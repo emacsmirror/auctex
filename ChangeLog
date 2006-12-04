@@ -1,3 +1,21 @@
+2006-12-04  Miguel Frasson  <mvsfrasson@gmail.com>
+
+	* toolbar-x.el (toolbarx-emacs-add-button):
+	Insert buttons in KEYMAP (new arg).
+	Unnecessary &optional removed.
+	Removed broken code for fake-button `:new-line'.
+	(toolbarx-emacs-refresh-process-button-or-insert-list):
+	New arg KEYMAP inserted.
+	Unnecessary &optional removed.
+	(toolbarx-emacs-refresh):
+	Fixed bug with `tool-bar-map' let-bound and made local variable.
+	(toolbarx-xemacs-refresh-process-button-or-insert-list):
+	Docstring improved..
+	(toolbarx-xemacs-refresh):
+	Using `nreverse' directly inside `let'.
+	`nreverse' is applied to lists generated from actual
+	data-structures, leaving such data-structures alone.
+	
 2006-11-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* context.el (ConTeXt-texexec-option-nonstop): New variable.

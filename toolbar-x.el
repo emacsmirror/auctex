@@ -1139,21 +1139,22 @@ This variable can store different values for the different buffers.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Second engine: display parsed buttons in Emacs
 
-(defun toolbarx-emacs-add-button (button &optional used-keys)
+(defun toolbarx-emacs-add-button (button used-keys keymap)
   "Insert a button where BUTTON is its description.
-In Emacs, insert a button to keymap `tool-bar-map' at the end.
+USED-KEYS should be a list of symbols, where the first element is
+`:used-symbols'.  This list should store the symbols of the
+buttons already inserted.  This list is changed by side effect.
+KEYMAP is the keymap where the menu-item corresponding to the
+tool-bal button is going to be inserted.  Insertion is made in
+the end of KEYMAP.
+
 BUTTON should be a list of form (SYMBOL . PROP-LIST).  SYMBOL is
 a symbol that \"names\" this button.  PROP-LIST is a list in the
 format (PROP VAL ... PROP VAL).	 The supported properties are
 `:image', `:command', `:append-command', `:prepend-command',
 `:help', `:enable', `:visible', `:button', `:insert' and
 `:toolbar'. For a description of properties, see documentation of
-function `toolbar-install-toolbar'.
-
-If USED-KEYS is present, it should be a list of symbols, where
-the first element is `:used-symbols'.  This list should store the
-symbols of the buttons already inserted.  This list is changed by
-side effect."
+function `toolbar-install-toolbar'."
   (let* ((symbol (nth 0 button))
 	 (used-keys-list (when used-keys
 			   (cdr used-keys)))
@@ -1195,38 +1196,6 @@ side effect."
 		     (eval (nth 1 (memq :insert filtered-props))))))
     (when insert
       (cond
-       ((eq symbol :new-line)
-	;; insert as many transparent spaces as neede to fill a line
-	;; (setq image-descriptor (toolbarx-find-image "tex6"))
-	(let ((lines-needed (tool-bar-lines-needed))
-	      (temp-tool-bar-map tool-bar-map)
-	      (new-line-happened (not tool-bar-mode))
-	      (starting t)
-	      (key-not-used 'transp)
-	      (count 0)
-	      (image-descriptor (toolbarx-find-image "transp-strip")))
-	  (while (not new-line-happened)
-	    (setq temp-tool-bar-map (copy-sequence tool-bar-map))
-	    (if starting
-		(setq starting nil)
-	      (setq used-keys-list (cons key-not-used used-keys-list)))
-	    ;; finding a symbol not in used-keys-list
-	    (while (memq key-not-used used-keys-list)
-	      (setq count (1+ count))
-	      (setq key-not-used (intern
-				  (format "%s-%d" 'transp count))))
-	    ;;
-	    (define-key-after tool-bar-map
-	      (vector key-not-used)
-	      `(menu-item "Transparent space"
-			  (lambda nil (interactive))
-			  :image ,image-descriptor
-			  :enable nil
-			  :help ""))
-	    (setq new-line-happened (not (eq (tool-bar-lines-needed)
-					     lines-needed))))
-	  (setq tool-bar-map (copy-sequence temp-tool-bar-map))))
-;;       ((eq symbol :sep)  )
        (t
 	;; symbol is not :new-line, therefore a normal button
 	(let* ((image (cadr (memq :image filtered-props)))
@@ -1288,14 +1257,14 @@ side effect."
 		  symb)))
 	  (when (and image-descriptor command)
 	    (setq used-keys-list (cons key-not-used used-keys-list))
-	    (define-key-after tool-bar-map
+	    (define-key-after keymap
 	      (vector key-not-used) menuitem))))))
     (when used-keys (setcdr used-keys used-keys-list))))
 
 
 (defun toolbarx-emacs-refresh-process-button-or-insert-list (switches
-							     &optional
-							     used-keys)
+							     used-keys
+							     keymap)
   "Process SWITCHES, inserting buttons in `tool-bar-map'.
 If a button is actually a `:insert' clause group (if `car' is
 `:insert') and evaluation of `cdr' yields non-nil, process `cddr'
@@ -1306,8 +1275,9 @@ been used as keys in the keymap `tool-bar-map'."
     (if (eq (car button) :insert)
 	(when (eval (cadr button))
 	  (toolbarx-emacs-refresh-process-button-or-insert-list (cddr button)
-								used-keys))
-      (toolbarx-emacs-add-button button used-keys))))
+								used-keys
+								keymap))
+      (toolbarx-emacs-add-button button used-keys keymap))))
 
 
 
@@ -1315,17 +1285,15 @@ been used as keys in the keymap `tool-bar-map'."
   "Refresh and redraw the toolbar in Emacs.
 If GLOBAL-FLAG is non-nil, the default value of toolbar switches
 is used and the default value of `toolbarx-map' is changed."
-  (let ((switches (if global-flag
+  (let* ((switches (if global-flag
 		       (if (default-boundp 'toolbarx-internal-button-switches)
 			   (default-value 'toolbarx-internal-button-switches)
 			 toolbarx-internal-button-switches)
 		     toolbarx-internal-button-switches))
-	(used-keys (list :used-symbols nil))
-	(tool-bar-map-temp))
-    (let (tool-bar-map)
-      (set (make-local-variable 'tool-bar-map) (make-sparse-keymap))
-      (toolbarx-emacs-refresh-process-button-or-insert-list switches used-keys)
-      (setq tool-bar-map-temp (copy-sequence tool-bar-map)))
+	 (used-keys (list :used-symbols nil))
+	 (tool-bar-map-temp (make-sparse-keymap)))
+    (toolbarx-emacs-refresh-process-button-or-insert-list switches used-keys
+							  tool-bar-map-temp)
     (if global-flag
 	(setq-default tool-bar-map tool-bar-map-temp)
       (setq tool-bar-map tool-bar-map-temp))))
@@ -1511,7 +1479,11 @@ TOOLBAR-PROPS should be a list with 12 elements, each one representing
 properties (in this order) `locale', `default', `top', `right',
 `bottom', `left', `default-height', `default-width', `top-height',
 `right-width', `bottom-height' and `left-width'.  The return is a list
-with the same properties updated."
+with the same properties updated.
+
+NB: Buttons (vectors) are inserted in front of the lists
+represented by `default', `top', `right', `bottom' and `left', so
+the lists are built reversed."
   (let ((locale		 (nth 0	 toolbar-props))
 	(default	 (nth 1	 toolbar-props))
 	(top		 (nth 2	 toolbar-props))
@@ -1604,53 +1576,50 @@ with the same properties updated."
 	 (toolbar-props
 	  (toolbarx-xemacs-refresh-process-button-or-insert-list switches
 								 toolbar-init))
-	 (default	  (nth 1  toolbar-props))
-	 (top		  (nth 2  toolbar-props))
-	 (right		  (nth 3  toolbar-props))
-	 (bottom	  (nth 4  toolbar-props))
-	 (left		  (nth 5  toolbar-props))
+	 ;; NB: Buttons (vectors) are inserted in front of the lists
+	 ;; represented by `default', `top', `right', `bottom' and
+	 ;; `left', so the lists are built reversed.
+	 (default	  (nreverse (nth 1  toolbar-props)))
+	 (top		  (nreverse (nth 2  toolbar-props)))
+	 (right		  (nreverse (nth 3  toolbar-props)))
+	 (bottom	  (nreverse (nth 4  toolbar-props)))
+	 (left		  (nreverse (nth 5  toolbar-props)))
 	 (default-height  (nth 6  toolbar-props))
 	 (default-width	  (nth 7  toolbar-props))
 	 (top-height	  (nth 8  toolbar-props))
 	 (right-width	  (nth 9  toolbar-props))
 	 (bottom-height	  (nth 10 toolbar-props))
-	 (left-width	  (nth 11 toolbar-props)))
-    ;; un-reverting variables
-    (setq default (nreverse default))
-    (setq top	  (nreverse top))
-    (setq right	  (nreverse right))
-    (setq bottom  (nreverse bottom))
-    (setq left	  (nreverse left))
+	 (left-width	  (nth 11 toolbar-props))
+	 (button-raised-border 2)
+	 (default-border (specifier-instance default-toolbar-border-width))
+	 (top-border (specifier-instance top-toolbar-border-width))
+	 (right-border (specifier-instance right-toolbar-border-width))
+	 (bottom-border (specifier-instance bottom-toolbar-border-width))
+	 (left-border (specifier-instance left-toolbar-border-width)))
     ;; adding borders
-    (let* ((button-raised-border 2)
-	   (default-border (specifier-instance default-toolbar-border-width))
-	   (top-border (specifier-instance top-toolbar-border-width))
-	   (right-border (specifier-instance right-toolbar-border-width))
-	   (bottom-border (specifier-instance bottom-toolbar-border-width))
-	   (left-border (specifier-instance left-toolbar-border-width)))
-      (when default
-	(setq default-height (+ (* 2 button-raised-border)
-				(* 2 default-border)
-				default-height))
-	(setq default-width (+ (* 2 button-raised-border)
-			       (* 2 default-border)
-			       default-width)))
-      (when top
-	(setq top-height (+ (* 2 button-raised-border)
-			    (* 2 top-border)
-			    top-height)))
-      (when right
-	(setq right-width (+ (* 2 button-raised-border)
-			     (* 2 right-border)
-			     right-width)))
-      (when bottom
-	(setq bottom-height (+ (* 2 button-raised-border)
-			       (* 2 bottom-border)
-			       bottom-height)))
-      (when left
-	(setq left-width (+ (* 2 button-raised-border)
-			       (* 2 left-border)
-			       left-width))))
+    (when default
+      (setq default-height (+ (* 2 button-raised-border)
+			      (* 2 default-border)
+			      default-height))
+      (setq default-width (+ (* 2 button-raised-border)
+			     (* 2 default-border)
+			     default-width)))
+    (when top
+      (setq top-height (+ (* 2 button-raised-border)
+			  (* 2 top-border)
+			  top-height)))
+    (when right
+      (setq right-width (+ (* 2 button-raised-border)
+			   (* 2 right-border)
+			   right-width)))
+    (when bottom
+      (setq bottom-height (+ (* 2 button-raised-border)
+			     (* 2 bottom-border)
+			     bottom-height)))
+    (when left
+      (setq left-width (+ (* 2 button-raised-border)
+			  (* 2 left-border)
+			  left-width)))
     ;; deal with specifiers
     ;; - remove all specifiers for toolbars witout buttons
     (if default
