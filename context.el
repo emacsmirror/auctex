@@ -27,7 +27,7 @@
 ;; This is in progress ConTeXt support for AUCTeX. Please report
 ;; anomalies or things you believe should be added.
 
-;; AUCTeX is closely intervowen with LaTeX.  We have to split up
+;; AUCTeX is closely interwoven with LaTeX.  We have to split up
 ;; things without breaking 'em.
 
 ;; some parts are stolen from latex.el and adapted to ConTeXt.
@@ -877,7 +877,7 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 (defun ConTeXt-arg-setup (optional &optional prompt)
   "Prompt for setup arguments."
   (let ((setup (read-from-minibuffer
-		(TeX-argument-prompt optional prompt "setup"))))
+		(TeX-argument-prompt optional prompt "Setup"))))
     (ConTeXt-argument-insert setup t)))
 
 
