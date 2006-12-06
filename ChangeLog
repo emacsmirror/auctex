@@ -1,3 +1,15 @@
+2006-12-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context-nl.el (ConTeXt-nl-mode-initialization): Use correct
+	syntax for prompting for an optional argument in case of \items
+	macro.
+
+	* context-en.el (ConTeXt-en-mode-initialization): Use correct
+	syntax for prompting for an optional argument in case of \items
+	macro.
+
+	* context.el (ConTeXt-arg-setup): Capitalize prompt.
+
 2006-12-04  Miguel Frasson  <mvsfrasson@gmail.com>
 
 	* toolbar-x.el (toolbarx-emacs-add-button):
