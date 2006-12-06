@@ -152,7 +152,7 @@
   (TeX-add-symbols
    '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))
    '("som" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-   '("items" (ConTeXt-arg-setup t) (TeX-arg-string "Comma separated list"))
+   '("items" [ConTeXt-arg-setup] (TeX-arg-string "Comma separated list"))
    '("its" ConTeXt-arg-define-ref (TeX-arg-literal " "))
    '("nop" (TeX-arg-literal " "))
    '("ran" TeX-arg-string (TeX-arg-literal " "))
