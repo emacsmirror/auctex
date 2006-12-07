@@ -210,7 +210,7 @@ format of the argument MEANING-ALIST in the mentioned function."
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
 	       (expand-file-name "images" TeX-data-directory))
-  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh)
+  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
   (toolbarx-install-toolbar TeX-bar-TeX-buttons
 			    (let ((append-list))
 			      (dolist (elt TeX-bar-TeX-all-button-alists)
@@ -348,7 +348,7 @@ format of the argument MEANING-ALIST in the mentioned function."
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
 	       (expand-file-name "images" TeX-data-directory))
-  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh)
+  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
 			    (let ((append-list))
 			      (dolist (elt TeX-bar-LaTeX-all-button-alists)
