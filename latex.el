@@ -372,6 +372,7 @@ To get a full featured `LaTeX-section' command, insert
 	 LaTeX-section-label))
 
 in your .emacs file."
+  :group 'LaTeX-macro
   :type 'hook
   :options '(LaTeX-section-heading
 	     LaTeX-section-title
@@ -1825,7 +1826,7 @@ Programs should not use this variable directly but the function
 `LaTeX-verbatim-macros-with-delims' which returns a value
 including buffer-local keyword additions via
 `LaTeX-verbatim-macros-with-delims-local' as well."
-  :group 'LaTeX
+  :group 'LaTeX-macro
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-macros-with-delims-local nil
@@ -1847,7 +1848,7 @@ Programs should not use this variable directly but the function
 `LaTeX-verbatim-macros-with-braces' which returns a value
 including buffer-local keyword additions via
 `LaTeX-verbatim-macros-with-braces-local' as well."
-  :group 'LaTeX
+  :group 'LaTeX-macro
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-macros-with-braces-local nil
@@ -1870,7 +1871,7 @@ Programs should not use this variable directly but the function
 `LaTeX-verbatim-environments' which returns a value including
 buffer-local keyword additions via
 `LaTeX-verbatim-environemts-local' as well."
-  :group 'LaTeX
+  :group 'LaTeX-environment
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-environments-local nil
