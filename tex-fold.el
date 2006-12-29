@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 
-;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
+;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2004-07-04
 ;; Keywords: tex, wp
@@ -58,6 +58,15 @@
 (defgroup TeX-fold nil
   "Fold TeX macros."
   :group 'AUCTeX)
+
+(defcustom TeX-fold-type-list '(env macro)
+  "List of item types to consider when folding.
+Valid items are the symbols 'env for environments, 'macro for
+macros and 'comment for comments."
+  :type '(set (const :tag "Environments" env)
+	      (const :tag "Macros" macro)
+	      (const :tag "Comments" comment))
+  :group 'TeX-fold)
 
 (defcustom TeX-fold-macro-spec-list
   '(("[f]" ("footnote"))
@@ -177,6 +186,7 @@ Set it to zero in order to disable help echos."
     (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
     (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
     (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
+    (define-key map "\C-c\C-o\C-c" 'TeX-fold-comment)
     (define-key map "\C-c\C-ob"    'TeX-fold-clearout-buffer)
     (define-key map "\C-c\C-or"    'TeX-fold-clearout-region)
     (define-key map "\C-c\C-op"    'TeX-fold-clearout-paragraph)
@@ -195,7 +205,8 @@ no folded content but a macro or environment, fold it."
   (cond ((TeX-fold-clearout-item))
 	((TeX-active-mark) (TeX-fold-region (mark) (point)))
 	((TeX-fold-item 'macro))
-	((TeX-fold-item 'env))))
+	((TeX-fold-item 'env))
+	((TeX-fold-comment))))
 
 (defun TeX-fold-buffer ()
   "Hide all configured macros and environments in the current buffer.
@@ -223,85 +234,111 @@ and environments in `TeX-fold-env-spec-list'."
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
-(defun TeX-fold-region (start end &optional type)
-  "Fold all items in region starting at position START and ending at END.
-If optional parameter TYPE is given, fold only items of the
-specified type.  TYPE can be one of the symbols 'env for
-environments or 'macro for macros."
+(defun TeX-fold-region (start end)
+  "Fold all items in region from START to END."
   (interactive "r")
-  (if (null type)
-      (progn
-	(TeX-fold-region start end 'env)
-	(TeX-fold-region start end 'macro))
-    (when (or (and (eq type 'env)
-		   (not (eq major-mode 'plain-tex-mode)))
-	      (eq type 'macro))
-      (save-excursion
-	(let (fold-list item-list regexp)
-	  (dolist (item (if (eq type 'env)
-			    TeX-fold-env-spec-list
-			  TeX-fold-macro-spec-list))
-	    (dolist (i (cadr item))
-	      (add-to-list 'fold-list (list i (car item)))
-	      (add-to-list 'item-list i)))
-	  (setq regexp (cond ((and (eq type 'env)
-				   (eq major-mode 'context-mode))
-			      (concat (regexp-quote TeX-esc)
-				      "start" (regexp-opt item-list t)))
-			     ((and (eq type 'env)
-				   (eq major-mode 'texinfo-mode))
-			      (concat (regexp-quote TeX-esc)
-				      (regexp-opt item-list t)))
-			     ((eq type 'env)
-			      (concat (regexp-quote TeX-esc)
-				      "begin[ \t]*{"
-				      (regexp-opt item-list t) "}"))
-			     (t
-			      (concat (regexp-quote TeX-esc)
-				      (regexp-opt item-list t)))))
-	  (save-restriction
-	    (narrow-to-region start end)
-	    ;; Start from the bottom so that it is easier to prioritize
-	    ;; nested macros.
-	    (goto-char (point-max))
-	    (let ((case-fold-search nil)
-		  item-name)
-	      (while (re-search-backward regexp nil t)
-		(setq item-name (match-string 1))
-		(unless (or (and TeX-fold-preserve-comments
-				 (TeX-in-commented-line))
-			    ;; Make sure no partially matched macros are
-			    ;; folded.  For macros consisting of letters
-			    ;; this means there should be none of the
-			    ;; characters [A-Za-z@*] after the matched
-			    ;; string.  Single-char non-letter macros like
-			    ;; \, don't have this requirement.
-			    (and (eq type 'macro)
-				 (save-match-data
-				   (string-match "[A-Za-z]" item-name))
-				 (save-match-data
-				   (string-match "[A-Za-z@*]"
-						 (string (char-after
-							  (match-end 0)))))))
-		  (let* ((item-start (match-beginning 0))
-			 (display-string-spec (cadr (assoc item-name
-							   fold-list)))
-			 (item-end (TeX-fold-item-end item-start type))
-			 (ov (TeX-fold-make-overlay item-start item-end type
-						    display-string-spec)))
-		    (TeX-fold-hide-item ov)))))))))))
+  (when (and (memq 'env TeX-fold-type-list)
+	     (not (eq major-mode 'plain-tex-mode)))
+    (TeX-fold-region-macro-or-env start end 'env))
+  (when (memq 'macro TeX-fold-type-list)
+    (TeX-fold-region-macro-or-env start end 'macro))
+  (when (memq 'comment TeX-fold-type-list)
+    (TeX-fold-region-comment start end)))
+
+(defun TeX-fold-region-macro-or-env (start end type)
+  "Fold all items of type TYPE in region from START to END.
+TYPE can be one of the symbols 'env for environments and 'macro
+for macros."
+  (save-excursion
+    (let (fold-list item-list regexp)
+      (dolist (item (if (eq type 'env)
+			TeX-fold-env-spec-list
+		      TeX-fold-macro-spec-list))
+	(dolist (i (cadr item))
+	  (add-to-list 'fold-list (list i (car item)))
+	  (add-to-list 'item-list i)))
+      (setq regexp (cond ((and (eq type 'env)
+			       (eq major-mode 'context-mode))
+			  (concat (regexp-quote TeX-esc)
+				  "start" (regexp-opt item-list t)))
+			 ((and (eq type 'env)
+			       (eq major-mode 'texinfo-mode))
+			  (concat (regexp-quote TeX-esc)
+				  (regexp-opt item-list t)))
+			 ((eq type 'env)
+			  (concat (regexp-quote TeX-esc)
+				  "begin[ \t]*{"
+				  (regexp-opt item-list t) "}"))
+			 (t
+			  (concat (regexp-quote TeX-esc)
+				  (regexp-opt item-list t)))))
+      (save-restriction
+	(narrow-to-region start end)
+	;; Start from the bottom so that it is easier to prioritize
+	;; nested macros.
+	(goto-char (point-max))
+	(let ((case-fold-search nil)
+	      item-name)
+	  (while (re-search-backward regexp nil t)
+	    (setq item-name (match-string 1))
+	    (unless (or (and TeX-fold-preserve-comments
+			     (TeX-in-commented-line))
+			;; Make sure no partially matched macros are
+			;; folded.  For macros consisting of letters
+			;; this means there should be none of the
+			;; characters [A-Za-z@*] after the matched
+			;; string.  Single-char non-letter macros like
+			;; \, don't have this requirement.
+			(and (eq type 'macro)
+			     (save-match-data
+			       (string-match "[A-Za-z]" item-name))
+			     (save-match-data
+			       (string-match "[A-Za-z@*]"
+					     (string (char-after
+						      (match-end 0)))))))
+	      (let* ((item-start (match-beginning 0))
+		     (display-string-spec (cadr (assoc item-name
+						       fold-list)))
+		     (item-end (TeX-fold-item-end item-start type))
+		     (ov (TeX-fold-make-overlay item-start item-end type
+						display-string-spec)))
+		(TeX-fold-hide-item ov)))))))))
+
+(defun TeX-fold-region-comment (start end)
+  "Fold all comments in region from START to END."
+  (save-excursion
+    (goto-char start)
+    (let (beg)
+      (while (setq beg (TeX-search-forward-comment-start end))
+	(goto-char beg)
+	;; Determine the start of the region to be folded just behind
+	;; the comment starter.
+	(looking-at TeX-comment-start-regexp)
+	(setq beg (match-end 0))
+	;; Search for the end of the comment.
+	(while (TeX-comment-forward))
+	(end-of-line 0)
+	;; Hide the whole region.
+	(TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
+						   TeX-fold-ellipsis))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
   (interactive)
   (unless (TeX-fold-item 'macro)
-    (message "No macro found.")))
+    (message "No macro found")))
 
 (defun TeX-fold-env ()
   "Hide the environment on which point currently is located."
   (interactive)
   (unless (TeX-fold-item 'env)
-    (message "No environment found.")))
+    (message "No environment found")))
+
+(defun TeX-fold-comment ()
+  "Hide the comment on which point currently is located."
+  (interactive)
+  (unless (TeX-fold-comment-do)
+    (message "No comment found")))
 
 (defun TeX-fold-item (type)
   "Hide the item on which point currently is located.
@@ -370,6 +407,27 @@ Return non-nil if an item was found and folded, nil otherwise."
 	       (ov (TeX-fold-make-overlay item-start item-end type
 					  display-string-spec)))
 	  (TeX-fold-hide-item ov))))))
+
+(defun TeX-fold-comment-do ()
+  "Hide the comment on which point currently is located.
+This is the function doing the work for `TeX-fold-comment'.  It
+is an internal function communication with return values rather
+than with messages for the user.
+Return non-nil if a comment was found and folded, nil otherwise."
+  (if (and (not (TeX-in-comment)) (not (TeX-in-line-comment)))
+      nil
+    (let (beg)
+      (save-excursion
+	(while (progn
+		 (beginning-of-line 0)
+		 (TeX-in-line-comment)))
+	(goto-char (TeX-search-forward-comment-start (line-end-position 2)))
+	(looking-at TeX-comment-start-regexp)
+	(setq beg (match-end 0))
+	(while (TeX-comment-forward))
+	(end-of-line 0)
+	(TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
+						   TeX-fold-ellipsis))))))
 
 
 ;;; Utilities
@@ -719,10 +777,10 @@ the other elements.  The ordering among elements is maintained."
 
 ;;; The mode
 
-;;; This autoload cookie had to be changed because of XEmacs.  This is
-;;; very dissatisfactory, because we now don't have the full doc string
-;;; available to tell people what to expect when using this mode
-;;; before loading it.
+;; This autoload cookie had to be changed because of XEmacs.  This is
+;; very dissatisfactory, because we now don't have the full doc string
+;; available to tell people what to expect when using this mode before
+;; loading it.
 
 ;;;###autoload (autoload 'TeX-fold-mode "tex-fold" "Minor mode for hiding and revealing macros and environments." t)
 (define-minor-mode TeX-fold-mode
