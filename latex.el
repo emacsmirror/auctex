@@ -2662,7 +2662,7 @@ space does not end a sentence, so don't break a line there."
 	(let* (linebeg
 	       (code-comment-start (save-excursion
 				     (LaTeX-back-to-indentation)
-				     (LaTeX-search-forward-comment-start
+				     (TeX-search-forward-comment-start
 				      (line-end-position))))
 	       (end-marker (save-excursion
 			     (goto-char (or code-comment-start to))
@@ -3086,7 +3086,7 @@ depends on the value of `LaTeX-syntactic-comments'."
        ;; A line with some code, followed by a comment?
        ((and (setq code-comment-start (save-excursion
 					(beginning-of-line)
-					(LaTeX-search-forward-comment-start
+					(TeX-search-forward-comment-start
 					 (line-end-position))))
 	     (> (point) code-comment-start)
 	     (not (TeX-in-commented-line))
@@ -3197,7 +3197,7 @@ depends on the value of `LaTeX-syntactic-comments'."
     (indent-according-to-mode)
     (when (when (setq code-comment-start (save-excursion
 					   (goto-char beg)
-					   (LaTeX-search-forward-comment-start
+					   (TeX-search-forward-comment-start
 					    (line-end-position))))
 	    (goto-char code-comment-start)
 	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
@@ -4848,6 +4848,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	 "[ \t]*%*[ \t]*\\("
 	 "\\$\\$" ; Plain TeX display math
 	 "\\|$\\)"))
+
+  (setq TeX-search-forward-comment-start-function
+	'LaTeX-search-forward-comment-start)
 
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
