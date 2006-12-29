@@ -1,3 +1,31 @@
+2006-12-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el (TeX-texinfo-mode): Set `comment-use-syntax'.
+
+	* tex-fold.el: Update author email address.
+	(TeX-fold-type-list): New variable.
+	(TeX-fold-keymap): Add key binding for `TeX-fold-comment'.
+	(TeX-fold-dwim): Try to fold comment as well.
+	(TeX-fold-region): Move implementation of region folding for
+	macros and environments out into the new function
+	`TeX-fold-region-macro-or-env' and cater for comments as well.
+	(TeX-fold-region-macro-or-env, TeX-fold-region-comment)
+	(TeX-fold-comment, TeX-fold-comment-do): New functions.
+
+	* latex.el (LaTeX-common-initialization): Set
+	`TeX-search-forward-comment-start-function'.
+	(LaTeX-fill-region-as-para-do, LaTeX-fill-paragraph)
+	(LaTeX-fill-code-comment): Call `TeX-search-forward-comment-start'
+	instead of `LaTeX-search-forward-comment-start'.
+
+	* tex.el (VirTeX-common-initialization): Set `comment-end-skip'
+	and `comment-use-syntax'.
+	(TeX-fold-menu): Add entry for folding comments.
+	(TeX-comment-forward): New compatibility function.
+	(TeX-comment-or-uncomment-region): Use it.
+	(TeX-search-forward-comment-start-function): New variable.
+	(TeX-search-forward-comment-start): New function.
+
 2006-12-10  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-section-hook): Place into `LaTeX-macro' group.
