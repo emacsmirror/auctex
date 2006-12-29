@@ -350,6 +350,7 @@ value of `Texinfo-mode-hook'."
   (setq comment-start "@c ")
   (make-local-variable 'comment-start-skip)
   (setq comment-start-skip "@c +\\|@comment +")
+  (set (make-local-variable 'comment-use-syntax) nil)
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes t)
   (if (not (boundp 'texinfo-imenu-generic-expression))
