@@ -2395,6 +2395,8 @@ The algorithm is as follows:
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
 	 "\\)*\\)\\(%+[ \t]*\\)"))
+  (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
+  (set (make-local-variable 'comment-use-syntax) t)
   ;; `comment-padding' is defined here as an integer for compatibility
   ;; reasons because older Emacsen could not cope with a string.
   (make-local-variable 'comment-padding)
@@ -3697,6 +3699,10 @@ Brace insertion is only done if point is in a math construct and
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-e"
       :help "Hide the environment containing point"]
+     ["Hide Current Comment" TeX-fold-comment
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-c"
+      :help "Hide the comment containing point"]
      "-"
      ["Show All in Current Buffer" TeX-fold-clearout-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
@@ -3889,10 +3895,7 @@ arg ARG is given, it is passed on to the respective function."
       (interactive "*r\nP")
       (funcall (if (save-excursion ;; check for already commented region
 		     (goto-char beg)
-		     ;; `comment-forward' is not available in Emacs 20
-		     (if (fboundp 'comment-forward)
-			 (comment-forward (point-max))
-		       (forward-comment (point-max)))
+		     (TeX-comment-forward (point-max))
 		     (<= end (point)))
 		   'TeX-uncomment-region 'TeX-comment-region)
 	       beg end arg)))
@@ -4053,6 +4056,26 @@ not move point to a position less than this value."
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-min)))
   (TeX-forward-comment-skip (- count) limit))
+
+;; Taken from `comment-forward' in Emacs' CVS on 2006-12-26.  Used as
+;; a compatibility function for XEmacs 21.4.
+(defun TeX-comment-forward (&optional n)
+  "Skip forward over N comments.
+Just like `forward-comment' but only for positive N
+and can use regexps instead of syntax."
+  (if (fboundp 'comment-forward)
+      (comment-forward n)
+    (setq n (or n 1))
+    (if (< n 0) (error "No comment-backward")
+      (if comment-use-syntax (forward-comment n)
+	(while (> n 0)
+	  (setq n
+		(if (or (forward-comment 1)
+			(and (looking-at comment-start-skip)
+			     (goto-char (match-end 0))
+			     (re-search-forward comment-end-skip nil 'move)))
+		    (1- n) -1)))
+	(= n 0)))))
 
 (defun TeX-comment-padding-string ()
   "Return  comment padding as a string.
@@ -4345,6 +4368,29 @@ escape characters, such as \"\\\" in LaTeX."
 	(forward-char (length TeX-esc))
 	(buffer-substring-no-properties
 	 (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
+
+(defvar TeX-search-forward-comment-start-function nil
+  "Function to find the start of a comment.
+The function should accept an optional argument for specifying
+the limit of the search.  It should return the position just
+before the comment if one is found and nil otherwise.  Point
+should not be moved.")
+(make-variable-buffer-local 'TeX-search-forward-comment-start-function)
+
+(defun TeX-search-forward-comment-start (&optional limit)
+  "Search forward for a comment start from current position till LIMIT.
+If LIMIT is omitted, search till the end of the buffer.
+
+The search relies on `TeX-comment-start-regexp' being set
+correctly for the current mode.
+
+Set `TeX-search-forward-comment-start-defun' in order to override
+the default implementation."
+  (if TeX-search-forward-comment-start-function
+      (funcall TeX-search-forward-comment-start-function limit)
+    (setq limit (or limit (point-max)))
+    (when (TeX-re-search-forward-unescaped TeX-comment-start-regexp limit t)
+      (match-beginning 0))))
 
 ;;; Fonts
 
