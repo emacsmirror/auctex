@@ -1722,25 +1722,26 @@ please refer to the faces mentioned in the explanations above and use
 @cindex Auto-Reveal
 @cindex Hide Macros
 
-There can be macros and environments which have content that is not part
-of the text body you are writing, like footnotes and citations.  Those
-enclose text which you often only want to see while actually editing it
-and which otherwise distract your view of the document body.  Similarly
-there are macros where you are not interested in viewing the macro
-besides its content but rather want to see the content only, like font
-specifiers where the content might already be fontified in a special way
-by font locking.
+A popular complaint about markup languages like @TeX{} and @LaTeX{} is
+that there is too much clutter in the source text and that one cannot
+focus well on the content.  There are macros where you are only
+interested in the content they are enclosing, like font specifiers where
+the content might already be fontified in a special way by font locking.
+Or macros the content of which you only want to see when actually
+editing it, like footnotes or citations.  Similarly you might find
+certain environments or comments distracting when trying to concentrate
+on the body of your document.
 
 With @AUCTeX{}'s folding functionality you can collapse those items and
 replace them by either a fixed string or the content of one of their
 arguments instead.  If you want to make the original text visible again
-temporarily in order to view or edit it, move point sideways onto the
-placeholder (also called display string) or left-click with the mouse
-pointer on it.  (The latter is currently only supported on GNU Emacs.)
-The macro or environment will unfold automatically, stay open as long as
-point is inside of it and collapse again once you move point out of it.
-(Note that folding of environments currently does not work in every
-@AUCTeX{} mode.)
+in order to view or edit it, move point sideways onto the placeholder
+(also called display string) or left-click with the mouse pointer on it.
+(The latter is currently only supported on Emacs.)  The macro or
+environment will unfold automatically, stay open as long as point is
+inside of it and collapse again once you move point out of it.  (Note
+that folding of environments currently does not work in every @AUCTeX{}
+mode.)
 
 In order to use this feature, you have to activate @code{TeX-fold-mode}
 which will activate the auto-reveal feature and the necessary commands
@@ -1760,23 +1761,38 @@ If it should be activated in all @AUCTeX{} modes, use
 @code{TeX-mode-hook} instead of @code{LaTeX-mode-hook}.
 
 Once the mode is active there are several commands available to hide
-and show macros and environments:
+and show macros, environments and comments:
 
 @deffn Command TeX-fold-buffer
 @kindex C-c C-o C-b
-(@kbd{C-c C-o C-b}) Hide all macros specified in the variables
-@code{TeX-fold-macro-spec-list} and @code{TeX-fold-env-spec-list}.  This
-command can also be used to refresh the whole buffer and hide any new
-macros and environments which were inserted after the last invocation of
-the command.
-
-@vindex TeX-fold-force-fontify
-In order for all folded content to get the right faces, the whole buffer
-has to be fontified before folding is carried out.  The command
-therefore will force fontification of unfontified regions.  As this will
-prolong the time folding takes, you can prevent forced fontification by
-customizing the variable @code{TeX-fold-force-fontify}.
+(@kbd{C-c C-o C-b}) Hide all foldable items in the current buffer
+according to the setting of @code{TeX-fold-type-list}.  This command can
+also be used to refresh the whole buffer and hide any new macros and
+environments which were inserted after the last invocation of the
+command.
 @end deffn
+
+@defopt TeX-fold-type-list
+List of symbols determining the item classes to consider for folding.
+This can be macros, environments and comments.  Per default only macros
+and environments are folded.
+@end defopt
+
+@defopt TeX-fold-force-fontify
+In order for all folded content to get the right faces, the whole buffer
+has to be fontified before folding is carried out.
+@code{TeX-fold-buffer} therefore will force fontification of unfontified
+regions.  As this will prolong the time folding takes, you can prevent
+forced fontification by customizing the variable
+@code{TeX-fold-force-fontify}.
+@end defopt
+
+@defopt TeX-fold-preserve-comments
+By default items found in comments will be folded.  If your comments
+often contain unfinished code this might lead to problems.  Give this
+variable a non-nil value and foldable items in your comments will be
+left alone.
+@end defopt
 
 @deffn Command TeX-fold-region
 @kindex C-c C-o C-r
@@ -1807,6 +1823,11 @@ located.  The behavior regarding the display string is analogous to
 @code{TeX-fold-macro} and determined by the variables
 @code{TeX-fold-env-spec-list} and
 @code{TeX-fold-unspec-env-display-string} respectively.
+@end deffn
+
+@deffn Command TeX-fold-comment
+@kindex C-c C-o C-c
+(@kbd{C-c C-o C-c}) Hide the comment point is located on.
 @end deffn
 
 @deffn Command TeX-fold-clearout-buffer
