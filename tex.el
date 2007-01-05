@@ -4675,16 +4675,17 @@ mark.  Third element is the closing quotation mark.  Opening and
 closing quotation marks can be specified directly as strings or
 as functions returning a string.  Fourth element is a boolean
 specifying insertion behavior, overriding
-`TeX-quote-after-quote'."
+`TeX-quote-after-quote'.  See Info node `(auctex)European' for
+valid languages."
   :group 'TeX-quote
+  :link '(custom-manual "(auctex)European")
   :type '(repeat (group (choice
 			 (const "czech")
 			 (const "danish")
 			 (const "dutch")
 			 (const "german")
 			 (const "ngerman")
-			 (const "frenchb")
-			 (const "francais")
+			 (const "french") ;; not frenchb or francais
 			 (const "italian")
 			 (const "plfonts")
 			 (const "plhb")
