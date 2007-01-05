@@ -1,9 +1,8 @@
 2007-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-command-default): Mark as safe-local-variable.
-	(TeX-quote-language-alist): Improve custom type.
-	(TeX-quote-language-alist): Fix custom type for French.  Add links
-	to the manual.
+	(TeX-quote-language-alist): Improve custom type.  Add links to the
+	manual.  Improve doc string.
 
 2006-12-30  Ralf Angeli  <angeli@caeruleus.net>
 

@@ -4670,11 +4670,11 @@ quotes are inserted only after \"."
 (defcustom TeX-quote-language-alist nil
   "Alist for overriding the default language-specific quote insertion.
 First element in each item is the name of the language as set by
-the language style file.  Second element is the opening quotation
-mark.  Third element is the closing quotation mark.  Opening and
-closing quotation marks can be specified directly as strings or
-as functions returning a string.  Fourth element is a boolean
-specifying insertion behavior, overriding
+the language style file as a string.  Second element is the
+opening quotation mark.  Third elemxent is the closing quotation
+mark.  Opening and closing quotation marks can be specified
+directly as strings or as functions returning a string.  Fourth
+element is a boolean specifying insertion behavior, overriding
 `TeX-quote-after-quote'.  See Info node `(auctex)European' for
 valid languages."
   :group 'TeX-quote
