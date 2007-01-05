@@ -1,5 +1,7 @@
 2007-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auctex.texi (European): Improve TeX-quote-language-alist.
+
 	* tex.el (TeX-command-default): Mark as safe-local-variable.
 	(TeX-quote-language-alist): Improve custom type.  Add links to the
 	manual.  Improve doc string.
