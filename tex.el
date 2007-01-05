@@ -4677,7 +4677,20 @@ as functions returning a string.  Fourth element is a boolean
 specifying insertion behavior, overriding
 `TeX-quote-after-quote'."
   :group 'TeX-quote
-  :type '(repeat (group (string :tag "Language")
+  :type '(repeat (group (choice
+			 (const "czech")
+			 (const "danish")
+			 (const "dutch")
+			 (const "german")
+			 (const "ngerman")
+			 (const "frenchb")
+			 (const "francais")
+			 (const "italian")
+			 (const "plfonts")
+			 (const "plhb")
+			 (const "slovak")
+			 (const "swedish")
+			 (string :tag "Other Language"))
 			(choice :tag "Opening quotation mark" string function)
 			(choice :tag "Closing quotation mark" string function)
 			(boolean :tag "Insert plain quote first" :value t))))
