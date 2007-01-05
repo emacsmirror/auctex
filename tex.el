@@ -1240,6 +1240,8 @@ Must be the car of an entry in `TeX-command-list'."
 
  (make-variable-buffer-local 'TeX-command-default)
 
+(put 'TeX-command-default 'safe-local-variable 'stringp)
+
 (defvar TeX-clean-default-intermediate-suffixes
   '("\\.aux" "\\.bbl" "\\.blg" "\\.brf" "\\.fot"
     "\\.glo" "\\.gls" "\\.idx" "\\.ilg" "\\.ind"

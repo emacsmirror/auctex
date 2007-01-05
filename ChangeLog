@@ -1,3 +1,7 @@
+2007-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-command-default): Mark as safe-local-variable.
+
 2006-12-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Folding): Document user-visible changes in the
