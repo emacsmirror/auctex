@@ -70,26 +70,26 @@ the file @file{INSTALL.windows}.
 version of @code{xemacs-base} older than 1.84 (released in sumo from
 02/02/2004).  Using @previewlatex{} requires a version of Emacs compiled
 with image support.  This means that @w{Emacs 21} will work only in the
-version for X11: for Windows and MacOSX, you need to use @w{Emacs 22}
-(which is not yet released) or a developer version.  Since the developer
-version is quite stable by now and features four more years of
+version for X11: for Windows and @w{Mac OS X}, you need to use @w{Emacs
+22} (which is not yet released) or a developer version.  Since the
+developer version is quite stable by now and features five more years of
 development and bugfixes, we recommend its use even for X11-based
 platforms.  You can get it here:
 
 @table @b
 @item Windows
 Precompiled versions are available from
-@uref{http://www.crasseux.com/emacs/} and @uref{http://nqmacs.sf.net/}.
-@item MacOSX
+@uref{ftp://alpha.gnu.org/gnu/auctex/} (including @AUCTeX{}) and
+@uref{http://ourcomments.org/Emacs/EmacsW32.html}.
+@item Mac OS X
 A precompiled version including an installer as well as preinstalled
 versions of @AUCTeX{} and @previewlatex{} is available from
-@uref{http://yaced.sf.net/}.  A different port is
-@uref{http://home.att.ne.jp/alpha/z123/emacs-mac-e.html}.
-@item Debian Linux
+@uref{http://homepage.mac.com/zenitani/emacs-e.html}.
+@item Debian GNU/Linux
 Debian provides @samp{emacs-snapshot} and @samp{emacs-snapshot-gtk}
 packages in its @samp{unstable} distribution.
-@item Fedora Linux
-@uref{http://people.redhat.com/petersen/emacs/}
+@item Fedora GNU/Linux
+@uref{http://people.redhat.com/coldwell/bugs/emacs/176171/}
 @item Self-compiled
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.
