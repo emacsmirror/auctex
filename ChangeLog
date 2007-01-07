@@ -1,3 +1,10 @@
+2007-01-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/wininstall.texi: Refer to up-to-date versions of CVS Emacs.
+
+	* doc/install.texi (Prerequisites): Refer to up-to-date versions
+	of CVS Emacs.
+
 2007-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (European): Improve TeX-quote-language-alist.
