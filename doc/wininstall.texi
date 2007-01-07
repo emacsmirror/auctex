@@ -155,13 +155,12 @@ trouble.  Using Cygwin either for everything or nothing might save
 headaches, @emph{if} things don't work out.
 
 @item
-Install a current version of XEmacs from
-@uref{http://www.xemacs.org} or try getting and compiling a developer
-version of @w{Emacs 22} from
+Install a current version of XEmacs from @uref{http://www.xemacs.org} or
+try getting and compiling a developer version of @w{Emacs 22} from
 @uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Compiling
-Emacs is outside of the scope of this manual.  Precompiled versions
-currently happen to be available at
-@uref{http://www.crasseux.com/emacs/} and @uref{http://nqmacs.sf.net/}.
+Emacs is outside of the scope of this manual.  Precompiled versions are
+available from @uref{ftp://alpha.gnu.org/gnu/auctex/} (including
+@AUCTeX{}) and @uref{http://ourcomments.org/Emacs/EmacsW32.html}.
 
 If you don't want to use a developer version and @w{Emacs 22} has not
 yet been released, it is also possible to use an @w{Emacs 21} binary
