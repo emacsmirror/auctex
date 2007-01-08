@@ -1,5 +1,7 @@
 2007-01-08  Ralf Angeli  <angeli@caeruleus.net>
 
+	* RELEASE: Document some new features.
+
 	* style/polish.el: New file.
 
 	* Makefile.in (STYLESRC): Add style/polish.el.
