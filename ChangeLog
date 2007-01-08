@@ -1,3 +1,17 @@
+2007-01-08  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/polish.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/polish.el.
+
+	* doc/auctex.texi (European): Remove references to `plfonts' and
+	`plhb' styles for typesetting Polish text because they seem to be
+	out of use.  Refer to the `polish' option for the babel LaTeX
+	package instead.
+
+	* tex.el (TeX-quote-language-alist): Replace references to
+	`plfonts' and `plhb' by `polish'.
+
 2007-01-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/wininstall.texi: Refer to up-to-date versions of CVS Emacs.
