@@ -4687,8 +4687,7 @@ valid languages."
 			 (const "ngerman")
 			 (const "french") ;; not frenchb or francais
 			 (const "italian")
-			 (const "plfonts")
-			 (const "plhb")
+			 (const "polish")
 			 (const "slovak")
 			 (const "swedish")
 			 (string :tag "Other Language"))
