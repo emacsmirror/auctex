@@ -1,3 +1,13 @@
+2007-01-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/polski.el.
+
+	* RELEASE: Mention support for `polski' LaTeX package.
+
+	* style/polski.el: New file.
+
+	* doc/auctex.texi (European): Mention `polski' language option.
+
 2007-01-08  Ralf Angeli  <angeli@caeruleus.net>
 
 	* RELEASE: Document some new features.
