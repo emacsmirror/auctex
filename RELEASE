@@ -51,9 +51,10 @@ specials.
 
 Support for folding of comments was added.
 
-The `polish' language option of the babel LaTeX package is now
-supported.  Most notably this means that AUCTeX will help to insert
-"`quotation marks"' as defined by polish.sty.
+The `polish' language option of the babel LaTeX package as well as the
+`polski' LaTeX package are now supported.  Most notably this means
+that AUCTeX will help to insert "`quotation marks"' as defined by
+polish.sty and polski.sty.
 
 There has been quite a number of bug fixes to various features and
 documentation across the board, most critical probably the tool bar.
