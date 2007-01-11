@@ -2929,6 +2929,11 @@ Runs style hook @code{TeX-language-pl-hook}.  Gives @samp{"} word syntax
 and makes the @key{"} key insert a literal @samp{"}.  Pressing @key{"}
 twice will insert @samp{"`} or @samp{"'} depending on context.
 
+@item polski
+Runs style hook @code{TeX-language-pl-hook}.  Makes the @key{"} key
+insert a literal @samp{"}.  Pressing @key{"} twice will insert @samp{,,}
+or @samp{''} depending on context.
+
 @item slovak
 Runs style hook @code{TeX-language-sk-hook}.  Pressing @key{"} will
 insert @samp{\uv@{} and @samp{@}} depending on context.
