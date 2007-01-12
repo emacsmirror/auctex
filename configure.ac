@@ -1,4 +1,4 @@
-AC_INIT(auctex,11.83,bug-auctex@gnu.org)
+AC_INIT(auctex,11.84,bug-auctex@gnu.org)
 
 AC_CHECK_PROGS_REQUIRED(MAKECMD, make, [make not found, aborting!])
 AC_PROG_MAKE_SET
