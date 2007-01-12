@@ -1,3 +1,15 @@
+2007-01-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* RELEASE: Update for release.
+
+	* doc/changes.texi: Update for release.
+
+	* auctex.spec (Version): Bump version number.
+
+	* configure.ac: Bump version number.
+
+	* doc/tex-ref.tex: Bump version number.
+
 2007-01-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (STYLESRC): Add style/polski.el.

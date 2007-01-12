@@ -1,3 +1,7 @@
+2007-01-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* configure.ac: Bump version number.
+
 2006-12-01  David Kastrup  <dak@gnu.org>
 
 	* prv-emacs.el (preview-move-point): Do not error out if
