@@ -4,10 +4,39 @@
 
 @end ifset
 
-@heading News after 11.83
-@c @heading News in 11.84
+@heading News in 11.84
 
 @itemize @bullet
+
+@item
+There have been problems with the @samp{-without-texmf-dir} option to
+@samp{configure} when the value of @samp{-with-kpathsea-sep} was set or
+determined for an installation system with a default different from that
+of the runtime system.  @code{with-kpathsea-sep} has been removed; the
+setting is now usually determined at runtime.
+
+Due to this and other problems, preview-latex in the released XEmacs
+package failed under Windows or with anything except recent 21.5
+XEmacsen.
+
+@item
+@AUCTeX{} and @previewlatex{} have been changed in order to accommodate
+file names containing spaces.  @previewlatex{} now tolerates bad
+PostScript code polluting the stack (like some Omega fonts).
+
+@item
+@samp{preview.sty} had in some cases failed to emit PostScript header
+specials.
+
+@item
+Support for folding of comments was added.
+
+@item
+The @code{polish} language option of the babel LaTeX package as well as
+the polski LaTeX package are now supported.  Most notably this means
+that AUCTeX will help to insert quotation marks as defined by polish.sty
+(@code{"`..."'}) and polski.sty (@code{,,...''}).
+
 @item
 The @TeX{} tool bar is now available and enabled by default in plain
 @TeX{} mode.
@@ -20,6 +49,10 @@ Bug fix in the display of math subscripts and superscripts.
 
 @item
 Bug fix @code{TeX-doc} for Emacs 21.
+
+@item
+There has been quite a number of other bug fixes to various features and
+documentation across the board.
 
 @end itemize
 

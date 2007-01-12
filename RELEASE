@@ -53,8 +53,8 @@ Support for folding of comments was added.
 
 The `polish' language option of the babel LaTeX package as well as the
 `polski' LaTeX package are now supported.  Most notably this means
-that AUCTeX will help to insert "`quotation marks"' as defined by
-polish.sty and polski.sty.
+that AUCTeX will help to insert quotation marks as defined by
+polish.sty ("`..."') and polski.sty (,,...'').
 
 There has been quite a number of bug fixes to various features and
 documentation across the board, most critical probably the tool bar.
@@ -142,12 +142,12 @@ remains the most effective way of helping AUCTeX development.
 
 The following people contributed to this release series (in
 alphabetical order): Ralf Angeli, Masayuki Ataka, Thomas Baumann,
-Berend de Boer, Miguel Frasson, Peter S. Galbraith, Patrick Gundlach,
-Yvon Hevel, Arne Jørgensen, David Kastrup, Ikumi Keita, Frank Küster,
-Jan-Åke Larsson, Dan Nicolaescu, Piet van Oostrum, Davide
-G. M. Salvetti, Mike Sperber, Reiner Steib, Christian Schlauer, Shiro
-Takeda, Mark Trettin (Please accept our apologies if we forgot
-somebody.)
+Berend de Boer, Joshua Buhl, Miguel Frasson, Peter S. Galbraith,
+Patrick Gundlach, Yvon Hevel, Arne Jørgensen, David Kastrup, Ikumi
+Keita, Frank Küster, Jan-Åke Larsson, Dan Nicolaescu, Piet van
+Oostrum, Davide G. M. Salvetti, Mike Sperber, Reiner Steib, Christian
+Schlauer, Shiro Takeda, Mark Trettin (Please accept our apologies if
+we forgot somebody.)
 
 Footnotes: 
 
@@ -164,7 +164,7 @@ AUCTeX preinstalled can be found at
 
 [4]  Debian provides precompiled GTK+ Emacs packages in its `unstable'
 distribution (look for `emacs-snapshot-gtk').  Packages for Fedora can
-be found at <URL:http://people.redhat.com/petersen/emacs/>.
+be found at <URL:http://people.redhat.com/coldwell/bugs/emacs/176171/>.
 
 [5]  If making use of the precompiled variants is not an option for
 you, instructions for checking out the CVS version straight from the
