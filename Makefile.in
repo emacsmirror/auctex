@@ -368,15 +368,15 @@ xemacs-package:
 
 www-doc:
 	rm -rf $(WWWDIR)
-	mkdir -p $(WWWDIR)/auctex-manual
-	mkdir -p $(WWWDIR)/preview-manual
-	$(CP) doc/*.texi $(WWWDIR)/auctex-manual
-	$(CP) doc/*.texi $(WWWDIR)/preview-manual
-	cd $(WWWDIR)/auctex-manual \
+	mkdir -p $(WWWDIR)/manual
+	$(CP) doc/*.texi $(WWWDIR)/manual
+	cd $(WWWDIR)/manual \
 	&& wget -O gendocs.sh 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh?rev=HEAD' \
+	&& patch <$(GENDOCSPATCH) \
 	&& chmod u+x gendocs.sh \
 	&& wget -O gendocs_template 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs_template?rev=HEAD' \
+	&& sed -i -e 's/html_node\/index\.html/%%PACKAGE%%\/index.html/' gendocs_template \
+	&& mkdir .texinfo \
+	&& echo -e "emacs split http://www.gnu.org/software/emacs/manual/html_node/\nemacs mono http://www.gnu.org/software/emacs/manual/emacs.html\nreftex mono http://staff.science.uva.nl/~dominik/Tools/reftex/reftex.html\n" > .texinfo/htmlxref.cnf \
 	&& ./gendocs.sh auctex "AUCTeX Manual" \
-	&& $(CP) gendocs.sh gendocs_template $(WWWDIR)/preview-manual
-	cd $(WWWDIR)/preview-manual \
 	&& ./gendocs.sh preview-latex "preview-latex Manual"
