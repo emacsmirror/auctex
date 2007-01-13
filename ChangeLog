@@ -1,3 +1,9 @@
+2007-01-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (www-doc): Generate AUCTeX and preview-latex manuals
+	in single directory.  Patch gendocs.sh to use texi2html instead of
+	makeinfo (patch not included).
+
 2007-01-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Version 11.84 released.
