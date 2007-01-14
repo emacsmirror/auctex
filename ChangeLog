@@ -1,3 +1,8 @@
+2007-01-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/wininstall.texi: Add copyright notice and licence reference.
+	Mention --infodir.  Some clean-ups.
+
 2007-01-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (www-doc): Generate AUCTeX and preview-latex manuals
