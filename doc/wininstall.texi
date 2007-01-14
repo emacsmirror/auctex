@@ -1,3 +1,7 @@
+@c This is part of the AUCTeX Manual.
+@c Copyright (C) 2003, 2004, 2005, 2006, 2007
+@c   Free Software Foundation, Inc.
+@c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
 @end ifset
@@ -11,7 +15,7 @@ further below.
 
 @enumerate
 @item
-Install the prerequisites, i.e. GNU Emacs or XEmacs, MSYS or Cygwin, a
+Install the prerequisites, i.e. Emacs or XEmacs, MSYS or Cygwin, a
 @TeX{} system, and Ghostscript.
 
 @item
@@ -21,15 +25,16 @@ containing the unzipped file contents.
 @item
 Configure @AUCTeX{}:
 
-For GNU Emacs: Many people like to install @AUCTeX{} into the pseudo
-file system hierarchy set up by the Emacs installation.  Assuming Emacs
-is installed in @file{C:/Program Files/Emacs} and the directory for
-local additions of your @TeX{} system, e.g. MiK@TeX{}, is
+For Emacs: Many people like to install @AUCTeX{} into the pseudo file
+system hierarchy set up by the Emacs installation.  Assuming Emacs is
+installed in @file{C:/Program Files/Emacs} and the directory for local
+additions of your @TeX{} system, e.g. MiK@TeX{}, is
 @file{C:/localtexmf}, you can do this by typing the following statement
 at the shell prompt:
 
 @example
 ./configure --prefix='C:/Program Files/Emacs' \
+  --infodir='C:/Program Files/Emacs/info' \
   --with-texmf-dir='C:/localtexmf'
 @end example
 
@@ -177,7 +182,7 @@ extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} Live}}
 which is rather close to its Unix cousins.
 
 @item
-A working copy of @uref{http://www.cs.wisc.edu/~ghost,Ghostscript} is
+A working copy of @uref{http://www.cs.wisc.edu/~ghost/,Ghostscript} is
 required for @previewlatex{} operation.  Examining the output from
 @example
 gswin32c -h
@@ -217,7 +222,8 @@ hierarchy as the program accessing the files.  Usually, directories like
 @var{prefix}.
 
 This option also affects the defaults for placing the Texinfo
-documentation files and automatically generated style hooks.
+documentation files (see also @samp{--infodir} below) and automatically
+generated style hooks.
 
 If you have a central directory hierarchy (not untypical with Cygwin)
 for such stuff, you might want to specify its root here.  You stand a
@@ -262,6 +268,13 @@ the @file{INSTALL} file.
 @ref{Configure}.
 @end ifclear
 
+@item --infodir=@var{drive:/path/to/info/directory}
+If you are installing into an Emacs directory, info files have to be put
+into the @file{info} folder below that directory.  The configuration
+script will usually try to install into the folder @file{share/info}, so
+you have to override this by specifying something like
+@samp{--infodir='C:/Program Files/info'} for the configure call.
+
 @item --with-auto-dir=@var{drive:/dir}
 Directory containing automatically generated information.  You should
 not normally need to set this, as @samp{--prefix} should take care of
@@ -276,7 +289,7 @@ display.  This will be the case if you are using a native variant of
 This will specify the directory where your @TeX{} installation sits.  If
 your @TeX{} installation does not conform to the TDS (@TeX{} directory
 standard), you may need to specify more options to get everything in
-place:
+place.
 @end table
 
 For more information about any of the above and additional options, see
