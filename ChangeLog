@@ -1,3 +1,10 @@
+2007-01-16  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-jp.el (japanese-TeX-command-list): Use "%`" and "%'" magic
+	to allow file names with spaces.  See also change log for
+	TeX-command-list in tex.el on 2006-10-10.
+	Reported by Ikumi Keita	<ikumi@ikumi.que.jp>.
+
 2007-01-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/wininstall.texi: Add copyright notice and licence reference.
