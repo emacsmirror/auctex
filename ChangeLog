@@ -1,3 +1,8 @@
+2007-01-17  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-clean-default-intermediate-suffixes): Add beamer
+	suffixes.
+
 2007-01-16  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-jp.el (japanese-TeX-command-list): Use "%`" and "%'" magic

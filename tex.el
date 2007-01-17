@@ -1245,7 +1245,8 @@ Must be the car of an entry in `TeX-command-list'."
 (defvar TeX-clean-default-intermediate-suffixes
   '("\\.aux" "\\.bbl" "\\.blg" "\\.brf" "\\.fot"
     "\\.glo" "\\.gls" "\\.idx" "\\.ilg" "\\.ind"
-    "\\.lof" "\\.log" "\\.lot" "\\.out" "\\.toc" "\\.url")
+    "\\.lof" "\\.log" "\\.lot" "\\.nav" "\\.out"
+    "\\.snm" "\\.toc" "\\.url")
   "List of regexps matching suffixes of files to be cleaned.
 Used as a default in TeX, LaTeX and docTeX mode.")
 
