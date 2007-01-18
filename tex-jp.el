@@ -4,7 +4,7 @@
 ;; Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
-;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
+;; Maintainer: Masayuki Ataka <masayuki.ataka@gmail.com>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.

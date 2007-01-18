@@ -1,3 +1,9 @@
+2007-01-18  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-jp.el: Update maintainer email address.
+
+	* style/verbatim.el: Update author email address.
+
 2007-01-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-clean-default-intermediate-suffixes): Add beamer

@@ -1,6 +1,6 @@
 ;;; verbatim.el --- Style hook for the verbatim package.
 ;;;
-;;; AUTHOR: Masayuki Ataka <ataka@milk.freemail.ne.jp>
+;;; AUTHOR: Masayuki Ataka <masayuki.ataka@gmail.com>
 ;;; CREATED: 2001/05/01
 
 ;;; Commentary:
