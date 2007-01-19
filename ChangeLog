@@ -1,3 +1,9 @@
+2007-01-20  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-fold.el (TeX-fold-macro-spec-list): Fold marginpar, eqref,
+	glossary, copyright, textregistered and texttrademark macros as
+	well.
+
 2007-01-18  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-jp.el: Update maintainer email address.

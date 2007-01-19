@@ -69,13 +69,16 @@ macros and 'comment for comments."
   :group 'TeX-fold)
 
 (defcustom TeX-fold-macro-spec-list
-  '(("[f]" ("footnote"))
+  `(("[f]" ("footnote" "marginpar"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
-    ("[r]" ("ref" "pageref"))
-    ("[i]" ("index"))
+    ("[r]" ("ref" "pageref" "eqref"))
+    ("[i]" ("index" "glossary"))
     ("*" ("item"))
     ("..." ("dots"))
+    ("(C)" ("copyright"))
+    ("(R)" ("textregistered"))
+    ("TM"  ("texttrademark"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
 	"paragraph" "subparagraph"
 	"part*" "chapter*" "section*" "subsection*" "subsubsection*"
