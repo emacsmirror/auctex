@@ -84,7 +84,7 @@ probably best solved by not installing this package).
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
 test -f ./configure || ./autogen.sh
-%configure --with-emacs %{extraconfig} INSTALL_INFO=: --without-texmf-dir
+%configure --with-emacs INSTALL_INFO=: --without-texmf-dir
 make
 pushd doc
 make tex-ref.pdf

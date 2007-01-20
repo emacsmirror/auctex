@@ -1,3 +1,7 @@
+2007-01-20  David Kastrup  <dak@gnu.org>
+
+	* auctex.spec: Remove unused `%{extraconfig}' argument.
+
 2007-01-20  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Fold marginpar, eqref,
