@@ -1,3 +1,13 @@
+2007-01-21  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-fold.el (TeX-fold-type-list): New new type 'math.
+	(TeX-fold-math-spec-list): New variable.
+	(TeX-fold-dwim, TeX-fold-region, TeX-fold-region-macro-or-env)
+	(TeX-fold-item): Try to fold math macros as well.
+	(TeX-fold-buffer, TeX-fold-paragraph, TeX-fold-make-overlay)
+	(TeX-fold-item-end): Mention new type 'math.
+	(TeX-fold-math): New function.
+
 2007-01-20  David Kastrup  <dak@gnu.org>
 
 	* auctex.spec: Remove unused `%{extraconfig}' argument.

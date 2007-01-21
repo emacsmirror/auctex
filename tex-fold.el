@@ -1,6 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.
 
-;; Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -59,12 +59,13 @@
   "Fold TeX macros."
   :group 'AUCTeX)
 
-(defcustom TeX-fold-type-list '(env macro)
+(defcustom TeX-fold-type-list '(env macro math)
   "List of item types to consider when folding.
 Valid items are the symbols 'env for environments, 'macro for
-macros and 'comment for comments."
+macros, 'math for math macros and 'comment for comments."
   :type '(set (const :tag "Environments" env)
 	      (const :tag "Macros" macro)
+	      (const :tag "Math Macros" math)
 	      (const :tag "Comments" comment))
   :group 'TeX-fold)
 
@@ -97,6 +98,30 @@ macros and 'comment for comments."
   :type '(repeat (group (choice (string :tag "Display String")
 				(integer :tag "Number of argument" :value 1))
 			(repeat :tag "Environments" (string))))
+  :group 'TeX-fold)
+
+(defcustom TeX-fold-math-spec-list
+  (delete nil
+	  (mapcar (lambda (elt)
+		    (let ((tex-token (nth 1 elt))
+			  (submenu   (nth 2 elt))
+			  (unicode   (nth 3 elt))
+			  uchar noargp)
+		      (when (integerp unicode) (setq uchar (decode-char 'ucs unicode)))
+		      (when (listp submenu) (setq submenu (nth 1 submenu)))
+		      (setq noargp
+			    (not (string-match
+				  (concat "^" (regexp-opt '("Constructs" "Accents")))
+				  submenu)))
+		      (when (and (stringp tex-token) (integerp uchar) noargp)
+			`(,(char-to-string uchar) (,tex-token)))))
+		  `((nil "to" "" 8594)
+		    (nil "gets" "" 8592)
+		    ,@LaTeX-math-default)))
+  "List of display strings and math macros to fold."
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
+			(repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
 (defcustom TeX-fold-unspec-macro-display-string "[m]"
@@ -208,13 +233,14 @@ no folded content but a macro or environment, fold it."
   (cond ((TeX-fold-clearout-item))
 	((TeX-active-mark) (TeX-fold-region (mark) (point)))
 	((TeX-fold-item 'macro))
+	((TeX-fold-item 'math))
 	((TeX-fold-item 'env))
 	((TeX-fold-comment))))
 
 (defun TeX-fold-buffer ()
   "Hide all configured macros and environments in the current buffer.
 The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
-and environments in `TeX-fold-env-spec-list'."
+and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (TeX-fold-clearout-region (point-min) (point-max))
   (when (and TeX-fold-force-fontify
@@ -229,7 +255,7 @@ and environments in `TeX-fold-env-spec-list'."
 (defun TeX-fold-paragraph ()
   "Hide all configured macros and environments in the current paragraph.
 The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
-and environments in `TeX-fold-env-spec-list'."
+and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (save-excursion
     (let ((end (progn (LaTeX-forward-paragraph) (point)))
@@ -245,18 +271,20 @@ and environments in `TeX-fold-env-spec-list'."
     (TeX-fold-region-macro-or-env start end 'env))
   (when (memq 'macro TeX-fold-type-list)
     (TeX-fold-region-macro-or-env start end 'macro))
+  (when (memq 'math TeX-fold-type-list)
+    (TeX-fold-region-macro-or-env start end 'math))
   (when (memq 'comment TeX-fold-type-list)
     (TeX-fold-region-comment start end)))
 
 (defun TeX-fold-region-macro-or-env (start end type)
   "Fold all items of type TYPE in region from START to END.
-TYPE can be one of the symbols 'env for environments and 'macro
-for macros."
+TYPE can be one of the symbols 'env for environments, 'macro
+for macros and 'math for math macros."
   (save-excursion
     (let (fold-list item-list regexp)
-      (dolist (item (if (eq type 'env)
-			TeX-fold-env-spec-list
-		      TeX-fold-macro-spec-list))
+      (dolist (item (cond ((eq type 'env) TeX-fold-env-spec-list)
+			  ((eq type 'math) TeX-fold-math-spec-list)
+			  (t TeX-fold-macro-spec-list)))
 	(dolist (i (cadr item))
 	  (add-to-list 'fold-list (list i (car item)))
 	  (add-to-list 'item-list i)))
@@ -292,7 +320,7 @@ for macros."
 			;; characters [A-Za-z@*] after the matched
 			;; string.  Single-char non-letter macros like
 			;; \, don't have this requirement.
-			(and (eq type 'macro)
+			(and (memq type '(macro math))
 			     (save-match-data
 			       (string-match "[A-Za-z]" item-name))
 			     (save-match-data
@@ -331,6 +359,12 @@ for macros."
   (unless (TeX-fold-item 'macro)
     (message "No macro found")))
 
+(defun TeX-fold-math ()
+  "Hide the math macro on which point currently is located."
+  (interactive)
+  (unless (TeX-fold-item 'math)
+    (message "No macro found")))
+
 (defun TeX-fold-env ()
   "Hide the environment on which point currently is located."
   (interactive)
@@ -346,7 +380,8 @@ for macros."
 (defun TeX-fold-item (type)
   "Hide the item on which point currently is located.
 TYPE specifies the type of item and can be one of the symbols
-'env for environments or 'macro for macros.
+'env for environments, 'macro for macros or 'math for math
+macros.
 Return non-nil if an item was found and folded, nil otherwise."
   (if (and (eq type 'env)
 	   (eq major-mode 'plain-tex-mode))
@@ -389,9 +424,9 @@ Return non-nil if an item was found and folded, nil otherwise."
 			    (if (fboundp 'match-string-no-properties)
 				(match-string-no-properties 1)
 			      (match-string 1))))
-	       (fold-list (if (eq type 'env)
-			      TeX-fold-env-spec-list
-			    TeX-fold-macro-spec-list))
+	       (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list)
+				((eq type 'math) TeX-fold-math-spec-list)
+				(t TeX-fold-macro-spec-list)))
 	       fold-item
 	       (display-string-spec
 		(or (catch 'found
@@ -438,7 +473,8 @@ Return non-nil if a comment was found and folded, nil otherwise."
 (defun TeX-fold-make-overlay (ov-start ov-end type display-string-spec)
   "Make a TeX-fold overlay extending from OV-START to OV-END.
 TYPE is a symbol which is used to describe the content to hide
-and may be 'macro for macros and 'env for environments.
+and may be 'macro for macros, 'math for math macro and 'env for
+environments.
 DISPLAY-STRING-SPEC is the original specification of the display
 string in the variables `TeX-fold-macro-spec-list' or
 `TeX-fold-env-spec-list' and may be a string or an integer."
@@ -455,7 +491,8 @@ string in the variables `TeX-fold-macro-spec-list' or
 
 (defun TeX-fold-item-end (start type)
   "Return the end of an item of type TYPE starting at START.
-TYPE can be either 'env for environments or 'macro for macros."
+TYPE can be either 'env for environments, 'macro for macros or
+'math for math macros."
   (save-excursion
     (cond ((and (eq type 'env)
 		(eq major-mode 'context-mode))
