@@ -1,3 +1,10 @@
+2007-01-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fptex.el: Make calls of start.exe work with quoted file
+	names.
+
+	* tex-mik.el: Make calls of start.exe work with quoted file names.
+
 2007-01-21  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-fold.el (TeX-fold-type-list): New new type 'math.
