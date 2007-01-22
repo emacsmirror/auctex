@@ -1,3 +1,14 @@
+2007-01-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* autogen.sh: Define PDFTEX if empty and pass it to `make dist' in
+	`doc' directory for documentation generation.
+
+	* doc/Makefile.in (docdir, PACKAGE_TARNAME): New variables.
+	(dist): Add tex-ref.pdf target.
+	(extradist): Remove tex-ref.pdf target.
+	(install-auctex): Add tex-ref.pdf target.  Install tex-ref.pdf
+	into $(docdir).
+
 2007-01-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-fptex.el: Make calls of start.exe work with quoted file
