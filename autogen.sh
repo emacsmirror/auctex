@@ -1,6 +1,7 @@
 #!/bin/sh
 test "x${AUTOCONF}" != x || AUTOCONF=autoconf
 test "x${MAKEINFO}" != x || MAKEINFO=makeinfo
+test "x${PDFTEX}" != x || PDFTEX=pdftex
 test "x${PERL}" != x || PERL=perl
 test "x${MAKE}" != x || MAKE=make
 ${AUTOCONF} || { echo "Error running ${AUTOCONF} in ." >&2 ; exit 1; }
@@ -22,7 +23,7 @@ fi
 
 cd doc
 rm -f version.texi
-${MAKE} -f Makefile.in MAKEINFO="${MAKEINFO}" PERL="$PERL" AUCTEXDATE="$AUCTEXDATE" AUCTEXVERSION="$AUCTEXVERSION" dist || { echo "Error running ${MAKE} in doc" >&2 ; exit 1; }
+${MAKE} -f Makefile.in MAKEINFO="${MAKEINFO}" PDFTEX="${PDFTEX}" PERL="$PERL" AUCTEXDATE="$AUCTEXDATE" AUCTEXVERSION="$AUCTEXVERSION" dist || { echo "Error running ${MAKE} in doc" >&2 ; exit 1; }
 cd ..
 
 
