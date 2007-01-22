@@ -3,6 +3,7 @@ datarootdir=@datarootdir@$(null)
 datadir=@datadir@$(null)
 packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
+docdir=@docdir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
 MAKEINFO=@MAKEINFO@
@@ -19,6 +20,7 @@ DVIPS=@DVIPS@
 PERL=@PERL@
 AUCTEXDATE=@AUCTEXDATE@
 AUCTEXVERSION=@AUCTEXVERSION@
+PACKAGE_TARNAME=@PACKAGE_TARNAME@
 
 AUCTEXTEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 	changes.texi todo.texi faq.texi macros.texi quickstart.texi \
@@ -45,9 +47,9 @@ install-man:
 	done ; \
 	}
 
-dist: $(DISTTEXTS) preview-latex.info auctex.info
+dist: $(DISTTEXTS) preview-latex.info auctex.info tex-ref.pdf
 
-extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
+extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps
 
 .PHONY: all info dvi dist install-auctex disttexts clean distclean \
 	maintainer-clean install-preview install-man html-docs extradist
@@ -85,7 +87,7 @@ auctex.ps: auctex.dvi
 auctex.info: $(AUCTEXTEXIFILES)
 	$(MAKEINFO) auctex.texi
 
-install-auctex: auctex.info
+install-auctex: auctex.info tex-ref.pdf
 	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
 	rm -f $(DESTDIR)$(infodir)/auctex $(DESTDIR)$(infodir)/auctex-*
 	$(INSTALL_DATA) auctex.info $(DESTDIR)$(infodir)
@@ -95,6 +97,9 @@ install-auctex: auctex.info
 	  fi; \
 	done
 	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) auctex.info
+	-$(MKINSTALLDIRS) $(DESTDIR)$(docdir)
+	rm -f $(DESTDIR)$(docdir)/tex-ref.pdf
+	$(INSTALL_DATA) tex-ref.pdf $(DESTDIR)$(docdir)
 
 # preview
 
