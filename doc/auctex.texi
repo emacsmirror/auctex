@@ -286,6 +286,8 @@ pairs.
 @cindex Matching dollar signs
 @cindex Display math mode
 
+@subheading Quotation Marks
+
 In @TeX{}, literal double quotes @samp{"like this"} are seldom used,
 instead two single quotes are used @samp{``like this''}.  To help you
 insert these efficiently, @AUCTeX{} allows you to continue to press
@@ -303,10 +305,12 @@ With prefix argument, always inserts @samp{"} characters.
 
 @defopt TeX-open-quote
 String inserted by typing @kbd{"} to open a quotation.
+(@xref{European}, for language-specific quotation mark insertion.)
 @end defopt
 
 @defopt TeX-close-quote
 String inserted by typing @kbd{"} to close a quotation.
+(@xref{European}, for language-specific quotation mark insertion.)
 @end defopt
 
 @defopt TeX-quote-after-quote
@@ -336,26 +340,36 @@ only be used if both variables---@code{LaTeX-csquotes-open-quote} and
 @samp{csquotes}-related values will take precedence over the
 language-specific ones.
 
+@subheading Dollar Signs
+
 In @AUCTeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
 within a paragraph.  The first @samp{$} you insert in a paragraph will
 do nothing special.  The second @samp{$} will match the first.  This
 will be indicated by moving the cursor temporarily over the first dollar
-sign.  If you enter a dollar sign that matches a double dollar sign
-@samp{$$} @AUCTeX{} will automatically insert two dollar signs.  If you
-enter a second dollar sign that matches a single dollar sign, the single
-dollar sign will automatically be converted to a double dollar sign.
+sign.
 
 @deffn Command TeX-insert-dollar @var{arg}
 @kindex $
 (@kbd{$}) Insert dollar sign.
 
 Show matching dollar sign if this dollar sign end the @TeX{} math mode.
-Ensure double dollar signs match up correctly by inserting extra
-dollar signs when needed.
+Ensure double dollar signs match up correctly by inserting extra dollar
+signs when needed if @code{TeX-math-close-double-dollar} is non-nil.
 
 With optional @var{arg}, insert that many dollar signs.
 @end deffn
+
+@defopt TeX-math-close-double-dollar
+Control the insertion of double dollar signs for delimiting display
+math.  (Note that you should not use double dollar signs in @LaTeX{}
+because this practice can lead to wrong spacing in typeset documents.)
+If the variable is non-nil and you enter a dollar sign that matches a
+double dollar sign @samp{$$} @AUCTeX{} will automatically insert two
+dollar signs.
+@end defopt
+
+@subheading Braces
 
 To avoid unbalanced braces, it is useful to insert them pairwise.  You
 can do this by typing @kbd{C-c @{}.
