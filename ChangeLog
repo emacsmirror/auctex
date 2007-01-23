@@ -1,3 +1,8 @@
+2007-01-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Quotes): Document
+	`TeX-math-close-double-dollar'.  Add subheadings.
+
 2007-01-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* autogen.sh: Define PDFTEX if empty and pass it to `make dist' in
