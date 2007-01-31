@@ -1,7 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
 ;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004,
-;;   2005, 2006 Free Software Foundation, Inc.
+;;   2005, 2006, 2007 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -158,11 +158,11 @@ will prompt iff the prefix is positive.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The document's header is all
-text before TeX-header-end.
+text before `TeX-header-end'.
 
 If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The document's trailer is
-all text after TeX-trailer-start."
+all text after `TeX-trailer-start'."
   (interactive "P")
   ;; Note that TeX-command-region-begin is not a marker when called
   ;; from TeX-command-buffer.
@@ -183,7 +183,7 @@ all text after TeX-trailer-start."
   "Run TeX on the current buffer.
 
 Query the user for a command to run on the temporary file specified by
-the variable TeX-region.  The region file file be recreated from the
+the variable `TeX-region'.  The region file will be recreated from the
 visible part of the buffer.
 
 If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
@@ -232,7 +232,7 @@ the master file."
 
 (defun TeX-next-error (reparse)
   "Find the next error in the TeX output buffer.
-Prefix by C-u to start from the beginning of the errors."
+With \\[universal-argument] prefix, start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
       (next-error reparse)
@@ -324,7 +324,7 @@ without further expansion."
 (defun TeX-check-files (derived originals extensions)
   "Check that DERIVED is newer than any of the ORIGINALS.
 Try each original with each member of EXTENSIONS, in all directories
-in TeX-check-path."
+in `TeX-check-path'."
   (let ((found nil)
 	(regexp (concat "\\`\\("
 			(mapconcat (lambda (dir)
@@ -394,7 +394,7 @@ in TeX-check-path."
       default)))
 
 (defvar TeX-command-next nil
-  "The default command next time TeX-command is invoked.")
+  "The default command next time `TeX-command' is invoked.")
 
  (make-variable-buffer-local 'TeX-command-next)
 
@@ -443,7 +443,7 @@ QUEUE is non-nil when we are checking for the printer queue."
     ""))
 
 (defun TeX-output-extension ()
-  "Get the extension of the current TeX output file"
+  "Get the extension of the current TeX output file."
   (if (listp TeX-output-extension)
       (car TeX-output-extension)
     (or (TeX-process-get-variable (TeX-active-master)
@@ -523,7 +523,9 @@ Return the new process."
     (setq mode-name name)
     (if TeX-show-compilation
 	(display-buffer buffer)
-      (message "Type `C-c C-l' to display results of compilation."))
+      (message "Type `%s' to display results of compilation."
+	       (substitute-command-keys
+		"\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
     (setq TeX-parse-function 'TeX-parse-command)
     (setq TeX-command-default default)
     (setq TeX-sentinel-function
@@ -547,7 +549,7 @@ Return the new process."
 		    TeX-shell-command-option command))))
 
 (defun TeX-run-set-command (name command)
-  "Remember TeX command to use to NAME and set corresponding output extension"
+  "Remember TeX command to use to NAME and set corresponding output extension."
   (setq TeX-command-default name
 	TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (let ((case-fold-search t)
@@ -687,7 +689,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
   "Run TeX interactively.
 Run command in a buffer (in comint-shell-mode) so that it accepts user
 interaction. If you return to the file buffer after the TeX run,
-Error parsing on C-x ` should work with a bit of luck."
+Error parsing on \\[next-error] should work with a bit of luck."
   (TeX-run-set-command name command)
   (require 'comint)
   (let ((default TeX-command-default)
@@ -807,7 +809,7 @@ NAME is the name of the process.")
 
 
 (defvar TeX-sentinel-default-function (lambda (process name))
-  "Default for TeX-sentinel-function. To be set in major mode.
+  "Default for `TeX-sentinel-function'.  To be set in major mode.
 Hook to cleanup TeX command buffer after temination of PROCESS.
 NAME is the name of the process.")
 
@@ -821,7 +823,7 @@ NAME is the name of the process.")
     (setq TeX-command-next TeX-command-Show)))
 
 (defun TeX-current-pages ()
-  ;; String indictating the number of pages formatted.
+  "Return string indicating the number of pages formatted."
   (cond ((null TeX-current-page)
 	 "some pages.")
 	((string-match "[^0-9]1[^0-9]" TeX-current-page)
@@ -845,8 +847,9 @@ Return nil ifs no errors were found."
   (if process (TeX-format-mode-line process))
   (if (re-search-forward "^\\(!\\|.*:[0-9]+:\\) " nil t)
       (progn
-	(message (concat name " errors in `" (buffer-name)
-			 "'. Use C-c ` to display."))
+	(message "%s errors in `%s'. Use %s to display." name (buffer-name)
+		 (substitute-command-keys
+		  "\\<TeX-mode-map>\\[TeX-next-error]"))
 	(setq TeX-command-next TeX-command-default)
 	;; error reported to TeX-error-report-switches
 	(setq TeX-error-report-switches
@@ -939,8 +942,10 @@ Warnings can be indicated by LaTeX or packages."
     ;; Tell the user their number so that she sees whether the
     ;; situation is getting better or worse.
     (message (concat "BibTeX finished with %s %s. "
-		     "Type `C-c C-l' to display output.")
-	     (match-string 1) (match-string 2)))
+		     "Type `%s' to display output.")
+	     (match-string 1) (match-string 2)
+	     (substitute-command-keys
+	      "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (message (concat "BibTeX finished successfully. "
 		     "Run LaTeX again to get citations right."))))
@@ -1163,7 +1168,7 @@ The hooks are run in the region buffer, you may use the variable
   file)
 
 (defun TeX-region-create (file region original offset)
-  "Create a new file named FILE with the string REGION
+  "Create a new file named FILE with the string REGION.
 The region is taken from ORIGINAL starting at line OFFSET.
 
 The current buffer and master file is searched, in order to ensure
@@ -1275,7 +1280,7 @@ the directory."
 		 TeX-region))))
 
 (defcustom TeX-region "_region_"
-  "*Base name for temporary file for use with TeX-region."
+  "*Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
   :group 'TeX-command
   :type 'string)
 
@@ -1289,12 +1294,12 @@ the directory."
  (make-variable-buffer-local 'TeX-error-point)
 
 (defvar TeX-error-file nil
-  "Stack of files in which errors have occured")
+  "Stack of files in which errors have occured.")
 
  (make-variable-buffer-local 'TeX-error-file)
 
 (defvar TeX-error-offset nil
-  "Add this to any line numbers from TeX.  Stack like TeX-error-file.")
+  "Add this to any line numbers from TeX.  Stack like `TeX-error-file'.")
 
  (make-variable-buffer-local 'TeX-error-offset)
 
@@ -1315,11 +1320,10 @@ the directory."
 
 (defun TeX-parse-TeX (reparse)
   "Find the next error produced by running TeX.
-Prefix by C-u to start from the beginning of the errors.
+With \\[universal-argument] prefix, start from the beginning of the errors.
 
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
-
   (let ((old-buffer (current-buffer))
 	(default-major-mode major-mode))
     (pop-to-buffer (TeX-active-buffer))
@@ -1652,7 +1656,7 @@ command \\gnu.) You'll have to choose a new name or, in the case of
 enumerated list, has received a number greater than 26. Either you're
 making a very long list or you've been resetting counter values.
 
-2. Footnotes are being ``numbered'' with letters or footnote symbols 
+2. Footnotes are being ``numbered'' with letters or footnote symbols
 and LaTeX has run out of letters or symbols. This is probably caused
 by too many \\thanks commands.")
 
@@ -2014,10 +2018,10 @@ page without enough text on it. ")
 
     (".*" . "No help available"))	; end definition
 "A list of the form (\"err-regexp\" . \"context\") used by function
-\\{TeX-help-error} to display help-text on an error message or warning.
+`TeX-help-error' to display help-text on an error message or warning.
 err-regexp should be a regular expression matching the error message
 given from TeX/LaTeX, and context should be some lines describing that
-error"
+error."
   :group 'TeX-output
   :type '(repeat (cons :tag "Entry"
 		       (regexp :tag "Match")

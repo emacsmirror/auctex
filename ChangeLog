@@ -1,3 +1,30 @@
+2007-02-01  Ikumi Keita	<ikumi@ikumi.que.jp>
+
+	* latex.el: Move (provide 'latex) to the end of buffer.
+	(TeX-global-input-files, BibTeX-global-style-files)
+	(BibTeX-global-files): checkdoc cleaning.
+	(LaTeX-fill-paragraph, LaTeX-fill-code-comment): Use function
+	TeX-match-buffer instead of buffer-substring-*.
+	(LaTeX-209-to-2e): Likewise.
+
+	* tex-buf.el (TeX-command-region, TeX-command-buffer)
+	(TeX-next-error, TeX-check-files, TeX-command-next)
+	(TeX-output-extension, TeX-run-set-command, TeX-run-interactive)
+	(TeX-sentinel-default-function, TeX-region-create, TeX-region)
+	(TeX-error-file, TeX-error-offset, TeX-parse-TeX)
+	(TeX-error-description-list): checkdoc cleaning.
+	(TeX-run-command, TeX-TeX-sentinel-check, TeX-BibTeX-sentinel):
+	Use substitute-command-keys to message key binding.
+	(TeX-current-pages): Add doc string.
+
+	* tex.el (TeX-print-command, TeX-queue-command)
+	(TeX-command-list, TeX-printer-list, TeX-set-mode-name)
+	(TeX-regexp-group-count): checkdoc cleaning.
+	(plain-TeX-mode-hook): Declare user option explicitly using
+	defcustom.
+	(TeX-search-files-kpathsea): Use TeX-kpathsea-path-delimiter
+	instead of kpathsea-path-delimiter.
+
 2007-01-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Quotes): Document

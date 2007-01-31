@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 
 ;; Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1999, 2000,
-;;   2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+;;   2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -1583,8 +1583,8 @@ ELSE as an argument list."
 		(setq options (funcall var))
 	      (when (symbol-value var)
 		(setq options
-		      (mapconcat 'identity 
-				 (TeX-completing-read-multiple 
+		      (mapconcat 'identity
+				 (TeX-completing-read-multiple
 				  "Options: " (mapcar 'list (symbol-value var)))
 				 ","))))
 	  (setq options (read-string "Options: ")))
@@ -1605,7 +1605,7 @@ ELSE as an argument list."
   "List of the non-local TeX input files.
 
 Initialized once at the first time you prompt for an input file.
-May be reset with `C-u \\[TeX-normal-mode]'.")
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-input-file (optionel &optional prompt local)
   "Prompt for a tex or sty file.
@@ -1640,7 +1640,7 @@ If the flag is set, only complete with local files."
   "Association list of BibTeX style files.
 
 Initialized once at the first time you prompt for an input file.
-May be reset with `C-u \\[TeX-normal-mode]'.")
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibstyle (optional &optional prompt)
   "Prompt for a BibTeX style file."
@@ -1665,7 +1665,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
   "Association list of BibTeX files.
 
 Initialized once at the first time you prompt for an BibTeX file.
-May be reset with `C-u \\[TeX-normal-mode]'.")
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibliography (optional &optional prompt)
   "Prompt for a BibTeX database file."
@@ -3081,8 +3081,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 	  (looking-at (concat "^[ \t]*" TeX-comment-start-regexp
 			      "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*")))
 	(setq has-comment t
-	      comment-fill-prefix (buffer-substring-no-properties
-				   (match-beginning 0) (match-end 0))))
+	      comment-fill-prefix (TeX-match-buffer 0)))
        ;; A line with some code, followed by a comment?
        ((and (setq code-comment-start (save-excursion
 					(beginning-of-line)
@@ -3213,7 +3212,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 	       (make-string (current-column) ?\ ))
 	     (progn
 	       (looking-at (concat TeX-comment-start-regexp "+[ \t]*"))
-	       (buffer-substring (match-beginning 0) (match-end 0)))))
+	       (TeX-match-buffer 0))))
       (fill-region-as-paragraph beg (line-beginning-position 2)
 				justify-flag  nil
 				(save-excursion
@@ -4281,8 +4280,6 @@ commands are defined:
     (insert "{\\cal " (char-to-string char) "}"))
   (if dollar (insert "$")))
 
-(provide 'latex)
-
 ;;; Keymap
 
 (defvar LaTeX-mode-map
@@ -5224,15 +5221,13 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	(search-forward-regexp
 	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
 	 (point-max) t)
-	(setq optstr (buffer-substring-no-properties (match-beginning 1) (match-end 1))
-	      docstyle (buffer-substring-no-properties (match-beginning 2)
-	      (match-end 2))
+	(setq optstr (TeX-match-buffer 1)
+	      docstyle (TeX-match-buffer 2)
 	      optlist (TeX-split-string "," optstr))
       (if (search-forward-regexp
 	   "\\documentstyle{\\([^}]*\\)}"
 	   (point-max) t)
-	  (setq docstyle (buffer-substring-no-properties (match-beginning 1)
-	  (match-end 1)))
+	  (setq docstyle (TeX-match-buffer 1))
 	(error "No documentstyle defined")))
     (beginning-of-line 1)
     (setq docline (point))
@@ -5261,5 +5256,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	(while (re-search-forward "\\\\blackandwhite{" nil t)
       (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
+
+(provide 'latex)
 
 ;;; latex.el ends here

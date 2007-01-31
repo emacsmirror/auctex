@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999, 2000,
-;;   2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+;;   2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -89,7 +89,7 @@
   "*Command used to print a file.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'.  If it is `nil',
+performed as specified in `TeX-expand-list'.  If it is nil,
 then customization is requested."
   :group 'TeX-command
   :type '(choice (string :tag "Print command")
@@ -133,7 +133,7 @@ If nil, none is specified."
   "*Command used to show the status of a printer queue.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'.  If this is `nil',
+performed as specified in `TeX-expand-list'.  If this is nil,
 the printer has no corresponding command."
   :group 'TeX-command
   :type '(choice (string :tag "Queue check command")
@@ -254,8 +254,7 @@ present in the Command menu.  Use t if it should be active in any
 mode.  If it should only be present in some modes, specify a list with
 the respective mode names.
 
-Any additional elements get just transferred to the respective menu entries.
-"
+Any additional elements get just transferred to the respective menu entries."
   :group 'TeX-command
   :type '(repeat (group :value ("" "" TeX-run-command nil t)
 			(string :tag "Name")
@@ -356,7 +355,7 @@ string."
 The first element of each entry is the printer name.
 
 The second element is the command used to print to this
-printer.  It defaults to the value of `TeX-print-command' when `nil'.
+printer.  It defaults to the value of `TeX-print-command' when nil.
 
 The third element is the command used to examine the print queue for
 this printer.  It defaults to the value of `TeX-queue-command' similarly.
@@ -883,7 +882,7 @@ helper modes where appropriate.
 If CHANGED is non-nil, it indicates which global mode
 may have changed so that all corresponding buffers
 without a local value might get their name updated.
-A value ot `t' will thus update all buffer names.
+A value of t will thus update all buffer names.
 
 If LOCAL is non-nil and CHANGED is buffer-local, only
 a local change has been performed and only the local
@@ -2467,6 +2466,11 @@ The algorithm is as follows:
 
 ;;; Plain TeX mode
 
+(defcustom plain-TeX-mode-hook nil
+  "A hook run in plain TeX mode buffers."
+  :type 'hook
+  :group 'TeX-misc)
+
 ;;;###autoload
 (defun TeX-plain-tex-mode ()
   "Major mode in AUCTeX for editing plain TeX files.
@@ -2903,7 +2907,7 @@ See `TeX-auto-x-parse-length'."
   (make-variable-buffer-local 'TeX-auto-x-regexp-list)
 
 (defun TeX-regexp-group-count (regexp)
-  "Return number of groups in a regexp.  This is not foolproof:
+  "Return number of groups in a REGEXP.  This is not foolproof:
 you should not use something like `[\\(]' for a character range."
   (let (start (n 0))
     (while (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\([^?]"
@@ -3203,7 +3207,7 @@ EXTENSIONS, NODIR and STRIP are explained there."
 				   (nth 1 format-spec))))
 			 (if (eq TeX-kpathsea-path-delimiter t)
 			     (throw 'no-kpathsea
-				    (setq kpathsea-path-delimiter nil))
+				    (setq TeX-kpathsea-path-delimiter nil))
 			   (error "kpsewhich error")))))
 	       result)
 	   (when (eq TeX-kpathsea-path-delimiter t)
