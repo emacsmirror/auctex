@@ -4837,9 +4837,7 @@ information about your AUCTeX version and AUCTeX configuration."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "bug-auctex@gnu.org"
-     (if (string-match "^CVS-" AUCTeX-version)
-	 (concat "tex-" (substring AUCTeX-version 4))
-       AUCTeX-version)
+     AUCTeX-version
      (list 'AUCTeX-date
 	   'window-system
 	   'LaTeX-version
@@ -4853,9 +4851,14 @@ information about your AUCTeX version and AUCTeX configuration."
 what in fact did happen.
 
 Be sure to consult the FAQ section in the manual before submitting
-a bug report.  If the bug (or problem) is triggered by a specific
-\(La\)TeX file, you should try to produce a minimal sample file
-showing the problem and include it in your report.
+a bug report.  In addition check if the bug is reproducable with an
+up-to-date version of AUCTeX.  So please upgrade to the version
+available from http://www.gnu.org/software/auctex/ if your
+installation is older than the one available from the web site.
+
+If the bug is triggered by a specific \(La\)TeX file, you should try
+to produce a minimal sample file showing the problem and include it
+in your report.
 
 Your bug report will be posted to the AUCTeX bug reporting list.
 ------------------------------------------------------------------------")))
