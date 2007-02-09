@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.279 2006-10-24 16:02:21 dak Exp $
+;; $Id: preview.el,v 1.280 2007-02-09 07:15:48 ataka Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3512,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.279 $"))
+	(rev "$Revision: 1.280 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3526,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-10-24 16:02:21 $"))
+    (let ((date "$Date: 2007-02-09 07:15:48 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3561,7 +3561,7 @@ In the form of yyyy.mmdd")
      (if (string-match "^CVS-" preview-version)
 	 (concat "preview-" (substring preview-version 4))
        preview-version)
-     '(AUC-TeX-version
+     '(AUCTeX-version
        LaTeX-command-style
        image-types
        preview-image-type

@@ -1,4 +1,4 @@
-;;; tex-bar.el --- toolbar icons on AUC-TeX in GNU emacs and XEmacs
+;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs and XEmacs
 
 ;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 

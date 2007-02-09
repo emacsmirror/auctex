@@ -1,3 +1,8 @@
+2007-02-09  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-bar.el: Fix typo.  Reported by Ikumi Keita
+	<ikumi@ikumi.que.jp>.
+
 2007-02-09  Ikumi Keita	<ikumi@ikumi.que.jp>
 
 	* tex-jp.el (japanese-TeX-command-list): Add
