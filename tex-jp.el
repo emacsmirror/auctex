@@ -133,20 +133,25 @@ For detail, see `TeX-command-list', which this list is appended to."
 
 (when (featurep 'mule)
 
+;; FIX-ME (2007-02-09) The default coding system in recent Unix (like Fedora and
+;; Ubuntu) is utf-8.  But Japanese TeX system is not support utf-8 yet
+;; (platex-utf is under development, may be alpha phase).  So,
+;; process-coding-system for Japanese TeX is not defined from
+;; default-coding-system.  When platex-utf is out, we should look this setting,
+;; again.
+
 (defcustom TeX-japanese-process-input-coding-system
-  (if (boundp 'default-process-coding-system)
-      (cdr default-process-coding-system)
-    ;; Old XEmacs < 21.5?
-    'euc-jp)
+  (cond ((eq window-system 'w32) 'shift_jis-dos)
+	((eq window-system 'mac) 'shift_jis-mac)
+	(t 'euc-jp-dos))
   "TeX-process' coding system with standard input."
   :group 'AUCTeX-jp
   :type 'coding-system)
 
 (defcustom TeX-japanese-process-output-coding-system
-  (if (boundp 'default-process-coding-system)
-      (car default-process-coding-system)
-    ;; Old XEmacs < 21.5?
-    'iso-2022-jp)
+  (cond ((eq window-system 'w32) 'shift_jis-dos)
+	((eq window-system 'mac) 'shift_jis-mac)
+	(t 'euc-jp-dos))
   "TeX-process' coding system with standard output."
   :group 'AUCTeX-jp
   :type 'coding-system)
