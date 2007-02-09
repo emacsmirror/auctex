@@ -1,7 +1,7 @@
 ;;; tex-jp.el --- Support for Japanese TeX.
 
 ;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
-;; Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation
+;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; Maintainer: Masayuki Ataka <masayuki.ataka@gmail.com>
@@ -80,6 +80,8 @@ For detail, see `TeX-command-list', which this list is appended to."
 				(function-item TeX-run-discard)
 				(function-item TeX-run-background)
 				(function-item TeX-run-silent)
+				(function-item TeX-run-discard-foreground)
+				(function-item TeX-run-function)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(choice :tag "Modes"
@@ -192,11 +194,14 @@ For detail, see `TeX-command-list', which this list is appended to."
 
 (when (featurep 'mule)
 
+(defun japanese-TeX-set-process-coding-system (process)
+  "Set proper coding system for japanese TeX PROCESS."
+  (if (with-current-buffer TeX-command-buffer japanese-TeX-mode)
+      (set-process-coding-system process
+				 TeX-japanese-process-output-coding-system
+				 TeX-japanese-process-input-coding-system)))
 (setq TeX-after-start-process-function
-      (lambda (process)
-	(set-process-coding-system process
-	 TeX-japanese-process-output-coding-system
-	 TeX-japanese-process-input-coding-system)))
+      'japanese-TeX-set-process-coding-system)
 )
 
 ;;; Japanese TeX modes
