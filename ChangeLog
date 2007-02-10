@@ -1,3 +1,10 @@
+2007-02-10  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-jp.el (TeX-japanese-process-input-coding-system)
+	(TeX-japanese-process-output-coding-system): Use system-type
+	instead of window-system.  Suggested by Ikumi Keita
+	<ikumi@ikumi.que.jp>.
+
 2007-02-09  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-jp.el (TeX-japanese-process-input-coding-system)

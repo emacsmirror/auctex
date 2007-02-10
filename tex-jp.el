@@ -141,17 +141,17 @@ For detail, see `TeX-command-list', which this list is appended to."
 ;; again.
 
 (defcustom TeX-japanese-process-input-coding-system
-  (cond ((eq window-system 'w32) 'shift_jis-dos)
-	((eq window-system 'mac) 'shift_jis-mac)
-	(t 'euc-jp-dos))
+  (cond ((memq system-type '(windows-nt ms-dos cygwin)) 'shift_jis-dos)
+	((memq system-type '(mac darwin)) 'shift_jis-mac)
+	(t 'euc-jp-unix))
   "TeX-process' coding system with standard input."
   :group 'AUCTeX-jp
   :type 'coding-system)
 
 (defcustom TeX-japanese-process-output-coding-system
-  (cond ((eq window-system 'w32) 'shift_jis-dos)
-	((eq window-system 'mac) 'shift_jis-mac)
-	(t 'euc-jp-dos))
+  (cond ((memq system-type '(windows-nt ms-dos cygwin)) 'shift_jis-dos)
+	((memq system-type '(mac darwin)) 'shift_jis-mac)
+	(t 'euc-jp-unix))
   "TeX-process' coding system with standard output."
   :group 'AUCTeX-jp
   :type 'coding-system)
