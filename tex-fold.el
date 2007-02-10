@@ -92,6 +92,14 @@ macros, 'math for math macros and 'comment for comments."
 			(repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
+(defvar TeX-fold-macro-spec-list-internal nil
+  "Internal list of display strings and macros to fold.
+Is updated when the TeX Fold mode is being activated and then
+contains all constructs to fold for the given buffer or mode
+respectively, i.e. contents of both `TeX-fold-macro-spec-list'
+and <mode-prefix>-fold-macro-spec-list.")
+(make-variable-buffer-local 'TeX-fold-macro-spec-list-internal)
+
 (defcustom TeX-fold-env-spec-list
   '(("[comment]" ("comment")))
   "List of display strings and environments to fold."
@@ -100,29 +108,28 @@ macros, 'math for math macros and 'comment for comments."
 			(repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
-(defcustom TeX-fold-math-spec-list
-  (delete nil
-	  (mapcar (lambda (elt)
-		    (let ((tex-token (nth 1 elt))
-			  (submenu   (nth 2 elt))
-			  (unicode   (nth 3 elt))
-			  uchar noargp)
-		      (when (integerp unicode) (setq uchar (decode-char 'ucs unicode)))
-		      (when (listp submenu) (setq submenu (nth 1 submenu)))
-		      (setq noargp
-			    (not (string-match
-				  (concat "^" (regexp-opt '("Constructs" "Accents")))
-				  submenu)))
-		      (when (and (stringp tex-token) (integerp uchar) noargp)
-			`(,(char-to-string uchar) (,tex-token)))))
-		  `((nil "to" "" 8594)
-		    (nil "gets" "" 8592)
-		    ,@LaTeX-math-default)))
+(defvar TeX-fold-env-spec-list-internal nil
+  "Internal list of display strings and environments to fold.
+Is updated when the TeX Fold mode is being activated and then
+contains all constructs to fold for the given buffer or mode
+respectively, i.e. contents of both `TeX-fold-env-spec-list'
+and <mode-prefix>-fold-env-spec-list.")
+(make-variable-buffer-local 'TeX-fold-env-spec-list-internal)
+
+(defcustom TeX-fold-math-spec-list nil
   "List of display strings and math macros to fold."
   :type '(repeat (group (choice (string :tag "Display String")
 				(integer :tag "Number of argument" :value 1))
 			(repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
+
+(defvar TeX-fold-math-spec-list-internal nil
+  "Internal list of display strings and math macros to fold.
+Is updated when the TeX Fold mode is being activated and then
+contains all constructs to fold for the given buffer or mode
+respectively, i.e. contents of both `TeX-fold-math-spec-list'
+and <mode-prefix>-fold-math-spec-list.")
+(make-variable-buffer-local 'TeX-fold-math-spec-list-internal)
 
 (defcustom TeX-fold-unspec-macro-display-string "[m]"
   "Display string for unspecified macros.
@@ -282,58 +289,59 @@ TYPE can be one of the symbols 'env for environments, 'macro
 for macros and 'math for math macros."
   (save-excursion
     (let (fold-list item-list regexp)
-      (dolist (item (cond ((eq type 'env) TeX-fold-env-spec-list)
-			  ((eq type 'math) TeX-fold-math-spec-list)
-			  (t TeX-fold-macro-spec-list)))
+      (dolist (item (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
+			  ((eq type 'math) TeX-fold-math-spec-list-internal)
+			  (t TeX-fold-macro-spec-list-internal)))
 	(dolist (i (cadr item))
 	  (add-to-list 'fold-list (list i (car item)))
 	  (add-to-list 'item-list i)))
-      (setq regexp (cond ((and (eq type 'env)
-			       (eq major-mode 'context-mode))
-			  (concat (regexp-quote TeX-esc)
-				  "start" (regexp-opt item-list t)))
-			 ((and (eq type 'env)
-			       (eq major-mode 'texinfo-mode))
-			  (concat (regexp-quote TeX-esc)
-				  (regexp-opt item-list t)))
-			 ((eq type 'env)
-			  (concat (regexp-quote TeX-esc)
-				  "begin[ \t]*{"
-				  (regexp-opt item-list t) "}"))
-			 (t
-			  (concat (regexp-quote TeX-esc)
-				  (regexp-opt item-list t)))))
-      (save-restriction
-	(narrow-to-region start end)
-	;; Start from the bottom so that it is easier to prioritize
-	;; nested macros.
-	(goto-char (point-max))
-	(let ((case-fold-search nil)
-	      item-name)
-	  (while (re-search-backward regexp nil t)
-	    (setq item-name (match-string 1))
-	    (unless (or (and TeX-fold-preserve-comments
-			     (TeX-in-commented-line))
-			;; Make sure no partially matched macros are
-			;; folded.  For macros consisting of letters
-			;; this means there should be none of the
-			;; characters [A-Za-z@*] after the matched
-			;; string.  Single-char non-letter macros like
-			;; \, don't have this requirement.
-			(and (memq type '(macro math))
-			     (save-match-data
-			       (string-match "[A-Za-z]" item-name))
-			     (save-match-data
-			       (string-match "[A-Za-z@*]"
-					     (string (char-after
-						      (match-end 0)))))))
-	      (let* ((item-start (match-beginning 0))
-		     (display-string-spec (cadr (assoc item-name
-						       fold-list)))
-		     (item-end (TeX-fold-item-end item-start type))
-		     (ov (TeX-fold-make-overlay item-start item-end type
-						display-string-spec)))
-		(TeX-fold-hide-item ov)))))))))
+      (when item-list
+	(setq regexp (cond ((and (eq type 'env)
+				 (eq major-mode 'context-mode))
+			    (concat (regexp-quote TeX-esc)
+				    "start" (regexp-opt item-list t)))
+			   ((and (eq type 'env)
+				 (eq major-mode 'texinfo-mode))
+			    (concat (regexp-quote TeX-esc)
+				    (regexp-opt item-list t)))
+			   ((eq type 'env)
+			    (concat (regexp-quote TeX-esc)
+				    "begin[ \t]*{"
+				    (regexp-opt item-list t) "}"))
+			   (t
+			    (concat (regexp-quote TeX-esc)
+				    (regexp-opt item-list t)))))
+	(save-restriction
+	  (narrow-to-region start end)
+	  ;; Start from the bottom so that it is easier to prioritize
+	  ;; nested macros.
+	  (goto-char (point-max))
+	  (let ((case-fold-search nil)
+		item-name)
+	    (while (re-search-backward regexp nil t)
+	      (setq item-name (match-string 1))
+	      (unless (or (and TeX-fold-preserve-comments
+			       (TeX-in-commented-line))
+			  ;; Make sure no partially matched macros are
+			  ;; folded.  For macros consisting of letters
+			  ;; this means there should be none of the
+			  ;; characters [A-Za-z@*] after the matched
+			  ;; string.  Single-char non-letter macros like
+			  ;; \, don't have this requirement.
+			  (and (memq type '(macro math))
+			       (save-match-data
+				 (string-match "[A-Za-z]" item-name))
+			       (save-match-data
+				 (string-match "[A-Za-z@*]"
+					       (string (char-after
+							(match-end 0)))))))
+		(let* ((item-start (match-beginning 0))
+		       (display-string-spec (cadr (assoc item-name
+							 fold-list)))
+		       (item-end (TeX-fold-item-end item-start type))
+		       (ov (TeX-fold-make-overlay item-start item-end type
+						  display-string-spec)))
+		  (TeX-fold-hide-item ov))))))))))
 
 (defun TeX-fold-region-comment (start end)
   "Fold all comments in region from START to END."
@@ -424,9 +432,9 @@ Return non-nil if an item was found and folded, nil otherwise."
 			    (if (fboundp 'match-string-no-properties)
 				(match-string-no-properties 1)
 			      (match-string 1))))
-	       (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list)
-				((eq type 'math) TeX-fold-math-spec-list)
-				(t TeX-fold-macro-spec-list)))
+	       (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
+				((eq type 'math) TeX-fold-math-spec-list-internal)
+				(t TeX-fold-macro-spec-list-internal)))
 	       fold-item
 	       (display-string-spec
 		(or (catch 'found
@@ -449,7 +457,7 @@ Return non-nil if an item was found and folded, nil otherwise."
 (defun TeX-fold-comment-do ()
   "Hide the comment on which point currently is located.
 This is the function doing the work for `TeX-fold-comment'.  It
-is an internal function communication with return values rather
+is an internal function communicating with return values rather
 than with messages for the user.
 Return non-nil if a comment was found and folded, nil otherwise."
   (if (and (not (TeX-in-comment)) (not (TeX-in-line-comment)))
@@ -803,7 +811,7 @@ Remove the respective properties from the overlay OV."
 ;;; Misc
 
 ;; Copy and adaption of `cvs-partition' from pcvs-util.el in GNU Emacs
-;; on 2004-07-05 to make latex-fold.el mainly self-contained.
+;; on 2004-07-05 to make tex-fold.el mainly self-contained.
 (defun TeX-fold-partition-list (p l)
   "Partition a list L into two lists based on predicate P.
 The function returns a `cons' cell where the `car' contains
@@ -834,7 +842,18 @@ With zero or negative ARG turn mode off."
       (progn
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t)
-	(add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t))
+	(add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
+	;; Update the `TeX-fold-*-spec-list-internal' variables.
+	(dolist (elt '("macro" "env" "math"))
+	  (set (intern (format "TeX-fold-%s-spec-list-internal" elt))
+	       ;; Append the value of `TeX-fold-*-spec-list' to the
+	       ;; mode-specific `<mode-prefix>-fold-*-spec-list' variable.
+	       (append (symbol-value (intern (format "TeX-fold-%s-spec-list"
+						     elt)))
+		       (let ((symbol (intern (format "%s-fold-%s-spec-list"
+						     (TeX-mode-prefix) elt))))
+			 (when (boundp symbol)
+			   (symbol-value symbol)))))))
     (kill-local-variable 'search-invisible)
     (remove-hook 'post-command-hook 'TeX-fold-post-command t)
     (remove-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point t)
