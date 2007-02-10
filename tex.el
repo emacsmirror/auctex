@@ -915,6 +915,14 @@ If RESET is non-nil, `TeX-command-next' is reset to
 				      'TeX-command-next TeX-command-default))
 	  (set-buffer-modified-p (buffer-modified-p))))))
 
+(defun TeX-mode-prefix ()
+  "Return the prefix of the current mode as string."
+  (cdr (assoc major-mode '((plain-tex-mode . "plain-TeX")
+			   (latex-mode . "LaTeX")
+			   (doctex-mode . "docTeX")
+			   (texinfo-mode . "Texinfo")
+			   (context-mode . "ConTeXt")))))
+
 ;;; Source Specials
 
 (defgroup TeX-source-specials nil
@@ -1266,11 +1274,7 @@ Used as a default in TeX, LaTeX and docTeX mode.")
 If prefix ARG is non-nil, not only remove intermediate but also
 output files."
   (interactive "P")
-  (let* ((mode-prefix (cdr (assoc major-mode '((plain-tex-mode . "plain-TeX")
-					       (latex-mode . "LaTeX")
-					       (doctex-mode . "docTeX")
-					       (texinfo-mode . "Texinfo")
-					       (context-mode . "ConTeXt")))))
+  (let* ((mode-prefix (TeX-mode-prefix-as-string))
 	 (suffixes (append (symbol-value
 			    (intern (concat mode-prefix
 					    "-clean-intermediate-suffixes")))
