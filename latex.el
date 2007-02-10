@@ -4280,6 +4280,50 @@ commands are defined:
     (insert "{\\cal " (char-to-string char) "}"))
   (if dollar (insert "$")))
 
+
+;;; Folding
+
+(defcustom LaTeX-fold-macro-spec-list nil
+  "List of display strings and macros to fold in LaTeX mode."
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
+			(repeat :tag "Macros" (string))))
+  :group 'TeX-fold)
+
+(defcustom LaTeX-fold-env-spec-list nil
+  "List of display strings and environments to fold in LaTeX mode."
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
+			(repeat :tag "Environments" (string))))
+  :group 'TeX-fold)
+
+(defcustom LaTeX-fold-math-spec-list
+  (delete nil
+	  (mapcar (lambda (elt)
+		    (let ((tex-token (nth 1 elt))
+			  (submenu   (nth 2 elt))
+			  (unicode   (nth 3 elt))
+			  uchar noargp)
+		      (when (integerp unicode)
+			(setq uchar (decode-char 'ucs unicode)))
+		      (when (listp submenu) (setq submenu (nth 1 submenu)))
+		      (setq noargp
+			    (not (string-match
+				  (concat "^" (regexp-opt '("Constructs"
+							    "Accents")))
+				  submenu)))
+		      (when (and (stringp tex-token) (integerp uchar) noargp)
+			`(,(char-to-string uchar) (,tex-token)))))
+		  `((nil "to" "" 8594)
+		    (nil "gets" "" 8592)
+		    ,@LaTeX-math-default)))
+  "List of display strings and math macros to fold in LaTeX mode."
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
+			(repeat :tag "Math Macros" (string))))
+  :group 'TeX-fold)
+
+
 ;;; Keymap
 
 (defvar LaTeX-mode-map
