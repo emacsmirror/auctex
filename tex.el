@@ -1274,7 +1274,7 @@ Used as a default in TeX, LaTeX and docTeX mode.")
 If prefix ARG is non-nil, not only remove intermediate but also
 output files."
   (interactive "P")
-  (let* ((mode-prefix (TeX-mode-prefix-as-string))
+  (let* ((mode-prefix (TeX-mode-prefix))
 	 (suffixes (append (symbol-value
 			    (intern (concat mode-prefix
 					    "-clean-intermediate-suffixes")))
