@@ -2019,6 +2019,9 @@ The variable will be temporarily let-bound with the necessary value.")
   "String used as a closing brace for argument insertion.
 The variable will be temporarily let-bound with the necessary value.")
 
+(defvar TeX-after-insert-macro-hook nil
+  "A hook run after `TeX-insert-macro'.")
+
 (defvar TeX-macro-history nil)
 
 (defun TeX-insert-macro (symbol)
@@ -2042,7 +2045,8 @@ is called with \\[universal-argument]."
 	 (setq symbol TeX-default-macro))
 	((interactive-p)
 	 (setq TeX-default-macro symbol)))
-  (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list)))))
+  (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
+  (run-hooks 'TeX-after-insert-macro-hook))
 
 (defvar TeX-electric-macro-map
   (let ((map (make-sparse-keymap)))

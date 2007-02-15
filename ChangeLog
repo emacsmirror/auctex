@@ -1,3 +1,12 @@
+2007-02-15  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex.el (TeX-after-insert-macro-hook): New hook.
+	(TeX-insert-macro): Use it.
+
+	* tex-fold.el (TeX-fold-auto): New variable.
+	(TeX-fold-mode): Append auto fold stuff to the end of
+	`TeX-after-insert-macro-hook'.
+
 2007-02-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-clean): Fix last change.

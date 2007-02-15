@@ -175,6 +175,12 @@ Set it to zero in order to disable help echos."
   :group 'TeX-fold
   :type 'boolean)
 
+(defcustom TeX-fold-auto t
+  "If non-nil, fold macros automatically after `TeX-insert-macro'."
+  :group 'TeX-fold
+  :type 'boolean)
+
+
 (defface TeX-fold-folded-face
   '((((class color) (background light))
      (:foreground "SlateBlue"))
@@ -843,6 +849,13 @@ With zero or negative ARG turn mode off."
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t)
 	(add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
+	(add-hook 'TeX-after-insert-macro-hook (lambda ()
+						 (when (and TeX-fold-mode TeX-fold-auto)
+						   (save-excursion
+						     (backward-char)
+						     (or (TeX-fold-item 'macro)
+							 (TeX-fold-item 'math)
+							 (TeX-fold-item 'env))))))
 	;; Update the `TeX-fold-*-spec-list-internal' variables.
 	(dolist (elt '("macro" "env" "math"))
 	  (set (intern (format "TeX-fold-%s-spec-list-internal" elt))
