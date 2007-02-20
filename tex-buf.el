@@ -1269,7 +1269,7 @@ original file."
 
 (defun TeX-region-file (&optional extension nondirectory)
   "Return TeX-region file name with EXTENSION.
-If optional second argument NONDIRECTORY is nil, do not include
+If optional second argument NONDIRECTORY is non-nil, do not include
 the directory."
   (concat (if nondirectory "" (TeX-master-directory))
 	  (cond ((eq extension t)
