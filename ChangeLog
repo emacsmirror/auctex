@@ -1,3 +1,9 @@
+2007-02-25  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-read-string): Add new function that will inherit the
+	input method if feasible.  TODO: replace calls of `read-string'
+	with this wherever it may be appropriate.
+
 2007-02-20  Ikumi Keita	<ikumi@ikumi.que.jp>
 
 	* tex-buf.el (TeX-region-file): Doc fix.

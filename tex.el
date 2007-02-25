@@ -681,6 +681,13 @@ overlays between two existing ones.")
 
 (when (featurep 'xemacs)
 
+  (defun TeX-read-string
+    (prompt &optional initial-input history default-value)
+    (condition-case nil
+	(read-string prompt initial-input history default-value t)
+      (wrong-number-of-arguments
+       (read-string prompt initial-input history default-value))))
+
   (defun TeX-mark-active ()
     ;; In Lucid (mark) returns nil when not active.
     (if zmacs-regions
@@ -765,6 +772,9 @@ If POS is nil, use current buffer location."
 
 (unless (featurep 'xemacs)
 
+  (defun TeX-read-string (prompt &optional initial-input history default-value)
+    (read-string prompt initial-input history default-value t))
+  
   (defun TeX-mark-active ()
     ;; In FSF 19 mark-active indicates if mark is active.
     mark-active)
