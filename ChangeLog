@@ -1,3 +1,55 @@
+2007-03-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el: Merge from multiline-font-lock branch.
+	(font-latex-do-multi-line, font-latex-use-cache): Remove.
+	(font-latex-multiline-boundary): New variable.
+	(font-latex-built-in-keyword-classes): Add information about
+	syntax of macros.  Quote face names.
+	(font-latex-deactivated-keyword-classes): Adapt type to new form
+	of `font-latex-built-in-keyword-classes'.
+	(font-latex-make-match-defun): Accept `face' argument.
+	(font-latex-keyword-matcher): Support up to 8 slots for faces.
+	(font-latex-make-built-in-keywords): Support new form of keywords
+	classes.
+	(font-latex-user-keyword-classes): Provide possibility to specify
+	macro syntax.
+	(font-latex-make-user-keywords): Add warning face in relevant
+	matchers.
+	(font-latex-extend-region-functions): New variable.
+	(font-latex-setup): Use it.  Clean up.
+	(font-latex-fontify-region): New function.
+	(font-latex-unfontify-region): Cater for XEmacs.
+	(font-lock-after-change-function): Advise function for challenged
+	editors.
+	(font-latex-find-matching-close): Use `TeX-search-syntax-table'.
+	(font-latex-not-on-same-line-as): New function.
+	(font-latex-set-cache, font-latex-get-cache)
+	(font-latex-check-cache): Remove.
+	(font-latex-put-multiline-property-maybe): New function.
+	(font-latex-match-command-cache): Remove.
+	(font-latex-matched-faces): New variable.
+	(font-latex-matched-face): New function.
+	(font-latex-match-command-with-arguments): Use them.  Set warning
+	face when syntax not correct.
+	(font-latex-match-in-braces-cache): Remove.
+	(font-latex-match-mandatory-arg): New function.
+	(font-latex-extend-region-backwards-command-with-args): New
+	function.
+	(font-latex-match-command-in-braces): Set multiline property if
+	necessary.
+	(font-latex-extend-region-backwards-command-in-braces): New
+	function.
+	(font-latex-match-math-env): Set multiline property if necessary.
+	(font-latex-extend-region-backwards-math-env): New function.
+	(font-latex-math-environments): New variable.
+	(font-latex-match-math-envII): Use it.  Set multiline property if
+	necessary.
+	(font-latex-extend-region-backwards-math-envII): New function.
+	(font-latex-update-quote-list): New function.
+	(font-latex-match-quotation): Use it.  Set multiline property if
+	necessary.
+	(font-latex-extend-region-backwards-quotation): New function.
+
 2007-02-25  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-read-string): Add new function that will inherit the
