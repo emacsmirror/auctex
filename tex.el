@@ -4229,46 +4229,50 @@ If LIMIT is non-nil, do not search further up than this position
 in the buffer."
   (TeX-find-balanced-brace -1 depth limit))
 
-(defun TeX-find-macro-boundaries ()
+(defun TeX-find-macro-boundaries (&optional lower-bound)
   "Return a list containing the start and end of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
-  (let ((orig-point (point))
-	start-point)
-    ;; Point is located directly at the start of a macro. (-!-\foo{bar})
-    (when (and (eq (char-after) (aref TeX-esc 0))
-	       (not (TeX-escaped-p)))
-      (setq start-point (point)))
-    ;; Point is located on a macro. (\fo-!-o{bar})
-    (unless start-point
-      (save-excursion
-	(skip-chars-backward "A-Za-z@*")
-	(when (and (eq (char-before) (aref TeX-esc 0))
-		   (not (TeX-escaped-p (1- (point)))))
-	  (setq start-point (1- (point))))))
-    ;; Point is located in the argument of a macro. (\foo{ba-!-r})
-    (unless start-point
-      (save-excursion
-	(catch 'abort
-	  (let ((parse-sexp-ignore-comments t))
-	    (when (condition-case nil (progn (up-list) t) (error nil))
-	      (while (progn
-		       (condition-case nil (backward-sexp)
-			 (error (throw 'abort nil)))
-		       (forward-comment -1)
-		       (and (memq (char-before) '(?\] ?\}))
-			    (not (TeX-escaped-p (1- (point)))))))
-	      (skip-chars-backward "A-Za-z@*")
-	      (when (and (eq (char-before) (aref TeX-esc 0))
-			 (not (TeX-escaped-p (1- (point)))))
-		(setq start-point (1- (point)))))))))
-    ;; Search forward for the end of the macro.
-    (when start-point
-      (save-excursion
-	(goto-char (TeX-find-macro-end-helper start-point))
-	(if (< orig-point (point))
-	    (cons start-point (point))
-	  nil)))))
+If LOWER-BOUND is given, do not search backward further than this
+point in buffer.  Arguments enclosed in brackets or braces are
+considered part of the macro."
+  (save-restriction
+    (when lower-bound
+      (narrow-to-region lower-bound (point-max)))
+    (let ((orig-point (point))
+	  start-point)
+      ;; Point is located directly at the start of a macro. (-!-\foo{bar})
+      (when (and (eq (char-after) (aref TeX-esc 0))
+		 (not (TeX-escaped-p)))
+	(setq start-point (point)))
+      ;; Point is located on a macro. (\fo-!-o{bar})
+      (unless start-point
+	(save-excursion
+	  (skip-chars-backward "A-Za-z@*")
+	  (when (and (eq (char-before) (aref TeX-esc 0))
+		     (not (TeX-escaped-p (1- (point)))))
+	    (setq start-point (1- (point))))))
+      ;; Point is located in the argument of a macro. (\foo{ba-!-r})
+      (unless start-point
+	(save-excursion
+	  (catch 'abort
+	    (let ((parse-sexp-ignore-comments t))
+	      (when (condition-case nil (progn (up-list) t) (error nil))
+		(while (progn
+			 (condition-case nil (backward-sexp)
+			   (error (throw 'abort nil)))
+			 (forward-comment -1)
+			 (and (memq (char-before) '(?\] ?\}))
+			      (not (TeX-escaped-p (1- (point)))))))
+		(skip-chars-backward "A-Za-z@*")
+		(when (and (eq (char-before) (aref TeX-esc 0))
+			   (not (TeX-escaped-p (1- (point)))))
+		  (setq start-point (1- (point)))))))))
+      ;; Search forward for the end of the macro.
+      (when start-point
+	(save-excursion
+	  (goto-char (TeX-find-macro-end-helper start-point))
+	  (if (< orig-point (point))
+	      (cons start-point (point))
+	    nil))))))
 
 (defun TeX-find-macro-end-helper (start)
   "Find the end of a macro given its START.
@@ -4312,11 +4316,12 @@ those will be considered part of it."
 	   (t
 	    (throw 'found (point)))))))))
 
-(defun TeX-find-macro-start ()
+(defun TeX-find-macro-start (&optional limit)
   "Return the start of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
-  (car (TeX-find-macro-boundaries)))
+If LIMIT is given, do not search backward further than this point
+in buffer.  Arguments enclosed in brackets or braces are
+considered part of the macro."
+  (car (TeX-find-macro-boundaries limit)))
 
 (defun TeX-find-macro-end ()
   "Return the end of a macro.
