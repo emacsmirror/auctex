@@ -1,5 +1,10 @@
 2007-03-04  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-find-macro-boundaries): Make it possible to restrict
+	the search with new argument `lower-bound'.
+	(TeX-find-macro-start): Make it possible to restrict the search
+	with new argument `limit'.
+
 	* font-latex.el: Merge from multiline-font-lock branch.
 	(font-latex-do-multi-line, font-latex-use-cache): Remove.
 	(font-latex-multiline-boundary): New variable.
