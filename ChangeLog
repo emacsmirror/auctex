@@ -1,3 +1,9 @@
+2007-03-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-search-syntax-table): Set syntax of ?\( and ?\)
+	explicitely to whitespace for Emacs 21.
+	(TeX-search-syntax-table): Clean the syntax table more thoroughly.
+
 2007-03-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-find-macro-boundaries): Make it possible to restrict
