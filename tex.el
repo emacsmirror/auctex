@@ -4158,9 +4158,10 @@ regardless of its data type."
 						     'syntax-table)))))
     ;; Preset mode-independent syntax entries.  (Mode-dependent
     ;; entries are set in the function `TeX-search-syntax-table'.)
-    ;; ?\" explicitely gets whitespace syntax because Emacs 21.3 and
-    ;; XEmacs don't generate a completely empty syntax table.
-    (dolist (elt '((?\f . ">") (?\n . ">") (?\" . " ")))
+    ;; ?\", ?\( and ?\) explicitely get whitespace syntax because
+    ;; Emacs 21.3 and XEmacs don't generate a completely empty syntax
+    ;; table.
+    (dolist (elt '((?\f . ">") (?\n . ">") (?\" . " ") (?\( . " ") (?\) . " ")))
       (modify-syntax-entry (car elt) (cdr elt) table))
     table)
   "Syntax table used for searching purposes.
@@ -4176,6 +4177,10 @@ of these characters not specified will be reset to \" \"."
 			     (?\} . "){")
 			     (?\[ . "(]")
 			     (?\] . ")["))))
+    ;; Clean entries possibly set before.
+    (modify-syntax-entry ?\\ " " TeX-search-syntax-table)
+    (modify-syntax-entry ?@ " " TeX-search-syntax-table)
+    (modify-syntax-entry ?\% " " TeX-search-syntax-table)
     ;; Preset mode-dependent syntax entries.  (Mode-independent entries
     ;; are set when the variable `TeX-search-syntax-table' is created.)
     (modify-syntax-entry (string-to-char TeX-esc) "\\" TeX-search-syntax-table)
