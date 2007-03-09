@@ -1306,11 +1306,14 @@ output files."
 		  (directory-files (or master-dir ".") nil regexp))))
     (if files
 	(when (or (not TeX-clean-confirm)
-		  (dired-mark-pop-up " *Deletions*" 'delete
-				     (if (> (length files) 1) 
-					 files
-				       (cons t files))
-				     'y-or-n-p "Delete files? "))
+		  (condition-case nil
+		      (dired-mark-pop-up " *Deletions*" 'delete
+					 (if (> (length files) 1) 
+					     files
+					   (cons t files))
+					 'y-or-n-p "Delete files? ")
+		    (wrong-type-argument ; e.g. with Emacs 21
+		     (y-or-n-p (format "Delete %S? " (car files))))))
 	  (dolist (file files)
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
