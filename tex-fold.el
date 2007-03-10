@@ -175,11 +175,10 @@ Set it to zero in order to disable help echos."
   :group 'TeX-fold
   :type 'boolean)
 
-(defcustom TeX-fold-auto t
+(defcustom TeX-fold-auto nil
   "If non-nil, fold macros automatically after `TeX-insert-macro'."
   :group 'TeX-fold
   :type 'boolean)
-
 
 (defface TeX-fold-folded-face
   '((((class color) (background light))
