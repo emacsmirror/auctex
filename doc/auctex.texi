@@ -2934,6 +2934,12 @@ insert @samp{\\og} and @samp{\\fg} depending on context.  Note that the
 language name for customizing @code{TeX-quote-language-alist} is
 @samp{french}.
 
+@item icelandic
+Runs style hook @code{TeX-language-is-hook}.  Gives @samp{"} word
+syntax, makes the @key{"} key insert a literal @samp{"}.  Typing @key{"}
+twice will insert insert @samp{"`} or @samp{"'} depending on context.
+Typing @key{-} twice will insert @samp{"=}, three times @samp{--}.
+
 @item italian
 Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
 insert @samp{"<} and @samp{">} depending on context.
