@@ -159,12 +159,11 @@ AUCTeX preinstalled can be found at
 <URL:ftp://alpha.gnu.org/gnu/auctex/>.
 
 [3]  Precompiled versions of Emacs for Mac OS X can be found e.g. at
-<URL:http://yaced.sf.net/> (including AUCTeX) and
-<URL:http://homepage.mac.com/zenitani/emacs-e.html>.
+<URL:http://homepage.mac.com/zenitani/emacs-e.html> (includes AUCTeX).
 
 [4]  Debian provides precompiled GTK+ Emacs packages in its `unstable'
 distribution (look for `emacs-snapshot-gtk').  Packages for Fedora can
-be found at <URL:http://people.redhat.com/coldwell/bugs/emacs/176171/>.
+be found at <URL:http://people.redhat.com/coldwell/emacs/fedora/6/>
 
 [5]  If making use of the precompiled variants is not an option for
 you, instructions for checking out the CVS version straight from the
