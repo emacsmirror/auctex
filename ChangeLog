@@ -1,5 +1,8 @@
 2007-03-11  Ralf Angeli  <angeli@caeruleus.net>
 
+	* latex.el (LaTeX-fold-math-spec-list): `decode-char' is not
+	autoloaded in XEmacs.  Only use it when it is defined.
+
 	* doc/auctex.texi (European): Document `icelandic' language
 	option.
 
