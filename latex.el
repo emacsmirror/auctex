@@ -4304,7 +4304,7 @@ commands are defined:
 			  (submenu   (nth 2 elt))
 			  (unicode   (nth 3 elt))
 			  uchar noargp)
-		      (when (integerp unicode)
+		      (when (and (fboundp 'decode-char) (integerp unicode))
 			(setq uchar (decode-char 'ucs unicode)))
 		      (when (listp submenu) (setq submenu (nth 1 submenu)))
 		      (setq noargp
