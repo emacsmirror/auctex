@@ -1,3 +1,9 @@
+2007-03-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/icelandic.el.
+
+	* style/icelandic.el: New file.
+
 2007-03-11  David Kastrup  <dak@gnu.org>
 
 	* RELEASE (Footnotes): Update Emacs CVS locations.
