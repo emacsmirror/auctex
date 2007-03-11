@@ -1,5 +1,8 @@
 2007-03-11  Ralf Angeli  <angeli@caeruleus.net>
 
+	* doc/auctex.texi (European): Document `icelandic' language
+	option.
+
 	* Makefile.in (STYLESRC): Add style/icelandic.el.
 
 	* style/icelandic.el: New file.
