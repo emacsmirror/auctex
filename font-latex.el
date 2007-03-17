@@ -115,11 +115,13 @@ Also selects \"<quote\"> versus \">quote\"<.
 
 If value `auto' is chosen, an attempt is being made in deriving
 the type of quotation mark matching from document settings like
-the language option supplied to the babel package."
-  :type '(choice (const auto) (const french) (const german))
+the language option supplied to the babel package.
+
+If nil, quoted content will not be fontified."
+  :type '(choice (const auto) (const french) (const german) (const nil))
   :group 'font-latex)
 (put 'font-latex-quotes 'safe-local-variable
-     '(lambda (x) (memq x '(auto french german))))
+     '(lambda (x) (memq x '(auto french german nil))))
 
 (defun font-latex-add-quotes (quotes)
   "Add QUOTES to `font-latex-quote-list'.
@@ -1631,74 +1633,81 @@ Used for patterns like:
 \"< french \"> and \"`german\"' quotes.
 The quotes << french >> and 8-bit french are used if `font-latex-quotes' is
 set to french, and >>german<< (and 8-bit) are used if set to german."
-  (font-latex-update-quote-list)
-  ;; Search for matches.
-  (catch 'match
-    (while (TeX-re-search-forward-unescaped font-latex-quote-regexp-beg limit t)
-      (unless (font-latex-faces-present-p '(font-lock-comment-face
-					    font-latex-verbatim-face
-					    font-latex-math-face)
-					  (match-beginning 0))
-	(let* ((beg (match-beginning 0))
-	       (after-beg (match-end 0))
-	       (opening-quote (match-string 0))
-	       (closing-quote
-		(nth 1 (assoc (if (fboundp 'string-make-multibyte)
-				  (string-make-multibyte (match-string 0))
-				(match-string 0))
-			      font-latex-quote-list)))
-	       (nest-count 0)
-	       (point-of-surrender (+ beg font-latex-multiline-boundary)))
-	  ;; Find closing quote taking nested quotes into account.
-	  (while (progn
-		   (re-search-forward (concat opening-quote "\\|" closing-quote)
-				      point-of-surrender 'move)
-		   (when (and (< (point) point-of-surrender) (not (eobp)))
-		     (if (string= (match-string 0) opening-quote)
-			 (setq nest-count (1+ nest-count))
-		       (when (/= nest-count 0)
-			 (setq nest-count (1- nest-count)))))))
-	  ;; If no closing quote was found, set the second match which
-	  ;; will be marked with warning color, if one was found, set
-	  ;; the first match which will be marked with string color.
-	  (if (or (= (point) point-of-surrender) (eobp))
-	      (progn
-		(goto-char after-beg)
-		(store-match-data (list after-beg after-beg beg after-beg)))
-	    (font-latex-put-multiline-property-maybe beg (point))
-	    (store-match-data (list beg (point) (point) (point))))
-	  (throw 'match t))))))
-
-(defun font-latex-extend-region-backwards-quotation (beg end)
-  "Extend region backwards if necessary for a multiline construct to fit in."
-  (font-latex-update-quote-list)
-  (let ((regexp-end (regexp-opt (mapcar 'cadr font-latex-quote-list) t)))
-    (save-excursion
-      (goto-char end)
-      (catch 'extend
-	(while (re-search-backward regexp-end beg t)
-	  (let ((closing-quote (match-string 0))
-		(nest-count 0)
-		(point-of-surrender (- beg font-latex-multiline-boundary))
-		opening-quote)
-	    (catch 'found
-	      (dolist (elt font-latex-quote-list)
-		(when (string= (cadr elt) closing-quote)
-		  (setq opening-quote (car elt))
-		  (throw 'found nil))))
-	    ;; Find opening quote taking nested quotes into account.
+  (when font-latex-quotes
+    (font-latex-update-quote-list)
+    ;; Search for matches.
+    (catch 'match
+      (while (TeX-re-search-forward-unescaped
+	      font-latex-quote-regexp-beg limit t)
+	(unless (font-latex-faces-present-p '(font-lock-comment-face
+					      font-latex-verbatim-face
+					      font-latex-math-face)
+					    (match-beginning 0))
+	  (let* ((beg (match-beginning 0))
+		 (after-beg (match-end 0))
+		 (opening-quote (match-string 0))
+		 (closing-quote
+		  (nth 1 (assoc (if (fboundp 'string-make-multibyte)
+				    (string-make-multibyte (match-string 0))
+				  (match-string 0))
+				font-latex-quote-list)))
+		 (nest-count 0)
+		 (point-of-surrender (+ beg font-latex-multiline-boundary)))
+	    ;; Find closing quote taking nested quotes into account.
 	    (while (progn
-		     (re-search-backward (concat opening-quote "\\|"
-						 closing-quote)
-					 point-of-surrender 'move)
-		     (when (and (> (point) point-of-surrender) (not (bobp)))
-		       (if (string= (match-string 0) closing-quote)
+		     (re-search-forward
+		      (concat opening-quote "\\|" closing-quote)
+		      point-of-surrender 'move)
+		     (when (and (< (point) point-of-surrender) (not (eobp)))
+		       (if (string= (match-string 0) opening-quote)
 			   (setq nest-count (1+ nest-count))
 			 (when (/= nest-count 0)
 			   (setq nest-count (1- nest-count)))))))
-	    (when (< (point) beg)
-	      (throw 'extend (point)))))
-	beg))))
+	    ;; If no closing quote was found, set the second match which
+	    ;; will be marked with warning color, if one was found, set
+	    ;; the first match which will be marked with string color.
+	    (if (or (= (point) point-of-surrender) (eobp))
+		(progn
+		  (goto-char after-beg)
+		  (store-match-data (list after-beg after-beg beg after-beg)))
+	      (font-latex-put-multiline-property-maybe beg (point))
+	      (store-match-data (list beg (point) (point) (point))))
+	    (throw 'match t)))))))
+
+(defun font-latex-extend-region-backwards-quotation (beg end)
+  "Extend region backwards if necessary for a multiline construct to fit in."
+  (if font-latex-quotes
+      (progn
+	(font-latex-update-quote-list)
+	(let ((regexp-end (regexp-opt (mapcar 'cadr font-latex-quote-list) t)))
+	  (save-excursion
+	    (goto-char end)
+	    (catch 'extend
+	      (while (re-search-backward regexp-end beg t)
+		(let ((closing-quote (match-string 0))
+		      (nest-count 0)
+		      (point-of-surrender (- beg font-latex-multiline-boundary))
+		      opening-quote)
+		  (catch 'found
+		    (dolist (elt font-latex-quote-list)
+		      (when (string= (cadr elt) closing-quote)
+			(setq opening-quote (car elt))
+			(throw 'found nil))))
+		  ;; Find opening quote taking nested quotes into account.
+		  (while (progn
+			   (re-search-backward (concat opening-quote "\\|"
+						       closing-quote)
+					       point-of-surrender 'move)
+			   (when (and (> (point) point-of-surrender)
+				      (not (bobp)))
+			     (if (string= (match-string 0) closing-quote)
+				 (setq nest-count (1+ nest-count))
+			       (when (/= nest-count 0)
+				 (setq nest-count (1- nest-count)))))))
+		  (when (< (point) beg)
+		    (throw 'extend (point)))))
+	      beg))))
+    beg))
 
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."
