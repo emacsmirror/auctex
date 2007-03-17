@@ -1,3 +1,13 @@
+2007-03-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-quotes): Add nil option.
+	(font-latex-match-quotation)
+	(font-latex-extend-region-backwards-quotation): Do nothing if
+	`font-latex-quotes' is nil.
+
+	* doc/auctex.texi (Font Locking): Document nil option of
+	`font-latex-quotes'.
+
 2007-03-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fold-math-spec-list): `decode-char' is not
