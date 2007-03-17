@@ -1652,6 +1652,9 @@ Set the value to @samp{german} if you are using >>German quotes<< and to
 recognize the different ways these quotes can be given in your source
 code, i.e. (@samp{"<}, @samp{">}), (@samp{<<}, @samp{>>}) and the
 respective 8-bit variants.
+
+If you set @code{font-latex-quotes} to nil, quoted content will not be
+fontified.
 @end defopt
 
 @heading Subscript and superscript in math
