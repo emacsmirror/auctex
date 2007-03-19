@@ -1,3 +1,15 @@
+2007-03-19  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/comment.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/comment.el.
+
+	* font-latex.el (font-latex-syntactic-keywords-extra): New
+	variable.
+	(font-latex-set-syntactic-keywords): Use it.
+
+	* tex-style.el (LaTeX-comment-env-list): New variable.
+
 2007-03-18  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Commands): Remove dependency on software du
