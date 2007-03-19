@@ -777,6 +777,15 @@ The car is used for subscript, the cdr is used for superscripts."
 
 ;;; Syntactic keywords
 
+(defvar font-latex-syntactic-keywords nil
+  "Syntactic keywords used by `font-latex'.")
+(make-variable-buffer-local 'font-latex-syntactic-keywords)
+
+(defvar font-latex-syntactic-keywords-extra nil
+  "List of syntactic keywords to add to `font-latex-syntactic-keywords'.
+The form should be the same as in `font-lock-syntactic-keywords'.")
+(make-variable-buffer-local 'font-latex-syntactic-keywords-extra)
+
 (defun font-latex-set-syntactic-keywords ()
   "Set the variable `font-latex-syntactic-keywords'.
 This function can be used to refresh the variable in case other
@@ -832,15 +841,13 @@ have changed."
 		   `(,(concat "\\\\\\(?:" verb-macros-with-braces "\\)"
 			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
 		     (1 "|") (2 "|")))))
+  (when font-latex-syntactic-keywords-extra
+    (nconc font-latex-syntactic-keywords font-latex-syntactic-keywords-extra))
   ;; Cater for docTeX mode.
   (setq font-latex-doctex-syntactic-keywords
 	(append font-latex-syntactic-keywords
 		;; For docTeX comment-in-doc.
 		`(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
-
-(defvar font-latex-syntactic-keywords nil
-  "Syntactic keywords used by `font-latex'.")
-(make-variable-buffer-local 'font-latex-syntactic-keywords)
 
 
 ;;; Syntactic fontification
