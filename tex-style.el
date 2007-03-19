@@ -213,6 +213,15 @@ It can be a list of themes or a function.  If it is the symbol
 	     :tag "Other"
 	     (string)))))
 
+;; style/comment.el
+
+(defcustom LaTeX-comment-env-list '("comment")
+  "List of environment names defined with comment.sty.
+Setting this variable does not take effect unless you
+reinitialize affected buffers."
+  :type '(repeat string)
+  :group 'LaTeX-style)
+
 ;; style/csquotes.el
 
 (defcustom LaTeX-csquotes-quote-after-quote nil
