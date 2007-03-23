@@ -1,3 +1,7 @@
+2007-03-23  David Kastrup  <dak@gnu.org>
+
+	* context.el (TeX-ConTeXt-sentinel): Fix end-of-run detection.
+
 2007-03-19  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/comment.el: New file.
