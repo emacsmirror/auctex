@@ -1,3 +1,9 @@
+2007-03-24  David Kastrup  <dak@gnu.org>
+
+	* context.el (ConTeXt-find-indent): Use `condition-case' rather
+	than `ignore-errors', and don't barf if at the end of file (like
+	with an empty file).
+
 2007-03-23  David Kastrup  <dak@gnu.org>
 
 	* context.el (TeX-ConTeXt-sentinel): Fix end-of-run detection.

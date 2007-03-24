@@ -1081,12 +1081,13 @@ else.  There might be text before point."
      (and virtual (>= (current-indentation) (current-column))
 	  (current-indentation))
      ;; Put leading close-paren where the matching open brace would be.
-     (and (eq (char-syntax (char-after)) ?\))
-	  (ignore-errors
-	   (save-excursion
-	     (skip-syntax-forward " )")
-	     (backward-sexp 1)
-	     (ConTeXt-find-indent 'virtual))))
+     (condition-case nil
+	 (and (eq (char-syntax (char-after)) ?\))
+	      (save-excursion
+		(skip-syntax-forward " )")
+		(backward-sexp 1)
+		(ConTeXt-find-indent 'virtual)))
+       (error nil))
      ;; Default (maybe an argument)
      (let ((pos (point))
 	   (char (char-after))
@@ -1137,7 +1138,7 @@ else.  There might be text before point."
 	 (+ indent (current-column) ConTeXt-indent-basic))
 	(t
 	 (let ((col (current-column)))
-	   (if (not (eq (char-syntax char) ?\())
+	   (if (not (and char (eq (char-syntax char) ?\()))
 	       ;; If the first char was not an open-paren, there's
 	       ;; a risk that this is really not an argument to the
 	       ;; macro at all.
