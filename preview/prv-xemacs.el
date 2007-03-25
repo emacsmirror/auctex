@@ -598,7 +598,7 @@ Also make `query-replace' open preview text about to be replaced."
   "List of tentatively changed overlays.")
 
 (defcustom preview-dump-threshold
-  "^ *\\\\begin *{document}"
+  "^ *\\\\begin *{document}[ %]*$"
   "*Regexp denoting end of preamble.
 This is the location up to which preamble changes are considered
 to require redumping of a format."

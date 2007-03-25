@@ -1,5 +1,10 @@
 2007-03-25  David Kastrup  <dak@gnu.org>
 
+	* prv-xemacs.el (preview-dump-threshold): 
+
+	* prv-emacs.el (preview-dump-threshold): Make the dump threshold
+	closely match what mylatex.ltx expects.
+
 	* latex/preview.dtx: Have the counter output appear before the
 	snippet start/end messages in order to have the counter
 	maintenance work out correctly regardless of the order of `auctex'

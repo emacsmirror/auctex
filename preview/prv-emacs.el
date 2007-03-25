@@ -203,7 +203,7 @@ are functions to call on preview's clicks."
   "List of tentatively changed overlays.")
 
 (defcustom preview-dump-threshold
-  "^ *\\\\begin *{document}"
+  "^ *\\\\begin *{document}[ %]*$"
   "*Regexp denoting end of preamble.
 This is the location up to which preamble changes are considered
 to require redumping of a format."
