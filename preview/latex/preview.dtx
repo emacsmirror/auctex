@@ -438,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.122 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.123 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-08-25 10:34:36 $
+\reserved@a\next $Date: 2007-03-25 09:02:14 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -1433,8 +1433,8 @@ Please complain to your document class author}%
 %<counters>\def\pr@ckpt#1{{\let\@elt\pr@eltprint\edef\next{\cl@@ckpt}%
 %<counters>  \ifx\next\@empty\else\typeout{Preview: Counters\next#1}%
 %<counters>  \let\@elt\pr@eltdef\cl@@ckpt\fi}}
-%<counters>\g@addto@macro\pr@ship@start{\pr@ckpt:}
-%<counters>\g@addto@macro\pr@ship@end{\pr@ckpt.}
+%<counters>\pr@addto@front\pr@ship@start{\pr@ckpt:}
+%<counters>\pr@addto@front\pr@ship@end{\pr@ckpt.}
 %    \end{macrocode}
 %
 % \subsection{Debugging options}

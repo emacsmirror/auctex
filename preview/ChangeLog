@@ -1,3 +1,10 @@
+2007-03-25  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Have the counter output appear before the
+	snippet start/end messages in order to have the counter
+	maintenance work out correctly regardless of the order of `auctex'
+	and `counters' options to preview.el.
+
 2007-02-09  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* preview.el (preview-report-bug): Use `AUCTeX-version' instead of
