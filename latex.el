@@ -1870,7 +1870,7 @@ including values of the variable
 Programs should not use this variable directly but the function
 `LaTeX-verbatim-environments' which returns a value including
 buffer-local keyword additions via
-`LaTeX-verbatim-environemts-local' as well."
+`LaTeX-verbatim-environments-local' as well."
   :group 'LaTeX-environment
   :type '(repeat (string)))
 
@@ -3524,44 +3524,48 @@ If COUNT is non-nil, do it COUNT times."
 		(save-excursion
 		  (TeX-backward-comment-skip 1 limit)
 		  (point))
-		;; Search for possible paragraph commands.
+		;; Search for paragraph commands.
 		(save-excursion
-		  (let (end-point)
-		    (catch 'found
-		      (while (and (> (point) limit)
-				  (not (bobp))
-				  (forward-line -1))
-			(when (looking-at
-			       (concat "^[ \t]*" TeX-comment-start-regexp "*"
-				       "[ \t]*\\("
-				       LaTeX-paragraph-commands-regexp "\\)"))
-			  (save-excursion
-			    (goto-char (match-beginning 1))
-			    (save-match-data
-			      (goto-char (TeX-find-macro-end)))
-			    ;; For an explanation of this distinction
-			    ;; see `LaTeX-forward-paragraph'.
-			    (if (save-match-data
-				  (looking-at
-				   (concat (regexp-quote TeX-esc) "[@A-Za-z]+"
-					   "\\|[ \t]*\\($\\|"
-					   TeX-comment-start-regexp "\\)")))
-				(progn
-				  (when (string=
-					 (buffer-substring-no-properties
-					  (point) (+ (point) (length TeX-esc)))
-					 TeX-esc)
-				    (goto-char (TeX-find-macro-end)))
-				  (forward-line 1)
-				  (setq end-point (if (< (point) start)
-						      (point)
-						    0)))
-			      (setq end-point (match-beginning 0))))
-			  (throw 'found nil))))
-		      (if end-point
-			end-point
-		      0))))))
-	(beginning-of-line)))))
+		  (let ((end-point 0) macro-bol)
+		    (when (setq macro-bol
+				(re-search-backward
+				 (format "^[ \t]*%s*[ \t]*\\(%s\\)"
+					 TeX-comment-start-regexp
+					 LaTeX-paragraph-commands-regexp)
+				 limit t))
+		      (if (and (string= (match-string 1) "\\begin")
+			       (progn
+				 (goto-char (match-end 1))
+				 (skip-chars-forward "{ \t")
+				 (member (buffer-substring-no-properties
+					  (point) (progn (skip-chars-forward
+							  "A-Za-z*") (point)))
+					 LaTeX-verbatim-environments)))
+			  ;; If inside a verbatim environment, just
+			  ;; use the next line.  In such environments
+			  ;; `TeX-find-macro-end' could otherwise
+			  ;; think brackets or braces belong to the
+			  ;; \begin macro.
+			  (setq end-point (line-beginning-position 2))
+			;; Jump to the macro end otherwise.
+			(goto-char (match-beginning 1))
+			(goto-char (TeX-find-macro-end))
+			;; For an explanation of this distinction see
+			;; `LaTeX-forward-paragraph'.
+			(if (looking-at (concat (regexp-quote TeX-esc)
+						"[@A-Za-z]+\\|[ \t]*\\($\\|"
+						TeX-comment-start-regexp "\\)"))
+			    (progn
+			      (when (string= (buffer-substring-no-properties
+					      (point) (+ (point)
+							 (length TeX-esc)))
+					     TeX-esc)
+				(goto-char (TeX-find-macro-end)))
+			      (forward-line 1)
+			      (when (< (point) start)
+				(setq end-point (point))))
+			  (setq end-point macro-bol)))
+		      end-point))))))))))
 
 (defun LaTeX-search-forward-comment-start (&optional limit)
   "Search forward for a comment start from current position till LIMIT.
