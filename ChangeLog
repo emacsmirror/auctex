@@ -1,3 +1,10 @@
+2007-03-31  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-verbatim-environments): Fix typo.
+	(LaTeX-backward-paragraph): Special-case verbatim environments in
+	order to prevent leading brackets or braces from being interpreted
+	as part of the \begin macro.  Clean up a bit.
+
 2007-03-24  David Kastrup  <dak@gnu.org>
 
 	* context.el (ConTeXt-find-indent): Use `condition-case' rather
