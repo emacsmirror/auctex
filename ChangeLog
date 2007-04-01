@@ -1,3 +1,8 @@
+2007-04-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-help-error): Correct regexp for matching line
+	indicator.
+
 2007-03-31  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-verbatim-environments): Fix typo.
