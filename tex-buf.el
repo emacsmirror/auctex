@@ -1595,7 +1595,7 @@ name(\\([^)]+\\))\\)\\|\
 			 (goto-line (point-min))
 			 (search-forward error nil t 1)))
 		  (progn
-		    (re-search-forward "^l.")
+		    (re-search-forward "^l\\.")
 		    (re-search-forward "^ [^\n]+$")
 		    (forward-char 1)
 		    (let ((start (point)))
