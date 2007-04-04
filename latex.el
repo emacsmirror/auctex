@@ -3564,8 +3564,8 @@ If COUNT is non-nil, do it COUNT times."
 			      (forward-line 1)
 			      (when (< (point) start)
 				(setq end-point (point))))
-			  (setq end-point macro-bol)))
-		      end-point))))))))))
+			  (setq end-point macro-bol))))
+		    end-point)))))))))
 
 (defun LaTeX-search-forward-comment-start (&optional limit)
   "Search forward for a comment start from current position till LIMIT.
