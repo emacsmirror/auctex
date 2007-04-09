@@ -808,9 +808,17 @@ have changed."
 				       (regexp-opt verb-macros-with-braces))
 	  font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
+      ;; We assume that the \begin part of verbatim environments can
+      ;; be preceded by all sorts of junk on the same line except
+      ;; comment characters, but the \end part only by whitespace.
+      ;; (The comment character matching is not exact since they could
+      ;; be escaped which is not being checked.)  The \end part of the
+      ;; vanilla verbatim environment should actually not even be
+      ;; preceded by whitespace since a spurious newline would be
+      ;; inserted in the typeset result in this case.
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "^[ \t]*\\\\begin *{\\(?:" verb-envs
-			      "\\)}.*\\(\n\\)")
+		   `(,(concat "\\(?:^\\|^[^%\n]*[^\\%]\\)\\(?:\\\\\\\\\\)*\
+\\\\begin *{\\(?:" verb-envs "\\)}.*\\(\n\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
 		   ;; Using the newline character for the syntax
