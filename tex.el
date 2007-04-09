@@ -4919,7 +4919,9 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		    `(,@TeX-macro-global ,@TeX-macro-private)))
 		 '("dvi" "pdf" "ps" "txt" "html") t t)))
 	    (lambda (doc)
-	      (call-process "texdoc" nil 0 nil doc)))
+	      ;; texdoc in MiKTeX requires --view in order to start
+	      ;; the viewer instead of an intermediate web page.
+	      (call-process "texdoc" nil 0 nil "--view" doc)))
     (latex-info (latex-mode)
 		(lambda ()
 		  (when (condition-case nil
