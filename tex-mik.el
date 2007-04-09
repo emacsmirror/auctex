@@ -61,8 +61,10 @@
 (unless (get 'TeX-source-specials-view-editor-flags 'saved-value)
   (setq TeX-source-specials-view-editor-flags ""))
 
+;; kpsewhich in MiKTeX (aka findtexmf) does not emit any useful
+;; information if fed with kpathsea-related variables anyway.
 (unless (get 'TeX-kpathsea-path-delimiter 'saved-value)
-  (setq TeX-kpathsea-path-delimiter ";"))
+  (setq TeX-kpathsea-path-delimiter nil))
 
 (provide 'tex-mik)
 
