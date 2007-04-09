@@ -1,3 +1,18 @@
+2007-04-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-doc-backend-alist): Add --view parameter to texdoc
+	call since texdoc in MiKTeX fires up a web page not useful for our
+	purposes otherwise.
+
+	* tex-mik.el: Set `TeX-kpathsea-path-delimiter' to nil since
+	kpsewhich in MiKTeX (aka findtexmf) does not emit any useful
+	information if fed with kpathsea-related variables anyway.  This
+	change makes `TeX-doc' work again on MiKTeX.
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Match the
+	\begin macro of verbatim environments in case it is preceded by
+	other content than whitespace.
+
 2007-04-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-backward-paragraph): Fix grouping in order to
