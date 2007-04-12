@@ -120,9 +120,8 @@
     (TeX-run-style-hooks "amstext" "amsbsy" "amsopn")
 
     ;; If RefTeX is loaded, make it recognize the amsmath environments.
-    (if (featurep 'reftex)
-	(reftex-add-to-label-alist '(AMSTeX)))
-    )))
+    (when (fboundp 'reftex-add-to-label-alist)
+      (reftex-add-to-label-alist '(AMSTeX))))))
 
 (defun LaTeX-amsmath-env-alignat (env)
   (let ((ncols (read-string "Number of columns: ")))
