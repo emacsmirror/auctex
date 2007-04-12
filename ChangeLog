@@ -1,3 +1,8 @@
+2007-04-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/amsmath.el ("amsmath"): Call `reftex-add-to-label-alist'
+	only if function is bound.
+
 2007-04-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc-backend-alist): Add --view parameter to texdoc
