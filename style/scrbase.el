@@ -5,7 +5,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.9 2005-06-05 18:32:07 angeli Exp $
+;; Version: $Id: scrbase.el,v 1.10 2007-04-13 21:06:38 angeli Exp $
 ;; Keywords: tex
 ;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
@@ -82,7 +82,7 @@
      '("addmargin*" (lambda (env &rest ignore)
 		      (LaTeX-insert-environment
 		       env
-		       (let ((innin (read-string "(Optional) Innner Indentation: "))
+		       (let ((innin (read-string "(Optional) Inner Indentation: "))
 			     (indent (read-string "Indentation: ")))
 			 (concat
 			  (if (not (zerop (length innin)))
@@ -205,12 +205,12 @@
     (TeX-argument-prompt optional prompt "Element")
     '(("")
       ("caption") ("captionlabel")
-      ("descriptionlabel") ("dictumauthor") ("dictumtext")
+      ("descriptionlabel") ("dictum") ("dictumauthor") ("dictumtext")
       ("footnote") ("footnotelabel") ("footnotereference")
-      ("pagefoot") ("pagehead") ("pagenumber")
+      ("pagefoot") ("pagehead") ("pagenumber") ("pagination")
       ("sectioning") ("part") ("partnumber") ("chapter") ("section")
       ("subsection") ("subsubsection") ("paragraph") ("subparagraph")
-      ("title"))
+      ("title") ("disposition") ("minisec"))
     nil t)
    optional))
  
