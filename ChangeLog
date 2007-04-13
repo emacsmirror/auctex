@@ -1,4 +1,4 @@
-2007-04-13  Marc Trettin  <Mark.Trettin@gmx.de>
+2007-04-13  Mark Trettin  <Mark.Trettin@gmx.de>
 
 	* style/scrbase.el ("scrbase"): Fix typo in prompt.
 	(TeX-arg-KOMA-fontelements): Add \dictum, \pagination,
