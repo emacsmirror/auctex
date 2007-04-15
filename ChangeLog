@@ -1,3 +1,9 @@
+2007-04-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-match-math-envII): Regexp-quote the
+	string used to look for the environment end in order for starred
+	environments to be found.
+
 2007-04-13  Mark Trettin  <Mark.Trettin@gmx.de>
 
 	* style/scrbase.el ("scrbase"): Fix typo in prompt.
