@@ -1591,9 +1591,10 @@ The \\begin{equation} and \\end{equation} are not fontified here."
 			   limit t)
     (let ((beg (match-end 0)) end)
       (if (re-search-forward (concat "\\\\end[ \t]*{"
-				     (buffer-substring-no-properties
-				      (match-beginning 1)
-				      (match-end 0)))
+				     (regexp-quote
+				      (buffer-substring-no-properties
+				       (match-beginning 1)
+				       (match-end 0))))
 			     ;; XXX: Should this rather be done by
 			     ;; extending the region to be fontified?
 			     (+ limit font-latex-multiline-boundary) 'move)
