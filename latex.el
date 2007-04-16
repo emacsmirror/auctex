@@ -3900,6 +3900,17 @@ See also `LaTeX-math-menu'."
     (nil "beth" ("AMS" "Hebrew") 8502) ;; #X2136
     (nil "daleth" ("AMS" "Hebrew") 8504) ;; #X2138
     (nil "gimel" ("AMS" "Hebrew") 8503) ;; #X2137
+    ("v G" "varGamma" ("AMS" "Greek Uppercase"))
+    ("v D" "varDelta" ("AMS" "Greek Uppercase"))
+    ("v J" "varTheta" ("AMS" "Greek Uppercase"))
+    ("v L" "varLambda" ("AMS" "Greek Uppercase"))
+    ("v X" "varXi" ("AMS" "Greek Uppercase"))
+    ("v P" "varPi" ("AMS" "Greek Uppercase"))
+    ("v S" "varSigma" ("AMS" "Greek Uppercase"))
+    ("v U" "varUpsilon" ("AMS" "Greek Uppercase"))
+    ("v F" "varPhi" ("AMS" "Greek Uppercase"))
+    ("v Y" "varPsi" ("AMS" "Greek Uppercase"))
+    ("v W" "varOmega" ("AMS" "Greek Uppercase"))
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
     (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
