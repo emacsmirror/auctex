@@ -1,3 +1,8 @@
+2007-04-16  Ikumi Keita	<ikumi@ikumi.que.jp>
+
+	* latex.el (LaTeX-math-default): Add various Greek uppercase
+	macros provided by amsmath.sty.
+
 2007-04-15  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-math-envII): Regexp-quote the
