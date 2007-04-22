@@ -1118,18 +1118,20 @@ backwards to the minimum over their return values.")
 (defun font-latex-fontify-region (beg end &optional loudly)
   "Fontify region from BEG to END.
 If optional argument is non-nil, print status messages."
-  (setq beg (apply 'min (mapcar (lambda (fun) (funcall fun beg end))
-				font-latex-extend-region-functions)))
-  ;; Stolen from `jit-lock-after-change'.  Without this stanza only
-  ;; the line in which a change happened will be refontified.  The
-  ;; rest to which the region was extended will only be refontified
-  ;; upon redisplay.  Unfortunately refontification is not done as
-  ;; fast as if `jit-lock-after-change' was advised.
-  (when (and (boundp 'jit-lock-context-unfontify-pos)
-	     jit-lock-context-unfontify-pos)
+  (let ((extend-list (delq nil (mapcar (lambda (fun) (funcall fun beg end))
+				       font-latex-extend-region-functions))))
+    (when extend-list
+      (setq beg (apply 'min extend-list))
+      ;; Stolen from `jit-lock-after-change'.  Without this stanza only
+      ;; the line in which a change happened will be refontified.  The
+      ;; rest to which the region was extended will only be refontified
+      ;; upon redisplay.  Unfortunately refontification is not done as
+      ;; fast as if `jit-lock-after-change' was advised.
+      (when (and (boundp 'jit-lock-context-unfontify-pos)
+		 jit-lock-context-unfontify-pos)
 	(setq jit-lock-context-unfontify-pos
-	      (min jit-lock-context-unfontify-pos beg)))
-  (font-lock-default-fontify-region beg end loudly))
+	      (min jit-lock-context-unfontify-pos beg))))
+    (font-lock-default-fontify-region beg end loudly)))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
@@ -1189,7 +1191,11 @@ ignored during the search."
 	 (not (eq major-mode 'doctex-mode))) ; scan-sexps ignores comments
         (init-point (point))
 	(mycount 1)
-	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\")))
+	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\"))
+	;; XXX: Do not look up syntax-table properties since they may
+	;; be misleading, e.g. in the case of "{foo}^^A" where the
+	;; closing brace gets a comment end syntax.
+	(parse-sexp-lookup-properties nil))
     (or
      (condition-case nil
 	 (progn
@@ -1449,7 +1455,10 @@ In case no closing brace is found the function will throw a
     (throw 'break nil)))
 
 (defun font-latex-extend-region-backwards-command-with-args (beg end)
-  "Extend region backwards if necessary for a multiline construct to fit in."
+  "Return position to extend region backwards for commands with args.
+Return nil if region does not have to be extended for a multiline
+macro to fit in.  The region between the positions BEG and END
+marks boundaries for searching for macro ends."
   (save-excursion
     (goto-char end)
     (catch 'extend
@@ -1460,7 +1469,7 @@ In case no closing brace is found the function will throw a
 	  (when (and macro-start
 		     (< macro-start beg))
 	    (throw 'extend macro-start))))
-      beg)))
+      nil)))
 
 (defun font-latex-match-command-in-braces (keywords limit)
   "Search for command like {\\bfseries fubar} before LIMIT.
@@ -1506,7 +1515,10 @@ Returns nil if no command is found."
 	      (throw 'match t))))))))
 
 (defun font-latex-extend-region-backwards-command-in-braces (beg end)
-  "Extend region backwards if necessary for a multiline construct to fit in."
+  "Return position to extend region backwards for commands in braces.
+Return nil if region does not have to be extended for a multiline
+group to fit in.  The region between the positions BEG and END
+marks boundaries for searching for group ends."
   (save-excursion
     (goto-char end)
     (catch 'extend
@@ -1525,7 +1537,7 @@ Returns nil if no command is found."
 	    (goto-char group-start)
 	    (when (< group-start beg)
 	      (throw 'extend group-start)))))
-      beg)))
+      nil)))
 
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
@@ -1560,7 +1572,10 @@ Used for patterns like:
 	  (throw 'match t))))))
 
 (defun font-latex-extend-region-backwards-math-env (beg end)
-  "Extend region backwards if necessary for a multiline construct to fit in."
+  "Return position to extend region backwards for math environments.
+Return nil if region does not have to be extended for a multiline
+environment to fit in.  The region between the positions BEG and
+END marks boundaries for searching for environment ends."
   (save-excursion
     (goto-char end)
     (catch 'extend
@@ -1569,7 +1584,7 @@ Used for patterns like:
 				    (- beg font-latex-multiline-boundary) t)
 		   (< (point) beg))
 	  (throw 'extend (point))))
-      beg)))
+      nil)))
 
 (defcustom font-latex-math-environments
   '("display" "displaymath" "equation" "eqnarray" "gather" "multline"
@@ -1606,7 +1621,10 @@ The \\begin{equation} and \\end{equation} are not fontified here."
       t)))
 
 (defun font-latex-extend-region-backwards-math-envII (beg end)
-  "Extend region backwards if necessary for multiline math environments."
+  "Return position to extend region backwards for math environments.
+Return nil if region does not have to be extended for a multiline
+environment to fit in.  The region between the positions BEG and
+END marks boundaries for searching for environment ends."
   (save-excursion
     (goto-char end)
     (catch 'extend
@@ -1621,7 +1639,7 @@ The \\begin{equation} and \\end{equation} are not fontified here."
 				       (- beg font-latex-multiline-boundary) t)
 		   (< (point) beg))
 	  (throw 'extend (point))))
-      beg)))
+      nil)))
 
 (defun font-latex-update-quote-list ()
   "Update quote list and regexp if value of `font-latex-quotes' changed."
@@ -1691,7 +1709,10 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 	    (throw 'match t)))))))
 
 (defun font-latex-extend-region-backwards-quotation (beg end)
-  "Extend region backwards if necessary for a multiline construct to fit in."
+  "Return position to extend region backwards for quotations.
+Return nil if region does not have to be extended for a multiline
+quotation to fit in.  The region between the positions BEG and
+END marks boundaries for searching for quotation ends."
   (if font-latex-quotes
       (progn
 	(font-latex-update-quote-list)
@@ -1722,8 +1743,8 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 				 (setq nest-count (1- nest-count)))))))
 		  (when (< (point) beg)
 		    (throw 'extend (point)))))
-	      beg))))
-    beg))
+	      nil))))
+    nil))
 
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."
