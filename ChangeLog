@@ -1,3 +1,16 @@
+2007-04-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-fontify-region): Force context-related
+	unfontification only if the region has to be extended.
+	(font-latex-find-matching-close): Do not look up syntax-table
+	properties.
+	(font-latex-extend-region-backwards-command-with-args)
+	(font-latex-extend-region-backwards-command-in-braces)
+	(font-latex-extend-region-backwards-math-env)
+	(font-latex-extend-region-backwards-math-envII)
+	(font-latex-extend-region-backwards-quotation): Doc fix.  Return
+	nil if no content requiring region extension was found.
+
 2007-04-16  Ikumi Keita	<ikumi@ikumi.que.jp>
 
 	* latex.el (LaTeX-math-default): Add various Greek uppercase
