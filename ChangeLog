@@ -1,3 +1,14 @@
+2007-04-22  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Add index entries for auctex.el and
+	tex-site.el.  Add references to INSTALL or manual.
+
+	* doc/install.texi (Loading the package): Add index entries for
+	auctex.el and tex-site.el.
+
+	* doc/wininstall.texi: Add index entries for tex-mik.el and
+	tex-fptex.el.  Clarify loading.
+
 2007-04-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-fontify-region): Force context-related

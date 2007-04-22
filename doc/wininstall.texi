@@ -341,8 +341,10 @@ in either a site-wide @file{site-start.el} or your personal startup file
 (usually accessible as @file{~/.emacs} from within Emacs and
 @file{~/.xemacs/init.el} from within XEmacs).
 
+@cindex @file{tex-mik.el}
+@cindex @file{tex-fptex.el}
 The default configuration of @AUCTeX{} is probably not the best fit for
-Windows systems.  You might want to additionally use
+Windows systems.  You might want to add
 @example
 (require 'tex-mik)
 @end example
@@ -351,7 +353,7 @@ or
 (require 'tex-fptex)
 @end example
 in order to get more appropriate values for MiK@TeX{} and fp@TeX{},
-respectively.
+respectively after loading @file{auctex.el} and @file{preview-latex.el}.
 
 You can always use
 

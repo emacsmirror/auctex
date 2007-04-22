@@ -309,6 +309,8 @@ and @previewlatex{} gives you a @samp{Preview} menu.
 For XEmacs, if the installation occured into a valid package directory
 (which is the default), then this should work out of the box.
 
+@cindex @file{auctex.el}
+@cindex @file{tex-site.el}
 With Emacs (or if you explicitly disabled use of the package system),
 the startup files @file{auctex.el} and @file{preview-latex.el} may
 already be in a directory of the @file{site-start.d/} variety if your

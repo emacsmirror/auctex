@@ -148,14 +148,22 @@ inserted by typing @key{"}.
 Completion support for options of some LaTeX packages was added.
 
 @item
+@cindex @file{auctex.el}
+@cindex @file{tex-site.el}
 Already in version 11.81 the way to activate @AUCTeX{} changed
 substantially.  This should now be done with @code{(load "auctex.el" nil
 t t)} instead of the former @code{(require 'tex-site)}.  Related to this
 change @file{tex-mik.el} does not load @file{tex-site.el} anymore.  That
 means if you used only @code{(require 'tex-mik)} in order to activate
 @AUCTeX{}, you have to add @code{(load "auctex.el" nil t t)} before the
-latter statement.  More detailed information can be found in the
-installation instructions.
+latter statement.
+@ifset rawfile
+More detailed information can be found in the installation instructions
+(file INSTALL).
+@end ifset
+@ifclear rawfile
+@xref{Loading the package}.
+@end ifclear
 
 @item
 Handling of verbatim constructs was consolidated across AUCTeX.  This
