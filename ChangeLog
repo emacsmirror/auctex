@@ -1,3 +1,15 @@
+2007-04-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-environment-menu): Support optional arguments
+	specified by vectors.
+
+	* style/flashcards.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/flashcards.el.
+
+	* doc/auctex.texi (Adding Environments): Document possibility to
+	specify optional arguments in `LaTeX-add-environments'.
+
 2007-04-22  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/changes.texi: Add index entries for auctex.el and
