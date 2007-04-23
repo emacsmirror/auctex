@@ -3541,9 +3541,10 @@ arguments can be provided by adding them to a list after the hook.
 For simple environments with arguments, for example defined with
 @samp{\newenvironment}, you can make @AUCTeX{} prompt for the arguments
 by giving the prompt strings in the call to
-@code{LaTeX-add-environments}.  For example, if you have defined a
-@code{loop} environment with the three arguments @var{from}, @var{to},
-and @var{step}, you can add support for them in a style file.
+@code{LaTeX-add-environments}.  (An optional argument can be indicated
+by putting the prompt string into a vector.)  For example, if you have
+defined a @code{loop} environment with the three arguments @var{from},
+@var{to}, and @var{step}, you can add support for them in a style file.
 
 @example
 %% loop.sty
