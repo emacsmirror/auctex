@@ -558,16 +558,19 @@ It may be customized with the following variables:
 	       (setq args (concat args TeX-grop TeX-grcl))
 	       (setq count (- count 1)))
 	     (LaTeX-insert-environment environment args)))
-	  ((stringp (nth 1 entry))
+	  ((or (stringp (nth 1 entry)) (vectorp (nth 1 entry)))
 	   (let ((prompts (cdr entry))
 		 (args ""))
-	     (while prompts
-	       (setq args (concat args
-				  TeX-grop
-				  (read-from-minibuffer
-				   (concat (car prompts) ": "))
-				  TeX-grcl))
-	       (setq prompts (cdr prompts)))
+	     (dolist (elt prompts)
+	       (let* ((optional (vectorp elt))
+		      (elt (if optional (elt elt 0) elt))
+		      (arg (read-string (concat (when optional "(Optional) ")
+						elt ": "))))
+		 (setq args (concat args
+				    (cond ((and optional (> (length arg) 0))
+					   (concat LaTeX-optop arg LaTeX-optcl))
+					  ((not optional)
+					   (concat TeX-grop arg TeX-grcl)))))))
 	     (LaTeX-insert-environment environment args)))
 	  (t
 	   (apply (nth 1 entry) environment (nthcdr 2 entry))))))
