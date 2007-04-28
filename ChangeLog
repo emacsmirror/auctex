@@ -4,6 +4,12 @@
 	instead of setting `jit-lock-context-unfontify-pos'.
 	(font-latex-command-with-args-default-spec): New variable.
 	(font-latex-match-command-with-arguments): Use it.
+	(font-latex-built-in-keyword-classes): Correct some syntax
+	specifiers.
+	(font-latex-jit-lock-force-redisplay): New function.
+	(font-latex-fontify-region): Use it.
+	(font-latex-doctex-preprocessor-face): Make DocStrip guards stand
+	out on Emacs 21.
 
 2007-04-23  Ralf Angeli  <angeli@caeruleus.net>
 
