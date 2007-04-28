@@ -1121,16 +1121,16 @@ If optional argument is non-nil, print status messages."
   (let ((extend-list (delq nil (mapcar (lambda (fun) (funcall fun beg end))
 				       font-latex-extend-region-functions))))
     (when extend-list
-      (setq beg (apply 'min extend-list))
-      ;; Stolen from `jit-lock-after-change'.  Without this stanza only
-      ;; the line in which a change happened will be refontified.  The
-      ;; rest to which the region was extended will only be refontified
-      ;; upon redisplay.  Unfortunately refontification is not done as
-      ;; fast as if `jit-lock-after-change' was advised.
-      (when (and (boundp 'jit-lock-context-unfontify-pos)
-		 jit-lock-context-unfontify-pos)
-	(setq jit-lock-context-unfontify-pos
-	      (min jit-lock-context-unfontify-pos beg))))
+      (let ((orig-beg beg))
+	(setq beg (apply 'min extend-list))
+	;; Stolen from `jit-lock-fontify-now' (2007-04-27) and
+	;; adapted.  Without this stanza only the line in which a
+	;; change happened will refontified.  The rest will only be
+	;; refontified upon redisplay.
+	(run-with-timer 0 nil (lambda (buf start end)
+				(with-current-buffer buf
+				  (put-text-property start end 'fontified t)))
+			(current-buffer) beg orig-beg)))
     (font-lock-default-fontify-region beg end loudly)))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
