@@ -2,6 +2,8 @@
 
 	* font-latex.el (font-latex-fontify-region): Force redisplay
 	instead of setting `jit-lock-context-unfontify-pos'.
+	(font-latex-command-with-args-default-spec): New variable.
+	(font-latex-match-command-with-arguments): Use it.
 
 2007-04-23  Ralf Angeli  <angeli@caeruleus.net>
 
