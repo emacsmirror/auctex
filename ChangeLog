@@ -1,3 +1,8 @@
+2007-04-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-fontify-region): Force redisplay
+	instead of setting `jit-lock-context-unfontify-pos'.
+
 2007-04-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-environment-menu): Support optional arguments
