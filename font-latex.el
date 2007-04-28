@@ -1306,6 +1306,10 @@ XEmacs does not do this at the time of this writing."
   "Return face at position POS in `font-latex-matched-faces'."
   (nth pos font-latex-matched-faces))
 
+(defvar font-latex-command-with-args-default-spec "* [] {}"
+  "Default specifier for keywords without syntax description.
+Set this to nil if verification of command syntax is unwanted.")
+
 (defun font-latex-match-command-with-arguments (regexp keywords face limit)
   "Search for regexp command KEYWORDS[opt]{arg} before LIMIT.
 Returns nil if none of KEYWORDS is found."
@@ -1318,7 +1322,8 @@ Returns nil if none of KEYWORDS is found."
 	(let* ((beg (match-beginning 0))
 	       end		   ; Used for multiline text property.
 	       match-data
-	       (spec-string (cadr (assoc (match-string 1) keywords)))
+	       (spec-string (or (cadr (assoc (match-string 1) keywords))
+				font-latex-command-with-args-default-spec))
 	       (spec-list (when spec-string
 			    (save-match-data
 			      ;; Create a list from space-separated specs.
