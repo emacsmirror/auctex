@@ -284,7 +284,7 @@ variable `font-latex-fontify-sectioning'." num)
       "appendix" "displaybreak" "allowdisplaybreaks" "include")
      'font-latex-warning-face 1 noarg)
     ("variable"
-     (("setlength" "{} {}") ("settowidth" "{} {}") ("setcounter" "{} {}")
+     (("setlength" "{}|\\ {}") ("settowidth" "{} {}") ("setcounter" "{} {}")
       ("addtolength" "{} {}") ("addtocounter" "{} {}"))
      'font-lock-variable-name-face 2 command)
     ("reference"
@@ -301,7 +301,7 @@ variable `font-latex-fontify-sectioning'." num)
       ("newcommand" "* {}|\\ [] [] {}") ("newlength" "{}")
       ("newtheorem" "{} [] {} []")
       ("newcounter" "{} []") ("renewenvironment" "* {} [] {} {}")
-      ("renewcommand" "* {} [] [] {}") ("renewtheorem" "{} [] {} []")
+      ("renewcommand" "* {}|\\ [] [] {}") ("renewtheorem" "{} [] {} []")
       ("usepackage" "[] {}") ("fbox" "{}") ("mbox" "{}") ("sbox" "{}")
       ("vspace" "* {}") ("hspace" "* {}") ("thinspace" "") ("negthinspace" "")
       ;; XXX: Should macros without arguments rather be listed in a
@@ -1115,6 +1115,26 @@ backwards to the minimum over their return values.")
     ;; Set the defaults.
     (setq font-lock-defaults defaults)))
 
+(defun font-latex-jit-lock-force-redisplay (buf start end)
+  "Compatibility for Emacsen not offering `jit-lock-force-redisplay'."
+  (if (fboundp 'jit-lock-force-redisplay)
+      (jit-lock-force-redisplay buf start end)
+    ;; The following block is an expansion of `jit-lock-force-redisplay'
+    ;; and involved macros taken from CVS Emacs on 2007-04-28.
+    (with-current-buffer buf
+      (let ((modified (buffer-modified-p)))
+	(unwind-protect
+	    (let ((buffer-undo-list t)
+		  (inhibit-read-only t)
+		  (inhibit-point-motion-hooks t)
+		  (inhibit-modification-hooks t)
+		  deactivate-mark
+		  buffer-file-name
+		  buffer-file-truename)
+	      (put-text-property start end 'fontified t))
+	  (unless modified
+	    (restore-buffer-modified-p nil)))))))
+
 (defun font-latex-fontify-region (beg end &optional loudly)
   "Fontify region from BEG to END.
 If optional argument is non-nil, print status messages."
@@ -1123,14 +1143,13 @@ If optional argument is non-nil, print status messages."
     (when extend-list
       (let ((orig-beg beg))
 	(setq beg (apply 'min extend-list))
-	;; Stolen from `jit-lock-fontify-now' (2007-04-27) and
-	;; adapted.  Without this stanza only the line in which a
-	;; change happened will refontified.  The rest will only be
-	;; refontified upon redisplay.
-	(run-with-timer 0 nil (lambda (buf start end)
-				(with-current-buffer buf
-				  (put-text-property start end 'fontified t)))
-			(current-buffer) beg orig-beg)))
+	(when (featurep 'jit-lock)
+	  ;; Stolen from `jit-lock-fontify-now' (2007-04-27) and
+	  ;; adapted.  Without this stanza only the line in which a
+	  ;; change happened will refontified.  The rest will only be
+	  ;; refontified upon redisplay.
+	  (run-with-timer 0 nil 'font-latex-jit-lock-force-redisplay
+			  (current-buffer) beg orig-beg))))
     (font-lock-default-fontify-region beg end loudly)))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
@@ -1816,6 +1835,8 @@ END marks boundaries for searching for quotation ends."
 
 (defface font-latex-doctex-preprocessor-face
   '((t (:inherit (font-latex-doctex-documentation-face
+		  font-lock-builtin-face ; Emacs 21 does not provide
+					 ; the preprocessor face.
 		  font-lock-preprocessor-face))))
   "Face used to highlight preprocessor directives in docTeX mode."
   :group 'font-latex-highlighting-faces)
