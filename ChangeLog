@@ -1,3 +1,7 @@
+2007-04-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-parse-error): Match any closing parenthesis.
+
 2007-04-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-fontify-region): Force redisplay
