@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.280 2007-02-09 07:15:48 ataka Exp $
+;; $Id: preview.el,v 1.281 2007-04-29 14:46:30 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2674,7 +2674,7 @@ call, and in its CDR the final stuff for the placement hook."
 \\(?:/+\\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
 \\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
 )*\\(?: \\|\r?$\\)\\|\
-)+\\([ >]\\|\r?$\\)\\|\
+\\()+\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
 ^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
@@ -3512,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.280 $"))
+	(rev "$Revision: 1.281 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3526,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2007-02-09 07:15:48 $"))
+    (let ((date "$Date: 2007-04-29 14:46:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
