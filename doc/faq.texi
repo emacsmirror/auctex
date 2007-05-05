@@ -86,6 +86,19 @@ found, if at all, after releases.  No experiences or recommendations can
 be given for beta or developer versions of XEmacs.
 
 @item
+What should I do when @code{./configure} does not find programs like latex?
+
+This is problem often encountered on Windows.  Make sure that the
+@env{PATH} environment variable includes the directories containing the
+relevant programs, as described in
+@ifset rawfile
+the file @file{INSTALL.windows}
+@end ifset
+@ifclear rawfile
+@ref{Installation under MS Windows,,,auctex,the @AUCTeX{} manual}.
+@end ifclear
+
+@item
 Why doesn't the completion, style file, or multi-file stuff work?
 
 It must be enabled first, insert this in your init file:
