@@ -1,3 +1,19 @@
+2007-05-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/beamer.el ("beamer"): Use new syntax in format specifier
+	for frametitle macro.
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Use new
+	syntax for format specifiers.
+	(font-latex-user-keyword-classes): Describe new syntax for format
+	specifiers.
+	(font-latex-command-with-args-default-spec): Use new syntax for
+	format specifiers.
+	(font-latex-command-with-args-opt-arg-delims): New variable.
+	(font-latex-match-command-with-arguments): Use it.  Change format
+	specifier parsing to support new syntax.
+	(font-latex-match-mandatory-arg): Remove.
+
 2007-05-05  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/faq.texi: Add entry about programs not being found by
