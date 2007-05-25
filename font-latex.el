@@ -1405,7 +1405,7 @@ Returns nil if none of KEYWORDS is found."
 		      (when alternative (pop spec-list)))
 		  (unless alternative
 		    (setq syntax-error t)
-		    (when (= match-beg (point))
+		    (when (and match-beg (= match-beg (point)))
 		      (setq error-indicator-pos match-beg))
 		    (throw 'break nil))))
 	       ;; Optional arguments: [...] and others
