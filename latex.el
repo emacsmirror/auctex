@@ -5227,7 +5227,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
+;; This is now done in style/pstricks.el because it prevents other
+;; pstricks style files from being loaded.
+;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
