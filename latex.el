@@ -5226,6 +5226,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   ;; parsing properly.  -- dak
   (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on)
+  (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off)
 ;; This is now done in style/pstricks.el because it prevents other
 ;; pstricks style files from being loaded.
