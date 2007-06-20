@@ -1,3 +1,8 @@
+2007-06-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-common-initialization): Turn TeX PDF mode on
+	when pst-pdf.sty is used.
+
 2007-06-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-common-initialization): Do not add pstricks to
