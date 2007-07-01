@@ -1,5 +1,14 @@
 2007-07-01  Ralf Angeli  <angeli@caeruleus.net>
 
+	* style/scrbase.el: Change copyright notice of Mark Trettin to FSF
+	to reflect the assignment.  Add licence info to header.
+
+	* style/subfigure.el: Change copyright notice of Reiner Steib to
+	FSF to reflect the assignment.  Add licence info to header.
+
+	* style/captcont.el: Change copyright notice of Reiner Steib to
+	FSF to reflect the assignment.  Add licence info to header.
+
 	* latex.el (LaTeX-auto-minimal-regexp-list): Match optional
 	arguments of document style or class macro even if they contain
 	periods, e.g. in case of "BCOR8.25mm" in KOMA Script classes.  Get
