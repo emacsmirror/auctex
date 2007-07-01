@@ -4598,13 +4598,14 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
-If current math mode was not entered with a dollar, refuse to insert one.
-Show matching dollar sign if this dollar sign ends the TeX math mode.
-Ensure double dollar signs match up correctly by inserting extra
-dollar signs when needed.
+If current math mode was not entered with a dollar, refuse to
+insert one.  Show matching dollar sign if this dollar sign ends
+the TeX math mode and `blink-matching-paren' is non-nil.  Ensure
+double dollar signs match up correctly by inserting extra dollar
+signs when needed.
 
-With raw \\[universal-argument] prefix, insert exactly one dollar sign.
-With optional ARG, insert that many dollar signs."
+With raw \\[universal-argument] prefix, insert exactly one dollar
+sign.  With optional ARG, insert that many dollar signs."
   (interactive "P")
   (cond
    ((and arg (listp arg))
@@ -4625,8 +4626,10 @@ With optional ARG, insert that many dollar signs."
 	  (if TeX-math-close-double-dollar
 	      (insert (car texmathp-why))
 	    (insert "$"))
-	  (when (or (string= (car texmathp-why) "$")
-		    (zerop (mod (save-excursion (skip-chars-backward "$")) 2)))
+	  (when (and blink-matching-paren
+		     (or (string= (car texmathp-why) "$")
+			 (zerop (mod (save-excursion
+				       (skip-chars-backward "$")) 2))))
 	    (save-excursion
 	      (goto-char (cdr texmathp-why))
 	      (if (pos-visible-in-window-p)
