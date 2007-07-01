@@ -1,5 +1,10 @@
 2007-07-01  Ralf Angeli  <angeli@caeruleus.net>
 
+	* latex.el (LaTeX-auto-minimal-regexp-list): Match optional
+	arguments of document style or class macro even if they contain
+	periods, e.g. in case of "BCOR8.25mm" in KOMA Script classes.  Get
+	rid of superfluous escapes in complemented character alternatives.
+
 	* tex.el (TeX-insert-dollar): Show matching start only if
 	`blink-matching-paren' is non-nil.
 
