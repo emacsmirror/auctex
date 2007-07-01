@@ -1,5 +1,11 @@
 2007-07-01  Ralf Angeli  <angeli@caeruleus.net>
 
+	* style/verbatim.el: Add copyright notice and licence info.
+
+	* style/paralist.el: Add copyright notice and licence info.
+
+	* style/booktabs.el: Add copyright notice and licence info.
+
 	* style/scrbase.el: Change copyright notice of Mark Trettin to FSF
 	to reflect the assignment.  Add licence info to header.
 
