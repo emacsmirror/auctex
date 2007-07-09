@@ -4091,6 +4091,8 @@ not move point to a position less than this value."
   "Skip forward over N comments.
 Just like `forward-comment' but only for positive N
 and can use regexps instead of syntax."
+  (when (fboundp 'comment-normalize-vars)
+    (comment-normalize-vars))
   (if (fboundp 'comment-forward)
       (comment-forward n)
     (setq n (or n 1))
