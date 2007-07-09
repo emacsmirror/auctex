@@ -1,3 +1,8 @@
+2007-07-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-comment-forward): Call `comment-normalize-vars' if
+	available.
+
 2007-07-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/verbatim.el: Add copyright notice and licence info.
