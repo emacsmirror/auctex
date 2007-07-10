@@ -1,3 +1,7 @@
+2007-07-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-format-filter): Remove line breaks at column 79.
+
 2007-07-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-comment-forward): Call `comment-normalize-vars' if
