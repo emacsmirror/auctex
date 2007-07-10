@@ -1051,6 +1051,18 @@ command."
 	(goto-char pt)
 	(insert-before-markers string)
 	(set-marker (process-mark process) (point))
+	;; Remove line breaks at column 79
+	(while (> (point) pt)
+	  (end-of-line 0)
+	  (when (and (= (current-column) 79)
+		     ;; Heuristic: Don't delete the linebreak if there
+		     ;; is an empty line after the current one or
+		     ;; point is located after a period.
+		     (not (eq (char-after (1+ (point))) ?\n))
+		     (not (eq (char-before) ?.)))
+	    (delete-char 1)))
+	(goto-char (marker-position (process-mark process)))
+	;; Determine current page
 	(while (and pt
 		    (skip-chars-backward "^]" pt)
 		    (> (point) pt))
