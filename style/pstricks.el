@@ -37,6 +37,7 @@
 (TeX-add-style-hook
  "pstricks"
  (lambda ()
-   (TeX-PDF-mode-off)))
+   (unless (member "pst-pdf" TeX-active-styles)
+     (TeX-PDF-mode-off))))
 
 ;;; pstricks.el ends here
