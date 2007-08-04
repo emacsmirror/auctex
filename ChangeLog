@@ -1,3 +1,8 @@
+2007-08-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-run-style-hooks): Set `default-directory' to the
+	directory of the master file.
+
 2007-07-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/pstricks.el ("pstricks"): Do not disable TeX PDF mode if
