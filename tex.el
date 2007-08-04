@@ -1844,9 +1844,11 @@ active.")
 	      (let ((default-directory default-directory))
 		;; Complex path.
 		(when (string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style)
-		  ;; Adjust `default-directory' to the directory of the style.
-		  (setq default-directory (expand-file-name
-					   (file-name-directory style))
+		  ;; Set `default-directory' to directory of master
+		  ;; file since style files not stored in the fixed
+		  ;; style directories are usually located there.
+		  (setq default-directory (save-match-data
+					    (TeX-master-directory))
 			style (substring style
 					 (match-beginning 2) (match-end 2))))
 		(mapcar 'funcall
