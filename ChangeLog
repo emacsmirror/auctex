@@ -1,3 +1,8 @@
+2007-08-08  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-TeX-sentinel-check): Shave off quotation marks
+	from file name if present.
+
 2007-08-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-run-style-hooks): Set `default-directory' to the
