@@ -836,10 +836,13 @@ NAME is the name of the process.")
 Return nil ifs no errors were found."
   (save-excursion
     (goto-char (point-max))
-    (if (re-search-backward "^Output written on \\(.*\\) (\\([0-9]+\\) page"
+    (if (re-search-backward "^Output written on \\(.*?\\) (\\([0-9]+\\) page"
 			    nil t)
 	(let ((output-file (TeX-match-buffer 1)))
 	  (setq TeX-current-page (concat "{" (TeX-match-buffer 2) "}"))
+	  ;; Shave off quotation marks if present.
+	  (when (string-match "\\`\"\\(.*\\)\"\\'" output-file)
+	    (setq output-file (match-string 1 output-file)))
 	  (setq TeX-output-extension
 		(if (string-match "\\.\\([^.]*\\)$" output-file)
 		    (match-string 1 output-file)
