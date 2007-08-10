@@ -4933,7 +4933,9 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		(lambda ()
 		  (when (condition-case nil
 			    (save-window-excursion
-			      (info "latex" (generate-new-buffer-name "*info*"))
+			      (let ((buf (generate-new-buffer-name "*info*")))
+				(info "latex" buf)
+				(kill-buffer buf))
 			      t)
 			  (error nil))
 		    (mapcar (lambda (x)
@@ -4947,8 +4949,9 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		  (lambda ()
 		    (when (condition-case nil
 			      (save-window-excursion
-				(info "texinfo"
-				      (generate-new-buffer-name "*info*"))
+				(let ((buf (generate-new-buffer-name "*info*")))
+				  (info "texinfo" buf)
+				  (kill-buffer buf))
 				t)
 			    (error nil))
 		      (mapcar (lambda (x)
