@@ -1,3 +1,8 @@
+2007-08-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-doc-backend-alist): Delete buffers used for checking
+	availability of info files.
+
 2007-08-08  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-TeX-sentinel-check): Shave off quotation marks
