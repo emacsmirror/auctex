@@ -106,11 +106,11 @@ DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
 
-all: lisp
+all: lisp docs
 	$(DESCEND)
 
 .PHONY: all lisp info dvi some install install-el install-lisp \
-	install-docs install-auto \
+	docs install-docs install-auto \
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball rpm-packages full-release tar-ball-clean \
@@ -119,10 +119,13 @@ all: lisp
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
 
-info:	doc/Makefile
+docs:
+	cd doc ; $(MAKE) all
+
+info:
 	cd doc ; $(MAKE) info
 
-dvi:	doc/Makefile
+dvi:
 	cd doc ; $(MAKE) dvi
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
@@ -143,7 +146,7 @@ configure: configure.ac aclocal.m4
 Makefile: Makefile.in config.status
 	./config.status
 
-doc/Makefile: doc/Makefile.in config.status
+doc/Makefile: doc/Makefile.in config.status ChangeLog
 	./config.status
 
 config.status: configure
@@ -314,7 +317,9 @@ tar-ball:	doc/Makefile
 	$(CP) auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)
 # The following files aren't produced in auctex-$(TAG) since they
 # are not in the tarball and should not become part of the patch target.
+	$(CP) auctex-$(TAG)/doc/version.texi doc/version.texi
 	cd doc && $(MAKE) extradist
+	rm -f doc/version.texi
 	$(CP) doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	$(CP) ChangeLog $(FTPDIR)
 
