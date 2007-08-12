@@ -193,34 +193,45 @@ install-el:
 	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
 	fi
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
-	for x in $(AUCSRC) $(MULESRC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC); do \
+	  echo '$(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	done
+	@for x in $(AUCSRC) $(MULESRC); do \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(styledir)
 	$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(styledir)
-	for x in $(STYLESRC) ; do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(styledir)' ; \
+	@: $(MAKE) ; for x in $(STYLESRC) ; do \
+	  echo '$(INSTALL_DATA)' $$x '$(DESTDIR)$(styledir)' ; \
+	done;
+	@for x in $(STYLESRC) ; do \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(styledir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(autodir)
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp: some install-el
-	for x in $(AUCSRC) $(MULESRC); do \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
+	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC); do \
+	  echo '$(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
+	done
+	@for x in $(AUCSRC) $(MULESRC); do \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
-	done;
-	for x in $(STYLESRC) ; do \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
+	done
+	@: $(MAKE) ; for x in $(STYLESRC) ; do \
+	  echo '$(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
+	done
+	@for x in $(STYLESRC) ; do \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(styledir) ; \
-	done;
+	done
 
 install-images:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
-	set -x; for x in images/*.xpm ; do \
+	@: $(MAKE) ; for x in images/*.xpm ; do \
+	  echo '$(INSTALL_DATA)' $${x} '$(DESTDIR)$(packagedatadir)/images' ; \
+	done
+	@for x in images/*.xpm ; do \
 	  $(INSTALL_DATA) $${x} $(DESTDIR)$(packagedatadir)/images ; \
-	done;
+	done
 
 install-docs:	doc/Makefile
 	cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-auctex

@@ -1,3 +1,12 @@
+2007-08-13  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (all): make new target "docs" as well.  Descend for
+	docs, info and dvi.
+	Before regenerating extradist documentation, copy version info
+	from checked-out version (can we do that saner?).
+	On various targets, replace set -x with a somewhat more elaborate
+	version that echoes more for make -n.
+
 2007-08-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc-backend-alist): Delete buffers used for checking
