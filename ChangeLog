@@ -1,3 +1,7 @@
+2007-08-14  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-insert-backslash): put delete-selection property on.
+
 2007-08-13  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (all): make new target "docs" as well.  Descend for

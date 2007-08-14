@@ -5109,6 +5109,7 @@ NAME may be a package, a command, or a document."
 (put 'TeX-newline 'delete-selection t)
 (put 'TeX-insert-dollar 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
+(put 'TeX-insert-backslash 'delete-selection t)
 
 
 (provide 'tex)
