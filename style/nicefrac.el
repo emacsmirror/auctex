@@ -37,8 +37,7 @@
    ;; enable fontifying
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-textual-keywords-local "nicefrac")
-     (font-latex-match-textual-make))))
+     (font-lock-add-keywords '(("nicefrac" "[{{")) 'textual))))
 
 (defvar LaTeX-nicefrac-package-options '("nice" "ugly")
   "Package options for the nicefrac package.")
