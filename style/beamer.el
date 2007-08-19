@@ -114,12 +114,7 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-slide-title-keywords-local
-		  '("frametitle" "<[{"))
-     (font-latex-match-slide-title-make)
-     ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults))))
+     (font-latex-add-keywords '(("frametitle" "<[{")) 'slide-title))))
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
   "Prompt for overlay specification." 
