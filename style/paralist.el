@@ -87,12 +87,10 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (setq font-latex-match-variable-keywords-local
-	   (append font-latex-match-variable-keywords-local
-		   '("setdefaultitem"
-		     "setdefaultenum"
-		     "setdefaultleftmargin")))
-     (font-latex-match-variable-make))))
+     (font-latex-add-keywords '(("setdefaultitem" "{{{{")
+				("setdefaultenum" "{{{{")
+				("setdefaultleftmargin" "{{{{{{"))
+			      'variable))))
 
 (defvar LaTeX-paralist-package-options '("newitem" "olditem" "newenum"
 					 "oldenum" "alwaysadjust"
