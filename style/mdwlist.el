@@ -52,10 +52,10 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (setq font-latex-match-function-keywords-local
-	   (append font-latex-match-function-keywords-local
-		   '("makecompactlist" "suspend" "resume")))
-     (font-latex-match-function-make))))
+     (font-latex-add-keywords '(("makecompactlist" "{{")
+				("suspend" "[{")
+				("resume" "[{["))
+			      'function))))
 
 (defvar LaTeX-mdwlist-package-options nil
   "Package options for the mdwlist package.")
