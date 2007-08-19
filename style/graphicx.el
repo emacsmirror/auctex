@@ -45,18 +45,12 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-textual-keywords-local "reflectbox")
-     ;; Fontification of optional and mandantory arguments of \resizebox,
-     ;; \rotatebox and \scalebox should be improved.
-     ;; (add-to-list 'font-latex-match-textual-keywords-local "resizebox")
-     ;; (add-to-list 'font-latex-match-textual-keywords-local "rotatebox")
-     ;; (add-to-list 'font-latex-match-textual-keywords-local "scalebox")
-     (add-to-list 'font-latex-match-reference-keywords-local "includegraphics")
-     ;; Tell font-lock about the update.
-     (font-latex-match-textual-make)
-     (font-latex-match-reference-make)
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults))))
+     (font-latex-add-keywords '(("reflectbox" "{")
+				("resizebox" "*{{{")
+				("rotatebox" "[{{")
+				("scalebox" "{[{"))
+			      'textual)
+     (font-latex-add-keywords '(("includegraphics" "*[[{")) 'reference))))
 
 (defun LaTeX-includegraphics-extensions (&optional list)
   "Return appropriate extensions for input files to \\includegraphics."
