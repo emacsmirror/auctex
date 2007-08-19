@@ -1355,7 +1355,8 @@ XEmacs does not do this at the time of this writing."
   "Default specifier for keywords without syntax description.
 Set this to nil if verification of command syntax is unwanted.")
 
-(defvar font-latex-command-with-args-opt-arg-delims '((?[ . ?]) (?< . ?>))
+(defvar font-latex-command-with-args-opt-arg-delims
+  '((?[ . ?]) (?< . ?>) (?\( . ?\)))
   "List character pairs used as delimiters for optional arguments.")
 
 (defun font-latex-match-command-with-arguments (regexp keywords face limit)
