@@ -60,18 +60,16 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
-     (font-latex-match-function-make)
-     (add-to-list 'font-latex-match-reference-keywords-local "lstinputlisting")
-     (font-latex-match-reference-make)
-     (add-to-list 'font-latex-match-textual-keywords-local "lstinline")	; Better
-									; idea?
-     (add-to-list 'font-latex-match-textual-keywords-local "lstlistoflistings")
-     (font-latex-match-textual-make)
-     (add-to-list 'font-latex-match-variable-keywords-local "lstalias")
-     (add-to-list 'font-latex-match-variable-keywords-local "lstdefinestyle")
-     (add-to-list 'font-latex-match-variable-keywords-local "lstset")
-     (font-latex-match-variable-make)
+     (font-latex-add-keywords '(("lstnewenvironment" "{[[{{")) 'function)
+     (font-latex-add-keywords '(("lstinputlisting" "[{")) 'reference)
+     (font-latex-add-keywords '(("lstinline" "[{") ; The second argument should
+						   ; actually be verbatim.
+				("lstlistoflistings" ""))
+			      'textual)
+     (font-latex-add-keywords '(("lstalias" "{{")
+				("lstdefinestyle" "{{")
+				("lstset" "{"))
+			      'variable)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
