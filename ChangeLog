@@ -1,3 +1,27 @@
+2007-08-19  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/paralist.el ("paralist"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/natbib.el ("natbib"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/mdwlist.el ("mdwlist"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/graphicx.el ("graphicx"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/fancyref.el ("fancyref"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/captcont.el ("captcont"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/beamer.el ("beamer"): Use `font-latex-add-keywords'.
+
+	* font-latex.el (font-latex-add-keywords): New function.
+
 2007-08-14  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-insert-backslash): put delete-selection property on.
