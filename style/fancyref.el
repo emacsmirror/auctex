@@ -67,12 +67,10 @@
 	      ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"
 	       1 LaTeX-fancyref-formats "}"))
 	    TeX-complete-list))
-     ;; font-lock:
+     ;; Fontification
      (when (and (featurep 'font-latex)
 		(eq TeX-install-font-lock 'font-latex-setup))
-       (add-to-list 'font-latex-match-reference-keywords-local "fref")
-       (add-to-list 'font-latex-match-reference-keywords-local "Fref")
-       (font-latex-match-reference-make))))
+       (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference))))
 
 ;; The following list keeps a list of available format names
 ;; Note that this list is only updated when a format is used, not
