@@ -59,16 +59,14 @@ PROMPT is the value of the prompt to be shown."
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (setq font-latex-match-function-keywords-local
-	   (append font-latex-match-function-keywords-local
-		   '("toprule"
-		     "midrule"
-		     "bottomrule"
-		     "cmidrule"
-		     "addlinespace"
-		     "morecmidrule"
-		     "specialrule")))
-     (font-latex-match-function-make))))
+     (font-latex-add-keywords '(("toprule" "[")
+				("midrule" "[")
+				("bottomrule" "[")
+				("cmidrule" "[({")
+				("addlinespace" "[")
+				("morecmidrules" "")
+				("specialrule" "{{{"))
+			      'function))))
 
 (defvar LaTeX-booktabs-package-options nil
   "Package options for the booktabs package.")			
