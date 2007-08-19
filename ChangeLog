@@ -1,5 +1,26 @@
 2007-08-19  Ralf Angeli  <angeli@caeruleus.net>
 
+	* style/units.el ("units"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/nicefrac.el ("nicefrac"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/listings.el ("listings"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/flashcards.el ("flashcards"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/comment.el ("comment"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/booktabs.el ("booktabs"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/babel.el ("babel"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
 	* style/paralist.el ("paralist"): Use `font-latex-add-keywords'.
 	Add syntax information.
 
@@ -21,6 +42,7 @@
 	* style/beamer.el ("beamer"): Use `font-latex-add-keywords'.
 
 	* font-latex.el (font-latex-add-keywords): New function.
+	(font-latex-command-with-args-opt-arg-delims): Add parentheses.
 
 2007-08-14  David Kastrup  <dak@gnu.org>
 
