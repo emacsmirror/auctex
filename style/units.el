@@ -38,12 +38,10 @@
    ;; units.sty requires the package nicefrac.sty, thus we enable the
    ;; macros of nicefrac.sty, too
    (TeX-run-style-hooks "nicefrac")
-   ;; enable fontifying
+   ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-textual-keywords-local "unit")
-     (add-to-list 'font-latex-match-textual-keywords-local "unitfrac")
-     (font-latex-match-textual-make))))
+     (font-latex-add-keywords '(("unit" "[{") ("unitfrac" "[{{")) 'textual))))
 
 (defvar LaTeX-units-package-options '("tight" "loose")
   "Package options for the units package.")
