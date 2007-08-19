@@ -50,13 +50,11 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (mapcar (lambda (keyword)
-	       (add-to-list 'font-latex-match-variable-keywords-local keyword))
-	     '("cardfrontstyle" "cardfrontfoot" "cardbackstyle"
-	       "cardfrontheadstyle" "cardfrontfootstyle"))
-     (font-latex-match-variable-make)
-     ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults))))
+     (font-latex-add-keywords '(("cardfrontstyle" "[{")
+				("cardfrontfoot" "{")
+				("cardbackstyle" "{")
+				("cardfrontheadstyle" "[{")
+				("cardfrontfootstyle" "[{"))
+			      'variable))))
 
 ;;; flashcards.el ends here
