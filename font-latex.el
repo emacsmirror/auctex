@@ -341,7 +341,7 @@ variable `font-latex-fontify-sectioning'." num)
      2 command)
     ("sectioning-5"
      (("paragraph" "*[{") ("subparagraph" "*[{")
-      ("subsubparagraph" "* [] {}"))
+      ("subsubparagraph" "*[{"))
      (if (eq font-latex-fontify-sectioning 'color)
 	 'font-lock-type-face
        'font-latex-sectioning-5-face)
