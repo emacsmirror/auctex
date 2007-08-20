@@ -59,25 +59,21 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-reference-keywords-local "path")
-     (add-to-list 'font-latex-match-reference-keywords-local "url")
-     (font-latex-match-reference-make)
-     (mapcar (lambda (keyword)
-	       (add-to-list 'font-latex-match-variable-keywords-local keyword))
-	     '("Url"
-	       "UrlBigBreakPenalty"
-	       "UrlBigBreaks"
-	       "UrlBreakPenalty"
-	       "UrlBreaks"
-	       "UrlFont"
-	       "UrlLeft"
-	       "UrlNoBreaks"
-	       "UrlOrds"
-	       "UrlRight"
-	       "UrlSpecials"
-	       "urldef"
-	       "urlstyle"))
-     (font-latex-match-variable-make)
+     (font-latex-add-keywords '(("path" "{") ("url" "{")) 'reference)
+     (font-latex-add-keywords '(("Url" "")
+				("UrlBigBreakPenalty" "")
+				("UrlBigBreaks" "")
+				("UrlBreakPenalty" "")
+				("UrlBreaks" "")
+				("UrlFont" "")
+				("UrlLeft" "")
+				("UrlNoBreaks" "")
+				("UrlOrds" "")
+				("UrlRight" "")
+				("UrlSpecials" "")
+				("urldef" "")
+				("urlstyle" "{"))
+			      'variable)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
