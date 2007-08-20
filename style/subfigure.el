@@ -45,15 +45,15 @@
 	  '(("\\\\subref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 	    ("\\\\Subref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
 	  TeX-complete-list))
-   ;; font-lock:
+   ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-textual-keywords-local "subfigure")
-     (add-to-list 'font-latex-match-textual-keywords-local "subtable")
-     (font-latex-match-textual-make)
-     (add-to-list 'font-latex-match-reference-keywords-local "Subref")
-     (add-to-list 'font-latex-match-reference-keywords-local "subref")
-     (font-latex-match-reference-make))))
+     (font-latex-add-keywords '(("subfigure" "[[{")
+				("subtable" "[[{"))
+			      'textual)
+     (font-latex-add-keywords '(("Subref" "{")
+				("subref" "{"))
+			      'reference))))
 
 (defvar LaTeX-subfigure-package-options '("normal" "hang" "center"
 					  "centerlast" "nooneline"
