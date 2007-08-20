@@ -1,3 +1,20 @@
+2007-08-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/url.el ("url"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/subfigure.el ("subfigure"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/csquotes.el ("csquotes"): Update for version 3.7.  Use
+	`font-latex-add-keywords'.  Add syntax information.
+
+	* style/MinionPro.el ("MinionPro"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Correct
+	syntax spec for \subsubparagraph.
+
 2007-08-19  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/units.el ("units"): Use `font-latex-add-keywords'.
