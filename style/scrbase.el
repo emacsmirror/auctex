@@ -1,6 +1,6 @@
 ;;; scrbase.el --- AUCTeX style for the KOMA-Script bundle.
 
-;; Copyright (C) 2002, 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2004, 2005, 2007 Free Software Foundation, Inc.
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
@@ -127,71 +127,60 @@
     (LaTeX-section-list-add-locally '(("addpart" 0)
 				      ("addsec" 2)
 				      ("minisec" 7)))
-    ;; This doesn't work. Maybe it's refTeX's label insertion?
+    ;; This doesn't work. Maybe it's RefTeX's label insertion?
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label (append
 			       LaTeX-section-label
 			       '(("addpart" . nil)
 				 ("addsec" . nil)
 				 ("minisec" . nil))))
-    ;; Definitions for font-latex
+    ;; Fontification
     (when (and (featurep 'font-latex)
 	       (eq TeX-install-font-lock 'font-latex-setup))
       ;; Textual keywords
-      (setq font-latex-match-textual-keywords-local
-	    (append font-latex-match-textual-keywords-local
-		    '("captionabove"
-		      "captionbelow"
-		      "dedication"
-		      "extratitle"
-		      "lowertitleback"
-		      "maketitle"
-		      "marginline"
-		      "publishers"
-		      "subject"
-		      "sectionmark"
-		      "setbibpreamble"
-		      "setindexpreamble"
-		      "subsectionmark"
-		      "textsubscript"
-		      "titlehead"
-		      "uppertitleback")))
-      (font-latex-match-textual-make)
+      (font-latex-add-keywords '(("captionabove" "[{")
+				 ("captionbelow" "[{")
+				 ("dedication" "{")
+				 ("extratitle" "{")
+				 ("lowertitleback" "{")
+				 ("maketitle" "[")
+				 ("marginline" "{")
+				 ("publishers" "{")
+				 ("subject" "{")
+				 ("sectionmark" "{")
+				 ("setbibpreamble" "{")
+				 ("setindexpreamble" "{")
+				 ("subsectionmark" "{")
+				 ("textsubscript" "{")
+				 ("titlehead" "{")
+				 ("uppertitleback" "{"))
+			       'textual)
       ;; Function keywords
-      (setq font-latex-match-function-keywords-local
-	    (append font-latex-match-function-keywords-local
-		    '("deffootnote"
-		      "deffootnotemark"
-		      "ifpdfoutput"
-		      "ifthispageodd")))
-      (font-latex-match-function-make)
+      (font-latex-add-keywords '(("deffootnote" "[{{{")
+				 ("deffootnotemark" "{")
+				 ("ifpdfoutput" "{{")
+				 ("ifthispageodd" "{{"))
+			       'function)
       ;; Variable keywords
-      (setq font-latex-match-variable-keywords-local
-	    (append font-latex-match-variable-keywords-local
-		    '("addtokomafont"
-		      "areaset"
-		      "setcaphanging"
-		      "setcapindent"
-		      "setcapmargin"
-		      "setcapwidth"
-		      "setkomafont"
-		      "typearea"
-		      "usekomafont")))
-      (font-latex-match-variable-make)
+      (font-latex-add-keywords '(("addtokomafont" "{{")
+				 ("areaset" "[{{")
+				 ("setcaphanging" "")
+				 ("setcapindent" "{")
+				 ("setcapmargin" "*[{")
+				 ("setcapwidth" "[{")
+				 ("setkomafont" "{{")
+				 ("typearea" "[{")
+				 ("usekomafont" "{"))
+			       'variable)
       ;; Warning keywords
-      (setq font-latex-match-warning-keywords-local
-	    (append font-latex-match-warning-keywords-local
-		    '("cleardoublestandardpage"
-		      "cleardoubleplainpage"
-		      "cleardoubleemptypage")))
-      (font-latex-match-warning-make)
+      (font-latex-add-keywords '("cleardoublestandardpage"
+				 "cleardoubleplainpage"
+				 "cleardoubleemptypage")
+			       'warning)
       ;; Sectioning keywords
-      (add-to-list 'font-latex-match-sectioning-1-keywords-local "addpart")
-      (font-latex-match-sectioning-1-make)
-      (add-to-list 'font-latex-match-sectioning-2-keywords-local "addsec")
-      (font-latex-match-sectioning-2-make)
-      (add-to-list 'font-latex-match-sectioning-4-keywords-local "minisec")
-      (font-latex-match-sectioning-4-make))))
+      (font-latex-add-keywords '(("addpart" "[{")) 'sectioning-1)
+      (font-latex-add-keywords '(("addsec" "[{")) 'sectioning-2)
+      (font-latex-add-keywords '(("minisec" "[{")) 'sectioning-4))))
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."
