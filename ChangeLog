@@ -1,3 +1,23 @@
+2007-08-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/scrreprt.el: Add licence text.
+	("scrreprt"): Use `font-latex-add-keywords'.  Add syntax
+	information.
+
+	* style/scrpage2.el: Add licence text.
+	("scrpage2"): Use `font-latex-add-keywords'.  Add syntax
+	information.
+
+	* style/scrlttr2.el: Add licence text.
+	("scrlttr2"): Use `font-latex-add-keywords'.  Add syntax
+	information.
+
+	* style/scrbook.el ("scrbook"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
+	* style/scrbase.el ("scrbase"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
 2007-08-20  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/url.el ("url"): Use `font-latex-add-keywords'.
