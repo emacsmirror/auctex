@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbook.el,v 1.7 2005-06-05 18:32:07 angeli Exp $
+;; Version: $Id: scrbook.el,v 1.8 2007-08-21 20:34:15 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -38,15 +38,12 @@
     (when (and (featurep 'font-latex)
 	       (eq TeX-install-font-lock 'font-latex-setup))
       ;; Textual keywords
-      (setq font-latex-match-textual-keywords-local
-	    (append font-latex-match-textual-keywords-local
-		    '("addchap"
-		      "setpartpreamble"
-		      "setchapterpreamble"
-		      "dictum")))
-      (font-latex-match-textual-make)
+      (font-latex-add-keywords '(("addchap" "[{")
+				 ("setpartpreamble" "[[{")
+				 ("setchapterpreamble" "[[{")
+				 ("dictum" "[{"))
+			       'textual)
       ;; Sectioning keywords
-      (add-to-list 'font-latex-match-sectioning-1-keywords-local "addchap")
-      (font-latex-match-sectioning-1-make))))
+      (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1))))
 
 ;;; scrbook.el ends here
