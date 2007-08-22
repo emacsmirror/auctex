@@ -1,3 +1,8 @@
+2007-08-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/jurabib.el ("jurabib"): Use `font-latex-add-keywords'.
+	Add syntax information.
+
 2007-08-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/scrreprt.el: Add licence text.
