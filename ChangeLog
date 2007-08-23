@@ -1,3 +1,7 @@
+2007-08-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/nicefrac.el ("nicefrac"): Fix last change.
+
 2007-08-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/jurabib.el ("jurabib"): Use `font-latex-add-keywords'.
