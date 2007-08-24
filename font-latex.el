@@ -1446,7 +1446,7 @@ Returns nil if none of KEYWORDS is found."
 			error-indicator-pos match-beg)
 		  (throw 'break nil))))
 	      (setq alternative nil)))
-	  (when syntax-error
+	  (when (and syntax-error (eq major-mode 'latex-mode))
 	    ;; Add the warning face at the front of the list because
 	    ;; the matcher uses 'append and the face would otherwise
 	    ;; be overridden by the keyword face.
