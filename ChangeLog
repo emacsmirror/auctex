@@ -1,3 +1,8 @@
+2007-08-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-match-command-with-arguments): Show
+	error indicator only in LaTeX mode.
+
 2007-08-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/nicefrac.el ("nicefrac"): Fix last change.
