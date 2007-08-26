@@ -1351,7 +1351,7 @@ XEmacs does not do this at the time of this writing."
   "Return face at position POS in `font-latex-matched-faces'."
   (nth pos font-latex-matched-faces))
 
-(defvar font-latex-command-with-args-default-spec "*[{"
+(defvar font-latex-command-with-args-default-spec nil ; "*[{"
   "Default specifier for keywords without syntax description.
 Set this to nil if verification of command syntax is unwanted.")
 
