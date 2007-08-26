@@ -1,3 +1,8 @@
+2007-08-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-command-with-args-default-spec):
+	Default to nil.
+
 2007-08-24  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-command-with-arguments): Show
