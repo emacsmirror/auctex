@@ -1,3 +1,7 @@
+2007-10-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-user-keyword-classes): Doc fix.
+
 2007-08-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-command-with-args-default-spec):
