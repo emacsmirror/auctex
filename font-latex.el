@@ -626,10 +626,10 @@ The list of keywords defines which commands and declarations
 should be covered by the keyword class.  A keyword can either be
 a simple command name omitting the leading backslash or a list
 consisting of the command name and a string specifying the syntax
-of the command.  This is useful if you want to match LaTeX macros
-with arguments (see below).  In that case you should choose the
-option \"Keywords with specs\" which lets you specify the
-occurence and order of optional (\"[\") and mandatory (\"{\")
+of the command.  The latter is useful if you want to match LaTeX
+macros with arguments (see below).  In that case you should
+choose the option \"Keywords with specs\" which lets you specify
+the occurence and order of optional (\"[\") and mandatory (\"{\")
 arguments for each keyword.  For example for \"documentclass\"
 you'd use \"[{\" because the macro has one optional followed by
 one mandatory argument.  Optionally starred macros can be
