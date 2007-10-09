@@ -1,3 +1,9 @@
+2007-10-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/nomencl.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/nomencl.el.
+
 2007-10-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-user-keyword-classes): Doc fix.
