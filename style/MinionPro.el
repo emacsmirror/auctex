@@ -48,6 +48,8 @@
     '("textssc" 1)
     "sscshape"
     "swshape")
+   ;; Run style hook for amsmath which is loaded via MnSymbol
+   (TeX-run-style-hooks "amsmath")
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
