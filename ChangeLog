@@ -1,3 +1,8 @@
+2007-10-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/MinionPro.el ("MinionPro"): Run style hook for amsmath
+	which is loaded via MnSymbol.
+
 2007-10-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/nomencl.el: New file.
