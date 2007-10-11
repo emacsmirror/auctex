@@ -1728,10 +1728,14 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
   "Prompt for delimiter and text."
   (let ((del (read-quoted-char
 	      (concat "Delimiter: (default "
-		      (char-to-string LaTeX-default-verb-delimiter) ") ")))
-	(text (read-from-minibuffer "Text: ")))
+		      (char-to-string LaTeX-default-verb-delimiter) ") "))))
     (when (<= del ?\ ) (setq del LaTeX-default-verb-delimiter))
-    (insert del text del)
+    (if (TeX-active-mark)
+	(progn
+	  (insert del)
+	  (goto-char (mark))
+	  (insert del))
+      (insert del (read-from-minibuffer "Text: ") del))
     (setq LaTeX-default-verb-delimiter del)))
 
 (defun TeX-arg-pair (optional first second)
