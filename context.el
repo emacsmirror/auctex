@@ -476,7 +476,7 @@ inserted after the sectioning command."
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "removed files :" nil t)
 	 (message "sucessfully cleaned up"))
-	((re-search-forward "^ ?TeX\\(Exec\\|Util\\)" nil t) ;; strange regexp --pg
+	((re-search-forward "^[ ]?TeX\\(Exec\\|Util\\)" nil t) ;; strange regexp --pg
 	 (message (concat name ": successfully formatted "
 			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
