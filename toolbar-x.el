@@ -1099,15 +1099,15 @@ in the end of SWITCHES, which is returned."
 
 ;; look at function `image-type-available-p' for Emacs !!!!
 
-(defun toolbarx-find-image (name)
-  "Return an image object from image on NAME, a string.
-In Emacs, return a image descriptor from NAME and in XEmacs,
+(defun toolbarx-find-image (image)
+  "Return image descriptor or glyph for IMAGE.
+In Emacs, return an image descriptor for IMAGE.  In XEmacs,
 return a glyph.
 
-Usually it should NAME does not contain a directory or an
-extension.  If the extension is omitted, `xpm', `xbm' and `pbm'
-are tried.  If the directory is omitted, `toolbarx-image-path' is
-searched."
+IMAGE is string.  Usually IMAGE neither contains a directory nor
+an extension.  If the extension is omitted, `xpm', `xbm' and
+`pbm' are tried.  If the directory is omitted,
+`toolbarx-image-path' is searched."
   ;; `find-image' in Emacs 21 looks in `load-path' and `data-directory'.  In
   ;; Emacs 22, we have `image-load-path' which includes `load-path' and
   ;; `data-directory'.
@@ -1121,14 +1121,14 @@ searched."
   (let ((file))
     (dolist (i '("" ".xpm" ".xbm" ".pbm"))
       (unless file
-	(setq file (locate-library (concat name i) t toolbarx-image-path))))
+	(setq file (locate-library (concat image i) t toolbarx-image-path))))
     (if (featurep 'xemacs)
 	(and file (make-glyph file))
       (if file
 	  (create-image file)
-	(find-image `((:type xpm :file ,(concat name ".xpm"))
-		      (:type xbm :file ,(concat name ".xbm"))
-		      (:type pbm :file ,(concat name ".pbm"))))))))
+	(find-image `((:type xpm :file ,(concat image ".xpm"))
+		      (:type xbm :file ,(concat image ".xbm"))
+		      (:type pbm :file ,(concat image ".pbm"))))))))
 
 ;; next variable interfaces between parsing and display engines
 (defvar toolbarx-internal-button-switches nil

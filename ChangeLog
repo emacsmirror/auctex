@@ -1,3 +1,8 @@
+2007-10-30  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* toolbar-x.el (toolbarx-find-image): Rename argument.  Improve
+	doc string.
+
 2007-10-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (TeX-arg-verb): Honor active region.
