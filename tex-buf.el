@@ -195,8 +195,8 @@ depend on it being positive instead of the entry in `TeX-command-list'."
 
 (unless (featurep 'xemacs)
   ;; This variable is not defined in XEmacs because XEmacs' version of
-  ;; `pop-to-buffer' doesn't have the optional NORECORD argument.  In XEmacs,
-  ;; the third arg is ON-FRAME (Emacs: NORECORD), so we set it to nil.
+  ;; `pop-to-buffer' doesn't support the optional NORECORD argument.  In
+  ;; XEmacs, the third arg is ON-FRAME (Emacs: NORECORD), so we set it to nil.
   (defcustom TeX-record-buffer nil
     "Whether to record buffer names of generated TeX buffers.
 When non-nil, these buffers are put at the front of the list of
