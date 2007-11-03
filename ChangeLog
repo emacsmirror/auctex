@@ -1,3 +1,11 @@
+2007-11-03  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-buf.el (TeX-record-buffer): New variable, only in Emacs.
+	(TeX-pop-to-buffer): New function.
+	(TeX-recenter-output-buffer, TeX-background-filter)
+	(TeX-parse-TeX, TeX-parse-error, TeX-help-error): Use
+	`TeX-pop-to-buffer'.
+
 2007-10-30  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* toolbar-x.el (toolbarx-find-image): Rename argument.  Improve

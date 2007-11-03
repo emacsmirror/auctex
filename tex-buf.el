@@ -193,6 +193,42 @@ depend on it being positive instead of the entry in `TeX-command-list'."
 	(TeX-command-region-end (point-max)))
     (TeX-command-region override-confirm)))
 
+(unless (featurep 'xemacs)
+  ;; This variable is not defined in XEmacs because XEmacs' version of
+  ;; `pop-to-buffer' doesn't have the optional NORECORD argument.
+  (defcustom TeX-record-buffer nil
+    "Whether to record buffer names of generated TeX buffers.
+When non-nil, these buffers are put at the front of the list of
+recently selected ones."
+    :group 'TeX-command
+    :type 'boolean))
+
+(defun TeX-pop-to-buffer (buffer &optional other-window norecord)
+  "Compatibility wrapper for `pop-to-buffer'.
+
+Select buffer BUFFER in some window, preferably a different one.
+BUFFER may be a buffer, a string (a buffer name), or nil.
+If BUFFER is a string which is not the name of an existing buffer,
+then this function creates a buffer with that name.
+If BUFFER is nil, then it chooses some other buffer.
+If `pop-up-windows' is non-nil, windows can be split to do this.
+If optional second arg OTHER-WINDOW is non-nil, insist on finding another
+window even if BUFFER is already visible in the selected window,
+and ignore `same-window-regexps' and `same-window-buffer-names'.
+This function returns the buffer it switched to.
+This uses the function `display-buffer' as a subroutine; see the documentation
+of `display-buffer' for additional customization information.
+
+Optional third arg NORECORD non-nil means do not put this buffer
+at the front of the list of recently selected ones.
+
+NORECORD is ignored in XEmacs."
+  ;; Make sure not to use third arg in XEmacs.  In XEmacs, the third arg is
+  ;; ON-FRAME (Emacs: NORECORD), so we set it to nil.
+  (pop-to-buffer buffer other-window (and norecord
+					  (boundp 'TeX-record-buffer)
+					  TeX-record-buffer)))
+
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
 The last line of the buffer is displayed on line LINE of the window, or
@@ -201,13 +237,13 @@ at bottom if LINE is nil."
   (let ((buffer (TeX-active-buffer)))
     (if buffer
 	(let ((old-buffer (current-buffer)))
-	  (pop-to-buffer buffer t)
+	  (TeX-pop-to-buffer buffer t t)
 	  (bury-buffer buffer)
 	  (goto-char (point-max))
 	  (recenter (if line
 			(prefix-numeric-value line)
 		      (/ (window-height) 2)))
-	  (pop-to-buffer old-buffer))
+	  (TeX-pop-to-buffer old-buffer nil t))
       (message "No process for this document."))))
 
 (defun TeX-kill-job ()
@@ -1094,7 +1130,7 @@ command."
   "Filter to process background output."
   (let ((old-window (selected-window))
 	(pop-up-windows t))
-    (pop-to-buffer "*TeX background*")
+    (TeX-pop-to-buffer "*TeX background*" nil t)
     (goto-char (point-max))
     (insert string)
     (select-window old-window)))
@@ -1341,7 +1377,7 @@ If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
 	(default-major-mode major-mode))
-    (pop-to-buffer (TeX-active-buffer))
+    (TeX-pop-to-buffer (TeX-active-buffer) nil t)
     (if reparse
 	(TeX-parse-reset))
     (goto-char TeX-error-point)
@@ -1377,7 +1413,7 @@ name(\\([^)]+\\))\\)\\|\
 	  ;; No more errors.
 	  (message "No more errors.")
 	  (beep)
-	  (pop-to-buffer old)
+	  (TeX-pop-to-buffer old)
 	  nil)
 	 ;; TeX error
 	 ((match-beginning 1)
@@ -1587,7 +1623,7 @@ name(\\([^)]+\\))\\)\\|\
 			      error))
       (setq TeX-error-pointer (+ TeX-error-pointer 1)))
 
-    (pop-to-buffer (get-buffer-create "*TeX Help*"))
+    (TeX-pop-to-buffer (get-buffer-create "*TeX Help*") nil t)
     (erase-buffer)
     (insert "ERROR: " error
 	    "\n\n--- TeX said ---"
@@ -1620,7 +1656,7 @@ name(\\([^)]+\\))\\)\\|\
 		(cdr (nth TeX-error-pointer
 			  TeX-error-description-list)))))
     (goto-char (point-min))
-    (pop-to-buffer old-buffer)))
+    (TeX-pop-to-buffer old-buffer nil t)))
 
 ;;; Error Messages
 
