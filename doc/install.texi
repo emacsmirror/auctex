@@ -87,6 +87,10 @@ Debian provides @samp{emacs22-gtk} (probably preferable) and
 @item Fedora GNU/Linux
 @w{Fedora 8} comes with @w{Emacs 22.1} and @w{Fedora 7} comes with a
 developer version of the same.
+@item openSUSE
+@w{openSUSE 10.3} comes with @w{Emacs 22.1}.  For some earlier
+@w{openSUSE} versions, @w{Emacs 22.1} is available from
+@uref{http://packages.opensuse-community.org}.
 @item Self-compiled
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.

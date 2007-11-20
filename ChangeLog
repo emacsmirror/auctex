@@ -1,3 +1,7 @@
+2007-11-20  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/install.texi (Prerequisites): Add openSUSE.
+
 2007-11-20  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Prerequisites): Update to reflect current
