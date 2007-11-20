@@ -69,12 +69,8 @@ the file @file{INSTALL.windows}.
 @w{Emacs 20} is no longer supported, and neither is XEmacs with a
 version of @code{xemacs-base} older than 1.84 (released in sumo from
 02/02/2004).  Using @previewlatex{} requires a version of Emacs compiled
-with image support.  This means that @w{Emacs 21} will work only in the
-version for X11: for Windows and @w{Mac OS X}, you need to use @w{Emacs
-22} (which is not yet released) or a developer version.  Since the
-developer version is quite stable by now and features five more years of
-development and bugfixes, we recommend its use even for X11-based
-platforms.  You can get it here:
+with image support.  While the X11 version of @w{Emacs 21} will likely
+work, @w{Emacs 22} is the preferred platform.
 
 @table @b
 @item Windows
@@ -86,10 +82,11 @@ A precompiled version including an installer as well as preinstalled
 versions of @AUCTeX{} and @previewlatex{} is available from
 @uref{http://homepage.mac.com/zenitani/emacs-e.html}.
 @item Debian GNU/Linux
-Debian provides @samp{emacs-snapshot} and @samp{emacs-snapshot-gtk}
-packages in its @samp{unstable} distribution.
+Debian provides @samp{emacs22-gtk} (probably preferable) and
+@samp{emacs22} packages in its @samp{unstable} distribution.
 @item Fedora GNU/Linux
-@uref{http://people.redhat.com/coldwell/bugs/emacs/176171/}
+@w{Fedora 8} comes with @w{Emacs 22.1} and @w{Fedora 7} comes with a
+developer version of the same.
 @item Self-compiled
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.
@@ -113,9 +110,9 @@ feedback in case you encounter bugs.
 
 Well, @AUCTeX{} would be pointless without that.  Processing
 documentation requires @TeX{}, @LaTeX{} and Texinfo during installation.
-@previewlatex{} requires Dvips for its operation in @acronym{DVI}
-mode.  The default configuration of @AUCTeX{} is tailored for
-te@TeX{}-based distributions, but can be adapted easily.
+@previewlatex{} requires Dvips for its operation in @acronym{DVI} mode.
+The default configuration of @AUCTeX{} is tailored for te@TeX{} or
+@TeX{}live-based distributions, but can be adapted easily.
 
 @item A recent Ghostscript
 

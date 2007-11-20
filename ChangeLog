@@ -1,3 +1,8 @@
+2007-11-20  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Prerequisites): Update to reflect current
+	realities.
+
 2007-11-03  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-buf.el (TeX-record-buffer): New variable, only in Emacs.
