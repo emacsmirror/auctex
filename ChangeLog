@@ -1,3 +1,7 @@
+2007-12-08  David Kastrup  <dak@gnu.org>
+
+	* texmathp.el (defgroup, defcustom): Remove compatibility cruft.
+
 2007-11-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/install.texi (Prerequisites): Add openSUSE.

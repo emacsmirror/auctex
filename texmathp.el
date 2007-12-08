@@ -97,15 +97,6 @@
 
 ;;; Code:
 
-;; Safety-check for the old customize package.
-(eval-and-compile
-  (condition-case () (require 'custom) (error nil))
-  (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
-      nil
-    (defmacro defgroup (&rest args) nil)
-    (defmacro defcustom (var value doc &rest args)
-      (` (defvar (, var) (, value) (, doc))))))
-
 (defgroup texmathp nil
   "Testing TeX and LaTeX documents for math mode."
   :tag "Test For TeX and LaTeX Math Mode"
