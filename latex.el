@@ -2883,18 +2883,26 @@ space does not end a sentence, so don't break a line there."
 	(verb-macros (regexp-opt (append (LaTeX-verbatim-macros-with-delims)
 					 (LaTeX-verbatim-macros-with-braces)))))
     (save-excursion
+      ;; Look for the start of a verbatim macro in the current line.
       (when (re-search-backward (concat (regexp-quote TeX-esc)
 					"\\(?:" verb-macros "\\)\\([^a-z@*]\\)")
 				(line-beginning-position) t)
+	;; Determine start and end of verbatim macro.
 	(let ((beg (point))
 	      (end (if (not (string-match "[ [{]" (match-string 1)))
 		       (cdr (LaTeX-verbatim-macro-boundaries))
 		     (TeX-find-macro-end))))
-	  (when (and end (> (- end (line-beginning-position))
-			    (current-fill-column)))
+	  ;; Determine if macro end is behind fill column.
+	  (when (and end
+		     (> (- end (line-beginning-position))
+			(current-fill-column))
+		     (> end final-breakpoint))
+	    ;; Search backwards for place to break before the macro.
 	    (goto-char beg)
 	    (skip-chars-backward "^ \n")
-	    (when (bolp)
+	    ;; Determine if point ended up at the beginning of the line.
+	    (when (save-excursion (skip-chars-backward " \t%") (bolp))
+	      ;; Search forward for a place to break after the macro.
 	      (goto-char end)
 	      (skip-chars-forward "^ \n" (point-max)))
 	    (setq final-breakpoint (point))))))
