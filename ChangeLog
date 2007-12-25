@@ -1,3 +1,8 @@
+2007-12-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Ignore whitespace
+	when checking if verbatim macro starts at beginning of line.
+
 2007-12-08  David Kastrup  <dak@gnu.org>
 
 	* texmathp.el (defgroup, defcustom): Remove compatibility cruft.
