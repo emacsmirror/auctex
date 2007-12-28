@@ -1,3 +1,8 @@
+2007-12-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-command-expand): Do not evaluate `file' as a
+	function.
+
 2007-12-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Ignore whitespace
