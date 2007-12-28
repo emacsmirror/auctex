@@ -347,7 +347,14 @@ without further expansion."
 	    expansion (car (cdr entry)) ;Second element
 	    arguments (cdr (cdr entry)) ;Remaining elements
 	    string (save-match-data
-		     (cond ((TeX-function-p expansion)
+		     ;; Note regarding the special casing of `file':
+		     ;; `file' is prevented from being evaluated as a
+		     ;; function because inside of AUCTeX it only has
+		     ;; a meaning as a variable.  This makes sure that
+		     ;; a function definition made by an external
+		     ;; package (e.g. icicles) is not picked up.
+		     (cond ((and (not (eq expansion 'file))
+				 (TeX-function-p expansion))
 			    (apply expansion arguments))
 			   ((boundp expansion)
 			    (apply (eval expansion) arguments))
