@@ -1,3 +1,26 @@
+dnl Autoconf script for AUCTeX
+
+dnl Maintainer: auctex-devel@gnu.org
+
+dnl Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+
+dnl This file is part of AUCTeX.
+
+dnl AUCTeX is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2, or (at your option)
+dnl any later version.
+
+dnl AUCTeX is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl General Public License for more details.
+
+dnl You should have received a copy of the GNU General Public License
+dnl along with AUCTeX; see the file COPYING.  If not, write to the Free
+dnl Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+dnl MA 02110-1301, USA.
+
 AC_INIT(auctex,11.84,bug-auctex@gnu.org)
 
 AC_CHECK_PROGS_REQUIRED(MAKECMD, make, [make not found, aborting!])
