@@ -1,6 +1,28 @@
-;; AUCTeX style file with support for fancyref.sty
-;; Author: C. Dominik <dominik@strw.leidenuniv.nl>
-;; Last change: 20 Feb 1999
+;;; fancyref.el --- AUCTeX style file with support for fancyref.sty
+
+;; Copyright (C) 1999 Free Software Foundation, Inc.
+
+;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
+;; Maintainer: auctex-devel@gnu.org
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+;; 02110-1301, USA.
+
+;;; Code:
 
 (TeX-add-style-hook "fancyref"
    (lambda ()
@@ -97,4 +119,4 @@ If the user gives an unknown name, add it to the list."
 					 "vario")
   "Package options for the fancyref package.")
 
-;; fancyref.el ends here
+;;; fancyref.el ends here
