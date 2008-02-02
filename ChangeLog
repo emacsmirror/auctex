@@ -1,5 +1,8 @@
 2008-02-02  Ralf Angeli  <angeli@caeruleus.net>
 
+	* Makefile.in, auctex.spec, autogen.sh, configure.ac: Add
+	copyright and license notices.
+
 	* texmathp.el, style/amsmath.el, style/amsthm.el,
 	style/fancyref.el, style/index.el, style/makeidx.el,
 	style/multind.el, style/varioref.el: Reflect copyright assignment
