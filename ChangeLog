@@ -1,3 +1,11 @@
+2008-02-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* texmathp.el, style/amsmath.el, style/amsthm.el,
+	style/fancyref.el, style/index.el, style/makeidx.el,
+	style/multind.el, style/varioref.el: Reflect copyright assignment
+	of Carsten Dominik to FSF in coypright notices and adapt licence
+	notice accordingly.
+
 2007-12-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-command-expand): Do not evaluate `file' as a
