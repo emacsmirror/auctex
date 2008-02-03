@@ -8,7 +8,7 @@ dnl This file is part of AUCTeX.
 
 dnl AUCTeX is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by
-dnl the Free Software Foundation; either version 2, or (at your option)
+dnl the Free Software Foundation; either version 3, or (at your option)
 dnl any later version.
 
 dnl AUCTeX is distributed in the hope that it will be useful, but

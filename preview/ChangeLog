@@ -1,3 +1,9 @@
+2008-02-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Relicense all "GPLv2 or later" files to "GPLv3 or later".
+
+	* COPYING: Switch to GPLv3.
+
 2007-04-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* preview.el (preview-parse-messages): Match any closing

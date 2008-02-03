@@ -10,7 +10,7 @@
 
 ;; This is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;;; Commentary:
@@ -62,7 +62,7 @@
 
 
 (defconst LaTeX-prosper-version
-  "$Id: prosper.el,v 1.3 2004-05-10 09:04:14 angeli Exp $"
+  "$Id: prosper.el,v 1.4 2008-02-03 14:53:29 angeli Exp $"
   "prosper.el version.")
 
 (defconst LaTeX-prosper-transition-styles '("Split"
