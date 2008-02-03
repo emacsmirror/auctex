@@ -1,3 +1,8 @@
+2008-02-03  Ikumi Keita	 <ikumi@ikumi.que.jp>
+
+	* tex-info.el (Texinfo-insert-node): Correct name of let-bound
+	variable.
+
 2008-02-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-info.el: Make sure the Texinfo mode of AUCTeX is still used
