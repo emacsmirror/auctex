@@ -28,6 +28,11 @@
 (require 'tex)
 
 (require 'texinfo)
+;; Make sure the Texinfo mode of AUCTeX is still used after loading
+;; texinfo.el.  (This is only an issue on Emacs 21.)
+(when (and (boundp 'TeX-modes)
+	   (memq 'texinfo-mode TeX-modes))
+  (defalias 'texinfo-mode 'TeX-texinfo-mode))
 
 ;;; Environments:
 
