@@ -4,6 +4,11 @@
 
 	* COPYING: Switch to GPLv3.
 
+	* doc/Makefile.in, doc/preview-dtxdoc.pl: Add coypright and
+	license notices.
+
+	* style/beamer.el, style/scrbook.el: Add license notices.
+
 2008-02-03  Ikumi Keita	 <ikumi@ikumi.que.jp>
 
 	* tex-info.el (Texinfo-insert-node): Correct name of let-bound

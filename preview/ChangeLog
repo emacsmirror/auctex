@@ -4,6 +4,10 @@
 
 	* COPYING: Switch to GPLv3.
 
+	* preview/Makefile.in, preview/configure.ac,
+	preview/preview-latex.spec, preview/latex/Makefile.in: Add
+	copyright and license notices.
+
 2007-04-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* preview.el (preview-parse-messages): Match any closing
@@ -1531,13 +1535,13 @@
 	* latex/preview.dtx: Make the end of snarfed environments behave
 	normally if the environment is not being snarfed.
 
-2004-10-14  Jan-Åke Larsson  <jalar@mai.liu.se>
+2004-10-14  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
 
 	* doc/wininstall.texi: Adjust text to conform with the AUCTeX aclocal.
 
 	* configure.in: Add VALID_BUILD_DIR 
 
-2004-10-13  Jan-Åke Larsson  <jalar@mai.liu.se>
+2004-10-13  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Adjust for the aclocal.m4 sync with AUCTeX 
 
