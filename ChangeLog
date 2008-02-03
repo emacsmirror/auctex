@@ -1,3 +1,8 @@
+2008-02-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el: Make sure the Texinfo mode of AUCTeX is still used
+	after loading texinfo.el.
+
 2008-02-02  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in, auctex.spec, autogen.sh, configure.ac: Add
