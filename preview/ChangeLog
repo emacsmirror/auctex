@@ -15,7 +15,7 @@
 
 2007-03-25  David Kastrup  <dak@gnu.org>
 
-	* prv-xemacs.el (preview-dump-threshold): 
+	* prv-xemacs.el (preview-dump-threshold):
 
 	* prv-emacs.el (preview-dump-threshold): Make the dump threshold
 	closely match what mylatex.ltx expects.
@@ -354,7 +354,7 @@
 	* preview.el (preview-at-point): Join adjacent touched previews
 	for regeneration.
 
-	* prv-emacs.el (preview-mode-setup): 
+	* prv-emacs.el (preview-mode-setup):
 
 	* prv-xemacs.el (preview-mode-setup): Use correct string for
 	resetting watch on preamble.
@@ -478,9 +478,9 @@
 
 	* doc/Makefile.in (TEXIFILES): Oops, depends on ../../doc/macros.texi
 
-	* latex/Makefile.in (MKINSTALLDIRS): 
+	* latex/Makefile.in (MKINSTALLDIRS):
 
-	* doc/Makefile.in (MKINSTALLDIRS): 
+	* doc/Makefile.in (MKINSTALLDIRS):
 
 	* Makefile.in (MKINSTALLDIRS): Use mkinstalldirs from AUCTeX.
 
@@ -593,7 +593,7 @@
 
 2005-05-02  David Kastrup  <dak@gnu.org>
 
-	* doc/wininstall.texi: 
+	* doc/wininstall.texi:
 
 	* doc/install.texi: Overhaul, use auto.texi.
 
@@ -690,7 +690,7 @@
 
 2005-04-11  jalar  <jalar@mai.liu.se>
 
-	* configure.in: Minimal changes to printouts 
+	* configure.in: Minimal changes to printouts
 
 2005-04-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
@@ -810,9 +810,9 @@
 	* doc/macros.texi: Make @previewlatex swallow argument in links.
 	Don't scrap sf declaration.  Make it correct in links.
 
-	* doc/readme.texi (What use is it?): 
+	* doc/readme.texi (What use is it?):
 
-	* doc/problems.texi: 
+	* doc/problems.texi:
 
 	* doc/install.texi (Top): Work around raisesection bug.
 
@@ -926,7 +926,7 @@
 
 2005-03-31  jalar  <jalar@mai.liu.se>
 
-	* Makefile.in: 
+	* Makefile.in:
 	* aclocal.m4: Add $emacsprefix
 
 2005-03-31  David Kastrup  <dak@gnu.org>
@@ -976,7 +976,7 @@
 2005-03-23  jalar  <jalar@mai.liu.se>
 
 	* doc/Makefile.in:
-	* Makefile.in: add maintainer-clean target 
+	* Makefile.in: add maintainer-clean target
 
 	* Makefile.in: add tarball-ready target
 
@@ -1114,7 +1114,7 @@
 	<URL:http://sourceforge.net/projects/preview-latex> into the
 	AUCTeX CVS Archive on
 	<URL:http://savannah.gnu.org/projects/auctex>.
-	
+
 2005-03-03  David Kastrup  <dak@gnu.org>
 
 	* Release 0.9
@@ -1196,7 +1196,7 @@
 
 	* autogen.sh: Use --output option for makeinfo to get
 	tableofcontents in FAQ.
-	
+
 	* doc/Makefile.in (.PHONY): Add install here.
 
 	* Makefile.in (install-el): Adapt targets to packagelispdir.
@@ -1359,7 +1359,7 @@
 	down to avoid byte compiler warnings.
 
 	* images/*: lots of renaming/moving stuff around.
-	
+
 	* configure.in: remove ICONFORM stuff.
 
 	* Makefile.in (ICONFORM): removed.
@@ -1535,15 +1535,15 @@
 	* latex/preview.dtx: Make the end of snarfed environments behave
 	normally if the environment is not being snarfed.
 
-2004-10-14  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2004-10-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* doc/wininstall.texi: Adjust text to conform with the AUCTeX aclocal.
 
-	* configure.in: Add VALID_BUILD_DIR 
+	* configure.in: Add VALID_BUILD_DIR
 
-2004-10-13  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2004-10-13  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* configure.in: Adjust for the aclocal.m4 sync with AUCTeX 
+	* configure.in: Adjust for the aclocal.m4 sync with AUCTeX
 
 	* aclocal.m4: Sync with AUCTeX. Well, almost. Don't
 	use the version test.
@@ -1573,7 +1573,7 @@
 	(The Emacs interface): Take PDF into account.
 	(The preview images): Describe `preview-gs-image-type-alist',
 	`preview-dvipng-image-type'.
-	
+
 	* doc/faq.texi (Introduction to FAQ): Change submission address to
 	preview-latex-devel since this appears to better reflect reality.
 
@@ -1752,7 +1752,11 @@
 	"copied" from TeX-command-list to Command menu.
 
 	* Release 0.8
-	
+
 	* RELEASE: prepare for 0.8
 
 	* preview-latex.spec: prepare for 0.8, bump XEmacs to 21.4.9.
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:
