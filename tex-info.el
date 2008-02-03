@@ -161,7 +161,7 @@ a comment on the following line indicating the order of arguments
 for @node."
   (interactive)
   (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
-	nodes node-name next-node preview-node up-node)
+	nodes node-name next-node previous-node up-node)
     ;; Build list of nodes in current buffer.
     ;; (What about using `imenu--index-alist'?)
     ;; FIXME: Support multi-file documents.
