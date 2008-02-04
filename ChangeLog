@@ -1,3 +1,9 @@
+2008-02-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Revert change
+	from 2007-04-09 because the unbalanced treatment of \begin and
+	\end may lead to color bleeding.
+
 2008-02-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Relicense all "GPLv2 or later" files to "GPLv3 or later".
