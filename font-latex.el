@@ -284,8 +284,8 @@ variable `font-latex-fontify-sectioning'." num)
       "appendix" "displaybreak" "allowdisplaybreaks" "include")
      'font-latex-warning-face 1 noarg)
     ("variable"
-     (("setlength" "|{\\{") ("settowidth" "{{") ("setcounter" "{{")
-      ("addtolength" "{{") ("addtocounter" "{{"))
+     (("setlength" "|{\\{") ("settowidth" "|{\\{") ("setcounter" "{|{\\")
+      ("addtolength" "|{\\{") ("addtocounter" "{|{\\"))
      'font-lock-variable-name-face 2 command)
     ("reference"
      (("nocite" "{") ("cite" "[{") ("label" "{") ("pageref" "{")
@@ -298,7 +298,7 @@ variable `font-latex-fontify-sectioning'." num)
       ("thispagestyle" "{") ("pagestyle" "{") ("nofiles" "")
       ("includeonly" "{") ("bibliographystyle" "{") ("documentstyle" "[{")
       ("documentclass" "[{") ("newenvironment" "*{[[{{")
-      ("newcommand" "*|{\\[[{") ("newlength" "{")
+      ("newcommand" "*|{\\[[{") ("newlength" "|{\\")
       ("newtheorem" "{[{[")
       ("newcounter" "{[") ("renewenvironment" "*{[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
@@ -360,7 +360,7 @@ variable `font-latex-fontify-sectioning'." num)
      (("emph" "{") ("textit" "{") ("textsl" "{"))
      'font-latex-italic-face 1 command)
     ("math-command"
-     (("ensuremath" "{"))
+     (("ensuremath" "|{\\"))
      'font-latex-math-face 1 command)
     ("type-command"
      (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{"))
@@ -1102,7 +1102,9 @@ backwards to the minimum over their return values.")
   ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
   (let ((defaults
 	 '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-	   nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil))
+	   ;; Use word syntax for @ because we use \> for matching macros
+	   ;; and we don't want \foo@bar to be found if we search for \foo.
+	   nil nil ((?\( . ".") (?\) . ".") (?$ . "\"") (?@ . "w")) nil))
 	(variables
 	 '((font-lock-comment-start-regexp . "%")
 	   (font-lock-mark-block-function . mark-paragraph)
@@ -1359,6 +1361,9 @@ Set this to nil if verification of command syntax is unwanted.")
   '((?[ . ?]) (?< . ?>) (?\( . ?\)))
   "List character pairs used as delimiters for optional arguments.")
 
+(defvar font-latex-syntax-error-modes '(latex-mode)
+  "List of modes where syntax errors in macros should be indicated.")
+
 (defun font-latex-match-command-with-arguments (regexp keywords face limit)
   "Search for regexp command KEYWORDS[opt]{arg} before LIMIT.
 Returns nil if none of KEYWORDS is found."
@@ -1446,7 +1451,8 @@ Returns nil if none of KEYWORDS is found."
 			error-indicator-pos match-beg)
 		  (throw 'break nil))))
 	      (setq alternative nil)))
-	  (when (and syntax-error (eq major-mode 'latex-mode))
+	  (when (and syntax-error (memq major-mode
+					font-latex-syntax-error-modes))
 	    ;; Add the warning face at the front of the list because
 	    ;; the matcher uses 'append and the face would otherwise
 	    ;; be overridden by the keyword face.
