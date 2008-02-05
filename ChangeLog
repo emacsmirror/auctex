@@ -1,3 +1,11 @@
+2008-02-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add syntax
+	alternatives for some commands.
+	(font-latex-setup): Give ?@ word syntax for font locking.
+	(font-latex-syntax-error-modes): New variable.
+	(font-latex-match-command-with-arguments): Use it.
+
 2008-02-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Revert change
