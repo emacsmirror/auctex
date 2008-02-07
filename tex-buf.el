@@ -1385,11 +1385,11 @@ If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
 	(default-major-mode major-mode))
-    (TeX-pop-to-buffer (TeX-active-buffer) nil t)
-    (if reparse
-	(TeX-parse-reset))
-    (goto-char TeX-error-point)
-    (TeX-parse-error old-buffer)))
+    (with-current-buffer (TeX-active-buffer)
+      (if reparse
+	  (TeX-parse-reset))
+      (goto-char TeX-error-point)
+      (TeX-parse-error old-buffer))))
 
 ;;; - Parsing (La)TeX
 
@@ -1523,7 +1523,7 @@ name(\\([^)]+\\))\\)\\|\
 	  (command-buffer TeX-command-buffer)
 	  error-file-buffer)
       (run-hooks 'TeX-translate-location-hook)
-      (setq error-file-buffer (find-file-other-window file))
+      (setq error-file-buffer (find-file file))
       ;; Set the value of `TeX-command-buffer' in the next file with an
       ;; error to be displayed to the value it has in the current buffer.
       (with-current-buffer error-file-buffer
