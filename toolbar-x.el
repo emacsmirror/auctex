@@ -125,7 +125,7 @@
 			      x))
 		     load-path))
    (list data-directory))
-  "This is where toolbarx finds its images.")
+  "List of directories where toolbarx finds its images.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; First engine: Parsing buttons

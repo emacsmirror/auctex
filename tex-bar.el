@@ -451,7 +451,8 @@ format of the argument MEANING-ALIST in the mentioned function."
 			 (setq list-str-temp (cons (car i)
 						   list-str-temp))))))
   (defvar LaTeX-symbols-toolbar-visible-flag nil
-    "Non-nil means that the LaTeX symbols on toolbar are visible.")
+    "Non-nil means that the LaTeX symbols on toolbar are visible.
+Internal variable.")
   (defconst LaTeX-symbols-toolbar-switch-contents
     `(;; the on-off switch button
       (latex-symbols-switch
