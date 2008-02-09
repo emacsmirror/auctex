@@ -1,3 +1,17 @@
+2008-02-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-error, TeX-warning): Handle `expert' option of
+	`TeX-display-help'.
+	(TeX-warning): Find error file in same window.
+
+	* tex.el (TeX-display-help): Add `expert' option.
+
+	* doc/auctex.texi (Commands): Add some explanatory text for TeXing
+	options.  Document `TeX-show-compilation'.
+	(Debugging): Reflect new option of `TeX-display-help'.
+
+	* doc/changes.texi: Add changes for 11.85.  Add copyright notice.
+
 2008-02-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-parse-TeX): Do not pop to output buffer.
