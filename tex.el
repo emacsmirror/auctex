@@ -1,7 +1,8 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999, 2000,
-;;   2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+;;   2001, 2002, 2003, 2004, 2005, 2006, 2007,
+;;   2008 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -850,9 +851,13 @@ Elements of KEEP-LIST are not removed even if duplicate."
   :group 'AUCTeX)
 
 (defcustom TeX-display-help t
-  "*Non-nil means popup help when stepping through errors with \\[TeX-next-error]."
+  "Control type of help display when stepping through errors with \\[TeX-next-error].
+If t display help buffer.  If nil display message about error in
+echo area.  If `expert' display output buffer with raw processor output."
   :group 'TeX-output
-  :type 'boolean)
+  :type '(choice (const :tag "Help buffer" t)
+		 (const :tag "Echo area" nil)
+		 (const :tag "Output buffer" expert)))
 
 (defcustom TeX-debug-bad-boxes nil
   "Non-nil means also find overfull/underfull box warnings with \\[TeX-next-error]."
