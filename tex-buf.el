@@ -1,7 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
 ;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004,
-;;   2005, 2006, 2007 Free Software Foundation, Inc.
+;;   2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -1533,9 +1533,14 @@ name(\\([^)]+\\))\\)\\|\
 	  (search-forward string nil t))
       
       ;; Explain the error.
-      (if TeX-display-help
-	  (TeX-help-error error context runbuf)
-	(message (concat "! " error))))))
+      (cond ((eq TeX-display-help 'expert)
+	     (TeX-pop-to-buffer runbuf nil t)
+	     (goto-char TeX-error-point)
+	     (TeX-pop-to-buffer error-file-buffer nil t))
+	    (TeX-display-help
+	     (TeX-help-error error context runbuf))
+	    (t
+	     (message (concat "! " error)))))))
 
 (defun TeX-warning (string)
   "Display a warning for STRING."
@@ -1593,7 +1598,7 @@ name(\\([^)]+\\))\\)\\|\
 	  (command-buffer TeX-command-buffer)
 	  error-file-buffer)
       (run-hooks 'TeX-translate-location-hook)
-      (setq error-file-buffer (find-file-other-window file))
+      (setq error-file-buffer (find-file file))
       ;; Set the value of `TeX-command-buffer' in the next file with an
       ;; error to be displayed to the value it has in the current buffer.
       (with-current-buffer error-file-buffer
@@ -1609,10 +1614,15 @@ name(\\([^)]+\\))\\)\\|\
 	    (search-backward string start t)
 	    (search-forward string nil t))))
       ;; Display help
-      (if TeX-display-help
-	  (TeX-help-error error (if bad-box context (concat "\n" context))
-			  runbuf)
-	(message (concat "! " error))))))
+      (cond ((eq TeX-display-help 'expert)
+	     (TeX-pop-to-buffer runbuf nil t)
+	     (goto-char TeX-error-point)
+	     (TeX-pop-to-buffer error-file-buffer nil t))
+	    (TeX-display-help
+	     (TeX-help-error error (if bad-box context (concat "\n" context))
+			     runbuf))
+	    (t
+	     (message (concat "! " error)))))))
 
 ;;; - Help
 
