@@ -1,8 +1,36 @@
+@c This is part of the AUCTeX manual.
+@c Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
+@c   2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+@c See file auctex.texi for copying conditions.
 @include macros.texi
 @ifset rawfile
 @chapheading Changes and New Features in @AUCTeX{}
 
 @end ifset
+
+@heading News in 11.85
+
+@itemize @bullet
+
+@item
+Font locking has been improved significantly.  It is now less prone to
+color bleeding which could lead to high resource usage.  In addition it
+now includes information about @LaTeX{} macro syntax and can indicate
+syntactically incorrect macros in @LaTeX{} mode.
+
+@item
+The license was updated to GPLv3.
+
+@item
+Support for the nomencl, flashcards and comment @LaTeX{} packages as
+well as the Icelandic language option of babel were added.
+
+@item
+Support for folding of math macros was added.
+
+@item
+Lots of minor bugs in features and documentation fixed.
+@end itemize
 
 @heading News in 11.84
 
