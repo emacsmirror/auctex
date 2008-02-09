@@ -13,7 +13,7 @@ This manual is for @AUCTeX{}
 a sophisticated TeX environment for Emacs.
 
 Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004, 2005,
-2006, 2007 Free Software Foundation, Inc.
+2006, 2007, 2008 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -2067,7 +2067,7 @@ controlled by the variable @code{TeX-command-list}.
 (@kbd{C-c C-r}) Query the user for a command, and run it on the ``region
 file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
 will write the current region into the region file, after extracting the
-header and tailer from the master file.  If mark is inactive (which can
+header and trailer from the master file.  If mark is inactive (which can
 happen with @code{transient-mark-mode}), use the old region.  The name
 of the region file is controlled by the variable @code{TeX-region}.  The
 name of the master file is controlled by the variable @code{TeX-master}.
@@ -2098,7 +2098,7 @@ always define a new region when calling @code{TeX-command-region}.
 (@kbd{C-c C-b}) Query the user for a command, and run it on the ``region
 file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
 will write the current buffer into the region file, after extracting the
-header and tailer from the master file.  See above for details.
+header and trailer from the master file.  See above for details.
 @end deffn
 
 @AUCTeX{} will allow one process for each document, plus one process
@@ -2171,6 +2171,14 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
+There are some options you can customize affecting which processors are
+invoked or the way this is done and which output they produce as a
+result.  These options control if @acronym{DVI} or @acronym{PDF} output
+should be produced, if @TeX{} should be started in interactive or
+nonstop mode, if Source Specials should be included in the @acronym{DVI}
+output for making inverse and forward search possible or if Omega
+processors should be used instead of regular @TeX{}.
+
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
 @vindex TeX-PDF-mode
@@ -2238,6 +2246,13 @@ This command toggles the use of the Omega @tex
 @command{omega} will be used instead of @command{tex}, and
 @command{lambda} instead of @command{latex}.
 @end deffn
+
+You can customize @AUCTeX{} to show the processor output as it is
+produced.
+
+@defopt TeX-show-compilation
+If non-nil, the output of @TeX{} compilation is shown in another window.
+@end defopt
 
 @node Viewing
 @section Viewing the formatted output
@@ -2373,14 +2388,16 @@ ask it to report `bad boxes' and warnings as well.
 well as normal errors.
 @end deffn
 
-As default, @AUCTeX{} will display that special @samp{*help*} buffer
-containing the error reported by @TeX{} along with the documentation.
-There is however an `expert' option, which allows you to display the
-real @TeX{} output.
+As default, @AUCTeX{} will display a special help buffer containing the
+error reported by @TeX{} along with the documentation.  There is however
+an `expert' option, which allows you to display the real @TeX{} output.
 
 @defopt TeX-display-help
-When non-nil @AUCTeX{} will automatically display a help text whenever
-an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
+If t @AUCTeX{} will automatically display a help text whenever an error
+is encountered using @code{TeX-next-error} (@kbd{C-c `}).  If nil a
+terse information about the error is displayed in the echo area.  If
+@code{expert} @AUCTeX{} will display the output buffer with the raw
+@TeX{} output.
 @end defopt
 
 @node Checking
