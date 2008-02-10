@@ -288,9 +288,12 @@ distclean:	doc/Makefile
 	cd doc && $(MAKE) distclean
 	$(DESCEND)
 
-maintainer-clean: distclean
+maintainer-clean: doc/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
+	rm -f $(CLEANFILES) $(DISTCLEANFILES)
+	cd doc && $(MAKE) maintainer-clean
+	$(DESCEND)
 
 extraclean: maintainer-clean
 	rm -f *~ \#*\#
