@@ -37,7 +37,7 @@
 
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
-Version: 	11.84
+Version: 	11.85
 Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
