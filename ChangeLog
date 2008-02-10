@@ -1,5 +1,10 @@
 2008-02-10  Ralf Angeli  <angeli@caeruleus.net>
 
+	* Makefile.in (maintainer-clean): Do not depend on distclean.  How
+	did this ever work?
+
+	* doc/Makefile.in (extradist): Re-add tex-ref.pdf dependency.
+
 	* Version 11.85 released.
 
 2008-02-10  Ralf Angeli  <angeli@caeruleus.net>
