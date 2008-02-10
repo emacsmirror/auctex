@@ -1,3 +1,6 @@
+@c This is part of the AUCTeX Manual.
+@c Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+@c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
 @node Development,,(dir),(dir)
@@ -330,11 +333,6 @@ by @samp{\mbox}'es and escaped double dollar for example.
 @item
 Correct indentation for tabular, tabbing, table, math, and array
 environments.
-
-@item
-Syntax highlighting of @LaTeX{} constructs spanning more than one line
-sometimes stops in the middle of the construct.  Highlighting can get
-lost during typing. (XEmacs only)
 
 @item
 No syntactic font locking of verbatim macros and environments. (XEmacs
