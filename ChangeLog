@@ -2,8 +2,14 @@
 
 	* Makefile.in (maintainer-clean): Do not depend on distclean.  How
 	did this ever work?
+	(www-doc): Use release files.  Update URLs.  Make gendocs.sh use
+	texi2html.
 
 	* doc/Makefile.in (extradist): Re-add tex-ref.pdf dependency.
+	(install-auctex): Do not install reference card when producing an
+	XEmacs package.
+
+2008-02-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Version 11.85 released.
 
