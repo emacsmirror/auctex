@@ -148,8 +148,8 @@ should provide you with a working @samp{unzip} command.
 
 @item
 The installation of @AUCTeX{} will require the MSYS tool set from
-@uref{http://www.mingw.org} or the Cygwin tool set from
-@uref{http://cygwin.com}.  The latter is slower and larger (the download
+@uref{http://www.mingw.org/} or the Cygwin tool set from
+@uref{http://cygwin.com/}.  The latter is slower and larger (the download
 size of the base system is about 15 MB) but comes with a package manager
 that allows for updating the tool set and installing additional packages
 like, for example, the spell checker @w{aspell}.
@@ -160,20 +160,10 @@ trouble.  Using Cygwin either for everything or nothing might save
 headaches, @emph{if} things don't work out.
 
 @item
-Install a current version of XEmacs from @uref{http://www.xemacs.org} or
-try getting and compiling a developer version of @w{Emacs 22} from
-@uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Compiling
-Emacs is outside of the scope of this manual.  Precompiled versions are
-available from @uref{ftp://alpha.gnu.org/gnu/auctex/} (including
-@AUCTeX{}) and @uref{http://ourcomments.org/Emacs/EmacsW32.html}.
-
-If you don't want to use a developer version and @w{Emacs 22} has not
-yet been released, it is also possible to use an @w{Emacs 21} binary
-from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}, but then you
-should disable the installation of @previewlatex{} (it will not work).
-Since the developer version has seen quite a few improvements relevant
-also for other features of @AUCTeX{}, we really recommend you give it a
-try.
+Install a current version of XEmacs from @uref{http://www.xemacs.org/}
+or @w{Emacs 22} from @uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
+@w{Emacs 22} is the recommended choice because it is currently the
+primary platform for @AUCTeX{} development.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
