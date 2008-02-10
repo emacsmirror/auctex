@@ -1,3 +1,7 @@
+@c This is part of the AUCTeX Manual.
+@c Copyright (C) 1994, 1996, 2003, 2004, 2005, 2006, 2007
+@c   Free Software Foundation, Inc.
+@c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
 @node Installation,,(dir),(dir)
@@ -75,8 +79,7 @@ work, @w{Emacs 22} is the preferred platform.
 @table @b
 @item Windows
 Precompiled versions are available from
-@uref{ftp://alpha.gnu.org/gnu/auctex/} (including @AUCTeX{}) and
-@uref{http://ourcomments.org/Emacs/EmacsW32.html}.
+@uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
 @item Mac OS X
 A precompiled version including an installer as well as preinstalled
 versions of @AUCTeX{} and @previewlatex{} is available from
@@ -90,7 +93,7 @@ developer version of the same.
 @item openSUSE
 @w{openSUSE 10.3} comes with @w{Emacs 22.1}.  For some earlier
 @w{openSUSE} versions, @w{Emacs 22.1} is available from
-@uref{http://packages.opensuse-community.org}.
+@uref{http://packages.opensuse-community.org/}.
 @item Self-compiled
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.
