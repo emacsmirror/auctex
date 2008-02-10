@@ -1,5 +1,4 @@
-% -*- plain-tex -*- 
-% Reference Card for AUCTeX version 11.84
+% Reference Card for AUCTeX version 11.85
 %**start of header
 \newcount\columnsperpage
 
@@ -43,9 +42,9 @@
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{11.84}
-\def\year{2005}
-\def\version{July \year\ v\versionnumber}
+\def\versionnumber{11.85}
+\def\year{2008}
+\def\version{February \year\ v\versionnumber}
 
 \def\shortcopyrightnotice{\vskip 1ex plus 2 fill
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
@@ -53,8 +52,8 @@
 
 \def\copyrightnotice{%
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ 1987, 1992, 1993, 2004, 2005 Free Software
-            Foundation, Inc.}
+\centerline{Copyright \copyright\ 1987, 1992, 1993, 2004, 2005, 2008
+  Free Software Foundation, Inc.}
 \centerline{for AUC\TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
@@ -242,7 +241,8 @@ are preserved on all copies.
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
 \key{Next error in \TeX/\LaTeX\ session}{C-c `}
-\key{Toggle debug of wonderful boxes}{C-c C-w} % wonderful?
+\key{Toggle debug of bad boxes}{C-c C-t C-b}
+\key{Toggle debug of warnings}{C-c C-t C-w}
 \key{View output file}{C-c C-v}
 
 Commands you can run on the master file (with \kbd{C-c C-c}) or the
@@ -263,6 +263,8 @@ are not available in all modes):
 \key{LaCheck}{Check}
 \key{Make (PostScript) File}{File}
 \key{Ispell}{Spell}
+\key{Delete intermediate files}{Clean}
+\key{Delete all output files files}{Clean All}
 
 \section{\TeX ing options}
 \TeX\ runs can come in various types, which may be toggled and are
