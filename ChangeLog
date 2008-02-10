@@ -1,3 +1,25 @@
+2008-02-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* RELEASE: Update for upcoming release.
+
+	* auctex.spec (Version): Bump version number.
+
+	* configure.ac: Bump version number.
+
+	* doc/todo.texi: Add copyright notice.
+	(Bugs): Remove entry about XEmacs bug since AUCTeX now helps
+	XEmacs in doing multi-line font locking.
+
+	* doc/tex-ref.tex: Bump version number.  Updated references to
+	toggles for bad boxes and warning.  Mention `Clean' and `Clean
+	All' commands.
+
+	* doc/install.texi: Add copyright notice.
+	(Prerequisites): Update information about Emacs 22.
+
+	* doc/wininstall.texi: Update information about requirements,
+	esp. availability of Emacs 22.
+
 2008-02-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-error, TeX-warning): Handle `expert' option of
