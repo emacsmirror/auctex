@@ -2,7 +2,8 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+# Copyright (C) 2003, 2004, 2005, 2006, 2007,
+#   2008 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -407,14 +408,14 @@ xemacs-package:
 www-doc:
 	rm -rf $(WWWDIR)
 	mkdir -p $(WWWDIR)/manual
-	$(CP) doc/*.texi $(WWWDIR)/manual
+	$(CP) auctex-$(TAG)/doc/*.texi $(WWWDIR)/manual
 	cd $(WWWDIR)/manual \
-	&& wget -O gendocs.sh 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh?rev=HEAD' \
+	&& wget -O gendocs.sh 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh' \
 	&& patch <$(GENDOCSPATCH) \
 	&& chmod u+x gendocs.sh \
-	&& wget -O gendocs_template 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs_template?rev=HEAD' \
+	&& wget -O gendocs_template 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs_template' \
 	&& sed -i -e 's/html_node\/index\.html/%%PACKAGE%%\/index.html/' gendocs_template \
 	&& mkdir .texinfo \
-	&& echo -e "emacs split http://www.gnu.org/software/emacs/manual/html_node/\nemacs mono http://www.gnu.org/software/emacs/manual/emacs.html\nreftex mono http://staff.science.uva.nl/~dominik/Tools/reftex/reftex.html\n" > .texinfo/htmlxref.cnf \
-	&& ./gendocs.sh auctex "AUCTeX Manual" \
-	&& ./gendocs.sh preview-latex "preview-latex Manual"
+	&& echo -e "emacs split http://www.gnu.org/software/emacs/manual/html_node/\nemacs mono http://www.gnu.org/software/emacs/manual/emacs.html\nreftex split http://www.gnu.org/software/auctex/manual/reftex/\nreftex mono http://www.gnu.org/software/auctex/manual/reftex.html\n" > .texinfo/htmlxref.cnf \
+	&& ./gendocs.sh --texi2html auctex "AUCTeX Manual" \
+	&& ./gendocs.sh --texi2html preview-latex "preview-latex Manual"
