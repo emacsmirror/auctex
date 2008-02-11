@@ -1,3 +1,10 @@
+2008-02-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-make-match-defun)
+	(font-latex-keyword-matcher): Recognize old-style type specs which
+	could be lists.  Prevents "void-function nil" error during font
+	locking.
+
 2008-02-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (maintainer-clean): Do not depend on distclean.  How
