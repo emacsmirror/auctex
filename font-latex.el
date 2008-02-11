@@ -446,7 +446,11 @@ and `font-latex-make-user-keywords' and not intended for general
 use."
   ;; Note: The functions are byte-compiled at the end of font-latex.el.
   ;; FIXME: Is the cond-clause possible inside of the defun?
-  (cond ((eq type 'command)
+
+  ;; In an earlier version of font-latex the type could be a list like
+  ;; (command 1).  This indicated a macro with one argument.  Provide
+  ;; a match function in this case but don't actually support it.
+  (cond ((or (eq type 'command) (listp type))
 	 (eval `(defun ,(intern (concat prefix name)) (limit)
 		  ,(concat "Fontify `" prefix name "' up to LIMIT.
 
@@ -494,7 +498,10 @@ construct to be highlighted.  Currently the symbols 'command,
 This is a helper function for `font-latex-make-built-in-keywords'
 and `font-latex-make-user-keywords' and not intended for general
 use."
-  (cond ((eq type 'command)
+  ;; In an earlier version of font-latex the type could be a list like
+  ;; (command 1).  This indicated a macro with one argument.  Provide
+  ;; a matcher in this case but don't actually support it.
+  (cond ((or (eq type 'command) (listp type))
 	 `(,(intern (concat prefix name))
 	   (0 (font-latex-matched-face 0) append t)
 	   (1 (font-latex-matched-face 1) append t)
