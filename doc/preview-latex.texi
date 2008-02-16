@@ -23,6 +23,9 @@ Documentation License.''
 @end copying
 
 @dircategory Emacs
+@direntry
+* preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
+@end direntry
 @dircategory TeX
 @direntry
 * preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
