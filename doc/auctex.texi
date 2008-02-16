@@ -26,6 +26,9 @@ Documentation License.''
 @end copying
 
 @dircategory Emacs
+@direntry
+* AUCTeX: (auctex).     A sophisticated TeX environment for Emacs.
+@end direntry
 @dircategory TeX
 @direntry
 * AUCTeX: (auctex).     A sophisticated TeX environment for Emacs.
