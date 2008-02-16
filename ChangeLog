@@ -1,3 +1,11 @@
+2008-02-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi: Repeat direntry after each category as per
+	recommendation of Karl Berry.
+
+	* doc/preview-latex.texi: Repeat direntry after each category as
+	per recommendation of Karl Berry.
+
 2008-02-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-make-match-defun)
