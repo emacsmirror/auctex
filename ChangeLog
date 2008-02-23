@@ -1,3 +1,8 @@
+2008-02-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-common-menu-entries): Add exception for docTeX mode
+	when extending the customization menu.
+
 2008-02-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi: Repeat direntry after each category as per
