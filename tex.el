@@ -3796,7 +3796,9 @@ Brace insertion is only done if point is in a math construct and
       ["Extend this Menu"
        (progn
 	 (easy-menu-add-item
-	  nil (list TeX-base-mode-name)
+	  nil
+	  ;; Ugly hack because docTeX mode uses the LaTeX menu.
+	  (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
 	  (or TeX-customization-menu
 	      (setq TeX-customization-menu
 		    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
