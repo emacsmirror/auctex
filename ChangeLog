@@ -69,6 +69,12 @@
 
 	* doc/changes.texi: Add changes for 11.85.  Add copyright notice.
 
+2008-02-08  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-bar.el (LaTeX-symbols-toolbar-visible-flag): Improve doc string.
+
+	* toolbar-x.el (toolbarx-image-path): Improve doc string.
+
 2008-02-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-parse-TeX): Do not pop to output buffer.
