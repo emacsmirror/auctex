@@ -1,3 +1,7 @@
+2008-02-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in: Add windows-package target and related variables.
+
 2008-02-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-common-menu-entries): Add exception for docTeX mode
