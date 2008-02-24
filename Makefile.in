@@ -133,7 +133,7 @@ all: lisp docs
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball rpm-packages full-release tar-ball-clean \
-	wc xemacs-package preview-ball
+	wc xemacs-package preview-ball windows-package
 
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
@@ -419,3 +419,51 @@ www-doc:
 	&& echo -e "emacs split http://www.gnu.org/software/emacs/manual/html_node/\nemacs mono http://www.gnu.org/software/emacs/manual/emacs.html\nreftex split http://www.gnu.org/software/auctex/manual/reftex/\nreftex mono http://www.gnu.org/software/auctex/manual/reftex.html\n" > .texinfo/htmlxref.cnf \
 	&& ./gendocs.sh --texi2html auctex "AUCTeX Manual" \
 	&& ./gendocs.sh --texi2html preview-latex "preview-latex Manual"
+
+# Pre-compiled AUCTeX package for Emacs on Windows
+
+WBUILDDIR=$(PWD)/windows-package
+WEMACSVER=22.1
+WEMACS=/usr/src/emacs-$(WEMACSVER)/src/emacs
+WAUCVER=11.85
+WPACKAGE=$(WBUILDDIR)/auctex-$(WAUCVER)-e$(WEMACSVER)-msw.zip
+WPACKAGEFILES=site-lisp/auctex site-lisp/site-start.d site-lisp/site-start.el \
+	site-lisp/tex-site.el var/auctex doc info/dir info/auctex.info \
+	info/preview-latex.info
+
+windows-package:
+# Make sure the prerequisites are available
+	test -d $(WBUILDDIR) || mkdir $(WBUILDDIR)
+	test -f $(WBUILDDIR)/emacs-$(WEMACSVER)-bin-i386.zip \
+	|| { cd $(WBUILDDIR) \
+	&& wget http://ftp.gnu.org/gnu/emacs/windows/emacs-$(WEMACSVER)-bin-i386.zip; }
+	test -f $(WBUILDDIR)/auctex-$(WAUCVER).zip \
+	|| { cd $(WBUILDDIR) \
+	&& wget http://ftp.gnu.org/gnu/auctex/auctex-$(WAUCVER).zip; }
+# Reset to clean state
+	cd $(WBUILDDIR) \
+	&& rm -rf emacs-$(WEMACSVER) \
+	&& rm -rf auctex-$(WAUCVER) \
+	&& unzip emacs-$(WEMACSVER)-bin-i386.zip \
+	&& unzip auctex-$(WAUCVER).zip
+	rm -f $(WPACKAGE)
+# Create site-start.el and site-start.d
+	cd $(WBUILDDIR)/emacs-$(WEMACSVER)/site-lisp \
+	&& echo -e ";; Load files in \`site-start.d' directory.\
+\n(dolist (file (directory-files\
+\n	       (concat (file-name-directory load-file-name) \"site-start.d\")\
+\n	       t \"\\\\\\\\.el\\\\\\\\'\"))\
+\n  (load file nil t t))" > site-start.el \
+	&& mkdir site-start.d
+# Build and install AUCTeX
+	cd $(WBUILDDIR)/auctex-$(WAUCVER) \
+	&& ./configure --prefix=$(WBUILDDIR)/emacs-$(WEMACSVER) \
+	  --without-texmf-dir --with-emacs=$(WEMACS) \
+	  --with-lispdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/site-lisp \
+	  --datarootdir=$(WBUILDDIR)/emacs-$(WEMACSVER) \
+	&& make \
+	&& sed -i -e 's/"\/[^\n]\+/(expand-file-name "..\/var\/auctex" (file-name-directory load-file-name))/' tex-site.el \
+	&& make install
+# Create the package
+	cd $(WBUILDDIR)/emacs-$(WEMACSVER) \
+	&& zip -r $(WPACKAGE) $(WPACKAGEFILES)
