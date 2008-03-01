@@ -32,10 +32,11 @@
 
 (defun LaTeX-pdfsync-output-page ()
   "Return page number in output file corresponding to buffer position."
-  (let* ((file (file-name-sans-extension
-		(file-name-nondirectory (buffer-file-name))))
-	 (line (TeX-line-number-at-pos))
+  (let* ((line (TeX-line-number-at-pos))
 	 (master (TeX-active-master))
+	 (file (file-name-sans-extension
+		(file-relative-name (buffer-file-name)
+				    (file-name-directory master))))
 	 (pdfsync-file (concat master ".pdfsync"))
 	 (sync-record "0")
 	 (sync-line "-1")
@@ -47,7 +48,7 @@
 	  (goto-char (point-min))
 	  ;; Narrow region to file in question.
 	  (when (not (string= file master))
-	    (re-search-forward (concat "^(" file "$") nil t)
+	    (re-search-forward (concat "^(" file "\\(.tex\\)?$") nil t)
 	    (let ((beg (match-beginning 0)))
 	      (goto-char beg)
 	      (narrow-to-region (line-beginning-position 2)
@@ -67,6 +68,9 @@
 			   last-match (match-beginning 0))))))
 	  ;; Look for the page number.
 	  (goto-char (or last-match (point-min)))
+	  ;; There might not be any p or s lines for the current file,
+	  ;; so make it possible to search further.
+	  (widen)
 	  (catch 'break
 	    (while (re-search-forward "^p \\([0-9]+\\)" nil t)
 	      (when (>= (string-to-number (match-string 1))
