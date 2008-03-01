@@ -1,3 +1,11 @@
+2008-03-01  Matan Ninio  <emacs@auctexdev.ninio.org>  (tiny change)
+
+	* style/pdfsync.el (LaTeX-pdfsync-output-page): Include
+	subdirectories relative to master file in file names.  Searching
+	for the file entry in the .pdfsync file allows for an optional
+	`.tex' extension in the filename.  Find further p lines if the
+	current context does not contain any more.
+
 2008-02-24  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in: Add windows-package target and related variables.
