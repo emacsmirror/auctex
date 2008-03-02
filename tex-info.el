@@ -56,7 +56,7 @@
   ;; Overwrite version from `texinfo.el'.
   (concat "^@\\("
 	  (mapconcat 'car Texinfo-environment-list "\\|")
-	  "\\|end\\)")
+	  "\\|end\\)\\>")
   "Regexp for environment-like Texinfo list commands.
 Subexpression 1 is what goes into the corresponding `@end' statement.")
 
