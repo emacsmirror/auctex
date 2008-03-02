@@ -1,3 +1,7 @@
+2008-03-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el (texinfo-environment-regexp): Terminate.
+
 2008-03-01  Matan Ninio  <emacs@auctexdev.ninio.org>  (tiny change)
 
 	* style/pdfsync.el (LaTeX-pdfsync-output-page): Include
