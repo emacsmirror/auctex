@@ -1,3 +1,8 @@
+2008-04-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/Makefile.in (install-auctex): Do not use `-' to suppress
+	errors within command.
+
 2008-04-28  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-run-command): disable undo in run buffer
