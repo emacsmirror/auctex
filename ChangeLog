@@ -1,3 +1,7 @@
+2008-04-28  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-run-command): disable undo in run buffer
+
 2008-03-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/pdfsync.el (LaTeX-pdfsync-output-page): Kill buffer with

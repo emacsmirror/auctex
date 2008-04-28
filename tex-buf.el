@@ -558,6 +558,7 @@ Return the new process."
     (setq-default TeX-command-buffer command-buff)
     (get-buffer-create buffer)
     (set-buffer buffer)
+    (buffer-disable-undo)
     (erase-buffer)
     (set (make-local-variable 'line-number-display-limit) 0)
     (setq TeX-output-extension nil)
