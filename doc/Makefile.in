@@ -121,7 +121,7 @@ install-auctex: auctex.info tex-ref.pdf
 	done
 	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) auctex.info
 	test X$(packagedir) != Xno || { \
-	  -$(MKINSTALLDIRS) $(DESTDIR)$(docdir); \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(docdir); \
 	  rm -f $(DESTDIR)$(docdir)/tex-ref.pdf; \
 	  $(INSTALL_DATA) tex-ref.pdf $(DESTDIR)$(docdir); \
 	}
