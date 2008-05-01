@@ -1,3 +1,8 @@
+2008-05-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-format-filter): Do not remove linebreak if the
+	following line starts with an opening parenthesis.
+
 2008-04-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/Makefile.in (install-auctex): Do not use `-' to suppress
