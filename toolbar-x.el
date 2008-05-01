@@ -1624,14 +1624,12 @@ the lists are built reversed."
     ;; - remove all specifiers for toolbars witout buttons
     (if default
 	(progn
-	  (if (memq (default-toolbar-position) '(top bottom))
-	      (set-specifier default-toolbar-visible-p
-			     (not (not default)) locale)
-	    (set-specifier default-toolbar-visible-p
-			   (not (not default)) locale))
-	  (if (memq (default-toolbar-position) '(top bottom))
-	      (set-specifier default-toolbar-height default-height locale)
-	    (set-specifier default-toolbar-width default-width locale))
+	  ;; Only activate the tool bar if it is already visible.
+	  (when toolbar-visible-p
+	    (set-specifier default-toolbar-visible-p (not (not default)) locale)
+	    (if (memq (default-toolbar-position) '(top bottom))
+		(set-specifier default-toolbar-height default-height locale)
+	      (set-specifier default-toolbar-width default-width locale)))
 	  (set-specifier default-toolbar default locale))
       (remove-specifier default-toolbar locale)
       (remove-specifier default-toolbar-visible-p locale)
