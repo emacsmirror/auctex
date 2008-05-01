@@ -1103,10 +1103,10 @@ command."
 	(while (> (point) pt)
 	  (end-of-line 0)
 	  (when (and (= (current-column) 79)
-		     ;; Heuristic: Don't delete the linebreak if there
-		     ;; is an empty line after the current one or
-		     ;; point is located after a period.
-		     (not (eq (char-after (1+ (point))) ?\n))
+		     ;; Heuristic: Don't delete the linebreak if the
+		     ;; next line is empty or starts with an opening
+		     ;; parenthesis or if point is located after a period.
+		     (not (memq (char-after (1+ (point))) '(?\n ?\()))
 		     (not (eq (char-before) ?.)))
 	    (delete-char 1)))
 	(goto-char (marker-position (process-mark process)))
