@@ -1,5 +1,8 @@
 2008-05-01  Ralf Angeli  <angeli@caeruleus.net>
 
+	* toolbar-x.el (toolbarx-xemacs-refresh): Only activate the tool
+	bar if it is already visible.  Remove redundant if clause.
+
 	* tex-buf.el (TeX-format-filter): Do not remove linebreak if the
 	following line starts with an opening parenthesis.
 
