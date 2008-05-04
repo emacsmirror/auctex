@@ -1,3 +1,10 @@
+2008-05-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-site.el.in (AUCTeX): Move customization group here from
+	tex.el and load the main files defining customization options.
+
+	* tex.el (AUCTeX): Move customization group to tex-site.el.in.
+
 2008-05-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* toolbar-x.el (toolbarx-xemacs-refresh): Only activate the tool
