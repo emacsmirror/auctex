@@ -516,7 +516,7 @@ string."
     ("%cS" TeX-source-specials-view-expand-client)
     ("%(outpage)" (lambda () (if TeX-sync-output-page-function
 				 (funcall TeX-sync-output-page-function)
-			       "")))
+			       "1")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
