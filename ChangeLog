@@ -4,6 +4,7 @@
 	tex.el and load the main files defining customization options.
 
 	* tex.el (AUCTeX): Move customization group to tex-site.el.in.
+	(TeX-expand-list): Make %(outpage) default to "1".
 
 2008-05-01  Ralf Angeli  <angeli@caeruleus.net>
 
