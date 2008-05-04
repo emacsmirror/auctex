@@ -41,6 +41,17 @@
 (if (< emacs-major-version 21)
   (error "AUCTeX requires Emacs 21 or later"))
 
+;; Define here in order for `M-x customize-group <RET> AUCTeX <RET>'
+;; to work if the main AUCTeX files are not loaded yet.
+(defgroup AUCTeX nil
+  "A (La)TeX environment."
+  :tag "AUCTeX"
+  :link '(custom-manual "(auctex)Top")
+  :link '(url-link :tag "Home Page" "http://www.gnu.org/software/auctex/")
+  :prefix "TeX-"
+  :group 'tex
+  :load "tex" :load "latex" :load "tex-style")
+
 (defvar TeX-lisp-directory
   @lisppackagelispdir@
   "The directory where most of the AUCTeX lisp files are located.
