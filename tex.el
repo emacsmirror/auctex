@@ -40,14 +40,6 @@
 (eval-when-compile
   (require 'cl))
 
-(defgroup AUCTeX nil
-  "A (La)TeX environment."
-  :tag "AUCTeX"
-  :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "http://www.gnu.org/software/auctex/")
-  :prefix "TeX-"
-  :group 'tex)
-
 (defgroup TeX-file nil
   "Files used by AUCTeX."
   :group 'AUCTeX)
