@@ -1,3 +1,8 @@
+2008-05-10  Reiner Steib  <reiner.steib@gmx.de>
+
+	* preview.el (preview-auto-cache-preamble): Fix markup in in doc
+	string.
+
 2008-02-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Relicense all "GPLv2 or later" files to "GPLv3 or later".

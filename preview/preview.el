@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.282 2008-02-03 14:53:31 angeli Exp $
+;; $Id: preview.el,v 1.283 2008-05-10 20:16:06 rsteib Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1839,7 +1839,7 @@ BUFFER-MISC is the appropriate data to be used."
 
 (defcustom preview-auto-cache-preamble 'ask
   "*Whether to generate a preamble cache format automatically.
-Possible values are NIL, T, and 'ask."
+Possible values are nil, t, and `ask'."
   :group 'preview-latex
   :type '(choice (const :tag "Cache" t)
 		 (const :tag "Don't cache" nil)
@@ -3512,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.282 $"))
+	(rev "$Revision: 1.283 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3526,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2008-02-03 14:53:31 $"))
+    (let ((date "$Date: 2008-05-10 20:16:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
