@@ -109,7 +109,7 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
 		    (const search-forward)
 		    (const print-buffer)
 		    (const [separator nil])
-		    (const latex)
+		    (const tex)
 		    (const next-error)
 		    (const view)
 		    (const file)

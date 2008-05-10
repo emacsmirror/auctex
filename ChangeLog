@@ -2,6 +2,7 @@
 
 	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Add
 	standard Emacs buttons to custom set.
+	(TeX-bar-TeX-buttons): Use `tex' instead of `latex' in custom set.
 
 2008-05-04  Ralf Angeli  <angeli@caeruleus.net>
 
