@@ -1,3 +1,8 @@
+2008-05-10  Reiner Steib  <reiner.steib@gmx.de>
+
+	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Add
+	standard Emacs buttons to custom set.
+
 2008-05-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-site.el.in (AUCTeX): Move customization group here from

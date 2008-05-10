@@ -96,12 +96,18 @@ Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-TeX-all-button-alists'."
   :type '(list (set :inline t
+		    (const new-file)
 		    (const open-file)
+		    (const dired)
+		    (const kill-buffer)
 		    (const save-buffer)
+		    (const write-file)
+		    (const undo)
 		    (const cut)
 		    (const copy)
 		    (const paste)
-		    (const undo)
+		    (const search-forward)
+		    (const print-buffer)
 		    (const [separator nil])
 		    (const latex)
 		    (const next-error)
@@ -232,12 +238,18 @@ Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-LaTeX-all-button-alists'."
   :type '(list (set :inline t
+		    (const new-file)
 		    (const open-file)
+		    (const dired)
+		    (const kill-buffer)
 		    (const save-buffer)
+		    (const write-file)
+		    (const undo)
 		    (const cut)
 		    (const copy)
 		    (const paste)
-		    (const undo)
+		    (const search-forward)
+		    (const print-buffer)
 		    (const [separator nil])
 		    (const latex)
 		    (const next-error)
