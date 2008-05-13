@@ -1,3 +1,7 @@
+2008-05-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Font Specifiers): Document `LaTeX-font-list'.
+
 2008-05-10  Reiner Steib  <reiner.steib@gmx.de>
 
 	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Add
