@@ -458,12 +458,17 @@ determines the font to use, as specified by @code{TeX-font-list}.
 @end deffn
 
 @defopt TeX-font-list
-List of fonts used by TeX-font.
+List of fonts used by @code{TeX-font}.
 
 Each entry is a list with three elements.  The first element is the
 key to activate the font.  The second element is the string to insert
 before point, and the third element is the string to insert after
 point.  An optional fourth element means always replace if not nil.
+@end defopt
+
+@defopt LaTeX-font-list
+List of fonts used by @code{TeX-font} in LaTeX mode.  It has the same
+structure as @code{TeX-font-list}.
 @end defopt
 
 @node Sectioning
