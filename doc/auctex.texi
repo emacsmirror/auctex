@@ -449,7 +449,7 @@ Delete the innermost font specification containing point.
 
 @end table
 
-@deffn Command TeX-font @var{arg}
+@deffn Command TeX-font replace what
 @kindex C-c C-f
 (@kbd{C-c C-f}) Insert template for font change command.
 
