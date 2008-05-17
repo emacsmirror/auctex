@@ -1,3 +1,8 @@
+2008-05-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Font Specifiers): Correct argument list of
+	`TeX-font'.
+
 2008-05-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Font Specifiers): Document `LaTeX-font-list'.
