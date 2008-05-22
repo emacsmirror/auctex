@@ -1,3 +1,8 @@
+2008-05-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-command-sentinel): Use `TeX-master-file' instead
+	of `TeX-active-master' for `TeX-transient-master'.
+
 2008-05-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Font Specifiers): Correct argument list of
