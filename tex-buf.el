@@ -810,8 +810,10 @@ reasons.  Use `TeX-run-function' instead."
   "Process TeX command output buffer after the process dies."
   ;; Set `TeX-transient-master' here because `preview-parse-messages'
   ;; may open files and thereby trigger master file questions which we
-  ;; don't want and need because we already know the master.
-  (let* ((TeX-transient-master (TeX-active-master))
+  ;; don't want and need because we already know the master.  Use
+  ;; `TeX-master-file' instead of `TeX-active-master' to determine the
+  ;; master because the region file should never be the master.
+  (let* ((TeX-transient-master (TeX-master-file))
 	 (buffer (process-buffer process))
 	 (name (process-name process)))
     (cond ((null (buffer-name buffer))	; buffer killed
