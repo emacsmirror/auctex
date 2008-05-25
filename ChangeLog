@@ -1,5 +1,8 @@
 2008-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
+	* latex.el (docTeX-mode): Add regexp group to value of
+	`TeX-comment-start-regexp'.
+
 	* style/doc.el (LaTeX-doc-after-insert-macrocode): New function.
 	("doc"): Add it to `LaTeX-after-insert-env-hooks'.
 
