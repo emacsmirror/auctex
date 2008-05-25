@@ -1,3 +1,51 @@
+2008-05-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/doc.el (LaTeX-doc-after-insert-macrocode): New function.
+	("doc"): Add it to `LaTeX-after-insert-env-hooks'.
+
+	* latex.el: Get rid of some compiler warnings.
+	(LaTeX-after-insert-env-hooks): New variable.
+	(LaTeX-insert-environment): Remove docTeX-specific code.
+	Run `LaTeX-after-insert-env-hooks'
+
+	* style/beamer.el (LaTeX-beamer-after-insert-env): New function.
+	("beamer"): Add it to `LaTeX-after-insert-env-hooks'.  Get rid of
+	some compiler warnings.  Support the semiverbatim environment.
+
+	* style/dinbrief.el: Get rid of some compiler warnings.
+
+	* style/dk-bib.el: Get rid of some compiler warnings.
+
+	* style/emp.el: Get rid of some compiler warnings.
+
+	* style/epsf.el: Get rid of some compiler warnings.
+
+	* style/foils.el: Get rid of some compiler warnings.
+
+	* style/graphicx.el: Get rid of some compiler warnings.
+
+	* style/letter.el: Get rid of some compiler warnings.
+
+	* style/prosper.el: Get rid of some compiler warnings.
+
+	* style/psfig.el: Get rid of some compiler warnings.
+
+	* texmathp.el: Get rid of some compiler warnings.
+
+	* tex.el: Get rid of some compiler warnings.
+
+	* tex-jp.el: Get rid of some compiler warnings.
+
+	* tex-buf.el: Get rid of some compiler warnings.
+
+	* font-latex.el: Get rid of some compiler warnings.
+
+	* context.el: Get rid of some compiler warnings.
+
+	* context-en.el: Get rid of some compiler warnings.
+
+	* context-nl.el: Get rid of some compiler warnings.
+
 2008-05-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-command-sentinel): Use `TeX-master-file' instead
