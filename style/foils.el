@@ -1,6 +1,6 @@
 ;;; foils.el - Special code for FoilTeX.
 
-;; $Id: foils.el,v 1.3 1999-07-16 13:48:17 abraham Exp $
+;; $Id: foils.el,v 1.4 2008-05-25 06:50:32 angeli Exp $
 
 ;;; Code:
 
@@ -17,10 +17,10 @@
   "Prompt for and insert foiltex options."
   (require 'timezone)
   (let* ((date (timezone-parse-date (current-time-string)))
-	 (year   (string-to-int (aref date 0)))
-	 (month  (string-to-int (aref date 1)))
-	 (day    (string-to-int (aref date 2)))
-	 (title (read-input "Title: ")))
+	 (year   (string-to-number (aref date 0)))
+	 (month  (string-to-number (aref date 1)))
+	 (day    (string-to-number (aref date 2)))
+	 (title (read-string "Title: ")))
     (save-excursion
       (goto-char (point-max))
       (re-search-backward ".begin.document.")

@@ -99,13 +99,15 @@ For detail, see `TeX-command-list', which this list is appended to."
 	      '(("-" "" ignore nil t)) ;; separator for command menu
 	      TeX-command-list))
 
-(mapcar (lambda (dir) (add-to-list 'TeX-macro-global dir t))
-  (TeX-macro-global-internal "platex" '("/ptex/" "/jbibtex/bst/")
-    '("/usr/share/texmf/ptex/" "/usr/share/texmf/jbibtex/bst/")))
+(mapc (lambda (dir) (add-to-list 'TeX-macro-global dir t))
+      (TeX-macro-global-internal
+       "platex" '("/ptex/" "/jbibtex/bst/")
+       '("/usr/share/texmf/ptex/" "/usr/share/texmf/jbibtex/bst/")))
 
-(mapcar (lambda (dir) (add-to-list 'TeX-macro-global dir t))
-  (TeX-macro-global-internal "jlatex" '("/jtex/" "/jbibtex/bst/")
-    '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
+(mapc (lambda (dir) (add-to-list 'TeX-macro-global dir t))
+      (TeX-macro-global-internal
+       "jlatex" '("/jtex/" "/jbibtex/bst/")
+       '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
 ;; Menus
 

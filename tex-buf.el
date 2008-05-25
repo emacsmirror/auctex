@@ -1474,7 +1474,7 @@ name(\\([^)]+\\))\\)\\|\
 	 ;; Hook to change line numbers
 	 ((match-beginning 5)
 	  (setq TeX-error-offset
-		(list (string-to-int (TeX-match-buffer 5))))
+		(list (string-to-number (TeX-match-buffer 5))))
 	  t)
 	 
 	 ;; Hook to change file name
@@ -1496,7 +1496,7 @@ name(\\([^)]+\\))\\)\\|\
 
 	 ;; And the line number to position the cursor.
 	 (line (if (re-search-forward "l\\.\\([0-9]+\\)" nil t)
-		   (string-to-int (TeX-match-buffer 1))
+		   (string-to-number (TeX-match-buffer 1))
 		 1))
 	 ;; And a string of the context to search for.
 	 (string (progn
@@ -1561,8 +1561,8 @@ name(\\([^)]+\\))\\)\\|\
 
 	 ;; Get error-line (warning)
 	 (line (when (re-search-backward line-string nil t)
-		 (string-to-int (TeX-match-buffer 1))))
-	 (line-end (if bad-box (string-to-int (TeX-match-buffer 2))
+		 (string-to-number (TeX-match-buffer 1))))
+	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
 		     line))
 
 	 ;; Find the context

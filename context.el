@@ -76,7 +76,7 @@
 
 ;; others
 
-(setq ConTeXt-known-interfaces '("cz" "de" "en" "it" "nl" "ro" "uk"))
+(defvar ConTeXt-known-interfaces '("cz" "de" "en" "it" "nl" "ro" "uk"))
 
 (defcustom ConTeXt-default-interface "en"
   "Default interface to be used when running ConTeXt."
@@ -398,6 +398,7 @@ To get a full featured `ConTeXt-section' command, insert
 				 ConTeXt-section-ref))
 
 in your .emacs file."
+  :group 'ConTeXt-macro
   :type 'hook
   :options
   '(ConTeXt-section-heading
@@ -522,7 +523,7 @@ inserted after the sectioning command."
 	 "start")
 	(t
 	 ;; this should not happen
-	 (error "Unknown interface: " ConTeXt-current-interface))))
+	 (error "Unknown interface: %s" ConTeXt-current-interface))))
 
 (defun ConTeXt-environment-stop-name ()
   "Return the \\stop translated to the language in current interface."
@@ -533,7 +534,7 @@ inserted after the sectioning command."
 	 "stop")
 	(t
 	 ;; this should not happen
-	 (error "Unknown interface: " ConTeXt-current-interface))))
+	 (error "Unknown interface: %s" ConTeXt-current-interface))))
 
 
 (defun ConTeXt-environment (arg)
@@ -1399,7 +1400,7 @@ else.  There might be text before point."
 	(TeX-update-style)
 	(setq ConTeXt-menu-changed nil)
 	(message "Updating section menu...")
-	(mapcar 'ConTeXt-section-enable ConTeXt-section-list)
+	(mapc 'ConTeXt-section-enable ConTeXt-section-list)
 	(message "Updating environment menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-environment-menu-name
 			  (LaTeX-split-long-menu

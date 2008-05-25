@@ -19,7 +19,7 @@
 (defun TeX-arg-epsfsize (optional &optional prompt definition)
   "Create a line that print epsf figures at a certain percentage"
   (interactive)
-  (let ((scale (read-input "Scale (%): "))
+  (let ((scale (read-string "Scale (%): "))
 	)
     (setq scalestr (if (zerop (length scale))
 		       "75"

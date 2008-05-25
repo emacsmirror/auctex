@@ -1075,17 +1075,17 @@ backwards to the minimum over their return values.")
   (when (fboundp 'built-in-face-specifiers)
     ;; Cool patch from Christoph Wedler...
     (let (instance)
-      (mapcar (lambda (property)
-		(setq instance
-		      (face-property-instance 'font-latex-math-face property
-					      nil 0 t))
-		(if (numberp instance)
-		    (setq instance
-			  (face-property-instance 'default property nil 0)))
-		(or (numberp instance)
-		    (set-face-property 'font-lock-string-face property
-				       instance (current-buffer))))
-	      (built-in-face-specifiers))))
+      (mapc (lambda (property)
+	      (setq instance
+		    (face-property-instance 'font-latex-math-face property
+					    nil 0 t))
+	      (if (numberp instance)
+		  (setq instance
+			(face-property-instance 'default property nil 0)))
+	      (or (numberp instance)
+		  (set-face-property 'font-lock-string-face property
+				     instance (current-buffer))))
+	    (built-in-face-specifiers))))
 
   ;; Activate multi-line fontification facilities if available.
   (when (boundp 'font-lock-multiline)
@@ -1141,8 +1141,8 @@ backwards to the minimum over their return values.")
 	(progn
 	  ;; XEmacs does not set these variables via `font-lock-defaults'
 	  ;; but requires them to be set explicitely.
-	  (mapcar (lambda (alist)
-		    (set (car alist) (cdr alist))) variables)
+	  (mapc (lambda (alist)
+		  (set (car alist) (cdr alist))) variables)
 	  ;; Has to be set to t as otherwise syntax properties will not be
 	  ;; be picked up during fontification.
 	  (set (make-local-variable 'lookup-syntax-properties) t))

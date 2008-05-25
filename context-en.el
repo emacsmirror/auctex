@@ -164,7 +164,7 @@
 
 (defun ConTeXt-en-mode-initialization ()
   "ConTeXt english interface specific initialization."
-  (mapcar 'ConTeXt-add-environments (reverse ConTeXt-environment-list-en))
+  (mapc 'ConTeXt-add-environments (reverse ConTeXt-environment-list-en))
 
   (TeX-add-symbols
    '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))

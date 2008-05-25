@@ -2793,8 +2793,8 @@ If TEX is a directory, generate style files for all files in the directory."
     (make-directory TeX-auto-global))
   (let ((TeX-file-extensions '("cls" "sty"))
 	(BibTeX-file-extensions nil))
-    (mapcar (lambda (macro) (TeX-auto-generate macro TeX-auto-global))
-	    TeX-macro-global))
+    (mapc (lambda (macro) (TeX-auto-generate macro TeX-auto-global))
+	  TeX-macro-global))
   (byte-recompile-directory TeX-auto-global 0))
 
 (defun TeX-auto-store (file)
@@ -2809,9 +2809,8 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook \"" style "\"\n"
 		  " (lambda ()")
-	  (mapcar (lambda (el)
-		    (TeX-auto-insert el style))
-		  TeX-auto-parser)
+	  (mapc (lambda (el) (TeX-auto-insert el style))
+		TeX-auto-parser)
 	  (insert "))\n\n")
 	  (write-region (point-min) (point-max) file nil 'silent)
 	  (kill-buffer (current-buffer))))
@@ -2999,7 +2998,7 @@ functions in `TeX-auto-cleanup-hook' after parsing."
 
   (let ((case-fold-search nil))
 
-    (mapcar 'TeX-auto-clear-entry TeX-auto-parser)
+    (mapc 'TeX-auto-clear-entry TeX-auto-parser)
     (run-hooks 'TeX-auto-prepare-hook)
 
     (save-excursion
