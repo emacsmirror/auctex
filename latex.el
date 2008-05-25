@@ -4828,7 +4828,7 @@ runs the hooks in `docTeX-mode-hook'."
   ;; Make filling and indentation aware of DocStrip guards.
   (setq paragraph-start (concat paragraph-start "\\|%<")
 	paragraph-separate (concat paragraph-separate "\\|%<")
-	TeX-comment-start-regexp "%\\(?:<[^>]+>\\)?")
+	TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
