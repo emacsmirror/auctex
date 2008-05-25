@@ -612,12 +612,16 @@ With prefix-argument, reopen environment afterwards."
 			 marker))
 	(move-marker marker nil)))))
 
+(defvar LaTeX-after-insert-env-hooks nil
+  "List of functions to be run at the end of `LaTeX-insert-environment'.
+Each function is called with three arguments: the name of the
+environment just inserted, the buffer position just before
+\\begin and the position just before \\end.")
+
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert LaTeX ENVIRONMENT with optional argument EXTRA."
   (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
-	(macrocode-p (and (eq major-mode 'doctex-mode)
-			  (string-match "\\`macrocode\\*?\\'" environment)))
-	prefix content-start)
+	prefix content-start env-start env-end)
     (when (and active-mark (< (mark) (point))) (exchange-point-and-mark))
     ;; Compute the prefix.
     (when (and LaTeX-insert-into-comments (TeX-in-commented-line))
@@ -663,7 +667,8 @@ With prefix-argument, reopen environment afterwards."
 	       (newline)
 	       (when prefix (insert prefix))))))
     ;; Now insert the environment.
-    (if macrocode-p (insert "%") (when prefix (insert prefix)))
+    (when prefix (insert prefix))
+    (setq env-start (point))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
     (indent-according-to-mode)
     (when extra (insert extra))
@@ -673,7 +678,8 @@ With prefix-argument, reopen environment afterwards."
       (when prefix (insert prefix))
       (newline))
     (when active-mark (goto-char (mark)))
-    (if macrocode-p (insert "%") (when prefix (insert prefix)))
+    (when prefix (insert prefix))
+    (setq env-end (point))
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
     (end-of-line 0)
     (if active-mark
@@ -682,8 +688,10 @@ With prefix-argument, reopen environment afterwards."
 	      (LaTeX-fill-region content-start (line-beginning-position 2)))
 	  (set-mark content-start))
       (indent-according-to-mode))
-    (save-excursion (beginning-of-line 2) (indent-according-to-mode)))
-  (TeX-math-input-method-off))
+    (save-excursion (beginning-of-line 2) (indent-according-to-mode))
+    (TeX-math-input-method-off)
+    (run-hook-with-args 'LaTeX-after-insert-env-hooks
+			environment env-start env-end)))
 
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
@@ -1304,49 +1312,49 @@ The input string may include LaTeX comments and newlines."
 	       (add-to-list 'TeX-auto-file "latex2"))))))
 
   ;; Cleanup optional arguments
-  (mapcar (lambda (entry)
-	    (add-to-list 'TeX-auto-symbol
-			 (list (nth 0 entry)
-			       (string-to-int (nth 1 entry)))))
-	  LaTeX-auto-arguments)
+  (mapc (lambda (entry)
+	  (add-to-list 'TeX-auto-symbol
+		       (list (nth 0 entry)
+			     (string-to-number (nth 1 entry)))))
+	LaTeX-auto-arguments)
 
   ;; Cleanup default optional arguments
-  (mapcar (lambda (entry)
-	    (add-to-list 'TeX-auto-symbol
-			 (list (nth 0 entry)
-			       (vector "argument")
-			       (1- (string-to-int (nth 1 entry))))))
-	  LaTeX-auto-optional)
+  (mapc (lambda (entry)
+	  (add-to-list 'TeX-auto-symbol
+		       (list (nth 0 entry)
+			     (vector "argument")
+			     (1- (string-to-number (nth 1 entry))))))
+	LaTeX-auto-optional)
 
   ;; Cleanup environments arguments
-  (mapcar (lambda (entry)
-	    (add-to-list 'LaTeX-auto-environment
-			 (list (nth 0 entry)
-			       (string-to-int (nth 1 entry)))))
-	  LaTeX-auto-env-args)
+  (mapc (lambda (entry)
+	  (add-to-list 'LaTeX-auto-environment
+		       (list (nth 0 entry)
+			     (string-to-number (nth 1 entry)))))
+	LaTeX-auto-env-args)
 
   ;; Cleanup use of def to add environments
   ;; NOTE: This uses an O(N^2) algorithm, while an O(N log N)
   ;; algorithm is possible.
-  (mapcar (lambda (symbol)
-	    (if (not (TeX-member symbol TeX-auto-symbol 'equal))
-		;; No matching symbol, insert in list
-		(add-to-list 'TeX-auto-symbol (concat "end" symbol))
-	      ;; Matching symbol found, remove from list
-	      (if (equal (car TeX-auto-symbol) symbol)
-		  ;; Is it the first symbol?
-		  (setq TeX-auto-symbol (cdr TeX-auto-symbol))
-		;; Nope!  Travel the list
-		(let ((list TeX-auto-symbol))
-		  (while (consp (cdr list))
-		    ;; Until we find it.
-		    (if (equal (car (cdr list)) symbol)
-			;; Then remove it.
-			(setcdr list (cdr (cdr list))))
-		    (setq list (cdr list)))))
-	      ;; and add the symbol as an environment.
-	      (add-to-list 'LaTeX-auto-environment symbol)))
-	  LaTeX-auto-end-symbol))
+  (mapc (lambda (symbol)
+	  (if (not (TeX-member symbol TeX-auto-symbol 'equal))
+	      ;; No matching symbol, insert in list
+	      (add-to-list 'TeX-auto-symbol (concat "end" symbol))
+	    ;; Matching symbol found, remove from list
+	    (if (equal (car TeX-auto-symbol) symbol)
+		;; Is it the first symbol?
+		(setq TeX-auto-symbol (cdr TeX-auto-symbol))
+	      ;; Nope!  Travel the list
+	      (let ((list TeX-auto-symbol))
+		(while (consp (cdr list))
+		  ;; Until we find it.
+		  (if (equal (car (cdr list)) symbol)
+		      ;; Then remove it.
+		      (setcdr list (cdr (cdr list))))
+		  (setq list (cdr list)))))
+	    ;; and add the symbol as an environment.
+	    (add-to-list 'LaTeX-auto-environment symbol)))
+	LaTeX-auto-end-symbol))
 
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-auto-cleanup)
 
@@ -1601,7 +1609,7 @@ ELSE as an argument list."
 	  ;; in the style list can come from documentclass options and
 	  ;; does not necessarily mean that the babel-related
 	  ;; extensions should be activated.
-	  (mapcar 'TeX-run-style-hooks (LaTeX-listify-package-options options))
+	  (mapc 'TeX-run-style-hooks (LaTeX-listify-package-options options))
 	  (TeX-argument-insert options t))))))
 
 (defvar TeX-global-input-files nil
@@ -4491,7 +4499,7 @@ The argument IGNORED is not used in any way."
   (or LaTeX-section-menu
       (progn
 	(setq LaTeX-section-list-changed nil)
-	(mapcar 'LaTeX-section-enable LaTeX-section-list)
+	(mapc 'LaTeX-section-enable LaTeX-section-list)
 	(setq LaTeX-section-menu
 	      (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))))
 
@@ -5316,7 +5324,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
       (setq optlist (cdr optlist)))
     ;;(message (format "%S %S" 2eoptlist 2epackages))
     (goto-char docline)
-    (next-line 1)
+    (forward-line 1)
     (insert "\\documentclass")
     (if 2eoptlist
 	(insert "["
