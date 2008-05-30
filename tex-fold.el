@@ -88,7 +88,8 @@ macros, 'math for math macros and 'comment for comments."
 	"textbf" "textsc" "textup")))
   "List of display strings and macros to fold."
   :type '(repeat (group (choice (string :tag "Display String")
-				(integer :tag "Number of argument" :value 1))
+				(integer :tag "Number of argument" :value 1)
+				(function :tag "Function to execute"))
 			(repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
@@ -711,10 +712,21 @@ That means, put respective properties onto overlay OV."
   (let* ((ov-start (overlay-start ov))
 	 (ov-end (overlay-end ov))
 	 (spec (overlay-get ov 'TeX-fold-display-string-spec))
-	 (computed (if (stringp spec)
-		       spec
-		     (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
-			 "[Error: No content found]")))
+	 (computed (cond
+		    ((stringp spec) spec)
+		    ((functionp spec)
+		     (let ((arg-list nil)
+			   (n 1)
+			   (arg ""))
+		       (while (setq arg (TeX-fold-macro-nth-arg n ov-start ov-end))
+			 (add-to-list 'arg-list (car arg) t)
+			 (setq n (1+ n)))
+		       (or (condition-case nil
+			       (apply spec arg-list)
+			     (error nil))
+			   "[Error: No content or function found]")))
+		    (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
+			   "[Error: No content found]"))))
 	 (display-string (if (listp computed) (car computed) computed))
 	 (face (when (listp computed) (cadr computed))))
     ;; Cater for zero-length display strings.
