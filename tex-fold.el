@@ -1,6 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.
 
-;; Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -86,7 +86,21 @@ macros, 'math for math macros and 'comment for comments."
 	"paragraph*" "subparagraph*"
 	"emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
 	"textbf" "textsc" "textup")))
-  "List of display strings and macros to fold."
+  "List of replacement specifiers and macros to fold.
+
+The first element of each item can be a string, an integer or a
+function symbol.  The second element is a list of macros two fold
+without the leading backslash.  If the first element is a string,
+it will be used as a display replacement for the whole macro.
+Numbers in braces, like \"{1}\" will be replaced by the
+respective macro argument.  If the first element is an integer,
+the macro will be replaced by the respective macro argument.  If
+the first element is a function symbol, the function will be
+called with all mandatory arguments of the macro and the result
+of the function call will be used as a replacement for the macro.
+
+Setting this variable does not take effect immediately.  Use
+Customize or reset the mode."
   :type '(repeat (group (choice (string :tag "Display String")
 				(integer :tag "Number of argument" :value 1)
 				(function :tag "Function to execute"))
@@ -713,12 +727,23 @@ That means, put respective properties onto overlay OV."
 	 (ov-end (overlay-end ov))
 	 (spec (overlay-get ov 'TeX-fold-display-string-spec))
 	 (computed (cond
-		    ((stringp spec) spec)
+		    ((stringp spec)
+		     (let (match-end)
+		       (while (string-match "{\\([1-9]\\)}" spec match-end)
+			 (setq match-end (match-beginning 0))
+			 (setq spec (replace-match
+				     (car (save-match-data
+					    (TeX-fold-macro-nth-arg
+					     (string-to-number
+					      (match-string 1 spec))
+					     ov-start ov-end)))
+				     nil nil spec)))
+		       spec))
 		    ((functionp spec)
-		     (let ((arg-list nil)
-			   (n 1)
-			   (arg ""))
-		       (while (setq arg (TeX-fold-macro-nth-arg n ov-start ov-end))
+		     (let (arg arg-list
+			   (n 1))
+		       (while (setq arg (TeX-fold-macro-nth-arg
+					 n ov-start ov-end))
 			 (add-to-list 'arg-list (car arg) t)
 			 (setq n (1+ n)))
 		       (or (condition-case nil
