@@ -1,3 +1,9 @@
+2008-05-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-macro-spec-list): Add some documentation.
+	(TeX-fold-hide-item): Support replacement of argument specifiers
+	like "{1}" by the respective argument value in the display string.
+
 2008-05-30  Joost Kremers  <joostkremers@fastmail.fm>  (tiny change)
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Add function choice.
