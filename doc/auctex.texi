@@ -1415,11 +1415,20 @@ your font locking patterns.  If you want to disable fontification in
 accessible with @kbd{M-x customize-group RET font-latex RET}.  For this
 description the various options are explained in conceptional groups.
 
-@heading Macros
+@menu
+* Fontification of macros::     Fontification of macros
+* Fontification of quotes::     Fontification of quotes
+* Subscript and superscript::   Subscript and superscript in math
+* Verbatim content::            Verbatim macros and environments
+* Multi-line fontification::    Multi-line fontification
+* Faces::                       Faces used by font-latex
+@end menu
+
+@node Fontification of macros
+@subsection Fontification of macros
 
 Highlighting of macros can be customized by adapting keyword lists which
-can be found in the customization group @code{font-latex-keywords}.  The
-lists contain names of macros without the leading backslash.
+can be found in the customization group @code{font-latex-keywords}.
 
 Three types of macros can be handled differently with respect to
 fontification:
@@ -1444,6 +1453,32 @@ is present, the latter face will be applied to the macro itself.
 Simple macros of the form @samp{\foo} which do not have any arguments or
 groupings.  The respective face will be applied to the macro itself.
 @end enumerate
+
+Customization variables for @samp{\foo[bar]@{baz@}} type macros allow
+both the macro name and the sequence of arguments to be specified.  The
+latter is done with a string which can contain the characters
+@table @samp
+@item *
+indicating the existence of a starred variant for the macro,
+@item [
+for optional arguments in brackets,
+@item @{
+for mandatory arguments in braces,
+@item \
+for mandatory arguments consisting of a single macro and
+@item |
+as a prefix indicating that two alternatives are following.
+@end table
+For example the specifier for @samp{\documentclass} would be @samp{[@{}
+because the macro has one optional followed by one mandatory argument.
+The specifier for @samp{\newcommand} would be @samp{*|@{\[[@{} because
+there is a starred variant, the mandatory argument following the macro
+name can be a macro or a @TeX{} group which can be followed by two
+optional arguments and the last token is a mandatory argument in braces.
+
+Customization variables for the @samp{@{\foo text@}} and @samp{\foo}
+types are simple lists of strings where each entry is a macro name
+(without the leading backslash).
 
 @subheading General macro classes
 
@@ -1476,7 +1511,7 @@ Face: @code{font-lock-type-face}
 @item font-latex-match-variable-keywords
 Keywords for macros defining or related to variables, like
 @samp{\setlength}.@*
-Type: @samp{\macro[...]@{...@}@{...@}}@*
+Type: @samp{\macro[...]@{...@}}@*
 Face: @code{font-lock-variable-name-face}
 
 @item font-latex-match-warning-keywords
@@ -1624,8 +1659,10 @@ names, i.e. they must not clash with names of the built-in keyword
 classes or other names given by you.  Additionally the names must not
 contain spaces.
 
-The keywords are names of commands you want to match omitting the
-leading backslash.
+The list of keywords defines which commands and declarations should be
+covered by the keyword class.  A keyword can either be a simple command
+name omitting the leading backslash or a list consisting of the command
+name and a string specifying the sequence of arguments for the command.
 
 The face argument can either be an existing face or font specifications
 made by you.  (The latter option is not available on XEmacs.)
@@ -1635,7 +1672,8 @@ arguments'', ``Declaration inside @TeX{} group'' and ``Command without
 arguments''---which correspond with the macro types explained above.
 @end defopt
 
-@heading Quotes
+@node Fontification of quotes
+@subsection Fontification of quotes
 @cindex Quotes, fontification of
 
 Text in quotation marks is displayed with the face
@@ -1665,7 +1703,8 @@ If you set @code{font-latex-quotes} to nil, quoted content will not be
 fontified.
 @end defopt
 
-@heading Subscript and superscript in math
+@node Subscript and superscript
+@subsection Subscript and superscript in math
 @cindex Subscript, fontification of
 @cindex Superscript, fontification of
 
@@ -1691,7 +1730,8 @@ exactly to specify for the values, see @ref{Other Display Specs, , Other
 Display Specifications, elisp, GNU Emacs Lisp Reference Manual}.
 @end defopt
 
-@heading Verbatim macros and environments
+@node Verbatim content
+@subsection Verbatim macros and environments
 @cindex Verbatim, fontification of
 
 Usually it is not desirable to have content to be typeset verbatim
@@ -1709,7 +1749,8 @@ environments are recognized is controlled by the variables
 @code{LaTeX-verbatim-macros-with-braces}, and
 @code{LaTeX-verbatim-environments} respectively.
 
-@heading Multi-line fontification
+@node Multi-line fontification
+@subsection Multi-line fontification
 
 Font locking in @LaTeX{} source code often involves constructs spanning
 more than one line of text.  For these constructs to be handled
@@ -1729,7 +1770,8 @@ Setting this variable will only have effect after resetting buffers
 controlled by @fontlatex{} or restarting Emacs.
 @end defopt
 
-@heading Faces
+@node Faces
+@subsection Faces used by @fontlatex{}
 @cindex Faces
 
 In case you want to change the colors and fonts used by @fontlatex{}
