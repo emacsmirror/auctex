@@ -1,3 +1,13 @@
+2008-06-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-make-built-in-keywords): Distinguish
+	command-type keyword classes from others when creating the
+	respective variables.
+
+	* doc/auctex.texi (Font Locking): Structure with nodes.
+	(Fontification of macros): Describe format specifiers for macros
+	with arguments.
+
 2008-05-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Add some documentation.
