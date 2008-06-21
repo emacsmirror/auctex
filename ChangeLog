@@ -1,3 +1,9 @@
+2008-06-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/hyperref.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/hyperref.el.
+
 2008-06-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-make-built-in-keywords): Distinguish
