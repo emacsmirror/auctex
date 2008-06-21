@@ -115,7 +115,8 @@ STYLESRC = style/prosper.el \
 	   style/inputenc.el  style/frenchb.el   style/francais.el \
 	   style/MinionPro.el style/pdfsync.el   style/polish.el \
 	   style/polski.el    style/icelandic.el style/comment.el \
-	   style/flashcards.el style/pstricks.el style/nomencl.el
+	   style/flashcards.el style/pstricks.el style/nomencl.el \
+	   style/hyperref.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
