@@ -2953,25 +2953,32 @@ This requires parsing to be enabled, @pxref{Parsing Files}.
 The following style files are recognized:
 
 @c In alphabetic order of the hooks:
+@vindex TeX-language-bg-hook
 @vindex TeX-language-cz-hook
 @vindex TeX-language-dk-hook
 @vindex TeX-language-nl-hook
 @vindex TeX-language-de-hook
 @vindex TeX-language-it-hook
+@vindex TeX-language-is-hook
 @vindex TeX-language-pl-hook
 @vindex TeX-language-sk-hook
 @vindex TeX-language-sv-hook
+@cindex Bulgarian
 @cindex Czech
-@cindex Italy
-@cindex Denmark
+@cindex Italian
 @cindex Danish
-@cindex Holland
 @cindex Dutch
-@cindex Germany
-@cindex Poland
-@cindex Slovakia
-@cindex Sweden
+@cindex German
+@cindex Polish
+@cindex Slovak
+@cindex Swedish
 @table @file
+@item bulgarian
+Runs style hook @code{TeX-language-bg-hook}.  Gives @samp{"} word
+syntax, makes the @key{"} key insert a literal @samp{"}.  Typing @key{"}
+twice will insert insert @samp{"`} or @samp{"'} depending on context.
+Typing @key{-} twice will insert @samp{"=}, three times @samp{--}.
+
 @item czech
 Runs style hook @code{TeX-language-cz-hook}.  Pressing @key{"} will
 insert @samp{\uv@{} and @samp{@}} depending on context.
