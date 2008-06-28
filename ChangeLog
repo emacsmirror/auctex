@@ -1,3 +1,12 @@
+2008-06-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (European): Document `bulgarian' language
+	option.
+
+	* Makefile.in (STYLESRC): Add style/bulgarian.el.
+
+	* style/bulgarian.el: New file.
+
 2008-06-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/hyperref.el: New file.
