@@ -4176,12 +4176,13 @@ It should be accessed through the function `TeX-search-syntax-table'.")
   "Return a syntax table for searching purposes.
 ARGS may be a list of characters.  For each of them the
 respective predefined syntax is set.  Currently the parenthetical
-characters ?{, ?}, ?[, and ?] are supported.  The syntax of each
-of these characters not specified will be reset to \" \"."
-  (let ((char-syntax-alist '((?\{ . "(}")
-			     (?\} . "){")
-			     (?\[ . "(]")
-			     (?\] . ")["))))
+characters ?{, ?}, ?[, ?], ?\(, ?\), ?<, and ?> are supported.
+The syntax of each of these characters not specified will be
+reset to \" \"."
+  (let ((char-syntax-alist '((?\{ . "(}") (?\} . "){")
+			     (?\[ . "(]") (?\] . ")[")
+			     (?\( . "()") (?\) . ")(")
+			     (?\< . "(>") (?\> . ")<"))))
     ;; Clean entries possibly set before.
     (modify-syntax-entry ?\\ " " TeX-search-syntax-table)
     (modify-syntax-entry ?@ " " TeX-search-syntax-table)
@@ -4196,6 +4197,7 @@ of these characters not specified will be reset to \" \"."
       (modify-syntax-entry (car elt) " " TeX-search-syntax-table))
     ;; Now set what we got.
     (dolist (elt args)
+      (unless (assoc elt char-syntax-alist) (error "Char not supported"))
       (modify-syntax-entry elt (cdr (assoc elt char-syntax-alist))
 			   TeX-search-syntax-table))
     ;; Return the syntax table.
