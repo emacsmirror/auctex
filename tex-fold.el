@@ -75,7 +75,7 @@ macros, 'math for math macros and 'comment for comments."
     ("[l]" ("label"))
     ("[r]" ("ref" "pageref" "eqref"))
     ("[i]" ("index" "glossary"))
-    ("*" ("item"))
+    ("[1]:||*" ("item"))
     ("..." ("dots"))
     ("(C)" ("copyright"))
     ("(R)" ("textregistered"))
@@ -90,12 +90,25 @@ macros, 'math for math macros and 'comment for comments."
 
 The first element of each item can be a string, an integer or a
 function symbol.  The second element is a list of macros two fold
-without the leading backslash.  If the first element is a string,
-it will be used as a display replacement for the whole macro.
-Numbers in braces, like \"{1}\" will be replaced by the
-respective macro argument.  If the first element is an integer,
-the macro will be replaced by the respective macro argument.  If
-the first element is a function symbol, the function will be
+without the leading backslash.
+
+If the first element is a string, it will be used as a display
+replacement for the whole macro.  Numbers in braces, brackets,
+parens or angle brackets will be replaced by the respective macro
+argument.  For example \"{1}\" will be replaced by the first
+mandatory argument of the macro.  One can also define
+alternatives within the specifier which are used if an argument
+is not found.  Alternatives are separated by \"||\".  They are
+most useful with optional arguments.  As an example, the default
+specifier for \\item is \"[1]:||*\" which means that if there is
+an optional argument, its value is shown followed by a colon.  If
+there is no optional argument, only an asterisk is used as the
+display string.
+
+If the first element is an integer, the macro will be replaced by
+the respective macro argument.
+
+If the first element is a function symbol, the function will be
 called with all mandatory arguments of the macro and the result
 of the function call will be used as a replacement for the macro.
 
@@ -453,7 +466,8 @@ Return non-nil if an item was found and folded, nil otherwise."
 				(match-string-no-properties 1)
 			      (match-string 1))))
 	       (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
-				((eq type 'math) TeX-fold-math-spec-list-internal)
+				((eq type 'math)
+				 TeX-fold-math-spec-list-internal)
 				(t TeX-fold-macro-spec-list-internal)))
 	       fold-item
 	       (display-string-spec
@@ -561,10 +575,14 @@ string DISPLAY-STRING."
 		ov-end))
 	  (current-fill-column))))
 
-(defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end)
+(defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end delims)
   "Return a property list of the argument number N of a macro.
 The start of the macro to examine is given by MACRO-START, its
-end optionally by MACRO-END.
+end optionally by MACRO-END.  With DELIMS the type of delimiters
+can be specified as a cons cell containing the opening char as
+the car and the closing char as the cdr.  The chars have to have
+opening and closing syntax as defined in
+`TeX-search-syntax-table'.
 
 The first item in the returned list is the string specified in
 the argument, the second item may be a face if the argument
@@ -573,20 +591,31 @@ as well, so the second item is always nil.  In XEmacs the string
 does not enclose any faces, so these are given in the second item
 of the resulting list."
   (save-excursion
-    (let ((macro-end (or macro-end
-			 (save-excursion (goto-char macro-start)
-					 (TeX-find-macro-end))))
-	  content-start content-end)
+    (let* ((macro-end (or macro-end
+			  (save-excursion (goto-char macro-start)
+					  (TeX-find-macro-end))))
+	   (open-char (if delims (car delims) ?{))
+	   (open-string (char-to-string open-char))
+	   (close-char (if delims (cdr delims) ?}))
+	   (close-string (char-to-string close-char))
+	   content-start content-end)
       (goto-char macro-start)
       (if (condition-case nil
 	      (progn
 		(while (> n 0)
-		  (skip-chars-forward "^{" macro-end)
-		  (when (not (looking-at "{")) (error nil))
+		  (skip-chars-forward (concat "^" open-string) macro-end)
+		  (when (= (point) macro-end)
+		    (error nil))
 		  (setq content-start (progn
-					(skip-chars-forward "{ \t")
+					(skip-chars-forward
+					 (concat open-string " \t"))
 					(point)))
-		  (goto-char (TeX-find-closing-brace))
+		  (goto-char
+		   (if delims
+		       (with-syntax-table
+			   (TeX-search-syntax-table open-char close-char)
+			 (scan-lists (point) 1 1))
+		     (TeX-find-closing-brace)))
 		  (setq content-end (save-excursion
 				      (backward-char)
 				      (skip-chars-backward " \t")
@@ -720,6 +749,40 @@ Return non-nil if a removal happened, nil otherwise."
 
 ;;; Toggling
 
+(defun TeX-fold-expand-spec (spec ov-start ov-end)
+  "Expand instances of {<num>}, [<num>], <<num>>, and (<num>).
+Replace them with the respective macro argument."
+  (let ((spec-list (split-string spec "||"))
+	(delims '((?{ . ?}) (?[ . ?]) (?< . ?>) (?\( . ?\))))
+	match-end success)
+    (catch 'success
+      ;; Iterate over alternatives.
+      (dolist (elt spec-list)
+	(setq spec elt)
+	;; Find and expand every placeholder.
+	(while (and (string-match "\\([[{<]\\)\\([1-9]\\)\\([]}>]\\)" elt
+				  match-end)
+		    ;; Does the closing delim fit to the opening one?
+		    (string-equal
+		     (match-string 3 elt)
+		     (char-to-string
+		      (cdr (assq (string-to-char (match-string 1 elt))
+				 delims)))))
+	  (setq match-end (match-beginning 0))
+	  (let ((arg (car (save-match-data
+			    ;; Get the argument.
+			    (TeX-fold-macro-nth-arg
+			     (string-to-number (match-string 2 elt))
+			     ov-start ov-end
+			     (assoc (string-to-char (match-string 1 elt))
+				    delims))))))
+	    (when arg (setq success t))
+	    ;; Replace the placeholder in the string.
+	    (setq elt (replace-match (or arg TeX-fold-ellipsis) nil nil elt)
+		  spec elt)))
+	(when success (throw 'success nil))))
+    spec))
+
 (defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.
 That means, put respective properties onto overlay OV."
@@ -728,17 +791,7 @@ That means, put respective properties onto overlay OV."
 	 (spec (overlay-get ov 'TeX-fold-display-string-spec))
 	 (computed (cond
 		    ((stringp spec)
-		     (let (match-end)
-		       (while (string-match "{\\([1-9]\\)}" spec match-end)
-			 (setq match-end (match-beginning 0))
-			 (setq spec (replace-match
-				     (car (save-match-data
-					    (TeX-fold-macro-nth-arg
-					     (string-to-number
-					      (match-string 1 spec))
-					     ov-start ov-end)))
-				     nil nil spec)))
-		       spec))
+		     (TeX-fold-expand-spec spec ov-start ov-end))
 		    ((functionp spec)
 		     (let (arg arg-list
 			   (n 1))
@@ -885,13 +938,14 @@ With zero or negative ARG turn mode off."
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t)
 	(add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
-	(add-hook 'TeX-after-insert-macro-hook (lambda ()
-						 (when (and TeX-fold-mode TeX-fold-auto)
-						   (save-excursion
-						     (backward-char)
-						     (or (TeX-fold-item 'macro)
-							 (TeX-fold-item 'math)
-							 (TeX-fold-item 'env))))))
+	(add-hook 'TeX-after-insert-macro-hook
+		  (lambda ()
+		    (when (and TeX-fold-mode TeX-fold-auto)
+		      (save-excursion
+			(backward-char)
+			(or (TeX-fold-item 'macro)
+			    (TeX-fold-item 'math)
+			    (TeX-fold-item 'env))))))
 	;; Update the `TeX-fold-*-spec-list-internal' variables.
 	(dolist (elt '("macro" "env" "math"))
 	  (set (intern (format "TeX-fold-%s-spec-list-internal" elt))
