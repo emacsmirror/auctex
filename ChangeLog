@@ -1,5 +1,18 @@
 2008-06-28  Ralf Angeli  <angeli@caeruleus.net>
 
+	* font-latex.el (font-latex-find-matching-close): Simplify.  There
+	is no need for a general mechanism if the supported chars are
+	limited at another place.
+
+	* tex.el (TeX-search-syntax-table): Support (...) and <...>.
+
+	* tex-fold.el (TeX-fold-macro-spec-list): New spec for \item.
+	Adapt doc string to reflect new functionality.
+	(TeX-fold-macro-nth-arg): New `delims' parameter which can be used
+	to find other macro args than those enclosed by braces.
+	(TeX-fold-expand-spec): New function.
+	(TeX-fold-hide-item): Use it.
+
 	* doc/auctex.texi (European): Document `bulgarian' language
 	option.
 
