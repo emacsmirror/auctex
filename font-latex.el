@@ -1265,16 +1265,7 @@ ignored during the search."
      (condition-case nil
 	 (progn
 	   (goto-char (with-syntax-table
-			  (let ((table (TeX-search-syntax-table)))
-			    ;; Give `openchar' and `closechar' open paren and
-			    ;; close paren syntax respectively.
-			    (modify-syntax-entry
-			     openchar (concat "(" (char-to-string closechar))
-			     table)
-			    (modify-syntax-entry
-			     closechar (concat ")" (char-to-string openchar))
-			     table)
-			    table)
+			  (TeX-search-syntax-table openchar closechar)
 			(scan-sexps (point) 1)))
 	   ;; No error code.  See if closechar is unquoted
 	   (save-excursion
