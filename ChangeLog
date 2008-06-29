@@ -1,3 +1,8 @@
+2008-06-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/bulgarian.el ("bulgarian"): Use value of
+	`TeX-quote-after-quote' for default quote insertion behavior.
+
 2008-06-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-find-matching-close): Simplify.  There
