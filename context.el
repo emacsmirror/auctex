@@ -145,6 +145,23 @@
   (ConTeXt-arg-setup nil))
 
 
+;; Referencing ConTeXt macro's
+
+(defvar ConTeXt-referencing-list ()
+  "Calls ConTeXt-XX-other-macro-list where XX is the current interface.")
+
+(defun ConTeXt-referencing-command (what)
+  "The ConTeXt macro to call WHAT is itself, no interface specific calls."
+  what)
+
+(defun ConTeXt-insert-referencing (what)
+  "Insert the ConTeXt referencing SETUP."
+  (insert TeX-esc (ConTeXt-referencing-command what))
+  (newline)
+  (indent-according-to-mode)
+  (ConTeXt-arg-setup nil))
+
+
 ;; Other ConTeXt macro's
 
 (defvar ConTeXt-other-macro-list ()
@@ -510,7 +527,7 @@ inserted after the sectioning command."
   (setq ConTeXt-menu-changed t))
 
 ;; (defvar ConTeXt-environment-list ()
-;; 	"ConTeXt-environment-list-XX where XX is the current interface.")
+;;	"ConTeXt-environment-list-XX where XX is the current interface.")
 
 (defvar ConTeXt-environment-history nil)
 
@@ -734,7 +751,7 @@ An entry looks like: (\"environment\" . function)")
 (defun ConTeXt-last-unended-start ()
   "Leave point at the beginning of the last `\\start...' that is unstopped looking from the current cursor."
   (while (and (re-search-backward "\\\\start[a-zA-Z]*\\|\\\\stop[a-zA-Z]*")
-              (looking-at "\\\\stop[a-zA-Z]*"))
+	      (looking-at "\\\\stop[a-zA-Z]*"))
     (ConTeXt-last-unended-start)))
 
 (defun ConTeXt-mark-environment (&optional inner)
@@ -1247,6 +1264,17 @@ else.  There might be text before point."
   "Insert SETUP from menu."
   (ConTeXt-insert-setup setup))
 
+;; ConTeXt referencing macros
+(defvar ConTeXt-referencing-menu-name "Referencing")
+
+(defun ConTeXt-referencing-menu-entry (entry)
+  "Create an entry for the referencing menu."
+  (vector entry (list 'ConTeXt-referencing-menu entry)))
+
+(defun ConTeXt-referencing-menu (referencing)
+  "Insert REFERENCING from menu."
+  (ConTeXt-insert-referencing referencing))
+
 ;; ConTeXt other macros
 (defvar ConTeXt-other-macro-menu-name "Other macro")
 
@@ -1421,6 +1449,11 @@ else.  There might be text before point."
 			  (LaTeX-split-long-menu
 			   (mapcar 'ConTeXt-setup-menu-entry
 				   ConTeXt-setup-list)))
+	(message "Updating referencing menu...")
+	(easy-menu-change '("ConTeXt") ConTeXt-referencing-menu-name
+			  (LaTeX-split-long-menu
+			   (mapcar 'ConTeXt-referencing-menu-entry
+				   ConTeXt-referencing-list)))
 	(message "Updating other macro's menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-other-macro-menu-name
 			  (LaTeX-split-long-menu
@@ -1472,9 +1505,9 @@ else.  There might be text before point."
 ;; They are mapped to interface specific variables
 
 (defvar ConTeXt-language-variable-list
-  '(ConTeXt-define-list ConTeXt-setup-list ConTeXt-other-macro-list
-           ConTeXt-project-structure-list
-           ConTeXt-section-block-list ConTeXt-section-list
+  '(ConTeXt-define-list ConTeXt-setup-list ConTeXt-referencing-list ConTeXt-other-macro-list
+	   ConTeXt-project-structure-list
+	   ConTeXt-section-block-list ConTeXt-section-list
 		       ConTeXt-text ConTeXt-item-list))
 
 (defcustom ConTeXt-clean-intermediate-suffixes
