@@ -1,3 +1,8 @@
+2008-07-04  Berend de Boer  <berend@pobox.com>
+
+	* context.el, context-en.el: added a few more entries to the menu
+	to select ConTeXt macro's from.
+
 2008-06-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/bulgarian.el ("bulgarian"): Use value of
@@ -1104,7 +1109,7 @@
 	Using `nreverse' directly inside `let'.
 	`nreverse' is applied to lists generated from actual
 	data-structures, leaving such data-structures alone.
-	
+
 2006-11-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* context.el (ConTeXt-texexec-option-nonstop): New variable.
@@ -1173,7 +1178,7 @@
 
 	* RELEASE: Mention space in file names, PostScript stack
 	tolerance.
-	
+
 	* tex-buf.el (TeX-command-expand): Make `file' self-quoting in
 	expansion, and trick around with `TeX-command-pos' and other junk
 	in order to make the quoting stuff of "%`" and "%'" work.
