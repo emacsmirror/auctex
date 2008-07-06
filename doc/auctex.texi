@@ -1800,15 +1800,15 @@ certain environments or comments distracting when trying to concentrate
 on the body of your document.
 
 With @AUCTeX{}'s folding functionality you can collapse those items and
-replace them by either a fixed string or the content of one of their
-arguments instead.  If you want to make the original text visible again
-in order to view or edit it, move point sideways onto the placeholder
-(also called display string) or left-click with the mouse pointer on it.
-(The latter is currently only supported on Emacs.)  The macro or
-environment will unfold automatically, stay open as long as point is
-inside of it and collapse again once you move point out of it.  (Note
-that folding of environments currently does not work in every @AUCTeX{}
-mode.)
+replace them by a fixed string, the content of one of their arguments,
+or a mixture of both.  If you want to make the original text visible
+again in order to view or edit it, move point sideways onto the
+placeholder (also called display string) or left-click with the mouse
+pointer on it.  (The latter is currently only supported on Emacs.)  The
+macro or environment will unfold automatically, stay open as long as
+point is inside of it and collapse again once you move point out of it.
+(Note that folding of environments currently does not work in every
+@AUCTeX{} mode.)
 
 In order to use this feature, you have to activate @code{TeX-fold-mode}
 which will activate the auto-reveal feature and the necessary commands
@@ -1892,6 +1892,15 @@ located.  The behavior regarding the display string is analogous to
 @code{TeX-fold-unspec-env-display-string} respectively.
 @end deffn
 
+@deffn Command TeX-fold-math
+Hide the math macro on which point currently is located.  If the name of
+the macro is found in @code{TeX-fold-math-spec-list}, the respective
+display string will be shown instead.  If it is not found, the name of
+the macro in sqare brackets or the default string for unspecified macros
+(@code{TeX-fold-unspec-macro-display-string}) will be shown, depending
+on the value of the variable @code{TeX-fold-unspec-use-name}.
+@end deffn
+
 @deffn Command TeX-fold-comment
 @kindex C-c C-o C-c
 (@kbd{C-c C-o C-c}) Hide the comment point is located on.
@@ -1938,9 +1947,28 @@ consideration which are specified in the variable
 respectively.
 
 @defopt TeX-fold-macro-spec-list
-List of display strings or argument numbers and macros to fold.  If you
-specify a number, the content of the first mandatory argument of a
-@LaTeX{} macro will be used as the placeholder.
+List of replacement specifiers and macros to fold.  The specifier can be
+a string, an integer or a function symbol.
+
+If you specify a string, it will be used as a display replacement for
+the whole macro.  Numbers in braces, brackets, parens or angle brackets
+will be replaced by the respective macro argument.  For example
+@samp{{1}} will be replaced by the first mandatory argument of the
+macro.  One can also define alternatives within the specifier which are
+used if an argument is not found.  Alternatives are separated by
+@samp{||}.  They are most useful with optional arguments.  As an
+example, the default specifier for @samp{\item} is @samp{[1]:||*} which
+means that if there is an optional argument, its value is shown followed
+by a colon.  If there is no optional argument, only an asterisk is used
+as the display string.
+
+If you specify a number as the first element, the content of the
+respective mandatory argument of a @LaTeX{} macro will be used as the
+placeholder.
+
+If the first element is a function symbol, the function will be called
+with all mandatory arguments of the macro and the result of the function
+call will be used as a replacement for the macro.
 
 The placeholder is made by copying the text from the buffer together with
 its properties, i.e. its face as well.  If fontification has not
@@ -1958,6 +1986,20 @@ you have e.g. @samp{\begin@{tabularx@}@{\linewidth@}@{XXX@} ...
 \end@{tabularx@}} and specify 3 as the argument number, the resulting
 display string will be ``XXX''.
 @end defopt
+
+@defopt TeX-fold-math-spec-list
+List of display strings and math macros to fold.
+@end defopt
+
+@vindex LaTeX-fold-macro-spec-list
+@vindex LaTeX-fold-env-spec-list
+@vindex LaTeX-fold-math-spec-list
+The variables @code{TeX-fold-macro-spec-list},
+@code{TeX-fold-env-spec-list}, and @code{TeX-fold-math-spec-list} apply
+to any @AUCTeX{} mode.  If you want to make settings which are only
+applied to @LaTeX{} mode, you can use the mode-specific variables
+@code{LaTeX-fold-macro-spec-list}, @code{LaTeX-fold-env-spec-list}, and
+@code{LaTeX-fold-math-spec-list}
 
 @defopt TeX-fold-unspec-macro-display-string
 Default display string for macros which are not specified in
@@ -2373,10 +2415,10 @@ currently editing (forward search).
 Upon opening the viewer you will be asked if you want to start a server
 process (Gnuserv or Emacs server) which is necessary for inverse search.
 This happens only if there is no server running already.  You can
-customize the variable @code{TeX-source-specials-view-start-server} to
-inhibit the question and always or never start the server respectively.
+customize the variable @code{TeX-view-start-server} to inhibit the
+question and always or never start the server respectively.
 
-@defopt TeX-source-specials-view-start-server
+@defopt TeX-view-start-server
 If @code{TeX-source-specials-mode} is active and a @acronym{DVI} viewer
 is invoked, the default behavior is to ask if a server process should be
 started.  Set this variable to @code{t} if the question should be
