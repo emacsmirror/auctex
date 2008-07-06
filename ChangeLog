@@ -1,5 +1,9 @@
 2008-07-06  Ralf Angeli  <angeli@caeruleus.net>
 
+	* doc/auctex.texi (Folding): Document folding of math constructs
+	and the possibilities of providing expanders and alternatives in
+	replacement specifiers.
+
 	* tex.el (TeX-command-list): Add expanders for SyncTeX.
 	(TeX-expand-list): Start server if necessary when viewing.  Define
 	expander for SyncTeX.
