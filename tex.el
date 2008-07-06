@@ -4694,22 +4694,17 @@ sign.  With optional ARG, insert that many dollar signs."
     (insert "$")))
   (TeX-math-input-method-off))
 
+(defvar TeX-math-input-method-off-regexp
+  "^\\(chinese\\|japanese\\|korean\\bulgarian\\russian\\)"
+  "Regexp matching input methods to be deactivated when entering math mode.")
+
 (defun TeX-math-input-method-off ()
   "Toggle off input method when entering math mode."
   (and TeX-math-toggle-off-input-method
        (texmathp)
-       (TeX-toggle-off-input-method)))
-
-(defun TeX-toggle-off-input-method ()
-  "Toggle off input methods.
-Currently, only support CJK input methods provided by LEIM package."
-  (cond
-   ;; LEIM Package
-   ((and (boundp 'current-input-method) current-input-method
-	 (string-match "^\\(chinese\\|japanese\\|korean\\)" current-input-method))
-    (inactivate-input-method))
-   (t );; do nothing
-   ))
+       (boundp 'current-input-method) current-input-method
+       (string-match TeX-math-input-method-off-regexp current-input-method)
+       (inactivate-input-method)))
 
 ;;; Simple Commands
 
