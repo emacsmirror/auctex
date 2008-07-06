@@ -1,3 +1,37 @@
+2008-07-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-command-list): Add expanders for SyncTeX.
+	(TeX-expand-list): Start server if necessary when viewing.  Define
+	expander for SyncTeX.
+	(hack-one-local-variable): Cater for TeX SyncTeX mode.
+	(TeX-set-mode-name): Add lighter for TeX SyncTeX mode.
+	(TeX-view): New customization group.
+	(TeX-view-start-server): Renamed from
+	`TeX-source-specials-view-start-server'.
+	(TeX-source-specials-view-start-server): Rename to
+	`TeX-view-start-server' and define alias.
+	(TeX-view-start-server-asked): Renamed from
+	`TeX-source-specials-view-start-server-asked'.
+	(TeX-source-specials-view-start-server-asked): Rename to
+	`TeX-view-start-server-asked'.
+	(TeX-view-start-server-flag): New variable.
+	(TeX-view-gnuserv-p): Renamed from
+	`TeX-source-specials-view-gnuserv-p'.
+	(TeX-source-specials-view-gnuserv-p): Rename to
+	`TeX-view-gnuserv-p'.
+	(TeX-view-server-enabled-p): New function.
+	(TeX-view-start-server-maybe): New function.
+	(TeX-source-specials-mode): Set `TeX-view-start-server-flag'.
+	(TeX-source-specials-view-expand-client): Adapt call to new
+	function name.
+	(TeX-source-specials-view-expand-options): Do not try to start the
+	server here anymore.
+	(TeX-synctex-mode): New minor mode.
+	(TeX-synctex-output-page): New function.
+	(TeX-mode-map): Add key for toggling TeX SyncTeX mode.
+	(TeX-mode-specific-command-menu-entries): Add menu entry for TeX
+	SyncTeX mode.
+
 2008-07-04  Berend de Boer  <berend@pobox.com>
 
 	* context.el, context-en.el: added a few more entries to the menu
