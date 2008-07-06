@@ -149,11 +149,10 @@ the printer has no corresponding command."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  ;; Changed to double quotes for Windows afflicted people.
-  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t"
+  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%(synctex)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
-    ("LaTeX" "%`%l%(mode)%' %t"
+    ("LaTeX" "%`%l%(mode)%(synctex)%' %t"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
 	;; Not part of standard TeX.
@@ -381,85 +380,6 @@ get consulted."
   :group 'TeX-command
   :type 'string)
 
-;; You may want special options to the view command depending on the
-;; style options.  Only works if parsing is enabled.
-
-(defcustom TeX-view-style
-  `((,(concat
-      "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ;; The latest xdvi can show embedded postscript.  If you don't
-    ;; have that, uncomment next line.
-    ;; ("^epsf$" "ghostview %f")
-    ("." "%(o?)xdvi %dS %d"))
-  "List of style options and view options.
-
-If the first element (a regular expresion) matches the name of
-one of the style files, any occurrence of the string `%v' in a
-command in `TeX-command-list' will be replaced with the second
-element.  The first match is used, if no match is found the `%v'
-is replaced with the empty string.
-
-As a default, the \"View\" command in `TeX-command-list' is set
-to `%V'.  This means that `TeX-output-view-style' will be
-consulted before `TeX-view-style'.  Only if no match is found in
-`TeX-output-view-style' the settings in `TeX-view-style' will be
-considered.  If you want to bypass `TeX-output-view-style', which
-is not recommended because it is more powerful than
-`TeX-view-style', use `%v' in the \"View\" command."
-  :group 'TeX-command
-  :type '(repeat (group regexp (string :tag "Command"))))
-
-(defcustom TeX-output-view-style
-  `(("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
-     "%(o?)dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
-    ("^dvi$" (,(concat
-		"^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ("^dvi$" ,(concat
-	       "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a5r -s 0 %d")
-    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
-    ("^html?$" "." "netscape %o"))
-  "List of output file extensions and view options.
-
-If the first element (a regular expresion) matches the output
-file extension, and the second element (a regular expression)
-matches the name of one of the style options, any occurrence of
-the string `%V' in a command in `TeX-command-list' will be
-replaced with the third element.  The first match is used; if no
-match is found the `%V' is replaced with `%v'.  The outcome of `%v'
-is determined by the settings in `TeX-view-style' which therefore
-serves as a fallback for `TeX-output-view-style'.  The second
-element may also be a list of regular expressions, in which case
-all the regular expressions must match for the element to apply."
-  :group 'TeX-command
-  :type '(repeat (group
-		  (regexp :tag "Extension")
-		  (choice regexp (repeat :tag "List" regexp))
-		  (string :tag "Command"))))
-
-;;Same for printing.
-
 (defcustom TeX-print-style '(("^landscape$" "-t landscape"))
   "List of style options and print options.
 
@@ -480,8 +400,10 @@ string."
     ("%q" (lambda ()
 	    (TeX-printer-query t)))
     ("%V" (lambda ()
+	    (TeX-view-start-server-maybe)
 	    (TeX-output-style-check TeX-output-view-style)))
     ("%v" (lambda ()
+	    (TeX-view-start-server-maybe)
 	    (TeX-style-check TeX-view-style)))
     ("%r" (lambda ()
 	    (TeX-style-check TeX-print-style)))
@@ -517,6 +439,7 @@ string."
     ("%(outpage)" (lambda () (if TeX-sync-output-page-function
 				 (funcall TeX-sync-output-page-function)
 			       "1")))
+    ("%(synctex)" (lambda () (if TeX-synctex-mode " --synctex=1" "")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
@@ -659,7 +582,7 @@ Also does other stuff."
 	(val (ad-get-arg 1)))
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode
+    (when (memq var '(TeX-PDF-mode TeX-synctex-mode
 		      TeX-source-specials-mode TeX-interactive-mode
 		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
@@ -910,7 +833,8 @@ If RESET is non-nil, `TeX-command-next' is reset to
 		(and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
 		(and TeX-interactive-mode "I")
-		(and TeX-source-specials-mode "S"))))
+		(and TeX-source-specials-mode "S")
+		(and TeX-synctex-mode "Y"))))
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
@@ -929,6 +853,140 @@ If RESET is non-nil, `TeX-command-next' is reset to
 			   (doctex-mode . "docTeX")
 			   (texinfo-mode . "Texinfo")
 			   (context-mode . "ConTeXt")))))
+
+;;; Viewing
+
+(defgroup TeX-view nil
+  "Calling viewers from AUCTeX."
+  :group 'TeX-command)
+
+(defcustom TeX-view-style
+  `((,(concat
+      "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
+     "%(o?)xdvi %dS -paper a4 %d")
+    (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
+     "%(o?)xdvi %dS -paper a5 %d")
+    ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
+    ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
+    ("^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
+    ("^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
+    ("^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
+    ;; The latest xdvi can show embedded postscript.  If you don't
+    ;; have that, uncomment next line.
+    ;; ("^epsf$" "ghostview %f")
+    ("." "%(o?)xdvi %dS %d"))
+  "List of style options and view options.
+
+If the first element (a regular expresion) matches the name of
+one of the style files, any occurrence of the string `%v' in a
+command in `TeX-command-list' will be replaced with the second
+element.  The first match is used, if no match is found the `%v'
+is replaced with the empty string.
+
+As a default, the \"View\" command in `TeX-command-list' is set
+to `%V'.  This means that `TeX-output-view-style' will be
+consulted before `TeX-view-style'.  Only if no match is found in
+`TeX-output-view-style' the settings in `TeX-view-style' will be
+considered.  If you want to bypass `TeX-output-view-style', which
+is not recommended because it is more powerful than
+`TeX-view-style', use `%v' in the \"View\" command."
+  :group 'TeX-view
+  :type '(repeat (group regexp (string :tag "Command"))))
+
+(defcustom TeX-output-view-style
+  `(("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
+     "%(o?)dvips -t landscape %d -o && gv %f")
+    ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
+    ("^dvi$" (,(concat
+		"^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
+	      "^landscape$")
+     "%(o?)xdvi %dS -paper a4r -s 0 %d")
+    ("^dvi$" ,(concat
+	       "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
+     "%(o?)xdvi %dS -paper a4 %d")
+    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
+	      "^landscape$")
+     "%(o?)xdvi %dS -paper a5r -s 0 %d")
+    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
+     "%(o?)xdvi %dS -paper a5 %d")
+    ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
+    ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
+    ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
+    ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
+    ("^dvi$" "." "%(o?)xdvi %dS %d")
+    ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
+    ("^html?$" "." "netscape %o"))
+  "List of output file extensions and view options.
+
+If the first element (a regular expresion) matches the output
+file extension, and the second element (a regular expression)
+matches the name of one of the style options, any occurrence of
+the string `%V' in a command in `TeX-command-list' will be
+replaced with the third element.  The first match is used; if no
+match is found the `%V' is replaced with `%v'.  The outcome of `%v'
+is determined by the settings in `TeX-view-style' which therefore
+serves as a fallback for `TeX-output-view-style'.  The second
+element may also be a list of regular expressions, in which case
+all the regular expressions must match for the element to apply."
+  :group 'TeX-view
+  :type '(repeat (group
+		  (regexp :tag "Extension")
+		  (choice regexp (repeat :tag "List" regexp))
+		  (string :tag "Command"))))
+
+(defcustom TeX-view-start-server 'ask
+  "Determine if server should be started for viewing.
+A feature requesting this is e.g. the ability for inverse searching."
+  :type '(choice (const :tag "Always" t)
+		 (const :tag "Never" nil)
+		 (const :tag "Ask" ask))
+  :group 'TeX-view)
+(defvaralias 'TeX-source-specials-view-start-server 'TeX-view-start-server)
+
+(defvar TeX-view-start-server-asked nil
+  "Keep track if question about server start search was asked.")
+
+(defvar TeX-view-start-server-flag nil
+  "If non-nil, `TeX-view-start-server-maybe' will start a server.
+Code related to features requiring a server, e.g. for inverse
+search, can set the variable.")
+
+(defun TeX-view-gnuserv-p ()
+  "Guess whether to use gnuserv when a server is requested."
+  (cond ((and (boundp 'gnuserv-process)
+	      (processp gnuserv-process)))
+	((and (boundp 'server-process)
+	      (processp server-process))
+	 nil)
+	((featurep 'xemacs))))
+
+(defun TeX-view-server-enabled-p ()
+  "Return non-nil if Emacs server or gnuserv is enabled."
+  (let* ((gnuserv-p (TeX-view-gnuserv-p))
+	 (process (if gnuserv-p 'gnuserv-process 'server-process)))
+    (and (boundp process) (processp (symbol-value process)))))
+
+(defun TeX-view-start-server-maybe ()
+  "Start Emacs server or gnuserv if a feature using it is enabled.
+This is the case if `TeX-view-start-server-flag' is non-nil."
+  (when (and TeX-view-start-server-flag
+	     (not (TeX-view-server-enabled-p)))
+    (let* ((gnuserv-p (TeX-view-gnuserv-p))
+	   (start (if gnuserv-p 'gnuserv-start 'server-start)))
+      (cond
+       ;; Server should be started unconditionally
+       ((eq TeX-view-start-server t)
+	(funcall start))
+       ;; Ask user if server is to be started
+       ((and (eq TeX-view-start-server 'ask)
+	     (not TeX-view-start-server-asked)
+	     (prog1
+		 (y-or-n-p (format "Start %s for inverse search in viewer? "
+				   (if gnuserv-p
+				       "gnuserv"
+				     "Emacs server")))
+	       (setq TeX-view-start-server-asked t)))
+	(funcall start))))))
 
 ;;; Source Specials
 
@@ -959,7 +1017,8 @@ See the the AUCTeX manual for details."
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials-mode
 			  TeX-source-specials-map))
-  (TeX-set-mode-name 'TeX-source-specials-mode t t))
+  (TeX-set-mode-name 'TeX-source-specials-mode t t)
+  (setq TeX-view-start-server-flag TeX-source-specials-mode))
 (defalias 'tex-source-specials-mode 'TeX-source-specials-mode)
 
 (put 'TeX-source-specials-mode 'safe-local-variable 'TeX-booleanp)
@@ -1011,13 +1070,6 @@ If this is nil, an empty string will be returned."
 		       ","))))
     ""))
 
-(defcustom TeX-source-specials-view-start-server 'ask
-  "Determine if server should be started upon starting a DVI viewer."
-  :type '(choice (const :tag "Always" t)
-		 (const :tag "Never" nil)
-		 (const :tag "Ask" ask))
-  :group 'TeX-source-specials)
-
 (defcustom TeX-source-specials-view-position-flags
   "-sourceposition \"%n %b\""
   "Flags to pass to the DVI viewer commands for the position in the source."
@@ -1042,22 +1094,10 @@ If this is nil, an empty string will be returned."
   :group 'TeX-source-specials
   :type 'string)
 
-(defvar TeX-source-specials-view-start-server-asked nil
-  "Keep track if question about server start for inverse search was asked.")
-
-(defun TeX-source-specials-view-gnuserv-p ()
-  "Guess whether to use gnuserv for inverse search."
-  (cond ((and (boundp 'gnuserv-process)
-	      (processp gnuserv-process)))
-	((and (boundp 'server-process)
-	      (processp server-process))
-	 nil)
-	((featurep 'xemacs))))
-
 (defun TeX-source-specials-view-expand-client ()
   "Return gnuclient or emacslient executable with options.
 Return the full path to the executable if possible."
-  (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
+  (let* ((gnuserv-p (TeX-view-gnuserv-p))
 	 (client-base (if gnuserv-p
 			  "gnuclient"
 			"emacsclient"))
@@ -1076,33 +1116,9 @@ Return the full path to the executable if possible."
 The return value depends on the value of `TeX-source-specials-mode'.
 If this is nil, an empty string will be returned."
   (if TeX-source-specials-mode
-      (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
-	     (process (if gnuserv-p 'gnuserv-process 'server-process))
-	     (start (if gnuserv-p 'gnuserv-start 'server-start))
-	     (server-enabled
-	      (cond
-	       ;; Server is already running
-	       ((and (boundp process) (processp (symbol-value process))))
-	       ;; Server is not running but should be started unconditionally
-	       ((eq TeX-source-specials-view-start-server t)
-		(funcall start)
-		t)
-	       ;; Server is not running and we have to ask if it is to
-	       ;; be started
-	       ((and (eq TeX-source-specials-view-start-server 'ask)
-		     (not TeX-source-specials-view-start-server-asked)
-		     (prog1
-			 (y-or-n-p
-			  (format "Start %s for inverse search in viewer? "
-				  (if gnuserv-p
-				      "gnuserv"
-				    "Emacs server")))
-		       (setq TeX-source-specials-view-start-server-asked t)))
-		(funcall start)
-		t))))
-	(concat TeX-source-specials-view-position-flags
-		(when server-enabled
-		  (concat " " TeX-source-specials-view-editor-flags))))
+      (concat TeX-source-specials-view-position-flags
+	      (when (TeX-view-server-enabled-p)
+		(concat " " TeX-source-specials-view-editor-flags)))
     ""))
 
 (defvar TeX-sync-output-page-function nil
@@ -1111,7 +1127,31 @@ The function should take no arguments and return the page numer
 as a string.")
 (make-variable-buffer-local 'TeX-sync-output-page-function)
 
-;;;
+;;; SyncTeX
+
+;; XXX: Should this conflict with pdfsync and source specials?
+;; TODO: Pass options for inverse search to viewer.
+(define-minor-mode TeX-synctex-mode
+  "Minor mode for using forward and inverse search with SyncTeX."
+  :group 'TeX-command
+  (setq TeX-sync-output-page-function (when TeX-synctex-mode
+					'TeX-synctex-output-page))
+  (setq TeX-view-start-server-flag TeX-synctex-mode))
+
+(defun TeX-synctex-output-page ()
+  "Return the page corresponding to the current source position."
+  (let ((synctex-output
+	 (with-output-to-string
+	   (call-process "synctex" nil (list standard-output nil) nil "view"
+			 "-i" (format "%s:%s:%s" (line-number-at-pos)
+				      (current-column)
+				      (file-name-nondirectory
+				       (buffer-file-name)))
+			 "-o" (TeX-active-master (TeX-output-extension))))))
+    (string-match "Page:\\([0-9]+\\)" synctex-output)
+    (match-string 1 synctex-output)))
+
+;;; Miscellaneous minor modes
 
 (defvar TeX-mode-p nil
   "This indicates a TeX mode being active.")
@@ -3570,6 +3610,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials-mode)
+    (define-key map "\C-c\C-t\C-y"   'TeX-synctex-mode)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
     (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
@@ -3671,6 +3712,9 @@ Brace insertion is only done if point is in a math construct and
        [ "Source Specials" TeX-source-specials-mode
 	 :style toggle :selected TeX-source-specials-mode
 	 :help "Enable forward and inverse search in the previewer"]
+       ["SyncTeX" TeX-synctex-mode
+	:style toggle :selected TeX-synctex-mode
+	:help "Enable forward and inverse search with SyncTeX"]
        ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
 	:style toggle :selected TeX-debug-bad-boxes :keys "C-c C-t C-b"
 	:help "Make \"Next Error\" show overfull and underfull boxes"]
