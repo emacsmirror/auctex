@@ -31,6 +31,10 @@
 	(TeX-mode-map): Add key for toggling TeX SyncTeX mode.
 	(TeX-mode-specific-command-menu-entries): Add menu entry for TeX
 	SyncTeX mode.
+	(TeX-math-input-method-off-regexp): New variable.
+	(TeX-toggle-off-input-method): Remove.
+	(TeX-math-input-method-off): Do without
+	`TeX-toggle-off-input-method'.
 
 2008-07-04  Berend de Boer  <berend@pobox.com>
 
