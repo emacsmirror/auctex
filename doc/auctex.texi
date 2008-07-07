@@ -1953,7 +1953,7 @@ a string, an integer or a function symbol.
 If you specify a string, it will be used as a display replacement for
 the whole macro.  Numbers in braces, brackets, parens or angle brackets
 will be replaced by the respective macro argument.  For example
-@samp{{1}} will be replaced by the first mandatory argument of the
+@samp{@{1@}} will be replaced by the first mandatory argument of the
 macro.  One can also define alternatives within the specifier which are
 used if an argument is not found.  Alternatives are separated by
 @samp{||}.  They are most useful with optional arguments.  As an
