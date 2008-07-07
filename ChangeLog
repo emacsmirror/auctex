@@ -1,3 +1,7 @@
+2008-07-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Folding): Fix last change.
+
 2008-07-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Folding): Document folding of math constructs
