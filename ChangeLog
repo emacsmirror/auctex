@@ -1,3 +1,54 @@
+2008-07-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/pdfsync.el ("pdfsync"): Use
+	`TeX-source-correlate-output-page-function' rather than
+	`TeX-sync-output-page-function'.
+
+	* tex.el (TeX-command-list): Remove SyncTeX expanders.
+	(TeX-expand-list): Adapt function calls.  Remove SyncTeX expander.
+	(hack-one-local-variable, TeX-set-mode-name): Remove
+	`TeX-synctex-mode' and `TeX-source-specials-mode'.  Add
+	`TeX-source-correlate-mode'.
+	(TeX-source-correlate-method): New variable.
+	(TeX-source-correlate-method-active): New variable.
+	(TeX-source-correlate-output-page-function): Renamed from
+	`TeX-sync-output-page-function'.
+	(TeX-source-correlate-start-server): Renamed from
+	`TeX-view-start-server'.
+	(TeX-source-correlate-start-server-asked): Renamed from
+	`TeX-view-start-server-asked'.
+	(TeX-source-correlate-start-server-flag): Renamed from
+	`TeX-view-start-server-flag'.
+	(TeX-source-correlate-gnuserv-p): Renamed from
+	`TeX-view-gnuser-p'.
+	(TeX-source-correlate-server-enabled-p): Renamed from
+	`TeX-view-server-enabled-p'.
+	(TeX-source-correlate-start-server-maybe): Renamed from
+	`TeX-view-start-server-maybe'.
+	(TeX-source-specials): Remove custom group.
+	(TeX-source-correlate-determine-method): New function.
+	(TeX-source-correlate-expand-options): Renamed from
+	`TeX-source-specials-expand-options'.  Support SyncTeX as well.
+	(TeX-source-correlate-map): Renamed from
+	`TeX-source-specials-map'.
+	(TeX-source-correlate-mode): Renamed from
+	`TeX-source-specials-mode'.  Support SyncTeX as well.
+	(TeX-source-specials-mode): Now an alias for
+	`TeX-source-specials-mode'.
+	(TeX-source-specials-tex-flags, TeX-source-specials-places)
+	(TeX-source-specials-view-position-flags)
+	(TeX-source-specials-view-editor-flags)
+	(TeX-source-specials-view-gnuclient-flags)
+	(TeX-source-specials-view-emacsclient-flags): Put into `TeX-view'
+	rather than `TeX-command' group.
+	(TeX-source-specials-view-expand-options): Adapt for new function
+	names and distinction between source specials and SyncTeX.
+	(TeX-synctex-mode): Remove.
+	(TeX-mode-map): Remove binding for TeX SyncTeX mode.
+	(TeX-mode-specific-command-menu-entries): Remove menu entry for
+	TeX SyncTeX mode.  Use Source Correlate moniker instead of Source
+	Specials.
+
 2008-07-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Folding): Fix last change.
