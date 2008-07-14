@@ -149,10 +149,10 @@ the printer has no corresponding command."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%(synctex)%' %t"
+  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
-    ("LaTeX" "%`%l%(mode)%(synctex)%' %t"
+    ("LaTeX" "%`%l%(mode)%' %t"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
 	;; Not part of standard TeX.
@@ -400,10 +400,10 @@ string."
     ("%q" (lambda ()
 	    (TeX-printer-query t)))
     ("%V" (lambda ()
-	    (TeX-view-start-server-maybe)
+	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-output-style-check TeX-output-view-style)))
     ("%v" (lambda ()
-	    (TeX-view-start-server-maybe)
+	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-style-check TeX-view-style)))
     ("%r" (lambda ()
 	    (TeX-style-check TeX-print-style)))
@@ -433,13 +433,13 @@ string."
 			       LaTeX-Omega-command
 			     LaTeX-command)))
     ("%(execopts)" ConTeXt-expand-options)
-    ("%S" TeX-source-specials-expand-options)
+    ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
-    ("%(outpage)" (lambda () (if TeX-sync-output-page-function
-				 (funcall TeX-sync-output-page-function)
-			       "1")))
-    ("%(synctex)" (lambda () (if TeX-synctex-mode " --synctex=1" "")))
+    ("%(outpage)" (lambda ()
+		    (if TeX-source-correlate-output-page-function
+			(funcall TeX-source-correlate-output-page-function)
+		      "1")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
@@ -582,8 +582,8 @@ Also does other stuff."
 	(val (ad-get-arg 1)))
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode TeX-synctex-mode
-		      TeX-source-specials-mode TeX-interactive-mode
+    (when (memq var '(TeX-PDF-mode
+		      TeX-source-correlate-mode TeX-interactive-mode
 		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
 
@@ -833,8 +833,7 @@ If RESET is non-nil, `TeX-command-next' is reset to
 		(and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
 		(and TeX-interactive-mode "I")
-		(and TeX-source-specials-mode "S")
-		(and TeX-synctex-mode "Y"))))
+		(and TeX-source-correlate-mode "S"))))
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
@@ -934,24 +933,43 @@ all the regular expressions must match for the element to apply."
 		  (choice regexp (repeat :tag "List" regexp))
 		  (string :tag "Command"))))
 
-(defcustom TeX-view-start-server 'ask
-  "Determine if server should be started for viewing.
-A feature requesting this is e.g. the ability for inverse searching."
+;;; Forward and inverse search
+
+(defcustom TeX-source-correlate-method 'auto
+  "Method to use for enabling forward and inverse search.
+This can be `source-specials' if source specials should be used,
+`synctex' if SyncTeX should be used, or`auto' if AUCTeX should
+decide."
+  :type '(choice (const auto) (const synctex) (const source-specials))
+  :group 'TeX-view)
+
+(defvar TeX-source-correlate-method-active nil
+  "Method actually used for forward and inverse search.")
+
+(defvar TeX-source-correlate-output-page-function nil
+  "Symbol of function returning an output page relating to buffer position.
+The function should take no arguments and return the page numer
+as a string.")
+(make-variable-buffer-local 'TeX-source-correlate-output-page-function)
+
+(defcustom TeX-source-correlate-start-server 'ask
+  "Control if server should be started for inverse search."
   :type '(choice (const :tag "Always" t)
 		 (const :tag "Never" nil)
 		 (const :tag "Ask" ask))
   :group 'TeX-view)
-(defvaralias 'TeX-source-specials-view-start-server 'TeX-view-start-server)
+(defvaralias 'TeX-source-specials-view-start-server
+  'TeX-source-correlate-start-server)
 
-(defvar TeX-view-start-server-asked nil
+(defvar TeX-source-correlate-start-server-asked nil
   "Keep track if question about server start search was asked.")
 
-(defvar TeX-view-start-server-flag nil
-  "If non-nil, `TeX-view-start-server-maybe' will start a server.
+(defvar TeX-source-correlate-start-server-flag nil
+  "If non-nil, `TeX-source-correlate-start-server-maybe' will start a server.
 Code related to features requiring a server, e.g. for inverse
 search, can set the variable.")
 
-(defun TeX-view-gnuserv-p ()
+(defun TeX-source-correlate-gnuserv-p ()
   "Guess whether to use gnuserv when a server is requested."
   (cond ((and (boundp 'gnuserv-process)
 	      (processp gnuserv-process)))
@@ -960,82 +978,111 @@ search, can set the variable.")
 	 nil)
 	((featurep 'xemacs))))
 
-(defun TeX-view-server-enabled-p ()
+(defun TeX-source-correlate-server-enabled-p ()
   "Return non-nil if Emacs server or gnuserv is enabled."
-  (let* ((gnuserv-p (TeX-view-gnuserv-p))
+  (let* ((gnuserv-p (TeX-source-correlate-gnuserv-p))
 	 (process (if gnuserv-p 'gnuserv-process 'server-process)))
     (and (boundp process) (processp (symbol-value process)))))
 
-(defun TeX-view-start-server-maybe ()
+(defun TeX-source-correlate-start-server-maybe ()
   "Start Emacs server or gnuserv if a feature using it is enabled.
-This is the case if `TeX-view-start-server-flag' is non-nil."
-  (when (and TeX-view-start-server-flag
-	     (not (TeX-view-server-enabled-p)))
-    (let* ((gnuserv-p (TeX-view-gnuserv-p))
+This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
+  (when (and TeX-source-correlate-start-server-flag
+	     (not (TeX-source-correlate-server-enabled-p)))
+    (let* ((gnuserv-p (TeX-source-correlate-gnuserv-p))
 	   (start (if gnuserv-p 'gnuserv-start 'server-start)))
       (cond
        ;; Server should be started unconditionally
-       ((eq TeX-view-start-server t)
+       ((eq TeX-source-correlate-start-server t)
 	(funcall start))
        ;; Ask user if server is to be started
-       ((and (eq TeX-view-start-server 'ask)
-	     (not TeX-view-start-server-asked)
+       ((and (eq TeX-source-correlate-start-server 'ask)
+	     (not TeX-source-correlate-start-server-asked)
 	     (prog1
 		 (y-or-n-p (format "Start %s for inverse search in viewer? "
 				   (if gnuserv-p
 				       "gnuserv"
 				     "Emacs server")))
-	       (setq TeX-view-start-server-asked t)))
+	       (setq TeX-source-correlate-start-server-asked t)))
 	(funcall start))))))
 
-;;; Source Specials
+(defun TeX-source-correlate-determine-method ()
+  "Determine which method is available for forward and inverse search."
+  (let ((help (with-output-to-string
+		(call-process "latex" nil (list standard-output nil) nil
+			      "--help"))))
+    (if (string-match "^-synctex" help)
+	'synctex
+      'source-specials)))
 
-(defgroup TeX-source-specials nil
-  "Controlling source specials in AUCTeX."
-  :group 'TeX-command)
+(defun TeX-source-correlate-expand-options ()
+  "Return TeX engine command line option for forward search facilities.
+The return value depends on the value of `TeX-source-correlate-mode'.
+If this is nil, an empty string will be returned."
+  (if TeX-source-correlate-mode
+      (if (eq TeX-source-correlate-method-active 'source-specials)
+	  (concat TeX-source-specials-tex-flags
+		  (if TeX-source-specials-places
+		      ;; -src-specials=WHERE: insert source specials
+		      ;; in certain places of the DVI file. WHERE is a
+		      ;; comma-separated value list: cr display hbox
+		      ;; math par parend vbox
+		      (concat "=" (mapconcat 'identity
+					     TeX-source-specials-places ","))))
+	" --synctex=1")
+    ""))
 
-(defvar TeX-source-specials-map
+(defvar TeX-source-correlate-map
   (let ((map (make-sparse-keymap)))
     ;; (if (featurep 'xemacs)
     ;;	   (define-key map [(control button1)] #'TeX-view-mouse)
     ;;   (define-key map [C-down-mouse-1] #'TeX-view-mouse))
     map)
-  "Keymap for `TeX-source-specials-mode'.
+  "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
-(define-minor-mode TeX-source-specials-mode
-  "Minor mode for generating and using LaTeX source specials.
+(define-minor-mode TeX-source-correlate-mode
+  "Minor mode for forward and inverse search.
 
-If enabled, an option that inserts source specials into the DVI
-file is added to the LaTeX commmand line and the DVI viewer is
-called with an appropriate option, so that it shows the the point
-in the DVI file corresponding to the point in the Emacs buffer.
+If enabled, the viewer can be advised to show the output page
+corresponding to the point in the source and vice versa.
 
-See the the AUCTeX manual for details."
-  :group 'TeX-source-specials
+The method to be used can be controlled with the variable
+`TeX-source-correlate-method'.  Currently source specials or
+SyncTeX are recognized."
+  :group 'TeX-view
   :global t
-  (set-keymap-parent TeX-mode-map
-		     (and TeX-source-specials-mode
-			  TeX-source-specials-map))
-  (TeX-set-mode-name 'TeX-source-specials-mode t t)
-  (setq TeX-view-start-server-flag TeX-source-specials-mode))
-(defalias 'tex-source-specials-mode 'TeX-source-specials-mode)
+  (set-keymap-parent TeX-mode-map (and TeX-source-correlate-mode
+				       TeX-source-correlate-map))
+  (TeX-set-mode-name 'TeX-source-correlate-mode t t)
+  (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
+  (unless TeX-source-correlate-method-active
+    (setq TeX-source-correlate-method-active
+	  (if (eq TeX-source-correlate-method 'auto)
+	      (TeX-source-correlate-determine-method)
+	    TeX-source-correlate-method)))
+  (when (eq TeX-source-correlate-method-active 'synctex)
+    (setq TeX-source-correlate-output-page-function
+	  (when TeX-source-correlate-mode
+	    'TeX-synctex-output-page))))
+(defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
+(put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
+(setq minor-mode-map-alist
+      (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
+	    minor-mode-map-alist))
 
-(put 'TeX-source-specials-mode 'safe-local-variable 'TeX-booleanp)
-
-(setq minor-mode-map-alist (delq
-		       (assq 'TeX-source-specials-mode minor-mode-map-alist)
-		       minor-mode-map-alist))
+;;; Source Specials
 
 (defcustom TeX-source-specials-tex-flags "-src-specials"
   "Extra flags to pass to TeX commands to generate source specials."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type '(choice string (repeat string)))
 
 (defcustom TeX-source-specials-places nil
   "List of places where to insert source specials into the DVI file.
 If nil, use (La)TeX's defaults."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type '(list (set :inline t
 		    ;; :tag "Options known to work"
 		    ;; cr display hbox math par parend vbox
@@ -1049,55 +1096,35 @@ If nil, use (La)TeX's defaults."
 	       (repeat :inline t
 		       :tag "Other options"
 		       (string))))
-;; From latex(1):
-;; -src-specials            insert source specials into the DVI file
-;; -src-specials=WHERE      insert source specials in certain places of
-;;                          the DVI file. WHERE is a comma-separated value
-;;                          list: cr display hbox math par parend vbox
-
-(defun TeX-source-specials-expand-options ()
-  "Return source specials command line option for TeX commands.
-The return value depends on the value of `TeX-source-specials-mode'.
-If this is nil, an empty string will be returned."
-  (if TeX-source-specials-mode
-      (concat
-       TeX-source-specials-tex-flags
-       (if TeX-source-specials-places
-	   (concat
-	    "="
-	    (mapconcat 'identity
-		       TeX-source-specials-places
-		       ","))))
-    ""))
 
 (defcustom TeX-source-specials-view-position-flags
   "-sourceposition \"%n %b\""
   "Flags to pass to the DVI viewer commands for the position in the source."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type 'string)
 
 (defcustom TeX-source-specials-view-editor-flags
   "-editor \"%cS\""
   "Flags to pass to DVI viewer commands for inverse search."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type 'string)
 
 (defcustom TeX-source-specials-view-gnuclient-flags
   "-q +%%l %%f"
   "Flags to pass to gnuclient for inverse search."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type 'string)
 
 (defcustom TeX-source-specials-view-emacsclient-flags
   "--no-wait +%%l %%f"
   "Flags to emacsclient for inverse search."
-  :group 'TeX-source-specials
+  :group 'TeX-view
   :type 'string)
 
 (defun TeX-source-specials-view-expand-client ()
   "Return gnuclient or emacslient executable with options.
 Return the full path to the executable if possible."
-  (let* ((gnuserv-p (TeX-view-gnuserv-p))
+  (let* ((gnuserv-p (TeX-source-correlate-gnuserv-p))
 	 (client-base (if gnuserv-p
 			  "gnuclient"
 			"emacsclient"))
@@ -1113,33 +1140,24 @@ Return the full path to the executable if possible."
 
 (defun TeX-source-specials-view-expand-options (&optional viewer)
   "Return source specials command line option for viewer command.
-The return value depends on the value of `TeX-source-specials-mode'.
-If this is nil, an empty string will be returned."
-  (if TeX-source-specials-mode
+The return value depends on the values of
+`TeX-source-correlate-mode' and
+`TeX-source-correlate-method-active'.  If those are nil or not
+`source-specials' respectively, an empty string will be
+returned."
+  (if (and TeX-source-correlate-mode
+	   (eq TeX-source-correlate-method-active 'source-specials))
       (concat TeX-source-specials-view-position-flags
-	      (when (TeX-view-server-enabled-p)
+	      (when (TeX-source-correlate-server-enabled-p)
 		(concat " " TeX-source-specials-view-editor-flags)))
     ""))
 
-(defvar TeX-sync-output-page-function nil
-  "Symbol of function returning an output page relating to buffer position.
-The function should take no arguments and return the page numer
-as a string.")
-(make-variable-buffer-local 'TeX-sync-output-page-function)
-
 ;;; SyncTeX
 
-;; XXX: Should this conflict with pdfsync and source specials?
-;; TODO: Pass options for inverse search to viewer.
-(define-minor-mode TeX-synctex-mode
-  "Minor mode for using forward and inverse search with SyncTeX."
-  :group 'TeX-command
-  (setq TeX-sync-output-page-function (when TeX-synctex-mode
-					'TeX-synctex-output-page))
-  (setq TeX-view-start-server-flag TeX-synctex-mode))
-
 (defun TeX-synctex-output-page ()
-  "Return the page corresponding to the current source position."
+  "Return the page corresponding to the current source position.
+This method assumes that the document was compiled with SyncTeX
+enabled and the `synctex' binary is available."
   (let ((synctex-output
 	 (with-output-to-string
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
@@ -3609,8 +3627,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-t\C-o"   'TeX-Omega-mode)
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
-    (define-key map "\C-c\C-t\C-s"   'TeX-source-specials-mode)
-    (define-key map "\C-c\C-t\C-y"   'TeX-synctex-mode)
+    (define-key map "\C-c\C-t\C-s"   'TeX-source-correlate-mode)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
     (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
@@ -3709,12 +3726,9 @@ Brace insertion is only done if point is in a math construct and
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]
-       [ "Source Specials" TeX-source-specials-mode
-	 :style toggle :selected TeX-source-specials-mode
+       [ "Source Correlate" TeX-source-correlate-mode
+	 :style toggle :selected TeX-source-correlate-mode
 	 :help "Enable forward and inverse search in the previewer"]
-       ["SyncTeX" TeX-synctex-mode
-	:style toggle :selected TeX-synctex-mode
-	:help "Enable forward and inverse search with SyncTeX"]
        ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
 	:style toggle :selected TeX-debug-bad-boxes :keys "C-c C-t C-b"
 	:help "Make \"Next Error\" show overfull and underfull boxes"]
