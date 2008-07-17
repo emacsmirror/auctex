@@ -3430,9 +3430,6 @@ value of NO-SUBSECTIONS."
 	    (concat LaTeX-paragraph-commands "\\|"))
 	  (regexp-opt LaTeX-paragraph-commands-internal) "\\)"))
 
-(defvar LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)
-    "Regular expression matching LaTeX macros that should have their own line.")
-
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
 The list should contain macro names without the leading backslash."
@@ -3442,6 +3439,9 @@ The list should contain macro names without the leading backslash."
          (set-default symbol value)
 	 (setq LaTeX-paragraph-commands-regexp
 	       (LaTeX-paragraph-commands-regexp-make))))
+
+(defvar LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)
+    "Regular expression matching LaTeX macros that should have their own line.")
 
 (defun LaTeX-set-paragraph-start ()
   "Set `paragraph-start'."
