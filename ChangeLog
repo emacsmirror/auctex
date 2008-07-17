@@ -2,6 +2,8 @@
 
 	* latex.el (LaTeX-paragraph-commands-regexp-make): Take
 	`LaTeX-paragraph-commands' into account.
+	(LaTeX-paragraph-commands-regexp): Move behind
+	`LaTeX-paragraph-commands' definition.
 
 2008-07-14  Ralf Angeli  <angeli@caeruleus.net>
 
