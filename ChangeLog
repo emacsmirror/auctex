@@ -1,3 +1,8 @@
+2008-07-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-paragraph-commands-regexp-make): Take
+	`LaTeX-paragraph-commands' into account.
+
 2008-07-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/pdfsync.el ("pdfsync"): Use
