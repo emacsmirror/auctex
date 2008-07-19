@@ -1,4 +1,9 @@
-2008-07-19  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+2008-07-19  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-mark-environment): Keep point upon unsuccessful
+	search.
+
+2008-07-19  Vincent Belaïche  <vincent.b.1@hotmail.fr>  (tiny change)
 
 	* latex.el (LaTeX-mark-environment): Support marking of multiple
 	nested environments.
