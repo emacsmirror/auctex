@@ -3344,17 +3344,24 @@ environment in commented regions with the same comment prefix."
     (or (= level 0)
 	(error "Can't locate beginning of current environment"))))
 
-(defun LaTeX-mark-environment ()
+(defun LaTeX-mark-environment (&optional count)
   "Set mark to end of current environment and point to the matching begin.
+If passed a prefix argument COUNT, mark the outer environnment by COUNT levels.
+Example: if point is --!-- and COUNT=2, env1 is the marked environment.
+
+    \\begin{env1} \\begin{env2} --!-- \\begin{env2} \\begin{env1}
+
 Will not work properly if there are unbalanced begin-end pairs in
 comments and verbatim environments"
-  (interactive)
-  (let ((cur (point)))
-    (LaTeX-find-matching-end)
+  (interactive "p")
+  (unless count (seq count 1))
+  (let ( (cur (point)))
+    (unless (> count 0) (error "invalid prefix arg, expects a positive number"))
+    (dotimes (c count) (LaTeX-find-matching-end))
     (beginning-of-line 2)
     (set-mark (point))
     (goto-char cur)
-    (LaTeX-find-matching-begin)
+    (dotimes (c count) (LaTeX-find-matching-begin))
     (TeX-activate-region)))
 
 (defun LaTeX-fill-environment (justify)
