@@ -1,3 +1,8 @@
+2008-07-19  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* latex.el (LaTeX-mark-environment): Support marking of multiple
+	nested environments.
+
 2008-07-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-paragraph-commands-regexp-make): Take
