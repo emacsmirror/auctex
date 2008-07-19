@@ -1008,9 +1008,11 @@ This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
 
 (defun TeX-source-correlate-determine-method ()
   "Determine which method is available for forward and inverse search."
-  (let ((help (with-output-to-string
-		(call-process "latex" nil (list standard-output nil) nil
-			      "--help"))))
+  (let ((help (condition-case nil
+		  (with-output-to-string
+		    (call-process "latex" nil (list standard-output nil) nil
+				  "--help"))
+		(error ""))))
     (if (string-match "^-synctex" help)
 	'synctex
       'source-specials)))
