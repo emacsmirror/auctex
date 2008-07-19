@@ -1,5 +1,8 @@
 2008-07-19  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-source-correlate-determine-method): Do not error out
+	if calling the engine fails.
+
 	* latex.el (LaTeX-mark-environment): Keep point upon unsuccessful
 	search.
 
