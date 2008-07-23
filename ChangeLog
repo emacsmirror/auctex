@@ -1,3 +1,22 @@
+2008-07-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-expand-list): Prevent "%(PDF)" expander from
+	returning "pdf" if `TeX-XeTeX-mode' is active.  Make "%(tex)" and
+	"%(latex)" expanders aware of the XeTeX commands.
+	(hack-one-local-variable): Cater for `TeX-XeTeX-mode'.
+	(TeX-set-mode-name): Cater for `TeX-XeTeX-mode'.
+	(TeX-source-specials-mode): Mark as obsolete.
+	(TeX-PDF-mode): Disable TeX XeTeX mode if TeX PDF mode is
+	disabled.
+	(TeX-Omega-mode): Disable TeX XeTeX mode if TeX Omega mode is to
+	be enabled.
+	(TeX-XeTeX-command, LaTeX-XeTeX-command): New variables.
+	(TeX-XeTeX-mode): New minor mode.
+	(TeX-mode-map): Define key for TeX XeTeX mode.
+	(TeX-mode-specific-command-menu-entries): Add entry for TeX XeTeX
+	mode.  Make the engine-related options exclusive by using radio
+	buttons.  Refine the wording for some options.
+
 2008-07-19  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-correlate-determine-method): Do not error out
