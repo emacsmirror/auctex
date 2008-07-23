@@ -411,6 +411,7 @@ string."
 	    (TeX-style-check LaTeX-command-style)))
     ("%(PDF)" (lambda ()
 		(if (and (not TeX-Omega-mode)
+			 (not TeX-XeTeX-mode)
 			 (or TeX-PDF-mode
 			     TeX-DVI-via-PDFTeX))
 		    "pdf"
@@ -426,12 +427,12 @@ string."
 		     ""
 		   " -interaction=nonstopmode")))
     ("%(o?)" (lambda () (if TeX-Omega-mode "o" "")))
-    ("%(tex)" (lambda () (if TeX-Omega-mode
-			     TeX-Omega-command
-			   TeX-command)))
-    ("%(latex)" (lambda () (if TeX-Omega-mode
-			       LaTeX-Omega-command
-			     LaTeX-command)))
+    ("%(tex)" (lambda () (cond (TeX-Omega-mode TeX-Omega-command)
+			       (TeX-XeTeX-mode TeX-XeTeX-command)
+			       (t TeX-command))))
+    ("%(latex)" (lambda () (cond (TeX-Omega-mode LaTeX-Omega-command)
+				 (TeX-XeTeX-mode LaTeX-XeTeX-command)
+				 (t LaTeX-command))))
     ("%(execopts)" ConTeXt-expand-options)
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
@@ -582,7 +583,7 @@ Also does other stuff."
 	(val (ad-get-arg 1)))
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode
+    (when (memq var '(TeX-PDF-mode TeX-XeTeX-mode
 		      TeX-source-correlate-mode TeX-interactive-mode
 		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
@@ -834,7 +835,8 @@ If RESET is non-nil, `TeX-command-next' is reset to
 		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
 		(and TeX-interactive-mode "I")
 		(and TeX-source-correlate-mode "S"))))
-	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
+	  (setq mode-name (concat (and TeX-PDF-mode (not TeX-XeTeX-mode) "PDF")
+				  (and TeX-XeTeX-mode "Xe")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
 				    (concat "/" trailing-flags))))
@@ -1068,6 +1070,7 @@ SyncTeX are recognized."
 	  (when TeX-source-correlate-mode
 	    'TeX-synctex-output-page))))
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(make-obsolote 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
 (setq minor-mode-map-alist
@@ -1194,6 +1197,9 @@ If enabled, PDFTeX will be used as an executable by default.
 You can customize an initial value, and you can use the
 function `TeX-global-PDF-mode' for toggling this value."
   :group 'TeX-command
+  ;; Disable TeX XeTeX mode if TeX PDF mode is disabled
+  (when (and (not TeX-PDF-mode) TeX-XeTeX-mode)
+    (TeX-XeTeX-mode -1))
   (when TeX-Omega-mode
     (setq TeX-PDF-mode nil))
   (setq TeX-PDF-mode-parsed nil)
@@ -1266,9 +1272,31 @@ already established, don't do anything."
   nil nil nil
   :group 'TeX-command
   (when TeX-Omega-mode
-    (TeX-PDF-mode 0))
+    (TeX-PDF-mode 0)
+    (TeX-XeTeX-mode -1))
   (TeX-set-mode-name 'TeX-Omega-mode t t))
 (defalias 'tex-omega-mode 'TeX-Omega-mode)
+
+(defcustom TeX-XeTeX-command "xetex"
+  "Command to run plain TeX on XeTeX."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom LaTeX-XeTeX-command "xelatex"
+  "Command to run LaTeX on XeTeX."
+  :group 'TeX-command
+  :type 'string)
+
+(define-minor-mode TeX-XeTeX-mode
+  "Minor mode for using the XeTeX engine."
+  nil nil nil
+  :group 'TeX-command
+  (when TeX-XeTeX-mode
+    (when TeX-Omega-mode (TeX-Omega-mode -1))
+    (TeX-PDF-mode 1))
+  (TeX-set-mode-name 'TeX-XeTeX-mode t t))
+(defalias 'tex-xetex-mode 'TeX-XeTeX-mode)
+(put 'TeX-XeTeX-mode 'safe-local-variable 'TeX-booleanp)
 
 ;;; Commands
 
@@ -3627,6 +3655,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
     (define-key map "\C-c\C-t\C-o"   'TeX-Omega-mode)
+    (define-key map "\C-c\C-t\C-x"   'TeX-XeTeX-mode)
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-correlate-mode)
@@ -3718,17 +3747,25 @@ Brace insertion is only done if point is in a math construct and
        :help "Start a viewer without prompting"]
       "-"
       ("TeXing Options"
+       [ "Use standard engine"
+	 (lambda () (interactive) (TeX-Omega-mode -1) (TeX-XeTeX-mode -1))
+	 :style radio :selected (and (not TeX-Omega-mode) (not TeX-XeTeX-mode))
+	 :help "Use the original TeX engines for compiling"]
        [ "Use Omega" TeX-Omega-mode
-	 :style toggle :selected TeX-Omega-mode
+	 :style radio :selected TeX-Omega-mode
 	 :help "Use the Omega engine for compiling"]
-       [ "PDF Mode" TeX-PDF-mode
+       [ "Use XeTeX" TeX-XeTeX-mode
+	 :style radio :selected TeX-XeTeX-mode
+	 :help "Use the XeTeX engine for compiling"]
+       "-"
+       [ "Generate PDF" TeX-PDF-mode
 	 :style toggle :selected TeX-PDF-mode
 	 :active (not TeX-Omega-mode)
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]
-       [ "Source Correlate" TeX-source-correlate-mode
+       [ "Correlate I/O" TeX-source-correlate-mode
 	 :style toggle :selected TeX-source-correlate-mode
 	 :help "Enable forward and inverse search in the previewer"]
        ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
