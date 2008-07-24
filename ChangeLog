@@ -1,3 +1,7 @@
+2008-07-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-specials-mode): Fix last change.
+
 2008-07-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-expand-list): Prevent "%(PDF)" expander from
