@@ -1070,7 +1070,7 @@ SyncTeX are recognized."
 	  (when TeX-source-correlate-mode
 	    'TeX-synctex-output-page))))
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
-(make-obsolote 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
 (setq minor-mode-map-alist
