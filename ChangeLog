@@ -1,3 +1,13 @@
+2008-07-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-synctex-tex-flags): New variable.
+	(TeX-source-correlate-expand-options): Use it.
+	(TeX-source-specials-tex-flags): Remove possibility to create
+	lists.
+
+	* context.el (ConTeXt-expand-options): Support TeX XeTeX mode and
+	TeX Source Correlate mode.
+
 2008-07-24  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-specials-mode): Fix last change.
