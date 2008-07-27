@@ -1033,7 +1033,7 @@ If this is nil, an empty string will be returned."
 		      ;; math par parend vbox
 		      (concat "=" (mapconcat 'identity
 					     TeX-source-specials-places ","))))
-	" --synctex=1")
+	TeX-synctex-tex-flags)
     ""))
 
 (defvar TeX-source-correlate-map
@@ -1082,7 +1082,7 @@ SyncTeX are recognized."
 (defcustom TeX-source-specials-tex-flags "-src-specials"
   "Extra flags to pass to TeX commands to generate source specials."
   :group 'TeX-view
-  :type '(choice string (repeat string)))
+  :type 'string)
 
 (defcustom TeX-source-specials-places nil
   "List of places where to insert source specials into the DVI file.
@@ -1158,6 +1158,9 @@ returned."
     ""))
 
 ;;; SyncTeX
+
+(defvar TeX-synctex-tex-flags "--synctex=1"
+  "Extra flags to pass to TeX commands to enable SyncTeX.")
 
 (defun TeX-synctex-output-page ()
   "Return the page corresponding to the current source position.
