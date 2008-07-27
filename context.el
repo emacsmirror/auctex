@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2005, 2006, 2008 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -1486,16 +1486,20 @@ else.  There might be text before point."
 (defun ConTeXt-expand-options ()
   "Expand options for texexec command."
   (concat
-   (and TeX-PDF-mode "--pdf ")
-   (if TeX-Omega-mode
-       (and ConTeXt-Omega-engine
-	    (format "--tex=%s " ConTeXt-Omega-engine))
-     (and ConTeXt-engine
+   (and TeX-PDF-mode (not TeX-XeTeX-mode) "--pdf ")
+   (cond ((and TeX-Omega-mode Context-Omega-engine)
+	  (format "--tex=%s " ConTeXt-Omega-engine))
+	 (TeX-XeTeX-mode
+	  "--xetex ")
+	 (ConTeXt-engine
 	  (format "--tex=%s " ConTeXt-engine)))
    (unless (eq ConTeXt-current-interface "en")
      (format "--interface=%s " ConTeXt-current-interface))
-   (when TeX-source-specials-mode
-     (format "--passon=\"%s\" " TeX-source-specials-tex-flags))
+   (when TeX-source-correlate-mode
+     (format "--passon=\"%s\" "
+	     (if (eq TeX-source-correlate-method-active 'synctex)
+		 TeX-synctex-tex-flags
+	       TeX-source-specials-tex-flags)))
    (unless TeX-interactive-mode
      ConTeXt-texexec-option-nonstop)))
 
