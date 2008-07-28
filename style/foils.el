@@ -1,8 +1,10 @@
 ;;; foils.el - Special code for FoilTeX.
 
-;; $Id: foils.el,v 1.4 2008-05-25 06:50:32 angeli Exp $
+;; $Id: foils.el,v 1.5 2008-07-28 20:40:18 angeli Exp $
 
 ;;; Code:
+
+(require 'timezone)
 
 (TeX-add-style-hook "foils"
  (function
@@ -15,7 +17,6 @@
 
 (defun LaTeX-style-foils nil
   "Prompt for and insert foiltex options."
-  (require 'timezone)
   (let* ((date (timezone-parse-date (current-time-string)))
 	 (year   (string-to-number (aref date 0)))
 	 (month  (string-to-number (aref date 1)))
