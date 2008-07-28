@@ -1,5 +1,8 @@
 2008-07-28  Ralf Angeli  <angeli@caeruleus.net>
 
+	* toolbar-x.el (toolbarx-image-path): Protect against load-path
+	items being nil.
+
 	* style/foils.el (LaTeX-style-foils): Silence the byte compiler.
 
 	* style/epsf.el (TeX-arg-epsfsize): Silence the byte compiler.
