@@ -1,3 +1,14 @@
+2008-07-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/foils.el (LaTeX-style-foils): Silence the byte compiler.
+
+	* style/epsf.el (TeX-arg-epsfsize): Silence the byte compiler.
+
+	* tex.el (TeX-source-specials-view-start-server): Alias only if
+	`defvaralias' is available.
+	(TeX-master, TeX-convert-master): Move upwards to prevent some
+	compiler warnings.
+
 2008-07-27  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-synctex-tex-flags): New variable.
