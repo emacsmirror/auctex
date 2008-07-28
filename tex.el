@@ -960,8 +960,9 @@ as a string.")
 		 (const :tag "Never" nil)
 		 (const :tag "Ask" ask))
   :group 'TeX-view)
-(defvaralias 'TeX-source-specials-view-start-server
-  'TeX-source-correlate-start-server)
+(when (fboundp 'defvaralias)
+  (defvaralias 'TeX-source-specials-view-start-server
+    'TeX-source-correlate-start-server))
 
 (defvar TeX-source-correlate-start-server-asked nil
   "Keep track if question about server start search was asked.")
@@ -1409,6 +1410,38 @@ output files."
 
 ;;; Master File
 
+(defcustom TeX-master t
+  "*The master file associated with the current buffer.
+If the file being edited is actually included from another file, you
+can tell AUCTeX the name of the master file by setting this variable.
+If there are multiple levels of nesting, specify the top level file.
+
+If this variable is nil, AUCTeX will query you for the name.
+
+If the variable is t, AUCTeX will assume the file is a master file
+itself.
+
+If the variable is 'shared, AUCTeX will query for the name, but not
+change the file.
+
+If the variable is 'dwim, AUCTeX will try to avoid querying by
+attempting to `do what I mean'; and then change the file.
+
+It is suggested that you use the File Variables (see the info node in
+the Emacs manual) to set this variable permanently for each file."
+  :group 'TeX-command
+  :group 'TeX-parse
+  :type '(choice (const :tag "Query" nil)
+		 (const :tag "This file" t)
+		 (const :tag "Shared" shared)
+		 (const :tag "Dwim" dwim)
+		 (string :format "%v")))
+(make-variable-buffer-local 'TeX-master)
+(put 'TeX-master 'safe-local-variable
+     '(lambda (x)
+	(or (stringp x)
+	    (member x (quote (t nil shared dwim))))))
+
 (defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
   "*Regular expression matching ordinary TeX files.
 
@@ -1421,6 +1454,10 @@ If you dislike AUCTeX automatically modifying your files, you can set
 this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
+
+(defvar TeX-convert-master t
+  "*If not nil, automatically convert ``Master:'' lines to file variables.
+This will be done when AUCTeX first try to use the master file.")
 
 ;; Can be let-bound temporarily in order to inhibit the master file question
 ;; by using its value instead in case `TeX-master' is nil or 'shared.
@@ -1572,42 +1609,6 @@ the beginning of the file, but that feature will be phased out."
 	(if dir (directory-file-name dir) "."))
       (and buffer-file-name
 	   (file-name-directory buffer-file-name)))))))
-
-(defcustom TeX-master t
-  "*The master file associated with the current buffer.
-If the file being edited is actually included from another file, you
-can tell AUCTeX the name of the master file by setting this variable.
-If there are multiple levels of nesting, specify the top level file.
-
-If this variable is nil, AUCTeX will query you for the name.
-
-If the variable is t, AUCTeX will assume the file is a master file
-itself.
-
-If the variable is 'shared, AUCTeX will query for the name, but not
-change the file.
-
-If the variable is 'dwim, AUCTeX will try to avoid querying by
-attempting to `do what I mean'; and then change the file.
-
-It is suggested that you use the File Variables (see the info node in
-the Emacs manual) to set this variable permanently for each file."
-  :group 'TeX-command
-  :group 'TeX-parse
-  :type '(choice (const :tag "Query" nil)
-		 (const :tag "This file" t)
-		 (const :tag "Shared" shared)
-		 (const :tag "Dwim" dwim)
-		 (string :format "%v")))
-(make-variable-buffer-local 'TeX-master)
-(put 'TeX-master 'safe-local-variable
-     '(lambda (x)
-	(or (stringp x)
-	    (member x (quote (t nil shared dwim))))))
-
-(defvar TeX-convert-master t
-  "*If not nil, automatically convert ``Master:'' lines to file variables.
-This will be done when AUCTeX first try to use the master file.")
 
 (defun TeX-add-local-master ()
   "Add local variable for `TeX-master'."
