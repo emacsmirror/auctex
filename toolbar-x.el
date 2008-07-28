@@ -117,7 +117,8 @@
 (defvar toolbarx-image-path
   (nconc
    (delq nil (mapcar #'(lambda(x)
-			 (and (member
+			 (and x
+			      (member
 			       (file-name-nondirectory
 				(directory-file-name x))
 			       '("toolbar" "images"))
