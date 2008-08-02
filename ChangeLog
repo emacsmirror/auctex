@@ -1,3 +1,14 @@
+2008-08-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Mimic
+	the default tool bars more closely.
+
+2008-08-02  Reiner Steib  <reiner.steib@gmx.de>
+
+	* toolbar-x.el (toolbarx-default-toolbar-meaning-alist): Provide
+	different defaults for different Emacs and XEmacs versions.
+	Conditionally add a `new-file' entry.
+
 2008-07-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* toolbar-x.el (toolbarx-image-path): Protect against load-path
