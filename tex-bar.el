@@ -83,8 +83,8 @@ If there is no help, the empty string is returned."
   :group 'AUCTeX)
 
 (defcustom TeX-bar-TeX-buttons
-  '(open-file save-buffer cut copy paste undo
-	      [separator nil] tex next-error view bibtex)
+  '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
+	     [separator nil] tex next-error view bibtex)
   "List of buttons available in `tex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -225,7 +225,7 @@ format of the argument MEANING-ALIST in the mentioned function."
 			      append-list)))
 
 (defcustom TeX-bar-LaTeX-buttons
-  '(open-file save-buffer cut copy paste undo
+  '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
 	      [separator nil] latex next-error view bibtex)
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
