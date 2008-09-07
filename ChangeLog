@@ -1,6 +1,7 @@
 2008-09-07  Ralf Angeli  <angeli@caeruleus.net>
 
-	* tex.el (TeX-PDF-mode): Add to `minor-mode-alist'.
+	* tex.el (TeX-PDF-mode): Add to `minor-mode-alist'.  Use "" as
+	lighter.
 	("desktop"): Remove `TeX-PDF-mode' from `desktop-locals-to-save'.
 
 	* latex.el (LaTeX-mark-environment): Swap beg and end.
