@@ -919,7 +919,7 @@ is not recommended because it is more powerful than
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
-If the first element (a regular expresion) matches the output
+If the first element (a regular expression) matches the output
 file extension, and the second element (a regular expression)
 matches the name of one of the style options, any occurrence of
 the string `%V' in a command in `TeX-command-list' will be
@@ -1210,6 +1210,7 @@ function `TeX-global-PDF-mode' for toggling this value."
   (TeX-set-mode-name nil nil t)
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi")))
+(add-to-list 'minor-mode-alist '(TeX-PDF-mode nil))
 
 (defun TeX-global-PDF-mode (&optional arg)
   "Toggle default for `TeX-PDF-mode'."
@@ -5193,8 +5194,7 @@ NAME may be a package, a command, or a document."
 ;; buffer-local values of it.
 (eval-after-load "desktop"
   '(progn
-     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode
-			       TeX-Omega-mode))
+     (dolist (elt '(TeX-master TeX-interactive-mode TeX-Omega-mode))
        (unless (member elt (default-value 'desktop-locals-to-save))
 	 (setq-default desktop-locals-to-save
 		       (cons elt (default-value 'desktop-locals-to-save)))))
