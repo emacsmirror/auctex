@@ -3357,10 +3357,10 @@ environments."
     ;; Point should not end up in the middle of nowhere if the search fails.
     (save-excursion
       (dotimes (c count) (LaTeX-find-matching-end))
-      (setq beg (line-beginning-position 2))
+      (setq end (line-beginning-position 2))
       (goto-char cur)
       (dotimes (c count) (LaTeX-find-matching-begin))
-      (setq end (point)))
+      (setq beg (point)))
     (set-mark end)
     (goto-char beg)
     (TeX-activate-region)))
