@@ -1,5 +1,8 @@
 2008-09-07  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-PDF-mode): Add to `minor-mode-alist'.
+	("desktop"): Remove `TeX-PDF-mode' from `desktop-locals-to-save'.
+
 	* latex.el (LaTeX-mark-environment): Swap beg and end.
 
 2008-08-02  Ralf Angeli  <angeli@caeruleus.net>
