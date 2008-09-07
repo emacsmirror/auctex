@@ -1210,7 +1210,7 @@ function `TeX-global-PDF-mode' for toggling this value."
   (TeX-set-mode-name nil nil t)
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi")))
-(add-to-list 'minor-mode-alist '(TeX-PDF-mode nil))
+(add-to-list 'minor-mode-alist '(TeX-PDF-mode ""))
 
 (defun TeX-global-PDF-mode (&optional arg)
   "Toggle default for `TeX-PDF-mode'."
