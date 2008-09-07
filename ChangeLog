@@ -1,3 +1,7 @@
+2008-09-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-mark-environment): Swap beg and end.
+
 2008-08-02  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Mimic
