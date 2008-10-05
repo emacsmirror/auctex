@@ -1487,9 +1487,9 @@ else.  There might be text before point."
   "Expand options for texexec command."
   (concat
    (and TeX-PDF-mode (not TeX-XeTeX-mode) "--pdf ")
-   (cond ((and TeX-Omega-mode Context-Omega-engine)
+   (cond ((and (eq TeX-engine 'omega) ConTeXt-Omega-engine)
 	  (format "--tex=%s " ConTeXt-Omega-engine))
-	 (TeX-XeTeX-mode
+	 ((eq TeX-engine 'xetex)
 	  "--xetex ")
 	 (ConTeXt-engine
 	  (format "--tex=%s " ConTeXt-engine)))
