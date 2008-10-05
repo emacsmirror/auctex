@@ -1,3 +1,25 @@
+2008-10-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-engine): New variable.
+	(TeX-expand-list): Use it instead of XeTeX and Omega mode
+	variables.
+	(hack-one-local-variable): Remove references to XeTeX and Omega
+	mode variables.
+	(TeX-set-mode-name): Remove lighters for XeTeX and Omega mode.
+	(TeX-engine-alist, LaTeX-engine-alist): New variables.
+	(TeX-engine-set): New function.
+	(TeX-Omega-mode): Mark as obsolete.  Remove defcustom.
+	(TeX-PDF-mode): Use `TeX-engine' instead of mode variables.
+	(TeX-XeTeX-mode): Remove.
+	(TeX-mode-map): Remove key bindings for toggling XeTeX and Omega
+	mode.
+	(TeX-mode-specific-command-menu-entries): Use new facilities for
+	switching TeX engines.
+	("desktop"): Remove reference to TeX Omega mode.
+
+	* context.el (ConTeXt-expand-options): Use `TeX-engine' instead of
+	XeTeX and Omega mode variables.
+
 2008-09-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-PDF-mode): Add to `minor-mode-alist'.  Use "" as
