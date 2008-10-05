@@ -93,6 +93,11 @@ then customization is requested."
   :group 'TeX-command
   :type 'string)
 
+(defcustom TeX-XeTeX-command "xetex"
+  "Command to run plain TeX on XeTeX."
+  :group 'TeX-command
+  :type 'string)
+
 (defcustom TeX-Omega-command "omega"
   "Command to run plain TeX on Omega."
   :group 'TeX-command
@@ -100,6 +105,11 @@ then customization is requested."
 
 (defcustom LaTeX-command "latex"
   "Command to run LaTeX."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom LaTeX-XeTeX-command "xelatex"
+  "Command to run LaTeX on XeTeX."
   :group 'TeX-command
   :type 'string)
 
@@ -410,29 +420,29 @@ string."
     ("%l" (lambda ()
 	    (TeX-style-check LaTeX-command-style)))
     ("%(PDF)" (lambda ()
-		(if (and (not TeX-Omega-mode)
-			 (not TeX-XeTeX-mode)
+		(if (and (eq TeX-engine 'default)
 			 (or TeX-PDF-mode
 			     TeX-DVI-via-PDFTeX))
 		    "pdf"
 		  "")))
     ("%(PDFout)" (lambda ()
-		   (if (and (not TeX-Omega-mode)
-			    (not TeX-PDF-mode)
-			    TeX-DVI-via-PDFTeX)
-		       " \"\\pdfoutput=0 \""
-		     "")))
+		   (cond ((and (eq TeX-engine 'xetex)
+			       (not TeX-PDF-mode))
+			  " -no-pdf")
+			 ((and (eq TeX-engine 'default)
+			       (not TeX-PDF-mode)
+			       TeX-DVI-via-PDFTeX)
+			  " \"\\pdfoutput=0 \"")
+			 (t ""))))
     ("%(mode)" (lambda ()
 		 (if TeX-interactive-mode
 		     ""
 		   " -interaction=nonstopmode")))
-    ("%(o?)" (lambda () (if TeX-Omega-mode "o" "")))
-    ("%(tex)" (lambda () (cond (TeX-Omega-mode TeX-Omega-command)
-			       (TeX-XeTeX-mode TeX-XeTeX-command)
-			       (t TeX-command))))
-    ("%(latex)" (lambda () (cond (TeX-Omega-mode LaTeX-Omega-command)
-				 (TeX-XeTeX-mode LaTeX-XeTeX-command)
-				 (t LaTeX-command))))
+    ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
+    ("%(tex)" (lambda ()
+		(eval (cdr (assq TeX-engine TeX-engine-alist)))))
+    ("%(latex)" (lambda ()
+		  (eval (cdr (assq TeX-engine LaTeX-engine-alist)))))
     ("%(execopts)" ConTeXt-expand-options)
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
@@ -583,9 +593,9 @@ Also does other stuff."
 	(val (ad-get-arg 1)))
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode TeX-XeTeX-mode
+    (when (memq var '(TeX-PDF-mode
 		      TeX-source-correlate-mode TeX-interactive-mode
-		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
+		      TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
 
 (defvar TeX-overlay-priority-step 16
@@ -830,13 +840,11 @@ If RESET is non-nil, `TeX-command-next' is reset to
     (if TeX-mode-p
 	(let ((trailing-flags
 	       (concat
-		(and TeX-Omega-mode "O")
 		(and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
 		(and TeX-interactive-mode "I")
 		(and TeX-source-correlate-mode "S"))))
-	  (setq mode-name (concat (and TeX-PDF-mode (not TeX-XeTeX-mode) "PDF")
-				  (and TeX-XeTeX-mode "Xe")
+	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
 				    (concat "/" trailing-flags))))
@@ -934,6 +942,47 @@ all the regular expressions must match for the element to apply."
 		  (regexp :tag "Extension")
 		  (choice regexp (repeat :tag "List" regexp))
 		  (string :tag "Command"))))
+
+;;; Engine
+
+(defcustom TeX-engine 'default
+  "Type of TeX engine to use."
+  :group 'TeX-command
+  :type '(choice (const :tag "Default" default)
+		 (const :tag "XeTeX" xetex)
+		 (const :tag "Omega" omega)))
+(put 'TeX-engine 'safe-local-variable (lambda (arg)
+					(memq arg '(default xetex omega))))
+
+(defvar TeX-engine-alist
+  '((default . TeX-command)
+    (xetex . TeX-XeTeX-command)
+    (omega . TeX-Omega-command))
+  "Alist associating engine type symbols with TeX command variables.")
+
+(defvar LaTeX-engine-alist
+  '((default . LaTeX-command)
+    (xetex . LaTeX-XeTeX-command)
+    (omega . LaTeX-Omega-command))
+  "Alist associating engine type symbols with LaTeX command variables.")
+
+(defun TeX-engine-set (type)
+  "Set TeX engine to TYPE.
+TYPE can be one of `default', `xetex' or `omega'."
+  (interactive (list (completing-read "Engine: "
+				      '("default" "xetex" "omega") nil t)))
+  (when (stringp type)
+    (setq type (intern type)))
+  (setq TeX-engine type))
+
+(define-minor-mode TeX-Omega-mode
+  "Minor mode for using the Omega engine."
+  nil nil nil
+  :group 'TeX-command
+  (setq TeX-engine (if TeX-Omega-mode 'omega 'default)))
+(defalias 'tex-omega-mode 'TeX-Omega-mode)
+(make-obsolete 'TeX-Omega-mode 'TeX-engine-set)
+(make-obsolete-variable 'TeX-Omega-mode 'TeX-engine)
 
 ;;; Forward and inverse search
 
@@ -1201,10 +1250,7 @@ If enabled, PDFTeX will be used as an executable by default.
 You can customize an initial value, and you can use the
 function `TeX-global-PDF-mode' for toggling this value."
   :group 'TeX-command
-  ;; Disable TeX XeTeX mode if TeX PDF mode is disabled
-  (when (and (not TeX-PDF-mode) TeX-XeTeX-mode)
-    (TeX-XeTeX-mode -1))
-  (when TeX-Omega-mode
+  (when (eq TeX-engine 'omega)
     (setq TeX-PDF-mode nil))
   (setq TeX-PDF-mode-parsed nil)
   (TeX-set-mode-name nil nil t)
@@ -1266,42 +1312,6 @@ already established, don't do anything."
   :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode 'TeX-interactive-mode)
-
-(defcustom TeX-Omega-mode nil nil
-  :group 'TeX-command
-  :set 'TeX-mode-set
-  :type 'boolean)
-
-(define-minor-mode TeX-Omega-mode
-  "Minor mode for using the Omega engine."
-  nil nil nil
-  :group 'TeX-command
-  (when TeX-Omega-mode
-    (TeX-PDF-mode 0)
-    (TeX-XeTeX-mode -1))
-  (TeX-set-mode-name 'TeX-Omega-mode t t))
-(defalias 'tex-omega-mode 'TeX-Omega-mode)
-
-(defcustom TeX-XeTeX-command "xetex"
-  "Command to run plain TeX on XeTeX."
-  :group 'TeX-command
-  :type 'string)
-
-(defcustom LaTeX-XeTeX-command "xelatex"
-  "Command to run LaTeX on XeTeX."
-  :group 'TeX-command
-  :type 'string)
-
-(define-minor-mode TeX-XeTeX-mode
-  "Minor mode for using the XeTeX engine."
-  nil nil nil
-  :group 'TeX-command
-  (when TeX-XeTeX-mode
-    (when TeX-Omega-mode (TeX-Omega-mode -1))
-    (TeX-PDF-mode 1))
-  (TeX-set-mode-name 'TeX-XeTeX-mode t t))
-(defalias 'tex-xetex-mode 'TeX-XeTeX-mode)
-(put 'TeX-XeTeX-mode 'safe-local-variable 'TeX-booleanp)
 
 ;;; Commands
 
@@ -3659,8 +3669,6 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
-    (define-key map "\C-c\C-t\C-o"   'TeX-Omega-mode)
-    (define-key map "\C-c\C-t\C-x"   'TeX-XeTeX-mode)
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-correlate-mode)
@@ -3752,20 +3760,19 @@ Brace insertion is only done if point is in a math construct and
        :help "Start a viewer without prompting"]
       "-"
       ("TeXing Options"
-       [ "Use standard engine"
-	 (lambda () (interactive) (TeX-Omega-mode -1) (TeX-XeTeX-mode -1))
-	 :style radio :selected (and (not TeX-Omega-mode) (not TeX-XeTeX-mode))
+       [ "Use standard engine" (TeX-engine-set 'default)
+	 :style radio :selected (eq TeX-engine 'default)
 	 :help "Use the original TeX engines for compiling"]
-       [ "Use Omega" TeX-Omega-mode
-	 :style radio :selected TeX-Omega-mode
-	 :help "Use the Omega engine for compiling"]
-       [ "Use XeTeX" TeX-XeTeX-mode
-	 :style radio :selected TeX-XeTeX-mode
+       [ "Use XeTeX" (TeX-engine-set 'xetex)
+	 :style radio :selected (eq TeX-engine 'xetex)
 	 :help "Use the XeTeX engine for compiling"]
+       [ "Use Omega" (TeX-engine-set 'omega)
+	 :style radio :selected (eq TeX-engine 'omega)
+	 :help "Use the Omega engine for compiling"]
        "-"
        [ "Generate PDF" TeX-PDF-mode
 	 :style toggle :selected TeX-PDF-mode
-	 :active (not TeX-Omega-mode)
+	 :active (not (eq TeX-engine 'omega))
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
@@ -5194,7 +5201,7 @@ NAME may be a package, a command, or a document."
 ;; buffer-local values of it.
 (eval-after-load "desktop"
   '(progn
-     (dolist (elt '(TeX-master TeX-interactive-mode TeX-Omega-mode))
+     (dolist (elt '(TeX-master TeX-interactive-mode))
        (unless (member elt (default-value 'desktop-locals-to-save))
 	 (setq-default desktop-locals-to-save
 		       (cons elt (default-value 'desktop-locals-to-save)))))
