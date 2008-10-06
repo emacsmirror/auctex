@@ -1,3 +1,8 @@
+2008-10-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-paragraph-commands-regexp-make): Make it work
+	for the case that `LaTeX-paragraph-commands' is set.
+
 2008-10-05  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-engine): New variable.
