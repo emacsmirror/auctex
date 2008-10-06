@@ -3434,9 +3434,8 @@ value of NO-SUBSECTIONS."
 (defun LaTeX-paragraph-commands-regexp-make ()
   "Return a regular expression matching defined paragraph commands."
   (concat (regexp-quote TeX-esc) "\\("
-	  (when LaTeX-paragraph-commands
-	    (concat LaTeX-paragraph-commands "\\|"))
-	  (regexp-opt LaTeX-paragraph-commands-internal) "\\)"))
+	  (regexp-opt (append LaTeX-paragraph-commands
+			      LaTeX-paragraph-commands-internal)) "\\)"))
 
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
