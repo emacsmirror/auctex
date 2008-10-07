@@ -1,3 +1,9 @@
+2008-10-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-interactive-mode): Add to `minor-mode-alist'.
+	("desktop"): Remove `TeX-interactive-mode' from
+	`desktop-locals-to-save'.
+
 2008-10-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-paragraph-commands-regexp-make): Make it work
