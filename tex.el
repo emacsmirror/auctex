@@ -1312,6 +1312,7 @@ already established, don't do anything."
   :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode 'TeX-interactive-mode)
+(add-to-list 'minor-mode-alist '(TeX-interactive-mode ""))
 
 ;;; Commands
 
@@ -5201,7 +5202,7 @@ NAME may be a package, a command, or a document."
 ;; buffer-local values of it.
 (eval-after-load "desktop"
   '(progn
-     (dolist (elt '(TeX-master TeX-interactive-mode))
+     (dolist (elt '(TeX-master))
        (unless (member elt (default-value 'desktop-locals-to-save))
 	 (setq-default desktop-locals-to-save
 		       (cons elt (default-value 'desktop-locals-to-save)))))
