@@ -842,10 +842,10 @@ If RESET is non-nil, `TeX-command-next' is reset to
 	       (concat
 		(and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
+		(and TeX-PDF-mode "P")
 		(and TeX-interactive-mode "I")
 		(and TeX-source-correlate-mode "S"))))
-	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
-				  TeX-base-mode-name
+	  (setq mode-name (concat TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
 				    (concat "/" trailing-flags))))
 	  (when reset
@@ -946,7 +946,9 @@ all the regular expressions must match for the element to apply."
 ;;; Engine
 
 (defcustom TeX-engine 'default
-  "Type of TeX engine to use."
+  "Type of TeX engine to use.
+The value should be one of the symbols `default' for plain old
+TeX or PDFTeX, `xetex' for XeTeX and `omega' for Omega."
   :group 'TeX-command
   :type '(choice (const :tag "Default" default)
 		 (const :tag "XeTeX" xetex)
