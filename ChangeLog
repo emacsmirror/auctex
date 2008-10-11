@@ -1,5 +1,9 @@
 2008-10-11  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-set-mode-name): Indicate TeX PDF mode as a trailing
+	flag.
+	(TeX-engine): Doc fix.
+
 	* doc/auctex.texi: Restructure some parts.  Update and extend it a
 	bit to reflect the recent changes of functionality.
 
