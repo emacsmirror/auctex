@@ -1,3 +1,8 @@
+2008-10-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi: Restructure some parts.  Update and extend it a
+	bit to reflect the recent changes of functionality.
+
 2008-10-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-interactive-mode): Add to `minor-mode-alist'.
