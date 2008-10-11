@@ -122,57 +122,56 @@ sending ``subscribe'' in the subject of a mail to
 @menu
 * Copying::                     Copying
 * Introduction::                Introduction to @AUCTeX{}
-* Installation::                Installing @AUCTeX{}
-* Quick Start::                 Quick Start
-* Frequently Used Commands::    Inserting Frequently Used Commands
-* Advanced Features::           Advanced Editing Features
+* Editing::                     Editing the Document Source
 * Display::                     Controlling Screen Display
-* Running TeX and friends::     Starting Processors, Viewers and Other Programs
-* Multifile::                   Multifile Documents
-* Parsing Files::               Automatic Parsing of @TeX{} Files
-* Internationalization::        Language Support
-* Automatic::                   Automatic Customization
-* Style Files::                 Writing Your own Style Support
-* Copying this Manual::         GNU Free Documentation License
-* Changes::                     Changes and New Features
-* Development::                 Future Development
-* FAQ::                         Frequently Asked Questions
-* Key Index::                   Key Index
-* Function Index::              Function Index
-* Variable Index::              Variable Index
-* Concept Index::               Concept Index
+* Processing::                  Starting Processors, Viewers and Other Programs
+* Customization::               Customization and Extension
+* Appendices::                  Copying, Changes, Development, FAQ
+* Indices::                     Indices
 
 @detailmenu
  --- The Detailed Node Listing ---
 
-Inserting Frequently Used Commands
+Introduction
+
+* Summary::                     Overview of @AUCTeX{}
+* Installation::                Installing @AUCTeX{}
+* Quick Start::                 Quick Start
+
+Editing the Document Source
 
 * Quotes::                      Inserting double quotes
 * Font Specifiers::             Inserting Font Specifiers
 * Sectioning::                  Inserting chapters, sections, etc.
 * Environments::                Inserting Environment Templates
-
-Inserting Environment Templates
-
-* Equations::                   Equations
-* Floats::                      Floats
-* Itemize-like::                Itemize-like
-* Tabular-like::                Tabular-like
-* Customizing environments::    Customizing environments
-
-Advanced Editing Features
-
 * Mathematics::                 Entering Mathematics
 * Completion::                  Completion of macros
 * Commenting::                  Commenting text
 * Indenting::                   Reflecting syntactic constructs with whitespace
 * Filling::                     Automatic and manual line breaking
 
+Inserting Environment Templates
+
+* Equations::                   Equations
+* Floats::                      Floats
+* Itemize-like::                Itemize-like Environments
+* Tabular-like::                Tabular-like Environments
+* Customizing Environments::    Customizing Environments
+
 Controlling Screen Display
 
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
+
+Font Locking
+
+* Fontification of macros::     Fontification of macros
+* Fontification of quotes::     Fontification of quotes
+* Subscript and superscript::   Subscript and superscript in math
+* Verbatim content::            Verbatim macros and environments
+* Multi-line fontification::    Multi-line fontification
+* Faces::                       Faces used by font-latex
 
 Starting Processors, Viewers and Other Programs
 
@@ -183,6 +182,19 @@ Starting Processors, Viewers and Other Programs
 * Control::                     Controlling the processes.
 * Cleaning::                    Cleaning intermediate and output files.
 * Documentation::               Documentation about macros and packages.
+
+Viewing the Formatted Output
+
+* Starting Viewers::            Starting viewers
+* I/O Correlation::             Forward and inverse search
+
+Customization and Extension
+
+* Multifile::                   Multifile Documents
+* Parsing Files::               Automatic Parsing of @TeX{} Files
+* Internationalization::        Language Support
+* Automatic::                   Automatic Customization
+* Style Files::                 Writing Your Own Style Support
 
 Language Support
 
@@ -195,13 +207,31 @@ Automatic Customization
 * Automatic Private::           Automatic Customization for a User
 * Automatic Local::             Automatic Customization for a Directory
 
-Writing Your own Style Support
+Writing Your Own Style Support
 
 * Simple Style::                A Simple Style File
 * Adding Macros::               Adding Support for Macros
 * Adding Environments::         Adding Support for Environments
 * Adding Other::                Adding Other Information
 * Hacking the Parser::          Automatic Extraction of New Things
+
+Copying, Changes, Development, FAQ
+
+* Copying this Manual::         
+* Changes::                     
+* Development::                 
+* FAQ::                         
+
+Copying this Manual
+
+* GNU Free Documentation License:: License for copying this manual.
+
+Indices
+
+* Key Index::                   
+* Function Index::              
+* Variable Index::              
+* Concept Index::               
 
 @end detailmenu
 @end menu
@@ -254,27 +284,46 @@ distributed as part of @AUCTeX{} are found in the General Public
 Licenses that accompany them.  This manual specifically is covered by
 the GNU Free Documentation License (@pxref{Copying this Manual}).
 
+@node Introduction
+@chapter Introduction
+
+@menu
+* Summary::                     Overview of @AUCTeX{}
+* Installation::                Installing @AUCTeX{}
+* Quick Start::                 Quick Start
+@end menu
+
+@lowersections
 @include intro.texi
 
 @include install.texi
 
 @include quickstart.texi
+@raisesections
 
-@node Frequently Used Commands
-@chapter Inserting Frequently Used Commands
+@node Editing
+@chapter Editing the Document Source
 
 The most commonly used commands/macros of @AUCTeX{} are those which
-simply insert templates for often used @TeX{} and/or @LaTeX{}/@ConTeXt{}
+simply insert templates for often used @TeX{}, @LaTeX{}, or @ConTeXt{}
 constructs, like font changes, handling of environments, etc.  These
-features are very simple, and easy to learn, and help you avoid stupid
-mistakes like mismatched braces, or @samp{\begin@{@}}-@samp{\end@{@}}
-pairs.
+features are very simple, and easy to learn, and help you avoid mistakes
+like mismatched braces, or @samp{\begin@{@}}-@samp{\end@{@}} pairs.
+
+Apart from that this chapter contains a description of some features for
+entering more specialized sorts of text, for formatting the source by
+indenting and filling and for navigating through the document.
 
 @menu
 * Quotes::                      Inserting double quotes
 * Font Specifiers::             Inserting Font Specifiers
 * Sectioning::                  Inserting chapters, sections, etc.
 * Environments::                Inserting Environment Templates
+* Mathematics::                 Entering Mathematics
+* Completion::                  Completion of macros
+* Commenting::                  Commenting text
+* Indenting::                   Reflecting syntactic constructs with whitespace
+* Filling::                     Automatic and manual line breaking
 @end menu
 
 @node Quotes
@@ -665,14 +714,14 @@ If the document is empty, or the cursor is placed at the top of the
 document, @AUCTeX{} will default to insert a `document' environment.
 
 Most of these are described further in the following sections, and you
-may easily specify more.  @xref{Customizing environments}.
+may easily specify more.  @xref{Customizing Environments}.
 
 @menu
 * Equations::                   Equations
 * Floats::                      Floats
-* Itemize-like::                Itemize-like
-* Tabular-like::                Tabular-like
-* Customizing environments::    Customizing environments
+* Itemize-like::                Itemize-like Environments
+* Tabular-like::                Tabular-like Environments
+* Customizing Environments::    Customizing Environments
 @end menu
 
 You can close the current environment with @kbd{C-c ]}, but we suggest
@@ -766,7 +815,7 @@ List of float environments with top caption.
 @end defopt
 
 @node Itemize-like
-@subsection Itemize-like
+@subsection Itemize-like Environments
 @cindex Itemize
 @cindex Enumerates
 @cindex Descriptions
@@ -785,7 +834,7 @@ insert an appropriate @samp{\item} for the current environment. That is,
 @end deffn
 
 @node Tabular-like
-@subsection Tabular-like
+@subsection Tabular-like Environments
 
 When inserting Tabular-like environments, that is, `tabular' `array'
 etc., you will be prompted for a template for that environment.
@@ -800,29 +849,11 @@ Default position string for array and tabular environments.  If nil,
 act like the empty string is given, but don't prompt for a position.
 @end defopt
 
-@node Customizing environments
-@subsection Customizing environments
+@node Customizing Environments
+@subsection Customizing Environments
 
 @xref{Adding Environments}, for how to customize the list of known
 environments.
-
-@node Advanced Features
-@chapter Advanced Editing Features
-@cindex Advanced features
-
-The previous chapter described how to write the main body of the text
-easily and with a minimum of errors.  In this chapter we will describe
-some features for entering more specialized sorts of text, for
-formatting the source by indenting and filling and for navigating
-through the document.
-
-@menu
-* Mathematics::                 Entering Mathematics
-* Completion::                  Completion of macros
-* Commenting::                  Commenting text
-* Indenting::                   Reflecting syntactic constructs with whitespace
-* Filling::                     Automatic and manual line breaking
-@end menu
 
 @node Mathematics
 @section Entering Mathematics
@@ -916,9 +947,9 @@ Emacs lisp programmers probably know the @code{lisp-complete-symbol}
 command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
 ispell mode know and love the @code{ispell-complete-word} command from
 that package.  Similarly, @AUCTeX{} has a @code{TeX-complete-symbol}
-command, usually bound to @kbd{M-@key{TAB}}.  Using
-@code{LaTeX-complete-symbol} makes it easier to type and remember the
-names of long @LaTeX{} macros.
+command, by default bound to @kbd{M-@key{TAB}} which is equivalent to
+@kbd{M-C-i}.  Using @code{TeX-complete-symbol} makes it easier to type
+and remember the names of long @LaTeX{} macros.
 
 In order to use @code{TeX-complete-symbol}, you should write a backslash
 and the start of the macro.  Typing @kbd{M-@key{TAB}} will now complete
@@ -932,17 +963,17 @@ as much of the macro, as it unambiguously can.  For example, if you type
 @end deffn
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
-bound to @kbd{C-c C-m}.  It has the advantage over completion that it
-knows about the argument of most standard @LaTeX{} macros, and will
-prompt for them.  It also knows about the type of the arguments, so it
-will for example give completion for the argument to @samp{\include}.
-Some examples are listed below.
+bound to @kbd{C-c C-m} which is equivalent to @kbd{C-c @key{RET}}.  It
+has the advantage over completion that it knows about the argument of
+most standard @LaTeX{} macros, and will prompt for them.  It also knows
+about the type of the arguments, so it will for example give completion
+for the argument to @samp{\include}.  Some examples are listed below.
 
 @deffn Command TeX-insert-macro
 @kindex C-c C-m
-(@kbd{C-c C-m} or @kbd{C-c RET}) Prompt (with completion) for the name
-of a @TeX{} macro, and if @AUCTeX{} knows the macro, prompt for each
-argument.
+(@kbd{C-c C-m} or @kbd{C-c @key{RET}}) Prompt (with completion) for the
+name of a @TeX{} macro, and if @AUCTeX{} knows the macro, prompt for
+each argument.
 @end deffn
 
 As a default selection, @AUCTeX{} will suggest the macro last inserted
@@ -999,7 +1030,7 @@ If non-nil, append a empty pair of braces after inserting a macro.
 @end defopt
 
 Completions work because @AUCTeX{} can analyze @TeX{} files, and store
-symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
+symbols in Emacs Lisp files for later retrieval.  @xref{Automatic}, for
 more information.
 
 @cindex \cite, completion of
@@ -1139,10 +1170,10 @@ to indenting with a small summary in each case:
 @code{newline-and-indent} inserts a new line (much like @key{RET}) and
 moves the cursor to an appropriate position by the left margin.
 
-Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
-tedious to type.  Therefore you can customize @AUCTeX{} to perform
-indentation (or to make coffee) upon typing @key{RET} as well.  The
-respective option is called @code{TeX-newline-function}.
+Most keyboards nowadays lack a linefeed key and @kbd{C-j} may be tedious
+to type.  Therefore you can customize @AUCTeX{} to perform indentation
+upon typing @key{RET} as well.  The respective option is called
+@code{TeX-newline-function}.
 
 @item C-j
 @kindex C-j
@@ -1208,16 +1239,11 @@ linebreaks will be inserted automatically if @code{auto-fill-mode} is
 enabled.  In this case the source is not only filled but also indented
 automatically as you write it.
 
-@c Describe hooks at another suitable place!
-
 @code{auto-fill-mode} can be enabled for @AUCTeX{} by calling
-@code{turn-on-auto-fill} in one of the hooks @AUCTeX{} is running.  For
-all text modes with @code{text-mode-hook}, for all @AUCTeX{} modes with
-@code{TeX-mode-hook} or for specific modes with
-@code{plain-TeX-mode-hook}, @code{LaTeX-mode-hook},
-@code{ConTeXt-mode-hook} or @code{docTeX-mode-hook}.  As an example, if
-you want to enable @code{auto-fill-mode} in @code{LaTeX-mode}, put the
-following into your init file:
+@code{turn-on-auto-fill} in one of the hooks @AUCTeX{} is running.
+@xref{Modes and Hooks}.  As an example, if you want to enable
+@code{auto-fill-mode} in @code{LaTeX-mode}, put the following into your
+init file:
 
 @lisp
 (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
@@ -1624,11 +1650,11 @@ Face: @code{font-latex-type-face}
 described above.  You can disable these defaults per class by
 customizing the variable @code{font-latex-deactivated-keyword-classes}.
 This is a list of strings for keyword classes to be deactivated.  Valid
-entries are \"warning\", \"variable\", \"reference\", \"function\" ,
-\"sectioning-0\", \"sectioning-1\", \"sectioning-2\", \"sectioning-3\",
-\"sectioning-4\", \"sectioning-5\", \"textual\", \"bold-command\",
-\"italic-command\", \"math-command\", \"type-command\",
-\"bold-declaration\", \"italic-declaration\", \"type-declaration\".
+entries are "warning", "variable", "reference", "function" ,
+"sectioning-0", "sectioning-1", "sectioning-2", "sectioning-3",
+"sectioning-4", "sectioning-5", "textual", "bold-command",
+"italic-command", "math-command", "type-command", "bold-declaration",
+"italic-declaration", "type-declaration".
 
 You can also get rid of certain keywords only.  For example if you want
 to remove highlighting of footnotes as references you can put the
@@ -2072,13 +2098,13 @@ You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
 
-@node Running TeX and friends
+@node Processing
 @chapter Starting Processors, Viewers and Other Programs
 
-The most powerful features of @AUCTeX{} may be those allowing you to
-run (La)@TeX{}/@ConTeXt{} and other external commands like Bib@TeX{} and
-@code{makeindex} from within Emacs, viewing and printing the results,
-and moreover allowing you to @emph{debug} your documents.
+The most powerful features of @AUCTeX{} may be those allowing you to run
+@TeX{}, @LaTeX{}, @ConTeXt{} and other external commands like Bib@TeX{}
+and @code{makeindex} from within Emacs, viewing and printing the
+results, and moreover allowing you to @emph{debug} your documents.
 
 @cindex tool bar, toolbar
 @vindex LaTeX-enable-toolbar
@@ -2134,12 +2160,21 @@ with a previewer, printing the document, running Bib@TeX{}, making an
 index, or checking the document with @command{lacheck} or
 @command{chktex} all require running an external command.
 
+@menu
+* Starting a Command::          Starting a Command on a Document or Region
+* Selecting a Command::         Selecting and Executing a Command
+* Processor Options::           Options for @TeX{} Processors
+@end menu
+
+@node Starting a Command
+@subsection Starting a Command on a Document or Region
+
 There are two ways to run an external command, you can either run it on
-all of the current documents with @code{TeX-command-master}, or on the
-current region with @code{TeX-command-region}.  A special case of
-running @TeX{} on a region is @code{TeX-command-buffer} which differs
-from @code{TeX-command-master} if the current buffer is not its own
-master file.
+the current document with @code{TeX-command-master}, or on the current
+region with @code{TeX-command-region}.  A special case of running @TeX{}
+on a region is @code{TeX-command-buffer} which differs from
+@code{TeX-command-master} if the current buffer is not its own master
+file.
 
 @deffn Command TeX-command-master
 @kindex C-c C-c
@@ -2151,22 +2186,22 @@ controlled by the variable @code{TeX-command-list}.
 @vindex TeX-command-list
 @end deffn
 
-@xref{Installation}, for a discussion about @code{TeX-command-list} and
-@ref{Multifile} for a discussion about @code{TeX-master}.
-
 @deffn Command TeX-command-region
 @kindex C-c C-r
-(@kbd{C-c C-r}) Query the user for a command, and run it on the ``region
-file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
-will write the current region into the region file, after extracting the
-header and trailer from the master file.  If mark is inactive (which can
-happen with @code{transient-mark-mode}), use the old region.  The name
-of the region file is controlled by the variable @code{TeX-region}.  The
-name of the master file is controlled by the variable @code{TeX-master}.
-The header is all text up to the line matching the regular expression
-@code{TeX-header-end}.  The trailer is all text from the line matching
-the regular expression @code{TeX-trailer-start}.  The available commands
-are controlled by the variable @code{TeX-command-list}.
+(@kbd{C-c C-r}) Query the user for a command, and run it on the contents
+of the selected region.  The region contents are written into the region
+file, after extracting the header and trailer from the master file.  If
+mark is inactive (which can happen with Transient Mark mode), use the
+old region.  See also the command @code{TeX-pin-region} about how to fix
+a region.
+
+The name of the region file is controlled by the variable
+@code{TeX-region}.  The name of the master file is controlled by the
+variable @code{TeX-master}.  The header is all text up to the line
+matching the regular expression @code{TeX-header-end}.  The trailer is
+all text from the line matching the regular expression
+@code{TeX-trailer-start}.  The available commands are controlled by the
+variable @code{TeX-command-list}.
 @vindex TeX-region
 @vindex TeX-header-end
 @vindex TeX-trailer-start
@@ -2174,32 +2209,14 @@ are controlled by the variable @code{TeX-command-list}.
 @vindex TeX-command-list
 @end deffn
 
-@deffn Command TeX-pin-region
-@kindex C-c C-t C-r
-(@kbd{C-c C-t C-r}) If you don't have a mode like
-@code{transient-mark-mode} active, where marks get disabled
-automatically, the region would need to get properly set before each
-call to @code{TeX-command-region}.  If you fix the current region with
-@kbd{C-c C-t C-r}, then it will get used for more commands even though
-mark and point may change.  An explicitly activated mark, however, will
-always define a new region when calling @code{TeX-command-region}.
-@end deffn
-
 @deffn Command TeX-command-buffer
 @kindex C-c C-b
-(@kbd{C-c C-b}) Query the user for a command, and run it on the ``region
-file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
-will write the current buffer into the region file, after extracting the
-header and trailer from the master file.  See above for details.
+(@kbd{C-c C-b}) Query the user for a command, and apply it to the
+contents of the current buffer.  The buffer contents are written into
+the region file, after extracting the header and trailer from the master
+file.  The command is then actually run on the region file.  See above
+for details.
 @end deffn
-
-@AUCTeX{} will allow one process for each document, plus one process
-for the region file to be active at the same time.  Thus, if you are
-editing @var{n} different documents, you can have @var{n} plus one
-processes running at the same time.  If the last process you started was
-on the region, the commands described in @ref{Debugging} and
-@ref{Control} will work on that process, otherwise they will work on the
-process associated with the current document.
 
 @defopt TeX-region
 The name of the file for temporarily storing the text when formatting
@@ -2218,43 +2235,87 @@ this is @samp{\end@{document@}} in @LaTeX{} mode and @samp{\bye} in
 @TeX{} mode.
 @end defopt
 
-@AUCTeX{} will try to guess what command you want to invoke, but by
-default it will assume that you want to run @TeX{} in @TeX{} mode and
-@LaTeX{} in @LaTeX{} mode.  You can overwrite this by setting the
-variable @code{TeX-command-default}.
+If you want to change the values of @code{TeX-header-end} and
+@code{TeX-trailer-start} you can do this for all files by setting the
+variables in a mode hook or per file by specifying them as file
+variables (@pxref{File Variables,,,emacs,The Emacs Editor}).
+
+@deffn Command TeX-pin-region
+@kindex C-c C-t C-r
+(@kbd{C-c C-t C-r}) If you don't have a mode like Transient Mark mode
+active, where marks get disabled automatically, the region would need to
+get properly set before each call to @code{TeX-command-region}.  If you
+fix the current region with @kbd{C-c C-t C-r}, then it will get used for
+more commands even though mark and point may change.  An explicitly
+activated mark, however, will always define a new region when calling
+@code{TeX-command-region}.
+@end deffn
+
+@AUCTeX{} will allow one process for each document, plus one process
+for the region file to be active at the same time.  Thus, if you are
+editing @var{n} different documents, you can have @var{n} plus one
+processes running at the same time.  If the last process you started was
+on the region, the commands described in @ref{Debugging} and
+@ref{Control} will work on that process, otherwise they will work on the
+process associated with the current document.
+
+@node Selecting a Command
+@subsection Selecting and Executing a Command
+
+Once you started the command selection with @kbd{C-c C-c}, @kbd{C-c C-s}
+or @kbd{C-c C-b} you will be prompted for the type of command.
+@AUCTeX{} will try to guess which command is appropriate in the given
+situation and propose it as default.  Usually this is a processor like
+@samp{TeX} or @samp{LaTeX} if the document was changed or a viewer if
+the document was just typeset.  Other commands can be selected in the
+minibuffer with completion support by typing @key{TAB}.
+
+@vindex TeX-command-list
+@vindex TeX-expand-list
+The available commands are defined by the variable
+@code{TeX-command-list}.  Per default it includes commands for
+typesetting the document (e.g. @samp{LaTeX}), for viewing the output
+(@samp{View}), for printing (@samp{Print}), for generating an index
+(@samp{Index}) or for spell checking (@samp{Spell}) to name but a few.
+You can also add your own commands by adding entries to
+@code{TeX-command-list}.  Refer to its doc string for information about
+its syntax.  You might also want to look at @code{TeX-expand-list} to
+learn about the expanders you can use in @code{TeX-command-list}.
+
+Note that the default of the variable occasionally changes.  Therefore
+it is advisable to add to the list rather than overwriting it.  You can
+do this with a call to @code{add-to-list} in your init file.  For
+example, if you wanted to add a command for running a program called
+@samp{foo} on the master or region file, you could do this with the
+following form.
+
+@lisp
+(eval-after-load "tex"
+  '(add-to-list 'TeX-command-list
+		'("Foo" "foo %s" TeX-run-command t t :help "Run foo") t))
+@end lisp
+
+As mentioned before, @AUCTeX{} will try to guess what command you want
+to invoke.  If you want to use another command than @samp{TeX},
+@samp{LaTeX} or whatever processor @AUCTeX{} thinks is appropriate for
+the current mode, set the variable @code{TeX-command-default}.  You can
+do this for all files by setting it in a mode hook or per file by
+specifying it as a file variable (@pxref{File Variables,,,emacs,The
+Emacs Editor}).
 
 @defopt TeX-command-default
 The default command to run in this buffer.  Must be an entry in
 @code{TeX-command-list}.
 @end defopt
 
-If you want to overwrite the values of @code{TeX-header-end},
-@code{TeX-trailer-start}, or @code{TeX-command-default}, you can do that
-for all files by setting them in either @code{TeX-mode-hook},
-@code{plain-TeX-mode-hook}, or @code{LaTeX-mode-hook}.  To overwrite
-them for a single file, define them as file variables (@pxref{File
-Variables,,,emacs,The Emacs Editor}).  You do this by putting special
-formatted text near the end of the file.
-@cindex Variables
-@cindex File Variables
-@cindex Local Variables
-
-@example
-%%% Local Variables:
-%%% TeX-header-end: "% End-Of-Header"
-%%% TeX-trailer-start: "% Start-Of-Trailer"
-%%% TeX-command-default: "SliTeX"
-%%% End:
-@end example
-
-@AUCTeX{} will try to save any buffers related to the document, and
-check if the document needs to be reformatted.  If the variable
-@code{TeX-save-query} is non-nil, @AUCTeX{} will query before saving
-each file.  By default @AUCTeX{} will check emacs buffers associated
-with files in the current directory, in one of the
-@code{TeX-macro-private} directories, and in the @code{TeX-macro-global}
-directories.  You can change this by setting the variable
-@code{TeX-check-path}.
+After confirming a command to execute, @AUCTeX{} will try to save any
+buffers related to the document, and check if the document needs to be
+reformatted.  If the variable @code{TeX-save-query} is non-nil,
+@AUCTeX{} will query before saving each file.  By default @AUCTeX{} will
+check emacs buffers associated with files in the current directory, in
+one of the @code{TeX-macro-private} directories, and in the
+@code{TeX-macro-global} directories.  You can change this by setting the
+variable @code{TeX-check-path}.
 
 @defopt TeX-check-path
 Directory path to search for dependencies.
@@ -2263,13 +2324,17 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
+@node Processor Options
+@subsection Options for @TeX{} Processors
+
 There are some options you can customize affecting which processors are
 invoked or the way this is done and which output they produce as a
 result.  These options control if @acronym{DVI} or @acronym{PDF} output
 should be produced, if @TeX{} should be started in interactive or
-nonstop mode, if Source Specials should be included in the @acronym{DVI}
-output for making inverse and forward search possible or if Omega
-processors should be used instead of regular @TeX{}.
+nonstop mode, if source specials or a Sync@TeX{} file should be produced
+for making inverse and forward search possible or which @TeX{} engine
+should be used instead of regular @TeX{}, like PDF@TeX{}, Omega or
+Xe@TeX{}.
 
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
@@ -2301,43 +2366,62 @@ interactive mode, @TeX{} will pause with an error prompt when errors are
 encountered and wait for the user to type something.
 @end deffn
 
-@deffn Command TeX-source-specials-mode
+@cindex I/O correlation
+@cindex SyncTeX
+@cindex Source specials
+@cindex PDFSync
+@deffn Command TeX-source-correlate-mode
 @kindex C-c C-t C-s
-@vindex TeX-source-specials-mode
-(@kbd{C-c C-t C-s}) toggles Source Special support.  Source Specials
-will move the @acronym{DVI} viewer to the location corresponding to
-point (forward search), and it will use @samp{emacsclient} or
-@samp{gnuclient} to have the previewer move Emacs to a location
-corresponding to a control-click in the previewer window.
-@xref{Viewing}.
+@vindex TeX-source-correlate-mode
+(@kbd{C-c C-t C-s}) Toggles support for forward and inverse search.
+Forward search refers to jumping to the place in the previewed document
+corresponding to where point is located in the document source and
+inverse search to the other way round.  @xref{I/O Correlation}.
 
-You can permanently activate @code{TeX-source-specials-mode} with
-@lisp
-(TeX-source-specials-mode 1)
-@end lisp
-or by customizing the variable @code{TeX-source-specials-mode}.
-There is a bunch of customization options, use @code{customize-group} on
-the group @samp{TeX-source-specials} to find out more.
+You can permanently activate @code{TeX-source-correlate-mode} by
+customizing the variable @code{TeX-source-correlate-mode}.  There is a
+bunch of customization options for the mode, use @kbd{M-x
+customize-group @key{RET} TeX-view @key{RET}} to find out more.
 
-It has to be stressed @emph{very} strongly however, that Source Specials
-can cause differences in page breaks, in spacing, can seriously
-interfere with various packages and should thus @emph{never} be used for
-the final version of a document.  In particular, fine-tuning the page
-breaks should be done with Source Specials switched off.
+@vindex TeX-source-correlate-method
+@AUCTeX{} is aware of three different means to do I/O correlation:
+source specials (only DVI output), the pdfsync @LaTeX{} package (only
+PDF output) and Sync@TeX{}.  The choice between source specials and
+Sync@TeX{} can be controlled with the variable
+@code{TeX-source-correlate-method}.
+
+Should you use source specials it has to be stressed @emph{very}
+strongly however, that source specials can cause differences in page
+breaks and spacing, can seriously interfere with various packages and
+should thus @emph{never} be used for the final version of a document.
+In particular, fine-tuning the page breaks should be done with source
+specials switched off.
 @end deffn
 
-@deffn Command TeX-Omega-mode
-@cindex Omega
-@kindex C-c C-t C-o
-@vindex TeX-Omega-mode
-(@kbd{C-c C-t C-o})
-This command toggles the use of the Omega @tex
-(@math{\Omega})
-@end tex
- mode of @AUCTeX{}, a buffer-local minor mode.  If it is switched on,
-@command{omega} will be used instead of @command{tex}, and
-@command{lambda} instead of @command{latex}.
-@end deffn
+@AUCTeX{} also allows you to easily select different @TeX{} engines for
+processing.
+
+@defopt TeX-engine
+This variable allows you to choose which @TeX{} engine should be used
+for typesetting the document, i.e. the executables which will be used
+when you invoke the @samp{TeX} or @samp{LaTeX} commands.  The value
+should be one of the symbols @code{default} for plain old @TeX{} or
+PDF@TeX{}, @code{xetex} for Xe@TeX{} and @code{omega} for Omega.
+@end defopt
+
+@vindex TeX-command
+@vindex LaTeX-command
+@vindex TeX-XeTeX-command
+@vindex LaTeX-XeTeX-command
+@vindex TeX-Omega-command
+@vindex LaTeX-Omega-command
+@vindex ConTeXt-engine
+@vindex ConTeXt-Omega-engine
+The executables related to the different @TeX{} engines are specified in
+the variables @code{TeX-command}, @code{LaTeX-command},
+@code{TeX-XeTeX-command}, @code{LaTeX-XeTeX-command},
+@code{TeX-Omega-command}, @code{LaTeX-Omega-command},
+@code{ConTeXt-engine} and @code{ConTeXt-Omega-engine} respectively.
 
 You can customize @AUCTeX{} to show the processor output as it is
 produced.
@@ -2347,17 +2431,35 @@ If non-nil, the output of @TeX{} compilation is shown in another window.
 @end defopt
 
 @node Viewing
-@section Viewing the formatted output
+@section Viewing the Formatted Output
 @cindex Viewing
 @cindex Previewing
 @cindex Starting a previewer
 
-@subsection Starting viewers and customizing their invocation
+@AUCTeX{} allows you to start external programs for previewing the
+formatted output of your document.
 
-@AUCTeX{} allows you to start external programs for previewing your
-document.  These are normally invoked by pressing @kbd{C-c C-c} once
-the document is formatted or via the respective entry in the Command
-menu.
+@menu
+* Starting Viewers::            Starting viewers
+* I/O Correlation::             Forward and inverse search
+@end menu
+
+@node Starting Viewers
+@subsection Starting Viewers
+
+Viewers are normally invoked by pressing @kbd{C-c C-c} once the document
+is formatted, which will propose the View command, or by activating the
+respective entry in the Command menu.  Alternatively you can type
+@kbd{C-c C-v} which calls the function @code{TeX-view}.
+
+@deffn Command TeX-view
+@kindex C-c C-v
+(@kbd{C-c C-v}) Start a viewer without confirmation.  The viewer is
+started either on a region or the master file, depending on the last
+command issued.  This is especially useful for jumping to the location
+corresponding to point in the viewer when using
+@code{TeX-source-correlate-mode}.
+@end deffn
 
 @AUCTeX{} will try to guess which type of viewer (@acronym{DVI},
 PostScript or @acronym{PDF}) has to be used and what options are to be
@@ -2378,69 +2480,76 @@ The information about which file types and style options are
 associated with which viewers and options for them is stored in the
 variables @code{TeX-output-view-style} and @code{TeX-view-style}.
 
-@deffn Command TeX-view
-@kindex C-c C-v
-The command @code{TeX-view}, bound to @kbd{C-c C-v}, starts a viewer
-without confirmation.  The viewer is started either on a region or the
-master file, depending on the last command issued.  This is especially
-useful for jumping to the location corresponding to point in the
-@acronym{DVI} viewer when using @code{TeX-source-specials-mode}.
-@end deffn
-
 @defopt TeX-output-view-style
-List of output file extensions, style options and view options.
+List of output file extensions, style options and view options.  Each
+item of the list consists of three elements.  If the first element (a
+regular expression) matches the output file extension, and the second
+element (a regular expression) matches the name of one of the style
+options, any occurrence of the string @code{%V} in a command in
+@code{TeX-command-list} will be replaced with the third element.
 @end defopt
 
 @defopt TeX-view-style
 List of style options and view options.  This is the predecessor of
-@code{TeX-output-view-style} which does not allow the specification of
-output file extensions.  It is used as a fallback in case none of the
-alternatives specified in @code{TeX-output-view-style} match.  In case
-none of the entries in @code{TeX-view-style} match either, no suggestion
-for a viewer will be made.
+@code{TeX-output-view-style} which does not provide the possibility to
+specify output file extensions.  It is used as a fallback in case none
+of the alternatives specified in @code{TeX-output-view-style} match.  In
+case none of the entries in @code{TeX-view-style} match either, no
+suggestion for a viewer is made.
 @end defopt
 
-@subsection Forward and inverse search
-
-@cindex Source specials
+@node I/O Correlation
+@subsection Forward and Inverse Search
 @cindex Inverse search
 @cindex Forward search
-You can make use of forward and inverse searching if this is supported
-by your @acronym{DVI} viewer and you enabled
-@code{TeX-source-specials-mode}.  @xref{Commands}, on how to do that.
-@AUCTeX{} will automatically pass the necessary command line options to
-the viewer in order to display the page containing the content you are
-currently editing (forward search).
+@cindex I/O correlation
+@cindex Source specials
+@cindex SyncTeX
+@cindex PDFSync
 
+Forward and inverse search refer to the correlation between the document
+source in the editor and the typeset document in the viewer.  Forward
+search allows you to jump to the place in the previewed document
+corresponding to a certain line in the document source and inverse
+search vice versa.
+
+@findex TeX-source-correlate-mode
+@AUCTeX{} supports three methods for forward and inverse search: source
+specials (only DVI output), the pdfsync @LaTeX{} package (only PDF
+output) and Sync@TeX{} (any type of output).  If you want to make use of
+forward and inverse searching with source specials or Sync@TeX{}, switch
+on @code{TeX-source-correlate-mode}.  @xref{Processor Options}, on how
+to do that.  The use of the pdfsync package is detected automatically if
+document parsing is enabled.
+
+@findex TeX-view
+Forward search happens automatically upon calling the viewer, e.g. by
+typing @kbd{C-c C-v} (@code{TeX-view}).  This will open the viewer or
+bring it to front and display the output page corresponding to the
+position of point in the source file.  @AUCTeX{} will automatically pass
+the necessary command line options to the viewer for this to happen.
+
+@vindex TeX-source-correlate-start-server
 Upon opening the viewer you will be asked if you want to start a server
 process (Gnuserv or Emacs server) which is necessary for inverse search.
 This happens only if there is no server running already.  You can
-customize the variable @code{TeX-view-start-server} to inhibit the
-question and always or never start the server respectively.
+customize the variable @code{TeX-source-correlate-start-server} to
+inhibit the question and always or never start the server respectively.
 
-@defopt TeX-view-start-server
-If @code{TeX-source-specials-mode} is active and a @acronym{DVI} viewer
-is invoked, the default behavior is to ask if a server process should be
-started.  Set this variable to @code{t} if the question should be
-inhibited and the server should always be started.  Set it to @code{nil}
-if the server should never be started.  Inverse search will not be
-available in the latter case.
+@defopt TeX-source-correlate-start-server
+If @code{TeX-source-correlate-mode} is active and a viewer is invoked,
+the default behavior is to ask if a server process should be started.
+Set this variable to @code{t} if the question should be inhibited and
+the server should always be started.  Set it to @code{nil} if the server
+should never be started.  Inverse search will not be available in the
+latter case.
 @end defopt
 
-Once the server and the viewer are running you can use a mouse click in
-the viewer to jump to the corresponding part of your document in Emacs
-(inverse search).  Refer to the documentation of your viewer to find out
-what you have to do exactly.  In xdvi you usually have to use
-@kbd{C-down-mouse-1}.
-
-For PDF output, forward search is availabe when using the pdfsync
-@LaTeX{} package and xpdf as PDF viewer.  With the pdfsync package
-forward search does not rely on source specials.  Therefore you don't
-have to bother about the provisions for source specials explained above.
-If document parsing is enabled, the functionality is usable immediately,
-e.g. by typing @kbd{C-c C-v} (@code{TeX-view}) which will open the
-viewer or bring it to front if it is already opened and display the
-output page corresponding to the position of point in the source file.
+Inverse search, i.e. jumping to the part of your document source in
+Emacs corresponding to a certain position in the viewer, is triggered
+from the viewer, typically by a mouse click.  Refer to the documentation
+of your viewer to find out how it has to be configured and what you have
+to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 
 @node Debugging
 @section Catching the errors
@@ -2616,8 +2725,47 @@ The command can be invoked by the key binding mentioned above as well as
 the @samp{Find Documentation...} entry in the mode menu.
 @end deffn
 
+@node Customization
+@chapter Customization and Extension
+
+@menu
+* Modes and Hooks::             Modes and Hooks
+* Multifile::                   Multifile Documents
+* Parsing Files::               Automatic Parsing of @TeX{} Files
+* Internationalization::        Language Support
+* Automatic::                   Automatic Customization
+* Style Files::                 Writing Your Own Style Support
+@end menu
+
+@node Modes and Hooks
+@section Modes and Hooks
+
+@AUCTeX{} supports a wide variety of derivatives and extensions of
+@TeX{}.  Besides plain @TeX{} those are @LaTeX{}, AMS-@TeX{},
+@ConTeXt{}, Texinfo and doc@TeX{}.  For each of them there is a separate
+major mode in @AUCTeX{} and each major mode runs @code{text-mode-hook},
+@code{TeX-mode-hook} as well as a hook special to the mode in this
+order.  The following table provides an overview of the respective mode
+functions and hooks.
+
+@multitable {Plain @TeX{}} {@code{plain-TeX-mode}} {@code{plain-TeX-mode-hook}}
+@headitem Type @tab Mode function @tab Hook
+@item Plain @TeX{} @tab @code{plain-TeX-mode} @tab @code{plain-TeX-mode-hook}
+@item @LaTeX{}     @tab @code{LaTeX-mode}     @tab @code{LaTeX-mode-hook}
+@item AMS-@TeX{}   @tab @code{ams-tex-mode}   @tab @code{AmS-TeX-mode-hook}
+@item @ConTeXt{}   @tab @code{ConTeXt-mode}   @tab @code{ConTeXt-mode-hook}
+@item Texinfo      @tab @code{Texinfo-mode}   @tab @code{Texinfo-mode-hook}
+@item Doc@TeX{}    @tab @code{docTeX-mode}    @tab @code{docTeX-mode-hook}
+@end multitable
+
+If you need to make a customization via a hook which is only relevant
+for one of the modes listed above, put it into the respective mode hook,
+if it is relevant for any @AUCTeX{} mode, add it to @code{TeX-mode-hook}
+and if it is relevant for all text modes, append it to
+@code{text-mode-hook}.
+
 @node Multifile
-@chapter Multifile Documents
+@section Multifile Documents
 @cindex Multifile Documents
 @cindex Documents
 @cindex Documents with multiple files
@@ -2742,7 +2890,7 @@ If non-nil, then query the user before saving each file with
 
 
 @node Parsing Files
-@chapter Automatic Parsing of @TeX{} Files
+@section Automatic Parsing of @TeX{} Files
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
 @cindex Tabs
@@ -2880,7 +3028,7 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @end defvr
 
 @node Internationalization
-@chapter Language Support
+@section Language Support
 @cindex Internationalization
 @cindex Language Support
 @cindex Character set
@@ -2933,7 +3081,7 @@ yet) if you need @acronym{CJK}.
 @end menu
 
 @node European
-@section Using @AUCTeX{} with European Languages
+@subsection Using @AUCTeX{} with European Languages
 @cindex Europe
 @cindex European Characters
 @cindex ISO 8859 Latin 1
@@ -2942,7 +3090,7 @@ yet) if you need @acronym{CJK}.
 @cindex Latin 2
 @cindex ANSI
 
-@subsection Typing and Displaying Non-ASCII Characters
+@subsubsection Typing and Displaying Non-ASCII Characters
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
@@ -2976,7 +3124,7 @@ a much more complete package for both Emacs and XEmacs that can also
 handle a lot of mathematical characters and input methods.
 @end table
 
-@subsection Style Files for Different Languages
+@subsubsection Style Files for Different Languages
 
 @cindex ispell
 @AUCTeX{} supports style files for several languages.  Each style file
@@ -3137,7 +3285,7 @@ If nil do it the other way round.
 @end defopt
 
 @node Japanese
-@section Using @AUCTeX{} with Japanese @TeX{}
+@subsection Using @AUCTeX{} with Japanese @TeX{}
 @cindex Japan
 @cindex Japanese
 @cindex Nippon
@@ -3202,7 +3350,7 @@ The default value is @samp{"jarticle"}.
 See @file{tex-jp.el} for more information.
 
 @node Automatic
-@chapter Automatic Customization
+@section Automatic Customization
 @cindex Automatic Customization
 @cindex Extracting @TeX{} symbols
 @cindex Automatic
@@ -3268,7 +3416,7 @@ These files or directories will not be considered when searching for
 @end defopt
 
 @node Automatic Global
-@section Automatic Customization for the Site
+@subsection Automatic Customization for the Site
 @cindex Global style hook directory
 @cindex Global macro directory
 @cindex Site macro directory
@@ -3306,7 +3454,7 @@ shared by all users of a site.
 @end defopt
 
 @node Automatic Private
-@section Automatic Customization for a User
+@subsection Automatic Customization for a User
 @cindex Private style hook directory
 @cindex Private macro directory
 @cindex Personal macro directory
@@ -3350,7 +3498,7 @@ These correspond to the personal @TeX{} macros.
 @end defopt
 
 @node Automatic Local
-@section Automatic Customization for a Directory
+@subsection Automatic Customization for a Directory
 @cindex Local style hooks
 @cindex Updating style hooks
 @cindex Automatic updating style hooks
@@ -3383,7 +3531,7 @@ These correspond to @TeX{} macros found in the current directory.
 @end defopt
 
 @node Style Files
-@chapter Writing Your own Style Support
+@section Writing Your Own Style Support
 @cindex Style files
 @cindex Style hooks
 @cindex @file{style}
@@ -3405,7 +3553,7 @@ If you write some useful support for a public @TeX{} style file, please
 send it to us.
 
 @node Simple Style
-@section A Simple Style File
+@subsection A Simple Style File
 @cindex @file{book.el}
 @cindex Sample style file
 @cindex Style file
@@ -3441,7 +3589,7 @@ file @var{style}.
 @end defun
 
 @node Adding Macros
-@section Adding Support for Macros
+@subsection Adding Support for Macros
 @cindex Adding macros
 @cindex Macros, adding
 @cindex Defining macros in style hooks
@@ -3625,7 +3773,7 @@ hooks have been processed, set the value of @code{exit-mark}.  It will
 point nowhere, until the argument hook sets it.
 
 @node Adding Environments
-@section Adding Support for Environments
+@subsection Adding Support for Environments
 @cindex Adding environments
 @cindex Environments, adding
 @cindex Defining environments in style hooks
@@ -3707,7 +3855,7 @@ Insert environment of type @var{env}, with optional argument @var{extra}.
 @end defun
 
 @node Adding Other
-@section Adding Other Information
+@subsection Adding Other Information
 @cindex Adding bibliographies
 @cindex Bibliographies, adding
 @cindex Defining bibliographies in style hooks
@@ -3731,7 +3879,7 @@ Add each @var{label} to the list of known labels.
 @end defun
 
 @node Hacking the Parser
-@section Automatic Extraction of New Things
+@subsection Automatic Extraction of New Things
 @cindex Parsing new macros
 @cindex @file{macro.tex}
 @cindex @file{macro.el}
@@ -3840,8 +3988,18 @@ List of functions to be called before parsing a @TeX{} file.
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
+@node Appendices
+@appendix Copying, Changes, Development, FAQ
+
+@menu
+* Copying this Manual::         
+* Changes::                     
+* Development::                 
+* FAQ::                         
+@end menu
+
 @node Copying this Manual
-@appendix Copying this Manual
+@appendixsec Copying this Manual
 
 @ifinfo
 The copyright notice for this manual is:
@@ -3855,42 +4013,61 @@ The full license text can be read here:
 * GNU Free Documentation License:: License for copying this manual.
 @end menu
 
+@lowersections
 @include fdl.texi
-
+@raisesections
 
 @node Changes
-@appendix Changes and New Features
+@appendixsec Changes and New Features
 
+@lowersections
 @include changes.texi
+@raisesections
 
-@heading Older versions
+@subheading Older versions
 See the file @file{history.texi} for older changes.
 
 @node Development
-@appendix Future Development
+@appendixsec Future Development
+
+@lowersections
 @include todo.texi
+@raisesections
 
 @node FAQ
-@appendix Frequently Asked Questions
+@appendixsec Frequently Asked Questions
+
+@lowersections
 @include faq.texi
+@raisesections
+
+@node Indices
+@unnumbered Indices
+
+@menu
+* Key Index::                   
+* Function Index::              
+* Variable Index::              
+* Concept Index::               
+@end menu
 
 @node Key Index
-@unnumbered Key Index
+@unnumberedsec Key Index
 
 @printindex ky
 
 @node Function Index
-@unnumbered Function Index
+@unnumberedsec Function Index
 
 @printindex fn
 
 @node Variable Index
-@unnumbered Variable Index
+@unnumberedsec Variable Index
 
 @printindex vr
 
 @node Concept Index
-@unnumbered Concept Index
+@unnumberedsec Concept Index
 
 @printindex cp
 
