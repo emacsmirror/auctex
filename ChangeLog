@@ -1,3 +1,7 @@
+2008-10-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-warning): Fix regexp for detecting bad boxes.
+
 2008-10-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-set-mode-name): Indicate TeX PDF mode as a trailing
