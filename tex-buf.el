@@ -1551,7 +1551,7 @@ name(\\([^)]+\\))\\)\\|\
   (let* ((error (concat "** " string))
 
 	 ;; bad-box is nil if this is a "LaTeX Warning"
-	 (bad-box (string-match "\\\\[vb]ox.*[0-9]*--[0-9]*" string))
+	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" string))
 	 ;; line-string: match 1 is beginning line, match 2 is end line
 	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
 			"on input line \\([0-9]*\\)\\."))
