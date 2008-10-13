@@ -1,3 +1,9 @@
+2008-10-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/changes.texi, doc/install.texi, doc/intro.texi,
+	doc/preview-readme.texi, doc/quickstart.texi: Make some
+	corrections and updates.
+
 2008-10-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-warning): Fix regexp for detecting bad boxes.
