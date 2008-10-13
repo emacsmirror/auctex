@@ -2,7 +2,7 @@
 @ifset rawfile
 @node Introduction, What use is it?, (dir), (dir)
 @top @previewlatex{} in a nutshell
-
+@paragraphindent none
 @end ifset
 @c -----------------------
 @cindex Readme

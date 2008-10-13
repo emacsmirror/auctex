@@ -69,7 +69,7 @@ that AUCTeX will help to insert quotation marks as defined by polish.sty
 The @TeX{} tool bar is now available and enabled by default in plain
 @TeX{} mode.
 @ifclear rawfile
-@xref{Running TeX and friends}.
+@xref{Processing Facilities}.
 @end ifclear
 
 @item
@@ -137,7 +137,7 @@ Bug fix in XyM@TeX{} support.
 @item
 The @LaTeX{} tool bar is now enabled by default.
 @ifclear rawfile
-@xref{Running TeX and friends}.
+@xref{Processing Facilities}.
 @end ifclear
 
 @end itemize

@@ -328,7 +328,7 @@ not, they should at least have been placed somewhere in your
 (load "preview-latex.el" nil t t)
 @end example
 
-into your @file{~/.emacs} file.
+into your init file.
 
 If you explicitly used @code{--with-lispdir}, you may need to add the
 specified directory into Emacs' @code{load-path} variable by adding
@@ -348,9 +348,19 @@ below.
 @xref{Advice for package providers}.
 @end ifclear
 
-That is all.  There are other ways of achieving the equivalent thing,
-but we don't mention them here any more since they are not better, and
-people got confused into trying everything at once.
+Once activated, the modes provided by @AUCTeX{} are used per default for
+all supported file types.  If you want to change the modes for which it
+is operative instead of the default, use
+@example
+@kbd{M-x customize-variable @key{RET} TeX-modes @key{RET}}
+@end example
+
+If you want to remove a preinstalled @AUCTeX{} completely before any of
+its modes have been used,
+@example
+(unload-feature 'tex-site)
+@end example
+should accomplish that.
 
 @node Advice for package providers
 @section Providing @AUCTeX{} as a package
