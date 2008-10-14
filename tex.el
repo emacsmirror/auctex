@@ -4136,8 +4136,9 @@ If there are no comment starters after potential whitespace at
 the beginning of the line, return nil."
   (save-excursion
     (beginning-of-line)
-    (when (looking-at (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
-      (match-string 0))))
+    (save-match-data
+      (when (looking-at (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
+	(match-string 0)))))
 
 (defun TeX-forward-comment-skip (&optional count limit)
   "Move forward to the next comment skip.
