@@ -728,33 +728,21 @@ work analogously."
   (let* ((in-comment (TeX-in-commented-line))
 	 (comment-prefix (and in-comment (TeX-comment-prefix))))
     (save-excursion
-      (while (and
-	      (/= arg 0)
-	      (re-search-backward
-	       (concat (regexp-quote TeX-esc) "begin" (regexp-quote TeX-grop)
-		       "\\|"
-		       (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop))
-	       nil t 1)
-	      (or (and LaTeX-syntactic-comments
+      (while (and (/= arg 0)
+		  (re-search-backward
+		   "\\\\\\(begin\\|end\\) *{ *\\([A-Za-z*]+\\) *}" nil t))
+	(when (or (and LaTeX-syntactic-comments
 		       (eq in-comment (TeX-in-commented-line))
-		       ;; If we are in a commented line, check if the
-		       ;; prefix matches the one we started out with.
 		       (or (not in-comment)
+			   ;; Consider only matching prefixes in the
+			   ;; commented case.
 			   (string= comment-prefix (TeX-comment-prefix))))
 		  (and (not LaTeX-syntactic-comments)
-		       (not (TeX-in-commented-line)))))
-	(cond ((looking-at (concat "[ \t]*" (regexp-quote TeX-esc)
-				   "end" (regexp-quote TeX-grop)))
-	       (setq arg (1+ arg)))
-	      (t
-	       (setq arg (1- arg)))))
+		       (not (TeX-in-commented-line))))
+	  (setq arg (if (string= (match-string 1) "end") (1+ arg) (1- arg)))))
       (if (/= arg 0)
 	  "document"
-	(search-forward TeX-grop)
-	(let ((beg (point)))
-	  (search-forward TeX-grcl)
-	  (backward-char 1)
-	  (buffer-substring-no-properties beg (point)))))))
+	(match-string-no-properties 2)))))
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
