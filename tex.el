@@ -2647,11 +2647,11 @@ of plain-TeX-mode-hook."
 	 "\\)" ))
   (setq paragraph-separate
 	(concat
+	 "[ \t]*"
 	 "\\("
-	 (regexp-quote TeX-esc)
-	 "par\\|"
-	 "^[ \t]*$\\|"
-	 "^[ \t]*"
+	 (regexp-quote TeX-esc) "par\\|"
+	 "$\\|"
+	 "\\$\\$\\|"
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 "begin\\|end\\|label\\|caption\\|part\\|chapter\\|"
