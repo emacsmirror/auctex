@@ -1,3 +1,8 @@
+2008-10-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (plain-TeX-common-initialization): Respect double dollar,
+	i.e. "$$", as a paragraph separator.
+
 2008-10-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-current-environment): Fix handling of commented
