@@ -1,5 +1,9 @@
 2008-11-02  Ralf Angeli  <angeli@caeruleus.net>
 
+	* font-latex.el (font-latex-match-math-env)
+	(font-latex-extend-region-backwards-math-env): Do not match
+	\\[...].
+
 	* tex-fold.el (TeX-fold-expand-spec): Do not treat `\' special in
 	replacement text.
 
