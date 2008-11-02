@@ -1,3 +1,8 @@
+2008-11-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-expand-spec): Do not treat `\' special in
+	replacement text.
+
 2008-10-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (plain-TeX-common-initialization): Respect double dollar,
