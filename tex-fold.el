@@ -778,7 +778,7 @@ Replace them with the respective macro argument."
 				    delims))))))
 	    (when arg (setq success t))
 	    ;; Replace the placeholder in the string.
-	    (setq elt (replace-match (or arg TeX-fold-ellipsis) nil nil elt)
+	    (setq elt (replace-match (or arg TeX-fold-ellipsis) nil t elt)
 		  spec elt)))
 	(when success (throw 'success nil))))
     spec))
