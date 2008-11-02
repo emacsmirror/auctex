@@ -1571,16 +1571,18 @@ Used for patterns like:
     (while (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
       (unless (save-excursion
 		(goto-char (match-beginning 0))
-		(eq (preceding-char) ?\\)) ; \\[ is not a math environment
+		;; \\[ does not start a math environment
+		(/= (mod (skip-chars-backward "\\\\") 2) 0))
 	(let ((beg (match-beginning 0))
 	      (open-tag (if (match-beginning 1) "\\(" "\\["))
 	      (close-tag (if (match-beginning 1) "\\)" "\\]")))
 	  ;; Search for both opening and closing tags in order to be
 	  ;; able to avoid erroneously matching stuff like "\(foo \(bar\)".
-	  (if (and (re-search-forward (concat (regexp-quote open-tag) "\\|"
-					      (regexp-quote close-tag))
+	  (if (and (re-search-forward (concat "[^\\]\\(?:\\\\\\\\\\)*\\("
+					      (regexp-quote open-tag) "\\|"
+					      (regexp-quote close-tag) "\\)")
 				      limit 'move)
-		   (string= (match-string 0) close-tag))
+		   (string= (match-string 1) close-tag))
 	      ;; Found closing tag.
 	      (progn
 		(font-latex-put-multiline-property-maybe beg (point))
@@ -1599,8 +1601,13 @@ END marks boundaries for searching for environment ends."
     (goto-char end)
     (catch 'extend
       (while (re-search-backward "\\(\\\\)\\)\\|\\(\\\\]\\)" beg t)
-	(when (and (search-backward (if (match-beginning 1) "\\(" "\\[")
-				    (- beg font-latex-multiline-boundary) t)
+	(when (and (zerop (mod (skip-chars-backward "\\\\") 2))
+		   (re-search-backward
+		    (concat "[^\\]\\(?:\\\\\\\\\\)*\\("
+			    (regexp-quote (if (match-beginning 1) "\\(" "\\["))
+			    "\\)")
+		    (- beg font-latex-multiline-boundary) t)
+		   (goto-char (match-beginning 1))
 		   (< (point) beg))
 	  (throw 'extend (point))))
       nil)))
