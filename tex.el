@@ -2421,7 +2421,8 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
-     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\\(article\\|report\\|book\\|slides\\)")
+     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\
+\\(article\\|report\\|book\\|slides\\)")
     ("JTEX" japanese-plain-tex-mode
      "-- string likely in Japanese TeX --")
     ("AMSTEX" ams-tex-mode
@@ -2433,7 +2434,8 @@ component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
 \\|inizia\\(testo\\|progetto\\|prodotto\\|ambiente\\|componente\\)\
 \\)\\|%.*?interface=")
     ("LATEX" latex-mode
-     "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
+     "\\\\\\(begin\\|\\(?:sub\\)\\{0,2\\}section\\|chapter\\|documentstyle\\|\
+documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
   "*List of format packages to consider when choosing a TeX mode.
 
