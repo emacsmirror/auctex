@@ -1,3 +1,9 @@
+2008-11-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-determine-method): Use configured
+	LaTeX command and find -synctex switch even if there are spaces in
+	front of it, as e.g. with MiKTeX.
+
 2008-11-02  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-math-env)
