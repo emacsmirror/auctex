@@ -3,6 +3,8 @@
 	* tex.el (TeX-source-correlate-determine-method): Use configured
 	LaTeX command and find -synctex switch even if there are spaces in
 	front of it, as e.g. with MiKTeX.
+	(TeX-format-list): Use \subsection and \subsubsection as well to
+	identify a LaTeX file.
 
 2008-11-02  Ralf Angeli  <angeli@caeruleus.net>
 
