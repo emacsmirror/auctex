@@ -1,3 +1,8 @@
+2008-11-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (VirTeX-common-initialization): Do not add call to
+	`TeX-update-style' to `find-file-hooks' but call it directly.
+
 2008-11-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-correlate-determine-method): Use configured
