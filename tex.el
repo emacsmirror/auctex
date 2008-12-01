@@ -2573,13 +2573,11 @@ The algorithm is as follows:
   ;; hook has to be made here because its local value will be deleted
   ;; by `kill-all-local-variables' if it is added e.g. in `tex-mode'.)
   ;;
-  ;; We now call `TeX-update-style' directly, not in `find-file-hooks'
-  ;; anymore.  When this was the case it had to be called before
+  ;; `TeX-update-style' has to be called before
   ;; `global-font-lock-mode', which may also be specified in
   ;; `find-file-hooks', gets called.  Otherwise style-based
-  ;; fontification would have been broken (in XEmacs).  That means,
-  ;; `add-hook' could be called with a non-nil value of the APPEND
-  ;; argument.
+  ;; fontification will break (in XEmacs).  That means, `add-hook'
+  ;; cannot be called with a non-nil value of the APPEND argument.
   ;;
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
@@ -2591,13 +2589,8 @@ The algorithm is as follows:
 	      ;; Check if we are looking at a new or shared file.
 	      (when (or (not (file-exists-p (buffer-file-name)))
 			(eq TeX-master 'shared))
-		(TeX-master-file nil nil t)))
-	    nil t)
-
-  ;; Call `TeX-update-style' directly so that style information is
-  ;; available when the mode hooks are run.
-  (when (file-exists-p (buffer-file-name))
-    (TeX-update-style t)))
+		(TeX-master-file nil nil t))
+	      (TeX-update-style t)) nil t))
 
 ;;; Plain TeX mode
 
