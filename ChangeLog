@@ -1,3 +1,7 @@
+2008-12-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (VirTeX-common-initialization): Revert last change.
+
 2008-11-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (VirTeX-common-initialization): Do not add call to
