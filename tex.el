@@ -2594,6 +2594,21 @@ The algorithm is as follows:
 
 ;;; Plain TeX mode
 
+(defcustom plain-TeX-clean-intermediate-suffixes
+  TeX-clean-default-intermediate-suffixes
+  "List of regexps matching suffixes of intermediate files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom plain-TeX-clean-output-suffixes TeX-clean-default-output-suffixes
+  "List of regexps matching suffixes of output files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
 (defcustom plain-TeX-mode-hook nil
   "A hook run in plain TeX mode buffers."
   :type 'hook
