@@ -1,3 +1,8 @@
+2008-12-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (plain-TeX-clean-intermediate-suffixes)
+	(plain-TeX-clean-output-suffixes): New variables.
+
 2008-12-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (VirTeX-common-initialization): Revert last change.
