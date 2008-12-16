@@ -1733,26 +1733,30 @@ If REGEXP is nil, or \"\", an error will occur."
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
-  (TeX-macro-global-internal "latex" '("/tex/" "/bibtex/bst/")
-			     '("/usr/share/texmf/tex/" "/usr/share/texmf/bibtex/bst/")))
+  (or (TeX-tree-expand '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
+		       "latex" '("/tex/" "/bibtex/bst/"))
+      '("/usr/share/texmf/tex/" "/usr/share/texmf/bibtex/bst/")))
 
-(defun TeX-macro-global-internal (latex search default)
-  "Return directories containing the site's TeX macro and style files.
-LATEX: latex command
-SEARCH: search path under system texmf tree
-DEFAULT: fallback path list"
-  (let ((tree-list '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST"))
-	path-list path exit-status input-dir-list)
+(defun TeX-macro-private ()
+  "Return directories containing the user's TeX macro and style files."
+  (TeX-tree-expand '("$TEXMFHOME") "latex" '("/tex/" "/bibtex/bst/")))
+
+(defun TeX-tree-expand (trees program subdirs)
+  "Return directories corresponding to the TeX trees TREES.
+This is done calling `kpsewhich' where PROGRAM is passed as the
+parameter for --progname.  SUBDIRS are subdirectories which are
+appended to the directories of the TeX trees."
+  (let (path-list path exit-status input-dir-list)
     (condition-case nil
 	(catch 'success
-	  (dotimes (i (safe-length tree-list))
+	  (dotimes (i (safe-length trees))
 	    (setq path (with-output-to-string
 			 (setq exit-status
 			       (call-process
 				"kpsewhich"  nil
 				(list standard-output nil) nil
-				"--progname" latex
-				"--expand-braces" (nth i tree-list)))))
+				"--progname" program
+				"--expand-braces" (nth i trees)))))
 	    (if (zerop exit-status)
 		(progn (add-to-list 'path-list path)
 		       (when (zerop i) (throw 'success nil)))
@@ -1761,8 +1765,8 @@ DEFAULT: fallback path list"
 				 (call-process
 				  "kpsewhich"  nil
 				  (list standard-output nil) nil
-				  "--progname" latex
-				  "--expand-path" (nth i tree-list)))))
+				  "--progname" program
+				  "--expand-path" (nth i trees)))))
 	      (when (zerop exit-status) (add-to-list 'path-list path)))))
       (error nil))
     (dolist (elt path-list)
@@ -1777,7 +1781,7 @@ DEFAULT: fallback path list"
 	    (setq item (substring item (match-end 0) (length item))))
 	  (when (string-match "/+$" item)
 	    (setq item (substring item 0 (match-beginning 0))))
-	  (dolist (subdir search)
+	  (dolist (subdir subdirs)
 	    (when (file-exists-p (file-name-as-directory (concat item subdir)))
 	      (add-to-list 'input-dir-list (concat item subdir)))))))
     (or input-dir-list default)))
@@ -1787,8 +1791,9 @@ DEFAULT: fallback path list"
   :group 'TeX-file
   :type '(repeat (directory :format "%v")))
 
-(defcustom TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
-				     (TeX-parse-path "BIBINPUTS"))
+(defcustom TeX-macro-private (or (append (TeX-parse-path "TEXINPUTS")
+					 (TeX-parse-path "BIBINPUTS"))
+				 (TeX-macro-private))
   "Directories where you store your personal TeX macros."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
