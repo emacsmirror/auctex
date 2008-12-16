@@ -2,7 +2,8 @@
 
 	* tex.el (TeX-tree-expand): New name for
 	`TeX-macro-global-internal'.  Adapt parameter list to make it more
-	flexible.  Update doc string.
+	flexible.  Update doc string.  Do not return removed default
+	argument.
 	(TeX-macro-global): Change to accomodate new interface of
 	`TeX-tree-expand'.
 	(TeX-macro-private): New function.
