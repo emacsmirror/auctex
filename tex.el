@@ -1784,7 +1784,7 @@ appended to the directories of the TeX trees."
 	  (dolist (subdir subdirs)
 	    (when (file-exists-p (file-name-as-directory (concat item subdir)))
 	      (add-to-list 'input-dir-list (concat item subdir)))))))
-    (or input-dir-list default)))
+    input-dir-list))
 
 (defcustom TeX-macro-global (TeX-macro-global)
   "Directories containing the site's TeX macro and style files."
