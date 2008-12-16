@@ -1,3 +1,13 @@
+2008-12-16  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-tree-expand): New name for
+	`TeX-macro-global-internal'.  Adapt parameter list to make it more
+	flexible.  Update doc string.
+	(TeX-macro-global): Change to accomodate new interface of
+	`TeX-tree-expand'.
+	(TeX-macro-private): New function.
+	(TeX-macro-private): Use it to determine variable value.
+
 2008-12-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (plain-TeX-clean-intermediate-suffixes)
