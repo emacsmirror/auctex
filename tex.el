@@ -1798,11 +1798,12 @@ appended to the directories of the TeX trees."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
 
-(defcustom TeX-auto-private (mapcar (lambda (entry)
-				      (expand-file-name TeX-auto-local entry))
-				    TeX-macro-private)
-  "List of directories containing automatically generated information.
-Must end with a slash.
+(defcustom TeX-auto-private
+  (list (expand-file-name TeX-auto-local
+			  (or (and (boundp 'user-emacs-directory)
+				   (concat user-emacs-directory "auctex/"))
+			      "~/.emacs.d/auctex/")))
+  "List of directories containing automatically generated AUCTeX style files.
 
 These correspond to the personal TeX macros."
   :group 'TeX-file
@@ -1811,11 +1812,12 @@ These correspond to the personal TeX macros."
 (if (stringp TeX-auto-private)		;Backward compatibility
     (setq TeX-auto-private (list TeX-auto-private)))
 
-(defcustom TeX-style-private (mapcar (lambda (entry)
-				       (expand-file-name
-					TeX-style-local entry))
-				     TeX-macro-private)
-  "List of directories containing hand generated information.
+(defcustom TeX-style-private
+  (list (expand-file-name TeX-style-local
+			  (or (and (boundp 'user-emacs-directory)
+				   (concat user-emacs-directory "auctex/"))
+			      "~/.emacs.d/auctex/")))
+  "List of directories containing hand-generated AUCTeX style files.
 
 These correspond to the personal TeX macros."
   :group 'TeX-file
@@ -1826,12 +1828,17 @@ These correspond to the personal TeX macros."
 
 (defcustom TeX-style-path
   (let ((path))
-    (mapcar (lambda (file) (if file (setq path (cons file path))))
+    ;; Put directories in an order where the more local files can
+    ;; override the more global ones.
+    (mapcar (lambda (file) (when file (add-to-list 'path file t)))
 	    (append (list TeX-auto-global TeX-style-global)
 		    TeX-auto-private TeX-style-private
 		    (list TeX-auto-local TeX-style-local)))
     path)
-  "List of directories to search for AUCTeX style files."
+  "List of directories to search for AUCTeX style files.
+Per default the list is built from the values of the variables
+`TeX-auto-global', `TeX-style-global', `TeX-auto-private',
+`TeX-style-private', `TeX-auto-local', and `TeX-style-local'."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
 
