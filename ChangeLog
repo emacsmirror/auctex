@@ -1,3 +1,13 @@
+2008-12-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-auto-private, TeX-style-private): Per default
+	propose a place in the user's Emacs directory, not in the TeX
+	tree.
+	(TeX-style-path): Add values to the end of the list.  Doc fix.
+
+	* doc/auctex.texi (Automatic Private): Adjust descriptions of
+	`TeX-macro-private', `TeX-auto-private', and `TeX-style-private'.
+
 2008-12-16  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-tree-expand): New name for
