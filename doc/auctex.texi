@@ -3467,33 +3467,29 @@ You should specify where you store your private @TeX{} macros, so
 @AUCTeX{} can extract their information.  The extracted information will
 go to the directories listed in @code{TeX-auto-private}
 
-Use @kbd{M-x TeX-auto-generate} to extract the information.
+Use @kbd{M-x TeX-auto-generate @key{RET}} to extract the information.
 
 @defopt TeX-macro-private
-Directories where you store your personal @TeX{} macros.
-Each must end with a slash.
-
-This defaults to the directories listed in the @samp{TEXINPUTS} and
-@samp{BIBINPUTS} environment variables.
+Directories where you store your personal @TeX{} macros.  The value
+defaults to the directories listed in the @samp{TEXINPUTS} and
+@samp{BIBINPUTS} environment variables or to the respective directories
+in @code{$TEXMFHOME} if no results can be obtained from the environment
+variables.
 @end defopt
 
 @defopt TeX-auto-private
-List of directories containing automatically generated information.
-Must end with a slash.
-
-These correspond to the personal @TeX{} macros.
+List of directories containing automatically generated @AUCTeX{} style
+files.  These correspond to the personal @TeX{} macros.
 @end defopt
 
 @deffn Command TeX-auto-generate @var{TEX} @var{AUTO}
-(@kbd{M-x TeX-auto-generate}) Generate style hook for @var{TEX} and
-store it in @var{AUTO}.  If @var{TEX} is a directory, generate style
-hooks for all files in the directory.
+(@kbd{M-x TeX-auto-generate @key{RET}}) Generate style hook for
+@var{TEX} and store it in @var{AUTO}.  If @var{TEX} is a directory,
+generate style hooks for all files in the directory.
 @end deffn
 
 @defopt TeX-style-private
-List of directories containing hand generated information.
-Must end with a slash.
-
+List of directories containing hand generated @AUCTeX{} style files.
 These correspond to the personal @TeX{} macros.
 @end defopt
 
@@ -3507,7 +3503,7 @@ These correspond to the personal @TeX{} macros.
 
 @AUCTeX{} can update the style information about a file each time you
 save it, and it will do this if the directory @code{TeX-auto-local}
-exist. @code{TeX-auto-local} is by default set to @samp{"auto/"}, so
+exist. @code{TeX-auto-local} is by default set to @samp{"auto"}, so
 simply creating an @file{auto} directory will enable automatic saving of
 style information.
 
