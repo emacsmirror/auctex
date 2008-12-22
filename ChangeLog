@@ -1,3 +1,13 @@
+2008-12-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-env-item): Deactivate the mark before the inserting
+	\item.
+	(LaTeX-insert-item): Swap point and mark when mark if necessary.
+	Insert newline only when not at beginning of line.
+
+	* tex.el (TeX-deactivate-mark): New function.
+	(TeX-parse-argument): Use it.
+
 2008-12-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-auto-private, TeX-style-private): Per default
