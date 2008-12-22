@@ -100,12 +100,14 @@ For detail, see `TeX-command-list', which this list is appended to."
 	      TeX-command-list))
 
 (mapc (lambda (dir) (add-to-list 'TeX-macro-global dir t))
-      (TeX-macro-global-internal
+      (TeX-tree-expand
+       '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
        "platex" '("/ptex/" "/jbibtex/bst/")
        '("/usr/share/texmf/ptex/" "/usr/share/texmf/jbibtex/bst/")))
 
 (mapc (lambda (dir) (add-to-list 'TeX-macro-global dir t))
-      (TeX-macro-global-internal
+      (TeX-tree-expand
+       '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
        "jlatex" '("/jtex/" "/jbibtex/bst/")
        '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
