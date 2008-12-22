@@ -1,6 +1,12 @@
 2008-12-22  Ralf Angeli  <angeli@caeruleus.net>
 
-	* latex.el (LaTeX-env-item): Deactivate the mark before the inserting
+	* tex.el (TeX-doc-backend-alist): Call `TeX-tree-expand' instead
+	of `TeX-macro-global-internal'.
+
+	* tex-jp.el (TeX-macro-global): Call `TeX-tree-expand' instead of
+	`TeX-macro-global-internal'.
+
+	* latex.el (LaTeX-env-item): Deactivate the mark before inserting
 	\item.
 	(LaTeX-insert-item): Swap point and mark when mark if necessary.
 	Insert newline only when not at beginning of line.
