@@ -5063,12 +5063,10 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		 ;; Explicitely supply doc directory for
 		 ;; non-kpathsea-based TeX systems.
 		 (unless (stringp TeX-kpathsea-path-delimiter)
-		   (TeX-tree-expand
-		    '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
-		    "latex" '("/doc/")
-		    ;; This likely won't improve the outcome but does
-		    ;; not make the situation worse than in the nil case.
-		    `(,@TeX-macro-global ,@TeX-macro-private)))
+		   (or (TeX-tree-expand
+			'("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
+			"latex" '("/doc/"))
+		       `(,@TeX-macro-global ,@TeX-macro-private)))
 		 '("dvi" "pdf" "ps" "txt" "html") t t)))
 	    (lambda (doc)
 	      ;; texdoc in MiKTeX requires --view in order to start
