@@ -857,6 +857,10 @@ If nil, act like the empty string is given, but do not prompt."
 			    "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
     (delete-region (point) (line-end-position)))
   (delete-horizontal-space)
+  ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
+  ;; from swapping point and mark and the \item ending up right after
+  ;; \begin{...}.
+  (TeX-deactivate-mark)
   (LaTeX-insert-item)
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
@@ -1104,7 +1108,10 @@ The cdr is the name of the function, used to insert this kind of items.")
 You may use `LaTeX-item-list' to change the routines used to insert the item."
   (interactive "*")
   (let ((environment (LaTeX-current-environment)))
-    (LaTeX-newline)
+    (when (and (TeX-active-mark)
+	       (> (point) (mark)))
+      (exchange-point-and-mark))
+    (unless (bolp) (LaTeX-newline))
     (if (assoc environment LaTeX-item-list)
 	(funcall (cdr (assoc environment LaTeX-item-list)))
       (TeX-insert-macro "item"))
@@ -3614,7 +3621,7 @@ of verbatim constructs are not considered."
 (defcustom LaTeX-math-list nil
   "Alist of your personal LaTeX math symbols.
 
-Each entry should be a list with upto four elements, KEY, VALUE,
+Each entry should be a list with up to four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
