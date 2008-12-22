@@ -2348,9 +2348,7 @@ See `TeX-parse-macro' for details."
 			     (prin1-to-string head))))))
 	  (t (error "Unknown argument type %s" (prin1-to-string arg))))
     (when (and insert-flag (not optional) (TeX-active-mark))
-      (if (featurep 'xemacs)
-	  (zmacs-deactivate-region)
-	(deactivate-mark)))))
+      (TeX-deactivate-mark))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
@@ -3520,6 +3518,15 @@ to look backward for."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
+
+(defun TeX-deactivate-mark ()
+  "Deactivate the mark.
+This is a compatibility function which works both in Emacs and
+XEmacs.  In XEmacs the region is deactivated instead of the
+mark which is sort of equivalent."
+  (if (featurep 'xemacs)
+      (zmacs-deactivate-region)
+    (deactivate-mark)))
 
 (defalias 'TeX-run-mode-hooks
   (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
