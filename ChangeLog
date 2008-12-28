@@ -1,3 +1,9 @@
+2008-12-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-current-pages): Get rid of trailing periods.
+	(TeX-LaTeX-sentinel): Add support for longtable warning.  Use only
+	one search per condition.  Call `message' like `format'.
+
 2008-12-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc-backend-alist): Call `TeX-tree-expand' instead
