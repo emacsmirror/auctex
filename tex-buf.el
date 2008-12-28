@@ -872,11 +872,11 @@ NAME is the name of the process.")
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
   (cond ((null TeX-current-page)
-	 "some pages.")
+	 "some pages")
 	((string-match "[^0-9]1[^0-9]" TeX-current-page)
-	 (concat TeX-current-page " page."))
+	 (concat TeX-current-page " page"))
 	(t
-	 (concat TeX-current-page " pages."))))
+	 (concat TeX-current-page " pages"))))
 
 (defun TeX-TeX-sentinel-check (process name)
   "Cleanup TeX output buffer after running TeX.
@@ -930,38 +930,40 @@ Warnings can be indicated by LaTeX or packages."
   "Cleanup TeX output buffer after running LaTeX."
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
-		(or
-		 (re-search-forward "^LaTeX Warning: Citation" nil t)
-		 (re-search-forward "^Package natbib Warning: Citation" nil t)))
+		(re-search-forward
+		 "^\\(?:LaTeX\\|Package natbib\\) Warning: Citation" nil t))
 	      (with-current-buffer TeX-command-buffer
 		(and (LaTeX-bibliography-list)
 		     (TeX-check-files (TeX-master-file "bbl")
 				      (TeX-style-list)
 				      (append TeX-file-extensions
 					      BibTeX-file-extensions)))))
-	 (message (concat "You should run BibTeX to get citations right, "
-			  (TeX-current-pages)))
+	 (message "%s%s" "You should run BibTeX to get citations right, "
+		  (TeX-current-pages))
 	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
 				  TeX-command-BibTeX)))
-	((or
-	  (re-search-forward "^LaTeX Warning: Label(s)" nil t)
-	  (re-search-forward "^Package natbib Warning: Citation(s)" nil t))
-	 (message (concat "You should run LaTeX again "
-			  "to get references right, "
-			  (TeX-current-pages)))
+	((re-search-forward "^\\(?:LaTeX Warning: Label(s)\\|\
+Package natbib Warning: Citation(s)\\)" nil t)
+	 (message "%s%s" "You should run LaTeX again to get references right, "
+		  (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
-	 (message (concat name ": there were unresolved references, "
-			  (TeX-current-pages)))
+	 (message "%s%s%s" name ": there were unresolved references, "
+		  (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-Show))
-	((or
-	  (re-search-forward "^LaTeX Warning: Citation" nil t)
-	  (re-search-forward "^Package natbib Warning:.*undefined citations" nil t))
-	 (message (concat name ": there were unresolved citations, "
-			  (TeX-current-pages)))
+	((re-search-forward "^\\(?:LaTeX Warning: Citation\\|\
+Package natbib Warning:.*undefined citations\\)" nil t)
+	 (message "%s%s%s" name ": there were unresolved citations, "
+		  (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-Show))
+	((re-search-forward "Package longtable Warning: Table widths have \
+changed\\. Rerun LaTeX\\." nil t)
+	 (message
+	  "%s" "You should run LaTeX again to get table formatting right")
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
-	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
+	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
+\\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
 	 (let* ((warnings (and TeX-debug-warnings
 			       (TeX-LaTeX-sentinel-has-warnings)))
 		(bad-boxes (and TeX-debug-bad-boxes
@@ -972,12 +974,11 @@ Warnings can be indicated by LaTeX or packages."
 				    (when (and warnings bad-boxes) " and ")
 				    (when bad-boxes "bad boxes")
 				    ")"))))
-	   (message (concat name ": successfully formatted "
-			    (TeX-current-pages) add-info)))
+	   (message "%s" (concat name ": successfully formatted "
+				 (TeX-current-pages) add-info)))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
-	 (message (concat name ": problems after "
-			  (TeX-current-pages)))
+	 (message "%s%s%s" name ": problems after " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default))))
 
 ;; should go into latex.el? --pg
