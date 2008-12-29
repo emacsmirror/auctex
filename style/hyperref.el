@@ -99,7 +99,8 @@
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
 
    ;; Fontification
-   (when (and (featurep 'font-latex)
+   (when (and (fboundp 'font-latex-add-keywords)
+	      (fboundp 'font-latex-set-syntactic-keywords)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("href" "{{")
 				("nolinkurl" "{")
@@ -114,6 +115,10 @@
 				("pageref" "*{"))
 			      'reference)
      ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords))))
+     (font-latex-set-syntactic-keywords))
+
+   ;; RefTeX
+   (when (fboundp 'reftex-ref-style-activate)
+     (reftex-ref-style-activate "Hyperref"))))
 
 ;;; hyperref.el ends here
