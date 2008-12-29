@@ -1,3 +1,9 @@
+2008-12-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/hyperref.el ("hyperref"): Test for font-latex function
+	instead of feature.  Activate hyperref referencing style if
+	possible.
+
 2008-12-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-current-pages): Get rid of trailing periods.
