@@ -1,3 +1,9 @@
+2009-01-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/flashcards.el ("flashcards"): Test for font-latex function
+	instead of feature.  Reflect that \cardbackstyle has an optional
+	argument.
+
 2008-12-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/hyperref.el ("hyperref"): Test for font-latex function
