@@ -1,3 +1,11 @@
+2009-01-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/CJK.el: New file.
+
+	* style/ruby.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/CJK.el and style/ruby.el.
+
 2009-01-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/flashcards.el ("flashcards"): Test for font-latex function
