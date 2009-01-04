@@ -117,7 +117,7 @@ STYLESRC = style/prosper.el \
 	   style/polski.el    style/icelandic.el style/comment.el \
 	   style/flashcards.el style/pstricks.el style/nomencl.el \
 	   style/hyperref.el  style/bulgarian.el style/CJK.el \
-	   style/ruby.el
+	   style/ruby.el      style/CJKutf8.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
