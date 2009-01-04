@@ -5,7 +5,10 @@
 	* style/ruby.el: New file.  Correct argument numbers of \rubysize
 	and \rubysep.
 
-	* Makefile.in (STYLESRC): Add style/CJK.el and style/ruby.el.
+	* style/CJKutf8.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/CJK.el and style/ruby.el.  Add
+	style/CJKutf8.el.
 
 2009-01-03  Ralf Angeli  <angeli@caeruleus.net>
 
