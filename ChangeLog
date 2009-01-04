@@ -2,7 +2,8 @@
 
 	* style/CJK.el: New file.
 
-	* style/ruby.el: New file.
+	* style/ruby.el: New file.  Correct argument numbers of \rubysize
+	and \rubysep.
 
 	* Makefile.in (STYLESRC): Add style/CJK.el and style/ruby.el.
 
