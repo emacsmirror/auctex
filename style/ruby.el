@@ -42,8 +42,8 @@
     '("rubynooverlap" 0)
     '("rubyCJK" 0)
     '("rubylatin" 0)
-    '("rubysize" 1)
-    '("rubysep" 1)
+    '("rubysize" 0)
+    '("rubysep" 0)
     '("ruby" t nil))))
 
 ;;; ruby.el ends here
