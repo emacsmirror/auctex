@@ -4737,6 +4737,8 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
        (h-after-h
 	(call-interactively 'self-insert-command))
        (t (insert hyphen))))))
+;; Cater for Delete Selection mode
+(put 'LaTeX-babel-insert-hyphen 'delete-selection t)
 
 (defcustom LaTeX-enable-toolbar t
   "Enable LaTeX tool bar."
