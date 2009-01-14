@@ -1,3 +1,8 @@
+2009-01-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-babel-insert-hyphen): Put `delete-selection'
+	property on function symbol.
+
 2009-01-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/CJK.el: New file.
