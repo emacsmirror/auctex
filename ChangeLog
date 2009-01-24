@@ -1,3 +1,9 @@
+2009-01-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-method): Doc fix.
+	(TeX-source-correlate-mode): Call minor mode function after file
+	is loaded.
+
 2009-01-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-babel-insert-hyphen): Put `delete-selection'
