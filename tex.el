@@ -992,7 +992,11 @@ TYPE can be one of `default', `xetex' or `omega'."
   "Method to use for enabling forward and inverse search.
 This can be `source-specials' if source specials should be used,
 `synctex' if SyncTeX should be used, or`auto' if AUCTeX should
-decide."
+decide.
+
+Setting this variable does not take effect if TeX Source
+Correlate mode has already been active.  Restart Emacs in this
+case."
   :type '(choice (const auto) (const synctex) (const source-specials))
   :group 'TeX-view)
 
@@ -1107,6 +1111,9 @@ The method to be used can be controlled with the variable
 `TeX-source-correlate-method'.  Currently source specials or
 SyncTeX are recognized."
   :group 'TeX-view
+  ;; Since this is a global minor mode and we don't want to require
+  ;; tex.el when the mode variable is set, the mode function is called
+  ;; explicitely if necessary after tex.el is loaded (see further below).
   :global t
   (set-keymap-parent TeX-mode-map (and TeX-source-correlate-mode
 				       TeX-source-correlate-map))
@@ -1128,6 +1135,10 @@ SyncTeX are recognized."
 (setq minor-mode-map-alist
       (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
 	    minor-mode-map-alist))
+(eval-after-load "tex" ; Alternatively this could be put at the end of the file.
+  '(when TeX-source-correlate-mode
+     (TeX-source-correlate-mode 1)))
+
 
 ;;; Source Specials
 
