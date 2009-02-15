@@ -1,3 +1,11 @@
+2009-02-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/natbib.el ("natbib"): Check for font-latex function rather
+	than feature.  Add fontification spec for \cite.
+
+	* doc/auctex.texi (Simple Style): Bring example in line with
+	reality.
+
 2009-01-24  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-correlate-method): Doc fix.
