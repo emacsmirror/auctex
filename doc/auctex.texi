@@ -3564,8 +3564,8 @@ Here is a simple example of a style file.
 
 (TeX-add-style-hook
  "book"
- (lambda () (setq LaTeX-largest-level
-		  (LaTeX-section-level ("chapter")))))
+ (lambda () 
+   (LaTeX-largest-level-set "chapter")))
 @end lisp
 
 This file specifies that the largest kind of section in a @LaTeX{} document
