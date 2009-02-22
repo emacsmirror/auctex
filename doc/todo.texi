@@ -167,7 +167,7 @@ Multiple argument completion for @samp{\bibliography}.  In general, I
 ought to make @kbd{,} special for these kind of completions.
 
 @item
-Suggest @samp{makindex} when appropriate.
+Suggest @samp{makeindex} when appropriate.
 
 @item
 Use index files (when available) to speed up @kbd{C-c C-m include
@@ -186,10 +186,6 @@ Installation procedure written purely in emacs lisp.
 @item
 Included PostScript files should also be counted as part of the
 document.
-
-@item
-The parser should catch warnings about undefined crossreferences.
-Suggested by Richard Hirsch @samp{i3080501@@ws.rz.tu-bs.de}.
 
 @item
 A nice hierarchical by-topic organization of all officially documented
