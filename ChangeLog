@@ -1,3 +1,14 @@
+2009-02-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Multi-line fontification): Remove.
+
+	* doc/todo.texi (Wishlist): Fix typo.  Remove entry which is
+	already supported.
+
+	* style/tabularx.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/tabularx.el
+
 2009-02-15  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/natbib.el ("natbib"): Check for font-latex function rather
