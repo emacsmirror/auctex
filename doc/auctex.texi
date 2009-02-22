@@ -170,7 +170,6 @@ Font Locking
 * Fontification of quotes::     Fontification of quotes
 * Subscript and superscript::   Subscript and superscript in math
 * Verbatim content::            Verbatim macros and environments
-* Multi-line fontification::    Multi-line fontification
 * Faces::                       Faces used by font-latex
 
 Starting Processors, Viewers and Other Programs
@@ -1446,7 +1445,6 @@ description the various options are explained in conceptional groups.
 * Fontification of quotes::     Fontification of quotes
 * Subscript and superscript::   Subscript and superscript in math
 * Verbatim content::            Verbatim macros and environments
-* Multi-line fontification::    Multi-line fontification
 * Faces::                       Faces used by font-latex
 @end menu
 
@@ -1774,27 +1772,6 @@ environments are recognized is controlled by the variables
 @code{LaTeX-verbatim-macros-with-delims},
 @code{LaTeX-verbatim-macros-with-braces}, and
 @code{LaTeX-verbatim-environments} respectively.
-
-@node Multi-line fontification
-@subsection Multi-line fontification
-
-Font locking in @LaTeX{} source code often involves constructs spanning
-more than one line of text.  For these constructs to be handled
-correctly GNU Emacs as well as @fontlatex{} provide mechanisms for
-multi-line fontification which can be controlled by the variable
-@code{font-latex-do-multi-line}.
-
-@defopt font-latex-do-multi-line
-Control multi-line fontification.
-
-Setting the variable to t will enable @fontlatex{}'s mechanism, setting
-it to nil will disable it.  Setting it to @samp{try-font-lock} (the
-default) will use font-lock's mechanism if available and @fontlatex{}'s
-method if not.
-
-Setting this variable will only have effect after resetting buffers
-controlled by @fontlatex{} or restarting Emacs.
-@end defopt
 
 @node Faces
 @subsection Faces used by @fontlatex{}
