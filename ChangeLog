@@ -1,3 +1,13 @@
+2009-03-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-verbatim-macro-boundaries): Do step backwards at
+	beginning of buffer.
+	(LaTeX-search-forward-comment-start): Treat find of comment at
+	limit correctly.
+
+	* tex-fold.el (TeX-fold-comment-do): Abort backward search for
+	comment start at beginning of buffer.  Do not fold empty comment.
+
 2009-02-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Multi-line fontification): Remove.
