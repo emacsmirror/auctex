@@ -500,14 +500,16 @@ Return non-nil if a comment was found and folded, nil otherwise."
       (save-excursion
 	(while (progn
 		 (beginning-of-line 0)
-		 (TeX-in-line-comment)))
+		 (and (TeX-in-line-comment)
+		      (not (bobp)))))
 	(goto-char (TeX-search-forward-comment-start (line-end-position 2)))
 	(looking-at TeX-comment-start-regexp)
 	(setq beg (match-end 0))
 	(while (TeX-comment-forward))
 	(end-of-line 0)
-	(TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
-						   TeX-fold-ellipsis))))))
+	(when (> (point) beg)
+	  (TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
+						     TeX-fold-ellipsis)))))))
 
 
 ;;; Utilities
