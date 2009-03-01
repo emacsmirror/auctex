@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1999, 2000,
-;;   2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2003,
+;;   2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -1920,15 +1920,17 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
   (save-excursion
     (let ((orig (point))
 	  (verbatim-regexp (regexp-opt (LaTeX-verbatim-macros-with-delims) t)))
+      ;; Search backwards for the macro start, unless we are facing one
       (unless (looking-at (concat (regexp-quote TeX-esc) verbatim-regexp))
 	(catch 'found
 	  (while (progn
 		   (skip-chars-backward (concat "^\n" (regexp-quote TeX-esc))
 					(line-beginning-position))
 		   (when (looking-at verbatim-regexp) (throw 'found nil))
-		   (forward-char -1)
+		   (or (bobp) (forward-char -1))
 		   (/= (point) (line-beginning-position))))))
-      (unless (= (point) (line-beginning-position))
+      ;; Search forward for the macro end, unless we failed to find a start
+      (unless (bolp)
 	(let ((beg (1- (point))))
 	  (goto-char (1+ (match-end 0)))
 	  (skip-chars-forward (concat "^" (buffer-substring-no-properties
@@ -3602,14 +3604,16 @@ This function makes sure that any comment starters found inside
 of verbatim constructs are not considered."
   (setq limit (or limit (point-max)))
   (save-excursion
-    (catch 'found
-      (while (progn
-	       (when (and (TeX-re-search-forward-unescaped
-			   TeX-comment-start-regexp limit 'move)
-			  (not (LaTeX-verbatim-p)))
-		 (throw 'found t))
-	       (< (point) limit))))
-    (unless (= (point) limit) (match-beginning 0))))
+    (let (start)
+      (catch 'found
+	(while (progn
+		 (when (and (TeX-re-search-forward-unescaped
+			     TeX-comment-start-regexp limit 'move)
+			    (not (LaTeX-verbatim-p)))
+		   (setq start (match-beginning 0))
+		   (throw 'found t))
+		 (< (point) limit))))
+      start)))
 
 
 ;;; Math Minor Mode
