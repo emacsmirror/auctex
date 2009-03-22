@@ -1,3 +1,8 @@
+2009-03-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-site.el.in: Revitalize support for completion in \cite
+	macros via `BibTeX-auto-store'.
+
 2009-03-02  Holger Sparr  <holger.sparr@gmx.net>
 
 	* Makefile.in (STYLESRC): Add style/multido.el;
@@ -24,6 +29,11 @@
 	* style/pst-plot.el: New file.
 
 	* style/pst-slpe.el: New file.
+
+2009-02-23  Holger Sparr  <holger.sparr@gmx.net>
+
+	* style/pstricks.el: Actually implement support for writing
+	PSTricks code.
 
 2009-02-22  Ralf Angeli  <angeli@caeruleus.net>
 
