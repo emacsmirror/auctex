@@ -1,3 +1,17 @@
+2009-03-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/listings.el (LaTeX-listings-key-val-options): New
+	variable.
+	("listings"): Use it.  Check for font-latex function, not feature.
+
+	* latex.el (TeX-arg-key-val): New function.
+
+	* multi-prompt.el: Require crm.el.
+	(multi-prompt-separator, multi-prompt-key-value-sep)
+	(multi-prompt-completion-table): New variables.
+	(multi-prompt-key-value-collection-fn, multi-prompt-key-value):
+	New functions.
+
 2009-03-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-site.el.in: Revitalize support for completion in \cite
