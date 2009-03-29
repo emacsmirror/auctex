@@ -1825,6 +1825,18 @@ the cdr is the brace used with \\right.")
 		   TeX-left-right-braces)))
 	(indent-according-to-mode)))))
 
+(defun TeX-arg-key-val (optional key-val-alist)
+  "Prompt for keys and values in KEY-VAL-ALIST.
+Insert the given value as a TeX macro argument.  If OPTIONAL is
+non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
+alist.  The car of each element should be a string representing a
+key and the optional cdr should be a list with strings to be used
+as values for the key."
+  (let ((options (multi-prompt-key-value
+		  (TeX-argument-prompt optional "Options" nil)
+		  key-val-alist)))
+    (TeX-argument-insert options optional)))
+
 
 ;;; Verbatim constructs
 
