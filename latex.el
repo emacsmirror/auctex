@@ -1097,6 +1097,14 @@ Just like array and tabular."
 				    TeX-grcl))
   (delete-horizontal-space))
 
+(defun LaTeX-env-args (environment &rest args)
+  "Insert ENVIRONMENT and arguments defined by ARGS."
+  (LaTeX-insert-environment environment)
+  (let ((pos (point-marker)))
+    (end-of-line 0)
+    (TeX-parse-arguments args)
+    (goto-char pos)))
+
 ;;; Item hooks
 
 (defvar LaTeX-item-list nil
@@ -1406,22 +1414,28 @@ It will setup BibTeX to store keys in an auto file."
 
 ;;; Macro Argument Hooks
 
-;; FIXME: Make doc-strings of the following functions checkdoc clean.
-;; Especially the "optional" argument.  -- rs
-
 (defun TeX-arg-conditional (optional expr then else)
   "Implement if EXPR THEN ELSE.
+
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.
 
 If EXPR evaluate to true, parse THEN as an argument list, else parse
 ELSE as an argument list."
   (TeX-parse-arguments (if (eval expr) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
-  "Evaluate args and insert value in buffer."
+  "Evaluate ARGS and insert value in buffer.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one."
   (TeX-argument-insert (eval args) optional))
 
 (defun TeX-arg-label (optional &optional prompt definition)
-  "Prompt for a label completing with known labels."
+  "Prompt for a label completing with known labels.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  If DEFINITION is non-nil, add the chosen label to the
+list of defined labels."
   (let ((label (completing-read (TeX-argument-prompt optional prompt "Key")
 				(LaTeX-label-list))))
     (if (and definition (not (string-equal "" label)))
@@ -1431,7 +1445,12 @@ ELSE as an argument list."
 (defalias 'TeX-arg-ref 'TeX-arg-label)
 
 (defun TeX-arg-index-tag (optional &optional prompt &rest args)
-  "Prompt for an index tag.  This is the name of an index, not the entry."
+  "Prompt for an index tag.
+This is the name of an index, not the entry.
+
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  ARGS is unused."
   (let (tag)
     (setq prompt (concat (if optional "(Optional) " "")
 			 (if prompt prompt "Index tag")
@@ -1440,7 +1459,10 @@ ELSE as an argument list."
     (TeX-argument-insert tag optional)))
 
 (defun TeX-arg-index (optional &optional prompt &rest args)
-  "Prompt for an index entry completing with known entries."
+  "Prompt for an index entry completing with known entries.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  ARGS is unused."
   (let ((entry (completing-read (TeX-argument-prompt optional prompt "Key")
 				(LaTeX-index-entry-list))))
     (if (and (not (string-equal "" entry))
@@ -1451,7 +1473,11 @@ ELSE as an argument list."
 (defalias 'TeX-arg-define-index 'TeX-arg-index)
 
 (defun TeX-arg-macro (optional &optional prompt definition)
-  "Prompt for a TeX macro with completion."
+  "Prompt for a TeX macro with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  If DEFINITION is non-nil, add the chosen macro to the
+list of defined macros."
   (let ((macro (completing-read (TeX-argument-prompt optional prompt
 						     (concat "Macro: "
 							     TeX-esc)
@@ -1462,7 +1488,11 @@ ELSE as an argument list."
     (TeX-argument-insert macro optional TeX-esc)))
 
 (defun TeX-arg-environment (optional &optional prompt definition)
-  "Prompt for a LaTeX environment with completion."
+  "Prompt for a LaTeX environment with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  If DEFINITION is non-nil, add the chosen environment to
+the list of defined environments."
   (let ((environment (completing-read (TeX-argument-prompt optional prompt
 							   "Environment")
 				      (TeX-symbol-list))))
@@ -1471,8 +1501,12 @@ ELSE as an argument list."
 
     (TeX-argument-insert environment optional)))
 
+;; Why is DEFINITION unused?
 (defun TeX-arg-cite (optional &optional prompt definition)
-  "Prompt for a BibTeX citation with completion."
+  "Prompt for a BibTeX citation with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  DEFINITION is unused."
   (setq prompt (concat (if optional "(Optional) " "")
 		       (if prompt prompt "Add key")
 		       ": (default none) "))
@@ -1480,15 +1514,23 @@ ELSE as an argument list."
     (apply 'LaTeX-add-bibitems items)
     (TeX-argument-insert (mapconcat 'identity items ",") optional optional)))
 
+;; Why is DEFINITION unused?
 (defun TeX-arg-counter (optional &optional prompt definition)
-  "Prompt for a LaTeX counter."
+  "Prompt for a LaTeX counter.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  DEFINITION is unused."
   ;; Completion not implemented yet.
   (TeX-argument-insert
    (read-string (TeX-argument-prompt optional prompt "Counter"))
    optional))
 
+;; Why is DEFINITION unused?
 (defun TeX-arg-savebox (optional &optional prompt definition)
-  "Prompt for a LaTeX savebox."
+  "Prompt for a LaTeX savebox.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  DEFINITION is unused."
   ;; Completion not implemented yet.
   (TeX-argument-insert
    (read-string (TeX-argument-prompt optional prompt
@@ -1497,34 +1539,55 @@ ELSE as an argument list."
    optional TeX-esc))
 
 (defun TeX-arg-file (optional &optional prompt)
-  "Prompt for a filename in the current directory."
+  "Prompt for a filename in the current directory.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-argument-insert (read-file-name (TeX-argument-prompt optional
 							    prompt "File")
 				       "" "" nil)
 		       optional))
 
 (defun TeX-arg-define-label (optional &optional prompt)
-  "Prompt for a label completing with known labels."
+  "Prompt for a label completing with known labels.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-label optional prompt t))
 
 (defun TeX-arg-define-macro (optional &optional prompt)
-  "Prompt for a TeX macro with completion."
+  "Prompt for a TeX macro with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-macro optional prompt t))
 
 (defun TeX-arg-define-environment (optional &optional prompt)
-  "Prompt for a LaTeX environment with completion."
+  "Prompt for a LaTeX environment with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-environment optional prompt t))
 
 (defun TeX-arg-define-cite (optional &optional prompt)
-  "Prompt for a BibTeX citation."
+  "Prompt for a BibTeX citation.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-cite optional prompt t))
 
 (defun TeX-arg-define-counter (optional &optional prompt)
-  "Prompt for a LaTeX counter."
+  "Prompt for a LaTeX counter.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-counter optional prompt t))
 
 (defun TeX-arg-define-savebox (optional &optional prompt)
-  "Prompt for a LaTeX savebox."
+  "Prompt for a LaTeX savebox.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-arg-savebox optional prompt t))
 
 (defcustom LaTeX-style-list '(("amsart")
@@ -1548,7 +1611,8 @@ ELSE as an argument list."
   :type '(repeat (group (string :format "%v"))))
 
 (defun TeX-arg-document (optional &optional ignore)
-  "Insert arguments to documentclass."
+  "Insert arguments to documentclass.
+OPTIONAL and IGNORE are ignored."
   (let ((style (completing-read
 		(concat "Document class: (default " LaTeX-default-style ") ")
 		LaTeX-style-list))
@@ -1571,7 +1635,8 @@ ELSE as an argument list."
   (TeX-update-style))
 
 (defun LaTeX-arg-usepackage (optional)
-  "Insert arguments to usepackage."
+  "Insert arguments to usepackage.
+OPTIONAL is ignored."
   (let ((TeX-file-extensions '("sty")))
     (TeX-arg-input-file nil "Package")
     (save-excursion
@@ -1613,11 +1678,12 @@ ELSE as an argument list."
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
-(defun TeX-arg-input-file (optionel &optional prompt local)
+(defun TeX-arg-input-file (optional &optional prompt local)
   "Prompt for a tex or sty file.
-
-First optional argument is the prompt, the second is a flag.
-If the flag is set, only complete with local files."
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  PROMPT is the prompt,
+LOCAL is a flag.  If the flag is set, only complete with local
+files."
   (unless (or TeX-global-input-files local)
     (message "Searching for files...")
     (setq TeX-global-input-files
@@ -1626,7 +1692,7 @@ If the flag is set, only complete with local files."
 					  TeX-file-extensions t t))))
   (let ((file (if TeX-check-path
 		  (completing-read
-		   (TeX-argument-prompt optionel prompt "File")
+		   (TeX-argument-prompt optional prompt "File")
 		   (TeX-delete-dups-by-car
 		    (append (mapcar 'list
 				    (TeX-search-files '("./")
@@ -1635,12 +1701,12 @@ If the flag is set, only complete with local files."
 			    (unless local
 			      TeX-global-input-files))))
 		(read-file-name
-		 (TeX-argument-prompt optionel prompt "File")))))
+		 (TeX-argument-prompt optional prompt "File")))))
     (if (null file)
 	(setq file ""))
     (if (not (string-equal "" file))
 	(TeX-run-style-hooks file))
-    (TeX-argument-insert file optionel)))
+    (TeX-argument-insert file optional)))
 
 (defvar BibTeX-global-style-files nil
   "Association list of BibTeX style files.
@@ -1649,7 +1715,10 @@ Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibstyle (optional &optional prompt)
-  "Prompt for a BibTeX style file."
+  "Prompt for a BibTeX style file.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (message "Searching for BibTeX styles...")
   (or BibTeX-global-style-files
       (setq BibTeX-global-style-files
@@ -1674,7 +1743,10 @@ Initialized once at the first time you prompt for an BibTeX file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibliography (optional &optional prompt)
-  "Prompt for a BibTeX database file."
+  "Prompt for a BibTeX database file.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (message "Searching for BibTeX files...")
   (or BibTeX-global-files
       (setq BibTeX-global-files
@@ -1692,7 +1764,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
     (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
 
 (defun TeX-arg-corner (optional &optional prompt)
-  "Prompt for a LaTeX side or corner position with completion."
+  "Prompt for a LaTeX side or corner position with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
 		    '(("") ("l") ("r") ("t") ("b") ("tl") ("tr") ("bl") ("br"))
@@ -1700,7 +1775,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
    optional))
 
 (defun TeX-arg-lr (optional &optional prompt)
-  "Prompt for a LaTeX side with completion."
+  "Prompt for a LaTeX side with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
 		    '(("") ("l") ("r"))
@@ -1708,7 +1786,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
    optional))
 
 (defun TeX-arg-tb (optional &optional prompt)
-  "Prompt for a LaTeX side with completion."
+  "Prompt for a LaTeX side with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
 		    '(("") ("t") ("b"))
@@ -1716,7 +1797,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
    optional))
 
 (defun TeX-arg-pagestyle (optional &optional prompt)
-  "Prompt for a LaTeX pagestyle with completion."
+  "Prompt for a LaTeX pagestyle with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Pagestyle")
 		    '(("plain") ("empty") ("headings") ("myheadings")))
@@ -1728,7 +1812,9 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
   :type 'character)
 
 (defun TeX-arg-verb (optional &optional ignore)
-  "Prompt for delimiter and text."
+  "Prompt for delimiter and text.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  IGNORE is ignored."
   (let ((del (read-quoted-char
 	      (concat "Delimiter: (default "
 		      (char-to-string LaTeX-default-verb-delimiter) ") "))))
@@ -1745,16 +1831,23 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
   "Insert a pair of number, prompted by FIRST and SECOND.
 
 The numbers are surounded by parenthesizes and separated with a
-comma."
+comma.
+
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one."
   (insert "(" (read-string (concat first  ": ")) ","
 	      (read-string (concat second ": ")) ")"))
 
 (defun TeX-arg-size (optional)
-  "Insert width and height as a pair."
+  "Insert width and height as a pair.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one."
   (TeX-arg-pair optional "Width" "Height"))
 
 (defun TeX-arg-coordinate (optional)
-  "Insert x and y coordinate as a pair."
+  "Insert x and y coordinate as a pair.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one."
  (TeX-arg-pair optional "X position" "Y position"))
 
 (defconst TeX-braces-default-association
@@ -1797,6 +1890,10 @@ the cdr is the brace used with \\right.")
   "List of symbols which can follow the \\left or \\right command.")
 
 (defun TeX-arg-insert-braces (optional &optional prompt)
+  "Prompt for a brace for \\left and insert the corresponding \\right.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
   (save-excursion
     (backward-word 1)
     (backward-char)
