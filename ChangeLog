@@ -1,3 +1,36 @@
+2009-04-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/listings.el ("listings"): Remove redundant list when
+	calling `TeX-arg-key-val'.  Use `LaTeX-env-args' for lstlisting
+	environment.
+
+	* latex.el (LaTeX-env-args): New function.
+	(TeX-arg-conditional, TeX-arg-eval, TeX-arg-label)
+	(TeX-arg-index-tag, TeX-arg-index, TeX-arg-macro)
+	(TeX-arg-environment, TeX-arg-cite, TeX-arg-counter)
+	(TeX-arg-savebox, TeX-arg-file, TeX-arg-define-label)
+	(TeX-arg-define-macro, TeX-arg-define-environment)
+	(TeX-arg-define-cite, TeX-arg-define-counter)
+	(TeX-arg-define-savebox, TeX-arg-document, LaTeX-arg-usepackage)
+	(TeX-arg-input-file, TeX-arg-bibstyle, TeX-arg-bibliography)
+	(TeX-arg-corner, TeX-arg-lr, TeX-arg-tb, TeX-arg-pagestyle)
+	(TeX-arg-verb, TeX-arg-pair, TeX-arg-size, TeX-arg-coordinate)
+	(TeX-arg-insert-braces): Doc fix.
+
+	* multi-prompt.el (multi-prompt-separator): Remove.
+	(multi-prompt-key-value-collection-fn): Do not search for
+	`multi-prompt-separator'.
+	(crm-local-must-match-map, crm-local-completion-map): Silence the
+	byte compiler.
+	(multi-prompt-key-value): Require crm.el here and not at
+	top-level.
+
+	* tex-info.el (TeX-texinfo-mode): Add @lowersections and
+	@raisesections.
+
+	* doc/auctex.texi (Adding Environments): Document hooks for
+	`LaTeX-add-environments'.
+
 2009-03-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/listings.el (LaTeX-listings-key-val-options): New
