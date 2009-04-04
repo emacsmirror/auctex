@@ -35,12 +35,6 @@
 
 ;;; Code:
 
-;; If `multi-prompt' (the function) is to be used as an alternative
-;; for `completing-read-multiple' in Emacsen which do not provide the
-;; latter, requiring crm.el will do no good, but we need it for
-;; `multi-prompt-key-value'.
-(require 'crm)
-
 (defvar multi-prompt-found nil
   "List of entries currently added during a `multi-prompt'.")
 
@@ -143,8 +137,6 @@ are the arguments to `completing-read'.  See that."
 ;; TODO: How to support stuff like "caption={[one]two}" or
 ;; "morekeywords={one,three,five}"?
 
-(defvar multi-prompt-separator ","
-  "Single-character string separating options in a key=value list.")
 (defvar multi-prompt-key-value-sep "="
   "Single-character string separating key=value pairs.")
 (defvar multi-prompt-completion-table nil
@@ -165,26 +157,23 @@ For more information on STRING, PREDICATE, and FLAG, see the Elisp
 Reference sections on 'Programmed Completion' and 'Basic Completion
 Functions'."
   (let ((beg 0) (last 0) matched)
-    ;; TODO: Will `string' ever contain a normal separator?
-    ;; `crm--select-current-element' probably already takes care that
-    ;; this does not happen.  In that case it would also be senseless
-    ;; to have `multi-prompt-separator'.
-    (while (string-match (regexp-opt (list multi-prompt-separator
-					   multi-prompt-key-value-sep))
-			 string beg)
+    (while (string-match multi-prompt-key-value-sep string beg)
       (setq matched t
 	    last beg
 	    beg (match-end 0)))
     (completion-table-with-context
      (substring string 0 beg)
-     (if (or (not matched)
-	     (string= (match-string 0 string) multi-prompt-separator))
+     (if (not matched)
 	 multi-prompt-completion-table
        (cadr (assoc (substring string last (1- beg))
 		    multi-prompt-completion-table)))
      (substring string beg)
      predicate
      flag)))
+
+;; Silence the byte compiler.
+(defvar crm-local-must-match-map)
+(defvar crm-local-completion-map)
 
 ;;;###autoload
 (defun multi-prompt-key-value
@@ -201,6 +190,7 @@ other arguments: PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST,
 DEF, and INHERIT-INPUT-METHOD.
 
 The return value is the string as entered in the minibuffer."
+  (require 'crm)
   (let* ((minibuffer-completion-table #'multi-prompt-key-value-collection-fn)
 	 (minibuffer-completion-predicate predicate)
 	 (minibuffer-completion-confirm
