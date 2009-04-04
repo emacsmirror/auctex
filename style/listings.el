@@ -197,7 +197,7 @@
     `("lstdefinestyle" "Style name"
       (TeX-arg-key-val ,LaTeX-listings-key-val-options))
     '("lstinline" TeX-arg-verb)
-    `("lstinputlisting" [(TeX-arg-key-val ,LaTeX-listings-key-val-options)]
+    `("lstinputlisting" [TeX-arg-key-val ,LaTeX-listings-key-val-options]
       TeX-arg-file)
     "lstlistoflistings"
     '("lstnewenvironment" "Name" ["Number or arguments"] ["Default argument"]
@@ -205,7 +205,8 @@
     `("lstset" (TeX-arg-key-val ,LaTeX-listings-key-val-options)))
    ;; New environments
    (LaTeX-add-environments
-    `("lstlisting" [(TeX-arg-key-val ,LaTeX-listings-key-val-options)]))
+    `("lstlisting" LaTeX-env-args
+      [TeX-arg-key-val ,LaTeX-listings-key-val-options]))
    ;; Filling
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
