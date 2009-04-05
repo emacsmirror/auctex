@@ -1,3 +1,8 @@
+2009-04-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-help-error): Make search for help text in log
+	file more robust.
+
 2009-04-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/listings.el ("listings"): Remove redundant list when
