@@ -1,7 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004,
-;;   2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004, 2005, 2006, 2007,
+;;   2008, 2009 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -1651,32 +1651,30 @@ name(\\([^)]+\\))\\)\\|\
 	    "\n\n--- TeX said ---"
 	    output
 	    "\n--- HELP ---\n"
-	    (save-excursion
-	      (if (and (string= (cdr (nth TeX-error-pointer
-					  TeX-error-description-list))
-				"No help available")
-		       (let* ((log-buffer (find-buffer-visiting log-file)))
-			 (if log-buffer
-			     (progn
-			       (set-buffer log-buffer)
-			       (revert-buffer t t))
-			   (setq log-buffer
-				 (find-file-noselect log-file))
-			   (set-buffer log-buffer))
-			 (auto-save-mode nil)
-			 (setq buffer-read-only t)
-			 (goto-line (point-min))
-			 (search-forward error nil t 1)))
-		  (progn
-		    (re-search-forward "^l\\.")
-		    (re-search-forward "^ [^\n]+$")
-		    (forward-char 1)
-		    (let ((start (point)))
+	    (let ((help (cdr (nth TeX-error-pointer
+				  TeX-error-description-list))))
+	      (save-excursion
+		(if (and (string= help "No help available")
+			 (let* ((log-buffer (find-buffer-visiting log-file)))
+			   (if log-buffer
+			       (progn
+				 (set-buffer log-buffer)
+				 (revert-buffer t t))
+			     (setq log-buffer
+				   (find-file-noselect log-file))
+			     (set-buffer log-buffer))
+			   (auto-save-mode nil)
+			   (setq buffer-read-only t)
+			   (goto-line (point-min))
+			   (search-forward error nil t 1))
+			 (re-search-forward "^l\\." nil t)
+			 (re-search-forward "^ [^\n]+$" nil t))
+		    (let ((start (1+ (point))))
+		      (forward-char 1)
 		      (re-search-forward "^$")
 		      (concat "From the .log file...\n\n"
-			      (buffer-substring start (point)))))
-		(cdr (nth TeX-error-pointer
-			  TeX-error-description-list)))))
+			      (buffer-substring start (point))))
+		  help))))
     (goto-char (point-min))
     (TeX-pop-to-buffer old-buffer nil t)))
 
