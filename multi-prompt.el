@@ -171,6 +171,16 @@ Functions'."
      predicate
      flag)))
 
+(defun multi-prompt-expand-completion-table (table)
+  "Return an expanded version of completion table TABLE.
+This is achieved by eval'ing all variables in the value parts of
+the alist elements."
+  (mapcar (lambda (x)
+	    (if (and (cadr x) (symbolp (cadr x)) (not (functionp (cadr x))))
+		(cons (car x) (list (eval (cadr x))))
+	      x))
+	  table))
+
 ;; Silence the byte compiler.
 (defvar crm-local-must-match-map)
 (defvar crm-local-completion-map)
@@ -195,7 +205,13 @@ The return value is the string as entered in the minibuffer."
 	 (minibuffer-completion-predicate predicate)
 	 (minibuffer-completion-confirm
 	  (unless (eq require-match t) require-match))
-	 (multi-prompt-completion-table table)
+	 (multi-prompt-completion-table
+	  ;; Expand the table here because completion would otherwise
+	  ;; interpret symbols in the table as functions.  However, it
+	  ;; would be nicer if this could be done during the actual
+	  ;; completion in order to avoid walking through the whole
+	  ;; table.
+	  (multi-prompt-expand-completion-table table))
 	 (map (if require-match
 		  crm-local-must-match-map
 		crm-local-completion-map))
