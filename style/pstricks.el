@@ -1,10 +1,10 @@
-;;; pstricks.el --- AUCTeX style for the `pstricks' babel option.
+;;; pstricks.el --- AUCTeX style for the `pstricks' package.
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2009 Free Software Foundation, Inc.
 
-;; Author: Ralf Angeli <angeli@caeruleus.net>
+;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2007-06-10
+;; Created: 2007-06-14
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -44,97 +44,12 @@
 ;;
 ;; -- use alist or hash-table for parameter input
 ;; -- adding more regularly used PSTricks macros
+;; -- Prevent errors in AUCTeX modes other than LaTeX mode.
 
 ;;; Code:
 
-(TeX-add-style-hook
- "pstricks"
- (function
-  (lambda ()
-    (mapcar 'TeX-auto-add-regexp LaTeX-auto-pstricks-regexp-list)
-    (LaTeX-add-environments
-     '("pspicture" LaTeX-pst-env-pspicture)
-     "overlaybox" "psclip")
-    (TeX-add-symbols
-     '("AltClipMode" 0) '("DontKillGlue" 0) '("KillGlue" 0)
-     '("NormalCoor" 0) '("SpecialCoor" 0) '("PSTricksLoaded" 0)
-     '("PSTricksOff" 0) '("altcolormode" 0) '("pslinecolor" 0)
-     '("pslinestyle" 0) '("pslinetype" 0) '("pslinewidth" 0)
-     '("pslabelsep" 0) '("radian" 0) '("psunit" 0) '("psrunit" 0)
-     '("psxunit" 0) '("psyunit" 0)
-     '("arrows" (TeX-arg-eval LaTeX-pst-arrows))
-     '("clipbox" ["Border"] t) '("closedshadow" [LaTeX-pst-parameters])
-     '("openshadow" [LaTeX-pst-parameters])
-     "closepath" "code" "coor" "curveto" "degrees" "dim" "endpsclip"
-     "file" "fill" "grestore" "gsave" "lineto" "movepath" "moveto"
-     "mrestore" "msave" "newpath" "rcoor" "rcurveto" "rlineto" "rotate"
-     "scale" "stroke" "swapaxes" "translate"
-     '("newcmykcolor" "Name" "Quadruple")
-     '("newrgbcolor" "Name" "Triple") '("newhsbcolor" "Name" "Triple")
-     '("newgray" "Name" "Value")
-     '("newpsobject" LaTeX-pst-macro-newpsobject LaTeX-pst-parameters)
-     '("newpsstyle" "New PSStyle Name" LaTeX-pst-parameters)
-     '("newpsfontdot" "New PSDot Name" ["Factors - separate by SPC: "]
-       "Fontname: " "Character Number (Hex): ")
-     '("parabola" [LaTeX-pst-parameters] LaTeX-pst-macro-parabola)
-     '("parabola*" [LaTeX-pst-parameters] LaTeX-pst-macro-parabola)
-     '("psarc" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
-     '("psarc*" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
-     '("psarcn" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
-     '("pswedge" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
-     '("psbezier" [LaTeX-pst-parameters] LaTeX-pst-macro-psbezier)
-     '("psbezier*" [LaTeX-pst-parameters] LaTeX-pst-macro-psbezier)
-     '("pscbezier" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
-     '("pscircle" [LaTeX-pst-parameters] LaTeX-pst-macro-pscircle)
-     '("psccurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("psccurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("pscurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("pscurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("pscustom" [LaTeX-pst-parameters])
-     '("psdiamond" [LaTeX-pst-parameters]
-       (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
-     '("pstriangle" [LaTeX-pst-parameters]
-       (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
-     '("psdot" [LaTeX-pst-macro-psdots t])
-     '("psdots" [LaTeX-pst-macro-psdots nil])
-     '("psecurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("psecurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("psellipse" [LaTeX-pst-parameters]
-       (LaTeX-pst-macro-pnt-twolen "Radius x" "Radius y"))
-     '("psellipse*" [LaTeX-pst-parameters]
-       (LaTeX-pst-macro-pnt-twolen "Radius x" "Radius y"))
-     '("psframe" [LaTeX-pst-parameters] LaTeX-pst-macro-psframe)
-     '("psframe*" [LaTeX-pst-parameters] LaTeX-pst-macro-psframe)
-     '("psframebox" [LaTeX-pst-parameters] t)
-     '("pscirclebox" [LaTeX-pst-parameters] t)
-     '("psdblframebox" [LaTeX-pst-parameters] t)
-     '("psdiabox" [LaTeX-pst-parameters] t)
-     '("psovalbox" [LaTeX-pst-parameters] t)
-     '("psshadowbox" [LaTeX-pst-parameters] t)
-     '("pstribox" [LaTeX-pst-parameters] t)
-     '("psscalebox" "Scaling Factor(s)" t)
-     '("psscaleboxto" LaTeX-pst-point-in-parens t)
-     '("psgrid" [LaTeX-pst-parameters] LaTeX-pst-macro-psgrid 0)
-     '("psline" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
-     '("psoverlay" t)
-     '("pspolygon" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
-     '("pspolygon*" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
-     '("psset" LaTeX-pst-parameters)
-     '("pssetlength" TeX-arg-macro "Length")
-     '("psaddtolength" TeX-arg-macro "Length")
-     '("degrees" ["Full Circle"])
-     '("qdisk" LaTeX-pst-point-in-parens "Radius")
-     '("qline" LaTeX-pst-point-in-parens LaTeX-pst-point-in-parens)
-     "pslongbox" "psrotatedown" "psrotateleft" "psrotateright"
-     '("rput" LaTeX-pst-macro-rput t)
-     '("rput*" LaTeX-pst-macro-rput t)
-     '("cput" [LaTeX-pst-parameters]
-       (TeX-arg-eval LaTeX-pst-angle) LaTeX-pst-point-in-parens t)
-     '("uput" LaTeX-pst-macro-uput t)
-     '("multirput" (LaTeX-pst-macro-multirputps t) t)
-     '("multips" (LaTeX-pst-macro-multirputps nil) t)))))
-
 ;;; General Functions
+
 (defun TeX-arg-compl-list (list &optional prompt hist)
   "Input a value after PROMPT with completion from LIST and HISTORY."
   (let ((first (car list)))
@@ -173,7 +88,7 @@ have to exist.
   "Return number as string asked for with PROMPT if no number
 passed with ARG."
   (unless (numberp arg)
-    (setq arg (read-number (concat prompt " : ") 2)))
+    (setq arg (read-number (concat prompt ": ") 2)))
   (number-to-string arg))
 
 (defun LaTeX-pst-enclose-obj (symbol op cl)
@@ -289,13 +204,13 @@ package PNAME"
   "History of values for point in pstricks.")
 
 (defun LaTeX-pst-point ()
-  "Ask for a point and manage point list"
+  "Ask for a point and manage point list."
   (LaTeX-pst-what "point"
-                  (concat "Point [" (car LaTeX-pst-point-history) "]")
+                  (concat "Point (default " (car LaTeX-pst-point-history) ")")
                   (car LaTeX-pst-point-history)))
 
 (defun LaTeX-pst-point-in-parens (optional)
-  "Enclose Point in parenthesis."
+  "Enclose point in parentheses."
   (LaTeX-pst-enclose-obj 'LaTeX-pst-point ?( ?)))
 
 ;;; Angles
@@ -308,7 +223,7 @@ package PNAME"
 (defun LaTeX-pst-angle ()
   "Ask for a angle and manage angle list"
   (LaTeX-pst-what "angle"
-                  (concat "Angle [" (car LaTeX-pst-angle-list) "]")
+                  (concat "Angle (default " (car LaTeX-pst-angle-list) ")")
                   (car LaTeX-pst-angle-list)))
 
 ;;; Extension in one Direction
@@ -321,7 +236,7 @@ package PNAME"
 (defun LaTeX-pst-extdir (descr)
   "Ask for a extdir and manage extdir list"
   (LaTeX-pst-what "extdir"
-                  (concat descr " [" (car LaTeX-pst-extdir-list) "]")
+                  (concat descr " (default " (car LaTeX-pst-extdir-list) ")")
                   (car LaTeX-pst-extdir-list)))
 
 ;;; Relative Points
@@ -344,12 +259,11 @@ package PNAME"
 
 (defun LaTeX-pst-arrows ()
   "Ask for a arrow type and manage arrow type list"
-  (LaTeX-pst-what "arrows"
-                  "Arrow Type [->,... Press TAB for more]" nil))
+  (or (LaTeX-pst-what "arrows" "Arrow type" nil) ""))
 
 ;;; Dots
 (defvar LaTeX-pst-dotstyle-list
-  '((completing-read "Dotsyle" nil LaTeX-pst-dotstyle-history)
+  '((completing-read "Dot style" nil LaTeX-pst-dotstyle-history)
     "*" "o" "+" "|" "triangle" "triangle*" "square" "square*" "pentagon"
     "pentagon*")
   "A list of values for dotstyle in pstricks.")
@@ -359,7 +273,7 @@ package PNAME"
 
 ;;; Reference Point
 (defvar LaTeX-pst-refpoint-list
-  '((completing-read "RefPoint" t LaTeX-pst-refpoint-history)
+  '((completing-read "Reference point" t LaTeX-pst-refpoint-history)
     "l" "r" "t" "tl" "lt" "tr" "rt" "b" "bl" "br" "lb" "rb" "B" "Bl"
     "Br" "lB" "rB")
   "A list of values for refpoint in pstricks.")
@@ -369,8 +283,7 @@ package PNAME"
 
 (defun LaTeX-pst-refpoint ()
   "Ask for a refpoint and manage refpoint list"
-  (LaTeX-pst-what "refpoint"
-                  "RefPoint [t,tl,... - Press TAB for all]" nil))
+  (LaTeX-pst-what "refpoint" "Reference point" nil))
 
 ;;; Color
 (defvar LaTeX-pst-color-list
@@ -498,8 +411,8 @@ package PNAME"
   (let ((refpoint (LaTeX-pst-refpoint))
         (rotation (if current-prefix-arg (LaTeX-pst-angle) nil))
         (pnt (LaTeX-pst-point))
-        (dpnt (LaTeX-pst-what "delpoint" "Increment [delx,dely]" "1,1"))
-        (repi (LaTeX-pst-input-int "Repititions" nil)))
+        (dpnt (LaTeX-pst-what "delpoint" "Increment (default 1,1)" "1,1"))
+        (repi (LaTeX-pst-input-int "Repetitions" nil)))
     (insert (if refpoint (format "[%s]" refpoint) "")
             (if rotation (format "{%s}" rotation) "")
             "(" pnt ")(" dpnt "){" repi "}")))
@@ -589,8 +502,8 @@ package PNAME"
 ;;; Environments
 (defun LaTeX-pst-env-pspicture (env)
   "Create new pspicure environment."
-  (let ((p0 (LaTeX-pst-what "point" "LowerLeft [default 0,0]" "0,0"))
-        (p1 (LaTeX-pst-what "point" "UpperRight [default 1,1]" "1,1"))
+  (let ((p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
+        (p1 (LaTeX-pst-what "point" "Upper right (default 1,1)" "1,1"))
         (grid (LaTeX-pst-parameters-pref-and-chosen '("showgrid")))
         corn)
     (setq corn (concat (if (string= "" grid) "" (format "[%s]" grid))
@@ -705,5 +618,94 @@ comma separated list. Point has to be within the sexp to modify."
     (insert (TeX-arg-compl-list (symbol-value symb) "New Value"
                                 'LaTeX-pst-parameters-value-history))))
 (define-key LaTeX-mode-map "\C-c\C-x\C-v" 'LaTeX-pst-parameter-change-value)
+
+(TeX-add-style-hook
+ "pstricks"
+ (lambda ()
+   (unless (member "pst-pdf" TeX-active-styles)
+     (TeX-PDF-mode-off))
+   (mapc 'TeX-auto-add-regexp LaTeX-auto-pstricks-regexp-list)
+   (LaTeX-add-environments
+    '("pspicture" LaTeX-pst-env-pspicture)
+    "overlaybox" "psclip")
+   (TeX-add-symbols
+    '("AltClipMode" 0) '("DontKillGlue" 0) '("KillGlue" 0)
+    '("NormalCoor" 0) '("SpecialCoor" 0) '("PSTricksLoaded" 0)
+    '("PSTricksOff" 0) '("altcolormode" 0) '("pslinecolor" 0)
+    '("pslinestyle" 0) '("pslinetype" 0) '("pslinewidth" 0)
+    '("pslabelsep" 0) '("radian" 0) '("psunit" 0) '("psrunit" 0)
+    '("psxunit" 0) '("psyunit" 0)
+    '("arrows" (TeX-arg-eval LaTeX-pst-arrows))
+    '("clipbox" ["Border"] t)
+    '("closedshadow" [LaTeX-pst-parameters])
+    '("openshadow" [LaTeX-pst-parameters])
+    "closepath" "code" "coor" "curveto" "degrees" "dim" "endpsclip"
+    "file" "fill" "grestore" "gsave" "lineto" "movepath" "moveto"
+    "mrestore" "msave" "newpath" "rcoor" "rcurveto" "rlineto" "rotate"
+    "scale" "stroke" "swapaxes" "translate"
+    '("newcmykcolor" "Name" "Quadruple")
+    '("newrgbcolor" "Name" "Triple") '("newhsbcolor" "Name" "Triple")
+    '("newgray" "Name" "Value")
+    '("newpsobject" LaTeX-pst-macro-newpsobject LaTeX-pst-parameters)
+    '("newpsstyle" "New PSStyle Name" LaTeX-pst-parameters)
+    '("newpsfontdot" "New PSDot Name" ["Factors"]
+      "Fontname" "Character Number (Hex)")
+    '("parabola" [LaTeX-pst-parameters] LaTeX-pst-macro-parabola)
+    '("parabola*" [LaTeX-pst-parameters] LaTeX-pst-macro-parabola)
+    '("psarc" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
+    '("psarc*" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
+    '("psarcn" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
+    '("pswedge" [LaTeX-pst-parameters] LaTeX-pst-macro-psarc)
+    '("psbezier" [LaTeX-pst-parameters] LaTeX-pst-macro-psbezier)
+    '("psbezier*" [LaTeX-pst-parameters] LaTeX-pst-macro-psbezier)
+    '("pscbezier" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
+    '("pscircle" [LaTeX-pst-parameters] LaTeX-pst-macro-pscircle)
+    '("psccurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("psccurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("pscurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("pscurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("pscustom" [LaTeX-pst-parameters])
+    '("psdiamond" [LaTeX-pst-parameters]
+      (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
+    '("pstriangle" [LaTeX-pst-parameters]
+      (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
+    '("psdot" [LaTeX-pst-macro-psdots t])
+    '("psdots" [LaTeX-pst-macro-psdots nil])
+    '("psecurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("psecurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("psellipse" [LaTeX-pst-parameters]
+      (LaTeX-pst-macro-pnt-twolen "Radius x" "Radius y"))
+    '("psellipse*" [LaTeX-pst-parameters]
+      (LaTeX-pst-macro-pnt-twolen "Radius x" "Radius y"))
+    '("psframe" [LaTeX-pst-parameters] LaTeX-pst-macro-psframe)
+    '("psframe*" [LaTeX-pst-parameters] LaTeX-pst-macro-psframe)
+    '("psframebox" [LaTeX-pst-parameters] t)
+    '("pscirclebox" [LaTeX-pst-parameters] t)
+    '("psdblframebox" [LaTeX-pst-parameters] t)
+    '("psdiabox" [LaTeX-pst-parameters] t)
+    '("psovalbox" [LaTeX-pst-parameters] t)
+    '("psshadowbox" [LaTeX-pst-parameters] t)
+    '("pstribox" [LaTeX-pst-parameters] t)
+    '("psscalebox" "Scaling Factor(s)" t)
+    '("psscaleboxto" LaTeX-pst-point-in-parens t)
+    '("psgrid" [LaTeX-pst-parameters] LaTeX-pst-macro-psgrid 0)
+    '("psline" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
+    '("psoverlay" t)
+    '("pspolygon" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
+    '("pspolygon*" [LaTeX-pst-parameters] LaTeX-pst-macro-pspolygon)
+    '("psset" LaTeX-pst-parameters)
+    '("pssetlength" TeX-arg-macro "Length")
+    '("psaddtolength" TeX-arg-macro "Length")
+    '("degrees" ["Full Circle"])
+    '("qdisk" LaTeX-pst-point-in-parens "Radius")
+    '("qline" LaTeX-pst-point-in-parens LaTeX-pst-point-in-parens)
+    "pslongbox" "psrotatedown" "psrotateleft" "psrotateright"
+    '("rput" LaTeX-pst-macro-rput t)
+    '("rput*" LaTeX-pst-macro-rput t)
+    '("cput" [LaTeX-pst-parameters]
+      (TeX-arg-eval LaTeX-pst-angle) LaTeX-pst-point-in-parens t)
+    '("uput" LaTeX-pst-macro-uput t)
+    '("multirput" (LaTeX-pst-macro-multirputps t) t)
+    '("multips" (LaTeX-pst-macro-multirputps nil) t))))
 
 ;;; pstricks.el ends here
