@@ -1931,7 +1931,9 @@ key and the optional cdr should be a list with strings to be used
 as values for the key."
   (let ((options (multi-prompt-key-value
 		  (TeX-argument-prompt optional "Options" nil)
-		  key-val-alist)))
+		  (if (symbolp key-val-alist)
+		      (eval key-val-alist)
+		    key-val-alist))))
     (TeX-argument-insert options optional)))
 
 
