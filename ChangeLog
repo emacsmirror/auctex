@@ -1,3 +1,25 @@
+2009-04-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-arg-key-val): Eval `key-val-alist' argument if it
+	is a symbol.
+
+	* style/listings.el ("listings"): Do not eval arguments of
+	`TeX-arg-key-val'.
+
+	* multi-prompt.el (multi-prompt-expand-completion-table): New
+	function.
+	(multi-prompt-key-value): Use it.
+
+	* style/pstricks.el: Correct header info.
+	(LaTeX-pst-input-int, LaTeX-pst-point, LaTeX-pst-angle)
+	(LaTeX-pst-extdir, LaTeX-pst-arrows, LaTeX-pst-dotstyle-list)
+	(LaTeX-pst-refpoint-list, LaTeX-pst-refpoint)
+	(LaTeX-pst-macro-multirputps, LaTeX-pst-env-pspicture): Improve or
+	correct prompt.
+	("pstricks"): Move to the bottom of the file.  Do not use
+	`function' to quote `lambda'.  Turn off TeX PDF mode.  Use `mapc'
+	instead of `mapcar'.
+
 2009-04-05  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-help-error): Make search for help text in log
