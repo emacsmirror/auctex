@@ -1,3 +1,11 @@
+2009-04-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-mode): Clean `custom-requests'
+	property.
+	(VirTeX-common-initialization): Call `TeX-source-correlate-mode'
+	minor mode function when initializing the mode instead of when
+	loading the file.
+
 2009-04-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (TeX-arg-key-val): Eval `key-val-alist' argument if it
