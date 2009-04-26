@@ -1113,7 +1113,10 @@ SyncTeX are recognized."
   :group 'TeX-view
   ;; Since this is a global minor mode and we don't want to require
   ;; tex.el when the mode variable is set, the mode function is called
-  ;; explicitely if necessary after tex.el is loaded (see further below).
+  ;; explicitely (if necessary) in `VirTeX-common-initialization'.  We
+  ;; do it there because otherwise `kill-all-local-variables' would
+  ;; reset `TeX-source-correlate-output-page-function' which is
+  ;; buffer-local.
   :global t
   (set-keymap-parent TeX-mode-map (and TeX-source-correlate-mode
 				       TeX-source-correlate-map))
@@ -1132,12 +1135,12 @@ SyncTeX are recognized."
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
+;; We do not want the custom variable to require tex.el.  This is only
+;; necessary if AUCTeX was compiled with Emacs 21.
+(put 'TeX-source-correlate-mode 'custom-requests nil)
 (setq minor-mode-map-alist
       (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
 	    minor-mode-map-alist))
-(eval-after-load "tex" ; Alternatively this could be put at the end of the file.
-  '(when TeX-source-correlate-mode
-     (TeX-source-correlate-mode 1)))
 
 
 ;;; Source Specials
@@ -2588,6 +2591,10 @@ The algorithm is as follows:
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
   (make-local-variable 'TeX-auto-update)
   (setq TeX-auto-update t)
+
+  ;; Minor modes
+  (when TeX-source-correlate-mode
+    (TeX-source-correlate-mode 1))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
@@ -5263,7 +5270,6 @@ NAME may be a package, a command, or a document."
 (put 'TeX-insert-dollar 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
-
 
 (provide 'tex)
 
