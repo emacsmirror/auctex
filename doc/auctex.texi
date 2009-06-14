@@ -13,7 +13,7 @@ This manual is for @AUCTeX{}
 a sophisticated TeX environment for Emacs.
 
 Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004, 2005,
-2006, 2007, 2008 Free Software Foundation, Inc.
+2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -168,7 +168,7 @@ Font Locking
 
 * Fontification of macros::     Fontification of macros
 * Fontification of quotes::     Fontification of quotes
-* Subscript and superscript::   Subscript and superscript in math
+* Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
 
@@ -1097,11 +1097,13 @@ Indentation is done by @LaTeX{} environments and by @TeX{} groups, that
 is the body of an environment is indented by the value of
 @code{LaTeX-indent-level} (default 2).  Also, items of an `itemize-like'
 environment are indented by the value of @code{LaTeX-item-indent},
-default @minus{}2.  If more environments are nested, they are indented
-`accumulated' just like most programming languages usually are seen
-indented in nested constructs.
+default @minus{}2.  (Items are identified with the help of
+@code{LaTeX-item-regexp}.)  If more environments are nested, they are
+indented `accumulated' just like most programming languages usually are
+seen indented in nested constructs.
 @vindex LaTeX-indent-level
 @vindex LaTeX-item-indent
+@vindex LaTeX-item-regexp
 
 You can explicitely indent single lines, usually by pressing @key{TAB},
 or marked regions by calling @code{indent-region} on it.  If you have
@@ -1443,7 +1445,7 @@ description the various options are explained in conceptional groups.
 @menu
 * Fontification of macros::     Fontification of macros
 * Fontification of quotes::     Fontification of quotes
-* Subscript and superscript::   Subscript and superscript in math
+* Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
 @end menu
@@ -1727,10 +1729,23 @@ If you set @code{font-latex-quotes} to nil, quoted content will not be
 fontified.
 @end defopt
 
-@node Subscript and superscript
-@subsection Subscript and superscript in math
+
+@node Fontification of math
+@subsection Fontification of mathematical constructs
+@cindex Math, fontification of
 @cindex Subscript, fontification of
 @cindex Superscript, fontification of
+
+@vindex font-latex-match-math-command-keywords
+@vindex font-latex-math-environments
+In @LaTeX{} mathematics can be indicated by a variety of different
+methods: toggles (like dollar signs), macros and environments.  Math
+constructs known by @fontlatex{} are displayed with the face
+@code{font-latex-math-face}.  Support for dollar signs and shorthands
+like @samp{\(...\)} or @samp{\[...\]} is built-in and not customizable.
+Support for other math macros and environments can be adapted by
+customizing the variables @code{font-latex-match-math-command-keywords}
+and @code{font-latex-math-environments} respectively.
 
 In order to make math constructs more readable, @fontlatex{} displays
 subscript and superscript parts in a smaller font and raised or lowered
@@ -3769,7 +3784,6 @@ argument, an environment hook.  The example is again a short version of
     '("list" LaTeX-env-list))))
 @end lisp
 
-@findex LaTeX-env-item
 It is completely up to the environment hook to insert the environment,
 but the function @code{LaTeX-insert-environment} may be of some help.
 The hook will be called with the name of the environment as its first
