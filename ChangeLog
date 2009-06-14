@@ -1,3 +1,9 @@
+2009-06-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Indenting): Mention `LaTeX-item-regexp'.
+	(Fontification of math): New section replacing and extending
+	`Subscript and superscript'.
+
 2009-04-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-correlate-mode): Clean `custom-requests'
