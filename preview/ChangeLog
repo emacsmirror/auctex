@@ -1,3 +1,9 @@
+2009-06-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* preview.el (preview-start-pdf2dsc): Determine the PDF source
+	depending on the previews being generated from the master or the
+	region file.
+
 2008-05-10  Reiner Steib  <reiner.steib@gmx.de>
 
 	* preview.el (preview-auto-cache-preamble): Fix markup in in doc
