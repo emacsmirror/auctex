@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001, 02, 03, 04, 05,
+;; Copyright (C) 2001, 2002, 2003, 2004, 2005,
 ;;               2006  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.283 2008-05-10 20:16:06 rsteib Exp $
+;; $Id: preview.el,v 1.284 2009-06-18 19:20:46 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3098,7 +3098,7 @@ If FAST is set, do a fast conversion."
 			(TeX-command-expand preview-pdf2dsc-command
 					    (car file))
 		      (setq tempdir TeX-active-tempdir
-			    pdfsource (TeX-master-file "pdf")))))
+			    pdfsource (funcall `,(car file) "pdf")))))
 	 (name "Preview-PDF2DSC"))
     (setq TeX-active-tempdir tempdir)
     (setq preview-ps-file (preview-attach-filename
@@ -3512,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.283 $"))
+	(rev "$Revision: 1.284 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3526,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2008-05-10 20:16:06 $"))
+    (let ((date "$Date: 2009-06-18 19:20:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
