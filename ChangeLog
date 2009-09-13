@@ -2,6 +2,9 @@
 
 	* tex-buf.el (TeX-error): Cater for case of file:line:error
 	messages without context.
+	(TeX-parse-error): Add support for quoted file names with
+	backslashes as path separators.  Those might be emitted by MiKTeX
+	2.8.
 
 2009-06-14  Ralf Angeli  <angeli@caeruleus.net>
 
