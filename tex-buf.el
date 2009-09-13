@@ -1494,11 +1494,22 @@ name(\\([^)]+\\))\\)\\|\
 
 	 ;; And the context for the help window.
 	 (context-start (point))
+	 context-available
 
 	 ;; And the line number to position the cursor.
-	 (line (if (re-search-forward "l\\.\\([0-9]+\\)" nil t)
-		   (string-to-number (TeX-match-buffer 1))
-		 1))
+	 (line (cond
+		;; regular style
+		((re-search-forward "l\\.\\([0-9]+\\)" nil t)
+		 (setq context-available t)
+		 (string-to-number (TeX-match-buffer 1)))
+		;; file:line:error style
+		((save-excursion
+		   (re-search-backward ":\\([0-9]+\\): "
+				       (line-beginning-position) t))
+		 (string-to-number (TeX-match-buffer 1)))
+		;; nothing found
+		(t 1)))
+
 	 ;; And a string of the context to search for.
 	 (string (progn
 		   (beginning-of-line)
@@ -1506,10 +1517,14 @@ name(\\([^)]+\\))\\)\\|\
 		   (TeX-match-buffer 1)))
 
 	 ;; And we have now found to the end of the context.
-	 (context (buffer-substring context-start (progn
-						    (forward-line 1)
-						    (end-of-line)
-						    (point))))
+	 (context (if context-available
+		      (buffer-substring context-start (progn (forward-line 1)
+							     (end-of-line)
+							     (point)))
+		    ;; There is no real context available, so we
+		    ;; simply show the line with the error message.
+		    (buffer-substring (1- (line-beginning-position))
+				      context-start)))
 	 ;; We may use these in another buffer.
 	 (offset (or (car TeX-error-offset) 0))
 	 (file (car TeX-error-file)))
