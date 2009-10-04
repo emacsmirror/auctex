@@ -1,3 +1,15 @@
+2009-10-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (LaTeX-command-style, TeX-print-style, TeX-view-style):
+	Doc fix.
+	(TeX-view-predicate-list-builtin, TeX-view-program-list-builtin):
+	New variables.
+	(TeX-view-predicate-list, TeX-view-program-list)
+	(TeX-view-program-selection): New user options.
+	(TeX-match-style, TeX-view-match-predicate)
+	(TeX-view-command-raw): New functions.
+	(TeX-expand-list): Use `TeX-view-command-raw' for %V expander.
+
 2009-09-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-error): Cater for case of file:line:error
