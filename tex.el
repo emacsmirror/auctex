@@ -338,7 +338,7 @@ The executable `latex' is LaTeX version 2e."
   '(("" "%(PDF)%(latex) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
-If the first element (a regular expresion) matches the name of one of
+If the first element (a regular expression) matches the name of one of
 the style files, any occurrence of the string `%l' in a command in
 `TeX-command-list' will be replaced with the second element.  The first
 match is used, if no match is found the `%l' is replaced with the empty
@@ -393,7 +393,7 @@ get consulted."
 (defcustom TeX-print-style '(("^landscape$" "-t landscape"))
   "List of style options and print options.
 
-If the first element (a regular expresion) matches the name of one of
+If the first element (a regular expression) matches the name of one of
 the style files, any occurrence of the string `%r' in a command in
 `TeX-command-list' will be replaced with the second element.  The first
 match is used, if no match is found the `%r' is replaced with the empty
@@ -886,7 +886,7 @@ If RESET is non-nil, `TeX-command-next' is reset to
     ("." "%(o?)xdvi %dS %d"))
   "List of style options and view options.
 
-If the first element (a regular expresion) matches the name of
+If the first element (a regular expression) matches the name of
 one of the style files, any occurrence of the string `%v' in a
 command in `TeX-command-list' will be replaced with the second
 element.  The first match is used, if no match is found the `%v'
