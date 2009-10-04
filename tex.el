@@ -1,8 +1,8 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999, 2000,
-;;   2001, 2002, 2003, 2004, 2005, 2006, 2007,
-;;   2008 Free Software Foundation, Inc.
+;;   2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+;;   2009 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -410,6 +410,9 @@ string."
     ("%q" (lambda ()
 	    (TeX-printer-query t)))
     ("%V" (lambda ()
+	    (TeX-source-correlate-start-server-maybe)
+	    (TeX-view-command-raw)))
+    ("%vv" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-output-style-check TeX-output-view-style)))
     ("%v" (lambda ()
@@ -942,6 +945,229 @@ all the regular expressions must match for the element to apply."
 		  (regexp :tag "Extension")
 		  (choice regexp (repeat :tag "List" regexp))
 		  (string :tag "Command"))))
+
+;;; Viewing (new implementation)
+
+;; FIXME: Should it be possible to pass parameters to the predicates,
+;; i.e. use something like (output "dvi")?
+;; 
+;; FIXME: Describe meaning of the provided predicates in the doc string.
+(defvar TeX-view-predicate-list-builtin
+  '((output-dvi
+     (string-match "dvi" (TeX-output-extension)))
+    (output-pdf
+     (string-match "pdf" (TeX-output-extension)))
+    (output-html
+     (string-match "html" (TeX-output-extension)))
+    (style-pstricks
+     (TeX-match-style "^pstricks$\\|^pst-\\|^psfrag$"))
+    (engine-omega
+     (eq TeX-engine 'omega))
+    (engine-xetex
+     (eq TeX-engine 'xetex))
+    (mode-io-correlate
+     TeX-source-correlate-mode)
+    (paper-landscape
+     (TeX-match-style "\\`landscape\\'"))
+    (paper-a4-portrait
+     (and (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'")
+	  (not (TeX-match-style "\\`landscape\\'"))))
+    (paper-a4-landscape
+     (and (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'")
+	  (TeX-match-style "\\`landscape\\'")))
+    (paper-a5-portrait
+     (and (TeX-match-style "\\`a5paper\\|a5comb\\'")
+	  (not (TeX-match-style "\\`landscape\\'"))))
+    (paper-a5-landscape
+     (and (TeX-match-style "\\`a5paper\\|a5comb\\'")
+	  (TeX-match-style "\\`landscape\\'")))
+    (paper-b5
+     (TeX-match-style "\\`b5paper\\'"))
+    (paper-letter
+     (TeX-match-style "\\`letterpaper\\'"))
+    (paper-legal
+     (TeX-match-style "\\`legalpaper\\'"))
+    (paper-executive
+     (TeX-match-style "\\`executivepaper\\'")))
+  "Alist of built-in predicate names and their implementations.")
+
+(defcustom TeX-view-predicate-list nil
+  "Alist of predicate names and their implementations."
+  :group 'TeX-view
+  :type '(alist :key-type symbol :value-type (group sexp)))
+
+;; FIXME: Should it also be possible to use a function instead of a
+;; command line specifier?  This could be useful if the viewer is not
+;; called through the command line, e.g. when triggering a refresh
+;; through a DDE command on Windows.  We'd have to hook this up with
+;; the prompting mechanism in `TeX-command'.
+;; 
+;; FIXME: Should it be possible to combine multiple predicates like in
+;; `TeX-view-program-selection'?
+;;
+;; FIXME: Should it be possible to use any function, not just a
+;; predefined predicate?
+;;
+;; FIXME: Put the stuff for Windows and Mac OS X into their own files
+;; (e.g. tex-mik.el for Windows) or custom themes.
+(defvar TeX-view-program-list-builtin
+  '(("xdvi" ("%(o?)xdvi"
+	     (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
+	     (paper-a4-portrait " -paper a4")
+	     (paper-a4-landscape " -paper a4r")
+	     (paper-a5-portrait " -paper a5")
+	     (paper-a5-landscape " -paper a5r")
+	     (paper-b5 " -paper b5")
+	     (paper-letter " -paper us")
+	     (paper-legal " -paper legal")
+	     (paper-executive " -paper 7.25x10.5in")
+	     " %d"))
+    ("dvips and gv" "%(o?)dvips %d -o && gv %f")
+    ("gv" "gv %o")
+    ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
+    ("Evince" ("evince" (mode-io-correlate " -p %(outpage)") " %o"))
+    ("xdg-open" "xdg-open %o")
+    ;; Windows
+    ("start" "start %o")
+    ("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
+    ;; Mac OS X
+    ("Preview.app" "open -a Preview.app %o")
+    ("Skim" "open -a Skim.app %o")
+    ("displayline" "displayline %n %o %b"))
+  "Alist of built-in viewer specifications.
+For a description of the data format see `TeX-view-program-list'.")
+
+(defcustom TeX-view-program-list nil
+  "Alist of viewer specifications.
+This variable can be used to specify how a viewer is to be
+invoked and thereby extend the viewer selection in
+`TeX-view-program-list-builtin' or override entries in the
+latter.
+
+The car of each item is a string with a user-readable name.  The
+rest can either be a string with a command line used to start the
+viewer or a list of strings representing command line parts and
+two-part lists.  The first element of the two-part lists is a
+symbol referring to to an entry in `TeX-view-predicate-list' or
+`TeX-view-predicate-list-builtin'.  The second part of the
+two-part lists is a command line part.  The command line for the
+viewer is constructed by concatenating the command line parts.
+Parts with a predicate are only considered if the predicate was
+evaluated with a positive result.  Note that the command line can
+contain placeholders as defined in `TeX-expand-list' which are
+expanded before the viewer is called.
+
+Note: Predicates defined in the current Emacs session will only
+show up in the customization interface for this variable after
+restarting Emacs."
+  :group 'TeX-view
+  :type `(alist
+	  :key-type (string :tag "Name")
+	  :value-type
+	  (choice
+	   (group :tag "Command" (string :tag "Command"))
+	   (group :tag "Command parts"
+	    (repeat :tag "Command parts"
+		    (choice
+		     (string :tag "Command part")
+		     (list :tag "Predicate and command part"
+			   (choice :tag "Predicate"
+				   ,@(let (list)
+				       (mapc
+					(lambda (spec)
+					  (add-to-list 'list
+						       `(const ,(car spec))))
+					(append
+					 TeX-view-predicate-list
+					 TeX-view-predicate-list-builtin))
+				       (sort list
+					     (lambda (a b)
+					       (string<
+						(downcase
+						 (symbol-name (cadr a)))
+						(downcase
+						 (symbol-name (cadr b)))))))))
+			   (string :tag "Command part"))))))))
+
+(defcustom TeX-view-program-selection
+  '(((output-dvi style-pstricks) "dvips and gv")
+    (output-dvi "xdvi")
+    (output-pdf "Evince")
+    (output-html "xdg-open"))
+  "Alist of predicates for viewer selection and viewers."
+  :group 'TeX-view
+  :type `(alist :key-type
+		;; Offer list of defined predicates.
+		,(let (list)
+		   (mapc (lambda (spec)
+			   (add-to-list 'list `(const ,(car spec))))
+			 (append TeX-view-predicate-list
+				 TeX-view-predicate-list-builtin))
+		   (setq list (sort list
+				    (lambda (a b)
+				      (string<
+				       (downcase (symbol-name (cadr a)))
+				       (downcase (symbol-name (cadr b)))))))
+		   `(choice (choice :tag "Single predicate" ,@list)
+			    (repeat :tag "Multiple predicates"
+				    (choice ,@list))))
+		:value-type
+		;; Offer list of defined viewers.
+		(group (choice :tag "Viewer"
+			       ,@(let (list)
+				   (mapc (lambda (spec)
+					   (add-to-list 'list
+							`(const ,(car spec))))
+				     (append TeX-view-program-list
+					     TeX-view-program-list-builtin))
+				   (sort list
+					 (lambda (a b)
+					   (string< (downcase (cadr a))
+						    (downcase (cadr b))))))))))
+
+(defun TeX-match-style (regexp)
+  "Check if a style matching REGEXP is active."
+  (TeX-member regexp (TeX-style-list) 'string-match))
+
+(defun TeX-view-match-predicate (predicate)
+  "Check if PREDICATE is true.
+PREDICATE can be a symbol or a list of symbols defined in
+`TeX-view-predicate-list-builtin' or `TeX-view-predicate-list'.
+In case of a single symbol, return t if the predicate is true,
+nil otherwise.  In case of a list of symbols, return t if all
+predicates are true, nil otherwise."
+  (let ((pred-symbols (if (listp predicate) predicate (list predicate)))
+	(pred-defs (append TeX-view-predicate-list
+			   TeX-view-predicate-list-builtin))
+	(result t)
+	elt)
+    (while (and (setq elt (pop pred-symbols)) result)
+      (unless (eval (cadr (assq elt pred-defs)))
+	(setq result nil)))
+    result))
+
+(defun TeX-view-command-raw ()
+  "Choose a viewer and return its unexpanded command string."
+  (let ((selection TeX-view-program-selection)
+	entry viewer spec command)
+    ;; Find the appropriate viewer.
+    (while (and (setq entry (pop selection)) (not viewer))
+      (when (TeX-view-match-predicate (car entry))
+	(setq viewer (cadr entry))))
+    ;; Get the command line spec.
+    (setq spec (cadr (assoc viewer (append TeX-view-program-list
+					   TeX-view-program-list-builtin))))
+    (if (stringp spec)
+	spec
+      ;; Build the unexpanded command line.  Pieces with predicates are
+      ;; only added if the predicate is evaluated positively.
+      (dolist (elt spec)
+	(cond ((stringp elt)
+	       (setq command (concat command elt)))
+	      ((listp elt)
+	       (when (TeX-view-match-predicate (car elt))
+		 (setq command (concat command (cadr elt)))))))
+      command)))
 
 ;;; Engine
 
