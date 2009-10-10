@@ -1576,13 +1576,6 @@ Must be the car of an entry in `TeX-command-list'."
   :type 'string)
   (make-variable-buffer-local 'TeX-command-Show)
 
-(defcustom TeX-command-Index "Index"
-  "The default command to create the index of a TeX file.
-Must be the car of an entry in `TeX-command-list'."
-  :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-Index)
-
 (defcustom TeX-command-Print "Print"
   "The name of the Print entry in `TeX-command-Print'."
   :group 'TeX-command-name
@@ -2762,12 +2755,6 @@ The algorithm is as follows:
   (kill-all-local-variables)
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
-  ;; XXX: Perhaps provide a possibility to use abbrevs specific to the
-  ;; AUCTeX modes.  One possibility would be to inherit abbrevs from
-  ;; text-mode-abbrev-table with the :parents property, another would
-  ;; be to provide a variable specifying if text-mode-abbrev-table,
-  ;; TeX-mode-abbrev-table or mode-specific abbrev tables should be
-  ;; used.
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
 
@@ -4395,13 +4382,10 @@ comment characters instead."
 	  (eq (preceding-char) ?\r))
       nil
     (save-excursion
-      (save-match-data
-	(let ((pos (point)))
-	  (beginning-of-line)
-	  (and (or (looking-at comment-start-skip)
-		   (re-search-forward comment-start-skip pos t))
-	       (or (not (fboundp 'LaTeX-verbatim-p))
-		   (not (LaTeX-verbatim-p)))))))))
+      (let ((pos (point)))
+	(re-search-backward "^\\|\r" nil t)
+	(or (looking-at comment-start-skip)
+	    (re-search-forward comment-start-skip pos t))))))
 
 (defun TeX-in-commented-line ()
   "Return non-nil if point is in a line consisting only of a comment.
