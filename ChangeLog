@@ -1,3 +1,7 @@
+2009-10-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-view-program-list): Shave off extra closing paren.
+
 2009-10-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (LaTeX-command-style, TeX-print-style, TeX-view-style):
