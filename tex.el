@@ -948,9 +948,6 @@ all the regular expressions must match for the element to apply."
 
 ;;; Viewing (new implementation)
 
-;; FIXME: Should it be possible to pass parameters to the predicates,
-;; i.e. use something like (output "dvi")?
-;; 
 ;; FIXME: Describe meaning of the provided predicates in the doc string.
 (defvar TeX-view-predicate-list-builtin
   '((output-dvi
@@ -969,18 +966,12 @@ all the regular expressions must match for the element to apply."
      TeX-source-correlate-mode)
     (paper-landscape
      (TeX-match-style "\\`landscape\\'"))
-    (paper-a4-portrait
-     (and (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'")
-	  (not (TeX-match-style "\\`landscape\\'"))))
-    (paper-a4-landscape
-     (and (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'")
-	  (TeX-match-style "\\`landscape\\'")))
-    (paper-a5-portrait
-     (and (TeX-match-style "\\`a5paper\\|a5comb\\'")
-	  (not (TeX-match-style "\\`landscape\\'"))))
-    (paper-a5-landscape
-     (and (TeX-match-style "\\`a5paper\\|a5comb\\'")
-	  (TeX-match-style "\\`landscape\\'")))
+    (paper-portrait
+     (not (TeX-match-style "\\`landscape\\'")))
+    (paper-a4
+     (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'"))
+    (paper-a5
+     (TeX-match-style "\\`a5paper\\|a5comb\\'"))
     (paper-b5
      (TeX-match-style "\\`b5paper\\'"))
     (paper-letter
@@ -1001,22 +992,20 @@ all the regular expressions must match for the element to apply."
 ;; called through the command line, e.g. when triggering a refresh
 ;; through a DDE command on Windows.  We'd have to hook this up with
 ;; the prompting mechanism in `TeX-command'.
+;;
+;; FIXME: Regarding a possibility to run an update command, one could
+;; add another entry to `TeX-command-list' called "View Update" and
+;; connect that with a command prefix for `TeX-view'.
 ;; 
-;; FIXME: Should it be possible to combine multiple predicates like in
-;; `TeX-view-program-selection'?
-;;
-;; FIXME: Should it be possible to use any function, not just a
-;; predefined predicate?
-;;
 ;; FIXME: Put the stuff for Windows and Mac OS X into their own files
 ;; (e.g. tex-mik.el for Windows) or custom themes.
 (defvar TeX-view-program-list-builtin
   '(("xdvi" ("%(o?)xdvi"
 	     (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
-	     (paper-a4-portrait " -paper a4")
-	     (paper-a4-landscape " -paper a4r")
-	     (paper-a5-portrait " -paper a5")
-	     (paper-a5-landscape " -paper a5r")
+	     ((paper-a4 paper-portrait) " -paper a4")
+	     ((paper-a4 paper-landscape) " -paper a4r")
+	     ((paper-a5 paper-portrait) " -paper a5")
+	     ((paper-a5 paper-landscape) " -paper a5r")
 	     (paper-b5 " -paper b5")
 	     (paper-letter " -paper us")
 	     (paper-legal " -paper legal")
@@ -1048,46 +1037,48 @@ The car of each item is a string with a user-readable name.  The
 rest can either be a string with a command line used to start the
 viewer or a list of strings representing command line parts and
 two-part lists.  The first element of the two-part lists is a
-symbol referring to to an entry in `TeX-view-predicate-list' or
-`TeX-view-predicate-list-builtin'.  The second part of the
-two-part lists is a command line part.  The command line for the
-viewer is constructed by concatenating the command line parts.
-Parts with a predicate are only considered if the predicate was
-evaluated with a positive result.  Note that the command line can
-contain placeholders as defined in `TeX-expand-list' which are
-expanded before the viewer is called.
+symbol or a list of symbols referring to one or more entries in
+`TeX-view-predicate-list' or `TeX-view-predicate-list-builtin'.
+The second part of the two-part lists is a command line part.
+The command line for the viewer is constructed by concatenating
+the command line parts.  Parts with a predicate are only
+considered if the predicate was evaluated with a positive result.
+Note that the command line can contain placeholders as defined in
+`TeX-expand-list' which are expanded before the viewer is called.
 
 Note: Predicates defined in the current Emacs session will only
 show up in the customization interface for this variable after
 restarting Emacs."
   :group 'TeX-view
-  :type `(alist
-	  :key-type (string :tag "Name")
-	  :value-type
-	  (choice
-	   (group :tag "Command" (string :tag "Command"))
-	   (group :tag "Command parts"
-		  (repeat
-		   :tag "Command parts"
-		   (choice
-		    (string :tag "Command part")
-		    (list :tag "Predicate and command part"
-			  (choice :tag "Predicate"
-				  ,@(let (list)
-				      (mapc
-				       (lambda (spec)
-					 (add-to-list 'list
-						      `(const ,(car spec))))
-				       (append TeX-view-predicate-list
-					       TeX-view-predicate-list-builtin))
-				      (sort list
-					    (lambda (a b)
-					      (string<
-					       (downcase
-						(symbol-name (cadr a)))
-					       (downcase
-						(symbol-name (cadr b))))))))
-			  (string :tag "Command part"))))))))
+  :type
+  `(alist
+    :key-type (string :tag "Name")
+    :value-type
+    (choice
+     (group :tag "Command" (string :tag "Command"))
+     (group :tag "Command parts"
+	    (repeat
+	     :tag "Command parts"
+	     (choice
+	      (string :tag "Command part")
+	      (list :tag "Predicate and command part"
+		    ,(let (list)
+		       ;; Build the list of available predicates.
+		       (mapc (lambda (spec)
+			       (add-to-list 'list `(const ,(car spec))))
+			     (append TeX-view-predicate-list
+				     TeX-view-predicate-list-builtin))
+		       ;; Sort the list alphabetically.
+		       (setq list (sort list
+					(lambda (a b)
+					  (string<
+					   (downcase (symbol-name (cadr a)))
+					   (downcase (symbol-name (cadr b)))))))
+		       `(choice
+			 (choice :tag "Predicate" ,@list)
+			 (repeat :tag "List of predicates"
+				 (choice :tag "Predicate" ,@list))))
+		    (string :tag "Command part"))))))))
 
 (defcustom TeX-view-program-selection
   '(((output-dvi style-pstricks) "dvips and gv")
