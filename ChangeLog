@@ -1,3 +1,12 @@
+2009-10-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-view-predicate-list-builtin): Remove combined
+	predicates for paper properties and add new predicates testing
+	only one property.
+	(TeX-view-program-list-builtin): Use new predicates.
+	(TeX-view-program-list): Provide the possibility to use a list of
+	predicates.
+
 2009-10-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-program-list): Shave off extra closing paren.
