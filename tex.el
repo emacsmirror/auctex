@@ -181,7 +181,7 @@ the printer has no corresponding command."
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ,(if (or window-system (getenv "DISPLAY"))
-	'("View" "%V" TeX-run-discard t t :help "Run Viewer")
+	'("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
        '("View" "dvi2tty -q -w 132 %s" TeX-run-command t t
 	 :help "Run Text viewer"))
     ("Print" "%p" TeX-run-command t t :help "Print the file")
@@ -243,6 +243,10 @@ TeX-run-function: Execute the Lisp function or function call
 specified by the string in the second element.  Consequently,
 this hook does not start a process.
 
+TeX-run-discard-or-function: If the command is a Lisp function,
+execute it as such, otherwise start the command as a process,
+discarding its output.
+
 To create your own hook, define a function taking three arguments: The
 name of the command, the command string, and the name of the file to
 process.  It might be useful to use `TeX-run-command' in order to
@@ -275,6 +279,7 @@ Any additional elements get just transferred to the respective menu entries."
 				(function-item TeX-run-silent)
 				(function-item TeX-run-discard-foreground)
 				(function-item TeX-run-function)
+				(function-item TeX-run-discard-or-function)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(choice :tag "Modes"
@@ -987,12 +992,6 @@ all the regular expressions must match for the element to apply."
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; FIXME: Should it also be possible to use a function instead of a
-;; command line specifier?  This could be useful if the viewer is not
-;; called through the command line, e.g. when triggering a refresh
-;; through a DDE command on Windows.  We'd have to hook this up with
-;; the prompting mechanism in `TeX-command'.
-;;
 ;; FIXME: Regarding a possibility to run an update command, one could
 ;; add another entry to `TeX-command-list' called "View Update" and
 ;; connect that with a command prefix for `TeX-view'.
@@ -1034,10 +1033,11 @@ invoked and thereby extend the viewer selection in
 latter.
 
 The car of each item is a string with a user-readable name.  The
-rest can either be a string with a command line used to start the
-viewer or a list of strings representing command line parts and
-two-part lists.  The first element of the two-part lists is a
-symbol or a list of symbols referring to one or more entries in
+second element can be a command line to be run as a process or a
+Lisp function to be executed.  The command line can either be
+specified as a single string or a list of strings and two-part
+lists.  The first element of the two-part lists is a symbol or a
+list of symbols referring to one or more of the predicates in
 `TeX-view-predicate-list' or `TeX-view-predicate-list-builtin'.
 The second part of the two-part lists is a command line part.
 The command line for the viewer is constructed by concatenating
@@ -1045,6 +1045,10 @@ the command line parts.  Parts with a predicate are only
 considered if the predicate was evaluated with a positive result.
 Note that the command line can contain placeholders as defined in
 `TeX-expand-list' which are expanded before the viewer is called.
+
+The use of a function as the second element only works if the
+View command in `TeX-command-list' makes use of the hook
+`TeX-run-discard-or-function'
 
 Note: Predicates defined in the current Emacs session will only
 show up in the customization interface for this variable after
@@ -1078,7 +1082,8 @@ restarting Emacs."
 			 (choice :tag "Predicate" ,@list)
 			 (repeat :tag "List of predicates"
 				 (choice :tag "Predicate" ,@list))))
-		    (string :tag "Command part"))))))))
+		    (string :tag "Command part")))))
+     (group :tag "Function" function))))
 
 (defcustom TeX-view-program-selection
   '(((output-dvi style-pstricks) "dvips and gv")
@@ -1145,20 +1150,25 @@ predicates are true, nil otherwise."
     (while (and (setq entry (pop selection)) (not viewer))
       (when (TeX-view-match-predicate (car entry))
 	(setq viewer (cadr entry))))
-    ;; Get the command line spec.
+    ;; Get the command line or function spec.
     (setq spec (cadr (assoc viewer (append TeX-view-program-list
 					   TeX-view-program-list-builtin))))
-    (if (stringp spec)
-	spec
-      ;; Build the unexpanded command line.  Pieces with predicates are
-      ;; only added if the predicate is evaluated positively.
-      (dolist (elt spec)
-	(cond ((stringp elt)
-	       (setq command (concat command elt)))
-	      ((listp elt)
-	       (when (TeX-view-match-predicate (car elt))
-		 (setq command (concat command (cadr elt)))))))
-      command)))
+    (cond ((functionp spec)
+	   ;; Converting the function call to a string is ugly, but
+	   ;; the backend currently only supports strings.
+	   (prin1-to-string spec))
+	  ((stringp spec)
+	   spec)
+	  (t
+	   ;; Build the unexpanded command line.  Pieces with predicates are
+	   ;; only added if the predicate is evaluated positively.
+	   (dolist (elt spec)
+	     (cond ((stringp elt)
+		    (setq command (concat command elt)))
+		   ((listp elt)
+		    (when (TeX-view-match-predicate (car elt))
+		      (setq command (concat command (cadr elt)))))))
+	   command))))
 
 ;;; Engine
 
