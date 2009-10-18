@@ -1,3 +1,15 @@
+2009-10-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-run-discard): Doc fix.
+	(TeX-run-discard-or-function): New function.
+
+	* tex.el (TeX-command-list): Use `TeX-run-discard-or-function' as
+	hook for View command and provide it as a customization option.
+	(TeX-view-program-list): Add the possibility to use a function to
+	call the viewer.
+	(TeX-view-command-raw): Support the use of a function to call the
+	viewer.
+
 2009-10-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-predicate-list-builtin): Remove combined
