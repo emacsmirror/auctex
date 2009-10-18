@@ -685,7 +685,8 @@ run of `TeX-run-TeX', use
 	(redraw-display))))
 
 (defun TeX-run-discard (name command file)
-  "Start process with second argument, discarding its output."
+  "Start COMMAND as process, discarding its output.
+NAME and FILE are ignored."
   (let ((default-directory (TeX-master-directory)))
     (call-process TeX-shell
 		  nil 0 nil
@@ -774,6 +775,14 @@ Error parsing on \\[next-error] should work with a bit of luck."
 Parameters NAME and FILE are ignored."
   (let ((fun (car (read-from-string command))))
     (if (functionp fun) (funcall fun) (eval fun))))
+
+(defun TeX-run-discard-or-function (name command file)
+  "Start COMMAND as process or execute it as a Lisp function.
+If run as a process, the output is discarded.  COMMAND is
+expected to be a string.  NAME and FILE are ignored."
+  (if (functionp (car (read-from-string command)))
+      (TeX-run-function name command file)
+    (TeX-run-discard name command file)))
 
 (defun TeX-run-ispell-on-document (command ignored name)
   "Run ispell on all open files belonging to the current document.
