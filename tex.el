@@ -992,10 +992,6 @@ all the regular expressions must match for the element to apply."
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; FIXME: Regarding a possibility to run an update command, one could
-;; add another entry to `TeX-command-list' called "View Update" and
-;; connect that with a command prefix for `TeX-view'.
-;; 
 ;; FIXME: Put the stuff for Windows and Mac OS X into their own files
 ;; (e.g. tex-mik.el for Windows) or custom themes.
 (defvar TeX-view-program-list-builtin
@@ -1085,6 +1081,13 @@ restarting Emacs."
 		    (string :tag "Command part")))))
      (group :tag "Function" function))))
 
+;; XXX: Regarding a possibility to (manually) run an update command,
+;; one could support this through `TeX-view' by letting it temporarily
+;; set a variable which is checked with a predicate in the viewer
+;; selection.  If the check is positive, the update command is run
+;; instead of the normal viewer command.  Direct support through the
+;; View command would require a predicate which knows when an update
+;; has to be done.
 (defcustom TeX-view-program-selection
   '(((output-dvi style-pstricks) "dvips and gv")
     (output-dvi "xdvi")
@@ -1465,8 +1468,12 @@ enabled and the `synctex' binary is available."
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
 			 "-i" (format "%s:%s:%s" (line-number-at-pos)
 				      (current-column)
-				      (file-name-nondirectory
-				       (buffer-file-name)))
+				      ;; The file name relative to the
+				      ;; directory of the master file.
+				      (file-relative-name
+				       (buffer-file-name)
+				       (file-name-directory
+					(TeX-active-master))))
 			 "-o" (TeX-active-master (TeX-output-extension))))))
     (string-match "Page:\\([0-9]+\\)" synctex-output)
     (match-string 1 synctex-output)))
