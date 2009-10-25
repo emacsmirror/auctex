@@ -1,3 +1,18 @@
+2009-10-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Starting Viewers): Describe new viewer
+	selection options.
+	(Folding): Add some hints on how to do automatic folding.
+
+	* tex.el (TeX-view-predicate-list-builtin)
+	(TeX-view-predicate-list, TeX-view-program-list): Doc fix.
+	(TeX-view-program-list-builtin, TeX-view-program-selection):
+	Conditionalize default value based on system type.  Doc fix.
+	(TeX-synctex-output-page): Do not return random stuff if there was
+	no match.
+	(TeX-clean-default-intermediate-suffixes): Remove SyncTeX files as
+	well.
+
 2009-10-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-synctex-output-page): Handle files in subdirectories
