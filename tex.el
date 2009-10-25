@@ -953,7 +953,6 @@ all the regular expressions must match for the element to apply."
 
 ;;; Viewing (new implementation)
 
-;; FIXME: Describe meaning of the provided predicates in the doc string.
 (defvar TeX-view-predicate-list-builtin
   '((output-dvi
      (string-match "dvi" (TeX-output-extension)))
@@ -985,48 +984,80 @@ all the regular expressions must match for the element to apply."
      (TeX-match-style "\\`legalpaper\\'"))
     (paper-executive
      (TeX-match-style "\\`executivepaper\\'")))
-  "Alist of built-in predicate names and their implementations.")
+  "Alist of built-in predicates for viewer selection and invocation.
+See the doc string of `TeX-view-predicate-list' for a short
+description of each predicate.")
 
 (defcustom TeX-view-predicate-list nil
-  "Alist of predicate names and their implementations."
+  "Alist of predicates for viewer selection and invocation.
+The key of each list item is a symbol and the value a Lisp form
+to be evaluated.  The form should return nil if the predicate is
+not fulfilled.
+
+Built-in predicates provided in `TeX-view-predicate-list-builtin'
+can be overwritten by defining predicates with the same symbol.
+
+The following built-in predicates are available:
+  `output-dvi': The output is a DVI file.
+  `output-pdf': The output is a PDF file.
+  `output-html': The output is an HTML file.
+  `style-pstricks': The document loads a PSTricks package.
+  `engine-omega': The Omega engine is used for typesetting.
+  `engine-xetex': The XeTeX engine is used for typesetting.
+  `mode-io-correlate': TeX Source Correlate mode is active.
+  `paper-landscape': The document is typeset in landscape orientation.
+  `paper-portrait': The document is not typeset in landscape orientation.
+  `paper-a4': The paper format is A4.
+  `paper-a5': The paper format is A5.
+  `paper-b5': The paper format is B5.
+  `paper-letter': The paper format is letter.
+  `paper-legal': The paper format is legal.
+  `paper-executive': The paper format is executive."
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; FIXME: Put the stuff for Windows and Mac OS X into their own files
-;; (e.g. tex-mik.el for Windows) or custom themes.
 (defvar TeX-view-program-list-builtin
-  '(("xdvi" ("%(o?)xdvi"
-	     (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
-	     ((paper-a4 paper-portrait) " -paper a4")
-	     ((paper-a4 paper-landscape) " -paper a4r")
-	     ((paper-a5 paper-portrait) " -paper a5")
-	     ((paper-a5 paper-landscape) " -paper a5r")
-	     (paper-b5 " -paper b5")
-	     (paper-letter " -paper us")
-	     (paper-legal " -paper legal")
-	     (paper-executive " -paper 7.25x10.5in")
-	     " %d"))
-    ("dvips and gv" "%(o?)dvips %d -o && gv %f")
-    ("gv" "gv %o")
-    ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
-    ("Evince" ("evince" (mode-io-correlate " -p %(outpage)") " %o"))
-    ("xdg-open" "xdg-open %o")
-    ;; Windows
-    ("start" "start %o")
-    ("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
-    ;; Mac OS X
-    ("Preview.app" "open -a Preview.app %o")
-    ("Skim" "open -a Skim.app %o")
-    ("displayline" "displayline %n %o %b"))
+  (cond
+   ((eq system-type 'windows-nt)
+    '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
+      ("dvips and start" "dvips %d -o && start \"\" %f")
+      ("start" "start \"\" %o")))
+;; XXX: We need the advice of a Mac OS X user to configure this
+;; correctly and test it.
+;;    ((eq system-type 'darwin)
+;;     '(("Preview.app" "open -a Preview.app %o")
+;;       ("Skim" "open -a Skim.app %o")
+;;       ("displayline" "displayline %n %o %b")
+;;       ("open" "open %o")))
+   (t
+    '(("xdvi" ("%(o?)xdvi"
+	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
+	       ((paper-a4 paper-portrait) " -paper a4")
+	       ((paper-a4 paper-landscape) " -paper a4r")
+	       ((paper-a5 paper-portrait) " -paper a5")
+	       ((paper-a5 paper-landscape) " -paper a5r")
+	       (paper-b5 " -paper b5")
+	       (paper-letter " -paper us")
+	       (paper-legal " -paper legal")
+	       (paper-executive " -paper 7.25x10.5in")
+	       " %d"))
+      ("dvips and gv" "%(o?)dvips %d -o && gv %f")
+      ("gv" "gv %o")
+      ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
+      ("Evince" ("evince" (mode-io-correlate " -p %(outpage)") " %o"))
+      ("xdg-open" "xdg-open %o"))))
   "Alist of built-in viewer specifications.
-For a description of the data format see `TeX-view-program-list'.")
+This variable should not be changed by the user who can use
+`TeX-view-program-list' to add new viewers or overwrite the
+definition of built-in ones.  The latter variable also contains a
+description of the data format.")
 
 (defcustom TeX-view-program-list nil
   "Alist of viewer specifications.
 This variable can be used to specify how a viewer is to be
-invoked and thereby extend the viewer selection in
-`TeX-view-program-list-builtin' or override entries in the
-latter.
+invoked and thereby add new viewers on top of the built-in list
+of viewers defined in `TeX-view-program-list-builtin' or override
+entries in the latter.
 
 The car of each item is a string with a user-readable name.  The
 second element can be a command line to be run as a process or a
@@ -1044,7 +1075,7 @@ Note that the command line can contain placeholders as defined in
 
 The use of a function as the second element only works if the
 View command in `TeX-command-list' makes use of the hook
-`TeX-run-discard-or-function'
+`TeX-run-discard-or-function'.
 
 Note: Predicates defined in the current Emacs session will only
 show up in the customization interface for this variable after
@@ -1089,11 +1120,34 @@ restarting Emacs."
 ;; View command would require a predicate which knows when an update
 ;; has to be done.
 (defcustom TeX-view-program-selection
-  '(((output-dvi style-pstricks) "dvips and gv")
-    (output-dvi "xdvi")
-    (output-pdf "Evince")
-    (output-html "xdg-open"))
-  "Alist of predicates for viewer selection and viewers."
+  (cond
+   ((eq system-type 'windows-nt)
+    '(((output-dvi style-pstricks) "dvips and start")
+      (output-dvi "Yap")
+      (output-pdf "start")
+      (output-html "start")))
+;; XXX: We need the advice of a Mac OS X user to configure this
+;; correctly and test it.
+;;    ((eq system-type 'darwin)
+;;     '((output-dvi "open")
+;;       (output-pdf "open")
+;;       (output-html "open")))
+   (t
+    '(((output-dvi style-pstricks) "dvips and gv")
+      (output-dvi "xdvi")
+      (output-pdf "Evince")
+      (output-html "xdg-open"))))
+  "Alist of predicates and viewers.
+Each entry consists of a list with two elements.  The first
+element is a symbol or list of symbols referring to predicates as
+defined in `TeX-view-predicate-list' or
+`TeX-view-predicate-list-builtin'.  The second element is a
+string referring to the name of a viewer as defined in
+`TeX-view-program-list' or `TeX-view-program-list-builtin'.
+
+When a viewer is called for, the entries are evaluated in turn
+and the viewer related to the first entry all predicates of which
+are evaluated positively is chosen."
   :group 'TeX-view
   :type `(alist :key-type
 		;; Offer list of defined predicates.
@@ -1475,8 +1529,8 @@ enabled and the `synctex' binary is available."
 				       (file-name-directory
 					(TeX-active-master))))
 			 "-o" (TeX-active-master (TeX-output-extension))))))
-    (string-match "Page:\\([0-9]+\\)" synctex-output)
-    (match-string 1 synctex-output)))
+    (when (string-match "Page:\\([0-9]+\\)" synctex-output)
+      (match-string 1 synctex-output))))
 
 ;;; Miscellaneous minor modes
 
@@ -1615,7 +1669,7 @@ Must be the car of an entry in `TeX-command-list'."
   '("\\.aux" "\\.bbl" "\\.blg" "\\.brf" "\\.fot"
     "\\.glo" "\\.gls" "\\.idx" "\\.ilg" "\\.ind"
     "\\.lof" "\\.log" "\\.lot" "\\.nav" "\\.out"
-    "\\.snm" "\\.toc" "\\.url")
+    "\\.snm" "\\.toc" "\\.url" "\\.synctex\\.gz")
   "List of regexps matching suffixes of files to be cleaned.
 Used as a default in TeX, LaTeX and docTeX mode.")
 
