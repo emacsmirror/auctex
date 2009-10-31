@@ -1,3 +1,14 @@
+2009-10-31  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-verbatim-p-function): New variable.
+	(TeX-verbatim-p): New function.
+	(TeX-in-comment): Use it.
+	(TeX-brace-count-line): Use `TeX-in-comment' instead of just
+	checking for a comment character.
+
+	* latex.el (LaTeX-common-initialization): Set
+	`TeX-verbatim-p-function'.
+
 2009-10-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Starting Viewers): Describe new viewer
