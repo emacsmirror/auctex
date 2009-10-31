@@ -4339,6 +4339,21 @@ of `AmS-TeX-mode-hook'."
   (TeX-set-mode-name))
 
 
+;;; Verbatim constructs
+
+(defvar TeX-verbatim-p-function nil
+  "Mode-specific function to be called by `TeX-verbatim-p'.")
+(make-variable-buffer-local 'TeX-verbatim-p-function)
+
+;; XXX: We only have an implementation for LaTeX mode at the moment (Oct 2009).
+(defun TeX-verbatim-p (&optional pos)
+  "Return non-nil if position POS is in a verbatim-like construct.
+A mode-specific implementation is required.  If it is not
+available, the function always returns nil."
+  (when TeX-verbatim-p-function
+    (funcall TeX-verbatim-p-function)))
+
+
 ;;; Comments
 
 (defvar TeX-comment-start-regexp "%"
@@ -4444,10 +4459,12 @@ comment characters instead."
 	  (eq (preceding-char) ?\r))
       nil
     (save-excursion
-      (let ((pos (point)))
-	(re-search-backward "^\\|\r" nil t)
-	(or (looking-at comment-start-skip)
-	    (re-search-forward comment-start-skip pos t))))))
+      (save-match-data
+	(let ((pos (point)))
+	  (beginning-of-line)
+	  (and (or (looking-at comment-start-skip)
+		   (re-search-forward comment-start-skip pos t))
+	       (not (TeX-verbatim-p))))))))
 
 (defun TeX-in-commented-line ()
   "Return non-nil if point is in a line consisting only of a comment.
@@ -4597,8 +4614,8 @@ regardless of its data type."
   (save-excursion
     (let ((count 0) (limit (line-end-position)) char)
       (while (progn
-	       (skip-chars-forward "^%{}\\\\" limit)
-	       (when (< (point) limit)
+	       (skip-chars-forward "^{}\\\\" limit)
+	       (when (and (< (point) limit) (not (TeX-in-comment)))
 		 (setq char (char-after))
 		 (forward-char)
 		 (cond ((eq char ?\{)
