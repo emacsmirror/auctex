@@ -765,7 +765,6 @@ To insert a hook here, you must insert it in the appropiate style file.")
   "Create new LaTeX document.
 The compatibility argument IGNORE is ignored."
   (TeX-insert-macro "documentclass")
-
   (LaTeX-newline)
   (LaTeX-newline)
   (LaTeX-newline)
@@ -5049,6 +5048,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	 "\\$\\$" ; Plain TeX display math
 	 "\\|$\\)"))
 
+  (setq TeX-verbatim-p-function 'LaTeX-verbatim-p)
   (setq TeX-search-forward-comment-start-function
 	'LaTeX-search-forward-comment-start)
 
