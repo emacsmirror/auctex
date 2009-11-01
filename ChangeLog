@@ -1,3 +1,21 @@
+2009-11-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/pstricks.el: Disable key bindings for macro parameter
+	addition and change.
+	(LaTeX-pst-color-list, LaTeX-pst-boolean-list)
+	(LaTeX-pst-fillstyle-list): Remove information for completion
+	mechanism.
+	(LaTeX-pst-trimode-list, LaTeX-pst-linestyle-list): Remove.
+	Handled directly in `LaTeX-pst-basic-parameters-list'.
+	(LaTeX-pst-basic-parameters-list): New variable.
+	(LaTeX-pst-parameters): Call `TeX-arg-key-val' instead of
+	`LaTeX-package-parameters' and thereby use a different completion
+	mechanism.
+	(LaTeX-pst-macro-psdots): Do not add a dotstyle parameter.
+	(LaTeX-pst-env-pspicture): Handle optional parameter via
+	`multi-prompt-key-value'.
+	("pstricks"): Handle arguments of \psdot and \psdots correctly.
+
 2009-10-31  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-verbatim-p-function): New variable.
