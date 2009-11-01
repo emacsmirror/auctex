@@ -33,6 +33,16 @@
 ;;
 ;; Parameter input completion together with input completion for certain
 ;; parameters (e.g. linestyle, linecolor and the like).
+;;
+;; There is a PSTricks-specific support for adding new parameters to
+;; existing parameter lists or changing existing ones in optional
+;; macro arguments.  You might want to make those available through
+;; key bindings by using something like
+;; (define-key LaTeX-mode-map (kbd "C-c p a")
+;;   'LaTeX-pst-parameter-add)
+;; (define-key LaTeX-mode-map (kbd "C-c p c")
+;;   'LaTeX-pst-parameter-change-value)
+;; in a personal style file for PSTricks.
 
 ;;; History:
 ;;
@@ -42,9 +52,11 @@
 
 ;;; TODO:
 ;;
-;; -- use alist or hash-table for parameter input
-;; -- adding more regularly used PSTricks macros
+;; -- Use alist or hash-table for parameter input
+;; -- Add more regularly used PSTricks macros
 ;; -- Prevent errors in AUCTeX modes other than LaTeX mode.
+;; -- Check if the functionality for adding and changing parameters
+;;    can be generalized.
 
 ;;; Code:
 
@@ -69,6 +81,8 @@
                        (funcall func prompt list nil compl nil hist)))))
       (completing-read (concat prompt ": ") list nil nil nil hist))))
 
+;; XXX: Show default value in prompt.  Perhaps extend
+;; `TeX-argument-prompt' to do that.
 (defun LaTeX-pst-what (what prompt default &optional arg)
   "Ask for WHAT with PROMPT with DEFAULT.
 The corresponding lists LaTeX-pst-<what>-\\(list\\|history\\)
@@ -123,6 +137,9 @@ available through package name PNAME and return \"param=value\"."
                (concat "(Press TAB for completions) " param)
                (intern (concat "LaTeX-" pname
                                "-parameters-value-history"))))
+    ;; FIXME: This looks broken.  `compl' is never set and unless ""
+    ;; is added to parlist (at least in the Boolean case), the prompt
+    ;; shown by `TeX-arg-compl-list' will be incorrect.
     (if (and (not compl) parlist) (add-to-list parlist val))
     (if (string= val "") "" (concat param "=" val))))
 
@@ -257,6 +274,8 @@ package PNAME"
 (defvar LaTeX-pst-arrows-history nil
   "History of values for arrows in pstricks.")
 
+;; XXX: Better ask for arrow start and end separately?
+;; `LaTeX-pst-arrows-list' is not exhaustive.
 (defun LaTeX-pst-arrows ()
   "Ask for a arrow type and manage arrow type list"
   (or (LaTeX-pst-what "arrows" "Arrow type" nil) ""))
@@ -286,44 +305,19 @@ package PNAME"
   (LaTeX-pst-what "refpoint" "Reference point" nil))
 
 ;;; Color
-(defvar LaTeX-pst-color-list
-  '((completing-read-multiple
-     "Color (C1 [number [C1 [...]]])" t LaTeX-pst-color-history "!")
-    "black" "darkgray" "gray" "lightgray" "white" "-black" "-darkgray"
-    "-gray" "-lightgray" "-white" "red" "green" "blue" "yellow"
-    "magenta" "cyan" "-red" "-green" "-blue" "-yellow" "-magenta"
-    "-cyan" "violet" "purple" "brown" "pink" "olive" "-violet" "-purple"
-    "-brown" "-pink" "-olive"
-    "10" "20" "30" "40" "50" "60" "70" "80" "90")
-  "A list of values for *color in pstricks.")
 
+;; FIXME: Still used?
 (defvar LaTeX-pst-color-history nil
   "History of values for color in pstricks.")
 
 ;;; Others without History in Completion
-(defvar LaTeX-pst-trimode-list
-  '((completing-read "Trimode" t) "U" "*U" "D" "*D" "R" "*R" "L" "*L")
-  "A list of values for trimode in pstribox.")
-
-(defvar LaTeX-pst-linestyle-list
-  '((completing-read "Linestyle" t) "none" "dashed" "dotted" "solid")
-  "A list of values for linestyle in pstricks.")
-
-(defvar LaTeX-pst-boolean-list
-  '((completing-read "Boolean" t) "true" "false")
-  "A list of values for boolean in pstricks.")
-
-(defvar LaTeX-pst-fillstyle-list
-  '((completing-read "Fillstyle" t)
-    "none" "solid" "vlines" "vlines*" "hlines" "hlines*" "crosshatch"
-    "crosshatch*")
-  "A list of values for fillstyle in pstricks.")
 
 (defvar LaTeX-pst-style-list
   '((completing-read "Defined Style" t))
   "A list of values for user defined styles in pstricks.")
 
 ;;; Parameters
+
 (defvar LaTeX-pst-parameters-history nil
   "History of values for parameters in pstricks.")
 
@@ -345,6 +339,152 @@ package PNAME"
     "subgriddiv" "subgriddots" "subgridwidth" "swapaxes" "tbarsize"
     "trimode" "unit" "xunit" "yunit")
   "A list of parameter names in pstricks.")
+
+
+(defvar LaTeX-pst-boolean-list '("true" "false")
+  "List of binary values for key=value completion.")
+
+;; XXX: Colors can actually be given as [-]<color>[!<num>].
+(defvar LaTeX-pst-color-list
+  '("black" "darkgray" "gray" "lightgray" "white"
+    "red" "green" "blue" "cyan" "magenta" "yellow")
+  "List of colors predefined in PSTricks.")
+
+(defvar LaTeX-pst-fillstyle-list
+  '("none" "solid" "vlines" "vlines*" "hlines" "hlines*" "crosshatch"
+    "crosshatch*" "boxfill")
+  "List of fill styles defined in PSTricks.")
+
+;; From PSTricks: PostScript macros for Generic TeX, User's Guide,
+;; Timothy Van Zandt, 25 July 2003, Version 97.
+;; FIXME: Provide separate variables tailored to the different macros.
+(defvar LaTeX-pst-basic-parameters-list
+  '(;; Dimensions, coordinates and angles
+    ("unit")
+    ("xunit")
+    ("yunit")
+    ("runit")
+    ;; Basic graphics parameters
+    ("linewidth")
+    ("linecolor" LaTeX-pst-color-list)
+    ("fillstyle" LaTeX-pst-fillstyle-list)
+    ("fillcolor" LaTeX-pst-color-list)
+    ("arrows" LaTeX-pst-arrows-list)
+    ("showpoints" LaTeX-pst-boolean-list)
+    ;; Lines and polygons
+    ("linearc")
+    ("framearc")
+    ("cornersize" ("relative" "absolute"))
+    ("gangle")
+    ;; Arcs, circles and ellipses
+    ("arcsepA")
+    ("arcsepB")
+    ("arcsep")
+    ;; Curves
+    ("curvature")
+    ;; Dots
+    ("dotstyle" ("*" "o" "Bo" "x" "+" "B+" "asterisk" "Basterisk" "oplus"
+		 "otimes" "|" "B|" "square" "Bsquare" "square*" "diamond"
+		 "Bdiamond" "diamond*" "triangle" "Btriangle" "triangle*"
+		 "pentagon" "Bpentagon" "pentagon*"))
+    ("dotsize")
+    ("dotscale")
+    ("dotangle")
+    ;; Grids
+    ("gridwidth")
+    ("gridcolor" LaTeX-pst-color-list)
+    ("griddots")
+    ("gridlabels")
+    ("gridlabelcolor" LaTeX-pst-color-list)
+    ("subgriddiv")
+    ("subgridwidth")
+    ("subgridcolor" LaTeX-pst-color-list)
+    ("subgriddots")
+    ;; Plots
+    ("plotstyle" ("dots" "line" "polygon" "curve" "ecurve" "ccurve"))
+    ("plotpoints")
+    ;; Coordinate systems
+    ("origin")
+    ("swapaxes" LaTeX-pst-boolean-list)
+    ;; Line styles
+    ("linestyle" ("none" "solid" "dashed" "dotted"))
+    ("dash")
+    ("dotsep")
+    ("border")
+    ("bordercolor" LaTeX-pst-color-list)
+    ("doubleline" LaTeX-pst-boolean-list)
+    ("doublesep")
+    ("doublecolor" LaTeX-pst-color-list)
+    ("shadow" LaTeX-pst-boolean-list)
+    ("shadowsize")
+    ("shadowangle")
+    ("shadowcolor" LaTeX-pst-color-list)
+    ("dimen" ("outer" "inner" "middle"))
+    ;; Fill styles
+    ("hatchwidth")
+    ("hatchsep")
+    ("hatchcolor" LaTeX-pst-color-list)
+    ("hatchangle")
+    ("addfillstyle" LaTeX-pst-fillstyle-list)
+    ;; Arrowheads and such
+    ("arrowsize")
+    ("arrowlength")
+    ("arrowwinset")
+    ("tbarsize")
+    ("bracketlength")
+    ("rbracketlength")
+    ("arrowscale")
+    ;; Parameters
+    ("linetype")
+    ;; Graphics objects
+    ("liftpen")
+    ;; Placing and rotating whatever
+    ("labelsep")
+    ;; Axes
+    ("labels" ("all" "x" "y" "none"))
+    ("showorigin" LaTeX-pst-boolean-list)
+    ("ticks" ("all" "x" "y" "none"))
+    ("tickstyle" ("full" "top" "bottom"))
+    ("ticksize")
+    ("axesstyle" ("axes" "frame" "none"))
+    ;; Framed boxes
+    ("framesep")
+    ("boxsep")
+    ("trimode" ("*" "U" "D" "R" "L"))
+    ;; Nodes
+    ("href")
+    ("vref")
+    ("radius")
+    ;; Node connections
+    ("nodesep")
+    ("arcangle")
+    ("angle")
+    ("arm")
+    ("loopsize")
+    ("ncurv")
+    ("boxsize")
+    ("offset")
+    ;; Node connections labels: I
+    ("ref")
+    ("nrot")
+    ("npos")
+    ("shortput" ("none" "nab" "tablr" "tab"))
+    ;; Node connection labels: II
+    ("tpos")
+    ;; Attaching labels to nodes
+    ("rot")
+    ;; Mathematical diagrams and graphs
+    ("mnode" ("R" "r" "C" "f" "p" "circle" "oval" "dia" "tri" "dot" "none"))
+    ("emnode" ("R" "r" "C" "f" "p" "circle" "oval" "dia" "tri" "dot" "none"))
+    ("name")
+    ("nodealign" LaTeX-pst-boolean-list)
+    ("mcol" ("l" "r" "c"))
+    ("rowsep")
+    ("colsep")
+    ("mnodesize")
+    ;; ...
+    )
+  "List of keys and values for PSTricks macro arguments.")
 
 (defvar LaTeX-pst-parameters-name-list
   LaTeX-pst-basic-parameters-name-list
@@ -369,9 +509,12 @@ package PNAME"
   "See documentation of `LaTeX-package-parameters-pref-and-chosen'."
   (LaTeX-package-parameters-pref-and-chosen param "pst" noskip))
 
-(defun LaTeX-pst-parameters (optional &optional preparam param)
-  "See documentation of `LaTeX-package-parameters-pref-and-chosen'."
-  (LaTeX-package-parameters optional "pst" preparam param))
+;; FIXME: This is likely only a transitional function used until all
+;; macros got their calls to `TeX-arg-key-val' with tailored parameter
+;; lists.
+(defun LaTeX-pst-parameters (optional)
+  "Prompt for general parameters of a PSTricks argument."
+  (TeX-arg-key-val optional LaTeX-pst-basic-parameters-list))
 
 ;;; Macros
 (defun LaTeX-pst-macro-psarc (optional &optional arg)
@@ -430,8 +573,6 @@ package PNAME"
 
 (defun LaTeX-pst-macro-psdots (optional single)
   "Return \\psdot[s]? arguments after querying."
-  ;; forced parameter dotstyle
-  (LaTeX-pst-parameters optional '("dotstyle"))
   (let* ((pnt1 (LaTeX-pst-point))
          (pnt2 (if single pnt1 (LaTeX-pst-point))))
     (insert "(" pnt1 ")")
@@ -496,17 +637,21 @@ package PNAME"
 (defun LaTeX-pst-macro-newpsobject (&optional arg)
   "Return \\newpsobject arguments after querying."
   (insert "{" (read-string "New PSObject Name: ") "}"
+	  ;; FIXME: It would be better to use something more confined
+	  ;; than `TeX-symbol-list'.
           "{" (completing-read "Parent Object: " (TeX-symbol-list))
           "}"))
 
 ;;; Environments
 (defun LaTeX-pst-env-pspicture (env)
   "Create new pspicure environment."
-  (let ((p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
+  (let ((opt (multi-prompt-key-value
+	      (TeX-argument-prompt t "Options" nil)
+	      '(("showgrid") ("shift"))))
+	(p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
         (p1 (LaTeX-pst-what "point" "Upper right (default 1,1)" "1,1"))
-        (grid (LaTeX-pst-parameters-pref-and-chosen '("showgrid")))
         corn)
-    (setq corn (concat (if (string= "" grid) "" (format "[%s]" grid))
+    (setq corn (concat (unless (string= "" opt) (format "[%s]" opt))
                        (if (string= "0,0" p0) "" (format "(%s)" p0))
                        "(" p1 ")"))
     (LaTeX-insert-environment env corn)))
@@ -545,6 +690,7 @@ package PNAME"
               (add-to-list 'LaTeX-pst-style-list (nth 1 list) t))
              ((string= type "color")
               (add-to-list 'LaTeX-pst-color-list (nth 1 list) t)
+	      ;; FIXME: Why is an entry with "-" in front added?
               (add-to-list 'LaTeX-pst-color-list
                            (concat "-" (nth 1 list)) t)))))
    LaTeX-auto-pstricks))
@@ -553,6 +699,8 @@ package PNAME"
   "Clear `LaTeX-auto-pstricks' before use."
   (setq LaTeX-auto-pstricks nil))
 
+;; FIXME: This does not seem to work unless one does a manual reparse.
+;; Check e.g. with "\definecolor" and "fillcolor=".
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-pst-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-pst-cleanup)
 
@@ -585,7 +733,9 @@ comma separated list. Point has to be within the sexp to modify."
       (when check
         (message
          "At least one Parameters appears twice. PLEASE CHECK!")))))
-(define-key LaTeX-mode-map "\C-c\C-x\C-a" 'LaTeX-pst-parameters-add)
+;; FIXME: Only define a key for this once it is a general-purpose
+;; facility, i.e. not just for pstricks but all types of macros.
+;; (define-key LaTeX-mode-map "\C-c\C-x\C-a" 'LaTeX-pst-parameters-add)
 
 (defvar LaTeX-pst-value-regexp
   "\\([-!.a-zA-Z0-9]*\\s\\?[-!.a-zA-Z0-9]+\\)"
@@ -617,7 +767,12 @@ comma separated list. Point has to be within the sexp to modify."
                             "-list")))))
     (insert (TeX-arg-compl-list (symbol-value symb) "New Value"
                                 'LaTeX-pst-parameters-value-history))))
-(define-key LaTeX-mode-map "\C-c\C-x\C-v" 'LaTeX-pst-parameter-change-value)
+;; FIXME: Only define a key for this once it is a general-purpose
+;; facility, i.e. not just for pstricks but all types of macros.  (See
+;; also `LaTeX-pst-parameters-add'.  Note that a parameter change
+;; should better be made available through a `C-u' prefix of the
+;; binding for the function doing the parameter addition.)
+;; (define-key LaTeX-mode-map "\C-c\C-x\C-v" 'LaTeX-pst-parameter-change-value)
 
 (TeX-add-style-hook
  "pstricks"
@@ -669,8 +824,8 @@ comma separated list. Point has to be within the sexp to modify."
       (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
     '("pstriangle" [LaTeX-pst-parameters]
       (LaTeX-pst-macro-pnt-twolen "Width" "Height"))
-    '("psdot" [LaTeX-pst-macro-psdots t])
-    '("psdots" [LaTeX-pst-macro-psdots nil])
+    '("psdot" [LaTeX-pst-parameters] (LaTeX-pst-macro-psdots t))
+    '("psdots" [LaTeX-pst-parameters] (LaTeX-pst-macro-psdots nil))
     '("psecurve" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
     '("psecurve*" [LaTeX-pst-parameters] LaTeX-pst-macro-psline)
     '("psellipse" [LaTeX-pst-parameters]
