@@ -1,3 +1,8 @@
+2009-11-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/wininstall.texi: Do not refer to Emacs 22 anymore.  Improve
+	the paragraphs about PNG support.
+
 2009-11-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/pstricks.el: Disable key bindings for macro parameter
