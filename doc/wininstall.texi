@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2003, 2004, 2005, 2006, 2007
+@c Copyright (C) 2003, 2004, 2005, 2006, 2007, 2009
 @c   Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
@@ -161,9 +161,9 @@ headaches, @emph{if} things don't work out.
 
 @item
 Install a current version of XEmacs from @uref{http://www.xemacs.org/}
-or @w{Emacs 22} from @uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
-@w{Emacs 22} is the recommended choice because it is currently the
-primary platform for @AUCTeX{} development.
+or @w{Emacs} from @uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
+@w{Emacs} is the recommended choice because it is currently the primary
+platform for @AUCTeX{} development.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
@@ -361,19 +361,31 @@ Load @file{preview/circ.tex} into Emacs or XEmacs and see if you get the
 Check whether the @samp{Preview} menu is available in this file.  Use it
 to generate previews for the document.
 
-If this barfs and tells you that image type @samp{png} is not
-supported, try adding the line
+If this barfs and tells you that image type @samp{png} is not supported,
+you can either add @acronym{PNG} support to your Emacs installation or
+choose another image format to be used by @previewlatex{}.
+
+Adding support for an image format usually involves the installation of
+a library, e.g. from @uref{http://gnuwin32.sf.net/}.  If you got your
+Emacs from @uref{gnu.org} you might want to check its
+@uref{ftp://ftp.gnu.org/gnu/emacs/windows/README,README file} for
+details.
+
+A different image format can be chosen by setting the variable
+@code{preview-image-type}.  While it is recommended to keep the
+@samp{dvipng} or @samp{png} setting, you can temporarily select a
+different format like @samp{pnm} to check if the lack of @acronym{PNG}
+support is the only problem with your Emacs installation.
+
+Try adding the line
 
 @example
 (setq preview-image-type 'pnm)
 @end example
 
-at the end of your installed version of @file{preview-latex.el}.  If
-this helps, complain to wherever you got your Emacs from: all current
-Emacs/XEmacs versions capable of running @previewlatex{} by now can be
-compiled to support @acronym{PNG} images.  Which is important, because
-@acronym{PNM} files take away @strong{vast} amounts of disk space, and
-thus also of load/save time.
-
+to your init file for a quick test.  You should remove the line after
+the test again, because @acronym{PNM} files take away @strong{vast}
+amounts of disk space, and thus also of load/save time.
 @end enumerate
+
 Well, that about is all.  Have fun!
