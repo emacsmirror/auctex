@@ -1,3 +1,13 @@
+2009-12-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-command-prefix): New variable.
+	(TeX-fold-mode): Use it.
+	(TeX-fold-keymap): Remove prefix strings.
+
+	* tex.el (TeX-fold-menu): Remove hard-coded key binding labels.
+
+	* doc/auctex.texi (Folding): Mention `TeX-fold-command-prefix'.
+
 2009-11-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/wininstall.texi: Do not refer to Emacs 22 anymore.  Improve
