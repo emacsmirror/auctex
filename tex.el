@@ -4161,50 +4161,39 @@ Brace insertion is only done if point is in a math construct and
      "-"
      ["Hide All in Current Buffer" TeX-fold-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-b"
       :help "Hide all configured TeX constructs in the current buffer"]
      ["Hide All in Current Region" TeX-fold-region
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-r"
       :help "Hide all configured TeX constructs in the marked region"]
      ["Hide All in Current Paragraph" TeX-fold-paragraph
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-p"
       :help "Hide all configured TeX constructs in the paragraph containing point"]
      ["Hide Current Macro" TeX-fold-macro
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-m"
       :help "Hide the macro containing point"]
      ["Hide Current Environment" TeX-fold-env
       :visible (not (eq major-mode 'plain-tex-mode))
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-e"
       :help "Hide the environment containing point"]
      ["Hide Current Comment" TeX-fold-comment
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-c"
       :help "Hide the comment containing point"]
      "-"
      ["Show All in Current Buffer" TeX-fold-clearout-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o b"
       :help "Permanently show all folded content again"]
      ["Show All in Current Region" TeX-fold-clearout-region
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o r"
       :help "Permanently show all folded content in marked region"]
      ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o p"
       :help "Permanently show all folded content in paragraph containing point"]
      ["Show Current Item" TeX-fold-clearout-item
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o i"
       :help "Permanently show the item containing point"]
      "-"
      ["Hide or Show Current Item" TeX-fold-dwim
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-o"
       :help "Hide or show the item containing point"]))
    "Menu definition for commands from tex-fold.el.")
 
