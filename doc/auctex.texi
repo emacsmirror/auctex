@@ -1968,8 +1968,13 @@ fold all configured content in this region.  If there is no folded
 content but a macro or environment, fold it.
 @end deffn
 
+In case you want to use a different prefix than @kbd{C-c C-o} for these
+commands you can customize the variable @code{TeX-fold-command-prefix}.
+(Note that this will not change the key binding for activating the
+mode.)
+
 The commands above will only take macros or environments into
-consideration which are specified in the variable
+consideration which are specified in the variables
 @code{TeX-fold-macro-spec-list} or @code{TeX-fold-env-spec-list}
 respectively.
 
