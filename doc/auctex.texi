@@ -1968,6 +1968,7 @@ fold all configured content in this region.  If there is no folded
 content but a macro or environment, fold it.
 @end deffn
 
+@vindex TeX-fold-command-prefix
 In case you want to use a different prefix than @kbd{C-c C-o} for these
 commands you can customize the variable @code{TeX-fold-command-prefix}.
 (Note that this will not change the key binding for activating the
