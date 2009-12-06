@@ -246,19 +246,26 @@ Set it to zero in order to disable help echos."
 (defvar TeX-fold-open-spots nil)
 (make-variable-buffer-local 'TeX-fold-open-spots)
 
+(defcustom TeX-fold-command-prefix "\C-c\C-o"
+  "Prefix key to use for commands in TeX Fold mode.
+The value of this variable is checked as part of loading TeX Fold mode.
+After that, changing the prefix key requires manipulating keymaps."
+  :type 'string
+  :group 'TeX-fold)
+
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map "\C-c\C-o\C-o" 'TeX-fold-dwim)
-    (define-key map "\C-c\C-o\C-b" 'TeX-fold-buffer)
-    (define-key map "\C-c\C-o\C-r" 'TeX-fold-region)
-    (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
-    (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
-    (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
-    (define-key map "\C-c\C-o\C-c" 'TeX-fold-comment)
-    (define-key map "\C-c\C-ob"    'TeX-fold-clearout-buffer)
-    (define-key map "\C-c\C-or"    'TeX-fold-clearout-region)
-    (define-key map "\C-c\C-op"    'TeX-fold-clearout-paragraph)
-    (define-key map "\C-c\C-oi"    'TeX-fold-clearout-item)
+    (define-key map "\C-o" 'TeX-fold-dwim)
+    (define-key map "\C-b" 'TeX-fold-buffer)
+    (define-key map "\C-r" 'TeX-fold-region)
+    (define-key map "\C-p" 'TeX-fold-paragraph)
+    (define-key map "\C-m" 'TeX-fold-macro)
+    (define-key map "\C-e" 'TeX-fold-env)
+    (define-key map "\C-c" 'TeX-fold-comment)
+    (define-key map "b"    'TeX-fold-clearout-buffer)
+    (define-key map "r"    'TeX-fold-clearout-region)
+    (define-key map "p"    'TeX-fold-clearout-paragraph)
+    (define-key map "i"    'TeX-fold-clearout-item)
     map))
 
 
@@ -934,7 +941,7 @@ the other elements.  The ordering among elements is maintained."
 Called interactively, with no prefix argument, toggle the mode.
 With universal prefix ARG (or if ARG is nil) turn mode on.
 With zero or negative ARG turn mode off."
-  nil nil TeX-fold-keymap
+  nil nil (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
 	(set (make-local-variable 'search-invisible) t)
