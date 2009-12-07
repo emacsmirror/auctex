@@ -1,3 +1,9 @@
+2009-12-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-parse-error): Add an alternative in the parser
+	regexp for quoted file names.  Strip the quotation marks if a file
+	name was found with the alternative.
+
 2009-12-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-fold.el (TeX-fold-command-prefix): New variable.
