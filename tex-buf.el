@@ -1414,23 +1414,32 @@ You might want to examine and modify the free variables `file',
 
 (defun TeX-parse-error (old)
   "Goto next error.  Pop to OLD buffer if no more errors are found."
-    (while
-	(cond
-	 ((null (re-search-forward
-		 "\
-^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|\
-\(\"?\\(/*\
+  (let ((regexp
+	 (concat
+	  ;; TeX error
+	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
+	  ;; New file
+	  "(\\(\".*?\"\\|/*\
 \\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
 \\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
 \\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\"?\
-)*\\(?: \\|\r?$\\)\\|\
-\\()\\))*\\|\
- !\\(?:offset(\\([---0-9]+\\))\\|\
-name(\\([^)]+\\))\\)\\|\
-^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
- \\\\.*?[0-9]+--[0-9]+\\)\\|\
-^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*" nil t))
+\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
+)*\\(?: \\|\r?$\\)\\|"
+	  ;; End of file
+	  "\\()\\))*\\|"
+	  ;; Hook to change line numbers
+	  " !\\(?:offset(\\([---0-9]+\\))\\|"
+	  ;; Hook to change file name
+	  "name(\\([^)]+\\))\\)\\|"
+	  ;; LaTeX bad box
+	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
+ \\\\.*?[0-9]+--[0-9]+\\)\\|"
+	  ;; LaTeX warning
+	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")))
+    (while
+	(cond
+	 ((null
+	   (re-search-forward regexp nil t))
 	  ;; No more errors.
 	  (message "No more errors.")
 	  (beep)
@@ -1448,7 +1457,7 @@ name(\\([^)]+\\))\\)\\|\
 	      t
 	    (TeX-error)
 	    nil))
-	 ;; LaTeX badbox
+	 ;; LaTeX bad box
 	 ((match-beginning 7)
 	  (if TeX-debug-bad-boxes
 	      (progn
@@ -1468,7 +1477,11 @@ name(\\([^)]+\\))\\)\\|\
 
 	 ;; New file -- Push on stack
 	 ((match-beginning 3)
-	  (push (TeX-match-buffer 3) TeX-error-file)
+	  (let ((file (TeX-match-buffer 3)))
+	    ;; Strip quotation marks if necessary.
+	    (when (eq (string-to-char file) ?\")
+	      (setq file (substring file 1 (1- (length file)))))
+	    (push file TeX-error-file))
 	  (push nil TeX-error-offset)
 	  (goto-char (match-end 3))
 	  t)
@@ -1491,7 +1504,7 @@ name(\\([^)]+\\))\\)\\|\
 	 ((match-beginning 6)
 	  (setq TeX-error-file
 		(list (TeX-match-buffer 6)))
-	  t))))
+	  t)))))
 
 (defun TeX-error ()
   "Display an error."
