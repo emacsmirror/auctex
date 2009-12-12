@@ -1,3 +1,9 @@
+2009-12-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-parse-error): Also find quoted file names with
+	newlines.  Remove the newlines from the matched string if
+	necessary.
+
 2009-12-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-parse-error): Add an alternative in the parser
