@@ -1419,7 +1419,7 @@ You might want to examine and modify the free variables `file',
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\\(\".*?\"\\|/*\
+	  "(\\(\"[^\"]*?\"\\|/*\
 \\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
 \\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
 \\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
@@ -1477,13 +1477,16 @@ You might want to examine and modify the free variables `file',
 
 	 ;; New file -- Push on stack
 	 ((match-beginning 3)
-	  (let ((file (TeX-match-buffer 3)))
-	    ;; Strip quotation marks if necessary.
-	    (when (eq (string-to-char file) ?\")
-	      (setq file (substring file 1 (1- (length file)))))
-	    (push file TeX-error-file))
-	  (push nil TeX-error-offset)
-	  (goto-char (match-end 3))
+	  (let ((file (TeX-match-buffer 3))
+		(end (match-end 3)))
+	    ;; Strip quotation marks and remove newlines if necessary
+	    (when (or (eq (string-to-char file) ?\")
+		      (string-match "\n" file))
+	      (setq file
+		    (mapconcat 'identity (split-string file "[\"\n]+") "")))
+	    (push file TeX-error-file)
+	    (push nil TeX-error-offset)
+	    (goto-char end))
 	  t)
 	 
 	 ;; End of file -- Pop from stack
