@@ -1,5 +1,18 @@
 2009-12-26  Ralf Angeli  <angeli@caeruleus.net>
 
+	* doc/auctex.texi (Known problems): New subsection on dealing with
+	font locking problems.
+
+	* font-latex.el (font-latex-syntax-alist): New variable.
+	(font-latex-add-to-syntax-alist): New function.
+	(font-latex-setup): Use `font-latex-syntax-alist'.
+
+	* style/shortvrb.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/shortvrb.el.
+
+	* tex-style.el (LaTeX-shortvrb-chars): New variable.
+
 	* doc/changes.texi: Document changes after 11.85.
 
 	* context.el (ConTeXt-expand-options): Check for XeTeX engine, not
