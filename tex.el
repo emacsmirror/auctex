@@ -2984,6 +2984,7 @@ of plain-TeX-mode-hook."
 	 "[ \t]*"
 	 "\\("
 	 (regexp-quote TeX-esc) "par\\|"
+	 "%\\|"
 	 "$\\|"
 	 "\\$\\$\\|"
 	 (regexp-quote TeX-esc)
