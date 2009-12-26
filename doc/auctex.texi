@@ -1448,6 +1448,7 @@ description the various options are explained in conceptional groups.
 * Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
+* Known problems::              Known fontification problems
 @end menu
 
 @node Fontification of macros
@@ -1797,6 +1798,27 @@ please refer to the faces mentioned in the explanations above and use
 @kbd{M-x customize-face RET <face> RET}.  All faces defined by
 @fontlatex{} are accessible through a customization group by typing
 @kbd{M-x customize-group RET font-latex-highlighting-faces RET}.
+
+@node Known problems
+@subsection Known fontification problems
+@cindex Dollar signs, color bleed with
+@cindex Math, fontification problems with
+
+In certain cases the fontification machinery fails to interpret buffer
+contents correctly.  This can lead to color bleed, i.e. large parts of a
+buffer get fontified with an inappropriate face.  A typical situation
+for this to happen is the use of a dollar sign (@samp{$}) in a verbatim
+macro or environment.  If @fontlatex{} is not aware of the verbatim
+construct, it assumes the dollar sign to be a toggle for mathematics and
+fontifies the following buffer content with the respective face until it
+finds a closing dollar sign or till the end of the buffer.
+
+As a remedy you can make the verbatim construct known to @fontlatex{},
+@pxref{Verbatim content}.  If this is not possible, you can insert a
+commented dollar sign (@samp{%$}) at the next suitable end of line as a
+quick workaround.
+@c As a last resort one can set `font-lock-keywords-only', but we should
+@c probably not advise users to do this.
 
 
 @node Folding
