@@ -1486,7 +1486,7 @@ else.  There might be text before point."
 (defun ConTeXt-expand-options ()
   "Expand options for texexec command."
   (concat
-   (and TeX-PDF-mode (not TeX-XeTeX-mode) "--pdf ")
+   (and TeX-PDF-mode (not (eq TeX-engine 'xetex)) "--pdf ")
    (cond ((and (eq TeX-engine 'omega) ConTeXt-Omega-engine)
 	  (format "--tex=%s " ConTeXt-Omega-engine))
 	 ((eq TeX-engine 'xetex)
