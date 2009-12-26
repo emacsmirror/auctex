@@ -1077,6 +1077,29 @@ returned.
 All specified functions will be called and the region extended
 backwards to the minimum over their return values.")
 
+(defvar font-latex-syntax-alist
+  ;; Use word syntax for @ because we use \> for matching macros and
+  ;; we don't want \foo@bar to be found if we search for \foo.
+  '((?\( . ".") (?\) . ".") (?$ . "\"") (?@ . "w"))
+  "List of specifiers for the syntax alist of `font-lock-defaults'.")
+
+(defun font-latex-add-to-syntax-alist (list)
+  "Activate syntactic font locking for the entries in LIST.
+The entries are added to `font-latex-syntax-alist' and eventually
+end up in `font-lock-defaults'.  Each entry in LIST should be a
+cons pair as expected by `font-lock-defaults'.  The function also
+triggers Font Lock to recognize the change."
+  (make-local-variable 'font-latex-syntax-alist)
+  (nconc font-latex-syntax-alist list)
+;; FIXME: Are there situations where we need to alter `font-lock-defaults'
+;; directly?
+;;   (dolist (entry list)
+;;     (setcar (cdddr font-lock-defaults)
+;; 	    (cons entry (cadddr font-lock-defaults))))
+  ;; Tell font-lock about the update.
+  (setq font-lock-set-defaults nil)
+  (font-lock-set-defaults))
+
 ;;;###autoload
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
@@ -1119,10 +1142,8 @@ backwards to the minimum over their return values.")
   ;; `VirTeX-common-initialization' and place it in the different
   ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
   (let ((defaults
-	 '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-	   ;; Use word syntax for @ because we use \> for matching macros
-	   ;; and we don't want \foo@bar to be found if we search for \foo.
-	   nil nil ((?\( . ".") (?\) . ".") (?$ . "\"") (?@ . "w")) nil))
+	 `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+	   nil nil ,font-latex-syntax-alist nil))
 	(variables
 	 '((font-lock-comment-start-regexp . "%")
 	   (font-lock-mark-block-function . mark-paragraph)
