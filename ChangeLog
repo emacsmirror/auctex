@@ -1,3 +1,14 @@
+2009-12-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/changes.texi: Document changes after 11.85.
+
+	* context.el (ConTeXt-expand-options): Check for XeTeX engine, not
+	for mode which does not exist anymore.
+
+	* tex.el (plain-TeX-common-initialization): Let commented lines be
+	matched by `paragrah-separate' in order for commented and
+	non-commented paragraphs to be filled separately.
+
 2009-12-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-parse-error): Also find quoted file names with
