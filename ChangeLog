@@ -1,3 +1,12 @@
+2009-12-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/austrian.el: New file.
+
+	* style/naustrian.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/austrian.el and
+	style/naustrian.el.
+
 2009-12-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Known problems): New subsection on dealing with
