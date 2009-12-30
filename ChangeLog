@@ -1,3 +1,8 @@
+2009-12-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/preview-faq.texi (Troubleshooting): Add some hints about
+	preview-latex overwriting output files.
+
 2009-12-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/austrian.el: New file.
