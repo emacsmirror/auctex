@@ -1,5 +1,8 @@
 2009-12-30  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-view-command-raw): Abort if no matching viewer is
+	found.
+
 	* doc/preview-faq.texi (Troubleshooting): Add some hints about
 	preview-latex overwriting output files.
 
