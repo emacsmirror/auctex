@@ -1207,6 +1207,10 @@ predicates are true, nil otherwise."
     (while (and (setq entry (pop selection)) (not viewer))
       (when (TeX-view-match-predicate (car entry))
 	(setq viewer (cadr entry))))
+    ;; Abort if no matching viewer is found.  This prevents infinite
+    ;; loops when trying to expand the viewer command.
+    (unless viewer
+      (error "No matching viewer found"))
     ;; Get the command line or function spec.
     (setq spec (cadr (assoc viewer (append TeX-view-program-list
 					   TeX-view-program-list-builtin))))
