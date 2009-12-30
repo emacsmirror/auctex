@@ -1,3 +1,7 @@
+@c This is part of the preview-latex manual.
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009 Free Software
+@c   Foundation, Inc.
+@c See file preview-latex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
 
@@ -13,6 +17,8 @@
 * Requirements::                
 * Installation Trouble::        
 * Customization::               
+* Troubleshooting::               
+* Other formats::               
 @end menu
 
 @comment we need at least one chapter, or the numbers disappear in the
@@ -152,7 +158,7 @@ Please note that the XEmacs installation is different, since XEmacs has
 a package system that gets used here.  Please make sure that you read
 and follow the installation instructions for XEmacs.
 
-@node Customization,  , Installation Trouble, Frequently Asked Questions
+@node Customization, Troubleshooting, Installation Trouble, Frequently Asked Questions
 @section Customization
 
 @subsection Why don't I get balloon help like in the screen shots?
@@ -239,6 +245,7 @@ facilities of @file{preview.sty} to tell it how to resolve this, whether
 you want no previews, previews of whole slides or previews of inner
 material.
 
+@node Troubleshooting, Other formats, Customization, Frequently Asked Questions
 @section Troubleshooting
 
 @subsection Preview causes all sort of strange error messages
@@ -275,6 +282,26 @@ errors were present, and errors will always be present when
 case of doubt, look for them explicitly in either run buffer or the
 resulting @file{.log} file.
 
+@subsection Why do my @acronym{DVI} and @acronym{PDF} output files vanish?
+
+In order to produce the preview images @previewlatex{} runs @LaTeX{} on
+the master or region file.  The resulting @acronym{DVI} or @acronym{PDF}
+file can happen to have the same name as the output file of a regular
+@LaTeX{} run.  So the regular output file gets overwritten and is
+subsequently deleted by @previewlatex{}.
+
+@subsection My output file suddenly only contains preview images?!
+
+As mentioned in the previews @acronym{FAQ} entry, @previewlatex{} might
+use the file name of the original output file for the creation of
+preview images.  If the original output file is being displayed with a
+viewer when this happens, you might see strange effects depending on the
+viewer, e.g. a message about the file being corrupted or the display of
+all the preview images instead of your typeset document.  (Also
+@xref{Customization}.)
+
+
+@node Other formats, , Troubleshooting, Frequently Asked Questions
 @section @previewlatex{} when not using @LaTeX{}
 
 @subsection Does @previewlatex{} work with  PDF@LaTeX{}?
