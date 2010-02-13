@@ -13,7 +13,7 @@ This manual is for @AUCTeX{}
 a sophisticated TeX environment for Emacs.
 
 Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004, 2005,
-2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -2428,29 +2428,59 @@ specials switched off.
 @end deffn
 
 @AUCTeX{} also allows you to easily select different @TeX{} engines for
-processing.
+processing, either by using the entries in the @samp{TeXing Options}
+submenu below the @samp{Command} menu or by calling the function
+@code{TeX-engine-set}.  These eventually set the variable
+@code{TeX-engine} which you can also modify directly.
 
 @defopt TeX-engine
 This variable allows you to choose which @TeX{} engine should be used
 for typesetting the document, i.e. the executables which will be used
 when you invoke the @samp{TeX} or @samp{LaTeX} commands.  The value
-should be one of the symbols @code{default} for plain old @TeX{} or
-PDF@TeX{}, @code{xetex} for Xe@TeX{} and @code{omega} for Omega.
+should be one of the symbols defined in @code{TeX-engine-alist-builtin}
+or @code{TeX-engine-alist}.  The symbols @samp{default}, @samp{xetex},
+@samp{luatex} and @samp{omega} are available from the built-in list.
 @end defopt
+
+Note that @code{TeX-engine} is buffer-local, so setting the variable
+directly or via the above mentioned menu or function will not take
+effect in other buffers.  If you want to activate an engine for all
+@AUCTeX{} modes, set @code{TeX-engine} in your init file, e.g. by using
+@kbd{M-x customize-variable <RET>}.  If you want to activate it for a
+certain @AUCTeX{} mode only, set the variable in the respective mode
+hook.  If you want to activate it for certain files, set it through file
+variables (@pxref{File Variables,,,emacs,The Emacs Editor}).
 
 @vindex TeX-command
 @vindex LaTeX-command
-@vindex TeX-XeTeX-command
-@vindex LaTeX-XeTeX-command
 @vindex TeX-Omega-command
 @vindex LaTeX-Omega-command
 @vindex ConTeXt-engine
 @vindex ConTeXt-Omega-engine
-The executables related to the different @TeX{} engines are specified in
-the variables @code{TeX-command}, @code{LaTeX-command},
-@code{TeX-XeTeX-command}, @code{LaTeX-XeTeX-command},
-@code{TeX-Omega-command}, @code{LaTeX-Omega-command},
-@code{ConTeXt-engine} and @code{ConTeXt-Omega-engine} respectively.
+@vindex TeX-engine-alist
+@vindex TeX-engine-alist-builtin
+Should you need to change the executable names related to the different
+engine settings, there are some variables you can tweak.  Those are
+@code{TeX-command}, @code{LaTeX-command}, @code{TeX-Omega-command},
+@code{LaTeX-Omega-command}, @code{ConTeXt-engine} and
+@code{ConTeXt-Omega-engine}.  The rest of the executables is defined
+directly in @code{TeX-engine-alist-builtin}.  If you want to override an
+entry from that, add an entry to @code{TeX-engine-alist} that starts
+with the same symbol as that the entry in the built-in list and specify
+the executables you want to use instead.  You can also add entries to
+@code{TeX-engine-alist} in order to add support for engines not covered
+per default.
+
+@defopt TeX-engine-alist
+Alist of TeX engines and associated commands.  Each entry is a list with
+a maximum of five elements.  The first element is a symbol used to
+identify the engine.  The second is a string describing the engine.  The
+third is the command to be used for plain TeX.  The fourth is the
+command to be used for LaTeX.  The fifth is the command to be used for
+the @samp{--engine} parameter of ConTeXt's @samp{texexec} program.  Each
+command can either be a variable or a string.  An empty string or nil
+means there is no command available.
+@end defopt
 
 You can customize @AUCTeX{} to show the processor output as it is
 produced.
