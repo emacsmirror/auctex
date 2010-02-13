@@ -1,3 +1,30 @@
+2010-02-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-XeTeX-command, LaTeX-XeTeX-command): Remove.
+	(ConTeXt-engine): Doc fix.
+	(ConTeXt-Omega-engine): Doc fix.  Make obsolote.
+	(TeX-expand-list): Add support for LuaTeX.  Adapt to new engine
+	handling.
+	(AUC-TeX-version, AUC-TeX-date): Remove.
+	(TeX-engine-alist-builtin): New variable.
+	(TeX-engine-alist): Adapt to new engine handling and make it a
+	defcustom.
+	(TeX-engine-alist): New function.
+	(TeX-engine): Adapt to new engine handling and make it
+	buffer-local.
+	(LaTeX-engine-alist): Remove.
+	(TeX-engine-set): Adapt to new engine handling and take care of
+	TeX PDF mode.
+	(TeX-clean-default-output-suffixes): Add .xdv.
+	(TeX-mode-specific-command-menu-entries): Construct list of
+	engines from `TeX-engine-alist'.
+
+	* context.el (ConTeXt-expand-options): Adapt to new engine
+	handling.
+
+	* doc/auctex.texi (Processor Options): Document options and
+	functions of new engine handling.
+
 2009-12-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-command-raw): Abort if no matching viewer is
@@ -36,7 +63,7 @@
 	for mode which does not exist anymore.
 
 	* tex.el (plain-TeX-common-initialization): Let commented lines be
-	matched by `paragrah-separate' in order for commented and
+	matched by `paragraph-separate' in order for commented and
 	non-commented paragraphs to be filled separately.
 
 2009-12-12  Ralf Angeli  <angeli@caeruleus.net>
