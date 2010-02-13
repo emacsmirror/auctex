@@ -1486,13 +1486,9 @@ else.  There might be text before point."
 (defun ConTeXt-expand-options ()
   "Expand options for texexec command."
   (concat
-   (and TeX-PDF-mode (not (eq TeX-engine 'xetex)) "--pdf ")
-   (cond ((and (eq TeX-engine 'omega) ConTeXt-Omega-engine)
-	  (format "--tex=%s " ConTeXt-Omega-engine))
-	 ((eq TeX-engine 'xetex)
-	  "--xetex ")
-	 (ConTeXt-engine
-	  (format "--tex=%s " ConTeXt-engine)))
+   (let ((engine (nth 4 (assq TeX-engine (TeX-engine-alist)))))
+     (when engine
+       (format "--engine=%s " engine)))
    (unless (eq ConTeXt-current-interface "en")
      (format "--interface=%s " ConTeXt-current-interface))
    (when TeX-source-correlate-mode
