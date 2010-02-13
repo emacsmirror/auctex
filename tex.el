@@ -1,8 +1,8 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999, 2000,
-;;   2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
-;;   2009 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999,
+;;   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -93,11 +93,6 @@ then customization is requested."
   :group 'TeX-command
   :type 'string)
 
-(defcustom TeX-XeTeX-command "xetex"
-  "Command to run plain TeX on XeTeX."
-  :group 'TeX-command
-  :type 'string)
-
 (defcustom TeX-Omega-command "omega"
   "Command to run plain TeX on Omega."
   :group 'TeX-command
@@ -108,29 +103,26 @@ then customization is requested."
   :group 'TeX-command
   :type 'string)
 
-(defcustom LaTeX-XeTeX-command "xelatex"
-  "Command to run LaTeX on XeTeX."
-  :group 'TeX-command
-  :type 'string)
-
 (defcustom LaTeX-Omega-command "lambda"
   "Command to run LaTeX on Omega."
   :group 'TeX-command
   :type 'string)
 
 (defcustom ConTeXt-engine nil
-  "Engine to use for --tex in the texexec command.
+  "Engine to use for --engine in the texexec command.
 If nil, none is specified."
   :group 'TeX-command
   :type '(choice (const :tag "Unspecified" nil)
 		 string))
 
 (defcustom ConTeXt-Omega-engine TeX-Omega-command
-  "Engine to use for --tex in the texexec command in Omega mode.
+  "Engine to use for --engine in the texexec command in Omega mode.
 If nil, none is specified."
   :group 'TeX-command
   :type '(choice (const :tag "Unspecified" nil)
 		 string))
+;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
+(make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist)
 
 (defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue.
@@ -437,6 +429,9 @@ string."
 		   (cond ((and (eq TeX-engine 'xetex)
 			       (not TeX-PDF-mode))
 			  " -no-pdf")
+			 ((and (eq TeX-engine 'luatex)
+			       (not TeX-PDF-mode))
+			  " --output-format=dvi")
 			 ((and (eq TeX-engine 'default)
 			       (not TeX-PDF-mode)
 			       TeX-DVI-via-PDFTeX)
@@ -447,10 +442,8 @@ string."
 		     ""
 		   " -interaction=nonstopmode")))
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
-    ("%(tex)" (lambda ()
-		(eval (cdr (assq TeX-engine TeX-engine-alist)))))
-    ("%(latex)" (lambda ()
-		  (eval (cdr (assq TeX-engine LaTeX-engine-alist)))))
+    ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
+    ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
     ("%(execopts)" ConTeXt-expand-options)
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
@@ -575,17 +568,6 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
-(defconst AUC-TeX-version AUCTeX-version)
-(condition-case nil
-    (make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version "11.50")
-  (wrong-number-of-arguments
-   (make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version)))
-
-(defconst AUC-TeX-date AUCTeX-date)
-(condition-case nil
-    (make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date "11.50")
-  (wrong-number-of-arguments
-   (make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date)))
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
@@ -1207,8 +1189,6 @@ predicates are true, nil otherwise."
     (while (and (setq entry (pop selection)) (not viewer))
       (when (TeX-view-match-predicate (car entry))
 	(setq viewer (cadr entry))))
-    ;; Abort if no matching viewer is found.  This prevents infinite
-    ;; loops when trying to expand the viewer command.
     (unless viewer
       (error "No matching viewer found"))
     ;; Get the command line or function spec.
@@ -1233,43 +1213,78 @@ predicates are true, nil otherwise."
 
 ;;; Engine
 
-(defcustom TeX-engine 'default
-  "Type of TeX engine to use.
-The value should be one of the symbols `default' for plain old
-TeX or PDFTeX, `xetex' for XeTeX and `omega' for Omega."
+(defvar TeX-engine-alist-builtin
+  '((default "Default" TeX-command LaTeX-command ConTeXt-engine)
+    (xetex "XeTeX" "xetex" "xelatex" "xetex")
+    (luatex "LuaTeX" "luatex" "lualatex" "luatex")
+    (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine))
+  "Alist of built-in TeX engines and associated commands.
+For a description of the format see `TeX-engine-alist'.")
+
+(defcustom TeX-engine-alist nil
+  "Alist of TeX engines and associated commands.
+Each entry is a list with a maximum of five elements.  The first
+element is a symbol used to identify the engine.  The second is a
+string describing the engine.  The third is the command to be
+used for plain TeX.  The fourth is the command to be used for
+LaTeX.  The fifth is the command to be used for the --engine
+parameter of ConTeXt's texexec program.  Each command can either
+be a variable or a string.  An empty string or nil means there is
+no command available.
+
+You can override a built-in engine defined in the variable
+`TeX-engine-alist-builtin' by adding an entry beginning with the
+same symbol as the built-in entry to `TeX-engine-alist'."
   :group 'TeX-command
-  :type '(choice (const :tag "Default" default)
-		 (const :tag "XeTeX" xetex)
-		 (const :tag "Omega" omega)))
-(put 'TeX-engine 'safe-local-variable (lambda (arg)
-					(memq arg '(default xetex omega))))
+  :type '(repeat (group symbol
+			(string :tag "Name")
+			(choice :tag "Plain TeX command" string variable)
+			(choice :tag "LaTeX command" string variable)
+			(choice :tag "ConTeXt command" string variable))))
 
-(defvar TeX-engine-alist
-  '((default . TeX-command)
-    (xetex . TeX-XeTeX-command)
-    (omega . TeX-Omega-command))
-  "Alist associating engine type symbols with TeX command variables.")
+(defun TeX-engine-alist ()
+  "Return an alist of TeX engines.
+The function appends the built-in engine specs from
+`TeX-engine-alist-builtin' and the user-defined engines from
+`TeX-engine-alist' and deletes any entries from the built-in part
+where an entry with the same car exists in the user-defined part."
+  (TeX-delete-dups-by-car (append TeX-engine-alist TeX-engine-alist-builtin)))
 
-(defvar LaTeX-engine-alist
-  '((default . LaTeX-command)
-    (xetex . LaTeX-XeTeX-command)
-    (omega . LaTeX-Omega-command))
-  "Alist associating engine type symbols with LaTeX command variables.")
+(defcustom TeX-engine 'default
+  (concat "Type of TeX engine to use.
+It should be one of the following symbols:\n\n"
+	  (mapconcat (lambda (x) (format "* `%s'" (car x)))
+		     (TeX-engine-alist) "\n"))
+  :group 'TeX-command
+  :type `(choice ,@(mapcar (lambda (x)
+			     `(const :tag ,(nth 1 x) ,(car x)))
+			   (TeX-engine-alist))))
+(make-variable-buffer-local 'TeX-engine)
+(put 'TeX-engine 'safe-local-variable
+     (lambda (arg) (memq arg (mapcar 'car TeX-engine-alist-builtin))))
 
 (defun TeX-engine-set (type)
-  "Set TeX engine to TYPE.
-TYPE can be one of `default', `xetex' or `omega'."
+  (concat "Set TeX engine to TYPE.
+TYPE can be one of the following symbols:\n"
+	  (mapconcat (lambda (x) (format "* `%s'" (car x)))
+		     (TeX-engine-alist) "\n"))
   (interactive (list (completing-read "Engine: "
-				      '("default" "xetex" "omega") nil t)))
+				      (mapcar (lambda (x)
+						(symbol-name (car x)))
+					      (TeX-engine-alist))
+				      nil t)))
   (when (stringp type)
     (setq type (intern type)))
-  (setq TeX-engine type))
+  (setq TeX-engine type)
+  ;; Automatically enable or disable TeX PDF mode as a convenience
+  (cond ((eq type 'xetex) (TeX-PDF-mode 1))
+	((eq type 'omega) (TeX-PDF-mode 0))))
 
 (define-minor-mode TeX-Omega-mode
   "Minor mode for using the Omega engine."
   nil nil nil
   :group 'TeX-command
-  (setq TeX-engine (if TeX-Omega-mode 'omega 'default)))
+  (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode 'TeX-Omega-mode)
 (make-obsolete 'TeX-Omega-mode 'TeX-engine-set)
 (make-obsolete-variable 'TeX-Omega-mode 'TeX-engine)
@@ -1678,7 +1693,7 @@ Must be the car of an entry in `TeX-command-list'."
 Used as a default in TeX, LaTeX and docTeX mode.")
 
 (defvar TeX-clean-default-output-suffixes
-  '("\\.dvi" "\\.pdf" "\\.ps")
+  '("\\.dvi" "\\.pdf" "\\.ps" "\\.xdv")
   "List of regexps matching suffixes of files to be cleaned.
 Used as a default in TeX, LaTeX and docTeX mode.")
 
@@ -4076,7 +4091,7 @@ Brace insertion is only done if point is in a math construct and
   "Return the entries for a Command menu specific to the major MODE."
   (append
    (TeX-menu-with-help
-    '("Command on"
+    `("Command on"
       [ "Master File" TeX-command-select-master
 	:keys "C-c C-c" :style radio
 	:selected (eq TeX-command-current 'TeX-command-master)
@@ -4111,15 +4126,12 @@ Brace insertion is only done if point is in a math construct and
        :help "Start a viewer without prompting"]
       "-"
       ("TeXing Options"
-       [ "Use standard engine" (TeX-engine-set 'default)
-	 :style radio :selected (eq TeX-engine 'default)
-	 :help "Use the original TeX engines for compiling"]
-       [ "Use XeTeX" (TeX-engine-set 'xetex)
-	 :style radio :selected (eq TeX-engine 'xetex)
-	 :help "Use the XeTeX engine for compiling"]
-       [ "Use Omega" (TeX-engine-set 'omega)
-	 :style radio :selected (eq TeX-engine 'omega)
-	 :help "Use the Omega engine for compiling"]
+       ,@(mapcar (lambda (x)
+		   (let ((symbol (car x)) (name (nth 1 x)))
+		     `[ ,(format "Use %s engine" name) (TeX-engine-set ',symbol)
+			:style radio :selected (eq TeX-engine ',symbol)
+			:help ,(format "Use %s engine for compiling" name) ]))
+		 (TeX-engine-alist))
        "-"
        [ "Generate PDF" TeX-PDF-mode
 	 :style toggle :selected TeX-PDF-mode
