@@ -2,8 +2,8 @@
 %%    The preview style for extracting previews from LaTeX documents.
 %%    Developed as part of AUCTeX <URL:http://www.gnu.org/software/auctex>.
 %
-%     Copyright (C) 2001, 2002, 2003, 2004, 2005,
-%                   2006 Free Software Foundation
+%     Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006,
+%                   2010 Free Software Foundation
 %
 %     This program is free software; you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1664}
+% \CheckSum{1746}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -31,7 +31,7 @@
 % environments (most notably displayed formulas) from \LaTeX\ sources
 % as graphics.  This works with DVI files postprocessed by either
 % Dvips and Ghostscript or dvipng, but it also works when you are
-% using PDF\TeX for generating PDF files (usually also postprocessed
+% using PDF\TeX\ for generating PDF files (usually also postprocessed
 % by Ghostscript).
 %
 % Current uses of the package include the \previewlatex\ package for
@@ -123,6 +123,8 @@
 %   previews.  If this option is specified, the changes will be undone
 %   if possible.
 % \item[|pdftex|] If this option is set, PDF\TeX\ is assumed as the
+%   output driver.  This mainly affects the |tightpage| option.
+% \item[|xetex|] If this option is set, Xe\TeX\ is assumed as the
 %   output driver.  This mainly affects the |tightpage| option.
 % \item[|displaymath|] will make all displayed math environments
 %   subject to preview processing.  This will typically be the most
@@ -438,11 +440,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.124 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.125 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2008-02-03 14:53:31 $
+\reserved@a\next $Date: 2010-02-14 14:47:20 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -588,6 +590,11 @@
 %    \begin{macrocode}
 \DeclareOption{pdftex}{%
   \let\pr@graphicstype\tw@}
+%    \end{macrocode}
+% And so does the |xetex| option.
+%    \begin{macrocode}
+\DeclareOption{xetex}{%
+  \let\pr@graphicstype\thr@@}
 %</!active>
 %    \end{macrocode}
 % \end{macro}
@@ -722,7 +729,7 @@
 %   called.  You must not under any circumstances change |\box\pr@box|
 %   in any way that would add typeset material at the front of it,
 %   except for PostScript header specials, since the front of
-%   |\box\pr@box| may contains stuff from \cmd{\AtBeginDvi}.
+%   |\box\pr@box| may contain stuff from \cmd{\AtBeginDvi}.
 %   \cmd{\pr@ship@end} contains two types of code additions: stuff
 %   that adds to |\box\pr@box|, like the |labels| option does, and
 %   stuff that measures out things or otherwise takes a look at the
@@ -739,12 +746,15 @@
 %   be at the (1in,1in)~mark defined by \TeX.  That way we can
 %   properly take ascenders into account.  And the third reason is
 %   that \TeX\ treats a \cmd{\hbox} and a \cmd{\vbox} differently with
-%   regard to the treating of its depth.
+%   regard to the treating of its depth.  Shifting \cmd{\voffset} and
+%   \cmd{\hoffset} can be inhibited by setting |\pr@offset@override|.
 %    \begin{macrocode}
    \pr@ship@end
    {\let\protect\noexpand
-   \voffset=-\ht\pr@box
-   \hoffset=\z@
+   \ifx\pr@offset@override\@undefined
+     \voffset=-\ht\pr@box
+     \hoffset=\z@
+   \fi
    \c@page=\pr@snippet
    \pr@shipout
    \ifpr@fixbb\hbox{%
@@ -1276,7 +1286,13 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 \def\pr@typeinfos{\typeout{Preview: Fontsize \f@size pt}%
   \ifnum\mag=\@m\else\typeout{Preview: Magnification \number\mag}\fi
-  \ifx\pdfoutput\@undefined \else
+  \ifx\pdfoutput\@undefined
+    \ifx\XeTeXversion\@undefined \else
+      % FIXME: The message should not be emitted if XeTeX does not produce
+      % PDF.  There does not seem to be a primitive for that, though.
+      \typeout{Preview: PDFoutput 1}%
+    \fi
+  \else
     \ifx\pdfoutput\relax \else
       \ifnum\pdfoutput>\z@
         \typeout{Preview: PDFoutput 1}%
@@ -1527,11 +1543,15 @@ Please complain to your document class author}%
 % out to the console.
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\z@
-%<tightpage>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
-%<tightpage>    \ifx\pdfoutput\relax \@ne\fi
-%<tightpage>    \ifnum\pdfoutput>\z@ \tw@\fi \@ne \or
-%<tightpage>    \ExecuteOptions{dvips}\relax \or
-%<tightpage>    \ExecuteOptions{pdftex}\relax\fi\fi
+%<tightpage>  \ifcase
+%<tightpage>    \ifx\XeTeXversion\@undefined
+%<tightpage>      \ifx\pdfoutput\@undefined \@ne\fi
+%<tightpage>      \ifx\pdfoutput\relax \@ne\fi
+%<tightpage>      \ifnum\pdfoutput>\z@ \tw@\fi \@ne
+%<tightpage>    \else \thr@@\fi
+%<tightpage>  \or \ExecuteOptions{dvips}\relax
+%<tightpage>  \or \ExecuteOptions{pdftex}\relax
+%<tightpage>  \or \ExecuteOptions{xetex}\relax\fi\fi
 %<tightpage>\global\let\pr@bbadjust\@empty
 %<tightpage>\pr@addto@front\pr@ship@end{\begingroup
 %<tightpage>  \let\next\@gobble
@@ -1571,6 +1591,28 @@ Please complain to your document class author}%
 %<tightpage>    \advance\dimen@\pr@bb@iii
 %<tightpage>    \global\pdfpagewidth\dimen@
 %<tightpage>    \global\pdfhorigin-\pr@bb@i}}
+%<tightpage>\or
+%<tightpage>  \g@addto@macro\pr@ship@end{\dimen@\ht\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@\z@\fi
+%<tightpage>    \advance\dimen@\pr@bb@iv
+%<tightpage>    \dimen@ii=\dimen@
+%<tightpage>    \voffset=-1in
+%<tightpage>    \advance\voffset\dimen@
+%<tightpage>    \advance\voffset-\ht\pr@box
+%<tightpage>    \dimen@\dp\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@\z@\fi
+%<tightpage>    \advance\dimen@-\pr@bb@ii
+%<tightpage>    \advance\dimen@\dimen@ii
+%<tightpage>    \global\pdfpageheight\dimen@
+%<tightpage>    \global\paperheight\dimen@
+%<tightpage>    \dimen@\wd\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@=\z@\fi
+%<tightpage>    \advance\dimen@-\pr@bb@i
+%<tightpage>    \advance\dimen@\pr@bb@iii
+%<tightpage>    \global\pdfpagewidth\dimen@
+%<tightpage>    \hoffset=-1in
+%<tightpage>    \advance\hoffset-\pr@bb@i
+%<tightpage>    \let\pr@offset@override\@empty}
 %<tightpage>\fi
 %    \end{macrocode}
 % Ok, here comes the beef.  First we fish the 7~numbers from the file
