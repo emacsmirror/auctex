@@ -36,8 +36,8 @@ Support for various @LaTeX{} packages was added, e.g. @samp{tabularx},
 @samp{CJK}, @samp{flashcards}, and @samp{hyperref}.
 
 @item
-An easy way to switch between @TeX{} engines (regular, Xe@TeX{}, Omega)
-was added.
+An easy way to switch between @TeX{} engines (PDF@TeX{}, Lua@TeX{},
+Xe@TeX{}, Omega) was added.
 
 @item
 Support for Sync@TeX{} was added.  This involves the command line
@@ -49,6 +49,9 @@ text.
 
 @item
 A lot of smaller and larger bugs have been squashed.
+
+@item
+@samp{preview.sty} now works with Xe@TeX{}.
 @end itemize
 
 @heading News in 11.85
