@@ -1,3 +1,7 @@
+2010-02-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/changes.texi: Mention preview.sty supporting XeTeX.
+
 2010-02-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-XeTeX-command, LaTeX-XeTeX-command): Remove.

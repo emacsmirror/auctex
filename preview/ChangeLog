@@ -1,3 +1,7 @@
+2010-02-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex/preview.dtx: Add support for XeTeX.
+
 2009-06-18  Ralf Angeli  <angeli@caeruleus.net>
 
 	* preview.el (preview-start-pdf2dsc): Determine the PDF source
