@@ -3,6 +3,8 @@
 	* tex.el (TeX-doc): Add a fallback in case nothing is found via
 	the backend list, e.g. when using MiKTeX 2.8.
 
+	* doc/auctex.texi (Documentation): Document change in `TeX-doc'.
+
 2010-02-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/changes.texi: Mention preview.sty supporting XeTeX.
