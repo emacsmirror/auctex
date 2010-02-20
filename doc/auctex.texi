@@ -2847,6 +2847,9 @@ manual, providing a list of available keywords for completion.  If point
 is on a command or word with available documentation, this will be
 suggested as default.
 
+In case no documentation could be found, a prompt for querying the
+@samp{texdoc} program is shown, should the latter be available.
+
 The command can be invoked by the key binding mentioned above as well as
 the @samp{Find Documentation...} entry in the mode menu.
 @end deffn
