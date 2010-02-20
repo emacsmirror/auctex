@@ -1,3 +1,8 @@
+2010-02-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-doc): Add a fallback in case nothing is found via
+	the backend list, e.g. when using MiKTeX 2.8.
+
 2010-02-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/changes.texi: Mention preview.sty supporting XeTeX.
