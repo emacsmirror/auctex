@@ -5463,7 +5463,13 @@ NAME may be a package, a command, or a document."
 	  (unless (null completions)
 	    (add-to-list 'docs (cons completions (nth 0 elt)))))))
     (if (null docs)
-	(message "No documentation found")
+	(progn
+	  (if (executable-find "texdoc")
+	      ;; Fallback if we did not find anything via the backend list.
+	      (let ((doc (read-from-minibuffer "Input for `texdoc': ")))
+		(when doc (call-process "texdoc" nil 0 nil "--view" doc)))
+	    ;; Give up.
+	    (message "No documentation found")))
       ;; Ask the user about the package, command, or document.
       (when (and (interactive-p)
 		 (or (not name) (string= name "")))
