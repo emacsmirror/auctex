@@ -74,31 +74,23 @@ the file @file{INSTALL.windows}.
 version of @code{xemacs-base} older than 1.84 (released in sumo from
 02/02/2004).  Using @previewlatex{} requires a version of Emacs compiled
 with image support.  While the X11 version of @w{Emacs 21} will likely
-work, @w{Emacs 22} is the preferred platform.
+work, @w{Emacs 22} and later is the preferred platform.
 
 @table @b
 @item Windows
 Precompiled versions are available from
 @uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
 @item Mac OS X
-A precompiled version including an installer as well as preinstalled
-versions of @AUCTeX{} and @previewlatex{} is available from
-@uref{http://homepage.mac.com/zenitani/emacs-e.html}.
-@item Debian GNU/Linux
-Debian provides @samp{emacs22-gtk} (probably preferable) and
-@samp{emacs22} packages in its @samp{unstable} distribution.
-@item Fedora GNU/Linux
-@w{Fedora 8} comes with @w{Emacs 22.1} and @w{Fedora 7} comes with a
-developer version of the same.
-@item openSUSE
-@w{openSUSE 10.3} comes with @w{Emacs 22.1}.  For some earlier
-@w{openSUSE} versions, @w{Emacs 22.1} is available from
-@uref{http://packages.opensuse-community.org/}.
+For an overview of precompiled versions of Emacs for Mac OS X see for
+example @uref{http://www.emacswiki.org/cgi-bin/wiki/EmacsForMacOS}.
+@item GNU/Linux
+Most GNU/Linux distributions nowadays provide a variant of Emacs 22 or
+later via their package repositories.
 @item Self-compiled
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.
 Instructions for checking out the source code can be found at
-@uref{http://savannah.gnu.org/cvs/?group=emacs}.
+@uref{https://savannah.gnu.org/bzr/?group=emacs}.
 @end table
 
 If you really need to use @w{Emacs 21} on platforms where this implies
