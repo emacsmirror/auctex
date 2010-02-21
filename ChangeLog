@@ -1,3 +1,29 @@
+2010-02-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Version 11.86 released.
+
+2010-02-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* RELEASE: Update for upcoming release.
+
+	* doc/install.texi (Prerequisites): Update information about Emacs
+	distributions.
+
+	* doc/tex-ref.tex: Bump version number.  Update section on TeXing
+	options.
+
+	* configure.ac: Bump version number.
+
+	* auctex.spec (Version): Bump version number.
+
+	* doc/fdl.texi: Switch to GFDL 1.3.
+
+	* doc/auctex.texi: Switch to GFDL 1.3.
+
+	* doc/preview-latex.texi: Switch to GFDL 1.3.
+
+	* doc/changes.texi: Update for next release.
+
 2010-02-20  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc): Add a fallback in case nothing is found via
