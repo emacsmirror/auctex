@@ -1,6 +1,6 @@
 @c This is part of the AUCTeX manual.
 @c Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-@c   2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+@c   2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
 @ifset rawfile
@@ -8,14 +8,14 @@
 
 @end ifset
 
-@heading News since 11.85
+@heading News in 11.86
 
 @itemize @bullet
 @item
-Parsing of @LaTeX{} output was improved.  It should now be less likely
-that @AUCTeX{} opens a non-existent file upon calling
-@code{TeX-next-error}.  In addition quoted file names as emitted by
-MiK@TeX{} are now supported.
+Parsing of @LaTeX{} output was improved.  It is now less likely that
+@AUCTeX{} opens a non-existent file upon calling @code{TeX-next-error};
+a problem for example encountered when using MiK@TeX{} 2.8.  In addition
+quoted file names as emitted by MiK@TeX{} are now supported.
 
 @item
 A new framework for the definition and selection of viewers was
@@ -33,7 +33,7 @@ Comprehensive editing support for PSTricks was added.
 
 @item
 Support for various @LaTeX{} packages was added, e.g. @samp{tabularx},
-@samp{CJK}, @samp{flashcards}, and @samp{hyperref}.
+@samp{CJK}, and @samp{hyperref}.
 
 @item
 An easy way to switch between @TeX{} engines (PDF@TeX{}, Lua@TeX{},
@@ -48,10 +48,10 @@ Folding can now be customized to use macro arguments as replacement
 text.
 
 @item
-A lot of smaller and larger bugs have been squashed.
+@samp{preview.sty} now works with Xe@TeX{}.
 
 @item
-@samp{preview.sty} now works with Xe@TeX{}.
+A lot of smaller and larger bugs have been squashed.
 @end itemize
 
 @heading News in 11.85
