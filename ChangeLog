@@ -1,3 +1,28 @@
+2010-03-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (DIST_PREFIX): Use the working directory for the
+	folder with distribution files.
+	(FTPDIR, WWWDIR): Make them subdirectories of `DIST_PREFIX'.
+	(COMMITTER_NAME, COMMITTER_EMAIL): Remove.
+	(COMMITTER): New variable.
+	(.PHONY): Update.
+	(tar-ball-clean): Use `check-tag'.
+	(check-tag): New name for `check-dist'.
+	(dist): Do not call `release-commit' anymore.
+	(snapshot): Now an alias for `dist'.
+	(release-commit): Use `COMMITTER'.
+	(release-sign): New name for `full-release' target.  Generate
+	version 1.1 directive files.
+	(xemacs-package): Depend on `check-tag'.
+	(WPACKAGEFILES): Include info files with a numerical supplement to
+	the .info extension.  Depend on `check-tag'.  Check for presence
+	of `WEMACSVER' variable.  Try to find a local AUCTeX tar ball
+	before downloading one.  Use `TAG' instead of `WAUCVER'.  Put ZIP
+	archive into `FTPDIR'.
+	(WAUCVER, WEMACSVER): Remove.
+	(release-upload): New target.
+	(www-doc): Depend on `check-tag'.  Update URLs for Emacs manuals.
+
 2010-02-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Version 11.86 released.
