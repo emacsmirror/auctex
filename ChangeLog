@@ -1,3 +1,9 @@
+2010-03-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-arg-key-val): Hint at key=value format in prompt.
+	(LaTeX-fill-region-as-para-do): Match whitespace without comment
+	starter at beginning of line when dealing with code comments.
+
 2010-03-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (DIST_PREFIX): Use the working directory for the
