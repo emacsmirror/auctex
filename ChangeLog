@@ -1,3 +1,9 @@
+2010-03-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/french.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/french.el.
+
 2010-03-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (TeX-arg-key-val): Hint at key=value format in prompt.
