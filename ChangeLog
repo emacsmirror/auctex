@@ -1,6 +1,7 @@
 2010-03-27  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-program-selection): Doc fix.
+	(TeX-clean): Regexp-quote the master file name.
 
 2010-03-20  Ralf Angeli  <angeli@caeruleus.net>
 
