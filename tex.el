@@ -1723,7 +1723,7 @@ output files."
 	 (master (TeX-active-master))
 	 (master-dir (file-name-directory master))
 	 (regexp (concat "\\("
-			 (file-name-nondirectory master) "\\|"
+			 (regexp-quote (file-name-nondirectory master)) "\\|"
 			 (TeX-region-file nil t)
 			 "\\)"
 			 "\\("
