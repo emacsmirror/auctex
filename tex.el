@@ -1126,6 +1126,9 @@ defined in `TeX-view-predicate-list' or
 `TeX-view-predicate-list-builtin'.  The second element is a
 string referring to the name of a viewer as defined in
 `TeX-view-program-list' or `TeX-view-program-list-builtin'.
+\(Note: Viewers added to `TeX-view-program-list' in the current
+Emacs session will not show up in the customization interface of
+`TeX-view-program-selection' until you restart Emacs.)
 
 When a viewer is called for, the entries are evaluated in turn
 and the viewer related to the first entry all predicates of which
