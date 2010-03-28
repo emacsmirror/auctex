@@ -1,3 +1,13 @@
+2010-03-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* plain-tex.el: New file.
+
+	* tex.el: Move code related to plain TeX to plain-tex.el.
+
+	* Makefile.in (AUCSRC): Add plain-tex.el.
+
+	* context.el: Require `plain-tex'.
+
 2010-03-27  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-program-selection): Doc fix.
