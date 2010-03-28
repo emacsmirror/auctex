@@ -51,8 +51,8 @@
 
 (require 'tex-buf)
 (require 'tex)
-;; need functions like TeX-look-at and LaTeX-split-long-menu
-(require 'latex)
+(require 'latex) ; for functions like `TeX-look-at' and `LaTeX-split-long-menu'
+(require 'plain-tex) ; for `plain-TeX-common-initialization'
 
 (defgroup ConTeXt-macro nil
   "Special support for ConTeXt macros in AUCTeX."
