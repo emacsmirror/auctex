@@ -1491,7 +1491,7 @@ You might want to examine and modify the free variables `file',
 	 
 	 ;; End of file -- Pop from stack
 	 ((match-beginning 4)
-	  (when (> (length TeX-error-file) 1)
+	  (when (> (length TeX-error-file) 0)
 	    (pop TeX-error-file)
 	    (pop TeX-error-offset))
 	  (goto-char (match-end 4))
