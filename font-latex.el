@@ -513,7 +513,8 @@ use."
 	   (7 (font-latex-matched-face 7) append t)))
 	((eq type 'noarg)
 	 `(,(intern (concat prefix name))
-	   (0 ,face)))
+	   ;; Quote a list of face properties but do not to quote a face symbol.
+	   (0 ,(if (listp face) `',face face))))
 	((eq type 'declaration)
 	 `(,(intern (concat prefix name))
 	   (0 'font-latex-warning-face t t)
