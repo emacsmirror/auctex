@@ -1114,7 +1114,7 @@ command."
 	;; Remove line breaks at column 79
 	(while (> (point) pt)
 	  (end-of-line 0)
-	  (when (and (= (current-column) 79)
+	  (when (and (= (- (point) (line-beginning-position)) 79)
 		     ;; Heuristic: Don't delete the linebreak if the
 		     ;; next line is empty or starts with an opening
 		     ;; parenthesis or if point is located after a period.
