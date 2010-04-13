@@ -1,3 +1,10 @@
+2010-04-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-format-filter): Calculate the current column as
+	difference between line start and end instead of using
+	`current-column' in order to do the right thing when octal codes
+	are present.
+
 2010-04-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-keyword-matcher): Quote a list of face
