@@ -1634,6 +1634,9 @@ You might want to examine and modify the free variables `file',
     (goto-char error-point)
     (setq TeX-error-point (point))
 
+    (unless file
+      (error "Could not determine file for warning"))
+
     ;; Go back to TeX-buffer
     (let ((runbuf (current-buffer))
 	  (master (with-current-buffer
