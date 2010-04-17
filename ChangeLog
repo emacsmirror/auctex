@@ -1,3 +1,9 @@
+2013-04-09  Leo Liu  <sdl.web@gmail.com>
+
+	* latex.el (LaTeX-outline-level): Make it work for customized
+	`outline-regexp'.  See bug report
+	http://permalink.gmane.org/gmane.emacs.auctex.bugs/1648.
+
 2013-04-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-style-list): Correct docstring.

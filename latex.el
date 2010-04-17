@@ -314,8 +314,7 @@ If so, return the second element, otherwise return nil."
 		((TeX-look-at LaTeX-section-list)
 		 (max 1 (+ (TeX-look-at LaTeX-section-list)
 			   (LaTeX-outline-offset))))
-		(t
-		 (error "Unrecognized header")))))))
+		(t (outline-level)))))))
 
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
