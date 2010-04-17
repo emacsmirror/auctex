@@ -4,6 +4,10 @@
 	`outline-regexp'.  See bug report
 	http://permalink.gmane.org/gmane.emacs.auctex.bugs/1648.
 
+	* tex.el (TeX-view-program-list-builtin)
+	(TeX-view-program-selection): Enable commented code to support
+	darwin system.
+
 2013-04-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-style-list): Correct docstring.

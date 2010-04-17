@@ -1091,13 +1091,11 @@ the requirements are met."
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
       ("dvips and start" "dvips %d -o && start \"\" %f")
       ("start" "start \"\" %o")))
-;; XXX: We need the advice of a Mac OS X user to configure this
-;; correctly and test it.
-;;    ((eq system-type 'darwin)
-;;     '(("Preview.app" "open -a Preview.app %o")
-;;       ("Skim" "open -a Skim.app %o")
-;;       ("displayline" "displayline %n %o %b")
-;;       ("open" "open %o")))
+   ((eq system-type 'darwin)
+    '(("Preview.app" "open -a Preview.app %o")
+      ("Skim" "open -a Skim.app %o")
+      ("displayline" "displayline %n %o %b")
+      ("open" "open %o")))
    (t
     `(("xdvi" ("%(o?)xdvi"
 	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
@@ -1204,12 +1202,10 @@ restarting Emacs."
       (output-dvi "Yap")
       (output-pdf "start")
       (output-html "start")))
-;; XXX: We need the advice of a Mac OS X user to configure this
-;; correctly and test it.
-;;    ((eq system-type 'darwin)
-;;     '((output-dvi "open")
-;;       (output-pdf "open")
-;;       (output-html "open")))
+   ((eq system-type 'darwin)
+    '((output-dvi "open")
+      (output-pdf "open")
+      (output-html "open")))
    (t
     '(((output-dvi style-pstricks) "dvips and gv")
       (output-dvi "xdvi")
