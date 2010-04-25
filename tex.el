@@ -59,32 +59,7 @@
 ;;; Site Customization
 ;;
 ;; The following variables are likely to need to be changed for your
-;; site.  You should do this with customize.  Here is the beef: If you
-;; want to print, TeX-print-command must be non-nil (if it is nil,
-;; you'll get a complaint when using the print menu).  If you want to
-;; view the queue, TeX-queue-command needs to be non-nil (if it is
-;; nil, it won't get mentioned in the menu).  If TeX-printer-list is
-;; nil, nothing else gets asked: the menu entries lead directly to the
-;; respective commands.  If those commands contain %p, the value of
-;; TeX-printer-default gets inserted there, no questions asked.  Now
-;; if TeX-printer-list is non-nil, you'll always get asked which
-;; printer you want to use.  You can enter a configured printer from
-;; TeX-printer-list, or an unknown one.  The respective menus will
-;; show all configured printers.  Since you can enter unknown
-;; printers, the printer name _must_ be set with %p in
-;; TeX-print-command.
-
-;; How to print.
-
-(defcustom TeX-print-command "%(o?)dvips -P%p %r %s"
-  "*Command used to print a file.
-
-First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'.  If it is nil,
-then customization is requested."
-  :group 'TeX-command
-  :type '(choice (string :tag "Print command")
-		 (const :tag "No print command customized" nil)))
+;; site.  You should do this with customize.
 
 (defcustom TeX-command "tex"
   "Command to run plain TeX."
@@ -121,16 +96,6 @@ If nil, none is specified."
 		 string))
 ;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
 (make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist)
-
-(defcustom TeX-queue-command "lpq -P%p"
-  "*Command used to show the status of a printer queue.
-
-First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'.  If this is nil,
-the printer has no corresponding command."
-  :group 'TeX-command
-  :type '(choice (string :tag "Queue check command")
-		 (const :tag "No such command" nil)))
 
 (defcustom TeX-mode-hook nil
   "A hook run in TeX mode buffers."
@@ -342,11 +307,55 @@ string."
   :type '(repeat (group :value ("" "")
 			regexp (string :tag "Style"))))
 
+;; Printing: If you want to print, TeX-print-command must be non-nil
+;; (if it is nil, you'll get a complaint when using the print menu).
+;; If you want to view the queue, TeX-queue-command needs to be
+;; non-nil (if it is nil, it won't get mentioned in the menu).  If
+;; TeX-printer-list is nil, nothing else gets asked: the menu entries
+;; lead directly to the respective commands.  If those commands
+;; contain %p, the value of TeX-printer-default gets inserted there,
+;; no questions asked.  Now if TeX-printer-list is non-nil, you'll
+;; always get asked which printer you want to use.  You can enter a
+;; configured printer from TeX-printer-list, or an unknown one.  The
+;; respective menus will show all configured printers.  Since you can
+;; enter unknown printers, the printer name _must_ be set with %p in
+;; TeX-print-command.
+
+(defcustom TeX-print-command
+  "{ test -e %s.dvi && %(o?)dvips -P%p %r %s; } || lp -d %p %o"
+  "Command used to print a file.
+
+First `%p' is expanded to the printer name, then ordinary expansion is
+performed as specified in `TeX-expand-list'.  If it is nil,
+then customization is requested."
+  :group 'TeX-command
+  :type '(choice (string :tag "Print command")
+		 (const :tag "No print command customized" nil)))
+
+(defcustom TeX-queue-command "lpstat -o %p" ; Formerly "lpq -P%p"
+  "Command used to show the status of a printer queue.
+
+First `%p' is expanded to the printer name, then ordinary expansion is
+performed as specified in `TeX-expand-list'.  If this is nil,
+the printer has no corresponding command."
+  :group 'TeX-command
+  :type '(choice (string :tag "Queue check command")
+		 (const :tag "No such command" nil)))
+
 ;; Enter the names of the printers available at your site, or nil if
 ;; you only have one printer.
 
 (defcustom TeX-printer-list
-  '(("Default" "%(o?)dvips -f %s | lpr" "lpq"))
+  '(("Default"
+     ;; Print to the (unnamed) default printer.  If there is a DVI
+     ;; file print via Dvips.  If not, pass the output file (which
+     ;; should then be a Postscript or PDF file) directly to lp.
+     "{ test -e %s.dvi && %(o?)dvips -f %r %s | lp; } || lp %o"
+     ;; Show the queue for the (unnamed) default printer.  Well, lpq
+     ;; would do that, but lpstat lists all jobs for a user and does
+     ;; not seem to have an option to show only the jobs for the
+     ;; default printer.
+     "lpstat")) ; Formerly "lpq"
   "List of available printers.
 
 The first element of each entry is the printer name.
@@ -381,7 +390,7 @@ get consulted."
 				   (and TeX-printer-list
 					(car (car TeX-printer-list)))
 				   "lp")
-  "*Default printer to use with `TeX-command'."
+  "Default printer to use with `TeX-command'."
   :group 'TeX-command
   :type 'string)
 
