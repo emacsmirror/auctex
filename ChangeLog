@@ -1,3 +1,13 @@
+2010-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-print-command): Support printing of Postscript and
+	PDF files.  Doc fix.
+	(TeX-queue-command): Use lpstat instead of lpq.  Doc fix.
+	(TeX-printer-list): Support printing of Postscript and PDF files.
+	Make use of System V style commands (lp, lpstat) instead of
+	Berkeley style (lpr, lpq).
+	(TeX-printer-default): Doc fix.
+
 2010-04-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-warning): Throw an error with a sensible message
