@@ -8,6 +8,9 @@
 	(TeX-view-program-selection): Enable commented code to support
 	darwin system.
 
+	* tex.el (TeX-math-input-method-off-regexp): Improve and fix typo.
+	See bug http://permalink.gmane.org/gmane.emacs.auctex.devel/2468.
+
 2013-04-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-style-list): Correct docstring.

@@ -5234,7 +5234,7 @@ sign.  With optional ARG, insert that many dollar signs."
   (TeX-math-input-method-off))
 
 (defvar TeX-math-input-method-off-regexp
-  "^\\(chinese\\|japanese\\|korean\\|bulgarian\\|russian\\)"
+  (concat "^" (regexp-opt '("chinese" "japanese" "korean" "bulgarian" "russian") t))
   "Regexp matching input methods to be deactivated when entering math mode.")
 
 (defun TeX-math-input-method-off ()
