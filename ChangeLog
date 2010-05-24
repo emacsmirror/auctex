@@ -1,3 +1,7 @@
+2010-05-24  Vincent Belaïche <vincent.belaiche@gmail.com>
+
+	* doc/auctex.texi (Texinfo mode): New section.
+
 2010-05-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-math-input-method-off-regexp): Fix regexp.
