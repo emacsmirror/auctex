@@ -1,4 +1,9 @@
-2010-05-24  Vincent Belaïche <vincent.belaiche@gmail.com>
+2010-05-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* autogen.sh: Set LANG=C when looking into ChangeLog for
+	AUCTEXDATE.
+
+2010-05-24  Vincent Belaïche  <vincent.belaiche@gmail.com>
 
 	* doc/auctex.texi (Texinfo mode): New section.
 
