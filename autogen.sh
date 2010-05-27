@@ -35,7 +35,7 @@ cd ..
 rm -rf autom4te.cache preview/autom4te.cache
 if test "x${AUCTEXDATE}" = x
 then
-    AUCTEXDATE=`sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog`
+    AUCTEXDATE=`LANG=C sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog`
     test "X${AUCTEXDATE}" != X || { echo "Can't find date in ChangeLog" >&2 ; exit 1; }
 fi
 
