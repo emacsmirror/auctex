@@ -1,3 +1,9 @@
+2010-06-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el (Texinfo-find-env-end, Texinfo-find-env-start):
+	Enable the commands to be used repeatedly without getting stuck at
+	an environment start or end respectively.
+
 2010-05-27  Ralf Angeli  <angeli@caeruleus.net>
 
 	* autogen.sh: Set LANG=C when looking into ChangeLog for
