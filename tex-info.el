@@ -112,14 +112,18 @@ With optional ARG, modify current environment."
   (let* ((envs (mapcar 'car Texinfo-environment-list))
 	 (regexp (concat "^[ \t]*" (regexp-quote TeX-esc) "\\(end \\)*"
 			 (regexp-opt envs t) "\\b"))
+	 (orig-pos (point))
 	 (level 1)
 	 case-fold-search)
     (save-restriction
       (save-excursion
 	(save-excursion
 	  (beginning-of-line)
+	  ;; Stop if point is inside of an @end <env> command, but not
+	  ;; if it is behind it.
 	  (when (and (looking-at regexp)
-		     (match-string 1))
+		     (match-string 1)
+		     (> (match-end 0) orig-pos))
 	    (setq level 0)))
 	(while (and (> level 0) (re-search-forward regexp nil t))
 	  (if (match-string 1)
@@ -133,19 +137,23 @@ With optional ARG, modify current environment."
   "Move point to the start of the current environment."
   (interactive)
   (let* ((envs (mapcar 'car Texinfo-environment-list))
-	 (regexp (concat "^[ \t]*" (regexp-quote TeX-esc) "\\(end \\)*"
+	 (regexp (concat "^[ \t]*\\(" (regexp-quote TeX-esc) "\\)\\(end \\)*"
 			 (regexp-opt envs t) "\\b"))
 	 (level 1)
+	 (orig-pos (point))
 	 case-fold-search)
     (save-restriction
       (save-excursion
 	(save-excursion
 	  (beginning-of-line)
+	  ;; Stop if point is inside of an @<env> command, but not if
+	  ;; it is before it.
 	  (when (and (looking-at regexp)
-		     (not (match-string 1)))
+		     (not (match-string 2))
+		     (< (match-beginning 1) orig-pos))
 	    (setq level 0)))
 	(while (and (> level 0) (re-search-backward regexp nil t))
-	  (if (match-string 1)
+	  (if (match-string 2)
 	      (setq level (1+ level))
 	    (setq level (1- level)))))
       (if (= level 0)
