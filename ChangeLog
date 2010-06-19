@@ -1,3 +1,8 @@
+2010-06-19  Berend de Boer  <berend@pobox.com>
+
+	* context.el: proper indent of all macros that can appear inside
+	an itemize list such as \sym.
+
 2010-06-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-info.el (Texinfo-find-env-end, Texinfo-find-env-start):
