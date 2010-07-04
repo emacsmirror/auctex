@@ -1,3 +1,8 @@
+2010-07-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-print-command, TeX-queue-command)
+	(TeX-printer-list): Switch back to Berkeley-style commands.
+
 2010-06-24  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Texinfo mode): Make a few corrections.
