@@ -1,5 +1,9 @@
 2010-07-04  Ralf Angeli  <angeli@caeruleus.net>
 
+	* doc/faq.texi: Update infos about Emacs versions.  Add FAQ entry
+	for file:line:error messages in case `TeX-next-error' fails due to
+	unbalanced parens.
+
 	* tex.el (TeX-print-command, TeX-queue-command)
 	(TeX-printer-list): Switch back to Berkeley-style commands.
 
