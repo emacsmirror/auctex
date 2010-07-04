@@ -322,7 +322,7 @@ string."
 ;; TeX-print-command.
 
 (defcustom TeX-print-command
-  "{ test -e %s.dvi && %(o?)dvips -P%p %r %s; } || lp -d %p %o"
+  "{ test -e %s.dvi && %(o?)dvips -P%p %r %s; } || lpr -P%p %o"
   "Command used to print a file.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
@@ -332,7 +332,7 @@ then customization is requested."
   :type '(choice (string :tag "Print command")
 		 (const :tag "No print command customized" nil)))
 
-(defcustom TeX-queue-command "lpstat -o %p" ; Formerly "lpq -P%p"
+(defcustom TeX-queue-command "lpq -P%p"
   "Command used to show the status of a printer queue.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
@@ -349,13 +349,10 @@ the printer has no corresponding command."
   '(("Default"
      ;; Print to the (unnamed) default printer.  If there is a DVI
      ;; file print via Dvips.  If not, pass the output file (which
-     ;; should then be a Postscript or PDF file) directly to lp.
-     "{ test -e %s.dvi && %(o?)dvips -f %r %s | lp; } || lp %o"
-     ;; Show the queue for the (unnamed) default printer.  Well, lpq
-     ;; would do that, but lpstat lists all jobs for a user and does
-     ;; not seem to have an option to show only the jobs for the
-     ;; default printer.
-     "lpstat")) ; Formerly "lpq"
+     ;; should then be a Postscript or PDF file) directly to lpr.
+     "{ test -e %s.dvi && %(o?)dvips -f %r %s | lpr; } || lpr %o"
+     ;; Show the queue for the (unnamed) default printer.
+     "lpq"))
   "List of available printers.
 
 The first element of each entry is the printer name.
