@@ -1,3 +1,7 @@
+2010-07-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el: Delete trailing whitespace.
+
 2010-07-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/faq.texi: Update infos about Emacs versions.  Add FAQ entry
