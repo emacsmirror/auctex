@@ -1,3 +1,8 @@
+2010-08-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/preview-dtxdoc.pl: Use explicit variable with split instead
+	of implicit split to @_ which does not work anymore in Perl 5.12.
+
 2010-07-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-info.el: Delete trailing whitespace.
