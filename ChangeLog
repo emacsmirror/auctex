@@ -1,3 +1,9 @@
+2010-08-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/ngerman.el: Prevent "| from leading to color bleed.
+
+	* style/german.el: Prevent "| from leading to color bleed.
+
 2010-08-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/preview-dtxdoc.pl: Use explicit variable with split instead
