@@ -1125,7 +1125,8 @@ end up in `font-lock-defaults'.  Each entry in LIST should be a
 cons pair as expected by `font-lock-defaults'.  The function also
 triggers Font Lock to recognize the change."
   (make-local-variable 'font-latex-syntax-alist)
-  (nconc font-latex-syntax-alist list)
+  (set (make-local-variable 'font-latex-syntax-alist)
+       (append font-latex-syntax-alist list))
 ;; FIXME: Are there situations where we need to alter `font-lock-defaults'
 ;; directly?
 ;;   (dolist (entry list)

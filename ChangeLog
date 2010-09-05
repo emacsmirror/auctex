@@ -11,6 +11,10 @@
 	* tex.el (TeX-math-input-method-off-regexp): Improve and fix typo.
 	See bug http://permalink.gmane.org/gmane.emacs.auctex.devel/2468.
 
+	* font-latex.el (font-latex-add-to-syntax-alist): Fix a bug in
+	`font-latex-add-to-syntax-alist' where it modified both the buffer
+	local and global value of `font-latex-syntax-alist'.
+
 2013-04-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-style-list): Correct docstring.
