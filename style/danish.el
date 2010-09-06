@@ -10,7 +10,7 @@
    ;; Fontification of quotation marks.
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '("\"`" "\"'"))
-     (font-latex-add-quotes '("\"<" "\">" french)))
+     (font-latex-add-quotes '("\">" "\"<" german)))
    (run-hooks 'TeX-language-dk-hook)))
 
 ;;; danish.el ends here
