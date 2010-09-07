@@ -1,3 +1,8 @@
+2010-09-06  Arne Jørgensen  <arne@arnested.dk>
+
+	* style/danish.el: Changed font-latex-add-quotes from french to
+	german.
+
 2010-08-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/ngerman.el: Prevent "| from leading to color bleed.
