@@ -1,5 +1,8 @@
 2010-09-12  Ralf Angeli  <angeli@caeruleus.net>
 
+	* style/virtex.el: Mention author.  Do not unnecessarily protect
+	`lambda' with `function'.
+
 	* font-latex.el (font-latex-keyword-matcher): Refine last change
 	to work properly with lists of face symbols.
 
