@@ -1,5 +1,11 @@
 2010-09-12  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex-fptex.el: Remove.
+
+	* Makefile.in (AUCSRC): Reflect removal of tex-fptex.el.
+
+	* doc/wininstall.texi: Reflect removal of tex-fptex.el.
+
 	* style/virtex.el: Mention author.  Do not unnecessarily protect
 	`lambda' with `function'.
 
