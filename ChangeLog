@@ -1,3 +1,8 @@
+2010-09-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-keyword-matcher): Refine last change
+	to work properly with lists of face symbols.
+
 2010-09-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/natbib.el: Update copyright information.
