@@ -82,7 +82,7 @@ MULEELC = @MULEELC@
 AUCSRC = tex.el tex-buf.el tex-style.el plain-tex.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el \
-	toolbar-x.el tex-bar.el bib-cite.el tex-fptex.el
+	toolbar-x.el tex-bar.el bib-cite.el
 AUCELC = $(AUCSRC:.el=.elc)
 
 STYLESRC = style/prosper.el \
