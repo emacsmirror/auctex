@@ -1486,7 +1486,7 @@ else.  There might be text before point."
 (defun ConTeXt-expand-options ()
   "Expand options for texexec command."
   (concat
-   (let ((engine (nth 4 (assq TeX-engine (TeX-engine-alist)))))
+   (let ((engine (eval (nth 4 (assq TeX-engine (TeX-engine-alist))))))
      (when engine
        (format "--engine=%s " engine)))
    (unless (eq ConTeXt-current-interface "en")
