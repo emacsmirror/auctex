@@ -1,3 +1,15 @@
+2010-09-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context.el (ConTeXt-extra-paragraph-commands): Remove.
+	(ConTeXt-language-variable-list): Add
+	`ConTeXt-extra-paragraph-commands'.
+
+	* context-en.el (ConTeXt-extra-paragraph-commands-en): New
+	variable.
+
+	* context-nl.el (ConTeXt-extra-paragraph-commands-nl): New
+	variable.
+
 2010-09-18  Ralf Angeli  <angeli@caeruleus.net>
 
 	* context.el (ConTeXt-expand-options): Eval value from engine
