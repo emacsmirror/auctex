@@ -904,10 +904,6 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 (defvar ConTeXt-item-list ()
   "List of macro's considered items.")
 
-(defvar ConTeXt-extra-paragraph-commands
-  '("crlf" "par")
-  "List of ConTeXt macros that should have their own line besides the section(-block) commands.")
-
 (defun ConTeXt-paragraph-commands-regexp ()
   "Return a regexp matching macros that should have their own line."
   (concat
@@ -1505,10 +1501,16 @@ else.  There might be text before point."
 ;; They are mapped to interface specific variables
 
 (defvar ConTeXt-language-variable-list
-  '(ConTeXt-define-list ConTeXt-setup-list ConTeXt-referencing-list ConTeXt-other-macro-list
-	   ConTeXt-project-structure-list
-	   ConTeXt-section-block-list ConTeXt-section-list
-		       ConTeXt-text ConTeXt-item-list))
+  '(ConTeXt-define-list
+    ConTeXt-setup-list
+    ConTeXt-referencing-list
+    ConTeXt-other-macro-list
+    ConTeXt-project-structure-list
+    ConTeXt-section-block-list
+    ConTeXt-section-list
+    ConTeXt-text
+    ConTeXt-item-list
+    ConTeXt-extra-paragraph-commands))
 
 (defcustom ConTeXt-clean-intermediate-suffixes
   ;; See *suffixes in texutil.pl.
