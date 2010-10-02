@@ -1,3 +1,7 @@
+2010-10-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/beamer.el ("beamer"): Prompt for block title.
+
 2010-09-28  Ralf Angeli  <angeli@caeruleus.net>
 
 	* context.el (ConTeXt-extra-paragraph-commands): Remove.
