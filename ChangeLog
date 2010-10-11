@@ -1,3 +1,8 @@
+2010-10-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-synctex-output-page): Return "1" if no page number
+	can be found to prevent an infinite loop in command expansion.
+
 2010-10-02  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/beamer.el ("beamer"): Prompt for block title.
