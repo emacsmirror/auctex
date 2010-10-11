@@ -1555,8 +1555,9 @@ enabled and the `synctex' binary is available."
 				       (file-name-directory
 					(TeX-active-master))))
 			 "-o" (TeX-active-master (TeX-output-extension))))))
-    (when (string-match "Page:\\([0-9]+\\)" synctex-output)
-      (match-string 1 synctex-output))))
+    (if (string-match "Page:\\([0-9]+\\)" synctex-output)
+	(match-string 1 synctex-output)
+      "1")))
 
 ;;; Miscellaneous minor modes
 
