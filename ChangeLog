@@ -1,3 +1,8 @@
+2010-10-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-arg-input-file-search): New user option.
+	(TeX-arg-input-file): Use it.
+
 2010-10-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-synctex-output-page): Return "1" if no page number
