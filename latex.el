@@ -1671,9 +1671,21 @@ OPTIONAL is ignored."
 	  (mapc 'TeX-run-style-hooks (LaTeX-listify-package-options options))
 	  (TeX-argument-insert options t))))))
 
+(defcustom TeX-arg-input-file-search t
+  "If `TeX-arg-input-file' should search for files.
+If the value is t, files in `TeX-macro-private' and
+`TeX-macro-global' are searched for and provided for completion.
+The file name is then inserted without directory and extension.
+If the value is nil, the file name can be specified manually and
+is inserted with a path relative to the directory of the current
+buffer's file and with extension.  If the value is `ask', you are
+asked for the method to use every time `TeX-arg-input-file' is
+called."
+  :group 'LaTeX-macro
+  :type '(choice (const t) (const nil) (const ask)))
+
 (defvar TeX-global-input-files nil
   "List of the non-local TeX input files.
-
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
@@ -1683,28 +1695,33 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  PROMPT is the prompt,
 LOCAL is a flag.  If the flag is set, only complete with local
 files."
-  (unless (or TeX-global-input-files local)
-    (message "Searching for files...")
-    (setq TeX-global-input-files
-	  (mapcar 'list (TeX-search-files (append TeX-macro-private
-						  TeX-macro-global)
-					  TeX-file-extensions t t))))
-  (let ((file (if TeX-check-path
-		  (completing-read
-		   (TeX-argument-prompt optional prompt "File")
-		   (TeX-delete-dups-by-car
-		    (append (mapcar 'list
-				    (TeX-search-files '("./")
-						      TeX-file-extensions
-						      t t))
-			    (unless local
-			      TeX-global-input-files))))
-		(read-file-name
-		 (TeX-argument-prompt optional prompt "File")))))
-    (if (null file)
-	(setq file ""))
-    (if (not (string-equal "" file))
-	(TeX-run-style-hooks file))
+  (let ((search (if (eq TeX-arg-input-file-search 'ask)
+		    (not (y-or-n-p "Find file yourself? "))
+		  TeX-arg-input-file-search))
+	file style)
+    (if search
+	(progn
+	  (unless (or TeX-global-input-files local)
+	    (message "Searching for files...")
+	    (setq TeX-global-input-files
+		  (mapcar 'list (TeX-search-files
+				 (append TeX-macro-private TeX-macro-global)
+				 TeX-file-extensions t t))))
+	  (setq file (completing-read
+		      (TeX-argument-prompt optional prompt "File")
+		      (TeX-delete-dups-by-car
+		       (append (mapcar 'list (TeX-search-files
+					      '("./") TeX-file-extensions t t))
+			(unless local
+			  TeX-global-input-files))))
+		style file))
+      (setq file (read-file-name
+		  (TeX-argument-prompt optional prompt "File") nil ""))
+      (unless (string-equal file "")
+	(setq file (file-relative-name file)))
+      (setq style (file-name-sans-extension (file-name-nondirectory file))))
+    (unless (string-equal "" style)
+      (TeX-run-style-hooks style))
     (TeX-argument-insert file optional)))
 
 (defvar BibTeX-global-style-files nil
