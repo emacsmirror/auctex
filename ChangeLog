@@ -1,3 +1,7 @@
+2010-11-16  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-view-program-list-builtin): Add Okular.
+
 2010-10-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (TeX-arg-input-file-search): New user option.
