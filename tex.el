@@ -1031,6 +1031,7 @@ The following built-in predicates are available:
       ("gv" "gv %o")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
       ("Evince" ("evince" (mode-io-correlate " -p %(outpage)") " %o"))
+      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%b")))
       ("xdg-open" "xdg-open %o"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
