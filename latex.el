@@ -4335,10 +4335,7 @@ use \\[customize]."
       (read-kbd-macro LaTeX-math-abbrev-prefix)
     LaTeX-math-abbrev-prefix))
 
-(defvar LaTeX-math-keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command)
-    map)
+(defvar LaTeX-math-keymap (make-sparse-keymap)
   "Keymap used for `LaTeX-math-mode' commands.")
 
 (defvar LaTeX-math-menu
@@ -4411,7 +4408,10 @@ the sequence by initializing this variable.")
 				  (list menu (vector (concat prefix value)
 						     name t))
 				(vector menu name t))
-			      (cdr parent))))))))))
+			      (cdr parent)))))))))
+  ;; Make the math prefix char available if it has not been used as a prefix.
+  (unless (lookup-key map (LaTeX-math-abbrev-prefix))
+    (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command)))
 
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy access to TeX math macros.
