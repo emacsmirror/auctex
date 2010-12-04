@@ -1,3 +1,8 @@
+2010-12-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-verbatim-macro-boundaries): Support verbatim
+	macros with braces.
+
 2010-12-04  Augusto Ritter Stoffel  <arstoffel@inf.ufrgs.br>  (tiny change)
 
 	* latex.el (LaTeX-math-keymap): Define a key for the math prefix
