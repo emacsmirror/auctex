@@ -1,3 +1,8 @@
+2010-12-04  Augusto Ritter Stoffel  <arstoffel@inf.ufrgs.br>  (tiny change)
+
+	* latex.el (LaTeX-math-keymap): Define a key for the math prefix
+	only if it has not been used as a prefix after the prefix.
+
 2010-11-16  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-view-program-list-builtin): Add Okular.
