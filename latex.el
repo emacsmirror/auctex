@@ -1,7 +1,8 @@
 ;;; latex.el --- Support for LaTeX documents.
 
 ;; Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2003,
-;;   2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;;   2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software
+;;   Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2058,10 +2059,22 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
 		   (/= (point) (line-beginning-position))))))
       ;; Search forward for the macro end, unless we failed to find a start
       (unless (bolp)
-	(let ((beg (1- (point))))
-	  (goto-char (1+ (match-end 0)))
-	  (skip-chars-forward (concat "^" (buffer-substring-no-properties
-					   (1- (point)) (point))))
+	(let* ((beg (1- (point)))
+	       (macro-end (match-end 0))
+	       ;; XXX: Here we assume we are dealing with \verb which
+	       ;; expects the delimiter right behind the command.
+	       ;; However, \lstinline can also cope with whitespace as
+	       ;; well as an optional argument after the command.
+	       (delimiter (buffer-substring-no-properties
+			   macro-end (1+ macro-end))))
+	  ;; Heuristic: If an opening brace is encountered, search for
+	  ;; both the opening and the closing brace as an end marker.
+	  ;; Like that the function should work for \verb|...| as well
+	  ;; as for \url{...}.
+	  (when (string= delimiter TeX-grop)
+	    (setq delimiter (concat delimiter TeX-grcl)))
+	  (goto-char (1+ macro-end))
+	  (skip-chars-forward (concat "^" delimiter))
 	  (when (<= orig (point))
 	    (cons beg (1+ (point)))))))))
 
