@@ -8,6 +8,19 @@
 
 @end ifset
 
+@heading News since 11.86
+
+@itemize @bullet
+@item
+Each @AUCTeX{} mode now has its own abbrev table.  On Emacsen which
+provide the possibility to inherit abbrevs from other tables, the
+abbrevs from the Text mode abbrev table are available as well.  Newly
+defined abbrevs are written to the mode-specific tables, though.
+
+@item
+@samp{tex-fptex.el} was removed.
+@end itemize
+
 @heading News in 11.86
 
 @itemize @bullet
