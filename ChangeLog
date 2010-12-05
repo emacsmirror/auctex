@@ -1,3 +1,22 @@
+2010-12-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context.el: Set up abbrev table.
+	(ConTeXt-mode-common-initialization): Set `local-abbrev-table'.
+
+	* latex.el: Set up abbrev table for LaTeX and docTeX mode.
+	(docTeX-mode): Set abbrev table.
+	(LaTeX-common-initialization): Set `local-abbrev-table'.
+
+	* plain-tex.el: Set up abbrev table.
+	(plain-TeX-common-initialization): Set `local-abbrev-table'.
+
+	* tex.el (TeX-mode-prefix): Add mode parameter.
+	(VirTeX-common-initialization): Do not set `local-abbrev-table'
+	anymore.
+	(TeX-abbrev-mode-setup): New function.
+
+	* doc/changes.texi: Mention change of abbrev handling.
+
 2010-12-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-verbatim-macro-boundaries): Support verbatim
