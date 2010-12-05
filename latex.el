@@ -4931,6 +4931,8 @@ This happens when \\left is inserted."
   :type 'hook
   :group 'LaTeX)
 
+(TeX-abbrev-mode-setup latex-mode)
+
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
 
@@ -4963,6 +4965,8 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
+(TeX-abbrev-mode-setup doctex-mode)
+
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
 
@@ -4971,6 +4975,7 @@ of `LaTeX-mode-hook'."
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
+  :abbrev-table doctex-mode-abbrev-table
   (setq major-mode 'doctex-mode)
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
@@ -5041,6 +5046,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (set-syntax-table LaTeX-mode-syntax-table)
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
+
+  (setq local-abbrev-table latex-mode-abbrev-table)
 
   ;; Filling
   (make-local-variable 'paragraph-ignore-fill-prefix)
@@ -5420,6 +5427,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
        'LaTeX-imenu-create-index-function)
 
   (use-local-map LaTeX-mode-map)
+
   ;; Calling `easy-menu-add' may result in the menu filters being
   ;; executed which call `TeX-update-style'.  So this is placed very
   ;; late in mode initialization to assure that all relevant variables
