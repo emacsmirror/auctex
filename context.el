@@ -1,6 +1,7 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003, 2004, 2005, 2006, 2008 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2005, 2006, 2008, 2010 Free Software
+;;   Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -1532,6 +1533,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
+(TeX-abbrev-mode-setup context-mode)
+
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
   ;; `plain-TeX-common-initialization' kills all local variables, but
@@ -1542,6 +1545,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
     (plain-TeX-common-initialization)
     (setq ConTeXt-current-interface save-ConTeXt-current-interface))
   (setq major-mode 'context-mode)
+
+  (setq local-abbrev-table context-mode-abbrev-table)
 
   ;; Make language specific variables buffer local
   (dolist (symbol ConTeXt-language-variable-list)
