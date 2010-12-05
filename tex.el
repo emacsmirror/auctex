@@ -849,13 +849,14 @@ If RESET is non-nil, `TeX-command-next' is reset to
 				      'TeX-command-next TeX-command-default))
 	  (set-buffer-modified-p (buffer-modified-p))))))
 
-(defun TeX-mode-prefix ()
-  "Return the prefix of the current mode as string."
-  (cdr (assoc major-mode '((plain-tex-mode . "plain-TeX")
-			   (latex-mode . "LaTeX")
-			   (doctex-mode . "docTeX")
-			   (texinfo-mode . "Texinfo")
-			   (context-mode . "ConTeXt")))))
+(defun TeX-mode-prefix (&optional mode)
+  "Return the prefix for the symbol MODE as string.
+If no mode is given the current major mode is used."
+  (cdr (assoc (or mode major-mode) '((plain-tex-mode . "plain-TeX")
+				     (latex-mode . "LaTeX")
+				     (doctex-mode . "docTeX")
+				     (texinfo-mode . "Texinfo")
+				     (context-mode . "ConTeXt")))))
 
 ;;; Viewing
 
@@ -2833,7 +2834,6 @@ The algorithm is as follows:
   (kill-all-local-variables)
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
-  (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
 
   ;; Ispell support
@@ -5382,6 +5382,20 @@ NAME may be a package, a command, or a document."
 (setq ispell-tex-major-modes
       (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
 	      ispell-tex-major-modes))
+
+
+;;; Abbrev mode
+
+(defmacro TeX-abbrev-mode-setup (mode)
+  "Set up the abbrev table and variable for MODE."
+  (let ((symbol (intern (concat (symbol-name mode) "-abbrev-table")))
+	(name (TeX-mode-prefix mode)))
+    `(progn
+       (defvar ,symbol nil
+	 ,(format "Abbrev table for %s mode." name))
+       (define-abbrev-table ',symbol nil)
+       (when (fboundp 'abbrev-table-put)
+	 (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table))))))
 
 
 ;;; Special provisions for other modes and libraries
