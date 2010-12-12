@@ -1100,10 +1100,10 @@ Just like array and tabular."
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
   (LaTeX-insert-environment environment)
-  (let ((pos (point-marker)))
-    (end-of-line 0)
-    (TeX-parse-arguments args)
-    (goto-char pos)))
+  (save-excursion
+    (LaTeX-find-matching-begin)
+    (end-of-line)
+    (TeX-parse-arguments args)))
 
 ;;; Item hooks
 
