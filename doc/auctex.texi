@@ -3698,16 +3698,21 @@ Here is a simple example of a style file.
    (LaTeX-largest-level-set "chapter")))
 @end lisp
 
-This file specifies that the largest kind of section in a @LaTeX{} document
-using the book document style is chapter.  The interesting thing to
-notice is that the style file defines an (anonymous) function, and adds it
-to the list of loaded style hooks by calling @code{TeX-add-style-hook}.
+The example is from the @AUCTeX{} sources and is loaded for any @LaTeX{}
+document using the book document class (or style before @LaTeX{}2e).
+The file specifies that the largest kind of section in such a document
+is chapter.  The interesting thing to notice is that the style file
+defines an (anonymous) function, and adds it to the list of loaded style
+hooks by calling @code{TeX-add-style-hook}.
 
-The first time the user indirectly tries to access some style specific
+The first time the user indirectly tries to access some style-specific
 information, such as the largest sectioning command available, the style
 hooks for all files directly or indirectly read by the current document
-is executed.  The actual files will only be evaluated once, but the
+are executed.  The actual files will only be evaluated once, but the
 hooks will be called for each buffer using the style file.
+
+Note that the basename of the style file and the name of the style hook
+should usually be identical.
 
 @defun TeX-add-style-hook @var{style} @var{hook}
 Add @var{hook} to the list of functions to run when we use the @TeX{}
