@@ -1,3 +1,8 @@
+2011-01-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-common-initialization): Add support for
+	\settoheight and \settodepth.
+
 2010-12-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (Simple Style): Add a note about the naming of
