@@ -5248,6 +5248,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("setlength" TeX-arg-macro "Length")
    '("addtolength" TeX-arg-macro "Length")
    '("settowidth" TeX-arg-macro t)
+   '("settoheight" TeX-arg-macro t)
+   '("settodepth" TeX-arg-macro t)
    '("\\" [ "Space" ])
    '("\\*" [ "Space" ])
    '("hyphenation" t)
