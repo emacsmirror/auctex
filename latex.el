@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 
 ;; Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2003,
-;;   2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software
+;;   2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software
 ;;   Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -1637,7 +1637,8 @@ OPTIONAL and IGNORE are ignored."
 (defun LaTeX-arg-usepackage (optional)
   "Insert arguments to usepackage.
 OPTIONAL is ignored."
-  (let ((TeX-file-extensions '("sty")))
+  (let ((TeX-file-extensions '("sty"))
+	(TeX-input-file-search t))
     (TeX-arg-input-file nil "Package")
     (save-excursion
       (search-backward-regexp "{\\(.*\\)}")
@@ -1672,16 +1673,45 @@ OPTIONAL is ignored."
 	  (mapc 'TeX-run-style-hooks (LaTeX-listify-package-options options))
 	  (TeX-argument-insert options t))))))
 
+(defcustom LaTeX-search-files-type-alist
+  '((texinputs "${TEXINPUTS.latex}" ("tex/generic/" "tex/latex/")
+	       TeX-file-extensions)
+    (docs "${TEXDOCS}" ("doc/") TeX-doc-extensions)
+    (graphics "${TEXINPUTS}" ("tex/") LaTeX-includegraphics-extensions)
+    (bibinputs "${BIBINPUTS}" ("bibtex/bib/") BibTeX-file-extensions)
+    (bstinputs "${BSTINPUTS}" ("bibtex/bst/") BibTeX-style-extensions))
+  "Alist of filetypes with locations and file extensions.
+Each element of the alist consists of a symbol expressing the
+filetype, a variable which can be expanded on kpathsea-based
+systems into the directories where files of the given type
+reside, a list of absolute directories, relative directories
+below the root of a TDS-compliant TeX tree or a list of variables
+with either type of directories as an alternative for
+non-kpathsea-based systems and a list of extensions to be matched
+upon a file search.  Note that the directories have to end with a
+directory separator.
+
+Reset the mode for a change of this variable to take effect."
+  :group 'TeX-file
+  :type '(alist :key-type symbol
+		:value-type
+		(group (string :tag "Kpathsea variable")
+		       (choice :tag "Directories"
+			       (repeat :tag "TDS subdirectories" string)
+			       (repeat :tag "Absolute directories" directory)
+			       (repeat :tag "Variables" variable))
+		       (choice :tag "Extensions"
+			       variable (repeat string)))))
+
 (defcustom TeX-arg-input-file-search t
   "If `TeX-arg-input-file' should search for files.
-If the value is t, files in `TeX-macro-private' and
-`TeX-macro-global' are searched for and provided for completion.
-The file name is then inserted without directory and extension.
-If the value is nil, the file name can be specified manually and
-is inserted with a path relative to the directory of the current
-buffer's file and with extension.  If the value is `ask', you are
-asked for the method to use every time `TeX-arg-input-file' is
-called."
+If the value is t, files in TeX's search path are searched for
+and provided for completion.  The file name is then inserted
+without directory and extension.  If the value is nil, the file
+name can be specified manually and is inserted with a path
+relative to the directory of the current buffer's file and with
+extension.  If the value is `ask', you are asked for the method
+to use every time `TeX-arg-input-file' is called."
   :group 'LaTeX-macro
   :type '(choice (const t) (const nil) (const ask)))
 
@@ -1705,16 +1735,15 @@ files."
 	  (unless (or TeX-global-input-files local)
 	    (message "Searching for files...")
 	    (setq TeX-global-input-files
-		  (mapcar 'list (TeX-search-files
-				 (append TeX-macro-private TeX-macro-global)
-				 TeX-file-extensions t t))))
+		  (mapcar 'list (TeX-search-files-by-type
+				 'texinputs 'global t t))))
 	  (setq file (completing-read
 		      (TeX-argument-prompt optional prompt "File")
 		      (TeX-delete-dups-by-car
-		       (append (mapcar 'list (TeX-search-files
-					      '("./") TeX-file-extensions t t))
-			(unless local
-			  TeX-global-input-files))))
+		       (append (mapcar 'list (TeX-search-files-by-type
+					      'texinputs 'local t t))
+			       (unless local
+				 TeX-global-input-files))))
 		style file))
       (setq file (read-file-name
 		  (TeX-argument-prompt optional prompt "File") nil ""))
@@ -1739,17 +1768,11 @@ string."
   (message "Searching for BibTeX styles...")
   (or BibTeX-global-style-files
       (setq BibTeX-global-style-files
-	    (mapcar 'list
-		    (TeX-search-files (append TeX-macro-private
-					      TeX-macro-global)
-				      BibTeX-style-extensions t t))))
-
+	    (mapcar 'list (TeX-search-files-by-type 'bstinputs 'global t t))))
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "BibTeX style")
-		    (append (mapcar 'list
-				    (TeX-search-files '("./")
-						      BibTeX-style-extensions
-						      t t))
+		    (append (mapcar 'list (TeX-search-files-by-type
+					   'bstinputs 'local t t))
 			    BibTeX-global-style-files))
    optional))
 
@@ -1767,15 +1790,12 @@ string."
   (message "Searching for BibTeX files...")
   (or BibTeX-global-files
       (setq BibTeX-global-files
-	    (mapcar 'list (TeX-search-files nil BibTeX-file-extensions t t))))
-
+	    (mapcar 'list (TeX-search-files-by-type 'bibinputs 'global t t))))
   (let ((styles (multi-prompt
 		 "," t
 		 (TeX-argument-prompt optional prompt "BibTeX files")
-		 (append (mapcar 'list
-				 (TeX-search-files '("./")
-						   BibTeX-file-extensions
-						   t t))
+		 (append (mapcar 'list (TeX-search-files-by-type
+					'bibinputs 'local t t))
 			 BibTeX-global-files))))
     (apply 'LaTeX-add-bibliographies styles)
     (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
@@ -5088,6 +5108,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq TeX-verbatim-p-function 'LaTeX-verbatim-p)
   (setq TeX-search-forward-comment-start-function
 	'LaTeX-search-forward-comment-start)
+  (set (make-local-variable 'TeX-search-files-type-alist)
+       LaTeX-search-files-type-alist)
 
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
