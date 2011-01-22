@@ -1,3 +1,27 @@
+2011-01-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-tree-expand): Make `subdirs' parameter optional.  Do
+	not try to call kpsewhich with --expand-braces anymore and adapt
+	code for handling of results accordingly.
+	(TeX-doc-extenstions): New variable.
+	(TeX-tree-roots): New function.
+	(TeX-tree-roots): New user option.
+	(TeX-kpathsea-format-alist): Remove.
+	(TeX-search-files-kpathsea): Add and use `extensions' and `scope'
+	parameters.
+	(TeX-search-files): Do not call `TeX-search-files-kpathsea'
+	anymore.
+	(TeX-search-files-type-alist): New variable.
+	(TeX-search-files-by-type): New function.
+
+	* latex.el (LaTeX-arg-usepackage): Let-bind
+	`TeX-input-file-search'.
+	(LaTeX-search-files-type-alist): New user option.
+	(TeX-arg-input-file-search): Doc fix.
+	(TeX-arg-input-file, TeX-arg-bibstyle, TeX-arg-bibliography): Use
+	`TeX-search-files-by-type' instead of `TeX-search-files'.
+	(LaTeX-common-initialization): Set `TeX-search-files-type-alist'.
+
 2011-01-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-common-initialization): Add support for
