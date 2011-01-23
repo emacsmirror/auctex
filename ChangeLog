@@ -1,5 +1,8 @@
 2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex-fold.el (TeX-fold-post-command): Add `forward-char' and
+	`backward-char' to commands on which to open an overlay.
+
 	* doc/auctex.texi (Adding Macros): Mention
 	`TeX-arg-input-file-search'.
 

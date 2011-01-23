@@ -1,3 +1,8 @@
+2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* preview.el (preview-auto-reveal): Add `forward-char' and
+	`backward-char' to commands on which to open an overlay.
+
 2010-10-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* preview.el (preview-gs-options): Start gs with -dDELAYSAFER
