@@ -3535,7 +3535,7 @@ recurse, a positive integer means go that far deep in the directory
 hierarchy, t means recurse indefinitely.
 @end defopt
 
-By default, @AUCTeX{} will ignore files name @file{.}, @file{..},
+By default, @AUCTeX{} will ignore files named @file{.}, @file{..},
 @file{SCCS}, @file{RCS}, and @file{CVS}.
 
 @defopt TeX-ignore-file
@@ -3848,8 +3848,11 @@ Prompt for a filename in the current directory, and use it without the
 extension.
 
 @item TeX-arg-input-file
+@vindex TeX-arg-input-file-search
 Prompt for the name of an input file in @TeX{}'s search path, and use it
-without the extension.  Run the style hooks for the file.
+without the extension.  Run the style hooks for the file.  (Note that
+the behavior (type of prompt and inserted file name) of the function can
+be controlled by the variable @code{TeX-arg-input-file-search}.)
 
 @item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
