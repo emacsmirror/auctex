@@ -1,3 +1,8 @@
+2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Adding Macros): Mention
+	`TeX-arg-input-file-search'.
+
 2011-01-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-tree-expand): Make `subdirs' parameter optional.  Do
