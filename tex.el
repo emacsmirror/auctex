@@ -2400,11 +2400,14 @@ Or alternatively:
 	       (pattern (TeX-match-buffer 0))
 	       (symbol (buffer-substring begin end))
 	       (list (funcall (nth 2 entry)))
-	       (completion (try-completion symbol list)))
+	       (completion (try-completion symbol list))
+	       (buf-name "*Completions*"))
 	  (cond ((eq completion t)
 		 (and close
 		      (not (looking-at (regexp-quote close)))
-		      (insert close)))
+		      (insert close))
+		 (let ((window (get-buffer-window buf-name)))
+		   (when window (delete-window window))))
 		((null completion)
 		 (error "Can't find completion for \"%s\"" pattern))
 		((not (string-equal symbol completion))
@@ -2413,13 +2416,19 @@ Or alternatively:
 		 (and close
 		      (eq (try-completion completion list) t)
 		      (not (looking-at (regexp-quote close)))
-		      (insert close)))
+		      (insert close))
+		 (let ((window (get-buffer-window buf-name)))
+		   (when window (delete-window window))))
 		(t
-		 (message "Making completion list...")
-		 (let ((list (all-completions symbol list nil)))
-		   (with-output-to-temp-buffer "*Completions*"
-		     (display-completion-list list)))
-		 (message "Making completion list...done"))))
+		 (if (fboundp 'completion-in-region)
+		     (completion-in-region begin end
+					   (all-completions symbol list nil))
+		   (message "Making completion list...")
+		   (let ((list (all-completions symbol list nil)))
+		     (with-output-to-temp-buffer buf-name
+		       (display-completion-list list)))
+		   (set-window-dedicated-p (get-buffer-window buf-name) 'soft)
+		   (message "Making completion list...done")))))
       (funcall (nth 1 entry)))))
 
 (defcustom TeX-default-macro "ref"
