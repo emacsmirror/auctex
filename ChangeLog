@@ -1,3 +1,8 @@
+2011-01-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-complete-symbol): Get rid of the window with the
+	completions when possible.
+
 2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-fold.el (TeX-fold-post-command): Add `forward-char' and
