@@ -1,3 +1,8 @@
+2011-02-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/letter.el (LaTeX-env-recipient): Use \renewcommand instead
+	of \def to set date.
+
 2011-01-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-parse-macro): Do not insert braces if the argument
