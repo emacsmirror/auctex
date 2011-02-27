@@ -1,3 +1,8 @@
+2011-02-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-common-initialization): Add support for
+	\ProvidesPackage.
+
 2011-02-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/letter.el (LaTeX-env-recipient): Use \renewcommand instead
