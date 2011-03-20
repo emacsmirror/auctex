@@ -1,3 +1,8 @@
+2011-03-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-synchronous-sentinel): Strip directory part of
+	master file because we are already in the master directory.
+
 2011-03-13  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (STYLESRC): Add style/lettrine.el and
