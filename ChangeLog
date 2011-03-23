@@ -1,3 +1,10 @@
+2011-03-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/bulgarian.el, style/czech.el, style/danish.el,
+	style/frenchb.el, style/icelandic.el, style/polish.el,
+	style/polski.el, style/slovak.el, style/swedish.el: Do not set
+	`TeX-quote-language' if `override' is in effect.
+
 2011-03-20  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-synchronous-sentinel): Strip directory part of
