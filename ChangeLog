@@ -1,3 +1,8 @@
+2011-03-27  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-mode): Add support for I/O
+	correlation mode inverse search for the Evince document viewer.
+
 2011-03-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/bulgarian.el, style/czech.el, style/danish.el,
