@@ -1413,6 +1413,22 @@ If this is nil, an empty string will be returned."
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
+(defun TeX-source-correlate-sync-source (file linecol)
+  "Show TeX FILE with point at LINECOL.
+This function is called when emacs receives a SyncSource signal
+emitted from the Evince document viewer."
+  ;; FILE is actually given as relative path to the TeX-master root document,
+  ;; so we need to strip the directory part to match the buffer name.
+  (let ((buf (get-buffer (file-name-nondirectory file)))
+        (line (car linecol))
+        (col (cadr linecol)))
+    (if (null buf)
+        (message "No buffer for %s." file)
+      (switch-to-buffer buf)
+      (goto-line (car linecol))
+      (unless (= col -1)
+        (move-to-column col)))))
+
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
 
@@ -1434,6 +1450,15 @@ SyncTeX are recognized."
 				       TeX-source-correlate-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
+  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
+  (when (and (fboundp 'dbus-register-signal)
+	     (fboundp 'dbus-call-method)
+	     (executable-find "evince"))
+    (require 'dbus)
+    (dbus-register-signal
+     :session nil "/org/gnome/evince/Window/0"
+     "org.gnome.evince.Window" "SyncSource"
+     'TeX-source-correlate-sync-source))
   (unless TeX-source-correlate-method-active
     (setq TeX-source-correlate-method-active
 	  (if (eq TeX-source-correlate-method 'auto)
