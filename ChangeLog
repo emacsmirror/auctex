@@ -1,3 +1,14 @@
+2011-04-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/xspace.el.
+
+	* style/xspace.el: Add copyright notice and license blurb.
+	Correct a few things.
+
+2011-04-03  Mads Jensen  <mje@inducks.org>
+
+	* style/xspace.el: New file.
+
 2011-03-27  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-source-correlate-mode): Add support for I/O
