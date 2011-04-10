@@ -1,3 +1,8 @@
+2011-04-10  Antoine Levitt  <antoine.levitt@gmail.com>  (tiny change)
+
+	* tex.el (TeX-source-correlate-sync-source): Do not use
+	`goto-line'.
+
 2011-04-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (STYLESRC): Add style/xspace.el.
