@@ -1425,7 +1425,9 @@ emitted from the Evince document viewer."
     (if (null buf)
         (message "No buffer for %s." file)
       (switch-to-buffer buf)
-      (goto-line (car linecol))
+      (push-mark (point) 'nomsg)
+      (goto-char (point-min))
+      (forward-line (1- line))
       (unless (= col -1)
         (move-to-column col)))))
 
