@@ -1455,6 +1455,7 @@ SyncTeX are recognized."
   ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
   (when (and (fboundp 'dbus-register-signal)
 	     (fboundp 'dbus-call-method)
+	     (getenv "DBUS_SESSION_BUS_ADDRESS")
 	     (executable-find "evince"))
     (require 'dbus)
     (dbus-register-signal
