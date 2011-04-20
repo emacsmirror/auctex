@@ -1,3 +1,8 @@
+2011-04-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-expand-spec): Make sure the expansion of a
+	placeholder is not processed again.
+
 2011-04-15  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-built-in-keyword-classes): Make a few
