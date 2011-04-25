@@ -1,3 +1,7 @@
+2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-style-list): Add memoir.
+
 2011-04-20  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-fold.el (TeX-fold-expand-spec): Make sure the expansion of a
