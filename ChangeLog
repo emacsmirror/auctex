@@ -1,5 +1,13 @@
 2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
 
+	* style/setspace.el: Add support for changing \displayskipstretch.
+
+2011-04-25  Mads Jensen  <mje@inducks.org>
+
+	* style/setspace.el: New file.
+
+2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
 	* latex.el (LaTeX-style-list): Add memoir.
 
 2011-04-20  Ralf Angeli  <angeli@caeruleus.net>
