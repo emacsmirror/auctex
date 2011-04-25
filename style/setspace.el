@@ -34,6 +34,7 @@
  (lambda ()
    (TeX-add-symbols
     '("setstretch" "Stretch")
+    '("setdisplayskipstretch" "Stretch")
     '("SetSinglespace" "Stretch")
     '("onehalfspacing" 0)
     '("doublespacing" 0)
@@ -54,7 +55,7 @@
                               'function))))
 
 (defvar LaTeX-setspace-package-options 
-  '("doublespacing" "onehalfspacing" "singlespacing")
+  '("doublespacing" "onehalfspacing" "singlespacing" "nodisplayskipstretch")
   "Package options for the setspace package.")
 
 ;;; setspace.el ends here
