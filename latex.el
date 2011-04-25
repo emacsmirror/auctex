@@ -1598,6 +1598,7 @@ string."
 			      ("dinbrief")
 			      ("foils")
 			      ("letter")
+			      ("memoir")
 			      ("minimal")
 			      ("prosper")
 			      ("report")
