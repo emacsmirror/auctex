@@ -307,7 +307,7 @@ variable `font-latex-fontify-sectioning'." num)
       ("providecommand" "*|{\\[[{")
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
-      ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("sbox" "{")
+      ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
       ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
