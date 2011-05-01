@@ -1,3 +1,8 @@
+2011-05-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add
+	definition for \rule and remove the one for \sbox.
+
 2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/setspace.el: Add support for changing \displayskipstretch.
