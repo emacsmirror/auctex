@@ -2110,7 +2110,9 @@ trees.  Only existing directories are returned."
 	    (add-to-list 'path-list path t)))
       (error nil))
     (dolist (elt path-list)
-      (let ((separators (if (string-match ";" elt) "[\n\r;]" "[\n\r:]")))
+      (let ((separators (if (string-match "^[A-Za-z]:" elt)
+			    "[\n\r;]"
+			  "[\n\r:]")))
 	(dolist (item (condition-case nil
 			  (split-string elt separators t)
 			;; COMPATIBILITY for XEmacs <= 21.4.15
