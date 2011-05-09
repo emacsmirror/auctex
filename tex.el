@@ -1413,10 +1413,12 @@ If this is nil, an empty string will be returned."
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
-(defun TeX-source-correlate-sync-source (file linecol)
+(defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
-emitted from the Evince document viewer."
+emitted from the Evince document viewer.  IGNORED absorbs an
+unused id field accompanying the DBUS signal sent by Evince-3.0.0
+or newer."
   ;; FILE is actually given as relative path to the TeX-master root document,
   ;; so we need to strip the directory part to match the buffer name.
   (let ((buf (get-buffer (file-name-nondirectory file)))
@@ -1569,8 +1571,8 @@ returned."
 (defvar TeX-synctex-tex-flags "--synctex=1"
   "Extra flags to pass to TeX commands to enable SyncTeX.")
 
-(defun TeX-synctex-output-page ()
-  "Return the page corresponding to the current source position.
+(defun TeX-synctex-output-page-1 (file)
+  "Return the page corresponding to the current position in FILE.
 This method assumes that the document was compiled with SyncTeX
 enabled and the `synctex' binary is available."
   (let ((synctex-output
@@ -1578,16 +1580,24 @@ enabled and the `synctex' binary is available."
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
 			 "-i" (format "%s:%s:%s" (line-number-at-pos)
 				      (current-column)
-				      ;; The file name relative to the
-				      ;; directory of the master file.
-				      (file-relative-name
-				       (buffer-file-name)
-				       (file-name-directory
-					(TeX-active-master))))
+				      file)
 			 "-o" (TeX-active-master (TeX-output-extension))))))
-    (if (string-match "Page:\\([0-9]+\\)" synctex-output)
-	(match-string 1 synctex-output)
-      "1")))
+    (when (string-match "Page:\\([0-9]+\\)" synctex-output)
+      (match-string 1 synctex-output))))
+
+(defun TeX-synctex-output-page ()
+  "Return the page corresponding to the position in the current buffer.
+This method assumes that the document was compiled with SyncTeX
+enabled and the `synctex' binary is available."
+  (let ((file (file-relative-name (buffer-file-name)
+				   (file-name-directory
+				    (TeX-active-master)))))
+    ;; On some systems, synctex wants foo/bar.tex for multifile docs, while on
+    ;; others it wants ./foo/bar.tex.  So try both variants before falling back
+    ;; to page 1.
+    (or (TeX-synctex-output-page-1 file)
+	(TeX-synctex-output-page-1 (concat "./" file))
+	"1")))
 
 ;;; Miscellaneous minor modes
 
