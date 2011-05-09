@@ -1,3 +1,13 @@
+2011-05-09  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-synctex-output-page-1): New function for calling
+	synctex.
+	(TeX-synctex-output-page): Use it, and try relative file names
+	with and without leading ./ when calling synctex before falling
+	back to page 1.
+	(TeX-source-correlate-sync-source): Add &rest parameter, because
+	Evince 3 sends an additional (ignored) parameter via dbus.
+
 2011-05-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-tree-expand): Use a different test to check for an
