@@ -453,9 +453,9 @@ string."
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
     ("%(outpage)" (lambda ()
-		    (if TeX-source-correlate-output-page-function
-			(funcall TeX-source-correlate-output-page-function)
-		      "1")))
+		    (or (when TeX-source-correlate-output-page-function
+			  (funcall TeX-source-correlate-output-page-function))
+			"1")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
