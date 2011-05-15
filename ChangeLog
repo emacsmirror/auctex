@@ -1,3 +1,10 @@
+2011-05-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/setspace.el.
+
+	* tex.el (TeX-expand-list): Add a safeguard to the %(outpage)
+	expander for when an output page function returns nil.
+
 2011-05-09  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-synctex-output-page-1): New function for calling
