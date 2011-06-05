@@ -1419,9 +1419,14 @@ This function is called when emacs receives a SyncSource signal
 emitted from the Evince document viewer.  IGNORED absorbs an
 unused id field accompanying the DBUS signal sent by Evince-3.0.0
 or newer."
-  ;; FILE is actually given as relative path to the TeX-master root document,
-  ;; so we need to strip the directory part to match the buffer name.
-  (let ((buf (get-buffer (file-name-nondirectory file)))
+  ;; FILE may be given as relative path to the TeX-master root document or as
+  ;; absolute file:// URL.  In the former case, the tex file has to be already
+  ;; opened.
+  (require 'url-parse)
+  (let ((buf (let ((f (aref (url-generic-parse-url file) 6)))
+	       (if (file-name-absolute-p f)
+		   (find-file f)
+		 (get-buffer (file-name-nondirectory file)))))
         (line (car linecol))
         (col (cadr linecol)))
     (if (null buf)

@@ -1,3 +1,8 @@
+2011-05-26  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Adapt to handle
+	file:// URLs.
+
 2011-05-15  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (STYLESRC): Add style/setspace.el.
