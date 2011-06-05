@@ -1,3 +1,8 @@
+2011-06-05  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Restore Emacs 21
+	compatibility.
+
 2011-05-26  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-source-correlate-sync-source): Adapt to handle

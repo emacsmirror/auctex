@@ -1422,8 +1422,13 @@ or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (require 'url-parse)
-  (let ((buf (let ((f (aref (url-generic-parse-url file) 6)))
+  (let ((buf (let ((f (condition-case nil
+			  (progn
+			    (require 'url-parse)
+			    (aref (url-generic-parse-url file) 6))
+			;; For Emacs 21 compatibility, which doesn't have the
+			;; url package.
+			(file-error (replace-regexp-in-string "^file://" "" file)))))
 	       (if (file-name-absolute-p f)
 		   (find-file f)
 		 (get-buffer (file-name-nondirectory file)))))
