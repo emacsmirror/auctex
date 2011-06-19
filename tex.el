@@ -1225,7 +1225,9 @@ predicates are true, nil otherwise."
 (defvar TeX-engine-alist-builtin
   '((default "Default" TeX-command LaTeX-command ConTeXt-engine)
     (xetex "XeTeX" "xetex" "xelatex" "xetex")
-    (luatex "LuaTeX" "luatex" "lualatex" "luatex")
+    ;; Some luatex versions before 0.71 would use "texput" as file
+    ;; name if --jobname were not supplied
+    (luatex "LuaTeX" "luatex --jobname=%s" "lualatex --jobname=%s" "luatex")
     (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine))
   "Alist of built-in TeX engines and associated commands.
 For a description of the format see `TeX-engine-alist'.")
