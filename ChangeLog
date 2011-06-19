@@ -2,6 +2,8 @@
 
 	* tex.el (TeX-engine-alist-builtin): Add --jobname to luatex and
 	lualatex calls.
+	(TeX-engine-alist-builtin): Remove --jobname again for luatex but
+	not for lualatex.
 
 2011-06-05  Tassilo Horn  <tassilo@member.fsf.org>
 
