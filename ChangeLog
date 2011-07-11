@@ -1,3 +1,11 @@
+2011-07-11  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* tex-info.el (Texinfo-mark-environment, Texinfo-mark-section)
+	(Texinfo-mark-node): New defun.
+	(Texinfo-mode-map): added key bindings for
+	Texinfo-mark-environment, Texinfo-mark-section, and
+	Texinfo-mark-node.
+
 2011-06-19  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-engine-alist-builtin): Add --jobname to luatex and
