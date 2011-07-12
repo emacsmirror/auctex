@@ -3671,8 +3671,9 @@ non-nil, remove file extension."
 	       (delete "." dirs))
 	   (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
 		 result (apply #'append (mapcar (lambda (x)
-						  (directory-files
-						   x (not nodir) extensions))
+						  (when (file-readable-p x)
+						    (directory-files
+						     x (not nodir) extensions)))
 						dirs)))
 	   (if strip
 	       (mapcar (lambda(x)
