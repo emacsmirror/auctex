@@ -1,3 +1,8 @@
+2011-07-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-search-files-kpathsea): Check if directories are
+	accessible.
+
 2011-07-11  Vincent Belaïche  <vincentb1@users.sourceforge.net>
 
 	* tex-info.el (Texinfo-mark-environment, Texinfo-mark-section)
