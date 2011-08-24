@@ -1,3 +1,9 @@
+2011-08-24  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-synctex-output-page): TeXLive 2011's synctex wants
+	absolute file names with dot indicating the master, like
+	/foo/bar/./baz/chap1.tex.  So add this as another variant.
+
 2011-08-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Take characters after

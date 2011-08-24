@@ -1601,13 +1601,17 @@ enabled and the `synctex' binary is available."
   "Return the page corresponding to the position in the current buffer.
 This method assumes that the document was compiled with SyncTeX
 enabled and the `synctex' binary is available."
-  (let ((file (file-relative-name (buffer-file-name)
+  (let* ((file (file-relative-name (buffer-file-name)
 				   (file-name-directory
-				    (TeX-active-master)))))
-    ;; On some systems, synctex wants foo/bar.tex for multifile docs, while on
-    ;; others it wants ./foo/bar.tex.  So try both variants before falling back
-    ;; to page 1.
-    (or (TeX-synctex-output-page-1 file)
+				    (TeX-active-master))))
+	 (abs-file (concat (expand-file-name (file-name-directory (TeX-active-master)))
+			   "./" file)))
+    ;; It's known that depending on synctex version one of
+    ;; /absolute/path/./foo/bar.tex, foo/bar.tex, or ./foo/bar.tex (relative to
+    ;; TeX-master, and the "." in the absolute path is important) are needed.
+    ;; So try all variants before falling back to page 1.
+    (or (TeX-synctex-output-page-1 abs-file)
+	(TeX-synctex-output-page-1 file)
 	(TeX-synctex-output-page-1 (concat "./" file))
 	"1")))
 
