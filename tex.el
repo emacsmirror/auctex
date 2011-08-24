@@ -1610,7 +1610,8 @@ enabled and the `synctex' binary is available."
   (let* ((file (file-relative-name (buffer-file-name)
 				   (file-name-directory
 				    (TeX-active-master))))
-	 (abs-file (concat (expand-file-name (file-name-directory (TeX-active-master)))
+	 (abs-file (concat (expand-file-name (or (file-name-directory (TeX-active-master))
+						 (file-name-directory (buffer-file-name))))
 			   "./" file)))
     ;; It's known that depending on synctex version one of
     ;; /absolute/path/./foo/bar.tex, foo/bar.tex, or ./foo/bar.tex (relative to
