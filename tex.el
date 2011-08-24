@@ -1017,7 +1017,7 @@ The following built-in predicates are available:
 ;;       ("displayline" "displayline %n %o %b")
 ;;       ("open" "open %o")))
    (t
-    '(("xdvi" ("%(o?)xdvi"
+    `(("xdvi" ("%(o?)xdvi"
 	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
 	       ((paper-a4 paper-portrait) " -paper a4")
 	       ((paper-a4 paper-landscape) " -paper a4r")
@@ -1031,7 +1031,13 @@ The following built-in predicates are available:
       ("dvips and gv" "%(o?)dvips %d -o && gv %f")
       ("gv" "gv %o")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
-      ("Evince" ("evince" (mode-io-correlate " -p %(outpage)") " %o"))
+      ("Evince" ("evince" (mode-io-correlate
+			   ;; With evince 3, -p N opens the page *labeled* N,
+			   ;; and -i,--page-index the physical page N.
+			   ,(if (string-match "--page-index"
+					      (shell-command-to-string "evince --help"))
+				" -i %(outpage)"
+			      " -p %(outpage)")) " %o"))
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%b")))
       ("xdg-open" "xdg-open %o"))))
   "Alist of built-in viewer specifications.
