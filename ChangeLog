@@ -1,3 +1,16 @@
+2011-09-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Marking): Make a few corrections throughout the
+	section.
+	(Adding Macros): Document special values for numbers used together
+	with `TeX-add-symbols'.
+
+2011-09-18  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* doc/auctex.texi: Add documentation for functions
+	LaTeX-mark-section, LaTeX-mark-environment, Texinfo-mark-section,
+	Texinfo-mark-environment and Texinfo-mark-node.
+
 2011-08-24  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-synctex-output-page): TeXLive 2011's synctex wants
