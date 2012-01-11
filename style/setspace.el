@@ -50,8 +50,8 @@
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("singlespacing" "")
-                              '("doublespacing" "")
-                              '("onehalfspacing" ""))
+				("doublespacing" "")
+				("onehalfspacing" ""))
                               'function))))
 
 (defvar LaTeX-setspace-package-options 
