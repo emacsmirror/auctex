@@ -1,3 +1,11 @@
+2012-04-08  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): New function.
+	(TeX-evince-sync-view): New function.
+	(TeX-view-program-list-builtin): Use Evince's DBUS interface for
+	forward search if available.
+	(TeX-source-correlate-mode): Use TeX-evince-dbus-p.
+
 2012-01-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/setspace.el ("setspace"): Correct quoting.

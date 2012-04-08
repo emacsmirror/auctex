@@ -1003,6 +1003,40 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
+(defun TeX-evince-dbus-p ()
+  "Return non-nil, if evince is installed and accessible via its
+DBUS interface."
+  (and (fboundp 'dbus-register-signal)
+       (fboundp 'dbus-call-method)
+       (getenv "DBUS_SESSION_BUS_ADDRESS")
+       (executable-find "evince")
+       (member
+	"org.gnome.evince.Daemon"
+	(dbus-introspect-get-interface-names
+	 :session "org.gnome.evince.Daemon"
+	 "/org/gnome/evince/Daemon"))))
+
+(defun TeX-evince-sync-view ()
+  (let* ((uri (concat "file://" (expand-file-name
+				 (concat file "." (TeX-output-extension)))))
+	 (owner (dbus-call-method
+		 :session "org.gnome.evince.Daemon"
+		 "/org/gnome/evince/Daemon"
+		 "org.gnome.evince.Daemon"
+		 "FindDocument"
+		 uri
+		 t)))
+    (if owner
+	(dbus-call-method
+	 :session owner
+	 "/org/gnome/evince/Window/0"
+	 "org.gnome.evince.Window"
+	 "SyncView"
+	 (buffer-file-name)
+	 (list :struct :int32 (line-number-at-pos) :int32 1)
+	 (round (float-time)))
+      (error "Couldn't find the Evince instance for %s" uri))))
+
 (defvar TeX-view-program-list-builtin
   (cond
    ((eq system-type 'windows-nt)
@@ -1031,13 +1065,15 @@ The following built-in predicates are available:
       ("dvips and gv" "%(o?)dvips %d -o && gv %f")
       ("gv" "gv %o")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
-      ("Evince" ("evince" (mode-io-correlate
-			   ;; With evince 3, -p N opens the page *labeled* N,
-			   ;; and -i,--page-index the physical page N.
-			   ,(if (string-match "--page-index"
-					      (shell-command-to-string "evince --help"))
-				" -i %(outpage)"
-			      " -p %(outpage)")) " %o"))
+      ("Evince" ,(if (TeX-evince-dbus-p)
+		     'TeX-evince-sync-view
+		   `("evince" (mode-io-correlate
+			       ;; With evince 3, -p N opens the page *labeled* N,
+			       ;; and -i,--page-index the physical page N.
+			       ,(if (string-match "--page-index"
+						  (shell-command-to-string "evince --help"))
+				    " -i %(outpage)"
+				  " -p %(outpage)")) " %o")))
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%b")))
       ("xdg-open" "xdg-open %o"))))
   "Alist of built-in viewer specifications.
@@ -1473,10 +1509,7 @@ SyncTeX are recognized."
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
   ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
-  (when (and (fboundp 'dbus-register-signal)
-	     (fboundp 'dbus-call-method)
-	     (getenv "DBUS_SESSION_BUS_ADDRESS")
-	     (executable-find "evince"))
+  (when (TeX-evince-dbus-p)
     (require 'dbus)
     (dbus-register-signal
      :session nil "/org/gnome/evince/Window/0"
