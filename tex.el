@@ -1008,6 +1008,7 @@ The following built-in predicates are available:
 DBUS interface."
   (and (fboundp 'dbus-register-signal)
        (fboundp 'dbus-call-method)
+       (require 'dbus)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
        (member
@@ -1510,7 +1511,6 @@ SyncTeX are recognized."
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
   ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
   (when (TeX-evince-dbus-p)
-    (require 'dbus)
     (dbus-register-signal
      :session nil "/org/gnome/evince/Window/0"
      "org.gnome.evince.Window" "SyncSource"
