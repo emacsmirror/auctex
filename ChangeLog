@@ -1,3 +1,10 @@
+2012-04-10  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-sync-view): Fix arithmetic range error.
+	(TeX-evince-dbus-p): Add parameter to extend the check depending
+	on wanted features (e.g., forward search).
+	(TeX-view-program-list-builtin): Use it.
+
 2012-04-08  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-evince-dbus-p): New function.

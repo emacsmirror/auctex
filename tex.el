@@ -1003,21 +1003,30 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-(defun TeX-evince-dbus-p ()
-  "Return non-nil, if evince is installed and accessible via its
-DBUS interface."
+(defun TeX-evince-dbus-p (&rest options)
+  "Return non-nil, if evince is installed and accessible via DBUS.
+Additional OPTIONS may be given to extend the check.  If none are
+given, only the minimal requirements needed by backward search
+are checked.  If OPTIONS include `:forward', which is currently
+the only option, then additional requirements needed by forward
+search are checked, too."
   (and (fboundp 'dbus-register-signal)
        (fboundp 'dbus-call-method)
        (require 'dbus)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
-       (member
-	"org.gnome.evince.Daemon"
-	(dbus-introspect-get-interface-names
-	 :session "org.gnome.evince.Daemon"
-	 "/org/gnome/evince/Daemon"))))
+       (if (memq :forward options)
+	   (dbus-introspect-get-method
+	    :session "org.gnome.evince.Daemon"
+	    "/org/gnome/evince/Daemon"
+	    "org.gnome.evince.Daemon"
+	    "FindDocument"))))
 
 (defun TeX-evince-sync-view ()
+  "Focus the focused page/paragraph in Evince with the position
+of point in emacs by using Evince's DBUS API.  Used by default
+for the Evince viewer entry in `TeX-view-program-list-builtin' if
+the requirements are met."
   (let* ((uri (concat "file://" (expand-file-name
 				 (concat file "." (TeX-output-extension)))))
 	 (owner (dbus-call-method
@@ -1035,7 +1044,7 @@ DBUS interface."
 	 "SyncView"
 	 (buffer-file-name)
 	 (list :struct :int32 (line-number-at-pos) :int32 1)
-	 (round (float-time)))
+	 :uint32 (float-time))
       (error "Couldn't find the Evince instance for %s" uri))))
 
 (defvar TeX-view-program-list-builtin
@@ -1066,7 +1075,7 @@ DBUS interface."
       ("dvips and gv" "%(o?)dvips %d -o && gv %f")
       ("gv" "gv %o")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
-      ("Evince" ,(if (TeX-evince-dbus-p)
+      ("Evince" ,(if (TeX-evince-dbus-p :forward)
 		     'TeX-evince-sync-view
 		   `("evince" (mode-io-correlate
 			       ;; With evince 3, -p N opens the page *labeled* N,
