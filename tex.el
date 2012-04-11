@@ -1043,8 +1043,16 @@ the requirements are met."
 	 "org.gnome.evince.Window"
 	 "SyncView"
 	 (buffer-file-name)
-	 (list :struct :int32 (line-number-at-pos) :int32 1)
-	 :uint32 (float-time))
+	 (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
+	 :uint32 (let ((time (float-time)))
+		   ;; FIXME: Evince wants a timestamp as UInt32, but POSIX time
+		   ;; is too large for emacs integers on 32 bit systems.  Emacs
+		   ;; 24.2 will allow providing DBUS ints as floats.  But it
+		   ;; seems providing just 1 as timestamp has no negative
+		   ;; consequences, anyway.
+		   (if (> most-positive-fixnum time)
+		       (round time)
+		     1)))
       (error "Couldn't find the Evince instance for %s" uri))))
 
 (defvar TeX-view-program-list-builtin
