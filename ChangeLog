@@ -2,6 +2,8 @@
 
 	* tex.el (TeX-evince-sync-view): Work around emacs integer limits.
 	Also provide the current column to Evince.
+	(TeX-evince-dbus-p): Also check the signature of Evince's
+	FindDocument DBUS method, which is only stable since evince 3.0.
 
 2012-04-10  Tassilo Horn  <tassilo@member.fsf.org>
 

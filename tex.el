@@ -1015,12 +1015,23 @@ search are checked, too."
        (require 'dbus)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
-       (if (memq :forward options)
-	   (dbus-introspect-get-method
-	    :session "org.gnome.evince.Daemon"
-	    "/org/gnome/evince/Daemon"
-	    "org.gnome.evince.Daemon"
-	    "FindDocument"))))
+       (or (not (memq :forward options))
+	   (let ((spec (dbus-introspect-get-method
+			:session "org.gnome.evince.Daemon"
+			"/org/gnome/evince/Daemon"
+			"org.gnome.evince.Daemon"
+			"FindDocument")))
+	     ;; FindDocument must exist, and its signature must be (String,
+	     ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
+	     ;; didn't have the Boolean spawn argument we need to start evince
+	     ;; initially.
+	     (and spec
+		  (equal '("s" "b" "s")
+			 (delq nil (mapcar (lambda (elem)
+					     (when (and (listp elem)
+							(eq (car elem) 'arg))
+					       (cdr (caar (cdr elem)))))
+					   spec))))))))
 
 (defun TeX-evince-sync-view ()
   "Focus the focused page/paragraph in Evince with the position
