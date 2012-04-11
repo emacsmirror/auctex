@@ -1058,8 +1058,10 @@ the requirements are met."
 	 :uint32 (let ((time (float-time)))
 		   ;; FIXME: Evince wants a timestamp as UInt32, but POSIX time
 		   ;; is too large for emacs integers on 32 bit systems.  Emacs
-		   ;; 24.2 will allow providing DBUS ints as floats.  But it
-		   ;; seems providing just 1 as timestamp has no negative
+		   ;; 24.2 will allow providing DBUS ints as floats, and this
+		   ;; dbus version will be identifiable by its new variables
+		   ;; `dbus-compiled-version' and `dbus-runtime-version'.  But
+		   ;; it seems providing just 1 as timestamp has no negative
 		   ;; consequences, anyway.
 		   (if (> most-positive-fixnum time)
 		       (round time)
