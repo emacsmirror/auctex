@@ -1010,9 +1010,7 @@ given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too."
-  (and (fboundp 'dbus-register-signal)
-       (fboundp 'dbus-call-method)
-       (require 'dbus)
+  (and (require 'dbus nil :no-error)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
        (or (not (memq :forward options))

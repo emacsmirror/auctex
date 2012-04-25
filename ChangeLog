@@ -1,3 +1,8 @@
+2012-04-25  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): Improve check for emacs's dbus
+	support.
+
 2012-04-11  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-evince-sync-view): Work around emacs integer limits.
