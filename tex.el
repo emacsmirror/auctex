@@ -1346,10 +1346,8 @@ It should be one of the following symbols:\n\n"
      (lambda (arg) (memq arg (mapcar 'car TeX-engine-alist-builtin))))
 
 (defun TeX-engine-set (type)
-  (concat "Set TeX engine to TYPE.
-TYPE can be one of the following symbols:\n"
-	  (mapconcat (lambda (x) (format "* `%s'" (car x)))
-		     (TeX-engine-alist) "\n"))
+  "Set TeX engine to TYPE.
+For available TYPEs, see variable `TeX-engine'."
   (interactive (list (completing-read "Engine: "
 				      (mapcar (lambda (x)
 						(symbol-name (car x)))
