@@ -1,3 +1,9 @@
+2012-06-22  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): Add check for
+	`dbus-register-signal', which might be unavailable if emacs was
+	configured with --without-dbus.
+
 2012-04-26  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-engine-set): Fix docstring leading to a misplaced

@@ -1011,6 +1011,7 @@ are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too."
   (and (require 'dbus nil :no-error)
+       (functionp 'dbus-register-signal)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
        (or (not (memq :forward options))
