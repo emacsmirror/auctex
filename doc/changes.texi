@@ -19,7 +19,15 @@ defined abbrevs are written to the mode-specific tables, though.
 
 @item
 @samp{tex-fptex.el} was removed.
+
+@item
+Forward/backward search for Evince has been improved.  If Emacs is
+compiled with DBUS support and a recent Evince version (3.x) is
+installed, the communication goes over the desktop bus instead of the
+command line, resulting in more accurate positioning of point in Emacs
+and highlighting of the target paragraph in Evince.
 @end itemize
+
 
 @heading News in 11.86
 

@@ -1,3 +1,8 @@
+2012-07-04  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* doc/changes.texi: Mention Evince forward/backward search
+	changes.
+
 2012-07-03  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* font-latex.el (byte-code-function-p): Reference the generated
