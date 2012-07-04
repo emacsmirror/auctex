@@ -1,3 +1,8 @@
+2012-07-03  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* font-latex.el (byte-code-function-p): Reference the generated
+	functions with font-latex-match prefix.  See Emacs bug 11837.
+
 2012-06-22  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* tex.el (TeX-evince-dbus-p): Add check for
