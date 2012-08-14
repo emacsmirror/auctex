@@ -1455,7 +1455,7 @@ This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
 		    (call-process LaTeX-command
 				  nil (list standard-output nil) nil "--help"))
 		(error ""))))
-    (if (string-match "^[ ]*-synctex" help)
+    (if (string-match "^[ ]*-?-synctex" help)
 	'synctex
       'source-specials)))
 
