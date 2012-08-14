@@ -1,3 +1,8 @@
+2012-08-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-determine-method): Match --synctex
+	as well as -synctex.
+
 2012-07-04  Tassilo Horn  <tassilo@member.fsf.org>
 
 	* doc/changes.texi: Mention Evince forward/backward search
