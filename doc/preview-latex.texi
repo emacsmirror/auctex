@@ -702,8 +702,9 @@ customizable concerning aspects of that operation, see the customization
 group @code{Preview Gs} for this.
 
 Another noteworthy setting of @code{preview-image-type} is
-@samp{dvipng}: in this case, the @samp{dvipng}@pindex{dvipng} program
-will get run on @acronym{DVI} output (see below for @acronym{PDF}).
+@samp{dvipng}: in this case, the @samp{dvipng}
+@pindex dvipng 
+program will get run on @acronym{DVI} output (see below for @acronym{PDF}).
 This is in general much faster than Dvips and Ghostscript.  In that
 case, the option
 

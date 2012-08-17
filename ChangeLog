@@ -1,3 +1,22 @@
+2012-06-21  Patrice Dumas <pertusus@free.fr> (tiny change)
+
+	* doc/preview-latex.texi (The preview images): Place index command
+	`@pindex dvipng' on a line of its own.
+
+	* doc/macros.texi: Replace user macro `@sans' by user macro
+	`@sansserif' and make definition conditional against flag
+	no-sansserif as `@sansserif' is a Texinfo macro and does not need
+	to be redefined.
+
+	* doc/macros.texi: Suppress user macro `@LaTeX' as this macro is
+	already defined in Texinfo.
+
+	* doc/quickstart.texi (Editing Facilities): Use texinfo
+	`@sansserif' macro rather than user macro `@sans'.
+
+	* doc/auctex.texi (Font Specifiers): Use texinfo `@sansserif'
+	macro rather than user macro `@sans'.
+
 2012-08-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-correlate-determine-method): Match --synctex

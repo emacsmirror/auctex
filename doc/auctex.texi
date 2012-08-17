@@ -480,7 +480,7 @@ Insert roman @r{\textrm@{@point{}@}} text.
 @item C-c C-f C-f
 @kindex C-c C-f C-f
 @cindex @code{\textsf}
-Insert @sans{sans serif} @samp{\textsf@{@point{}@}} text.
+Insert @sansserif{sans serif} @samp{\textsf@{@point{}@}} text.
 
 @item C-c C-f C-t
 @kindex C-c C-f C-t
