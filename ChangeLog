@@ -1,3 +1,29 @@
+2012-09-13  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge Biber support developed by Philip Kime
+	<philkime@kime.org.uk>.
+	* doc/changes.texi: Mention Biber support.
+
+	* tex.el (TeX-command-list, TeX-auto-generate)
+	(TeX-auto-generate-global, TeX-search-files-type-alist)
+	(TeX-normal-mode): Adapt.
+	(TeX-command-Biber): New defcustom.
+	(BibTeX-Biber-file-extensions): Renamed from
+	BibTeX-file-extensions.
+
+	* tex-buf.el (TeX-save-document, TeX-check-files)
+	(TeX-command-query, TeX-LaTeX-sentinel): Adapt.
+	(TeX-Biber-sentinel, TeX-run-Biber): New functions.
+
+	* latex.el (LaTeX-auto-regexp-list, LaTeX-auto-cleanup)
+	(TeX-arg-bibliography, LaTeX-common-initialization): Adapt.
+	(LaTeX-biber, LaTeX-split-bibs, LaTeX-using-Biber)
+	(LaTeX-always-use-Biber): New functions and vars.
+	(BibTeX-Biber-global-files): Renamed from BibTeX-global-files.
+
+	* font-latex.el (font-latex-built-in-keyword-classes)
+	(font-latex-add-keywords): Adapt.
+
 2012-06-21  Patrice Dumas <pertusus@free.fr> (tiny change)
 
 	* doc/preview-latex.texi (The preview images): Place index command

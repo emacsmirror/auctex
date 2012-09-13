@@ -12,6 +12,9 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now supports Biber in addition to BibLaTeX and BibTeX.
+
+@item
 Each @AUCTeX{} mode now has its own abbrev table.  On Emacsen which
 provide the possibility to inherit abbrevs from other tables, the
 abbrevs from the Text mode abbrev table are available as well.  Newly
