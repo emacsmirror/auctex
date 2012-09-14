@@ -105,6 +105,13 @@ For detailed information about the @previewlatex{} subsystem of
 @AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
 Manual}.
 
+If you use the biblatex package, you may want to put the following in
+your @file{.emacs} file:
+
+@lisp
+(setq LaTeX-always-use-Biber t)
+@end lisp
+
 There is a mailing list for general discussion about @AUCTeX{}: write a
 mail with ``subscribe'' in the subject to
 @email{auctex-request@@gnu.org} to join it.  Send contributions to

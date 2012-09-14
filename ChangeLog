@@ -1,3 +1,9 @@
+2012-09-14  Ken Brown  <kbrown@cornell.edu>  (tiny change)
+
+	* doc/auctex.texi (top): Mention LaTeX-always-use-Biber.
+
+	* doc/tex-ref.tex: Add Biber.
+
 2012-09-13  Tassilo Horn  <tsdh@gnu.org>
 
 	Merge Biber support developed by Philip Kime
@@ -24,7 +30,7 @@
 	* font-latex.el (font-latex-built-in-keyword-classes)
 	(font-latex-add-keywords): Adapt.
 
-2012-06-21  Patrice Dumas <pertusus@free.fr> (tiny change)
+2012-06-21  Patrice Dumas  <pertusus@free.fr>  (tiny change)
 
 	* doc/preview-latex.texi (The preview images): Place index command
 	`@pindex dvipng' on a line of its own.
