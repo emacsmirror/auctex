@@ -978,7 +978,7 @@ Warnings can be indicated by LaTeX or packages."
 	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
 				  TeX-command-BibTeX)))
   ((re-search-forward "Package biblatex Warning: Please rerun LaTeX" nil t)
-	 (message "You should run LaTeX again")
+	 (message "%s%s" "You should run LaTeX again, " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^(biblatex)\\W+Page breaks have changed" nil t)
 	 (message "%s%s" "You should run LaTeX again - page breaks have changed, "
