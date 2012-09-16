@@ -408,11 +408,6 @@ ORIGINALS which are modified but not saved yet."
 
 (defvar TeX-command-history nil)
 
-;; Something to remember - if you are testing on a document with no content at
-;; all, perhaps one with just \nocite{*} in it for testing Biber runs, no PDF
-;; file is created by latex and so the first cond clause will match because
-;; (file-newer-than-p) returns t when the second argument does not exist
-;; ... this has caused hours of pointless investigations before ...
 (defun TeX-command-query (name)
   "Query the user for what TeX command to use."
   (let* ((default (cond ((if (string-equal name TeX-region)
@@ -982,6 +977,9 @@ Warnings can be indicated by LaTeX or packages."
 		  (TeX-current-pages))
 	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
 				  TeX-command-BibTeX)))
+  ((re-search-forward "Package biblatex Warning: Please rerun LaTeX" nil t)
+	 (message "You should run LaTeX again")
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^(biblatex)\\W+Page breaks have changed" nil t)
 	 (message "%s%s" "You should run LaTeX again - page breaks have changed, "
 		  (TeX-current-pages))
