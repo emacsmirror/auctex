@@ -374,10 +374,10 @@ ORIGINALS which are modified but not saved yet."
   (let ((existingoriginals nil)
         (found nil)
         (buffers (buffer-list)))
-      (dolist (path (map 'list (lambda (dir)
-                               (expand-file-name
-                                (file-name-as-directory dir)))
-                       TeX-check-path))
+      (dolist (path (mapcar 'list (lambda (dir)
+				    (expand-file-name
+				     (file-name-as-directory dir)))
+			    TeX-check-path))
         (dolist (orig originals)
           (dolist (ext extensions)
            (let ((filepath (concat path orig "." ext)))

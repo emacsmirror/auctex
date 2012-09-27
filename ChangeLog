@@ -1,3 +1,7 @@
+2012-09-27  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-check-files): Use mapcar instead of cl's map.
+
 2012-09-16 Philip Kime <Philip@kime.org.uk> (tiny change)
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Detect generic rerun message
