@@ -138,7 +138,7 @@ For detail, see `TeX-command-list', which this list is appended to."
 (when (featurep 'mule)
 
 ;; FIX-ME (2007-02-09) The default coding system in recent Unix (like Fedora and
-;; Ubuntu) is utf-8.  But Japanese TeX system is not support utf-8 yet
+;; Ubuntu) is utf-8.  But Japanese TeX system does not support utf-8 yet
 ;; (platex-utf is under development, may be alpha phase).  So,
 ;; process-coding-system for Japanese TeX is not defined from
 ;; default-coding-system.  When platex-utf is out, we should look this setting,
@@ -394,10 +394,10 @@ thebibliography環境で引数を忘れた場合にも生じます．")
 に生じます．この問題は環境のうちのいくつかを文書の終わりの方に移動すれ
 ば解決できます．また，このエラーは``logjam''によって生じることもありま
 す．``logjam''とは，LaTeXが出現順序通りにしか図表を出力できないせいで，
-つまっている後ろの図表のために前の図表を出力できなくなることをいいます．
-このジャムの原因は，大きすぎて1ページないしは指定された領域に収まらな
-いような図や表である可能性があります．これは，引数にpオプションが指定
-されていないと起きやすくなります．")
+図表の出力が1ヶ所でもつまるとその後ろの図表が軒並みすべてつっかえてしま
+うことをいいます．このジャムの原因は，大きすぎて1ページないしはオプショ
+ン引数で指定された位置に収まらないような図や表である可能性があります．こ
+れは，引数にpオプションが指定されていないと起きやすくなります．")
 
     ("Undefined tab position." .
 "\\>・\\+・\\-または\\<命令で，存在しないタブ位置，すなわち\\=命令で定

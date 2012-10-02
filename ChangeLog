@@ -1,3 +1,8 @@
+2012-10-02  Ikumi Keita	 <ikumi@ikumi.que.jp>
+
+	* tex-jp.el: Comment fix.
+	(TeX-error-description-list): Doc fix.
+
 2012-09-27  Joost Kremers  <joostkremers@fastmail.fm>  (tiny change)
 
 	* tex-buf.el (TeX-check-files): Use mapcar instead of cl's map.
