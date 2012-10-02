@@ -1,5 +1,21 @@
 2012-10-02  Ikumi Keita	 <ikumi@ikumi.que.jp>
 
+	* tex-jp.el (japanese-TeX-engine-default)
+	(TeX-engine-alist-builtin, japanese-TeX-use-kanji-opt-flag): New
+	defcustoms.
+	(japanese-TeX-coding-ejsu, japanese-TeX-get-encoding-string): New
+	functions.
+	(japanese-TeX-command-list): Support %(kanjiopt).
+	(TeX-expand-list): Support new option kanjiopt, bibtex, makeindex,
+	mendexkopt, xdvi.
+	(TeX-view-predicate-list-builtin): Judge paper.
+	(TeX-view-program-list): Support dviout paper size, and other DVI
+	previewers in Mac and others.
+	(TeX-view-program-selection): Add Dviout, TeXworks and Preview.
+	(LaTeX-command-style): Support uplatex.
+	(japanese-plain-tex-mode-initialization): Use TeX-engine-set.
+	(japanese-latex-mode-initialization): Ditto.
+
 	* tex-jp.el: Comment fix.
 	(TeX-error-description-list): Doc fix.
 
