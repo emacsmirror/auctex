@@ -53,7 +53,7 @@
                (jtex "jTeX" "jtex" "jlatex" nil)
                (uptex "upTeX" "euptex" "uplatex" "euptex"))))
 
-;; 順調に行けば不要になる。
+;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
 (defcustom japanese-TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.  I don't
   ;; use the %(latex) and %(tex) shorthands here because I have not
@@ -102,61 +102,61 @@ For detail, see `TeX-command-list', to which this list is appended."
 				     (const :tag "AmSTeX" ams-tex-mode)))
 			(repeat :tag "Menu elements" :inline t sexp))))
 
-;; 順調に行けば不要になる。
+;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
 (setq TeX-command-list
       (append japanese-TeX-command-list
 	      '(("-" "" ignore nil t)) ;; separator for command menu
 	      TeX-command-list))
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
+;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
 (setcar (cdr (assoc "BibTeX" TeX-command-list)) "%(bibtex) %s")
 (setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s")
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
+;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
 (setq TeX-expand-list
       (append
        TeX-expand-list
        '(
-        ;; -kanji オプションの文字列を作る。
+        ;; -kanji $A%*%W%7%g%s$NNDWVAP$rWw$k!#(B
         ("%(kanjiopt)" (lambda ()
                          (if (and
-                              ;; non-mule な emacsen はそもそも日本語
-                              ;; 文書を typeset することは考えなくても
-                              ;; いいだろう、とは思うけど一応…。
+                              ;; non-mule $A$J(B emacsen $A$O$=$b$=$bHU1>$(Gk#(B
+                              ;; $AND$(GUs$A$r(B typeset $A$9$k$3$H$O?<$($J$/$F$b(B
+                              ;; $A$$$$$@$m$&!"$H$OK<$&$1$IR;$(I%w$A!-!#(B
                               (featurep 'mule)
                               japanese-TeX-use-kanji-opt-flag)
                              (let ((str (japanese-TeX-get-encoding-string)))
                                (if str (format " -kanji=%s " str) ""))
                            "")))
-        ;; pbibtex, jbibtex, upbibtex, bibtex の中から適切なものを選択する。
+        ;; pbibtex, jbibtex, upbibtex, bibtex $A$NVP$+$i$(GoK$AGP$J$b$N$r$(GrY$(I&1$A$9$k!#(B
         ("%(bibtex)" (lambda ()
                        (cond
                         ((eq TeX-engine 'ptex)
-                         ;; pLaTeX 用日本語 BibTeX が pbibtex になった
-                         ;; のは比較的最近なので、まだ jbibtex の人もそ
-                         ;; れなりにいるだろう。
+                         ;; pLaTeX $ASCHU1>$(Gk#(B BibTeX $A$,(B pbibtex $A$K$J$C$?(B
+                         ;; $A$N$O1H$(Gg$$A5DWn=|$J$N$G!"$^$@(B jbibtex $A$NHK$b$=(B
+                         ;; $A$l$J$j$K$$$k$@$m$&!#(B
                          (if (executable-find "pbibtex")
                              "pbibtex %(kanjiopt)" "jbibtex"))
                         ((eq TeX-engine 'jtex) "jbibtex")
                         ((eq TeX-engine 'uptex) "upbibtex")
                         (t "bibtex"))))
-        ;; mendex と makeindex の適切な方を選択する。
+        ;; mendex $A$H(B makeindex $A$N$(GoK$AGP$J7=$r$(GrY$(I&1$A$9$k!#(B
         ("%(makeindex)" (lambda ()
                           (if (memq TeX-engine '(ptex uptex))
                               "mendex %(mendexkopt)" "makeindex")))
-        ;; mendex 用日本語コードオプション。
+        ;; mendex $ASCHU1>$(Gk#$A%3$B!<$A%I%*%W%7%g%s!#(B
         ("%(mendexkopt)" (lambda ()
                            (if (and (featurep 'mule)
                                     japanese-TeX-use-kanji-opt-flag)
                                (let ((str (japanese-TeX-get-encoding-string)))
-                                 ;; １文字目を大文字に。
+                                 ;; $A#1NDWVD?$r4sNDWV$K!#(B
                                  (if str (format " -%c " (upcase (aref str 0)))
                                    ""))
                              "")))
-        ;; pxdvi と %(o?)xdvi の適切な方を選択する。
+        ;; pxdvi $A$H(B %(o?)xdvi $A$N$(GoK$AGP$J7=$r$(GrY$(I&1$A$9$k!#(B
         ("%(xdvi)" (lambda ()
-                     ;; pxdvi は ptex, jtex 共用なので、
-                     ;; japanese mode かどうかで判定すれば OK。
+                     ;; pxdvi $A$O(B ptex, jtex $A92SC$J$N$G!"(B
+                     ;; japanese mode $A$+$I$&$+$GEP6($9$l$P(B OK$A!#(B
                      (if (and japanese-TeX-mode (executable-find "pxdvi"))
                          "pxdvi" "%(o?)xdvi"))))))
 
@@ -170,8 +170,8 @@ For detail, see `TeX-command-list', to which this list is appended."
          (paper-a5
           (TeX-match-style
            "\\`\\(a5j\\|a5paper\\|a5comb\\)\\'"))
-         ;; jarticle などだと b4paper, b5paper は JIS B 系列。
-         ;; j-article などの方には a4j, b5j といったオプションはない。
+         ;; jarticle $A$J$I$@$H(B b4paper, b5paper $A$O(B JIS B $AO5AP!#(B
+         ;; j-article $A$J$I$N7=$K$O(B a4j, b5j $A$H$$$C$?%*%W%7%g%s$O$J$$!#(B
          (paper-b5    ; ISO B5
           (and (TeX-match-style "\\`b5paper\\'")
                (not (memq TeX-engine '(ptex uptex)))))
@@ -179,20 +179,20 @@ For detail, see `TeX-command-list', to which this list is appended."
           (or (TeX-match-style "\\`b5j\\'")
               (and (TeX-match-style "\\`b5paper\\'")
                    (memq TeX-engine '(ptex uptex)))))
-         ;; article などには b4paper というオプションはない。
-         ;; b4paper というオプションがあったら JIS B4 と見なす。
+         ;; article $A$J$I$K$O(B b4paper $A$H$$$&%*%W%7%g%s$O$J$$!#(B
+         ;; b4paper $A$H$$$&%*%W%7%g%s$,$"$C$?$i(B JIS B4 $A$H$(GKD$A$J$9!#(B
          (paper-b4jis
           (TeX-match-style "\\`\\(b4j\\|b4paper\\)\\'")))))
-;; jsarticle だと他にももっと判型のオプションがあるが、
-;; 全部面倒見てるとキリがないので、これくらいでいいだろう。
-;; jsarticle.el や jsbook.el で追加分の処理を仕込めばいいのかも知れない。
+;; jsarticle $A$@$HK{$K$b$b$C$HEPPM$N%*%W%7%g%s$,$"$k$,!"(B
+;; $AH+2?Cf59$(GKD$A$F$k$H%-%j$,$J$$$N$G!"$3$l$/$i$$$G$$$$$@$m$&!#(B
+;; jsarticle.el $A$d(B jsbook.el $A$GW7<S7V$N$B=h$A@m$rJK$B9~$A$a$P$$$$$N$+$bV*$l$J$$!#(B
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
+;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
 (unless (get 'TeX-view-program-list 'saved-value)
   (setq TeX-view-program-list
        (cond
         ;; http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?AUCTeX
-        ;; を参考にしてみた。
+        ;; $A$r2N?<$K$7$F$_$?!#(B
         ((eq system-type 'windows-nt)
          '(("Dviout" ("dviout -1 "
                       ((paper-a4 paper-portrait) " -y=A4 ")
@@ -213,7 +213,7 @@ For detail, see `TeX-command-list', to which this list is appended."
            ("SumatraPDF" "SumatraPDF -reuse-instance %o"
             (mode-io-correlate " -forward-search \"%b\" %n"))
            ("MuPDF" "mupdf %o")))
-        ;; これでいいのかどうかは不安。
+        ;; $A$3$l$G$$$$$N$+$I$&$+$O2;02!#(B
         ((eq system-type 'darwin)
          '(("Preview" "open -a Preview.app %o")
            ("TeXShop" "open -a TeXShop.app %o")
@@ -230,9 +230,9 @@ For detail, see `TeX-command-list', to which this list is appended."
            ("zathura" "zathura %o")
            ("MuPDF" "mupdf %o"))))))
 
-;; これは tex.el に取り入れてもらうのは難しいか？
-;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
-;; なってしまうのは抵抗が大きいかも。
+;; $A$3$l$O(B tex.el $A$KH!$jHk$l$F$b$i$&$N$O$(GyE$A$7$$$+#?(B
+;; tex-jp.el $A$,$BFI$A$_$B9~$A$^$l$k$@$1$G!"(Bdvi viewer $A$N%G%U%)%k%H$,(B dviout $A$K(B
+;; $A$J$C$F$7$^$&$N$O5V?9$,4s$-$$$+$b!#(B
 (unless (get 'TeX-view-program-selection 'saved-value)
   (setq TeX-view-program-selection
        (append
@@ -258,7 +258,7 @@ For detail, see `TeX-command-list', to which this list is appended."
 	   "jlatex" '("/jtex/" "/jbibtex/bst/"))
 	  '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
-;; 順調に行けば不要になる。
+;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
 (setq LaTeX-command-style
       (append '(("\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'"
                 "%(PDF)uplatex %(kanjiopt)%S%(PDFout)")
@@ -300,14 +300,14 @@ For detail, see `TeX-command-list', to which this list is appended."
 
 )
 
-;; 順調に行けば不要になる。
+;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
 (defcustom japanese-TeX-command-default "pTeX"
   "*The default command for `TeX-command' in the japanese-TeX mode."
   :group 'AUCTeX-jp
   :type 'string)
   (make-variable-buffer-local 'japanese-TeX-command-default)
 
-;; 順調に行けば不要になる。
+;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
 (defcustom japanese-LaTeX-command-default "LaTeX"
   "*The default command for `TeX-command' in the japanese-LaTeX mode."
   :group 'AUCTeX-jp
@@ -371,7 +371,7 @@ Return nil otherwise."
                 (japanese-shift-jis . "sjis")
                 (utf-8 . "utf8")
 
-                ;; xemacs だと以下の名前は違うかも…。
+                ;; xemacs $A$@$HRTOB$NC{G0$O$(Gg0$A$&$+$b!-!#(B
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
                 (japanese-shift-jis-2004 . "sjis")
@@ -384,19 +384,19 @@ Return nil otherwise."
 For inappropriate encoding, nil instead."
   (or (japanese-TeX-coding-ejsu buffer-file-coding-system)
 
-      ;; 複数ファイルに分割した文書の場合、emacs で開いたファイルが日本
-      ;; 語を１字も含まないことがある。このため、そのファイルの
-      ;; buffer-file-coding-system は日本語コードが不定に留まって
-      ;; しまう可能性がある。そのような場合、master file の
-      ;; buffer-file-coding-system を使う。
-      (if (stringp TeX-master) ; 自分が子ファイルのとき
+      ;; $(Gno$AJ}%U%!%$%k$K7V8n$7$?ND$(GUs$A$N$(G^[$A:O!"(Bemacs $A$G$(Gbd$A$$$?%U%!%$%k$,HU1>(B
+      ;; $(Gk#$A$r#1WV$b:,$^$J$$$3$H$,$"$k!#$3$N$?$a!"$=$N%U%!%$%k$N(B
+      ;; buffer-file-coding-system $A$OHU1>$(Gk#$A%3$B!<$A%I$,2;6($KAt$^$C$F(B
+      ;; $A$7$^$&?ID\PT$,$"$k!#$=$N$h$&$J$(G^[$A:O!"(Bmaster file $A$N(B
+      ;; buffer-file-coding-system $A$rJ9$&!#(B
+      (if (stringp TeX-master) ; $AWT7V$,WS%U%!%$%k$N$H$-(B
          (let ((buf (get-file-buffer (TeX-master-file t))))
            (if buf
                (japanese-TeX-coding-ejsu
                 (with-current-buffer buf buffer-file-coding-system)))))
 
-      ;; それでも決められない場合は buffer-file-coding-system の
-      ;; default 値を使う。
+      ;; $A$=$l$G$b$(GJn$A$a$i$l$J$$$(G^[$A:O$O(B buffer-file-coding-system $A$N(B
+      ;; default $(I/N$A$rJ9$&!#(B
       (japanese-TeX-coding-ejsu
        (default-value 'buffer-file-coding-system))))
 
@@ -438,9 +438,9 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
   (when japanese-TeX-mode
 ;    (setq TeX-command-default japanese-LaTeX-command-default)
     (TeX-engine-set
-     ;; class file 名に頼るのは正しいのか？
-     ;; jLaTeX にも jarticle は一応あるし、pLaTeX でも自分で j-article を
-     ;; インストールして使っていけない法はない。
+     ;; class file $AC{$K$(IS[$A$k$N$OU}$7$$$N$+#?(B
+     ;; jLaTeX $A$K$b(B jarticle $A$OR;$(I%w$A$"$k$7!"(BpLaTeX $A$G$bWT7V$G(B j-article $A$r(B
+     ;; $A%$%s%9%H$B!<$A%k$7$FJ9$C$F$$$1$J$$7($O$J$$!#(B
      (cond
       ((TeX-match-style "\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'")
        'uptex)
