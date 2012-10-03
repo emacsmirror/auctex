@@ -1,3 +1,7 @@
+2012-10-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-jp.el: Repair coding.
+
 2012-10-02  Ikumi Keita	 <ikumi@ikumi.que.jp>
 
 	* tex-jp.el (japanese-TeX-engine-default)
