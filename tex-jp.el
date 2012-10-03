@@ -53,7 +53,7 @@
                (jtex "jTeX" "jtex" "jlatex" nil)
                (uptex "upTeX" "euptex" "uplatex" "euptex"))))
 
-;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
+;; $B=gD4$K9T$1$PITMW$K$J$k!#(B
 (defcustom japanese-TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.  I don't
   ;; use the %(latex) and %(tex) shorthands here because I have not
@@ -102,61 +102,61 @@ For detail, see `TeX-command-list', to which this list is appended."
 				     (const :tag "AmSTeX" ams-tex-mode)))
 			(repeat :tag "Menu elements" :inline t sexp))))
 
-;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
+;; $B=gD4$K9T$1$PITMW$K$J$k!#(B
 (setq TeX-command-list
       (append japanese-TeX-command-list
 	      '(("-" "" ignore nil t)) ;; separator for command menu
 	      TeX-command-list))
 
-;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
+;; $B;CDj=hCV!#(Btex.el $B$K<h$j9~$s$G$b$i$($k$H$h$$!#(B
 (setcar (cdr (assoc "BibTeX" TeX-command-list)) "%(bibtex) %s")
 (setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s")
 
-;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
+;; $B;CDj=hCV!#(Btex.el $B$K<h$j9~$s$G$b$i$($k$H$h$$!#(B
 (setq TeX-expand-list
       (append
        TeX-expand-list
        '(
-        ;; -kanji $A%*%W%7%g%s$NNDWVAP$rWw$k!#(B
+        ;; -kanji $B%*%W%7%g%s$NJ8;zNs$r:n$k!#(B
         ("%(kanjiopt)" (lambda ()
                          (if (and
-                              ;; non-mule $A$J(B emacsen $A$O$=$b$=$bHU1>$(Gk#(B
-                              ;; $AND$(GUs$A$r(B typeset $A$9$k$3$H$O?<$($J$/$F$b(B
-                              ;; $A$$$$$@$m$&!"$H$OK<$&$1$IR;$(I%w$A!-!#(B
+                              ;; non-mule $B$J(B emacsen $B$O$=$b$=$bF|K\8l(B
+                              ;; $BJ8=q$r(B typeset $B$9$k$3$H$O9M$($J$/$F$b(B
+                              ;; $B$$$$$@$m$&!"$H$O;W$&$1$I0l1~!D!#(B
                               (featurep 'mule)
                               japanese-TeX-use-kanji-opt-flag)
                              (let ((str (japanese-TeX-get-encoding-string)))
                                (if str (format " -kanji=%s " str) ""))
                            "")))
-        ;; pbibtex, jbibtex, upbibtex, bibtex $A$NVP$+$i$(GoK$AGP$J$b$N$r$(GrY$(I&1$A$9$k!#(B
+        ;; pbibtex, jbibtex, upbibtex, bibtex $B$NCf$+$iE,@Z$J$b$N$rA*Br$9$k!#(B
         ("%(bibtex)" (lambda ()
                        (cond
                         ((eq TeX-engine 'ptex)
-                         ;; pLaTeX $ASCHU1>$(Gk#(B BibTeX $A$,(B pbibtex $A$K$J$C$?(B
-                         ;; $A$N$O1H$(Gg$$A5DWn=|$J$N$G!"$^$@(B jbibtex $A$NHK$b$=(B
-                         ;; $A$l$J$j$K$$$k$@$m$&!#(B
+                         ;; pLaTeX $BMQF|K\8l(B BibTeX $B$,(B pbibtex $B$K$J$C$?(B
+                         ;; $B$N$OHf3SE*:G6a$J$N$G!"$^$@(B jbibtex $B$N?M$b$=(B
+                         ;; $B$l$J$j$K$$$k$@$m$&!#(B
                          (if (executable-find "pbibtex")
                              "pbibtex %(kanjiopt)" "jbibtex"))
                         ((eq TeX-engine 'jtex) "jbibtex")
                         ((eq TeX-engine 'uptex) "upbibtex")
                         (t "bibtex"))))
-        ;; mendex $A$H(B makeindex $A$N$(GoK$AGP$J7=$r$(GrY$(I&1$A$9$k!#(B
+        ;; mendex $B$H(B makeindex $B$NE,@Z$JJ}$rA*Br$9$k!#(B
         ("%(makeindex)" (lambda ()
                           (if (memq TeX-engine '(ptex uptex))
                               "mendex %(mendexkopt)" "makeindex")))
-        ;; mendex $ASCHU1>$(Gk#$A%3$B!<$A%I%*%W%7%g%s!#(B
+        ;; mendex $BMQF|K\8l%3!<%I%*%W%7%g%s!#(B
         ("%(mendexkopt)" (lambda ()
                            (if (and (featurep 'mule)
                                     japanese-TeX-use-kanji-opt-flag)
                                (let ((str (japanese-TeX-get-encoding-string)))
-                                 ;; $A#1NDWVD?$r4sNDWV$K!#(B
+                                 ;; $B#1J8;zL\$rBgJ8;z$K!#(B
                                  (if str (format " -%c " (upcase (aref str 0)))
                                    ""))
                              "")))
-        ;; pxdvi $A$H(B %(o?)xdvi $A$N$(GoK$AGP$J7=$r$(GrY$(I&1$A$9$k!#(B
+        ;; pxdvi $B$H(B %(o?)xdvi $B$NE,@Z$JJ}$rA*Br$9$k!#(B
         ("%(xdvi)" (lambda ()
-                     ;; pxdvi $A$O(B ptex, jtex $A92SC$J$N$G!"(B
-                     ;; japanese mode $A$+$I$&$+$GEP6($9$l$P(B OK$A!#(B
+                     ;; pxdvi $B$O(B ptex, jtex $B6&MQ$J$N$G!"(B
+                     ;; japanese mode $B$+$I$&$+$GH=Dj$9$l$P(B OK$B!#(B
                      (if (and japanese-TeX-mode (executable-find "pxdvi"))
                          "pxdvi" "%(o?)xdvi"))))))
 
@@ -170,8 +170,8 @@ For detail, see `TeX-command-list', to which this list is appended."
          (paper-a5
           (TeX-match-style
            "\\`\\(a5j\\|a5paper\\|a5comb\\)\\'"))
-         ;; jarticle $A$J$I$@$H(B b4paper, b5paper $A$O(B JIS B $AO5AP!#(B
-         ;; j-article $A$J$I$N7=$K$O(B a4j, b5j $A$H$$$C$?%*%W%7%g%s$O$J$$!#(B
+         ;; jarticle $B$J$I$@$H(B b4paper, b5paper $B$O(B JIS B $B7ONs!#(B
+         ;; j-article $B$J$I$NJ}$K$O(B a4j, b5j $B$H$$$C$?%*%W%7%g%s$O$J$$!#(B
          (paper-b5    ; ISO B5
           (and (TeX-match-style "\\`b5paper\\'")
                (not (memq TeX-engine '(ptex uptex)))))
@@ -179,20 +179,20 @@ For detail, see `TeX-command-list', to which this list is appended."
           (or (TeX-match-style "\\`b5j\\'")
               (and (TeX-match-style "\\`b5paper\\'")
                    (memq TeX-engine '(ptex uptex)))))
-         ;; article $A$J$I$K$O(B b4paper $A$H$$$&%*%W%7%g%s$O$J$$!#(B
-         ;; b4paper $A$H$$$&%*%W%7%g%s$,$"$C$?$i(B JIS B4 $A$H$(GKD$A$J$9!#(B
+         ;; article $B$J$I$K$O(B b4paper $B$H$$$&%*%W%7%g%s$O$J$$!#(B
+         ;; b4paper $B$H$$$&%*%W%7%g%s$,$"$C$?$i(B JIS B4 $B$H8+$J$9!#(B
          (paper-b4jis
           (TeX-match-style "\\`\\(b4j\\|b4paper\\)\\'")))))
-;; jsarticle $A$@$HK{$K$b$b$C$HEPPM$N%*%W%7%g%s$,$"$k$,!"(B
-;; $AH+2?Cf59$(GKD$A$F$k$H%-%j$,$J$$$N$G!"$3$l$/$i$$$G$$$$$@$m$&!#(B
-;; jsarticle.el $A$d(B jsbook.el $A$GW7<S7V$N$B=h$A@m$rJK$B9~$A$a$P$$$$$N$+$bV*$l$J$$!#(B
+;; jsarticle $B$@$HB>$K$b$b$C$HH=7?$N%*%W%7%g%s$,$"$k$,!"(B
+;; $BA4ItLLE]8+$F$k$H%-%j$,$J$$$N$G!"$3$l$/$i$$$G$$$$$@$m$&!#(B
+;; jsarticle.el $B$d(B jsbook.el $B$GDI2CJ,$N=hM}$r;E9~$a$P$$$$$N$+$bCN$l$J$$!#(B
 
-;; $(Gm2$A6($B=h$AVC!#(Btex.el $A$KH!$j$B9~$A$s$G$b$i$($k$H$h$$!#(B
+;; $B;CDj=hCV!#(Btex.el $B$K<h$j9~$s$G$b$i$($k$H$h$$!#(B
 (unless (get 'TeX-view-program-list 'saved-value)
   (setq TeX-view-program-list
        (cond
         ;; http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?AUCTeX
-        ;; $A$r2N?<$K$7$F$_$?!#(B
+        ;; $B$r;29M$K$7$F$_$?!#(B
         ((eq system-type 'windows-nt)
          '(("Dviout" ("dviout -1 "
                       ((paper-a4 paper-portrait) " -y=A4 ")
@@ -213,7 +213,7 @@ For detail, see `TeX-command-list', to which this list is appended."
            ("SumatraPDF" "SumatraPDF -reuse-instance %o"
             (mode-io-correlate " -forward-search \"%b\" %n"))
            ("MuPDF" "mupdf %o")))
-        ;; $A$3$l$G$$$$$N$+$I$&$+$O2;02!#(B
+        ;; $B$3$l$G$$$$$N$+$I$&$+$OIT0B!#(B
         ((eq system-type 'darwin)
          '(("Preview" "open -a Preview.app %o")
            ("TeXShop" "open -a TeXShop.app %o")
@@ -230,9 +230,9 @@ For detail, see `TeX-command-list', to which this list is appended."
            ("zathura" "zathura %o")
            ("MuPDF" "mupdf %o"))))))
 
-;; $A$3$l$O(B tex.el $A$KH!$jHk$l$F$b$i$&$N$O$(GyE$A$7$$$+#?(B
-;; tex-jp.el $A$,$BFI$A$_$B9~$A$^$l$k$@$1$G!"(Bdvi viewer $A$N%G%U%)%k%H$,(B dviout $A$K(B
-;; $A$J$C$F$7$^$&$N$O5V?9$,4s$-$$$+$b!#(B
+;; $B$3$l$O(B tex.el $B$K<h$jF~$l$F$b$i$&$N$OFq$7$$$+!)(B
+;; tex-jp.el $B$,FI$_9~$^$l$k$@$1$G!"(Bdvi viewer $B$N%G%U%)%k%H$,(B dviout $B$K(B
+;; $B$J$C$F$7$^$&$N$ODq93$,Bg$-$$$+$b!#(B
 (unless (get 'TeX-view-program-selection 'saved-value)
   (setq TeX-view-program-selection
        (append
@@ -258,7 +258,7 @@ For detail, see `TeX-command-list', to which this list is appended."
 	   "jlatex" '("/jtex/" "/jbibtex/bst/"))
 	  '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
-;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
+;; $B=gD4$K9T$1$PITMW$K$J$k!#(B
 (setq LaTeX-command-style
       (append '(("\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'"
                 "%(PDF)uplatex %(kanjiopt)%S%(PDFout)")
@@ -300,14 +300,14 @@ For detail, see `TeX-command-list', to which this list is appended."
 
 )
 
-;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
+;; $B=gD4$K9T$1$PITMW$K$J$k!#(B
 (defcustom japanese-TeX-command-default "pTeX"
   "*The default command for `TeX-command' in the japanese-TeX mode."
   :group 'AUCTeX-jp
   :type 'string)
   (make-variable-buffer-local 'japanese-TeX-command-default)
 
-;; $(Gb{n~$A$KPP$1$P2;R*$K$J$k!#(B
+;; $B=gD4$K9T$1$PITMW$K$J$k!#(B
 (defcustom japanese-LaTeX-command-default "LaTeX"
   "*The default command for `TeX-command' in the japanese-LaTeX mode."
   :group 'AUCTeX-jp
@@ -371,7 +371,7 @@ Return nil otherwise."
                 (japanese-shift-jis . "sjis")
                 (utf-8 . "utf8")
 
-                ;; xemacs $A$@$HRTOB$NC{G0$O$(Gg0$A$&$+$b!-!#(B
+                ;; xemacs $B$@$H0J2<$NL>A0$O0c$&$+$b!D!#(B
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
                 (japanese-shift-jis-2004 . "sjis")
@@ -384,19 +384,19 @@ Return nil otherwise."
 For inappropriate encoding, nil instead."
   (or (japanese-TeX-coding-ejsu buffer-file-coding-system)
 
-      ;; $(Gno$AJ}%U%!%$%k$K7V8n$7$?ND$(GUs$A$N$(G^[$A:O!"(Bemacs $A$G$(Gbd$A$$$?%U%!%$%k$,HU1>(B
-      ;; $(Gk#$A$r#1WV$b:,$^$J$$$3$H$,$"$k!#$3$N$?$a!"$=$N%U%!%$%k$N(B
-      ;; buffer-file-coding-system $A$OHU1>$(Gk#$A%3$B!<$A%I$,2;6($KAt$^$C$F(B
-      ;; $A$7$^$&?ID\PT$,$"$k!#$=$N$h$&$J$(G^[$A:O!"(Bmaster file $A$N(B
-      ;; buffer-file-coding-system $A$rJ9$&!#(B
-      (if (stringp TeX-master) ; $AWT7V$,WS%U%!%$%k$N$H$-(B
+      ;; $BJ#?t%U%!%$%k$KJ,3d$7$?J8=q$N>l9g!"(Bemacs $B$G3+$$$?%U%!%$%k$,F|K\(B
+      ;; $B8l$r#1;z$b4^$^$J$$$3$H$,$"$k!#$3$N$?$a!"$=$N%U%!%$%k$N(B
+      ;; buffer-file-coding-system $B$OF|K\8l%3!<%I$,ITDj$KN1$^$C$F(B
+      ;; $B$7$^$&2DG=@-$,$"$k!#$=$N$h$&$J>l9g!"(Bmaster file $B$N(B
+      ;; buffer-file-coding-system $B$r;H$&!#(B
+      (if (stringp TeX-master) ; $B<+J,$,;R%U%!%$%k$N$H$-(B
          (let ((buf (get-file-buffer (TeX-master-file t))))
            (if buf
                (japanese-TeX-coding-ejsu
                 (with-current-buffer buf buffer-file-coding-system)))))
 
-      ;; $A$=$l$G$b$(GJn$A$a$i$l$J$$$(G^[$A:O$O(B buffer-file-coding-system $A$N(B
-      ;; default $(I/N$A$rJ9$&!#(B
+      ;; $B$=$l$G$b7h$a$i$l$J$$>l9g$O(B buffer-file-coding-system $B$N(B
+      ;; default $BCM$r;H$&!#(B
       (japanese-TeX-coding-ejsu
        (default-value 'buffer-file-coding-system))))
 
@@ -438,9 +438,9 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
   (when japanese-TeX-mode
 ;    (setq TeX-command-default japanese-LaTeX-command-default)
     (TeX-engine-set
-     ;; class file $AC{$K$(IS[$A$k$N$OU}$7$$$N$+#?(B
-     ;; jLaTeX $A$K$b(B jarticle $A$OR;$(I%w$A$"$k$7!"(BpLaTeX $A$G$bWT7V$G(B j-article $A$r(B
-     ;; $A%$%s%9%H$B!<$A%k$7$FJ9$C$F$$$1$J$$7($O$J$$!#(B
+     ;; class file $BL>$KMj$k$N$O@5$7$$$N$+!)(B
+     ;; jLaTeX $B$K$b(B jarticle $B$O0l1~$"$k$7!"(BpLaTeX $B$G$b<+J,$G(B j-article $B$r(B
+     ;; $B%$%s%9%H!<%k$7$F;H$C$F$$$1$J$$K!$O$J$$!#(B
      (cond
       ((TeX-match-style "\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'")
        'uptex)

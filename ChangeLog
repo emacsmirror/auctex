@@ -1,3 +1,7 @@
+2012-10-04  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-jp.el: Repair coding from iso-2022-7bit to iso-2022-jp.
+
 2012-10-03  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-jp.el: Repair coding.
