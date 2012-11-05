@@ -1,3 +1,8 @@
+2012-11-05  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-doc-extensions): Fix typo.  This variable was
+	formerly named TeX-doc-extenstions.
+
 2012-10-04  Masayuki Ataka  <masayuki.ataka@gmail.com>
 
 	* tex-jp.el: Repair coding from iso-2022-7bit to iso-2022-jp.

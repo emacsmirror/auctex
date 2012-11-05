@@ -3620,7 +3620,7 @@ Check for potential LaTeX environments."
 
   (make-variable-buffer-local 'TeX-default-extension)
 
-(defvar TeX-doc-extenstions
+(defvar TeX-doc-extensions
   '("dvi" "pdf" "ps" "txt" "html" "dvi.gz" "pdf.gz" "ps.gz" "txt.gz" "html.gz"
     "dvi.bz2" "pdf.bz2" "ps.bz2" "txt.bz2" "html.bz2")
   "File extensions of documentation files.")
