@@ -1,3 +1,23 @@
+2012-11-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-auto-regexp-list): Remove entries for Biber.
+	(LaTeX-biber): Remove.
+	(LaTeX-listify-package-options): Rewrite so that the function can
+	deal with key=value pairs.
+	(LaTeX-always-use-Biber): Remove.
+	(LaTeX-using-Biber): Add doc string and make buffer-local.
+
+	* tex-style.el (LaTeX-biblatex-use-Biber): New variable.
+
+	* doc/auctex.texi (top): Remove reference to
+	`LaTeX-always-use-Biber'.
+	(Selecting a Command): Mention Biber and
+	`LaTeX-biblatex-use-Biber'.
+
+	* Makefile.in (STYLESRC): Add style/biblatex.el.
+
+	* style/biblatex.el: New file.
+
 2012-11-05  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-doc-extensions): Fix typo.  This variable was

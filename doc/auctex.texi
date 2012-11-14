@@ -105,13 +105,6 @@ For detailed information about the @previewlatex{} subsystem of
 @AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
 Manual}.
 
-If you use the biblatex package, you may want to put the following in
-your @file{.emacs} file:
-
-@lisp
-(setq LaTeX-always-use-Biber t)
-@end lisp
-
 There is a mailing list for general discussion about @AUCTeX{}: write a
 mail with ``subscribe'' in the subject to
 @email{auctex-request@@gnu.org} to join it.  Send contributions to
@@ -2424,6 +2417,14 @@ Emacs Editor}).
 The default command to run in this buffer.  Must be an entry in
 @code{TeX-command-list}.
 @end defopt
+
+@cindex Biber
+@cindex biblatex
+@vindex LaTeX-biblatex-use-Biber
+In case you use biblatex in a document, @AUCTeX{} switches from
+Bib@TeX{} to Biber for bibliography processing.  In case you want to
+keep using Bib@TeX{}, set the variable @code{LaTeX-biblatex-use-Biber}
+to nil.
 
 After confirming a command to execute, @AUCTeX{} will try to save any
 buffers related to the document, and check if the document needs to be
