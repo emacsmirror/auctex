@@ -1,3 +1,8 @@
+2012-11-20  Davide G. M. Salvetti  <salve@debian.org>
+
+        * doc/tex-ref.tex (column{preview-latex}): Fix typo.  Reported by
+        Sébastien Villemot.  Update copyright information.
+
 2012-11-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-auto-regexp-list): Remove entries for Biber.
