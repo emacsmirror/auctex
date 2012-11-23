@@ -1,3 +1,10 @@
+2012-11-23  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/quickstart.texi (Quick Start): Document that one mustn't
+	load auctex.el if AUCTeX is installed from ELPA.
+
+	* doc/install.texi (Installation): Mention installation from ELPA.
+
 2012-11-20  Davide G. M. Salvetti  <salve@debian.org>
 
         * doc/tex-ref.tex (column{preview-latex}): Fix typo.  Reported by
