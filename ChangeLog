@@ -1,3 +1,8 @@
+2012-07-17  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* tex-info.el (Texinfo-reftex-hook): Added function.
+	(TeX-texinfo-mode): Added RefTeX plugging.
+
 2012-11-23  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/quickstart.texi (Quick Start): Document that one mustn't

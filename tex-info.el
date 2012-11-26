@@ -343,6 +343,70 @@ for @node."
 	      (progn (skip-chars-forward "^,") (forward-char 2))
 	    (throw 'break nil)))))))
 
+;; Silence the byte-compiler from warnings for variables and functions declared
+;; in reftex.
+(eval-when-compile
+  (defvar reftex-section-levels-all)
+  (defvar reftex-level-indent)
+  (defvar reftex-label-menu-flags)
+  (defvar reftex-tables-dirty)
+
+  (when (fboundp 'declare-function)
+    (declare-function reftex-match-string "reftex" (n))
+    (declare-function reftex-section-number "reftex-parse" (&optional level star))
+    (declare-function reftex-nicify-text "reftex" (text))
+    (declare-function reftex-ensure-compiled-variables "reftex" ())))
+
+(defun Texinfo-reftex-section-info (file)
+  ;; Return a section entry for the current match.
+  ;; Carefull: This function expects the match-data to be still in place!
+  (let* ((marker (set-marker (make-marker) (1- (match-beginning 3))))
+         (macro (reftex-match-string 3))
+         (level-exp (cdr (assoc macro reftex-section-levels-all)))
+         (level (if (symbolp level-exp)
+                    (save-match-data (funcall level-exp))
+                  level-exp))
+         (unnumbered  (< level 0))
+         (level (abs level))
+         (section-number (reftex-section-number level unnumbered))
+         (text1 (save-match-data
+                  (save-excursion
+		    (buffer-substring-no-properties (point) (progn (end-of-line) (point))))))
+         (literal (buffer-substring-no-properties
+                   (1- (match-beginning 3))
+                   (min (point-max) (+ (match-end 0) (length text1) 1))))
+         ;; Literal can be too short since text1 too short. No big problem.
+         (text (reftex-nicify-text text1)))
+
+    ;; Add section number and indentation
+    (setq text
+          (concat
+           (make-string (* reftex-level-indent level) ?\ )
+           (if (nth 1 reftex-label-menu-flags) ; section number flag
+               (concat section-number " "))
+           text))
+    (list 'toc "toc" text file marker level section-number
+          literal (marker-position marker))))
+
+(defun Texinfo-reftex-hook ()
+  "Hook function to plug Texinfo into RefTeX."
+  ;; force recompilation of variables
+  (when (string= TeX-base-mode-name "Texinfo")
+    (dolist (v `((reftex-section-pre-regexp . "@")
+		 ; section post-regexp must contain exactly one group
+		 (reftex-section-post-regexp . "\\([ \t]+\\)")
+		 (reftex-section-info-function . Texinfo-reftex-section-info)
+	       (reftex-section-levels
+		. ,(mapcar
+		    (lambda (x)
+		      (if (string-match "\\(\\`unnumbered\\)\\|\\(heading\\'\\)\\|\\(\\`top\\'\\)"
+					(car x))
+			  (cons (car x) (- (cadr x)))
+			(cons (car x) (cadr x))))
+		    texinfo-section-list))))
+      (set (make-local-variable (car v) ) (cdr v)))
+    (setq reftex-tables-dirty t)
+    (reftex-ensure-compiled-variables)))
 
 ;;; Keymap:
 
@@ -680,6 +744,11 @@ value of `Texinfo-mode-hook'."
    '("vskip" (TeX-arg-literal " ") (TeX-arg-free "Amount"))
    '("w" "Text")
    '("xref" "Node name"))
+
+  ;; RefTeX plugging
+  (add-hook 'reftex-mode-hook 'Texinfo-reftex-hook)
+  (if (and (boundp 'reftex-mode) reftex-mode)
+      (Texinfo-reftex-hook))
 
   (TeX-run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
