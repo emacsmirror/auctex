@@ -1198,22 +1198,26 @@ This is necessary since index entries may contain commands and stuff.")
 	(1 2 3) LaTeX-auto-optional)
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
 	(1 2) LaTeX-auto-arguments)
-       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
+       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
+	1 TeX-auto-symbol)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[")
 	1 LaTeX-auto-environment)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
 	(1 2) LaTeX-auto-env-args)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?") 1 LaTeX-auto-environment)
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?")
+	1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
 	1 TeX-auto-file)
        ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
 	1 TeX-auto-file)
-       (, (concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}") 1 LaTeX-auto-bibitem)
+       (, (concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+	  1 LaTeX-auto-bibitem)
        (, (concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
 	  1 LaTeX-auto-bibitem)
        ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
-       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\..+}" 1 LaTeX-auto-bibliography)
+       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\..+}"
+	1 LaTeX-auto-bibliography)
        ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
        ("\\\\newrefsection\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)
        ("\\\\begin{refsection}\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)))
@@ -1224,12 +1228,14 @@ This is necessary since index entries may contain commands and stuff.")
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defun LaTeX-split-bibs (match)
+  "Extract bibliography resources from MATCH.
+Split the string at commas and remove Biber file extensions."
   (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
     (dolist (bib bibs)
       (LaTeX-add-bibliographies (replace-regexp-in-string 
 				 (concat "\\(?:\\."
 					 (mapconcat 'regexp-quote
-						    BibTeX-Biber-file-extensions
+						    TeX-Biber-file-extensions
 						    "\\|\\.")
 					 "\\)")
 				 "" bib)))))
@@ -1724,8 +1730,9 @@ OPTIONAL is ignored."
 	       TeX-file-extensions)
     (docs "${TEXDOCS}" ("doc/") TeX-doc-extensions)
     (graphics "${TEXINPUTS}" ("tex/") LaTeX-includegraphics-extensions)
-    (bibinputs "${BIBINPUTS}" ("bibtex/bib/") BibTeX-Biber-file-extensions)
-    (bstinputs "${BSTINPUTS}" ("bibtex/bst/") BibTeX-style-extensions))
+    (bibinputs "${BIBINPUTS}" ("bibtex/bib/") BibTeX-file-extensions)
+    (bstinputs "${BSTINPUTS}" ("bibtex/bst/") BibTeX-style-extensions)
+    (biberinputs "${BIBINPUTS}" ("bibtex/bib/") TeX-Biber-file-extensions))
   "Alist of filetypes with locations and file extensions.
 Each element of the alist consists of a symbol expressing the
 filetype, a variable which can be expanded on kpathsea-based
@@ -1822,27 +1829,42 @@ string."
 			    BibTeX-global-style-files))
    optional))
 
-(defvar BibTeX-Biber-global-files nil
-  "Association list of BibTeX/Biber files.
+(defvar BibTeX-global-files nil
+  "Association list of BibTeX files.
 
-Initialized once at the first time you prompt for an BibTeX/Biber file.
+Initialized once at the first time you prompt for a BibTeX file.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+(defvar TeX-Biber-global-files nil
+  "Association list of Biber files.
+
+Initialized once at the first time you prompt for an Biber file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibliography (optional &optional prompt)
-  "Prompt for a BibTeX/Biber database file.
+  "Prompt for a BibTeX or Biber database file.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (message "Searching for BibTeX/Biber files...")
-  (or BibTeX-Biber-global-files
-      (setq BibTeX-Biber-global-files
-	    (mapcar 'list (TeX-search-files-by-type 'bibinputs 'global t t))))
-  (let ((styles (multi-prompt
-		 "," t
-		 (TeX-argument-prompt optional prompt "BibTeX/Biber files")
-		 (append (mapcar 'list (TeX-search-files-by-type
-					'bibinputs 'local t t))
-			 BibTeX-Biber-global-files))))
+  (let (name files inputs styles)
+    (if LaTeX-using-Biber
+	(progn
+	  (setq name "Biber"
+		files 'TeX-Biber-global-files
+		inputs 'biberinputs))
+      (setq name "BibTeX"
+	    files 'BibTeX-global-files
+	    inputs 'bibinputs))
+    (message "Searching for %s files..." name)
+    (or (symbol-value files)
+	(set files (mapcar 'list (TeX-search-files-by-type
+				  'biberinputs 'global t t))))
+    (setq styles (multi-prompt
+		  "," t
+		  (TeX-argument-prompt optional prompt (concat name " files"))
+		  (append (mapcar 'list (TeX-search-files-by-type
+					 inputs 'local t t))
+			  (symbol-value files))))
     (apply 'LaTeX-add-bibliographies styles)
     (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
 

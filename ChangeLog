@@ -1,3 +1,30 @@
+2012-11-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-split-bibs): Add doc string and use variable for
+	Biber file extensions.
+	(LaTeX-search-files-type-alist): Add entry for Biber.
+	(BibTeX-Biber-global-files): Remove.
+	(BibTeX-global-files): Reintroduce.
+	(TeX-Biber-global-files): New variable.
+	(TeX-arg-bibliography): Check if Biber or BibTeX is used and react
+	accordingly.
+
+	* tex-buf.el (TeX-check-files): Do not check duplicate extensions.
+	(TeX-command-query, TeX-LaTeX-sentinel): Use separate variables
+	for BibTeX and Biber file extensions.
+	(TeX-synchronous-sentinel): Use `let' instead of `let*'.
+
+	* tex.el (TeX-clean-default-intermediate-suffixes): Add suffixes
+	for biblatex.
+	(TeX-auto-generate, TeX-auto-generate-global): Use separate
+	variables for BibTeX and Biber file extensions.
+	(TeX-Biber-file-extensions): New variable.
+	(BibTeX-Biber-file-extensions): Remove.
+	(BibTeX-file-extensions): Reintroduce.
+	(TeX-search-files-type-alist): Use `BibTeX-file-extensions'.
+	(TeX-normal-mode): Use separate variables for BibTeX and Biber
+	global files.
+
 2012-07-17  Vincent Belaïche  <vincentb1@users.sourceforge.net>
 
 	* tex-info.el (Texinfo-reftex-hook): Added function.
