@@ -1,3 +1,8 @@
+2012-11-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* RELEASE, configure.ac, doc/auctex.texi, doc/changes.texi,
+	doc/install.texi, doc/tex-ref.tex: Update for upcoming release.
+
 2012-11-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-split-bibs): Add doc string and use variable for

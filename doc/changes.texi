@@ -1,6 +1,7 @@
 @c This is part of the AUCTeX manual.
 @c Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-@c   2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+@c   2004, 2005, 2006, 2007, 2008, 2009, 2010, 2012 Free Software
+@c   Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
 @ifset rawfile
@@ -8,11 +9,12 @@
 
 @end ifset
 
-@heading News since 11.86
+@heading News since 11.87
 
 @itemize @bullet
 @item
-@AUCTeX{} now supports Biber in addition to BibLaTeX and BibTeX.
+@AUCTeX{} now supports Biber in conjunction with biblatex in addition to
+BibTeX.
 
 @item
 Each @AUCTeX{} mode now has its own abbrev table.  On Emacsen which
@@ -21,7 +23,7 @@ abbrevs from the Text mode abbrev table are available as well.  Newly
 defined abbrevs are written to the mode-specific tables, though.
 
 @item
-@samp{tex-fptex.el} was removed.
+The file @samp{tex-fptex.el} was removed.
 
 @item
 Forward/backward search for Evince has been improved.  If Emacs is
@@ -29,6 +31,13 @@ compiled with DBUS support and a recent Evince version (3.x) is
 installed, the communication goes over the desktop bus instead of the
 command line, resulting in more accurate positioning of point in Emacs
 and highlighting of the target paragraph in Evince.
+
+@item
+A problem where Ghostscript threw an /invalidfileaccess error when
+running @previewlatex{} was fixed.
+
+@item
+A lot of smaller fixes and additions have been made.
 @end itemize
 
 
