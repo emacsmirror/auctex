@@ -1,3 +1,8 @@
+2012-11-30  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-dbus-p): Check for feature emacs in order not
+	to signal an error on XEmacs.
+
 2012-11-29  Ralf Angeli  <angeli@caeruleus.net>
 
 	* RELEASE, configure.ac, doc/auctex.texi, doc/changes.texi,

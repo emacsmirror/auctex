@@ -1014,7 +1014,9 @@ given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too."
-  (and (require 'dbus nil :no-error)
+  (and (featurep 'emacs)  ;; XEmacs 21.4 has no `require` with arity 3, and no
+			  ;; dbus support anyway.
+       (require 'dbus nil :no-error)
        (functionp 'dbus-register-signal)
        (getenv "DBUS_SESSION_BUS_ADDRESS")
        (executable-find "evince")
