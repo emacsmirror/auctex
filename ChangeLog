@@ -1,3 +1,8 @@
+2012-11-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-evince-dbus-p): Make last change a little more
+	conventional.
+
 2012-11-30  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-evince-dbus-p): Check for feature emacs in order not
