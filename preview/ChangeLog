@@ -1,3 +1,10 @@
+2012-12-04  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge revno 314 (Stefan Monnier) from emacs elpa branch: Shorten
+	copyright year ranges.
+
+	* preview.el:
+
 2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* preview.el (preview-auto-reveal): Add `forward-char' and

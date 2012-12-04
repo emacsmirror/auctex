@@ -1,7 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2010 Free
-;;   Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2010, 2012  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -23,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.286 2011-01-23 18:53:55 angeli Exp $
+;; $Id: preview.el,v 1.287 2012-12-04 08:01:34 tsdh Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3519,7 +3518,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.286 $"))
+	(rev "$Revision: 1.287 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3533,7 +3532,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2011-01-23 18:53:55 $"))
+    (let ((date "$Date: 2012-12-04 08:01:34 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

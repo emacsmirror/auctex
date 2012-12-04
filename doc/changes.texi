@@ -1,7 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-@c   2004, 2005, 2006, 2007, 2008, 2009, 2010, 2012 Free Software
-@c   Foundation, Inc.
+@c Copyright (C) 1994-2002, 2004-2010, 2012 Free Software Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
 @ifset rawfile

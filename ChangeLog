@@ -1,3 +1,28 @@
+2012-12-04  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge revno 314 (Stefan Monnier) from emacs elpa branch: Shorten
+	copyright year ranges.
+
+	* context.el:
+
+	* doc/auctex.texi:
+
+	* doc/changes.texi:
+
+	* doc/install.texi:
+
+	* font-latex.el:
+
+	* latex.el:
+
+	* style/letter.el:
+
+	* tex-fold.el:
+
+	* tex-jp.el:
+
+	* tex.el:
+
 2012-11-30  Ralf Angeli <angeli@caeruleus.net>
 
 	* Version 11.87 released.
