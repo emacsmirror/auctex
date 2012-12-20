@@ -1,3 +1,8 @@
+2012-12-20  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-bar.el (TeX-bar-TeX-button-alist, TeX-bar-TeX-buttons): Add
+	`spell' button to run spell-checker.
+
 2012-12-04  Tassilo Horn  <tsdh@gnu.org>
 
 	Merge revno 314 (Stefan Monnier) from emacs elpa branch: Shorten

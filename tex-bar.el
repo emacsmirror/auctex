@@ -84,7 +84,7 @@ If there is no help, the empty string is returned."
 
 (defcustom TeX-bar-TeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-	     [separator nil] tex next-error view bibtex)
+	     [separator nil] tex next-error view bibtex spell)
   "List of buttons available in `tex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -114,7 +114,8 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
 		    (const view)
 		    (const file)
 		    (const bibtex)
-		    (const clean))
+		    (const clean)
+		    (const spell))
 		    ;; (const latex-symbols-experimental)
 	       (repeat (choice (symbol :tag "Label")
 			       (vector :args ((symbol :tag "Label in Emacs ")
@@ -196,7 +197,11 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
     (clean  :image "delete"
 	    :command (TeX-command "Clean" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "Clean"))))
+		    (TeX-bar-help-from-command-list "Clean")))
+    (spell  :image "view" ;; TODO: We probably want a custom icon.
+	    :command (TeX-command "Spell" 'TeX-master-file -1)
+	    :help (lambda (&rest ignored)
+		    (TeX-bar-help-from-command-list "Spell"))))
   ;; latex-symbols-experimental?
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
