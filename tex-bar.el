@@ -231,7 +231,7 @@ format of the argument MEANING-ALIST in the mentioned function."
 
 (defcustom TeX-bar-LaTeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-	      [separator nil] latex next-error view bibtex)
+	      [separator nil] latex next-error view bibtex spell)
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -262,6 +262,7 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
 		    (const file)
 		    (const bibtex)
 		    (const clean)
+		    (const spell)
 		    (const latex-symbols-experimental))
 	       (repeat (choice (symbol :tag "Label")
 			       (vector :args ((symbol :tag "Label in Emacs ")
@@ -344,6 +345,10 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 	    :command (TeX-command "Clean" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
 		    (TeX-bar-help-from-command-list "Clean")))
+    (spell  :image "spell"
+	    :command (TeX-command "Spell" 'TeX-master-file -1)
+	    :help (lambda (&rest ignored)
+		    (TeX-bar-help-from-command-list "Spell")))
     (latex-symbols-experimental . (:alias :eval-group
 					  LaTeX-symbols-toolbar-switch-contents
 					  LaTeX-symbols-toolbar-contents)))

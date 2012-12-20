@@ -1,5 +1,8 @@
 2012-12-20  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex-bar.el (TeX-bar-LaTeX-buttons, TeX-bar-LaTeX-button-alist):
+	Also add spell button.
+
 	* images/spell.xpm: New image, copied from Emacs.
 
 	* tex-bar.el (TeX-bar-TeX-button-alist): Use it for the spell
