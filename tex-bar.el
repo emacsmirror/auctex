@@ -198,7 +198,7 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 	    :command (TeX-command "Clean" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
 		    (TeX-bar-help-from-command-list "Clean")))
-    (spell  :image "view" ;; TODO: We probably want a custom icon.
+    (spell  :image "spell"
 	    :command (TeX-command "Spell" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
 		    (TeX-bar-help-from-command-list "Spell"))))
