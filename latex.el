@@ -3953,10 +3953,10 @@ See also `LaTeX-math-menu'."
     (nil "bigtriangledown" "Binary Op" 9661) ;; #X25BD
     (nil "triangleleft" "Binary Op" 9665) ;; #X25C1
     (nil "triangleright" "Binary Op" 9655) ;; #X25B7
-    (nil "lhd" "Binary Op")
-    (nil "rhd" "Binary Op")
-    (nil "unlhd" "Binary Op")
-    (nil "unrhd" "Binary Op")
+    (nil "lhd" "Binary Op" 8882) ;; #X22B2
+    (nil "rhd" "Binary Op" 8883) ;; #X22B3
+    (nil "unlhd" "Binary Op" 8884) ;; #X22B4
+    (nil "unrhd" "Binary Op" 8885) ;; #X22B5
     (nil "oplus" "Binary Op" 8853) ;; #X2295
     (nil "ominus" "Binary Op" 8854) ;; #X2296
     (nil "otimes" "Binary Op" 8855) ;; #X2297
@@ -4048,10 +4048,10 @@ See also `LaTeX-math-menu'."
     (?0 "emptyset" "Misc Symbol" 8709) ;; #X2205
     (?E "exists" "Misc Symbol" 8707) ;; #X2203
     (nil "surd" "Misc Symbol" 8730) ;; #X221A
-    (nil "Box" "Misc Symbol")
+    (nil "Box" "Misc Symbol" 9633) ;; #X25A1
     (nil "triangle" "Misc Symbol" 9651) ;; #X25B3
-    (nil "Diamond" "Misc Symbol")
-    (nil "imath" "Misc Symbol" 305) ;; #X0131
+    (nil "Diamond" "Misc Symbol" 9671) ;; #X25C7
+    (nil "imath" "Misc Symbol" 120484) ;; #X1D6A4
     (nil "jmath" "Misc Symbol" 120485) ;; #X1D6A5
     (nil "ell" "Misc Symbol" 8467) ;; #X2113
     (nil "neg" "Misc Symbol" 172) ;; #X00AC
@@ -4117,8 +4117,8 @@ See also `LaTeX-math-menu'."
     (?\C-^ "sup" "Log-like")
     (?\C-t "tan" "Log-like")
     (nil "tanh" "Log-like")
-    (nil "{" "Delimiters")
-    (nil "}" "Delimiters")
+    (nil "{" "Delimiters" ?{)
+    (nil "}" "Delimiters" ?})
     (nil "lfloor" "Delimiters" 8970) ;; #X230A
     (nil "rfloor" "Delimiters" 8971) ;; #X230B
     (nil "lceil" "Delimiters" 8968) ;; #X2308
@@ -4127,10 +4127,10 @@ See also `LaTeX-math-menu'."
     (?\) "rangle" "Delimiters" 10217) ;; #X27E9
     (nil "rmoustache" "Delimiters" 9137) ;; #X23B1
     (nil "lmoustache" "Delimiters" 9136) ;; #X23B0
-    (nil "rgroup" "Delimiters")
-    (nil "lgroup" "Delimiters")
+    (nil "rgroup" "Delimiters" 9133) ;; #X23AD
+    (nil "lgroup" "Delimiters" 9129) ;; #X23A9
     (nil "backslash" "Delimiters" 92) ;; #X005C
-    (nil "|" "Delimiters")
+    (nil "|" "Delimiters" 8214) ;; #X2016)
     (nil "arrowvert" "Delimiters")
     (nil "Arrowvert" "Delimiters")
     (nil "bracevert" "Delimiters")
@@ -4138,8 +4138,8 @@ See also `LaTeX-math-menu'."
     (nil "widehat" "Constructs" 770) ;; #X0302
     (nil "overleftarrow" "Constructs" 8406) ;; #X20D6
     (nil "overrightarrow" "Constructs")
-    (nil "overline" "Constructs")
-    (nil "underline" "Constructs")
+    (nil "overline" "Constructs" 773) ;; #X0305
+    (nil "underline" "Constructs" 818) ;; #X0332
     (nil "overbrace" "Constructs" 65079) ;; #XFE37
     (nil "underbrace" "Constructs" 65080) ;; #XFE38
     (nil "sqrt" "Constructs" 8730) ;; #X221A
@@ -4154,22 +4154,23 @@ See also `LaTeX-math-menu'."
     (nil "vec" "Accents" 8407) ;; #X20D7
     (nil "ddot" "Accents" 776) ;; #X0308
     (?~ "tilde" "Accents" 771) ;; #X0303
+    (nil "mathring" "Accents" 778) ;; #X030A
     (nil "digamma" ("AMS" "Hebrew") 989) ;; #X03DD
     (nil "varkappa" ("AMS" "Hebrew") 1008) ;; #X03F0
     (nil "beth" ("AMS" "Hebrew") 8502) ;; #X2136
     (nil "daleth" ("AMS" "Hebrew") 8504) ;; #X2138
     (nil "gimel" ("AMS" "Hebrew") 8503) ;; #X2137
-    ("v G" "varGamma" ("AMS" "Greek Uppercase"))
-    ("v D" "varDelta" ("AMS" "Greek Uppercase"))
-    ("v J" "varTheta" ("AMS" "Greek Uppercase"))
-    ("v L" "varLambda" ("AMS" "Greek Uppercase"))
-    ("v X" "varXi" ("AMS" "Greek Uppercase"))
-    ("v P" "varPi" ("AMS" "Greek Uppercase"))
-    ("v S" "varSigma" ("AMS" "Greek Uppercase"))
-    ("v U" "varUpsilon" ("AMS" "Greek Uppercase"))
-    ("v F" "varPhi" ("AMS" "Greek Uppercase"))
-    ("v Y" "varPsi" ("AMS" "Greek Uppercase"))
-    ("v W" "varOmega" ("AMS" "Greek Uppercase"))
+    ("v G" "varGamma" ("AMS" "Greek Uppercase") 120548) ;; #X1D6E4
+    ("v D" "varDelta" ("AMS" "Greek Uppercase") 120549) ;; #X1D6E5
+    ("v J" "varTheta" ("AMS" "Greek Uppercase") 120553) ;; #X1D6E9
+    ("v L" "varLambda" ("AMS" "Greek Uppercase") 120556) ;; #X1D6EC
+    ("v X" "varXi" ("AMS" "Greek Uppercase") 120559) ;; #X1D6EF
+    ("v P" "varPi" ("AMS" "Greek Uppercase") 120561) ;; #X1D6F1
+    ("v S" "varSigma" ("AMS" "Greek Uppercase") 120564) ;; #X1D6F4
+    ("v U" "varUpsilon" ("AMS" "Greek Uppercase") 120566) ;; #X1D6F6
+    ("v F" "varPhi" ("AMS" "Greek Uppercase") 120567) ;; #X1D6F7
+    ("v Y" "varPsi" ("AMS" "Greek Uppercase") 120569) ;; #X1D6F9
+    ("v W" "varOmega" ("AMS" "Greek Uppercase") 120570) ;; #X1D6FA
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
     (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
@@ -4180,7 +4181,7 @@ See also `LaTeX-math-menu'."
     (nil "looparrowleft" ("AMS" "Arrows") 8619) ;; #X21AB
     (nil "leftrightharpoons" ("AMS" "Arrows") 8651) ;; #X21CB
     (nil "curvearrowleft" ("AMS" "Arrows") 8630) ;; #X21B6
-    (nil "circlearrowleft" ("AMS" "Arrows"))
+    (nil "circlearrowleft" ("AMS" "Arrows") 8634) ;; #X21BA
     (nil "Lsh" ("AMS" "Arrows") 8624) ;; #X21B0
     (nil "upuparrows" ("AMS" "Arrows") 8648) ;; #X21C8
     (nil "upharpoonleft" ("AMS" "Arrows") 8639) ;; #X21BF
@@ -4213,7 +4214,7 @@ See also `LaTeX-math-menu'."
     (nil "lessgtr" ("AMS" "Relational I") 8822) ;; #X2276
     (nil "lesseqgtr" ("AMS" "Relational I") 8922) ;; #X22DA
     (nil "lesseqqgtr" ("AMS" "Relational I") 10891) ;; #X2A8B
-    (nil "doteqdot" ("AMS" "Relational I"))
+    (nil "doteqdot" ("AMS" "Relational I") 8785) ;; #X2251
     (nil "risingdotseq" ("AMS" "Relational I") 8787) ;; #X2253
     (nil "fallingdotseq" ("AMS" "Relational I") 8786) ;; #X2252
     (nil "backsim" ("AMS" "Relational I") 8765) ;; #X223D
@@ -5358,6 +5359,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("sqrt" [ "Root" ] t)
    '("underbrace" t)
    '("underline" t)
+   '("acute" t) '("grave" t) '("ddot" t) '("tilde" t) '("bar" t)
+   '("breve" t) '("check" t) '("hat" t) '("vec" t) '("dot" t)
+   '("widetilde" t) '("widehat" t)
    '("author" t)
    '("date" t)
    '("thanks" t)
@@ -5441,13 +5445,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("ensuremath" "Math commands")
      '("textsuperscript" "Text")
      '("textcircled" "Text")
+     '("mathring" t)
 
      "LaTeXe"
      "listfiles" "frontmatter" "mainmatter" "backmatter"
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
      "textquotedblright" "textquoteleft" "textquoteright"
-     "textbullet" "textperiodcentered"
+     "textbullet" "textperiodcentered" "textasteriskcentered"
      "textbackslash" "textbar" "textless" "textgreater"
      "textasciicircum" "textasciitilde"
      "textregistered" "texttrademark"
