@@ -1,3 +1,15 @@
+2012-12-26  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/ragged2e.el: New style by Mads Jensen <mje@inducks.org>.
+
+	* style/mathtools.el: Ditto.
+
+	* style/everysel.el: Ditto.
+
+	* style/bigstrut.el: Ditto.
+
+	* style/bigdelim.el: Ditto.
+
 2012-12-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/ulem.el: New style by Mads Jensen <mje@inducks.org>.
