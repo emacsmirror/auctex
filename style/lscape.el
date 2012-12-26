@@ -1,9 +1,10 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'
+;;; lscape.el --- AUCTeX style for `lscape.sty'
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2011 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
+;; Created: 2011-05-04
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -25,25 +26,19 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bigstrut.sty'.
+;; This file adds support for `lscape.sty'.
 
 ;;; Code:
 
 (TeX-add-style-hook
- "bigstrut"
+ "lscape"
  (lambda ()
-   (TeX-add-symbols
-    "bigstrutsetup"
-    '("bigstrut" [ TeX-arg-bigstrut ]))))
+   (LaTeX-add-environments
+    "landscapee"))
+ ;; lscape uses graphics internally to handle the work
+ (TeX-run-style-hooks "graphics"))
 
-(defun TeX-arg-bigstrut (optional &optional prompt)
-  "Prompt for the optional argument in \\bigstrut"
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-     optional "Strut to top (t) or bottom (b)" nil t)
-     (mapcar 'list '("t" "b")) nil t) optional))
+(defvar LaTeX-lscape-package-options '("pdftex")
+  "Package options for the lscape package.")
 
-(defvar LaTeX-bigstrut-package-options nil
-  "Package options for the bigstrut package.")
-
-;;; bigstrut.el ends here
+;;; lscape.el ends here
