@@ -45,6 +45,7 @@
      '("xxalignat"  LaTeX-amsmath-env-alignat)
      '("aligned"    LaTeX-amsmath-env-aligned)
      '("gathered"   LaTeX-amsmath-env-aligned)
+     '("alignedat"  LaTeX-amsmath-env-alignedat)
      "align*" "gather*" "flalign*" "multline*" "equation*"
      "split"
      "cases"
@@ -56,6 +57,7 @@
      '("eqref" TeX-arg-ref)
      '("numberwithin" TeX-arg-counter "Section level")
      '("raisetag" "Dimension")
+     '("shoveright" t) '("shoveleft" t)
      '("intertext" t)
      '("hdotsfor" ["Stretch"] "Number of columns to cover")
      '("xleftarrow" ["Below"] "Above")
@@ -111,6 +113,7 @@
 		     ("xalignat"  . LaTeX-item-equations)
 		     ("xalignat*" . LaTeX-item-equation)
 		     ("xxalignat" . LaTeX-item-equation)
+		     ("alignedat" . LaTeX-item-equation)
 		     ("flalign"  . LaTeX-item-equations)
 		     ("flalign*" . LaTeX-item-equation)
 		     ("matrix" .  LaTeX-item-equation)
@@ -119,6 +122,7 @@
 		     ("Bmatrix" .  LaTeX-item-equation)
 		     ("vmatrix" .  LaTeX-item-equation)
 		     ("Vmatrix" .  LaTeX-item-equation)
+		     ("subarray" . LaTeX-item-equation)
 		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
@@ -157,6 +161,14 @@
 	(setq where "")
       (setq where (concat "[" where "]")))
     (LaTeX-insert-environment env where)))
+
+(defun LaTeX-amsmath-env-alignedat (env)
+  (let ((where (read-string "(optional) Vertical position (t or b): "))
+     (ncols (read-string "Number of columns: ")))
+    (if (string= where "")
+     (setq where "")
+      (setq where (concat "[" where "]")))
+    (LaTeX-insert-environment env (concat where TeX-grop ncols TeX-grcl))))
 
 (defun LaTeX-item-equation ()
   (end-of-line 0)
