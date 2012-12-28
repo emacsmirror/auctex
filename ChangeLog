@@ -1,3 +1,7 @@
+2012-12-28  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/multirow.el: New style by Mads Jensen <mje@inducks.org>.
+
 2012-12-27  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/siunitx.el (LaTeX-siunitx-package-options): New variable.
