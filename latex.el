@@ -1900,6 +1900,13 @@ string."
 		    nil t)
    optional))
 
+(defcustom LaTeX-pagestyle-list
+  '(("plain") ("empty") ("headings") ("myheadings"))
+  "A list of available pagestyles."
+  :group 'LaTeX
+  :type '(repeat (list (string))))
+(make-variable-buffer-local 'LaTeX-pagestyle-list)
+
 (defun TeX-arg-pagestyle (optional &optional prompt)
   "Prompt for a LaTeX pagestyle with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -1907,7 +1914,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Pagestyle")
-		    '(("plain") ("empty") ("headings") ("myheadings")))
+		    LaTeX-pagestyle-list)
    optional))
 
 (defcustom LaTeX-default-verb-delimiter ?|
