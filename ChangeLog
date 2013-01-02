@@ -1,5 +1,7 @@
 2013-01-02  Tassilo Horn  <tsdh@gnu.org>
 
+	* style/afterpage.el: New style by Mads Jensen <mje@inducks.org>.
+
 	* style/everysel.el: Fix typos.
 
 2012-12-30  Mosè Giordano  <giordano.mose@libero.it>
