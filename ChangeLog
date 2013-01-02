@@ -1,3 +1,7 @@
+2013-01-02  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/everysel.el: Fix typos.
+
 2012-12-30  Mosè Giordano  <giordano.mose@libero.it>
 
         * latex.el (LaTeX-pagestyle-list): New variable.

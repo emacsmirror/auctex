@@ -1,4 +1,4 @@
-;;; ragged2e.el --- AUCTeX style for `everysel.sty'
+;;; everysel.el --- AUCTeX style for `everysel.sty'
 
 ;; Copyright (C) 2012 Free Software Foundation, Inc.
 
@@ -38,7 +38,7 @@
     ;; adds a hook to be called after the next \\selectfont
     '("AtNextSelectont" 1))))
 
-(defvar LaTeX-ragged2e-package-options nil
+(defvar LaTeX-everysel-package-options nil
   "Package options for the everysel package.")
 
 ;;; everysel.el ends here
