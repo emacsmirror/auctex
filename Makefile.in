@@ -121,7 +121,12 @@ STYLESRC = style/prosper.el \
 	   style/pst-plot.el  style/pst-slpe.el  style/shortvrb.el \
 	   style/austrian.el  style/naustrian.el style/french.el \
 	   style/lettrine.el  style/multicol.el  style/xspace.el \
-	   style/setspace.el  style/biblatex.el
+	   style/setspace.el  style/biblatex.el  style/siunitx.el \
+	   style/bm.el        style/footmisc.el  style/ulem.el \
+	   style/bigdelim.el  style/bigstrut.el  style/everysel.el \
+	   style/mathtools.el style/ragged2e.el  style/amssymb.el \
+	   style/lscape.el    style/epigraph.el  style/mflogo.el \
+	   style/multirow.el  style/imakeidx.el  style/afterpage.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
@@ -322,15 +327,16 @@ wc:
 #    Tag the release.
 #    
 # 2) dist TAG=<tag>
-#    Create the tar ball.
+#    Create the tar ball and other release files and put them into $FTPDIR.
 #
 # 3) xemacs-package TAG=<tag>
 #    Create the precompiled XEmacs package.
 #
 # 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
+#    This requires a compiled Emacs of the same version at location $WEMACS.
 # 
-# 5) release-sign
+# 5) release-sign TAG=<tag>
 #    Sign the tar ball and create directive files for upload.
 # 
 # 6) release-upload
@@ -454,7 +460,7 @@ windows-package: check-tag
 	cd $(WBUILDDIR)/emacs-$(WEMACSVER) \
 	&& zip -r $(FTPDIR)/$(WPACKAGE) $(WPACKAGEFILES)
 
-release-sign:
+release-sign: check-tag
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
 	if [ "x$$GPG_AGENT_INFO" = "x" ]; then \
 	  read -sp "Enter pass phrase: " phrase ; \

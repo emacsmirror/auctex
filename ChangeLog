@@ -1,25 +1,33 @@
+2013-01-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Activate new style files.
+
+	* ChangeLog: Move name of style file contributors to head of
+	ChangLog entries.
+
 2013-01-02  Tassilo Horn  <tsdh@gnu.org>
 
-	* style/afterpage.el: New style by Mads Jensen <mje@inducks.org>.
-
 	* style/everysel.el: Fix typos.
+
+2013-01-02  Mads Jensen  <mje@inducks.org>
+
+	* style/afterpage.el: New style.
 
 2012-12-30  Mosè Giordano  <giordano.mose@libero.it>
 
         * latex.el (LaTeX-pagestyle-list): New variable.
 	(TeX-arg-pagestyle): Use it.
 
-        * style/imakeidx.el: New style by Mosè Giordano
-	<giordano.mose@libero.it>.
+        * style/imakeidx.el: New style.
 
 2012-12-29  Ikumi Keita <ikumi@ikumi.que.jp>
 
 	* doc/tex-ref.tex: Fix apparent errors and add keybind entries for
 	C-c ? and `:' (in math mode).
 
-2012-12-28  Tassilo Horn  <tsdh@gnu.org>
+2012-12-28  Mads Jensen  <mje@inducks.org>
 
-	* style/multirow.el: New style by Mads Jensen <mje@inducks.org>.
+	* style/multirow.el: New style.
 
 2012-12-27  Mosè Giordano  <giordano.mose@libero.it>
 
@@ -29,9 +37,9 @@
 	* style/hyperref.el (LaTeX-hyperref-href-options): New variable.
 	(LaTeX-hyperref-package-options, "hyperref"): Use it.
 
-2012-12-27  Tassilo Horn  <tsdh@gnu.org>
+2012-12-27  Mads Jensen  <mje@inducks.org>
 
-	* style/mflogo.el: New style by Mads Jensen <mje@inducks.org>.
+	* style/mflogo.el: New style.
 
 	* style/epigraph.el: Ditto.
 
@@ -43,9 +51,9 @@
 	* font-latex.el (font-latex-math-environments): Add "xxalignat"
 	and "flalign".
 
-2012-12-26  Tassilo Horn  <tsdh@gnu.org>
+2012-12-26  Mads Jensen  <mje@inducks.org>
 
-	* style/lscape.el: New style by Mads Jensen <mje@inducks.org>.
+	* style/lscape.el: New style.
 
 	* style/amssymb.el: Ditto.
 
@@ -59,9 +67,9 @@
 
 	* style/bigdelim.el: Ditto.
 
-2012-12-25  Tassilo Horn  <tsdh@gnu.org>
+2012-12-25  Mads Jensen  <mje@inducks.org>
 
-	* style/ulem.el: New style by Mads Jensen <mje@inducks.org>.
+	* style/ulem.el: New style.
 
 2012-12-25  Ikumi Keita <ikumi@ikumi.que.jp>
 
@@ -70,13 +78,13 @@
 	(LaTeX-common-initialization): Added support for accent macros
 	\hat, \dot etc and \textasteriskcentered.
 
-2012-12-24  Tassilo Horn  <tsdh@gnu.org>
+2012-12-24  Mads Jensen  <mje@inducks.org>
 
-	* style/footmisc.el: New style by Mads Jensen <mje@inducks.org>.
+	* style/footmisc.el: New style.
 
-2012-12-21  Tassilo Horn  <tsdh@gnu.org>
+2012-12-21  Mosè Giordano  <giordano.mose@libero.it>
 
-	* style/bm.el: New style by Mosè Giordano <giordano.mose@libero.it>.
+	* style/bm.el: New style.
 
 	* style/siunitx.el: Ditto.
 
