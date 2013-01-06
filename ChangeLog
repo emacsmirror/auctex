@@ -1,3 +1,9 @@
+2013-01-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/mathtools.el ("mathtools"): Append amsmath options to
+	mathtools option after the amsmath style file has been loaded.
+	Remove `function' wrapper.
+
 2013-01-05  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in (STYLESRC): Activate new style files.
