@@ -63,9 +63,8 @@
    ;; mathtools requires amsmath, as some bugs in amsmath are fixed
    (TeX-run-style-hooks "amsmath")
 
-   (setq LaTeX-mathtools-package-options
-	 (append LaTeX-mathtools-package-options
-		 LaTeX-amsmath-package-options))
+   (dolist (elt LaTeX-amsmath-package-options)
+     (add-to-list 'LaTeX-mathtools-package-options elt))
 
    (LaTeX-add-environments
     '("lgathered" LaTeX-amsmath-env-aligned)
