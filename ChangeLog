@@ -1,3 +1,8 @@
+2013-01-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/epigraph.el ("epigraph"): Do not quote list entries for
+	`font-latex-add-keywords'.
+
 2013-01-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/mathtools.el ("mathtools"): Prevent amsmath options from
