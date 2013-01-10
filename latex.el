@@ -763,12 +763,24 @@ To insert a hook here, you must insert it in the appropiate style file.")
 
 (defun LaTeX-env-document (&optional ignore)
   "Create new LaTeX document.
+Also inserts a \\documentclass macro if there's none already
 The compatibility argument IGNORE is ignored."
-  (TeX-insert-macro "documentclass")
-  (LaTeX-newline)
-  (LaTeX-newline)
-  (LaTeX-newline)
-  (end-of-line 0)
+  ;; just assume a single valid \\documentclass, i.e., one not in a
+  ;; commented line
+  (let ((found nil))
+    (save-excursion
+      (while (and (not found)
+		  (re-search-backward
+		   "\\\\documentclass\\(\\[[a-z0-9A-Z\-\_,]*\\]\\)?\\({[^}]+}\\)"
+		   nil t))
+	(and (not (TeX-in-commented-line))
+	     (setq found t))))
+    (when (not found)
+      (TeX-insert-macro "documentclass")
+      (LaTeX-newline)
+      (LaTeX-newline)
+      (LaTeX-newline)
+      (end-of-line 0)))
   (LaTeX-insert-environment "document")
   (run-hooks 'LaTeX-document-style-hook)
   (setq LaTeX-document-style-hook nil))

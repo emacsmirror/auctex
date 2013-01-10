@@ -1,3 +1,8 @@
+2013-01-10  Mads Jensen  <mje@inducks.org>
+
+	* latex.el (LaTeX-env-document): Only insert \documentclass in
+	case the document does not already contain one.
+
 2013-01-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/epigraph.el ("epigraph"): Do not quote list entries for
