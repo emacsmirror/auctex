@@ -1,3 +1,16 @@
+2013-01-11  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (STYLESRC): Add new style files kantlipsum.el,
+	lipsum.el, and longtable.el.
+
+2013-01-10  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/kantlipsum.el: New style.
+
+	* style/lipsum.el: Ditto.
+
+	* style/longtable.el: Ditto
+
 2013-01-10  Mads Jensen  <mje@inducks.org>
 
 	* latex.el (LaTeX-env-document): Only insert \documentclass in

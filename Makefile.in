@@ -126,7 +126,8 @@ STYLESRC = style/prosper.el \
 	   style/bigdelim.el  style/bigstrut.el  style/everysel.el \
 	   style/mathtools.el style/ragged2e.el  style/amssymb.el \
 	   style/lscape.el    style/epigraph.el  style/mflogo.el \
-	   style/multirow.el  style/imakeidx.el  style/afterpage.el
+	   style/multirow.el  style/imakeidx.el  style/afterpage.el \
+	   style/longtable.el style/lipsum.el    style/kantlipsum.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
