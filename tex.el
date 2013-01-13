@@ -147,6 +147,8 @@ If nil, none is specified."
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
+    ("ChkTeX" "chktex -v6 %s" TeX-run-compile nil (latex-mode)
+     :help "Check LaTeX file for common mistakes")
     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t
      :help "Spell-check the document")
     ("Clean" "TeX-clean" TeX-run-function nil t
