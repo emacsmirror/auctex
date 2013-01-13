@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-1997, 1999, 2000, 2003-2012
+;; Copyright (C) 1991, 1993-1997, 1999, 2000, 2003-2013
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -1202,6 +1202,10 @@ This is necessary since index entries may contain commands and stuff.")
      1 TeX-auto-symbol))
   "List of regular expressions matching macros in LaTeX classes and packages.")
 
+(defvar LaTeX-auto-pagestyle-regexp-list
+  '(("\\\\ps@\\([A-Za-z]+\\)" 1 LaTeX-auto-pagestyle))
+  "List of regular expression matching LaTeX pagestyle only.")
+
 (defvar LaTeX-auto-regexp-list
   (append
    (let ((token TeX-token-char))
@@ -1235,7 +1239,8 @@ This is necessary since index entries may contain commands and stuff.")
    LaTeX-auto-class-regexp-list
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
-   LaTeX-auto-minimal-regexp-list)
+   LaTeX-auto-minimal-regexp-list
+   LaTeX-auto-pagestyle-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defun LaTeX-split-bibs (match)
@@ -1243,7 +1248,7 @@ This is necessary since index entries may contain commands and stuff.")
 Split the string at commas and remove Biber file extensions."
   (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
     (dolist (bib bibs)
-      (LaTeX-add-bibliographies (replace-regexp-in-string 
+      (LaTeX-add-bibliographies (replace-regexp-in-string
 				 (concat "\\(?:\\."
 					 (mapconcat 'regexp-quote
 						    TeX-Biber-file-extensions
@@ -1422,6 +1427,7 @@ The input string may include LaTeX comments and newlines."
 (TeX-auto-add-type "environment" "LaTeX")
 (TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
 (TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
+(TeX-auto-add-type "pagestyle" "LaTeX")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))
@@ -1912,13 +1918,6 @@ string."
 		    nil t)
    optional))
 
-(defcustom LaTeX-pagestyle-list
-  '(("plain") ("empty") ("headings") ("myheadings"))
-  "A list of available pagestyles."
-  :group 'LaTeX
-  :type '(repeat (list (string))))
-(make-variable-buffer-local 'LaTeX-pagestyle-list)
-
 (defun TeX-arg-pagestyle (optional &optional prompt)
   "Prompt for a LaTeX pagestyle with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -1926,7 +1925,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Pagestyle")
-		    LaTeX-pagestyle-list)
+		    (LaTeX-pagestyle-list))
    optional))
 
 (defcustom LaTeX-default-verb-delimiter ?|
@@ -5261,6 +5260,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("table*" LaTeX-env-figure)
    '("thebibliography" LaTeX-env-bib)
    '("theindex" LaTeX-env-item))
+
+  ;; `latex.ltx' defines `plain' and `empty' pagestyles
+  (LaTeX-add-pagestyles "plain" "empty")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")

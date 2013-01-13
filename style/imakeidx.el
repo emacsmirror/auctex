@@ -1,6 +1,6 @@
 ;;; imakeidx.el --- AUCTeX style for `imakeidx.sty'.
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -53,12 +53,9 @@
 ;; available only if `fancyhdr' is not loaded.  The following code
 ;; works only if `imakeidx' is loaded before `fancyhdr'
 (unless (member "fancyhdr" TeX-active-styles)
-  ;; `firstpagestyle' key takes as value one of the available
-  ;; pagestyles.  `LaTeX-pagestyle-list' is a list of lists of
-  ;; strings, we need a list of strings
   (setq LaTeX-imakeidx-indexsetup-options
 	(append LaTeX-imakeidx-indexsetup-options
-                `(("firstpagestyle" ,(mapcar #'car LaTeX-pagestyle-list)))
+                `(("firstpagestyle" ,(LaTeX-pagestyle-list)))
 		'(("headers")))))
 
 (TeX-add-style-hook "imakeidx"

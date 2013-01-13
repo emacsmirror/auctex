@@ -1,3 +1,17 @@
+2013-01-10  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el: Update copyright range.
+	(LaTeX-auto-pagestyle-regexp-list): New variable.
+	(LaTeX-auto-regexp-list): Use `LaTeX-auto-pagestyle-regexp-list'.
+	("pagestyle"): New type for the parser.
+	(LaTeX-pagestyle-list): Remove.
+	(TeX-arg-pagestyle): Use `LaTeX-pagestyle-list' function for
+	completing.
+	(LaTeX-common-initialization): Initialize pagestyles.
+
+	* style/imakeidx.el: Use `LaTeX-pagestyle-list' function to set
+	`firstpagestyle' option values.
+
 2013-01-11  Ivan Andrus  <darthandrus@gmail.com>
 
 	* tex.el (TeX-command-list): Add command to run ChkTeX.
