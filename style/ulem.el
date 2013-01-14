@@ -61,17 +61,17 @@
 				("xout" "{")) 'textual))))
 
 (defvar LaTeX-arg-fontdecl
-  '(mapcar (concat (lambda (str) (concat "\\" str)))
-	   '("itshape" "bfseries" "scshape"
-	     "ttfamily" "upshape" "mdseries"
-	     "rmfamily" "sffamily" "slshape"))
+  (mapcar (lambda (str) (concat "\\" str))
+	  '("itshape" "bfseries" "scshape"
+	    "ttfamily" "upshape" "mdseries"
+	    "rmfamily" "sffamily" "slshape"))
   "List of font declaration commands in LaTeX")
 
 (defvar LaTeX-arg-fontcmd
-  '(mapcar (concat (lambda (str) (concat "\\" str)))
-	   '("textit" "textbf" "textsc"
-	     "texttt" "textup" "textmd"
-	     "textrm" "textsf" "textsl"))
+  (mapcar (lambda (str) (concat "\\" str))
+	  '("textit" "textbf" "textsc"
+	    "texttt" "textup" "textmd"
+	    "textrm" "textsf" "textsl"))
   "List of font commands in LaTeX")
 
 (defun TeX-arg-ulem-fontdecl (optional &optional prompt)
