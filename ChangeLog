@@ -7,6 +7,11 @@
 	("varioref"): Add more definitions.
 	(LaTeX-varioref-package-options): Reformat.
 
+	* style/listings.el: Update copyright range.
+	(LaTeX-listings-key-val-options, "listings")
+	(LaTeX-listings-package-options): Update to recent listings
+	version.
+
 2013-01-14  Tassilo Horn  <tsdh@gnu.org>
 
 	* Makefile.in (STYLESRC): Enable memoir.el style.
