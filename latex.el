@@ -1563,7 +1563,7 @@ string.  If DEFINITION is non-nil, add the chosen environment to
 the list of defined environments."
   (let ((environment (completing-read (TeX-argument-prompt optional prompt
 							   "Environment")
-				      (TeX-symbol-list))))
+				      (LaTeX-environment-list))))
     (if (and definition (not (string-equal "" environment)))
 	(LaTeX-add-environments environment))
 
