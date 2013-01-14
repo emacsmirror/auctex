@@ -863,4 +863,8 @@ comma separated list. Point has to be within the sexp to modify."
     '("multirput" (LaTeX-pst-macro-multirputps t) t)
     '("multips" (LaTeX-pst-macro-multirputps nil) t))))
 
+(defvar LaTeX-pstricks-package-options
+  '("97" "plain" "DIA" "vtex" "distiller" "noxcolor")
+  "Package options for pstricks.")
+
 ;;; pstricks.el ends here
