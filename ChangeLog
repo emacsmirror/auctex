@@ -3,6 +3,10 @@
 	* style/pstricks.el (LaTeX-pstricks-package-options): New
 	variable.
 
+	* style/varioref.el: Update copyright range.
+	("varioref"): Add more definitions.
+	(LaTeX-varioref-package-options): Reformat.
+
 2013-01-14  Tassilo Horn  <tsdh@gnu.org>
 
 	* Makefile.in (STYLESRC): Enable memoir.el style.
