@@ -1,3 +1,11 @@
+2013-01-14  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (STYLESRC): Enable memoir.el style.
+
+2013-01-14  Mads Jensen  <mje@inducks.org>
+
+	* style/memoir.el: New style.
+
 2013-01-14  Mosè Giordano  <giordano.mose@libero.it>
 
         * latex.el (TeX-arg-environment): Fix typo.
