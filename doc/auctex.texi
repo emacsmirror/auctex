@@ -3961,7 +3961,7 @@ list of defined environments.
 Prompt for a Bib@TeX{} citation.
 
 @item TeX-arg-define-counter
-Prompt for a @LaTeX{} counter.
+Prompt for a @LaTeX{} counter completing with known counters.
 
 @item TeX-arg-define-savebox
 Prompt for a @LaTeX{} savebox.

@@ -1204,7 +1204,12 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-pagestyle-regexp-list
   '(("\\\\ps@\\([A-Za-z]+\\)" 1 LaTeX-auto-pagestyle))
-  "List of regular expression matching LaTeX pagestyle only.")
+  "List of regular expressions matching LaTeX pagestyles only.")
+
+(defvar LaTeX-auto-counter-regexp-list
+  '(("\\\\newcounter *{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter)
+    ("\\\\@definecounter{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter))
+  "List of regular expressions matching LaTeX counters only.")
 
 (defvar LaTeX-auto-regexp-list
   (append
@@ -1240,7 +1245,8 @@ This is necessary since index entries may contain commands and stuff.")
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list
-   LaTeX-auto-pagestyle-regexp-list)
+   LaTeX-auto-pagestyle-regexp-list
+   LaTeX-auto-counter-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defun LaTeX-split-bibs (match)
@@ -1428,6 +1434,7 @@ The input string may include LaTeX comments and newlines."
 (TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
 (TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
 (TeX-auto-add-type "pagestyle" "LaTeX")
+(TeX-auto-add-type "counter" "LaTeX")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))
@@ -1582,16 +1589,18 @@ string.  DEFINITION is unused."
     (apply 'LaTeX-add-bibitems items)
     (TeX-argument-insert (mapconcat 'identity items ",") optional optional)))
 
-;; Why is DEFINITION unused?
 (defun TeX-arg-counter (optional &optional prompt definition)
   "Prompt for a LaTeX counter.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  DEFINITION is unused."
-  ;; Completion not implemented yet.
-  (TeX-argument-insert
-   (read-string (TeX-argument-prompt optional prompt "Counter"))
-   optional))
+string.  If DEFINITION is non-nil, add the chosen counter to
+the list of defined counters."
+  (let ((counter (completing-read (TeX-argument-prompt optional prompt
+						       "Counter")
+				  (LaTeX-counter-list))))
+    (if (and definition (not (string-equal "" counter)))
+	(LaTeX-add-counters counter))
+    (TeX-argument-insert counter optional)))
 
 ;; Why is DEFINITION unused?
 (defun TeX-arg-savebox (optional &optional prompt definition)
@@ -1918,15 +1927,18 @@ string."
 		    nil t)
    optional))
 
-(defun TeX-arg-pagestyle (optional &optional prompt)
+(defun TeX-arg-pagestyle (optional &optional prompt definition)
   "Prompt for a LaTeX pagestyle with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Pagestyle")
-		    (LaTeX-pagestyle-list))
-   optional))
+string.  If DEFINITION is non-nil, add the chosen pagestyle to
+the list of defined pagestyles."
+  (let ((pagestyle (completing-read (TeX-argument-prompt optional prompt
+							 "Pagestyle")
+				    (LaTeX-pagestyle-list))))
+    (if (and definition (not (string-equal "" pagestyle)))
+	(LaTeX-add-pagestyles pagestyle))
+    (TeX-argument-insert pagestyle optional)))
 
 (defcustom LaTeX-default-verb-delimiter ?|
   "Default delimiter for `\\verb' macros."
@@ -5263,6 +5275,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   ;; `latex.ltx' defines `plain' and `empty' pagestyles
   (LaTeX-add-pagestyles "plain" "empty")
+
+  ;; `latex.ltx' defines the following counters
+  (LaTeX-add-counters "page" "equation" "enumi" "enumii" "enumiii"
+		      "enumiv" "footnote" "mpfootnote")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")

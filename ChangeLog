@@ -1,3 +1,19 @@
+2013-01-15  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/auctex.texi: Document that `TeX-arg-counter' does completion
+	now.
+
+2013-01-15  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-auto-pagestyle-regexp-list): Fix typo.
+	(LaTeX-auto-counter-regexp-list): New variable.
+	(LaTeX-auto-regexp-list): Use `LaTeX-auto-counter-regexp-list'.
+	("counter"): New type for the parser.
+	(TeX-arg-counter): Use `LaTeX-counter-list' function for
+	completion and `definition' argument.
+	(TeX-arg-pagestyle): Use `definition' argument.
+	(LaTeX-common-initialization): Initialize counters.
+
 2013-01-14  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/ulem.el (LaTeX-arg-fontdecl, LaTeX-arg-fontcmd): Fix
