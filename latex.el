@@ -1211,6 +1211,10 @@ This is necessary since index entries may contain commands and stuff.")
     ("\\\\@definecounter{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter))
   "List of regular expressions matching LaTeX counters only.")
 
+(defvar LaTeX-auto-length-regexp-list
+  '(("\\\\newlength *{?\\\\\\([A-Za-z]+\\)}?" 1 LaTeX-auto-length))
+  "List of regular expressions matching LaTeX lengths only.")
+
 (defvar LaTeX-auto-regexp-list
   (append
    (let ((token TeX-token-char))
@@ -1246,7 +1250,8 @@ This is necessary since index entries may contain commands and stuff.")
    LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list
    LaTeX-auto-pagestyle-regexp-list
-   LaTeX-auto-counter-regexp-list)
+   LaTeX-auto-counter-regexp-list
+   LaTeX-auto-length-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defun LaTeX-split-bibs (match)
@@ -1435,6 +1440,7 @@ The input string may include LaTeX comments and newlines."
 (TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
 (TeX-auto-add-type "pagestyle" "LaTeX")
 (TeX-auto-add-type "counter" "LaTeX")
+(TeX-auto-add-type "length" "LaTeX")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))
@@ -1615,6 +1621,30 @@ string.  DEFINITION is unused."
 				     t))
    optional TeX-esc))
 
+(defun TeX-arg-length (optional &optional prompt initial-input definition)
+  "Prompt for a LaTeX length.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
+initially, with point positioned at the end.  If DEFINITION is
+non-nil, the length is added to the list of defined length."
+  (let ((length (completing-read (TeX-argument-prompt optional prompt "Length")
+				 ;; A valid length can be a macro or a length of
+				 ;; the form <value><dimension>.  Input starting
+				 ;; with a `\' can be completed with length
+				 ;; macros.
+				 (mapcar (lambda(elt) (concat TeX-esc (car elt)))
+					 (LaTeX-length-list))
+				 ;; Some macros takes as argument only a length
+				 ;; macro (e.g., `\setlength' in its first
+				 ;; argument, and `\newlength'), in this case is
+				 ;; convenient to set `\\' as initial input.
+				 nil nil initial-input)))
+    (if (and definition (not (zerop (length length))))
+	;; Strip leading TeX-esc from macro name
+        (LaTeX-add-lengths (substring length 1)))
+    (TeX-argument-insert length optional)))
+
 (defun TeX-arg-file (optional &optional prompt)
   "Prompt for a filename in the current directory.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -1666,6 +1696,13 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-arg-savebox optional prompt t))
+
+(defun TeX-arg-define-length (optional &optional prompt)
+  "Prompt for a LaTeX length.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (TeX-arg-length optional prompt "\\" t))
 
 (defcustom LaTeX-style-list '(("amsart")
 			      ("amsbook")
@@ -5280,6 +5317,12 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (LaTeX-add-counters "page" "equation" "enumi" "enumii" "enumiii"
 		      "enumiv" "footnote" "mpfootnote")
 
+  (LaTeX-add-lengths "baselineskip" "baselinestretch" "columnsep"
+		     "columnwidth" "evensidemargin" "linewidth" "oddsidemargin"
+		     "paperwidth" "paperheight" "parindent" "parskip"
+		     "tabcolsep" "textheight" "textwidth" "topmargin"
+		     "unitlength")
+
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")
    '("alph" TeX-arg-counter)
@@ -5373,12 +5416,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      t)
    '("footnotemark"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
-   '("newlength" TeX-arg-define-macro)
-   '("setlength" TeX-arg-macro "Length")
-   '("addtolength" TeX-arg-macro "Length")
-   '("settowidth" TeX-arg-macro t)
-   '("settoheight" TeX-arg-macro t)
-   '("settodepth" TeX-arg-macro t)
+   '("newlength" (TeX-arg-define-length "Length macro"))
+   '("setlength" (TeX-arg-length "Length macro" "\\")
+     (TeX-arg-length "Length value"))
+   '("addtolength" (TeX-arg-length "Length macro" "\\")
+     (TeX-arg-length "Length to add"))
+   '("settowidth" (TeX-arg-length "Length macro" "\\") "Text")
+   '("settoheight" (TeX-arg-length "Length macro" "\\") "Text")
+   '("settodepth" (TeX-arg-length "Length macro" "\\") "Text")
    '("\\" [ "Space" ])
    '("\\*" [ "Space" ])
    '("hyphenation" t)
@@ -5410,10 +5455,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("markboth" t nil)
    '("markright" t)
    '("thispagestyle" TeX-arg-pagestyle)
-   '("addvspace" "Length")
+   '("addvspace" TeX-arg-length)
    '("fbox" t)
-   '("hspace*" "Length")
-   '("hspace" "Length")
+   '("hspace*" TeX-arg-length)
+   '("hspace" TeX-arg-length)
    '("mbox" t)
    '("newsavebox" TeX-arg-define-savebox)
    '("parbox" [ TeX-arg-tb ] [ "Height" ] [ TeX-arg-tb "Inner position" ]
@@ -5422,8 +5467,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("rule" [ "Raise" ] "Width" "Thickness")
    '("sbox" TeX-arg-savebox t)
    '("usebox" TeX-arg-savebox)
-   '("vspace*" "Length")
-   '("vspace" "Length")
+   '("vspace*" TeX-arg-length)
+   '("vspace" TeX-arg-length)
    '("documentstyle" TeX-arg-document)
    '("include" (TeX-arg-input-file "File" t))
    '("includeonly" t)
@@ -5475,9 +5520,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("filecontents*" LaTeX-env-contents))
 
     (TeX-add-symbols
-     '("enlargethispage" "Length")
-     '("enlargethispage*" "Length")
-     '("tabularnewline" [ "Length" ])
+     '("enlargethispage" TeX-arg-length)
+     '("enlargethispage*" TeX-arg-length)
+     '("tabularnewline" [ TeX-arg-length ])
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")
      '("textsuperscript" "Text")

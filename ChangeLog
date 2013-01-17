@@ -1,3 +1,14 @@
+2013-01-16  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-auto-length-regexp-list): New variable.
+	(LaTeX-auto-regexp-list): Use `LaTeX-auto-length-regexp-list'.
+	("length"): New type for the parser.
+	(TeX-arg-length): New function.
+	(TeX-arg-define-length): New function.
+	(LaTeX-common-initialization): Initialize some standard LaTeX
+	lengths and use `TeX-arg-length' and `TeX-arg-define-length' for
+	completion of some macros.
+
 2013-01-15  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/auctex.texi: Document that `TeX-arg-counter' does completion
