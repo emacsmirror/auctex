@@ -3919,6 +3919,9 @@ Evaluate arguments and insert the result in the buffer.
 @item TeX-arg-label
 Prompt for a label completing with known labels.
 
+@item TeX-arg-length
+Prompt for a @LaTeX{} length completing with known lengths.
+
 @item TeX-arg-macro
 Prompt for a @TeX{} macro with completion.
 
@@ -3948,6 +3951,11 @@ be controlled by the variable @code{TeX-arg-input-file-search}.)
 @item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
 defined labels.
+
+@item TeX-arg-define-length
+Prompt for a @LaTeX{} length completing with known lengths.  Add length
+to list of defined lengths.
+
 
 @item TeX-arg-define-macro
 Prompt for a @TeX{} macro with completion.  Add macro to list of defined
