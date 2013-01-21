@@ -1,3 +1,7 @@
+2013-01-21  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (STYLESRC): Activate new style placeins.el.
+
 2013-01-21  Ivan Andrus  <darthandrus@gmail.com>
 
 	* texmathp.el (texmathp-tex-commands-default): Add \shortintertext.
