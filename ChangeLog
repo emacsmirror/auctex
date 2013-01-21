@@ -1,3 +1,7 @@
+2013-01-21  Ivan Andrus  <darthandrus@gmail.com>
+
+	* texmathp.el (texmathp-tex-commands-default): Add \shortintertext.
+
 2013-01-19  Mads Jensen  <mje@inducks.org>
 
 	* style/placeins.el: New style.

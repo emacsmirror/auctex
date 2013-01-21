@@ -139,7 +139,10 @@
     ("alignat"       env-on)      ("alignat*"      env-on)
     ("xalignat"      env-on)      ("xalignat*"     env-on)
     ("xxalignat"     env-on)      ("\\boxed"       arg-on)
-    ("\\text"        arg-off)     ("\\intertext"   arg-off))
+    ("\\text"        arg-off)     ("\\intertext"   arg-off)
+
+    ;; mathtools
+    ("\\shortintertext"   arg-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()
