@@ -2257,7 +2257,8 @@ error."
     "Major mode for viewing TeX output.
 \\{TeX-output-mode-map} "
     :syntax-table nil
-    (setq revert-buffer-function #'TeX-output-revert-buffer)
+    (set (make-local-variable 'revert-buffer-function)
+	 #'TeX-output-revert-buffer)
     ;; special-mode makes it read-only which prevents input from TeX.
     (setq buffer-read-only nil))
 

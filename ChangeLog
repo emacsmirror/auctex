@@ -1,3 +1,8 @@
+2013-01-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-output-mode): Make revert-buffer-function buffer
+	local before setting it to TeX-output-revert-buffer.
+
 2013-01-24  Ivan Andrus  <darthandrus@gmail.com>
 
 	* auctex.texi: Updated documetation about ChkTeX and lacheck.
