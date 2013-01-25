@@ -1462,7 +1462,7 @@ the line becomes overfull.
 @chapter Controlling Screen Display
 
 It is often desirable to get visual help of what markup code in a text
-actually does whithout having to decipher it explicitely.  For this
+actually does without having to decipher it explicitly.  For this
 purpose Emacs and @AUCTeX{} provide font locking (also known as syntax
 highlighting) which visually sets off markup code like macros or
 environments by using different colors or fonts.  For example text to be
@@ -2829,23 +2829,22 @@ terse information about the error is displayed in the echo area.  If
 
 Running @TeX{} or @LaTeX{} will only find regular errors in the
 document, not examples of bad style.  Furthermore, description of the
-errors may often be confusing.  The utility @code{lacheck} can be used
-to find style errors, such as forgetting to escape the space after an
-abbreviation or using @samp{...} instead of @samp{\ldots} and many other
-problems like that.  You start @code{lacheck} with @kbd{C-c C-c Check
+errors may often be confusing.  The utilities @code{lacheck} and
+@code{chktex} can be used to find style errors, such as forgetting to
+escape the space after an abbreviation or using @samp{...} instead of
+@samp{\ldots} and other similar problems.  You start @code{lacheck} with
+@kbd{C-c C-c Check @key{RET}} and @code{chktex} with @kbd{C-c C-c ChkTeX
 @key{RET}}.  The result will be a list of errors in the
 @samp{*compilation*} buffer.  You can go through the errors with
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next error.
 
-Another newer program which can be used to find errors is @code{chktex}.
-It is much more configurable than @code{lacheck}, but doesn't find all
-the problems @code{lacheck} does, at least in its default configuration.
-You must install the programs before using them, and for @code{chktex}
-you may also need modify @code{TeX-command-list} unless you use its
-@code{lacheck} compatibility wrapper.  You can get @code{lacheck} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} or
-alternatively @code{chktex} from
+Each of the two utilities will find some errors the other doesn't, but
+@code{chktex} is more configurable, allowing you to create your own
+errors.  You may need to install the programs before using them.  You
+can get @code{lacheck} from
+@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} and
+@code{chktex} from
 @file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.
 
 @node Control
