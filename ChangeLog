@@ -1,3 +1,9 @@
+2013-01-24  Ivan Andrus  <darthandrus@gmail.com>
+
+	* tex-buf.el (TeX-output-revert-buffer): New function.
+	(TeX-special-mode, TeX-output-mode): New major modes.
+	(TeX-special-mode-map, TeX-output-mode-map): New variables.
+
 2013-01-21  Tassilo Horn  <tsdh@gnu.org>
 
 	* Makefile.in (STYLESRC): Activate new style placeins.el.

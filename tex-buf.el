@@ -571,7 +571,7 @@ Return the new process."
     (set (make-local-variable 'TeX-command-buffer) command-buff)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
-    (setq mode-name name)
+    (TeX-output-mode)
     (if TeX-show-compilation
 	(display-buffer buffer)
       (message "Type `%s' to display results of compilation."
@@ -1780,6 +1780,7 @@ You might want to examine and modify the free variables `file',
 			      (buffer-substring start (point))))
 		  help))))
     (goto-char (point-min))
+    (TeX-special-mode)
     (TeX-pop-to-buffer old-buffer nil t)))
 
 ;;; Error Messages
@@ -2201,6 +2202,77 @@ error."
   :type '(repeat (cons :tag "Entry"
 		       (regexp :tag "Match")
 		       (string :format "Description:\n%v"))))
+
+;;; Output mode
+
+(if (fboundp 'special-mode)
+    (progn
+      (defalias 'TeX-special-mode 'special-mode)
+      (defvaralias 'TeX-special-mode-map 'special-mode-map))
+  (defun TeX-special-mode ()
+    "Placeholder mode for Emacsen which don't have `special-mode'.")
+  (defvar TeX-special-mode-map
+    (let ((map (make-sparse-keymap)))
+      (suppress-keymap map)
+      (define-key map "q" (if (fboundp 'quit-window)
+                              'quit-window
+                            'bury-buffer))
+      (define-key map " " (if (fboundp 'scroll-up-command)
+                              'scroll-up-command
+                            'scroll-up))
+      (define-key map [backspace] (if (fboundp 'scroll-down-command)
+                                      'scroll-down-command
+                                    'scroll-down))
+      (define-key map "\C-?" (if (fboundp 'scroll-down-command)
+                                 'scroll-down-command
+                               'scroll-down))
+      (define-key map "?" 'describe-mode)
+      (define-key map "h" 'describe-mode)
+      (define-key map ">" 'end-of-buffer)
+      (define-key map "<" 'beginning-of-buffer)
+      (define-key map "g" 'revert-buffer)
+      map)
+    "Keymap for `TeX-special-mode-map'."))
+
+(defvar TeX-output-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map TeX-special-mode-map)
+    (define-key map "n" 'TeX-next-error)
+    ;; TODO: Implement TeX-previous-error
+    ;; (define-key map "p" 'TeX-previous-error)
+    (define-key map "b" 'TeX-toggle-debug-bad-boxes)
+    (define-key map "w" 'TeX-toggle-debug-warnings)
+    (define-key map "i" (lambda ()
+                          (interactive)
+                          (with-current-buffer TeX-command-buffer
+                            (TeX-interactive-mode (if TeX-interactive-mode -1 1)))))
+    (define-key map "s" (lambda ()
+                          (interactive)
+                          (with-current-buffer TeX-command-buffer
+                            (TeX-source-correlate-mode (if TeX-source-correlate-mode -1 1)))))
+    map)
+  "Keymap for `TeX-output-mode'.")
+
+(define-derived-mode TeX-output-mode TeX-special-mode "TeX Output"
+    "Major mode for viewing TeX output.
+\\{TeX-output-mode-map} "
+    :syntax-table nil
+    (setq revert-buffer-function #'TeX-output-revert-buffer)
+    ;; special-mode makes it read-only which prevents input from TeX.
+    (setq buffer-read-only nil))
+
+(defun TeX-output-revert-buffer (ignore-auto noconfirm)
+  "Rerun the TeX command which of which this buffer was the output."
+  (goto-char (point-min))
+  (if (looking-at "Running `\\(.*\\)' on `\\(.*\\)' with ``\\(.*\\)''$")
+      (let ((name (match-string 1))
+            (file (match-string 2))
+            (command (match-string 3)))
+        (with-current-buffer TeX-command-buffer
+          (TeX-command name (if (string-match "_region_" file)
+                                'TeX-region-file
+                              'TeX-master-file))))
+    (error "Unable to find what command to run.")))
 
 (provide 'tex-buf)
 
