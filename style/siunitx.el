@@ -1,6 +1,6 @@
-;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5m.
+;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5o.
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `siunitx.sty' version 2.5m.
+;; This file adds support for `siunitx.sty' version 2.5o.
 
 ;;; Code:
 
@@ -199,7 +199,8 @@
     ("strict"))
   "Package options for the siunitx package.")
 
-(TeX-add-style-hook "siunitx"
+(TeX-add-style-hook
+ "siunitx"
  (lambda ()
    (TeX-add-symbols
     ;; Numbers
@@ -229,6 +230,7 @@
     '("candela" 0)
     '("kelvin" 0)
     '("kilogram" 0)
+    '("gram" 0)
     '("meter" 0)
     '("metre" 0)
     '("second" 0)
@@ -491,7 +493,9 @@
     '("fb" 0)
     '("ab" 0)
     '("zb" 0)
-    '("yb" 0))
+    '("yb" 0)
+    ;; Transferring settings to pgf
+    '("SendSettingsToPgf" 0))
    (TeX-run-style-hooks "l3keys2e"
 			"array"
 			"amstext"
