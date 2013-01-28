@@ -1,3 +1,15 @@
+2013-01-26  Mads Jensen  <mje@inducks.org>
+
+	* latex.el (LaTeX-auto-savebox-regexp-list): New variable.
+	(LaTeX-auto-regexp-list): Use `LaTeX-auto-savebox-regexp-list'.
+	("savebox"): New type for the parser.
+	(TeX-arg-savebox): Use `LaTeX-savebox-list' for completion and
+	`definition' argument.
+	(LaTeX-common-initialization): Added makeatletter, makeatother,
+	and jobname macros.
+	(LaTeX-default-options): Changed documentstyle to documentclass in
+	docstring.
+
 2013-01-25  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/siunitx.el ("siunitx"): Add `\gram' and

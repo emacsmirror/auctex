@@ -48,8 +48,8 @@
   :type 'string)
 
 (defcustom LaTeX-default-options nil
-  "Default options to documentstyle.
-A list of strings."
+  "Default options to documentclass.
+A comma-seperated list of strings."
   :group 'LaTeX-environment
   :type '(repeat (string :format "%v")))
 
@@ -1215,6 +1215,10 @@ This is necessary since index entries may contain commands and stuff.")
   '(("\\\\newlength *{?\\\\\\([A-Za-z]+\\)}?" 1 LaTeX-auto-length))
   "List of regular expressions matching LaTeX lengths only.")
 
+(defvar LaTeX-auto-savebox-regexp-list
+  '(("\\\\newsavebox *{?\\\\\\([A-Za-z]+\\)}?" 1 LaTeX-auto-savebox))
+  "List of regular expressions matching LaTeX saveboxes only.")
+
 (defvar LaTeX-auto-regexp-list
   (append
    (let ((token TeX-token-char))
@@ -1251,7 +1255,8 @@ This is necessary since index entries may contain commands and stuff.")
    LaTeX-auto-minimal-regexp-list
    LaTeX-auto-pagestyle-regexp-list
    LaTeX-auto-counter-regexp-list
-   LaTeX-auto-length-regexp-list)
+   LaTeX-auto-length-regexp-list
+   LaTeX-auto-savebox-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defun LaTeX-split-bibs (match)
@@ -1441,6 +1446,7 @@ The input string may include LaTeX comments and newlines."
 (TeX-auto-add-type "pagestyle" "LaTeX")
 (TeX-auto-add-type "counter" "LaTeX")
 (TeX-auto-add-type "length" "LaTeX")
+(TeX-auto-add-type "savebox" "LaTeX" "saveboxes")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))
@@ -1608,18 +1614,19 @@ the list of defined counters."
 	(LaTeX-add-counters counter))
     (TeX-argument-insert counter optional)))
 
-;; Why is DEFINITION unused?
 (defun TeX-arg-savebox (optional &optional prompt definition)
   "Prompt for a LaTeX savebox.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  DEFINITION is unused."
-  ;; Completion not implemented yet.
-  (TeX-argument-insert
-   (read-string (TeX-argument-prompt optional prompt
-				     (concat "Savebox: " TeX-esc)
-				     t))
-   optional TeX-esc))
+string.  If definition is non-nil, the savebox is added to the
+list of defined saveboxes."
+  (let ((savebox (completing-read (TeX-argument-prompt optional prompt
+						       (concat "Savebox: "
+							       TeX-esc) t)
+                                   (LaTeX-savebox-list))))
+    (if (and definition (not (zerop (length savebox))))
+        (LaTeX-add-saveboxes savebox))
+    (TeX-argument-insert savebox optional TeX-esc)))
 
 (defun TeX-arg-length (optional &optional prompt initial-input definition)
   "Prompt for a LaTeX length.
@@ -5512,7 +5519,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    "hfil" "hfill" "vfil" "vfill" "hrulefill" "dotfill"
    "indent" "noindent" "today"
    "appendix"
-   "dots")
+   "dots"
+   "makeatletter" "makeatother" "jobname")
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments
