@@ -1,3 +1,7 @@
+2013-01-28  Mads Jensen  <mje@inducks.org>
+
+	* doc/todo.texi (Wishlist): Remove "Completion for sboxes".
+
 2013-01-27  Mads Jensen  <mje@inducks.org>
 
 	* latex.el (LaTeX-env-contents): Replaced regular expression with

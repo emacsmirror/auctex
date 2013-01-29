@@ -252,9 +252,6 @@ Here is the start of such a list.
 @end table
 
 @item
-Completion for sboxes.
-
-@item
 Outline should be (better) supported in @TeX{} mode.
 
 At least, support headers, trailers, as well as TeX-outline-extra.
