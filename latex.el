@@ -1100,8 +1100,8 @@ Just like array and tabular."
 (defun LaTeX-env-contents (environment)
   "Insert ENVIRONMENT with filename for contents."
   (save-excursion
-    (when (re-search-backward "^\\\\documentclass.*{" nil t)
-      (error "Put %s environment before \\documentclass" environment)))
+    (when (re-search-backward LaTeX-header-end nil t)
+      (error "Put %s environment before \\begin{document}" environment)))
   (LaTeX-insert-environment environment
 			    (concat TeX-grop
 				    (read-string "File: ")

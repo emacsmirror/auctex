@@ -1,3 +1,10 @@
+2013-01-27  Mads Jensen  <mje@inducks.org>
+
+	* latex.el (LaTeX-env-contents): Replaced regular expression with
+	`LaTeX-header-end', i.e., filecontents environments must go
+	somewhere in the preamble but not necessarily before the
+	\documentclass.
+
 2013-01-26  Mads Jensen  <mje@inducks.org>
 
 	* latex.el (LaTeX-auto-savebox-regexp-list): New variable.
