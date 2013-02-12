@@ -1345,18 +1345,20 @@ The input string may include LaTeX comments and newlines."
 	;; Get the options.
 	(setq options (LaTeX-listify-package-options options))
 
-	;; Add them, to the style list.
+	;; Append them to the style list.
 	(dolist (elt options)
-	  (add-to-list 'TeX-auto-file elt))
+	  (add-to-list 'TeX-auto-file elt t))
 
 	;; Treat documentclass/documentstyle specially.
 	(if (or (string-equal "package" class)
 		(string-equal "Package" class))
 	    (dolist (elt (TeX-split-string
 			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
-	      (add-to-list 'TeX-auto-file elt))
+	      ;; Append style to the style list, so style files can check the
+	      ;; values of the options given on load time to packages.
+	      (add-to-list 'TeX-auto-file elt t))
 	  ;; And a special "art10" style file combining style and size.
-	  (add-to-list 'TeX-auto-file style)
+	  (add-to-list 'TeX-auto-file style t)
 	  (add-to-list 'TeX-auto-file
 		       (concat
 			(cond ((string-equal "article" style)
@@ -1383,7 +1385,7 @@ The input string may include LaTeX comments and newlines."
 			      ((member "12pt" options)
 			       "12")
 			      (t
-			       "10")))))
+			       "10"))) t))
 
 	;; The third argument if "class" indicates LaTeX2e features.
 	(cond ((equal class "class")

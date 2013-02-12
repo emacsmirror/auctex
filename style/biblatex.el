@@ -1,6 +1,6 @@
 ;;; biblatex.el --- AUCTeX style for `biblatex.sty'
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,11 +33,11 @@
 (TeX-add-style-hook
  "biblatex"
  (lambda ()
-   ;; Unfortunately `(member "backend=biber" TeX-active-styles)' does
-   ;; not work as a test because "backend=biber" is added to
-   ;; `TeX-active-styles' after "biblatex".  So we check the value of
-   ;; `LaTeX-biblatex-use-biber' and let the user set it if desired.
-   (when LaTeX-biblatex-use-Biber
+   ;; Biblatex uses as default backend biber, run it unless biblatex `backend'
+   ;; option value is one of `bibtex', `bibtex8', `bibtexu'.
+   (unless (or (member "backend=bibtex" TeX-active-styles)
+	       (member "backend=bibtex8" TeX-active-styles)
+	       (member "backend=bibtexu" TeX-active-styles))
      (setq LaTeX-using-Biber t))))
 
 ;; TODO: Add package options.

@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993, 1994, 1996, 1997, 1999-2012
+;; Copyright (C) 1985-1987, 1991, 1993, 1994, 1996, 1997, 1999-2013
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -3121,8 +3121,9 @@ separate type of information in the parser."
 	 (add (intern (concat prefix "-add-" names)))
 	 (local (intern (concat prefix "-" name "-list")))
 	 (change (intern (concat prefix "-" name "-changed"))))
-    (setq TeX-auto-parser
-	  (cons (list name tmp add local change) TeX-auto-parser))
+    ;; Append new type to `TeX-auto-parser' in order to make `style' type always
+    ;; the first.
+    (add-to-list 'TeX-auto-parser (list name tmp add local change) t)
     (set local nil)
     (make-variable-buffer-local local)
     (set change nil)
@@ -3345,8 +3346,8 @@ If TEX is a directory, generate style files for all files in the directory."
 	(save-excursion
 	  (set-buffer (generate-new-buffer file))
 	  (erase-buffer)
-	  (insert "(TeX-add-style-hook \"" style "\"\n"
-		  " (lambda ()")
+	  (insert "(TeX-add-style-hook\n \""
+		  style "\"\n (lambda ()")
 	  (mapc (lambda (el) (TeX-auto-insert el style))
 		TeX-auto-parser)
 	  (insert "))\n\n")

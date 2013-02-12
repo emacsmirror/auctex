@@ -1,3 +1,20 @@
+2013-02-08  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el: Update copyright range.
+	("biblatex"): Check `backend' option value in
+	`TeX-active-styles'.
+
+	* tex-style.el: Update copyright years.
+	(LaTeX-biblatex-use-Biber) Remove unused variable.
+
+	* tex.el: Update copyright range.
+	(TeX-auto-add-type): Append new type to `TeX-auto-parser' instead
+	of prepending it.
+	(TeX-auto-store): Fix indentation of first lines of parsed file.
+
+	* latex.el (LaTeX-auto-cleanup): Append options and styles to
+	`TeX-auto-file' instead of prepending them.
+
 2013-01-28  Mads Jensen  <mje@inducks.org>
 
 	* doc/todo.texi (Wishlist): Remove "Completion for sboxes".
