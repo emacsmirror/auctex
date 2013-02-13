@@ -1,5 +1,13 @@
 2013-02-13  Tassilo Horn  <tsdh@gnu.org>
 
+	* Makefile.in (STYLESRC): Activate new style filecontents.el.
+
+2013-01-23  Mads Jensen  <mje@inducks.org>
+
+	* style/filecontents.el: New style.
+
+2013-02-13  Tassilo Horn  <tsdh@gnu.org>
+
 	* Makefile.in (STYLESRC): Activate new style fancynum.el.
 
 2013-02-08  Mads Jensen  <mje@inducks.org>
