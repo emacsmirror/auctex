@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
 
-;; Copyright (C) 2008 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -156,8 +156,10 @@
 (TeX-add-style-hook
  "hyperref"
  (lambda ()
-   ;; hyperref.sty loads url.sty
-   (TeX-run-style-hooks "url")
+   ;; hyperref loads nameref and url (+ some other packages which do not have
+   ;; style hooks)
+   (TeX-run-style-hooks "url" "nameref")
+
    (TeX-add-symbols
     '("hypersetup" (TeX-arg-key-val LaTeX-hyperref-package-options))
     '("href" [ (TeX-arg-key-val LaTeX-hyperref-href-options) ] "URL" "Text")

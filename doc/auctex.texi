@@ -3934,7 +3934,7 @@ Prompt for a Bib@TeX{} citation.
 Prompt for a @LaTeX{} counter completing with known counters.
 
 @item TeX-arg-savebox
-Prompt for a @LaTeX{} savebox.
+Prompt for a @LaTeX{} savebox completing with known saveboxes.
 
 @item TeX-arg-file
 Prompt for a filename in the current directory, and use it without the

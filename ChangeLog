@@ -1,3 +1,17 @@
+2013-02-13  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (STYLESRC): Activate new style nameref.el.
+
+2013-02-13  Mads Jensen  <mje@inducks.org>
+
+	* doc/auctex.texi (Adding Macros): Mention that `TeX-arg-savebox'
+	now supports completion.
+
+	* style/nameref.el: New style.
+
+	* style/hyperref.el ("hyperref"): Run nameref style hook because
+	hyperref activates nameref.
+
 2013-02-10  Mosè Giordano  <giordano.mose@libero.it>
 
         * style/siunitx.el ("siunitx-unit"): New type for the parser.
