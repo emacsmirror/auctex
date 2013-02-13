@@ -1,3 +1,18 @@
+2013-02-13  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/auctex.texi (Quotes): Document
+	`TeX-math-close-single-dollar'.
+	(Selecting a Command): Remove reference to
+	`LaTeX-biblatex-use-Biber'.
+	(Parsing Files): Document `LaTeX-auto-index-regexp-list',
+	`LaTeX-auto-class-regexp-list',
+	`LaTeX-auto-pagestyle-regexp-list',
+	`LaTeX-auto-counter-regexp-list', `LaTeX-auto-length-regexp-list',
+	`LaTeX-auto-savebox-regexp-list'.
+
+	* tex.el (TeX-math-close-single-dollar): New variable.
+	(TeX-insert-dollar): Use it.
+
 2013-02-13  Tassilo Horn  <tsdh@gnu.org>
 
 	* Makefile.in (STYLESRC): Activate new style filecontents.el.

@@ -5110,6 +5110,13 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-math-close-single-dollar nil
+  "If non-nil, when outside math mode insert opening and closing dollar
+signs for TeX inline equation and put the point between them, just by
+typing a single `$'."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
@@ -5148,7 +5155,7 @@ sign.  With optional ARG, insert that many dollar signs."
 	    (save-excursion
 	      (goto-char (cdr texmathp-why))
 	      (if (pos-visible-in-window-p)
-		  (sit-for 1)
+		  (sit-for blink-matching-delay)
 		(message "Matches %s"
 			 (buffer-substring
 			  (point) (progn (end-of-line) (point))))))))
@@ -5158,7 +5165,16 @@ sign.  With optional ARG, insert that many dollar signs."
       (insert "$")))
    (t
     ;; Just somewhere in the text.
-    (insert "$")))
+    (if TeX-math-close-single-dollar
+	(progn
+	  (insert "$$")
+	  (if blink-matching-paren
+	      (progn
+		(backward-char 2)
+		(sit-for blink-matching-delay)
+		(forward-char))
+	    (backward-char)))
+      (insert "$"))))
   (TeX-math-input-method-off))
 
 (defvar TeX-math-input-method-off-regexp
