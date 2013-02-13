@@ -1,3 +1,21 @@
+2013-02-10  Mosè Giordano  <giordano.mose@libero.it>
+
+        * style/siunitx.el ("siunitx-unit"): New type for the parser.
+        (LaTeX-siunitx-regexp): New variable.
+        (LaTeX-auto-siunitx-unit): New variable.
+        (LaTeX-siunitx-prepare): New function.
+        (LaTeX-siunitx-cleanup): New function.
+        (TeX-auto-prepare-hook): Add `LaTeX-siunitx-prepare' function.
+        (TeX-auto-cleanup-hook): Add `LaTeX-siunitx-cleanup' function.
+        (TeX-arg-siunitx-unit): New function.
+        (TeX-arg-define-siunitx-unit): New function.
+        ("siunitx"): Add `LaTeX-siunitx-regexp' to list of regexps used
+	for parsing.
+        ("siunitx"): Use `TeX-arg-siunitx-unit' and
+	`TeX-arg-define-siunitx-unit' functions.
+        ("siunitx"): Use `LaTeX-add-siunitx-units' for adding siunitx unit
+	macros to the list of known units.
+
 2013-02-08  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el: Update copyright range.
