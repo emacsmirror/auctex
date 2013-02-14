@@ -1,3 +1,9 @@
+2013-02-13  Mads Jensen  <mje@inducks.org>
+
+	* style/subfigure.el: Expanded copyright range.
+	("subfigure"): Collapsed the two regular expressions for
+	completion.  Added lengths, and commands for fonts.
+
 2013-02-14  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/fancyhdr.el (TeX-arg-fancyhdr-position): Document the
