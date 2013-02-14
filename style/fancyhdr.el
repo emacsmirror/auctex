@@ -89,8 +89,10 @@
 ;; the list of positions differs between the macros
 (defun TeX-arg-fancyhdr-position (optional &optional prompt collection)
   "Prompt for a fancyhdr position with completion.
-If non-nil, PROMPT is used as the prompt.  If non-nil, COLLECTION
-is used as the completion list for the position."
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  If non-nil, PROMPT is
+used as the prompt.  If non-nil, COLLECTION is used as the
+completion list for the position."
   (let* ((positions (if (not collection)
                         ;; Standard positions with no restrictions.  Lower-case
                         ;; versions, and reverse versions (e.g., OC) are left

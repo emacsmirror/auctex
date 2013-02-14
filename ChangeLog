@@ -1,3 +1,8 @@
+2013-02-14  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/fancyhdr.el (TeX-arg-fancyhdr-position): Document the
+	OPTIONAL argument.
+
 2013-02-14  Mads Jensen  <mje@inducks.org>
 
 	* Makefile.in (STYLESRC): Activate new style fancyhdr.el.
