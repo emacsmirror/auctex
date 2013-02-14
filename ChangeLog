@@ -1,3 +1,10 @@
+2013-02-14  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/siunitx.el (LaTeX-siunitx-package-options): New function.
+
+	* style/hyperref.el (LaTeX-hyperref-package-options): New
+	function.
+
 2013-02-13  Mads Jensen  <mje@inducks.org>
 
 	* style/subfigure.el: Expanded copyright range.

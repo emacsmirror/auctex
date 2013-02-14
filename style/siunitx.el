@@ -595,4 +595,10 @@ string."
 				("highlight" "{"))
    			      'function))))
 
+(defun LaTeX-siunitx-package-options nil
+  "Prompt for package options for the siunitx package."
+  (let ((options
+	 (TeX-arg-key-val nil LaTeX-siunitx-package-options)))
+    options))
+
 ;; siunitx.el ends here
