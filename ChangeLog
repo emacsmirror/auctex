@@ -1,3 +1,9 @@
+2013-02-14  Mads Jensen  <mje@inducks.org>
+
+	* Makefile.in (STYLESRC): Activate new style fancyhdr.el.
+
+	* style/fancyhdr.el: New style.
+
 2013-02-13  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/auctex.texi (Quotes): Document
