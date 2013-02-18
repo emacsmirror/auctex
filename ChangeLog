@@ -1,3 +1,19 @@
+2013-02-16  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el ("biblatex"): Add hooks for loaded packages.
+	(LaTeX-biblatex-package-options): New function.
+	(LaTeX-biblatex-package-options-list): Renamed from
+	`LaTeX-biblatex-package-options' to avoid clash with the function
+	with the same name.
+
+	* latex.el (LaTeX-search-files-type-alist): Add `bbxinputs'.
+	(BibLaTeX-global-style-files): New variable.
+
+	* tex.el (BibLaTeX-style-extensions): New variable.
+	(TeX-normal-mode): Make ARG argument optional.
+	(TeX-normal-mode): Reset `BibLaTeX-global-style-files' when ARG is
+	non-nil.
+
 2013-02-14  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/siunitx.el (LaTeX-siunitx-package-options): New function.

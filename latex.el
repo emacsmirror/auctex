@@ -1804,6 +1804,7 @@ OPTIONAL is ignored."
     (graphics "${TEXINPUTS}" ("tex/") LaTeX-includegraphics-extensions)
     (bibinputs "${BIBINPUTS}" ("bibtex/bib/") BibTeX-file-extensions)
     (bstinputs "${BSTINPUTS}" ("bibtex/bst/") BibTeX-style-extensions)
+    (bbxinputs "" ("tex/latex/") BibLaTeX-style-extensions)
     (biberinputs "${BIBINPUTS}" ("bibtex/bib/") TeX-Biber-file-extensions))
   "Alist of filetypes with locations and file extensions.
 Each element of the alist consists of a symbol expressing the
@@ -1884,6 +1885,12 @@ files."
 
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+(defvar BibLaTeX-global-style-files nil
+  "Association list of BibLaTeX style files.
+
+Initialized once at the first time you prompt for a BibLaTeX
+style.  May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibstyle (optional &optional prompt)
   "Prompt for a BibTeX style file.

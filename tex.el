@@ -3656,6 +3656,11 @@ Access to the value should be through the function `TeX-output-extension'.")
   :group 'TeX-file-extension
   :type '(repeat (string :format "%v")))
 
+(defcustom BibLaTeX-style-extensions '("bbx")
+  "Valid file extensions for BibLaTeX styles."
+  :group 'TeX-file-extension
+  :type '(repeat (string :format "%v")))
+
 (defcustom BibTeX-style-extensions '("bst")
   "Valid file extensions for BibTeX styles."
   :group 'TeX-file-extension
@@ -5191,16 +5196,16 @@ sign.  With optional ARG, insert that many dollar signs."
 
 ;;; Simple Commands
 
-(defun TeX-normal-mode (arg)
+(defun TeX-normal-mode (&optional arg)
   "Remove all information about this buffer, and apply the style hooks again.
 Save buffer first including style information.
 With optional argument ARG, also reload the style hooks."
-  ;; FIXME: Shouldn't it be (&optional arg)?  -- rs
   (interactive "*P")
   (if arg
       (setq TeX-style-hook-list nil
 	    BibTeX-global-style-files nil
 	    BibTeX-global-files nil
+	    BibLaTeX-global-style-files nil
 	    TeX-Biber-global-files nil
 	    TeX-global-input-files nil))
   (let ((TeX-auto-save t))
