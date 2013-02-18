@@ -1,3 +1,10 @@
+2013-02-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (require): Require crm.
+
+	* multi-prompt.el (multi-prompt-key-value): Don't require crm here
+	because it has already been required in tex.el.
+
 2013-02-16  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el ("biblatex"): Add hooks for loaded packages.

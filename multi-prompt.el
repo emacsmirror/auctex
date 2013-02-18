@@ -200,7 +200,6 @@ other arguments: PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST,
 DEF, and INHERIT-INPUT-METHOD.
 
 The return value is the string as entered in the minibuffer."
-  (require 'crm)
   (let* ((minibuffer-completion-table #'multi-prompt-key-value-collection-fn)
 	 (minibuffer-completion-predicate predicate)
 	 (minibuffer-completion-confirm

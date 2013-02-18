@@ -669,6 +669,15 @@ overlays."
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
 	    (t TeX-overlay-priority-step)))) )
 
+;; require crm here, because we often do
+;;
+;; (let ((crm-separator ","))
+;;   (TeX-completing-read-multiple ...))
+;;
+;; which results in a void-variable error if crm hasn't been loaded before.
+(unless (require 'crm nil t)
+  (error "AUCTeX requires crm.el which is included in Emacs and
+edit-utils >= 2.32 for XEmacs."))
 
 (if (fboundp 'completing-read-multiple)
     (defalias 'TeX-completing-read-multiple 'completing-read-multiple)
