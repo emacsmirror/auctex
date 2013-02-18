@@ -1,6 +1,6 @@
 ;;; tabularx.el --- AUCTeX style for the tabularx package.
 
-;; Copyright (C) 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2013 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -47,6 +47,9 @@
     ;; tabular* environment.  However, the supported tokens in the
     ;; format can differ, so at some point in time we might want to
     ;; separate tabular* and tabularx.
-    '("tabularx" LaTeX-env-tabular*))))
+    '("tabularx" LaTeX-env-tabular*))
+   
+   ;; `tabularx' requires array to define the column types
+   (TeX-run-style-hooks "array")))
 
 ;;; tabularx.el ends here

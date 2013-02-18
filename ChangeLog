@@ -1,3 +1,13 @@
+2013-02-18  Mads Jensen  <mje@inducks.org>
+
+	* Makefile.in (STYLESRC): Activate new style array.el.
+
+	* style/array.el: New style.
+
+	* style/tabularx.el: Expand copyright range.
+	("tabularx"): The package relies on the array package, so run its
+	style hook.
+
 2013-02-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (require): Require crm.
