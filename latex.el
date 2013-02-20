@@ -4238,11 +4238,11 @@ See also `LaTeX-math-menu'."
     (nil "ddot" "Accents" 776) ;; #X0308
     (?~ "tilde" "Accents" 771) ;; #X0303
     (nil "mathring" "Accents" 778) ;; #X030A
-    (nil "digamma" ("AMS" "Hebrew") 989) ;; #X03DD
-    (nil "varkappa" ("AMS" "Hebrew") 1008) ;; #X03F0
     (nil "beth" ("AMS" "Hebrew") 8502) ;; #X2136
     (nil "daleth" ("AMS" "Hebrew") 8504) ;; #X2138
     (nil "gimel" ("AMS" "Hebrew") 8503) ;; #X2137
+    (nil "digamma" ("AMS" "Greek Lowercase") 989) ;; #X03DD
+    ("v k" "varkappa" ("AMS" "Greek Lowercase") 1008) ;; #X03F0
     ("v G" "varGamma" ("AMS" "Greek Uppercase") 120548) ;; #X1D6E4
     ("v D" "varDelta" ("AMS" "Greek Uppercase") 120549) ;; #X1D6E5
     ("v J" "varTheta" ("AMS" "Greek Uppercase") 120553) ;; #X1D6E9

@@ -1,3 +1,8 @@
+2013-02-20  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-math-default): Move `digamma' and `varkappa' to
+	`AMS > Greek Lowercase' menu.
+
 2013-02-18  Mads Jensen  <mje@inducks.org>
 
 	* Makefile.in (STYLESRC): Activate new style array.el.
