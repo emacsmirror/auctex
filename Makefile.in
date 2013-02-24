@@ -130,7 +130,7 @@ STYLESRC = style/prosper.el \
 	   style/longtable.el style/lipsum.el    style/kantlipsum.el \
 	   style/memoir.el    style/placeins.el  style/nameref.el \
 	   style/fancynum.el  style/fancyhdr.el	 style/filecontents.el \
-	   style/array.el
+	   style/array.el     style/kpfonts.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)

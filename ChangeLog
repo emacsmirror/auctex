@@ -1,3 +1,9 @@
+2013-02-23  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/kpfonts.el: New style file.
+
+	* Makefile.in (STYLESRC): Add style/kpfonts.el.
+
 2013-02-20  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-math-default): Move `digamma' and `varkappa' to
