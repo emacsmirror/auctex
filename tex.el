@@ -2717,15 +2717,19 @@ type of ARGS:
 			  (numberp (car args))
 			  (<= (car args) 0)))
 		(equal position (point))
-		(string-match "[a-zA-Z]+" symbol)
-		(not (texmathp)))
-	   (insert TeX-grop)
-	   (if (TeX-active-mark)
-	       (progn
+		(string-match "[a-zA-Z]+" symbol))
+	   (if (texmathp)
+	       (when (TeX-active-mark)
+		 (insert TeX-grop)
 		 (exchange-point-and-mark)
 		 (insert TeX-grcl))
-	     (insert TeX-grcl)
-	     (backward-char))))))
+	     (insert TeX-grop)
+	     (if (TeX-active-mark)
+		 (progn
+		   (exchange-point-and-mark)
+		   (insert TeX-grcl))
+	       (insert TeX-grcl)
+	       (backward-char)))))))
 
 (defun TeX-arg-string (optional &optional prompt initial-input)
   "Prompt for a string.

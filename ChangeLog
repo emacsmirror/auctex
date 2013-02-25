@@ -1,5 +1,9 @@
 2013-02-25  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-parse-macro): Add TeX group characters also in math
+	environments if there is an active region that should probably
+	used as argument.
+
 	* latex.el (LaTeX-paragraph-commands-internal): Add \clearpage and
 	\newpage.
 
