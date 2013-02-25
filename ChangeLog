@@ -1,5 +1,8 @@
 2013-02-25  Tassilo Horn  <tsdh@gnu.org>
 
+	* latex.el (LaTeX-paragraph-commands-internal): Add \clearpage and
+	\newpage.
+
 	* style/scrbase.el ("scrbase"): Add \minisec macro to
 	`LaTeX-paragraph-commands' locally.
 

@@ -3736,7 +3736,7 @@ value of NO-SUBSECTIONS."
   '("[" "]" ; display math
     "appendix" "begin" "caption" "chapter" "end" "include" "includeonly"
     "label" "maketitle" "noindent" "par" "paragraph" "part" "section"
-    "subsection" "subsubsection" "tableofcontents")
+    "subsection" "subsubsection" "tableofcontents" "newpage" "clearpage")
   "Internal list of LaTeX macros that should have their own line.")
 
 (defun LaTeX-paragraph-commands-regexp-make ()
