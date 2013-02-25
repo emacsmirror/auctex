@@ -1,3 +1,14 @@
+2013-02-25  Werner Fink  <werner@suse.de>
+
+	* style/dinbrief.el ("dinbrief"): Update dinbrief style.
+	(LaTeX-dinbrief-insert): New macro.
+	(LaTeX-dinbrief-style): New function.
+	(LaTeX-dinbrief-env-recipient): Rename from
+	`LaTeX-recipient-hook'.
+	(LaTeX-dinbrief-sender): New function.
+	(LaTeX-dinbrief-recipient): New function.
+	(LaTeX-dinbrief-today): Rename from `LaTeX-today'.
+
 2013-02-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-parse-macro): Add TeX group characters also in math
