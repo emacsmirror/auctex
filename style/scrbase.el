@@ -134,6 +134,8 @@
 			       '(("addpart" . nil)
 				 ("addsec" . nil)
 				 ("minisec" . nil))))
+    ;; Fill \minisec{...} like normal sectioning commands
+    (LaTeX-paragraph-commands-add-locally "minisec")
     ;; Fontification
     (when (and (featurep 'font-latex)
 	       (eq TeX-install-font-lock 'font-latex-setup))

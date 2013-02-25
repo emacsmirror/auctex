@@ -1,3 +1,8 @@
+2013-02-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/scrbase.el ("scrbase"): Add \minisec macro to
+	`LaTeX-paragraph-commands' locally.
+
 2013-02-23  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/kpfonts.el: New style file.
