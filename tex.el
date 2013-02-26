@@ -2433,8 +2433,15 @@ active.")
 					    (TeX-master-directory))
 			style (substring style
 					 (match-beginning 2) (match-end 2))))
-		(mapcar 'funcall
-			(cdr-safe (assoc style TeX-style-hook-list))))))
+		(condition-case err
+		    (mapcar 'funcall
+			    (cdr-safe (assoc style TeX-style-hook-list)))
+		  ;; This happens in case some style added a new parser, and
+		  ;; now the style isn't used anymore (user deleted
+		  ;; \usepackage{style}).  Then we're left over with, e.g.,
+		  ;; (LaTeX-add-siunitx-units "\\parsec"), but the function is
+		  ;; defined in a style siunitx.el that's not loaded anymore.
+		  (void-function nil)))))
 	  styles))
 
 (defcustom TeX-parse-self nil

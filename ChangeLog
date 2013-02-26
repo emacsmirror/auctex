@@ -1,3 +1,10 @@
+2013-02-26  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-run-style-hooks): Guard running style hooks in a
+	`condition-case' in order not to error in cases the auto file
+	contains calls to functions that are defined by a style that has
+	been deactivated in the meantime.
+
 2013-02-25  Werner Fink  <werner@suse.de>
 
 	* style/dinbrief.el ("dinbrief"): Update dinbrief style.
