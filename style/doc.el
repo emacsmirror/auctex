@@ -119,7 +119,7 @@
     "efill"
     "pfill"
     "PrintIndex"
-    '("changes" "version" "date (YYYY/MM/DD)")
+    '("changes" "version" TeX-arg-date t)
     "generalname"
     "RecordChanges"
     "GlossaryPrologue"

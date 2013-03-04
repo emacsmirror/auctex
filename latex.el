@@ -1980,6 +1980,18 @@ string."
 		    nil t)
    optional))
 
+(defun TeX-arg-date (optional &optional prompt)
+  "Prompt for a date, defaulting to the current date.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (let ((default (format-time-string "%Y/%m/%d" (current-time))))
+    (TeX-argument-insert
+     (TeX-read-string (TeX-argument-prompt
+		       optional prompt (format "Date (default %s)" default))
+		      nil nil default)
+     optional)))
+
 (defun TeX-arg-pagestyle (optional &optional prompt definition)
   "Prompt for a LaTeX pagestyle with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -5461,7 +5473,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("breve" t) '("check" t) '("hat" t) '("vec" t) '("dot" t)
    '("widetilde" t) '("widehat" t)
    '("author" t)
-   '("date" t)
+   '("date" TeX-arg-date)
    '("thanks" t)
    '("title" t)
    '("pagenumbering" (TeX-arg-eval

@@ -1,3 +1,12 @@
+2013-03-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (TeX-arg-date): New function.
+	(LaTeX-common-initialization): Use `TeX-arg-date' for \date macro.
+
+	* doc/auctex.texi: Document `TeX-arg-date'.
+
+	* style/doc.el ("doc"): Use `TeX-arg-date' for the \changes macro.
+
 2013-02-26  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-run-style-hooks): Guard running style hooks in a

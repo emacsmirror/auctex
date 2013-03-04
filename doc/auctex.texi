@@ -3961,6 +3961,9 @@ Prompt for a @LaTeX{} length completing with known lengths.
 @item TeX-arg-macro
 Prompt for a @TeX{} macro with completion.
 
+@item TeX-arg-date
+Prompt for a date, defaulting to the current date.
+
 @item TeX-arg-environment
 Prompt for a @LaTeX{} environment with completion.
 
