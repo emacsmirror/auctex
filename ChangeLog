@@ -1,3 +1,8 @@
+2013-03-06  Mads Jensen  <mje@inducks.org>
+
+	* latex.el (LaTeX-common-initialization): Added regular expression
+	for thispagestyle and pagestyle to `TeX-complete-list'.
+
 2013-03-04  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (TeX-arg-date): New function.

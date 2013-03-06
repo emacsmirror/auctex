@@ -5298,7 +5298,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
 		   1 LaTeX-symbol-list "}")
 		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
-		   1 LaTeX-environment-list "}"))
+		   1 LaTeX-environment-list "}")
+                  ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
+		   1 LaTeX-pagestyle-list "}"))
 		TeX-complete-list))
 
   (LaTeX-add-environments
