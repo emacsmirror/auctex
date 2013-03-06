@@ -1,5 +1,12 @@
 2013-03-06  Mads Jensen  <mje@inducks.org>
 
+	* style/amsopn.el: Add GPL copyright notice.
+	("amsopn"): Add regex for \DeclareMathOperator to
+	`LaTeX-auto-regexp-list'.  Use `TeX-arg-define-macro' for
+	\DeclareMathOperator.
+
+2013-03-06  Mads Jensen  <mje@inducks.org>
+
         * tex.el (TeX-command-list): Add support for xindy.
 
 2013-03-06  Mads Jensen  <mje@inducks.org>
