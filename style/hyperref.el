@@ -228,10 +228,8 @@
    (when (fboundp 'reftex-ref-style-activate)
      (reftex-ref-style-activate "Hyperref"))))
 
-(defun LaTeX-hyperref-package-options nil
-  "Prompt for package options for the hyperref package."
-  (let ((options
-	 (TeX-arg-key-val nil LaTeX-hyperref-package-options)))
-    options))
+(defun LaTeX-hyperref-package-options ()
+  "Read the hyperref package options from the user."
+  (TeX-read-key-val t LaTeX-hyperref-package-options))
 
 ;;; hyperref.el ends here

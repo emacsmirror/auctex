@@ -1,3 +1,14 @@
+2013-03-07  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (TeX-read-key-val): New function.
+	(TeX-arg-key-val): Use `TeX-read-key-val'.
+
+	* style/hyperref.el (LaTeX-hyperref-package-options): Use
+	`TeX-read-key-val' instead of `TeX-arg-key-val' which caused args
+	to be inserted twice.
+
+	* style/siunitx.el (LaTeX-siunitx-package-options): Ditto.
+
 2013-03-06  Mads Jensen  <mje@inducks.org>
 
 	* style/amsopn.el: Add GPL copyright notice.
