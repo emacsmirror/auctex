@@ -2109,7 +2109,7 @@ the beginning of the file, but that feature will be phased out."
 			   (file-name-nondirectory (buffer-file-name)))
 	     (not buffer-read-only))
     (goto-char (point-max))
-    (if (re-search-backward (concat "^\\([^\n]+\\)Local " "Variables:")
+    (if (re-search-backward "^\\([^\n]+\\)Local Variables:"
 			    (- (point-max) 3000) t)
 	(let ((prefix (TeX-match-buffer 1)))
 	  (re-search-forward (regexp-quote (concat prefix
@@ -2126,10 +2126,10 @@ the beginning of the file, but that feature will be phased out."
 	(when (eq major-mode 'doctex-mode)
 	  (insert comment-prefix TeX-esc "endinput\n"))
 	(insert
-	 comment-prefix "Local " "Variables: \n"
+	 comment-prefix "Local Variables:\n"
 	 comment-prefix "mode: " mode "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
-	 comment-prefix "End: \n")))))
+	 comment-prefix "End:\n")))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
