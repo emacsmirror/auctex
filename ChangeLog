@@ -1,5 +1,10 @@
 2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (LaTeX-common-initialization): Remove `addbibresource'
+	macro.
+
+2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
+
 	* style/biblatex.el (LaTeX-biblatex-addbibresource-options): New
 	variable.
 	(LaTeX-arg-addbibresource): New function, based on current

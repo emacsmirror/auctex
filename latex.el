@@ -5437,7 +5437,6 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("nocite" TeX-arg-cite)
    '("bibliographystyle" TeX-arg-bibstyle)
    '("bibliography" TeX-arg-bibliography)
-   '("addbibresource" TeX-arg-bibliography)
    '("footnote"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
      t)
