@@ -1,3 +1,15 @@
+2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el (LaTeX-biblatex-addbibresource-options): New
+	variable.
+	(LaTeX-arg-addbibresource): New function, based on current
+	`TeX-arg-bibliography'.
+	("biblatex"): Add `addbibresource' macro.
+	(LaTeX-biblatex-package-options): Use `TeX-read-key-val'.
+
+	* latex.el (TeX-arg-bibliography): Remove `addbibresource'
+	support.
+
 2013-03-27  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-add-local-master): Remove trailing spaces from

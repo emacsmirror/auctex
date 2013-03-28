@@ -30,6 +30,38 @@
 
 ;;; Code:
 
+(defvar LaTeX-biblatex-addbibresource-options
+  '(("label")
+    ("location" ("local" "remote"))
+    ("type" ("file"))
+    ("datatype" ("bibtex" "ris" "zoterordfxml" "endnotexml")))
+  "Key=value options for addbibresource macro of the biblatex package.")
+
+(defun LaTeX-arg-addbibresource (optional &optional prompt)
+  "Prompt for a BibLaTeX database file.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (let (files inputs database)
+    (if LaTeX-using-Biber
+	(setq files 'TeX-Biber-global-files
+	      inputs 'biberinputs)
+      (setq files 'BibTeX-global-files
+	    inputs 'bibinputs))
+    (setq files 'TeX-Biber-global-files
+	  inputs 'biberinputs)
+    (message "Searching for BibLaTeX files...")
+    (or (symbol-value files)
+	(set files (mapcar 'list (TeX-search-files-by-type
+				  'biberinputs 'global t nil))))
+    (setq database (completing-read
+		    (TeX-argument-prompt optional prompt "BibLaTeX files")
+		    (append (mapcar 'list (TeX-search-files-by-type
+					   inputs 'local t nil))
+			    (symbol-value files))))
+    (LaTeX-add-bibliographies database)
+    (TeX-argument-insert database optional)))
+
 (TeX-add-style-hook
  "biblatex"
  (lambda ()
@@ -46,7 +78,10 @@
     "kvoptions"
     "logreq"
     "ifthen"
-    "url")))
+    "url")
+   (TeX-add-symbols
+    '("addbibresource" [TeX-arg-key-val LaTeX-biblatex-addbibresource-options]
+      LaTeX-arg-addbibresource))))
 
 (defvar LaTeX-biblatex-package-options-list
   '(;;; Load-time Options
@@ -167,11 +202,6 @@
 	      "authortitle-tcomp" "authortitle-ticomp" "verbose" "verbose-ibid"
 	      "verbose-note" "verbose-inote" "verbose-trad1" "verbose-trad2"
 	      "verbose-trad3" "reading" "draft" "debug"))))
-  ;; Can't use directly `TeX-arg-key-val' because that would insert an empty
-  ;; `[]' after `\usepackage' when `options' is empty.
-  (let ((options (multi-prompt-key-value
-		  (TeX-argument-prompt optional "Options (k=v)" nil)
-		  LaTeX-biblatex-package-options-list)))
-    options))
+  (TeX-read-key-val t LaTeX-biblatex-package-options))
 
 ;;; biblatex.el ends here
