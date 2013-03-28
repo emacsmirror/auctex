@@ -1,9 +1,10 @@
 2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
 
+	* style/biblatex.el (LaTeX-biblatex-package-options): Correct name
+	of `TeX-read-key-val' argument.
+
 	* latex.el (LaTeX-common-initialization): Remove `addbibresource'
 	macro.
-
-2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el (LaTeX-biblatex-addbibresource-options): New
 	variable.

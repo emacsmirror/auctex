@@ -202,6 +202,6 @@ string."
 	      "authortitle-tcomp" "authortitle-ticomp" "verbose" "verbose-ibid"
 	      "verbose-note" "verbose-inote" "verbose-trad1" "verbose-trad2"
 	      "verbose-trad3" "reading" "draft" "debug"))))
-  (TeX-read-key-val t LaTeX-biblatex-package-options))
+  (TeX-read-key-val t LaTeX-biblatex-package-options-list))
 
 ;;; biblatex.el ends here
