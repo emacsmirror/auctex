@@ -1737,15 +1737,23 @@ string."
 (defun TeX-arg-document (optional &optional ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
-  (let ((style (completing-read
-		(concat "Document class: (default " LaTeX-default-style ") ")
-		LaTeX-style-list))
-	(options (read-string "Options: "
-			      (if (stringp LaTeX-default-options)
-				  LaTeX-default-options
-				(mapconcat 'identity
-					   LaTeX-default-options
-					   ",")))))
+  (let* ((TeX-file-extensions '("cls"))
+	 (search (if (eq TeX-arg-input-file-search 'ask)
+		     (not (y-or-n-p "Find class yourself? "))
+		   TeX-arg-input-file-search))
+	 (LaTeX-style-list
+	  (if search
+	      (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t))
+	    LaTeX-style-list))
+	 (style (completing-read
+		 (concat "Document class: (default " LaTeX-default-style ") ")
+		 LaTeX-style-list))
+	 (options (read-string "Options: "
+			       (if (stringp LaTeX-default-options)
+				   LaTeX-default-options
+				 (mapconcat 'identity
+					    LaTeX-default-options
+					    ",")))))
     (if (zerop (length style))
 	(setq style LaTeX-default-style))
     (if (not (zerop (length options)))

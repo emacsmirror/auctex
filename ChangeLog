@@ -1,3 +1,7 @@
+2013-03-29  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (TeX-arg-document): Search for LaTeX classes.
+
 2013-03-28  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el (LaTeX-biblatex-package-options): Correct name
