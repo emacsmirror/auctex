@@ -3363,13 +3363,23 @@ If TEX is a directory, generate style files for all files in the directory."
   (TeX-auto-parse)
 
   (if (member nil (mapcar 'TeX-auto-entry-clear-p TeX-auto-parser))
-      (let ((style (TeX-strip-extension nil TeX-all-extensions t)))
+      (let ((style (TeX-strip-extension nil TeX-all-extensions t))
+	    (class-opts (if (boundp 'LaTeX-provided-class-options)
+			    LaTeX-provided-class-options))
+	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
+			  LaTeX-provided-package-options)))
 	(TeX-unload-style style)
 	(save-excursion
 	  (set-buffer (generate-new-buffer file))
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook\n \""
 		  style "\"\n (lambda ()")
+	  (when class-opts
+	    (insert "\n   (TeX-add-to-alist 'LaTeX-provided-class-options\n"
+		    "                     '" (prin1-to-string class-opts) ")"))
+	  (when pkg-opts
+	    (insert "\n   (TeX-add-to-alist 'LaTeX-provided-package-options\n"
+		    "                     '" (prin1-to-string pkg-opts) ")"))
 	  (mapc (lambda (el) (TeX-auto-insert el style))
 		TeX-auto-parser)
 	  (insert "))\n\n")
@@ -3392,13 +3402,13 @@ If SKIP is not-nil, don't insert code for SKIP."
   (let ((name (symbol-name (nth TeX-auto-parser-add entry)))
 	(list (symbol-value (nth TeX-auto-parser-temporary entry))))
     (unless (null list)
-      (insert "\n    (" name)
+      (insert "\n   (" name)
       (dolist (el list)
 	(cond ((and (stringp el) (not (string= el skip)))
-	       (insert "\n     ")
+	       (insert "\n    ")
 	       (insert (prin1-to-string el)))
 	      ((not (stringp el))
-	       (insert "\n     ")
+	       (insert "\n    ")
 	       (insert "'" (prin1-to-string el)))))
       (insert ")"))))
 
@@ -3874,7 +3884,7 @@ example.")
 (defun TeX-search-files-by-type (filetype &optional scope nodir strip)
   "Return a list of files in TeX's search path with type FILETYPE.
 FILETYPE is a symbol used to choose the search paths and
-extensions.  See `TeX-search-file-type-alist' for supported
+extensions.  See `TeX-search-files-type-alist' for supported
 symbols.
 
 The optional argument SCOPE sets the scope for the search.
@@ -4015,6 +4025,29 @@ mark which is sort of equivalent."
 (defalias 'TeX-run-mode-hooks
   (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
 
+(defun TeX-add-to-alist (alist-var new-alist)
+  "Add NEW-ALIST to the ALIST-VAR.
+If an element with the same key as the key of an element of
+NEW-ALIST is already present in ALIST-VAR, add the new values to
+it; if a matching element is not already present, append the new
+element to ALIST-VAR."
+  ;; Loop over all elements of NEW-ALIST.
+  (while new-alist
+    (let* ((new-element (car new-alist))
+	   ;; Get the element of ALIST-VAR with the same key of the current
+	   ;; element of NEW-ALIST, if any.
+	   (old-element (assoc (car new-element) (symbol-value alist-var))))
+      (if old-element
+	  (progn
+	    (set alist-var (delete old-element (symbol-value alist-var)))
+	    ;; Append to `old-element' the values of the current element of
+	    ;; NEW-ALIST.
+	    (mapc (lambda (elt) (add-to-list 'old-element elt t))
+		  (cdr new-element))
+	    (set alist-var (add-to-list alist-var old-element t)))
+	(add-to-list alist-var new-element t)))
+    ;; Next element of NEW-ALIST.
+    (setq new-alist (cdr new-alist))))
 
 ;;; Syntax Table
 
@@ -5264,7 +5297,7 @@ quotes are inserted only after \"."
   "Alist for overriding the default language-specific quote insertion.
 First element in each item is the name of the language as set by
 the language style file as a string.  Second element is the
-opening quotation mark.  Third elemxent is the closing quotation
+opening quotation mark.  Third element is the closing quotation
 mark.  Opening and closing quotation marks can be specified
 directly as strings or as functions returning a string.  Fourth
 element is a boolean specifying insertion behavior, overriding

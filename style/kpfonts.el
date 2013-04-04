@@ -531,9 +531,9 @@ following commands are defined:
 (TeX-add-style-hook
  "kpfonts"
  (lambda ()
-   (unless (member "notextcomp" TeX-active-styles)
-     (TeX-run-style-hooks "full" "textcomp"))
-   (unless (member "noamsmath" TeX-active-styles)
+   (unless (LaTeX-provided-package-options-member "kpfonts" "notextcomp")
+     (TeX-run-style-hooks "textcomp"))
+   (unless (LaTeX-provided-package-options-member "kpfonts" "noamsmath")
      (TeX-run-style-hooks "amsmath"))
    (TeX-add-symbols
     ;; Text fonts options

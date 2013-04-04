@@ -1322,6 +1322,39 @@ The input string may include LaTeX comments and newlines."
 	  (delete-backward-char 1)))))
     opts))
 
+(defvar LaTeX-provided-class-options nil
+  "Alist of options provided to LaTeX classes.
+For each element, the CAR is the name of the class, the CDR is
+the list of options provided to it.
+
+E.g., its value will be
+  \(\(\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\"\)
+   ...\)
+See also `LaTeX-provided-package-options'.")
+(make-variable-buffer-local 'LaTeX-provided-class-options)
+
+(defun LaTeX-provided-class-options-member (class option)
+  "Return non-nil if OPTION has been given to CLASS at load time.
+The value is actually the tail of the list of options given to CLASS."
+  (member option (cdr (assoc package LaTeX-provided-class-options))))
+
+(defvar LaTeX-provided-package-options nil
+  "Alist of options provided to LaTeX packages.
+For each element, the CAR is the name of the package, the CDR is
+the list of options provided to it.
+
+E.g., its value will be
+  \(\(\"babel\" \"german\"\)
+   \(\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\"\)
+   ...\)
+See also `LaTeX-provided-class-options'.")
+(make-variable-buffer-local 'LaTeX-provided-package-options)
+
+(defun LaTeX-provided-package-options-member (package option)
+  "Return non-nil if OPTION has been given to PACKAGE at load time.
+The value is actually the tail of the list of options given to PACKAGE."
+  (member option (cdr (assoc package LaTeX-provided-package-options))))
+
 (defun LaTeX-auto-cleanup ()
   "Cleanup after LaTeX parsing."
 
@@ -1330,6 +1363,10 @@ The input string may include LaTeX comments and newlines."
 	(apply 'append (mapcar (lambda (arg)
 				 (TeX-split-string "," arg))
 			       LaTeX-auto-bibliography)))
+
+  ;; Reset class and packages options for the current buffer
+  (setq LaTeX-provided-class-options nil)
+  (setq LaTeX-provided-package-options nil)
 
   ;; Cleanup document classes and packages
   (unless (null LaTeX-auto-style)
@@ -1345,18 +1382,18 @@ The input string may include LaTeX comments and newlines."
 	;; Get the options.
 	(setq options (LaTeX-listify-package-options options))
 
-	;; Append them to the style list.
-	(dolist (elt options)
-	  (add-to-list 'TeX-auto-file elt t))
-
-	;; Treat documentclass/documentstyle specially.
-	(if (or (string-equal "package" class)
-		(string-equal "Package" class))
-	    (dolist (elt (TeX-split-string
-			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
-	      ;; Append style to the style list, so style files can check the
-	      ;; values of the options given on load time to packages.
-	      (add-to-list 'TeX-auto-file elt t))
+        ;; Treat documentclass/documentstyle specially.
+        (if (or (string-equal "package" class)
+                (string-equal "Package" class))
+            (dolist (elt (TeX-split-string
+                          "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
+	      ;; Append style to the style list.
+	      (add-to-list 'TeX-auto-file elt t)
+              ;; Append to `LaTeX-provided-package-options' the name of the
+              ;; package and the options provided to it at load time.
+	      (unless (equal options '(""))
+		(TeX-add-to-alist 'LaTeX-provided-package-options
+				  (list (cons elt options)))))
 	  ;; And a special "art10" style file combining style and size.
 	  (add-to-list 'TeX-auto-file style t)
 	  (add-to-list 'TeX-auto-file
@@ -1385,7 +1422,10 @@ The input string may include LaTeX comments and newlines."
 			      ((member "12pt" options)
 			       "12")
 			      (t
-			       "10"))) t))
+			       "10"))) t)
+	  (unless (equal options '(""))
+	    (TeX-add-to-alist 'LaTeX-provided-class-options
+			      (list (cons style options)))))
 
 	;; The third argument if "class" indicates LaTeX2e features.
 	(cond ((equal class "class")
@@ -1770,11 +1810,11 @@ OPTIONAL and IGNORE are ignored."
   "Insert arguments to usepackage.
 OPTIONAL is ignored."
   (let ((TeX-file-extensions '("sty"))
-	(TeX-input-file-search t))
+	(TeX-arg-input-file-search (or TeX-arg-input-file-search 'ask)))
     (TeX-arg-input-file nil "Package")
     (save-excursion
       (search-backward-regexp "{\\(.*\\)}")
-      (let* ((package (match-string 1))
+      (let* ((package (TeX-match-buffer 1))
 	     (var (intern (format "LaTeX-%s-package-options" package)))
 	     (crm-separator ",")
 	     (TeX-arg-opening-brace LaTeX-optop)
@@ -1793,17 +1833,14 @@ OPTIONAL is ignored."
 				 ","))))
 	  (setq options (read-string "Options: ")))
 	(when options
-	  ;; XXX: The following statement will add the options
-	  ;; supplied to the LaTeX package to the style list.  This is
-	  ;; consistent with the way the parser works (see
-	  ;; `LaTeX-auto-cleanup').  But in a revamped style system
-	  ;; such options should be associated with their LaTeX
-	  ;; package to avoid confusion.  For example a `german' entry
-	  ;; in the style list can come from documentclass options and
-	  ;; does not necessarily mean that the babel-related
-	  ;; extensions should be activated.
-	  (mapc 'TeX-run-style-hooks (LaTeX-listify-package-options options))
-	  (TeX-argument-insert options t))))))
+	  (let ((opts (LaTeX-listify-package-options options)))
+	    (TeX-add-to-alist 'LaTeX-provided-package-options
+			      (list (add-to-list 'opts package))))
+	  (TeX-argument-insert options t)
+	  ;; When `babel' package is loaded with options, load also language
+	  ;; style files.
+	  (when (string-equal package "babel")
+	    (mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))))))))
 
 (defcustom LaTeX-search-files-type-alist
   '((texinputs "${TEXINPUTS.latex}" ("tex/generic/" "tex/latex/")

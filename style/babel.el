@@ -31,30 +31,39 @@
 ;;; Code:
 
 (defvar LaTeX-babel-language-list
-  '("acadian" "afrikaans" "american" "austrian""bahasa" "basque" "brazil"
-    "brazilian" "breton" "british" "bulgarian" "canadian" "canadien"
-    "catalan" "croatian" "czech" "danish" "dutch" "english" "esperanto"
-    "estonian" "finnish" "francais" "frenchb" "french" "galician"
-    "german" "germanb" "greek" "polutonikogreek" "hebrew" "hungarian"
-    "icelandic" "irish" "italian" "latin" "lowersorbian" "magyar"
-    "naustrian" "ngerman" "norsk" "samin" "nynorsk" "polish" "portuges"
-    "portuguese" "romanian" "russian" "scottish" "serbian" "slovak"
-    "slovene" "spanish" "swedish" "turkish" "ukrainian" "uppersorbian"
-    "welsh" "UKenglish" "USenglish")
+  '("acadian" "albanian" "afrikaans" "american" "australian" "austrian" "bahasa"
+    "indonesian" "indon" "bahasai" "malay" "meyalu" "bahasam" "basque" "brazil"
+    "brazilian" "breton" "british" "bulgarian" "canadian" "canadien" "catalan"
+    "croatian" "czech" "danish" "dutch" "english" "esperanto" "estonian" "finnish"
+    "francais" "frenchb" "french" "galician" "german" "germanb" "greek"
+    "polutonikogreek" "hebrew" "hungarian" "icelandic" "interlingua" "irish"
+    "italian" "latin" "lowersorbian" "magyar" "naustrian" "newzealand" "ngerman"
+    "norsk" "samin" "nynorsk" "polish" "portuges" "portuguese" "romanian"
+    "russian" "scottish" "serbian" "slovak" "slovene" "spanish" "swedish" "turkish"
+    "ukrainian" "uppersorbian" "welsh" "UKenglish" "USenglish")
   "List of languages supported by the babel LaTeX package.")
 
-(if (fboundp 'defvaralias)
-    (defvaralias 'LaTeX-babel-package-options 'LaTeX-babel-language-list)
-  (defvar LaTeX-babel-package-options LaTeX-babel-language-list
-    "Package options for the babel package."))
+(defvar LaTeX-babel-package-options
+  (append LaTeX-babel-language-list '("activeacute" "activegrave"
+				      "KeepShorthandsActive"))
+  "Package options for the babel package.")
 
 (defun LaTeX-babel-active-languages ()
   "Return a list of languages used in the document."
   (let (active-languages)
-    (dolist (elt LaTeX-babel-language-list)
-      (when (member elt TeX-active-styles)
-	(add-to-list 'active-languages (list elt))))
-    active-languages))
+    ;; Loop over options provided to class and `babel' package at load time.
+    (dolist (elt (append
+		  ;; In most cases there is only one element in the alist, if
+		  ;; there is more than one element, the first one should
+		  ;; contain the class options of the current buffer.  So we can
+		  ;; take the car of `LaTeX-provided-class-options'.
+		  (cdr (car LaTeX-provided-class-options))
+		  (cdr (assoc "babel" LaTeX-provided-package-options))))
+      (when (member elt LaTeX-babel-language-list)
+	;; Append element to `active-languages' to respect loading order.
+	;; `babel' package uses as default language the last loaded one.
+	(add-to-list 'active-languages elt t)))
+  active-languages))
 
 (defun TeX-arg-babel-lang (optional &optional prompt)
   "Prompt for a language with completion and insert it as an argument."
@@ -70,6 +79,9 @@
 (TeX-add-style-hook
  "babel"
  (lambda ()
+   ;; Run style hooks for every active language in loading order, so
+   ;; `TeX-quote-language' will be correctly set.
+   (mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))
    ;; New symbols
    (TeX-add-symbols
     '("selectlanguage" TeX-arg-babel-lang)

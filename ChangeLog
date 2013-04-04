@@ -1,3 +1,42 @@
+2013-04-03  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-provided-class-options): New buffer-local
+	variable.
+	(LaTeX-provided-class-options-member): New function.
+	(LaTeX-provided-package-options): New buffer-local variable.
+	(LaTeX-provided-package-options-member): New function
+	(LaTeX-auto-cleanup): Rewrite to support
+	`LaTeX-provided-{class,package}-options' variables.
+	(LaTeX-arg-usepackage): Ditto.
+
+	* tex.el (TeX-auto-store): Write to parsed file values of
+	`LaTeX-provided-{class,package}-options' variables.
+	(TeX-auto-insert): Fix indentation of inserted lines.
+	(TeX-search-files-by-type): Fix typo in doc-string.
+	(TeX-add-to-alist): New function.
+	(TeX-quote-language-alist): Fix typo in doc-string.
+
+	* style/babel.el (LaTeX-babel-package-options): Add missing
+	languages.
+	(LaTeX-babel-package-options): Add options other than
+	languages.
+	(LaTeX-babel-active-languages): Use
+	`LaTeX-provided-{class,package}-options'.  Loop over actually
+	used options instead of all babel languages.
+	("babel"): Run styles of active languages.
+
+	* style/biblatex.el ("biblatex"): Use
+	`LaTeX-provided-package-options-member'.
+	(LaTeX-biblatex-package-options): Consider the `ask' value for
+	'TeX-arg-input-file-search'.
+
+	* style/kpfonts.el ("kpfonts"): Use
+	`LaTeX-provided-package-options-member'.
+
+	* style/siunitx.el: Rename `TeX-siunitx-*' functions to
+	`LaTeX-siunitx-*' for consistency.
+	("siunitx"): Use `LaTeX-provided-package-options-member'.
+
 2013-03-29  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (TeX-arg-document): Search for LaTeX classes.

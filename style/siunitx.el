@@ -1,4 +1,4 @@
-;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5p.
+;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5q.
 
 ;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `siunitx.sty' version 2.5p.
+;; This file adds support for `siunitx.sty' version 2.5q.
 
 ;;; Code:
 
@@ -57,7 +57,7 @@
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-siunitx-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-siunitx-cleanup)
 
-(defun TeX-arg-siunitx-unit (optional &optional prompt initial-input definition)
+(defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input definition)
   "Prompt for siunitx units, prefixes, powers, and qualifiers.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -79,16 +79,16 @@ non-nil, add the chosen unit to the list of defined units."
       (if (and definition (not (string-equal "" unit)))
 	  (LaTeX-add-siunitx-units unit))
       (TeX-argument-insert unit optional))
-  ;; Restore <SPC> key bindings in minibuffer.
-  (define-key minibuffer-local-completion-map " " space-completion)
-  (define-key minibuffer-local-must-match-map " " space-must-match)))
+    ;; Restore <SPC> key bindings in minibuffer.
+    (define-key minibuffer-local-completion-map " " space-completion)
+    (define-key minibuffer-local-must-match-map " " space-must-match)))
 
-(defun TeX-arg-define-siunitx-unit (optional &optional prompt)
+(defun LaTeX-arg-define-siunitx-unit (optional &optional prompt)
   "Prompt for a LaTeX siunitx unit, prefix, power, and qualifier.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (TeX-arg-siunitx-unit optional prompt "\\" t))
+  (LaTeX-arg-siunitx-unit optional prompt "\\" t))
 
 (defvar LaTeX-siunitx-package-options
   '(;; Detecting fonts
@@ -266,26 +266,26 @@ string."
    (TeX-auto-add-regexp `(,LaTeX-siunitx-regexp 1 LaTeX-auto-siunitx-unit))
    (TeX-add-symbols
     ;; Numbers
-    '("ang" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Angle")
-    '("num" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Number")
-    '("numlist" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Numbers")
-    '("numrange" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Number 1" "Number 2")
+    '("ang" [TeX-arg-key-val LaTeX-siunitx-package-options] "Angle")
+    '("num" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
+    '("numlist" [TeX-arg-key-val LaTeX-siunitx-package-options] "Numbers")
+    '("numrange" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number 1" "Number 2")
     ;; Units
-    '("si" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] TeX-arg-siunitx-unit)
-    '("SI" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Value" [ "Pre-unit"] TeX-arg-siunitx-unit)
-    '("SIlist" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Values" TeX-arg-siunitx-unit)
-    '("SIrange" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Value 1" "Value 2" TeX-arg-siunitx-unit)
+    '("si" [TeX-arg-key-val LaTeX-siunitx-package-options] LaTeX-arg-siunitx-unit)
+    '("SI" [TeX-arg-key-val LaTeX-siunitx-package-options] "Value" [ "Pre-unit"] LaTeX-arg-siunitx-unit)
+    '("SIlist" [TeX-arg-key-val LaTeX-siunitx-package-options] "Values" LaTeX-arg-siunitx-unit)
+    '("SIrange" [TeX-arg-key-val LaTeX-siunitx-package-options] "Value 1" "Value 2" LaTeX-arg-siunitx-unit)
     ;; Settings
     '("sisetup" (TeX-arg-key-val LaTeX-siunitx-package-options))
     ;; Tabular material
-    '("tablenum" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] "Number")
+    '("tablenum" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
     ;; Creating new macros (`DeclareSIUnitWithOptions' macro is deprecated)
-    '("DeclareSIUnit" [ (TeX-arg-key-val LaTeX-siunitx-package-options) ] (TeX-arg-define-siunitx-unit) "Symbol")
-    '("DeclareSIPrefix" (TeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 10")
-    '("DeclareBinaryPrefix" (TeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 2")
-    '("DeclareSIPostPower" (TeX-arg-define-siunitx-unit "Name") "Power")
-    '("DeclareSIPrePower" (TeX-arg-define-siunitx-unit "Name") "Power")
-    '("DeclareSIQualifier" (TeX-arg-define-siunitx-unit "Qualifier") "Symbol")
+    '("DeclareSIUnit" [TeX-arg-key-val LaTeX-siunitx-package-options] (LaTeX-arg-define-siunitx-unit) "Symbol")
+    '("DeclareSIPrefix" (LaTeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 10")
+    '("DeclareBinaryPrefix" (LaTeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 2")
+    '("DeclareSIPostPower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
+    '("DeclareSIPrePower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
+    '("DeclareSIQualifier" (LaTeX-arg-define-siunitx-unit "Qualifier") "Symbol")
     ;; Highlighting
     '("highlight" "Color")
     ;; Transferring settings to pgf
@@ -390,7 +390,7 @@ string."
     "\\per"
     "\\of")
    ;; Abbreviated units (available unless `abbreviations' option is set to `false')
-   (unless (member "abbreviations=false" TeX-active-styles)
+   (unless (LaTeX-provided-package-options-member "siunitx" "abbreviations=false")
      (LaTeX-add-siunitx-units
       "\\fg"
       "\\pg"
@@ -479,8 +479,8 @@ string."
       "\\K"
       "\\dB"))
    ;; Binary prefixes and units available when `binary-units' option is used
-   (when (or (member "binary-units" TeX-active-styles)
-	     (member "binary-units=true" TeX-active-styles))
+   (when (or (LaTeX-provided-package-options-member "siunitx" "binary-units")
+	     (LaTeX-provided-package-options-member "siunitx" "binary-units=true"))
      (LaTeX-add-siunitx-units
       "\\kibi"
       "\\mebi"
@@ -502,8 +502,8 @@ string."
     "\\SIUnitSymbolMicro"
     "\\SIUnitSymbolOhm")
    ;; Macros available when `version-1-compatibility' option is used
-   (when (or (member "version-1-compatibility" TeX-active-styles)
-	     (member "version-1-compatibility=true" TeX-active-styles))
+   (when (or (LaTeX-provided-package-options-member "siunitx" "version-1-compatibility")
+	     (LaTeX-provided-package-options-member "siunitx" "version-1-compatibility=true"))
      (LaTeX-add-siunitx-units
       "\\Square"
       "\\ssquare"
