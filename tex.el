@@ -5262,7 +5262,8 @@ With optional argument ARG, also reload the style hooks."
 	    BibTeX-global-files nil
 	    BibLaTeX-global-style-files nil
 	    TeX-Biber-global-files nil
-	    TeX-global-input-files nil))
+	    TeX-global-input-files nil
+	    LaTeX-global-class-files nil))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)
 	(save-buffer)

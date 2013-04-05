@@ -2,6 +2,13 @@
 
 ;;; Code:
 
+(defvar LaTeX-report-class-options
+  '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
+    "landscape" "10pt" "11pt" "12pt" "oneside" "twoside" "draft" "final"
+    "titlepage" "notitlepage" "openright" "openany" "onecolumn" "twocolumn"
+    "leqno" "fleqn" "openbib")
+  "Package options for the report class.")
+
 (TeX-add-style-hook
  "report"
  (lambda () 

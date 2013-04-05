@@ -1,3 +1,20 @@
+2013-04-05  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-global-class-files): New variable.
+	(TeX-arg-document): Provide completion for class options, based on
+	`LaTeX-arg-usepackage'.  Use `LaTeX-global-class-files'.
+	(LaTeX-style-list): Mention that if `TeX-arg-input-file-search' is
+	set to `t' this variable will be ignored.
+
+	* tex.el (TeX-normal-mode): Reset `LaTeX-global-class-files' when
+	ARG is non-nil.
+
+	* style/article.el (LaTeX-article-class-options): New variable.
+
+	* style/book.el (LaTeX-book-class-options): New variable.
+
+	* style/report.el (LaTeX-report-class-options): New variable.
+
 2013-04-03  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-provided-class-options): New buffer-local

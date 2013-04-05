@@ -1770,34 +1770,61 @@ string."
 			      ("scrlttr2")
 			      ("scrreprt")
 			      ("slides"))
-  "List of document classes offered when inserting a document environment."
+  "List of document classes offered when inserting a document class.
+
+If `TeX-arg-input-file-search' is set to `t', you will get
+completion with all LaTeX classes available in your distribution
+and this variable will be ignored."
   :group 'LaTeX-environment
   :type '(repeat (group (string :format "%v"))))
+
+(defvar LaTeX-global-class-files nil
+  "List of the LaTeX class files.
+Initialized once at the first time you prompt for a LaTeX class.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-document (optional &optional ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
-	 (search (if (eq TeX-arg-input-file-search 'ask)
-		     (not (y-or-n-p "Find class yourself? "))
-		   TeX-arg-input-file-search))
-	 (LaTeX-style-list
-	  (if search
-	      (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t))
-	    LaTeX-style-list))
-	 (style (completing-read
+	 (crm-separator ",")
+	 style var options)
+    (unless LaTeX-global-class-files
+      (if (if (eq TeX-arg-input-file-search 'ask)
+	      (not (y-or-n-p "Find class yourself? "))
+	    TeX-arg-input-file-search)
+	  (progn
+	    (message "Searching for LaTeX classes...")
+	    (setq LaTeX-global-class-files
+		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t))))
+	LaTeX-style-list))
+    (setq style (completing-read
 		 (concat "Document class: (default " LaTeX-default-style ") ")
-		 LaTeX-style-list))
-	 (options (read-string "Options: "
-			       (if (stringp LaTeX-default-options)
-				   LaTeX-default-options
-				 (mapconcat 'identity
-					    LaTeX-default-options
-					    ",")))))
+		 LaTeX-global-class-files))
     (if (zerop (length style))
 	(setq style LaTeX-default-style))
-    (if (not (zerop (length options)))
-	(insert LaTeX-optop options LaTeX-optcl))
+    (TeX-run-style-hooks style)
+    (setq var (intern (format "LaTeX-%s-class-options" style)))
+    (if (or (and (boundp var)
+		 (listp (symbol-value var)))
+	    (fboundp var))
+	(if (functionp var)
+	    (setq options (funcall var))
+	  (when (symbol-value var)
+	    (setq options
+		  (mapconcat 'identity
+			     (TeX-completing-read-multiple
+			      "Options: " (mapcar 'list (symbol-value var)) nil nil
+			      (if (stringp LaTeX-default-options)
+				  LaTeX-default-options
+				(mapconcat 'identity LaTeX-default-options ",")))
+			     ","))))
+      (setq options (read-string "Options: ")))
+    (unless (zerop (length options))
+      (insert LaTeX-optop options LaTeX-optcl)
+      (let ((opts (LaTeX-listify-package-options options)))
+	(TeX-add-to-alist 'LaTeX-provided-class-options
+			  (list (cons style opts)))))
     (insert TeX-grop style TeX-grcl))
 
   ;; remove old information
