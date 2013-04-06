@@ -1336,7 +1336,7 @@ See also `LaTeX-provided-package-options'.")
 (defun LaTeX-provided-class-options-member (class option)
   "Return non-nil if OPTION has been given to CLASS at load time.
 The value is actually the tail of the list of options given to CLASS."
-  (member option (cdr (assoc package LaTeX-provided-class-options))))
+  (member option (cdr (assoc class LaTeX-provided-class-options))))
 
 (defvar LaTeX-provided-package-options nil
   "Alist of options provided to LaTeX packages.
@@ -1836,38 +1836,51 @@ OPTIONAL and IGNORE are ignored."
 (defun LaTeX-arg-usepackage (optional)
   "Insert arguments to usepackage.
 OPTIONAL is ignored."
-  (let ((TeX-file-extensions '("sty"))
-	(TeX-arg-input-file-search (or TeX-arg-input-file-search 'ask)))
-    (TeX-arg-input-file nil "Package")
-    (save-excursion
-      (search-backward-regexp "{\\(.*\\)}")
-      (let* ((package (TeX-match-buffer 1))
-	     (var (intern (format "LaTeX-%s-package-options" package)))
-	     (crm-separator ",")
-	     (TeX-arg-opening-brace LaTeX-optop)
-	     (TeX-arg-closing-brace LaTeX-optcl)
-	     options)
-	(if (or (and (boundp var)
-		     (listp (symbol-value var)))
-		(fboundp var))
-	    (if (functionp var)
-		(setq options (funcall var))
-	      (when (symbol-value var)
-		(setq options
-		      (mapconcat 'identity
-				 (TeX-completing-read-multiple
-				  "Options: " (mapcar 'list (symbol-value var)))
-				 ","))))
-	  (setq options (read-string "Options: ")))
-	(unless (zerop (length options))
-	  (let ((opts (LaTeX-listify-package-options options)))
-	    (TeX-add-to-alist 'LaTeX-provided-package-options
-			      (list (cons package opts))))
-	  (TeX-argument-insert options t)
-	  ;; When `babel' package is loaded with options, load also language
-	  ;; style files.
-	  (when (string-equal package "babel")
-	    (mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))))))))
+  (let* ((TeX-file-extensions '("sty"))
+	 (crm-separator ",")
+	 packages var options)
+    (unless TeX-global-input-files
+      (if (if (eq TeX-arg-input-file-search 'ask)
+	      (not (y-or-n-p "Find packages yourself? "))
+	    TeX-arg-input-file-search)
+	  (progn
+	    (message "Searching for LaTeX packages...")
+	    (setq TeX-global-input-files
+		  (mapcar 'list (TeX-search-files-by-type
+				 'texinputs 'global t t))))))
+    (setq packages (TeX-completing-read-multiple
+		    "Packages: " TeX-global-input-files))
+    (mapc 'TeX-run-style-hooks packages)
+    (setq var (if (= 1 (length packages))
+		  (intern (format "LaTeX-%s-package-options" (car packages)))
+		;; Something like `\usepackage[options]{pkg1,pkg2,pkg3,...}' is
+		;; allowed (provided that pkg1, pkg2, pkg3, ... accept same
+		;; options).  When there is more than one package, set `var' to
+		;; a dummy value so next `if' enters else form.
+		t))
+    (if (or (and (boundp var)
+		 (listp (symbol-value var)))
+	    (fboundp var))
+	(if (functionp var)
+	    (setq options (funcall var))
+	  (when (symbol-value var)
+	    (setq options
+		  (mapconcat 'identity
+			     (TeX-completing-read-multiple
+			      "Options: " (mapcar 'list (symbol-value var)))
+			     ","))))
+      (setq options (read-string "Options: ")))
+    (unless (zerop (length options))
+      (let ((opts (LaTeX-listify-package-options options)))
+	(mapc (lambda (elt)
+		(TeX-add-to-alist 'LaTeX-provided-package-options
+				  (list (cons elt opts))))
+	      packages))
+      (insert LaTeX-optop options LaTeX-optcl)
+      ;; When `babel' is loaded with options, load also language style files.
+      (when (member "babel" packages)
+	(mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))))
+    (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)))
 
 (defcustom LaTeX-search-files-type-alist
   '((texinputs "${TEXINPUTS.latex}" ("tex/generic/" "tex/latex/")

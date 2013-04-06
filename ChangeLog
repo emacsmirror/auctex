@@ -1,3 +1,9 @@
+2013-04-06  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-provided-class-options-member): Fix typo.
+	(LaTeX-arg-usepackage): Provide completion for more than one
+	package in mandatory argument.
+
 2013-04-05  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-global-class-files): New variable.
