@@ -1832,10 +1832,10 @@ OPTIONAL is ignored."
 				  "Options: " (mapcar 'list (symbol-value var)))
 				 ","))))
 	  (setq options (read-string "Options: ")))
-	(when options
+	(unless (zerop (length options))
 	  (let ((opts (LaTeX-listify-package-options options)))
 	    (TeX-add-to-alist 'LaTeX-provided-package-options
-			      (list (add-to-list 'opts package))))
+			      (list (cons package opts))))
 	  (TeX-argument-insert options t)
 	  ;; When `babel' package is loaded with options, load also language
 	  ;; style files.
