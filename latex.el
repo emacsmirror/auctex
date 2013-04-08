@@ -1770,7 +1770,7 @@ string."
 			      ("scrlttr2")
 			      ("scrreprt")
 			      ("slides"))
-  "List of document classes offered when inserting a document class.
+  "List of document classes offered when inserting a document environment.
 
 If `TeX-arg-input-file-search' is set to `t', you will get
 completion with all LaTeX classes available in your distribution

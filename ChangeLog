@@ -1,3 +1,7 @@
+2013-04-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-style-list): Correct docstring.
+
 2013-04-06  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-provided-class-options-member): Fix typo.
