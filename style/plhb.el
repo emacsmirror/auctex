@@ -1,7 +1,5 @@
 ;;; plhb.el - Setup AUC TeX for editing Polish text with plhb.sty
 
-;; $Id: plhb.el,v 1.1 1994-01-30 21:17:27 amanda Exp $
-
 ;;; Commentary:
 ;;
 ;; `plhb.sty' use `"' to make next character Polish.

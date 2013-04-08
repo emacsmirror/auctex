@@ -22,8 +22,6 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.287 2012-12-04 08:01:34 tsdh Exp $
-;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
 ;; for further instruction.
@@ -36,8 +34,7 @@
 ;; configured by using
 ;; M-x customize-group RET preview RET
 ;;
-;; Please report bugs with M-x preview-report-bug RET
-;;
+;; Please report bugs with M-x preview-report-bug RET.
 
 ;;; Code:
 

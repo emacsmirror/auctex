@@ -1,7 +1,5 @@
 ;;; foils.el - Special code for FoilTeX.
 
-;; $Id: foils.el,v 1.5 2008-07-28 20:40:18 angeli Exp $
-
 ;;; Code:
 
 (require 'timezone)
