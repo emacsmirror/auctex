@@ -1,3 +1,7 @@
+2013-04-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* README.GIT: Rename from README.CVS; update contents to Git.
+
 2013-04-09  Leo Liu  <sdl.web@gmail.com>
 
 	* latex.el (LaTeX-outline-level): Make it work for customized
