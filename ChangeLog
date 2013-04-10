@@ -1,3 +1,8 @@
+2013-04-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-sync-view): URL-escape pdf file path when
+	calling evince via DBUS.
+
 2013-04-10  Nicolas Richard  <theonewiththeevillook@yahoo.fr>  (tiny change)
 
 	* style/mathtools.el (LaTeX-mathtools-key-val-options): Fix defvar

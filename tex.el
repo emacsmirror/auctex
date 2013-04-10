@@ -1055,8 +1055,11 @@ search are checked, too."
 of point in emacs by using Evince's DBUS API.  Used by default
 for the Evince viewer entry in `TeX-view-program-list-builtin' if
 the requirements are met."
-  (let* ((uri (concat "file://" (expand-file-name
-				 (concat file "." (TeX-output-extension)))))
+  (require 'url-util)
+  (let* ((uri (concat "file://" (let ((url-unreserved-chars (cons ?/ url-unreserved-chars)))
+				  (url-hexify-string
+				   (expand-file-name
+				    (concat file "." (TeX-output-extension)))))))
 	 (owner (dbus-call-method
 		 :session "org.gnome.evince.Daemon"
 		 "/org/gnome/evince/Daemon"
