@@ -43,7 +43,6 @@
   "Package options for the mathtools package.")
 
 (defvar LaTeX-mathtools-key-val-options
-  "Options for the \\mathtoolsset command"
   '(("showonlyrefs")
     ("mathic" ("true" "false"))
     ("showmanualtags" ("true" "false"))
@@ -54,7 +53,8 @@
     ("centercolon" ("true" "false"))
     ("prescript-sub-format")
     ("prescript-sup-format")
-    ("prescript-arg-format")))
+    ("prescript-arg-format"))
+  "Options for the \\mathtoolsset command")
 
 (TeX-add-style-hook
  "mathtools"
