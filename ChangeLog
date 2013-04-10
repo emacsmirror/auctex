@@ -2,6 +2,8 @@
 
 	* tex.el (TeX-evince-sync-view): URL-escape pdf file path when
 	calling evince via DBUS.
+	(TeX-evince-sync-view): Use 0 as timestamp.
+	(TeX-source-correlate-sync-source): URL-decode tex file name.
 
 2013-04-10  Nicolas Richard  <theonewiththeevillook@yahoo.fr>  (tiny change)
 

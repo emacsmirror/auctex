@@ -1075,17 +1075,7 @@ the requirements are met."
 	 "SyncView"
 	 (buffer-file-name)
 	 (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
-	 :uint32 (let ((time (float-time)))
-		   ;; FIXME: Evince wants a timestamp as UInt32, but POSIX time
-		   ;; is too large for emacs integers on 32 bit systems.  Emacs
-		   ;; 24.2 will allow providing DBUS ints as floats, and this
-		   ;; dbus version will be identifiable by its new variables
-		   ;; `dbus-compiled-version' and `dbus-runtime-version'.  But
-		   ;; it seems providing just 1 as timestamp has no negative
-		   ;; consequences, anyway.
-		   (if (> most-positive-fixnum time)
-		       (round time)
-		     1)))
+	 :uint32 0)
       (error "Couldn't find the Evince instance for %s" uri))))
 
 (defvar TeX-view-program-list-builtin
@@ -1514,7 +1504,8 @@ or newer."
   (let ((buf (let ((f (condition-case nil
 			  (progn
 			    (require 'url-parse)
-			    (aref (url-generic-parse-url file) 6))
+			    (require 'url-util)
+			    (url-unhex-string (aref (url-generic-parse-url file) 6)))
 			;; For Emacs 21 compatibility, which doesn't have the
 			;; url package.
 			(file-error (replace-regexp-in-string "^file://" "" file)))))
