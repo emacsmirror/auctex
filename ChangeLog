@@ -1,3 +1,7 @@
+2013-04-10  Jobst Hoffmann  <j.hoffmann@fh-aachen.de>  (tiny change)
+
+	* style/lscape.el ("lscape"): Fix typo and parentheses.
+
 2013-04-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* README.GIT: Rename from README.CVS; update contents to Git.

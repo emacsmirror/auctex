@@ -34,9 +34,9 @@
  "lscape"
  (lambda ()
    (LaTeX-add-environments
-    "landscapee"))
- ;; lscape uses graphics internally to handle the work
- (TeX-run-style-hooks "graphics"))
+    "landscape")
+   ;; lscape uses graphics internally to handle the work
+   (TeX-run-style-hooks "graphics")))
 
 (defvar LaTeX-lscape-package-options '("pdftex")
   "Package options for the lscape package.")
