@@ -1,3 +1,11 @@
+2013-04-12  Mosè Giordano  <giordano.mose@libero.it>
+
+	* Makefile.in (STYLESRC): Add style/acro.el and style/acronym.el.
+
+	* style/acro.el: New style.
+
+	* style/acronym.el: Ditto.
+
 2013-04-10  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-evince-sync-view): URL-escape pdf file path when
