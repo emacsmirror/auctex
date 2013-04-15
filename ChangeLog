@@ -1,5 +1,8 @@
 2013-04-15  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (TeX-read-key-val): Add `prompt' optional argument.
+	(TeX-arg-key-val): Ditto.
+
 	* tex.el (fboundp): Use `crm-separator' as separator in XEmacs
 	`TeX-completing-read-multiple' implementation.
 

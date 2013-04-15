@@ -2196,27 +2196,27 @@ string."
 		   TeX-left-right-braces)))
 	(indent-according-to-mode)))))
 
-(defun TeX-read-key-val (optional key-val-alist)
+(defun TeX-read-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST and return them.
 If OPTIONAL is non-nil, indicate in the prompt that we are
 reading an optional argument.  KEY-VAL-ALIST is an alist.  The
 car of each element should be a string representing a key and the
 optional cdr should be a list with strings to be used as values
-for the key."
+for the key.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
-   (TeX-argument-prompt optional "Options (k=v)" nil)
+   (TeX-argument-prompt optional prompt "Options (k=v)")
    (if (symbolp key-val-alist)
        (eval key-val-alist)
      key-val-alist)))
 
-(defun TeX-arg-key-val (optional key-val-alist)
+(defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
 Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
-as values for the key."
-  (let ((options (TeX-read-key-val optional key-val-alist)))
+as values for the key.  Use PROMPT as the prompt string."
+  (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
 
 
