@@ -688,8 +688,8 @@ edit-utils >= 2.32 for XEmacs."))
 	    hist def inherit-input-method)
     "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs.
 The XEmacs package edit-utils-2.32 includes `crm.el'."
-    (multi-prompt "," nil prompt table predicate require-match initial-input
-		  hist)))
+    (multi-prompt (if (boundp 'crm-separator) crm-separator ",") nil prompt
+		  table predicate require-match initial-input hist)))
 
 (if (fboundp 'line-number-at-pos)
     (defalias 'TeX-line-number-at-pos 'line-number-at-pos)
