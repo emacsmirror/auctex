@@ -1,6 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.
 
-;; Copyright (C) 2007, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2009, 2013 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -199,7 +199,7 @@ package PNAME"
       (setq preparam (funcall fask preparam)))
     ;;
     (setq param
-          (completing-read-multiple
+          (TeX-completing-read-multiple
            (concat
             "Params (use <Up,Down> for history or RET for choices): ")
            nlist nil nil nil hlist))

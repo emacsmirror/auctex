@@ -1,3 +1,13 @@
+2013-04-15  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/pst-node.el (LaTeX-pstnode-env-psmatrix): Replace
+	`completing-read-multiple' with `TeX-completing-read-multiple'.
+
+	* style/pstricks.el (LaTeX-package-parameters): Ditto.
+
+	* style/siunitx.el (LaTeX-arg-siunitx-unit): Replace
+	`completing-read-multiple' with `TeX-completing-read-multiple'.
+
 2013-04-15  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-source-correlate-sync-source): Raise frame when

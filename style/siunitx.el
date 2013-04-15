@@ -72,7 +72,7 @@ non-nil, add the chosen unit to the list of defined units."
     (define-key minibuffer-local-completion-map " " nil)
     (define-key minibuffer-local-must-match-map " " nil)
     (let ((unit (mapconcat 'identity
-			   (completing-read-multiple
+			   (TeX-completing-read-multiple
 			    (TeX-argument-prompt optional prompt "Unit")
 			    (LaTeX-siunitx-unit-list) nil nil initial-input)
 			   crm-separator)))
