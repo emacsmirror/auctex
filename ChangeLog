@@ -1,3 +1,8 @@
+2013-04-15  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Raise frame when
+	placing point on the source location.
+
 2013-04-12  Mosè Giordano  <giordano.mose@libero.it>
 
 	* Makefile.in (STYLESRC): Add style/acro.el and style/acronym.el.

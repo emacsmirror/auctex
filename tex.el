@@ -1494,10 +1494,11 @@ You could use this for unusual mouse bindings.")
 
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
-This function is called when emacs receives a SyncSource signal
-emitted from the Evince document viewer.  IGNORED absorbs an
-unused id field accompanying the DBUS signal sent by Evince-3.0.0
-or newer."
+If the external wmctrl program is installed, the emacs frame will
+also be risen.  This function is called when emacs receives a
+SyncSource signal emitted from the Evince document viewer.
+IGNORED absorbs an unused id field accompanying the DBUS signal
+sent by Evince-3.0.0 or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
@@ -1521,7 +1522,10 @@ or newer."
       (goto-char (point-min))
       (forward-line (1- line))
       (unless (= col -1)
-        (move-to-column col)))))
+        (move-to-column col))
+      (let ((wmctrl (executable-find "wmctrl")))
+	(when wmctrl
+	  (start-process "wmctrl" nil wmctrl "-R" (frame-parameter nil 'name)))))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
