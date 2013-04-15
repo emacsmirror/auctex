@@ -64,24 +64,24 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
 initially, with point positioned at the end.  If DEFINITION is
 non-nil, add the chosen unit to the list of defined units."
-  ;; Remove <SPC> key bindings in minibuffer and set completion
-  ;; separator to <SPC>.
-  (let ((space-completion (lookup-key minibuffer-local-completion-map " "))
-	(space-must-match (lookup-key minibuffer-local-must-match-map " "))
-	(crm-separator " "))
-    (define-key minibuffer-local-completion-map " " nil)
-    (define-key minibuffer-local-must-match-map " " nil)
-    (let ((unit (mapconcat 'identity
-			   (TeX-completing-read-multiple
-			    (TeX-argument-prompt optional prompt "Unit")
-			    (LaTeX-siunitx-unit-list) nil nil initial-input)
-			   crm-separator)))
-      (if (and definition (not (string-equal "" unit)))
-	  (LaTeX-add-siunitx-units unit))
-      (TeX-argument-insert unit optional))
-    ;; Restore <SPC> key bindings in minibuffer.
-    (define-key minibuffer-local-completion-map " " space-completion)
-    (define-key minibuffer-local-must-match-map " " space-must-match)))
+  ;; Remove <SPC> key binding from map used in `TeX-completing-read-multiple'
+  ;; with `require-match' set to `nil' (it's `crm-local-completion-map' if
+  ;; `completing-read-multiple' is bound, `minibuffer-local-completion-map'
+  ;; otherwise) and set completion separator to <SPC>.
+  (let* ((crm-local-completion-map
+	  (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
+	 (minibuffer-local-completion-map
+	  (remove (assoc 32 minibuffer-local-completion-map)
+		  minibuffer-local-completion-map))
+	 (crm-separator " ")
+	 (unit (mapconcat 'identity
+			  (TeX-completing-read-multiple
+			   (TeX-argument-prompt optional prompt "Unit")
+			   (LaTeX-siunitx-unit-list) nil nil initial-input)
+			  crm-separator)))
+    (if (and definition (not (string-equal "" unit)))
+	(LaTeX-add-siunitx-units unit))
+    (TeX-argument-insert unit optional)))
 
 (defun LaTeX-arg-define-siunitx-unit (optional &optional prompt)
   "Prompt for a LaTeX siunitx unit, prefix, power, and qualifier.

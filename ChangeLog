@@ -6,13 +6,20 @@
 	* tex.el (fboundp): Use `crm-separator' as separator in XEmacs
 	`TeX-completing-read-multiple' implementation.
 
+	* style/acro.el (LaTeX-arg-acro-key-val): Let-bind keymap with SPC
+	key binding removed, instead of defining a new key binding for
+	SPC.  Use `TeX-arg-key-val' instead of `multi-prompt-key-value'
+	and `TeX-argument-insert'.
+
 	* style/pst-node.el (LaTeX-pstnode-env-psmatrix): Replace
 	`completing-read-multiple' with `TeX-completing-read-multiple'.
 
 	* style/pstricks.el (LaTeX-package-parameters): Ditto.
 
-	* style/siunitx.el (LaTeX-arg-siunitx-unit): Replace
-	`completing-read-multiple' with `TeX-completing-read-multiple'.
+	* style/siunitx.el (LaTeX-arg-siunitx-unit): Let-bind keymap with
+	SPC key binding removed, instead of defining a new key binding for
+	SPC.  Replace `completing-read-multiple' with
+	`TeX-completing-read-multiple'.
 
 2013-04-15  Tassilo Horn  <tsdh@gnu.org>
 
