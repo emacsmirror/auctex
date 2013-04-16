@@ -1,13 +1,19 @@
 2013-04-16  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (LaTeX-default-author): New customizable variable.
+	(LaTeX-arg-author): New function.
+	(LaTeX-common-initialization): Use `LaTeX-arg-author' for the
+	\author macro.
+
 	* doc/auctex.texi (Itemize-like): Document `TeX-arg-item-label-p'
 	option.
 	(Tabular-like): Document `LaTeX-default-width' option.
 	(Modes and Hooks): Add modes and hooks to indices.
 	(Adding Macros): Document `TeX-arg-index-tag', `TeX-arg-index',
 	`TeX-arg-document', `LaTeX-arg-usepackage', `TeX-arg-bibstyle',
-	`TeX-arg-bibliography', `TeX-read-key-val', and `TeX-arg-key-val'
-	functions.  Mention `TeX-arg-cite-note-p' option.
+	`TeX-arg-bibliography', `LaTeX-arg-author', `TeX-read-key-val',
+	and `TeX-arg-key-val' functions.  Mention `TeX-arg-cite-note-p'
+	and `LaTeX-default-author' options.
 	(Adding Environments): Use in example code actually present in
 	`listings.el' file.
 

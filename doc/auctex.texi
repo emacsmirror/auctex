@@ -4095,6 +4095,11 @@ Insert width and height as a pair.  No arguments.
 @item TeX-arg-coordinate
 Insert x and y coordinates as a pair.  No arguments.
 
+@item LaTeX-arg-author
+@vindex LaTeX-default-author
+Prompt for document author, using @code{LaTeX-default-author} as initial
+input.
+
 @item TeX-read-key-val
 Prompt for a key=value list of options and return them.
 

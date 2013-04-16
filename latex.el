@@ -2196,6 +2196,25 @@ string."
 		   TeX-left-right-braces)))
 	(indent-according-to-mode)))))
 
+(defcustom LaTeX-default-author user-full-name
+  "Initial input to `LaTeX-arg-author' prompt.
+If nil, do not prompt at all."
+  :group 'LaTeX-macro
+  :type '(choice (const :tag "Do not prompt" nil)
+		 string))
+
+(defun LaTeX-arg-author (optional &optional prompt)
+  "Prompt for author name.
+Insert the given value as a TeX macro argument.  If OPTIONAL is
+non-nil, insert it as an optional argument.  Use PROMPT as the
+prompt string.  `LaTeX-default-author' is the initial input."
+  (let ((author (if LaTeX-default-author
+		    (read-string
+		     (TeX-argument-prompt optional prompt "Author(s)")
+		     LaTeX-default-author)
+		  "")))
+    (TeX-argument-insert author optional nil)))
+
 (defun TeX-read-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST and return them.
 If OPTIONAL is non-nil, indicate in the prompt that we are
@@ -5557,7 +5576,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("acute" t) '("grave" t) '("ddot" t) '("tilde" t) '("bar" t)
    '("breve" t) '("check" t) '("hat" t) '("vec" t) '("dot" t)
    '("widetilde" t) '("widehat" t)
-   '("author" t)
+   '("author" LaTeX-arg-author)
    '("date" TeX-arg-date)
    '("thanks" t)
    '("title" t)
