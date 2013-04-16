@@ -1523,9 +1523,7 @@ sent by Evince-3.0.0 or newer."
       (forward-line (1- line))
       (unless (= col -1)
         (move-to-column col))
-      (let ((wmctrl (executable-find "wmctrl")))
-	(when wmctrl
-	  (start-process "wmctrl" nil wmctrl "-R" (frame-parameter nil 'name)))))))
+      (raise-frame))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
