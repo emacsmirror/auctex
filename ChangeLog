@@ -1,3 +1,16 @@
+2013-04-16  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/auctex.texi (Itemize-like): Document `TeX-arg-item-label-p'
+	option.
+	(Tabular-like): Document `LaTeX-default-width' option.
+	(Modes and Hooks): Add modes and hooks to indices.
+	(Adding Macros): Document `TeX-arg-index-tag', `TeX-arg-index',
+	`TeX-arg-document', `LaTeX-arg-usepackage', `TeX-arg-bibstyle',
+	`TeX-arg-bibliography', `TeX-read-key-val', and `TeX-arg-key-val'
+	functions.  Mention `TeX-arg-cite-note-p' option.
+	(Adding Environments): Use in example code actually present in
+	`listings.el' file.
+
 2013-04-16  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-source-correlate-sync-source): Use `raise-frame'

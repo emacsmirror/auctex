@@ -847,6 +847,11 @@ insert an appropriate @samp{\item} for the current environment. That is,
 `description' will have @samp{\item[]} inserted.
 @end deffn
 
+@defopt TeX-arg-item-label-p
+If non-nil, you will always be asked for optional label in items.
+Otherwise, you will be asked only in description environments.
+@end defopt
+
 @node Tabular-like
 @subsection Tabular-like Environments
 
@@ -856,6 +861,10 @@ Related variables:
 
 @defopt LaTeX-default-format
 Default format string for array and tabular environments.
+@end defopt
+
+@defopt LaTeX-default-width
+Default width for minipage and tabular* environments.
 @end defopt
 
 @defopt LaTeX-default-position
@@ -2987,6 +2996,18 @@ functions and hooks.
 @item Texinfo      @tab @code{Texinfo-mode}   @tab @code{Texinfo-mode-hook}
 @item Doc@TeX{}    @tab @code{docTeX-mode}    @tab @code{docTeX-mode-hook}
 @end multitable
+@findex plain-TeX-mode
+@vindex plain-TeX-mode-hook
+@findex LaTeX-mode
+@vindex LaTeX-mode-hook
+@findex AmS-TeX-mode
+@vindex AmS-TeX-mode-hook
+@findex ConTeXt-mode
+@vindex ConTeXt-mode-hook
+@findex Texinfo-mode
+@vindex Texinfo-mode-hook
+@findex docTeX-mode
+@vindex docTeX-mode-hook
 
 If you need to make a customization via a hook which is only relevant
 for one of the modes listed above, put it into the respective mode hook,
@@ -3955,6 +3976,12 @@ Evaluate arguments and insert the result in the buffer.
 @item TeX-arg-label
 Prompt for a label completing with known labels.
 
+@item TeX-arg-index-tag
+Prompt for an index tag.  This is the name of an index, not the entry.
+
+@item TeX-arg-index
+Prompt for an index entry completing with known entries.
+
 @item TeX-arg-length
 Prompt for a @LaTeX{} length completing with known lengths.
 
@@ -3968,7 +3995,9 @@ Prompt for a date, defaulting to the current date.
 Prompt for a @LaTeX{} environment with completion.
 
 @item TeX-arg-cite
-Prompt for a Bib@TeX{} citation.
+@vindex TeX-arg-cite-note-p
+Prompt for a Bib@TeX{} citation.  If the variable
+@code{TeX-arg-cite-note-p} is non-nil, ask also for optional note in citations.
 
 @item TeX-arg-counter
 Prompt for a @LaTeX{} counter completing with known counters.
@@ -4013,6 +4042,34 @@ Prompt for a @LaTeX{} counter.
 @item TeX-arg-define-savebox
 Prompt for a @LaTeX{} savebox.
 
+@item TeX-arg-document
+@vindex LaTeX-default-style
+@vindex LaTeX-default-options
+@vindex TeX-arg-input-file-search
+@vindex LaTeX-style-list
+Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style}
+as default value and @code{LaTeX-default-options} as default list of
+options.  If the variable @code{TeX-arg-input-file-search} is t, you
+will be able to complete with all @LaTeX{} classes available on your
+system, otherwise classes listed in the variable @code{LaTeX-style-list}
+will be used for completion.  It is also provided completion for options
+of many common classes.
+
+@item LaTeX-arg-usepackage
+@vindex TeX-arg-input-file-search
+Prompt for @LaTeX{} packages.  If the variable
+@code{TeX-arg-input-file-search} is t, you will be able to complete with
+all @LaTeX{} packages available on your system.  It is also provided
+completion for options of many common packages.
+
+@item TeX-arg-bibstyle
+Prompt for a Bib@TeX{} style file completing with all style available on
+your system.
+
+@item TeX-arg-bibliography
+Prompt for BibTeX database files completing with all databases available
+on your system.
+
 @item TeX-arg-corner
 Prompt for a @LaTeX{} side or corner position with completion.
 
@@ -4037,6 +4094,13 @@ Insert width and height as a pair.  No arguments.
 
 @item TeX-arg-coordinate
 Insert x and y coordinates as a pair.  No arguments.
+
+@item TeX-read-key-val
+Prompt for a key=value list of options and return them.
+
+@item TeX-arg-key-val
+Prompt for a key=value list of options and insert it as a @TeX{} macro
+argument.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after
@@ -4179,8 +4243,8 @@ an optional argument of the @samp{lstlisting} environment:
 
 @lisp
 (LaTeX-add-environments
- `("lstlisting" LaTeX-env-args
-   [TeX-arg-key-val ,LaTeX-listings-key-val-options]))
+ '("lstlisting" LaTeX-env-args
+   [TeX-arg-key-val LaTeX-listings-key-val-options]))
 @end lisp
 @end ftable
 
