@@ -4,6 +4,9 @@
 	(LaTeX-arg-author): New function.
 	(LaTeX-common-initialization): Use `LaTeX-arg-author' for the
 	\author macro.
+	(LaTeX-default-author): Change default to 'user-full-name (quoted)
+	and add a new possible value.
+	(LaTeX-arg-author): Change accordingly.
 
 	* doc/auctex.texi (Itemize-like): Document `TeX-arg-item-label-p'
 	option.

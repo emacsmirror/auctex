@@ -2196,11 +2196,12 @@ string."
 		   TeX-left-right-braces)))
 	(indent-according-to-mode)))))
 
-(defcustom LaTeX-default-author user-full-name
+(defcustom LaTeX-default-author 'user-full-name
   "Initial input to `LaTeX-arg-author' prompt.
 If nil, do not prompt at all."
   :group 'LaTeX-macro
-  :type '(choice (const :tag "Do not prompt" nil)
+  :type '(choice (const :tag "User name in Emacs" user-full-name)
+		 (const :tag "Do not prompt" nil)
 		 string))
 
 (defun LaTeX-arg-author (optional &optional prompt)
@@ -2211,7 +2212,9 @@ prompt string.  `LaTeX-default-author' is the initial input."
   (let ((author (if LaTeX-default-author
 		    (read-string
 		     (TeX-argument-prompt optional prompt "Author(s)")
-		     LaTeX-default-author)
+		     (if (symbolp LaTeX-default-author)
+			 (symbol-value LaTeX-default-author)
+		       LaTeX-default-author))
 		  "")))
     (TeX-argument-insert author optional nil)))
 
