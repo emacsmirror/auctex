@@ -1,3 +1,8 @@
+2013-04-17  Mosè Giordano  <giordano.mose@libero.it>
+
+	* plain-tex.el (plain-TeX-common-initialization): Fix typo in
+	abbrev table name.
+
 2013-04-16  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-default-author): New customizable variable.
