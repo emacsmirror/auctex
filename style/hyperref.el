@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(defvar LaTeX-hyperref-package-options
+(defvar LaTeX-hyperref-package-options-list
   '(;; See http://www.tug.org/applications/hyperref/manual.html#x1-40003
     ;; General options
     ("draft" ("true" "false"))
@@ -67,7 +67,7 @@
     ("vtex")
     ("vtexpdfmark")
     ("xetex")
-    ;;  Extension options
+    ;; Extension options
     ("extension")
     ("hyperfigures" ("true" "false"))
     ("backref" ("section" "slide" "page" "none" "false"))
@@ -161,7 +161,7 @@
    (TeX-run-style-hooks "url" "nameref")
 
    (TeX-add-symbols
-    '("hypersetup" (TeX-arg-key-val LaTeX-hyperref-package-options))
+    '("hypersetup" (TeX-arg-key-val LaTeX-hyperref-package-options-list))
     '("href" [ (TeX-arg-key-val LaTeX-hyperref-href-options) ] "URL" "Text")
     '("nolinkurl" t)
     '("hyperbaseurl" t)
@@ -230,6 +230,6 @@
 
 (defun LaTeX-hyperref-package-options ()
   "Read the hyperref package options from the user."
-  (TeX-read-key-val t LaTeX-hyperref-package-options))
+  (TeX-read-key-val t LaTeX-hyperref-package-options-list))
 
 ;;; hyperref.el ends here

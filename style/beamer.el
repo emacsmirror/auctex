@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class
 
-;; Copyright (C) 2003, 2004, 2005,2008 Free Software Foundation
+;; Copyright (C) 2003, 2004, 2005, 2008, 2013 Free Software Foundation
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -55,6 +55,9 @@
  "beamer"
  (lambda ()
    (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-beamer-after-insert-env nil t)
+
+   (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
+			"hyperref" "inputenc" "translator" "xcolor")
 
    (unless LaTeX-beamer-section-labels-flag
      (make-local-variable 'LaTeX-section-hook)
@@ -172,7 +175,7 @@
      (font-lock-set-defaults))))
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
-  "Prompt for overlay specification." 
+  "Prompt for overlay specification."
   (let ((overlay (read-string "(Optional) Overlay: ")))
     (unless (zerop (length overlay))
       (insert "<" overlay ">"))
@@ -182,13 +185,13 @@
   "Prompt for the frametitle."
   (let ((title (read-string "Title: ")))
     (if (not (zerop (length title)))
-        (insert TeX-grop TeX-esc "frametitle" TeX-grop 
+        (insert TeX-grop TeX-esc "frametitle" TeX-grop
 		title TeX-grcl TeX-grcl)
       (insert TeX-grop TeX-grcl))))
 
 (defun LaTeX-item-beamer ()
-  "Insert a new item with an optional overlay argument. You 
-can turn off the prompt for the overlay argument by setting 
+  "Insert a new item with an optional overlay argument. You
+can turn off the prompt for the overlay argument by setting
 `LaTeX-beamer-item-overlay-flag' to nil. Calling the function
 with a prefix argument prompts for the overlay specification
 unconditionally."
@@ -201,7 +204,7 @@ unconditionally."
       (TeX-arg-beamer-overlay-spec 0))
   (insert " ")
   (indent-according-to-mode))
-  
+
 (defun TeX-arg-beamer-note (optional &optional prompt)
   "Prompt for overlay specification and optional argument."
   (let ((overlay (read-string "(Optional) Overlay: "))
@@ -332,5 +335,19 @@ also be a string.  Then the length of the string is used."
 		      LaTeX-beamer-font-themes))))
     nil nil nil)
    t))
+
+(defun LaTeX-beamer-class-options ()
+  "Read the beamer class options from the user."
+  (TeX-read-key-val t '(("usepdftitle" ("false")) ("envcountsect")
+			("notheorems") ("noamsthm") ("compress") ("t") ("c")
+			("leqno") ("fleqn") ("handout") ("trans") ("pdftex")
+			("nativepdf") ("pdfmark") ("dvips") ("dviwindo")
+			("dvipsone") ("vtex") ("ps2pdf") ("ignorenonframetext")
+			("noamssymb") ("bigger") ("smaller") ("8pt") ("9pt")
+			("10pt") ("11pt") ("12pt") ("14pt") ("17pt") ("20pt")
+			("draft") ("CJK") ("cjk") ("pgf")
+			("hyperref" LaTeX-hyperref-package-options-list)
+			("color") ("xcolor") ("ucs") ("utf8x") ("utf8")
+			("aspectratio" ("1610" "169" "149" "54" "43" "32")))))
 
 ;;; beamer.el ends here

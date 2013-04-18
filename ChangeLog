@@ -1,3 +1,16 @@
+2013-04-18  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/beamer.el: Update copyright years and remove trailing
+	whitespaces.
+	("beamer"): Run style hooks for loaded packages.
+	(LaTeX-beamer-class-options): New function.
+
+	* style/hyperref.el (LaTeX-hyperref-package-options-list): Rename
+	from `LaTeX-hyperref-package-options' to avoid clash with the
+	function with the same name.
+	("hyperref"): Use it.
+	(LaTeX-hyperref-package-options): Ditto.
+
 2013-04-17  Mosè Giordano  <giordano.mose@libero.it>
 
 	* plain-tex.el (plain-TeX-common-initialization): Fix typo in
