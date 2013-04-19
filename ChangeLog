@@ -1,3 +1,19 @@
+2013-04-19  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/article.el ("article"): Add counters and pagestyles.
+
+	* style/beamer.el ("beamer"): Ditto.
+
+	* style/book.el ("book"): Ditto.
+
+	* style/letter.el (LaTeX-letter-class-options): New variable.
+	("letter"): Add pagestyles.
+
+	* style/report.el ("report"): Add counters and pagestyles.
+
+	* style/slides.el (LaTeX-slides-class-options): New variable.
+	("slides"): Add counters and pagestyles.
+
 2013-04-18  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/beamer.el: Update copyright years and remove trailing

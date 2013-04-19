@@ -11,6 +11,9 @@
 (TeX-add-style-hook
  "article"
  (lambda ()
-   (LaTeX-largest-level-set "section")))
+   (LaTeX-largest-level-set "section")
+   (LaTeX-add-counters "part" "section" "subsection" "subsubsection" "paragraph"
+		       "subparagraph" "figure" "table")
+   (LaTeX-add-pagestyles "headings" "myheadings")))
 
 ;;; article.el ends here

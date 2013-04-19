@@ -12,6 +12,9 @@
 (TeX-add-style-hook
  "book"
  (lambda () 
-   (LaTeX-largest-level-set "chapter")))
+   (LaTeX-largest-level-set "chapter")
+   (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
+		       "paragraph" "subparagraph" "figure" "table")
+   (LaTeX-add-pagestyles "headings" "myheadings")))
 
 ;;; book.el ends here

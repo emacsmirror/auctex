@@ -157,6 +157,10 @@
 			  (format "[%s]" width))))))
     "semiverbatim")
 
+   (LaTeX-add-counters "lecture" "part" "section" "subsection" "subsubsection"
+		       "subsectionslide" "framenumber" "figure" "table"
+		       "beamerpauses")
+   (LaTeX-add-pagestyles "navigation")
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
 		'("semiverbatim" current-indentation))

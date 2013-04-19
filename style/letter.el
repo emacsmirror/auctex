@@ -1,6 +1,6 @@
 ;;; letter.el - Special code for letter style.
 
-;; Copyright (C) 1993, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 1993, 2012, 2013  Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,6 +25,12 @@
 
 ;;; Code:
 
+(defvar LaTeX-letter-class-options
+  '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
+    "landscape" "10pt" "11pt" "12pt" "oneside" "twoside" "draft" "final"
+    "leqno" "fleqn")
+  "Package options for the letter class.")
+
 ;; You may want to define this in tex-site.el to contain your
 ;; organizations address.  
 (defvar LaTeX-letter-sender-address ""
@@ -35,6 +41,7 @@
   (lambda ()
     (LaTeX-add-environments
      '("letter" LaTeX-env-recipient))
+    (LaTeX-add-pagestyles "headings" "firstpage")
     (TeX-add-symbols
      '("name" "Sender: ") 
      '("address" "Sender address: ")
