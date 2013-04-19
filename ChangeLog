@@ -1,5 +1,12 @@
 2013-04-19  Mosè Giordano  <giordano.mose@libero.it>
 
+	* style/amsthm.el (LaTeX-amsthm-package-options): New variable.
+	("amsthm"): Remove `newtheorem' macro, already defined in
+	`latex.el'.  Use `TeX-arg-define-environment' in `newtheorem*'
+	macro.  Add `qedhere', `swapnumbers', and `newtheoremstyle'
+	macros.  Add `newtheorem*' regexp to match new environments.  Add
+	fontification.
+
 	* style/article.el ("article"): Add counters and pagestyles.
 
 	* style/beamer.el ("beamer"): Ditto.
