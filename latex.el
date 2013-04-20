@@ -2182,7 +2182,6 @@ string."
 		     TeX-left-right-braces)))
     (insert left-brace)
     (LaTeX-newline)
-    (indent-according-to-mode)
     (save-excursion
       (let ((right-brace (cdr (assoc left-brace
 				     TeX-braces-association))))
@@ -2194,7 +2193,8 @@ string."
 	  (insert (completing-read
 		   (TeX-argument-prompt optional prompt "Which brace")
 		   TeX-left-right-braces)))
-	(indent-according-to-mode)))))
+	(indent-according-to-mode)))
+    (indent-according-to-mode)))
 
 (defcustom LaTeX-default-author 'user-full-name
   "Initial input to `LaTeX-arg-author' prompt.
