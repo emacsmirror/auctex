@@ -71,6 +71,8 @@
 		   ("enumerate" . LaTeX-item-beamer))
 		 LaTeX-item-list))
 
+   (setq LaTeX-default-environment "frame")
+
    (LaTeX-paragraph-commands-add-locally "frametitle")
 
    (TeX-add-symbols
@@ -157,6 +159,7 @@
 			  (format "[%s]" width))))))
     "semiverbatim")
 
+   (LaTeX-largest-level-set "section")
    (LaTeX-add-counters "lecture" "part" "section" "subsection" "subsubsection"
 		       "subsectionslide" "framenumber" "figure" "table"
 		       "beamerpauses")
@@ -171,7 +174,10 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("frametitle" "<[{")) 'slide-title)
+     (font-latex-add-keywords '(("title" "[{")
+				("author" "[{")
+				("date" "[{")
+				("frametitle" "<[{")) 'slide-title)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.

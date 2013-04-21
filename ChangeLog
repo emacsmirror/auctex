@@ -1,5 +1,14 @@
 2013-04-21  Mosè Giordano  <giordano.mose@libero.it>
 
+	* style/beamer.el ("beamer"): Set `frame' as default environment.
+	Set `section' as largest sectioning level.  Add fontification for
+	`title', `author', and `date'.
+
+	* style/letter.el ("letter"): Set `letter' as default environment.
+	Add some macros and fontification.
+
+	* style/slides.el ("slides"): Set `slide' as default environment.
+
 	* latex.el (TeX-arg-insert-braces): Move
 	`indent-according-to-mode' after `save-excursion' because
 	`LaTeX-newline' (used in `save-excursion') deletes trailing
