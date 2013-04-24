@@ -104,6 +104,9 @@ set to `true'."
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-acro-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-acro-cleanup)
 
+(defvar LaTeX-acro-acronym-history nil
+  "History of acronyms in acro.")
+
 (defun LaTeX-arg-acro-acronym (optional &optional prompt definition)
   "Prompt for an acronym completing with known acronyms.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -111,7 +114,8 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If DEFINITION is non-nil, add the chosen acronym to the
 list of defined acronyms."
   (let ((acronym (completing-read (TeX-argument-prompt optional prompt "Acronym")
-				  (LaTeX-acro-acronym-list))))
+				  (LaTeX-acro-acronym-list) nil nil nil
+				  'LaTeX-acro-acronym-history)))
     (if (and definition (not (string-equal "" acronym)))
 	(LaTeX-add-acro-acronyms acronym))
     (TeX-argument-insert acronym optional optional)))

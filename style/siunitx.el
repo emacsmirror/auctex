@@ -57,6 +57,9 @@
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-siunitx-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-siunitx-cleanup)
 
+(defvar LaTeX-siunitx-unit-history nil
+  "History of units in siunitx.")
+
 (defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input definition)
   "Prompt for siunitx units, prefixes, powers, and qualifiers.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -77,7 +80,8 @@ non-nil, add the chosen unit to the list of defined units."
 	 (unit (mapconcat 'identity
 			  (TeX-completing-read-multiple
 			   (TeX-argument-prompt optional prompt "Unit")
-			   (LaTeX-siunitx-unit-list) nil nil initial-input)
+			   (LaTeX-siunitx-unit-list) nil nil initial-input
+			   'LaTeX-siunitx-unit-history)
 			  crm-separator)))
     (if (and definition (not (string-equal "" unit)))
 	(LaTeX-add-siunitx-units unit))

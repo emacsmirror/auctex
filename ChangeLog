@@ -1,3 +1,18 @@
+2013-04-24  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/acro.el (LaTeX-acro-acronym-history): New variable.
+	(LaTeX-arg-acro-acronym): Use it.
+
+	* style/acronym.el (LaTeX-acronym-acronym-history): New variable.
+	(LaTeX-arg-acronym-acronym): Use it.
+
+	* style/beamer.el (LaTeX-beamer-frametitle-history): New variable.
+	("beamer"): Use it.
+	(TeX-arg-beamer-frametitle): Ditto.
+
+	* style/siunitx.el (LaTeX-siunitx-unit-history): New variable.
+	(LaTeX-arg-siunitx-unit): Use it.
+
 2013-04-21  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/beamer.el ("beamer"): Set `frame' as default environment.

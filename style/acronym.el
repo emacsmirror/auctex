@@ -53,6 +53,9 @@
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-acronym-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-acronym-cleanup)
 
+(defvar LaTeX-acronym-acronym-history nil
+  "History of acronyms in acronym.")
+
 ;; The former `acronym' stands for package name, the latter stands for the
 ;; argument of the macro calling this function.
 (defun LaTeX-arg-acronym-acronym (optional &optional prompt definition)
@@ -62,7 +65,8 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If DEFINITION is non-nil, add the chosen acronym to the
 list of defined acronyms."
   (let ((acronym (completing-read (TeX-argument-prompt optional prompt "Acronym")
-				  (LaTeX-acronym-list))))
+				  (LaTeX-acronym-list) nil nil nil
+				  'LaTeX-acronym-acronym-history)))
     (if (and definition (not (string-equal "" acronym)))
 	(LaTeX-add-acronyms acronym))
     (TeX-argument-insert acronym optional optional)))

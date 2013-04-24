@@ -51,6 +51,9 @@
 	    (goto-char end-of-begin)
 	    (insert "[fragile]")))))))
 
+(defvar LaTeX-beamer-frametitle-history nil
+  "History of frame titles in beamer.")
+
 (TeX-add-style-hook
  "beamer"
  (lambda ()
@@ -83,7 +86,8 @@
     '("beamerreturnbutton" 1)
     '("beamerskipbutton" 1)
     '("frame" TeX-arg-beamer-frametitle)
-    '("frametitle" 1)
+    '("frametitle"
+      (TeX-arg-eval read-string "Title: " nil 'LaTeX-beamer-frametitle-history))
     '("hyperlink" TeX-arg-beamer-overlay-spec 2)
     '("hyperlinkslideprev" TeX-arg-beamer-overlay-spec 1)
     '("hyperlinkslidenext" TeX-arg-beamer-overlay-spec 1)
@@ -132,7 +136,8 @@
     "columnsonlytextwidth"
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
-		 (let ((title (read-string "(Optional) Title: ")))
+		 (let ((title (read-string "(Optional) Title: " nil
+					   'LaTeX-beamer-frametitle-history)))
 		   (LaTeX-insert-environment env)
 		   (unless (zerop (length title))
 		     (save-excursion
@@ -193,7 +198,7 @@
 
 (defun TeX-arg-beamer-frametitle (optional &optional prompt)
   "Prompt for the frametitle."
-  (let ((title (read-string "Title: ")))
+  (let ((title (read-string "Title: " nil 'LaTeX-beamer-frametitle-history)))
     (if (not (zerop (length title)))
         (insert TeX-grop TeX-esc "frametitle" TeX-grop
 		title TeX-grcl TeX-grcl)
