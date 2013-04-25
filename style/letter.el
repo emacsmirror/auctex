@@ -42,7 +42,7 @@
    (LaTeX-add-environments
     '("letter" LaTeX-env-recipient))
    (LaTeX-add-pagestyles "headings" "firstpage")
-   (setq LaTeX-default-environment "letter")
+   (setq LaTeX-default-document-environment "letter")
    (TeX-add-symbols
     '("name" "Sender: ")
     '("address" "Sender address: ")

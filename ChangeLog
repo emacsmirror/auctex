@@ -1,3 +1,19 @@
+2013-04-25  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-default-document-environment): New buffer-local
+	variable.
+	(LaTeX-default-environment): Mention
+	`LaTeX-default-document-environment' in doc-string.
+	(LaTeX-environment): Use `LaTeX-default-document-environment'.
+
+	* style/beamer.el ("beamer"): Use
+	`LaTeX-default-document-environment' instead of
+	`LaTeX-default-environment'.
+
+	* style/letter.el ("letter"): Ditto.
+
+	* style/slides.el ("slides"): Ditto.
+
 2013-04-24  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/acro.el (LaTeX-acro-acronym-history): New variable.

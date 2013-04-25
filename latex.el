@@ -490,10 +490,18 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
   :group 'LaTeX-macro)
 
 (defcustom LaTeX-default-environment "itemize"
-  "*The default environment when creating new ones with `LaTeX-environment'."
+  "*The default environment when creating new ones with `LaTeX-environment'.
+It is overridden by `LaTeX-default-document-environment' when it
+is non-nil and the current environment is \"document\"."
   :group 'LaTeX-environment
   :type 'string)
- (make-variable-buffer-local 'LaTeX-default-environment)
+(make-variable-buffer-local 'LaTeX-default-environment)
+
+(defvar LaTeX-default-document-environment nil
+  "The default environment when creating new ones with
+`LaTeX-environment' and the current one is \"document\".  This
+variable overrides `LaTeX-default-environment'.")
+(make-variable-buffer-local 'LaTeX-default-document-environment)
 
 (defvar LaTeX-environment-history nil)
 
@@ -520,20 +528,19 @@ It may be customized with the following variables:
 `LaTeX-default-position'          Position for array and tabular."
 
   (interactive "*P")
-  (let ((environment (completing-read (concat "Environment type: (default "
-					       (if (TeX-near-bobp)
-						   "document"
-						 LaTeX-default-environment)
-					       ") ")
-				      (LaTeX-environment-list)
-				      nil nil nil
-				      'LaTeX-environment-history)))
+  (let* ((default (cond
+		   ((TeX-near-bobp) "document")
+		   ((and LaTeX-default-document-environment
+			 (string-equal (LaTeX-current-environment) "document"))
+		    LaTeX-default-document-environment)
+		   (t LaTeX-default-environment)))
+    (environment (completing-read (concat "Environment type: (default "
+					  default ") ")
+				  (LaTeX-environment-list) nil nil nil
+				  'LaTeX-environment-history)))
     ;; Get default
-    (cond ((and (zerop (length environment))
-		(TeX-near-bobp))
-	   (setq environment "document"))
-	  ((zerop (length environment))
-	   (setq environment LaTeX-default-environment))
+    (cond ((zerop (length environment))
+	   (setq environment default))
 	  (t
 	   (setq LaTeX-default-environment environment)))
 

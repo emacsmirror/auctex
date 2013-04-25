@@ -74,7 +74,7 @@
 		   ("enumerate" . LaTeX-item-beamer))
 		 LaTeX-item-list))
 
-   (setq LaTeX-default-environment "frame")
+   (setq LaTeX-default-document-environment "frame")
 
    (LaTeX-paragraph-commands-add-locally "frametitle")
 
