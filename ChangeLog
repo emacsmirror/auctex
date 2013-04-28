@@ -1,3 +1,10 @@
+2013-04-28  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-bar.el: Update copyright range.
+	(TeX-bar-LaTeX-button-alist): Change BibTeX button to Biber when
+	`LaTeX-using-biber' is non-nil.
+	(LaTeX-install-toolbar): Refresh toolbar after styles update.
+
 2013-04-25  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-default-document-environment): New buffer-local

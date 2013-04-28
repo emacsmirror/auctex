@@ -1,6 +1,6 @@
 ;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs and XEmacs
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2008, 2012, 2013 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -338,9 +338,11 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 	  :help (lambda (&rest ignored)
 		  (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
-	    :command (TeX-command "BibTeX" 'TeX-master-file -1)
+	    :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
+				  'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "BibTeX")))
+		    (TeX-bar-help-from-command-list
+		     (if LaTeX-using-Biber "Biber" "BibTeX"))))
     (clean  :image "delete"
 	    :command (TeX-command "Clean" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
@@ -371,6 +373,9 @@ format of the argument MEANING-ALIST in the mentioned function."
   (add-to-list 'toolbarx-image-path
 	       (expand-file-name "images" TeX-data-directory))
   (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
+  ;; Refresh toolbar after styles update because `LaTeX-using-Biber' value could
+  ;; have been changed.
+  (add-hook 'TeX-update-style-hook 'toolbarx-refresh nil t)
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
 			    (let ((append-list))
 			      (dolist (elt TeX-bar-LaTeX-all-button-alists)
