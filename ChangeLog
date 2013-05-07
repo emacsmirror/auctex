@@ -1,3 +1,8 @@
+2013-05-08  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/auctex.texi (Environments): Document
+	`LaTeX-default-document-environment'.
+
 2013-05-07  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-electric-dollar): New variable.

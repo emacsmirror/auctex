@@ -728,8 +728,17 @@ inserted or, as the first choice the value of the variable
 
 @defopt LaTeX-default-environment
 Default environment to insert when invoking @samp{LaTeX-environment}
-first time.
+first time.  When the current environment is @samp{document}, it is
+overriden by @code{LaTeX-default-document-environment}.
 @end defopt
+
+@defvar LaTeX-default-document-environment
+Default environment when invoking @samp{LaTeX-environment} and the
+current environment is @samp{document}.  It is intended to be used in
+@LaTeX{} class style files.  For example, in @file{beamer.el} it is set
+to @code{slide}, in @file{letter.el} to @code{letter}, and in
+@file{slides.el} to @code{slide}.
+@end defvar
 
 If the document is empty, or the cursor is placed at the top of the
 document, @AUCTeX{} will default to insert a `document' environment.
