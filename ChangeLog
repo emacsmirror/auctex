@@ -1,3 +1,10 @@
+2013-05-07  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-electric-dollar): New variable.
+	(TeX-insert-dollar): Use it.
+
+	* doc/auctex.texi (Quotes): Document `TeX-electric-dollar'.
+
 2013-04-28  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-bar.el: Update copyright range.

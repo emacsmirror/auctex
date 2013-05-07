@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2012
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2013
 Free Software Foundation, Inc.
 
 @quotation
@@ -433,6 +433,13 @@ the variable is non-nil and you enter a dollar sign outside math mode
 @AUCTeX{} will automatically insert the opening and closing dollar signs
 and put the point between them.  If the variable
 @code{blink-matching-paren} is non-nil the opening dollar will blink.
+@end defopt
+
+@defopt TeX-electric-dollar
+Control the insertion of dollar signs when there is an active region
+outside math mode.  If the variable is non-nil, typing @samp{$} will put
+a pair of single dollar around the active region and leave point after
+the closing dollar.
 @end defopt
 
 @subheading Braces

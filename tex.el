@@ -5169,6 +5169,13 @@ typing a single `$'."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-electric-dollar nil
+  "When outside math mode, if non-nil and there is an active
+region, typing `$' will put a pair of single dollar around it and
+leave point after the closing dollar."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
@@ -5217,16 +5224,23 @@ sign.  With optional ARG, insert that many dollar signs."
       (insert "$")))
    (t
     ;; Just somewhere in the text.
-    (if TeX-math-close-single-dollar
+    (if (and TeX-electric-dollar (TeX-active-mark))
 	(progn
-	  (insert "$$")
-	  (if blink-matching-paren
-	      (progn
-		(backward-char 2)
-		(sit-for blink-matching-delay)
-		(forward-char))
-	    (backward-char)))
-      (insert "$"))))
+	  (if (> (point) (mark))
+	      (exchange-point-and-mark))
+	  (insert "$")
+	  (exchange-point-and-mark)
+	  (insert "$"))
+      (if TeX-math-close-single-dollar
+	  (progn
+	    (insert "$$")
+	    (if blink-matching-paren
+		(progn
+		  (backward-char 2)
+		  (sit-for blink-matching-delay)
+		  (forward-char))
+	      (backward-char)))
+	(insert "$")))))
   (TeX-math-input-method-off))
 
 (defvar TeX-math-input-method-off-regexp
@@ -5701,7 +5715,6 @@ NAME may be a package, a command, or a document."
 
 ;; delsel.el, `delete-selection-mode'
 (put 'TeX-newline 'delete-selection t)
-(put 'TeX-insert-dollar 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
 
