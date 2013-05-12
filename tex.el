@@ -5195,8 +5195,9 @@ sign.  With optional ARG, insert that many dollar signs."
    (arg
     ;; Numerical arg inserts that many
     (insert (make-string (prefix-numeric-value arg) ?\$)))
-   ((TeX-escaped-p)
-    ;; This is escaped with `\', so just insert one.
+   ((or (TeX-escaped-p) (TeX-verbatim-p))
+    ;; Point is escaped with `\' or is in a verbatim-like construct, so just
+    ;; insert one $.
     (insert "$"))
    ((texmathp)
     ;; We are inside math mode

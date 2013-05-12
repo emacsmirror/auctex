@@ -1,5 +1,8 @@
 2013-05-12  Mosè Giordano  <giordano.mose@libero.it>
 
+	* tex.el (TeX-insert-dollar): Insert just a single dollar when the
+	point is in a verbatim-like construct.
+
 	* font-latex.el (font-latex-jit-lock-force-redisplay): Don't rely
 	on existing `jit-lock-force-redisplay' because recent bzr Emacs
 	broke compatibility changing the number of arguments.  Reported by
