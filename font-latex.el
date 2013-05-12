@@ -1220,8 +1220,6 @@ triggers Font Lock to recognize the change."
 
 (defun font-latex-jit-lock-force-redisplay (buf start end)
   "Compatibility for Emacsen not offering `jit-lock-force-redisplay'."
-  (if (fboundp 'jit-lock-force-redisplay)
-      (jit-lock-force-redisplay buf start end)
     ;; The following block is an expansion of `jit-lock-force-redisplay'
     ;; and involved macros taken from CVS Emacs on 2007-04-28.
     (with-current-buffer buf
@@ -1236,7 +1234,7 @@ triggers Font Lock to recognize the change."
 		  buffer-file-truename)
 	      (put-text-property start end 'fontified t))
 	  (unless modified
-	    (restore-buffer-modified-p nil)))))))
+	    (restore-buffer-modified-p nil))))))
 
 (defun font-latex-fontify-region (beg end &optional loudly)
   "Fontify region from BEG to END.

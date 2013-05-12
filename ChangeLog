@@ -1,3 +1,10 @@
+2013-05-12  Mosè Giordano  <giordano.mose@libero.it>
+
+	* font-latex.el (font-latex-jit-lock-force-redisplay): Don't rely
+	on existing `jit-lock-force-redisplay' because recent bzr Emacs
+	broke compatibility changing the number of arguments.  Reported by
+	Robert Goldman.
+
 2013-05-08  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/auctex.texi (Environments): Document
