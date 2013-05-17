@@ -1,3 +1,19 @@
+2013-05-18  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el: Update copyright years, there have been non-trivial
+	changes in 1998, 2001, 2002.
+	(TeX-arg-index-tag): Use `TeX-argument-prompt'.
+	(TeX-arg-cite): Ditto.
+
+	* tex.el: Update copyright years, there have been non-trivial
+	changes in 1995, 1998.
+	(TeX-parse-arguments): Move skipping of optional
+	arguments inside loop over all arguments, because optional
+	arguments may not be the first ones.  Remove unused let-bound
+	variable `skip-opt'.
+	(TeX-arg-literal): Remove FIXME comment, `optional' is the first
+	argument passed to all functions by `TeX-parse-argument'.
+
 2013-05-13  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/fancyvrb.el: New style.

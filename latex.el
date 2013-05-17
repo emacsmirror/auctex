@@ -1,7 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-1997, 1999, 2000, 2003-2013
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2013 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -1586,12 +1585,8 @@ This is the name of an index, not the entry.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  ARGS is unused."
-  (let (tag)
-    (setq prompt (concat (if optional "(Optional) " "")
-			 (if prompt prompt "Index tag")
-			 ": (default none) "))
-    (setq tag (read-string prompt))
-    (TeX-argument-insert tag optional)))
+  (TeX-argument-insert
+   (read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
 
 (defun TeX-arg-index (optional &optional prompt &rest args)
   "Prompt for an index entry completing with known entries.
@@ -1642,10 +1637,8 @@ the list of defined environments."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  DEFINITION is unused."
-  (setq prompt (concat (if optional "(Optional) " "")
-		       (if prompt prompt "Add key")
-		       ": (default none) "))
-  (let ((items (multi-prompt "," t prompt (LaTeX-bibitem-list))))
+  (let ((items (multi-prompt "," t (TeX-argument-prompt optional prompt "Key")
+			     (LaTeX-bibitem-list))))
     (apply 'LaTeX-add-bibitems items)
     (TeX-argument-insert (mapconcat 'identity items ",") optional optional)))
 

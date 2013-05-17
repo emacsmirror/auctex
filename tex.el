@@ -1,7 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993, 1994, 1996, 1997, 1999-2013
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2013 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2749,20 +2748,16 @@ INITIAL-INPUT is a string to insert before reading input."
   "Parse TeX macro arguments ARGS.
 
 See `TeX-parse-macro' for details."
-  (let ((last-optional-rejected nil)
-	skip-opt)
-    ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro' for
-    ;; more comments.  See `TeX-insert-macro-default-style'.
-    (when (or (and (eq TeX-insert-macro-default-style 'show-optional-args)
-		   (equal current-prefix-arg '(4)))
-	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
-		   (null (equal current-prefix-arg '(4)))))
-      (while (vectorp (car args))
-	(setq args (cdr args))))
-
+  (let ((last-optional-rejected nil))
     (while args
       (if (vectorp (car args))
-	  (unless last-optional-rejected
+	  ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro'
+	  ;; for more comments.  See `TeX-insert-macro-default-style'.
+	  (unless (or (and (eq TeX-insert-macro-default-style 'show-optional-args)
+			   (equal current-prefix-arg '(4)))
+		      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
+			   (null (equal current-prefix-arg '(4))))
+		      last-optional-rejected)
 	    (let ((TeX-arg-opening-brace LaTeX-optop)
 		  (TeX-arg-closing-brace LaTeX-optcl))
 	      (TeX-parse-argument t (if (equal (length (car args)) 1)
@@ -2894,8 +2889,8 @@ Return the number as car and unit as cdr."
 
 (defun TeX-arg-literal (optional &rest args)
   "Insert its arguments ARGS into the buffer.
-Used for specifying extra syntax for a macro."
-  ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
+Used for specifying extra syntax for a macro.  The compatibility
+argument OPTION is ignored."
   (apply 'insert args))
 
 
