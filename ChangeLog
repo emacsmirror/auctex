@@ -1,3 +1,11 @@
+2013-05-19  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/.gitignore: Rename from .cvsignore.
+
+	* preview/.gitignore: Ditto.
+
+	* preview/latex/.gitignore: Ditto.
+
 2013-05-18  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el: Update copyright years, there have been non-trivial
