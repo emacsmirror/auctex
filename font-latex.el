@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2009, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2013  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -313,10 +313,14 @@ variable `font-latex-fontify-sectioning'." num)
       ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{") ("citereset" "*")
       ("RN" "{") ("Rn" "{") ("DefineBibliographyStrings" "{{") ("DefineBibliographyExtras" "{{")
       ("UndefineBibliographyExtras" "{{") ("DefineHyphenationExceptions" "{{")
-      ("NewBibliographyString" "{") ("autocites" "(([[{") ("Autocites" "(([[{")
-      ("cites" "(([[{") ("Cites" "(([[{") ("parencites" "(([[{") ("Parencites" "(([[{")
-      ("footcites" "(([[{") ("footcitetexts" "(([[{") ("smartcites" "(([[{")
-      ("Smartcites" "(([[{") ("textcites" "(([[{") ("Textcites" "(([[{") ("supercites" "(([[{"))
+      ("NewBibliographyString" "{")
+      ;; Multicite macros take any number of "key" arguments, let's limit
+      ;; fontification to three arguments.
+      ("autocites" "(([[{[[{[[{") ("Autocites" "(([[{[[{[[{") ("cites" "(([[{[[{[[{")
+      ("Cites" "(([[{[[{[[{") ("parencites" "(([[{[[{[[{") ("Parencites" "(([[{[[{[[{")
+      ("footcites" "(([[{[[{[[{") ("footcitetexts" "(([[{[[{[[{") ("smartcites" "(([[{[[{[[{")
+      ("Smartcites" "(([[{[[{[[{") ("textcites" "(([[{[[{[[{") ("Textcites" "(([[{[[{[[{")
+      ("supercites" "(([[{[[{[[{"))
      'font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")

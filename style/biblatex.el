@@ -30,68 +30,24 @@
 
 ;;; Code:
 
-(defvar LaTeX-biblatex-addbibresource-options
-  '(("label")
-    ("location" ("local" "remote"))
-    ("type" ("file"))
-    ("datatype" ("bibtex" "ris" "zoterordfxml" "endnotexml")))
-  "Key=value options for addbibresource macro of the biblatex package.")
+(defvar LaTeX-biblatex-entrytype
+  '(;; Regular Types
+    "article" "book" "mvbook" "inbook" "bookinbook" "suppbook" "booklet"
+    "collection" "mvcollection" "incollection" "suppcollection" "manual" "misc"
+    "online" "patent" "periodical" "suppperiodical" "proceedings"
+    "mvproceedings" "inproceedings" "reference" "mvreference" "inreference"
+    "report" "set" "thesis" "unpublished" "xdata" "customa" "customb" "customc"
+    "customd" "custome" "customf"
+    ;; Type Aliases
+    "conference" "electronic" "masterthesis" "phdthesis" "techreport" "www"
+    ;; Unsupported Types
+    "artwork" "audio" "bibnote" "commentary" "image" "jurisdiction"
+    "legislation" "legal" "letter" "movie" "music" "performance" "review"
+    "software" "standard" "video")
+  "List of biblatex entry types.")
 
-(defun LaTeX-arg-addbibresource (optional &optional prompt)
-  "Prompt for a BibLaTeX database file.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string."
-  (let (files inputs database)
-    (if LaTeX-using-Biber
-	(setq files 'TeX-Biber-global-files
-	      inputs 'biberinputs)
-      (setq files 'BibTeX-global-files
-	    inputs 'bibinputs))
-    (setq files 'TeX-Biber-global-files
-	  inputs 'biberinputs)
-    (message "Searching for BibLaTeX files...")
-    (or (symbol-value files)
-	(set files (mapcar 'list (TeX-search-files-by-type
-				  'biberinputs 'global t nil))))
-    (setq database (completing-read
-		    (TeX-argument-prompt optional prompt "BibLaTeX files")
-		    (append (mapcar 'list (TeX-search-files-by-type
-					   inputs 'local t nil))
-			    (symbol-value files))))
-    (LaTeX-add-bibliographies database)
-    (TeX-argument-insert database optional)))
-
-(TeX-add-style-hook
- "biblatex"
- (lambda ()
-   ;; Biblatex uses as default backend biber, run it unless biblatex `backend'
-   ;; option value is one of `bibtex', `bibtex8', `bibtexu'.
-   (unless (or (LaTeX-provided-package-options-member "biblatex" "backend=bibtex")
-	       (LaTeX-provided-package-options-member "biblatex" "backend=bibtex8")
-	       (LaTeX-provided-package-options-member "biblatex" "backend=bibtexu"))
-     (setq LaTeX-using-Biber t))
-
-   (TeX-run-style-hooks
-    "etoolbox"
-    "keyval"
-    "kvoptions"
-    "logreq"
-    "ifthen"
-    "url")
-   (TeX-add-symbols
-    '("addbibresource" [TeX-arg-key-val LaTeX-biblatex-addbibresource-options]
-      LaTeX-arg-addbibresource))))
-
-(defvar LaTeX-biblatex-package-options-list
-  '(;;; Load-time Options
-    ("backend" ("biber" "bibtex" "bibtexu" "bibtex8"))
-    ("style" BibLaTeX-global-style-files)
-    ("bibstyle" BibLaTeX-global-style-files)
-    ("citestyle" BibLaTeX-global-style-files)
-    ("natbib" ("true" "false"))
-    ("mcite" ("true" "false"))
-    ;;; Preamble Options
+(defvar LaTeX-biblatex-executebibliographyoptions-options
+  '(;;; Preamble options
     ;; General
     ("sorting" ("nty" "nyt" "nyvt" "anyt" "anyvt" "ynt" "ydnt" "none" "debug"))
     ("sortcase" ("true" "false"))
@@ -110,6 +66,7 @@ string."
     ("minitems")
     ("autocite" ("plain" "inline" "footnote" "superscript"))
     ("autopunct" ("true" "false"))
+    ;; For list of languages, see table 5 of Biblatex reference manual.
     ("language" ("auto" "catalan" "czech" "danish" "dutch" "american" "british"
 		 "canadian" "australian" "newzealand" "finnish" "french"
 		 "german" "austrian" "ngernam" "naustrian" "greek" "italian"
@@ -171,7 +128,343 @@ string."
     ("labelyear" ("true" "false"))
     ("singletitle" ("true" "false"))
     ("uniquename" ("true" "false" "init" "full" "allinit" "allfull" "mininit" "minfull"))
-    ("uniquelist" ("true" "false" "minyear"))
+    ("uniquelist" ("true" "false" "minyear")))
+  "Key=value options for ExecuteBibliographyOptions macro of the biblatex package.")
+
+;; See table 2 of Biblatex reference manual.
+(defvar LaTeX-biblatex-language-list
+  '("catalan" "czech" "danish" "dutch" "american" "british" "canadian"
+    "australian" "newzealand" "finnish" "french" "german" "austrian" "ngernam"
+    "naustrian" "greek" "italian" "norsk" "brazil" "portuguese" "russian"
+    "spanish" "swedish")
+  "List of languages supported by biblatex packages.")
+
+(defvar LaTeX-biblatex-addbibresource-options
+  '(("label")
+    ("location" ("local" "remote"))
+    ("type" ("file"))
+    ("datatype" ("bibtex" "ris" "zoterordfxml" "endnotexml")))
+  "Key=value options for addbibresource macro of the biblatex package.")
+
+(defun LaTeX-arg-addbibresource (optional &optional prompt)
+  "Prompt for a BibLaTeX database file.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (let (files inputs database)
+    (if LaTeX-using-Biber
+	(setq files 'TeX-Biber-global-files
+	      inputs 'biberinputs)
+      (setq files 'BibTeX-global-files
+	    inputs 'bibinputs))
+    (setq files 'TeX-Biber-global-files
+	  inputs 'biberinputs)
+    (message "Searching for BibLaTeX files...")
+    (or (symbol-value files)
+	(set files (mapcar 'list (TeX-search-files-by-type
+				  'biberinputs 'global t nil))))
+    (setq database (completing-read
+		    (TeX-argument-prompt optional prompt "BibLaTeX files")
+		    (append (mapcar 'list (TeX-search-files-by-type
+					   inputs 'local t nil))
+			    (symbol-value files))))
+    (LaTeX-add-bibliographies database)
+    (TeX-argument-insert database optional)))
+
+;; Support for multicite commands, see § 3.7.3 of Biblatex reference manual.
+(defun LaTeX-arg-biblatex-cites (optional &optional prompt)
+  "Prompt for citations with completion until input is empty.
+Prompt also for optional prenotes and postnotes.  If OPTIONAL is
+non-nil, insert the citation key as an optional argument,
+otherwise as a mandatory one.  Use PROMPT as the prompt string
+for citation keys."
+  ;; Prompt for global prenote and postnote.
+  (and TeX-arg-cite-note-p (not current-prefix-arg)
+       (let ((TeX-arg-opening-brace "(")
+	     (TeX-arg-closing-brace ")")
+	     (prenote (TeX-read-string
+		       (TeX-argument-prompt t nil "Global prenote"))))
+	 (TeX-argument-insert prenote t)
+	 ;; If the prenote is empty the postnote is optional, otherwise it's
+	 ;; mandatory.
+	 (TeX-argument-insert
+	  (TeX-read-string (TeX-argument-prompt t nil "Global postnote"))
+	  (equal prenote ""))))
+  (let (items noinsert)
+    (while (not (equal items '("")))
+      ;; Prompt for prenote and postnote of the current keys.
+      (and TeX-arg-cite-note-p (not current-prefix-arg)
+	   (let ((TeX-arg-opening-brace "[")
+		 (TeX-arg-closing-brace "]")
+		 (prenote (TeX-read-string
+			   (TeX-argument-prompt t nil "Prenote"))))
+	     (TeX-argument-insert prenote t)
+	     ;; If the prenote is empty the postnote is optional, otherwise it's
+	     ;; mandatory.
+	     (TeX-argument-insert
+	      (TeX-read-string (TeX-argument-prompt t nil "Postnote"))
+	      (equal prenote ""))))
+      (setq items (completing-read-multiple
+		   (TeX-argument-prompt optional prompt "Key")
+		   (LaTeX-bibitem-list)))
+      (apply 'LaTeX-add-bibitems items)
+      ;; If input is empty, insert an empty group only the first time, when
+      ;; `noinsert' flag is nil.
+      (unless (and (equal items '("")) noinsert)
+	(TeX-argument-insert (mapconcat 'identity items ",") optional))
+      (setq noinsert t))))
+
+(TeX-add-style-hook
+ "biblatex"
+ (lambda ()
+   ;; Biblatex uses as default backend biber, run it unless biblatex `backend'
+   ;; option value is one of `bibtex', `bibtex8', `bibtexu'.
+   (setq LaTeX-using-Biber
+	 (not (or (LaTeX-provided-package-options-member "biblatex" "backend=bibtex")
+		  (LaTeX-provided-package-options-member "biblatex" "backend=bibtex8")
+		  (LaTeX-provided-package-options-member "biblatex" "backend=bibtexu"))))
+
+   (TeX-run-style-hooks
+    "etoolbox"
+    "keyval"
+    "kvoptions"
+    "logreq"
+    "ifthen"
+    "url")
+   (TeX-add-symbols
+    ;;; Global Customization
+    ;; Setting Package Options
+    '("ExecuteBibliographyOptions"
+      [TeX-arg-eval  mapconcat 'identity
+		     (completing-read-multiple
+		      "Entry type: " LaTeX-biblatex-entrytype) ","]
+      (TeX-arg-key-val LaTeX-biblatex-executebibliographyoptions-options))
+    ;;; Bibliography Commands
+    ;; Resources
+    '("addbibresource" [TeX-arg-key-val LaTeX-biblatex-addbibresource-options]
+      LaTeX-arg-addbibresource)
+    '("addglobalbib" [TeX-arg-key-val LaTeX-biblatex-addbibresource-options]
+      LaTeX-arg-addbibresource)
+    '("addsectionbib" [TeX-arg-key-val LaTeX-biblatex-addbibresource-options]
+      LaTeX-arg-addbibresource)
+    ;; The Bibliography
+    '("printbibliography"
+      [TeX-arg-key-val '(("env") ("heading") ("title") ("prenote") ("postnote")
+			 ("section") ("segment") ("sorting") ("type") ("nottype")
+			 ("subtype") ("notsubtype") ("keyword") ("notkeyword")
+			 ("categoy") ("notcategory") ("filter") ("check")
+			 ("prefixnumbers") ("resetnumbers" ("true" "false"))
+			 ("omitnumbers" ("true" "false")))])
+    '("bibbysection"
+      [TeX-arg-key-val '(("env") ("heading") ("prenote") ("postnote"))])
+    '("bibbysegment"
+      [TeX-arg-key-val '(("env") ("heading") ("prenote") ("postnote"))])
+    '("bibbycategory"
+      [TeX-arg-key-val '(("env") ("prenote") ("postnote") ("section"))])
+    '("printbibheading"
+      [TeX-arg-key-val '(("heading") ("title"))])
+    ;; The List of Shorthands
+    '("printshorthands"
+      [TeX-arg-key-val '(("env") ("heading") ("title") ("prenote") ("postnote")
+			 ("section") ("segment") ("sorting") ("type") ("nottype")
+			 ("subtype") ("notsubtype") ("keyword") ("notkeyword")
+			 ("categoy") ("notcategory") ("filter") ("check"))])
+    ;; Bibliography Sections
+    '("newrefsection" ["Resources"])
+    "endrefsection"
+    ;; Bibliography Segments
+    "newrefsegment"
+    "endrefsegment"
+    ;; Bibliography Categories
+    '("DeclareBibliographyCategory" "Category")
+    '("addtocategory" "Category" TeX-arg-cite)
+    ;; Bibliography Headings and Environments
+    '("defbibenvironment" "Name" 3)
+    '("defbibheading" "Name" ["Title"] t)
+    ;; Bibliography Notes
+    '("defbibnote" "Name" "Text")
+    ;; Bibliography Filters and Checks
+    '("defbibfilter" "Name" t)
+    '("defbibcheck" "Name" t)
+    ;; Dynamic Entry Sets
+    '("defbibentryset" "Set"
+      (TeX-arg-eval mapconcat 'identity (completing-read-multiple
+					 "Keys: " (LaTeX-bibitem-list)) ","))
+    ;;; Citation Commands
+    '("cite" (TeX-arg-conditional TeX-arg-cite-note-p
+				  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Cite" (TeX-arg-conditional TeX-arg-cite-note-p
+				  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("parencite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Parencite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("footcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("footcitetext" (TeX-arg-conditional TeX-arg-cite-note-p
+					  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    ;; Style-specific Commands
+    '("textcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Textcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("smartcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Smartcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("cite*" (TeX-arg-conditional TeX-arg-cite-note-p
+				   (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("parencite*" (TeX-arg-conditional TeX-arg-cite-note-p
+					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("supercite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    ;; Qualified Citation Lists
+    '("cites" LaTeX-arg-biblatex-cites)
+    '("Cites" LaTeX-arg-biblatex-cites)
+    '("parencites" LaTeX-arg-biblatex-cites)
+    '("Parencites" LaTeX-arg-biblatex-cites)
+    '("footcites" LaTeX-arg-biblatex-cites)
+    '("footcitetexts" LaTeX-arg-biblatex-cites)
+    '("smartcites" LaTeX-arg-biblatex-cites)
+    '("Smartcites" LaTeX-arg-biblatex-cites)
+    '("textcites" LaTeX-arg-biblatex-cites)
+    '("Textcites" LaTeX-arg-biblatex-cites)
+    '("supercites" LaTeX-arg-biblatex-cites)
+    ;; Style-independent Commands
+    '("autocite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Autocite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("autocite*" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Autocite*" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("autocites" LaTeX-arg-biblatex-cites)
+    '("Autocites" LaTeX-arg-biblatex-cites)
+    ;; Text Commands
+    '("citeauthor" (TeX-arg-conditional TeX-arg-cite-note-p
+					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Citeauthor" (TeX-arg-conditional TeX-arg-cite-note-p
+					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citetitle" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citetitle*" (TeX-arg-conditional TeX-arg-cite-note-p
+					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citeyear" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citeyear*" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citedate" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citedate*" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citeurl" (TeX-arg-conditional TeX-arg-cite-note-p
+				     (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("parentext" "Text")
+    '("brackettext" "Text")
+    ;; Special Commands
+    '("fullcite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("footfullcite" (TeX-arg-conditional TeX-arg-cite-note-p
+					  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("volcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Volcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Pvolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Pvolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("fvolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("ftolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("svolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Svolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("tvolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Tvolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("avolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("Avolcite"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
+    '("notecite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Notecite" (TeX-arg-conditional TeX-arg-cite-note-p
+				      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("pnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Pnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("fnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
+				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    ;; Low-level Commands
+    '("citename"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite (TeX-arg-conditional TeX-arg-cite-note-p (["Format"]) ())
+      "Name list")
+    '("citelist"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite (TeX-arg-conditional TeX-arg-cite-note-p (["Format"]) ())
+      "Literal list")
+    '("citefield"
+      (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite (TeX-arg-conditional TeX-arg-cite-note-p (["Format"]) ())
+      "Field")
+    ;; Miscellaneous Commands
+    "citereset"
+    "citereset*"
+    "mancite"
+    "pno"
+    "ppno"
+    "nopp"
+    "psq"
+    "psqq"
+    '("RN" "Integer")
+    '("Rn" "Integer")
+    ;; Localization Commands
+    '("DefineBibliographyStrings"
+      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+    '("DefineBibliographyExtras"
+      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+    '("UndefineBibliographyExtras"
+      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+    '("DefineHyphenationExceptions"
+      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+    "NewBibliographyString")
+   (LaTeX-add-environments
+    ;;; Bibliography commands
+    ;; Bibliography Sections
+    '("refsection" ["Resources"])
+    ;; Bibliography Segments
+    "refsegment")))
+
+(defvar LaTeX-biblatex-package-options-list
+  (append
+   ;;; Preamble Options
+   LaTeX-biblatex-executebibliographyoptions-options
+   '(;;; Load-time Options
+    ("backend" ("biber" "bibtex" "bibtexu" "bibtex8"))
+    ("style" BibLaTeX-global-style-files)
+    ("bibstyle" BibLaTeX-global-style-files)
+    ("citestyle" BibLaTeX-global-style-files)
+    ("natbib" ("true" "false"))
+    ("mcite" ("true" "false"))
     ;;; Entry Options
     ;; Preamble/Type/Entry Options
     ("useauthor" ("true" "false"))
@@ -181,7 +474,7 @@ string."
     ("indexing" ("true" "false" "cite" "bib"))
     ;; Type/Entry Options are not available globally.
     ;; Legacy Options (deprecated)
-    ("openbib"))
+    ("openbib")))
   "Package options for the biblatex package.")
 
 (defun LaTeX-biblatex-package-options nil

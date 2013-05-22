@@ -1,3 +1,19 @@
+2013-05-23  Mosè Giordano  <giordano.mose@libero.it>
+
+	* font-latex.el: Update copyright years, there have been
+	non-trivial changes in 2010, and 2011.
+	(font-latex-built-in-keyword-classes): Fontify Biblatex multicites
+	macros up to three mandatory arguments.
+
+	* style/biblatex.el (LaTeX-biblatex-entrytype): New variable.
+	(LaTeX-biblatex-executebibliographyoptions-options): New variable.
+	(LaTeX-biblatex-language-list): New variable.
+	(LaTeX-arg-biblatex-cites): New function.
+	("biblatex"): Always set `LaTeX-using-Biber'.  Add citation
+	macros.
+	(LaTeX-biblatex-package-options-list): Move preamble options to
+	`LaTeX-biblatex-executebibliographyoptions-options'.
+
 2013-05-22  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el: Replace `delete-backward-char' with `delete-char'.
