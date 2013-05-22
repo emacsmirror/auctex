@@ -5094,7 +5094,7 @@ See also `TeX-font-replace-macro' and `TeX-font-replace-function'."
 		(delete-char 3)
 		nil)
 	    t))
-	(delete-backward-char 1))
+	(delete-char -1))
     (insert end)))
 
 (defun TeX-font-replace-macro (start end)
@@ -5126,7 +5126,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	(forward-sexp 2))
       (save-excursion
 	(replace-match start t t))
-      (delete-backward-char 1)
+      (delete-char -1)
       (insert end))))
 
 ;;; Dollars
@@ -5375,7 +5375,7 @@ With prefix argument FORCE, always inserts \" characters."
 			    (concat (regexp-quote open-quote) "\\|"
 				    (regexp-quote close-quote))
 			    (max (length open-quote) (length close-quote))))
-			 (delete-backward-char (length (match-string 0)))
+			 (delete-char (- (length (match-string 0))))
 			 "\"\"")
 			((< (save-excursion (skip-chars-backward "\"")) -1)
 			 ?\")
@@ -5384,15 +5384,15 @@ With prefix argument FORCE, always inserts \" characters."
 			((save-excursion
 			   (forward-char -1)
 			   (bobp))
-			 (delete-backward-char 1)
+			 (delete-char -1)
 			 open-quote)
 			((save-excursion
 			   (forward-char -2) ;;; at -1 there is double quote
 			   (looking-at "[ \t\n]\\|\\s("))
-			 (delete-backward-char 1)
+			 (delete-char -1)
 			 open-quote)
 			(t
-			 (delete-backward-char 1)
+			 (delete-char -1)
 			 close-quote)))
 	(insert (cond ((bobp)
 		       open-quote)
@@ -5403,12 +5403,12 @@ With prefix argument FORCE, always inserts \" characters."
 		      ((save-excursion
 			 (forward-char (- (length open-quote)))
 			 (looking-at (regexp-quote open-quote)))
-		       (delete-backward-char (length open-quote))
+		       (delete-char (- (length open-quote)))
 		       ?\")
 		      ((save-excursion
 			 (forward-char (- (length close-quote)))
 			 (looking-at (regexp-quote close-quote)))
-		       (delete-backward-char (length close-quote))
+		       (delete-char (- (length close-quote)))
 		       ?\")
 		      ((save-excursion
 			 (forward-char -1)

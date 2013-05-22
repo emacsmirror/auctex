@@ -1324,7 +1324,7 @@ The input string may include LaTeX comments and newlines."
 			 (line-beginning-position 2)))
 	 ;; Get rid of newlines.
 	 ((or (string= match "\n") (string= match "\r"))
-	  (delete-backward-char 1)))))
+	  (delete-char -1)))))
     opts))
 
 (defvar LaTeX-provided-class-options nil
@@ -3035,7 +3035,7 @@ space does not end a sentence, so don't break a line there."
       (if (and oneleft
 	       (not (and use-hard-newlines
 			 (get-text-property (1- (point)) 'hard))))
-	  (delete-backward-char 1)
+	  (delete-char -1)
 	(backward-char 1)
 	(setq oneleft t)))
     (setq to (copy-marker (point) t))
@@ -5153,9 +5153,9 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 				   (point))
 		 hyphen)
 	(if h-after-h
-	    (progn (delete-backward-char hyphen-length)
+	    (progn (delete-char (- hyphen-length))
 		   (insert "--"))
-	  (delete-backward-char hyphen-length)
+	  (delete-char (- hyphen-length))
 	  (call-interactively 'self-insert-command)))
        ;; -- --> [+]-
        ((string= (buffer-substring (max (- (point) 2) (point-min))
@@ -5165,7 +5165,7 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
        ;; - --> "= / [+]-
        ((eq (char-before) ?-)
 	(if h-after-h
-	    (progn (delete-backward-char 1)
+	    (progn (delete-char -1)
 		   (insert hyphen))
 	  (call-interactively 'self-insert-command)))
        (h-after-h

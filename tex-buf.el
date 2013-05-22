@@ -1633,7 +1633,8 @@ You might want to examine and modify the free variables `file',
       ;; error to be displayed to the value it has in the current buffer.
       (with-current-buffer error-file-buffer
 	(set (make-local-variable 'TeX-command-buffer) command-buffer))
-      (goto-line (+ offset line))
+      (goto-char (point-min))
+      (forward-line (+ offset line -1))
       (if (not (string= string " "))
 	  (search-forward string nil t))
       
@@ -1713,10 +1714,12 @@ You might want to examine and modify the free variables `file',
 	(set (make-local-variable 'TeX-command-buffer) command-buffer))
       ;; Find line and string
       (when line
-	(goto-line (+ offset line))
+	(goto-char (point-min))
+	(forward-line (+ offset line -1))
 	(beginning-of-line 0)
 	(let ((start (point)))
-	  (goto-line (+ offset line-end))
+	  (goto-char (point-min))
+	  (forward-line (+ offset line-end -1))
 	  (end-of-line)
 	  (when string
 	    (search-backward string start t)
@@ -1769,7 +1772,7 @@ You might want to examine and modify the free variables `file',
 			     (set-buffer log-buffer))
 			   (auto-save-mode nil)
 			   (setq buffer-read-only t)
-			   (goto-line (point-min))
+			   (goto-char (point-min))
 			   (search-forward error nil t 1))
 			 (re-search-forward "^l\\." nil t)
 			 (re-search-forward "^ [^\n]+$" nil t))
