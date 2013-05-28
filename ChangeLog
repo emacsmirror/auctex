@@ -1,3 +1,7 @@
+2013-05-28  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Fix docstring.
+
 2013-05-23  Mosè Giordano  <giordano.mose@libero.it>
 
 	* font-latex.el: Update copyright years, there have been
