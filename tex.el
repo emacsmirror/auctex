@@ -510,6 +510,8 @@ string."
     ;; command needs to be relative to the master file, just in
     ;; case the file is in a different subdirectory
     ("%b" TeX-current-file-name-master-relative)
+    ;; Okular forward PDF search requires absolute path.
+    ("%a" (lambda nil (prin1-to-string (expand-file-name (buffer-file-name)))))
     ;; the following is for preview-latex.
     ("%m" preview-create-subdirectory))
   "List of expansion strings for TeX command names.
@@ -1112,7 +1114,7 @@ the requirements are met."
 						  (shell-command-to-string "evince --help"))
 				    " -i %(outpage)"
 				  " -p %(outpage)")) " %o")))
-      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%b")))
+      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")))
       ("xdg-open" "xdg-open %o"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use

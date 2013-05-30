@@ -1,3 +1,10 @@
+2013-05-30  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-expand-list): Add new expander "%a", it returns the
+	quoted absolute path of the file visiting current buffer.
+	(TeX-view-program-list-builtin): Use "%a" expander for forward PDF
+	search.
+
 2013-05-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-source-correlate-sync-source): Fix docstring.
