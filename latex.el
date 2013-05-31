@@ -965,46 +965,40 @@ job to this function."
       (insert TeX-esc "centering")
       (indent-according-to-mode)
       (LaTeX-newline))
-    (if (member environment LaTeX-top-caption-list)
-	;; top caption -- do nothing if user skips caption
-	(unless (zerop (length caption))
-	  (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+    ;; Insert caption and ask for a label, do nothing if user skips caption
+    (unless (zerop (length caption))
+      (if (member environment LaTeX-top-caption-list)
+	  ;; top caption
+	  (progn
+	    (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	    ;; If `auto-fill-mode' is active, fill the caption.
+	    (if auto-fill-function (LaTeX-fill-paragraph))
+	    (LaTeX-newline)
+	    (indent-according-to-mode)
+	    ;; ask for a label and insert a new line only if a label is
+	    ;; actually inserted
+	    (when (LaTeX-label environment)
+	      (LaTeX-newline)
+	      (indent-according-to-mode)))
+	;; bottom caption (default)
+	(when active-mark (goto-char end-marker))
+	(save-excursion
 	  (LaTeX-newline)
 	  (indent-according-to-mode)
-	  ;; ask for a label and insert a new line only if a label is
-	  ;; actually inserted
-	  (when (LaTeX-label environment)
+	  ;; If there is an active region point is before the backslash of
+	  ;; "\end" macro, go one line upwards.
+	  (when active-mark (forward-line -1) (indent-according-to-mode))
+	  (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	  ;; If `auto-fill-mode' is active, fill the caption.
+	  (if auto-fill-function (LaTeX-fill-paragraph))
+	  ;; ask for a label and if necessary insert a new line between caption
+	  ;; and label
+	  (when (save-excursion (LaTeX-label environment))
 	    (LaTeX-newline)
 	    (indent-according-to-mode)))
-      ;; bottom caption (default) -- do nothing if user skips caption
-      (unless (zerop (length caption))
-	(when active-mark (goto-char end-marker))
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	(insert TeX-esc "caption" TeX-grop caption TeX-grcl)
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	;; ask for a label -- if user skips label, remove the last new
-	;; line again
-	(if (LaTeX-label environment)
-	    (progn
-	      (unless (looking-at "[ \t]*$")
-		(LaTeX-newline)
-		(end-of-line 0)))
-	  (delete-blank-lines)
-	  (end-of-line 0))
-	;; if there is a caption or a label, move point upwards again
-	;; so that it is placed above the caption or the label (or
-	;; both) -- search the current line (even long captions are
-	;; inserted on a single line, even if auto-fill is turned on,
-	;; so it is enough to search the current line) for \label or
-	;; \caption and go one line upwards if any of them is found
-	(while (re-search-backward
-		(concat "^\\s-*" (regexp-quote TeX-esc)
-			"\\(label\\|caption\\)")
-		(line-beginning-position) t)
-	  (end-of-line 0)
-	  (indent-according-to-mode))))
+	;; Insert an empty line between caption and marked region, if any.
+	(when active-mark (LaTeX-newline) (forward-line -1))
+	(indent-according-to-mode)))
     (when (and (member environment '("table" "table*"))
 	       ;; Suppose an existing tabular environment should just
 	       ;; be wrapped into a table if there is an active region.

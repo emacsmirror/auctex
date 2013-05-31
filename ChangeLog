@@ -1,3 +1,9 @@
+2013-05-31  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-env-figure): Simplify using `save-excursion'
+	instead of regexp searches.  Fill the caption when
+	`auto-fill-mode' is on.
+
 2013-05-30  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-expand-list): Add new expander "%a", it returns the
