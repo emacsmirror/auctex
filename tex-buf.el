@@ -1,7 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004, 2005, 2006, 2007,
-;;   2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2013 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -680,7 +679,7 @@ run of `TeX-run-TeX', use
       (TeX-synchronous-sentinel name file process))))
 
 (defun TeX-run-Biber (name command file)
-  "Create a process for NAME using COMMAND to format FILE with Biber." 
+  "Create a process for NAME using COMMAND to format FILE with Biber."
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function 'TeX-Biber-sentinel)
     (if TeX-process-asynchronous
@@ -689,7 +688,8 @@ run of `TeX-run-TeX', use
 
 (defun TeX-run-compile (name command file)
   "Ignore first and third argument, start compile with second argument."
-  (compile command))
+  (let ((default-directory (TeX-master-directory)))
+    (compile command)))
 
 (defun TeX-run-shell (name command file)
   "Ignore first and third argument, start shell-command with second argument."
@@ -981,7 +981,7 @@ Warnings can be indicated by LaTeX or packages."
 		  (TeX-current-pages))
 	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
 				  TeX-command-BibTeX)))
-  ((re-search-forward "Package biblatex Warning: Please rerun LaTeX" nil t)
+	((re-search-forward "Package biblatex Warning: Please rerun LaTeX" nil t)
 	 (message "%s%s" "You should run LaTeX again, " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^(biblatex)\\W+Page breaks have changed" nil t)
@@ -1549,7 +1549,7 @@ You might want to examine and modify the free variables `file',
 	    (push nil TeX-error-offset)
 	    (goto-char end))
 	  t)
-	 
+
 	 ;; End of file -- Pop from stack
 	 ((match-beginning 4)
 	  (when (> (length TeX-error-file) 0)
@@ -1557,13 +1557,13 @@ You might want to examine and modify the free variables `file',
 	    (pop TeX-error-offset))
 	  (goto-char (match-end 4))
 	  t)
-	 
+
 	 ;; Hook to change line numbers
 	 ((match-beginning 5)
 	  (setq TeX-error-offset
 		(list (string-to-number (TeX-match-buffer 5))))
 	  t)
-	 
+
 	 ;; Hook to change file name
 	 ((match-beginning 6)
 	  (setq TeX-error-file
@@ -1637,7 +1637,7 @@ You might want to examine and modify the free variables `file',
       (forward-line (+ offset line -1))
       (if (not (string= string " "))
 	  (search-forward string nil t))
-      
+
       ;; Explain the error.
       (cond ((eq TeX-display-help 'expert)
 	     (TeX-pop-to-buffer runbuf nil t)
