@@ -5,7 +5,8 @@
 	(TeX-electric-dollar): Ditto.
 	(TeX-electric-math): New customizable variable, supersedes
 	variables above.
-	(TeX-insert-dollar): Adapt to `TeX-electric-math'.
+	(TeX-insert-dollar): Adapt to `TeX-electric-math'.  See
+	http://thread.gmane.org/gmane.emacs.auctex.devel/3070
 
 	* doc/auctex.texi (Quotes): Document `TeX-electric-math'.
 	(Environments): Document `LaTeX-find-matching-begin' and
