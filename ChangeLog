@@ -8,6 +8,8 @@
 	(TeX-insert-dollar): Adapt to `TeX-electric-math'.
 
 	* doc/auctex.texi (Quotes): Document `TeX-electric-math'.
+	(Environments): Document `LaTeX-find-matching-begin' and
+	`LaTeX-find-matching-end'.
 
 2013-06-02  Mosè Giordano  <giordano.mose@libero.it>
 

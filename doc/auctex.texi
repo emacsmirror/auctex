@@ -779,6 +779,27 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment.
 @end deffn
 
+@AUCTeX{} offers keyboard shortcuts for moving point to the beginning
+and to the end of the current environment.
+@deffn Command LaTeX-find-matching-begin
+@kindex C-M-a
+(@kbd{C-M-a}) Move point to the @samp{\begin} of the current
+environment.
+
+If this command is called inside a comment and
+@code{LaTeX-syntactic-comments} is enabled, try to find the environment
+in commented regions with the same comment prefix.
+@end deffn
+
+@deffn Command LaTeX-find-matching-end
+@kindex C-M-e
+(@kbd{C-M-e}) Move point to the @samp{\end} of the current environment.
+
+If this command is called inside a comment and
+@code{LaTeX-syntactic-comments} is enabled, try to find the environment
+in commented regions with the same comment prefix.
+@end deffn
+
 @node Equations
 @subsection Equations
 @cindex Equations
