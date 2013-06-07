@@ -5153,33 +5153,42 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
   :group 'TeX-macro
   :type 'boolean)
 
-(defcustom TeX-math-close-double-dollar nil
-  "If non-nil close double dollar math by typing a single `$'."
-  :group 'TeX-macro
-  :type 'boolean)
+(defcustom TeX-electric-math nil
+  "If non-nil, when outside math mode `TeX-insert-dollar' will
+insert symbols for opening and closing inline equation and put
+the point between them.  If there is an active region,
+`TeX-insert-dollar' will put around it symbols for opening and
+closing inline equation and keep the region active, with point
+after closing symbol.  If you press `$' again, you can toggle
+between inline equation, display equation, and no equation.
 
-(defcustom TeX-math-close-single-dollar nil
-  "If non-nil, when outside math mode insert opening and closing dollar
-signs for TeX inline equation and put the point between them, just by
-typing a single `$'."
-  :group 'TeX-macro
-  :type 'boolean)
+If non-nil and point is inside math mode right between a couple
+of single dollars, pressing `$' will insert another pair of
+dollar signs and leave the point between them.
 
-(defcustom TeX-electric-dollar nil
-  "When outside math mode, if non-nil and there is an active
-region, typing `$' will put a pair of single dollar around it and
-leave point after the closing dollar."
+If nil, `TeX-insert-dollar' will simply insert \"$\" at point,
+this is the default.
+
+If non-nil, this variable is a cons cell whose CAR is the string
+to insert before point, the CDR is the string to insert after
+point.  You can choose between \"$...$\" and \"\\(...\\)\"."
   :group 'TeX-macro
-  :type 'boolean)
+  :type '(choice (const :tag "$" nil)
+		 (const :tag "$...$" '("$" . "$"))
+		 (const :tag "\\(...\\)" '("\\(" . "\\)"))
+		 (cons :tag "Other"
+		       (string :tag "Insert before point")
+		       (string :tag "Insert after point"))))
 
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
 If current math mode was not entered with a dollar, refuse to
 insert one.  Show matching dollar sign if this dollar sign ends
-the TeX math mode and `blink-matching-paren' is non-nil.  Ensure
-double dollar signs match up correctly by inserting extra dollar
-signs when needed.
+the TeX math mode and `blink-matching-paren' is non-nil.
+
+When outside math mode, the behavior is controlled by the variable
+`TeX-electric-math'.
 
 With raw \\[universal-argument] prefix, insert exactly one dollar
 sign.  With optional ARG, insert that many dollar signs."
@@ -5197,47 +5206,84 @@ sign.  With optional ARG, insert that many dollar signs."
     (insert "$"))
    ((texmathp)
     ;; We are inside math mode
-    (if (and (stringp (car texmathp-why))
-	     (string-equal (substring (car texmathp-why) 0 1) "\$"))
-	;; Math mode was turned on with $ or $$ - so finish it accordingly.
-	(progn
-	  (if TeX-math-close-double-dollar
-	      (insert (car texmathp-why))
-	    (insert "$"))
-	  (when (and blink-matching-paren
-		     (or (string= (car texmathp-why) "$")
-			 (zerop (mod (save-excursion
-				       (skip-chars-backward "$")) 2))))
-	    (save-excursion
-	      (goto-char (cdr texmathp-why))
-	      (if (pos-visible-in-window-p)
-		  (sit-for blink-matching-delay)
-		(message "Matches %s"
-			 (buffer-substring
-			  (point) (progn (end-of-line) (point))))))))
+    (cond
+     ((and TeX-electric-math
+	   (eq (preceding-char) ?\$)
+	   (eq (following-char) ?\$))
+      ;; Point is between "$$" and `TeX-electric-math' is non-nil - insert
+      ;; another pair of dollar signs and leave point between them.
+      (insert "$$")
+      (backward-char))
+     ((and (stringp (car texmathp-why))
+	   (string-equal (substring (car texmathp-why) 0 1) "\$"))
+      ;; Math mode was turned on with $ or $$ - insert a single $.
+      (insert "$")
+      ;; Compatibility, `TeX-math-close-double-dollar' has been removed
+      ;; after AUCTeX 11.87.
+      (if (boundp 'TeX-math-close-double-dollar)
+	  (message
+	   (concat "`TeX-math-close-double-dollar' has been removed,"
+		   "\nplease use `TeX-electric-math' instead.")))
+      (when (and blink-matching-paren
+		 (or (string= (car texmathp-why) "$")
+		     (zerop (mod (save-excursion
+				   (skip-chars-backward "$")) 2))))
+	(save-excursion
+	  (goto-char (cdr texmathp-why))
+	  (if (pos-visible-in-window-p)
+	      (sit-for blink-matching-delay)
+	    (message "Matches %s"
+		     (buffer-substring
+		      (point) (progn (end-of-line) (point))))))))
+     (t
       ;; Math mode was not entered with dollar - we cannot finish it with one.
       (message "Math mode started with `%s' cannot be closed with dollar"
 	       (car texmathp-why))
-      (insert "$")))
+      (insert "$"))))
    (t
     ;; Just somewhere in the text.
-    (if (and TeX-electric-dollar (TeX-active-mark))
-	(progn
-	  (if (> (point) (mark))
-	      (exchange-point-and-mark))
-	  (insert "$")
-	  (exchange-point-and-mark)
-	  (insert "$"))
-      (if TeX-math-close-single-dollar
+    (cond
+     ((and TeX-electric-math (TeX-active-mark))
+      (if (> (point) (mark))
+	  (exchange-point-and-mark))
+      (cond
+       ;; $...$ to $$...$$
+       ((and (eq last-command 'TeX-insert-dollar)
+	     (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
+	(replace-match "$$\\1$$")
+	(push-mark (match-beginning 0) t))
+       ;; \(...\) to \[...\]
+       ((and (eq last-command 'TeX-insert-dollar)
+	     (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
+	(replace-match "\\\\[\\1\\\\]")
+	(push-mark (match-beginning 0) t))
+       ;; Strip \[...\] or $$...$$
+       ((and (eq last-command 'TeX-insert-dollar)
+	     (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
+		 (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
+	(replace-match "\\1")
+	(push-mark (match-beginning 0) t))
+       (t
+	;; We use `save-excursion' because point must be situated before opening
+	;; symbol.
+	(save-excursion (insert (car TeX-electric-math)))
+	(exchange-point-and-mark)
+	(insert (cdr TeX-electric-math))))
+      ;; Keep the region active.
+      (if (featurep 'xemacs)
+	  (zmacs-activate-region)
+	(setq activate-mark t
+	      deactivate-mark nil)))
+     (TeX-electric-math
+      (insert (car TeX-electric-math))
+      (save-excursion (insert (cdr TeX-electric-math)))
+      (if blink-matching-paren
 	  (progn
-	    (insert "$$")
-	    (if blink-matching-paren
-		(progn
-		  (backward-char 2)
-		  (sit-for blink-matching-delay)
-		  (forward-char))
-	      (backward-char)))
-	(insert "$")))))
+	    (backward-char)
+	    (sit-for blink-matching-delay)
+	    (forward-char))))
+     ;; In any other case just insert a single $.
+     ((insert "$")))))
   (TeX-math-input-method-off))
 
 (defvar TeX-math-input-method-off-regexp

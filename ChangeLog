@@ -1,3 +1,14 @@
+2013-06-08  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-math-close-double-dollar): Remove.
+	(TeX-math-close-single-dollar): Ditto.
+	(TeX-electric-dollar): Ditto.
+	(TeX-electric-math): New customizable variable, supersedes
+	variables above.
+	(TeX-insert-dollar): Adapt to `TeX-electric-math'.
+
+	* doc/auctex.texi (Quotes): Document `TeX-electric-math'.
+
 2013-06-02  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el: Shorten copyright year ranges and update with

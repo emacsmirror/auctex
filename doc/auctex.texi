@@ -407,40 +407,57 @@ first dollar sign.
 (@kbd{$}) Insert dollar sign.
 
 Show matching dollar sign if this dollar sign end the @TeX{} math mode.
-Ensure double dollar signs match up correctly by inserting extra dollar
-signs when needed if @code{TeX-math-close-double-dollar} is non-nil.
-
-If @var{TeX-math-close-single-dollar} is non-nil, when outside math mode
-the function insert the opening and closing dollar signs for @TeX{}
-inline formula and put the point between them just by typing a single
-@samp{$}.
 
 With optional @var{arg}, insert that many dollar signs.
 @end deffn
 
-@defopt TeX-math-close-double-dollar
-Control the insertion of double dollar signs for delimiting display
-math.  (Note that you should not use double dollar signs in @LaTeX{}
-because this practice can lead to wrong spacing in typeset documents.)
-If the variable is non-nil and you enter a dollar sign that matches a
-double dollar sign @samp{$$} @AUCTeX{} will automatically insert two
-dollar signs.
+@TeX{} and @LaTeX{} users often look for a way to insert inline
+equations like @samp{$...$} or @samp{\(...\)} simply typing @kbd{$}.
+@AUCTeX{} helps them through the customizable variable
+@code{TeX-electric-math}.
+
+@defopt TeX-electric-math
+If the variable is non-nil and you type @kbd{$} outside math mode,
+@AUCTeX{} will automatically insert the opening and closing symbols for
+an inline equation and put the point between them.  The opening symbol
+will blink when @code{blink-matching-paren} is non-nil.  If
+@code{TeX-electric-math} is nil, typing @kbd{$} simply inserts @samp{$}
+at point, this is the default.
+
+Besides @code{nil}, possible values for this variable are @code{(cons
+"$" "$")} for @TeX{} inline equations @samp{$...$}, and @code{(cons
+"\\(" "\\)")} for @LaTeX{} inline equations @samp{\(...\)}.
+
+If the variable is non-nil and point is inside math mode right between a
+couple of single dollars, pressing @kbd{$} will insert another pair of
+dollar signs and leave the point between them.  Thus, if
+@code{TeX-electric-math} is set to @code{(cons "$" "$")} you can easily
+obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$}
+twice in a row.  (Note that you should not use double dollar signs in
+@LaTeX{} because this practice can lead to wrong spacing in typeset
+documents.)
+
+In addition, when the variable is non-nil and there is an active region
+outside math mode, typing @kbd{$} will put around the active region
+symbols for opening and closing inline equation and keep the region
+active, leaving point after the closing symbol.  By pressing repeatedly
+@kbd{$} while the region is active you can toggle between an inline
+equation, a display equation, and no equation.  To be precise,
+@samp{$...$} is replaced by @samp{$$...$$}, whereas @samp{\(...\)} is
+replaced by @samp{\[...\]}.
 @end defopt
 
-@defopt TeX-math-close-single-dollar
-Control the insertion of dollar signs for delimiting inline math.  If
-the variable is non-nil and you enter a dollar sign outside math mode
-@AUCTeX{} will automatically insert the opening and closing dollar signs
-and put the point between them.  If the variable
-@code{blink-matching-paren} is non-nil the opening dollar will blink.
-@end defopt
-
-@defopt TeX-electric-dollar
-Control the insertion of dollar signs when there is an active region
-outside math mode.  If the variable is non-nil, typing @samp{$} will put
-a pair of single dollar around the active region and leave point after
-the closing dollar.
-@end defopt
+If you want to automatically insert @samp{$...$} in plain @TeX{} files,
+and @samp{\(...\)} in @LaTeX{} files by pressing @kbd{$}, add the
+following to your init file
+@lisp
+(add-hook 'plain-TeX-mode-hook
+	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+			  (cons "$" "$"))))
+(add-hook 'LaTeX-mode-hook
+	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+			  (cons "\\(" "\\)"))))
+@end lisp
 
 @subheading Braces
 
