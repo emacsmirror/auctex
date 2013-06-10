@@ -1,3 +1,15 @@
+2013-06-11  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (TeX-after-document-hook): New hook.
+	(TeX-arg-document): Use it.
+	(LaTeX-after-usepackage-hook): New hook.
+	(LaTeX-arg-usepackage): Use it, remove babel specific code.
+
+	* style/babel.el: Update copyright years.
+	(LaTeX-env-babel-lang): New function.
+	("babel"): Add `LaTeX-env-babel-lang' to
+	`LaTeX-after-usepackage-hook'.
+
 2013-06-08  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-math-close-double-dollar): Remove.

@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty'
 
-;; Copyright (C) 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2007, 2013 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -63,7 +63,7 @@
 	;; Append element to `active-languages' to respect loading order.
 	;; `babel' package uses as default language the last loaded one.
 	(add-to-list 'active-languages elt t)))
-  active-languages))
+    active-languages))
 
 (defun TeX-arg-babel-lang (optional &optional prompt)
   "Prompt for a language with completion and insert it as an argument."
@@ -76,12 +76,17 @@
    env (format "{%s}" (completing-read "Language: "
 				       (LaTeX-babel-active-languages)))))
 
+(defun LaTeX-babel-load-languages ()
+  "Load style files of babel active languages."
+  ;; Run style hooks for every active language in loading order, so
+  ;; `TeX-quote-language' will be correctly set.
+  (mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages)))
+
 (TeX-add-style-hook
  "babel"
  (lambda ()
-   ;; Run style hooks for every active language in loading order, so
-   ;; `TeX-quote-language' will be correctly set.
-   (mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))
+   (LaTeX-babel-load-languages)
+   (add-hook 'LaTeX-after-usepackage-hook 'LaTeX-babel-load-languages nil t)
    ;; New symbols
    (TeX-add-symbols
     '("selectlanguage" TeX-arg-babel-lang)

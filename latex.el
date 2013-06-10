@@ -1776,6 +1776,11 @@ and this variable will be ignored."
 Initialized once at the first time you prompt for a LaTeX class.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+(defvar TeX-after-document-hook nil
+  "List of functions to be run at the end of `TeX-arg-document'.
+
+To insert a hook here, you must insert it in the appropiate style file.")
+
 (defun TeX-arg-document (optional &optional ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
@@ -1796,6 +1801,8 @@ OPTIONAL and IGNORE are ignored."
 		 LaTeX-global-class-files))
     (if (zerop (length style))
 	(setq style LaTeX-default-style))
+    ;; Clean up hook before use.
+    (setq TeX-after-document-hook nil)
     (TeX-run-style-hooks style)
     (setq var (intern (format "LaTeX-%s-class-options" style)))
     (if (or (and (boundp var)
@@ -1824,7 +1831,13 @@ OPTIONAL and IGNORE are ignored."
   (TeX-remove-style)
 
   ;; defined in individual style hooks
-  (TeX-update-style))
+  (TeX-update-style)
+  (run-hooks 'TeX-after-document-hook))
+
+(defvar LaTeX-after-usepackage-hook nil
+  "List of functions to be run at the end of `LaTeX-arg-usepackage'.
+
+To insert a hook here, you must insert it in the appropiate style file.")
 
 (defun LaTeX-arg-usepackage (optional)
   "Insert arguments to usepackage.
@@ -1843,6 +1856,8 @@ OPTIONAL is ignored."
 				 'texinputs 'global t t))))))
     (setq packages (TeX-completing-read-multiple
 		    "Packages: " TeX-global-input-files))
+    ;; Clean up hook before use.
+    (setq LaTeX-after-usepackage-hook nil)
     (mapc 'TeX-run-style-hooks packages)
     (setq var (if (= 1 (length packages))
 		  (intern (format "LaTeX-%s-package-options" (car packages)))
@@ -1869,11 +1884,9 @@ OPTIONAL is ignored."
 		(TeX-add-to-alist 'LaTeX-provided-package-options
 				  (list (cons elt opts))))
 	      packages))
-      (insert LaTeX-optop options LaTeX-optcl)
-      ;; When `babel' is loaded with options, load also language style files.
-      (when (member "babel" packages)
-	(mapc 'TeX-run-style-hooks (LaTeX-babel-active-languages))))
-    (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)))
+      (insert LaTeX-optop options LaTeX-optcl))
+    (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)
+    (run-hooks 'LaTeX-after-usepackage-hook)))
 
 (defcustom LaTeX-search-files-type-alist
   '((texinputs "${TEXINPUTS.latex}" ("tex/generic/" "tex/latex/")
