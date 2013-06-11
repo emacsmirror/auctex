@@ -1,3 +1,8 @@
+2013-06-11  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-help-error): Let-bind `inhibit-read-only' when
+	updating the *TeX Help* buffer.
+
 2013-06-11  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (TeX-after-document-hook): New hook.

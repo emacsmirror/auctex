@@ -1753,35 +1753,36 @@ You might want to examine and modify the free variables `file',
       (setq TeX-error-pointer (+ TeX-error-pointer 1)))
 
     (TeX-pop-to-buffer (get-buffer-create "*TeX Help*") nil t)
-    (erase-buffer)
-    (insert "ERROR: " error
-	    "\n\n--- TeX said ---"
-	    output
-	    "\n--- HELP ---\n"
-	    (let ((help (cdr (nth TeX-error-pointer
-				  TeX-error-description-list))))
-	      (save-excursion
-		(if (and (string= help "No help available")
-			 (let* ((log-buffer (find-buffer-visiting log-file)))
-			   (if log-buffer
-			       (progn
-				 (set-buffer log-buffer)
-				 (revert-buffer t t))
-			     (setq log-buffer
-				   (find-file-noselect log-file))
-			     (set-buffer log-buffer))
-			   (auto-save-mode nil)
-			   (setq buffer-read-only t)
-			   (goto-char (point-min))
-			   (search-forward error nil t 1))
-			 (re-search-forward "^l\\." nil t)
-			 (re-search-forward "^ [^\n]+$" nil t))
-		    (let ((start (1+ (point))))
-		      (forward-char 1)
-		      (re-search-forward "^$")
-		      (concat "From the .log file...\n\n"
-			      (buffer-substring start (point))))
-		  help))))
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert "ERROR: " error
+	      "\n\n--- TeX said ---"
+	      output
+	      "\n--- HELP ---\n"
+	      (let ((help (cdr (nth TeX-error-pointer
+				    TeX-error-description-list))))
+		(save-excursion
+		  (if (and (string= help "No help available")
+			   (let* ((log-buffer (find-buffer-visiting log-file)))
+			     (if log-buffer
+				 (progn
+				   (set-buffer log-buffer)
+				   (revert-buffer t t))
+			       (setq log-buffer
+				     (find-file-noselect log-file))
+			       (set-buffer log-buffer))
+			     (auto-save-mode nil)
+			     (setq buffer-read-only t)
+			     (goto-char (point-min))
+			     (search-forward error nil t 1))
+			   (re-search-forward "^l\\." nil t)
+			   (re-search-forward "^ [^\n]+$" nil t))
+		      (let ((start (1+ (point))))
+			(forward-char 1)
+			(re-search-forward "^$")
+			(concat "From the .log file...\n\n"
+				(buffer-substring start (point))))
+		    help)))))
     (goto-char (point-min))
     (TeX-special-mode)
     (TeX-pop-to-buffer old-buffer nil t)))
