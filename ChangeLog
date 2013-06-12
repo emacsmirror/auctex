@@ -1,3 +1,7 @@
+2013-06-12  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-jp.el: Add `coding: iso-2022-7bit-unix' file local variable.
+
 2013-06-11  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-help-error): Let-bind `inhibit-read-only' when

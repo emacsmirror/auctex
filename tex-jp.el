@@ -1,3 +1,5 @@
+;; -*- coding: iso-2022-7bit-unix; -*-
+
 ;;; tex-jp.el --- Support for Japanese TeX.
 
 ;; Copyright (C) 2002-2007, 2012  Free Software Foundation, Inc.
