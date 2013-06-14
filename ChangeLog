@@ -1,3 +1,7 @@
+2013-06-14  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-jp.el: Change to `coding: iso-2022-jp-unix'.
+
 2013-06-12  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-jp.el: Add `coding: iso-2022-7bit-unix' file local variable.

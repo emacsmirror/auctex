@@ -1,4 +1,4 @@
-;; -*- coding: iso-2022-7bit-unix; -*-
+;; -*- coding: iso-2022-jp-unix; -*-
 
 ;;; tex-jp.el --- Support for Japanese TeX.
 
