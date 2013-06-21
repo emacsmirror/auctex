@@ -1,3 +1,7 @@
+2013-06-21  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-dbus-p): Improved DBUS availability check.
+
 2013-06-21  Rüdiger Sonderfeld  <ruediger@c-plusplus.de>
 
 	* tex.el (TeX-doc-backend-alist): Remove unnecessary `info' check.
