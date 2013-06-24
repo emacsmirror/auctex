@@ -1020,6 +1020,8 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
+;; For `dbus-ignore-errors'.
+(eval-when-compile (require 'dbus nil :no-error))
 (defun TeX-evince-dbus-p (&rest options)
   "Return non-nil, if evince is installed and accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
@@ -1030,6 +1032,7 @@ search are checked, too."
   (and (featurep 'dbusbind)
        (require 'dbus nil :no-error)
        (dbus-ignore-errors (dbus-get-unique-name :session))
+       (dbus-ping :session "org.gnome.evince.Daemon")
        (executable-find "evince")
        (or (not (memq :forward options))
 	   (let ((spec (dbus-introspect-get-method
