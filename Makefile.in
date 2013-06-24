@@ -137,7 +137,7 @@ STYLEELC = $(STYLESRC:.el=.elc)
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
 	auto-loads.el config.*
-DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
+DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS
 
 NOSEARCH = style/.nosearch
 

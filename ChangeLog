@@ -1,5 +1,9 @@
 2013-06-24  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/Makefile.in (DISTTEXTS): Add ../PROBLEMS.
+
+	* Makefile.in (DISTTEXTS): Add PROBLEMS.
+
 	* tex.el (TeX-evince-dbus-p): Require dbus at compile-time.
 
 2013-06-21  Tassilo Horn  <tsdh@gnu.org>
