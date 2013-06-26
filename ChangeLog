@@ -1,3 +1,21 @@
+2013-06-26  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/preview-problems.texi: Rename "Known problems" section to
+	"Known problems with preview-latex" in rawfile export.  Delete
+	sections "Problems with Ghostscript" and "Emacs problems" because
+	those are basically ruled out when using the prerequisites
+	documented in the manual.
+
+	* doc/install.texi: Don't link to ghostscript specific
+	preview-latex problems section because that has been removed.
+
+	* doc/Makefile.in (DISTTEXTS, ../PROBLEMS.preview): Rename
+	PROBLEMS to PROBLEMS.preview since it only deals with
+	preview-latex problems.
+
+	* Makefile.in (DISTTEXTS): Use PROBLEMS.preview instead of
+	PROBLEMS.
+
 2013-06-24  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/Makefile.in (DISTTEXTS): Add ../PROBLEMS.

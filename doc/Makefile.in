@@ -52,7 +52,7 @@ PREVIEWTEXIFILES = copying.texi preview-faq.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi preview-problems.texi \
 	preview-readme.texi preview-todo.texi version.texi
 DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES	\
-	../PROBLEMS
+	../PROBLEMS.preview
 
 all: dist
 
@@ -181,7 +181,7 @@ install-preview: preview-latex.info
 	$(MAKEINFO) $(MAKEINFO_PLAIN) faq.texi --output $@
 	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-faq.texi --output - >> $@
 
-../PROBLEMS: preview-problems.texi macros.texi
+../PROBLEMS.preview: preview-problems.texi macros.texi
 	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-problems.texi --output $@
 
 # clean

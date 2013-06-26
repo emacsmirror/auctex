@@ -1,3 +1,8 @@
+2013-06-26  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (use-hint): Don't warn about problems with overly
+	obsolete packages.
+
 2013-04-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex/preview.dtx: Fix date format which got converted from
