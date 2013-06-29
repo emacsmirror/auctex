@@ -1,5 +1,8 @@
 2013-06-29  Mosè Giordano  <giordano.mose@libero.it>
 
+	* tex-buf.el (TeX-error-file): Fix spelling error.
+	(TeX-error): Ditto.
+
 	* doc/install.texi (Configure): Update for Git.
 
 	* doc/preview-readme.texi (Availability): Ditto.

@@ -1427,7 +1427,7 @@ the directory."
  (make-variable-buffer-local 'TeX-error-point)
 
 (defvar TeX-error-file nil
-  "Stack of files in which errors have occured.")
+  "Stack of files in which errors have occurred.")
 
  (make-variable-buffer-local 'TeX-error-file)
 
@@ -1620,7 +1620,7 @@ You might want to examine and modify the free variables `file',
 
     ;; Find the error.
     (if (null file)
-	(error "Error occured after last TeX file closed"))
+	(error "Error occurred after last TeX file closed"))
     (let ((runbuf (current-buffer))
 	  (master (with-current-buffer
 		      TeX-command-buffer
