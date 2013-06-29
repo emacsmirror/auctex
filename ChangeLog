@@ -1,3 +1,11 @@
+2013-06-29  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/install.texi (Configure): Update for Git.
+
+	* doc/preview-readme.texi (Availability): Ditto.
+
+	* doc/wininstall.texi: Ditto.
+
 2013-06-26  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/preview-problems.texi: Rename "Known problems" section to
