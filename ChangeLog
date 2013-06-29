@@ -1,5 +1,15 @@
 2013-06-29  Mosè Giordano  <giordano.mose@libero.it>
 
+	* bib-cite.el: Replace `save-excursion'+`set-buffer' with
+	`with-current-buffer'.
+
+	* tex-bar.el: Ditto.
+
+	* tex-buf.el: Ditto.
+
+	* tex.el: Replace `save-excursion'+`set-buffer' with
+	`with-current-buffer'.  Delete trailing whitespaces.
+
 	* tex-buf.el (TeX-error-file): Fix spelling error.
 	(TeX-error): Ditto.
 

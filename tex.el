@@ -144,7 +144,7 @@ If nil, none is specified."
     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t
      :help "Generate PostScript file")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
-    ("Xindy" "texindy %s" TeX-run-command nil t 
+    ("Xindy" "texindy %s" TeX-run-command nil t
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
@@ -712,7 +712,7 @@ If POS is nil, use current buffer location."
 
   (defun TeX-read-string (prompt &optional initial-input history default-value)
     (read-string prompt initial-input history default-value t))
-  
+
   (defun TeX-mark-active ()
     ;; In FSF 19 mark-active indicates if mark is active.
     mark-active)
@@ -1758,7 +1758,7 @@ already established, don't do anything."
     (unless (local-variable-p 'TeX-PDF-mode (current-buffer))
       (TeX-PDF-mode (if arg 1 0))
       (setq TeX-PDF-mode-parsed t))))
-  
+
 (defun TeX-PDF-mode-on ()
   "Use only from parsing routines."
   (TeX-PDF-mode-parsed t))
@@ -1882,7 +1882,7 @@ output files."
 	(when (or (not TeX-clean-confirm)
 		  (condition-case nil
 		      (dired-mark-pop-up " *Deletions*" 'delete
-					 (if (> (length files) 1) 
+					 (if (> (length files) 1)
 					     files
 					   (cons t files))
 					 'y-or-n-p "Delete files? ")
@@ -3001,7 +3001,7 @@ The algorithm is as follows:
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
-  
+
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
   (make-local-variable 'paragraph-separate)
@@ -3322,9 +3322,8 @@ If TEX is a directory, generate style files for all files in the directory."
 				   (append TeX-file-extensions
 					   BibTeX-file-extensions
 					   TeX-Biber-file-extensions)))
-	 (save-excursion
-	   (set-buffer (let (enable-local-eval)
-			 (find-file-noselect tex)))
+	 (with-current-buffer (let (enable-local-eval)
+				(find-file-noselect tex))
 	   (message "Parsing %s..." tex)
 	   (TeX-auto-store (concat (file-name-as-directory auto)
 				   (TeX-strip-extension tex
@@ -3358,8 +3357,7 @@ If TEX is a directory, generate style files for all files in the directory."
 	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
 			  LaTeX-provided-package-options)))
 	(TeX-unload-style style)
-	(save-excursion
-	  (set-buffer (generate-new-buffer file))
+	(with-current-buffer (generate-new-buffer file)
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook\n \""
 		  style "\"\n (lambda ()")
@@ -4192,7 +4190,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c?"    'TeX-doc)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
     (define-key map "\r"       'TeX-newline)
-    
+
     ;; From tex.el
     (define-key map "\""       'TeX-insert-quote)
     (define-key map "$"        'TeX-insert-dollar)
@@ -4206,14 +4204,14 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "^"        'TeX-insert-sub-or-superscript)
     (define-key map "_"        'TeX-insert-sub-or-superscript)
     (define-key map "\e\t"     'TeX-complete-symbol) ;*** Emacs 19 way
-    
+
     (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
     (define-key map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
     (define-key map "\C-c\""   'TeX-uncomment) ;*** Old way
-    
+
     (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
-    
+
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-correlate-mode)
@@ -5686,7 +5684,7 @@ NAME may be a package, a command, or a document."
 	(regexp (concat "\\`\\("
 			(mapconcat (lambda (dir)
 				     (regexp-quote
-				      (expand-file-name 
+				      (expand-file-name
 				       (file-name-as-directory dir))))
 				   (append (when (file-name-directory name)
 					     (list (file-name-directory name)))

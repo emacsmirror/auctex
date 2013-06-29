@@ -137,8 +137,7 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
 				       assqs-button-alists)))
     (setq assqs-button-alists (nreverse assqs-button-alists))
     ;; displaying results
-    (save-excursion
-      (set-buffer (get-buffer-create "*TeX tool bar buttons*"))
+    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
       (erase-buffer)
       (insert "Available buttons for TeX mode
 ================================")
@@ -284,8 +283,7 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
 				       assqs-button-alists)))
     (setq assqs-button-alists (nreverse assqs-button-alists))
     ;; displaying results
-    (save-excursion
-      (set-buffer (get-buffer-create "*TeX tool bar buttons*"))
+    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
       (erase-buffer)
       (insert "Available buttons for LaTeX mode
 ================================")

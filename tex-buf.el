@@ -393,7 +393,7 @@ ORIGINALS which are modified but not saved yet."
                        (y-or-n-p (concat "Save file "
                                          (buffer-file-name buffer)
                                          "? ")))
-                   (save-excursion (set-buffer buffer) (save-buffer)))))))
+                   (with-current-buffer buffer (save-buffer)))))))
     (dolist (eo existingoriginals)
       (if (file-newer-than-file-p eo derived)
           (setq found t)))
@@ -503,8 +503,7 @@ QUEUE is non-nil when we are checking for the printer queue."
 (defun TeX-view-mouse (event)
   "Start `TeX-view' at mouse position."
   (interactive "e")
-  (save-excursion
-    (set-buffer (window-buffer (posn-window (event-start event))))
+  (with-current-buffer (window-buffer (posn-window (event-start event)))
     (goto-char (posn-point (event-start event)))
     (TeX-view)))
 
@@ -616,8 +615,7 @@ Return the new process."
   (let ((buffer (TeX-process-buffer-name file))
 	(process (TeX-run-command name command file)))
     ;; Hook to TeX debuger.
-    (save-excursion
-      (set-buffer buffer)
+    (with-current-buffer buffer
       (TeX-parse-reset)
       (setq TeX-parse-function 'TeX-parse-TeX)
       (setq TeX-sentinel-function 'TeX-TeX-sentinel)
@@ -811,8 +809,7 @@ reasons.  Use `TeX-run-function' instead."
 (defun TeX-synchronous-sentinel (name file result)
   "Process TeX command output buffer after the process dies."
   (let ((buffer (TeX-process-buffer (file-name-nondirectory file))))
-    (save-excursion
-      (set-buffer buffer)
+    (with-current-buffer buffer
 
       ;; Append post-mortem information to the buffer
       (goto-char (point-max))
@@ -843,8 +840,7 @@ reasons.  Use `TeX-run-function' instead."
 	   (set-process-buffer process nil)
 	   (set-process-sentinel process nil))
 	  ((memq (process-status process) '(signal exit))
-	   (save-excursion
-	     (set-buffer buffer)
+	   (with-current-buffer buffer
 
 	     ;; Append post-mortem information to the buffer
 	     (goto-char (point-max))
@@ -1091,8 +1087,7 @@ defined."
   (let ((buffer (TeX-process-buffer name)))
     (if (and buffer
 	     (local-variable-p symbol buffer))
-	(save-excursion
-	  (set-buffer buffer)
+	(with-current-buffer buffer
 	  (symbol-value symbol))
       default)))
 
@@ -1101,8 +1096,7 @@ defined."
 Return nil iff no process buffer exist."
   (let ((buffer (TeX-process-buffer name)))
     (if buffer
-	(save-excursion
-	  (set-buffer buffer)
+	(with-current-buffer buffer
 	  (set symbol value)
 	  t)
       nil)))
@@ -1374,8 +1368,7 @@ original file."
     (setq original (TeX-quote-filename (file-relative-name
 					original (TeX-master-directory)))
 	  master-name (TeX-quote-filename master-name))
-    (save-excursion
-      (set-buffer file-buffer)
+    (with-current-buffer file-buffer
       (setq buffer-undo-list t)
       (setq original-content (buffer-string))
       (erase-buffer)
