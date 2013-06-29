@@ -344,9 +344,15 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
      (dotimes (i 4 box)
        (aset box i (+ (aref box i) (aref border i)))))))
 
-(defcustom preview-gs-command (if (eq system-type 'windows-nt)
-				  "GSWIN32C.EXE"
-				"gs")
+(defcustom preview-gs-command
+  (or ;; The GS wrapper coming with TeX Live
+      (executable-find "rungs")
+      ;; The GS wrapper coming with MikTeX
+      (executable-find "mgs")
+      ;; Windows ghostscript
+      (executable-find "GSWIN32C.EXE")
+      ;; standard GhostScript
+      (executable-find "gs"))
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
   :group 'preview-gs
   :type 'string)

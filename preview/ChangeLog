@@ -1,3 +1,9 @@
+2013-06-29  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el (preview-gs-command): Prefer the TeX distro
+	ghostscript wrapper scripts `rungs' and `mgs' over calling `gs'
+	directly which requires it to be in PATH.
+
 2013-06-26  Tassilo Horn  <tsdh@gnu.org>
 
 	* Makefile.in (use-hint): Don't warn about problems with overly
