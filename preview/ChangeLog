@@ -1,3 +1,8 @@
+2013-07-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el (preview-gs-command): Test `mgs' for functionality
+	before using it.
+
 2013-06-29  Tassilo Horn  <tsdh@gnu.org>
 
 	* preview.el (preview-gs-command): Prefer the TeX distro

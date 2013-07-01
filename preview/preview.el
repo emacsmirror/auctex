@@ -347,8 +347,12 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
 (defcustom preview-gs-command
   (or ;; The GS wrapper coming with TeX Live
       (executable-find "rungs")
-      ;; The GS wrapper coming with MikTeX
-      (executable-find "mgs")
+      ;; The MikTeX builtin GS
+      (let ((gs (executable-find "mgs")))
+	;; Check if mgs is functional for external non-MikTeX apps.
+	;; See http://blog.miktex.org/post/2005/04/07/Starting-mgsexe-at-the-DOS-Prompt.aspx
+	(when (= 0 (shell-command (concat gs " -q -dNOPAUSE -dBATCH")))
+	  gs))
       ;; Windows ghostscript
       (executable-find "GSWIN32C.EXE")
       ;; standard GhostScript
