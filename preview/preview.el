@@ -351,7 +351,7 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
       (let ((gs (executable-find "mgs")))
 	;; Check if mgs is functional for external non-MikTeX apps.
 	;; See http://blog.miktex.org/post/2005/04/07/Starting-mgsexe-at-the-DOS-Prompt.aspx
-	(when (= 0 (shell-command (concat gs " -q -dNOPAUSE -dBATCH")))
+	(when (= 0 (shell-command (concat gs " -q -dNODISPLAY -c "2 3 mul" -c quit")))
 	  gs))
       ;; Windows ghostscript
       (executable-find "GSWIN32C.EXE")
