@@ -1,3 +1,8 @@
+2013-07-03  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el (preview-gs-command): Change test for `mgs'
+	functionality to "gs -q -dNODISPLAY -c quit".
+
 2013-07-02  Tassilo Horn  <tsdh@gnu.org>
 
 	* preview.el (preview-gs-command): Better test if `mgs' is
