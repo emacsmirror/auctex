@@ -502,6 +502,11 @@ is non-nil and the current environment is \"document\"."
 variable overrides `LaTeX-default-environment'.")
 (make-variable-buffer-local 'LaTeX-default-document-environment)
 
+(defvar LaTeX-default-tabular-environment "tabular"
+  "The default tabular-like environment used when inserting a table env.
+Styles such as tabularx may set it according to their needs.")
+(make-variable-buffer-local 'LaTeX-default-tabular-environment)
+
 (defvar LaTeX-environment-history nil)
 
 ;; Variable used to cache the current environment, e.g. for repeated
@@ -1003,7 +1008,7 @@ job to this function."
 	       ;; Suppose an existing tabular environment should just
 	       ;; be wrapped into a table if there is an active region.
 	       (not active-mark))
-      (LaTeX-env-array "tabular"))))
+      (LaTeX-environment-menu LaTeX-default-tabular-environment))))
 
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.

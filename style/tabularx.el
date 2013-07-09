@@ -37,6 +37,8 @@
 (TeX-add-style-hook
  "tabularx"
  (lambda ()
+   ;; Make tabularx the default tabular environment
+   (setq LaTeX-default-tabular-environment "tabularx")
    ;; New symbols
    (TeX-add-symbols
     "tracingtabularx"

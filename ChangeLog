@@ -1,3 +1,11 @@
+2013-07-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-default-tabular-environment): New variable.
+	(LaTeX-env-figure): Use it instead of hard-coding "tabular".
+
+	* style/tabularx.el ("tabularx"): Set
+	`LaTeX-default-tabular-environment' to "tabularx".
+
 2013-06-29  Mosè Giordano  <giordano.mose@libero.it>
 
 	* bib-cite.el: Replace `save-excursion'+`set-buffer' with
