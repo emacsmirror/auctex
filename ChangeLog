@@ -1,3 +1,8 @@
+2013-07-11  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/auctex.texi (Processor Options): Document
+	`TeX-source-correlate-method'.
+
 2013-07-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-default-tabular-environment): New variable.
