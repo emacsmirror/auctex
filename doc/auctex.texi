@@ -2577,6 +2577,7 @@ customizing the variable @code{TeX-source-correlate-mode}.  There is a
 bunch of customization options for the mode, use @kbd{M-x
 customize-group @key{RET} TeX-view @key{RET}} to find out more.
 
+@vindex TeX-source-correlate-method
 @AUCTeX{} is aware of three different means to do I/O correlation:
 source specials (only DVI output), the pdfsync @LaTeX{} package (only
 PDF output) and Sync@TeX{}.  The choice between source specials and
@@ -2590,20 +2591,6 @@ should thus @emph{never} be used for the final version of a document.
 In particular, fine-tuning the page breaks should be done with source
 specials switched off.
 @end deffn
-
-@defopt TeX-source-correlate-method
-Method to use for enabling forward and inverse search.  This can be
-@samp{source-specials} if source specials should be used, @samp{synctex}
-if SyncTeX should be used, or @samp{auto} if @AUCTeX{} should decide.
-
-When the variable is set to @samp{auto}, @AUCTeX{} will use SyncTeX if
-your @code{latex} processor supports it, source specials otherwise.  You
-must make sure your viewer supports the same forward and inverse method.
-
-Setting this variable does not take effect if
-@code{TeX-source-correlate-mode} has already been active.  Restart Emacs
-in this case.
-@end defopt
 
 @AUCTeX{} also allows you to easily select different @TeX{} engines for
 processing, either by using the entries in the @samp{TeXing Options}
@@ -2824,7 +2811,23 @@ output) and Sync@TeX{} (any type of output).  If you want to make use of
 forward and inverse searching with source specials or Sync@TeX{}, switch
 on @code{TeX-source-correlate-mode}.  @xref{Processor Options}, on how
 to do that.  The use of the pdfsync package is detected automatically if
-document parsing is enabled.
+document parsing is enabled.  Customize the variable
+@code{TeX-source-correlate-method} to select the method to use.
+
+@defopt TeX-source-correlate-method
+Method to use for enabling forward and inverse search.  This can be
+@samp{source-specials} if source specials should be used, @samp{synctex}
+if SyncTeX should be used, or @samp{auto} if @AUCTeX{} should decide,
+this is the default.
+
+When the variable is set to @samp{auto}, @AUCTeX{} will use SyncTeX if
+your @code{latex} processor supports it, source specials otherwise.  You
+must make sure your viewer supports the same method.
+
+Setting this variable does not take effect if
+@code{TeX-source-correlate-mode} has already been active.  Restart Emacs
+in this case.
+@end defopt
 
 @findex TeX-view
 Forward search happens automatically upon calling the viewer, e.g. by
