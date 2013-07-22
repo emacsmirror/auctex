@@ -38,8 +38,8 @@
 
 ;; New versions of this package (if they exist) may be found at:
 ;;   http://people.debian.org/~psg/elisp/bib-cite.el
-;; and in AUCTeX's CVS archive at
-;;   http://savannah.gnu.org/cgi-bin/viewcvs/auctex/auctex/
+;; and in AUCTeX's Git archive at
+;;   http://git.savannah.gnu.org/cgit/auctex.git
 
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.

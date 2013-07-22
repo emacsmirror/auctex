@@ -1,5 +1,9 @@
 2013-07-22  Mosè Giordano  <giordano.mose@libero.it>
 
+	* auctex.spec (Provides): Update reference to Git in comment.
+
+	* bib-cite.el: Update AUCTeX repository link in comment.
+
 	* font-latex.el (font-latex-built-in-keyword-classes): Fix
 	fontification of some biblatex macros.  Reported by Christian
 	Knüpfer.
