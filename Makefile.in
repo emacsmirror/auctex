@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2010 Free Software
+# Copyright (C) 2003-2008, 2010, 2013 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -58,8 +58,8 @@ AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (save-buffers-kill-emacs t))'
 DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd "$$OLDPWD";echo "Ascending into $$OLDPWD";done)
 
-CVSFILES=autogen.sh .cvsignore doc/.cvsignore preview/.cvsignore \
-	preview/latex/.cvsignore README.CVS
+GITFILES=autogen.sh .gitignore doc/.gitignore preview/.gitignore \
+	preview/latex/.gitignore README.GIT
 
 .SUFFIXES: .el .elc .texi
 
@@ -72,7 +72,7 @@ FTPDIR = $(DIST_PREFIX)/ftp
 WWWDIR = $(DIST_PREFIX)/www
 XEMACS_BUILD_DIR = xemacs-build
 PREVIEW_BUILD_DIR = preview-build
-COMMITTER="David Kastrup  <dak@gnu.org>"
+COMMITTER="`git config --get user.name`\ \ \<`git config --get user.email`\>"
 RPMROOT = /usr/src/redhat
 RPM_SIGN = --sign
 
@@ -215,7 +215,7 @@ install-startup:
 
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
-	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (CVS-version) mistakes
+	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (Git-version) mistakes
 	test ! -f $(DESTDIR)$(lispdir)/tex-site.el || { \
 	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
@@ -331,6 +331,9 @@ wc:
 # 
 # 1) release-commit TAG=<tag> COMMITTER=<committer>
 #    Tag the release.
+#    Pass `COMMITTER=<committer>' argument only if it is different from
+#    your git name and email.  `<committer>' should be in the form
+#        "John Doe  <john.doe@example.com>"
 #    
 # 2) dist TAG=<tag>
 #    Create the tar ball and other release files and put them into $FTPDIR.
@@ -362,26 +365,30 @@ check-tag:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** Error: No TAG ***"; exit 1; fi
 
 release-commit: check-tag
-	@echo "Tagging release $(TAG) in CVS ..."
+	@echo "Tagging release $(TAG) in Git ..."
 	sleep 5
 	mv ChangeLog ChangeLog.old
-	echo `date "+%Y-%m-%d "`" "${COMMITTER} > ChangeLog
+# Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
+# requires the `iconv' program.
+	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	cvs commit -m 'Release_$(TAG)' ChangeLog
-	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
+	git commit -m 'Release_$(TAG)' -- ChangeLog
+	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
+	@echo
+	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."
+	@echo "Please, remember tu run"
+	@echo "    git push --tags"
+	@echo "to propagate release commit and tag to the remote repository."
 
 tar-ball: doc/Makefile
 	test ! -d auctex-$(TAG) || rm -r auctex-$(TAG)
 	mkdir auctex-$(TAG)
 # Use TAG_EXPORT if set (for snapshots)
-	cvs export -d auctex-$(TAG) \
-          `echo $${TAG_EXPORT:=$(TAG)} | \
-	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
-              -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
-	cd auctex-$(TAG) && AUCTEXVERSION=$(TAG) AUCTEXDATE=$(AUCTEXDATE) ./autogen.sh && rm $(CVSFILES)
+	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} | tar -xC auctex-$(TAG)
+	cd auctex-$(TAG) && AUCTEXVERSION=$(TAG) AUCTEXDATE=$(AUCTEXDATE) ./autogen.sh && rm -f $(GITFILES)
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR)
 	mkdir -p $(FTPDIR)
@@ -512,10 +519,8 @@ preview-ball: check-tag
 	test ! -d $(PREVIEW_BUILD_DIR) || rm -r $(PREVIEW_BUILD_DIR)
 	mkdir $(PREVIEW_BUILD_DIR)
 # Use TAG_EXPORT if set (for snapshots)
-	cvs export -d $(PREVIEW_BUILD_DIR) \
-          `echo $${TAG_EXPORT:=$(TAG)} | \
-	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
-              -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex/preview/latex
+	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} \
+	  preview/latex | tar -xC $(PREVIEW_BUILD_DIR) --strip-components=2
 	cd $(PREVIEW_BUILD_DIR) && make -f ../preview/latex/Makefile preview.ins preview.pdf
 	chmod -R go-w+rX $(PREVIEW_BUILD_DIR)
 	test -d $(FTPDIR) || mkdir -p $(FTPDIR)

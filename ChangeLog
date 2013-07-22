@@ -1,5 +1,15 @@
 2013-07-22  Mosè Giordano  <giordano.mose@libero.it>
 
+	* Makefile.in: Update copyright years.
+	(GITFILES): Rename from `CVSFILES', adapt to Git.
+	(COMMITTER): Get user name and email from Git configuration;
+	escape `<', `>' and spaces.
+	(install-el): Update reference to Git in comment.
+	(release-commit): Adapt to Git; make sure committer name and email
+	are encoded with ISO-8859-1 using the `iconv' program.
+	(tar-ball): Adapt to Git.
+	(preview-ball): Ditto.
+
 	* auctex.spec (Provides): Update reference to Git in comment.
 
 	* bib-cite.el: Update AUCTeX repository link in comment.
