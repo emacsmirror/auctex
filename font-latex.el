@@ -313,14 +313,10 @@ variable `font-latex-fontify-sectioning'." num)
       ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{") ("citereset" "*")
       ("RN" "{") ("Rn" "{") ("DefineBibliographyStrings" "{{") ("DefineBibliographyExtras" "{{")
       ("UndefineBibliographyExtras" "{{") ("DefineHyphenationExceptions" "{{")
-      ("NewBibliographyString" "{")
-      ;; Multicite macros take any number of "key" arguments, let's limit
-      ;; fontification to three arguments.
-      ("autocites" "(([[{[[{[[{") ("Autocites" "(([[{[[{[[{") ("cites" "(([[{[[{[[{")
-      ("Cites" "(([[{[[{[[{") ("parencites" "(([[{[[{[[{") ("Parencites" "(([[{[[{[[{")
-      ("footcites" "(([[{[[{[[{") ("footcitetexts" "(([[{[[{[[{") ("smartcites" "(([[{[[{[[{")
-      ("Smartcites" "(([[{[[{[[{") ("textcites" "(([[{[[{[[{") ("Textcites" "(([[{[[{[[{")
-      ("supercites" "(([[{[[{[[{"))
+      ("NewBibliographyString" "{") ("autocites" "(([[{") ("Autocites" "(([[{")
+      ("cites" "(([[{") ("Cites" "(([[{") ("parencites" "(([[{") ("Parencites" "(([[{")
+      ("footcites" "(([[{") ("footcitetexts" "(([[{") ("smartcites" "(([[{")
+      ("Smartcites" "(([[{") ("textcites" "(([[{") ("Textcites" "(([[{") ("supercites" "(([[{"))
      'font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")

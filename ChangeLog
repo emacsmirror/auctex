@@ -3,6 +3,8 @@
 	* font-latex.el (font-latex-built-in-keyword-classes): Fix
 	fontification of some biblatex macros.  Reported by Christian
 	Knüpfer.
+	(font-latex-built-in-keyword-classes): Revert changes made with
+	commit 7531cca, they were useless.
 
 2013-07-15  Mads Jensen  <mje@inducks.org>
 
