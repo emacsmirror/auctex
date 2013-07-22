@@ -1,3 +1,9 @@
+2013-07-22  Mosè Giordano  <giordano.mose@libero.it>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Fix
+	fontification of some biblatex macros.  Reported by Christian
+	Knüpfer.
+
 2013-07-15  Mads Jensen  <mje@inducks.org>
 
 	* style/tabulary.el: New style.
