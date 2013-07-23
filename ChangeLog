@@ -1,5 +1,10 @@
 2013-07-23  Mosè Giordano  <giordano.mose@libero.it>
 
+	* tex.el (TeX-clean-default-intermediate-suffixes): Add `.fls',
+	files created by TeX processors with `-recorder' option, and
+	`-blx.bib', files created by `bibtex' when using the `biblatex'
+	package.
+
 	* doc/changes.texi: Document some changes for next release.
 
 2013-07-22  Mosè Giordano  <giordano.mose@libero.it>
