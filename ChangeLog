@@ -1,3 +1,7 @@
+2013-07-23  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/changes.texi: Document some changes for next release.
+
 2013-07-22  Mosè Giordano  <giordano.mose@libero.it>
 
 	* Makefile.in: Update copyright years.
