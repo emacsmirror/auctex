@@ -1,3 +1,8 @@
+2013-07-24  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-math-menu-unicode): Enable also on windows
+	systems as it seems to work there, too.
+
 2013-07-23  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-clean-default-intermediate-suffixes): Add `.fls',

@@ -4663,7 +4663,8 @@ The menu entries will be generated dynamically, but you can specify
 the sequence by initializing this variable.")
 
 (defcustom LaTeX-math-menu-unicode
-  (and (string-match "\\<GTK\\>" (emacs-version)) t)
+  (or (string-match "\\<GTK\\>" (emacs-version))
+      (eq window-system 'w32))
   "Whether the LaTeX menu should try using Unicode for effect."
   :type 'boolean
   :group 'LaTeX-math)
