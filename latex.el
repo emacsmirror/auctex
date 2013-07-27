@@ -1541,7 +1541,7 @@ It will setup BibTeX to store keys in an auto file."
 
 (defvar BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+[{(][ \t]*\\([^, \n\r\t%\"#'()={}]*\\)" 1 LaTeX-auto-bibitem)))
+    ("@[a-zA-Z]+[{(][ \t]*\\([^, \n\r\t%\"#'()={}]*\\)" 1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 ;;; Macro Argument Hooks
