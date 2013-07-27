@@ -1,3 +1,9 @@
+2013-07-27  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (BibTeX-auto-regexp-list): Remove `TeX-token-char' from
+	the regexp since cite keys can start with non-letter characters,
+	e.g., bibcodes start with year of publication.
+
 2013-07-24  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-math-menu-unicode): Enable also on windows
