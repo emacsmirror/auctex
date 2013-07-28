@@ -1,3 +1,9 @@
+2013-07-29  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/changes.texi: Add other changes.
+
+	* doc/auctex.texi (Environments): Fix typo.
+
 2013-07-27  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (BibTeX-auto-regexp-list): Remove `TeX-token-char' from

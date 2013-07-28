@@ -753,7 +753,7 @@ overriden by @code{LaTeX-default-document-environment}.
 Default environment when invoking @samp{LaTeX-environment} and the
 current environment is @samp{document}.  It is intended to be used in
 @LaTeX{} class style files.  For example, in @file{beamer.el} it is set
-to @code{slide}, in @file{letter.el} to @code{letter}, and in
+to @code{frame}, in @file{letter.el} to @code{letter}, and in
 @file{slides.el} to @code{slide}.
 @end defvar
 
