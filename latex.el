@@ -4062,44 +4062,108 @@ of verbatim constructs are not considered."
   "Mathematics in AUCTeX."
   :group 'LaTeX-macro)
 
-(defcustom LaTeX-math-list nil
-  "Alist of your personal LaTeX math symbols.
+(defvar LaTeX-math-keymap (make-sparse-keymap)
+  "Keymap used for `LaTeX-math-mode' commands.")
 
-Each entry should be a list with up to four elements, KEY, VALUE,
-MENU and CHARACTER.
+(defun LaTeX-math-abbrev-prefix ()
+  "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
+  (if (stringp LaTeX-math-abbrev-prefix)
+      (read-kbd-macro LaTeX-math-abbrev-prefix)
+    LaTeX-math-abbrev-prefix))
 
-KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
-in math minor mode.  If KEY is nil, the symbol has no associated
-keystroke \(it is available in the menu, though\).
+(defvar LaTeX-math-menu
+  '("Math"
+    ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
+    ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
+    ("Delimiters") ("Constructs") ("Accents") ("AMS"))
+  "Menu containing LaTeX math commands.
+The menu entries will be generated dynamically, but you can specify
+the sequence by initializing this variable.")
 
-VALUE can be a string with the name of the macro to be inserted,
-or a function to be called.  The macro must be given without the
-leading backslash.
+(defcustom LaTeX-math-menu-unicode
+  (or (string-match "\\<GTK\\>" (emacs-version))
+      (eq window-system 'w32))
+  "Whether the LaTeX menu should try using Unicode for effect."
+  :type 'boolean
+  :group 'LaTeX-math)
 
-The third element MENU is the name of the submenu where the
-command should be added.  MENU can be either a string
-\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
-nil.  If MENU is nil, no menu item will be created.
+(defcustom LaTeX-math-abbrev-prefix "`"
+  "Prefix key for use in `LaTeX-math-mode'.
+This has to be a string representing a key sequence in a format
+understood by the `kbd' macro.  This corresponds to the syntax
+usually used in the Emacs and Elisp manuals.
 
-The fourth element CHARACTER is a Unicode character position for
-menu display.  When nil, no character is shown.
-
-See also `LaTeX-math-menu'."
+Setting this variable directly does not take effect;
+use \\[customize]."
   :group 'LaTeX-math
-  :type '(repeat (group (choice :tag "Key"
-				(const :tag "none" nil)
-				(choice (character)
-					(string :tag "Key sequence")))
-			(choice :tag "Value"
-				(string :tag "Macro")
-				(function))
-			(choice :tag "Menu"
-				(string :tag "Top level menu" )
-				(repeat :tag "Submenu"
-					(string :tag "Menu")))
-			(choice :tag "Unicode character"
-				(const :tag "none" nil)
-				(integer :tag "Number")))))
+  :initialize 'custom-initialize-default
+  :set '(lambda (symbol value)
+	  (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
+	  (set-default symbol value)
+	  (define-key LaTeX-math-mode-map
+	    (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  :type '(string :tag "Key sequence"))
+
+(defun LaTeX-math-initialize ()
+  (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
+	(map LaTeX-math-keymap)
+	(unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+    (while math
+      (let* ((entry (car math))
+	     (key (nth 0 entry))
+	     (prefix
+	      (and unicode
+		   (nth 3 entry)))
+	     value menu name)
+	(setq math (cdr math))
+	(if (and prefix
+		 (setq prefix (decode-char 'ucs (nth 3 entry))))
+	    (setq prefix (concat (string prefix) " \\"))
+	  (setq prefix "\\"))
+	(if (listp (cdr entry))
+	    (setq value (nth 1 entry)
+		  menu (nth 2 entry))
+	  (setq value (cdr entry)
+		menu nil))
+	(if (stringp value)
+	    (progn
+	      (setq name (intern (concat "LaTeX-math-" value)))
+	      (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
+			       (list 'LaTeX-math-insert value 'arg))))
+	  (setq name value))
+	(if key
+	    (progn
+	      (setq key (cond ((numberp key) (char-to-string key))
+			      ((stringp key) (read-kbd-macro key))
+			      (t (vector key))))
+	      (define-key map key name)))
+	(if menu
+	    (let ((parent LaTeX-math-menu))
+	      (if (listp menu)
+		  (progn
+		    (while (cdr menu)
+		      (let ((sub (assoc (car menu) LaTeX-math-menu)))
+			(if sub
+			    (setq parent sub)
+			  (setcdr parent (cons (list (car menu)) (cdr parent))))
+			(setq menu (cdr menu))))
+		    (setq menu (car menu))))
+	      (let ((sub (assoc menu parent)))
+		(if sub
+		    (if (stringp value)
+			(setcdr sub (cons (vector (concat prefix value)
+						  name t)
+					  (cdr sub)))
+		      (error "Cannot have multiple special math menu items"))
+		  (setcdr parent
+			  (cons (if (stringp value)
+				    (list menu (vector (concat prefix value)
+						       name t))
+				  (vector menu name t))
+				(cdr parent)))))))))
+    ;; Make the math prefix char available if it has not been used as a prefix.
+    (unless (lookup-key map (LaTeX-math-abbrev-prefix))
+      (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
 
 (defconst LaTeX-math-default
   '((?a "alpha" "Greek Lowercase" 945) ;; #X03B1
@@ -4626,107 +4690,47 @@ See also `LaTeX-math-menu'."
 Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
-(defcustom LaTeX-math-abbrev-prefix "`"
-  "Prefix key for use in `LaTeX-math-mode'.
-This has to be a string representing a key sequence in a format
-understood by the `kbd' macro.  This corresponds to the syntax
-usually used in the Emacs and Elisp manuals.
+(defcustom LaTeX-math-list nil
+  "Alist of your personal LaTeX math symbols.
 
-Setting this variable directly does not take effect;
-use \\[customize]."
+Each entry should be a list with up to four elements, KEY, VALUE,
+MENU and CHARACTER.
+
+KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
+in math minor mode.  If KEY is nil, the symbol has no associated
+keystroke \(it is available in the menu, though\).
+
+VALUE can be a string with the name of the macro to be inserted,
+or a function to be called.  The macro must be given without the
+leading backslash.
+
+The third element MENU is the name of the submenu where the
+command should be added.  MENU can be either a string
+\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
+nil.  If MENU is nil, no menu item will be created.
+
+The fourth element CHARACTER is a Unicode character position for
+menu display.  When nil, no character is shown.
+
+See also `LaTeX-math-menu'."
   :group 'LaTeX-math
-  :initialize 'custom-initialize-default
-  :set '(lambda (symbol value)
-	  (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
-	  (set-default symbol value)
-	  (define-key LaTeX-math-mode-map
-	    (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
-  :type '(string :tag "Key sequence"))
-
-(defun LaTeX-math-abbrev-prefix ()
-  "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
-  (if (stringp LaTeX-math-abbrev-prefix)
-      (read-kbd-macro LaTeX-math-abbrev-prefix)
-    LaTeX-math-abbrev-prefix))
-
-(defvar LaTeX-math-keymap (make-sparse-keymap)
-  "Keymap used for `LaTeX-math-mode' commands.")
-
-(defvar LaTeX-math-menu
-  '("Math"
-    ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
-    ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
-    ("Delimiters") ("Constructs") ("Accents") ("AMS"))
-  "Menu containing LaTeX math commands.
-The menu entries will be generated dynamically, but you can specify
-the sequence by initializing this variable.")
-
-(defcustom LaTeX-math-menu-unicode
-  (or (string-match "\\<GTK\\>" (emacs-version))
-      (eq window-system 'w32))
-  "Whether the LaTeX menu should try using Unicode for effect."
-  :type 'boolean
-  :group 'LaTeX-math)
-
-(let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
-      (map LaTeX-math-keymap)
-      (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
-  (while math
-    (let* ((entry (car math))
-	   (key (nth 0 entry))
-	   (prefix
-	    (and unicode
-		 (nth 3 entry)))
-	   value menu name)
-      (setq math (cdr math))
-      (if (and prefix
-	       (setq prefix (decode-char 'ucs (nth 3 entry))))
-	  (setq prefix (concat (string prefix) " \\"))
-	(setq prefix "\\"))
-      (if (listp (cdr entry))
-	  (setq value (nth 1 entry)
-		menu (nth 2 entry))
-	(setq value (cdr entry)
-	      menu nil))
-      (if (stringp value)
-	  (progn
-	   (setq name (intern (concat "LaTeX-math-" value)))
-	   (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-			    (list 'LaTeX-math-insert value 'arg))))
-	(setq name value))
-      (if key
-	  (progn
-	    (setq key (cond ((numberp key) (char-to-string key))
-			    ((stringp key) (read-kbd-macro key))
-			    (t (vector key))))
-	    (define-key map key name)))
-      (if menu
-	  (let ((parent LaTeX-math-menu))
-	    (if (listp menu)
-		(progn
-		  (while (cdr menu)
-		    (let ((sub (assoc (car menu) LaTeX-math-menu)))
-		      (if sub
-			  (setq parent sub)
-			(setcdr parent (cons (list (car menu)) (cdr parent))))
-		      (setq menu (cdr menu))))
-		  (setq menu (car menu))))
-	    (let ((sub (assoc menu parent)))
-	      (if sub
-		  (if (stringp value)
-		      (setcdr sub (cons (vector (concat prefix value)
-						name t)
-					(cdr sub)))
-		    (error "Cannot have multiple special math menu items"))
-		(setcdr parent
-			(cons (if (stringp value)
-				  (list menu (vector (concat prefix value)
-						     name t))
-				(vector menu name t))
-			      (cdr parent)))))))))
-  ;; Make the math prefix char available if it has not been used as a prefix.
-  (unless (lookup-key map (LaTeX-math-abbrev-prefix))
-    (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command)))
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (LaTeX-math-initialize))
+  :type '(repeat (group (choice :tag "Key"
+				(const :tag "none" nil)
+				(choice (character)
+					(string :tag "Key sequence")))
+			(choice :tag "Value"
+				(string :tag "Macro")
+				(function))
+			(choice :tag "Menu"
+				(string :tag "Top level menu" )
+				(repeat :tag "Submenu"
+					(string :tag "Menu")))
+			(choice :tag "Unicode character"
+				(const :tag "none" nil)
+				(integer :tag "Number")))))
 
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy access to TeX math macros.
