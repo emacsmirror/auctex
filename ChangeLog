@@ -1,3 +1,23 @@
+2013-08-03  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (TeX-arg-ref): New function.
+
+	* doc/auctex.texi: Replace occurrences of `TeX-arg-label' with
+	`TeX-arg-ref'.
+	(Adding Macros): Document `TeX-arg-ref'.
+
+	* style/fancyref.el ("fancyref"): Use `TeX-arg-ref' instead of
+	`TeX-arg-label'.
+
+	* style/latexinfo.el ("latexinfo"): Ditto.
+
+	* style/nameref.el ("nameref"): Ditto.
+
+	* style/varioref.el ("varioref"): Ditto.
+
+	* style/subfigure.el ("subfigure"): Use `TeX-arg-ref' instead of
+	`TeX-arg-label' and fix parentheses.
+
 2013-07-31  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-math-initialize): Refactor top-level code into

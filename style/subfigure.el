@@ -35,11 +35,11 @@
    (TeX-add-symbols
     '("subfigure"  [ "List entry" ] [ "Sub caption" ] "Figure")
     '("subtable"   [ "List entry" ] [ "Sub caption" ] "Figure")
-    '("Subref" TeX-arg-label)
-    '("subref" TeX-arg-label)
+    '("Subref" TeX-arg-ref)
+    '("subref" TeX-arg-ref)
     '("subcapsize" 0)
     '("subcapfont" 0)
-    '("subcaplabelfont" 0)
+    '("subcaplabelfont" 0))
 
    (LaTeX-add-lengths "subfigtopskip" "subfigcapskip" "subfigcaptopadj"
                       "subfigbottomskip" "subfigcapmargin" "subfiglabelskip")
@@ -48,7 +48,7 @@
    (setq TeX-complete-list
 	 (append
 	  '(("\\\\[Ss]ubref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")))
-	  TeX-complete-list))
+	  TeX-complete-list)
 
    ;; Fontification
    (when (and (featurep 'font-latex)

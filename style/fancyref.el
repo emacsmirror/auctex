@@ -30,8 +30,8 @@
      (TeX-add-symbols
 
       ;; The macros with label arguments
-      '("fref" [ TeX-arg-fancyref-format ] TeX-arg-label)
-      '("Fref" [ TeX-arg-fancyref-format ] TeX-arg-label)
+      '("fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
+      '("Fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
 
       ;; The macros which define new prefixes and formats
       '("fancyrefchangeprefix" TeX-arg-macro "Prefix")

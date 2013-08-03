@@ -98,11 +98,11 @@ This fails when the user types in the label of something else"
        (TeX-arg-literal " ")
        (TeX-arg-free TeX-arg-define-label "Node name")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-label "Next node")
+       (TeX-arg-free TeX-arg-ref "Next node")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-label "Previous node")
+       (TeX-arg-free TeX-arg-ref "Previous node")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-label "Up node"))
+       (TeX-arg-free TeX-arg-ref "Up node"))
      '("setfilename" TeX-arg-file)
 
      '("var" t)
@@ -136,8 +136,8 @@ This fails when the user types in the label of something else"
      '("copyright" nil)
      '("sp" nil)
 
-     '("xref" TeX-arg-label)
-     '("pxref" TeX-arg-label)
+     '("xref" TeX-arg-ref)
+     '("pxref" TeX-arg-ref)
      '("inforef"
        (TeX-arg-literal "{")
        (TeX-arg-free "Name of node")

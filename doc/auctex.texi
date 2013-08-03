@@ -3953,7 +3953,7 @@ Here are a few examples from @file{latex.el}.
    (TeX-add-symbols
     '("arabic" TeX-arg-counter)
     '("label" TeX-arg-define-label)
-    '("ref" TeX-arg-label)
+    '("ref" TeX-arg-ref)
     '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
     '("newtheorem" TeX-arg-define-environment
       [ TeX-arg-environment "Numbered like" ]
@@ -3982,7 +3982,7 @@ Thus, to overwrite
 @end example
 you can specify
 @example
-	'("tref" TeX-arg-label ignore) ; two arguments
+	'("tref" TeX-arg-ref ignore) ; two arguments
 @end example
 
 @code{ignore} is a function that does not do anything, so when you
@@ -4044,7 +4044,13 @@ Parse its arguments but use no braces when they are inserted.
 Evaluate arguments and insert the result in the buffer.
 
 @item TeX-arg-label
-Prompt for a label completing with known labels.
+Prompt for a label completing with known labels.  If Ref@TeX{} is
+active, prompt for the reference format.
+
+@item TeX-arg-ref
+Prompt for a label completing with known labels.  If Ref@TeX{} is
+active, do not prompt for the reference format.  Usually, reference
+macros should use this function instead of @code{TeX-arg-label}.
 
 @item TeX-arg-index-tag
 Prompt for an index tag.  This is the name of an index, not the entry.

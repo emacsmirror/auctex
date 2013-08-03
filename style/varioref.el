@@ -31,21 +31,21 @@
      (TeX-add-symbols
 
       ;; The macros with label arguments
-      '("vref" TeX-arg-label)
-      '("Vref" TeX-arg-label)
-      '("vrefrange" [ "Same page text" ] TeX-arg-label TeX-arg-label)
-      '("vrefrange*" [ "Same page text" ] TeX-arg-label TeX-arg-label)
-      '("vref*" TeX-arg-label)
-      '("Vref" TeX-arg-label)
-      '("Ref" TeX-arg-label)
-      '("vpageref" [ "Same page text" ] [ "Different page text" ] TeX-arg-label)
+      '("vref" TeX-arg-ref)
+      '("Vref" TeX-arg-ref)
+      '("vrefrange" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
+      '("vrefrange*" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
+      '("vref*" TeX-arg-ref)
+      '("Vref" TeX-arg-ref)
+      '("Ref" TeX-arg-ref)
+      '("vpageref" [ "Same page text" ] [ "Different page text" ] TeX-arg-ref)
       '("vpageref*" [ "Same page text" ] [ "Different page text" ]
-        TeX-arg-label)
-      '("fullref" TeX-arg-label)
+        TeX-arg-ref)
+      '("fullref" TeX-arg-ref)
       '("labelformat" TeX-arg-counter t)
 
-      '("vpagerefrange" [ "Same page text" ] TeX-arg-label TeX-arg-label)
-      '("vpagerefrange*" [ "Same page text" ] TeX-arg-label TeX-arg-label)
+      '("vpagerefrange" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
+      '("vpagerefrange*" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
 
       ;; And the other macros used for customization
       "reftextbefore" "reftextfacebefore"

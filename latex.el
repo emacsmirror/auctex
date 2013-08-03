@@ -1574,7 +1574,14 @@ list of defined labels."
 	(LaTeX-add-labels label))
     (TeX-argument-insert label optional optional)))
 
-(defalias 'TeX-arg-ref 'TeX-arg-label)
+(defun TeX-arg-ref (optional &optional prompt definition)
+  "Let-bind `reftex-ref-macro-prompt' to nil and pass arguments
+to `TeX-arg-label'.
+
+See the documentation of `TeX-arg-label' for details on the
+arguments: OPTIONAL, PROMPT, and DEFINITION."
+  (let ((reftex-ref-macro-prompt nil))
+    (TeX-arg-label optional prompt definition)))
 
 (defun TeX-arg-index-tag (optional &optional prompt &rest args)
   "Prompt for an index tag.

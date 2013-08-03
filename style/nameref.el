@@ -33,7 +33,7 @@
  "nameref"
  (lambda ()
    (TeX-add-symbols
-    '("nameref" TeX-arg-label))
+    '("nameref" TeX-arg-ref))
    
    (setq TeX-complete-list
          (append '(("\\\\nameref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
