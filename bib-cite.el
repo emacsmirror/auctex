@@ -763,7 +763,8 @@ runs bib-find, and [mouse-3] runs bib-display."
 	(progn
 	  (bib-cite-setup-highlight-mouse-keymap)
 	  (bib-highlight-mouse)
-	  (make-local-hook 'after-change-functions)
+	  (when bib-cite-is-XEmacs
+	    (make-local-hook 'after-change-functions))
 	  (add-hook 'after-change-functions
 		    'bib-cite-setup-mouse-function nil t)))
     (if bib-cite-is-XEmacs

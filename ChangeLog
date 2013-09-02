@@ -1,3 +1,8 @@
+2013-09-02  Tassilo Horn  <tsdh@gnu.org>
+
+	* bib-cite.el (bib-cite-minor-mode): Call `make-local-hook' only
+	on XEmacs.
+
 2013-08-03  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (TeX-arg-ref): New function.
