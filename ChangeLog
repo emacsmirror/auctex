@@ -1,5 +1,7 @@
 2013-09-02  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-electric-math): Fix defcustom choices.
+
 	* bib-cite.el (bib-cite-minor-mode): Call `make-local-hook' only
 	on XEmacs.
 

@@ -5172,9 +5172,9 @@ If non-nil, this variable is a cons cell whose CAR is the string
 to insert before point, the CDR is the string to insert after
 point.  You can choose between \"$...$\" and \"\\(...\\)\"."
   :group 'TeX-macro
-  :type '(choice (const :tag "$" nil)
-		 (const :tag "$...$" '("$" . "$"))
-		 (const :tag "\\(...\\)" '("\\(" . "\\)"))
+  :type '(choice (const :tag "No electricity" nil)
+		 (const :tag "$...$" ("$" . "$"))
+		 (const :tag "\\(...\\)" ("\\(" . "\\)"))
 		 (cons :tag "Other"
 		       (string :tag "Insert before point")
 		       (string :tag "Insert after point"))))
