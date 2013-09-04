@@ -579,9 +579,9 @@ either: at the top of the document; the top level sectioning for that
 document style, and any other place: The same as the last occurring
 sectioning command.
 
-Next, you will be asked for the actual name of that section, and
-last you will be asked for a label to be associated with that section.
-The label will be prefixed by the value specified in
+Next, you will be asked for the actual name of that section, and last
+you will be asked for a label to be associated with that section.  The
+label will be prefixed by the value specified in
 @code{LaTeX-section-hook}.
 
 @deffn Command LaTeX-section @var{arg}
