@@ -639,7 +639,8 @@ The following variables are set before the hooks are run
 
 @table @var
 @item level
-Numeric section level, default set by prefix arg to @code{LaTeX-section}.
+Numeric section level, default set by prefix arg to
+@code{LaTeX-section}.
 @item name
 Name of the sectioning command, derived from @var{level}.
 @item title
