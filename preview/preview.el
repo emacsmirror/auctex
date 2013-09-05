@@ -1440,6 +1440,9 @@ autoloads for preview-latex.")
 							    preview-datadir))
 		 ,@(preview-filter-specs-1 args))))
 
+(defvar preview-lispdir TeX-lisp-directory
+  "The directory where the preview lisp files are located.")
+
 (defun preview-ascent-from-bb (bb)
   "This calculates the image ascent from its bounding box.
 The bounding box BB needs to be a 4-component vector of
