@@ -1,3 +1,8 @@
+2013-09-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-check-files): Handle buffers that haven't been
+	saved yet.
+
 2013-09-02  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-electric-math): Fix defcustom choices.

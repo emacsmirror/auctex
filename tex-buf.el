@@ -380,7 +380,8 @@ ORIGINALS which are modified but not saved yet."
       (dolist (orig originals)
 	(dolist (ext extensions)
 	  (let ((filepath (concat path orig "." ext)))
-	    (if (file-exists-p filepath)
+	    (if (or (file-exists-p filepath)
+		    (get-file-buffer filepath))
                 (setq existingoriginals (cons filepath existingoriginals)))))))
     (while buffers
       (let* ((buffer (car buffers))
