@@ -332,18 +332,13 @@ in either a site-wide @file{site-start.el} or your personal startup file
 @file{~/.xemacs/init.el} from within XEmacs).
 
 @cindex @file{tex-mik.el}
-@cindex @file{tex-fptex.el}
 The default configuration of @AUCTeX{} is probably not the best fit for
-Windows systems.  You might want to add
+Windows systems with MiK@TeX{}.  You might want to add
 @example
 (require 'tex-mik)
 @end example
-or
-@example
-(require 'tex-fptex)
-@end example
-in order to get more appropriate values for MiK@TeX{} and fp@TeX{},
-respectively after loading @file{auctex.el} and @file{preview-latex.el}.
+after loading @file{auctex.el} and @file{preview-latex.el} in order to
+get more appropriate values for some customization options.
 
 You can always use
 

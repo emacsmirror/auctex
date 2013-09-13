@@ -104,9 +104,9 @@ MAIN: while (<STDIN>) {
     # Braces WITHIN bars should be escaped like so: @{ @}
     # and |..| translates to @code{..} or @file{..} depending on content
     # and to .. if in {quote}
-    split /\|/;
+    @chunks = split /\|/;
     $odd=0;
-    COMMAND: foreach (@_) {
+    COMMAND: foreach (@chunks) {
 	if ($odd==0) {
 	    $odd=1;
 	} else {
@@ -122,7 +122,7 @@ MAIN: while (<STDIN>) {
 	    $odd=0;
 	}
     }
-    $_=join("",@_);
+    $_=join("",@chunks);
     # Argh! mixed types occurs in @code{...}@var{..}@file{..}
     # Should be @file{...@var{..}..}
     s/\@code(\S*?)\}(\S*)\@file\{/\@file$1$2/g;

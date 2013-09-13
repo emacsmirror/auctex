@@ -1,3 +1,6 @@
+@c This is part of the AUCTeX Manual.
+@c Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+@c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
 @chapheading Frequently Asked Questions about @AUCTeX{}
@@ -25,7 +28,7 @@ But before you do this, you can try to get more information about the
 problem at hand which might also help you locate the cause of the error
 yourself.
 
-First, you can try to generate a so-called backtrace which shows
+First, you can try to generate a so-called backtrace which shows the
 functions involved in a program error.  In order to do this, start Emacs
 with the command line @samp{emacs --debug-init} and/or put the line
 
@@ -42,15 +45,9 @@ it in the bug report.
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
 customizations.  You can do this by invoking Emacs with the command line
-@samp{emacs -q -no-site-file}.  Once Emacs is running, copy the line
-
-@lisp
-(load "auctex.el" nil t t)
-@end lisp
-
-into the @samp{*scratch*} buffer and type @kbd{M-x eval-buffer RET}.
-This makes sure that @AUCTeX{} will be used for the file types it
-supports.  After you have done so, you can load the file triggering the
+@samp{emacs -q -no-site-file -l auctex}.  The @samp{-l} option
+@samp{auctex.el} which you normally do in your init file.  After you
+have started Emacs like this, you can load the file triggering the
 error.  If everything is working now, you know that you have to search
 either in the site configuration file or your personal init file for
 statements related to the problem.
@@ -63,27 +60,17 @@ versions may work but are unsupported.  Older versions of XEmacs might
 possibly made to work by updating the @file{xemacs-base} package through
 the XEmacs package system.  If you are looking for a recommendation, it
 would appear that the smoothest working platform on all operating
-systems at the current point of time would be @w{Emacs 22.1}.  At the
-time of this writing, however, it has not been released and is still
-under development.  The quality of the development version is quite
-solid, so we recommend giving it a try.  With a developer version, of
-course, you have to be prepared to update in case you managed to get
-your snapshot at a bad time.  The second best choice would be the latest
-released @w{Emacs 21.4}.  However, Unicode support is less good, there
-is no version for the popular GTK toolkit, and the native versions for
-Windows and MacOS don't offer toolbar and @previewlatex{} support.
+systems at the current point of time would be @w{Emacs 22} or higher.
 
-Our success with XEmacs has been less than convincing.  Under the
-Windows operating system, nominally the only option for a released,
-stable Emacs variant supporting toolbars and @previewlatex{} would be
-@w{XEmacs 21.4}.  However, code for core functionality like formatting
-and syntax highlighting tends to be different and often older than even
-@w{Emacs 21.4}, and Unicode support as delivered is problematic at best,
-missing on Windows.  Both @AUCTeX{} and XEmacs developers don't hear
-much from active users of the combination.  Partly for that reason,
-problems tend to go unnoticed for long amounts of time and are often
-found, if at all, after releases.  No experiences or recommendations can
-be given for beta or developer versions of XEmacs.
+Our success with XEmacs has been less than convincing.  Code for core
+functionality like formatting and syntax highlighting tends to be
+different and often older than even @w{Emacs 21.4}, and Unicode support
+as delivered is problematic at best, missing on Windows.  Both @AUCTeX{}
+and XEmacs developers don't hear much from active users of the
+combination.  Partly for that reason, problems tend to go unnoticed for
+long amounts of time and are often found, if at all, after releases.  No
+experiences or recommendations can be given for beta or developer
+versions of XEmacs.
 
 @item
 What should I do when @code{./configure} does not find programs like latex?
@@ -137,6 +124,22 @@ file, restart Emacs and open a @LaTeX{} file.  Emacs will complain
 loudly by opening a debugging buffer as soon as an error occurs.  The
 information in the debugging buffer can help you find the cause of the
 error in your init file.
+
+@item
+Why does @code{TeX-next-error} (@kbd{C-c `}) fail?
+
+When writing the log file, @TeX{} puts information related to a file,
+including error messages, between a pair of parentheses.  @AUCTeX{}
+determines the file where the error happened by parsing the log file and
+counting the parentheses.  This can fail when there are other,
+unbalanced parentheses present.
+
+As a workaround you can activate so-called file:line:error messages for
+the log file.  (Those are are easier to parse, but may lack some
+details.)  Either you do this in the configuration of your @TeX{} system
+(consult its manual to see where this is) or you add a command line
+switch to the (la)tex call, e.g. by customizing
+@code{LaTeX-command-style} or @code{TeX-command-list}.
 
 @item
 What does AUC stand for?

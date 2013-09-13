@@ -1,10 +1,10 @@
-;;; polish.el --- AUCTeX style for the `polish' babel option.
+;;; french.el --- AUCTeX style for the `french' babel option.
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2010 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2007-01-08
+;; Created: 2010-03-20
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,27 +26,23 @@
 
 ;;; Commentary:
 
-;; Set up AUCTeX for editing Polish text in connection with the
-;; `polish' babel option.
+;; Set up AUCTeX for editing French text in connection with the
+;; `french' babel option.  The file basically loads the style file for
+;; the `frenchb' babel option.
+;; 
+;; Support for the FrenchPro package by Bernard Gaulle is _not_
+;; included.  If the presence of FrenchPro is detected, the `frenchb'
+;; support is not loaded.
 
 ;;; Code:
 
-(defvar LaTeX-polish-mode-syntax-table
-  (copy-syntax-table LaTeX-mode-syntax-table)
-  "Syntax table used in LaTeX mode when using `polish.sty'.")
-
-(modify-syntax-entry ?\" "w" LaTeX-polish-mode-syntax-table)
-
 (TeX-add-style-hook
- "polish"
+ "french"
  (lambda ()
-   (set-syntax-table LaTeX-polish-mode-syntax-table)
-   (unless (eq (car TeX-quote-language) 'override)
-     (setq TeX-quote-language '("polish" "\"`" "\"'" t)))
-   ;; Fontification of quotation marks.
-   (when (fboundp 'font-latex-add-quotes)
-     (font-latex-add-quotes '("\"`" "\"'"))
-     (font-latex-add-quotes '("\"<" "\">" french)))
-   (run-hooks 'TeX-language-pl-hook)))
+   (when (and (member "babel" TeX-active-styles)
+	      (not (member "frenchpro" TeX-active-styles))
+	      (not (member "frenchle" TeX-active-styles))
+	      (not (member "mlp" TeX-active-styles)))
+     (TeX-run-style-hooks "frenchb"))))
 
-;;; polish.el ends here
+;;; french.el ends here

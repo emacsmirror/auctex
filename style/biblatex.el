@@ -1,10 +1,10 @@
-;;; polish.el --- AUCTeX style for the `polish' babel option.
+;;; biblatex.el --- AUCTeX style for `biblatex.sty'
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2012 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2007-01-08
+;; Created: 2012-11-14
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,27 +26,22 @@
 
 ;;; Commentary:
 
-;; Set up AUCTeX for editing Polish text in connection with the
-;; `polish' babel option.
+;; This file adds support for `biblatex.sty'.
 
 ;;; Code:
 
-(defvar LaTeX-polish-mode-syntax-table
-  (copy-syntax-table LaTeX-mode-syntax-table)
-  "Syntax table used in LaTeX mode when using `polish.sty'.")
-
-(modify-syntax-entry ?\" "w" LaTeX-polish-mode-syntax-table)
-
 (TeX-add-style-hook
- "polish"
+ "biblatex"
  (lambda ()
-   (set-syntax-table LaTeX-polish-mode-syntax-table)
-   (unless (eq (car TeX-quote-language) 'override)
-     (setq TeX-quote-language '("polish" "\"`" "\"'" t)))
-   ;; Fontification of quotation marks.
-   (when (fboundp 'font-latex-add-quotes)
-     (font-latex-add-quotes '("\"`" "\"'"))
-     (font-latex-add-quotes '("\"<" "\">" french)))
-   (run-hooks 'TeX-language-pl-hook)))
+   ;; Unfortunately `(member "backend=biber" TeX-active-styles)' does
+   ;; not work as a test because "backend=biber" is added to
+   ;; `TeX-active-styles' after "biblatex".  So we check the value of
+   ;; `LaTeX-biblatex-use-biber' and let the user set it if desired.
+   (when LaTeX-biblatex-use-Biber
+     (setq LaTeX-using-Biber t))))
 
-;;; polish.el ends here
+;; TODO: Add package options.
+(defvar LaTeX-biblatex-package-options nil
+  "Package options for the biblatex package.")
+
+;;; biblatex.el ends here

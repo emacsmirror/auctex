@@ -7,9 +7,6 @@ AUC@TeX{}
 @macro ConTeXt {}
 Con@TeX{}t
 @end macro
-@macro LaTeX {}
-La@TeX{}
-@end macro
 @macro previewlatex {}
 preview-latex
 @end macro
@@ -41,7 +38,8 @@ font-latex
 @end macro
 @end ifset
 @end ifnottex
-@macro sans {text}@c
+@ifset no-sansserif
+@macro sansserif {text}@c
 @iftex
 {@textsf \text\}@c
 @end iftex
@@ -49,6 +47,7 @@ font-latex
 \text\@c
 @end ifnottex
 @end macro
+@end ifset
 @tex
 \global\let\savedTeX\TeX
 \gdef\TeX#1{\savedTeX#1}

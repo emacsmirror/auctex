@@ -1,3 +1,22 @@
+2012-12-04  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge revno 314 (Stefan Monnier) from emacs elpa branch: Shorten
+	copyright year ranges.
+
+	* preview.el:
+
+2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* preview.el (preview-auto-reveal): Add `forward-char' and
+	`backward-char' to commands on which to open an overlay.
+
+2010-10-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* preview.el (preview-gs-options): Start gs with -dDELAYSAFER
+	instead of -dSAFER.
+	(preview-prepare-fast-conversion): Add relevant files to
+	PermitFileReading list of paths.
+
 2010-02-14  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex/preview.dtx: Add support for XeTeX.

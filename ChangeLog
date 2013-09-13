@@ -1,3 +1,733 @@
+2012-12-04  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge revno 314 (Stefan Monnier) from emacs elpa branch: Shorten
+	copyright year ranges.
+
+	* context.el:
+
+	* doc/auctex.texi:
+
+	* doc/changes.texi:
+
+	* doc/install.texi:
+
+	* font-latex.el:
+
+	* latex.el:
+
+	* style/letter.el:
+
+	* tex-fold.el:
+
+	* tex-jp.el:
+
+	* tex.el:
+
+2012-11-30  Ralf Angeli <angeli@caeruleus.net>
+
+	* Version 11.87 released.
+
+2012-11-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-evince-dbus-p): Make last change a little more
+	conventional.
+
+2012-11-30  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-dbus-p): Check for feature emacs in order not
+	to signal an error on XEmacs.
+
+2012-11-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* RELEASE, configure.ac, doc/auctex.texi, doc/changes.texi,
+	doc/install.texi, doc/tex-ref.tex: Update for upcoming release.
+
+2012-11-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-split-bibs): Add doc string and use variable for
+	Biber file extensions.
+	(LaTeX-search-files-type-alist): Add entry for Biber.
+	(BibTeX-Biber-global-files): Remove.
+	(BibTeX-global-files): Reintroduce.
+	(TeX-Biber-global-files): New variable.
+	(TeX-arg-bibliography): Check if Biber or BibTeX is used and react
+	accordingly.
+
+	* tex-buf.el (TeX-check-files): Do not check duplicate extensions.
+	(TeX-command-query, TeX-LaTeX-sentinel): Use separate variables
+	for BibTeX and Biber file extensions.
+	(TeX-synchronous-sentinel): Use `let' instead of `let*'.
+
+	* tex.el (TeX-clean-default-intermediate-suffixes): Add suffixes
+	for biblatex.
+	(TeX-auto-generate, TeX-auto-generate-global): Use separate
+	variables for BibTeX and Biber file extensions.
+	(TeX-Biber-file-extensions): New variable.
+	(BibTeX-Biber-file-extensions): Remove.
+	(BibTeX-file-extensions): Reintroduce.
+	(TeX-search-files-type-alist): Use `BibTeX-file-extensions'.
+	(TeX-normal-mode): Use separate variables for BibTeX and Biber
+	global files.
+
+2012-07-17  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* tex-info.el (Texinfo-reftex-hook): Added function.
+	(TeX-texinfo-mode): Added RefTeX plugging.
+
+2012-11-23  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/quickstart.texi (Quick Start): Document that one mustn't
+	load auctex.el if AUCTeX is installed from ELPA.
+
+	* doc/install.texi (Installation): Mention installation from ELPA.
+
+2012-11-20  Davide G. M. Salvetti  <salve@debian.org>
+
+        * doc/tex-ref.tex (column{preview-latex}): Fix typo.  Reported by
+        Sébastien Villemot.  Update copyright information.
+
+2012-11-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-auto-regexp-list): Remove entries for Biber.
+	(LaTeX-biber): Remove.
+	(LaTeX-listify-package-options): Rewrite so that the function can
+	deal with key=value pairs.
+	(LaTeX-always-use-Biber): Remove.
+	(LaTeX-using-Biber): Add doc string and make buffer-local.
+
+	* tex-style.el (LaTeX-biblatex-use-Biber): New variable.
+
+	* doc/auctex.texi (top): Remove reference to
+	`LaTeX-always-use-Biber'.
+	(Selecting a Command): Mention Biber and
+	`LaTeX-biblatex-use-Biber'.
+
+	* Makefile.in (STYLESRC): Add style/biblatex.el.
+
+	* style/biblatex.el: New file.
+
+2012-11-05  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-doc-extensions): Fix typo.  This variable was
+	formerly named TeX-doc-extenstions.
+
+2012-10-04  Masayuki Ataka  <masayuki.ataka@gmail.com>
+
+	* tex-jp.el: Repair coding from iso-2022-7bit to iso-2022-jp.
+
+2012-10-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-jp.el: Repair coding.
+
+2012-10-02  Ikumi Keita	 <ikumi@ikumi.que.jp>
+
+	* tex-jp.el (japanese-TeX-engine-default)
+	(TeX-engine-alist-builtin, japanese-TeX-use-kanji-opt-flag): New
+	defcustoms.
+	(japanese-TeX-coding-ejsu, japanese-TeX-get-encoding-string): New
+	functions.
+	(japanese-TeX-command-list): Support %(kanjiopt).
+	(TeX-expand-list): Support new option kanjiopt, bibtex, makeindex,
+	mendexkopt, xdvi.
+	(TeX-view-predicate-list-builtin): Judge paper.
+	(TeX-view-program-list): Support dviout paper size, and other DVI
+	previewers in Mac and others.
+	(TeX-view-program-selection): Add Dviout, TeXworks and Preview.
+	(LaTeX-command-style): Support uplatex.
+	(japanese-plain-tex-mode-initialization): Use TeX-engine-set.
+	(japanese-latex-mode-initialization): Ditto.
+
+	* tex-jp.el: Comment fix.
+	(TeX-error-description-list): Doc fix.
+
+2012-09-27  Joost Kremers  <joostkremers@fastmail.fm>  (tiny change)
+
+	* tex-buf.el (TeX-check-files): Use mapcar instead of cl's map.
+
+2012-09-16 Philip Kime  <Philip@kime.org.uk>  (tiny change)
+
+	* tex-buf.el (TeX-LaTeX-sentinel): Detect generic rerun message
+	from biblatex
+
+2012-09-14  Ken Brown  <kbrown@cornell.edu>  (tiny change)
+
+	* doc/auctex.texi (top): Mention LaTeX-always-use-Biber.
+
+	* doc/tex-ref.tex: Add Biber.
+
+2012-09-13  Tassilo Horn  <tsdh@gnu.org>
+
+	Merge Biber support developed by Philip Kime
+	<philkime@kime.org.uk>.
+	* doc/changes.texi: Mention Biber support.
+
+	* tex.el (TeX-command-list, TeX-auto-generate)
+	(TeX-auto-generate-global, TeX-search-files-type-alist)
+	(TeX-normal-mode): Adapt.
+	(TeX-command-Biber): New defcustom.
+	(BibTeX-Biber-file-extensions): Renamed from
+	BibTeX-file-extensions.
+
+	* tex-buf.el (TeX-save-document, TeX-check-files)
+	(TeX-command-query, TeX-LaTeX-sentinel): Adapt.
+	(TeX-Biber-sentinel, TeX-run-Biber): New functions.
+
+	* latex.el (LaTeX-auto-regexp-list, LaTeX-auto-cleanup)
+	(TeX-arg-bibliography, LaTeX-common-initialization): Adapt.
+	(LaTeX-biber, LaTeX-split-bibs, LaTeX-using-Biber)
+	(LaTeX-always-use-Biber): New functions and vars.
+	(BibTeX-Biber-global-files): Renamed from BibTeX-global-files.
+
+	* font-latex.el (font-latex-built-in-keyword-classes)
+	(font-latex-add-keywords): Adapt.
+
+2012-06-21  Patrice Dumas  <pertusus@free.fr>  (tiny change)
+
+	* doc/preview-latex.texi (The preview images): Place index command
+	`@pindex dvipng' on a line of its own.
+
+	* doc/macros.texi: Replace user macro `@sans' by user macro
+	`@sansserif' and make definition conditional against flag
+	no-sansserif as `@sansserif' is a Texinfo macro and does not need
+	to be redefined.
+
+	* doc/macros.texi: Suppress user macro `@LaTeX' as this macro is
+	already defined in Texinfo.
+
+	* doc/quickstart.texi (Editing Facilities): Use texinfo
+	`@sansserif' macro rather than user macro `@sans'.
+
+	* doc/auctex.texi (Font Specifiers): Use texinfo `@sansserif'
+	macro rather than user macro `@sans'.
+
+2012-08-14  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-determine-method): Match --synctex
+	as well as -synctex.
+
+2012-07-04  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* doc/changes.texi: Mention Evince forward/backward search
+	changes.
+
+2012-07-03  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* font-latex.el (byte-code-function-p): Reference the generated
+	functions with font-latex-match prefix.  See Emacs bug 11837.
+
+2012-06-22  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): Add check for
+	`dbus-register-signal', which might be unavailable if emacs was
+	configured with --without-dbus.
+
+2012-04-26  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-engine-set): Fix docstring leading to a misplaced
+	interactive spec warning.
+
+2012-04-25  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): Improve check for emacs's dbus
+	support.
+
+2012-04-11  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-sync-view): Work around emacs integer limits.
+	Also provide the current column to Evince.
+	(TeX-evince-dbus-p): Also check the signature of Evince's
+	FindDocument DBUS method, which is only stable since evince 3.0.
+
+2012-04-10  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-sync-view): Fix arithmetic range error.
+	(TeX-evince-dbus-p): Add parameter to extend the check depending
+	on wanted features (e.g., forward search).
+	(TeX-view-program-list-builtin): Use it.
+
+2012-04-08  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-evince-dbus-p): New function.
+	(TeX-evince-sync-view): New function.
+	(TeX-view-program-list-builtin): Use Evince's DBUS interface for
+	forward search if available.
+	(TeX-source-correlate-mode): Use TeX-evince-dbus-p.
+
+2012-01-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/setspace.el ("setspace"): Correct quoting.
+
+2011-09-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Marking): Make a few corrections throughout the
+	section.
+	(Adding Macros): Document special values for numbers used together
+	with `TeX-add-symbols'.
+
+2011-09-18  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* doc/auctex.texi: Add documentation for functions
+	LaTeX-mark-section, LaTeX-mark-environment, Texinfo-mark-section,
+	Texinfo-mark-environment and Texinfo-mark-node.
+
+2011-08-24  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-synctex-output-page): TeXLive 2011's synctex wants
+	absolute file names with dot indicating the master, like
+	/foo/bar/./baz/chap1.tex.  So add this as another variant.
+	(TeX-view-program-list-builtin): Use evince's -i,--page-index
+	switch instead of -p,--page-label if that evince version supports
+	it (>=3.0.x).
+
+2011-08-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Take characters after
+	closing dollar sign into account when deciding to break before
+	inline math.
+
+2011-07-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-search-files-kpathsea): Check if directories are
+	accessible.
+
+2011-07-11  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* tex-info.el (Texinfo-mark-environment, Texinfo-mark-section)
+	(Texinfo-mark-node): New defun.
+	(Texinfo-mode-map): added key bindings for
+	Texinfo-mark-environment, Texinfo-mark-section, and
+	Texinfo-mark-node.
+
+2011-06-19  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-engine-alist-builtin): Add --jobname to luatex and
+	lualatex calls.
+	(TeX-engine-alist-builtin): Remove --jobname again for luatex but
+	not for lualatex.
+
+2011-06-05  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Restore Emacs 21
+	compatibility.
+
+2011-05-26  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-sync-source): Adapt to handle
+	file:// URLs.
+
+2011-05-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/setspace.el.
+
+	* tex.el (TeX-expand-list): Add a safeguard to the %(outpage)
+	expander for when an output page function returns nil.
+
+2011-05-09  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-synctex-output-page-1): New function for calling
+	synctex.
+	(TeX-synctex-output-page): Use it, and try relative file names
+	with and without leading ./ when calling synctex before falling
+	back to page 1.
+	(TeX-source-correlate-sync-source): Add &rest parameter, because
+	Evince 3 sends an additional (ignored) parameter via dbus.
+
+2011-05-01  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-tree-expand): Use a different test to check for an
+	absolute path on Windows.
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add
+	definition for \rule and remove the one for \sbox.
+
+2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/setspace.el: Add support for changing \displayskipstretch.
+
+2011-04-25  Mads Jensen  <mje@inducks.org>
+
+	* style/setspace.el: New file.
+
+2011-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-style-list): Add memoir.
+
+2011-04-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-expand-spec): Make sure the expansion of a
+	placeholder is not processed again.
+
+2011-04-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Make a few
+	additions and corrections.
+
+	* latex.el (LaTeX-common-initialization): Prompt for file
+	extension instead of name when inserting \addcontentsline or
+	\addtocontents.
+
+2011-04-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-correlate-mode): Check for D-Bus session.
+
+2011-04-10  Antoine Levitt  <antoine.levitt@gmail.com>  (tiny change)
+
+	* tex.el (TeX-source-correlate-sync-source): Do not use
+	`goto-line'.
+
+2011-04-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/xspace.el.
+
+	* style/xspace.el: Add copyright notice and license blurb.
+	Correct a few things.
+
+2011-04-03  Mads Jensen  <mje@inducks.org>
+
+	* style/xspace.el: New file.
+
+2011-03-27  Tassilo Horn  <tassilo@member.fsf.org>
+
+	* tex.el (TeX-source-correlate-mode): Add support for I/O
+	correlation mode inverse search for the Evince document viewer.
+
+2011-03-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/bulgarian.el, style/czech.el, style/danish.el,
+	style/frenchb.el, style/icelandic.el, style/polish.el,
+	style/polski.el, style/slovak.el, style/swedish.el: Do not set
+	`TeX-quote-language' if `override' is in effect.
+
+2011-03-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-synchronous-sentinel): Strip directory part of
+	master file because we are already in the master directory.
+
+2011-03-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (STYLESRC): Add style/lettrine.el and
+	style/multicol.el.
+
+	* style/lettrine.el: Add copyright notice and license blurb.
+	Correct a few things.
+
+	* style/multicol.el: Add copyright notice and license blurb.
+	Simplify environment definitions.  Provide completion for lengths
+	the package defines.  Get rid of indentation and filling barrier.
+	Remove fontification definitions.
+
+2011-03-13  Mads Jensen  <mje@inducks.org>
+
+	* style/lettrine.el: New file.
+
+	* style/multicol.el: New file.
+
+2011-02-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-common-initialization): Add support for
+	\ProvidesPackage.
+
+2011-02-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/letter.el (LaTeX-env-recipient): Use \renewcommand instead
+	of \def to set date.
+
+2011-01-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-parse-macro): Do not insert braces if the argument
+	is 0 or less.
+	(TeX-parse-argument): Put both the macro and the marked region in
+	a TeX group if the argument is less than 0.
+
+	* latex.el (LaTeX-common-initialization): Give macros that change
+	font size a -1 argument so that braces are added around them if
+	if there is an active region.
+
+	* doc/auctex.texi (Adding Macros): Document special options 0 and
+	-1 for number-type specs.
+
+2011-01-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-complete-symbol): Get rid of the window with the
+	completions when possible.
+
+2011-01-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fold.el (TeX-fold-post-command): Add `forward-char' and
+	`backward-char' to commands on which to open an overlay.
+
+	* doc/auctex.texi (Adding Macros): Mention
+	`TeX-arg-input-file-search'.
+
+2011-01-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-tree-expand): Make `subdirs' parameter optional.  Do
+	not try to call kpsewhich with --expand-braces anymore and adapt
+	code for handling of results accordingly.
+	(TeX-doc-extenstions): New variable.
+	(TeX-tree-roots): New function.
+	(TeX-tree-roots): New user option.
+	(TeX-kpathsea-format-alist): Remove.
+	(TeX-search-files-kpathsea): Add and use `extensions' and `scope'
+	parameters.
+	(TeX-search-files): Do not call `TeX-search-files-kpathsea'
+	anymore.
+	(TeX-search-files-type-alist): New variable.
+	(TeX-search-files-by-type): New function.
+
+	* latex.el (LaTeX-arg-usepackage): Let-bind
+	`TeX-input-file-search'.
+	(LaTeX-search-files-type-alist): New user option.
+	(TeX-arg-input-file-search): Doc fix.
+	(TeX-arg-input-file, TeX-arg-bibstyle, TeX-arg-bibliography): Use
+	`TeX-search-files-by-type' instead of `TeX-search-files'.
+	(LaTeX-common-initialization): Set `TeX-search-files-type-alist'.
+
+2011-01-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-common-initialization): Add support for
+	\settoheight and \settodepth.
+
+2010-12-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Simple Style): Add a note about the naming of
+	the style file and the style hook.
+
+2010-12-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-env-args): Add the optional argument at the
+	right position when wrapping the environment around existing text.
+
+2010-12-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context.el: Set up abbrev table.
+	(ConTeXt-mode-common-initialization): Set `local-abbrev-table'.
+
+	* latex.el: Set up abbrev table for LaTeX and docTeX mode.
+	(docTeX-mode): Set abbrev table.
+	(LaTeX-common-initialization): Set `local-abbrev-table'.
+
+	* plain-tex.el: Set up abbrev table.
+	(plain-TeX-common-initialization): Set `local-abbrev-table'.
+
+	* tex.el (TeX-mode-prefix): Add mode parameter.
+	(VirTeX-common-initialization): Do not set `local-abbrev-table'
+	anymore.
+	(TeX-abbrev-mode-setup): New function.
+
+	* doc/changes.texi: Mention change of abbrev handling.
+
+2010-12-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-verbatim-macro-boundaries): Support verbatim
+	macros with braces.
+
+2010-12-04  Augusto Ritter Stoffel  <arstoffel@inf.ufrgs.br>  (tiny change)
+
+	* latex.el (LaTeX-math-keymap): Define a key for the math prefix
+	only if it has not been used as a prefix after the prefix.
+
+2010-11-16  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-view-program-list-builtin): Add Okular.
+
+2010-10-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-arg-input-file-search): New user option.
+	(TeX-arg-input-file): Use it.
+
+2010-10-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-synctex-output-page): Return "1" if no page number
+	can be found to prevent an infinite loop in command expansion.
+
+2010-10-02  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/beamer.el ("beamer"): Prompt for block title.
+
+2010-09-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context.el (ConTeXt-extra-paragraph-commands): Remove.
+	(ConTeXt-language-variable-list): Add
+	`ConTeXt-extra-paragraph-commands'.
+
+	* context-en.el (ConTeXt-extra-paragraph-commands-en): New
+	variable.
+
+	* context-nl.el (ConTeXt-extra-paragraph-commands-nl): New
+	variable.
+
+2010-09-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* context.el (ConTeXt-expand-options): Eval value from engine
+	alist.
+
+2010-09-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-fptex.el: Remove.
+
+	* Makefile.in (AUCSRC): Reflect removal of tex-fptex.el.
+
+	* doc/wininstall.texi: Reflect removal of tex-fptex.el.
+
+	* style/virtex.el: Mention author.  Do not unnecessarily protect
+	`lambda' with `function'.
+
+	* font-latex.el (font-latex-keyword-matcher): Refine last change
+	to work properly with lists of face symbols.
+
+2010-09-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/natbib.el: Update copyright information.
+
+	* style/letter.el: Update copyright information.
+
+	* style/harvard.el: Update copyright information.
+
+	* style/doc.el: Do not unnecessarily protect `lambda' with
+	`function'.
+
+2010-09-06  Arne Jørgensen  <arne@arnested.dk>
+
+	* style/danish.el: Changed font-latex-add-quotes from french to
+	german.
+
+2010-08-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/ngerman.el: Prevent "| from leading to color bleed.
+
+	* style/german.el: Prevent "| from leading to color bleed.
+
+2010-08-29  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/preview-dtxdoc.pl: Use explicit variable with split instead
+	of implicit split to @_ which does not work anymore in Perl 5.12.
+
+2010-07-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el: Delete trailing whitespace.
+
+2010-07-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/faq.texi: Update infos about Emacs versions.  Add FAQ entry
+	for file:line:error messages in case `TeX-next-error' fails due to
+	unbalanced parens.
+
+	* tex.el (TeX-print-command, TeX-queue-command)
+	(TeX-printer-list): Switch back to Berkeley-style commands.
+
+2010-06-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (Texinfo mode): Make a few corrections.
+
+2010-06-19  Berend de Boer  <berend@pobox.com>
+
+	* context.el: proper indent of all macros that can appear inside
+	an itemize list such as \sym.
+
+2010-06-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-info.el (Texinfo-find-env-end, Texinfo-find-env-start):
+	Enable the commands to be used repeatedly without getting stuck at
+	an environment start or end respectively.
+
+2010-05-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* autogen.sh: Set LANG=C when looking into ChangeLog for
+	AUCTEXDATE.
+
+2010-05-24  Vincent Belaïche  <vincent.belaiche@gmail.com>
+
+	* doc/auctex.texi (Texinfo mode): New section.
+
+2010-05-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-math-input-method-off-regexp): Fix regexp.
+
+2010-04-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-print-command): Support printing of Postscript and
+	PDF files.  Doc fix.
+	(TeX-queue-command): Use lpstat instead of lpq.  Doc fix.
+	(TeX-printer-list): Support printing of Postscript and PDF files.
+	Make use of System V style commands (lp, lpstat) instead of
+	Berkeley style (lpr, lpq).
+	(TeX-printer-default): Doc fix.
+
+2010-04-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-warning): Throw an error with a sensible message
+	if the file for the warning could not be determined.
+
+2010-04-13  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-format-filter): Calculate the current column as
+	difference between line start and end instead of using
+	`current-column' in order to do the right thing when octal codes
+	are present.
+
+2010-04-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-keyword-matcher): Quote a list of face
+	properties but do not to quote a face symbol.
+
+2010-04-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-parse-error): Allow `TeX-error-file' to become
+	empty.
+
+2010-03-28  Ralf Angeli  <angeli@caeruleus.net>
+
+	* plain-tex.el: New file.
+
+	* tex.el: Move code related to plain TeX to plain-tex.el.
+
+	* Makefile.in (AUCSRC): Add plain-tex.el.
+
+	* context.el: Require `plain-tex'.
+
+2010-03-27  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-view-program-selection): Doc fix.
+	(TeX-clean): Regexp-quote the master file name.
+
+2010-03-20  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/french.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/french.el.
+
+2010-03-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-arg-key-val): Hint at key=value format in prompt.
+	(LaTeX-fill-region-as-para-do): Match whitespace without comment
+	starter at beginning of line when dealing with code comments.
+
+2010-03-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in (DIST_PREFIX): Use the working directory for the
+	folder with distribution files.
+	(FTPDIR, WWWDIR): Make them subdirectories of `DIST_PREFIX'.
+	(COMMITTER_NAME, COMMITTER_EMAIL): Remove.
+	(COMMITTER): New variable.
+	(.PHONY): Update.
+	(tar-ball-clean): Use `check-tag'.
+	(check-tag): New name for `check-dist'.
+	(dist): Do not call `release-commit' anymore.
+	(snapshot): Now an alias for `dist'.
+	(release-commit): Use `COMMITTER'.
+	(release-sign): New name for `full-release' target.  Generate
+	version 1.1 directive files.
+	(xemacs-package): Depend on `check-tag'.
+	(WPACKAGEFILES): Include info files with a numerical supplement to
+	the .info extension.  Depend on `check-tag'.  Check for presence
+	of `WEMACSVER' variable.  Try to find a local AUCTeX tar ball
+	before downloading one.  Use `TAG' instead of `WAUCVER'.  Put ZIP
+	archive into `FTPDIR'.
+	(WAUCVER, WEMACSVER): Remove.
+	(release-upload): New target.
+	(www-doc): Depend on `check-tag'.  Update URLs for Emacs manuals.
+
 2010-02-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Version 11.86 released.
