@@ -16,3 +16,8 @@ config.*
 configure
 tex-site.el
 tex-site.el.out
+
+# From preview/.cvsignore
+auto
+auto.el
+preview-latex.el
