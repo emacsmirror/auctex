@@ -1,13 +1,12 @@
 ;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.
 
+;; Copyright (C) 1994,1997,2005,2012  Free Software Foundation, Inc.
+
 ;; Harvard citation style is from Peter Williams
 ;; available on the CTAN servers
 
+;; Author: Berwin Turlach <berwin.turlach@anu.edu.au>
 ;; Version: $Id: harvard.el,v 1.10 2008-02-03 14:53:30 angeli Exp $
-
-;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
-;; Copyright (C) 1997 Berwin Turlach <berwin.turlach@anu.edu.au>
-;; Copyright (C) 2005 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

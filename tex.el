@@ -1,7 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999,
-;;   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+;; Copyright (C) 1985-1987, 1991, 1993, 1994, 1996, 1997, 1999-2013
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -39,6 +38,11 @@
 (require 'tex-site)
 (eval-when-compile
   (require 'cl))
+
+(defun TeX--call-3/2 (f arg1 arg2 arg3)
+  (condition-case nil
+      (funcall f arg1 arg2 arg3)
+    (wrong-number-of-arguments (funcall f arg1 arg2))))
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -122,7 +126,8 @@ If nil, none is specified."
   :type '(choice (const :tag "Unspecified" nil)
 		 string))
 ;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
-(make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist)
+(TeX--call-3/2 #'make-obsolete-variable 'ConTeXt-Omega-engine
+               'TeX-engine-alist "before 11.86")
 
 (defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue.
@@ -1286,8 +1291,9 @@ TYPE can be one of the following symbols:\n"
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode 'TeX-Omega-mode)
-(make-obsolete 'TeX-Omega-mode 'TeX-engine-set)
-(make-obsolete-variable 'TeX-Omega-mode 'TeX-engine)
+(TeX--call-3/2 #'make-obsolete 'TeX-Omega-mode 'TeX-engine-set "before 11.86")
+(TeX--call-3/2 #'make-obsolete-variable 'TeX-Omega-mode
+               'TeX-engine "before 11.86")
 
 ;;; Forward and inverse search
 
@@ -1435,7 +1441,8 @@ SyncTeX are recognized."
 	  (when TeX-source-correlate-mode
 	    'TeX-synctex-output-page))))
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
-(make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(TeX--call-3/2 #'make-obsolete 'TeX-source-specials-mode
+               'TeX-source-correlate-mode "before 11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
 ;; We do not want the custom variable to require tex.el.  This is only
