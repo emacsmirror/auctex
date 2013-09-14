@@ -1,5 +1,7 @@
 ;;; dinbrief.el - Special code for LaTeX-Style dinbrief.
 
+;; Copyright (C) 2013 Free Software Foundation, Inc.
+
 ;; Contributed by Werner Fink <tex@itap.physik.uni-stuttgart.de>
 ;; Please direct comments to him.
 

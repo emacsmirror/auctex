@@ -1,5 +1,7 @@
 ;;; epsf.el - Support for the epsf style option.
 
+;; Copyright (C) 2013 Free Software Foundation, Inc.
+
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 
 ;;; Code: 
