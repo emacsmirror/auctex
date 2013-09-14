@@ -1,0 +1,11 @@
+*.m4
+*.in
+*.ac
+*.spec
+autogen.sh
+.cvsignore
+install-sh
+lpath.el
+mkinstalldirs
+prv-install.el
+README.CVS

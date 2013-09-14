@@ -17,7 +17,7 @@ configure
 tex-site.el
 tex-site.el.out
 
-# From preview/.cvsignore
-auto
-auto.el
-preview-latex.el
+doc/preview-dtxdoc.texi
+doc/version.texi
+latex/preview-mk.ins
+latex/preview.drv
