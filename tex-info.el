@@ -532,6 +532,7 @@ value of `Texinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)
   (setq TeX-mode-p t)
+  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name "Texinfo")
   (setq major-mode 'texinfo-mode)

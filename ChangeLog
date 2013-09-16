@@ -1,3 +1,8 @@
+2013-09-16  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-info.el (TeX-texinfo-mode): Set
+	`TeX-sentinel-default-function' to `TeX-TeX-sentinel'.
+
 2013-09-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-check-files): Handle buffers that haven't been
