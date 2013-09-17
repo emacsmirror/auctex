@@ -272,9 +272,8 @@ With \\[universal-argument] prefix, start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
       (next-error reparse)
-    (funcall (TeX-process-get-variable (with-current-buffer TeX-command-buffer
-					 (TeX-active-master))
-				       'TeX-parse-function)
+    (funcall (with-current-buffer TeX-command-buffer
+	       (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function))
 	     reparse)))
 
 (defun TeX-previous-error (arg)
@@ -1245,8 +1244,8 @@ command."
 (defun TeX-active-buffer ()
   "Return the buffer of the active process for this buffer."
   (and TeX-command-buffer
-       (TeX-process-buffer (with-current-buffer TeX-command-buffer
-			     (TeX-active-master)))))
+       (with-current-buffer TeX-command-buffer
+	 (TeX-process-buffer (TeX-active-master)))))
 
 (defun TeX-active-master (&optional extension nondirectory)
   "The master file currently being compiled.

@@ -1,3 +1,8 @@
+2013-09-17  Fabrice Ben Hamouda  <fabrice_102@yahoo.fr>  (tiny change)
+
+	* tex-buf.el (TeX-next-error, TeX-active-buffer): Fix a problem
+	with `TeX-next-error' in multi-file documents.
+
 2013-09-16  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-info.el (TeX-texinfo-mode): Set
