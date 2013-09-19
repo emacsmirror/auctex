@@ -1,3 +1,7 @@
+2013-09-19  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/siunitx.el ("siunitx"): Fix `radian' unit name.
+
 2013-09-17  Fabrice Ben Hamouda  <fabrice_102@yahoo.fr>  (tiny change)
 
 	* tex-buf.el (TeX-next-error, TeX-active-buffer): Fix a problem
