@@ -1,3 +1,18 @@
+2013-09-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* latex.el: Enhance brace pairing feature.
+	(TeX-arg-insert-braces): Extend to be used with \bigl and its
+	friends.
+	(TeX-arg-insert-right-brace-maybe): New function.
+	(LaTeX-insert-left-brace): New function.
+	(LaTeX-insert-corresponding-right-macro-and-brace): New function.
+	(LaTeX-find-preceeding-left-macro-name): New function.
+	(LaTeX-electric-left-right-brace): New customization option.
+	(LaTeX-left-right-macros-association): New variable.
+
+	* style/amsmath.el ("amsmath"): Make use of the above change.
+	\lvert and \lVert are paired with \rvert and \rVert, respectively.
+
 2013-09-19  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/siunitx.el ("siunitx"): Fix `radian' unit name.

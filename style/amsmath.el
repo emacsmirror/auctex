@@ -94,7 +94,9 @@
      '("ddddot" t)
      "bmod" "notag"
      "dots" "dotsb" "dotsc" "dotsi" "dotsm" "dotso" "nobreakdash" 
-     "lvert" "rvert" "lVert" "rVert" 
+     '("lvert" TeX-arg-insert-right-brace-maybe)
+     '("lVert" TeX-arg-insert-right-brace-maybe)
+     "rvert" "rVert"
      "iint" "iiint" "iiiint" "idotsint"
      )
     
@@ -138,6 +140,14 @@
 		    ("flalign"    . LaTeX-amsmath-label)
 		    ("gather"     . LaTeX-amsmath-label))
 		  LaTeX-label-alist))
+
+    (set (make-local-variable 'TeX-braces-association)
+	 (append '(("\\lvert" . "\\rvert")
+		   ("\\lVert" . "\\rVert"))
+		 TeX-braces-association))
+    (set (make-local-variable 'TeX-left-right-braces)
+	 (append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
+		 TeX-left-right-braces))
 
     ;; amsmath includes amstext, amsbsy, & amsopn.
     ;; So we run their hooks, too.

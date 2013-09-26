@@ -2173,6 +2173,11 @@ the cdr is the brace used with \\right."
 The car of each entry is the brace used with \\left,
 the cdr is the brace used with \\right.")
 
+(defcustom LaTeX-electric-left-right-brace nil
+  "If non-nil, insert right brace with suitable macro after typing left brace."
+  :group 'LaTeX-macro
+  :type 'boolean)
+
 (defvar TeX-left-right-braces
   '(("[") ("]") ("\\{") ("\\}") ("(") (")") ("|") ("\\|")
     ("/") ("\\backslash") ("\\lfloor") ("\\rfloor")
@@ -2181,38 +2186,175 @@ the cdr is the brace used with \\right.")
     ("\\updownarrow") ("\\Updownarrow") ("."))
   "List of symbols which can follow the \\left or \\right command.")
 
+(defvar LaTeX-left-right-macros-association
+  '(("left" . "right")
+    ("bigl" . "bigr") ("Bigl" . "Bigr")
+    ("biggl" . "biggr") ("Biggl" . "Biggr"))
+  "Alist of macros for adjusting size of left and right braces.
+The car of each entry is for left brace and the cdr is for right brace.")
+
 (defun TeX-arg-insert-braces (optional &optional prompt)
   "Prompt for a brace for \\left and insert the corresponding \\right.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (save-excursion
-    (backward-word 1)
-    (backward-char)
-    (LaTeX-newline)
-    (indent-according-to-mode)
-    (beginning-of-line 0)
-    (if (looking-at "^[ \t]*$")
-	(progn (delete-horizontal-space)
-	       (delete-char 1))))
-  (let ((left-brace (completing-read
-		     (TeX-argument-prompt optional prompt "Which brace")
-		     TeX-left-right-braces)))
-    (insert left-brace)
-    (LaTeX-newline)
+  (let (left-macro)
     (save-excursion
-      (let ((right-brace (cdr (assoc left-brace
-				     TeX-braces-association))))
-	(LaTeX-newline)
-	(insert TeX-esc "right")
-	(if (and TeX-arg-right-insert-p
-		 right-brace)
-	    (insert right-brace)
-	  (insert (completing-read
-		   (TeX-argument-prompt optional prompt "Which brace")
-		   TeX-left-right-braces)))
-	(indent-according-to-mode)))
-    (indent-according-to-mode)))
+      ;; Obtain macro name such as "left", "bigl" etc.
+      (setq left-macro (buffer-substring-no-properties
+                        (point)
+                        (progn (backward-word 1) (point))))
+      (backward-char)
+      (LaTeX-newline)
+      (indent-according-to-mode)
+      ;; Delete possibly produced blank line.
+      (beginning-of-line 0)
+      (if (looking-at "^[ \t]*$")
+          (progn (delete-horizontal-space)
+                 (delete-char 1))))
+    (let ((left-brace (completing-read
+                       (TeX-argument-prompt optional prompt
+					    "Which brace")
+                       TeX-left-right-braces)))
+      (insert left-brace)
+      (LaTeX-newline)
+      (indent-according-to-mode)
+      (save-excursion
+	(if (TeX-active-mark)
+	    (goto-char (mark)))
+        (LaTeX-newline)
+        (LaTeX-insert-corresponding-right-macro-and-brace
+         left-macro left-brace optional prompt)
+        (indent-according-to-mode)))))
+
+(defun TeX-arg-insert-right-brace-maybe (optional)
+  "Insert the suitable right brace macro such as \\rangle.
+Insertion is done when `TeX-arg-right-insert-p' is non-nil.
+If the left brace macro is preceeded by \\left, \\bigl etc.,
+supply the corresponding macro such as \\right before the right brace macro.
+OPTIONAL is ignored."
+  ;; Nothing is done when TeX-arg-right-insert-p is nil.
+  (when TeX-arg-right-insert-p
+    (let (left-brace left-macro)
+      (save-excursion
+	;; Obtain left brace macro name such as "\langle".
+	(setq left-brace (buffer-substring-no-properties
+			  (point)
+			  (progn (backward-word) (backward-char)
+				 (point)))
+	      ;; Obtain the name of preceeding left macro, if any,
+	      ;; such as "left", "bigl" etc.
+	      left-macro (LaTeX-find-preceeding-left-macro-name)))
+      (save-excursion
+	(if (TeX-active-mark)
+	    (goto-char (mark)))
+	(LaTeX-insert-corresponding-right-macro-and-brace
+	 left-macro left-brace optional)))))
+
+(defun LaTeX-insert-left-brace (arg)
+  "Insert typed left brace ARG times and possibly a correspondig right brace.
+Automatic right brace insertion is done only if no prefix ARG is given and
+`LaTeX-electric-left-right-brace' is non-nil.
+Normally bound to keys \(, { and [."
+  (interactive "*P")
+  (let ((auto-p (and LaTeX-electric-left-right-brace (not arg))))
+    (if (and auto-p
+	     (TeX-active-mark)
+	     (> (point) (mark)))
+	(exchange-point-and-mark))
+    (self-insert-command (prefix-numeric-value arg))
+    (if auto-p
+      (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
+        (save-excursion
+          (backward-char)
+	  ;; The brace "{" is exceptional in two aspects.
+	  ;; 1. "\{" should be considered as a single brace
+	  ;;    like "(" and "[".
+	  ;; 2. "\left{" is nonsense while "\left\{" and
+	  ;;    "\left(" are not.
+	  (if (string= lbrace TeX-grop)
+	      ;; If "{" follows "\", set lbrace to "\{".
+	      (if (TeX-escaped-p)
+		  (progn
+		    (backward-char)
+		    (setq lbrace (concat TeX-esc TeX-grop)))
+		;; Otherwise, don't search for left macros.
+		(setq skip-p t)))
+	  (unless skip-p
+	    ;; Obtain the name of preceeding left macro, if any,
+	    ;; such as "left", "bigl" etc.
+	    (setq lmacro (LaTeX-find-preceeding-left-macro-name))))
+        (let ((TeX-arg-right-insert-p t)
+              ;; "{" and "}" are paired temporally so that typing
+	      ;; a single "{" should insert a pair "{}".
+              (TeX-braces-association
+               (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
+	  (save-excursion
+	    (if (TeX-active-mark)
+		(goto-char (mark)))
+	    (LaTeX-insert-corresponding-right-macro-and-brace
+	     lmacro lbrace)))))))
+
+(defun LaTeX-insert-corresponding-right-macro-and-brace
+  (lmacro lbrace &optional optional prompt)
+  "Insert right macro and brace correspoinding to LMACRO and LBRACE.
+Left-right association is determined through
+`LaTeX-left-right-macros-association' and `TeX-braces-association'.
+
+If brace association can't be determined or `TeX-arg-right-insert-p'
+is nil, consult user which brace should be used."
+  ;; This function is called with LMACRO being one of the following
+  ;; possibilities.
+  ;;  (1) nil, which means LBRACE is isolated.
+  ;;  (2) null string, which means LBRACE follows right after "\" to
+  ;;      form "\(" or "\[".
+  ;;  (3) a string in CARs of `LaTeX-left-right-macros-association'.
+  (let ((rmacro (cdr (assoc lmacro LaTeX-left-right-macros-association)))
+	(rbrace (cdr (assoc lbrace TeX-braces-association))))
+    ;; Since braces like "\(" and "\)" should be paired, RMACRO
+    ;; should be considered as null string in the case (2).
+    (if (string= lmacro "")
+	(setq rmacro ""))
+    ;; Insert right macros such as "\right", "\bigr" etc., if necessary.
+    ;; Even single "\" will be inserted so that "\)" or "\]" is
+    ;; inserted after "\(", "\[".
+    (if rmacro
+	(insert TeX-esc rmacro))
+    (cond
+     ((and TeX-arg-right-insert-p rbrace)
+      (insert rbrace))
+     (rmacro
+      (insert (completing-read
+	       (TeX-argument-prompt
+		optional prompt
+		(format "Which brace (default %s)"
+			(or rbrace "."))) TeX-left-right-braces
+			nil nil nil nil (or rbrace ".")))))))
+
+(defun LaTeX-find-preceeding-left-macro-name ()
+  "Return the left macro name just before the point, if any.
+If the preceeding macro isn't left macros such as \\left, \\bigl etc.,
+return nil.
+If the point is just after unescaped `TeX-esc', return the null string."
+  ;; \left-!- => "left"
+  ;; \-!- => ""
+  ;; \infty-!- => nil
+  ;; \&-!- => nil
+  ;; \mathrm{abc}-!- => nil
+  ;; {blah blah blah}-!- => nil
+  ;; \\-!- => nil
+  (let ((name (buffer-substring-no-properties
+	       (point)
+	       ;; This is only a helper function, so we do not
+	       ;; preserve point by save-excursion.
+	       (progn
+		 ;; Assume left macro names consist of only A-Z and a-z.
+		 (skip-chars-backward "A-Za-z")
+		 (point)))))
+    (if (and (TeX-escaped-p)
+	     (or (string= name "")
+		 (assoc name LaTeX-left-right-macros-association)))
+	name)))
 
 (defcustom LaTeX-default-author 'user-full-name
   "Initial input to `LaTeX-arg-author' prompt.
@@ -4858,6 +5000,9 @@ commands are defined:
     (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
 
     (define-key map "-" 'LaTeX-babel-insert-hyphen)
+    (define-key map "(" 'LaTeX-insert-left-brace)
+    (define-key map "{" 'LaTeX-insert-left-brace)
+    (define-key map "[" 'LaTeX-insert-left-brace)
     map)
   "Keymap used in `LaTeX-mode'.")
 
@@ -5647,6 +5792,15 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("caption" t)
    '("marginpar" [ "Left margin text" ] "Text")
    '("left" TeX-arg-insert-braces)
+   ;; The following 4 macros are not specific to amsmath.
+   '("bigl" TeX-arg-insert-braces)
+   '("Bigl" TeX-arg-insert-braces)
+   '("biggl" TeX-arg-insert-braces)
+   '("Biggl" TeX-arg-insert-braces)
+
+   '("langle" TeX-arg-insert-right-brace-maybe)
+   '("lceil" TeX-arg-insert-right-brace-maybe)
+   '("lfloor" TeX-arg-insert-right-brace-maybe)
 
    ;; These have no special support, but are included in case the
    ;; auto files are missing.
