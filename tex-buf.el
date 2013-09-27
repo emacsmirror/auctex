@@ -989,6 +989,12 @@ Package natbib Warning: Citation(s)\\)" nil t)
 	 (message "%s%s" "You should run LaTeX again to get references right, "
 		  (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward
+	  "^\\(?:(rerunfilecheck)\\|Package hyperref Warning:\\)\\W+\
+Rerun to get outlines right" nil t)
+	 (message "%s%s" "You should run LaTeX again to get outlines right, "
+		  (TeX-current-pages))
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
 	 (message "%s%s%s" name ": there were unresolved references, "
 		  (TeX-current-pages))
