@@ -1,5 +1,10 @@
 2013-09-27  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (TeX-arg-insert-braces): : Move
+	`indent-according-to-mode' after `save-excursion' because
+	`LaTeX-newline' (used in `save-excursion') deletes trailing
+	whitespaces.
+
 	* tex-buf.el (TeX-LaTeX-sentinel): Add support for hyperref "Rerun
 	to get outlines right" messages.
 

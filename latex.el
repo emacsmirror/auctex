@@ -2218,14 +2218,14 @@ string."
                        TeX-left-right-braces)))
       (insert left-brace)
       (LaTeX-newline)
-      (indent-according-to-mode)
       (save-excursion
 	(if (TeX-active-mark)
 	    (goto-char (mark)))
         (LaTeX-newline)
         (LaTeX-insert-corresponding-right-macro-and-brace
          left-macro left-brace optional prompt)
-        (indent-according-to-mode)))))
+        (indent-according-to-mode))
+      (indent-according-to-mode))))
 
 (defun TeX-arg-insert-right-brace-maybe (optional)
   "Insert the suitable right brace macro such as \\rangle.
