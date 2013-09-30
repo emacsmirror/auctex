@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -152,4 +152,15 @@ If not a regular release, the date of the last change.")
 ;; Store bibitems when saving a BibTeX buffer
 (add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
 
+;;; Code specific to ELPA packaging:
+
+;; From preview-latex.el:
+
+(defvar preview-TeX-style-dir
+  (expand-file-name "latex" (file-name-directory load-file-name)))
+
+;;; Ensure that loading the autoloads file also loads this file.
+;;;###autoload (require 'tex-site)
+
 (provide 'tex-site)
+;;; tex-site.el ends here
