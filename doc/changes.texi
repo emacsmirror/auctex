@@ -30,8 +30,8 @@ Completion for class options of the standard @LaTeX{} classes is
 provided as well.
 
 @item
-New user option @code{LaTeX-default-author}.  It is used as initial
-input to @kbd{C-c RET author RET}.
+New user options @code{LaTeX-default-author} and
+@code{TeX-insert-braces-alist}.
 
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,

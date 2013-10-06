@@ -1,3 +1,22 @@
+2013-10-06  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-insert-braces-alist): New customizable variable.
+	(TeX-insert-braces): Mention it in doc-string.
+	(TeX-parse-macro): Use `TeX-insert-braces-alist'.
+
+	* style/booktabs.el: Update copyright years.
+	(LaTeX-booktabs-arg-paren): Let-bind `TeX-arg-opening-brace' and
+	`TeX-arg-closing-brace' instead of `<' and `>'.
+	("booktabs"): Add `toprule', `midrule', and `bottomrule' macros to
+	`TeX-insert-braces-alist'.
+	("booktabs"): Add a dummy `ignore' in `cmidrule' macro in order to
+	reset `last-optional-rejected' to nil.
+
+	* doc/auctex.texi (Completion): Document
+	`TeX-insert-braces-alist'.
+
+	* doc/changes.texi: Mention `TeX-insert-braces-alist'.
+
 2013-09-27  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (TeX-arg-insert-braces): : Move

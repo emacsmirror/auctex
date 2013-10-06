@@ -1107,6 +1107,19 @@ This can be stopped by entering @code{LaTeX-math-mode},
 If non-nil, append a empty pair of braces after inserting a macro.
 @end defopt
 
+@defopt TeX-insert-braces-alist
+Control the insertion of a pair of braces after a macro on a per macro
+basis.
+
+This variable is an alist.  Each element is a cons cell, whose car is
+the macro name, and the cdr is non-nil or nil, depending on whether a
+pair of braces should be, respectively, appended or not to the macro.
+
+If a macro has an element in this variable, @code{TeX-parse-macro} will
+use its value to decided what to do, whatever the value of the variable
+@code{TeX-insert-braces}.
+@end defopt
+
 Completions work because @AUCTeX{} can analyze @TeX{} files, and store
 symbols in Emacs Lisp files for later retrieval.  @xref{Automatic}, for
 more information.

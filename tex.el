@@ -2587,9 +2587,26 @@ Or alternatively:
 (make-variable-buffer-local 'TeX-default-macro)
 
 (defcustom TeX-insert-braces t
-  "*If non-nil, append a empty pair of braces after inserting a macro."
+  "*If non-nil, append a empty pair of braces after inserting a macro.
+
+See also `TeX-insert-braces-alist'."
   :group 'TeX-macro
   :type 'boolean)
+
+(defcustom TeX-insert-braces-alist nil
+  "Alist of macros to which braces should or should not be appended.
+
+Each element is a cons cell, whose CAR is the macro name, and the
+CDR is non-nil or nil, depending on whether a pair of braces
+should be, respectively, appended or not to the macro.
+
+If a macro has an element in this variable, `TeX-parse-macro'
+will use its value to decided what to do, whatever the value of
+the variable `TeX-insert-braces'."
+  :group 'TeX-macro
+  :type '(repeat (cons (string :tag "Macro name")
+		       (boolean :tag "Append braces?"))))
+(make-variable-buffer-local 'TeX-insert-braces-alist)
 
 (defcustom TeX-insert-macro-default-style 'show-optional-args
   "Specifies whether `TeX-insert-macro' will ask for all optional arguments.
@@ -2713,13 +2730,19 @@ type of ARGS:
     (cond ((marker-position exit-mark)
 	   (goto-char (marker-position exit-mark))
 	   (set-marker exit-mark nil))
-	  ((and TeX-insert-braces
-		;; Do not add braces if the argument is 0 or -1.
-		(not (and (= (safe-length args) 1)
-			  (numberp (car args))
-			  (<= (car args) 0)))
-		(equal position (point))
-		(string-match "[a-zA-Z]+" symbol))
+	  ((let ((element (assoc symbol TeX-insert-braces-alist)))
+	     ;; If in `TeX-insert-braces-alist' there is an element associated
+	     ;; to the current macro, use its value to decide whether inserting
+	     ;; a pair of braces, otherwise use the standard criterion.
+	     (if element
+		 (cdr element)
+	       (and TeX-insert-braces
+		    ;; Do not add braces if the argument is 0 or -1.
+		    (not (and (= (safe-length args) 1)
+			      (numberp (car args))
+			      (<= (car args) 0)))
+		    (equal position (point))
+		    (string-match "[a-zA-Z]+" symbol))))
 	   (if (texmathp)
 	       (when (TeX-active-mark)
 		 (insert TeX-grop)
