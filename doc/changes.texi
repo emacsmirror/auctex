@@ -31,7 +31,9 @@ provided as well.
 
 @item
 New user options @code{LaTeX-default-author} and
-@code{TeX-insert-braces-alist}.
+@code{TeX-insert-braces-alist}.  A new possible value
+(@code{show-all-optional-args}) for
+@code{TeX-insert-macro-default-style} was added.
 
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,

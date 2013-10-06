@@ -1,5 +1,13 @@
 2013-10-06  Mosè Giordano  <giordano.mose@libero.it>
 
+	* tex.el (TeX-insert-macro-default-style): Add new possible value
+	`show-all-optional-args' and update doc-string accordingly.
+	(TeX-parse-arguments): Use it.
+
+	* doc/auctex.texi (Completion): Document `show-all-optional-args'.
+
+	* doc/changes.texi: Mention `show-all-optional-args'.
+
 	* tex.el (TeX-insert-braces-alist): New customizable variable.
 	(TeX-insert-braces): Mention it in doc-string.
 	(TeX-parse-macro): Use `TeX-insert-braces-alist'.

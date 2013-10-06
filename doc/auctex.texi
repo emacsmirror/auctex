@@ -1063,13 +1063,16 @@ Specifies whether @code{TeX-insert-macro} will ask for all optional
 arguments.
 
 If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
-asks for optional arguments of @TeX{} macros.  If set to
-@code{mandatory-args-only}, @code{TeX-insert-macro} asks only for
-mandatory arguments.  When @code{TeX-insert-macro} is called with prefix
-argument (@kbd{C-u}), it's the other way round.
+asks for optional arguments of @TeX{} marcos, unless the previous
+optional argument has been rejected.  If set to
+@code{show-all-optional-args}, @code{TeX-insert-macro} asks for all
+optional arguments.  @code{mandatory-args-only}, @code{TeX-insert-macro}
+asks only for mandatory arguments.  When @code{TeX-insert-macro} is
+called with prefix argument (@kbd{C-u}), it's the other way round.
 
 Note that for some macros, there are special mechanisms, e.g.
-@code{LaTeX-includegraphics-options-alist}.
+@code{LaTeX-includegraphics-options-alist} and
+@code{TeX-arg-cite-note-p}.
 
 @end defopt
 

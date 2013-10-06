@@ -2611,18 +2611,22 @@ the variable `TeX-insert-braces'."
 (defcustom TeX-insert-macro-default-style 'show-optional-args
   "Specifies whether `TeX-insert-macro' will ask for all optional arguments.
 
-If set to the symbol `show-optional-args', `TeX-insert-macro' asks for
-optional arguments of TeX marcos.  If set to `mandatory-args-only',
+If set to the symbol `show-optional-args', `TeX-insert-macro'
+asks for optional arguments of TeX marcos, unless the previous
+optional argument has been rejected.  If set to
+`show-all-optional-args', `TeX-insert-macro' asks for all
+optional arguments.  If set to `mandatory-args-only',
 `TeX-insert-macro' asks only for mandatory argument.
 
 When `TeX-insert-macro' is called with \\[universal-argument], it's the other
 way round.
 
 Note that for some macros, there are special mechanisms, see e.g.
-`LaTeX-includegraphics-options-alist'."
+`LaTeX-includegraphics-options-alist' and `TeX-arg-cite-note-p'."
   :group 'TeX-macro
   :type '(choice (const mandatory-args-only)
-		 (const show-optional-args)))
+		 (const show-optional-args)
+		 (const show-all-optional-args)))
 
 (defvar TeX-arg-opening-brace nil
   "String used as an opening brace for argument insertion.
@@ -2778,11 +2782,14 @@ See `TeX-parse-macro' for details."
       (if (vectorp (car args))
 	  ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro'
 	  ;; for more comments.  See `TeX-insert-macro-default-style'.
-	  (unless (or (and (eq TeX-insert-macro-default-style 'show-optional-args)
-			   (equal current-prefix-arg '(4)))
-		      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
-			   (null (equal current-prefix-arg '(4))))
-		      last-optional-rejected)
+	  (unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
+		      (equal current-prefix-arg '(4))
+		    (or
+		     (and (eq TeX-insert-macro-default-style 'show-optional-args)
+			  (equal current-prefix-arg '(4)))
+		     (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
+			  (null (equal current-prefix-arg '(4))))
+		     last-optional-rejected))
 	    (let ((TeX-arg-opening-brace LaTeX-optop)
 		  (TeX-arg-closing-brace LaTeX-optcl))
 	      (TeX-parse-argument t (if (equal (length (car args)) 1)
