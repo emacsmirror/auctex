@@ -495,8 +495,8 @@ As a side effect, when @code{LaTeX-math-mode} (@pxref{Mathematics}) is
 on, just typing @kbd{`(} inserts not only @samp{\langle}, but also
 @samp{\rangle}.
 
-If you don't like such auto completion at all, it can be disabled by
-an user option.
+If you do not like such auto completion at all, it can be disabled by a
+user option.
 
 @defopt TeX-arg-right-insert-p
 If this option is turned off, the automatic supply of the right macros

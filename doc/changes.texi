@@ -37,7 +37,7 @@ New user options @code{LaTeX-default-author} and
 
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,
-@AUCTeX{} looks at @samp{backend} option to decide whether using Biber
+@AUCTeX{} looks at @samp{backend} option to decide whether to use Biber
 or BibTeX.  @code{LaTeX-biblatex-use-Biber} option was removed.
 
 @item
