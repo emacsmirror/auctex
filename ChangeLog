@@ -1,3 +1,9 @@
+2013-10-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/changes.texi: Document enhanced paired braces feature.
+
+	* doc/auctex.texi: Ditto.
+
 2013-10-06  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-insert-macro-default-style): Add new possible value

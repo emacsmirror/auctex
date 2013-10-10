@@ -48,6 +48,24 @@ environment is @samp{frame}, with @samp{letter} it is @samp{letter},
 with @samp{slides} it is @samp{slide}.
 
 @item
+Brace pairing feature was enhanced in @LaTeX{} documents.  Support for
+@samp{\bigl}, @samp{\Bigl}, @samp{\biggl} and @samp{\Biggl}, the same
+as the one for @samp{\left}, was added to @code{TeX-insert-macro}.
+For example, @kbd{C-c @key{RET} bigl @key{RET} ( @key{RET}} inserts
+@samp{\bigl(\bigr)}.
+
+You can insert brace pair @samp{()}, @samp{@{@}} and @samp{[]} by typing
+a single left brace if the new user option
+@code{LaTeX-electric-left-right-brace} is enabled.
+
+Macros @samp{\langle}, @samp{\lfloor} and @samp{\lceil}, which produce
+the left part of the paired braces, are treated similarly as @samp{(},
+@samp{@{} and @samp{[} during the course of @code{TeX-insert-macro}.
+@ifclear rawfile
+@xref{Quotes}, for details.
+@end ifclear
+
+@item
 Support for dozens of @LaTeX{} packages was added.
 @end itemize
 

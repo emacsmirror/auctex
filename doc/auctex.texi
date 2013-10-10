@@ -315,7 +315,7 @@ entering more specialized sorts of text, for formatting the source by
 indenting and filling and for navigating through the document.
 
 @menu
-* Quotes::                      Inserting double quotes
+* Quotes::                      Inserting quotes, dollars, and braces
 * Font Specifiers::             Inserting Font Specifiers
 * Sectioning::                  Inserting chapters, sections, etc.
 * Environments::                Inserting Environment Templates
@@ -470,6 +470,110 @@ can do this by typing @kbd{C-c @{}.
 to type inside of them.  If there is an active region, put braces around
 it and leave point after the closing brace.
 @end deffn
+
+When writing complex math formulas in @LaTeX{} documents, you
+sometimes need to adjust the size of braces with pairs of macros like
+@samp{\left}-@samp{\right}, @samp{\bigl}-@samp{\bigr} and so on.  You
+can avoid unbalanced pairs with the help of @code{TeX-insert-macro},
+bound to @kbd{C-c C-m} or @kbd{C-c @key{RET}} (@pxref{Completion}).
+If you insert left size adjusting macros such as @samp{\left},
+@samp{\bigl} etc. with @code{TeX-insert-macro}, it asks for left brace
+to use and supplies automatically right size adjusting macros such as
+@samp{\right}, @samp{\bigr} etc. and corresponding right brace in
+addtion to the intended left macro and left brace.
+
+The completion by @code{TeX-insert-macro} also applies when entering
+macros such as @samp{\langle}, @samp{\lfloor} and @samp{\lceil}, which
+produce the left part of the paired braces.  For example, inserting
+@samp{\lfloor} by @kbd{C-c C-m} is immediately followed by the
+insertion of @samp{\rfloor}.  In addition, if the point was located
+just after @samp{\left} or its friends, the corresponding
+@samp{\right} etc. will be inserted in front of @samp{\rfloor}.
+In both cases, active region is honored.
+
+As a side effect, when @code{LaTeX-math-mode} (@pxref{Mathematics}) is
+on, just typing @kbd{`(} inserts not only @samp{\langle}, but also
+@samp{\rangle}.
+
+If you don't like such auto completion at all, it can be disabled by
+an user option.
+
+@defopt TeX-arg-right-insert-p
+If this option is turned off, the automatic supply of the right macros
+and braces is suppressed.
+@end defopt
+
+When you edit @LaTeX{} documents, you can enable automatic brace
+pairing when typing @kbd{(}, @kbd{@{} and @kbd{[}.
+
+@defopt LaTeX-electric-left-right-brace
+If this option is on, just typing @kbd{(}, @kbd{@{} or @kbd{[}
+immediately adds the corresponding right brace @samp{)}, @samp{@}} or
+@samp{]}.  The point is left after the opening brace.  If there is an
+active region, braces are put around it.
+
+They recognize the preceeding backslash or size adjusting macros such
+as @samp{\left}, @samp{\bigl} etc., so the following completions will
+occur:
+@itemize @bullet
+
+@item
+(when typing single left brace)
+@itemize @minus
+
+@item
+@samp{(} -> @samp{()}
+
+@item
+@samp{@{} -> @samp{@{@}}
+
+@item
+@samp{[} -> @samp{[]}
+@end itemize
+
+@item
+(when typing left brace just after a backslash)
+@itemize @minus
+
+@item
+@samp{\(} -> @samp{\(\)}
+
+@item
+@samp{\@{} -> @samp{\@{\@}}
+
+@item
+@samp{\[} -> @samp{\[\]}
+@end itemize
+
+@item
+(when typing just after @samp{\left} or @samp{\bigl})
+@itemize @minus
+
+@item
+@samp{\left(} -> @samp{\left(\right)}
+
+@item
+@samp{\bigl[} -> @samp{\bigl[\bigr]}
+@end itemize
+
+@item
+(when typing just after @samp{\Bigl\})
+@itemize @minus
+
+@item
+@samp{\Bigl\@{} -> @samp{\Bigl\@{\Bigr\@}}
+
+@end itemize
+
+@end itemize
+
+This auto completion feature may be a bit annoying when editing an
+already existing @LaTeX{} document.  In that case, use @kbd{C-u 1} or
+@kbd{C-q} before typing @kbd{(}, @kbd{@{} or @kbd{[}.  Then no
+completion is done and just a single left brace is inserted.  In fact,
+with optional prefix @var{arg}, just that many open braces are
+inserted without any completion.
+@end defopt
 
 @node Font Specifiers
 @section Inserting Font Specifiers
