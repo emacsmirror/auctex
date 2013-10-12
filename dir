@@ -1,18 +1,16 @@
-Ceci est le fichier .../info/dir, qui contient le nœud le
-plus haut de la hiérarchie Info. Ce nœud est appelé (dir)Top.
-C'est de ce nœud que vous démarrez la première fois que
-vous utilisez Info.
+This is the file .../info/dir, which contains the
+topmost node of the Info hierarchy, called (dir)Top.
+The first time you invoke Info you start off looking at this node.
 
-File: dir,	Node: Top	Ceci est le haut de l'arborescence INFO
+File: dir,	Node: Top	This is the top of the INFO tree
 
-  Ceci (le nœud Répertoire) fournit un menu des sujets majeurs.
-  Emtrez « q » pour quitter, « ? » pour afficher toutes les commandes Info,
-  « d » pour revenir ici ;, « h » affiche un guide d'initiation pour les
-  nouveaux venus, « mEmacs<Entrée> » démarre une consultation du manuel
-  Emacs, et cætera.
+  This (the Directory node) gives a menu of major topics.
+  Typing "q" exits, "?" lists all Info commands, "d" returns here,
+  "h" gives a primer for first-timers,
+  "mEmacs<Return>" visits the Emacs manual, etc.
 
-  Dans Emacs, vous pouvez cliquer avec le deuxième bouton de la souris
-  sur une entrée de menu ou sur un renvoi pour le sélectionner.
+  In Emacs, you can click mouse button 2 on a menu item or cross reference
+  to select it.
 
 * Menu:
 

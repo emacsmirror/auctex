@@ -62,7 +62,6 @@ tex-site.el: tex-site.el.in
 	    -e 's|@lispautodir@|(if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")|'\
 	    -e 's|@AUCTEXVERSION@|$(AUCTEXVERSION)|'\
 	    -e 's|@AUCTEXDATE@|$(AUCTEXDATE)|'\
-	    -e "\$$a(provide 'tex-site)" \
 	    $< >$@
 
 doc/version.texi: ChangeLog
