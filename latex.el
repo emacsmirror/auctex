@@ -2633,14 +2633,34 @@ consideration just as is in the non-commented source code."
     ("tabbing")
     ("table")
     ("table*")
-    ("tabular")
-    ("tabular*"))
+    ("tabular" LaTeX-indent-tabular)
+    ("tabular*" LaTeX-indent-tabular)
+    ("align" LaTeX-indent-tabular)
+    ("align*" LaTeX-indent-tabular))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns."
     :group 'LaTeX-indentation
     :type '(repeat (list (string :tag "Environment")
-			 (option function))))
+			 (option function)))
+    :set (lambda (symbol value)
+           (setq LaTeX--tabular-like-end
+                 (format "\\\\end{%s}"
+                         (regexp-opt
+                          (let (out)
+                            (mapc (lambda (x)
+                                    (when (eq (cadr x) 'LaTeX-indent-tabular)
+                                      (push (car x) out)))
+                                  value)
+                            out))))
+           (set-default symbol value)))
+
+(defvar LaTeX--tabular-like-end nil
+  "A regexp matching tabular-like environment ends.
+Those will be aligned with `LaTeX-indent-tabular'.
+
+Do not set this variable. This variable is auto-set
+by customizing `LaTeX-indent-environment-list'.")
 
 (defcustom LaTeX-indent-environment-check t
   "*If non-nil, check for any special environments."
@@ -5995,6 +6015,47 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	(while (re-search-forward "\\\\blackandwhite{" nil t)
       (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
+
+(defun LaTeX-env-beginning-pos-col ()
+  "Return a cons: (POINT . COLUMN) for current environment's beginning."
+  (save-excursion
+    (LaTeX-find-matching-begin)
+    (cons (point) (current-column))))
+
+(defun LaTeX-hanging-ampersand-position ()
+  "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
+  (destructuring-bind (beg-pos . beg-col)
+      (LaTeX-env-beginning-pos-col)
+    (let* ((cur-pos (point)))
+      (save-excursion
+        (if (re-search-backward "\\\\\\\\" beg-pos t)
+            (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
+              (goto-char beg-pos)
+              (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+              (- (current-column) 1))
+          (+ 2 beg-col))))))
+
+(defun LaTeX-indent-tabular ()
+  "Return indent column for the current tabular-like line."
+  (destructuring-bind (beg-pos . beg-col)
+      (LaTeX-env-beginning-pos-col)
+    (cond ((looking-at LaTeX--tabular-like-end)
+           beg-col)
+
+          ((looking-at "\\\\\\\\")
+           (+ 2 beg-col))
+
+          ((looking-at "&")
+           (LaTeX-hanging-ampersand-position))
+
+          (t
+           (+ 2
+              (let ((any-col (save-excursion
+                               (when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
+                                 (current-column)))))
+                (if (and any-col (string= "&" (match-string 0)))
+                    any-col
+                  beg-col)))))))
 
 (provide 'latex)
 

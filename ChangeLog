@@ -1,3 +1,26 @@
+2013-10-14  Oleh Krehel  <ohwoeowho@gmail.com>
+
+	* latex.el: `LaTeX-indent-tabular' now indents tabular-like
+	environments.
+	(LaTeX--tabular-like-end): new variable.
+	(LaTeX-indent-environment-list): added `LaTeX-indent-tabular' as
+	indenter for "tabular" and "align", added a setter that recomputes
+	`LaTeX--tabular-like-end'
+	(LaTeX-env-beginning-pos-col): new function.
+	(LaTeX-hanging-ampersand-position): new function.
+	(LaTeX-indent-tabular): new function.
+
+	* tests/latex/latex-test.el : added an ERT test for
+	`LaTeX-indent-tabular'
+	(LaTeX-indent-tabular-test/in): input filename variable
+	(LaTeX-indent-tabular-test/out): output filename variable
+
+	* tests/latex/tabular-in.tex: input to latex-test.el
+
+	* tests/latex/tabular-out.tex: input to latex-test.el
+
+	* tex.el (TeX-how-many): added for compatibility with XEmacs.
+
 2013-10-11  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/auctex.texi (Quotes): Fix typo.

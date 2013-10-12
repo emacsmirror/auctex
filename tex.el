@@ -5776,6 +5776,15 @@ NAME may be a package, a command, or a document."
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
 
+(defun TeX-how-many (regexp &optional rstart rend)
+  "Compatibily function for `how-many'.
+Supports restriction to a region where the XEmacs version doesn't."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region rstart rend)
+      (goto-char (point-min))
+      (how-many regexp))))
+
 (provide 'tex)
 
 ;; Local Variables:
