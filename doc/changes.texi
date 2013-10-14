@@ -67,6 +67,12 @@ the left part of the paired braces, are treated similarly as @samp{(},
 
 @item
 Support for dozens of @LaTeX{} packages was added.
+
+@item
+Tabular-like environments (tabular, tabular*, tabularx, tabulary, array,
+align, ...) are indented in a nicer and more informative way when the
+column values of a table line are written across multiple lines in the
+tex file.
 @end itemize
 
 @heading News since 11.87

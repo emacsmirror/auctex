@@ -1,5 +1,7 @@
 2013-10-14  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/changes.texi: Mention the enhanced tabular indentation.
+
 	* style/longtable.el ("longtable"): Use `LaTeX-indent-tabular'
 	also for longtable environment.
 
