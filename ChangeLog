@@ -1,3 +1,17 @@
+2013-10-14  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/longtable.el ("longtable"): Use `LaTeX-indent-tabular'
+	also for longtable environment.
+
+	* style/tabularx.el ("tabularx"): Use `LaTeX-indent-tabular' also
+	for tabularx environment.
+
+	* style/tabulary.el ("tabulary"): Use `LaTeX-indent-tabular' also
+	for tabulary environment.
+
+	* latex.el (LaTeX-indent-environment-list): Use
+	`LaTeX-indent-tabular' also for array and eqnarray environments.
+
 2013-10-14  Oleh Krehel  <ohwoeowho@gmail.com>
 
 	* latex.el: `LaTeX-indent-tabular' now indents tabular-like

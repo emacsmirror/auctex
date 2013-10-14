@@ -39,6 +39,9 @@
  (lambda ()
    ;; Make tabulary the default tabular environment
    (setq LaTeX-default-tabular-environment "tabulary")
+   ;; Use the enhanced tabular indentation
+   (add-to-list 'LaTeX-indent-environment-list
+		'("tabulary" LaTeX-indent-tabular))
    ;; New symbols
    (TeX-add-symbols
     "tymax" "tymin" "tyformat")

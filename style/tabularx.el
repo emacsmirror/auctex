@@ -39,6 +39,9 @@
  (lambda ()
    ;; Make tabularx the default tabular environment
    (setq LaTeX-default-tabular-environment "tabularx")
+   ;; Use the enhanced tabular indentation
+   (add-to-list 'LaTeX-indent-environment-list
+		'("tabularx" LaTeX-indent-tabular))
    ;; New symbols
    (TeX-add-symbols
     "tracingtabularx"

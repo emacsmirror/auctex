@@ -76,6 +76,10 @@
     ;; Caption commands
     '("caption*" 1))
 
+   ;; Use the enhanced table formatting
+   (add-to-list 'LaTeX-indent-environment-list
+		'("longtable" LaTeX-indent-tabular))
+
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))

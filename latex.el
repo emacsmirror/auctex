@@ -2621,22 +2621,22 @@ consideration just as is in the non-commented source code."
 (defcustom LaTeX-indent-environment-list
   '(("verbatim" current-indentation)
     ("verbatim*" current-indentation)
-    ;; The following should have there own, smart indentation function.
+    ("tabular" LaTeX-indent-tabular)
+    ("tabular*" LaTeX-indent-tabular)
+    ("align" LaTeX-indent-tabular)
+    ("align*" LaTeX-indent-tabular)
+    ("array" LaTeX-indent-tabular)
+    ("eqnarray" LaTeX-indent-tabular)
+    ("eqnarray*" LaTeX-indent-tabular)
+    ;; The following should have their own, smart indentation function.
     ;; Some other day.
-    ("array")
     ("displaymath")
-    ("eqnarray")
-    ("eqnarray*")
     ("equation")
     ("equation*")
     ("picture")
     ("tabbing")
     ("table")
-    ("table*")
-    ("tabular" LaTeX-indent-tabular)
-    ("tabular*" LaTeX-indent-tabular)
-    ("align" LaTeX-indent-tabular)
-    ("align*" LaTeX-indent-tabular))
+    ("table*"))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns."
