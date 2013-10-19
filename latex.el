@@ -1708,6 +1708,29 @@ string."
 				       "" "" nil)
 		       optional))
 
+(defun TeX-arg-file-name (optional &optional prompt)
+  "Prompt for a file name.
+Initial input is the name of the file being visited in the
+current buffer, with extension.  If OPTIONAL is non-nil, insert
+it as an optional argument.  Use PROMPT as the prompt string."
+  (TeX-argument-insert
+   (TeX-read-string
+    (TeX-argument-prompt optional prompt "Name")
+    (file-name-nondirectory buffer-file-name))
+   optional))
+
+(defun TeX-arg-file-name-sans-extension (optional &optional prompt)
+  "Prompt for a file name.
+Initial input is the name of the file being visited in the
+current buffer, without extension.  If OPTIONAL is non-nil,
+insert it as an optional argument.  Use PROMPT as the prompt
+string."
+  (TeX-argument-insert
+   (TeX-read-string
+    (TeX-argument-prompt optional prompt "Name")
+    (file-name-sans-extension (file-name-nondirectory buffer-file-name)))
+   optional))
+
 (defun TeX-arg-define-label (optional &optional prompt)
   "Prompt for a label completing with known labels.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -2084,6 +2107,16 @@ string."
 		       optional prompt (format "Date (default %s)" default))
 		      nil nil default)
      optional)))
+
+(defun TeX-arg-version (optional &optional prompt)
+  "Prompt for the version of a file.
+Use as initial input the current date.  If OPTIONAL is non-nil,
+insert the resulting value as an optional argument, otherwise as
+a mandatory one.  Use PROMPT as the prompt string."
+  (TeX-argument-insert
+   (TeX-read-string (TeX-argument-prompt optional prompt "Version")
+		    (format-time-string "%Y/%m/%d" (current-time)))
+   optional))
 
 (defun TeX-arg-pagestyle (optional &optional prompt definition)
   "Prompt for a LaTeX pagestyle with completion.
@@ -5897,7 +5930,15 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
-     '("ProvidesPackage" "Name" [ "Version" ])
+     '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
+       [ TeX-arg-conditional (y-or-n-p "Insert version? ")
+			     ([ TeX-arg-version ]) nil])
+     '("ProvidesClass" (TeX-arg-file-name-sans-extension "Class name")
+       [ TeX-arg-conditional (y-or-n-p "Insert version? ")
+			     ([ TeX-arg-version ]) nil])
+     '("ProvidesFile" (TeX-arg-file-name "File name")
+       [ TeX-arg-conditional (y-or-n-p "Insert version? ")
+			     ([ TeX-arg-version ]) nil ])
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"

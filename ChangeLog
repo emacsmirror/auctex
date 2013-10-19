@@ -1,3 +1,14 @@
+2013-10-19  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (TeX-arg-file-name): New function.
+	(TeX-arg-file-name-sans-extension): Ditto.
+	(TeX-arg-version): Ditto.
+	(LaTeX-common-initialization): Add completion for
+	`ProvidesPackage', `ProvidesClass', and `ProvidesFile'.
+
+	* doc/auctex.texi (Adding Macros): Document `TeX-arg-version',
+	`TeX-arg-file-name', and `TeX-arg-file-name-sans-extension'.
+
 2013-10-14  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/changes.texi: Mention the enhanced tabular indentation.

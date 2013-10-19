@@ -4188,6 +4188,10 @@ Prompt for a @TeX{} macro with completion.
 @item TeX-arg-date
 Prompt for a date, defaulting to the current date.
 
+@item TeX-arg-version
+Prompt for the version of a file, using as initial input the current
+date.
+
 @item TeX-arg-environment
 Prompt for a @LaTeX{} environment with completion.
 
@@ -4205,6 +4209,14 @@ Prompt for a @LaTeX{} savebox completing with known saveboxes.
 @item TeX-arg-file
 Prompt for a filename in the current directory, and use it without the
 extension.
+
+@item TeX-arg-file-name
+Prompt for a filename and use as initial input the name of the file
+being visited in the current buffer, with extension.
+
+@item TeX-arg-file-name-sans-extension
+Prompt for a filename and use as initial input the name of the file
+being visited in the current buffer, without extension.
 
 @item TeX-arg-input-file
 @vindex TeX-arg-input-file-search
