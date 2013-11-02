@@ -1,3 +1,18 @@
+2013-11-02  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-narrow-to-environment): New function, disabled
+	by default.
+	(LaTeX-common-initialization): Add key binding for
+	`LaTeX-narrow-to-environment'.
+
+	* tex.el (VirTeX-common-initialization): Add key binding for
+	`TeX-narrow-to-group'.
+	(TeX-narrow-to-group): New function, disabled by default.
+
+	* doc/auctex.texi (Narrowing): Document narrowing commands.
+
+	* doc/changes.texi: Mention narrowing commands.
+
 2013-10-19  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (TeX-arg-file-name): New function.

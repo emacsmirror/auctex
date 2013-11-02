@@ -3087,6 +3087,8 @@ The algorithm is as follows:
   (make-local-variable 'TeX-auto-update)
   (setq TeX-auto-update t)
 
+  (define-key narrow-map "g" 'TeX-narrow-to-group)
+
   ;; Minor modes
   (when TeX-source-correlate-mode
     (TeX-source-correlate-mode 1))
@@ -3944,6 +3946,24 @@ If optional argument STRIP is non-nil, remove file extension."
 					       dir) t)))))
 	    (append local-files (TeX-search-files dirs exts nodir strip)))))))
 
+;;; Narrowing
+
+(defun TeX-narrow-to-group ()
+  "Make text outside current group invisible."
+  (interactive)
+  (save-excursion
+    (widen)
+    (let ((opoint (point))
+	  beg end)
+      (if (null (search-backward "{" nil t))
+	  (message "Nothing to be narrowed here.")
+	(setq beg (point))
+	(forward-sexp)
+	(setq end (point))
+	(if (< end opoint)
+	    (message "Nothing to be narrowed here.")
+	  (narrow-to-region beg end))))))
+(put 'TeX-narrow-to-group 'disabled t)
 
 ;;; Utilities
 ;;

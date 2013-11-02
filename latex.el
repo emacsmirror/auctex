@@ -5017,6 +5017,25 @@ commands are defined:
 			(repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
+;;; Narrowing
+
+(defun LaTeX-narrow-to-environment (&optional count)
+  "Make text outside current environment invisible.
+With optional COUNT keep visible that number of enclosing
+environmens."
+  (interactive "p")
+  (setq count (if count (abs count) 1))
+  (save-excursion
+    (widen)
+    (let ((opoint (point))
+	  beg end)
+      (dotimes (c count) (LaTeX-find-matching-end))
+      (setq end (point))
+      (goto-char opoint)
+      (dotimes (c count) (LaTeX-find-matching-begin))
+      (setq beg (point))
+      (narrow-to-region beg end))))
+(put 'LaTeX-narrow-to-environment 'disabled t)
 
 ;;; Keymap
 
@@ -5989,7 +6008,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   ;; late in mode initialization to assure that all relevant variables
   ;; are properly initialized before style files try to alter them.
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map))
+  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
+
+  (define-key narrow-map "e" 'LaTeX-narrow-to-environment))
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."

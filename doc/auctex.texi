@@ -163,6 +163,7 @@ Controlling Screen Display
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
+* Narrowing::                   Restricting display and editing to a portion of the buffer
 
 Font Locking
 
@@ -1677,10 +1678,15 @@ for Emacs' outline mode which lets you narrow the buffer content to
 certain sections of your text by hiding the parts not belonging to these
 sections.
 
+Moreover, you can focus in a specific portion of the code by narrowing
+the buffer to the desired region.  @AUCTeX{} provides also functions to
+narrow the buffer to the current group and to @LaTeX{} environments.
+
 @menu
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
+* Narrowing::                   Restricting display and editing to a portion of the buffer
 @end menu
 
 @node Font Locking
@@ -2404,6 +2410,34 @@ and @samp{\item} being below @samp{\subparagraph}.
 You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
+
+@node Narrowing
+@section Narrowing
+
+Sometimes you want to focus your attention to a limited region of the
+code.  You can do that by restricting the text addressable by editing
+commands and hiding the rest of the buffer with the narrowing functions,
+@pxref{Narrowing,,,emacs,GNU Emacs Manual}.  In addition, AUCTeX
+provides a couple of other commands to narrow the buffer to a group,
+i.e. a region enclosed in a pair of curly braces, and to @LaTeX{}
+environments.
+
+@deffn Command TeX-narrow-to-group
+@kindex C-x n g
+(@kbd{C-x n g}) Make text outside current group invisible.
+@end deffn
+
+@deffn Command LaTeX-narrow-to-environment @var{count}
+@kindex C-x n e
+(@kbd{C-x n e}) Make text outside current environment invisible.  With
+optional argument @var{count} keep visible that number of enclosing
+environmens.
+@end deffn
+
+Like other standard narrowing functions, the above commands are
+disabled.  Attempting to use them asks for confirmation and gives you
+the option of enabling them; if you enable the commands, confirmation
+will no longer be required for them.
 
 @node Processing
 @chapter Starting Processors, Viewers and Other Programs
