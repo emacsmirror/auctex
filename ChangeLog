@@ -1,3 +1,8 @@
+2013-11-03  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el ("biblatex"): Quote `TeX-arg-key-val'
+	arguments with `quote' special form istead of apostrophe.
+
 2013-11-02  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-narrow-to-environment): New function, disabled
