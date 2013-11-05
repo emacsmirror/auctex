@@ -1,7 +1,12 @@
 2013-11-05  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (TeX-arg-bibliography): Run style files associated to
+	the bibliography database files.
+
 	* style/biblatex.el ("biblatex"): Do not quote at all
 	`TeX-arg-key-val' arguments.
+	(LaTeX-arg-addbibresource): Run style file associated to the
+	bibliography database file.
 
 2013-11-03  Mosè Giordano  <giordano.mose@libero.it>
 

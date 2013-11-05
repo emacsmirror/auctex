@@ -169,6 +169,10 @@ string."
 					   inputs 'local t nil))
 			    (symbol-value files))))
     (LaTeX-add-bibliographies database)
+    ;; Run style file associated to the bibliography database file in order to
+    ;; immediately fill `LaTeX-bibitem-list'.  We need to strip the extension
+    ;; because AUCTeX style files don't use it.
+    (TeX-run-style-hooks (file-name-sans-extension database))
     (TeX-argument-insert database optional)))
 
 ;; Support for multicite commands, see § 3.7.3 of Biblatex reference manual.

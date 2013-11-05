@@ -2061,6 +2061,9 @@ string."
 					'bibinputs 'local t t))
 			 BibTeX-global-files))))
     (apply 'LaTeX-add-bibliographies styles)
+    ;; Run style files associated to the bibliography database files in order to
+    ;; immediately fill `LaTeX-bibitem-list'.
+    (mapc 'TeX-run-style-hooks styles)
     (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
 
 (defun TeX-arg-corner (optional &optional prompt)
