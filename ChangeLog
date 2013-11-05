@@ -1,3 +1,8 @@
+2013-11-05  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el ("biblatex"): Do not quote at all
+	`TeX-arg-key-val' arguments.
+
 2013-11-03  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el ("biblatex"): Quote `TeX-arg-key-val'

@@ -249,26 +249,26 @@ for citation keys."
       LaTeX-arg-addbibresource)
     ;; The Bibliography
     '("printbibliography"
-      [TeX-arg-key-val (quote (("env") ("heading") ("title") ("prenote") ("postnote")
-			       ("section") ("segment") ("sorting") ("type") ("nottype")
-			       ("subtype") ("notsubtype") ("keyword") ("notkeyword")
-			       ("categoy") ("notcategory") ("filter") ("check")
-			       ("prefixnumbers") ("resetnumbers" ("true" "false"))
-			       ("omitnumbers" ("true" "false"))))])
+      [TeX-arg-key-val (("env") ("heading") ("title") ("prenote") ("postnote")
+			("section") ("segment") ("sorting") ("type") ("nottype")
+			("subtype") ("notsubtype") ("keyword") ("notkeyword")
+			("categoy") ("notcategory") ("filter") ("check")
+			("prefixnumbers") ("resetnumbers" ("true" "false"))
+			("omitnumbers" ("true" "false")))])
     '("bibbysection"
-      [TeX-arg-key-val (quote (("env") ("heading") ("prenote") ("postnote")))])
+      [TeX-arg-key-val (("env") ("heading") ("prenote") ("postnote"))])
     '("bibbysegment"
-      [TeX-arg-key-val (quote (("env") ("heading") ("prenote") ("postnote")))])
+      [TeX-arg-key-val (("env") ("heading") ("prenote") ("postnote"))])
     '("bibbycategory"
-      [TeX-arg-key-val (quote (("env") ("prenote") ("postnote") ("section")))])
+      [TeX-arg-key-val (("env") ("prenote") ("postnote") ("section"))])
     '("printbibheading"
-      [TeX-arg-key-val (quote (("heading") ("title")))])
+      [TeX-arg-key-val (("heading") ("title"))])
     ;; The List of Shorthands
     '("printshorthands"
-      [TeX-arg-key-val (quote (("env") ("heading") ("title") ("prenote") ("postnote")
-			       ("section") ("segment") ("sorting") ("type") ("nottype")
-			       ("subtype") ("notsubtype") ("keyword") ("notkeyword")
-			       ("categoy") ("notcategory") ("filter") ("check")))])
+      [TeX-arg-key-val (("env") ("heading") ("title") ("prenote") ("postnote")
+			("section") ("segment") ("sorting") ("type") ("nottype")
+			("subtype") ("notsubtype") ("keyword") ("notkeyword")
+			("categoy") ("notcategory") ("filter") ("check"))])
     ;; Bibliography Sections
     '("newrefsection" ["Resources"])
     "endrefsection"
