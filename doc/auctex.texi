@@ -2187,11 +2187,22 @@ forced fontification by customizing the variable
 @code{TeX-fold-force-fontify}.
 @end defopt
 
+@defopt TeX-fold-auto
+By default, a macro inserted with @code{TeX-insert-macro} (@kbd{C-c
+C-m}) will not be folded.  Set this variable to a non-nil value to
+aumatically fold macros as soon as they are inserted.
+@end defopt
+
 @defopt TeX-fold-preserve-comments
 By default items found in comments will be folded.  If your comments
 often contain unfinished code this might lead to problems.  Give this
 variable a non-nil value and foldable items in your comments will be
 left alone.
+@end defopt
+
+@defopt TeX-fold-unfold-around-mark
+When this variable is non-nil and there is an active regione, text
+around the mark will be kept unfolded.
 @end defopt
 
 @deffn Command TeX-fold-region
