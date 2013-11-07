@@ -6124,4 +6124,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
 (provide 'latex)
 
+
+;; Local Variables:
+;; outline-regexp: "\\(;;\\)\\(;+\\)"
+;; End:
+
 ;;; latex.el ends here
