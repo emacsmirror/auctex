@@ -11,6 +11,15 @@
 
 @itemize @bullet
 @item
+Style file authors are encouraged to distinguish common from expert
+macros/environments, and mark the latter using
+@code{TeX-declare-expert-macros} and
+@code{LaTeX-declare-expert-environments}.
+
+Users can then restrict completion using
+@code{TeX-complete-expert-commands}.
+
+@item
 Management of @LaTeX{} package options in the parser was improved.  You
 might need to reparse your documents, especially if you loaded the
 @samp{babel} package with language options.

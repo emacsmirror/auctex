@@ -609,7 +609,7 @@ value of `Texinfo-mode-hook'."
 
   (make-local-variable 'TeX-complete-list)
   (setq TeX-complete-list
-	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list nil)
+	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list-filtered nil)
 	      (list "" TeX-complete-word)))
 
   (make-local-variable 'TeX-font-list)

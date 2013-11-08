@@ -540,7 +540,7 @@ It may be customized with the following variables:
 		   (t LaTeX-default-environment)))
     (environment (completing-read (concat "Environment type: (default "
 					  default ") ")
-				  (LaTeX-environment-list) nil nil nil
+				  (LaTeX-environment-list-filtered) nil nil nil
 				  'LaTeX-environment-history)))
     ;; Get default
     (cond ((zerop (length environment))
@@ -5642,12 +5642,12 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
 		   2 LaTeX-index-entry-list "}")
-		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
-		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
+		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
+		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
 		  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
-		   1 TeX-symbol-list "}")
+		   1 TeX-symbol-list-filtered "}")
 		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
-		   1 LaTeX-environment-list "}")
+		   1 LaTeX-environment-list-filtered "}")
                   ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
 		   1 LaTeX-pagestyle-list "}"))
 		TeX-complete-list))

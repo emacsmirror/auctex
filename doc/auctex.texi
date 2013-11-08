@@ -869,6 +869,21 @@ document, @AUCTeX{} will default to insert a `document' environment.
 Most of these are described further in the following sections, and you
 may easily specify more.  @xref{Customizing Environments}.
 
+@AUCTeX{} distinguishes normal and expert environments.  By default, it
+will offer completion only for normal environments.  This behavior is
+controlled by the user option @code{TeX-complete-expert-commands}.
+
+@defopt TeX-complete-expert-commands
+Complete macros and environments marked as expert commands.
+
+Possible values are nil, t, or a list of style names.
+
+  - nil           Don't complete expert commands (default).
+  - t             Always complete expert commands.
+  - (STYLES ...)  Only complete expert commands of STYLES.
+@end defopt
+
+
 @menu
 * Equations::                   Equations
 * Floats::                      Floats
@@ -1231,6 +1246,21 @@ use its value to decided what to do, whatever the value of the variable
 Completions work because @AUCTeX{} can analyze @TeX{} files, and store
 symbols in Emacs Lisp files for later retrieval.  @xref{Automatic}, for
 more information.
+
+@AUCTeX{} distinguishes normal and expert macros.  By default, it will
+offer completion only for normal commands.  This behavior can be
+controlled using the user option @code{TeX-complete-expert-commands}.
+
+@defopt TeX-complete-expert-commands
+Complete macros and environments marked as expert commands.
+
+Possible values are nil, t, or a list of style names.
+
+  - nil           Don't complete expert commands (default).
+  - t             Always complete expert commands.
+  - (STYLES ...)  Only complete expert commands of STYLES.
+@end defopt
+
 
 @cindex \cite, completion of
 @cindex Bib@TeX{}, completion
@@ -4369,6 +4399,21 @@ inserting.  If you want point to be located somewhere else after all
 hooks have been processed, set the value of @code{exit-mark}.  It will
 point nowhere, until the argument hook sets it.
 
+Some packages provide macros that are rarely useful to non-expert users.
+Those should be marked as expert macros using
+@code{TeX-declare-expert-macros}.
+
+@defun TeX-declare-expert-macros @var{pairs}...
+Declare the macros in PAIRS as expert macros.
+
+Each entry in PAIRS has the form (MACRO . STYLE), declaring MACRO
+to be an expert macro provided by STYLE.  If STYLE is nil,
+declare MACRO to be non-expert.
+
+Expert macros are completed depending on `TeX-complete-expert-commands'.
+@end defun
+
+
 @node Adding Environments
 @subsection Adding Support for Environments
 @cindex Adding environments
@@ -4506,6 +4551,21 @@ an optional argument of the @samp{lstlisting} environment:
    [TeX-arg-key-val LaTeX-listings-key-val-options]))
 @end lisp
 @end ftable
+
+Some packages provide environments that are rarely useful to non-expert
+users.  Those should be marked as expert environments using
+@code{LaTeX-declare-expert-environments}.
+
+@defun LaTeX-declare-expert-environments @var{pairs}...
+Declare the environments in PAIRS as expert environments.
+
+Each entry in PAIRS has the form (ENVIRONMENT . STYLE), declaring ENVIRONMENT
+to be an expert environment provided by STYLE.  If STYLE is nil,
+declare ENVIRONMENT to be non-expert.
+
+Expert environments are completed depending on `TeX-complete-expert-commands'.
+@end defun
+
 
 @node Adding Other
 @subsection Adding Other Information

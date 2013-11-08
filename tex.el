@@ -2515,6 +2515,64 @@ FORCE is not nil."
   "*Function to call for completing non-macros in `tex-mode'."
   :group 'TeX-macro)
 
+(defcustom TeX-complete-expert-commands nil
+  "Complete macros and environments marked as expert commands.
+
+Possible values are nil, t, or a list of style names.
+
+  - nil           Don't complete expert commands (default).
+  - t             Always complete expert commands.
+  - (STYLES ...)  Only complete expert commands of STYLES."
+  :group 'TeX-macro
+  :type '(choice (const  :tag "Don't complete expert commands" nil)
+		 (const  :tag "Always complete expert commands" t)
+		 (repeat :tag "Complete expert commands of certain styles" string)))
+
+(defmacro TeX-complete-make-expert-command-functions (thing list-var prefix)
+  (let ((plural (concat thing "s"))
+	(upcase (upcase thing)))
+    `(progn
+       (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
+	 (make-hash-table :test 'equal)
+	 ,(format "A hash-table mapping %s names to the style name providing it.
+
+A %s occuring in this table is considered an expert %s and
+treated specially in the completion." thing thing thing))
+
+       (defun ,(intern (format "%s-declare-expert-%s" prefix plural)) (&rest pairs)
+	 ,(format "Declare the %s in PAIRS as expert %s.
+
+Each entry in PAIRS has the form (%s . STYLE), declaring %s
+to be an expert %s provided by STYLE.  If STYLE is nil,
+declare %s to be non-expert.
+
+Expert %s are completed depending on `TeX-complete-expert-commands'."
+		 plural plural upcase upcase thing upcase plural)
+	 (dolist (entry pairs)
+	   (let ((macro (car entry))
+		 (style (cdr entry)))
+	     (if (null style)
+		 (remhash macro TeX-expert-macro-table)
+	       (puthash macro style TeX-expert-macro-table)))))
+
+       (defun ,(intern (format "%s-filtered" list-var)) ()
+	 ,(format "Return (%s) filtered depending on `TeX-complete-expert-commands'."
+		  list-var)
+	 (delq nil
+	       (mapcar
+		(lambda (entry)
+		  (if (eq t TeX-complete-expert-commands)
+		      entry
+		    (let* ((cmd (car entry))
+			   (style (gethash cmd TeX-expert-macro-table)))
+		      (when (or (null style)
+				(member style TeX-complete-expert-commands))
+			entry))))
+		(,list-var)))))))
+
+(TeX-complete-make-expert-command-functions "macro" TeX-symbol-list "TeX")
+(TeX-complete-make-expert-command-functions "environment" LaTeX-environment-list "LaTeX")
+
 (defvar TeX-complete-list nil
   "List of ways to complete the preceding text.
 
@@ -2656,7 +2714,7 @@ is called with \\[universal-argument]."
 					      TeX-default-macro
 					      "): "
 					      TeX-esc)
-				      (TeX-symbol-list) nil nil nil
+				      (TeX-symbol-list-filtered) nil nil nil
 				      'TeX-macro-history)))
   (cond ((string-equal symbol "")
 	 (setq symbol TeX-default-macro))
@@ -3074,7 +3132,8 @@ The algorithm is as follows:
   (make-local-variable 'TeX-complete-list)
   (setq TeX-complete-list
 	(list (list "\\\\\\([a-zA-Z]*\\)"
-		    1 'TeX-symbol-list (if TeX-insert-braces "{}"))
+		    1 'TeX-symbol-list-filtered
+		    (if TeX-insert-braces "{}"))
 	      (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
