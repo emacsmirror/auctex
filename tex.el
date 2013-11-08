@@ -2586,45 +2586,6 @@ Or alternatively:
 
 (make-variable-buffer-local 'TeX-default-macro)
 
-(defcustom TeX-add-advanced-macros/envs nil
-  "Determines if advanced macros/environments should be added.
-
-When you use some LaTeX package or input some TeX file, AUCTeX
-runs the style file of that package.  AUCTeX comes with a library
-of style files for popular packages like graphicx, href, or
-beamer.  These style files make AUCTeX aware of the macros and
-environments that are provided by a package.  This information is
-used by AUCTeX's syntax highlighting and macro/environment
-completion.
-
-Many packages provide a small set of macros/environments that are
-likely to be used by most users.  But often they also provide
-more advanced macros that allow expert users to twiddle and
-fine-tune the behaviour of a package.
-
-By default, AUCTeX's style files do not add those advanced
-commands in order to keep the macro and environment completion
-slim and discoverable.  Using this variable, it is possible also
-add advanced commands, either of all used packages or of only
-some used packages.
-
-  - nil                      Do not add advanced commands (default)
-  - (\"href\" \"graphicx\")  Register only the advanced commands
-                             of the href and graphicx packages.
-  - t                        Register"
-  :group 'TeX-macro
-  :type '(choice (const  :tag "Of all used packages" t)
-		 (repeat :tag "Only of some packages" string)))
-
-(defun TeX-add-advanced-macros/envs-p (style)
-  "Return non-nil if advanced macro/envs of STYLE should be added."
-  (cond
-   ((eq t TeX-add-advanced-macros/envs) t)
-   ((listp TeX-add-advanced-macros/envs)
-    (member style TeX-add-advanced-macros/envs))
-   (t (error "TeX-add-advanced-macros/envs must be nil/t/list of strings but was %s"
-	     TeX-add-advanced-macros/envs))))
-
 (defcustom TeX-insert-braces t
   "*If non-nil, append a empty pair of braces after inserting a macro.
 
@@ -5848,7 +5809,6 @@ Supports restriction to a region where the XEmacs version doesn't."
 
 ;; Local Variables:
 ;; coding: iso-8859-1
-;; outline-regexp: "\\(;;\\)\\(;+\\)"
 ;; End:
 
 ;;; tex.el ends here

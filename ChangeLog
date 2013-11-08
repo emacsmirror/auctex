@@ -1,13 +1,3 @@
-2013-11-07  Tassilo Horn  <tsdh@gnu.org>
-
-	* tex.el (TeX-add-advanced-macros/envs): New defcustom.
-	(TeX-add-advanced-macros/envs-p): New function.
-
-	* doc/auctex.texi: Document addition of common vs. advanced macros
-	and environments both for users and style file authors.
-
-	* doc/changes.texi: Give a hint to the above.
-
 2013-11-05  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/auctex.texi (Folding): Document `TeX-fold-auto' and

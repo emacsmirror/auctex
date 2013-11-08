@@ -1230,22 +1230,7 @@ use its value to decided what to do, whatever the value of the variable
 
 Completions work because @AUCTeX{} can analyze @TeX{} files, and store
 symbols in Emacs Lisp files for later retrieval.  @xref{Automatic}, for
-more information.  Additionally, @AUCTeX{} comes with a library of
-handwritten style files for various popular @LaTeX{} packages that add
-macros and environments for completion, @xref{Style Files}.  Many
-packages provide a small set of macros/environments that are likely to
-be used by most users.  But often they also provide more advanced macros
-that allow expert users to twiddle and fine-tune the behaviour of a
-package.  The following user option determines if these style files
-should only register the commonly used or also the advanced macros and
-environments.
-
-@defopt TeX-add-advanced-macros/envs
-If nil (the default), only register commonly used macros and
-environments.  If t, also register all advanced macros/environments.
-Else, it should be a list of package names from which advanced macros
-and environments should be registered.
-@end defopt
+more information.
 
 @cindex \cite, completion of
 @cindex Bib@TeX{}, completion
@@ -1264,7 +1249,6 @@ completion to work, parsing must be enabled as described in
 the Bib@TeX{} files have been saved at least once after you enabled
 automatic parsing on save, and that the basename of the Bib@TeX{} file
 does not conflict with the basename of one of @TeX{} files.
-
 
 @node Marking
 @section Marking Environments, Sections, or Texinfo Nodes
@@ -4068,7 +4052,6 @@ directories instead of @file{auto} directories.
 * Simple Style::                A Simple Style File
 * Adding Macros::               Adding Support for Macros
 * Adding Environments::         Adding Support for Environments
-* Common vs. advanced::         Common versus Advanced Macros and Environments
 * Adding Other::                Adding Other Information
 * Hacking the Parser::          Automatic Extraction of New Things
 @end menu
@@ -4523,68 +4506,6 @@ an optional argument of the @samp{lstlisting} environment:
    [TeX-arg-key-val LaTeX-listings-key-val-options]))
 @end lisp
 @end ftable
-
-@node Common vs. advanced
-@subsection Adding Common versus Advanced Macros and Environments
-@cindex Common vs. advanced macros
-@cindex Common vs. advanced environments
-@cindex Macros, adding
-@cindex Environments, adding
-@cindex Defining macros in style hooks
-@cindex Defining environments in style hooks
-
-Many @LaTeX{} packages define a small set of macros and environments
-that are likely to be used by anyone using that package.  But
-oftentimes, they also define many advanced macros or environments that
-allow expert users to twiddle with and fine-tune the package's behavior.
-
-When writing an @AUCTeX{} style file for a package, it makes sense to
-try to distinguish those user-level, common commands from those that are
-not interesting for most users.  Then users can configure the following
-option to enable/disable advanced commands, or to enable them only for a
-specific set of packages.
-
-@defopt TeX-add-advanced-macros/envs
-If nil (the default), only add commonly used macros and environments.
-If t, also add all advanced macros/environments of all used packages.
-Else, it should be a list of package names from which advanced macros
-and environments should be registered.
-@end defopt
-
-In order to enable that feature, make your style file add the advanced
-macros and environments only if the following predicate returns non-nil
-when given the name of your style.
-
-@defun TeX-add-advanced-macros/envs-p @var{style}
-Return non-nil if the advanced macros and environments of @var{style}
-should be added.
-@end defun
-
-For example, assume you write a style file for a hypothetical @LaTeX{}
-package @code{fooquux}.  That package provides the commonly used macro
-@code{\foo}, and the environment @code{quux}.  Furthermore, it provides
-the @code{\bar} macro and the @code{fubar} environment, however, those
-are only useful if one needs to fiddle with details, and as such are
-rarely used.  In that case, your style file should go like this:
-
-@lisp
-(TeX-add-style-hook
- "foobarquux"
- (lambda ()
-   ;; Add common macros and environments
-   (TeX-add-symbols '("foo" ...))
-   (LaTeX-add-environments '("quux" ...))
-   ;; Also add the advanced commands if the user wants to
-   (when (TeX-add-advanced-macros/envs-p "foobarquux")
-     (TeX-add-symbols '("bar" ...))
-     (LaTeX-add-environments '("fubar" ...)))))
-@end lisp
-
-The distinction of what macro or environment is common and what is
-advanced is a pretty subjective issue, of course.  As a general rule of
-thumb, if the package's documentation has a usage, tutorial, or overview
-section, then the macros and environments discussed in there are
-probably the commonly used ones, the rest being advanced.
 
 @node Adding Other
 @subsection Adding Other Information

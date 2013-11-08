@@ -10,17 +10,6 @@
 @heading News in 11.88
 
 @itemize @bullet
-
-@item
-Users can now define if style files should add only commonly used macros
-and environments to @AUCTeX{}'s completion machinery, or if advanced,
-rarely used commands are added, too.  This can be configured using the
-new configure option @code{TeX-add-advanced-macros/envs}.
-
-Style file authors are encouraged to distinguish common from advanced
-macros/environments, and add the latter only if the new predicate
-@code{TeX-add-advanced-macros/envs-p} returns non-nil.
-
 @item
 Management of @LaTeX{} package options in the parser was improved.  You
 might need to reparse your documents, especially if you loaded the
