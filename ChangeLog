@@ -1,3 +1,8 @@
+2013-11-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Fix void-function
+	LaTeX-symbol-list error.
+
 2013-11-05  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/auctex.texi (Folding): Document `TeX-fold-auto' and

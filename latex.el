@@ -5645,7 +5645,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
-		   1 LaTeX-symbol-list "}")
+		   1 TeX-symbol-list "}")
 		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
 		   1 LaTeX-environment-list "}")
                   ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
