@@ -1,3 +1,10 @@
+2013-11-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-complete-make-expert-command-functions): Change
+	signature of declare-expert functions.
+
+	* doc/auctex.texi: Document it.
+
 2013-11-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-complete-expert-commands): New defcustom.
@@ -6,7 +13,8 @@
 	`TeX-complete-expert-commands'.
 	(VirTeX-common-initialization): Ditto.
 
-	* latex.el (LaTeX-environment, LaTeX-common-initialization): 
+	* latex.el (LaTeX-environment, LaTeX-common-initialization):
+	Restrict completion depending on `TeX-complete-expert-commands'.
 
 	* tex-info.el (TeX-texinfo-mode): Restrict completion depending on
 	`TeX-complete-expert-commands'.

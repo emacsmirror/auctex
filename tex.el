@@ -2529,8 +2529,9 @@ Possible values are nil, t, or a list of style names.
 		 (repeat :tag "Complete expert commands of certain styles" string)))
 
 (defmacro TeX-complete-make-expert-command-functions (thing list-var prefix)
-  (let ((plural (concat thing "s"))
-	(upcase (upcase thing)))
+  (let* ((plural (concat thing "s"))
+	 (upcase (upcase thing))
+	 (upcase-plural (upcase plural)))
     `(progn
        (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
 	 (make-hash-table :test 'equal)
@@ -2539,21 +2540,15 @@ Possible values are nil, t, or a list of style names.
 A %s occuring in this table is considered an expert %s and
 treated specially in the completion." thing thing thing))
 
-       (defun ,(intern (format "%s-declare-expert-%s" prefix plural)) (&rest pairs)
-	 ,(format "Declare the %s in PAIRS as expert %s.
-
-Each entry in PAIRS has the form (%s . STYLE), declaring %s
-to be an expert %s provided by STYLE.  If STYLE is nil,
-declare %s to be non-expert.
+       (defun ,(intern (format "%s-declare-expert-%s" prefix plural)) (style &rest ,(intern plural))
+	 ,(format "Declare %s as expert %s of STYLE.
 
 Expert %s are completed depending on `TeX-complete-expert-commands'."
-		 plural plural upcase upcase thing upcase plural)
-	 (dolist (entry pairs)
-	   (let ((macro (car entry))
-		 (style (cdr entry)))
-	     (if (null style)
-		 (remhash macro TeX-expert-macro-table)
-	       (puthash macro style TeX-expert-macro-table)))))
+		  upcase-plural plural plural)
+	 (dolist (x ,(intern plural))
+	   (if (null style)
+	       (remhash x TeX-expert-macro-table)
+	     (puthash x style TeX-expert-macro-table))))
 
        (defun ,(intern (format "%s-filtered" list-var)) ()
 	 ,(format "Return (%s) filtered depending on `TeX-complete-expert-commands'."

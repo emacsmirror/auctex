@@ -4403,12 +4403,8 @@ Some packages provide macros that are rarely useful to non-expert users.
 Those should be marked as expert macros using
 @code{TeX-declare-expert-macros}.
 
-@defun TeX-declare-expert-macros @var{pairs}...
-Declare the macros in PAIRS as expert macros.
-
-Each entry in PAIRS has the form (MACRO . STYLE), declaring MACRO
-to be an expert macro provided by STYLE.  If STYLE is nil,
-declare MACRO to be non-expert.
+@defun TeX-declare-expert-macros @var{style} @var{macros}...
+Declare MACROS as expert macros of STYLE.
 
 Expert macros are completed depending on `TeX-complete-expert-commands'.
 @end defun
@@ -4556,12 +4552,8 @@ Some packages provide environments that are rarely useful to non-expert
 users.  Those should be marked as expert environments using
 @code{LaTeX-declare-expert-environments}.
 
-@defun LaTeX-declare-expert-environments @var{pairs}...
-Declare the environments in PAIRS as expert environments.
-
-Each entry in PAIRS has the form (ENVIRONMENT . STYLE), declaring ENVIRONMENT
-to be an expert environment provided by STYLE.  If STYLE is nil,
-declare ENVIRONMENT to be non-expert.
+@defun LaTeX-declare-expert-environments @var{style} @var{ENVIRONMENTS}...
+Declare ENVIRONMENTS as expert environments of STYLE.
 
 Expert environments are completed depending on `TeX-complete-expert-commands'.
 @end defun
