@@ -1,3 +1,8 @@
+2013-11-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* bib-cite.el (bib-highlight-mouse): Change regexp to cope with
+	multiple optional arguments of a macro.
+
 2013-11-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-complete-make-expert-command-functions): Change
