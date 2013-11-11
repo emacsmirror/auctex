@@ -1,3 +1,11 @@
+2013-11-11  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-next-error, TeX-previous-error): Call
+	`next-error' also if last TeX command was a compile command (e.g.,
+	Check, ChkTeX).
+	(TeX-run-compile): Save compilation buffer in
+	`TeX-command-buffer'.
+
 2013-11-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* bib-cite.el (bib-highlight-mouse): Change regexp to cope with

@@ -270,7 +270,9 @@ the master file."
   "Find the next error in the TeX output buffer.
 With \\[universal-argument] prefix, start from the beginning of the errors."
   (interactive "P")
-  (if (null (TeX-active-buffer))
+  (if (or (null (TeX-active-buffer))
+	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
+				  major-mode)))
       (next-error reparse)
     (funcall (with-current-buffer TeX-command-buffer
 	       (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function))
@@ -279,7 +281,9 @@ With \\[universal-argument] prefix, start from the beginning of the errors."
 (defun TeX-previous-error (arg)
   "Find the previous error in the TeX output buffer."
   (interactive "P")
-  (if (null (TeX-active-buffer))
+  (if (or (null (TeX-active-buffer))
+	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
+				  major-mode)))
       (previous-error arg)
     (error "Jumping to previous error not supported")))
 
@@ -687,7 +691,7 @@ run of `TeX-run-TeX', use
 (defun TeX-run-compile (name command file)
   "Ignore first and third argument, start compile with second argument."
   (let ((default-directory (TeX-master-directory)))
-    (compile command)))
+    (setq TeX-command-buffer (compile command))))
 
 (defun TeX-run-shell (name command file)
   "Ignore first and third argument, start shell-command with second argument."
