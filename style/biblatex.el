@@ -456,7 +456,24 @@ for citation keys."
     ;; Bibliography Sections
     '("refsection" ["Resources"])
     ;; Bibliography Segments
-    "refsegment")))
+    "refsegment")
+
+   ;; Declaring expert macros and environments.  Criterion: all macros and
+   ;; environments to fine tune the bibliography, probably they will be used
+   ;; only by expert users.
+   (TeX-declare-expert-macros
+    "biblatex"
+    "ExecuteBibliographyOptions" "printshorthands" "newrefsection"
+    "endrefsection" "newrefsegment" "endrefsegment"
+    "DeclareBibliographyCategory" "addtocategory" "defbibenvironment"
+    "defbibheading" "defbibnote" "defbibfilter" "defbibcheck" "defbibentryset"
+    "citereset" "citereset*" "mancite" "pno" "ppno" "nopp" "psq" "psqq" "RN"
+    "Rn" "DefineBibliographyStrings" "DefineBibliographyExtras"
+    "UndefineBibliographyExtras" "DefineHyphenationExceptions"
+    "NewBibliographyString")
+   (LaTeX-declare-expert-environments
+    "biblatex"
+    "refsection" "refsegment")))
 
 (defvar LaTeX-biblatex-package-options-list
   (append

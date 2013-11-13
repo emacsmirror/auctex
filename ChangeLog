@@ -1,3 +1,8 @@
+2013-11-13  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el ("biblatex"): Declare expert macros and
+	environments.
+
 2013-11-11  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-next-error, TeX-previous-error): Call
