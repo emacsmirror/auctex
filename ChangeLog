@@ -1,3 +1,12 @@
+2013-11-23  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-common-initialization):
+
+	* tex.el (VirTeX-common-initialization): Move
+	`LaTeX-narrow-to-environment' and `TeX-narrow-to-group' bindings
+	to the AUCTeX maps because `narrow-map' is not defined in GNU
+	Emacs < 22.2 and XEmacs.  Reported by Giacomo Boffi.
+
 2013-11-13  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el ("biblatex"): Declare expert macros and
