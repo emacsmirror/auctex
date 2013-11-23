@@ -3141,7 +3141,7 @@ The algorithm is as follows:
   (make-local-variable 'TeX-auto-update)
   (setq TeX-auto-update t)
 
-  (define-key TeX-map "C-xng" 'TeX-narrow-to-group)
+  (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)
 
   ;; Minor modes
   (when TeX-source-correlate-mode

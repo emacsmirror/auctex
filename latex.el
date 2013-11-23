@@ -6013,7 +6013,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
 
-  (define-key LaTeX-map "C-xne" 'LaTeX-narrow-to-environment))
+  (define-key LaTeX-mode-map "\C-xne" 'LaTeX-narrow-to-environment))
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
