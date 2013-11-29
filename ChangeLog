@@ -1,3 +1,9 @@
+2013-11-29  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (VirTeX-common-initialization): Disable
+	`electric-pair-mode' (a global minor mode) in auctex buffers
+	because it interferes with auctex's pairing feature.
+
 2013-11-23  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-common-initialization):

@@ -3169,7 +3169,13 @@ The algorithm is as follows:
 	      (when (or (not (file-exists-p (buffer-file-name)))
 			(eq TeX-master 'shared))
 		(TeX-master-file nil nil t))
-	      (TeX-update-style t)) nil t))
+	      (TeX-update-style t)) nil t)
+  ;; AUCTeX brace pairing feature doesn't play nice with `electric-pair-mode'
+  ;; which is a global minor mode as of emacs 24.4.
+  (when (and (boundp 'electric-pair-mode)
+	     (boundp 'electric-pair-inhibit-predicate))
+    (set (make-local-variable 'electric-pair-inhibit-predicate)
+	 (lambda (char) t))))
 
 
 ;;; Hilighting
