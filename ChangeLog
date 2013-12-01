@@ -1,3 +1,11 @@
+2013-12-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Move disabling of
+	`electric-pair-mode' from `VirTeX-common-initialization'.  Disable
+	it only if `LaTeX-electric-left-right-brace' is non-nil.
+
+	* tex.el (VirTeX-common-initialization): See above.
+
 2013-11-29  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (VirTeX-common-initialization): Disable

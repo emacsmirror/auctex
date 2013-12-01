@@ -5615,7 +5615,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq paragraph-separate
 	(concat
 	 "[ \t]*%*[ \t]*\\("
-	 "\\$\\$" ; Plain TeX display math
+	 "\\$\\$"			; Plain TeX display math
 	 "\\|$\\)"))
 
   (setq TeX-verbatim-p-function 'LaTeX-verbatim-p)
@@ -5964,19 +5964,19 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"
-   ;; Use new fonts for `\documentclass' documents.
-   (lambda ()
-     (setq TeX-font-list LaTeX-font-list)
-     (setq TeX-font-replace-function 'TeX-font-replace-macro)
-     (run-hooks 'LaTeX2e-hook)))
+		      ;; Use new fonts for `\documentclass' documents.
+		      (lambda ()
+			(setq TeX-font-list LaTeX-font-list)
+			(setq TeX-font-replace-function 'TeX-font-replace-macro)
+			(run-hooks 'LaTeX2e-hook)))
 
   (TeX-add-style-hook "latex2"
-   ;; Use old fonts for `\documentstyle' documents.
-   (lambda ()
-     (setq TeX-font-list (default-value 'TeX-font-list))
-     (setq TeX-font-replace-function
-	   (default-value 'TeX-font-replace-function))
-     (run-hooks 'LaTeX2-hook)))
+		      ;; Use old fonts for `\documentstyle' documents.
+		      (lambda ()
+			(setq TeX-font-list (default-value 'TeX-font-list))
+			(setq TeX-font-replace-function
+			      (default-value 'TeX-font-replace-function))
+			(run-hooks 'LaTeX2-hook)))
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak
@@ -5984,22 +5984,22 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on)
   (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off)
-;; This is now done in style/pstricks.el because it prevents other
-;; pstricks style files from being loaded.
-;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
+  ;; This is now done in style/pstricks.el because it prevents other
+  ;; pstricks style files from being loaded.
+  ;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
-;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
-;;
-;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
-;;  get DVI output.  Ugh.
+  ;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
+  ;;
+  ;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
+  ;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
 				(TeX-PDF-mode-on)
 				(TeX-PDF-mode-off)))
-;; ifpdf indicates that we cater for either.  So calling both
-;; functions will make sure that the default will get used unless the
-;; user overrode it.
+  ;; ifpdf indicates that we cater for either.  So calling both
+  ;; functions will make sure that the default will get used unless the
+  ;; user overrode it.
 
   (set (make-local-variable 'imenu-create-index-function)
        'LaTeX-imenu-create-index-function)
@@ -6013,7 +6013,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
 
-  (define-key LaTeX-mode-map "\C-xne" 'LaTeX-narrow-to-environment))
+  (define-key LaTeX-mode-map "\C-xne" 'LaTeX-narrow-to-environment)
+
+  ;; AUCTeX's brace pairing feature (`LaTeX-electric-left-right-brace') doesn't
+  ;; play nice with `electric-pair-mode' which is a global minor mode as of
+  ;; emacs 24.4.
+  (when (and LaTeX-electric-left-right-brace
+	     (boundp 'electric-pair-mode))
+    (set (make-local-variable 'electric-pair-mode) nil)))
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
