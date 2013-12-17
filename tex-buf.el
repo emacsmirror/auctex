@@ -1482,10 +1482,6 @@ You might want to examine and modify the free variables `file',
 	 (concat
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
-	  ;; Skip comment (or file) between parentheses in one line
-	  ;; Avoids problems with "Driver (autodetected):" from hyperref
-	  ;; and with "(version 2006.09.02)." from supp-pdf.mkii
-	  "([^()\r\n{}]*)\\|"
 	  ;; New file
 	  "(\\(\"[^\"]*?\"\\|/*\
 \\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
@@ -1575,8 +1571,7 @@ You might want to examine and modify the free variables `file',
 	 ((match-beginning 6)
 	  (setq TeX-error-file
 		(list (TeX-match-buffer 6)))
-	  t)
-	 (t t)))))
+	  t)))))
 
 (defun TeX-error ()
   "Display an error."

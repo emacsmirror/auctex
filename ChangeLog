@@ -1,8 +1,3 @@
-2013-12-17  Luc Van Eycken  <Luc.VanEycken@esat.kuleuven.be>
-
-	* tex-buf.el (TeX-parse-error): Skip comment (or file) between
-	parentheses.
-
 2013-12-01  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-common-initialization): Move disabling of
