@@ -1489,8 +1489,9 @@ You might want to examine and modify the free variables `file',
 \\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
 \\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
 )*\\(?: \\|\r?$\\)\\|"
-	  ;; End of file
-	  "\\()\\))*\\|"
+	  ;; End of file.  The [^:] skips package messages like:
+	  ;; Package hyperref Message: Driver (autodetected): hpdftex.
+	  "\\()\\)[^:]\\|"
 	  ;; Hook to change line numbers
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name

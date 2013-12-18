@@ -1,3 +1,8 @@
+2013-12-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-parse-error): Don't confuse ) in package
+	messages with EOF.
+
 2013-12-01  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-common-initialization): Move disabling of
