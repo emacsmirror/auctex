@@ -1,3 +1,18 @@
+2013-12-20  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/imakeidx.el ("imakeidx"): Move addition of options to
+	`LaTeX-imakeidx-indexsetup-options' inside the hook.
+
+	* Makefile.in (STYLESRC): Activate new styles.
+
+	* style/fontspec.el: New style.
+
+	* style/luacode.el: Ditto.
+
+	* style/metalogo.el: Ditto.
+
+	* style/unicode-math.el: Ditto.
+
 2013-12-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-parse-error): Don't confuse ) in package

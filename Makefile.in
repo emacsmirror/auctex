@@ -132,7 +132,8 @@ STYLESRC = style/prosper.el \
 	   style/fancynum.el  style/fancyhdr.el	 style/filecontents.el \
 	   style/array.el     style/kpfonts.el   style/acro.el \
 	   style/acronym.el   style/xparse.el    style/fancyvrb.el \
-	   style/tabulary.el
+	   style/tabulary.el  style/fontspec.el  style/unicode-math.el \
+	   style/luacode.el   style/metalogo.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
@@ -328,13 +329,13 @@ wc:
 # intended to be used only by the maintainers.
 
 # Steps for making a release:
-# 
+#
 # 1) release-commit TAG=<tag> COMMITTER=<committer>
 #    Tag the release.
 #    Pass `COMMITTER=<committer>' argument only if it is different from
 #    your git name and email.  `<committer>' should be in the form
 #        "John Doe  <john.doe@example.com>"
-#    
+#
 # 2) dist TAG=<tag>
 #    Create the tar ball and other release files and put them into $FTPDIR.
 #
@@ -344,16 +345,16 @@ wc:
 # 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
 #    This requires a compiled Emacs of the same version at location $WEMACS.
-# 
+#
 # 5) release-sign TAG=<tag>
 #    Sign the tar ball and create directive files for upload.
-# 
+#
 # 6) release-upload
 #    Upload files to GNU FTP server.
 #
 # 7) www-doc TAG=<tag> GENDOCSPATCH=<patch-file>
 #    Create documentation for AUCTeX home page.
-# 
+#
 # 8) preview-ball TAG=<tag>
 #    Create preview package.  (Not for GNU FTP server but for CTAN.)
 

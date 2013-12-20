@@ -49,17 +49,18 @@
   "Key=value options for indexsetup macro of the imakeidx package.")
 (make-variable-buffer-local 'LaTeX-imakeidx-indexsetup-options)
 
-;; `firstpagestyle' and `headers' options for `indexsetup' macro are
-;; available only if `fancyhdr' is not loaded.  The following code
-;; works only if `imakeidx' is loaded before `fancyhdr'
-(unless (member "fancyhdr" TeX-active-styles)
-  (setq LaTeX-imakeidx-indexsetup-options
-	(append LaTeX-imakeidx-indexsetup-options
-                `(("firstpagestyle" ,(LaTeX-pagestyle-list)))
-		'(("headers")))))
-
-(TeX-add-style-hook "imakeidx"
+(TeX-add-style-hook
+ "imakeidx"
  (lambda ()
+   ;; `firstpagestyle' and `headers' options for `indexsetup' macro are
+   ;; available only if `fancyhdr' is not loaded.  The following code works only
+   ;; if `imakeidx' is loaded after `fancyhdr'.
+   (unless (member "fancyhdr" TeX-active-styles)
+     (setq LaTeX-imakeidx-indexsetup-options
+	   (append LaTeX-imakeidx-indexsetup-options
+		   `(("firstpagestyle" ,(LaTeX-pagestyle-list)))
+		   '(("headers")))))
+
    (TeX-add-symbols
     '("makeindex" [ (TeX-arg-key-val LaTeX-imakeidx-makeindex-options) ])
     '("indexsetup" (TeX-arg-key-val LaTeX-imakeidx-indexsetup-options))
