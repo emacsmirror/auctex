@@ -1,3 +1,15 @@
+2013-12-24  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-style.el (LaTeX-fontspec-arg-font-search): New customizable
+	variable.
+	(LaTeX-fontspec-font-list-default): Ditto.
+
+	* style/fontspec.el (LaTeX-fontspec-arg-font): New function.
+	("fontspec"): Use it.
+
+	* doc/changes.texi: Mention `LaTeX-fontspec-arg-font-search' and
+	`LaTeX-fontspec-font-list-default'.
+
 2013-12-20  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/imakeidx.el ("imakeidx"): Move addition of options to

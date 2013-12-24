@@ -39,8 +39,9 @@ Completion for class options of the standard @LaTeX{} classes is
 provided as well.
 
 @item
-New user options @code{LaTeX-default-author} and
-@code{TeX-insert-braces-alist}.  A new possible value
+New user options @code{LaTeX-default-author},
+@code{TeX-insert-braces-alist}, @code{LaTeX-fontspec-arg-font-search},
+and @code{LaTeX-fontspec-font-list-default}.  A new possible value
 (@code{show-all-optional-args}) for
 @code{TeX-insert-macro-default-style} was added.
 

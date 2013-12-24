@@ -254,6 +254,31 @@ produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
 
+;; style/fontspec.el
+
+(defcustom LaTeX-fontspec-arg-font-search t
+  "If `LaTeX-fontspec-arg-font' should search for fonts.
+If the value is t, fonts are retrieved automatically and provided
+for completion.  If the value is nil,
+`LaTeX-fontspec-font-list-default' is used for completion.  If
+the value is `ask', you are asked for the method to use every
+time `LaTeX-fontspec-arg-font' is called.
+
+`LaTeX-fontspec-arg-font' calls `luaotf-load --list=basename' to
+automatically get the list of fonts.  This requires
+`luaotfload-tool' version 2.3 or higher in order to work."
+  :group 'LaTeX-style
+  :type '(choice
+	  (const :tag "Search automatically" t)
+	  (const :tag "Use default font list" nil)
+	  (const :tag "Ask what to do" ask)))
+
+(defcustom LaTeX-fontspec-font-list-default nil
+  "List of default fonts to be used as completion for
+`LaTeX-fontspec-arg-font'."
+  :group 'LaTeX-style
+  :type '(repeat (string :tag "Font")))
+
 ;; style/graphicx.el
 
 (defcustom LaTeX-includegraphics-extensions

@@ -131,6 +131,38 @@
     ("Vertical" ("RotatedGlyphs")))
   "Font features options for macros of the fontspec package.")
 
+(defvar LaTeX-fontspec-font-list nil
+  "List of the fonts accessible to fontspec.")
+
+(defun LaTeX-fontspec-arg-font (optional &optional prompt)
+  "Prompt for a font name with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.
+
+Customize `LaTeX-fontspec-arg-font-search' in order to decide how
+to retrieve the list of fonts."
+  (unless LaTeX-fontspec-font-list
+    (when (if (eq LaTeX-fontspec-arg-font-search 'ask)
+	      (not (y-or-n-p "Find font yourself? "))
+	    LaTeX-fontspec-arg-font-search)
+      (message "Searching for fonts...")
+      (with-temp-buffer
+	(shell-command "luaotfload-tool --list=basename" t)
+	;; Search for the font base names and full names, and add them to
+	;; `LaTeX-fontspec-font-list'.  The list is in the form
+	;;     <base name><TAB><full name><TAB><version>
+	(while
+	    (re-search-forward "^\\([^\n\r\t]*\\)\t\\([^\n\r\t]*\\)\t.*$" nil t)
+	  (add-to-list 'LaTeX-fontspec-font-list (match-string-no-properties 1))
+	  (add-to-list 'LaTeX-fontspec-font-list
+		       (match-string-no-properties 2))))))
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt optional prompt "Font name")
+    (or LaTeX-fontspec-font-list LaTeX-fontspec-font-list-default))
+   optional))
+
 (TeX-add-style-hook
  "fontspec"
  (lambda ()
@@ -138,24 +170,24 @@
    (TeX-add-symbols
     ;; Font selection
     '("fontspec" [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Font name")
+      LaTeX-fontspec-arg-font)
     ;; Default font families
     '("setmainfont"
       [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Main font name")
+      (LaTeX-fontspec-arg-font "Main font name"))
     '("setsansfont"
       [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Sans font name")
+      (LaTeX-fontspec-arg-font "Sans font name"))
     '("setmonofont"
       [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Mono font name")
+      (LaTeX-fontspec-arg-font "Mono font name"))
     ;; New commands to select font families
     '("newfontfamily" TeX-arg-define-macro
       [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Font name")
+      LaTeX-fontspec-arg-font)
     '("newfontface" TeX-arg-define-macro
       [TeX-arg-key-val LaTeX-fontspec-font-features "Font features"]
-      "Font name")
+      LaTeX-fontspec-arg-font)
     ;; Math(s) fonts
     '("setmathrm" [ "Font features" ] "Font name")
     '("setmathsf" [ "Font features" ] "Font name")
@@ -165,7 +197,7 @@
     "emshape"
     "eminnershape"
     ;; Default settings
-    '("defaultfontfeatures" [ "Font name" ]
+    '("defaultfontfeatures" [ LaTeX-fontspec-arg-font ]
       (TeX-arg-key-val LaTeX-fontspec-font-features "Font features"))
     ;; Changing the currently selected features
     '("addfontfeatures"
