@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2013 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2014 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -4963,19 +4963,23 @@ commands are defined:
   :type 'function)
 
 (defun LaTeX-math-insert (string dollar)
-  "Insert \\STRING{}.  If DOLLAR is non-nil, put $'s around it."
-  (if dollar (insert "$"))
+  "Insert \\STRING{}.  If DOLLAR is non-nil, put $'s around it.
+If `TeX-electric-math' is non-nil wrap that symbols around the
+string."
+  (if dollar (insert (or (car TeX-electric-math) "$")))
   (funcall LaTeX-math-insert-function string)
-  (if dollar (insert "$")))
+  (if dollar (insert (or (cdr TeX-electric-math) "$"))))
 
 (defun LaTeX-math-cal (char dollar)
-  "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it."
+  "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it.
+If `TeX-electric-math' is non-nil wrap that symbols around the
+char."
   (interactive "*c\nP")
-  (if dollar (insert "$"))
+  (if dollar (insert (or (car TeX-electric-math) "$")))
   (if (member "latex2e" (TeX-style-list))
       (insert "\\mathcal{" (char-to-string char) "}")
     (insert "{\\cal " (char-to-string char) "}"))
-  (if dollar (insert "$")))
+  (if dollar (insert (or (cdr TeX-electric-math) "$"))))
 
 
 ;;; Folding
