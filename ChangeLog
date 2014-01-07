@@ -1,3 +1,15 @@
+2014-01-06  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* tex-info.el (Texinfo-reftex-hook): Replace use of
+	reftex-tables-dirty by that of reftex-default-label-alist-entries
+	to trigger call to reftex-compile-variables in a standard way.
+	The problem was that generating a TOC for a Texinfo file and then
+	for a LaTeX file was not working for the LaTeX file because the
+	Texinfo file was using LaTeX label style and as such
+	reftex-ensure-compiled-variables was not calling
+	reftex-compile-variables, which caused wrong
+	reftex-everything-regexp for sections.
+
 2014-01-06  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-math-insert): Use `TeX-electric-math' for

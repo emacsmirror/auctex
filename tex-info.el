@@ -392,10 +392,17 @@ for @node."
   "Hook function to plug Texinfo into RefTeX."
   ;; force recompilation of variables
   (when (string= TeX-base-mode-name "Texinfo")
+    ;; dirty temporary hook to remove when reftex has a Texinfo builtin 
+    ;; TODO --- taken on <2014-01-06 mon> --- remove the dirty trick once reftex
+    ;; has been corrected for long enough a time
+    (unless (assq 'Texinfo reftex-label-alist-builtin)
+      (setq reftex-label-alist-builtin (append reftex-label-alist-builtin
+					       '((Texinfo "Texinfo default environments" nil)))))
     (dolist (v `((reftex-section-pre-regexp . "@")
 		 ; section post-regexp must contain exactly one group
 		 (reftex-section-post-regexp . "\\([ \t]+\\)")
 		 (reftex-section-info-function . Texinfo-reftex-section-info)
+		 (reftex-default-label-alist-entries . (Texinfo))
 	       (reftex-section-levels
 		. ,(mapcar
 		    (lambda (x)
@@ -405,7 +412,6 @@ for @node."
 			(cons (car x) (cadr x))))
 		    texinfo-section-list))))
       (set (make-local-variable (car v) ) (cdr v)))
-    (setq reftex-tables-dirty t)
     (reftex-ensure-compiled-variables)))
 
 ;;; Keymap:
