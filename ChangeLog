@@ -1,3 +1,12 @@
+2014-01-11  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-current-environment): Make search for `\begin'
+	and `\end' case sensitive.
+	(docTeX-in-macrocode-p): Ditto.
+	(LaTeX-indent-calculate): Ditto.
+	(LaTeX-find-matching-end): Ditto.
+	(LaTeX-find-matching-begin): Ditto.
+
 2014-01-06  Vincent Belaïche  <vincentb1@users.sourceforge.net>
 
 	* tex-info.el (Texinfo-reftex-hook): Replace use of

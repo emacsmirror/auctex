@@ -736,7 +736,8 @@ The functions `LaTeX-find-matching-begin' and `LaTeX-find-matching-end'
 work analogously."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let* ((in-comment (TeX-in-commented-line))
-	 (comment-prefix (and in-comment (TeX-comment-prefix))))
+	 (comment-prefix (and in-comment (TeX-comment-prefix)))
+	 (case-fold-search nil))
     (save-excursion
       (while (and (/= arg 0)
 		  (re-search-backward
@@ -756,12 +757,13 @@ work analogously."
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
-  (save-excursion
-    (re-search-backward
-     (concat "^%    " (regexp-quote TeX-esc)
-	     "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 'move)
-    (not (or (bobp)
-	     (= (char-after (match-beginning 1)) ?e)))))
+  (let ((case-fold-search nil))
+    (save-excursion
+      (re-search-backward
+       (concat "^%    " (regexp-quote TeX-esc)
+	       "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 'move)
+      (not (or (bobp)
+	       (= (char-after (match-beginning 1)) ?e))))))
 
 
 ;;; Environment Hooks
@@ -2851,6 +2853,7 @@ outer indentation in case of a commented line.  The symbols
     (LaTeX-back-to-indentation force-type)
     (let ((i 0)
 	  (list-length (safe-length docTeX-indent-inner-fixed))
+	  (case-fold-search nil)
 	  entry
 	  found)
       (cond ((save-excursion (beginning-of-line) (bobp)) 0)
@@ -3930,7 +3933,8 @@ environment in commented regions with the same comment prefix."
   (let* ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	 (level 1)
 	 (in-comment (TeX-in-commented-line))
-	 (comment-prefix (and in-comment (TeX-comment-prefix))))
+	 (comment-prefix (and in-comment (TeX-comment-prefix)))
+	 (case-fold-search nil))
     (save-excursion
       (skip-chars-backward "a-zA-Z \t{")
       (unless (bolp)
@@ -3964,7 +3968,8 @@ environment in commented regions with the same comment prefix."
   (let* ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	 (level 1)
 	 (in-comment (TeX-in-commented-line))
-	 (comment-prefix (and in-comment (TeX-comment-prefix))))
+	 (comment-prefix (and in-comment (TeX-comment-prefix)))
+	 (case-fold-search nil))
     (skip-chars-backward "a-zA-Z \t{")
     (unless (bolp)
       (backward-char 1)
