@@ -1,3 +1,14 @@
+2014-01-15  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/babel.el: Update copyright years and specify last `babel'
+	version supported.
+	(LaTeX-babel-language-list): Expand language list to all languages
+	mentioned in the last version of the manual.
+	(LaTeX-babel-active-languages): Update in order to parse the
+	`main' option and ignore the modifiers.
+	(LaTeX-babel-package-options): Turn the variable into a function
+	because now requires `TeX-read-key-val'.
+
 2014-01-11  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-current-environment): Make search for `\begin'
