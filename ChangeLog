@@ -1,3 +1,7 @@
+2014-01-21  Berend de Boer  <berend@pobox.com>
+
+	* context.el: distinguish between numbered and unnumbered sections.
+
 2014-01-15  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/babel.el: Update copyright years and specify last `babel'
