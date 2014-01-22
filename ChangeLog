@@ -5,6 +5,7 @@
 	shortvrb does not make | a shortvrb char.  One needs to define it
 	using \MakeShortVrb{\|}.  Extend the docstring so that it tells
 	that one should usually set this variable only buffer-locally.
+	(LaTeX-shortvrb-chars): Declare it as safe local variable.
 
 	* font-latex.el (font-latex-add-to-syntax-alist): Call
 	`font-latex-setup' to make syntactic font-lock changes effective.

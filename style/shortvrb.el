@@ -62,6 +62,7 @@ your document actually defines shortvrb chars using
 \\MakeShortVrb."
   :group 'LaTeX-style
   :type '(repeat character))
+(put 'LaTeX-shortvrb-chars 'safe-local-variable 'listp)
 
 (TeX-add-style-hook
  "shortvrb"
