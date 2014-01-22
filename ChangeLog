@@ -1,3 +1,14 @@
+2014-01-22  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/shortvrb.el (LaTeX-shortvrb-chars): Move from
+	tex-style.el.  Set default value to nil because just loading
+	shortvrb does not make | a shortvrb char.  One needs to define it
+	using \MakeShortVrb{\|}.  Extend the docstring so that it tells
+	that one should usually set this variable only buffer-locally.
+
+	* font-latex.el (font-latex-add-to-syntax-alist): Call
+	`font-latex-setup' to make syntactic font-lock changes effective.
+
 2014-01-21  Berend de Boer  <berend@pobox.com>
 
 	* context.el: distinguish between numbered and unnumbered sections.

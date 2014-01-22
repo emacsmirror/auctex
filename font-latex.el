@@ -1127,14 +1127,9 @@ triggers Font Lock to recognize the change."
   (make-local-variable 'font-latex-syntax-alist)
   (set (make-local-variable 'font-latex-syntax-alist)
        (append font-latex-syntax-alist list))
-;; FIXME: Are there situations where we need to alter `font-lock-defaults'
-;; directly?
-;;   (dolist (entry list)
-;;     (setcar (cdddr font-lock-defaults)
-;; 	    (cons entry (cadddr font-lock-defaults))))
   ;; Tell font-lock about the update.
   (setq font-lock-set-defaults nil)
-  (font-lock-set-defaults))
+  (font-latex-setup))
 
 ;;;###autoload
 (defun font-latex-setup ()
