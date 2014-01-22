@@ -76,4 +76,8 @@ your document actually defines shortvrb chars using
 	 (add-to-list 'syntax-alist (cons char "|")))
        (font-latex-add-to-syntax-alist syntax-alist)))))
 
+;; Don't look for file-local variables before this line, so that the example in
+;; the docstring isn't picked up.
+
+
 ;;; shortvrb.el ends here
