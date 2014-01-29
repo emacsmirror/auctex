@@ -1,3 +1,8 @@
+2014-01-29  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-environment): Use default parameter of
+	`completing-read'.
+
 2014-01-22  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/shortvrb.el (LaTeX-shortvrb-chars): Move from

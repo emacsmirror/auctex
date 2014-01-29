@@ -541,12 +541,8 @@ It may be customized with the following variables:
     (environment (completing-read (concat "Environment type: (default "
 					  default ") ")
 				  (LaTeX-environment-list-filtered) nil nil nil
-				  'LaTeX-environment-history)))
-    ;; Get default
-    (cond ((zerop (length environment))
-	   (setq environment default))
-	  (t
-	   (setq LaTeX-default-environment environment)))
+				  'LaTeX-environment-history default)))
+    (setq LaTeX-default-environment environment)
 
     (let ((entry (assoc environment (LaTeX-environment-list))))
       (if (null entry)
