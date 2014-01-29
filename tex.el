@@ -2710,11 +2710,9 @@ is called with \\[universal-argument]."
 					      "): "
 					      TeX-esc)
 				      (TeX-symbol-list-filtered) nil nil nil
-				      'TeX-macro-history)))
-  (cond ((string-equal symbol "")
-	 (setq symbol TeX-default-macro))
-	((interactive-p)
-	 (setq TeX-default-macro symbol)))
+				      'TeX-macro-history TeX-default-macro)))
+  (when (interactive-p)
+    (setq TeX-default-macro symbol))
   (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
   (run-hooks 'TeX-after-insert-macro-hook))
 

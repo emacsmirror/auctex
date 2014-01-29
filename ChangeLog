@@ -1,7 +1,13 @@
 2014-01-29  Tassilo Horn  <tsdh@gnu.org>
 
-	* latex.el (LaTeX-environment): Use default parameter of
+	* tex-buf.el (TeX-command-query): Use default parameter of
 	`completing-read'.
+
+	* tex.el (TeX-insert-macro): Use default parameter of
+	`completing-read'.
+
+	* latex.el (LaTeX-environment, TeX-arg-document): Use default
+	parameter of `completing-read'.
 
 2014-01-22  Tassilo Horn  <tsdh@gnu.org>
 

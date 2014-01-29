@@ -438,7 +438,7 @@ ORIGINALS which are modified but not saved yet."
                      (completing-read
                       (concat "Command: (default " default ") ")
                       (TeX-mode-specific-command-list major-mode) nil t
-                      nil 'TeX-command-history))))
+                      nil 'TeX-command-history default))))
     ;; If the answer is "latex" it will not be expanded to "LaTeX"
     (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
     (if (and answer
