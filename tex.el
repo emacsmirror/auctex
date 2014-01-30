@@ -93,7 +93,7 @@ If nil, none is specified."
   :type '(choice (const :tag "Unspecified" nil)
 		 string))
 ;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
-(make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist)
+(make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist "11.86")
 
 (defcustom TeX-mode-hook nil
   "A hook run in TeX mode buffers."
@@ -1376,8 +1376,8 @@ For available TYPEs, see variable `TeX-engine'."
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode 'TeX-Omega-mode)
-(make-obsolete 'TeX-Omega-mode 'TeX-engine-set)
-(make-obsolete-variable 'TeX-Omega-mode 'TeX-engine)
+(make-obsolete 'TeX-Omega-mode 'TeX-engine-set "11.86")
+(make-obsolete-variable 'TeX-Omega-mode 'TeX-engine "11.86")
 
 ;;; Forward and inverse search
 
@@ -1563,7 +1563,7 @@ SyncTeX are recognized."
 	  (when TeX-source-correlate-mode
 	    'TeX-synctex-output-page))))
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
-(make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
 ;; We do not want the custom variable to require tex.el.  This is only
