@@ -1149,6 +1149,21 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 
 ;;; Parser
 
+(defvar LaTeX-auto-style nil)
+(defvar LaTeX-auto-arguments nil)
+(defvar LaTeX-auto-optional nil)
+(defvar LaTeX-auto-env-args nil)
+
+(TeX-auto-add-type "label" "LaTeX")
+(TeX-auto-add-type "bibitem" "LaTeX")
+(TeX-auto-add-type "environment" "LaTeX")
+(TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
+(TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
+(TeX-auto-add-type "pagestyle" "LaTeX")
+(TeX-auto-add-type "counter" "LaTeX")
+(TeX-auto-add-type "length" "LaTeX")
+(TeX-auto-add-type "savebox" "LaTeX" "saveboxes")
+
 (defvar LaTeX-auto-minimal-regexp-list
   '(("\\\\document\\(style\\|class\\)\
 \\(\\[\\(\\([^#\\%]\\|%[^\n\r]*[\n\r]\\)*\\)\\]\\)?\
@@ -1481,16 +1496,6 @@ The value is actually the tail of the list of options given to PACKAGE."
 	LaTeX-auto-end-symbol))
 
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-auto-cleanup)
-
-(TeX-auto-add-type "label" "LaTeX")
-(TeX-auto-add-type "bibitem" "LaTeX")
-(TeX-auto-add-type "environment" "LaTeX")
-(TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
-(TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
-(TeX-auto-add-type "pagestyle" "LaTeX")
-(TeX-auto-add-type "counter" "LaTeX")
-(TeX-auto-add-type "length" "LaTeX")
-(TeX-auto-add-type "savebox" "LaTeX" "saveboxes")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))

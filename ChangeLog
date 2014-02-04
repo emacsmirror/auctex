@@ -1,3 +1,13 @@
+2014-02-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-auto-add-type): Convert to macro.
+
+	* lpath.el: Don't silence byte-compiler.
+
+	* latex.el (LaTeX-auto-style, LaTeX-auto-arguments)
+	(LaTeX-auto-optional, LaTeX-auto-env-args): Defvar explicitly
+	before use.
+
 2014-01-29  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-command-query): Use default parameter of
