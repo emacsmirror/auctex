@@ -1,3 +1,12 @@
+2014-02-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/english.el: New style for english documents so that
+	`TeX-language-en-hook' gets run.
+
+	* Makefile.in (STYLESRC): Activate it.
+
+	* doc/auctex.texi (languages): Document it.
+
 2014-02-04  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-auto-add-type): Convert to macro.

@@ -3687,6 +3687,7 @@ The following style files are recognized:
 @vindex TeX-language-bg-hook
 @vindex TeX-language-cz-hook
 @vindex TeX-language-dk-hook
+@vindex TeX-language-en-hook
 @vindex TeX-language-nl-hook
 @vindex TeX-language-de-hook
 @vindex TeX-language-it-hook
@@ -3699,6 +3700,7 @@ The following style files are recognized:
 @cindex Italian
 @cindex Danish
 @cindex Dutch
+@cindex English
 @cindex German
 @cindex Polish
 @cindex Slovak
@@ -3727,13 +3729,8 @@ in the composing words.
 @item dutch
 Runs style hook @code{TeX-language-nl-hook}.
 
-@item german
-@itemx ngerman
-Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
-syntax, makes the @key{"} key insert a literal @samp{"}.  Pressing the
-key twice will give you opening or closing German quotes (@samp{"`} or
-@samp{"'}).  Typing @key{-} twice will insert @samp{"=}, three times
-@samp{--}.
+@item english
+Runs style hook @code{TeX-language-en-hook}.
 
 @item frenchb
 @itemx francais
@@ -3741,6 +3738,14 @@ Runs style hook @code{TeX-language-fr-hook}.  Pressing @key{"} will
 insert @samp{\\og} and @samp{\\fg} depending on context.  Note that the
 language name for customizing @code{TeX-quote-language-alist} is
 @samp{french}.
+
+@item german
+@itemx ngerman
+Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
+syntax, makes the @key{"} key insert a literal @samp{"}.  Pressing the
+key twice will give you opening or closing German quotes (@samp{"`} or
+@samp{"'}).  Typing @key{-} twice will insert @samp{"=}, three times
+@samp{--}.
 
 @item icelandic
 Runs style hook @code{TeX-language-is-hook}.  Gives @samp{"} word
