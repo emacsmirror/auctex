@@ -94,6 +94,10 @@ per file basis using the @code{TeX-command-extra-options} option.
 @ifclear rawfile
 @xref{Processor Options}, for details.
 @end ifclear
+
+@item
+Now @kbd{C-c C-e document @key{RET}}, in an empty document, prompts for
+@samp{\usepackage} macros in addition to @samp{\documentclass}.
 @end itemize
 
 @heading News since 11.87

@@ -1,3 +1,20 @@
+2014-02-21  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-arg-usepackage-read-packages-with-options): New
+	function.  Now options are requested only if at least one package
+	has been provided.
+	(LaTeX-arg-usepackage-insert): New function.
+	(LaTeX-arg-usepackage): Use
+	`LaTeX-arg-usepackage-read-packages-with-options' and
+	`LaTeX-arg-usepackage-insert'.
+	(LaTeX-insert-usepackages): New function.
+	(LaTeX-env-document): Use it.
+
+	* doc/auctex.texi (Environments): Document new behavior of
+	`LaTeX-env-document'.
+
+	* doc/changes.texi: Mention it.
+
 2014-02-20  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-command-extra-options): New customizable variable.

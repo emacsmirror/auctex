@@ -827,6 +827,9 @@ specific document.  This is achieved by examining your
 @samp{\documentclass} command, and consulting a precompiled list of
 environments available in a large number of styles.
 
+Most of these are described further in the following sections, and you
+may easily specify more.  @xref{Customizing Environments}.
+
 You insert an environment with @kbd{C-c C-e}, and select an environment
 type.  Depending on the environment, @AUCTeX{} may ask more questions
 about the optional parts of the selected environment type.  With
@@ -864,10 +867,11 @@ to @code{frame}, in @file{letter.el} to @code{letter}, and in
 @end defvar
 
 If the document is empty, or the cursor is placed at the top of the
-document, @AUCTeX{} will default to insert a `document' environment.
-
-Most of these are described further in the following sections, and you
-may easily specify more.  @xref{Customizing Environments}.
+document, @AUCTeX{} will default to insert a @samp{document} environment
+prompting also for the insertion of @samp{\documentclass} and
+@samp{\usepackage} macros.  You will be prompted for a new package until
+you enter nothing.  If you do not want to insert any @samp{\usepackage}
+at all, just press @key{RET} at the first @samp{Packages} prompt.
 
 @AUCTeX{} distinguishes normal and expert environments.  By default, it
 will offer completion only for normal environments.  This behavior is
