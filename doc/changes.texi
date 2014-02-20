@@ -87,6 +87,13 @@ tex file.
 @item
 Commands for narrowing to a group (@code{TeX-narrow-to-group}) and to
 @LaTeX{} environments (@code{LaTeX-narrow-to-environment}) were added.
+
+@item
+Now arbitrary options can be passed to the @TeX{} processor on a
+per file basis using the @code{TeX-command-extra-options} option.
+@ifclear rawfile
+@xref{Processor Options}, for details.
+@end ifclear
 @end itemize
 
 @heading News since 11.87

@@ -112,24 +112,24 @@ If nil, none is specified."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t"
+  `(("TeX" "%(PDF)%(tex) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %t"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
 	;; Not part of standard TeX.
-    ("Makeinfo" "makeinfo %t" TeX-run-compile nil
+    ("Makeinfo" "makeinfo %(extraopts) %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with Info output")
-    ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
+    ("Makeinfo HTML" "makeinfo %(extraopts) --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t"
+    ("AmSTeX" "%(PDF)amstex %(extraopts) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
-    ("ConTeXt" "texexec --once --texutil %(execopts)%t"
+    ("ConTeXt" "texexec --once --texutil %(extraopts) %(execopts)%t"
      TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
-    ("ConTeXt Full" "texexec %(execopts)%t"
+    ("ConTeXt Full" "texexec %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
@@ -301,7 +301,7 @@ The executable `latex' is LaTeX version 2e."
 
 (defcustom LaTeX-command-style
   ;; They have all been combined in LaTeX 2e.
-  '(("" "%(PDF)%(latex) %S%(PDFout)"))
+  '(("" "%(PDF)%(latex) %(extraopts) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
 If the first element (a regular expression) matches the name of one of
@@ -408,6 +408,11 @@ string."
   :group 'TeX-command
   :type '(repeat (group regexp (string :tag "Command"))))
 
+(defcustom TeX-command-extra-options ""
+  "String with the extra options to be given to the TeX processor."
+  :type 'string)
+(make-variable-buffer-local 'TeX-command-extra-options)
+
 ;; This is the list of expansion for the commands in
 ;; TeX-command-list.  Not likely to be changed, but you may e.g. want
 ;; to handle .ps files.
@@ -455,6 +460,7 @@ string."
     ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
     ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
     ("%(execopts)" ConTeXt-expand-options)
+    ("%(extraopts)" (lambda () TeX-command-extra-options))
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
