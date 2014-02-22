@@ -1,3 +1,9 @@
+2014-02-22  Mosè Giordano  <giordano.mose@libero.it>
+
+	* latex.el (LaTeX-environment): Do not set
+	`LaTeX-default-environment' to `environment' if the latter is
+	equal to the current default environment.
+
 2014-02-21  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-arg-usepackage-read-packages-with-options): New

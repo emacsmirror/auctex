@@ -538,11 +538,14 @@ It may be customized with the following variables:
 			 (string-equal (LaTeX-current-environment) "document"))
 		    LaTeX-default-document-environment)
 		   (t LaTeX-default-environment)))
-    (environment (completing-read (concat "Environment type: (default "
-					  default ") ")
-				  (LaTeX-environment-list-filtered) nil nil nil
-				  'LaTeX-environment-history default)))
-    (setq LaTeX-default-environment environment)
+	 (environment (completing-read (concat "Environment type: (default "
+					       default ") ")
+				       (LaTeX-environment-list-filtered) nil nil
+				       nil 'LaTeX-environment-history default)))
+    ;; Use `environment' as default for the next time only if it is different
+    ;; from the current default.
+    (unless (equal environment default)
+      (setq LaTeX-default-environment environment))
 
     (let ((entry (assoc environment (LaTeX-environment-list))))
       (if (null entry)
