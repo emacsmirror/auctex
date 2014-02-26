@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 
-;; Version: 11.87.2
+;; Version: 11.87.3
 ;; URL: http://www.gnu.org/software/auctex/
 
 ;; This file is part of GNU Emacs.
