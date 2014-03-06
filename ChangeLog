@@ -1,3 +1,7 @@
+2014-03-06  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/auctex.texi (Processor Options): Add missing pair of braces.
+
 2014-02-22  Mosè Giordano  <giordano.mose@libero.it>
 
 	* latex.el (LaTeX-environment): Do not set

@@ -2849,7 +2849,7 @@ means there is no command available.
 
 As shown above, @AUCTeX{} handles in a special way most of the main
 options that can be given to the @TeX{} processors.  When you need to
-pass to the @TeX{} processor arbitrary options not handled by @AUCTeX,
+pass to the @TeX{} processor arbitrary options not handled by @AUCTeX{},
 you can use the file local variable @code{TeX-command-extra-options}.
 @defopt TeX-command-extra-options
 String with the extra options to be given to the TeX processor.  For
