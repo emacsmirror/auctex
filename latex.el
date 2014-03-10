@@ -3142,7 +3142,7 @@ recognized."
 
 ;;; Filling
 
-(defcustom LaTeX-fill-break-at-separators nil
+(defcustom LaTeX-fill-break-at-separators (\\\( \\\) \\\[ \\\])
   "List of separators before or after which respectively a line
 break will be inserted if they do not fit into one line."
   :group 'LaTeX
