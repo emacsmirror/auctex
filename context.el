@@ -599,11 +599,8 @@ inserted after the sectioning command."
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
-(fset 'ConTeXt-add-environments-auto
-      (symbol-function 'ConTeXt-add-environments))
-(defun ConTeXt-add-environments (&rest environments)
+(defadvice ConTeXt-add-environments (after ConTeXt-invalidate-menu (&rest environments) activate)
   "Add ENVIRONMENTS to the list of known environments."
-  (apply 'ConTeXt-add-environments-auto environments)
   (setq ConTeXt-menu-changed t))
 
 ;; (defvar ConTeXt-environment-list ()

@@ -1,7 +1,13 @@
 2014-03-11  Tassilo Horn  <tsdh@gnu.org>
 
+	* context.el (ConTeXt-add-environments): Advice instead of
+	renaming and redefining generated function.
+
 	* latex.el (LaTeX-close-environment): Remove non-interactive
 	`next-line' usage compile warning.
+	(LaTeX-add-bibliographies): Advice instead of renaming and
+	redefining generated function.
+	(LaTeX-add-environments): Ditto.
 
 2014-03-10  Tassilo Horn  <tsdh@gnu.org>
 
