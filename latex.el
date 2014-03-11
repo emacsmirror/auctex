@@ -605,9 +605,8 @@ With prefix-argument, reopen environment afterwards."
 		 (save-excursion (beginning-of-line 2)
 				 (not (TeX-in-commented-line)))))
 	(LaTeX-newline)
-      (let ((next-line-add-newlines t))
-	(next-line 1)
-	(beginning-of-line)))
+      (unless (= (forward-line 1) 0)
+      	(insert "\n")))
     (indent-according-to-mode)
     (when reopen
       (save-excursion
