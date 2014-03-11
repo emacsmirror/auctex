@@ -1900,7 +1900,7 @@ of the options, nil otherwise."
     (mapc 'TeX-run-style-hooks packages)
     ;; Prompt for options only if at least one package has been supplied, return
     ;; nil otherwise.
-    (unless (equal packages '(""))
+    (when packages
       (setq var (if (= 1 (length packages))
 		    (intern (format "LaTeX-%s-package-options" (car packages)))
 		  ;; Something like `\usepackage[options]{pkg1,pkg2,pkg3,...}' is

@@ -1,5 +1,8 @@
 2014-03-11  Tassilo Horn  <tsdh@gnu.org>
 
+	* latex.el (LaTeX-arg-usepackage-read-packages-with-options): Fix
+	bug that caused AUCTeX to query for packages infinitely.
+
 	* context.el (ConTeXt-add-environments): Advice instead of
 	renaming and redefining generated function.
 
