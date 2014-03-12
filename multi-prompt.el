@@ -94,9 +94,9 @@ are the arguments to `completing-read'.  See that."
 				      initial nil)
 				(setq multi-prompt-found
 				      (cons extra multi-prompt-found)))))))))
-      (if answer 
-	  (nreverse (cons answer multi-prompt-found))
-	multi-prompt-found))))
+      (if (string= answer "")
+	  multi-prompt-found
+	(nreverse (cons answer multi-prompt-found))))))
 
 (defun multi-prompt-delete ()
   (interactive)

@@ -689,7 +689,15 @@ overlays."
 edit-utils >= 2.32 for XEmacs."))
 
 (if (fboundp 'completing-read-multiple)
-    (defalias 'TeX-completing-read-multiple 'completing-read-multiple)
+    (defun TeX-completing-read-multiple
+	(prompt table &optional predicate require-match initial-input
+		hist def inherit-input-method)
+      "Like `completing-read-multiple' which see.
+Ensures that empty input results in nil across different emacs versions."
+      (let ((result (completing-read-multiple prompt table predicate
+					      require-match initial-input
+					      hist def inherit-input-method)))
+	(if (equal result '("")) nil result)))
   (defun TeX-completing-read-multiple
     (prompt table &optional predicate require-match initial-input
 	    hist def inherit-input-method)

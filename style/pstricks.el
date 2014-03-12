@@ -204,7 +204,7 @@ package PNAME"
             "Params (use <Up,Down> for history or RET for choices): ")
            nlist nil nil nil hlist))
     ;;
-    (if (and  (string= "" (car param)) (= (length param) 1))
+    (if (not param)
         (setq param (funcall fask nil t))
       (setq param (car (symbol-value hlist))))
     (TeX-argument-insert

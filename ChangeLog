@@ -1,3 +1,20 @@
+2014-03-12  Tassilo Horn  <tsdh@gnu.org>
+
+	* multi-prompt.el (multi-prompt): Return nil on empty input.
+
+	* tex.el (TeX-completing-read-multiple): Define it so that empty
+	input results in nil across different emacs versions (<= 24.3
+	vs. later versions).
+
+	* style/biblatex.el ("biblatex"): Use
+	`TeX-completing-read-multiple' instead of
+	`completing-read-multiple'.
+	(LaTeX-arg-biblatex-cites): Use `TeX-completing-read-multiple' and
+	adapt handling of return value.
+
+	* style/pstricks.el (LaTeX-package-parameters): Adapt to
+	`TeX-completing-read-multiple' change.
+
 2014-03-11  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-arg-usepackage-read-packages-with-options): Fix

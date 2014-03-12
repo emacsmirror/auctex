@@ -208,13 +208,13 @@ for citation keys."
 	     (TeX-argument-insert
 	      (TeX-read-string (TeX-argument-prompt t nil "Postnote"))
 	      (equal prenote ""))))
-      (setq items (completing-read-multiple
+      (setq items (TeX-completing-read-multiple
 		   (TeX-argument-prompt optional prompt "Key")
 		   (LaTeX-bibitem-list)))
       (apply 'LaTeX-add-bibitems items)
       ;; If input is empty, insert an empty group only the first time, when
       ;; `noinsert' flag is nil.
-      (unless (and (equal items '("")) noinsert)
+      (unless (and (not items) noinsert)
 	(TeX-argument-insert (mapconcat 'identity items ",") optional))
       (setq noinsert t))))
 
@@ -240,7 +240,7 @@ for citation keys."
     ;; Setting Package Options
     '("ExecuteBibliographyOptions"
       [TeX-arg-eval  mapconcat 'identity
-		     (completing-read-multiple
+		     (TeX-completing-read-multiple
 		      "Entry type: " LaTeX-biblatex-entrytype) ","]
       (TeX-arg-key-val LaTeX-biblatex-executebibliographyoptions-options))
     ;;; Bibliography Commands
@@ -292,7 +292,7 @@ for citation keys."
     '("defbibcheck" "Name" t)
     ;; Dynamic Entry Sets
     '("defbibentryset" "Set"
-      (TeX-arg-eval mapconcat 'identity (completing-read-multiple
+      (TeX-arg-eval mapconcat 'identity (TeX-completing-read-multiple
 					 "Keys: " (LaTeX-bibitem-list)) ","))
     ;;; Citation Commands
     '("cite" (TeX-arg-conditional TeX-arg-cite-note-p
