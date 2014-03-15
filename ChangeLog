@@ -1,3 +1,9 @@
+2014-03-15  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/paralist.el: Update copyright years.
+	("paralist"): Use `LaTeX-provided-package-options-member' to
+	conditionally define environments.
+
 2014-03-12  Tassilo Horn  <tsdh@gnu.org>
 
 	* multi-prompt.el (multi-prompt): Return nil on empty input.
