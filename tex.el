@@ -1304,6 +1304,10 @@ predicates are true, nil otherwise."
 	   (prin1-to-string spec))
 	  ((stringp spec)
 	   spec)
+	  ((null spec)
+	   (error
+	    (format "Unknown %S viewer. \
+Check the `TeX-view-program-selection' variable." viewer)))
 	  (t
 	   ;; Build the unexpanded command line.  Pieces with predicates are
 	   ;; only added if the predicate is evaluated positively.

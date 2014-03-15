@@ -1,5 +1,9 @@
 2014-03-15  Mosè Giordano  <giordano.mose@libero.it>
 
+	* tex.el (TeX-view-command-raw): Throw an error when `spec' is
+	nil, otherwise when the function returns nil `TeX-command-expand'
+	enters an infinite loop.
+
 	* style/paralist.el: Update copyright years.
 	("paralist"): Use `LaTeX-provided-package-options-member' to
 	conditionally define environments.
