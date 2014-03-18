@@ -11,6 +11,9 @@
 
 @itemize @bullet
 @item
+@code{TeX-PDF-mode} is now enabled by default.
+
+@item
 Style file authors are encouraged to distinguish common from expert
 macros/environments, and mark the latter using
 @code{TeX-declare-expert-macros} and

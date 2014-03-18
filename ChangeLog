@@ -1,5 +1,10 @@
 2014-03-18  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/auctex.texi: Mention that `TeX-PDF-mode' is enabled by
+	default.
+
+	* tex.el (TeX-PDF-mode): Enable TeX PDF mode by default.
+
 	* tex-buf.el (TeX-command-master): Ask for TeX-master if it cannot
 	be determined otherwise.
 

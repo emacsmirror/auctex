@@ -1721,7 +1721,7 @@ enabled and the `synctex' binary is available."
   (set-default var value)
   (TeX-set-mode-name var nil t))
 
-(defcustom TeX-PDF-mode nil nil
+(defcustom TeX-PDF-mode t nil
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)

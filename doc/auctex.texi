@@ -2736,10 +2736,10 @@ Xe@TeX{}.
 @cindex PDF mode
 (@kbd{C-c C-t C-p})
 This command toggles the @acronym{PDF} mode of @AUCTeX{}, a buffer-local
-minor mode.  You can customize @code{TeX-PDF-mode} to give it a
-different default.  The default is used when @AUCTeX{} does not have
-additional clue about what a document might want.  This option usually
-results in calling either PDF@TeX{} or ordinary @TeX{}.
+minor mode which is enabled by default.  You can customize
+@code{TeX-PDF-mode} to give it a different default or set it as a file
+local variable on a per-document basis.  This option usually results in
+calling either PDF@TeX{} or ordinary @TeX{}.
 @end deffn
 
 @defopt TeX-DVI-via-PDFTeX
