@@ -1,3 +1,6 @@
+2014-03-17  Nicolas Richard  <theonewiththeevillook@yahoo.fr>
+
+	* style/exercise.el: New file.
 2014-03-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/auctex.texi: Mention that `TeX-PDF-mode' is enabled by
