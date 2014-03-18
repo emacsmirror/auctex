@@ -90,8 +90,8 @@ Return non-nil if document needs to be re-TeX'ed."
 If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in `TeX-command-list'."
   (interactive "P")
-  (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file
-	       override-confirm))
+  (TeX-command (TeX-command-query (TeX-master-file nil nil t))
+	       'TeX-master-file override-confirm))
 
 (defvar TeX-command-region-begin nil)
 (defvar TeX-command-region-end nil)

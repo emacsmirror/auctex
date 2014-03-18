@@ -1,3 +1,8 @@
+2014-03-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-command-master): Ask for TeX-master if it cannot
+	be determined otherwise.
+
 2014-03-15  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-view-command-raw): Throw an error when `spec' is
