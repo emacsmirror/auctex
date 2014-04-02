@@ -1,6 +1,16 @@
+2014-04-02  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/biblatex.el: Update copyright years and specify last
+	`biblatex' version supported.
+	(LaTeX-biblatex-executebibliographyoptions-options): Update.
+	(LaTeX-biblatex-language-list): Ditto.
+	(LaTeX-arg-biblatex-cites): Fix condition on `items' variable to
+	adapt to the `TeX-completing-read-multiple' return value change.
+
 2014-03-17  Nicolas Richard  <theonewiththeevillook@yahoo.fr>
 
 	* style/exercise.el: New file.
+
 2014-03-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/auctex.texi: Mention that `TeX-PDF-mode' is enabled by

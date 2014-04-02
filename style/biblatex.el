@@ -1,6 +1,6 @@
-;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.5.
+;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.
 
-;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `biblatex.sty' version 2.5.
+;; This file adds support for `biblatex.sty' version 2.8a.
 
 ;;; Code:
 
@@ -47,8 +47,7 @@
   "List of biblatex entry types.")
 
 (defvar LaTeX-biblatex-executebibliographyoptions-options
-  '(;;; Preamble options
-    ;; General
+  '(;; General
     ("sorting" ("nty" "nyt" "nyvt" "anyt" "anyvt" "ynt" "ydnt" "none" "debug"))
     ("sortcase" ("true" "false"))
     ("sortupper" ("true" "false"))
@@ -66,20 +65,17 @@
     ("minitems")
     ("autocite" ("plain" "inline" "footnote" "superscript"))
     ("autopunct" ("true" "false"))
-    ;; For list of languages, see table 5 of Biblatex reference manual.
-    ("language" ("auto" "catalan" "czech" "danish" "dutch" "american" "british"
-		 "canadian" "australian" "newzealand" "finnish" "french"
-		 "german" "austrian" "ngernam" "naustrian" "greek" "italian"
-		 "norwegian" "brazilian" "portuguese" "russian" "spanish"
-		 "swedish"))
+    ("language" (append LaTeX-biblatex-language-list
+			'("autobib" "autocite" "auto")))
     ("clearlang" ("true" "false"))
-    ("babel" ("none" "hyphen" "other" "other*"))
+    ("autolang" ("none" "hyphen" "other" "other*" "langname"))
     ("block" ("none" "space" "par" "nbpar" "ragged"))
     ("notetype" ("foot+end" "footonly" "endonly"))
-    ("hyperref" ("true" "false"))
+    ("hyperref" ("true" "false" "auto"))
     ("backref" ("true" "false"))
     ("backrefstyle" ("none" "three" "two" "two+" "three+" "all+"))
-    ("backrefsetstyle" ("setonly" "memonly" "setormem" "setandmem" "memandset" "setplusmem"))
+    ("backrefsetstyle" ("setonly" "memonly" "setormem" "setandmem" "memandset"
+			"setplusmem"))
     ("indexing" ("true" "false" "cite" "bib"))
     ("loadfiles" ("true" "false"))
     ("refsection" ("none" "part" "chapter" "section" "subsection"))
@@ -87,6 +83,7 @@
     ("citereset" ("none" "part" "chapter" "section" "subsection"))
     ("abbreviate" ("true" "false"))
     ("date" ("short" "long" "terse" "comp" "iso8601"))
+    ("datelabel" ("year" "short" "long" "terse" "comp" "iso8601"))
     ("origdate" ("short" "long" "terse" "comp" "iso8601"))
     ("eventdate" ("short" "long" "terse" "comp" "iso8601"))
     ("urldate" ("short" "long" "terse" "comp" "iso8601"))
@@ -118,25 +115,26 @@
     ("maxparens")
     ("firstinits" ("true" "false"))
     ("sortfirstinits" ("true" "false"))
-    ("tersefirstinits" ("true" "false"))
+    ("terseinits" ("true" "false"))
     ("labelalpha" ("true" "false"))
     ("maxalphanames")
     ("minalphanames")
-    ("labelnum" ("true" "false"))
+    ("labelnumber" ("true" "false"))
     ("labeltitle" ("true" "false"))
     ("labeltitleyear" ("true" "false"))
-    ("labelyear" ("true" "false"))
+    ("labeldate" ("true" "false"))
     ("singletitle" ("true" "false"))
-    ("uniquename" ("true" "false" "init" "full" "allinit" "allfull" "mininit" "minfull"))
+    ("uniquename" ("true" "false" "init" "full" "allinit" "allfull" "mininit"
+		   "minfull"))
     ("uniquelist" ("true" "false" "minyear")))
   "Key=value options for ExecuteBibliographyOptions macro of the biblatex package.")
 
 ;; See table 2 of Biblatex reference manual.
 (defvar LaTeX-biblatex-language-list
-  '("catalan" "czech" "danish" "dutch" "american" "british" "canadian"
-    "australian" "newzealand" "finnish" "french" "german" "austrian" "ngernam"
-    "naustrian" "greek" "italian" "norsk" "brazil" "portuguese" "russian"
-    "spanish" "swedish")
+  '("catalan" "croatian" "czech" "danish" "dutch" "american" "british"
+    "canadian" "australian" "newzealand" "finnish" "french" "german" "austrian"
+    "ngernam" "naustrian" "greek" "italian" "norwegian" "polish" "brazilian"
+    "portuguese" "russian" "spanish" "swedish")
   "List of languages supported by biblatex packages.")
 
 (defvar LaTeX-biblatex-addbibresource-options
@@ -194,8 +192,8 @@ for citation keys."
 	 (TeX-argument-insert
 	  (TeX-read-string (TeX-argument-prompt t nil "Global postnote"))
 	  (equal prenote ""))))
-  (let (items noinsert)
-    (while (not (equal items '("")))
+  (let ((items t) (noinsert nil))
+    (while items
       ;; Prompt for prenote and postnote of the current keys.
       (and TeX-arg-cite-note-p (not current-prefix-arg)
 	   (let ((TeX-arg-opening-brace "[")
