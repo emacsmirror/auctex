@@ -1,5 +1,10 @@
 2014-04-04  Mosè Giordano  <giordano.mose@libero.it>
 
+	* latex.el (LaTeX-add-environments): Move advising of
+	`LaTeX-add-environments' after definition of
+	`LaTeX-environment-menu' and `LaTeX-environment-modify-menu'
+	variables to fix assignment to free variable warnings.
+
 	* tex-style.el: Update coyright years.
 	(LaTeX-biblatex-use-Biber): New variable.  Mark as
 	safe-local-variable.
