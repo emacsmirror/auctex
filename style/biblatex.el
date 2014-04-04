@@ -220,11 +220,18 @@ for citation keys."
  "biblatex"
  (lambda ()
    ;; Biblatex uses as default backend biber, run it unless biblatex `backend'
-   ;; option value is one of `bibtex', `bibtex8', `bibtexu'.
+   ;; option value is one of `bibtex', `bibtex8', `bibtexu'.  Autodetection of
+   ;; the backend can be overridden by setting `LaTeX-biblatex-use-Biber' as a
+   ;; local variable.
    (setq LaTeX-using-Biber
-	 (not (or (LaTeX-provided-package-options-member "biblatex" "backend=bibtex")
-		  (LaTeX-provided-package-options-member "biblatex" "backend=bibtex8")
-		  (LaTeX-provided-package-options-member "biblatex" "backend=bibtexu"))))
+	 (if (local-variable-p 'LaTeX-biblatex-use-Biber)
+	     LaTeX-biblatex-use-Biber
+	   (not (or (LaTeX-provided-package-options-member
+		     "biblatex" "backend=bibtex")
+		    (LaTeX-provided-package-options-member
+		     "biblatex" "backend=bibtex8")
+		    (LaTeX-provided-package-options-member
+		     "biblatex" "backend=bibtexu")))))
 
    (TeX-run-style-hooks
     "etoolbox"

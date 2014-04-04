@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2013
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2014
 Free Software Foundation, Inc.
 
 @quotation
@@ -2696,11 +2696,18 @@ The default command to run in this buffer.  Must be an entry in
 
 @cindex Biber
 @cindex biblatex
-In case you use biblatex in a document, @AUCTeX{} switches from
-Bib@TeX{} to Biber for bibliography processing.  If you have enabled
-automatic parsing, @AUCTeX{} checks the value of @samp{backend} option
-given to biblatex at load time to decide whether to use Bib@TeX{} or
-Biber.
+In case you use biblatex in a document, when automatic parsing is
+enabled @AUCTeX{} checks the value of @samp{backend} option given to
+biblatex at load time to decide whether to use Bib@TeX{} or Biber for
+bibliography processing.  Should @AUCTeX{} fail to detect the right
+backend, you can use the file local @code{LaTeX-biblatex-use-Biber}
+variable.
+@defvr Variable LaTeX-biblatex-use-Biber
+If this boolean variable is set as file local, it tells to @AUCTeX{}
+whether to use Biber with biblatex.  In this case, the autodetection of
+the biblatex backend will be overridden.  You may want to set locally
+this variable if automatic parsing is not enabled.
+@end defvr
 
 After confirming a command to execute, @AUCTeX{} will try to save any
 buffers related to the document, and check if the document needs to be

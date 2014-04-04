@@ -51,7 +51,8 @@ and @code{LaTeX-fontspec-font-list-default}.  A new possible value
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,
 @AUCTeX{} looks at @samp{backend} option to decide whether to use Biber
-or BibTeX.  @code{LaTeX-biblatex-use-Biber} option was removed.
+or BibTeX.  The @code{LaTeX-biblatex-use-Biber} variable was changed to
+be file local only and is no more customizable.
 
 @item
 With some @LaTeX{} classes, the default environment suggested by

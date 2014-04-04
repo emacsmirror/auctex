@@ -1,3 +1,24 @@
+2014-04-04  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-style.el: Update coyright years.
+	(LaTeX-biblatex-use-Biber): New variable.  Mark as
+	safe-local-variable.
+
+	* latex.el (TeX-latex-mode): Add setting of `LaTeX-using-Biber' to
+	`TeX-update-style-hook'.
+
+	* style/biblatex.el ("biblatex"): Use `LaTeX-biblatex-use-Biber'
+	value to set `LaTeX-using-Biber' when it is set locally.
+
+	* tex-bar.el: Update copyright years.
+	(LaTeX-install-toolbar): Append toolbar refresh to
+	`TeX-update-style-hook' instead of prepending it.
+
+	* doc/auctex.texi:  Update copyright years.
+	(Selecting a Command): Document `LaTeX-biblatex-use-Biber'.
+
+	* doc/changes.texi: Mention `LaTeX-biblatex-use-Biber' change.
+
 2014-04-02  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/biblatex.el: Update copyright years and specify last

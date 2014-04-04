@@ -5535,6 +5535,14 @@ of `LaTeX-mode-hook'."
 	    (featurep 'toolbar)
 	  (and (boundp 'tool-bar-mode) tool-bar-mode))
     (LaTeX-maybe-install-toolbar))
+  ;; Set the value of `LaTeX-using-Biber' based on the local value of
+  ;; `LaTeX-biblatex-use-Biber'.  This should be run within
+  ;; `TeX-update-style-hook' before toolbarx-refresh, otherwise the bibliography
+  ;; button could be wrongly set.
+  (add-hook 'TeX-update-style-hook
+	    (lambda ()
+	      (if (local-variable-p 'LaTeX-biblatex-use-Biber)
+		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (TeX-set-mode-name)
   ;; Defeat filladapt
