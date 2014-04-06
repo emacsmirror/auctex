@@ -1,6 +1,7 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files
 
-;; Copyright (C) 2005, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2007, 2009, 2012-2014
+;;   Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Keywords: tex, wp, convenience
@@ -212,6 +213,16 @@ It can be a list of themes or a function.  If it is the symbol
      (repeat :inline t
 	     :tag "Other"
 	     (string)))))
+
+;; style/biblatex.el
+
+(defvar LaTeX-biblatex-use-Biber t
+  "Whether to use Biber with biblatex.
+
+This variable is intended to be used as a file local variable to
+override the autodetection of the biblatex backend.")
+(make-variable-buffer-local 'LaTeX-biblatex-use-Biber)
+(put 'LaTeX-biblatex-use-Biber 'safe-local-variable 'TeX-booleanp)
 
 ;; style/comment.el
 
