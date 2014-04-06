@@ -1,4 +1,4 @@
-This is auctex.info, produced by makeinfo version 5.1 from auctex.texi.
+This is auctex.info, produced by makeinfo version 5.2 from auctex.texi.
 
 This manual is for AUCTeX (version 11.87.2012-12-04 from 2012-12-04), a
 sophisticated TeX environment for Emacs.
@@ -7419,21 +7419,21 @@ Node: Hacking the Parser197293
 Node: Appendices201162
 Node: Copying this Manual201546
 Node: GNU Free Documentation License202439
-Node: Changes227557
-Node: Development251794
-Node: Mid-term Goals252440
-Node: Wishlist254001
-Node: Bugs260945
-Node: FAQ262342
-Node: Texinfo mode268358
-Node: Exploiting269494
-Node: Superseding270314
-Node: Mapping274518
-Node: Unbinding276347
-Node: Indices277168
-Node: Key Index277393
-Node: Function Index282914
-Node: Variable Index291023
-Node: Concept Index308707
+Node: Changes227558
+Node: Development251795
+Node: Mid-term Goals252441
+Node: Wishlist254002
+Node: Bugs260946
+Node: FAQ262343
+Node: Texinfo mode268359
+Node: Exploiting269495
+Node: Superseding270315
+Node: Mapping274519
+Node: Unbinding276348
+Node: Indices277169
+Node: Key Index277394
+Node: Function Index282915
+Node: Variable Index291024
+Node: Concept Index308708
 
 End Tag Table
