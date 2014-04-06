@@ -627,6 +627,11 @@ value of `Texinfo-mode-hook'."
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))) nil t)
 
+  (when (and (boundp 'add-log-current-defun-function)
+	     (fboundp 'texinfo-current-defun-name))
+    (setq add-log-current-defun-function
+	  #'texinfo-current-defun-name))
+
   (TeX-add-symbols
    '("appendix" (TeX-arg-literal " ") (TeX-arg-free "Title"))
    '("appendixsec" (TeX-arg-literal " ") (TeX-arg-free "Title"))

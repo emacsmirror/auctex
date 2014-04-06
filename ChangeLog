@@ -1,3 +1,8 @@
+2014-04-06  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-info.el (TeX-texinfo-mode): Use `texinfo-current-defun-name'
+	in `C-x 4 a'.
+
 2014-03-17  Nicolas Richard  <theonewiththeevillook@yahoo.fr>
 
 	* style/exercise.el: New file.
