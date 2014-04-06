@@ -392,10 +392,17 @@ for @node."
   "Hook function to plug Texinfo into RefTeX."
   ;; force recompilation of variables
   (when (string= TeX-base-mode-name "Texinfo")
+    ;; dirty temporary hook to remove when reftex has a Texinfo builtin 
+    ;; TODO --- taken on <2014-01-06 mon> --- remove the dirty trick once reftex
+    ;; has been corrected for long enough a time
+    (unless (assq 'Texinfo reftex-label-alist-builtin)
+      (setq reftex-label-alist-builtin (append reftex-label-alist-builtin
+					       '((Texinfo "Texinfo default environments" nil)))))
     (dolist (v `((reftex-section-pre-regexp . "@")
 		 ; section post-regexp must contain exactly one group
 		 (reftex-section-post-regexp . "\\([ \t]+\\)")
 		 (reftex-section-info-function . Texinfo-reftex-section-info)
+		 (reftex-default-label-alist-entries . (Texinfo))
 	       (reftex-section-levels
 		. ,(mapcar
 		    (lambda (x)
@@ -405,7 +412,6 @@ for @node."
 			(cons (car x) (cadr x))))
 		    texinfo-section-list))))
       (set (make-local-variable (car v) ) (cdr v)))
-    (setq reftex-tables-dirty t)
     (reftex-ensure-compiled-variables)))
 
 ;;; Keymap:
@@ -532,6 +538,7 @@ value of `Texinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)
   (setq TeX-mode-p t)
+  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name "Texinfo")
   (setq major-mode 'texinfo-mode)
@@ -608,7 +615,7 @@ value of `Texinfo-mode-hook'."
 
   (make-local-variable 'TeX-complete-list)
   (setq TeX-complete-list
-	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list nil)
+	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list-filtered nil)
 	      (list "" TeX-complete-word)))
 
   (make-local-variable 'TeX-font-list)
@@ -619,6 +626,11 @@ value of `Texinfo-mode-hook'."
   (add-hook 'find-file-hooks (lambda ()
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))) nil t)
+
+  (when (and (boundp 'add-log-current-defun-function)
+	     (fboundp 'texinfo-current-defun-name))
+    (setq add-log-current-defun-function
+	  #'texinfo-current-defun-name))
 
   (TeX-add-symbols
    '("appendix" (TeX-arg-literal " ") (TeX-arg-free "Title"))
