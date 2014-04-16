@@ -1,3 +1,7 @@
+2014-04-16  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-parse-error): Add another exception.
+
 2014-04-06  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-info.el (TeX-texinfo-mode): Use `texinfo-current-defun-name'

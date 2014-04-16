@@ -1491,7 +1491,8 @@ You might want to examine and modify the free variables `file',
 )*\\(?: \\|\r?$\\)\\|"
 	  ;; End of file.  The [^:] skips package messages like:
 	  ;; Package hyperref Message: Driver (autodetected): hpdftex.
-	  "\\()\\)[^:]\\|"
+	  ;; [Loading MPS to PDF converter (version 2006.09.02).]
+	  "\\()\\)[^:.]\\|"
 	  ;; Hook to change line numbers
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name
