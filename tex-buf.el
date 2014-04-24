@@ -1483,16 +1483,9 @@ You might want to examine and modify the free variables `file',
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\\(\"[^\"]*?\"\\|/*\
-\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
-\\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
-)*\\(?: \\|\r?$\\)\\|"
-	  ;; End of file.  The [^:] skips package messages like:
-	  ;; Package hyperref Message: Driver (autodetected): hpdftex.
-	  ;; [Loading MPS to PDF converter (version 2006.09.02).]
-	  "\\()\\)[^:.]\\|"
+	  "(\n?\\([^())]+\\)\\|"
+	  ;; End of file.
+	  "\\()\\)\\|"
 	  ;; Hook to change line numbers
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name
@@ -1545,11 +1538,12 @@ You might want to examine and modify the free variables `file',
 	 ((match-beginning 3)
 	  (let ((file (TeX-match-buffer 3))
 		(end (match-end 3)))
-	    ;; Strip quotation marks and remove newlines if necessary
+	    ;; Trim, strip quotation marks and remove newlines if necessary
 	    (when (or (eq (string-to-char file) ?\")
-		      (string-match "\n" file))
-	      (setq file
-		    (mapconcat 'identity (split-string file "[\"\n]+") "")))
+		      (string-match "[ \t\n]" file))
+	      (setq file (mapconcat 'identity
+				    (split-string file "[\"\n]+" nil "[ \t]")
+				    "")))
 	    (push file TeX-error-file)
 	    (push nil TeX-error-offset)
 	    (goto-char end))
@@ -1624,8 +1618,10 @@ You might want to examine and modify the free variables `file',
     (setq TeX-error-point (point))
 
     ;; Find the error.
-    (if (null file)
-	(error "Error occurred after last TeX file closed"))
+    (when (null file)
+      (error "Error occurred after last TeX file closed"))
+    (when (not (file-exists-p file))
+      (error "No such file: %s" file))
     (let ((runbuf (current-buffer))
 	  (master (with-current-buffer
 		      TeX-command-buffer
