@@ -1176,15 +1176,17 @@ command."
 	(goto-char pt)
 	(insert-before-markers string)
 	(set-marker (process-mark process) (point))
-	;; Remove line breaks at column 79
+	;; Remove line breaks at columns 79 and 80
 	(while (> (point) pt)
 	  (end-of-line 0)
-	  (when (and (= (- (point) (line-beginning-position)) 79)
-		     ;; Heuristic: Don't delete the linebreak if the
-		     ;; next line is empty or starts with an opening
-		     ;; parenthesis or if point is located after a period.
+	  (when (and (memql (- (point) (line-beginning-position)) '(79 80))
+		     ;; Heuristic: Don't delete the linebreak if the next line
+		     ;; is empty or starts with an opening parenthesis, or if
+		     ;; point is located after a period and in the next line no
+		     ;; word char follows.
 		     (not (memq (char-after (1+ (point))) '(?\n ?\()))
-		     (not (eq (char-before) ?.)))
+		     (not (and (eq (char-before) ?.)
+			       (not (eq ?w (char-syntax (char-after (1+ (point)))))))))
 	    (delete-char 1)))
 	(goto-char (marker-position (process-mark process)))
 	;; Determine current page
