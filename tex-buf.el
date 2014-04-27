@@ -1540,12 +1540,15 @@ You might want to examine and modify the free variables `file',
 	 ((match-beginning 3)
 	  (let ((file (TeX-match-buffer 3))
 		(end (match-end 3)))
-	    ;; Trim, strip quotation marks and remove newlines if necessary
+	    ;; Strip quotation marks and remove newlines if necessary
 	    (when (or (eq (string-to-char file) ?\")
 		      (string-match "[ \t\n]" file))
-	      (setq file (mapconcat 'identity
-				    (split-string file "[\"\n]+" nil "[ \t]")
-				    "")))
+	      (setq file (mapconcat 'identity (split-string file "[\"\n]+") "")))
+	    ;; Trim whitespace at the front/end
+	    (setq file
+		  (progn
+		    (string-match "^[[:space:]]*\\(.*[^[:space:]]\\)[[:space:]]*$" file)
+		    (match-string 1 file)))
 	    (push file TeX-error-file)
 	    (push nil TeX-error-offset)
 	    (goto-char end))
