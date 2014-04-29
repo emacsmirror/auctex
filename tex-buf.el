@@ -1186,6 +1186,7 @@ command."
 		     ;; word char follows.
 		     (not (memq (char-after (1+ (point))) '(?\n ?\()))
 		     (not (and (eq (char-before) ?.)
+			       (char-after (1+ (point)))
 			       (not (eq ?w (char-syntax (char-after (1+ (point)))))))))
 	    (delete-char 1)))
 	(goto-char (marker-position (process-mark process)))
