@@ -1486,7 +1486,7 @@ You might want to examine and modify the free variables `file',
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\n?\\([^())]+\\)\\|"
+	  "(\n?\\([^\n())]+\\)\\|"
 	  ;; End of file.
 	  "\\()\\)\\|"
 	  ;; Hook to change line numbers
