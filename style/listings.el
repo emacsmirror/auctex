@@ -235,7 +235,7 @@
     '("lstloadlanguages" t)
     ;; 4.17 Short Inline Listing Commands
     '("lstMakeShortInline" [ "Options" ] "Character")
-    '("lstDeleteShortLine" "Character")
+    '("lstDeleteShortInline" "Character")
     
     "lstgrinddeffile" "lstaspectfiles" "lstlanguagefiles"
     "lstlistingname" "lstlistlistingname")

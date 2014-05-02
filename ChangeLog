@@ -1,3 +1,7 @@
+2014-05-02  Jobst Hoffmann  <J.Hoffmann@fh-aachen.de>  (tiny change)
+
+	* style/listings.el ("listings"): Fix typo.
+
 2014-05-01  Mosè Giordano  <giordano.mose@libero.it>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Fix
