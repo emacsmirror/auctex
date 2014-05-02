@@ -1,3 +1,9 @@
+2014-05-01  Mosè Giordano  <giordano.mose@libero.it>
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Fix
+	fontification of the optional argument to a verbatim-like
+	environment.
+
 2014-04-16  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-parse-error): Add another exception.

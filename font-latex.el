@@ -896,8 +896,20 @@ have changed."
 	  font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "^[ \t]*\\\\begin *{\\(?:" verb-envs
-			      "\\)}.*\\(\n\\)")
+		   `(,(concat
+		       "^[ \t]*\\\\begin *{\\(?:" verb-envs "\\)}"
+		       ;; Some environments accept an optional argument that can
+		       ;; span over more lines.  Between "\begin{<envname>}" and
+		       ;; the optional argument there can be whitespaces and the
+		       ;; newline can be commented by a "%" character.
+		       "[ \t]*\\(?:%.*\n[ \t]*\\)?"
+		       ;; The following line of the regexp matches the optional
+		       ;; argument and allows for up to one level of brackets
+		       ;; inside the argument (e.g., the dialect of a language
+		       ;; in the `lstlisting' environment by the `listings'
+		       ;; package).
+		       "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
+		       "\\(\n\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
 		   ;; Using the newline character for the syntax
