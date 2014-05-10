@@ -1,3 +1,17 @@
+2014-05-10  Mosè Giordano  <giordano.mose@libero.it>
+
+	* style/siunitx.el: Update copyright years and specify last
+	`siunitx' version supported.  Hard wrap lines longer than 80
+	columns.
+	(LaTeX-siunitx-regexp): Move the escape character out of the group
+	matching the unit name.
+	(LaTeX-arg-siunitx-unit): Add `prefix' argument.  Replace the
+	space with `TeX-esc' as the completion separator.
+	(LaTeX-arg-define-siunitx-unit): Define a default prompt; set
+	`initial-input' to nil; use `TeX-esc' as prefix to the given
+	input.
+	("siunitx"): Remove the escape character from the unit names.
+
 2014-05-02  Jobst Hoffmann  <J.Hoffmann@fh-aachen.de>  (tiny change)
 
 	* style/listings.el ("listings"): Fix typo.

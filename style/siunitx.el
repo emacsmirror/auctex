@@ -1,6 +1,6 @@
-;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5q.
+;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5s.
 
-;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `siunitx.sty' version 2.5q.
+;; This file adds support for `siunitx.sty' version 2.5s.
 
 ;;; Code:
 
@@ -36,8 +36,9 @@
 ;; wrapped in `[...]'.
 (defvar LaTeX-siunitx-regexp
   (concat "\\\\Declare"
-	  "\\(?:SIUnit\\|SIPrefix\\|BinaryPrefix\\|SIPostPower\\|SIPrepower\\|SIQualifier\\)"
-	  "[ \t\n\r]*\\(?:\\[.*\\]\\)?[ \t\n\r]*{?\\(\\\\[A-Za-z]+\\)}?")
+	  "\\(?:SIUnit\\|SIPrefix\\|BinaryPrefix\\|SIPostPower\\|SIPrepower\\|"
+	  "SIQualifier\\)"
+	  "[ \t\n\r]*\\(?:\\[.*\\]\\)?[ \t\n\r]*{?\\\\\\([A-Za-z]+\\)}?")
   "Matches new siunitx unit, prefix, power, and qualifier definitions.")
 
 (defvar LaTeX-auto-siunitx-unit nil
@@ -60,39 +61,43 @@
 (defvar LaTeX-siunitx-unit-history nil
   "History of units in siunitx.")
 
-(defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input definition)
+(defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input
+					definition prefix)
   "Prompt for siunitx units, prefixes, powers, and qualifiers.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
 initially, with point positioned at the end.  If DEFINITION is
-non-nil, add the chosen unit to the list of defined units."
+non-nil, add the chosen unit to the list of defined units.  If
+PREFIX is non-nil, insert it before the given input."
   ;; Remove <SPC> key binding from map used in `TeX-completing-read-multiple'
   ;; with `require-match' set to `nil' (it's `crm-local-completion-map' if
   ;; `completing-read-multiple' is bound, `minibuffer-local-completion-map'
-  ;; otherwise) and set completion separator to <SPC>.
+  ;; otherwise) and set completion separator to the TeX escape character.
   (let* ((crm-local-completion-map
 	  (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
 	 (minibuffer-local-completion-map
 	  (remove (assoc 32 minibuffer-local-completion-map)
 		  minibuffer-local-completion-map))
-	 (crm-separator " ")
+	 (crm-separator (regexp-quote TeX-esc))
 	 (unit (mapconcat 'identity
 			  (TeX-completing-read-multiple
-			   (TeX-argument-prompt optional prompt "Unit")
+			   (TeX-argument-prompt optional prompt "Unit: " t)
 			   (LaTeX-siunitx-unit-list) nil nil initial-input
 			   'LaTeX-siunitx-unit-history)
-			  crm-separator)))
+			  TeX-esc)))
     (if (and definition (not (string-equal "" unit)))
-	(LaTeX-add-siunitx-units unit))
-    (TeX-argument-insert unit optional)))
+    	(LaTeX-add-siunitx-units unit))
+    (TeX-argument-insert unit optional prefix)))
 
 (defun LaTeX-arg-define-siunitx-unit (optional &optional prompt)
   "Prompt for a LaTeX siunitx unit, prefix, power, and qualifier.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (LaTeX-arg-siunitx-unit optional prompt "\\" t))
+  (LaTeX-arg-siunitx-unit optional
+			  (unless prompt (concat "Unit: " TeX-esc))
+			  nil t TeX-esc))
 
 (defvar LaTeX-siunitx-package-options
   '(;; Detecting fonts
@@ -204,7 +209,8 @@ string."
     ("literal-superscript-as-power" ("true" "false"))
     ("inter-unit-product")
     ("parse-units" ("true" "false"))
-    ("per-mode" ("reciprocal" "fraction" "reciprocal-positive-first" "symbol" "repeated-symbol" "symbol-or-fraction"))
+    ("per-mode" ("reciprocal" "fraction" "reciprocal-positive-first" "symbol"
+		 "repeated-symbol" "symbol-or-fraction"))
     ("per-symbol")
     ("power-font" ("number" "unit"))
     ("prefixes-as-symbols" ("true" "false"))
@@ -217,7 +223,8 @@ string."
     ("list-units" ("brackets" "repeat" "single"))
     ("multi-part-units" ("brackets" "repeat" "single"))
     ("number-unit-product")
-    ("product-units" ("repeat" "brackets" "brackets-power" "power" "repeat" "single"))
+    ("product-units" ("repeat" "brackets" "brackets-power" "power" "repeat"
+		      "single"))
     ("range-units" ("brackets" "repeat" "single"))
     ;; Tabular material
     ("table-align-comparator" ("true" "false"))
@@ -273,20 +280,27 @@ string."
     '("ang" [TeX-arg-key-val LaTeX-siunitx-package-options] "Angle")
     '("num" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
     '("numlist" [TeX-arg-key-val LaTeX-siunitx-package-options] "Numbers")
-    '("numrange" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number 1" "Number 2")
+    '("numrange" [TeX-arg-key-val LaTeX-siunitx-package-options]
+      "Number 1" "Number 2")
     ;; Units
     '("si" [TeX-arg-key-val LaTeX-siunitx-package-options] LaTeX-arg-siunitx-unit)
-    '("SI" [TeX-arg-key-val LaTeX-siunitx-package-options] "Value" [ "Pre-unit"] LaTeX-arg-siunitx-unit)
-    '("SIlist" [TeX-arg-key-val LaTeX-siunitx-package-options] "Values" LaTeX-arg-siunitx-unit)
-    '("SIrange" [TeX-arg-key-val LaTeX-siunitx-package-options] "Value 1" "Value 2" LaTeX-arg-siunitx-unit)
+    '("SI" [TeX-arg-key-val LaTeX-siunitx-package-options]
+      "Value" [ "Pre-unit"] LaTeX-arg-siunitx-unit)
+    '("SIlist" [TeX-arg-key-val LaTeX-siunitx-package-options]
+      "Values" LaTeX-arg-siunitx-unit)
+    '("SIrange" [TeX-arg-key-val LaTeX-siunitx-package-options]
+      "Value 1" "Value 2" LaTeX-arg-siunitx-unit)
     ;; Settings
     '("sisetup" (TeX-arg-key-val LaTeX-siunitx-package-options))
     ;; Tabular material
     '("tablenum" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
     ;; Creating new macros (`DeclareSIUnitWithOptions' macro is deprecated)
-    '("DeclareSIUnit" [TeX-arg-key-val LaTeX-siunitx-package-options] (LaTeX-arg-define-siunitx-unit) "Symbol")
-    '("DeclareSIPrefix" (LaTeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 10")
-    '("DeclareBinaryPrefix" (LaTeX-arg-define-siunitx-unit "Prefix") "Symbol" "Powers of 2")
+    '("DeclareSIUnit" [TeX-arg-key-val LaTeX-siunitx-package-options]
+      (LaTeX-arg-define-siunitx-unit) "Symbol")
+    '("DeclareSIPrefix" (LaTeX-arg-define-siunitx-unit "Prefix")
+      "Symbol" "Powers of 10")
+    '("DeclareBinaryPrefix" (LaTeX-arg-define-siunitx-unit "Prefix")
+      "Symbol" "Powers of 2")
     '("DeclareSIPostPower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
     '("DeclareSIPrePower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
     '("DeclareSIQualifier" (LaTeX-arg-define-siunitx-unit "Qualifier") "Symbol")
@@ -297,281 +311,283 @@ string."
     ;;; The unit macros
    ;; SI base units
    (LaTeX-add-siunitx-units
-    "\\ampere"
-    "\\candela"
-    "\\kelvin"
-    "\\kilogram"
-    "\\gram"
-    "\\meter"
-    "\\metre"
-    "\\second"
+    "ampere"
+    "candela"
+    "kelvin"
+    "kilogram"
+    "gram"
+    "meter"
+    "metre"
+    "second"
     ;; Coherent derived units in the SI with special names and symbols
-    "\\becquerel"
-    "\\celsius"
-    "\\degreeCelsius"
-    "\\coulomb"
-    "\\farad"
-    "\\gray"
-    "\\hertz"
-    "\\henry"
-    "\\joule"
-    "\\katal"
-    "\\lumen"
-    "\\lux"
-    "\\newton"
-    "\\ohm"
-    "\\pascal"
-    "\\radian"
-    "\\siemens"
-    "\\sievert"
-    "\\steradian"
-    "\\tesla"
-    "\\volt"
-    "\\watt"
-    "\\weber"
+    "becquerel"
+    "celsius"
+    "degreeCelsius"
+    "coulomb"
+    "farad"
+    "gray"
+    "hertz"
+    "henry"
+    "joule"
+    "katal"
+    "lumen"
+    "lux"
+    "newton"
+    "ohm"
+    "pascal"
+    "radian"
+    "siemens"
+    "sievert"
+    "steradian"
+    "tesla"
+    "volt"
+    "watt"
+    "weber"
     ;; Non-SI units accepted for use with the International System of Units
-    "\\day"
-    "\\degree"
-    "\\hectare"
-    "\\hour"
-    "\\liter"
-    "\\litre"
-    "\\arcminute"
-    "\\minute"
-    "\\arcsecond"
-    "\\tonne"
+    "day"
+    "degree"
+    "hectare"
+    "hour"
+    "liter"
+    "litre"
+    "arcminute"
+    "minute"
+    "arcsecond"
+    "tonne"
     ;; Non-SI units whose values in SI units must be obtained experimentally
-    "\\astronomicalunit"
-    "\\atomicmassunit"
-    "\\bohr"
-    "\\clight"
-    "\\dalton"
-    "\\electronmass"
-    "\\electronvolt"
-    "\\elementarycharge"
-    "\\hartree"
-    "\\planckbar"
+    "astronomicalunit"
+    "atomicmassunit"
+    "bohr"
+    "clight"
+    "dalton"
+    "electronmass"
+    "electronvolt"
+    "elementarycharge"
+    "hartree"
+    "planckbar"
     ;; Other non-SI units.
-    "\\angstrom"
-    "\\bar"
-    "\\barn"
-    "\\bel"
-    "\\decibel"
-    "\\knot"
-    "\\mmHg"
-    "\\nauticalmile"
-    "\\neper"
-    "\\percent"
+    "angstrom"
+    "bar"
+    "barn"
+    "bel"
+    "decibel"
+    "knot"
+    "mmHg"
+    "nauticalmile"
+    "neper"
+    "percent"
     ;; SI prefixes
-    "\\yocto"
-    "\\zepto"
-    "\\atto"
-    "\\femto"
-    "\\pico"
-    "\\nano"
-    "\\micro"
-    "\\milli"
-    "\\centi"
-    "\\deci"
-    "\\deca"
-    "\\deka"
-    "\\hecto"
-    "\\kilo"
-    "\\mega"
-    "\\giga"
-    "\\tera"
-    "\\peta"
-    "\\exa"
-    "\\zetta"
-    "\\yotta"
+    "yocto"
+    "zepto"
+    "atto"
+    "femto"
+    "pico"
+    "nano"
+    "micro"
+    "milli"
+    "centi"
+    "deci"
+    "deca"
+    "deka"
+    "hecto"
+    "kilo"
+    "mega"
+    "giga"
+    "tera"
+    "peta"
+    "exa"
+    "zetta"
+    "yotta"
     ;; Powers
-    "\\square"
-    "\\squared"
-    "\\cubic"
-    "\\cubed"
-    "\\tothe"
-    "\\raiseto"
-    "\\per"
-    "\\of")
+    "square"
+    "squared"
+    "cubic"
+    "cubed"
+    "tothe"
+    "raiseto"
+    "per"
+    "of")
    ;; Abbreviated units (available unless `abbreviations' option is set to `false')
    (unless (LaTeX-provided-package-options-member "siunitx" "abbreviations=false")
      (LaTeX-add-siunitx-units
-      "\\fg"
-      "\\pg"
-      "\\ng"
-      "\\ug"
-      "\\mg"
-      "\\g"
-      "\\kg"
-      "\\amu"
-      "\\pm"
-      "\\nm"
-      "\\um"
-      "\\mm"
-      "\\cm"
-      "\\dm"
-      "\\m"
-      "\\km"
-      "\\as"
-      "\\fs"
-      "\\ps"
-      "\\ns"
-      "\\us"
-      "\\ms"
-      "\\s"
-      "\\fmol"
-      "\\pmol"
-      "\\nmol"
-      "\\umol"
-      "\\mmol"
-      "\\mol"
-      "\\kmol"
-      "\\pA"
-      "\\nA"
-      "\\uA"
-      "\\mA"
-      "\\A"
-      "\\kA"
-      "\\ul"
-      "\\ml"
-      "\\l"
-      "\\hl"
-      "\\uL"
-      "\\mL"
-      "\\L"
-      "\\hL"
-      "\\mHz"
-      "\\Hz"
-      "\\kHz"
-      "\\MHz"
-      "\\GHz"
-      "\\THz"
-      "\\N"
-      "\\mN"
-      "\\kN"
-      "\\MN"
-      "\\Pa"
-      "\\kPa"
-      "\\MPa"
-      "\\GPa"
-      "\\mohm"
-      "\\kohm"
-      "\\Mohm"
-      "\\pV"
-      "\\nV"
-      "\\uV"
-      "\\mV"
-      "\\V"
-      "\\kV"
-      "\\uW"
-      "\\mW"
-      "\\W"
-      "\\kW"
-      "\\MW"
-      "\\GW"
-      "\\J"
-      "\\kJ"
-      "\\meV"
-      "\\keV"
-      "\\MeV"
-      "\\GeV"
-      "\\TeV"
-      "\\kWh"
-      "\\F"
-      "\\fF"
-      "\\pF"
-      "\\K"
-      "\\dB"))
+      "fg"
+      "pg"
+      "ng"
+      "ug"
+      "mg"
+      "g"
+      "kg"
+      "amu"
+      "pm"
+      "nm"
+      "um"
+      "mm"
+      "cm"
+      "dm"
+      "m"
+      "km"
+      "as"
+      "fs"
+      "ps"
+      "ns"
+      "us"
+      "ms"
+      "s"
+      "fmol"
+      "pmol"
+      "nmol"
+      "umol"
+      "mmol"
+      "mol"
+      "kmol"
+      "pA"
+      "nA"
+      "uA"
+      "mA"
+      "A"
+      "kA"
+      "ul"
+      "ml"
+      "l"
+      "hl"
+      "uL"
+      "mL"
+      "L"
+      "hL"
+      "mHz"
+      "Hz"
+      "kHz"
+      "MHz"
+      "GHz"
+      "THz"
+      "N"
+      "mN"
+      "kN"
+      "MN"
+      "Pa"
+      "kPa"
+      "MPa"
+      "GPa"
+      "mohm"
+      "kohm"
+      "Mohm"
+      "pV"
+      "nV"
+      "uV"
+      "mV"
+      "V"
+      "kV"
+      "uW"
+      "mW"
+      "W"
+      "kW"
+      "MW"
+      "GW"
+      "J"
+      "kJ"
+      "meV"
+      "keV"
+      "MeV"
+      "GeV"
+      "TeV"
+      "kWh"
+      "F"
+      "fF"
+      "pF"
+      "K"
+      "dB"))
    ;; Binary prefixes and units available when `binary-units' option is used
    (when (or (LaTeX-provided-package-options-member "siunitx" "binary-units")
 	     (LaTeX-provided-package-options-member "siunitx" "binary-units=true"))
      (LaTeX-add-siunitx-units
-      "\\kibi"
-      "\\mebi"
-      "\\gibi"
-      "\\tebi"
-      "\\pebi"
-      "\\exbi"
-      "\\zebi"
-      "\\yobi"
-      "\\bit"
-      "\\byte"))
+      "kibi"
+      "mebi"
+      "gibi"
+      "tebi"
+      "pebi"
+      "exbi"
+      "zebi"
+      "yobi"
+      "bit"
+      "byte"))
    ;; Symbols
    (LaTeX-add-siunitx-units
-    "\\SIUnitSymbolAngstrom"
-    "\\SIUnitSymbolArcminute"
-    "\\SIUnitSymbolArcsecond"
-    "\\SIUnitSymbolCelsius"
-    "\\SIUnitSymbolDegree"
-    "\\SIUnitSymbolMicro"
-    "\\SIUnitSymbolOhm")
+    "SIUnitSymbolAngstrom"
+    "SIUnitSymbolArcminute"
+    "SIUnitSymbolArcsecond"
+    "SIUnitSymbolCelsius"
+    "SIUnitSymbolDegree"
+    "SIUnitSymbolMicro"
+    "SIUnitSymbolOhm")
    ;; Macros available when `version-1-compatibility' option is used
-   (when (or (LaTeX-provided-package-options-member "siunitx" "version-1-compatibility")
-	     (LaTeX-provided-package-options-member "siunitx" "version-1-compatibility=true"))
+   (when (or (LaTeX-provided-package-options-member
+	      "siunitx" "version-1-compatibility")
+	     (LaTeX-provided-package-options-member
+	      "siunitx" "version-1-compatibility=true"))
      (LaTeX-add-siunitx-units
-      "\\Square"
-      "\\ssquare"
-      "\\BAR"
-      "\\bbar"
-      "\\Day"
-      "\\dday"
-      "\\Gray"
-      "\\ggray"
-      "\\atomicmass"
-      "\\arcmin"
-      "\\arcsec"
-      "\\are"
-      "\\curie"
-      "\\gal"
-      "\\millibar"
-      "\\rad"
-      "\\rem"
-      "\\roentgen"
-      "\\micA"
-      "\\micmol"
-      "\\micl"
-      "\\micL"
-      "\\nanog"
-      "\\micg"
-      "\\picm"
-      "\\micm"
-      "\\Sec"
-      "\\mics"
-      "\\cmc"
-      "\\dmc"
-      "\\cms"
-      "\\centimetrecubed"
-      "\\centimetresquared"
-      "\\cubiccentimetre"
-      "\\cubicdecimetre"
-      "\\squarecentimetre"
-      "\\squaremetre"
-      "\\squarekilometre"
-      "\\parsec"
-      "\\lightyear"
-      "\\gmol"
-      "\\kgmol"
-      "\\lbmol"
-      "\\molar"
-      "\\Molar"
-      "\\torr"
-      "\\gon"
-      "\\micron"
-      "\\mrad"
-      "\\gauss"
-      "\\eVperc"
-      "\\nanobarn"
-      "\\picobarn"
-      "\\femtobarn"
-      "\\attobarn"
-      "\\zeptobarn"
-      "\\yoctobarn"
-      "\\nb"
-      "\\pb"
-      "\\fb"
-      "\\ab"
-      "\\zb"
-      "\\yb"))
+      "Square"
+      "ssquare"
+      "BAR"
+      "bbar"
+      "Day"
+      "dday"
+      "Gray"
+      "ggray"
+      "atomicmass"
+      "arcmin"
+      "arcsec"
+      "are"
+      "curie"
+      "gal"
+      "millibar"
+      "rad"
+      "rem"
+      "roentgen"
+      "micA"
+      "micmol"
+      "micl"
+      "micL"
+      "nanog"
+      "micg"
+      "picm"
+      "micm"
+      "Sec"
+      "mics"
+      "cmc"
+      "dmc"
+      "cms"
+      "centimetrecubed"
+      "centimetresquared"
+      "cubiccentimetre"
+      "cubicdecimetre"
+      "squarecentimetre"
+      "squaremetre"
+      "squarekilometre"
+      "parsec"
+      "lightyear"
+      "gmol"
+      "kgmol"
+      "lbmol"
+      "molar"
+      "Molar"
+      "torr"
+      "gon"
+      "micron"
+      "mrad"
+      "gauss"
+      "eVperc"
+      "nanobarn"
+      "picobarn"
+      "femtobarn"
+      "attobarn"
+      "zeptobarn"
+      "yoctobarn"
+      "nb"
+      "pb"
+      "fb"
+      "ab"
+      "zb"
+      "yb"))
    (TeX-run-style-hooks "l3keys2e"
 			"array"
 			"amstext"
