@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2014 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -116,13 +116,18 @@ definition."
   (let ((list TeX-mode-alist) elt)
     (while list
       (setq elt (car (pop list)))
-      (when (or update (null (get elt 'tex-saved)))
-	(when (fboundp elt)
-	  (put elt 'tex-saved (symbol-function elt))))
-      (defalias elt
-	(if (memq elt value)
-	    (intern (concat "TeX-" (symbol-name elt)))
-	  (get elt 'tex-saved))))))
+      (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
+        (if (fboundp 'advice-add)
+            (if (memq elt value)
+                (advice-add elt :override dst)
+              (advice-remove elt dst))
+          (when (or update (null (get elt 'tex-saved)))
+            (when (fboundp elt)
+              (put elt 'tex-saved (symbol-function elt))))
+          (defalias elt
+            (if (memq elt value)
+                dst
+              (get elt 'tex-saved))))))))
 
 (defcustom TeX-modes
   (mapcar 'car TeX-mode-alist)
@@ -136,11 +141,12 @@ set it with `TeX-modes-set'."
   :group 'AUCTeX
   :initialize (lambda (var value)
 		(custom-initialize-reset var value)
-		(let ((list TeX-mode-alist))
-		  (while list
-		    (eval-after-load (cdar list)
-		      `(TeX-modes-set ',var ,var t))
-		    (setq list (cdr list))))))
+                (unless (fboundp 'advice-add)
+                  (let ((list TeX-mode-alist))
+                    (while list
+                      (eval-after-load (cdar list)
+                        `(TeX-modes-set ',var ,var t))
+                      (setq list (cdr list)))))))
 
 (defconst AUCTeX-version "11.87.2012-12-04"
     "AUCTeX version.
