@@ -1,3 +1,10 @@
+2014-05-17  Mosè Giordano  <giordano.mose@libero.it>
+
+	* font-latex.el: Update copyright years.
+	(font-latex-update-sectioning-faces): Make sure
+	`height-scale' is a floating point number.
+	(font-latex-make-sectioning-faces): Ditto.
+
 2014-05-10  Mosè Giordano  <giordano.mose@libero.it>
 
 	* style/siunitx.el: Update copyright years and specify last

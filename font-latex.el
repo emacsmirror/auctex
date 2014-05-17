@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2013  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2014  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -182,7 +182,10 @@ correct value from document properties."
   "Update sectioning commands faces."
   (unless height-scale
     (setq height-scale (if (numberp font-latex-fontify-sectioning)
-			   font-latex-fontify-sectioning
+			   ;; Make sure `height-scale' is a floating point
+			   ;; number because `set-face-attribute' treats
+			   ;; integers differently from floating points.
+			   (float font-latex-fontify-sectioning)
 			 1.1)))
   (unless max
     (setq max font-latex-sectioning-max))
@@ -236,7 +239,10 @@ Emacs."
   (unless max (setq max font-latex-sectioning-max))
   (unless height-scale
     (setq height-scale (if (numberp font-latex-fontify-sectioning)
-			   font-latex-fontify-sectioning
+			   ;; Make sure `height-scale' is a floating point
+			   ;; number because the integer type is treated
+			   ;; differently.
+			   (float font-latex-fontify-sectioning)
 			 1.1)))
   (dotimes (num max)
     (let* (;; reverse for XEmacs:
