@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2013 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2014 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -266,26 +266,61 @@ the master file."
       (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
 
-(defun TeX-next-error (reparse)
+(defvar TeX-error-last-visited -1
+  "Index of the last visited error listed in `TeX-error-list'.
+
+This variable is intended to be set only in output buffer so it
+will be shared among all files of the same document.")
+(make-variable-buffer-local 'TeX-error-last-visited)
+
+(defun TeX-get-parse-function ()
+  "Get the parse function for the current buffer."
+  (with-current-buffer TeX-command-buffer
+    (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)))
+
+(defun TeX-next-error (&optional arg reparse)
   "Find the next error in the TeX output buffer.
-With \\[universal-argument] prefix, start from the beginning of the errors."
+
+A prefix ARG specifies how many error messages to move;
+negative means move back to previous error messages, if possible.
+
+If REPARSE is non-nil, reparse the error message buffer.
+
+\\[universal-argument] as a prefix means reparse the error
+message buffer and start at the first error."
   (interactive "P")
   (if (or (null (TeX-active-buffer))
 	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
 				  major-mode)))
-      (next-error reparse)
-    (funcall (with-current-buffer TeX-command-buffer
-	       (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function))
-	     reparse)))
+      (next-error arg reparse)
+
+    ;; Force reparsing when the function is called with a universal-argument.
+    (if (consp arg) (setq reparse t arg nil))
+
+    (funcall (TeX-get-parse-function) arg reparse)))
 
 (defun TeX-previous-error (arg)
-  "Find the previous error in the TeX output buffer."
-  (interactive "P")
+  "Find the previous error in the TeX output buffer.
+
+Prefix arg N says how many error messages to move backward (or
+forward, if negative).
+
+This works only with TeX commands and if the
+`TeX-parse-all-errors' variable is non-nil."
+  (interactive "p")
   (if (or (null (TeX-active-buffer))
 	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
 				  major-mode)))
       (previous-error arg)
-    (error "Jumping to previous error not supported")))
+
+    (let ((parse-function (TeX-get-parse-function)))
+      (if (and TeX-parse-all-errors (equal parse-function 'TeX-parse-TeX))
+	  ;; When `TeX-parse-all-errors' and the parsing function is
+	  ;; `TeX-parse-TeX' we can move backward in the errors.
+	  (TeX-parse-TeX (- arg) nil)
+	;; XXX: moving backward in the errors hasn't yet been implemented for
+	;; other parsing functions.
+	(error "Jumping to previous error not supported.")))))
 
 ;;; Command Query
 
@@ -886,10 +921,15 @@ NAME is the name of the process.")
   (make-variable-buffer-local 'TeX-sentinel-default-function)
 
 (defun TeX-TeX-sentinel (process name)
-  "Cleanup TeX output buffer after running TeX."
+  "Cleanup TeX output buffer after running TeX.
+
+Parse the output buffer to collect errors and warnings if the
+variable `TeX-parse-all-errors' is non-nil."
   (if (TeX-TeX-sentinel-check process name)
       ()
     (message (concat name ": formatted " (TeX-current-pages)))
+    (if TeX-parse-all-errors
+	(TeX-parse-all-errors))
     (setq TeX-command-next TeX-command-Show)))
 
 (defun TeX-current-pages ()
@@ -950,7 +990,12 @@ Warnings can be indicated by LaTeX or packages."
 
 ;; should go into latex.el? --pg
 (defun TeX-LaTeX-sentinel (process name)
-  "Cleanup TeX output buffer after running LaTeX."
+  "Cleanup TeX output buffer after running LaTeX.
+
+Parse the output buffer to collect errors and warnings if the
+variable `TeX-parse-all-errors' is non-nil."
+  (if TeX-parse-all-errors
+      (TeX-parse-all-errors))
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
 		(re-search-forward
@@ -1439,34 +1484,68 @@ the directory."
 
  (make-variable-buffer-local 'TeX-error-offset)
 
-(defun TeX-parse-reset ()
-  "Reset all variables used for parsing TeX output."
-  (setq TeX-error-point (point-min))
-  (setq TeX-error-offset nil)
-  (setq TeX-error-file nil))
+(defun TeX-parse-reset (&optional reparse)
+  "Reset all variables used for parsing TeX output.
+If optional argument REPARSE is non-nil, reparse the output log."
+  (setq TeX-error-point (point-min)
+	TeX-error-offset nil
+	TeX-error-file nil
+	TeX-error-list nil
+	TeX-error-last-visited -1)
+  (if reparse
+      (TeX-parse-all-errors)))
 
 ;;; - Parsers Hooks
 
-(defun TeX-parse-command (reparse)
+;; All this parsers hooks should have the same arguments even though they will
+;; be ignored, because `TeX-next-error' can call any of these functions.
+(defun TeX-parse-command (arg reparse)
   "We can't parse anything but TeX."
-  (error "I cannot parse %s output, sorry"
+  (error "I cannot parse %s output, sorry."
 	 (if (TeX-active-process)
 	     (process-name (TeX-active-process))
 	   "this")))
 
-(defun TeX-parse-TeX (reparse)
+(defun TeX-parse-TeX (arg reparse)
   "Find the next error produced by running TeX.
-With \\[universal-argument] prefix, start from the beginning of the errors.
+
+ARG specifies how many error messages to move, when possible;
+negative means move back to previous error messages.
+
+If REPARSE is non-nil, reparse the output log.
 
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
-	(default-major-mode major-mode))
+	(default-major-mode major-mode)
+	max-index item)
+
+    ;; Switch to the output buffer.
     (with-current-buffer (TeX-active-buffer)
       (if reparse
-	  (TeX-parse-reset))
-      (goto-char TeX-error-point)
-      (TeX-parse-error old-buffer))))
+	  (TeX-parse-reset reparse))
+      (if TeX-parse-all-errors
+	  (progn
+	    (setq max-index (length TeX-error-list)
+		  TeX-error-last-visited (+ (or arg 1) TeX-error-last-visited)
+		  item (nth TeX-error-last-visited TeX-error-list))
+	    (if (< TeX-error-last-visited -1)
+		(setq TeX-error-last-visited -1))
+	    (cond ((or (null item)
+		       (< TeX-error-last-visited 0))
+		   (if (> TeX-error-last-visited max-index)
+		       (setq TeX-error-last-visited max-index))
+		   (message "No more errors.")
+		   (beep)
+		   (TeX-pop-to-buffer old-buffer))
+		  (t
+		   (apply (intern
+			   (concat "TeX-" (symbol-name (car item))
+				   "--find-display-help"))
+			  (cdr item)))))
+
+	(goto-char TeX-error-point)
+	(TeX-parse-error old-buffer)))))
 
 ;;; - Parsing (La)TeX
 
@@ -1476,8 +1555,39 @@ already in an Emacs buffer) and the cursor is placed at the error."
 You might want to examine and modify the free variables `file',
 `offset', `line', `string', `error', and `context' from this hook.")
 
-(defun TeX-parse-error (old)
-  "Goto next error.  Pop to OLD buffer if no more errors are found."
+(defvar TeX-error-list nil
+  "List of warning and errors.
+
+This variable is intended to be set only in output buffer so it
+will be shared among all files of the same document.")
+(make-variable-buffer-local 'TeX-error-list)
+
+(defcustom TeX-parse-all-errors t
+  "Whether to automatically collect all warning and errors after running TeX.
+
+If t, it make it possible to use `TeX-previous-error' with TeX
+commands."
+  :group 'TeX-command
+  :type 'boolean)
+
+(defun TeX-parse-all-errors ()
+  "Parse TeX output buffer to collect all warnings and errors."
+  ;; Reset error list.
+  (setq TeX-error-list nil)
+  (save-excursion
+    (goto-char (point-min))
+    (while (TeX-parse-error nil t)))
+  ;; Reset last visited error.
+  (setq TeX-error-last-visited -1))
+
+(defun TeX-parse-error (old &optional store)
+  "Goto next error.  Pop to OLD buffer if no more errors are found.
+
+If the optional argument STORE is non-nil, the function will
+store the found warning or error in `TeX-error-list' instead of
+displaying the issue.
+
+Return non-nil if an error or warning is found."
   (let ((regexp
 	 (concat
 	  ;; TeX error
@@ -1501,15 +1611,17 @@ You might want to examine and modify the free variables `file',
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
  \\\\.*?[0-9]+--[0-9]+\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")))
+	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*"))
+	(error-found nil))
     (while
 	(cond
 	 ((null
 	   (re-search-forward regexp nil t))
 	  ;; No more errors.
-	  (message "No more errors.")
-	  (beep)
-	  (TeX-pop-to-buffer old)
+	  (unless store
+	    (message "No more errors.")
+	    (beep)
+	    (TeX-pop-to-buffer old))
 	  nil)
 	 ;; TeX error
 	 ((match-beginning 1)
@@ -1519,15 +1631,17 @@ You might want to examine and modify the free variables `file',
 	      (push nil TeX-error-offset))
 	    (unless (car TeX-error-offset)
 	      (rplaca TeX-error-file (TeX-match-buffer 2))))
+	  (setq error-found t)
 	  (if (looking-at "Preview ")
 	      t
-	    (TeX-error)
+	    (TeX-error store)
 	    nil))
 	 ;; LaTeX bad box
 	 ((match-beginning 7)
 	  (if TeX-debug-bad-boxes
 	      (progn
-		(TeX-warning (TeX-match-buffer 7))
+		(setq error-found t)
+		(TeX-warning (TeX-match-buffer 7) store)
 		nil)
 	    (re-search-forward "\r?\n\
 \\(?:.\\{79\\}\r?\n\
@@ -1537,7 +1651,8 @@ You might want to examine and modify the free variables `file',
 	 ((match-beginning 8)
 	  (if TeX-debug-warnings
 	      (progn
-		(TeX-warning (TeX-match-buffer 8))
+		(setq error-found t)
+		(TeX-warning (TeX-match-buffer 8) store)
 		nil)
 	    t))
 
@@ -1573,12 +1688,16 @@ You might want to examine and modify the free variables `file',
 	 ((match-beginning 6)
 	  (setq TeX-error-file
 		(list (TeX-match-buffer 6)))
-	  t)))))
+	  t)))
+    error-found))
 
-(defun TeX-error ()
-  "Display an error."
+(defun TeX-error (&optional store)
+  "Display an error.
 
-  (let* (;; We need the error message to show the user.
+If optional argument STORE is non-nil, store the error
+information in `TeX-error-list' instead of displaying the error."
+
+  (let* ( ;; We need the error message to show the user.
 	 (error (progn
 		  (re-search-forward "\\(.*\\)")
 		  (TeX-match-buffer 1)))
@@ -1622,39 +1741,53 @@ You might want to examine and modify the free variables `file',
 
     ;; Remember where we was.
     (setq TeX-error-point (point))
+    (if store
+	;; Store the error information.
+	(add-to-list 'TeX-error-list
+		     (list 'error file line error offset context string) t)
+      ;; Find the error point and display the help.
+      (TeX-error--find-display-help
+       file line error offset context string))))
 
-    ;; Find the error.
-    (if (null file)
-	(error "Error occurred after last TeX file closed"))
-    (let ((runbuf (current-buffer))
-	  (master (with-current-buffer
-		      TeX-command-buffer
-		    (expand-file-name (TeX-master-file))))
-	  (command-buffer TeX-command-buffer)
-	  error-file-buffer)
-      (run-hooks 'TeX-translate-location-hook)
-      (setq error-file-buffer (find-file file))
-      ;; Set the value of `TeX-command-buffer' in the next file with an
-      ;; error to be displayed to the value it has in the current buffer.
-      (with-current-buffer error-file-buffer
-	(set (make-local-variable 'TeX-command-buffer) command-buffer))
-      (goto-char (point-min))
-      (forward-line (+ offset line -1))
-      (if (not (string= string " "))
-	  (search-forward string nil t))
+(defun TeX-error--find-display-help (file line error offset context
+					  string)
+  "Find the error and display the help."
+  ;; Find the error.
+  (if (null file)
+      (error "Error occurred after last TeX file closed"))
+  (let ((runbuf (current-buffer))
+	(master (with-current-buffer
+		    TeX-command-buffer
+		  (expand-file-name (TeX-master-file))))
+	(command-buffer TeX-command-buffer)
+	error-file-buffer)
+    (run-hooks 'TeX-translate-location-hook)
+    (setq error-file-buffer (find-file file))
+    ;; Set the value of `TeX-command-buffer' in the next file with an
+    ;; error to be displayed to the value it has in the current buffer.
+    (with-current-buffer error-file-buffer
+      (set (make-local-variable 'TeX-command-buffer) command-buffer))
+    (goto-char (point-min))
+    (forward-line (+ offset line -1))
+    (if (not (string= string " "))
+	(search-forward string nil t))
 
-      ;; Explain the error.
-      (cond ((eq TeX-display-help 'expert)
-	     (TeX-pop-to-buffer runbuf nil t)
-	     (goto-char TeX-error-point)
-	     (TeX-pop-to-buffer error-file-buffer nil t))
-	    (TeX-display-help
-	     (TeX-help-error error context runbuf))
-	    (t
-	     (message (concat "! " error)))))))
+    ;; Explain the error.
+    (cond ((eq TeX-display-help 'expert)
+	   (TeX-pop-to-buffer runbuf nil t)
+	   (goto-char TeX-error-point)
+	   (TeX-pop-to-buffer error-file-buffer nil t))
+	  (TeX-display-help
+	   (TeX-help-error error context runbuf))
+	  (t
+	   (message (concat "! " error))))))
 
-(defun TeX-warning (string)
-  "Display a warning for STRING."
+(defun TeX-warning (string &optional store)
+  "Display a warning for STRING.
+
+If optional argument STORE is non-nil, store the warning
+information in `TeX-error-list' instead of displaying the
+warning."
 
   (let* ((error (concat "** " string))
 
@@ -1701,44 +1834,56 @@ You might want to examine and modify the free variables `file',
     (goto-char error-point)
     (setq TeX-error-point (point))
 
-    (unless file
-      (error "Could not determine file for warning"))
+    (if store
+	;; Store the warning information.
+	(add-to-list 'TeX-error-list
+		     (list 'warning file line error offset context
+			   string line-end bad-box) t)
+      ;; Find the warning point and display the help.
+      (TeX-warning--find-display-help
+       file line error offset context string line-end bad-box))))
 
-    ;; Go back to TeX-buffer
-    (let ((runbuf (current-buffer))
-	  (master (with-current-buffer
-		      TeX-command-buffer
-		    (expand-file-name (TeX-master-file))))
-	  (command-buffer TeX-command-buffer)
-	  error-file-buffer)
-      (run-hooks 'TeX-translate-location-hook)
-      (setq error-file-buffer (find-file file))
-      ;; Set the value of `TeX-command-buffer' in the next file with an
-      ;; error to be displayed to the value it has in the current buffer.
-      (with-current-buffer error-file-buffer
-	(set (make-local-variable 'TeX-command-buffer) command-buffer))
-      ;; Find line and string
-      (when line
+(defun TeX-warning--find-display-help (file line error offset context
+					    string line-end bad-box)
+  "Find the warning and display the help."
+  (unless file
+    (error "Could not determine file for warning"))
+
+  ;; Go back to TeX-buffer
+  (let ((runbuf (current-buffer))
+	(master (with-current-buffer
+		    TeX-command-buffer
+		  (expand-file-name (TeX-master-file))))
+	(command-buffer TeX-command-buffer)
+	error-file-buffer)
+    (run-hooks 'TeX-translate-location-hook)
+    (setq error-file-buffer (find-file file))
+    ;; Set the value of `TeX-command-buffer' in the next file with an
+    ;; error to be displayed to the value it has in the current buffer.
+    (with-current-buffer error-file-buffer
+      (set (make-local-variable 'TeX-command-buffer) command-buffer))
+    ;; Find line and string
+    (when line
+      (goto-char (point-min))
+      (forward-line (+ offset line -1))
+      (beginning-of-line 0)
+      (let ((start (point)))
 	(goto-char (point-min))
-	(forward-line (+ offset line -1))
-	(beginning-of-line 0)
-	(let ((start (point)))
-	  (goto-char (point-min))
-	  (forward-line (+ offset line-end -1))
-	  (end-of-line)
-	  (when string
-	    (search-backward string start t)
-	    (search-forward string nil t))))
-      ;; Display help
-      (cond ((eq TeX-display-help 'expert)
-	     (TeX-pop-to-buffer runbuf nil t)
-	     (goto-char TeX-error-point)
-	     (TeX-pop-to-buffer error-file-buffer nil t))
-	    (TeX-display-help
-	     (TeX-help-error error (if bad-box context (concat "\n" context))
-			     runbuf))
-	    (t
-	     (message (concat "! " error)))))))
+	(forward-line (+ offset line-end -1))
+	(end-of-line)
+	(when string
+	  (search-backward string start t)
+	  (search-forward string nil t))))
+    ;; Display help
+    (cond ((eq TeX-display-help 'expert)
+	   (TeX-pop-to-buffer runbuf nil t)
+	   (goto-char TeX-error-point)
+	   (TeX-pop-to-buffer error-file-buffer nil t))
+	  (TeX-display-help
+	   (TeX-help-error error (if bad-box context (concat "\n" context))
+			   runbuf))
+	  (t
+	   (message (concat "! " error))))))
 
 ;;; - Help
 
@@ -2247,8 +2392,7 @@ error."
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-special-mode-map)
     (define-key map "n" 'TeX-next-error)
-    ;; TODO: Implement TeX-previous-error
-    ;; (define-key map "p" 'TeX-previous-error)
+    (define-key map "p" 'TeX-previous-error)
     (define-key map "b" 'TeX-toggle-debug-bad-boxes)
     (define-key map "w" 'TeX-toggle-debug-warnings)
     (define-key map "i" (lambda ()

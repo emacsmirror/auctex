@@ -1,3 +1,47 @@
+2014-05-20  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-buf.el: Update copyright years.
+	(TeX-error-last-visited): New buffer-local variable.
+	(TeX-get-parse-function): New function.
+	(TeX-next-error): Add `apt' argument and make all arguments
+	optional.  Use `TeX-get-parse-function'.
+	(TeX-previous-error): Use `TeX-get-parse-function'.  Use
+	`TeX-parse-TeX' to move between errors when possible.
+	(TeX-TeX-sentinel): Parse the output log when
+	`TeX-parse-all-errors' is non-nil.
+	(TeX-LaTeX-sentinel): Ditto.
+	(TeX-parse-reset): Add an optional `reparse' argument and reparse
+	the output log when it is non-nil.  Reset also `TeX-error-list'
+	and `TeX-error-last-visited'.
+	(TeX-parse-command): Add `arg' argument.
+	(TeX-parse-TeX): Add `arg' argument.  When `TeX-parse-all-errors'
+	is non-nil, use `TeX-error-list' to move to the error point.
+	(TeX-error-list): New buffer-local variable.
+	(TeX-parse-all-errors): New customizable variable.
+	(TeX-parse-all-errors): New function.
+	(TeX-parse-error): Add an optional `store' argument.  Make the
+	function return non-nil when an error or a warning is found.
+	(TeX-error): Add an optional `store' argument: when it is non-nil
+	store the relevant information about the error in
+	`TeX-error-list'.  Use `TeX-error--find-display-help'.
+	(TeX-error--find-display-help): New function.
+	(TeX-warning): Add an optional `store' argument: when it is
+	non-nil store the relevant information about the warning in
+	`TeX-error-list'.  Use `TeX-warning--find-display-help'.
+	(TeX-warning--find-display-help): New function.
+	(TeX-output-mode-map): Bind `p' to the now working
+	`TeX-previous-error'.
+
+	* doc/auctex.texi (Debugging): Document `TeX-previous-error' and
+	`TeX-parse-all-errors'.  Update `TeX-next-error'.
+
+	* doc/changes.texi: Update copyright years.  Mention
+	`TeX-next-error' and `TeX-previous-error' changes and the new
+	`TeX-parse-all-errors'.
+
+	* doc/todo.texi: Update copyright years.
+	(Wishlist): Update a couple of items related to error parsing.
+
 2014-05-17  Mosè Giordano  <giordano.mose@libero.it>
 
 	* font-latex.el: Update copyright years.

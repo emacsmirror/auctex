@@ -1,5 +1,6 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2006, 2008, 2009, 2013, 2014 Free Software
+@c Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -91,8 +92,9 @@ A special ispell dictionary for macros could be nice to have.
 @item Quick error overviews
 
 An error overview window (extract from the log file with just the error
-lines, clickable like a ``grep'' buffer) and/or fringe indicators for
-errors in the main text would be nice.
+lines, clickable like a ``grep'' buffer; @code{TeX-error-list} can be
+used for this purpose) and/or fringe indicators for errors in the main
+text would be nice.
 
 @item A math entry grid
 
@@ -275,10 +277,8 @@ of the standard @code{TeX-mode} would help convince some people to
 change to @AUCTeX{}.
 
 @item
-Make @code{TeX-next-error} parse ahead and store the results in a list,
-using markers to remember buffer positions in order to be more robust
-with regard to line numbers and changed files.  This is what
-@code{next-error} does. (Or did, until Emacs 19).
+Use markers in @code{TeX-error-list} to remember buffer positions in
+order to be more robust with regard to line numbers and changed files.
 
 @item
 Finish the Texinfo mode.  For one thing, many Texinfo mode commands do
