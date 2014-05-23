@@ -1,3 +1,15 @@
+2014-05-23  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Backport from ELPA repository.
+	* tex-site.el (TeX-modes-set): Use advice-add if available.
+	* font-latex.el (font-latex-make-sectioning-faces): Don't rely on
+	dynamic scoping for `num'.
+	(font-latex-make-built-in-keywords): Don't use `eval' needlessly.
+	(font-latex-doctex-syntactic-keywords): Declare before first use.
+	(font-latex-match-command-with-arguments):
+	Stay away from `add-to-list' on let-bound variables.
+	(font-latex-match-command-in-braces): Remove unused var `end'.
+
 2014-05-20  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el: Update copyright years.
