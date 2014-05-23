@@ -1,3 +1,8 @@
+2014-05-23  Tassilo Horn  <tsdh@gnu.org>
+
+	* texmathp.el (texmathp-tex-commands-default): Recognize
+	\\shortintertext from mathtools.
+
 2014-05-16  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* tex-site.el (TeX-modes-set): Use advice-add if available.
