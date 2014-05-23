@@ -3097,13 +3097,43 @@ to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 Once you've formatted your document you may `debug' it, i.e. browse
 through the errors (La)@TeX{} reported.
 
-@deffn Command TeX-next-error
+@deffn Command TeX-next-error @var{arg} @var{reparse}
 @kindex C-c `
 (@kbd{C-c `})  Go to the next error reported by @TeX{}.  The view will
 be split in two, with the cursor placed as close as possible to the
 error in the top view.  In the bottom view, the error message will be
 displayed along with some explanatory text.
+
+An optional numeric @var{arg}, positive or negative, specifies how many
+error messages to move.  A negative @var{arg} means to move back to
+previous error messages, see also @code{TeX-previous-error}.
+
+The optional @var{reparse} argument makes @AUCTeX{} reparse the error
+message buffer and start the debugging from the first error.  This can
+also be achieved by calling the function with a prefix argument
+(@kbd{C-u}).
 @end deffn
+
+@deffn Command TeX-previous-error @var{arg}
+@kindex M-g p
+(@kbd{M-g p}) Go to the previous error reported by @TeX{}.  An optional
+numeric @var{arg} specifies how many error messages to move backward.
+This is like calling @code{TeX-next-error} with a negative argument.
+@end deffn
+
+The command @code{TeX-previous-error} works only if @AUCTeX{} can parse
+the whole @TeX{} log buffer.  This is controlled by the
+@code{TeX-parse-all-errors} variable.
+
+@defopt TeX-parse-all-errors
+If t, @AUCTeX{} automatically parses the whole output log buffer right
+after running a @TeX{} command, in order to collect all warnings and
+errors.  This makes it possible to navigate back and forth between the
+error messages using @code{TeX-next-error} and
+@code{TeX-previous-error}.  This is the default.  If nil, @AUCTeX{} do
+not parse the whole output log buffer and @code{TeX-previous-error}
+cannot be used.
+@end defopt
 
 Normally @AUCTeX{} will only report real errors, but you may as well
 ask it to report `bad boxes' and warnings as well.

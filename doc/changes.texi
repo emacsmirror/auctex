@@ -1,5 +1,6 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012 Free Software Foundation, Inc.
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2014 Free Software
+@c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
 @ifset rawfile
@@ -12,6 +13,12 @@
 @itemize @bullet
 @item
 @code{TeX-PDF-mode} is now enabled by default.
+
+@item
+Now @code{TeX-previous-error} works with @TeX{} commands if the new
+option @code{TeX-parse-all-errors} is non-nil, which is the default.
+@code{TeX-next-error} and @code{TeX-previous-error} can take a numeric
+argument to specify how many errors to move forward or backward.
 
 @item
 Style file authors are encouraged to distinguish common from expert
