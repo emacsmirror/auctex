@@ -1556,7 +1556,7 @@ You might want to examine and modify the free variables `file',
 `offset', `line', `string', `error', and `context' from this hook.")
 
 (defvar TeX-error-list nil
-  "List of warning and errors.
+  "List of warnings and errors.
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
@@ -1565,7 +1565,7 @@ will be shared among all files of the same document.")
 (defcustom TeX-parse-all-errors t
   "Whether to automatically collect all warning and errors after running TeX.
 
-If t, it make it possible to use `TeX-previous-error' with TeX
+If t, it makes it possible to use `TeX-previous-error' with TeX
 commands."
   :group 'TeX-command
   :type 'boolean)
