@@ -4419,6 +4419,8 @@ Brace insertion is only done if point is in a math construct and
        :help "Kill the current TeX process"]
       ["Next Error" TeX-next-error
        :help "Jump to the next error of the last TeX run"]
+      ["Previous Error" TeX-previous-error
+       :help "Jump to the previous error of the last TeX run"]
       ["Quick View" TeX-view
        :help "Start a viewer without prompting"]
       "-"

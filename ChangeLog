@@ -1,3 +1,11 @@
+2014-05-27  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-mode-specific-command-menu-entries): Add
+	`TeX-previous-error'.
+
+	* tex-buf.el (TeX-error-list): Fix typo.
+	(TeX-parse-all-errors): Ditto.
+
 2014-05-23  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	Backport from ELPA repository.
