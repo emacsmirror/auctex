@@ -13,6 +13,9 @@
 	(TeX-error-description-help): Ditto.
 	(TeX-help-error): Add new `type' argument.  Color help messages
 	using the new faces.
+	(TeX-warning): Preserve point when searching backward.  In some
+	cases this prevents infinite loops in `TeX-parse-all-errors' and
+	fixes wrong detection of context string.
 
 2014-05-27  Mosè Giordano  <giordano.mose@libero.it>
 

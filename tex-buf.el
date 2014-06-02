@@ -1798,8 +1798,8 @@ warning."
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
 			"`\\(\\w+\\)'"))
 
-	 ;; Get error-line (warning)
-	 (line (when (re-search-backward line-string nil t)
+	 ;; Get error-line (warning).
+	 (line (when (save-excursion (re-search-backward line-string nil t))
 		 (string-to-number (TeX-match-buffer 1))))
 	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
 		     line))
@@ -1821,7 +1821,8 @@ warning."
 	 (error-point (point))
 
 	 ;; Now find the error word.
-	 (string (when (re-search-backward word-string context-start t)
+	 (string (when (save-excursion
+			 (re-search-backward word-string context-start t))
 		   (TeX-match-buffer 1)))
 
 	 ;; We might use these in another file.
