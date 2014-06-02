@@ -1778,20 +1778,19 @@ information in `TeX-error-list' instead of displaying the error."
 	   (goto-char TeX-error-point)
 	   (TeX-pop-to-buffer error-file-buffer nil t))
 	  (TeX-display-help
-	   (TeX-help-error error context runbuf))
+	   (TeX-help-error error context runbuf 'error))
 	  (t
 	   (message (concat "! " error))))))
 
-(defun TeX-warning (string &optional store)
-  "Display a warning for STRING.
+(defun TeX-warning (warning &optional store)
+  "Display a warning for WARNING.
 
 If optional argument STORE is non-nil, store the warning
 information in `TeX-error-list' instead of displaying the
 warning."
-  (let* ((error (concat "** " string))
 
-	 ;; bad-box is nil if this is a "LaTeX Warning"
-	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" string))
+  (let* (;; bad-box is nil if this is a "LaTeX Warning"
+	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" warning))
 	 ;; line-string: match 1 is beginning line, match 2 is end line
 	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
 			"on input line \\([0-9]*\\)\\."))
@@ -1799,8 +1798,8 @@ warning."
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
 			"`\\(\\w+\\)'"))
 
-	 ;; Get error-line (warning)
-	 (line (when (re-search-backward line-string nil t)
+	 ;; Get error-line (warning).
+	 (line (when (save-excursion (re-search-backward line-string nil t))
 		 (string-to-number (TeX-match-buffer 1))))
 	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
 		     line))
@@ -1822,7 +1821,8 @@ warning."
 	 (error-point (point))
 
 	 ;; Now find the error word.
-	 (string (when (re-search-backward word-string context-start t)
+	 (string (when (save-excursion
+			 (re-search-backward word-string context-start t))
 		   (TeX-match-buffer 1)))
 
 	 ;; We might use these in another file.
@@ -1836,11 +1836,11 @@ warning."
     (if store
 	;; Store the warning information.
 	(add-to-list 'TeX-error-list
-		     (list 'warning file line error offset context
+		     (list 'warning file line warning offset context
 			   string line-end bad-box) t)
       ;; Find the warning point and display the help.
       (TeX-warning--find-display-help
-       file line error offset context string line-end bad-box))))
+       file line warning offset context string line-end bad-box))))
 
 (defun TeX-warning--find-display-help (file line error offset context
 					    string line-end bad-box)
@@ -1880,14 +1880,58 @@ warning."
 	   (TeX-pop-to-buffer error-file-buffer nil t))
 	  (TeX-display-help
 	   (TeX-help-error error (if bad-box context (concat "\n" context))
-			   runbuf))
+			   runbuf 'warning))
 	  (t
 	   (message (concat "! " error))))))
 
 ;;; - Help
 
-(defun TeX-help-error (error output runbuffer)
-  "Print ERROR in context OUTPUT from RUNBUFFER in another window."
+(defgroup TeX-error-description-faces nil
+  "Faces used in error descriptions."
+  :prefix "TeX-error-description-"
+  :group 'AUCTeX)
+
+(defface TeX-error-description-error
+  ;; This is the same as `error' face in latest GNU Emacs versions.
+  '((default :weight bold)
+    (((class color) (min-colors 88) (background light)) :foreground "Red1")
+    (((class color) (min-colors 88) (background dark))  :foreground "Pink")
+    (((class color) (min-colors 16) (background light)) :foreground "Red1")
+    (((class color) (min-colors 16) (background dark))  :foreground "Pink")
+    (((class color) (min-colors 8)) :foreground "red")
+    (t :inverse-video t))
+  "Face for \"Error\" string in error descriptions.")
+
+(defface TeX-error-description-warning
+  ;; This is the same as `warning' face in latest GNU Emacs versions.
+  '((default :weight bold)
+    (((class color) (min-colors 16)) :foreground "DarkOrange")
+    (((class color)) :foreground "yellow"))
+  "Face for \"Warning\" string in error descriptions.")
+
+(defface TeX-error-description-tex-said
+  ;; This is the same as `font-lock-function-name-face' face in latest GNU Emacs
+  ;; versions.
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Blue1")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 16) (background light))
+     :foreground "Blue")
+    (((class color) (min-colors 16) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 8))
+     :foreground "blue" :weight bold)
+    (t :inverse-video t :weight bold))
+  "Face for \"TeX said\" string in error descriptions.")
+
+(defface TeX-error-description-help
+  '((t :inherit TeX-error-description-tex-said))
+  "Face for \"Help\" string in error descriptions.")
+
+(defun TeX-help-error (error output runbuffer type)
+  "Print ERROR in context OUTPUT from RUNBUFFER in another window.
+TYPE is a symbol specifing if ERROR is a real error or a warning."
 
   (let ((old-buffer (current-buffer))
 	(log-file (with-current-buffer runbuffer
@@ -1904,34 +1948,42 @@ warning."
     (TeX-pop-to-buffer (get-buffer-create "*TeX Help*") nil t)
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (insert "ERROR: " error
-	      "\n\n--- TeX said ---"
-	      output
-	      "\n--- HELP ---\n"
-	      (let ((help (cdr (nth TeX-error-pointer
-				    TeX-error-description-list))))
-		(save-excursion
-		  (if (and (string= help "No help available")
-			   (let* ((log-buffer (find-buffer-visiting log-file)))
-			     (if log-buffer
-				 (progn
-				   (set-buffer log-buffer)
-				   (revert-buffer t t))
-			       (setq log-buffer
-				     (find-file-noselect log-file))
-			       (set-buffer log-buffer))
-			     (auto-save-mode nil)
-			     (setq buffer-read-only t)
-			     (goto-char (point-min))
-			     (search-forward error nil t 1))
-			   (re-search-forward "^l\\." nil t)
-			   (re-search-forward "^ [^\n]+$" nil t))
-		      (let ((start (1+ (point))))
-			(forward-char 1)
-			(re-search-forward "^$")
-			(concat "From the .log file...\n\n"
-				(buffer-substring start (point))))
-		    help)))))
+      (insert
+       (cond
+	((equal type 'error)
+	 (propertize "ERROR" 'font-lock-face 'TeX-error-description-error))
+	((equal type 'warning)
+	 (propertize "WARNING" 'font-lock-face 'TeX-error-description-warning)))
+       ": " error
+       (propertize "\n\n--- TeX said ---" 'font-lock-face
+		   'TeX-error-description-tex-said)
+       output
+       (propertize "\n--- HELP ---\n" 'font-lock-face
+		   'TeX-error-description-help)
+       (let ((help (cdr (nth TeX-error-pointer
+			     TeX-error-description-list))))
+	 (save-excursion
+	   (if (and (string= help "No help available")
+		    (let* ((log-buffer (find-buffer-visiting log-file)))
+		      (if log-buffer
+			  (progn
+			    (set-buffer log-buffer)
+			    (revert-buffer t t))
+			(setq log-buffer
+			      (find-file-noselect log-file))
+			(set-buffer log-buffer))
+		      (auto-save-mode nil)
+		      (setq buffer-read-only t)
+		      (goto-char (point-min))
+		      (search-forward error nil t 1))
+		    (re-search-forward "^l\\." nil t)
+		    (re-search-forward "^ [^\n]+$" nil t))
+	       (let ((start (1+ (point))))
+		 (forward-char 1)
+		 (re-search-forward "^$")
+		 (concat "From the .log file...\n\n"
+			 (buffer-substring start (point))))
+	     help)))))
     (goto-char (point-min))
     (TeX-special-mode)
     (TeX-pop-to-buffer old-buffer nil t)))

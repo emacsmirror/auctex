@@ -1,3 +1,22 @@
+2014-06-02  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-buf.el (TeX-error--find-display-help): Use new fourth
+	argument of `TeX-help-error'.
+	(TeX-warning): Rename mandatory argument to `warning'.  Do not add
+	leading "** " to warning string.
+	(TeX-warning--find-display-help): Use new fourth argument of
+	`TeX-help-error'.
+	(TeX-error-description-faces): New group.
+	(TeX-error-description-error): New face.
+	(TeX-error-description-warning): Ditto.
+	(TeX-error-description-tex-said): Ditto.
+	(TeX-error-description-help): Ditto.
+	(TeX-help-error): Add new `type' argument.  Color help messages
+	using the new faces.
+	(TeX-warning): Preserve point when searching backward.  In some
+	cases this prevents infinite loops in `TeX-parse-all-errors' and
+	fixes wrong detection of context string.
+
 2014-05-27  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-mode-specific-command-menu-entries): Add
