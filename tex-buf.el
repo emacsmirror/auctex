@@ -966,10 +966,10 @@ Return nil ifs no errors were found."
 	(setq TeX-command-next TeX-command-default)
 	;; error reported to TeX-error-report-switches
 	(setq TeX-error-report-switches
-	  (plist-put TeX-error-report-switches
-		     (intern (plist-get TeX-error-report-switches
-					'TeX-current-master))
-		     t))
+	      (plist-put TeX-error-report-switches
+			 (intern (plist-get TeX-error-report-switches
+					    'TeX-current-master))
+			 t))
 	t)
     (setq TeX-command-next TeX-command-Show)
     nil))
@@ -1539,10 +1539,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
 		   (beep)
 		   (TeX-pop-to-buffer old-buffer))
 		  (t
-		   (apply (intern
-			   (concat "TeX-" (symbol-name (car item))
-				   "--find-display-help"))
-			  (cdr item)))))
+		   (TeX-error-list-find-display-help item))))
 
 	(goto-char TeX-error-point)
 	(TeX-parse-error old-buffer)))))
@@ -1691,6 +1688,20 @@ Return non-nil if an error or warning is found."
 	  t)))
     error-found))
 
+(defun TeX-error-list-find-display-help (item)
+  "Find the error and display the help associated to it.
+ITEM is an element of `TeX-error-list' with all relevant
+information about the error or warning."
+  (let ((type (car item)))
+    (apply (intern (concat "TeX-"
+			   (cond
+			    ((equal type 'error)
+			     "error")
+			    ((or (equal type 'warning) (equal type 'bad-box))
+			     "warning"))
+			   "--find-display-help"))
+	   (cdr item))))
+
 (defun TeX-error (&optional store)
   "Display an error.
 
@@ -1836,8 +1847,8 @@ warning."
     (if store
 	;; Store the warning information.
 	(add-to-list 'TeX-error-list
-		     (list 'warning file line warning offset context
-			   string line-end bad-box) t)
+		     (list (if bad-box 'bad-box 'warning) file line warning
+			   offset context string line-end bad-box) t)
       ;; Find the warning point and display the help.
       (TeX-warning--find-display-help
        file line warning offset context string line-end bad-box))))
@@ -1880,7 +1891,7 @@ warning."
 	   (TeX-pop-to-buffer error-file-buffer nil t))
 	  (TeX-display-help
 	   (TeX-help-error error (if bad-box context (concat "\n" context))
-			   runbuf 'warning))
+			   runbuf (if bad-box 'bad-box 'warning)))
 	  (t
 	   (message (concat "! " error))))))
 
@@ -1931,7 +1942,8 @@ warning."
 
 (defun TeX-help-error (error output runbuffer type)
   "Print ERROR in context OUTPUT from RUNBUFFER in another window.
-TYPE is a symbol specifing if ERROR is a real error or a warning."
+TYPE is a symbol specifing if ERROR is a real error, a warning or
+a bad box."
 
   (let ((old-buffer (current-buffer))
 	(log-file (with-current-buffer runbuffer
@@ -1953,7 +1965,9 @@ TYPE is a symbol specifing if ERROR is a real error or a warning."
 	((equal type 'error)
 	 (propertize "ERROR" 'font-lock-face 'TeX-error-description-error))
 	((equal type 'warning)
-	 (propertize "WARNING" 'font-lock-face 'TeX-error-description-warning)))
+	 (propertize "WARNING" 'font-lock-face 'TeX-error-description-warning))
+	((equal type 'bad-box)
+	 (propertize "BAD BOX" 'font-lock-face 'TeX-error-description-warning)))
        ": " error
        (propertize "\n\n--- TeX said ---" 'font-lock-face
 		   'TeX-error-description-tex-said)
