@@ -1,3 +1,19 @@
+2014-06-21  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-buf.el (TeX-parse-TeX): Use `TeX-find-display-help' in place
+	of `TeX-error-list-find-display-help'.
+	(TeX-error-list-find-display-help): Removed, replaced by more
+	general `TeX-find-display-help'.
+	(TeX-find-display-help): New function.
+	(TeX-error): Append nils to the `TeX-error-list' entry to make
+	each entry of the same lenght for both errors and warnings.
+	Append also `TeX-error-point'.  This fixes a bug occurring when
+	`TeX-display-help' is set to `expert'.  Use
+	`TeX-find-display-help' to display the help.
+	(TeX-warning): Append `TeX-error-point' to the `TeX-error-list'
+	entry to fix the above mentioned bug.  Use `TeX-find-display-help'
+	to display the help.
+
 2014-06-04  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el (TeX-parse-TeX): Use
