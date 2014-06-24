@@ -1542,7 +1542,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
 		   (beep)
 		   (TeX-pop-to-buffer old-buffer))
 		  (t
-		   (TeX-error-list-find-display-help item))))
+		   (apply 'TeX-find-display-help item))))
 
 	(goto-char TeX-error-point)
 	(TeX-parse-error old-buffer)))))
@@ -1688,19 +1688,62 @@ Return non-nil if an error or warning is found."
 	  t)))
     error-found))
 
-(defun TeX-error-list-find-display-help (item)
-  "Find the error and display the help associated to it.
-ITEM is an element of `TeX-error-list' with all relevant
-information about the error or warning."
-  (let ((type (car item)))
-    (apply (intern (concat "TeX-"
-			   (cond
-			    ((equal type 'error)
-			     "error")
-			    ((or (equal type 'warning) (equal type 'bad-box))
-			     "warning"))
-			   "--find-display-help"))
-	   (cdr item))))
+(defun TeX-find-display-help (type file line error offset context string
+				   line-end bad-box error-point)
+  "Find the error and display the help."
+  (unless file
+    (cond
+     ;; XXX: error messages have to be different?
+     ((equal type 'error)
+      (error "Error occurred after last TeX file closed"))
+     (t
+      (error "Could not determine file for warning"))))
+
+  ;; Go back to TeX-buffer
+  (let ((runbuf (current-buffer))
+	(master (with-current-buffer TeX-command-buffer
+		  (expand-file-name (TeX-master-file))))
+	(command-buffer TeX-command-buffer)
+	error-file-buffer start)
+    (run-hooks 'TeX-translate-location-hook)
+    (setq error-file-buffer (find-file file))
+    ;; Set the value of `TeX-command-buffer' in the next file with an
+    ;; error to be displayed to the value it has in the current buffer.
+    (with-current-buffer error-file-buffer
+      (set (make-local-variable 'TeX-command-buffer) command-buffer))
+
+    ;; Find the location of the error or warning.
+    (when line
+      (goto-char (point-min))
+      (forward-line (+ offset line -1))
+      (cond
+       ;; Error.
+       ((equal type 'error)
+	(if (not (string= string " "))
+	    (search-forward string nil t)))
+       ;; Warning or bad box.
+       (t
+	(beginning-of-line 0)
+	(setq start (point))
+	(goto-char (point-min))
+	(forward-line (+ offset line-end -1))
+	(end-of-line)
+	(when string
+	  (search-backward string start t)
+	  (search-forward string nil t)))))
+
+    ;; Display the help.
+    (cond ((eq TeX-display-help 'expert)
+	   (TeX-pop-to-buffer runbuf nil t)
+	   (goto-char error-point)
+	   (TeX-pop-to-buffer error-file-buffer nil t))
+	  (TeX-display-help
+	   (TeX-help-error
+	    error
+	    (if (equal type 'warning) (concat "\n" context) context)
+	    runbuf type))
+	  (t
+	   (message (concat "! " error))))))
 
 (defun TeX-error (&optional store)
   "Display an error.
@@ -1755,43 +1798,11 @@ information in `TeX-error-list' instead of displaying the error."
     (if store
 	;; Store the error information.
 	(add-to-list 'TeX-error-list
-		     (list 'error file line error offset context string) t)
+		     (list 'error file line error offset context string nil nil
+			   TeX-error-point) t)
       ;; Find the error point and display the help.
-      (TeX-error--find-display-help
-       file line error offset context string))))
-
-(defun TeX-error--find-display-help (file line error offset context
-					  string)
-  "Find the error and display the help."
-  ;; Find the error.
-  (if (null file)
-      (error "Error occurred after last TeX file closed"))
-  (let ((runbuf (current-buffer))
-	(master (with-current-buffer
-		    TeX-command-buffer
-		  (expand-file-name (TeX-master-file))))
-	(command-buffer TeX-command-buffer)
-	error-file-buffer)
-    (run-hooks 'TeX-translate-location-hook)
-    (setq error-file-buffer (find-file file))
-    ;; Set the value of `TeX-command-buffer' in the next file with an
-    ;; error to be displayed to the value it has in the current buffer.
-    (with-current-buffer error-file-buffer
-      (set (make-local-variable 'TeX-command-buffer) command-buffer))
-    (goto-char (point-min))
-    (forward-line (+ offset line -1))
-    (if (not (string= string " "))
-	(search-forward string nil t))
-
-    ;; Explain the error.
-    (cond ((eq TeX-display-help 'expert)
-	   (TeX-pop-to-buffer runbuf nil t)
-	   (goto-char TeX-error-point)
-	   (TeX-pop-to-buffer error-file-buffer nil t))
-	  (TeX-display-help
-	   (TeX-help-error error context runbuf 'error))
-	  (t
-	   (message (concat "! " error))))))
+      (TeX-find-display-help
+       'error file line error offset context string nil nil TeX-error-point))))
 
 (defun TeX-warning (warning &optional store)
   "Display a warning for WARNING.
@@ -1800,7 +1811,7 @@ If optional argument STORE is non-nil, store the warning
 information in `TeX-error-list' instead of displaying the
 warning."
 
-  (let* (;; bad-box is nil if this is a "LaTeX Warning"
+  (let* ( ;; bad-box is nil if this is a "LaTeX Warning"
 	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" warning))
 	 ;; line-string: match 1 is beginning line, match 2 is end line
 	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
@@ -1848,52 +1859,12 @@ warning."
 	;; Store the warning information.
 	(add-to-list 'TeX-error-list
 		     (list (if bad-box 'bad-box 'warning) file line warning
-			   offset context string line-end bad-box) t)
+			   offset context string line-end bad-box
+			   TeX-error-point) t)
       ;; Find the warning point and display the help.
-      (TeX-warning--find-display-help
-       file line warning offset context string line-end bad-box))))
-
-(defun TeX-warning--find-display-help (file line error offset context
-					    string line-end bad-box)
-  "Find the warning and display the help."
-  (unless file
-    (error "Could not determine file for warning"))
-
-  ;; Go back to TeX-buffer
-  (let ((runbuf (current-buffer))
-	(master (with-current-buffer
-		    TeX-command-buffer
-		  (expand-file-name (TeX-master-file))))
-	(command-buffer TeX-command-buffer)
-	error-file-buffer)
-    (run-hooks 'TeX-translate-location-hook)
-    (setq error-file-buffer (find-file file))
-    ;; Set the value of `TeX-command-buffer' in the next file with an
-    ;; error to be displayed to the value it has in the current buffer.
-    (with-current-buffer error-file-buffer
-      (set (make-local-variable 'TeX-command-buffer) command-buffer))
-    ;; Find line and string
-    (when line
-      (goto-char (point-min))
-      (forward-line (+ offset line -1))
-      (beginning-of-line 0)
-      (let ((start (point)))
-	(goto-char (point-min))
-	(forward-line (+ offset line-end -1))
-	(end-of-line)
-	(when string
-	  (search-backward string start t)
-	  (search-forward string nil t))))
-    ;; Display help
-    (cond ((eq TeX-display-help 'expert)
-	   (TeX-pop-to-buffer runbuf nil t)
-	   (goto-char TeX-error-point)
-	   (TeX-pop-to-buffer error-file-buffer nil t))
-	  (TeX-display-help
-	   (TeX-help-error error (if bad-box context (concat "\n" context))
-			   runbuf (if bad-box 'bad-box 'warning)))
-	  (t
-	   (message (concat "! " error))))))
+      (TeX-find-display-help (if bad-box 'bad-box 'warning) file line warning
+			     offset context string line-end bad-box
+			     TeX-error-point))))
 
 ;;; - Help
 

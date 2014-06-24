@@ -1,3 +1,8 @@
+2014-06-24  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el (preview-gs-command): Don't run the mgs command if
+	mgs is not installed.
+
 2013-09-05  Tassilo Horn  <tsdh@gnu.org>
 
 	* preview.el (preview-lispdir): New defvar.
