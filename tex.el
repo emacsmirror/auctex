@@ -551,6 +551,7 @@ the name of the file being processed, with an optional extension."
 (autoload 'TeX-kill-job "tex-buf" nil t)
 (autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
 (autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-error-overview "tex-buf" nil t)
 (autoload 'TeX-region-file "tex-buf" nil nil)
 (autoload 'TeX-current-offset "tex-buf" nil nil)
 (autoload 'TeX-process-set-variable "tex-buf" nil nil)
@@ -4421,6 +4422,8 @@ Brace insertion is only done if point is in a math construct and
        :help "Jump to the next error of the last TeX run"]
       ["Previous Error" TeX-previous-error
        :help "Jump to the previous error of the last TeX run"]
+      ["Error overview" TeX-error-overview
+       :help "Open an overview of errors occured in the last TeX run"]
       ["Quick View" TeX-view
        :help "Start a viewer without prompting"]
       "-"
@@ -4448,7 +4451,7 @@ Brace insertion is only done if point is in a math construct and
        ["Debug Warnings" TeX-toggle-debug-warnings
 	:style toggle :selected TeX-debug-warnings
 	:help "Make \"Next Error\" show warnings"])))
-   (let ((file 'TeX-command-on-current));; is this actually needed?
+   (let ((file 'TeX-command-on-current)) ;; is this actually needed?
      (TeX-maybe-remove-help
       (delq nil
 	    (mapcar 'TeX-command-menu-entry

@@ -353,6 +353,13 @@ asked if it is positive, and suppressed if it is not."
 	      (read-from-minibuffer (concat name " command: ") command
 				    nil nil)))
 
+    ;; Kill the frame and buffer associated to the error overview before running
+    ;; the command.
+    (if (frame-live-p TeX-error-overview-frame)
+	(delete-frame TeX-error-overview-frame))
+    (if (get-buffer TeX-error-overview-buffer-name)
+	(kill-buffer TeX-error-overview-buffer-name))
+
     ;; Now start the process
     (setq file (funcall file))
     (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
@@ -924,12 +931,18 @@ NAME is the name of the process.")
   "Cleanup TeX output buffer after running TeX.
 
 Parse the output buffer to collect errors and warnings if the
-variable `TeX-parse-all-errors' is non-nil."
+variable `TeX-parse-all-errors' is non-nil.
+
+Open the error overview if
+`TeX-error-overview-open-after-TeX-run' is non-nil and there are
+errors or warnings to show."
   (if (TeX-TeX-sentinel-check process name)
       ()
     (message (concat name ": formatted " (TeX-current-pages)))
     (if TeX-parse-all-errors
 	(TeX-parse-all-errors))
+    (if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
+	(TeX-error-overview))
     (setq TeX-command-next TeX-command-Show)))
 
 (defun TeX-current-pages ()
@@ -993,9 +1006,15 @@ Warnings can be indicated by LaTeX or packages."
   "Cleanup TeX output buffer after running LaTeX.
 
 Parse the output buffer to collect errors and warnings if the
-variable `TeX-parse-all-errors' is non-nil."
+variable `TeX-parse-all-errors' is non-nil.
+
+Open the error overview if
+`TeX-error-overview-open-after-TeX-run' is non-nil and there are
+errors or warnings to show."
   (if TeX-parse-all-errors
       (TeX-parse-all-errors))
+  (if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
+      (TeX-error-overview))
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
 		(re-search-forward
@@ -1700,7 +1719,7 @@ Return non-nil if an error or warning is found."
       (error "Could not determine file for warning"))))
 
   ;; Go back to TeX-buffer
-  (let ((runbuf (current-buffer))
+  (let ((runbuf (TeX-active-buffer))
 	(master (with-current-buffer TeX-command-buffer
 		  (expand-file-name (TeX-master-file))))
 	(command-buffer TeX-command-buffer)
@@ -1871,7 +1890,7 @@ warning."
 (defgroup TeX-error-description-faces nil
   "Faces used in error descriptions."
   :prefix "TeX-error-description-"
-  :group 'AUCTeX)
+  :group 'TeX-output)
 
 (defface TeX-error-description-error
   ;; This is the same as `error' face in latest GNU Emacs versions.
@@ -2392,6 +2411,266 @@ error."
   :type '(repeat (cons :tag "Entry"
 		       (regexp :tag "Match")
 		       (string :format "Description:\n%v"))))
+
+;;; Error Overview
+
+(defvar TeX-error-overview-active-buffer nil
+  "The active buffer for the current error overview.")
+
+(defvar TeX-error-overview-orig-frame nil
+  "Frame from which the error overview has been launched.")
+
+(defvar TeX-error-overview-orig-window nil
+  "Window from which the error overview has been launched.")
+
+(defvar TeX-error-overview-frame nil
+  "The frame of the error overview.")
+
+(defcustom TeX-error-overview-setup nil
+  "The frame setup of the error overview.
+
+The possible value is: `separate-frame' (error oveview in a
+separate frame); with a nil value the current frame is used.
+
+If the display does not support multi frame, the current frame
+will be used regardless of the value of this variable."
+  :group 'TeX-output
+  :type '(choice
+          (const :tag "Error overview in separate frame" separate-frame)
+          (const :tag "Use current frame" nil)))
+
+(defun TeX-error-overview-setup ()
+  "Return the frame setup of the error overview for the current display."
+  (and (display-multi-frame-p) TeX-error-overview-setup))
+
+(defun TeX-error-overview-goto-source (&optional button)
+  "Go to the error point in the source.
+If optional argument BUTTON is non-nil, go to source associated
+to the selected error."
+  (interactive)
+  (let ((index (if button (button-get button 'id) (tabulated-list-get-id)))
+	item window)
+    (if index
+	(progn
+	  ;; Select the source frame/window, if still live.
+	  (if (TeX-error-overview-setup)
+	      (if (frame-live-p TeX-error-overview-orig-frame)
+		  (select-frame TeX-error-overview-orig-frame)
+		(error "You have deleted a vital frame---\
+please restart TeX error overview"))
+	    (if (window-live-p TeX-error-overview-orig-window)
+		(select-window TeX-error-overview-orig-window)
+	      (error "You have deleted a vital window---\
+please restart TeX error overview")))
+	  ;; Get the error details.
+	  (with-current-buffer TeX-error-overview-active-buffer
+	    (setq item (nth index TeX-error-list)
+		  TeX-error-last-visited index))
+	  ;; Find the error and display the help.
+	  (with-current-buffer TeX-command-buffer
+	    ;; For consistency with `TeX-parse-TeX', use the major mode of
+	    ;; `TeX-command-buffer' when visiting the error point.
+	    (let ((default-major-mode major-mode))
+	      ;; Find the error and display the help.
+	      (apply 'TeX-find-display-help item)))
+	  ;; Return to the error overview.
+	  (if (TeX-error-overview-setup)
+	      (select-frame TeX-error-overview-frame)
+	    (if (setq window
+		      (get-buffer-window TeX-error-overview-buffer-name))
+		;; If error overview window is visible just select it.
+		(select-window window)
+	      ;; Otherwise, split the help window and display the error overview
+	      ;; near to it.  This should be the only reason for the error
+	      ;; overview window not being still visible after the beginning of
+	      ;; the function.
+	      (select-window
+	       (get-buffer-window (cond
+				   ((eq TeX-display-help 'expert)
+				    TeX-error-overview-active-buffer)
+				   (TeX-display-help  "*TeX Help*"))))
+	      (if (window-splittable-p (selected-window) t)
+		  (split-window-horizontally)
+		(split-window-vertically))
+	      (switch-to-buffer TeX-error-overview-buffer-name))))
+      (message "No more errors.")
+      (beep))))
+
+(defun TeX-error-overview-make-entries ()
+  "Generate the list of errors to be printed using `tabulated-list-entries'."
+  (with-current-buffer TeX-error-overview-active-buffer
+    (let ((id 0)
+	  type file line msg entries)
+      (mapc
+       (lambda (entry)
+	 (setq type (nth 0 entry)
+	       file (nth 1 entry)
+	       line (nth 2 entry)
+	       msg  (nth 3 entry))
+	 (add-to-list
+	  'entries
+	  (list
+	   ;; ID.
+	   id
+	   (vector
+	    ;; File.
+	    (if (stringp file) file "")
+	    ;; Line.
+	    (if (numberp line)
+		(number-to-string line)
+	      "")
+	    ;; Type.
+	    (cond
+	     ((equal type 'error)
+	      (propertize "Error" 'font-lock-face 'TeX-error-description-error))
+	     ((equal type 'warning)
+	      (propertize "Warning" 'font-lock-face
+			  'TeX-error-description-warning))
+	     ((equal type 'bad-box)
+	      (propertize "Bad box" 'font-lock-face
+			  'TeX-error-description-warning))
+	     (t
+	      ""))
+	    ;; Message.
+	    (list (if (stringp msg) msg "")
+		  'face 'link
+		  'follow-link t
+		  'id id
+		  'action 'TeX-error-overview-goto-source)
+	    )) t)
+	 (setq id (1+ id))) TeX-error-list)
+      entries)))
+
+(defun TeX-error-overview-next-error (&optional arg)
+  "Move to the next line and find the associated error.
+
+A prefix ARG specifies how many error messages to move; negative
+means move back to previous error messages."
+  (interactive "p")
+  (if (= (forward-line arg) 0)
+      (TeX-error-overview-goto-source)
+    ;; If there are lines left to move we are at the beginning or at the end of
+    ;; the buffer and there are no more errors.
+    (message "No more errors.")
+    (beep)))
+
+(defun TeX-error-overview-previous-error (&optional arg)
+  "Move to the previous line and find the associated error.
+
+Prefix arg N says how many error messages to move backward (or
+forward, if negative)."
+  (interactive "p")
+  (TeX-error-overview-next-error (- arg)))
+
+(defun TeX-error-overview-quit ()
+  "Delete the window or the frame of the error overview."
+  (interactive)
+  (if (TeX-error-overview-setup)
+      (delete-frame TeX-error-overview-frame)
+    (delete-window))
+  (setq TeX-error-overview-orig-frame nil))
+
+(defvar TeX-error-overview-mode-map
+  (let ((map (make-sparse-keymap))
+	(menu-map (make-sparse-keymap)))
+    (define-key map "n"    'TeX-error-overview-next-error)
+    (define-key map "p"    'TeX-error-overview-previous-error)
+    (define-key map "q"    'TeX-error-overview-quit)
+    (define-key map "\C-m" 'TeX-error-overview-goto-source)
+    map)
+  "Local keymap for `TeX-error-overview-mode' buffers.")
+
+(defvar TeX-error-overview-list-entries nil
+  "List of errors to be used in the error overview.")
+
+(define-derived-mode TeX-error-overview-mode tabulated-list-mode
+  "TeX errors"
+  "Major mode for listing TeX errors."
+  (setq tabulated-list-format [("File" 25 nil)
+                               ("Line" 4 nil :right-align t)
+                               ("Type" 7 nil)
+                               ("Message" 0 nil)]
+        tabulated-list-padding 1
+        tabulated-list-entries TeX-error-overview-list-entries)
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
+(defconst TeX-error-overview-buffer-name "*TeX errors*"
+  "Name of the buffer in which to show error list.")
+
+(defcustom TeX-error-overview-frame-parameters
+  '((name . "TeX errors")
+    (title . "TeX errors")
+    (height . 10)
+    (width . 80)
+    (top . (- 0))
+    (left . (- 0))
+    (unsplittable . t)
+    (minibuffer . nil)
+    (vertical-scroll-bars . t)
+    (tool-bar-lines . 0))
+  "Parameters of the error overview frame."
+  :group 'TeX-output
+  :type 'alist
+  :options '((name string) (title string) (height integer) (width integer)
+	     (top integer) (left integer) (unsplittable boolean)
+	     (minibuffer boolean) (vertical-scroll-bars boolean)
+	     (tool-bar-lines integer)))
+
+(defcustom TeX-error-overview-open-after-TeX-run nil
+  "Whether to open automatically the error overview after running TeX."
+  :group 'TeX-output
+  :type 'boolean)
+
+(defun TeX-error-overview ()
+  "Show an overview of the errors occurred in the last TeX run."
+  (interactive)
+  ;; Check requirements before start.
+  (if (fboundp 'tabulated-list-mode)
+      (if (setq TeX-error-overview-active-buffer (TeX-active-buffer))
+	  (if (with-current-buffer TeX-error-overview-active-buffer
+		TeX-error-list)
+	      (progn
+		(setq TeX-error-overview-list-entries
+		      (TeX-error-overview-make-entries)
+		      TeX-error-overview-orig-window (selected-window)
+		      TeX-error-overview-orig-frame
+		      (window-frame TeX-error-overview-orig-window))
+		;; Create the error overview buffer.  This is
+		;; automatically killed before running TeX commands, so if
+		;; exists it is up-to-date and doesn't need to be
+		;; re-created.
+		(unless (get-buffer TeX-error-overview-buffer-name)
+		  (with-current-buffer
+		      (get-buffer-create TeX-error-overview-buffer-name)
+		    (TeX-error-overview-mode)))
+		;; Move point to the line associated to the last visited
+		;; error.
+		(with-current-buffer TeX-error-overview-buffer-name
+		  (goto-char (point-min))
+		  (forward-line (with-current-buffer
+				    TeX-error-overview-active-buffer
+				  TeX-error-last-visited))
+		  ;; Create a new frame for the error overview or display the
+		  ;; buffer in the same frame, depending on the setup.
+		  (if (TeX-error-overview-setup)
+		      (if (frame-live-p TeX-error-overview-frame)
+			  ;; Do not create a duplicate frame if there is
+			  ;; already one, just select it.
+			  (select-frame-set-input-focus
+			   TeX-error-overview-frame)
+			;; Create a new frame and store its name.
+			(select-frame
+			 (setq TeX-error-overview-frame
+			       (make-frame
+				TeX-error-overview-frame-parameters)))
+			(set-window-buffer (selected-window)
+					   TeX-error-overview-buffer-name)
+			(set-window-dedicated-p (selected-window) t))
+		    (TeX-pop-to-buffer TeX-error-overview-buffer-name))))
+	    (error "No errror or warning to show"))
+	(error "No process for this document"))
+    (error "Error overview is available only in Emacs 24 or later")))
 
 ;;; Output mode
 

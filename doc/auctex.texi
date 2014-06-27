@@ -3130,7 +3130,7 @@ If t, @AUCTeX{} automatically parses the whole output log buffer right
 after running a @TeX{} command, in order to collect all warnings and
 errors.  This makes it possible to navigate back and forth between the
 error messages using @code{TeX-next-error} and
-@code{TeX-previous-error}.  This is the default.  If nil, @AUCTeX{} do
+@code{TeX-previous-error}.  This is the default.  If nil, @AUCTeX{} does
 not parse the whole output log buffer and @code{TeX-previous-error}
 cannot be used.
 @end defopt
@@ -3160,6 +3160,45 @@ is encountered using @code{TeX-next-error} (@kbd{C-c `}).  If nil a
 terse information about the error is displayed in the echo area.  If
 @code{expert} @AUCTeX{} will display the output buffer with the raw
 @TeX{} output.
+@end defopt
+
+When the option @code{TeX-parse-all-errors} is non-nil, you will be also
+able to open an overview of all errors and warnings reported by the TeX
+compiler.  This feature requires @code{tabulated-list-mode}, shipped
+with GNU Emacs 24 or later.
+
+@deffn Command TeX-error-overview
+Show an overview of the errors and warnings occurred in the last TeX
+run.
+
+In this window you can visit the error on which point is on by pressing
+@key{RET}, and visit the next or previous issue by pressing @key{n} or
+@key{p} respectively.  A prefix argument to these keys specifies how
+many errors to move forward or backward.  You can visit an error also by
+clicking on its message.  Press @key{q} to quit the overview.
+@end deffn
+
+@defopt TeX-error-overview-open-after-TeX-run
+When this boolean variable is non-nil, the error overview will be
+automatically opened after running TeX if there are errors or warnings
+to show.
+@end defopt
+
+The error overview is opened in a new window of the current frame by
+default, but you can change this behavior by customizing the option
+@code{TeX-error-overview-setup}.
+
+@defopt TeX-error-overview-setup
+Controls the frame setup of the error overview.  The possible value is:
+@code{separate-frame}; with a nil value the current frame is used
+instead.
+
+The parameters of the separate frame can be set with the
+@code{TeX-error-overview-frame-parameters} option.
+
+If the display does not support multi frame, the current frame
+will be used regardless of the value of this variable.
+@vindex TeX-error-overview-frame-parameters
 @end defopt
 
 @node Checking
@@ -5036,3 +5075,8 @@ used by @AUCTeX{} for sectioning.
 @printindex cp
 
 @bye
+
+@c Local Variables:
+@c mode: texinfo
+@c TeX-master: t
+@c End:

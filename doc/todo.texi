@@ -89,12 +89,9 @@ requested yet.
 
 A special ispell dictionary for macros could be nice to have.
 
-@item Quick error overviews
+@item Improvements to error reporting
 
-An error overview window (extract from the log file with just the error
-lines, clickable like a ``grep'' buffer; @code{TeX-error-list} can be
-used for this purpose) and/or fringe indicators for errors in the main
-text would be nice.
+Fringe indicators for errors in the main text would be nice.
 
 @item A math entry grid
 
@@ -340,3 +337,8 @@ signs and the like spilling out of the verbatim content. (XEmacs only)
 Folding of @LaTeX{} constructs spanning more than one line may result in
 overfull lines. (XEmacs only)
 @end itemize
+
+@c Local Variables:
+@c mode: texinfo
+@c TeX-master: "auctex"
+@c End:

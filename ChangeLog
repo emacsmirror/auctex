@@ -1,3 +1,46 @@
+2014-06-28  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-buf.el (TeX-command): Kill the frame and buffer associated
+	to the error overview before running commands.
+	(TeX-TeX-sentinel): Open error overview if
+	`TeX-error-overview-open-after-TeX-run' is non-nil and there are
+	errors or warnings to show.
+	(TeX-LaTeX-sentinel): Ditto.
+	(TeX-find-display-help): Set `runbuf' to `TeX-active-buffer' since
+	this function may be called also from the error overview buffer.
+	(TeX-error-description-faces): Change group to more appropriate
+	`TeX-output'.
+	(TeX-error-overview-active-buffer): New variable.
+	(TeX-error-overview-orig-frame): Ditto.
+	(TeX-error-overview-orig-window): Ditto.
+	(TeX-error-overview-frame): Ditto.
+	(TeX-error-overview-setup): New customizable variable.
+	(TeX-error-overview-setup): New function.
+	(TeX-error-overview-goto-source): Ditto.
+	(TeX-error-overview-make-entries): Ditto.
+	(TeX-error-overview-next-error): Ditto.
+	(TeX-error-overview-previous-error): Ditto.
+	(TeX-error-overview-quit): Ditto.
+	(TeX-error-overview-mode-map): New variable.
+	(TeX-error-overview-list-entries): Ditto.
+	(TeX-error-overview-mode): New major mode.
+	(TeX-error-overview-buffer-name): New constant.
+	(TeX-error-overview-frame-parameters): New customizable variable.
+	(TeX-error-overview-open-after-TeX-run): Ditto.
+	(TeX-error-overview): New function.
+
+	* tex.el (TeX-error-overview): Autoload `TeX-error-overview'.
+	(TeX-mode-specific-command-menu-entries): Add an entry for the
+	error overview.
+
+	* doc/auctex.texi (Debugging): Document error overview.
+
+	* doc/changes.texi: Mention error overview.  Add local variables
+	to the end of the file.
+
+	* doc/todo.texi: Add local variables to the end of the file.
+	(Wishlist): Update entry about error reporting.
+
 2014-06-21  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el (TeX-parse-TeX): Use `TeX-find-display-help' in place
