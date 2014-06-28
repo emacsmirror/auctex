@@ -1725,7 +1725,9 @@ Return non-nil if an error or warning is found."
 	(command-buffer TeX-command-buffer)
 	error-file-buffer start)
     (run-hooks 'TeX-translate-location-hook)
-    (setq error-file-buffer (find-file file))
+    (setq error-file-buffer
+	  (find-file
+	   (expand-file-name file (file-name-directory master))))
     ;; Set the value of `TeX-command-buffer' in the next file with an
     ;; error to be displayed to the value it has in the current buffer.
     (with-current-buffer error-file-buffer

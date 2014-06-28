@@ -28,6 +28,8 @@
 	(TeX-error-overview-frame-parameters): New customizable variable.
 	(TeX-error-overview-open-after-TeX-run): Ditto.
 	(TeX-error-overview): New function.
+	(TeX-find-display-help): Expand the name of the file to be visited
+	starting from the directory of the master file.
 
 	* tex.el (TeX-error-overview): Autoload `TeX-error-overview'.
 	(TeX-mode-specific-command-menu-entries): Add an entry for the
