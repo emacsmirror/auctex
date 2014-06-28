@@ -30,6 +30,10 @@
 	(TeX-error-overview): New function.
 	(TeX-find-display-help): Expand the name of the file to be visited
 	starting from the directory of the master file.
+	(TeX-error-overview-make-entries): Add optional `master-dir'
+	argument, to shorten file names when they are relative.
+	(TeX-error-overview): Pass `TeX-master-directory' as argument to
+	`TeX-error-overview-make-entries'.
 
 	* tex.el (TeX-error-overview): Autoload `TeX-error-overview'.
 	(TeX-mode-specific-command-menu-entries): Add an entry for the

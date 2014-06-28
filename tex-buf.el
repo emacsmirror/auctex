@@ -2498,8 +2498,9 @@ please restart TeX error overview")))
       (message "No more errors.")
       (beep))))
 
-(defun TeX-error-overview-make-entries ()
-  "Generate the list of errors to be printed using `tabulated-list-entries'."
+(defun TeX-error-overview-make-entries (&optional master-dir)
+  "Generate the list of errors to be printed using `tabulated-list-entries'.
+Write file names relative to MASTER-DIR when they are not absolute."
   (with-current-buffer TeX-error-overview-active-buffer
     (let ((id 0)
 	  type file line msg entries)
@@ -2516,7 +2517,11 @@ please restart TeX error overview")))
 	   id
 	   (vector
 	    ;; File.
-	    (if (stringp file) file "")
+	    (if (stringp file)
+		(if (file-name-absolute-p file)
+		    file
+		  (file-relative-name file master-dir))
+	      "")
 	    ;; Line.
 	    (if (numberp line)
 		(number-to-string line)
@@ -2634,7 +2639,7 @@ forward, if negative)."
 		TeX-error-list)
 	      (progn
 		(setq TeX-error-overview-list-entries
-		      (TeX-error-overview-make-entries)
+		      (TeX-error-overview-make-entries (TeX-master-directory))
 		      TeX-error-overview-orig-window (selected-window)
 		      TeX-error-overview-orig-frame
 		      (window-frame TeX-error-overview-orig-window))
