@@ -44,15 +44,6 @@ Further integration will happen at the backend.  This involves folding
 of error parsing and task management of both packages which will ease
 development efforts and avoid redundant work.
 
-@item More flexible option and command handling
-
-The current state of command handling with @code{TeX-command-list} is
-not very flexible because there is no distinction between executables
-and command line options to be passed to them.
-
-Customization of @code{TeX-command-list} by the user will interfere with
-updates of @AUCTeX{}.
-
 @item Error help catalogs
 
 Currently, the help for errors is more or less hardwired into
@@ -112,21 +103,6 @@ code of the @file{.dtx} file.
 For starters, @code{LaTeX-math-mode} is not very @LaTeX{}-specific in
 the first place, and similar holds for indentation and formatting.
 
-@item Poor man's Source Specials
-In particular in PDF mode (and where Source Specials cause problems),
-alternatives would be desirable.  One could implement inverse search by
-something like Heiko Oberdiek's @file{vpe.sty}, and forward search by
-using the @file{.aux} file info to correlate labels in the text
-(possibly in cooperation with Ref@TeX{}) with previewer pages.
-
-In @AUCTeX{} 11.83, support for forward search with PDF files was added.
-Currently this only works if you use the pdfsync @LaTeX{} package and
-xpdf as your PDF viewer.
-@ifclear rawfile
-@xref{Viewing}.
-@end ifclear
-
-
 @item
 Page count when compiling should (optionally) go to modeline of the
 window where the compilation command was invoked, instead of the output
@@ -160,10 +136,6 @@ master, but instead disable all features that relies on TeX-master.
 
 This default value for TeX-master could then be controled with mapping
 based on the extension.
-
-@item
-Multiple argument completion for @samp{\bibliography}.  In general, I
-ought to make @kbd{,} special for these kind of completions.
 
 @item
 Suggest @samp{makeindex} when appropriate.

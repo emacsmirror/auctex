@@ -1,3 +1,12 @@
+2014-06-29  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/todo.texi (Mid-term Goals): Remove "More flexible option and
+	command handling" item: we now have `TeX-command-extra-options'.
+	(Wishlist): Remove "Poor man's Source Specials": AUCTeX supports
+	source specials and SyncTeX.
+	(Wishlist): Remove "multiple completion for \bibliography" item:
+	"\bibliography" does complete multiple arguments.
+
 2014-06-28  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el (TeX-command): Kill the frame and buffer associated
