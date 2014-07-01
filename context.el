@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -1586,7 +1586,7 @@ else.  There might be text before point."
      (format "--interface=%s " ConTeXt-current-interface))
    (when TeX-source-correlate-mode
      (format "--passon=\"%s\" "
-	     (if (eq TeX-source-correlate-method-active 'synctex)
+	     (if (eq (TeX-source-correlate-method-active) 'synctex)
 		 TeX-synctex-tex-flags
 	       TeX-source-specials-tex-flags)))
    (unless TeX-interactive-mode

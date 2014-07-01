@@ -3041,16 +3041,26 @@ document parsing is enabled.  Customize the variable
 @defopt TeX-source-correlate-method
 Method to use for enabling forward and inverse search.  This can be
 @samp{source-specials} if source specials should be used, @samp{synctex}
-if SyncTeX should be used, or @samp{auto} if @AUCTeX{} should decide,
-this is the default.
+if SyncTeX should be used, or @samp{auto} if @AUCTeX{} should decide.
 
-When the variable is set to @samp{auto}, @AUCTeX{} will use SyncTeX if
-your @code{latex} processor supports it, source specials otherwise.  You
-must make sure your viewer supports the same method.
+When the variable is set to @samp{auto}, @AUCTeX{} will always use
+SyncTeX if your @code{latex} processor supports it, source specials
+otherwise.  You must make sure your viewer supports the same method.
 
-Setting this variable does not take effect if
-@code{TeX-source-correlate-mode} has already been active.  Restart Emacs
-in this case.
+It is also possible to specify a different method depending on the
+output, either DVI or PDF, by setting the variable to an alist of the
+kind
+@lisp
+((dvi . <source-specials or synctex>)
+ (pdf . <source-specials or synctex>))
+@end lisp
+in which the CDR of each entry is a symbol specifying the method to be
+used in the corresponding mode.  The default value of the variable is
+@lisp
+((dvi . source-specials)
+ (pdf . synctex))
+@end lisp
+which is compatible with the majority of viewers.
 @end defopt
 
 @findex TeX-view

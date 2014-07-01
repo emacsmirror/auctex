@@ -418,15 +418,15 @@ string."
 ;; to handle .ps files.
 
 (defcustom TeX-expand-list
-  '(("%p" TeX-printer-query)	;%p must be the first entry
+  '(("%p" TeX-printer-query)		;%p must be the first entry
     ("%q" (lambda ()
 	    (TeX-printer-query t)))
     ("%V" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-view-command-raw)))
     ("%vv" (lambda ()
-	    (TeX-source-correlate-start-server-maybe)
-	    (TeX-output-style-check TeX-output-view-style)))
+	     (TeX-source-correlate-start-server-maybe)
+	     (TeX-output-style-check TeX-output-view-style)))
     ("%v" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-style-check TeX-view-style)))
@@ -465,8 +465,16 @@ string."
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
     ("%(outpage)" (lambda ()
-		    (or (when TeX-source-correlate-output-page-function
-			  (funcall TeX-source-correlate-output-page-function))
+		    ;; When `TeX-source-correlate-output-page-function' is nil
+		    ;; and we are using synctex, fallback on
+		    ;; `TeX-synctex-output-page'.
+		    (and TeX-source-correlate-mode
+			 (null TeX-source-correlate-output-page-function)
+			 (eq (TeX-source-correlate-method-active) 'synctex)
+			 (setq TeX-source-correlate-output-page-function
+			       'TeX-synctex-output-page))
+		    (or (if TeX-source-correlate-output-page-function
+			    (funcall TeX-source-correlate-output-page-function))
 			"1")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
@@ -502,7 +510,7 @@ string."
 		      (setq pos (+ (length TeX-command-text) 9)
 			    TeX-command-pos
 			    (and (string-match " "
-					      (funcall file t t))
+					       (funcall file t t))
 				 "\""))
 		      (concat TeX-command-text " \"\\input\""))
 		  (setq TeX-command-pos nil)
@@ -1400,20 +1408,38 @@ For available TYPEs, see variable `TeX-engine'."
 
 ;;; Forward and inverse search
 
-(defcustom TeX-source-correlate-method 'auto
+(defcustom TeX-source-correlate-method
+  '((dvi . source-specials) (pdf . synctex))
   "Method to use for enabling forward and inverse search.
 This can be `source-specials' if source specials should be used,
-`synctex' if SyncTeX should be used, or`auto' if AUCTeX should
+`synctex' if SyncTeX should be used, or `auto' if AUCTeX should
 decide.
 
-Setting this variable does not take effect if TeX Source
-Correlate mode has already been active.  Restart Emacs in this
-case."
-  :type '(choice (const auto) (const synctex) (const source-specials))
-  :group 'TeX-view)
+The previous values determine the variable for both DVI and PDF
+mode.  This variable can also be an alist of the kind
 
-(defvar TeX-source-correlate-method-active nil
-  "Method actually used for forward and inverse search.")
+  ((dvi . <source-specials or synctex>)
+   (pdf . <source-specials or synctex>))
+
+in which the CDR of each entry is a symbol specifying the method
+to be used in the corresponding mode.
+
+Programs should not use this variable directly but the function
+`TeX-source-correlate-method-active' which returns the method
+actually used for forward and inverse search."
+  :type '(choice (const auto)
+		 (const synctex)
+		 (const source-specials)
+		 (list :tag "Different method for DVI and PDF"
+		       (cons (const dvi)
+			     (choice :tag "Method for DVI mode"
+				     (const synctex)
+				     (const source-specials)))
+		       (cons (const pdf)
+			     (choice :tag "Method for PDF mode"
+				     (const synctex)
+				     (const source-specials)))))
+  :group 'TeX-view)
 
 (defvar TeX-source-correlate-output-page-function nil
   "Symbol of function returning an output page relating to buffer position.
@@ -1487,12 +1513,24 @@ This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
 	'synctex
       'source-specials)))
 
+(defun TeX-source-correlate-method-active ()
+  "Return the method actually used for forward and inverse search."
+  (cond
+   ((eq TeX-source-correlate-method 'auto)
+    (TeX-source-correlate-determine-method))
+   ((listp TeX-source-correlate-method)
+    (if TeX-PDF-mode
+	(cdr (assoc 'pdf TeX-source-correlate-method))
+      (cdr (assoc 'dvi TeX-source-correlate-method))))
+   (t
+    TeX-source-correlate-method)))
+
 (defun TeX-source-correlate-expand-options ()
   "Return TeX engine command line option for forward search facilities.
 The return value depends on the value of `TeX-source-correlate-mode'.
 If this is nil, an empty string will be returned."
   (if TeX-source-correlate-mode
-      (if (eq TeX-source-correlate-method-active 'source-specials)
+      (if (eq (TeX-source-correlate-method-active) 'source-specials)
 	  (concat TeX-source-specials-tex-flags
 		  (if TeX-source-specials-places
 		      ;; -src-specials=WHERE: insert source specials
@@ -1571,16 +1609,8 @@ SyncTeX are recognized."
     (dbus-register-signal
      :session nil "/org/gnome/evince/Window/0"
      "org.gnome.evince.Window" "SyncSource"
-     'TeX-source-correlate-sync-source))
-  (unless TeX-source-correlate-method-active
-    (setq TeX-source-correlate-method-active
-	  (if (eq TeX-source-correlate-method 'auto)
-	      (TeX-source-correlate-determine-method)
-	    TeX-source-correlate-method)))
-  (when (eq TeX-source-correlate-method-active 'synctex)
-    (setq TeX-source-correlate-output-page-function
-	  (when TeX-source-correlate-mode
-	    'TeX-synctex-output-page))))
+     'TeX-source-correlate-sync-source)))
+
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
@@ -1668,7 +1698,7 @@ The return value depends on the values of
 `source-specials' respectively, an empty string will be
 returned."
   (if (and TeX-source-correlate-mode
-	   (eq TeX-source-correlate-method-active 'source-specials))
+	   (eq (TeX-source-correlate-method-active) 'source-specials))
       (concat TeX-source-specials-view-position-flags
 	      (when (TeX-source-correlate-server-enabled-p)
 		(concat " " TeX-source-specials-view-editor-flags)))

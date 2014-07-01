@@ -57,7 +57,8 @@ New user options @code{LaTeX-default-author},
 @code{TeX-insert-braces-alist}, @code{LaTeX-fontspec-arg-font-search},
 and @code{LaTeX-fontspec-font-list-default}.  A new possible value
 (@code{show-all-optional-args}) for
-@code{TeX-insert-macro-default-style} was added.
+@code{TeX-insert-macro-default-style} was added.  The default value of
+@code{TeX-source-correlate-method} has been changed.
 
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,

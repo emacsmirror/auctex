@@ -1,3 +1,29 @@
+2014-07-02  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-expand-list): Set
+	`TeX-source-correlate-output-page-function' when necessary, in the
+	"%(outpage)" expander.
+	(TeX-source-correlate-method): Add an alist as a possible value
+	and change the default.
+	(TeX-source-correlate-method-active): Convert to a function.
+	(TeX-source-correlate-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+	(TeX-source-correlate-mode): Remove setting of the
+	`TeX-source-correlate-output-page-function' variable and of the
+	now deleted `TeX-source-correlate-method-active' variable.
+	(TeX-source-specials-view-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+
+	* context.el: Update copyright years.
+	(ConTeXt-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+
+	* doc/auctex.texi (I/O Correlation): Update documentation of
+	`TeX-source-correlate-method'.
+
+	* doc/changes.texi: Mention change to the default value of
+	`TeX-source-correlate-method'.
+
 2014-06-29  Mosè Giordano  <giordano.mose@libero.it>
 
 	* doc/todo.texi (Mid-term Goals): Remove "More flexible option and
