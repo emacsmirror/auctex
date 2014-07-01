@@ -4451,9 +4451,11 @@ Brace insertion is only done if point is in a math construct and
       ["Next Error" TeX-next-error
        :help "Jump to the next error of the last TeX run"]
       ["Previous Error" TeX-previous-error
-       :help "Jump to the previous error of the last TeX run"]
-      ["Error overview" TeX-error-overview
-       :help "Open an overview of errors occured in the last TeX run"]
+       :help "Jump to the previous error of the last TeX run"
+       :visible TeX-parse-all-errors]
+      ["Error Overview" TeX-error-overview
+       :help "Open an overview of errors occured in the last TeX run"
+       :visible (and TeX-parse-all-errors (fboundp 'tabulated-list-mode))]
       ["Quick View" TeX-view
        :help "Start a viewer without prompting"]
       "-"

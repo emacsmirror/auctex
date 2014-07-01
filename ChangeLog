@@ -13,6 +13,8 @@
 	now deleted `TeX-source-correlate-method-active' variable.
 	(TeX-source-specials-view-expand-options): Use the
 	`TeX-source-correlate-method-active' function.
+	(TeX-mode-specific-command-menu-entries): Hide "Previous Error"
+	and "Error Overview" entries when not available.
 
 	* context.el: Update copyright years.
 	(ConTeXt-expand-options): Use the
