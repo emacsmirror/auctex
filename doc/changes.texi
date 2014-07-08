@@ -17,8 +17,12 @@
 @item
 Now @code{TeX-previous-error} works with @TeX{} commands if the new
 option @code{TeX-parse-all-errors} is non-nil, which is the default.
-@code{TeX-next-error} and @code{TeX-previous-error} can take a numeric
-argument to specify how many errors to move forward or backward.
+When this option is non-nil, an overview of errors and warnings reported
+by the TeX compiler can be opened with @kbd{M-x TeX-error-overview
+@key{RET}}.
+@ifclear rawfile
+@xref{Debugging}, for details.
+@end ifclear
 
 @item
 Style file authors are encouraged to distinguish common from expert
@@ -43,17 +47,18 @@ Now you can insert @samp{$...$} or @samp{\(...\)} by typing a single
 @end ifclear
 
 @item
-@kbd{C-c RET documentclass RET} completes with all available @LaTeX{}
-classes, if the @code{TeX-arg-input-file-search} variable is non-nil.
-Completion for class options of the standard @LaTeX{} classes is
-provided as well.
+@kbd{C-c @key{RET} documentclass @key{RET}} completes with all available
+@LaTeX{} classes, if the @code{TeX-arg-input-file-search} variable is
+non-nil.  Completion for class options of the standard @LaTeX{} classes
+is provided as well.
 
 @item
 New user options @code{LaTeX-default-author},
 @code{TeX-insert-braces-alist}, @code{LaTeX-fontspec-arg-font-search},
 and @code{LaTeX-fontspec-font-list-default}.  A new possible value
 (@code{show-all-optional-args}) for
-@code{TeX-insert-macro-default-style} was added.
+@code{TeX-insert-macro-default-style} was added.  The default value of
+@code{TeX-source-correlate-method} has been changed.
 
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,
@@ -933,3 +938,8 @@ Added by David Kastrup <David.Kastrup@@t-online.de>.
 @item
 Bug fixes.
 @end itemize
+
+@c Local Variables:
+@c mode: texinfo
+@c TeX-master: "auctex"
+@c End:

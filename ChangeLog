@@ -1,3 +1,89 @@
+2014-07-02  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex.el (TeX-expand-list): Set
+	`TeX-source-correlate-output-page-function' when necessary, in the
+	"%(outpage)" expander.
+	(TeX-source-correlate-method): Add an alist as a possible value
+	and change the default.
+	(TeX-source-correlate-method-active): Convert to a function.
+	(TeX-source-correlate-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+	(TeX-source-correlate-mode): Remove setting of the
+	`TeX-source-correlate-output-page-function' variable and of the
+	now deleted `TeX-source-correlate-method-active' variable.
+	(TeX-source-specials-view-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+	(TeX-mode-specific-command-menu-entries): Hide "Previous Error"
+	and "Error Overview" entries when not available.
+
+	* context.el: Update copyright years.
+	(ConTeXt-expand-options): Use the
+	`TeX-source-correlate-method-active' function.
+
+	* doc/auctex.texi (I/O Correlation): Update documentation of
+	`TeX-source-correlate-method'.
+
+	* doc/changes.texi: Mention change to the default value of
+	`TeX-source-correlate-method'.
+
+2014-06-29  Mosè Giordano  <giordano.mose@libero.it>
+
+	* doc/todo.texi (Mid-term Goals): Remove "More flexible option and
+	command handling" item: we now have `TeX-command-extra-options'.
+	(Wishlist): Remove "Poor man's Source Specials": AUCTeX supports
+	source specials and SyncTeX.
+	(Wishlist): Remove "multiple completion for \bibliography" item:
+	"\bibliography" does complete multiple arguments.
+
+2014-06-28  Mosè Giordano  <giordano.mose@libero.it>
+
+	* tex-buf.el (TeX-command): Kill the frame and buffer associated
+	to the error overview before running commands.
+	(TeX-TeX-sentinel): Open error overview if
+	`TeX-error-overview-open-after-TeX-run' is non-nil and there are
+	errors or warnings to show.
+	(TeX-LaTeX-sentinel): Ditto.
+	(TeX-find-display-help): Set `runbuf' to `TeX-active-buffer' since
+	this function may be called also from the error overview buffer.
+	(TeX-error-description-faces): Change group to more appropriate
+	`TeX-output'.
+	(TeX-error-overview-active-buffer): New variable.
+	(TeX-error-overview-orig-frame): Ditto.
+	(TeX-error-overview-orig-window): Ditto.
+	(TeX-error-overview-frame): Ditto.
+	(TeX-error-overview-setup): New customizable variable.
+	(TeX-error-overview-setup): New function.
+	(TeX-error-overview-goto-source): Ditto.
+	(TeX-error-overview-make-entries): Ditto.
+	(TeX-error-overview-next-error): Ditto.
+	(TeX-error-overview-previous-error): Ditto.
+	(TeX-error-overview-quit): Ditto.
+	(TeX-error-overview-mode-map): New variable.
+	(TeX-error-overview-list-entries): Ditto.
+	(TeX-error-overview-mode): New major mode.
+	(TeX-error-overview-buffer-name): New constant.
+	(TeX-error-overview-frame-parameters): New customizable variable.
+	(TeX-error-overview-open-after-TeX-run): Ditto.
+	(TeX-error-overview): New function.
+	(TeX-find-display-help): Expand the name of the file to be visited
+	starting from the directory of the master file.
+	(TeX-error-overview-make-entries): Add optional `master-dir'
+	argument, to shorten file names when they are relative.
+	(TeX-error-overview): Pass `TeX-master-directory' as argument to
+	`TeX-error-overview-make-entries'.
+
+	* tex.el (TeX-error-overview): Autoload `TeX-error-overview'.
+	(TeX-mode-specific-command-menu-entries): Add an entry for the
+	error overview.
+
+	* doc/auctex.texi (Debugging): Document error overview.
+
+	* doc/changes.texi: Mention error overview.  Add local variables
+	to the end of the file.
+
+	* doc/todo.texi: Add local variables to the end of the file.
+	(Wishlist): Update entry about error reporting.
+
 2014-06-21  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex-buf.el (TeX-parse-TeX): Use `TeX-find-display-help' in place
