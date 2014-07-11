@@ -693,9 +693,13 @@ overlays."
 ;;   (TeX-completing-read-multiple ...))
 ;;
 ;; which results in a void-variable error if crm hasn't been loaded before.
-(unless (require 'crm nil t)
-  (error "AUCTeX requires crm.el which is included in Emacs and
-edit-utils >= 2.32 for XEmacs."))
+;; XEmacs 21.4 `require' doesn't have the third NOERROR argument, thus we handle
+;; the file-error signal with a `condition-case' also in GNU Emacs.
+(condition-case nil
+    (require 'crm)
+  (file-error
+   (error "AUCTeX requires crm.el which is included in Emacs and
+edit-utils >= 2.32 for XEmacs.")))
 
 (if (fboundp 'completing-read-multiple)
     (defun TeX-completing-read-multiple
@@ -1043,8 +1047,10 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; For `dbus-ignore-errors'.
-(eval-when-compile (require 'dbus nil :no-error))
+;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
+;; not being defined.
+(eval-when-compile (and (featurep 'dbusbind)
+			(require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (&rest options)
   "Return non-nil, if evince is installed and accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are

@@ -1,3 +1,16 @@
+2014-07-11  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-error-description-error): Make face definition
+	XEmacs compatible.
+	(TeX-error-description-tex-said): Ditto.
+	(TeX-error-description-help): Ditto.
+
+	* tex.el (nil): Handle the case of a non-available crm.el with a
+	`condition-case', instead of using the third argument of
+	`require', not recognized by XEmacs 21.4.
+	(and): Check whether dbus support is available before requiring
+	dbus.el.
+
 2014-07-02  Mosè Giordano  <giordano.mose@libero.it>
 
 	* tex.el (TeX-expand-list): Set

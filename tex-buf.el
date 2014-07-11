@@ -1902,7 +1902,7 @@ warning."
     (((class color) (min-colors 16) (background light)) :foreground "Red1")
     (((class color) (min-colors 16) (background dark))  :foreground "Pink")
     (((class color) (min-colors 8)) :foreground "red")
-    (t :inverse-video t))
+    (t (:inverse-video t)))
   "Face for \"Error\" string in error descriptions.")
 
 (defface TeX-error-description-warning
@@ -1925,11 +1925,11 @@ warning."
      :foreground "LightSkyBlue")
     (((class color) (min-colors 8))
      :foreground "blue" :weight bold)
-    (t :inverse-video t :weight bold))
+    (t (:inverse-video t :weight bold)))
   "Face for \"TeX said\" string in error descriptions.")
 
 (defface TeX-error-description-help
-  '((t :inherit TeX-error-description-tex-said))
+  '((t (:inherit TeX-error-description-tex-said)))
   "Face for \"Help\" string in error descriptions.")
 
 (defun TeX-help-error (error output runbuffer type)
