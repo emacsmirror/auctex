@@ -1896,20 +1896,23 @@ warning."
 
 (defface TeX-error-description-error
   ;; This is the same as `error' face in latest GNU Emacs versions.
-  '((default :weight bold)
-    (((class color) (min-colors 88) (background light)) :foreground "Red1")
-    (((class color) (min-colors 88) (background dark))  :foreground "Pink")
-    (((class color) (min-colors 16) (background light)) :foreground "Red1")
-    (((class color) (min-colors 16) (background dark))  :foreground "Pink")
-    (((class color) (min-colors 8)) :foreground "red")
-    (t (:inverse-video t)))
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 16) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 16) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 8))
+     :foreground "red" :weight bold)
+    (t (:inverse-video t :weight bold)))
   "Face for \"Error\" string in error descriptions.")
 
 (defface TeX-error-description-warning
   ;; This is the same as `warning' face in latest GNU Emacs versions.
-  '((default :weight bold)
-    (((class color) (min-colors 16)) :foreground "DarkOrange")
-    (((class color)) :foreground "yellow"))
+  '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
+    (((class color)) :foreground "yellow" :weight bold))
   "Face for \"Warning\" string in error descriptions.")
 
 (defface TeX-error-description-tex-said
