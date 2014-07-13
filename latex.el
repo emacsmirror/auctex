@@ -5541,7 +5541,7 @@ of `LaTeX-mode-hook'."
   ;; button could be wrongly set.
   (add-hook 'TeX-update-style-hook
 	    (lambda ()
-	      (if (local-variable-p 'LaTeX-biblatex-use-Biber)
+	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (TeX-set-mode-name)

@@ -1,3 +1,16 @@
+2014-07-13  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (TeX-latex-mode): Add second argument to
+	`local-variable-p', mandatory in XEmacs.  Suggested by Ikumi
+	Keita.
+
+	* preview/preview.el (preview-dump-state): Ditto.
+
+	* style/biblatex.el ("biblatex"): Ditto.
+
+	* tex.el (TeX-how-many): Make the function return a number also in
+	XEmacs and Emacs 21.  Suggested by Ikumi Keita.
+
 2014-07-12  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-error-description-error): Do not use the

@@ -224,7 +224,7 @@ for citation keys."
    ;; the backend can be overridden by setting `LaTeX-biblatex-use-Biber' as a
    ;; local variable.
    (setq LaTeX-using-Biber
-	 (if (local-variable-p 'LaTeX-biblatex-use-Biber)
+	 (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 	     LaTeX-biblatex-use-Biber
 	   (not (or (LaTeX-provided-package-options-member
 		     "biblatex" "backend=bibtex")
