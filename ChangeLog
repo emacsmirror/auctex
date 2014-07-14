@@ -1,3 +1,16 @@
+2014-07-14  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-next-error): Do not pass `reparse' argument to
+	`next-error' in XEmacs as it is not supported.
+	(TeX-error-overview-frame, TeX-error-overview-buffer-name): Move
+	before their first use in order to prevent a runtime error in
+	XEmacs and GNU Emacs 21.  Reported by Ikumi Keita.
+	(TeX-parse-TeX): Manually set `item' to nil when
+	`TeX-error-last-visited' is negative.
+	(TeX-error-description-error, TeX-error-description-warning)
+	(TeX-error-description-tex-said): Set to nil in XEmacs and GNU
+	Emacs 21.  Reported by Ikumi Keita.
+
 2014-07-13  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (TeX-latex-mode): Add second argument to
