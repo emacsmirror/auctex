@@ -693,9 +693,13 @@ overlays."
 ;;   (TeX-completing-read-multiple ...))
 ;;
 ;; which results in a void-variable error if crm hasn't been loaded before.
-(unless (require 'crm nil t)
-  (error "AUCTeX requires crm.el which is included in Emacs and
-edit-utils >= 2.32 for XEmacs."))
+;; XEmacs 21.4 `require' doesn't have the third NOERROR argument, thus we handle
+;; the file-error signal with a `condition-case' also in GNU Emacs.
+(condition-case nil
+    (require 'crm)
+  (file-error
+   (error "AUCTeX requires crm.el which is included in Emacs and
+edit-utils >= 2.32 for XEmacs.")))
 
 (if (fboundp 'completing-read-multiple)
     (defun TeX-completing-read-multiple
@@ -1043,8 +1047,10 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; For `dbus-ignore-errors'.
-(eval-when-compile (require 'dbus nil :no-error))
+;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
+;; not being defined.
+(eval-when-compile (and (featurep 'dbusbind)
+			(require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (&rest options)
   "Return non-nil, if evince is installed and accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
@@ -5911,12 +5917,31 @@ NAME may be a package, a command, or a document."
 
 (defun TeX-how-many (regexp &optional rstart rend)
   "Compatibily function for `how-many'.
-Supports restriction to a region where the XEmacs version doesn't."
-  (save-excursion
-    (save-restriction
-      (narrow-to-region rstart rend)
-      (goto-char (point-min))
-      (how-many regexp))))
+Supports restriction to a region where the XEmacs version doesn't
+and always returns the number of matches, also in XEmacs and GNU
+Emacs 21."
+  ;; Emacs >= 22 does what we want.
+  (if (>= emacs-major-version 22)
+      (how-many regexp rstart rend)
+    ;; XEmacs and GNU Emacs 21 don't return the number of matches but only print
+    ;; it.
+    (let ((string
+	   (if (featurep 'xemacs)
+	       ;; XEmacs doesn't even support restriction to a region.
+	       (save-excursion
+		 (save-restriction
+		   (when (and (integer-or-marker-p rstart)
+			      (integer-or-marker-p rend))
+		     (narrow-to-region rstart rend)
+		     (goto-char (point-min)))
+		   (how-many regexp)))
+	     (how-many regexp rstart rend))))
+      ;; Hide the message printed by `how-many'.
+      (message "")
+      ;; Select the number of occurrences and convert it to a number.
+      (if (string-match "\\([0-9]+\\).*" string)
+	  (string-to-number (replace-match "\\1" nil nil string))
+	0))))
 
 (provide 'tex)
 

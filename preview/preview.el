@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001-2006, 2010, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2010-2014  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -3554,7 +3554,7 @@ In the form of yyyy.mmdd")
 (defun preview-dump-state (buffer)
   (condition-case nil
       (progn
-	(unless (local-variable-p 'TeX-command-buffer)
+	(unless (local-variable-p 'TeX-command-buffer (current-buffer))
 	  (setq buffer (with-current-buffer buffer (TeX-active-buffer))))
 	(when (bufferp buffer)
 	  (insert "\nRun buffer contents:\n\n")

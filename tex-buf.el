@@ -292,7 +292,9 @@ message buffer and start at the first error."
   (if (or (null (TeX-active-buffer))
 	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
 				  major-mode)))
-      (next-error arg reparse)
+      (if (featurep 'xemacs)
+	  (next-error arg)
+	(next-error arg reparse))
 
     ;; Force reparsing when the function is called with a universal-argument.
     (if (consp arg) (setq reparse t arg nil))
@@ -315,7 +317,7 @@ This works only with TeX commands and if the
 
     (let ((parse-function (TeX-get-parse-function)))
       (if (and TeX-parse-all-errors (equal parse-function 'TeX-parse-TeX))
-	  ;; When `TeX-parse-all-errors' and the parsing function is
+	  ;; When `TeX-parse-all-errors' is non-nil and the parsing function is
 	  ;; `TeX-parse-TeX' we can move backward in the errors.
 	  (TeX-parse-TeX (- arg) nil)
 	;; XXX: moving backward in the errors hasn't yet been implemented for
@@ -323,6 +325,12 @@ This works only with TeX commands and if the
 	(error "Jumping to previous error not supported.")))))
 
 ;;; Command Query
+
+(defvar TeX-error-overview-frame nil
+  "The frame of the error overview.")
+
+(defconst TeX-error-overview-buffer-name "*TeX errors*"
+  "Name of the buffer in which to show error list.")
 
 (defun TeX-command (name file &optional override-confirm)
   "Run command NAME on the file returned by calling FILE.
@@ -1550,7 +1558,10 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	  (progn
 	    (setq max-index (length TeX-error-list)
 		  TeX-error-last-visited (+ (or arg 1) TeX-error-last-visited)
-		  item (nth TeX-error-last-visited TeX-error-list))
+		  item (if (natnump TeX-error-last-visited)
+			   (nth TeX-error-last-visited TeX-error-list)
+			 ;; XEmacs doesn't support `nth' with a negative index.
+			 nil))
 	    (if (< TeX-error-last-visited -1)
 		(setq TeX-error-last-visited -1))
 	    (cond ((or (null item)
@@ -1895,41 +1906,50 @@ warning."
   :group 'TeX-output)
 
 (defface TeX-error-description-error
-  ;; This is the same as `error' face in latest GNU Emacs versions.
-  '((default :weight bold)
-    (((class color) (min-colors 88) (background light)) :foreground "Red1")
-    (((class color) (min-colors 88) (background dark))  :foreground "Pink")
-    (((class color) (min-colors 16) (background light)) :foreground "Red1")
-    (((class color) (min-colors 16) (background dark))  :foreground "Pink")
-    (((class color) (min-colors 8)) :foreground "red")
-    (t :inverse-video t))
+  (if (< emacs-major-version 22)
+      nil
+    ;; This is the same as `error' face in latest GNU Emacs versions.
+    '((((class color) (min-colors 88) (background light))
+       :foreground "Red1" :weight bold)
+      (((class color) (min-colors 88) (background dark))
+       :foreground "Pink" :weight bold)
+      (((class color) (min-colors 16) (background light))
+       :foreground "Red1" :weight bold)
+      (((class color) (min-colors 16) (background dark))
+       :foreground "Pink" :weight bold)
+      (((class color) (min-colors 8))
+       :foreground "red" :weight bold)
+      (t (:inverse-video t :weight bold))))
   "Face for \"Error\" string in error descriptions.")
 
 (defface TeX-error-description-warning
-  ;; This is the same as `warning' face in latest GNU Emacs versions.
-  '((default :weight bold)
-    (((class color) (min-colors 16)) :foreground "DarkOrange")
-    (((class color)) :foreground "yellow"))
+  (if (< emacs-major-version 22)
+      nil
+    ;; This is the same as `warning' face in latest GNU Emacs versions.
+    '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
+      (((class color)) :foreground "yellow" :weight bold)))
   "Face for \"Warning\" string in error descriptions.")
 
 (defface TeX-error-description-tex-said
-  ;; This is the same as `font-lock-function-name-face' face in latest GNU Emacs
-  ;; versions.
-  '((((class color) (min-colors 88) (background light))
-     :foreground "Blue1")
-    (((class color) (min-colors 88) (background dark))
-     :foreground "LightSkyBlue")
-    (((class color) (min-colors 16) (background light))
-     :foreground "Blue")
-    (((class color) (min-colors 16) (background dark))
-     :foreground "LightSkyBlue")
-    (((class color) (min-colors 8))
-     :foreground "blue" :weight bold)
-    (t :inverse-video t :weight bold))
+  (if (< emacs-major-version 22)
+      nil
+    ;; This is the same as `font-lock-function-name-face' face in latest GNU
+    ;; Emacs versions.
+    '((((class color) (min-colors 88) (background light))
+       :foreground "Blue1")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "LightSkyBlue")
+      (((class color) (min-colors 16) (background light))
+       :foreground "Blue")
+      (((class color) (min-colors 16) (background dark))
+       :foreground "LightSkyBlue")
+      (((class color) (min-colors 8))
+       :foreground "blue" :weight bold)
+      (t (:inverse-video t :weight bold))))
   "Face for \"TeX said\" string in error descriptions.")
 
 (defface TeX-error-description-help
-  '((t :inherit TeX-error-description-tex-said))
+  '((t (:inherit TeX-error-description-tex-said)))
   "Face for \"Help\" string in error descriptions.")
 
 (defun TeX-help-error (error output runbuffer type)
@@ -2425,9 +2445,6 @@ error."
 (defvar TeX-error-overview-orig-window nil
   "Window from which the error overview has been launched.")
 
-(defvar TeX-error-overview-frame nil
-  "The frame of the error overview.")
-
 (defcustom TeX-error-overview-setup nil
   "The frame setup of the error overview.
 
@@ -2601,9 +2618,6 @@ forward, if negative)."
         tabulated-list-entries TeX-error-overview-list-entries)
   (tabulated-list-init-header)
   (tabulated-list-print))
-
-(defconst TeX-error-overview-buffer-name "*TeX errors*"
-  "Name of the buffer in which to show error list.")
 
 (defcustom TeX-error-overview-frame-parameters
   '((name . "TeX errors")
