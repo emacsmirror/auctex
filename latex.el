@@ -1028,7 +1028,8 @@ Just like array and tabular."
 			      (concat
 			       (unless (zerop (length pos))
 				 (concat LaTeX-optop pos LaTeX-optcl))
-			       (concat TeX-grop fmt TeX-grcl)))))
+			       (concat TeX-grop fmt TeX-grcl)))
+    (LaTeX-item-array t)))
 
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
@@ -1076,7 +1077,8 @@ Just like array and tabular."
 			       (concat TeX-grop width TeX-grcl) ;; not optional!
 			       (unless (zerop (length pos))
 				 (concat LaTeX-optop pos LaTeX-optcl))
-			       (concat TeX-grop fmt TeX-grcl)))))
+			       (concat TeX-grop fmt TeX-grcl)))
+    (LaTeX-item-tabular* t)))
 
 (defun LaTeX-env-picture (environment)
   "Insert ENVIRONMENT with width, height specifications."
@@ -1153,6 +1155,126 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 (defun LaTeX-item-bib ()
   "Insert a new bibitem."
   (TeX-insert-macro "bibitem"))
+
+(defvar LaTeX-array-skipping-regexp (regexp-opt '("[t]" "[b]" ""))
+   "Regexp matching between \\begin{xxx} and column specification.
+For array and tabular environments.  See `LaTeX-insert-ampersands' for
+detail.")
+
+(defvar LaTeX-tabular*-skipping-regexp
+  ;; Assume width specification contains neither nested curly brace
+  ;; pair nor escaped "}".
+  (concat "{[^}]*}[ \t]*" (regexp-opt '("[t]" "[b]" "")))
+   "Regexp matching between \\begin{tabular*} and column specification.
+For tabular* environment only.  See `LaTeX-insert-ampersands' for detail.")
+
+(defun LaTeX-item-array (&optional suppress)
+  "Insert line break macro on the last line and suitable number of &'s.
+For array and tabular environments.
+
+If SUPPRESS is non-nil, do not insert line break macro."
+  (unless suppress
+    (save-excursion
+      (end-of-line 0)
+      (just-one-space)
+      (TeX-insert-macro "\\")))
+  (LaTeX-insert-ampersands
+   LaTeX-array-skipping-regexp 'LaTeX-array-count-columns))
+
+(defun LaTeX-item-tabular* (&optional suppress)
+  "Insert line break macro on the last line and suitable number of &'s.
+For tabular* environment only.
+
+If SUPPRESS is non-nil, do not insert line break macro."
+  (unless suppress
+    (save-excursion
+      (end-of-line 0)
+      (just-one-space)
+      (TeX-insert-macro "\\")))
+  (LaTeX-insert-ampersands
+   LaTeX-tabular*-skipping-regexp 'LaTeX-array-count-columns))
+
+(defun LaTeX-insert-ampersands (regexp func)
+  "Insert suitable number of ampersands for the current environment.
+The number is calculated from REGEXP and FUNC.
+
+Example 1:
+Consider the case that the current environment begins with
+\\begin{array}[t]{|lcr|}
+.  REGEXP must be chosen to match \"[t]\", i.e., the text between just
+after \"\\begin{array}\" and just before \"{|lcr|}\", which encloses
+the column specification.  FUNC must return the number of ampersands to
+be inserted, which is 2 since this example specifies three columns.
+FUNC is called with two arguments START and END, which spans the column
+specification (without enclosing braces.)  REGEXP is used to determine
+these START and END.
+
+Example 2:
+This time the environment begins with
+\\begin{tabular*}{1.0\\linewidth}[b]{c@{,}p{5ex}}
+.  REGEXP must match \"{1.0\\linewidth}[b]\" and FUNC must return 1 from
+the text \"c@{,}p{5ex}\" between START and END specified two columns.
+
+FUNC should return nil if it cannot determine the number of ampersands."
+  (let* ((cur (point))
+	 (num
+	  (save-excursion
+	    (ignore-errors
+	      (LaTeX-find-matching-begin)
+	      ;; Skip over "\begin{xxx}" and possible whitespaces.
+	      (forward-list 1)
+	      (skip-chars-forward " \t")
+	      ;; Skip over the text specified by REGEXP and whitespaces.
+	      (when (let ((case-fold-search nil))
+		      (re-search-forward regexp cur))
+		(skip-chars-forward " \t")
+		(when (eq (following-char) ?{)
+		  ;; We have reached the target "{yyy}" part.
+		  (forward-char 1)
+		  ;; The next line doesn't move point, so point
+		  ;; is left just after the opening brace.
+		  (let ((pos (TeX-find-closing-brace)))
+		    (if pos
+			;; Calculate number of ampersands to be inserted.
+			(funcall func (point) (1- pos))))))))))
+    (if (natnump num)
+	(save-excursion (insert (make-string num ?&))))))
+
+(defvar LaTeX-array-column-letters "clrp"
+  "Column letters for array-like environments.
+See `LaTeX-array-count-columns' for detail.")
+
+(defun LaTeX-array-count-columns (start end)
+  "Count number of ampersands to be inserted.
+The columns are specified by the letters found in the string
+`LaTeX-array-column-letters' and the number of those letters within the
+text between START and END is basically considered to be the number of
+columns.  The arguments surrounded between braces such as p{30pt} do not
+interfere the count of columns.
+
+Return one less number than the columns, or nil on failing to count the
+right number."
+  (save-excursion
+    (let (p (cols 0))
+      (goto-char start)
+      (while (< (setq p (point)) end)
+
+	;; The below block accounts for one unit of move for
+	;; one column.
+	(setq cols (+ cols (skip-chars-forward
+			    LaTeX-array-column-letters end)))
+	(skip-chars-forward (concat
+			     "^" LaTeX-array-column-letters
+			     TeX-grop) end)
+	(if (eq (following-char) ?{) (forward-list 1))
+
+	;; Not sure whether this is really necessary or not, but
+	;; prepare for possible infinite loop anyway.
+	(when (eq p (point))
+	  (setq cols nil)
+	  (goto-char end)))
+      ;; The number of ampersands is one less than column.
+      (if cols (1- cols)))))
 
 ;;; Parser
 
@@ -5678,7 +5800,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
-			  ("thebibliography" . LaTeX-item-bib)))
+			  ("thebibliography" . LaTeX-item-bib)
+			  ("array" . LaTeX-item-array)
+			  ("tabular" . LaTeX-item-array)
+			  ("tabular*" . LaTeX-item-tabular*)))
 
   (setq TeX-complete-list
 	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"

@@ -1,3 +1,63 @@
+2014-07-17  Mosè Giordano  <mose@gnu.org>
+
+	* Makefile.in: Update copyright years.
+	(EXCLUDEDFILES): Rename from GITFILES.  Remove also .cvsignore and
+	tests from the release tarball.
+	(release-commit): More precise suggestion to push tag and release
+	commit.
+	(tar-ball): Use EXCLUDEDFILES in place of GITFILES.
+
+2014-07-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* latex.el: Enhance array and tabular(*) environments support.
+	(LaTeX-env-array): Add call to `LaTeX-item-array'.
+	(LaTeX-env-tabular*): Add call to `LaTeX-item-tabular*'.
+	(LaTeX-array-skipping-regexp): New variable.
+	(LaTeX-tabular*-skipping-regexp): Ditto.
+	(LaTeX-item-array): New function.  Put line break macro on the
+	last line and insert suitable number of ampersands.
+	(LaTeX-item-tabular*): Ditto.
+	(LaTeX-insert-ampersands): New function.  Insert suitable number
+	of ampersands.
+	(LaTeX-array-column-letters): New variable.  Column letters for
+	array-like environments.
+	(LaTeX-array-count-columns): New function.  Count number of
+	ampersands to be inserted.
+	(LaTeX-common-initialization): Add entries to LaTeX-item-list to
+	use `LaTeX-item-array' and `LaTeX-item-tabular*'.
+
+	* style/amsmath.el: Enhance alignat-like environments support
+	as well as some cleanups.
+	(LaTeX-item-equation-alignat): New function.  Insert contents to
+	terminate a line in multi-line equations environment.
+	(LaTeX-amsmath-env-alignat): Use it.  Add doc string.
+	(LaTeX-amsmath-env-alignedat): Ditto.
+	(LaTeX-amsmath-env-aligned): Removed.  Just specifying a prompt
+	string for an optional argument is enough.
+	(LaTeX-item-equation): Take over the job of
+	`LaTeX-item-equations'.  Add an optional `suppress' argument:
+	when it is non-nil skip putting line break macro.  Add doc string.
+	(LaTeX-item-equations): Removed.  Its task is now covered by
+	`LaTeX-item-equation'.
+	(LaTeX-item-equation-alignat): New function.  Insert ampersands
+	according to the columns number, as well as calling
+	`LaTeX-item-equation'.
+	(LaTeX-amsmath-alignat-number-of-ampersands): New function.
+	("amsmath"): Arrange setups of variables to adopt the above
+	changes.
+
+	* style/array.el ("array"): Change `LaTeX-array-column-letters'
+	locally to include addtional letters extended in array.sty.
+
+	* style/plext.el: New style file.  Add support for extended
+	format for array-like environments.
+
+	* Makefile.in (STYLESRC): Include style/plext.el.
+
+	* doc/auctex.texi: Add documentation for the above enhancements.
+
+	* doc/changes.texi: Ditto.
+
 2014-07-14  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-next-error): Do not pass `reparse' argument to

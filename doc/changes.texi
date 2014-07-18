@@ -101,6 +101,19 @@ column values of a table line are written across multiple lines in the
 tex file.
 
 @item
+The suitable number of ampersands are inserted when you insert array,
+tabular and tabular* environments with @kbd{C-c C-e}.  Similar
+experience is obtained if you terminate rows in these environments with
+@kbd{C-c @key{LFD}}.  It supplies line break macro @samp{\\} and inserts
+the suitable number of ampersands on the next line.
+
+Similar supports are provided for various amsmath environments.
+
+@ifclear rawfile
+@xref{Tabular-like}, for details.
+@end ifclear
+
+@item
 Commands for narrowing to a group (@code{TeX-narrow-to-group}) and to
 @LaTeX{} environments (@code{LaTeX-narrow-to-environment}) were added.
 

@@ -40,7 +40,10 @@
 
    ;; `array.sty' adds a couple of new lengths.  They're added here, rather than
    ;; in the `TeX-add-symbols' block.
-   (LaTeX-add-lengths "extratabsurround" "extrarowheight")))
+   (LaTeX-add-lengths "extratabsurround" "extrarowheight")
+
+   ;; `array.sty' adds some new column specification letters.
+   (set (make-local-variable 'LaTeX-array-column-letters) "clrpmb")))
 
 (defvar LaTeX-array-package-options nil
   "Package options for array.")

@@ -1033,6 +1033,7 @@ Otherwise, you will be asked only in description environments.
 
 @node Tabular-like
 @subsection Tabular-like Environments
+@cindex amsmath
 
 When inserting Tabular-like environments, that is, `tabular' `array'
 etc., you will be prompted for a template for that environment.
@@ -1050,6 +1051,26 @@ Default width for minipage and tabular* environments.
 Default position string for array and tabular environments.  If nil,
 act like the empty string is given, but don't prompt for a position.
 @end defopt
+
+@AUCTeX{} calculates the number of columns from the format string and
+inserts the suitable number of ampersands.
+
+You can use @kbd{C-c @key{LFD}} (@code{LaTeX-insert-item}) to terminate
+rows in these environments.  It supplies line break macro @samp{\\} and
+inserts the suitable number of ampersands on the next line.
+
+@deffn Command LaTeX-insert-item
+@kindex C-c @key{LFD}
+(@kbd{C-c @key{LFD}}) Close the current row with @samp{\\}, move to the
+next line and insert an appropriate number of ampersands for the current
+environment.
+@end deffn
+
+Similar supports are provided for various amsmath environments such as
+@samp{align}, @samp{gather}, @samp{alignat}, @samp{matrix} etc.  Try
+typing @kbd{C-c @key{LFD}} in these environments.  It recognizes the
+current environment and does the appropriate job depending on the
+context.
 
 @node Customizing Environments
 @subsection Customizing Environments
