@@ -1414,7 +1414,7 @@ See variables bib-etags-command and bib-etags-filename"
 	  (re-search-forward
 	   (concat
 	    "\\\\\\(" (substring bib-ref-regexp 2)
-	    "\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}")
+	    "\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[[^]]*\\]\\)*\\){[^}]*}")
 	   nil t)
 	(setq s (match-beginning 0))
 	(setq e (match-end 0))
