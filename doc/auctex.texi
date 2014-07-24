@@ -4394,7 +4394,12 @@ Prompt for a @LaTeX{} length completing with known lengths.
 Prompt for a @TeX{} macro with completion.
 
 @item TeX-arg-date
-Prompt for a date, defaulting to the current date.
+@vindex TeX-date-format
+Prompt for a date, defaulting to the current date.  The format of the
+date is specified by the @code{TeX-date-format} option.  If you want to
+change the format when the @samp{babel} package is loaded with a
+specific language, set @code{TeX-date-format} inside the appropriate
+language hook, for details @pxref{European}.
 
 @item TeX-arg-version
 Prompt for the version of a file, using as initial input the current
