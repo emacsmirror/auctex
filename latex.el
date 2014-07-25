@@ -280,6 +280,14 @@ SECTION has to be a string contained in `LaTeX-section-list'.
 Additionally the function will invalidate the section submenu in
 order to let the menu filter regenerate it."
   (setq LaTeX-largest-level (LaTeX-section-level section))
+  (let ((offset (LaTeX-outline-offset)))
+    (when (> offset 0)
+      (let (lst)
+	(dolist (tup outline-heading-alist)
+	  (setq lst (cons (cons (car tup)
+				(+ offset (cdr tup)))
+			  lst)))
+	(setq outline-heading-alist (nreverse lst)))))
   (setq LaTeX-section-menu nil))
 
 (defun LaTeX-outline-offset ()

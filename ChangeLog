@@ -1,3 +1,9 @@
+2014-07-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-largest-level-set): Adapt
+	`outline-heading-alist' according to largest level in order to
+	make `outline-promote' (and others) work correctly.
+
 2014-07-25  Mosè Giordano  <mose@gnu.org>
 
 	* doc/auctex.texi (Adding Macros): Document `TeX-date-format'.
