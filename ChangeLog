@@ -1,3 +1,19 @@
+2014-07-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-largest-level-set): Adapt
+	`outline-heading-alist' according to largest level in order to
+	make `outline-promote' (and others) work correctly.
+
+2014-07-25  Mosè Giordano  <mose@gnu.org>
+
+	* doc/auctex.texi (Adding Macros): Document `TeX-date-format'.
+
+	* doc/changes.texi: Mention `TeX-date-format'.
+
+	* latex.el (TeX-date-format): New customizable option.
+	Suggested by Uwe Brauer.
+	(TeX-arg-date): Use it.
+
 2014-07-17  Mosè Giordano  <mose@gnu.org>
 
 	* Makefile.in: Update copyright years.

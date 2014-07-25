@@ -280,6 +280,14 @@ SECTION has to be a string contained in `LaTeX-section-list'.
 Additionally the function will invalidate the section submenu in
 order to let the menu filter regenerate it."
   (setq LaTeX-largest-level (LaTeX-section-level section))
+  (let ((offset (LaTeX-outline-offset)))
+    (when (> offset 0)
+      (let (lst)
+	(dolist (tup outline-heading-alist)
+	  (setq lst (cons (cons (car tup)
+				(+ offset (cdr tup)))
+			  lst)))
+	(setq outline-heading-alist (nreverse lst)))))
   (setq LaTeX-section-menu nil))
 
 (defun LaTeX-outline-offset ()
@@ -2251,12 +2259,17 @@ string."
 		    nil t)
    optional))
 
+(defcustom TeX-date-format "%Y/%m/%d"
+  "The default date format prompted by `TeX-arg-date'."
+  :group 'LaTeX-macro
+  :type 'string)
+
 (defun TeX-arg-date (optional &optional prompt)
   "Prompt for a date, defaulting to the current date.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (let ((default (format-time-string "%Y/%m/%d" (current-time))))
+  (let ((default (format-time-string TeX-date-format (current-time))))
     (TeX-argument-insert
      (TeX-read-string (TeX-argument-prompt
 		       optional prompt (format "Date (default %s)" default))
