@@ -1,5 +1,8 @@
 2014-08-11  Mosè Giordano  <mose@gnu.org>
 
+	* tex-buf.el (TeX-command): Keep the frame and the buffer
+	associate to the error overview if the command to be run is View.
+
 	* latex.el (LaTeX-auto-insert-label): New customizable variable.
 	(LaTeX-label): Use it.
 
