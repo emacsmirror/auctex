@@ -835,27 +835,28 @@ the label inserted, or nil if no label was inserted."
   :group 'LaTeX-label
   :type 'function)
 
-(defcustom LaTeX-auto-insert-label t
+(defcustom LaTeX-insert-label t
   "Control whether `LaTeX-label' function should insert a label.
 If nil, never inserts a label, if t always inserts a label.
 
 This variable may also be a cons cell, to whitelist or blacklist
-the environments for which a label should or should not be
-inserted.  The CAR can be either nil or t.  In the former case,
-`LaTeX-label' never inserts labels except for the environments
-listed in the CDR; in the latter case `LaTeX-label' always
-inserts labels except for the environments listed in the CDR."
+the sections or environments for which a label should or should
+not be inserted.  The CAR can be either nil or t.  In the former
+case, `LaTeX-label' never inserts labels except for the sections
+and environments listed in the CDR; in the latter case
+`LaTeX-label' always inserts labels except for the sections and
+environments listed in the CDR."
   :group 'LaTeX-label
   :type '(choice (const :tag "Insert labels" t)
 		 (const :tag "Do not insert labels" nil)
-		 (cons :tag "Whitelist or blacklist environments"
+		 (cons :tag "Whitelist or blacklist"
 		       (choice
 			(const
-			 :tag "Insert labels except for environments..." t)
+			 :tag "Insert labels except for sections and environments..." t)
 			(const
-			 :tag "Do not insert labels except for environments..."
+			 :tag "Do not insert labels except for sections and environments..."
 			 nil))
-		       (repeat (string :tag "Environment")))))
+		       (repeat (string :tag "Section or Environment")))))
 
 (defcustom LaTeX-figure-label "fig:"
   "*Default prefix to figure labels."
@@ -945,18 +946,18 @@ either the prefix or a symbol referring to one."
 
 (defun LaTeX-label (environment)
   "Insert a label for ENVIRONMENT at point.
-`LaTeX-auto-insert-label' controls whether the label should
-actually be inserted.  If `LaTeX-label-function' is a valid
-function, LaTeX label will transfer the job to this function."
+`LaTeX-insert-label' controls whether the label should actually
+be inserted.  If `LaTeX-label-function' is a valid function,
+LaTeX label will transfer the job to this function."
   (if (cond
-       ;; `LaTeX-auto-insert-label' is boolean.
-       ((booleanp LaTeX-auto-insert-label)
-	LaTeX-auto-insert-label)
-       ;; `LaTeX-auto-insert-label' is a whitelist or a blacklist.
-       ((consp LaTeX-auto-insert-label)
-	(if (member environment (cdr LaTeX-auto-insert-label))
-	    (null (car LaTeX-auto-insert-label))
-	  (car LaTeX-auto-insert-label)))
+       ;; `LaTeX-insert-label' is boolean.
+       ((booleanp LaTeX-insert-label)
+	LaTeX-insert-label)
+       ;; `LaTeX-insert-label' is a whitelist or a blacklist.
+       ((consp LaTeX-insert-label)
+	(if (member environment (cdr LaTeX-insert-label))
+	    (null (car LaTeX-insert-label))
+	  (car LaTeX-insert-label)))
        ;; In any other cases, insert the label.
        (t))
       (let (label)

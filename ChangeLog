@@ -1,3 +1,19 @@
+2014-08-12  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-insert-label): Rename from
+	`LaTeX-auto-insert-label' and mention sections in the doc-string.
+	(LaTeX-label): Update accordingly.
+
+	* doc/auctex.texi (Sectioning): Mention `LaTeX-insert-label'.
+	(Environments): Update `LaTeX-insert-label' name and document use
+	for sectioning commands.
+	(Environments, Completion): Prettify
+	`TeX-complete-expert-commands' documentation by using a table
+	environment.
+
+	* doc/changes.texi: Rename `LaTeX-auto-insert-label' to
+	`LaTeX-insert-label' and mention sections too.
+
 2014-08-11  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-command): Keep the frame and the buffer

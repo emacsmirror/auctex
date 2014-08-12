@@ -734,6 +734,12 @@ Prefix to all section references.
 
 @end deffn
 
+@vindex LaTeX-insert-label
+The @code{LaTeX-insert-label} user option controls whether
+@code{LaTeX-section} should automatically insert a label for the given
+sectioning command.  By default, a label for all sectioning commands
+will be prompted.  @xref{Environments}, for more information.
+
 The precise behavior of @code{LaTeX-section} is defined by the contents
 of @code{LaTeX-section-hook}.
 
@@ -853,33 +859,33 @@ as @samp{equation}, @samp{figure}, @samp{table}, etc@dots{}  When you
 insert one of the supported environments with @kbd{C-c C-e}, you will be
 automatically prompted for a label.  If you want to select the
 environments for which to automatically insert or not the label,
-customize the @code{LaTeX-auto-insert-label} variable.
-@defopt LaTeX-auto-insert-label
-Control whether @code{LaTeX-environment} (@kbd{C-c C-e}) should insert a
-label.  If nil, never inserts a label, if t always inserts a label and
-this the default.
+customize the @code{LaTeX-insert-label} variable.
+@defopt LaTeX-insert-label
+Control whether @code{LaTeX-section} (@kbd{C-c C-s}) or
+@code{LaTeX-environment} (@kbd{C-c C-e}) should insert a label.  If nil,
+never insert a label, if t always insert a label and this the default.
 
 This variable may also be a cons cell, to whitelist or blacklist the
-environments for which a label should or should not be inserted.  The
-car can be either nil or t.  In the former case,
-@code{LaTeX-environment} never inserts labels except for the
-environments listed in the cdr; in the latter case
-@code{LaTeX-environment} always inserts labels except for the
-environments listed in the cdr.  In any cases, you can manually insert
-at point a label inside an environment with @kbd{C-c C-m label
-@key{RET}}, as usual.
+sections or environments for which a label should or should not be
+inserted.  The car can be either nil or t.  In the former case,
+@code{LaTeX-section} and @code{LaTeX-environment} never insert labels
+except for the sections and environments listed in the cdr; in the
+latter case those functions always insert labels except for the sections
+and environments listed in the cdr.  In any cases, you can manually
+insert a label at point with @kbd{C-c C-m label @key{RET}}, as usual.
 
 For example, the value
 @lisp
-(t . "equation")
+(t . "paragraph" "equation")
 @end lisp
 makes @AUCTeX{} always prompt you for a label except for the
-@samp{equation} environment.  Instead with the value
+@samp{paragraph} section, and th @samp{equation} environment.  Instead
+with the value
 @lisp
-(nil . "caption" "figure")
+(nil . "part" "chapter" "caption" "figure")
 @end lisp
-you will be prompted for a label only for @samp{caption} and
-@samp{figure} environments.
+you will be prompted for a label only for @samp{part} and @samp{chapter}
+sections, and @samp{caption} and @samp{figure} environments.
 @end defopt
 
 As a default selection, @AUCTeX{} will suggest the environment last
@@ -916,9 +922,14 @@ Complete macros and environments marked as expert commands.
 
 Possible values are nil, t, or a list of style names.
 
-  - nil           Don't complete expert commands (default).
-  - t             Always complete expert commands.
-  - (STYLES ...)  Only complete expert commands of STYLES.
+@table @asis
+@item nil
+Don't complete expert commands (default).
+@item t
+Always complete expert commands.
+@item (STYLES @dots{})
+Only complete expert commands of STYLES.
+@end table
 @end defopt
 
 
@@ -1315,9 +1326,14 @@ Complete macros and environments marked as expert commands.
 
 Possible values are nil, t, or a list of style names.
 
-  - nil           Don't complete expert commands (default).
-  - t             Always complete expert commands.
-  - (STYLES ...)  Only complete expert commands of STYLES.
+@table @asis
+@item nil
+Don't complete expert commands (default).
+@item t
+Always complete expert commands.
+@item (STYLES @dots{})
+Only complete expert commands of STYLES.
+@end table
 @end defopt
 
 
