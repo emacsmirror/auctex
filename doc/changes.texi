@@ -26,7 +26,7 @@ by the TeX compiler can be opened with @kbd{M-x TeX-error-overview
 
 @item
 Style file authors are encouraged to distinguish common from expert
-macros/environments, and mark the latter using
+macros and environments, and mark the latter using
 @code{TeX-declare-expert-macros} and
 @code{LaTeX-declare-expert-environments}.
 
@@ -53,9 +53,10 @@ non-nil.  Completion for class options of the standard @LaTeX{} classes
 is provided as well.
 
 @item
-New user options @code{LaTeX-default-author}, @code{TeX-date-format},
-@code{TeX-insert-braces-alist}, @code{LaTeX-fontspec-arg-font-search},
-and @code{LaTeX-fontspec-font-list-default}.  A new possible value
+New user options @code{LaTeX-default-author},
+@code{LaTeX-fontspec-arg-font-search},
+@code{LaTeX-fontspec-font-list-default}, @code{TeX-date-format}, and
+@code{TeX-insert-braces-alist}.  A new possible value
 (@code{show-all-optional-args}) for
 @code{TeX-insert-macro-default-style} was added.  The default value of
 @code{TeX-source-correlate-method} has been changed.
@@ -127,6 +128,10 @@ per file basis using the @code{TeX-command-extra-options} option.
 @item
 Now @kbd{C-c C-e document @key{RET}}, in an empty document, prompts for
 @samp{\usepackage} macros in addition to @samp{\documentclass}.
+
+@item
+You can customize for which environments a label should be automatically
+inserted or not through the user option @code{LaTeX-auto-insert-label}.
 @end itemize
 
 @heading News since 11.87

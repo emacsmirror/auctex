@@ -835,6 +835,28 @@ the label inserted, or nil if no label was inserted."
   :group 'LaTeX-label
   :type 'function)
 
+(defcustom LaTeX-auto-insert-label t
+  "Control whether `LaTeX-label' function should insert a label.
+If nil, never inserts a label, if t always inserts a label.
+
+This variable may also be a cons cell, to whitelist or blacklist
+the environments for which a label should or should not be
+inserted.  The CAR can be either nil or t.  In the former case,
+`LaTeX-label' never inserts labels except for the environments
+listed in the CDR; in the latter case `LaTeX-label' always
+inserts labels except for the environments listed in the CDR."
+  :group 'LaTeX-label
+  :type '(choice (const :tag "Insert labels" t)
+		 (const :tag "Do not insert labels" nil)
+		 (cons :tag "Whitelist or blacklist environments"
+		       (choice
+			(const
+			 :tag "Insert labels except for environments..." t)
+			(const
+			 :tag "Do not insert labels except for environments..."
+			 nil))
+		       (repeat (string :tag "Environment")))))
+
 (defcustom LaTeX-figure-label "fig:"
   "*Default prefix to figure labels."
   :group 'LaTeX-label
@@ -923,39 +945,51 @@ either the prefix or a symbol referring to one."
 
 (defun LaTeX-label (environment)
   "Insert a label for ENVIRONMENT at point.
-If `LaTeX-label-function' is a valid function, LaTeX label will transfer the
-job to this function."
-  (let (label)
-    (if (and (boundp 'LaTeX-label-function)
-	     LaTeX-label-function
-	     (fboundp LaTeX-label-function))
+`LaTeX-auto-insert-label' controls whether the label should
+actually be inserted.  If `LaTeX-label-function' is a valid
+function, LaTeX label will transfer the job to this function."
+  (if (cond
+       ;; `LaTeX-auto-insert-label' is boolean.
+       ((booleanp LaTeX-auto-insert-label)
+	LaTeX-auto-insert-label)
+       ;; `LaTeX-auto-insert-label' is a whitelist or a blacklist.
+       ((consp LaTeX-auto-insert-label)
+	(if (member environment (cdr LaTeX-auto-insert-label))
+	    (null (car LaTeX-auto-insert-label))
+	  (car LaTeX-auto-insert-label)))
+       ;; In any other cases, insert the label.
+       (t))
+      (let (label)
+	(if (and (boundp 'LaTeX-label-function)
+		 LaTeX-label-function
+		 (fboundp LaTeX-label-function))
 
-	(setq label (funcall LaTeX-label-function environment))
-      (let ((prefix
-	     (or (cdr (assoc environment LaTeX-label-alist))
-		 (if (assoc environment LaTeX-section-list)
-		     (if (stringp LaTeX-section-label)
-			 LaTeX-section-label
-		       (and (listp LaTeX-section-label)
-			    (cdr (assoc environment LaTeX-section-label))))
-		   ""))))
-	(when prefix
-	  (when (symbolp prefix)
-	    (setq prefix (symbol-value prefix)))
-	  ;; Use completing-read as we do with `C-c C-m \label RET'
-	  (setq label (completing-read
-		       (TeX-argument-prompt t nil "What label")
-		       (LaTeX-label-list) nil nil prefix))
-	  ;; No label or empty string entered?
-	  (if (or (string= prefix label)
-		  (string= "" label))
-	      (setq label nil)
-	    (insert TeX-esc "label" TeX-grop label TeX-grcl))))
-      (if label
-	  (progn
-	    (LaTeX-add-labels label)
-	    label)
-	nil))))
+	    (setq label (funcall LaTeX-label-function environment))
+	  (let ((prefix
+		 (or (cdr (assoc environment LaTeX-label-alist))
+		     (if (assoc environment LaTeX-section-list)
+			 (if (stringp LaTeX-section-label)
+			     LaTeX-section-label
+			   (and (listp LaTeX-section-label)
+				(cdr (assoc environment LaTeX-section-label))))
+		       ""))))
+	    (when prefix
+	      (when (symbolp prefix)
+		(setq prefix (symbol-value prefix)))
+	      ;; Use completing-read as we do with `C-c C-m \label RET'
+	      (setq label (completing-read
+			   (TeX-argument-prompt t nil "What label")
+			   (LaTeX-label-list) nil nil prefix))
+	      ;; No label or empty string entered?
+	      (if (or (string= prefix label)
+		      (string= "" label))
+		  (setq label nil)
+		(insert TeX-esc "label" TeX-grop label TeX-grcl))))
+	  (if label
+	      (progn
+		(LaTeX-add-labels label)
+		label)
+	    nil)))))
 
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\caption and \\label commands."

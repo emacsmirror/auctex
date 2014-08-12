@@ -1,3 +1,17 @@
+2014-08-11  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-command): Keep the frame and the buffer
+	associate to the error overview if the command to be run is View.
+
+	* latex.el (LaTeX-auto-insert-label): New customizable variable.
+	(LaTeX-label): Use it.
+
+	* doc/auctex.texi (Environments): Document
+	`LaTeX-auto-insert-label'.
+
+	* doc/changes.texi: Mention `LaTeX-auto-insert-label'.  Fix a
+	couple of bad-boxes in the PDF output of the manual.
+
 2014-07-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-largest-level-set): Adapt

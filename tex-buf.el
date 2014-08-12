@@ -362,11 +362,12 @@ asked if it is positive, and suppressed if it is not."
 				    nil nil)))
 
     ;; Kill the frame and buffer associated to the error overview before running
-    ;; the command.
-    (if (frame-live-p TeX-error-overview-frame)
-	(delete-frame TeX-error-overview-frame))
-    (if (get-buffer TeX-error-overview-buffer-name)
-	(kill-buffer TeX-error-overview-buffer-name))
+    ;; the command, but keep them if the command to be run is View.
+    (unless (string= name "View")
+      (if (frame-live-p TeX-error-overview-frame)
+		   (delete-frame TeX-error-overview-frame))
+     (if (get-buffer TeX-error-overview-buffer-name)
+	 (kill-buffer TeX-error-overview-buffer-name)))
 
     ;; Now start the process
     (setq file (funcall file))

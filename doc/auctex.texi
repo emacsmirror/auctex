@@ -848,6 +848,40 @@ prefix argument), the current environment is modified and no new
 environment is inserted.
 @end deffn
 
+@AUCTeX{} helps you adding labels to environments which use them, such
+as @samp{equation}, @samp{figure}, @samp{table}, etc@dots{}  When you
+insert one of the supported environments with @kbd{C-c C-e}, you will be
+automatically prompted for a label.  If you want to select the
+environments for which to automatically insert or not the label,
+customize the @code{LaTeX-auto-insert-label} variable.
+@defopt LaTeX-auto-insert-label
+Control whether @code{LaTeX-environment} (@kbd{C-c C-e}) should insert a
+label.  If nil, never inserts a label, if t always inserts a label and
+this the default.
+
+This variable may also be a cons cell, to whitelist or blacklist the
+environments for which a label should or should not be inserted.  The
+car can be either nil or t.  In the former case,
+@code{LaTeX-environment} never inserts labels except for the
+environments listed in the cdr; in the latter case
+@code{LaTeX-environment} always inserts labels except for the
+environments listed in the cdr.  In any cases, you can manually insert
+at point a label inside an environment with @kbd{C-c C-m label
+@key{RET}}, as usual.
+
+For example, the value
+@lisp
+(t . "equation")
+@end lisp
+makes @AUCTeX{} always prompt you for a label except for the
+@samp{equation} environment.  Instead with the value
+@lisp
+(nil . "caption" "figure")
+@end lisp
+you will be prompted for a label only for @samp{caption} and
+@samp{figure} environments.
+@end defopt
+
 As a default selection, @AUCTeX{} will suggest the environment last
 inserted or, as the first choice the value of the variable
 @code{LaTeX-default-environment}.
