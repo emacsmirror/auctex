@@ -1,6 +1,6 @@
 ;;; longtable.el --- AUCTeX style for `longtable.sty'.
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,9 +29,6 @@
 
 ;;; Code:
 
-(add-to-list 'LaTeX-label-alist
-	     '("longtable" . LaTeX-table-label))
-
 (TeX-add-style-hook
  "longtable"
  (lambda ()
@@ -57,7 +54,7 @@
 			(indent-according-to-mode)
 			;; ask for a label and insert a new line only
 			;; if a label is actually inserted
-			(when (LaTeX-label environment)
+			(when (LaTeX-label environment 'environment)
 			  (LaTeX-newline)
 			  (indent-according-to-mode)))))))
    (TeX-add-symbols
@@ -79,6 +76,10 @@
    ;; Use the enhanced table formatting
    (add-to-list 'LaTeX-indent-environment-list
 		'("longtable" LaTeX-indent-tabular))
+
+   ;; Append longtable to `LaTeX-label-alist', in order not to override possible
+   ;; custome values.
+   (add-to-list 'LaTeX-label-alist '("longtable" . LaTeX-table-label) t)
 
    ;; Fontification
    (when (and (featurep 'font-latex)

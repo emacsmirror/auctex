@@ -487,7 +487,7 @@ Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
 The behaviour of this hook is controlled by variable `LaTeX-section-label'."
-  (and (LaTeX-label name)
+  (and (LaTeX-label name 'section)
        (LaTeX-newline)))
 
 ;;; Environments
@@ -835,29 +835,6 @@ the label inserted, or nil if no label was inserted."
   :group 'LaTeX-label
   :type 'function)
 
-(defcustom LaTeX-insert-label t
-  "Control whether `LaTeX-label' function should insert a label.
-If nil, never inserts a label, if t always inserts a label.
-
-This variable may also be a cons cell, to whitelist or blacklist
-the sections or environments for which a label should or should
-not be inserted.  The CAR can be either nil or t.  In the former
-case, `LaTeX-label' never inserts labels except for the sections
-and environments listed in the CDR; in the latter case
-`LaTeX-label' always inserts labels except for the sections and
-environments listed in the CDR."
-  :group 'LaTeX-label
-  :type '(choice (const :tag "Insert labels" t)
-		 (const :tag "Do not insert labels" nil)
-		 (cons :tag "Whitelist or blacklist"
-		       (choice
-			(const
-			 :tag "Insert labels except for sections and environments..." t)
-			(const
-			 :tag "Do not insert labels except for sections and environments..."
-			 nil))
-		       (repeat (string :tag "Section or Environment")))))
-
 (defcustom LaTeX-figure-label "fig:"
   "*Default prefix to figure labels."
   :group 'LaTeX-label
@@ -944,53 +921,43 @@ either the prefix or a symbol referring to one."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defun LaTeX-label (environment)
-  "Insert a label for ENVIRONMENT at point.
-`LaTeX-insert-label' controls whether the label should actually
-be inserted.  If `LaTeX-label-function' is a valid function,
-LaTeX label will transfer the job to this function."
-  (if (cond
-       ;; `LaTeX-insert-label' is boolean.
-       ((booleanp LaTeX-insert-label)
-	LaTeX-insert-label)
-       ;; `LaTeX-insert-label' is a whitelist or a blacklist.
-       ((consp LaTeX-insert-label)
-	(if (member environment (cdr LaTeX-insert-label))
-	    (null (car LaTeX-insert-label))
-	  (car LaTeX-insert-label)))
-       ;; In any other cases, insert the label.
-       (t))
-      (let (label)
-	(if (and (boundp 'LaTeX-label-function)
-		 LaTeX-label-function
-		 (fboundp LaTeX-label-function))
-
-	    (setq label (funcall LaTeX-label-function environment))
-	  (let ((prefix
-		 (or (cdr (assoc environment LaTeX-label-alist))
-		     (if (assoc environment LaTeX-section-list)
-			 (if (stringp LaTeX-section-label)
-			     LaTeX-section-label
-			   (and (listp LaTeX-section-label)
-				(cdr (assoc environment LaTeX-section-label))))
-		       ""))))
-	    (when prefix
-	      (when (symbolp prefix)
-		(setq prefix (symbol-value prefix)))
-	      ;; Use completing-read as we do with `C-c C-m \label RET'
-	      (setq label (completing-read
-			   (TeX-argument-prompt t nil "What label")
-			   (LaTeX-label-list) nil nil prefix))
-	      ;; No label or empty string entered?
-	      (if (or (string= prefix label)
-		      (string= "" label))
-		  (setq label nil)
-		(insert TeX-esc "label" TeX-grop label TeX-grcl))))
-	  (if label
-	      (progn
-		(LaTeX-add-labels label)
-		label)
-	    nil)))))
+(defun LaTeX-label (name type)
+  "Insert a label for NAME at point.
+TYPE can be either environment or section.  If
+`LaTeX-label-function' is a valid function, LaTeX label will
+transfer the job to this function."
+  (let ((prefix (cond
+		 ((eq type 'environment)
+		  (cdr (assoc name LaTeX-label-alist)))
+		 ((eq type 'section)
+		  (if (assoc name LaTeX-section-list)
+		      (if (stringp LaTeX-section-label)
+			  LaTeX-section-label
+			(and (listp LaTeX-section-label)
+			     (cdr (assoc name LaTeX-section-label))))
+		    ""))))
+	label)
+    (when (symbolp prefix)
+      (setq prefix (symbol-value prefix)))
+    (when prefix
+      (if (and (boundp 'LaTeX-label-function)
+	       LaTeX-label-function
+	       (fboundp LaTeX-label-function))
+	  (setq label (funcall LaTeX-label-function name))
+	;; Use completing-read as we do with `C-c C-m \label RET'
+	(setq label (completing-read
+		     (TeX-argument-prompt t nil "What label")
+		     (LaTeX-label-list) nil nil prefix))
+	;; No label or empty string entered?
+	(if (or (string= prefix label)
+		(string= "" label))
+	    (setq label nil)
+	  (insert TeX-esc "label" TeX-grop label TeX-grcl))
+	(if label
+	    (progn
+	      (LaTeX-add-labels label)
+	      label)
+	  nil)))))
 
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\caption and \\label commands."
@@ -1030,7 +997,7 @@ LaTeX label will transfer the job to this function."
 	    (indent-according-to-mode)
 	    ;; ask for a label and insert a new line only if a label is
 	    ;; actually inserted
-	    (when (LaTeX-label environment)
+	    (when (LaTeX-label environment 'environment)
 	      (LaTeX-newline)
 	      (indent-according-to-mode)))
 	;; bottom caption (default)
@@ -1046,7 +1013,7 @@ LaTeX label will transfer the job to this function."
 	  (if auto-fill-function (LaTeX-fill-paragraph))
 	  ;; ask for a label and if necessary insert a new line between caption
 	  ;; and label
-	  (when (save-excursion (LaTeX-label environment))
+	  (when (save-excursion (LaTeX-label environment 'environment))
 	    (LaTeX-newline)
 	    (indent-according-to-mode)))
 	;; Insert an empty line between caption and marked region, if any.
@@ -1077,7 +1044,7 @@ Just like array and tabular."
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
   (LaTeX-insert-environment environment)
-  (when (LaTeX-label environment)
+  (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
     (indent-according-to-mode)))
 

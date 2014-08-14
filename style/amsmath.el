@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
 
-;; Copyright (C) 2002, 2005  Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2005-2007, 2012-2014  Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
@@ -133,13 +133,15 @@
       (setq LaTeX-amsmath-label LaTeX-equation-label))
 
     (setq LaTeX-label-alist
-	  (append '(("align"      . LaTeX-amsmath-label)
+	  ;; Append amsmath environments to `LaTeX-label-alist', in order not to
+	  ;; override possible custome values.
+	  (append LaTeX-label-alist
+		  '(("align"      . LaTeX-amsmath-label)
 		    ("alignat"    . LaTeX-amsmath-label)
 		    ("xalignat"   . LaTeX-amsmath-label)
 		    ("multline"   . LaTeX-amsmath-label)
 		    ("flalign"    . LaTeX-amsmath-label)
-		    ("gather"     . LaTeX-amsmath-label))
-		  LaTeX-label-alist))
+		    ("gather"     . LaTeX-amsmath-label))))
 
     (set (make-local-variable 'TeX-braces-association)
 	 (append '(("\\lvert" . "\\rvert")
@@ -188,7 +190,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
     (indent-according-to-mode))
   (let ((env (LaTeX-current-environment)))
     (when (and (assoc env LaTeX-label-alist)
-	       (LaTeX-label env))
+	       (LaTeX-label env 'environment))
       (LaTeX-newline)
       (indent-according-to-mode))))
 
