@@ -1,3 +1,8 @@
+2014-08-15  Vladimir Lomov  <lomov.vl@gmail.com>
+
+	* style/mathtools.el ("mathtools"): Don't use the removed
+	`LaTeX-amsmath-env-aligned' function.
+
 2014-08-14  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-insert-label): Remove.

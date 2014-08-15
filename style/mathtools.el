@@ -67,8 +67,8 @@
      (add-to-list 'LaTeX-mathtools-package-options elt))
 
    (LaTeX-add-environments
-    '("lgathered" LaTeX-amsmath-env-aligned)
-    '("rgathered" LaTeX-amsmath-env-aligned)
+    '("lgathered" ["Vertical position (t or b)"])
+    '("rgathered" ["Vertical position (t or b)"])
     '("multlined" LaTeX-mathtools-env-multlined)
     '("matrix*" LaTeX-mathtools-env-matrix-starred)
     '("pmatrix*" LaTeX-mathtools-env-matrix-starred)
