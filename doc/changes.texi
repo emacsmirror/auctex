@@ -128,11 +128,6 @@ per file basis using the @code{TeX-command-extra-options} option.
 @item
 Now @kbd{C-c C-e document @key{RET}}, in an empty document, prompts for
 @samp{\usepackage} macros in addition to @samp{\documentclass}.
-
-@item
-You can customize for which sections and environments a label should be
-automatically inserted or not through the new user option
-@code{LaTeX-insert-label}.
 @end itemize
 
 @heading News since 11.87

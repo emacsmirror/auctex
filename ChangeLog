@@ -1,3 +1,29 @@
+2014-08-14  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-insert-label): Remove.
+	(LaTeX-label): Add a new mandatory argument.  Do not use
+	`LaTeX-insert-label'.  Determine the prefix at the beginning of
+	the function and insert the label only if the prefix is non nil.
+	(LaTeX-section-label, LaTeX-env-figure, LaTeX-env-label): Use the
+	second mandatory argument of `LaTeX-label'.
+
+	* style/amsmath.el: Update copyright years.
+	("amsmath"): Append the environments to `LaTeX-label-alist'
+	instead of prepeding them.  Use the second mandatory argument of
+	the `LaTeX-label' function.
+
+	* style/longtable.el: Update copyright years.
+	("longtable"): Move addition of "longtable" environment to
+	`LaTeX-label-alist' inside the style hook.  Append the environment
+	to the alist instead of prepending it.  Use the second mandatory
+	argument of the `LaTeX-label' function.
+
+	* doc/auctex.texi (Sectioning, Environments): Remove references to
+	`LaTeX-insert-label'.
+	(Environments): Document `LaTeX-label-alist'.
+
+	* doc/changes.texi: Remove references to `LaTeX-insert-label'.
+
 2014-08-12  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-insert-label): Rename from

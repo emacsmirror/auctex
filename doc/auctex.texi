@@ -734,12 +734,6 @@ Prefix to all section references.
 
 @end deffn
 
-@vindex LaTeX-insert-label
-The @code{LaTeX-insert-label} user option controls whether
-@code{LaTeX-section} should automatically insert a label for the given
-sectioning command.  By default, a label for all sectioning commands
-will be prompted.  @xref{Environments}, for more information.
-
 The precise behavior of @code{LaTeX-section} is defined by the contents
 of @code{LaTeX-section-hook}.
 
@@ -857,35 +851,21 @@ environment is inserted.
 @AUCTeX{} helps you adding labels to environments which use them, such
 as @samp{equation}, @samp{figure}, @samp{table}, etc@dots{}  When you
 insert one of the supported environments with @kbd{C-c C-e}, you will be
-automatically prompted for a label.  If you want to select the
-environments for which to automatically insert or not the label,
-customize the @code{LaTeX-insert-label} variable.
-@defopt LaTeX-insert-label
-Control whether @code{LaTeX-section} (@kbd{C-c C-s}) or
-@code{LaTeX-environment} (@kbd{C-c C-e}) should insert a label.  If nil,
-never insert a label, if t always insert a label and this the default.
+automatically prompted for a label.  You can select the prefix to be
+used for such environments with the @code{LaTeX-label-alist} variable.
+@defopt LaTeX-label-alist
+List the prefixes to be used for the label of each supported
+environment.
 
-This variable may also be a cons cell, to whitelist or blacklist the
-sections or environments for which a label should or should not be
-inserted.  The car can be either nil or t.  In the former case,
-@code{LaTeX-section} and @code{LaTeX-environment} never insert labels
-except for the sections and environments listed in the cdr; in the
-latter case those functions always insert labels except for the sections
-and environments listed in the cdr.  In any cases, you can manually
-insert a label at point with @kbd{C-c C-m label @key{RET}}, as usual.
+This is an alist whose car is the environment name, and the cdr either
+the prefix or a symbol referring to one.
 
-For example, the value
-@lisp
-(t . "paragraph" "equation")
-@end lisp
-makes @AUCTeX{} always prompt you for a label except for the
-@samp{paragraph} section, and th @samp{equation} environment.  Instead
-with the value
-@lisp
-(nil . "part" "chapter" "caption" "figure")
-@end lisp
-you will be prompted for a label only for @samp{part} and @samp{chapter}
-sections, and @samp{caption} and @samp{figure} environments.
+If the name is not found, or if the cdr is nil, no label is
+automatically inserted for that environment.
+
+If you want to automatically insert a label for a environment but with
+an empty prefix, use the empty string @code{""} as the cdr of the
+corresponding entry.
 @end defopt
 
 As a default selection, @AUCTeX{} will suggest the environment last
