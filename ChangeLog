@@ -1,3 +1,8 @@
+2014-08-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Allow for a
+	mandatory argument for a verbatim environment.
+
 2014-08-15  Vladimir Lomov  <lomov.vl@gmail.com>
 
 	* style/mathtools.el ("mathtools"): Don't use the removed
