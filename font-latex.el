@@ -906,10 +906,11 @@ have changed."
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat
 		       "^[ \t]*\\\\begin *{\\(?:" verb-envs "\\)}"
-		       ;; Some environments accept an optional argument that can
-		       ;; span over more lines.  Between "\begin{<envname>}" and
-		       ;; the optional argument there can be whitespaces and the
-		       ;; newline can be commented by a "%" character.
+		       ;; Some environments accept an optional and/or mandatory
+		       ;; argument that can span over more lines.  Between
+		       ;; "\begin{<envname>}" and the optional argument there
+		       ;; can be whitespaces and the newline can be commented
+		       ;; by a "%" character.
 		       "[ \t]*\\(?:%.*\n[ \t]*\\)?"
 		       ;; The following line of the regexp matches the optional
 		       ;; argument and allows for up to one level of brackets
@@ -917,6 +918,10 @@ have changed."
 		       ;; in the `lstlisting' environment by the `listings'
 		       ;; package).
 		       "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
+		       ;; After the optional argument, there may also be
+		       ;; another mandatory argument (e.g. with VerbatimOut or
+		       ;; the minted envs).
+		       "\\(?:{[^}]+}\\)?"
 		       "\\(\n\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
