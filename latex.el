@@ -1657,16 +1657,11 @@ It will setup BibTeX to store keys in an auto file."
   (if (boundp 'local-write-file-hooks)
       (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
-  (make-local-variable 'TeX-auto-update)
-  (setq TeX-auto-update 'BibTeX)
-  (make-local-variable 'TeX-auto-untabify)
-  (setq TeX-auto-untabify nil)
-  (make-local-variable 'TeX-auto-parse-length)
-  (setq TeX-auto-parse-length 999999)
-  (make-local-variable 'TeX-auto-regexp-list)
-  (setq TeX-auto-regexp-list BibTeX-auto-regexp-list)
-  (make-local-variable 'TeX-master)
-  (setq TeX-master t))
+  (set (make-local-variable 'TeX-auto-update) 'BibTeX)
+  (set (make-local-variable 'TeX-auto-untabify) nil)
+  (set (make-local-variable 'TeX-auto-parse-length) 999999)
+  (set (make-local-variable 'TeX-auto-regexp-list) BibTeX-auto-regexp-list)
+  (set (make-local-variable 'TeX-master) t))
 
 (defvar BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
@@ -5766,18 +5761,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   "Common initialization for LaTeX derived modes."
   (VirTeX-common-initialization)
   (set-syntax-table LaTeX-mode-syntax-table)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'LaTeX-indent-line)
+  (set (make-local-variable 'indent-line-function) 'LaTeX-indent-line)
 
   (setq local-abbrev-table latex-mode-abbrev-table)
 
   ;; Filling
-  (make-local-variable 'paragraph-ignore-fill-prefix)
-  (setq paragraph-ignore-fill-prefix t)
-  (make-local-variable 'fill-paragraph-function)
-  (setq fill-paragraph-function 'LaTeX-fill-paragraph)
-  (make-local-variable 'adaptive-fill-mode)
-  (setq adaptive-fill-mode nil)
+  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
+  (set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
+  (set (make-local-variable 'adaptive-fill-mode) nil)
 
   (or LaTeX-largest-level
       (setq LaTeX-largest-level (LaTeX-section-level "section")))
@@ -5786,18 +5777,15 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	TeX-trailer-start LaTeX-trailer-start)
 
   (require 'outline)
-  (make-local-variable 'outline-level)
-  (setq outline-level 'LaTeX-outline-level)
-  (make-local-variable 'outline-regexp)
-  (setq outline-regexp (LaTeX-outline-regexp t))
+  (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
+  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
   (when (boundp 'outline-heading-alist)
     (setq outline-heading-alist
 	  (mapcar (lambda (x)
 		    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
 		  LaTeX-section-list)))
 
-  (make-local-variable 'TeX-auto-full-regexp-list)
-  (setq TeX-auto-full-regexp-list
+  (set (make-local-variable 'TeX-auto-full-regexp-list)
 	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
 
   (LaTeX-set-paragraph-start)
@@ -5813,8 +5801,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
 
-  (make-local-variable 'LaTeX-item-list)
-  (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
+  (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
 			  ("thebibliography" . LaTeX-item-bib)
 			  ("array" . LaTeX-item-array)
 			  ("tabular" . LaTeX-item-array)
