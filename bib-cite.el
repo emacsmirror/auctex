@@ -756,8 +756,7 @@ runs bib-find, and [mouse-3] runs bib-display."
     ;; Added for version 2.19
     (if (boundp 'tags-always-exact)
 	(progn
-	  (make-local-variable 'tags-always-exact)
-	  (setq tags-always-exact nil)))
+	  (set (make-local-variable 'tags-always-exact) nil)))
     ;; mouse overlay
     (if bib-highlight-mouse-t
 	(progn
@@ -795,8 +794,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 ;; own.
 (defun bib-cite-setup-highlight-mouse-keymap ()
   "Set up the bib-cite text in the current buffer to be clickable."
-  (make-local-variable 'bib-highlight-mouse-keymap)
-  (setq bib-highlight-mouse-keymap
+  (set (make-local-variable 'bib-highlight-mouse-keymap)
    ;;; First, copy the local keymap so we don't have `disappearing' menus
    ;;; when the mouse is moved over a \ref, \label or \cite command.
 

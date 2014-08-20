@@ -1,3 +1,45 @@
+2014-08-18  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+
+	* font-latex.el (font-latex-add-quotes): Code optimization: use
+	'(add-to-list (make-local-variable (quote foo)) some-value)'
+	instead of '(make-local-variable (quote foo)) (add-to-list 'foo
+	some-value)' wherever possible.
+
+	* bib-cite.el (bib-cite-minor-mode)
+	(bib-cite-setup-highlight-mouse-keymap): Code optimization: use
+	'(set (make-local-variable (quote foo)) some-value)' instead of
+	'(make-local-variable (quote foo)) (setq foo some-value)' wherever
+	possible.
+
+	* latex.el (BibTeX-auto-store)
+	(LaTeX-common-initialization): Ditto.
+
+	* tex-info.el (TeX-texinfo-mode): Code optimization: use '(set
+	(make-local-variable (quote foo)) some-value)' instead of
+	'(make-local-variable (quote foo)) (setq foo some-value)' wherever
+	possible. Add in style Texinfo standard macros '@acronym' and
+	'@tie'.
+
+	* tex.el (TeX-assoc-string) new defalias to work-around missing
+	assoc-string in XEmacs.
+	(TeX-unload-style): Code optimization: use 'TeX-assoc-string'
+	instead of 'assoc' to search style in 'TeX-style-hook-list', and
+	use delq on returned value of assoc-string for removing the style
+	--- on the one hand delq will go through the whole list rather
+	than stop after the first match like in original code, but on the
+	other hand comparison are faster because eq instead of equal is
+	used and we are working on assoc cell rather than on key, so less
+	indirection, furthermore delq is C code. Anyway that make the code
+	much smaller and easier to understand.
+	(TeX-file-extensions): Add txi amongst extension of texinfo files,
+	for consistency with info node '(texinfo) Minimum'
+	(TeX-run-style-hooks): Code optimization: use 'TeX-assoc-string'
+	instead of 'assoc' to search style in 'TeX-style-hook-list'.
+	(VirTeX-common-initialization): Code optimization: use '(set
+	(make-local-variable (quote foo)) some-value)' instead of
+	'(make-local-variable (quote foo)) (setq foo some-value)' wherever
+	possible.
+
 2014-08-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Allow for a

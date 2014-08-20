@@ -595,6 +595,13 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
+;;;###autoload
+(defalias 'TeX-assoc-string
+  (symbol-function  (if (featurep 'xemacs) 'assoc 'assoc-string))
+  (concat "Compatibility alias that points to
+  function `assoc' with XEMACS and to function `assoc-string'
+  with GNU EMACS. See function `"
+	  (if (featurep 'xemacs) "assoc" "assoc-string") "'." ))
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
@@ -2444,14 +2451,9 @@ active.")
 
 (defun TeX-unload-style (style)
   "Forget that we once loaded STYLE."
-  (cond ((null (assoc style TeX-style-hook-list)))
-	((equal (car (car TeX-style-hook-list)) style)
-	 (setq TeX-style-hook-list (cdr TeX-style-hook-list)))
-	(t
-	 (let ((entry TeX-style-hook-list))
-	   (while (not (equal (car (car (cdr entry))) style))
-	     (setq entry (cdr entry)))
-	   (setcdr entry (cdr (cdr entry)))))))
+  (let ((style-data (TeX-assoc-string style TeX-style-hook-list)))
+    (if style-data
+	(setq TeX-style-hook-list (delq style-data TeX-style-hook-list)))))
 
 (defcustom TeX-virgin-style (if (and TeX-auto-global
 				     (file-directory-p TeX-auto-global))
@@ -2485,7 +2487,7 @@ active.")
 					 (match-beginning 2) (match-end 2))))
 		(condition-case err
 		    (mapcar 'funcall
-			    (cdr-safe (assoc style TeX-style-hook-list)))
+			    (cdr-safe (TeX-assoc-string style TeX-style-hook-list)))
 		  ;; This happens in case some style added a new parser, and
 		  ;; now the style isn't used anymore (user deleted
 		  ;; \usepackage{style}).  Then we're left over with, e.g.,
@@ -3133,18 +3135,14 @@ The algorithm is as follows:
   (setq indent-tabs-mode nil)
 
   ;; Ispell support
-  (make-local-variable 'ispell-parser)
-  (setq ispell-parser 'tex)
-  (make-local-variable 'ispell-tex-p)
-  (setq ispell-tex-p t)
+  (set (make-local-variable 'ispell-parser) 'tex)
+  (set (make-local-variable 'ispell-tex-p) t)
 
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
   (make-local-variable 'paragraph-separate)
-  (make-local-variable 'comment-start)
-  (setq comment-start "%")
-  (make-local-variable 'comment-start-skip)
-  (setq comment-start-skip
+  (set (make-local-variable 'comment-start) "%")
+  (set (make-local-variable 'comment-start-skip)
 	(concat
 	 "\\(\\(^\\|[^\\\n]\\)\\("
 	 (regexp-quote TeX-esc)
@@ -3154,20 +3152,16 @@ The algorithm is as follows:
   (set (make-local-variable 'comment-use-syntax) t)
   ;; `comment-padding' is defined here as an integer for compatibility
   ;; reasons because older Emacsen could not cope with a string.
-  (make-local-variable 'comment-padding)
-  (setq comment-padding 1)
+  (set (make-local-variable 'comment-padding) 1)
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
-  (make-local-variable 'comment-indent-function)
-  (setq comment-indent-function 'TeX-comment-indent)
-  (make-local-variable 'comment-multi-line)
-  (setq comment-multi-line nil)
+  (set (make-local-variable 'comment-indent-function) 'TeX-comment-indent)
+  (set (make-local-variable 'comment-multi-line) nil)
   (make-local-variable 'compile-command)
   (unless (boundp 'compile-command)
     (setq compile-command "make"))
-  (make-local-variable 'words-include-escapes)
-  (setq words-include-escapes nil)
+  (set (make-local-variable 'words-include-escapes) nil)
 
   ;; Make TAB stand out
   ;;  (make-local-variable 'buffer-display-table)
@@ -3177,8 +3171,7 @@ The algorithm is as follows:
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
   ;; Symbol completion.
-  (make-local-variable 'TeX-complete-list)
-  (setq TeX-complete-list
+  (set (make-local-variable 'TeX-complete-list)
 	(list (list "\\\\\\([a-zA-Z]*\\)"
 		    1 'TeX-symbol-list-filtered
 		    (if TeX-insert-braces "{}"))
@@ -3191,8 +3184,7 @@ The algorithm is as follows:
   (if (boundp 'local-write-file-hooks)
       (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
-  (make-local-variable 'TeX-auto-update)
-  (setq TeX-auto-update t)
+  (set (make-local-variable 'TeX-auto-update) t)
 
   (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)
 
@@ -3775,7 +3767,7 @@ Check for potential LaTeX environments."
   "File extensions recognized by AUCTeX."
   :group 'TeX-file)
 
-(defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo" "dtx")
+(defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "txi" "texinfo" "dtx")
   "*File extensions used by manually generated TeX files."
   :group 'TeX-file-extension
   :type '(repeat (string :format "%v")))
