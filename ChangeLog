@@ -1,4 +1,4 @@
-2014-08-18  Vincent Belaïche  <vincentb1@users.sourceforge.net>
+2014-08-18  Vincent Belaïche  <vincent.b.1@hotmail.fr>
 
 	* font-latex.el (font-latex-add-quotes): Code optimization: use
 	'(add-to-list (make-local-variable (quote foo)) some-value)'
