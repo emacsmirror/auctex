@@ -1,3 +1,7 @@
+2014-08-24  Mosè Giordano  <mose@gnu.org>
+
+	* tests/tex/command-expansion.el: New test file.
+
 2014-08-24  Florent Rougon  <f.rougon@free.fr>  (tiny change)
 
 	* tex.el (TeX-expand-list): Add the previous position to the
