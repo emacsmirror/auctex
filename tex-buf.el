@@ -387,7 +387,7 @@ without further expansion."
 		  (concat (and (stringp TeX-command-pos) TeX-command-pos)
 			  (apply ',file args)
 			  (and (stringp TeX-command-pos) TeX-command-pos)))))
-	case-fold-search string expansion arguments)
+        expansion-res case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
 			     (setq pos (1+ pos))
@@ -410,7 +410,13 @@ without further expansion."
 				 (TeX-function-p expansion))
 			    (apply expansion arguments))
 			   ((boundp expansion)
-			    (apply (eval expansion) arguments))
+                            (setq expansion-res
+                                  (apply (eval expansion) arguments))
+                            (when (eq expansion 'file)
+                              ;; Advance past the file name in order to
+                              ;; prevent expanding any substring of it.
+                              (setq pos (+ pos (length expansion-res))))
+                              expansion-res)
 			   (t
 			    (error "Nonexpansion %s" expansion)))))
       (if (stringp string)
