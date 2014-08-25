@@ -507,7 +507,7 @@ string."
 	    (prog1
 		(if (stringp TeX-command-text)
 		    (progn
-		      (setq pos (+ (length TeX-command-text) 9)
+		      (setq pos (+ pos (length TeX-command-text) 9)
 			    TeX-command-pos
 			    (and (string-match " "
 					       (funcall file t t))

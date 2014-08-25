@@ -1,3 +1,18 @@
+2014-08-25  Florent Rougon  <f.rougon@free.fr>  (tiny change)
+
+	* tex-buf.el (TeX-command-expand): Fix possible endless loop in
+	file name expansion.
+
+2014-08-24  Mosè Giordano  <mose@gnu.org>
+
+	* tests/tex/command-expansion.el: New test file.
+
+2014-08-24  Florent Rougon  <f.rougon@free.fr>  (tiny change)
+
+	* tex.el (TeX-expand-list): Add the previous position to the
+	lenght of the expanded string to get the current position in the
+	%' expander.
+
 2014-08-18  Vincent Belaïche  <vincent.b.1@hotmail.fr>
 
 	* font-latex.el (font-latex-add-quotes): Code optimization: use
