@@ -1,3 +1,8 @@
+2014-09-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-assoc-string): Remove docstring from defalias since
+	that's not supported with XEmacs.
+
 2014-08-25  Florent Rougon  <f.rougon@free.fr>  (tiny change)
 
 	* tex-buf.el (TeX-command-expand): Fix possible endless loop in
