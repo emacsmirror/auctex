@@ -597,11 +597,7 @@ Also does other stuff."
 
 ;;;###autoload
 (defalias 'TeX-assoc-string
-  (symbol-function  (if (featurep 'xemacs) 'assoc 'assoc-string))
-  (concat "Compatibility alias that points to
-  function `assoc' with XEMACS and to function `assoc-string'
-  with GNU EMACS. See function `"
-	  (if (featurep 'xemacs) "assoc" "assoc-string") "'." ))
+  (symbol-function  (if (featurep 'xemacs) 'assoc 'assoc-string)))
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
