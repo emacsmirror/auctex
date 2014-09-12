@@ -4535,6 +4535,11 @@ use \\[customize]."
     (unless (lookup-key map (LaTeX-math-abbrev-prefix))
       (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
 
+(defconst LaTeX-dialect :latex
+  "Default dialect for use with function `TeX-add-style-hook' for
+  argument DIALECT when the hook is to be run only on LaTeX file,
+  or any mode derived thereof. See variable `TeX-style-hook-dialect'." )
+
 (defconst LaTeX-math-default
   '((?a "alpha" "Greek Lowercase" 945) ;; #X03B1
     (?b "beta" "Greek Lowercase" 946) ;; #X03B2
@@ -5775,6 +5780,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
+  (set (make-local-variable 'TeX-style-hook-dialect) :latex)
 
   (require 'outline)
   (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
@@ -6147,7 +6153,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		      (lambda ()
 			(setq TeX-font-list LaTeX-font-list)
 			(setq TeX-font-replace-function 'TeX-font-replace-macro)
-			(run-hooks 'LaTeX2e-hook)))
+			(run-hooks 'LaTeX2e-hook))
+		      LaTeX-dialect)
 
   (TeX-add-style-hook "latex2"
 		      ;; Use old fonts for `\documentstyle' documents.
@@ -6155,27 +6162,28 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 			(setq TeX-font-list (default-value 'TeX-font-list))
 			(setq TeX-font-replace-function
 			      (default-value 'TeX-font-replace-function))
-			(run-hooks 'LaTeX2-hook)))
+			(run-hooks 'LaTeX2-hook))
+		      LaTeX-dialect)
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak
-  (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on)
-  (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on)
-  (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on)
-  (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on LaTeX-dialect)
+  (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
+  (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on LaTeX-dialect)
+  (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off LaTeX-dialect)
   ;; This is now done in style/pstricks.el because it prevents other
   ;; pstricks style files from being loaded.
   ;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off LaTeX-dialect)
   ;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
   ;;
   ;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
   ;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
 				(TeX-PDF-mode-on)
-				(TeX-PDF-mode-off)))
+				(TeX-PDF-mode-off)) LaTeX-dialect)
   ;; ifpdf indicates that we cater for either.  So calling both
   ;; functions will make sure that the default will get used unless the
   ;; user overrode it.

@@ -5,6 +5,7 @@
 (TeX-add-style-hook
  "j-article"
  (lambda ()
-   (LaTeX-largest-level-set "section")))
+   (LaTeX-largest-level-set "section"))
+ LaTeX-dialect)
 
 ;;; j-article.el ends here

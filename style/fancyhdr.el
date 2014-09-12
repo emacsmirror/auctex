@@ -82,7 +82,8 @@
                                 ("plainfootrulewidth" "")) 'variable)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults))))
+     (font-lock-set-defaults)))
+ LaTeX-dialect)
 
 ;; Because there can be many positions, `TeX-completing-read-multiple' is used
 ;; instead of just `completing-read', and a `collection' argument is provided as

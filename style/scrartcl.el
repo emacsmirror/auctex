@@ -20,6 +20,7 @@
    (lambda ()
      (LaTeX-largest-level-set "section")
      ;; load basic definitons
-     (TeX-run-style-hooks "scrbase")))
+     (TeX-run-style-hooks "scrbase"))
+   LaTeX-dialect)
 
 ;;; scrartcl.el ends here

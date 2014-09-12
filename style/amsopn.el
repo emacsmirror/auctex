@@ -1,4 +1,4 @@
-;;; amsnopn.el --- AUCTeX style for the `amsnopn.sty' AMS-LaTeX package
+;;; amsopn.el --- AUCTeX style for the `amsnopn.sty' AMS-LaTeX package
 
 ;; Copyright (C) 1997, 2002, 2005, 2013 Free Software Foundation, Inc.
 
@@ -43,7 +43,9 @@
 
     (add-to-list 'LaTeX-auto-regexp-list
 		 '("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
-		   1 TeX-auto-symbol)))))
+		   1 TeX-auto-symbol))))
+ LaTeX-dialect
+ )
 
 (defvar LaTeX-amsopn-package-options '("namelimits" "nonamelimits")
   "Package options for the amsopn package.")

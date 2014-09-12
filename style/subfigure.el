@@ -58,7 +58,8 @@
 			      'textual)
      (font-latex-add-keywords '(("Subref" "{")
 				("subref" "{"))
-			      'reference))))
+			      'reference)))
+ LaTeX-dialect)
 
 (defvar LaTeX-subfigure-package-options '("normal" "hang" "center"
 					  "centerlast" "nooneline"

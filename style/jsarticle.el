@@ -5,6 +5,7 @@
 (TeX-add-style-hook
  "jsarticle"
  (lambda ()
-   (LaTeX-largest-level-set "section")))
+   (LaTeX-largest-level-set "section"))
+ LaTeX-dialect)
 
 ;;; jsarticle.el ends here

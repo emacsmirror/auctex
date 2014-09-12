@@ -36,7 +36,8 @@
     ;; adds a hook (the argument code) to be called after \\selectfont
     '("EverySelectfont" 1)
     ;; adds a hook to be called after the next \\selectfont
-    '("AtNextSelectont" 1))))
+    '("AtNextSelectont" 1)))
+ LaTeX-dialect)
 
 (defvar LaTeX-everysel-package-options nil
   "Package options for the everysel package.")

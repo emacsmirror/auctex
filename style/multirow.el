@@ -43,7 +43,8 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("multirow" "{[{")) 'function))))
+     (font-latex-add-keywords '(("multirow" "{[{")) 'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-multirow-package-options nil
   "Package options for the multirow package.")

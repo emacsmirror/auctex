@@ -64,7 +64,8 @@
               ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
               ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
 	       2 LaTeX-label-list "}"))
-	    TeX-complete-list))))
+	    TeX-complete-list)))
+   LaTeX-dialect)
 
 (defvar LaTeX-varioref-package-options
   '("draft" "final" "afrikaans" "american" "austrian" "naustrian" "basque"

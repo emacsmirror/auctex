@@ -43,7 +43,8 @@
    (LaTeX-add-lengths "extratabsurround" "extrarowheight")
 
    ;; `array.sty' adds some new column specification letters.
-   (set (make-local-variable 'LaTeX-array-column-letters) "clrpmb")))
+   (set (make-local-variable 'LaTeX-array-column-letters) "clrpmb"))
+ LaTeX-dialect)
 
 (defvar LaTeX-array-package-options nil
   "Package options for array.")

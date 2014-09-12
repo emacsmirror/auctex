@@ -34,7 +34,8 @@
  (lambda ()
    (TeX-add-symbols
     "bigstrutsetup"
-    '("bigstrut" [ TeX-arg-bigstrut ]))))
+    '("bigstrut" [ TeX-arg-bigstrut ])))
+ LaTeX-dialect)
 
 (defun TeX-arg-bigstrut (optional &optional prompt)
   "Prompt for the optional argument in \\bigstrut"

@@ -40,7 +40,8 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("logofamily" "{")
 				("textlogo" "{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-mflogo-package-options nil
   "Package options for the mflogo package.")

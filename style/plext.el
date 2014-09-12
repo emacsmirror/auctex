@@ -46,7 +46,8 @@
 	(concat "\\(?:<[tyz]>\\)?[ \t]*" (regexp-opt '("[t]" "[b]" ""))))
    (set (make-local-variable 'LaTeX-tabular*-skipping-regexp)
 	(concat "\\(?:<[tyz]>\\)?[ \t]*{[^}]*}[ \t]*"
-		(regexp-opt '("[t]" "[b]" ""))))))
+		(regexp-opt '("[t]" "[b]" "")))))
+ LaTeX-dialect)
 
 (defun LaTeX-plext-env-array (env)
   (let ((dir (read-string "(Optional) Direction (t or y or z): "))

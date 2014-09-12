@@ -46,7 +46,8 @@
      (font-latex-add-keywords '(("DeclareBoldMathCommand" "[|{\\{")
 				("bmdefine" "|{\\{")
 				("hmdefine" "|{\\{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-bm-package-options nil
   "Package options for the bm package.")

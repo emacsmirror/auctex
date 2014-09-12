@@ -38,7 +38,8 @@
  (lambda ()
    (LaTeX-add-environments
     '("filecontents" LaTeX-env-filecontents)
-    '("filecontents*" LaTeX-env-filecontents))))
+    '("filecontents*" LaTeX-env-filecontents)))
+ LaTeX-dialect)
 
 (defun LaTeX-env-filecontents (environment)
   "Insert ENVIRONMENT with filename for contents."

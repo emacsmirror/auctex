@@ -36,7 +36,8 @@
     '("fnum" t)
     '("setfnumdsym" t)
     '("setfnummsym" t)
-    '("setfnumgsym" t))))
+    '("setfnumgsym" t)))
+ LaTeX-dialect)
 
 (defvar LaTeX-fancynum-package-options
   '("english" "french" "tight" "loose" "commas" "thinspaces" "plain")

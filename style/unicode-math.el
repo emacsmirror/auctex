@@ -64,7 +64,8 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("setmathfont" "[{")
 				("unimathsetup" "{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defun LaTeX-unicode-math-package-options ()
   "Prompt for package options for the unicode-math package."

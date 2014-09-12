@@ -167,7 +167,8 @@ string."
 				("acroplural" "{[{")
 				("acrodefplural" "{[{")
 				("newacroplural" "{[{"))
-   			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-acronym-package-options
   '("footnote" "nohyperlinks" "printonlyused" "withpage" "smaller" "dua" "nolist")

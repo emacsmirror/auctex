@@ -60,7 +60,8 @@
 				("qitem" "{{")
 				("dropchapter" "{")
 				("epigraphhead" "{")) 'function)
-     (font-latex-add-keywords '("cleartoevenpage") 'warning))))
+     (font-latex-add-keywords '("cleartoevenpage") 'warning)))
+ LaTeX-dialect)
 
 (defvar LaTeX-epigraph-package-options nil
   "Package options for the epigraph package.")

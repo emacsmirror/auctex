@@ -70,7 +70,8 @@ PROMPT is the value of the prompt to be shown."
 				("addlinespace" "[")
 				("morecmidrules" "")
 				("specialrule" "{{{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-booktabs-package-options nil
   "Package options for the booktabs package.")

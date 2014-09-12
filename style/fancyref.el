@@ -92,7 +92,8 @@
      ;; Fontification
      (when (and (featurep 'font-latex)
 		(eq TeX-install-font-lock 'font-latex-setup))
-       (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference))))
+       (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference)))
+   LaTeX-dialect)
 
 ;; The following list keeps a list of available format names
 ;; Note that this list is only updated when a format is used, not

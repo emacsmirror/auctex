@@ -157,7 +157,8 @@
 
     ;; If RefTeX is loaded, make it recognize the amsmath environments.
     (when (fboundp 'reftex-add-to-label-alist)
-      (reftex-add-to-label-alist '(AMSTeX))))))
+      (reftex-add-to-label-alist '(AMSTeX)))))
+ LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
   "Insert ENV with column number specifications.

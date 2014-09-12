@@ -5,6 +5,7 @@
 (TeX-add-style-hook
  "j-report"
  (lambda ()
-   (LaTeX-largest-level-set "chapter")))
+   (LaTeX-largest-level-set "chapter"))
+ LaTeX-dialect)
 
 ;;; j-report.el ends here
