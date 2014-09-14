@@ -187,7 +187,8 @@
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults))))
+     (font-lock-set-defaults)))
+ LaTeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
   "Prompt for overlay specification."

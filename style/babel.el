@@ -167,7 +167,8 @@
      (font-latex-add-keywords '(("defineshorthand" "{{")
 				("aliasshorthand" "{{")
 				("languageattribute" "{{"))
-			      'variable))))
+			      'variable)))
+ LaTeX-dialect)
 
 (defun LaTeX-babel-package-options ()
   "Prompt for package options for the babel package."

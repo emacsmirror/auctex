@@ -34,7 +34,8 @@
  "afterpage"
  (lambda ()
    (TeX-add-symbols
-    '("afterpage" t))))
+    '("afterpage" t)))
+ LaTeX-dialect)
 
 (defvar LaTeX-afterpage-package-options nil
   "Package options for afterpage.")

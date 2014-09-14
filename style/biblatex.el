@@ -478,7 +478,8 @@ for citation keys."
     "NewBibliographyString")
    (LaTeX-declare-expert-environments
     "biblatex"
-    "refsection" "refsegment")))
+    "refsection" "refsegment"))
+ LaTeX-dialect)
 
 (defvar LaTeX-biblatex-package-options-list
   (append

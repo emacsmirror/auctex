@@ -151,7 +151,8 @@
     "GetFileInfo"
     "filename"
     "fileinfo")
-   (TeX-run-style-hooks "shortvrb")))
+   (TeX-run-style-hooks "shortvrb"))
+ LaTeX-dialect)
 
 ;; Local Variables:
 ;; coding: iso-8859-1

@@ -861,7 +861,8 @@ comma separated list. Point has to be within the sexp to modify."
       (TeX-arg-eval LaTeX-pst-angle) LaTeX-pst-point-in-parens t)
     '("uput" LaTeX-pst-macro-uput t)
     '("multirput" (LaTeX-pst-macro-multirputps t) t)
-    '("multips" (LaTeX-pst-macro-multirputps nil) t))))
+    '("multips" (LaTeX-pst-macro-multirputps nil) t)))
+ LaTeX-dialect)
 
 (defvar LaTeX-pstricks-package-options
   '("97" "plain" "DIA" "vtex" "distiller" "noxcolor")

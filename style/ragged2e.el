@@ -56,7 +56,8 @@
    (LaTeX-add-environments 
     "FlushLeft" "FlushRight" "Center" "justify")
 
-   (TeX-run-style-hooks "footmisc" "everysel")))
+   (TeX-run-style-hooks "footmisc" "everysel"))
+ LaTeX-dialect)
 
 (defvar LaTeX-ragged2e-package-options 
   '("originalcommands" "newcommands" "originalparameters" "document"

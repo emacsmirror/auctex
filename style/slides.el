@@ -45,6 +45,7 @@
 			   "note")
    (LaTeX-add-counters "minutes" "seconds")
    (LaTeX-add-pagestyles "headings" "slide" "overlay" "note")
-   (setq LaTeX-default-document-environment "slide")))
+   (setq LaTeX-default-document-environment "slide"))
+ LaTeX-dialect)
 
 ;;; slides.el ends here

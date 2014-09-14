@@ -74,7 +74,8 @@ your document actually defines shortvrb chars using
      (let (syntax-alist)
        (dolist (char LaTeX-shortvrb-chars)
 	 (add-to-list 'syntax-alist (cons char "|")))
-       (font-latex-add-to-syntax-alist syntax-alist)))))
+       (font-latex-add-to-syntax-alist syntax-alist))))
+ LaTeX-dialect)
 
 ;; Don't look for file-local variables before this line, so that the example in
 ;; the docstring isn't picked up.

@@ -4269,7 +4269,8 @@ Here is a simple example of a style file.
 (TeX-add-style-hook
  "book"
  (lambda () 
-   (LaTeX-largest-level-set "chapter")))
+   (LaTeX-largest-level-set "chapter"))
+ LaTeX-dialect)
 @end lisp
 
 The example is from the @AUCTeX{} sources and is loaded for any @LaTeX{}
@@ -4288,10 +4289,58 @@ hooks will be called for each buffer using the style file.
 Note that the basename of the style file and the name of the style hook
 should usually be identical.
 
-@defun TeX-add-style-hook @var{style} @var{hook}
+@defun TeX-add-style-hook @var{style} @var{hook} &optional @var{dialect-expr}
 Add @var{hook} to the list of functions to run when we use the @TeX{}
-file @var{style}.
+file @var{style} and the current dialect is one in the set derived from
+@var{dialect-expr}. When @var{dialect-expr} is omitted, then @var{hook}
+is allowed to be run whatever the current dialect is.
+
+@var{dialect-expr} may be one of:
+
+@itemize
+@item
+A symbol indicating a singleton containing one basic @TeX{} dialect,
+this symbol shall be selected among:
+@table @code
+@item :latex
+For all files in @LaTeX{} mode, or any mode derived thereof
+@item :bibtex
+For all files in Bib@TeX{} mode, or any mode derived thereof
+@item :texinfo
+For all files in @acronym{Texinfo} mode.
+@end table
+@item
+A logical expression like:
+@table @code
+@item (or @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
+For union of the sets of dialects corresponding to  @var{dialect-expression1}
+through @var{dialect-expression_@var{n}}
+@item (and @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
+For intersection of the sets of dialects corresponding to
+@var{dialect-expression1} through @var{dialect-expression_@var{n}}
+@item (nor @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
+For complement of the union sets of dialects corresponding to
+@var{dialect-expression1} through @var{dialect-expression_@var{n}}
+relatively to the set of all supported dialects
+@item (not @var{dialect-expr})
+For complement set of dialect corresponding to @var{dialect-expr}
+relatively to the set of all supported dialects
+@end table
+@end itemize
+
 @end defun
+
+In case of adding a style hook for @LaTeX{}, when calling function
+@code{TeX-add-style-hook} it is thought more futureproof for argument
+@var{dialect-expr} to pass constant @code{LaTeX-dialect} currently
+defined to @code{:latex}, rather than passing @code{:latex} directly.
+
+@defvr Constant LaTeX-dialect
+Default dialect for use with function @code{TeX-add-style-hook} for
+argument @var{dialect-expr} when the hook is to be run only on LaTeX
+file, or any mode derived thereof.
+@end defvr
+
 
 @node Adding Macros
 @subsection Adding Support for Macros

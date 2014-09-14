@@ -43,7 +43,8 @@
    (when (and (fboundp 'font-latex-add-keywords)
 	      (fboundp 'font-latex-set-syntactic-keywords)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("nameref" "{")) 'reference))))
+     (font-latex-add-keywords '(("nameref" "{")) 'reference)))
+ LaTeX-dialect)
 
 (defvar LaTeX-nameref-package-options nil
   "Package options for nameref.")

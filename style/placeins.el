@@ -33,7 +33,8 @@
  "placeins"
  (lambda ()
    (TeX-add-symbols
-    '("FloatBarrier" 0))))
+    '("FloatBarrier" 0)))
+ LaTeX-dialect)
 
 (defvar LaTeX-placeins-package-options 
   '("section" "above" "below" "verbose")

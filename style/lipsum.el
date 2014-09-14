@@ -36,7 +36,8 @@
     '("lipsum" [ "Range of paragraph (max: 150)" ])
     '("lipsum*" [ "Range of paragraph (max: 150)" ])
     '("setlipsumdefault" [ "Default range of paragraph (max: 150)" ])
-    '("ChangeLipsumPar" 0))))
+    '("ChangeLipsumPar" 0)))
+ LaTeX-dialect)
 
 (defvar LaTeX-lipsum-package-options
   '("nopar")

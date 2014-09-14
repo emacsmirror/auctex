@@ -240,7 +240,8 @@
     "varkappa"
     "Bbbk"
     "hslash"
-    "backepsilon")))
+    "backepsilon"))
+ LaTeX-dialect)
 
 (defvar LaTeX-amssymb-package-options '("psamsfonts")
   "Package options for the amssymb package.")

@@ -185,7 +185,8 @@
 			'("PDForPS" TeX-arg-conditional)
 			'("onlyInPS" t)
 			'("onlyInPDF" t)
-			'("FromSlide" "Number")))))
+			'("FromSlide" "Number"))))
+		    LaTeX-dialect)
 
 
 ;;; prosper.el ends here

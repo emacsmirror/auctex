@@ -5,6 +5,7 @@
 (TeX-add-style-hook
  "english"
  (lambda ()
-   (run-hooks 'TeX-language-en-hook)))
+   (run-hooks 'TeX-language-en-hook))
+ LaTeX-dialect)
 
 ;;; english.el ends here

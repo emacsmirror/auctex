@@ -11,7 +11,8 @@
     (setq LaTeX-default-style "foils")
     (setq LaTeX-default-options '("landscape"))
     (TeX-add-symbols
-     '("foilhead" [ "Rubric-body separation" ] "Foil rubric")))))
+     '("foilhead" [ "Rubric-body separation" ] "Foil rubric"))))
+ LaTeX-dialect)
 
 (defun LaTeX-style-foils nil
   "Prompt for and insert foiltex options."

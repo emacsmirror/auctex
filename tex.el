@@ -1580,16 +1580,16 @@ or newer."
 	       (if (file-name-absolute-p f)
 		   (find-file f)
 		 (get-buffer (file-name-nondirectory file)))))
-        (line (car linecol))
-        (col (cadr linecol)))
+	(line (car linecol))
+	(col (cadr linecol)))
     (if (null buf)
-        (message "No buffer for %s." file)
+	(message "No buffer for %s." file)
       (switch-to-buffer buf)
       (push-mark (point) 'nomsg)
       (goto-char (point-min))
       (forward-line (1- line))
       (unless (= col -1)
-        (move-to-column col))
+	(move-to-column col))
       (raise-frame))))
 
 (define-minor-mode TeX-source-correlate-mode
@@ -2376,14 +2376,50 @@ Used when checking if any files have changed."
 (defvar TeX-style-hook-list nil
   "List of TeX style hooks currently loaded.
 
-Each entry is a list where the first element is the name of the style,
-and the remaining elements are hooks to be run when that style is
-active.")
+Each entry is a list:
+
+ (STYLE HOOK1 HOOK2 ...)
+
+where the first element STYLE is the name of the style, and the
+remaining elements HOOKN, if any, are hooks to be run when that
+style is active.
+
+A hook HOOKN may be a hook function HOOK-FUN to be run in
+all TeX dialects (LaTeX, Texinfo, etc.), or a vector like:
+
+     [TeX-style-hook HOOK-FUN DIALECT-SET]
+
+where HOOK-FUN is the hook function to be run, and DIALECT-SET is
+a non-empty set of dialects in which the hook function may be
+run.
+
+This set is instantiated by function `TeX-add-style-hook' through
+functions manipulating style hook dialect expression named with a
+`TeX-shdex-' prefix.
+
+For supported dialects, see variables `TeX-style-hook-dialect'.")
+
+(defvar TeX-style-hook-dialect :latex
+  "Dialect for running hooks locally to the considered file.
+Supported values are described below:
+
+* `:bibtex'  for files in BibTeX mode.
+* `:latex'   for files in LaTeX mode, or any mode derived
+	     thereof.
+* `:texinfo' for Texinfo files.
+
+Purpose is notably to prevent non-Texinfo hooks to be run in
+Texinfo files, due to ambiguous style name, as this may cause bad
+side effect e.g. on variable `TeX-font-list'.")
 
 (defcustom TeX-byte-compile nil
   "*Not nil means try to byte compile auto files before loading."
   :group 'TeX-parse
   :type 'boolean)
+
+(defun TeX-bibtex-set-BibTeX-dialect ()
+  "Set `TeX-style-hook-dialect' to `:bibtex' locally to BibTeX buffers."
+  (set (make-local-variable 'TeX-style-hook-dialect) :bibtex))
 
 (defun TeX-load-style (style)
   "Search for and load each definition for STYLE in `TeX-style-path'."
@@ -2431,9 +2467,79 @@ active.")
 	  ((file-readable-p el)
 	   (load-file el)))))
 
-(defun TeX-add-style-hook (style hook)
-  "Give STYLE yet another HOOK to run."
-  (let ((entry (assoc style TeX-style-hook-list)))
+(defconst TeX-style-hook-dialect-weight-alist
+  '((:latex . 1) (:texinfo . 2) (:bibtex . 4))
+  "Association list to map dialects to binary weight, in order to
+  implement dialect sets as bitmaps."  )
+
+(defun TeX-shdex-eval (dialect-expr)
+  "Evaluate a style hook dialect expression DIALECT-EXPR."
+  (cond
+   ((symbolp dialect-expr)
+    (let ((cell (assq dialect-expr TeX-style-hook-dialect-weight-alist)))
+      (if cell (cdr cell)
+	(error "Invalid dialect expression : %S." dialect-expr))))
+   ((and (consp dialect-expr)
+	 (memq (car dialect-expr) '(or not and nor)))
+    (apply (intern
+	    (concat "TeX-shdex-" (symbol-name  (car dialect-expr))))
+	   (cdr dialect-expr)))
+   (t
+    (error "Invalid dialect expression : %S." dialect-expr))))
+
+(defsubst TeX-shdex-or (&rest args)
+  "OR operator for style hook dialect expressions."
+  (apply 'logior (mapcar 'TeX-shdex-eval args)))
+
+(defsubst TeX-shdex-and (&rest args)
+  "AND operator for style hook dialect expressions."
+  (apply 'logand (mapcar 'TeX-shdex-eval args)))
+
+(defsubst TeX-shdex-nor (&rest args)
+  "NOR operator for style hook dialect expressions."
+  (lognot (apply 'TeX-shdex-or args)))
+
+(defsubst TeX-shdex-not (arg)
+  "NOT operator for style hook dialect expressions."
+   (lognot (TeX-shdex-eval arg)))
+
+(defsubst TeX-shdex-in-p (dialect dialect-set)
+  "Test whether dialect DIALECT is in dialect set DIALECT-SET."
+  (let ((cell (assq dialect TeX-style-hook-dialect-weight-alist)))
+    (if cell
+	(/= 0 (logand (cdr cell) dialect-set))
+      (error "Invalid dialect %S" dialect))))
+
+(defsubst TeX-shdex-listify (dialect-set)
+  "Converts a dialect set DIALECT-SET to a list of all dialect
+comprised in this set, where dialects are symbols"
+  (let (ret)
+    (dolist (c dialect-set)
+      (when (/= 0 (logand (cdr c) dialect-set))
+	(push (car c) ret)))
+    ret))
+
+(defun TeX-add-style-hook (style hook &optional dialect-expr)
+  "Give STYLE yet another HOOK to run.
+
+DIALECT-EXPR serves the purpose of marking the hook to be run only in
+that dicontext.
+
+DIALECT-EXPR may be a single symbol defining the dialect, see
+variable `TeX-style-hook-dialect' for supported dialects.
+
+DIALECT-EXPR can also be an expression like one of the following:
+
+* (or  DIALECT1 DIALECT2 ...)
+* (nor DIALECT1 DIALECT2 ...)
+* (and DIALECT1 DIALECT2 ...)
+* (not DIALECT )
+
+When omitted DIALECT-EXPR is equivalent to `(nor )', ie all
+dialected are allowed."
+  (let ((entry (TeX-assoc-string style TeX-style-hook-list)))
+    (and dialect-expr (setq hook (vector 'TeX-style-hook hook
+					 (TeX-shdex-eval dialect-expr))))
     (cond ((null entry)
 	   ;; New style, add entry.
 	   (setq TeX-style-hook-list (cons (list style hook)
@@ -2445,11 +2551,30 @@ active.")
 	   ;; Old style, new hook.
 	   (setcdr entry (cons hook (cdr entry)))))))
 
-(defun TeX-unload-style (style)
-  "Forget that we once loaded STYLE."
+(defun TeX-keep-hooks-in-dialect (hooks dialect-list)
+  "Scan HOOKS for all hooks the associated dialect of which is
+found in DIALECT-LIST and return the list thereof."
+  (let (ret dialect-list-1)
+    (dolist (hook hooks)
+      (setq dialect-list-1 (and (vectorp hook) (eq (aref hook 0) 'TeX-style-hook)
+				(TeX-shdex-listify (aref hook 2))))
+      (while dialect-list-1
+	(when (memq (pop dialect-list-1) dialect-list)
+	  (push hook ret)
+	  (setq dialect-list-1 nil)))
+    ret)))
+
+(defun TeX-unload-style (style &optional dialect-list)
+  "Forget that we once loaded STYLE. If DIALECT-LIST is provided
+the STYLE is only removed for those dialects in DIALECT-LIST.
+
+See variable `TeX-style-hook-dialect' for supported dialects."
   (let ((style-data (TeX-assoc-string style TeX-style-hook-list)))
     (if style-data
-	(setq TeX-style-hook-list (delq style-data TeX-style-hook-list)))))
+	(let ((hooks (and dialect-list (TeX-keep-hooks-in-dialect (cdr style-data) dialect-list))))
+	  (if hooks
+	      (setcdr style-data hooks)
+	    (setq TeX-style-hook-list (delq style-data TeX-style-hook-list)))))))
 
 (defcustom TeX-virgin-style (if (and TeX-auto-global
 				     (file-directory-p TeX-auto-global))
@@ -2482,7 +2607,15 @@ active.")
 			style (substring style
 					 (match-beginning 2) (match-end 2))))
 		(condition-case err
-		    (mapcar 'funcall
+		    (mapcar (lambda (hook)
+			      (cond
+			       ((functionp hook)
+				(funcall hook))
+			       ((and (vectorp hook)
+				     (eq (aref hook 0) 'TeX-style-hook))
+				(and (TeX-shdex-in-p TeX-style-hook-dialect (aref hook 2))
+				     (funcall (aref hook 1))))
+			       (t (error "Invalid style hook %S" hook))))
 			    (cdr-safe (TeX-assoc-string style TeX-style-hook-list)))
 		  ;; This happens in case some style added a new parser, and
 		  ;; now the style isn't used anymore (user deleted
@@ -5719,21 +5852,21 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 	      (call-process "texdoc" nil 0 nil "--view" doc)))
     (latex-info (latex-mode)
 		(lambda ()
-                  (mapcar (lambda (x)
-                            (let ((x (car x)))
-                              (if (string-match "\\`\\\\" x)
-                                  (substring x 1) x)))
-                          (info-lookup->completions 'symbol 'latex-mode)))
+		  (mapcar (lambda (x)
+			    (let ((x (car x)))
+			      (if (string-match "\\`\\\\" x)
+				  (substring x 1) x)))
+			  (info-lookup->completions 'symbol 'latex-mode)))
 		(lambda (doc)
 		  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
     (texinfo-info (texinfo-mode)
 		  (lambda ()
-                    (mapcar (lambda (x)
-                              (let ((x (car x)))
-                                (if (string-match "\\`@" x)
-                                    (substring x 1) x)))
-                            (info-lookup->completions 'symbol
-                                                      'texinfo-mode)))
+		    (mapcar (lambda (x)
+			      (let ((x (car x)))
+				(if (string-match "\\`@" x)
+				    (substring x 1) x)))
+			    (info-lookup->completions 'symbol
+						      'texinfo-mode)))
 		  (lambda (doc)
 		    (info-lookup-symbol (concat "@" doc) 'texinfo-mode))))
   "Alist of backends used for looking up documentation.

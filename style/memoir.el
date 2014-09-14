@@ -77,6 +77,7 @@
     "tabularx" "titleref" "titling" "tocbibind" "tocloft"
     "verbatim" "verse")
 
-   (LaTeX-largest-level-set "chapter")))
+   (LaTeX-largest-level-set "chapter"))
+ LaTeX-dialect)
 
 ;;; memoir.el ends here

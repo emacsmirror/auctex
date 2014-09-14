@@ -59,7 +59,8 @@
      (font-latex-add-keywords '(("newtheorem" "*{[{[")
 				("theoremstyle" "{")
 				("newtheoremstyle" "{{{{{{{{{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defun LaTeX-amsthm-complete-theoremstyle (&rest ignore)
   (insert TeX-grop

@@ -94,7 +94,7 @@
     '("ShowDocumentEnvironmentArgSpec" TeX-arg-environment))
    ;; Fontification
    (when (and (featurep 'font-latex)
-   	      (eq TeX-install-font-lock 'font-latex-setup))
+	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("DeclareDocumentCommand" "|{{{")
 				("NewDocumentCommand" "|{{{")
 				("RenewDocumentCommand" "|{{{")
@@ -104,7 +104,8 @@
 				("NewDocumentEnvironment" "{{{{")
 				("RenewDocumentEnvironment" "{{{{")
 				("ProvideDocumentEnvironment" "{{{{"))
-   			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defun LaTeX-xparse-package-options ()
   "Read the xparse package options from the user."

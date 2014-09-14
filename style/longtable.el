@@ -88,6 +88,7 @@
      ;; argument, not an optional one, the following is a workaround
      ;; to fontify correctly also the standard `\caption[]{}' macro.
      (font-latex-add-keywords '(("caption" "*[{"))
-			      'textual))))
+			      'textual)))
+ LaTeX-dialect)
 
 ;; longtable.el ends here

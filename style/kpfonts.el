@@ -570,7 +570,8 @@ following commands are defined:
 			      'bold-declaration)
      (font-latex-add-keywords '(("scslshape")
 				("otherscslshape"))
-			      'italic-declaration))))
+			      'italic-declaration)))
+ LaTeX-dialect)
 
 (defvar LaTeX-kpfonts-package-options
   '(;; Main global options

@@ -166,7 +166,8 @@
 	 (append '(("lgathered"    . LaTeX-amsmath-label)
 		   ("rgathered"   . LaTeX-amsmath-label)
 		   ("multlined"    . LaTeX-amsmath-label)
-		   LaTeX-label-alist)))))
+		   LaTeX-label-alist))))
+ LaTeX-dialect)
 
 (defun LaTeX-mathtools-env-matrix-starred (env)
   (let ((where (read-string "(optional) Vertical placement of columns: ")))

@@ -76,7 +76,8 @@
 				("setLaTeXee" "{")
 				("seteverylogo" "{")
 				("everylogo" "{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-metalogo-package-options nil
   "Package options for the metalogo package.")

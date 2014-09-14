@@ -60,7 +60,8 @@
                                 ("DefineFNsymbolsTM" "{{")
                                 ("DefineFNsymbolsTM*" "{{")
         			("setfnsymbol" "{")) 'function)
-     (font-latex-add-keywords '(("footnoteref")) 'reference))))
+     (font-latex-add-keywords '(("footnoteref")) 'reference)))
+ LaTeX-dialect)
 
 (defvar LaTeX-footmisc-package-options '("perpage" "side" "ragged"
                                          "para" "symbol" "symbol*"

@@ -37,7 +37,8 @@
     '("ldelim" TeX-arg-bigdelim-brace "Number of rows for multirow"
       "Width in multirow" [ "Text in multirow" ])
     '("rdelim" TeX-arg-bigdelim-brace "Number of rows for multirow"
-      "Width in multirow" [ "Text in multirow" ]))))
+      "Width in multirow" [ "Text in multirow" ])))
+ LaTeX-dialect)
 
 (defun TeX-arg-bigdelim-brace (optional &optional prompt)
   "Prompt for a single brace, and do not insert the matching

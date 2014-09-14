@@ -44,7 +44,8 @@
      (font-latex-add-keywords '(("xspace" "")
 				("xspaceaddexception" "{")
 				("xspaceremoveexception" "{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-xspace-package-options nil
   "Package options for the xspace package.")

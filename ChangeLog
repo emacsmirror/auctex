@@ -1,3 +1,346 @@
+2014-09-13  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* latex.el (LaTeX-dialect): Correct doctstring for consistency
+	with definition of function TeX-add-style-hook.
+
+	* doc/auctex.texi (Simple Style): modify example with
+	'TeX-add-style-hook', so that 3rd argument is added. Modify @defun
+	of 'TeX-add-style-hook' also to document addition of 3rd argument.
+
+2014-09-11  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* doc/changes.texi: Add information about style hook labelling by dialect.
+
+	* doc/todo.texi (Bugs): Update Bug #1 about style hook clash.
+
+	* style/xspace.el ("xspace"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/xparse.el ("xparse"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/virtex.el ("virtex"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/verbatim.el ("verbatim"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/varioref.el ("varioref"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/url.el ("url"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/units.el ("units"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/unicode-math.el ("unicode-math"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ulem.el ("ulem"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/tabulary.el ("tabulary"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/tabularx.el ("tabularx"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/swedish.el ("swedish"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/subfigure.el ("subfigure"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/slovak.el ("slovak"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/slides.el ("slides"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/siunitx.el ("siunitx"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/shortvrb.el ("shortvrb"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/setspace.el ("setspace"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrreprt.el ("scrreprt"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrpage2.el ("scrpage2"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrlttr2.el ("scrlttr2"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrbook.el ("scrbook"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrbase.el ("scrbase"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/scrartcl.el ("scrartcl"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ruby.el ("ruby"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/report.el ("report"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ragged2e.el ("ragged2e"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pstricks.el ("pstricks"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pst-slpe.el ("pst-slpe"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pst-plot.el ("pst-plot"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pst-node.el ("pst-node"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pst-grad.el ("pst-grad"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/psfig.el ("psfig"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/prosper.el ("prosper"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/polski.el ("polski"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/polish.el ("polish"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/plhb.el ("plhb"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/plfonts.el ("plfonts"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/plext.el ("plext"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/placeins.el ("placeins"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/pdfsync.el ("pdfsync"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/paralist.el ("paralist"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/nomencl.el ("nomencl"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/nicefrac.el ("nicefrac"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ngerman.el ("ngerman"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/naustrian.el ("naustrian"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/natbib.el ("natbib"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/nameref.el ("nameref"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/multirow.el ("multirow"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/multind.el ("multind"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/multido.el ("multido"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/multicol.el ("multicol"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/mflogo.el ("mflogo"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/metalogo.el ("metalogo"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/memoir.el ("memoir"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/mdwlist.el ("mdwlist"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/mathtools.el ("mathtools"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/makeidx.el ("makeidx"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/luacode.el ("luacode"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ltxdoc.el ("ltxdoc"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/ltx-base.el ("ltx-base"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/lscape.el ("lscape"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/longtable.el ("longtable"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/listings.el ("listings"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/lipsum.el ("lipsum"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/lettrine.el ("lettrine"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/letter.el ("letter"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/latexinfo.el ("latexinfo"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/kpfonts.el ("kpfonts"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/kantlipsum.el ("kantlipsum"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jurabib.el ("jurabib"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jura.el ("jura"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jsbook.el ("jsbook"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jsarticle.el ("jsarticle"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jreport.el ("jreport"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jbook.el ("jbook"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/jarticle.el ("jarticle"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/j-report.el ("j-report"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/j-book.el ("j-book"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/j-article.el ("j-article"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/italian.el ("italian"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/inputenc.el ("inputenc"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/index.el ("index"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/imakeidx.el ("imakeidx"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/icelandic.el ("icelandic"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/hyperref.el ("hyperref"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/harvard.el ("harvard"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/graphicx.el ("graphicx"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/graphics.el ("graphics"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/german.el ("german"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/frenchb.el ("frenchb"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/french.el ("french"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/francais.el ("francais"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/footmisc.el ("footmisc"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/fontspec.el ("fontspec"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/foils.el ("foils"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/flashcards.el ("flashcards"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/filecontents.el ("filecontents"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/fancyvrb.el ("fancyvrb"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/fancyref.el ("fancyref"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/fancynum.el ("fancynum"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/fancyhdr.el ("fancyhdr"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/exercise.el ("exercise"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/everysel.el ("everysel"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/epsf.el ("epsf"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/epigraph.el ("epigraph"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/english.el ("english"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/emp.el ("emp"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/dutch.el ("dutch"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/doc.el ("doc"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/dk.el ("dk"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/dinbrief.el ("dinbrief"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/danish.el ("danish"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/czech.el ("czech"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/csquotes.el ("csquotes"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/comment.el ("comment"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/captcont.el ("captcont"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/bulgarian.el ("bulgarian"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/booktabs.el ("booktabs"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/book.el ("book"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/bm.el ("bm"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/bigstrut.el ("bigstrut"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/bigdelim.el ("bigdelim"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/biblatex.el ("biblatex"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/beamer.el ("beamer"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/babel.el ("babel"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/austrian.el ("austrian"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/article.el ("article"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/array.el ("array"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amsthm.el ("amsthm"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amstext.el ("amstext"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amstex.el ("amstex"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amssymb.el ("amssymb"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amsopn.el ("amsopn"): Add LaTeX-dialect to
+	TeX-add-style-hook call. Update header with correct filename.
+
+	* style/amsmath.el ("amsmath"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amsbsy.el ("amsbsy"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amsbook.el ("amsbook"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/amsart.el ("amsart"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/alphanum.el ("alphanum"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/alltt.el ("alltt"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/afterpage.el ("afterpage"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/acronym.el ("acronym"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/acro.el ("acro"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/MinionPro.el ("MinionPro"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/CJKutf8.el ("CJKutf8"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* style/CJK.el ("CJK"): Add LaTeX-dialect to TeX-add-style-hook call.
+
+	* bib-cite.el (eval-after-load "bibtex"): Add hook
+	TeX-bibtex-set-BibTeX-dialect to BibTex mode, this will set
+	'TeX-style-hook-dialect' to :bibtex for BibTeX files so that
+	Mosè's problem should be solved.
+
+	* latex.el (LaTeX-common-initialization): set
+	'TeX-style-hook-dialect' to :latex for LaTeX files, and those in
+	LaTeX derived modes. Add LaTeX-dialect as DIALECT argument to all
+	calls of TeX-add-style-hook.
+
+	* tex.el (TeX-style-hook-list): Update docstring to make clear
+	that style hooks can also be in the form '[TeX-style-hook HOOK-FUN
+	DIALECT-SET]'.
+	(TeX-bibtex-set-BibTeX-dialect): New defun.
+	(TeX-style-hook-dialect-weight-alist): New defconst.
+	(TeX-shdex-eval): New defun.
+	(TeX-shdex-or TeX-shdex-and TeX-shdex-nor TeX-shdex-not)
+	(TeX-shdex-in-p TeX-shdex-listify): New defsubst.
+	(TeX-style-hook-dialect): New defvar, used to have style hooks
+	called only in corresponding context.
+	(TeX-add-style-hook): Add optional argument context for marking
+	hooks that must run only in non default (aka nil) dialect.
+	(TeX-keep-hooks-in-dialect): New defun, used for unloading only
+	those hooks in a dialect list.
+	(TeX-unload-style): Add optional argument context-list for
+	unloading only those hooks marked for contexts in that
+	context-list.
+	(TeX-run-style-hooks): Run style hook only when current style hook
+	context matches context for which hook is marked.
+
+	* tex-info.el (Texinfo-environment-list): Add 'html' and 'float'
+	environments.
+	(TeX-texinfo-mode): set 'TeX-style-hook-dialect' to :texinfo for
+	Texinfo files. Add macro '@caption'.
+
 2014-09-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-assoc-string): Remove docstring from defalias since

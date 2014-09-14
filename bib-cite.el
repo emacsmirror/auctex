@@ -941,6 +941,7 @@ runs bib-find, and [mouse-3] runs bib-display."
   (eval-after-load
    "bibtex"
    '(progn
+      (add-hook 'bibtex-mode-hook 'TeX-bibtex-set-BibTeX-dialect)
       (cond
        ((lookup-key bibtex-mode-map [menu-bar move/edit])
 	(define-key-after

@@ -60,7 +60,8 @@
      '("backaddress" "Retouradresse: ")
      '("signature" "Unterschrift: ")
      '("opening" "Anrede: ")
-     '("closing" "Schluss: ")))))
+     '("closing" "Schluss: "))))
+ LaTeX-dialect)
 
 (defmacro LaTeX-dinbrief-insert (&rest args)
   "Insert text ignoring active markers."

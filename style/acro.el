@@ -282,7 +282,8 @@ be a list with strings to be used as values for the key."
 				("iacflike" "*{")
 				("Iacflike" "*{")
 				("acuse" "{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defun LaTeX-acro-package-options ()
   "Prompt for package options for the acro package."

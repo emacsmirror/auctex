@@ -225,7 +225,8 @@ to retrieve the list of fonts."
 				("addfontfeature" "{")
 				("newfontscript" "{{")
 				("newfontlanguage" "{{"))
-			      'function))))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-fontspec-package-options
   '("math" "no-math" "config" "no-config" "quiet" "silent")

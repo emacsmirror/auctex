@@ -58,7 +58,8 @@
      (font-latex-add-keywords '(("uline" "{")
 				("uwave" "{")
 				("sout" "{")
-				("xout" "{")) 'textual))))
+				("xout" "{")) 'textual)))
+ LaTeX-dialect)
 
 (defvar LaTeX-arg-fontdecl
   (mapcar (lambda (str) (concat "\\" str))

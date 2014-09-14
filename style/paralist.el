@@ -92,7 +92,8 @@
      (font-latex-add-keywords '(("setdefaultitem" "{{{{")
 				("setdefaultenum" "{{{{")
 				("setdefaultleftmargin" "{{{{{{"))
-			      'variable))))
+			      'variable)))
+ LaTeX-dialect)
 
 (defvar LaTeX-paralist-package-options '("newitem" "olditem" "newenum"
 					 "oldenum" "alwaysadjust"

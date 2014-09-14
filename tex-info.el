@@ -35,15 +35,14 @@
   (defalias 'texinfo-mode 'TeX-texinfo-mode))
 
 ;;; Environments:
-
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
     ("defmac") ("defmethod") ("defop") ("defopt") ("defspec")
     ("deftp") ("deftypefn") ("deftypefun") ("deftypevar") ("deftypevr")
     ("defun") ("defvar") ("defvr") ("description") ("detailmenu")
     ("direntry") ("display") ("documentdescription") ("enumerate")
-    ("example") ("flushleft") ("flushright") ("format") ("ftable")
-    ("group") ("ifclear") ("ifdocbook") ("ifhtml") ("ifinfo")
+    ("example") ("float") ("flushleft") ("flushright") ("format") ("ftable")
+    ("group") ("html") ("ifclear") ("ifdocbook") ("ifhtml") ("ifinfo")
     ("ifnotdocbook") ("ifnothtml") ("ifnotinfo") ("ifnotplaintext")
     ("ifnottex") ("ifnotxml") ("ifplaintext") ("ifset") ("iftex")
     ("ifxml") ("ignore") ("itemize") ("lisp") ("macro") ("menu")
@@ -603,6 +602,7 @@ value of `Texinfo-mode-hook'."
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
   (set (make-local-variable 'TeX-font-replace-function) 'TeX-font-replace-macro)
+  (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
 
   (add-hook 'find-file-hooks (lambda ()
 			       (unless (file-exists-p (buffer-file-name))
@@ -626,6 +626,10 @@ value of `Texinfo-mode-hook'."
    '("bullet")
    '("bye")
    '("c" (TeX-arg-literal " ") (TeX-arg-free "Comment"))
+   '("caption" "Caption"
+     ;; TODO: caption is meaningful only inside float env. Maybe some checking
+     ;; and warning would be good.
+     )
    '("center" (TeX-arg-literal " ") (TeX-arg-free "Line of text"))
    '("chapheading" (TeX-arg-literal " ") (TeX-arg-free "Title"))
    '("chapter" (TeX-arg-literal " ") (TeX-arg-free "Title"))

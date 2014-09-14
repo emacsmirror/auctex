@@ -55,6 +55,7 @@
     '("tabularx" LaTeX-env-tabular*))
    
    ;; `tabularx' requires array to define the column types
-   (TeX-run-style-hooks "array")))
+   (TeX-run-style-hooks "array"))
+ LaTeX-dialect)
 
 ;;; tabularx.el ends here

@@ -54,7 +54,8 @@
     '("DifficultyMarker")
     '("listofexercises")
     '("ListOfExerciseInToc")
-    '("ExerciseLevelInToc"))))
+    '("ExerciseLevelInToc")))
+ LaTeX-dialect)
 
 (defvar LaTeX-exercise-package-options '("noexercise" "noanswer" "exerciseonly" "answeronly" "nothing" "answerdelayed" "exercisedelayed" "lastexercise")
   "Package options for the exercise package.")

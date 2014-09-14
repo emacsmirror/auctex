@@ -5,6 +5,7 @@
 (TeX-add-style-hook
  "jsbook"
  (lambda () 
-   (LaTeX-largest-level-set "chapter")))
+   (LaTeX-largest-level-set "chapter"))
+ LaTeX-dialect)
 
 ;;; jsbook.el ends here

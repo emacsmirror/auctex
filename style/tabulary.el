@@ -52,6 +52,7 @@
     '("tabulary" LaTeX-env-tabular*))
 
    ;; `tabulary' requires the array package
-   (TeX-run-style-hooks "array")))
+   (TeX-run-style-hooks "array"))
+ LaTeX-dialect)
 
 ;;; tabulary.el ends here
