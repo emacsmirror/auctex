@@ -4537,8 +4537,9 @@ use \\[customize]."
 
 (defconst LaTeX-dialect :latex
   "Default dialect for use with function `TeX-add-style-hook' for
-  argument DIALECT when the hook is to be run only on LaTeX file,
-  or any mode derived thereof. See variable `TeX-style-hook-dialect'." )
+argument DIALECT-EXPR when the hook is to be run only on LaTeX
+file, or any mode derived thereof. See variable
+`TeX-style-hook-dialect'." )
 
 (defconst LaTeX-math-default
   '((?a "alpha" "Greek Lowercase" 945) ;; #X03B1

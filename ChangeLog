@@ -1,3 +1,12 @@
+2014-09-13  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* latex.el (LaTeX-dialect): Correct doctstring for consistency
+	with definition of function TeX-add-style-hook.
+
+	* doc/auctex.texi (Simple Style): modify example with
+	'TeX-add-style-hook', so that 3rd argument is added. Modify @defun
+	of 'TeX-add-style-hook' also to document addition of 3rd argument.
+
 2014-09-11  Vincent Belaïche  <vincent.b.1@hotmail.fr>
 
 	* doc/changes.texi: Add information about style hook labelling by dialect.
