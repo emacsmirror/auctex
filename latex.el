@@ -695,7 +695,6 @@ environment just inserted, the buffer position just before
       (newline))
     (when active-mark (goto-char (mark)))
     (when prefix (insert prefix))
-    (setq env-end (point))
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
     (end-of-line 0)
     (if active-mark
@@ -706,6 +705,11 @@ environment just inserted, the buffer position just before
       (indent-according-to-mode))
     (save-excursion (beginning-of-line 2) (indent-according-to-mode))
     (TeX-math-input-method-off)
+    (setq env-end (save-excursion
+		    (search-forward
+		     (concat TeX-esc "end" TeX-grop
+			     environment TeX-grcl))
+		    (match-beginning 0)))
     (run-hook-with-args 'LaTeX-after-insert-env-hooks
 			environment env-start env-end)))
 
