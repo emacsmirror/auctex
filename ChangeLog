@@ -1,5 +1,11 @@
 2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
 
+	* texmathp.el (texmathp-tex-commands-default): Move equation*
+	environment to AMS-LaTeX section.
+	(texmathp-why): Fix docstring.
+
+2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
 	* style/amstext.el (LaTeX-amstext-package-options): Rename from
 	`LaTeX-amstext-package-option'.
 
