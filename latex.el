@@ -4172,7 +4172,7 @@ environments."
       (goto-char cur)
       (dotimes (c count) (LaTeX-find-matching-begin))
       (setq beg (point)))
-    (set-mark end)
+    (push-mark end)
     (goto-char beg)
     (TeX-activate-region)))
 

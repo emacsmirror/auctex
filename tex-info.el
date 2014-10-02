@@ -183,7 +183,7 @@ environments."
 	(unless (= (1+ c) count)
 	  (beginning-of-line 0)))
       (setq beg (point)))
-    (set-mark end)
+    (push-mark end)
     (goto-char beg)
     (TeX-activate-region)))
 
@@ -264,7 +264,7 @@ the section."
 	    (when  (looking-at "^\\s-*@node\\_>")
 	      (set boundary (point))))))
 
-      (set-mark end)
+      (push-mark end)
       (goto-char beg)
       (TeX-activate-region) )))
 
@@ -284,7 +284,7 @@ beginning of keyword `@node' or `@bye'."
 		    (progn (beginning-of-line) (point))))))
 
     (when (and beg end)
-      (set-mark end)
+      (push-mark end)
       (goto-char beg)
       (TeX-activate-region) )))
 
