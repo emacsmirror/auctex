@@ -839,7 +839,7 @@ the contents."
   (interactive)
   (let ((cur (point)))
     (ConTeXt-find-matching-stop inner)
-    (set-mark (point))
+    (push-mark (point))
     (goto-char cur)
     (ConTeXt-find-matching-start inner)
     (TeX-activate-region)))

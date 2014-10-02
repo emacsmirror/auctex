@@ -1,3 +1,12 @@
+2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex-info.el (Texinfo-mark-environment, Texinfo-mark-section)
+	(Texinfo-mark-node): Use `push-mark' instead of `set-mark'.
+
+	* latex.el (LaTeX-mark-environment): Ditto.
+
+	* context.el (ConTeXt-mark-environment): Ditto.
+
 2014-09-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-insert-environment): Pass correct \end buffer
