@@ -1,5 +1,12 @@
 2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
 
+	* tex.el (featurep): Activate mark in the GNU Emacs version of
+	TeX-activate-mark instead of being a no-op.
+	(TeX-insert-dollar): Use set-mark instead of push-mark in order to
+	avoid duplicate marks.
+
+2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
 	* texmathp.el (texmathp-tex-commands-default): Move equation*
 	environment to AMS-LaTeX section.
 	(texmathp-why): Fix docstring.
