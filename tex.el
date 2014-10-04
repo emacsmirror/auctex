@@ -751,7 +751,8 @@ If POS is nil, use current buffer location."
     (and transient-mark-mode mark-active))
 
   (defun TeX-activate-region ()
-    nil)
+    (setq deactivate-mark nil)
+    (activate-mark))
 
   (defun TeX-overlay-prioritize (start end)
     "Calculate a priority for an overlay extending from START to END.
@@ -5540,18 +5541,18 @@ sign.  With optional ARG, insert that many dollar signs."
        ((and (eq last-command 'TeX-insert-dollar)
 	     (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
 	(replace-match "$$\\1$$")
-	(push-mark (match-beginning 0) t))
+	(set-mark (match-beginning 0)))
        ;; \(...\) to \[...\]
        ((and (eq last-command 'TeX-insert-dollar)
 	     (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
 	(replace-match "\\\\[\\1\\\\]")
-	(push-mark (match-beginning 0) t))
+	(set-mark (match-beginning 0)))
        ;; Strip \[...\] or $$...$$
        ((and (eq last-command 'TeX-insert-dollar)
 	     (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
 		 (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
 	(replace-match "\\1")
-	(push-mark (match-beginning 0) t))
+	(set-mark (match-beginning 0)))
        (t
 	;; We use `save-excursion' because point must be situated before opening
 	;; symbol.
@@ -5559,10 +5560,7 @@ sign.  With optional ARG, insert that many dollar signs."
 	(exchange-point-and-mark)
 	(insert (cdr TeX-electric-math))))
       ;; Keep the region active.
-      (if (featurep 'xemacs)
-	  (zmacs-activate-region)
-	(setq activate-mark t
-	      deactivate-mark nil)))
+      (TeX-activate-region))
      (TeX-electric-math
       (insert (car TeX-electric-math))
       (save-excursion (insert (cdr TeX-electric-math)))
