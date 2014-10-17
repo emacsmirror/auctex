@@ -1,3 +1,7 @@
+2014-10-13  Matthew Leach  <matthew@mattleach.net>
+
+	* style/cleveref.el: New file.
+
 2014-10-02  Ikumi Keita  <ikumi@ikumi.que.jp>
 
 	* tex.el (featurep): Activate mark in the GNU Emacs version of
