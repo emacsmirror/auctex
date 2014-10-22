@@ -134,6 +134,9 @@ Now @kbd{C-c C-e document @key{RET}}, in an empty document, prompts for
 which dialect (LaTeX, Texinfo or BibTeX) the style hook is
 registers. Labelling style hook by dialect will avoid applying them not
 in the right context.
+
+@item
+There have been lots of bug fixes and feature additions.
 @end itemize
 
 @heading News since 11.87

@@ -1,5 +1,18 @@
 2014-10-22  Mosè Giordano  <mose@gnu.org>
 
+	* RELEASE: Update AUCTeX version, the new features section, and
+	the list of contributors.
+
+	* configure.ac: Update AUCTeX version.
+
+	* doc/changes.texi: Mention generic bug fixes for 11.88 release.
+
+	* doc/tex-ref.tex: Update AUCTeX version and copyright years
+	across the file.
+	Add now working `TeX-previous-error' key-binding.
+
+	* tex.el: Update copyright year.
+
 	* doc/Makefile.in: Make it possible to build the HTML doc with
 	`makeinfo' if `texi2html' is not available.  Add new
 	`TEXI2HTML_TOC' variable.
