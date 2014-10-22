@@ -80,8 +80,14 @@ This depends on `LaTeX-insert-into-comments'."
 		   (concat "[ \t]*" TeX-comment-start-regexp "+[ \t]*")))
 	     (delete-region (match-beginning 0) (match-end 0))
 	     (indent-new-comment-line))
+	    ;; `indent-new-comment-line' does nothing when
+	    ;; `comment-auto-fill-only-comments' is non-il, so we must be sure
+	    ;; to be in a comment before calling it.  In any other case
+	    ;; `newline' is used.
+	    ((TeX-in-comment)
+	     (indent-new-comment-line))
 	    (t
-	     (indent-new-comment-line)))
+	     (newline)))
     (newline)))
 
 

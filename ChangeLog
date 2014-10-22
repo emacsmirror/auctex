@@ -1,3 +1,9 @@
+2014-10-22  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-newline): Fix for when
+	`comment-auto-fill-only-comments' is non-nil.  Suggested by Piet
+	van Oostrum.
+
 2014-10-13  Matthew Leach  <matthew@mattleach.net>
 
 	* style/cleveref.el: New file.
