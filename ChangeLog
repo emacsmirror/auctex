@@ -1,5 +1,12 @@
 2014-10-22  Mosè Giordano  <mose@gnu.org>
 
+	* doc/Makefile.in: Make it possible to build the HTML doc with
+	`makeinfo' if `texi2html' is not available.  Add new
+	`TEXI2HTML_TOC' variable.
+	(extradist): Use `TEXI2HTML_TOC'.
+	(html/$(TEXI2HTML_TOC)): Use `TEXI2HTML_TOC'.  Fix splitting
+	option to HTML engine.  Suggested by Norbert Preining.
+
 	* latex.el (LaTeX-newline): Fix for when
 	`comment-auto-fill-only-comments' is non-nil.  Suggested by Piet
 	van Oostrum.
