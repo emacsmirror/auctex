@@ -40,5 +40,5 @@ preview/latex/prshowlabels.def
 preview/latex/prtightpage.def
 preview/latex/prtracingall.def
 preview/preview-latex.el
+preview/preview.el
 PROBLEMS.preview
-

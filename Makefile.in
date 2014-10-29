@@ -139,7 +139,7 @@ STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
-	auto-loads.el config.*
+	auto-loads.el config.* preview/preview.el
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
 
 NOSEARCH = style/.nosearch
@@ -370,14 +370,17 @@ release-commit: check-tag
 	@echo "Tagging release $(TAG) in Git ..."
 	sleep 5
 	mv ChangeLog ChangeLog.old
+	mv preview/ChangeLog preview/ChangeLog.old
 # Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
 # requires the `iconv' program.
 	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
+	cp ChangeLog preview/ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	git commit -m 'Release_$(TAG)' -- ChangeLog
+	cat preview/ChangeLog.old >> preview/ChangeLog
+	git commit -m 'Release_$(TAG)' -- ChangeLog preview/ChangeLog
 	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	@echo
 	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."

@@ -1,3 +1,10 @@
+2014-10-29  Mosè Giordano  <mose@gnu.org>
+
+	* preview.el.in: Rename from "preview/preview.el".
+	(preview-version): Use @PREVIEWVERSION@ autoconf variable.
+	(preview-release-date): Use @PREVIEWDATE@ autoconf variable.
+	(preview-report-bug): Adapt to new `preview-version' format.
+
 2014-06-24  Tassilo Horn  <tsdh@gnu.org>
 
 	* preview.el (preview-gs-command): Don't run the mgs command if

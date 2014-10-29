@@ -1,3 +1,19 @@
+2014-10-29  Mosè Giordano  <mose@gnu.org>
+
+	* .gitignore: Ignore preview/preview.el.
+
+	* Makefile.in (DISTCLEANFILES): Add preview/preview.el.
+	(release-commit): Write new version announcement also into
+	preview/ChangeLog.
+
+	* aclocal.m4: Add a third argument to
+	`AC_DATE_VERSION_FROM_CHANGELOG' specifying the ChangeLog file.
+
+	* configure.ac: Use new third argument of
+	`AC_DATE_VERSION_FROM_CHANGELOG'.  Retrieve preview date and
+	version from its ChangeLog.  Add preview/preview.el to output
+	files.
+
 2014-10-22  Mosè Giordano  <mose@gnu.org>
 
 	* RELEASE: Update AUCTeX version, the new features section, and
