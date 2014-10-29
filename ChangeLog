@@ -1,5 +1,8 @@
 2014-10-29  Mosè Giordano  <mose@gnu.org>
 
+	* latex.el (LaTeX-largest-level-set): Set `outline-heading-alist'
+	only if it is bound.
+
 	* .gitignore: Ignore preview/preview.el.
 
 	* Makefile.in (DISTCLEANFILES): Add preview/preview.el.

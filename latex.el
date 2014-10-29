@@ -287,7 +287,9 @@ Additionally the function will invalidate the section submenu in
 order to let the menu filter regenerate it."
   (setq LaTeX-largest-level (LaTeX-section-level section))
   (let ((offset (LaTeX-outline-offset)))
-    (when (> offset 0)
+    (when (and (> offset 0)
+	       ;; XEmacs does not know `outline-heading-alist'.
+	       (boundp 'outline-heading-alist))
       (let (lst)
 	(dolist (tup outline-heading-alist)
 	  (setq lst (cons (cons (car tup)
