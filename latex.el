@@ -6291,35 +6291,35 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
 (defun LaTeX-indent-tabular ()
   "Return indent column for the current tabular-like line."
-  (destructuring-bind (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
-    (let ((tabular-like-end-regex
-           (format "\\\\end{%s}"
-                   (regexp-opt
-                    (let (out)
-                      (mapcar (lambda (x)
-                              (when (eq (cadr x) 'LaTeX-indent-tabular)
-                                (push (car x) out)))
-                              LaTeX-indent-environment-list)
-                      (pp out)
-                      out)))))
-      (cond ((looking-at tabular-like-end-regex)
-             beg-col)
+  (destructuring-bind
+   (beg-pos . beg-col)
+   (LaTeX-env-beginning-pos-col)
+   (let ((tabular-like-end-regex
+	  (format "\\\\end{%s}"
+		  (regexp-opt
+		   (let (out)
+		     (mapcar (lambda (x)
+			       (when (eq (cadr x) 'LaTeX-indent-tabular)
+				 (push (car x) out)))
+			     LaTeX-indent-environment-list)
+		     out)))))
+     (cond ((looking-at tabular-like-end-regex)
+	    beg-col)
 
-            ((looking-at "\\\\\\\\")
-             (+ 2 beg-col))
+	   ((looking-at "\\\\\\\\")
+	    (+ 2 beg-col))
 
-            ((looking-at "&")
-             (LaTeX-hanging-ampersand-position))
+	   ((looking-at "&")
+	    (LaTeX-hanging-ampersand-position))
 
-            (t
-             (+ 2
-                (let ((any-col (save-excursion
-                                 (when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
-                                   (current-column)))))
-                  (if (and any-col (string= "&" (match-string 0)))
-                      any-col
-                    beg-col))))))))
+	   (t
+	    (+ 2
+	       (let ((any-col (save-excursion
+				(when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
+				  (current-column)))))
+		 (if (and any-col (string= "&" (match-string 0)))
+		     any-col
+		   beg-col))))))))
 
 (provide 'latex)
 
