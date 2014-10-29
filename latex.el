@@ -2852,25 +2852,7 @@ The second element in each entry is the function to calculate the
 indentation level in columns."
     :group 'LaTeX-indentation
     :type '(repeat (list (string :tag "Environment")
-			 (option function)))
-    :set (lambda (symbol value)
-           (setq LaTeX--tabular-like-end
-                 (format "\\\\end{%s}"
-                         (regexp-opt
-                          (let (out)
-                            (mapc (lambda (x)
-                                    (when (eq (cadr x) 'LaTeX-indent-tabular)
-                                      (push (car x) out)))
-                                  value)
-                            out))))
-           (set-default symbol value)))
-
-(defvar LaTeX--tabular-like-end nil
-  "A regexp matching tabular-like environment ends.
-Those will be aligned with `LaTeX-indent-tabular'.
-
-Do not set this variable. This variable is auto-set
-by customizing `LaTeX-indent-environment-list'.")
+			 (option function))))
 
 (defcustom LaTeX-indent-environment-check t
   "*If non-nil, check for any special environments."
@@ -6311,23 +6293,33 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   "Return indent column for the current tabular-like line."
   (destructuring-bind (beg-pos . beg-col)
       (LaTeX-env-beginning-pos-col)
-    (cond ((looking-at LaTeX--tabular-like-end)
-           beg-col)
+    (let ((tabular-like-end-regex
+           (format "\\\\end{%s}"
+                   (regexp-opt
+                    (let (out)
+                      (mapcar (lambda (x)
+                              (when (eq (cadr x) 'LaTeX-indent-tabular)
+                                (push (car x) out)))
+                              LaTeX-indent-environment-list)
+                      (pp out)
+                      out)))))
+      (cond ((looking-at tabular-like-end-regex)
+             beg-col)
 
-          ((looking-at "\\\\\\\\")
-           (+ 2 beg-col))
+            ((looking-at "\\\\\\\\")
+             (+ 2 beg-col))
 
-          ((looking-at "&")
-           (LaTeX-hanging-ampersand-position))
+            ((looking-at "&")
+             (LaTeX-hanging-ampersand-position))
 
-          (t
-           (+ 2
-              (let ((any-col (save-excursion
-                               (when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
-                                 (current-column)))))
-                (if (and any-col (string= "&" (match-string 0)))
-                    any-col
-                  beg-col)))))))
+            (t
+             (+ 2
+                (let ((any-col (save-excursion
+                                 (when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
+                                   (current-column)))))
+                  (if (and any-col (string= "&" (match-string 0)))
+                      any-col
+                    beg-col))))))))
 
 (provide 'latex)
 

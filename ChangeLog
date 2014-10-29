@@ -1,3 +1,12 @@
+2014-10-29  Matthew Leach  <matthew@mattleach.net>
+
+	* latex.el (LaTeX-indent-environment-list): Remove setter
+	lambda.
+	(LaTeX--tabular-like-end): Remove variable.
+	(LaTeX-indent-tabular): Move setter function from
+	LaTeX-indent-environment-list to generate tabular-end regex when
+	called.
+
 2014-10-29  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-largest-level-set): Set `outline-heading-alist'
