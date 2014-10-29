@@ -1,5 +1,9 @@
 2014-10-29  Mosè Giordano  <mose@gnu.org>
 
+	* Version 11.88 released.
+
+2014-10-29  Mosè Giordano  <mose@gnu.org>
+
 	* latex/preview.dtx: Manually change the release version.
 
 	* preview.el.in: Rename from "preview/preview.el".

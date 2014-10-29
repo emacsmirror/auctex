@@ -1,3 +1,7 @@
+2014-10-29  Mosè Giordano  <mose@gnu.org>
+
+	* Version 11.88 released.
+
 2014-10-29  Matthew Leach  <matthew@mattleach.net>
 
 	* latex.el (LaTeX-indent-environment-list): Remove setter
