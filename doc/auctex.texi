@@ -2786,7 +2786,7 @@ should be produced, if @TeX{} should be started in interactive or
 nonstop mode, if source specials or a Sync@TeX{} file should be produced
 for making inverse and forward search possible or which @TeX{} engine
 should be used instead of regular @TeX{}, like PDF@TeX{}, Omega or
-Xe@TeX{}.
+Xe@TeX{}, and the style error messages are printed with.
 
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
@@ -2927,6 +2927,13 @@ produced.
 
 @defopt TeX-show-compilation
 If non-nil, the output of @TeX{} compilation is shown in another window.
+@end defopt
+
+You can instruct @TeX{} to print error messages in the form
+file:line:error which is similar to the way many compilers format them.
+
+@defopt TeX-file-line-error
+If non-nil, @TeX{} will produce file:line:error style error messages.
 @end defopt
 
 @node Viewing

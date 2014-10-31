@@ -1,3 +1,15 @@
+2014-11-01  Davide G. M. Salvetti  <salve@linux.it>
+
+        * tex.el (TeX-file-line-error): New customizable option.
+        (TeX-expand-list): New expander "$(file-line-error)".
+        (TeX-command-list): Use it.
+        (LaTeX-command-style): Use it.
+
+        * doc/auctex.texi (Processor Options): Document
+        `TeX-file-line-error'.
+
+        * doc/changes.texi: Mention `TeX-file-line-error'.
+
 2014-10-31  Mosè Giordano  <mose@gnu.org>
 
 	* Makefile.in (CTANDIR): New variable.

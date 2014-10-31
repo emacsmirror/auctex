@@ -8,6 +8,14 @@
 
 @end ifset
 
+@heading News since 11.88
+
+@itemize @bullet
+@item
+New option @code{TeX-file-line-error} allows to select file:line:error
+style for error messages.
+@end itemize
+
 @heading News in 11.88
 
 @itemize @bullet

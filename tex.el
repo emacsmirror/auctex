@@ -79,6 +79,11 @@
   :group 'TeX-command
   :type 'string)
 
+(defcustom TeX-file-line-error t
+  "Whether to have TeX produce file:line:error style error messages."
+  :group 'TeX-command
+  :type 'boolean)
+
 (defcustom ConTeXt-engine nil
   "Engine to use for --engine in the texexec command.
 If nil, none is specified."
@@ -112,7 +117,7 @@ If nil, none is specified."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  `(("TeX" "%(PDF)%(tex) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
+  `(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %t"
@@ -301,7 +306,7 @@ The executable `latex' is LaTeX version 2e."
 
 (defcustom LaTeX-command-style
   ;; They have all been combined in LaTeX 2e.
-  '(("" "%(PDF)%(latex) %(extraopts) %S%(PDFout)"))
+  '(("" "%(PDF)%(latex) %(file-line-error) %(extraopts) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
 If the first element (a regular expression) matches the name of one of
@@ -456,6 +461,8 @@ string."
 		 (if TeX-interactive-mode
 		     ""
 		   " -interaction=nonstopmode")))
+    ("%(file-line-error)"
+     (lambda () (if TeX-file-line-error " -file-line-error" "")))
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
     ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
     ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
