@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2005 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -116,13 +116,18 @@ definition."
   (let ((list TeX-mode-alist) elt)
     (while list
       (setq elt (car (pop list)))
-      (when (or update (null (get elt 'tex-saved)))
-	(when (fboundp elt)
-	  (put elt 'tex-saved (symbol-function elt))))
-      (defalias elt
-	(if (memq elt value)
-	    (intern (concat "TeX-" (symbol-name elt)))
-	  (get elt 'tex-saved))))))
+      (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
+        (if (fboundp 'advice-add)
+            (if (memq elt value)
+                (advice-add elt :override dst)
+              (advice-remove elt dst))
+          (when (or update (null (get elt 'tex-saved)))
+            (when (fboundp elt)
+              (put elt 'tex-saved (symbol-function elt))))
+          (defalias elt
+            (if (memq elt value)
+                dst
+              (get elt 'tex-saved))))))))
 
 (defcustom TeX-modes
   (mapcar 'car TeX-mode-alist)
@@ -134,13 +139,14 @@ set it with `TeX-modes-set'."
 	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set 'TeX-modes-set
   :group 'AUCTeX
-  :initialize (lambda (var value)
-		(custom-initialize-reset var value)
-		(let ((list TeX-mode-alist))
-		  (while list
-		    (eval-after-load (cdar list)
-		      `(TeX-modes-set ',var ,var t))
-		    (setq list (cdr list))))))
+  :initialize(lambda (var value)
+	       (custom-initialize-reset var value)
+	       (unless (fboundp 'advice-add)
+		 (let ((list TeX-mode-alist))
+		   (while list
+		     (eval-after-load (cdar list)
+		       `(TeX-modes-set ',var ,var t))
+		     (setq list (cdr list)))))) )
 
 (defconst AUCTeX-version "@AUCTEXVERSION@"
     "AUCTeX version.
@@ -152,15 +158,3 @@ If not a regular release, the date of the last change.")
 ;; Store bibitems when saving a BibTeX buffer
 (add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
 
-;;; Code specific to ELPA packaging:
-
-;; From preview-latex.el:
-
-(defvar preview-TeX-style-dir
-  (expand-file-name "latex" (file-name-directory load-file-name)))
-
-;;; Ensure that loading the autoloads file also loads this file.
-;;;###autoload (require 'tex-site)
-
-(provide 'tex-site)
-;;; tex-site.el ends here

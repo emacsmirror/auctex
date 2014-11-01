@@ -1,4 +1,4 @@
-% Reference Card for AUCTeX version 11.87
+% Reference Card for AUCTeX version 11.88
 %**start of header
 \newcount\columnsperpage
 
@@ -42,9 +42,9 @@
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{11.87}
-\def\year{2012}
-\def\version{November \year\ v\versionnumber}
+\def\versionnumber{11.88}
+\def\year{2014}
+\def\version{October \year\ v\versionnumber}
 
 \def\shortcopyrightnotice{\vskip 1ex plus 2 fill
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
@@ -53,7 +53,7 @@
 \def\copyrightnotice{%
 \vskip 1ex plus 2 fill\begingroup\small
 \centerline{Copyright \copyright\ 1987, 1992, 1993, 2004, 2005, 2008,}
-\centerline{2010, 2012 Free Software Foundation, Inc.}
+\centerline{2010, 2012, 2014 Free Software Foundation, Inc.}
 \centerline{for AUC\TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
@@ -241,6 +241,7 @@ are preserved on all copies.
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
 \key{Next error in \TeX/\LaTeX\ session}{C-c `}
+\key{Previous error in \TeX/\LaTeX\ session}{M-g p}
 \key{Toggle debug of bad boxes}{C-c C-t C-b}
 \key{Toggle debug of warnings}{C-c C-t C-w}
 \key{View output file}{C-c C-v}
@@ -265,7 +266,7 @@ are not available in all modes):
 \key{Make (PostScript) File}{File}
 \key{Ispell}{Spell}
 \key{Delete intermediate files}{Clean}
-\key{Delete all output files files}{Clean All}
+\key{Delete all output files}{Clean All}
 
 \section{\TeX ing options}
 \TeX\ runs can come in various types, which may be toggled and are
@@ -278,6 +279,7 @@ indicated in the mode line.
 \section{Miscellaneous}
 
 \key{Read AUC\TeX\ manual}{C-c TAB}
+\key{Find documentation}{C-c ?}
 \key{Math Mode}{C-c \string~}
 \key{Reset Buffer}{C-c C-n}
 \key{Reset AUC\TeX}{C-u C-c C-n}
@@ -295,7 +297,7 @@ indicated in the mode line.
 \key{Insert item}{C-c LFD}
 \key{Insert item (alias)}{M-RET}
 \key{Close \LaTeX\ environment}{C-c ]}
-\key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
+\key{Insert \TeX\ macro \kbd{\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
 \key{Complete \TeX\ macro}{M-TAB}
 \key{Smart ``quote''}{"}
@@ -384,7 +386,7 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \keycs\omega{w}
 \keycs\Delta{D}
 \keycs\Gamma{G}
-\keycs\Theta{Q}
+\keycs\Theta{J}
 \keycs\Lambda{L}
 \keycs\Xi{X}
 \keycs\Pi{P}
@@ -404,6 +406,7 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \keycs\leq{<}
 \keycs\geq{>}
 \keycs\tilde x{\string~}
+\keycs\hat x{^}
 \keycs\nabla{N}
 \keycs\infty{I}
 \keycs\forall{A}
@@ -412,6 +415,7 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \keycs\in{i}
 \keycs\times{*}
 \keycs\cdot{.}
+\keycs\colon{:}
 \keycs\subset{\{}
 \keycs\supset{\}}
 \keycs\subseteq{[}
@@ -430,7 +434,6 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \keycs\det{C-d}
 \keycs\lim{C-l}
 \keycs\tan{C-t}
-\keycs\hat x{^}
 \keycs\vee{|}
 \keycs\wedge{\&}
 
@@ -574,7 +577,6 @@ RefTeX is part of [X]Emacs.  To activate and make it interact with
 AUCTeX, insert the following lines in .emacs.
 \vskip-3mm
 \beginexample
-(add-hook 'latex-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-auctex t)
 \endexample
@@ -623,7 +625,7 @@ variables
 \vskip-3mm
 \beginexample
 reftex-label-alist
-reftex-section-lecels
+reftex-section-levels
 reftex-index-macros
 reftex-cite-format
 \endexample
@@ -641,7 +643,6 @@ consistent.
 
 \vskip-4mm
 \beginexample
-(add-hook 'latex-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-auctex t)
 \endexample

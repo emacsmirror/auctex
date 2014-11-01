@@ -1,6 +1,7 @@
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
-;; Copyright (C) 2001-2006 Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04, 05,
+;;               2006 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -38,13 +39,12 @@
     "List of macros only present when compiling/loading uncompiled.")
 
   (defmacro preview-defmacro (name &rest rest)
-    (when (featurep 'xemacs)
-      (push
-       (if (fboundp name)
-           (cons name (symbol-function name))
-         name)
-       preview-compatibility-macros)
-      `(eval-when-compile (defmacro ,name ,@rest))))
+    (push 
+     (if (fboundp name)
+	 (cons name (symbol-function name))
+       name)
+     preview-compatibility-macros)
+    `(eval-when-compile (defmacro ,name ,@rest)))
   (push 'preview-defmacro preview-compatibility-macros))
 
 (preview-defmacro assoc-default (key alist test)

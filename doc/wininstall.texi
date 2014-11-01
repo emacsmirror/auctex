@@ -183,7 +183,7 @@ MiKTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
 
 @item
 @uref{http://www.perl.org,Perl} is needed for rebuilding the
-documentation if you are working with a copy from @acronym{CVS} or have
+documentation if you are working with a copy from @acronym{Git} or have
 touched documentation source files in the @previewlatex{} part.  If the
 line endings of the file @file{preview/latex/preview.dtx} don't
 correspond with what Perl calls @code{\n} when reading text files,
