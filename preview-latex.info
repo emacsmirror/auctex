@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 5.2 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.87.2012-12-04 from 2012-12-04).
+(version 11.88 from 2014-10-29).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -244,7 +244,7 @@ should already be integrated into AUCTeX, so no separate download will
 be necessary.
 
    You will also find '.rpm' files there for Fedora and possibly SuSE.
-Anonymous CVS is available as well.
+Anonymous Git is available as well.
 
 
 File: preview-latex.info,  Node: Contacts,  Prev: Availability,  Up: Introduction
@@ -576,9 +576,7 @@ newer versions of the problematic software or by simple patches.
 
 * Menu:
 
-* Problems with Ghostscript::   
 * Font problems with Dvips::    
-* Emacs problems::              
 * Too small bounding boxes::    
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
@@ -589,51 +587,9 @@ information interesting to us and send it to the <bug-auctex@gnu.org>
 list.  Please use the bug reporting commands if at all possible.
 
 
-File: preview-latex.info,  Node: Problems with Ghostscript,  Next: Font problems with Dvips,  Up: Known problems
+File: preview-latex.info,  Node: Font problems with Dvips,  Next: Too small bounding boxes,  Up: Known problems
 
-5.1 Problems with Ghostscript
-=============================
-
-Most of the problems encountered come from interaction with Ghostscript.
-It is a good idea to have a fairly recent version of Ghostscript
-installed.  One problem occurs if you have specified the wrong
-executable under Windows: the command line version of Ghostscript is
-called 'GSWIN32C.EXE', not 'GSWIN32.EXE'.
-
-   When Ghostscript fails, the necessary information and messages from
-Ghostscript go somewhere.  If Ghostscript fails before starting to
-process images, you'll find the information at the end of the process
-buffer you can see with 'C-c C-l'.  If Ghostscript fails while
-processing a particular image, this image will be tagged with clickable
-buttons for the error description and for the corresponding source file.
-
-   The default options configurable with
-
-     'M-x customize-variable <RET> preview-gs-options <RET>'
-include the options '-dTextAlphaBits=4' and '-dGraphicsAlphaBits=4'.
-These options have been reported to make Ghostscript 5.50 fail, but
-should work under Ghostscript 6.51 and later.  If you are experiencing
-problems, it might help to customize them away.  Of course, this also
-takes away the joy of antialiasing, so upgrading Ghostscript might not
-be the worst idea after all.
-
-   The device names have changed over time, so when using an old
-Ghostscript, you may have problems with the devices demanded by the
-customizable variable 'preview-image-creators'.  In that case, make sure
-they fit your version of Ghostscript, at least the entry corresponding
-to the current value of 'preview-image-type'.  While not being best in
-file size and image quality, setting 'preview-image-creators' to 'jpeg'
-should probably be one of the best bets for the purpose of checking
-basic operation, since that device name has not changed in quite some
-time.  But JPEG is not intended for text, but for photographic images.
-On a more permanent time scale, the best choice is to use PNG and
-complain to your suppliers if either Emacs or Ghostscript fail to
-properly accommodate this format.
-
-
-File: preview-latex.info,  Node: Font problems with Dvips,  Next: Emacs problems,  Prev: Problems with Ghostscript,  Up: Known problems
-
-5.2 Font problems with Dvips
+5.1 Font problems with Dvips
 ============================
 
 Some fonts have been reported to produce wrong characters with
@@ -657,51 +613,9 @@ a long-standing bug in its implementation fixed (only very recent
 versions of Dvips have).
 
 
-File: preview-latex.info,  Node: Emacs problems,  Next: Too small bounding boxes,  Prev: Font problems with Dvips,  Up: Known problems
+File: preview-latex.info,  Node: Too small bounding boxes,  Next: x-symbol interoperation,  Prev: Font problems with Dvips,  Up: Known problems
 
-5.3 Emacs problems
-==================
-
-   * GNU Emacs versions
-
-     Don't use Emacsen older than 21.3 on X11-based systems.  On most
-     other systems, you'll need at least Emacs 22.1 or one of the
-     developer versions leading up to it.  Details can be found in *note
-     (auctex)Prerequisites::.
-
-   * Emacsen on Windows operating systems
-
-     For Emacs 21, no image support is available in Emacs under Windows.
-     Without images, preview-latex is useless.  The current CVS version
-     of Emacs available from <http://savannah.gnu.org/projects/emacs>
-     now supports images including the PNG format, so Emacs 22 should
-     work out of the box once it is released.  Precompiled versions are
-     available from <http://crasseux.com/emacs> and
-     <http://nqmacs.sf.net>.
-
-     For detailed installation instructions for Windows, see *note
-     (auctex)Installation under MS Windows::.
-
-   * XEmacs
-
-     There is are two larger problems known with older XEmacs releases.
-     One leads to seriously mispositioned baselines and previews hanging
-     far above other text on the same line.  This should be fixed as of
-     XEmacs-21.4.9.
-
-     The other core bug causes a huge delay when XEmacs's idea of the
-     state of processes (like ghostscript) is wrong, and can lead to
-     nasty spurious error messages.  It should be fixed in version
-     21.4.8.
-
-     Previews will only remain from one session to the next if you have
-     version 1.81 or above of the 'edit-utils' package, first released
-     in the 2002-03-12 sumo tarball.
-
-
-File: preview-latex.info,  Node: Too small bounding boxes,  Next: x-symbol interoperation,  Prev: Emacs problems,  Up: Known problems
-
-5.4 Too small bounding boxes
+5.2 Too small bounding boxes
 ============================
 
 The bounding box of a preview is determined by the LaTeX package using
@@ -729,7 +643,7 @@ which Dvips would otherwise reserve no space for.
 
 File: preview-latex.info,  Node: x-symbol interoperation,  Next: Middle-clicks paste instead of toggling,  Prev: Too small bounding boxes,  Up: Known problems
 
-5.5 x-symbol interoperation
+5.3 x-symbol interoperation
 ===========================
 
 Thanks to the work of Christoph Wedler, starting with version
@@ -757,7 +671,7 @@ environment or, as a last resort, customize the variable
 
 File: preview-latex.info,  Node: Middle-clicks paste instead of toggling,  Prev: x-symbol interoperation,  Up: Known problems
 
-5.6 Middle-clicks paste instead of toggling
+5.4 Middle-clicks paste instead of toggling
 ===========================================
 
 This is probably the fault of your favorite package.  'flyspell.el' and
@@ -1986,7 +1900,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.87.2012-12-04 from 2012-12-04).
+(version 11.88 from 2014-10-29).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -2521,7 +2435,6 @@ Index
 * Contacts:                              Contacts.            (line   6)
 * Copying:                               Copying.             (line   6)
 * Copyright:                             Copying.             (line   6)
-* CVS access:                            Availability.        (line   6)
 * Distribution:                          Copying.             (line   6)
 * Download:                              Availability.        (line   6)
 * FDL, GNU Free Documentation License:   GNU Free Documentation License.
@@ -2529,6 +2442,7 @@ Index
 * Free:                                  Copying.             (line   6)
 * Free software:                         Copying.             (line   6)
 * General Public License:                Copying.             (line   6)
+* GIT access:                            Availability.        (line   6)
 * GPL:                                   Copying.             (line   6)
 * Inline math:                           Simple customization.
                                                               (line 110)
@@ -2569,18 +2483,12 @@ Index
 * preview-fast-dvips-command:            The Emacs interface. (line 123)
 * preview-goto-info-page:                Keys and lisp.       (line 147)
 * preview-gs-image-type-alist:           The preview images.  (line   8)
-* preview-gs-options:                    Problems with Ghostscript.
-                                                              (line  22)
-* preview-gs-options <1>:                The preview images.  (line  54)
+* preview-gs-options:                    The preview images.  (line  54)
 * preview-icon-specs:                    The Emacs interface. (line 151)
-* preview-image-creators:                Problems with Ghostscript.
-                                                              (line  31)
-* preview-image-creators <1>:            The preview images.  (line   7)
+* preview-image-creators:                The preview images.  (line   7)
 * preview-image-type:                    Basic modes of operation.
                                                               (line  17)
-* preview-image-type <1>:                Problems with Ghostscript.
-                                                              (line  33)
-* preview-image-type <2>:                The preview images.  (line   6)
+* preview-image-type <1>:                The preview images.  (line   6)
 * preview-inner-environments:            The Emacs interface. (line 156)
 * preview-LaTeX-command:                 The Emacs interface. (line  11)
 * preview-LaTeX-command-replacements:    The Emacs interface. (line  25)
@@ -2612,43 +2520,41 @@ Index
 
 
 Tag Table:
-Node: Top952
-Node: Copying2224
-Node: Introduction2678
-Node: What use is it?3352
-Node: Activating preview-latex4741
-Node: Getting started5556
-Node: Basic modes of operation7644
-Node: More documentation8846
-Node: Availability9734
-Node: Contacts10339
-Node: Installation11611
-Node: Keys and lisp11812
-Node: Simple customization18476
-Node: Known problems24236
-Node: Problems with Ghostscript25090
-Node: Font problems with Dvips27275
-Node: Emacs problems28472
-Node: Too small bounding boxes30162
-Node: x-symbol interoperation31548
-Node: Middle-clicks paste instead of toggling32931
-Node: For advanced users33747
-Node: The LaTeX style file34246
-Node: Package options36807
-Node: Provided commands47711
-Node: The Emacs interface55058
-Node: The preview images64229
-Node: Misplaced previews67712
-Node: ToDo71166
-Node: Frequently Asked Questions75937
-Node: Introduction to FAQ76338
-Node: Requirements76677
-Node: Installation Trouble79648
-Node: Customization82210
-Node: Troubleshooting85755
-Node: Other formats88273
-Node: Copying this Manual89588
-Node: GNU Free Documentation License90527
-Node: Index115649
+Node: Top941
+Node: Copying2213
+Node: Introduction2667
+Node: What use is it?3341
+Node: Activating preview-latex4730
+Node: Getting started5545
+Node: Basic modes of operation7633
+Node: More documentation8835
+Node: Availability9723
+Node: Contacts10328
+Node: Installation11600
+Node: Keys and lisp11801
+Node: Simple customization18465
+Node: Known problems24225
+Node: Font problems with Dvips25013
+Node: Too small bounding boxes26186
+Node: x-symbol interoperation27582
+Node: Middle-clicks paste instead of toggling28965
+Node: For advanced users29781
+Node: The LaTeX style file30280
+Node: Package options32841
+Node: Provided commands43745
+Node: The Emacs interface51092
+Node: The preview images60263
+Node: Misplaced previews63746
+Node: ToDo67200
+Node: Frequently Asked Questions71971
+Node: Introduction to FAQ72372
+Node: Requirements72711
+Node: Installation Trouble75682
+Node: Customization78244
+Node: Troubleshooting81789
+Node: Other formats84307
+Node: Copying this Manual85622
+Node: GNU Free Documentation License86550
+Node: Index111672
 
 End Tag Table

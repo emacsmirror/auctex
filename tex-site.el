@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -139,20 +139,20 @@ set it with `TeX-modes-set'."
 	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set 'TeX-modes-set
   :group 'AUCTeX
-  :initialize (lambda (var value)
-		(custom-initialize-reset var value)
-                (unless (fboundp 'advice-add)
-                  (let ((list TeX-mode-alist))
-                    (while list
-                      (eval-after-load (cdar list)
-                        `(TeX-modes-set ',var ,var t))
-                      (setq list (cdr list)))))))
+  :initialize(lambda (var value)
+	       (custom-initialize-reset var value)
+	       (unless (fboundp 'advice-add)
+		 (let ((list TeX-mode-alist))
+		   (while list
+		     (eval-after-load (cdar list)
+		       `(TeX-modes-set ',var ,var t))
+		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.87.2012-12-04"
+(defconst AUCTeX-version "11.88"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2012-12-04"
+(defconst AUCTeX-date "2014-10-29"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer

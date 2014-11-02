@@ -1,9 +1,9 @@
 This is auctex.info, produced by makeinfo version 5.2 from auctex.texi.
 
-This manual is for AUCTeX (version 11.87.2012-12-04 from 2012-12-04), a
+This manual is for AUCTeX (version 11.88 from 2014-10-29), a
 sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2012 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -115,6 +115,7 @@ Controlling Screen Display
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
+* Narrowing::                   Restricting display and editing to a portion of the buffer
 
 Font Locking
 
@@ -389,8 +390,7 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
 
      This is needed for operation of preview-latex in both DVI and PDF
      mode.  Most versions of Ghostscript nowadays in use should work
-     fine (version 7.0 and newer).  If you encounter problems, check
-     *note (preview-latex)Problems with Ghostscript::.
+     fine (version 7.0 and newer).
 
    * The 'texinfo' package
 
@@ -413,9 +413,9 @@ files will be.  To do so, run
 
      ./configure OPTIONS
 
-   (Note: if you have fetched AUCTeX from CVS rather than a regular
+   (Note: if you have fetched AUCTeX from Git rather than a regular
 release, you will have to first follow the instructions in
-'README.CVS').
+'README.GIT').
 
    On many machines, you will not need to specify any options, but if
 'configure' cannot determine something on its own, you'll need to help
@@ -913,7 +913,7 @@ single quotes for that.
      apparently comes with its own Ghostscript called 'mgs.exe'.
 
   6. Perl (http://www.perl.org) is needed for rebuilding the
-     documentation if you are working with a copy from CVS or have
+     documentation if you are working with a copy from Git or have
      touched documentation source files in the preview-latex part.  If
      the line endings of the file 'preview/latex/preview.dtx' don't
      correspond with what Perl calls '\n' when reading text files,
@@ -1405,7 +1405,7 @@ by indenting and filling and for navigating through the document.
 
 * Menu:
 
-* Quotes::                      Inserting double quotes
+* Quotes::                      Inserting quotes, dollars, and braces
 * Font Specifiers::             Inserting Font Specifiers
 * Sectioning::                  Inserting chapters, sections, etc.
 * Environments::                Inserting Environment Templates
@@ -1472,27 +1472,61 @@ Dollar Signs
 
 In AUCTeX, dollar signs should match like they do in TeX.  This has been
 partially implemented, we assume dollar signs always match within a
-paragraph.  The first '$' you insert in a paragraph will do nothing
-special.  The second '$' will match the first.  This will be indicated
-by moving the cursor temporarily over the first dollar sign.
+paragraph.  By default, the first '$' you insert in a paragraph will do
+nothing special.  The second '$' will match the first.  This will be
+indicated by moving the cursor temporarily over the first dollar sign.
 
  -- Command: TeX-insert-dollar ARG
      ('$') Insert dollar sign.
 
      Show matching dollar sign if this dollar sign end the TeX math
-     mode.  Ensure double dollar signs match up correctly by inserting
-     extra dollar signs when needed if 'TeX-math-close-double-dollar' is
-     non-nil.
+     mode.
 
      With optional ARG, insert that many dollar signs.
 
- -- User Option: TeX-math-close-double-dollar
-     Control the insertion of double dollar signs for delimiting display
-     math.  (Note that you should not use double dollar signs in LaTeX
-     because this practice can lead to wrong spacing in typeset
-     documents.)  If the variable is non-nil and you enter a dollar sign
-     that matches a double dollar sign '$$' AUCTeX will automatically
-     insert two dollar signs.
+   TeX and LaTeX users often look for a way to insert inline equations
+like '$...$' or '\(...\)' simply typing '$'.  AUCTeX helps them through
+the customizable variable 'TeX-electric-math'.
+
+ -- User Option: TeX-electric-math
+     If the variable is non-nil and you type '$' outside math mode,
+     AUCTeX will automatically insert the opening and closing symbols
+     for an inline equation and put the point between them.  The opening
+     symbol will blink when 'blink-matching-paren' is non-nil.  If
+     'TeX-electric-math' is nil, typing '$' simply inserts '$' at point,
+     this is the default.
+
+     Besides 'nil', possible values for this variable are '(cons "$"
+     "$")' for TeX inline equations '$...$', and '(cons "\\(" "\\)")'
+     for LaTeX inline equations '\(...\)'.
+
+     If the variable is non-nil and point is inside math mode right
+     between a couple of single dollars, pressing '$' will insert
+     another pair of dollar signs and leave the point between them.
+     Thus, if 'TeX-electric-math' is set to '(cons "$" "$")' you can
+     easily obtain a TeX display equation '$$...$$' by pressing '$'
+     twice in a row.  (Note that you should not use double dollar signs
+     in LaTeX because this practice can lead to wrong spacing in typeset
+     documents.)
+
+     In addition, when the variable is non-nil and there is an active
+     region outside math mode, typing '$' will put around the active
+     region symbols for opening and closing inline equation and keep the
+     region active, leaving point after the closing symbol.  By pressing
+     repeatedly '$' while the region is active you can toggle between an
+     inline equation, a display equation, and no equation.  To be
+     precise, '$...$' is replaced by '$$...$$', whereas '\(...\)' is
+     replaced by '\[...\]'.
+
+   If you want to automatically insert '$...$' in plain TeX files, and
+'\(...\)' in LaTeX files by pressing '$', add the following to your init
+file
+     (add-hook 'plain-TeX-mode-hook
+     	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+     			  (cons "$" "$"))))
+     (add-hook 'LaTeX-mode-hook
+     	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+     			  (cons "\\(" "\\)"))))
 
 Braces
 ------
@@ -1504,6 +1538,80 @@ can do this by typing 'C-c {'.
      ('C-c {') Make a pair of braces and position the cursor to type
      inside of them.  If there is an active region, put braces around it
      and leave point after the closing brace.
+
+   When writing complex math formulas in LaTeX documents, you sometimes
+need to adjust the size of braces with pairs of macros like
+'\left'-'\right', '\bigl'-'\bigr' and so on.  You can avoid unbalanced
+pairs with the help of 'TeX-insert-macro', bound to 'C-c C-m' or 'C-c
+<RET>' (*note Completion::).  If you insert left size adjusting macros
+such as '\left', '\bigl' etc.  with 'TeX-insert-macro', it asks for left
+brace to use and supplies automatically right size adjusting macros such
+as '\right', '\bigr' etc.  and corresponding right brace in addtion to
+the intended left macro and left brace.
+
+   The completion by 'TeX-insert-macro' also applies when entering
+macros such as '\langle', '\lfloor' and '\lceil', which produce the left
+part of the paired braces.  For example, inserting '\lfloor' by 'C-c
+C-m' is immediately followed by the insertion of '\rfloor'.  In
+addition, if the point was located just after '\left' or its friends,
+the corresponding '\right' etc.  will be inserted in front of '\rfloor'.
+In both cases, active region is honored.
+
+   As a side effect, when 'LaTeX-math-mode' (*note Mathematics::) is on,
+just typing '`(' inserts not only '\langle', but also '\rangle'.
+
+   If you do not like such auto completion at all, it can be disabled by
+a user option.
+
+ -- User Option: TeX-arg-right-insert-p
+     If this option is turned off, the automatic supply of the right
+     macros and braces is suppressed.
+
+   When you edit LaTeX documents, you can enable automatic brace pairing
+when typing '(', '{' and '['.
+
+ -- User Option: LaTeX-electric-left-right-brace
+     If this option is on, just typing '(', '{' or '[' immediately adds
+     the corresponding right brace ')', '}' or ']'.  The point is left
+     after the opening brace.  If there is an active region, braces are
+     put around it.
+
+     They recognize the preceeding backslash or size adjusting macros
+     such as '\left', '\bigl' etc., so the following completions will
+     occur:
+
+        * (when typing single left brace)
+
+             - '(' -> '()'
+
+             - '{' -> '{}'
+
+             - '[' -> '[]'
+
+        * (when typing left brace just after a backslash)
+
+             - '\(' -> '\(\)'
+
+             - '\{' -> '\{\}'
+
+             - '\[' -> '\[\]'
+
+        * (when typing just after '\left' or '\bigl')
+
+             - '\left(' -> '\left(\right)'
+
+             - '\bigl[' -> '\bigl[\bigr]'
+
+        * (when typing just after '\Bigl\')
+
+             - '\Bigl\{' -> '\Bigl\{\Bigr\}'
+
+     This auto completion feature may be a bit annoying when editing an
+     already existing LaTeX document.  In that case, use 'C-u 1' or
+     'C-q' before typing '(', '{' or '['.  Then no completion is done
+     and just a single left brace is inserted.  In fact, with optional
+     prefix ARG, just that many open braces are inserted without any
+     completion.
 
 
 File: auctex.info,  Node: Font Specifiers,  Next: Sectioning,  Prev: Quotes,  Up: Editing
@@ -1694,6 +1802,9 @@ specific document.  This is achieved by examining your '\documentclass'
 command, and consulting a precompiled list of environments available in
 a large number of styles.
 
+   Most of these are described further in the following sections, and
+you may easily specify more.  *Note Customizing Environments::.
+
    You insert an environment with 'C-c C-e', and select an environment
 type.  Depending on the environment, AUCTeX may ask more questions about
 the optional parts of the selected environment type.  With 'C-u C-c C-e'
@@ -1710,19 +1821,62 @@ you will change the current environment.
      prefix argument), the current environment is modified and no new
      environment is inserted.
 
+   AUCTeX helps you adding labels to environments which use them, such
+as 'equation', 'figure', 'table', etc... When you insert one of the
+supported environments with 'C-c C-e', you will be automatically
+prompted for a label.  You can select the prefix to be used for such
+environments with the 'LaTeX-label-alist' variable.
+ -- User Option: LaTeX-label-alist
+     List the prefixes to be used for the label of each supported
+     environment.
+
+     This is an alist whose car is the environment name, and the cdr
+     either the prefix or a symbol referring to one.
+
+     If the name is not found, or if the cdr is nil, no label is
+     automatically inserted for that environment.
+
+     If you want to automatically insert a label for a environment but
+     with an empty prefix, use the empty string '""' as the cdr of the
+     corresponding entry.
+
    As a default selection, AUCTeX will suggest the environment last
 inserted or, as the first choice the value of the variable
 'LaTeX-default-environment'.
 
  -- User Option: LaTeX-default-environment
      Default environment to insert when invoking 'LaTeX-environment'
-     first time.
+     first time.  When the current environment is 'document', it is
+     overriden by 'LaTeX-default-document-environment'.
+
+ -- Variable: LaTeX-default-document-environment
+     Default environment when invoking 'LaTeX-environment' and the
+     current environment is 'document'.  It is intended to be used in
+     LaTeX class style files.  For example, in 'beamer.el' it is set to
+     'frame', in 'letter.el' to 'letter', and in 'slides.el' to 'slide'.
 
    If the document is empty, or the cursor is placed at the top of the
-document, AUCTeX will default to insert a 'document' environment.
+document, AUCTeX will default to insert a 'document' environment
+prompting also for the insertion of '\documentclass' and '\usepackage'
+macros.  You will be prompted for a new package until you enter nothing.
+If you do not want to insert any '\usepackage' at all, just press <RET>
+at the first 'Packages' prompt.
 
-   Most of these are described further in the following sections, and
-you may easily specify more.  *Note Customizing Environments::.
+   AUCTeX distinguishes normal and expert environments.  By default, it
+will offer completion only for normal environments.  This behavior is
+controlled by the user option 'TeX-complete-expert-commands'.
+
+ -- User Option: TeX-complete-expert-commands
+     Complete macros and environments marked as expert commands.
+
+     Possible values are nil, t, or a list of style names.
+
+     nil
+          Don't complete expert commands (default).
+     t
+          Always complete expert commands.
+     (STYLES ...)
+          Only complete expert commands of STYLES.
 
 * Menu:
 
@@ -1737,6 +1891,22 @@ that you use 'C-c C-e' to insert complete environments instead.
 
  -- Command: LaTeX-close-environment
      ('C-c ]') Insert an '\end' that matches the current environment.
+
+   AUCTeX offers keyboard shortcuts for moving point to the beginning
+and to the end of the current environment.
+ -- Command: LaTeX-find-matching-begin
+     ('C-M-a') Move point to the '\begin' of the current environment.
+
+     If this command is called inside a comment and
+     'LaTeX-syntactic-comments' is enabled, try to find the environment
+     in commented regions with the same comment prefix.
+
+ -- Command: LaTeX-find-matching-end
+     ('C-M-e') Move point to the '\end' of the current environment.
+
+     If this command is called inside a comment and
+     'LaTeX-syntactic-comments' is enabled, try to find the environment
+     in commented regions with the same comment prefix.
 
 
 File: auctex.info,  Node: Equations,  Next: Floats,  Up: Environments
@@ -1817,6 +1987,10 @@ using 'C-c <LFD>'.
      is, 'itemize' and 'enumerate' will have '\item ' inserted, while
      'description' will have '\item[]' inserted.
 
+ -- User Option: TeX-arg-item-label-p
+     If non-nil, you will always be asked for optional label in items.
+     Otherwise, you will be asked only in description environments.
+
 
 File: auctex.info,  Node: Tabular-like,  Next: Customizing Environments,  Prev: Itemize-like,  Up: Environments
 
@@ -1830,10 +2004,30 @@ variables:
  -- User Option: LaTeX-default-format
      Default format string for array and tabular environments.
 
+ -- User Option: LaTeX-default-width
+     Default width for minipage and tabular* environments.
+
  -- User Option: LaTeX-default-position
      Default position string for array and tabular environments.  If
      nil, act like the empty string is given, but don't prompt for a
      position.
+
+   AUCTeX calculates the number of columns from the format string and
+inserts the suitable number of ampersands.
+
+   You can use 'C-c <LFD>' ('LaTeX-insert-item') to terminate rows in
+these environments.  It supplies line break macro '\\' and inserts the
+suitable number of ampersands on the next line.
+
+ -- Command: LaTeX-insert-item
+     ('C-c <LFD>') Close the current row with '\\', move to the next
+     line and insert an appropriate number of ampersands for the current
+     environment.
+
+   Similar supports are provided for various amsmath environments such
+as 'align', 'gather', 'alignat', 'matrix' etc.  Try typing 'C-c <LFD>'
+in these environments.  It recognizes the current environment and does
+the appropriate job depending on the context.
 
 
 File: auctex.info,  Node: Customizing Environments,  Prev: Tabular-like,  Up: Environments
@@ -1956,13 +2150,15 @@ or, as the first choice the value of the variable 'TeX-default-macro'.
      arguments.
 
      If set to the symbol 'show-optional-args', 'TeX-insert-macro' asks
-     for optional arguments of TeX macros.  If set to
+     for optional arguments of TeX marcos, unless the previous optional
+     argument has been rejected.  If set to 'show-all-optional-args',
+     'TeX-insert-macro' asks for all optional arguments.
      'mandatory-args-only', 'TeX-insert-macro' asks only for mandatory
      arguments.  When 'TeX-insert-macro' is called with prefix argument
      ('C-u'), it's the other way round.
 
      Note that for some macros, there are special mechanisms, e.g.
-     'LaTeX-includegraphics-options-alist'.
+     'LaTeX-includegraphics-options-alist' and 'TeX-arg-cite-note-p'.
 
  -- User Option: TeX-default-macro
      Default macro to insert when invoking 'TeX-insert-macro' first
@@ -1992,9 +2188,38 @@ setting 'TeX-insert-braces' to nil.
  -- User Option: TeX-insert-braces
      If non-nil, append a empty pair of braces after inserting a macro.
 
+ -- User Option: TeX-insert-braces-alist
+     Control the insertion of a pair of braces after a macro on a per
+     macro basis.
+
+     This variable is an alist.  Each element is a cons cell, whose car
+     is the macro name, and the cdr is non-nil or nil, depending on
+     whether a pair of braces should be, respectively, appended or not
+     to the macro.
+
+     If a macro has an element in this variable, 'TeX-parse-macro' will
+     use its value to decided what to do, whatever the value of the
+     variable 'TeX-insert-braces'.
+
    Completions work because AUCTeX can analyze TeX files, and store
 symbols in Emacs Lisp files for later retrieval.  *Note Automatic::, for
 more information.
+
+   AUCTeX distinguishes normal and expert macros.  By default, it will
+offer completion only for normal commands.  This behavior can be
+controlled using the user option 'TeX-complete-expert-commands'.
+
+ -- User Option: TeX-complete-expert-commands
+     Complete macros and environments marked as expert commands.
+
+     Possible values are nil, t, or a list of style names.
+
+     nil
+          Don't complete expert commands (default).
+     t
+          Always complete expert commands.
+     (STYLES ...)
+          Only complete expert commands of STYLES.
 
    AUCTeX will also make completion for many macro arguments, for
 example existing labels when you enter a '\ref' macro with
@@ -2367,7 +2592,7 @@ File: auctex.info,  Node: Display,  Next: Processing,  Prev: Editing,  Up: Top
 ****************************
 
 It is often desirable to get visual help of what markup code in a text
-actually does whithout having to decipher it explicitely.  For this
+actually does without having to decipher it explicitly.  For this
 purpose Emacs and AUCTeX provide font locking (also known as syntax
 highlighting) which visually sets off markup code like macros or
 environments by using different colors or fonts.  For example text to be
@@ -2385,11 +2610,17 @@ for Emacs' outline mode which lets you narrow the buffer content to
 certain sections of your text by hiding the parts not belonging to these
 sections.
 
+   Moreover, you can focus in a specific portion of the code by
+narrowing the buffer to the desired region.  AUCTeX provides also
+functions to narrow the buffer to the current group and to LaTeX
+environments.
+
 * Menu:
 
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
+* Narrowing::                   Restricting display and editing to a portion of the buffer
 
 
 File: auctex.info,  Node: Font Locking,  Next: Folding,  Up: Display
@@ -2840,11 +3071,20 @@ and show macros, environments and comments:
      prevent forced fontification by customizing the variable
      'TeX-fold-force-fontify'.
 
+ -- User Option: TeX-fold-auto
+     By default, a macro inserted with 'TeX-insert-macro' ('C-c C-m')
+     will not be folded.  Set this variable to a non-nil value to
+     aumatically fold macros as soon as they are inserted.
+
  -- User Option: TeX-fold-preserve-comments
      By default items found in comments will be folded.  If your
      comments often contain unfinished code this might lead to problems.
      Give this variable a non-nil value and foldable items in your
      comments will be left alone.
+
+ -- User Option: TeX-fold-unfold-around-mark
+     When this variable is non-nil and there is an active regione, text
+     around the mark will be kept unfolded.
 
  -- Command: TeX-fold-region
      ('C-c C-o C-r') Hide all configured macros in the marked region.
@@ -2991,7 +3231,7 @@ variable 'TeX-fold-help-echo-max-length'.
      feature.
 
 
-File: auctex.info,  Node: Outline,  Prev: Folding,  Up: Display
+File: auctex.info,  Node: Outline,  Next: Narrowing,  Prev: Folding,  Up: Display
 
 3.3 Outlining the Document
 ==========================
@@ -3026,6 +3266,32 @@ being below '\subparagraph'.
    You may want to check out the unbundled 'out-xtra' package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
+
+
+File: auctex.info,  Node: Narrowing,  Prev: Outline,  Up: Display
+
+3.4 Narrowing
+=============
+
+Sometimes you want to focus your attention to a limited region of the
+code.  You can do that by restricting the text addressable by editing
+commands and hiding the rest of the buffer with the narrowing functions,
+*note (emacs)Narrowing::.  In addition, AUCTeX provides a couple of
+other commands to narrow the buffer to a group, i.e.  a region enclosed
+in a pair of curly braces, and to LaTeX environments.
+
+ -- Command: TeX-narrow-to-group
+     ('C-x n g') Make text outside current group invisible.
+
+ -- Command: LaTeX-narrow-to-environment COUNT
+     ('C-x n e') Make text outside current environment invisible.  With
+     optional argument COUNT keep visible that number of enclosing
+     environmens.
+
+   Like other standard narrowing functions, the above commands are
+disabled.  Attempting to use them asks for confirmation and gives you
+the option of enabling them; if you enable the commands, confirmation
+will no longer be required for them.
 
 
 File: auctex.info,  Node: Processing,  Next: Customization,  Prev: Display,  Up: Top
@@ -3193,9 +3459,17 @@ variable (*note (emacs)File Variables::).
      The default command to run in this buffer.  Must be an entry in
      'TeX-command-list'.
 
-   In case you use biblatex in a document, AUCTeX switches from BibTeX
-to Biber for bibliography processing.  In case you want to keep using
-BibTeX, set the variable 'LaTeX-biblatex-use-Biber' to nil.
+   In case you use biblatex in a document, when automatic parsing is
+enabled AUCTeX checks the value of 'backend' option given to biblatex at
+load time to decide whether to use BibTeX or Biber for bibliography
+processing.  Should AUCTeX fail to detect the right backend, you can use
+the file local 'LaTeX-biblatex-use-Biber' variable.
+ -- Variable: LaTeX-biblatex-use-Biber
+     If this boolean variable is set as file local, it tells to AUCTeX
+     whether to use Biber with biblatex.  In this case, the
+     autodetection of the biblatex backend will be overridden.  You may
+     want to set locally this variable if automatic parsing is not
+     enabled.
 
    After confirming a command to execute, AUCTeX will try to save any
 buffers related to the document, and check if the document needs to be
@@ -3228,9 +3502,9 @@ regular TeX, like PDFTeX, Omega or XeTeX.
 
  -- Command: TeX-PDF-mode
      ('C-c C-t C-p') This command toggles the PDF mode of AUCTeX, a
-     buffer-local minor mode.  You can customize 'TeX-PDF-mode' to give
-     it a different default.  The default is used when AUCTeX does not
-     have additional clue about what a document might want.  This option
+     buffer-local minor mode which is enabled by default.  You can
+     customize 'TeX-PDF-mode' to give it a different default or set it
+     as a file local variable on a per-document basis.  This option
      usually results in calling either PDFTeX or ordinary TeX.
 
  -- User Option: TeX-DVI-via-PDFTeX
@@ -3316,6 +3590,20 @@ to add support for engines not covered per default.
      'texexec' program.  Each command can either be a variable or a
      string.  An empty string or nil means there is no command
      available.
+
+   As shown above, AUCTeX handles in a special way most of the main
+options that can be given to the TeX processors.  When you need to pass
+to the TeX processor arbitrary options not handled by AUCTeX, you can
+use the file local variable 'TeX-command-extra-options'.
+ -- User Option: TeX-command-extra-options
+     String with the extra options to be given to the TeX processor.
+     For example, if you need to enable the shell escape feature to
+     compile a document, add the following line to the list of local
+     variables of the source file:
+          %%% TeX-command-extra-options: "-shell-escape"
+     By default this option is not safe as a file-local variable because
+     a specially crafted document compiled with shell escape enabled can
+     be used for malicious purposes.
 
    You can customize AUCTeX to show the processor output as it is
 produced.
@@ -3470,7 +3758,29 @@ and SyncTeX (any type of output).  If you want to make use of forward
 and inverse searching with source specials or SyncTeX, switch on
 'TeX-source-correlate-mode'.  *Note Processor Options::, on how to do
 that.  The use of the pdfsync package is detected automatically if
-document parsing is enabled.
+document parsing is enabled.  Customize the variable
+'TeX-source-correlate-method' to select the method to use.
+
+ -- User Option: TeX-source-correlate-method
+     Method to use for enabling forward and inverse search.  This can be
+     'source-specials' if source specials should be used, 'synctex' if
+     SyncTeX should be used, or 'auto' if AUCTeX should decide.
+
+     When the variable is set to 'auto', AUCTeX will always use SyncTeX
+     if your 'latex' processor supports it, source specials otherwise.
+     You must make sure your viewer supports the same method.
+
+     It is also possible to specify a different method depending on the
+     output, either DVI or PDF, by setting the variable to an alist of
+     the kind
+          ((dvi . <source-specials or synctex>)
+           (pdf . <source-specials or synctex>))
+     in which the CDR of each entry is a symbol specifying the method to
+     be used in the corresponding mode.  The default value of the
+     variable is
+          ((dvi . source-specials)
+           (pdf . synctex))
+     which is compatible with the majority of viewers.
 
    Forward search happens automatically upon calling the viewer, e.g.
 by typing 'C-c C-v' ('TeX-view').  This will open the viewer or bring it
@@ -3507,11 +3817,37 @@ File: auctex.info,  Node: Debugging,  Next: Checking,  Prev: Viewing,  Up: Proce
 Once you've formatted your document you may 'debug' it, i.e.  browse
 through the errors (La)TeX reported.
 
- -- Command: TeX-next-error
+ -- Command: TeX-next-error ARG REPARSE
      ('C-c `') Go to the next error reported by TeX.  The view will be
      split in two, with the cursor placed as close as possible to the
      error in the top view.  In the bottom view, the error message will
      be displayed along with some explanatory text.
+
+     An optional numeric ARG, positive or negative, specifies how many
+     error messages to move.  A negative ARG means to move back to
+     previous error messages, see also 'TeX-previous-error'.
+
+     The optional REPARSE argument makes AUCTeX reparse the error
+     message buffer and start the debugging from the first error.  This
+     can also be achieved by calling the function with a prefix argument
+     ('C-u').
+
+ -- Command: TeX-previous-error ARG
+     ('M-g p') Go to the previous error reported by TeX.  An optional
+     numeric ARG specifies how many error messages to move backward.
+     This is like calling 'TeX-next-error' with a negative argument.
+
+   The command 'TeX-previous-error' works only if AUCTeX can parse the
+whole TeX log buffer.  This is controlled by the 'TeX-parse-all-errors'
+variable.
+
+ -- User Option: TeX-parse-all-errors
+     If t, AUCTeX automatically parses the whole output log buffer right
+     after running a TeX command, in order to collect all warnings and
+     errors.  This makes it possible to navigate back and forth between
+     the error messages using 'TeX-next-error' and 'TeX-previous-error'.
+     This is the default.  If nil, AUCTeX does not parse the whole
+     output log buffer and 'TeX-previous-error' cannot be used.
 
    Normally AUCTeX will only report real errors, but you may as well ask
 it to report 'bad boxes' and warnings as well.
@@ -3535,6 +3871,42 @@ error reported by TeX along with the documentation.  There is however an
      If 'expert' AUCTeX will display the output buffer with the raw TeX
      output.
 
+   When the option 'TeX-parse-all-errors' is non-nil, you will be also
+able to open an overview of all errors and warnings reported by the TeX
+compiler.  This feature requires 'tabulated-list-mode', shipped with GNU
+Emacs 24 or later.
+
+ -- Command: TeX-error-overview
+     Show an overview of the errors and warnings occurred in the last
+     TeX run.
+
+     In this window you can visit the error on which point is on by
+     pressing <RET>, and visit the next or previous issue by pressing
+     <n> or <p> respectively.  A prefix argument to these keys specifies
+     how many errors to move forward or backward.  You can visit an
+     error also by clicking on its message.  Press <q> to quit the
+     overview.
+
+ -- User Option: TeX-error-overview-open-after-TeX-run
+     When this boolean variable is non-nil, the error overview will be
+     automatically opened after running TeX if there are errors or
+     warnings to show.
+
+   The error overview is opened in a new window of the current frame by
+default, but you can change this behavior by customizing the option
+'TeX-error-overview-setup'.
+
+ -- User Option: TeX-error-overview-setup
+     Controls the frame setup of the error overview.  The possible value
+     is: 'separate-frame'; with a nil value the current frame is used
+     instead.
+
+     The parameters of the separate frame can be set with the
+     'TeX-error-overview-frame-parameters' option.
+
+     If the display does not support multi frame, the current frame will
+     be used regardless of the value of this variable.
+
 
 File: auctex.info,  Node: Checking,  Next: Control,  Prev: Debugging,  Up: Processing
 
@@ -3543,22 +3915,21 @@ File: auctex.info,  Node: Checking,  Next: Control,  Prev: Debugging,  Up: Proce
 
 Running TeX or LaTeX will only find regular errors in the document, not
 examples of bad style.  Furthermore, description of the errors may often
-be confusing.  The utility 'lacheck' can be used to find style errors,
-such as forgetting to escape the space after an abbreviation or using
-'...' instead of '\ldots' and many other problems like that.  You start
-'lacheck' with 'C-c C-c Check <RET>'.  The result will be a list of
-errors in the '*compilation*' buffer.  You can go through the errors
-with 'C-x `' ('next-error', *note (emacs)Compilation::), which will move
-point to the location of the next error.
+be confusing.  The utilities 'lacheck' and 'chktex' can be used to find
+style errors, such as forgetting to escape the space after an
+abbreviation or using '...' instead of '\ldots' and other similar
+problems.  You start 'lacheck' with 'C-c C-c Check <RET>' and 'chktex'
+with 'C-c C-c ChkTeX <RET>'.  The result will be a list of errors in the
+'*compilation*' buffer.  You can go through the errors with 'C-x `'
+('next-error', *note (emacs)Compilation::), which will move point to the
+location of the next error.
 
-   Another newer program which can be used to find errors is 'chktex'.
-It is much more configurable than 'lacheck', but doesn't find all the
-problems 'lacheck' does, at least in its default configuration.  You
-must install the programs before using them, and for 'chktex' you may
-also need modify 'TeX-command-list' unless you use its 'lacheck'
-compatibility wrapper.  You can get 'lacheck' from
-'<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>' or alternatively
-'chktex' from '<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>'.
+   Each of the two utilities will find some errors the other doesn't,
+but 'chktex' is more configurable, allowing you to create your own
+errors.  You may need to install the programs before using them.  You
+can get 'lacheck' from
+'<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>' and 'chktex'
+from '<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>'.
 
 
 File: auctex.info,  Node: Control,  Next: Cleaning,  Prev: Checking,  Up: Processing
@@ -3880,6 +4251,24 @@ these before loading AUCTeX by quoting them, as in the example above.
  -- Constant: LaTeX-auto-label-regexp-list
      Only parse LaTeX labels.
 
+ -- Constant: LaTeX-auto-index-regexp-list
+     Only parse LaTeX index and glossary entries.
+
+ -- Constant: LaTeX-auto-class-regexp-list
+     Only parse macros in LaTeX classes and packages.
+
+ -- Constant: LaTeX-auto-pagestyle-regexp-list
+     Only parse LaTeX pagestyles.
+
+ -- Constant: LaTeX-auto-counter-regexp-list
+     Only parse LaTeX counters.
+
+ -- Constant: LaTeX-auto-length-regexp-list
+     Only parse LaTeX lengths.
+
+ -- Constant: LaTeX-auto-savebox-regexp-list
+     Only parse LaTeX saveboxes.
+
  -- Constant: LaTeX-auto-regexp-list
      Parse common LaTeX commands.
 
@@ -3989,18 +4378,21 @@ will for example choose a Danish dictionary for documents including
 'dutch'
      Runs style hook 'TeX-language-nl-hook'.
 
-'german'
-'ngerman'
-     Runs style hook 'TeX-language-de-hook'.  Gives '"' word syntax,
-     makes the <"> key insert a literal '"'.  Pressing the key twice
-     will give you opening or closing German quotes ('"`' or '"'').
-     Typing <-> twice will insert '"=', three times '--'.
+'english'
+     Runs style hook 'TeX-language-en-hook'.
 
 'frenchb'
 'francais'
      Runs style hook 'TeX-language-fr-hook'.  Pressing <"> will insert
      '\\og' and '\\fg' depending on context.  Note that the language
      name for customizing 'TeX-quote-language-alist' is 'french'.
+
+'german'
+'ngerman'
+     Runs style hook 'TeX-language-de-hook'.  Gives '"' word syntax,
+     makes the <"> key insert a literal '"'.  Pressing the key twice
+     will give you opening or closing German quotes ('"`' or '"'').
+     Typing <-> twice will insert '"=', three times '--'.
 
 'icelandic'
      Runs style hook 'TeX-language-is-hook'.  Gives '"' word syntax,
@@ -4312,7 +4704,8 @@ Here is a simple example of a style file.
      (TeX-add-style-hook
       "book"
       (lambda ()
-        (LaTeX-largest-level-set "chapter")))
+        (LaTeX-largest-level-set "chapter"))
+      LaTeX-dialect)
 
    The example is from the AUCTeX sources and is loaded for any LaTeX
 document using the book document class (or style before LaTeX2e).  The
@@ -4331,9 +4724,48 @@ style file.
    Note that the basename of the style file and the name of the style
 hook should usually be identical.
 
- -- Function: TeX-add-style-hook STYLE HOOK
+ -- Function: TeX-add-style-hook STYLE HOOK &optional DIALECT-EXPR
      Add HOOK to the list of functions to run when we use the TeX file
-     STYLE.
+     STYLE and the current dialect is one in the set derived from
+     DIALECT-EXPR.  When DIALECT-EXPR is omitted, then HOOK is allowed
+     to be run whatever the current dialect is.
+
+     DIALECT-EXPR may be one of:
+
+        * A symbol indicating a singleton containing one basic TeX
+          dialect, this symbol shall be selected among:
+          ':latex'
+               For all files in LaTeX mode, or any mode derived thereof
+          ':bibtex'
+               For all files in BibTeX mode, or any mode derived thereof
+          ':texinfo'
+               For all files in Texinfo mode.
+        * A logical expression like:
+          '(or DIALECT-EXPRESSION1 ... DIALECT-EXPRESSION_N)'
+               For union of the sets of dialects corresponding to
+               DIALECT-EXPRESSION1 through DIALECT-EXPRESSION_N
+          '(and DIALECT-EXPRESSION1 ... DIALECT-EXPRESSION_N)'
+               For intersection of the sets of dialects corresponding to
+               DIALECT-EXPRESSION1 through DIALECT-EXPRESSION_N
+          '(nor DIALECT-EXPRESSION1 ... DIALECT-EXPRESSION_N)'
+               For complement of the union sets of dialects
+               corresponding to DIALECT-EXPRESSION1 through
+               DIALECT-EXPRESSION_N relatively to the set of all
+               supported dialects
+          '(not DIALECT-EXPR)'
+               For complement set of dialect corresponding to
+               DIALECT-EXPR relatively to the set of all supported
+               dialects
+
+   In case of adding a style hook for LaTeX, when calling function
+'TeX-add-style-hook' it is thought more futureproof for argument
+DIALECT-EXPR to pass constant 'LaTeX-dialect' currently defined to
+':latex', rather than passing ':latex' directly.
+
+ -- Constant: LaTeX-dialect
+     Default dialect for use with function 'TeX-add-style-hook' for
+     argument DIALECT-EXPR when the hook is to be run only on LaTeX
+     file, or any mode derived thereof.
 
 
 File: auctex.info,  Node: Adding Macros,  Next: Adding Environments,  Prev: Simple Style,  Up: Style Files
@@ -4353,7 +4785,7 @@ function, since the symbol itself can be defined automatically.
         (TeX-add-symbols
          '("arabic" TeX-arg-counter)
          '("label" TeX-arg-define-label)
-         '("ref" TeX-arg-label)
+         '("ref" TeX-arg-ref)
          '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
          '("newtheorem" TeX-arg-define-environment
            [ TeX-arg-environment "Numbered like" ]
@@ -4377,7 +4809,7 @@ the longest definition (i.e.  the one with the most arguments).
    Thus, to overwrite
      	'("tref" 1) ; one argument
    you can specify
-     	'("tref" TeX-arg-label ignore) ; two arguments
+     	'("tref" TeX-arg-ref ignore) ; two arguments
 
    'ignore' is a function that does not do anything, so when you insert
 a 'tref' you will be prompted for a label and no more.
@@ -4436,26 +4868,63 @@ overwrite the default prompt.
      Evaluate arguments and insert the result in the buffer.
 
 'TeX-arg-label'
-     Prompt for a label completing with known labels.
+     Prompt for a label completing with known labels.  If RefTeX is
+     active, prompt for the reference format.
+
+'TeX-arg-ref'
+     Prompt for a label completing with known labels.  If RefTeX is
+     active, do not prompt for the reference format.  Usually, reference
+     macros should use this function instead of 'TeX-arg-label'.
+
+'TeX-arg-index-tag'
+     Prompt for an index tag.  This is the name of an index, not the
+     entry.
+
+'TeX-arg-index'
+     Prompt for an index entry completing with known entries.
+
+'TeX-arg-length'
+     Prompt for a LaTeX length completing with known lengths.
 
 'TeX-arg-macro'
      Prompt for a TeX macro with completion.
+
+'TeX-arg-date'
+     Prompt for a date, defaulting to the current date.  The format of
+     the date is specified by the 'TeX-date-format' option.  If you want
+     to change the format when the 'babel' package is loaded with a
+     specific language, set 'TeX-date-format' inside the appropriate
+     language hook, for details *note European::.
+
+'TeX-arg-version'
+     Prompt for the version of a file, using as initial input the
+     current date.
 
 'TeX-arg-environment'
      Prompt for a LaTeX environment with completion.
 
 'TeX-arg-cite'
-     Prompt for a BibTeX citation.
+     Prompt for a BibTeX citation.  If the variable
+     'TeX-arg-cite-note-p' is non-nil, ask also for optional note in
+     citations.
 
 'TeX-arg-counter'
-     Prompt for a LaTeX counter.
+     Prompt for a LaTeX counter completing with known counters.
 
 'TeX-arg-savebox'
-     Prompt for a LaTeX savebox.
+     Prompt for a LaTeX savebox completing with known saveboxes.
 
 'TeX-arg-file'
      Prompt for a filename in the current directory, and use it without
      the extension.
+
+'TeX-arg-file-name'
+     Prompt for a filename and use as initial input the name of the file
+     being visited in the current buffer, with extension.
+
+'TeX-arg-file-name-sans-extension'
+     Prompt for a filename and use as initial input the name of the file
+     being visited in the current buffer, without extension.
 
 'TeX-arg-input-file'
      Prompt for the name of an input file in TeX's search path, and use
@@ -4467,6 +4936,10 @@ overwrite the default prompt.
 'TeX-arg-define-label'
      Prompt for a label completing with known labels.  Add label to list
      of defined labels.
+
+'TeX-arg-define-length'
+     Prompt for a LaTeX length completing with known lengths.  Add
+     length to list of defined lengths.
 
 'TeX-arg-define-macro'
      Prompt for a TeX macro with completion.  Add macro to list of
@@ -4484,6 +4957,29 @@ overwrite the default prompt.
 
 'TeX-arg-define-savebox'
      Prompt for a LaTeX savebox.
+
+'TeX-arg-document'
+     Prompt for a LaTeX document class, using 'LaTeX-default-style' as
+     default value and 'LaTeX-default-options' as default list of
+     options.  If the variable 'TeX-arg-input-file-search' is t, you
+     will be able to complete with all LaTeX classes available on your
+     system, otherwise classes listed in the variable 'LaTeX-style-list'
+     will be used for completion.  It is also provided completion for
+     options of many common classes.
+
+'LaTeX-arg-usepackage'
+     Prompt for LaTeX packages.  If the variable
+     'TeX-arg-input-file-search' is t, you will be able to complete with
+     all LaTeX packages available on your system.  It is also provided
+     completion for options of many common packages.
+
+'TeX-arg-bibstyle'
+     Prompt for a BibTeX style file completing with all style available
+     on your system.
+
+'TeX-arg-bibliography'
+     Prompt for BibTeX database files completing with all databases
+     available on your system.
 
 'TeX-arg-corner'
      Prompt for a LaTeX side or corner position with completion.
@@ -4510,12 +5006,33 @@ overwrite the default prompt.
 'TeX-arg-coordinate'
      Insert x and y coordinates as a pair.  No arguments.
 
+'LaTeX-arg-author'
+     Prompt for document author, using 'LaTeX-default-author' as initial
+     input.
+
+'TeX-read-key-val'
+     Prompt for a key=value list of options and return them.
+
+'TeX-arg-key-val'
+     Prompt for a key=value list of options and insert it as a TeX macro
+     argument.
+
    If you add new hooks, you can assume that point is placed directly
 after the previous argument, or after the macro name if this is the
 first argument.  Please leave point located after the argument you are
 inserting.  If you want point to be located somewhere else after all
 hooks have been processed, set the value of 'exit-mark'.  It will point
 nowhere, until the argument hook sets it.
+
+   Some packages provide macros that are rarely useful to non-expert
+users.  Those should be marked as expert macros using
+'TeX-declare-expert-macros'.
+
+ -- Function: TeX-declare-expert-macros STYLE MACROS...
+     Declare MACROS as expert macros of STYLE.
+
+     Expert macros are completed depending on
+     'TeX-complete-expert-commands'.
 
 
 File: auctex.info,  Node: Adding Environments,  Next: Adding Other,  Prev: Adding Macros,  Up: Style Files
@@ -4638,8 +5155,18 @@ in 'latex.el' it is just ignored.
      as an optional argument of the 'lstlisting' environment:
 
           (LaTeX-add-environments
-           `("lstlisting" LaTeX-env-args
-             [TeX-arg-key-val ,LaTeX-listings-key-val-options]))
+           '("lstlisting" LaTeX-env-args
+             [TeX-arg-key-val LaTeX-listings-key-val-options]))
+
+   Some packages provide environments that are rarely useful to
+non-expert users.  Those should be marked as expert environments using
+'LaTeX-declare-expert-environments'.
+
+ -- Function: LaTeX-declare-expert-environments STYLE ENVIRONMENTS...
+     Declare ENVIRONMENTS as expert environments of STYLE.
+
+     Expert environments are completed depending on
+     'TeX-complete-expert-commands'.
 
 
 File: auctex.info,  Node: Adding Other,  Next: Hacking the Parser,  Prev: Adding Environments,  Up: Style Files
@@ -4782,10 +5309,10 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.87.2012-12-04 from 2012-12-04),
-a sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 11.88 from 2014-10-29), a
+sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2012 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -5288,6 +5815,106 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 
 A.2 Changes and New Features
 ============================
+
+News in 11.88
+=============
+
+   * 'TeX-PDF-mode' is now enabled by default.
+
+   * Now 'TeX-previous-error' works with TeX commands if the new option
+     'TeX-parse-all-errors' is non-nil, which is the default.  When this
+     option is non-nil, an overview of errors and warnings reported by
+     the TeX compiler can be opened with 'M-x TeX-error-overview <RET>'.
+     *Note Debugging::, for details.
+
+   * Style file authors are encouraged to distinguish common from expert
+     macros and environments, and mark the latter using
+     'TeX-declare-expert-macros' and
+     'LaTeX-declare-expert-environments'.
+
+     Users can then restrict completion using
+     'TeX-complete-expert-commands'.
+
+   * Management of LaTeX package options in the parser was improved.
+     You might need to reparse your documents, especially if you loaded
+     the 'babel' package with language options.
+
+   * Now you can insert '$...$' or '\(...\)' by typing a single '$'.  To
+     do this, customize the new option 'TeX-electric-math'.
+     'TeX-math-close-double-dollar' was removed.  *Note Quotes::, for
+     details.
+
+   * 'C-c <RET> documentclass <RET>' completes with all available LaTeX
+     classes, if the 'TeX-arg-input-file-search' variable is non-nil.
+     Completion for class options of the standard LaTeX classes is
+     provided as well.
+
+   * New user options 'LaTeX-default-author',
+     'LaTeX-fontspec-arg-font-search',
+     'LaTeX-fontspec-font-list-default', 'TeX-date-format', and
+     'TeX-insert-braces-alist'.  A new possible value
+     ('show-all-optional-args') for 'TeX-insert-macro-default-style' was
+     added.  The default value of 'TeX-source-correlate-method' has been
+     changed.
+
+   * 'biblatex' support was greatly expanded.  If parsing is enabled,
+     AUCTeX looks at 'backend' option to decide whether to use Biber or
+     BibTeX. The 'LaTeX-biblatex-use-Biber' variable was changed to be
+     file local only and is no more customizable.
+
+   * With some LaTeX classes, the default environment suggested by
+     'LaTeX-environment' ('C-c C-e') when the current environment is
+     'document' was changed.  With 'beamer' class the default
+     environment is 'frame', with 'letter' it is 'letter', with 'slides'
+     it is 'slide'.
+
+   * Brace pairing feature was enhanced in LaTeX documents.  Support for
+     '\bigl', '\Bigl', '\biggl' and '\Biggl', the same as the one for
+     '\left', was added to 'TeX-insert-macro'.  For example, 'C-c <RET>
+     bigl <RET> ( <RET>' inserts '\bigl(\bigr)'.
+
+     You can insert brace pair '()', '{}' and '[]' by typing a single
+     left brace if the new user option 'LaTeX-electric-left-right-brace'
+     is enabled.
+
+     Macros '\langle', '\lfloor' and '\lceil', which produce the left
+     part of the paired braces, are treated similarly as '(', '{' and
+     '[' during the course of 'TeX-insert-macro'.  *Note Quotes::, for
+     details.
+
+   * Support for dozens of LaTeX packages was added.
+
+   * Tabular-like environments (tabular, tabular*, tabularx, tabulary,
+     array, align, ...)  are indented in a nicer and more informative
+     way when the column values of a table line are written across
+     multiple lines in the tex file.
+
+   * The suitable number of ampersands are inserted when you insert
+     array, tabular and tabular* environments with 'C-c C-e'.  Similar
+     experience is obtained if you terminate rows in these environments
+     with 'C-c <LFD>'.  It supplies line break macro '\\' and inserts
+     the suitable number of ampersands on the next line.
+
+     Similar supports are provided for various amsmath environments.
+
+     *Note Tabular-like::, for details.
+
+   * Commands for narrowing to a group ('TeX-narrow-to-group') and to
+     LaTeX environments ('LaTeX-narrow-to-environment') were added.
+
+   * Now arbitrary options can be passed to the TeX processor on a per
+     file basis using the 'TeX-command-extra-options' option.  *Note
+     Processor Options::, for details.
+
+   * Now 'C-c C-e document <RET>', in an empty document, prompts for
+     '\usepackage' macros in addition to '\documentclass'.
+
+   * 'TeX-add-style-hook' has now a third argument to tell AUCTeX for
+     which dialect (LaTeX, Texinfo or BibTeX) the style hook is
+     registers.  Labelling style hook by dialect will avoid applying
+     them not in the right context.
+
+   * There have been lots of bug fixes and feature additions.
 
 News since 11.87
 ================
@@ -5917,15 +6544,6 @@ A.3.1 Mid-term Goals
      folding of error parsing and task management of both packages which
      will ease development efforts and avoid redundant work.
 
-   * More flexible option and command handling
-
-     The current state of command handling with 'TeX-command-list' is
-     not very flexible because there is no distinction between
-     executables and command line options to be passed to them.
-
-     Customization of 'TeX-command-list' by the user will interfere with
-     updates of AUCTeX.
-
    * Error help catalogs
 
      Currently, the help for errors is more or less hardwired into
@@ -5962,11 +6580,9 @@ A.3.2 Wishlist
 
      A special ispell dictionary for macros could be nice to have.
 
-   * Quick error overviews
+   * Improvements to error reporting
 
-     An error overview window (extract from the log file with just the
-     error lines, clickable like a "grep" buffer) and/or fringe
-     indicators for errors in the main text would be nice.
+     Fringe indicators for errors in the main text would be nice.
 
    * A math entry grid
 
@@ -5986,17 +6602,6 @@ A.3.2 Wishlist
 
      For starters, 'LaTeX-math-mode' is not very LaTeX-specific in the
      first place, and similar holds for indentation and formatting.
-
-   * Poor man's Source Specials In particular in PDF mode (and where
-     Source Specials cause problems), alternatives would be desirable.
-     One could implement inverse search by something like Heiko
-     Oberdiek's 'vpe.sty', and forward search by using the '.aux' file
-     info to correlate labels in the text (possibly in cooperation with
-     RefTeX) with previewer pages.
-
-     In AUCTeX 11.83, support for forward search with PDF files was
-     added.  Currently this only works if you use the pdfsync LaTeX
-     package and xpdf as your PDF viewer.  *Note Viewing::.
 
    * Page count when compiling should (optionally) go to modeline of the
      window where the compilation command was invoked, instead of the
@@ -6026,9 +6631,6 @@ A.3.2 Wishlist
 
      This default value for TeX-master could then be controled with
      mapping based on the extension.
-
-   * Multiple argument completion for '\bibliography'.  In general, I
-     ought to make ',' special for these kind of completions.
 
    * Suggest 'makeindex' when appropriate.
 
@@ -6098,8 +6700,6 @@ A.3.2 Wishlist
 
      'LaTeX-largest-level'
 
-   * Completion for counters and sboxes.
-
    * Outline should be (better) supported in TeX mode.
 
      At least, support headers, trailers, as well as TeX-outline-extra.
@@ -6119,10 +6719,9 @@ A.3.2 Wishlist
      of the standard 'TeX-mode' would help convince some people to
      change to AUCTeX.
 
-   * Make 'TeX-next-error' parse ahead and store the results in a list,
-     using markers to remember buffer positions in order to be more
-     robust with regard to line numbers and changed files.  This is what
-     'next-error' does.  (Or did, until Emacs 19).
+   * Use markers in 'TeX-error-list' to remember buffer positions in
+     order to be more robust with regard to line numbers and changed
+     files.
 
    * Finish the Texinfo mode.  For one thing, many Texinfo mode commands
      do not accept braces around their arguments.
@@ -6135,8 +6734,10 @@ File: auctex.info,  Node: Bugs,  Prev: Wishlist,  Up: Development
 A.3.3 Bugs
 ----------
 
-   * The parsed files and style hooks for 'example.dtx', 'example.sty',
-     'example.drv' and 'example.bib' all clash.  Bad.
+   * The style hooks automatically generated by parsing files for
+     'example.dtx', 'example.sty', 'example.drv' and 'example.bib' all
+     clash.  Bad.  Clash with hand-written style hooks should be removed
+     by dialect discrimination -- to be checked.
 
    * 'C-c `' should always stay in the current window, also when it
      finds a new file.
@@ -6532,7 +7133,7 @@ Key Index
 * C-c C-b:                               Starting a Command.  (line  35)
 * C-c C-c:                               Starting a Command.  (line  13)
 * C-c C-d:                               Multifile.           (line  97)
-* C-c C-e:                               Environments.        (line  20)
+* C-c C-e:                               Environments.        (line  23)
 * C-c C-f:                               Font Specifiers.     (line  43)
 * C-c C-f C-b:                           Editing Facilities.  (line  73)
 * C-c C-f C-b <1>:                       Font Specifiers.     (line  16)
@@ -6556,41 +7157,47 @@ Key Index
 * C-c C-l:                               Control.             (line  14)
 * C-c C-m:                               Completion.          (line  29)
 * C-c C-n:                               Parsing Files.       (line  44)
-* C-c C-o b:                             Folding.             (line 113)
+* C-c C-o b:                             Folding.             (line 122)
 * C-c C-o C-b:                           Folding.             (line  44)
-* C-c C-o C-c:                           Folding.             (line 110)
-* C-c C-o C-e:                           Folding.             (line  94)
+* C-c C-o C-c:                           Folding.             (line 119)
+* C-c C-o C-e:                           Folding.             (line 103)
 * C-c C-o C-f:                           Folding.             (line  32)
-* C-c C-o C-m:                           Folding.             (line  85)
-* C-c C-o C-o:                           Folding.             (line 132)
-* C-c C-o C-p:                           Folding.             (line  81)
-* C-c C-o C-r:                           Folding.             (line  78)
-* C-c C-o i:                             Folding.             (line 125)
-* C-c C-o p:                             Folding.             (line 121)
-* C-c C-o r:                             Folding.             (line 117)
+* C-c C-o C-m:                           Folding.             (line  94)
+* C-c C-o C-o:                           Folding.             (line 141)
+* C-c C-o C-p:                           Folding.             (line  90)
+* C-c C-o C-r:                           Folding.             (line  87)
+* C-c C-o i:                             Folding.             (line 134)
+* C-c C-o p:                             Folding.             (line 130)
+* C-c C-o r:                             Folding.             (line 126)
 * C-c C-q C-e:                           Filling.             (line  92)
 * C-c C-q C-p:                           Filling.             (line  86)
 * C-c C-q C-r:                           Filling.             (line 101)
 * C-c C-q C-s:                           Filling.             (line  97)
 * C-c C-r:                               Starting a Command.  (line  19)
 * C-c C-s:                               Sectioning.          (line  22)
-* C-c C-t C-b:                           Debugging.           (line  19)
+* C-c C-t C-b:                           Debugging.           (line  45)
 * C-c C-t C-i:                           Processor Options.   (line  29)
 * C-c C-t C-p:                           Processor Options.   (line  15)
 * C-c C-t C-r:                           Starting a Command.  (line  61)
 * C-c C-t C-s:                           Processor Options.   (line  36)
-* C-c C-t C-w:                           Debugging.           (line  23)
+* C-c C-t C-w:                           Debugging.           (line  49)
 * C-c C-v:                               Starting Viewers.    (line  12)
 * C-c <LFD>:                             Itemize-like.        (line  10)
-* C-c ]:                                 Environments.        (line  56)
+* C-c <LFD> <1>:                         Tabular-like.        (line  29)
+* C-c ]:                                 Environments.        (line 102)
 * C-c ^:                                 Control.             (line  18)
 * C-c _:                                 Multifile.           (line  69)
 * C-c `:                                 Debugging.           (line  10)
-* C-c {:                                 Quotes.              (line  85)
+* C-c {:                                 Quotes.              (line 119)
 * C-c ~:                                 Mathematics.         (line  12)
 * C-j:                                   Indenting.           (line  81)
+* C-M-a:                                 Environments.        (line 107)
+* C-M-e:                                 Environments.        (line 114)
+* C-x n e:                               Narrowing.           (line  17)
+* C-x n g:                               Narrowing.           (line  14)
 * <LFD>:                                 Indenting.           (line  72)
 * M-C-h:                                 Marking (Texinfo).   (line  34)
+* M-g p:                                 Debugging.           (line  25)
 * M-q:                                   Filling.             (line  89)
 * M-<TAB>:                               Completion.          (line  19)
 * <TAB>:                                 Indenting.           (line  69)
@@ -6604,10 +7211,16 @@ Function Index
  [index ]
 * Menu:
 
+* AmS-TeX-mode:                          Modes and Hooks.     (line  21)
+* ConTeXt-mode:                          Modes and Hooks.     (line  21)
+* docTeX-mode:                           Modes and Hooks.     (line  21)
 * LaTeX-add-bibliographies:              Adding Other.        (line  10)
 * LaTeX-add-environments:                Adding Environments. (line  66)
 * LaTeX-add-labels:                      Adding Other.        (line  13)
-* LaTeX-close-environment:               Environments.        (line  55)
+* LaTeX-arg-author:                      Adding Macros.       (line 239)
+* LaTeX-arg-usepackage:                  Adding Macros.       (line 200)
+* LaTeX-close-environment:               Environments.        (line 101)
+* LaTeX-declare-expert-environments:     Adding Environments. (line 128)
 * LaTeX-env-args:                        Adding Environments. (line 109)
 * LaTeX-env-array:                       Adding Environments. (line  81)
 * LaTeX-env-bib:                         Adding Environments. (line 103)
@@ -6619,52 +7232,71 @@ Function Index
 * LaTeX-env-minipage:                    Adding Environments. (line  92)
 * LaTeX-env-picture:                     Adding Environments. (line 100)
 * LaTeX-env-tabular*:                    Adding Environments. (line  96)
-* LaTeX-environment:                     Environments.        (line  19)
+* LaTeX-environment:                     Environments.        (line  22)
 * LaTeX-fill-environment:                Filling.             (line  81)
 * LaTeX-fill-environment <1>:            Filling.             (line  92)
 * LaTeX-fill-paragraph:                  Filling.             (line  86)
 * LaTeX-fill-region:                     Filling.             (line 101)
 * LaTeX-fill-section:                    Filling.             (line  97)
+* LaTeX-find-matching-begin:             Environments.        (line 106)
+* LaTeX-find-matching-end:               Environments.        (line 113)
 * LaTeX-indent-line:                     Indenting.           (line  69)
 * LaTeX-insert-environment:              Adding Environments. (line  69)
 * LaTeX-insert-item:                     Itemize-like.        (line   9)
+* LaTeX-insert-item <1>:                 Tabular-like.        (line  28)
 * LaTeX-mark-environment:                Marking (LaTeX).     (line  15)
 * LaTeX-mark-section:                    Marking (LaTeX).     (line   6)
 * LaTeX-math-mode:                       Mathematics.         (line  11)
+* LaTeX-mode:                            Modes and Hooks.     (line  21)
+* LaTeX-narrow-to-environment:           Narrowing.           (line  16)
 * LaTeX-section:                         Sectioning.          (line  21)
 * LaTeX-section-heading:                 Sectioning.          (line  69)
 * LaTeX-section-label:                   Sectioning.          (line  82)
 * LaTeX-section-section:                 Sectioning.          (line  77)
 * LaTeX-section-title:                   Sectioning.          (line  72)
 * LaTeX-section-toc:                     Sectioning.          (line  75)
-* TeX-add-style-hook:                    Simple Style.        (line  32)
+* plain-TeX-mode:                        Modes and Hooks.     (line  21)
+* TeX-add-style-hook:                    Simple Style.        (line  33)
 * TeX-add-symbols:                       Adding Macros.       (line  24)
-* TeX-arg-cite:                          Adding Macros.       (line 109)
+* TeX-arg-bibliography:                  Adding Macros.       (line 210)
+* TeX-arg-bibstyle:                      Adding Macros.       (line 206)
+* TeX-arg-cite:                          Adding Macros.       (line 136)
 * TeX-arg-conditional:                   Adding Macros.       (line  86)
-* TeX-arg-coordinate:                    Adding Macros.       (line 172)
-* TeX-arg-corner:                        Adding Macros.       (line 150)
-* TeX-arg-counter:                       Adding Macros.       (line 112)
-* TeX-arg-define-cite:                   Adding Macros.       (line 141)
-* TeX-arg-define-counter:                Adding Macros.       (line 144)
-* TeX-arg-define-environment:            Adding Macros.       (line 137)
-* TeX-arg-define-label:                  Adding Macros.       (line 129)
-* TeX-arg-define-macro:                  Adding Macros.       (line 133)
-* TeX-arg-define-savebox:                Adding Macros.       (line 147)
-* TeX-arg-environment:                   Adding Macros.       (line 106)
+* TeX-arg-coordinate:                    Adding Macros.       (line 236)
+* TeX-arg-corner:                        Adding Macros.       (line 214)
+* TeX-arg-counter:                       Adding Macros.       (line 141)
+* TeX-arg-date:                          Adding Macros.       (line 122)
+* TeX-arg-define-cite:                   Adding Macros.       (line 182)
+* TeX-arg-define-counter:                Adding Macros.       (line 185)
+* TeX-arg-define-environment:            Adding Macros.       (line 178)
+* TeX-arg-define-label:                  Adding Macros.       (line 166)
+* TeX-arg-define-length:                 Adding Macros.       (line 170)
+* TeX-arg-define-macro:                  Adding Macros.       (line 174)
+* TeX-arg-define-savebox:                Adding Macros.       (line 188)
+* TeX-arg-document:                      Adding Macros.       (line 191)
+* TeX-arg-environment:                   Adding Macros.       (line 133)
 * TeX-arg-eval:                          Adding Macros.       (line  97)
-* TeX-arg-file:                          Adding Macros.       (line 118)
+* TeX-arg-file:                          Adding Macros.       (line 147)
+* TeX-arg-file-name:                     Adding Macros.       (line 151)
+* TeX-arg-file-name-sans-extension:      Adding Macros.       (line 155)
 * TeX-arg-free:                          Adding Macros.       (line  94)
-* TeX-arg-input-file:                    Adding Macros.       (line 122)
+* TeX-arg-index:                         Adding Macros.       (line 113)
+* TeX-arg-index-tag:                     Adding Macros.       (line 109)
+* TeX-arg-input-file:                    Adding Macros.       (line 159)
+* TeX-arg-key-val:                       Adding Macros.       (line 246)
 * TeX-arg-label:                         Adding Macros.       (line 100)
+* TeX-arg-length:                        Adding Macros.       (line 116)
 * TeX-arg-literal:                       Adding Macros.       (line  90)
-* TeX-arg-lr:                            Adding Macros.       (line 153)
-* TeX-arg-macro:                         Adding Macros.       (line 103)
-* TeX-arg-pagestyle:                     Adding Macros.       (line 159)
-* TeX-arg-pair:                          Adding Macros.       (line 165)
-* TeX-arg-savebox:                       Adding Macros.       (line 115)
-* TeX-arg-size:                          Adding Macros.       (line 169)
-* TeX-arg-tb:                            Adding Macros.       (line 156)
-* TeX-arg-verb:                          Adding Macros.       (line 162)
+* TeX-arg-lr:                            Adding Macros.       (line 217)
+* TeX-arg-macro:                         Adding Macros.       (line 119)
+* TeX-arg-pagestyle:                     Adding Macros.       (line 223)
+* TeX-arg-pair:                          Adding Macros.       (line 229)
+* TeX-arg-ref:                           Adding Macros.       (line 104)
+* TeX-arg-savebox:                       Adding Macros.       (line 144)
+* TeX-arg-size:                          Adding Macros.       (line 233)
+* TeX-arg-tb:                            Adding Macros.       (line 220)
+* TeX-arg-verb:                          Adding Macros.       (line 226)
+* TeX-arg-version:                       Adding Macros.       (line 129)
 * TeX-auto-generate:                     Automatic Private.   (line  23)
 * TeX-clean:                             Cleaning.            (line   6)
 * TeX-command-buffer:                    Starting a Command.  (line  34)
@@ -6673,46 +7305,52 @@ Function Index
 * TeX-comment-or-uncomment-paragraph:    Commenting.          (line  22)
 * TeX-comment-or-uncomment-region:       Commenting.          (line  14)
 * TeX-complete-symbol:                   Completion.          (line  18)
+* TeX-declare-expert-macros:             Adding Macros.       (line 261)
 * TeX-doc:                               Documentation.       (line   6)
-* TeX-electric-macro:                    Completion.          (line  64)
+* TeX-electric-macro:                    Completion.          (line  66)
+* TeX-error-overview:                    Debugging.           (line  68)
 * TeX-fold-buffer:                       Folding.             (line  43)
-* TeX-fold-clearout-buffer:              Folding.             (line 112)
-* TeX-fold-clearout-item:                Folding.             (line 124)
-* TeX-fold-clearout-paragraph:           Folding.             (line 120)
-* TeX-fold-clearout-region:              Folding.             (line 116)
-* TeX-fold-comment:                      Folding.             (line 109)
-* TeX-fold-dwim:                         Folding.             (line 131)
-* TeX-fold-env:                          Folding.             (line  93)
-* TeX-fold-macro:                        Folding.             (line  84)
-* TeX-fold-math:                         Folding.             (line 100)
+* TeX-fold-clearout-buffer:              Folding.             (line 121)
+* TeX-fold-clearout-item:                Folding.             (line 133)
+* TeX-fold-clearout-paragraph:           Folding.             (line 129)
+* TeX-fold-clearout-region:              Folding.             (line 125)
+* TeX-fold-comment:                      Folding.             (line 118)
+* TeX-fold-dwim:                         Folding.             (line 140)
+* TeX-fold-env:                          Folding.             (line 102)
+* TeX-fold-macro:                        Folding.             (line  93)
+* TeX-fold-math:                         Folding.             (line 109)
 * TeX-fold-mode:                         Folding.             (line  32)
-* TeX-fold-paragraph:                    Folding.             (line  80)
-* TeX-fold-region:                       Folding.             (line  77)
+* TeX-fold-paragraph:                    Folding.             (line  89)
+* TeX-fold-region:                       Folding.             (line  86)
 * TeX-font:                              Font Specifiers.     (line  42)
 * TeX-header-end:                        Multifile.           (line  28)
 * TeX-home-buffer:                       Control.             (line  17)
-* TeX-insert-braces:                     Quotes.              (line  84)
+* TeX-insert-braces:                     Quotes.              (line 118)
 * TeX-insert-dollar:                     Quotes.              (line  60)
 * TeX-insert-macro:                      Completion.          (line  28)
 * TeX-insert-quote:                      Quotes.              (line  14)
 * TeX-interactive-mode:                  Processor Options.   (line  28)
 * TeX-kill-job:                          Control.             (line   9)
 * TeX-master-file-ask:                   Multifile.           (line  68)
+* TeX-narrow-to-group:                   Narrowing.           (line  13)
 * TeX-next-error:                        Debugging.           (line   9)
 * TeX-normal-mode:                       Parsing Files.       (line  43)
 * TeX-PDF-mode:                          Processor Options.   (line  14)
 * TeX-pin-region:                        Starting a Command.  (line  60)
+* TeX-previous-error:                    Debugging.           (line  24)
+* TeX-read-key-val:                      Adding Macros.       (line 243)
 * TeX-recenter-output-buffer:            Control.             (line  13)
 * TeX-save-document:                     Multifile.           (line  96)
 * TeX-source-correlate-mode:             Processor Options.   (line  35)
 * TeX-source-correlate-mode <1>:         I/O Correlation.     (line  12)
-* TeX-toggle-debug-bad-boxes:            Debugging.           (line  18)
-* TeX-toggle-debug-warnings:             Debugging.           (line  22)
+* TeX-toggle-debug-bad-boxes:            Debugging.           (line  44)
+* TeX-toggle-debug-warnings:             Debugging.           (line  48)
 * TeX-view:                              Starting Viewers.    (line  11)
-* TeX-view <1>:                          I/O Correlation.     (line  20)
+* TeX-view <1>:                          I/O Correlation.     (line  42)
 * Texinfo-mark-environment:              Marking (Texinfo).   (line  24)
 * Texinfo-mark-node:                     Marking (Texinfo).   (line  33)
 * Texinfo-mark-section:                  Marking (Texinfo).   (line   6)
+* Texinfo-mode:                          Modes and Hooks.     (line  21)
 
 
 File: auctex.info,  Node: Variable Index,  Next: Concept Index,  Prev: Function Index,  Up: Indices
@@ -6723,12 +7361,15 @@ Variable Index
  [index ]
 * Menu:
 
+* AmS-TeX-mode-hook:                     Modes and Hooks.     (line  21)
 * ConTeXt-clean-intermediate-suffixes:   Cleaning.            (line   7)
 * ConTeXt-clean-output-suffixes:         Cleaning.            (line   7)
 * ConTeXt-engine:                        Processor Options.   (line  83)
+* ConTeXt-mode-hook:                     Modes and Hooks.     (line  21)
 * ConTeXt-Omega-engine:                  Processor Options.   (line  83)
 * docTeX-clean-intermediate-suffixes:    Cleaning.            (line   7)
 * docTeX-clean-output-suffixes:          Cleaning.            (line   7)
+* docTeX-mode-hook:                      Modes and Hooks.     (line  21)
 * font-latex-deactivated-keyword-classes: Fontification of macros.
                                                               (line 162)
 * font-latex-fontify-script:             Fontification of math.
@@ -6804,22 +7445,35 @@ Variable Index
 * japanese-TeX-command-default:          Japanese.            (line   6)
 * japanese-TeX-command-default <1>:      Japanese.            (line  29)
 * LaTeX-amsmath-label:                   Equations.           (line  15)
+* LaTeX-auto-class-regexp-list:          Parsing Files.       (line 105)
+* LaTeX-auto-counter-regexp-list:        Parsing Files.       (line 111)
+* LaTeX-auto-index-regexp-list:          Parsing Files.       (line 102)
 * LaTeX-auto-label-regexp-list:          Parsing Files.       (line  99)
+* LaTeX-auto-length-regexp-list:         Parsing Files.       (line 114)
 * LaTeX-auto-minimal-regexp-list:        Parsing Files.       (line  96)
-* LaTeX-auto-regexp-list:                Parsing Files.       (line 102)
-* LaTeX-babel-hyphen:                    European.            (line 149)
-* LaTeX-babel-hyphen-after-hyphen:       European.            (line 157)
-* LaTeX-babel-hyphen-language-alist:     European.            (line 136)
-* LaTeX-biblatex-use-Biber:              Selecting a Command. (line  46)
+* LaTeX-auto-pagestyle-regexp-list:      Parsing Files.       (line 108)
+* LaTeX-auto-regexp-list:                Parsing Files.       (line 120)
+* LaTeX-auto-savebox-regexp-list:        Parsing Files.       (line 117)
+* LaTeX-babel-hyphen:                    European.            (line 152)
+* LaTeX-babel-hyphen-after-hyphen:       European.            (line 160)
+* LaTeX-babel-hyphen-language-alist:     European.            (line 139)
+* LaTeX-biblatex-use-Biber:              Selecting a Command. (line  51)
 * LaTeX-clean-intermediate-suffixes:     Cleaning.            (line   7)
 * LaTeX-clean-output-suffixes:           Cleaning.            (line   7)
 * LaTeX-command:                         Processor Options.   (line  83)
 * LaTeX-csquotes-close-quote:            Quotes.              (line  43)
 * LaTeX-csquotes-open-quote:             Quotes.              (line  43)
 * LaTeX-csquotes-quote-after-quote:      Quotes.              (line  43)
-* LaTeX-default-environment:             Environments.        (line  34)
+* LaTeX-default-author:                  Adding Macros.       (line 240)
+* LaTeX-default-document-environment:    Environments.        (line  61)
+* LaTeX-default-environment:             Environments.        (line  56)
 * LaTeX-default-format:                  Tabular-like.        (line  10)
-* LaTeX-default-position:                Tabular-like.        (line  13)
+* LaTeX-default-options:                 Adding Macros.       (line 192)
+* LaTeX-default-position:                Tabular-like.        (line  16)
+* LaTeX-default-style:                   Adding Macros.       (line 192)
+* LaTeX-default-width:                   Tabular-like.        (line  13)
+* LaTeX-dialect:                         Simple Style.        (line  71)
+* LaTeX-electric-left-right-brace:       Quotes.              (line 154)
 * LaTeX-enable-toolbar:                  Processing.          (line  11)
 * LaTeX-eqnarray-label:                  Equations.           (line  12)
 * LaTeX-equation-label:                  Equations.           (line   9)
@@ -6829,9 +7483,9 @@ Variable Index
 * LaTeX-fill-break-before-code-comments: Filling.             (line 113)
 * LaTeX-float:                           Floats.              (line  14)
 * LaTeX-float <1>:                       Floats.              (line  32)
-* LaTeX-fold-env-spec-list:              Folding.             (line 189)
-* LaTeX-fold-macro-spec-list:            Folding.             (line 189)
-* LaTeX-fold-math-spec-list:             Folding.             (line 189)
+* LaTeX-fold-env-spec-list:              Folding.             (line 198)
+* LaTeX-fold-macro-spec-list:            Folding.             (line 198)
+* LaTeX-fold-math-spec-list:             Folding.             (line 198)
 * LaTeX-font-list:                       Font Specifiers.     (line  57)
 * LaTeX-indent-environment-check:        Indenting.           (line  51)
 * LaTeX-indent-environment-list:         Indenting.           (line  37)
@@ -6842,15 +7496,18 @@ Variable Index
 * LaTeX-item-indent:                     Indenting.           (line  19)
 * LaTeX-item-indent <1>:                 Indenting.           (line  98)
 * LaTeX-item-regexp:                     Indenting.           (line  19)
+* LaTeX-label-alist:                     Environments.        (line  38)
 * LaTeX-math-abbrev-prefix:              Mathematics.         (line  26)
 * LaTeX-math-list:                       Mathematics.         (line  36)
 * LaTeX-math-menu-unicode:               Mathematics.         (line  54)
+* LaTeX-mode-hook:                       Modes and Hooks.     (line  21)
 * LaTeX-Omega-command:                   Processor Options.   (line  83)
 * LaTeX-paragraph-commands:              Filling.             (line  55)
 * LaTeX-section-hook:                    Sectioning.          (line  40)
 * LaTeX-section-hook <1>:                Sectioning.          (line  48)
 * LaTeX-section-label:                   Sectioning.          (line  42)
 * LaTeX-section-label <1>:               Sectioning.          (line 100)
+* LaTeX-style-list:                      Adding Macros.       (line 192)
 * LaTeX-syntactic-comments:              Indenting.           (line  63)
 * LaTeX-syntactic-comments <1>:          Indenting.           (line 106)
 * LaTeX-table-label:                     Floats.              (line  25)
@@ -6860,14 +7517,20 @@ Variable Index
 * LaTeX-verbatim-environments:           Verbatim content.    (line  10)
 * LaTeX-verbatim-macros-with-braces:     Verbatim content.    (line  10)
 * LaTeX-verbatim-macros-with-delims:     Verbatim content.    (line  10)
-* plain-TeX-auto-regexp-list:            Parsing Files.       (line 105)
+* plain-TeX-auto-regexp-list:            Parsing Files.       (line 123)
 * plain-TeX-clean-intermediate-suffixes: Cleaning.            (line   7)
 * plain-TeX-clean-output-suffixes:       Cleaning.            (line   7)
 * plain-TeX-enable-toolbar:              Processing.          (line  11)
-* TeX-arg-input-file-search:             Adding Macros.       (line 123)
+* plain-TeX-mode-hook:                   Modes and Hooks.     (line  21)
+* TeX-arg-cite-note-p:                   Adding Macros.       (line 137)
+* TeX-arg-input-file-search:             Adding Macros.       (line 160)
+* TeX-arg-input-file-search <1>:         Adding Macros.       (line 192)
+* TeX-arg-input-file-search <2>:         Adding Macros.       (line 201)
+* TeX-arg-item-label-p:                  Itemize-like.        (line  15)
+* TeX-arg-right-insert-p:                Quotes.              (line 147)
 * TeX-auto-cleanup-hook:                 Hacking the Parser.  (line 100)
 * TeX-auto-empty-regexp-list:            Parsing Files.       (line  93)
-* TeX-auto-full-regexp-list:             Parsing Files.       (line 108)
+* TeX-auto-full-regexp-list:             Parsing Files.       (line 126)
 * TeX-auto-global:                       Automatic Global.    (line  25)
 * TeX-auto-local:                        Automatic Local.     (line  22)
 * TeX-auto-parse-length:                 Parsing Files.       (line  87)
@@ -6878,43 +7541,54 @@ Variable Index
 * TeX-auto-save:                         Parsing Files.       (line  40)
 * TeX-auto-untabify:                     Parsing Files.       (line  57)
 * TeX-brace-indent-level:                Indenting.           (line 102)
-* TeX-check-path:                        Selecting a Command. (line  59)
+* TeX-check-path:                        Selecting a Command. (line  67)
 * TeX-clean-confirm:                     Cleaning.            (line  26)
 * TeX-close-quote:                       Quotes.              (line  25)
 * TeX-command:                           Processor Options.   (line  83)
 * TeX-command-default:                   Selecting a Command. (line  42)
+* TeX-command-extra-options:             Processor Options.   (line 109)
 * TeX-command-list:                      Starting a Command.  (line  16)
 * TeX-command-list <1>:                  Starting a Command.  (line  32)
 * TeX-command-list <2>:                  Selecting a Command. (line  14)
-* TeX-default-macro:                     Completion.          (line  49)
+* TeX-complete-expert-commands:          Environments.        (line  78)
+* TeX-complete-expert-commands <1>:      Completion.          (line 100)
+* TeX-date-format:                       Adding Macros.       (line 123)
+* TeX-default-macro:                     Completion.          (line  51)
 * TeX-default-mode:                      Japanese.            (line   6)
 * TeX-default-mode <1>:                  Japanese.            (line  21)
-* TeX-display-help:                      Debugging.           (line  30)
+* TeX-display-help:                      Debugging.           (line  56)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  21)
-* TeX-electric-escape:                   Completion.          (line  56)
+* TeX-electric-escape:                   Completion.          (line  58)
+* TeX-electric-math:                     Quotes.              (line  72)
 * TeX-electric-sub-and-superscript:      Mathematics.         (line  68)
 * TeX-engine:                            Processor Options.   (line  66)
 * TeX-engine-alist:                      Processor Options.   (line  83)
 * TeX-engine-alist <1>:                  Processor Options.   (line  94)
 * TeX-engine-alist-builtin:              Processor Options.   (line  83)
+* TeX-error-overview-frame-parameters:   Debugging.           (line  97)
+* TeX-error-overview-open-after-TeX-run: Debugging.           (line  79)
+* TeX-error-overview-setup:              Debugging.           (line  88)
 * TeX-expand-list:                       Selecting a Command. (line  14)
 * TeX-file-recurse:                      Automatic.           (line  45)
-* TeX-fold-command-prefix:               Folding.             (line 137)
-* TeX-fold-env-spec-list:                Folding.             (line 179)
+* TeX-fold-auto:                         Folding.             (line  71)
+* TeX-fold-command-prefix:               Folding.             (line 146)
+* TeX-fold-env-spec-list:                Folding.             (line 188)
 * TeX-fold-force-fontify:                Folding.             (line  63)
-* TeX-fold-help-echo-max-length:         Folding.             (line 216)
-* TeX-fold-macro-spec-list:              Folding.             (line 146)
-* TeX-fold-math-spec-list:               Folding.             (line 186)
-* TeX-fold-preserve-comments:            Folding.             (line  71)
+* TeX-fold-help-echo-max-length:         Folding.             (line 225)
+* TeX-fold-macro-spec-list:              Folding.             (line 155)
+* TeX-fold-math-spec-list:               Folding.             (line 195)
+* TeX-fold-preserve-comments:            Folding.             (line  76)
 * TeX-fold-type-list:                    Folding.             (line  58)
-* TeX-fold-unspec-env-display-string:    Folding.             (line 199)
-* TeX-fold-unspec-macro-display-string:  Folding.             (line 195)
-* TeX-fold-unspec-use-name:              Folding.             (line 203)
+* TeX-fold-unfold-around-mark:           Folding.             (line  82)
+* TeX-fold-unspec-env-display-string:    Folding.             (line 208)
+* TeX-fold-unspec-macro-display-string:  Folding.             (line 204)
+* TeX-fold-unspec-use-name:              Folding.             (line 212)
 * TeX-font-list:                         Font Specifiers.     (line  48)
 * TeX-header-end:                        Starting a Command.  (line  32)
 * TeX-header-end <1>:                    Starting a Command.  (line  45)
 * TeX-ignore-file:                       Automatic.           (line  53)
-* TeX-insert-braces:                     Completion.          (line  74)
+* TeX-insert-braces:                     Completion.          (line  76)
+* TeX-insert-braces-alist:               Completion.          (line  79)
 * TeX-insert-macro-default-style:        Completion.          (line  36)
 * TeX-install-font-lock:                 Font Locking.        (line  13)
 * TeX-interactive-mode:                  Processor Options.   (line  29)
@@ -6922,6 +7596,7 @@ Variable Index
 * TeX-language-cz-hook:                  European.            (line  53)
 * TeX-language-de-hook:                  European.            (line  53)
 * TeX-language-dk-hook:                  European.            (line  53)
+* TeX-language-en-hook:                  European.            (line  53)
 * TeX-language-is-hook:                  European.            (line  53)
 * TeX-language-it-hook:                  European.            (line  53)
 * TeX-language-nl-hook:                  European.            (line  53)
@@ -6934,7 +7609,6 @@ Variable Index
 * TeX-master:                            Starting a Command.  (line  16)
 * TeX-master <1>:                        Starting a Command.  (line  32)
 * TeX-master <2>:                        Multifile.           (line  40)
-* TeX-math-close-double-dollar:          Quotes.              (line  70)
 * TeX-newline-function:                  Indenting.           (line  29)
 * TeX-newline-function <1>:              Indenting.           (line 110)
 * TeX-Omega-command:                     Processor Options.   (line  83)
@@ -6942,18 +7616,20 @@ Variable Index
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
 * TeX-output-view-style:                 Starting Viewers.    (line  97)
+* TeX-parse-all-errors:                  Debugging.           (line  33)
 * TeX-parse-self:                        Parsing Files.       (line  37)
 * TeX-PDF-mode:                          Processor Options.   (line  15)
 * TeX-quote-after-quote:                 Quotes.              (line  29)
-* TeX-quote-language-alist:              European.            (line 123)
+* TeX-quote-language-alist:              European.            (line 126)
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  41)
 * TeX-save-query:                        Multifile.           (line 100)
-* TeX-show-compilation:                  Processor Options.   (line 108)
+* TeX-show-compilation:                  Processor Options.   (line 122)
 * TeX-source-correlate-method:           Processor Options.   (line  47)
+* TeX-source-correlate-method <1>:       I/O Correlation.     (line  21)
 * TeX-source-correlate-mode:             Processor Options.   (line  36)
-* TeX-source-correlate-start-server:     I/O Correlation.     (line  26)
-* TeX-source-correlate-start-server <1>: I/O Correlation.     (line  32)
+* TeX-source-correlate-start-server:     I/O Correlation.     (line  48)
+* TeX-source-correlate-start-server <1>: I/O Correlation.     (line  54)
 * TeX-style-global:                      Automatic Global.    (line  19)
 * TeX-style-local:                       Automatic Local.     (line  16)
 * TeX-style-path:                        Automatic.           (line  38)
@@ -6966,6 +7642,7 @@ Variable Index
 * TeX-view-style:                        Starting Viewers.    (line 106)
 * Texinfo-clean-intermediate-suffixes:   Cleaning.            (line   7)
 * Texinfo-clean-output-suffixes:         Cleaning.            (line   7)
+* Texinfo-mode-hook:                     Modes and Hooks.     (line  21)
 
 
 File: auctex.info,  Node: Concept Index,  Prev: Variable Index,  Up: Indices
@@ -6980,7 +7657,7 @@ Concept Index
 * '\begin':                              Environments.        (line   6)
 * '\chapter':                            Editing Facilities.  (line  26)
 * '\chapter' <1>:                        Sectioning.          (line   6)
-* \cite, completion of:                  Completion.          (line  81)
+* \cite, completion of:                  Completion.          (line 112)
 * '\emph':                               Editing Facilities.  (line  79)
 * '\emph' <1>:                           Font Specifiers.     (line  22)
 * '\end':                                Environments.        (line   6)
@@ -6989,8 +7666,8 @@ Concept Index
 * \item:                                 Itemize-like.        (line   6)
 * '\label':                              Editing Facilities.  (line  26)
 * '\label' <1>:                          Sectioning.          (line   6)
-* \label, completion:                    Completion.          (line  81)
-* \ref, completion:                      Completion.          (line  81)
+* \label, completion:                    Completion.          (line 112)
+* \ref, completion:                      Completion.          (line 112)
 * '\section':                            Editing Facilities.  (line  26)
 * '\section' <1>:                        Sectioning.          (line   6)
 * '\subsection':                         Editing Facilities.  (line  26)
@@ -7019,13 +7696,14 @@ Concept Index
 * Adding to 'PATH' in Windows:           Installation under MS Windows.
                                                               (line  51)
 * amsmath:                               Equations.           (line   6)
+* amsmath <1>:                           Tabular-like.        (line   6)
 * ANSI:                                  European.            (line   5)
 * Arguments to TeX macros:               Completion.          (line   6)
 * ASCII pTeX:                            Internationalization.
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * 'auctex.el':                           Loading the package. (line  14)
-* 'auctex.el' <1>:                       Changes.             (line 174)
+* 'auctex.el' <1>:                       Changes.             (line 274)
 * 'auto' directories.:                   Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -7037,9 +7715,9 @@ Concept Index
 * biblatex:                              Selecting a Command. (line  46)
 * Bibliographies, adding:                Adding Other.        (line   6)
 * Bibliography:                          Commands.            (line   6)
-* bibliography, completion:              Completion.          (line  81)
+* bibliography, completion:              Completion.          (line 112)
 * BibTeX:                                Commands.            (line   6)
-* BibTeX, completion:                    Completion.          (line  81)
+* BibTeX, completion:                    Completion.          (line 112)
 * 'book.el':                             Simple Style.        (line   6)
 * Braces:                                Quotes.              (line   6)
 * Brackets:                              Quotes.              (line   6)
@@ -7054,8 +7732,8 @@ Concept Index
 * ChinaTeX:                              Internationalization.
                                                               (line   6)
 * 'chktex':                              Checking.            (line   6)
-* citations, completion of:              Completion.          (line  81)
-* cite, completion of:                   Completion.          (line  81)
+* citations, completion of:              Completion.          (line 112)
+* cite, completion of:                   Completion.          (line 112)
 * CJK language:                          Internationalization.
                                                               (line   6)
 * CJK-LaTeX:                             Internationalization.
@@ -7093,6 +7771,7 @@ Concept Index
 * Dollars:                               Quotes.              (line   6)
 * Double quotes:                         Quotes.              (line   6)
 * Dutch:                                 European.            (line  53)
+* English:                               European.            (line  53)
 * Enumerates:                            Itemize-like.        (line   6)
 * Environments:                          Environments.        (line   6)
 * Environments, adding:                  Adding Environments. (line   6)
@@ -7174,7 +7853,7 @@ Concept Index
 * Labels:                                Sectioning.          (line 110)
 * Labels <1>:                            Floats.              (line  25)
 * Labels, adding:                        Adding Other.        (line   6)
-* labels, completion of:                 Completion.          (line  81)
+* labels, completion of:                 Completion.          (line 112)
 * 'lacheck':                             Checking.            (line   6)
 * Language Support:                      Internationalization.
                                                               (line   6)
@@ -7323,7 +8002,7 @@ Concept Index
                                                               (line 286)
 * 'tex-site.el':                         Loading the package. (line  14)
 * 'tex-site.el' <1>:                     Customizing.         (line   6)
-* 'tex-site.el' <2>:                     Changes.             (line 174)
+* 'tex-site.el' <2>:                     Changes.             (line 274)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -7341,99 +8020,100 @@ Concept Index
 
 
 Tag Table:
-Node: Top927
-Node: Copying7098
-Node: Introduction9054
-Node: Summary9324
-Node: Installation12065
-Node: Prerequisites13439
-Node: Configure16396
-Node: Build/install21807
-Node: Loading the package22298
-Node: Advice for package providers24105
-Node: Advice for non-privileged users28050
-Node: Installation under MS Windows32008
-Node: Customizing47231
-Node: Quick Start48814
-Ref: Quick Start-Footnote-150804
-Node: Editing Facilities50951
-Node: Processing Facilities55746
-Node: Editing59640
-Node: Quotes60956
-Node: Font Specifiers64696
-Node: Sectioning66522
-Node: Environments70842
-Node: Equations73208
-Node: Floats73799
-Node: Itemize-like75332
-Node: Tabular-like75875
-Node: Customizing Environments76505
-Node: Mathematics76745
-Node: Completion79671
-Node: Marking83731
-Node: Marking (LaTeX)84355
-Node: Marking (Texinfo)85297
-Node: Commenting86907
-Node: Indenting88232
-Node: Filling94017
-Node: Display99337
-Node: Font Locking100650
-Node: Fontification of macros102725
-Node: Fontification of quotes112163
-Node: Fontification of math113658
-Node: Verbatim content115377
-Node: Faces116151
-Node: Known problems116640
-Node: Folding117569
-Node: Outline128004
-Node: Processing129258
-Node: Commands130421
-Node: Starting a Command130977
-Node: Selecting a Command134700
-Node: Processor Options137769
-Node: Viewing143439
-Node: Starting Viewers143813
-Node: I/O Correlation149975
-Node: Debugging152349
-Node: Checking153864
-Node: Control155156
-Node: Cleaning155883
-Node: Documentation157096
-Node: Customization157876
-Node: Modes and Hooks158369
-Node: Multifile159575
-Node: Parsing Files164254
-Node: Internationalization168659
-Node: European169840
-Node: Japanese176664
-Node: Automatic178361
-Node: Automatic Global180886
-Node: Automatic Private182047
-Node: Automatic Local183360
-Node: Style Files184449
-Node: Simple Style185242
-Node: Adding Macros186541
-Node: Adding Environments192437
-Node: Adding Other196706
-Node: Hacking the Parser197293
-Node: Appendices201162
-Node: Copying this Manual201546
-Node: GNU Free Documentation License202439
-Node: Changes227558
-Node: Development251795
-Node: Mid-term Goals252441
-Node: Wishlist254002
-Node: Bugs260946
-Node: FAQ262343
-Node: Texinfo mode268359
-Node: Exploiting269495
-Node: Superseding270315
-Node: Mapping274519
-Node: Unbinding276348
-Node: Indices277169
-Node: Key Index277394
-Node: Function Index282915
-Node: Variable Index291024
-Node: Concept Index308708
+Node: Top916
+Node: Copying7178
+Node: Introduction9134
+Node: Summary9404
+Node: Installation12145
+Node: Prerequisites13519
+Node: Configure16387
+Node: Build/install21798
+Node: Loading the package22289
+Node: Advice for package providers24096
+Node: Advice for non-privileged users28041
+Node: Installation under MS Windows31999
+Node: Customizing47222
+Node: Quick Start48805
+Ref: Quick Start-Footnote-150795
+Node: Editing Facilities50942
+Node: Processing Facilities55737
+Node: Editing59631
+Node: Quotes60961
+Node: Font Specifiers69229
+Node: Sectioning71055
+Node: Environments75375
+Node: Equations80529
+Node: Floats81120
+Node: Itemize-like82653
+Node: Tabular-like83374
+Node: Customizing Environments84857
+Node: Mathematics85097
+Node: Completion88023
+Node: Marking93346
+Node: Marking (LaTeX)93970
+Node: Marking (Texinfo)94912
+Node: Commenting96522
+Node: Indenting97847
+Node: Filling103632
+Node: Display108952
+Node: Font Locking110564
+Node: Fontification of macros112639
+Node: Fontification of quotes122077
+Node: Fontification of math123572
+Node: Verbatim content125291
+Node: Faces126065
+Node: Known problems126554
+Node: Folding127483
+Node: Outline138307
+Node: Narrowing139579
+Node: Processing140629
+Node: Commands141792
+Node: Starting a Command142348
+Node: Selecting a Command146071
+Node: Processor Options149597
+Node: Viewing156049
+Node: Starting Viewers156423
+Node: I/O Correlation162585
+Node: Debugging166031
+Node: Checking170386
+Node: Control171548
+Node: Cleaning172275
+Node: Documentation173488
+Node: Customization174268
+Node: Modes and Hooks174761
+Node: Multifile175967
+Node: Parsing Files180646
+Node: Internationalization185558
+Node: European186739
+Node: Japanese193619
+Node: Automatic195316
+Node: Automatic Global197841
+Node: Automatic Private199002
+Node: Automatic Local200315
+Node: Style Files201404
+Node: Simple Style202197
+Node: Adding Macros205470
+Node: Adding Environments214591
+Node: Adding Other219252
+Node: Hacking the Parser219839
+Node: Appendices223708
+Node: Copying this Manual224092
+Node: GNU Free Documentation License224974
+Node: Changes250093
+Node: Development278741
+Node: Mid-term Goals279387
+Node: Wishlist280604
+Node: Bugs286561
+Node: FAQ288091
+Node: Texinfo mode294107
+Node: Exploiting295243
+Node: Superseding296063
+Node: Mapping300267
+Node: Unbinding302096
+Node: Indices302917
+Node: Key Index303142
+Node: Function Index309101
+Node: Variable Index319473
+Node: Concept Index340004
 
 End Tag Table

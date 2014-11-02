@@ -213,7 +213,7 @@ should already be integrated into AUCTeX, so no separate download will
 be necessary.
 
 You will also find '.rpm' files there for Fedora and possibly SuSE.
-Anonymous CVS is available as well.
+Anonymous Git is available as well.
 
 7 Contacts
 **********

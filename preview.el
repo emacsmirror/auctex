@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001-2006, 2010, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2010-2014  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -22,8 +22,6 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.287 2012-12-04 08:01:34 tsdh Exp $
-;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
 ;; for further instruction.
@@ -36,8 +34,7 @@
 ;; configured by using
 ;; M-x customize-group RET preview RET
 ;;
-;; Please report bugs with M-x preview-report-bug RET
-;;
+;; Please report bugs with M-x preview-report-bug RET.
 
 ;;; Code:
 
@@ -252,7 +249,7 @@ that is."
 			       preview-image-creators))))))
     (when hook
       (apply (car hook) (append (cdr hook) rest)))))
-	 	   
+
 
 (defvar TeX-active-tempdir nil
   "List of directory name, top directory name and reference count.")
@@ -347,9 +344,19 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
      (dotimes (i 4 box)
        (aset box i (+ (aref box i) (aref border i)))))))
 
-(defcustom preview-gs-command (if (eq system-type 'windows-nt)
-				  "GSWIN32C.EXE"
-				"gs")
+(defcustom preview-gs-command
+  (or ;; The GS wrapper coming with TeX Live
+      (executable-find "rungs")
+      ;; The MikTeX builtin GS
+      (let ((gs (executable-find "mgs")))
+	;; Check if mgs is functional for external non-MikTeX apps.
+	;; See http://blog.miktex.org/post/2005/04/07/Starting-mgsexe-at-the-DOS-Prompt.aspx
+	(when (and gs (= 0 (shell-command (concat gs " -q -dNODISPLAY -c quit"))))
+	  gs))
+      ;; Windows ghostscript
+      (executable-find "GSWIN32C.EXE")
+      ;; standard GhostScript
+      (executable-find "gs"))
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
   :group 'preview-gs
   :type 'string)
@@ -450,7 +457,7 @@ show as response of Ghostscript."
       (preview-gs-flag-error ov err)
       (overlay-put ov 'queued nil))
     ov))
-    
+
 (defvar preview-gs-command-line nil)
 (make-variable-buffer-local 'preview-gs-command-line)
 (defvar preview-gs-file nil)
@@ -642,7 +649,7 @@ and tries to restart Ghostscript if necessary."
 			    (preview-delete-file preview-ps-file)
 			  (file-error nil)))
 		      (preview-gs-queue-empty))
-		  
+
 		  ;; restart only if we made progress since last call
 		  (let (filenames)
 		    (dolist (ov preview-gs-outstanding)
@@ -1051,7 +1058,7 @@ object corresponding to the wanted page."
   (let ((curpage (aref dsc page)))
     (format "dup %d setfileposition %d()/SubFileDecode filter cvx"
 	    (1- (car curpage)) (nth 1 curpage))))
-  
+
 (defun preview-ps-quote-filename (str &optional nonrel)
   "Make a PostScript string from filename STR.
 The file name is first made relative unless
@@ -1320,7 +1327,7 @@ recursively."
 	((and (symbolp hook) (boundp hook))
 	 (symbol-value hook))
 	(t hook)))
-			  
+
 (defcustom preview-scale-function #'preview-scale-from-face
   "*Scale factor for included previews.
 This can be either a function to calculate the scale, or
@@ -1433,6 +1440,9 @@ autoloads for preview-latex.")
 							    preview-datadir))
 		 ,@(preview-filter-specs-1 args))))
 
+(defvar preview-lispdir TeX-lisp-directory
+  "The directory where the preview lisp files are located.")
+
 (defun preview-ascent-from-bb (bb)
   "This calculates the image ascent from its bounding box.
 The bounding box BB needs to be a 4-component vector of
@@ -1489,7 +1499,7 @@ All of the options show reasonable defaults."
 				     (key-binding [right])))
 		       function (list :tag "Argument list"
 				      (repeat :inline t sexp)))))
-  
+
 (defun preview-auto-reveal-p (mode distance)
   "Decide whether to auto-reveal.
 Returns non-NIL if region should be auto-opened.
@@ -1589,7 +1599,7 @@ Searches backwards if BACKWARDS is non-nil."
 	    '(active inactive)))
 	(setq history (and (not preview-state) pt)))
       (or history pt))))
-	     
+
 (defun preview-at-point ()
   "Do the appropriate preview thing at point.
 If point is positioned on or inside of an unmodified preview area,
@@ -1819,7 +1829,7 @@ BUFFER-MISC is the appropriate data to be used."
 				   (with-current-buffer ,(current-buffer)
 				     (preview-buffer-restore-internal
 				      ',buffer-misc)))))
-  
+
 (defun desktop-buffer-preview (desktop-buffer-file-name
 			       desktop-buffer-name
 			       desktop-buffer-misc)
@@ -1939,7 +1949,7 @@ Deletes the dvi file when finished."
 	     (with-current-buffer TeX-command-buffer
 	       (funcall (car gsfile) "dvi"))))
 	(file-error nil)))))
-   
+
 (defun preview-active-string (ov)
   "Generate before-string for active image overlay OV."
   (preview-make-clickable
@@ -2747,10 +2757,10 @@ name(\\([^)]+\\))\\)\\|\
 				    (setq lpoint (point))
 				    (end-of-line)
 				    (buffer-substring lpoint (point)))
-			    
+
 			    ;; And the context for the help window.
 			    context-start (point)
-			    
+
 			    ;; And the line number to position the cursor.
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
 ;;; to be favorable.  Removing incomplete characters from the error
@@ -2767,7 +2777,7 @@ name(\\([^)]+\\))\\)\\|\
 						       (- (match-end 3)
 							  (match-beginning 0)))
 						    (match-end 4)))
-			    
+
 			    ;; And we have now found to the end of the context.
 			    context (buffer-substring context-start (point))
 			    ;; We may use these in another buffer.
@@ -3387,7 +3397,7 @@ stored in `preview-dumped-alist'."
      (preview-string-expand preview-LaTeX-command)
      'TeX-master-file)
     preview-LaTeX-command-replacements)))
-		       
+
 (defun preview-environment (count)
   "Run preview on LaTeX environment.
 This avoids running environments through preview that are
@@ -3516,35 +3526,17 @@ internal parameters, STR may be a log to insert into the current log."
 	     (delete-process process)
 	     (preview-reraise-error process)))))
 
-(defconst preview-version (eval-when-compile
-  (let ((name "$Name:  $")
-	(rev "$Revision: 1.287 $"))
-    (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
-	  (setq name (match-string 1 name))
-	  (while (string-match "_" name)
-	    (setq name (replace-match "." t t name)))
-	  name)
-	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
-	    (format "CVS-%s" (match-string 1 rev)))
-	"unknown")))
+(defconst preview-version AUCTeX-version
   "Preview version.
-If not a regular release, CVS revision of `preview.el'.")
+If not a regular release, the date of the last change.")
 
-(defconst preview-release-date
-  (eval-when-compile
-    (let ((date "$Date: 2012-12-04 08:01:34 $"))
-      (string-match
-       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
-       date)
-      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
-	      (match-string 3 date))))
-  "Preview release date.
-In the form of yyyy.mmdd")
+(defconst preview-release-date AUCTeX-date
+  "Preview release date using the ISO 8601 format, yyyy-mm-dd.")
 
 (defun preview-dump-state (buffer)
   (condition-case nil
       (progn
-	(unless (local-variable-p 'TeX-command-buffer)
+	(unless (local-variable-p 'TeX-command-buffer (current-buffer))
 	  (setq buffer (with-current-buffer buffer (TeX-active-buffer))))
 	(when (bufferp buffer)
 	  (insert "\nRun buffer contents:\n\n")
@@ -3564,9 +3556,7 @@ In the form of yyyy.mmdd")
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "bug-auctex@gnu.org"
-     (if (string-match "^CVS-" preview-version)
-	 (concat "preview-" (substring preview-version 4))
-       preview-version)
+     preview-version
      '(AUCTeX-version
        LaTeX-command-style
        image-types

@@ -98,11 +98,7 @@ install: install-texmf install-el install-nosearch install-images \
 use-hint:
 	@echo "Installation completed."
 	@echo
-	@echo "Please read the PROBLEMS file if you use"
-	@echo "a) AUCTeX with a version less than 11.0"
-	@echo "b) GNU Emacs with a version less than 21.2"
-	@echo "   OR XEmacs with a version less than 21.4.9"
-	@echo "c) Ghostscript with a version less than 6.51"
+	@echo "Read the PROBLEMS file if you experience problems."
 	@echo "Please use M-x preview-report-bug if you experience any"
 	@echo "problems not mentioned in there."
 
