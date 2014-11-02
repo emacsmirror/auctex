@@ -1,3 +1,13 @@
+2014-11-02  Arash Esbati  <esbati@gmx.de>
+
+	* style/MinionPro.el (TeX-add-symbols): Remove `figureversion',
+	`textsw', `textssc', `sscshape' and `swshape'.
+	(TeX-run-style-hooks): Added "fontaxes".
+
+	* style/MinionPro.el (LaTeX-MinionPro-package-options): Added
+	additional options from v2.3 of `MinionPro.sty', available from
+	<https://github.com/sebschub>
+
 2014-11-01  Davide G. M. Salvetti  <salve@linux.it>
 
         * tex.el (TeX-file-line-error): New customizable option.
