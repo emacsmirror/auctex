@@ -35,21 +35,7 @@ INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 DESTDIR=
-# If `texi2html' is not available, use `makeinfo' when possible.  Set the ToC
-# file accordingly.  Actually, makeinfo >= 5 is needed, but we don't check the
-# version.
-ifneq (@TEXI2HTML@,:)
-	TEXI2HTML=@TEXI2HTML@
-	TEXI2HTML_TOC=auctex_toc.html
-else
-	ifneq (@MAKEINFO@,:)
-		TEXI2HTML=@MAKEINFO@ --html
-		TEXI2HTML_TOC=index.html
-	else
-		TEXI2HTML=@TEXI2HTML@
-		TEXI2HTML_TOC=auctex_toc.html
-	endif
-endif
+TEXI2HTML=@TEXI2HTML@
 TEXI2DVI=@TEXI2DVI@
 TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
@@ -65,8 +51,7 @@ AUCTEXTEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 PREVIEWTEXIFILES = copying.texi preview-faq.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi preview-problems.texi \
 	preview-readme.texi preview-todo.texi version.texi
-DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES	\
-	../PROBLEMS.preview
+DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: dist
 
@@ -87,17 +72,17 @@ install-man:
 
 dist: $(DISTTEXTS) preview-latex.info auctex.info tex-ref.pdf
 
-extradist: html/$(TEXI2HTML_TOC) auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
+extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 .PHONY: all info dvi dist install-auctex disttexts clean distclean \
 	maintainer-clean install-preview install-man html-docs extradist
 
 # AUCTeX
 
-html/$(TEXI2HTML_TOC): auctex.texi
+html/auctex_toc.html: auctex.texi
 	rm -rf html
 	mkdir html
-	cd html && $(TEXI2HTML) --split=node -I .. ../auctex.texi && \
+	cd html && $(TEXI2HTML) -split_node -I .. ../auctex.texi && \
 	test ! -d auctex || { mv auctex/* . && rm -rf auctex ; }
 
 tex-ref.dvi: tex-ref.tex
@@ -195,7 +180,7 @@ install-preview: preview-latex.info
 	$(MAKEINFO) $(MAKEINFO_PLAIN) faq.texi --output $@
 	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-faq.texi --output - >> $@
 
-../PROBLEMS.preview: preview-problems.texi macros.texi
+../PROBLEMS: preview-problems.texi macros.texi
 	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-problems.texi --output $@
 
 # clean

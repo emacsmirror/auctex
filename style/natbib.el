@@ -105,8 +105,7 @@
 
     ;; Tell RefTeX
     (if (fboundp 'reftex-set-cite-format)
-	(reftex-set-cite-format 'natbib))))
- LaTeX-dialect)
+	(reftex-set-cite-format 'natbib)))))
 
 (defun natbib-note-args (optional &optional prompt definition)
   "Prompt for two note arguments a natbib citation command."

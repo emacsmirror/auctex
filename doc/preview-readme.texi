@@ -190,7 +190,7 @@ will display it.
 @node  Availability, Contacts, More documentation, Introduction
 @section Availability
 @cindex Download
-@cindex @sc{git} access
+@cindex @sc{cvs} access
 
 The @previewlatex{} project is now part of @AUCTeX{} and accessible as
 part of the @uref{http://savannah.gnu.org/projects/auctex,@AUCTeX{}
@@ -200,7 +200,7 @@ project page}.  You can get its files from the
 @AUCTeX{}, so no separate download will be necessary.
 
 You will also find @file{.rpm} files there for Fedora and possibly
-SuSE. Anonymous @acronym{Git} is available as well.
+SuSE. Anonymous @acronym{CVS} is available as well.
 
 @node  Contacts,  , Availability, Introduction
 @section Contacts

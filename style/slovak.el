@@ -8,5 +8,4 @@
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
-   (run-hooks 'TeX-language-sk-hook))
- LaTeX-dialect)
+   (run-hooks 'TeX-language-sk-hook)))

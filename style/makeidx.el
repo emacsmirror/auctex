@@ -40,8 +40,7 @@
 
     ;; RefTeX support
     (and (fboundp 'reftex-add-index-macros)
-	 (reftex-add-index-macros '(default))))
-  LaTeX-dialect)
+	 (reftex-add-index-macros '(default)))))
 
 (defvar LaTeX-makeidx-package-options nil
   "Package options for the makeidx package.")

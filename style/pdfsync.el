@@ -86,7 +86,6 @@
 (TeX-add-style-hook
  "pdfsync"
  (lambda ()
-   (setq TeX-source-correlate-output-page-function 'LaTeX-pdfsync-output-page))
- LaTeX-dialect)
+   (setq TeX-source-correlate-output-page-function 'LaTeX-pdfsync-output-page)))
 
 ;;; pdfsync.el ends here

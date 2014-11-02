@@ -64,7 +64,6 @@
 			      'variable)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
- LaTeX-dialect)
+     (font-lock-set-defaults))))
 
 ;;; comment.el ends here

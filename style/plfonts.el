@@ -1,5 +1,7 @@
 ;;; plfonts.el - Setup AUC TeX for editing Polish text with plfonts.sty
 
+;; $Id: plfonts.el,v 1.1 1994-01-30 21:17:25 amanda Exp $
+
 ;;; Commentary:
 ;;
 ;; `plfonts.sty' use `"' to make next character Polish.
@@ -24,7 +26,6 @@
    (setq TeX-close-quote "\">")
    (setq TeX-quote-after-quote t)
    (setq TeX-command-default "plLaTeX")
-   (run-hooks 'TeX-language-pl-hook)))
- LaTeX-dialect)
+   (run-hooks 'TeX-language-pl-hook))))
 
 ;;; plfonts.el ends here

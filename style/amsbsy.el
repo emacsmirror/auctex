@@ -10,8 +10,7 @@
     (TeX-add-symbols
      '("boldsymbol" "Symbol")
      '("pmb"        "Symbol")
-     )))
- LaTeX-dialect)
+     ))))
 
 (defvar LaTeX-amsbsy-package-options nil
   "Package options for the amsbsy package.")

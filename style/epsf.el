@@ -1,5 +1,7 @@
 ;;; epsf.el - Support for the epsf style option.
 
+;; Copyright (C) 2013 Free Software Foundation, Inc.
+
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 
 ;;; Code: 
@@ -14,8 +16,7 @@
     "epsflly" "epsfury" "testit" "epsfgetlitbb"
     "epsfnormal" "epsfgetbb" "other" "epsfsetgraph"
     "PsFragSpecialArgs" "epsfaux" "testit" "epsfgrab"
-    "epsfllx" "epsflly" "epsfury" "epsfverbosetrue"))
- LaTeX-dialect)
+    "epsfllx" "epsflly" "epsfury" "epsfverbosetrue")))
 
 (defun TeX-arg-epsfsize (optional &optional prompt definition)
   "Create a line that print epsf figures at a certain percentage"

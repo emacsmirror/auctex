@@ -3,7 +3,6 @@
 ;; Copyright (C) 2011 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
-;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2011-02-01
 ;; Keywords: tex
 
@@ -44,8 +43,7 @@
      (font-latex-add-keywords '(("xspace" "")
 				("xspaceaddexception" "{")
 				("xspaceremoveexception" "{"))
-			      'function)))
- LaTeX-dialect)
+			      'function))))
 
 (defvar LaTeX-xspace-package-options nil
   "Package options for the xspace package.")

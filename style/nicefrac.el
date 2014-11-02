@@ -37,8 +37,7 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("nicefrac" "[{{")) 'textual)))
- LaTeX-dialect)
+     (font-latex-add-keywords '(("nicefrac" "[{{")) 'textual))))
 
 (defvar LaTeX-nicefrac-package-options '("nice" "ugly")
   "Package options for the nicefrac package.")

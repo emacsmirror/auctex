@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013, 2014 Free Software
+# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2010 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -58,8 +58,8 @@ AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (save-buffers-kill-emacs t))'
 DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd "$$OLDPWD";echo "Ascending into $$OLDPWD";done)
 
-EXCLUDEDFILES=autogen.sh .cvsignore .gitignore doc/.gitignore preview/.gitignore \
-	preview/latex/.gitignore README.GIT tests
+CVSFILES=autogen.sh .cvsignore doc/.cvsignore preview/.cvsignore \
+	preview/latex/.cvsignore README.CVS
 
 .SUFFIXES: .el .elc .texi
 
@@ -70,10 +70,9 @@ CP_A = $(CP) -R
 DIST_PREFIX=$(PWD)/auctex-dist
 FTPDIR = $(DIST_PREFIX)/ftp
 WWWDIR = $(DIST_PREFIX)/www
-CTANDIR = $(DIST_PREFIX)/ctan
 XEMACS_BUILD_DIR = xemacs-build
 PREVIEW_BUILD_DIR = preview-build
-COMMITTER="`git config --get user.name`\ \ \<`git config --get user.email`\>"
+COMMITTER="David Kastrup  <dak@gnu.org>"
 RPMROOT = /usr/src/redhat
 RPM_SIGN = --sign
 
@@ -122,26 +121,13 @@ STYLESRC = style/prosper.el \
 	   style/pst-plot.el  style/pst-slpe.el  style/shortvrb.el \
 	   style/austrian.el  style/naustrian.el style/french.el \
 	   style/lettrine.el  style/multicol.el  style/xspace.el \
-	   style/setspace.el  style/biblatex.el  style/siunitx.el \
-	   style/bm.el        style/footmisc.el  style/ulem.el \
-	   style/bigdelim.el  style/bigstrut.el  style/everysel.el \
-	   style/mathtools.el style/ragged2e.el  style/amssymb.el \
-	   style/lscape.el    style/epigraph.el  style/mflogo.el \
-	   style/multirow.el  style/imakeidx.el  style/afterpage.el \
-	   style/longtable.el style/lipsum.el    style/kantlipsum.el \
-	   style/memoir.el    style/placeins.el  style/nameref.el \
-	   style/fancynum.el  style/fancyhdr.el	 style/filecontents.el \
-	   style/array.el     style/kpfonts.el   style/acro.el \
-	   style/acronym.el   style/xparse.el    style/fancyvrb.el \
-	   style/tabulary.el  style/fontspec.el  style/unicode-math.el \
-	   style/luacode.el   style/metalogo.el  style/english.el \
-	   style/exercise.el  style/plext.el     style/cleveref.el
+	   style/setspace.el  style/biblatex.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
-	auto-loads.el config.* preview/preview.el
-DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
+	auto-loads.el config.*
+DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
 
@@ -218,7 +204,7 @@ install-startup:
 
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
-	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (Git-version) mistakes
+	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (CVS-version) mistakes
 	test ! -f $(DESTDIR)$(lispdir)/tex-site.el || { \
 	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
@@ -331,32 +317,28 @@ wc:
 # intended to be used only by the maintainers.
 
 # Steps for making a release:
-#
+# 
 # 1) release-commit TAG=<tag> COMMITTER=<committer>
 #    Tag the release.
-#    Pass `COMMITTER=<committer>' argument only if it is different from
-#    your git name and email.  `<committer>' should be in the form
-#        "John Doe  <john.doe@example.com>"
-#
+#    
 # 2) dist TAG=<tag>
-#    Create the tar ball and other release files and put them into $FTPDIR.
+#    Create the tar ball.
 #
 # 3) xemacs-package TAG=<tag>
 #    Create the precompiled XEmacs package.
 #
 # 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
-#    This requires a compiled Emacs of the same version at location $WEMACS.
-#
-# 5) release-sign TAG=<tag>
+# 
+# 5) release-sign
 #    Sign the tar ball and create directive files for upload.
-#
+# 
 # 6) release-upload
 #    Upload files to GNU FTP server.
 #
 # 7) www-doc TAG=<tag> GENDOCSPATCH=<patch-file>
 #    Create documentation for AUCTeX home page.
-#
+# 
 # 8) preview-ball TAG=<tag>
 #    Create preview package.  (Not for GNU FTP server but for CTAN.)
 
@@ -368,33 +350,26 @@ check-tag:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** Error: No TAG ***"; exit 1; fi
 
 release-commit: check-tag
-	@echo "Tagging release $(TAG) in Git ..."
+	@echo "Tagging release $(TAG) in CVS ..."
 	sleep 5
 	mv ChangeLog ChangeLog.old
-	mv preview/ChangeLog preview/ChangeLog.old
-# Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
-# requires the `iconv' program.
-	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > ChangeLog
+	echo `date "+%Y-%m-%d "`" "${COMMITTER} > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
-	cp ChangeLog preview/ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	cat preview/ChangeLog.old >> preview/ChangeLog
-	git commit -m 'Release_$(TAG)' -- ChangeLog preview/ChangeLog
-	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
-	@echo
-	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."
-	@echo "Please, remember to run"
-	@echo "    git push --tags origin master"
-	@echo "to propagate release commit and tag to the remote repository."
+	cvs commit -m 'Release_$(TAG)' ChangeLog
+	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 
 tar-ball: doc/Makefile
 	test ! -d auctex-$(TAG) || rm -r auctex-$(TAG)
 	mkdir auctex-$(TAG)
 # Use TAG_EXPORT if set (for snapshots)
-	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} | tar -xC auctex-$(TAG)
-	cd auctex-$(TAG) && AUCTEXVERSION=$(TAG) AUCTEXDATE=$(AUCTEXDATE) ./autogen.sh && rm -rf $(EXCLUDEDFILES)
+	cvs export -d auctex-$(TAG) \
+          `echo $${TAG_EXPORT:=$(TAG)} | \
+	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
+              -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
+	cd auctex-$(TAG) && AUCTEXVERSION=$(TAG) AUCTEXDATE=$(AUCTEXDATE) ./autogen.sh && rm $(CVSFILES)
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR)
 	mkdir -p $(FTPDIR)
@@ -479,7 +454,7 @@ windows-package: check-tag
 	cd $(WBUILDDIR)/emacs-$(WEMACSVER) \
 	&& zip -r $(FTPDIR)/$(WPACKAGE) $(WPACKAGEFILES)
 
-release-sign: check-tag
+release-sign:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
 	if [ "x$$GPG_AGENT_INFO" = "x" ]; then \
 	  read -sp "Enter pass phrase: " phrase ; \
@@ -525,12 +500,12 @@ preview-ball: check-tag
 	test ! -d $(PREVIEW_BUILD_DIR) || rm -r $(PREVIEW_BUILD_DIR)
 	mkdir $(PREVIEW_BUILD_DIR)
 # Use TAG_EXPORT if set (for snapshots)
-	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} \
-	  preview/latex | tar -xC $(PREVIEW_BUILD_DIR) --strip-components=2
+	cvs export -d $(PREVIEW_BUILD_DIR) \
+          `echo $${TAG_EXPORT:=$(TAG)} | \
+	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
+              -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex/preview/latex
 	cd $(PREVIEW_BUILD_DIR) && make -f ../preview/latex/Makefile preview.ins preview.pdf
 	chmod -R go-w+rX $(PREVIEW_BUILD_DIR)
-	test -d $(CTANDIR) || mkdir -p $(CTANDIR)
-# CTAN requires a top level directory "preview/" for the archive.
-	cd $(PREVIEW_BUILD_DIR) && mkdir -p preview && \
-	cp README preview.dtx preview.ins preview.pdf preview/ && \
-	tar -cf - --owner=root --group=root preview/ | gzip --best > $(CTANDIR)/preview-$(TAG).tar.gz
+	test -d $(FTPDIR) || mkdir -p $(FTPDIR)
+	cd $(PREVIEW_BUILD_DIR) && \
+	tar -cf - --owner=root --group=root README preview.dtx preview.ins preview.pdf | gzip --best > $(FTPDIR)/preview-$(TAG).tar.gz

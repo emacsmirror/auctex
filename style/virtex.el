@@ -77,7 +77,6 @@
 		     "vcenter" "vfil" "vfill" "vfilneg" "vfuzz"
 		     "voffset" "vrule" "vsize" "vskip" "vss" "vtop"
 		     "wd" "widowpenalty" "write" "xdef" "xleaders"
-		     "xspaceskip" "year"))
-  LaTeX-dialect)
+		     "xspaceskip" "year")))
 
 ;;; virtex.el ends here

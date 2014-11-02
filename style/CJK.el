@@ -88,7 +88,6 @@ The function can be used for CJK and CJK* environments."
    ;; New environments
    (LaTeX-add-environments
     '("CJK" LaTeX-env-CJK)
-    '("CJK*" LaTeX-env-CJK)))
- LaTeX-dialect)
+    '("CJK*" LaTeX-env-CJK))))
 
 ;;; CJK.el ends here

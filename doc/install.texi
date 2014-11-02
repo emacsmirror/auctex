@@ -125,7 +125,14 @@ The default configuration of @AUCTeX{} is tailored for te@TeX{} or
 
 This is needed for operation of @previewlatex{} in both @acronym{DVI}
 and @acronym{PDF} mode.  Most versions of Ghostscript nowadays in use
-should work fine (version 7.0 and newer).
+should work fine (version 7.0 and newer).  If you encounter problems,
+check
+@ifset rawfile
+the @file{PROBLEMS} file.
+@end ifset
+@ifclear rawfile
+@ref{Problems with Ghostscript,,,preview-latex,the @previewlatex{} manual}.
+@end ifclear
 
 @item The @code{texinfo} package
 
@@ -154,9 +161,9 @@ various files will be.  To do so, run
 ./configure @var{options}
 @end example
 
-(Note: if you have fetched @AUCTeX{} from @acronym{Git} rather than
+(Note: if you have fetched @AUCTeX{} from @acronym{CVS} rather than
 a regular release, you will have to first follow the instructions in
-@file{README.GIT}).
+@file{README.CVS}).
 
 On many machines, you will not need to specify any options, but if
 @command{configure} cannot determine something on its own, you'll need to

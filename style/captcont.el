@@ -37,8 +37,7 @@
     '("captcont*" [ "list entry" ] "Caption"))
    ;; Fontification
    (when (featurep 'font-latex)
-     (font-latex-add-keywords '(("captcont" "*[{")) 'textual)))
- LaTeX-dialect)
+     (font-latex-add-keywords '(("captcont" "*[{")) 'textual))))
 
 (defvar LaTeX-captcont-package-options '("figbotcap" "figtopcap" "tabbotcap"
 					 "tabtopcap")

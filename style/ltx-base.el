@@ -79,8 +79,7 @@
      '("message" "Log Message")
      '("@ifundefined" "Macro Name" 2)
      '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "character") 2 )
-     "expandafter")))
- LaTeX-dialect)
+     "expandafter"))))
 
 ;; Local Variables:
 ;; coding: iso-8859-1

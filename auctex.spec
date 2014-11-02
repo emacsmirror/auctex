@@ -104,7 +104,7 @@ probably best solved by not installing this package).
 %setup
 
 %build
-# The below will make the package build from a tar straight from Git
+# The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
 test -f ./configure || ./autogen.sh
 %configure --with-emacs INSTALL_INFO=: --without-texmf-dir

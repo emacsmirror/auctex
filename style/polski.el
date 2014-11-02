@@ -50,7 +50,6 @@
    ;; Fontification of quotation marks.
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '(",," "''")))
-   (run-hooks 'TeX-language-pl-hook))
- LaTeX-dialect)
+   (run-hooks 'TeX-language-pl-hook)))
 
 ;;; polski.el ends here

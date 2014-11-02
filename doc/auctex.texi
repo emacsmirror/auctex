@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2014
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2012
 Free Software Foundation, Inc.
 
 @quotation
@@ -81,8 +81,8 @@ reasons to despair.  You can continue to write @TeX{} and @LaTeX{}
 documents the way you are used to, and only start using the multiple
 features in small steps.  @AUCTeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
-an environment where you will make very few @LaTeX{} errors, and makes
-it easy to find the errors that may slip through anyway.
+an environment where you will make very few @LaTeX{} errors, and makes it
+easy to find the errors that may slip through anyway.
 
 It is a good idea to make a printout of @AUCTeX{}'s reference card
 @file{tex-ref.tex} or one of its typeset versions.
@@ -163,7 +163,6 @@ Controlling Screen Display
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
-* Narrowing::                   Restricting display and editing to a portion of the buffer
 
 Font Locking
 
@@ -316,7 +315,7 @@ entering more specialized sorts of text, for formatting the source by
 indenting and filling and for navigating through the document.
 
 @menu
-* Quotes::                      Inserting quotes, dollars, and braces
+* Quotes::                      Inserting double quotes
 * Font Specifiers::             Inserting Font Specifiers
 * Sectioning::                  Inserting chapters, sections, etc.
 * Environments::                Inserting Environment Templates
@@ -398,67 +397,30 @@ language-specific ones.
 
 In @AUCTeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
-within a paragraph.  By default, the first @samp{$} you insert in a
-paragraph will do nothing special.  The second @samp{$} will match the
-first.  This will be indicated by moving the cursor temporarily over the
-first dollar sign.
+within a paragraph.  The first @samp{$} you insert in a paragraph will
+do nothing special.  The second @samp{$} will match the first.  This
+will be indicated by moving the cursor temporarily over the first dollar
+sign.
 
 @deffn Command TeX-insert-dollar @var{arg}
 @kindex $
 (@kbd{$}) Insert dollar sign.
 
 Show matching dollar sign if this dollar sign end the @TeX{} math mode.
+Ensure double dollar signs match up correctly by inserting extra dollar
+signs when needed if @code{TeX-math-close-double-dollar} is non-nil.
 
 With optional @var{arg}, insert that many dollar signs.
 @end deffn
 
-@TeX{} and @LaTeX{} users often look for a way to insert inline
-equations like @samp{$...$} or @samp{\(...\)} simply typing @kbd{$}.
-@AUCTeX{} helps them through the customizable variable
-@code{TeX-electric-math}.
-
-@defopt TeX-electric-math
-If the variable is non-nil and you type @kbd{$} outside math mode,
-@AUCTeX{} will automatically insert the opening and closing symbols for
-an inline equation and put the point between them.  The opening symbol
-will blink when @code{blink-matching-paren} is non-nil.  If
-@code{TeX-electric-math} is nil, typing @kbd{$} simply inserts @samp{$}
-at point, this is the default.
-
-Besides @code{nil}, possible values for this variable are @code{(cons
-"$" "$")} for @TeX{} inline equations @samp{$...$}, and @code{(cons
-"\\(" "\\)")} for @LaTeX{} inline equations @samp{\(...\)}.
-
-If the variable is non-nil and point is inside math mode right between a
-couple of single dollars, pressing @kbd{$} will insert another pair of
-dollar signs and leave the point between them.  Thus, if
-@code{TeX-electric-math} is set to @code{(cons "$" "$")} you can easily
-obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$}
-twice in a row.  (Note that you should not use double dollar signs in
-@LaTeX{} because this practice can lead to wrong spacing in typeset
-documents.)
-
-In addition, when the variable is non-nil and there is an active region
-outside math mode, typing @kbd{$} will put around the active region
-symbols for opening and closing inline equation and keep the region
-active, leaving point after the closing symbol.  By pressing repeatedly
-@kbd{$} while the region is active you can toggle between an inline
-equation, a display equation, and no equation.  To be precise,
-@samp{$...$} is replaced by @samp{$$...$$}, whereas @samp{\(...\)} is
-replaced by @samp{\[...\]}.
+@defopt TeX-math-close-double-dollar
+Control the insertion of double dollar signs for delimiting display
+math.  (Note that you should not use double dollar signs in @LaTeX{}
+because this practice can lead to wrong spacing in typeset documents.)
+If the variable is non-nil and you enter a dollar sign that matches a
+double dollar sign @samp{$$} @AUCTeX{} will automatically insert two
+dollar signs.
 @end defopt
-
-If you want to automatically insert @samp{$...$} in plain @TeX{} files,
-and @samp{\(...\)} in @LaTeX{} files by pressing @kbd{$}, add the
-following to your init file
-@lisp
-(add-hook 'plain-TeX-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
-			  (cons "$" "$"))))
-(add-hook 'LaTeX-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
-			  (cons "\\(" "\\)"))))
-@end lisp
 
 @subheading Braces
 
@@ -471,110 +433,6 @@ can do this by typing @kbd{C-c @{}.
 to type inside of them.  If there is an active region, put braces around
 it and leave point after the closing brace.
 @end deffn
-
-When writing complex math formulas in @LaTeX{} documents, you
-sometimes need to adjust the size of braces with pairs of macros like
-@samp{\left}-@samp{\right}, @samp{\bigl}-@samp{\bigr} and so on.  You
-can avoid unbalanced pairs with the help of @code{TeX-insert-macro},
-bound to @kbd{C-c C-m} or @kbd{C-c @key{RET}} (@pxref{Completion}).
-If you insert left size adjusting macros such as @samp{\left},
-@samp{\bigl} etc. with @code{TeX-insert-macro}, it asks for left brace
-to use and supplies automatically right size adjusting macros such as
-@samp{\right}, @samp{\bigr} etc. and corresponding right brace in
-addtion to the intended left macro and left brace.
-
-The completion by @code{TeX-insert-macro} also applies when entering
-macros such as @samp{\langle}, @samp{\lfloor} and @samp{\lceil}, which
-produce the left part of the paired braces.  For example, inserting
-@samp{\lfloor} by @kbd{C-c C-m} is immediately followed by the
-insertion of @samp{\rfloor}.  In addition, if the point was located
-just after @samp{\left} or its friends, the corresponding
-@samp{\right} etc. will be inserted in front of @samp{\rfloor}.
-In both cases, active region is honored.
-
-As a side effect, when @code{LaTeX-math-mode} (@pxref{Mathematics}) is
-on, just typing @kbd{`(} inserts not only @samp{\langle}, but also
-@samp{\rangle}.
-
-If you do not like such auto completion at all, it can be disabled by a
-user option.
-
-@defopt TeX-arg-right-insert-p
-If this option is turned off, the automatic supply of the right macros
-and braces is suppressed.
-@end defopt
-
-When you edit @LaTeX{} documents, you can enable automatic brace
-pairing when typing @kbd{(}, @kbd{@{} and @kbd{[}.
-
-@defopt LaTeX-electric-left-right-brace
-If this option is on, just typing @kbd{(}, @kbd{@{} or @kbd{[}
-immediately adds the corresponding right brace @samp{)}, @samp{@}} or
-@samp{]}.  The point is left after the opening brace.  If there is an
-active region, braces are put around it.
-
-They recognize the preceeding backslash or size adjusting macros such
-as @samp{\left}, @samp{\bigl} etc., so the following completions will
-occur:
-@itemize @bullet
-
-@item
-(when typing single left brace)
-@itemize @minus
-
-@item
-@samp{(} -> @samp{()}
-
-@item
-@samp{@{} -> @samp{@{@}}
-
-@item
-@samp{[} -> @samp{[]}
-@end itemize
-
-@item
-(when typing left brace just after a backslash)
-@itemize @minus
-
-@item
-@samp{\(} -> @samp{\(\)}
-
-@item
-@samp{\@{} -> @samp{\@{\@}}
-
-@item
-@samp{\[} -> @samp{\[\]}
-@end itemize
-
-@item
-(when typing just after @samp{\left} or @samp{\bigl})
-@itemize @minus
-
-@item
-@samp{\left(} -> @samp{\left(\right)}
-
-@item
-@samp{\bigl[} -> @samp{\bigl[\bigr]}
-@end itemize
-
-@item
-(when typing just after @samp{\Bigl\})
-@itemize @minus
-
-@item
-@samp{\Bigl\@{} -> @samp{\Bigl\@{\Bigr\@}}
-
-@end itemize
-
-@end itemize
-
-This auto completion feature may be a bit annoying when editing an
-already existing @LaTeX{} document.  In that case, use @kbd{C-u 1} or
-@kbd{C-q} before typing @kbd{(}, @kbd{@{} or @kbd{[}.  Then no
-completion is done and just a single left brace is inserted.  In fact,
-with optional prefix @var{arg}, just that many open braces are
-inserted without any completion.
-@end defopt
 
 @node Font Specifiers
 @section Inserting Font Specifiers
@@ -684,9 +542,9 @@ either: at the top of the document; the top level sectioning for that
 document style, and any other place: The same as the last occurring
 sectioning command.
 
-Next, you will be asked for the actual name of that section, and last
-you will be asked for a label to be associated with that section.  The
-label will be prefixed by the value specified in
+Next, you will be asked for the actual name of that section, and
+last you will be asked for a label to be associated with that section.
+The label will be prefixed by the value specified in
 @code{LaTeX-section-hook}.
 
 @deffn Command LaTeX-section @var{arg}
@@ -744,8 +602,7 @@ The following variables are set before the hooks are run
 
 @table @var
 @item level
-Numeric section level, default set by prefix arg to
-@code{LaTeX-section}.
+Numeric section level, default set by prefix arg to @code{LaTeX-section}.
 @item name
 Name of the sectioning command, derived from @var{level}.
 @item title
@@ -827,9 +684,6 @@ specific document.  This is achieved by examining your
 @samp{\documentclass} command, and consulting a precompiled list of
 environments available in a large number of styles.
 
-Most of these are described further in the following sections, and you
-may easily specify more.  @xref{Customizing Environments}.
-
 You insert an environment with @kbd{C-c C-e}, and select an environment
 type.  Depending on the environment, @AUCTeX{} may ask more questions
 about the optional parts of the selected environment type.  With
@@ -848,70 +702,20 @@ prefix argument), the current environment is modified and no new
 environment is inserted.
 @end deffn
 
-@AUCTeX{} helps you adding labels to environments which use them, such
-as @samp{equation}, @samp{figure}, @samp{table}, etc@dots{}  When you
-insert one of the supported environments with @kbd{C-c C-e}, you will be
-automatically prompted for a label.  You can select the prefix to be
-used for such environments with the @code{LaTeX-label-alist} variable.
-@defopt LaTeX-label-alist
-List the prefixes to be used for the label of each supported
-environment.
-
-This is an alist whose car is the environment name, and the cdr either
-the prefix or a symbol referring to one.
-
-If the name is not found, or if the cdr is nil, no label is
-automatically inserted for that environment.
-
-If you want to automatically insert a label for a environment but with
-an empty prefix, use the empty string @code{""} as the cdr of the
-corresponding entry.
-@end defopt
-
 As a default selection, @AUCTeX{} will suggest the environment last
 inserted or, as the first choice the value of the variable
 @code{LaTeX-default-environment}.
 
 @defopt LaTeX-default-environment
 Default environment to insert when invoking @samp{LaTeX-environment}
-first time.  When the current environment is @samp{document}, it is
-overriden by @code{LaTeX-default-document-environment}.
+first time.
 @end defopt
-
-@defvar LaTeX-default-document-environment
-Default environment when invoking @samp{LaTeX-environment} and the
-current environment is @samp{document}.  It is intended to be used in
-@LaTeX{} class style files.  For example, in @file{beamer.el} it is set
-to @code{frame}, in @file{letter.el} to @code{letter}, and in
-@file{slides.el} to @code{slide}.
-@end defvar
 
 If the document is empty, or the cursor is placed at the top of the
-document, @AUCTeX{} will default to insert a @samp{document} environment
-prompting also for the insertion of @samp{\documentclass} and
-@samp{\usepackage} macros.  You will be prompted for a new package until
-you enter nothing.  If you do not want to insert any @samp{\usepackage}
-at all, just press @key{RET} at the first @samp{Packages} prompt.
+document, @AUCTeX{} will default to insert a `document' environment.
 
-@AUCTeX{} distinguishes normal and expert environments.  By default, it
-will offer completion only for normal environments.  This behavior is
-controlled by the user option @code{TeX-complete-expert-commands}.
-
-@defopt TeX-complete-expert-commands
-Complete macros and environments marked as expert commands.
-
-Possible values are nil, t, or a list of style names.
-
-@table @asis
-@item nil
-Don't complete expert commands (default).
-@item t
-Always complete expert commands.
-@item (STYLES @dots{})
-Only complete expert commands of STYLES.
-@end table
-@end defopt
-
+Most of these are described further in the following sections, and you
+may easily specify more.  @xref{Customizing Environments}.
 
 @menu
 * Equations::                   Equations
@@ -927,27 +731,6 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 @deffn Command LaTeX-close-environment
 @kindex C-c ]
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment.
-@end deffn
-
-@AUCTeX{} offers keyboard shortcuts for moving point to the beginning
-and to the end of the current environment.
-@deffn Command LaTeX-find-matching-begin
-@kindex C-M-a
-(@kbd{C-M-a}) Move point to the @samp{\begin} of the current
-environment.
-
-If this command is called inside a comment and
-@code{LaTeX-syntactic-comments} is enabled, try to find the environment
-in commented regions with the same comment prefix.
-@end deffn
-
-@deffn Command LaTeX-find-matching-end
-@kindex C-M-e
-(@kbd{C-M-e}) Move point to the @samp{\end} of the current environment.
-
-If this command is called inside a comment and
-@code{LaTeX-syntactic-comments} is enabled, try to find the environment
-in commented regions with the same comment prefix.
 @end deffn
 
 @node Equations
@@ -1051,14 +834,8 @@ insert an appropriate @samp{\item} for the current environment. That is,
 `description' will have @samp{\item[]} inserted.
 @end deffn
 
-@defopt TeX-arg-item-label-p
-If non-nil, you will always be asked for optional label in items.
-Otherwise, you will be asked only in description environments.
-@end defopt
-
 @node Tabular-like
 @subsection Tabular-like Environments
-@cindex amsmath
 
 When inserting Tabular-like environments, that is, `tabular' `array'
 etc., you will be prompted for a template for that environment.
@@ -1068,34 +845,10 @@ Related variables:
 Default format string for array and tabular environments.
 @end defopt
 
-@defopt LaTeX-default-width
-Default width for minipage and tabular* environments.
-@end defopt
-
 @defopt LaTeX-default-position
 Default position string for array and tabular environments.  If nil,
 act like the empty string is given, but don't prompt for a position.
 @end defopt
-
-@AUCTeX{} calculates the number of columns from the format string and
-inserts the suitable number of ampersands.
-
-You can use @kbd{C-c @key{LFD}} (@code{LaTeX-insert-item}) to terminate
-rows in these environments.  It supplies line break macro @samp{\\} and
-inserts the suitable number of ampersands on the next line.
-
-@deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current row with @samp{\\}, move to the
-next line and insert an appropriate number of ampersands for the current
-environment.
-@end deffn
-
-Similar supports are provided for various amsmath environments such as
-@samp{align}, @samp{gather}, @samp{alignat}, @samp{matrix} etc.  Try
-typing @kbd{C-c @key{LFD}} in these environments.  It recognizes the
-current environment and does the appropriate job depending on the
-context.
 
 @node Customizing Environments
 @subsection Customizing Environments
@@ -1233,16 +986,13 @@ Specifies whether @code{TeX-insert-macro} will ask for all optional
 arguments.
 
 If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
-asks for optional arguments of @TeX{} marcos, unless the previous
-optional argument has been rejected.  If set to
-@code{show-all-optional-args}, @code{TeX-insert-macro} asks for all
-optional arguments.  @code{mandatory-args-only}, @code{TeX-insert-macro}
-asks only for mandatory arguments.  When @code{TeX-insert-macro} is
-called with prefix argument (@kbd{C-u}), it's the other way round.
+asks for optional arguments of @TeX{} macros.  If set to
+@code{mandatory-args-only}, @code{TeX-insert-macro} asks only for
+mandatory arguments.  When @code{TeX-insert-macro} is called with prefix
+argument (@kbd{C-u}), it's the other way round.
 
 Note that for some macros, there are special mechanisms, e.g.
-@code{LaTeX-includegraphics-options-alist} and
-@code{TeX-arg-cite-note-p}.
+@code{LaTeX-includegraphics-options-alist}.
 
 @end defopt
 
@@ -1280,42 +1030,9 @@ This can be stopped by entering @code{LaTeX-math-mode},
 If non-nil, append a empty pair of braces after inserting a macro.
 @end defopt
 
-@defopt TeX-insert-braces-alist
-Control the insertion of a pair of braces after a macro on a per macro
-basis.
-
-This variable is an alist.  Each element is a cons cell, whose car is
-the macro name, and the cdr is non-nil or nil, depending on whether a
-pair of braces should be, respectively, appended or not to the macro.
-
-If a macro has an element in this variable, @code{TeX-parse-macro} will
-use its value to decided what to do, whatever the value of the variable
-@code{TeX-insert-braces}.
-@end defopt
-
 Completions work because @AUCTeX{} can analyze @TeX{} files, and store
 symbols in Emacs Lisp files for later retrieval.  @xref{Automatic}, for
 more information.
-
-@AUCTeX{} distinguishes normal and expert macros.  By default, it will
-offer completion only for normal commands.  This behavior can be
-controlled using the user option @code{TeX-complete-expert-commands}.
-
-@defopt TeX-complete-expert-commands
-Complete macros and environments marked as expert commands.
-
-Possible values are nil, t, or a list of style names.
-
-@table @asis
-@item nil
-Don't complete expert commands (default).
-@item t
-Always complete expert commands.
-@item (STYLES @dots{})
-Only complete expert commands of STYLES.
-@end table
-@end defopt
-
 
 @cindex \cite, completion of
 @cindex Bib@TeX{}, completion
@@ -1745,7 +1462,7 @@ the line becomes overfull.
 @chapter Controlling Screen Display
 
 It is often desirable to get visual help of what markup code in a text
-actually does without having to decipher it explicitly.  For this
+actually does whithout having to decipher it explicitely.  For this
 purpose Emacs and @AUCTeX{} provide font locking (also known as syntax
 highlighting) which visually sets off markup code like macros or
 environments by using different colors or fonts.  For example text to be
@@ -1763,15 +1480,10 @@ for Emacs' outline mode which lets you narrow the buffer content to
 certain sections of your text by hiding the parts not belonging to these
 sections.
 
-Moreover, you can focus in a specific portion of the code by narrowing
-the buffer to the desired region.  @AUCTeX{} provides also functions to
-narrow the buffer to the current group and to @LaTeX{} environments.
-
 @menu
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
-* Narrowing::                   Restricting display and editing to a portion of the buffer
 @end menu
 
 @node Font Locking
@@ -2272,22 +1984,11 @@ forced fontification by customizing the variable
 @code{TeX-fold-force-fontify}.
 @end defopt
 
-@defopt TeX-fold-auto
-By default, a macro inserted with @code{TeX-insert-macro} (@kbd{C-c
-C-m}) will not be folded.  Set this variable to a non-nil value to
-aumatically fold macros as soon as they are inserted.
-@end defopt
-
 @defopt TeX-fold-preserve-comments
 By default items found in comments will be folded.  If your comments
 often contain unfinished code this might lead to problems.  Give this
 variable a non-nil value and foldable items in your comments will be
 left alone.
-@end defopt
-
-@defopt TeX-fold-unfold-around-mark
-When this variable is non-nil and there is an active regione, text
-around the mark will be kept unfolded.
 @end defopt
 
 @deffn Command TeX-fold-region
@@ -2507,34 +2208,6 @@ You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
 
-@node Narrowing
-@section Narrowing
-
-Sometimes you want to focus your attention to a limited region of the
-code.  You can do that by restricting the text addressable by editing
-commands and hiding the rest of the buffer with the narrowing functions,
-@pxref{Narrowing,,,emacs,GNU Emacs Manual}.  In addition, AUCTeX
-provides a couple of other commands to narrow the buffer to a group,
-i.e. a region enclosed in a pair of curly braces, and to @LaTeX{}
-environments.
-
-@deffn Command TeX-narrow-to-group
-@kindex C-x n g
-(@kbd{C-x n g}) Make text outside current group invisible.
-@end deffn
-
-@deffn Command LaTeX-narrow-to-environment @var{count}
-@kindex C-x n e
-(@kbd{C-x n e}) Make text outside current environment invisible.  With
-optional argument @var{count} keep visible that number of enclosing
-environmens.
-@end deffn
-
-Like other standard narrowing functions, the above commands are
-disabled.  Attempting to use them asks for confirmation and gives you
-the option of enabling them; if you enable the commands, confirmation
-will no longer be required for them.
-
 @node Processing
 @chapter Starting Processors, Viewers and Other Programs
 
@@ -2747,18 +2420,11 @@ The default command to run in this buffer.  Must be an entry in
 
 @cindex Biber
 @cindex biblatex
-In case you use biblatex in a document, when automatic parsing is
-enabled @AUCTeX{} checks the value of @samp{backend} option given to
-biblatex at load time to decide whether to use Bib@TeX{} or Biber for
-bibliography processing.  Should @AUCTeX{} fail to detect the right
-backend, you can use the file local @code{LaTeX-biblatex-use-Biber}
-variable.
-@defvr Variable LaTeX-biblatex-use-Biber
-If this boolean variable is set as file local, it tells to @AUCTeX{}
-whether to use Biber with biblatex.  In this case, the autodetection of
-the biblatex backend will be overridden.  You may want to set locally
-this variable if automatic parsing is not enabled.
-@end defvr
+@vindex LaTeX-biblatex-use-Biber
+In case you use biblatex in a document, @AUCTeX{} switches from
+Bib@TeX{} to Biber for bibliography processing.  In case you want to
+keep using Bib@TeX{}, set the variable @code{LaTeX-biblatex-use-Biber}
+to nil.
 
 After confirming a command to execute, @AUCTeX{} will try to save any
 buffers related to the document, and check if the document needs to be
@@ -2794,10 +2460,10 @@ Xe@TeX{}.
 @cindex PDF mode
 (@kbd{C-c C-t C-p})
 This command toggles the @acronym{PDF} mode of @AUCTeX{}, a buffer-local
-minor mode which is enabled by default.  You can customize
-@code{TeX-PDF-mode} to give it a different default or set it as a file
-local variable on a per-document basis.  This option usually results in
-calling either PDF@TeX{} or ordinary @TeX{}.
+minor mode.  You can customize @code{TeX-PDF-mode} to give it a
+different default.  The default is used when @AUCTeX{} does not have
+additional clue about what a document might want.  This option usually
+results in calling either PDF@TeX{} or ordinary @TeX{}.
 @end deffn
 
 @defopt TeX-DVI-via-PDFTeX
@@ -2903,23 +2569,6 @@ command to be used for LaTeX.  The fifth is the command to be used for
 the @samp{--engine} parameter of ConTeXt's @samp{texexec} program.  Each
 command can either be a variable or a string.  An empty string or nil
 means there is no command available.
-@end defopt
-
-As shown above, @AUCTeX{} handles in a special way most of the main
-options that can be given to the @TeX{} processors.  When you need to
-pass to the @TeX{} processor arbitrary options not handled by @AUCTeX{},
-you can use the file local variable @code{TeX-command-extra-options}.
-@defopt TeX-command-extra-options
-String with the extra options to be given to the TeX processor.  For
-example, if you need to enable the shell escape feature to compile a
-document, add the following line to the list of local variables of the
-source file:
-@example
-%%% TeX-command-extra-options: "-shell-escape"
-@end example
-By default this option is not safe as a file-local variable because a
-specially crafted document compiled with shell escape enabled can be
-used for malicious purposes.
 @end defopt
 
 You can customize @AUCTeX{} to show the processor output as it is
@@ -3086,33 +2735,7 @@ output) and Sync@TeX{} (any type of output).  If you want to make use of
 forward and inverse searching with source specials or Sync@TeX{}, switch
 on @code{TeX-source-correlate-mode}.  @xref{Processor Options}, on how
 to do that.  The use of the pdfsync package is detected automatically if
-document parsing is enabled.  Customize the variable
-@code{TeX-source-correlate-method} to select the method to use.
-
-@defopt TeX-source-correlate-method
-Method to use for enabling forward and inverse search.  This can be
-@samp{source-specials} if source specials should be used, @samp{synctex}
-if SyncTeX should be used, or @samp{auto} if @AUCTeX{} should decide.
-
-When the variable is set to @samp{auto}, @AUCTeX{} will always use
-SyncTeX if your @code{latex} processor supports it, source specials
-otherwise.  You must make sure your viewer supports the same method.
-
-It is also possible to specify a different method depending on the
-output, either DVI or PDF, by setting the variable to an alist of the
-kind
-@lisp
-((dvi . <source-specials or synctex>)
- (pdf . <source-specials or synctex>))
-@end lisp
-in which the CDR of each entry is a symbol specifying the method to be
-used in the corresponding mode.  The default value of the variable is
-@lisp
-((dvi . source-specials)
- (pdf . synctex))
-@end lisp
-which is compatible with the majority of viewers.
-@end defopt
+document parsing is enabled.
 
 @findex TeX-view
 Forward search happens automatically upon calling the viewer, e.g. by
@@ -3158,43 +2781,13 @@ to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 Once you've formatted your document you may `debug' it, i.e. browse
 through the errors (La)@TeX{} reported.
 
-@deffn Command TeX-next-error @var{arg} @var{reparse}
+@deffn Command TeX-next-error
 @kindex C-c `
 (@kbd{C-c `})  Go to the next error reported by @TeX{}.  The view will
 be split in two, with the cursor placed as close as possible to the
 error in the top view.  In the bottom view, the error message will be
 displayed along with some explanatory text.
-
-An optional numeric @var{arg}, positive or negative, specifies how many
-error messages to move.  A negative @var{arg} means to move back to
-previous error messages, see also @code{TeX-previous-error}.
-
-The optional @var{reparse} argument makes @AUCTeX{} reparse the error
-message buffer and start the debugging from the first error.  This can
-also be achieved by calling the function with a prefix argument
-(@kbd{C-u}).
 @end deffn
-
-@deffn Command TeX-previous-error @var{arg}
-@kindex M-g p
-(@kbd{M-g p}) Go to the previous error reported by @TeX{}.  An optional
-numeric @var{arg} specifies how many error messages to move backward.
-This is like calling @code{TeX-next-error} with a negative argument.
-@end deffn
-
-The command @code{TeX-previous-error} works only if @AUCTeX{} can parse
-the whole @TeX{} log buffer.  This is controlled by the
-@code{TeX-parse-all-errors} variable.
-
-@defopt TeX-parse-all-errors
-If t, @AUCTeX{} automatically parses the whole output log buffer right
-after running a @TeX{} command, in order to collect all warnings and
-errors.  This makes it possible to navigate back and forth between the
-error messages using @code{TeX-next-error} and
-@code{TeX-previous-error}.  This is the default.  If nil, @AUCTeX{} does
-not parse the whole output log buffer and @code{TeX-previous-error}
-cannot be used.
-@end defopt
 
 Normally @AUCTeX{} will only report real errors, but you may as well
 ask it to report `bad boxes' and warnings as well.
@@ -3223,45 +2816,6 @@ terse information about the error is displayed in the echo area.  If
 @TeX{} output.
 @end defopt
 
-When the option @code{TeX-parse-all-errors} is non-nil, you will be also
-able to open an overview of all errors and warnings reported by the TeX
-compiler.  This feature requires @code{tabulated-list-mode}, shipped
-with GNU Emacs 24 or later.
-
-@deffn Command TeX-error-overview
-Show an overview of the errors and warnings occurred in the last TeX
-run.
-
-In this window you can visit the error on which point is on by pressing
-@key{RET}, and visit the next or previous issue by pressing @key{n} or
-@key{p} respectively.  A prefix argument to these keys specifies how
-many errors to move forward or backward.  You can visit an error also by
-clicking on its message.  Press @key{q} to quit the overview.
-@end deffn
-
-@defopt TeX-error-overview-open-after-TeX-run
-When this boolean variable is non-nil, the error overview will be
-automatically opened after running TeX if there are errors or warnings
-to show.
-@end defopt
-
-The error overview is opened in a new window of the current frame by
-default, but you can change this behavior by customizing the option
-@code{TeX-error-overview-setup}.
-
-@defopt TeX-error-overview-setup
-Controls the frame setup of the error overview.  The possible value is:
-@code{separate-frame}; with a nil value the current frame is used
-instead.
-
-The parameters of the separate frame can be set with the
-@code{TeX-error-overview-frame-parameters} option.
-
-If the display does not support multi frame, the current frame
-will be used regardless of the value of this variable.
-@vindex TeX-error-overview-frame-parameters
-@end defopt
-
 @node Checking
 @section Checking for problems
 @cindex Checking
@@ -3275,22 +2829,23 @@ will be used regardless of the value of this variable.
 
 Running @TeX{} or @LaTeX{} will only find regular errors in the
 document, not examples of bad style.  Furthermore, description of the
-errors may often be confusing.  The utilities @code{lacheck} and
-@code{chktex} can be used to find style errors, such as forgetting to
-escape the space after an abbreviation or using @samp{...} instead of
-@samp{\ldots} and other similar problems.  You start @code{lacheck} with
-@kbd{C-c C-c Check @key{RET}} and @code{chktex} with @kbd{C-c C-c ChkTeX
+errors may often be confusing.  The utility @code{lacheck} can be used
+to find style errors, such as forgetting to escape the space after an
+abbreviation or using @samp{...} instead of @samp{\ldots} and many other
+problems like that.  You start @code{lacheck} with @kbd{C-c C-c Check
 @key{RET}}.  The result will be a list of errors in the
 @samp{*compilation*} buffer.  You can go through the errors with
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next error.
 
-Each of the two utilities will find some errors the other doesn't, but
-@code{chktex} is more configurable, allowing you to create your own
-errors.  You may need to install the programs before using them.  You
-can get @code{lacheck} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} and
-@code{chktex} from
+Another newer program which can be used to find errors is @code{chktex}.
+It is much more configurable than @code{lacheck}, but doesn't find all
+the problems @code{lacheck} does, at least in its default configuration.
+You must install the programs before using them, and for @code{chktex}
+you may also need modify @code{TeX-command-list} unless you use its
+@code{lacheck} compatibility wrapper.  You can get @code{lacheck} from
+@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} or
+alternatively @code{chktex} from
 @file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.
 
 @node Control
@@ -3420,18 +2975,6 @@ functions and hooks.
 @item Texinfo      @tab @code{Texinfo-mode}   @tab @code{Texinfo-mode-hook}
 @item Doc@TeX{}    @tab @code{docTeX-mode}    @tab @code{docTeX-mode-hook}
 @end multitable
-@findex plain-TeX-mode
-@vindex plain-TeX-mode-hook
-@findex LaTeX-mode
-@vindex LaTeX-mode-hook
-@findex AmS-TeX-mode
-@vindex AmS-TeX-mode-hook
-@findex ConTeXt-mode
-@vindex ConTeXt-mode-hook
-@findex Texinfo-mode
-@vindex Texinfo-mode-hook
-@findex docTeX-mode
-@vindex docTeX-mode-hook
 
 If you need to make a customization via a hook which is only relevant
 for one of the modes listed above, put it into the respective mode hook,
@@ -3690,30 +3233,6 @@ Only parse @LaTeX{} class and packages.
 Only parse @LaTeX{} labels.
 @end defvr
 
-@defvr Constant LaTeX-auto-index-regexp-list
-Only parse @LaTeX{} index and glossary entries.
-@end defvr
-
-@defvr Constant LaTeX-auto-class-regexp-list
-Only parse macros in @LaTeX{} classes and packages.
-@end defvr
-
-@defvr Constant LaTeX-auto-pagestyle-regexp-list
-Only parse @LaTeX{} pagestyles.
-@end defvr
-
-@defvr Constant LaTeX-auto-counter-regexp-list
-Only parse @LaTeX{} counters.
-@end defvr
-
-@defvr Constant LaTeX-auto-length-regexp-list
-Only parse @LaTeX{} lengths.
-@end defvr
-
-@defvr Constant LaTeX-auto-savebox-regexp-list
-Only parse @LaTeX{} saveboxes.
-@end defvr
-
 @defvr Constant LaTeX-auto-regexp-list
 Parse common @LaTeX{} commands.
 @end defvr
@@ -3845,7 +3364,6 @@ The following style files are recognized:
 @vindex TeX-language-bg-hook
 @vindex TeX-language-cz-hook
 @vindex TeX-language-dk-hook
-@vindex TeX-language-en-hook
 @vindex TeX-language-nl-hook
 @vindex TeX-language-de-hook
 @vindex TeX-language-it-hook
@@ -3858,7 +3376,6 @@ The following style files are recognized:
 @cindex Italian
 @cindex Danish
 @cindex Dutch
-@cindex English
 @cindex German
 @cindex Polish
 @cindex Slovak
@@ -3887,16 +3404,6 @@ in the composing words.
 @item dutch
 Runs style hook @code{TeX-language-nl-hook}.
 
-@item english
-Runs style hook @code{TeX-language-en-hook}.
-
-@item frenchb
-@itemx francais
-Runs style hook @code{TeX-language-fr-hook}.  Pressing @key{"} will
-insert @samp{\\og} and @samp{\\fg} depending on context.  Note that the
-language name for customizing @code{TeX-quote-language-alist} is
-@samp{french}.
-
 @item german
 @itemx ngerman
 Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
@@ -3904,6 +3411,13 @@ syntax, makes the @key{"} key insert a literal @samp{"}.  Pressing the
 key twice will give you opening or closing German quotes (@samp{"`} or
 @samp{"'}).  Typing @key{-} twice will insert @samp{"=}, three times
 @samp{--}.
+
+@item frenchb
+@itemx francais
+Runs style hook @code{TeX-language-fr-hook}.  Pressing @key{"} will
+insert @samp{\\og} and @samp{\\fg} depending on context.  Note that the
+language name for customizing @code{TeX-quote-language-alist} is
+@samp{french}.
 
 @item icelandic
 Runs style hook @code{TeX-language-is-hook}.  Gives @samp{"} word
@@ -4269,8 +3783,7 @@ Here is a simple example of a style file.
 (TeX-add-style-hook
  "book"
  (lambda () 
-   (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+   (LaTeX-largest-level-set "chapter")))
 @end lisp
 
 The example is from the @AUCTeX{} sources and is loaded for any @LaTeX{}
@@ -4289,58 +3802,10 @@ hooks will be called for each buffer using the style file.
 Note that the basename of the style file and the name of the style hook
 should usually be identical.
 
-@defun TeX-add-style-hook @var{style} @var{hook} &optional @var{dialect-expr}
+@defun TeX-add-style-hook @var{style} @var{hook}
 Add @var{hook} to the list of functions to run when we use the @TeX{}
-file @var{style} and the current dialect is one in the set derived from
-@var{dialect-expr}. When @var{dialect-expr} is omitted, then @var{hook}
-is allowed to be run whatever the current dialect is.
-
-@var{dialect-expr} may be one of:
-
-@itemize
-@item
-A symbol indicating a singleton containing one basic @TeX{} dialect,
-this symbol shall be selected among:
-@table @code
-@item :latex
-For all files in @LaTeX{} mode, or any mode derived thereof
-@item :bibtex
-For all files in Bib@TeX{} mode, or any mode derived thereof
-@item :texinfo
-For all files in @acronym{Texinfo} mode.
-@end table
-@item
-A logical expression like:
-@table @code
-@item (or @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
-For union of the sets of dialects corresponding to  @var{dialect-expression1}
-through @var{dialect-expression_@var{n}}
-@item (and @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
-For intersection of the sets of dialects corresponding to
-@var{dialect-expression1} through @var{dialect-expression_@var{n}}
-@item (nor @var{dialect-expression1} @dots{} @var{dialect-expression_@var{n}})
-For complement of the union sets of dialects corresponding to
-@var{dialect-expression1} through @var{dialect-expression_@var{n}}
-relatively to the set of all supported dialects
-@item (not @var{dialect-expr})
-For complement set of dialect corresponding to @var{dialect-expr}
-relatively to the set of all supported dialects
-@end table
-@end itemize
-
+file @var{style}.
 @end defun
-
-In case of adding a style hook for @LaTeX{}, when calling function
-@code{TeX-add-style-hook} it is thought more futureproof for argument
-@var{dialect-expr} to pass constant @code{LaTeX-dialect} currently
-defined to @code{:latex}, rather than passing @code{:latex} directly.
-
-@defvr Constant LaTeX-dialect
-Default dialect for use with function @code{TeX-add-style-hook} for
-argument @var{dialect-expr} when the hook is to be run only on LaTeX
-file, or any mode derived thereof.
-@end defvr
-
 
 @node Adding Macros
 @subsection Adding Support for Macros
@@ -4361,7 +3826,7 @@ Here are a few examples from @file{latex.el}.
    (TeX-add-symbols
     '("arabic" TeX-arg-counter)
     '("label" TeX-arg-define-label)
-    '("ref" TeX-arg-ref)
+    '("ref" TeX-arg-label)
     '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
     '("newtheorem" TeX-arg-define-environment
       [ TeX-arg-environment "Numbered like" ]
@@ -4390,7 +3855,7 @@ Thus, to overwrite
 @end example
 you can specify
 @example
-	'("tref" TeX-arg-ref ignore) ; two arguments
+	'("tref" TeX-arg-label ignore) ; two arguments
 @end example
 
 @code{ignore} is a function that does not do anything, so when you
@@ -4452,63 +3917,26 @@ Parse its arguments but use no braces when they are inserted.
 Evaluate arguments and insert the result in the buffer.
 
 @item TeX-arg-label
-Prompt for a label completing with known labels.  If Ref@TeX{} is
-active, prompt for the reference format.
-
-@item TeX-arg-ref
-Prompt for a label completing with known labels.  If Ref@TeX{} is
-active, do not prompt for the reference format.  Usually, reference
-macros should use this function instead of @code{TeX-arg-label}.
-
-@item TeX-arg-index-tag
-Prompt for an index tag.  This is the name of an index, not the entry.
-
-@item TeX-arg-index
-Prompt for an index entry completing with known entries.
-
-@item TeX-arg-length
-Prompt for a @LaTeX{} length completing with known lengths.
+Prompt for a label completing with known labels.
 
 @item TeX-arg-macro
 Prompt for a @TeX{} macro with completion.
-
-@item TeX-arg-date
-@vindex TeX-date-format
-Prompt for a date, defaulting to the current date.  The format of the
-date is specified by the @code{TeX-date-format} option.  If you want to
-change the format when the @samp{babel} package is loaded with a
-specific language, set @code{TeX-date-format} inside the appropriate
-language hook, for details @pxref{European}.
-
-@item TeX-arg-version
-Prompt for the version of a file, using as initial input the current
-date.
 
 @item TeX-arg-environment
 Prompt for a @LaTeX{} environment with completion.
 
 @item TeX-arg-cite
-@vindex TeX-arg-cite-note-p
-Prompt for a Bib@TeX{} citation.  If the variable
-@code{TeX-arg-cite-note-p} is non-nil, ask also for optional note in citations.
+Prompt for a Bib@TeX{} citation.
 
 @item TeX-arg-counter
-Prompt for a @LaTeX{} counter completing with known counters.
+Prompt for a @LaTeX{} counter.
 
 @item TeX-arg-savebox
-Prompt for a @LaTeX{} savebox completing with known saveboxes.
+Prompt for a @LaTeX{} savebox.
 
 @item TeX-arg-file
 Prompt for a filename in the current directory, and use it without the
 extension.
-
-@item TeX-arg-file-name
-Prompt for a filename and use as initial input the name of the file
-being visited in the current buffer, with extension.
-
-@item TeX-arg-file-name-sans-extension
-Prompt for a filename and use as initial input the name of the file
-being visited in the current buffer, without extension.
 
 @item TeX-arg-input-file
 @vindex TeX-arg-input-file-search
@@ -4520,11 +3948,6 @@ be controlled by the variable @code{TeX-arg-input-file-search}.)
 @item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
 defined labels.
-
-@item TeX-arg-define-length
-Prompt for a @LaTeX{} length completing with known lengths.  Add length
-to list of defined lengths.
-
 
 @item TeX-arg-define-macro
 Prompt for a @TeX{} macro with completion.  Add macro to list of defined
@@ -4542,34 +3965,6 @@ Prompt for a @LaTeX{} counter.
 
 @item TeX-arg-define-savebox
 Prompt for a @LaTeX{} savebox.
-
-@item TeX-arg-document
-@vindex LaTeX-default-style
-@vindex LaTeX-default-options
-@vindex TeX-arg-input-file-search
-@vindex LaTeX-style-list
-Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style}
-as default value and @code{LaTeX-default-options} as default list of
-options.  If the variable @code{TeX-arg-input-file-search} is t, you
-will be able to complete with all @LaTeX{} classes available on your
-system, otherwise classes listed in the variable @code{LaTeX-style-list}
-will be used for completion.  It is also provided completion for options
-of many common classes.
-
-@item LaTeX-arg-usepackage
-@vindex TeX-arg-input-file-search
-Prompt for @LaTeX{} packages.  If the variable
-@code{TeX-arg-input-file-search} is t, you will be able to complete with
-all @LaTeX{} packages available on your system.  It is also provided
-completion for options of many common packages.
-
-@item TeX-arg-bibstyle
-Prompt for a Bib@TeX{} style file completing with all style available on
-your system.
-
-@item TeX-arg-bibliography
-Prompt for BibTeX database files completing with all databases available
-on your system.
 
 @item TeX-arg-corner
 Prompt for a @LaTeX{} side or corner position with completion.
@@ -4595,18 +3990,6 @@ Insert width and height as a pair.  No arguments.
 
 @item TeX-arg-coordinate
 Insert x and y coordinates as a pair.  No arguments.
-
-@item LaTeX-arg-author
-@vindex LaTeX-default-author
-Prompt for document author, using @code{LaTeX-default-author} as initial
-input.
-
-@item TeX-read-key-val
-Prompt for a key=value list of options and return them.
-
-@item TeX-arg-key-val
-Prompt for a key=value list of options and insert it as a @TeX{} macro
-argument.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after
@@ -4615,17 +3998,6 @@ argument.  Please leave point located after the argument you are
 inserting.  If you want point to be located somewhere else after all
 hooks have been processed, set the value of @code{exit-mark}.  It will
 point nowhere, until the argument hook sets it.
-
-Some packages provide macros that are rarely useful to non-expert users.
-Those should be marked as expert macros using
-@code{TeX-declare-expert-macros}.
-
-@defun TeX-declare-expert-macros @var{style} @var{macros}...
-Declare MACROS as expert macros of STYLE.
-
-Expert macros are completed depending on `TeX-complete-expert-commands'.
-@end defun
-
 
 @node Adding Environments
 @subsection Adding Support for Environments
@@ -4760,21 +4132,10 @@ an optional argument of the @samp{lstlisting} environment:
 
 @lisp
 (LaTeX-add-environments
- '("lstlisting" LaTeX-env-args
-   [TeX-arg-key-val LaTeX-listings-key-val-options]))
+ `("lstlisting" LaTeX-env-args
+   [TeX-arg-key-val ,LaTeX-listings-key-val-options]))
 @end lisp
 @end ftable
-
-Some packages provide environments that are rarely useful to non-expert
-users.  Those should be marked as expert environments using
-@code{LaTeX-declare-expert-environments}.
-
-@defun LaTeX-declare-expert-environments @var{style} @var{ENVIRONMENTS}...
-Declare ENVIRONMENTS as expert environments of STYLE.
-
-Expert environments are completed depending on `TeX-complete-expert-commands'.
-@end defun
-
 
 @node Adding Other
 @subsection Adding Other Information
@@ -5190,8 +4551,3 @@ used by @AUCTeX{} for sectioning.
 @printindex cp
 
 @bye
-
-@c Local Variables:
-@c mode: texinfo
-@c TeX-master: t
-@c End:

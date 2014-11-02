@@ -53,8 +53,7 @@
     '("columnseprulecolor" 0)
     '("raggedcolumns" 0)
     '("flushcolumns" 0)
-    "columnbreak"))
- LaTeX-dialect)
+    "columnbreak")))
 
 (defvar LaTeX-multicol-package-options
   '("errorshow" "infoshow" "balancingshow" "markshow" "debugshow" "grid")

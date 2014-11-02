@@ -197,8 +197,7 @@
      (font-latex-add-keywords '("cleardoublestandardpage"
 				"cleardoubleplainpage"
 				"cleardoubleemptypage")
-			      'warning)))
-  LaTeX-dialect)
+			      'warning))))
 
 (defun TeX-arg-KOMA-scrlttr-vars (optional &optional prompt)
   "Prompt for KOMA-Script's scrlttr2 predefined variables with completion."

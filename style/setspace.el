@@ -52,8 +52,7 @@
      (font-latex-add-keywords '(("singlespacing" "")
 				("doublespacing" "")
 				("onehalfspacing" ""))
-                              'function)))
- LaTeX-dialect)
+                              'function))))
 
 (defvar LaTeX-setspace-package-options 
   '("doublespacing" "onehalfspacing" "singlespacing" "nodisplayskipstretch")

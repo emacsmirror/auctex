@@ -119,7 +119,7 @@
     "efill"
     "pfill"
     "PrintIndex"
-    '("changes" "version" TeX-arg-date t)
+    '("changes" "version" "date (YYYY/MM/DD)")
     "generalname"
     "RecordChanges"
     "GlossaryPrologue"
@@ -151,8 +151,7 @@
     "GetFileInfo"
     "filename"
     "fileinfo")
-   (TeX-run-style-hooks "shortvrb"))
- LaTeX-dialect)
+   (TeX-run-style-hooks "shortvrb")))
 
 ;; Local Variables:
 ;; coding: iso-8859-1

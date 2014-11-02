@@ -5,7 +5,6 @@
 (TeX-add-style-hook "graphics"
  (function
   (lambda ()
-    (TeX-run-style-hooks "graphicx")))
- LaTeX-dialect)
+    (TeX-run-style-hooks "graphicx"))))
 
 ;;; graphics.el ends here.

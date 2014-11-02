@@ -47,7 +47,6 @@
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
-   (run-hooks 'TeX-language-pl-hook))
- LaTeX-dialect)
+   (run-hooks 'TeX-language-pl-hook)))
 
 ;;; polish.el ends here

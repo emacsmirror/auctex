@@ -58,7 +58,6 @@
 				("dictum" "[{"))
 			      'textual)
      ;; Sectioning keywords
-     (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
- LaTeX-dialect)
+     (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1))))
 
 ;;; scrreprt.el ends here

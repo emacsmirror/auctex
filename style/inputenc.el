@@ -77,8 +77,7 @@
  (lambda ()
    ;; New symbols
    (TeX-add-symbols
-    '("inputencoding" LaTeX-arg-inputenc-inputenc)))
- LaTeX-dialect)
+    '("inputencoding" LaTeX-arg-inputenc-inputenc))))
 
 ;; Local Variables:
 ;; coding: iso-8859-1

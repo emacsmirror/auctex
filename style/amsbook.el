@@ -5,7 +5,6 @@
 (TeX-add-style-hook "amsbook"
  (function
   (lambda ()
-    (TeX-run-style-hooks "amsmath" "amsthm")))
- LaTeX-dialect)
+    (TeX-run-style-hooks "amsmath" "amsthm"))))
 
 ;;; amsbook.el ends here.

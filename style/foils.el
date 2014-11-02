@@ -1,5 +1,7 @@
 ;;; foils.el - Special code for FoilTeX.
 
+;; $Id: foils.el,v 1.5 2008-07-28 20:40:18 angeli Exp $
+
 ;;; Code:
 
 (require 'timezone)
@@ -11,8 +13,7 @@
     (setq LaTeX-default-style "foils")
     (setq LaTeX-default-options '("landscape"))
     (TeX-add-symbols
-     '("foilhead" [ "Rubric-body separation" ] "Foil rubric"))))
- LaTeX-dialect)
+     '("foilhead" [ "Rubric-body separation" ] "Foil rubric")))))
 
 (defun LaTeX-style-foils nil
   "Prompt for and insert foiltex options."

@@ -44,7 +44,6 @@
      (font-latex-add-quotes '("\">" "\"<" german))
      ;; Prevent "| from leading to color bleed.
      (font-latex-add-to-syntax-alist (list (cons ?\" "\\"))))
-   (run-hooks 'TeX-language-de-hook))
- LaTeX-dialect)
+   (run-hooks 'TeX-language-de-hook)))
 
 ;;; ngerman.el ends here

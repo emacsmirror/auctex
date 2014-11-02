@@ -110,8 +110,7 @@
 				("newpagestyle" "{{{")
 				("renewpagestyle" "{{{")
 				("providepagestyle" "{{{"))
-			      'function)))
- LaTeX-dialect)
+			      'function))))
 
 (defvar LaTeX-scrpage2-package-options '("headinclude" "headexclude"
 					 "footinclude" "footexclude"

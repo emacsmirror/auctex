@@ -58,8 +58,7 @@
 				("textsw" "{")
 				("textssc" "{"))
 			      'textual)
-     (font-latex-add-keywords '(("figureversion" "{")) 'variable)))
- LaTeX-dialect)
+     (font-latex-add-keywords '(("figureversion" "{")) 'variable))))
 
 (defvar LaTeX-MinionPro-package-options
   '("smallfamily" "medfamily" "fullfamily" "noopticals" "opticals"

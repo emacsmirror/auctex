@@ -66,8 +66,7 @@
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("lettrine" "[{{")) 'textual)))
- LaTeX-dialect)
+     (font-latex-add-keywords '(("lettrine" "[{{")) 'textual))))
 
 (defvar LaTeX-lettrine-package-options nil
   "Package options for the lettrine package.")

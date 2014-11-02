@@ -1,8 +1,9 @@
 ;;; latexinfo.el - Support for LaTeXinfo files.
 
-;; Copyright (C) 1993 Marc Gemis <makke@wins.uia.ac.be>
+;; Copyright (C) 1993 Free Software Foundation, Inc.
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
+;; Version: $Id: latexinfo.el,v 1.7 2008-02-03 14:53:30 angeli Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -98,11 +99,11 @@ This fails when the user types in the label of something else"
        (TeX-arg-literal " ")
        (TeX-arg-free TeX-arg-define-label "Node name")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Next node")
+       (TeX-arg-free TeX-arg-label "Next node")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Previous node")
+       (TeX-arg-free TeX-arg-label "Previous node")
        (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Up node"))
+       (TeX-arg-free TeX-arg-label "Up node"))
      '("setfilename" TeX-arg-file)
 
      '("var" t)
@@ -136,8 +137,8 @@ This fails when the user types in the label of something else"
      '("copyright" nil)
      '("sp" nil)
 
-     '("xref" TeX-arg-ref)
-     '("pxref" TeX-arg-ref)
+     '("xref" TeX-arg-label)
+     '("pxref" TeX-arg-label)
      '("inforef"
        (TeX-arg-literal "{")
        (TeX-arg-free "Name of node")
@@ -175,7 +176,6 @@ This fails when the user types in the label of something else"
 
     ;; need the following stuff to let xref and pxref work
     (make-local-variable 'LaTeX-section-label)
-    (setq LaTeX-section-label "")))
- LaTeX-dialect)
+    (setq LaTeX-section-label ""))))
 
 ;;; latexinfo.el ends here

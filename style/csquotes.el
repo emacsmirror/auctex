@@ -240,7 +240,6 @@ the insertion of optional arguments."
 				("SetBlockThreshold" "{")
 				("SetBlockEnvironment" "{")
 				("SetCiteCommand" "{"))
-			      'variable))))
- LaTeX-dialect)
+			      'variable)))))
 
 ;;; csquotes.el ends here

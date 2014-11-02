@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'
 
-;; Copyright (C) 2004, 2005, 2009, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,7 +33,8 @@
 ;;; Code:
 
 ;; The following are options taken from chapter 4 of the listings
-;; manual (2007/02/22 Version 1.4).
+;; manual (2006/05/08 Version 1.3c).  Experimental options described
+;; in chapter 5 are not included.
 (defvar LaTeX-listings-key-val-options
   '(;; Space and placement
     ("float" ("t" "b" "p" "h")) ; Support [*] as an optional prefix and that
@@ -101,7 +102,6 @@
     ("caption") ; Insert braces?
     ("label")
     ("nolol" ("true" "false"))
-    ("numberbychapter" ("true" "false"))
     ("captionpos" ("t" "b")) ; Can be a subset of tb.
     ("abovecaptionskip")
     ("belowcaptionskip")
@@ -141,9 +141,8 @@
     ("deleteindex")
     ("indexstyle")
     ;; Column alignment
-    ("columns" ("fixed" "flexible" "fullflexible" "spaceflexible")) ;
-                                        ; Also supports an optional
-                                        ; argument with {c,l,r}.
+    ("columns" ("fixed" "flexible" "fullflexible")) ; Also supports an optional
+						    ; argument with {c,l,r}.
     ("flexiblecolumns" ("true" "false"))
     ("keepspaces" ("true" "false"))
     ("basewidth")
@@ -186,35 +185,7 @@
     ("morekeywordcomment")
     ("deletekeywordcomment")
     ("keywordcommentsemicolon")
-    ("podcomment" ("true" "false"))
-    ;; The following are all options from chapter 5, which are
-    ;; experimental
-    ;; Export of identifiers
-    ("procnamekeys")
-    ("moreprocnamekeys")
-    ("deleteprocnamekeys")
-    ("procnamestyle")
-    ("indexprocnames" ("true" "false"))
-    ;; Hyperlink references
-    ("hyperref")
-    ("morehyperref")
-    ("deletehyperref")
-    ("hyperanchor")
-    ("hyperlink")
-    ;; Literate programming
-    ("literate") ;; three arguments: replace,replacement text,length
-    ;; LGrind definitions
-    ("lgrindef")
-    ;; Arbitrary linerange markers
-    ("rangebeginprefix")
-    ("rangebeginsuffix")
-    ("rangeendprefix")
-    ("rangeendsuffix")
-    ("rangeprefix")
-    ("rangesuffix")
-    ("includerangemarker" ("true" "false"))
-    ;; Multicolumn Listing
-    ("multicolumn"))
+    ("podcomment" ("true" "false")))
   "Key=value options for listings macros and environments.")
 
 (TeX-add-style-hook
@@ -231,15 +202,7 @@
     "lstlistoflistings"
     '("lstnewenvironment" "Name" ["Number or arguments"] ["Default argument"]
       "Starting code" "Ending code")
-    '("lstset" (TeX-arg-key-val LaTeX-listings-key-val-options))
-    '("lstloadlanguages" t)
-    ;; 4.17 Short Inline Listing Commands
-    '("lstMakeShortInline" [ "Options" ] "Character")
-    '("lstDeleteShortInline" "Character")
-    
-    "lstgrinddeffile" "lstaspectfiles" "lstlanguagefiles"
-    "lstlistingname" "lstlistlistingname")
-   
+    '("lstset" (TeX-arg-key-val LaTeX-listings-key-val-options)))
    ;; New environments
    (LaTeX-add-environments
     '("lstlisting" LaTeX-env-args
@@ -271,14 +234,10 @@
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
- LaTeX-dialect)
+     (font-lock-set-defaults))))
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem" 
-					 "noaspects"
-                                         ;; procnames is mentioned in
-                                         ;; Section 5.2 
-                                         "procnames")
+					 "noaspects")
   "Package options for the listings package.")
 
 ;;; listings.el ends here

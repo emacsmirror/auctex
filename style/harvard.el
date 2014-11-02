@@ -1,6 +1,6 @@
 ;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.
 
-;; Copyright (C) 1994, 1997, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 1994, 1997, 2005, 2012 Free Software Foundation, Inc.
 
 ;; Author: Berwin Turlach <statba@nus.edu.sg>
 ;; Maintainer: auctex-devel@gnu.org
@@ -104,8 +104,7 @@
 
     ;; Tell RefTeX
     (when (fboundp 'reftex-set-cite-format)
-      (reftex-set-cite-format 'harvard))))
- LaTeX-dialect)
+      (reftex-set-cite-format 'harvard)))))
 
 (defun LaTeX-env-harvardbib (environment &optional ignore)
   "Insert ENVIRONMENT with label for harvarditem."

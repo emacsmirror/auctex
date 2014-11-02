@@ -78,8 +78,7 @@
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
- LaTeX-dialect)
+     (font-lock-set-defaults))))
 
 (defun TeX-arg-urlstyle (optional &optional prompt)
   "Prompt for style used in \\urlstyle with completion."
