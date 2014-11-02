@@ -28,6 +28,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (byte-recompile-directory "style/" 0))
+
 (autoload 'TeX-load-hack
   (expand-file-name "tex-site.el"
                     (file-name-directory load-file-name)))
