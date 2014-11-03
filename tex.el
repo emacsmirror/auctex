@@ -3020,7 +3020,7 @@ INITIAL-INPUT is a string to insert before reading input."
        (let ((TeX-argument (buffer-substring (point) (mark))))
 	 (delete-region (point) (mark))
 	 TeX-argument)
-     (read-string (TeX-argument-prompt optional prompt "Text") initial-input))
+     (TeX-read-string (TeX-argument-prompt optional prompt "Text") initial-input))
    optional))
 
 (defun TeX-parse-arguments (args)

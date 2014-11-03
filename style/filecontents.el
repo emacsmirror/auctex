@@ -1,6 +1,6 @@
 ;;; filecontents.el --- AUCTeX style for `filecontents.sty'
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,7 +45,7 @@
   "Insert ENVIRONMENT with filename for contents."
   (LaTeX-insert-environment environment
 			    (concat TeX-grop
-				    (read-string "File: ")
+				    (TeX-read-string "File: ")
 				    TeX-grcl))
   (delete-horizontal-space))
 

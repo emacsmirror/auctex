@@ -523,7 +523,7 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
   "Hook to prompt for ConTeXt section title.
 Insert this hook into `ConTeXt-(un)numbered-section-hook' to allow the user to change
 the title of the section inserted with `\\[ConTeXt-section]."
-  (setq title (read-string "What title: ")))
+  (setq title (TeX-read-string "What title: ")))
 
 (defun ConTeXt-section-section ()
   "Hook to insert ConTeXt section command into the file.

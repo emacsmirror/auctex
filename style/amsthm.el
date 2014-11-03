@@ -1,6 +1,6 @@
 ;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.
 
-;; Copyright (C) 1997, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2013, 2014 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,7 +34,7 @@
     '("proof" (lambda (env &rest ignore)
 		(LaTeX-insert-environment
 		 env
-		 (let ((heading (read-string "(optional) Heading: ")))
+		 (let ((heading (TeX-read-string "(optional) Heading: ")))
 		   (if (string= heading "")
 		       ""
 		     (format "[%s]" heading))))))

@@ -1,5 +1,8 @@
 ;;; foils.el - Special code for FoilTeX.
 
+;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; FIXME: What about the copyright for <= 2014?
+
 ;;; Code:
 
 (require 'timezone)
@@ -20,7 +23,7 @@
 	 (year   (string-to-number (aref date 0)))
 	 (month  (string-to-number (aref date 1)))
 	 (day    (string-to-number (aref date 2)))
-	 (title (read-string "Title: ")))
+	 (title (TeX-read-string "Title: ")))
     (save-excursion
       (goto-char (point-max))
       (re-search-backward ".begin.document.")

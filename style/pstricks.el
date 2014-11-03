@@ -1,6 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.
 
-;; Copyright (C) 2007, 2009, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2009, 2013, 2014 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -636,7 +636,7 @@ package PNAME"
 
 (defun LaTeX-pst-macro-newpsobject (&optional arg)
   "Return \\newpsobject arguments after querying."
-  (insert "{" (read-string "New PSObject Name: ") "}"
+  (insert "{" (TeX-read-string "New PSObject Name: ") "}"
 	  ;; FIXME: It would be better to use something more confined
 	  ;; than `TeX-symbol-list'.
           "{" (completing-read "Parent Object: " (TeX-symbol-list))

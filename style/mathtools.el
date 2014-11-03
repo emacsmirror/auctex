@@ -1,6 +1,6 @@
 ;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.
 
-;; Copyright (C) 2011-2012 Free Software Foundation, Inc.
+;; Copyright (C) 2011-2012, 2014 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-02-13
@@ -170,22 +170,22 @@
  LaTeX-dialect)
 
 (defun LaTeX-mathtools-env-matrix-starred (env)
-  (let ((where (read-string "(optional) Vertical placement of columns: ")))
+  (let ((where (TeX-read-string "(optional) Vertical placement of columns: ")))
     (if (string= where "")
 	(setq where "")
       (setq where (concat "[" where "]")))
     (LaTeX-insert-environment env where)))
 
 (defun LaTeX-mathtools-env-spreadlines (env)
-  (let ((spread (read-string "Spacing between lines: ")))
+  (let ((spread (TeX-read-string "Spacing between lines: ")))
     (LaTeX-insert-environment env (concat TeX-grop spread TeX-grcl))
     (newline-and-indent)))
 
 ;; FIXME: there are probably more subtle ways to support more than one
 ;; optional argument; please change if this is the case
 (defun LaTeX-mathtools-env-multlined (env)
-  (let ((pos (read-string "(optional) Position: "))
-	(width (read-string "(optional) Width: "))
+  (let ((pos (TeX-read-string "(optional) Position: "))
+	(width (TeX-read-string "(optional) Width: "))
 	(extra ""))
     (if (not (string= pos ""))
 	(setq pos (concat LaTeX-optop pos LaTeX-optcl))

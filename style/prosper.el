@@ -1,6 +1,6 @@
 ;;; prosper.el --- Prosper style file for AUCTeX
 
-;; Copyright (C) 2001, 2002 by Philip Lord, Nevin Kapur
+;; Copyright (C) 2001, 2002, 2014 by Philip Lord, Nevin Kapur
 
 ;; Authors:  Phillip Lord<p.lord@russet.org.uk>
 ;;           Nevin Kapur <nevin@jhu.edu>
@@ -138,7 +138,7 @@
                  (progn
                    (goto-char (+ 1 (point)))
                    (insert "%\n")))))
-  (let ((title (read-string "Title: ")))
+  (let ((title (TeX-read-string "Title: ")))
     (LaTeX-insert-environment "slide" (concat TeX-grop title TeX-grcl))))
 
 

@@ -1,6 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006, 2011
+;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006, 2011, 2014
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -312,7 +312,7 @@ for @node."
 					   (point))))
                  nodes :test #'equal)))
     (unless active-mark
-      (setq node-name (read-string "Node name: ")))
+      (setq node-name (TeX-read-string "Node name: ")))
     ;; FIXME: What if key binding for `minibuffer-complete' was changed?
     ;; `substitute-command-keys' doesn't return the correct value.
     (setq next-node (completing-read "Next node (TAB completes): " nodes))

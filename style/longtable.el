@@ -36,8 +36,8 @@
     '("longtable" (lambda (environment)
 		    (let ((pos (completing-read (TeX-argument-prompt t nil "Position")
 						'(("l") ("r") ("c"))))
-			  (fmt (read-string "Format: " LaTeX-default-format))
-			  (caption (read-string "Caption: ")))
+			  (fmt (TeX-read-string "Format: " LaTeX-default-format))
+			  (caption (TeX-read-string "Caption: ")))
 		      (setq LaTeX-default-format fmt)
 		      (LaTeX-insert-environment environment
 						(concat
