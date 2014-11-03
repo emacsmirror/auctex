@@ -1,3 +1,21 @@
+2014-11-03  Arash Esbati  <esbati@gmx.de>
+
+	* style/zlmtt.el: New file.
+
+	* style/XCharter.el: New file.
+
+	* style/textcomp.el: New file.
+
+	* style/MyriadPro.el: New file.
+
+	* style/mdsymbol.el: New file.
+
+	* style/fontaxes.el: New file.
+
+	* style/eso-pic.el: New file.
+
+	* style/AnonymousPro.el: New file.
+
 2014-11-02  Arash Esbati  <esbati@gmx.de>
 
 	* style/MinionPro.el (TeX-add-symbols): Remove `figureversion',

@@ -135,7 +135,10 @@ STYLESRC = style/prosper.el \
 	   style/acronym.el   style/xparse.el    style/fancyvrb.el \
 	   style/tabulary.el  style/fontspec.el  style/unicode-math.el \
 	   style/luacode.el   style/metalogo.el  style/english.el \
-	   style/exercise.el  style/plext.el     style/cleveref.el
+	   style/exercise.el  style/plext.el     style/cleveref.el \
+	   style/eso-pic.el   style/fontaxes.el  style/AnonymousPro.el \
+	   style/mdsymbol.el  style/MyriadPro.el style/textcomp.el \
+	   style/XCharter.el  style/zlmtt
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
