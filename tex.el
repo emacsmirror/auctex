@@ -3285,11 +3285,11 @@ The algorithm is as follows:
   (make-local-variable 'paragraph-separate)
   (set (make-local-variable 'comment-start) "%")
   (set (make-local-variable 'comment-start-skip)
-	(concat
-	 "\\(\\(^\\|[^\\\n]\\)\\("
-	 (regexp-quote TeX-esc)
-	 (regexp-quote TeX-esc)
-	 "\\)*\\)\\(%+[ \t]*\\)"))
+       (concat
+	"\\(\\(^\\|[^\\\n]\\)\\("
+	(regexp-quote TeX-esc)
+	(regexp-quote TeX-esc)
+	"\\)*\\)\\(%+[ \t]*\\)"))
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
   (set (make-local-variable 'comment-use-syntax) t)
   ;; `comment-padding' is defined here as an integer for compatibility
@@ -3314,10 +3314,10 @@ The algorithm is as follows:
 
   ;; Symbol completion.
   (set (make-local-variable 'TeX-complete-list)
-	(list (list "\\\\\\([a-zA-Z]*\\)"
-		    1 'TeX-symbol-list-filtered
-		    (if TeX-insert-braces "{}"))
-	      (list "" TeX-complete-word)))
+       (list (list "\\\\\\([a-zA-Z]*\\)"
+		   1 'TeX-symbol-list-filtered
+		   (if TeX-insert-braces "{}"))
+	     (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
 
@@ -3341,16 +3341,19 @@ The algorithm is as follows:
   ;;
   ;; `TeX-update-style' has to be called before
   ;; `global-font-lock-mode', which may also be specified in
-  ;; `find-file-hooks', gets called.  Otherwise style-based
+  ;; `find-file-hook', gets called.  Otherwise style-based
   ;; fontification will break (in XEmacs).  That means, `add-hook'
   ;; cannot be called with a non-nil value of the APPEND argument.
   ;;
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
-  (when (and (featurep 'xemacs) (not (emacs-version>= 21 5)))
-    (make-local-hook 'find-file-hooks))
-  (add-hook 'find-file-hooks
+  (when (featurep 'xemacs)
+    (unless (boundp 'find-file-hook)
+      (defvaralias 'find-file-hook 'find-file-hooks))
+    (when (not (emacs-version>= 21 5))
+      (make-local-hook 'find-file-hook)))
+  (add-hook 'find-file-hook
 	    (lambda ()
 	      ;; Check if we are looking at a new or shared file.
 	      (when (or (not (file-exists-p (buffer-file-name)))
@@ -5626,7 +5629,7 @@ With optional argument ARG, also reload the style hooks."
 	(save-buffer)
       (TeX-auto-write)))
   (normal-mode)
-  ;; See also addition to `find-file-hooks' in `VirTeX-common-initialization'.
+  ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
   (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
   (TeX-update-style t))
 
