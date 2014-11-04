@@ -1092,6 +1092,8 @@ search are checked, too."
 					       (cdr (caar (cdr elem)))))
 					   spec))))))))
 
+(defvar url-unreserved-chars)
+
 (defun TeX-evince-sync-view ()
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
@@ -2274,6 +2276,9 @@ This is done calling `kpsewhich --expand-path' for each variable.
 PROGRAM is passed as the parameter for --progname.  SUBDIRS are
 subdirectories which are appended to the directories of the TeX
 trees.  Only existing directories are returned."
+  ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
+  ;; and uses "filename" for the name of a file even if it contains possibly
+  ;; several elements separated by "/".
   (let (path-list path exit-status input-dir-list)
     (condition-case nil
 	(dolist (var vars)
@@ -2284,9 +2289,9 @@ trees.  Only existing directories are returned."
 					  "--progname" program
 					  "--expand-path" var))))
 	  (when (zerop exit-status)
-	    (add-to-list 'path-list path t)))
+            (pushnew path path-list :test #'equal)))
       (error nil))
-    (dolist (elt path-list)
+    (dolist (elt (nreverse path-list))
       (let ((separators (if (string-match "^[A-Za-z]:" elt)
 			    "[\n\r;]"
 			  "[\n\r:]")))
@@ -2298,11 +2303,11 @@ trees.  Only existing directories are returned."
 	      (dolist (subdir subdirs)
 		(setq path (file-name-as-directory (concat item subdir)))
 		(when (file-exists-p path)
-		  (add-to-list 'input-dir-list path t)))
+                  (pushnew path input-dir-list :test #'equal)))
 	    (setq path (file-name-as-directory item))
 	    (when (file-exists-p path)
-	      (add-to-list 'input-dir-list path t))))))
-    input-dir-list))
+	      (pushnew path input-dir-list :test #'equal))))))
+    (nreverse input-dir-list)))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
@@ -2358,10 +2363,10 @@ These correspond to the personal TeX macros."
   (let ((path))
     ;; Put directories in an order where the more local files can
     ;; override the more global ones.
-    (mapcar (lambda (file) (when file (add-to-list 'path file t)))
-	    (append (list TeX-auto-global TeX-style-global)
-		    TeX-auto-private TeX-style-private
-		    (list TeX-auto-local TeX-style-local)))
+    (mapc (lambda (file) (when file (add-to-list 'path file t)))
+          (append (list TeX-auto-global TeX-style-global)
+                  TeX-auto-private TeX-style-private
+                  (list TeX-auto-local TeX-style-local)))
     path)
   "List of directories to search for AUCTeX style files.
 Per default the list is built from the values of the variables
@@ -2614,7 +2619,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 					    (TeX-master-directory))
 			style (substring style
 					 (match-beginning 2) (match-end 2))))
-		(condition-case err
+		(condition-case nil
 		    (mapcar (lambda (hook)
 			      (cond
 			       ((functionp hook)
@@ -3557,6 +3562,10 @@ directory hierarchy, t means recurse indefinitely."
 		 (const :tag "Off" nil)
 		 (integer :tag "Depth" :value 1)))
 
+(defvar TeX-file-extensions)
+(defvar BibTeX-file-extensions)
+(defvar TeX-Biber-file-extensions)
+
 ;;;###autoload
 (defun TeX-auto-generate (tex auto)
   "Generate style file for TEX and store it in AUTO.
@@ -4008,10 +4017,11 @@ EXTENSIONS defaults to `TeX-file-extensions'."
   "Return a list of available TeX tree roots."
   (let (list)
     (dolist (dir (TeX-tree-expand '("$TEXMFHOME" "$TEXMFMAIN" "$TEXMFLOCAL"
-				    "$TEXMFDIST") "latex"))
+				    "$TEXMFDIST")
+                                  "latex"))
       (when (file-readable-p dir)
-	(add-to-list 'list dir t)))
-    list))
+        (pushnew dir list :test #'equal)))
+    (nreverse list)))
 
 (defcustom TeX-tree-roots (TeX-tree-roots)
   "List of all available TeX tree root directories."
@@ -4173,19 +4183,23 @@ If optional argument STRIP is non-nil, remove file extension."
 	    (if (null TeX-tree-roots)
 		(error "No TeX trees available; configure `TeX-tree-roots'")
 	      ;; Expand variables.
-	      (dolist (rawdir rawdirs)
-		(if (symbolp rawdir)
-		    (setq expdirs (append expdirs (eval rawdir)))
-		  (add-to-list 'expdirs rawdir t)))
-	      (delete-dups expdirs)
+              (setq expdirs
+                    (delete-dups
+                     (apply #'append
+                            (mapcar (lambda (rawdir)
+                                      (if (symbolp rawdir)
+                                          (symbol-value rawdir)
+                                        (list rawdir)))
+                                    rawdirs))))
 	      ;; Assumption: Either all paths are absolute or all are relative.
 	      (if (file-name-absolute-p (car expdirs))
 		  (setq dirs expdirs)
 		;; Append relative TDS subdirs to all TeX tree roots.
 		(dolist (root TeX-tree-roots)
 		  (dolist (dir expdirs)
-		    (add-to-list 'dirs (concat (file-name-as-directory root)
-					       dir) t)))))
+                    (let ((dir (expand-file-name dir root)))
+                      (unless (member dir dirs)
+                        (setq dirs (append dirs (list dir)))))))))
 	    (append local-files (TeX-search-files dirs exts nodir strip)))))))
 
 ;;; Narrowing
@@ -5900,7 +5914,7 @@ NAME may be a package, a command, or a document."
       (when (memq major-mode (nth 1 elt))
 	(let ((completions (funcall (nth 2 elt))))
 	  (unless (null completions)
-	    (add-to-list 'docs (cons completions (nth 0 elt)))))))
+            (pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
     (if (null docs)
 	(progn
 	  (if (executable-find "texdoc")

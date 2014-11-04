@@ -1383,6 +1383,10 @@ The hooks are run in the region buffer, you may use the variable
 	    pos (+ pos 8))))
   file)
 
+(defvar font-lock-mode-enable-list)
+(defvar font-lock-auto-fontify)
+(defvar font-lock-defaults-alist)
+
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION.
 The region is taken from ORIGINAL starting at line OFFSET.

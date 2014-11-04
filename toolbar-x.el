@@ -1,6 +1,6 @@
 ;;; toolbar-x.el --- fancy toolbar handling in Emacs and XEmacs
 
-;; Copyright (C) 2004, 2005, 2008 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2008, 2014 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -106,6 +106,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 ;; Note that this just gives a useful default.  Icons are expected to
 ;; be in subdirectory "images" or "toolbar" relative to the load-path.
 ;; Packages loading toolbarx are advised to explicitly add their own
@@ -177,8 +179,7 @@ different.  OPTION-LIST equal to nil is a good option list."
     (dotimes (i n)
       (when (> i 0)
 	(setq temp-opt-list (cddr temp-opt-list)))
-      (add-to-list 'list-diff
-		   (car temp-opt-list))
+      (pushnew (car temp-opt-list) list-diff :test #'equal)
       (setq elt-in-valid (and elt-in-valid
 			      (memq (car temp-opt-list)
 				    valid-options))))

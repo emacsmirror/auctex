@@ -25,6 +25,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (require 'tex)
 
 (require 'texinfo)
@@ -305,10 +307,10 @@ for @node."
       (goto-char (point-min))
       (while (re-search-forward "^@node\\b" nil t)
 	(skip-chars-forward " \t")
-	(add-to-list 'nodes
-		     (list (buffer-substring-no-properties
+	(pushnew (list (buffer-substring-no-properties
 			    (point) (progn (skip-chars-forward "^,")
-					   (point)))))))
+					   (point))))
+                 nodes :test #'equal)))
     (unless active-mark
       (setq node-name (read-string "Node name: ")))
     ;; FIXME: What if key binding for `minibuffer-complete' was changed?
@@ -344,12 +346,12 @@ for @node."
 
 ;; Silence the byte-compiler from warnings for variables and functions declared
 ;; in reftex.
-(eval-when-compile
-  (defvar reftex-section-levels-all)
-  (defvar reftex-level-indent)
-  (defvar reftex-label-menu-flags)
-  (defvar reftex-tables-dirty)
+(defvar reftex-section-levels-all)
+(defvar reftex-level-indent)
+(defvar reftex-label-menu-flags)
+(defvar reftex-tables-dirty)
 
+(eval-when-compile
   (when (fboundp 'declare-function)
     (declare-function reftex-match-string "reftex" (n))
     (declare-function reftex-section-number "reftex-parse" (&optional level star))
@@ -604,9 +606,10 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'TeX-font-replace-function) 'TeX-font-replace-macro)
   (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
 
-  (add-hook 'find-file-hooks (lambda ()
-			       (unless (file-exists-p (buffer-file-name))
-				 (TeX-master-file nil nil t))) nil t)
+  (add-hook 'find-file-hook (lambda ()
+                              (unless (file-exists-p (buffer-file-name))
+                                (TeX-master-file nil nil t)))
+            nil t)
 
   (when (and (boundp 'add-log-current-defun-function)
 	     (fboundp 'texinfo-current-defun-name))

@@ -28,6 +28,7 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 (require 'tex)
 (require 'tex-style)
 
@@ -105,6 +106,13 @@ This depends on `LaTeX-insert-into-comments'."
 		       LaTeX-mode-syntax-table))
 
 ;;; Sections
+
+;; Declare dynamically scoped vars.
+(defvar title)
+(defvar name)
+(defvar level)
+(defvar done-mark)
+(defvar toc)
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -791,7 +799,7 @@ work analogously."
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun LaTeX-env-document (&optional ignore)
+(defun LaTeX-env-document (&optional _ignore)
   "Create new LaTeX document.
 Also inserts a \\documentclass macro if there's none already and
 prompts for the insertion of \\usepackage macros.
@@ -1169,6 +1177,8 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
       (TeX-insert-macro "item"))
     (indent-according-to-mode)))
 
+(defvar TeX-arg-item-label-p)
+
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
   (let ((TeX-arg-item-label-p t))
@@ -1478,8 +1488,10 @@ The input string may include LaTeX comments and newlines."
 			   (point))))
 	 ;; Add entry to output.
 	 ((or (string= match ",") (= (point) (point-max)))
-	  (add-to-list 'opts (buffer-substring-no-properties
-			      start (1- (point))) t)
+          (let ((entry (buffer-substring-no-properties
+                        start (1- (point)))))
+            (unless (member entry opts)
+              (setq opts (append opts (list entry)))))
 	  (setq start (point)))
 	 ;; Get rid of comments.
 	 ((string= match "%")
@@ -1710,6 +1722,8 @@ list of defined labels."
 	(LaTeX-add-labels label))
     (TeX-argument-insert label optional optional)))
 
+(defvar reftex-ref-macro-prompt)
+
 (defun TeX-arg-ref (optional &optional prompt definition)
   "Let-bind `reftex-ref-macro-prompt' to nil and pass arguments
 to `TeX-arg-label'.
@@ -1719,7 +1733,7 @@ arguments: OPTIONAL, PROMPT, and DEFINITION."
   (let ((reftex-ref-macro-prompt nil))
     (TeX-arg-label optional prompt definition)))
 
-(defun TeX-arg-index-tag (optional &optional prompt &rest args)
+(defun TeX-arg-index-tag (optional &optional prompt &rest _args)
   "Prompt for an index tag.
 This is the name of an index, not the entry.
 
@@ -1951,7 +1965,7 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun TeX-arg-document (optional &optional ignore)
+(defun TeX-arg-document (optional &optional _ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
@@ -2066,7 +2080,7 @@ of the options, nil otherwise."
   (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)
   (run-hooks 'LaTeX-after-usepackage-hook))
 
-(defun LaTeX-arg-usepackage (optional)
+(defun LaTeX-arg-usepackage (_optional)
   "Insert arguments to usepackage.
 OPTIONAL is ignored."
   (let* ((packages-options (LaTeX-arg-usepackage-read-packages-with-options))
@@ -2313,7 +2327,7 @@ the list of defined pagestyles."
   :group 'LaTeX-macro
   :type 'character)
 
-(defun TeX-arg-verb (optional &optional ignore)
+(defun TeX-arg-verb (optional &optional _ignore)
   "Prompt for delimiter and text.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  IGNORE is ignored."
@@ -2460,6 +2474,8 @@ OPTIONAL is ignored."
 	    (goto-char (mark)))
 	(LaTeX-insert-corresponding-right-macro-and-brace
 	 left-macro left-brace optional)))))
+
+(defvar TeX-arg-right-insert-p)
 
 (defun LaTeX-insert-left-brace (arg)
   "Insert typed left brace ARG times and possibly a correspondig right brace.
@@ -2940,7 +2956,8 @@ Lines starting with an item is given an extra indentation of
     ;; the 'invisible property.
     (dolist (ol overlays)
       (when (extent-property ol 'invisible)
-	(add-to-list 'ol-specs (list ol (extent-property ol 'invisible)))
+        (pushnew (list ol (extent-property ol 'invisible))
+                 ol-specs :test #'equal)
 	(set-extent-property ol 'invisible nil)))
     (save-excursion
       (cond ((and fill-prefix
@@ -3716,8 +3733,7 @@ space does not end a sentence, so don't break a line there."
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
-	  start-point
-	  math-sep)
+	  start-point)
       (save-excursion
 	(beginning-of-line)
 	(LaTeX-back-to-indentation)
@@ -5262,9 +5278,9 @@ environmens."
   "Create an entry for the change environment menu."
   (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
 
-(defun LaTeX-section-enable-symbol (LEVEL)
+(defun LaTeX-section-enable-symbol (level)
   "Symbol used to enable section LEVEL in the menu bar."
-  (intern (concat "LaTeX-section-" (int-to-string (nth 1 entry)) "-enable")))
+  (intern (concat "LaTeX-section-" (int-to-string level) "-enable")))
 
 (defun LaTeX-section-enable (entry)
   "Enable or disable section ENTRY from `LaTeX-section-list'."
@@ -6298,10 +6314,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	  (format "\\\\end{%s}"
 		  (regexp-opt
 		   (let (out)
-		     (mapcar (lambda (x)
-			       (when (eq (cadr x) 'LaTeX-indent-tabular)
-				 (push (car x) out)))
-			     LaTeX-indent-environment-list)
+		     (mapc (lambda (x)
+                             (when (eq (cadr x) 'LaTeX-indent-tabular)
+                               (push (car x) out)))
+                           LaTeX-indent-environment-list)
 		     out)))))
      (cond ((looking-at tabular-like-end-regex)
 	    beg-col)
