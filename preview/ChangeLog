@@ -1,3 +1,20 @@
+2014-11-04  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* prv-install.el: Adjust copyright years.
+	(preview-make-package-xemacs): Use insert-file-contents instead of
+	insert-file.
+
+	* preview.el.in (error): Declare not only at compile-time.
+	(preview-expandable-string): Use explicit let instead of calling
+	lambda with another lambda.
+	(preview-mouse-open-eps): Use default-value of major-mode instead
+	of default-major-mode.
+	(preview-copy-text): Use with-current-buffer instead of
+	save-excursion with set-buffer.
+	(preview-parse-messages): Don't let-bind context.  Use mapc +
+	funcall instead of run-hooks.  Use goto-char + forward-line
+	instead of goto-line.
+
 2014-10-29  Mosè Giordano  <mose@gnu.org>
 
 	* Version 11.88 released.

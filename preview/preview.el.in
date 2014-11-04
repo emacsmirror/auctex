@@ -52,8 +52,8 @@ preview-latex buffers will not survive across sessions.")))
       (require 'reporter)
     (file-error (message "Missing reporter library, probably from the mail-lib package:
 preview-latex's bug reporting commands will probably not work.")))
-  (require 'info)
-  (defvar error))
+  (require 'info))
+(defvar error)
 
 ;; we need the compatibility macros which do _not_ get byte-compiled.
 (eval-when-compile
@@ -506,19 +506,20 @@ of a cell used for string concatenation."
    (t (error "Bad string expansion"))))
 
 (defconst preview-expandable-string
-  ((lambda (f) (funcall f (funcall f 'sexp)))
-   (lambda (x)
-     `(choice
-       string
-       (repeat :tag "Concatenate"
-	(choice
-	 string
-	 (cons :tag "Separated list"
-	       (choice (string :tag "Separator")
-		       (symbol :tag "Indirect separator or flag"))
-	       ,x)
-	 (symbol :tag "Indirect variable (no separator)")))
-       (symbol :tag "Indirect variable (with separator)"))))
+  (let ((f (lambda (x)
+             `(choice
+               string
+               (repeat :tag "Concatenate"
+                       (choice
+                        string
+                        (cons :tag "Separated list"
+                              (choice (string :tag "Separator")
+                                      (symbol :tag
+                                              "Indirect separator or flag"))
+                              ,x)
+                        (symbol :tag "Indirect variable (no separator)")))
+               (symbol :tag "Indirect variable (with separator)")))))
+    (funcall f (funcall f 'sexp)))
   "Type to be used for `preview-string-expand'.
 Just a hack until we get to learn how to do this properly.
 Recursive definitions are not popular with Emacs,
@@ -1157,7 +1158,7 @@ Place point at POSITION, else beginning of file."
   (let ((default-major-mode
 	  (or
 	   (assoc-default "x.ps" auto-mode-alist #'string-match)
-	   default-major-mode))
+	   (default-value 'major-mode)))
 	(buff (get-file-buffer file)))
     (save-excursion
       (if buff
@@ -2267,8 +2268,7 @@ See description of `TeX-command-list' for details."
 
 (defun preview-copy-text (ov)
   "Copy the text of OV into the kill buffer."
-  (save-excursion
-    (set-buffer (overlay-buffer ov))
+  (with-current-buffer (overlay-buffer ov)
     (copy-region-as-kill (overlay-start ov) (overlay-end ov))))
 
 (defun preview-copy-mml (ov)
@@ -2665,7 +2665,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
 	  lcounters
 	  string after-string error context-start
-	  context offset
+	  offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
 	  (run-coding-system preview-coding-system)
@@ -2694,39 +2694,39 @@ call, and in its CDR the final stuff for the placement hook."
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
 ^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
-;;; Ok, here is a line by line breakdown:
-;;; match-alternative 1:
-;;; error indicator for TeX error, either style.
-;;; match-alternative 2:
-;;; The same, but file-line-error-style, matching on file name.
-;;; match-alternative 3:
-;;; Too ugly to describe in detail.  In short, we try to catch file
-;;; names built from path components that don't contain spaces or
-;;; other special characters once the file extension has started.
-;;;
-;;; Position for searching immediately after the file name so as to
-;;; not miss closing parens or something.
-;;; (match-string 3) is the file name.
-;;; match-alternative 4:
-;;; )+\( \|$\)
-;;; a closing paren followed by the end of line or a space: a just
-;;; closed file.
-;;; match-alternative 5 (wrapped into one shy group with
-;;; match-alternative 6, so that the match on first char is slightly
-;;; faster):
-;;; !offset(\([---0-9]+\))
-;;; an AUCTeX offset message. (match-string 5) is the offset itself
-;;; !name(\([^)]+\))
-;;; an AUCTeX file name message.  (match-string 6) is the file name
-;;; TODO: Actually, the latter two should probably again match only
-;;; after a space or newline, since that it what \message produces.
-;;;disabled in prauctex.def:
-;;;\(?:Ov\|Und\)erfull \\.*[0-9]*--[0-9]*
-;;;\(?:.\{79\}
-;;;\)*.*$\)\|
-;;; This would have caught overfull box messages that consist of
-;;; several lines of context all with 79 characters in length except
-;;; of the last one.  prauctex.def kills all such messages.
+;;;   Ok, here is a line by line breakdown:
+;;;   match-alternative 1:
+;;;   error indicator for TeX error, either style.
+;;;   match-alternative 2:
+;;;   The same, but file-line-error-style, matching on file name.
+;;;   match-alternative 3:
+;;;   Too ugly to describe in detail.  In short, we try to catch file
+;;;   names built from path components that don't contain spaces or
+;;;   other special characters once the file extension has started.
+;;;  
+;;;   Position for searching immediately after the file name so as to
+;;;   not miss closing parens or something.
+;;;   (match-string 3) is the file name.
+;;;   match-alternative 4:
+;;;   )+\( \|$\)
+;;;   a closing paren followed by the end of line or a space: a just
+;;;   closed file.
+;;;   match-alternative 5 (wrapped into one shy group with
+;;;   match-alternative 6, so that the match on first char is slightly
+;;;   faster):
+;;;   !offset(\([---0-9]+\))
+;;;   an AUCTeX offset message. (match-string 5) is the offset itself
+;;;   !name(\([^)]+\))
+;;;   an AUCTeX file name message.  (match-string 6) is the file name
+;;;   TODO: Actually, the latter two should probably again match only
+;;;   after a space or newline, since that it what \message produces.
+;;;  disabled in prauctex.def:
+;;;  \(?:Ov\|Und\)erfull \\.*[0-9]*--[0-9]*
+;;;  \(?:.\{79\}
+;;;  \)*.*$\)\|
+;;;   This would have caught overfull box messages that consist of
+;;;   several lines of context all with 79 characters in length except
+;;;   of the last one.  prauctex.def kills all such messages.
 	      (setq file (match-string-no-properties 2))
 	      (cond
 	       ((match-beginning 1)
@@ -2762,9 +2762,9 @@ name(\\([^)]+\\))\\)\\|\
 			    context-start (point)
 
 			    ;; And the line number to position the cursor.
-;;; variant 1: profiling seems to indicate the regexp-heavy solution
-;;; to be favorable.  Removing incomplete characters from the error
-;;; context is an absolute nuisance.
+;;;  variant 1: profiling seems to indicate the regexp-heavy solution
+;;;  to be favorable.  Removing incomplete characters from the error
+;;;  context is an absolute nuisance.
 			    line (and (re-search-forward "\
 ^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^*\\(?:[89a-f][0-9a-f]\\|[]@-\\_?]\\)\\|\
 \[0-9a-f]?\\)\\)?\\([^\n\r]*?\\)\r?
@@ -2804,11 +2804,12 @@ name(\\([^)]+\\))\\)\\|\
 				(setq slow-hook
 				      (nconc slow-hook (list lst)))))))
 			(condition-case err
-			    (save-excursion (run-hooks 'slow-hook))
+			    (save-excursion (mapc #'funcall slow-hook))
 			  (error (preview-log-error err "Translation hook")))
 			(push (vector file (+ line offset)
 				      string after-string
-				      snippet box counters) parsestate)))
+				      snippet box counters)
+                              parsestate)))
 		  ;; else normal error message
 		  (forward-line)
 		  (re-search-forward "^l\\.[0-9]" nil t)
@@ -2905,7 +2906,8 @@ name(\\([^)]+\\))\\)\\|\
 						       'end
 						       (- line lline))
 				  (forward-line (- line lline)))))
-			(goto-line line))
+                        (goto-char (point-min))
+                        (forward-line (1- line)))
 		      (setq lpoint (point))
 		      (cond
 		       ((search-forward (concat string after-string)
