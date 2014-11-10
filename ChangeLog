@@ -1,3 +1,61 @@
+2014-11-10  Davide G. M. Salvetti  <salve@linux.it>
+
+        * context.el: Replace `read-string' with `TeX-read-string'.
+
+        * latex.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/CJK.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/amsmath.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/amsthm.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/beamer.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/csquotes.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/dinbrief.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/dk-bib.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/emp.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/epsf.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/filecontents.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/foils.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/graphicx.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/inputenc.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/letter.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/longtable.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/mathtools.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/natbib.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/paralist.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/plext.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/prosper.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/psfig.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/pstricks.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/scrbase.el: Replace `read-string' with `TeX-read-string'.
+
+        * style/scrlttr2.el: Replace `read-string' with `TeX-read-string'.
+
+        * tex-info.el: Replace `read-string' with `TeX-read-string'.
+
+        * tex.el: Replace `read-string' with `TeX-read-string'.
+
 2014-11-04  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (VirTeX-common-initialization): Define a variable alias
