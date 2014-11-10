@@ -24,7 +24,8 @@
 
         * style/filecontents.el: Replace `read-string' with `TeX-read-string'.
 
-        * style/foils.el: Replace `read-string' with `TeX-read-string'.
+        * style/foils.el: Replace `read-string' with `TeX-read-string';
+        add copyright notice.
 
         * style/graphicx.el: Replace `read-string' with `TeX-read-string'.
 
