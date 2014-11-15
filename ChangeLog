@@ -1,5 +1,7 @@
 2014-11-15  Davide G. M. Salvetti  <salve@linux.it>
 
+        * style/ifluatex.el: New style.
+
         * doc/faq.texi: Update the `Why does 'TeX-next-error' ('C-c `')
         fail?' entry, taking into account the `TeX-file-line-error'
         option.  Update copyright range.
