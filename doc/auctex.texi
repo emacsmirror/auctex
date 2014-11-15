@@ -2699,7 +2699,7 @@ process associated with the current document.
 @node Selecting a Command
 @subsection Selecting and Executing a Command
 
-Once you started the command selection with @kbd{C-c C-c}, @kbd{C-c C-s}
+Once you started the command selection with @kbd{C-c C-c}, @kbd{C-c C-r}
 or @kbd{C-c C-b} you will be prompted for the type of command.
 @AUCTeX{} will try to guess which command is appropriate in the given
 situation and propose it as default.  Usually this is a processor like
