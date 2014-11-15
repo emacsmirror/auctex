@@ -138,7 +138,7 @@ STYLESRC = style/prosper.el \
 	   style/exercise.el  style/plext.el     style/cleveref.el \
 	   style/eso-pic.el   style/fontaxes.el  style/AnonymousPro.el \
 	   style/mdsymbol.el  style/MyriadPro.el style/textcomp.el \
-	   style/XCharter.el  style/zlmtt.el
+	   style/XCharter.el  style/zlmtt.el     style/ifluatex.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
