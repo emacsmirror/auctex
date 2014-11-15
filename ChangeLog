@@ -1,6 +1,6 @@
 2014-11-15  Davide G. M. Salvetti  <salve@linux.it>
 
-        * Makefile.in (STYLESRC): Add `ifluatex.el'.
+        * Makefile.in (STYLESRC): Add `ifluatex.el', `luatextra.el'.
 
         * style/luatextra.el: New style.
 
