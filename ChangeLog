@@ -1,3 +1,9 @@
+2014-11-15  Mosè Giordano  <mose@gnu.org>
+
+	* Makefile.in (WEMACSPACKAGE, WEMACSEXTRACTDIR): New variables.
+	(windows-package): Adapt rule to new Emacs 24.4 package for
+	Windows.  Use `WEMACSPACKAGE' and `WEMACSEXTRACTDIR'.
+
 2014-11-15  Davide G. M. Salvetti  <salve@linux.it>
 
         * Makefile.in (STYLESRC): Add `ifluatex.el', `luatextra.el'.
