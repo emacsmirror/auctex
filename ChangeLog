@@ -1,5 +1,9 @@
 2014-11-15  Davide G. M. Salvetti  <salve@linux.it>
 
+        * doc/faq.texi: Update the `Why does 'TeX-next-error' ('C-c `')
+        fail?' entry, taking into account the `TeX-file-line-error'
+        option.  Update copyright range.
+
         * doc/auctex.texi (Selecting a Command): Fix typo.
         (Automatic Local): Update description of `TeX-style-path',
         `TeX-style-global', `TeX-style-local', and `TeX-auto-local'
