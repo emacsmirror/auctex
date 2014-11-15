@@ -1,6 +1,10 @@
 2014-11-15  Davide G. M. Salvetti  <salve@linux.it>
 
         * doc/auctex.texi (Selecting a Command): Fix typo.
+        (Automatic Local): Update description of `TeX-style-path',
+        `TeX-style-global', `TeX-style-local', and `TeX-auto-local'
+        variables: there is no need to end directories and directories
+        lists items with a slash.
 
         * doc/quickstart.texi (Editing Facilities): Fix documentation: to
         change font attributes of existing text, it has to be marked as an
