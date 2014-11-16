@@ -5,6 +5,9 @@
 	(windows-package): Fix structure of the package for Emacs 24.4.
 	Reported by Uwe Siart.  Remove the zip package before creating it,
 	otherwise it would be updated instead of recreated.
+	Mention that bash shell is required for windows-package and
+	release-upload recipes due to some bashisms in them.  Reported by
+	José Carlos Santos.
 
 2014-11-15  Mosè Giordano  <mose@gnu.org>
 

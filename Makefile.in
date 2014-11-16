@@ -351,9 +351,11 @@ wc:
 # 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
 #    This requires a compiled Emacs of the same version at location $WEMACS.
+#    NOTA BENE: you may need to use bash shell for this recipe to work.
 #
 # 5) release-sign TAG=<tag>
-#    Sign the tar ball and create directive files for upload.
+#    Sign the tar ball and create directive files for upload.  NOTA BENE: you
+#    may need to use bash shell for this recipe to work.
 #
 # 6) release-upload
 #    Upload files to GNU FTP server.
