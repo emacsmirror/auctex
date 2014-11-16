@@ -436,21 +436,24 @@ xemacs-package: check-tag
 WBUILDDIR=$(PWD)/windows-package
 WEMACS=/usr/src/emacs-$(WEMACSVER)/src/emacs
 WPACKAGE=auctex-$(TAG)-e$(WEMACSVER)-msw.zip
-WPACKAGEFILES=site-lisp/auctex site-lisp/site-start.d site-lisp/site-start.el \
-	site-lisp/tex-site.el var/auctex doc info/dir info/auctex.info* \
-	info/preview-latex.info*
-# Starting from Emacs 24.4, the name of the Windows package has been changed.
-# The following variable set the name of the package depending on the selected
-# Emacs version.
-WEMACSPACKAGE=$(shell if echo "$(WEMACSVER)" | grep -q '\(2[2-3].[1-4]\|24.[1-3]\)' -; \
-	then echo "emacs-$(WEMACSVER)-bin-i386.zip"; \
-	else echo "emacs-$(WEMACSVER)-bin-i686-pc-mingw32.zip"; fi)
-# They also changed the tree structure of the package, there is no more a top
-# level directory.  The following variable set the directory to which extract
-# the files.
-WEMACSEXTRACTDIR=$(shell if echo "$(WEMACSVER)" | grep -q '\(2[2-3].[1-4]\|24.[1-3]\)' -; \
-	then echo ""; \
-	else echo "emacs-$(WEMACSVER)"; fi)
+# Starting from Emacs 24.4, the name of the Windows package and the tree
+# structure of the package have been changed.  The following variables cater for
+# these differences.
+ifeq ($(shell echo "$(WEMACSVER)" | grep '\(2[2-3].[1-4]\|24.[1-3]\)' -),$(WEMACSVER))
+	WEMACSDATAROOTDIR=""
+	WEMACSEXTRACTDIR=""
+	WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i386.zip"
+	WEMACSSITELISP="site-lisp"
+else
+	WEMACSDATAROOTDIR="share/"
+	WEMACSEXTRACTDIR="emacs-$(WEMACSVER)"
+	WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-pc-mingw32.zip"
+	WEMACSSITELISP="$(WEMACSDATAROOTDIR)/emacs/site-lisp"
+endif
+WPACKAGEFILES=$(WEMACSSITELISP)/auctex $(WEMACSSITELISP)/site-start.d \
+	$(WEMACSSITELISP)/site-start.el $(WEMACSSITELISP)/tex-site.el \
+	var/auctex $(WEMACSDOC) $(WEMACSDATAROOTDIR)doc $(WEMACSDATAROOTDIR)info/dir \
+	$(WEMACSDATAROOTDIR)info/auctex.info* $(WEMACSDATAROOTDIR)info/preview-latex.info*
 windows-package: check-tag
 	@if [ "X$(WEMACSVER)" = "X" ]; then \
 	  echo "*** Error: No Emacs version (WEMACSVER) ***"; \
@@ -473,11 +476,8 @@ windows-package: check-tag
 	&& unzip -d "$(WEMACSEXTRACTDIR)" $(WEMACSPACKAGE) \
 	&& unzip auctex-$(TAG).zip
 	rm -f $(WPACKAGE)
-# Create the site-lisp subdirectory if needed (starting from Emacs 24.4 it is no
-# more present in the Windows package) and then create site-start.el and
-# site-start.d
-	mkdir -p $(WBUILDDIR)/emacs-$(WEMACSVER)/site-lisp \
-	&& cd $(WBUILDDIR)/emacs-$(WEMACSVER)/site-lisp \
+# Create site-start.el and site-start.d
+	cd $(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSSITELISP) \
 	&& echo -e ";; Load files in \`site-start.d' directory.\
 \n(dolist (file (directory-files\
 \n	       (concat (file-name-directory load-file-name) \"site-start.d\")\
@@ -488,13 +488,14 @@ windows-package: check-tag
 	cd $(WBUILDDIR)/auctex-$(TAG) \
 	&& ./configure --prefix=$(WBUILDDIR)/emacs-$(WEMACSVER) \
 	  --without-texmf-dir --with-emacs=$(WEMACS) \
-	  --with-lispdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/site-lisp \
-	  --datarootdir=$(WBUILDDIR)/emacs-$(WEMACSVER) \
+	  --with-lispdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSSITELISP) \
+	  --datarootdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSDATAROOTDIR) \
 	&& make \
 	&& sed -i -e 's/"\/[^\n]\+/(expand-file-name "..\/var\/auctex" (file-name-directory load-file-name))/' tex-site.el \
 	&& make install
 # Create the package
 	test -d $(FTPDIR) || mkdir -p $(FTPDIR)
+	rm -f $(FTPDIR)/$(WPACKAGE)
 	cd $(WBUILDDIR)/emacs-$(WEMACSVER) \
 	&& zip -r $(FTPDIR)/$(WPACKAGE) $(WPACKAGEFILES)
 
