@@ -168,7 +168,7 @@
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("oldstylenums"  "{"))
-                              'italic-declaration)))
+                              'type-command)))
  LaTeX-dialect)
 
 (defvar LaTeX-textcomp-package-options

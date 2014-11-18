@@ -47,7 +47,7 @@
      (font-latex-add-keywords '(("proptt"   "{")
                                 ("monott"   "{")
                                 ("lctt"     "{"))
-                              'textual)))
+                              'type-command)))
  LaTeX-dialect)
 
 (defvar LaTeX-zlmtt-package-options

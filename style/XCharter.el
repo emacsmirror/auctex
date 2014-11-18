@@ -61,11 +61,11 @@
                                 ("textlf"    "{")
                                 ("textosf"   "{")
                                 ("textosfI"  "{"))
-                              'textual)
+                              'type-command)
      (font-latex-add-keywords '(("sustyle"   "")
                                 ("lfstyle"   "")
                                 ("osfstyle"  ""))
-                              'italic-declaration)))
+                              'type-declaration)))
  LaTeX-dialect)
 
 (defvar LaTeX-XCharter-package-options

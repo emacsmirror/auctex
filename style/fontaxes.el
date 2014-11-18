@@ -96,7 +96,7 @@
                                 ("liningfigures"       "{")
                                 ("tabularfigures"      "{")
                                 ("proportionalfigures" "{"))
-                              'textual)
+                              'type-command)
      (font-latex-add-keywords '(("textsw"              "{")
                                 ("textssc"             "{")
                                 ("textulc"             "{"))
