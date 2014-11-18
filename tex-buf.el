@@ -1414,7 +1414,14 @@ original file."
 	 (font-lock-auto-fontify nil)
 	 (font-lock-mode-enable-list nil)
 	 ;; And insert them into the FILE buffer.
-	 (file-buffer (let ((TeX-transient-master t))
+	 (file-buffer (let (;; Don't query for master file
+			    (TeX-transient-master t)
+			    ;; Don't choose a special mode (and call its hooks)
+			    (auto-mode-alist nil)
+			    (magic-mode-alist nil)
+			    (enable-local-variables nil)
+			    ;; Don't run any f-f hooks
+			    (find-file-hook nil))
 			(find-file-noselect file)))
 	 ;; But remember original content.
 	 original-content
@@ -1462,29 +1469,31 @@ original file."
 					original (TeX-master-directory)))
 	  master-name (TeX-quote-filename master-name))
     (with-current-buffer file-buffer
-      (setq buffer-undo-list t)
+      (setq buffer-read-only t
+	    buffer-undo-list t)
       (setq original-content (buffer-string))
-      (erase-buffer)
-      (when (boundp 'buffer-file-coding-system)
-	(setq buffer-file-coding-system
-	      (with-current-buffer master-buffer buffer-file-coding-system)))
-      (insert "\\message{ !name(" master-name ")}"
-	      header
-	      TeX-region-extra
-	      "\n\\message{ !name(" original ") !offset(")
-      (insert (int-to-string (- offset
-				(1+ (TeX-current-offset))))
-	      ") }\n"
-	      region
-	      "\n\\message{ !name("  master-name ") !offset(")
-      (insert (int-to-string (- trailer-offset
-				(1+ (TeX-current-offset))))
-	      ") }\n"
-	      trailer)
-      (run-hooks 'TeX-region-hook)
-      (if (string-equal (buffer-string) original-content)
-	  (set-buffer-modified-p nil)
-	(save-buffer 0)))))
+      (let ((inhibit-read-only t))
+	(erase-buffer)
+	(when (boundp 'buffer-file-coding-system)
+	  (setq buffer-file-coding-system
+		(with-current-buffer master-buffer buffer-file-coding-system)))
+	(insert "\\message{ !name(" master-name ")}"
+		header
+		TeX-region-extra
+		"\n\\message{ !name(" original ") !offset(")
+	(insert (int-to-string (- offset
+				  (1+ (TeX-current-offset))))
+		") }\n"
+		region
+		"\n\\message{ !name("  master-name ") !offset(")
+	(insert (int-to-string (- trailer-offset
+				  (1+ (TeX-current-offset))))
+		") }\n"
+		trailer)
+	(run-hooks 'TeX-region-hook)
+	(if (string-equal (buffer-string) original-content)
+	    (set-buffer-modified-p nil)
+	  (save-buffer 0))))))
 
 (defun TeX-region-file (&optional extension nondirectory)
   "Return TeX-region file name with EXTENSION.

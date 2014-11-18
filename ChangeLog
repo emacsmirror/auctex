@@ -1,3 +1,12 @@
+2014-11-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-region-create): Disable finding of appropriate
+	major-mode for region file.  Also disable file-local vars, and
+	don't run find-file-hook functions.  Also, make the region file
+	read-only to prevent accidental editing where actually the real
+	file should have been edited (happens easily with source
+	correlation mode).
+
 2014-11-16  Mosè Giordano  <mose@gnu.org>
 
 	* Makefile.in (WEMACSDATAROOTDIR, WEMACSSITELISP): New variables.
