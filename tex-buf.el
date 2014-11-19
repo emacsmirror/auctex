@@ -1387,6 +1387,10 @@ The hooks are run in the region buffer, you may use the variable
 (defvar font-lock-auto-fontify)
 (defvar font-lock-defaults-alist)
 
+(defvar TeX-region-orig-buffer nil
+  "The original buffer in which the TeX-region was created.")
+(make-variable-buffer-local 'TeX-region-orig-buffer)
+
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION.
 The region is taken from ORIGINAL starting at line OFFSET.
@@ -1490,6 +1494,7 @@ original file."
 				  (1+ (TeX-current-offset))))
 		") }\n"
 		trailer)
+	(setq TeX-region-orig-buffer orig-buffer)
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
 	    (set-buffer-modified-p nil)

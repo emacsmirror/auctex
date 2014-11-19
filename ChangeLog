@@ -1,5 +1,11 @@
 2014-11-19  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-source-correlate-sync-source): Make backward/inverse
+	search form PDF to tex work also for TeX-regions.
+
+	* tex-buf.el (TeX-region-orig-buffer): New variable.
+	(TeX-region-create): Set TeX-region-orig-buffer.
+
 	* tex.el (TeX-submit-bug-report): Adapt bug report intro text to
 	mention debbugs url.
 

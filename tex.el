@@ -1579,25 +1579,52 @@ or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let ((buf (let ((f (condition-case nil
-			  (progn
-			    (require 'url-parse)
-			    (require 'url-util)
-			    (url-unhex-string (aref (url-generic-parse-url file) 6)))
-			;; For Emacs 21 compatibility, which doesn't have the
-			;; url package.
-			(file-error (replace-regexp-in-string "^file://" "" file)))))
-	       (if (file-name-absolute-p f)
-		   (find-file f)
-		 (get-buffer (file-name-nondirectory file)))))
-	(line (car linecol))
-	(col (cadr linecol)))
+  (let* ((line (car linecol))
+	 (col (cadr linecol))
+	 (region (string= TeX-region (file-name-sans-extension
+				      (file-name-nondirectory file))))
+	 (region-search-string nil)
+	 (buf (let ((f (condition-case nil
+			   (progn
+			     (require 'url-parse)
+			     (require 'url-util)
+			     (url-unhex-string (aref (url-generic-parse-url file) 6)))
+			 ;; For Emacs 21 compatibility, which doesn't have the
+			 ;; url package.
+			 (file-error (replace-regexp-in-string "^file://" "" file)))))
+		(cond
+		 ;; Copy the text referenced by syntex relative in the region
+		 ;; file so that we can search it in the original file.
+		 (region (let ((region-buf (get-buffer (file-name-nondirectory file))))
+			   (when region-buf
+			     (with-current-buffer region-buf
+			       (goto-char (point-min))
+			       (forward-line (1- line))
+			       (let* ((p (point))
+				      (bound (save-excursion
+					       (re-search-backward "\\\\message{[^}]+}" nil t)
+					       (end-of-line)
+					       (point)))
+				      (start (save-excursion
+					       (while (< (- p (point)) 250)
+						 (backward-paragraph))
+					       (point))))
+				 (setq region-search-string (buffer-substring-no-properties
+							     (if (< start bound) bound start)
+							     (point))))
+			       ;; TeX-region-create stores the original buffer
+			       ;; locally as TeX-region-orig-buffer.
+			       (get-buffer TeX-region-orig-buffer)))))
+		 ((file-name-absolute-p f) (find-file f))
+		 (t (get-buffer (file-name-nondirectory file)))))))
     (if (null buf)
 	(message "No buffer for %s." file)
       (switch-to-buffer buf)
       (push-mark (point) 'nomsg)
       (goto-char (point-min))
-      (forward-line (1- line))
+      (if region
+	  (search-forward region-search-string nil t)
+	(forward-line (1- line)))
       (unless (= col -1)
 	(move-to-column col))
       (raise-frame))))
