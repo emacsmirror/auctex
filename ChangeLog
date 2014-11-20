@@ -1,3 +1,8 @@
+2014-11-20  Mosè Giordano  <mose@gnu.org>
+
+	* style/fontspec.el ("fontspec"): Fix fontification of
+	"newfontfamily" and "newfontface".
+
 2014-11-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-source-correlate-sync-source): Make backward/inverse
