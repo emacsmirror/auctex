@@ -1004,7 +1004,8 @@ transfer the job to this function."
     (when center
       (insert TeX-esc "centering")
       (indent-according-to-mode)
-      (LaTeX-newline))
+      (LaTeX-newline)
+      (indent-according-to-mode))
     ;; Insert caption and ask for a label, do nothing if user skips caption
     (unless (zerop (length caption))
       (if (member environment LaTeX-top-caption-list)

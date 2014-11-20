@@ -1,5 +1,8 @@
 2014-11-20  Mosè Giordano  <mose@gnu.org>
 
+	* latex.el (LaTeX-env-figure): Fix indentation when there is the
+	\centering macro and no caption is inserted.
+
 	* style/fontspec.el ("fontspec"): Fix fontification of
 	"newfontfamily" and "newfontface".
 
