@@ -1112,14 +1112,17 @@ the requirements are met."
 		 uri
 		 t)))
     (if owner
-	(dbus-call-method
-	 :session owner
-	 "/org/gnome/evince/Window/0"
-	 "org.gnome.evince.Window"
-	 "SyncView"
-	 (buffer-file-name)
-	 (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
-	 :uint32 0)
+	(with-current-buffer (or (when TeX-current-process-region-p
+				   (get-file-buffer (TeX-region-file t)))
+				 (current-buffer))
+	  (dbus-call-method
+	   :session owner
+	   "/org/gnome/evince/Window/0"
+	   "org.gnome.evince.Window"
+	   "SyncView"
+	   (buffer-file-name)
+	   (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
+	   :uint32 0))
       (error "Couldn't find the Evince instance for %s" uri))))
 
 (defvar TeX-view-program-list-builtin

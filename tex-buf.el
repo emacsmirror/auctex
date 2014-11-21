@@ -365,9 +365,9 @@ asked if it is positive, and suppressed if it is not."
     ;; the command, but keep them if the command to be run is View.
     (unless (string= name "View")
       (if (frame-live-p TeX-error-overview-frame)
-		   (delete-frame TeX-error-overview-frame))
-     (if (get-buffer TeX-error-overview-buffer-name)
-	 (kill-buffer TeX-error-overview-buffer-name)))
+	  (delete-frame TeX-error-overview-frame))
+      (if (get-buffer TeX-error-overview-buffer-name)
+	  (kill-buffer TeX-error-overview-buffer-name)))
 
     ;; Now start the process
     (setq file (funcall file))
@@ -1447,7 +1447,7 @@ original file."
 			       ""
 			     (re-search-forward "[\r\n]" nil t)
 			     (buffer-substring (point-min) (point)))))))))
-
+	 (header-offset 0)
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
@@ -1485,8 +1485,9 @@ original file."
 		header
 		TeX-region-extra
 		"\n\\message{ !name(" original ") !offset(")
-	(insert (int-to-string (- offset
-				  (1+ (TeX-current-offset))))
+	(setq header-offset (- offset
+			       (1+ (TeX-current-offset))))
+	(insert (int-to-string header-offset)
 		") }\n"
 		region
 		"\n\\message{ !name("  master-name ") !offset(")
@@ -1495,6 +1496,13 @@ original file."
 		") }\n"
 		trailer)
 	(setq TeX-region-orig-buffer orig-buffer)
+	;; Position point at the line/col that corresponds to point's line in
+	;; orig-buffer in order to make forward search work.
+	(let ((line-col (with-current-buffer orig-buffer
+			  (cons (line-number-at-pos)
+				(current-column)))))
+	  (goto-line (abs (- header-offset (car line-col))))
+	  (forward-char (cdr line-col)))
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
 	    (set-buffer-modified-p nil)

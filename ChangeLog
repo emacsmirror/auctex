@@ -1,3 +1,11 @@
+2014-11-21  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-sync-view): Use line/col information from the
+	TeX-region buffer if the View command is made on a region.
+
+	* tex-buf.el (TeX-region-create): Position point in the same
+	line/col as in the original buffer to make forward search work.
+
 2014-11-20  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-env-figure): Fix indentation when there is the
