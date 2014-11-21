@@ -1,5 +1,16 @@
 2014-11-21  Tassilo Horn  <tsdh@gnu.org>
 
+	* style/book.el ("book"): Set LaTeX-largest-level to part instead
+	of chapter.
+
+	* tex-buf.el (LaTeX-command-section-level): New variable.
+	(LaTeX-command-section-level): New function.
+	(LaTeX-command-section-change-level, LaTeX-command-section): New
+	commands.
+
+	* latex.el (LaTeX-mode-map): Bind C-c C-z to LaTeX-command-section
+	and C-c M-z to LaTeX-command-section-change-level.
+
 	* tex.el (TeX-evince-sync-view): Use line/col information from the
 	TeX-region buffer if the View command is made on a region.
 

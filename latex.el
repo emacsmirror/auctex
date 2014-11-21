@@ -5248,6 +5248,9 @@ environmens."
     (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
     (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
 
+    (define-key map "\C-c\C-z" 'LaTeX-command-section)
+    (define-key map "\C-c\M-z" 'LaTeX-command-section-change-level)
+
     (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
     (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
 

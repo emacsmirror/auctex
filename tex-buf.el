@@ -1525,6 +1525,72 @@ the directory."
   :group 'TeX-command
   :type 'string)
 
+(defvar LaTeX-command-section-level nil
+  "The section level used for `LaTeX-command-section'.
+Will be initialized to `LaTeX-largest-level' buffer-locally.")
+(make-variable-buffer-local 'LaTeX-command-section-level)
+
+(defun LaTeX-command-section-level ()
+  "Return the value of `LaTeX-command-section-level'.
+Initialize it to `LaTeX-largest-level' if needed."
+  (unless LaTeX-command-section-level
+    (setq LaTeX-command-section-level LaTeX-largest-level))
+  LaTeX-command-section-level)
+
+(defun LaTeX-command-section-change-level (arg)
+  "Change `LaTeX-command-section-level' by ARG.
+`LaTeX-command-section-level' is the sectioning level used to
+determine the current section by `LaTeX-command-section'.  The
+levels are defined by `LaTeX-section-list'."
+  (interactive "p")
+  (let ((old-level (car (rassoc (list (LaTeX-command-section-level))
+				LaTeX-section-list))))
+    (setq LaTeX-command-section-level (+ LaTeX-command-section-level arg))
+    (cond
+     ((> LaTeX-command-section-level 6)
+      (setq LaTeX-command-section-level 6)
+      (message "Cannot shrink LaTeX-command-section-level below subparagraph."))
+     ((< LaTeX-command-section-level 0)
+      (setq LaTeX-command-section-level 0)
+      (message "Cannot enlarge LaTeX-command-section-level above part."))
+     (t (message "Changed level from %s to %s."
+		 old-level (car (rassoc (list LaTeX-command-section-level)
+					LaTeX-section-list)))))))
+
+(defun LaTeX-command-section (&optional override-confirm)
+  "Run a command on the current section.
+
+What makes the current section is defined by
+`LaTeX-command-section-level' which can be enlarged or shrunken
+with `LaTeX-command-section-change-level'.
+
+Query the user for a command to run on the temporary file
+specified by the variable `TeX-region'.  The region file will be
+recreated from current section.
+
+If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
+depend on it being positive instead of the entry in
+`TeX-command-list'."
+  (interactive "P")
+  (let* ((case-fold-search t)
+	 (rx (concat "\\\\" (regexp-opt
+			     (mapcar
+			      (lambda (level)
+				(car (rassoc (list level) LaTeX-section-list)))
+			      (let (r)
+				(dotimes (i (1+ (LaTeX-command-section-level)))
+				  (push i r))
+				r)))
+		     "{"))
+	 (TeX-command-region-begin (save-excursion
+				     (re-search-backward rx nil t)
+				     (point)))
+	 (TeX-command-region-end (save-excursion
+				   (re-search-forward rx nil t)
+				   (forward-line 0)
+				   (point))))
+    (TeX-command-region override-confirm)))
+
 ;;; Parsing
 
 ;;; - Global Parser Variables
