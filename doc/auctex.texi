@@ -2655,6 +2655,22 @@ file.  The command is then actually run on the region file.  See above
 for details.
 @end deffn
 
+@deffn Command LaTeX-command-section
+@kindex C-c C-z
+(@kbd{C-c C-z}) Query the user for a command, and apply it to the
+current section (or part, chapter, subsection, paragraph, or
+subparagraph).  What makes the current section is determined by
+@code{LaTeX-command-section-level} which can be enlarged/shrunken using
+@code{LaTeX-command-section-change-level} (@kbd{C-c M-z}).  The given
+numeric prefix arg is added to the current value of
+@code{LaTeX-command-section-level}.  By default,
+@code{LaTeX-command-section-level} is initialized with the current
+document's @code{LaTeX-largest-level}.  The buffer contents are written
+into the region file, after extracting the header and trailer from the
+master file.  The command is then actually run on the region file.  See
+@code{TeX-command-region} for details.
+@end deffn
+
 @defopt TeX-region
 The name of the file for temporarily storing the text when formatting
 the current region.

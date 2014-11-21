@@ -1,5 +1,8 @@
 2014-11-21  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/auctex.texi (Starting a Command): Document
+	LaTeX-command-section and friends.
+
 	* style/book.el ("book"): Set LaTeX-largest-level to part instead
 	of chapter.
 
