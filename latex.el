@@ -30,6 +30,7 @@
 
 (require 'tex)
 (require 'tex-style)
+(eval-when-compile (require 'cl))
 
 ;;; Syntax
 

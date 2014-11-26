@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+
 (TeX-auto-add-type "siunitx-unit" "LaTeX")
 
 ;; Self Parsing -- see (info "(auctex)Hacking the Parser").  `\\(?:\\[.*\\]\\)?'

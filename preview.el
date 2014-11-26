@@ -506,7 +506,8 @@ of a cell used for string concatenation."
    (t (error "Bad string expansion"))))
 
 (defconst preview-expandable-string
-  ((lambda (f) (funcall f (funcall f 'sexp)))
+  (funcall
+   (lambda (f) (funcall f (funcall f 'sexp)))
    (lambda (x)
      `(choice
        string
