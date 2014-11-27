@@ -1,3 +1,60 @@
+2014-11-27  Matthew Leach  <matthew@mattleach.net>
+
+	* configure.ac: Merge from preview/configure.ac.
+
+	* .gitignore: Merge from preview/.gitignore.
+
+	* autogen.sh: Don't run autoconf in the preview direcotry.
+
+	* Makefile.in (subdirs): Remove.
+	(DESCEND): Remove.
+	(EXCLUDEDFILES): Remove 'preview/' prefix.
+	(preview-ball): Likewise and decrement stip-components in tar.
+	(previewstartfile): Adapt from preview/Makefile.in.
+	(PREVIEW_AUTOLOAD): Likewise.
+	(texmf): Likewise.
+	(preview-latex.el): Likewise.
+	(latex/Makefile): Likewise.
+	(auto.el): Likewise.
+	(install-startup): Likewise.
+	(install-texmf): Likewise.
+	(release-commit): Likewise.
+	(DISTCLEANFILES): Likewise.
+	(CLEANFILES): Add preview files.
+	(install-el): Likewise.
+	(install-lisp): Likewise.
+	(all): Add texmf dependency and remove DESCEND.
+	(clean): Remove DESCEND action.
+	(distclean): Likewise.
+	(maintainer-clean): Likewise.
+
+	* doc/Makefile.in (preview-dtxdoc.texi): Update path of
+	preview.dtx.
+
+	* preview/ChangeLog: Move to ChangeLog-preview
+
+	* preview/ChangeLog.1: Move to ChangeLog.1-preview
+
+	* preview/auto.el.in: Move to top-level.
+
+	* preview/circ.tex: Move to top-level.
+
+	* preview/preview.el.in: Move to top-level.
+
+	* preview/*.el: Move to top-level.
+
+	* preview/images/: Move to images/.
+
+	* preview/latex/: Move to latex/.
+
+	* preview/Makefile.in: Remove.
+
+	* preview/configure.ac: Remove.
+
+	* preview/.gitignore: Remove.
+
+	* preview/COPYING: Remove.
+
 2014-11-21  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/auctex.texi (Starting a Command): Document

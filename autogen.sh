@@ -29,10 +29,7 @@ test "x${PDFTEX}" != x || PDFTEX=pdftex
 test "x${PERL}" != x || PERL=perl
 test "x${MAKE}" != x || MAKE=make
 ${AUTOCONF} || { echo "Error running ${AUTOCONF} in ." >&2 ; exit 1; }
-cd preview
-${AUTOCONF} -I.. || { echo "Error running ${AUTOCONF} in preview" >&2 ; exit 1; }
-cd ..
-rm -rf autom4te.cache preview/autom4te.cache
+rm -rf autom4te.cache
 if test "x${AUCTEXDATE}" = x
 then
     AUCTEXDATE=`LC_ALL=C sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog`

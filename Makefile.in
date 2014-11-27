@@ -34,12 +34,12 @@ localstatedir = @localstatedir@$(null)
 infodir = @infodir@$(null)
 lispdir = @lispdir@$(null)
 auctexstartfile=@auctexstartfile@
+previewstartfile = @previewstartfile@
 packagelispdir = @packagelispdir@$(null)
 packagedatadir = @packagedatadir@$(null)
 packagedir = @packagedir@$(null)
 autodir = @autodir@$(null)
 preview_enabled=@preview_enabled@
-subdirs=@subdirs@
 styledir = $(packagedatadir)/style
 AUCTEXDATE = @AUCTEXDATE@
 AUCTEXVERSION = @AUCTEXVERSION@
@@ -56,10 +56,11 @@ ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (mapcar (function update-file-autoloads) command-line-args-left) \
   (save-buffers-kill-emacs t))'
-DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd "$$OLDPWD";echo "Ascending into $$OLDPWD";done)
 
-EXCLUDEDFILES=autogen.sh .cvsignore .gitignore doc/.gitignore preview/.gitignore \
-	preview/latex/.gitignore README.GIT tests
+PREVIEW_AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
+		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
+
+EXCLUDEDFILES=autogen.sh .cvsignore .gitignore doc/.gitignore README.GIT tests
 
 .SUFFIXES: .el .elc .texi
 
@@ -142,15 +143,37 @@ STYLESRC = style/prosper.el \
 	   style/luatextra.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
-CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
+ifeq (@preview_enabled@,yes)
+   PREVIEWSRC = @PLAT_LISP@ preview.el
+   PREVIEWELC = $(PREVIEWSRC:.el=.elc)
+   PREVIEWLATEX = test "x$(packagedir)" != xno || $(MAKE) preview-latex.el
+   TEXMF = (cd latex ; $(MAKE) all)
+
+   # Install actions
+   INS_TEXMF = (cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
+   PREVIEW_INS_STARTUP = test $(packagedir) != no || \
+     $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(previewstartfile)
+else
+   # Don't do anything with preview if the user doesn't want the
+   # preview component.
+   PREVIEWSRC =
+   PREVIEWELC =
+   PREVIEWLATEX =
+   TEXMF =
+   INS_TEXMF =
+   PREVIEW_INS_STARTUP =
+endif
+
+
+
+CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC) $(PREVIEWELC) preview-latex.el
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
-	auto-loads.el config.* preview/preview.el
+	auto-loads.el config.* preview.el
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
 
 NOSEARCH = style/.nosearch
 
-all: lisp docs
-	$(DESCEND)
+all: texmf lisp docs
 
 .PHONY: all lisp info dvi some install install-el install-lisp docs	\
 	install-docs install-auto install-metadata install-startup	\
@@ -159,8 +182,22 @@ all: lisp docs
 	tar-ball rpm-packages wc xemacs-package windows-package		\
 	release-sign release-upload preview-ball
 
-lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
-	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
+texmf: latex/Makefile
+	$(TEXMF)
+
+lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
+	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
+	$(PREVIEWLATEX)
+
+preview-latex.el: preview.el auto.el
+	rm -f preview-latex.el
+	-$(EMACS) -batch -no-site-file -no-init-file $(PREVIEW_AUTOLOAD) ; \
+	test -r $@ || { \
+	  echo ";; Auto-generated preview-latex.el" > $@ ; \
+	  echo "" >> $@ ; \
+	  $(EMACS) -batch -no-site-file -no-init-file $(PREVIEW_AUTOLOAD) ; \
+	}
+	cat auto.el >> $@
 
 docs:
 	cd doc ; $(MAKE) all
@@ -181,6 +218,12 @@ tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
 
 auctex.el: auctex.el.in config.status
+	./config.status
+
+latex/Makefile: latex/Makefile.in Makefile config.status
+	./config.status
+
+auto.el: auto.el.in Makefile config.status
 	./config.status
 
 configure: configure.ac aclocal.m4
@@ -208,8 +251,8 @@ auto-loads.el: $(AUCSRC) $(MULESRC) Makefile
 
 some:	$(AUCELC) $(STYLEELC)
 
-install: install-lisp install-docs install-images install-startup
-	$(DESCEND)
+install: install-texmf install-lisp install-docs install-images \
+         install-startup
 	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
 
 install-man: doc/Makefile
@@ -217,8 +260,13 @@ install-man: doc/Makefile
 	$(INSTALL_DATA) RELEASE $(DESTDIR)$(packagedir)/man/auctex
 
 install-startup:
+	$(PREVIEWLATEX)
+	$(PREVIEW_INS_STARTUP)
 	test $(packagedir) != no || \
 	  $(INSTALL_DATA) auctex.el $(DESTDIR)$(auctexstartfile)
+
+install-texmf:
+	$(INS_TEXMF)
 
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
@@ -236,10 +284,10 @@ install-el:
 	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
 	fi
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
-	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC); do \
+	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
 	  echo '$(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
 	done
-	@for x in $(AUCSRC) $(MULESRC); do \
+	@for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(styledir)
@@ -254,10 +302,10 @@ install-el:
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp: some install-el
-	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC); do \
+	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
 	  echo '$(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
 	done
-	@for x in $(AUCSRC) $(MULESRC); do \
+	@for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done
 	@: $(MAKE) ; for x in $(STYLESRC) ; do \
@@ -288,9 +336,9 @@ install-metadata:
 	test "x$(packagedir)" = xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
 	  if test "x$(preview_enabled)" = xyes; then \
-	    $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el preview/auto.el; \
+	    $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el auto.el; \
 	  else \
-	    $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el; \
+	    $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el; \
 	  fi && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
@@ -306,19 +354,16 @@ install-metadata:
 clean:	doc/Makefile
 	rm -f $(CLEANFILES)
 	cd doc && $(MAKE) clean
-	$(DESCEND)
 
 distclean: doc/Makefile
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) distclean
-	$(DESCEND)
 
 maintainer-clean: doc/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) maintainer-clean
-	$(DESCEND)
 
 extraclean: maintainer-clean
 	rm -f *~ \#*\#
@@ -377,17 +422,17 @@ release-commit: check-tag
 	@echo "Tagging release $(TAG) in Git ..."
 	sleep 5
 	mv ChangeLog ChangeLog.old
-	mv preview/ChangeLog preview/ChangeLog.old
+	mv ChangeLog-preview ChangeLog-preview.old
 # Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
 # requires the `iconv' program.
 	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
-	cp ChangeLog preview/ChangeLog
+	cp ChangeLog ChangeLog-preview
 	cat ChangeLog.old >> ChangeLog
-	cat preview/ChangeLog.old >> preview/ChangeLog
-	git commit -m 'Release_$(TAG)' -- ChangeLog preview/ChangeLog
+	cat ChangeLog-preview.old >> ChangeLog-preview
+	git commit -m 'Release_$(TAG)' -- ChangeLog ChangeLog-preview
 	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	@echo
 	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."
@@ -548,8 +593,8 @@ preview-ball: check-tag
 	mkdir $(PREVIEW_BUILD_DIR)
 # Use TAG_EXPORT if set (for snapshots)
 	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} \
-	  preview/latex | tar -xC $(PREVIEW_BUILD_DIR) --strip-components=2
-	cd $(PREVIEW_BUILD_DIR) && make -f ../preview/latex/Makefile preview.ins preview.pdf
+	  latex/ | tar -xC $(PREVIEW_BUILD_DIR) --strip-components=1
+	cd $(PREVIEW_BUILD_DIR) && make -f ../latex/Makefile preview.ins preview.pdf
 	chmod -R go-w+rX $(PREVIEW_BUILD_DIR)
 	test -d $(CTANDIR) || mkdir -p $(CTANDIR)
 # CTAN requires a top level directory "preview/" for the archive.

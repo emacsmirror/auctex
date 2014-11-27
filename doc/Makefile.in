@@ -149,8 +149,8 @@ preview-latex/index.html: $(PREVIEWTEXIFILES)
 
 html-docs: preview-latex/index.html
 
-preview-dtxdoc.texi: ../preview/latex/preview.dtx preview-dtxdoc.pl
-	-$(PERL) preview-dtxdoc.pl ../preview/latex/preview.dtx \
+preview-dtxdoc.texi: ../latex/preview.dtx preview-dtxdoc.pl
+	-$(PERL) preview-dtxdoc.pl ../latex/preview.dtx \
 		preview-dtxdoc.texi
 
 preview-latex.dvi: $(PREVIEWTEXIFILES)
