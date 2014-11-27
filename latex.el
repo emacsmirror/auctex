@@ -933,7 +933,14 @@ If nil, act like the empty string is given, but do not prompt."
     ("eqnarray" . LaTeX-eqnarray-label))
   "Lookup prefixes for labels.
 An alist where the CAR is the environment name, and the CDR
-either the prefix or a symbol referring to one."
+either the prefix or a symbol referring to one.
+
+If the name is not found, or if the CDR is nil, no label is
+automatically inserted for that environment.
+
+If you want to automatically insert a label for a environment but
+with an empty prefix, use the empty string \"\" as the CDR of the
+corresponding entry."
   :group 'LaTeX-label
   :type '(repeat (cons (string :tag "Environment")
 		       (choice (string :tag "Label prefix")
@@ -941,10 +948,16 @@ either the prefix or a symbol referring to one."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defun LaTeX-label (name type)
+(defun LaTeX-label (name &optional type)
   "Insert a label for NAME at point.
-TYPE can be either environment or section.  If
-`LaTeX-label-function' is a valid function, LaTeX label will
+The optional TYPE argument can be either environment or section:
+in the former case this function looks up `LaTeX-label-alist' to
+choose which prefix to use for the label, in the latter case
+`LaTeX-section-label' will be looked up instead.  If TYPE is nil,
+you will be always prompted for a label, with an empty default
+prefix.
+
+If `LaTeX-label-function' is a valid function, LaTeX label will
 transfer the job to this function."
   (let ((prefix (cond
 		 ((eq type 'environment)
@@ -955,7 +968,11 @@ transfer the job to this function."
 			  LaTeX-section-label
 			(and (listp LaTeX-section-label)
 			     (cdr (assoc name LaTeX-section-label))))
-		    ""))))
+		    ""))
+		 ((null type)
+		  "")
+		 (t
+		  nil)))
 	label)
     (when (symbolp prefix)
       (setq prefix (symbol-value prefix)))

@@ -1,3 +1,9 @@
+2014-11-27  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-label-alist): Expand doc string.
+	(LaTeX-label): Make second argument optional to restore backward
+	compatibility and update doc string accordingly.  (Bug#19178)
+
 2014-11-27  Matthew Leach  <matthew@mattleach.net>
 
 	* configure.ac: Merge from preview/configure.ac.
