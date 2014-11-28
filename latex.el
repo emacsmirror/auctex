@@ -28,9 +28,9 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 (require 'tex)
 (require 'tex-style)
+(eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 
 ;;; Syntax
 

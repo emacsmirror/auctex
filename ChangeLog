@@ -1,3 +1,12 @@
+2014-11-28  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* style/siunitx.el (tex): Require tex because its indispensable
+	when compiling the call to TeX-auto-add-type.
+
+	* style/acronym.el (tex): Ditto.
+
+	* style/acro.el (tex): Ditto.
+
 2014-11-27  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-label-alist): Expand doc string.
