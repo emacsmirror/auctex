@@ -1161,7 +1161,7 @@ the requirements are met."
 				    " -i %(outpage)"
 				  " -p %(outpage)")) " %o")) "evince")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
-      ("xdg-open" "xdg-open %o"))) "xdg-open")
+      ("xdg-open" "xdg-open %o" "xdg-open"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -5871,6 +5871,7 @@ output buffer into your mail program, as it gives us important
 information about your AUCTeX version and AUCTeX configuration."
   (interactive)
   (require 'reporter)
+  (defvar reporter-prompt-for-summary-p)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "bug-auctex@gnu.org"
