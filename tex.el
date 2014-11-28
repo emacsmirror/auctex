@@ -1128,14 +1128,14 @@ the requirements are met."
 (defvar TeX-view-program-list-builtin
   (cond
    ((eq system-type 'windows-nt)
-    '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
-      ("dvips and start" "dvips %d -o && start \"\" %f")
-      ("start" "start \"\" %o")))
+    '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
+      ("dvips and start" "dvips %d -o && start \"\" %f" ,(list "dvips" "start"))
+      ("start" "start \"\" %o" "start")))
    ((eq system-type 'darwin)
-    '(("Preview.app" "open -a Preview.app %o")
-      ("Skim" "open -a Skim.app %o")
-      ("displayline" "displayline %n %o %b")
-      ("open" "open %o")))
+    '(("Preview.app" "open -a Preview.app %o" "open")
+      ("Skim" "open -a Skim.app %o" "open")
+      ("displayline" "displayline %n %o %b" "displayline")
+      ("open" "open %o" "open")))
    (t
     `(("xdvi" ("%(o?)xdvi"
 	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
@@ -1147,10 +1147,10 @@ the requirements are met."
 	       (paper-letter " -paper us")
 	       (paper-legal " -paper legal")
 	       (paper-executive " -paper 7.25x10.5in")
-	       " %d"))
-      ("dvips and gv" "%(o?)dvips %d -o && gv %f")
-      ("gv" "gv %o")
-      ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
+	       " %d") "%(o?)xdvi")
+      ("dvips and gv" "%(o?)dvips %d -o && gv %f" ,(list "%(o?)dvips" "gv"))
+      ("gv" "gv %o" "gv")
+      ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
       ("Evince" ,(if (TeX-evince-dbus-p :forward)
 		     'TeX-evince-sync-view
 		   `("evince" (mode-io-correlate
@@ -1159,9 +1159,9 @@ the requirements are met."
 			       ,(if (string-match "--page-index"
 						  (shell-command-to-string "evince --help"))
 				    " -i %(outpage)"
-				  " -p %(outpage)")) " %o")))
-      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")))
-      ("xdg-open" "xdg-open %o"))))
+				  " -p %(outpage)")) " %o")) "evince")
+      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
+      ("xdg-open" "xdg-open %o"))) "xdg-open")
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1169,7 +1169,7 @@ definition of built-in ones.  The latter variable also contains a
 description of the data format.")
 
 (defcustom TeX-view-program-list nil
-  "Alist of viewer specifications.
+  "List of viewer specifications.
 This variable can be used to specify how a viewer is to be
 invoked and thereby add new viewers on top of the built-in list
 of viewers defined in `TeX-view-program-list-builtin' or override
@@ -1188,6 +1188,12 @@ the command line parts.  Parts with a predicate are only
 considered if the predicate was evaluated with a positive result.
 Note that the command line can contain placeholders as defined in
 `TeX-expand-list' which are expanded before the viewer is called.
+The third element of the item is optional and is a string, or a
+list of strings, with the name of the executable, or executables,
+needed to open the output file in the viewer.  Placeholders
+defined in `TeX-expand-list' can be used here.  This element is
+used to check whether the viewer is actually available on the
+system.
 
 The use of a function as the second element only works if the
 View command in `TeX-command-list' makes use of the hook
@@ -1198,35 +1204,39 @@ show up in the customization interface for this variable after
 restarting Emacs."
   :group 'TeX-view
   :type
-  `(alist
-    :key-type (string :tag "Name")
-    :value-type
-    (choice
-     (group :tag "Command" (string :tag "Command"))
-     (group :tag "Command parts"
-	    (repeat
-	     :tag "Command parts"
-	     (choice
-	      (string :tag "Command part")
-	      (list :tag "Predicate and command part"
-		    ,(let (list)
-		       ;; Build the list of available predicates.
-		       (mapc (lambda (spec)
-			       (add-to-list 'list `(const ,(car spec))))
-			     (append TeX-view-predicate-list
-				     TeX-view-predicate-list-builtin))
-		       ;; Sort the list alphabetically.
-		       (setq list (sort list
-					(lambda (a b)
-					  (string<
-					   (downcase (symbol-name (cadr a)))
-					   (downcase (symbol-name (cadr b)))))))
-		       `(choice
-			 (choice :tag "Predicate" ,@list)
-			 (repeat :tag "List of predicates"
-				 (choice :tag "Predicate" ,@list))))
-		    (string :tag "Command part")))))
-     (group :tag "Function" function))))
+  `(repeat
+    (list
+     (string :tag "Name")
+     (choice
+      (group :tag "Command" (string :tag "Command"))
+      (group :tag "Command parts"
+	     (repeat
+	      :tag "Command parts"
+	      (choice
+	       (string :tag "Command part")
+	       (list :tag "Predicate and command part"
+		     ,(let (list)
+			;; Build the list of available predicates.
+			(mapc (lambda (spec)
+				(add-to-list 'list `(const ,(car spec))))
+			      (append TeX-view-predicate-list
+				      TeX-view-predicate-list-builtin))
+			;; Sort the list alphabetically.
+			(setq list (sort list
+					 (lambda (a b)
+					   (string<
+					    (downcase (symbol-name (cadr a)))
+					    (downcase (symbol-name (cadr b)))))))
+			`(choice
+			  (choice :tag "Predicate" ,@list)
+			  (repeat :tag "List of predicates"
+				  (choice :tag "Predicate" ,@list))))
+		     (string :tag "Command part")))))
+      (group :tag "Function" function))
+     (choice :tag "Viewer executable(s)"
+	     (string :tag "One executable")
+	     (repeat :tag "List of executables" (string :tag "Name"))
+	     (const :tag "No executable" nil)))))
 
 ;; XXX: Regarding a possibility to (manually) run an update command,
 ;; one could support this through `TeX-view' by letting it temporarily
@@ -1319,16 +1329,31 @@ predicates are true, nil otherwise."
 (defun TeX-view-command-raw ()
   "Choose a viewer and return its unexpanded command string."
   (let ((selection TeX-view-program-selection)
-	entry viewer spec command)
+	entry viewer item executable spec command)
     ;; Find the appropriate viewer.
     (while (and (setq entry (pop selection)) (not viewer))
       (when (TeX-view-match-predicate (car entry))
 	(setq viewer (cadr entry))))
     (unless viewer
       (error "No matching viewer found"))
-    ;; Get the command line or function spec.
-    (setq spec (cadr (assoc viewer (append TeX-view-program-list
-					   TeX-view-program-list-builtin))))
+    (setq item (assoc viewer (append TeX-view-program-list
+				     TeX-view-program-list-builtin))
+	  ;; Get the command line or function spec.
+	  spec (cadr item)
+	  ;; Get the name of the executable(s) associated to the viewer.
+	  executable (nth 2 item))
+    ;; Check the executable exists.
+    (unless (or (null executable)
+		(cond
+		 ((stringp executable)
+		  (executable-find (TeX-command-expand executable nil)))
+		 ((listp executable)
+		  (catch 'notfound
+		    (dolist (exec executable t)
+		      (unless (executable-find (TeX-command-expand exec nil))
+			(throw 'notfound nil)))))))
+      (error (format "Cannot find %S viewer.  \
+Select another one in `TeX-view-program-selection'" viewer)))
     (cond ((functionp spec)
 	   ;; Converting the function call to a string is ugly, but
 	   ;; the backend currently only supports strings.
@@ -1338,7 +1363,7 @@ predicates are true, nil otherwise."
 	  ((null spec)
 	   (error
 	    (format "Unknown %S viewer. \
-Check the `TeX-view-program-selection' variable." viewer)))
+Check the `TeX-view-program-selection' variable" viewer)))
 	  (t
 	   ;; Build the unexpanded command line.  Pieces with predicates are
 	   ;; only added if the predicate is evaluated positively.

@@ -1,3 +1,17 @@
+2014-11-28  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-view-program-list-builtin): Add the new third
+	element to each item.
+	(TeX-view-program-list): Document new third element of items in
+	doc string.  Adapt the type.
+	(TeX-view-command-raw): Check whether the viewer executable
+	exists.  (Bug#19121)
+
+	* doc/auctex.texi (Starting Viewers): Document change to
+	`TeX-view-program-list'.
+
+	* doc/changes.texi: Mention it.
+
 2014-11-28  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* style/siunitx.el (tex): Require tex because its indispensable

@@ -3045,6 +3045,12 @@ exact format to use.)  The command line can also contain placeholders as
 defined in @code{TeX-expand-list} which are expanded before the viewer
 is called.
 
+The third element of each item is a string, or a list of strings, with
+the name of the executable, or executables, needed to open the output
+file in the viewer.  Placeholders defined in @code{TeX-expand-list} can
+be used here.  This element is optional and is used to check whether the
+viewer is actually available on the system.
+
 A built-in viewer spec from @code{TeX-view-program-list-builtin} can be
 overwritten by defining a new viewer spec with the same name.
 @end defopt
