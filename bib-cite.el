@@ -724,9 +724,6 @@ These are usually month abbreviations (or journals) defined in a style file."
   "*Regular expression for \\ref LaTeX commands that have a matching \\label.
 A opening curly bracket is appended to the regexp.")
 
-(defvar bib-cite-is-XEmacs
-  (not (null (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))))
-
 (defvar bib-cite-minor-mode nil)
 
 (defvar bib-highlight-mouse-keymap (make-sparse-keymap)
@@ -762,11 +759,11 @@ runs bib-find, and [mouse-3] runs bib-display."
 	(progn
 	  (bib-cite-setup-highlight-mouse-keymap)
 	  (bib-highlight-mouse)
-	  (when bib-cite-is-XEmacs
+	  (when (featurep 'xemacs)
 	    (make-local-hook 'after-change-functions))
 	  (add-hook 'after-change-functions
 		    'bib-cite-setup-mouse-function nil t)))
-    (if bib-cite-is-XEmacs
+    (if (featurep 'xemacs)
 	(progn
 	  (or (local-variable-p 'current-menubar (current-buffer))
 	      (set-buffer-menubar current-menubar))
@@ -775,7 +772,7 @@ runs bib-find, and [mouse-3] runs bib-display."
    ;;;Undo the minor-mode
     ;; mouse overlay
     (cond
-     (bib-cite-is-XEmacs
+     ((featurep 'xemacs)
       (while bib-ext-list
 	(delete-extent (car bib-ext-list))
 	(setq bib-ext-list (cdr bib-ext-list))))
@@ -786,7 +783,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 	;; FIXME Hope no other package is using them in this buffer!
 	(remove-text-properties (point-min) (point-max)
 				'(mouse-face t local-map t)))))
-    (if bib-cite-is-XEmacs
+    (if (featurep 'xemacs)
 	(delete-menu-item '("BCite"))))))
 
 ;;This must be eval'ed when the LaTeX mode is in use.
@@ -803,7 +800,7 @@ runs bib-find, and [mouse-3] runs bib-display."
    ;;;        display the bib-cite stuff (or a subset of it).
 	(let ((m (copy-keymap (current-local-map))))
 	  (cond
-	   (bib-cite-is-XEmacs
+	   ((featurep 'xemacs)
 	    (set-keymap-name m 'bib-highlight-mouse-keymap)
 	    (cond
 	     ;;action-key stuff from Vladimir Alexiev <vladimir@cs.ualberta.ca>
@@ -849,7 +846,7 @@ runs bib-find, and [mouse-3] runs bib-display."
   "Unconditionally turn on Bib Cite mode."
   (bib-cite-minor-mode 1))
 
-(defun bib-cite-setup-mouse-function (beg end old-len)
+(defun bib-cite-setup-mouse-function (beg end _old-len)
   (save-excursion
     (save-match-data
       (save-restriction
@@ -893,7 +890,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 
 ;;; Add a menu entry to bibtex.el (Perhaps I should not do this).
 (cond
- ((and (string-match "XEmacs\\|Lucid" emacs-version)
+ ((and (featurep 'xemacs)
        (or window-system
 	   (fboundp 'smart-menu)))      ;text menus by Bob Weiner
   ;;
@@ -927,7 +924,7 @@ runs bib-find, and [mouse-3] runs bib-display."
     (add-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))
   )
 
- ((and (not (string-match "XEmacs\\|Lucid" emacs-version))
+ ((and (not (featurep 'xemacs))
        (string-equal "19" (substring emacs-version 0 2))
        (or window-system
 	   (fboundp 'tmm-menubar)))     ; 19.30 - Will autoload if necessary
@@ -1160,7 +1157,7 @@ by using bib-apropos sequentially."
       (if (not the-text)
 	  (message "Sorry, no matches found.")
 	(with-output-to-temp-buffer "*Help*"
-	  (mapcar 'princ (nreverse the-text)))
+	  (mapc #'princ (nreverse the-text)))
 	(bib-cite-fontify-help-as-bibtex)
 	(if bib-novice
 	    (message
@@ -1236,18 +1233,19 @@ to create a bibtex file containing only the references used in the document."
       (put-text-property (point-min)(or limit (point-max))
 			 'face 'red-bold))))
 
-(defun bib-cite-fontify-help-xemacs (defaults)
-  (if (fboundp 'font-lock-set-defaults-1) ; >= XEmcas 19.14
-      (progn
-	(set-buffer "*Help*")
-	(setq font-lock-defaults-computed nil
-	      font-lock-keywords nil)
-	(font-lock-set-defaults-1
-	 (and defaults (font-lock-find-font-lock-defaults defaults)))
-	(font-lock-fontify-buffer)
-	(setq font-lock-defaults-computed nil
-	      font-lock-keywords nil)
-	(font-lock-set-defaults-1))))
+(when (featurep 'xemacs)
+  (defun bib-cite-fontify-help-xemacs (defaults)
+    (if (fboundp 'font-lock-set-defaults-1) ; >= XEmacs 19.14
+        (progn
+          (set-buffer "*Help*")
+          (setq font-lock-defaults-computed nil
+                font-lock-keywords nil)
+          (font-lock-set-defaults-1
+           (and defaults (font-lock-find-font-lock-defaults defaults)))
+          (font-lock-fontify-buffer)
+          (setq font-lock-defaults-computed nil
+                font-lock-keywords nil)
+          (font-lock-set-defaults-1)))))
 
 (defun bib-cite-fontify-help-as-bibtex ()
   (save-excursion
@@ -1255,7 +1253,7 @@ to create a bibtex file containing only the references used in the document."
      ((not (featurep 'font-lock))
       nil)                              ;No font-lock! Stop here.
      ;; font-lock under Emacs and XEmacs
-     ((string-match "XEmacs\\|Lucid" emacs-version)
+     ((featurep 'xemacs)
       ;; XEmacs
       (bib-cite-fontify-help-xemacs 'bibtex-mode))
      (t
@@ -1264,9 +1262,10 @@ to create a bibtex file containing only the references used in the document."
       (let ((font-lock-defaults
 	     '(bib-cite-bibtex-font-lock-keywords
 	       nil t ((?$ . "\"")(?\" . ".")))))
-	(if font-lock-mode
-	    (font-lock-mode)
-	  (if (fboundp 'font-lock-unset-defaults) (font-lock-unset-defaults))
+	(if (not font-lock-mode)
+	    (font-lock-mode 1)
+	  (if (fboundp 'font-lock-unset-defaults)
+	      (font-lock-unset-defaults))
 	  (font-lock-unfontify-buffer))
 	(font-lock-fontify-buffer))))))
 
@@ -1276,7 +1275,7 @@ to create a bibtex file containing only the references used in the document."
      ((not (featurep 'font-lock))
       nil)                              ;No font-lock! Stop here.
      ;; font-lock under Emacs and XEmacs
-     ((string-match "XEmacs\\|Lucid" emacs-version)
+     ((featurep 'xemacs)
       ;; XEmacs, not necessary to do s.th. special for font-latex, we do *not*
       ;; want the buffer-local faces!
       (bib-cite-fontify-help-xemacs 'latex-mode))
@@ -1298,9 +1297,10 @@ to create a bibtex file containing only the references used in the document."
 		   (font-lock-comment-start-regexp . "%")
 		   (font-lock-mark-block-function . mark-paragraph))
 	       '(tex-font-lock-keywords nil nil ((?$ . "\""))))))
-	(if font-lock-mode
-	    (font-lock-mode)
-	  (if (fboundp 'font-lock-unset-defaults) (font-lock-unset-defaults))
+	(if (not font-lock-mode)
+	    (font-lock-mode 1)
+	  (if (fboundp 'font-lock-unset-defaults)
+	      (font-lock-unset-defaults))
 	  (font-lock-unfontify-buffer))
 	(font-lock-fontify-buffer))))))
 
@@ -1347,7 +1347,7 @@ See variables bib-etags-command and bib-etags-filename"
     ;;  tags-file-name set.
     ;;  To get around this.  I'm setting this variable in the TAGS buffer.
     ;; Skip this in XEmacs (Changed by Anders Stenman)
-    (if (and (not (string-match "XEmacs\\|Lucid" emacs-version))
+    (if (and (not (featurep 'xemacs))
 	     (get-file-buffer the-tags-file))
 	(with-current-buffer (get-file-buffer the-tags-file)
 	  (set (make-local-variable 'tags-file-name) the-tags-file))))
@@ -1390,7 +1390,7 @@ See variables bib-etags-command and bib-etags-filename"
       ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
       ;;   properties first.
       (setq bib-ext-list nil)		;Reconstructed below...
-      (if (string-match "XEmacs\\|Lucid" emacs-version)
+      (if (featurep 'xemacs)
 	  (while local-extent-list
 	    (setq extent (car local-extent-list))
 	    (if (or (extent-detached-p extent)
@@ -1415,7 +1415,7 @@ See variables bib-etags-command and bib-etags-filename"
 	(setq s (match-beginning 0))
 	(setq e (match-end 0))
 	(cond
-	 ((string-match "XEmacs\\|Lucid" emacs-version)
+	 ((featurep 'xemacs)
 	  (setq extent (make-extent s e))
 	  (setq bib-ext-list (cons extent bib-ext-list))
 	  (set-extent-property extent 'highlight t)
@@ -1448,7 +1448,7 @@ See variables bib-etags-command and bib-etags-filename"
     (let ((modified (buffer-modified-p))
 	  (inhibit-read-only t))
       (cond
-       ((string-match "XEmacs\\|Lucid" emacs-version)
+       ((featurep 'xemacs)
 	(while bib-ext-list
 	  (delete-extent (car bib-ext-list))
 	  (setq bib-ext-list (cdr bib-ext-list))))
@@ -1726,7 +1726,7 @@ If within a multi-file document (in auctex only)
     (if (looking-at "\n")  ;Remove first empty line...
 	(delete-char 1))
     (with-output-to-temp-buffer "*Help*"
-      (princ (buffer-substring 1 (point-max))))
+      (princ (buffer-substring (point-min) (point-max))))
     (bib-cite-fontify-help-as-latex)
     (kill-buffer "*BiBTemp*"))
    (t
@@ -2307,7 +2307,7 @@ Makes sure TAGS file exists, etc."
     ;; find-tag-noselect should set the TAGS file for the new buffer
     ;; that's what C-h f visit-tags-table says...
     (cond
-     ((string-match "XEmacs\\|Lucid" emacs-version)
+     ((featurep 'xemacs)
       (find-tag tag)
       (setq new-buffer (current-buffer))
       (set-buffer the-buffer))
@@ -2420,6 +2420,10 @@ although BiBTeX doesn't allow it!"
 	    (setq doNext nil)))
 	(mapcar 'list the-list)))))
 
+(defvar TeX-auto-save)
+(defvar TeX-auto-update)
+(defvar TeX-auto-regexp-list)
+
 ;; BibTeX-mode key def to create AUCTeX's parsing file.
 (defun bib-create-auto-file ()
   "Force the creation of the AUCTeX auto file for a bibtex buffer."
@@ -2427,8 +2431,8 @@ although BiBTeX doesn't allow it!"
   (if (not (require 'latex))
       (error "Sorry, This is only useful if you have AUCTeX"))
   (let ((TeX-auto-save t)
-       (TeX-auto-update t)
-       (TeX-auto-regexp-list BibTeX-auto-regexp-list))
+        (TeX-auto-update t)
+        (TeX-auto-regexp-list BibTeX-auto-regexp-list))
     ;; TeX-auto-write
     ;; -> calls TeX-auto-store
     ;;    -> calls TeX-auto-parse

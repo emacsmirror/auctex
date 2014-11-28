@@ -365,9 +365,9 @@ asked if it is positive, and suppressed if it is not."
     ;; the command, but keep them if the command to be run is View.
     (unless (string= name "View")
       (if (frame-live-p TeX-error-overview-frame)
-		   (delete-frame TeX-error-overview-frame))
-     (if (get-buffer TeX-error-overview-buffer-name)
-	 (kill-buffer TeX-error-overview-buffer-name)))
+	  (delete-frame TeX-error-overview-frame))
+      (if (get-buffer TeX-error-overview-buffer-name)
+	  (kill-buffer TeX-error-overview-buffer-name)))
 
     ;; Now start the process
     (setq file (funcall file))
@@ -1383,6 +1383,14 @@ The hooks are run in the region buffer, you may use the variable
 	    pos (+ pos 8))))
   file)
 
+(defvar font-lock-mode-enable-list)
+(defvar font-lock-auto-fontify)
+(defvar font-lock-defaults-alist)
+
+(defvar TeX-region-orig-buffer nil
+  "The original buffer in which the TeX-region was created.")
+(make-variable-buffer-local 'TeX-region-orig-buffer)
+
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION.
 The region is taken from ORIGINAL starting at line OFFSET.
@@ -1410,7 +1418,14 @@ original file."
 	 (font-lock-auto-fontify nil)
 	 (font-lock-mode-enable-list nil)
 	 ;; And insert them into the FILE buffer.
-	 (file-buffer (let ((TeX-transient-master t))
+	 (file-buffer (let (;; Don't query for master file
+			    (TeX-transient-master t)
+			    ;; Don't choose a special mode (and call its hooks)
+			    (auto-mode-alist nil)
+			    (magic-mode-alist nil)
+			    (enable-local-variables nil)
+			    ;; Don't run any f-f hooks
+			    (find-file-hook nil))
 			(find-file-noselect file)))
 	 ;; But remember original content.
 	 original-content
@@ -1432,7 +1447,7 @@ original file."
 			       ""
 			     (re-search-forward "[\r\n]" nil t)
 			     (buffer-substring (point-min) (point)))))))))
-
+	 (header-offset 0)
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
@@ -1458,29 +1473,40 @@ original file."
 					original (TeX-master-directory)))
 	  master-name (TeX-quote-filename master-name))
     (with-current-buffer file-buffer
-      (setq buffer-undo-list t)
+      (setq buffer-read-only t
+	    buffer-undo-list t)
       (setq original-content (buffer-string))
-      (erase-buffer)
-      (when (boundp 'buffer-file-coding-system)
-	(setq buffer-file-coding-system
-	      (with-current-buffer master-buffer buffer-file-coding-system)))
-      (insert "\\message{ !name(" master-name ")}"
-	      header
-	      TeX-region-extra
-	      "\n\\message{ !name(" original ") !offset(")
-      (insert (int-to-string (- offset
-				(1+ (TeX-current-offset))))
-	      ") }\n"
-	      region
-	      "\n\\message{ !name("  master-name ") !offset(")
-      (insert (int-to-string (- trailer-offset
-				(1+ (TeX-current-offset))))
-	      ") }\n"
-	      trailer)
-      (run-hooks 'TeX-region-hook)
-      (if (string-equal (buffer-string) original-content)
-	  (set-buffer-modified-p nil)
-	(save-buffer 0)))))
+      (let ((inhibit-read-only t))
+	(erase-buffer)
+	(when (boundp 'buffer-file-coding-system)
+	  (setq buffer-file-coding-system
+		(with-current-buffer master-buffer buffer-file-coding-system)))
+	(insert "\\message{ !name(" master-name ")}"
+		header
+		TeX-region-extra
+		"\n\\message{ !name(" original ") !offset(")
+	(setq header-offset (- offset
+			       (1+ (TeX-current-offset))))
+	(insert (int-to-string header-offset)
+		") }\n"
+		region
+		"\n\\message{ !name("  master-name ") !offset(")
+	(insert (int-to-string (- trailer-offset
+				  (1+ (TeX-current-offset))))
+		") }\n"
+		trailer)
+	(setq TeX-region-orig-buffer orig-buffer)
+	;; Position point at the line/col that corresponds to point's line in
+	;; orig-buffer in order to make forward search work.
+	(let ((line-col (with-current-buffer orig-buffer
+			  (cons (line-number-at-pos)
+				(current-column)))))
+	  (goto-line (abs (- header-offset (car line-col))))
+	  (forward-char (cdr line-col)))
+	(run-hooks 'TeX-region-hook)
+	(if (string-equal (buffer-string) original-content)
+	    (set-buffer-modified-p nil)
+	  (save-buffer 0))))))
 
 (defun TeX-region-file (&optional extension nondirectory)
   "Return TeX-region file name with EXTENSION.
@@ -1498,6 +1524,72 @@ the directory."
   "*Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
   :group 'TeX-command
   :type 'string)
+
+(defvar LaTeX-command-section-level nil
+  "The section level used for `LaTeX-command-section'.
+Will be initialized to `LaTeX-largest-level' buffer-locally.")
+(make-variable-buffer-local 'LaTeX-command-section-level)
+
+(defun LaTeX-command-section-level ()
+  "Return the value of `LaTeX-command-section-level'.
+Initialize it to `LaTeX-largest-level' if needed."
+  (unless LaTeX-command-section-level
+    (setq LaTeX-command-section-level LaTeX-largest-level))
+  LaTeX-command-section-level)
+
+(defun LaTeX-command-section-change-level (arg)
+  "Change `LaTeX-command-section-level' by ARG.
+`LaTeX-command-section-level' is the sectioning level used to
+determine the current section by `LaTeX-command-section'.  The
+levels are defined by `LaTeX-section-list'."
+  (interactive "p")
+  (let ((old-level (car (rassoc (list (LaTeX-command-section-level))
+				LaTeX-section-list))))
+    (setq LaTeX-command-section-level (+ LaTeX-command-section-level arg))
+    (cond
+     ((> LaTeX-command-section-level 6)
+      (setq LaTeX-command-section-level 6)
+      (message "Cannot shrink LaTeX-command-section-level below subparagraph."))
+     ((< LaTeX-command-section-level 0)
+      (setq LaTeX-command-section-level 0)
+      (message "Cannot enlarge LaTeX-command-section-level above part."))
+     (t (message "Changed level from %s to %s."
+		 old-level (car (rassoc (list LaTeX-command-section-level)
+					LaTeX-section-list)))))))
+
+(defun LaTeX-command-section (&optional override-confirm)
+  "Run a command on the current section.
+
+What makes the current section is defined by
+`LaTeX-command-section-level' which can be enlarged or shrunken
+with `LaTeX-command-section-change-level'.
+
+Query the user for a command to run on the temporary file
+specified by the variable `TeX-region'.  The region file will be
+recreated from current section.
+
+If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
+depend on it being positive instead of the entry in
+`TeX-command-list'."
+  (interactive "P")
+  (let* ((case-fold-search t)
+	 (rx (concat "\\\\" (regexp-opt
+			     (mapcar
+			      (lambda (level)
+				(car (rassoc (list level) LaTeX-section-list)))
+			      (let (r)
+				(dotimes (i (1+ (LaTeX-command-section-level)))
+				  (push i r))
+				r)))
+		     "{"))
+	 (TeX-command-region-begin (save-excursion
+				     (re-search-backward rx nil t)
+				     (point)))
+	 (TeX-command-region-end (save-excursion
+				   (re-search-forward rx nil t)
+				   (forward-line 0)
+				   (point))))
+    (TeX-command-region override-confirm)))
 
 ;;; Parsing
 

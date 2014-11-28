@@ -186,10 +186,10 @@ Delete the innermost font specification containing point.
 
 @end table
 
-If you want to change font attributes of existing text, mark it as a
-region, and then invoke the commands.  If no region is selected, the
-command will be inserted with empty braces, and you can start typing the
-changed text.
+If you want to change font attributes of existing text, mark it as an
+active region, and then invoke the commands.  If no region is selected,
+the command will be inserted with empty braces, and you can start typing
+the changed text.
 
 Most of those commands will also work in math mode, but then macros like
 @code{\mathbf} will be inserted.

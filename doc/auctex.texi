@@ -2655,6 +2655,22 @@ file.  The command is then actually run on the region file.  See above
 for details.
 @end deffn
 
+@deffn Command LaTeX-command-section
+@kindex C-c C-z
+(@kbd{C-c C-z}) Query the user for a command, and apply it to the
+current section (or part, chapter, subsection, paragraph, or
+subparagraph).  What makes the current section is determined by
+@code{LaTeX-command-section-level} which can be enlarged/shrunken using
+@code{LaTeX-command-section-change-level} (@kbd{C-c M-z}).  The given
+numeric prefix arg is added to the current value of
+@code{LaTeX-command-section-level}.  By default,
+@code{LaTeX-command-section-level} is initialized with the current
+document's @code{LaTeX-largest-level}.  The buffer contents are written
+into the region file, after extracting the header and trailer from the
+master file.  The command is then actually run on the region file.  See
+@code{TeX-command-region} for details.
+@end deffn
+
 @defopt TeX-region
 The name of the file for temporarily storing the text when formatting
 the current region.
@@ -2699,7 +2715,7 @@ process associated with the current document.
 @node Selecting a Command
 @subsection Selecting and Executing a Command
 
-Once you started the command selection with @kbd{C-c C-c}, @kbd{C-c C-s}
+Once you started the command selection with @kbd{C-c C-c}, @kbd{C-c C-r}
 or @kbd{C-c C-b} you will be prompted for the type of command.
 @AUCTeX{} will try to guess which command is appropriate in the given
 situation and propose it as default.  Usually this is a processor like
@@ -2786,7 +2802,7 @@ should be produced, if @TeX{} should be started in interactive or
 nonstop mode, if source specials or a Sync@TeX{} file should be produced
 for making inverse and forward search possible or which @TeX{} engine
 should be used instead of regular @TeX{}, like PDF@TeX{}, Omega or
-Xe@TeX{}.
+Xe@TeX{}, and the style error messages are printed with.
 
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
@@ -2929,6 +2945,13 @@ produced.
 If non-nil, the output of @TeX{} compilation is shown in another window.
 @end defopt
 
+You can instruct @TeX{} to print error messages in the form
+file:line:error which is similar to the way many compilers format them.
+
+@defopt TeX-file-line-error
+If non-nil, @TeX{} will produce file:line:error style error messages.
+@end defopt
+
 @node Viewing
 @section Viewing the Formatted Output
 @cindex Viewing
@@ -3021,6 +3044,12 @@ conditionalized by prefixing them with predicates from
 exact format to use.)  The command line can also contain placeholders as
 defined in @code{TeX-expand-list} which are expanded before the viewer
 is called.
+
+The third element of each item is a string, or a list of strings, with
+the name of the executable, or executables, needed to open the output
+file in the viewer.  Placeholders defined in @code{TeX-expand-list} can
+be used here.  This element is optional and is used to check whether the
+viewer is actually available on the system.
 
 A built-in viewer spec from @code{TeX-view-program-list-builtin} can be
 overwritten by defining a new viewer spec with the same name.
@@ -4097,7 +4126,6 @@ files will be executed.
 
 @defopt TeX-style-path
 List of directories to search for @AUCTeX{} style files.
-Each must end with a slash.
 @end defopt
 
 By default, when @AUCTeX{} searches a directory for files, it will
@@ -4145,7 +4173,6 @@ Directories containing the site's @TeX{} style files.
 
 @defopt TeX-style-global
 Directory containing hand generated @TeX{} information.
-Must end with a slash.
 
 These correspond to @TeX{} macros shared by all users of a site.
 @end defopt
@@ -4218,14 +4245,12 @@ set @code{TeX-auto-local} to nil.
 
 @defopt TeX-style-local
 Directory containing hand generated @TeX{} information.
-Must end with a slash.
 
 These correspond to @TeX{} macros found in the current directory.
 @end defopt
 
 @defopt TeX-auto-local
 Directory containing automatically generated @TeX{} information.
-Must end with a slash.
 
 These correspond to @TeX{} macros found in the current directory.
 @end defopt

@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2014 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -128,18 +128,20 @@ error in your init file.
 @item
 Why does @code{TeX-next-error} (@kbd{C-c `}) fail?
 
-When writing the log file, @TeX{} puts information related to a file,
-including error messages, between a pair of parentheses.  @AUCTeX{}
+If @code{TeX-file-line-error} is set to nil (not the default), these
+sort of failures might be related to the the fact that when writing the
+log file, @TeX{} puts information related to a file, including error
+messages, between a pair of parentheses.  In this scenario @AUCTeX{}
 determines the file where the error happened by parsing the log file and
 counting the parentheses.  This can fail when there are other,
 unbalanced parentheses present.
 
-As a workaround you can activate so-called file:line:error messages for
-the log file.  (Those are are easier to parse, but may lack some
-details.)  Either you do this in the configuration of your @TeX{} system
-(consult its manual to see where this is) or you add a command line
-switch to the (la)tex call, e.g. by customizing
-@code{LaTeX-command-style} or @code{TeX-command-list}.
+Activating so-called file:line:error messages for the log file usually
+solves this issue, as these kind of messages are are easier to parse;
+however, they may lack some details.  Activation can be done either in
+the configuration of your @TeX{} system (consult its manual to see where
+this is) or by simply keeping the variable @code{TeX-file-line-error} to
+the default value of non-nil.
 
 @item
 What does AUC stand for?

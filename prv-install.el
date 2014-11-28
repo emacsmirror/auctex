@@ -1,6 +1,6 @@
 ;;; prv-install.el --- Complicated install-time magic for preview-latex.
 
-;; Copyright (C) 2002, 2005  Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2005, 2014  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -105,7 +105,7 @@ package name, and version (to be evaluated), followed by a file to append."
       (fset 'message si:message))
     (while (setq append-file (pop command-line-args-left))
       (when (file-exists-p generated-autoload-file)
-	(with-temp-buffer (insert-file append-file)
+	(with-temp-buffer (insert-file-contents append-file)
 			  (append-to-file (point-min) (point-max)
 					  generated-autoload-file))))
     (byte-compile-file generated-autoload-file)))

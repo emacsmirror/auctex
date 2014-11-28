@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class
 
-;; Copyright (C) 2003, 2004, 2005, 2008, 2013 Free Software Foundation
+;; Copyright (C) 2003, 2004, 2005, 2008, 2013, 2014 Free Software Foundation
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -87,7 +87,7 @@
     '("beamerskipbutton" 1)
     '("frame" TeX-arg-beamer-frametitle)
     '("frametitle"
-      (TeX-arg-eval read-string "Title: " nil 'LaTeX-beamer-frametitle-history))
+      (TeX-arg-eval TeX-read-string "Title: " nil 'LaTeX-beamer-frametitle-history))
     '("hyperlink" TeX-arg-beamer-overlay-spec 2)
     '("hyperlinkslideprev" TeX-arg-beamer-overlay-spec 1)
     '("hyperlinkslidenext" TeX-arg-beamer-overlay-spec 1)
@@ -130,13 +130,13 @@
     '("beamerboxesrounded" 1)
     '("block" (lambda (env &rest ignore)
 		(LaTeX-insert-environment
-		 env (format "{%s}" (read-string "Title: ")))))
+		 env (format "{%s}" (TeX-read-string "Title: ")))))
     '("column" "Width")
     "columns"
     "columnsonlytextwidth"
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
-		 (let ((title (read-string "(Optional) Title: " nil
+		 (let ((title (TeX-read-string "(Optional) Title: " nil
 					   'LaTeX-beamer-frametitle-history)))
 		   (LaTeX-insert-environment env)
 		   (unless (zerop (length title))
@@ -152,14 +152,14 @@
     '("onlyenv" (lambda (env &rest ignore)
 		  (LaTeX-insert-environment
 		   env
-		   (let ((overlay (read-string "(Optional) Overlay: ")))
+		   (let ((overlay (TeX-read-string "(Optional) Overlay: ")))
 		     (unless (zerop (length overlay))
 		       (format "<%s>" overlay))))))
     '("overlayarea" "Area width" "Area height")
     '("overprint"  (lambda (env &rest ignore)
 		     (LaTeX-insert-environment
 		      env
-		      (let ((width (read-string "(Optional) Area width: ")))
+		      (let ((width (TeX-read-string "(Optional) Area width: ")))
 			(unless (zerop (length width))
 			  (format "[%s]" width))))))
     "semiverbatim")
@@ -192,14 +192,14 @@
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
   "Prompt for overlay specification."
-  (let ((overlay (read-string "(Optional) Overlay: ")))
+  (let ((overlay (TeX-read-string "(Optional) Overlay: ")))
     (unless (zerop (length overlay))
       (insert "<" overlay ">"))
     (indent-according-to-mode)))
 
 (defun TeX-arg-beamer-frametitle (optional &optional prompt)
   "Prompt for the frametitle."
-  (let ((title (read-string "Title: " nil 'LaTeX-beamer-frametitle-history)))
+  (let ((title (TeX-read-string "Title: " nil 'LaTeX-beamer-frametitle-history)))
     (if (not (zerop (length title)))
         (insert TeX-grop TeX-esc "frametitle" TeX-grop
 		title TeX-grcl TeX-grcl)
@@ -223,8 +223,8 @@ unconditionally."
 
 (defun TeX-arg-beamer-note (optional &optional prompt)
   "Prompt for overlay specification and optional argument."
-  (let ((overlay (read-string "(Optional) Overlay: "))
-        (options (read-string "(Optional) Options: ")))
+  (let ((overlay (TeX-read-string "(Optional) Overlay: "))
+        (options (TeX-read-string "(Optional) Options: ")))
     (unless (zerop (length overlay))
       (insert "<" overlay ">"))
     (unless (zerop (length options))

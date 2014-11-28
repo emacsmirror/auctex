@@ -30,7 +30,7 @@
 
 (require 'tex)
 (require 'tex-style)
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 
 ;;; Syntax
 
@@ -106,6 +106,13 @@ This depends on `LaTeX-insert-into-comments'."
 		       LaTeX-mode-syntax-table))
 
 ;;; Sections
+
+;; Declare dynamically scoped vars.
+(defvar title)
+(defvar name)
+(defvar level)
+(defvar done-mark)
+(defvar toc)
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -445,7 +452,7 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (setq title (read-string "Title: " title))
+  (setq title (TeX-read-string "Title: " title))
   (let ((region (and (TeX-active-mark)
 		     (cons (region-beginning) (region-end)))))
     (when region (delete-region (car region) (cdr region)))))
@@ -454,7 +461,7 @@ the title of the section inserted with `\\[LaTeX-section]."
   "Hook to prompt for the LaTeX section entry in the table of content .
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
 a different entry for the section in the table of content."
-  (setq toc (read-string "Toc Entry: "))
+  (setq toc (TeX-read-string "Toc Entry: "))
   (if (zerop (length toc))
       (setq toc nil)))
 
@@ -590,7 +597,7 @@ It may be customized with the following variables:
 	     (dolist (elt prompts)
 	       (let* ((optional (vectorp elt))
 		      (elt (if optional (elt elt 0) elt))
-		      (arg (read-string (concat (when optional "(Optional) ")
+		      (arg (TeX-read-string (concat (when optional "(Optional) ")
 						elt ": "))))
 		 (setq args (concat args
 				    (cond ((and optional (> (length arg) 0))
@@ -792,7 +799,7 @@ work analogously."
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun LaTeX-env-document (&optional ignore)
+(defun LaTeX-env-document (&optional _ignore)
   "Create new LaTeX document.
 Also inserts a \\documentclass macro if there's none already and
 prompts for the insertion of \\usepackage macros.
@@ -926,7 +933,14 @@ If nil, act like the empty string is given, but do not prompt."
     ("eqnarray" . LaTeX-eqnarray-label))
   "Lookup prefixes for labels.
 An alist where the CAR is the environment name, and the CDR
-either the prefix or a symbol referring to one."
+either the prefix or a symbol referring to one.
+
+If the name is not found, or if the CDR is nil, no label is
+automatically inserted for that environment.
+
+If you want to automatically insert a label for a environment but
+with an empty prefix, use the empty string \"\" as the CDR of the
+corresponding entry."
   :group 'LaTeX-label
   :type '(repeat (cons (string :tag "Environment")
 		       (choice (string :tag "Label prefix")
@@ -934,10 +948,16 @@ either the prefix or a symbol referring to one."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defun LaTeX-label (name type)
+(defun LaTeX-label (name &optional type)
   "Insert a label for NAME at point.
-TYPE can be either environment or section.  If
-`LaTeX-label-function' is a valid function, LaTeX label will
+The optional TYPE argument can be either environment or section:
+in the former case this function looks up `LaTeX-label-alist' to
+choose which prefix to use for the label, in the latter case
+`LaTeX-section-label' will be looked up instead.  If TYPE is nil,
+you will be always prompted for a label, with an empty default
+prefix.
+
+If `LaTeX-label-function' is a valid function, LaTeX label will
 transfer the job to this function."
   (let ((prefix (cond
 		 ((eq type 'environment)
@@ -948,7 +968,11 @@ transfer the job to this function."
 			  LaTeX-section-label
 			(and (listp LaTeX-section-label)
 			     (cdr (assoc name LaTeX-section-label))))
-		    ""))))
+		    ""))
+		 ((null type)
+		  "")
+		 (t
+		  nil)))
 	label)
     (when (symbolp prefix)
       (setq prefix (symbol-value prefix)))
@@ -976,8 +1000,8 @@ transfer the job to this function."
   "Create ENVIRONMENT with \\caption and \\label commands."
   (let ((float (and LaTeX-float		; LaTeX-float can be nil, i.e.
 					; do not prompt
-		    (read-string "(Optional) Float position: " LaTeX-float)))
-	(caption (read-string "Caption: "))
+		    (TeX-read-string "(Optional) Float position: " LaTeX-float)))
+	(caption (TeX-read-string "Caption: "))
 	(center (y-or-n-p "Center? "))
 	(active-mark (and (TeX-active-mark)
 			  (not (eq (mark) (point)))))
@@ -997,7 +1021,8 @@ transfer the job to this function."
     (when center
       (insert TeX-esc "centering")
       (indent-according-to-mode)
-      (LaTeX-newline))
+      (LaTeX-newline)
+      (indent-according-to-mode))
     ;; Insert caption and ask for a label, do nothing if user skips caption
     (unless (zerop (length caption))
       (if (member environment LaTeX-top-caption-list)
@@ -1043,8 +1068,8 @@ transfer the job to this function."
 Just like array and tabular."
   (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
 					; be nil, i.e. do not prompt
-		  (read-string "(Optional) Position: " LaTeX-default-position)))
-	(fmt (read-string "Format: " LaTeX-default-format)))
+		  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
+	(fmt (TeX-read-string "Format: " LaTeX-default-format)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
@@ -1063,7 +1088,7 @@ Just like array and tabular."
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
-  (let ((label (read-string "Default Label: ")))
+  (let ((label (TeX-read-string "Default Label: ")))
     (LaTeX-insert-environment environment
 			      (format "{%s}{}" label))
     (end-of-line 0)
@@ -1075,8 +1100,8 @@ Just like array and tabular."
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
   (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
 					; be nil, i.e. do not prompt
-		  (read-string "(Optional) Position: " LaTeX-default-position)))
-	(width (read-string "Width: " LaTeX-default-width)))
+		  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
+	(width (TeX-read-string "Width: " LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
     (LaTeX-insert-environment environment
@@ -1087,11 +1112,11 @@ Just like array and tabular."
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
-  (let ((width (read-string "Width: " LaTeX-default-width))
+  (let ((width (TeX-read-string "Width: " LaTeX-default-width))
 	(pos (and LaTeX-default-position ; LaTeX-default-position can
 					; be nil, i.e. do not prompt
-		  (read-string "(Optional) Position: " LaTeX-default-position)))
-	(fmt (read-string "Format: " LaTeX-default-format)))
+		  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
+	(fmt (TeX-read-string "Format: " LaTeX-default-format)))
     (setq LaTeX-default-width width)
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
@@ -1105,10 +1130,10 @@ Just like array and tabular."
 
 (defun LaTeX-env-picture (environment)
   "Insert ENVIRONMENT with width, height specifications."
-  (let ((width (read-string "Width: "))
-	(height (read-string "Height: "))
-	(x-offset (read-string "X Offset: "))
-	(y-offset (read-string "Y Offset: ")))
+  (let ((width (TeX-read-string "Width: "))
+	(height (TeX-read-string "Height: "))
+	(x-offset (TeX-read-string "X Offset: "))
+	(y-offset (TeX-read-string "Y Offset: ")))
     (if (zerop (length x-offset))
 	(setq x-offset "0"))
     (if (zerop (length y-offset))
@@ -1124,7 +1149,7 @@ Just like array and tabular."
   "Insert ENVIRONMENT with label for bibitem."
   (LaTeX-insert-environment environment
 			    (concat TeX-grop
-				    (read-string "Label for BibItem: " "99")
+				    (TeX-read-string "Label for BibItem: " "99")
 				    TeX-grcl))
   (end-of-line 0)
   (delete-char 1)
@@ -1138,7 +1163,7 @@ Just like array and tabular."
       (error "Put %s environment before \\begin{document}" environment)))
   (LaTeX-insert-environment environment
 			    (concat TeX-grop
-				    (read-string "File: ")
+				    (TeX-read-string "File: ")
 				    TeX-grcl))
   (delete-horizontal-space))
 
@@ -1169,6 +1194,8 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 	(funcall (cdr (assoc environment LaTeX-item-list)))
       (TeX-insert-macro "item"))
     (indent-according-to-mode)))
+
+(defvar TeX-arg-item-label-p)
 
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
@@ -1479,8 +1506,10 @@ The input string may include LaTeX comments and newlines."
 			   (point))))
 	 ;; Add entry to output.
 	 ((or (string= match ",") (= (point) (point-max)))
-	  (add-to-list 'opts (buffer-substring-no-properties
-			      start (1- (point))) t)
+          (let ((entry (buffer-substring-no-properties
+                        start (1- (point)))))
+            (unless (member entry opts)
+              (setq opts (append opts (list entry)))))
 	  (setq start (point)))
 	 ;; Get rid of comments.
 	 ((string= match "%")
@@ -1711,6 +1740,8 @@ list of defined labels."
 	(LaTeX-add-labels label))
     (TeX-argument-insert label optional optional)))
 
+(defvar reftex-ref-macro-prompt)
+
 (defun TeX-arg-ref (optional &optional prompt definition)
   "Let-bind `reftex-ref-macro-prompt' to nil and pass arguments
 to `TeX-arg-label'.
@@ -1720,7 +1751,7 @@ arguments: OPTIONAL, PROMPT, and DEFINITION."
   (let ((reftex-ref-macro-prompt nil))
     (TeX-arg-label optional prompt definition)))
 
-(defun TeX-arg-index-tag (optional &optional prompt &rest args)
+(defun TeX-arg-index-tag (optional &optional prompt &rest _args)
   "Prompt for an index tag.
 This is the name of an index, not the entry.
 
@@ -1728,7 +1759,7 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  ARGS is unused."
   (TeX-argument-insert
-   (read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
+   (TeX-read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
 
 (defun TeX-arg-index (optional &optional prompt &rest args)
   "Prompt for an index entry completing with known entries.
@@ -1952,7 +1983,7 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun TeX-arg-document (optional &optional ignore)
+(defun TeX-arg-document (optional &optional _ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
@@ -1988,7 +2019,7 @@ OPTIONAL and IGNORE are ignored."
 				  LaTeX-default-options
 				(mapconcat 'identity LaTeX-default-options ",")))
 			     ","))))
-      (setq options (read-string "Options: ")))
+      (setq options (TeX-read-string "Options: ")))
     (unless (zerop (length options))
       (insert LaTeX-optop options LaTeX-optcl)
       (let ((opts (LaTeX-listify-package-options options)))
@@ -2052,7 +2083,7 @@ of the options, nil otherwise."
 			       (TeX-completing-read-multiple
 				"Options: " (mapcar 'list (symbol-value var)))
 			       ","))))
-	(setq options (read-string "Options: ")))
+	(setq options (TeX-read-string "Options: ")))
       (cons packages options))))
 
 (defun LaTeX-arg-usepackage-insert (packages options)
@@ -2067,7 +2098,7 @@ of the options, nil otherwise."
   (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)
   (run-hooks 'LaTeX-after-usepackage-hook))
 
-(defun LaTeX-arg-usepackage (optional)
+(defun LaTeX-arg-usepackage (_optional)
   "Insert arguments to usepackage.
 OPTIONAL is ignored."
   (let* ((packages-options (LaTeX-arg-usepackage-read-packages-with-options))
@@ -2314,7 +2345,7 @@ the list of defined pagestyles."
   :group 'LaTeX-macro
   :type 'character)
 
-(defun TeX-arg-verb (optional &optional ignore)
+(defun TeX-arg-verb (optional &optional _ignore)
   "Prompt for delimiter and text.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  IGNORE is ignored."
@@ -2338,8 +2369,8 @@ comma.
 
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one."
-  (insert "(" (read-string (concat first  ": ")) ","
-	      (read-string (concat second ": ")) ")"))
+  (insert "(" (TeX-read-string (concat first  ": ")) ","
+	      (TeX-read-string (concat second ": ")) ")"))
 
 (defun TeX-arg-size (optional)
   "Insert width and height as a pair.
@@ -2462,6 +2493,8 @@ OPTIONAL is ignored."
 	(LaTeX-insert-corresponding-right-macro-and-brace
 	 left-macro left-brace optional)))))
 
+(defvar TeX-arg-right-insert-p)
+
 (defun LaTeX-insert-left-brace (arg)
   "Insert typed left brace ARG times and possibly a correspondig right brace.
 Automatic right brace insertion is done only if no prefix ARG is given and
@@ -2581,7 +2614,7 @@ Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  Use PROMPT as the
 prompt string.  `LaTeX-default-author' is the initial input."
   (let ((author (if LaTeX-default-author
-		    (read-string
+		    (TeX-read-string
 		     (TeX-argument-prompt optional prompt "Author(s)")
 		     (if (symbolp LaTeX-default-author)
 			 (symbol-value LaTeX-default-author)
@@ -2941,7 +2974,8 @@ Lines starting with an item is given an extra indentation of
     ;; the 'invisible property.
     (dolist (ol overlays)
       (when (extent-property ol 'invisible)
-	(add-to-list 'ol-specs (list ol (extent-property ol 'invisible)))
+        (pushnew (list ol (extent-property ol 'invisible))
+                 ol-specs :test #'equal)
 	(set-extent-property ol 'invisible nil)))
     (save-excursion
       (cond ((and fill-prefix
@@ -3717,8 +3751,7 @@ space does not end a sentence, so don't break a line there."
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
-	  start-point
-	  math-sep)
+	  start-point)
       (save-excursion
 	(beginning-of-line)
 	(LaTeX-back-to-indentation)
@@ -5232,6 +5265,9 @@ environmens."
     (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
     (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
 
+    (define-key map "\C-c\C-z" 'LaTeX-command-section)
+    (define-key map "\C-c\M-z" 'LaTeX-command-section-change-level)
+
     (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
     (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
 
@@ -5263,9 +5299,9 @@ environmens."
   "Create an entry for the change environment menu."
   (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
 
-(defun LaTeX-section-enable-symbol (LEVEL)
+(defun LaTeX-section-enable-symbol (level)
   "Symbol used to enable section LEVEL in the menu bar."
-  (intern (concat "LaTeX-section-" (int-to-string (nth 1 entry)) "-enable")))
+  (intern (concat "LaTeX-section-" (int-to-string level) "-enable")))
 
 (defun LaTeX-section-enable (entry)
   "Enable or disable section ENTRY from `LaTeX-section-list'."
@@ -6299,10 +6335,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 	  (format "\\\\end{%s}"
 		  (regexp-opt
 		   (let (out)
-		     (mapcar (lambda (x)
-			       (when (eq (cadr x) 'LaTeX-indent-tabular)
-				 (push (car x) out)))
-			     LaTeX-indent-environment-list)
+		     (mapc (lambda (x)
+                             (when (eq (cadr x) 'LaTeX-indent-tabular)
+                               (push (car x) out)))
+                           LaTeX-indent-environment-list)
 		     out)))))
      (cond ((looking-at tabular-like-end-regex)
 	    beg-col)

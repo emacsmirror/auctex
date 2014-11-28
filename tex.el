@@ -79,6 +79,11 @@
   :group 'TeX-command
   :type 'string)
 
+(defcustom TeX-file-line-error t
+  "Whether to have TeX produce file:line:error style error messages."
+  :group 'TeX-command
+  :type 'boolean)
+
 (defcustom ConTeXt-engine nil
   "Engine to use for --engine in the texexec command.
 If nil, none is specified."
@@ -112,7 +117,7 @@ If nil, none is specified."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  `(("TeX" "%(PDF)%(tex) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
+  `(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %t"
@@ -301,7 +306,7 @@ The executable `latex' is LaTeX version 2e."
 
 (defcustom LaTeX-command-style
   ;; They have all been combined in LaTeX 2e.
-  '(("" "%(PDF)%(latex) %(extraopts) %S%(PDFout)"))
+  '(("" "%(PDF)%(latex) %(file-line-error) %(extraopts) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
 If the first element (a regular expression) matches the name of one of
@@ -456,6 +461,8 @@ string."
 		 (if TeX-interactive-mode
 		     ""
 		   " -interaction=nonstopmode")))
+    ("%(file-line-error)"
+     (lambda () (if TeX-file-line-error " -file-line-error" "")))
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
     ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
     ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
@@ -1085,6 +1092,8 @@ search are checked, too."
 					       (cdr (caar (cdr elem)))))
 					   spec))))))))
 
+(defvar url-unreserved-chars)
+
 (defun TeX-evince-sync-view ()
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
@@ -1103,27 +1112,30 @@ the requirements are met."
 		 uri
 		 t)))
     (if owner
-	(dbus-call-method
-	 :session owner
-	 "/org/gnome/evince/Window/0"
-	 "org.gnome.evince.Window"
-	 "SyncView"
-	 (buffer-file-name)
-	 (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
-	 :uint32 0)
+	(with-current-buffer (or (when TeX-current-process-region-p
+				   (get-file-buffer (TeX-region-file t)))
+				 (current-buffer))
+	  (dbus-call-method
+	   :session owner
+	   "/org/gnome/evince/Window/0"
+	   "org.gnome.evince.Window"
+	   "SyncView"
+	   (buffer-file-name)
+	   (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
+	   :uint32 0))
       (error "Couldn't find the Evince instance for %s" uri))))
 
 (defvar TeX-view-program-list-builtin
   (cond
    ((eq system-type 'windows-nt)
-    '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o"))
-      ("dvips and start" "dvips %d -o && start \"\" %f")
-      ("start" "start \"\" %o")))
+    '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
+      ("dvips and start" "dvips %d -o && start \"\" %f" ,(list "dvips" "start"))
+      ("start" "start \"\" %o" "start")))
    ((eq system-type 'darwin)
-    '(("Preview.app" "open -a Preview.app %o")
-      ("Skim" "open -a Skim.app %o")
-      ("displayline" "displayline %n %o %b")
-      ("open" "open %o")))
+    '(("Preview.app" "open -a Preview.app %o" "open")
+      ("Skim" "open -a Skim.app %o" "open")
+      ("displayline" "displayline %n %o %b" "displayline")
+      ("open" "open %o" "open")))
    (t
     `(("xdvi" ("%(o?)xdvi"
 	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
@@ -1135,10 +1147,10 @@ the requirements are met."
 	       (paper-letter " -paper us")
 	       (paper-legal " -paper legal")
 	       (paper-executive " -paper 7.25x10.5in")
-	       " %d"))
-      ("dvips and gv" "%(o?)dvips %d -o && gv %f")
-      ("gv" "gv %o")
-      ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")))
+	       " %d") "%(o?)xdvi")
+      ("dvips and gv" "%(o?)dvips %d -o && gv %f" ,(list "%(o?)dvips" "gv"))
+      ("gv" "gv %o" "gv")
+      ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
       ("Evince" ,(if (TeX-evince-dbus-p :forward)
 		     'TeX-evince-sync-view
 		   `("evince" (mode-io-correlate
@@ -1147,9 +1159,9 @@ the requirements are met."
 			       ,(if (string-match "--page-index"
 						  (shell-command-to-string "evince --help"))
 				    " -i %(outpage)"
-				  " -p %(outpage)")) " %o")))
-      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")))
-      ("xdg-open" "xdg-open %o"))))
+				  " -p %(outpage)")) " %o")) "evince")
+      ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
+      ("xdg-open" "xdg-open %o"))) "xdg-open")
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1157,7 +1169,7 @@ definition of built-in ones.  The latter variable also contains a
 description of the data format.")
 
 (defcustom TeX-view-program-list nil
-  "Alist of viewer specifications.
+  "List of viewer specifications.
 This variable can be used to specify how a viewer is to be
 invoked and thereby add new viewers on top of the built-in list
 of viewers defined in `TeX-view-program-list-builtin' or override
@@ -1176,6 +1188,12 @@ the command line parts.  Parts with a predicate are only
 considered if the predicate was evaluated with a positive result.
 Note that the command line can contain placeholders as defined in
 `TeX-expand-list' which are expanded before the viewer is called.
+The third element of the item is optional and is a string, or a
+list of strings, with the name of the executable, or executables,
+needed to open the output file in the viewer.  Placeholders
+defined in `TeX-expand-list' can be used here.  This element is
+used to check whether the viewer is actually available on the
+system.
 
 The use of a function as the second element only works if the
 View command in `TeX-command-list' makes use of the hook
@@ -1186,35 +1204,39 @@ show up in the customization interface for this variable after
 restarting Emacs."
   :group 'TeX-view
   :type
-  `(alist
-    :key-type (string :tag "Name")
-    :value-type
-    (choice
-     (group :tag "Command" (string :tag "Command"))
-     (group :tag "Command parts"
-	    (repeat
-	     :tag "Command parts"
-	     (choice
-	      (string :tag "Command part")
-	      (list :tag "Predicate and command part"
-		    ,(let (list)
-		       ;; Build the list of available predicates.
-		       (mapc (lambda (spec)
-			       (add-to-list 'list `(const ,(car spec))))
-			     (append TeX-view-predicate-list
-				     TeX-view-predicate-list-builtin))
-		       ;; Sort the list alphabetically.
-		       (setq list (sort list
-					(lambda (a b)
-					  (string<
-					   (downcase (symbol-name (cadr a)))
-					   (downcase (symbol-name (cadr b)))))))
-		       `(choice
-			 (choice :tag "Predicate" ,@list)
-			 (repeat :tag "List of predicates"
-				 (choice :tag "Predicate" ,@list))))
-		    (string :tag "Command part")))))
-     (group :tag "Function" function))))
+  `(repeat
+    (list
+     (string :tag "Name")
+     (choice
+      (group :tag "Command" (string :tag "Command"))
+      (group :tag "Command parts"
+	     (repeat
+	      :tag "Command parts"
+	      (choice
+	       (string :tag "Command part")
+	       (list :tag "Predicate and command part"
+		     ,(let (list)
+			;; Build the list of available predicates.
+			(mapc (lambda (spec)
+				(add-to-list 'list `(const ,(car spec))))
+			      (append TeX-view-predicate-list
+				      TeX-view-predicate-list-builtin))
+			;; Sort the list alphabetically.
+			(setq list (sort list
+					 (lambda (a b)
+					   (string<
+					    (downcase (symbol-name (cadr a)))
+					    (downcase (symbol-name (cadr b)))))))
+			`(choice
+			  (choice :tag "Predicate" ,@list)
+			  (repeat :tag "List of predicates"
+				  (choice :tag "Predicate" ,@list))))
+		     (string :tag "Command part")))))
+      (group :tag "Function" function))
+     (choice :tag "Viewer executable(s)"
+	     (string :tag "One executable")
+	     (repeat :tag "List of executables" (string :tag "Name"))
+	     (const :tag "No executable" nil)))))
 
 ;; XXX: Regarding a possibility to (manually) run an update command,
 ;; one could support this through `TeX-view' by letting it temporarily
@@ -1307,16 +1329,31 @@ predicates are true, nil otherwise."
 (defun TeX-view-command-raw ()
   "Choose a viewer and return its unexpanded command string."
   (let ((selection TeX-view-program-selection)
-	entry viewer spec command)
+	entry viewer item executable spec command)
     ;; Find the appropriate viewer.
     (while (and (setq entry (pop selection)) (not viewer))
       (when (TeX-view-match-predicate (car entry))
 	(setq viewer (cadr entry))))
     (unless viewer
       (error "No matching viewer found"))
-    ;; Get the command line or function spec.
-    (setq spec (cadr (assoc viewer (append TeX-view-program-list
-					   TeX-view-program-list-builtin))))
+    (setq item (assoc viewer (append TeX-view-program-list
+				     TeX-view-program-list-builtin))
+	  ;; Get the command line or function spec.
+	  spec (cadr item)
+	  ;; Get the name of the executable(s) associated to the viewer.
+	  executable (nth 2 item))
+    ;; Check the executable exists.
+    (unless (or (null executable)
+		(cond
+		 ((stringp executable)
+		  (executable-find (TeX-command-expand executable nil)))
+		 ((listp executable)
+		  (catch 'notfound
+		    (dolist (exec executable t)
+		      (unless (executable-find (TeX-command-expand exec nil))
+			(throw 'notfound nil)))))))
+      (error (format "Cannot find %S viewer.  \
+Select another one in `TeX-view-program-selection'" viewer)))
     (cond ((functionp spec)
 	   ;; Converting the function call to a string is ugly, but
 	   ;; the backend currently only supports strings.
@@ -1326,7 +1363,7 @@ predicates are true, nil otherwise."
 	  ((null spec)
 	   (error
 	    (format "Unknown %S viewer. \
-Check the `TeX-view-program-selection' variable." viewer)))
+Check the `TeX-view-program-selection' variable" viewer)))
 	  (t
 	   ;; Build the unexpanded command line.  Pieces with predicates are
 	   ;; only added if the predicate is evaluated positively.
@@ -1570,25 +1607,52 @@ or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let ((buf (let ((f (condition-case nil
-			  (progn
-			    (require 'url-parse)
-			    (require 'url-util)
-			    (url-unhex-string (aref (url-generic-parse-url file) 6)))
-			;; For Emacs 21 compatibility, which doesn't have the
-			;; url package.
-			(file-error (replace-regexp-in-string "^file://" "" file)))))
-	       (if (file-name-absolute-p f)
-		   (find-file f)
-		 (get-buffer (file-name-nondirectory file)))))
-	(line (car linecol))
-	(col (cadr linecol)))
+  (let* ((line (car linecol))
+	 (col (cadr linecol))
+	 (region (string= TeX-region (file-name-sans-extension
+				      (file-name-nondirectory file))))
+	 (region-search-string nil)
+	 (buf (let ((f (condition-case nil
+			   (progn
+			     (require 'url-parse)
+			     (require 'url-util)
+			     (url-unhex-string (aref (url-generic-parse-url file) 6)))
+			 ;; For Emacs 21 compatibility, which doesn't have the
+			 ;; url package.
+			 (file-error (replace-regexp-in-string "^file://" "" file)))))
+		(cond
+		 ;; Copy the text referenced by syntex relative in the region
+		 ;; file so that we can search it in the original file.
+		 (region (let ((region-buf (get-buffer (file-name-nondirectory file))))
+			   (when region-buf
+			     (with-current-buffer region-buf
+			       (goto-char (point-min))
+			       (forward-line (1- line))
+			       (let* ((p (point))
+				      (bound (save-excursion
+					       (re-search-backward "\\\\message{[^}]+}" nil t)
+					       (end-of-line)
+					       (point)))
+				      (start (save-excursion
+					       (while (< (- p (point)) 250)
+						 (backward-paragraph))
+					       (point))))
+				 (setq region-search-string (buffer-substring-no-properties
+							     (if (< start bound) bound start)
+							     (point))))
+			       ;; TeX-region-create stores the original buffer
+			       ;; locally as TeX-region-orig-buffer.
+			       (get-buffer TeX-region-orig-buffer)))))
+		 ((file-name-absolute-p f) (find-file f))
+		 (t (get-buffer (file-name-nondirectory file)))))))
     (if (null buf)
 	(message "No buffer for %s." file)
       (switch-to-buffer buf)
       (push-mark (point) 'nomsg)
       (goto-char (point-min))
-      (forward-line (1- line))
+      (if region
+	  (search-forward region-search-string nil t)
+	(forward-line (1- line)))
       (unless (= col -1)
 	(move-to-column col))
       (raise-frame))))
@@ -2267,6 +2331,9 @@ This is done calling `kpsewhich --expand-path' for each variable.
 PROGRAM is passed as the parameter for --progname.  SUBDIRS are
 subdirectories which are appended to the directories of the TeX
 trees.  Only existing directories are returned."
+  ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
+  ;; and uses "filename" for the name of a file even if it contains possibly
+  ;; several elements separated by "/".
   (let (path-list path exit-status input-dir-list)
     (condition-case nil
 	(dolist (var vars)
@@ -2277,9 +2344,9 @@ trees.  Only existing directories are returned."
 					  "--progname" program
 					  "--expand-path" var))))
 	  (when (zerop exit-status)
-	    (add-to-list 'path-list path t)))
+            (pushnew path path-list :test #'equal)))
       (error nil))
-    (dolist (elt path-list)
+    (dolist (elt (nreverse path-list))
       (let ((separators (if (string-match "^[A-Za-z]:" elt)
 			    "[\n\r;]"
 			  "[\n\r:]")))
@@ -2291,11 +2358,11 @@ trees.  Only existing directories are returned."
 	      (dolist (subdir subdirs)
 		(setq path (file-name-as-directory (concat item subdir)))
 		(when (file-exists-p path)
-		  (add-to-list 'input-dir-list path t)))
+                  (pushnew path input-dir-list :test #'equal)))
 	    (setq path (file-name-as-directory item))
 	    (when (file-exists-p path)
-	      (add-to-list 'input-dir-list path t))))))
-    input-dir-list))
+	      (pushnew path input-dir-list :test #'equal))))))
+    (nreverse input-dir-list)))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
@@ -2351,10 +2418,10 @@ These correspond to the personal TeX macros."
   (let ((path))
     ;; Put directories in an order where the more local files can
     ;; override the more global ones.
-    (mapcar (lambda (file) (when file (add-to-list 'path file t)))
-	    (append (list TeX-auto-global TeX-style-global)
-		    TeX-auto-private TeX-style-private
-		    (list TeX-auto-local TeX-style-local)))
+    (mapc (lambda (file) (when file (add-to-list 'path file t)))
+          (append (list TeX-auto-global TeX-style-global)
+                  TeX-auto-private TeX-style-private
+                  (list TeX-auto-local TeX-style-local)))
     path)
   "List of directories to search for AUCTeX style files.
 Per default the list is built from the values of the variables
@@ -2607,7 +2674,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 					    (TeX-master-directory))
 			style (substring style
 					 (match-beginning 2) (match-end 2))))
-		(condition-case err
+		(condition-case nil
 		    (mapcar (lambda (hook)
 			      (cond
 			       ((functionp hook)
@@ -3008,7 +3075,7 @@ INITIAL-INPUT is a string to insert before reading input."
        (let ((TeX-argument (buffer-substring (point) (mark))))
 	 (delete-region (point) (mark))
 	 TeX-argument)
-     (read-string (TeX-argument-prompt optional prompt "Text") initial-input))
+     (TeX-read-string (TeX-argument-prompt optional prompt "Text") initial-input))
    optional))
 
 (defun TeX-parse-arguments (args)
@@ -3273,11 +3340,11 @@ The algorithm is as follows:
   (make-local-variable 'paragraph-separate)
   (set (make-local-variable 'comment-start) "%")
   (set (make-local-variable 'comment-start-skip)
-	(concat
-	 "\\(\\(^\\|[^\\\n]\\)\\("
-	 (regexp-quote TeX-esc)
-	 (regexp-quote TeX-esc)
-	 "\\)*\\)\\(%+[ \t]*\\)"))
+       (concat
+	"\\(\\(^\\|[^\\\n]\\)\\("
+	(regexp-quote TeX-esc)
+	(regexp-quote TeX-esc)
+	"\\)*\\)\\(%+[ \t]*\\)"))
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
   (set (make-local-variable 'comment-use-syntax) t)
   ;; `comment-padding' is defined here as an integer for compatibility
@@ -3302,10 +3369,10 @@ The algorithm is as follows:
 
   ;; Symbol completion.
   (set (make-local-variable 'TeX-complete-list)
-	(list (list "\\\\\\([a-zA-Z]*\\)"
-		    1 'TeX-symbol-list-filtered
-		    (if TeX-insert-braces "{}"))
-	      (list "" TeX-complete-word)))
+       (list (list "\\\\\\([a-zA-Z]*\\)"
+		   1 'TeX-symbol-list-filtered
+		   (if TeX-insert-braces "{}"))
+	     (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
 
@@ -3329,16 +3396,19 @@ The algorithm is as follows:
   ;;
   ;; `TeX-update-style' has to be called before
   ;; `global-font-lock-mode', which may also be specified in
-  ;; `find-file-hooks', gets called.  Otherwise style-based
+  ;; `find-file-hook', gets called.  Otherwise style-based
   ;; fontification will break (in XEmacs).  That means, `add-hook'
   ;; cannot be called with a non-nil value of the APPEND argument.
   ;;
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
-  (when (and (featurep 'xemacs) (not (emacs-version>= 21 5)))
-    (make-local-hook 'find-file-hooks))
-  (add-hook 'find-file-hooks
+  (when (featurep 'xemacs)
+    (unless (boundp 'find-file-hook)
+      (defvaralias 'find-file-hook 'find-file-hooks))
+    (when (not (emacs-version>= 21 5))
+      (make-local-hook 'find-file-hook)))
+  (add-hook 'find-file-hook
 	    (lambda ()
 	      ;; Check if we are looking at a new or shared file.
 	      (when (or (not (file-exists-p (buffer-file-name)))
@@ -3549,6 +3619,10 @@ directory hierarchy, t means recurse indefinitely."
   :type '(choice (const :tag "On" t)
 		 (const :tag "Off" nil)
 		 (integer :tag "Depth" :value 1)))
+
+(defvar TeX-file-extensions)
+(defvar BibTeX-file-extensions)
+(defvar TeX-Biber-file-extensions)
 
 ;;;###autoload
 (defun TeX-auto-generate (tex auto)
@@ -4001,10 +4075,11 @@ EXTENSIONS defaults to `TeX-file-extensions'."
   "Return a list of available TeX tree roots."
   (let (list)
     (dolist (dir (TeX-tree-expand '("$TEXMFHOME" "$TEXMFMAIN" "$TEXMFLOCAL"
-				    "$TEXMFDIST") "latex"))
+				    "$TEXMFDIST")
+                                  "latex"))
       (when (file-readable-p dir)
-	(add-to-list 'list dir t)))
-    list))
+        (pushnew dir list :test #'equal)))
+    (nreverse list)))
 
 (defcustom TeX-tree-roots (TeX-tree-roots)
   "List of all available TeX tree root directories."
@@ -4166,19 +4241,23 @@ If optional argument STRIP is non-nil, remove file extension."
 	    (if (null TeX-tree-roots)
 		(error "No TeX trees available; configure `TeX-tree-roots'")
 	      ;; Expand variables.
-	      (dolist (rawdir rawdirs)
-		(if (symbolp rawdir)
-		    (setq expdirs (append expdirs (eval rawdir)))
-		  (add-to-list 'expdirs rawdir t)))
-	      (delete-dups expdirs)
+              (setq expdirs
+                    (delete-dups
+                     (apply #'append
+                            (mapcar (lambda (rawdir)
+                                      (if (symbolp rawdir)
+                                          (symbol-value rawdir)
+                                        (list rawdir)))
+                                    rawdirs))))
 	      ;; Assumption: Either all paths are absolute or all are relative.
 	      (if (file-name-absolute-p (car expdirs))
 		  (setq dirs expdirs)
 		;; Append relative TDS subdirs to all TeX tree roots.
 		(dolist (root TeX-tree-roots)
 		  (dolist (dir expdirs)
-		    (add-to-list 'dirs (concat (file-name-as-directory root)
-					       dir) t)))))
+                    (let ((dir (expand-file-name dir root)))
+                      (unless (member dir dirs)
+                        (setq dirs (append dirs (list dir)))))))))
 	    (append local-files (TeX-search-files dirs exts nodir strip)))))))
 
 ;;; Narrowing
@@ -5605,7 +5684,7 @@ With optional argument ARG, also reload the style hooks."
 	(save-buffer)
       (TeX-auto-write)))
   (normal-mode)
-  ;; See also addition to `find-file-hooks' in `VirTeX-common-initialization'.
+  ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
   (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
   (TeX-update-style t))
 
@@ -5818,7 +5897,9 @@ If the bug is triggered by a specific \(La\)TeX file, you should try
 to produce a minimal sample file showing the problem and include it
 in your report.
 
-Your bug report will be posted to the AUCTeX bug reporting list.
+Your report will be posted for the auctex package at the GNU bug
+tracker.  Visit http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex
+to browse existing AUCTeX bugs.
 ------------------------------------------------------------------------")))
 
 
@@ -5893,7 +5974,7 @@ NAME may be a package, a command, or a document."
       (when (memq major-mode (nth 1 elt))
 	(let ((completions (funcall (nth 2 elt))))
 	  (unless (null completions)
-	    (add-to-list 'docs (cons completions (nth 0 elt)))))))
+            (pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
     (if (null docs)
 	(progn
 	  (if (executable-find "texdoc")
