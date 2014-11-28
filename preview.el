@@ -53,7 +53,6 @@ preview-latex buffers will not survive across sessions.")))
     (file-error (message "Missing reporter library, probably from the mail-lib package:
 preview-latex's bug reporting commands will probably not work.")))
   (require 'info))
-(defvar error)
 
 ;; we need the compatibility macros which do _not_ get byte-compiled.
 (eval-when-compile
@@ -326,7 +325,8 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
    (consp list)
    (let* ((dims (vconcat (mapcar
 			  #'(lambda (x)
-			      (/ x 65781.76)) list)))
+			      (/ x 65781.76))
+                          list)))
 	  (box
 	   (vector
 	    (+ 72 (min 0 (aref dims 2)))
@@ -336,13 +336,15 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
 	  (border (if preview-parsed-tightpage
 		      (vconcat (mapcar
 				#'(lambda(x)
-				    (/ x 65781.76)) preview-parsed-tightpage))
+				    (/ x 65781.76))
+                                preview-parsed-tightpage))
 		    (vector (- preview-TeX-bb-border)
 			    (- preview-TeX-bb-border)
 			    preview-TeX-bb-border
 			    preview-TeX-bb-border))))
-     (dotimes (i 4 box)
-       (aset box i (+ (aref box i) (aref border i)))))))
+     (dotimes (i 4)
+       (aset box i (+ (aref box i) (aref border i))))
+     box)))
 
 (defcustom preview-gs-command
   (or ;; The GS wrapper coming with TeX Live
@@ -879,7 +881,7 @@ Pure borderless black-on-white will return an empty string."
 (defalias 'preview-dvipng-abort 'preview-dvips-abort)
 ;  "Abort a DviPNG run.")
 
-(defun preview-gs-dvips-sentinel (process command &optional gsstart)
+(defun preview-gs-dvips-sentinel (process _command &optional gsstart)
   "Sentinel function for indirect rendering DviPS process.
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
@@ -909,7 +911,7 @@ The usual PROCESS and COMMAND arguments for
     (error (preview-log-error err "DviPS sentinel" process)))
   (preview-reraise-error process))
 
-(defun preview-pdf2dsc-sentinel (process command &optional gsstart)
+(defun preview-pdf2dsc-sentinel (process _command &optional gsstart)
   "Sentinel function for indirect rendering PDF process.
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
@@ -965,7 +967,7 @@ The usual PROCESS and COMMAND arguments for
 	(unless (eq (process-status process) 'signal)
 	  (preview-dvips-abort)))))
 
-(defun preview-dvipng-sentinel (process command &optional placeall)
+(defun preview-dvipng-sentinel (process _command &optional placeall)
   "Sentinel function for indirect rendering DviPNG process.
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Places all snippets if PLACEALL is set."
@@ -1114,7 +1116,7 @@ is located."
   t)
 
 
-(defun preview-gs-place (ov snippet box run-buffer tempdir ps-file imagetype)
+(defun preview-gs-place (ov snippet box run-buffer tempdir ps-file _imagetype)
   "Generate an image placeholder rendered over by Ghostscript.
 This enters OV into all proper queues in order to make it render
 this image for real later, and returns the overlay after setting
@@ -1139,6 +1141,8 @@ for the file extension."
   (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
   (list ov))
 
+(defvar view-exit-action)
+
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
   (let ((buff (get-buffer-create
@@ -1156,6 +1160,8 @@ for the file extension."
   "Display eps FILE in a view buffer on click.
 Place point at POSITION, else beginning of file."
   (let ((default-major-mode
+          ;; FIXME: Yuck!  Just arrange for the file name to have the right
+          ;; extension instead!
 	  (or
 	   (assoc-default "x.ps" auto-mode-alist #'string-match)
 	   (default-value 'major-mode)))
@@ -1425,7 +1431,7 @@ icon is cached in the property list of the symbol."
 	   ,@(preview-filter-specs-1 (nthcdr 2 specs))))))
 
 (put 'preview-filter-specs :min
-     #'(lambda (keyword value &rest args)
+     #'(lambda (_keyword value &rest args)
 	 (if (> value preview-min-spec)
 	     (throw 'preview-filter-specs nil)
 	   (preview-filter-specs-1 args))))
@@ -1436,7 +1442,7 @@ This should be hardwired into the startup file containing the
 autoloads for preview-latex.")
 
 (put 'preview-filter-specs :file
-     #'(lambda (keyword value &rest args)
+     #'(lambda (_keyword value &rest args)
 	 `(:file ,(expand-file-name value (expand-file-name "images"
 							    preview-datadir))
 		 ,@(preview-filter-specs-1 args))))
@@ -1831,16 +1837,13 @@ BUFFER-MISC is the appropriate data to be used."
 				     (preview-buffer-restore-internal
 				      ',buffer-misc)))))
 
-(defun desktop-buffer-preview (desktop-buffer-file-name
-			       desktop-buffer-name
-			       desktop-buffer-misc)
+(defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
-  (when (and desktop-buffer-file-name
-	     (file-readable-p desktop-buffer-file-name))
-    (let ((buf (find-file-noselect desktop-buffer-file-name)))
-      (if (eq (car desktop-buffer-misc) 'preview)
+  (when (and file-name (file-readable-p file-name))
+    (let ((buf (find-file-noselect file-name)))
+      (if (eq (car misc) 'preview)
 	  (with-current-buffer buf
-	    (preview-buffer-restore desktop-buffer-misc)
+	    (preview-buffer-restore misc)
 	    buf)
 	buf))))
 
@@ -2664,7 +2667,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  file line
 	  (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
 	  lcounters
-	  string after-string error context-start
+	  string after-string
 	  offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
@@ -2753,23 +2756,19 @@ name(\\([^)]+\\))\\)\\|\
 					       (match-string 6)))
 				    t))
 			    counters (mapcar #'cdr preview-parsed-counters)
-			    error (progn
-				    (setq lpoint (point))
-				    (end-of-line)
-				    (buffer-substring lpoint (point)))
-
-			    ;; And the context for the help window.
-			    context-start (point)
 
 			    ;; And the line number to position the cursor.
+                            line (progn
+                                   (setq lpoint (point))
+                                   (end-of-line)
 ;;;  variant 1: profiling seems to indicate the regexp-heavy solution
 ;;;  to be favorable.  Removing incomplete characters from the error
 ;;;  context is an absolute nuisance.
-			    line (and (re-search-forward "\
+                                   (and (re-search-forward "\
 ^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^*\\(?:[89a-f][0-9a-f]\\|[]@-\\_?]\\)\\|\
 \[0-9a-f]?\\)\\)?\\([^\n\r]*?\\)\r?
 \\([^\n\r]*?\\)\\(\\(?:\\^+[89a-f]?\\)?\\.\\.\\.\\)?\r?$" nil t)
-				      (string-to-number (match-string 1)))
+                                        (string-to-number (match-string 1))))
 			    ;; And a string of the context to search for.
 			    string (and line (match-string 3))
 			    after-string (and line (buffer-substring
@@ -2778,8 +2777,6 @@ name(\\([^)]+\\))\\)\\|\
 							  (match-beginning 0)))
 						    (match-end 4)))
 
-			    ;; And we have now found to the end of the context.
-			    context (buffer-substring context-start (point))
 			    ;; We may use these in another buffer.
 			    offset (or (car TeX-error-offset) 0)
 			    file (car TeX-error-file))
@@ -3042,7 +3039,7 @@ and `preview-colors' are set as given."
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
     (setq TeX-sentinel-function
-	  (lambda (process name) (message "%s: done." name)))
+	  (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
 	(let ((process (start-process name (current-buffer) TeX-shell
 				      TeX-shell-command-option
@@ -3080,12 +3077,13 @@ If FAST is set, do a fast conversion."
     (setq preview-ps-file (and fast
 			       (preview-make-filename
 				(preview-make-filename
-				 "preview.ps" tempdir) tempdir)))
+				 "preview.ps" tempdir)
+                                tempdir)))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
     (setq TeX-sentinel-function
-	  (lambda (process name) (message "%s: done." name)))
+	  (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
 	(let ((process (start-process name (current-buffer) TeX-shell
 				      TeX-shell-command-option
@@ -3123,12 +3121,13 @@ If FAST is set, do a fast conversion."
 			   pdfsource
 			   (preview-make-filename
 			    (preview-make-filename
-			     "preview.dsc" tempdir) tempdir)))
+			     "preview.dsc" tempdir)
+                            tempdir)))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
     (setq TeX-sentinel-function
-	  (lambda (process name) (message "%s: done." name)))
+	  (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
 	(let ((process (start-process name (current-buffer) TeX-shell
 				      TeX-shell-command-option
@@ -3149,7 +3148,7 @@ If FAST is set, do a fast conversion."
 		    TeX-shell-command-option
 		    command))))
 
-(defun preview-TeX-inline-sentinel (process name)
+(defun preview-TeX-inline-sentinel (process _name)
   "Sentinel function for preview.
 See `TeX-sentinel-function' and `set-process-sentinel'
 for definition of PROCESS and NAME."
