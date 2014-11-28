@@ -2,13 +2,6 @@
 
 	* tex.el (TeX-view-program-list-builtin): Fix up paren typo.
 
-	* preview.el: Cleanup compiler warnings.  Mark unused arguments.
-	(error): Don't declare; we don't use it anyway.
-	(view-exit-action): Declare.
-	(desktop-buffer-preview): Use normal names for the function's args.
-	(preview-parse-messages): Remove unused vars `error', `context-start',
-	and `context' (this last one wasn't even bound).
-
 2014-11-28  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-view-program-list-builtin): Add the new third
