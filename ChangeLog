@@ -1,3 +1,16 @@
+2014-11-29  Mosè Giordano  <mose@gnu.org>
+
+	* tests/latex/latex-test.el (latex): Require latex.el.
+	(LaTeX-indent-tabular-test/in): Expand file name in load
+	directory, for automated tests.
+	(LaTeX-indent-tabular-test/out): Ditto.
+
+	* tests/Makefile: New Makefile.
+
+	* Makefile.in (.PHONY): Add new check target.
+	(check): New rule.  Suggest in comments to run it before a new
+	release.
+
 2014-11-28  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* tex.el (TeX-view-program-list-builtin): Fix up paren typo.

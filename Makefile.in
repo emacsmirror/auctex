@@ -178,8 +178,8 @@ all: texmf lisp docs
 .PHONY: all lisp info dvi some install install-el install-lisp docs	\
 	install-docs install-auto install-metadata install-startup	\
 	install-man clean distclean maintainer-clean extraclean		\
-	tar-ball-clean check-tag release-commit dist snapshot patch	\
-	tar-ball rpm-packages wc xemacs-package windows-package		\
+	tar-ball-clean check-tag check release-commit dist snapshot	\
+	patch tar-ball rpm-packages wc xemacs-package windows-package	\
 	release-sign release-upload preview-ball
 
 texmf: latex/Makefile
@@ -381,6 +381,10 @@ wc:
 
 # Steps for making a release:
 #
+# 0) check
+#    Run tests using ERT tool.  Not necessary but strongly suggested before a
+#    release.
+#
 # 1) release-commit TAG=<tag> COMMITTER=<committer>
 #    Tag the release.
 #    Pass `COMMITTER=<committer>' argument only if it is different from
@@ -417,6 +421,9 @@ snapshot: dist
 
 check-tag:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** Error: No TAG ***"; exit 1; fi
+
+check:
+	cd tests && $(MAKE) check
 
 release-commit: check-tag
 	@echo "Tagging release $(TAG) in Git ..."
