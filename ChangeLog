@@ -1,3 +1,7 @@
+2014-12-03  Mosè Giordano  <mose@gnu.org>
+
+	* README.GIT: Describe branches of the repository.
+
 2014-12-02  Vladimir Lomov  <lomov.vl@gmail.com>  (tiny change)
 
 	* latex/Makefile.in (MKINSTALLDIRS): Fix MKINSTALLDIRS path.
