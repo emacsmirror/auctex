@@ -39,7 +39,7 @@ TEXMFGEN = @TEXMFGEN@
 DESTDIR=
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKINSTALLDIRS = ../../mkinstalldirs
+MKINSTALLDIRS = ../mkinstalldirs
 
 all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi preview.pdf
 

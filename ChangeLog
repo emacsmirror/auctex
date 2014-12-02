@@ -1,3 +1,7 @@
+2014-12-02  Vladimir Lomov  <lomov.vl@gmail.com>  (tiny change)
+
+	* latex/Makefile.in (MKINSTALLDIRS): Fix MKINSTALLDIRS path.
+
 2014-11-29  Mosè Giordano  <mose@gnu.org>
 
 	* tests/latex/latex-test.el (latex): Require latex.el.
