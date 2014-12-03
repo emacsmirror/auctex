@@ -4,6 +4,7 @@
 
 ;; Version: 11.88
 ;; URL: http://www.gnu.org/software/auctex/
+;; Maintainer: auctex-devel@gnu.org
 
 ;; This file is part of GNU Emacs.
 
