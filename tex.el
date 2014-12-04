@@ -67,7 +67,9 @@
 (defcustom TeX-Omega-command "omega"
   "Command to run plain TeX on Omega."
   :group 'TeX-command
-  :type 'string)
+  :type '(choice (const :tag "Aleph" "aleph")
+		 (const :tag "Omega" "omega")
+		 (string :tag "Other command")))
 
 (defcustom LaTeX-command "latex"
   "Command to run LaTeX."
@@ -77,7 +79,9 @@
 (defcustom LaTeX-Omega-command "lambda"
   "Command to run LaTeX on Omega."
   :group 'TeX-command
-  :type 'string)
+  :type '(choice (const :tag "Lamed" "lamed")
+		 (const :tag "Lambda" "lambda")
+		 (string :tag "Other command")))
 
 (defcustom TeX-file-line-error t
   "Whether to have TeX produce file:line:error style error messages."
