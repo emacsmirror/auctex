@@ -1,3 +1,12 @@
+2014-11-28  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* preview.el.in: Cleanup compiler warnings.  Mark unused arguments.
+	(error): Don't declare; we don't use it anyway.
+	(view-exit-action): Declare.
+	(desktop-buffer-preview): Use normal names for the function's args.
+	(preview-parse-messages): Remove unused vars `error', `context-start',
+	and `context' (this last one wasn't even bound).
+
 2014-11-04  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* prv-install.el: Adjust copyright years.

@@ -1,4 +1,4 @@
-;;; latex-test.el --- tests for LaTeX mode?
+;;; latex-test.el --- tests for LaTeX mode
 
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 
@@ -22,10 +22,16 @@
 ;;; Code:
 
 (require 'ert)
+(require 'latex)
 
-
-(defvar LaTeX-indent-tabular-test/in  (expand-file-name "tabular-in.tex"))
-(defvar LaTeX-indent-tabular-test/out (expand-file-name "tabular-out.tex"))
+(defvar LaTeX-indent-tabular-test/in
+  (expand-file-name "tabular-in.tex"
+		    (when load-file-name
+		      (file-name-directory load-file-name))))
+(defvar LaTeX-indent-tabular-test/out
+  (expand-file-name "tabular-out.tex"
+		    (when load-file-name
+		      (file-name-directory load-file-name))))
 
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
