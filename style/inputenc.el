@@ -68,7 +68,7 @@
 	    selected)))
     (TeX-read-string "Input encoding: ")))
 
-(defun LaTeX-arg-inputenc-inputenc (optional)
+(defun LaTeX-arg-inputenc-inputenc (_optional)
   "Prompt for input encoding."
   (TeX-argument-insert (LaTeX-inputenc-package-options) nil))
 

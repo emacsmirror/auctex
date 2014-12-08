@@ -19,7 +19,7 @@
     "epsfllx" "epsflly" "epsfury" "epsfverbosetrue"))
  LaTeX-dialect)
 
-(defun TeX-arg-epsfsize (optional &optional prompt definition)
+(defun TeX-arg-epsfsize (_optional &optional _prompt _definition)
   "Create a line that print epsf figures at a certain percentage"
   (interactive)
   (let ((scale (TeX-read-string "Scale in percent (default 75): ")))

@@ -1,3 +1,93 @@
+2014-12-08  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* tex.el (TeX-mode-specific-command-menu): Remove Emacs 20
+	compatibility code.
+
+	* style/shortvrb.el ("shortvrb"): Use mapcar instead of
+	dolist/add-to-list.
+
+	* style/pstricks.el (LaTeX-pst-point-in-parens)
+	(LaTeX-pst-macro-psarc, LaTeX-pst-macro-pscircle)
+	(LaTeX-pst-macro-rput, LaTeX-pst-macro-uput)
+	(LaTeX-pst-macro-multirputps, LaTeX-pst-macro-psline)
+	(LaTeX-pst-macro-psdots, LaTeX-pst-macro-parabola)
+	(LaTeX-pst-macro-pnt-twolen, LaTeX-pst-macro-psbezier)
+	(LaTeX-pst-macro-pspolygon, LaTeX-pst-macro-psframe)
+	(LaTeX-pst-macro-psgrid, LaTeX-pst-macro-newpsobject): Rename
+	unused arg to silence the byte-compiler.
+	(LaTeX-pst-parameters-add): Remove unused var beg.
+
+	* style/pst-plot.el (LaTeX-pst-macro-psaxes): Rename unused arg to
+	silence the byte-compiler and fix indentation.
+	("pst-plot"): Use mapc instead of mapcar for side-effects only.
+
+	* style/pst-node.el (LaTeX-pstnode-macro-nput)
+	(LaTeX-pstnode-macro-cnodeput, LaTeX-pstnode-macro-nc)
+	(LaTeX-pstnode-macro-pc, LaTeX-pstnode-macro-tnabcput): Rename
+	unused arg to silence the byte-compiler.
+
+	* style/psfig.el (TeX-arg-psfig, LaTeX-env-psfigure): Rename
+	unused arg to silence the byte-compiler.
+
+	* style/prosper.el: Fix comment style.
+	(LaTeX-prosper-insert-title, LaTeX-prosper-arg-pdftransition)
+	(LaTeX-prosper-insert-options, LaTeX-prosper-insert-slide): Rename
+	unused arg to silence the byte-compiler.
+
+	* style/pdfsync.el (LaTeX-pdfsync-output-page): Remove unused
+	sync-line variable.
+
+	* style/natbib.el (natbib-note-args): Rename unused arg to silence
+	the byte-compiler.
+
+	* style/inputenc.el (LaTeX-arg-inputenc-inputenc): Rename unused
+	arg to silence the byte-compiler.
+
+	* style/harvard.el (LaTeX-env-harvardbib): Rename unused arg to
+	silence the byte-compiler.
+
+	* style/graphicx.el (LaTeX-arg-includegraphics): Rename unused arg
+	to silence the byte-compiler.
+
+	* style/fancyref.el (TeX-arg-fancyref-format): Rename unused arg
+	to silence the byte-compiler.
+
+	* style/epsf.el (TeX-arg-epsfsize): Rename unused arg to silence
+	the byte-compiler.
+
+	* style/emp.el (LaTeX-env-empfile): Rename unused arg to silence
+	the byte-compiler.
+
+	* style/dinbrief.el (LaTeX-dinbrief-sender): Add a FIXME.
+
+	* style/bigstrut.el (TeX-arg-bigstrut): Rename unused arg to
+	silence the byte-compiler.
+
+	* style/beamer.el
+	(LaTeX-beamer-after-insert-env, TeX-arg-beamer-overlay-spec)
+	(TeX-arg-beamer-frametitle, TeX-arg-beamer-note)
+	(LaTeX-arg-beamer-theme, LaTeX-arg-beamer-inner-theme)
+	(LaTeX-arg-beamer-outer-theme, LaTeX-arg-beamer-color-theme)
+	(LaTeX-arg-beamer-font-theme): Rename unused arg to silence the
+	byte-compiler.
+
+	* style/babel.el (require): Require cl at compile-time.
+	(LaTeX-babel-active-languages): Use pushnew/nreverse instead of
+	add-to-list.
+
+	* bib-cite.el (bib-cite--kind): New function.
+	(bib-display, bib-find): Use it.
+	(featurep): Use with-current-buffer instead of set-buffer.
+	(bib-cite--fontify-help): New function.
+	(bib-cite-fontify-help-as-bibtex, bib-cite-fontify-help-as-latex):
+	Use it.
+	(bib-highlight-mouse, bib-label-help): Make comment conform to the
+	commenting conventions.
+	(bib-label-prompt-map): Derive from
+	minibuffer-local-completion-map instead of copying that.
+	(bib-display-this-environment): Fix comment.
+	(bib-document-TeX-files): Don't doubly-declare the-file.
+
 2014-12-08  Mosè Giordano  <mose@gnu.org>
 
 	* style/mathtools.el ("mathtools"): Fix closing bracket

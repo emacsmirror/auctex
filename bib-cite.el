@@ -1002,6 +1002,16 @@ runs bib-find, and [mouse-3] runs bib-display."
       "^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\([a-zA-Z][^#%'(),={}\" \t\n]*\\)"
       "Regular expression for field containing a @string.")
 
+(defun bib-cite--kind ()
+  (save-excursion
+    (if (not (looking-at "\\\\"))
+        (search-backward "\\" nil t))
+    (if (looking-at bib-ref-regexpc)
+        'ref
+      (if (looking-at "\\\\label{")
+          'label
+        'cite))))
+
 (defun bib-display ()
   "Display BibTeX citation or matching \\ref or \\label command under point.
 
@@ -1023,23 +1033,15 @@ string, a second prompt for a ref will be given.
 
 A TAGS file is created and used for multi-file documents under auctex."
   (interactive)
-  (let ((cite)(ref)(label))
-    (save-excursion
-      (if (not (looking-at "\\\\"))
-	  (search-backward "\\" nil t))
-      (if (looking-at bib-ref-regexpc)
-	  (setq ref t)
-	(if (looking-at "\\\\label{")
-	    (setq label t)
-	  (setq cite t))))
+  (let ((kind (bib-cite--kind)))
     (cond
      ;; reftex doesn't handle label->ref
      ((and bib-cite-use-reftex-view-crossref
-	   (or ref cite))
+	   (memq kind '(ref cite)))
       ;;;FIXME: reftex doesn't want point on \ref or \cite part, but on keyword
       (require 'reftex)
       (reftex-view-crossref nil))
-     (cite
+     ((eq kind 'cite)
       (bib-display-citation))
      (t
       (bib-display-label)))))
@@ -1064,22 +1066,14 @@ string, a second prompt for a ref will be given.
 
 A TAGS file is created and used for multi-file documents under auctex."
   (interactive)
-  (let ((cite)(ref)(label))
-    (save-excursion
-      (if (not (looking-at "\\\\"))
-	  (search-backward "\\" nil t))
-      (if (looking-at bib-ref-regexpc)
-	  (setq ref t)
-	(if (looking-at "\\\\label{")
-	    (setq label t)
-	  (setq cite t))))
+  (let ((kind (bib-cite--kind)))
     (cond
      ;; reftex doesn't handle label->ref
      ((and bib-cite-use-reftex-view-crossref
-	   (or ref cite))
+	   (memq kind '(ref cite)))
       (require 'reftex)
       (reftex-view-crossref t))
-     (cite
+     ((eq kind 'cite)
       (bib-edit-citation))
      (t
       (bib-find-label)))))
@@ -1236,8 +1230,7 @@ to create a bibtex file containing only the references used in the document."
 (when (featurep 'xemacs)
   (defun bib-cite-fontify-help-xemacs (defaults)
     (if (fboundp 'font-lock-set-defaults-1) ; >= XEmacs 19.14
-        (progn
-          (set-buffer "*Help*")
+        (with-current-buffer "*Help*"
           (setq font-lock-defaults-computed nil
                 font-lock-keywords nil)
           (font-lock-set-defaults-1
@@ -1247,41 +1240,44 @@ to create a bibtex file containing only the references used in the document."
                 font-lock-keywords nil)
           (font-lock-set-defaults-1)))))
 
+(defun bib-cite--fontify-help ()
+  ;; FIXME: This looks ugly and incorrect.
+  (if font-lock-mode
+      (font-lock-mode -1)
+    (if (fboundp 'font-lock-unset-defaults) (font-lock-unset-defaults))
+    (font-lock-unfontify-buffer))
+  (if (fboundp 'font-lock-ensure)
+      (font-lock-ensure)
+    (with-no-warnings (font-lock-fontify-buffer))))
+
 (defun bib-cite-fontify-help-as-bibtex ()
-  (save-excursion
-    (cond
-     ((not (featurep 'font-lock))
-      nil)                              ;No font-lock! Stop here.
-     ;; font-lock under Emacs and XEmacs
-     ((featurep 'xemacs)
-      ;; XEmacs
-      (bib-cite-fontify-help-xemacs 'bibtex-mode))
-     (t
-      ;; Emacs
-      (set-buffer "*Help*")
+  (cond
+   ((not (featurep 'font-lock))
+    nil)                                ;No font-lock! Stop here.
+   ;; font-lock under Emacs and XEmacs
+   ((featurep 'xemacs)
+    ;; XEmacs
+    (bib-cite-fontify-help-xemacs 'bibtex-mode))
+   (t
+    ;; Emacs
+    (with-current-buffer "*Help*"
       (let ((font-lock-defaults
-	     '(bib-cite-bibtex-font-lock-keywords
-	       nil t ((?$ . "\"")(?\" . ".")))))
-	(if (not font-lock-mode)
-	    (font-lock-mode 1)
-	  (if (fboundp 'font-lock-unset-defaults)
-	      (font-lock-unset-defaults))
-	  (font-lock-unfontify-buffer))
-	(font-lock-fontify-buffer))))))
+             '(bib-cite-bibtex-font-lock-keywords
+               nil t ((?$ . "\"")(?\" . ".")))))
+        (bib-cite--fontify-help))))))
 
 (defun bib-cite-fontify-help-as-latex ()
-  (save-excursion
-    (cond
-     ((not (featurep 'font-lock))
-      nil)                              ;No font-lock! Stop here.
-     ;; font-lock under Emacs and XEmacs
-     ((featurep 'xemacs)
-      ;; XEmacs, not necessary to do s.th. special for font-latex, we do *not*
-      ;; want the buffer-local faces!
-      (bib-cite-fontify-help-xemacs 'latex-mode))
-     (t
-      ;; Emacs
-      (set-buffer "*Help*")
+  (cond
+   ((not (featurep 'font-lock))
+    nil)                                ;No font-lock! Stop here.
+   ;; font-lock under Emacs and XEmacs
+   ((featurep 'xemacs)
+    ;; XEmacs, not necessary to do s.th. special for font-latex, we do *not*
+    ;; want the buffer-local faces!
+    (bib-cite-fontify-help-xemacs 'latex-mode))
+   (t
+    ;; Emacs
+    (with-current-buffer "*Help*"
       ;; Actually, don't want to `permanently' affect *Help* buffer...
       ;;(if (featurep 'font-latex)
       ;; (font-latex-setup)
@@ -1297,12 +1293,7 @@ to create a bibtex file containing only the references used in the document."
 		   (font-lock-comment-start-regexp . "%")
 		   (font-lock-mark-block-function . mark-paragraph))
 	       '(tex-font-lock-keywords nil nil ((?$ . "\""))))))
-	(if (not font-lock-mode)
-	    (font-lock-mode 1)
-	  (if (fboundp 'font-lock-unset-defaults)
-	      (font-lock-unset-defaults))
-	  (font-lock-unfontify-buffer))
-	(font-lock-fontify-buffer))))))
+	(bib-cite--fontify-help))))))
 
 (defvar bib-document-TeX-files-warnings nil
   "Bib-cite internal variable.")
@@ -1374,15 +1365,15 @@ See variables bib-etags-command and bib-etags-filename"
 (defun bib-highlight-mouse ()
   "Make that nice green highlight when the mouse is over LaTeX commands."
   (interactive)
-;;;Comment this out.  User should be able to use bib-highlight-mouse
-;;;to try it out regardless of bib-highlight-mouse-t.
-;;;Check bib-highlight-mouse-t only in automated cases.
-;;;
-;;;  (if (and bib-highlight-mouse-t
-;;;           ;;window-system)        ;Do nothing unless under X
-;;;           )
-;;; *all of code was here*
-;;;      )
+  ;;Comment this out.  User should be able to use bib-highlight-mouse
+  ;;to try it out regardless of bib-highlight-mouse-t.
+  ;;Check bib-highlight-mouse-t only in automated cases.
+  ;;
+  ;;  (if (and bib-highlight-mouse-t
+  ;;           ;;window-system)        ;Do nothing unless under X
+  ;;           )
+  ;; *all of code was here*
+  ;;      )
   (save-excursion
     (let ((s)(e)(extent)(local-extent-list bib-ext-list)
 	  (inhibit-read-only t)
@@ -1427,11 +1418,11 @@ See variables bib-etags-command and bib-etags-filename"
 	  (let ((before-change-functions) (after-change-functions)
 		;;(this-overlay (make-overlay s e))
 		)
-;;; Even using overlays doens't help here.  If bib-highlight-mouse-keymap
-;;; does not include the AucTeX menus, then these disappear when we click
-;;; onto a \cite command.  Perhaps using bib-cite as a minor mode will fix
-;;; this?  For now, bib-cite must be loaded after these menus are built.
-;;; It must therefore be loaded in a mode-hook.
+;;;  Even using overlays doesn't help here.  If bib-highlight-mouse-keymap
+;;;  does not include the AucTeX menus, then these disappear when we click
+;;;  onto a \cite command.  Perhaps using bib-cite as a minor mode will fix
+;;;  this?  For now, bib-cite must be loaded after these menus are built.
+;;;  It must therefore be loaded in a mode-hook.
 	    (put-text-property s e 'local-map bib-highlight-mouse-keymap)
 	    (put-text-property s e 'mouse-face 'highlight)
 	  ;;(overlay-put this-overlay 'local-map bib-highlight-mouse-keymap)
@@ -1462,8 +1453,8 @@ See variables bib-etags-command and bib-etags-filename"
   (if bib-label-help-echo-format
       (bib-label-help object bib-label-help-echo-format)))
 
-;;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
-;;;             Patched by Bruce Ravel <bruce.ravel@nist.gov>
+;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
+;;             Patched by Bruce Ravel <bruce.ravel@nist.gov>
 (defun bib-label-help (object &optional format)
   (or format (setq format "Use mouse button 2 to find the %s.
 Use mouse button 3 to display the %s."))
@@ -1655,11 +1646,11 @@ If within a multi-file document (in auctex only)
 	  (beginning-of-line)
 	  (show-entry)))))
 
-(defvar bib-label-prompt-map nil)
-(if bib-label-prompt-map
-    ()
-  (setq bib-label-prompt-map (copy-keymap minibuffer-local-completion-map))
-  (define-key bib-label-prompt-map " " 'self-insert-command))
+(defvar bib-label-prompt-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map minibuffer-local-completion-map)
+    (define-key map " " 'self-insert-command)
+    map))
 
 (defun bib-guess-or-prompt-for-label ()
   "Guess from context, or prompt the user for a label command."
@@ -1788,7 +1779,7 @@ Does not save excursion."
       (goto-char the-point)
       (if (re-search-backward
 ;;;        "\\(^\\|\^M\\)[ \t]*\\\\\\(sub\\)*section{\\([^}]*\\)}" nil t)
-;;; Michael Steiner <steiner@cs.uni-sb.de> patch
+;;;  Michael Steiner <steiner@cs.uni-sb.de> patch
 	   "\\(^\\|\^M\\)[ \t]*\\\\\\(\\(sub\\)*section\\|chapter\\|part\\)\\*?\
 {\\([^}]*\\)}"
 	   nil t)
@@ -1808,10 +1799,10 @@ into
 '((\"label3\") (\"label4\") (\"label1\") (\"label2\") (\"label\"))"
   (mapcar 'list (bib-cite-mh-list-to-string the-list)))
 
-;;;
-;;; Following two functions from mh-utils.el (part of GNU emacs)
-;;; I have changed the names in case these functions change what they do.
-;;;
+;;
+;; Following two functions from mh-utils.el (part of GNU emacs)
+;; I have changed the names in case these functions change what they do.
+;;
 
 (defun bib-cite-mh-list-to-string (l)
   "Flattens the list L and make every element of the new list into a string."
@@ -2004,7 +1995,7 @@ Return the-warnings as text."
     ;; Return the warnings...
     the-warnings))
 
-;;; Following contributed by Michael Steiner <steiner@cs.uni-sb.de> The
+;; Following contributed by Michael Steiner <steiner@cs.uni-sb.de> The
 ;;  @string abbreviation are not case-sensitive, so we replaced the `member'
 ;;  test above with `member-cis' defined here:
 (defun member-cis (ELT LIST)
@@ -2175,8 +2166,7 @@ Sets global variable bib-document-TeX-files-warnings."
   (let* ((masterfile (bib-master-file))
 	 (dir (and masterfile (file-name-directory masterfile)))
 	 (tex-buffer (get-buffer-create "*tex-document*"))
-	 (the-list (list masterfile))
-	 (the-file))
+	 (the-list (list masterfile)))
     (if (not masterfile)
 	(progn
 	  (kill-buffer tex-buffer)
@@ -2259,7 +2249,7 @@ Sets global variable bib-document-citekeys-obarray-warnings."
 		(insert-file-contents auxfile))))
 	  (goto-char 1)
 
-;;; Patched by calvanes@dis.uniroma1.it (Diego Calvanese)
+;;;  Patched by calvanes@dis.uniroma1.it (Diego Calvanese)
 ;;;      ;; look for \citation{gertsenshtein59}
 ;;;       (while (re-search-forward "^\\\\citation{\\(.*\\)}$" nil t)
 ;;;         (intern (buffer-substring (match-beginning 1)(match-end 1))
@@ -2528,19 +2518,19 @@ If FIRST-FILE is t, stop after first file is found."
 
     match))
 
-;;; (defun psg-checkfor-file-list (filename list)
-;;;   (let ((the-list list)
-;;;         (filespec))
-;;;     (while the-list
-;;;       (if (not (car the-list))          ; it is nil
-;;;           (setq filespec (concat "~/" filename))
-;;;         (setq filespec
-;;;               (concat (file-name-as-directory (car the-list)) filename)))
-;;;       (if (file-exists-p filespec)
-;;;             (setq the-list nil)
-;;;         (setq filespec nil)
-;;;         (setq the-list (cdr the-list))))
-;;;     filespec))
+;; (defun psg-checkfor-file-list (filename list)
+;;   (let ((the-list list)
+;;         (filespec))
+;;     (while the-list
+;;       (if (not (car the-list))          ; it is nil
+;;           (setq filespec (concat "~/" filename))
+;;         (setq filespec
+;;               (concat (file-name-as-directory (car the-list)) filename)))
+;;       (if (file-exists-p filespec)
+;;             (setq the-list nil)
+;;         (setq filespec nil)
+;;         (setq the-list (cdr the-list))))
+;;     filespec))
 
 (or (fboundp 'dired-replace-in-string)
     ;; This code is part of GNU emacs

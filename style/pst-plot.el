@@ -1,6 +1,6 @@
 ;;; pst-plot.el --- AUCTeX style for `pst-plot.sty'
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2014 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -85,17 +85,17 @@
   "A list of values for axesstyles in pst-plot.")
 
 ;;; Macros
-(defun LaTeX-pst-macro-psaxes (optional &optional arg)
+(defun LaTeX-pst-macro-psaxes (_optional &optional _arg)
   "Return \\psaxes arguments after querying."
-(let* ((cpref (if current-prefix-arg (car current-prefix-arg) 0))
-       (arrows (LaTeX-pst-arrows))
-       (pnt1 (if (> cpref 4) (LaTeX-pst-point) nil))
-       (pnt2 (if (> cpref 0) (LaTeX-pst-point) nil))
-       (pnt3 (LaTeX-pst-point)))
-  ;; insert \psaxes arguments
-  (insert (if arrows (format "{%s}" arrows) "")
-          (if pnt1 (format "(%s)" pnt1) "")
-          (if pnt2 (format "(%s)" pnt2) "") "(" pnt3 ")")))
+  (let* ((cpref (if current-prefix-arg (car current-prefix-arg) 0))
+         (arrows (LaTeX-pst-arrows))
+         (pnt1 (if (> cpref 4) (LaTeX-pst-point) nil))
+         (pnt2 (if (> cpref 0) (LaTeX-pst-point) nil))
+         (pnt3 (LaTeX-pst-point)))
+    ;; Insert \psaxes arguments.
+    (insert (if arrows (format "{%s}" arrows) "")
+            (if pnt1 (format "(%s)" pnt1) "")
+            (if pnt2 (format "(%s)" pnt2) "") "(" pnt3 ")")))
 
 ;;; Derived defuns
 (defun LaTeX-pstplot-datasets-read ()
@@ -106,7 +106,7 @@
  "pst-plot"
  (function
   (lambda ()
-    (mapcar 'TeX-auto-add-regexp LaTeX-auto-pstplot-regexp-list)
+    (mapc #'TeX-auto-add-regexp LaTeX-auto-pstplot-regexp-list)
     (TeX-add-symbols
      '("readdata" "Macro Name" TeX-arg-file)
      '("savedata" "Macro Name" ["Values"])

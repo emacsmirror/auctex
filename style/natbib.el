@@ -108,7 +108,7 @@
 	(reftex-set-cite-format 'natbib))))
  LaTeX-dialect)
 
-(defun natbib-note-args (optional &optional prompt definition)
+(defun natbib-note-args (optional &optional _prompt _definition)
   "Prompt for two note arguments a natbib citation command."
   (if TeX-arg-cite-note-p
       (let* ((pre (TeX-read-string

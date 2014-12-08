@@ -213,8 +213,8 @@
 	(progn
 	  (goto-char (point-min)) ; insert before \end{document}
 	  (if (re-search-forward ".end.document." (point-max) t)
-	     (beginning-of-line 1))
-	  (previous-line 1)
+	      (beginning-of-line 1))
+	  (previous-line 1)             ;FIXME: Use forward-line!
 	  (LaTeX-dinbrief-insert TeX-esc "address" TeX-grop name)
 	  (if (not (zerop (length str)))
 	      (progn

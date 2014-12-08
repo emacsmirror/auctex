@@ -64,7 +64,7 @@ Used for emp, empdef, and empgraph environments."
      (indent-according-to-mode)
      ))
 
-(defun LaTeX-env-empfile (optional)
+(defun LaTeX-env-empfile (_optional)
    "Ask for file. Insert empfile environment"
    (let ((empfile (TeX-read-string "empfile: " "")))
      (if (not (zerop (length empfile)))
