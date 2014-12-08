@@ -1,3 +1,8 @@
+2014-12-08  Mosè Giordano  <mose@gnu.org>
+
+	* style/mathtools.el ("mathtools"): Fix closing bracket
+	placement.  (Bug#19301)
+
 2014-12-08  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new styles.
