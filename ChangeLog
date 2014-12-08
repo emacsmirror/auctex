@@ -1,3 +1,8 @@
+2014-12-09  Mosè Giordano  <mose@gnu.org>
+
+	* style/babel.el (LaTeX-babel-active-languages): Move `nreverse'
+	call inside `let'.
+
 2014-12-08  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* tex.el (TeX-mode-specific-command-menu): Remove Emacs 20

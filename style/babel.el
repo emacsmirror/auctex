@@ -111,8 +111,8 @@
 	    ;; except if it is set with the `main' option.
 	    (pushnew elt active-languages :test #'equal))))
     (if main-language
-        (pushnew main-language active-languages :test #'equal)))
-  (nreverse active-languages))
+        (pushnew main-language active-languages :test #'equal))
+    (nreverse active-languages)))
 
 (defun TeX-arg-babel-lang (_optional &optional _prompt)
   "Prompt for a language with completion and insert it as an argument."
