@@ -1,3 +1,21 @@
+2014-12-08  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/newtxttt.el: New file.
+
+	* style/newtxtext.el: New file.
+
+	* style/newtxsf.el: New file.
+
+	* style/newtxmath.el: New file.
+
+	* style/fbb.el: New file.
+
+	* style/erewhon.el: New file.
+
+	* style/baskervaldx.el: New file.
+
 2014-12-04  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-Omega-command): Add aleph and omega choices.
