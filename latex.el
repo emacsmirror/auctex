@@ -729,6 +729,15 @@ environment just inserted, the buffer position just before
     (run-hook-with-args 'LaTeX-after-insert-env-hooks
 			environment env-start env-end)))
 
+(defun LaTeX-environment-name-regexp ()
+  "Return the regexp matching the name of a LaTeX environment.
+This matches everything different from a TeX closing brace but
+allowing one level of TeX group braces."
+  (concat "\\([^" (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\("
+	  (regexp-quote TeX-grop) "[^" (regexp-quote TeX-grcl)
+	  (regexp-quote TeX-grop) "]*" (regexp-quote TeX-grcl) "\\)*[^"
+	  (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\)"))
+
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
   (save-excursion
@@ -736,7 +745,7 @@ environment just inserted, the buffer position just before
     (re-search-backward (concat (regexp-quote TeX-esc)
 				"end"
 				(regexp-quote TeX-grop)
-				" *\\([a-zA-Z*]*\\)"
+				(LaTeX-environment-name-regexp)
 				(regexp-quote TeX-grcl))
 			(save-excursion (beginning-of-line 1) (point)))
     (replace-match (concat TeX-esc "end" TeX-grop environment TeX-grcl) t t)
@@ -745,7 +754,7 @@ environment just inserted, the buffer position just before
     (re-search-forward (concat (regexp-quote TeX-esc)
 			       "begin"
 			       (regexp-quote TeX-grop)
-			       " *\\([a-zA-Z*]*\\)"
+			       (LaTeX-environment-name-regexp)
 			       (regexp-quote TeX-grcl))
 		       (save-excursion (end-of-line 1) (point)))
     (replace-match (concat TeX-esc "begin" TeX-grop environment TeX-grcl) t t)))
@@ -4124,7 +4133,7 @@ environment in commented regions with the same comment prefix."
 	 (comment-prefix (and in-comment (TeX-comment-prefix)))
 	 (case-fold-search nil))
     (save-excursion
-      (skip-chars-backward "a-zA-Z \t{")
+      (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
       (unless (bolp)
 	(backward-char 1)
 	(and (looking-at regexp)
@@ -4143,7 +4152,8 @@ environment in commented regions with the same comment prefix."
 	    (setq level (1+ level))
 	  (setq level (1- level)))))
     (if (= level 0)
-	(search-forward "}")
+	(re-search-forward
+	 (concat TeX-grop (LaTeX-environment-name-regexp) TeX-grcl))
       (error "Can't locate end of current environment"))))
 
 (defun LaTeX-find-matching-begin ()
@@ -4158,7 +4168,7 @@ environment in commented regions with the same comment prefix."
 	 (in-comment (TeX-in-commented-line))
 	 (comment-prefix (and in-comment (TeX-comment-prefix)))
 	 (case-fold-search nil))
-    (skip-chars-backward "a-zA-Z \t{")
+    (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
     (unless (bolp)
       (backward-char 1)
       (and (looking-at regexp)

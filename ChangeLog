@@ -1,3 +1,15 @@
+2014-12-12  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-environment-name-regexp): New function.
+	(LaTeX-modify-environment): Use it.
+	(LaTeX-find-matching-end): Use `TeX-grop' instead of the
+	hard-coded "{".  Search for the closing of the environment with
+	`re-search-forward' instead of `search-forward' and use
+	`LaTeX-environment-name-regexp': this allows to consider
+	environments with macros in their names.  (Bug#19281)
+	(LaTeX-find-matching-begin): Use `TeX-grop' instead of the
+	hard-coded "{".
+
 2014-12-09  Mosè Giordano  <mose@gnu.org>
 
 	* style/babel.el (LaTeX-babel-active-languages): Move `nreverse'
