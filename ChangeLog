@@ -1,3 +1,8 @@
+2014-12-18  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-sync-view): Don't URL-encode commas in the
+	file name (bug#19398).
+
 2014-12-12  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-environment-name-regexp): New function.
