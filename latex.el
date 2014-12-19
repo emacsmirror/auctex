@@ -1182,7 +1182,10 @@ Just like array and tabular."
   (save-excursion
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (TeX-parse-arguments args)))
+    (let ((exit-mark (if (boundp 'exit-mark)
+			 exit-mark
+		       (make-marker))))
+      (TeX-parse-arguments args))))
 
 ;;; Item hooks
 

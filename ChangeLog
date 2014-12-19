@@ -1,3 +1,8 @@
+2014-12-19  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-env-args): Bind exit-mark if its not bound
+	already.
+
 2014-12-18  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-evince-sync-view): Don't URL-encode commas in the
