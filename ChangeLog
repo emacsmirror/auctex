@@ -1,5 +1,9 @@
 2014-12-19  Tassilo Horn  <tsdh@gnu.org>
 
+	* style/minted.el: New style.
+
+	* Makefile.in (STYLESRC): Add style/minted.el.
+
 	* latex.el (LaTeX-env-args): Bind exit-mark if its not bound
 	already.
 	(LaTeX-verbatim-regexp): Make variable obsolete.
