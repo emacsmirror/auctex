@@ -2914,6 +2914,8 @@ indentation level in columns."
   "*Regexp matching environments with indentation at col 0 for begin/end."
   :group 'LaTeX-indentation
   :type 'regexp)
+(make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
+			"2014-12-19")
 
 (defcustom LaTeX-begin-regexp "begin\\b"
   "*Regexp matching macros considered begins."
@@ -3045,6 +3047,10 @@ Lines starting with an item is given an extra indentation of
   (delete-region (line-beginning-position) (point))
   (indent-to outer-indent))
 
+(defun LaTeX-verbatim-regexp ()
+  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'."
+  (regexp-opt (LaTeX-verbatim-environments)))
+
 (defun LaTeX-indent-calculate (&optional force-type)
   "Return the indentation of a line of LaTeX source.
 FORCE-TYPE can be used to force the calculation of an inner or
@@ -3076,7 +3082,7 @@ outer indentation in case of a commented line.  The symbols
 	       (nth 1 entry)))
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "\\(begin\\|end\\){\\("
-				 LaTeX-verbatim-regexp
+				 (LaTeX-verbatim-regexp)
 				 "\\)}"))
 	     ;; \end{verbatim} must be flush left, otherwise an unwanted
 	     ;; empty line appears in LaTeX's output.
@@ -3208,19 +3214,19 @@ outer indentation in case of a commented line.  The symbols
 	   0)
 	  ((looking-at (concat (regexp-quote TeX-esc)
 			       "begin *{\\("
-			       LaTeX-verbatim-regexp
+			       (LaTeX-verbatim-regexp)
 			       "\\)}"))
 	   0)
 	  ((looking-at (concat (regexp-quote TeX-esc)
 			       "end *{\\("
-			       LaTeX-verbatim-regexp
+			       (LaTeX-verbatim-regexp)
 			       "\\)}"))
 	   ;; If I see an \end{verbatim} in the previous line I skip
 	   ;; back to the preceding \begin{verbatim}.
 	   (save-excursion
 	     (if (re-search-backward (concat (regexp-quote TeX-esc)
 					     "begin *{\\("
-					     LaTeX-verbatim-regexp
+					     (LaTeX-verbatim-regexp)
 					     "\\)}") 0 t)
 		 (LaTeX-indent-calculate-last force-type)
 	       0)))

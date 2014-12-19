@@ -2,6 +2,23 @@
 
 	* latex.el (LaTeX-env-args): Bind exit-mark if its not bound
 	already.
+	(LaTeX-verbatim-regexp): Make variable obsolete.
+	(LaTeX-verbatim-regexp): New function which computes a regexp of
+	verbatim environments from LaTeX-verbatim-environments.
+	(LaTeX-indent-calculate, LaTeX-indent-calculate-last): Use the
+	function LaTeX-verbatim-regexp instead of the variable.
+
+	* style/listings.el ("listings"): Don't modify the now obsolete
+	LaTeX-verbatim-regexp.
+
+	* style/fancyvrb.el ("fancyvrb"): Don't modify the now obsolete
+	LaTeX-verbatim-regexp.
+
+	* style/beamer.el ("beamer"): Don't modify the now obsolete
+	LaTeX-verbatim-regexp.
+
+	* style/alltt.el ("alltt"): Don't modify the now obsolete
+	LaTeX-verbatim-regexp.
 
 2014-12-18  Tassilo Horn  <tsdh@gnu.org>
 

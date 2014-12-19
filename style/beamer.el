@@ -137,7 +137,7 @@
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
 		 (let ((title (TeX-read-string "(Optional) Title: " nil
-					   'LaTeX-beamer-frametitle-history)))
+					       'LaTeX-beamer-frametitle-history)))
 		   (LaTeX-insert-environment env)
 		   (unless (zerop (length title))
 		     (save-excursion
@@ -172,8 +172,6 @@
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
 		'("semiverbatim" current-indentation))
-   (make-local-variable 'LaTeX-verbatim-regexp)
-   (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|semiverbatim"))
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
 
    ;; Fontification
