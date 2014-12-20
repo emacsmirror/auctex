@@ -129,13 +129,7 @@
 	LaTeX-minted-auto-newmintedfile nil))
 
 (defun LaTeX-minted-auto-cleanup ()
-  ;; (message "1: %s\n2: %s\n3: %s\n4: %s"
-  ;; 	   LaTeX-minted-auto-newminted
-  ;; 	   LaTeX-minted-auto-newmint
-  ;; 	   LaTeX-minted-auto-newmintinline
-  ;; 	   LaTeX-minted-auto-newmintedfile)
-  ;; Every \newminted{lang}{opts} defines a new langcode and a new langcode*
-  ;; env.  The starred version has mandatory args.
+  ;; \newminted{lang}{opts} => new langcode and langcode* envs.
   (dolist (lang LaTeX-minted-auto-newminted)
     (let* ((env (concat lang "code"))
 	   (env* (concat env "*")))
@@ -147,6 +141,17 @@
       (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation))
       (add-to-list 'LaTeX-verbatim-environments-local env)
       (add-to-list 'LaTeX-verbatim-environments-local env*)))
+  ;; \newmint{foo}{opts} => \foo|code|
+  (dolist (lang LaTeX-minted-auto-newmint)
+    (add-to-list 'TeX-auto-symbol lang)
+    (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang))
+  ;; \newmintinline{foo}{opts} => \fooinline|code|
+  (dolist (lang LaTeX-minted-auto-newmintinline)
+    (add-to-list 'TeX-auto-symbol lang)
+    (add-to-list 'LaTeX-verbatim-macros-with-delims-local (concat lang "inline")))
+  ;; \newmintedfile{foo}{opts} => \foofile{file-name}
+  (dolist (lang LaTeX-minted-auto-newmintedfile)
+    (add-to-list 'TeX-auto-symbol (list lang 'TeX-arg-file)))
   (when (and (fboundp 'font-latex-add-keywords)
 	     (fboundp 'font-latex-set-syntactic-keywords)
 	     (eq TeX-install-font-lock 'font-latex-setup))
