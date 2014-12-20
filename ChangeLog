@@ -1,3 +1,7 @@
+2014-12-20  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-sync-view): Encode URI with `url-encode-url'.
+
 2014-12-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/minted.el: New style.
