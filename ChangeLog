@@ -1,3 +1,19 @@
+2014-12-21  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-parse-macro): Enclose arg in
+	LaTeX-default-verb-delimiter if macro is in
+	LaTeX-verbatim-macros-with-delims and there's only one argument.
+	(TeX-auto-store): Check if LaTeX-verbatim-environments,
+	LaTeX-verbatim-macros-with-delims, and
+	LaTeX-verbatim-macros-with-braces are bound before using them.
+
+	* style/minted.el (LaTeX-minted-newminted-regexp)
+	(LaTeX-minted-newmint-regexp, LaTeX-minted-newmintinline-regexp)
+	(LaTeX-minted-newmintedfile-regexp, LaTeX-minted-auto-cleanup):
+	Extend to recognize optional env/macro name.
+	("minted"): Add \newminted, \newmint, \newmintinline, and
+	\newmintedfile macros.
+
 2014-12-20  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-auto-store): Write LaTeX-verbatim-*-local variables

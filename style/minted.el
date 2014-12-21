@@ -108,19 +108,23 @@
 ;; environments are fifi and fifi* rather than cppcode and cppcode*.
 (defvar LaTeX-minted-auto-newminted nil)
 (defvar LaTeX-minted-newminted-regexp
-  '("\\\\newminted{\\([^}]+\\)}{[^}]*}" 1 LaTeX-minted-auto-newminted))
+  '("\\\\newminted\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
+    (1 2) LaTeX-minted-auto-newminted))
 
 (defvar LaTeX-minted-auto-newmint nil)
 (defvar LaTeX-minted-newmint-regexp
-  '("\\\\newmint{\\([^}]+\\)}{[^}]*}" 1 LaTeX-minted-auto-newmint))
+  '("\\\\newmint\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
+    (1 2) LaTeX-minted-auto-newmint))
 
 (defvar LaTeX-minted-auto-newmintinline nil)
 (defvar LaTeX-minted-newmintinline-regexp
-  '("\\\\newmintinline{\\([^}]+\\)}{[^}]*}" 1 LaTeX-minted-auto-newmintinline))
+  '("\\\\newmintinline\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
+    (1 2) LaTeX-minted-auto-newmintinline))
 
 (defvar LaTeX-minted-auto-newmintedfile nil)
 (defvar LaTeX-minted-newmintedfile-regexp
-  '("\\\\newmintedfile{\\([^}]+\\)}{[^}]*}" 1 LaTeX-minted-auto-newmintedfile))
+  '("\\\\newmintedfile\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
+    (1 2) LaTeX-minted-auto-newmintedfile))
 
 (defun LaTeX-minted-auto-prepare ()
   (setq LaTeX-minted-auto-newminted     nil
@@ -130,8 +134,11 @@
 
 (defun LaTeX-minted-auto-cleanup ()
   ;; \newminted{lang}{opts} => new langcode and langcode* envs.
-  (dolist (lang LaTeX-minted-auto-newminted)
-    (let* ((env (concat lang "code"))
+  ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
+  (dolist (name-lang LaTeX-minted-auto-newminted)
+    (let* ((env (if (> (length (car name-lang)) 0)
+		    (car name-lang)
+		  (cadr name-lang)))
 	   (env* (concat env "*")))
       (add-to-list 'LaTeX-auto-environment (list env))
       (add-to-list 'LaTeX-auto-environment
@@ -142,16 +149,28 @@
       (add-to-list 'LaTeX-verbatim-environments-local env)
       (add-to-list 'LaTeX-verbatim-environments-local env*)))
   ;; \newmint{foo}{opts} => \foo|code|
-  (dolist (lang LaTeX-minted-auto-newmint)
-    (add-to-list 'TeX-auto-symbol lang)
-    (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang))
+  ;; \newmint[macname]{foo}{opts} => \macname|code|
+  (dolist (name-lang LaTeX-minted-auto-newmint)
+    (let ((lang (if (> (length (car name-lang)) 0)
+		    (car name-lang)
+		  (cadr name-lang))))
+      (add-to-list 'TeX-auto-symbol lang)
+      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)))
   ;; \newmintinline{foo}{opts} => \fooinline|code|
-  (dolist (lang LaTeX-minted-auto-newmintinline)
-    (add-to-list 'TeX-auto-symbol lang)
-    (add-to-list 'LaTeX-verbatim-macros-with-delims-local (concat lang "inline")))
+  ;; \newmintinline[macname]{foo}{opts} => \macname|code|
+  (dolist (name-lang LaTeX-minted-auto-newmintinline)
+    (let ((lang (if (> (length (car name-lang)) 0)
+		    (car name-lang)
+		  (cadr name-lang))))
+      (add-to-list 'TeX-auto-symbol lang)
+      (add-to-list 'LaTeX-verbatim-macros-with-delims-local (concat lang "inline"))))
   ;; \newmintedfile{foo}{opts} => \foofile{file-name}
-  (dolist (lang LaTeX-minted-auto-newmintedfile)
-    (add-to-list 'TeX-auto-symbol (list lang 'TeX-arg-file)))
+  ;; \newmintedfile[macname]{foo}{opts} => \macname{file-name}
+  (dolist (name-lang LaTeX-minted-auto-newmintedfile)
+    (let ((lang (if (> (length (car name-lang)) 0)
+		    (car name-lang)
+		  (cadr name-lang))))
+      (add-to-list 'TeX-auto-symbol (list lang 'TeX-arg-file))))
   (when (and (fboundp 'font-latex-add-keywords)
 	     (fboundp 'font-latex-set-syntactic-keywords)
 	     (eq TeX-install-font-lock 'font-latex-setup))
@@ -170,7 +189,15 @@
    (TeX-add-symbols
     '("mint" LaTeX-arg-minted-language TeX-arg-verb)
     '("mintinline" LaTeX-arg-minted-language TeX-arg-verb)
-    '("listoflistings"))
+    '("listoflistings")
+    '("newminted" ["Environment Name"] LaTeX-arg-minted-language
+      (TeX-arg-key-val LaTeX-minted-key-val-options))
+    '("newmint" ["Macro Name"] LaTeX-arg-minted-language
+      (TeX-arg-key-val LaTeX-minted-key-val-options))
+    '("newmintinline" ["Macro Name"] LaTeX-arg-minted-language
+      (TeX-arg-key-val LaTeX-minted-key-val-options))
+    '("newmintedfile" ["Macro Name"] LaTeX-arg-minted-language
+      (TeX-arg-key-val LaTeX-minted-key-val-options)))
 
    ;; New environments
    (LaTeX-add-environments

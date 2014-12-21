@@ -3031,42 +3031,51 @@ type of ARGS:
   parse it as a list, otherwise parse the only element as above.
   Use square brackets instead of curly braces, and is not inserted
   on empty user input."
-
-  (if (and (TeX-active-mark)
-	   (> (point) (mark)))
-      (exchange-point-and-mark))
-  (insert TeX-esc symbol)
-  (let ((exit-mark (make-marker))
-	(position (point)))
-    (TeX-parse-arguments args)
-    (cond ((marker-position exit-mark)
-	   (goto-char (marker-position exit-mark))
-	   (set-marker exit-mark nil))
-	  ((let ((element (assoc symbol TeX-insert-braces-alist)))
-	     ;; If in `TeX-insert-braces-alist' there is an element associated
-	     ;; to the current macro, use its value to decide whether inserting
-	     ;; a pair of braces, otherwise use the standard criterion.
-	     (if element
-		 (cdr element)
-	       (and TeX-insert-braces
-		    ;; Do not add braces if the argument is 0 or -1.
-		    (not (and (= (safe-length args) 1)
-			      (numberp (car args))
-			      (<= (car args) 0)))
-		    (equal position (point))
-		    (string-match "[a-zA-Z]+" symbol))))
-	   (if (texmathp)
-	       (when (TeX-active-mark)
-		 (insert TeX-grop)
-		 (exchange-point-and-mark)
-		 (insert TeX-grcl))
-	     (insert TeX-grop)
-	     (if (TeX-active-mark)
-		 (progn
+  (let ((TeX-grop (if (and (or (atom args) (= (length args) 1))
+			   (fboundp 'LaTeX-verbatim-macros-with-delims)
+			   (member symbol (LaTeX-verbatim-macros-with-delims)))
+		      LaTeX-default-verb-delimiter
+		    TeX-grop))
+	(TeX-grcl (if (and (or (atom args) (= (length args) 1))
+			   (fboundp 'LaTeX-verbatim-macros-with-delims)
+			   (member symbol (LaTeX-verbatim-macros-with-delims)))
+		      LaTeX-default-verb-delimiter
+		    TeX-grcl)))
+    (if (and (TeX-active-mark)
+	     (> (point) (mark)))
+	(exchange-point-and-mark))
+    (insert TeX-esc symbol)
+    (let ((exit-mark (make-marker))
+	  (position (point)))
+      (TeX-parse-arguments args)
+      (cond ((marker-position exit-mark)
+	     (goto-char (marker-position exit-mark))
+	     (set-marker exit-mark nil))
+	    ((let ((element (assoc symbol TeX-insert-braces-alist)))
+	       ;; If in `TeX-insert-braces-alist' there is an element associated
+	       ;; to the current macro, use its value to decide whether inserting
+	       ;; a pair of braces, otherwise use the standard criterion.
+	       (if element
+		   (cdr element)
+		 (and TeX-insert-braces
+		      ;; Do not add braces if the argument is 0 or -1.
+		      (not (and (= (safe-length args) 1)
+				(numberp (car args))
+				(<= (car args) 0)))
+		      (equal position (point))
+		      (string-match "[a-zA-Z]+" symbol))))
+	     (if (texmathp)
+		 (when (TeX-active-mark)
+		   (insert TeX-grop)
 		   (exchange-point-and-mark)
 		   (insert TeX-grcl))
-	       (insert TeX-grcl)
-	       (backward-char)))))))
+	       (insert TeX-grop)
+	       (if (TeX-active-mark)
+		   (progn
+		     (exchange-point-and-mark)
+		     (insert TeX-grcl))
+		 (insert TeX-grcl)
+		 (backward-char))))))))
 
 (defun TeX-arg-string (optional &optional prompt initial-input)
   "Prompt for a string.
@@ -3700,9 +3709,12 @@ If TEX is a directory, generate style files for all files in the directory."
 			    LaTeX-provided-class-options))
 	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
 			  LaTeX-provided-package-options))
-	    (verb-envs          LaTeX-verbatim-environments-local)
-	    (verb-macros-delims LaTeX-verbatim-macros-with-delims-local)
-	    (verb-macros-braces LaTeX-verbatim-macros-with-braces-local))
+	    (verb-envs (when (boundp 'LaTeX-verbatim-environments-local)
+			 LaTeX-verbatim-environments-local))
+	    (verb-macros-delims (when (boundp 'LaTeX-verbatim-macros-with-delims-local)
+				  LaTeX-verbatim-macros-with-delims-local))
+	    (verb-macros-braces (when (boundp 'LaTeX-verbatim-macros-with-braces-local)
+				  LaTeX-verbatim-macros-with-braces-local)))
 	(TeX-unload-style style)
 	(with-current-buffer (generate-new-buffer file)
 	  (erase-buffer)
