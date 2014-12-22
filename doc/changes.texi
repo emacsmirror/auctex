@@ -14,8 +14,11 @@
 @item
 Commands such as LaTeX and View can now be executed conveniently on the
 current section (or part, chapter, subsection, etc).  See
-@code{LaTeX-command-section}, @code{LaTeX-command-section-change-level},
-and @xref{Starting a Command}.
+@code{LaTeX-command-section} and
+@code{LaTeX-command-section-change-level}.
+@ifclear rawfile
+Also see the documentation at @xref{Starting a Command}.
+@end ifclear
 
 @item
 Forward and backward search with Evince now also work when only a region
