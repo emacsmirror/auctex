@@ -1,5 +1,8 @@
 2014-12-22  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/changes.texi: Document addition of LaTeX-command-section and
+	forward/backward search enhancements with Evince.
+
 	* latex.el (auto-mode-alist): Add latex-mode association for HeVeA
 	files.
 

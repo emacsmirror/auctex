@@ -12,6 +12,16 @@
 
 @itemize @bullet
 @item
+Commands such as LaTeX and View can now be executed conveniently on the
+current section (or part, chapter, subsection, etc).  See
+@code{LaTeX-command-section}, @code{LaTeX-command-section-change-level},
+and @xref{Starting a Command}.
+
+@item
+Forward and backward search with Evince now also work when only a region
+of the document is compiled/viewed.
+
+@item
 New option @code{TeX-file-line-error} allows to select file:line:error
 style for error messages.
 
