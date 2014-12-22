@@ -5701,6 +5701,10 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
 
+;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
+
 ;;;###autoload
 (defun TeX-latex-mode ()
   "Major mode in AUCTeX for editing LaTeX files.
