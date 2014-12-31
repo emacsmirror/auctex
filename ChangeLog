@@ -1,3 +1,11 @@
+2014-12-30  Arash Esbati  <esbati@gmx.de>
+
+	* style/hyperref.el ("hyperref"): Add `Form' environment needed
+	for PDF and HTML forms.
+	(LaTeX-hyperref-forms-options): New variable for key-val options
+	used in form related macros (`TextField', `CheckBox',
+	`ChoiceMenu', `PushButton', `Submit', `Reset').
+
 2014-12-22  Tassilo Horn  <tsdh@gnu.org>
 
 	* doc/changes.texi: Document addition of LaTeX-command-section and
