@@ -1,5 +1,8 @@
 2014-12-30  Arash Esbati  <esbati@gmx.de>
 
+	* style/multirow.el ("multirow"): Fix a typo in the name of a
+	variable.
+
 	* Makefile.in (STYLESRC): Add new styles.
 
 	* style/relsize.el: New file.
