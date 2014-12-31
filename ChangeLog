@@ -1,5 +1,11 @@
 2014-12-30  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/relsize.el: New file.
+
+	* style/wrapfig.el: New file.
+
 	* style/hyperref.el ("hyperref"): Add `Form' environment needed
 	for PDF and HTML forms.
 	(LaTeX-hyperref-forms-options): New variable for key-val options
