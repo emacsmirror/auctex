@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty'
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -138,7 +138,7 @@
   (dolist (name-lang LaTeX-minted-auto-newminted)
     (let* ((env (if (> (length (car name-lang)) 0)
 		    (car name-lang)
-		  (cadr name-lang)))
+		  (concat (cadr name-lang) "code")))
 	   (env* (concat env "*")))
       (add-to-list 'LaTeX-auto-environment (list env))
       (add-to-list 'LaTeX-auto-environment
