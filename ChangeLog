@@ -1,3 +1,8 @@
+2015-01-19  Tassilo Horn  <tsdh@gnu.org>
+
+	* auctex.el (byte-recompile-directory): Refer to correct style
+	directory on load.
+
 2014-12-04  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-Omega-command): Add aleph and omega choices.
