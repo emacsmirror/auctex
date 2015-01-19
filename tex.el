@@ -3728,15 +3728,15 @@ If TEX is a directory, generate style files for all files in the directory."
 		    "                     '" (prin1-to-string pkg-opts) ")"))
 	  (dolist (env verb-envs)
 	    (insert
-	     (format "\n  (add-to-list 'LaTeX-verbatim-environments-local \"%s\")"
+	     (format "\n   (add-to-list 'LaTeX-verbatim-environments-local \"%s\")"
 		     env)))
 	  (dolist (env verb-macros-braces)
 	    (insert
-	     (format "\n  (add-to-list 'LaTeX-verbatim-macros-with-braces-local \"%s\")"
+	     (format "\n   (add-to-list 'LaTeX-verbatim-macros-with-braces-local \"%s\")"
 		     env)))
 	  (dolist (env verb-macros-delims)
 	    (insert
-	     (format "\n  (add-to-list 'LaTeX-verbatim-macros-with-delims-local \"%s\")"
+	     (format "\n   (add-to-list 'LaTeX-verbatim-macros-with-delims-local \"%s\")"
 		     env)))
 	  (mapc (lambda (el) (TeX-auto-insert el style))
 		TeX-auto-parser)

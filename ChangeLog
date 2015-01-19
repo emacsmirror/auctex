@@ -1,3 +1,7 @@
+2015-01-19  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-auto-store): Fix indentation in auto files.
+
 2015-01-16  Arash Esbati  <esbati@gmx.de>
 
 	* style/minted.el: Update copyright year.
