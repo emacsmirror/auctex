@@ -103,9 +103,6 @@
 		    (LaTeX-minted-language-list))
    optional))
 
-;; FIXME: All the \newmint-macros allow to specify the env/macro name as
-;; optional 1st arg, e.g., with \newminted[fifi]{cpp}{opts} the resulting
-;; environments are fifi and fifi* rather than cppcode and cppcode*.
 (defvar LaTeX-minted-auto-newminted nil)
 (defvar LaTeX-minted-newminted-regexp
   '("\\\\newminted\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
