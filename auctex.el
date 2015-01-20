@@ -1,8 +1,8 @@
 ;;; auctex.el --- Integrated environment for *TeX*
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
-;; Version: 11.88
+;; Version: 11.88.1
 ;; URL: http://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 
@@ -28,11 +28,6 @@
 ;; safely undone using (unload-feature 'tex-site).
 
 ;;; Code:
-
-(eval-when-compile
-  (byte-recompile-directory
-   (expand-file-name "style/"
-		     (file-name-directory load-file-name)) 0))
 
 (autoload 'TeX-load-hack
   (expand-file-name "tex-site.el"

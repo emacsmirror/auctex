@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 5.2 from auctex.texi.
 
-This manual is for AUCTeX (version 11.88.2014-11-28 from 2014-11-28), a
+This manual is for AUCTeX (version 11.88.1 from 2015-01-20), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
@@ -5333,8 +5333,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.88.2014-11-28 from 2014-11-28),
-a sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 11.88.1 from 2015-01-20), a
+sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
 Foundation, Inc.
@@ -8058,100 +8058,100 @@ Concept Index
 
 
 Tag Table:
-Node: Top927
-Node: Copying7189
-Node: Introduction9145
-Node: Summary9415
-Node: Installation12156
-Node: Prerequisites13530
-Node: Configure16398
-Node: Build/install21809
-Node: Loading the package22300
-Node: Advice for package providers24107
-Node: Advice for non-privileged users28052
-Node: Installation under MS Windows32010
-Node: Customizing47233
-Node: Quick Start48816
-Ref: Quick Start-Footnote-150806
-Node: Editing Facilities50953
-Node: Processing Facilities55756
-Node: Editing59650
-Node: Quotes60980
-Node: Font Specifiers69248
-Node: Sectioning71074
-Node: Environments75394
-Node: Equations80548
-Node: Floats81139
-Node: Itemize-like82672
-Node: Tabular-like83393
-Node: Customizing Environments84876
-Node: Mathematics85116
-Node: Completion88042
-Node: Marking93365
-Node: Marking (LaTeX)93989
-Node: Marking (Texinfo)94931
-Node: Commenting96541
-Node: Indenting97866
-Node: Filling103651
-Node: Display108971
-Node: Font Locking110583
-Node: Fontification of macros112658
-Node: Fontification of quotes122096
-Node: Fontification of math123591
-Node: Verbatim content125310
-Node: Faces126084
-Node: Known problems126573
-Node: Folding127502
-Node: Outline138326
-Node: Narrowing139598
-Node: Processing140648
-Node: Commands141811
-Node: Starting a Command142367
-Node: Selecting a Command146903
-Node: Processor Options150429
-Node: Viewing157171
-Node: Starting Viewers157545
-Node: I/O Correlation164063
-Node: Debugging167509
-Node: Checking171864
-Node: Control173026
-Node: Cleaning173753
-Node: Documentation174966
-Node: Customization175746
-Node: Modes and Hooks176239
-Node: Multifile177445
-Node: Parsing Files182124
-Node: Internationalization187036
-Node: European188217
-Node: Japanese195097
-Node: Automatic196794
-Node: Automatic Global199285
-Node: Automatic Private200417
-Node: Automatic Local201730
-Node: Style Files202761
-Node: Simple Style203554
-Node: Adding Macros206827
-Node: Adding Environments215948
-Node: Adding Other220609
-Node: Hacking the Parser221196
-Node: Appendices225065
-Node: Copying this Manual225449
-Node: GNU Free Documentation License226342
-Node: Changes251461
-Node: Development280392
-Node: Mid-term Goals281038
-Node: Wishlist282255
-Node: Bugs288212
-Node: FAQ289742
-Node: Texinfo mode295915
-Node: Exploiting297051
-Node: Superseding297871
-Node: Mapping302075
-Node: Unbinding303904
-Node: Indices304725
-Node: Key Index304950
-Node: Function Index310982
-Node: Variable Index321427
-Node: Concept Index342031
+Node: Top918
+Node: Copying7180
+Node: Introduction9136
+Node: Summary9406
+Node: Installation12147
+Node: Prerequisites13521
+Node: Configure16389
+Node: Build/install21800
+Node: Loading the package22291
+Node: Advice for package providers24098
+Node: Advice for non-privileged users28043
+Node: Installation under MS Windows32001
+Node: Customizing47224
+Node: Quick Start48807
+Ref: Quick Start-Footnote-150797
+Node: Editing Facilities50944
+Node: Processing Facilities55747
+Node: Editing59641
+Node: Quotes60971
+Node: Font Specifiers69239
+Node: Sectioning71065
+Node: Environments75385
+Node: Equations80539
+Node: Floats81130
+Node: Itemize-like82663
+Node: Tabular-like83384
+Node: Customizing Environments84867
+Node: Mathematics85107
+Node: Completion88033
+Node: Marking93356
+Node: Marking (LaTeX)93980
+Node: Marking (Texinfo)94922
+Node: Commenting96532
+Node: Indenting97857
+Node: Filling103642
+Node: Display108962
+Node: Font Locking110574
+Node: Fontification of macros112649
+Node: Fontification of quotes122087
+Node: Fontification of math123582
+Node: Verbatim content125301
+Node: Faces126075
+Node: Known problems126564
+Node: Folding127493
+Node: Outline138317
+Node: Narrowing139589
+Node: Processing140639
+Node: Commands141802
+Node: Starting a Command142358
+Node: Selecting a Command146894
+Node: Processor Options150420
+Node: Viewing157162
+Node: Starting Viewers157536
+Node: I/O Correlation164054
+Node: Debugging167500
+Node: Checking171855
+Node: Control173017
+Node: Cleaning173744
+Node: Documentation174957
+Node: Customization175737
+Node: Modes and Hooks176230
+Node: Multifile177436
+Node: Parsing Files182115
+Node: Internationalization187027
+Node: European188208
+Node: Japanese195088
+Node: Automatic196785
+Node: Automatic Global199276
+Node: Automatic Private200408
+Node: Automatic Local201721
+Node: Style Files202752
+Node: Simple Style203545
+Node: Adding Macros206818
+Node: Adding Environments215939
+Node: Adding Other220600
+Node: Hacking the Parser221187
+Node: Appendices225056
+Node: Copying this Manual225440
+Node: GNU Free Documentation License226324
+Node: Changes251443
+Node: Development280374
+Node: Mid-term Goals281020
+Node: Wishlist282237
+Node: Bugs288194
+Node: FAQ289724
+Node: Texinfo mode295897
+Node: Exploiting297033
+Node: Superseding297853
+Node: Mapping302057
+Node: Unbinding303886
+Node: Indices304707
+Node: Key Index304932
+Node: Function Index310964
+Node: Variable Index321409
+Node: Concept Index342013
 
 End Tag Table

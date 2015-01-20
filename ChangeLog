@@ -1,3 +1,10 @@
+2015-01-20  Tassilo Horn  <tsdh@gnu.org>
+
+	* auctex.el: Remove byte-recompile-directory call compiling style
+	files because package.el does that anyhow.
+
+	* Version 11.88.1 released.
+
 2015-01-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* auctex.el (byte-recompile-directory): Refer to correct style
