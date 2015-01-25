@@ -1,3 +1,8 @@
+2015-01-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-section-heading): Use default parameter of
+	completing-read.  Fixes bug#19675.
+
 2015-01-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-auto-store): Fix indentation in auto files.
