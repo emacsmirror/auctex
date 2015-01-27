@@ -1,10 +1,10 @@
-;;; alltt.el --- AUCTeX style for `alltt.sty'
+;;; newtxtt.el --- AUCTeX style for `newtxtt.sty' (v1.05)
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2014 Free Software Foundation, Inc.
 
-;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
+;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2004-04-30
+;; Created: 2014-11-22
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,29 +26,37 @@
 
 ;;; Commentary:
 
-;; This file adds support for `alltt.sty'.
+;; This file adds support for `newtxtt.sty' (v1.05) from 2014/11/18.
+;; `newtxtt.sty' is part of TeXLive.
 
 ;;; Code:
 
 (TeX-add-style-hook
- "alltt"
+ "newtxtt"
  (lambda ()
-   (LaTeX-add-environments "alltt")
-   (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list
-		'("alltt" current-indentation))
-   (add-to-list 'LaTeX-verbatim-environments-local "alltt")
+
+   ;; Run style hook for newtxtt
+   (TeX-run-style-hooks "textcomp")
+
+   ;; New symbols
+   (TeX-add-symbols
+    '("textttz"      t)
+    '("ttz"         -1)
+    '("ttzdefault"  -1))
+
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)
-     ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
+     (font-latex-add-keywords '(("textttz"    "{"))
+			      'type-command)
+     (font-latex-add-keywords '(("ttzfamily"  "")
+				("ttz"        ""))
+			      'type-declaration)))
  LaTeX-dialect)
 
-(defvar LaTeX-alltt-package-options nil
-  "Package options for the alltt package.")
+(defvar LaTeX-newtxtt-package-options
+  '("scaled" "zerostyle" "nomono" "straightquotes"
+    "ttdefault" "ttzdefault")
+  "Package options for the newtxtt package.")
 
-;;; alltt.el ends here
+;;; newtxtt.el ends here

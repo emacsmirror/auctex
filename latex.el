@@ -441,11 +441,11 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
 		 (concat "Level: (default " name ") ")
 		 LaTeX-section-list
-		 nil nil nil)))
-    ; Update name
+		 nil nil nil nil name)))
+    ;; Update name
     (if (not (zerop (length string)))
 	(setq name string))
-    ; Update level
+    ;; Update level
     (setq level (LaTeX-section-level name))))
 
 (defun LaTeX-section-title ()
@@ -729,6 +729,15 @@ environment just inserted, the buffer position just before
     (run-hook-with-args 'LaTeX-after-insert-env-hooks
 			environment env-start env-end)))
 
+(defun LaTeX-environment-name-regexp ()
+  "Return the regexp matching the name of a LaTeX environment.
+This matches everything different from a TeX closing brace but
+allowing one level of TeX group braces."
+  (concat "\\([^" (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\("
+	  (regexp-quote TeX-grop) "[^" (regexp-quote TeX-grcl)
+	  (regexp-quote TeX-grop) "]*" (regexp-quote TeX-grcl) "\\)*[^"
+	  (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\)"))
+
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
   (save-excursion
@@ -736,7 +745,7 @@ environment just inserted, the buffer position just before
     (re-search-backward (concat (regexp-quote TeX-esc)
 				"end"
 				(regexp-quote TeX-grop)
-				" *\\([a-zA-Z*]*\\)"
+				(LaTeX-environment-name-regexp)
 				(regexp-quote TeX-grcl))
 			(save-excursion (beginning-of-line 1) (point)))
     (replace-match (concat TeX-esc "end" TeX-grop environment TeX-grcl) t t)
@@ -745,7 +754,7 @@ environment just inserted, the buffer position just before
     (re-search-forward (concat (regexp-quote TeX-esc)
 			       "begin"
 			       (regexp-quote TeX-grop)
-			       " *\\([a-zA-Z*]*\\)"
+			       (LaTeX-environment-name-regexp)
 			       (regexp-quote TeX-grcl))
 		       (save-excursion (end-of-line 1) (point)))
     (replace-match (concat TeX-esc "begin" TeX-grop environment TeX-grcl) t t)))
@@ -1173,7 +1182,10 @@ Just like array and tabular."
   (save-excursion
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (TeX-parse-arguments args)))
+    (let ((exit-mark (if (boundp 'exit-mark)
+			 exit-mark
+		       (make-marker))))
+      (TeX-parse-arguments args))))
 
 ;;; Item hooks
 
@@ -2902,6 +2914,8 @@ indentation level in columns."
   "*Regexp matching environments with indentation at col 0 for begin/end."
   :group 'LaTeX-indentation
   :type 'regexp)
+(make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
+			"2014-12-19")
 
 (defcustom LaTeX-begin-regexp "begin\\b"
   "*Regexp matching macros considered begins."
@@ -3033,6 +3047,10 @@ Lines starting with an item is given an extra indentation of
   (delete-region (line-beginning-position) (point))
   (indent-to outer-indent))
 
+(defun LaTeX-verbatim-regexp ()
+  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'."
+  (regexp-opt (LaTeX-verbatim-environments)))
+
 (defun LaTeX-indent-calculate (&optional force-type)
   "Return the indentation of a line of LaTeX source.
 FORCE-TYPE can be used to force the calculation of an inner or
@@ -3064,7 +3082,7 @@ outer indentation in case of a commented line.  The symbols
 	       (nth 1 entry)))
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "\\(begin\\|end\\){\\("
-				 LaTeX-verbatim-regexp
+				 (LaTeX-verbatim-regexp)
 				 "\\)}"))
 	     ;; \end{verbatim} must be flush left, otherwise an unwanted
 	     ;; empty line appears in LaTeX's output.
@@ -3196,19 +3214,19 @@ outer indentation in case of a commented line.  The symbols
 	   0)
 	  ((looking-at (concat (regexp-quote TeX-esc)
 			       "begin *{\\("
-			       LaTeX-verbatim-regexp
+			       (LaTeX-verbatim-regexp)
 			       "\\)}"))
 	   0)
 	  ((looking-at (concat (regexp-quote TeX-esc)
 			       "end *{\\("
-			       LaTeX-verbatim-regexp
+			       (LaTeX-verbatim-regexp)
 			       "\\)}"))
 	   ;; If I see an \end{verbatim} in the previous line I skip
 	   ;; back to the preceding \begin{verbatim}.
 	   (save-excursion
 	     (if (re-search-backward (concat (regexp-quote TeX-esc)
 					     "begin *{\\("
-					     LaTeX-verbatim-regexp
+					     (LaTeX-verbatim-regexp)
 					     "\\)}") 0 t)
 		 (LaTeX-indent-calculate-last force-type)
 	       0)))
@@ -4124,7 +4142,7 @@ environment in commented regions with the same comment prefix."
 	 (comment-prefix (and in-comment (TeX-comment-prefix)))
 	 (case-fold-search nil))
     (save-excursion
-      (skip-chars-backward "a-zA-Z \t{")
+      (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
       (unless (bolp)
 	(backward-char 1)
 	(and (looking-at regexp)
@@ -4143,7 +4161,8 @@ environment in commented regions with the same comment prefix."
 	    (setq level (1+ level))
 	  (setq level (1- level)))))
     (if (= level 0)
-	(search-forward "}")
+	(re-search-forward
+	 (concat TeX-grop (LaTeX-environment-name-regexp) TeX-grcl))
       (error "Can't locate end of current environment"))))
 
 (defun LaTeX-find-matching-begin ()
@@ -4158,7 +4177,7 @@ environment in commented regions with the same comment prefix."
 	 (in-comment (TeX-in-commented-line))
 	 (comment-prefix (and in-comment (TeX-comment-prefix)))
 	 (case-fold-search nil))
-    (skip-chars-backward "a-zA-Z \t{")
+    (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
     (unless (bolp)
       (backward-char 1)
       (and (looking-at regexp)
@@ -5681,6 +5700,10 @@ This happens when \\left is inserted."
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
+
+;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
 ;;;###autoload
 (defun TeX-latex-mode ()

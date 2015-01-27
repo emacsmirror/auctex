@@ -1,9 +1,10 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'
+;;; newtxtext.el --- AUCTeX style for `newtxtext.sty' (v1.321)
 
-;; Copyright (C) 2012, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014 Free Software Foundation, Inc.
 
-;; Author: Mads Jensen <mje@inducks.org>
+;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
+;; Created: 2014-11-19
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -25,27 +26,25 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bigstrut.sty'.
+;; This file adds support for `newtxtext.sty' (v1.321) from 2014/11/16.
+;; `newtxtext.sty' is part of TeXLive.
 
 ;;; Code:
 
 (TeX-add-style-hook
- "bigstrut"
+ "newtxtext"
  (lambda ()
+
+   ;; Run style hook for various packages loaded by newtxtext
+   (TeX-run-style-hooks "textcomp" "fontaxes")
+
+   ;; New symbols
    (TeX-add-symbols
-    "bigstrutsetup"
-    '("bigstrut" [ TeX-arg-bigstrut ])))
+    '("useosf"  0)))  ; Only preamble command
  LaTeX-dialect)
 
-(defun TeX-arg-bigstrut (optional &optional _prompt)
-  "Prompt for the optional argument in \\bigstrut."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-     optional "Strut to top (t) or bottom (b)" nil t)
-                    (mapcar 'list '("t" "b")) nil t)
-   optional))
+(defvar LaTeX-newtxtext-package-options
+  '("defaultsups" "helvratio" "osf" "scaled" "scosf")
+  "Package options for the newtxtext package.")
 
-(defvar LaTeX-bigstrut-package-options nil
-  "Package options for the bigstrut package.")
-
-;;; bigstrut.el ends here
+;;; newtxtext.el ends here

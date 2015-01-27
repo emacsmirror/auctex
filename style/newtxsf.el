@@ -1,9 +1,10 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'
+;;; newtxsf.el --- AUCTeX style for `newtxsf.sty' (v1.0)
 
-;; Copyright (C) 2012, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014 Free Software Foundation, Inc.
 
-;; Author: Mads Jensen <mje@inducks.org>
+;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
+;; Created: 2014-11-22
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -25,27 +26,32 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bigstrut.sty'.
+;; This file adds support for `newtxsf.sty' (v1.0) from 2014/11/14.
+;; `newtxsf.sty' is part of TeXLive.
 
 ;;; Code:
 
 (TeX-add-style-hook
- "bigstrut"
+ "newtxsf"
  (lambda ()
+   ;; Run style hook for amsmath
+   (TeX-run-style-hooks "amsmath")
+
+   ;; New symbols
    (TeX-add-symbols
-    "bigstrutsetup"
-    '("bigstrut" [ TeX-arg-bigstrut ])))
+    '("upimath"  0)
+    '("upjmath"  0)))
  LaTeX-dialect)
 
-(defun TeX-arg-bigstrut (optional &optional _prompt)
-  "Prompt for the optional argument in \\bigstrut."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-     optional "Strut to top (t) or bottom (b)" nil t)
-                    (mapcar 'list '("t" "b")) nil t)
-   optional))
+(defvar LaTeX-newtxsf-package-options
+  '("scaled"
+    "nosymbolsc"
+    "cmintegrals"
+    "amssymbols"
+    "noamssymbols"
+    "uprightGreek"
+    "slantedGreek"
+    "frenchmath")
+  "Package options for the newtxsf package.")
 
-(defvar LaTeX-bigstrut-package-options nil
-  "Package options for the bigstrut package.")
-
-;;; bigstrut.el ends here
+;;; newtxsf.el ends here

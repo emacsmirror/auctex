@@ -25,7 +25,7 @@
     ))
  LaTeX-dialect)
 
-(defun TeX-arg-psfig (optional)
+(defun TeX-arg-psfig (_optional)
    "Ask for file, width and length. Insert psfig macro"
    (let ((psfile (read-file-name "PS-file: " "" "" nil))
 	 (figwidth (TeX-read-string "Figure width: "))
@@ -42,7 +42,7 @@
    )
 
 
-(defun LaTeX-env-psfigure (environment)
+(defun LaTeX-env-psfigure (_environment)
   "Create  with \\label and \\caption and \\psfig commands."
   (let ((float (TeX-read-string "Float to: " LaTeX-float))
 	(caption (TeX-read-string "Caption: "))

@@ -29,7 +29,7 @@
 
 ;;; Code:
 
-(defun LaTeX-beamer-after-insert-env (env start end)
+(defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."
   ;; Add `fragile' as an optional argument to the frame environment if
   ;; a verbatim environment is inserted.
@@ -137,7 +137,7 @@
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
 		 (let ((title (TeX-read-string "(Optional) Title: " nil
-					   'LaTeX-beamer-frametitle-history)))
+					       'LaTeX-beamer-frametitle-history)))
 		   (LaTeX-insert-environment env)
 		   (unless (zerop (length title))
 		     (save-excursion
@@ -172,8 +172,6 @@
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
 		'("semiverbatim" current-indentation))
-   (make-local-variable 'LaTeX-verbatim-regexp)
-   (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|semiverbatim"))
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
 
    ;; Fontification
@@ -190,14 +188,14 @@
      (font-lock-set-defaults)))
  LaTeX-dialect)
 
-(defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
+(defun TeX-arg-beamer-overlay-spec (_optional &optional _prompt)
   "Prompt for overlay specification."
   (let ((overlay (TeX-read-string "(Optional) Overlay: ")))
     (unless (zerop (length overlay))
       (insert "<" overlay ">"))
     (indent-according-to-mode)))
 
-(defun TeX-arg-beamer-frametitle (optional &optional prompt)
+(defun TeX-arg-beamer-frametitle (_optional &optional _prompt)
   "Prompt for the frametitle."
   (let ((title (TeX-read-string "Title: " nil 'LaTeX-beamer-frametitle-history)))
     (if (not (zerop (length title)))
@@ -221,7 +219,7 @@ unconditionally."
   (insert " ")
   (indent-according-to-mode))
 
-(defun TeX-arg-beamer-note (optional &optional prompt)
+(defun TeX-arg-beamer-note (_optional &optional _prompt)
   "Prompt for overlay specification and optional argument."
   (let ((overlay (TeX-read-string "(Optional) Overlay: "))
         (options (TeX-read-string "(Optional) Options: ")))
@@ -257,7 +255,7 @@ also be a string.  Then the length of the string is used."
 		       (substring file chars))))
 	      (TeX-search-files nil exts t t))))))
 
-(defun LaTeX-arg-beamer-theme (&rest ignore)
+(defun LaTeX-arg-beamer-theme (&rest _ignore)
   "Prompt for beamer theme with completion."
   (TeX-argument-insert
    (completing-read
@@ -276,7 +274,7 @@ also be a string.  Then the length of the string is used."
     nil nil nil)
    t))
 
-(defun LaTeX-arg-beamer-inner-theme (&rest ignore)
+(defun LaTeX-arg-beamer-inner-theme (&rest _ignore)
   "Prompt for beamer inner theme with completion."
   (TeX-argument-insert
    (completing-read
@@ -295,7 +293,7 @@ also be a string.  Then the length of the string is used."
     nil nil nil)
    t))
 
-(defun LaTeX-arg-beamer-outer-theme (&rest ignore)
+(defun LaTeX-arg-beamer-outer-theme (&rest _ignore)
   "Prompt for beamer outer theme with completion."
   (TeX-argument-insert
    (completing-read
@@ -314,7 +312,7 @@ also be a string.  Then the length of the string is used."
     nil nil nil)
    t))
 
-(defun LaTeX-arg-beamer-color-theme (&rest ignore)
+(defun LaTeX-arg-beamer-color-theme (&rest _ignore)
   "Prompt for beamer color theme with completion."
   (TeX-argument-insert
    (completing-read
@@ -333,7 +331,7 @@ also be a string.  Then the length of the string is used."
     nil nil nil)
    t))
 
-(defun LaTeX-arg-beamer-font-theme (&rest ignore)
+(defun LaTeX-arg-beamer-font-theme (&rest _ignore)
   "Prompt for beamer font theme with completion."
   (TeX-argument-insert
    (completing-read

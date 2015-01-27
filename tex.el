@@ -1104,10 +1104,9 @@ of point in emacs by using Evince's DBUS API.  Used by default
 for the Evince viewer entry in `TeX-view-program-list-builtin' if
 the requirements are met."
   (require 'url-util)
-  (let* ((uri (concat "file://" (let ((url-unreserved-chars (cons ?/ url-unreserved-chars)))
-				  (url-hexify-string
-				   (expand-file-name
-				    (concat file "." (TeX-output-extension)))))))
+  (let* ((uri (concat "file://" (url-encode-url
+				 (expand-file-name
+				  (concat file "." (TeX-output-extension))))))
 	 (owner (dbus-call-method
 		 :session "org.gnome.evince.Daemon"
 		 "/org/gnome/evince/Daemon"
@@ -1133,8 +1132,8 @@ the requirements are met."
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
-      ("dvips and start" "dvips %d -o && start \"\" %f" ,(list "dvips" "start"))
-      ("start" "start \"\" %o" "start")))
+      ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
+      ("start" "start \"\" %o")))
    ((eq system-type 'darwin)
     '(("Preview.app" "open -a Preview.app %o" "open")
       ("Skim" "open -a Skim.app %o" "open")
@@ -3032,42 +3031,51 @@ type of ARGS:
   parse it as a list, otherwise parse the only element as above.
   Use square brackets instead of curly braces, and is not inserted
   on empty user input."
-
-  (if (and (TeX-active-mark)
-	   (> (point) (mark)))
-      (exchange-point-and-mark))
-  (insert TeX-esc symbol)
-  (let ((exit-mark (make-marker))
-	(position (point)))
-    (TeX-parse-arguments args)
-    (cond ((marker-position exit-mark)
-	   (goto-char (marker-position exit-mark))
-	   (set-marker exit-mark nil))
-	  ((let ((element (assoc symbol TeX-insert-braces-alist)))
-	     ;; If in `TeX-insert-braces-alist' there is an element associated
-	     ;; to the current macro, use its value to decide whether inserting
-	     ;; a pair of braces, otherwise use the standard criterion.
-	     (if element
-		 (cdr element)
-	       (and TeX-insert-braces
-		    ;; Do not add braces if the argument is 0 or -1.
-		    (not (and (= (safe-length args) 1)
-			      (numberp (car args))
-			      (<= (car args) 0)))
-		    (equal position (point))
-		    (string-match "[a-zA-Z]+" symbol))))
-	   (if (texmathp)
-	       (when (TeX-active-mark)
-		 (insert TeX-grop)
-		 (exchange-point-and-mark)
-		 (insert TeX-grcl))
-	     (insert TeX-grop)
-	     (if (TeX-active-mark)
-		 (progn
+  (let ((TeX-grop (if (and (or (atom args) (= (length args) 1))
+			   (fboundp 'LaTeX-verbatim-macros-with-delims)
+			   (member symbol (LaTeX-verbatim-macros-with-delims)))
+		      LaTeX-default-verb-delimiter
+		    TeX-grop))
+	(TeX-grcl (if (and (or (atom args) (= (length args) 1))
+			   (fboundp 'LaTeX-verbatim-macros-with-delims)
+			   (member symbol (LaTeX-verbatim-macros-with-delims)))
+		      LaTeX-default-verb-delimiter
+		    TeX-grcl)))
+    (if (and (TeX-active-mark)
+	     (> (point) (mark)))
+	(exchange-point-and-mark))
+    (insert TeX-esc symbol)
+    (let ((exit-mark (make-marker))
+	  (position (point)))
+      (TeX-parse-arguments args)
+      (cond ((marker-position exit-mark)
+	     (goto-char (marker-position exit-mark))
+	     (set-marker exit-mark nil))
+	    ((let ((element (assoc symbol TeX-insert-braces-alist)))
+	       ;; If in `TeX-insert-braces-alist' there is an element associated
+	       ;; to the current macro, use its value to decide whether inserting
+	       ;; a pair of braces, otherwise use the standard criterion.
+	       (if element
+		   (cdr element)
+		 (and TeX-insert-braces
+		      ;; Do not add braces if the argument is 0 or -1.
+		      (not (and (= (safe-length args) 1)
+				(numberp (car args))
+				(<= (car args) 0)))
+		      (equal position (point))
+		      (string-match "[a-zA-Z]+" symbol))))
+	     (if (texmathp)
+		 (when (TeX-active-mark)
+		   (insert TeX-grop)
 		   (exchange-point-and-mark)
 		   (insert TeX-grcl))
-	       (insert TeX-grcl)
-	       (backward-char)))))))
+	       (insert TeX-grop)
+	       (if (TeX-active-mark)
+		   (progn
+		     (exchange-point-and-mark)
+		     (insert TeX-grcl))
+		 (insert TeX-grcl)
+		 (backward-char))))))))
 
 (defun TeX-arg-string (optional &optional prompt initial-input)
   "Prompt for a string.
@@ -3700,7 +3708,13 @@ If TEX is a directory, generate style files for all files in the directory."
 	    (class-opts (if (boundp 'LaTeX-provided-class-options)
 			    LaTeX-provided-class-options))
 	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
-			  LaTeX-provided-package-options)))
+			  LaTeX-provided-package-options))
+	    (verb-envs (when (boundp 'LaTeX-verbatim-environments-local)
+			 LaTeX-verbatim-environments-local))
+	    (verb-macros-delims (when (boundp 'LaTeX-verbatim-macros-with-delims-local)
+				  LaTeX-verbatim-macros-with-delims-local))
+	    (verb-macros-braces (when (boundp 'LaTeX-verbatim-macros-with-braces-local)
+				  LaTeX-verbatim-macros-with-braces-local)))
 	(TeX-unload-style style)
 	(with-current-buffer (generate-new-buffer file)
 	  (erase-buffer)
@@ -3712,6 +3726,18 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (when pkg-opts
 	    (insert "\n   (TeX-add-to-alist 'LaTeX-provided-package-options\n"
 		    "                     '" (prin1-to-string pkg-opts) ")"))
+	  (dolist (env verb-envs)
+	    (insert
+	     (format "\n   (add-to-list 'LaTeX-verbatim-environments-local \"%s\")"
+		     env)))
+	  (dolist (env verb-macros-braces)
+	    (insert
+	     (format "\n   (add-to-list 'LaTeX-verbatim-macros-with-braces-local \"%s\")"
+		     env)))
+	  (dolist (env verb-macros-delims)
+	    (insert
+	     (format "\n   (add-to-list 'LaTeX-verbatim-macros-with-delims-local \"%s\")"
+		     env)))
 	  (mapc (lambda (el) (TeX-auto-insert el style))
 		TeX-auto-parser)
 	  (insert "))\n\n")
@@ -4617,14 +4643,10 @@ Brace insertion is only done if point is in a math construct and
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
   ;; COMPATIBILITY for Emacs < 21
-  (if (and (not (featurep 'xemacs))
-	   (= emacs-major-version 20))
-      (cons TeX-command-menu-name
-	    (TeX-mode-specific-command-menu-entries mode))
-    (list TeX-command-menu-name
-	  :filter `(lambda (&rest ignored)
-		     (TeX-mode-specific-command-menu-entries ',mode))
-	  "Bug.")))
+  (list TeX-command-menu-name
+        :filter `(lambda (&rest ignored)
+                   (TeX-mode-specific-command-menu-entries ',mode))
+        "Bug."))
 
 (defun TeX-mode-specific-command-menu-entries (mode)
   "Return the entries for a Command menu specific to the major MODE."

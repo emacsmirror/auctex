@@ -91,7 +91,7 @@ doesn't works with Emacs 21.3 or XEmacs.  See
  	  (string-match (LaTeX-includegraphics-extensions) fname))))
    (TeX-master-directory)))
 
-(defun LaTeX-arg-includegraphics (prefix)
+(defun LaTeX-arg-includegraphics (_prefix)
   "Ask for mandantory and optional arguments for the \\includegraphics command.
 
 The extent of the optional arguments is determined by the prefix argument and
