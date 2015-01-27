@@ -3,6 +3,8 @@
 	* tex.el (TeX-view-program-list-builtin): Remove "start" as
 	executable entry because it's no executable but a Windows system
 	command.
+	(TeX-view-program-list-builtin): Also remove "start" as executable
+	from the "dvips and start" entry.
 
 2015-01-25  Tassilo Horn  <tsdh@gnu.org>
 

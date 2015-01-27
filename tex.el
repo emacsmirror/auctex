@@ -1132,7 +1132,7 @@ the requirements are met."
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
-      ("dvips and start" "dvips %d -o && start \"\" %f" ,(list "dvips" "start"))
+      ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
    ((eq system-type 'darwin)
     '(("Preview.app" "open -a Preview.app %o" "open")
