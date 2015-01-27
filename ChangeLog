@@ -1,3 +1,9 @@
+2015-01-27  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-view-program-list-builtin): Remove "start" as
+	executable entry because it's no executable but a Windows system
+	command.
+
 2015-01-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-section-heading): Use default parameter of
