@@ -1,5 +1,7 @@
 2015-01-27  Tassilo Horn  <tsdh@gnu.org>
 
+	* Version 11.88.2 released.
+
 	* tex.el (TeX-view-program-list-builtin): Remove "start" as
 	executable entry because it's no executable but a Windows system
 	command.
