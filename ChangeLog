@@ -1,3 +1,9 @@
+2015-01-31  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/currvita.el: New file.
+
 2015-01-27  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-view-program-list-builtin): Remove "start" as
