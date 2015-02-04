@@ -1,3 +1,9 @@
+2015-02-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/tcolorbox.el: New style.
+
 2015-01-31  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.
