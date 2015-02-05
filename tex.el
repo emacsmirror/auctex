@@ -1098,6 +1098,20 @@ search are checked, too."
 
 (defvar url-unreserved-chars)
 
+(defun TeX-pdf-tools-sync-view ()
+  "Focus the focused page/paragraph in `pdf-view-mode'.  Used by
+default for the PDF Tools viewer entry in
+`TeX-view-program-list-builtin'."
+  (unless (featurep 'pdf-tools)
+    (error "PDF Tools are not installed!"))
+  (let ((doc (concat file "." (TeX-output-extension))))
+    (unless (get-file-buffer doc)
+      (find-file-noselect doc))
+    (if (and TeX-source-correlate-mode
+	     (fboundp 'pdf-sync-display-pdf))
+	(pdf-sync-display-pdf)
+      (pop-to-buffer doc))))
+
 (defun TeX-evince-sync-view ()
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
@@ -1164,7 +1178,8 @@ the requirements are met."
 				    " -i %(outpage)"
 				  " -p %(outpage)")) " %o")) "evince")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
-      ("xdg-open" "xdg-open %o" "xdg-open"))))
+      ("xdg-open" "xdg-open %o" "xdg-open")
+      ("PDF Tools" TeX-pdf-tools-sync-view))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
