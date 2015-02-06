@@ -1621,7 +1621,8 @@ You could use this for unusual mouse bindings.")
 That is, if FILE is `TeX-region', update FILE to the real tex
 file and LINE to (+ LINE offset-of-region).  Else, return the
 list of arguments unchanged."
-  (if (string-equal TeX-region (file-name-base file))
+  (if (string-equal TeX-region (file-name-sans-extension
+				(file-name-nondirectory file)))
       (with-current-buffer (or (find-buffer-visiting file)
 			       (find-file-noselect file))
 	(goto-char 0)

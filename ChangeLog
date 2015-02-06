@@ -1,3 +1,9 @@
+2015-02-06  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-source-correlate-handle-TeX-region): Replace
+	`file-name-base', introduced in GNU Emacs 24, with
+	`file-name-sans-extension'+`file-name-nondirectory'.
+
 2015-02-06  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-source-correlate-handle-TeX-region): New function.
