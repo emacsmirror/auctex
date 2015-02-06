@@ -1,3 +1,10 @@
+2015-02-06  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-source-correlate-handle-TeX-region): New function.
+	(TeX-source-correlate-sync-source): Use it.
+	(TeX-PDF-mode): Set `pdf-sync-correlate-tex-refine-function' to
+	`TeX-source-correlate-sync-source'.
+
 2015-02-05  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-pdf-tools-sync-view): New function to use PDF Tools

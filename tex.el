@@ -1096,8 +1096,6 @@ search are checked, too."
 					       (cdr (caar (cdr elem)))))
 					   spec))))))))
 
-(defvar url-unreserved-chars)
-
 (defun TeX-pdf-tools-sync-view ()
   "Focus the focused page/paragraph in `pdf-view-mode'.  Used by
 default for the PDF Tools viewer entry in
@@ -1111,6 +1109,8 @@ default for the PDF Tools viewer entry in
 	     (fboundp 'pdf-sync-display-pdf))
 	(pdf-sync-display-pdf)
       (pop-to-buffer doc))))
+
+(defvar url-unreserved-chars)
 
 (defun TeX-evince-sync-view ()
   "Focus the focused page/paragraph in Evince with the position
@@ -1316,8 +1316,8 @@ are evaluated positively is chosen."
 				   (mapc (lambda (spec)
 					   (add-to-list 'list
 							`(const ,(car spec))))
-				     (append TeX-view-program-list
-					     TeX-view-program-list-builtin))
+					 (append TeX-view-program-list
+						 TeX-view-program-list-builtin))
 				   (sort list
 					 (lambda (a b)
 					   (string< (downcase (cadr a))
@@ -1616,6 +1616,25 @@ If this is nil, an empty string will be returned."
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
+(defun TeX-source-correlate-handle-TeX-region (file line col &rest more)
+  "Translate backward search info with respect to `TeX-region'.
+That is, if FILE is `TeX-region', update FILE to the real tex
+file and LINE to (+ LINE offset-of-region).  Else, return the
+list of arguments unchanged."
+  (if (string-equal TeX-region (file-name-base file))
+      (with-current-buffer (or (find-buffer-visiting file)
+			       (find-file-noselect file))
+	(goto-char 0)
+	(if (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
+	    (let ((offset (string-to-int (match-string-no-properties 1))))
+	      (if TeX-region-orig-buffer
+		  (apply #'list
+			 (expand-file-name (buffer-file-name TeX-region-orig-buffer))
+			 (+ line offset) col more)
+		(apply #'list file line col more)))
+	  (apply #'list file line col more)))
+    (apply #'list file line col more)))
+
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
@@ -1625,55 +1644,36 @@ or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let* ((line (car linecol))
-	 (col (cadr linecol))
-	 (region (string= TeX-region (file-name-sans-extension
-				      (file-name-nondirectory file))))
-	 (region-search-string nil)
-	 (buf (let ((f (condition-case nil
-			   (progn
-			     (require 'url-parse)
-			     (require 'url-util)
-			     (url-unhex-string (aref (url-generic-parse-url file) 6)))
-			 ;; For Emacs 21 compatibility, which doesn't have the
-			 ;; url package.
-			 (file-error (replace-regexp-in-string "^file://" "" file)))))
-		(cond
-		 ;; Copy the text referenced by syntex relative in the region
-		 ;; file so that we can search it in the original file.
-		 (region (let ((region-buf (get-buffer (file-name-nondirectory file))))
-			   (when region-buf
-			     (with-current-buffer region-buf
-			       (goto-char (point-min))
-			       (forward-line (1- line))
-			       (let* ((p (point))
-				      (bound (save-excursion
-					       (re-search-backward "\\\\message{[^}]+}" nil t)
-					       (end-of-line)
-					       (point)))
-				      (start (save-excursion
-					       (while (< (- p (point)) 250)
-						 (backward-paragraph))
-					       (point))))
-				 (setq region-search-string (buffer-substring-no-properties
-							     (if (< start bound) bound start)
-							     (point))))
-			       ;; TeX-region-create stores the original buffer
-			       ;; locally as TeX-region-orig-buffer.
-			       (get-buffer TeX-region-orig-buffer)))))
-		 ((file-name-absolute-p f) (find-file f))
-		 (t (get-buffer (file-name-nondirectory file)))))))
-    (if (null buf)
-	(message "No buffer for %s." file)
-      (switch-to-buffer buf)
-      (push-mark (point) 'nomsg)
-      (goto-char (point-min))
-      (if region
-	  (search-forward region-search-string nil t)
-	(forward-line (1- line)))
-      (unless (= col -1)
-	(move-to-column col))
-      (raise-frame))))
+  (let* ((file (condition-case nil
+		   (progn
+		     (require 'url-parse)
+		     (require 'url-util)
+		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
+		 ;; For Emacs 21 compatibility, which doesn't have the
+		 ;; url package.
+		 (file-error (replace-regexp-in-string "^file://" "" file))))
+	 (flc (apply #'TeX-source-correlate-handle-TeX-region file linecol))
+	 (file (car flc))
+	 (line (cadr flc))
+	 (col  (nth 2 flc)))
+    (pop-to-buffer (or (find-buffer-visiting file)
+                       (find-file-noselect file)))
+    (push-mark nil 'nomsg)
+    (let ((pos
+	   (when (> line 0)
+	     (save-excursion
+	       (save-restriction
+		 (widen)
+		 (goto-char 1)
+		 (forward-line (1- line))
+		 (when (> col 0)
+		   (forward-char (1- col)))
+		 (point))))))
+      (when pos
+	(when (or (< pos (point-min))
+		  (> pos (point-max)))
+	  (widen))
+	(goto-char pos)))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
@@ -1861,6 +1861,10 @@ function `TeX-global-PDF-mode' for toggling this value."
     (setq TeX-PDF-mode nil))
   (setq TeX-PDF-mode-parsed nil)
   (TeX-set-mode-name nil nil t)
+  (when (and TeX-PDF-mode
+	     (boundp 'pdf-sync-correlate-tex-refine-function))
+    (setq pdf-sync-correlate-tex-refine-function
+	  #'TeX-source-correlate-handle-TeX-region))
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi")))
 (add-to-list 'minor-mode-alist '(TeX-PDF-mode ""))
