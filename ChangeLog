@@ -1,3 +1,10 @@
+2015-02-07  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-pdf-tools-sync-view)
+	(TeX-source-correlate-handle-TeX-region)
+	(TeX-source-correlate-sync-source, TeX-PDF-mode): Adapt PDF Tools
+	forward/backward search to latest PDF Tools changes.
+
 2015-02-06  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-source-correlate-handle-TeX-region): Replace

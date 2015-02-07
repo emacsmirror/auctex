@@ -1102,13 +1102,16 @@ default for the PDF Tools viewer entry in
 `TeX-view-program-list-builtin'."
   (unless (featurep 'pdf-tools)
     (error "PDF Tools are not installed!"))
-  (let ((doc (concat file "." (TeX-output-extension))))
-    (unless (get-file-buffer doc)
-      (find-file-noselect doc))
+  (let* ((doc (concat (if TeX-current-process-region-p
+			  (TeX-region-file)
+			file)
+		      "." (TeX-output-extension)))
+	 (buf (or (find-buffer-visiting doc)
+		  (find-file-noselect doc))))
     (if (and TeX-source-correlate-mode
-	     (fboundp 'pdf-sync-display-pdf))
-	(pdf-sync-display-pdf)
-      (pop-to-buffer doc))))
+	     (fboundp 'pdf-sync-forward-search))
+	(pdf-sync-forward-search)
+      (pop-to-buffer buf))))
 
 (defvar url-unreserved-chars)
 
@@ -1616,25 +1619,21 @@ If this is nil, an empty string will be returned."
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
-(defun TeX-source-correlate-handle-TeX-region (file line col &rest more)
+(defun TeX-source-correlate-handle-TeX-region (file line col)
   "Translate backward search info with respect to `TeX-region'.
 That is, if FILE is `TeX-region', update FILE to the real tex
-file and LINE to (+ LINE offset-of-region).  Else, return the
-list of arguments unchanged."
-  (if (string-equal TeX-region (file-name-sans-extension
-				(file-name-nondirectory file)))
-      (with-current-buffer (or (find-buffer-visiting file)
-			       (find-file-noselect file))
-	(goto-char 0)
-	(if (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
-	    (let ((offset (string-to-int (match-string-no-properties 1))))
-	      (if TeX-region-orig-buffer
-		  (apply #'list
-			 (expand-file-name (buffer-file-name TeX-region-orig-buffer))
-			 (+ line offset) col more)
-		(apply #'list file line col more)))
-	  (apply #'list file line col more)))
-    (apply #'list file line col more)))
+file and LINE to (+ LINE offset-of-region).  Else, return nil."
+  (when (string-equal TeX-region (file-name-sans-extension
+				  (file-name-nondirectory file)))
+    (with-current-buffer (or (find-buffer-visiting file)
+			     (find-file-noselect file))
+      (goto-char 0)
+      (when (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
+	(let ((offset (string-to-int (match-string-no-properties 1))))
+	  (when TeX-region-orig-buffer
+	    (apply #'list
+		   (expand-file-name (buffer-file-name TeX-region-orig-buffer))
+		   (+ line offset) col more)))))))
 
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
@@ -1653,7 +1652,8 @@ or newer."
 		 ;; For Emacs 21 compatibility, which doesn't have the
 		 ;; url package.
 		 (file-error (replace-regexp-in-string "^file://" "" file))))
-	 (flc (apply #'TeX-source-correlate-handle-TeX-region file linecol))
+	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
+		  (apply #'list file linecol)))
 	 (file (car flc))
 	 (line (cadr flc))
 	 (col  (nth 2 flc)))
@@ -1862,10 +1862,9 @@ function `TeX-global-PDF-mode' for toggling this value."
     (setq TeX-PDF-mode nil))
   (setq TeX-PDF-mode-parsed nil)
   (TeX-set-mode-name nil nil t)
-  (when (and TeX-PDF-mode
-	     (boundp 'pdf-sync-correlate-tex-refine-function))
-    (setq pdf-sync-correlate-tex-refine-function
-	  #'TeX-source-correlate-handle-TeX-region))
+  (when TeX-PDF-mode
+    (add-hook 'pdf-sync-backward-redirect-functions
+	      #'TeX-source-correlate-handle-TeX-region))
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi")))
 (add-to-list 'minor-mode-alist '(TeX-PDF-mode ""))
