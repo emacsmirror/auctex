@@ -1631,9 +1631,8 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
       (when (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
 	(let ((offset (string-to-int (match-string-no-properties 1))))
 	  (when TeX-region-orig-buffer
-	    (apply #'list
-		   (expand-file-name (buffer-file-name TeX-region-orig-buffer))
-		   (+ line offset) col more)))))))
+	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
+		  (+ line offset) col)))))))
 
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
