@@ -144,7 +144,7 @@ STYLESRC = style/prosper.el \
 	   style/fbb.el       style/newtxmath.el style/newtxsf.el \
 	   style/newtxtext.el style/newtxttt.el  style/minted.el \
 	   style/wrapfig.el   style/relsize.el   style/currvita.el \
-	   style/tcolorbox.el
+	   style/tcolorbox.el style/color.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 ifeq (@preview_enabled@,yes)
