@@ -1102,10 +1102,7 @@ default for the PDF Tools viewer entry in
 `TeX-view-program-list-builtin'."
   (unless (featurep 'pdf-tools)
     (error "PDF Tools are not installed!"))
-  (let* ((doc (concat (if TeX-current-process-region-p
-			  (TeX-region-file)
-			file)
-		      "." (TeX-output-extension)))
+  (let* ((doc (concat file "." (TeX-output-extension)))
 	 (buf (or (find-buffer-visiting doc)
 		  (find-file-noselect doc))))
     (if (and TeX-source-correlate-mode
