@@ -1,5 +1,10 @@
 2015-02-09  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-pdf-tools-sync-view): Make it work with
+	`TeX-command-region'.
+
+2015-02-09  Tassilo Horn  <tsdh@gnu.org>
+
 	* tex.el (TeX-pdf-tools-sync-view): Simplify function.
 
 2015-02-09  Arash Esbati  <esbati@gmx.de>

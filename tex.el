@@ -1097,18 +1097,23 @@ search are checked, too."
 					   spec))))))))
 
 (defun TeX-pdf-tools-sync-view ()
-  "Focus the focused page/paragraph in `pdf-view-mode'.  Used by
-default for the PDF Tools viewer entry in
-`TeX-view-program-list-builtin'."
+  "Focus the focused page/paragraph in `pdf-view-mode'.
+If `TeX-source-correlate-mode' is disabled, only find and pop to
+the output PDF file.  Used by default for the PDF Tools viewer
+entry in `TeX-view-program-list-builtin'."
   (unless (featurep 'pdf-tools)
-    (error "PDF Tools are not installed!"))
-  (let* ((doc (concat file "." (TeX-output-extension)))
-	 (buf (or (find-buffer-visiting doc)
-		  (find-file-noselect doc))))
-    (if (and TeX-source-correlate-mode
-	     (fboundp 'pdf-sync-forward-search))
-	(pdf-sync-forward-search)
-      (pop-to-buffer buf))))
+    (error "PDF Tools are not installed"))
+  (unless TeX-PDF-mode
+    (error "PDF Tools only work with PDF output"))
+  (if (and TeX-source-correlate-mode
+	   (fboundp 'pdf-sync-forward-search))
+      (with-current-buffer (or (find-buffer-visiting
+				(concat file "." TeX-default-extension))
+			       (current-buffer))
+	(pdf-sync-forward-search))
+    (let ((pdf (concat file "." (TeX-output-extension))))
+      (pop-to-buffer (or (find-buffer-visiting pdf)
+			 (find-file-noselect pdf))))))
 
 (defvar url-unreserved-chars)
 
