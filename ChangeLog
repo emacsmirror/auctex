@@ -1,3 +1,10 @@
+2015-02-13  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-pdf-tools-sync-view, TeX-PDF-mode): Move addition of
+	`TeX-source-correlate-handle-TeX-region' to
+	`pdf-sync-backward-redirect-functions' from `TeX-PDF-mode' to
+	`TeX-pdf-tools-sync-view'.
+
 2015-02-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-pdf-tools-sync-view): Make it work with

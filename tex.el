@@ -1105,6 +1105,8 @@ entry in `TeX-view-program-list-builtin'."
     (error "PDF Tools are not installed"))
   (unless TeX-PDF-mode
     (error "PDF Tools only work with PDF output"))
+  (add-hook 'pdf-sync-backward-redirect-functions
+	    #'TeX-source-correlate-handle-TeX-region)
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
       (with-current-buffer (or (find-buffer-visiting
@@ -1863,9 +1865,6 @@ function `TeX-global-PDF-mode' for toggling this value."
     (setq TeX-PDF-mode nil))
   (setq TeX-PDF-mode-parsed nil)
   (TeX-set-mode-name nil nil t)
-  (when TeX-PDF-mode
-    (add-hook 'pdf-sync-backward-redirect-functions
-	      #'TeX-source-correlate-handle-TeX-region))
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi")))
 (add-to-list 'minor-mode-alist '(TeX-PDF-mode ""))
