@@ -1,3 +1,11 @@
+2015-02-17  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-after-insert-env-hook): Rename from
+	`LaTeX-after-insert-env-hooks' which is now an obsolete variable
+	alias.
+	(LaTeX-after-modify-env-hook): New hook.
+	(LaTeX-modify-environment): Run `LaTeX-after-modify-env-hook'.
+
 2015-02-13  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-pdf-tools-sync-view, TeX-PDF-mode): Move addition of
