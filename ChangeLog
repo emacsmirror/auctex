@@ -1,3 +1,8 @@
+2015-03-02  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-match-command-with-arguments): Fix
+	error introduced in the last change.
+
 2015-02-24  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/expl3.el: New style for the wrapper package for

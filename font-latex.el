@@ -1494,8 +1494,7 @@ Returns nil if none of KEYWORDS is found."
 			     (list (point)
 				   (progn
 				     (forward-char)
-				     (if (zerop (skip-chars-forward
-						 "\\\\\\(?:\\s_\\|\\sw\\)+"))
+				     (if (zerop (skip-syntax-forward "_w"))
 					 (forward-char) ; Single-char macro.
 				       (skip-chars-forward "*"))
 				     (point))))
