@@ -1741,6 +1741,26 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
+@defopt LaTeX-fill-excluded-macros
+A list of macro names (without leading backslash) for whose arguments
+filling should be disabled.  Typically, you will want to add macros here
+which have long, multi-line arguments.  An example is
+@code{\pgfplotstabletypeset} from the pgfplotstable package which is
+used as shown in the following listing:
+
+@verbatim
+\pgfplotstabletypeset[skip first n=4]{%
+  XYZ Format,
+  Version 1.234
+  Date 2010-09-01
+  @author Mustermann
+  A B C
+  1 2 3
+  4 5 6
+}
+@end verbatim
+@end defopt
+
 @node Display
 @chapter Controlling Screen Display
 

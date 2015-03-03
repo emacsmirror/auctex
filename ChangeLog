@@ -1,5 +1,7 @@
 2015-03-03  Tassilo Horn  <tsdh@gnu.org>
 
+	* doc/auctex.texi (Filling): Document LaTeX-fill-excluded-macros.
+
 	* latex.el (LaTeX-fill-excluded-macros): New defcustom for
 	excluding macro arguments from filling.
 	(LaTeX-fill-region-as-paragraph): Use it.
