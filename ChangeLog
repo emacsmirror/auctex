@@ -1,3 +1,9 @@
+2015-03-03  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-fill-excluded-macros): New defcustom for
+	excluding macro arguments from filling.
+	(LaTeX-fill-region-as-paragraph): Use it.
+
 2015-03-02  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el (font-latex-match-command-with-arguments): Fix

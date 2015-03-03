@@ -3353,6 +3353,12 @@ does not fit into the line."
   :group 'LaTeX
   :type 'boolean)
 
+(defcustom LaTeX-fill-excluded-macros nil
+  "List of macro names (without leading \\) whose arguments must
+not be subject to filling."
+  :group 'LaTeX
+  :type '(repeat string))
+
 (defvar LaTeX-nospace-between-char-regexp
   (if (featurep 'xemacs)
     (if (and (boundp 'word-across-newline) word-across-newline)
@@ -3379,6 +3385,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
   (let ((end-marker (save-excursion (goto-char to) (point-marker))))
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+	    (member (TeX-current-macro) LaTeX-fill-excluded-macros)
 	    ;; This could be generalized, if there are more cases where
 	    ;; a special string at the start of a region to fill should
 	    ;; inhibit filling.
