@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013, 2014 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -184,7 +184,7 @@ all: texmf lisp docs
 	install-man clean distclean maintainer-clean extraclean		\
 	tar-ball-clean check-tag check release-commit dist snapshot	\
 	patch tar-ball rpm-packages wc xemacs-package windows-package	\
-	release-sign release-upload preview-ball
+	release-sign release-upload preview-ball uninstall
 
 texmf: latex/Makefile
 	$(TEXMF)
@@ -351,6 +351,21 @@ install-metadata:
 	  done && \
 	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
 	}
+
+uninstall:
+	rm -rf $(DESTDIR)$(packagelispdir) $(DESTDIR)$(packagedatadir) \
+		$(DESTDIR)$(autodir)
+	if test X$(packagedir) = Xno ; then \
+		rm -f $(DESTDIR)$(lispdir)/tex-site.el \
+		$(DESTDIR)$(auctexstartfile) ; \
+	else \
+		rm -f $(DESTDIR)$(packagedir)/man/auctex/RELEASE \
+		$(DESTDIR)$(packagedir)/pkginfo/MANIFEST.$(PACKAGE); \
+	fi
+	cd doc ; $(MAKE) DESTDIR=$(DESTDIR) uninstall
+	rm -f $(DESTDIR)$(previewstartfile)
+	rm -rf $(DESTDIR)$(packagelispdir)
+	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) uninstall)
 
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<
