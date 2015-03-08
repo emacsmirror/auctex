@@ -1,5 +1,8 @@
 2015-03-08  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-style-path): Replace add-to-list on local with
+	pushnew.
+
 	* style/bidibeamer.el: New style.
 
 	* Makefile.in (STYLESRC): Activate new bidibeamer style.

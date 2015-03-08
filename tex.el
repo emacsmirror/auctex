@@ -2440,11 +2440,11 @@ These correspond to the personal TeX macros."
   (let ((path))
     ;; Put directories in an order where the more local files can
     ;; override the more global ones.
-    (mapc (lambda (file) (when file (add-to-list 'path file t)))
+    (mapc (lambda (file) (when file (pushnew file path)))
           (append (list TeX-auto-global TeX-style-global)
                   TeX-auto-private TeX-style-private
                   (list TeX-auto-local TeX-style-local)))
-    path)
+    (nreverse path))
   "List of directories to search for AUCTeX style files.
 Per default the list is built from the values of the variables
 `TeX-auto-global', `TeX-style-global', `TeX-auto-private',
