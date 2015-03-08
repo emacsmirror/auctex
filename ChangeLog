@@ -1,3 +1,9 @@
+2015-03-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/bidibeamer.el: New style.
+
+	* Makefile.in (STYLESRC): Activate new bidibeamer style.
+
 2015-03-07  Mosè Giordano  <mose@gnu.org>
 
 	* doc/install.texi: Mention uninstallation in menus.
