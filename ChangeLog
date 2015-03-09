@@ -1,3 +1,9 @@
+2015-03-08  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/enumitem.el: New file.
+
 2015-03-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-style-path): Replace add-to-list on local with

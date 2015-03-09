@@ -145,7 +145,8 @@ STYLESRC = style/prosper.el \
 	   style/newtxtext.el style/newtxttt.el  style/minted.el \
 	   style/wrapfig.el   style/relsize.el   style/currvita.el \
 	   style/tcolorbox.el style/color.el	 style/expl3.el \
-	   style/bidibeamer.el
+	   style/bidibeamer.el style/enumitem.el
+
 STYLEELC = $(STYLESRC:.el=.elc)
 
 ifeq (@preview_enabled@,yes)
