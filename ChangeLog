@@ -1,3 +1,9 @@
+2015-03-09  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-end-regexp): Add "\]".
+	(LaTeX-indent-calculate): Indent "\[...\]" display math as a
+	regular environment.
+
 2015-03-08  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.
