@@ -1820,14 +1820,6 @@ Return non-nil if an error or warning is found."
 (defun TeX-find-display-help (type file line error offset context string
 				   line-end bad-box error-point)
   "Find the error and display the help."
-  (unless file
-    (cond
-     ;; XXX: error messages have to be different?
-     ((equal type 'error)
-      (error "Error occurred after last TeX file closed"))
-     (t
-      (error "Could not determine file for warning"))))
-
   ;; Go back to TeX-buffer
   (let ((runbuf (TeX-active-buffer))
 	(master (with-current-buffer TeX-command-buffer
@@ -1835,33 +1827,41 @@ Return non-nil if an error or warning is found."
 	(command-buffer TeX-command-buffer)
 	error-file-buffer start)
     (run-hooks 'TeX-translate-location-hook)
-    (setq error-file-buffer
-	  (find-file
-	   (expand-file-name file (file-name-directory master))))
-    ;; Set the value of `TeX-command-buffer' in the next file with an
-    ;; error to be displayed to the value it has in the current buffer.
-    (with-current-buffer error-file-buffer
-      (set (make-local-variable 'TeX-command-buffer) command-buffer))
 
-    ;; Find the location of the error or warning.
-    (when line
-      (goto-char (point-min))
-      (forward-line (+ offset line -1))
-      (cond
-       ;; Error.
-       ((equal type 'error)
-	(if (not (string= string " "))
-	    (search-forward string nil t)))
-       ;; Warning or bad box.
-       (t
-	(beginning-of-line 0)
-	(setq start (point))
-	(goto-char (point-min))
-	(forward-line (+ offset line-end -1))
-	(end-of-line)
-	(when string
-	  (search-backward string start t)
-	  (search-forward string nil t)))))
+    (if file
+	(progn
+	  (setq error-file-buffer
+		(find-file
+		 (expand-file-name file (file-name-directory master))))
+	  ;; Set the value of `TeX-command-buffer' in the next file with an
+	  ;; error to be displayed to the value it has in the current buffer.
+	  (with-current-buffer error-file-buffer
+	    (set (make-local-variable 'TeX-command-buffer) command-buffer))
+
+	  ;; Find the location of the error or warning.
+	  (when line
+	    (goto-char (point-min))
+	    (forward-line (+ offset line -1))
+	    (cond
+	     ;; Error.
+	     ((equal type 'error)
+	      (if (not (string= string " "))
+		  (search-forward string nil t)))
+	     ;; Warning or bad box.
+	     (t
+	      (beginning-of-line 0)
+	      (setq start (point))
+	      (goto-char (point-min))
+	      (forward-line (+ offset line-end -1))
+	      (end-of-line)
+	      (when string
+		(search-backward string start t)
+		(search-forward string nil t))))))
+      ;; When the file cannot be determined stay here but issue a warning.
+      (message (concat "Could not determine file for "
+		       (cond ((equal type 'error) "error")
+			     (t "warning"))))
+      (beep))
 
     ;; Display the help.
     (cond ((eq TeX-display-help 'expert)

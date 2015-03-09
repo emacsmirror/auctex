@@ -1,5 +1,8 @@
 2015-03-09  Mosè Giordano  <mose@gnu.org>
 
+	* tex-buf.el (TeX-find-display-help): Display the help also when
+	the file cannot be determined.
+
 	* latex.el (LaTeX-end-regexp): Add "\]".
 	(LaTeX-indent-calculate): Indent "\[...\]" display math as a
 	regular environment.
