@@ -2440,7 +2440,9 @@ These correspond to the personal TeX macros."
   (let ((path))
     ;; Put directories in an order where the more local files can
     ;; override the more global ones.
-    (mapc (lambda (file) (when file (pushnew file path)))
+    (mapc (lambda (file)
+	    (when (and file (not (member file path)))
+	      (setq path (cons file path))))
           (append (list TeX-auto-global TeX-style-global)
                   TeX-auto-private TeX-style-private
                   (list TeX-auto-local TeX-style-local)))

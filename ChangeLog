@@ -1,5 +1,8 @@
 2015-03-10  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el (TeX-style-path): Replace `pushnew' with equivalent code
+	since defcustom init-forms don't seem to get compiled.
+
 	* doc/auctex.texi (Modes and Hooks): Document
 	TeX-after-TeX-LaTeX-command-finished-hook.
 
