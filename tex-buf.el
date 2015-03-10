@@ -557,8 +557,8 @@ QUEUE is non-nil when we are checking for the printer queue."
   (if (listp TeX-output-extension)
       (car TeX-output-extension)
     (or (TeX-process-get-variable (TeX-active-master)
-				'TeX-output-extension
-				TeX-output-extension)
+				  'TeX-output-extension
+				  TeX-output-extension)
 	TeX-output-extension)))
 
 (defun TeX-view-mouse (event)
@@ -602,6 +602,12 @@ the current style options."
       "%v")))
 
 ;;; Command Hooks
+
+(defvar TeX-after-TeX-LaTeX-command-finished-hook nil
+  "Hook being run after TeX/LaTeX finished successfully.
+The functions in this hook are run with the DVI/PDF output file
+given as argument.  Using this hook can be useful for updating
+the viewer automatically after re-compilation of the document.")
 
 (defvar TeX-after-start-process-function nil
   "Hooks to run after starting an asynchronous process.
@@ -1110,7 +1116,12 @@ changed\\. Rerun LaTeX\\." nil t)
 	 (setq TeX-command-next TeX-command-Show))
 	(t
 	 (message "%s%s%s" name ": problems after " (TeX-current-pages))
-	 (setq TeX-command-next TeX-command-default))))
+	 (setq TeX-command-next TeX-command-default)))
+  (unless TeX-error-list
+    (run-hook-with-args 'TeX-after-TeX-LaTeX-command-finished-hook
+			(with-current-buffer TeX-command-buffer
+			  (expand-file-name
+			   (TeX-active-master (TeX-output-extension)))))))
 
 ;; should go into latex.el? --pg
 (defun TeX-BibTeX-sentinel (process name)

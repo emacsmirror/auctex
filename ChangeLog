@@ -1,3 +1,12 @@
+2015-03-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* doc/auctex.texi (Modes and Hooks): Document
+	TeX-after-TeX-LaTeX-command-finished-hook.
+
+	* tex-buf.el (TeX-after-TeX-LaTeX-command-finished-hook): New
+	hook.
+	(TeX-LaTeX-sentinel): Call it.
+
 2015-03-09  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-find-display-help): Display the help also when
