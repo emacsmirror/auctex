@@ -1,5 +1,11 @@
 2015-03-15  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/ltablex.el: New file.
+
+2015-03-15  Arash Esbati  <esbati@gmx.de>
+
 	* style/enumitem.el (LaTeX-enumitem-SetEnumitemKey-regexp): Delete
 	match for the second argument.
 	(LaTeX-enumitem-SetEnumitemValue-regexp): Delete match for the
