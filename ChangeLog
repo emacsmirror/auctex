@@ -2,6 +2,12 @@
 
 	* Makefile.in (STYLESRC): Add new style.
 
+	* style/ltxtable.el: New file.
+
+2015-03-15  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
 	* style/ltablex.el: New file.
 
 2015-03-15  Arash Esbati  <esbati@gmx.de>
