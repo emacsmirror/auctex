@@ -1,3 +1,17 @@
+2015-03-15  Arash Esbati  <esbati@gmx.de>
+
+	* style/enumitem.el (LaTeX-enumitem-SetEnumitemKey-regexp): Delete
+	match for the second argument.
+	(LaTeX-enumitem-SetEnumitemValue-regexp): Delete match for the
+	third argument.
+	(LaTeX-arg-SetEnumitemValue): Replace the randomly generated
+	number with something human-readable.
+
+	* style/caption.el (LaTeX-caption-DeclareCaption-regexp): Delete
+	match for the second argument.
+	(LaTeX-arg-caption-DeclareCaption): Replace the randomly generated
+	number with something human-readable.
+
 2015-03-10  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-style-path): Replace `pushnew' with equivalent code

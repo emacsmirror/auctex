@@ -121,13 +121,15 @@ supported by `caption.sty'.")
 ;; Setup for various \DeclareCaption's:
 (TeX-auto-add-type "caption-DeclareCaption" "LaTeX")
 
+;; The 2. argument to `DeclareCaption[A-Za-z]' contains (La)TeX code.
+;; We deliberately ignore that argument in our regex since it is not
+;; needed for this style and would pollute the auto generated
+;; `docname.el' file.
 (defvar LaTeX-caption-DeclareCaption-regexp
   `(,(concat "\\\\DeclareCaption\\(Font\\|Format\\|Justification"
 	     "\\|LabelFormat\\|LabelSeparator\\|ListFormat"
 	     "\\|Option\\|Style\\|TextFormat\\)"
 	     "\\*?"
-	     "[ \t\n\r%]*"
-	     "{\\([^}]+\\)}"
 	     "[ \t\n\r%]*"
 	     "{\\([^}]+\\)}")
     (0 1 2) LaTeX-auto-caption-DeclareCaption)
@@ -175,14 +177,15 @@ standard one."
 
 ;; In `LaTeX-caption-DeclareCaption-regexp', we match (0 1 2).  When
 ;; adding a new `Name', we need something unique for `0'-match until
-;; the next `C-c C-n'.  We use a random number for this purpose which
-;; will then disappear.
+;; the next `C-c C-n'.  We mimic that regex-match bei concat'ing the
+;; elements.  It will vanish upon next `C-c C-n'.
 (defun LaTeX-arg-caption-DeclareCaption (format)
   "Insert various `\\DeclareCaptionFORMAT' commands.  FORMAT is
 the suffix of the command."
   (let ((name (TeX-read-string "Name: ")))
     (LaTeX-add-caption-DeclareCaptions
-     `(,(number-to-string (random)) ,format ,name))
+     (list (concat "\\DeclareCaption" format "{" name "}")
+	   format name))
     (format "%s" name)))
 
 (TeX-add-style-hook

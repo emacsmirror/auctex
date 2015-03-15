@@ -137,7 +137,7 @@ package.")
 (TeX-auto-add-type "enumitem-SetEnumitemKey" "LaTeX")
 
 (defvar LaTeX-enumitem-SetEnumitemKey-regexp
-  '("\\\\SetEnumitemKey{\\([^}]+\\)}{\\([^}]+\\)}"
+  '("\\\\SetEnumitemKey{\\([^}]+\\)}"
     1 LaTeX-auto-enumitem-SetEnumitemKey)
   "Matches the arguments of `\\SetEnumitemKey' from `enumitem'
 package.")
@@ -150,9 +150,12 @@ package.")
 ;; Upon Tassilo's recommendation, we include also `0' so that we can
 ;; use the function `LaTeX-enumitem-SetEnumitemValue-list' while we
 ;; make sure that `TeX-auto-list-information' doesn't remove multiple
-;; defined values to a specific key.
+;; defined values to a specific key.  For this reason, we also ignore
+;; the 3. argument to the `\SetEnumitemValue' macro (i.e., a third
+;; {\\([^}]+\\)} in regex) so that we don't pollute the generated
+;; `docname.el' with unnecessary (La)TeX code.
 (defvar LaTeX-enumitem-SetEnumitemValue-regexp
-  '("\\\\SetEnumitemValue{\\([^}]+\\)}{\\([^}]+\\)}{\\([^}]+\\)}"
+  '("\\\\SetEnumitemValue{\\([^}]+\\)}{\\([^}]+\\)}"
     (0 1 2) LaTeX-auto-enumitem-SetEnumitemValue)
   "Matches the arguments of `\\SetEnumitemValue' from `enumitem'
 package.")
@@ -229,11 +232,12 @@ key-val and the first item."
     (add-to-list 'LaTeX-enumitem-key-val-options-local (list key))
     (LaTeX-add-enumitem-SetEnumitemKeys key)))
 
-
 ;; In `LaTeX-enumitem-SetEnumitemValue-regexp', we match (0 1 2).
 ;; When adding a new `key=val', we need something unique for `0'-match
-;; until the next `C-c C-n'.  We use a random number for this purpose
-;; which will then disappear.
+;; until the next `C-c C-n'.  We mimic that regex-match bei concat'ing
+;; the elements and pass the result to
+;; `LaTeX-add-enumitem-SetEnumitemValues'.  It will vanish upon next
+;; invocation of `C-c C-n'.
 (defun LaTeX-arg-SetEnumitemValue (optional &optional prompt)
   "Ask for a new value added to an existing key incl. the final
 replacement of the value."
@@ -252,7 +256,8 @@ replacement of the value."
     (TeX-argument-insert key optional)
     (TeX-argument-insert val optional)
     (LaTeX-add-enumitem-SetEnumitemValues
-     `(,(number-to-string (random)) ,key ,val))))
+     (list (concat "\\SetEnumitemValue{" key "}{" val "}")
+	   key val))))
 
 (defun LaTeX-enumitem-update-key-val-options ()
   "Update the buffer-local key-val options before offering them
