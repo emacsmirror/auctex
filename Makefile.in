@@ -146,7 +146,8 @@ STYLESRC = style/prosper.el \
 	   style/wrapfig.el   style/relsize.el   style/currvita.el \
 	   style/tcolorbox.el style/color.el	 style/expl3.el \
 	   style/bidibeamer.el style/enumitem.el style/caption.el \
-	   style/geometry.el  style/ltablex.el   style/ltxtable.el
+	   style/geometry.el  style/ltablex.el   style/ltxtable.el \
+	   style/mn2e.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

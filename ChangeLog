@@ -1,3 +1,9 @@
+2015-03-17  Mosè Giordano  <mose@gnu.org>
+
+	* style/mn2e.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate new style.
+
 2015-03-15  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.
