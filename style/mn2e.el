@@ -1,4 +1,4 @@
-;;; ms2e.el --- AUCTeX style for `mn2e.cls' version 2.2.
+;;; mn2e.el --- AUCTeX style for `mn2e.cls' version 2.2.
 
 ;; Copyright (C) 2015 Free Software Foundation, Inc.
 
