@@ -1,5 +1,7 @@
 2015-03-17  Mosè Giordano  <mose@gnu.org>
 
+	* doc/wininstall.texi: Fix a broken link.
+
 	* style/mn2e.el: New style file.
 
 	* Makefile.in (STYLESRC): Activate new style.
