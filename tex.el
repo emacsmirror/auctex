@@ -1096,6 +1096,27 @@ search are checked, too."
 					       (cdr (caar (cdr elem)))))
 					   spec))))))))
 
+(defun TeX-pdf-tools-sync-view ()
+  "Focus the focused page/paragraph in `pdf-view-mode'.
+If `TeX-source-correlate-mode' is disabled, only find and pop to
+the output PDF file.  Used by default for the PDF Tools viewer
+entry in `TeX-view-program-list-builtin'."
+  (unless (featurep 'pdf-tools)
+    (error "PDF Tools are not installed"))
+  (unless TeX-PDF-mode
+    (error "PDF Tools only work with PDF output"))
+  (add-hook 'pdf-sync-backward-redirect-functions
+	    #'TeX-source-correlate-handle-TeX-region)
+  (if (and TeX-source-correlate-mode
+	   (fboundp 'pdf-sync-forward-search))
+      (with-current-buffer (or (find-buffer-visiting
+				(concat file "." TeX-default-extension))
+			       (current-buffer))
+	(pdf-sync-forward-search))
+    (let ((pdf (concat file "." (TeX-output-extension))))
+      (pop-to-buffer (or (find-buffer-visiting pdf)
+			 (find-file-noselect pdf))))))
+
 (defvar url-unreserved-chars)
 
 (defun TeX-evince-sync-view ()
@@ -1164,7 +1185,8 @@ the requirements are met."
 				    " -i %(outpage)"
 				  " -p %(outpage)")) " %o")) "evince")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
-      ("xdg-open" "xdg-open %o" "xdg-open"))))
+      ("xdg-open" "xdg-open %o" "xdg-open")
+      ("PDF Tools" TeX-pdf-tools-sync-view))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1301,8 +1323,8 @@ are evaluated positively is chosen."
 				   (mapc (lambda (spec)
 					   (add-to-list 'list
 							`(const ,(car spec))))
-				     (append TeX-view-program-list
-					     TeX-view-program-list-builtin))
+					 (append TeX-view-program-list
+						 TeX-view-program-list-builtin))
 				   (sort list
 					 (lambda (a b)
 					   (string< (downcase (cadr a))
@@ -1601,6 +1623,21 @@ If this is nil, an empty string will be returned."
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
+(defun TeX-source-correlate-handle-TeX-region (file line col)
+  "Translate backward search info with respect to `TeX-region'.
+That is, if FILE is `TeX-region', update FILE to the real tex
+file and LINE to (+ LINE offset-of-region).  Else, return nil."
+  (when (string-equal TeX-region (file-name-sans-extension
+				  (file-name-nondirectory file)))
+    (with-current-buffer (or (find-buffer-visiting file)
+			     (find-file-noselect file))
+      (goto-char 0)
+      (when (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
+	(let ((offset (string-to-int (match-string-no-properties 1))))
+	  (when TeX-region-orig-buffer
+	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
+		  (+ line offset) col)))))))
+
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
@@ -1610,55 +1647,37 @@ or newer."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let* ((line (car linecol))
-	 (col (cadr linecol))
-	 (region (string= TeX-region (file-name-sans-extension
-				      (file-name-nondirectory file))))
-	 (region-search-string nil)
-	 (buf (let ((f (condition-case nil
-			   (progn
-			     (require 'url-parse)
-			     (require 'url-util)
-			     (url-unhex-string (aref (url-generic-parse-url file) 6)))
-			 ;; For Emacs 21 compatibility, which doesn't have the
-			 ;; url package.
-			 (file-error (replace-regexp-in-string "^file://" "" file)))))
-		(cond
-		 ;; Copy the text referenced by syntex relative in the region
-		 ;; file so that we can search it in the original file.
-		 (region (let ((region-buf (get-buffer (file-name-nondirectory file))))
-			   (when region-buf
-			     (with-current-buffer region-buf
-			       (goto-char (point-min))
-			       (forward-line (1- line))
-			       (let* ((p (point))
-				      (bound (save-excursion
-					       (re-search-backward "\\\\message{[^}]+}" nil t)
-					       (end-of-line)
-					       (point)))
-				      (start (save-excursion
-					       (while (< (- p (point)) 250)
-						 (backward-paragraph))
-					       (point))))
-				 (setq region-search-string (buffer-substring-no-properties
-							     (if (< start bound) bound start)
-							     (point))))
-			       ;; TeX-region-create stores the original buffer
-			       ;; locally as TeX-region-orig-buffer.
-			       (get-buffer TeX-region-orig-buffer)))))
-		 ((file-name-absolute-p f) (find-file f))
-		 (t (get-buffer (file-name-nondirectory file)))))))
-    (if (null buf)
-	(message "No buffer for %s." file)
-      (switch-to-buffer buf)
-      (push-mark (point) 'nomsg)
-      (goto-char (point-min))
-      (if region
-	  (search-forward region-search-string nil t)
-	(forward-line (1- line)))
-      (unless (= col -1)
-	(move-to-column col))
-      (raise-frame))))
+  (let* ((file (condition-case nil
+		   (progn
+		     (require 'url-parse)
+		     (require 'url-util)
+		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
+		 ;; For Emacs 21 compatibility, which doesn't have the
+		 ;; url package.
+		 (file-error (replace-regexp-in-string "^file://" "" file))))
+	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
+		  (apply #'list file linecol)))
+	 (file (car flc))
+	 (line (cadr flc))
+	 (col  (nth 2 flc)))
+    (pop-to-buffer (or (find-buffer-visiting file)
+                       (find-file-noselect file)))
+    (push-mark nil 'nomsg)
+    (let ((pos
+	   (when (> line 0)
+	     (save-excursion
+	       (save-restriction
+		 (widen)
+		 (goto-char 1)
+		 (forward-line (1- line))
+		 (when (> col 0)
+		   (forward-char (1- col)))
+		 (point))))))
+      (when pos
+	(when (or (< pos (point-min))
+		  (> pos (point-max)))
+	  (widen))
+	(goto-char pos)))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
@@ -2421,11 +2440,13 @@ These correspond to the personal TeX macros."
   (let ((path))
     ;; Put directories in an order where the more local files can
     ;; override the more global ones.
-    (mapc (lambda (file) (when file (add-to-list 'path file t)))
+    (mapc (lambda (file)
+	    (when (and file (not (member file path)))
+	      (setq path (cons file path))))
           (append (list TeX-auto-global TeX-style-global)
                   TeX-auto-private TeX-style-private
                   (list TeX-auto-local TeX-style-local)))
-    path)
+    (nreverse path))
   "List of directories to search for AUCTeX style files.
 Per default the list is built from the values of the variables
 `TeX-auto-global', `TeX-style-global', `TeX-auto-private',

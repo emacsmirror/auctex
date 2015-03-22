@@ -644,7 +644,11 @@ With prefix-argument, reopen environment afterwards."
 			 marker))
 	(move-marker marker nil)))))
 
-(defvar LaTeX-after-insert-env-hooks nil
+(if (featurep 'xemacs)
+    (define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook)
+  (define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook "11.89"))
+
+(defvar LaTeX-after-insert-env-hook nil
   "List of functions to be run at the end of `LaTeX-insert-environment'.
 Each function is called with three arguments: the name of the
 environment just inserted, the buffer position just before
@@ -738,26 +742,48 @@ allowing one level of TeX group braces."
 	  (regexp-quote TeX-grop) "]*" (regexp-quote TeX-grcl) "\\)*[^"
 	  (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\)"))
 
+(defvar LaTeX-after-modify-env-hook nil
+  "List of functions to be run at the end of `LaTeX-modify-environment'.
+Each function is called with four arguments: the new name of the
+environment, the former name of the environment, the buffer
+position just before \\begin and the position just before
+\\end.")
+
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
-  (save-excursion
-    (LaTeX-find-matching-end)
-    (re-search-backward (concat (regexp-quote TeX-esc)
-				"end"
-				(regexp-quote TeX-grop)
-				(LaTeX-environment-name-regexp)
-				(regexp-quote TeX-grcl))
-			(save-excursion (beginning-of-line 1) (point)))
-    (replace-match (concat TeX-esc "end" TeX-grop environment TeX-grcl) t t)
-    (beginning-of-line 1)
-    (LaTeX-find-matching-begin)
-    (re-search-forward (concat (regexp-quote TeX-esc)
-			       "begin"
-			       (regexp-quote TeX-grop)
-			       (LaTeX-environment-name-regexp)
-			       (regexp-quote TeX-grcl))
-		       (save-excursion (end-of-line 1) (point)))
-    (replace-match (concat TeX-esc "begin" TeX-grop environment TeX-grcl) t t)))
+  (let ((goto-end (lambda ()
+		    (LaTeX-find-matching-end)
+		    (re-search-backward (concat (regexp-quote TeX-esc)
+						"end"
+						(regexp-quote TeX-grop)
+						"\\("
+						(LaTeX-environment-name-regexp)
+						"\\)"
+						(regexp-quote TeX-grcl))
+					(save-excursion (beginning-of-line 1) (point)))))
+	(goto-begin (lambda ()
+		      (LaTeX-find-matching-begin)
+		      (prog1 (point)
+			(re-search-forward (concat (regexp-quote TeX-esc)
+						   "begin"
+						   (regexp-quote TeX-grop)
+						   "\\("
+						   (LaTeX-environment-name-regexp)
+						   "\\)"
+						   (regexp-quote TeX-grcl))
+					   (save-excursion (end-of-line 1) (point)))))))
+    (save-excursion
+      (funcall goto-end)
+      (let ((old-env (match-string 1)))
+	(replace-match environment t t nil 1)
+	(beginning-of-line 1)
+	(funcall goto-begin)
+	(replace-match environment t t nil 1)
+	(end-of-line 1)
+	(run-hook-with-args 'LaTeX-after-modify-env-hook
+			    environment old-env
+			    (save-excursion (funcall goto-begin))
+			    (progn (funcall goto-end) (point)))))))
 
 (defun LaTeX-current-environment (&optional arg)
   "Return the name (a string) of the enclosing LaTeX environment.
@@ -2922,7 +2948,7 @@ indentation level in columns."
   :group 'LaTeX-indentation
   :type 'regexp)
 
-(defcustom LaTeX-end-regexp "end\\b"
+(defcustom LaTeX-end-regexp "end\\b\\|\\]"
   "*Regexp matching macros considered ends."
   :group 'LaTeX-indentation
   :type 'regexp)
@@ -3115,6 +3141,10 @@ outer indentation in case of a commented line.  The symbols
 	     ;; End brace in the start of the line.
 	     (- (LaTeX-indent-calculate-last force-type)
 		TeX-brace-indent-level))
+	    ((and (texmathp)
+		  ;; Display math \[...\], treat as a generic environment.
+		  (equal "\\[" (car texmathp-why)))
+	     LaTeX-indent-level)
 	    (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
@@ -3327,6 +3357,12 @@ does not fit into the line."
   :group 'LaTeX
   :type 'boolean)
 
+(defcustom LaTeX-fill-excluded-macros nil
+  "List of macro names (without leading \\) whose arguments must
+not be subject to filling."
+  :group 'LaTeX
+  :type '(repeat string))
+
 (defvar LaTeX-nospace-between-char-regexp
   (if (featurep 'xemacs)
     (if (and (boundp 'word-across-newline) word-across-newline)
@@ -3353,6 +3389,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
   (let ((end-marker (save-excursion (goto-char to) (point-marker))))
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+	    (member (TeX-current-macro) LaTeX-fill-excluded-macros)
 	    ;; This could be generalized, if there are more cases where
 	    ;; a special string at the start of a region to fill should
 	    ;; inhibit filling.
@@ -5847,7 +5884,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  LaTeX-section-list)))
 
   (set (make-local-variable 'TeX-auto-full-regexp-list)
-	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
+       (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
 
   (LaTeX-set-paragraph-start)
   (setq paragraph-separate
@@ -5863,10 +5900,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
        LaTeX-search-files-type-alist)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
-			  ("thebibliography" . LaTeX-item-bib)
-			  ("array" . LaTeX-item-array)
-			  ("tabular" . LaTeX-item-array)
-			  ("tabular*" . LaTeX-item-tabular*)))
+						("thebibliography" . LaTeX-item-bib)
+						("array" . LaTeX-item-array)
+						("tabular" . LaTeX-item-array)
+						("tabular*" . LaTeX-item-tabular*)))
 
   (setq TeX-complete-list
 	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
