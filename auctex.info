@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 5.2 from auctex.texi.
 
-This manual is for AUCTeX (version 11.88.2 from 2015-01-27), a
+This manual is for AUCTeX (version 11.88.3 from 2015-03-22), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
@@ -329,7 +329,7 @@ are asked to consult *Note Installation under MS Windows::.
 
 * Prerequisites::
 * Configure::
-* Build/install::
+* Build/install and uninstall::
 * Loading the package::
 * Advice for package providers::
 * Advice for non-privileged users::
@@ -403,7 +403,7 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
 (preview-latex)Known problems::.
 
 
-File: auctex.info,  Node: Configure,  Next: Build/install,  Prev: Prerequisites,  Up: Installation
+File: auctex.info,  Node: Configure,  Next: Build/install and uninstall,  Prev: Prerequisites,  Up: Installation
 
 1.2.2 Configure
 ---------------
@@ -526,10 +526,10 @@ it out with one of these options:
      but is normally not necessary otherwise.
 
 
-File: auctex.info,  Node: Build/install,  Next: Loading the package,  Prev: Configure,  Up: Installation
+File: auctex.info,  Node: Build/install and uninstall,  Next: Loading the package,  Prev: Configure,  Up: Installation
 
-1.2.3 Build/install
--------------------
+1.2.3 Build/install and uninstall
+---------------------------------
 
 Once 'configure' has been run, simply enter
 
@@ -541,11 +541,19 @@ chosen earlier, type
 
      make install
 
-   You may need special privileges to install, e.g., if you are
-installing into system directories.
+You may need special privileges to install, e.g., if you are installing
+into system directories.
+
+   Should you want to completely remove the installed package, in the
+same directory you built AUCTeX run
+
+     make uninstall
+
+You will need administration privileges if you installed the package
+into system directories.
 
 
-File: auctex.info,  Node: Loading the package,  Next: Advice for package providers,  Prev: Build/install,  Up: Installation
+File: auctex.info,  Node: Loading the package,  Next: Advice for package providers,  Prev: Build/install and uninstall,  Up: Installation
 
 1.2.4 Loading the package
 -------------------------
@@ -1065,9 +1073,9 @@ single quotes for that.
 
      Adding support for an image format usually involves the
      installation of a library, e.g.  from <http://gnuwin32.sf.net/>.
-     If you got your Emacs from <gnu.org> you might want to check its
-     README file (ftp://ftp.gnu.org/gnu/emacs/windows/README) for
-     details.
+     If you got your Emacs from <http://www.gnu.org> you might want to
+     check its README file (ftp://ftp.gnu.org/gnu/emacs/windows/README)
+     for details.
 
      A different image format can be chosen by setting the variable
      'preview-image-type'.  While it is recommended to keep the 'dvipng'
@@ -2585,6 +2593,23 @@ inside the comment, AUCTeX will report an error.
      will be inserted before the last non-comment word to minimize the
      chance that the line becomes overfull.
 
+ -- User Option: LaTeX-fill-excluded-macros
+     A list of macro names (without leading backslash) for whose
+     arguments filling should be disabled.  Typically, you will want to
+     add macros here which have long, multi-line arguments.  An example
+     is '\pgfplotstabletypeset' from the pgfplotstable package which is
+     used as shown in the following listing:
+
+     \pgfplotstabletypeset[skip first n=4]{%
+       XYZ Format,
+       Version 1.234
+       Date 2010-09-01
+       @author Mustermann
+       A B C
+       1 2 3
+       4 5 6
+     }
+
 
 File: auctex.info,  Node: Display,  Next: Processing,  Prev: Editing,  Up: Top
 
@@ -4073,6 +4098,18 @@ for one of the modes listed above, put it into the respective mode hook,
 if it is relevant for any AUCTeX mode, add it to 'TeX-mode-hook' and if
 it is relevant for all text modes, append it to 'text-mode-hook'.
 
+   Other useful hooks are listed below.
+
+ -- Variable: TeX-after-TeX-LaTeX-command-finished-hook
+     Hook which is run after the TeX/LaTeX processor has successfully
+     finished compiling your document.  (*Note Processing::, for finding
+     out how to compile your document).  Each function in the hook is
+     run with the compiled output document as its argument.
+
+     This is useful for automatically refreshing the viewer after
+     re-compilation especially when using Emacs viewers such as DocView
+     or PDF Tools.
+
 
 File: auctex.info,  Node: Multifile,  Next: Parsing Files,  Prev: Modes and Hooks,  Up: Customization
 
@@ -5333,7 +5370,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.88.2 from 2015-01-27), a
+   This manual is for AUCTeX (version 11.88.3 from 2015-03-22), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
@@ -7526,6 +7563,7 @@ Variable Index
 * LaTeX-figure-label <1>:                Floats.              (line  35)
 * LaTeX-fill-break-at-separators:        Filling.             (line 103)
 * LaTeX-fill-break-before-code-comments: Filling.             (line 113)
+* LaTeX-fill-excluded-macros:            Filling.             (line 123)
 * LaTeX-float:                           Floats.              (line  14)
 * LaTeX-float <1>:                       Floats.              (line  32)
 * LaTeX-fold-env-spec-list:              Folding.             (line 198)
@@ -7567,6 +7605,9 @@ Variable Index
 * plain-TeX-clean-output-suffixes:       Cleaning.            (line   7)
 * plain-TeX-enable-toolbar:              Processing.          (line  11)
 * plain-TeX-mode-hook:                   Modes and Hooks.     (line  21)
+* TeX-after-TeX-LaTeX-command-finished-hook: Modes and Hooks. (line  29)
+* TeX-after-TeX-LaTeX-command-finished-hook <1>: Modes and Hooks.
+                                                              (line  37)
 * TeX-arg-cite-note-p:                   Adding Macros.       (line 137)
 * TeX-arg-input-file-search:             Adding Macros.       (line 160)
 * TeX-arg-input-file-search <1>:         Adding Macros.       (line 192)
@@ -7874,7 +7915,8 @@ Concept Index
 * Indexing:                              Commands.            (line   6)
 * Initialization:                        Customizing.         (line   6)
 * Inputing:                              Multifile.           (line   6)
-* Installation:                          Build/install.       (line   6)
+* Installation:                          Build/install and uninstall.
+                                                              (line   6)
 * Internationalization:                  Internationalization.
                                                               (line   6)
 * Inverse search:                        I/O Correlation.     (line   6)
@@ -7917,7 +7959,8 @@ Concept Index
 * 'macro.el':                            Hacking the Parser.  (line   6)
 * 'macro.tex':                           Hacking the Parser.  (line   6)
 * Macros, adding:                        Adding Macros.       (line   6)
-* Make:                                  Build/install.       (line   6)
+* Make:                                  Build/install and uninstall.
+                                                              (line   6)
 * 'makeindex':                           Commands.            (line   6)
 * Making a bibliography:                 Commands.            (line   6)
 * Making an index:                       Commands.            (line   6)
@@ -8054,6 +8097,8 @@ Concept Index
 * Underfull boxes:                       Debugging.           (line   6)
 * UNICODE:                               Internationalization.
                                                               (line   6)
+* Uninstallation:                        Build/install and uninstall.
+                                                              (line   6)
 * Untabify:                              Parsing Files.       (line   6)
 * Updating style hooks:                  Automatic Local.     (line   6)
 * Verbatim, fontification of:            Verbatim content.    (line   6)
@@ -8071,95 +8116,95 @@ Node: Copying7180
 Node: Introduction9136
 Node: Summary9406
 Node: Installation12147
-Node: Prerequisites13521
-Node: Configure16389
-Node: Build/install21800
-Node: Loading the package22291
-Node: Advice for package providers24098
-Node: Advice for non-privileged users28043
-Node: Installation under MS Windows32001
-Node: Customizing47224
-Node: Quick Start48807
-Ref: Quick Start-Footnote-150797
-Node: Editing Facilities50944
-Node: Processing Facilities55747
-Node: Editing59641
-Node: Quotes60971
-Node: Font Specifiers69239
-Node: Sectioning71065
-Node: Environments75385
-Node: Equations80539
-Node: Floats81130
-Node: Itemize-like82663
-Node: Tabular-like83384
-Node: Customizing Environments84867
-Node: Mathematics85107
-Node: Completion88033
-Node: Marking93356
-Node: Marking (LaTeX)93980
-Node: Marking (Texinfo)94922
-Node: Commenting96532
-Node: Indenting97857
-Node: Filling103642
-Node: Display108962
-Node: Font Locking110574
-Node: Fontification of macros112649
-Node: Fontification of quotes122087
-Node: Fontification of math123582
-Node: Verbatim content125301
-Node: Faces126075
-Node: Known problems126564
-Node: Folding127493
-Node: Outline138317
-Node: Narrowing139589
-Node: Processing140639
-Node: Commands141802
-Node: Starting a Command142358
-Node: Selecting a Command146894
-Node: Processor Options150420
-Node: Viewing157162
-Node: Starting Viewers157536
-Node: I/O Correlation164054
-Node: Debugging167500
-Node: Checking171855
-Node: Control173017
-Node: Cleaning173744
-Node: Documentation174957
-Node: Customization175737
-Node: Modes and Hooks176230
-Node: Multifile177436
-Node: Parsing Files182115
-Node: Internationalization187027
-Node: European188208
-Node: Japanese195088
-Node: Automatic196785
-Node: Automatic Global199276
-Node: Automatic Private200408
-Node: Automatic Local201721
-Node: Style Files202752
-Node: Simple Style203545
-Node: Adding Macros206818
-Node: Adding Environments215939
-Node: Adding Other220600
-Node: Hacking the Parser221187
-Node: Appendices225056
-Node: Copying this Manual225440
-Node: GNU Free Documentation License226324
-Node: Changes251443
-Node: Development280769
-Node: Mid-term Goals281415
-Node: Wishlist282632
-Node: Bugs288589
-Node: FAQ290119
-Node: Texinfo mode296292
-Node: Exploiting297428
-Node: Superseding298248
-Node: Mapping302452
-Node: Unbinding304281
-Node: Indices305102
-Node: Key Index305327
-Node: Function Index311359
-Node: Variable Index321804
-Node: Concept Index342408
+Node: Prerequisites13535
+Node: Configure16403
+Node: Build/install and uninstall21828
+Node: Loading the package22581
+Node: Advice for package providers24402
+Node: Advice for non-privileged users28347
+Node: Installation under MS Windows32305
+Node: Customizing47539
+Node: Quick Start49122
+Ref: Quick Start-Footnote-151112
+Node: Editing Facilities51259
+Node: Processing Facilities56062
+Node: Editing59956
+Node: Quotes61286
+Node: Font Specifiers69554
+Node: Sectioning71380
+Node: Environments75700
+Node: Equations80854
+Node: Floats81445
+Node: Itemize-like82978
+Node: Tabular-like83699
+Node: Customizing Environments85182
+Node: Mathematics85422
+Node: Completion88348
+Node: Marking93671
+Node: Marking (LaTeX)94295
+Node: Marking (Texinfo)95237
+Node: Commenting96847
+Node: Indenting98172
+Node: Filling103957
+Node: Display109829
+Node: Font Locking111441
+Node: Fontification of macros113516
+Node: Fontification of quotes122954
+Node: Fontification of math124449
+Node: Verbatim content126168
+Node: Faces126942
+Node: Known problems127431
+Node: Folding128360
+Node: Outline139184
+Node: Narrowing140456
+Node: Processing141506
+Node: Commands142669
+Node: Starting a Command143225
+Node: Selecting a Command147761
+Node: Processor Options151287
+Node: Viewing158029
+Node: Starting Viewers158403
+Node: I/O Correlation164921
+Node: Debugging168367
+Node: Checking172722
+Node: Control173884
+Node: Cleaning174611
+Node: Documentation175824
+Node: Customization176604
+Node: Modes and Hooks177097
+Node: Multifile178832
+Node: Parsing Files183511
+Node: Internationalization188423
+Node: European189604
+Node: Japanese196484
+Node: Automatic198181
+Node: Automatic Global200672
+Node: Automatic Private201804
+Node: Automatic Local203117
+Node: Style Files204148
+Node: Simple Style204941
+Node: Adding Macros208214
+Node: Adding Environments217335
+Node: Adding Other221996
+Node: Hacking the Parser222583
+Node: Appendices226452
+Node: Copying this Manual226836
+Node: GNU Free Documentation License227720
+Node: Changes252839
+Node: Development282165
+Node: Mid-term Goals282811
+Node: Wishlist284028
+Node: Bugs289985
+Node: FAQ291515
+Node: Texinfo mode297688
+Node: Exploiting298824
+Node: Superseding299644
+Node: Mapping303848
+Node: Unbinding305677
+Node: Indices306498
+Node: Key Index306723
+Node: Function Index312755
+Node: Variable Index323200
+Node: Concept Index344089
 
 End Tag Table
