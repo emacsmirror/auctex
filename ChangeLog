@@ -1,3 +1,9 @@
+2015-03-23  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-run-style-hooks): Apply style hooks in reverse
+	order.  With that, a local style can modify a private or a global
+	style, and a private style can modify a global one.
+
 2015-03-17  Mosè Giordano  <mose@gnu.org>
 
 	* doc/wininstall.texi: Fix a broken link.
