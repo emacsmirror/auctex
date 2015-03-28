@@ -1,5 +1,8 @@
 2015-03-28  Arash Esbati  <esbati@gmx.de>
 
+	* style/ltxtable.el ("ltxtable"): Ask for a `Width' and not for a
+	`Length' in minibuffer.
+
 	* latex.el (LaTeX-common-initialization): Add standard LaTeX
 	lengths `arraycolsep', `arrayrulewidth' and `doublerulesep'.
 
