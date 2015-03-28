@@ -142,7 +142,6 @@ supported by `caption.sty'.")
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-caption-auto-prepare t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
-(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defun LaTeX-caption-update-key-val-options ()
   "Update the buffer-local key-val options before offering them
