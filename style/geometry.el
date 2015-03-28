@@ -99,6 +99,8 @@ package.")
   (setq	LaTeX-auto-geometry-savegeometry nil))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-geometry-auto-prepare t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook
  "geometry"

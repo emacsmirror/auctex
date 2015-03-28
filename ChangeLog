@@ -1,3 +1,26 @@
+2015-03-28  Mosè Giordano  <mose@gnu.org>
+
+	* style/acro.el:
+
+	* style/acronym.el:
+
+	* style/caption.el:
+
+	* style/color.el:
+
+	* style/enumitem.el:
+
+	* style/geometry.el:
+
+	* style/minted.el:
+
+	* style/pst-plot.el:
+
+	* style/pstricks.el:
+
+	* style/siunitx.el: Update copyright years and add
+	`TeX-auto-parse' to `TeX-update-style-hook'.
+
 2015-03-28  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.
