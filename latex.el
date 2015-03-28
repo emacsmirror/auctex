@@ -5973,11 +5973,11 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (LaTeX-add-counters "page" "equation" "enumi" "enumii" "enumiii"
 		      "enumiv" "footnote" "mpfootnote")
 
-  (LaTeX-add-lengths "baselineskip" "baselinestretch" "columnsep"
-		     "columnwidth" "evensidemargin" "linewidth" "oddsidemargin"
-		     "paperwidth" "paperheight" "parindent" "parskip"
-		     "tabcolsep" "textheight" "textwidth" "topmargin"
-		     "unitlength")
+  (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
+		     "columnsep" "columnwidth" "doublerulesep" "evensidemargin"
+		     "linewidth" "oddsidemargin" "paperwidth" "paperheight"
+		     "parindent" "parskip" "tabcolsep" "textheight" "textwidth"
+		     "topmargin" "unitlength")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")
