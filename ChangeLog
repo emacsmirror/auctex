@@ -1,3 +1,10 @@
+2015-03-30  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-begin-regexp): Add "\[".
+	(LaTeX-indent-calculate): Remove indentation of "\[...\]" from
+	here, it is automatically done in `LaTeX-indent-level-count' now
+	that `LaTeX-begin-regexp' has "\[".  (Bug#20227)
+
 2015-03-28  Mosè Giordano  <mose@gnu.org>
 
 	* style/acro.el:

@@ -2943,7 +2943,7 @@ indentation level in columns."
 (make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
 			"2014-12-19")
 
-(defcustom LaTeX-begin-regexp "begin\\b"
+(defcustom LaTeX-begin-regexp "begin\\b\\|\\["
   "*Regexp matching macros considered begins."
   :group 'LaTeX-indentation
   :type 'regexp)
@@ -3141,10 +3141,6 @@ outer indentation in case of a commented line.  The symbols
 	     ;; End brace in the start of the line.
 	     (- (LaTeX-indent-calculate-last force-type)
 		TeX-brace-indent-level))
-	    ((and (texmathp)
-		  ;; Display math \[...\], treat as a generic environment.
-		  (equal "\\[" (car texmathp-why)))
-	     LaTeX-indent-level)
 	    (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
