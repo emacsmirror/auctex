@@ -1,3 +1,9 @@
+2015-04-02  Mosè Giordano  <mose@gnu.org>
+
+	* doc/auctex.texi (Indenting): Document indentation of "\[...\]".
+
+	* doc/changes.texi: Mention it.
+
 2015-03-30  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-begin-regexp): Add "\[".
