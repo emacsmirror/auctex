@@ -70,7 +70,7 @@
     ("labelsep"      ("none" "colon" "period" "space" "quad" "newline" "endash"))
     ("list"          ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("listformat"    ("empty" "simple" "paren" "subsimple" "subparens"))
-    ("margin"        ("type*" "width"))
+    ("margin")
     ("margin*")
     ("maxmargin")
     ("minmargin")
@@ -166,28 +166,29 @@ in `caption'-completions."
 	  (pushnew (list key (list val)) opts :test #'equal)))
       (setq LaTeX-caption-key-val-options-local (copy-alist opts)))))
 
-(defun LaTeX-arg-caption-command (&optional optional prompt)
-  "Insert caption-commands from `caption.sty'. If OPTIONAL is non-nil,
-indicate `(Optional)' while reading key=val.  PROMPT replaces the
-standard one."
+(defun LaTeX-arg-caption-command (optional &optional prompt)
+  "Insert caption-commands from `caption.sty'. If OPTIONAL,
+indicate `(Optional)' while reading key=val and insert it in
+square brackets.  PROMPT replaces the standard one."
   (LaTeX-caption-update-key-val-options)
   (let ((opts (TeX-read-key-val optional
 				LaTeX-caption-key-val-options-local
 				prompt)))
-    (format "%s" opts)))
+    (TeX-argument-insert opts optional)))
 
 ;; In `LaTeX-caption-DeclareCaption-regexp', we match (0 1 2).  When
 ;; adding a new `Name', we need something unique for `0'-match until
 ;; the next `C-c C-n'.  We mimic that regex-match bei concat'ing the
 ;; elements.  It will vanish upon next `C-c C-n'.
-(defun LaTeX-arg-caption-DeclareCaption (format)
-  "Insert various `\\DeclareCaptionFORMAT' commands.  FORMAT is
-the suffix of the command."
+(defun LaTeX-arg-caption-DeclareCaption (optional format)
+  "Insert various `\\DeclareCaptionFORMAT' commands.  If
+OPTIONAL, insert argument in square brackets.  FORMAT is the
+suffix of the command."
   (let ((name (TeX-read-string "Name: ")))
     (LaTeX-add-caption-DeclareCaptions
      (list (concat "\\DeclareCaption" format "{" name "}")
 	   format name))
-    (format "%s" name)))
+    (TeX-argument-insert name optional)))
 
 (TeX-add-style-hook
  "caption"
@@ -222,59 +223,59 @@ the suffix of the command."
     '("captionsetup"
       [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
 		    LaTeX-caption-supported-float-types]
-      (TeX-arg-eval LaTeX-arg-caption-command))
+      (LaTeX-arg-caption-command))
 
     '("captionsetup*"
       [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
 		    LaTeX-caption-supported-float-types]
-      (TeX-arg-eval LaTeX-arg-caption-command))
+      (LaTeX-arg-caption-command))
 
     '("clearcaptionsetup"
-      [TeX-arg-eval LaTeX-arg-caption-command t "Single key"]
+      [LaTeX-arg-caption-command "Single key"]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types))
 
     '("clearcaptionsetup*"
-      [TeX-arg-eval LaTeX-arg-caption-command t "Single key"]
+      [LaTeX-arg-caption-command "Single key"]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types))
 
     '("ContinuedFloat" 0)
 
     '("DeclareCaptionFont"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Font") t)
+      (LaTeX-arg-caption-DeclareCaption "Font") t)
 
     '("DeclareCaptionFormat"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Format") t)
+      (LaTeX-arg-caption-DeclareCaption "Format") t)
 
     '("DeclareCaptionFormat*"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Format") t)
+      (LaTeX-arg-caption-DeclareCaption "Format") t)
 
     '("DeclareCaptionJustification"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Justification") t)
+      (LaTeX-arg-caption-DeclareCaption "Justification") t)
 
     '("DeclareCaptionLabelFormat"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "LabelFormat") t)
+      (LaTeX-arg-caption-DeclareCaption "LabelFormat") t)
 
     '("DeclareCaptionLabelSeparator"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "LabelSeparator") t)
+      (LaTeX-arg-caption-DeclareCaption "LabelSeparator") t)
 
     '("DeclareCaptionLabelSeparator*"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "LabelSeparator") t)
+      (LaTeX-arg-caption-DeclareCaption "LabelSeparator") t)
 
     '("DeclareCaptionListFormat"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "ListFormat") t)
+      (LaTeX-arg-caption-DeclareCaption "ListFormat") t)
 
     '("DeclareCaptionOption"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Option") t)
+      (LaTeX-arg-caption-DeclareCaption "Option") t)
 
     '("DeclareCaptionStyle"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "Style")
-      [TeX-arg-eval LaTeX-arg-caption-command t "Additional options"]
-      (TeX-arg-eval LaTeX-arg-caption-command nil "Options"))
+      (LaTeX-arg-caption-DeclareCaption "Style")
+      [LaTeX-arg-caption-command "Additional options"]
+      (LaTeX-arg-caption-command "Options"))
 
     '("DeclareCaptionTextFormat"
-      (TeX-arg-eval LaTeX-arg-caption-DeclareCaption "TextFormat") t)
+      (LaTeX-arg-caption-DeclareCaption "TextFormat") t)
 
     '("bothIfFirst" 2)
 

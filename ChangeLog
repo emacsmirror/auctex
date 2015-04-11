@@ -1,3 +1,36 @@
+2015-04-11  Arash Esbati  <esbati@gmx.de>
+
+	* style/fbb.el: Update style to LaTeX package v1.07 from
+	2015/04/06.
+
+	* style/erewhon.el ("erewhon"): Update style to LaTeX package
+	v1.04 from 2015/04/07.
+
+	* style/baskervaldx.el ("baskervaldx"): Update style to LaTeX
+	package v1.07 from 2015/04/06.
+
+	* style/newtxtext.el ("newtxtext"): Update style to LaTeX package
+	v1.434 from 2015/04/07.
+
+	* style/enumitem.el ("enumitem"): Fix typos.
+
+	* style/everysel.el ("everysel"): Fix typo (AtNextSelect_f_ont).
+
+	* style/color.el: Replace `read-string' with `TeX-read-string'.
+
+	* style/currvita.el: Replace `read-string' with `TeX-read-string'.
+
+	* style/wrapfig.el: Replace `read-string' with `TeX-read-string'.
+
+	* style/MyriadPro.el ("MyriadPro"): Add missing lenghts
+	`MdSlantfracSpacingBeforeSlash' and `MdSlantfracSpacingAfterSlash'.
+
+	* style/caption.el (LaTeX-caption-key-val-options): Delete wrong
+	values for `margin'-key.
+	(LaTeX-arg-caption-command): Use `TeX-argument-insert' and do not
+	rely on `TeX-arg-eval' anymore.
+	(LaTeX-arg-caption-DeclareCaption): Ditto.
+
 2015-04-02  Mosè Giordano  <mose@gnu.org>
 
 	* doc/auctex.texi (Indenting): Document indentation of "\[...\]".

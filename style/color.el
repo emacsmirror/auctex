@@ -98,7 +98,7 @@ package.")
   "Insert arguments of `\\definecolor' from `color.sty'."
   ;; \definecolor{<name>}{<model>}{<color spec>}
   ;; Ask for <name>, add to our list and insert it
-  (let ((colorname (read-string "Color name: ")))
+  (let ((colorname (TeX-read-string "Color name: ")))
     (LaTeX-add-color-definecolors colorname)
     (TeX-argument-insert colorname optional))
   ;; Ask and insert <model>
@@ -112,22 +112,22 @@ package.")
     ;; Depending on <model>, ask for <color spec> and insert it
     (cond (;; <cmyk> model
 	   (string-equal model "cmyk")
-	   (let ((cyan    (read-string "Value Cyan (between 0,1): "))
-		 (magenta (read-string "Value Magenta (between 0,1): "))
-		 (yellow  (read-string "Value Yellow (between 0,1): "))
-		 (black   (read-string "Value Black (between 0,1): ")))
+	   (let ((cyan    (TeX-read-string "Value Cyan (between 0,1): "))
+		 (magenta (TeX-read-string "Value Magenta (between 0,1): "))
+		 (yellow  (TeX-read-string "Value Yellow (between 0,1): "))
+		 (black   (TeX-read-string "Value Black (between 0,1): ")))
 	     (TeX-argument-insert
 	      (concat cyan "," magenta "," yellow "," black) optional)))
 	  ;; <rgb> model
 	  ((string-equal model "rgb")
-	   (let ((red   (read-string "Value Red (between 0,1): "))
-		 (green (read-string "Value Green (between 0,1): "))
-		 (blue  (read-string "Value Blue (between 0,1): ")))
+	   (let ((red   (TeX-read-string "Value Red (between 0,1): "))
+		 (green (TeX-read-string "Value Green (between 0,1): "))
+		 (blue  (TeX-read-string "Value Blue (between 0,1): ")))
 	     (TeX-argument-insert
 	      (concat red "," green "," blue) optional)))
 	  ;; <gray> model
 	  ((string-equal model "gray")
-	   (let ((grayness (read-string "Value Gray (between 0,1): ")))
+	   (let ((grayness (TeX-read-string "Value Gray (between 0,1): ")))
 	     (TeX-argument-insert grayness optional)))
 	  ;; <named> model takes the dvipsnames
 	  ((string-equal model "named")
@@ -156,22 +156,22 @@ package.")
       (insert (concat LaTeX-optop model LaTeX-optcl))
       (cond (;; <cmyk> model
 	     (string-equal model "cmyk")
-	     (let ((cyan    (read-string "Value Cyan (between 0,1): "))
-		   (magenta (read-string "Value Magenta (between 0,1): "))
-		   (yellow  (read-string "Value Yellow (between 0,1): "))
-		   (black   (read-string "Value Black (between 0,1): ")))
+	     (let ((cyan    (TeX-read-string "Value Cyan (between 0,1): "))
+		   (magenta (TeX-read-string "Value Magenta (between 0,1): "))
+		   (yellow  (TeX-read-string "Value Yellow (between 0,1): "))
+		   (black   (TeX-read-string "Value Black (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat cyan "," magenta "," yellow "," black) optional)))
 	    ;; <rgb> model
 	    ((string-equal model "rgb")
-	     (let ((red   (read-string "Value Red (between 0,1): "))
-		   (green (read-string "Value Green (between 0,1): "))
-		   (blue  (read-string "Value Blue (between 0,1): ")))
+	     (let ((red   (TeX-read-string "Value Red (between 0,1): "))
+		   (green (TeX-read-string "Value Green (between 0,1): "))
+		   (blue  (TeX-read-string "Value Blue (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat red "," green "," blue) optional)))
 	    ;; <gray> model
 	    ((string-equal model "gray")
-	     (let ((grayness (read-string "Value Gray (between 0,1): ")))
+	     (let ((grayness (TeX-read-string "Value Gray (between 0,1): ")))
 	       (TeX-argument-insert grayness optional)))
 	    ;; <named> model; allowed are dvipsnames.
 	    ((string-equal model "named")
@@ -204,35 +204,35 @@ package.")
       (insert (concat LaTeX-optop model LaTeX-optcl))
       (cond (;; <cmyk> model
 	     (string-equal model "cmyk")
-	     (let ((cyan    (read-string "Frame value Cyan (between 0,1): "))
-		   (magenta (read-string "Frame value Magenta (between 0,1): "))
-		   (yellow  (read-string "Frame value Yellow (between 0,1): "))
-		   (black   (read-string "Frame value Black (between 0,1): ")))
+	     (let ((cyan    (TeX-read-string "Frame value Cyan (between 0,1): "))
+		   (magenta (TeX-read-string "Frame value Magenta (between 0,1): "))
+		   (yellow  (TeX-read-string "Frame value Yellow (between 0,1): "))
+		   (black   (TeX-read-string "Frame value Black (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat cyan "," magenta "," yellow "," black) optional))
-	     (let ((cyan    (read-string "Box value Cyan (between 0,1): "))
-		   (magenta (read-string "Box value Magenta (between 0,1): "))
-		   (yellow  (read-string "Box value Yellow (between 0,1): "))
-		   (black   (read-string "Box value Black (between 0,1): ")))
+	     (let ((cyan    (TeX-read-string "Box value Cyan (between 0,1): "))
+		   (magenta (TeX-read-string "Box value Magenta (between 0,1): "))
+		   (yellow  (TeX-read-string "Box value Yellow (between 0,1): "))
+		   (black   (TeX-read-string "Box value Black (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat cyan "," magenta "," yellow "," black) optional)))
 	    ;; <rgb> model
 	    ((string-equal model "rgb")
-	     (let ((red   (read-string "Frame value Red (between 0,1): "))
-		   (green (read-string "Frame value Green (between 0,1): "))
-		   (blue  (read-string "Frame value Blue (between 0,1): ")))
+	     (let ((red   (TeX-read-string "Frame value Red (between 0,1): "))
+		   (green (TeX-read-string "Frame value Green (between 0,1): "))
+		   (blue  (TeX-read-string "Frame value Blue (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat red "," green "," blue) optional))
-	     (let ((red   (read-string "Box value Red (between 0,1): "))
-		   (green (read-string "Box value Green (between 0,1): "))
-		   (blue  (read-string "box value Blue (between 0,1): ")))
+	     (let ((red   (TeX-read-string "Box value Red (between 0,1): "))
+		   (green (TeX-read-string "Box value Green (between 0,1): "))
+		   (blue  (TeX-read-string "box value Blue (between 0,1): ")))
 	       (TeX-argument-insert
 		(concat red "," green "," blue) optional)))
 	    ;; <gray> model
 	    ((string-equal model "gray")
-	     (let ((grayness (read-string "Frame value Gray (between 0,1): ")))
+	     (let ((grayness (TeX-read-string "Frame value Gray (between 0,1): ")))
 	       (TeX-argument-insert grayness optional))
-	     (let ((grayness (read-string "Box value Gray (between 0,1): ")))
+	     (let ((grayness (TeX-read-string "Box value Gray (between 0,1): ")))
 	       (TeX-argument-insert grayness optional)))
 	    ;; <named> model; allowed are dvipsnames.
 	    ((string-equal model "named")
