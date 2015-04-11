@@ -1,3 +1,8 @@
+2015-04-11  Tassilo Horn  <tsdh@gnu.org>
+
+	* style/mathtools.el (LaTeX-mathtools-env-multlined): Don't call
+	newline-and-indent after inserting environment.
+
 2015-04-11  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.

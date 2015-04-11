@@ -194,7 +194,6 @@
 	(setq width (concat LaTeX-optop width LaTeX-optcl))
       (setq width ""))
     (setq extra (concat pos width))
-    (LaTeX-insert-environment env extra)
-    (newline-and-indent)))
+    (LaTeX-insert-environment env extra)))
 
 ;;; mathtools.el ends here.
