@@ -2943,7 +2943,7 @@ indentation level in columns."
 (make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
 			"2014-12-19")
 
-(defcustom LaTeX-begin-regexp "begin\\b"
+(defcustom LaTeX-begin-regexp "begin\\b\\|\\["
   "*Regexp matching macros considered begins."
   :group 'LaTeX-indentation
   :type 'regexp)
@@ -3141,10 +3141,6 @@ outer indentation in case of a commented line.  The symbols
 	     ;; End brace in the start of the line.
 	     (- (LaTeX-indent-calculate-last force-type)
 		TeX-brace-indent-level))
-	    ((and (texmathp)
-		  ;; Display math \[...\], treat as a generic environment.
-		  (equal "\\[" (car texmathp-why)))
-	     LaTeX-indent-level)
 	    (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
@@ -5973,11 +5969,11 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (LaTeX-add-counters "page" "equation" "enumi" "enumii" "enumiii"
 		      "enumiv" "footnote" "mpfootnote")
 
-  (LaTeX-add-lengths "baselineskip" "baselinestretch" "columnsep"
-		     "columnwidth" "evensidemargin" "linewidth" "oddsidemargin"
-		     "paperwidth" "paperheight" "parindent" "parskip"
-		     "tabcolsep" "textheight" "textwidth" "topmargin"
-		     "unitlength")
+  (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
+		     "columnsep" "columnwidth" "doublerulesep" "evensidemargin"
+		     "linewidth" "oddsidemargin" "paperwidth" "paperheight"
+		     "parindent" "parskip" "tabcolsep" "textheight" "textwidth"
+		     "topmargin" "unitlength")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")

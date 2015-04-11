@@ -37,7 +37,7 @@
    (TeX-run-style-hooks "tabularx" "longtable")
    (TeX-add-symbols
     '("LTXtable"
-      (TeX-arg-length)
+      (TeX-arg-length "Width" "1.0\\linewidth")
       (TeX-arg-eval
        (lambda ()
 	 (let ((longtable (file-relative-name

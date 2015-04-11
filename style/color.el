@@ -92,6 +92,7 @@ package.")
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-color-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-color-auto-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defun TeX-arg-color-definecolor (optional &optional prompt)
   "Insert arguments of `\\definecolor' from `color.sty'."

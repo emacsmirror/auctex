@@ -187,6 +187,7 @@ package.")
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-enumitem-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-enumitem-auto-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defun LaTeX-enumitem-env-with-opts (env)
   "Update available key-val options, then insert ENV and optional

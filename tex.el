@@ -2708,7 +2708,11 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 				(and (TeX-shdex-in-p TeX-style-hook-dialect (aref hook 2))
 				     (funcall (aref hook 1))))
 			       (t (error "Invalid style hook %S" hook))))
-			    (cdr-safe (TeX-assoc-string style TeX-style-hook-list)))
+			    ;; Reverse the list of style hooks in order to run
+			    ;; styles in the order global, private, local
+			    ;; (assuming TeX-style-path has that ordering,
+			    ;; too).
+			    (reverse (cdr-safe (TeX-assoc-string style TeX-style-hook-list))))
 		  ;; This happens in case some style added a new parser, and
 		  ;; now the style isn't used anymore (user deleted
 		  ;; \usepackage{style}).  Then we're left over with, e.g.,

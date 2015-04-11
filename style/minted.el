@@ -178,6 +178,7 @@
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-minted-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-minted-auto-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook
  "minted"
