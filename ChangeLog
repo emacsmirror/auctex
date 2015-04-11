@@ -1,5 +1,9 @@
 2015-04-11  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/attachfile.el: New file.
+
 	* style/fbb.el: Update style to LaTeX package v1.07 from
 	2015/04/06.
 
