@@ -1,3 +1,14 @@
+2015-04-17  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el.in (preview-datadir, preview-lispdir): Delete these
+	two variables.
+	(preview-filter-specs): Use TeX-data-directory in place of
+	preview-datadir.
+
+	* configure.ac: Remove auto.el from AC_OUTPUT.
+
+	* Makefile.in (auto.el): Delete target.
+
 2015-04-11  Tassilo Horn  <tsdh@gnu.org>
 
 	* style/mathtools.el (LaTeX-mathtools-env-multlined): Don't call
