@@ -2015,7 +2015,7 @@ output files."
 	 (master-dir (file-name-directory master))
 	 (regexp (concat "\\("
 			 (regexp-quote (file-name-nondirectory master)) "\\|"
-			 (TeX-region-file nil t)
+			 (regexp-quote (TeX-region-file nil t))
 			 "\\)"
 			 "\\("
 			 (mapconcat 'identity suffixes "\\|")
