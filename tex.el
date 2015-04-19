@@ -2020,7 +2020,7 @@ output files."
 			 "\\("
 			 (mapconcat 'identity suffixes "\\|")
 			 "\\)\\'"
-			 "\\|" (TeX-region-file t t)))
+			 "\\|" (regexp-quote (TeX-region-file t t))))
 	 (files (when regexp
 		  (directory-files (or master-dir ".") nil regexp))))
     (if files
