@@ -3025,10 +3025,9 @@ Space will complete and exit."
 
 First argument SYMBOL is the name of the macro.
 
-If called with no additional arguments, insert macro with point
-inside braces.  Otherwise, each argument of this function should
-match an argument to the TeX macro.  What is done depend on the
-type of ARGS:
+If ARGS is nil, insert macro with point inside braces.
+Otherwise, each element in ARGS should match an argument to the
+TeX macro.  What is done depend on the type of the element:
 
   string: Use the string as a prompt to prompt for the argument.
 

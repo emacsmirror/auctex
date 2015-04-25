@@ -1,3 +1,7 @@
+2015-04-25  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-parse-macro): Improve docstring.
+
 2015-04-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-clean): Also regexp-quote TeX-region-file.
