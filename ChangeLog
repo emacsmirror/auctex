@@ -1,3 +1,9 @@
+2015-04-29  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-string-divide-number-unit): Fix docstring.
+
+	* style/mathtools.el ("mathtools"): Fix typos.
+
 2015-04-25  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-parse-macro): Improve docstring.

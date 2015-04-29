@@ -3230,8 +3230,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 	  (if complete "" ": ")))
 
 (defun TeX-string-divide-number-unit (string)
-  "Divide number and unit in STRING.
-Return the number as car and unit as cdr."
+  "Divide number and unit in STRING and return a list (number unit)."
   (if (string-match "[0-9]*\\.?[0-9]+" string)
       (list (substring string 0 (string-match "[^.0-9]" string))
 	    (substring string (if (string-match "[^.0-9]" string)
