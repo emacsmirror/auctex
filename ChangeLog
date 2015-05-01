@@ -1,5 +1,9 @@
 2015-05-01  Tassilo Horn  <tsdh@gnu.org>
 
+	* Version 11.88.5 released.
+
+2015-05-01  Tassilo Horn  <tsdh@gnu.org>
+
 	* tex.el (TeX-tree-expand): Expand all given vars in just one
 	single call of kpsewhich.  Users reported that on some windows and
 	mac systems, kpsewhich is extremely slow leading to auctex startup
