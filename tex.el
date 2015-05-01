@@ -640,7 +640,7 @@ overlays between two existing ones.")
 (when (featurep 'xemacs)
 
   (defun TeX-read-string
-    (prompt &optional initial-input history default-value)
+      (prompt &optional initial-input history default-value)
     (condition-case nil
 	(read-string prompt initial-input history default-value t)
       (wrong-number-of-arguments
@@ -2015,12 +2015,12 @@ output files."
 	 (master-dir (file-name-directory master))
 	 (regexp (concat "\\("
 			 (regexp-quote (file-name-nondirectory master)) "\\|"
-			 (TeX-region-file nil t)
+			 (regexp-quote (TeX-region-file nil t))
 			 "\\)"
 			 "\\("
 			 (mapconcat 'identity suffixes "\\|")
 			 "\\)\\'"
-			 "\\|" (TeX-region-file t t)))
+			 "\\|" (regexp-quote (TeX-region-file t t))))
 	 (files (when regexp
 		  (directory-files (or master-dir ".") nil regexp))))
     (if files
@@ -2356,35 +2356,36 @@ trees.  Only existing directories are returned."
   ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
   ;; and uses "filename" for the name of a file even if it contains possibly
   ;; several elements separated by "/".
-  (let (path-list path exit-status input-dir-list)
-    (condition-case nil
-	(dolist (var vars)
-	  (setq path (with-output-to-string
-		       (setq exit-status (call-process
-					  "kpsewhich"  nil
-					  (list standard-output nil) nil
-					  "--progname" program
-					  "--expand-path" var))))
-	  (when (zerop exit-status)
-            (pushnew path path-list :test #'equal)))
-      (error nil))
-    (dolist (elt (nreverse path-list))
-      (let ((separators (if (string-match "^[A-Za-z]:" elt)
+  (let* ((exit-status 1)
+	 (path-list (ignore-errors
+		      (with-output-to-string
+			(setq exit-status
+			      (call-process
+			       "kpsewhich"  nil
+			       (list standard-output nil) nil
+			       "--progname" program
+			       "--expand-path"
+			       (mapconcat #'identity vars
+					  (if (eq system-type 'windows-nt)
+					      ";" ":"))))))))
+    (when (zerop exit-status)
+      (let ((separators (if (string-match "^[A-Za-z]:" path-list)
 			    "[\n\r;]"
-			  "[\n\r:]")))
+			  "[\n\r:]"))
+	    path input-dir-list)
 	(dolist (item (condition-case nil
-			  (split-string elt separators t)
+			  (split-string path-list separators t)
 			;; COMPATIBILITY for XEmacs <= 21.4.15
-			(error (delete "" (split-string elt separators)))))
+			(error (delete "" (split-string path-list separators)))))
 	  (if subdirs
 	      (dolist (subdir subdirs)
 		(setq path (file-name-as-directory (concat item subdir)))
 		(when (file-exists-p path)
-                  (pushnew path input-dir-list :test #'equal)))
+		  (pushnew path input-dir-list :test #'equal)))
 	    (setq path (file-name-as-directory item))
 	    (when (file-exists-p path)
-	      (pushnew path input-dir-list :test #'equal))))))
-    (nreverse input-dir-list)))
+	      (pushnew path input-dir-list :test #'equal))))
+	(nreverse input-dir-list)))))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
@@ -3025,10 +3026,9 @@ Space will complete and exit."
 
 First argument SYMBOL is the name of the macro.
 
-If called with no additional arguments, insert macro with point
-inside braces.  Otherwise, each argument of this function should
-match an argument to the TeX macro.  What is done depend on the
-type of ARGS:
+If ARGS is nil, insert macro with point inside braces.
+Otherwise, each element in ARGS should match an argument to the
+TeX macro.  What is done depend on the type of the element:
 
   string: Use the string as a prompt to prompt for the argument.
 
@@ -3231,8 +3231,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 	  (if complete "" ": ")))
 
 (defun TeX-string-divide-number-unit (string)
-  "Divide number and unit in STRING.
-Return the number as car and unit as cdr."
+  "Divide number and unit in STRING and return a list (number unit)."
   (if (string-match "[0-9]*\\.?[0-9]+" string)
       (list (substring string 0 (string-match "[^.0-9]" string))
 	    (substring string (if (string-match "[^.0-9]" string)

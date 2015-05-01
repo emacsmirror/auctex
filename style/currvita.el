@@ -36,7 +36,7 @@
   "Insert ENV, a mandatory label and the first item."
   (LaTeX-insert-environment
    env
-   (let ((heading (read-string "Heading of list: ")))
+   (let ((heading (TeX-read-string "Heading of list: ")))
        (format "{%s}" heading)))
   (if (TeX-active-mark)
       (progn

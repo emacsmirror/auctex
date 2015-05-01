@@ -40,14 +40,14 @@
       (lambda (env &rest ignore)
 	(LaTeX-insert-environment
 	 env
-	 (let ((narrow    (read-string "(Optional) Number of narrow lines: "))
+	 (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
 	       (placement (completing-read
 			   "Placement: " '(("r") ("R")
 					   ("l") ("L")
 					   ("i") ("I")
 					   ("o") ("O"))))
-	       (overhang  (read-string "(Optional) Overhang: "))
-	       (width     (read-string "Width: ")))
+	       (overhang  (TeX-read-string "(Optional) Overhang: "))
+	       (width     (TeX-read-string "Width: ")))
 	   (concat
 	    (unless (string= narrow "")
 	      (format "[%s]" narrow))
@@ -61,14 +61,14 @@
       (lambda (env &rest ignore)
 	(LaTeX-insert-environment
 	 env
-	 (let ((narrow    (read-string "(Optional) Number of narrow lines: "))
+	 (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
 	       (placement (completing-read
 			   "Placement: " '(("r") ("R")
 					   ("l") ("L")
 					   ("i") ("I")
 					   ("o") ("O"))))
-	       (overhang  (read-string "(Optional) Overhang: "))
-	       (width     (read-string "Width: ")))
+	       (overhang  (TeX-read-string "(Optional) Overhang: "))
+	       (width     (TeX-read-string "Width: ")))
 	   (concat
 	    (unless (string= narrow "")
 	      (format "[%s]" narrow))
@@ -82,15 +82,15 @@
       (lambda (env &rest ignore)
 	(LaTeX-insert-environment
 	 env
-	 (let ((floattype (read-string "Float type: "))
-	       (narrow    (read-string "(Optional) Number of narrow lines: "))
+	 (let ((floattype (TeX-read-string "Float type: "))
+	       (narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
 	       (placement (completing-read
 			   "Placement: " '(("r") ("R")
 					   ("l") ("L")
 					   ("i") ("I")
 					   ("o") ("O"))))
-	       (overhang  (read-string "(Optional) Overhang: "))
-	       (width     (read-string "Width: ")))
+	       (overhang  (TeX-read-string "(Optional) Overhang: "))
+	       (width     (TeX-read-string "Width: ")))
 	   (concat
 	    (format "{%s}" floattype)
 	    (unless (string= narrow "")

@@ -369,7 +369,7 @@ in `enumitem'-completions."
 		      ("itemize*") ("enumerate*") ("description*")))
       "Max-depth")
 
-    ;; \setlist{<names,levels>}{<key-vals>}
+    ;; \setlist[<names,levels>]{<key-vals>}
     '("setlist"
       [TeX-arg-eval mapconcat 'identity
 		    (TeX-completing-read-multiple
@@ -382,7 +382,7 @@ in `enumitem'-completions."
 	 (let ((opts (TeX-read-key-val nil LaTeX-enumitem-key-val-options-local)))
 	   (format "%s" opts)))))
 
-    ;; \setlist*{<names,levels>}{<key-vals>}
+    ;; \setlist*[<names,levels>]{<key-vals>}
     '("setlist*"
       [TeX-arg-eval mapconcat 'identity
 		    (TeX-completing-read-multiple

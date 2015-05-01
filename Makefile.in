@@ -147,7 +147,7 @@ STYLESRC = style/prosper.el \
 	   style/tcolorbox.el style/color.el	 style/expl3.el \
 	   style/bidibeamer.el style/enumitem.el style/caption.el \
 	   style/geometry.el  style/ltablex.el   style/ltxtable.el \
-	   style/mn2e.el      style/colortbl.el
+	   style/mn2e.el      style/colortbl.el  style/attachfile.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -197,7 +197,7 @@ lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
 	$(PREVIEWLATEX)
 
-preview-latex.el: preview.el auto.el
+preview-latex.el: preview.el
 	rm -f preview-latex.el
 	-$(EMACS) -batch -no-site-file -no-init-file $(PREVIEW_AUTOLOAD) ; \
 	test -r $@ || { \
@@ -205,7 +205,6 @@ preview-latex.el: preview.el auto.el
 	  echo "" >> $@ ; \
 	  $(EMACS) -batch -no-site-file -no-init-file $(PREVIEW_AUTOLOAD) ; \
 	}
-	cat auto.el >> $@
 
 docs:
 	cd doc ; $(MAKE) all
@@ -229,9 +228,6 @@ auctex.el: auctex.el.in config.status
 	./config.status
 
 latex/Makefile: latex/Makefile.in Makefile config.status
-	./config.status
-
-auto.el: auto.el.in Makefile config.status
 	./config.status
 
 configure: configure.ac aclocal.m4
