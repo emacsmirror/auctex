@@ -640,7 +640,7 @@ overlays between two existing ones.")
 (when (featurep 'xemacs)
 
   (defun TeX-read-string
-    (prompt &optional initial-input history default-value)
+      (prompt &optional initial-input history default-value)
     (condition-case nil
 	(read-string prompt initial-input history default-value t)
       (wrong-number-of-arguments
@@ -2356,35 +2356,36 @@ trees.  Only existing directories are returned."
   ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
   ;; and uses "filename" for the name of a file even if it contains possibly
   ;; several elements separated by "/".
-  (let (path-list path exit-status input-dir-list)
-    (condition-case nil
-	(dolist (var vars)
-	  (setq path (with-output-to-string
-		       (setq exit-status (call-process
-					  "kpsewhich"  nil
-					  (list standard-output nil) nil
-					  "--progname" program
-					  "--expand-path" var))))
-	  (when (zerop exit-status)
-            (pushnew path path-list :test #'equal)))
-      (error nil))
-    (dolist (elt (nreverse path-list))
-      (let ((separators (if (string-match "^[A-Za-z]:" elt)
+  (let* ((exit-status 1)
+	 (path-list (ignore-errors
+		      (with-output-to-string
+			(setq exit-status
+			      (call-process
+			       "kpsewhich"  nil
+			       (list standard-output nil) nil
+			       "--progname" program
+			       "--expand-path"
+			       (mapconcat #'identity vars
+					  (if (eq system-type 'windows-nt)
+					      ";" ":"))))))))
+    (when (zerop exit-status)
+      (let ((separators (if (string-match "^[A-Za-z]:" path-list)
 			    "[\n\r;]"
-			  "[\n\r:]")))
+			  "[\n\r:]"))
+	    path input-dir-list)
 	(dolist (item (condition-case nil
-			  (split-string elt separators t)
+			  (split-string path-list separators t)
 			;; COMPATIBILITY for XEmacs <= 21.4.15
-			(error (delete "" (split-string elt separators)))))
+			(error (delete "" (split-string path-list separators)))))
 	  (if subdirs
 	      (dolist (subdir subdirs)
 		(setq path (file-name-as-directory (concat item subdir)))
 		(when (file-exists-p path)
-                  (pushnew path input-dir-list :test #'equal)))
+		  (pushnew path input-dir-list :test #'equal)))
 	    (setq path (file-name-as-directory item))
 	    (when (file-exists-p path)
-	      (pushnew path input-dir-list :test #'equal))))))
-    (nreverse input-dir-list)))
+	      (pushnew path input-dir-list :test #'equal))))
+	(nreverse input-dir-list)))))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."

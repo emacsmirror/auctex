@@ -1,3 +1,10 @@
+2015-05-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-tree-expand): Expand all given vars in just one
+	single call of kpsewhich.  Users reported that on some windows and
+	mac systems, kpsewhich is extremely slow leading to auctex startup
+	times of several seconds.
+
 2015-04-29  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-string-divide-number-unit): Fix docstring.
