@@ -1,3 +1,7 @@
+2015-05-05  Mosè Giordano  <mose@gnu.org>
+
+	* style/italian.el: Evaluate `TeX-quote-after-quote'.
+
 2015-05-01  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-tree-expand): Expand all given vars in just one
