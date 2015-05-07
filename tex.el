@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2014 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2015 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -1234,7 +1234,7 @@ restarting Emacs."
      (string :tag "Name")
      (choice
       (group :tag "Command" (string :tag "Command"))
-      (group :tag "Command parts"
+      (group :inline t :tag "Command parts"
 	     (repeat
 	      :tag "Command parts"
 	      (choice
