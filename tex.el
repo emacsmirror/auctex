@@ -4463,15 +4463,15 @@ element to ALIST-VAR."
 
 (progn ; Define TeX-mode-syntax-table.
   (modify-syntax-entry (string-to-char TeX-esc)
-			   "\\" TeX-mode-syntax-table)
+		       "\\" TeX-mode-syntax-table)
   (modify-syntax-entry ?\f ">"  TeX-mode-syntax-table)
   (modify-syntax-entry ?\n ">"  TeX-mode-syntax-table)
   (modify-syntax-entry (string-to-char TeX-grop)
-			   (concat "(" TeX-grcl)
-				TeX-mode-syntax-table)
+		       (concat "(" TeX-grcl)
+		       TeX-mode-syntax-table)
   (modify-syntax-entry (string-to-char TeX-grcl)
-			   (concat ")" TeX-grop)
-				TeX-mode-syntax-table)
+		       (concat ")" TeX-grop)
+		       TeX-mode-syntax-table)
   (modify-syntax-entry ?%  "<"  TeX-mode-syntax-table)
   (modify-syntax-entry ?\" "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?&  "."  TeX-mode-syntax-table)
@@ -4481,7 +4481,8 @@ element to ALIST-VAR."
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
   (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
-  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table))
+  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?|  "$"  TeX-mode-syntax-table))
 
 ;;; Menu Support
 
