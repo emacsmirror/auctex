@@ -1,5 +1,7 @@
 2015-05-08  Tassilo Horn  <tsdh@gnu.org>
 
+	* Version 11.88.6 released.
+
 2015-05-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-mode-syntax-table): Use paired delimiter syntax for
