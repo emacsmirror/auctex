@@ -2349,7 +2349,7 @@ If REGEXP is nil, or \"\", an error will occur."
 
 (defun TeX-tree-expand (vars program &optional subdirs)
   "Return directories corresponding to the kpathsea variables VARS.
-This is done calling `kpsewhich --expand-path' for each variable.
+This is done calling `kpsewhich --expand-path' for the variables.
 PROGRAM is passed as the parameter for --progname.  SUBDIRS are
 subdirectories which are appended to the directories of the TeX
 trees.  Only existing directories are returned."

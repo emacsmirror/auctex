@@ -2,6 +2,7 @@
 
 	* tex.el (TeX-mode-syntax-table): Use paired delimiter syntax for
 	character |.
+	(TeX-tree-expand): Fix docstring.
 
 2015-05-07  Mosè Giordano  <mose@gnu.org>
 
