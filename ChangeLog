@@ -1,5 +1,8 @@
 2015-05-16  Arash Esbati  <esbati@gmx.de>
 
+	* font-latex.el (font-latex-set-syntactic-keywords): Allow for
+	multiple mandatory argument for a verbatim environment.
+
 	* style/listings.el ("listings"): Add support for parsing new
 	env's defined with `\lstnewenvironment' command.
 
