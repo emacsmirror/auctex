@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'
 
-;; Copyright (C) 2004, 2005, 2009, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009, 2013, 2015 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -27,6 +27,9 @@
 ;;; Commentary:
 
 ;; This file adds support for `listings.sty'.
+;;
+;; May 2015: The style detects new environments defined with
+;; `\lstnewenvironment'.  Users need to invoke `C-c C-n' for this.
 ;;
 ;; FIXME: Please make me more sophisticated!
 
@@ -217,9 +220,44 @@
     ("multicolumn"))
   "Key=value options for listings macros and environments.")
 
+(defvar LaTeX-auto-listings-lstnewenvironment nil
+  "Temporary for parsing the arguments of `\\lstnewenvironment'
+from `listings' package.")
+
+(defvar LaTeX-listing-lstnewenvironment-regexp
+  `(,(concat "\\\\lstnewenvironment"
+	     "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
+	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?")
+    (1 2) LaTeX-auto-listings-lstnewenvironment)
+  "Matches the argument of `\\lstnewenvironment' from `listings.sty'.")
+
+(defun LaTeX-listings-auto-prepare ()
+  "Clear temporary variable from `listings.sty' before parsing."
+  (setq LaTeX-auto-listings-lstnewenvironment nil))
+
+(defun LaTeX-listings-auto-cleanup ()
+  "Process the parsed results of `\\lstnewenvironment'."
+  (dolist (env-args LaTeX-auto-listings-lstnewenvironment)
+    (let ((env  (car env-args))
+	  (args (cadr env-args)))
+      (if (string-equal args "")
+	  (add-to-list 'LaTeX-auto-environment (list env))
+	(add-to-list 'LaTeX-auto-environment
+		     (list env (string-to-number args))))
+      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation))
+      (add-to-list 'LaTeX-verbatim-environments-local env))))
+
+(add-hook 'TeX-auto-prepare-hook #'LaTeX-listings-auto-prepare t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-listings-auto-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+
 (TeX-add-style-hook
  "listings"
  (lambda ()
+
+   ;; Add it to the parser
+   (TeX-auto-add-regexp LaTeX-listing-lstnewenvironment-regexp)
+
    ;; New symbols
    (TeX-add-symbols
     '("lstalias" ["Alias dialect"] "Alias" ["Dialect"] "Language")

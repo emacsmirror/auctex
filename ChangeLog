@@ -1,3 +1,8 @@
+2015-05-16  Arash Esbati  <esbati@gmx.de>
+
+	* style/listings.el ("listings"): Add support for parsing new
+	env's defined with `\lstnewenvironment' command.
+
 2015-05-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-mode-syntax-table): Use paired delimiter syntax for
