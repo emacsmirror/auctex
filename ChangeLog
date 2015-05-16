@@ -1,5 +1,11 @@
 2015-05-16  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/newpxmath.el: New file.
+
+	* style/newpxtext.el: New file.
+
 	* font-latex.el (font-latex-set-syntactic-keywords): Allow for
 	multiple mandatory argument for a verbatim environment.
 
