@@ -1,3 +1,8 @@
+2015-05-18  Orlando Iovino  <orlando.iovino@yahoo.it>  (tiny change)
+
+	* style/beamer.el ("beamer"): Add `subtitle' to the `slide-title'
+	class.
+
 2015-05-16  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new styles.
