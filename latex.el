@@ -4475,10 +4475,7 @@ If COUNT is non-nil, do it COUNT times."
 						"[@A-Za-z]+\\|[ \t]*\\($\\|"
 						TeX-comment-start-regexp "\\)"))
 			    (progn
-			      (when (string= (buffer-substring-no-properties
-					      (point) (+ (point)
-							 (length TeX-esc)))
-					     TeX-esc)
+			      (when (looking-at (regexp-quote TeX-esc))
 				(goto-char (TeX-find-macro-end)))
 			      (forward-line 1)
 			      (when (< (point) start)

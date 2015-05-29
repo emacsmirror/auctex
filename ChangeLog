@@ -1,3 +1,8 @@
+2015-05-29  Nicolas Richard  <youngfrog@members.fsf.org>
+
+	* latex.el (LaTeX-backward-paragraph): Make it work in narrowed
+	buffers.  Fixes bug#20685.
+
 2015-05-18  Orlando Iovino  <orlando.iovino@yahoo.it>  (tiny change)
 
 	* style/beamer.el ("beamer"): Add `subtitle' to the `slide-title'
