@@ -1,3 +1,11 @@
+2015-06-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-auto-env-args-with-opt): New variable for
+	collecting environments with an optional argument.
+	(LaTeX-auto-regexp-list): Use it.
+	(LaTeX-auto-cleanup): Initialize \newenvironment{foo}[n][d]{}{}
+	with the n-1 remaining mandatory arguments.
+
 2015-05-29  Nicolas Richard  <youngfrog@members.fsf.org>
 
 	* latex.el (LaTeX-backward-paragraph): Make it work in narrowed

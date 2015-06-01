@@ -1370,6 +1370,7 @@ right number."
 (defvar LaTeX-auto-arguments nil)
 (defvar LaTeX-auto-optional nil)
 (defvar LaTeX-auto-env-args nil)
+(defvar LaTeX-auto-env-args-with-opt nil)
 
 (TeX-auto-add-type "label" "LaTeX")
 (TeX-auto-add-type "bibitem" "LaTeX")
@@ -1463,7 +1464,7 @@ This is necessary since index entries may contain commands and stuff.")
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
 	1 TeX-auto-symbol)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[")
-	1 LaTeX-auto-environment)
+	(1 2) LaTeX-auto-env-args-with-opt)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
 	(1 2) LaTeX-auto-env-args)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?")
@@ -1690,6 +1691,12 @@ The value is actually the tail of the list of options given to PACKAGE."
 		       (list (nth 0 entry)
 			     (string-to-number (nth 1 entry)))))
 	LaTeX-auto-env-args)
+  ;; Ditto for environments with optional args
+  (mapc (lambda (entry)
+	  (add-to-list 'LaTeX-auto-environment
+		       (list (nth 0 entry)
+			     (1- (string-to-number (nth 1 entry))))))
+	LaTeX-auto-env-args-with-opt)
 
   ;; Cleanup use of def to add environments
   ;; NOTE: This uses an O(N^2) algorithm, while an O(N log N)
