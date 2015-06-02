@@ -1,3 +1,8 @@
+2015-06-02  Arash Esbati  <esbati@gmx.de>
+
+	* latex.el (LaTeX-auto-cleanup): Prepare so that an optional
+	environment arg is also queried.
+
 2015-06-01  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-auto-env-args-with-opt): New variable for

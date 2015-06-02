@@ -1691,10 +1691,10 @@ The value is actually the tail of the list of options given to PACKAGE."
 		       (list (nth 0 entry)
 			     (string-to-number (nth 1 entry)))))
 	LaTeX-auto-env-args)
-  ;; Ditto for environments with optional args
+  ;; Ditto for environments with an optional arg
   (mapc (lambda (entry)
 	  (add-to-list 'LaTeX-auto-environment
-		       (list (nth 0 entry)
+		       (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
 			     (1- (string-to-number (nth 1 entry))))))
 	LaTeX-auto-env-args-with-opt)
 
