@@ -145,8 +145,8 @@
     ("indexstyle")
     ;; Column alignment
     ("columns" ("fixed" "flexible" "fullflexible" "spaceflexible")) ;
-                                        ; Also supports an optional
-                                        ; argument with {c,l,r}.
+					; Also supports an optional
+					; argument with {c,l,r}.
     ("flexiblecolumns" ("true" "false"))
     ("keepspaces" ("true" "false"))
     ("basewidth")
@@ -227,8 +227,9 @@ from `listings' package.")
 (defvar LaTeX-listing-lstnewenvironment-regexp
   `(,(concat "\\\\lstnewenvironment"
 	     "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
-	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?")
-    (1 2) LaTeX-auto-listings-lstnewenvironment)
+	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
+	     "[ \t\n\r]*\\(\\[\\)?")
+    (1 2 3) LaTeX-auto-listings-lstnewenvironment)
   "Matches the argument of `\\lstnewenvironment' from `listings.sty'.")
 
 (defun LaTeX-listings-auto-prepare ()
@@ -238,12 +239,22 @@ from `listings' package.")
 (defun LaTeX-listings-auto-cleanup ()
   "Process the parsed results of `\\lstnewenvironment'."
   (dolist (env-args LaTeX-auto-listings-lstnewenvironment)
-    (let ((env  (car env-args))
-	  (args (cadr env-args)))
-      (if (string-equal args "")
-	  (add-to-list 'LaTeX-auto-environment (list env))
-	(add-to-list 'LaTeX-auto-environment
-		     (list env (string-to-number args))))
+    (let ((env  (car   env-args))
+	  (args (cadr  env-args))
+	  (opt  (nth 2 env-args)))
+      (cond (;; opt. 1st argument and mandatory argument(s)
+	     (and args (not (string-equal args ""))
+		  opt  (not (string-equal opt  "")))
+	     (add-to-list 'LaTeX-auto-environment
+			  (list env 'LaTeX-env-args (vector "argument")
+				(1- (string-to-number args)))))
+	    (;; mandatory argument(s) only
+	     (and args (not (string-equal args ""))
+		  (string-equal opt ""))
+	     (add-to-list 'LaTeX-auto-environment
+			  (list env (string-to-number args))))
+	    (t ; No args
+	     (add-to-list 'LaTeX-auto-environment (list env))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation))
       (add-to-list 'LaTeX-verbatim-environments-local env))))
 
@@ -274,10 +285,10 @@ from `listings' package.")
     ;; 4.17 Short Inline Listing Commands
     '("lstMakeShortInline" [ "Options" ] "Character")
     '("lstDeleteShortInline" "Character")
-    
+
     "lstgrinddeffile" "lstaspectfiles" "lstlanguagefiles"
     "lstlistingname" "lstlistlistingname")
-   
+
    ;; New environments
    (LaTeX-add-environments
     '("lstlisting" LaTeX-env-args
@@ -310,11 +321,11 @@ from `listings' package.")
      (font-lock-set-defaults)))
  LaTeX-dialect)
 
-(defvar LaTeX-listings-package-options '("draft" "final" "savemem" 
+(defvar LaTeX-listings-package-options '("draft" "final" "savemem"
 					 "noaspects"
-                                         ;; procnames is mentioned in
-                                         ;; Section 5.2 
-                                         "procnames")
+					 ;; procnames is mentioned in
+					 ;; Section 5.2
+					 "procnames")
   "Package options for the listings package.")
 
 ;;; listings.el ends here

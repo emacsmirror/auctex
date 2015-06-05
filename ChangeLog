@@ -1,3 +1,9 @@
+2015-06-05  Arash Esbati  <esbati@gmx.de>
+
+	* style/listings.el (LaTeX-listings-auto-cleanup): Add support for
+	the optional argument of env's defined with `\lstnewenvironment'.
+	(LaTeX-listing-lstnewenvironment-regexp): Ditto.
+
 2015-06-05  Ikumi Keita  <ikumi@ikumi.que.jp>
 
 	* tex.el (featurep): Restore compatibility with emacs versions
