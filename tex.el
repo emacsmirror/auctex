@@ -763,7 +763,19 @@ If POS is nil, use current buffer location."
 
   (defun TeX-activate-region ()
     (setq deactivate-mark nil)
-    (activate-mark))
+    (if (fboundp 'activate-mark)
+	(activate-mark)
+      ;; COMPATIBILITY for Emacs <= 22
+      ;; This part is adopted from `activate-mark' of Emacs 24.5.
+      (when (mark t)
+	(unless (and transient-mark-mode mark-active
+		 (mark))
+	  (force-mode-line-update) ;Refresh toolbar (bug#16382).
+	  (setq mark-active t)
+	  (unless transient-mark-mode
+	    (setq transient-mark-mode 'lambda))
+	  (if (boundp 'activate-mark-hook)
+	      (run-hooks 'activate-mark-hook))))))
 
   (defun TeX-overlay-prioritize (start end)
     "Calculate a priority for an overlay extending from START to END.

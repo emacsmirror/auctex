@@ -1,3 +1,8 @@
+2015-06-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex.el (featurep): Restore compatibility with emacs versions
+	which don't have `activate-mark' (Emacs <= 22).
+
 2015-06-02  Arash Esbati  <esbati@gmx.de>
 
 	* latex.el (LaTeX-auto-cleanup): Prepare so that an optional
