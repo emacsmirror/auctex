@@ -1085,28 +1085,29 @@ given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too."
-  (and (featurep 'dbusbind)
-       (require 'dbus nil :no-error)
-       (dbus-ignore-errors (dbus-get-unique-name :session))
-       (dbus-ping :session "org.gnome.evince.Daemon")
-       (executable-find "evince")
-       (or (not (memq :forward options))
-	   (let ((spec (dbus-introspect-get-method
-			:session "org.gnome.evince.Daemon"
-			"/org/gnome/evince/Daemon"
-			"org.gnome.evince.Daemon"
-			"FindDocument")))
-	     ;; FindDocument must exist, and its signature must be (String,
-	     ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
-	     ;; didn't have the Boolean spawn argument we need to start evince
-	     ;; initially.
-	     (and spec
-		  (equal '("s" "b" "s")
-			 (delq nil (mapcar (lambda (elem)
-					     (when (and (listp elem)
-							(eq (car elem) 'arg))
-					       (cdr (caar (cdr elem)))))
-					   spec))))))))
+  (let ((dbus-debug nil))
+    (and (featurep 'dbusbind)
+	 (require 'dbus nil :no-error)
+	 (dbus-ignore-errors (dbus-get-unique-name :session))
+	 (dbus-ping :session "org.gnome.evince.Daemon")
+	 (executable-find "evince")
+	 (or (not (memq :forward options))
+	     (let ((spec (dbus-introspect-get-method
+			  :session "org.gnome.evince.Daemon"
+			  "/org/gnome/evince/Daemon"
+			  "org.gnome.evince.Daemon"
+			  "FindDocument")))
+	       ;; FindDocument must exist, and its signature must be (String,
+	       ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
+	       ;; didn't have the Boolean spawn argument we need to start evince
+	       ;; initially.
+	       (and spec
+		    (equal '("s" "b" "s")
+			   (delq nil (mapcar (lambda (elem)
+					       (when (and (listp elem)
+							  (eq (car elem) 'arg))
+						 (cdr (caar (cdr elem)))))
+					     spec)))))))))
 
 (defun TeX-pdf-tools-sync-view ()
   "Focus the focused page/paragraph in `pdf-view-mode'.
