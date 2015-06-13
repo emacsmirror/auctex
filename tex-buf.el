@@ -1014,7 +1014,7 @@ Warnings can be indicated by LaTeX or packages."
   (save-excursion
     (goto-char (point-min))
     (re-search-forward
-     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:" nil t)))
+     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:" nil t)))
 
 (defun TeX-LaTeX-sentinel-has-bad-boxes ()
   "Return non-nil, if LaTeX output indicates overfull or underfull boxes."
@@ -1748,7 +1748,7 @@ Return non-nil if an error or warning is found."
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
  \\\\.*?[0-9]+--[0-9]+\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*"))
+	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:.*"))
 	(error-found nil))
     (while
 	(cond
