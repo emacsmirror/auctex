@@ -1,3 +1,9 @@
+2015-06-14  Arash Esbati  <esbati@gmx.de>
+
+	* style/pdfpages.el ("pdfpages"): Restrict suggested files to
+	*.pdf files.  File name should be relative to master file
+	directory.
+
 2015-06-13  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-LaTeX-sentinel-has-warnings, TeX-parse-error):

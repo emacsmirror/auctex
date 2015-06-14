@@ -98,8 +98,12 @@
       [TeX-arg-key-val LaTeX-pdfpages-key-val-options]
       (TeX-arg-eval
        (lambda ()
-	 (let ((pdffile (file-relative-name
-			 (read-file-name "File to include: "))))
+         (let ((pdffile (file-relative-name
+			 (read-file-name
+			  "File to include: " nil nil nil nil
+			  (lambda (pdfs)
+			    (string-match "\\.pdf$" pdfs)))
+			 (TeX-master-directory))))
 	   (format "%s" pdffile)))))
 
     ;; \includepdfmerge[<options>]{<file-page-list>}
