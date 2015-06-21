@@ -1,3 +1,9 @@
+2015-06-21  Mosè Giordano  <mose@gnu.org>
+
+	* style/mnras.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
 2015-06-14  Arash Esbati  <esbati@gmx.de>
 
 	* style/pdfpages.el ("pdfpages"): Restrict suggested files to
@@ -8,7 +14,7 @@
 
 	* tex-buf.el (TeX-LaTeX-sentinel-has-warnings, TeX-parse-error):
 	Cater for packages with digits in their names (e.g., fixltx2e,
-	wich emits a warning from TeX Live 2015).
+	which emits a warning from TeX Live 2015).
 
 2015-06-09  Tassilo Horn  <tsdh@gnu.org>
 
