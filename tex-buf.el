@@ -1098,6 +1098,11 @@ changed\\. Rerun LaTeX\\." nil t)
 	 (message
 	  "%s" "You should run LaTeX again to get table formatting right")
 	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward "^hf-TikZ Warning: Mark '.*' changed\\. \
+Rerun to get mark in right position\\." nil t)
+	 (message
+	  "%s" "You should run LaTeX again to get TikZ marks in right position")
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
 \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)

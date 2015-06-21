@@ -1,5 +1,8 @@
 2015-06-21  Mosè Giordano  <mose@gnu.org>
 
+	* tex-buf.el (TeX-LaTeX-sentinel): Add support for hf-tikz
+	messages.
+
 	* style/mnras.el: New style file.
 
 	* Makefile.in (STYLESRC): Activate it.
