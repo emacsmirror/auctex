@@ -1,3 +1,10 @@
+2015-07-09  Mosè Giordano  <mose@gnu.org>
+
+	* latex/README: restore file deleted by mistake when preview/
+	directory has been moved to top level.
+
+	* Makefile.in: Use everywhere $(MAKE) in place of make.
+
 2015-06-21  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Add support for hf-tikz
