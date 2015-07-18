@@ -1,5 +1,9 @@
 2015-07-18  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/environ.el: New file.
+
 	* style/tabulary.el ("tabulary"): Add `LCRJ' to
 	`LaTeX-array-column-letters'.
 
