@@ -1,3 +1,8 @@
+2015-07-18  Arash Esbati  <esbati@gmx.de>
+
+	* style/array.el: Parse user-defined new column types and add them
+	to `LaTeX-array-column-letters'.
+
 2015-07-09  Mosè Giordano  <mose@gnu.org>
 
 	* latex/README: restore file deleted by mistake when preview/
