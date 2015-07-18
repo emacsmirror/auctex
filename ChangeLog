@@ -1,5 +1,8 @@
 2015-07-18  Arash Esbati  <esbati@gmx.de>
 
+	* style/tabulary.el ("tabulary"): Add `LCRJ' to
+	`LaTeX-array-column-letters'.
+
 	* style/tabularx.el ("tabularx"): Add `X' to
 	`LaTeX-array-column-letters'.
 
