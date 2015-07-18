@@ -1,5 +1,8 @@
 2015-07-18  Arash Esbati  <esbati@gmx.de>
 
+	* style/tabularx.el ("tabularx"): Add `X' to
+	`LaTeX-array-column-letters'.
+
 	* style/array.el: Parse user-defined new column types and add them
 	to `LaTeX-array-column-letters'.
 
