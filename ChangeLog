@@ -2,6 +2,10 @@
 
 	* Makefile.in (STYLESRC): Add new style.
 
+	* style/vwcol.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
 	* style/textpos.el: New file.
 
 	* Makefile.in (STYLESRC): Add new style.
