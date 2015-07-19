@@ -6227,6 +6227,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("renewcommand*" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("newenvironment" TeX-arg-define-environment
+       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
+     '("renewenvironment" TeX-arg-environment
+       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")

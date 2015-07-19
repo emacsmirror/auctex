@@ -1,5 +1,8 @@
 2015-07-18  Arash Esbati  <esbati@gmx.de>
 
+	* latex.el (LaTeX-common-initialization): Query for the default
+	value of first arg when (re-)defining new environments.
+
 	* Makefile.in (STYLESRC): Add new style.
 
 	* style/vwcol.el: New file.
