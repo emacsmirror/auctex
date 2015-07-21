@@ -1,5 +1,8 @@
 2015-07-21  Arash Esbati  <esbati@gmx.de>
 
+	* style/nameref.el ("nameref"): Add missing commands `\nameref*'
+	and `\Nameref'.
+
 	* style/textpos.el ("textpos"): Fix the name of the provided env's
 	which is `textblock' and not `textpos'.
 
