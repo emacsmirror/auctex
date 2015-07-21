@@ -31,8 +31,8 @@
 
 ;;; Code:
 
-(defun LaTeX-env-arg-textpos (env)
-  "Query for the arguments of `textpos' environment and insert
+(defun LaTeX-env-arg-textpos-textblock (env)
+  "Query for the arguments of `textblock' environment and insert
 them."
   (let* ((hsize (TeX-read-string "Width: "))
 	 (ho    (TeX-read-string "(Optional) X reference point: "))
@@ -68,9 +68,9 @@ them."
    (TeX-run-style-hooks "everyshi" "color")
 
    (LaTeX-add-environments
-    ;; \begin{textpos}{<hsize>}[<ho>,<vo>](<hpos>,<vpos>) ... \end{textpos}
-    '("textpos"  LaTeX-env-arg-textpos)
-    '("textpos*" LaTeX-env-arg-textpos))
+    ;; \begin{textblock}{<hsize>}[<ho>,<vo>](<hpos>,<vpos>) ... \end{textblock}
+    '("textblock"  LaTeX-env-arg-textpos-textblock)
+    '("textblock*" LaTeX-env-arg-textpos-textblock))
 
    (TeX-add-symbols
     '("TPGrid" [ LaTeX-arg-textpos-tpgrid ]

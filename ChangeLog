@@ -1,3 +1,8 @@
+2015-07-21  Arash Esbati  <esbati@gmx.de>
+
+	* style/textpos.el ("textpos"): Fix the name of the provided env's
+	which is `textblock' and not `textpos'.
+
 2015-07-18  Arash Esbati  <esbati@gmx.de>
 
 	* latex.el (LaTeX-common-initialization): Query for the default
