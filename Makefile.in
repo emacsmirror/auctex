@@ -147,7 +147,10 @@ STYLESRC = style/prosper.el \
 	   style/tcolorbox.el style/color.el	 style/expl3.el \
 	   style/bidibeamer.el style/enumitem.el style/caption.el \
 	   style/geometry.el  style/ltablex.el   style/ltxtable.el \
-	   style/mn2e.el      style/colortbl.el  style/attachfile.el
+	   style/mn2e.el      style/colortbl.el  style/attachfile.el \
+	   style/newpxtext.el style/newpxmath.el style/pdfpages.el \
+	   style/mnras.el     style/environ.el   style/textpos.el \
+	   style/vwcol.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -503,7 +506,7 @@ xemacs-package: check-tag
 	$(CP_A) auctex-$(TAG) $(XEMACS_BUILD_DIR)
 	cd $(XEMACS_BUILD_DIR) \
 	&& ./configure INSTALL_INFO=: TEXHASH=: --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
-	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
+	&& $(MAKE) all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
 
 # Pre-compiled AUCTeX package for Emacs on Windows
 WBUILDDIR=$(PWD)/windows-package
@@ -563,9 +566,9 @@ windows-package: check-tag
 	  --without-texmf-dir --with-emacs=$(WEMACS) \
 	  --with-lispdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSSITELISP) \
 	  --datarootdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSDATAROOTDIR) \
-	&& make \
+	&& $(MAKE) \
 	&& sed -i -e 's/"\/[^\n]\+/(expand-file-name "..\/var\/auctex" (file-name-directory load-file-name))/' tex-site.el \
-	&& make install
+	&& $(MAKE) install
 # Create the package
 	test -d $(FTPDIR) || mkdir -p $(FTPDIR)
 	rm -f $(FTPDIR)/$(WPACKAGE)
@@ -620,7 +623,7 @@ preview-ball: check-tag
 # Use TAG_EXPORT if set (for snapshots)
 	git archive $${TAG_EXPORT:=`echo release_$(TAG) | sed 's/[.]/_/g'`} \
 	  latex/ | tar -xC $(PREVIEW_BUILD_DIR) --strip-components=1
-	cd $(PREVIEW_BUILD_DIR) && make -f ../latex/Makefile preview.ins preview.pdf
+	cd $(PREVIEW_BUILD_DIR) && $(MAKE) -f ../latex/Makefile preview.ins preview.pdf
 	chmod -R go-w+rX $(PREVIEW_BUILD_DIR)
 	test -d $(CTANDIR) || mkdir -p $(CTANDIR)
 # CTAN requires a top level directory "preview/" for the archive.

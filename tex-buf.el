@@ -1014,7 +1014,7 @@ Warnings can be indicated by LaTeX or packages."
   (save-excursion
     (goto-char (point-min))
     (re-search-forward
-     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:" nil t)))
+     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:" nil t)))
 
 (defun TeX-LaTeX-sentinel-has-bad-boxes ()
   "Return non-nil, if LaTeX output indicates overfull or underfull boxes."
@@ -1097,6 +1097,11 @@ Package natbib Warning:.*undefined citations\\)" nil t)
 changed\\. Rerun LaTeX\\." nil t)
 	 (message
 	  "%s" "You should run LaTeX again to get table formatting right")
+	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward "^hf-TikZ Warning: Mark '.*' changed\\. \
+Rerun to get mark in right position\\." nil t)
+	 (message
+	  "%s" "You should run LaTeX again to get TikZ marks in right position")
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
@@ -1748,7 +1753,7 @@ Return non-nil if an error or warning is found."
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
  \\\\.*?[0-9]+--[0-9]+\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*"))
+	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:.*"))
 	(error-found nil))
     (while
 	(cond

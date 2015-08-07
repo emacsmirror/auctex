@@ -918,9 +918,9 @@ have changed."
 		       ;; package).
 		       "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
 		       ;; After the optional argument, there may also be
-		       ;; another mandatory argument (e.g. with VerbatimOut or
-		       ;; the minted envs).
-		       "\\(?:{[^}]+}\\)?"
+		       ;; another mandatory argument(s) (e.g. with VerbatimOut or
+		       ;; the minted envs or defined with `lstnewenvironment').
+		       "\\(?:{[^}]+}\\)*"
 		       "\\(\n\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords

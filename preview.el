@@ -2571,19 +2571,12 @@ later while in use."
     (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
     (setq TeX-active-tempdir
 	  (list (make-temp-file (expand-file-name
-			   "tmp" (file-name-as-directory topdir)) t)
+				 "tmp" (file-name-as-directory topdir)) t)
 		topdir
 		0))
     (shell-quote-argument
      (concat (file-name-as-directory (file-name-nondirectory topdir))
 	     (file-name-nondirectory (nth 0 TeX-active-tempdir))))))
-
-;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
-(if (featurep 'latex)
-    (LaTeX-preview-setup)
-  (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup))
-
-;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 
 (defun preview-parse-counters (string)
   "Extract counter information from STRING."

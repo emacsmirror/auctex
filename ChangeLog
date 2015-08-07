@@ -1,3 +1,131 @@
+2015-08-07  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (TeX-latex-mode): Call `LaTeX-preview-setup'
+	unconditionally instead of calling it from `LaTeX-mode-hook' which
+	breaks things if that hook is customized (bug#21188).
+
+	* preview.el.in: Don't add `LaTeX-preview-setup' to
+	`LaTeX-mode-hook'.
+
+2015-07-21  Arash Esbati  <esbati@gmx.de>
+
+	* style/nameref.el ("nameref"): Add missing commands `\nameref*'
+	and `\Nameref'.
+
+	* style/textpos.el ("textpos"): Fix the name of the provided env's
+	which is `textblock' and not `textpos'.
+
+2015-07-18  Arash Esbati  <esbati@gmx.de>
+
+	* latex.el (LaTeX-common-initialization): Query for the default
+	value of first arg when (re-)defining new environments.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/vwcol.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/textpos.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/environ.el: New file.
+
+	* style/tabulary.el ("tabulary"): Add `LCRJ' to
+	`LaTeX-array-column-letters'.
+
+	* style/tabularx.el ("tabularx"): Add `X' to
+	`LaTeX-array-column-letters'.
+
+	* style/array.el: Parse user-defined new column types and add them
+	to `LaTeX-array-column-letters'.
+
+2015-07-09  Mosè Giordano  <mose@gnu.org>
+
+	* latex/README: restore file deleted by mistake when preview/
+	directory has been moved to top level.
+
+	* Makefile.in: Use everywhere $(MAKE) in place of make.
+
+2015-06-21  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-LaTeX-sentinel): Add support for hf-tikz
+	messages.
+
+	* style/mnras.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
+2015-06-14  Arash Esbati  <esbati@gmx.de>
+
+	* style/pdfpages.el ("pdfpages"): Restrict suggested files to
+	*.pdf files.  File name should be relative to master file
+	directory.
+
+2015-06-13  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-LaTeX-sentinel-has-warnings, TeX-parse-error):
+	Cater for packages with digits in their names (e.g., fixltx2e,
+	which emits a warning from TeX Live 2015).
+
+2015-06-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-evince-dbus-p): Explicitly bind dbus-debug to nil in
+	order to really ignore dbus errors with dbus-ignore-errors.
+
+2015-06-05  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/pdfpages.el: New file.
+
+	* style/listings.el (LaTeX-listings-auto-cleanup): Add support for
+	the optional argument of env's defined with `\lstnewenvironment'.
+	(LaTeX-listing-lstnewenvironment-regexp): Ditto.
+
+2015-06-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex.el (featurep): Restore compatibility with emacs versions
+	which don't have `activate-mark' (Emacs <= 22).
+
+2015-06-02  Arash Esbati  <esbati@gmx.de>
+
+	* latex.el (LaTeX-auto-cleanup): Prepare so that an optional
+	environment arg is also queried.
+
+2015-06-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-auto-env-args-with-opt): New variable for
+	collecting environments with an optional argument.
+	(LaTeX-auto-regexp-list): Use it.
+	(LaTeX-auto-cleanup): Initialize \newenvironment{foo}[n][d]{}{}
+	with the n-1 remaining mandatory arguments.
+
+2015-05-29  Nicolas Richard  <youngfrog@members.fsf.org>
+
+	* latex.el (LaTeX-backward-paragraph): Make it work in narrowed
+	buffers.  Fixes bug#20685.
+
+2015-05-18  Orlando Iovino  <orlando.iovino@yahoo.it>  (tiny change)
+
+	* style/beamer.el ("beamer"): Add `subtitle' to the `slide-title'
+	class.
+
+2015-05-16  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/newpxmath.el: New file.
+
+	* style/newpxtext.el: New file.
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Allow for
+	multiple mandatory argument for a verbatim environment.
+
+	* style/listings.el ("listings"): Add support for parsing new
+	env's defined with `\lstnewenvironment' command.
+
 2015-05-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* Version 11.88.6 released.

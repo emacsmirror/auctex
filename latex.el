@@ -1370,6 +1370,7 @@ right number."
 (defvar LaTeX-auto-arguments nil)
 (defvar LaTeX-auto-optional nil)
 (defvar LaTeX-auto-env-args nil)
+(defvar LaTeX-auto-env-args-with-opt nil)
 
 (TeX-auto-add-type "label" "LaTeX")
 (TeX-auto-add-type "bibitem" "LaTeX")
@@ -1463,7 +1464,7 @@ This is necessary since index entries may contain commands and stuff.")
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
 	1 TeX-auto-symbol)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[")
-	1 LaTeX-auto-environment)
+	(1 2) LaTeX-auto-env-args-with-opt)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
 	(1 2) LaTeX-auto-env-args)
        (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?")
@@ -1690,6 +1691,12 @@ The value is actually the tail of the list of options given to PACKAGE."
 		       (list (nth 0 entry)
 			     (string-to-number (nth 1 entry)))))
 	LaTeX-auto-env-args)
+  ;; Ditto for environments with an optional arg
+  (mapc (lambda (entry)
+	  (add-to-list 'LaTeX-auto-environment
+		       (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
+			     (1- (string-to-number (nth 1 entry))))))
+	LaTeX-auto-env-args-with-opt)
 
   ;; Cleanup use of def to add environments
   ;; NOTE: This uses an O(N^2) algorithm, while an O(N log N)
@@ -4475,10 +4482,7 @@ If COUNT is non-nil, do it COUNT times."
 						"[@A-Za-z]+\\|[ \t]*\\($\\|"
 						TeX-comment-start-regexp "\\)"))
 			    (progn
-			      (when (string= (buffer-substring-no-properties
-					      (point) (+ (point)
-							 (length TeX-esc)))
-					     TeX-esc)
+			      (when (looking-at (regexp-quote TeX-esc))
 				(goto-char (TeX-find-macro-end)))
 			      (forward-line 1)
 			      (when (< (point) start)
@@ -5738,6 +5742,9 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
+(when (fboundp 'declare-function)
+  (declare-function LaTeX-preview-setup "preview"))
+
 ;;;###autoload
 (defun TeX-latex-mode ()
   "Major mode in AUCTeX for editing LaTeX files.
@@ -5769,6 +5776,7 @@ of `LaTeX-mode-hook'."
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+  (LaTeX-preview-setup)
   (TeX-set-mode-name)
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
@@ -6223,6 +6231,10 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("renewcommand*" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("newenvironment" TeX-arg-define-environment
+       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
+     '("renewenvironment" TeX-arg-environment
+       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
