@@ -1,3 +1,12 @@
+2015-08-07  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (TeX-latex-mode): Call `LaTeX-preview-setup'
+	unconditionally instead of calling it from `LaTeX-mode-hook' which
+	breaks things if that hook is customized (bug#21188).
+
+	* preview.el.in: Don't add `LaTeX-preview-setup' to
+	`LaTeX-mode-hook'.
+
 2015-07-21  Arash Esbati  <esbati@gmx.de>
 
 	* style/nameref.el ("nameref"): Add missing commands `\nameref*'

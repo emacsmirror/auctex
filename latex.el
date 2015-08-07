@@ -5742,6 +5742,9 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
+(when (fboundp 'declare-function)
+  (declare-function LaTeX-preview-setup "preview"))
+
 ;;;###autoload
 (defun TeX-latex-mode ()
   "Major mode in AUCTeX for editing LaTeX files.
@@ -5773,6 +5776,7 @@ of `LaTeX-mode-hook'."
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+  (LaTeX-preview-setup)
   (TeX-set-mode-name)
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
