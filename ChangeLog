@@ -1,3 +1,8 @@
+2015-08-09  Arash Esbati  <esbati@gmx.de>
+
+	* style/ragged2e.el ("ragged2e"): Make package lengths available
+	through `LaTeX-add-lengths' and not `TeX-add-symbol'.
+
 2015-08-07  Tassilo Horn  <tsdh@gnu.org>
 
 	* Version 11.88.7 released.
