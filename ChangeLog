@@ -1,5 +1,8 @@
 2015-08-09  Arash Esbati  <esbati@gmx.de>
 
+	* style/enumitem.el ("enumitem"): Cater for the starred version of
+	`\AddEnumerateCounter'.
+
 	* style/ragged2e.el ("ragged2e"): Make package lengths available
 	through `LaTeX-add-lengths' and not `TeX-add-symbol'.
 
