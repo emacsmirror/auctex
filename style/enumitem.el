@@ -403,6 +403,7 @@ in `enumitem'-completions."
 
     ;; Just add the braces and let the user do the rest.
     '("AddEnumerateCounter" 3)
+    '("AddEnumerateCounter*" 3)
 
     ;; This command only makes sense for enumerate type environments.
     ;; Currently, we offer all defined env's -- to be improved
@@ -431,7 +432,7 @@ in `enumitem'-completions."
      (font-latex-add-keywords '(("newlist"             "{{{")
 				("renewlist"           "{{{")
 				("setlist"             "*[{")
-				("AddEnumerateCounter" "{{{")
+				("AddEnumerateCounter" "*{{{")
 				("SetEnumitemKey"      "{{" )
 				("SetEnumitemValue"    "{{{"))
 			      'function)
