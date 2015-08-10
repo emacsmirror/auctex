@@ -1,5 +1,8 @@
 2015-08-10  Tassilo Horn  <tsdh@gnu.org>
 
+	* latex.el (TeX-latex-mode): Call LaTeX-preview-setup only if its
+	bound.
+
 	* preview.el.in (LaTeX-preview-setup): Setup menu and keymap only
 	once.
 

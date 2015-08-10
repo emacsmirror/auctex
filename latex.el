@@ -5776,7 +5776,8 @@ of `LaTeX-mode-hook'."
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
-  (LaTeX-preview-setup)
+  (when (fboundp 'LaTeX-preview-setup)
+    (LaTeX-preview-setup))
   (TeX-set-mode-name)
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
