@@ -1,3 +1,8 @@
+2015-08-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* preview.el.in (LaTeX-preview-setup): Setup menu and keymap only
+	once.
+
 2015-08-09  Arash Esbati  <esbati@gmx.de>
 
 	* style/enumitem.el ("enumitem"): Cater for the starred version of

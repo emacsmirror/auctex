@@ -2490,44 +2490,47 @@ pp")
   "Hook function for embedding the preview package into AUCTeX.
 This is called by `LaTeX-mode-hook' and changes AUCTeX variables
 to add the preview functionality."
-  (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-  (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
-  (define-key LaTeX-mode-map "\C-c\C-p" preview-map)
-  (easy-menu-define preview-menu LaTeX-mode-map
-    "This is the menu for preview-latex."
-    '("Preview"
-      "Generate previews"
-      ["(or toggle) at point" preview-at-point]
-      ["for environment" preview-environment]
-      ["for section" preview-section]
-      ["for region" preview-region (preview-mark-active)]
-      ["for buffer" preview-buffer]
-      ["for document" preview-document]
-      "---"
-      "Remove previews"
-      ["at point" preview-clearout-at-point]
-      ["from section" preview-clearout-section]
-      ["from region" preview-clearout (preview-mark-active)]
-      ["from buffer" preview-clearout-buffer]
-      ["from document" preview-clearout-document]
-      "---"
-      "Turn preamble cache"
-      ["on" preview-cache-preamble]
-      ["off" preview-cache-preamble-off]
-      "---"
-      ("Customize"
-       ["Browse options"
-	(customize-group 'preview)]
-       ["Extend this menu"
-	(easy-menu-add-item
-	 nil '("Preview")
-	 (customize-menu-create 'preview))])
-      ["Read documentation" preview-goto-info-page]
-      ["Report Bug" preview-report-bug]))
-  (if (eq major-mode 'latex-mode)
-      (preview-mode-setup))
-  (if (boundp 'desktop-buffer-misc)
-      (preview-buffer-restore desktop-buffer-misc)))
+  ;; This has to be done only once.
+  (unless (and (boundp 'LaTeX-mode-hook)
+	       (memq #'preview-mode-setup LaTeX-mode-hook))
+    (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+    (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
+    (define-key LaTeX-mode-map "\C-c\C-p" preview-map)
+    (easy-menu-define preview-menu LaTeX-mode-map
+      "This is the menu for preview-latex."
+      '("Preview"
+	"Generate previews"
+	["(or toggle) at point" preview-at-point]
+	["for environment" preview-environment]
+	["for section" preview-section]
+	["for region" preview-region (preview-mark-active)]
+	["for buffer" preview-buffer]
+	["for document" preview-document]
+	"---"
+	"Remove previews"
+	["at point" preview-clearout-at-point]
+	["from section" preview-clearout-section]
+	["from region" preview-clearout (preview-mark-active)]
+	["from buffer" preview-clearout-buffer]
+	["from document" preview-clearout-document]
+	"---"
+	"Turn preamble cache"
+	["on" preview-cache-preamble]
+	["off" preview-cache-preamble-off]
+	"---"
+	("Customize"
+	 ["Browse options"
+	  (customize-group 'preview)]
+	 ["Extend this menu"
+	  (easy-menu-add-item
+	   nil '("Preview")
+	   (customize-menu-create 'preview))])
+	["Read documentation" preview-goto-info-page]
+	["Report Bug" preview-report-bug]))
+    (if (eq major-mode 'latex-mode)
+	(preview-mode-setup))
+    (if (boundp 'desktop-buffer-misc)
+	(preview-buffer-restore desktop-buffer-misc))))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
