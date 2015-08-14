@@ -5931,7 +5931,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
 		   1 LaTeX-environment-list-filtered "}")
                   ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
-		   1 LaTeX-pagestyle-list "}"))
+		   2 LaTeX-pagestyle-list "}"))
 		TeX-complete-list))
 
   (LaTeX-add-environments
