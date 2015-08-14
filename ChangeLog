@@ -1,3 +1,8 @@
+2015-08-14  Arash Esbati  <esbati@gmx.de>
+
+	* latex.el (LaTeX-common-initialization): Fix the subgroup number
+	in the regex for `\\(this\\)?pagestyle'
+
 2015-08-10  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (TeX-latex-mode): Call LaTeX-preview-setup only if its
