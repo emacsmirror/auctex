@@ -993,35 +993,36 @@ you will be always prompted for a label, with an empty default
 prefix.
 
 If `LaTeX-label-function' is a valid function, LaTeX label will
-transfer the job to this function."
-  (let ((prefix (cond
-		 ((eq type 'environment)
-		  (cdr (assoc name LaTeX-label-alist)))
-		 ((eq type 'section)
-		  (if (assoc name LaTeX-section-list)
-		      (if (stringp LaTeX-section-label)
-			  LaTeX-section-label
-			(and (listp LaTeX-section-label)
-			     (cdr (assoc name LaTeX-section-label))))
-		    ""))
-		 ((null type)
-		  "")
-		 (t
-		  nil)))
+transfer the job to this function.
+
+The inserted label is returned, nil if it is empty."
+  (let ((TeX-read-label-prefix
+	 (cond
+	  ((eq type 'environment)
+	   (cdr (assoc name LaTeX-label-alist)))
+	  ((eq type 'section)
+	   (if (assoc name LaTeX-section-list)
+	       (if (stringp LaTeX-section-label)
+		   LaTeX-section-label
+		 (and (listp LaTeX-section-label)
+		      (cdr (assoc name LaTeX-section-label))))
+	     ""))
+	  ((null type)
+	   "")
+	  (t
+	   nil)))
 	label)
-    (when (symbolp prefix)
-      (setq prefix (symbol-value prefix)))
-    (when prefix
+    (when (symbolp TeX-read-label-prefix)
+      (setq TeX-read-label-prefix (symbol-value TeX-read-label-prefix)))
+    (when TeX-read-label-prefix
       (if (and (boundp 'LaTeX-label-function)
 	       LaTeX-label-function
 	       (fboundp LaTeX-label-function))
 	  (setq label (funcall LaTeX-label-function name))
 	;; Use completing-read as we do with `C-c C-m \label RET'
-	(setq label (completing-read
-		     (TeX-argument-prompt t nil "What label")
-		     (LaTeX-label-list) nil nil prefix))
+	(setq label (TeX-read-label t "What label" t))
 	;; No label or empty string entered?
-	(if (or (string= prefix label)
+	(if (or (string= TeX-read-label-prefix label)
 		(string= "" label))
 	    (setq label nil)
 	  (insert TeX-esc "label" TeX-grop label TeX-grcl))
@@ -1773,17 +1774,32 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one."
   (TeX-argument-insert (eval args) optional))
 
+(defvar TeX-read-label-prefix nil
+  "Initial input for the label in `TeX-read-label.'")
+
+(defun TeX-read-label (optional &optional prompt definition)
+  "Prompt for a label completing with known labels and return it.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string.  If DEFINITION is non-nil, add the chosen label to the
+list of defined labels.  `TeX-read-label-prefix' is used as
+initial input for the label."
+  (let ((label (completing-read
+		(TeX-argument-prompt optional prompt "Key")
+		(LaTeX-label-list) nil nil TeX-read-label-prefix)))
+    (if (and definition (not (string-equal "" label)))
+	(LaTeX-add-labels label))
+    label))
+
 (defun TeX-arg-label (optional &optional prompt definition)
   "Prompt for a label completing with known labels.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If DEFINITION is non-nil, add the chosen label to the
-list of defined labels."
-  (let ((label (completing-read (TeX-argument-prompt optional prompt "Key")
-				(LaTeX-label-list))))
-    (if (and definition (not (string-equal "" label)))
-	(LaTeX-add-labels label))
-    (TeX-argument-insert label optional optional)))
+list of defined labels.  `TeX-read-label-prefix' is used as
+initial input for the label."
+  (TeX-argument-insert
+   (TeX-read-label optional prompt definition) optional optional))
 
 (defvar reftex-ref-macro-prompt)
 
@@ -1948,7 +1964,8 @@ string."
   "Prompt for a label completing with known labels.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string."
+string.  `TeX-read-label-prefix' is used as initial input for the
+label."
   (TeX-arg-label optional prompt t))
 
 (defun TeX-arg-define-macro (optional &optional prompt)
