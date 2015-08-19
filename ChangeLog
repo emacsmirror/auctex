@@ -1,3 +1,15 @@
+2015-08-19  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-label): Mention in the docstring the returned
+	value.  Let-bind `TeX-read-label-prefix' and use `TeX-read-label'
+	to read the label.
+	(TeX-read-label-prefix): New variable.
+	(TeX-read-label): New function.
+	(TeX-arg-label): Use `TeX-read-label' and mention
+	`TeX-read-label-prefix' in docstring.
+	(TeX-arg-define-label): Mention `TeX-read-label-prefix' in
+	docstring.
+
 2015-08-14  Arash Esbati  <esbati@gmx.de>
 
 	* latex.el (LaTeX-common-initialization): Fix the subgroup number
