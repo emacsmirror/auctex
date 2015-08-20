@@ -2701,6 +2701,21 @@ forward, if negative)."
   (interactive "p")
   (TeX-error-overview-next-error (- arg)))
 
+(defun TeX-error-overview-jump-to-source ()
+  "Display the help and move point to the error source."
+  (interactive)
+  (TeX-error-overview-goto-source)
+  (pop-to-buffer
+   (save-window-excursion
+     (select-window TeX-error-overview-orig-window)
+     (current-buffer))))
+
+(defun TeX-error-overview-goto-log ()
+  "Display the current error in log buffer."
+  (interactive)
+  (let ((TeX-display-help 'expert))
+    (TeX-error-overview-goto-source)))
+
 (defun TeX-error-overview-quit ()
   "Delete the window or the frame of the error overview."
   (interactive)
@@ -2712,12 +2727,32 @@ forward, if negative)."
 (defvar TeX-error-overview-mode-map
   (let ((map (make-sparse-keymap))
 	(menu-map (make-sparse-keymap)))
+    (define-key map "j"    'TeX-error-overview-jump-to-source)
+    (define-key map "l"    'TeX-error-overview-goto-log)
     (define-key map "n"    'TeX-error-overview-next-error)
     (define-key map "p"    'TeX-error-overview-previous-error)
     (define-key map "q"    'TeX-error-overview-quit)
     (define-key map "\C-m" 'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
+
+(easy-menu-define TeX-error-overview-menu
+  TeX-error-overview-mode-map
+  "Menu used in TeX error overview mode."
+  (TeX-menu-with-help
+   '("TeX errors"
+     ["Next error" TeX-error-overview-next-error
+      :help "Jump to the next error"]
+     ["Previous error" TeX-error-overview-previous-error
+      :help "Jump to the previous error"]
+     ["Go to source" TeX-error-overview-goto-source
+      :help "Show the error in the source"]
+     ["Jump to source" TeX-error-overview-jump-to-source
+      :help "Move point to the error in the source"]
+     ["Go to log" TeX-error-overview-goto-log
+      :help "Show the error in the log buffer"]
+     ["Quit" TeX-error-overview-quit
+      :help "Quit"])))
 
 (defvar TeX-error-overview-list-entries nil
   "List of errors to be used in the error overview.")
@@ -2732,7 +2767,8 @@ forward, if negative)."
         tabulated-list-padding 1
         tabulated-list-entries TeX-error-overview-list-entries)
   (tabulated-list-init-header)
-  (tabulated-list-print))
+  (tabulated-list-print)
+  (easy-menu-add TeX-error-overview-menu TeX-error-overview-mode-map))
 
 (defcustom TeX-error-overview-frame-parameters
   '((name . "TeX errors")

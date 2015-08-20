@@ -1,3 +1,17 @@
+2015-08-20  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-error-overview-jump-to-source)
+	(TeX-error-overview-goto-log): New functions.
+	(TeX-error-overview-mode-map): Add
+	`TeX-error-overview-jump-to-source' and
+	`TeX-error-overview-goto-log'.
+	(TeX-error-overview-menu): Define menu for TeX error overview.
+	(TeX-error-overview-mode): Add menu.
+
+	* doc/auctex.texi (top)
+	(Debugging): Add section for error overview.
+	(Error overview): Document new functions and keys.
+
 2015-08-19  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-label): Mention in the docstring the returned

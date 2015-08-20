@@ -188,6 +188,10 @@ Viewing the Formatted Output
 * Starting Viewers::            Starting viewers
 * I/O Correlation::             Forward and inverse search
 
+Catching the errors
+
+* Error overview::              List of all errors and warnings
+
 Customization and Extension
 
 * Multifile::                   Multifile Documents
@@ -3210,7 +3214,9 @@ to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 @cindex Underfull boxes
 
 Once you've formatted your document you may `debug' it, i.e. browse
-through the errors (La)@TeX{} reported.
+through the errors (La)@TeX{} reported.  If you have GNU Emacs 24 or
+later, you may also have a look at a nicely formatted list of all errors
+and warnings reported by the compiler.
 
 @deffn Command TeX-next-error @var{arg} @var{reparse}
 @kindex C-c `
@@ -3277,6 +3283,13 @@ terse information about the error is displayed in the echo area.  If
 @TeX{} output.
 @end defopt
 
+@menu
+* Error overview::            List of all errors and warnings
+@end menu
+
+@node Error overview
+@subsection List of all errors and warnings
+
 When the option @code{TeX-parse-all-errors} is non-nil, you will be also
 able to open an overview of all errors and warnings reported by the TeX
 compiler.  This feature requires @code{tabulated-list-mode}, shipped
@@ -3290,7 +3303,9 @@ In this window you can visit the error on which point is on by pressing
 @key{RET}, and visit the next or previous issue by pressing @key{n} or
 @key{p} respectively.  A prefix argument to these keys specifies how
 many errors to move forward or backward.  You can visit an error also by
-clicking on its message.  Press @key{q} to quit the overview.
+clicking on its message.  Jump to error point in the source code with
+@key{j}, and use @key{l} see the error in the log buffer.  Press @key{q}
+to quit the overview.
 @end deffn
 
 @defopt TeX-error-overview-open-after-TeX-run
