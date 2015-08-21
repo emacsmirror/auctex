@@ -34,6 +34,11 @@ Indent @samp{\[...\]} math mode as a regular environment by default.
 @item
 @code{TeX-view-program-list} can contain, as third optional element of
 each item, the name of the executable(s) needed to open the viewer.
+
+@item
+When new option @code{TeX-check-engine} is non-nil, before running
+@LaTeX{} commands @AUCTeX{} will check whether the correct engine has
+been set, based upon known restrictions posed by @LaTeX{} packages.
 @end itemize
 
 @heading News in 11.88
