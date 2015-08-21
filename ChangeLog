@@ -1,3 +1,19 @@
+2015-08-21  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-check-engine): New customizable variable.
+	(TeX-check-engine-list): New variable.
+	(TeX-check-engine-add-engines): New function.
+	(TeX-check-engine): New function.
+	(TeX-command): Use `TeX-check-engine' and update docstring
+	accordingly.
+
+	* style/fontspec.el ("fontspec"): Add engine restrictions.
+
+	* doc/auctex.texi (Processor Options): Document
+	`TeX-check-engine'.
+
+	* doc/changes.texi: Mention `TeX-check-engine'.
+
 2015-08-20  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-error-overview-jump-to-source)
