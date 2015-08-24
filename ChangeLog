@@ -1,3 +1,8 @@
+2015-08-24  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (VirTeX-common-initialization): Add support for
+	`prettify-symbols-mode'.
+
 2015-08-21  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-check-engine): New customizable variable.

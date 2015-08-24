@@ -127,7 +127,7 @@ If nil, none is specified."
     ("LaTeX" "%`%l%(mode)%' %t"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
-	;; Not part of standard TeX.
+    ;; Not part of standard TeX.
     ("Makeinfo" "makeinfo %(extraopts) %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo %(extraopts) --html %t" TeX-run-compile nil
@@ -144,7 +144,7 @@ If nil, none is specified."
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
     ,(if (or window-system (getenv "DISPLAY"))
-	'("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
+	 '("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
        '("View" "dvi2tty -q -w 132 %s" TeX-run-command t t
 	 :help "Run Text viewer"))
     ("Print" "%p" TeX-run-command t t :help "Print the file")
@@ -264,8 +264,8 @@ Any additional elements get just transferred to the respective menu entries."
 
 (defcustom TeX-command-output-list
   '(
-; Add the following line if you want to use htlatex (tex4ht)
-;    ("\\`htlatex" ("html"))
+					; Add the following line if you want to use htlatex (tex4ht)
+					;    ("\\`htlatex" ("html"))
     )
   "List of regexps and file extensions.
 
@@ -3437,6 +3437,16 @@ The algorithm is as follows:
   ;; Minor modes
   (when TeX-source-correlate-mode
     (TeX-source-correlate-mode 1))
+
+  ;; Prettify Symbols mode
+  (when (and (boundp 'tex--prettify-symbols-alist)
+	     (boundp 'prettify-symbols-compose-predicate))
+    (set (make-local-variable 'prettify-symbols-alist) tex--prettify-symbols-alist)
+    (if (fboundp 'add-function)
+	(add-function :override (local 'prettify-symbols-compose-predicate)
+		      #'tex--prettify-symbols-compose-p)
+      (set (make-local-variable 'prettify-symbols-compose-predicate)
+	   #'tex--prettify-symbols-compose-p)))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
