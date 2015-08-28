@@ -1,3 +1,8 @@
+2015-08-28  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-mode-syntax-table): Use punctuation syntax for
+	character | (bug#21366).
+
 2015-08-24  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (VirTeX-common-initialization): Add support for
