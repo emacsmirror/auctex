@@ -1,5 +1,7 @@
 2015-08-28  Tassilo Horn  <tsdh@gnu.org>
 
+	* Version 11.88.8 released.
+
 	* tex.el (TeX-mode-syntax-table): Use punctuation syntax for
 	character | (bug#21366).
 

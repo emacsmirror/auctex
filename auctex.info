@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 5.2 from auctex.texi.
 
-This manual is for AUCTeX (version 11.88.7 from 2015-08-07), a
+This manual is for AUCTeX (version 11.88.8 from 2015-08-28), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
@@ -139,6 +139,10 @@ Viewing the Formatted Output
 
 * Starting Viewers::            Starting viewers
 * I/O Correlation::             Forward and inverse search
+
+Catching the errors
+
+* Error overview::              List of all errors and warnings
 
 Customization and Extension
 
@@ -3636,6 +3640,18 @@ to add support for engines not covered per default.
      string.  An empty string or nil means there is no command
      available.
 
+   Some LaTeX packages requires the document to be compiled with a
+specific engine.  Notably examples are fontspec and polyglossia
+packages, which require LuaTeX and XeTeX engines.  If you try to compile
+a document which loads one of such packages and the set engine is not
+one of those allowed you will be asked to select a different engine
+before running the LaTeX command.  If you do not want to be warned by
+AUCTeX in these cases, customize the option 'TeX-check-engine'.
+
+ -- User Option: TeX-check-engine
+     This boolean option controls whether AUCTeX should check the
+     correct engine has been set before running LaTeX commands.
+
    As shown above, AUCTeX handles in a special way most of the main
 options that can be given to the TeX processors.  When you need to pass
 to the TeX processor arbitrary options not handled by AUCTeX, you can
@@ -3873,7 +3889,9 @@ File: auctex.info,  Node: Debugging,  Next: Checking,  Prev: Viewing,  Up: Proce
 =======================
 
 Once you've formatted your document you may 'debug' it, i.e.  browse
-through the errors (La)TeX reported.
+through the errors (La)TeX reported.  If you have GNU Emacs 24 or later,
+you may also have a look at a nicely formatted list of all errors and
+warnings reported by the compiler.
 
  -- Command: TeX-next-error ARG REPARSE
      ('C-c `') Go to the next error reported by TeX.  The view will be
@@ -3929,8 +3947,18 @@ error reported by TeX along with the documentation.  There is however an
      If 'expert' AUCTeX will display the output buffer with the raw TeX
      output.
 
-   When the option 'TeX-parse-all-errors' is non-nil, you will be also
-able to open an overview of all errors and warnings reported by the TeX
+* Menu:
+
+* Error overview::            List of all errors and warnings
+
+
+File: auctex.info,  Node: Error overview,  Up: Debugging
+
+4.3.1 List of all errors and warnings
+-------------------------------------
+
+When the option 'TeX-parse-all-errors' is non-nil, you will be also able
+to open an overview of all errors and warnings reported by the TeX
 compiler.  This feature requires 'tabulated-list-mode', shipped with GNU
 Emacs 24 or later.
 
@@ -3942,8 +3970,9 @@ Emacs 24 or later.
      pressing <RET>, and visit the next or previous issue by pressing
      <n> or <p> respectively.  A prefix argument to these keys specifies
      how many errors to move forward or backward.  You can visit an
-     error also by clicking on its message.  Press <q> to quit the
-     overview.
+     error also by clicking on its message.  Jump to error point in the
+     source code with <j>, and use <l> see the error in the log buffer.
+     Press <q> to quit the overview.
 
  -- User Option: TeX-error-overview-open-after-TeX-run
      When this boolean variable is non-nil, the error overview will be
@@ -5375,7 +5404,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.88.7 from 2015-08-07), a
+   This manual is for AUCTeX (version 11.88.8 from 2015-08-28), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2014 Free Software
@@ -5900,6 +5929,10 @@ News since 11.88
 
    * 'TeX-view-program-list' can contain, as third optional element of
      each item, the name of the executable(s) needed to open the viewer.
+
+   * When new option 'TeX-check-engine' is non-nil, before running LaTeX
+     commands AUCTeX will check whether the correct engine has been set,
+     based upon known restrictions posed by LaTeX packages.
 
 News in 11.88
 =============
@@ -7262,12 +7295,12 @@ Key Index
 * C-c C-q C-s:                           Filling.             (line  97)
 * C-c C-r:                               Starting a Command.  (line  19)
 * C-c C-s:                               Sectioning.          (line  22)
-* C-c C-t C-b:                           Debugging.           (line  45)
+* C-c C-t C-b:                           Debugging.           (line  47)
 * C-c C-t C-i:                           Processor Options.   (line  30)
 * C-c C-t C-p:                           Processor Options.   (line  16)
 * C-c C-t C-r:                           Starting a Command.  (line  75)
 * C-c C-t C-s:                           Processor Options.   (line  37)
-* C-c C-t C-w:                           Debugging.           (line  49)
+* C-c C-t C-w:                           Debugging.           (line  51)
 * C-c C-v:                               Starting Viewers.    (line  12)
 * C-c C-z:                               Starting a Command.  (line  42)
 * C-c <LFD>:                             Itemize-like.        (line  10)
@@ -7275,7 +7308,7 @@ Key Index
 * C-c ]:                                 Environments.        (line 102)
 * C-c ^:                                 Control.             (line  18)
 * C-c _:                                 Multifile.           (line  69)
-* C-c `:                                 Debugging.           (line  10)
+* C-c `:                                 Debugging.           (line  12)
 * C-c {:                                 Quotes.              (line 119)
 * C-c ~:                                 Mathematics.         (line  12)
 * C-j:                                   Indenting.           (line  81)
@@ -7285,7 +7318,7 @@ Key Index
 * C-x n g:                               Narrowing.           (line  14)
 * <LFD>:                                 Indenting.           (line  72)
 * M-C-h:                                 Marking (Texinfo).   (line  34)
-* M-g p:                                 Debugging.           (line  25)
+* M-g p:                                 Debugging.           (line  27)
 * M-q:                                   Filling.             (line  89)
 * M-<TAB>:                               Completion.          (line  19)
 * <TAB>:                                 Indenting.           (line  69)
@@ -7397,7 +7430,7 @@ Function Index
 * TeX-declare-expert-macros:             Adding Macros.       (line 261)
 * TeX-doc:                               Documentation.       (line   6)
 * TeX-electric-macro:                    Completion.          (line  66)
-* TeX-error-overview:                    Debugging.           (line  68)
+* TeX-error-overview:                    Error overview.      (line  11)
 * TeX-fold-buffer:                       Folding.             (line  43)
 * TeX-fold-clearout-buffer:              Folding.             (line 121)
 * TeX-fold-clearout-item:                Folding.             (line 133)
@@ -7422,18 +7455,18 @@ Function Index
 * TeX-kill-job:                          Control.             (line   9)
 * TeX-master-file-ask:                   Multifile.           (line  68)
 * TeX-narrow-to-group:                   Narrowing.           (line  13)
-* TeX-next-error:                        Debugging.           (line   9)
+* TeX-next-error:                        Debugging.           (line  11)
 * TeX-normal-mode:                       Parsing Files.       (line  43)
 * TeX-PDF-mode:                          Processor Options.   (line  15)
 * TeX-pin-region:                        Starting a Command.  (line  74)
-* TeX-previous-error:                    Debugging.           (line  24)
+* TeX-previous-error:                    Debugging.           (line  26)
 * TeX-read-key-val:                      Adding Macros.       (line 243)
 * TeX-recenter-output-buffer:            Control.             (line  13)
 * TeX-save-document:                     Multifile.           (line  96)
 * TeX-source-correlate-mode:             Processor Options.   (line  36)
 * TeX-source-correlate-mode <1>:         I/O Correlation.     (line  12)
-* TeX-toggle-debug-bad-boxes:            Debugging.           (line  44)
-* TeX-toggle-debug-warnings:             Debugging.           (line  48)
+* TeX-toggle-debug-bad-boxes:            Debugging.           (line  46)
+* TeX-toggle-debug-warnings:             Debugging.           (line  50)
 * TeX-view:                              Starting Viewers.    (line  11)
 * TeX-view <1>:                          I/O Correlation.     (line  42)
 * Texinfo-mark-environment:              Marking (Texinfo).   (line  24)
@@ -7634,12 +7667,13 @@ Variable Index
 * TeX-auto-save:                         Parsing Files.       (line  40)
 * TeX-auto-untabify:                     Parsing Files.       (line  57)
 * TeX-brace-indent-level:                Indenting.           (line 102)
+* TeX-check-engine:                      Processor Options.   (line 114)
 * TeX-check-path:                        Selecting a Command. (line  67)
 * TeX-clean-confirm:                     Cleaning.            (line  26)
 * TeX-close-quote:                       Quotes.              (line  25)
 * TeX-command:                           Processor Options.   (line  84)
 * TeX-command-default:                   Selecting a Command. (line  42)
-* TeX-command-extra-options:             Processor Options.   (line 110)
+* TeX-command-extra-options:             Processor Options.   (line 122)
 * TeX-command-list:                      Starting a Command.  (line  16)
 * TeX-command-list <1>:                  Starting a Command.  (line  32)
 * TeX-command-list <2>:                  Selecting a Command. (line  14)
@@ -7649,7 +7683,7 @@ Variable Index
 * TeX-default-macro:                     Completion.          (line  51)
 * TeX-default-mode:                      Japanese.            (line   6)
 * TeX-default-mode <1>:                  Japanese.            (line  21)
-* TeX-display-help:                      Debugging.           (line  56)
+* TeX-display-help:                      Debugging.           (line  58)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line  58)
 * TeX-electric-math:                     Quotes.              (line  72)
@@ -7658,11 +7692,11 @@ Variable Index
 * TeX-engine-alist:                      Processor Options.   (line  84)
 * TeX-engine-alist <1>:                  Processor Options.   (line  95)
 * TeX-engine-alist-builtin:              Processor Options.   (line  84)
-* TeX-error-overview-frame-parameters:   Debugging.           (line  97)
-* TeX-error-overview-open-after-TeX-run: Debugging.           (line  79)
-* TeX-error-overview-setup:              Debugging.           (line  88)
+* TeX-error-overview-frame-parameters:   Error overview.      (line  41)
+* TeX-error-overview-open-after-TeX-run: Error overview.      (line  23)
+* TeX-error-overview-setup:              Error overview.      (line  32)
 * TeX-expand-list:                       Selecting a Command. (line  14)
-* TeX-file-line-error:                   Processor Options.   (line 130)
+* TeX-file-line-error:                   Processor Options.   (line 142)
 * TeX-file-recurse:                      Automatic.           (line  44)
 * TeX-fold-auto:                         Folding.             (line  71)
 * TeX-fold-command-prefix:               Folding.             (line 146)
@@ -7710,7 +7744,7 @@ Variable Index
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
 * TeX-output-view-style:                 Starting Viewers.    (line 104)
-* TeX-parse-all-errors:                  Debugging.           (line  33)
+* TeX-parse-all-errors:                  Debugging.           (line  35)
 * TeX-parse-self:                        Parsing Files.       (line  37)
 * TeX-PDF-mode:                          Processor Options.   (line  16)
 * TeX-quote-after-quote:                 Quotes.              (line  29)
@@ -7718,7 +7752,7 @@ Variable Index
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  55)
 * TeX-save-query:                        Multifile.           (line 100)
-* TeX-show-compilation:                  Processor Options.   (line 123)
+* TeX-show-compilation:                  Processor Options.   (line 135)
 * TeX-source-correlate-method:           Processor Options.   (line  48)
 * TeX-source-correlate-method <1>:       I/O Correlation.     (line  21)
 * TeX-source-correlate-mode:             Processor Options.   (line  37)
@@ -7797,7 +7831,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * 'auctex.el':                           Loading the package. (line  14)
-* 'auctex.el' <1>:                       Changes.             (line 293)
+* 'auctex.el' <1>:                       Changes.             (line 297)
 * 'auto' directories.:                   Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8098,7 +8132,7 @@ Concept Index
                                                               (line 286)
 * 'tex-site.el':                         Loading the package. (line  14)
 * 'tex-site.el' <1>:                     Customizing.         (line   6)
-* 'tex-site.el' <2>:                     Changes.             (line 293)
+* 'tex-site.el' <2>:                     Changes.             (line 297)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8119,99 +8153,100 @@ Concept Index
 
 Tag Table:
 Node: Top918
-Node: Copying7180
-Node: Introduction9136
-Node: Summary9406
-Node: Installation12147
-Node: Prerequisites13535
-Node: Configure16403
-Node: Build/install and uninstall21828
-Node: Loading the package22581
-Node: Advice for package providers24402
-Node: Advice for non-privileged users28347
-Node: Installation under MS Windows32305
-Node: Customizing47539
-Node: Quick Start49122
-Ref: Quick Start-Footnote-151112
-Node: Editing Facilities51259
-Node: Processing Facilities56062
-Node: Editing59956
-Node: Quotes61286
-Node: Font Specifiers69554
-Node: Sectioning71380
-Node: Environments75700
-Node: Equations80854
-Node: Floats81445
-Node: Itemize-like82978
-Node: Tabular-like83699
-Node: Customizing Environments85182
-Node: Mathematics85422
-Node: Completion88348
-Node: Marking93671
-Node: Marking (LaTeX)94295
-Node: Marking (Texinfo)95237
-Node: Commenting96847
-Node: Indenting98172
-Node: Filling104208
-Node: Display110080
-Node: Font Locking111692
-Node: Fontification of macros113767
-Node: Fontification of quotes123205
-Node: Fontification of math124700
-Node: Verbatim content126419
-Node: Faces127193
-Node: Known problems127682
-Node: Folding128611
-Node: Outline139435
-Node: Narrowing140707
-Node: Processing141757
-Node: Commands142920
-Node: Starting a Command143476
-Node: Selecting a Command148012
-Node: Processor Options151538
-Node: Viewing158280
-Node: Starting Viewers158654
-Node: I/O Correlation165172
-Node: Debugging168618
-Node: Checking172973
-Node: Control174135
-Node: Cleaning174862
-Node: Documentation176075
-Node: Customization176855
-Node: Modes and Hooks177348
-Node: Multifile179083
-Node: Parsing Files183762
-Node: Internationalization188674
-Node: European189855
-Node: Japanese196735
-Node: Automatic198432
-Node: Automatic Global200923
-Node: Automatic Private202055
-Node: Automatic Local203368
-Node: Style Files204399
-Node: Simple Style205192
-Node: Adding Macros208465
-Node: Adding Environments217586
-Node: Adding Other222247
-Node: Hacking the Parser222834
-Node: Appendices226703
-Node: Copying this Manual227087
-Node: GNU Free Documentation License227971
-Node: Changes253090
-Node: Development282486
-Node: Mid-term Goals283132
-Node: Wishlist284349
-Node: Bugs290306
-Node: FAQ291836
-Node: Texinfo mode298009
-Node: Exploiting299145
-Node: Superseding299965
-Node: Mapping304169
-Node: Unbinding305998
-Node: Indices306819
-Node: Key Index307044
-Node: Function Index313076
-Node: Variable Index323521
-Node: Concept Index344410
+Node: Copying7266
+Node: Introduction9222
+Node: Summary9492
+Node: Installation12233
+Node: Prerequisites13621
+Node: Configure16489
+Node: Build/install and uninstall21914
+Node: Loading the package22667
+Node: Advice for package providers24488
+Node: Advice for non-privileged users28433
+Node: Installation under MS Windows32391
+Node: Customizing47625
+Node: Quick Start49208
+Ref: Quick Start-Footnote-151198
+Node: Editing Facilities51345
+Node: Processing Facilities56148
+Node: Editing60042
+Node: Quotes61372
+Node: Font Specifiers69640
+Node: Sectioning71466
+Node: Environments75786
+Node: Equations80940
+Node: Floats81531
+Node: Itemize-like83064
+Node: Tabular-like83785
+Node: Customizing Environments85268
+Node: Mathematics85508
+Node: Completion88434
+Node: Marking93757
+Node: Marking (LaTeX)94381
+Node: Marking (Texinfo)95323
+Node: Commenting96933
+Node: Indenting98258
+Node: Filling104294
+Node: Display110166
+Node: Font Locking111778
+Node: Fontification of macros113853
+Node: Fontification of quotes123291
+Node: Fontification of math124786
+Node: Verbatim content126505
+Node: Faces127279
+Node: Known problems127768
+Node: Folding128697
+Node: Outline139521
+Node: Narrowing140793
+Node: Processing141843
+Node: Commands143006
+Node: Starting a Command143562
+Node: Selecting a Command148098
+Node: Processor Options151624
+Node: Viewing159008
+Node: Starting Viewers159382
+Node: I/O Correlation165900
+Node: Debugging169346
+Node: Error overview172370
+Node: Checking174147
+Node: Control175309
+Node: Cleaning176036
+Node: Documentation177249
+Node: Customization178029
+Node: Modes and Hooks178522
+Node: Multifile180257
+Node: Parsing Files184936
+Node: Internationalization189848
+Node: European191029
+Node: Japanese197909
+Node: Automatic199606
+Node: Automatic Global202097
+Node: Automatic Private203229
+Node: Automatic Local204542
+Node: Style Files205573
+Node: Simple Style206366
+Node: Adding Macros209639
+Node: Adding Environments218760
+Node: Adding Other223421
+Node: Hacking the Parser224008
+Node: Appendices227877
+Node: Copying this Manual228261
+Node: GNU Free Documentation License229145
+Node: Changes254264
+Node: Development283867
+Node: Mid-term Goals284513
+Node: Wishlist285730
+Node: Bugs291687
+Node: FAQ293217
+Node: Texinfo mode299390
+Node: Exploiting300526
+Node: Superseding301346
+Node: Mapping305550
+Node: Unbinding307379
+Node: Indices308200
+Node: Key Index308425
+Node: Function Index314457
+Node: Variable Index324902
+Node: Concept Index345864
 
 End Tag Table
