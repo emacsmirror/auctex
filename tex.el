@@ -4505,7 +4505,7 @@ element to ALIST-VAR."
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
   (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?»  "."  TeX-mode-syntax-table)
-  (modify-syntax-entry ?|  "$"  TeX-mode-syntax-table))
+  (modify-syntax-entry ?|  "."  TeX-mode-syntax-table))
 
 ;;; Menu Support
 
