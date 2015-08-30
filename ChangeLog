@@ -1,5 +1,9 @@
 2015-08-30  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/transparent.el: New file.
+
 	* style/filecontents.el ("filecontents"): Do not indent the
 	content of `filecontents[*]' environment.
 
