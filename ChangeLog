@@ -1,5 +1,8 @@
 2015-08-30  Arash Esbati  <esbati@gmx.de>
 
+	* style/filecontents.el ("filecontents"): Do not indent the
+	content of `filecontents[*]' environment.
+
 	* style/hyperref.el ("hyperref"): Do not indent the content of
 	`Form' environment.
 
