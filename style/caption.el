@@ -190,6 +190,51 @@ suffix of the command."
 	   format name))
     (TeX-argument-insert name optional)))
 
+;; Support for an undocumented feature of caption.sty:
+;; `\captionbox' sets the width of the caption equal to the width of
+;; the contents (a feature provided e.g. by `threeparttable.sty').
+;; The starred version typesets the caption without label and without
+;; entry to the list of figures or tables.
+
+;; The first mandatory argument {<heading>} contains the caption text
+;; and the label.  We use `TeX-insert-macro' to do the job. (Thanks to
+;; M. Giordano for his valuable comments on this!)
+
+;; Syntax:
+;; \captionbox[<list entry>]{<heading>}[<width>][<inner-pos>]{<contents>}
+;; \captionbox*{<heading>}[<width>][<inner-pos>]{<contents>}
+
+(defun LaTeX-arg-caption-captionbox (optional &optional star prompt)
+  "Query for the arguments of `\\captionbox' incl. a label and
+insert them.  If STAR is t, then do not query for a `\\label' and
+insert only a caption."
+  (let ((caption (TeX-read-string
+		  (TeX-argument-prompt optional prompt "Caption"))))
+    (LaTeX-indent-line)
+    (insert TeX-grop caption)
+    (unless star (TeX-insert-macro "label"))
+    (insert TeX-grcl))
+  (let ((width (completing-read (TeX-argument-prompt t prompt "Width")
+				(mapcar (lambda(elt) (concat TeX-esc (car elt)))
+					(LaTeX-length-list))))
+	(inpos (completing-read (TeX-argument-prompt t prompt "Inner position")
+				'("c" "l" "r" "s"))))
+    (cond (;; 2 optional args
+	   (and width (not (string-equal width ""))
+		inpos (not (string-equal inpos "")))
+	   (insert (format "[%s][%s]" width inpos)))
+	  (;; 1st empty opt. arg, 2nd opt. arg
+	   (and (string-equal width "")
+		inpos (not (string-equal inpos "")))
+	   (insert (format "[][%s]" inpos)))
+	  (;; 1st opt. arg, 2nd empty opt. arg
+	   (and width (not (string-equal width ""))
+		(string-equal inpos ""))
+	   (insert (format "[%s]" width)))
+	  (t ; Do nothing if both empty
+	   (ignore))))
+  (LaTeX-fill-paragraph))
+
 (TeX-add-style-hook
  "caption"
  (lambda ()
@@ -240,6 +285,10 @@ suffix of the command."
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types))
 
+    '("captionbox"  ["List entry"] (LaTeX-arg-caption-captionbox) t)
+
+    '("captionbox*" (LaTeX-arg-caption-captionbox t) t)
+
     '("ContinuedFloat" 0)
 
     '("DeclareCaptionFont"
@@ -286,7 +335,8 @@ suffix of the command."
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("caption"           "*[{")
 				("captionlistentry"  "[{")
-				("captionof"         "*[{"))
+				("captionof"         "*[{")
+				("captionbox"        "*[{[[{"))
 			      'textual)
      (font-latex-add-keywords '(("captionsetup"                  "*[{")
 				("clearcaptionsetup"             "*[{")

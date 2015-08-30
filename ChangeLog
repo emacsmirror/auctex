@@ -1,5 +1,9 @@
 2015-08-30  Arash Esbati  <esbati@gmx.de>
 
+	* style/caption.el ("caption"): Add support for undocumented
+	macros `\captionbox[*]'.
+	(LaTeX-arg-caption-captionbox): New function.
+
 	* Makefile.in (STYLESRC): Add new style.
 
 	* style/transparent.el: New file.
