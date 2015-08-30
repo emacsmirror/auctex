@@ -1,3 +1,8 @@
+2015-08-30  Arash Esbati  <esbati@gmx.de>
+
+	* style/array.el ("array"): Add fontification for
+	`\newcolumntype'.
+
 2015-08-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-mode-syntax-table): Use punctuation syntax for
