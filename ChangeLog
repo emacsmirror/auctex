@@ -1,5 +1,8 @@
 2015-08-30  Arash Esbati  <esbati@gmx.de>
 
+	* style/hyperref.el ("hyperref"): Do not indent the content of
+	`Form' environment.
+
 	* style/array.el ("array"): Add fontification for
 	`\newcolumntype'.
 

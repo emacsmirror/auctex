@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
 
-;; Copyright (C) 2008, 2013, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013--2015 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -265,6 +265,10 @@
    ;; It is up to user to insert [<options>] after \begin{Form}
    (LaTeX-add-environments
     '("Form"))
+
+   ;; Do not indent the content of the "Form"-env; it is odd if the
+   ;; whole document is indented.
+   (add-to-list 'LaTeX-indent-environment-list '("Form" current-indentation))
 
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
