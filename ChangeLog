@@ -1,3 +1,35 @@
+2015-08-31  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el: Update copyright year.
+	(TeX-command-sequence-max-runs-same-command)
+	(TeX-command-sequence-max-runs): New customizable variables.
+	(TeX-command-sequence-count-same-command)
+	(TeX-command-sequence-count, TeX-command-sequence-last-command)
+	(TeX-command-sequence-sentinel, TeX-command-sequence-command): New
+	variables.
+	(TeX-command-sequence): New function.
+	(TeX-command-default): New function, stripped off from
+	`TeX-command-query'.
+	(TeX-command-query): Use `TeX-command-default'.
+	(TeX-command-sequence-sentinel): New function.
+
+	* tex.el (TeX-update): New function.
+	(TeX-mode-map): Add key binding for `TeX-update'.
+	(TeX-mode-specific-command-menu-entries): Add entry for
+	`TeX-update'.
+
+	* doc/auctex.texi: Update copyright year.
+	(Starting a Command): Document `TeX-update'.
+
+	* doc/changes.texi: Update copyright year.
+	Mention `TeX-update'.
+
+	* doc/quickstart.texi (Processing Facilities): Mention
+	`TeX-update' and `TeX-error-overview'.
+
+	* doc/todo.texi: Update copyright year.
+	(Wishlist): Remove entry for `TeX-update'.
+
 2015-08-30  Arash Esbati  <esbati@gmx.de>
 
 	* style/caption.el ("caption"): Add support for undocumented

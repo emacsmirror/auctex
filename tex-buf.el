@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2014 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2015 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -555,6 +555,114 @@ ORIGINALS which are modified but not saved yet."
           (setq found t)))
     found))
 
+(defcustom TeX-command-sequence-max-runs-same-command 4
+  "Maximum number of runs of the same command."
+  :type 'integer
+  :group 'TeX-command)
+
+(defcustom TeX-command-sequence-max-runs 12
+  "Maximum number of total runs."
+  :type 'integer
+  :group 'TeX-command)
+
+(defvar TeX-command-sequence-count-same-command 1
+  "Counter for the runs of the same command in `TeX-command-sequence'.")
+
+(defvar TeX-command-sequence-count 1
+  "Counter for the total runs of `TeX-command-sequence'.")
+
+(defvar TeX-command-sequence-last-command nil
+  "Last command run in `TeX-command-sequence'.")
+
+(defvar TeX-command-sequence-sentinel nil
+  "Sentinel for `TeX-command-sequence'.")
+
+(defvar TeX-command-sequence-command nil
+  "Command argument for `TeX-command-sequence'.
+
+It is set in `TeX-command-sequence' and used in
+`TeX-command-sequence-sentinel' to call again
+`TeX-command-sequence' with the appropriate command argument.")
+
+(defun TeX-command-sequence (command &optional reset)
+  "Run a sequence of TeX commands defined by COMMAND.
+
+The COMMAND argument may be
+
+  * nil: no command will be run in this case
+
+  * a string with a command from `TeX-command-list'
+
+  * a non-nil list of strings, which are commands from
+    `TeX-command-list'; the car of the list is used as command to
+    be executed in the first run of `TeX-command-sequence', the
+    cdr of the list will be passed to the function in the next
+    run, etc.
+
+  * a function name, returning a string which is command from
+    `TeX-command-list'; it will be funcall'd (without arguments!)
+    and used again in the next run of `TeX-command-sequence'.
+
+  * with any other value the function `TeX-command-default' is
+    used to determine the command to run, until a stopping
+    condition is met.
+
+This function runs at most
+`TeX-command-sequence-max-runs-same-command' times the same
+command in a row, and `TeX-command-sequence-max-runs' times in
+total in any case.  It ends when `TeX-command-Show' is the
+command to be run.
+
+A non-nil value for the optional argument RESET means this is the
+first run of the function and some variables need to be reset."
+  (if (null command)
+      (message "No command to run.")
+    (let (cmd process)
+      (cond
+       ((stringp command)
+	(setq cmd command
+	      TeX-command-sequence-command nil))
+       ((listp command)
+	(setq cmd (pop command)
+	      TeX-command-sequence-command command))
+       ((functionp command)
+	(setq cmd (funcall command)
+	      TeX-command-sequence-command command))
+       (t
+	(setq cmd (TeX-command-default (TeX-master-file))
+	      TeX-command-sequence-command t)))
+      (TeX-command cmd 'TeX-master-file 0)
+      (when reset
+	(setq TeX-command-sequence-count-same-command 1
+	      TeX-command-sequence-count 1
+	      TeX-command-sequence-last-command nil))
+      (cond
+       ;; Stop when the same command has been run
+       ;; `TeX-command-sequence-max-runs-same-command' times in a row.
+       ((>= TeX-command-sequence-count-same-command
+	    TeX-command-sequence-max-runs-same-command)
+	(message "Stopping after running %S %d times in a row."
+		 TeX-command-sequence-last-command
+		 TeX-command-sequence-count-same-command))
+       ;; Stop when there have been `TeX-command-sequence-max-runs' total
+       ;; compilations.
+       ((>= TeX-command-sequence-count TeX-command-sequence-max-runs)
+	(message "Stopping after %d compilations." TeX-command-sequence-count))
+       ;; The command just run is `TeX-command-Show'.
+       ((equal command TeX-command-Show))
+       ;; In any other case continue: increase counters (when needed), update
+       ;; `TeX-command-sequence-last-command' and run the sentinel.
+       (t
+	(if (equal cmd TeX-command-sequence-last-command)
+	    (setq TeX-command-sequence-count-same-command
+		  (1+ TeX-command-sequence-count-same-command))
+	  (setq TeX-command-sequence-count-same-command 1))
+	(setq TeX-command-sequence-count (1+ TeX-command-sequence-count)
+	      TeX-command-sequence-last-command cmd)
+	(and (setq process (get-buffer-process (current-buffer)))
+	     (setq TeX-command-sequence-sentinel (process-sentinel process))
+	     (set-process-sentinel process 'TeX-command-sequence-sentinel)))))))
+
 (defcustom TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX."
   :group 'TeX-command
@@ -562,29 +670,32 @@ ORIGINALS which are modified but not saved yet."
 
 (defvar TeX-command-history nil)
 
+(defun TeX-command-default (name)
+  "Guess the next command to be run on NAME."
+  (cond ((if (string-equal name TeX-region)
+	     (TeX-check-files (concat name "." (TeX-output-extension))
+			      (list name)
+			      TeX-file-extensions)
+	   (TeX-save-document (TeX-master-file)))
+	 TeX-command-default)
+	((and (memq major-mode '(doctex-mode latex-mode))
+	      ;; Want to know if bib file is newer than .bbl
+	      ;; We don't care whether the bib files are open in emacs
+	      (TeX-check-files (concat name ".bbl")
+			       (mapcar 'car
+				       (LaTeX-bibliography-list))
+			       (append BibTeX-file-extensions
+				       TeX-Biber-file-extensions)))
+	 ;; We should check for bst files here as well.
+	 (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
+	((TeX-process-get-variable name
+				   'TeX-command-next
+				   TeX-command-Show))
+	(TeX-command-Show)))
+
 (defun TeX-command-query (name)
   "Query the user for what TeX command to use."
-  (let* ((default
-	   (cond ((if (string-equal name TeX-region)
-		      (TeX-check-files (concat name "." (TeX-output-extension))
-				       (list name)
-				       TeX-file-extensions)
-		    (TeX-save-document (TeX-master-file)))
-		  TeX-command-default)
-		 ((and (memq major-mode '(doctex-mode latex-mode))
-		       ;; Want to know if bib file is newer than .bbl
-		       ;; We don't care whether the bib files are open in emacs
-		       (TeX-check-files (concat name ".bbl")
-					(mapcar 'car
-						(LaTeX-bibliography-list))
-					(append BibTeX-file-extensions
-						TeX-Biber-file-extensions)))
-		  ;; We should check for bst files here as well.
-		  (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
-		 ((TeX-process-get-variable name
-					    'TeX-command-next
-					    TeX-command-Show))
-		 (TeX-command-Show)))
+  (let* ((default (TeX-command-default name))
          (completion-ignore-case t)
          (answer (or TeX-command-force
                      (completing-read
@@ -1267,6 +1378,22 @@ Rerun to get mark in right position\\." nil t)
     (message (concat "Biber finished successfully. "
                      "Run LaTeX again to get citations right."))
     (setq TeX-command-next TeX-command-default))))
+
+(defun TeX-command-sequence-sentinel (process string)
+  "Call the appropriate sentinel for the current process.
+
+If there are no errors, call back `TeX-command-sequence' using
+`TeX-command-sequence-command' as command argument, unless this
+variable is nil."
+  (with-current-buffer (process-buffer process)
+    (funcall TeX-command-sequence-sentinel process string)
+    (if (string-match "\\(finished\\|exited\\)" string)
+	(with-current-buffer TeX-command-buffer
+	  (unless
+	      (or
+	       (plist-get TeX-error-report-switches (intern (TeX-master-file)))
+	       (null TeX-command-sequence-command))
+	    (TeX-command-sequence TeX-command-sequence-command))))))
 
 ;;; Process Control
 

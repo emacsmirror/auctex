@@ -1276,13 +1276,6 @@ restarting Emacs."
 	     (repeat :tag "List of executables" (string :tag "Name"))
 	     (const :tag "No executable" nil)))))
 
-;; XXX: Regarding a possibility to (manually) run an update command,
-;; one could support this through `TeX-view' by letting it temporarily
-;; set a variable which is checked with a predicate in the viewer
-;; selection.  If the check is positive, the update command is run
-;; instead of the normal viewer command.  Direct support through the
-;; View command would require a predicate which knows when an update
-;; has to be done.
 (defcustom TeX-view-program-selection
   (cond
    ((eq system-type 'windows-nt)
@@ -2050,6 +2043,10 @@ output files."
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
 
+(defun TeX-update ()
+  "Compile the current document until an error occurs or it is finished."
+  (interactive)
+  (TeX-command-sequence t t))
 
 ;;; Master File
 
@@ -4667,6 +4664,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-r" 'TeX-command-region)
     (define-key map "\C-c\C-b" 'TeX-command-buffer)
     (define-key map "\C-c\C-c" 'TeX-command-master)
+    (define-key map "\C-c\C-u" 'TeX-update)
     (define-key map "\C-c\C-k" 'TeX-kill-job)
     (define-key map "\C-c\C-l" 'TeX-recenter-output-buffer)
     (define-key map "\C-c^" 'TeX-home-buffer)
@@ -4763,7 +4761,9 @@ Brace insertion is only done if point is in a math construct and
 	:help "Make \"Next Error\" show overfull and underfull boxes"]
        ["Debug Warnings" TeX-toggle-debug-warnings
 	:style toggle :selected TeX-debug-warnings
-	:help "Make \"Next Error\" show warnings"])))
+	:help "Make \"Next Error\" show warnings"])
+      ["Compile and view" TeX-update
+       :help "Compile the document until it is ready and open the viewer"]))
    (let ((file 'TeX-command-on-current)) ;; is this actually needed?
      (TeX-maybe-remove-help
       (delq nil

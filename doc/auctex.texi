@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2014
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2015
 Free Software Foundation, Inc.
 
 @quotation
@@ -2699,6 +2699,18 @@ into the region file, after extracting the header and trailer from the
 master file.  The command is then actually run on the region file.  See
 @code{TeX-command-region} for details.
 @end deffn
+
+It is also possible to compile automatically the whole document until it
+is ready with a single command: @code{TeX-update}.
+
+@deffn Command TeX-update
+@kindex C-c C-u
+(@kbd{C-c C-u}) Compile the current document until an error occurs or it
+is finished.  If compilation finishes successfully, run the viewer at
+the end.
+@end deffn
+
+Here are some relevant variables.
 
 @defopt TeX-region
 The name of the file for temporarily storing the text when formatting

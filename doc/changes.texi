@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2014 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2015 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -11,6 +11,11 @@
 @heading News since 11.88
 
 @itemize @bullet
+@item
+You can now run all commands needed to compile a document and then open
+the viewer with a single command: @code{TeX-update}, bound to @kbd{C-c
+C-u}.
+
 @item
 Commands such as LaTeX and View can now be executed conveniently on the
 current section (or part, chapter, subsection, etc).  See
