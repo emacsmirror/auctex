@@ -322,7 +322,7 @@ This works only with TeX commands and if the
 	  (TeX-parse-TeX (- arg) nil)
 	;; XXX: moving backward in the errors hasn't yet been implemented for
 	;; other parsing functions.
-	(error "Jumping to previous error not supported.")))))
+	(error "Jumping to previous error not supported")))))
 
 ;;; Command Query
 
@@ -522,8 +522,8 @@ without further expansion."
 (defun TeX-check-files (derived originals extensions)
   "Check if DERIVED is newer than any of the ORIGINALS.
 Try each original with each member of EXTENSIONS, in all directories
-in `TeX-check-path'. Returns true if any of the ORIGINALS with any of the
-EXTENSIONS are newer than DERIVED. Will prompt to save the buffer of any
+in `TeX-check-path'.  Returns true if any of the ORIGINALS with any of the
+EXTENSIONS are newer than DERIVED.  Will prompt to save the buffer of any
 ORIGINALS which are modified but not saved yet."
   (let (existingoriginals
         found
@@ -690,7 +690,9 @@ first run of the function and some variables need to be reset."
 	 (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
 	((TeX-process-get-variable name
 				   'TeX-command-next
-				   TeX-command-Show))
+				   (if (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode)
+				       "Dvips"
+				     TeX-command-Show)))
 	(TeX-command-Show)))
 
 (defun TeX-command-query (name)
@@ -873,7 +875,8 @@ Return the new process."
 (defun TeX-run-set-command (name command)
   "Remember TeX command to use to NAME and set corresponding output extension."
   (setq TeX-command-default name
-	TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
+	TeX-output-extension
+	(if (and (null TeX-PDF-via-dvips-ps2pdf) TeX-PDF-mode) "pdf" "dvi"))
   (let ((case-fold-search t)
 	(lst TeX-command-output-list))
     (while lst
@@ -953,6 +956,22 @@ run of `TeX-run-TeX', use
   "Create a process for NAME using COMMAND to format FILE with Biber."
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function 'TeX-Biber-sentinel)
+    (if TeX-process-asynchronous
+        process
+      (TeX-synchronous-sentinel name file process))))
+
+(defun TeX-run-dvips (name command file)
+  "Create a process for NAME using COMMAND to convert FILE with dvips."
+  (let ((process (TeX-run-command name command file)))
+    (setq TeX-sentinel-function 'TeX-dvips-sentinel)
+    (if TeX-process-asynchronous
+        process
+      (TeX-synchronous-sentinel name file process))))
+
+(defun TeX-run-ps2pdf (name command file)
+  "Create a process for NAME using COMMAND to convert FILE with ps2pdf."
+  (let ((process (TeX-run-command name command file)))
+    (setq TeX-sentinel-function 'TeX-ps2pdf-sentinel)
     (if TeX-process-asynchronous
         process
       (TeX-synchronous-sentinel name file process))))
@@ -1170,7 +1189,10 @@ errors or warnings to show."
 	(TeX-parse-all-errors))
     (if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
 	(TeX-error-overview))
-    (setq TeX-command-next TeX-command-Show)))
+    (if (with-current-buffer TeX-command-buffer
+	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	(setq TeX-command-next "Dvips")
+      (setq TeX-command-next TeX-command-Show))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -1211,7 +1233,10 @@ Return nil ifs no errors were found."
 					    'TeX-current-master))
 			 t))
 	t)
-    (setq TeX-command-next TeX-command-Show)
+    (if (with-current-buffer TeX-command-buffer
+	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	(setq TeX-command-next "Dvips")
+      (setq TeX-command-next TeX-command-Show))
     nil))
 
 (defun TeX-LaTeX-sentinel-has-warnings ()
@@ -1293,12 +1318,18 @@ Rerun to get outlines right" nil t)
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
 	 (message "%s%s%s" name ": there were unresolved references, "
 		  (TeX-current-pages))
-	 (setq TeX-command-next TeX-command-Show))
+	 (if (with-current-buffer TeX-command-buffer
+	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	     (setq TeX-command-next "Dvips")
+	   (setq TeX-command-next TeX-command-Show)))
 	((re-search-forward "^\\(?:LaTeX Warning: Citation\\|\
 Package natbib Warning:.*undefined citations\\)" nil t)
 	 (message "%s%s%s" name ": there were unresolved citations, "
 		  (TeX-current-pages))
-	 (setq TeX-command-next TeX-command-Show))
+	 (if (with-current-buffer TeX-command-buffer
+	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	     (setq TeX-command-next "Dvips")
+	   (setq TeX-command-next TeX-command-Show)))
 	((re-search-forward "Package longtable Warning: Table widths have \
 changed\\. Rerun LaTeX\\." nil t)
 	 (message
@@ -1324,7 +1355,10 @@ Rerun to get mark in right position\\." nil t)
 				    ")"))))
 	   (message "%s" (concat name ": successfully formatted "
 				 (TeX-current-pages) add-info)))
-	 (setq TeX-command-next TeX-command-Show))
+	 (if (with-current-buffer TeX-command-buffer
+	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	     (setq TeX-command-next "Dvips")
+	   (setq TeX-command-next TeX-command-Show)))
 	(t
 	 (message "%s%s%s" name ": problems after " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default)))
@@ -1378,6 +1412,36 @@ Rerun to get mark in right position\\." nil t)
     (message (concat "Biber finished successfully. "
                      "Run LaTeX again to get citations right."))
     (setq TeX-command-next TeX-command-default))))
+
+(defun TeX-dvips-sentinel (_process _name)
+  "Cleanup TeX output buffer after running dvips."
+  (goto-char (point-max))
+  (cond
+   ((search-backward "TeX Output exited abnormally" nil t)
+    (message "Dvips failed.  Type `%s' to display output."
+	     (substitute-command-keys
+              "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+   (t
+    (if (with-current-buffer TeX-command-buffer
+	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	(setq TeX-output-extension "ps"
+	      TeX-command-next "Ps2pdf"))
+    (message "Dvips finished successfully. "))))
+
+(defun TeX-ps2pdf-sentinel (_process _name)
+  "Cleanup TeX output buffer after running ps2pdf."
+  (goto-char (point-max))
+  (cond
+   ((search-backward "TeX Output exited abnormally" nil t)
+    (message "ps2pdf failed.  Type `%s' to display output."
+	     (substitute-command-keys
+              "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+   (t
+    (if (with-current-buffer TeX-command-buffer
+	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	(setq TeX-command-next TeX-command-Show
+	      TeX-output-extension "pdf"))
+    (message "ps2pdf finished successfully. "))))
 
 (defun TeX-command-sequence-sentinel (process string)
   "Call the appropriate sentinel for the current process.
@@ -1865,7 +1929,7 @@ If optional argument REPARSE is non-nil, reparse the output log."
 ;; be ignored, because `TeX-next-error' can call any of these functions.
 (defun TeX-parse-command (arg reparse)
   "We can't parse anything but TeX."
-  (error "I cannot parse %s output, sorry."
+  (error "I cannot parse %s output, sorry"
 	 (if (TeX-active-process)
 	     (process-name (TeX-active-process))
 	   "this")))
@@ -3135,7 +3199,7 @@ forward, if negative)."
           (TeX-command name (if (string-match "_region_" file)
                                 'TeX-region-file
                               'TeX-master-file))))
-    (error "Unable to find what command to run.")))
+    (error "Unable to find what command to run")))
 
 (provide 'tex-buf)
 

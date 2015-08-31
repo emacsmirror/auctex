@@ -1,5 +1,31 @@
 2015-08-31  Mosè Giordano  <mose@gnu.org>
 
+	* tex-buf.el (TeX-previous-error): Delete point in error message.
+	(TeX-command-default)
+	(TeX-run-set-command): Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-run-dvips, TeX-run-ps2pdf): New functions.
+	(TeX-TeX-sentinel, TeX-TeX-sentinel-check, TeX-LaTeX-sentinel):
+	Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-dvips-sentinel, TeX-ps2pdf-sentinel): New functions.
+	(TeX-parse-command, TeX-output-revert-buffer): Delete point in
+	error message.
+
+	* tex.el (TeX-command-list): Add "Dvips" and "Ps2pdf" entries.
+	(TeX-expand-list): Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-PDF-via-dvips-ps2pdf): New customizable and safe-local
+	variable.
+	(TeX-toggle-PDF-via-dvips-ps2pdf): New function.
+	(TeX-mode-specific-command-menu-entries): Add "PDF via dvips +
+	ps2pdf" entry.
+
+	* doc/auctex.texi (Processor Options): Document
+	`TeX-PDF-via-dvips-ps2pdf' and fix a typo.
+
+	* doc/changes.texi: Mention `TeX-PDF-via-dvips-ps2pdf'.
+
+	* doc/quickstart.texi (Processing Facilities): Mention
+	`TeX-PDF-via-dvips-ps2pdf'.
+
 	* tex-buf.el: Update copyright year.
 	(TeX-command-sequence-max-runs-same-command)
 	(TeX-command-sequence-max-runs): New customizable variables.

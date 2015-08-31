@@ -150,8 +150,12 @@ If nil, none is specified."
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
-    ("File" "%(o?)dvips %d -o %f " TeX-run-command t t
+    ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t t
      :help "Generate PostScript file")
+    ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil t
+     :help "Convert DVI file to PostScript")
+    ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
+     :help "Convert PostScript file to PDF")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ("Xindy" "texindy %s" TeX-run-command nil t
      :help "Run xindy to create index file")
@@ -445,8 +449,9 @@ string."
 	    (TeX-style-check LaTeX-command-style)))
     ("%(PDF)" (lambda ()
 		(if (and (eq TeX-engine 'default)
-			 (or TeX-PDF-mode
-			     TeX-DVI-via-PDFTeX))
+			 (if TeX-PDF-mode
+			     (not TeX-PDF-via-dvips-ps2pdf)
+			   TeX-DVI-via-PDFTeX))
 		    "pdf"
 		  "")))
     ("%(PDFout)" (lambda ()
@@ -1922,6 +1927,20 @@ already established, don't do anything."
   "Whether to use PDFTeX also for producing DVI files."
   :group 'TeX-command
   :type 'boolean)
+
+(defcustom TeX-PDF-via-dvips-ps2pdf nil
+  "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
+  :group 'TeX-command
+  :type 'boolean)
+(make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
+(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'booleanp)
+
+(defun TeX-toggle-PDF-via-dvips-ps2pdf ()
+  "Toggle `TeX-PDF-via-dvips-ps2pdf'."
+  (interactive)
+  (setq TeX-PDF-via-dvips-ps2pdf (not TeX-PDF-via-dvips-ps2pdf))
+  (message (concat "TeX-PDF-via-dvips-ps2pdf: "
+		   (if TeX-PDF-via-dvips-ps2pdf "on" "off"))))
 
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
@@ -4750,6 +4769,10 @@ Brace insertion is only done if point is in a math construct and
 	 :style toggle :selected TeX-PDF-mode
 	 :active (not (eq TeX-engine 'omega))
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
+       [ "PDF via dvips + ps2pdf" TeX-toggle-PDF-via-dvips-ps2pdf
+	 :style toggle :selected TeX-PDF-via-dvips-ps2pdf
+	 :visible TeX-PDF-mode
+	 :help "Compile with (La)TeX and convert to PDF with dvips + ps2pdf"]
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]

@@ -30,6 +30,11 @@ Forward and backward search with Evince now also work when only a region
 of the document is compiled/viewed.
 
 @item
+With new option @code{TeX-PDF-via-dvips-ps2pdf} it is possible to
+compile a document to @acronym{DVI} and then convert it to @acronym{PDF}
+using @command{dvips}--@command{ps2pdf} before viewing it.
+
+@item
 New option @code{TeX-file-line-error} allows to select file:line:error
 style for error messages.
 

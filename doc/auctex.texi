@@ -2907,6 +2907,33 @@ In particular, fine-tuning the page breaks should be done with source
 specials switched off.
 @end deffn
 
+Sometimes you are requested, by journal rules or packages, to compile
+the document into @acronym{DVI} output.  Thus, if you want a
+@acronym{PDF} document in the end you can either use Xe@TeX{} engine,
+see below for information about how to set engines, or compile the
+document with @command{tex} and then convert to @acronym{PDF} with
+@command{dvips}--@command{ps2pdf} before viewing it.  The latter can be
+done automatically in @AUCTeX{} by setting the
+@code{TeX-PDF-via-dvips-ps2pdf} variable to a non-nil value.
+
+@defopt TeX-PDF-via-dvips-ps2pdf
+With @code{TeX-PDF-mode} set to non-nil, if
+@code{TeX-PDF-via-dvips-ps2pdf} is non-nil too, the document is compiled
+with @command{tex} (or @command{latex}) instead of @command{pdftex} (or
+@command{pdflatex}).  When the document is ready, @kbd{C-c C-c} will
+suggest to run @command{dvips} and then @command{ps2pdf} in order to
+convert the @acronym{DVI} file to @acronym{PDF}.  When the @acronym{PDF}
+file is finally ready, the next suggested command will be to open the
+viewer.
+
+This option can also be set as a file local variable, in order to use
+the sequence @command{tex}--@command{dvips}--@command{ps2pdf} on a
+per-document basis.
+
+Recall the whole sequence of @kbd{C-c C-c} commands can be replace by
+the single @kbd{C-c C-u}.
+@end defopt
+
 @AUCTeX{} also allows you to easily select different @TeX{} engines for
 processing, either by using the entries in the @samp{TeXing Options}
 submenu below the @samp{Command} menu or by calling the function
@@ -2963,7 +2990,7 @@ means there is no command available.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a
-specific engine.  Notably examples are fontspec and polyglossia
+specific engine.  Notable examples are fontspec and polyglossia
 packages, which require Lua@TeX{} and Xe@TeX{} engines.  If you try to
 compile a document which loads one of such packages and the set engine
 is not one of those allowed you will be asked to select a different
