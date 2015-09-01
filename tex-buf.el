@@ -584,7 +584,7 @@ It is set in `TeX-command-sequence' and used in
 `TeX-command-sequence-sentinel' to call again
 `TeX-command-sequence' with the appropriate command argument.")
 
-(defun TeX-command-sequence (command &optional reset)
+(defun TeX-command-sequence (command &optional reset file-fn)
   "Run a sequence of TeX commands defined by COMMAND.
 
 The COMMAND argument may be
@@ -614,7 +614,12 @@ total in any case.  It ends when `TeX-command-Show' is the
 command to be run.
 
 A non-nil value for the optional argument RESET means this is the
-first run of the function and some variables need to be reset."
+first run of the function and some variables need to be reset.
+
+FILE-FN is a function of zero arguments returning the current
+filename.  Valid choices are `TeX-master-file' (default if
+omitted) and `TeX-region-file'."
+  (setq file-fn (or file-fn #'TeX-master-file))
   (if (null command)
       (message "No command to run.")
     (let (cmd process)
@@ -629,9 +634,9 @@ first run of the function and some variables need to be reset."
 	(setq cmd (funcall command)
 	      TeX-command-sequence-command command))
        (t
-	(setq cmd (TeX-command-default (TeX-master-file))
+	(setq cmd (TeX-command-default (funcall file-fn))
 	      TeX-command-sequence-command t)))
-      (TeX-command cmd 'TeX-master-file 0)
+      (TeX-command cmd file-fn 0)
       (when reset
 	(setq TeX-command-sequence-count-same-command 1
 	      TeX-command-sequence-count 1
