@@ -583,6 +583,26 @@ the name of the file being processed, with an optional extension."
 
 ;;; Portability.
 
+(defmacro TeX--if-macro-fboundp (name then &rest else)
+  "Execute THEN if macro NAME is bound and ELSE otherwise.
+Essentially,
+
+  (TeX--if-macro-fboundp name then else...)
+
+is equivalent to
+
+  (if (fboundp 'name) then else...)
+
+but takes care of byte-compilation issues where the byte-code for
+the latter could signal an error if it has been compiled with
+emacs 24.1 and is then later run by emacs 24.5."
+  (declare (indent 2) (debug (symbolp form)))
+  (if (fboundp name)            ;If macro exists at compile-time, just use it.
+      then
+    `(if (fboundp ',name)       ;Else, check if it exists at run-time.
+	 (eval ',then)          ;If it does, then run the then code.
+       ,@else)))                ;Otherwise, run the else code.
+
 (require 'easymenu)
 
 (eval-and-compile
@@ -3458,7 +3478,7 @@ The algorithm is as follows:
   (when (and (boundp 'tex--prettify-symbols-alist)
 	     (boundp 'prettify-symbols-compose-predicate))
     (set (make-local-variable 'prettify-symbols-alist) tex--prettify-symbols-alist)
-    (if (fboundp 'add-function)
+    (TeX--if-macro-fboundp add-function
 	(add-function :override (local 'prettify-symbols-compose-predicate)
 		      #'tex--prettify-symbols-compose-p)
       (set (make-local-variable 'prettify-symbols-compose-predicate)

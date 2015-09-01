@@ -1,3 +1,8 @@
+2015-09-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX--if-macro-fboundp): New portability macro.
+	(VirTeX-common-initialization): Use it.
+
 2015-08-31  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-previous-error): Delete point in error message.
