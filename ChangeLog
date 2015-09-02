@@ -1,3 +1,8 @@
+2015-09-02  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el: Remove code which set up font-latex for use with
+	stock latex-mode on load.
+
 2015-09-01  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-command-sequence): Add argument for processing
