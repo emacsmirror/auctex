@@ -1,8 +1,13 @@
 2015-09-03  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el (font-latex-fontify-script): Add possible value
-	`multi-level' to allow raising/lowering scripts of scripts.
+	`multi-level' to allow raising/lowering scripts of scripts, and
+	another value `invisible' which in addition hides the ^ and _
+	characters in scripts.
 	(font-latex-match-script): Use it.
+	(font-latex-make-user-keywords): Add font-lock entry for script
+	signs.
+	(font-latex-script-invisible): New function.
 
 	* tex.el (TeX-tex-mode): Don't ignore case when matching the
 	TeX-format-list regexes.
