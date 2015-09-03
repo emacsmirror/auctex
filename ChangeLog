@@ -1,3 +1,12 @@
+2015-09-03  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-tex-mode): Don't ignore case when matching the
+	TeX-format-list regexes.
+	(TeX-expand-list): Add expansion of %(PDFout) to -output-format
+	option for AmS-TeX.
+	(TeX-command-list): Use it instead of calling the non-existing
+	pdfamstex command.
+
 2015-09-02  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el: Remove code which set up font-latex for use with

@@ -132,7 +132,7 @@ If nil, none is specified."
      (texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo %(extraopts) --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "%(PDF)amstex %(extraopts) %`%S%(PDFout)%(mode)%' %t"
+    ("AmSTeX" "amstex %(PDFout) %(extraopts) %`%S%(mode)%' %t"
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -455,7 +455,11 @@ string."
 		    "pdf"
 		  "")))
     ("%(PDFout)" (lambda ()
-		   (cond ((and (eq TeX-engine 'xetex)
+		   (cond ((eq major-mode 'ams-tex-mode)
+			  (if TeX-PDF-mode
+			      " -output-format=pdf"
+			    " -output-format=dvi"))
+			 ((and (eq TeX-engine 'xetex)
 			       (not TeX-PDF-mode))
 			  " -no-pdf")
 			 ((and (eq TeX-engine 'luatex)
@@ -3398,7 +3402,7 @@ The algorithm is as follows:
 		       (regexp-quote TeX-esc)
 		       "\\)*\\)\\(%+ *\\)"))
 		     (entry TeX-format-list)
-		     answer)
+		     answer case-fold-search)
 		 (while (and entry (not answer))
 		   (if (re-search-forward (nth 2 (car entry))
 					  10000 t)
