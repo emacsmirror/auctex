@@ -7,7 +7,7 @@
 	(font-latex-match-script): Use it.
 	(font-latex-make-user-keywords): Add font-lock entry for script
 	signs.
-	(font-latex-script-invisible): New function.
+	(font-latex-match-script-chars): New function.
 
 	* tex.el (TeX-tex-mode): Don't ignore case when matching the
 	TeX-format-list regexes.
