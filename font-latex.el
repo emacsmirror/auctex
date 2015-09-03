@@ -851,10 +851,22 @@ locking machinery will be triggered."
 
 (defcustom font-latex-fontify-script (not (featurep 'xemacs))
   "If non-nil, fontify subscript and superscript strings.
-This feature does not work in XEmacs."
-  :type 'boolean
+This feature does not work in XEmacs.
+
+By default, super/subscripts are raised/lowered if this variable
+is non-nil.  This fontification only affects one level of
+scripts, e.g., in x^y^z, the y and the z have the same size and
+are equally raised over x.  If this variable is set to the symbol
+`multi-level', then y is raised above x, and z is raised above y.
+With many script levels, the text might become too small to be
+readable."
+  :type '(choice (boolean :tag "Enabled")
+		 (const :tag "Multiple levels" multi-level))
   :group 'font-latex)
-(put 'font-latex-fontify-script 'safe-local-variable 'TeX-booleanp)
+(put 'font-latex-fontify-script 'safe-local-variable
+     (lambda (val)
+       (or (TeX-booleanp val)
+	   (eq 'multi-level val))))
 
 (defcustom font-latex-script-display '((raise -0.3) . (raise 0.3))
   "Display specification for subscript and superscript content.
@@ -1852,11 +1864,12 @@ END marks boundaries for searching for quotation ends."
   (when (and font-latex-fontify-script
 	     (re-search-forward "[_^] *\\([^\n\\{}]\\|\
 \\\\\\([a-zA-Z@]+\\|[^ \t\n]\\)\\|\\({\\)\\)" limit t))
-    (if (font-latex-faces-present-p '(font-latex-subscript-face
-				      font-latex-superscript-face))
-	;; Apply subscript and superscript highlighting only once in
-	;; order to prevent the font size becoming too small.  We set
-	;; an empty match to do that.
+    (if (and (not (eq 'multi-level font-latex-fontify-script))
+	     (font-latex-faces-present-p '(font-latex-subscript-face
+					   font-latex-superscript-face)))
+	;; Apply subscript and superscript highlighting only once (in case
+	;; font-latex-fontify-script is not 'multi-level) in order to prevent
+	;; the font size becoming too small.  We set an empty match to do that.
 	(let ((point (point)))
 	  (store-match-data (list point point point point)))
       (when (match-end 3)
