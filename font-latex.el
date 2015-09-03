@@ -857,7 +857,7 @@ This feature does not work in XEmacs.
 
 By default, super/subscripts are raised/lowered if this variable
 is non-nil.  This fontification only affects one level of
-scripts, e.g., in x^y^z, the y and the z have the same size and
+scripts, e.g., in x^{y^z}, the y and the z have the same size and
 are equally raised over x.
 
 If this variable is set to the symbol `multi-level', then y is
