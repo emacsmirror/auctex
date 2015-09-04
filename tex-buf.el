@@ -581,6 +581,9 @@ ORIGINALS which are modified but not saved yet."
 (defvar TeX-command-sequence-sentinel nil
   "Sentinel for `TeX-command-sequence'.")
 
+(defvar TeX-command-sequence-file-function nil
+  "File function for `TeX-command-sequence'.")
+
 (defvar TeX-command-sequence-command nil
   "Command argument for `TeX-command-sequence'.
 
@@ -623,7 +626,7 @@ first run of the function and some variables need to be reset.
 FILE-FN is a function of zero arguments returning the current
 filename.  Valid choices are `TeX-master-file' (default if
 omitted) and `TeX-region-file'."
-  (setq file-fn (or file-fn #'TeX-master-file))
+  (setq TeX-command-sequence-file-function (or file-fn #'TeX-master-file))
   (if (null command)
       (message "No command to run.")
     (let (cmd process)
@@ -638,9 +641,10 @@ omitted) and `TeX-region-file'."
 	(setq cmd (funcall command)
 	      TeX-command-sequence-command command))
        (t
-	(setq cmd (TeX-command-default (funcall file-fn nil t))
+	(setq cmd (TeX-command-default
+		   (funcall TeX-command-sequence-file-function nil t))
 	      TeX-command-sequence-command t)))
-      (TeX-command cmd file-fn 0)
+      (TeX-command cmd TeX-command-sequence-file-function 0)
       (when reset
 	(setq TeX-command-sequence-count-same-command 1
 	      TeX-command-sequence-count 1
@@ -1466,7 +1470,8 @@ variable is nil."
 	      (or
 	       (plist-get TeX-error-report-switches (intern (TeX-master-file)))
 	       (null TeX-command-sequence-command))
-	    (TeX-command-sequence TeX-command-sequence-command))))))
+	    (TeX-command-sequence TeX-command-sequence-command nil
+				  TeX-command-sequence-file-function))))))
 
 ;;; Process Control
 
@@ -1600,7 +1605,7 @@ command."
 
 (defvar TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
- (make-variable-buffer-local 'TeX-parse-function)
+(make-variable-buffer-local 'TeX-parse-function)
 
 (defun TeX-background-filter (process string)
   "Filter to process background output."
@@ -1885,7 +1890,7 @@ The section is determined by `LaTeX-command-section-level'."
 	    (re-search-backward rx nil t)
 	    (point))
 	  (save-excursion
-	    (re-search-forward rx nil t)
+	    (re-search-forward (concat rx "\\|\\\\end{document}") nil t)
 	    (forward-line 0)
 	    (point)))))
 
@@ -1904,10 +1909,12 @@ If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in
 `TeX-command-list'."
   (interactive "P")
-  (let* ((bounds (LaTeX-command-section-boundaries))
-	 (TeX-command-region-begin (car bounds))
-	 (TeX-command-region-end (cdr bounds)))
-    (TeX-command-region override-confirm)))
+  (if (eq major-mode 'latex-mode)
+      (let* ((bounds (LaTeX-command-section-boundaries))
+	     (TeX-command-region-begin (car bounds))
+	     (TeX-command-region-end (cdr bounds)))
+	(TeX-command-region override-confirm))
+    (error "LaTeX-command-section can only be run on LaTeX documents")))
 
 (defun TeX-command-run-all-region ()
   "Compile the current region until an error occurs or it is finished."
@@ -1918,11 +1925,13 @@ depend on it being positive instead of the entry in
 (defun LaTeX-command-run-all-section ()
   "Compile the current section until an error occurs or it is finished."
   (interactive)
-  (let* ((bounds (LaTeX-command-section-boundaries))
-	 (TeX-command-region-begin (car bounds))
-	 (TeX-command-region-end (cdr bounds)))
-    (TeX-region-update))
-  (TeX-command-sequence t t #'TeX-region-file))
+  (if (eq major-mode 'latex-mode)
+      (let* ((bounds (LaTeX-command-section-boundaries))
+	     (TeX-command-region-begin (car bounds))
+	     (TeX-command-region-end (cdr bounds)))
+	(TeX-region-update)
+	(TeX-command-sequence t t #'TeX-region-file))
+    (error "LaTeX-command-run-all-section can only be run on LaTeX documents")))
 
 (defun TeX-command-run-all (arg)
   "Compile the current document until an error occurs or it is finished.
@@ -1945,17 +1954,17 @@ compile the current section instead, e.g. call
 (defvar TeX-error-point nil
   "How far we have parsed until now.")
 
- (make-variable-buffer-local 'TeX-error-point)
+(make-variable-buffer-local 'TeX-error-point)
 
 (defvar TeX-error-file nil
   "Stack of files in which errors have occurred.")
 
- (make-variable-buffer-local 'TeX-error-file)
+(make-variable-buffer-local 'TeX-error-file)
 
 (defvar TeX-error-offset nil
   "Add this to any line numbers from TeX.  Stack like `TeX-error-file'.")
 
- (make-variable-buffer-local 'TeX-error-offset)
+(make-variable-buffer-local 'TeX-error-offset)
 
 (defun TeX-parse-reset (&optional reparse)
   "Reset all variables used for parsing TeX output.

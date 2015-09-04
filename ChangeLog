@@ -12,6 +12,13 @@
 
 2015-09-04  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex-buf.el (TeX-command-sequence-file-function): New variable.
+	(TeX-command-sequence): Use it.
+	(LaTeX-command-section-boundaries): Recognize end of document as
+	ultimate boundary.
+	(LaTeX-command-section): Signal an error if not in a LaTeX buffer.
+	(LaTeX-command-run-all-section): Ditto.
+
 	* tex.el: Add autoloads for the new commands.
 
 	* tex-buf.el (TeX-region-update): New function.
