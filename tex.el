@@ -2086,7 +2086,7 @@ output files."
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
 
-(defun TeX-update ()
+(defun TeX-command-run-all ()
   "Compile the current document until an error occurs or it is finished."
   (interactive)
   (TeX-command-sequence t t))
@@ -4707,7 +4707,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-r" 'TeX-command-region)
     (define-key map "\C-c\C-b" 'TeX-command-buffer)
     (define-key map "\C-c\C-c" 'TeX-command-master)
-    (define-key map "\C-c\C-u" 'TeX-update)
+    (define-key map "\C-c\C-a" 'TeX-command-run-all)
     (define-key map "\C-c\C-k" 'TeX-kill-job)
     (define-key map "\C-c\C-l" 'TeX-recenter-output-buffer)
     (define-key map "\C-c^" 'TeX-home-buffer)
@@ -4809,7 +4809,7 @@ Brace insertion is only done if point is in a math construct and
        ["Debug Warnings" TeX-toggle-debug-warnings
 	:style toggle :selected TeX-debug-warnings
 	:help "Make \"Next Error\" show warnings"])
-      ["Compile and view" TeX-update
+      ["Compile and view" TeX-command-run-all
        :help "Compile the document until it is ready and open the viewer"]))
    (let ((file 'TeX-command-on-current)) ;; is this actually needed?
      (TeX-maybe-remove-help

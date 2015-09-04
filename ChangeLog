@@ -1,3 +1,8 @@
+2015-09-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX-command-run-all): Rename from TeX-update.
+	(TeX-mode-map): Bind TeX-command-run-all to C-c C-a.
+
 2015-09-03  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el (font-latex-fontify-script): Add possible value
