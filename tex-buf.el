@@ -1926,11 +1926,12 @@ depend on it being positive instead of the entry in
 
 (defun TeX-command-run-all (arg)
   "Compile the current document until an error occurs or it is finished.
-With a prefix ARG (`C-u \\[TeX-command-run-all]'), compile the
-current region instead, e.g, call `TeX-command-run-all-region'.
-With multiple prefix arguments (`C-u C-u
-\\[TeX-command-run-all]'), compile the current section instead,
-e.g. call `LaTeX-command-run-all-section'."
+With a prefix ARG (`\\[universal-argument] \\[TeX-command-run-all]'),
+compile the current region instead, e.g, call
+`TeX-command-run-all-region'.  With multiple prefix
+arguments (`\\[universal-argument] \\[universal-argument] \\[TeX-command-run-all]'),
+compile the current section instead, e.g. call
+`LaTeX-command-run-all-section'."
   (interactive "P")
   (cond
    ((null arg)       (TeX-command-sequence t t))

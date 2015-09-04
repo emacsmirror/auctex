@@ -229,10 +229,10 @@ suggest to run a viewer, or you can chose to create a PostScript file
 using @command{dvips}, or to directly print it.
 
 Actually, there is another command which comes in handy to compile
-documents: type @kbd{C-c C-u} (@code{TeX-update}) and @AUCTeX{} will
-compile the document for you until it is ready and then run the viewer.
-This is the same as issuing repeatedly @kbd{C-c C-c} and letting
-@AUCTeX{} guess the next command to run.
+documents: type @kbd{C-c C-a} (@code{TeX-command-run-all}) and @AUCTeX{}
+will compile the document for you until it is ready and then run the
+viewer.  This is the same as issuing repeatedly @kbd{C-c C-c} and
+letting @AUCTeX{} guess the next command to run.
 
 At this place, a warning needs to be given: First, although @AUCTeX{} is
 really good in detecting the standard situations when an additional

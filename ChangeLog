@@ -1,3 +1,15 @@
+2015-09-04  Mosè Giordano  <mose@gnu.org>
+
+	* doc/auctex.texi (Starting a Command): Update references to
+	`TeX-command-run-all' and C-c C-a key binding.
+
+	* doc/changes.texi: Ditto.
+
+	* doc/quickstart.texi (Processing Facilities): Ditto.
+
+	* tex-buf.el (TeX-command-run-all): Use `universal-argument' to
+	reference C-u.
+
 2015-09-04  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el: Add autoloads for the new commands.

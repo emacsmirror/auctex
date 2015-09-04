@@ -2701,11 +2701,11 @@ master file.  The command is then actually run on the region file.  See
 @end deffn
 
 It is also possible to compile automatically the whole document until it
-is ready with a single command: @code{TeX-update}.
+is ready with a single command: @code{TeX-command-run-all}.
 
-@deffn Command TeX-update
-@kindex C-c C-u
-(@kbd{C-c C-u}) Compile the current document until an error occurs or it
+@deffn Command TeX-command-run-all
+@kindex C-c C-a
+(@kbd{C-c C-a}) Compile the current document until an error occurs or it
 is finished.  If compilation finishes successfully, run the viewer at
 the end.
 @end deffn
@@ -2931,7 +2931,7 @@ the sequence @command{tex}--@command{dvips}--@command{ps2pdf} on a
 per-document basis.
 
 Recall the whole sequence of @kbd{C-c C-c} commands can be replace by
-the single @kbd{C-c C-u}.
+the single @kbd{C-c C-a}.
 @end defopt
 
 @AUCTeX{} also allows you to easily select different @TeX{} engines for
