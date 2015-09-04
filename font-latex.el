@@ -1303,16 +1303,18 @@ If optional argument is non-nil, print status messages."
   ;; property is only added if `font-lock-multiline' is bound.)
   (unless (boundp 'font-lock-multiline)
     (remove-text-properties beg end '(font-latex-multiline)))
-  (while (< beg end)
-    (let ((next (next-single-property-change beg 'display nil end))
-	  (prop (get-text-property beg 'display)))
-      (if (and (eq (car-safe prop) 'raise)
-	       (member (car-safe (cdr prop))
-		       (list (nth 1 (car font-latex-script-display))
-			     (nth 1 (cdr font-latex-script-display))))
-	       (null (cddr prop)))
-	  (put-text-property beg next 'display nil))
-      (setq beg next))))
+  (let ((start beg))
+    (while (< beg end)
+      (let ((next (next-single-property-change beg 'display nil end))
+	    (prop (get-text-property beg 'display)))
+	(if (and (eq (car-safe prop) 'raise)
+		 (member (car-safe (cdr prop))
+			 (list (nth 1 (car font-latex-script-display))
+			       (nth 1 (cdr font-latex-script-display))))
+		 (null (cddr prop)))
+	    (put-text-property beg next 'display nil))
+	(setq beg next)))
+    (remove-text-properties start end '(invisible))))
 
 (defadvice font-lock-after-change-function (before font-latex-after-change
 						   activate)
@@ -1949,7 +1951,7 @@ END marks boundaries for searching for quotation ends."
 (defface font-latex-doctex-preprocessor-face
   '((t (:inherit (font-latex-doctex-documentation-face
 		  font-lock-builtin-face ; Emacs 21 does not provide
-					 ; the preprocessor face.
+					; the preprocessor face.
 		  font-lock-preprocessor-face))))
   "Face used to highlight preprocessor directives in docTeX mode."
   :group 'font-latex-highlighting-faces)
