@@ -575,6 +575,10 @@ the name of the file being processed, with an optional extension."
 (autoload 'TeX-command-region "tex-buf" nil t)
 (autoload 'TeX-command-buffer "tex-buf" nil t)
 (autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'LaTeX-command-section "tex-buf" nil t)
+(autoload 'TeX-command-run-all "tex-buf" nil t)
+(autoload 'TeX-command-run-all-region "tex-buf" nil t)
+(autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
 (autoload 'TeX-command "tex-buf" nil nil)
 (autoload 'TeX-kill-job "tex-buf" nil t)
 (autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
@@ -2085,11 +2089,6 @@ output files."
 	  (dolist (file files)
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
-
-(defun TeX-command-run-all ()
-  "Compile the current document until an error occurs or it is finished."
-  (interactive)
-  (TeX-command-sequence t t))
 
 ;;; Master File
 

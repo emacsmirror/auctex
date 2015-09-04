@@ -1,5 +1,15 @@
 2015-09-04  Tassilo Horn  <tsdh@gnu.org>
 
+	* tex.el: Add autoloads for the new commands.
+
+	* tex-buf.el (TeX-region-update): New function.
+	(TeX-command-region): Use it.
+	(LaTeX-command-section-boundaries): New function.
+	(LaTeX-command-section): Use it.
+	(TeX-command-run-all-region): New command.
+	(LaTeX-command-run-all-section): New command.
+	(TeX-command-run-all): Move it here from tex.el.
+
 	* tex.el (TeX-command-run-all): Rename from TeX-update.
 	(TeX-mode-map): Bind TeX-command-run-all to C-c C-a.
 

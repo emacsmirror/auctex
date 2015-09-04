@@ -142,6 +142,21 @@ pinned region will get unpinned and vice versa."
     (setq TeX-command-region-end nil)
     (message "TeX region unpinned.")))
 
+(defun TeX-region-update ()
+  "Update the TeX-region file."
+  ;; Note that TeX-command-region-begin is not a marker when called
+  ;; from TeX-command-buffer.
+  (and (or (null TeX-command-region-begin)
+	   (markerp TeX-command-region-begin))
+       (TeX-active-mark)
+       (TeX-pin-region (region-beginning) (region-end)))
+  (let ((begin (or TeX-command-region-begin (region-beginning)))
+	(end (or TeX-command-region-end (region-end))))
+    (TeX-region-create (TeX-region-file TeX-default-extension)
+		       (buffer-substring begin end)
+		       (file-name-nondirectory (buffer-file-name))
+		       (TeX-current-offset begin))))
+
 (defun TeX-command-region (&optional override-confirm)
   "Run TeX on the current region.
 
@@ -163,18 +178,7 @@ If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The document's trailer is
 all text after `TeX-trailer-start'."
   (interactive "P")
-  ;; Note that TeX-command-region-begin is not a marker when called
-  ;; from TeX-command-buffer.
-  (and (or (null TeX-command-region-begin)
-	   (markerp TeX-command-region-begin))
-       (TeX-active-mark)
-       (TeX-pin-region (region-beginning) (region-end)))
-  (let ((begin (or TeX-command-region-begin (region-beginning)))
-	(end (or TeX-command-region-end (region-end))))
-    (TeX-region-create (TeX-region-file TeX-default-extension)
-		       (buffer-substring begin end)
-		       (file-name-nondirectory (buffer-file-name))
-		       (TeX-current-offset begin)))
+  (TeX-region-update)
   (TeX-command (TeX-command-query (TeX-region-file nil t)) 'TeX-region-file
 	       override-confirm))
 
@@ -511,7 +515,7 @@ without further expansion."
                               ;; Advance past the file name in order to
                               ;; prevent expanding any substring of it.
                               (setq pos (+ pos (length expansion-res))))
-                              expansion-res)
+			    expansion-res)
 			   (t
 			    (error "Nonexpansion %s" expansion)))))
       (if (stringp string)
@@ -634,7 +638,7 @@ omitted) and `TeX-region-file'."
 	(setq cmd (funcall command)
 	      TeX-command-sequence-command command))
        (t
-	(setq cmd (TeX-command-default (funcall file-fn))
+	(setq cmd (TeX-command-default (funcall file-fn nil t))
 	      TeX-command-sequence-command t)))
       (TeX-command cmd file-fn 0)
       (when reset
@@ -1864,6 +1868,27 @@ levels are defined by `LaTeX-section-list'."
 		 old-level (car (rassoc (list LaTeX-command-section-level)
 					LaTeX-section-list)))))))
 
+(defun LaTeX-command-section-boundaries ()
+  "Return the boundaries of the current section as (start . end).
+The section is determined by `LaTeX-command-section-level'."
+  (let* ((case-fold-search nil)
+	 (rx (concat "\\\\" (regexp-opt
+			     (mapcar
+			      (lambda (level)
+				(car (rassoc (list level) LaTeX-section-list)))
+			      (let (r)
+				(dotimes (i (1+ (LaTeX-command-section-level)))
+				  (push i r))
+				r)))
+		     "{")))
+    (cons (save-excursion
+	    (re-search-backward rx nil t)
+	    (point))
+	  (save-excursion
+	    (re-search-forward rx nil t)
+	    (forward-line 0)
+	    (point)))))
+
 (defun LaTeX-command-section (&optional override-confirm)
   "Run a command on the current section.
 
@@ -1879,24 +1904,38 @@ If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in
 `TeX-command-list'."
   (interactive "P")
-  (let* ((case-fold-search t)
-	 (rx (concat "\\\\" (regexp-opt
-			     (mapcar
-			      (lambda (level)
-				(car (rassoc (list level) LaTeX-section-list)))
-			      (let (r)
-				(dotimes (i (1+ (LaTeX-command-section-level)))
-				  (push i r))
-				r)))
-		     "{"))
-	 (TeX-command-region-begin (save-excursion
-				     (re-search-backward rx nil t)
-				     (point)))
-	 (TeX-command-region-end (save-excursion
-				   (re-search-forward rx nil t)
-				   (forward-line 0)
-				   (point))))
+  (let* ((bounds (LaTeX-command-section-boundaries))
+	 (TeX-command-region-begin (car bounds))
+	 (TeX-command-region-end (cdr bounds)))
     (TeX-command-region override-confirm)))
+
+(defun TeX-command-run-all-region ()
+  "Compile the current region until an error occurs or it is finished."
+  (interactive)
+  (TeX-region-update)
+  (TeX-command-sequence t t #'TeX-region-file))
+
+(defun LaTeX-command-run-all-section ()
+  "Compile the current section until an error occurs or it is finished."
+  (interactive)
+  (let* ((bounds (LaTeX-command-section-boundaries))
+	 (TeX-command-region-begin (car bounds))
+	 (TeX-command-region-end (cdr bounds)))
+    (TeX-region-update))
+  (TeX-command-sequence t t #'TeX-region-file))
+
+(defun TeX-command-run-all (arg)
+  "Compile the current document until an error occurs or it is finished.
+With a prefix ARG (`C-u \\[TeX-command-run-all]'), compile the
+current region instead, e.g, call `TeX-command-run-all-region'.
+With multiple prefix arguments (`C-u C-u
+\\[TeX-command-run-all]'), compile the current section instead,
+e.g. call `LaTeX-command-run-all-section'."
+  (interactive "P")
+  (cond
+   ((null arg)       (TeX-command-sequence t t))
+   ((= 4 (car arg))  (TeX-command-run-all-region))
+   (t                (LaTeX-command-run-all-section))))
 
 ;;; Parsing
 
@@ -2424,40 +2463,40 @@ a bad box."
 
 (defcustom TeX-error-description-list
   '(("\\(?:Package Preview Error\\|Preview\\):.*" .
-"The `auctex' option to `preview' should not be applied manually.
+     "The `auctex' option to `preview' should not be applied manually.
 If you see this error message outside of a preview run, either
 you did something too clever, or AUCTeX something too stupid.")
 
     ("Bad \\\\line or \\\\vector argument.*" .
-"The first argument of a \\line or \\vector command, which specifies the
+     "The first argument of a \\line or \\vector command, which specifies the
 slope, is illegal\.")
 
     ("Bad math environment delimiter.*" .
-"TeX has found either a math-mode-starting command such as \\[ or \\(
+     "TeX has found either a math-mode-starting command such as \\[ or \\(
 when it is already in math mode, or else a math-mode-ending command
 such as \\) or \\] while in LR or paragraph mode.  The problem is caused
 by either unmatched math mode delimiters or unbalanced braces\.")
 
     ("Bad use of \\\\\\\\.*" .
-"A \\\\ command appears between paragraphs, where it makes no sense. This
+     "A \\\\ command appears between paragraphs, where it makes no sense. This
 error message occurs when the \\\\ is used in a centering or flushing
 environment or else in the scope of a centering or flushing
 declaration.")
 
     ("\\\\begin{[^ ]*} ended by \\\\end{[^ ]*}." .
-"LaTeX has found an \\end command that doesn't match the corresponding
+     "LaTeX has found an \\end command that doesn't match the corresponding
 \\begin command. You probably misspelled the environment name in the
 \\end command, have an extra \\begin, or else forgot an \\end.")
 
     ("Can be used only in preamble." .
-"LaTeX has encountered, after the \\begin{document}, one of the
+     "LaTeX has encountered, after the \\begin{document}, one of the
 following commands that should appear only in the preamble:
 \\documentclass, \\nofiles, \\includeonly, \\makeindex, or
 \\makeglossary.  The error is also caused by an extra \\begin{document}
 command.")
 
     ("Command name [^ ]* already used.*" .
-"You are using \\newcommand, \\newenvironment, \\newlength, \\newsavebox,
+     "You are using \\newcommand, \\newenvironment, \\newlength, \\newsavebox,
 or \\newtheorem to define a command or environment name that is
 already defined, or \\newcounter to define a counter that already
 exists. (Defining an environment named gnu automatically defines the
@@ -2465,7 +2504,7 @@ command \\gnu.) You'll have to choose a new name or, in the case of
 \\newcommand or \\newenvironment, switch to the \\renew ...  command.")
 
     ("Counter too large." .
-"1. Some object that is numbered with letters, probably an item in a
+     "1. Some object that is numbered with letters, probably an item in a
 enumerated list, has received a number greater than 26. Either you're
 making a very long list or you've been resetting counter values.
 
@@ -2474,11 +2513,11 @@ and LaTeX has run out of letters or symbols. This is probably caused
 by too many \\thanks commands.")
 
     ("Environment [^ ]* undefined." .
-"LaTeX has encountered a \\begin command for a nonexistent environment.
+     "LaTeX has encountered a \\begin command for a nonexistent environment.
 You probably misspelled the environment name. ")
 
     ("Float(s) lost." .
-"You put a figure or table environment or a \\marginpar command inside a
+     "You put a figure or table environment or a \\marginpar command inside a
 parbox---either one made with a minipage environment or \\parbox
 command, or one constructed by LaTeX in making a footnote, figure,
 etc. This is an outputting error, and the offending environment or
@@ -2487,70 +2526,70 @@ the problem. One or more figures, tables, and/or marginal notes have
 been lost, but not necessarily the one that caused the error.")
 
     ("Illegal character in array arg." .
-"There is an illegal character in the argument of an array or tabular
+     "There is an illegal character in the argument of an array or tabular
 environment, or in the second argument of a \\multicolumn command.")
 
     ("Missing \\\\begin{document}." .
-"LaTeX produced printed output before encountering a \\begin{document}
+     "LaTeX produced printed output before encountering a \\begin{document}
 command. Either you forgot the \\begin{document} command or there is
 something wrong in the preamble. The problem may be a stray character
 or an error in a declaration---for example, omitting the braces around
 an argument or forgetting the \\ in a command name.")
 
     ("Missing p-arg in array arg.*" .
-"There is a p that is not followed by an expression in braces in the
+     "There is a p that is not followed by an expression in braces in the
 argument of an array or tabular environment, or in the second argument
 of a \\multicolumn command.")
 
     ("Missing @-exp in array arg." .
-"There is an @ character not followed by an @-expression in the
+     "There is an @ character not followed by an @-expression in the
 argument of an array or tabular environment, or in the second argument
 of a \\multicolumn command.")
 
     ("No such counter." .
-"You have specified a nonexistent counter in a \\setcounter or
+     "You have specified a nonexistent counter in a \\setcounter or
 \\addtocounter command. This is probably caused by a simple typing
 error.  However, if the error occurred while a file with the extension
 aux is being read, then you probably used a \\newcounter command
 outside the preamble.")
 
     ("Not in outer par mode." .
-"You had a figure or table environment or a \\marginpar command in math
+     "You had a figure or table environment or a \\marginpar command in math
 mode or inside a parbox.")
 
     ("\\\\pushtabs and \\\\poptabs don't match." .
-"LaTeX found a \\poptabs with no matching \\pushtabs, or has come to the
+     "LaTeX found a \\poptabs with no matching \\pushtabs, or has come to the
 \\end{tabbing} command with one or more unmatched \\pushtabs commands.")
 
     ("Something's wrong--perhaps a missing \\\\item." .
-"The most probable cause is an omitted \\item command in a list-making
+     "The most probable cause is an omitted \\item command in a list-making
 environment. It is also caused by forgetting the argument of a
 thebibliography environment.")
 
     ("Tab overflow." .
-"A \\= command has exceeded the maximum number of tab stops that LaTeX
+     "A \\= command has exceeded the maximum number of tab stops that LaTeX
 permits.")
 
     ("There's no line here to end." .
-"A \\newline or \\\\ command appears between paragraphs, where it makes no
+     "A \\newline or \\\\ command appears between paragraphs, where it makes no
 sense. If you're trying to ``leave a blank line'', use a \\vspace
 command.")
 
     ("This may be a LaTeX bug." .
-"LaTeX has become thoroughly confused. This is probably due to a
+     "LaTeX has become thoroughly confused. This is probably due to a
 previously detected error, but it is possible that you have found an
 error in LaTeX itself. If this is the first error message produced by
 the input file and you can't find anything wrong, save the file and
 contact the person listed in your Local Guide.")
 
     ("Too deeply nested." .
-"There are too many list-making environments nested within one another.
+     "There are too many list-making environments nested within one another.
 How many levels of nesting are permitted may depend upon what computer
 you are using, but at least four levels are provided, which should be
 enough.")
 
     ("Too many unprocessed floats." .
-"While this error can result from having too many \\marginpar commands
+     "While this error can result from having too many \\marginpar commands
 on a page, a more likely cause is forcing LaTeX to save more figures
 and tables than it has room for.  When typesetting its continuous
 scroll, LaTeX saves figures and tables separately and inserts them as
@@ -2566,38 +2605,38 @@ argument says it must go. This is likely to happen if the argument
 does not contain a p option.")
 
     ("Undefined tab position." .
-"A \\>, \\+, \\-, or \\< command is trying to go to a nonexistent tab
+     "A \\>, \\+, \\-, or \\< command is trying to go to a nonexistent tab
 position---one not defined by a \\= command.")
 
     ("\\\\< in mid line." .
-"A \\< command appears in the middle of a line in a tabbing environment.
+     "A \\< command appears in the middle of a line in a tabbing environment.
 This command should come only at the beginning of a line.")
 
     ("Double subscript." .
-"There are two subscripts in a row in a mathematical
+     "There are two subscripts in a row in a mathematical
 formula---something like x_{2}_{3}, which makes no sense.")
 
     ("Double superscript." .
-"There are two superscripts in a row in a mathematical
+     "There are two superscripts in a row in a mathematical
 formula---something like x^{2}^{3}, which makes no sense.")
 
     ("Extra alignment tab has been changed to \\\\cr." .
-"There are too many separate items (column entries) in a single row of
+     "There are too many separate items (column entries) in a single row of
 an array or tabular environment. In other words, there were too many &
 's before the end of the row. You probably forgot the \\\\ at the end of
 the preceding row.")
 
     ("Extra \\}, or forgotten \\$." .
-"The braces or math mode delimiters don't match properly. You probably
+     "The braces or math mode delimiters don't match properly. You probably
 forgot a {, \\[, \\(, or $.")
 
     ("Font [^ ]* not loaded: Not enough room left." .
-"The document uses more fonts than TeX has room for. If different parts
+     "The document uses more fonts than TeX has room for. If different parts
 of the document use different fonts, then you can get around the
 problem by processing it in parts.")
 
     ("I can't find file `.*'." .
-"TeX can't find a file that it needs. If the name of the missing file
+     "TeX can't find a file that it needs. If the name of the missing file
 has the extension tex, then it is looking for an input file that you
 specified---either your main file or another file inserted with an
 \\input or \\include command. If the missing file has the extension sty
@@ -2605,7 +2644,7 @@ specified---either your main file or another file inserted with an
 option.")
 
     ("Illegal parameter number in definition of .*" .
-"This is probably caused by a \\newcommand, \\renewcommand,
+     "This is probably caused by a \\newcommand, \\renewcommand,
 \\newenvironment, or \\renewenvironment command in which a # is used
 incorrectly.  A # character, except as part of the command name \\#,
 can be used only to indicate an argument parameter, as in #2, which
@@ -2615,7 +2654,7 @@ like #2 in the last argument of a \\newenvironment or \\renewenvironment
 command.")
 
     ("Illegal unit of measure ([^ ]* inserted)." .
-"If you just got a
+     "If you just got a
 
       ! Missing number, treated as zero.
 
@@ -2627,16 +2666,16 @@ should result in correct output. However, the error can also be caused
 by omitting a command argument.")
 
     ("Misplaced alignment tab character \\&." .
-"The special character &, which should be used only to separate items
+     "The special character &, which should be used only to separate items
 in an array or tabular environment, appeared in ordinary text. You
 probably meant to type \\&.")
 
     ("Missing control sequence inserted." .
-"This is probably caused by a \\newcommand, \\renewcommand, \\newlength,
+     "This is probably caused by a \\newcommand, \\renewcommand, \\newlength,
 or \\newsavebox command whose first argument is not a command name.")
 
     ("Missing number, treated as zero." .
-"This is usually caused by a LaTeX command expecting but not finding
+     "This is usually caused by a LaTeX command expecting but not finding
 either a number or a length as an argument. You may have omitted an
 argument, or a square bracket in the text may have been mistaken for
 the beginning of an optional argument. This error is also caused by
@@ -2644,11 +2683,11 @@ putting \\protect in front of either a length command or a command such
 as \\value that produces a number.")
 
     ("Missing [{}] inserted." .
-"TeX has become confused. The position indicated by the error locator
+     "TeX has become confused. The position indicated by the error locator
 is probably beyond the point where the incorrect input is.")
 
     ("Missing \\$ inserted." .
-"TeX probably found a command that can be used only in math mode when
+     "TeX probably found a command that can be used only in math mode when
 it wasn't in math mode.  Remember that unless stated otherwise, all
 all the commands of Section 3.3 in LaTeX Book (Lamport) can be used
 only in math mode. TeX is not in math mode when it begins processing
@@ -2657,28 +2696,28 @@ math environment. This error also occurs if TeX encounters a blank
 line when it is in math mode.")
 
     ("Not a letter." .
-"Something appears in the argument of a \\hyphenation command that
+     "Something appears in the argument of a \\hyphenation command that
 doesn't belong there.")
 
     ("Paragraph ended before [^ ]* was complete." .
-"A blank line occurred in a command argument that shouldn't contain
+     "A blank line occurred in a command argument that shouldn't contain
 one. You probably forgot the right brace at the end of an argument.")
 
     ("\\\\[^ ]*font [^ ]* is undefined .*" .
-"These errors occur when an uncommon font is used in math mode---for
+     "These errors occur when an uncommon font is used in math mode---for
 example, if you use a \\sc command in a formula inside a footnote,
 calling for a footnote-sized small caps font.  This problem is solved
 by using a \\load command.")
 
     ("Font .* not found." .
-"You requested a family/series/shape/size combination that is totally
+     "You requested a family/series/shape/size combination that is totally
 unknown.  There are two cases in which this error can occur:
   1) You used the \\size macro to select a size that is not available.
   2) If you did not do that, go to your local `wizard' and
      complain fiercely that the font selection tables are corrupted!")
 
     ("TeX capacity exceeded, sorry .*" .
-"TeX has just run out of space and aborted its execution. Before you
+     "TeX has just run out of space and aborted its execution. Before you
 panic, remember that the least likely cause of this error is TeX not
 having the capacity to process your document.  It was probably an
 error in your input file that caused TeX to run out of room. The
@@ -2779,14 +2818,14 @@ turn has a \\footnotesize declaration whose scope contains a \\multiput
 command containing a ....")
 
     ("Text line contains an invalid character." .
-"The input contains some strange character that it shouldn't. A mistake
+     "The input contains some strange character that it shouldn't. A mistake
 when creating the file probably caused your text editor to insert this
 character. Exactly what could have happened depends upon what text
 editor you used. If examining the input file doesn't reveal the
 offending character, consult the Local Guide for suggestions.")
 
     ("Undefined control sequence."   .
-"TeX encountered an unknown command name. You probably misspelled the
+     "TeX encountered an unknown command name. You probably misspelled the
 name. If this message occurs when a LaTeX command is being processed,
 the command is probably in the wrong place---for example, the error
 can be produced by an \\item command that's not inside a list-making
@@ -2794,43 +2833,43 @@ environment. The error can also be caused by a missing \\documentclass
 command.")
 
     ("Use of [^ ]* doesn't match its definition." .
-"It's probably one of the picture-drawing commands, and you have used
+     "It's probably one of the picture-drawing commands, and you have used
 the wrong syntax for specifying an argument. If it's \\@array that
 doesn't match its definition, then there is something wrong in an
 @-expression in the argument of an array or tabular
 environment---perhaps a fragile command that is not \\protect'ed.")
 
     ("You can't use `macro parameter character \\#' in [^ ]* mode." .
-"The special character # has appeared in ordinary text. You probably
+     "The special character # has appeared in ordinary text. You probably
 meant to type \\#.")
 
     ("Overfull \\\\hbox .*" .
-"Because it couldn't find a good place for a line break, TeX put more
+     "Because it couldn't find a good place for a line break, TeX put more
 on this line than it should.")
 
     ("Overfull \\\\vbox .*" .
-"Because it couldn't find a good place for a page break, TeX put more
+     "Because it couldn't find a good place for a page break, TeX put more
 on the page than it should. ")
 
     ("Underfull \\\\hbox .*" .
-"Check your output for extra vertical space.  If you find some, it was
+     "Check your output for extra vertical space.  If you find some, it was
 probably caused by a problem with a \\\\ or \\newline command---for
 example, two \\\\ commands in succession. This warning can also be
 caused by using the sloppypar environment or \\sloppy declaration, or
 by inserting a \\linebreak command.")
 
     ("Underfull \\\\vbox .*" .
-"TeX could not find a good place to break the page, so it produced a
+     "TeX could not find a good place to break the page, so it produced a
 page without enough text on it. ")
 
-;; New list items should be placed here
-;;
-;; ("err-regexp" . "context")
-;;
-;; the err-regexp item should match anything
+    ;; New list items should be placed here
+    ;;
+    ;; ("err-regexp" . "context")
+    ;;
+    ;; the err-regexp item should match anything
 
     (".*" . "No help available"))	; end definition
-"A list of the form (\"err-regexp\" . \"context\") used by function
+  "A list of the form (\"err-regexp\" . \"context\") used by function
 `TeX-help-error' to display help-text on an error message or warning.
 err-regexp should be a regular expression matching the error message
 given from TeX/LaTeX, and context should be some lines describing that
@@ -3049,7 +3088,7 @@ forward, if negative)."
   "List of errors to be used in the error overview.")
 
 (define-derived-mode TeX-error-overview-mode tabulated-list-mode
-  "TeX errors"
+		     "TeX errors"
   "Major mode for listing TeX errors."
   (setq tabulated-list-format [("File" 25 nil)
                                ("Line" 4 nil :right-align t)
@@ -3185,13 +3224,13 @@ forward, if negative)."
   "Keymap for `TeX-output-mode'.")
 
 (define-derived-mode TeX-output-mode TeX-special-mode "TeX Output"
-    "Major mode for viewing TeX output.
+  "Major mode for viewing TeX output.
 \\{TeX-output-mode-map} "
-    :syntax-table nil
-    (set (make-local-variable 'revert-buffer-function)
-	 #'TeX-output-revert-buffer)
-    ;; special-mode makes it read-only which prevents input from TeX.
-    (setq buffer-read-only nil))
+  :syntax-table nil
+  (set (make-local-variable 'revert-buffer-function)
+       #'TeX-output-revert-buffer)
+  ;; special-mode makes it read-only which prevents input from TeX.
+  (setq buffer-read-only nil))
 
 (defun TeX-output-revert-buffer (ignore-auto noconfirm)
   "Rerun the TeX command which of which this buffer was the output."
