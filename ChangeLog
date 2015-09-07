@@ -1,5 +1,23 @@
 2015-09-07  Mosè Giordano  <mose@gnu.org>
 
+	* tex-buf.el (LaTeX-idx-md5-alist, LaTeX-idx-changed-alist): New
+	variables.
+	(TeX-command-sequence): Call file function without optional
+	arguments.
+	(TeX-command-default): Suggest "Index" when appropriate.
+	(TeX-run-TeX): Store value of `LaTeX-idx-md5-alist'.
+	(TeX-run-index): New function.
+	(TeX-LaTeX-sentinel): Set `LaTeX-idx-changed-alist'.
+	(TeX-index-sentinel): New function.
+
+	* tex.el (TeX-command-list): Mention "makeindex" in "Index" help.
+	Suggested by Arash Esbati.
+
+	* doc/changes.texi: Mention ability to suggest makeindex when
+	needed.
+
+	* doc/todo.texi (Wishlist): Remove reference to makeindex.
+
 	* doc/tex-ref.tex: Update copyright years.
 	Mention C-c C-a key binding.
 

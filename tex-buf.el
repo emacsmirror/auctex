@@ -336,6 +336,17 @@ This works only with TeX commands and if the
 (defconst TeX-error-overview-buffer-name "*TeX errors*"
   "Name of the buffer in which to show error list.")
 
+(defvar LaTeX-idx-md5-alist nil
+  "Alist of MD5 hashes of idx file.
+
+Car is the idx file, cdr is its md5 hash.")
+
+(defvar LaTeX-idx-changed-alist nil
+  "Whether the idx files changed.
+
+Car is the idx file, cdr is whether idx changed after LaTeX
+run.")
+
 (defcustom TeX-check-engine t
   "Whether AUCTeX should check the correct engine has been set before running LaTeX commands."
   :group 'TeX-command
@@ -642,7 +653,10 @@ omitted) and `TeX-region-file'."
 	      TeX-command-sequence-command command))
        (t
 	(setq cmd (TeX-command-default
-		   (funcall TeX-command-sequence-file-function nil t))
+		   ;; File function should be called with nil `nondirectory'
+		   ;; argument, otherwise `TeX-command-sequence' won't work in
+		   ;; included files not placed in `TeX-master-directory'.
+		   (funcall TeX-command-sequence-file-function))
 	      TeX-command-sequence-command t)))
       (TeX-command cmd TeX-command-sequence-file-function 0)
       (when reset
@@ -685,28 +699,44 @@ omitted) and `TeX-region-file'."
 
 (defun TeX-command-default (name)
   "Guess the next command to be run on NAME."
-  (cond ((if (string-equal name TeX-region)
-	     (TeX-check-files (concat name "." (TeX-output-extension))
-			      (list name)
-			      TeX-file-extensions)
-	   (TeX-save-document (TeX-master-file)))
-	 TeX-command-default)
-	((and (memq major-mode '(doctex-mode latex-mode))
-	      ;; Want to know if bib file is newer than .bbl
-	      ;; We don't care whether the bib files are open in emacs
-	      (TeX-check-files (concat name ".bbl")
-			       (mapcar 'car
-				       (LaTeX-bibliography-list))
-			       (append BibTeX-file-extensions
-				       TeX-Biber-file-extensions)))
-	 ;; We should check for bst files here as well.
-	 (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
-	((TeX-process-get-variable name
-				   'TeX-command-next
-				   (if (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode)
-				       "Dvips"
-				     TeX-command-Show)))
-	(TeX-command-Show)))
+  (let ((command-next nil))
+    (cond ((if (string-equal name TeX-region)
+	       (TeX-check-files (concat name "." (TeX-output-extension))
+				(list name)
+				TeX-file-extensions)
+	     (TeX-save-document (TeX-master-file)))
+	   TeX-command-default)
+	  ((and (memq major-mode '(doctex-mode latex-mode))
+		;; Want to know if bib file is newer than .bbl
+		;; We don't care whether the bib files are open in emacs
+		(TeX-check-files (concat name ".bbl")
+				 (mapcar 'car
+					 (LaTeX-bibliography-list))
+				 (append BibTeX-file-extensions
+					 TeX-Biber-file-extensions)))
+	   ;; We should check for bst files here as well.
+	   (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
+	  ((and
+	    ;; Rational: makeindex should be run when final document is almost
+	    ;; complete (see
+	    ;; http://tex.blogoverflow.com/2012/09/dont-forget-to-run-makeindex/),
+	    ;; otherwise, after following latex runs, index pages may change due
+	    ;; to changes in final document, resulting in extra makeindex and
+	    ;; latex runs.
+	    (member
+	     (setq command-next
+		   (TeX-process-get-variable
+		    name
+		    'TeX-command-next
+		    (if (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode)
+			"Dvips"
+		      TeX-command-Show)))
+	     (list "Dvips" TeX-command-Show))
+	    (cdr (assoc (expand-file-name (concat name ".idx"))
+			LaTeX-idx-changed-alist)))
+	   "Index")
+	  (command-next)
+	  (TeX-command-Show))))
 
 (defun TeX-command-query (name)
   "Query the user for what TeX command to use."
@@ -928,7 +958,8 @@ run of `TeX-run-TeX', use
   ;; Save information in TeX-error-report-switches
   ;; Initialize error to nil (no error) for current master.
   ;; Presence of error is reported inside `TeX-TeX-sentinel-check'
-  (let ((current-master (TeX-master-file)))
+  (let ((current-master (TeX-master-file))
+	(idx-file nil) (element nil))
     ;; the current master file is saved because error routines are
     ;; parsed in other buffers;
     (setq TeX-error-report-switches
@@ -937,7 +968,22 @@ run of `TeX-run-TeX', use
     ;; reset error to nil (no error)
     (setq TeX-error-report-switches
 	  (plist-put TeX-error-report-switches
-		     (intern current-master) nil)))
+		     (intern current-master) nil))
+
+    ;; Store md5 hash of the index file before running LaTeX.
+    (and (memq major-mode '(doctex-mode latex-mode))
+	 (prog1 (file-exists-p
+		 (setq idx-file (expand-file-name (concat file ".idx"))))
+	   ;; In order to avoid confusion and pollution of
+	   ;; `LaTeX-idx-md5-alist', remove from this alist all md5 hashes of
+	   ;; the current index file.  Note `assq-delete-all' doesn't work with
+	   ;; string keys and has problems with non-list elements in Emacs 21
+	   ;; (see file tex-site.el).
+	   (while (setq element (assoc idx-file LaTeX-idx-md5-alist))
+	     (setq LaTeX-idx-md5-alist (delq element LaTeX-idx-md5-alist))))
+	 (with-temp-buffer
+	   (insert-file-contents idx-file)
+	   (push (cons idx-file (md5 (current-buffer))) LaTeX-idx-md5-alist))))
 
   ;; can we assume that TeX-sentinel-function will not be changed
   ;; during (TeX-run-format ..)? --pg
@@ -985,6 +1031,25 @@ run of `TeX-run-TeX', use
   "Create a process for NAME using COMMAND to convert FILE with ps2pdf."
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function 'TeX-ps2pdf-sentinel)
+    (if TeX-process-asynchronous
+        process
+      (TeX-synchronous-sentinel name file process))))
+
+(defun TeX-run-index (name command file)
+  "Create a process for NAME using COMMAND to compile the index file."
+  (let ((process (TeX-run-command name command file))
+	(element nil))
+    (setq TeX-sentinel-function 'TeX-index-sentinel)
+    ;; Same cleaning as that for `LaTeX-idx-md5-alist' in `TeX-run-TeX'.
+    (while (setq element
+		 ;; `file' has been determined in `TeX-command-buffer', while
+		 ;; this function has `TeX-master-directory' as
+		 ;; `default-directory', then we have to expand `file' file-name
+		 ;; in the same directory of `TeX-command-buffer'.
+		 (assoc (with-current-buffer TeX-command-buffer
+			    (expand-file-name (concat file ".idx")))
+			LaTeX-idx-changed-alist))
+      (setq LaTeX-idx-changed-alist (delq element LaTeX-idx-changed-alist)))
     (if TeX-process-asynchronous
         process
       (TeX-synchronous-sentinel name file process))))
@@ -1375,6 +1440,27 @@ Rerun to get mark in right position\\." nil t)
 	(t
 	 (message "%s%s%s" name ": problems after " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default)))
+
+  ;; Check whether the idx file changed.
+  (let ((idx-file nil) (master nil))
+    (and (file-exists-p
+	  (setq idx-file
+		(concat
+		 (setq master
+		       (with-current-buffer TeX-command-buffer
+			 (expand-file-name (TeX-active-master)))) ".idx")))
+	 ;; imakeidx package automatically runs makeindex, thus, we need to be
+	 ;; sure .ind file isn't newer than .idx.
+	 (TeX-check-files (concat master ".ind")
+			  (list (file-name-nondirectory master)) '("idx"))
+	 (with-temp-buffer
+	   (insert-file-contents idx-file)
+	   (not (equal
+		 ;; Compare old md5 hash of the idx file with the new one.
+		 (cdr (assoc idx-file LaTeX-idx-md5-alist))
+		 (md5 (current-buffer)))))
+	 (push (cons idx-file t) LaTeX-idx-changed-alist)))
+
   (unless TeX-error-list
     (run-hook-with-args 'TeX-after-TeX-LaTeX-command-finished-hook
 			(with-current-buffer TeX-command-buffer
@@ -1455,6 +1541,19 @@ Rerun to get mark in right position\\." nil t)
 	(setq TeX-command-next TeX-command-Show
 	      TeX-output-extension "pdf"))
     (message "ps2pdf finished successfully. "))))
+
+(defun TeX-index-sentinel (_process _name)
+  "Cleanup TeX output buffer after compiling index."
+  (goto-char (point-max))
+  (cond
+   ((search-backward "TeX Output exited abnormally" nil t)
+    (message "Index failed.  Type `%s' to display output."
+	     (substitute-command-keys
+              "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+   (t
+    (setq TeX-command-next TeX-command-default)
+    (message (concat "Index finished successfully. "
+		     "Run LaTeX again to get index right.")))))
 
 (defun TeX-command-sequence-sentinel (process string)
   "Call the appropriate sentinel for the current process.

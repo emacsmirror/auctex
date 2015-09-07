@@ -22,7 +22,7 @@ current section (or part, chapter, subsection, etc).  See
 @code{LaTeX-command-section} and
 @code{LaTeX-command-section-change-level}.
 @ifclear rawfile
-Also see the documentation at @xref{Starting a Command}.
+@xref{Starting a Command}, for details.
 @end ifclear
 
 @item
@@ -40,6 +40,9 @@ style for error messages.
 
 @item
 Indent @samp{\[...\]} math mode as a regular environment by default.
+
+@item
+Now @AUCTeX{} suggests to run @command{makeindex} when appropriate.
 
 @item
 @code{TeX-view-program-list} can contain, as third optional element of

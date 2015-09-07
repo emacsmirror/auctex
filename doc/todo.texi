@@ -138,9 +138,6 @@ This default value for TeX-master could then be controled with mapping
 based on the extension.
 
 @item
-Suggest @samp{makeindex} when appropriate.
-
-@item
 Use index files (when available) to speed up @kbd{C-c C-m include
 @key{RET}}.
 
