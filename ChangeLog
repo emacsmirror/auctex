@@ -1,3 +1,9 @@
+2015-09-08  Arash Esbati  <esbati@gmx.de>
+
+	* style/hyperref.el ("hyperref"): Add completion for starred
+	version of `\autoref' incl. fontification.
+	("hyperref"): Add fontification support for `\hypersetup'.
+
 2015-09-08  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-command-default): Fix bug where wrong command

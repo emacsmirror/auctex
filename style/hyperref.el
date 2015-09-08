@@ -230,6 +230,7 @@
     '("hypertarget" "Name" "Text")
     '("phantomsection" 0)
     '("autoref" TeX-arg-ref)
+    '("autoref*" TeX-arg-ref)
     '("ref*" TeX-arg-ref)
     '("pageref*" TeX-arg-ref)
     '("autopageref" TeX-arg-ref)
@@ -287,11 +288,13 @@
 				("hyperref" "{{{{")
 				("hyperlink" "{{")
 				("hypertarget" "{{")
-				("autoref" "{")
+				("autoref" "*{")
 				("ref" "*{")
 				("pageref" "*{")
 				("autopageref" "*{"))
 			      'reference)
+     (font-latex-add-keywords '(("hypersetup" "{"))
+			      'function)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords))
 
