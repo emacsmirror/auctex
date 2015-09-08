@@ -1,3 +1,8 @@
+2015-09-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-command-default): Fix bug where wrong command
+	was guessed for region files.
+
 2015-09-07  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (LaTeX-idx-md5-alist, LaTeX-idx-changed-alist): New

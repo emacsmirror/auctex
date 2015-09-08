@@ -700,9 +700,15 @@ omitted) and `TeX-region-file'."
 (defun TeX-command-default (name)
   "Guess the next command to be run on NAME."
   (let ((command-next nil))
-    (cond ((if (string-equal name TeX-region)
+    (cond (;; name might be absolute or relative, so expand it for
+	   ;; comparison.
+	   (if (string-equal (expand-file-name name)
+			     (expand-file-name TeX-region))
 	       (TeX-check-files (concat name "." (TeX-output-extension))
-				(list name)
+				;; Each original will be checked for all dirs
+				;; in `TeX-check-path' so this needs to be just
+				;; a filename without directory.
+				(list (file-name-nondirectory name))
 				TeX-file-extensions)
 	     (TeX-save-document (TeX-master-file)))
 	   TeX-command-default)
