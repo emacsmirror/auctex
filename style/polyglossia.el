@@ -29,9 +29,11 @@
 
 ;;; TODO:
 
-;; Create language specific styles with names `gloss-<lang>.el'.  They should
-;; add `text<lang>' macros, `<lang>' environments (`Arabic' for `arabic'
-;; language), and the others language-specific commands.
+;;  -- Create language specific styles with names `gloss-<lang>.el'.  They
+;;     should add `text<lang>' macros, `<lang>' environments (`Arabic' for
+;;     `arabic' language), and the others language-specific commands.
+;;
+;;  -- Make autoloading of these style files really work.
 
 ;;; Code:
 
@@ -47,7 +49,7 @@
 
 (defvar LaTeX-polyglossia-setkeys-regexp
   (concat "\\\\setkeys"
-	  "[ \t\n\r]*{\\([A-Za-z]+\\)}[ \t\n\r]*{\\([^}]\\)}")
+	  "[ \t\n\r]*{\\([A-Za-z]+\\)}[ \t\n\r]*{\\([^}]*\\)}")
   "Matches polyglossia languages options set using \"\setkeys\".")
 
 (defvar LaTeX-auto-polyglossia-lang nil
@@ -81,7 +83,8 @@
   ;; In each element of the alist, the key is the language, the second value is
   ;; the polyglossia command which set the language, the rest of values is the
   ;; list of options given to the language.
-  (let (tmp newelt opts otheropts)
+  (let (opts otheropts)
+    (setq LaTeX-polyglossia-lang-list nil)
     (mapc
      (lambda (elt)
        (mapc
@@ -93,17 +96,15 @@
 	  ;; "\setkeys".
 	  (setq otheropts
 		(car (cdr (assoc language LaTeX-auto-polyglossia-setkeys))))
-	  (setq newelt
-		(append
-		 (list language) (list (nth 1 elt))
-		 (unless (equal opts '(""))
-		   (LaTeX-listify-package-options (car opts)))
-		 (if otheropts (LaTeX-listify-package-options otheropts))))
-	  (add-to-list 'LaTeX-polyglossia-lang-list newelt t)
-	  (add-to-list 'tmp newelt t))
+	  (add-to-list
+	   'LaTeX-polyglossia-lang-list
+	   (append
+	    (list language) (list (nth 1 elt))
+	    (unless (equal opts '(""))
+	      (LaTeX-listify-package-options (car opts)))
+	    (if otheropts (LaTeX-listify-package-options otheropts))) t))
 	(LaTeX-listify-package-options (car elt))))
-     LaTeX-auto-polyglossia-lang)
-    (setq LaTeX-auto-polyglossia-lang tmp)))
+     LaTeX-auto-polyglossia-lang)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-polyglossia-prepare)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-polyglossia-cleanup)
@@ -133,13 +134,13 @@ The last language is the default one."
 			 (string-equal "mainlanguage" (nth 1 elt))))
        ;; Append the language to the list if it's the default one.
        (add-to-list 'active-languages (car elt) default))
-     (LaTeX-polyglossia-lang-list))
+     LaTeX-polyglossia-lang-list)
     active-languages))
 
 (defun LaTeX-polyglossia-lang-option-member (language option)
   "Return non-nil if OPTION has been given to polyglossia LANGUAGE.
 The value is actually the tail of the list of options given to LANGUAGE."
-  (member option (cdr (cdr (assoc language (LaTeX-polyglossia-lang-list))))))
+  (member option (cdr (cdr (assoc language LaTeX-polyglossia-lang-list)))))
 
 (defun LaTeX-arg-polyglossia-lang (_optional default multiple setkeys)
   "Prompt for language and its options with completion and insert them
@@ -216,6 +217,11 @@ argument, otherwise as a mandatory one."
 		     ;; ("localnumber")
 		     )))
 
+(defun LaTeX-polyglossia-load-languages ()
+  "Load style files of babel active languages."
+  (mapc (lambda (elt) (TeX-run-style-hooks (concat "gloss-" elt)))
+	(LaTeX-polyglossia-active-languages)))
+
 (TeX-add-style-hook
  "polyglossia"
  (lambda ()
@@ -224,9 +230,10 @@ argument, otherwise as a mandatory one."
     `(,LaTeX-polyglossia-lang-regexp (3 1 2) LaTeX-auto-polyglossia-lang))
    (TeX-auto-add-regexp
     `(,LaTeX-polyglossia-setkeys-regexp (1 2) LaTeX-auto-polyglossia-setkeys))
-   ;; Run style hooks for every active language.
-   (mapc (lambda (elt) (TeX-run-style-hooks (concat "gloss-" elt)))
-	 (LaTeX-polyglossia-active-languages))
+   ;; Run style hooks for every active language.  FIXME: actually
+   ;; `LaTeX-polyglossia-active-languages' returns nil here, so no style hook is
+   ;; automatically loaded.
+   (LaTeX-polyglossia-load-languages)
    (TeX-run-style-hooks "etoolbox" "makecmds" "xkeyval" "fontspec")
    (TeX-add-symbols
     '("setdefaultlanguage" (LaTeX-arg-polyglossia-lang  t  nil nil))
@@ -318,10 +325,6 @@ argument, otherwise as a mandatory one."
 (defvar LaTeX-polyglossia-hindi-options-list
   '(("numerals" ("Western" "Devanagari")))
   "Hindi language options for the polyglossia package.")
-
-(defvar LaTeX-polyglossia-italian-options-list
-  '(("babelshorthands" ("true" "false")))
-  "Italian language options for the polyglossia package.")
 
 (defvar LaTeX-polyglossia-lao-options-list
   '(("numerals" ("lao" "arabic")))

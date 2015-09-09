@@ -1,5 +1,21 @@
 2015-09-09  Mosè Giordano  <mose@gnu.org>
 
+	* style/polyglossia.el: Remove
+	`LaTeX-polyglossia-italian-options-list', moved to
+	gloss-italian.el.
+	(LaTeX-polyglossia-setkeys-regexp): Fix regexp.
+	(LaTeX-polyglossia-cleanup): Remove useless let-bound variables
+	and set `LaTeX-polyglossia-lang-list'.
+	(LaTeX-polyglossia-active-languages)
+	(LaTeX-polyglossia-lang-option-member): Use
+	`LaTeX-polyglossia-lang-list' variable instead of function.
+	(LaTeX-polyglossia-load-languages): New function.
+	("polyglossia"): Use it.
+
+	* style/gloss-italian.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
 	* style/polyglossia.el: New style file.
 
 	* Makefile.in (STYLESRC): Activate it.
