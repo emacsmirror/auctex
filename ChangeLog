@@ -1,3 +1,9 @@
+2015-09-09  Mosè Giordano  <mose@gnu.org>
+
+	* style/polyglossia.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
 2015-09-08  Arash Esbati  <esbati@gmx.de>
 
 	* style/hyperref.el ("hyperref"): Add completion for starred
