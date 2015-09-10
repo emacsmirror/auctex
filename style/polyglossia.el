@@ -32,8 +32,6 @@
 ;;  -- Create language specific styles with names `gloss-<lang>.el'.  They
 ;;     should add `text<lang>' macros, `<lang>' environments (`Arabic' for
 ;;     `arabic' language), and the others language-specific commands.
-;;
-;;  -- Make autoloading of these style files really work.
 
 ;;; Code:
 
