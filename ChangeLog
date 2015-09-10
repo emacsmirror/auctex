@@ -1,5 +1,8 @@
 2015-09-10  Mosè Giordano  <mose@gnu.org>
 
+	* style/gloss-italian.el ("gloss-italian"): Fix "textitalian"
+	macro and "italian" environment arguments.
+
 	* style/polyglossia.el (LaTeX-polyglossia-prepare): Clear
 	`LaTeX-polyglossia-lang-list'.
 	(LaTeX-polyglossia-cleanup): Remove clearing of

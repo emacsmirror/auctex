@@ -36,9 +36,10 @@
  "gloss-italian"
  (lambda ()
    (TeX-add-symbols
-    '("textitalian" [TeX-arg-key-val LaTeX-polyglossia-italian-options-list]))
+    '("textitalian" [TeX-arg-key-val LaTeX-polyglossia-italian-options-list] t))
    (LaTeX-add-environments
-    '("italian" [TeX-arg-key-val LaTeX-polyglossia-italian-options-list]))
+    '("italian"
+      LaTeX-env-args [TeX-arg-key-val LaTeX-polyglossia-italian-options-list]))
 
    (when (or (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands=true")
 	     (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands"))
