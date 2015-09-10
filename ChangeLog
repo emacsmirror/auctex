@@ -1,3 +1,14 @@
+2015-09-10  Mosè Giordano  <mose@gnu.org>
+
+	* style/polyglossia.el (LaTeX-polyglossia-prepare): Clear
+	`LaTeX-polyglossia-lang-list'.
+	(LaTeX-polyglossia-cleanup): Remove clearing of
+	`LaTeX-polyglossia-lang-list'.
+	(TeX-update-style-hook): Append
+	`LaTeX-polyglossia-load-languages'.
+	("polyglossia"): Remove `LaTeX-polyglossia-load-languages' from
+	here.
+
 2015-09-09  Mosè Giordano  <mose@gnu.org>
 
 	* style/polyglossia.el: Remove

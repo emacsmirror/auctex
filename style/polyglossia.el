@@ -59,9 +59,10 @@
   "Temporary for parsing polyglossia language options.")
 
 (defun LaTeX-polyglossia-prepare ()
-  "Clear `LaTex-auto-polyglossia-lang' before use."
+  "Clear some polyglossia variables before use."
   (setq LaTeX-auto-polyglossia-lang nil
-	LaTeX-auto-polyglossia-setkeys nil))
+	LaTeX-auto-polyglossia-setkeys nil
+	LaTeX-polyglossia-lang-list nil))
 
 (defun LaTeX-polyglossia-cleanup ()
   "Move languages and their options from
@@ -84,7 +85,6 @@
   ;; the polyglossia command which set the language, the rest of values is the
   ;; list of options given to the language.
   (let (opts otheropts)
-    (setq LaTeX-polyglossia-lang-list nil)
     (mapc
      (lambda (elt)
        (mapc
@@ -109,6 +109,9 @@
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-polyglossia-prepare)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-polyglossia-cleanup)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+;; Run style hooks for every active language.  This *has* to be done after
+;; `TeX-auto-parse'.
+(add-hook 'TeX-update-style-hook #'LaTeX-polyglossia-load-languages t)
 
 (defvar LaTeX-polyglossia-language-list
   '("albanian" "amharic" "arabic" "armenian" "asturian" "bahasai" "bahasam"
@@ -230,10 +233,6 @@ argument, otherwise as a mandatory one."
     `(,LaTeX-polyglossia-lang-regexp (3 1 2) LaTeX-auto-polyglossia-lang))
    (TeX-auto-add-regexp
     `(,LaTeX-polyglossia-setkeys-regexp (1 2) LaTeX-auto-polyglossia-setkeys))
-   ;; Run style hooks for every active language.  FIXME: actually
-   ;; `LaTeX-polyglossia-active-languages' returns nil here, so no style hook is
-   ;; automatically loaded.
-   (LaTeX-polyglossia-load-languages)
    (TeX-run-style-hooks "etoolbox" "makecmds" "xkeyval" "fontspec")
    (TeX-add-symbols
     '("setdefaultlanguage" (LaTeX-arg-polyglossia-lang  t  nil nil))
