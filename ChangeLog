@@ -1,5 +1,9 @@
 2015-09-13  Arash Esbati  <esbati@gmx.de>
 
+	* style/eso-pic.el (LaTeX-eso-pic-package-options-list): Rename
+	from `LaTeX-eso-pic-package-options'.
+	(LaTeX-eso-pic-package-options): Use renamed variable.
+
 	* style/AlegreyaSans.el: New file.
 
 	* Makefile.in (STYLESRC): Add new style.
