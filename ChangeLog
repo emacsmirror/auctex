@@ -2,6 +2,10 @@
 
 	* Makefile.in (STYLESRC): Add new style.
 
+	* style/Alegreya.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
 	* style/fontenc.el: New file.
 
 2015-09-10  Mosè Giordano  <mose@gnu.org>
