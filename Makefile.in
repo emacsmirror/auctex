@@ -151,7 +151,7 @@ STYLESRC = style/prosper.el \
 	   style/newpxtext.el style/newpxmath.el style/pdfpages.el \
 	   style/mnras.el     style/environ.el   style/polyglossia.el \
 	   style/vwcol.el     style/textpos.el   style/transparent.el \
-	   style/gloss-italian.el
+	   style/fontenc.el   style/gloss-italian.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

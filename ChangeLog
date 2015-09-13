@@ -1,3 +1,9 @@
+2015-09-13  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/fontenc.el: New file.
+
 2015-09-10  Mosè Giordano  <mose@gnu.org>
 
 	* style/gloss-italian.el ("gloss-italian"): Fix "textitalian"
