@@ -1,5 +1,7 @@
 2015-09-13  Arash Esbati  <esbati@gmx.de>
 
+	* style/AlegreyaSans.el: New file.
+
 	* Makefile.in (STYLESRC): Add new style.
 
 	* style/Alegreya.el: New file.
