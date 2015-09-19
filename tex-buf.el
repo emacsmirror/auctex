@@ -3285,7 +3285,7 @@ forward, if negative)."
 					   TeX-error-overview-buffer-name)
 			(set-window-dedicated-p (selected-window) t))
 		    (TeX-pop-to-buffer TeX-error-overview-buffer-name))))
-	    (error "No errror or warning to show"))
+	    (error "No error or warning to show"))
 	(error "No process for this document"))
     (error "Error overview is available only in Emacs 24 or later")))
 

@@ -1,3 +1,7 @@
+2015-09-19  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-error-overview): Fix typo in error message.
+
 2015-09-13  Arash Esbati  <esbati@gmx.de>
 
 	* style/eso-pic.el (LaTeX-eso-pic-package-options-list): Rename
