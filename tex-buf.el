@@ -1267,12 +1267,12 @@ Open the error overview if
 `TeX-error-overview-open-after-TeX-run' is non-nil and there are
 errors or warnings to show."
   (if (TeX-TeX-sentinel-check process name)
-      ()
+      (progn
+	(if TeX-parse-all-errors
+	    (TeX-parse-all-errors))
+	(if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
+	    (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
-    (if TeX-parse-all-errors
-	(TeX-parse-all-errors))
-    (if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
-	(TeX-error-overview))
     (if (with-current-buffer TeX-command-buffer
 	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
 	(setq TeX-command-next "Dvips")

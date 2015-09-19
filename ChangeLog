@@ -1,6 +1,7 @@
 2015-09-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-error-overview): Fix typo in error message.
+	(TeX-TeX-sentinel): Fix error parsing.
 
 2015-09-13  Arash Esbati  <esbati@gmx.de>
 
