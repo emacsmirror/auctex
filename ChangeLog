@@ -1,3 +1,10 @@
+2015-09-20  Mosè Giordano  <mose@gnu.org>
+
+	* .gitignore: Do not ignore auto.el.
+
+	* Makefile.in (install-metadata): auto.el is not there anymore,
+	we do not need to test if preview is enabled here.
+
 2015-09-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-error-overview): Fix typo in error message.

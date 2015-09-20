@@ -23,7 +23,6 @@ doc/preview-dtxdoc.texi
 doc/preview-latex.info
 doc/tex-ref.pdf
 doc/version.texi
-auto.el
 latex/prauctex.cfg
 latex/prauctex.def
 latex/prcounters.def
