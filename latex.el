@@ -4198,13 +4198,14 @@ environment in commented regions with the same comment prefix."
 	 (in-comment (TeX-in-commented-line))
 	 (comment-prefix (and in-comment (TeX-comment-prefix)))
 	 (case-fold-search nil))
-    (save-excursion
+    (let ((pt (point)))
       (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
       (unless (bolp)
 	(backward-char 1)
-	(and (looking-at regexp)
-	     (char-equal (char-after (1+ (match-beginning 0))) ?e)
-	     (setq level 0))))
+	(if (and (looking-at regexp)
+		 (char-equal (char-after (1+ (match-beginning 0))) ?e))
+	    (setq level 0)
+	  (goto-char pt))))
     (while (and (> level 0) (re-search-forward regexp nil t))
       (when (or (and LaTeX-syntactic-comments
 		     (eq in-comment (TeX-in-commented-line))

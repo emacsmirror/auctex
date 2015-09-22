@@ -1,3 +1,8 @@
+2015-09-22  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-find-matching-end): Find correct end when point
+	is already on the name in \end{name}.
+
 2015-09-20  Mosè Giordano  <mose@gnu.org>
 
 	* .gitignore: Do not ignore auto.el.
