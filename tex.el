@@ -6120,13 +6120,12 @@ NAME may be a package, a command, or a document."
 	  (dolist (elt docs)
 	    (setq completions (nconc (mapcar 'list (car elt)) completions)))
 	  ;; Query user.
-	  (setq doc (completing-read
-		     (if contained
-			 (format "Package, command, or document (default %s): "
-				 symbol)
-		       "Package, command, or document: ")
-		     completions))
-	  (setq name (if (string= doc "") symbol doc))))
+	  (setq name (completing-read
+		      (if contained
+			  (format "Package, command, or document (default %s): "
+				  symbol)
+			"Package, command, or document: ")
+		      completions nil nil nil nil symbol))))
       (if (not name)
 	  (message "No documentation specified")
 	;; XXX: Provide way to choose in case a symbol can be found in

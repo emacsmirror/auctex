@@ -1,3 +1,7 @@
+2015-09-24  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-doc): Use default argument of `completing-read'.
+
 2015-09-22  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-find-matching-end): Find correct end when point
