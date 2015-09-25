@@ -269,6 +269,7 @@
 
    ;; Do not indent the content of the "Form"-env; it is odd if the
    ;; whole document is indented.
+   (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list '("Form" current-indentation))
 
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")

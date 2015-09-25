@@ -1,5 +1,8 @@
 2015-09-25  Arash Esbati  <esbati@gmx.de>
 
+	* style/hyperref.el ("hyperref"): Make
+	`LaTeX-indent-environment-list' local before adding new env's.
+
 	* style/filecontents.el ("filecontents"): Make
 	`LaTeX-indent-environment-list' local before adding new env's.
 
