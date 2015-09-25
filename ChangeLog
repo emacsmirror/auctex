@@ -1,3 +1,22 @@
+2015-09-25  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Remove "abstract"
+	environment, it is not defined in latex.ltx.
+
+	* style/amsart.el ("amsart"): Add "abstract" environment.
+
+	* style/amsbook.el ("amsbook"): Ditto.
+
+	* style/article.el ("article"): Ditto.
+
+	* style/memoir.el ("memoir"): Ditto.
+
+	* style/report.el ("report"): Ditto.
+
+	* style/scrartcl.el ("scrartcl"): Ditto.
+
+	* style/scrreprt.el ("scrreprt"): Ditto.
+
 2015-09-24  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-doc): Use default argument of `completing-read'.

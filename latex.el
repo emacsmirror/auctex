@@ -5971,7 +5971,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
    "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
    "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
-   "abstract" "center" "titlepage" "verse" "eqnarray*"
+   "center" "titlepage" "verse" "eqnarray*"
 
    ;; The following are not defined in latex.el, but in a number of
    ;; other style files.  I'm to lazy to copy them to all the
