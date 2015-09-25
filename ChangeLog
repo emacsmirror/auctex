@@ -1,5 +1,8 @@
 2015-09-25  Arash Esbati  <esbati@gmx.de>
 
+	* style/filecontents.el ("filecontents"): Make
+	`LaTeX-indent-environment-list' local before adding new env's.
+
 	* style/fontenc.el: Fix mail address in Maintainer-header.
 
 2015-09-25  Mosè Giordano  <mose@gnu.org>

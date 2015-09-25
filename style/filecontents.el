@@ -40,6 +40,7 @@
     '("filecontents" LaTeX-env-filecontents)
     '("filecontents*" LaTeX-env-filecontents))
 
+   (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
 		'("filecontents" current-indentation))
    (add-to-list 'LaTeX-indent-environment-list
