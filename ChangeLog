@@ -1,5 +1,13 @@
 2015-09-25  Arash Esbati  <esbati@gmx.de>
 
+	* style/caption.el (LaTeX-caption-key-val-options): Fix values of hypcap-key.
+	(LaTeX-caption-update-key-val-options): Add support for
+	subcaption.el if loaded.
+	(LaTeX-arg-caption-captionbox): Do not query for the third
+	optional arg. if the second one is empty.
+	("caption"): Add support for all lowercase \continuedfloat*?.
+	("caption"): Fix fontification for \captionof.
+
 	* style/hyperref.el ("hyperref"): Make
 	`LaTeX-indent-environment-list' local before adding new env's.
 
