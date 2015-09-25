@@ -1,5 +1,9 @@
 2015-09-25  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/subcaption.el: New file.
+
 	* style/caption.el (LaTeX-caption-key-val-options): Fix values of hypcap-key.
 	(LaTeX-caption-update-key-val-options): Add support for
 	subcaption.el if loaded.
