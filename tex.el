@@ -4248,10 +4248,11 @@ non-nil, remove file extension."
 		   (if (string-match ";" dirs) ";" ":")))
 	   (unless TeX-kpathsea-path-delimiter
 	     (throw 'no-kpathsea nil))
-	   (setq dirs (delete "" (split-string
-				  dirs (concat "[\n\r"
-					       TeX-kpathsea-path-delimiter
-					       "]+"))))
+	   (setq dirs (TeX-delete-duplicate-strings
+		       (delete "" (split-string
+				   dirs (concat "[\n\r"
+						TeX-kpathsea-path-delimiter
+						"]+")))))
 	   (if (eq scope 'global)
 	       (delete "." dirs))
 	   (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
