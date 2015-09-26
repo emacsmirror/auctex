@@ -3413,6 +3413,15 @@ The algorithm is as follows:
 		     answer
 		   TeX-default-mode))))))
 
+(when (and (boundp 'tex--prettify-symbols-alist)
+	   (boundp 'prettify-symbols-compose-predicate))
+  (defun TeX--prettify-symbols-compose-p (start end match)
+    (and (tex--prettify-symbols-compose-p start end match)
+	 (not (let ((face (get-text-property end 'face)))
+		(if (consp face)
+		    (memq 'font-latex-verbatim-face face)
+		  (eq face 'font-latex-verbatim-face)))))))
+
 (defun VirTeX-common-initialization ()
   "Perform basic initialization."
   (kill-all-local-variables)
@@ -3479,14 +3488,13 @@ The algorithm is as follows:
     (TeX-source-correlate-mode 1))
 
   ;; Prettify Symbols mode
-  (when (and (boundp 'tex--prettify-symbols-alist)
-	     (boundp 'prettify-symbols-compose-predicate))
+  (when (fboundp 'TeX--prettify-symbols-compose-p)
     (set (make-local-variable 'prettify-symbols-alist) tex--prettify-symbols-alist)
     (TeX--if-macro-fboundp add-function
 	(add-function :override (local 'prettify-symbols-compose-predicate)
-		      #'tex--prettify-symbols-compose-p)
+		      #'TeX--prettify-symbols-compose-p)
       (set (make-local-variable 'prettify-symbols-compose-predicate)
-	   #'tex--prettify-symbols-compose-p)))
+	   #'TeX--prettify-symbols-compose-p)))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
