@@ -89,8 +89,8 @@ insert only a caption."
 
    ;; Make "subrefformat" available in key-vals of caption.el:
    (setq LaTeX-caption-key-val-options-local
-   	 (append LaTeX-subcaption-key-val-options
-   		 LaTeX-caption-key-val-options-local))
+	 (append LaTeX-subcaption-key-val-options
+		 LaTeX-caption-key-val-options-local))
 
    (TeX-add-symbols
     ;; Basic commands
