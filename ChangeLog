@@ -1,3 +1,8 @@
+2015-09-27  Arash Esbati  <esbati@gmx.de>
+
+	* style/longtable.el ("longtable"): Make package lengths available
+	through `LaTeX-add-lengths' and not `TeX-add-symbol'.
+
 2015-09-26  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-search-files-kpathsea): Remove duplicates
