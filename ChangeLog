@@ -1,5 +1,9 @@
 2015-09-27  Arash Esbati  <esbati@gmx.de>
 
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/newfloat.el: New file.
+
 	* style/longtable.el ("longtable"): Make package lengths available
 	through `LaTeX-add-lengths' and not `TeX-add-symbol'.
 
