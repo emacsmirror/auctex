@@ -54,9 +54,6 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
-
 ;; Needed for auto-parsing.
 (require 'tex)
 
@@ -106,15 +103,13 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
 	  (type (cadr flt-type)))
       (cond ((string-equal type "figure")
 	     (LaTeX-add-environments `(,flt LaTeX-env-figure))
-	     (pushnew `(,flt . LaTeX-figure-label)
-		      LaTeX-label-alist :test #'equal)
+	     (add-to-list 'LaTeX-label-alist `(,flt . LaTeX-figure-label) t)
 	     (when (fboundp 'reftex-add-label-environments)
 	       (reftex-add-label-environments
 		`((,flt ?f ,LaTeX-figure-label "~\\ref{%s}" caption nil nil)))))
 	    ((string-equal type "table")
 	     (LaTeX-add-environments `(,flt LaTeX-env-figure))
-	     (pushnew `(,flt . LaTeX-table-label)
-		      LaTeX-label-alist :test #'equal)
+	     (add-to-list 'LaTeX-label-alist `(,flt . LaTeX-table-label) t)
 	     (when (fboundp 'reftex-add-label-environments)
 	       (reftex-add-label-environments
 		`((,flt ?t ,LaTeX-table-label "~\\ref{%s}" caption nil nil)))))

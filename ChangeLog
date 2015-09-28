@@ -1,3 +1,10 @@
+2015-09-28  Mosè Giordano  <mose@gnu.org>
+
+	* style/newfloat.el: Do not require cl at loading time.
+	(LaTeX-newfloat-auto-cleanup): Append elements to
+	`LaTeX-label-alist' in order not to override possible custom
+	values.
+
 2015-09-27  Arash Esbati  <esbati@gmx.de>
 
 	* Makefile.in (STYLESRC): Add new style.
