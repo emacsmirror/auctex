@@ -115,9 +115,8 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
 		`((,flt ?t ,LaTeX-table-label "~\\ref{%s}" caption nil nil)))))
 	    ((string-equal type "verbatim")
 	     (LaTeX-add-environments flt)
-	     (make-local-variable 'LaTeX-indent-environment-list)
-	     (pushnew `(,flt current-indentation)
-		      LaTeX-indent-environment-list :test #'equal)
+	     (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+			  `(,flt current-indentation) t)
 	     (when (fboundp 'reftex-add-label-environments)
 	       (reftex-add-label-environments
 		`((,flt ?l "lst:" "~\\ref{%s}" caption nil nil)))))

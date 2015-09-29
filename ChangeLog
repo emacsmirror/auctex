@@ -1,3 +1,8 @@
+2015-09-29  Mosè Giordano  <mose@gnu.org>
+
+	* style/newfloat.el (LaTeX-newfloat-auto-cleanup): Replace another
+	`pushnew' with `add-to-list', previously overlooked.
+
 2015-09-28  Mosè Giordano  <mose@gnu.org>
 
 	* style/newfloat.el: Do not require cl at loading time.
