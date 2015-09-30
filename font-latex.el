@@ -2022,7 +2022,7 @@ END marks boundaries for searching for quotation ends."
 
 ;; Here used to be some code which tried to magically make things work and
 ;; thereby broke other stuff.  If you want to use font-latex with stock
-;; latex-mode, then please just add `font-lock-setup' to `'latex-mode-hook'
+;; latex-mode, then please just add `font-latex-setup' to `latex-mode-hook'
 ;; yourself.
 
 ;;; Byte-compilation of generated functions
