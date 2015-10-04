@@ -1,3 +1,8 @@
+2015-10-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-math-environments): Add math
+	environment.
+
 2015-10-04  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-command-list): Add MkIV to `TeX-command-list'.

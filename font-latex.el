@@ -1710,7 +1710,7 @@ END marks boundaries for searching for environment ends."
       nil)))
 
 (defcustom font-latex-math-environments
-  '("display" "displaymath" "equation" "eqnarray" "gather" "multline"
+  '("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
     "align" "alignat" "xalignat" "xxalignat" "flalign")
   "List of math environment names for font locking."
   :type '(repeat string)
