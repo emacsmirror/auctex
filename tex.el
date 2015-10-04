@@ -141,6 +141,8 @@ If nil, none is specified."
     ("ConTeXt Full" "texexec %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
+    ("MkIV" "context %(extraopts) %S %t" TeX-run-TeX nil
+     (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
     ,(if (or window-system (getenv "DISPLAY"))
