@@ -1,3 +1,14 @@
+2015-10-04  Mosè Giordano  <mose@gnu.org>
+
+	* context.el (ConTeXt-Mark-version): New customizable and
+	safe-local variable.
+	(ConTeXt-expand-command): New function.
+	(ConTeXt-expand-options): Use `ConTeXt-Mark-version'.
+
+	* tex.el (TeX-command-list): Use %(cntxcom) expander in all
+	ConTeXt programs.  Remove MkIV entry.
+	(TeX-expand-list): Add %(cntxcom).
+
 2015-10-04  Tassilo Horn  <tsdh@gnu.org>
 
 	* font-latex.el (font-latex-math-environments): Add math

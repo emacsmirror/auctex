@@ -136,12 +136,10 @@ If nil, none is specified."
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
-    ("ConTeXt" "texexec --once --texutil %(extraopts) %(execopts)%t"
+    ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
      TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
-    ("ConTeXt Full" "texexec %(extraopts) %(execopts)%t"
+    ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
-     (context-mode) :help "Run ConTeXt until completion")
-    ("MkIV" "context %(extraopts) %S %t" TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
@@ -482,6 +480,7 @@ string."
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
     ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
     ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
+    ("%(cntxcom)" ConTeXt-expand-command)
     ("%(execopts)" ConTeXt-expand-options)
     ("%(extraopts)" (lambda () TeX-command-extra-options))
     ("%S" TeX-source-correlate-expand-options)
