@@ -571,11 +571,11 @@ inserted after the sectioning command."
     (cond ((TeX-TeX-sentinel-check process name))
 	  ((re-search-forward "fatal error: " nil t)
 	   (message (concat name ": problems after "
-			    (TeX-current-pages name)))
+			    (TeX-current-pages)))
 	   (setq TeX-command-next TeX-command-default))
 	  (t
 	   (message (concat name ": successfully formatted "
-			    (TeX-current-pages name)))
+			    (TeX-current-pages)))
 	   (setq TeX-command-next TeX-command-Show))))
    ;; Mark II
    (t
