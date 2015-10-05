@@ -87,7 +87,7 @@
 
 (defun LaTeX-newfloat-auto-prepare ()
   "Clear `LaTeX-auto-newfloat-DeclareFloatingEnvironment' before parsing."
-  (setq	LaTeX-auto-newfloat-DeclareFloatingEnvironment nil))
+  (setq LaTeX-auto-newfloat-DeclareFloatingEnvironment nil))
 
 (defun LaTeX-newfloat-auto-cleanup ()
   "Process definded floats with \\DeclareFloatingEnvironment.
@@ -97,7 +97,9 @@ AUCTeX (\"figure\", \"table\" or \"verbatim\"), update
 loaded, add the new floating environment via
 `reftex-add-label-environments'.  For \"verbatim\" environments,
 update `LaTeX-indent-environment-list' to suppress indentation.
-Also define the macros \"listofENVs\" and \"listofENVes\"."
+If `caption.el' is loaded, add the new floating environment to
+`LaTeX-caption-supported-float-types'.  Also define the macros
+\"listofENVs\" and \"listofENVes\"."
   (dolist (flt-type (LaTeX-newfloat-DeclareFloatingEnvironment-list))
     (let ((flt  (car  flt-type))
 	  (type (cadr flt-type)))
@@ -122,6 +124,9 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
 		`((,flt ?l "lst:" "~\\ref{%s}" caption nil nil)))))
 	    (t
 	     (LaTeX-add-environments flt)))
+      (when (boundp 'LaTeX-caption-supported-float-types)
+	(add-to-list (make-local-variable 'LaTeX-caption-supported-float-types)
+		     flt))
       (if (string-equal "e" (substring flt -1))
 	  (TeX-add-symbols (concat "listof" flt "s"))
 	(TeX-add-symbols
@@ -144,7 +149,7 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
    (setq LaTeX-newfloat-key-val-options-local
 	 (copy-alist LaTeX-newfloat-key-val-options))
 
-   (if (= (LaTeX-largest-level) 1)
+   (if (< (LaTeX-largest-level) 2)
        (add-to-list 'LaTeX-newfloat-key-val-options-local
 		    '("within" ("chapter" "section" "none")))
      (add-to-list 'LaTeX-newfloat-key-val-options-local
@@ -165,15 +170,7 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt nil nil "Floating environment")
 		    (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-      (TeX-arg-eval
-       (lambda ()
-	 (let ((keyvals (TeX-read-key-val
-			 nil
-			 (append (if (= (LaTeX-largest-level) 1)
-				     '(("within" ("chapter" "section" "none")))
-				   '(("within" ("section" "none"))))
-				 LaTeX-newfloat-key-val-options))))
-	   (format "%s" keyvals)))))
+      (TeX-arg-key-val LaTeX-newfloat-key-val-options-local))
 
     '("ForEachFloatingEnvironment" t)
     '("ForEachFloatingEnvironment*" t)
@@ -190,7 +187,7 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
 	 (let ((keyvals (TeX-read-key-val
 			 nil
 			 (append '(("chapterlistsgap"))
-				 (if (= (LaTeX-largest-level) 1)
+				 (if (< (LaTeX-largest-level) 2)
 				     '(("within" ("chapter" "section" "none")))
 				   '(("within" ("section" "none"))))))))
 	   (format "%s" keyvals))))))
@@ -212,7 +209,7 @@ Also define the macros \"listofENVs\" and \"listofENVes\"."
    t
    (append
     '(("chapterlistsgap"))
-    (if (= (LaTeX-largest-level) 1)
+    (if (< (LaTeX-largest-level) 2)
 	'(("within" ("chapter" "section" "none")))
       '(("within" ("section" "none")))))))
 
