@@ -1292,17 +1292,33 @@ errors or warnings to show."
 Return nil ifs no errors were found."
   (save-excursion
     (goto-char (point-max))
-    (if (re-search-backward "^Output written on \\(.*?\\) (\\([0-9]+\\) page"
-			    nil t)
+    (cond
+     ((and (string-match "ConTeXt" name)
+	   (with-current-buffer TeX-command-buffer
+	     (string= ConTeXt-Mark-version "IV")))
+      (when (re-search-backward " > result saved in file: \\(.*?\\), " nil t)
 	(let ((output-file (TeX-match-buffer 1)))
-	  (setq TeX-current-page (concat "{" (TeX-match-buffer 2) "}"))
 	  ;; Shave off quotation marks if present.
 	  (when (string-match "\\`\"\\(.*\\)\"\\'" output-file)
 	    (setq output-file (match-string 1 output-file)))
 	  (setq TeX-output-extension
 		(if (string-match "\\.\\([^.]*\\)$" output-file)
 		    (match-string 1 output-file)
-		  "dvi")))))
+		  "dvi")))
+	(if (re-search-forward ", \\([0-9]+\\) shipped pages, " nil t)
+	    (setq TeX-current-page (concat "{" (TeX-match-buffer 1) "}")))))
+     (t
+      (if (re-search-backward "^Output written on \\(.*?\\) (\\([0-9]+\\) page"
+			      nil t)
+	  (let ((output-file (TeX-match-buffer 1)))
+	    (setq TeX-current-page (concat "{" (TeX-match-buffer 2) "}"))
+	    ;; Shave off quotation marks if present.
+	    (when (string-match "\\`\"\\(.*\\)\"\\'" output-file)
+	      (setq output-file (match-string 1 output-file)))
+	    (setq TeX-output-extension
+		  (if (string-match "\\.\\([^.]*\\)$" output-file)
+		      (match-string 1 output-file)
+		    "dvi")))))))
   (if process (TeX-format-mode-line process))
   (if (re-search-forward "^\\(!\\|.*:[0-9]+:\\) " nil t)
       (progn

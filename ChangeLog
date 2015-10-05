@@ -1,3 +1,9 @@
+2015-10-05  Mosè Giordano  <mose@gnu.org>
+
+	* context.el (TeX-ConTeXt-sentinel): Parse ConTeXt Mark IV output.
+
+	* tex-buf.el (TeX-TeX-sentinel-check): Ditto.
+
 2015-10-05  Arash Esbati  <esbati@gmx.de>
 
 	* style/newfloat.el (LaTeX-newfloat-auto-cleanup): Check if

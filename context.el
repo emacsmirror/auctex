@@ -564,28 +564,43 @@ inserted after the sectioning command."
 ;; Various
 (defun TeX-ConTeXt-sentinel (process name)
   "Cleanup TeX output buffer after running ConTeXt."
-  (cond ((TeX-TeX-sentinel-check process name))
-	((save-excursion
-	   ;; in a full ConTeXt run there will multiple texutil
-	   ;; outputs. Just looking for "another run needed" would
-	   ;; find the first occurence
-	   (goto-char (point-max))
-	   (re-search-backward "TeXUtil " nil t)
-	   (re-search-forward "another run needed" nil t))
-	 (message (concat "You should run ConTeXt again "
-			  "to get references right, "
-			  (TeX-current-pages)))
-	 (setq TeX-command-next TeX-command-default))
-	((re-search-forward "removed files :" nil t)
-	 (message "sucessfully cleaned up"))
-	((re-search-forward "^ ?TeX\\(Exec\\|Util\\)" nil t) ;; strange regexp --pg
-	 (message (concat name ": successfully formatted "
-			  (TeX-current-pages)))
-	 (setq TeX-command-next TeX-command-Show))
-	(t
-	 (message (concat name ": problems after "
-			  (TeX-current-pages)))
-	 (setq TeX-command-next TeX-command-default))))
+  (cond
+   ;; Mark IV
+   ((with-current-buffer TeX-command-buffer
+      (string= ConTeXt-Mark-version "IV"))
+    (cond ((TeX-TeX-sentinel-check process name))
+	  ((re-search-forward "fatal error: " nil t)
+	   (message (concat name ": problems after "
+			    (TeX-current-pages name)))
+	   (setq TeX-command-next TeX-command-default))
+	  (t
+	   (message (concat name ": successfully formatted "
+			    (TeX-current-pages name)))
+	   (setq TeX-command-next TeX-command-Show))))
+   ;; Mark II
+   (t
+    (cond ((TeX-TeX-sentinel-check process name))
+	  ((save-excursion
+	     ;; in a full ConTeXt run there will multiple texutil
+	     ;; outputs. Just looking for "another run needed" would
+	     ;; find the first occurence
+	     (goto-char (point-max))
+	     (re-search-backward "TeXUtil " nil t)
+	     (re-search-forward "another run needed" nil t))
+	   (message (concat "You should run ConTeXt again "
+			    "to get references right, "
+			    (TeX-current-pages)))
+	   (setq TeX-command-next TeX-command-default))
+	  ((re-search-forward "removed files :" nil t)
+	   (message "sucessfully cleaned up"))
+	  ((re-search-forward "^ ?TeX\\(Exec\\|Util\\)" nil t) ;; strange regexp --pg
+	   (message (concat name ": successfully formatted "
+			    (TeX-current-pages)))
+	   (setq TeX-command-next TeX-command-Show))
+	  (t
+	   (message (concat name ": problems after "
+			    (TeX-current-pages)))
+	   (setq TeX-command-next TeX-command-default))))))
 
 
 ;;; Environments
