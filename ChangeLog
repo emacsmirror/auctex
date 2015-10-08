@@ -1,3 +1,9 @@
+2015-10-08  Arash Esbati  <esbati@gmx.de>
+
+	* style/wrapfig.el ("wrapfig"): Check for new floating
+	environments definded through "newfloat.el" and offer them as
+	completion to "wrapfloat" environment.
+
 2015-10-05  Mosè Giordano  <mose@gnu.org>
 
 	* context.el (TeX-ConTeXt-sentinel): Parse ConTeXt Mark IV output.
