@@ -1,5 +1,16 @@
 2015-10-08  Arash Esbati  <esbati@gmx.de>
 
+	* style/listings.el (LaTeX-listings-key-val-options-local): New
+	variable used for all key-val queries.
+	("listings-lstdefinestyle"): Add parsing support for
+	"\lstdefinestyle".
+	(LaTeX-listings-lstnewenvironment-regexp): Add missing "s" to
+	"listing".
+	(LaTeX-listings-update-style-key): New function adding newly
+	defined values to "style" key in
+	`LaTeX-listings-key-val-options-local'.
+	("listings"): Extend "lstdefinestyle".
+
 	* style/wrapfig.el ("wrapfig"): Check for new floating
 	environments definded through "newfloat.el" and offer them as
 	completion to "wrapfloat" environment.
