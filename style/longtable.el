@@ -58,8 +58,6 @@
 			  (LaTeX-newline)
 			  (indent-according-to-mode)))))))
    (TeX-add-symbols
-    ;; Parameter
-    '("LTchunksize" 0)
     ;; Commands to end table rows
     '("endhead" 0)
     '("endfirsthead" 0)
@@ -71,6 +69,9 @@
    ;; These parameters are set with \setlength
    (LaTeX-add-lengths
     "LTleft" "LTright" "LTpre" "LTpost" "LTcapwidth")
+
+   ;; This parameter is set with \setcounter
+   (LaTeX-add-counters "LTchunksize")
 
    ;; Use the enhanced table formatting
    (add-to-list 'LaTeX-indent-environment-list

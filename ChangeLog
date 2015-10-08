@@ -1,5 +1,8 @@
 2015-10-08  Arash Esbati  <esbati@gmx.de>
 
+	* style/longtable.el ("longtable"): Use `LaTeX-add-counters' on
+	"LTchunksize" and not `TeX-add-symbols'.
+
 	* style/enumitem.el (LaTeX-arg-SetEnumitemKey): Remove unused
 	`prompt' from arguments list.
 	(LaTeX-arg-SetEnumitemValue): ditto.
