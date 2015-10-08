@@ -1,3 +1,17 @@
+2015-10-08  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-expand-list-builtin): New variable.
+	(TeX-expand-list): Move all entries to `TeX-expand-list-builtin'
+	and update docstring.
+	(TeX-expand-list): New function.
+
+	* tex-buf.el (TeX-command-expand): Use `TeX-expand-list' function.
+
+	* doc/auctex.texi (Starting Viewers): Mention
+	`TeX-expand-list-builtin'.
+
+	* doc/changes.texi: Mention change to `TeX-expand-list'.
+
 2015-10-08  Arash Esbati  <esbati@gmx.de>
 
 	* style/longtable.el ("longtable"): Use `LaTeX-add-counters' on

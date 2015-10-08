@@ -114,11 +114,11 @@ If nil, none is specified."
   :type 'hook
   :group 'TeX-misc)
 
-;; This is the major configuration variable.  Most sites will only
-;; need to change the second string in each entry, which is the name
-;; of a command to send to the shell.  If you use other formatters
-;; like AMSLaTeX or AMSTeX, you can add those to the list.  See
-;; TeX-expand-list for a description of the % escapes
+;; This is the major configuration variable.  Most sites will only need to
+;; change the second string in each entry, which is the name of a command to
+;; send to the shell.  If you use other formatters like AMSLaTeX or AMSTeX, you
+;; can add those to the list.  See `TeX-expand-list' and
+;; `TeX-expand-list-builtin' for a description of the % escapes
 
 (defcustom TeX-command-list
   `(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
@@ -431,9 +431,8 @@ string."
 ;; TeX-command-list.  Not likely to be changed, but you may e.g. want
 ;; to handle .ps files.
 
-(defcustom TeX-expand-list
-  '(("%p" TeX-printer-query)		;%p must be the first entry
-    ("%q" (lambda ()
+(defvar TeX-expand-list-builtin
+  '(("%q" (lambda ()
 	    (TeX-printer-query t)))
     ("%V" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
@@ -550,13 +549,31 @@ string."
     ("%a" (lambda nil (prin1-to-string (expand-file-name (buffer-file-name)))))
     ;; the following is for preview-latex.
     ("%m" preview-create-subdirectory))
-  "List of expansion strings for TeX command names.
+  "List of built-in expansion strings for TeX command names.
 
-Each entry is a list with two or more elements.  The first element is
-the string to be expanded.  The second element is the name of a
-function returning the expanded string when called with the remaining
-elements as arguments.  The special value `file' will be expanded to
-the name of the file being processed, with an optional extension."
+This should not be changed by the user who can use
+`TeX-expand-list' variable.  The latter variable also contains a
+description of the data format.
+
+Programs should not use these variables directly but the function
+`TeX-expand-list'.")
+
+(defcustom TeX-expand-list nil
+  "List of expansion strings for TeX command names defined by the user.
+
+Each entry is a list with two or more elements.  The first
+element is the string to be expanded.  The second element is the
+name of a function returning the expanded string when called with
+the remaining elements as arguments.  The special value `file'
+will be expanded to the name of the file being processed, with an
+optional extension.
+
+Built-in expansions provided in `TeX-expand-list-builtin' can be
+overwritten by defining expansions strings with the same
+expander.  Only \"%p\" expander cannot be overwritten.
+
+Programs should not use these variables directly but the function
+`TeX-expand-list'."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Key")
 			(sexp :tag "Expander")
@@ -564,6 +581,16 @@ the name of the file being processed, with an optional extension."
 				:tag "Arguments"
 				(sexp :format "%v")))))
 
+(defun TeX-expand-list ()
+  "Complete list of expansion strings for TeX command names.
+
+Concatenate `TeX-expand-list' and `TeX-expand-list-bultin' making
+sure \"%p\" is the first entry."
+  (append
+   ;; %p must be the first entry, see `TeX-print-command'.
+   '(("%p" TeX-printer-query))
+   TeX-expand-list
+   TeX-expand-list-builtin))
 
 ;; The following dependencies are not done with autoload cookies since
 ;; they are only useful when tex.el is loaded, anyway.  tex-buf.el

@@ -49,6 +49,13 @@ Now @AUCTeX{} suggests to run @command{makeindex} when appropriate.
 each item, the name of the executable(s) needed to open the viewer.
 
 @item
+@code{TeX-expand-list} variable has been split into
+@code{TeX-expand-list} and @code{TeX-expand-list-builtin}.  Only the
+former is intended to be customized by the user, the latter contains
+built-in expanders.  You might want to keep in @code{TeX-expand-list}
+only new expansion strings.
+
+@item
 When new option @code{TeX-check-engine} is non-nil, before running
 @LaTeX{} commands @AUCTeX{} will check whether the correct engine has
 been set, based upon known restrictions posed by @LaTeX{} packages.

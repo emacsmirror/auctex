@@ -3124,14 +3124,15 @@ conditionalized by prefixing them with predicates from
 @code{TeX-view-predicate-list} or
 @code{TeX-view-predicate-list-builtin}.  (See the doc string for the
 exact format to use.)  The command line can also contain placeholders as
-defined in @code{TeX-expand-list} which are expanded before the viewer
-is called.
+defined in @code{TeX-expand-list} and @code{TeX-expand-list-builtin}
+which are expanded before the viewer is called.
 
 The third element of each item is a string, or a list of strings, with
 the name of the executable, or executables, needed to open the output
-file in the viewer.  Placeholders defined in @code{TeX-expand-list} can
-be used here.  This element is optional and is used to check whether the
-viewer is actually available on the system.
+file in the viewer.  Placeholders defined in @code{TeX-expand-list} and
+@code{TeX-expand-list-builtin} can be used here.  This element is
+optional and is used to check whether the viewer is actually available
+on the system.
 
 A built-in viewer spec from @code{TeX-view-program-list-builtin} can be
 overwritten by defining a new viewer spec with the same name.
@@ -3139,10 +3140,10 @@ overwritten by defining a new viewer spec with the same name.
 
 Note that the viewer selection and invocation as described above will
 only work if certain default settings in @AUCTeX{} are intact.  For one,
-the whole viewer selection machinery will only be triggered if the
-@samp{%V} expander in @code{TeX-expand-list} is unchanged.  So if you
-have trouble with the viewer invocation you might check if there is an
-older customization of the variable in place.  In addition, the use of a
+the whole viewer selection machinery will only be triggered if there is
+no @samp{%V} expander in @code{TeX-expand-list}.  So if you have trouble
+with the viewer invocation you might check if there is an older
+customization of the variable in place.  In addition, the use of a
 function in @code{TeX-view-program-list} only works if the View command
 in @code{TeX-command-list} makes use of the hook
 @code{TeX-run-discard-or-function}.

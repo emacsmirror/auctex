@@ -502,7 +502,7 @@ without further expansion."
 		(list "%%" (lambda nil
 			     (setq pos (1+ pos))
 			     "%"))
-		(or list TeX-expand-list))
+		(or list (TeX-expand-list)))
 	  pat (regexp-opt (mapcar #'car list)))
     (while (setq pos (string-match pat command pos))
       (setq string (match-string 0 command)
