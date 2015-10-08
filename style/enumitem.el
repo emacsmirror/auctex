@@ -221,7 +221,7 @@ key-val and the first item."
 		(current-fill-column)))
     (LaTeX-fill-paragraph nil)))
 
-(defun LaTeX-arg-SetEnumitemKey (optional &optional prompt)
+(defun LaTeX-arg-SetEnumitemKey (optional)
   "Ask for a new key to be defined and add it to
 `LaTeX-enumitem-key-val-options-local'."
   (LaTeX-enumitem-update-key-val-options)
@@ -239,7 +239,7 @@ key-val and the first item."
 ;; the elements and pass the result to
 ;; `LaTeX-add-enumitem-SetEnumitemValues'.  It will vanish upon next
 ;; invocation of `C-c C-n'.
-(defun LaTeX-arg-SetEnumitemValue (optional &optional prompt)
+(defun LaTeX-arg-SetEnumitemValue (optional)
   "Ask for a new value added to an existing key incl. the final
 replacement of the value."
   (LaTeX-enumitem-update-key-val-options)

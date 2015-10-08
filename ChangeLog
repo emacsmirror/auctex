@@ -1,5 +1,9 @@
 2015-10-08  Arash Esbati  <esbati@gmx.de>
 
+	* style/enumitem.el (LaTeX-arg-SetEnumitemKey): Remove unused
+	`prompt' from arguments list.
+	(LaTeX-arg-SetEnumitemValue): ditto.
+
 	* style/listings.el (LaTeX-listings-key-val-options-local): New
 	variable used for all key-val queries.
 	("listings-lstdefinestyle"): Add parsing support for
