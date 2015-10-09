@@ -3935,8 +3935,8 @@ space does not end a sentence, so don't break a line there."
 		     (if (member match-string '("$" "$$"))
 			 (save-excursion
 			   (skip-chars-backward "$")
-			   (not (TeX-search-backward-unescaped
-				 match-string (line-beginning-position) t)))
+			   (TeX-search-backward-unescaped
+			    match-string (line-beginning-position) t))
 		       (texmathp-match-switch (line-beginning-position)))))
 	      (save-excursion
 		(skip-chars-forward "^ \n")

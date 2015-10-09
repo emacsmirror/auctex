@@ -1,3 +1,8 @@
+2015-10-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Fill $...$ like
+	\(...\) (bug#21645)
+
 2015-10-08  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (TeX-expand-list-builtin): New variable.
