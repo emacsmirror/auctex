@@ -1,3 +1,8 @@
+2015-10-13  Mosè Giordano  <mose@gnu.org>
+
+	* style/pstricks.el ("pstricks"): Do not disable PDF mode if XeTeX
+	engine is used.  Suggested by Mandar Mitra.
+
 2015-10-09  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Fill $...$ like
