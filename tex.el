@@ -778,18 +778,57 @@ overlays."
 edit-utils >= 2.32 for XEmacs.")))
 
 (if (fboundp 'completing-read-multiple)
-    (defun TeX-completing-read-multiple
-	(prompt table &optional predicate require-match initial-input
-		hist def inherit-input-method)
-      "Like `completing-read-multiple' which see.
+    (if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
+	    (>= emacs-major-version 25))
+	;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
+	;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
+	;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
+	(defun TeX-completing-read-multiple
+	    (prompt table &optional predicate require-match initial-input
+		    hist def inherit-input-method)
+	  "Like `completing-read-multiple' which see.
+Retain zero-length substrings but ensure that empty input results
+in nil across different emacs versions."
+	  (unwind-protect
+	      (progn
+		(add-hook 'choose-completion-string-functions
+			  'crm--choose-completion-string)
+		(let* ((minibuffer-completion-table #'crm--collection-fn)
+		       (minibuffer-completion-predicate predicate)
+		       ;; see completing_read in src/minibuf.c
+		       (minibuffer-completion-confirm
+			(unless (eq require-match t) require-match))
+		       (crm-completion-table table)
+		       (map (if require-match
+				crm-local-must-match-map
+			      crm-local-completion-map))
+		       ;; If the user enters empty input, `read-from-minibuffer'
+		       ;; returns the empty string, not DEF.
+		       (input (read-from-minibuffer
+			       prompt initial-input map
+			       nil hist def inherit-input-method))
+		       result)
+		  (and def (string-equal input "") (setq input def))
+		  (if (equal (setq result (split-string input crm-separator))
+			     '(""))
+		      nil
+		    result)))
+	    (remove-hook 'choose-completion-string-functions
+			 'crm--choose-completion-string)))
+      ;; For GNU Emacs <= 24.3.
+      (defun TeX-completing-read-multiple
+	  (prompt table &optional predicate require-match initial-input
+		  hist def inherit-input-method)
+	"Like `completing-read-multiple' which see.
 Ensures that empty input results in nil across different emacs versions."
-      (let ((result (completing-read-multiple prompt table predicate
-					      require-match initial-input
-					      hist def inherit-input-method)))
-	(if (equal result '("")) nil result)))
+	(let ((result (completing-read-multiple prompt table predicate
+						require-match initial-input
+						hist def inherit-input-method)))
+	  (if (equal result '("")) nil result))))
+  ;; For XEmacs.
   (defun TeX-completing-read-multiple
-    (prompt table &optional predicate require-match initial-input
-	    hist def inherit-input-method)
+      (prompt table &optional predicate require-match initial-input
+	      hist def inherit-input-method)
     "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs.
 The XEmacs package edit-utils-2.32 includes `crm.el'."
     (multi-prompt (if (boundp 'crm-separator) crm-separator ",") nil prompt

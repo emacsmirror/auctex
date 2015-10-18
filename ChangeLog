@@ -1,3 +1,8 @@
+2015-10-18  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (fboundp): Define a `TeX-completing-read-multiple'
+	version for GNU Emacs >= 24.4.  Fixes bug#19504.
+
 2015-10-13  Mosè Giordano  <mose@gnu.org>
 
 	* style/pstricks.el ("pstricks"): Do not disable PDF mode if XeTeX
