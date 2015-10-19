@@ -1,3 +1,8 @@
+2015-10-19  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-command): Check that AUCTeX can find a working
+	TeX distribution before running some *TeX commands.
+
 2015-10-18  Mosè Giordano  <mose@gnu.org>
 
 	* tex.el (fboundp): Define a `TeX-completing-read-multiple'

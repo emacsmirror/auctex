@@ -479,6 +479,18 @@ been set."
       (if (get-buffer TeX-error-overview-buffer-name)
 	  (kill-buffer TeX-error-overview-buffer-name)))
 
+    ;; Before running some commands, check that AUCTeX is able to find "tex"
+    ;; program.
+    (and (member name '("TeX" "LaTeX" "AmSTeX" "ConTeXt" "ConTeXt Full"))
+	 (not (executable-find TeX-command))
+	 (error (format "ERROR: AUCTeX cannot find a working TeX distribution.
+Make sure you have one and that TeX binaries are in PATH environment variable%s"
+			(if (eq system-type 'darwin)
+			    ".
+If you are using OS X El Capitan or later
+remember to add /Library/TeX/texbin/ to your PATH"
+			  ""))))
+
     ;; Now start the process
     (setq file (funcall file))
     (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
