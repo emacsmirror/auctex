@@ -31,9 +31,15 @@
 ;; May 2015: The style detects new environments defined with
 ;; `\lstnewenvironment'.  Users need to invoke `C-c C-n' for this.
 ;;
+;; October 2015: The style detects new "styles" defined with
+;; `\lstdefinestyle' and offers them during key-value query.
+;;
 ;; FIXME: Please make me more sophisticated!
 
 ;;; Code:
+
+;; Needed for compiling `pushnew':
+(eval-when-compile (require 'cl))
 
 ;; The following are options taken from chapter 4 of the listings
 ;; manual (2007/02/22 Version 1.4).
@@ -220,11 +226,16 @@
     ("multicolumn"))
   "Key=value options for listings macros and environments.")
 
+(defvar LaTeX-listings-key-val-options-local nil
+  "Buffer-local Key=value options for listings macros and environments.")
+(make-variable-buffer-local 'LaTeX-listings-key-val-options-local)
+
+;; Setup for \lstnewenvironment:
 (defvar LaTeX-auto-listings-lstnewenvironment nil
   "Temporary for parsing the arguments of `\\lstnewenvironment'
 from `listings' package.")
 
-(defvar LaTeX-listing-lstnewenvironment-regexp
+(defvar LaTeX-listings-lstnewenvironment-regexp
   `(,(concat "\\\\lstnewenvironment"
 	     "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
 	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
@@ -232,12 +243,36 @@ from `listings' package.")
     (1 2 3) LaTeX-auto-listings-lstnewenvironment)
   "Matches the argument of `\\lstnewenvironment' from `listings.sty'.")
 
+;; Setup for \lstdefinestyle:
+(TeX-auto-add-type "listings-lstdefinestyle" "LaTeX")
+
+(defvar LaTeX-listings-lstdefinestyle-regexp
+  '("\\\\lstdefinestyle{\\([^}]+\\)}"
+    1 LaTeX-auto-listings-lstdefinestyle)
+  "Matches the argument of \"\\lstdefinestyle\" from
+\"listings\" package.")
+
+(defun LaTeX-listings-update-style-key ()
+  "Update the \"style\" key from `LaTeX-listings-key-val-options-local'
+with user-defined values via the \"lstdefinestyle\" macro."
+  (let* ((elt (assoc "style" LaTeX-listings-key-val-options-local))
+	 (key (car elt))
+	 (temp (copy-alist LaTeX-listings-key-val-options-local))
+	 (opts (assq-delete-all (car (assoc key temp)) temp)))
+    (pushnew (list key (delete-dups
+			(mapcar 'car (LaTeX-listings-lstdefinestyle-list))))
+	     opts :test #'equal)
+    (setq LaTeX-listings-key-val-options-local
+	  (copy-alist opts))))
+
 (defun LaTeX-listings-auto-prepare ()
   "Clear temporary variable from `listings.sty' before parsing."
-  (setq LaTeX-auto-listings-lstnewenvironment nil))
+  (setq LaTeX-auto-listings-lstnewenvironment nil)
+  (setq LaTeX-auto-listings-lstdefinestyle    nil))
 
 (defun LaTeX-listings-auto-cleanup ()
-  "Process the parsed results of `\\lstnewenvironment'."
+  "Process the parsed results of \"\\lstnewenvironment\" and
+\"\\lstdefinestyle\"."
   (dolist (env-args LaTeX-auto-listings-lstnewenvironment)
     (let ((env  (car   env-args))
 	  (args (cadr  env-args))
@@ -256,7 +291,9 @@ from `listings' package.")
 	    (t ; No args
 	     (add-to-list 'LaTeX-auto-environment (list env))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation))
-      (add-to-list 'LaTeX-verbatim-environments-local env))))
+      (add-to-list 'LaTeX-verbatim-environments-local env)))
+  (when (LaTeX-listings-lstdefinestyle-list)
+    (LaTeX-listings-update-style-key)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-listings-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-listings-auto-cleanup t)
@@ -266,21 +303,32 @@ from `listings' package.")
  "listings"
  (lambda ()
 
-   ;; Add it to the parser
-   (TeX-auto-add-regexp LaTeX-listing-lstnewenvironment-regexp)
+   ;; Add to parser:
+   (TeX-auto-add-regexp LaTeX-listings-lstnewenvironment-regexp)
+   (TeX-auto-add-regexp LaTeX-listings-lstdefinestyle-regexp)
+
+   ;; Local version of key-val options:
+   (setq LaTeX-listings-key-val-options-local
+	 (copy-alist LaTeX-listings-key-val-options))
 
    ;; New symbols
    (TeX-add-symbols
     '("lstalias" ["Alias dialect"] "Alias" ["Dialect"] "Language")
-    '("lstdefinestyle" "Style name"
-      (TeX-arg-key-val LaTeX-listings-key-val-options))
+    '("lstdefinestyle"
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((name (TeX-read-string "Style name: ")))
+	   (LaTeX-add-listings-lstdefinestyles name)
+	   (LaTeX-listings-update-style-key)
+	   (format "%s" name))))
+      (TeX-arg-key-val LaTeX-listings-key-val-options-local))
     '("lstinline" TeX-arg-verb)
-    '("lstinputlisting" [TeX-arg-key-val LaTeX-listings-key-val-options]
+    '("lstinputlisting" [TeX-arg-key-val LaTeX-listings-key-val-options-local]
       TeX-arg-file)
     "lstlistoflistings"
     '("lstnewenvironment" "Name" ["Number or arguments"] ["Default argument"]
       "Starting code" "Ending code")
-    '("lstset" (TeX-arg-key-val LaTeX-listings-key-val-options))
+    '("lstset" (TeX-arg-key-val LaTeX-listings-key-val-options-local))
     '("lstloadlanguages" t)
     ;; 4.17 Short Inline Listing Commands
     '("lstMakeShortInline" [ "Options" ] "Character")
@@ -292,7 +340,7 @@ from `listings' package.")
    ;; New environments
    (LaTeX-add-environments
     '("lstlisting" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-listings-key-val-options]))
+      [TeX-arg-key-val LaTeX-listings-key-val-options-local]))
    ;; Filling
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list

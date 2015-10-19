@@ -1,6 +1,427 @@
+2015-10-19  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-command): Check that AUCTeX can find a working
+	TeX distribution before running some *TeX commands.
+
+2015-10-18  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (fboundp): Define a `TeX-completing-read-multiple'
+	version for GNU Emacs >= 24.4.  Fixes bug#19504.
+
+2015-10-13  Mosè Giordano  <mose@gnu.org>
+
+	* style/pstricks.el ("pstricks"): Do not disable PDF mode if XeTeX
+	engine is used.  Suggested by Mandar Mitra.
+
+2015-10-09  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Fill $...$ like
+	\(...\) (bug#21645)
+
+2015-10-08  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-expand-list-builtin): New variable.
+	(TeX-expand-list): Move all entries to `TeX-expand-list-builtin'
+	and update docstring.
+	(TeX-expand-list): New function.
+
+	* tex-buf.el (TeX-command-expand): Use `TeX-expand-list' function.
+
+	* doc/auctex.texi (Starting Viewers): Mention
+	`TeX-expand-list-builtin'.
+
+	* doc/changes.texi: Mention change to `TeX-expand-list'.
+
+2015-10-08  Arash Esbati  <esbati@gmx.de>
+
+	* style/longtable.el ("longtable"): Use `LaTeX-add-counters' on
+	"LTchunksize" and not `TeX-add-symbols'.
+
+	* style/enumitem.el (LaTeX-arg-SetEnumitemKey): Remove unused
+	`prompt' from arguments list.
+	(LaTeX-arg-SetEnumitemValue): ditto.
+
+	* style/listings.el (LaTeX-listings-key-val-options-local): New
+	variable used for all key-val queries.
+	("listings-lstdefinestyle"): Add parsing support for
+	"\lstdefinestyle".
+	(LaTeX-listings-lstnewenvironment-regexp): Add missing "s" to
+	"listing".
+	(LaTeX-listings-update-style-key): New function adding newly
+	defined values to "style" key in
+	`LaTeX-listings-key-val-options-local'.
+	("listings"): Extend "lstdefinestyle".
+
+	* style/wrapfig.el ("wrapfig"): Check for new floating
+	environments definded through "newfloat.el" and offer them as
+	completion to "wrapfloat" environment.
+
+2015-10-05  Mosè Giordano  <mose@gnu.org>
+
+	* context.el (TeX-ConTeXt-sentinel): Parse ConTeXt Mark IV output.
+
+	* tex-buf.el (TeX-TeX-sentinel-check): Ditto.
+
+2015-10-05  Arash Esbati  <esbati@gmx.de>
+
+	* style/newfloat.el (LaTeX-newfloat-auto-cleanup): Check if
+	`LaTeX-caption-supported-float-types' from caption.el is bound and
+	update it accordingly.  Fix docstring.
+	("newfloat"): Fix wrong check with (LaTeX-largest-level).
+	("newfloat"): Use `LaTeX-newfloat-key-val-options-local' and
+	delete redundant code.
+
+2015-10-04  Mosè Giordano  <mose@gnu.org>
+
+	* context.el (ConTeXt-Mark-version): New customizable and
+	safe-local variable.
+	(ConTeXt-expand-command): New function.
+	(ConTeXt-expand-options): Use `ConTeXt-Mark-version'.
+
+	* tex.el (TeX-command-list): Use %(cntxcom) expander in all
+	ConTeXt programs.  Remove MkIV entry.
+	(TeX-expand-list): Add %(cntxcom).
+
+2015-10-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-math-environments): Add math
+	environment.
+
+2015-10-04  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-command-list): Add MkIV to `TeX-command-list'.
+
+2015-09-29  Mosè Giordano  <mose@gnu.org>
+
+	* style/newfloat.el (LaTeX-newfloat-auto-cleanup): Replace another
+	`pushnew' with `add-to-list', previously overlooked.
+
+2015-09-28  Mosè Giordano  <mose@gnu.org>
+
+	* style/newfloat.el: Do not require cl at loading time.
+	(LaTeX-newfloat-auto-cleanup): Append elements to
+	`LaTeX-label-alist' in order not to override possible custom
+	values.
+
+2015-09-27  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/newfloat.el: New file.
+
+	* style/longtable.el ("longtable"): Make package lengths available
+	through `LaTeX-add-lengths' and not `TeX-add-symbol'.
+
+2015-09-26  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-search-files-kpathsea): Remove duplicates
+	directories.
+
+2015-09-26  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex.el (TeX--prettify-symbols-compose-p): New function.
+	(VirTeX-common-initialization): Use it.
+
+2015-09-25  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/subcaption.el: New file.
+
+	* style/caption.el (LaTeX-caption-key-val-options): Fix values of hypcap-key.
+	(LaTeX-caption-update-key-val-options): Add support for
+	subcaption.el if loaded.
+	(LaTeX-arg-caption-captionbox): Do not query for the third
+	optional arg. if the second one is empty.
+	("caption"): Add support for all lowercase \continuedfloat*?.
+	("caption"): Fix fontification for \captionof.
+
+	* style/hyperref.el ("hyperref"): Make
+	`LaTeX-indent-environment-list' local before adding new env's.
+
+	* style/filecontents.el ("filecontents"): Make
+	`LaTeX-indent-environment-list' local before adding new env's.
+
+	* style/fontenc.el: Fix mail address in Maintainer-header.
+
+2015-09-25  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Remove "abstract"
+	environment, it is not defined in latex.ltx.
+
+	* style/amsart.el ("amsart"): Add "abstract" environment.
+
+	* style/amsbook.el ("amsbook"): Ditto.
+
+	* style/article.el ("article"): Ditto.
+
+	* style/memoir.el ("memoir"): Ditto.
+
+	* style/report.el ("report"): Ditto.
+
+	* style/scrartcl.el ("scrartcl"): Ditto.
+
+	* style/scrreprt.el ("scrreprt"): Ditto.
+
+2015-09-24  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-doc): Use default argument of `completing-read'.
+
+2015-09-22  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-find-matching-end): Find correct end when point
+	is already on the name in \end{name}.
+
+2015-09-20  Mosè Giordano  <mose@gnu.org>
+
+	* .gitignore: Do not ignore auto.el.
+
+	* Makefile.in (install-metadata): auto.el is not there anymore,
+	we do not need to test if preview is enabled here.
+
+2015-09-19  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-error-overview): Fix typo in error message.
+	(TeX-TeX-sentinel): Fix error parsing.
+
+2015-09-13  Arash Esbati  <esbati@gmx.de>
+
+	* style/eso-pic.el (LaTeX-eso-pic-package-options-list): Rename
+	from `LaTeX-eso-pic-package-options'.
+	(LaTeX-eso-pic-package-options): Use renamed variable.
+
+	* style/AlegreyaSans.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/Alegreya.el: New file.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/fontenc.el: New file.
+
+2015-09-10  Mosè Giordano  <mose@gnu.org>
+
+	* style/gloss-italian.el ("gloss-italian"): Fix "textitalian"
+	macro and "italian" environment arguments.
+
+	* style/polyglossia.el (LaTeX-polyglossia-prepare): Clear
+	`LaTeX-polyglossia-lang-list'.
+	(LaTeX-polyglossia-cleanup): Remove clearing of
+	`LaTeX-polyglossia-lang-list'.
+	(TeX-update-style-hook): Append
+	`LaTeX-polyglossia-load-languages'.
+	("polyglossia"): Remove `LaTeX-polyglossia-load-languages' from
+	here.
+
+2015-09-09  Mosè Giordano  <mose@gnu.org>
+
+	* style/polyglossia.el: Remove
+	`LaTeX-polyglossia-italian-options-list', moved to
+	gloss-italian.el.
+	(LaTeX-polyglossia-setkeys-regexp): Fix regexp.
+	(LaTeX-polyglossia-cleanup): Remove useless let-bound variables
+	and set `LaTeX-polyglossia-lang-list'.
+	(LaTeX-polyglossia-active-languages)
+	(LaTeX-polyglossia-lang-option-member): Use
+	`LaTeX-polyglossia-lang-list' variable instead of function.
+	(LaTeX-polyglossia-load-languages): New function.
+	("polyglossia"): Use it.
+
+	* style/gloss-italian.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
+	* style/polyglossia.el: New style file.
+
+	* Makefile.in (STYLESRC): Activate it.
+
+2015-09-08  Arash Esbati  <esbati@gmx.de>
+
+	* style/hyperref.el ("hyperref"): Add completion for starred
+	version of `\autoref' incl. fontification.
+	("hyperref"): Add fontification support for `\hypersetup'.
+
+2015-09-08  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-command-default): Fix bug where wrong command
+	was guessed for region files.
+
+2015-09-07  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (LaTeX-idx-md5-alist, LaTeX-idx-changed-alist): New
+	variables.
+	(TeX-command-sequence): Call file function without optional
+	arguments.
+	(TeX-command-default): Suggest "Index" when appropriate.
+	(TeX-run-TeX): Store value of `LaTeX-idx-md5-alist'.
+	(TeX-run-index): New function.
+	(TeX-LaTeX-sentinel): Set `LaTeX-idx-changed-alist'.
+	(TeX-index-sentinel): New function.
+
+	* tex.el (TeX-command-list): Mention "makeindex" in "Index" help.
+	Suggested by Arash Esbati.
+
+	* doc/changes.texi: Mention ability to suggest makeindex when
+	needed.
+
+	* doc/todo.texi (Wishlist): Remove reference to makeindex.
+
+	* doc/tex-ref.tex: Update copyright years.
+	Mention C-c C-a key binding.
+
+2015-09-05  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-unfontify-region): Also remove the
+	`invisible' text properties.
+
+2015-09-04  Mosè Giordano  <mose@gnu.org>
+
+	* doc/auctex.texi (Starting a Command): Update references to
+	`TeX-command-run-all' and C-c C-a key binding.
+
+	* doc/changes.texi: Ditto.
+
+	* doc/quickstart.texi (Processing Facilities): Ditto.
+
+	* tex-buf.el (TeX-command-run-all): Use `universal-argument' to
+	reference C-u.
+
+2015-09-04  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-command-sequence-file-function): New variable.
+	(TeX-command-sequence): Use it.
+	(LaTeX-command-section-boundaries): Recognize end of document as
+	ultimate boundary.
+	(LaTeX-command-section): Signal an error if not in a LaTeX buffer.
+	(LaTeX-command-run-all-section): Ditto.
+
+	* tex.el: Add autoloads for the new commands.
+
+	* tex-buf.el (TeX-region-update): New function.
+	(TeX-command-region): Use it.
+	(LaTeX-command-section-boundaries): New function.
+	(LaTeX-command-section): Use it.
+	(TeX-command-run-all-region): New command.
+	(LaTeX-command-run-all-section): New command.
+	(TeX-command-run-all): Move it here from tex.el.
+
+	* tex.el (TeX-command-run-all): Rename from TeX-update.
+	(TeX-mode-map): Bind TeX-command-run-all to C-c C-a.
+
+2015-09-03  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el (font-latex-fontify-script): Add possible value
+	`multi-level' to allow raising/lowering scripts of scripts, and
+	another value `invisible' which in addition hides the ^ and _
+	characters in scripts.
+	(font-latex-match-script): Use it.
+	(font-latex-make-user-keywords): Add font-lock entry for script
+	signs.
+	(font-latex-match-script-chars): New function.
+
+	* tex.el (TeX-tex-mode): Don't ignore case when matching the
+	TeX-format-list regexes.
+	(TeX-expand-list): Add expansion of %(PDFout) to -output-format
+	option for AmS-TeX.
+	(TeX-command-list): Use it instead of calling the non-existing
+	pdfamstex command.
+
+2015-09-02  Tassilo Horn  <tsdh@gnu.org>
+
+	* font-latex.el: Remove code which set up font-latex for use with
+	stock latex-mode on load.
+
+2015-09-01  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-command-sequence): Add argument for processing
+	the region file instead of the master file.
+
+	* tex.el (TeX--if-macro-fboundp): New portability macro.
+	(VirTeX-common-initialization): Use it.
+
+2015-08-31  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-previous-error): Delete point in error message.
+	(TeX-command-default)
+	(TeX-run-set-command): Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-run-dvips, TeX-run-ps2pdf): New functions.
+	(TeX-TeX-sentinel, TeX-TeX-sentinel-check, TeX-LaTeX-sentinel):
+	Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-dvips-sentinel, TeX-ps2pdf-sentinel): New functions.
+	(TeX-parse-command, TeX-output-revert-buffer): Delete point in
+	error message.
+
+	* tex.el (TeX-command-list): Add "Dvips" and "Ps2pdf" entries.
+	(TeX-expand-list): Take care of `TeX-PDF-via-dvips-ps2pdf'.
+	(TeX-PDF-via-dvips-ps2pdf): New customizable and safe-local
+	variable.
+	(TeX-toggle-PDF-via-dvips-ps2pdf): New function.
+	(TeX-mode-specific-command-menu-entries): Add "PDF via dvips +
+	ps2pdf" entry.
+
+	* doc/auctex.texi (Processor Options): Document
+	`TeX-PDF-via-dvips-ps2pdf' and fix a typo.
+
+	* doc/changes.texi: Mention `TeX-PDF-via-dvips-ps2pdf'.
+
+	* doc/quickstart.texi (Processing Facilities): Mention
+	`TeX-PDF-via-dvips-ps2pdf'.
+
+	* tex-buf.el: Update copyright year.
+	(TeX-command-sequence-max-runs-same-command)
+	(TeX-command-sequence-max-runs): New customizable variables.
+	(TeX-command-sequence-count-same-command)
+	(TeX-command-sequence-count, TeX-command-sequence-last-command)
+	(TeX-command-sequence-sentinel, TeX-command-sequence-command): New
+	variables.
+	(TeX-command-sequence): New function.
+	(TeX-command-default): New function, stripped off from
+	`TeX-command-query'.
+	(TeX-command-query): Use `TeX-command-default'.
+	(TeX-command-sequence-sentinel): New function.
+
+	* tex.el (TeX-update): New function.
+	(TeX-mode-map): Add key binding for `TeX-update'.
+	(TeX-mode-specific-command-menu-entries): Add entry for
+	`TeX-update'.
+
+	* doc/auctex.texi: Update copyright year.
+	(Starting a Command): Document `TeX-update'.
+
+	* doc/changes.texi: Update copyright year.
+	Mention `TeX-update'.
+
+	* doc/quickstart.texi (Processing Facilities): Mention
+	`TeX-update' and `TeX-error-overview'.
+
+	* doc/todo.texi: Update copyright year.
+	(Wishlist): Remove entry for `TeX-update'.
+
+2015-08-30  Arash Esbati  <esbati@gmx.de>
+
+	* style/caption.el ("caption"): Add support for undocumented
+	macros `\captionbox[*]'.
+	(LaTeX-arg-caption-captionbox): New function.
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/transparent.el: New file.
+
+	* style/filecontents.el ("filecontents"): Do not indent the
+	content of `filecontents[*]' environment.
+
+	* style/hyperref.el ("hyperref"): Do not indent the content of
+	`Form' environment.
+
+	* style/array.el ("array"): Add fontification for
+	`\newcolumntype'.
+
 2015-08-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* Version 11.88.8 released.
+
+2015-08-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex.el (TeX-mode-syntax-table): Use punctuation syntax for
 	character | (bug#21366).

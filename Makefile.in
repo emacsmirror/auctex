@@ -149,8 +149,10 @@ STYLESRC = style/prosper.el \
 	   style/geometry.el  style/ltablex.el   style/ltxtable.el \
 	   style/mn2e.el      style/colortbl.el  style/attachfile.el \
 	   style/newpxtext.el style/newpxmath.el style/pdfpages.el \
-	   style/mnras.el     style/environ.el   style/textpos.el \
-	   style/vwcol.el
+	   style/mnras.el     style/environ.el   style/polyglossia.el \
+	   style/vwcol.el     style/textpos.el   style/transparent.el \
+	   style/fontenc.el   style/Alegreya.el  style/gloss-italian.el \
+	   style/newfloat.el  style/subcaption.el style/AlegreyaSans.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -342,11 +344,7 @@ install-auto:
 install-metadata:
 	test "x$(packagedir)" = xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
-	  if test "x$(preview_enabled)" = xyes; then \
-	    $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el auto.el; \
-	  else \
-	    $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el; \
-	  fi && \
+	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \

@@ -90,7 +90,13 @@ and make it buffer local. "
 
    ;; `array.sty' adds some new column specification letters.
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "m" "b")))
+	(concat LaTeX-array-column-letters "m" "b"))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("newcolumntype" "{[{"))
+			      'function)))
  LaTeX-dialect)
 
 (defvar LaTeX-array-package-options nil

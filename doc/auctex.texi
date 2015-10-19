@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2014
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2015
 Free Software Foundation, Inc.
 
 @quotation
@@ -2700,6 +2700,18 @@ master file.  The command is then actually run on the region file.  See
 @code{TeX-command-region} for details.
 @end deffn
 
+It is also possible to compile automatically the whole document until it
+is ready with a single command: @code{TeX-command-run-all}.
+
+@deffn Command TeX-command-run-all
+@kindex C-c C-a
+(@kbd{C-c C-a}) Compile the current document until an error occurs or it
+is finished.  If compilation finishes successfully, run the viewer at
+the end.
+@end deffn
+
+Here are some relevant variables.
+
 @defopt TeX-region
 The name of the file for temporarily storing the text when formatting
 the current region.
@@ -2895,6 +2907,33 @@ In particular, fine-tuning the page breaks should be done with source
 specials switched off.
 @end deffn
 
+Sometimes you are requested, by journal rules or packages, to compile
+the document into @acronym{DVI} output.  Thus, if you want a
+@acronym{PDF} document in the end you can either use Xe@TeX{} engine,
+see below for information about how to set engines, or compile the
+document with @command{tex} and then convert to @acronym{PDF} with
+@command{dvips}--@command{ps2pdf} before viewing it.  The latter can be
+done automatically in @AUCTeX{} by setting the
+@code{TeX-PDF-via-dvips-ps2pdf} variable to a non-nil value.
+
+@defopt TeX-PDF-via-dvips-ps2pdf
+With @code{TeX-PDF-mode} set to non-nil, if
+@code{TeX-PDF-via-dvips-ps2pdf} is non-nil too, the document is compiled
+with @command{tex} (or @command{latex}) instead of @command{pdftex} (or
+@command{pdflatex}).  When the document is ready, @kbd{C-c C-c} will
+suggest to run @command{dvips} and then @command{ps2pdf} in order to
+convert the @acronym{DVI} file to @acronym{PDF}.  When the @acronym{PDF}
+file is finally ready, the next suggested command will be to open the
+viewer.
+
+This option can also be set as a file local variable, in order to use
+the sequence @command{tex}--@command{dvips}--@command{ps2pdf} on a
+per-document basis.
+
+Recall the whole sequence of @kbd{C-c C-c} commands can be replace by
+the single @kbd{C-c C-a}.
+@end defopt
+
 @AUCTeX{} also allows you to easily select different @TeX{} engines for
 processing, either by using the entries in the @samp{TeXing Options}
 submenu below the @samp{Command} menu or by calling the function
@@ -2951,7 +2990,7 @@ means there is no command available.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a
-specific engine.  Notably examples are fontspec and polyglossia
+specific engine.  Notable examples are fontspec and polyglossia
 packages, which require Lua@TeX{} and Xe@TeX{} engines.  If you try to
 compile a document which loads one of such packages and the set engine
 is not one of those allowed you will be asked to select a different
@@ -3085,14 +3124,15 @@ conditionalized by prefixing them with predicates from
 @code{TeX-view-predicate-list} or
 @code{TeX-view-predicate-list-builtin}.  (See the doc string for the
 exact format to use.)  The command line can also contain placeholders as
-defined in @code{TeX-expand-list} which are expanded before the viewer
-is called.
+defined in @code{TeX-expand-list} and @code{TeX-expand-list-builtin}
+which are expanded before the viewer is called.
 
 The third element of each item is a string, or a list of strings, with
 the name of the executable, or executables, needed to open the output
-file in the viewer.  Placeholders defined in @code{TeX-expand-list} can
-be used here.  This element is optional and is used to check whether the
-viewer is actually available on the system.
+file in the viewer.  Placeholders defined in @code{TeX-expand-list} and
+@code{TeX-expand-list-builtin} can be used here.  This element is
+optional and is used to check whether the viewer is actually available
+on the system.
 
 A built-in viewer spec from @code{TeX-view-program-list-builtin} can be
 overwritten by defining a new viewer spec with the same name.
@@ -3100,10 +3140,10 @@ overwritten by defining a new viewer spec with the same name.
 
 Note that the viewer selection and invocation as described above will
 only work if certain default settings in @AUCTeX{} are intact.  For one,
-the whole viewer selection machinery will only be triggered if the
-@samp{%V} expander in @code{TeX-expand-list} is unchanged.  So if you
-have trouble with the viewer invocation you might check if there is an
-older customization of the variable in place.  In addition, the use of a
+the whole viewer selection machinery will only be triggered if there is
+no @samp{%V} expander in @code{TeX-expand-list}.  So if you have trouble
+with the viewer invocation you might check if there is an older
+customization of the variable in place.  In addition, the use of a
 function in @code{TeX-view-program-list} only works if the View command
 in @code{TeX-command-list} makes use of the hook
 @code{TeX-run-discard-or-function}.

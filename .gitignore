@@ -19,7 +19,6 @@ tex-site.el.out
 # Files generated while building the auto-generated files included in elpa.
 doc/preview-dtxdoc.texi
 doc/version.texi
-
 auto.el
 latex/prauctex.cfg
 latex/prauctex.def
