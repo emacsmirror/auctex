@@ -1,5 +1,13 @@
 2015-10-24  Arash Esbati  <esbati@gmx.de>
 
+	* style/amsthm.el (LaTeX-amsthm-theoremstyle-list): New variable
+	replacing the deleted function
+	`LaTeX-amsthm-complete-theoremstyle'.
+	(LaTeX-amsthm-env-label): New function to insert user defined
+	environments.
+	("amsthm"): Improve handling of "newtheorem*" and
+	"newtheoremstyle".
+
 	* style/AlegreyaSans.el ("AlegreyaSans"): Remove SmallCaps
 	font declaration command.
 
