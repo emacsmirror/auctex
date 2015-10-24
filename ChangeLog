@@ -1,3 +1,11 @@
+2015-10-24  Arash Esbati  <esbati@gmx.de>
+
+	* style/caption.el (LaTeX-arg-caption-captionbox): Fix doctring.
+
+	* style/subcaption.el (LaTeX-arg-subcaption-subcaption): Fix
+	doctring.
+	(LaTeX-arg-subcaption-subcaptionbox): ditto.
+
 2015-10-19  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-command): Check that AUCTeX can find a working

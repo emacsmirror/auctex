@@ -221,7 +221,7 @@ suffix of the command."
 
 (defun LaTeX-arg-caption-captionbox (optional &optional star prompt)
   "Query for the arguments of `\\captionbox' incl. a label and
-insert them.  If STAR is t, then do not query for a `\\label' and
+insert them.  If STAR is non-nil, then do not query for a `\\label' and
 insert only a caption."
   (let ((caption (TeX-read-string
 		  (TeX-argument-prompt optional prompt "Caption"))))

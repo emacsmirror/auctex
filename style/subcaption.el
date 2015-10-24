@@ -38,7 +38,7 @@ same values as \"labelformat\" from caption package.")
 
 (defun LaTeX-arg-subcaption-subcaption (optional &optional star prompt)
   "Query for the arguments of \\subcaption incl. a label and
-insert them.  If STAR is t, then do not query for the lof entry
+insert them.  If STAR is non-nil, then do not query for the lof entry
 and \\label and insert only a caption."
   (let ((lof (unless star
 	       (TeX-read-string
@@ -56,7 +56,7 @@ and \\label and insert only a caption."
 
 (defun LaTeX-arg-subcaption-subcaptionbox (optional &optional star prompt)
   "Query for the arguments of \\subcaptionbox incl. a label and
-insert them.  If STAR is t, then do not query for a \\label and
+insert them.  If STAR is non-nil, then do not query for a \\label and
 insert only a caption."
   (let ((caption (TeX-read-string
 		  (TeX-argument-prompt optional prompt "Sub-caption"))))
