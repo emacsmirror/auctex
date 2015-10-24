@@ -1,4 +1,4 @@
-;;; Alegreya.el --- AUCTeX style for `Alegreya.sty' (v2015/09/02)
+;;; Alegreya.el --- AUCTeX style for `Alegreya.sty' (v2015/10/22)
 
 ;; Copyright (C) 2015 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `Alegreya.sty' (v2015/09/02).
+;; This file adds support for `Alegreya.sty' (v2015/10/22).
 ;; `Alegreya.sty' is part of TeXLive.
 
 ;;; Code:
@@ -49,7 +49,6 @@
     '("useosf")
     ;; Text commands
     '("Alegreya"      -1)
-    '("AlegreyaSC"    -1)
     '("AlegreyaBlack" -1)
     '("AlegreyaLF"    -1)
     '("AlegreyaOsF"   -1)
@@ -67,7 +66,6 @@
 				("textin"    "{"))
 			      'type-command)
      (font-latex-add-keywords '(("Alegreya"      "")
-				("AlegreyaSC"    "")
 				("AlegreyaBlack" "")
 				("AlegreyaLF"    "")
 				("AlegreyaOsF"   "")

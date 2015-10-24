@@ -1,5 +1,11 @@
 2015-10-24  Arash Esbati  <esbati@gmx.de>
 
+	* style/AlegreyaSans.el ("AlegreyaSans"): Remove SmallCaps
+	font declaration command.
+
+	* style/Alegreya.el ("Alegreya"): Remove SmallCaps
+	font declaration command.
+
 	* style/caption.el (LaTeX-arg-caption-captionbox): Fix doctring.
 
 	* style/subcaption.el (LaTeX-arg-subcaption-subcaption): Fix
