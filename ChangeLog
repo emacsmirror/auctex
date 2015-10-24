@@ -1,5 +1,10 @@
 2015-10-24  Arash Esbati  <esbati@gmx.de>
 
+	* style/enumitem.el (LaTeX-enumitem-auto-cleanup): Move some
+	operations from style hook into this function.
+	(LaTeX-enumitem-newlist-list-item-arg-local): Delete now unused
+	variable.
+
 	* style/amsthm.el (LaTeX-amsthm-theoremstyle-list): New variable
 	replacing the deleted function
 	`LaTeX-amsthm-complete-theoremstyle'.
