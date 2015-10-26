@@ -290,6 +290,50 @@ beginning of keyword `@node' or `@bye'."
       (goto-char beg)
       (TeX-activate-region) )))
 
+(defun Texinfo-nodename-de-escape (node-name)
+  "In NODE-NAME, convert `@comma{}' commands to the corresponding `,'
+character. Return the resulting string."
+  (let ((pos 0) (map '(("comma" . ","))))
+    (while (and (< pos (length
+			node-name)) (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
+      (setq node-name (concat  (substring node-name 0 (match-beginning 0))
+			       (cdr (assoc-string (match-string 1 node-name) map))
+			       (substring node-name (match-end 0)))
+	    pos (1+ (match-beginning 0)))))
+  node-name)
+
+
+(defun Texinfo-nodename-escape (node-name)
+  "Convert in NODE-NAME the `,' characters to `@comma{}'
+commands. Return the resulting string."
+  (let* ((pos 0)
+	 (map '(("," . "comma")))
+	 (re (regexp-opt (mapcar 'car map))) )
+    (while (and (< pos (length node-name)) (string-match re node-name pos))
+      (setq node-name (concat  (substring node-name 0 (match-beginning 0))
+			       "@" (cdr (assoc-string (match-string 0 node-name) map))
+			       "{}"
+			       (substring node-name (match-end 0)))
+	    pos (1+ (match-beginning 0)))))
+  node-name)
+
+
+(defun Texinfo-make-node-list (&optional nodes)
+  ;; Build list of nodes in current buffer.
+  ;; (What about using `imenu--index-alist'?)
+  ;; FIXME: Support multi-file documents.
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^@node\\b" nil t)
+      (skip-chars-forward "[:blank:]")
+      (pushnew (list (Texinfo-nodename-de-escape
+		      (buffer-substring-no-properties
+		       (point) (progn (skip-chars-forward "^\r\n,")
+				      (skip-chars-backward "[:blank:]")
+				      (point)))))
+	       nodes :test #'equal)))
+  nodes)
+
 (defun Texinfo-insert-node ()
   "Insert a Texinfo node in the current buffer.
 That means, insert the string `@node' and prompt for current,
@@ -299,26 +343,20 @@ a comment on the following line indicating the order of arguments
 for @node."
   (interactive)
   (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
-	nodes node-name next-node previous-node up-node)
-    ;; Build list of nodes in current buffer.
-    ;; (What about using `imenu--index-alist'?)
-    ;; FIXME: Support multi-file documents.
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "^@node\\b" nil t)
-	(skip-chars-forward " \t")
-	(pushnew (list (buffer-substring-no-properties
-			    (point) (progn (skip-chars-forward "^,")
-					   (point))))
-                 nodes :test #'equal)))
+	(nodes (Texinfo-make-node-list))
+	node-name next-node previous-node up-node)
     (unless active-mark
-      (setq node-name (TeX-read-string "Node name: ")))
+      (setq node-name (Texinfo-nodename-escape
+		       (TeX-read-string "Node name: "))))
     ;; FIXME: What if key binding for `minibuffer-complete' was changed?
     ;; `substitute-command-keys' doesn't return the correct value.
-    (setq next-node (completing-read "Next node (TAB completes): " nodes))
+    (setq next-node (Texinfo-nodename-escape
+		     (completing-read "Next node (TAB completes): " nodes)))
     (setq previous-node
-	  (completing-read "Previous node (TAB completes): " nodes))
-    (setq up-node (completing-read "Upper node (TAB completes): " nodes))
+	  (Texinfo-nodename-escape
+	   (completing-read "Previous node (TAB completes): " nodes)))
+    (setq up-node (Texinfo-nodename-escape
+		   (completing-read "Upper node (TAB completes): " nodes)))
     (when (and active-mark
 	       (< (mark) (point)))
       (exchange-point-and-mark))
@@ -343,6 +381,18 @@ for @node."
 	  (if (> (length node) 0)
 	      (progn (skip-chars-forward "^,") (forward-char 2))
 	    (throw 'break nil)))))))
+
+(defun Texinfo-arg-nodename (optional &optional prompt definition)
+  "Prompt for a node name completing with known node names.
+OPTIONAL is ignored.
+Use PROMPT as the prompt string.
+If DEFINITION is non-nil, then chosen node name is a node name to be
+added to the list of defined node names. Current implementation
+ignored DEFINITION as the full document is scanned for node names at
+each invocation."
+  (let ((node-name (completing-read (TeX-argument-prompt optional prompt "Key")
+				    (Texinfo-make-node-list))))
+    (insert "{" (Texinfo-nodename-escape node-name) "}" )))
 
 ;; Silence the byte-compiler from warnings for variables and functions declared
 ;; in reftex.
@@ -664,7 +714,10 @@ value of `Texinfo-mode-hook'."
    '("findex" (TeX-arg-literal " ") (TeX-arg-free "Entry"))
    '("footnote" "Text of footnote")
    '("footnotestyle" (TeX-arg-literal " ") (TeX-arg-free "Style"))
-   '("group")
+   '("guillemetleft")
+   '("guillemetright")
+   '("guilsinglleft")
+   '("guilsinglright")
    '("heading" (TeX-arg-literal " ") (TeX-arg-free "Title"))
    ;; XXX: Would be nice with completion.
    '("headings" (TeX-arg-literal " ") (TeX-arg-free "On off single double"))
@@ -695,10 +748,12 @@ value of `Texinfo-mode-hook'."
    '("point" nil)
    '("print")
    '("printindex" (TeX-arg-literal " ") (TeX-arg-free "Index name"))
-   '("pxref" "Node name")
+   '("pxref" (Texinfo-arg-nodename "Node name"))
+   '("quotedblbase")
+   '("quotesinglbase")
    '("r" "Text")
    '("raisesections" 0)
-   '("ref" "Node name")
+   '("ref" (Texinfo-arg-nodename "Node name"))
    '("refill")
    '("result")
    '("samp" "Text")
@@ -745,7 +800,7 @@ value of `Texinfo-mode-hook'."
    '("vindex" (TeX-arg-literal " ") (TeX-arg-free "Entry"))
    '("vskip" (TeX-arg-literal " ") (TeX-arg-free "Amount"))
    '("w" "Text")
-   '("xref" "Node name"))
+   '("xref" (Texinfo-arg-nodename "Node name")))
 
   ;; RefTeX plugging
   (add-hook 'reftex-mode-hook 'Texinfo-reftex-hook)

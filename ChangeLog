@@ -1,3 +1,23 @@
+2015-10-25  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* tex-info.el (Texinfo-nodename-de-escape): New defun.
+	(Texinfo-nodename-escape): New defun.
+	(Texinfo-make-node-list): New defun, code taken from
+	Texinfo-insert-node into this function for the sake of code
+	factorization.  In addition, (1) allow node name not to be
+	followed by a comma --- i.e. next node etc. unspecified --- (2)
+	trim trailing blanks after node name, and (3) de-escape @comma{}
+	before insertion of node name into the list.
+	(Texinfo-insert-node): (1) Use new function
+	`Texinfo-make-node-list', and (2) escape node names for commas.
+	(Texinfo-arg-nodename): New defun.
+	(TeX-texinfo-mode): (1) Remove `group' from list of commands,
+	`group' is an environment, not a command.  (2) Add
+	`guillemetleft', `guillemetright', `guilsinglleft',
+	`guilsinglright', `quotedblbase' and `quotesinglbase' to the list
+	of commands.  (3) For commands `pxref', `ref' and `xref', use new
+	function `Texinfo-arg-nodename' to read node name with completion.
+
 2015-10-24  Arash Esbati  <esbati@gmx.de>
 
 	* style/enumitem.el (LaTeX-enumitem-auto-cleanup): Move some
