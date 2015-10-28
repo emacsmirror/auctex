@@ -1,5 +1,8 @@
 2015-10-28  Tassilo Horn  <tsdh@gnu.org>
 
+	* latex.el (LaTeX-fill-break-at-separators): Default to nil
+	because many users don't like that special filling.
+
 	* tex-info.el (Texinfo-make-node-list): Warn about duplicate
 	nodes.  Return nodes in order instead of reversed.
 
