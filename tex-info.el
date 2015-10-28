@@ -318,21 +318,29 @@ commands. Return the resulting string."
   node-name)
 
 
-(defun Texinfo-make-node-list (&optional nodes)
+(defun Texinfo-make-node-list ()
   ;; Build list of nodes in current buffer.
   ;; (What about using `imenu--index-alist'?)
   ;; FIXME: Support multi-file documents.
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "^@node\\b" nil t)
-      (skip-chars-forward "[:blank:]")
-      (pushnew (list (Texinfo-nodename-de-escape
-		      (buffer-substring-no-properties
-		       (point) (progn (skip-chars-forward "^\r\n,")
-				      (skip-chars-backward "[:blank:]")
-				      (point)))))
-	       nodes :test #'equal)))
-  nodes)
+    (let (nodes dups)
+      (while (re-search-forward "^@node\\b" nil t)
+	(skip-chars-forward "[:blank:]")
+	(pushnew (list (Texinfo-nodename-de-escape
+			(buffer-substring-no-properties
+			 (point) (progn (skip-chars-forward "^\r\n,")
+					(skip-chars-backward "[:blank:]")
+					(point)))))
+		 nodes
+		 :test (lambda (a b)
+			 (when (equal a b)
+			   (push (cons a (line-number-at-pos (point))) dups)
+			   t))))
+      (message "There are duplicate nodes:")
+      (dolist (dup (nreverse dups))
+	(message "    %s on line %d" (car dup) (cdr dup)))))
+  (nreverse nodes))
 
 (defun Texinfo-insert-node ()
   "Insert a Texinfo node in the current buffer.

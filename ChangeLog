@@ -1,3 +1,8 @@
+2015-10-28  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-info.el (Texinfo-make-node-list): Warn about duplicate
+	nodes.  Return nodes in order instead of reversed.
+
 2015-10-25  Vincent Belaïche  <vincent.b.1@hotmail.fr>
 
 	* tex-info.el (Texinfo-nodename-de-escape): New defun.
