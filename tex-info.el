@@ -337,10 +337,15 @@ commands. Return the resulting string."
 			 (when (equal a b)
 			   (push (cons a (line-number-at-pos (point))) dups)
 			   t))))
-      (message "There are duplicate nodes:")
-      (dolist (dup (nreverse dups))
-	(message "    %s on line %d" (car dup) (cdr dup)))))
-  (nreverse nodes))
+      (when dups
+	(display-warning
+	 'AUCTeX
+	 (format "There are duplicate nodes:\n%s"
+		 (mapconcat (lambda (dup)
+			      (format "    %s on line %d" (car dup) (cdr dup)))
+			    (nreverse dups)
+			    "\n"))))
+      (nreverse nodes))))
 
 (defun Texinfo-insert-node ()
   "Insert a Texinfo node in the current buffer.
