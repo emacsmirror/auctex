@@ -33,6 +33,12 @@
 	nil, use `LaTeX-style-list' to complete document classes.  Fixes
 	bug#21814.
 
+2015-10-31  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/hologo.el: New file.
+
 2015-10-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-fill-break-at-separators): Default to nil
