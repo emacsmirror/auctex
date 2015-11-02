@@ -2052,14 +2052,14 @@ OPTIONAL and IGNORE are ignored."
 	 (crm-separator ",")
 	 style var options)
     (unless LaTeX-global-class-files
-      (if (if (eq TeX-arg-input-file-search 'ask)
-	      (not (y-or-n-p "Find class yourself? "))
-	    TeX-arg-input-file-search)
-	  (progn
-	    (message "Searching for LaTeX classes...")
-	    (setq LaTeX-global-class-files
-		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t))))
-	LaTeX-style-list))
+      (setq LaTeX-global-class-files
+	    (if (if (eq TeX-arg-input-file-search 'ask)
+		    (not (y-or-n-p "Find class yourself? "))
+		  TeX-arg-input-file-search)
+		(progn
+		  (message "Searching for LaTeX classes...")
+		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t)))
+	      LaTeX-style-list)))
     (setq style (completing-read
 		 (concat "Document class: (default " LaTeX-default-style ") ")
 		 LaTeX-global-class-files nil nil nil nil LaTeX-default-style))

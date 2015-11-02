@@ -1,3 +1,9 @@
+2015-11-02  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (TeX-arg-document): When `TeX-arg-input-file-search' is
+	nil, use `LaTeX-style-list' to complete document classes.  Fixes
+	bug#21814.
+
 2015-10-28  Tassilo Horn  <tsdh@gnu.org>
 
 	* latex.el (LaTeX-fill-break-at-separators): Default to nil
