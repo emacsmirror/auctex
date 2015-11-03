@@ -59,6 +59,12 @@ only new expansion strings.
 When new option @code{TeX-check-engine} is non-nil, before running
 @LaTeX{} commands @AUCTeX{} will check whether the correct engine has
 been set, based upon known restrictions posed by @LaTeX{} packages.
+
+@item
+Basic support to @ConTeXt{} Mark IV has been added.  Users can now
+select the Mark version to be used with new option
+@code{ConTeXt-Mark-version}, and @AUCTeX{} is able to catch error
+messages in the output log of a Mark IV document.
 @end itemize
 
 @heading News in 11.88

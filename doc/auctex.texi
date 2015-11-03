@@ -3034,6 +3034,16 @@ file:line:error which is similar to the way many compilers format them.
 If non-nil, @TeX{} will produce file:line:error style error messages.
 @end defopt
 
+@ConTeXt{} users can choose between Mark II and Mark IV versions.  This
+is controlled by @code{ConTeXt-Mark-version} option.
+
+@defopt ConTeXt-Mark-version
+This variables specifies which version of Mark should be used.  Values
+currently supported are @code{"II"}, the default, and @code{"IV"}.  It
+can be set globally using customization interface or on a per-file
+basis, by specifying it as a file variable.
+@end defopt
+
 @node Viewing
 @section Viewing the Formatted Output
 @cindex Viewing
@@ -3645,6 +3655,9 @@ file itself.
 
 If the variable is @code{shared}, then @AUCTeX{} will query for the name,
 but will not change the file.
+
+If the variable is @code{dwim}, @AUCTeX{} will try to avoid querying by
+attempting to ``do what I mean''; and then change the file.
 @end defopt
 
 @defopt TeX-one-master
