@@ -2989,6 +2989,23 @@ command can either be a variable or a string.  An empty string or nil
 means there is no command available.
 @end defopt
 
+In some systems, Emacs cannot inherit the PATH environment variable from
+the shell and thus @AUCTeX{} may not be able to run @TeX{} commands.
+Before running them, @AUCTeX{} checks if it able to find those commands
+and will warn you in case it fails.  You can skip this test by changing
+the option @code{TeX-check-TeX}.
+
+@defopt TeX-check-TeX
+@vindex TeX-command
+@vindex TeX-check-TeX-command-not-found
+If non-nil, @AUCTeX{} will check if it is able to find a working @TeX{}
+distribution before running @TeX{}, @LaTeX{}, @ConTeXt{}, etc.  It
+actually checks if can run @code{TeX-command} command or the shell
+returns a command not found error.  The error code returned by the shell
+in this case can be set in @code{TeX-check-TeX-command-not-found}
+option.
+@end defopt
+
 Some @LaTeX{} packages requires the document to be compiled with a
 specific engine.  Notable examples are fontspec and polyglossia
 packages, which require Lua@TeX{} and Xe@TeX{} engines.  If you try to
