@@ -602,6 +602,7 @@ value of `Texinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)
   (setq TeX-mode-p t)
+  (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name "Texinfo")
@@ -625,9 +626,8 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'comment-start-skip) "@c +\\|@comment +")
   (set (make-local-variable 'comment-use-syntax) nil)
   (set (make-local-variable 'words-include-escapes) t)
-  (if (boundp 'texinfo-imenu-generic-expression)
-      ;; This was introduced in 19.30.
-      (set (make-local-variable 'imenu-generic-expression) texinfo-imenu-generic-expression))
+  (set (make-local-variable 'imenu-generic-expression)
+       texinfo-imenu-generic-expression)
 
   (set (make-local-variable 'font-lock-defaults)
 	;; COMPATIBILITY for Emacs 20
@@ -636,15 +636,16 @@ value of `Texinfo-mode-hook'."
 	      nil nil nil backward-paragraph
 	      (font-lock-syntactic-keywords
 	       . texinfo-font-lock-syntactic-keywords))
-	  '(texinfo-font-lock-keywords t)))
-  (if (not (boundp 'texinfo-section-list))
-      ;; This was included in 19.31.
-      ()
-    (set (make-local-variable 'outline-regexp)
-	 (concat "@\\("
-		 (mapconcat 'car texinfo-section-list "\\>\\|")
-		 "\\>\\)"))
-    (set (make-local-variable 'outline-level) 'texinfo-outline-level))
+	  ;; This is for Emacs >= 23.3, when
+	  ;; `texinfo-font-lock-syntactic-keywords' was removed.
+	  '(texinfo-font-lock-keywords nil nil nil backward-paragraph)))
+
+  ;; Outline settings.
+  (set (make-local-variable 'outline-regexp)
+       (concat "@\\("
+	       (mapconcat 'car texinfo-section-list "\\>\\|")
+	       "\\>\\)"))
+  (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
   ;; Mostly AUCTeX stuff
   (easy-menu-add Texinfo-mode-menu Texinfo-mode-map)

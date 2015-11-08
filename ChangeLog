@@ -1,3 +1,8 @@
+2015-11-08  Mosè Giordano  <mose@gnu.org>
+
+	* tex-info.el (TeX-texinfo-mode): Set `TeX-output-extension'.
+	Remove compatibility code with old Emacsen.
+
 2015-11-06  Mosè Giordano  <mose@gnu.org>
 
 	* tex-buf.el (TeX-check-TeX, TeX-check-TeX-command-not-found): New
