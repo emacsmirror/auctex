@@ -1,3 +1,9 @@
+2015-11-09  Mosè Giordano  <mose@gnu.org>
+
+	* tex-info.el: Update copyright years.
+	(Texinfo-nodename-de-escape, Texinfo-nodename-escape): Use
+	`TeX-assoc-string' in place of `assoc-string'.
+
 2015-11-08  Mosè Giordano  <mose@gnu.org>
 
 	* tex-info.el (TeX-texinfo-mode): Set `TeX-output-extension'.

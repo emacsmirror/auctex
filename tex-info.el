@@ -1,6 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006, 2011, 2014
+;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006, 2011-2015
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -297,7 +297,7 @@ character. Return the resulting string."
     (while (and (< pos (length
 			node-name)) (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
-			       (cdr (assoc-string (match-string 1 node-name) map))
+			       (cdr (TeX-assoc-string (match-string 1 node-name) map))
 			       (substring node-name (match-end 0)))
 	    pos (1+ (match-beginning 0)))))
   node-name)
@@ -311,7 +311,7 @@ commands. Return the resulting string."
 	 (re (regexp-opt (mapcar 'car map))) )
     (while (and (< pos (length node-name)) (string-match re node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
-			       "@" (cdr (assoc-string (match-string 0 node-name) map))
+			       "@" (cdr (TeX-assoc-string (match-string 0 node-name) map))
 			       "{}"
 			       (substring node-name (match-end 0)))
 	    pos (1+ (match-beginning 0)))))
