@@ -3357,7 +3357,9 @@ recognized."
 
 ;;; Filling
 
-(defcustom LaTeX-fill-break-at-separators nil
+;; The default value should try not to break formulae across lines (this is
+;; useful for preview-latex) and give a meaningful filling.
+(defcustom LaTeX-fill-break-at-separators '(\\\( \\\[)
   "List of separators before or after which respectively a line
 break will be inserted if they do not fit into one line."
   :group 'LaTeX

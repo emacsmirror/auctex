@@ -1,3 +1,19 @@
+2015-11-10  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-fill-break-at-separators): Change default value
+	to opening only inline and display math switches.
+
+	* tests/latex/latex-filling-in.tex: New test file.
+
+	* tests/latex/latex-filling-out.tex: Ditto.
+
+	* tests/latex/latex-test.el (LaTeX-indent-tabular-test/in)
+	(LaTeX-indent-tabular-test/out): Remove variables defined with
+	`defvar'.
+	(AUCTeX-set-ert-path): New function for setting the path of the
+	ERT test files.
+	(LaTeX-filling): New ERT test.
+
 2015-11-10  Tassilo Horn  <tsdh@gnu.org>
 
 	* tex-buf.el (TeX-revert-document-buffer): New function.
