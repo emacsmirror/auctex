@@ -3599,9 +3599,11 @@ the compiled output document as its argument.
 
 This is useful for automatically refreshing the viewer after
 re-compilation especially when using Emacs viewers such as DocView or
-PDF Tools.
+PDF Tools.  The function @code{TeX-revert-document-buffer} can be added
+to the hook for this purpose.
 @end defvr
 @vindex TeX-after-TeX-LaTeX-command-finished-hook
+@findex TeX-revert-document-buffer
 
 @node Multifile
 @section Multifile Documents

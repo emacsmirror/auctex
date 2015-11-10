@@ -889,7 +889,24 @@ the current style options."
   "Hook being run after TeX/LaTeX finished successfully.
 The functions in this hook are run with the DVI/PDF output file
 given as argument.  Using this hook can be useful for updating
-the viewer automatically after re-compilation of the document.")
+the viewer automatically after re-compilation of the document.
+
+If you use an emacs-internal viewer such as `doc-view-mode' or
+`pdf-view-mode', add `TeX-revert-document-buffer' to this hook.")
+
+(defun TeX-revert-document-buffer (file)
+  "Revert the buffer visiting FILE.
+This function is intended to be used in
+`TeX-after-TeX-LaTeX-command-finished-hook' for users that view
+their compiled document with an emacs viewer such as
+`doc-view-mode' or `pdf-view-mode'.  (Note that this function
+just calls `revert-buffer' in the respective buffer and thus
+requires that the corresponding mode defines a sensible
+`revert-buffer-function'.)"
+  (let ((buf (find-buffer-visiting file)))
+    (when buf
+      (with-current-buffer buf
+	(revert-buffer nil t t)))))
 
 (defvar TeX-after-start-process-function nil
   "Hooks to run after starting an asynchronous process.
