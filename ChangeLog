@@ -1,3 +1,9 @@
+2015-11-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-revert-document-buffer): New function.
+	(TeX-after-TeX-LaTeX-command-finished-hook): Mention it in docstring.
+	* doc/auctex.texi (Modes and Hooks): Mention it in manual.
+
 2015-11-10  Santiago Saavedra  <ssaavedra@gpul.org>  (tiny change)
 
 	* tex.el (TeX-command-list, TeX-view-program-list-builtin)
