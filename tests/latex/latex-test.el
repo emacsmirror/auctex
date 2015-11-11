@@ -44,7 +44,11 @@ line and from another directory."
  'LaTeX-filling/in
  "latex-filling-in.tex"
  'LaTeX-filling/out
- "latex-filling-out.tex")
+ "latex-filling-out.tex"
+ 'LaTeX-math-indent/in
+ "math-indent-in.tex"
+ 'LaTeX-math-indent/out
+ "math-indent-out.tex")
 
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
@@ -55,6 +59,20 @@ line and from another directory."
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-indent-tabular-test/out)
+             (buffer-string)))))
+
+;; Another test for indentation, but for math mode, see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20227 Let's keep those tests
+;; separated so it would be easier to find the culprit of a future failure.
+(ert-deftest LaTeX-math-indent ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-math-indent/in)
+             (LaTeX-mode)
+             (indent-region (point-min) (point-max))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-math-indent/out)
              (buffer-string)))))
 
 ;; Test LaTeX code with math modes is indented as expected.  This has mostly to
@@ -71,6 +89,21 @@ line and from another directory."
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
+             (buffer-string)))))
+
+;; Test for bug#19281 (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19281):
+;; make sure AUCTeX is able to insert and modify an environment containing a
+;; TeX-esc and braces in its name.
+(ert-deftest LaTeX-change-environment-with-esc ()
+  (should (string=
+           (with-temp-buffer
+             (LaTeX-mode)
+	     (LaTeX-insert-environment (concat TeX-esc "foo{bar}"))
+	     (LaTeX-modify-environment "foobar")
+             (buffer-string))
+           (with-temp-buffer
+             (LaTeX-mode)
+	     (LaTeX-insert-environment "foobar")
              (buffer-string)))))
 
 ;;; latex-test.el ends here

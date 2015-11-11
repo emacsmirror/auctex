@@ -1,3 +1,12 @@
+2015-11-11  Mosè Giordano  <mose@gnu.org>
+
+	* tests/latex/latex-test.el (LaTeX-math-indent)
+	(LaTeX-change-environment-with-esc): New tests.
+
+	* tests/latex/math-indent-in.tex: New test file.
+
+	* tests/latex/math-indent-out.tex: Ditto.
+
 2015-11-10  Mosè Giordano  <mose@gnu.org>
 
 	* latex.el (LaTeX-fill-break-at-separators): Change default value
