@@ -1,5 +1,20 @@
 2015-11-12  Mosè Giordano  <mose@gnu.org>
 
+	* RELEASE: Update AUCTeX version, the new features section, and
+	the list of contributors.
+
+	* configure.ac: Update AUCTeX version.
+
+	* doc/changes.texi: Mention PDF Tools and generic features for
+	11.89 release.
+
+	* doc/tex-ref.tex: Update AUCTeX version and copyright years
+	across the file.
+
+	* latex.el: Update copyright year.
+
+	* latex/preview.dtx: Manually update release version.
+
 	* Makefile.in (WEMACSPACKAGE): Update for Emacs 24.5
 	(www-doc): Download gendocs.sh patch from AUCTeX repository.
 

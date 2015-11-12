@@ -8,7 +8,7 @@
 
 @end ifset
 
-@heading News since 11.88
+@heading News in 11.89
 
 @itemize @bullet
 @item
@@ -28,6 +28,11 @@ current section (or part, chapter, subsection, etc).  See
 @item
 Forward and backward search with Evince now also work when only a region
 of the document is compiled/viewed.
+
+@item
+To open the PDF output file you can now use also PDF Tools, a document
+viewer for Emacs.  With it, as a plus, forward and backward search is
+accurate at word level.
 
 @item
 With new option @code{TeX-PDF-via-dvips-ps2pdf} it is possible to
@@ -69,6 +74,12 @@ Basic support to @ConTeXt{} Mark IV has been added.  Users can now
 select the Mark version to be used with new option
 @code{ConTeXt-Mark-version}, and @AUCTeX{} is able to catch error
 messages in the output log of a Mark IV document.
+
+@item
+Support for tons of @LaTeX{} packages has been addedd.
+
+@item
+Numbers of bugs have been fixed, many minor features have been addedd.
 @end itemize
 
 @heading News in 11.88
@@ -202,7 +213,7 @@ in the right context.
 There have been lots of bug fixes and feature additions.
 @end itemize
 
-@heading News since 11.87
+@heading News in 11.87
 
 @itemize @bullet
 @item
