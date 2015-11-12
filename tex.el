@@ -1117,7 +1117,11 @@ all the regular expressions must match for the element to apply."
     (output-html
      (string-match "html" (TeX-output-extension)))
     (has-no-display-manager
-     (not (or window-system (getenv "DISPLAY"))))
+     ;; Compatibility for Emacs <= 22: older Emacsen don't have FRAME argument
+     ;; to `getenv', later versions have the `display-graphic-p' function.
+     (not (if (< emacs-major-version 23)
+	      (or window-system (getenv "DISPLAY"))
+	    (display-graphic-p))))
     (style-pstricks
      (TeX-match-style "^pstricks$\\|^pst-\\|^psfrag$"))
     (engine-omega

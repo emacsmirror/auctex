@@ -1,3 +1,10 @@
+2015-11-12  Mosè Giordano  <mose@gnu.org>
+
+	* tex.el (TeX-view-predicate-list-bultin): For
+	`has-no-display-manager' predicate, use the current test only for
+	old Emacsen, otherwise employ `display-graphic-p'.  Suggested by
+	Santiago Saavedra.
+
 2015-11-11  Mosè Giordano  <mose@gnu.org>
 
 	* tests/latex/latex-test.el (LaTeX-math-indent)
