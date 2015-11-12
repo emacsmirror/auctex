@@ -430,7 +430,7 @@ wc:
 # 6) release-upload
 #    Upload files to GNU FTP server.
 #
-# 7) www-doc TAG=<tag> GENDOCSPATCH=<patch-file>
+# 7) www-doc TAG=<tag>
 #    Create documentation for AUCTeX home page.
 #
 # 8) preview-ball TAG=<tag>
@@ -522,7 +522,16 @@ ifeq ($(shell echo "$(WEMACSVER)" | grep '\(2[2-3].[1-4]\|24.[1-3]\)' -),$(WEMAC
 else
 	WEMACSDATAROOTDIR="share/"
 	WEMACSEXTRACTDIR="emacs-$(WEMACSVER)"
-	WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-pc-mingw32.zip"
+# And just to add more complexity, the package name changed again with Emacs
+# 24.5.  Actually, we don't really need to keep track of all these changes as we
+# should support only the latest Emacs version, but unless something else
+# changes again again in the near future we can keep them (and it's useful to
+# reproduce old AUCTeX packages!).
+	ifeq (24.4,$(WEMACSVER))
+		WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-pc-mingw32.zip"
+	else
+		WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-mingw32.zip"
+	endif
 	WEMACSSITELISP="$(WEMACSDATAROOTDIR)/emacs/site-lisp"
 endif
 WPACKAGEFILES=$(WEMACSSITELISP)/auctex $(WEMACSSITELISP)/site-start.d \
@@ -605,7 +614,8 @@ www-doc: check-tag
 	$(CP) auctex-$(TAG)/doc/*.texi $(WWWDIR)/manual
 	cd $(WWWDIR)/manual \
 	&& wget -O gendocs.sh 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh' \
-	&& patch <$(GENDOCSPATCH) \
+	&& wget -O gendocs.sh.patch 'http://git.savannah.gnu.org/gitweb/?p=auctex.git;a=blob_plain;f=gendocs.sh.patch;hb=gendocspatch' \
+	&& patch <gendocs.sh.patch \
 	&& chmod u+x gendocs.sh \
 	&& wget -O gendocs_template 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs_template' \
 	&& sed -i -e 's/html_node\/index\.html/%%PACKAGE%%\/index.html/' gendocs_template \

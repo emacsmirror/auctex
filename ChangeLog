@@ -1,5 +1,8 @@
 2015-11-12  Mosè Giordano  <mose@gnu.org>
 
+	* Makefile.in (WEMACSPACKAGE): Update for Emacs 24.5
+	(www-doc): Download gendocs.sh patch from AUCTeX repository.
+
 	* tex.el (TeX-view-predicate-list-bultin): For
 	`has-no-display-manager' predicate, use the current test only for
 	old Emacsen, otherwise employ `display-graphic-p'.  Suggested by
