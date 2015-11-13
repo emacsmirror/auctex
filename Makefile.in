@@ -242,7 +242,7 @@ configure: configure.ac aclocal.m4
 Makefile: Makefile.in config.status
 	./config.status
 
-doc/Makefile: doc/Makefile.in config.status ChangeLog
+doc/Makefile: doc/Makefile.in config.status ChangeLog.1
 	./config.status
 
 config.status: configure
