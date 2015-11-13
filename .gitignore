@@ -3,6 +3,7 @@
 *.log
 *~
 CHANGES
+ChangeLog
 FAQ
 INSTALL
 INSTALL.windows
@@ -41,3 +42,4 @@ latex/prtracingall.def
 preview-latex.el
 preview.el
 PROBLEMS.preview
+tests/*/auto/*
