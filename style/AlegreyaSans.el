@@ -1,4 +1,4 @@
-;;; AlegreyaSans.el --- AUCTeX style for `AlegreyaSans.sty' (v2015/09/02)
+;;; AlegreyaSans.el --- AUCTeX style for `AlegreyaSans.sty' (v2015/10/22)
 
 ;; Copyright (C) 2015 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `AlegreyaSans.sty' (v2015/09/02).
+;; This file adds support for `AlegreyaSans.sty' (v2015/10/22).
 ;; `AlegreyaSans.sty' is part of TeXLive.
 
 ;;; Code:
@@ -58,7 +58,6 @@
     '("AlegreyaSansMedium"     -1)
     '("AlegreyaSansExtraBold"  -1)
     '("AlegreyaSansBlack"      -1)
-    '("AlegreyaSansSC"         -1)
     '("textsu"                  t)  ; superior figures
     '("sufigures"              -1)  ;
     '("textin"                  t)  ; inferior figures
@@ -79,7 +78,6 @@
 				("AlegreyaSansMedium"     "")
 				("AlegreyaSansExtraBold"  "")
 				("AlegreyaSansBlack"      "")
-				("AlegreyaSansSC"         "")
 				("sufigures"              "")
 				("infigures"              ""))
 			      'type-declaration)))

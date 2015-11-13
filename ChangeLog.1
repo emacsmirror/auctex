@@ -1,3 +1,173 @@
+2015-11-13  Mosè Giordano  <mose@gnu.org>
+
+	* Version 11.89 released.
+
+2015-11-12  Mosè Giordano  <mose@gnu.org>
+
+	* RELEASE: Update AUCTeX version, the new features section, and
+	the list of contributors.
+
+	* configure.ac: Update AUCTeX version.
+
+	* doc/changes.texi: Mention PDF Tools and generic features for
+	11.89 release.
+
+	* doc/tex-ref.tex: Update AUCTeX version and copyright years
+	across the file.
+
+	* latex.el: Update copyright year.
+
+	* latex/preview.dtx: Manually update release version.
+
+	* Makefile.in (WEMACSPACKAGE): Update for Emacs 24.5
+	(www-doc): Download gendocs.sh patch from AUCTeX repository.
+
+	* tex.el (TeX-view-predicate-list-bultin): For
+	`has-no-display-manager' predicate, use the current test only for
+	old Emacsen, otherwise employ `display-graphic-p'.  Suggested by
+	Santiago Saavedra.
+
+2015-11-11  Mosè Giordano  <mose@gnu.org>
+
+	* tests/latex/latex-test.el (LaTeX-math-indent)
+	(LaTeX-change-environment-with-esc): New tests.
+
+	* tests/latex/math-indent-in.tex: New test file.
+
+	* tests/latex/math-indent-out.tex: Ditto.
+
+2015-11-10  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (LaTeX-fill-break-at-separators): Change default value
+	to opening only inline and display math switches.
+
+	* tests/latex/latex-filling-in.tex: New test file.
+
+	* tests/latex/latex-filling-out.tex: Ditto.
+
+	* tests/latex/latex-test.el (LaTeX-indent-tabular-test/in)
+	(LaTeX-indent-tabular-test/out): Remove variables defined with
+	`defvar'.
+	(AUCTeX-set-ert-path): New function for setting the path of the
+	ERT test files.
+	(LaTeX-filling): New ERT test.
+
+2015-11-10  Tassilo Horn  <tsdh@gnu.org>
+
+	* tex-buf.el (TeX-revert-document-buffer): New function.
+	(TeX-after-TeX-LaTeX-command-finished-hook): Mention it in docstring.
+	* doc/auctex.texi (Modes and Hooks): Mention it in manual.
+
+2015-11-10  Santiago Saavedra  <ssaavedra@gpul.org>  (tiny change)
+
+	* tex.el (TeX-command-list, TeX-view-program-list-builtin)
+	(TeX-view-program-selection): Add dvi2tty as a first-class
+	command, removing it from a load-time quasiquotation so that the
+	strategy for selecting it or evince goes down to the frame
+	performing the View command.  Fixes bug#21873.
+
+2015-11-09  Mosè Giordano  <mose@gnu.org>
+
+	* tex-info.el: Update copyright years.
+	(Texinfo-nodename-de-escape, Texinfo-nodename-escape): Use
+	`TeX-assoc-string' in place of `assoc-string'.
+
+2015-11-08  Mosè Giordano  <mose@gnu.org>
+
+	* tex-info.el (TeX-texinfo-mode): Set `TeX-output-extension'.
+	Remove compatibility code with old Emacsen.
+
+2015-11-06  Mosè Giordano  <mose@gnu.org>
+
+	* tex-buf.el (TeX-check-TeX, TeX-check-TeX-command-not-found): New
+	customizable options.
+	(TeX-command): Do a better check for the presence of a TeX
+	distribution.  Run `call-process' instead of `executable-find',
+	like `TeX-run-command' actually does.  The point is that
+	`call-process' and `start-process' use `PATH' environment
+	variable, `executable-find' uses `exec-path' variable and they do
+	not need to match, but we should check what `TeX-run-command' will
+	really do.
+
+	* doc/auctex.texi (Processor Options): Document `TeX-check-TeX'.
+
+	* doc/changes.texi: Mention `TeX-check-TeX'.
+
+2015-11-03  Mosè Giordano  <mose@gnu.org>
+
+	* doc/auctex.texi (Processor Options): Document
+	`ConTeXt-Mark-version'.
+	(Multifile): Mention `dwim' value for `TeX-master'.
+
+	* doc/changes.texi: Mention `ConTeXt-Mark-version'.
+
+2015-11-02  Mosè Giordano  <mose@gnu.org>
+
+	* latex.el (TeX-arg-document): When `TeX-arg-input-file-search' is
+	nil, use `LaTeX-style-list' to complete document classes.  Fixes
+	bug#21814.
+
+2015-10-31  Arash Esbati  <esbati@gmx.de>
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/hologo.el: New file.
+
+2015-10-28  Tassilo Horn  <tsdh@gnu.org>
+
+	* latex.el (LaTeX-fill-break-at-separators): Default to nil
+	because many users don't like that special filling.
+
+	* tex-info.el (Texinfo-make-node-list): Warn about duplicate
+	nodes.  Return nodes in order instead of reversed.
+
+2015-10-25  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	* tex-info.el (Texinfo-nodename-de-escape): New defun.
+	(Texinfo-nodename-escape): New defun.
+	(Texinfo-make-node-list): New defun, code taken from
+	Texinfo-insert-node into this function for the sake of code
+	factorization.  In addition, (1) allow node name not to be
+	followed by a comma --- i.e. next node etc. unspecified --- (2)
+	trim trailing blanks after node name, and (3) de-escape @comma{}
+	before insertion of node name into the list.
+	(Texinfo-insert-node): (1) Use new function
+	`Texinfo-make-node-list', and (2) escape node names for commas.
+	(Texinfo-arg-nodename): New defun.
+	(TeX-texinfo-mode): (1) Remove `group' from list of commands,
+	`group' is an environment, not a command.  (2) Add
+	`guillemetleft', `guillemetright', `guilsinglleft',
+	`guilsinglright', `quotedblbase' and `quotesinglbase' to the list
+	of commands.  (3) For commands `pxref', `ref' and `xref', use new
+	function `Texinfo-arg-nodename' to read node name with completion.
+
+2015-10-24  Arash Esbati  <esbati@gmx.de>
+
+	* style/enumitem.el (LaTeX-enumitem-auto-cleanup): Move some
+	operations from style hook into this function.
+	(LaTeX-enumitem-newlist-list-item-arg-local): Delete now unused
+	variable.
+
+	* style/amsthm.el (LaTeX-amsthm-theoremstyle-list): New variable
+	replacing the deleted function
+	`LaTeX-amsthm-complete-theoremstyle'.
+	(LaTeX-amsthm-env-label): New function to insert user defined
+	environments.
+	("amsthm"): Improve handling of "newtheorem*" and
+	"newtheoremstyle".
+
+	* style/AlegreyaSans.el ("AlegreyaSans"): Remove SmallCaps
+	font declaration command.
+
+	* style/Alegreya.el ("Alegreya"): Remove SmallCaps
+	font declaration command.
+
+	* style/caption.el (LaTeX-arg-caption-captionbox): Fix doctring.
+
+	* style/subcaption.el (LaTeX-arg-subcaption-subcaption): Fix
+	doctring.
+	(LaTeX-arg-subcaption-subcaptionbox): ditto.
+
 2015-10-19  Tassilo Horn  <tsdh@gnu.org>
 
 	* Version 11.88.9 released.

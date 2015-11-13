@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2014 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2015 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2052,14 +2052,14 @@ OPTIONAL and IGNORE are ignored."
 	 (crm-separator ",")
 	 style var options)
     (unless LaTeX-global-class-files
-      (if (if (eq TeX-arg-input-file-search 'ask)
-	      (not (y-or-n-p "Find class yourself? "))
-	    TeX-arg-input-file-search)
-	  (progn
-	    (message "Searching for LaTeX classes...")
-	    (setq LaTeX-global-class-files
-		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t))))
-	LaTeX-style-list))
+      (setq LaTeX-global-class-files
+	    (if (if (eq TeX-arg-input-file-search 'ask)
+		    (not (y-or-n-p "Find class yourself? "))
+		  TeX-arg-input-file-search)
+		(progn
+		  (message "Searching for LaTeX classes...")
+		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t)))
+	      LaTeX-style-list)))
     (setq style (completing-read
 		 (concat "Document class: (default " LaTeX-default-style ") ")
 		 LaTeX-global-class-files nil nil nil nil LaTeX-default-style))
@@ -3357,7 +3357,9 @@ recognized."
 
 ;;; Filling
 
-(defcustom LaTeX-fill-break-at-separators '(\\\( \\\) \\\[ \\\])
+;; The default value should try not to break formulae across lines (this is
+;; useful for preview-latex) and give a meaningful filling.
+(defcustom LaTeX-fill-break-at-separators '(\\\( \\\[)
   "List of separators before or after which respectively a line
 break will be inserted if they do not fit into one line."
   :group 'LaTeX

@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -24,14 +24,31 @@
 (require 'ert)
 (require 'latex)
 
-(defvar LaTeX-indent-tabular-test/in
-  (expand-file-name "tabular-in.tex"
-		    (when load-file-name
-		      (file-name-directory load-file-name))))
-(defvar LaTeX-indent-tabular-test/out
-  (expand-file-name "tabular-out.tex"
-		    (when load-file-name
-		      (file-name-directory load-file-name))))
+(defun AUCTeX-set-ert-path (&rest sym-val)
+  "Set first element of SYM-VAL to the next one, and so on.
+
+The value is the path to the test file, make sure it is expanded
+in the right directory even when the ERT test from the command
+line and from another directory."
+  (while sym-val
+    (set (pop sym-val)
+	 (expand-file-name (pop sym-val)
+			   (when load-file-name
+			     (file-name-directory load-file-name))))))
+
+(AUCTeX-set-ert-path
+ 'LaTeX-indent-tabular-test/in
+ "tabular-in.tex"
+ 'LaTeX-indent-tabular-test/out
+ "tabular-out.tex"
+ 'LaTeX-filling/in
+ "latex-filling-in.tex"
+ 'LaTeX-filling/out
+ "latex-filling-out.tex"
+ 'LaTeX-math-indent/in
+ "math-indent-in.tex"
+ 'LaTeX-math-indent/out
+ "math-indent-out.tex")
 
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
@@ -42,6 +59,51 @@
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-indent-tabular-test/out)
+             (buffer-string)))))
+
+;; Another test for indentation, but for math mode, see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20227 Let's keep those tests
+;; separated so it would be easier to find the culprit of a future failure.
+(ert-deftest LaTeX-math-indent ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-math-indent/in)
+             (LaTeX-mode)
+             (indent-region (point-min) (point-max))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-math-indent/out)
+             (buffer-string)))))
+
+;; Test LaTeX code with math modes is indented as expected.  This has mostly to
+;; do with the value of `LaTeX-fill-break-at-separators' and how
+;; `LaTeX-fill-move-to-break-point' handles it.  If the test fails, try to look
+;; there.
+(ert-deftest LaTeX-filling ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-filling/in)
+             (LaTeX-mode)
+	     (let ((fill-column 70))
+	       (fill-paragraph))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-filling/out)
+             (buffer-string)))))
+
+;; Test for bug#19281 (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19281):
+;; make sure AUCTeX is able to insert and modify an environment containing a
+;; TeX-esc and braces in its name.
+(ert-deftest LaTeX-change-environment-with-esc ()
+  (should (string=
+           (with-temp-buffer
+             (LaTeX-mode)
+	     (LaTeX-insert-environment (concat TeX-esc "foo{bar}"))
+	     (LaTeX-modify-environment "foobar")
+             (buffer-string))
+           (with-temp-buffer
+             (LaTeX-mode)
+	     (LaTeX-insert-environment "foobar")
              (buffer-string)))))
 
 ;;; latex-test.el ends here

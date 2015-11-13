@@ -437,6 +437,16 @@ Do you want to select one of these engines?"
 	 (add-file-local-variable 'TeX-engine engine)
 	 (save-buffer))))))
 
+(defcustom TeX-check-TeX t
+  "Whether AUCTeX should check if a working TeX distribution is present."
+  :group 'TeX-command
+  :type 'boolean)
+
+(defcustom TeX-check-TeX-command-not-found 127
+  "Numerical code returned by shell for a command not found error."
+  :group 'TeX-command
+  :type 'integer)
+
 (defun TeX-command (name file &optional override-confirm)
   "Run command NAME on the file returned by calling FILE.
 
@@ -481,8 +491,11 @@ been set."
 
     ;; Before running some commands, check that AUCTeX is able to find "tex"
     ;; program.
-    (and (member name '("TeX" "LaTeX" "AmSTeX" "ConTeXt" "ConTeXt Full"))
-	 (not (executable-find TeX-command))
+    (and TeX-check-TeX
+         (member name '("TeX" "LaTeX" "AmSTeX" "ConTeXt" "ConTeXt Full"))
+	 (= TeX-check-TeX-command-not-found
+            (call-process TeX-shell nil nil nil
+                          TeX-shell-command-option TeX-command))
 	 (error (format "ERROR: AUCTeX cannot find a working TeX distribution.
 Make sure you have one and that TeX binaries are in PATH environment variable%s"
 			(if (eq system-type 'darwin)
@@ -876,7 +889,24 @@ the current style options."
   "Hook being run after TeX/LaTeX finished successfully.
 The functions in this hook are run with the DVI/PDF output file
 given as argument.  Using this hook can be useful for updating
-the viewer automatically after re-compilation of the document.")
+the viewer automatically after re-compilation of the document.
+
+If you use an emacs-internal viewer such as `doc-view-mode' or
+`pdf-view-mode', add `TeX-revert-document-buffer' to this hook.")
+
+(defun TeX-revert-document-buffer (file)
+  "Revert the buffer visiting FILE.
+This function is intended to be used in
+`TeX-after-TeX-LaTeX-command-finished-hook' for users that view
+their compiled document with an emacs viewer such as
+`doc-view-mode' or `pdf-view-mode'.  (Note that this function
+just calls `revert-buffer' in the respective buffer and thus
+requires that the corresponding mode defines a sensible
+`revert-buffer-function'.)"
+  (let ((buf (find-buffer-visiting file)))
+    (when buf
+      (with-current-buffer buf
+	(revert-buffer nil t t)))))
 
 (defvar TeX-after-start-process-function nil
   "Hooks to run after starting an asynchronous process.

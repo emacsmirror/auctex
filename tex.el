@@ -121,7 +121,7 @@ If nil, none is specified."
 ;; `TeX-expand-list-builtin' for a description of the % escapes
 
 (defcustom TeX-command-list
-  `(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
+  '(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %t"
@@ -143,10 +143,7 @@ If nil, none is specified."
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
-    ,(if (or window-system (getenv "DISPLAY"))
-	 '("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
-       '("View" "dvi2tty -q -w 132 %s" TeX-run-command t t
-	 :help "Run Text viewer"))
+    ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
@@ -1119,6 +1116,12 @@ all the regular expressions must match for the element to apply."
      (string-match "pdf" (TeX-output-extension)))
     (output-html
      (string-match "html" (TeX-output-extension)))
+    (has-no-display-manager
+     ;; Compatibility for Emacs <= 22: older Emacsen don't have FRAME argument
+     ;; to `getenv', later versions have the `display-graphic-p' function.
+     (not (if (< emacs-major-version 23)
+	      (or window-system (getenv "DISPLAY"))
+	    (display-graphic-p))))
     (style-pstricks
      (TeX-match-style "^pstricks$\\|^pst-\\|^psfrag$"))
     (engine-omega
@@ -1275,7 +1278,8 @@ the requirements are met."
       ("displayline" "displayline %n %o %b" "displayline")
       ("open" "open %o" "open")))
    (t
-    `(("xdvi" ("%(o?)xdvi"
+    `(("dvi2tty" ("dvi2tty -q -w 132 %o"))
+      ("xdvi" ("%(o?)xdvi"
 	       (mode-io-correlate " -sourceposition \"%n %b\" -editor \"%cS\"")
 	       ((paper-a4 paper-portrait) " -paper a4")
 	       ((paper-a4 paper-landscape) " -paper a4r")
@@ -1389,7 +1393,8 @@ restarting Emacs."
       (output-pdf "open")
       (output-html "open")))
    (t
-    '(((output-dvi style-pstricks) "dvips and gv")
+    '(((output-dvi has-no-display-manager) "dvi2tty")
+      ((output-dvi style-pstricks) "dvips and gv")
       (output-dvi "xdvi")
       (output-pdf "Evince")
       (output-html "xdg-open"))))
