@@ -5,6 +5,7 @@
 #   auctex.info
 #   preview-latex.info
 #   README
+#   ChangeLog
 #   auctex.el (or auctex-pkg.el)?
 #   tex-site.el
 #   doc: preview-dtxdoc.texi
@@ -51,6 +52,7 @@ README: doc/intro.texi doc/preview-readme.texi doc/macros.texi
 	(cd doc; $(MAKEINFO_PLAIN) preview-readme.texi --output -) >> $@
 
 # Commands copied&adapted from autogen.sh and doc/Makefile.in.
+IGNORED:=$(shell ./build-aux/gitlog-to-changelog --since=2015-11-13 > ChangeLog && cat ChangeLog.1 >> ChangeLog)
 AUCTEXDATE:=$(shell LANG=C sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog)
 THISVERSION:=$(shell sed -n '2,/^[0-9]/s/.*Version \(.*\) released\..*/\1/p' ChangeLog)
 LASTVERSION:=$(shell sed -n '/.*Version .* released\./{s/.*Version \(.*\) released\..*/\1/p;q}' ChangeLog)
