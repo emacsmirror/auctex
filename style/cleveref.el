@@ -1,6 +1,6 @@
 ;;; cleveref.el --- Style hook for the `cleveref.sty' package.
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -93,7 +93,12 @@ list of defined labels."
                                 ("labelcpageref" "{"))
 			      'reference)
      ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)))
+     (font-latex-set-syntactic-keywords))
+
+   ;; Activate RefTeX reference style.
+   (and LaTeX-reftex-ref-style-auto-activate
+	(fboundp 'reftex-ref-style-activate)
+	(reftex-ref-style-activate "Cleveref")))
  LaTeX-dialect)
 
 (defvar LaTeX-cleveref-package-options

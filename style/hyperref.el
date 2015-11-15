@@ -299,9 +299,10 @@
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords))
 
-   ;; RefTeX
-   (when (fboundp 'reftex-ref-style-activate)
-     (reftex-ref-style-activate "Hyperref")))
+   ;; Activate RefTeX reference style.
+   (and LaTeX-reftex-ref-style-auto-activate
+	(fboundp 'reftex-ref-style-activate)
+	(reftex-ref-style-activate "Hyperref")))
  LaTeX-dialect)
 
 (defun LaTeX-hyperref-package-options ()
