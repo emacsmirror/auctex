@@ -32,14 +32,29 @@ ${AUTOCONF} || { echo "Error running ${AUTOCONF} in ." >&2 ; exit 1; }
 rm -rf autom4te.cache
 if test "x${AUCTEXDATE}" = x
 then
-    AUCTEXDATE=`LC_ALL=C sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog.1`
-    test "X${AUCTEXDATE}" != X || { echo "Can't find date in ChangeLog.1" >&2 ; exit 1; }
+    AUCTEXDATE=`git log -1 --date=short --format=%ad 2> /dev/null`
+    if test "X${AUCTEXDATE}" = X
+    then
+	echo "Can't find date with git, trying with ChangeLog.1..." >&2
+	AUCTEXDATE=`LC_ALL=C sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog.1`
+	test "X${AUCTEXDATE}" != X || { echo "Can't find date in ChangeLog.1" >&2 ; exit 1; }
+    fi
 fi
 
 if test "x${AUCTEXVERSION}" = x
 then
-    AUCTEXVERSION=`sed -n '2,/^[0-9]/s/.*Version \(.*\) released\..*/\1/p' ChangeLog.1`
-    test "X${AUCTEXVERSION}" != X || AUCTEXVERSION=${AUCTEXDATE}
+    if git describe --tags >/dev/null 2> /dev/null
+    then
+	if test "X`git describe --tags | sed 's/release_.._..//'`" = X
+	then
+	    AUCTEXVERSION=`git describe --tags`
+	else
+	    AUCTEXVERSION=${AUCTEXDATE}
+	fi
+    else
+	AUCTEXVERSION=`sed -n '2,/^[0-9]/s/.*Version \(.*\) released\..*/\1/p' ChangeLog.1`
+	test "X${AUCTEXVERSION}" != X || AUCTEXVERSION=${AUCTEXDATE}
+    fi
 fi
 
 cd doc
