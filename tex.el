@@ -2210,10 +2210,6 @@ this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
 
-(defvar TeX-convert-master t
-  "*If not nil, automatically convert ``Master:'' lines to file variables.
-This will be done when AUCTeX first try to use the master file.")
-
 ;; Can be let-bound temporarily in order to inhibit the master file question
 ;; by using its value instead in case `TeX-master' is nil or 'shared.
 (defvar TeX-transient-master nil)
@@ -2269,10 +2265,7 @@ If optional second argument NONDIRECTORY is non-nil, do not include
 the directory.
 
 If optional third argument ASK is non-nil, ask the user for the
-name of master file if it cannot be determined otherwise.
-
-Currently it will check for the presence of a ``Master:'' line in
-the beginning of the file, but that feature will be phased out."
+name of master file if it cannot be determined otherwise."
   (interactive)
   (if (eq extension t)
       (setq extension TeX-default-extension))
@@ -2318,18 +2311,6 @@ the beginning of the file, but that feature will be phased out."
 
 	 ;; We might already know the name.
 	 ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
-
-	 ;; Support the ``Master:'' line (under protest!)
-	 ((re-search-forward
-	   "^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
-	  (setq TeX-master
-		(TeX-strip-extension (TeX-match-buffer 1)
-				     (list TeX-default-extension)))
-	  (if TeX-convert-master
-	      (progn
-		(beginning-of-line)
-		(kill-line 1)
-		(TeX-add-local-master))))
 
 	 ;; Ask the user (but add it as a local variable).
 	 (ask (TeX-master-file-ask)))))
