@@ -680,8 +680,12 @@ omitted) and `TeX-region-file'."
 	(setq cmd (TeX-command-default
 		   ;; File function should be called with nil `nondirectory'
 		   ;; argument, otherwise `TeX-command-sequence' won't work in
-		   ;; included files not placed in `TeX-master-directory'.
-		   (funcall TeX-command-sequence-file-function))
+		   ;; included files not placed in `TeX-master-directory'.  In
+		   ;; addition, `TeX-master-file' is called with the third
+		   ;; argument (`ask') set to t, so that the master file is
+		   ;; properly set.  This is also what `TeX-command-master'
+		   ;; does.
+		   (funcall TeX-command-sequence-file-function nil nil t))
 	      TeX-command-sequence-command t)))
       (TeX-command cmd TeX-command-sequence-file-function 0)
       (when reset
@@ -1987,10 +1991,16 @@ original file."
 	    (set-buffer-modified-p nil)
 	  (save-buffer 0))))))
 
-(defun TeX-region-file (&optional extension nondirectory)
+(defun TeX-region-file (&optional extension nondirectory _ignore)
   "Return TeX-region file name with EXTENSION.
 If optional second argument NONDIRECTORY is non-nil, do not include
-the directory."
+the directory.
+
+The compatibility argument IGNORE is ignored."
+  ;; The third argument `_ignore' is kept for symmetry with `TeX-master-file's
+  ;; third argument `ask'.  For example, it's used in `TeX-command-sequence',
+  ;; where we don't know which function has to be called.  Keep this in mind
+  ;; should you want to use another argument here.
   (concat (if nondirectory "" (TeX-master-directory))
 	  (cond ((eq extension t)
 		 (concat TeX-region "." TeX-default-extension))
