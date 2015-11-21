@@ -41,9 +41,18 @@ defined with \"\\newtheoremstyle\".")
 
 (defvar LaTeX-amsthm-fontdecl
   (mapcar (lambda (elt) (concat TeX-esc elt))
-	  '("itshape" "bfseries" "scshape"
-	    "ttfamily" "upshape" "mdseries"
-	    "rmfamily" "sffamily" "slshape"))
+	  '(;; family
+	    "rmfamily" "sffamily" "ttfamily"
+	    ;; series
+	    "mdseries" "bfseries"
+	    ;; shape
+	    "upshape" "itshape" "slshape" "scshape"
+	    ;; size
+	    "tiny"  "scriptsize" "footnotesize"
+	    "small" "normalsize" "large"
+	    "Large" "LARGE" "huge" "Huge"
+	    ;; reset macro
+	    "normalfont"))
   "List of font declaration commands for \"\\newtheoremstyle\".")
 
 (defun LaTeX-amsthm-env-label (environment)
@@ -106,6 +115,23 @@ make them available as new environments.  Update
    (LaTeX-add-environments
     '("proof" LaTeX-amsthm-env-label))
    (TeX-add-symbols
+    ;; Overrule the defintion in `latex.el':
+    '("newtheorem"
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((nthm (TeX-read-string
+		      (TeX-argument-prompt nil nil "Environment"))))
+	   (LaTeX-add-amsthm-newtheorems nthm)
+	   (LaTeX-add-environments (list nthm 'LaTeX-theorem-env-label))
+	   (format "%s" nthm))))
+      [ TeX-arg-environment "Numbered like" ]
+      t [ (TeX-arg-eval progn (if (eq (save-excursion
+					(backward-char 2)
+					(preceding-char)) ?\])
+				  ()
+				(TeX-arg-counter t "Within counter"))
+			"") ])
+
     '("newtheorem*"
       (TeX-arg-eval
        (lambda ()
@@ -119,8 +145,7 @@ make them available as new environments.  Update
 	   (format "%s" heading)))))
 
     '("theoremstyle"
-      (TeX-arg-eval completing-read
-		    "Style: "
+      (TeX-arg-eval completing-read "Style: "
 		    LaTeX-amsthm-theoremstyle-list))
     "qedhere"
     "swapnumbers"
@@ -136,11 +161,16 @@ make them available as new environments.  Update
 	   (format "%s" nthmstyle))))
       (TeX-arg-length "Space above")
       (TeX-arg-length "Space below")
-      (TeX-arg-eval completing-read
-		    "Body font: " LaTeX-amsthm-fontdecl)
+      (TeX-arg-eval mapconcat 'identity
+		    (TeX-completing-read-multiple
+		     "Body font: "
+		     LaTeX-amsthm-fontdecl) "")
       "Indent amount"
-      (TeX-arg-eval completing-read
-		    "Theorem head font: " LaTeX-amsthm-fontdecl)
+      (TeX-arg-eval mapconcat 'identity
+		    (TeX-completing-read-multiple
+		     "Theorem head font: "
+		     LaTeX-amsthm-fontdecl) "")
+
       "Punctuation after head"
       (TeX-arg-length "Space after head")
       "Theorem head spec"))
