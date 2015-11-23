@@ -3591,7 +3591,7 @@ and if it is relevant for all text modes, append it to
 
 Other useful hooks are listed below.
 
-@defvr Variable TeX-after-TeX-LaTeX-command-finished-hook
+@defvr Variable TeX-after-compilation-finished-hook
 Hook which is run after the @TeX{}/@LaTeX{} processor has successfully
 finished compiling your document.  (@xref{Processing}, for finding out
 how to compile your document).  Each function in the hook is run with
@@ -3602,7 +3602,7 @@ re-compilation especially when using Emacs viewers such as DocView or
 PDF Tools.  The function @code{TeX-revert-document-buffer} can be added
 to the hook for this purpose.
 @end defvr
-@vindex TeX-after-TeX-LaTeX-command-finished-hook
+@vindex TeX-after-compilation-finished-hook
 @findex TeX-revert-document-buffer
 
 @node Multifile
