@@ -889,7 +889,7 @@ the current style options."
 
 ;;; Command Hooks
 
-(defvar TeX-after-compilation-finished-hook nil
+(defvar TeX-after-compilation-finished-functions nil
   "Hook being run after TeX/LaTeX/ConTeXt finished successfully.
 The functions in this hook are run with the DVI/PDF output file
 given as argument.  Using this hook can be useful for updating
@@ -899,13 +899,13 @@ If you use an emacs-internal viewer such as `doc-view-mode' or
 `pdf-view-mode', add `TeX-revert-document-buffer' to this hook.")
 
 (make-obsolete-variable 'TeX-after-TeX-LaTeX-command-finished-hook
-			'TeX-after-compilation-finished-hook
+			'TeX-after-compilation-finished-functions
 			"11.89")
 
 (defun TeX-revert-document-buffer (file)
   "Revert the buffer visiting FILE.
 This function is intended to be used in
-`TeX-after-compilation-finished-hook' for users that view
+`TeX-after-compilation-finished-functions' for users that view
 their compiled document with an emacs viewer such as
 `doc-view-mode' or `pdf-view-mode'.  (Note that this function
 just calls `revert-buffer' in the respective buffer and thus
@@ -1534,7 +1534,7 @@ Rerun to get mark in right position\\." nil t)
 	 (push (cons idx-file t) LaTeX-idx-changed-alist)))
 
   (unless TeX-error-list
-    (run-hook-with-args 'TeX-after-compilation-finished-hook
+    (run-hook-with-args 'TeX-after-compilation-finished-functions
 			(with-current-buffer TeX-command-buffer
 			  (expand-file-name
 			   (TeX-active-master (TeX-output-extension)))))))

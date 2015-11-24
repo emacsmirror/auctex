@@ -602,7 +602,7 @@ inserted after the sectioning command."
 			    (TeX-current-pages)))
 	   (setq TeX-command-next TeX-command-default)))))
   (unless TeX-error-list
-    (run-hook-with-args 'TeX-after-compilation-finished-hook
+    (run-hook-with-args 'TeX-after-compilation-finished-functions
 			(with-current-buffer TeX-command-buffer
 			  (expand-file-name
 			   (TeX-active-master (TeX-output-extension)))))))
