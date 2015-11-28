@@ -198,7 +198,7 @@ make them available as new environments.  Update
     '("theoremheaderfont"
       (TeX-arg-eval mapconcat 'identity
 		    (TeX-completing-read-multiple
-		     "Body font: "
+		     "Header font: "
 		     LaTeX-ntheorem-fontdecl) ""))
 
     '("theoremnumbering"

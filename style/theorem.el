@@ -141,7 +141,7 @@ make them available as new environments."
     '("theoremheaderfont"
       (TeX-arg-eval mapconcat 'identity
 		    (TeX-completing-read-multiple
-		     "Body font: "
+		     "Header font: "
 		     LaTeX-theorem-fontdecl) ""))
 
     '("theorempreskipamount"
