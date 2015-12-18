@@ -3207,8 +3207,8 @@ and strings get evaluated as replacement strings."
 
 (defconst preview-LaTeX-disable-pdfoutput
   '(("\\`\\(pdf[^ ]*\\)\
-\\(\\( [-&]\\([^ \"]\\|\"[^\"]*\"\\)*\\|\
- \"[-&][^\"]*\"\\)*\\)\\(.*\\)\\'"
+\\(\\( +[-&]\\([^ \"]\\|\"[^\"]*\"\\)*\\|\
+ +\"[-&][^\"]*\"\\)*\\)\\(.*\\)\\'"
    . ("\\1\\2 \"\\\\pdfoutput=0 \" \\5")))
   "This replacement places `\"\\pdfoutput=0 \"' after the options
 of any command starting with `pdf'.")
