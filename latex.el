@@ -4929,6 +4929,9 @@ file, or any mode derived thereof. See variable
     ("v W" "varOmega" ("AMS" "Greek Uppercase") 120570) ;; #X1D6FA
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
+    (nil "impliedby" ("AMS" "Arrows") 10232) ;; #X27F8
+    (nil "implies" ("AMS" "Arrows") 10233) ;; #X27F9
+    (nil "iff" ("AMS" "Arrows") 10234) ;; #X27FA
     (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
     (nil "leftrightarrows" ("AMS" "Arrows") 8646) ;; #X21C6
     (nil "Lleftarrow" ("AMS" "Arrows") 8666) ;; #X21DA
