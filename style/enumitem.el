@@ -100,32 +100,20 @@
   "Buffer-local key=value options for enumitem macros and environments.")
 (make-variable-buffer-local 'LaTeX-enumitem-key-val-options-local)
 
-;; Variables needed for \newlist: This command is not hooked into
-;; the parser via `TeX-auto-add-type', we mimic that behaviour.
-
-(defvar LaTeX-enumitem-newlist-list nil
-  "List of environments defined by command `\\newlist' from
-`enumitem' package.")
-
 (defvar LaTeX-enumitem-newlist-list-local nil
-  "Local list of all environments definded with `\\newlist'
-plus available through `enumitem' package.")
+  "Local list of all environments definded with `\\newlist' plus
+the ones initially available through `enumitem' package.")
 (make-variable-buffer-local 'LaTeX-enumitem-newlist-list-local)
 
-(defvar LaTeX-enumitem-newlist-list-item-arg nil
-  "List of description like environments defined by command
-`\\newlist' from `enumitem' package.")
+;; Setup for \newlist:
 
-(defvar LaTeX-auto-enumitem-newlist nil
-  "Temporary for parsing the arguments of `\\newlist' from
-`enumitem' package.")
+(TeX-auto-add-type "enumitem-newlist" "LaTeX")
 
 (defvar LaTeX-enumitem-newlist-regexp
   '("\\\\newlist{\\([^}]+\\)}{\\([^}]+\\)}"
     (1 2) LaTeX-auto-enumitem-newlist)
   "Matches the arguments of `\\newlist' from `enumitem'
 package.")
-
 
 ;; Setup for \SetEnumitemKey:
 
@@ -136,7 +124,6 @@ package.")
     1 LaTeX-auto-enumitem-SetEnumitemKey)
   "Matches the arguments of `\\SetEnumitemKey' from `enumitem'
 package.")
-
 
 ;; Setup for \SetEnumitemValue:
 
@@ -158,9 +145,7 @@ package.")
 ;; Plug them into the machinery.
 (defun LaTeX-enumitem-auto-prepare ()
   "Clear various `LaTeX-enumitem-*' before parsing."
-  (setq	LaTeX-auto-enumitem-newlist          nil
-	LaTeX-enumitem-newlist-list          nil
-	LaTeX-enumitem-newlist-list-item-arg nil
+  (setq LaTeX-auto-enumitem-newlist          nil
 	LaTeX-auto-enumitem-SetEnumitemKey   nil
 	LaTeX-auto-enumitem-SetEnumitemValue nil))
 
@@ -168,26 +153,19 @@ package.")
   "Move parsing results into right places for further usage."
   ;; \newlist{<name>}{<type>}{<max-depth>}
   ;; env=<name>, type=<type>, ignored=<max-depth>
-  (dolist (env-type LaTeX-auto-enumitem-newlist)
+  (dolist (env-type (LaTeX-enumitem-newlist-list))
     (let* ((env  (car env-type))
 	   (type (cadr env-type)))
-      (add-to-list 'LaTeX-auto-environment
-		   (list env 'LaTeX-enumitem-env-with-opts))
-      (add-to-list 'LaTeX-enumitem-newlist-list
-		   (list env))
+      (LaTeX-add-environments (list env 'LaTeX-enumitem-env-with-opts))
+      ;; Tell AUCTeX about parsed description like environments.
       (when (or (string-equal type "description")
 		(string-equal type "description*"))
-	(add-to-list 'LaTeX-enumitem-newlist-list-item-arg
-		     (list env)))))
+	(add-to-list 'LaTeX-item-list `(,env . LaTeX-item-argument)))))
   ;; Now add the parsed env's to the local list.
-  (when LaTeX-enumitem-newlist-list
+  (when (LaTeX-enumitem-newlist-list)
     (setq LaTeX-enumitem-newlist-list-local
-	  (append LaTeX-enumitem-newlist-list
-		  LaTeX-enumitem-newlist-list-local)))
-  ;; Tell AUCTeX about parsed description like environments.
-  (when LaTeX-enumitem-newlist-list-item-arg
-    (dolist (env LaTeX-enumitem-newlist-list-item-arg)
-      (add-to-list 'LaTeX-item-list `(,(car env) . LaTeX-item-argument)))))
+	  (append (mapcar 'list (mapcar 'car (LaTeX-enumitem-newlist-list)))
+		  LaTeX-enumitem-newlist-list-local))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-enumitem-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-enumitem-auto-cleanup t)
@@ -282,7 +260,6 @@ in `enumitem'-completions."
 	(pushnew (list key (list val)) opts :test #'equal))
       (setq LaTeX-enumitem-key-val-options-local (copy-alist opts)))))
 
-
 (TeX-add-style-hook
  "enumitem"
  (lambda ()
@@ -347,6 +324,7 @@ in `enumitem'-completions."
 		     (string-equal type "description*"))
 	     (add-to-list 'LaTeX-item-list `(,name . LaTeX-item-argument)))
 	   (LaTeX-add-environments `(,name LaTeX-enumitem-env-with-opts))
+	   (LaTeX-add-enumitem-newlists (list name type))
 	   (insert (format "{%s}" name)
 		   (format "{%s}" type))
 	    (format "%s" depth)))))
@@ -396,12 +374,23 @@ in `enumitem'-completions."
     '("AddEnumerateCounter" 3)
     '("AddEnumerateCounter*" 3)
 
-    ;; This command only makes sense for enumerate type environments.
-    ;; Currently, we offer all defined env's -- to be improved
-    ;; sometimes.
+    ;; "\restartlist" only works for lists defined with "resume" key.
+    ;; We will not extract that information and leave that to users.
+    ;; For completion, extract enumerated environments from
+    ;; `LaTeX-enumitem-newlist-list' and add "enumerate" to them.
     '("restartlist"
-      (TeX-arg-eval completing-read "List name: "
-		    LaTeX-enumitem-newlist-list-local))
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((enums '("enumerate")))
+	   (when (LaTeX-provided-package-options-member "enumitem" "inline")
+	     (pushnew "enumerate*" enums :test #'equal))
+	   (dolist (env-type (LaTeX-enumitem-newlist-list))
+	     (let ((env   (car env-type))
+		   (type  (cadr env-type)))
+	       (when (or (string-equal type "enumerate")
+			 (string-equal type "enumerate*"))
+		 (pushnew env enums :test #'equal))))
+	   (completing-read "List name: " enums)))))
 
     ;; "Key" will be parsed and added to key-val list.
     '("SetEnumitemKey" LaTeX-arg-SetEnumitemKey)
