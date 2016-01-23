@@ -121,9 +121,9 @@
 	(list (concat slash citations opt arg) 3 'font-lock-constant-face)
 	;;
 	;; Text between `` quotes ''.
-	(cons (concat (regexp-opt `("``" "\"<" "\"`" "<<" "«") t)
-		      "[^'\">»]+"	;a bit pessimistic
-		      (regexp-opt `("''" "\">" "\"'" ">>" "»") t))
+	(cons (concat (regexp-opt `("``" "\"<" "\"`" "<<" "Â«") t)
+		      "[^'\">Â»]+"	;a bit pessimistic
+		      (regexp-opt `("''" "\">" "\"'" ">>" "Â»") t))
 	      'font-lock-string-face)
 	;;
 	;; Command names, special and general.
@@ -169,5 +169,9 @@
     )
 
 (provide 'tex-font)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 
 ;;; tex-font.el ends here
