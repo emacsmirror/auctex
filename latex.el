@@ -1745,6 +1745,7 @@ It will setup BibTeX to store keys in an auto file."
   (if (boundp 'local-write-file-hooks)
       (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  (TeX-bibtex-set-BibTeX-dialect)
   (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)
   (set (make-local-variable 'TeX-auto-parse-length) 999999)
