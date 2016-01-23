@@ -2603,8 +2603,10 @@ For supported dialects, see variables `TeX-style-hook-dialect'.")
 Supported values are described below:
 
 * `:bibtex'  for files in BibTeX mode.
+* `:context' for files in ConTeXt mode.
 * `:latex'   for files in LaTeX mode, or any mode derived
 	     thereof.
+* `:plain-tex' for files in plain-TeX mode.
 * `:texinfo' for Texinfo files.
 
 Purpose is notably to prevent non-Texinfo hooks to be run in
@@ -2667,7 +2669,7 @@ side effect e.g. on variable `TeX-font-list'.")
 	   (load-file el)))))
 
 (defconst TeX-style-hook-dialect-weight-alist
-  '((:latex . 1) (:texinfo . 2) (:bibtex . 4))
+  '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16))
   "Association list to map dialects to binary weight, in order to
   implement dialect sets as bitmaps."  )
 

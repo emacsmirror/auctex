@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014, 2015
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2016
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -1661,6 +1661,12 @@ Use `ConTeXt-Mark-version' to choose the command."
     ConTeXt-item-list
     ConTeXt-extra-paragraph-commands))
 
+(defconst ConTeXt-dialect :context
+  "Default dialect for use with function `TeX-add-style-hook' for
+argument DIALECT-EXPR when the hook is to be run only on ConTeXt
+file, or any mode derived thereof. See variable
+`TeX-style-hook-dialect'." )
+
 (defcustom ConTeXt-clean-intermediate-suffixes
   ;; See *suffixes in texutil.pl.
   '("\\.tui" "\\.tup" "\\.ted" "\\.tes" "\\.top" "\\.log" "\\.tmp" "\\.run"
@@ -1695,6 +1701,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq major-mode 'context-mode)
 
   (setq local-abbrev-table context-mode-abbrev-table)
+  (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
   ;; Make language specific variables buffer local
   (dolist (symbol ConTeXt-language-variable-list)
