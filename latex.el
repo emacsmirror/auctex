@@ -4776,6 +4776,7 @@ file, or any mode derived thereof. See variable
     (nil "Longrightarrow" "Arrows" 10233) ;; #X27F9
     (nil "longleftrightarrow" "Arrows" 10231) ;; #X27F7
     (nil "Longleftrightarrow" "Arrows" 10234) ;; #X27FA
+    (nil "iff" "Arrows" 10234) ;; #X27FA
     (nil "longmapsto" "Arrows" 10236) ;; #X27FC
     (nil "hookrightarrow" "Arrows" 8618) ;; #X21AA
     (nil "rightharpoonup" "Arrows" 8640) ;; #X21C0
@@ -4931,7 +4932,6 @@ file, or any mode derived thereof. See variable
     (nil "dashleftarrow" ("AMS" "Arrows"))
     (nil "impliedby" ("AMS" "Arrows") 10232) ;; #X27F8
     (nil "implies" ("AMS" "Arrows") 10233) ;; #X27F9
-    (nil "iff" ("AMS" "Arrows") 10234) ;; #X27FA
     (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
     (nil "leftrightarrows" ("AMS" "Arrows") 8646) ;; #X21C6
     (nil "Lleftarrow" ("AMS" "Arrows") 8666) ;; #X21DA
