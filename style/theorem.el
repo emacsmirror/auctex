@@ -42,20 +42,33 @@
   "List of theorem styles provided by `theorem.sty'.")
 
 (defvar LaTeX-theorem-fontdecl
-  (mapcar (lambda (elt) (concat TeX-esc elt))
-	  '(;; family
-	    "rmfamily" "sffamily" "ttfamily"
-	    ;; series
-	    "mdseries" "bfseries"
-	    ;; shape
-	    "upshape" "itshape" "slshape" "scshape"
-	    ;; size
-	    "tiny"  "scriptsize" "footnotesize"
-	    "small" "normalsize" "large"
-	    "Large" "LARGE" "huge" "Huge"
-	    ;; reset macro
-	    "normalfont"))
+  '(;; family
+    "rmfamily" "sffamily" "ttfamily"
+    ;; series
+    "mdseries" "bfseries"
+    ;; shape
+    "upshape" "itshape" "slshape" "scshape"
+    ;; size
+    "tiny"  "scriptsize" "footnotesize"
+    "small" "normalsize" "large"
+    "Large" "LARGE" "huge" "Huge"
+    ;; reset macro
+    "normalfont")
   "List of font declaration commands for \"\\theorem(body\|header)font\".")
+
+(defun LaTeX-arg-theorem-fontdecl (optional &optional prompt)
+  "Prompt for font declaration commands in \"\\theorem(body\|header)font\".
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument.  Use PROMPT as the prompt string."
+  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
+  ;; is hard-coded to `TeX-esc'.
+  (let* ((crm-separator (regexp-quote TeX-esc))
+	 (fontdecl (mapconcat 'identity
+			      (TeX-completing-read-multiple
+			       (TeX-argument-prompt optional prompt "Font")
+			       LaTeX-theorem-fontdecl nil nil TeX-esc)
+			      TeX-esc)))
+    (TeX-argument-insert fontdecl optional)))
 
 (defun LaTeX-theorem-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -133,16 +146,10 @@ make them available as new environments."
 		    LaTeX-theorem-theoremstyle-list))
 
     '("theorembodyfont"
-      (TeX-arg-eval mapconcat 'identity
-		    (TeX-completing-read-multiple
-		     "Body font: "
-		     LaTeX-theorem-fontdecl) ""))
+      (LaTeX-arg-theorem-fontdecl "Body font"))
 
     '("theoremheaderfont"
-      (TeX-arg-eval mapconcat 'identity
-		    (TeX-completing-read-multiple
-		     "Header font: "
-		     LaTeX-theorem-fontdecl) ""))
+      (LaTeX-arg-theorem-fontdecl "Header font"))
 
     '("theorempreskipamount"
       (TeX-arg-length "Skip before theorem"))
