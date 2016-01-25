@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2015 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2016 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2059,7 +2059,7 @@ OPTIONAL and IGNORE are ignored."
 		  TeX-arg-input-file-search)
 		(progn
 		  (message "Searching for LaTeX classes...")
-		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t)))
+		  (TeX-search-files-by-type 'texinputs 'global t t))
 	      LaTeX-style-list)))
     (setq style (completing-read
 		 (concat "Document class: (default " LaTeX-default-style ") ")

@@ -1,6 +1,6 @@
 ;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.
 
-;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014, 2016 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -514,7 +514,7 @@ for citation keys."
 	(progn
 	  (message "Searching for BibLaTeX styles...")
 	  (setq BibLaTeX-global-style-files
-		(mapcar 'identity (TeX-search-files-by-type 'bbxinputs 'global t t))))
+		(TeX-search-files-by-type 'bbxinputs 'global t t)))
       ;; ...else, use for completion only standard BibLaTeX styles (see §3.3 of
       ;; Biblatex reference manual).
       (setq BibLaTeX-global-style-files
