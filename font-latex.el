@@ -69,7 +69,7 @@
   "Regexp used to find quotes.")
 (make-variable-buffer-local 'font-latex-quote-regexp-beg)
 
-(defvar font-latex-quote-list '(("``" "''") ("<<" ">>" french) ("Â«" "Â»" french))
+(defvar font-latex-quote-list '(("``" "''") ("<<" ">>" french) ("«" "»" french))
   "List of quote specifiers for quotation fontification.
 
 Each element of the list is either a list consisting of two
@@ -2039,7 +2039,7 @@ END marks boundaries for searching for quotation ends."
 (provide 'font-latex)
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: iso-8859-1
 ;; End:
 
 ;;; font-latex.el ends here

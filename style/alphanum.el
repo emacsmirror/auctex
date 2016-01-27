@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 
-;; Author: Frank KÃ¼ster <frank@kuesterei.ch>
+;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
@@ -28,7 +28,7 @@
 ;; This is file alphanum.el, which makes AUCTeX usable with jura.cls
 ;; and its style file alphanum.sty.
 ;;
-;; Contributed by Frank KÃ¼ster <frank@kuesterei.ch>. The code for
+;; Contributed by Frank Küster <frank@kuesterei.ch>. The code for
 ;; reftex has been written by Carsten Dominik, the maintainer of
 ;; reftex, but all the errors are mine.
 
@@ -96,5 +96,5 @@
  LaTeX-dialect)
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: iso-8859-1
 ;; End:

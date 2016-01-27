@@ -4610,8 +4610,8 @@ element to ALIST-VAR."
   (modify-syntax-entry ?~  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
-  (modify-syntax-entry ?Â«  "."  TeX-mode-syntax-table)
-  (modify-syntax-entry ?Â»  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?|  "."  TeX-mode-syntax-table))
 
 ;;; Menu Support
@@ -6334,7 +6334,7 @@ Emacs 21."
 (provide 'tex)
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: iso-8859-1
 ;; End:
 
 ;;; tex.el ends here

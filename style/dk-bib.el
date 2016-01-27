@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2005, 2014 Free Software Foundation, Inc.
 
-;; Author: Arne JÃ¸rgensen <arne@arnested.dk>
+;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -56,7 +56,7 @@
     options))
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: iso-8859-1
 ;; End:
 
 ;;; dk-bib.el ends here
