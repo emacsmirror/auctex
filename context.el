@@ -1659,7 +1659,9 @@ Use `ConTeXt-Mark-version' to choose the command."
     ConTeXt-section-list
     ConTeXt-text
     ConTeXt-item-list
-    ConTeXt-extra-paragraph-commands))
+    ConTeXt-extra-paragraph-commands
+    ConTeXt-environment-list)
+  "List of variables to be set from languages specific ones.")
 
 (defconst ConTeXt-dialect :context
   "Default dialect for use with function `TeX-add-style-hook' for
