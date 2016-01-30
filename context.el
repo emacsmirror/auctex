@@ -654,33 +654,26 @@ inserted after the sectioning command."
 	 ;; this should not happen
 	 (error "Unknown interface: %s" ConTeXt-current-interface))))
 
-
 (defun ConTeXt-environment (arg)
   "Make ConTeXt environment (\\start...-\\stop... pair).
 With optional ARG, modify current environment."
   (interactive "*P")
-  (let ((environment (
-		      completing-read (concat "Environment type: (default "
-					      (if (TeX-near-bobp)
-						  "text"
-						ConTeXt-default-environment)
-					      ") ")
-		      ConTeXt-environment-list
-		      nil nil nil
-		      'ConTeXt-environment-history)
-		     ))
-    ;; Get default
-    (cond ((and (zerop (length environment))
-		(TeX-near-bobp))
-	   (setq environment "text"))
-	  ((zerop (length environment))
-	   (setq environment ConTeXt-default-environment))
-	  (t
-	   (setq ConTeXt-default-environment environment)))
+  (let* ((default (cond
+		   ((TeX-near-bobp) "text")
+		   (t ConTeXt-default-environment)))
+	 (environment
+	  (completing-read (concat "Environment type: (default " default ") ")
+			   ConTeXt-environment-list nil nil nil
+			   'ConTeXt-environment-history default)))
+    ;; Use `environment' as default for the next time only if it is different
+    ;; from the current default.
+    (unless (equal environment default)
+      (setq ConTeXt-default-environment environment))
 
     (let ((entry (assoc environment ConTeXt-environment-list)))
-      (when (null entry)
-	(ConTeXt-add-environments (list environment)))
+      (if (null entry)
+	  (ConTeXt-add-environments (list environment)))
+
       (if arg
 	  (ConTeXt-modify-environment environment)
 	(ConTeXt-environment-menu environment)))))
