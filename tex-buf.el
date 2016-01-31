@@ -680,8 +680,12 @@ omitted) and `TeX-region-file'."
 	(setq cmd (TeX-command-default
 		   ;; File function should be called with nil `nondirectory'
 		   ;; argument, otherwise `TeX-command-sequence' won't work in
-		   ;; included files not placed in `TeX-master-directory'.
-		   (funcall TeX-command-sequence-file-function))
+		   ;; included files not placed in `TeX-master-directory'.  In
+		   ;; addition, `TeX-master-file' is called with the third
+		   ;; argument (`ask') set to t, so that the master file is
+		   ;; properly set.  This is also what `TeX-command-master'
+		   ;; does.
+		   (funcall TeX-command-sequence-file-function nil nil t))
 	      TeX-command-sequence-command t)))
       (TeX-command cmd TeX-command-sequence-file-function 0)
       (when reset
@@ -885,8 +889,8 @@ the current style options."
 
 ;;; Command Hooks
 
-(defvar TeX-after-TeX-LaTeX-command-finished-hook nil
-  "Hook being run after TeX/LaTeX finished successfully.
+(defvar TeX-after-compilation-finished-functions nil
+  "Hook being run after TeX/LaTeX/ConTeXt finished successfully.
 The functions in this hook are run with the DVI/PDF output file
 given as argument.  Using this hook can be useful for updating
 the viewer automatically after re-compilation of the document.
@@ -894,10 +898,14 @@ the viewer automatically after re-compilation of the document.
 If you use an emacs-internal viewer such as `doc-view-mode' or
 `pdf-view-mode', add `TeX-revert-document-buffer' to this hook.")
 
+(make-obsolete-variable 'TeX-after-TeX-LaTeX-command-finished-hook
+			'TeX-after-compilation-finished-functions
+			"11.89")
+
 (defun TeX-revert-document-buffer (file)
   "Revert the buffer visiting FILE.
 This function is intended to be used in
-`TeX-after-TeX-LaTeX-command-finished-hook' for users that view
+`TeX-after-compilation-finished-functions' for users that view
 their compiled document with an emacs viewer such as
 `doc-view-mode' or `pdf-view-mode'.  (Note that this function
 just calls `revert-buffer' in the respective buffer and thus
@@ -1526,7 +1534,7 @@ Rerun to get mark in right position\\." nil t)
 	 (push (cons idx-file t) LaTeX-idx-changed-alist)))
 
   (unless TeX-error-list
-    (run-hook-with-args 'TeX-after-TeX-LaTeX-command-finished-hook
+    (run-hook-with-args 'TeX-after-compilation-finished-functions
 			(with-current-buffer TeX-command-buffer
 			  (expand-file-name
 			   (TeX-active-master (TeX-output-extension)))))))
@@ -1987,10 +1995,16 @@ original file."
 	    (set-buffer-modified-p nil)
 	  (save-buffer 0))))))
 
-(defun TeX-region-file (&optional extension nondirectory)
+(defun TeX-region-file (&optional extension nondirectory _ignore)
   "Return TeX-region file name with EXTENSION.
 If optional second argument NONDIRECTORY is non-nil, do not include
-the directory."
+the directory.
+
+The compatibility argument IGNORE is ignored."
+  ;; The third argument `_ignore' is kept for symmetry with `TeX-master-file's
+  ;; third argument `ask'.  For example, it's used in `TeX-command-sequence',
+  ;; where we don't know which function has to be called.  Keep this in mind
+  ;; should you want to use another argument here.
   (concat (if nondirectory "" (TeX-master-directory))
 	  (cond ((eq extension t)
 		 (concat TeX-region "." TeX-default-extension))
@@ -2256,7 +2270,7 @@ Return non-nil if an error or warning is found."
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
  \\\\.*?[0-9]+--[0-9]+\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:.*"))
+	  "^\\(\\(?:LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:.*\\)"))
 	(error-found nil))
     (while
 	(cond

@@ -153,7 +153,7 @@ STYLESRC = style/prosper.el \
 	   style/vwcol.el     style/textpos.el   style/transparent.el \
 	   style/fontenc.el   style/Alegreya.el  style/gloss-italian.el \
 	   style/newfloat.el  style/subcaption.el style/AlegreyaSans.el \
-	   style/hologo.el
+	   style/hologo.el    style/theorem.el   style/ntheorem.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -242,7 +242,7 @@ configure: configure.ac aclocal.m4
 Makefile: Makefile.in config.status
 	./config.status
 
-doc/Makefile: doc/Makefile.in config.status ChangeLog
+doc/Makefile: doc/Makefile.in config.status ChangeLog.1
 	./config.status
 
 config.status: configure

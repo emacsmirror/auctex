@@ -1,6 +1,6 @@
 ;;; varioref.el --- AUCTeX style file with support for varioref.sty
 
-;; Copyright (C) 1999, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2013, 2015 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;;         Mads Jensen <mje@inducks.org>
@@ -64,7 +64,12 @@
               ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
               ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
 	       2 LaTeX-label-list "}"))
-	    TeX-complete-list)))
+	    TeX-complete-list))
+
+     ;; Activate RefTeX reference style.
+     (and LaTeX-reftex-ref-style-auto-activate
+	  (fboundp 'reftex-ref-style-activate)
+	  (reftex-ref-style-activate "Varioref")))
    LaTeX-dialect)
 
 (defvar LaTeX-varioref-package-options

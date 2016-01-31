@@ -1,4 +1,4 @@
-;;; holog.el --- AUCTeX style for `hologo.sty' (v1.10)
+;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.10)
 
 ;; Copyright (C) 2015 Free Software Foundation, Inc.
 

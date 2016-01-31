@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014, 2015
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2016
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -600,7 +600,12 @@ inserted after the sectioning command."
 	  (t
 	   (message (concat name ": problems after "
 			    (TeX-current-pages)))
-	   (setq TeX-command-next TeX-command-default))))))
+	   (setq TeX-command-next TeX-command-default)))))
+  (unless TeX-error-list
+    (run-hook-with-args 'TeX-after-compilation-finished-functions
+			(with-current-buffer TeX-command-buffer
+			  (expand-file-name
+			   (TeX-active-master (TeX-output-extension)))))))
 
 
 ;;; Environments
@@ -649,33 +654,26 @@ inserted after the sectioning command."
 	 ;; this should not happen
 	 (error "Unknown interface: %s" ConTeXt-current-interface))))
 
-
 (defun ConTeXt-environment (arg)
   "Make ConTeXt environment (\\start...-\\stop... pair).
 With optional ARG, modify current environment."
   (interactive "*P")
-  (let ((environment (
-		      completing-read (concat "Environment type: (default "
-					      (if (TeX-near-bobp)
-						  "text"
-						ConTeXt-default-environment)
-					      ") ")
-		      ConTeXt-environment-list
-		      nil nil nil
-		      'ConTeXt-environment-history)
-		     ))
-    ;; Get default
-    (cond ((and (zerop (length environment))
-		(TeX-near-bobp))
-	   (setq environment "text"))
-	  ((zerop (length environment))
-	   (setq environment ConTeXt-default-environment))
-	  (t
-	   (setq ConTeXt-default-environment environment)))
+  (let* ((default (cond
+		   ((TeX-near-bobp) "text")
+		   (t ConTeXt-default-environment)))
+	 (environment
+	  (completing-read (concat "Environment type: (default " default ") ")
+			   ConTeXt-environment-list nil nil nil
+			   'ConTeXt-environment-history default)))
+    ;; Use `environment' as default for the next time only if it is different
+    ;; from the current default.
+    (unless (equal environment default)
+      (setq ConTeXt-default-environment environment))
 
     (let ((entry (assoc environment ConTeXt-environment-list)))
-      (when (null entry)
-	(ConTeXt-add-environments (list environment)))
+      (if (null entry)
+	  (ConTeXt-add-environments (list environment)))
+
       (if arg
 	  (ConTeXt-modify-environment environment)
 	(ConTeXt-environment-menu environment)))))
@@ -1654,7 +1652,15 @@ Use `ConTeXt-Mark-version' to choose the command."
     ConTeXt-section-list
     ConTeXt-text
     ConTeXt-item-list
-    ConTeXt-extra-paragraph-commands))
+    ConTeXt-extra-paragraph-commands
+    ConTeXt-environment-list)
+  "List of variables to be set from languages specific ones.")
+
+(defconst ConTeXt-dialect :context
+  "Default dialect for use with function `TeX-add-style-hook' for
+argument DIALECT-EXPR when the hook is to be run only on ConTeXt
+file, or any mode derived thereof. See variable
+`TeX-style-hook-dialect'." )
 
 (defcustom ConTeXt-clean-intermediate-suffixes
   ;; See *suffixes in texutil.pl.
@@ -1690,6 +1696,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq major-mode 'context-mode)
 
   (setq local-abbrev-table context-mode-abbrev-table)
+  (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
   ;; Make language specific variables buffer local
   (dolist (symbol ConTeXt-language-variable-list)

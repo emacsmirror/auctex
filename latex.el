@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2015 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2016 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -1745,6 +1745,7 @@ It will setup BibTeX to store keys in an auto file."
   (if (boundp 'local-write-file-hooks)
       (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  (TeX-bibtex-set-BibTeX-dialect)
   (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)
   (set (make-local-variable 'TeX-auto-parse-length) 999999)
@@ -2058,7 +2059,7 @@ OPTIONAL and IGNORE are ignored."
 		  TeX-arg-input-file-search)
 		(progn
 		  (message "Searching for LaTeX classes...")
-		  (mapcar 'identity (TeX-search-files-by-type 'texinputs 'global t t)))
+		  (TeX-search-files-by-type 'texinputs 'global t t))
 	      LaTeX-style-list)))
     (setq style (completing-read
 		 (concat "Document class: (default " LaTeX-default-style ") ")
@@ -4776,6 +4777,7 @@ file, or any mode derived thereof. See variable
     (nil "Longrightarrow" "Arrows" 10233) ;; #X27F9
     (nil "longleftrightarrow" "Arrows" 10231) ;; #X27F7
     (nil "Longleftrightarrow" "Arrows" 10234) ;; #X27FA
+    (nil "iff" "Arrows" 10234) ;; #X27FA
     (nil "longmapsto" "Arrows" 10236) ;; #X27FC
     (nil "hookrightarrow" "Arrows" 8618) ;; #X21AA
     (nil "rightharpoonup" "Arrows" 8640) ;; #X21C0
@@ -4929,6 +4931,8 @@ file, or any mode derived thereof. See variable
     ("v W" "varOmega" ("AMS" "Greek Uppercase") 120570) ;; #X1D6FA
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
+    (nil "impliedby" ("AMS" "Arrows") 10232) ;; #X27F8
+    (nil "implies" ("AMS" "Arrows") 10233) ;; #X27F9
     (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
     (nil "leftrightarrows" ("AMS" "Arrows") 8646) ;; #X21C6
     (nil "Lleftarrow" ("AMS" "Arrows") 8666) ;; #X21DA

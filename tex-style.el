@@ -1,6 +1,6 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files
 
-;; Copyright (C) 2005, 2007, 2009, 2012-2014
+;; Copyright (C) 2005, 2007, 2009, 2012-2015
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
@@ -33,6 +33,13 @@
 
 ;; Note: We don't have any defcustom in plain TeX style files yet.  Else we
 ;; should also create a TeX-style group.
+
+;; Common
+
+(defcustom LaTeX-reftex-ref-style-auto-activate t
+  "Whether to activate automatically RefTeX reference styles."
+  :type 'boolean
+  :group 'LaTeX-style)
 
 ;; style/amsmath.el
 
