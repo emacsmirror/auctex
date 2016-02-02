@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2015 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2016 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -4736,7 +4736,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c}"    'up-list)
     (define-key map "\C-c#"    'TeX-normal-mode)
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
-    (define-key map "\C-c?"    'TeX-doc)
+    (define-key map "\C-c?"    'TeX-documentation-texdoc)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
     (define-key map "\r"       'TeX-newline)
 
@@ -4959,7 +4959,7 @@ Brace insertion is only done if point is in a math construct and
        :help "Save and reparse the current buffer for style information"]
       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
        :help "Reset buffer and reload AUCTeX style files"])
-     ["Find Documentation..." TeX-doc
+     ["Find Documentation..." TeX-documentation-texdoc
       :help "Get help on commands, packages, or TeX-related topics in general"]
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
@@ -6093,6 +6093,71 @@ to browse existing AUCTeX bugs.
 
 
 ;;; Documentation
+
+(defun TeX-documentation-texdoc (&optional arg)
+  "Run texdoc to read documentation.
+
+Prompt for selection of the package of which to show the documentation.
+
+If called with a prefix argument ARG, after selecting the
+package, prompt for selection of the manual of that package to
+show."
+  (interactive "*P")
+  (let ((pkg (thing-at-point 'symbol))
+	buffer list doc)
+    ;; Strip off properties.  XXX: XEmacs doesn't have
+    ;; `substring-no-properties'.
+    (set-text-properties 0 (length pkg) nil pkg)
+    (setq pkg (TeX-read-string "View documentation for: " pkg))
+    (unless (zerop (length pkg))
+      (if arg
+	  ;; Called with prefix argument: run "texdoc --list --nointeract <pkg>"
+	  (progn
+	    ;; Create the buffer, insert the result of the command, and
+	    ;; accumulate the list of manuals.
+	    (with-current-buffer (get-buffer-create
+				  (setq buffer (format "*texdoc: %s*" pkg)))
+	      (erase-buffer)
+	      (insert (shell-command-to-string
+		       (concat "texdoc --list --nointeract " pkg)))
+	      (goto-char 1)		; No need to use `point-min' here.
+	      (save-excursion
+		(while (re-search-forward
+			;; XXX: XEmacs doesn't support character classes in
+			;; regexps, like "[:alnum:]".
+			"^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:]+\\)" nil t)
+		  (push (cons (match-string 1) (match-string 2)) list))))
+	    (unwind-protect
+		(cond
+		 ((null (executable-find "texdoc"))
+		  ;; Note: `shell-command-to-string' uses shell, only
+		  ;; `call-process' looks at `exec-path', thus only here makes
+		  ;; sense to use `executable-find' to test whether texdoc is
+		  ;; available.
+		  (message "texdoc not found"))
+		 (list
+		  ;; Go on if there are manuals listed: show the buffer, prompt
+		  ;; for the number of the manual, then run
+		  ;;     texdoc --just-view <doc>
+		  (TeX-pop-to-buffer (get-buffer buffer))
+		  (condition-case nil
+		      (when (setq doc
+				  (cdr (assoc (TeX-read-string "Please enter \
+the number of the file to view, anything else to skip: ") list)))
+			(call-process "texdoc" nil 0 nil "--just-view" doc))
+		    ;; Exit gently if a `quit' signal is thrown.
+		    (quit nil)))
+		 (t (message "No documentation found for %s" pkg)))
+	      ;; In any case quit-and-kill the window.  XXX: XEmacs doesn't have
+	      ;; `quit-window', just kill the buffer in that case.
+	      (when (get-buffer-window buffer)
+		(if (fboundp 'quit-window)
+		    (quit-window t (get-buffer-window buffer))
+		  (kill-buffer buffer)))))
+	;; Called without prefix argument: just run "texdoc --view <pkg>" and
+	;; show the output, so that the user is warned in case it doesn't find
+	;; the documentation or "texdoc" is not available.
+	(message (shell-command-to-string (concat "texdoc --view " pkg)))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."
