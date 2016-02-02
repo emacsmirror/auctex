@@ -6125,7 +6125,7 @@ show."
 		(while (re-search-forward
 			;; XXX: XEmacs doesn't support character classes in
 			;; regexps, like "[:alnum:]".
-			"^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:]+\\)" nil t)
+			"^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:\\]+\\)" nil t)
 		  (push (cons (match-string 1) (match-string 2)) list))))
 	    (unwind-protect
 		(cond
