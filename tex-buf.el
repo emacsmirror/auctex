@@ -1742,15 +1742,18 @@ command."
 	(goto-char pt)
 	(insert-before-markers string)
 	(set-marker (process-mark process) (point))
-	;; Remove line breaks at column 79
+	;; Remove line breaks at columns 79 and 80
 	(while (> (point) pt)
 	  (end-of-line 0)
-	  (when (and (= (- (point) (line-beginning-position)) 79)
-		     ;; Heuristic: Don't delete the linebreak if the
-		     ;; next line is empty or starts with an opening
-		     ;; parenthesis or if point is located after a period.
+	  (when (and (memql (- (point) (line-beginning-position)) '(79 80))
+		     ;; Heuristic: Don't delete the linebreak if the next line
+		     ;; is empty or starts with an opening parenthesis, or if
+		     ;; point is located after a period and in the next line no
+		     ;; word char follows.
 		     (not (memq (char-after (1+ (point))) '(?\n ?\()))
-		     (not (eq (char-before) ?.)))
+		     (not (and (eq (char-before) ?.)
+			       (char-after (1+ (point)))
+			       (not (eq ?w (char-syntax (char-after (1+ (point)))))))))
 	    (delete-char 1)))
 	(goto-char (marker-position (process-mark process)))
 	;; Determine current page
@@ -2252,16 +2255,9 @@ Return non-nil if an error or warning is found."
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\\(\"[^\"]*?\"\\|/*\
-\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
-\\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
-)*\\(?: \\|\r?$\\)\\|"
-	  ;; End of file.  The [^:] skips package messages like:
-	  ;; Package hyperref Message: Driver (autodetected): hpdftex.
-	  ;; [Loading MPS to PDF converter (version 2006.09.02).]
-	  "\\()\\)[^:.]\\|"
+	  "(\n?\\([^\n())]+\\)\\|"
+	  ;; End of file.
+	  "\\()\\)\\|"
 	  ;; Hook to change line numbers
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name
@@ -2321,9 +2317,13 @@ Return non-nil if an error or warning is found."
 		(end (match-end 3)))
 	    ;; Strip quotation marks and remove newlines if necessary
 	    (when (or (eq (string-to-char file) ?\")
-		      (string-match "\n" file))
-	      (setq file
-		    (mapconcat 'identity (split-string file "[\"\n]+") "")))
+		      (string-match "[ \t\n]" file))
+	      (setq file (mapconcat 'identity (split-string file "[\"\n]+") "")))
+	    ;; Trim whitespace at the front/end
+	    (setq file
+		  (progn
+		    (string-match "^[[:space:]]*\\(.*[^[:space:]]\\)[[:space:]]*$" file)
+		    (match-string 1 file)))
 	    (push file TeX-error-file)
 	    (push nil TeX-error-offset)
 	    (goto-char end))
