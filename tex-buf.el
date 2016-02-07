@@ -1389,13 +1389,16 @@ Return nil ifs no errors were found."
       (setq TeX-command-next TeX-command-Show))
     nil))
 
+(defvar LaTeX-warnings-regexp
+  "\\(?:LaTeX [-A-Za-z0-9]*\\|\\(?:Class\\|Package\\) [-A-Za-z0-9]+ \\)Warning:"
+  "Regexp matching LaTeX warnings.")
+
 (defun TeX-LaTeX-sentinel-has-warnings ()
   "Return non-nil, if the output buffer contains warnings.
 Warnings can be indicated by LaTeX or packages."
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward
-     "^\\(LaTeX [-A-Za-z]*\\|Package [-A-Za-z0-9]+ \\)Warning:" nil t)))
+    (re-search-forward (concat "^" LaTeX-warnings-regexp) nil t)))
 
 (defun TeX-LaTeX-sentinel-has-bad-boxes ()
   "Return non-nil, if LaTeX output indicates overfull or underfull boxes."
@@ -2266,7 +2269,7 @@ Return non-nil if an error or warning is found."
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
  \\\\.*?[0-9]+--[0-9]+\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(\\(?:LaTeX [-A-Za-z]*\\|Package [-A-Za-z0-9]+ \\)Warning:.*\\)"))
+	  "^\\(" LaTeX-warnings-regexp ".*\\)"))
 	(error-found nil))
     (while
 	(cond
