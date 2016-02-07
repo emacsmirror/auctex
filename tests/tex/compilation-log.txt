@@ -5,4 +5,9 @@
 
 Package foo Warning: This is a warning!
 
-[1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux))
+[1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux)
+
+(./secondary-file.tex [8] [9] [10]
+Underfull \hbox (badness 6608) in paragraph at lines 131--132
+[]|\T1/jkpl/m/n/10.95 (+20) Something bla
+[11] [12]))

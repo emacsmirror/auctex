@@ -44,12 +44,18 @@ command line and from another directory."
   "Test error parsing functions."
   (should (equal
 	   (with-temp-buffer
-	     (setq TeX-debug-warnings t)
+	     (setq TeX-debug-warnings t
+		   TeX-debug-bad-boxes t)
              (insert-file-contents TeX-test-compilation-log)
              (TeX-parse-all-errors)
 	     TeX-error-list)
 	   '((warning "./test.tex" nil "Package foo Warning: This is a warning!"
 		      0 "Package foo Warning: This is a warning!\n"
-		      nil nil nil 170)))))
+		      nil nil nil 170)
+	     (bad-box
+	      "./secondary-file.tex" 131
+	      "Underfull \\hbox (badness 6608) in paragraph at lines 131--132"
+	      0 "\n[]|\\T1/jkpl/m/n/10.95 (+20) Something bla" "bla"
+	      132 10 391)))))
 
 ;;; error-parsing.el ends here

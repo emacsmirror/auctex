@@ -2319,11 +2319,23 @@ Return non-nil if an error or warning is found."
 	    (when (or (eq (string-to-char file) ?\")
 		      (string-match "[ \t\n]" file))
 	      (setq file (mapconcat 'identity (split-string file "[\"\n]+") "")))
-	    ;; Trim whitespace at the front/end
+	    ;; Polish `file' string
 	    (setq file
-		  (progn
-		    (string-match "^[[:space:]]*\\(.*[^[:space:]]\\)[[:space:]]*$" file)
-		    (match-string 1 file)))
+		  (let ((string file))
+		    ;; Trim whitespaces at the front.  XXX: XEmacs doesn't
+		    ;; support character classes in regexps, like "[:space:]".
+		    (setq string
+			  (if (string-match "\\'[ \t\n\r]*" string)
+			      (replace-match "" t t string)
+			    string))
+		    ;; Sometimes `file' is something like
+		    ;;     "./path/to/file.tex [9] [10] "
+		    ;; where "[9]" and "[10]" are pages of the output file.
+		    ;; Remove these numbers together with whitespaces at the end
+		    ;; of the string.
+		    (if (string-match "\\( *\\(\\[[0-9]+\\]\\)? *\\)*\\'" string)
+			(replace-match "" t t string)
+		      string)))
 	    (push file TeX-error-file)
 	    (push nil TeX-error-offset)
 	    (goto-char end))
