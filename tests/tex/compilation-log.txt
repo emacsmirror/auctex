@@ -1,13 +1,43 @@
-(./test.tex
+(./test.tex (./nice-class.cls
+Document Class: nice-class 1970/01/01 v42 A good class
+
+Package nice-class Warning: ******************************************
+(nice-class)                * THIS IS JUST A WARNING WITH A PESKY
+(nice-class)                * UNMATCHED CLOSED PARENTHESIS :-)
+(nice-class)                ****************************************** on input line 32.
+
+)
+
 (/opt/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 )
 
-Package foo Warning: This is a warning!
+./test.tex:2: Class nice-class Error: ***********************************
+(nice-class)              * This is a very bad error!
+(nice-class)              ************************************.
+
+See the suftesi class documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.2 \begin{document}
+
+(/other/packages/loaded.sty)
+ABD: EveryShipout initializing macros
+
+Package foo Warning: This is a warning! on input line 3.
 
 [1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux)
 
 (./secondary-file.tex [8] [9] [10]
 Underfull \hbox (badness 6608) in paragraph at lines 131--132
 []|\T1/jkpl/m/n/10.95 (+20) Something bla
-[11] [12]))
+[11] [12])
+
+LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4.
+
+[1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux)
+
+LaTeX Warning: There were undefined references.
+
+)

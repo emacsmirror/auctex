@@ -2510,7 +2510,18 @@ warning."
 				 (beginning-of-line))
 			       (point)))
 
-	 (context (progn
+	 (context (if (string-match LaTeX-warnings-regexp warning)
+		      ;; The warnings matching `LaTeX-warnings-regexp' are
+		      ;; emitted by \GenericWarning macro, or macros based on it
+		      ;; (\ClassWarning, \PackageWarning, etc).  After such
+		      ;; warnings there is an empty line, just look for it to
+		      ;; find the end.
+		      (progn
+			(beginning-of-line)
+			(while (null (eolp))
+			  (forward-line 1))
+			(buffer-substring context-start (progn (end-of-line)
+							       (point))))
 		    (forward-line 1)
 		    (end-of-line)
 		    (while (equal (current-column) 79)
@@ -2529,6 +2540,17 @@ warning."
 	 ;; We might use these in another file.
 	 (offset (or (car TeX-error-offset) 0))
 	 (file (car TeX-error-file)))
+
+    ;; Second chance to get line number right.  If `line' is nil, check whether
+    ;; the reference to the line number is in `context'.  For example, this is
+    ;; the case for warnings emitted with \ClassWarning and \PackageWarning.
+    ;; XXX: maybe it suffices to evaluate `line' after `context' above, but I
+    ;; don't know if there are cases in which it's important to get `line'
+    ;; before `context'.
+    (and (null line)
+	 (string-match line-string context)
+	 (setq line-end
+	       (setq line (string-to-number (match-string 1 context)))))
 
     ;; This is where we start next time.
     (goto-char error-point)

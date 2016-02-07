@@ -49,13 +49,45 @@ command line and from another directory."
              (insert-file-contents TeX-test-compilation-log)
              (TeX-parse-all-errors)
 	     TeX-error-list)
-	   '((warning "./test.tex" nil "Package foo Warning: This is a warning!"
-		      0 "Package foo Warning: This is a warning!\n"
-		      nil nil nil 170)
+	   '((warning
+	      "./nice-class.cls" 32
+	      "Package nice-class Warning: ******************************************"
+	      0
+	      "Package nice-class Warning: ******************************************
+(nice-class)                * THIS IS JUST A WARNING WITH A PESKY
+(nice-class)                * UNMATCHED CLOSED PARENTHESIS :-)
+(nice-class)                ****************************************** on input line 32.\n"
+	      nil 32 nil 376)
+	     (error
+              "./test.tex" 2
+              "Class nice-class Error: ***********************************" 0
+              "\n(nice-class)              * This is a very bad error!
+(nice-class)              ************************************.
+
+See the suftesi class documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.2 \\begin{document}
+
+(/other/packages/loaded.sty)
+ABD: EveryShipout initializing macros"
+              "\\begin{document}\n\n(/other/packages/loaded.sty)" nil nil 971)
+	     (warning "./test.tex" 3
+              "Package foo Warning: This is a warning! on input line 3." 0
+	      "Package foo Warning: This is a warning! on input line 3.\n"
+	      nil 3 nil 1030)
 	     (bad-box
 	      "./secondary-file.tex" 131
 	      "Underfull \\hbox (badness 6608) in paragraph at lines 131--132"
 	      0 "\n[]|\\T1/jkpl/m/n/10.95 (+20) Something bla" "bla"
-	      132 10 391)))))
+	      132 10 1251)
+             (warning "./test.tex" 4
+              "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4."
+              0
+              "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4.\n"
+              "wrong" 4 nil 1334)
+             (warning "./test.tex" 4 "LaTeX Warning: There were undefined references."
+              0 "LaTeX Warning: There were undefined references.\n" nil 4 nil 1465)))))
 
 ;;; error-parsing.el ends here
