@@ -6102,7 +6102,7 @@ Prompt for selection of the package of which to show the documentation.
 If called with a prefix argument ARG, after selecting the
 package, prompt for selection of the manual of that package to
 show."
-  (interactive "*P")
+  (interactive "P")
   (let ((pkg (thing-at-point 'symbol))
 	buffer list doc)
     ;; Strip off properties.  XXX: XEmacs doesn't have
