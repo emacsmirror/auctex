@@ -1,0 +1,8 @@
+(./test.tex
+(/opt/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+
+Package foo Warning: This is a warning!
+
+[1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux))
