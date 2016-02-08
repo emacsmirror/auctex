@@ -16,6 +16,9 @@ Parsing of the compilation log has been reworked.  You should encounter
 fewer mistaken files while navigating through errors and warnings.
 
 @item
+Added support for SumatraPDF viewer on Windows.
+
+@item
 Added support for Zathura viewer.  Forward and inverse search requires a
 recent version of the program to work (3.4 or later).
 
@@ -94,10 +97,10 @@ select the Mark version to be used with new option
 messages in the output log of a Mark IV document.
 
 @item
-Support for tons of @LaTeX{} packages has been addedd.
+Support for tons of @LaTeX{} packages has been added.
 
 @item
-Numbers of bugs have been fixed, many minor features have been addedd.
+Numbers of bugs have been fixed, many minor features have been added.
 @end itemize
 
 @heading News in 11.88
