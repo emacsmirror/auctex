@@ -12,6 +12,14 @@
 
 @itemize @bullet
 @item
+Parsing of the compilation log has been reworked.  You should encounter
+fewer mistaken files while navigating through errors and warnings.
+
+@item
+Added support for Zathura viewer.  Forward and inverse search requires a
+recent version of the program to work (3.4 or later).
+
+@item
 A new function, @code{TeX-documentation-texdoc}, for reading
 documentation with @samp{texdoc} has been added.  @code{TeX-doc} is
 still available but now @kbd{C-c ?} runs

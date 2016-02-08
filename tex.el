@@ -1304,7 +1304,12 @@ the requirements are met."
 				  " -p %(outpage)")) " %o")) "evince")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
       ("xdg-open" "xdg-open %o" "xdg-open")
-      ("PDF Tools" TeX-pdf-tools-sync-view))))
+      ("PDF Tools" TeX-pdf-tools-sync-view)
+      ("Zathura"
+       ("zathura %o"
+	(mode-io-correlate
+	 " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\""))
+	"zathura"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
