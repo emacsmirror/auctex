@@ -16,6 +16,17 @@ Parsing of the compilation log has been reworked.  You should encounter
 fewer mistaken files while navigating through errors and warnings.
 
 @item
+Added support for dviout viewer on Windows.  Note that this setup works
+when @code{TeX-source-correlate-method} is set to use
+@samp{source-specials} for @acronym{DVI}, e.g.:
+@lisp
+(setq TeX-source-correlate-method
+      '((dvi . source-specials)
+        (pdf . synctex)))
+@end lisp
+which is the default.
+
+@item
 Added support for SumatraPDF viewer on Windows.
 
 @item

@@ -1270,9 +1270,10 @@ the requirements are met."
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
+      ("dviout" ("dviout -1 %d" (mode-io-correlate "\"# %n %b\"")) "dviout")
       ("SumatraPDF"
-       ("SumatraPDF -reuse-instance %o"
-	(mode-io-correlate " -forward-search \"%b\" %n"))
+       ("SumatraPDF -reuse-instance"
+	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
        "SumatraPDF")
       ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
