@@ -1178,28 +1178,38 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
+;; XXX: Atril is a fork of Evince and shares an almost identical interface with
+;; it.  Instead of having different functions for each program, we keep the
+;; original *-evince-* functions and make them accept arguments to specify the
+;; actual name of the program and the desktop environment, that will be used to
+;; set up DBUS communication.
+
 ;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
 ;; not being defined.
 (eval-when-compile (and (featurep 'dbusbind)
 			(require 'dbus nil :no-error)))
-(defun TeX-evince-dbus-p (&rest options)
-  "Return non-nil, if evince is installed and accessible via DBUS.
+(defun TeX-evince-dbus-p (de app &rest options)
+  "Return non-nil, if atril or evince are installed and accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
 given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
-search are checked, too."
+search are checked, too.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
   (let ((dbus-debug nil))
     (and (featurep 'dbusbind)
 	 (require 'dbus nil :no-error)
 	 (dbus-ignore-errors (dbus-get-unique-name :session))
-	 (dbus-ping :session "org.gnome.evince.Daemon")
-	 (executable-find "evince")
+	 (dbus-ping :session (format "org.%s.%s.Daemon" de app))
+	 (executable-find app)
 	 (or (not (memq :forward options))
 	     (let ((spec (dbus-introspect-get-method
-			  :session "org.gnome.evince.Daemon"
-			  "/org/gnome/evince/Daemon"
-			  "org.gnome.evince.Daemon"
+			  :session (format "org.%s.%s.Daemon" de app)
+			  (format "/org/%s/%s/Daemon" de app)
+			  (format "org.%s.%s.Daemon" de app)
 			  "FindDocument")))
 	       ;; FindDocument must exist, and its signature must be (String,
 	       ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
@@ -1236,19 +1246,23 @@ entry in `TeX-view-program-list-builtin'."
 
 (defvar url-unreserved-chars)
 
-(defun TeX-evince-sync-view ()
+(defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
-for the Evince viewer entry in `TeX-view-program-list-builtin' if
-the requirements are met."
+for the Atril or Evince entries in
+`TeX-view-program-list-builtin' if the requirements are met.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
   (require 'url-util)
   (let* ((uri (concat "file://" (url-encode-url
 				 (expand-file-name
 				  (concat file "." (TeX-output-extension))))))
 	 (owner (dbus-call-method
-		 :session "org.gnome.evince.Daemon"
-		 "/org/gnome/evince/Daemon"
-		 "org.gnome.evince.Daemon"
+		 :session (format "org.%s.%s.Daemon" de app)
+		 (format "/org/%s/%s/Daemon" de app)
+		 (format "org.%s.%s.Daemon" de app)
 		 "FindDocument"
 		 uri
 		 t)))
@@ -1258,13 +1272,38 @@ the requirements are met."
 				 (current-buffer))
 	  (dbus-call-method
 	   :session owner
-	   "/org/gnome/evince/Window/0"
-	   "org.gnome.evince.Window"
+	   (format "/org/%s/%s/Window/0" de app)
+	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
+	   (list :struct :int32 (line-number-at-pos)
+		 :int32 (1+ (current-column)))
 	   :uint32 0))
-      (error "Couldn't find the Evince instance for %s" uri))))
+      (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
+
+(defun TeX-atril-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Atril."
+  (TeX-evince-sync-view-1 "mate" "atril"))
+
+(defun TeX-evince-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "gnome" "evince"))
+
+(defun TeX-view-program-select-evince (de app)
+  "Select how to call the Evince-like viewer.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
+  (if (TeX-evince-dbus-p de app :forward)
+      (intern (format "TeX-%s-sync-view" app))
+    `(,app (mode-io-correlate
+	    ;; With evince 3, -p N opens the page *labeled* N,
+	    ;; and -i,--page-index the physical page N.
+	    ,(if (string-match "--page-index"
+			       (shell-command-to-string (concat app " --help")))
+		 " -i %(outpage)"
+	       " -p %(outpage)")) " %o")))
 
 (defvar TeX-view-program-list-builtin
   (cond
@@ -1298,15 +1337,8 @@ the requirements are met."
       ("dvips and gv" "%(o?)dvips %d -o && gv %f" ,(list "%(o?)dvips" "gv"))
       ("gv" "gv %o" "gv")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
-      ("Evince" ,(if (TeX-evince-dbus-p :forward)
-		     'TeX-evince-sync-view
-		   `("evince" (mode-io-correlate
-			       ;; With evince 3, -p N opens the page *labeled* N,
-			       ;; and -i,--page-index the physical page N.
-			       ,(if (string-match "--page-index"
-						  (shell-command-to-string "evince --help"))
-				    " -i %(outpage)"
-				  " -p %(outpage)")) " %o")) "evince")
+      ("Evince" ,(TeX-view-program-select-evince "gnome" "evince") "evince")
+      ("Atril" ,(TeX-view-program-select-evince "mate" "atril") "atril")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
       ("xdg-open" "xdg-open %o" "xdg-open")
       ("PDF Tools" TeX-pdf-tools-sync-view)
@@ -1314,7 +1346,7 @@ the requirements are met."
        ("zathura %o"
 	(mode-io-correlate
 	 " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\""))
-	"zathura"))))
+       "zathura"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1822,12 +1854,14 @@ SyncTeX are recognized."
 				       TeX-source-correlate-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
-  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
-  (when (TeX-evince-dbus-p)
-    (dbus-register-signal
-     :session nil "/org/gnome/evince/Window/0"
-     "org.gnome.evince.Window" "SyncSource"
-     'TeX-source-correlate-sync-source)))
+  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince or Atril.
+  (dolist (de-app '(("gnome" "evince") ("mate" "atril")))
+    (when (TeX-evince-dbus-p (car de-app) (cadr de-app))
+      (dbus-register-signal
+       :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
+       (format "org.%s.%s.Window" (car de-app) (cadr de-app))
+       "SyncSource"
+       'TeX-source-correlate-sync-source))))
 
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")

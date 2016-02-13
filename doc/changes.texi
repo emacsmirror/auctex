@@ -16,6 +16,10 @@ Parsing of the compilation log has been reworked.  You should encounter
 fewer mistaken files while navigating through errors and warnings.
 
 @item
+Added support for Atril viewer.  Forward and inverse search requires
+version 1.9.1 or later to work.
+
+@item
 Added support for dviout viewer on Windows.  Note that this setup works
 when @code{TeX-source-correlate-method} is set to use
 @samp{source-specials} for @acronym{DVI}, e.g.:
