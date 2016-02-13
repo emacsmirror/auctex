@@ -134,7 +134,7 @@ If `caption.el' is loaded, add the new floating environment to
 	 (concat "listof" flt "es"))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-newfloat-auto-prepare t)
-(add-hook 'TeX-auto-prepare-hook #'LaTeX-newfloat-auto-cleanup t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-newfloat-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook

@@ -111,7 +111,7 @@ make them available as new environments."
     (LaTeX-add-environments (list newthm 'LaTeX-theorem-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-theorem-auto-prepare t)
-(add-hook 'TeX-auto-prepare-hook #'LaTeX-theorem-auto-cleanup t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-theorem-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook

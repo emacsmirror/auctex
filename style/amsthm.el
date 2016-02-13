@@ -119,7 +119,7 @@ make them available as new environments.  Update
 		 newthmstyle)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-amsthm-auto-prepare t)
-(add-hook 'TeX-auto-prepare-hook #'LaTeX-amsthm-auto-cleanup t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-amsthm-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook
