@@ -2392,11 +2392,12 @@ Return non-nil if an error or warning is found."
 			      (replace-match "" t t string)
 			    string))
 		    ;; Sometimes `file' is something like
-		    ;;     "./path/to/file.tex [9] [10] "
-		    ;; where "[9]" and "[10]" are pages of the output file.
-		    ;; Remove these numbers together with whitespaces at the end
-		    ;; of the string.
-		    (if (string-match "\\( *\\(\\[[0-9]+\\]\\)? *\\)*\\'" string)
+		    ;;     "./path/to/file.tex [9] [10 <./path/to/file>] "
+		    ;; where "[9]" and "[10 <./path/to/file>]" are pages of the
+		    ;; output file, with path to an included file.  Remove these
+		    ;; numbers together with whitespaces at the end of the
+		    ;; string.
+		    (if (string-match "\\( *\\(\\[[^]]+\\]\\)? *\\)*\\'" string)
 			(replace-match "" t t string)
 		      string)))
 	    (push file TeX-error-file)

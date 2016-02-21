@@ -57,7 +57,7 @@ command line and from another directory."
 (nice-class)                * THIS IS JUST A WARNING WITH A PESKY
 (nice-class)                * UNMATCHED CLOSED PARENTHESIS :-)
 (nice-class)                ****************************************** on input line 32.\n"
-	      nil 32 nil 376)
+	      nil 32 nil 376 nil)
 	     (error
               "./test.tex" 2
               "Class nice-class Error: ***********************************" 0
@@ -72,22 +72,22 @@ l.2 \\begin{document}
 
 (/other/packages/loaded.sty)
 ABD: EveryShipout initializing macros"
-              "\\begin{document}\n\n(/other/packages/loaded.sty)" nil nil 971)
+              "\\begin{document}\n\n(/other/packages/loaded.sty)" nil nil 971 nil)
 	     (warning "./test.tex" 3
               "Package foo Warning: This is a warning! on input line 3." 0
 	      "Package foo Warning: This is a warning! on input line 3.\n"
-	      nil 3 nil 1030)
+	      nil 3 nil 1030 nil)
 	     (bad-box
 	      "./secondary-file.tex" 131
 	      "Underfull \\hbox (badness 6608) in paragraph at lines 131--132"
 	      0 "\n[]|\\T1/jkpl/m/n/10.95 (+20) Something bla" "bla"
-	      132 10 1251)
+	      132 10 1268 nil)
              (warning "./test.tex" 4
               "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4."
               0
               "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4.\n"
-              "wrong" 4 nil 1334)
+              "wrong" 4 nil 1351 nil)
              (warning "./test.tex" 4 "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil 4 nil 1465)))))
+              0 "LaTeX Warning: There were undefined references.\n" nil 4 nil 1482 nil)))))
 
 ;;; error-parsing.el ends here
