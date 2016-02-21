@@ -1398,8 +1398,13 @@ Return nil ifs no errors were found."
       (setq TeX-command-next TeX-command-Show))
     nil))
 
+;; This regexp should catch warnings of the type
+;;   LaTeX Warning: ...
+;;   LaTeX Font Warning: ...
+;;   Package xyz123 Warning: ...
+;;   Class xyz123 Warning: ...
 (defvar LaTeX-warnings-regexp
-  "\\(?:LaTeX [-A-Za-z0-9]*\\|\\(?:Class\\|Package\\) [-A-Za-z0-9]+ \\)Warning:"
+  "\\(?:LaTeX\\|Class\\|Package\\) [-A-Za-z0-9]* ?Warning:"
   "Regexp matching LaTeX warnings.")
 
 (defun TeX-LaTeX-sentinel-has-warnings ()
