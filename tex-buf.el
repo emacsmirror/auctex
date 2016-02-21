@@ -2362,7 +2362,7 @@ Return non-nil if an error or warning is found."
 	  (if (or store TeX-debug-bad-boxes)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 7) store)
+		(TeX-warning (TeX-match-buffer 7) (match-beginning 7) store)
 		nil)
 	    (re-search-forward "\r?\n\
 \\(?:.\\{79\\}\r?\n\
@@ -2375,7 +2375,7 @@ Return non-nil if an error or warning is found."
 	  (if (or store TeX-debug-warnings)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 8) store)
+		(TeX-warning (TeX-match-buffer 8) (match-beginning 8) store)
 		nil)
 	    t))
 
@@ -2552,8 +2552,10 @@ information in `TeX-error-list' instead of displaying the error."
       ;; Find the error point and display the help.
       (apply 'TeX-find-display-help info-list))))
 
-(defun TeX-warning (warning &optional store)
+(defun TeX-warning (warning warning-start &optional store)
   "Display a warning for WARNING.
+
+WARNING-START is the position where WARNING starts.
 
 If optional argument STORE is non-nil, store the warning
 information in `TeX-error-list' instead of displaying the
@@ -2568,8 +2570,10 @@ warning."
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
 			"`\\(\\w+\\)'"))
 
-	 ;; Get error-line (warning).
-	 (line (when (save-excursion (re-search-backward line-string nil t))
+	 ;; Get error-line (warning).  Don't search before `warning-start' to
+	 ;; avoid catching completely unrelated line numbers.
+	 (line (when (save-excursion (re-search-backward line-string
+							 warning-start t))
 		 (string-to-number (TeX-match-buffer 1))))
 	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
 		     line))

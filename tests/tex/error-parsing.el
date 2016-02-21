@@ -87,7 +87,10 @@ ABD: EveryShipout initializing macros"
               0
               "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4.\n"
               "wrong" 4 nil 1351 nil)
-             (warning "./test.tex" 4 "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil 4 nil 1482 nil)))))
+             (warning "./test.tex" 70 "LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available"
+              0 "LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available
+(Font)              size <5> substituted on input line 70.\n" nil 70 nil 1485 nil)
+             (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
+              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 1616 nil)))))
 
 ;;; error-parsing.el ends here

@@ -36,6 +36,9 @@ Underfull \hbox (badness 6608) in paragraph at lines 131--132
 
 LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4.
 
+LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available
+(Font)              size <5> substituted on input line 70.
+
 [1{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux)
 
 LaTeX Warning: There were undefined references.
