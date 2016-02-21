@@ -16,6 +16,14 @@ Parsing of the compilation log has been reworked.  You should encounter
 fewer mistaken files while navigating through errors and warnings.
 
 @item
+Two new user options, @code{TeX-ignore-warnings} and
+@code{TeX-suppress-ignored-warnings}, allow ignoring certain warnings
+after compilation of the document.
+@ifclear rawfile
+@xref{Ignoring warnings}, for details.
+@end ifclear
+
+@item
 Added support for Atril viewer.  Forward and inverse search requires
 version 1.9.1 or later to work.
 

@@ -2180,18 +2180,22 @@ If optional argument REPARSE is non-nil, reparse the output log."
 	     (process-name (TeX-active-process))
 	   "this")))
 
-(defun TeX-error-list-skip-warning-p (type)
+(defun TeX-error-list-skip-warning-p (type ignore)
   "Decide if a warning of `TeX-error-list' should be skipped.
 
-TYPE is one of the types listed in `TeX-error-list'."
+TYPE is one of the types listed in `TeX-error-list', IGNORE
+is the flag to choose if the warning should be skipped."
   ;; The warning should be skipped if it...
   (or
    ;; ...is a warning and we want to ignore all warnings, or...
    (and (null TeX-debug-warnings)
 	(equal type 'warning))
-   ;; ...is a bad-box and we want to ignore all bad-boxes.
+   ;; ...is a bad-box and we want to ignore all bad-boxes, or...
    (and (null TeX-debug-bad-boxes)
-	(equal type 'bad-box))))
+	(equal type 'bad-box))
+   ;; ...is a warning to be ignored.
+   (and TeX-suppress-ignored-warnings
+	ignore)))
 
 (defun TeX-parse-TeX (arg reparse)
   "Find the next error produced by running TeX.
@@ -2215,7 +2219,9 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	  (progn
 	    (setq arg (or arg 1)
 		  max-index (length TeX-error-list))
-	    ;; This loop is needed to skip ignored warnings.
+	    ;; This loop is needed to skip ignored warnings, when
+	    ;; `TeX-suppress-ignored-warnings' is non-nil and there are ignore
+	    ;; warnings.
 	    (while (null (zerop arg))
 	      (setq TeX-error-last-visited (1+ TeX-error-last-visited)
 		    item (if (natnump TeX-error-last-visited)
@@ -2224,7 +2230,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
 			   nil))
 	      ;; Increase or decrease `arg' only if the warning isn't to be
 	      ;; skipped.
-	      (unless (TeX-error-list-skip-warning-p (nth 0 item))
+	      (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
 		(setq arg (if (> arg 0)
 			      (1- arg)
 			    (1+ arg)))))
@@ -2251,6 +2257,10 @@ already in an Emacs buffer) and the cursor is placed at the error."
 You might want to examine and modify the free variables `file',
 `offset', `line', `string', `error', and `context' from this hook.")
 
+;; `ignore' flag should be the always the last one in the list of information
+;; for each error/warning, because it can be set within `TeX-warning' by a
+;; custom function taking as argument all information present in
+;; `TeX-error-list' but `ignore', see `TeX-ignore-warnings'.
 (defvar TeX-error-list nil
   "List of warnings and errors.
 
@@ -2259,13 +2269,15 @@ error or warning.  This is the structure of each element:
  *  0: type (error, warning, bad-box)
  *  1: file
  *  2: line
- *  3: error/warning text
+ *  3: message of the error or warning
  *  4: offset
  *  5: context
  *  6: string
- *  7: line-end
+ *  7: for warnings referring to multiple lines (e.g. bad boxes),
+       the last line mentioned in the warning message
  *  8: bad-box
  *  9: value of `TeX-error-point'
+ * 10: whether the warning should be ignored
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
@@ -2414,8 +2426,11 @@ Return non-nil if an error or warning is found."
     error-found))
 
 (defun TeX-find-display-help (type file line error offset context string
-				   line-end bad-box error-point)
-  "Find the error and display the help."
+				   line-end bad-box error-point _ignore)
+  "Find the error and display the help.
+
+For a description of arguments, see `TeX-error-list'.  IGNORE
+value is not used here."
   ;; Go back to TeX-buffer
   (let ((runbuf (TeX-active-buffer))
 	(master (with-current-buffer TeX-command-buffer
@@ -2518,18 +2533,18 @@ information in `TeX-error-list' instead of displaying the error."
 				      context-start)))
 	 ;; We may use these in another buffer.
 	 (offset (or (car TeX-error-offset) 0))
-	 (file (car TeX-error-file)))
+	 (file (car TeX-error-file))
+	 info-list)
 
     ;; Remember where we was.
-    (setq TeX-error-point (point))
+    (setq TeX-error-point (point)
+	  info-list (list 'error file line error offset context string nil nil
+			  TeX-error-point nil))
     (if store
 	;; Store the error information.
-	(add-to-list 'TeX-error-list
-		     (list 'error file line error offset context string nil nil
-			   TeX-error-point) t)
+	(add-to-list 'TeX-error-list info-list t)
       ;; Find the error point and display the help.
-      (TeX-find-display-help
-       'error file line error offset context string nil nil TeX-error-point))))
+      (apply 'TeX-find-display-help info-list))))
 
 (defun TeX-warning (warning &optional store)
   "Display a warning for WARNING.
@@ -2587,7 +2602,8 @@ warning."
 
 	 ;; We might use these in another file.
 	 (offset (or (car TeX-error-offset) 0))
-	 (file (car TeX-error-file)))
+	 (file (car TeX-error-file))
+	 info-list ignore)
 
     ;; Second chance to get line number right.  If `line' is nil, check whether
     ;; the reference to the line number is in `context'.  For example, this is
@@ -2604,16 +2620,31 @@ warning."
     (goto-char error-point)
     (setq TeX-error-point (point))
 
+    ;; Explanation of what follows: we add the warning to `TeX-error-list' even
+    ;; if it has to be ignored, with a flag specifying whether it is ignored.
+    ;; We do so in order to be able to change between "ignore" and "dont-ignore"
+    ;; behavior by just looking to the flag, without the need to reparse the
+    ;; output log.
+
+    ;; Store the list of information about the warning.
+    (setq info-list (list (if bad-box 'bad-box 'warning) file line warning
+			  offset context string line-end bad-box
+			  TeX-error-point)
+	  ;; Decide whether it should be ignored.
+	  ignore (and TeX-ignore-warnings
+		      (cond
+		       ((stringp TeX-ignore-warnings)
+			(string-match TeX-ignore-warnings warning))
+		       ((fboundp TeX-ignore-warnings)
+			(apply TeX-ignore-warnings info-list))))
+	  ;; Update `info-list'.
+	  info-list (append info-list (list ignore)))
+
     (if store
 	;; Store the warning information.
-	(add-to-list 'TeX-error-list
-		     (list (if bad-box 'bad-box 'warning) file line warning
-			   offset context string line-end bad-box
-			   TeX-error-point) t)
+	(add-to-list 'TeX-error-list info-list t)
       ;; Find the warning point and display the help.
-      (TeX-find-display-help (if bad-box 'bad-box 'warning) file line warning
-			     offset context string line-end bad-box
-			     TeX-error-point))))
+      (apply 'TeX-find-display-help info-list))))
 
 ;;; - Help
 
@@ -3245,7 +3276,7 @@ Write file names relative to MASTER-DIR when they are not absolute."
 	       line (nth 2 entry)
 	       msg  (nth 3 entry))
 	 ;; Add the entry only if it isn't to be skipped.
-	 (unless (TeX-error-list-skip-warning-p type)
+	 (unless (TeX-error-list-skip-warning-p type (nth 10 entry))
 	   (add-to-list
 	    'entries
 	    (list
@@ -3325,8 +3356,9 @@ forward, if negative)."
   "Run `TeX-toggle-debug-bad-boxes' and update entries list."
   (interactive)
   (TeX-toggle-debug-bad-boxes)
-  (setq tabulated-list-entries (TeX-error-overview-make-entries
-				(TeX-master-directory)))
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
   (tabulated-list-init-header)
   (tabulated-list-print))
 
@@ -3334,8 +3366,19 @@ forward, if negative)."
   "Run `TeX-toggle-debug-warnings' and update entries list."
   (interactive)
   (TeX-toggle-debug-warnings)
-  (setq tabulated-list-entries (TeX-error-overview-make-entries
-				(TeX-master-directory)))
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
+(defun TeX-error-overview-toggle-suppress-ignored-warnings ()
+  "Toggle visibility of ignored warnings and update entries list."
+  (interactive)
+  (TeX-toggle-suppress-ignored-warnings)
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
   (tabulated-list-init-header)
   (tabulated-list-print))
 
@@ -3357,6 +3400,7 @@ forward, if negative)."
     (define-key map "p"    'TeX-error-overview-previous-error)
     (define-key map "q"    'TeX-error-overview-quit)
     (define-key map "w"    'TeX-error-overview-toggle-debug-warnings)
+    (define-key map "x"    'TeX-error-overview-toggle-suppress-ignored-warnings)
     (define-key map "\C-m" 'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
@@ -3383,6 +3427,10 @@ forward, if negative)."
      ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
       :style toggle :selected TeX-debug-warnings
       :help "Show warnings"]
+     ["Ignore Unimportant Warnings"
+      TeX-error-overview-toggle-suppress-ignored-warnings
+      :style toggle :selected TeX-suppress-ignored-warnings
+      :help "Hide specified warnings"]
      "-"
      ["Quit" TeX-error-overview-quit
       :help "Quit"])))

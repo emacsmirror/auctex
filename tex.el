@@ -958,6 +958,28 @@ echo area.  If `expert' display output buffer with raw processor output."
   :group 'TeX-output
   :type 'boolean)
 
+(defcustom TeX-ignore-warnings nil
+  "Controls which warnings are to be ignored.
+
+It can be either a regexp matching warnings to be ignored, or a
+symbol with the name of a custom function taking as arguments all
+the information of the warning listed in `TeX-error-list', except
+the last one about whether to ignore the warning.
+
+If you want to use the custom function, see how it is used in the
+code of `TeX-warning'."
+  :group 'TeX-command
+  :type '(choice (const  :tag "Do not ignore anything" nil)
+		 (string :tag "Regexp")
+		 (symbol :tag "Function name")))
+
+(defcustom TeX-suppress-ignored-warnings nil
+  "Whether to actually show ignored warnings.
+
+Note that `TeX-debug-warnings' always takes the precedence."
+  :group 'TeX-command
+  :type 'boolean)
+
 (defun TeX-toggle-debug-bad-boxes ()
   "Toggle if the debugger should display \"bad boxes\" too."
   (interactive)
@@ -971,6 +993,16 @@ echo area.  If `expert' display output buffer with raw processor output."
   (setq TeX-debug-warnings (not TeX-debug-warnings))
   (message (concat "TeX-debug-warnings: "
 		   (if TeX-debug-warnings "on" "off"))))
+
+(defun TeX-toggle-suppress-ignored-warnings ()
+  "Toggle if the debugger should display ignored warnings too.
+
+See `TeX-suppress-ignored-warnings' and `TeX-ignore-warnings' for
+more details."
+  (interactive)
+  (setq TeX-suppress-ignored-warnings (not TeX-suppress-ignored-warnings))
+  (message (concat "TeX-suppress-ignored-warnings: "
+		   (if TeX-suppress-ignored-warnings "on" "off"))))
 
 ;;; Mode names.
 
@@ -4812,6 +4844,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
     (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
     (define-key map "\C-c\C-t\C-w"   'TeX-toggle-debug-warnings)
+    (define-key map "\C-c\C-t\C-x"   'TeX-toggle-suppress-ignored-warnings)
     (define-key map "\C-c\C-v" 'TeX-view)
     ;; From tex-buf.el
     (define-key map "\C-c\C-d" 'TeX-save-document)
