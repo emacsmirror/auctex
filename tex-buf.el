@@ -2180,6 +2180,19 @@ If optional argument REPARSE is non-nil, reparse the output log."
 	     (process-name (TeX-active-process))
 	   "this")))
 
+(defun TeX-error-list-skip-warning-p (type)
+  "Decide if a warning of `TeX-error-list' should be skipped.
+
+TYPE is one of the types listed in `TeX-error-list'."
+  ;; The warning should be skipped if it...
+  (or
+   ;; ...is a warning and we want to ignore all warnings, or...
+   (and (null TeX-debug-warnings)
+	(equal type 'warning))
+   ;; ...is a bad-box and we want to ignore all bad-boxes.
+   (and (null TeX-debug-bad-boxes)
+	(equal type 'bad-box))))
+
 (defun TeX-parse-TeX (arg reparse)
   "Find the next error produced by running TeX.
 
@@ -2200,12 +2213,21 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	  (TeX-parse-reset reparse))
       (if TeX-parse-all-errors
 	  (progn
-	    (setq max-index (length TeX-error-list)
-		  TeX-error-last-visited (+ (or arg 1) TeX-error-last-visited)
-		  item (if (natnump TeX-error-last-visited)
-			   (nth TeX-error-last-visited TeX-error-list)
-			 ;; XEmacs doesn't support `nth' with a negative index.
-			 nil))
+	    (setq arg (or arg 1)
+		  max-index (length TeX-error-list))
+	    ;; This loop is needed to skip ignored warnings.
+	    (while (null (zerop arg))
+	      (setq TeX-error-last-visited (1+ TeX-error-last-visited)
+		    item (if (natnump TeX-error-last-visited)
+			     (nth TeX-error-last-visited TeX-error-list)
+			   ;; XEmacs doesn't support `nth' with a negative index.
+			   nil))
+	      ;; Increase or decrease `arg' only if the warning isn't to be
+	      ;; skipped.
+	      (unless (TeX-error-list-skip-warning-p (nth 0 item))
+		(setq arg (if (> arg 0)
+			      (1- arg)
+			    (1+ arg)))))
 	    (if (< TeX-error-last-visited -1)
 		(setq TeX-error-last-visited -1))
 	    (cond ((or (null item)
@@ -2231,6 +2253,19 @@ You might want to examine and modify the free variables `file',
 
 (defvar TeX-error-list nil
   "List of warnings and errors.
+
+Each element of the list is a list of information for a specific
+error or warning.  This is the structure of each element:
+ *  0: type (error, warning, bad-box)
+ *  1: file
+ *  2: line
+ *  3: error/warning text
+ *  4: offset
+ *  5: context
+ *  6: string
+ *  7: line-end
+ *  8: bad-box
+ *  9: value of `TeX-error-point'
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
@@ -2305,7 +2340,9 @@ Return non-nil if an error or warning is found."
 	    nil))
 	 ;; LaTeX bad box
 	 ((match-beginning 7)
-	  (if TeX-debug-bad-boxes
+	  ;; In `TeX-error-list' we collect all warnings, also if they're going
+	  ;; to be actually skipped.
+	  (if (or store TeX-debug-bad-boxes)
 	      (progn
 		(setq error-found t)
 		(TeX-warning (TeX-match-buffer 7) store)
@@ -2316,7 +2353,9 @@ Return non-nil if an error or warning is found."
 	    t))
 	 ;; LaTeX warning
 	 ((match-beginning 8)
-	  (if TeX-debug-warnings
+	  ;; In `TeX-error-list' we collect all warnings, also if they're going
+	  ;; to be actually skipped.
+	  (if (or store TeX-debug-warnings)
 	      (progn
 		(setq error-found t)
 		(TeX-warning (TeX-match-buffer 8) store)
@@ -3205,42 +3244,45 @@ Write file names relative to MASTER-DIR when they are not absolute."
 	       file (nth 1 entry)
 	       line (nth 2 entry)
 	       msg  (nth 3 entry))
-	 (add-to-list
-	  'entries
-	  (list
-	   ;; ID.
-	   id
-	   (vector
-	    ;; File.
-	    (if (stringp file)
-		(if (file-name-absolute-p file)
-		    file
-		  (file-relative-name file master-dir))
-	      "")
-	    ;; Line.
-	    (if (numberp line)
-		(number-to-string line)
-	      "")
-	    ;; Type.
-	    (cond
-	     ((equal type 'error)
-	      (propertize "Error" 'font-lock-face 'TeX-error-description-error))
-	     ((equal type 'warning)
-	      (propertize "Warning" 'font-lock-face
-			  'TeX-error-description-warning))
-	     ((equal type 'bad-box)
-	      (propertize "Bad box" 'font-lock-face
-			  'TeX-error-description-warning))
-	     (t
-	      ""))
-	    ;; Message.
-	    (list (if (stringp msg) msg "")
-		  'face 'link
-		  'follow-link t
-		  'id id
-		  'action 'TeX-error-overview-goto-source)
-	    )) t)
-	 (setq id (1+ id))) TeX-error-list)
+	 ;; Add the entry only if it isn't to be skipped.
+	 (unless (TeX-error-list-skip-warning-p type)
+	   (add-to-list
+	    'entries
+	    (list
+	     ;; ID.
+	     id
+	     (vector
+	      ;; File.
+	      (if (stringp file)
+		  (if (file-name-absolute-p file)
+		      file
+		    (file-relative-name file master-dir))
+		"")
+	      ;; Line.
+	      (if (numberp line)
+		  (number-to-string line)
+		"")
+	      ;; Type.
+	      (cond
+	       ((equal type 'error)
+		(propertize "Error" 'font-lock-face 'TeX-error-description-error))
+	       ((equal type 'warning)
+		(propertize "Warning" 'font-lock-face
+			    'TeX-error-description-warning))
+	       ((equal type 'bad-box)
+		(propertize "Bad box" 'font-lock-face
+			    'TeX-error-description-warning))
+	       (t
+		""))
+	      ;; Message.
+	      (list (if (stringp msg) msg "")
+		    'face 'link
+		    'follow-link t
+		    'id id
+		    'action 'TeX-error-overview-goto-source))) t))
+	 ;; Increase the `id' counter in any case.
+	 (setq id (1+ id)))
+       TeX-error-list)
       entries)))
 
 (defun TeX-error-overview-next-error (&optional arg)
@@ -3279,6 +3321,24 @@ forward, if negative)."
   (let ((TeX-display-help 'expert))
     (TeX-error-overview-goto-source)))
 
+(defun TeX-error-overview-toggle-debug-bad-boxes ()
+  "Run `TeX-toggle-debug-bad-boxes' and update entries list."
+  (interactive)
+  (TeX-toggle-debug-bad-boxes)
+  (setq tabulated-list-entries (TeX-error-overview-make-entries
+				(TeX-master-directory)))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
+(defun TeX-error-overview-toggle-debug-warnings ()
+  "Run `TeX-toggle-debug-warnings' and update entries list."
+  (interactive)
+  (TeX-toggle-debug-warnings)
+  (setq tabulated-list-entries (TeX-error-overview-make-entries
+				(TeX-master-directory)))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
 (defun TeX-error-overview-quit ()
   "Delete the window or the frame of the error overview."
   (interactive)
@@ -3290,11 +3350,13 @@ forward, if negative)."
 (defvar TeX-error-overview-mode-map
   (let ((map (make-sparse-keymap))
 	(menu-map (make-sparse-keymap)))
+    (define-key map "b"    'TeX-error-overview-toggle-debug-bad-boxes)
     (define-key map "j"    'TeX-error-overview-jump-to-source)
     (define-key map "l"    'TeX-error-overview-goto-log)
     (define-key map "n"    'TeX-error-overview-next-error)
     (define-key map "p"    'TeX-error-overview-previous-error)
     (define-key map "q"    'TeX-error-overview-quit)
+    (define-key map "w"    'TeX-error-overview-toggle-debug-warnings)
     (define-key map "\C-m" 'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
@@ -3314,6 +3376,14 @@ forward, if negative)."
       :help "Move point to the error in the source"]
      ["Go to log" TeX-error-overview-goto-log
       :help "Show the error in the log buffer"]
+     "-"
+     ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
+      :style toggle :selected TeX-debug-bad-boxes
+      :help "Show overfull and underfull boxes"]
+     ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
+      :style toggle :selected TeX-debug-warnings
+      :help "Show warnings"]
+     "-"
      ["Quit" TeX-error-overview-quit
       :help "Quit"])))
 
@@ -3363,12 +3433,17 @@ forward, if negative)."
   ;; Check requirements before start.
   (if (fboundp 'tabulated-list-mode)
       (if (setq TeX-error-overview-active-buffer (TeX-active-buffer))
-	  (if (with-current-buffer TeX-error-overview-active-buffer
-		TeX-error-list)
+	  ;; `TeX-error-overview-list-entries' is going to be used only as value
+	  ;; of `tabulated-list-entries' in `TeX-error-overview-mode'.  In
+	  ;; principle, we don't need `TeX-error-overview-list-entries', but
+	  ;; `tabulated-list-entries' is buffer-local and we need the list of
+	  ;; entries before creating the error overview buffer in order to
+	  ;; decide whether we need to show anything.
+	  (if (setq TeX-error-overview-list-entries
+		    (TeX-error-overview-make-entries
+		     (TeX-master-directory)))
 	      (progn
-		(setq TeX-error-overview-list-entries
-		      (TeX-error-overview-make-entries (TeX-master-directory))
-		      TeX-error-overview-orig-window (selected-window)
+		(setq TeX-error-overview-orig-window (selected-window)
 		      TeX-error-overview-orig-frame
 		      (window-frame TeX-error-overview-orig-window))
 		;; Create the error overview buffer.  This is
