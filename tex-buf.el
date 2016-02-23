@@ -569,18 +569,19 @@ ORIGINALS which are modified but not saved yet."
         found
 	(extensions (TeX-delete-duplicate-strings extensions))
         (buffers (buffer-list)))
-    (dolist (path (mapcar (lambda (dir)
-			    (expand-file-name (file-name-as-directory dir)))
-			  (append
-			   TeX-check-path
-			   ;; In `TeX-command-default', this function is used to
-			   ;; check whether bibliography databases are newer
-			   ;; than generated *.bbl files, but bibliography
-			   ;; database are relative to `TeX-master-directory'
-			   ;; and the test can be run also from included files
-			   ;; that are in directories different from
-			   ;; `TeX-master-directory'.
-			   (list (TeX-master-directory)))))
+    (dolist (path (TeX-delete-duplicate-strings
+		   (mapcar (lambda (dir)
+			     (expand-file-name (file-name-as-directory dir)))
+			   (append
+			    TeX-check-path
+			    ;; In `TeX-command-default', this function is used to
+			    ;; check whether bibliography databases are newer
+			    ;; than generated *.bbl files, but bibliography
+			    ;; database are relative to `TeX-master-directory'
+			    ;; and the test can be run also from included files
+			    ;; that are in directories different from
+			    ;; `TeX-master-directory'.
+			    (list (TeX-master-directory))))))
       (dolist (orig originals)
 	(dolist (ext extensions)
 	  (let ((filepath (concat path orig "." ext)))
