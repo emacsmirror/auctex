@@ -2277,11 +2277,12 @@ error or warning.  This is the structure of each element:
  *  2: line
  *  3: message of the error or warning
  *  4: offset
- *  5: context
- *  6: string
+ *  5: context, to be displayed in the help window
+ *  6: string to search in the buffer, in order to find location
+       of the error or warning
  *  7: for warnings referring to multiple lines (e.g. bad boxes),
        the last line mentioned in the warning message
- *  8: bad-box
+ *  8: t if it is a bad-box, nil otherwise
  *  9: value of `TeX-error-point'
  * 10: whether the warning should be ignored
 
@@ -2329,7 +2330,7 @@ Return non-nil if an error or warning is found."
 	  "name(\\([^)]+\\))\\)\\|"
 	  ;; LaTeX bad box
 	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
- \\\\.*?[0-9]+--[0-9]+\\)\\|"
+ \\\\[hv]box.*\\)\\|"
 	  ;; LaTeX warning
 	  "^\\(" LaTeX-warnings-regexp ".*\\)"))
 	(error-found nil))
@@ -2363,7 +2364,7 @@ Return non-nil if an error or warning is found."
 	  (if (or store TeX-debug-bad-boxes)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 7) (match-beginning 7) store)
+		(TeX-warning (TeX-match-buffer 7) (match-beginning 7) t store)
 		nil)
 	    (re-search-forward "\r?\n\
 \\(?:.\\{79\\}\r?\n\
@@ -2376,7 +2377,7 @@ Return non-nil if an error or warning is found."
 	  (if (or store TeX-debug-warnings)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 8) (match-beginning 8) store)
+		(TeX-warning (TeX-match-buffer 8) (match-beginning 8) nil store)
 		nil)
 	    t))
 
@@ -2553,19 +2554,20 @@ information in `TeX-error-list' instead of displaying the error."
       ;; Find the error point and display the help.
       (apply 'TeX-find-display-help info-list))))
 
-(defun TeX-warning (warning warning-start &optional store)
+(defun TeX-warning (warning warning-start bad-box &optional store)
   "Display a warning for WARNING.
 
-WARNING-START is the position where WARNING starts.
+WARNING-START is the position where WARNING starts.  If BAD-BOX
+is non-nil, the warning refers to a bad-box, otherwise it is a
+generic warning.
 
 If optional argument STORE is non-nil, store the warning
 information in `TeX-error-list' instead of displaying the
 warning."
 
-  (let* ( ;; bad-box is nil if this is a "LaTeX Warning"
-	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" warning))
-	 ;; line-string: match 1 is beginning line, match 2 is end line
-	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
+  (let* ( ;; line-string: match 1 is beginning line, match 2 is end line
+	 (line-string (if bad-box
+			  "at lines? \\([0-9]*\\)\\(?:--\\([0-9]*\\)\\)?"
 			"on input line \\([0-9]*\\)\\."))
 	 ;; word-string: match 1 is the word
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
@@ -2576,7 +2578,11 @@ warning."
 	 (line (when (save-excursion (re-search-backward line-string
 							 warning-start t))
 		 (string-to-number (TeX-match-buffer 1))))
-	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
+	 ;; If this is a bad box and the warning ends with "...at lines MM--NN"
+	 ;; we can use "NN" as `line-end', in any other case (including bad
+	 ;; boxes ending with "...at line NN") just use `line'.
+	 (line-end (if (and bad-box (match-beginning 2))
+		       (string-to-number (TeX-match-buffer 2))
 		     line))
 
 	 ;; Find the context
@@ -2625,7 +2631,8 @@ warning."
     (and (null line)
 	 (string-match line-string context)
 	 (setq line-end
-	       (setq line (string-to-number (match-string 1 context)))))
+	       (setq line (and (match-beginning 1)
+			       (string-to-number (match-string 1 context))))))
 
     ;; This is where we start next time.
     (goto-char error-point)

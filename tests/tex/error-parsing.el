@@ -81,7 +81,7 @@ ABD: EveryShipout initializing macros"
 	      "./secondary-file.tex" 131
 	      "Underfull \\hbox (badness 6608) in paragraph at lines 131--132"
 	      0 "\n[]|\\T1/jkpl/m/n/10.95 (+20) Something bla" "bla"
-	      132 10 1268 nil)
+	      132 t 1268 nil)
              (warning "./test.tex" 4
               "LaTeX Warning: Reference `wrong' on page 1 undefined on input line 4."
               0
