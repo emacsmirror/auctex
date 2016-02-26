@@ -90,7 +90,17 @@ ABD: EveryShipout initializing macros"
              (warning "./test.tex" 70 "LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available"
               0 "LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available
 (Font)              size <5> substituted on input line 70.\n" nil 70 nil 1485 nil)
+             (bad-box "./test.lof" nil "Underfull \\vbox (badness 1048) has occurred while \\output is active [7]"
+              0 "\nUnderfull \\vbox (badness 1048) has occurred while \\output is active [7]"
+              nil nil t 1651 nil)
+             ;; It is possible there are two different bad box warnings in two
+             ;; consecutive lines (for example it happens if the first one is a
+             ;; vertical bad box which doesn't provide additional information),
+             ;; this test makes sure the second warning is not mistaken as
+             ;; context of the first one.
+             (bad-box "./test.lof" 31 "Overfull \\hbox (0.93071pt too wide) detected at line 31"
+              0 "\n []\\T1/jkpl/m/n/10.95 144" "144" 31 t 1733 nil)
              (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 1616 nil)))))
+              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 1785 nil)))))
 
 ;;; error-parsing.el ends here

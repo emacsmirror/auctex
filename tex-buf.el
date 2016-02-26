@@ -2590,24 +2590,34 @@ warning."
 				 (beginning-of-line))
 			       (point)))
 
-	 (context (if (string-match LaTeX-warnings-regexp warning)
-		      ;; The warnings matching `LaTeX-warnings-regexp' are
-		      ;; emitted by \GenericWarning macro, or macros based on it
-		      ;; (\ClassWarning, \PackageWarning, etc).  After such
-		      ;; warnings there is an empty line, just look for it to
-		      ;; find the end.
-		      (progn
-			(beginning-of-line)
-			(while (null (eolp))
-			  (forward-line 1))
-			(buffer-substring context-start (progn (end-of-line)
-							       (point))))
-		    (forward-line 1)
-		    (end-of-line)
-		    (while (equal (current-column) 79)
-		      (forward-line 1)
-		      (end-of-line))
-		    (buffer-substring context-start (point))))
+	 (context (cond ((string-match LaTeX-warnings-regexp warning)
+			 ;; The warnings matching `LaTeX-warnings-regexp' are
+			 ;; emitted by \GenericWarning macro, or macros based on
+			 ;; it (\ClassWarning, \PackageWarning, etc).  After
+			 ;; such warnings there is an empty line, just look for
+			 ;; it to find the end.
+			 (beginning-of-line)
+			 (while (null (eolp))
+			   (forward-line 1))
+			 (buffer-substring context-start (progn (end-of-line)
+								(point))))
+
+			((and bad-box (string-match "\\\\vbox" warning))
+			;; Vertical bad boxes don't provide any additional
+			;; information.  In this case, reuse the `warning' as
+			;; `context' and don't move point, so that we avoid
+			;; eating the next line that may contain another
+			;; warning.
+			 (concat "\n" warning))
+
+			(t
+			 ;; Horizontal bad boxes.
+			 (forward-line 1)
+			 (end-of-line)
+			 (while (equal (current-column) 79)
+			   (forward-line 1)
+			   (end-of-line))
+			 (buffer-substring context-start (point)))))
 
 	 ;; This is where we want to be.
 	 (error-point (point))
