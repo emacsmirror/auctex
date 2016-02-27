@@ -47,6 +47,20 @@ Overfull \hbox (0.93071pt too wide) detected at line 31
  []\T1/jkpl/m/n/10.95 144
 )
 
+(./file  name/with spaces.tex
+chapter 5.
+<use image/an_image.pdf> [82] [83 <./image/an_image.pdf>] [84] [85] [86] (./image/another.tex
+<image/another.pdf, id=1357, 208.78pt x 146.5475pt> <use image/another.pdf>)
+<image/another2.pdf, id=1358, 542.025pt x 481.8pt> <use image/another2.pdf>
+Underfull \vbox (badness 3942) has occurred while \output is active [87 <./image/another.pdf> <./image/another2.pdf>] [88] (./image/beta.tex
+<image/beta.pdf, id=1410, 289.08pt x 201.75375pt>
+<use image/beta.pdf>) [89] [90 <./image/beta.pdf>]
+Overfull \hbox (13.59138pt too wide) in paragraph at lines 367--368
+[]\T1/pplj/m/n/10.95 Un qua-dri-vet-to-re co-va-rian-te $\OMS/zplm/m/n/10.95 f\OML/zplm/m/it/10.95 A[]\OMS/zplm/m/n/10.95 g$ \T1/pplj/m/n/10.95 e un in-sie-me di quat-tro quan-ti-ta $\OT1/zplm/m/n/10.95 (\OML/zplm/m/it/10.95 A[]; A[]; A[]; A[]\OT1/zplm/m/n/10.95 )$
+[91] [92]
+
+[93])
+
 LaTeX Warning: There were undefined references.
 
 )

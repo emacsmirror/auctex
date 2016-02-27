@@ -2328,9 +2328,12 @@ Return non-nil if an error or warning is found."
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name
 	  "name(\\([^)]+\\))\\)\\|"
-	  ;; LaTeX bad box
-	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
- \\\\[hv]box.*\\)\\|"
+	  ;; Start of LaTeX bad box
+	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\) "
+	  ;;   Horizontal bad box
+	  "\\(?:\\\\hbox.* at lines? [0-9]+\\(?:--[0-9]+\\)?$\\|"
+	  ;;   Vertical bad box.  See also `TeX-warning'.
+	  "\\\\vbox ([ a-z0-9]+) has occurred while \\\\output is active \\[[^]]+\\]\\)\\)\\|"
 	  ;; LaTeX warning
 	  "^\\(" LaTeX-warnings-regexp ".*\\)"))
 	(error-found nil))
@@ -2586,8 +2589,25 @@ warning."
 		     line))
 
 	 ;; Find the context
-	 (context-start (progn (if bad-box (end-of-line)
-				 (beginning-of-line))
+	 (context-start (progn (cond
+				((and bad-box (string-match "\\\\hbox" warning))
+				 ;; Horizontal bad box
+				 (end-of-line))
+				(bad-box
+				 ;; Vertical bad box (by exclusion), don't move
+				 ;; point.  In the output buffer, unlike in the
+				 ;; actual *.log file, these warnings do not end
+				 ;; with "...is active []", but in the same line
+				 ;; there may be something else, including a new
+				 ;; file opened.  Thus, point shouldn't move
+				 ;; from the end of the actual bad box warning.
+				 ;; This is why the corresponding regexp in
+				 ;; `TeX-parse-error' doesn't match everything
+				 ;; until the end of the line.
+				 nil)
+				(t
+				 ;; Generic warning.
+				 (beginning-of-line)))
 			       (point)))
 
 	 (context (cond ((string-match LaTeX-warnings-regexp warning)
@@ -2603,11 +2623,11 @@ warning."
 								(point))))
 
 			((and bad-box (string-match "\\\\vbox" warning))
-			;; Vertical bad boxes don't provide any additional
-			;; information.  In this case, reuse the `warning' as
-			;; `context' and don't move point, so that we avoid
-			;; eating the next line that may contain another
-			;; warning.
+			 ;; Vertical bad boxes don't provide any additional
+			 ;; information.  In this case, reuse the `warning' as
+			 ;; `context' and don't move point, so that we avoid
+			 ;; eating the next line that may contain another
+			 ;; warning.  See also comment for `context-start'.
 			 (concat "\n" warning))
 
 			(t

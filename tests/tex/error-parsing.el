@@ -100,7 +100,17 @@ ABD: EveryShipout initializing macros"
              ;; context of the first one.
              (bad-box "./test.lof" 31 "Overfull \\hbox (0.93071pt too wide) detected at line 31"
               0 "\n []\\T1/jkpl/m/n/10.95 144" "144" 31 t 1733 nil)
+             ;; The line of this warning ends with a new file opened.  This test
+             ;; makes sure point stays exactly at the end of the warning so that
+             ;; the next the next warning in the list has the right file
+             ;; (otherwise it would be nil).
+             (bad-box "./file  name/with spaces.tex" nil "Underfull \\vbox (badness 3942) has occurred while \\output is active [87 <./image/another.pdf> <./image/another2.pdf>]"
+              0 "\nUnderfull \\vbox (badness 3942) has occurred while \\output is active [87 <./image/another.pdf> <./image/another2.pdf>]"
+              nil nil t 2142 nil)
+             (bad-box "./file  name/with spaces.tex" 367 "Overfull \\hbox (13.59138pt too wide) in paragraph at lines 367--368"
+              0 "\n[]\\T1/pplj/m/n/10.95 Un qua-dri-vet-to-re co-va-rian-te $\\OMS/zplm/m/n/10.95 f\\OML/zplm/m/it/10.95 A[]\\OMS/zplm/m/n/10.95 g$ \\T1/pplj/m/n/10.95 e un in-sie-me di quat-tro quan-ti-ta $\\OT1/zplm/m/n/10.95 (\\OML/zplm/m/it/10.95 A[]; A[]; A[]; A[]\\OT1/zplm/m/n/10.95 )$" "$"
+              368 t 2600 nil)
              (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 1785 nil)))))
+              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2667 nil)))))
 
 ;;; error-parsing.el ends here
