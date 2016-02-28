@@ -110,7 +110,11 @@ ABD: EveryShipout initializing macros"
              (bad-box "./file  name/with spaces.tex" 367 "Overfull \\hbox (13.59138pt too wide) in paragraph at lines 367--368"
               0 "\n[]\\T1/pplj/m/n/10.95 Un qua-dri-vet-to-re co-va-rian-te $\\OMS/zplm/m/n/10.95 f\\OML/zplm/m/it/10.95 A[]\\OMS/zplm/m/n/10.95 g$ \\T1/pplj/m/n/10.95 e un in-sie-me di quat-tro quan-ti-ta $\\OT1/zplm/m/n/10.95 (\\OML/zplm/m/it/10.95 A[]; A[]; A[]; A[]\\OT1/zplm/m/n/10.95 )$" "$"
               368 t 2600 nil)
+             (warning "./test.tex" 48
+              "LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48." 0
+              "LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48.\n"
+              "Knuth:TeXbook-1984" 48 nil 2692 nil)
              (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2667 nil)))))
+              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2741 nil)))))
 
 ;;; error-parsing.el ends here

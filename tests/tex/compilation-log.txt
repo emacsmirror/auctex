@@ -61,6 +61,8 @@ Overfull \hbox (13.59138pt too wide) in paragraph at lines 367--368
 
 [93])
 
+LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48.
+
 LaTeX Warning: There were undefined references.
 
 )

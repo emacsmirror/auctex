@@ -2574,7 +2574,9 @@ warning."
 			"on input line \\([0-9]*\\)\\."))
 	 ;; word-string: match 1 is the word
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
-			"`\\(\\w+\\)'"))
+			;; Match "ref" in both "Reference `ref' on page NN
+			;; undefined" and "Citation 'ref' on page NN undefined".
+			"\\(?:`\\|'\\)\\([-a-zA-Z0-9:]+\\)'"))
 
 	 ;; Get error-line (warning).  Don't search before `warning-start' to
 	 ;; avoid catching completely unrelated line numbers.
