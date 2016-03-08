@@ -2941,9 +2941,7 @@ consideration just as is in the non-commented source code."
     ("equation")
     ("equation*")
     ("picture")
-    ("tabbing")
-    ("table")
-    ("table*"))
+    ("tabbing"))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns."
