@@ -1032,16 +1032,35 @@ The inserted label is returned, nil if it is empty."
 	      label)
 	  nil)))))
 
+(defcustom LaTeX-short-caption-prompt-length 40
+  "The length that the caption of a figure should be before
+  propting for \\caption's optional short-version."
+  :group 'LaTeX-environment
+  :type 'integer)
+
+(defun LaTeX-compose-caption-macro (caption &optional short-caption)
+  "Return a \\caption macro for a given CAPTION as a string.
+If SHORT-CAPTION is non-nil pass it as an optional argument to
+\\caption."
+  (let ((short-caption-string
+         (if (and short-caption
+                  (not (string= short-caption "")))
+             (concat LaTeX-optop short-caption LaTeX-optcl))))
+    (concat TeX-esc "caption" short-caption-string
+            TeX-grop caption TeX-grcl)))
+
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\caption and \\label commands."
-  (let ((float (and LaTeX-float		; LaTeX-float can be nil, i.e.
+  (let* ((float (and LaTeX-float		; LaTeX-float can be nil, i.e.
 					; do not prompt
-		    (TeX-read-string "(Optional) Float position: " LaTeX-float)))
-	(caption (TeX-read-string "Caption: "))
-	(center (y-or-n-p "Center? "))
-	(active-mark (and (TeX-active-mark)
-			  (not (eq (mark) (point)))))
-	start-marker end-marker)
+                     (TeX-read-string "(Optional) Float position: " LaTeX-float)))
+         (caption (TeX-read-string "Caption: "))
+         (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
+                          (TeX-read-string "(Optional) Short caption: ")))
+         (center (y-or-n-p "Center? "))
+         (active-mark (and (TeX-active-mark)
+                           (not (eq (mark) (point)))))
+         start-marker end-marker)
     (when active-mark
       (if (< (mark) (point))
 	  (exchange-point-and-mark))
@@ -1064,7 +1083,7 @@ The inserted label is returned, nil if it is empty."
       (if (member environment LaTeX-top-caption-list)
 	  ;; top caption
 	  (progn
-	    (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	    (insert (LaTeX-compose-caption-macro caption short-caption))
 	    ;; If `auto-fill-mode' is active, fill the caption.
 	    (if auto-fill-function (LaTeX-fill-paragraph))
 	    (LaTeX-newline)
@@ -1082,7 +1101,7 @@ The inserted label is returned, nil if it is empty."
 	  ;; If there is an active region point is before the backslash of
 	  ;; "\end" macro, go one line upwards.
 	  (when active-mark (forward-line -1) (indent-according-to-mode))
-	  (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	  (insert (LaTeX-compose-caption-macro caption short-caption))
 	  ;; If `auto-fill-mode' is active, fill the caption.
 	  (if auto-fill-function (LaTeX-fill-paragraph))
 	  ;; ask for a label and if necessary insert a new line between caption

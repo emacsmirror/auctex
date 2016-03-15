@@ -34,10 +34,12 @@
  (lambda ()
    (LaTeX-add-environments
     '("longtable" (lambda (environment)
-		    (let ((pos (completing-read (TeX-argument-prompt t nil "Position")
-						'(("l") ("r") ("c"))))
-			  (fmt (TeX-read-string "Format: " LaTeX-default-format))
-			  (caption (TeX-read-string "Caption: ")))
+		    (let* ((pos (completing-read (TeX-argument-prompt t nil "Position")
+                                                 '(("l") ("r") ("c"))))
+                           (fmt (TeX-read-string "Format: " LaTeX-default-format))
+                           (caption (TeX-read-string "Caption: "))
+                           (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
+                                            (TeX-read-string "(Optional) Short caption: "))))
 		      (setq LaTeX-default-format fmt)
 		      (LaTeX-insert-environment environment
 						(concat
@@ -49,7 +51,7 @@
 			;; the longtable `\caption' is equivalent to a
 			;; `\multicolumn', so it needs a `\\' at the
 			;; end of the line
-			(insert TeX-esc "caption" TeX-grop caption TeX-grcl " \\\\")
+			(insert (LaTeX-compose-caption-macro caption short-caption) "\\\\")
 			(LaTeX-newline)
 			(indent-according-to-mode)
 			;; ask for a label and insert a new line only

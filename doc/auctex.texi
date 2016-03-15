@@ -1005,6 +1005,14 @@ at the bottom of the float.  You can specify floats where the caption
 should be placed at the top with @code{LaTeX-top-caption-list}.
 @vindex LaTeX-top-caption-list
 
+@item short caption
+If the specified caption is greater than a specific length, then a short
+caption is prompted for and it is inserted as an optional argument to
+the @samp{\caption} macro.  The length that a caption needs to be before
+prompting for a short version is controlled by
+@code{LaTeX-short-caption-prompt-length}.
+@vindex LaTeX-short-caption-prompt-length
+
 @item label
 The label of this float.  The label will have a default prefix, which is
 controlled by the variables @code{LaTeX-figure-label} and
@@ -1035,6 +1043,11 @@ Prefix to use for table labels.
 
 @defopt LaTeX-top-caption-list
 List of float environments with top caption.
+@end defopt
+
+@defopt LaTeX-short-caption-prompt-length
+Number of chars a caption should be before prompting for a short
+caption.
 @end defopt
 
 @node Itemize-like

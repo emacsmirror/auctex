@@ -12,6 +12,12 @@
 
 @itemize @bullet
 @item
+When inserting a new float, @AUCTeX{} will now prompt for a
+short-caption if the length of the caption provided is greater than a
+certain size.  This size is controlled via a new user option
+@code{LaTeX-short-caption-prompt-length}.
+
+@item
 Parsing of the compilation log has been reworked.  You should encounter
 fewer mistaken files while navigating through errors and warnings.
 
