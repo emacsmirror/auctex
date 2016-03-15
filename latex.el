@@ -1969,6 +1969,35 @@ string.  `TeX-read-label-prefix' is used as initial input for the
 label."
   (TeX-arg-label optional prompt t))
 
+(defun TeX-arg-default-argument-value (optional &optional prompt)
+  "Prompt for the default value for the first argument of a LaTeX macro.
+
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (TeX-argument-insert
+   (TeX-read-string
+    (TeX-argument-prompt optional prompt "Default value for first argument"))
+   optional))
+
+(defun TeX-arg-define-macro-arguments (optional &optional prompt)
+  "Prompt for the number of arguments for a LaTeX macro.  If this
+is non-zero, also prompt for the default value for the first
+argument.
+
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  Use PROMPT as the prompt
+string."
+  (let ((arg-count (TeX-read-string
+                    (TeX-argument-prompt optional prompt
+                                         "Number of arguments"
+                                         nil))))
+    (unless (or (string= arg-count "0")
+                (string= arg-count ""))
+      (TeX-argument-insert arg-count optional)
+      (unless (string-equal LaTeX-version "2")
+        (TeX-arg-default-argument-value optional)))))
+
 (defun TeX-arg-define-macro (optional &optional prompt)
   "Prompt for a TeX macro with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -6022,16 +6051,16 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    '("label" TeX-arg-define-label)
    '("pageref" TeX-arg-ref)
    '("ref" TeX-arg-ref)
-   '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-   '("renewcommand" TeX-arg-macro [ "Number of arguments" ] t)
+   '("newcommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+   '("renewcommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment" TeX-arg-define-environment
      [ "Number of arguments"] t t)
    '("renewenvironment" TeX-arg-environment
      [ "Number of arguments"] t t)
-   '("providecommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-   '("providecommand*" TeX-arg-define-macro [ "Number of arguments" ] t)
-   '("newcommand*" TeX-arg-define-macro [ "Number of arguments" ] t)
-   '("renewcommand*" TeX-arg-macro [ "Number of arguments" ] t)
+   '("providecommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+   '("providecommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+   '("newcommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+   '("renewcommand*" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment*" TeX-arg-define-environment
      [ "Number of arguments"] t t)
    '("renewenvironment*" TeX-arg-environment
@@ -6243,21 +6272,21 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
     (setq TeX-font-replace-function 'TeX-font-replace-macro)
     (TeX-add-symbols
      '("newcommand" TeX-arg-define-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("renewcommand" TeX-arg-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("providecommand" TeX-arg-define-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("providecommand*" TeX-arg-define-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("newcommand*" TeX-arg-define-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("renewcommand*" TeX-arg-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+       [ TeX-arg-define-macro-arguments ] t)
      '("newenvironment" TeX-arg-define-environment
-       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
+       [ TeX-arg-define-macro-arguments ]  t t)
      '("renewenvironment" TeX-arg-environment
-       [ "Number of arguments" ] [ "Default value for first argument" ] t t)
+       [ TeX-arg-define-macro-arguments ] t t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
