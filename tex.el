@@ -4484,7 +4484,8 @@ in the global directories only and nil in both.
 If optional argument NODIR is non-nil, remove directory part.
 
 If optional argument STRIP is non-nil, remove file extension."
-  (let* ((spec (assq filetype TeX-search-files-type-alist))
+  (let* ((gc-cons-threshold 10000000)
+	 (spec (assq filetype TeX-search-files-type-alist))
 	 (kpse-var (nth 1 spec))
 	 (rawdirs (nth 2 spec))
 	 (exts (nth 3 spec))
