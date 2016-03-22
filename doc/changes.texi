@@ -12,6 +12,11 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now has limited support for the TikZ package.  For the moment,
+this includes some basic support for prompting the user of arguments to
+the @samp{\draw} macro.
+
+@item
 When inserting a new float, @AUCTeX{} will now prompt for a
 short-caption if the length of the caption provided is greater than a
 certain size.  This size is controlled via a new user option
