@@ -1268,8 +1268,8 @@ entry in `TeX-view-program-list-builtin'."
 	    #'TeX-source-correlate-handle-TeX-region)
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
-      (with-current-buffer (or (find-buffer-visiting
-				(concat file "." TeX-default-extension))
+      (with-current-buffer (or (when TeX-current-process-region-p
+				 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
     (let ((pdf (concat file "." (TeX-output-extension))))
