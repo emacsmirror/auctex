@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2015
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2016
 Free Software Foundation, Inc.
 
 @quotation
@@ -190,6 +190,7 @@ Viewing the Formatted Output
 
 Catching the errors
 
+* Ignoring warnings::           Controlling warnings to be reported
 * Error overview::              List of all errors and warnings
 
 Customization and Extension
@@ -1004,6 +1005,14 @@ at the bottom of the float.  You can specify floats where the caption
 should be placed at the top with @code{LaTeX-top-caption-list}.
 @vindex LaTeX-top-caption-list
 
+@item short caption
+If the specified caption is greater than a specific length, then a short
+caption is prompted for and it is inserted as an optional argument to
+the @samp{\caption} macro.  The length that a caption needs to be before
+prompting for a short version is controlled by
+@code{LaTeX-short-caption-prompt-length}.
+@vindex LaTeX-short-caption-prompt-length
+
 @item label
 The label of this float.  The label will have a default prefix, which is
 controlled by the variables @code{LaTeX-figure-label} and
@@ -1034,6 +1043,11 @@ Prefix to use for table labels.
 
 @defopt LaTeX-top-caption-list
 List of float environments with top caption.
+@end defopt
+
+@defopt LaTeX-short-caption-prompt-length
+Number of chars a caption should be before prompting for a short
+caption.
 @end defopt
 
 @node Itemize-like
@@ -3337,21 +3351,6 @@ not parse the whole output log buffer and @code{TeX-previous-error}
 cannot be used.
 @end defopt
 
-Normally @AUCTeX{} will only report real errors, but you may as well
-ask it to report `bad boxes' and warnings as well.
-
-@deffn Command TeX-toggle-debug-bad-boxes
-@kindex C-c C-t C-b
-(@kbd{C-c C-t C-b}) Toggle whether @AUCTeX{} should stop at bad boxes
-(i.e. overfull and underfull boxes) as well as normal errors.
-@end deffn
-
-@deffn Command TeX-toggle-debug-warnings
-@kindex C-c C-t C-w
-(@kbd{C-c C-t C-w}) Toggle whether @AUCTeX{} should stop at warnings as
-well as normal errors.
-@end deffn
-
 As default, @AUCTeX{} will display a special help buffer containing the
 error reported by @TeX{} along with the documentation.  There is however
 an `expert' option, which allows you to display the real @TeX{} output.
@@ -3365,8 +3364,63 @@ terse information about the error is displayed in the echo area.  If
 @end defopt
 
 @menu
+* Ignoring warnings::         Controlling warnings to be reported
 * Error overview::            List of all errors and warnings
 @end menu
+
+@node Ignoring warnings
+@subsection Controlling warnings to be reported
+
+Normally @AUCTeX{} will only report real errors, but you may as well
+ask it to report `bad boxes' and warnings as well.
+
+@deffn Command TeX-toggle-debug-bad-boxes
+@kindex C-c C-t C-b
+@vindex TeX-debug-bad-boxes
+(@kbd{C-c C-t C-b}) Toggle whether @AUCTeX{} should stop at bad boxes
+(i.e. overfull and underfull boxes) as well as normal errors.  The
+boolean option @code{TeX-debug-bad-boxes} is set accordingly.
+@end deffn
+
+@deffn Command TeX-toggle-debug-warnings
+@kindex C-c C-t C-w
+@vindex TeX-debug-warnings
+(@kbd{C-c C-t C-w}) Toggle whether @AUCTeX{} should stop at warnings as
+well as normal errors.  The boolean option @code{TeX-debug-warnings} is
+set accordingly.
+@end deffn
+
+While many users desire to have warnings reported after compilation,
+there are certain warnings that are considered unimportant and users
+want to ignore them.  For a more fine-grained control of what kinds of
+warnings should be shown after compilation, @AUCTeX{} provides other
+options.
+
+@defopt TeX-ignore-warnings
+Controls which warnings are to be ignored.
+
+It can be a regexp matching the message of the warnings to be ignored.
+
+More advanced users can set also this option to a symbol with the name
+of a custom function taking as arguments all the information of the
+warning listed in @code{TeX-error-list} variable, except the last one
+about whether to ignore the warning.  See the code of @code{TeX-warning}
+function and the documentation of @code{TeX-error-list} for more
+details.
+@end defopt
+
+@deffn Command TeX-toggle-suppress-ignored-warnings
+@kindex C-c C-t C-x
+@vindex TeX-suppress-ignored-warnings
+(@kbd{C-c C-t C-x}) Toggle whether @AUCTeX{} should actually hide the
+ignored warnings specified with @code{TeX-ignore-warnings}.  The boolean
+option @code{TeX-suppress-ignored-warnings} is set accordingly.  If this
+is nil, all warnings are shown, even those matched by
+@code{TeX-ignore-warnings}, otherwise these are hidden.
+
+Note that @code{TeX-debug-warnings} takes the precedence: if it is nil,
+all warnings are hidden in any case.
+@end deffn
 
 @node Error overview
 @subsection List of all errors and warnings
@@ -3385,8 +3439,11 @@ In this window you can visit the error on which point is on by pressing
 @key{p} respectively.  A prefix argument to these keys specifies how
 many errors to move forward or backward.  You can visit an error also by
 clicking on its message.  Jump to error point in the source code with
-@key{j}, and use @key{l} see the error in the log buffer.  Press @key{q}
-to quit the overview.
+@key{j}, and use @key{l} see the error in the log buffer.  In addition,
+you can toggle visibility of bad boxes, generic warnings, and ignored
+warnings with @key{b}, @key{w}, and @key{x}, respectively (see
+@ref{Ignoring warnings} for details).  Press @key{q} to quit the
+overview.
 @end deffn
 
 @defopt TeX-error-overview-open-after-TeX-run
@@ -3523,16 +3580,15 @@ before it is actually done.  If non-nil, ask before deleting files.
 @section Documentation about macros and packages
 @cindex Documentation
 
-@deffn Command TeX-doc
+@deffn Command TeX-documentation-texdoc
 @kindex C-c ?
-(@kbd{C-c ?})  Get documentation about macros, packages or @TeX{} &
-Co. in general.  The function will prompt for the name of a command or
-manual, providing a list of available keywords for completion.  If point
-is on a command or word with available documentation, this will be
+(@kbd{C-c ?})  Get documentation about the packages installed on your
+system, using @samp{texdoc} to find the manuals.  The function will
+prompt for the name of packages.  If point is on a word, this will be
 suggested as default.
 
-In case no documentation could be found, a prompt for querying the
-@samp{texdoc} program is shown, should the latter be available.
+If the command is called with a prefix argument, you will be shown a
+list of manuals of the given package among to choose.
 
 The command can be invoked by the key binding mentioned above as well as
 the @samp{Find Documentation...} entry in the mode menu.

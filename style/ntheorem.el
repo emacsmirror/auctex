@@ -142,7 +142,7 @@ make them available as new environments.  Update
     (TeX-add-symbols (concat nthm "name"))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-ntheorem-auto-prepare t)
-(add-hook 'TeX-auto-prepare-hook #'LaTeX-ntheorem-auto-cleanup t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-ntheorem-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook

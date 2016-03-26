@@ -398,6 +398,18 @@ Inserting the subdirectory in the filename (as
 					 (TeX-master-directory))))
 		 (function :tag "other")))
 
+;; style/splitidx.el
+
+(defcustom LaTeX-splitidx-sindex-reftex-quick-id-key ?s
+  "Unique letter identifying \"\\sindex\" macro in RefTeX.
+
+A character argument for quick identification of \"\\sindex\"
+when RefTeX inserts new index entries with `reftex-index'.  It
+must be unique.  It is initialized to ?s when added to
+`reftex-index-macros'."
+  :group 'LaTeX-style
+  :type 'character)
+
 (provide 'tex-style)
 
 ;;; tex-style.el ends here

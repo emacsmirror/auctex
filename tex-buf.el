@@ -569,9 +569,19 @@ ORIGINALS which are modified but not saved yet."
         found
 	(extensions (TeX-delete-duplicate-strings extensions))
         (buffers (buffer-list)))
-    (dolist (path (mapcar (lambda (dir)
-			    (expand-file-name (file-name-as-directory dir)))
-			  TeX-check-path))
+    (dolist (path (TeX-delete-duplicate-strings
+		   (mapcar (lambda (dir)
+			     (expand-file-name (file-name-as-directory dir)))
+			   (append
+			    TeX-check-path
+			    ;; In `TeX-command-default', this function is used to
+			    ;; check whether bibliography databases are newer
+			    ;; than generated *.bbl files, but bibliography
+			    ;; database are relative to `TeX-master-directory'
+			    ;; and the test can be run also from included files
+			    ;; that are in directories different from
+			    ;; `TeX-master-directory'.
+			    (list (TeX-master-directory))))))
       (dolist (orig originals)
 	(dolist (ext extensions)
 	  (let ((filepath (concat path orig "." ext)))
@@ -1389,13 +1399,21 @@ Return nil ifs no errors were found."
       (setq TeX-command-next TeX-command-Show))
     nil))
 
+;; This regexp should catch warnings of the type
+;;   LaTeX Warning: ...
+;;   LaTeX Font Warning: ...
+;;   Package xyz123 Warning: ...
+;;   Class xyz123 Warning: ...
+(defvar LaTeX-warnings-regexp
+  "\\(?:LaTeX\\|Class\\|Package\\) [-A-Za-z0-9]* ?Warning:"
+  "Regexp matching LaTeX warnings.")
+
 (defun TeX-LaTeX-sentinel-has-warnings ()
   "Return non-nil, if the output buffer contains warnings.
 Warnings can be indicated by LaTeX or packages."
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward
-     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:" nil t)))
+    (re-search-forward (concat "^" LaTeX-warnings-regexp) nil t)))
 
 (defun TeX-LaTeX-sentinel-has-bad-boxes ()
   "Return non-nil, if LaTeX output indicates overfull or underfull boxes."
@@ -1742,15 +1760,18 @@ command."
 	(goto-char pt)
 	(insert-before-markers string)
 	(set-marker (process-mark process) (point))
-	;; Remove line breaks at column 79
+	;; Remove line breaks at columns 79 and 80
 	(while (> (point) pt)
 	  (end-of-line 0)
-	  (when (and (= (- (point) (line-beginning-position)) 79)
-		     ;; Heuristic: Don't delete the linebreak if the
-		     ;; next line is empty or starts with an opening
-		     ;; parenthesis or if point is located after a period.
+	  (when (and (memql (- (point) (line-beginning-position)) '(79 80))
+		     ;; Heuristic: Don't delete the linebreak if the next line
+		     ;; is empty or starts with an opening parenthesis, or if
+		     ;; point is located after a period and in the next line no
+		     ;; word char follows.
 		     (not (memq (char-after (1+ (point))) '(?\n ?\()))
-		     (not (eq (char-before) ?.)))
+		     (not (and (eq (char-before) ?.)
+			       (char-after (1+ (point)))
+			       (not (eq ?w (char-syntax (char-after (1+ (point)))))))))
 	    (delete-char 1)))
 	(goto-char (marker-position (process-mark process)))
 	;; Determine current page
@@ -2165,6 +2186,23 @@ If optional argument REPARSE is non-nil, reparse the output log."
 	     (process-name (TeX-active-process))
 	   "this")))
 
+(defun TeX-error-list-skip-warning-p (type ignore)
+  "Decide if a warning of `TeX-error-list' should be skipped.
+
+TYPE is one of the types listed in `TeX-error-list', IGNORE
+is the flag to choose if the warning should be skipped."
+  ;; The warning should be skipped if it...
+  (or
+   ;; ...is a warning and we want to ignore all warnings, or...
+   (and (null TeX-debug-warnings)
+	(equal type 'warning))
+   ;; ...is a bad-box and we want to ignore all bad-boxes, or...
+   (and (null TeX-debug-bad-boxes)
+	(equal type 'bad-box))
+   ;; ...is a warning to be ignored.
+   (and TeX-suppress-ignored-warnings
+	ignore)))
+
 (defun TeX-parse-TeX (arg reparse)
   "Find the next error produced by running TeX.
 
@@ -2185,12 +2223,23 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	  (TeX-parse-reset reparse))
       (if TeX-parse-all-errors
 	  (progn
-	    (setq max-index (length TeX-error-list)
-		  TeX-error-last-visited (+ (or arg 1) TeX-error-last-visited)
-		  item (if (natnump TeX-error-last-visited)
-			   (nth TeX-error-last-visited TeX-error-list)
-			 ;; XEmacs doesn't support `nth' with a negative index.
-			 nil))
+	    (setq arg (or arg 1)
+		  max-index (length TeX-error-list))
+	    ;; This loop is needed to skip ignored warnings, when
+	    ;; `TeX-suppress-ignored-warnings' is non-nil and there are ignore
+	    ;; warnings.
+	    (while (null (zerop arg))
+	      (setq TeX-error-last-visited (1+ TeX-error-last-visited)
+		    item (if (natnump TeX-error-last-visited)
+			     (nth TeX-error-last-visited TeX-error-list)
+			   ;; XEmacs doesn't support `nth' with a negative index.
+			   nil))
+	      ;; Increase or decrease `arg' only if the warning isn't to be
+	      ;; skipped.
+	      (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
+		(setq arg (if (> arg 0)
+			      (1- arg)
+			    (1+ arg)))))
 	    (if (< TeX-error-last-visited -1)
 		(setq TeX-error-last-visited -1))
 	    (cond ((or (null item)
@@ -2214,8 +2263,28 @@ already in an Emacs buffer) and the cursor is placed at the error."
 You might want to examine and modify the free variables `file',
 `offset', `line', `string', `error', and `context' from this hook.")
 
+;; `ignore' flag should be the always the last one in the list of information
+;; for each error/warning, because it can be set within `TeX-warning' by a
+;; custom function taking as argument all information present in
+;; `TeX-error-list' but `ignore', see `TeX-ignore-warnings'.
 (defvar TeX-error-list nil
   "List of warnings and errors.
+
+Each element of the list is a list of information for a specific
+error or warning.  This is the structure of each element:
+ *  0: type (error, warning, bad-box)
+ *  1: file
+ *  2: line
+ *  3: message of the error or warning
+ *  4: offset
+ *  5: context, to be displayed in the help window
+ *  6: string to search in the buffer, in order to find location
+       of the error or warning
+ *  7: for warnings referring to multiple lines (e.g. bad boxes),
+       the last line mentioned in the warning message
+ *  8: t if it is a bad-box, nil otherwise
+ *  9: value of `TeX-error-point'
+ * 10: whether the warning should be ignored
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
@@ -2252,25 +2321,21 @@ Return non-nil if an error or warning is found."
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\\(\"[^\"]*?\"\\|/*\
-\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
-\\(?:[\\/]+\\(?:\\.+[^()\r\n{} \\/]*\\|[^()\r\n{} .\\/]+\
-\\(?: [^()\r\n{} .\\/]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
-)*\\(?: \\|\r?$\\)\\|"
-	  ;; End of file.  The [^:] skips package messages like:
-	  ;; Package hyperref Message: Driver (autodetected): hpdftex.
-	  ;; [Loading MPS to PDF converter (version 2006.09.02).]
-	  "\\()\\)[^:.]\\|"
+	  "(\n?\\([^\n())]+\\)\\|"
+	  ;; End of file.
+	  "\\()\\)\\|"
 	  ;; Hook to change line numbers
 	  " !\\(?:offset(\\([---0-9]+\\))\\|"
 	  ;; Hook to change file name
 	  "name(\\([^)]+\\))\\)\\|"
-	  ;; LaTeX bad box
-	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
- \\\\.*?[0-9]+--[0-9]+\\)\\|"
+	  ;; Start of LaTeX bad box
+	  "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\) "
+	  ;;   Horizontal bad box
+	  "\\(?:\\\\hbox.* at lines? [0-9]+\\(?:--[0-9]+\\)?$\\|"
+	  ;;   Vertical bad box.  See also `TeX-warning'.
+	  "\\\\vbox ([ a-z0-9]+) has occurred while \\\\output is active \\[[^]]+\\]\\)\\)\\|"
 	  ;; LaTeX warning
-	  "^\\(\\(?:LaTeX [A-Za-z]*\\|Package [A-Za-z0-9]+ \\)Warning:.*\\)"))
+	  "^\\(" LaTeX-warnings-regexp ".*\\)"))
 	(error-found nil))
     (while
 	(cond
@@ -2297,10 +2362,12 @@ Return non-nil if an error or warning is found."
 	    nil))
 	 ;; LaTeX bad box
 	 ((match-beginning 7)
-	  (if TeX-debug-bad-boxes
+	  ;; In `TeX-error-list' we collect all warnings, also if they're going
+	  ;; to be actually skipped.
+	  (if (or store TeX-debug-bad-boxes)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 7) store)
+		(TeX-warning (TeX-match-buffer 7) (match-beginning 7) t store)
 		nil)
 	    (re-search-forward "\r?\n\
 \\(?:.\\{79\\}\r?\n\
@@ -2308,10 +2375,12 @@ Return non-nil if an error or warning is found."
 	    t))
 	 ;; LaTeX warning
 	 ((match-beginning 8)
-	  (if TeX-debug-warnings
+	  ;; In `TeX-error-list' we collect all warnings, also if they're going
+	  ;; to be actually skipped.
+	  (if (or store TeX-debug-warnings)
 	      (progn
 		(setq error-found t)
-		(TeX-warning (TeX-match-buffer 8) store)
+		(TeX-warning (TeX-match-buffer 8) (match-beginning 8) nil store)
 		nil)
 	    t))
 
@@ -2321,9 +2390,26 @@ Return non-nil if an error or warning is found."
 		(end (match-end 3)))
 	    ;; Strip quotation marks and remove newlines if necessary
 	    (when (or (eq (string-to-char file) ?\")
-		      (string-match "\n" file))
-	      (setq file
-		    (mapconcat 'identity (split-string file "[\"\n]+") "")))
+		      (string-match "[ \t\n]" file))
+	      (setq file (mapconcat 'identity (split-string file "[\"\n]+") "")))
+	    ;; Polish `file' string
+	    (setq file
+		  (let ((string file))
+		    ;; Trim whitespaces at the front.  XXX: XEmacs doesn't
+		    ;; support character classes in regexps, like "[:space:]".
+		    (setq string
+			  (if (string-match "\\'[ \t\n\r]*" string)
+			      (replace-match "" t t string)
+			    string))
+		    ;; Sometimes `file' is something like
+		    ;;     "./path/to/file.tex [9] [10 <./path/to/file>] "
+		    ;; where "[9]" and "[10 <./path/to/file>]" are pages of the
+		    ;; output file, with path to an included file.  Remove these
+		    ;; numbers together with whitespaces at the end of the
+		    ;; string.
+		    (if (string-match "\\( *\\(\\[[^]]+\\]\\)? *\\)*\\'" string)
+			(replace-match "" t t string)
+		      string)))
 	    (push file TeX-error-file)
 	    (push nil TeX-error-offset)
 	    (goto-char end))
@@ -2351,8 +2437,11 @@ Return non-nil if an error or warning is found."
     error-found))
 
 (defun TeX-find-display-help (type file line error offset context string
-				   line-end bad-box error-point)
-  "Find the error and display the help."
+				   line-end bad-box error-point _ignore)
+  "Find the error and display the help.
+
+For a description of arguments, see `TeX-error-list'.  IGNORE
+value is not used here."
   ;; Go back to TeX-buffer
   (let ((runbuf (TeX-active-buffer))
 	(master (with-current-buffer TeX-command-buffer
@@ -2455,53 +2544,102 @@ information in `TeX-error-list' instead of displaying the error."
 				      context-start)))
 	 ;; We may use these in another buffer.
 	 (offset (or (car TeX-error-offset) 0))
-	 (file (car TeX-error-file)))
+	 (file (car TeX-error-file))
+	 info-list)
 
     ;; Remember where we was.
-    (setq TeX-error-point (point))
+    (setq TeX-error-point (point)
+	  info-list (list 'error file line error offset context string nil nil
+			  TeX-error-point nil))
     (if store
 	;; Store the error information.
-	(add-to-list 'TeX-error-list
-		     (list 'error file line error offset context string nil nil
-			   TeX-error-point) t)
+	(add-to-list 'TeX-error-list info-list t)
       ;; Find the error point and display the help.
-      (TeX-find-display-help
-       'error file line error offset context string nil nil TeX-error-point))))
+      (apply 'TeX-find-display-help info-list))))
 
-(defun TeX-warning (warning &optional store)
+(defun TeX-warning (warning warning-start bad-box &optional store)
   "Display a warning for WARNING.
+
+WARNING-START is the position where WARNING starts.  If BAD-BOX
+is non-nil, the warning refers to a bad-box, otherwise it is a
+generic warning.
 
 If optional argument STORE is non-nil, store the warning
 information in `TeX-error-list' instead of displaying the
 warning."
 
-  (let* ( ;; bad-box is nil if this is a "LaTeX Warning"
-	 (bad-box (string-match "\\\\[vh]box.*[0-9]*--[0-9]*" warning))
-	 ;; line-string: match 1 is beginning line, match 2 is end line
-	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
+  (let* ( ;; line-string: match 1 is beginning line, match 2 is end line
+	 (line-string (if bad-box
+			  "at lines? \\([0-9]*\\)\\(?:--\\([0-9]*\\)\\)?"
 			"on input line \\([0-9]*\\)\\."))
 	 ;; word-string: match 1 is the word
 	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
-			"`\\(\\w+\\)'"))
+			;; Match "ref" in both "Reference `ref' on page NN
+			;; undefined" and "Citation 'ref' on page NN undefined".
+			"\\(?:`\\|'\\)\\([-a-zA-Z0-9:]+\\)'"))
 
-	 ;; Get error-line (warning).
-	 (line (when (save-excursion (re-search-backward line-string nil t))
+	 ;; Get error-line (warning).  Don't search before `warning-start' to
+	 ;; avoid catching completely unrelated line numbers.
+	 (line (when (save-excursion (re-search-backward line-string
+							 warning-start t))
 		 (string-to-number (TeX-match-buffer 1))))
-	 (line-end (if bad-box (string-to-number (TeX-match-buffer 2))
+	 ;; If this is a bad box and the warning ends with "...at lines MM--NN"
+	 ;; we can use "NN" as `line-end', in any other case (including bad
+	 ;; boxes ending with "...at line NN") just use `line'.
+	 (line-end (if (and bad-box (match-beginning 2))
+		       (string-to-number (TeX-match-buffer 2))
 		     line))
 
 	 ;; Find the context
-	 (context-start (progn (if bad-box (end-of-line)
-				 (beginning-of-line))
+	 (context-start (progn (cond
+				((and bad-box (string-match "\\\\hbox" warning))
+				 ;; Horizontal bad box
+				 (end-of-line))
+				(bad-box
+				 ;; Vertical bad box (by exclusion), don't move
+				 ;; point.  In the output buffer, unlike in the
+				 ;; actual *.log file, these warnings do not end
+				 ;; with "...is active []", but in the same line
+				 ;; there may be something else, including a new
+				 ;; file opened.  Thus, point shouldn't move
+				 ;; from the end of the actual bad box warning.
+				 ;; This is why the corresponding regexp in
+				 ;; `TeX-parse-error' doesn't match everything
+				 ;; until the end of the line.
+				 nil)
+				(t
+				 ;; Generic warning.
+				 (beginning-of-line)))
 			       (point)))
 
-	 (context (progn
-		    (forward-line 1)
-		    (end-of-line)
-		    (while (equal (current-column) 79)
-		      (forward-line 1)
-		      (end-of-line))
-		    (buffer-substring context-start (point))))
+	 (context (cond ((string-match LaTeX-warnings-regexp warning)
+			 ;; The warnings matching `LaTeX-warnings-regexp' are
+			 ;; emitted by \GenericWarning macro, or macros based on
+			 ;; it (\ClassWarning, \PackageWarning, etc).  After
+			 ;; such warnings there is an empty line, just look for
+			 ;; it to find the end.
+			 (beginning-of-line)
+			 (while (null (eolp))
+			   (forward-line 1))
+			 (buffer-substring context-start (progn (end-of-line)
+								(point))))
+
+			((and bad-box (string-match "\\\\vbox" warning))
+			 ;; Vertical bad boxes don't provide any additional
+			 ;; information.  In this case, reuse the `warning' as
+			 ;; `context' and don't move point, so that we avoid
+			 ;; eating the next line that may contain another
+			 ;; warning.  See also comment for `context-start'.
+			 (concat "\n" warning))
+
+			(t
+			 ;; Horizontal bad boxes.
+			 (forward-line 1)
+			 (end-of-line)
+			 (while (equal (current-column) 79)
+			   (forward-line 1)
+			   (end-of-line))
+			 (buffer-substring context-start (point)))))
 
 	 ;; This is where we want to be.
 	 (error-point (point))
@@ -2513,22 +2651,50 @@ warning."
 
 	 ;; We might use these in another file.
 	 (offset (or (car TeX-error-offset) 0))
-	 (file (car TeX-error-file)))
+	 (file (car TeX-error-file))
+	 info-list ignore)
+
+    ;; Second chance to get line number right.  If `line' is nil, check whether
+    ;; the reference to the line number is in `context'.  For example, this is
+    ;; the case for warnings emitted with \ClassWarning and \PackageWarning.
+    ;; XXX: maybe it suffices to evaluate `line' after `context' above, but I
+    ;; don't know if there are cases in which it's important to get `line'
+    ;; before `context'.
+    (and (null line)
+	 (string-match line-string context)
+	 (setq line-end
+	       (setq line (and (match-beginning 1)
+			       (string-to-number (match-string 1 context))))))
 
     ;; This is where we start next time.
     (goto-char error-point)
     (setq TeX-error-point (point))
 
+    ;; Explanation of what follows: we add the warning to `TeX-error-list' even
+    ;; if it has to be ignored, with a flag specifying whether it is ignored.
+    ;; We do so in order to be able to change between "ignore" and "dont-ignore"
+    ;; behavior by just looking to the flag, without the need to reparse the
+    ;; output log.
+
+    ;; Store the list of information about the warning.
+    (setq info-list (list (if bad-box 'bad-box 'warning) file line warning
+			  offset context string line-end bad-box
+			  TeX-error-point)
+	  ;; Decide whether it should be ignored.
+	  ignore (and TeX-ignore-warnings
+		      (cond
+		       ((stringp TeX-ignore-warnings)
+			(string-match TeX-ignore-warnings warning))
+		       ((fboundp TeX-ignore-warnings)
+			(apply TeX-ignore-warnings info-list))))
+	  ;; Update `info-list'.
+	  info-list (append info-list (list ignore)))
+
     (if store
 	;; Store the warning information.
-	(add-to-list 'TeX-error-list
-		     (list (if bad-box 'bad-box 'warning) file line warning
-			   offset context string line-end bad-box
-			   TeX-error-point) t)
+	(add-to-list 'TeX-error-list info-list t)
       ;; Find the warning point and display the help.
-      (TeX-find-display-help (if bad-box 'bad-box 'warning) file line warning
-			     offset context string line-end bad-box
-			     TeX-error-point))))
+      (apply 'TeX-find-display-help info-list))))
 
 ;;; - Help
 
@@ -3159,42 +3325,45 @@ Write file names relative to MASTER-DIR when they are not absolute."
 	       file (nth 1 entry)
 	       line (nth 2 entry)
 	       msg  (nth 3 entry))
-	 (add-to-list
-	  'entries
-	  (list
-	   ;; ID.
-	   id
-	   (vector
-	    ;; File.
-	    (if (stringp file)
-		(if (file-name-absolute-p file)
-		    file
-		  (file-relative-name file master-dir))
-	      "")
-	    ;; Line.
-	    (if (numberp line)
-		(number-to-string line)
-	      "")
-	    ;; Type.
-	    (cond
-	     ((equal type 'error)
-	      (propertize "Error" 'font-lock-face 'TeX-error-description-error))
-	     ((equal type 'warning)
-	      (propertize "Warning" 'font-lock-face
-			  'TeX-error-description-warning))
-	     ((equal type 'bad-box)
-	      (propertize "Bad box" 'font-lock-face
-			  'TeX-error-description-warning))
-	     (t
-	      ""))
-	    ;; Message.
-	    (list (if (stringp msg) msg "")
-		  'face 'link
-		  'follow-link t
-		  'id id
-		  'action 'TeX-error-overview-goto-source)
-	    )) t)
-	 (setq id (1+ id))) TeX-error-list)
+	 ;; Add the entry only if it isn't to be skipped.
+	 (unless (TeX-error-list-skip-warning-p type (nth 10 entry))
+	   (add-to-list
+	    'entries
+	    (list
+	     ;; ID.
+	     id
+	     (vector
+	      ;; File.
+	      (if (stringp file)
+		  (if (file-name-absolute-p file)
+		      file
+		    (file-relative-name file master-dir))
+		"")
+	      ;; Line.
+	      (if (numberp line)
+		  (number-to-string line)
+		"")
+	      ;; Type.
+	      (cond
+	       ((equal type 'error)
+		(propertize "Error" 'font-lock-face 'TeX-error-description-error))
+	       ((equal type 'warning)
+		(propertize "Warning" 'font-lock-face
+			    'TeX-error-description-warning))
+	       ((equal type 'bad-box)
+		(propertize "Bad box" 'font-lock-face
+			    'TeX-error-description-warning))
+	       (t
+		""))
+	      ;; Message.
+	      (list (if (stringp msg) msg "")
+		    'face 'link
+		    'follow-link t
+		    'id id
+		    'action 'TeX-error-overview-goto-source))) t))
+	 ;; Increase the `id' counter in any case.
+	 (setq id (1+ id)))
+       TeX-error-list)
       entries)))
 
 (defun TeX-error-overview-next-error (&optional arg)
@@ -3233,6 +3402,36 @@ forward, if negative)."
   (let ((TeX-display-help 'expert))
     (TeX-error-overview-goto-source)))
 
+(defun TeX-error-overview-toggle-debug-bad-boxes ()
+  "Run `TeX-toggle-debug-bad-boxes' and update entries list."
+  (interactive)
+  (TeX-toggle-debug-bad-boxes)
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
+(defun TeX-error-overview-toggle-debug-warnings ()
+  "Run `TeX-toggle-debug-warnings' and update entries list."
+  (interactive)
+  (TeX-toggle-debug-warnings)
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
+(defun TeX-error-overview-toggle-suppress-ignored-warnings ()
+  "Toggle visibility of ignored warnings and update entries list."
+  (interactive)
+  (TeX-toggle-suppress-ignored-warnings)
+  (setq tabulated-list-entries
+	(TeX-error-overview-make-entries
+	 (with-current-buffer TeX-command-buffer (TeX-master-directory))))
+  (tabulated-list-init-header)
+  (tabulated-list-print))
+
 (defun TeX-error-overview-quit ()
   "Delete the window or the frame of the error overview."
   (interactive)
@@ -3244,11 +3443,14 @@ forward, if negative)."
 (defvar TeX-error-overview-mode-map
   (let ((map (make-sparse-keymap))
 	(menu-map (make-sparse-keymap)))
+    (define-key map "b"    'TeX-error-overview-toggle-debug-bad-boxes)
     (define-key map "j"    'TeX-error-overview-jump-to-source)
     (define-key map "l"    'TeX-error-overview-goto-log)
     (define-key map "n"    'TeX-error-overview-next-error)
     (define-key map "p"    'TeX-error-overview-previous-error)
     (define-key map "q"    'TeX-error-overview-quit)
+    (define-key map "w"    'TeX-error-overview-toggle-debug-warnings)
+    (define-key map "x"    'TeX-error-overview-toggle-suppress-ignored-warnings)
     (define-key map "\C-m" 'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
@@ -3268,6 +3470,18 @@ forward, if negative)."
       :help "Move point to the error in the source"]
      ["Go to log" TeX-error-overview-goto-log
       :help "Show the error in the log buffer"]
+     "-"
+     ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
+      :style toggle :selected TeX-debug-bad-boxes
+      :help "Show overfull and underfull boxes"]
+     ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
+      :style toggle :selected TeX-debug-warnings
+      :help "Show warnings"]
+     ["Ignore Unimportant Warnings"
+      TeX-error-overview-toggle-suppress-ignored-warnings
+      :style toggle :selected TeX-suppress-ignored-warnings
+      :help "Hide specified warnings"]
+     "-"
      ["Quit" TeX-error-overview-quit
       :help "Quit"])))
 
@@ -3317,12 +3531,17 @@ forward, if negative)."
   ;; Check requirements before start.
   (if (fboundp 'tabulated-list-mode)
       (if (setq TeX-error-overview-active-buffer (TeX-active-buffer))
-	  (if (with-current-buffer TeX-error-overview-active-buffer
-		TeX-error-list)
+	  ;; `TeX-error-overview-list-entries' is going to be used only as value
+	  ;; of `tabulated-list-entries' in `TeX-error-overview-mode'.  In
+	  ;; principle, we don't need `TeX-error-overview-list-entries', but
+	  ;; `tabulated-list-entries' is buffer-local and we need the list of
+	  ;; entries before creating the error overview buffer in order to
+	  ;; decide whether we need to show anything.
+	  (if (setq TeX-error-overview-list-entries
+		    (TeX-error-overview-make-entries
+		     (TeX-master-directory)))
 	      (progn
-		(setq TeX-error-overview-list-entries
-		      (TeX-error-overview-make-entries (TeX-master-directory))
-		      TeX-error-overview-orig-window (selected-window)
+		(setq TeX-error-overview-orig-window (selected-window)
 		      TeX-error-overview-orig-frame
 		      (window-frame TeX-error-overview-orig-window))
 		;; Create the error overview buffer.  This is

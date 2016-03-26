@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2015 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2016 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -958,6 +958,28 @@ echo area.  If `expert' display output buffer with raw processor output."
   :group 'TeX-output
   :type 'boolean)
 
+(defcustom TeX-ignore-warnings nil
+  "Controls which warnings are to be ignored.
+
+It can be either a regexp matching warnings to be ignored, or a
+symbol with the name of a custom function taking as arguments all
+the information of the warning listed in `TeX-error-list', except
+the last one about whether to ignore the warning.
+
+If you want to use the custom function, see how it is used in the
+code of `TeX-warning'."
+  :group 'TeX-command
+  :type '(choice (const  :tag "Do not ignore anything" nil)
+		 (string :tag "Regexp")
+		 (symbol :tag "Function name")))
+
+(defcustom TeX-suppress-ignored-warnings nil
+  "Whether to actually show ignored warnings.
+
+Note that `TeX-debug-warnings' always takes the precedence."
+  :group 'TeX-command
+  :type 'boolean)
+
 (defun TeX-toggle-debug-bad-boxes ()
   "Toggle if the debugger should display \"bad boxes\" too."
   (interactive)
@@ -971,6 +993,16 @@ echo area.  If `expert' display output buffer with raw processor output."
   (setq TeX-debug-warnings (not TeX-debug-warnings))
   (message (concat "TeX-debug-warnings: "
 		   (if TeX-debug-warnings "on" "off"))))
+
+(defun TeX-toggle-suppress-ignored-warnings ()
+  "Toggle if the debugger should display ignored warnings too.
+
+See `TeX-suppress-ignored-warnings' and `TeX-ignore-warnings' for
+more details."
+  (interactive)
+  (setq TeX-suppress-ignored-warnings (not TeX-suppress-ignored-warnings))
+  (message (concat "TeX-suppress-ignored-warnings: "
+		   (if TeX-suppress-ignored-warnings "on" "off"))))
 
 ;;; Mode names.
 
@@ -1178,28 +1210,38 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
+;; XXX: Atril is a fork of Evince and shares an almost identical interface with
+;; it.  Instead of having different functions for each program, we keep the
+;; original *-evince-* functions and make them accept arguments to specify the
+;; actual name of the program and the desktop environment, that will be used to
+;; set up DBUS communication.
+
 ;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
 ;; not being defined.
 (eval-when-compile (and (featurep 'dbusbind)
 			(require 'dbus nil :no-error)))
-(defun TeX-evince-dbus-p (&rest options)
-  "Return non-nil, if evince is installed and accessible via DBUS.
+(defun TeX-evince-dbus-p (de app &rest options)
+  "Return non-nil, if atril or evince are installed and accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
 given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
-search are checked, too."
+search are checked, too.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
   (let ((dbus-debug nil))
     (and (featurep 'dbusbind)
 	 (require 'dbus nil :no-error)
 	 (dbus-ignore-errors (dbus-get-unique-name :session))
-	 (dbus-ping :session "org.gnome.evince.Daemon")
-	 (executable-find "evince")
+	 (dbus-ping :session (format "org.%s.%s.Daemon" de app))
+	 (executable-find app)
 	 (or (not (memq :forward options))
 	     (let ((spec (dbus-introspect-get-method
-			  :session "org.gnome.evince.Daemon"
-			  "/org/gnome/evince/Daemon"
-			  "org.gnome.evince.Daemon"
+			  :session (format "org.%s.%s.Daemon" de app)
+			  (format "/org/%s/%s/Daemon" de app)
+			  (format "org.%s.%s.Daemon" de app)
 			  "FindDocument")))
 	       ;; FindDocument must exist, and its signature must be (String,
 	       ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
@@ -1226,8 +1268,8 @@ entry in `TeX-view-program-list-builtin'."
 	    #'TeX-source-correlate-handle-TeX-region)
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
-      (with-current-buffer (or (find-buffer-visiting
-				(concat file "." TeX-default-extension))
+      (with-current-buffer (or (when TeX-current-process-region-p
+				 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
     (let ((pdf (concat file "." (TeX-output-extension))))
@@ -1236,19 +1278,23 @@ entry in `TeX-view-program-list-builtin'."
 
 (defvar url-unreserved-chars)
 
-(defun TeX-evince-sync-view ()
+(defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
-for the Evince viewer entry in `TeX-view-program-list-builtin' if
-the requirements are met."
+for the Atril or Evince entries in
+`TeX-view-program-list-builtin' if the requirements are met.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
   (require 'url-util)
   (let* ((uri (concat "file://" (url-encode-url
 				 (expand-file-name
 				  (concat file "." (TeX-output-extension))))))
 	 (owner (dbus-call-method
-		 :session "org.gnome.evince.Daemon"
-		 "/org/gnome/evince/Daemon"
-		 "org.gnome.evince.Daemon"
+		 :session (format "org.%s.%s.Daemon" de app)
+		 (format "/org/%s/%s/Daemon" de app)
+		 (format "org.%s.%s.Daemon" de app)
 		 "FindDocument"
 		 uri
 		 t)))
@@ -1258,18 +1304,48 @@ the requirements are met."
 				 (current-buffer))
 	  (dbus-call-method
 	   :session owner
-	   "/org/gnome/evince/Window/0"
-	   "org.gnome.evince.Window"
+	   (format "/org/%s/%s/Window/0" de app)
+	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (line-number-at-pos) :int32 (1+ (current-column)))
+	   (list :struct :int32 (line-number-at-pos)
+		 :int32 (1+ (current-column)))
 	   :uint32 0))
-      (error "Couldn't find the Evince instance for %s" uri))))
+      (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
+
+(defun TeX-atril-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Atril."
+  (TeX-evince-sync-view-1 "mate" "atril"))
+
+(defun TeX-evince-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "gnome" "evince"))
+
+(defun TeX-view-program-select-evince (de app)
+  "Select how to call the Evince-like viewer.
+
+DE is the name of the desktop environment, either \"gnome\" or
+\"mate\", APP is the name of viewer, either \"evince\" or
+\"atril\"."
+  (if (TeX-evince-dbus-p de app :forward)
+      (intern (format "TeX-%s-sync-view" app))
+    `(,app (mode-io-correlate
+	    ;; With evince 3, -p N opens the page *labeled* N,
+	    ;; and -i,--page-index the physical page N.
+	    ,(if (string-match "--page-index"
+			       (shell-command-to-string (concat app " --help")))
+		 " -i %(outpage)"
+	       " -p %(outpage)")) " %o")))
 
 (defvar TeX-view-program-list-builtin
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
+      ("dviout" ("dviout -1 %d" (mode-io-correlate "\"# %n %b\"")) "dviout")
+      ("SumatraPDF"
+       ("SumatraPDF -reuse-instance"
+	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
+       "SumatraPDF")
       ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
    ((eq system-type 'darwin)
@@ -1293,18 +1369,16 @@ the requirements are met."
       ("dvips and gv" "%(o?)dvips %d -o && gv %f" ,(list "%(o?)dvips" "gv"))
       ("gv" "gv %o" "gv")
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
-      ("Evince" ,(if (TeX-evince-dbus-p :forward)
-		     'TeX-evince-sync-view
-		   `("evince" (mode-io-correlate
-			       ;; With evince 3, -p N opens the page *labeled* N,
-			       ;; and -i,--page-index the physical page N.
-			       ,(if (string-match "--page-index"
-						  (shell-command-to-string "evince --help"))
-				    " -i %(outpage)"
-				  " -p %(outpage)")) " %o")) "evince")
+      ("Evince" ,(TeX-view-program-select-evince "gnome" "evince") "evince")
+      ("Atril" ,(TeX-view-program-select-evince "mate" "atril") "atril")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
       ("xdg-open" "xdg-open %o" "xdg-open")
-      ("PDF Tools" TeX-pdf-tools-sync-view))))
+      ("PDF Tools" TeX-pdf-tools-sync-view)
+      ("Zathura"
+       ("zathura %o"
+	(mode-io-correlate
+	 " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\""))
+       "zathura"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1812,12 +1886,14 @@ SyncTeX are recognized."
 				       TeX-source-correlate-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
-  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince.
-  (when (TeX-evince-dbus-p)
-    (dbus-register-signal
-     :session nil "/org/gnome/evince/Window/0"
-     "org.gnome.evince.Window" "SyncSource"
-     'TeX-source-correlate-sync-source)))
+  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince or Atril.
+  (dolist (de-app '(("gnome" "evince") ("mate" "atril")))
+    (when (TeX-evince-dbus-p (car de-app) (cadr de-app))
+      (dbus-register-signal
+       :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
+       (format "org.%s.%s.Window" (car de-app) (cadr de-app))
+       "SyncSource"
+       'TeX-source-correlate-sync-source))))
 
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
@@ -4408,7 +4484,8 @@ in the global directories only and nil in both.
 If optional argument NODIR is non-nil, remove directory part.
 
 If optional argument STRIP is non-nil, remove file extension."
-  (let* ((spec (assq filetype TeX-search-files-type-alist))
+  (let* ((gc-cons-threshold 10000000)
+	 (spec (assq filetype TeX-search-files-type-alist))
 	 (kpse-var (nth 1 spec))
 	 (rawdirs (nth 2 spec))
 	 (exts (nth 3 spec))
@@ -4736,7 +4813,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c}"    'up-list)
     (define-key map "\C-c#"    'TeX-normal-mode)
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
-    (define-key map "\C-c?"    'TeX-doc)
+    (define-key map "\C-c?"    'TeX-documentation-texdoc)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
     (define-key map "\r"       'TeX-newline)
 
@@ -4768,6 +4845,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
     (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
     (define-key map "\C-c\C-t\C-w"   'TeX-toggle-debug-warnings)
+    (define-key map "\C-c\C-t\C-x"   'TeX-toggle-suppress-ignored-warnings)
     (define-key map "\C-c\C-v" 'TeX-view)
     ;; From tex-buf.el
     (define-key map "\C-c\C-d" 'TeX-save-document)
@@ -4959,7 +5037,7 @@ Brace insertion is only done if point is in a math construct and
        :help "Save and reparse the current buffer for style information"]
       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
        :help "Reset buffer and reload AUCTeX style files"])
-     ["Find Documentation..." TeX-doc
+     ["Find Documentation..." TeX-documentation-texdoc
       :help "Get help on commands, packages, or TeX-related topics in general"]
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
@@ -6093,6 +6171,71 @@ to browse existing AUCTeX bugs.
 
 
 ;;; Documentation
+
+(defun TeX-documentation-texdoc (&optional arg)
+  "Run texdoc to read documentation.
+
+Prompt for selection of the package of which to show the documentation.
+
+If called with a prefix argument ARG, after selecting the
+package, prompt for selection of the manual of that package to
+show."
+  (interactive "P")
+  (let ((pkg (thing-at-point 'symbol))
+	buffer list doc)
+    ;; Strip off properties.  XXX: XEmacs doesn't have
+    ;; `substring-no-properties'.
+    (set-text-properties 0 (length pkg) nil pkg)
+    (setq pkg (TeX-read-string "View documentation for: " pkg))
+    (unless (zerop (length pkg))
+      (if arg
+	  ;; Called with prefix argument: run "texdoc --list --nointeract <pkg>"
+	  (progn
+	    ;; Create the buffer, insert the result of the command, and
+	    ;; accumulate the list of manuals.
+	    (with-current-buffer (get-buffer-create
+				  (setq buffer (format "*texdoc: %s*" pkg)))
+	      (erase-buffer)
+	      (insert (shell-command-to-string
+		       (concat "texdoc --list --nointeract " pkg)))
+	      (goto-char 1)		; No need to use `point-min' here.
+	      (save-excursion
+		(while (re-search-forward
+			;; XXX: XEmacs doesn't support character classes in
+			;; regexps, like "[:alnum:]".
+			"^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:\\ ()]+\\)" nil t)
+		  (push (cons (match-string 1) (match-string 2)) list))))
+	    (unwind-protect
+		(cond
+		 ((null (executable-find "texdoc"))
+		  ;; Note: `shell-command-to-string' uses shell, only
+		  ;; `call-process' looks at `exec-path', thus only here makes
+		  ;; sense to use `executable-find' to test whether texdoc is
+		  ;; available.
+		  (message "texdoc not found"))
+		 (list
+		  ;; Go on if there are manuals listed: show the buffer, prompt
+		  ;; for the number of the manual, then run
+		  ;;     texdoc --just-view <doc>
+		  (TeX-pop-to-buffer (get-buffer buffer))
+		  (condition-case nil
+		      (when (setq doc
+				  (cdr (assoc (TeX-read-string "Please enter \
+the number of the file to view, anything else to skip: ") list)))
+			(call-process "texdoc" nil 0 nil "--just-view" doc))
+		    ;; Exit gently if a `quit' signal is thrown.
+		    (quit nil)))
+		 (t (message "No documentation found for %s" pkg)))
+	      ;; In any case quit-and-kill the window.  XXX: XEmacs doesn't have
+	      ;; `quit-window', just kill the buffer in that case.
+	      (when (get-buffer-window buffer)
+		(if (fboundp 'quit-window)
+		    (quit-window t (get-buffer-window buffer))
+		  (kill-buffer buffer)))))
+	;; Called without prefix argument: just run "texdoc --view <pkg>" and
+	;; show the output, so that the user is warned in case it doesn't find
+	;; the documentation or "texdoc" is not available.
+	(message (shell-command-to-string (concat "texdoc --view " pkg)))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."

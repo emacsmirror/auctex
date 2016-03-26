@@ -1,6 +1,6 @@
 ;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.5.2)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -115,6 +115,16 @@ the ones initially available through `enumitem' package.")
   "Matches the arguments of `\\newlist' from `enumitem'
 package.")
 
+;; Setup for \SetLabelAlign:
+
+(TeX-auto-add-type "enumitem-SetLabelAlign" "LaTeX")
+
+(defvar LaTeX-enumitem-SetLabelAlign-regexp
+  '("\\\\SetLabelAlign{\\([^}]+\\)}"
+    1 LaTeX-auto-enumitem-SetLabelAlign)
+  "Matches the argument of `\\SetLabelAlign' from `enumitem'
+package.")
+
 ;; Setup for \SetEnumitemKey:
 
 (TeX-auto-add-type "enumitem-SetEnumitemKey" "LaTeX")
@@ -146,6 +156,7 @@ package.")
 (defun LaTeX-enumitem-auto-prepare ()
   "Clear various `LaTeX-enumitem-*' before parsing."
   (setq LaTeX-auto-enumitem-newlist          nil
+	LaTeX-auto-enumitem-SetLabelAlign    nil
 	LaTeX-auto-enumitem-SetEnumitemKey   nil
 	LaTeX-auto-enumitem-SetEnumitemValue nil))
 
@@ -203,6 +214,20 @@ key-val and the first item."
 		(current-fill-column)))
     (LaTeX-fill-paragraph nil)))
 
+(defun LaTeX-arg-SetLabelAlign (optional)
+  "Ask for new type (value) for the \"align\" key and add it to
+`LaTeX-enumitem-key-val-options-local'."
+  (LaTeX-enumitem-update-key-val-options)
+  (let* ((key "align")
+	 (val (TeX-read-string "Alignment: "))
+	 (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
+	 (temp (copy-alist LaTeX-enumitem-key-val-options-local))
+	 (opts (assq-delete-all (car (assoc key temp)) temp)))
+    (pushnew (list key (delete-dups (apply 'append (list val) val-match)))
+	     opts :test #'equal)
+    (TeX-argument-insert val optional)
+    (LaTeX-add-enumitem-SetLabelAligns val)))
+
 (defun LaTeX-arg-SetEnumitemKey (optional)
   "Ask for a new key to be defined and add it to
 `LaTeX-enumitem-key-val-options-local'."
@@ -225,7 +250,7 @@ key-val and the first item."
   "Ask for a new value added to an existing key incl. the final
 replacement of the value."
   (LaTeX-enumitem-update-key-val-options)
-  (let* ((key (TeX-read-key-val optional LaTeX-enumitem-key-val-options-local "Key"))
+  (let* ((key (completing-read  "Key: " LaTeX-enumitem-key-val-options-local))
 	 (val (TeX-read-string "String value: "))
 	 ;; (key-match (car (assoc key LaTeX-enumitem-key-val-options-local)))
 	 (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
@@ -258,6 +283,15 @@ in `enumitem'-completions."
 	  (pushnew (list key (delete-dups (apply 'append (list val) val-match)))
 		   opts :test #'equal)
 	(pushnew (list key (list val)) opts :test #'equal))
+      (setq LaTeX-enumitem-key-val-options-local (copy-alist opts))))
+  (dolist (newalign (LaTeX-enumitem-SetLabelAlign-list))
+    (let* ((key "align")
+	   (val (car newalign))
+	   (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
+	   (temp (copy-alist LaTeX-enumitem-key-val-options-local))
+	   (opts (assq-delete-all (car (assoc key temp)) temp)))
+      (pushnew (list key (delete-dups (apply 'append (list val) val-match)))
+	       opts :test #'equal)
       (setq LaTeX-enumitem-key-val-options-local (copy-alist opts)))))
 
 (TeX-add-style-hook
@@ -268,6 +302,7 @@ in `enumitem'-completions."
    (TeX-auto-add-regexp LaTeX-enumitem-newlist-regexp)
    (TeX-auto-add-regexp LaTeX-enumitem-SetEnumitemKey-regexp)
    (TeX-auto-add-regexp LaTeX-enumitem-SetEnumitemValue-regexp)
+   (TeX-auto-add-regexp LaTeX-enumitem-SetLabelAlign-regexp)
 
    ;; Activate the buffer-local version of key-vals.
    (setq LaTeX-enumitem-key-val-options-local
@@ -392,6 +427,9 @@ in `enumitem'-completions."
 		 (pushnew env enums :test #'equal))))
 	   (completing-read "List name: " enums)))))
 
+    ;; "Align" is added as new value to "align" key in key-val list.
+    '("SetLabelAlign" LaTeX-arg-SetLabelAlign t)
+
     ;; "Key" will be parsed and added to key-val list.
     '("SetEnumitemKey" LaTeX-arg-SetEnumitemKey)
 
@@ -413,6 +451,7 @@ in `enumitem'-completions."
 				("renewlist"           "{{{")
 				("setlist"             "*[{")
 				("AddEnumerateCounter" "*{{{")
+				("SetLabelAlign"       "{{")
 				("SetEnumitemKey"      "{{" )
 				("SetEnumitemValue"    "{{{"))
 			      'function)

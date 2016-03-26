@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2015 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2016 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -7,6 +7,56 @@
 @chapheading Changes and New Features in @AUCTeX{}
 
 @end ifset
+
+@heading News since 11.89
+
+@itemize @bullet
+@item
+When inserting a new float, @AUCTeX{} will now prompt for a
+short-caption if the length of the caption provided is greater than a
+certain size.  This size is controlled via a new user option
+@code{LaTeX-short-caption-prompt-length}.
+
+@item
+Parsing of the compilation log has been reworked.  You should encounter
+fewer mistaken files while navigating through errors and warnings.
+
+@item
+Two new user options, @code{TeX-ignore-warnings} and
+@code{TeX-suppress-ignored-warnings}, allow ignoring certain warnings
+after compilation of the document.
+@ifclear rawfile
+@xref{Ignoring warnings}, for details.
+@end ifclear
+
+@item
+Added support for Atril viewer.  Forward and inverse search requires
+version 1.9.1 or later to work.
+
+@item
+Added support for dviout viewer on Windows.  Note that this setup works
+when @code{TeX-source-correlate-method} is set to use
+@samp{source-specials} for @acronym{DVI}, e.g.:
+@lisp
+(setq TeX-source-correlate-method
+      '((dvi . source-specials)
+        (pdf . synctex)))
+@end lisp
+which is the default.
+
+@item
+Added support for SumatraPDF viewer on Windows.
+
+@item
+Added support for Zathura viewer.  Forward and inverse search requires a
+recent version of the program to work (3.4 or later).
+
+@item
+A new function, @code{TeX-documentation-texdoc}, for reading
+documentation with @samp{texdoc} has been added.  @code{TeX-doc} is
+still available but now @kbd{C-c ?} runs
+@code{TeX-documentation-texdoc}.
+@end itemize
 
 @heading News in 11.89
 
@@ -76,10 +126,10 @@ select the Mark version to be used with new option
 messages in the output log of a Mark IV document.
 
 @item
-Support for tons of @LaTeX{} packages has been addedd.
+Support for tons of @LaTeX{} packages has been added.
 
 @item
-Numbers of bugs have been fixed, many minor features have been addedd.
+Numbers of bugs have been fixed, many minor features have been added.
 @end itemize
 
 @heading News in 11.88
