@@ -167,11 +167,21 @@ functions.")
                                           "Coordinate point type: ")))
     (insert options " " name " at" point ";")))
 
+(defun TeX-TikZ-node-arg (optional)
+  "Prompt the user for the arguments to a TikZ node macro."
+  (let ((options (TeX-TikZ-arg-options t))
+        (name (TeX-TikZ-arg-name nil))
+        (point (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
+                                          "Node point type: "))
+        (text (TeX-TikZ-arg-text nil)))
+    (insert options " " name  " at" point text ";")))
+
 (TeX-add-style-hook
  "tikz"
  (lambda ()
    (TeX-add-symbols
     '("draw" (TeX-TikZ-draw-arg))
-    '("coordinate" (TeX-TikZ-coordinate-arg)))
+    '("coordinate" (TeX-TikZ-coordinate-arg))
+    '("node" (TeX-TikZ-node-arg)))
    (LaTeX-add-environments
     '("tikzpicture"))))
