@@ -142,9 +142,14 @@ is finished."
     ;; Finish the macro.
     (insert ";")))
 
-(defconst TeX-TikZ-draw-arg-function-map
+(defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
-    ("Polar Point" TeX-TikZ-arg-polar-point)
+    ("Polar Point" TeX-TikZ-arg-polar-point))
+  "An alist of point specification types to their respective
+functions.")
+
+(defconst TeX-TikZ-draw-arg-function-map
+  `(,@TeX-TikZ-point-function-map
     ("Node" TeX-TikZ-arg-node)
     ("--" identity)
     ("-+" identity))
@@ -154,10 +159,19 @@ is finished."
 (defun TeX-TikZ-draw-arg (optional)
   (TeX-TikZ-macro-arg TeX-TikZ-draw-arg-function-map))
 
+(defun TeX-TikZ-coordinate-arg (optional)
+  "Prompt the user for the arguments to a TikZ coordinate macro."
+  (let ((options (TeX-TikZ-arg-options t))
+        (name (TeX-TikZ-arg-name nil))
+        (point (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
+                                          "Coordinate point type: ")))
+    (insert options " " name " at" point ";")))
+
 (TeX-add-style-hook
  "tikz"
  (lambda ()
    (TeX-add-symbols
-    '("draw" (TeX-TikZ-draw-arg)))
+    '("draw" (TeX-TikZ-draw-arg))
+    '("coordinate" (TeX-TikZ-coordinate-arg)))
    (LaTeX-add-environments
     '("tikzpicture"))))
