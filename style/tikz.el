@@ -94,10 +94,14 @@ string \"node[OPTIONS](NAME){TEXT}\"."
         (text (TeX-TikZ-arg-text nil)))
     (concat "node" options name text " ")))
 
-(defun TeX-TikZ-get-arg-type (types)
-  "Prompt the user for the next argument type.
-TYPES is a list of possible types that the user can specify."
-  (completing-read "Next argument type (RET to finish): " types nil t))
+(defun TeX-TikZ-get-arg-type (types &optional prompt)
+  "Prompt the user for an argument type.
+TYPES is a list of possible types that the user can specify.  If
+PROMPT is non-nil use that prompt instead."
+  (let ((prompt (if prompt
+                    prompt
+                  "Next argument type (RET to finish): ")))
+    (completing-read prompt types nil t)))
 
 (defun TeX-TikZ-macro-arg (function-alist)
   "Prompt the user for arguments to compose a TikZ macro.
