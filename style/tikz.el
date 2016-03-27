@@ -58,17 +58,41 @@ Ask the user for r and theta values, and return the string
         (theta (TeX-read-string (TeX-argument-prompt nil nil "Theta"))))
    (concat " (" theta ":" r ") ")))
 
+(defun TeX-TikZ-arg-options (optional)
+  "Prompt the user for options to a TikZ macro.
+If OPTIONAL is non-nil, always return `LaTeX-optop' and
+`LaTeX-optcl', even if the user doesn't provide any input."
+  (let ((options (TeX-read-string (TeX-argument-prompt optional nil "Options" ))))
+    (if optional
+        (TeX-TikZ-get-opt-arg-string options)
+      (concat LaTeX-optop options LaTeX-optcl))))
+
+(defun TeX-TikZ-arg-name (optional)
+  "Prompt the user for a TikZ name.
+If OPTIONAL is non-nil, always return \"()\", even if the user
+doesn't provide any input."
+  (let ((name (TeX-read-string (TeX-argument-prompt optional nil "Name" ))))
+    (if optional
+        (TeX-TikZ-get-opt-arg-string name "(" ")")
+      (concat "(" name ")"))))
+
+(defun TeX-TikZ-arg-text (optional)
+  "Prompt the user for TikZ text.
+If OPTIONAL is non-nil always return `TeX-grop' and `TeX-grcl',
+even if the user doesn't provide any input."
+  (let ((text (TeX-read-string (TeX-argument-prompt optional nil "Text" ))))
+    (if optional
+        (TeX-TikZ-get-opt-arg-string text TeX-grop TeX-grcl)
+      (concat TeX-grop text TeX-grcl))))
+
 (defun TeX-TikZ-arg-node (_ignored)
   "Prompt the user for the deatils of a node.
 Ask the user for the name and text for a node and return the
 string \"node[OPTIONS](NAME){TEXT}\"."
-  (let ((options (TeX-read-string (TeX-argument-prompt t nil "Options" )))
-        (name (TeX-read-string (TeX-argument-prompt t nil "Name")))
-        (text (TeX-read-string (TeX-argument-prompt nil nil "Text"))))
-    (concat "node"
-            (TeX-TikZ-get-opt-arg-string options)
-            (TeX-TikZ-get-opt-arg-string name "(" ")")
-            TeX-grop text TeX-grcl " ")))
+  (let ((options (TeX-TikZ-arg-options t))
+        (name (TeX-TikZ-arg-name t))
+        (text (TeX-TikZ-arg-text nil)))
+    (concat "node" options name text " ")))
 
 (defun TeX-TikZ-get-arg-type (types)
   "Prompt the user for the next argument type.
@@ -82,13 +106,12 @@ user is repeatedly prompted for the next argument-type; they can
 choose form the cars in FUNCTION-ALIST and the appropriate
 function is then called.  If the user enters \"\", then the macro
 is finished."
-  (let* ((options (TeX-read-string (TeX-argument-prompt t nil "Options")))
+  (let* ((options (TeX-TikZ-arg-options t))
          (argument-types `("" ,@(mapcar 'car function-alist)))
          (argument-type (TeX-TikZ-get-arg-type argument-types)))
 
     ;; Insert the macro options.
-    (insert (TeX-TikZ-get-opt-arg-string options)
-            " ")
+    (insert options " ")
 
     ;; Iteratively prompt the user for TikZ's arguments until "" is
     ;; returned.
