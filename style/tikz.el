@@ -103,6 +103,19 @@ PROMPT is non-nil use that prompt instead."
                   "Next argument type (RET to finish): ")))
     (completing-read prompt types nil t)))
 
+(defun TeX-TikZ-single-macro-arg (function-alist &optional prompt)
+  "Prompt the user for a single argument to compose a TikZ macro.
+FUNCTION-ALIST is a mapping of argument-types to functions.  The
+user is prompted for the argument type, the chosen function is
+then called and the value returned.  PROMPT is used as the prompt
+for the argument type."
+  (let* ((argument-types (mapcar 'car function-alist))
+         (argument-type (TeX-TikZ-get-arg-type argument-types prompt)))
+    (funcall
+     (cadr (assoc argument-type function-alist))
+     argument-type)))
+
+
 (defun TeX-TikZ-macro-arg (function-alist)
   "Prompt the user for arguments to compose a TikZ macro.
 FUNCTION-ALIST is a mapping of argument-types to functions.  The
@@ -111,19 +124,20 @@ choose form the cars in FUNCTION-ALIST and the appropriate
 function is then called.  If the user enters \"\", then the macro
 is finished."
   (let* ((options (TeX-TikZ-arg-options t))
-         (argument-types `("" ,@(mapcar 'car function-alist)))
-         (argument-type (TeX-TikZ-get-arg-type argument-types)))
+         ;; For the iterative version, we need to add "" to the
+         ;; function-alist, allowing the user to end the macro.
+         (function-alist-iterative `(,@function-alist ("" identity)))
+         (string-to-insert (TeX-TikZ-single-macro-arg function-alist-iterative)))
 
     ;; Insert the macro options.
     (insert options " ")
 
     ;; Iteratively prompt the user for TikZ's arguments until "" is
     ;; returned.
-    (while (not (string= argument-type ""))
-      (insert (funcall
-               (cadr (assoc argument-type TeX-TikZ-draw-arg-function-map))
-               argument-type))
-      (setq argument-type (TeX-TikZ-get-arg-type argument-types)))
+    (while (not (string= string-to-insert ""))
+      (insert string-to-insert)
+      (setq string-to-insert
+            (TeX-TikZ-single-macro-arg function-alist-iterative)))
 
     ;; Finish the macro.
     (insert ";")))
