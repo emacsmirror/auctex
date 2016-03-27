@@ -1551,7 +1551,7 @@ Rerun to get mark in right position\\." nil t)
 		 (md5 (current-buffer)))))
 	 (push (cons idx-file t) LaTeX-idx-changed-alist)))
 
-  (unless TeX-error-list
+  (unless (memq 'error (mapcar #'car TeX-error-list))
     (run-hook-with-args 'TeX-after-compilation-finished-functions
 			(with-current-buffer TeX-command-buffer
 			  (expand-file-name
