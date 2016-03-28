@@ -209,7 +209,7 @@ key-val and the first item."
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
   (when (and (not (looking-at "$"))
-	     (not (assoc environment LaTeX-indent-environment-list))
+	     (not (assoc env LaTeX-indent-environment-list))
 	     (> (- (line-end-position) (line-beginning-position))
 		(current-fill-column)))
     (LaTeX-fill-paragraph nil)))
@@ -218,13 +218,7 @@ key-val and the first item."
   "Ask for new type (value) for the \"align\" key and add it to
 `LaTeX-enumitem-key-val-options-local'."
   (LaTeX-enumitem-update-key-val-options)
-  (let* ((key "align")
-	 (val (TeX-read-string "Alignment: "))
-	 (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
-	 (temp (copy-alist LaTeX-enumitem-key-val-options-local))
-	 (opts (assq-delete-all (car (assoc key temp)) temp)))
-    (pushnew (list key (delete-dups (apply 'append (list val) val-match)))
-	     opts :test #'equal)
+  (let ((val (TeX-read-string "Alignment: ")))
     (TeX-argument-insert val optional)
     (LaTeX-add-enumitem-SetLabelAligns val)))
 
@@ -237,7 +231,6 @@ key-val and the first item."
 				   LaTeX-enumitem-key-val-options-local "Replacement")))
     (TeX-argument-insert key     optional)
     (TeX-argument-insert replace optional)
-    (add-to-list 'LaTeX-enumitem-key-val-options-local (list key))
     (LaTeX-add-enumitem-SetEnumitemKeys key)))
 
 ;; In `LaTeX-enumitem-SetEnumitemValue-regexp', we match (0 1 2).
@@ -250,17 +243,8 @@ key-val and the first item."
   "Ask for a new value added to an existing key incl. the final
 replacement of the value."
   (LaTeX-enumitem-update-key-val-options)
-  (let* ((key (completing-read  "Key: " LaTeX-enumitem-key-val-options-local))
-	 (val (TeX-read-string "String value: "))
-	 ;; (key-match (car (assoc key LaTeX-enumitem-key-val-options-local)))
-	 (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
-	 (temp (copy-alist LaTeX-enumitem-key-val-options-local))
-	 (opts (assq-delete-all (car (assoc key temp)) temp)))
-    (if val-match
-	(pushnew (list key (delete-dups (apply 'append (list val) val-match)))
-		 opts :test #'equal)
-      (pushnew (list key (list val)) opts :test #'equal))
-    (setq LaTeX-enumitem-key-val-options-local (copy-alist opts))
+  (let ((key (completing-read  "Key: " LaTeX-enumitem-key-val-options-local))
+	(val (TeX-read-string "String value: ")))
     (TeX-argument-insert key optional)
     (TeX-argument-insert val optional)
     (LaTeX-add-enumitem-SetEnumitemValues
