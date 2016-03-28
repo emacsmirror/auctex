@@ -142,9 +142,41 @@ is finished."
     ;; Finish the macro.
     (insert ";")))
 
+(defcustom TeX-TikZ-point-name-regexp
+  "(\\([A-Za-z0-9]+\\))"
+  "A regexp that matches TikZ names, i.e. alpha-numeric
+  characters enclosed in a ()."
+  :type 'regexp
+  :group 'auctex-tikz)
+
+(defun TeX-TikZ-find-named-points ()
+  "Find TiKZ named points in current enviroment.
+Begin by finding the span of the current TikZ enviroment and then
+searching within that span to find all named-points and return
+them as a list of strings, dropping the '()'."
+  (let* ((env-end (save-excursion
+                    (LaTeX-find-matching-end)
+                     (point)))
+         (matches ()))
+    ;; TODO: Handle cases where we are in a nested environment, \scope
+    ;; for example.
+    (save-excursion
+      (LaTeX-find-matching-begin)
+      (save-match-data
+        (while (re-search-forward TeX-TikZ-point-name-regexp env-end t)
+          (add-to-list 'matches (match-string 1)))))
+    matches))
+
+(defun TeX-TikZ-arg-named-point (_ignored)
+  "Prompt the user for the name of a previous named-point."
+  (let ((point-name (completing-read "Point name: "
+                                     (TeX-TikZ-find-named-points))))
+    (concat " (" point-name ") ")))
+
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
-    ("Polar Point" TeX-TikZ-arg-polar-point))
+    ("Polar Point" TeX-TikZ-arg-polar-point)
+    ("Named Point" TeX-TikZ-arg-named-point))
   "An alist of point specification types to their respective
 functions.")
 
