@@ -56,7 +56,7 @@
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
   (when (and (not (looking-at "$"))
-	     (not (assoc environment LaTeX-indent-environment-list))
+	     (not (assoc env LaTeX-indent-environment-list))
 	     (> (- (line-end-position) (line-beginning-position))
 		(current-fill-column)))
     (LaTeX-fill-paragraph nil)))
