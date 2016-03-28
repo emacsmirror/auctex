@@ -126,8 +126,8 @@
 		     1 LaTeX-auto-index-entry))
       ;; Cater for completion
       (add-to-list 'TeX-complete-list
-		   `(,(concat "\\\\" elt "{\\([^{}\n\r]*\\)"
-		     1 LaTeX-index-entry-list "}"))) )))
+		   `(,(concat "\\\\" elt "{\\([^{}\n\r]*\\)")
+		     1 LaTeX-index-entry-list "}")) )))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-splitidx-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-splitidx-auto-cleanup t)
