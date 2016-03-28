@@ -1,6 +1,6 @@
 ;;; environ.el --- AUCTeX style for `environ.sty' version v0.3
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -118,7 +118,15 @@ from `environ.sty'.")
     '("BODY")
 
     ;; Define another macro instead of \BODY
-    '("environbodyname" TeX-arg-define-macro)))
+    '("environbodyname" TeX-arg-define-macro))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("NewEnviron"      "{[[{[")
+				("RenewEnviron"    "{[[{[")
+				("environbodyname" "|{\\"))
+			      'function)))
   LaTeX-dialect)
 
 (defvar LaTeX-environ-package-options nil
