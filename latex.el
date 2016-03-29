@@ -720,7 +720,9 @@ environment just inserted, the buffer position just before
     (if active-mark
 	(progn
 	  (or (assoc environment LaTeX-indent-environment-list)
-	      (LaTeX-fill-region content-start (line-beginning-position 2)))
+	      (if auto-fill-function
+		  ;; Fill the region only when `auto-fill-mode' is active.
+		  (LaTeX-fill-region content-start (line-beginning-position 2))))
 	  (set-mark content-start))
       (indent-according-to-mode))
     (save-excursion (beginning-of-line 2) (indent-according-to-mode))
