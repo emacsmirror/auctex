@@ -1014,9 +1014,13 @@ Return the new process."
 
 (defvar TeX-error-report-switches nil
   "Reports presence of errors after `TeX-run-TeX'.
-To test whether the current buffer has an compile error from last
+To test whether the current buffer has a compile error from last
 run of `TeX-run-TeX', use
-  (plist-get TeX-error-report-switches (intern (TeX-master-file)))")
+  (TeX-error-report-has-errors-p)")
+
+(defun TeX-error-report-has-errors-p ()
+  "Return non-nil if current buffer has compile errors from last TeX run."
+  (plist-get TeX-error-report-switches (intern (TeX-master-file))))
 
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
@@ -1551,7 +1555,7 @@ Rerun to get mark in right position\\." nil t)
 		 (md5 (current-buffer)))))
 	 (push (cons idx-file t) LaTeX-idx-changed-alist)))
 
-  (unless (plist-get TeX-error-report-switches (intern (TeX-master-file)))
+  (unless (TeX-error-report-has-errors-p)
     (run-hook-with-args 'TeX-after-compilation-finished-functions
 			(with-current-buffer TeX-command-buffer
 			  (expand-file-name
@@ -1657,7 +1661,7 @@ variable is nil."
 	(with-current-buffer TeX-command-buffer
 	  (unless
 	      (or
-	       (plist-get TeX-error-report-switches (intern (TeX-master-file)))
+	       (TeX-error-report-has-errors-p)
 	       (null TeX-command-sequence-command))
 	    (TeX-command-sequence TeX-command-sequence-command nil
 				  TeX-command-sequence-file-function))))))
