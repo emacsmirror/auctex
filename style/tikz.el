@@ -179,11 +179,22 @@ them as a list of strings, dropping the '()'."
     ("Named Point" TeX-TikZ-arg-named-point))
   "An alist of point specification types and their functions." )
 
+(defconst TeX-TikZ-path-connector-function-map
+  (let ((connectors '("--" "|-" "-|")))
+    (apply 'append (mapcar
+                     (lambda (connector)
+                       `((,connector identity)
+                         (,(concat connector " +") identity)
+                         (,(concat connector " ++") identity)))
+                     connectors)))
+  "An alist of path connectors.
+A set of base connectors along with variants that have \" +\" and
+\" ++\" appended to them, mapping to the identity function.")
+
 (defconst TeX-TikZ-draw-arg-function-map
   `(,@TeX-TikZ-point-function-map
-    ("Node" TeX-TikZ-arg-node)
-    ("--" identity)
-    ("-+" identity))
+    ,@TeX-TikZ-path-connector-function-map
+    ("Node" TeX-TikZ-arg-node))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
