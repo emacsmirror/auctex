@@ -177,7 +177,7 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
     (next-error :image "error"
 		:command TeX-next-error
 		:enable (TeX-error-report-has-errors-p)
-		:visible (TeX-error-report-has-errors-p)
+		:visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
 	  :help (lambda (&rest ignored)
@@ -321,7 +321,7 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
     (next-error :image "error"
 		:command TeX-next-error
 		:enable (TeX-error-report-has-errors-p)
-		:visible (TeX-error-report-has-errors-p)
+		:visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
 	  :help (lambda (&rest ignored)
