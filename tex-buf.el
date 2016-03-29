@@ -1767,7 +1767,7 @@ command."
 	;; Remove line breaks at columns 79 and 80
 	(while (> (point) pt)
 	  (end-of-line 0)
-	  (when (and (memql (- (point) (line-beginning-position)) '(79 80))
+	  (when (and (memq (- (point) (line-beginning-position)) '(79 80))
 		     ;; Heuristic: Don't delete the linebreak if the next line
 		     ;; is empty or starts with an opening parenthesis, or if
 		     ;; point is located after a period and in the next line no
