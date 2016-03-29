@@ -144,8 +144,7 @@ is finished."
 
 (defcustom TeX-TikZ-point-name-regexp
   "(\\([A-Za-z0-9]+\\))"
-  "A regexp that matches TikZ names, i.e. alpha-numeric
-  characters enclosed in a ()."
+  "A regexp that matches TikZ names."
   :type 'regexp
   :group 'auctex-tikz)
 
@@ -177,21 +176,20 @@ them as a list of strings, dropping the '()'."
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
     ("Named Point" TeX-TikZ-arg-named-point))
-  "An alist of point specification types to their respective
-functions.")
+  "An alist of point specification types and their functions." )
 
 (defconst TeX-TikZ-draw-arg-function-map
   `(,@TeX-TikZ-point-function-map
     ("Node" TeX-TikZ-arg-node)
     ("--" identity)
     ("-+" identity))
-  "An alist of argument type names to their respecitve functions
-  for TikZ's \draw macro.")
+  "An alist of argument names and functoins for TikZ's \draw.")
 
-(defun TeX-TikZ-draw-arg (optional)
+(defun TeX-TikZ-draw-arg (_ignored)
+  "Prompt the user for the arguments to a TikZ draw macro."
   (TeX-TikZ-macro-arg TeX-TikZ-draw-arg-function-map))
 
-(defun TeX-TikZ-coordinate-arg (optional)
+(defun TeX-TikZ-coordinate-arg (_ignored)
   "Prompt the user for the arguments to a TikZ coordinate macro."
   (let ((options (TeX-TikZ-arg-options t))
         (name (TeX-TikZ-arg-name nil))
@@ -199,7 +197,7 @@ functions.")
                                           "Coordinate point type: ")))
     (insert options " " name " at" point ";")))
 
-(defun TeX-TikZ-node-arg (optional)
+(defun TeX-TikZ-node-arg (_ignored)
   "Prompt the user for the arguments to a TikZ node macro."
   (let ((options (TeX-TikZ-arg-options t))
         (name (TeX-TikZ-arg-name nil))
@@ -217,3 +215,5 @@ functions.")
     '("node" (TeX-TikZ-node-arg)))
    (LaTeX-add-environments
     '("tikzpicture"))))
+
+;;; tikz.el ends here
