@@ -76,14 +76,14 @@ doesn't provide any input."
         (TeX-TikZ-get-opt-arg-string name "(" ")")
       (concat "(" name ")"))))
 
-(defun TeX-TikZ-arg-text (optional)
-  "Prompt the user for TikZ text.
+(defun TeX-TikZ-arg-label (optional)
+  "Prompt the user for TikZ label.
 If OPTIONAL is non-nil always return `TeX-grop' and `TeX-grcl',
 even if the user doesn't provide any input."
-  (let ((text (TeX-read-string (TeX-argument-prompt optional nil "Text" ))))
+  (let ((label (TeX-read-string (TeX-argument-prompt optional nil "Label" ))))
     (if optional
-        (TeX-TikZ-get-opt-arg-string text TeX-grop TeX-grcl)
-      (concat TeX-grop text TeX-grcl))))
+        (TeX-TikZ-get-opt-arg-string label TeX-grop TeX-grcl)
+      (concat TeX-grop label TeX-grcl))))
 
 (defun TeX-TikZ-arg-node (_ignored)
   "Prompt the user for the deatils of a node.
@@ -91,8 +91,8 @@ Ask the user for the name and text for a node and return the
 string \"node[OPTIONS](NAME){TEXT}\"."
   (let ((options (TeX-TikZ-arg-options t))
         (name (TeX-TikZ-arg-name t))
-        (text (TeX-TikZ-arg-text nil)))
-    (concat "node" options name text " ")))
+        (label (TeX-TikZ-arg-label nil)))
+    (concat "node" options name label " ")))
 
 (defun TeX-TikZ-get-arg-type (types &optional prompt)
   "Prompt the user for an argument type.
@@ -204,8 +204,8 @@ them as a list of strings, dropping the '()'."
         (name (TeX-TikZ-arg-name nil))
         (point (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
                                           "Node point type: "))
-        (text (TeX-TikZ-arg-text nil)))
-    (insert options " " name  " at" point text ";")))
+        (label (TeX-TikZ-arg-label nil)))
+    (insert options " " name  " at" point label ";")))
 
 (TeX-add-style-hook
  "tikz"
