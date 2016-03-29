@@ -98,7 +98,8 @@ string \"node[OPTIONS](NAME){TEXT}\"."
   "Prompt the user for an argument type.
 TYPES is a list of possible types that the user can specify.  If
 PROMPT is non-nil use that prompt instead."
-  (let ((prompt (if prompt
+  (let ((completion-ignore-case t)
+        (prompt (if prompt
                     prompt
                   "Next argument type (RET to finish): ")))
     (completing-read prompt types nil t)))
