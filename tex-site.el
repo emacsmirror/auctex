@@ -148,7 +148,7 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.89.2"
+(defconst AUCTeX-version "11.89.3"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 

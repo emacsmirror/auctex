@@ -2,9 +2,10 @@
 
 ;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
-;; Version: 11.89.2
+;; Version: 11.89.3
 ;; URL: http://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
+;; Notifications-To: auctex-diffs@gnu.org
 
 ;; This file is part of GNU Emacs.
 
