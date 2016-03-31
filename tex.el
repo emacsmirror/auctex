@@ -6445,6 +6445,7 @@ NAME may be a package, a command, or a document."
 (put 'TeX-newline 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
+(put 'TeX-insert-dollar 'delete-selection (lambda () (null TeX-electric-math)))
 
 (defun TeX-how-many (regexp &optional rstart rend)
   "Compatibily function for `how-many'.
