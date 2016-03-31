@@ -173,6 +173,11 @@ them as a list of strings, dropping the '()'."
                                      (TeX-TikZ-find-named-points))))
     (concat " (" point-name ") ")))
 
+(defun TeX-TikZ-arg-circle (_ignored)
+  "Prompt the user for the arguments to the circle command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "circle" options)))
+
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
@@ -194,7 +199,8 @@ A set of base connectors along with variants that have \" +\" and
 (defconst TeX-TikZ-draw-arg-function-map
   `(,@TeX-TikZ-point-function-map
     ,@TeX-TikZ-path-connector-function-map
-    ("Node" TeX-TikZ-arg-node))
+    ("Node" TeX-TikZ-arg-node)
+    ("Circle" TeX-TikZ-arg-circle))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
