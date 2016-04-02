@@ -6445,7 +6445,18 @@ NAME may be a package, a command, or a document."
 (put 'TeX-newline 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
-(put 'TeX-insert-dollar 'delete-selection (lambda () (null TeX-electric-math)))
+;; When `TeX-electric-math' is non-nil, `TeX-insert-dollar' interferes with
+;; `delete-selection-mode', but when it's nil users may want to be able to
+;; delete active region if `delete-selection-mode' is active, see bug#23177.  We
+;; can dynamically determine the behavior of `delete-selection' with
+;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.  This
+;; dynamicity has been introduced in Emacs 24.3, for previous versions keep
+;; `TeX-insert-dollar' without this property.
+(if (or (> emacs-major-version 24)
+	(and (= emacs-major-version 24)
+	     (>= emacs-minor-version 3)))
+    (put 'TeX-insert-dollar 'delete-selection
+	 (lambda () (null TeX-electric-math))))
 
 (defun TeX-how-many (regexp &optional rstart rend)
   "Compatibily function for `how-many'.
