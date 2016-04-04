@@ -94,17 +94,14 @@ string \"node[OPTIONS](NAME){TEXT}\"."
         (label (TeX-TikZ-arg-label nil)))
     (concat "node" options name label " ")))
 
-(defun TeX-TikZ-get-arg-type (types &optional prompt)
+(defun TeX-TikZ-get-arg-type (types prompt)
   "Prompt the user for an argument type.
-TYPES is a list of possible types that the user can specify.  If
-PROMPT is non-nil use that prompt instead."
-  (let ((completion-ignore-case t)
-        (prompt (if prompt
-                    prompt
-                  "Next argument type (RET to finish): ")))
+TYPES is a list of possible types that the user can specify.  Use
+PROMPT as the prompt for input."
+  (let ((completion-ignore-case t))
     (completing-read prompt types nil t)))
 
-(defun TeX-TikZ-single-macro-arg (function-alist &optional prompt)
+(defun TeX-TikZ-single-macro-arg (function-alist prompt)
   "Prompt the user for a single argument to compose a TikZ macro.
 FUNCTION-ALIST is a mapping of argument-types to functions.  The
 user is prompted for the argument type, the chosen function is
@@ -128,7 +125,8 @@ is finished."
          ;; For the iterative version, we need to add "" to the
          ;; function-alist, allowing the user to end the macro.
          (function-alist-iterative `(,@function-alist ("" identity)))
-         (string-to-insert (TeX-TikZ-single-macro-arg function-alist-iterative)))
+         (prompt "Next argument type (RET to finish): ")
+         (string-to-insert (TeX-TikZ-single-macro-arg function-alist-iterative prompt)))
 
     ;; Insert the macro options.
     (insert options " ")
@@ -138,7 +136,7 @@ is finished."
     (while (not (string= string-to-insert ""))
       (insert string-to-insert)
       (setq string-to-insert
-            (TeX-TikZ-single-macro-arg function-alist-iterative)))
+            (TeX-TikZ-single-macro-arg function-alist-iterative prompt)))
 
     ;; Finish the macro.
     (insert ";")))
