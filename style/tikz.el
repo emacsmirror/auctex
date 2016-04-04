@@ -178,6 +178,11 @@ them as a list of strings, dropping the '()'."
   (let ((options (TeX-TikZ-arg-options t)))
     (concat "circle" options)))
 
+(defun TeX-TikZ-arg-arc (_ignored)
+  "Prompt the user for the arguments to the arc command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "arc" options)))
+
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
@@ -200,7 +205,8 @@ A set of base connectors along with variants that have \" +\" and
   `(,@TeX-TikZ-point-function-map
     ,@TeX-TikZ-path-connector-function-map
     ("Node" TeX-TikZ-arg-node)
-    ("Circle" TeX-TikZ-arg-circle))
+    ("Circle" TeX-TikZ-arg-circle)
+    ("Arc" TeX-TikZ-arg-arc))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
