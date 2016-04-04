@@ -101,14 +101,18 @@ PROMPT as the prompt for input."
   (let ((completion-ignore-case t))
     (completing-read prompt types nil t)))
 
-(defun TeX-TikZ-single-macro-arg (function-alist prompt)
+(defun TeX-TikZ-single-macro-arg (function-alist prompt &optional optional)
   "Prompt the user for a single argument to compose a TikZ macro.
 FUNCTION-ALIST is a mapping of argument-types to functions.  The
 user is prompted for the argument type, the chosen function is
 then called and the value returned.  PROMPT is used as the prompt
-for the argument type."
+for the argument type.  When OPTIONAL is non-nil, add \"\" to
+FUNCTION-ALIST with a mapping to `identity', permitting an
+optional input."
   (let* ((argument-types (mapcar 'car function-alist))
          (argument-type (TeX-TikZ-get-arg-type argument-types prompt)))
+    (when optional
+      (setq function-alist `(,@function-alist ("" identity))))
     (funcall
      (cadr (assoc argument-type function-alist))
      argument-type)))
@@ -122,11 +126,8 @@ choose form the cars in FUNCTION-ALIST and the appropriate
 function is then called.  If the user enters \"\", then the macro
 is finished."
   (let* ((options (TeX-TikZ-arg-options t))
-         ;; For the iterative version, we need to add "" to the
-         ;; function-alist, allowing the user to end the macro.
-         (function-alist-iterative `(,@function-alist ("" identity)))
          (prompt "Next argument type (RET to finish): ")
-         (string-to-insert (TeX-TikZ-single-macro-arg function-alist-iterative prompt)))
+         (string-to-insert (TeX-TikZ-single-macro-arg function-alist prompt t)))
 
     ;; Insert the macro options.
     (insert options " ")
@@ -136,7 +137,7 @@ is finished."
     (while (not (string= string-to-insert ""))
       (insert string-to-insert)
       (setq string-to-insert
-            (TeX-TikZ-single-macro-arg function-alist-iterative prompt)))
+            (TeX-TikZ-single-macro-arg function-alist prompt t)))
 
     ;; Finish the macro.
     (insert ";")))
