@@ -182,6 +182,24 @@ them as a list of strings, dropping the '()'."
   (let ((options (TeX-TikZ-arg-options t)))
     (concat "arc" options)))
 
+(defun TeX-TikZ-arg-bend (optional)
+  "Prompt the user for a bend argument.
+If OPTIONAL is non-nil and the user doesn't provide a point,
+  return \"\"."
+  (let ((point
+         (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
+                                    (TeX-argument-prompt optional nil "Bend point")
+                                    optional)))
+    (if (string= point "")
+        point
+      (concat " bend" point))))
+
+(defun TeX-TikZ-arg-parabola (_ignored)
+  "Prompt the user for the arguments to the parabola command."
+  (let ((options (TeX-TikZ-arg-options t))
+        (bend (TeX-TikZ-arg-bend t)))
+       (concat "parabola" options bend)))
+
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
@@ -205,7 +223,8 @@ A set of base connectors along with variants that have \" +\" and
     ,@TeX-TikZ-path-connector-function-map
     ("Node" TeX-TikZ-arg-node)
     ("Circle" TeX-TikZ-arg-circle)
-    ("Arc" TeX-TikZ-arg-arc))
+    ("Arc" TeX-TikZ-arg-arc)
+    ("Parabola" TeX-TikZ-arg-parabola))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
