@@ -232,7 +232,9 @@ A set of base point types along with variants that have \"+\" and
 (defconst TeX-TikZ-path-connector-function-map
   '(("--" identity)
     ("|-" identity)
-    ( "-|" identity))
+    ( "-|" identity)
+    ("sin" identity)
+    ("cos" identity))
   "An alist of path connectors.")
 
 (defconst TeX-TikZ-draw-arg-function-map
