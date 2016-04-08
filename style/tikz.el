@@ -208,6 +208,11 @@ If OPTIONAL is non-nil and the user doesn't provide a point,
         (bend (TeX-TikZ-arg-bend t)))
        (concat "parabola" options bend)))
 
+(defun TeX-TikZ-arg-grid (_ignored)
+  "Prompt the user for the arguments to the grid command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "grid" options)))
+
 (defconst TeX-TikZ-point-function-map
   (let ((point-alist '(("Rect Point" TeX-TikZ-arg-rect-point)
                        ("Polar Point" TeX-TikZ-arg-polar-point)
@@ -238,7 +243,8 @@ A set of base point types along with variants that have \"+\" and
     ("Node" TeX-TikZ-arg-node)
     ("Circle" TeX-TikZ-arg-circle)
     ("Arc" TeX-TikZ-arg-arc)
-    ("Parabola" TeX-TikZ-arg-parabola))
+    ("Parabola" TeX-TikZ-arg-parabola)
+    ("Grid" TeX-TikZ-arg-grid))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
