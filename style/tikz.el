@@ -214,20 +214,21 @@ If OPTIONAL is non-nil and the user doesn't provide a point,
     (concat "grid" options)))
 
 (defconst TeX-TikZ-point-function-map
-  (let ((point-alist '(("Rect Point" TeX-TikZ-arg-rect-point)
-                       ("Polar Point" TeX-TikZ-arg-polar-point)
-                       ("Named Point" TeX-TikZ-arg-named-point))))
-    (apply 'append (mapcar
-                    (lambda (point-map)
-                      (let ((key (car point-map))
-                            (value (cadr point-map)))
-                        `((,key ,value)
-                          (,(concat "+" key) ,value "+")
-                          (,(concat "++" key) ,value "++"))))
-                    point-alist)))
-  "An alist of point specification types and their functions.
-A set of base point types along with variants that have \"+\" and
-\"++\" as a prefix."  )
+  '(("Rect Point" TeX-TikZ-arg-rect-point)
+    ("Polar Point" TeX-TikZ-arg-polar-point)
+    ("Named Point" TeX-TikZ-arg-named-point))
+  "An alist of point specification types and their functions.")
+
+(defconst TeX-TikZ-relative-point-function-map
+  (apply 'append (mapcar
+                  (lambda (point-map)
+                    (let ((key (car point-map))
+                          (value (cadr point-map)))
+                      `((,(concat "+" key) ,value "+")
+                        (,(concat "++" key) ,value "++"))))
+                  TeX-TikZ-point-function-map))
+  "`TeX-TikZ-point-function-map' with \"+\" and \"++\" as a
+prefix.")
 
 (defconst TeX-TikZ-path-connector-function-map
   '(("--" identity)
@@ -239,6 +240,7 @@ A set of base point types along with variants that have \"+\" and
 
 (defconst TeX-TikZ-draw-arg-function-map
   `(,@TeX-TikZ-point-function-map
+    ,@TeX-TikZ-relative-point-function-map
     ,@TeX-TikZ-path-connector-function-map
     ("Node" TeX-TikZ-arg-node)
     ("Circle" TeX-TikZ-arg-circle)
