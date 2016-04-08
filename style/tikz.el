@@ -42,10 +42,6 @@ CLOSE\". If OPEN or CLOSE are nil, set them to `LaTeX-optop' and
       (concat open arg close)
     ""))
 
-(defun TeX-TikZ-get-prefix-string (prefix)
-  "Return a string for the prefix to a command.
-")
-
 (defun TeX-TikZ-arg-rect-point (_ignored &optional prefix)
   "Prompt the user for a point on the Cartesian plane.
 Ask the user for an X and Y coordinate, and return the string
