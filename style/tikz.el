@@ -164,14 +164,14 @@ them as a list of strings, dropping the '()'."
   (let* ((env-end (save-excursion
                     (LaTeX-find-matching-end)
                      (point)))
-         (matches ()))
+         (matches))
     ;; TODO: Handle cases where we are in a nested environment, \scope
     ;; for example.
     (save-excursion
       (LaTeX-find-matching-begin)
       (save-match-data
         (while (re-search-forward TeX-TikZ-point-name-regexp env-end t)
-          (add-to-list 'matches (match-string 1)))))
+          (push (match-string 1) matches))))
     matches))
 
 (defun TeX-TikZ-arg-named-point (_ignored &optional prefix)
