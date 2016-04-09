@@ -109,8 +109,7 @@ then called and the value returned.  PROMPT is used as the prompt
 for the argument type.  When OPTIONAL is non-nil, add \"\" to
 FUNCTION-ALIST with a mapping to `identity', permitting an
 optional input."
-  (let* ((argument-type-names (mapcar 'car function-alist))
-         (selected-argument-type (TeX-TikZ-get-arg-type argument-type-names prompt))
+  (let* ((selected-argument-type (TeX-TikZ-get-arg-type function-alist prompt))
          (fn-alist-with-optional-elm (if optional
                                          `(,@function-alist ("" identity))
                                        function-alist))
