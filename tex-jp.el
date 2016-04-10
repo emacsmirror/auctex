@@ -1,6 +1,6 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- coding: iso-2022-jp-unix; -*-
 
-;; Copyright (C) 2002-2007, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 2002-2007, 2012, 2016  Free Software Foundation, Inc.
 ;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
@@ -194,41 +194,19 @@ For detail, see `TeX-command-list', to which this list is appended."
         ;; http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?AUCTeX
         ;; を参考にしてみた。
         ((eq system-type 'windows-nt)
-         '(("Dviout" ("dviout -1 "
-                      ((paper-a4 paper-portrait) " -y=A4 ")
-                      ((paper-a4 paper-landscape) " -y=A4L ")
-                      ((paper-a5 paper-portrait) " -y=A5 ")
-                      ((paper-a5 paper-landscape) " -y=A5L ")
-                      ((paper-b5 paper-portrait) " -y=E5 ")
-                      ((paper-b5 paper-landscape) " -y=E5L ")
-                      ((paper-b4jis paper-portrait) " -y=B4 ")
-                      ((paper-b4jis paper-landscape) " -y=B4L ")
-                      ((paper-b5jis paper-portrait) " -y=B5 ")
-                      ((paper-b5jis paper-landscape) " -y=B5L ")
-                      (paper-legal " -y=Legal ")
-                      (paper-letter " -y=Letter ")
-                      (paper-executive " -y=Exective ")
-                      "%o" (mode-io-correlate " \"# %n '%b'\"")))
-           ("TeXworks" "TeXworks %o")
-           ("SumatraPDF" "SumatraPDF -reuse-instance %o"
-            (mode-io-correlate " -forward-search \"%b\" %n"))
-           ("MuPDF" "mupdf %o")))
+         '(("TeXworks" "TeXworks %o" "texworks")
+           ("MuPDF" "mupdf %o" "mupdf")))
         ;; これでいいのかどうかは不安。
         ((eq system-type 'darwin)
-         '(("Preview" "open -a Preview.app %o")
-           ("TeXShop" "open -a TeXShop.app %o")
-           ("TeXworks" "open -a TeXworks.app %o")
-           ("Skim" "open -a Skim.app %o")
-           ("displayline" "displayline %n %o %b")
-           ("PictPrinter" "open -a PictPrinter.app %d")
-           ("Mxdvi" "open -a Mxdvi.app %d")
-           ("open" "open %o")))
+         '(("TeXShop" "open -a TeXShop.app %o" "open")
+           ("TeXworks" "open -a TeXworks.app %o" "open")
+           ("PictPrinter" "open -a PictPrinter.app %d" "open")
+           ("Mxdvi" "open -a Mxdvi.app %d" "open")))
         (t
          (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
                  "%(xdvi) -unique")
-         '(("TeXworks" "texworks %o")
-           ("zathura" "zathura %o")
-           ("MuPDF" "mupdf %o"))))))
+         '(("TeXworks" "texworks %o" "texworks")
+           ("MuPDF" "mupdf %o" "mupdf"))))))
 
 ;; これは tex.el に取り入れてもらうのは難しいか？
 ;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
@@ -238,10 +216,10 @@ For detail, see `TeX-command-list', to which this list is appended."
        (append
         (cond
          ((eq system-type 'windows-nt)
-          '((output-dvi "Dviout")
+          '((output-dvi "dviout")
             (output-pdf "TeXworks")))
          ((eq system-type 'darwin)
-          '((output-pdf "Preview")))
+          '((output-pdf "Preview.app")))
          (t
           nil))
         TeX-view-program-selection)))

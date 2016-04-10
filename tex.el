@@ -1341,7 +1341,21 @@ DE is the name of the desktop environment, either \"gnome\" or
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
-      ("dviout" ("dviout -1 %d" (mode-io-correlate "\"# %n %b\"")) "dviout")
+      ("dviout" ("dviout -1 "
+		 ((paper-a4 paper-portrait) "-y=A4 ")
+		 ((paper-a4 paper-landscape) "-y=A4L ")
+		 ((paper-a5 paper-portrait) "-y=A5 ")
+		 ((paper-a5 paper-landscape) "-y=A5L ")
+		 ((paper-b5 paper-portrait) "-y=E5 ")
+		 ((paper-b5 paper-landscape) "-y=E5L ")
+		 ((paper-b4jis paper-portrait) "-y=B4 ")
+		 ((paper-b4jis paper-landscape) "-y=B4L ")
+		 ((paper-b5jis paper-portrait) "-y=B5 ")
+		 ((paper-b5jis paper-landscape) "-y=B5L ")
+		 (paper-legal "-y=Legal ")
+		 (paper-letter "-y=Letter ")
+		 (paper-executive "-y=Executive ")
+		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
 	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
