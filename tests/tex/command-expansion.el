@@ -33,4 +33,47 @@
 				 'TeX-master-file))
            "%%  \"\\input\"")))
 
+(ert-deftest TeX-view-command-raw-errors ()
+  "Tests to trigger errors in `TeX-view-command-raw'."
+  ;; Viewer specification should be either a command line string or a Lisp
+  ;; function name to be executed.  This test makes sure that the functions
+  ;; throws an error if the selected viewer has a wrong specification (for
+  ;; example a function call, not the function name) such that the returned
+  ;; value `command' isn't a string.  This prevents an infinite loop in
+  ;; `TeX-command-expand'.
+  (should-error
+   (with-temp-buffer
+     (let ((TeX-view-program-list '(("viewer"
+				     (wrong-specification))))
+	   (TeX-view-program-selection
+	    '((output-pdf "viewer"))))
+       (TeX-mode)
+       (TeX-view-command-raw)))
+   :type 'error)
+  ;; Signal an error when a nonexistent viewer is selected.
+  (should-error
+   (with-temp-buffer
+     (let ((TeX-view-program-selection
+	    '((output-pdf "does-not-exist"))))
+       (TeX-mode)
+       (TeX-view-command-raw)))
+   :type 'error)
+  ;; Signal an error if the binary associated to the viewer cannot be found.
+  (should-error
+   (with-temp-buffer
+     (let ((TeX-view-program-list
+	    '(("viewer" "viewer %o" "**this-program-does-not-exist**")))
+	   (TeX-view-program-selection
+	    '((output-pdf "viewer"))))
+       (TeX-mode)
+       (TeX-view-command-raw)))
+   :type 'error)
+  ;; Error if there is no selected viewer for current buffer.
+  (should-error
+   (with-temp-buffer
+     (let (TeX-view-program-selection)
+       (TeX-mode)
+       (TeX-view-command-raw)))
+   :type 'error))
+
 ;;; command-expansion.el ends here

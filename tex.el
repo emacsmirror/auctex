@@ -1598,7 +1598,11 @@ Check the `TeX-view-program-selection' variable" viewer)))
 		   ((listp elt)
 		    (when (TeX-view-match-predicate (car elt))
 		      (setq command (concat command (cadr elt)))))))
-	   command))))
+	   (if (stringp command)
+	       command
+	     ;; Signal an error if `command' isn't a string.  This prevents an
+	     ;; infinite loop in `TeX-command-expand' if `command' is nil.
+	     (error "Wrong viewer specification in `TeX-view-program-list'"))))))
 
 ;;; Engine
 
