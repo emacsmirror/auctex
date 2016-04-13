@@ -3953,6 +3953,7 @@ If TEX is a directory, generate style files for all files in the directory."
 			    LaTeX-provided-class-options))
 	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
 			  LaTeX-provided-package-options))
+	    (tex-cmd-opts TeX-command-extra-options)
 	    (verb-envs (when (boundp 'LaTeX-verbatim-environments-local)
 			 LaTeX-verbatim-environments-local))
 	    (verb-macros-delims (when (boundp 'LaTeX-verbatim-macros-with-delims-local)
@@ -3965,6 +3966,9 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook\n \""
 		  style "\"\n (lambda ()")
+	  (unless (string= tex-cmd-opts "")
+	    (insert "\n   (setq TeX-command-extra-options\n"
+		    "         " (prin1-to-string tex-cmd-opts) ")"))
 	  (when class-opts
 	    (insert "\n   (TeX-add-to-alist 'LaTeX-provided-class-options\n"
 		    "                     '" (prin1-to-string class-opts) ")"))
