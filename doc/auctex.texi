@@ -4430,7 +4430,7 @@ These correspond to the personal @TeX{} macros.
 
 @AUCTeX{} can update the style information about a file each time you
 save it, and it will do this if the directory @code{TeX-auto-local}
-exist. @code{TeX-auto-local} is by default set to @samp{"auto"}, so
+exists. @code{TeX-auto-local} is by default set to @samp{"auto"}, so
 simply creating an @file{auto} directory will enable automatic saving of
 style information.
 
