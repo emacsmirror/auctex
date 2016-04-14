@@ -1358,7 +1358,9 @@ errors or warnings to show."
       (progn
 	(if TeX-parse-all-errors
 	    (TeX-parse-all-errors))
-	(if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
+	(if (and TeX-error-overview-open-after-TeX-run
+		 (TeX-error-overview-make-entries
+		  (TeX-master-directory)))
 	    (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
     (if (with-current-buffer TeX-command-buffer
@@ -1461,7 +1463,9 @@ Open the error overview if
 errors or warnings to show."
   (if TeX-parse-all-errors
       (TeX-parse-all-errors))
-  (if (and TeX-error-overview-open-after-TeX-run TeX-error-list)
+  (if (and TeX-error-overview-open-after-TeX-run
+	   (TeX-error-overview-make-entries
+	    (TeX-master-directory)))
       (TeX-error-overview))
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
