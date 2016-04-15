@@ -3755,7 +3755,7 @@ The algorithm is as follows:
 Optional third argument PLURAL is the plural form of TYPE.
 By default just add an `s'.
 
-This function create a set of variables and functions to maintain a
+This macro creates a set of variables and functions to maintain a
 separate type of information in the parser."
   (let* ((names (or plural (concat name "s")))
 	 (tmp (intern (concat prefix "-auto-" name)))

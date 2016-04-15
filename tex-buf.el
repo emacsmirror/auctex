@@ -1023,7 +1023,7 @@ Return the new process."
   (TeX-run-set-command name command)
   (let ((buffer (TeX-process-buffer-name file))
 	(process (TeX-run-command name command file)))
-    ;; Hook to TeX debuger.
+    ;; Hook to TeX debugger.
     (with-current-buffer buffer
       (TeX-parse-reset)
       (setq TeX-parse-function #'TeX-parse-TeX)
