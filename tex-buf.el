@@ -3677,7 +3677,7 @@ forward, if negative)."
       (let ((name (match-string 1))
             (file (match-string 2)))
         (with-current-buffer TeX-command-buffer
-          (TeX-command name (if (string-match "_region_" file)
+          (TeX-command name (if (string-match TeX-region file)
                                 #'TeX-region-file
                               #'TeX-master-file))))
     (error "Unable to find what command to run")))
