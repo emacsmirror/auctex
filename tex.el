@@ -5950,7 +5950,10 @@ sign.  With optional ARG, insert that many dollar signs."
        (texmathp)
        (boundp 'current-input-method) current-input-method
        (string-match TeX-math-input-method-off-regexp current-input-method)
-       (inactivate-input-method)))
+       ;; inactivate-input-method is obsolete since emacs 24.3.
+       (if (fboundp 'deactivate-input-method)
+	   (deactivate-input-method)
+	 (inactivate-input-method))))
 
 ;;; Simple Commands
 
