@@ -35,13 +35,22 @@ after compilation of the document.
 @end ifclear
 
 @item
-Added support for Atril viewer.  Forward and inverse search requires
-version 1.9.1 or later to work.
+A new option, @code{TeX-PDF-from-DVI}, controls if and how to produce a
+@acronym{PDF} file by converting a @acronym{DVI} file.  This supersedes
+@code{TeX-PDF-via-dvips-ps2pdf} which is still recognized but marked as
+obsolete and may be removed in future releases.
 
 @item
-Added support for dviout viewer on Windows.  Note that this setup works
-when @code{TeX-source-correlate-method} is set to use
-@samp{source-specials} for @acronym{DVI}, e.g.:
+Support for a number of external viewers has been addedd:
+@itemize
+@item
+Atril viewer.  Forward and inverse search requires version 1.9.1 or
+later to work.
+
+@item
+dviout viewer on Windows.  Note that this setup works when
+@code{TeX-source-correlate-method} is set to use @samp{source-specials}
+for @acronym{DVI}, e.g.:
 @lisp
 (setq TeX-source-correlate-method
       '((dvi . source-specials)
@@ -50,11 +59,12 @@ when @code{TeX-source-correlate-method} is set to use
 which is the default.
 
 @item
-Added support for SumatraPDF viewer on Windows.
+SumatraPDF viewer on Windows.
 
 @item
-Added support for Zathura viewer.  Forward and inverse search requires a
-recent version of the program to work (3.4 or later).
+Zathura viewer.  Forward and inverse search requires a recent version of
+the program to work (3.4 or later).
+@end itemize
 
 @item
 A new function, @code{TeX-documentation-texdoc}, for reading

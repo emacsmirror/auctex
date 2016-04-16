@@ -151,6 +151,8 @@ If nil, none is specified."
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil t
      :help "Convert DVI file to PostScript")
+    ("Dvipdfmx" "dvipdfmx %d" TeX-run-dvipdfmx nil t
+     :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
      :help "Convert PostScript file to PDF")
     ("Index" "makeindex %s" TeX-run-index nil t
@@ -447,7 +449,7 @@ string."
     ("%(PDF)" (lambda ()
 		(if (and (eq TeX-engine 'default)
 			 (if TeX-PDF-mode
-			     (not TeX-PDF-via-dvips-ps2pdf)
+			     (not (TeX-PDF-from-DVI))
 			   TeX-DVI-via-PDFTeX))
 		    "pdf"
 		  "")))
@@ -2123,19 +2125,52 @@ already established, don't do anything."
   :group 'TeX-command
   :type 'boolean)
 
+(defcustom TeX-PDF-from-DVI nil
+  "Specify if and how to produce PDF output from a DVI file.
+
+If non-nil, the default compiler produces DVI output.  The value
+should be the name of the command used to convert the DVI file to
+PDF or to an intermediate type.
+
+Possible values are
+
+* \"Dvips\": the DVI file is converted to PS with dvips.  After
+  successfully running it, ps2pdf will be the default command to
+  convert the PS file to PDF
+* \"Dvipdfmx\": the PDF is produced with dvipdfmx
+
+Programs should not use this variable directly but the function
+`TeX-PDF-from-DVI' which handles now obsolete variable
+`TeX-PDF-via-dvips-ps2pdf'."
+  :group 'TeX-command
+  :type '(choice
+	  (const :tag "No DVI to PDF conversion" nil)
+	  (const :tag "dvips - ps2pdf sequence" "Dvips")
+	  (const :tag "dvipdfmx" "Dvipdfmx")))
+;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
+;; `TeX-command-default' accordingly.
+(make-variable-buffer-local 'TeX-PDF-from-DVI)
+(put 'TeX-PDF-from-DVI 'safe-local-variable
+     (lambda (x) (or (stringp x) (null x))))
+
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
   :group 'TeX-command
   :type 'boolean)
 (make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'booleanp)
+(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'TeX-booleanp)
+(make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
-(defun TeX-toggle-PDF-via-dvips-ps2pdf ()
-  "Toggle `TeX-PDF-via-dvips-ps2pdf'."
-  (interactive)
-  (setq TeX-PDF-via-dvips-ps2pdf (not TeX-PDF-via-dvips-ps2pdf))
-  (message (concat "TeX-PDF-via-dvips-ps2pdf: "
-		   (if TeX-PDF-via-dvips-ps2pdf "on" "off"))))
+(defun TeX-PDF-from-DVI ()
+  "Return the value of variable `TeX-PDF-from-DVI'.
+
+If `TeX-PDF-from-DVI' is not set and obsolete option
+`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"dvips-ps2pdf\"
+for backward compatibility."
+  (cond
+   (TeX-PDF-from-DVI)
+   (TeX-PDF-via-dvips-ps2pdf
+    "Dvips")))
 
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
@@ -4960,10 +4995,21 @@ Brace insertion is only done if point is in a math construct and
 	 :style toggle :selected TeX-PDF-mode
 	 :active (not (eq TeX-engine 'omega))
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
-       [ "PDF via dvips + ps2pdf" TeX-toggle-PDF-via-dvips-ps2pdf
-	 :style toggle :selected TeX-PDF-via-dvips-ps2pdf
+       ( "PDF from DVI"
 	 :visible TeX-PDF-mode
-	 :help "Compile with (La)TeX and convert to PDF with dvips + ps2pdf"]
+	 :help "Compile to DVI with (La)TeX and convert to PDF"
+	 [ "Compile directly to PDF"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI nil))
+	   :style radio :selected (null (TeX-PDF-from-DVI))
+	   :help "Compile directly to PDF without intermediate conversions"]
+	 [ "dvips + ps2pdf"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvips"))
+	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvips")
+	   :help "Convert DVI to PDF with dvips + ps2pdf sequence"]
+	 [ "dvipdfmx"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvipdfmx"))
+	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvipdfmx")
+	   :help "Convert DVI to PDF with dvipdfmx"])
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]

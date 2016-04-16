@@ -786,7 +786,7 @@ omitted) and `TeX-region-file'."
 	   ;; We should check for bst files here as well.
 	   (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
 	  ((and
-	    ;; Rational: makeindex should be run when final document is almost
+	    ;; Rationale: makeindex should be run when final document is almost
 	    ;; complete (see
 	    ;; http://tex.blogoverflow.com/2012/09/dont-forget-to-run-makeindex/),
 	    ;; otherwise, after following latex runs, index pages may change due
@@ -797,10 +797,9 @@ omitted) and `TeX-region-file'."
 		   (TeX-process-get-variable
 		    name
 		    'TeX-command-next
-		    (if (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode)
-			"Dvips"
-		      TeX-command-Show)))
-	     (list "Dvips" TeX-command-Show))
+		    (or (and TeX-PDF-mode (TeX-PDF-from-DVI))
+			TeX-command-Show)))
+	     (list "Dvips" "Dvipdfmx" TeX-command-Show))
 	    (cdr (assoc (expand-file-name (concat name ".idx"))
 			LaTeX-idx-changed-alist)))
 	   "Index")
@@ -1009,7 +1008,7 @@ Return the new process."
   "Remember TeX command to use to NAME and set corresponding output extension."
   (setq TeX-command-default name
 	TeX-output-extension
-	(if (and (null TeX-PDF-via-dvips-ps2pdf) TeX-PDF-mode) "pdf" "dvi"))
+	(if (and (null (TeX-PDF-from-DVI)) TeX-PDF-mode) "pdf" "dvi"))
   (let ((case-fold-search t)
 	(lst TeX-command-output-list))
     (while lst
@@ -1117,6 +1116,14 @@ run of `TeX-run-TeX', use
   "Create a process for NAME using COMMAND to convert FILE with dvips."
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function #'TeX-dvips-sentinel)
+    (if TeX-process-asynchronous
+        process
+      (TeX-synchronous-sentinel name file process))))
+
+(defun TeX-run-dvipdfmx (name command file)
+  "Create a process for NAME using COMMAND to convert FILE with dvipdfmx."
+  (let ((process (TeX-run-command name command file)))
+    (setq TeX-sentinel-function #'TeX-dvipdfmx-sentinel)
     (if TeX-process-asynchronous
         process
       (TeX-synchronous-sentinel name file process))))
@@ -1363,10 +1370,11 @@ errors or warnings to show."
 		  (TeX-master-directory)))
 	    (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
-    (if (with-current-buffer TeX-command-buffer
-	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
-	(setq TeX-command-next "Dvips")
-      (setq TeX-command-next TeX-command-Show))))
+    (let (dvi2pdf)
+	(if (with-current-buffer TeX-command-buffer
+	   (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+	 (setq TeX-command-next dvi2pdf)
+       (setq TeX-command-next TeX-command-Show)))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -1423,10 +1431,11 @@ Return nil ifs no errors were found."
 					    'TeX-current-master))
 			 t))
 	t)
-    (if (with-current-buffer TeX-command-buffer
-	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
-	(setq TeX-command-next "Dvips")
-      (setq TeX-command-next TeX-command-Show))
+    (let (dvi2pdf)
+	(if (with-current-buffer TeX-command-buffer
+	   (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+	 (setq TeX-command-next dvi2pdf)
+       (setq TeX-command-next TeX-command-Show)))
     nil))
 
 ;; This regexp should catch warnings of the type
@@ -1518,18 +1527,20 @@ Rerun to get outlines right" nil t)
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
 	 (message "%s%s%s" name ": there were unresolved references, "
 		  (TeX-current-pages))
-	 (if (with-current-buffer TeX-command-buffer
-	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
-	     (setq TeX-command-next "Dvips")
-	   (setq TeX-command-next TeX-command-Show)))
+	 (let (dvi2pdf)
+	   (if (with-current-buffer TeX-command-buffer
+		 (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+	       (setq TeX-command-next dvi2pdf)
+	     (setq TeX-command-next TeX-command-Show))))
 	((re-search-forward "^\\(?:LaTeX Warning: Citation\\|\
 Package natbib Warning:.*undefined citations\\)" nil t)
 	 (message "%s%s%s" name ": there were unresolved citations, "
 		  (TeX-current-pages))
-	 (if (with-current-buffer TeX-command-buffer
-	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
-	     (setq TeX-command-next "Dvips")
-	   (setq TeX-command-next TeX-command-Show)))
+	 (let (dvi2pdf)
+	   (if (with-current-buffer TeX-command-buffer
+		 (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+	       (setq TeX-command-next dvi2pdf)
+	     (setq TeX-command-next TeX-command-Show))))
 	((re-search-forward "Package longtable Warning: Table widths have \
 changed\\. Rerun LaTeX\\." nil t)
 	 (message
@@ -1555,10 +1566,11 @@ Rerun to get mark in right position\\." nil t)
 				    ")"))))
 	   (message "%s" (concat name ": successfully formatted "
 				 (TeX-current-pages) add-info)))
-	 (if (with-current-buffer TeX-command-buffer
-	       (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
-	     (setq TeX-command-next "Dvips")
-	   (setq TeX-command-next TeX-command-Show)))
+	 (let (dvi2pdf)
+	   (if (with-current-buffer TeX-command-buffer
+		 (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+	       (setq TeX-command-next dvi2pdf)
+	     (setq TeX-command-next TeX-command-Show))))
 	(t
 	 (message "%s%s%s" name ": problems after " (TeX-current-pages))
 	 (setq TeX-command-next TeX-command-default)))
@@ -1643,10 +1655,25 @@ Rerun to get mark in right position\\." nil t)
               "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (if (with-current-buffer TeX-command-buffer
-	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	  (and (equal (TeX-PDF-from-DVI) "Dvips") TeX-PDF-mode))
 	(setq TeX-output-extension "ps"
 	      TeX-command-next "Ps2pdf"))
     (message "Dvips finished successfully. "))))
+
+(defun TeX-dvipdfmx-sentinel (_process _name)
+  "Cleanup TeX output buffer after running dvipdfmx."
+  (goto-char (point-max))
+  (cond
+   ((search-backward "TeX Output exited abnormally" nil t)
+    (message "Dvipdfmx failed.  Type `%s' to display output."
+	     (substitute-command-keys
+              "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+   (t
+    (if (with-current-buffer TeX-command-buffer
+	  (and (equal (TeX-PDF-from-DVI) "Dvipdfmx") TeX-PDF-mode))
+	(setq TeX-output-extension "pdf"
+	      TeX-command-next TeX-command-Show))
+    (message "Dvipdfmx finished successfully. "))))
 
 (defun TeX-ps2pdf-sentinel (_process _name)
   "Cleanup TeX output buffer after running ps2pdf."
@@ -1658,7 +1685,7 @@ Rerun to get mark in right position\\." nil t)
               "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (if (with-current-buffer TeX-command-buffer
-	  (and TeX-PDF-via-dvips-ps2pdf TeX-PDF-mode))
+	  (and (equal (TeX-PDF-from-DVI) "Dvips") TeX-PDF-mode))
 	(setq TeX-command-next TeX-command-Show
 	      TeX-output-extension "pdf"))
     (message "ps2pdf finished successfully. "))))
