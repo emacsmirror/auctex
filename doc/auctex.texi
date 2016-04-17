@@ -2926,10 +2926,10 @@ the document into @acronym{DVI} output.  Thus, if you want a
 @acronym{PDF} document in the end you can either use Xe@TeX{} engine,
 see below for information about how to set engines, or compile the
 document with @command{tex} and then convert to @acronym{PDF} with
-@command{dvips}--@command{ps2pdf} before viewing it.  In addition, most
-documents written in Japanese are compiled with @command{tex} or
-@command{latex} (not their @command{pdf} variants) and then converted to
-@acronym{PDF} with @command{dvipdfmx}.  You can use the
+@command{dvips}--@command{ps2pdf} before viewing it.  In addition,
+current Japanese @TeX{} engines cannot generate @acronym{PDF} directly
+so they rely on @acronym{DVI}-to-@acronym{PDF} converters.  Usually
+@command{dvipdfmx} command is used for this purpose.  You can use the
 @code{TeX-PDF-from-DVI} variable to let @AUCTeX{} know you want to
 generate the final @acronym{PDF} by converting a @acronym{DVI} file.
 
@@ -2938,14 +2938,13 @@ This option controls if and how to produce a @acronym{PDF} file by
 converting a @acronym{DVI} file.
 
 When @code{TeX-PDF-mode} is non-nil, if @code{TeX-PDF-from-DVI} is
-non-nil too the document is compiled with @command{tex} (or
-@command{latex}) instead of @command{pdftex} (or @command{pdflatex}).
-When the document is ready, @kbd{C-c C-c} will suggest to run the
-command indicated by @code{TeX-PDF-from-DVI}.
+non-nil too the document is compiled to @acronym{DVI} instead of
+@acronym{PDF}.  When the document is ready, @kbd{C-c C-c} will suggest
+to run the converter to @acronym{PDF} or an intermediate format.
 
 If non-nil, @code{TeX-PDF-from-DVI} should be the name of the command,
 as a string, used to convert the @acronym{DVI} file to @acronym{PDF} or
-to an intermediate type.  Values currently supported are:
+to an intermediate format.  Values currently supported are:
 @itemize
 @item
 @code{"Dvips"}: the @acronym{DVI} file is converted to @acronym{PS} with
