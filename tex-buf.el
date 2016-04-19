@@ -1367,7 +1367,7 @@ errors or warnings to show."
 	    (TeX-parse-all-errors))
 	(if (and TeX-error-overview-open-after-TeX-run
 		 (TeX-error-overview-make-entries
-		  (TeX-master-directory)))
+		  (TeX-master-directory) (TeX-active-buffer)))
 	    (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
     (let (dvi2pdf)
@@ -1474,7 +1474,7 @@ errors or warnings to show."
       (TeX-parse-all-errors))
   (if (and TeX-error-overview-open-after-TeX-run
 	   (TeX-error-overview-make-entries
-	    (TeX-master-directory)))
+	    (TeX-master-directory) (TeX-active-buffer)))
       (TeX-error-overview))
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
@@ -3373,10 +3373,13 @@ please restart TeX error overview")))
       (message "No more errors.")
       (beep))))
 
-(defun TeX-error-overview-make-entries (&optional master-dir)
+(defun TeX-error-overview-make-entries (&optional master-dir active-buffer)
   "Generate the list of errors to be printed using `tabulated-list-entries'.
-Write file names relative to MASTER-DIR when they are not absolute."
-  (with-current-buffer TeX-error-overview-active-buffer
+Write file names relative to MASTER-DIR when they are not absolute.
+
+ACTIVE-BUFFER is used as buffer from which to extract the list of
+errors.  If nil, defaults to `TeX-error-overview-active-buffer'."
+  (with-current-buffer (or active-buffer TeX-error-overview-active-buffer)
     (let ((id 0)
 	  type file line msg entries)
       (mapc
