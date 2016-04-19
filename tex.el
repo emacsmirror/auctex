@@ -4861,7 +4861,7 @@ Brace insertion is only done if point is in a math construct and
 
 (defun TeX-newline ()
   "Call the function specified by the variable `TeX-newline-function'."
-  (interactive) (funcall TeX-newline-function))
+  (interactive) (call-interactively TeX-newline-function))
 
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
