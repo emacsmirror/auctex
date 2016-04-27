@@ -399,7 +399,13 @@ Set `japanese-TeX-mode' to t, and enter `TeX-plain-tex-mode'."
   "Japanese plain-TeX specific initializations."
   (when japanese-TeX-mode
 ;    (setq TeX-command-default japanese-TeX-command-default)
-    (TeX-engine-set japanese-TeX-engine-default)))
+    (TeX-engine-set japanese-TeX-engine-default)
+
+    ;; For the intent of the following lines, see the comments below
+    ;; in `japanese-latex-mode-initialization'.
+    (setq major-mode 'japanese-plain-tex-mode)
+    (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+	      nil t)))
 
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
@@ -431,10 +437,41 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 ;    (setq TeX-command-BibTeX
 ;        (if (and (eq TeX-engine 'ptex) (executable-find "pbibtex"))
 ;            "pBibTeX" "jBibTeX"))
-))
+
+    ;; The value of `major-mode' should be `latex-mode', not
+    ;; `japanese-latex-mode', because the name `latex-mode' is hard
+    ;; coded in several places of AUCTeX like "(eq major-mode
+    ;; 'latex-mode)", "(memq major-mode '(doctex-mode latex-mode)" and
+    ;; so on.  By such piece of codes, `japanese-latex-mode' should
+    ;; simply be regarded as `latex-mode'.  So we'd like to leave
+    ;; `major-mode' as `latex-mode' here, but doing so confuses
+    ;; `hack-local-variables' in two ways.
+    ;; (1) It is tricked into considering that the major mode is not
+    ;;     yet initialized and calls `japanese-latex-mode' again.
+    ;; (2) It does not read the directory local variables prepared for
+    ;;     `japanese-latex-mode'.
+    ;; Thus we temporarily set `major-mode' to `japanese-latex-mode'
+    ;; here and plan to reset it to `latex-mode' after
+    ;; `hack-local-variables' is done.
+    (setq major-mode 'japanese-latex-mode)
+    (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+	      nil t)))
 
 (add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
+;; This function is useful only within `hack-local-variables-hook'.
+(defun japanese-TeX-reset-mode-name ()
+  (cond ((eq major-mode 'japanese-latex-mode)
+	 (setq major-mode 'latex-mode))
+	((eq major-mode 'japanese-plain-tex-mode)
+	 (setq major-mode 'plain-tex-mode)))
+  (remove-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name t))
+
+;; Make `hack-dir-local-variables' to regard `latex-mode' as parent
+;; of `japanese-latex-mode', and `plain-tex-mode' as parent of
+;; `japanese-plain-tex-mode'.
+(put 'japanese-plain-tex-mode 'derived-mode-parent 'plain-tex-mode)
+(put 'japanese-latex-mode 'derived-mode-parent 'latex-mode)
 
 ;;; Support for various self-insert-command
 
