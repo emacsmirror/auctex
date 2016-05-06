@@ -1838,7 +1838,9 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
     (with-current-buffer (or (find-buffer-visiting file)
 			     (find-file-noselect file))
       (goto-char 0)
-      (when (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
+      ;; Same regexp used in `preview-parse-messages'.  XXX: XEmacs doesn't
+      ;; support regexp classes, so we can't use "[:digit:]" here.
+      (when (re-search-forward "!offset(\\([---0-9]+\\))" nil t)
 	(let ((offset (string-to-int (match-string-no-properties 1))))
 	  (when TeX-region-orig-buffer
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
