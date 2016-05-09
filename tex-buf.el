@@ -432,7 +432,7 @@ to be run."
 Do you want to use this engine?" (cdr (assoc engine name-alist)))))
 	  ;; More than one engine is allowed.
 	  ((> length 1)
-	   (if (y-or-n-p (format "%s are required to build this document.
+	   (if (y-or-n-p (format "It appears %s are required to build this document.
 Do you want to select one of these engines?"
 				 (mapconcat
 				  (lambda (elt) (cdr (assoc elt name-alist)))
@@ -448,7 +448,12 @@ Do you want to select one of these engines?"
 			    (mapcar
 			     (lambda (elt) (cdr (assoc elt name-alist)))
 			     TeX-check-engine-list))
-			   name-alist))))))
+			   name-alist)))
+	     ;; Don't keep asking.  If user doesn't want to change engine,
+	     ;; probably has a good reason.  In order to do so, without adding
+	     ;; yet another variable we just hack `TeX-check-engine-list' and
+	     ;; make it nil.
+	     (setq TeX-check-engine-list nil))))
        (TeX-engine-set engine)
        (when (and (fboundp 'add-file-local-variable)
 		  (y-or-n-p "Do you want to remember the choice?"))
