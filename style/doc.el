@@ -1,6 +1,6 @@
 ;;; doc.el --- AUCTeX style for `doc.sty'
 
-;; Copyright (C) 2004, 2008 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2008, 2016 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -62,6 +62,8 @@
 		'("macrocode" current-indentation))
    (add-to-list 'LaTeX-indent-environment-list
 		'("macrocode*" current-indentation))
+   (add-to-list 'LaTeX-indent-environment-list
+		'("macro" current-indentation))
    (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-doc-after-insert-macrocode
 	     nil t)
    (LaTeX-add-environments
@@ -72,24 +74,33 @@
    (TeX-add-symbols
     "EnableCrossrefs"
     "DisableCrossrefs"
-    "DoNotIndex"
+    '("DoNotIndex" t)
     "DontCheckModules"
     "CheckModules"
     "Module"
-    '("DescribeMacro" "Macro")
+    '("DescribeMacro" (TeX-arg-eval
+		       (lambda ()
+			 (let ((name (TeX-read-string
+				      (TeX-argument-prompt optional nil "Macro")
+				      TeX-esc)))
+			   (format "%s" name)))))
     '("DescribeEnv" "Environment")
     "verbatim"
     "verb"
-    "parg"
-    "oarg"
-    "marg"
-    "meta"
-    "cmd"
+    '("parg" "Argument")
+    '("oarg" "Argument")
+    '("marg" "Argument")
+    '("meta" "Text")
+    '("cs" "Name")
+    '("cmd" (TeX-arg-eval
+	     (lambda ()
+	       (let ((name (TeX-read-string
+			    (TeX-argument-prompt optional nil "Name")
+			    TeX-esc)))
+		 (format "%s" name)))))
     "makelabel"
-    "MacroFont"
-    "MacroFont"
-    "AltMacroFont"
-    "AltMacroFont"
+    '("MacroFont" t)
+    '("AltMacroFont" t)
     "PrintMacroName"
     "PrintDescribeMacro"
     "PrintDescribeEnv"
@@ -126,7 +137,7 @@
     "GlossaryParms"
     "PrintChanges"
     "AlsoImplementation"
-    "StopEventually"
+    '("StopEventually" t)
     "OnlyDescription"
     "Finale"
     "IndexInput"
@@ -142,16 +153,34 @@
     "CodelineIndex"
     "PageIndex"
     "theCodelineNo"
-    "theCodelineNo"
     "DocstyleParms"
     "MakePercentIgnore"
     "MakePercentComment"
-    "DocInput"
-    "DocInclude"
+    '("DocInput"
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((file (file-relative-name
+		      (read-file-name
+		       "File to input: " nil nil nil nil
+		       (lambda (x)
+			 (string-match "\\.fdd$\\|\\.dtx$" x)))
+		      (TeX-master-directory))))
+	   (format "%s" file)))))
+    '("DocInclude"
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((file (file-relative-name
+		      (read-file-name
+		       "File to include: " nil nil nil nil
+		       (lambda (x)
+			 (string-match "\\.fdd$\\|\\.dtx$" x)))
+		      (TeX-master-directory))))
+	   (format "%s" file)))))
     "GetFileInfo"
     "filename"
     "fileinfo")
-   (TeX-run-style-hooks "shortvrb"))
+   (TeX-run-style-hooks "shortvrb")
+   (LaTeX-add-lengths "MacrocodeTopsep" "MacroTopsep" "MacroIndent"))
  LaTeX-dialect)
 
 ;; Local Variables:
