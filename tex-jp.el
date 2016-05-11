@@ -309,7 +309,10 @@ For detail, see `TeX-command-list', to which this list is appended."
     ("treport")
     ("tbook")
     ("jsarticle")
-    ("jsbook"))
+    ("jsbook")
+    ;; for upLaTeX
+    ("ujarticle") ("ujreport") ("ujbook")
+    ("utarticle") ("utreport") ("utbook"))
   "*List of Japanese document styles."
   :group 'AUCTeX-jp
   :type '(repeat (group (string :format "%v"))))

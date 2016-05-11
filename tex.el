@@ -3521,7 +3521,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
-     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\
+     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{u?\\(j[s-]?\\|t\\)\
 \\(article\\|report\\|book\\|slides\\)")
     ("JTEX" japanese-plain-tex-mode
      "-- string likely in Japanese TeX --")
