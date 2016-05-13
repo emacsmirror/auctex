@@ -406,9 +406,10 @@ Set `japanese-TeX-mode' to t, and enter `TeX-plain-tex-mode'."
 
     ;; For the intent of the following lines, see the comments below
     ;; in `japanese-latex-mode-initialization'.
-    (setq major-mode 'japanese-plain-tex-mode)
-    (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
-	      nil t)))
+    (when enable-local-variables
+      (setq major-mode 'japanese-plain-tex-mode)
+      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+		nil t))))
 
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
@@ -456,9 +457,10 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
     ;; Thus we temporarily set `major-mode' to `japanese-latex-mode'
     ;; here and plan to reset it to `latex-mode' after
     ;; `hack-local-variables' is done.
-    (setq major-mode 'japanese-latex-mode)
-    (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
-	      nil t)))
+    (when enable-local-variables
+      (setq major-mode 'japanese-latex-mode)
+      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+		nil t))))
 
 (add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
