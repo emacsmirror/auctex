@@ -1271,7 +1271,7 @@ entry in `TeX-view-program-list-builtin'."
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
       (with-current-buffer (or (when TeX-current-process-region-p
-				 (get-file-buffer (TeX-region-file t)))
+			    	 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
     (let ((pdf (concat file "." (TeX-output-extension))))

@@ -892,6 +892,25 @@ QUEUE is non-nil when we are checking for the printer queue."
     (goto-char (posn-point (event-start event)))
     (TeX-view)))
 
+(defun TeX-region-update-point ()
+  "Syncs the location of point in the region file with the current file.
+
+Thereafter, point in the region file is on the same text as in
+the current buffer.
+
+Does nothing in case the last command hasn't operated on the
+region."
+  (when TeX-current-process-region-p
+    (let ((region-buf (get-file-buffer (TeX-region-file t)))
+	  (current-line (line-number-at-pos)))
+      (when region-buf
+	(with-current-buffer region-buf
+	  (goto-char (point-min))
+	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)")
+	    (let ((offset (string-to-int (match-string 1))))
+	      (goto-char (point-min))
+	      (forward-line (- current-line (1+ offset))))))))))
+
 (defun TeX-view ()
   "Start a viewer without confirmation.
 The viewer is started either on region or master file,
@@ -899,7 +918,11 @@ depending on the last command issued."
   (interactive)
   (let ((output-file (TeX-active-master (TeX-output-extension))))
     (if (file-exists-p output-file)
-	(TeX-command "View" 'TeX-active-master 0)
+	(progn
+	  ;; When we're operating on a region, we need to update the position
+	  ;; of point in the region file so that forward search works.
+	  (TeX-region-update-point)
+	  (TeX-command "View" 'TeX-active-master 0))
       (message "Output file %S does not exist." output-file))))
 
 (defun TeX-output-style-check (styles)
