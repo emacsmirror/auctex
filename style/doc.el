@@ -31,7 +31,12 @@
 
 (defun LaTeX-env-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
-  (LaTeX-insert-environment environment)
+  (LaTeX-insert-environment environment
+			    (when (string-equal environment "macro")
+			      (let ((macroname (TeX-read-string
+						(TeX-argument-prompt nil nil "Macro")
+						TeX-esc)))
+				(format "{%s}" macroname))))
   (unless (TeX-active-mark)
     (when (save-excursion
 	    (beginning-of-line)
@@ -42,7 +47,7 @@
 
 (defun LaTeX-doc-after-insert-macrocode (env start end)
   "Make sure the macrocode environment is properly formatted after insertion."
-  (when (TeX-member env '("macrocode" "macrocode*") 'string-equal)
+  (when (TeX-member env '("macro" "macrocode" "macrocode*") 'string-equal)
     (save-excursion
       (goto-char end)
       (skip-chars-backward " \t")
@@ -70,7 +75,7 @@
     "theglossary"
     '("macrocode" LaTeX-env-no-comment)
     '("macrocode*" LaTeX-env-no-comment)
-    '("macro" "Macro"))
+    '("macro" LaTeX-env-no-comment))
    (TeX-add-symbols
     "EnableCrossrefs"
     "DisableCrossrefs"
