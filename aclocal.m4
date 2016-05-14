@@ -94,7 +94,7 @@ fi
 
 AC_DEFUN(AC_DATE_VERSION_FROM_CHANGELOG, [
 AC_MSG_CHECKING([for date with git])
-$1=[`git log -1 --date=short --format=%ad 2> /dev/null`]
+$1=[`git log -1 --date=short --format=%cd 2> /dev/null`]
 if test "X${$1}" = X
 then
   AC_MSG_RESULT([git not found, checking for date in ChangeLog:])
