@@ -1,6 +1,6 @@
 ;;; textpos.el --- AUCTeX style for `textpos.sty' version v1.7j
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -65,7 +65,7 @@ them."
  "textpos"
  (lambda ()
 
-   (TeX-run-style-hooks "everyshi" "color")
+   (TeX-run-style-hooks "everyshi")
 
    (LaTeX-add-environments
     ;; \begin{textblock}{<hsize>}[<ho>,<vo>](<hpos>,<vpos>) ... \end{textblock}
@@ -84,14 +84,16 @@ them."
       (TeX-arg-eval
        (lambda ()
 	 (let ((color (completing-read "Color name: "
-				       (LaTeX-color-definecolor-list))))
+				       (or (LaTeX-xcolor-definecolor-list)
+					   (LaTeX-color-definecolor-list)))))
 	   (format "%s" color)))))
 
     '("textblockrulecolour"
       (TeX-arg-eval
        (lambda ()
 	 (let ((color (completing-read "Color name: "
-				       (LaTeX-color-definecolor-list))))
+				       (or (LaTeX-xcolor-definecolor-list)
+					   (LaTeX-color-definecolor-list)))))
 	   (format "%s" color)))))
 
    '("TPshowboxestrue")
