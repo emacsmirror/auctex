@@ -64,11 +64,11 @@
  "doc"
  (lambda ()
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("macrocode" current-indentation))
+		'("macrocode" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("macrocode*" current-indentation))
+		'("macrocode*" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("macro" current-indentation))
+		'("macro" current-indentation) t)
    (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-doc-after-insert-macrocode
 	     nil t)
    (LaTeX-add-environments

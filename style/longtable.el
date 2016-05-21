@@ -1,9 +1,9 @@
 ;;; longtable.el --- AUCTeX style for `longtable.sty'.
 
-;; Copyright (C) 2013--2015  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2016  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
-;; Author: Mosè Giordano <giordano.mose@libero.it>
+;; Author: Mosè Giordano <mose@gnu.org>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -75,9 +75,10 @@
    ;; This parameter is set with \setcounter
    (LaTeX-add-counters "LTchunksize")
 
-   ;; Use the enhanced table formatting
-   (add-to-list 'LaTeX-indent-environment-list
-		'("longtable" LaTeX-indent-tabular))
+   ;; Use the enhanced table formatting.  Append to
+   ;; `LaTeX-indent-environment-list' in order not to override custom settings.
+   (add-to-list (make-variable-buffer-local 'LaTeX-indent-environment-list)
+		'("longtable" LaTeX-indent-tabular) t)
 
    ;; Append longtable to `LaTeX-label-alist', in order not to override possible
    ;; custome values.

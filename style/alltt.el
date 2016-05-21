@@ -1,6 +1,6 @@
 ;;; alltt.el --- AUCTeX style for `alltt.sty'
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2014, 2016 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,9 +34,8 @@
  "alltt"
  (lambda ()
    (LaTeX-add-environments "alltt")
-   (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list
-		'("alltt" current-indentation))
+   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+		'("alltt" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "alltt")
    ;; Fontification
    (when (and (featurep 'font-latex)
