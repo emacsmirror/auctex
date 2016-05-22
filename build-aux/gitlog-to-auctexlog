@@ -76,12 +76,10 @@ test -d .git || {
 
 # Use Gnulib's packaged ChangeLog generator.
 # Maybe we should skip all "Merge branch 'master'" messages.
-# NOTE: in AUCTeX the ChangeLog is encoded with ISO-8859-1, use iconv
-# to enforce this encoding in the output file.
 ./build-aux/gitlog-to-changelog \
     --ignore-matching="^; |^Merge branch .*$|^Merge from master\.$|^Merge master branch\.$" \
   --ignore-line='^; ' --format='%B' \
-  "$gen_origin..$new_origin" | iconv -f UTF-8 -t ISO-8859-1 - >"ChangeLog.tmp" || exit
+  "$gen_origin..$new_origin" >"ChangeLog.tmp" || exit
 
 if test -s "ChangeLog.tmp"; then
 
