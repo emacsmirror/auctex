@@ -148,11 +148,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.89.3"
-    "AUCTeX version.
+(defconst AUCTeX-version "11.89.4"
+  "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2016-01-31"
+(defconst AUCTeX-date "2016-05-22"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
