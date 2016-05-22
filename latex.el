@@ -1259,7 +1259,8 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
-  (let ((TeX-arg-item-label-p t))
+  (let ((TeX-arg-item-label-p t)
+	(TeX-insert-macro-default-style 'show-optional-args))
     (TeX-insert-macro "item")))
 
 (defun LaTeX-item-bib ()

@@ -1,6 +1,6 @@
 ;;; currvita.el --- AUCTeX style for `currvita.sty' (v0.9i)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,7 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- coding: iso-2022-jp-unix; -*-
 
-;; Copyright (C) 1999, 2001-2007, 2012  Free Software Foundation, Inc.
+;; Copyright (C) 2002-2007, 2012, 2016  Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
 ;;             Hidenobu Nabetani <nabe@debian.or.jp>
@@ -194,41 +195,19 @@ For detail, see `TeX-command-list', to which this list is appended."
         ;; http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?AUCTeX
         ;; を参考にしてみた。
         ((eq system-type 'windows-nt)
-         '(("Dviout" ("dviout -1 "
-                      ((paper-a4 paper-portrait) " -y=A4 ")
-                      ((paper-a4 paper-landscape) " -y=A4L ")
-                      ((paper-a5 paper-portrait) " -y=A5 ")
-                      ((paper-a5 paper-landscape) " -y=A5L ")
-                      ((paper-b5 paper-portrait) " -y=E5 ")
-                      ((paper-b5 paper-landscape) " -y=E5L ")
-                      ((paper-b4jis paper-portrait) " -y=B4 ")
-                      ((paper-b4jis paper-landscape) " -y=B4L ")
-                      ((paper-b5jis paper-portrait) " -y=B5 ")
-                      ((paper-b5jis paper-landscape) " -y=B5L ")
-                      (paper-legal " -y=Legal ")
-                      (paper-letter " -y=Letter ")
-                      (paper-executive " -y=Exective ")
-                      "%o" (mode-io-correlate " \"# %n '%b'\"")))
-           ("TeXworks" "TeXworks %o")
-           ("SumatraPDF" "SumatraPDF -reuse-instance %o"
-            (mode-io-correlate " -forward-search \"%b\" %n"))
-           ("MuPDF" "mupdf %o")))
+         '(("TeXworks" "TeXworks %o" "texworks")
+           ("MuPDF" "mupdf %o" "mupdf")))
         ;; これでいいのかどうかは不安。
         ((eq system-type 'darwin)
-         '(("Preview" "open -a Preview.app %o")
-           ("TeXShop" "open -a TeXShop.app %o")
-           ("TeXworks" "open -a TeXworks.app %o")
-           ("Skim" "open -a Skim.app %o")
-           ("displayline" "displayline %n %o %b")
-           ("PictPrinter" "open -a PictPrinter.app %d")
-           ("Mxdvi" "open -a Mxdvi.app %d")
-           ("open" "open %o")))
+         '(("TeXShop" "open -a TeXShop.app %o" "open")
+           ("TeXworks" "open -a TeXworks.app %o" "open")
+           ("PictPrinter" "open -a PictPrinter.app %d" "open")
+           ("Mxdvi" "open -a Mxdvi.app %d" "open")))
         (t
          (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
                  "%(xdvi) -unique")
-         '(("TeXworks" "texworks %o")
-           ("zathura" "zathura %o")
-           ("MuPDF" "mupdf %o"))))))
+         '(("TeXworks" "texworks %o" "texworks")
+           ("MuPDF" "mupdf %o" "mupdf"))))))
 
 ;; これは tex.el に取り入れてもらうのは難しいか？
 ;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
@@ -238,10 +217,10 @@ For detail, see `TeX-command-list', to which this list is appended."
        (append
         (cond
          ((eq system-type 'windows-nt)
-          '((output-dvi "Dviout")
+          '((output-dvi "dviout")
             (output-pdf "TeXworks")))
          ((eq system-type 'darwin)
-          '((output-pdf "Preview")))
+          '((output-pdf "Preview.app")))
          (t
           nil))
         TeX-view-program-selection)))
@@ -331,7 +310,10 @@ For detail, see `TeX-command-list', to which this list is appended."
     ("treport")
     ("tbook")
     ("jsarticle")
-    ("jsbook"))
+    ("jsbook")
+    ;; for upLaTeX
+    ("ujarticle") ("ujreport") ("ujbook")
+    ("utarticle") ("utreport") ("utbook"))
   "*List of Japanese document styles."
   :group 'AUCTeX-jp
   :type '(repeat (group (string :format "%v"))))
@@ -421,7 +403,14 @@ Set `japanese-TeX-mode' to t, and enter `TeX-plain-tex-mode'."
   "Japanese plain-TeX specific initializations."
   (when japanese-TeX-mode
 ;    (setq TeX-command-default japanese-TeX-command-default)
-    (TeX-engine-set japanese-TeX-engine-default)))
+    (TeX-engine-set japanese-TeX-engine-default)
+
+    ;; For the intent of the following lines, see the comments below
+    ;; in `japanese-latex-mode-initialization'.
+    (when enable-local-variables
+      (setq major-mode 'japanese-plain-tex-mode)
+      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+		nil t))))
 
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
@@ -453,10 +442,42 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 ;    (setq TeX-command-BibTeX
 ;        (if (and (eq TeX-engine 'ptex) (executable-find "pbibtex"))
 ;            "pBibTeX" "jBibTeX"))
-))
+
+    ;; The value of `major-mode' should be `latex-mode', not
+    ;; `japanese-latex-mode', because the name `latex-mode' is hard
+    ;; coded in several places of AUCTeX like "(eq major-mode
+    ;; 'latex-mode)", "(memq major-mode '(doctex-mode latex-mode)" and
+    ;; so on.  By such piece of codes, `japanese-latex-mode' should
+    ;; simply be regarded as `latex-mode'.  So we'd like to leave
+    ;; `major-mode' as `latex-mode' here, but doing so confuses
+    ;; `hack-local-variables' in two ways.
+    ;; (1) It is tricked into considering that the major mode is not
+    ;;     yet initialized and calls `japanese-latex-mode' again.
+    ;; (2) It does not read the directory local variables prepared for
+    ;;     `japanese-latex-mode'.
+    ;; Thus we temporarily set `major-mode' to `japanese-latex-mode'
+    ;; here and plan to reset it to `latex-mode' after
+    ;; `hack-local-variables' is done.
+    (when enable-local-variables
+      (setq major-mode 'japanese-latex-mode)
+      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+		nil t))))
 
 (add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
+;; This function is useful only within `hack-local-variables-hook'.
+(defun japanese-TeX-reset-mode-name ()
+  (cond ((eq major-mode 'japanese-latex-mode)
+	 (setq major-mode 'latex-mode))
+	((eq major-mode 'japanese-plain-tex-mode)
+	 (setq major-mode 'plain-tex-mode)))
+  (remove-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name t))
+
+;; Make `hack-dir-local-variables' to regard `latex-mode' as parent
+;; of `japanese-latex-mode', and `plain-tex-mode' as parent of
+;; `japanese-plain-tex-mode'.
+(put 'japanese-plain-tex-mode 'derived-mode-parent 'plain-tex-mode)
+(put 'japanese-latex-mode 'derived-mode-parent 'latex-mode)
 
 ;;; Support for various self-insert-command
 

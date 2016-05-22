@@ -1,6 +1,6 @@
 ;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <esbati'at'gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -289,8 +289,10 @@ make them available as new environments.  Update
       (TeX-arg-eval
        (lambda ()
 	 (let ((color
-		(if (fboundp 'LaTeX-color-definecolor-list)
-		    (completing-read "color: " (LaTeX-color-definecolor-list))
+		(if (or (member "xcolor" (TeX-style-list))
+			(member "color" (TeX-style-list)))
+		    (completing-read "color: " (or (LaTeX-xcolor-definecolor-list)
+						   (LaTeX-color-definecolor-list)))
 		  (TeX-read-string "color: "))))
 	   (format "%s" color)))))
 

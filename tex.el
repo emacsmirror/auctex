@@ -151,6 +151,8 @@ If nil, none is specified."
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil t
      :help "Convert DVI file to PostScript")
+    ("Dvipdfmx" "dvipdfmx %d" TeX-run-dvipdfmx nil t
+     :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
      :help "Convert PostScript file to PDF")
     ("Index" "makeindex %s" TeX-run-index nil t
@@ -447,7 +449,7 @@ string."
     ("%(PDF)" (lambda ()
 		(if (and (eq TeX-engine 'default)
 			 (if TeX-PDF-mode
-			     (not TeX-PDF-via-dvips-ps2pdf)
+			     (not (TeX-PDF-from-DVI))
 			   TeX-DVI-via-PDFTeX))
 		    "pdf"
 		  "")))
@@ -1269,7 +1271,7 @@ entry in `TeX-view-program-list-builtin'."
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
       (with-current-buffer (or (when TeX-current-process-region-p
-				 (get-file-buffer (TeX-region-file t)))
+			    	 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
     (let ((pdf (concat file "." (TeX-output-extension))))
@@ -1341,7 +1343,21 @@ DE is the name of the desktop environment, either \"gnome\" or
   (cond
    ((eq system-type 'windows-nt)
     '(("Yap" ("yap -1" (mode-io-correlate " -s %n%b") " %o") "yap")
-      ("dviout" ("dviout -1 %d" (mode-io-correlate "\"# %n %b\"")) "dviout")
+      ("dviout" ("dviout -1 "
+		 ((paper-a4 paper-portrait) "-y=A4 ")
+		 ((paper-a4 paper-landscape) "-y=A4L ")
+		 ((paper-a5 paper-portrait) "-y=A5 ")
+		 ((paper-a5 paper-landscape) "-y=A5L ")
+		 ((paper-b5 paper-portrait) "-y=E5 ")
+		 ((paper-b5 paper-landscape) "-y=E5L ")
+		 ((paper-b4jis paper-portrait) "-y=B4 ")
+		 ((paper-b4jis paper-landscape) "-y=B4L ")
+		 ((paper-b5jis paper-portrait) "-y=B5 ")
+		 ((paper-b5jis paper-landscape) "-y=B5L ")
+		 (paper-legal "-y=Legal ")
+		 (paper-letter "-y=Letter ")
+		 (paper-executive "-y=Executive ")
+		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
 	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
@@ -1584,7 +1600,11 @@ Check the `TeX-view-program-selection' variable" viewer)))
 		   ((listp elt)
 		    (when (TeX-view-match-predicate (car elt))
 		      (setq command (concat command (cadr elt)))))))
-	   command))))
+	   (if (stringp command)
+	       command
+	     ;; Signal an error if `command' isn't a string.  This prevents an
+	     ;; infinite loop in `TeX-command-expand' if `command' is nil.
+	     (error "Wrong viewer specification in `TeX-view-program-list'"))))))
 
 ;;; Engine
 
@@ -1818,7 +1838,9 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
     (with-current-buffer (or (find-buffer-visiting file)
 			     (find-file-noselect file))
       (goto-char 0)
-      (when (re-search-forward "!offset(\\([[:digit:]]+\\))" nil t)
+      ;; Same regexp used in `preview-parse-messages'.  XXX: XEmacs doesn't
+      ;; support regexp classes, so we can't use "[:digit:]" here.
+      (when (re-search-forward "!offset(\\([---0-9]+\\))" nil t)
 	(let ((offset (string-to-int (match-string-no-properties 1))))
 	  (when TeX-region-orig-buffer
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
@@ -2105,19 +2127,52 @@ already established, don't do anything."
   :group 'TeX-command
   :type 'boolean)
 
+(defcustom TeX-PDF-from-DVI nil
+  "Specify if and how to produce PDF output from a DVI file.
+
+If non-nil, the default compiler produces DVI output.  The value
+should be the name of the command used to convert the DVI file to
+PDF or to an intermediate type.
+
+Possible values are
+
+* \"Dvips\": the DVI file is converted to PS with dvips.  After
+  successfully running it, ps2pdf will be the default command to
+  convert the PS file to PDF
+* \"Dvipdfmx\": the PDF is produced with dvipdfmx
+
+Programs should not use this variable directly but the function
+`TeX-PDF-from-DVI' which handles now obsolete variable
+`TeX-PDF-via-dvips-ps2pdf'."
+  :group 'TeX-command
+  :type '(choice
+	  (const :tag "No DVI to PDF conversion" nil)
+	  (const :tag "dvips - ps2pdf sequence" "Dvips")
+	  (const :tag "dvipdfmx" "Dvipdfmx")))
+;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
+;; `TeX-command-default' accordingly.
+(make-variable-buffer-local 'TeX-PDF-from-DVI)
+(put 'TeX-PDF-from-DVI 'safe-local-variable
+     (lambda (x) (or (stringp x) (null x))))
+
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
   :group 'TeX-command
   :type 'boolean)
 (make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'booleanp)
+(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'TeX-booleanp)
+(make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
-(defun TeX-toggle-PDF-via-dvips-ps2pdf ()
-  "Toggle `TeX-PDF-via-dvips-ps2pdf'."
-  (interactive)
-  (setq TeX-PDF-via-dvips-ps2pdf (not TeX-PDF-via-dvips-ps2pdf))
-  (message (concat "TeX-PDF-via-dvips-ps2pdf: "
-		   (if TeX-PDF-via-dvips-ps2pdf "on" "off"))))
+(defun TeX-PDF-from-DVI ()
+  "Return the value of variable `TeX-PDF-from-DVI'.
+
+If `TeX-PDF-from-DVI' is not set and obsolete option
+`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"dvips-ps2pdf\"
+for backward compatibility."
+  (cond
+   (TeX-PDF-from-DVI)
+   (TeX-PDF-via-dvips-ps2pdf
+    "Dvips")))
 
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
@@ -3466,7 +3521,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
-     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\
+     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{u?\\(j[s-]?\\|t\\)\
 \\(article\\|report\\|book\\|slides\\)")
     ("JTEX" japanese-plain-tex-mode
      "-- string likely in Japanese TeX --")
@@ -3737,7 +3792,7 @@ The algorithm is as follows:
 Optional third argument PLURAL is the plural form of TYPE.
 By default just add an `s'.
 
-This function create a set of variables and functions to maintain a
+This macro creates a set of variables and functions to maintain a
 separate type of information in the parser."
   (let* ((names (or plural (concat name "s")))
 	 (tmp (intern (concat prefix "-auto-" name)))
@@ -3935,6 +3990,7 @@ If TEX is a directory, generate style files for all files in the directory."
 			    LaTeX-provided-class-options))
 	    (pkg-opts (if (boundp 'LaTeX-provided-package-options)
 			  LaTeX-provided-package-options))
+	    (tex-cmd-opts TeX-command-extra-options)
 	    (verb-envs (when (boundp 'LaTeX-verbatim-environments-local)
 			 LaTeX-verbatim-environments-local))
 	    (verb-macros-delims (when (boundp 'LaTeX-verbatim-macros-with-delims-local)
@@ -3947,6 +4003,9 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook\n \""
 		  style "\"\n (lambda ()")
+	  (unless (string= tex-cmd-opts "")
+	    (insert "\n   (setq TeX-command-extra-options\n"
+		    "         " (prin1-to-string tex-cmd-opts) ")"))
 	  (when class-opts
 	    (insert "\n   (TeX-add-to-alist 'LaTeX-provided-class-options\n"
 		    "                     '" (prin1-to-string class-opts) ")"))
@@ -4804,7 +4863,7 @@ Brace insertion is only done if point is in a math construct and
 
 (defun TeX-newline ()
   "Call the function specified by the variable `TeX-newline-function'."
-  (interactive) (funcall TeX-newline-function))
+  (interactive) (call-interactively TeX-newline-function))
 
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
@@ -4938,10 +4997,21 @@ Brace insertion is only done if point is in a math construct and
 	 :style toggle :selected TeX-PDF-mode
 	 :active (not (eq TeX-engine 'omega))
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
-       [ "PDF via dvips + ps2pdf" TeX-toggle-PDF-via-dvips-ps2pdf
-	 :style toggle :selected TeX-PDF-via-dvips-ps2pdf
+       ( "PDF from DVI"
 	 :visible TeX-PDF-mode
-	 :help "Compile with (La)TeX and convert to PDF with dvips + ps2pdf"]
+	 :help "Compile to DVI with (La)TeX and convert to PDF"
+	 [ "Compile directly to PDF"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI nil))
+	   :style radio :selected (null (TeX-PDF-from-DVI))
+	   :help "Compile directly to PDF without intermediate conversions"]
+	 [ "dvips + ps2pdf"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvips"))
+	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvips")
+	   :help "Convert DVI to PDF with dvips + ps2pdf sequence"]
+	 [ "dvipdfmx"
+	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvipdfmx"))
+	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvipdfmx")
+	   :help "Convert DVI to PDF with dvipdfmx"])
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]
@@ -5928,7 +5998,10 @@ sign.  With optional ARG, insert that many dollar signs."
        (texmathp)
        (boundp 'current-input-method) current-input-method
        (string-match TeX-math-input-method-off-regexp current-input-method)
-       (inactivate-input-method)))
+       ;; inactivate-input-method is obsolete since emacs 24.3.
+       (if (fboundp 'deactivate-input-method)
+	   (deactivate-input-method)
+	 (inactivate-input-method))))
 
 ;;; Simple Commands
 
@@ -6445,6 +6518,18 @@ NAME may be a package, a command, or a document."
 (put 'TeX-newline 'delete-selection t)
 (put 'TeX-insert-quote 'delete-selection t)
 (put 'TeX-insert-backslash 'delete-selection t)
+;; When `TeX-electric-math' is non-nil, `TeX-insert-dollar' interferes with
+;; `delete-selection-mode', but when it's nil users may want to be able to
+;; delete active region if `delete-selection-mode' is active, see bug#23177.  We
+;; can dynamically determine the behavior of `delete-selection' with
+;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.  This
+;; dynamicity has been introduced in Emacs 24.3, for previous versions keep
+;; `TeX-insert-dollar' without this property.
+(if (or (> emacs-major-version 24)
+	(and (= emacs-major-version 24)
+	     (>= emacs-minor-version 3)))
+    (put 'TeX-insert-dollar 'delete-selection
+	 (lambda () (null TeX-electric-math))))
 
 (defun TeX-how-many (regexp &optional rstart rend)
   "Compatibily function for `how-many'.

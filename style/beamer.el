@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class
 
-;; Copyright (C) 2003, 2004, 2005, 2008, 2013, 2014 Free Software Foundation
+;; Copyright (C) 2003, 2004, 2005, 2008, 2013-2016 Free Software Foundation
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -169,9 +169,8 @@
 		       "subsectionslide" "framenumber" "figure" "table"
 		       "beamerpauses")
    (LaTeX-add-pagestyles "navigation")
-   (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list
-		'("semiverbatim" current-indentation))
+   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+		'("semiverbatim" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
 
    ;; Fontification

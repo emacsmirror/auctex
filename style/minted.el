@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty'
 
-;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2016 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -141,8 +141,8 @@
       (add-to-list 'LaTeX-auto-environment
 		   (list env* 'LaTeX-env-args
 			 '(TeX-arg-key-val LaTeX-minted-key-val-options)))
-      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation))
-      (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation))
+      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
+      (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env)
       (add-to-list 'LaTeX-verbatim-environments-local env*)))
   ;; \newmint{foo}{opts} => \foo|code|
@@ -210,9 +210,8 @@
    (TeX-auto-add-regexp LaTeX-minted-newmintedfile-regexp)
 
    ;; Filling
-   (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list
-		'("minted" current-indentation))
+   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+		'("minted" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "minted")
    ;; FIXME: That doesn't work because \mintinline has 2 args and only the
    ;; second argument is verbatim.

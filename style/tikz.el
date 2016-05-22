@@ -42,21 +42,21 @@ CLOSE\". If OPEN or CLOSE are nil, set them to `LaTeX-optop' and
       (concat open arg close)
     ""))
 
-(defun TeX-TikZ-arg-rect-point (_ignored)
+(defun TeX-TikZ-arg-rect-point (_ignored &optional prefix)
   "Prompt the user for a point on the Cartesian plane.
 Ask the user for an X and Y coordinate, and return the string
 \"(X,Y)\"."
   (let ((x (TeX-read-string (TeX-argument-prompt nil nil "X-coordinate")))
         (y (TeX-read-string (TeX-argument-prompt nil nil "Y-coordinate"))))
-   (concat " (" x ", " y") ")))
+   (concat " " prefix "(" x ", " y") ")))
 
-(defun TeX-TikZ-arg-polar-point (_ignored)
+(defun TeX-TikZ-arg-polar-point (_ignored &optional prefix)
   "Prompt the user for a point on the polar plane.
 Ask the user for r and theta values, and return the string
 \"(THETA:R)\"."
   (let ((r (TeX-read-string (TeX-argument-prompt nil nil "R")))
         (theta (TeX-read-string (TeX-argument-prompt nil nil "Theta"))))
-   (concat " (" theta ":" r ") ")))
+   (concat " " prefix "(" theta ":" r ") ")))
 
 (defun TeX-TikZ-arg-options (optional)
   "Prompt the user for options to a TikZ macro.
@@ -94,27 +94,36 @@ string \"node[OPTIONS](NAME){TEXT}\"."
         (label (TeX-TikZ-arg-label nil)))
     (concat "node" options name label " ")))
 
-(defun TeX-TikZ-get-arg-type (types &optional prompt)
+(defun TeX-TikZ-get-arg-type (types prompt)
   "Prompt the user for an argument type.
-TYPES is a list of possible types that the user can specify.  If
-PROMPT is non-nil use that prompt instead."
-  (let ((completion-ignore-case t)
-        (prompt (if prompt
-                    prompt
-                  "Next argument type (RET to finish): ")))
+TYPES is a list of possible types that the user can specify.  Use
+PROMPT as the prompt for input."
+  (let ((completion-ignore-case t))
     (completing-read prompt types nil t)))
 
-(defun TeX-TikZ-single-macro-arg (function-alist &optional prompt)
+(defun TeX-TikZ-single-macro-arg (function-alist prompt &optional optional)
   "Prompt the user for a single argument to compose a TikZ macro.
 FUNCTION-ALIST is a mapping of argument-types to functions.  The
 user is prompted for the argument type, the chosen function is
 then called and the value returned.  PROMPT is used as the prompt
-for the argument type."
-  (let* ((argument-types (mapcar 'car function-alist))
-         (argument-type (TeX-TikZ-get-arg-type argument-types prompt)))
-    (funcall
-     (cadr (assoc argument-type function-alist))
-     argument-type)))
+for the argument type.  When OPTIONAL is non-nil, add \"\" to
+FUNCTION-ALIST with a mapping to `identity', permitting an
+optional input."
+  (let* ((selected-argument-type (TeX-TikZ-get-arg-type function-alist prompt))
+         (fn-alist-with-optional-elm (if optional
+                                         `(,@function-alist ("" identity))
+                                       function-alist))
+         (selected-mapping (assoc selected-argument-type
+                                  fn-alist-with-optional-elm)))
+
+    (eval
+     ;; Build the form we wish to evaluate.  This will be the function
+     ;; to be called (the second element in the assoc element),
+     ;; followed by the type name (the first element), followed by any
+     ;; other elements in the list as extra arguments.
+     `(,(cadr selected-mapping)
+       ,(car selected-mapping)
+       ,@(cddr selected-mapping)))))
 
 
 (defun TeX-TikZ-macro-arg (function-alist)
@@ -125,10 +134,8 @@ choose form the cars in FUNCTION-ALIST and the appropriate
 function is then called.  If the user enters \"\", then the macro
 is finished."
   (let* ((options (TeX-TikZ-arg-options t))
-         ;; For the iterative version, we need to add "" to the
-         ;; function-alist, allowing the user to end the macro.
-         (function-alist-iterative `(,@function-alist ("" identity)))
-         (string-to-insert (TeX-TikZ-single-macro-arg function-alist-iterative)))
+         (prompt "Next argument type (RET to finish): ")
+         (string-to-insert (TeX-TikZ-single-macro-arg function-alist prompt t)))
 
     ;; Insert the macro options.
     (insert options " ")
@@ -138,7 +145,7 @@ is finished."
     (while (not (string= string-to-insert ""))
       (insert string-to-insert)
       (setq string-to-insert
-            (TeX-TikZ-single-macro-arg function-alist-iterative)))
+            (TeX-TikZ-single-macro-arg function-alist prompt t)))
 
     ;; Finish the macro.
     (insert ";")))
@@ -157,44 +164,89 @@ them as a list of strings, dropping the '()'."
   (let* ((env-end (save-excursion
                     (LaTeX-find-matching-end)
                      (point)))
-         (matches ()))
+         (matches))
     ;; TODO: Handle cases where we are in a nested environment, \scope
     ;; for example.
     (save-excursion
       (LaTeX-find-matching-begin)
       (save-match-data
         (while (re-search-forward TeX-TikZ-point-name-regexp env-end t)
-          (add-to-list 'matches (match-string 1)))))
+          (push (match-string 1) matches))))
     matches))
 
-(defun TeX-TikZ-arg-named-point (_ignored)
+(defun TeX-TikZ-arg-named-point (_ignored &optional prefix)
   "Prompt the user for the name of a previous named-point."
   (let ((point-name (completing-read "Point name: "
                                      (TeX-TikZ-find-named-points))))
-    (concat " (" point-name ") ")))
+    (concat " " prefix "(" point-name ") ")))
+
+(defun TeX-TikZ-arg-circle (_ignored)
+  "Prompt the user for the arguments to the circle command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "circle" options)))
+
+(defun TeX-TikZ-arg-arc (_ignored)
+  "Prompt the user for the arguments to the arc command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "arc" options)))
+
+(defun TeX-TikZ-arg-bend (optional)
+  "Prompt the user for a bend argument.
+If OPTIONAL is non-nil and the user doesn't provide a point,
+  return \"\"."
+  (let ((point
+         (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
+                                    (TeX-argument-prompt optional nil "Bend point")
+                                    optional)))
+    (if (string= point "")
+        point
+      (concat " bend" point))))
+
+(defun TeX-TikZ-arg-parabola (_ignored)
+  "Prompt the user for the arguments to the parabola command."
+  (let ((options (TeX-TikZ-arg-options t))
+        (bend (TeX-TikZ-arg-bend t)))
+       (concat "parabola" options bend)))
+
+(defun TeX-TikZ-arg-grid (_ignored)
+  "Prompt the user for the arguments to the grid command."
+  (let ((options (TeX-TikZ-arg-options t)))
+    (concat "grid" options)))
 
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
     ("Named Point" TeX-TikZ-arg-named-point))
-  "An alist of point specification types and their functions." )
+  "An alist of point specification types and their functions.")
+
+(defconst TeX-TikZ-relative-point-function-map
+  (apply 'append (mapcar
+                  (lambda (point-map)
+                    (let ((key (car point-map))
+                          (value (cadr point-map)))
+                      `((,(concat "+" key) ,value "+")
+                        (,(concat "++" key) ,value "++"))))
+                  TeX-TikZ-point-function-map))
+  "`TeX-TikZ-point-function-map' with \"+\" and \"++\" as a
+prefix.")
 
 (defconst TeX-TikZ-path-connector-function-map
-  (let ((connectors '("--" "|-" "-|")))
-    (apply 'append (mapcar
-                     (lambda (connector)
-                       `((,connector identity)
-                         (,(concat connector " +") identity)
-                         (,(concat connector " ++") identity)))
-                     connectors)))
-  "An alist of path connectors.
-A set of base connectors along with variants that have \" +\" and
-\" ++\" appended to them, mapping to the identity function.")
+  '(("--" identity)
+    ("|-" identity)
+    ( "-|" identity)
+    ("sin" identity)
+    ("cos" identity))
+  "An alist of path connectors.")
 
 (defconst TeX-TikZ-draw-arg-function-map
   `(,@TeX-TikZ-point-function-map
+    ,@TeX-TikZ-relative-point-function-map
     ,@TeX-TikZ-path-connector-function-map
-    ("Node" TeX-TikZ-arg-node))
+    ("Node" TeX-TikZ-arg-node)
+    ("Circle" TeX-TikZ-arg-circle)
+    ("Arc" TeX-TikZ-arg-arc)
+    ("Parabola" TeX-TikZ-arg-parabola)
+    ("Grid" TeX-TikZ-arg-grid))
   "An alist of argument names and functoins for TikZ's \draw.")
 
 (defun TeX-TikZ-draw-arg (_ignored)
