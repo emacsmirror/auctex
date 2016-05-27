@@ -30,6 +30,7 @@
 
 (require 'tex)
 (require 'latex)
+(require 'comint)
 
 ;;; Customization:
 
@@ -907,7 +908,7 @@ region."
 	(with-current-buffer region-buf
 	  (goto-char (point-min))
 	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)")
-	    (let ((offset (string-to-int (match-string 1))))
+	    (let ((offset (string-to-number (match-string 1))))
 	      (goto-char (point-min))
 	      (forward-line (- current-line (1+ offset))))))))))
 
@@ -2096,7 +2097,8 @@ original file."
 	(let ((line-col (with-current-buffer orig-buffer
 			  (cons (line-number-at-pos)
 				(current-column)))))
-	  (goto-line (abs (- header-offset (car line-col))))
+          (goto-char (point-min))
+          (forward-line (1- (abs (- header-offset (car line-col)))))
 	  (forward-char (cdr line-col)))
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
@@ -3672,34 +3674,35 @@ forward, if negative)."
 
 ;;; Output mode
 
-(if (fboundp 'special-mode)
-    (progn
-      (defalias 'TeX-special-mode 'special-mode)
-      (defvaralias 'TeX-special-mode-map 'special-mode-map))
-  (defun TeX-special-mode ()
-    "Placeholder mode for Emacsen which don't have `special-mode'.")
-  (defvar TeX-special-mode-map
-    (let ((map (make-sparse-keymap)))
-      (suppress-keymap map)
-      (define-key map "q" (if (fboundp 'quit-window)
-                              'quit-window
-                            'bury-buffer))
-      (define-key map " " (if (fboundp 'scroll-up-command)
-                              'scroll-up-command
-                            'scroll-up))
-      (define-key map [backspace] (if (fboundp 'scroll-down-command)
-                                      'scroll-down-command
-                                    'scroll-down))
-      (define-key map "\C-?" (if (fboundp 'scroll-down-command)
-                                 'scroll-down-command
-                               'scroll-down))
-      (define-key map "?" 'describe-mode)
-      (define-key map "h" 'describe-mode)
-      (define-key map ">" 'end-of-buffer)
-      (define-key map "<" 'beginning-of-buffer)
-      (define-key map "g" 'revert-buffer)
-      map)
-    "Keymap for `TeX-special-mode-map'."))
+(defalias 'TeX-special-mode
+  (if (fboundp 'special-mode)
+      (progn
+        (defvaralias 'TeX-special-mode-map 'special-mode-map)
+        #'special-mode)
+    (defvar TeX-special-mode-map
+      (let ((map (make-sparse-keymap)))
+        (suppress-keymap map)
+        (define-key map "q" (if (fboundp 'quit-window)
+                                'quit-window
+                              'bury-buffer))
+        (define-key map " " (if (fboundp 'scroll-up-command)
+                                'scroll-up-command
+                              'scroll-up))
+        (define-key map [backspace] (if (fboundp 'scroll-down-command)
+                                        'scroll-down-command
+                                      'scroll-down))
+        (define-key map "\C-?" (if (fboundp 'scroll-down-command)
+                                   'scroll-down-command
+                                 'scroll-down))
+        (define-key map "?" 'describe-mode)
+        (define-key map "h" 'describe-mode)
+        (define-key map ">" 'end-of-buffer)
+        (define-key map "<" 'beginning-of-buffer)
+        (define-key map "g" 'revert-buffer)
+        map)
+      "Keymap for `TeX-special-mode-map'.")
+    (lambda ()
+      "Placeholder mode for Emacsen which don't have `special-mode'.")))
 
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
