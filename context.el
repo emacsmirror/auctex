@@ -495,6 +495,14 @@ in your .emacs file."
     ConTeXt-section-ref
     ConTeXt-section-section))
 
+;; Define before first use.
+(defcustom ConTeXt-Mark-version "II"
+  "ConTeXt Mark version used for running ConTeXt."
+  :type "string"
+  :group 'TeX-command)
+(make-variable-buffer-local 'ConTeXt-Mark-version)
+(put 'ConTeXt-Mark-version 'safe-local-variable 'stringp)
+
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
 Insert this hook into `ConTeXt-numbered-section-hook' to allow the user to change
@@ -1004,11 +1012,11 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
    "[][]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
    (ConTeXt-environment-start-name) "\\|"
    (ConTeXt-environment-stop-name) "\\|"
-   (mapconcat 'car ConTeXt-numbered-section-list "\\b\\|") "\\b\\|"
-   (mapconcat 'car ConTeXt-unnumbered-section-list "\\b\\|") "\\b\\|"
-   (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
+   (mapconcat #'car ConTeXt-numbered-section-list "\\b\\|") "\\b\\|"
+   (mapconcat #'car ConTeXt-unnumbered-section-list "\\b\\|") "\\b\\|"
+   (mapconcat #'identity ConTeXt-extra-paragraph-commands "\\b\\|")
    "\\b\\|"
-   (mapconcat 'identity ConTeXt-item-list "\\b\\|") "\\b\\)"))
+   (mapconcat #'identity ConTeXt-item-list "\\b\\|") "\\b\\)"))
 
 
 ;; Outline support
@@ -1028,14 +1036,14 @@ header is at the start of a line."
    "[ \t]*"
    (regexp-quote TeX-esc)
    "\\("
-   (mapconcat 'ConTeXt-environment-full-start-name ConTeXt-section-block-list "\\|") "\\|"
-   (mapconcat 'car ConTeXt-numbered-section-list "\\|")
-   (mapconcat 'car ConTeXt-unnumbered-section-list "\\|")
+   (mapconcat #'ConTeXt-environment-full-start-name ConTeXt-section-block-list "\\|") "\\|"
+   (mapconcat #'car ConTeXt-numbered-section-list "\\|")
+   (mapconcat #'car ConTeXt-unnumbered-section-list "\\|")
    "\\)\\b"
    (if TeX-outline-extra
        "\\|"
      "")
-   (mapconcat 'car TeX-outline-extra "\\|")
+   (mapconcat #'car TeX-outline-extra "\\|")
    "\\|" (ConTeXt-header-end) "\\b"
    "\\|" (ConTeXt-trailer-start) "\\b"))
 
@@ -1063,7 +1071,7 @@ header is at the start of a line."
   "Regular expression that matches a start of all environments mentioned in LIST."
   (concat
    "start\\("
-   (mapconcat 'identity list "\\|")
+   (mapconcat #'identity list "\\|")
    "\\)\\b"))
 
 ;; The top headings are \starttext, \startfrontmatter, \startbodymatter etc.
@@ -1533,68 +1541,61 @@ else.  There might be text before point."
 	(TeX-update-style)
 	(setq ConTeXt-menu-changed nil)
 	(message "Updating section menu...")
-	(mapc 'ConTeXt-section-enable ConTeXt-section-list)
+	(mapc #'ConTeXt-section-enable ConTeXt-section-list)
 	(message "Updating environment menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-environment-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-environment-menu-entry
+			   (mapcar #'ConTeXt-environment-menu-entry
 				   (ConTeXt-environment-list))))
 	(message "Updating modify environment menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-environment-modify-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-environment-modify-menu-entry
+			   (mapcar #'ConTeXt-environment-modify-menu-entry
 				   (ConTeXt-environment-list))))
 	(message "Updating define menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-define-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-define-menu-entry
+			   (mapcar #'ConTeXt-define-menu-entry
 				   ConTeXt-define-list)))
 	(message "Updating setup menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-setup-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-setup-menu-entry
+			   (mapcar #'ConTeXt-setup-menu-entry
 				   ConTeXt-setup-list)))
 	(message "Updating referencing menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-referencing-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-referencing-menu-entry
+			   (mapcar #'ConTeXt-referencing-menu-entry
 				   ConTeXt-referencing-list)))
 	(message "Updating other macro's menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-other-macro-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-other-macro-menu-entry
+			   (mapcar #'ConTeXt-other-macro-menu-entry
 				   ConTeXt-other-macro-list)))
 	(message "Updating project structure menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-project-structure-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-project-structure-menu-entry
+			   (mapcar #'ConTeXt-project-structure-menu-entry
 				   ConTeXt-project-structure-list)))
 	(message "Updating section block menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-section-block-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-section-block-menu-entry
+			   (mapcar #'ConTeXt-section-block-menu-entry
 				   ConTeXt-section-block-list)))
 	(message "Updating section menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-numbered-section-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-numbered-section-menu-entry
+			   (mapcar #'ConTeXt-numbered-section-menu-entry
 				   ConTeXt-numbered-section-list)))
 	(easy-menu-change '("ConTeXt") ConTeXt-unnumbered-section-menu-name
 			  (LaTeX-split-long-menu
-			   (mapcar 'ConTeXt-unnumbered-section-menu-entry
+			   (mapcar #'ConTeXt-unnumbered-section-menu-entry
 				   ConTeXt-unnumbered-section-list)))
 	(message "Updating...done")
 	(and menu (easy-menu-return-item ConTeXt-mode-menu menu))
 	)))
 
 ;;; Option expander
-
-(defcustom ConTeXt-Mark-version "II"
-  "ConTeXt Mark version used for running ConTeXt."
-  :type "string"
-  :group 'TeX-command)
-(make-variable-buffer-local 'ConTeXt-Mark-version)
-(put 'ConTeXt-Mark-version 'safe-local-variable 'stringp)
 
 (defvar ConTeXt-texexec-option-nonstop "--nonstop "
   "Command line option for texexec to use nonstopmode.")
@@ -1708,7 +1709,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 					      ConTeXt-current-interface)))))
 
   ;; Create certain regular expressions based on language
-  (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat 'identity ConTeXt-item-list "\\|") "\\)\\>"))
+  (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
 
   ;; What's the deepest level at we can collapse a document?
   ;; set only if user has not set it. Need to be set before menu is created.

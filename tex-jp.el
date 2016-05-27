@@ -33,6 +33,7 @@
 ;;; Code:
 
 (require 'latex)
+(require 'tex-buf)
 
 ;;; Customization
 
@@ -101,6 +102,12 @@ For detail, see `TeX-command-list', to which this list is appended."
 				     (const :tag "Texinfo" texinfo-mode)
 				     (const :tag "AmSTeX" ams-tex-mode)))
 			(repeat :tag "Menu elements" :inline t sexp))))
+
+;; Define before first use.
+(defvar japanese-TeX-mode nil
+  "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
+(make-variable-buffer-local 'japanese-TeX-mode)
+(put 'japanese-TeX-mode 'permanent-local t)
 
 ;; 順調に行けば不要になる。
 (setq TeX-command-list
@@ -251,8 +258,6 @@ For detail, see `TeX-command-list', to which this list is appended."
   :group 'AUCTeX-jp
   :type 'boolean)
 
-(when (featurep 'mule)
-
 ;; FIX-ME (2007-02-09) The default coding system in recent Unix (like Fedora and
 ;; Ubuntu) is utf-8.  But Japanese TeX system does not support utf-8 yet
 ;; (platex-utf is under development, may be alpha phase).  So,
@@ -275,8 +280,6 @@ For detail, see `TeX-command-list', to which this list is appended."
   "TeX-process' coding system with standard output."
   :group 'AUCTeX-jp
   :type 'coding-system)
-
-)
 
 ;; 順調に行けば不要になる。
 (defcustom japanese-TeX-command-default "pTeX"
@@ -322,16 +325,15 @@ For detail, see `TeX-command-list', to which this list is appended."
 
 ;;; Coding system
 
-(when (featurep 'mule)
-
 (defun japanese-TeX-set-process-coding-system (process)
   "Set proper coding system for japanese TeX PROCESS."
   (if (with-current-buffer TeX-command-buffer japanese-TeX-mode)
       (set-process-coding-system process
 				 TeX-japanese-process-output-coding-system
 				 TeX-japanese-process-input-coding-system)))
-(setq TeX-after-start-process-function
-      'japanese-TeX-set-process-coding-system)
+(when (featurep 'mule)
+  (setq TeX-after-start-process-function
+        #'japanese-TeX-set-process-coding-system))
 
 (defcustom japanese-TeX-use-kanji-opt-flag t
   "Add kanji option to Japanese pTeX family if non-nil."
@@ -381,14 +383,7 @@ For inappropriate encoding, nil instead."
       (japanese-TeX-coding-ejsu
        (default-value 'buffer-file-coding-system))))
 
-)
-
 ;;; Japanese TeX modes
-
-(defvar japanese-TeX-mode nil
-  "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
-(make-variable-buffer-local 'japanese-TeX-mode)
-(put 'japanese-TeX-mode 'permanent-local t)
 
 ;;;###autoload
 (defun japanese-plain-tex-mode ()
@@ -482,13 +477,13 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 
 (fset 'japanese-TeX-self-insert-command
       (cond ((fboundp 'can-n-egg-self-insert-command)
-	     'can-n-egg-self-insert-command)
+	     #'can-n-egg-self-insert-command)
 	    ((fboundp 'egg-self-insert-command)
-	     'egg-self-insert-command)
+	     #'egg-self-insert-command)
 	    ((fboundp 'canna-self-insert-command)
-	     'canna-self-insert-command)
+	     #'canna-self-insert-command)
 	    (t
-	     'self-insert-command)))
+	     #'self-insert-command)))
 
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
