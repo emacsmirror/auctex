@@ -164,6 +164,7 @@ Controlling Screen Display
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
 * Narrowing::                   Restricting display and editing to a portion of the buffer
+* Prettifying::                 Displaying Greek and math macros as Unicode characters
 
 Font Locking
 
@@ -1810,11 +1811,15 @@ Moreover, you can focus in a specific portion of the code by narrowing
 the buffer to the desired region.  @AUCTeX{} provides also functions to
 narrow the buffer to the current group and to @LaTeX{} environments.
 
+Lastly, @AUCTeX{} with Emacs 25 or later can display certain math macros
+using Unicode characters.  That's called prettification.
+
 @menu
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
 * Narrowing::                   Restricting display and editing to a portion of the buffer
+* Prettifying::                 Displaying Greek and math macros as Unicode characters
 @end menu
 
 @node Font Locking
@@ -2577,6 +2582,30 @@ Like other standard narrowing functions, the above commands are
 disabled.  Attempting to use them asks for confirmation and gives you
 the option of enabling them; if you enable the commands, confirmation
 will no longer be required for them.
+
+@node Prettifying
+@section Prettifying
+
+Emacs 25 is able to prettify symbols in programming language buffers,
+@pxref{Misc for Programs,,,emacs,GNU Emacs Manual}.  The canonical
+example is to display @code{(lambda () ...)} as @code{(λ () ...)} in
+Lisp buffers.
+
+@AUCTeX{} can use this feature in order to display certain math macros
+and greek letters using their Unicode representation, too.  For example,
+the @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α
+× β}.  When point is on one of the characters, it'll be unprettified
+automatically, meaning you see the verbatim text again.
+
+To enable prettification in @AUCTeX, simply add
+@code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled
+prettification globally with @code{global-prettify-symbols-mode}, then
+it's automatically enabled in @AUCTeX, too.
+
+You can also add custom symbol unicode-character pairs for
+prettification by adding to @code{tex--prettify-symbols-alist}.  Note
+that this variable is part of Emacs' stock @code{tex-mode.el} and used
+by that and @AUCTeX{}.
 
 @node Processing
 @chapter Starting Processors, Viewers and Other Programs
