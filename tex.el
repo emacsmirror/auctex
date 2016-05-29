@@ -1885,7 +1885,8 @@ or newer."
 	(when (or (< pos (point-min))
 		  (> pos (point-max)))
 	  (widen))
-	(goto-char pos)))))
+	(goto-char pos))
+      (x-focus-frame (selected-frame)))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
