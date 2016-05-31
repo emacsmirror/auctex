@@ -1886,7 +1886,10 @@ or newer."
 		  (> pos (point-max)))
 	  (widen))
 	(goto-char pos))
-      (x-focus-frame (selected-frame)))))
+      ;; Grab focus after inverse search (only if `x-focus-frame' function is
+      ;; available).
+      (when (fboundp 'x-focus-frame)
+	(x-focus-frame (selected-frame))))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
