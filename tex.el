@@ -1846,12 +1846,44 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
 		  (+ line offset) col)))))))
 
+(defcustom TeX-raise-frame-function nil
+  "A function which will be called to raise the Emacs frame.
+The function is called after `TeX-source-correlate-sync-source'
+has processed an inverse search DBUS request from Evince or
+Atril in order to raise the Emacs frame.
+
+`TeX-source-correlate-sync-source' already calls `raise-frame',
+however, depending on window manager and focus stealing policies,
+it might very well be that Emacs doesn't pop into the foreground.
+So you can do whatever it takes here.
+
+For some users, `x-focus-frame' does the trick.  For some
+users (on GNOME 3.20),
+
+  (lambda ()
+    (run-at-time 0.5 nil #'x-focus-frame))
+
+does the trick.  Some other users use the external wmctrl tool to
+raise the Emacs frame like so:
+
+  (lambda ()
+    (call-process
+     \"wmctrl\" nil nil nil \"-i\" \"-R\"
+     (frame-parameter (selected-frame) 'outer-window-id)))"
+  :type 'function
+  :group 'TeX-view)
+
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
 emitted from the Evince document viewer.  IGNORED absorbs an
 unused id field accompanying the DBUS signal sent by Evince-3.0.0
-or newer."
+or newer.
+
+Note that this function tries to raise the Emacs frame using
+`raise-frame'.  However, that doesn't work reliably across window
+managers/operating systems.  If the Emacs frame isn't raised,
+customize `TeX-raise-frame-function'."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
@@ -1886,10 +1918,9 @@ or newer."
 		  (> pos (point-max)))
 	  (widen))
 	(goto-char pos))
-      ;; Grab focus after inverse search (only if `x-focus-frame' function is
-      ;; available).
-      (when (fboundp 'x-focus-frame)
-	(x-focus-frame (selected-frame))))))
+      (raise-frame)
+      (when TeX-raise-frame-function
+	(funcall TeX-raise-frame-function)))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
