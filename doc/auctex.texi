@@ -3355,8 +3355,9 @@ Atril, you can customize the following option.
 A function that will be called after performing an inverse search from
 Evince or Atril in order to raise the current Emacs frame.
 
-If your Emacs frame is already raised in that situation, just leave this
-variable set to @code{nil}.  Otherwise, here are some alternative
+If your Emacs frame is already raised in that situation, just
+leave this variable set to its default value
+@code{raise-frame}.  Otherwise, here are some alternative
 settings that work for some users.
 
 @lisp

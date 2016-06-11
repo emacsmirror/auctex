@@ -12,6 +12,11 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} has a new customize option @code{TeX-raise-frame-function}
+that is currently only used by Evince and Atril inverse search to raise
+the Emacs frame.
+
+@item
 @AUCTeX{} now has limited support for the TikZ package.  For the moment,
 this includes some basic support for prompting the user of arguments to
 the @samp{\draw} macro.

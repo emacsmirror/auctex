@@ -1846,16 +1846,16 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
 		  (+ line offset) col)))))))
 
-(defcustom TeX-raise-frame-function nil
+(defcustom TeX-raise-frame-function #'raise-frame
   "A function which will be called to raise the Emacs frame.
 The function is called after `TeX-source-correlate-sync-source'
 has processed an inverse search DBUS request from Evince or
 Atril in order to raise the Emacs frame.
 
-`TeX-source-correlate-sync-source' already calls `raise-frame',
-however, depending on window manager and focus stealing policies,
-it might very well be that Emacs doesn't pop into the foreground.
-So you can do whatever it takes here.
+The default value is `raise-frame', however, depending on window
+manager and focus stealing policies, it might very well be that
+Emacs doesn't pop into the foreground.  So you can do whatever it
+takes here.
 
 For some users, `x-focus-frame' does the trick.  For some
 users (on GNOME 3.20),
@@ -1880,10 +1880,8 @@ emitted from the Evince document viewer.  IGNORED absorbs an
 unused id field accompanying the DBUS signal sent by Evince-3.0.0
 or newer.
 
-Note that this function tries to raise the Emacs frame using
-`raise-frame'.  However, that doesn't work reliably across window
-managers/operating systems.  If the Emacs frame isn't raised,
-customize `TeX-raise-frame-function'."
+If the Emacs frame isn't raised, customize
+`TeX-raise-frame-function'."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
@@ -1918,7 +1916,6 @@ customize `TeX-raise-frame-function'."
 		  (> pos (point-max)))
 	  (widen))
 	(goto-char pos))
-      (raise-frame)
       (when TeX-raise-frame-function
 	(funcall TeX-raise-frame-function)))))
 
