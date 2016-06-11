@@ -3342,6 +3342,48 @@ from the viewer, typically by a mouse click.  Refer to the documentation
 of your viewer to find out how it has to be configured and what you have
 to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 
+@vindex TeX-source-correlate-start-server
+Note that inverse search with the Evince PDF viewer or its MATE fork
+Atril might fail in raising the Emacs frame after updating point in your
+document's buffer.  There is simply no way to raise the Emacs frame
+reliably accross different operating systems and different window
+managers with their different focus stealing policies.  If the Emacs
+frame is not raised after performing an inverse search from Evince or
+Atril, you can customize the following option.
+
+@defopt TeX-raise-frame-function
+A function that will be called after performing an inverse search from
+Evince or Atril in order to raise the current Emacs frame.
+
+If your Emacs frame is already raised in that situation, just leave this
+variable set to @code{nil}.  Otherwise, here are some alternative
+settings that work for some users.
+
+@lisp
+;; Alternative 1: For some users, `x-focus-frame' works.  Note
+;; that this function requires Emacs 24+.
+(setq TeX-raise-frame-function #'x-focus-frame)
+
+;; Alternative 2: Under GNOME 3.20 (and probably others), it
+;; seems some focus stealing prevention policy prohibits that
+;; some window gets the focus immediately after the user has
+;; clicked in some other window.  Here waiting a bit before
+;; issuing the request seems to work.
+(setq TeX-raise-frame-function
+      (lambda ()
+	(run-at-time 0.5 nil #'x-focus-frame)))
+
+;; Alternative 3: Use the external wmctrl tool in order to
+;; force Emacs into the focus.
+(setq TeX-raise-frame-function
+      (lambda ()
+	(call-process
+	 "wmctrl" nil nil nil "-i" "-R"
+	 (frame-parameter (selected-frame) ’outer-window-id))))
+@end lisp
+@end defopt
+
+
 @node Debugging
 @section Catching the errors
 @cindex Debugging
