@@ -1262,8 +1262,11 @@ DE is the name of the desktop environment, either \"gnome\" or
 If `TeX-source-correlate-mode' is disabled, only find and pop to
 the output PDF file.  Used by default for the PDF Tools viewer
 entry in `TeX-view-program-list-builtin'."
-  (unless (featurep 'pdf-tools)
-    (error "PDF Tools are not installed"))
+  ;; Make sure `pdf-tools' is at least in the `load-path', but the user must
+  ;; take care of properly loading and installing the package.  We used to test
+  ;; "(featurep 'pdf-tools)", but that doesn't play well with deferred loading.
+  (unless (fboundp 'pdf-tools-install)
+    (error "PDF Tools are not available"))
   (unless TeX-PDF-mode
     (error "PDF Tools only work with PDF output"))
   (add-hook 'pdf-sync-backward-redirect-functions
