@@ -2597,10 +2597,10 @@ the @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α
 × β}.  When point is on one of the characters, it'll be unprettified
 automatically, meaning you see the verbatim text again.
 
-To enable prettification in @AUCTeX, simply add
+To enable prettification in @AUCTeX{}, simply add
 @code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled
 prettification globally with @code{global-prettify-symbols-mode}, then
-it's automatically enabled in @AUCTeX, too.
+it's automatically enabled in @AUCTeX{}, too.
 
 You can also add custom symbol unicode-character pairs for
 prettification by adding to @code{tex--prettify-symbols-alist}.  Note
