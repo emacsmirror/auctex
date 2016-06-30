@@ -89,7 +89,7 @@ from `environ.sty'.")
 (defun TeX-arg-environ-final-code (_optional)
   "Query for the presence of optional `final code' as argument to
 `\\NewEnviron' and insert the appropriate brackets."
-  (let ((fincode (y-or-n-p "With optional final code?")))
+  (let ((fincode (y-or-n-p "With optional final code? ")))
     (when fincode
 	(insert "[]"))))
 
