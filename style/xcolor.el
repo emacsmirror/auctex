@@ -34,13 +34,13 @@
 ;; commands take more arguments.  In order to make the commands and
 ;; font-locking work correctly, we follow this strategy: If
 ;; `xcolor.sty' is loaded after `color.sty', everything works fine.
-;; For the way around, we guard the definitions in `color.sty' with:
+;; For the way around, we guard the definitions for `color.sty' with:
 ;;
-;;     (unless (member "xcolor" (TeX-TeX-style-list))
-;;       (<define stuff from color.sty<))
+;;     (unless (member "xcolor" (TeX-style-list))
+;;       (<define stuff for color.sty>))
 ;;
-;; to make sure that we define stuff `color.sty' only if `xcolor.sty'
-;; is not already loaded.
+;; to make sure that we define stuff for `color.sty' only if AUCTeX
+;; style for `xcolor.sty' is not already loaded.
 
 ;;; Code:
 
@@ -255,7 +255,8 @@ xcolor package.")
 
 (defun LaTeX-xcolor-auto-prepare ()
   "Clear `LaTeX-auto-xcolor-definecolor' before parsing."
-  (setq	LaTeX-auto-xcolor-definecolor nil))
+  (setq LaTeX-auto-xcolor-definecolor nil
+	LaTeX-auto-xcolor-definecolorset nil))
 
 (defun LaTeX-xcolor-auto-cleanup ()
   "Process the parsed elements from `LaTeX-auto-xcolor-definecolorset'."
@@ -504,7 +505,7 @@ xcolor.sty."
 		    (LaTeX-xcolor-definecolor-list))
       (TeX-arg-define-macro "Command: \\"))
 
-    ;; \extractcolorspecs{<color>}{<model-cmd>{<color-cmd>}
+    ;; \extractcolorspecs{<color>}{<model-cmd>}{<color-cmd>}
     '("extractcolorspecs"
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Color")
