@@ -75,14 +75,14 @@ argument.  Use PROMPT as the prompt string."
 for label.  AUCTeX users should add ENVIRONMENT to
 `LaTeX-label-alist' via customize or in init-file with:
 
-  (add-to-list 'LaTeX-label-alist '(\"lemma\" . \"lem:\"))
+  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
 
 RefTeX users should customize or add ENVIRONMENT to
 `LaTeX-label-alist' and `reftex-label-alist', e.g.
 
-  (add-to-list 'LaTeX-label-alist '(\"lemma\" . \"lem:\"))
-  (add-to-list 'reftex-label-alist
-	       '(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
+  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
+  (add-to-list \\='reftex-label-alist
+	       \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
 		 nil (\"Lemma\" \"lemma\") nil))"
   (let ((opthead (TeX-read-string
 		  (TeX-argument-prompt t nil "Heading"))))
