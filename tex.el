@@ -6521,6 +6521,86 @@ NAME may be a package, a command, or a document."
       (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
 	      ispell-tex-major-modes))
 
+(defcustom TeX-ispell-extend-skip-list t
+  "Whether to extend regions selected for skipping during spell checking."
+  :group 'TeX-misc
+  :type 'boolean)
+
+;; These functions are used to add new items to
+;; `ispell-tex-skip-alists' -- see tex-ispell.el:
+(defun TeX-ispell-skip-setcar (skip)
+  "Add SKIP to car of `ispell-tex-skip-alists'.
+SKIP is an alist with the format described in
+`ispell-tex-skip-alists'.  Each element in SKIP is added on top
+of the car of `ispell-tex-skip-alists'.  This only happens if
+`TeX-ispell-extend-skip-list' is non-nil."
+  (when TeX-ispell-extend-skip-list
+    (let ((raws (car ispell-tex-skip-alists))
+	  (envs (cadr ispell-tex-skip-alists)))
+      (dolist (x skip)
+	(pushnew x raws :test #'equal))
+      (setq ispell-tex-skip-alists (list raws envs)))))
+
+(defun TeX-ispell-skip-setcdr (skip)
+  "Add SKIP to cdr of `ispell-tex-skip-alists'.
+SKIP is an alist with the format described in
+`ispell-tex-skip-alists'.  Each element in SKIP is added on top
+of the cdr of `ispell-tex-skip-alists'.  This only happens if
+`TeX-ispell-extend-skip-list' is non-nil."
+  (when TeX-ispell-extend-skip-list
+    (let ((raws (car ispell-tex-skip-alists))
+	  (envs (cadr ispell-tex-skip-alists)))
+      (dolist (x skip)
+	(pushnew x envs :test #'equal))
+      (setq ispell-tex-skip-alists (list raws envs)))))
+
+(defun TeX-ispell-tex-arg-end (&optional arg1 arg2 arg3)
+  "Skip across ARG1, ARG2 and ARG3 number of braces and brackets.
+This function is a variation of `ispell-tex-arg-end'.  It should
+be used when adding skip regions to `ispell-tex-skip-alists' for
+constructs like:
+
+  \\begin{tabularx}{300pt}[t]{lrc} ...
+    or
+  \\fontspec{font name}[font features]
+
+where optional and/or mandatory argument(s) follow(s) a mandatory
+one.  ARG1 is the number of mandatory arguments before the
+optional one, ARG2 the max. number of following optional
+arguments, ARG3 is the max. number of mandatory arguments
+following.  Omitting argument means 1.
+
+Here some examples for additions to `ispell-tex-skip-alists':
+
+  \\begin{tabularx}{300pt}[t]{lrc} ...
+		ARG  1    2   3
+  (\"tabularx\" TeX-ispell-tex-arg-end) or equivalent
+  (\"tabularx\" TeX-ispell-tex-arg-end 1 1 1)
+
+  \\fontspec{font name}[font features]
+	       ARG1         ARG2        ARG3=0
+  (\"\\\\\\\\fontspec\" TeX-ispell-tex-arg-end 1 1 0)
+
+  \\raisebox{lift}[height][depth]{contents}
+	    ARG1       ARG2       ARG3=0 (checked by Ispell)
+  (\"\\\\\\\\raisebox\" TeX-ispell-tex-arg-end 1 2 0)
+
+Optional arguments before the first mandatory one are all
+skipped."
+  (condition-case nil
+      (progn
+	(while (looking-at "[ \t\n]*\\[") (forward-sexp))
+	(forward-sexp (or arg1 1))
+	(let ((num 0))
+	  (while (and (looking-at "[ \t\n]*\\[")
+		      (< num (or arg2 1)))
+	    (setq num (1+ num))
+	    (forward-sexp)))
+	(forward-sexp (or arg3 1)))
+    (error
+     (message "Error skipping s-expressions at point %d" (point))
+     (sit-for 2))))
+
 
 ;;; Abbrev mode
 

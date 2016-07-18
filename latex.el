@@ -30,6 +30,7 @@
 
 (require 'tex)
 (require 'tex-style)
+(require 'tex-ispell)
 (eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 
 ;;; Syntax
