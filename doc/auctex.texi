@@ -2876,6 +2876,126 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
+@cindex ispell
+When performing spell checking on a document or a region (invoked
+through @AUCTeX{}'s @samp{Spell} command or @kbd{M-x ispell RET}), you
+want the spell checking program to skip certain macro arguments and
+environments, most notably the arguments of referencing macros and the
+contents of verbatim environments.  The skipped parts are controlled by
+variable @code{ispell-tex-skip-alists} provided by @file{ispell.el}.
+@AUCTeX{} has a library which can be added to this variable depending on
+the value of @code{TeX-ispell-extend-skip-list} which is set to @code{t}
+by default.
+
+@defopt TeX-ispell-extend-skip-list
+This boolean option controls whether @AUCTeX{} activates its extension
+for skipping certain macro arguments and environments when spell
+checking.
+
+When non-@code{nil}, @AUCTeX{} loads the file @file{tex-ispell.el} and
+adds its content to @code{ispell-tex-skip-alists}.  This library can and
+will never be complete, but the interface can be used to add selected
+and private macro names within your init file or on a file local basis.
+
+@code{ispell-tex-skip-alists} has the following structure:
+@lisp
+(defvar ispell-tex-skip-alists
+  '((;; First list
+     ("\\\\addcontentsline"         ispell-tex-arg-end 2)
+     ("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+     ("\\\\makebox"                 ispell-tex-arg-end 0)
+     ("\\\\documentclass" . "\\\\begin@{document@}"))
+    (;; Second list
+     ("\\(figure\\|table\\)\\*?"  ispell-tex-arg-end 0)
+     ("list"                      ispell-tex-arg-end 2)
+     ("verbatim\\*?" . "\\\\end@{verbatim\\*?@}")))
+  "*Lists of regions to be skipped in TeX mode.
+First list is used raw.
+Second list has key placed inside \\begin@{@}.")
+@end lisp
+Each item is an alist and the structure of it is described in
+@code{ispell-skip-region-alist}:
+@lisp
+(defvar ispell-skip-region-alist
+  '((...))
+  "Alist expressing beginning and end of regions not to spell check.
+The alist key must be a regular expression.
+Valid forms include:
+  (KEY) - just skip the key.
+  (KEY . REGEXP) - skip to the end of REGEXP.
+                   REGEXP may be string or symbol.
+  (KEY REGEXP) - skip to end of REGEXP.  REGEXP must be a string.
+  (KEY FUNCTION ARGS) - FUNCTION called with ARGS
+                        returns end of region.")
+@end lisp
+
+Let's go through the first list of @code{ispell-tex-skip-alists} line by
+line:
+@lisp
+("\\\\addcontentsline"         ispell-tex-arg-end 2)
+@end lisp
+@code{KEY} is the string @code{"\\\\addcontentsline"}, @code{FUNCTION}
+is @code{ispell-tex-arg-end} called with @code{ARGS}, here @code{2}.
+@code{ispell-tex-arg-end} is a function provided by @file{ispell.el}
+which skips as many subsequent optional arguments in square brackets as
+it sees and then skips @code{ARGS} number of mandatory arguments in
+braces.  Omitting @code{ARGS} means skip @code{1} mandatory argument.
+In practice, when you have something like this in your document:
+@example
+\addcontentsline@{toc@}@{chapter@}@{Some text@}
+@end example
+The first two arguments are left out and @samp{Some text} will be spell
+checked.  For the next line
+@lisp
+("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+@end lisp
+the name of the counter as argument is skipped.  Next line is
+@lisp
+("\\\\makebox"                 ispell-tex-arg-end 0)
+@end lisp
+where only optional arguments are skipped, the first mandatory argument
+is checked, e.g.
+@example
+\makebox[0pt][l]@{Some text@}
+@end example
+Finally, the next line
+@lisp
+("\\\\documentclass" . "\\\\begin@{document@}"))
+@end lisp
+ensures that the entire preamble of a document is discarded.  Second
+list works the same; it is more convenient for environments since
+@code{KEY} is wrapped inside @code{\begin@{@}}.
+
+@AUCTeX{} provides two functions to add items to car and cdr of
+@code{ispell-tex-arg-end}, namely @code{TeX-ispell-skip-setcar} and
+@code{TeX-ispell-skip-setcdr}.  The argument of these functions is
+exactly as in @code{ispell-tex-skip-alists}.  Additions can be done via
+init file, e.g.:
+@lisp
+(eval-after-load "tex-ispell"
+  '(progn
+     (TeX-ispell-skip-setcar
+      '(("\\\\mymacro" ispell-tex-arg-end)))
+     (TeX-ispell-skip-setcdr
+      '(("myverbatim" . "\\\\end@{myverbatim@}")))))
+@end lisp
+Another possibility is to use file local additions at the end of your
+@TeX{} file, e.g.:
+@example
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% eval: (TeX-ispell-skip-setcar '(("\\\\mymacro" . "@{[-0-9]+@}")))
+%%% End:
+@end example
+
+@findex TeX-ispell-tex-arg-end
+Finally, @AUCTeX{} provides a function called
+@code{TeX-ispell-tex-arg-end} which sees more arguments than
+@code{ispell-tex-arg-end}.  Refer to its doc string for more
+information.
+@end defopt
+
 @node Processor Options
 @subsection Options for @TeX{} Processors
 
