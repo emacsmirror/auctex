@@ -429,9 +429,9 @@ number of ampersands if possible."
      (TeX-ispell-skip-setcdr
       `(,(cons (concat "\\(AmS\\(?:align\\(?:\\*\\|at\\*?\\)?\\|"
 		       "equation\\*?\\|flalign\\*?\\|gather\\*?\\|multline\\*?\\)\\)")
-	       (concat "\\\\end"
+	       (concat "\\\\end{"
 		       "\\(AmS\\(?:align\\(?:\\*\\|at\\*?\\)?\\|"
-		       "equation\\*?\\|flalign\\*?\\|gather\\*?\\|multline\\*?\\)\\)")))))
+		       "equation\\*?\\|flalign\\*?\\|gather\\*?\\|multline\\*?\\)\\)}")))))
 
    ;; 3.2 Support for ntheorem
    (LaTeX-add-lengths "mintagvsep")
@@ -445,7 +445,19 @@ number of ampersands if possible."
 	 (let ((delim (TeX-read-string (concat "Delimiter: " TeX-esc))))
 	   (TeX-add-symbols (concat "empheq" delim)
 			    (concat "empheqbig" delim))
-	   (LaTeX-add-empheq-declaredelimiters delim)
+	   (LaTeX-add-empheq-declaredelimiters `(,delim "Left"))
+	   (LaTeX-empheq-update-key-val-options)
+	   (concat TeX-esc delim)))))
+
+    '("DeclareRightDelimiter"
+      [ "Space adjustment" ]
+      (TeX-arg-eval
+       (lambda ()
+	 (let ((delim (TeX-read-string (concat "Delimiter: " TeX-esc))))
+	   (TeX-add-symbols (concat "empheq" delim)
+			    (concat "empheqbig" delim))
+	   (LaTeX-add-empheq-declaredelimiters `(,delim "Right"))
+	   (LaTeX-empheq-update-key-val-options)
 	   (concat TeX-esc delim))))))
 
    ;; 4.2 Fine-tuning of delimiters
