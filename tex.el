@@ -4679,15 +4679,6 @@ See `match-data' for details."
       (buffer-substring-no-properties (match-beginning n) (match-end n))
     ""))
 
-(defun TeX-function-p (arg)
-  "Return non-nil if ARG is callable as a function."
-  (or (and (fboundp 'byte-code-function-p)
-	   (byte-code-function-p arg))
-      (and (listp arg)
-	   (eq (car arg) 'lambda))
-      (and (symbolp arg)
-	   (fboundp arg))))
-
 (defun TeX-booleanp (arg)
   "Return non-nil if ARG is t or nil."
   (memq arg '(t nil)))

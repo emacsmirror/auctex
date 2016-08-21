@@ -571,7 +571,7 @@ without further expansion."
 		     ;; a function definition made by an external
 		     ;; package (e.g. icicles) is not picked up.
 		     (cond ((and (not (eq expansion 'file))
-				 (TeX-function-p expansion))
+				 (functionp expansion))
 			    (apply expansion arguments))
 			   ((boundp expansion)
                             (setq expansion-res
