@@ -567,7 +567,12 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 
 (if japanese-TeX-error-messages
 (setq TeX-error-description-list
-  '(("Bad \\\\line or \\\\vector argument.*" .
+  '(("\\(?:Package Preview Error\\|Preview\\):.*" .
+"`preview'へ`auctex'オプションを直接与えるのは避けてください．
+プレビューの実行時以外でこのエラーが出た場合，余りにこみいったことを
+しすぎか，でなければAUCTeXがひどい失敗をしています．")
+
+    ("Bad \\\\line or \\\\vector argument.*" .
 "線の傾きを指定する，\\lineまたは\\vectorの最初の引数が不正です．")
 
     ("Bad math environment delimiter.*" .
