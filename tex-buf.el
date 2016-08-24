@@ -2319,7 +2319,10 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	    ;; `TeX-suppress-ignored-warnings' is non-nil and there are ignore
 	    ;; warnings.
 	    (while (null (zerop arg))
-	      (setq TeX-error-last-visited (1+ TeX-error-last-visited)
+	      (setq TeX-error-last-visited
+		    ;; Increase or decrese `TeX-error-last-visited' depending on
+		    ;; the sign of `arg'.
+		    (+ (signum arg) TeX-error-last-visited)
 		    item (if (natnump TeX-error-last-visited)
 			     (nth TeX-error-last-visited TeX-error-list)
 			   ;; XEmacs doesn't support `nth' with a negative index.
@@ -2327,9 +2330,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	      ;; Increase or decrease `arg' only if the warning isn't to be
 	      ;; skipped.
 	      (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
-		(setq arg (if (> arg 0)
-			      (1- arg)
-			    (1+ arg)))))
+		(setq arg (- arg (signum arg)))))
 	    (if (< TeX-error-last-visited -1)
 		(setq TeX-error-last-visited -1))
 	    (cond ((or (null item)
