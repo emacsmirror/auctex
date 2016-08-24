@@ -4203,8 +4203,8 @@ j@TeX{} for Japanese, H@LaTeX{} and k@TeX{} for Korean.  The
 
 Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
 @acronym{CJK} characters are not usable.  Please use the
-@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 (not released
-yet) if you need @acronym{CJK}.
+@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 and later if
+you need @acronym{CJK}.
 
 @c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
 
@@ -4436,8 +4436,7 @@ If nil do it the other way round.
 @cindex p@LaTeX{}
 @cindex @file{tex-jp.el}
 @vindex TeX-default-mode
-@vindex japanese-TeX-command-default
-@vindex japanese-LaTeX-command-default
+@vindex japanese-TeX-engine-default
 @vindex japanese-LaTeX-default-style
 
 To write Japanese text with @AUCTeX{}, you need to have versions of
@@ -4467,16 +4466,10 @@ set the variable like this:
 @end lisp
 @end defopt
 
-@defopt japanese-TeX-command-default
-The default command for @code{TeX-command} in Japanese @TeX{} mode.
+@defopt japanese-TeX-engine-default
+The default TeX engine in Japanese @TeX{} mode.
 
-The default value is @samp{"pTeX"}.
-@end defopt
-
-@defopt japanese-LaTeX-command-default
-The default command for @code{TeX-command} in Japanese @LaTeX{} mode.
-
-The default value is @samp{"LaTeX"}.
+The default value is @samp{ptex}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
@@ -4484,6 +4477,16 @@ The default style/class when creating a new Japanese @LaTeX{} document.
 
 The default value is @samp{"jarticle"}.
 @end defopt
+
+The former customize options @code{japanese-TeX-command-default} and
+@code{japanese-LaTeX-command-default} are obsolete.  Use
+@code{japanese-TeX-engine-default} instead.  If you need to customize
+the executable file name such as @samp{"latex"}, the options for them,
+or both, customize @code{TeX-engine-alist}.
+
+Also, the option @code{japanese-TeX-command-list} is considered as
+semi-obsolete.  It still functions as before, but in theory, it is not
+required anymore in normal use.
 
 See @file{tex-jp.el} for more information.
 
