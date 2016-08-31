@@ -96,7 +96,7 @@
 
 (defvar LaTeX-splitidx-newindex-regex
   `(,(concat "\\\\new\\(?:protected\\)?index"
-	     "\\(?:\\[[^}]*\\]\\)?"
+	     "\\(?:\\[[^]]*\\]\\)?"
 	     "{\\([^}]+\\)}")
     1 LaTeX-auto-splitidx-newindex)
   "Matches the argument of `\\newindex' from `splitidx.sty'.")
@@ -108,9 +108,11 @@
 (defun LaTeX-splitidx-auto-cleanup ()
   "Process parsed results for \"splitidx.sty\"."
   (when (LaTeX-provided-package-options-member "splitidx" "idxcommands")
-    (dolist (elt (mapcar 'car (LaTeX-splitidx-newindex-list)))
+    (dolist (elt (mapcar #'car (LaTeX-splitidx-newindex-list)))
       ;; Make every element available as a command
       (TeX-add-symbols `(,elt TeX-arg-index))
+      ;; Add new macros's to `ispell-tex-skip-alist': skip one argument
+      (TeX-ispell-skip-setcar `((,elt ispell-tex-arg-end)))
       ;; font-locking
       (when (and (featurep 'font-latex)
 		 (eq TeX-install-font-lock 'font-latex-setup))
@@ -265,9 +267,11 @@
    ;; instead of \sindex[foo]{<entry>}
    (when (and (LaTeX-provided-package-options-member "splitidx" "idxcommands")
 	      (LaTeX-splitidx-newindex-list))
-     (dolist (elt (mapcar 'car (LaTeX-splitidx-newindex-list)))
+     (dolist (elt (mapcar #'car (LaTeX-splitidx-newindex-list)))
        ;; Make every `foo' available as a command
        (TeX-add-symbols `(,elt TeX-arg-index))
+       ;; Add new macros's to `ispell-tex-skip-alist': skip one argument
+       (TeX-ispell-skip-setcar `((,elt ispell-tex-arg-end)))
        ;; Cater for font-locking
        (when (and (featurep 'font-latex)
 		  (eq TeX-install-font-lock 'font-latex-setup))
