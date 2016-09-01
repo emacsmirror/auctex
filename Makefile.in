@@ -155,7 +155,8 @@ STYLESRC = style/prosper.el \
 	   style/newfloat.el  style/subcaption.el style/AlegreyaSans.el \
 	   style/hologo.el    style/theorem.el   style/ntheorem.el \
 	   style/splitidx.el  style/tikz.el      style/xcolor.el \
-	   style/pdflscape.el style/commath.el   style/empheq.el
+	   style/pdflscape.el style/commath.el   style/empheq.el \
+	   style/framed.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
