@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.1 from auctex.texi.
 
-This manual is for AUCTeX (version 11.89.4 from 2016-05-22), a
+This manual is for AUCTeX (version 11.89.5 from 2016-09-01), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -116,6 +116,7 @@ Controlling Screen Display
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
 * Narrowing::                   Restricting display and editing to a portion of the buffer
+* Prettifying::                 Displaying Greek and math macros as Unicode characters
 
 Font Locking
 
@@ -2678,12 +2679,16 @@ narrowing the buffer to the desired region.  AUCTeX provides also
 functions to narrow the buffer to the current group and to LaTeX
 environments.
 
+   Lastly, AUCTeX with Emacs 25 or later can display certain math macros
+using Unicode characters.  That's called prettification.
+
 * Menu:
 
 * Font Locking::                Font Locking
 * Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
 * Narrowing::                   Restricting display and editing to a portion of the buffer
+* Prettifying::                 Displaying Greek and math macros as Unicode characters
 
 
 File: auctex.info,  Node: Font Locking,  Next: Folding,  Up: Display
@@ -3331,7 +3336,7 @@ better outline support.  It is available from your favorite emacs lisp
 archive.
 
 
-File: auctex.info,  Node: Narrowing,  Prev: Outline,  Up: Display
+File: auctex.info,  Node: Narrowing,  Next: Prettifying,  Prev: Outline,  Up: Display
 
 3.4 Narrowing
 =============
@@ -3355,6 +3360,32 @@ in a pair of curly braces, and to LaTeX environments.
 disabled.  Attempting to use them asks for confirmation and gives you
 the option of enabling them; if you enable the commands, confirmation
 will no longer be required for them.
+
+
+File: auctex.info,  Node: Prettifying,  Prev: Narrowing,  Up: Display
+
+3.5 Prettifying
+===============
+
+Emacs 25 is able to prettify symbols in programming language buffers,
+*note (emacs)Misc for Programs::.  The canonical example is to display
+'(lambda () ...)' as '(λ () ...)' in Lisp buffers.
+
+   AUCTeX can use this feature in order to display certain math macros
+and greek letters using their Unicode representation, too.  For example,
+the TeX code '\alpha \times \beta' will be displayed as 'α × β'.
+When point is on one of the characters, it'll be unprettified
+automatically, meaning you see the verbatim text again.
+
+   To enable prettification in AUCTeX, simply add
+'prettify-symbols-mode' to 'TeX-mode-hook'.  If you enabled
+prettification globally with 'global-prettify-symbols-mode', then it's
+automatically enabled in AUCTeX, too.
+
+   You can also add custom symbol unicode-character pairs for
+prettification by adding to 'tex--prettify-symbols-alist'.  Note that
+this variable is part of Emacs' stock 'tex-mode.el' and used by that and
+AUCTeX.
 
 
 File: auctex.info,  Node: Processing,  Next: Customization,  Prev: Display,  Up: Top
@@ -3572,6 +3603,102 @@ directories.  You can change this by setting the variable
 
      If nil, just check the current file.  Used when checking if any
      files have changed.
+
+   When performing spell checking on a document or a region (invoked
+through AUCTeX's 'Spell' command or 'M-x ispell RET'), you want the
+spell checking program to skip certain macro arguments and environments,
+most notably the arguments of referencing macros and the contents of
+verbatim environments.  The skipped parts are controlled by variable
+'ispell-tex-skip-alists' provided by 'ispell.el'.  AUCTeX has a library
+which can be added to this variable depending on the value of
+'TeX-ispell-extend-skip-list' which is set to 't' by default.
+
+ -- User Option: TeX-ispell-extend-skip-list
+     This boolean option controls whether AUCTeX activates its extension
+     for skipping certain macro arguments and environments when spell
+     checking.
+
+     When non-'nil', AUCTeX loads the file 'tex-ispell.el' and adds its
+     content to 'ispell-tex-skip-alists'.  This library can and will
+     never be complete, but the interface can be used to add selected
+     and private macro names within your init file or on a file local
+     basis.
+
+     'ispell-tex-skip-alists' has the following structure:
+          (defvar ispell-tex-skip-alists
+            '((;; First list
+               ("\\\\addcontentsline"         ispell-tex-arg-end 2)
+               ("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+               ("\\\\makebox"                 ispell-tex-arg-end 0)
+               ("\\\\documentclass" . "\\\\begin{document}"))
+              (;; Second list
+               ("\\(figure\\|table\\)\\*?"  ispell-tex-arg-end 0)
+               ("list"                      ispell-tex-arg-end 2)
+               ("verbatim\\*?" . "\\\\end{verbatim\\*?}")))
+            "*Lists of regions to be skipped in TeX mode.
+          First list is used raw.
+          Second list has key placed inside \\begin{}.")
+     Each item is an alist and the structure of it is described in
+     'ispell-skip-region-alist':
+          (defvar ispell-skip-region-alist
+            '((...))
+            "Alist expressing beginning and end of regions not to spell check.
+          The alist key must be a regular expression.
+          Valid forms include:
+            (KEY) - just skip the key.
+            (KEY . REGEXP) - skip to the end of REGEXP.
+                             REGEXP may be string or symbol.
+            (KEY REGEXP) - skip to end of REGEXP.  REGEXP must be a string.
+            (KEY FUNCTION ARGS) - FUNCTION called with ARGS
+                                  returns end of region.")
+
+     Let's go through the first list of 'ispell-tex-skip-alists' line by
+     line:
+          ("\\\\addcontentsline"         ispell-tex-arg-end 2)
+     'KEY' is the string '"\\\\addcontentsline"', 'FUNCTION' is
+     'ispell-tex-arg-end' called with 'ARGS', here '2'.
+     'ispell-tex-arg-end' is a function provided by 'ispell.el' which
+     skips as many subsequent optional arguments in square brackets as
+     it sees and then skips 'ARGS' number of mandatory arguments in
+     braces.  Omitting 'ARGS' means skip '1' mandatory argument.  In
+     practice, when you have something like this in your document:
+          \addcontentsline{toc}{chapter}{Some text}
+     The first two arguments are left out and 'Some text' will be spell
+     checked.  For the next line
+          ("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+     the name of the counter as argument is skipped.  Next line is
+          ("\\\\makebox"                 ispell-tex-arg-end 0)
+     where only optional arguments are skipped, the first mandatory
+     argument is checked, e.g.
+          \makebox[0pt][l]{Some text}
+     Finally, the next line
+          ("\\\\documentclass" . "\\\\begin{document}"))
+     ensures that the entire preamble of a document is discarded.
+     Second list works the same; it is more convenient for environments
+     since 'KEY' is wrapped inside '\begin{}'.
+
+     AUCTeX provides two functions to add items to car and cdr of
+     'ispell-tex-arg-end', namely 'TeX-ispell-skip-setcar' and
+     'TeX-ispell-skip-setcdr'.  The argument of these functions is
+     exactly as in 'ispell-tex-skip-alists'.  Additions can be done via
+     init file, e.g.:
+          (eval-after-load "tex-ispell"
+            '(progn
+               (TeX-ispell-skip-setcar
+                '(("\\\\mymacro" ispell-tex-arg-end)))
+               (TeX-ispell-skip-setcdr
+                '(("myverbatim" . "\\\\end{myverbatim}")))))
+     Another possibility is to use file local additions at the end of
+     your TeX file, e.g.:
+          %%% Local Variables:
+          %%% mode: latex
+          %%% TeX-master: t
+          %%% eval: (TeX-ispell-skip-setcar '(("\\\\mymacro" . "{[-0-9]+}")))
+          %%% End:
+
+     Finally, AUCTeX provides a function called 'TeX-ispell-tex-arg-end'
+     which sees more arguments than 'ispell-tex-arg-end'.  Refer to its
+     doc string for more information.
 
 
 File: auctex.info,  Node: Processor Options,  Prev: Selecting a Command,  Up: Commands
@@ -3979,6 +4106,43 @@ Emacs corresponding to a certain position in the viewer, is triggered
 from the viewer, typically by a mouse click.  Refer to the documentation
 of your viewer to find out how it has to be configured and what you have
 to do exactly.  In xdvi you normally have to use 'C-down-mouse-1'.
+
+   Note that inverse search with the Evince PDF viewer or its MATE fork
+Atril might fail in raising the Emacs frame after updating point in your
+document's buffer.  There is simply no way to raise the Emacs frame
+reliably accross different operating systems and different window
+managers with their different focus stealing policies.  If the Emacs
+frame is not raised after performing an inverse search from Evince or
+Atril, you can customize the following option.
+
+ -- User Option: TeX-raise-frame-function
+     A function that will be called after performing an inverse search
+     from Evince or Atril in order to raise the current Emacs frame.
+
+     If your Emacs frame is already raised in that situation, just leave
+     this variable set to its default value 'raise-frame'.  Otherwise,
+     here are some alternative settings that work for some users.
+
+          ;; Alternative 1: For some users, `x-focus-frame' works.  Note
+          ;; that this function requires Emacs 24+.
+          (setq TeX-raise-frame-function #'x-focus-frame)
+
+          ;; Alternative 2: Under GNOME 3.20 (and probably others), it
+          ;; seems some focus stealing prevention policy prohibits that
+          ;; some window gets the focus immediately after the user has
+          ;; clicked in some other window.  Here waiting a bit before
+          ;; issuing the request seems to work.
+          (setq TeX-raise-frame-function
+                (lambda ()
+          	(run-at-time 0.5 nil #'x-focus-frame)))
+
+          ;; Alternative 3: Use the external wmctrl tool in order to
+          ;; force Emacs into the focus.
+          (setq TeX-raise-frame-function
+                (lambda ()
+          	(call-process
+          	 "wmctrl" nil nil nil "-i" "-R"
+          	 (frame-parameter (selected-frame) ’outer-window-id))))
 
 
 File: auctex.info,  Node: Debugging,  Next: Checking,  Prev: Viewing,  Up: Processing
@@ -4540,7 +4704,7 @@ document.
 
    Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
 CJK characters are not usable.  Please use the MULE-UCS EmacsLisp
-package or Emacs 22 (not released yet) if you need CJK.
+package or Emacs 22 and later if you need CJK.
 
 * Menu:
 
@@ -4742,21 +4906,26 @@ variables is useful.
      set the variable like this:
           (setq TeX-default-mode 'japanese-latex-mode)
 
- -- User Option: japanese-TeX-command-default
-     The default command for 'TeX-command' in Japanese TeX mode.
+ -- User Option: japanese-TeX-engine-default
+     The default TeX engine in Japanese TeX mode.
 
-     The default value is '"pTeX"'.
-
- -- User Option: japanese-LaTeX-command-default
-     The default command for 'TeX-command' in Japanese LaTeX mode.
-
-     The default value is '"LaTeX"'.
+     The default value is 'ptex'.
 
  -- User Option: japanese-LaTeX-default-style
      The default style/class when creating a new Japanese LaTeX
      document.
 
      The default value is '"jarticle"'.
+
+   The former customize options 'japanese-TeX-command-default' and
+'japanese-LaTeX-command-default' are obsolete.  Use
+'japanese-TeX-engine-default' instead.  If you need to customize the
+executable file name such as '"latex"', the options for them, or both,
+customize 'TeX-engine-alist'.
+
+   Also, the option 'japanese-TeX-command-list' is considered as
+semi-obsolete.  It still functions as before, but in theory, it is not
+required anymore in normal use.
 
    See 'tex-jp.el' for more information.
 
@@ -5546,7 +5715,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.89.4 from 2016-05-22), a
+   This manual is for AUCTeX (version 11.89.5 from 2016-09-01), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -6056,6 +6225,16 @@ A.2 Changes and New Features
 News since 11.89
 ----------------
 
+   * AUCTeX has a new Ispell dictionary 'tex-ispell.el' for macros and
+     environments which will be skipped during spell checking.  The
+     activiation of this feature is controlled by a new customize option
+     'TeX-ispell-extend-skip-list', which is set to 't' and activated by
+     default.
+
+   * AUCTeX has a new customize option 'TeX-raise-frame-function' that
+     is currently only used by Evince and Atril inverse search to raise
+     the Emacs frame.
+
    * AUCTeX now has limited support for the TikZ package.  For the
      moment, this includes some basic support for prompting the user of
      arguments to the '\draw' macro.
@@ -6079,7 +6258,7 @@ News since 11.89
      'TeX-PDF-via-dvips-ps2pdf' which is still recognized but marked as
      obsolete and may be removed in future releases.
 
-   * Support for a number of external viewers has been addedd:
+   * Support for a number of external viewers has been added:
         * Atril viewer.  Forward and inverse search requires version
           1.9.1 or later to work.
 
@@ -6917,10 +7096,6 @@ A.3.2 Wishlist
      the user tries to insert a macro for which the respective package
      has not been requested yet.
 
-   * Spell checking of macros
-
-     A special ispell dictionary for macros could be nice to have.
-
    * Improvements to error reporting
 
      Fringe indicators for errors in the main text would be nice.
@@ -7666,6 +7841,7 @@ Function Index
 * TeX-insert-macro:                      Completion.          (line  28)
 * TeX-insert-quote:                      Quotes.              (line  14)
 * TeX-interactive-mode:                  Processor Options.   (line  29)
+* TeX-ispell-tex-arg-end:                Selecting a Command. (line 165)
 * TeX-kill-job:                          Control.             (line   9)
 * TeX-master-file-ask:                   Multifile.           (line  71)
 * TeX-narrow-to-group:                   Narrowing.           (line  13)
@@ -7777,12 +7953,10 @@ Variable Index
                                                               (line 114)
 * font-latex-user-keyword-classes:       Fontification of macros.
                                                               (line 191)
-* japanese-LaTeX-command-default:        Japanese.            (line   6)
-* japanese-LaTeX-command-default <1>:    Japanese.            (line  34)
 * japanese-LaTeX-default-style:          Japanese.            (line   6)
-* japanese-LaTeX-default-style <1>:      Japanese.            (line  39)
-* japanese-TeX-command-default:          Japanese.            (line   6)
-* japanese-TeX-command-default <1>:      Japanese.            (line  29)
+* japanese-LaTeX-default-style <1>:      Japanese.            (line  34)
+* japanese-TeX-engine-default:           Japanese.            (line   6)
+* japanese-TeX-engine-default <1>:       Japanese.            (line  29)
 * LaTeX-amsmath-label:                   Equations.           (line  15)
 * LaTeX-auto-class-regexp-list:          Parsing Files.       (line 105)
 * LaTeX-auto-counter-regexp-list:        Parsing Files.       (line 111)
@@ -7944,6 +8118,7 @@ Variable Index
 * TeX-insert-macro-default-style:        Completion.          (line  36)
 * TeX-install-font-lock:                 Font Locking.        (line  13)
 * TeX-interactive-mode:                  Processor Options.   (line  30)
+* TeX-ispell-extend-skip-list:           Selecting a Command. (line  82)
 * TeX-language-bg-hook:                  European.            (line  53)
 * TeX-language-cz-hook:                  European.            (line  53)
 * TeX-language-de-hook:                  European.            (line  53)
@@ -7974,6 +8149,7 @@ Variable Index
 * TeX-PDF-mode:                          Processor Options.   (line  16)
 * TeX-quote-after-quote:                 Quotes.              (line  29)
 * TeX-quote-language-alist:              European.            (line 126)
+* TeX-raise-frame-function:              I/O Correlation.     (line  76)
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  65)
 * TeX-save-query:                        Multifile.           (line 103)
@@ -7983,6 +8159,7 @@ Variable Index
 * TeX-source-correlate-mode:             Processor Options.   (line  37)
 * TeX-source-correlate-start-server:     I/O Correlation.     (line  48)
 * TeX-source-correlate-start-server <1>: I/O Correlation.     (line  54)
+* TeX-source-correlate-start-server <2>: I/O Correlation.     (line  68)
 * TeX-style-global:                      Automatic Global.    (line  19)
 * TeX-style-local:                       Automatic Local.     (line  16)
 * TeX-style-path:                        Automatic.           (line  38)
@@ -8057,7 +8234,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 378)
+* auctex.el <1>:                         Changes.             (line 388)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8190,7 +8367,8 @@ Concept Index
 * ISO 8859 Latin 1:                      European.            (line   6)
 * ISO 8859 Latin 2:                      European.            (line   6)
 * iso-cvt.el:                            European.            (line  28)
-* ispell:                                European.            (line  40)
+* ispell:                                Selecting a Command. (line  73)
+* ispell <1>:                            European.            (line  40)
 * Italian:                               European.            (line  53)
 * Itemize:                               Itemize-like.        (line   6)
 * Items:                                 Itemize-like.        (line   6)
@@ -8358,7 +8536,7 @@ Concept Index
                                                               (line 286)
 * tex-site.el:                           Loading the package. (line  14)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 378)
+* tex-site.el <2>:                       Changes.             (line 388)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8379,101 +8557,102 @@ Concept Index
 
 Tag Table:
 Node: Top918
-Node: Copying7334
-Node: Introduction9290
-Node: Summary9560
-Node: Installation12301
-Node: Prerequisites13689
-Node: Configure16557
-Node: Build/install and uninstall21982
-Node: Loading the package22735
-Node: Advice for package providers24556
-Node: Advice for non-privileged users28501
-Node: Installation under MS Windows32459
-Node: Customizing47693
-Node: Quick Start49276
-Ref: Quick Start-Footnote-151266
-Node: Editing Facilities51413
-Node: Processing Facilities56216
-Node: Editing60974
-Node: Quotes62304
-Node: Font Specifiers70572
-Node: Sectioning72398
-Node: Environments76718
-Node: Equations81872
-Node: Floats82463
-Node: Itemize-like84467
-Node: Tabular-like85188
-Node: Customizing Environments86671
-Node: Mathematics86911
-Node: Completion89837
-Node: Marking95160
-Node: Marking (LaTeX)95784
-Node: Marking (Texinfo)96726
-Node: Commenting98336
-Node: Indenting99661
-Node: Filling105697
-Node: Display111569
-Node: Font Locking113181
-Node: Fontification of macros115256
-Node: Fontification of quotes124694
-Node: Fontification of math126189
-Node: Verbatim content127908
-Node: Faces128682
-Node: Known problems129171
-Node: Folding130100
-Node: Outline140924
-Node: Narrowing142196
-Node: Processing143246
-Node: Commands144409
-Node: Starting a Command144965
-Node: Selecting a Command149868
-Node: Processor Options153394
-Node: Viewing163674
-Node: Starting Viewers164048
-Node: I/O Correlation170625
-Node: Debugging174071
-Node: Ignoring warnings176725
-Node: Error overview178785
-Node: Checking180778
-Node: Control181940
-Node: Cleaning182667
-Node: Documentation183880
-Node: Customization184595
-Node: Modes and Hooks185088
-Node: Multifile186908
-Node: Parsing Files191720
-Node: Internationalization196632
-Node: European197813
-Node: Japanese204693
-Node: Automatic206390
-Node: Automatic Global208881
-Node: Automatic Private210013
-Node: Automatic Local211326
-Node: Style Files212358
-Node: Simple Style213151
-Node: Adding Macros216424
-Node: Adding Environments225545
-Node: Adding Other230206
-Node: Hacking the Parser230793
-Node: Appendices234662
-Node: Copying this Manual235046
-Node: GNU Free Documentation License235930
-Node: Changes261049
-Node: Development294060
-Node: Mid-term Goals294706
-Node: Wishlist295923
-Node: Bugs301463
-Node: FAQ302993
-Node: Texinfo mode309166
-Node: Exploiting310302
-Node: Superseding311122
-Node: Mapping315326
-Node: Unbinding317155
-Node: Indices317976
-Node: Key Index318201
-Node: Function Index324379
-Node: Variable Index335043
-Node: Concept Index356742
+Node: Copying7421
+Node: Introduction9377
+Node: Summary9647
+Node: Installation12388
+Node: Prerequisites13776
+Node: Configure16644
+Node: Build/install and uninstall22069
+Node: Loading the package22822
+Node: Advice for package providers24643
+Node: Advice for non-privileged users28588
+Node: Installation under MS Windows32546
+Node: Customizing47780
+Node: Quick Start49363
+Ref: Quick Start-Footnote-151353
+Node: Editing Facilities51500
+Node: Processing Facilities56303
+Node: Editing61061
+Node: Quotes62391
+Node: Font Specifiers70659
+Node: Sectioning72485
+Node: Environments76805
+Node: Equations81959
+Node: Floats82550
+Node: Itemize-like84554
+Node: Tabular-like85275
+Node: Customizing Environments86758
+Node: Mathematics86998
+Node: Completion89924
+Node: Marking95247
+Node: Marking (LaTeX)95871
+Node: Marking (Texinfo)96813
+Node: Commenting98423
+Node: Indenting99748
+Node: Filling105784
+Node: Display111656
+Node: Font Locking113486
+Node: Fontification of macros115561
+Node: Fontification of quotes124999
+Node: Fontification of math126494
+Node: Verbatim content128213
+Node: Faces128987
+Node: Known problems129476
+Node: Folding130405
+Node: Outline141229
+Node: Narrowing142501
+Node: Prettifying143571
+Node: Processing144636
+Node: Commands145799
+Node: Starting a Command146355
+Node: Selecting a Command151258
+Node: Processor Options159646
+Node: Viewing169926
+Node: Starting Viewers170300
+Node: I/O Correlation176877
+Node: Debugging182135
+Node: Ignoring warnings184789
+Node: Error overview186849
+Node: Checking188842
+Node: Control190004
+Node: Cleaning190731
+Node: Documentation191944
+Node: Customization192659
+Node: Modes and Hooks193152
+Node: Multifile194972
+Node: Parsing Files199784
+Node: Internationalization204696
+Node: European205868
+Node: Japanese212748
+Node: Automatic214732
+Node: Automatic Global217223
+Node: Automatic Private218355
+Node: Automatic Local219668
+Node: Style Files220700
+Node: Simple Style221493
+Node: Adding Macros224766
+Node: Adding Environments233887
+Node: Adding Other238548
+Node: Hacking the Parser239135
+Node: Appendices243004
+Node: Copying this Manual243388
+Node: GNU Free Documentation License244272
+Node: Changes269391
+Node: Development302867
+Node: Mid-term Goals303513
+Node: Wishlist304730
+Node: Bugs310171
+Node: FAQ311701
+Node: Texinfo mode317874
+Node: Exploiting319010
+Node: Superseding319830
+Node: Mapping324034
+Node: Unbinding325863
+Node: Indices326684
+Node: Key Index326909
+Node: Function Index333087
+Node: Variable Index343824
+Node: Concept Index365596
 
 End Tag Table

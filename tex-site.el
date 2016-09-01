@@ -87,21 +87,23 @@ shared by all users of a site."
 
 (add-hook 'tex-site-unload-hook
 	  (lambda ()
-	    (let ((list after-load-alist))
-	      (while list
-		;; Adapted copy of the definition of `assq-delete-all'
-		;; from Emacs 21 as substitute for
-		;; `(assq-delete-all'TeX-modes-set (car list))' which
-		;; fails on non-list elements in Emacs 21.
-		(let* ((alist (car list))
-		       (tail alist)
-		       (key 'TeX-modes-set))
-		  (while tail
-		    (if (and (consp (car tail))
-			     (eq (car (car tail)) key))
-			(setq alist (delq (car tail) alist)))
-		    (setq tail (cdr tail))))
-		(setq list (cdr list))))
+	    (if (fboundp 'advice-add)
+		(TeX-modes-set 'TeX-modes nil)
+	      (let ((list after-load-alist))
+		(while list
+		  ;; Adapted copy of the definition of `assq-delete-all'
+		  ;; from Emacs 21 as substitute for
+		  ;; `(assq-delete-all'TeX-modes-set (car list))' which
+		  ;; fails on non-list elements in Emacs 21.
+		  (let* ((alist (car list))
+			 (tail alist)
+			 (key 'TeX-modes-set))
+		    (while tail
+		      (if (and (consp (car tail))
+			       (eq (car (car tail)) key))
+			  (setq alist (delq (car tail) alist)))
+		      (setq tail (cdr tail))))
+		  (setq list (cdr list)))))
 	    (setq load-path (delq TeX-lisp-directory load-path))))
 
 (defun TeX-modes-set (var value &optional update)
@@ -148,11 +150,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.89.4"
-  "AUCTeX version.
+(defconst AUCTeX-version "11.89.5"
+    "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2016-05-22"
+(defconst AUCTeX-date "2016-09-01"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
