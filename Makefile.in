@@ -84,7 +84,7 @@ MULEELC = @MULEELC@
 AUCSRC = tex.el tex-buf.el tex-style.el plain-tex.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el \
-	toolbar-x.el tex-bar.el bib-cite.el
+	toolbar-x.el tex-bar.el bib-cite.el tex-ispell.el
 AUCELC = $(AUCSRC:.el=.elc)
 
 STYLESRC = style/prosper.el \
@@ -154,7 +154,9 @@ STYLESRC = style/prosper.el \
 	   style/fontenc.el   style/Alegreya.el  style/gloss-italian.el \
 	   style/newfloat.el  style/subcaption.el style/AlegreyaSans.el \
 	   style/hologo.el    style/theorem.el   style/ntheorem.el \
-	   style/splitidx.el  style/tikz.el      style/xcolor.el
+	   style/splitidx.el  style/tikz.el      style/xcolor.el \
+	   style/pdflscape.el style/commath.el   style/empheq.el \
+	   style/framed.el    style/paracol.el   style/menukeys.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

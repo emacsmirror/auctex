@@ -171,7 +171,9 @@ package.")
       ;; Tell AUCTeX about parsed description like environments.
       (when (or (string-equal type "description")
 		(string-equal type "description*"))
-	(add-to-list 'LaTeX-item-list `(,env . LaTeX-item-argument)))))
+	(add-to-list 'LaTeX-item-list `(,env . LaTeX-item-argument)))
+      ;; Add new env's to `ispell-tex-skip-alist': skip the optional argument
+      (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0)))))
   ;; Now add the parsed env's to the local list.
   (when (LaTeX-enumitem-newlist-list)
     (setq LaTeX-enumitem-newlist-list-local
@@ -344,9 +346,10 @@ in `enumitem'-completions."
 	     (add-to-list 'LaTeX-item-list `(,name . LaTeX-item-argument)))
 	   (LaTeX-add-environments `(,name LaTeX-enumitem-env-with-opts))
 	   (LaTeX-add-enumitem-newlists (list name type))
-	   (insert (format "{%s}" name)
-		   (format "{%s}" type))
-	    (format "%s" depth)))))
+	   (TeX-ispell-skip-setcdr `((,name ispell-tex-arg-end 0)))
+	   (TeX-argument-insert name optional)
+	   (TeX-argument-insert type optional)
+	   (format "%s" depth)))))
 
     ;; \renewlist{<name>}{<type>}{<max-depth>}
     '("renewlist"

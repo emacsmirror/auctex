@@ -2597,10 +2597,10 @@ the @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α
 × β}.  When point is on one of the characters, it'll be unprettified
 automatically, meaning you see the verbatim text again.
 
-To enable prettification in @AUCTeX, simply add
+To enable prettification in @AUCTeX{}, simply add
 @code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled
 prettification globally with @code{global-prettify-symbols-mode}, then
-it's automatically enabled in @AUCTeX, too.
+it's automatically enabled in @AUCTeX{}, too.
 
 You can also add custom symbol unicode-character pairs for
 prettification by adding to @code{tex--prettify-symbols-alist}.  Note
@@ -2874,6 +2874,126 @@ Directory path to search for dependencies.
 
 If nil, just check the current file.
 Used when checking if any files have changed.
+@end defopt
+
+@cindex ispell
+When performing spell checking on a document or a region (invoked
+through @AUCTeX{}'s @samp{Spell} command or @kbd{M-x ispell RET}), you
+want the spell checking program to skip certain macro arguments and
+environments, most notably the arguments of referencing macros and the
+contents of verbatim environments.  The skipped parts are controlled by
+variable @code{ispell-tex-skip-alists} provided by @file{ispell.el}.
+@AUCTeX{} has a library which can be added to this variable depending on
+the value of @code{TeX-ispell-extend-skip-list} which is set to @code{t}
+by default.
+
+@defopt TeX-ispell-extend-skip-list
+This boolean option controls whether @AUCTeX{} activates its extension
+for skipping certain macro arguments and environments when spell
+checking.
+
+When non-@code{nil}, @AUCTeX{} loads the file @file{tex-ispell.el} and
+adds its content to @code{ispell-tex-skip-alists}.  This library can and
+will never be complete, but the interface can be used to add selected
+and private macro names within your init file or on a file local basis.
+
+@code{ispell-tex-skip-alists} has the following structure:
+@lisp
+(defvar ispell-tex-skip-alists
+  '((;; First list
+     ("\\\\addcontentsline"         ispell-tex-arg-end 2)
+     ("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+     ("\\\\makebox"                 ispell-tex-arg-end 0)
+     ("\\\\documentclass" . "\\\\begin@{document@}"))
+    (;; Second list
+     ("\\(figure\\|table\\)\\*?"  ispell-tex-arg-end 0)
+     ("list"                      ispell-tex-arg-end 2)
+     ("verbatim\\*?" . "\\\\end@{verbatim\\*?@}")))
+  "*Lists of regions to be skipped in TeX mode.
+First list is used raw.
+Second list has key placed inside \\begin@{@}.")
+@end lisp
+Each item is an alist and the structure of it is described in
+@code{ispell-skip-region-alist}:
+@lisp
+(defvar ispell-skip-region-alist
+  '((...))
+  "Alist expressing beginning and end of regions not to spell check.
+The alist key must be a regular expression.
+Valid forms include:
+  (KEY) - just skip the key.
+  (KEY . REGEXP) - skip to the end of REGEXP.
+                   REGEXP may be string or symbol.
+  (KEY REGEXP) - skip to end of REGEXP.  REGEXP must be a string.
+  (KEY FUNCTION ARGS) - FUNCTION called with ARGS
+                        returns end of region.")
+@end lisp
+
+Let's go through the first list of @code{ispell-tex-skip-alists} line by
+line:
+@lisp
+("\\\\addcontentsline"         ispell-tex-arg-end 2)
+@end lisp
+@code{KEY} is the string @code{"\\\\addcontentsline"}, @code{FUNCTION}
+is @code{ispell-tex-arg-end} called with @code{ARGS}, here @code{2}.
+@code{ispell-tex-arg-end} is a function provided by @file{ispell.el}
+which skips as many subsequent optional arguments in square brackets as
+it sees and then skips @code{ARGS} number of mandatory arguments in
+braces.  Omitting @code{ARGS} means skip @code{1} mandatory argument.
+In practice, when you have something like this in your document:
+@example
+\addcontentsline@{toc@}@{chapter@}@{Some text@}
+@end example
+The first two arguments are left out and @samp{Some text} will be spell
+checked.  For the next line
+@lisp
+("\\\\\\([aA]lph\\|arabic\\)"  ispell-tex-arg-end)
+@end lisp
+the name of the counter as argument is skipped.  Next line is
+@lisp
+("\\\\makebox"                 ispell-tex-arg-end 0)
+@end lisp
+where only optional arguments are skipped, the first mandatory argument
+is checked, e.g.
+@example
+\makebox[0pt][l]@{Some text@}
+@end example
+Finally, the next line
+@lisp
+("\\\\documentclass" . "\\\\begin@{document@}"))
+@end lisp
+ensures that the entire preamble of a document is discarded.  Second
+list works the same; it is more convenient for environments since
+@code{KEY} is wrapped inside @code{\begin@{@}}.
+
+@AUCTeX{} provides two functions to add items to car and cdr of
+@code{ispell-tex-arg-end}, namely @code{TeX-ispell-skip-setcar} and
+@code{TeX-ispell-skip-setcdr}.  The argument of these functions is
+exactly as in @code{ispell-tex-skip-alists}.  Additions can be done via
+init file, e.g.:
+@lisp
+(eval-after-load "tex-ispell"
+  '(progn
+     (TeX-ispell-skip-setcar
+      '(("\\\\mymacro" ispell-tex-arg-end)))
+     (TeX-ispell-skip-setcdr
+      '(("myverbatim" . "\\\\end@{myverbatim@}")))))
+@end lisp
+Another possibility is to use file local additions at the end of your
+@TeX{} file, e.g.:
+@example
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% eval: (TeX-ispell-skip-setcar '(("\\\\mymacro" . "@{[-0-9]+@}")))
+%%% End:
+@end example
+
+@findex TeX-ispell-tex-arg-end
+Finally, @AUCTeX{} provides a function called
+@code{TeX-ispell-tex-arg-end} which sees more arguments than
+@code{ispell-tex-arg-end}.  Refer to its doc string for more
+information.
 @end defopt
 
 @node Processor Options
@@ -3341,6 +3461,49 @@ Emacs corresponding to a certain position in the viewer, is triggered
 from the viewer, typically by a mouse click.  Refer to the documentation
 of your viewer to find out how it has to be configured and what you have
 to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
+
+@vindex TeX-source-correlate-start-server
+Note that inverse search with the Evince PDF viewer or its MATE fork
+Atril might fail in raising the Emacs frame after updating point in your
+document's buffer.  There is simply no way to raise the Emacs frame
+reliably accross different operating systems and different window
+managers with their different focus stealing policies.  If the Emacs
+frame is not raised after performing an inverse search from Evince or
+Atril, you can customize the following option.
+
+@defopt TeX-raise-frame-function
+A function that will be called after performing an inverse search from
+Evince or Atril in order to raise the current Emacs frame.
+
+If your Emacs frame is already raised in that situation, just
+leave this variable set to its default value
+@code{raise-frame}.  Otherwise, here are some alternative
+settings that work for some users.
+
+@lisp
+;; Alternative 1: For some users, `x-focus-frame' works.  Note
+;; that this function requires Emacs 24+.
+(setq TeX-raise-frame-function #'x-focus-frame)
+
+;; Alternative 2: Under GNOME 3.20 (and probably others), it
+;; seems some focus stealing prevention policy prohibits that
+;; some window gets the focus immediately after the user has
+;; clicked in some other window.  Here waiting a bit before
+;; issuing the request seems to work.
+(setq TeX-raise-frame-function
+      (lambda ()
+	(run-at-time 0.5 nil #'x-focus-frame)))
+
+;; Alternative 3: Use the external wmctrl tool in order to
+;; force Emacs into the focus.
+(setq TeX-raise-frame-function
+      (lambda ()
+	(call-process
+	 "wmctrl" nil nil nil "-i" "-R"
+	 (frame-parameter (selected-frame) ’outer-window-id))))
+@end lisp
+@end defopt
+
 
 @node Debugging
 @section Catching the errors
@@ -4040,8 +4203,8 @@ j@TeX{} for Japanese, H@LaTeX{} and k@TeX{} for Korean.  The
 
 Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
 @acronym{CJK} characters are not usable.  Please use the
-@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 (not released
-yet) if you need @acronym{CJK}.
+@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 and later if
+you need @acronym{CJK}.
 
 @c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
 
@@ -4273,8 +4436,7 @@ If nil do it the other way round.
 @cindex p@LaTeX{}
 @cindex @file{tex-jp.el}
 @vindex TeX-default-mode
-@vindex japanese-TeX-command-default
-@vindex japanese-LaTeX-command-default
+@vindex japanese-TeX-engine-default
 @vindex japanese-LaTeX-default-style
 
 To write Japanese text with @AUCTeX{}, you need to have versions of
@@ -4304,16 +4466,10 @@ set the variable like this:
 @end lisp
 @end defopt
 
-@defopt japanese-TeX-command-default
-The default command for @code{TeX-command} in Japanese @TeX{} mode.
+@defopt japanese-TeX-engine-default
+The default TeX engine in Japanese @TeX{} mode.
 
-The default value is @samp{"pTeX"}.
-@end defopt
-
-@defopt japanese-LaTeX-command-default
-The default command for @code{TeX-command} in Japanese @LaTeX{} mode.
-
-The default value is @samp{"LaTeX"}.
+The default value is @samp{ptex}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
@@ -4321,6 +4477,16 @@ The default style/class when creating a new Japanese @LaTeX{} document.
 
 The default value is @samp{"jarticle"}.
 @end defopt
+
+The former customize options @code{japanese-TeX-command-default} and
+@code{japanese-LaTeX-command-default} are obsolete.  Use
+@code{japanese-TeX-engine-default} instead.  If you need to customize
+the executable file name such as @samp{"latex"}, the options for them,
+or both, customize @code{TeX-engine-alist}.
+
+Also, the option @code{japanese-TeX-command-list} is considered as
+semi-obsolete.  It still functions as before, but in theory, it is not
+required anymore in normal use.
 
 See @file{tex-jp.el} for more information.
 

@@ -48,6 +48,14 @@
 		 (const :tag "jTeX" jtex)
 		 (const :tag "upTeX" uptex)))
 
+(defcustom japanese-TeX-use-kanji-opt-flag (not (eq system-type 'windows-nt))
+  "Add kanji option to Japanese pTeX family if non-nil.
+If `TeX-japanese-process-input-coding-system' or
+`TeX-japanese-process-output-coding-system' are non-nil, the process coding
+systems are determined by their values regardless of the kanji option."
+  :group 'AUCTeX-jp
+  :type 'boolean)
+
 (setq TeX-engine-alist-builtin
       (append TeX-engine-alist-builtin
              '((ptex "pTeX" "ptex %(kanjiopt)" "platex %(kanjiopt)" "eptex")
@@ -246,11 +254,11 @@ For detail, see `TeX-command-list', to which this list is appended."
 ;; 順調に行けば不要になる。
 (setq LaTeX-command-style
       (append '(("\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'"
-                "%(PDF)uplatex %(kanjiopt)%S%(PDFout)")
+                "%(PDF)uplatex %S%(PDFout)")
                ("\\`[jt]s?\\(article\\|report\\|book\\)\\'"
                 "%(PDF)platex %(kanjiopt)%S%(PDFout)")
                ("\\`j-\\(article\\|report\\|book\\)\\'"
-                "%(PDF)jlatex %(kanjiopt)%S%(PDFout)"))
+                "%(PDF)jlatex %S%(PDFout)"))
 	      LaTeX-command-style))
 
 (defcustom japanese-TeX-error-messages t
@@ -258,28 +266,19 @@ For detail, see `TeX-command-list', to which this list is appended."
   :group 'AUCTeX-jp
   :type 'boolean)
 
-;; FIX-ME (2007-02-09) The default coding system in recent Unix (like Fedora and
-;; Ubuntu) is utf-8.  But Japanese TeX system does not support utf-8 yet
-;; (platex-utf is under development, may be alpha phase).  So,
-;; process-coding-system for Japanese TeX is not defined from
-;; default-coding-system.  When platex-utf is out, we should look this setting,
-;; again.
-
-(defcustom TeX-japanese-process-input-coding-system
-  (cond ((memq system-type '(windows-nt ms-dos cygwin)) 'shift_jis-dos)
-	((memq system-type '(mac darwin)) 'shift_jis-mac)
-	(t 'euc-jp-unix))
-  "TeX-process' coding system with standard input."
+(defcustom TeX-japanese-process-input-coding-system nil
+  "If non-nil, used for encoding input to Japanese TeX process.
+When nil, AUCTeX tries to choose suitable coding system.
+See also a user custom option `TeX-japanese-process-output-coding-system'."
   :group 'AUCTeX-jp
-  :type 'coding-system)
+  :type '(choice (const :tag "Default" nil) coding-system))
 
-(defcustom TeX-japanese-process-output-coding-system
-  (cond ((memq system-type '(windows-nt ms-dos cygwin)) 'shift_jis-dos)
-	((memq system-type '(mac darwin)) 'shift_jis-mac)
-	(t 'euc-jp-unix))
-  "TeX-process' coding system with standard output."
+(defcustom TeX-japanese-process-output-coding-system nil
+  "If non-nil, used for decoding output from Japanese TeX process.
+When nil, AUCTeX tries to choose suitable coding system.
+See also a user custom option `TeX-japanese-process-input-coding-system'."
   :group 'AUCTeX-jp
-  :type 'coding-system)
+  :type '(choice (const :tag "Default" nil) coding-system))
 
 ;; 順調に行けば不要になる。
 (defcustom japanese-TeX-command-default "pTeX"
@@ -327,18 +326,80 @@ For detail, see `TeX-command-list', to which this list is appended."
 
 (defun japanese-TeX-set-process-coding-system (process)
   "Set proper coding system for japanese TeX PROCESS."
-  (if (with-current-buffer TeX-command-buffer japanese-TeX-mode)
-      (set-process-coding-system process
-				 TeX-japanese-process-output-coding-system
-				 TeX-japanese-process-input-coding-system)))
+  (with-current-buffer TeX-command-buffer
+    (when japanese-TeX-mode
+      ;; TeX-engine が ptex, jtex, uptex のいずれかである場合のみ考え
+      ;; る。luatex-ja などの場合はそもそもただの latex-mode でよく、
+      ;; わざわざ japanese-latex-mode にする必要がない。
+
+      ;; FIXME: 以下の処理は tex engine を対象とする場合しか考えていない。
+      ;; bibtex や mendex 等の補助ツールの場合は正しくない処理かもしれない。
+      (let*
+	  ;; -kanji オプションありの時の文字コード。
+	  ((kanji (and japanese-TeX-use-kanji-opt-flag
+		       (let ((str (japanese-TeX-get-encoding-string)))
+			 (cond
+			  ((equal str "euc") 'euc-jp)
+			  ((equal str "jis") 'iso-2022-jp)
+			  ((equal str "sjis") 'shift_jis)
+			  ((equal str "utf8") 'utf-8)))))
+
+	   ;; process からの出力の文字コード。
+	   (dec (cond
+		 ;; windows と mac の場合。
+		 ((memq system-type '(windows-nt darwin))
+		  (cond
+		   ;; ptex なら mac は utf-8。
+		   ;; windows で -kanji オプションありの時はその文字コード、
+		   ;; なしの時は sjis。
+		   ((eq TeX-engine 'ptex)
+		    (cond ((eq system-type 'darwin)
+			   'utf-8)
+			  (japanese-TeX-use-kanji-opt-flag
+			   kanji)
+			  (t 'shift_jis)))
+		   ;; jtex なら sjis に固定する。
+		   ((eq TeX-engine 'jtex)
+		    'shift_jis)
+		   ;; uptex なら utf-8 に固定する。
+		   (t
+		    'utf-8)))
+		 ;; unix の場合。
+		 (t
+		  ;; jtex なら euc に固定する。
+		  (cond
+		   ((eq TeX-engine 'jtex)
+		    'euc-jp)
+		   ;; それ以外は、uptex でも locale に従う。
+		   ;; ただし、locale が日本語をサポートしない場合は
+		   ;; euc に固定する。
+		   (t
+		    (if (japanese-TeX-coding-ejsu locale-coding-system)
+			locale-coding-system 'euc-jp))))))
+
+	   ;; process に与える入力の文字コード。
+	   (enc (cond
+		 ;; ptex で -kanji オプションありなら、その文字コード。
+		 ;; なしなら utf-8 か sjis。
+		 ((eq TeX-engine 'ptex)
+		  (if japanese-TeX-use-kanji-opt-flag
+		      kanji
+		    (if (eq system-type 'windows-nt)
+			'shift_jis 'utf-8)))
+		 ;; jtex なら euc か sjis に固定する。
+		 ((eq TeX-engine 'jtex)
+		  (if (memq system-type '(windows-nt darwin))
+		      'shift_jis 'euc-jp))
+		 ;; uptex なら utf-8 に固定する。
+		 (t
+		  'utf-8))))
+	;; Customize 値があればそれを優先。
+	(set-process-coding-system process
+				   (or TeX-japanese-process-output-coding-system dec)
+				   (or TeX-japanese-process-input-coding-system enc))))))
 (when (featurep 'mule)
   (setq TeX-after-start-process-function
         #'japanese-TeX-set-process-coding-system))
-
-(defcustom japanese-TeX-use-kanji-opt-flag t
-  "Add kanji option to Japanese pTeX family if non-nil."
-  :group 'AUCTeX-jp
-  :type 'boolean)
 
 (defun japanese-TeX-coding-ejsu (coding-system)
   "Convert japanese CODING-SYSTEM to mnemonic string.
@@ -348,17 +409,26 @@ shift_jis: \"sjis\"
 utf-8:     \"utf8\"
 Return nil otherwise."
   (let ((base (coding-system-base coding-system)))
+    (if (featurep 'xemacs)
+	(setq base (coding-system-name base)))
     (cdr (assq base
               '((japanese-iso-8bit . "euc")
+                (euc-jp . "euc") ; for xemacs
                 (iso-2022-jp . "jis")
                 (japanese-shift-jis . "sjis")
+                (shift_jis . "sjis") ; for xemacs
                 (utf-8 . "utf8")
+                (mule-utf-8 . "utf8") ; for emacs 21, 22
+                ;; utf-8-auto や utf-8-emacs を入れる必要はあるのか？
 
-                ;; xemacs だと以下の名前は違うかも…。
+                ;; xemacs で jisx0213 は使えるのか？使えるとして、
+                ;; その coding system 名は？
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
                 (japanese-shift-jis-2004 . "sjis")
 
+                ;; xemacs に cp932 系の coding system があるのか
+                ;; どうかもよくわからない。
                 (japanese-cp932 . "sjis")
                 (eucjp-ms . "euc"))))))
 
@@ -497,7 +567,12 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 
 (if japanese-TeX-error-messages
 (setq TeX-error-description-list
-  '(("Bad \\\\line or \\\\vector argument.*" .
+  '(("\\(?:Package Preview Error\\|Preview\\):.*" .
+"`preview'へ`auctex'オプションを直接与えるのは避けてください．
+プレビューの実行時以外でこのエラーが出た場合，余りにこみいったことを
+しすぎか，でなければAUCTeXがひどい失敗をしています．")
+
+    ("Bad \\\\line or \\\\vector argument.*" .
 "線の傾きを指定する，\\lineまたは\\vectorの最初の引数が不正です．")
 
     ("Bad math environment delimiter.*" .

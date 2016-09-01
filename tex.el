@@ -1262,8 +1262,11 @@ DE is the name of the desktop environment, either \"gnome\" or
 If `TeX-source-correlate-mode' is disabled, only find and pop to
 the output PDF file.  Used by default for the PDF Tools viewer
 entry in `TeX-view-program-list-builtin'."
-  (unless (featurep 'pdf-tools)
-    (error "PDF Tools are not installed"))
+  ;; Make sure `pdf-tools' is at least in the `load-path', but the user must
+  ;; take care of properly loading and installing the package.  We used to test
+  ;; "(featurep 'pdf-tools)", but that doesn't play well with deferred loading.
+  (unless (fboundp 'pdf-tools-install)
+    (error "PDF Tools are not available"))
   (unless TeX-PDF-mode
     (error "PDF Tools only work with PDF output"))
   (add-hook 'pdf-sync-backward-redirect-functions
@@ -1846,12 +1849,42 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
 		  (+ line offset) col)))))))
 
+(defcustom TeX-raise-frame-function #'raise-frame
+  "A function which will be called to raise the Emacs frame.
+The function is called after `TeX-source-correlate-sync-source'
+has processed an inverse search DBUS request from Evince or
+Atril in order to raise the Emacs frame.
+
+The default value is `raise-frame', however, depending on window
+manager and focus stealing policies, it might very well be that
+Emacs doesn't pop into the foreground.  So you can do whatever it
+takes here.
+
+For some users, `x-focus-frame' does the trick.  For some
+users (on GNOME 3.20),
+
+  (lambda ()
+    (run-at-time 0.5 nil #'x-focus-frame))
+
+does the trick.  Some other users use the external wmctrl tool to
+raise the Emacs frame like so:
+
+  (lambda ()
+    (call-process
+     \"wmctrl\" nil nil nil \"-i\" \"-R\"
+     (frame-parameter (selected-frame) 'outer-window-id)))"
+  :type 'function
+  :group 'TeX-view)
+
 (defun TeX-source-correlate-sync-source (file linecol &rest ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
 emitted from the Evince document viewer.  IGNORED absorbs an
 unused id field accompanying the DBUS signal sent by Evince-3.0.0
-or newer."
+or newer.
+
+If the Emacs frame isn't raised, customize
+`TeX-raise-frame-function'."
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
@@ -1885,7 +1918,9 @@ or newer."
 	(when (or (< pos (point-min))
 		  (> pos (point-max)))
 	  (widen))
-	(goto-char pos)))))
+	(goto-char pos))
+      (when TeX-raise-frame-function
+	(funcall TeX-raise-frame-function)))))
 
 (define-minor-mode TeX-source-correlate-mode
   "Minor mode for forward and inverse search.
@@ -4644,15 +4679,6 @@ See `match-data' for details."
       (buffer-substring-no-properties (match-beginning n) (match-end n))
     ""))
 
-(defun TeX-function-p (arg)
-  "Return non-nil if ARG is callable as a function."
-  (or (and (fboundp 'byte-code-function-p)
-	   (byte-code-function-p arg))
-      (and (listp arg)
-	   (eq (car arg) 'lambda))
-      (and (symbolp arg)
-	   (fboundp arg))))
-
 (defun TeX-booleanp (arg)
   "Return non-nil if ARG is t or nil."
   (memq arg '(t nil)))
@@ -6485,6 +6511,86 @@ NAME may be a package, a command, or a document."
 (setq ispell-tex-major-modes
       (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
 	      ispell-tex-major-modes))
+
+(defcustom TeX-ispell-extend-skip-list t
+  "Whether to extend regions selected for skipping during spell checking."
+  :group 'TeX-misc
+  :type 'boolean)
+
+;; These functions are used to add new items to
+;; `ispell-tex-skip-alists' -- see tex-ispell.el:
+(defun TeX-ispell-skip-setcar (skip)
+  "Add SKIP to car of `ispell-tex-skip-alists'.
+SKIP is an alist with the format described in
+`ispell-tex-skip-alists'.  Each element in SKIP is added on top
+of the car of `ispell-tex-skip-alists'.  This only happens if
+`TeX-ispell-extend-skip-list' is non-nil."
+  (when TeX-ispell-extend-skip-list
+    (let ((raws (car ispell-tex-skip-alists))
+	  (envs (cadr ispell-tex-skip-alists)))
+      (dolist (x skip)
+	(pushnew x raws :test #'equal))
+      (setq ispell-tex-skip-alists (list raws envs)))))
+
+(defun TeX-ispell-skip-setcdr (skip)
+  "Add SKIP to cdr of `ispell-tex-skip-alists'.
+SKIP is an alist with the format described in
+`ispell-tex-skip-alists'.  Each element in SKIP is added on top
+of the cdr of `ispell-tex-skip-alists'.  This only happens if
+`TeX-ispell-extend-skip-list' is non-nil."
+  (when TeX-ispell-extend-skip-list
+    (let ((raws (car ispell-tex-skip-alists))
+	  (envs (cadr ispell-tex-skip-alists)))
+      (dolist (x skip)
+	(pushnew x envs :test #'equal))
+      (setq ispell-tex-skip-alists (list raws envs)))))
+
+(defun TeX-ispell-tex-arg-end (&optional arg1 arg2 arg3)
+  "Skip across ARG1, ARG2 and ARG3 number of braces and brackets.
+This function is a variation of `ispell-tex-arg-end'.  It should
+be used when adding skip regions to `ispell-tex-skip-alists' for
+constructs like:
+
+  \\begin{tabularx}{300pt}[t]{lrc} ...
+    or
+  \\fontspec{font name}[font features]
+
+where optional and/or mandatory argument(s) follow(s) a mandatory
+one.  ARG1 is the number of mandatory arguments before the
+optional one, ARG2 the max. number of following optional
+arguments, ARG3 is the max. number of mandatory arguments
+following.  Omitting argument means 1.
+
+Here some examples for additions to `ispell-tex-skip-alists':
+
+  \\begin{tabularx}{300pt}[t]{lrc} ...
+		ARG  1    2   3
+  (\"tabularx\" TeX-ispell-tex-arg-end) or equivalent
+  (\"tabularx\" TeX-ispell-tex-arg-end 1 1 1)
+
+  \\fontspec{font name}[font features]
+	       ARG1         ARG2        ARG3=0
+  (\"\\\\\\\\fontspec\" TeX-ispell-tex-arg-end 1 1 0)
+
+  \\raisebox{lift}[height][depth]{contents}
+	    ARG1       ARG2       ARG3=0 (checked by Ispell)
+  (\"\\\\\\\\raisebox\" TeX-ispell-tex-arg-end 1 2 0)
+
+Optional arguments before the first mandatory one are all
+skipped."
+  (condition-case nil
+      (progn
+	(while (looking-at "[ \t\n]*\\[") (forward-sexp))
+	(forward-sexp (or arg1 1))
+	(let ((num 0))
+	  (while (and (looking-at "[ \t\n]*\\[")
+		      (< num (or arg2 1)))
+	    (setq num (1+ num))
+	    (forward-sexp)))
+	(forward-sexp (or arg3 1)))
+    (error
+     (message "Error skipping s-expressions at point %d" (point))
+     (sit-for 2))))
 
 
 ;;; Abbrev mode

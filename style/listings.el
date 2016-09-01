@@ -291,7 +291,9 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	    (t ; No args
 	     (add-to-list 'LaTeX-auto-environment (list env))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
-      (add-to-list 'LaTeX-verbatim-environments-local env)))
+      (add-to-list 'LaTeX-verbatim-environments-local env)
+      ;; Add new env's to `ispell-tex-skip-alist': skip the entire env
+      (TeX-ispell-skip-setcdr `(,(cons env (concat "\\\\end{" env "}"))))))
   (when (LaTeX-listings-lstdefinestyle-list)
     (LaTeX-listings-update-style-key)))
 

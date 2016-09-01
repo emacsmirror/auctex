@@ -12,6 +12,18 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} has a new Ispell dictionary @file{tex-ispell.el} for macros
+and environments which will be skipped during spell checking.  The
+activiation of this feature is controlled by a new customize option
+@code{TeX-ispell-extend-skip-list}, which is set to @code{t} and
+activated by default.
+
+@item
+@AUCTeX{} has a new customize option @code{TeX-raise-frame-function}
+that is currently only used by Evince and Atril inverse search to raise
+the Emacs frame.
+
+@item
 @AUCTeX{} now has limited support for the TikZ package.  For the moment,
 this includes some basic support for prompting the user of arguments to
 the @samp{\draw} macro.
@@ -41,7 +53,7 @@ A new option, @code{TeX-PDF-from-DVI}, controls if and how to produce a
 obsolete and may be removed in future releases.
 
 @item
-Support for a number of external viewers has been addedd:
+Support for a number of external viewers has been added:
 @itemize
 @item
 Atril viewer.  Forward and inverse search requires version 1.9.1 or

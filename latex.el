@@ -30,6 +30,7 @@
 
 (require 'tex)
 (require 'tex-style)
+(require 'tex-ispell)
 (eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
 
 ;;; Syntax
@@ -2995,7 +2996,10 @@ consideration just as is in the non-commented source code."
     ("tabbing"))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
-indentation level in columns."
+indentation level in columns.
+
+Environments present in this list are not filled by filling
+functions, see `LaTeX-fill-region-as-paragraph'."
     :group 'LaTeX-indentation
     :type '(repeat (list (string :tag "Environment")
 			 (option function))))
@@ -3457,7 +3461,11 @@ Break lines to fit `fill-column', but leave all lines ending with
 \\\\ \(plus its optional argument) alone.  Lines with code
 comments and lines ending with `\par' are included in filling but
 act as boundaries.  Prefix arg means justify too.  From program,
-pass args FROM, TO and JUSTIFY-FLAG."
+pass args FROM, TO and JUSTIFY-FLAG.
+
+You can disable filling inside a specific environment by adding
+it to `LaTeX-indent-environment-list', only indentation is
+performed in that case."
   (interactive "*r\nP")
   (let ((end-marker (save-excursion (goto-char to) (point-marker))))
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
