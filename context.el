@@ -498,7 +498,7 @@ in your .emacs file."
 ;; Define before first use.
 (defcustom ConTeXt-Mark-version "II"
   "ConTeXt Mark version used for running ConTeXt."
-  :type "string"
+  :type 'string
   :group 'TeX-command)
 (make-variable-buffer-local 'ConTeXt-Mark-version)
 (put 'ConTeXt-Mark-version 'safe-local-variable 'stringp)
