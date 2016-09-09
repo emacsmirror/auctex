@@ -219,7 +219,8 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     '("addcontentsonly"
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Content file")
-		    '("toc" "lof" "lot")))
+		    '("toc" "lof" "lot"))
+      "Column")
 
     '("flushpage" 0))
 
