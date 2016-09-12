@@ -4561,7 +4561,7 @@ upon a file search.  Note that the directories have to end with a
 directory separator.
 
 Each AUCTeX mode should set the variable buffer-locally with a
-more specific value.  See `LateX-search-files-type-alist' for an
+more specific value.  See `LaTeX-search-files-type-alist' for an
 example.")
 
 (defun TeX-search-files-by-type (filetype &optional scope nodir strip)
