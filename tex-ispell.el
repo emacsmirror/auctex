@@ -250,7 +250,7 @@ skipped as cdr."))
 	(dolist (elt TeX-ispell-skip-cmds-list)
 	  (when (= (cdr elt) arg)
 	    (push (car elt) cmds)))
-	(symbol-value 'cmds)))))
+	cmds))))
 
 (defvar TeX-ispell-skip-cmds-one-arg-regexp
   (eval-when-compile

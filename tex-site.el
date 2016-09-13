@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -132,14 +132,14 @@ definition."
               (get elt 'tex-saved))))))))
 
 (defcustom TeX-modes
-  (mapcar 'car TeX-mode-alist)
+  (mapcar #'car TeX-mode-alist)
   "List of modes provided by AUCTeX.
 
 This variable can't be set normally; use customize for that, or
 set it with `TeX-modes-set'."
   :type (cons 'set
 	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
-  :set 'TeX-modes-set
+  :set #'TeX-modes-set
   :group 'AUCTeX
   :initialize(lambda (var value)
 	       (custom-initialize-reset var value)
