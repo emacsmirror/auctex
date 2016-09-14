@@ -124,7 +124,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 
     ;; 7.4 Commands for Two-Sided Typesetting and Marginal Note Placement
     ;; \twosided[t1t2 ... tk]
-    '("twosided" "Features (combination of p, c, m, b)")
+    '("twosided" [ "Features (combination of p, c, m, b)" ])
 
     ;; \marginparthreshold{k}[k']
     '("marginparthreshold" "Number of columns" [ "Number of columns" ] )
