@@ -1649,8 +1649,9 @@ Rerun to get mark in right position\\." nil t)
 	      "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (message (concat "BibTeX finished successfully. "
-		     "Run LaTeX again to get citations right."))
-  (setq TeX-command-next TeX-command-default))))
+		     "Run LaTeX again to get citations right.")))
+   ;; In any case, run the default next command.
+   (setq TeX-command-next TeX-command-default)))
 
 (defun TeX-Biber-sentinel (_process _name)
   "Cleanup TeX output buffer after running Biber."
