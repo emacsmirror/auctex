@@ -941,7 +941,10 @@ have changed."
 		       ;; another mandatory argument(s) (e.g. with VerbatimOut or
 		       ;; the minted envs or defined with `lstnewenvironment').
 		       "\\(?:{[^}]+}\\)*"
-		       "\\(\n\\)")
+		       ;; Now match the final newline.  The "." alternative
+		       ;; catches the case where verbatim content is written
+		       ;; immediately after the \begin{verbatim}.
+		       "\\(\n\\|.\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
 		   ;; Using the newline character for the syntax
