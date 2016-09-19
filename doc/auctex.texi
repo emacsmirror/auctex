@@ -1811,19 +1811,24 @@ Moreover, you can focus in a specific portion of the code by narrowing
 the buffer to the desired region.  @AUCTeX{} provides also functions to
 narrow the buffer to the current group and to @LaTeX{} environments.
 
-Another tool to obtain more WYSIWYG feeling is to set
-@code{font-latex-fontify-script} to @code{invisible} so that the
-@code{^} and @code{_} in sub and superscripts are not displayed.
+@AUCTeX{} also provides some WYSIWYG features.
 
-Lastly, @AUCTeX{} with GNU Emacs 25 or later can display certain math
-macros using Unicode characters.  That's called prettification and is
-pretty lightweight and reasonable robust, however it only provides a
-limited WYSIWYG feature compared to @previewlatex{} a subsystem of
+First, you can customize @code{font-latex-fontify-script} to enable
+special formatting of @code{^} superscripts and @code{_} subscripts
+(@pxref{Font Locking}).
+
+Secondly, @AUCTeX{} with GNU Emacs 25 or later can display certain math
+macros using Unicode characters, e.g., @code{\alpha} as α.  This is
+called prettification and is lightweight and reasonable robust
+(@pxref{Prettifying}).
+
+A more accurate approach is provided by @previewlatex{}, a subsystem of
 @AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
-Manual} which let LaTeX generate images that are displayed in your
-buffer.  It is extremely accurate but sometimes fragile with some
-packages.  Please note that you can use prettification and preview-latex
-together.
+Manual}.  This system uses @LaTeX{} to generate images that are then
+displayed in your buffer.  It is extremely accurate but can be fragile
+with some packages (like older pgf versions).
+
+Please note that you can use prettification and @previewlatex{} together.
 
 @menu
 * Font Locking::                Font Locking
@@ -2183,27 +2188,28 @@ variables @code{font-latex-fontify-script} and
 @code{font-latex-script-display}.
 
 @defopt font-latex-fontify-script
-If non-nil, fontify subscript and superscript strings.
+If non-nil, fontify subscript and superscript strings.  Concretely, this
+means that the scripts are raised or lowered.
 
-In addition you can configure Emacs so that the @code{^} and @code{_} in
-sub and superscripts are not displayed.  To enable that feature you have
-to set the variable @code{font-latex-fontify-script} to
-@code{invisible}.  Another possiblity is setting this variable to
-the symbol @code{multi-level}, then y is raised above x, and z is raised
-above y.  With many script levels, the text might become too small to be
-readable.
+Another possiblity is setting this variable to the symbol
+@code{multi-level}.  In this case, in a formula @code{x^y^z}, y is
+raised above x, and z is raised above y.  With many script levels, the
+text might become too small to be readable.
+
+Lastly, you can set this variable to @code{invisible} whose behavior is
+like @code{multi-level}, and in addition the super-/subscript characters
+@code{^} and @code{_} are not displayed.
 
 Note that this feature is not available on XEmacs, for which
 it is disabled per default.  In GNU Emacs raising and lowering is not
 enabled for versions 21.3 and before due to it working not properly.
-
 @end defopt
 
 @defopt font-latex-script-display
 Display specification for subscript and superscript content.  The car is
 used for subscript, the cdr is used for superscript.  The feature is
 implemented using so-called display properties.  For information on what
-exactly to specify for the values, see @xref{Other Display Specs, , Other
+exactly to specify for the values, see @ref{Other Display Specs, , Other
 Display Specifications, elisp, GNU Emacs Lisp Reference Manual}.
 @end defopt
 
