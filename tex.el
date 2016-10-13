@@ -632,7 +632,7 @@ is equivalent to
 but takes care of byte-compilation issues where the byte-code for
 the latter could signal an error if it has been compiled with
 emacs 24.1 and is then later run by emacs 24.5."
-  (declare (indent 2) (debug (symbolp form)))
+  (declare (indent 2) (debug (symbolp form &rest form)))
   (if (fboundp name)            ;If macro exists at compile-time, just use it.
       then
     `(if (fboundp ',name)       ;Else, check if it exists at run-time.
