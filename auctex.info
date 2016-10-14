@@ -1,6 +1,6 @@
-This is auctex.info, produced by makeinfo version 6.1 from auctex.texi.
+This is auctex.info, produced by makeinfo version 6.3 from auctex.texi.
 
-This manual is for AUCTeX (version 11.89.5 from 2016-09-01), a
+This manual is for AUCTeX (version 11.89.6 from 2016-10-14), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -2679,8 +2679,25 @@ narrowing the buffer to the desired region.  AUCTeX provides also
 functions to narrow the buffer to the current group and to LaTeX
 environments.
 
-   Lastly, AUCTeX with Emacs 25 or later can display certain math macros
-using Unicode characters.  That's called prettification.
+   AUCTeX also provides some WYSIWYG features.
+
+   First, you can customize 'font-latex-fontify-script' to enable
+special formatting of '^' superscripts and '_' subscripts (*note Font
+Locking::).
+
+   Secondly, AUCTeX with GNU Emacs 25 or later can display certain math
+macros using Unicode characters, e.g., '\alpha' as α.  This is called
+prettification and is lightweight and reasonable robust (*note
+Prettifying::).
+
+   A more accurate approach is provided by preview-latex, a subsystem of
+AUCTeX, see *note Introduction: (preview-latex)Top.  This system uses
+LaTeX to generate images that are then displayed in your buffer.  It is
+extremely accurate but can be fragile with some packages (like older pgf
+versions).
+
+   Please note that you can use prettification and preview-latex
+together.
 
 * Menu:
 
@@ -3004,7 +3021,17 @@ respectively.  This fontification feature can be controlled with the
 variables 'font-latex-fontify-script' and 'font-latex-script-display'.
 
  -- User Option: font-latex-fontify-script
-     If non-nil, fontify subscript and superscript strings.
+     If non-nil, fontify subscript and superscript strings.  Concretely,
+     this means that the scripts are raised or lowered.
+
+     Another possiblity is setting this variable to the symbol
+     'multi-level'.  In this case, in a formula 'x^y^z', y is raised
+     above x, and z is raised above y.  With many script levels, the
+     text might become too small to be readable.
+
+     Lastly, you can set this variable to 'invisible' whose behavior is
+     like 'multi-level', and in addition the super-/subscript characters
+     '^' and '_' are not displayed.
 
      Note that this feature is not available on XEmacs, for which it is
      disabled per default.  In GNU Emacs raising and lowering is not
@@ -3375,7 +3402,10 @@ Emacs 25 is able to prettify symbols in programming language buffers,
 and greek letters using their Unicode representation, too.  For example,
 the TeX code '\alpha \times \beta' will be displayed as 'α × β'.
 When point is on one of the characters, it'll be unprettified
-automatically, meaning you see the verbatim text again.
+automatically, meaning you see the verbatim text again.  For this
+behaviour however you need to set 'prettify-symbols-unprettify-at-point'
+to t or 'right-edge' which will unprettify the symbol when point moves
+into or near it.
 
    To enable prettification in AUCTeX, simply add
 'prettify-symbols-mode' to 'TeX-mode-hook'.  If you enabled
@@ -5715,7 +5745,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.89.5 from 2016-09-01), a
+   This manual is for AUCTeX (version 11.89.6 from 2016-10-14), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -6224,6 +6254,16 @@ A.2 Changes and New Features
 
 News since 11.89
 ----------------
+
+   * The style 'graphicx.el' went through a bigger overhaul.  The
+     optional argument of command '\includegraphics' now supports
+     key-val query; keys can independently be chosen anytime by pressing
+     the <,> key.  As a side effect, the variable
+     'LaTeX-includegraphics-options-alist' is now no-op and is removed
+     from 'tex-style.el'.  You can safely remove any customization of it
+     from your init file.  The mandatory argument of '\includegraphics'
+     knows about image file extensions supported by the used engine and
+     offers them for inclusion.
 
    * AUCTeX has a new Ispell dictionary 'tex-ispell.el' for macros and
      environments which will be skipped during spell checking.  The
@@ -7936,7 +7976,7 @@ Variable Index
 * font-latex-quotes:                     Fontification of quotes.
                                                               (line  15)
 * font-latex-script-display:             Fontification of math.
-                                                              (line  28)
+                                                              (line  38)
 * font-latex-sectioning-0-face:          Fontification of macros.
                                                               (line  96)
 * font-latex-sectioning-1-face:          Fontification of macros.
@@ -8234,7 +8274,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 388)
+* auctex.el <1>:                         Changes.             (line 398)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8536,7 +8576,7 @@ Concept Index
                                                               (line 286)
 * tex-site.el:                           Loading the package. (line  14)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 388)
+* tex-site.el <2>:                       Changes.             (line 398)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8592,67 +8632,67 @@ Node: Commenting98423
 Node: Indenting99748
 Node: Filling105784
 Node: Display111656
-Node: Font Locking113486
-Node: Fontification of macros115561
-Node: Fontification of quotes124999
-Node: Fontification of math126494
-Node: Verbatim content128213
-Node: Faces128987
-Node: Known problems129476
-Node: Folding130405
-Node: Outline141229
-Node: Narrowing142501
-Node: Prettifying143571
-Node: Processing144636
-Node: Commands145799
-Node: Starting a Command146355
-Node: Selecting a Command151258
-Node: Processor Options159646
-Node: Viewing169926
-Node: Starting Viewers170300
-Node: I/O Correlation176877
-Node: Debugging182135
-Node: Ignoring warnings184789
-Node: Error overview186849
-Node: Checking188842
-Node: Control190004
-Node: Cleaning190731
-Node: Documentation191944
-Node: Customization192659
-Node: Modes and Hooks193152
-Node: Multifile194972
-Node: Parsing Files199784
-Node: Internationalization204696
-Node: European205868
-Node: Japanese212748
-Node: Automatic214732
-Node: Automatic Global217223
-Node: Automatic Private218355
-Node: Automatic Local219668
-Node: Style Files220700
-Node: Simple Style221493
-Node: Adding Macros224766
-Node: Adding Environments233887
-Node: Adding Other238548
-Node: Hacking the Parser239135
-Node: Appendices243004
-Node: Copying this Manual243388
-Node: GNU Free Documentation License244272
-Node: Changes269391
-Node: Development302867
-Node: Mid-term Goals303513
-Node: Wishlist304730
-Node: Bugs310171
-Node: FAQ311701
-Node: Texinfo mode317874
-Node: Exploiting319010
-Node: Superseding319830
-Node: Mapping324034
-Node: Unbinding325863
-Node: Indices326684
-Node: Key Index326909
-Node: Function Index333087
-Node: Variable Index343824
-Node: Concept Index365596
+Node: Font Locking114151
+Node: Fontification of macros116226
+Node: Fontification of quotes125664
+Node: Fontification of math127159
+Node: Verbatim content129380
+Node: Faces130154
+Node: Known problems130643
+Node: Folding131572
+Node: Outline142396
+Node: Narrowing143668
+Node: Prettifying144738
+Node: Processing145974
+Node: Commands147137
+Node: Starting a Command147693
+Node: Selecting a Command152596
+Node: Processor Options160984
+Node: Viewing171264
+Node: Starting Viewers171638
+Node: I/O Correlation178215
+Node: Debugging183473
+Node: Ignoring warnings186127
+Node: Error overview188187
+Node: Checking190180
+Node: Control191342
+Node: Cleaning192069
+Node: Documentation193282
+Node: Customization193997
+Node: Modes and Hooks194490
+Node: Multifile196310
+Node: Parsing Files201122
+Node: Internationalization206034
+Node: European207206
+Node: Japanese214086
+Node: Automatic216070
+Node: Automatic Global218561
+Node: Automatic Private219693
+Node: Automatic Local221006
+Node: Style Files222038
+Node: Simple Style222831
+Node: Adding Macros226104
+Node: Adding Environments235225
+Node: Adding Other239886
+Node: Hacking the Parser240473
+Node: Appendices244342
+Node: Copying this Manual244726
+Node: GNU Free Documentation License245610
+Node: Changes270729
+Node: Development304781
+Node: Mid-term Goals305427
+Node: Wishlist306644
+Node: Bugs312085
+Node: FAQ313615
+Node: Texinfo mode319788
+Node: Exploiting320924
+Node: Superseding321744
+Node: Mapping325948
+Node: Unbinding327777
+Node: Indices328598
+Node: Key Index328823
+Node: Function Index335001
+Node: Variable Index345738
+Node: Concept Index367510
 
 End Tag Table
