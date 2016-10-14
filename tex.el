@@ -632,7 +632,7 @@ is equivalent to
 but takes care of byte-compilation issues where the byte-code for
 the latter could signal an error if it has been compiled with
 emacs 24.1 and is then later run by emacs 24.5."
-  (declare (indent 2) (debug (symbolp form)))
+  (declare (indent 2) (debug (symbolp form &rest form)))
   (if (fboundp name)            ;If macro exists at compile-time, just use it.
       then
     `(if (fboundp ',name)       ;Else, check if it exists at run-time.
@@ -4561,7 +4561,7 @@ upon a file search.  Note that the directories have to end with a
 directory separator.
 
 Each AUCTeX mode should set the variable buffer-locally with a
-more specific value.  See `LateX-search-files-type-alist' for an
+more specific value.  See `LaTeX-search-files-type-alist' for an
 example.")
 
 (defun TeX-search-files-by-type (filetype &optional scope nodir strip)

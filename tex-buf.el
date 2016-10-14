@@ -1649,8 +1649,9 @@ Rerun to get mark in right position\\." nil t)
 	      "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (message (concat "BibTeX finished successfully. "
-		     "Run LaTeX again to get citations right."))
-  (setq TeX-command-next TeX-command-default))))
+		     "Run LaTeX again to get citations right."))))
+  ;; In any case, run the default next command.
+  (setq TeX-command-next TeX-command-default))
 
 (defun TeX-Biber-sentinel (_process _name)
   "Cleanup TeX output buffer after running Biber."
@@ -2321,8 +2322,11 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	    (while (null (zerop arg))
 	      (setq TeX-error-last-visited
 		    ;; Increase or decrese `TeX-error-last-visited' depending on
-		    ;; the sign of `arg'.
-		    (+ (signum arg) TeX-error-last-visited)
+		    ;; the sign of `arg'.  Note: `signum' is a function from
+		    ;; `cl' library, do not be tempted to use it.
+		    (if (> arg 0)
+			(1+ TeX-error-last-visited)
+		      (1- TeX-error-last-visited))
 		    item (if (natnump TeX-error-last-visited)
 			     (nth TeX-error-last-visited TeX-error-list)
 			   ;; XEmacs doesn't support `nth' with a negative index.
@@ -2330,7 +2334,11 @@ already in an Emacs buffer) and the cursor is placed at the error."
 	      ;; Increase or decrease `arg' only if the warning isn't to be
 	      ;; skipped.
 	      (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
-		(setq arg (- arg (signum arg)))))
+		;; Note: `signum' is a function from `cl' library, do not be
+		;; tempted to use it.
+		(setq arg (if (> arg 0)
+			      (1- arg)
+			    (1+ arg)))))
 	    (if (< TeX-error-last-visited -1)
 		(setq TeX-error-last-visited -1))
 	    (cond ((or (null item)

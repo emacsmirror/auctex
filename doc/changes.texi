@@ -12,6 +12,17 @@
 
 @itemize @bullet
 @item
+The style @file{graphicx.el} went through a bigger overhaul.  The
+optional argument of command @samp{\includegraphics} now supports
+key-val query; keys can independently be chosen anytime by pressing the
+@key{,} key.  As a side effect, the variable
+@code{LaTeX-includegraphics-options-alist} is now no-op and is removed
+from @file{tex-style.el}.  You can safely remove any customization of it
+from your init file.  The mandatory argument of @samp{\includegraphics}
+knows about image file extensions supported by the used engine and
+offers them for inclusion.
+
+@item
 @AUCTeX{} has a new Ispell dictionary @file{tex-ispell.el} for macros
 and environments which will be skipped during spell checking.  The
 activiation of this feature is controlled by a new customize option

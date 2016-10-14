@@ -312,48 +312,6 @@ automatically get the list of fonts.  This requires
 		       :tag "Other"
 		       (string))))
 
-(defcustom LaTeX-includegraphics-options-alist
-  '((0 width)
-    ;; (1 width height clip)
-    ;; (2 width height keepaspectratio clip)
-    (4) ;; --> (4 nil)
-    (5 trim)
-    (16
-     ;; Table 1 in epslatex.ps: ``includegraphics Options''
-     height totalheight width scale angle origin bb
-     ;; Table 2 in epslatex.ps: ``cropping Options''
-     viewport trim
-     ;; Table 3 in epslatex.ps: ``Boolean Options''
-     ;; [not implemented:] noclip draft final
-     clip keepaspectratio
-     ;; Only for PDF:
-     page))
-  "Controls for which optional arguments of \\includegraphics you get prompted.
-
-An alist, consisting of \(NUMBER . LIST\) pairs.  Valid elements of LIST are
-`width', `height', `keepaspectratio', `clip', `angle', `totalheight', `trim'
-and `bb' \(Bounding Box\).
-
-The list corresponding to 0 is used if no prefix is given.  Note that 4 \(one
-\\[universal-argument]\) and 16 \(two \\[universal-argument]'s\) are easy to
-type and should be used for frequently needed combinations."
-  :group 'LaTeX-style
-  :type '(repeat (cons (integer :tag "Argument")
-		       (list (set :inline t
-				  (const height)
-				  (const totalheight)
-				  (const width)
-				  (const scale)
-				  (const angle)
-				  (const origin)
-				  (const :tag "Bounding Box" bb)
-				  ;;
-				  (const viewport)
-				  (const trim)
-				  ;;
-				  (const clip)
-				  (const keepaspectratio))))))
-
 (defcustom LaTeX-includegraphics-strip-extension-flag t
   "Non-nil means to strip known extensions from image file name."
   :group 'LaTeX-style

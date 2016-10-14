@@ -1811,8 +1811,24 @@ Moreover, you can focus in a specific portion of the code by narrowing
 the buffer to the desired region.  @AUCTeX{} provides also functions to
 narrow the buffer to the current group and to @LaTeX{} environments.
 
-Lastly, @AUCTeX{} with Emacs 25 or later can display certain math macros
-using Unicode characters.  That's called prettification.
+@AUCTeX{} also provides some WYSIWYG features.
+
+First, you can customize @code{font-latex-fontify-script} to enable
+special formatting of @code{^} superscripts and @code{_} subscripts
+(@pxref{Font Locking}).
+
+Secondly, @AUCTeX{} with GNU Emacs 25 or later can display certain math
+macros using Unicode characters, e.g., @code{\alpha} as α.  This is
+called prettification and is lightweight and reasonable robust
+(@pxref{Prettifying}).
+
+A more accurate approach is provided by @previewlatex{}, a subsystem of
+@AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
+Manual}.  This system uses @LaTeX{} to generate images that are then
+displayed in your buffer.  It is extremely accurate but can be fragile
+with some packages (like older pgf versions).
+
+Please note that you can use prettification and @previewlatex{} together.
 
 @menu
 * Font Locking::                Font Locking
@@ -2172,11 +2188,21 @@ variables @code{font-latex-fontify-script} and
 @code{font-latex-script-display}.
 
 @defopt font-latex-fontify-script
-If non-nil, fontify subscript and superscript strings.
+If non-nil, fontify subscript and superscript strings.  Concretely, this
+means that the scripts are raised or lowered.
 
-Note that this feature is not available on XEmacs, for which it is
-disabled per default.  In GNU Emacs raising and lowering is not enabled
-for versions 21.3 and before due to it working not properly.
+Another possiblity is setting this variable to the symbol
+@code{multi-level}.  In this case, in a formula @code{x^y^z}, y is
+raised above x, and z is raised above y.  With many script levels, the
+text might become too small to be readable.
+
+Lastly, you can set this variable to @code{invisible} whose behavior is
+like @code{multi-level}, and in addition the super-/subscript characters
+@code{^} and @code{_} are not displayed.
+
+Note that this feature is not available on XEmacs, for which
+it is disabled per default.  In GNU Emacs raising and lowering is not
+enabled for versions 21.3 and before due to it working not properly.
 @end defopt
 
 @defopt font-latex-script-display
@@ -2595,7 +2621,10 @@ Lisp buffers.
 and greek letters using their Unicode representation, too.  For example,
 the @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α
 × β}.  When point is on one of the characters, it'll be unprettified
-automatically, meaning you see the verbatim text again.
+automatically, meaning you see the verbatim text again.  For this
+behaviour however you need to set
+@code{prettify-symbols-unprettify-at-point} to t or @code{right-edge}
+which will unprettify the symbol when point moves into or near it.
 
 To enable prettification in @AUCTeX{}, simply add
 @code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled

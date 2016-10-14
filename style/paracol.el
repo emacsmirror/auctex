@@ -124,7 +124,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 
     ;; 7.4 Commands for Two-Sided Typesetting and Marginal Note Placement
     ;; \twosided[t1t2 ... tk]
-    '("twosided" "Features (combination of p, c, m, b)")
+    '("twosided" [ "Features (combination of p, c, m, b)" ])
 
     ;; \marginparthreshold{k}[k']
     '("marginparthreshold" "Number of columns" [ "Number of columns" ] )
@@ -219,7 +219,8 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     '("addcontentsonly"
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Content file")
-		    '("toc" "lof" "lot")))
+		    '("toc" "lof" "lot"))
+      "Column")
 
     '("flushpage" 0))
 
