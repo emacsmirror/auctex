@@ -41,8 +41,8 @@
     (when (featurep 'xemacs)
       (push
        (if (fboundp name)
-           (cons name (symbol-function name))
-         name)
+	   (cons name (symbol-function name))
+	 name)
        preview-compatibility-macros)
       `(eval-when-compile (defmacro ,name ,@rest))))
   (push 'preview-defmacro preview-compatibility-macros))
