@@ -1,7 +1,7 @@
 ;;; bib-cite.el --- test
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003, 2004, 2005, 2014
+;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014
 ;; Free Software Foundation
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>

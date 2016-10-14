@@ -1,10 +1,9 @@
 ;;; psfig.el - Support for the psfig style option.
 
+;; Copyright (C) 2013-2014 Free Software Foundation, Inc.
+
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 ;; Please direct comments to him.
-
-;; Copyright (C) 2014 Free Software Foundation, Inc.
-;; FIXME: What about the copyright for <= 2014?
 
 ;;; Code:
 
