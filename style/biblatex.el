@@ -216,6 +216,32 @@ for citation keys."
 	(TeX-argument-insert (mapconcat 'identity items ",") optional))
       (setq noinsert t))))
 
+(defun LaTeX-arg-biblatex-natbib-notes (optional)
+  "Prompt for two note arguments of a natbib compat citation command."
+  (when TeX-arg-cite-note-p
+      (let ((pre (TeX-read-string
+		  (TeX-argument-prompt optional nil "Prenote")))
+	    (post (TeX-read-string
+		   (TeX-argument-prompt optional nil "Postnote"))))
+	(cond
+	 (;; Both optional args are given
+	  (and pre (not (string= pre ""))
+	       post (not (string= post "")))
+	  (insert LaTeX-optop pre LaTeX-optcl
+		  LaTeX-optop post LaTeX-optcl))
+	 (;; pre is given, post is empty: Make sure that we insert an
+	  ;; extra pair of `[]', otherwise pre becomes post
+	  (and pre (not (string= pre ""))
+	       (string= post ""))
+	  (insert LaTeX-optop pre LaTeX-optcl
+		  LaTeX-optop LaTeX-optcl))
+	 (;; pre is empty, post is given
+	  (and (string= pre "")
+	       post (not (string= post "")))
+	  (insert LaTeX-optop post LaTeX-optcl))
+	 (;; both empty
+	  t (ignore))))))
+
 (TeX-add-style-hook
  "biblatex"
  (lambda ()
@@ -456,6 +482,53 @@ for citation keys."
     '("DefineHyphenationExceptions"
       (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
     "NewBibliographyString")
+
+   ;; § 3.8.9 natbib Compatibility Commands
+   (when (or (LaTeX-provided-package-options-member "biblatex" "natbib")
+	     (LaTeX-provided-package-options-member "biblatex" "natbib=true"))
+     (let ((cmds '(("citet" . 1) ("citet*" . 1)
+		   ("Citet" . 1) ("Citet*" . 1)
+		   ("citep" . 2) ("citep*" . 2)
+		   ("Citep" . 2) ("Citep*" . 2)
+		   ("citealt" . 1) ("citealt*" . 1)
+		   ("Citealt" . 1) ("Citealt*" . 1)
+		   ("citealp" . 2) ("citealp*" . 2)
+		   ("Citealp" . 2) ("Citealp*" . 2))))
+       ;; Taken from natbib.el:
+       (apply
+	#'TeX-add-symbols
+	(mapcar
+	 (lambda (cmd)
+	   (cond
+	    ((= (cdr cmd) 1)
+	     ;; Just one optional argument, the post note
+	     (list
+	      (car cmd)
+	      '(TeX-arg-conditional TeX-arg-cite-note-p (["Postnote"]) nil)
+	      'TeX-arg-cite))
+	    ((= (cdr cmd) 2)
+	     ;; Pre and post notes
+	     (list
+	      (car cmd)
+	      '(TeX-arg-conditional TeX-arg-cite-note-p
+				    ([LaTeX-arg-biblatex-natbib-notes])
+				  nil)
+	      'TeX-arg-cite))))
+	 cmds))
+
+     ;; Fontification for compat macros does not go into `font-latex.el':
+     (when (and (featurep 'font-latex)
+		(eq TeX-install-font-lock 'font-latex-setup))
+       (font-latex-add-keywords '(("citet"        "*[{")
+				  ("Citet"        "*[{")
+				  ("citep"        "*[[{")
+				  ("Citep"        "*[[{")
+				  ("citealt"      "*[{")
+				  ("Citealt"      "*[{")
+				  ("citealp"      "*[[{")
+				  ("Citealp"      "*[[{"))
+				'biblatex))))
+
    (LaTeX-add-environments
     ;;; Bibliography commands
     ;; Bibliography Sections
