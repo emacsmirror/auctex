@@ -1,6 +1,6 @@
 ;;; bidi.el --- AUCTeX style for the (XeLaTeX) bidi package
 
-;; Copyright (C) Free Software Foundation
+;; Copyright (C) 2016 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06

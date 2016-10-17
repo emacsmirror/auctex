@@ -2,7 +2,7 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
 ;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014
-;; Free Software Foundation
+;; Free Software Foundation, Inc.
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
