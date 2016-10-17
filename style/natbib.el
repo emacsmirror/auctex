@@ -32,7 +32,7 @@
     ;; The number in the cdr of the following list indicates how many
     ;; optional note arguments we consider useful.  Prompting for those
     ;; arguments will still depend upon `TeX-arg-cite-note-p'.
-    (let  ((citecmds 
+    (let  ((citecmds
 	    '(("cite" . 0)
 	      ("citet" . 1) ("citet*" . 1) ("citealt" . 1) ("citealt*" . 1)
 	      ("citep" . 2) ("citep*" . 2) ("citealp" . 2) ("citealp*" . 2)
@@ -41,11 +41,11 @@
 	      ("shortcites" . 0))))
 
       ;; Add these symbols
-      (apply 
+      (apply
        'TeX-add-symbols
        (mapcar
 	(lambda (cmd)
-	  (cond 
+	  (cond
 	   ((= (cdr cmd) 0)
 	    ;; No optional arguments
 	    (list (car cmd) 'TeX-arg-cite))
@@ -59,14 +59,14 @@
 	    ;; Pre and post notes
 	    (list
 	     (car cmd)
-	     '(TeX-arg-conditional TeX-arg-cite-note-p (natbib-note-args) nil)
+	     '(TeX-arg-conditional TeX-arg-cite-note-p ([LaTeX-arg-natbib-notes]) nil)
 	     'TeX-arg-cite))))
       citecmds))
 
       ;; Add the other symbols
       (TeX-add-symbols
        '("citetext" "Text")
-       '("bibpunct" ["Post note separator"] 
+       '("bibpunct" ["Post note separator"]
 		 "Opening bracket"
 		 "Closing bracket"
 		 "Punctuation between multiple citations"
@@ -82,7 +82,7 @@
       (add-to-list
        'TeX-complete-list
        (list
-	(concat "\\\\\\(" 
+	(concat "\\\\\\("
 		(mapconcat (lambda (x) (regexp-quote (car x)))
 			   citecmds "\\|")
 		"\\)\\(\\[[^]\n\r\\%]*\\]\\)*{\\([^{}\n\r\\%,]*,\\)*\\([^{}\n\r\\%,]*\\)")
@@ -108,18 +108,22 @@
 	(reftex-set-cite-format 'natbib))))
  LaTeX-dialect)
 
-(defun natbib-note-args (optional &optional _prompt _definition)
-  "Prompt for two note arguments a natbib citation command."
+(defun LaTeX-arg-natbib-notes (optional)
+  "Prompt for two note arguments a natbib citation command.
+If OPTIONAL is non-nil, insert them in brackets, otherwise in
+braces."
   (if TeX-arg-cite-note-p
-      (let* ((pre (TeX-read-string
-		   (TeX-argument-prompt optional optional "Pre-note")))
-	     (post (TeX-read-string
-		    (TeX-argument-prompt optional optional "Post-note"))))
-	(if (not (string= pre "")) (insert "[" pre "]"))
-	(if (not (string= post ""))
-	    (insert "[" post "]")
-	  ;; Make sure that we have an empty post note if pre is not empty
-	  (if (string= pre "") (insert "[]"))))))
+      (let ((pre (TeX-read-string
+		  (TeX-argument-prompt optional nil "Pre-note")))
+	    (post (TeX-read-string
+		   (TeX-argument-prompt optional nil "Post-note"))))
+	(TeX-argument-insert pre optional)
+	(TeX-argument-insert post optional)
+	;; pre is given, post is empty: Make sure that we insert an
+	;; extra pair of `[]', otherwise pre becomes post
+	(when (and pre (not (string= pre ""))
+		   (string= post ""))
+	  (insert LaTeX-optop LaTeX-optcl)))))
 
 (defvar LaTeX-natbib-package-options '("numbers" "super" "authoryear"
 				       "round" "square" "angle" "curly"
