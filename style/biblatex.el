@@ -223,24 +223,13 @@ for citation keys."
 		  (TeX-argument-prompt optional nil "Prenote")))
 	    (post (TeX-read-string
 		   (TeX-argument-prompt optional nil "Postnote"))))
-	(cond
-	 (;; Both optional args are given
-	  (and pre (not (string= pre ""))
-	       post (not (string= post "")))
-	  (insert LaTeX-optop pre LaTeX-optcl
-		  LaTeX-optop post LaTeX-optcl))
-	 (;; pre is given, post is empty: Make sure that we insert an
-	  ;; extra pair of `[]', otherwise pre becomes post
-	  (and pre (not (string= pre ""))
-	       (string= post ""))
-	  (insert LaTeX-optop pre LaTeX-optcl
-		  LaTeX-optop LaTeX-optcl))
-	 (;; pre is empty, post is given
-	  (and (string= pre "")
-	       post (not (string= post "")))
-	  (insert LaTeX-optop post LaTeX-optcl))
-	 (;; both empty
-	  t (ignore))))))
+	(TeX-argument-insert pre optional)
+	(TeX-argument-insert post optional)
+	;; pre is given, post is empty: Make sure that we insert an
+	;; extra pair of `[]', otherwise pre becomes post
+	(when (and pre (not (string= pre ""))
+		   (string= post ""))
+	  (insert LaTeX-optop LaTeX-optcl)))))
 
 (TeX-add-style-hook
  "biblatex"
