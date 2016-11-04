@@ -1258,7 +1258,11 @@ triggers Font Lock to recognize the change."
 	  (set (make-local-variable 'lookup-syntax-properties) t))
       (setq defaults (append defaults variables)))
     ;; Set the defaults.
-    (setq font-lock-defaults defaults)))
+    (setq font-lock-defaults defaults))
+
+  ;; Make sure fontification will be refreshed if a user sets variables
+  ;; influencing fontification in her file-local variables section.
+  (add-hook 'hack-local-variables-hook #'font-latex-after-hacking-local-variables t t))
 
 (defun font-latex-jit-lock-force-redisplay (buf start end)
   "Compatibility for Emacsen not offering `jit-lock-force-redisplay'."
@@ -1343,6 +1347,24 @@ fontification facilities like `font-lock-multiline' itself."
 	  (when (numberp ad-end)
 	    (ad-set-arg 1 ad-end)))))))
 
+(defun font-latex-after-hacking-local-variables ()
+  "Refresh fontification if required by updates of file-local variables.
+This function is added to `hack-local-variables-hook' and
+recomputes fontification if variables affecting fontification are
+modified.  Such variables include
+`LaTeX-verbatim-environments-local',
+`LaTeX-verbatim-macros-with-braces-local',
+`LaTeX-verbatim-macros-with-delims-local'."
+  ;; Note to self: directory-local variables are also added to
+  ;; file-local-variables-alist.
+  (let ((hacked-local-vars (mapcar #'car file-local-variables-alist)))
+    (when (or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
+	      (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
+	      (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars))
+      ;; Ok, we need to refresh fontification.
+      (font-latex-set-syntactic-keywords)
+      (setq font-lock-set-defaults nil)
+      (font-lock-set-defaults))))
 
 ;;; Utility functions
 

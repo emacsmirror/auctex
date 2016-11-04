@@ -6665,6 +6665,16 @@ Emacs 21."
 	  (string-to-number (replace-match "\\1" nil nil string))
 	0))))
 
+(defun TeX--list-of-string-p (lst)
+  "Return non-nil iff `LST' is a list of strings.
+Used as function for validating a variable's `safe-local-variable' property."
+  (and (listp lst)
+       (let ((all-strings t))
+	 (while (and all-strings lst)
+	   (setq all-strings (stringp (car lst)))
+	   (setq lst (cdr lst)))
+	 all-strings)))
+
 (provide 'tex)
 
 ;; Local Variables:
