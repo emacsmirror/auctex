@@ -2785,6 +2785,9 @@ Programs should not use this variable directly but the function
 including values of the variable
 `LaTeX-verbatim-macros-with-delims' as well.")
 (make-variable-buffer-local 'LaTeX-verbatim-macros-with-delims-local)
+(put 'LaTeX-verbatim-macros-with-delims-local 'safe-local-variable
+     #'TeX--list-of-string-p)
+
 
 (defcustom LaTeX-verbatim-macros-with-braces nil
   "Macros for inline verbatim with arguments in braces, like \\foo{...}.
@@ -2807,6 +2810,8 @@ Programs should not use this variable directly but the function
 including values of the variable
 `LaTeX-verbatim-macros-with-braces' as well.")
 (make-variable-buffer-local 'LaTeX-verbatim-macros-with-braces-local)
+(put 'LaTeX-verbatim-macros-with-braces-local 'safe-local-variable
+     #'TeX--list-of-string-p)
 
 (defcustom LaTeX-verbatim-environments
   '("verbatim" "verbatim*")
@@ -2829,6 +2834,8 @@ Programs should not use this variable directly but the function
 `LaTeX-verbatim-environments' which returns a value including
 values of the variable `LaTeX-verbatim-environments' as well.")
 (make-variable-buffer-local 'LaTeX-verbatim-environments-local)
+(put 'LaTeX-verbatim-environments-local 'safe-local-variable
+     #'TeX--list-of-string-p)
 
 (defun LaTeX-verbatim-macros-with-delims ()
   "Return list of verbatim macros with delimiters."
