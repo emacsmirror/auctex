@@ -1,8 +1,8 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.3-111)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
-;; Author: Arash Esbati <esbati'at'gmx.de>
+;; Author: Arash Esbati <arash.esbati'at'gmail.com>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2015-02-21
 ;; Keywords: tex
@@ -80,6 +80,7 @@
     ("parskip")
     ("position"        ("top" "above" "bottom" "below" "auto"))
     ("singlelinecheck" ("false" "no" "off" "0" "true" "yes" "on" "1"))
+    ("slc"             ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("skip")
     ("strut"      ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("style"      ("base" "default"))
@@ -219,32 +220,40 @@ suffix of the command."
 ;; \captionbox[<list entry>]{<heading>}[<width>][<inner-pos>]{<contents>}
 ;; \captionbox*{<heading>}[<width>][<inner-pos>]{<contents>}
 
-(defun LaTeX-arg-caption-captionbox (optional &optional star prompt)
-  "Query for the arguments of `\\captionbox' incl. a label and
-insert them.  If STAR is non-nil, then do not query for a `\\label' and
-insert only a caption."
-  (let ((caption (TeX-read-string
-		  (TeX-argument-prompt optional prompt "Caption"))))
-    (LaTeX-indent-line)
+(defun LaTeX-arg-caption-captionbox (optional &optional star)
+  "Query for the arguments of \"\\captionbox\" incl. a label and insert them.
+If STAR is non-nil, then do not query for a \\label and a short
+caption, insert only a caption."
+  (let* ((currenv (LaTeX-current-environment))
+	 (caption (TeX-read-string
+		   (TeX-argument-prompt optional nil "Caption")))
+	 (short-caption
+	  (when (and (not star)
+		     (>= (length caption) LaTeX-short-caption-prompt-length))
+	    (TeX-read-string
+	     (TeX-argument-prompt t nil "Short caption")))))
+    (indent-according-to-mode)
+    (when (and short-caption (not (string= short-caption "")))
+      (insert LaTeX-optop short-caption LaTeX-optcl))
     (insert TeX-grop caption)
-    (unless star (TeX-insert-macro "label"))
+    (unless star (LaTeX-label currenv 'environment))
     (insert TeX-grcl))
-  (let* ((width (completing-read (TeX-argument-prompt t prompt "Width")
-				 (mapcar (lambda(elt) (concat TeX-esc (car elt)))
+  (let* ((TeX-arg-opening-brace "[")
+	 (TeX-arg-closing-brace "]")
+	 (width (completing-read (TeX-argument-prompt t nil "Width")
+				 (mapcar (lambda (elt) (concat TeX-esc (car elt)))
 					 (LaTeX-length-list))))
-	 (inpos (when (and width (not (string-equal width "")))
-		  (completing-read (TeX-argument-prompt t prompt "Inner position")
-				   '("c" "l" "r" "s")))))
-    (cond (;; 2 optional args
-	   (and width (not (string-equal width ""))
-		inpos (not (string-equal inpos "")))
-	   (insert (format "[%s][%s]" width inpos)))
-	  (;; 1st opt. arg, 2nd empty opt. arg
-	   (and width (not (string-equal width ""))
-		(string-equal inpos ""))
-	   (insert (format "[%s]" width)))
-	  (t ; Do nothing if both empty
-	   (ignore)))))
+	 (inpos (if (and width (not (string-equal width "")))
+		    (completing-read (TeX-argument-prompt t nil "Inner position")
+				     '("c" "l" "r" "s"))
+		  "")))
+    (TeX-argument-insert width t)
+    (TeX-argument-insert inpos t))
+  ;; Fill the paragraph before inserting {}.  We can use
+  ;; `LaTeX-fill-paragraph' without messing up the code since
+  ;; \caption starts a new paragraph with AUCTeX
+  ;; (cf. `paragraph-start').
+  (LaTeX-fill-paragraph))
 
 (TeX-add-style-hook
  "caption"
@@ -269,12 +278,12 @@ insert only a caption."
     '("captionof"
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types)
-      ["List entry"] t)
+      ["Short caption"] t)
 
     '("captionof*"
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types)
-      ["List entry"] t)
+      t)
 
     '("captionsetup"
       [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
@@ -296,7 +305,7 @@ insert only a caption."
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-caption-supported-float-types))
 
-    '("captionbox"  ["List entry"] (LaTeX-arg-caption-captionbox) t)
+    '("captionbox"  (LaTeX-arg-caption-captionbox) t)
 
     '("captionbox*" (LaTeX-arg-caption-captionbox t) t)
 
@@ -351,7 +360,7 @@ insert only a caption."
      (font-latex-add-keywords '(("caption"           "*[{")
 				("captionlistentry"  "[{")
 				("captionof"         "*{[{")
-				("captionbox"        "*[{[[{"))
+				("captionbox"        "*[{[["))
 			      'textual)
      (font-latex-add-keywords '(("captionsetup"                  "*[{")
 				("clearcaptionsetup"             "*[{")
