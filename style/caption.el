@@ -106,6 +106,7 @@
 (defvar LaTeX-caption-supported-float-types
   '("figure" "table" "ContinuedFloat"	; Standard caption.sty
     "sub" "subtable" "subfigure"        ; subcaption.sty
+    "bi" "bi-first" "bi-second"         ; bicaption.sty
     "ruled" "boxed"			; float.sty
     "floatingfigure" "floatingtable"	; floatflt.sty
     "lstlisting"			; listings.sty
@@ -213,8 +214,9 @@ suffix of the command."
 ;; entry to the list of figures or tables.
 
 ;; The first mandatory argument {<heading>} contains the caption text
-;; and the label.  We use `TeX-insert-macro' to do the job. (Thanks to
-;; M. Giordano for his valuable comments on this!)
+;; and the label.  We used to use `TeX-insert-macro' to do the job
+;; (Thanks to M. Giordano for his valuable comments on this!), but now
+;; moved to `LaTeX-label'.
 
 ;; Syntax:
 ;; \captionbox[<list entry>]{<heading>}[<width>][<inner-pos>]{<contents>}
@@ -266,6 +268,21 @@ caption, insert only a caption."
    (setq LaTeX-caption-key-val-options-local
 	 (copy-alist LaTeX-caption-key-val-options))
 
+   ;; Append key=vals from bicaption.sty if loaded: "language" key
+   ;; depends on the active languages, it is appended extra where main
+   ;; language is removed from the list:
+   (when (and (member "bicaption" (TeX-style-list))
+	      ;; Make sure that one of these packages is loaded:
+	      (or (fboundp 'LaTeX-babel-active-languages)
+		  (fboundp 'LaTeX-polyglossia-active-languages)))
+     (setq LaTeX-caption-key-val-options-local
+	   (append
+	    `(,(list "language"
+		     (or (butlast (LaTeX-babel-active-languages))
+			 (butlast (LaTeX-polyglossia-active-languages)))))
+	    LaTeX-bicaption-key-val-options
+	    LaTeX-caption-key-val-options-local)))
+
    ;; Caption commands:
    (TeX-add-symbols
     '("caption*" t)
@@ -286,13 +303,19 @@ caption, insert only a caption."
       t)
 
     '("captionsetup"
-      [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
-		    LaTeX-caption-supported-float-types]
+      (TeX-arg-conditional (member "bicaption" (TeX-style-list))
+			   ([LaTeX-arg-bicaption-captionsetup])
+			 ([TeX-arg-eval completing-read
+					(TeX-argument-prompt t nil "Float type")
+					LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("captionsetup*"
-      [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
-		    LaTeX-caption-supported-float-types]
+      (TeX-arg-conditional (member "bicaption" (TeX-style-list))
+			   ([LaTeX-arg-bicaption-captionsetup])
+			 ([TeX-arg-eval completing-read
+					(TeX-argument-prompt t nil "Float type")
+					LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("clearcaptionsetup"
@@ -362,7 +385,7 @@ caption, insert only a caption."
 				("captionof"         "*{[{")
 				("captionbox"        "*[{[["))
 			      'textual)
-     (font-latex-add-keywords '(("captionsetup"                  "*[{")
+     (font-latex-add-keywords '(("captionsetup"                  "*[[{")
 				("clearcaptionsetup"             "*[{")
 				("DeclareCaptionFont"            "{{")
 				("DeclareCaptionFormat"          "*{{")
