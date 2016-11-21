@@ -60,9 +60,13 @@ caption, insert only a caption."
     ;; Fill the \subcaption paragraph before inserting the \label:
     (LaTeX-fill-paragraph)
     (unless star
-      (LaTeX-newline)
-      (indent-according-to-mode)
-      (LaTeX-label currenv 'environment))))
+      (save-excursion
+	(LaTeX-label currenv 'environment))
+      ;; Move \label into next line if we have one:
+      (when (looking-at (regexp-quote "\\label{"))
+	(LaTeX-newline)
+	(indent-according-to-mode)
+	(end-of-line)))))
 
 (defun LaTeX-arg-subcaption-subcaptionbox (optional &optional star)
   "Query for the arguments of \"\\subcaptionbox\" incl. a label and insert them.
