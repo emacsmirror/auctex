@@ -35,11 +35,11 @@
    (LaTeX-add-environments
     '("longtable" (lambda (environment)
 		    (let* ((pos (completing-read (TeX-argument-prompt t nil "Position")
-                                                 '(("l") ("r") ("c"))))
-                           (fmt (TeX-read-string "Format: " LaTeX-default-format))
-                           (caption (TeX-read-string "Caption: "))
-                           (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
-                                            (TeX-read-string "(Optional) Short caption: "))))
+						 '(("l") ("r") ("c"))))
+			   (fmt (TeX-read-string "Format: " LaTeX-default-format))
+			   (caption (TeX-read-string "Caption: "))
+			   (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
+					    (TeX-read-string "(Optional) Short caption: "))))
 		      (setq LaTeX-default-format fmt)
 		      (LaTeX-insert-environment environment
 						(concat
@@ -48,17 +48,24 @@
 						 (concat TeX-grop fmt TeX-grcl)))
 		      ;; top caption -- do nothing if user skips caption
 		      (unless (zerop (length caption))
+			;; insert `\caption[short-caption]{caption':
+			(insert TeX-esc "caption")
+			(when (and short-caption (not (string= short-caption "")))
+			  (insert LaTeX-optop short-caption LaTeX-optcl))
+			(insert TeX-grop caption)
+			;; ask for a label and insert it
+			(LaTeX-label environment 'environment)
 			;; the longtable `\caption' is equivalent to a
 			;; `\multicolumn', so it needs a `\\' at the
-			;; end of the line
-			(insert (LaTeX-compose-caption-macro caption short-caption) "\\\\")
+			;; end of the line.  Prior to that, add } to
+			;; close `\caption{'
+			(insert TeX-grcl "\\\\")
+			;; fill the caption
+			(LaTeX-fill-paragraph)
+			;; Insert a new line and indent
 			(LaTeX-newline)
-			(indent-according-to-mode)
-			;; ask for a label and insert a new line only
-			;; if a label is actually inserted
-			(when (LaTeX-label environment 'environment)
-			  (LaTeX-newline)
-			  (indent-according-to-mode)))))))
+			(indent-according-to-mode))))))
+
    (TeX-add-symbols
     ;; Commands to end table rows
     '("endhead" 0)
@@ -93,5 +100,11 @@
      (font-latex-add-keywords '(("caption" "*[{"))
 			      'textual)))
  LaTeX-dialect)
+
+;; `longtable.sty' has two options "errorshow" and "pausing", both for
+;; debugging purposes.  We ignore them both in order to make package
+;; loading faster in a buffer.
+(defvar LaTeX-longtable-package-options nil
+  "Package options for the longtable package.")
 
 ;; longtable.el ends here
