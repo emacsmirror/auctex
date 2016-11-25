@@ -176,12 +176,25 @@ in `caption'-completions."
 	      (when (and (string-equal key "labelformat")
 			 (boundp 'LaTeX-subcaption-key-val-options))
 		(pushnew (list "subrefformat"
-			       (delete-dups (apply 'append (list val) val-match)))
+			       (delete-dups (apply #'append (list val) val-match)))
 			 opts :test #'equal))
-	      (pushnew (list key (delete-dups (apply 'append (list val) val-match)))
+	      (pushnew (list key (delete-dups (apply #'append (list val) val-match)))
 		       opts :test #'equal))
 	  (pushnew (list key (list val)) opts :test #'equal)))
-      (setq LaTeX-caption-key-val-options-local (copy-alist opts)))))
+      (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
+  ;; Support for environments defined with newfloat.sty: These
+  ;; environments are added to "type" and "type*" key:
+  (when (and (member "newfloat" (TeX-style-list))
+	     (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+	     (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+    (dolist (key '("type" "type*"))
+      (let* ((val (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+	     (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
+	     (temp (copy-alist LaTeX-caption-key-val-options-local))
+	     (opts (assq-delete-all (car (assoc key temp)) temp)))
+	(pushnew (list key (delete-dups (apply #'append val val-match)))
+		 opts :test #'equal)
+	(setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-arg-caption-command (optional &optional prompt)
   "Insert caption-commands from `caption.sty'. If OPTIONAL,
