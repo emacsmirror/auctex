@@ -51,6 +51,7 @@
 ;; fontaxes.sty
 ;; fontspec.sty
 ;; listings.sty
+;; ltxtable.sty
 ;; mdframed.sty
 ;; minted.sty
 ;; nameref.sty
@@ -153,6 +154,8 @@
       ;; listings.sty
       ("lstinputlisting" . 1)
       ("lstset" . 1)
+      ;; ltxtable.sty
+      ("LTXtable" . 2)
       ;; mdframed.sty
       ("mdfsetup" . 1)
       ("mdfapptodefinestyle" . 2)
