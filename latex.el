@@ -6284,6 +6284,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")
      '("textsuperscript" "Text")
+     '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
 

@@ -387,7 +387,7 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("textual"
      (("item" "[") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
-      ("textsuperscript" "{"))
+      ("textsuperscript" "{") ("textsubscript" "{"))
      'font-lock-type-face 2 command)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
