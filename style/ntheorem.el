@@ -288,12 +288,12 @@ make them available as new environments.  Update
     '("shadecolor"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color
-		(if (or (member "xcolor" (TeX-style-list))
-			(member "color" (TeX-style-list)))
-		    (completing-read "color: " (or (LaTeX-xcolor-definecolor-list)
-						   (LaTeX-color-definecolor-list)))
-		  (TeX-read-string "color: "))))
+	 (let ((color (cond ((member "xcolor" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+			    ((member "color" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+			    (t
+			     (TeX-read-string "Color name: ")))))
 	   (format "%s" color)))))
 
     '("theoremframepreskip"
