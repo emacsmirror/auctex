@@ -133,8 +133,8 @@
 		   `(,env . LaTeX-item-equation) t)
       (add-to-list 'LaTeX-label-alist
 		   `(,env . LaTeX-amsmath-label) t)
-      (when (boundp 'reftex-label-alist)
-	(add-to-list 'reftex-label-alist `(,env ?e nil nil t) t)))))
+      (when (fboundp 'reftex-add-label-environments)
+	(reftex-add-label-environments `((,env ?e nil nil t)))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-mathtools-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-mathtools-auto-cleanup t)
@@ -458,13 +458,13 @@ Put line break macro on the last line.  Next, insert an ampersand."
 		   ("multlined" . LaTeX-amsmath-label))
 		 LaTeX-label-alist))
 
-   ;; RefTeX support: Add env's to `reftex-label-alist'
-   (when (boundp 'reftex-label-alist)
+   ;; RefTeX support: Add env's with `reftex-add-label-environments'
+   (when (fboundp 'reftex-add-label-environments)
      (let ((envs '(("lgathered"  ?e nil nil t)
 		   ("rgathered"  ?e nil nil t)
 		   ("multlined"  ?e nil nil t))))
        (dolist (env envs)
-	 (add-to-list 'reftex-label-alist env t))))
+	 (reftex-add-label-environments `(,env)))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -481,7 +481,10 @@ Put line break macro on the last line.  Next, insert an ampersand."
 				("renewgathered"              "{{{{"))
 			      'function)
      (font-latex-add-keywords '(("usetagform" "{"))
-			      'variable)))
+			      'variable)
+     (font-latex-add-keywords '(("refeq"   "{")
+				("noeqref" "{"))
+			      'reference)))
  LaTeX-dialect)
 
 ;;; mathtools.el ends here
