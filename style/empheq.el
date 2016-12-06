@@ -288,9 +288,9 @@ number of ampersands if possible."
    ;; `LaTeX-empheq-item-equation' when `M-RET' is invoked
    (add-to-list 'LaTeX-item-list '("empheq" . LaTeX-empheq-item-equation) t)
 
-   ;; Reftex support: Append definition to `reftex-label-alist'
-   (when (boundp 'reftex-label-alist)
-     (add-to-list 'reftex-label-alist '("empheq" ?e nil nil t) t))
+   ;; Reftex support: Use `reftex-add-label-environments'
+   (when (fboundp 'reftex-add-label-environments)
+     (reftex-add-label-environments '(("empheq" ?e nil nil t))))
 
    (TeX-add-symbols
     '("empheqset" (TeX-arg-key-val LaTeX-empheq-key-val-options-local))
@@ -399,8 +399,8 @@ number of ampersands if possible."
        (dolist (env envs)
 	 (add-to-list 'LaTeX-label-alist `(,env . LaTeX-amsmath-label) t)))
 
-     ;; RefTeX support: Append original definitions to `reftex-label-alist'
-     (when (boundp 'reftex-label-alist)
+     ;; RefTeX support: Add original definitions with `reftex-add-label-environments'
+     (when (fboundp 'reftex-add-label-environments)
        (let ((envs '(("AmSalign"     ?e nil nil eqnarray-like)
 		     ("AmSequation"  ?e nil nil t)
 		     ("AmSgather"    ?e nil nil eqnarray-like)
@@ -408,7 +408,7 @@ number of ampersands if possible."
 		     ("AmSflalign"   ?e nil nil eqnarray-like)
 		     ("AmSalignat"   ?e nil nil alignat-like))))
 	 (dolist (env envs)
-	   (add-to-list 'reftex-label-alist env t))))
+	   (reftex-add-label-environments `(,env)))))
 
      ;; Append original definitions to `LaTeX-item-list'; functions
      ;; are provided by amsmath.el
