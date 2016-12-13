@@ -144,28 +144,22 @@
   "Query and insert mathstyle argument to various commands.
 If OPTIONAL, insert it as optional argument in brackets."
   (TeX-argument-insert
-   (let ((style (completing-read
-		 (TeX-argument-prompt optional nil
-				      (concat "Math style: " TeX-esc) t)
-		 '("displaystyle" "textstyle"
-		   "scriptstyle"  "scriptscriptstyle"))))
-     (if (string= style "")
-	 style
-       (concat TeX-esc style)))
-   optional))
+   (completing-read
+    (TeX-argument-prompt optional nil
+			 (concat "Math style: " TeX-esc) t)
+    '("displaystyle" "textstyle"
+      "scriptstyle"  "scriptscriptstyle"))
+   optional TeX-esc))
 
 (defun LaTeX-mathtools-arg-mathsize-completion (optional)
   "Query and insert math size argument to various commands.
 If OPTIONAL, insert it as optional argument in brackets."
   (TeX-argument-insert
-   (let ((size (completing-read
-		(TeX-argument-prompt optional nil
-				     (concat "Size command: " TeX-esc) t)
-		'("big" "Big" "bigg" "Bigg"))))
-     (if (string= size "")
-	 size
-       (concat TeX-esc size)))
-   optional))
+   (completing-read
+    (TeX-argument-prompt optional nil
+			 (concat "Size command: " TeX-esc) t)
+    '("big" "Big" "bigg" "Bigg"))
+   optional TeX-esc))
 
 (defun LaTeX-mathtools-arg-declarepaireddelimiter (optional &optional X)
   "Query and insert various \\DeclarePairedDelimiter macros from mathtools package."
@@ -183,7 +177,7 @@ If OPTIONAL, insert it as optional argument in brackets."
 			  1)))
     (LaTeX-add-mathtools-DeclarePairedDelimiters
      `(,cmd ,(if X arg "")))
-    (TeX-argument-insert (concat TeX-esc cmd) optional)
+    (TeX-argument-insert cmd optional TeX-esc)
     (when arg
       (insert (concat LaTeX-optop arg LaTeX-optcl)))))
 
