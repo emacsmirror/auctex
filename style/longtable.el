@@ -29,6 +29,23 @@
 
 ;;; Code:
 
+(defvar LaTeX-longtable-skipping-regexp
+  (regexp-opt '("[l]" "[r]" "[c]" ""))
+  "Regexp matching between \\begin{longtable} and column specification.
+For longtable environments only.")
+
+(defun LaTeX-item-longtable (&optional suppress)
+  "Insert line break macro on the last line and suitable number of &'s.
+For longtable environments.  If SUPPRESS is non-nil, do not
+insert line break macro."
+  (unless suppress
+    (save-excursion
+      (end-of-line 0)
+      (just-one-space)
+      (TeX-insert-macro "\\")))
+  (LaTeX-insert-ampersands
+   LaTeX-longtable-skipping-regexp #'LaTeX-array-count-columns))
+
 (TeX-add-style-hook
  "longtable"
  (lambda ()
@@ -64,7 +81,9 @@
 			(LaTeX-fill-paragraph)
 			;; Insert a new line and indent
 			(LaTeX-newline)
-			(indent-according-to-mode))))))
+			(indent-according-to-mode))
+		      ;; Insert suitable number of &'s, suppress line break
+		      (LaTeX-item-longtable t)))))
 
    (TeX-add-symbols
     ;; Commands to end table rows
@@ -90,6 +109,9 @@
    ;; Append longtable to `LaTeX-label-alist', in order not to override possible
    ;; custome values.
    (add-to-list 'LaTeX-label-alist '("longtable" . LaTeX-table-label) t)
+
+   ;; Append longtable to `LaTeX-item-list' with `LaTeX-item-longtable'
+   (add-to-list 'LaTeX-item-list '("longtable" . LaTeX-item-longtable) t)
 
    ;; Fontification
    (when (and (featurep 'font-latex)
