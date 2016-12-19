@@ -1,0 +1,43 @@
+\documentclass{article}
+% \usepackage{tabularx,tabulary,longtable}
+\begin{document}
+
+Standard LaTeX tabular:
+\begin{tabular}[t]{llll}
+  1 & 2 & 3 & LaTeX-insert-item \\
+    &&&
+\end{tabular}
+
+LaTeX tabular with *-operator:
+\begin{tabular}[t]{*{3}{l}r}
+  1 & 2 & 3 & LaTeX-insert-item \\
+    &&&
+\end{tabular}
+
+\begin{tabular}{*{3}{l}>{\tiny\hfill}l<{\hfill}}
+  1 & 2 & 3 & LaTeX-insert-item \\
+    &&&
+\end{tabular}
+
+\begin{tabular}[t]{*{3}{lc}r}
+  1 & 2 & 3 & 4 & 5 & 6 & LaTeX-insert-item \\
+    &&&&&&
+\end{tabular}
+
+\begin{tabular}[t]{*{3}{lc*{2}{l}} r}
+  1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & LaTeX-insert-item \\
+    &&&&&&&&&&&&
+\end{tabular}
+
+Standard LaTeX tabular*:
+\begin{tabular*}{1.0\linewidth}[t]{@{}lllr@{}}
+  1 & 2 & 3 & LaTeX-insert-item \\
+    &&&
+\end{tabular*}
+
+\begin{tabular*}{1.0\linewidth}[t]{@{}*{3}{|l}|r|}
+  1 & 2 & 3 & LaTeX-insert-item \\
+    &&&
+\end{tabular*}
+
+\end{document}
