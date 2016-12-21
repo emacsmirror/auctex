@@ -2548,7 +2548,11 @@ Get `major-mode' from master file and enable it."
 	 comment-prefix "mode: " mode-string "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
 	 comment-prefix "End:\n")
-	(funcall mode)))))
+	(funcall mode)
+	;; TeX modes run `VirTeX-common-initialization' which kills all local
+	;; variables, thus `TeX-master' will be forgotten after `(funcall
+	;; mode)'.  Reparse local variables in order to bring it back.
+	(hack-local-variables)))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
