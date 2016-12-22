@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2016 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -23,6 +23,13 @@
 
 (require 'ert)
 (require 'latex)
+
+;; Add the "style/" directory to `TeX-style-path',
+;; so we can load style files inside tests.
+(add-to-list 'TeX-style-path
+	     (expand-file-name "../../style"
+			       (when load-file-name
+				 (file-name-directory load-file-name))))
 
 (defun AUCTeX-set-ert-path (&rest sym-val)
   "Set first element of SYM-VAL to the next one, and so on.
@@ -48,7 +55,11 @@ line and from another directory."
  'LaTeX-math-indent/in
  "math-indent-in.tex"
  'LaTeX-math-indent/out
- "math-indent-out.tex")
+ "math-indent-out.tex"
+ 'tabular-count-ampersands/in
+ "tabular-count-ampersands-in.tex"
+ 'tabular-count-ampersands/out
+ "tabular-count-ampersands-out.tex")
 
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
@@ -105,5 +116,23 @@ line and from another directory."
              (LaTeX-mode)
 	     (LaTeX-insert-environment "foobar")
              (buffer-string)))))
+
+;; Test for inserting &'s with `M-RET' in various tabular environment.
+;; FIXME: One thing missing is running style hooks while running the test.
+(ert-deftest LaTeX-count-ampersands-inserted-in-tabular ()
+  (should (string=
+	   (with-temp-buffer
+	     (insert-file-contents tabular-count-ampersands/in)
+	     (LaTeX-mode)
+	     (goto-char (point-min))
+	     ;; Do not ask for opt. argument in (TeX-insert-macro "\\"):
+	     (let ((TeX-insert-macro-default-style 'mandatory-args-only))
+	       (while (search-forward "LaTeX-insert-item" nil t)
+		 (LaTeX-insert-item)))
+	     (buffer-string))
+	   (with-temp-buffer
+	     (insert-file-contents tabular-count-ampersands/out)
+	     (LaTeX-mode)
+	     (buffer-string)))))
 
 ;;; latex-test.el ends here

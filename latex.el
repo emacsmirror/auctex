@@ -1373,12 +1373,31 @@ right number."
 
 	;; The below block accounts for one unit of move for
 	;; one column.
-	(setq cols (+ cols (skip-chars-forward
-			    LaTeX-array-column-letters end)))
+	(setq cols (+ cols
+		      ;; treat *-operator specially.
+		      (if (eq (following-char) ?*)
+			  ;; *-operator is there.
+			  (progn
+			    ;; pick up repetition number and count
+			    ;; how many columns are repeated.
+			    (re-search-forward
+			     "\\*[ \t\r\n%]*{[ \t\r\n%]*\\([0-9]+\\)[ \t\r\n%]*}" end)
+			    (let ((n (string-to-number
+				      (match-string-no-properties 1)))
+				  ;; get start and end of repeated spec.
+				  (s (progn (down-list 1) (point)))
+				  (e (progn (up-list 1) (1- (point)))))
+			      (* n (1+ (LaTeX-array-count-columns s e)))))
+			;; not *-operator.
+			(skip-chars-forward
+			 LaTeX-array-column-letters end))))
+	;; Do not skip over `*' (see above) and `[' (siunitx has `S[key=val]':):
 	(skip-chars-forward (concat
-			     "^" LaTeX-array-column-letters
-			     TeX-grop) end)
-	(if (eq (following-char) ?{) (forward-list 1))
+			     "^" LaTeX-array-column-letters "*"
+			     TeX-grop LaTeX-optop) end)
+	(when (or (eq (following-char) ?\{)
+		  (eq (following-char) ?\[))
+	  (forward-list 1))
 
 	;; Not sure whether this is really necessary or not, but
 	;; prepare for possible infinite loop anyway.
@@ -6284,6 +6303,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")
      '("textsuperscript" "Text")
+     '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
 

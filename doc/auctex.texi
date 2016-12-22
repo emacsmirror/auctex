@@ -1101,7 +1101,12 @@ inserts the suitable number of ampersands.
 
 You can use @kbd{C-c @key{LFD}} (@code{LaTeX-insert-item}) to terminate
 rows in these environments.  It supplies line break macro @samp{\\} and
-inserts the suitable number of ampersands on the next line.
+inserts the suitable number of ampersands on the next line.  @AUCTeX{}
+also supports the @samp{*@{num@}@{cols@}} notation (which may contain
+another @samp{*}-expression) in the format string when calculating the
+number of ampersands.  Please note that @samp{num} and @samp{cols} must
+be enclosed in braces; expressions like @samp{*2l} are not recognized
+correctly by the algorithm.
 
 @deffn Command LaTeX-insert-item
 @kindex C-c @key{LFD}

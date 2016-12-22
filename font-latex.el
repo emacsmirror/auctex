@@ -225,7 +225,7 @@ effect unless you call \\[font-lock-fontify-buffer] or restart
 Emacs."
   ;; Possibly add some words about XEmacs here. :-(
   :type '(choice (number :tag "Scale factor")
-                 (const color))
+		 (const color))
   :initialize 'custom-initialize-default
   :set (lambda (symbol value)
 	 (set-default symbol value)
@@ -387,7 +387,7 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("textual"
      (("item" "[") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
-      ("textsuperscript" "{"))
+      ("textsuperscript" "{") ("textsubscript" "{"))
      'font-lock-type-face 2 command)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
@@ -842,8 +842,7 @@ locking machinery will be triggered."
     (dolist (elt keywords)
       (add-to-list list elt))
     (funcall (intern (format "font-latex-match-%s-make" class)))
-    (setq font-lock-set-defaults nil)
-    (font-lock-set-defaults)))
+    (font-latex-update-font-lock)))
 
 (defvar font-latex-keywords font-latex-keywords-1
   "Default expressions to highlight in TeX mode.")
@@ -1264,6 +1263,25 @@ triggers Font Lock to recognize the change."
   ;; influencing fontification in her file-local variables section.
   (add-hook 'hack-local-variables-hook #'font-latex-after-hacking-local-variables t t))
 
+(defun font-latex-update-font-lock (&optional syntactic-kws)
+  "Tell font-lock about updates of fontification rules.
+If SYNTACTIC-KWS is non-nil, also update
+`font-latex-syntactic-keywords'."
+  ;; Update syntactic keywords.
+  (when syntactic-kws
+    (font-latex-set-syntactic-keywords))
+
+  ;; Let font-lock recompute its fontification rules.
+  (setq font-lock-set-defaults nil)
+  (font-lock-set-defaults)
+
+  ;; Re-initialize prettification if needed.
+  (when (and (boundp 'prettify-symbols-mode)
+	     (boundp 'prettify-symbols--keywords)
+	     prettify-symbols-mode
+	     prettify-symbols--keywords)
+    (font-lock-add-keywords nil prettify-symbols--keywords)))
+
 (defun font-latex-jit-lock-force-redisplay (buf start end)
   "Compatibility for Emacsen not offering `jit-lock-force-redisplay'."
   ;; The following block is an expansion of `jit-lock-force-redisplay'
@@ -1362,9 +1380,7 @@ modified.  Such variables include
 	      (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
 	      (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars))
       ;; Ok, we need to refresh fontification.
-      (font-latex-set-syntactic-keywords)
-      (setq font-lock-set-defaults nil)
-      (font-lock-set-defaults))))
+      (font-latex-update-font-lock t))))
 
 ;;; Utility functions
 
@@ -1375,7 +1391,7 @@ character.  Character pairs are usually { } or [ ].  Comments are
 ignored during the search."
   (let ((parse-sexp-ignore-comments
 	 (not (eq major-mode 'doctex-mode))) ; scan-sexps ignores comments
-        (init-point (point))
+	(init-point (point))
 	(mycount 1)
 	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\"))
 	;; XXX: Do not look up syntax-table properties since they may
@@ -1761,9 +1777,9 @@ The \\begin{equation} and \\end{equation} are not fontified here."
 			     ;; XXX: Should this rather be done by
 			     ;; extending the region to be fontified?
 			     (+ limit font-latex-multiline-boundary) 'move)
-          (setq end (match-beginning 0))
+	  (setq end (match-beginning 0))
 	(goto-char beg)
-        (setq end beg))
+	(setq end beg))
       (font-latex-put-multiline-property-maybe beg end)
       (store-match-data (list beg end))
       t)))

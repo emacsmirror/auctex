@@ -175,7 +175,7 @@
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-set-syntactic-keywords)
+	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("DefineVerbatimEnvironment" "{{{")
 				("CustomVerbatimEnvironment" "{{{")
@@ -189,11 +189,8 @@
 					; actually be verbatim.
 			      'textual)
      (font-latex-add-keywords '(("fvset" "{")) 'variable)
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
+     (font-latex-update-font-lock t)))
  LaTeX-dialect)
 
 (defvar LaTeX-fancyvrb-package-options nil

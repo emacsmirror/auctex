@@ -351,7 +351,7 @@ with user-defined values via the \"lstdefinestyle\" macro."
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "lstinline")
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-set-syntactic-keywords)
+	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lstnewenvironment" "{[[{{")) 'function)
      (font-latex-add-keywords '(("lstinputlisting" "[{")) 'reference)
@@ -363,11 +363,8 @@ with user-defined values via the \"lstdefinestyle\" macro."
 				("lstdefinestyle" "{{")
 				("lstset" "{"))
 			      'variable)
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
+     (font-latex-update-font-lock t)))
  LaTeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"

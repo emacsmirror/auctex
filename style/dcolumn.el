@@ -1,10 +1,10 @@
-;;; expl3.el --- AUCTeX style for `expl3.sty'
+;;; dcolumn.el --- AUCTeX style for `dcolumn.sty' (v1.06)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2016 Free Software Foundation, Inc.
 
-;; Author: Tassilo Horn <tsdh@gnu.org>
+;; Author: Arash Esbati <arash.esbati'at'gmail.com>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2015-02-22
+;; Created: 2016-12-18
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,23 +26,24 @@
 
 ;;; Commentary:
 
-;; This file adds support for `expl3.sty'.
+;; This file adds support for `dcolumn.sty' (v1.06) from 2014/10/28.
+;; `dcolumn.sty' is part of TeXLive.
 
 ;;; Code:
 
-(defvar LaTeX-expl3-syntax-table
-  (let ((st (copy-syntax-table LaTeX-mode-syntax-table)))
-    ;; Make _ and : symbol chars
-    (modify-syntax-entry ?\_ "_" st)
-    (modify-syntax-entry ?\: "_" st)
-    st))
-
 (TeX-add-style-hook
- "expl3"
+ "dcolumn"
  (lambda ()
-   (set-syntax-table LaTeX-expl3-syntax-table)
-   (when (and (fboundp 'font-latex-update-font-lock)
-	      (eq TeX-install-font-lock 'font-latex-setup))
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+
+   ;; `dcolumn.sty' adds one new column specification letter:
+   (set (make-local-variable 'LaTeX-array-column-letters)
+	(concat LaTeX-array-column-letters "D"))
+
+   ;; Also run style hook for `array':
+   (TeX-run-style-hooks "array"))
  LaTeX-dialect)
+
+(defvar LaTeX-dcolumn-package-options nil
+  "Package options for the dcolumn package.")
+
+;;; dcolumn.el ends here

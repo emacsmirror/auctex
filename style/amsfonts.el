@@ -1,10 +1,9 @@
-;;; expl3.el --- AUCTeX style for `expl3.sty'
+;;; amsfonts.el --- AUCTeX style for `amsfonts.sty' version 3.01
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2016 Free Software Foundation, Inc.
 
-;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2015-02-22
+;; Author: Mosè Giordano <mose@gnu.org>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,23 +25,29 @@
 
 ;;; Commentary:
 
-;; This file adds support for `expl3.sty'.
+;; This file adds support for `amsfonts.sty' version 3.01.
 
 ;;; Code:
 
-(defvar LaTeX-expl3-syntax-table
-  (let ((st (copy-syntax-table LaTeX-mode-syntax-table)))
-    ;; Make _ and : symbol chars
-    (modify-syntax-entry ?\_ "_" st)
-    (modify-syntax-entry ?\: "_" st)
-    st))
-
 (TeX-add-style-hook
- "expl3"
+ "amsfonts"
  (lambda ()
-   (set-syntax-table LaTeX-expl3-syntax-table)
-   (when (and (fboundp 'font-latex-update-font-lock)
-	      (eq TeX-install-font-lock 'font-latex-setup))
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+   (TeX-add-symbols
+    '("bold" 1))
+   ;; New math font by `amsfonts'.
+   (setq TeX-font-list
+	 (append
+	  TeX-font-list
+	  '((?\C-k "" "" "\\mathfrak{" "}"))))
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+   	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("bold" "{"))
+			      'bold-command)))
  LaTeX-dialect)
+
+;; The `psamsfonts' option is obsolete in AMSFonts v3
+(defvar LaTeX-amsfonts-package-options nil
+  "Package options for the amsfonts package.")
+
+;;; amsfonts.el ends here.

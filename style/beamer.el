@@ -181,11 +181,7 @@
 				("author" "[{")
 				("date" "[{")
 				("frametitle" "<[{")) 'slide-title)
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)
-     ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
+     (font-latex-update-font-lock t)))
  LaTeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (_optional &optional _prompt)

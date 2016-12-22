@@ -43,6 +43,10 @@
    ;; `LaTeX-indent-environment-list' in order not to override custom settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 		'("tabularx" LaTeX-indent-tabular) t)
+
+   ;; Append tabularx to `LaTeX-item-list' with `LaTeX-item-tabular*'
+   (add-to-list 'LaTeX-item-list '("tabularx" . LaTeX-item-tabular*) t)
+
    ;; New symbols
    (TeX-add-symbols
     "tracingtabularx"

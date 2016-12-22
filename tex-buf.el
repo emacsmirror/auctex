@@ -3677,7 +3677,21 @@ forward, if negative)."
 					   TeX-error-overview-buffer-name)
 			(set-window-dedicated-p (selected-window) t))
 		    (TeX-pop-to-buffer TeX-error-overview-buffer-name))))
-	    (error "No error or warning to show"))
+	    (error (concat "No error or warning to show"
+			   ;; Suggest to display warnings and bad boxes with the
+			   ;; appropriate key-bindings if there are such
+			   ;; messages in the output buffer.  Rationale of the
+			   ;; test: `TeX-error-overview-list-entries' is nil,
+			   ;; but if `TeX-error-list' is not nil it means that
+			   ;; there are hidden warnings/bad boxes.
+			   (when (TeX-process-get-variable (TeX-active-master)
+							   'TeX-error-list)
+			     (format ".  Type `%s' and `%s' to display \
+warnings and bad boxes"
+				     (substitute-command-keys
+				      "\\<TeX-mode-map>\\[TeX-toggle-debug-warnings]")
+				     (substitute-command-keys
+				      "\\<TeX-mode-map>\\[TeX-toggle-debug-bad-boxes]"))))))
 	(error "No process for this document"))
     (error "Error overview is available only in Emacs 24 or later")))
 

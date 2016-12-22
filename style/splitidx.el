@@ -230,12 +230,10 @@
    (add-to-list 'TeX-complete-list
 		'("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
 
-   ;; Append our defintion to `reftex-index-macros' in order not to
-   ;; override any user customizations.
-   (when (boundp 'reftex-index-macros)
-     (add-to-list 'reftex-index-macros
-		  `("\\sindex[]{*}" 1
-		    ,LaTeX-splitidx-sindex-reftex-quick-id-key "" nil t)))
+   ;; Tell RefTeX with `reftex-add-index-macros'
+   (when (fboundp 'reftex-add-index-macros)
+     (reftex-add-index-macros
+      `(("\\sindex[]{*}" 1 ,LaTeX-splitidx-sindex-reftex-quick-id-key "" nil t))))
 
    ;; 3.2 Marking up index entries
    ;; \index should be an alias for \sindex
@@ -247,10 +245,8 @@
 			(LaTeX-splitidx-newindex-list) ]
 	  (TeX-arg-index)))
        ;; Tell RefTeX to look in the optional arg. for the index short cut
-       (when (boundp 'reftex-index-macros)
-	 (add-to-list 'reftex-index-macros
-		      '("\\index[]{*}" 1 ?i "" nil t)
-		      t))
+       (when (fboundp 'reftex-add-index-macros)
+	 (reftex-add-index-macros '(("\\index[]{*}" 1 ?i "" nil t))))
        (add-to-list 'LaTeX-auto-regexp-list
 		    `(,(concat
 			"\\\\index\\(?:\\[[^{}]*\\]\\)?"

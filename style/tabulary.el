@@ -43,6 +43,10 @@
    ;; `LaTeX-indent-environment-list' in order not to override custom settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 		'("tabulary" LaTeX-indent-tabular))
+
+   ;; Append tabulary to `LaTeX-item-list' with `LaTeX-item-tabular*'
+   (add-to-list 'LaTeX-item-list '("tabulary" . LaTeX-item-tabular*) t)
+
    ;; New symbols
    (TeX-add-symbols
     "tymax" "tymin" "tyformat")

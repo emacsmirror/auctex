@@ -83,17 +83,23 @@ them."
     '("textblockcolour"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color (completing-read "Color name: "
-				       (or (LaTeX-xcolor-definecolor-list)
-					   (LaTeX-color-definecolor-list)))))
+	 (let ((color (cond ((member "xcolor" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+			    ((member "color" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+			    (t
+			     (TeX-read-string "Color name: ")))))
 	   (format "%s" color)))))
 
     '("textblockrulecolour"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color (completing-read "Color name: "
-				       (or (LaTeX-xcolor-definecolor-list)
-					   (LaTeX-color-definecolor-list)))))
+	 (let ((color (cond ((member "xcolor" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+			    ((member "color" (TeX-style-list))
+			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+			    (t
+			     (TeX-read-string "Color name: ")))))
 	   (format "%s" color)))))
 
    '("TPshowboxestrue")

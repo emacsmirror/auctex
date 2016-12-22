@@ -2513,7 +2513,9 @@ name of master file if it cannot be determined otherwise."
 	   (file-name-directory buffer-file-name)))))))
 
 (defun TeX-add-local-master ()
-  "Add local variable for `TeX-master'."
+  "Add local variable for `TeX-master'.
+
+Get `major-mode' from master file and enable it."
   (when (and (buffer-file-name)
 	     (string-match TeX-one-master
 			   (file-name-nondirectory (buffer-file-name)))
@@ -2526,20 +2528,31 @@ name of master file if it cannot be determined otherwise."
 						   "End:")))
 	  (beginning-of-line 1)
 	  (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
-      (let ((comment-prefix (cond ((eq major-mode 'texinfo-mode) "@c ")
-				  ((eq major-mode 'doctex-mode) "% ")
-				  (t "%%% ")))
-	    (mode (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
-			       "japanese-")
-			  (substring (symbol-name major-mode) 0 -5))))
+      (let* ((mode (if (stringp TeX-master)
+		       (with-current-buffer
+			   (find-file-noselect
+			    (TeX-master-file TeX-default-extension))
+			 major-mode)
+		     major-mode))
+	     (comment-prefix (cond ((eq mode 'texinfo-mode) "@c ")
+				   ((eq mode 'doctex-mode) "% ")
+				   (t "%%% ")))
+	     (mode-string (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
+				       "japanese-")
+				  (substring (symbol-name mode) 0 -5))))
 	(newline)
 	(when (eq major-mode 'doctex-mode)
 	  (insert comment-prefix TeX-esc "endinput\n"))
 	(insert
 	 comment-prefix "Local Variables:\n"
-	 comment-prefix "mode: " mode "\n"
+	 comment-prefix "mode: " mode-string "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
-	 comment-prefix "End:\n")))))
+	 comment-prefix "End:\n")
+	(funcall mode)
+	;; TeX modes run `VirTeX-common-initialization' which kills all local
+	;; variables, thus `TeX-master' will be forgotten after `(funcall
+	;; mode)'.  Reparse local variables in order to bring it back.
+	(hack-local-variables)))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
