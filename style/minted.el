@@ -168,13 +168,10 @@
 		    (car name-lang)
 		  (cadr name-lang))))
       (add-to-list 'TeX-auto-symbol (list lang 'TeX-arg-file))))
-  (when (and (fboundp 'font-latex-add-keywords)
-	     (fboundp 'font-latex-set-syntactic-keywords)
+  (when (and (fboundp 'font-latex-update-font-lock)
 	     (eq TeX-install-font-lock 'font-latex-setup))
     ;; Refresh font-locking so that the verbatim envs take effect.
-    (font-latex-set-syntactic-keywords)
-    (setq font-lock-set-defaults nil)
-    (font-lock-set-defaults)))
+    (font-latex-update-font-lock t)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-minted-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-minted-auto-cleanup t)
@@ -219,18 +216,15 @@
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-set-syntactic-keywords)
+	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(;; FIXME: Those have the form \mint{lang}|code|
 				;; so ideally the verbatim arg should be
 				;; recognized.
 				"mint" "mintinline")
 			      'function)
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
-     (setq font-lock-set-defaults nil)
-     (font-lock-set-defaults)))
+     (font-latex-update-font-lock t)))
  LaTeX-dialect)
 
 (defvar LaTeX-minted-package-options '("section" "chapter" "cache"
