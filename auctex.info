@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.3 from auctex.texi.
 
-This manual is for AUCTeX (version 11.89.7 from 2016-11-12), a
+This manual is for AUCTeX (version 11.89.8 from 2016-12-22), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -2059,7 +2059,11 @@ inserts the suitable number of ampersands.
 
    You can use 'C-c <LFD>' ('LaTeX-insert-item') to terminate rows in
 these environments.  It supplies line break macro '\\' and inserts the
-suitable number of ampersands on the next line.
+suitable number of ampersands on the next line.  AUCTeX also supports
+the '*{num}{cols}' notation (which may contain another '*'-expression)
+in the format string when calculating the number of ampersands.  Please
+note that 'num' and 'cols' must be enclosed in braces; expressions like
+'*2l' are not recognized correctly by the algorithm.
 
  -- Command: LaTeX-insert-item
      ('C-c <LFD>') Close the current row with '\\', move to the next
@@ -5745,7 +5749,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.89.7 from 2016-11-12), a
+   This manual is for AUCTeX (version 11.89.8 from 2016-12-22), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -7732,7 +7736,7 @@ Key Index
 * C-c C-v:                               Starting Viewers.    (line  12)
 * C-c C-z:                               Starting a Command.  (line  42)
 * C-c <LFD>:                             Itemize-like.        (line  10)
-* C-c <LFD> <1>:                         Tabular-like.        (line  29)
+* C-c <LFD> <1>:                         Tabular-like.        (line  33)
 * C-c ]:                                 Environments.        (line 102)
 * C-c ^:                                 Control.             (line  18)
 * C-c _:                                 Multifile.           (line  72)
@@ -7793,7 +7797,7 @@ Function Index
 * LaTeX-indent-line:                     Indenting.           (line  69)
 * LaTeX-insert-environment:              Adding Environments. (line  69)
 * LaTeX-insert-item:                     Itemize-like.        (line   9)
-* LaTeX-insert-item <1>:                 Tabular-like.        (line  28)
+* LaTeX-insert-item <1>:                 Tabular-like.        (line  32)
 * LaTeX-mark-environment:                Marking (LaTeX).     (line  15)
 * LaTeX-mark-section:                    Marking (LaTeX).     (line   6)
 * LaTeX-math-mode:                       Mathematics.         (line  11)
@@ -8622,77 +8626,77 @@ Node: Equations81959
 Node: Floats82550
 Node: Itemize-like84554
 Node: Tabular-like85275
-Node: Customizing Environments86758
-Node: Mathematics86998
-Node: Completion89924
-Node: Marking95247
-Node: Marking (LaTeX)95871
-Node: Marking (Texinfo)96813
-Node: Commenting98423
-Node: Indenting99748
-Node: Filling105784
-Node: Display111656
-Node: Font Locking114151
-Node: Fontification of macros116226
-Node: Fontification of quotes125664
-Node: Fontification of math127159
-Node: Verbatim content129380
-Node: Faces130154
-Node: Known problems130643
-Node: Folding131572
-Node: Outline142396
-Node: Narrowing143668
-Node: Prettifying144738
-Node: Processing145974
-Node: Commands147137
-Node: Starting a Command147693
-Node: Selecting a Command152596
-Node: Processor Options160984
-Node: Viewing171264
-Node: Starting Viewers171638
-Node: I/O Correlation178215
-Node: Debugging183473
-Node: Ignoring warnings186127
-Node: Error overview188187
-Node: Checking190180
-Node: Control191342
-Node: Cleaning192069
-Node: Documentation193282
-Node: Customization193997
-Node: Modes and Hooks194490
-Node: Multifile196310
-Node: Parsing Files201122
-Node: Internationalization206034
-Node: European207206
-Node: Japanese214086
-Node: Automatic216070
-Node: Automatic Global218561
-Node: Automatic Private219693
-Node: Automatic Local221006
-Node: Style Files222038
-Node: Simple Style222831
-Node: Adding Macros226104
-Node: Adding Environments235225
-Node: Adding Other239886
-Node: Hacking the Parser240473
-Node: Appendices244342
-Node: Copying this Manual244726
-Node: GNU Free Documentation License245610
-Node: Changes270729
-Node: Development304781
-Node: Mid-term Goals305427
-Node: Wishlist306644
-Node: Bugs312085
-Node: FAQ313615
-Node: Texinfo mode319788
-Node: Exploiting320924
-Node: Superseding321744
-Node: Mapping325948
-Node: Unbinding327777
-Node: Indices328598
-Node: Key Index328823
-Node: Function Index335001
-Node: Variable Index345738
-Node: Concept Index367510
+Node: Customizing Environments87048
+Node: Mathematics87288
+Node: Completion90214
+Node: Marking95537
+Node: Marking (LaTeX)96161
+Node: Marking (Texinfo)97103
+Node: Commenting98713
+Node: Indenting100038
+Node: Filling106074
+Node: Display111946
+Node: Font Locking114441
+Node: Fontification of macros116516
+Node: Fontification of quotes125954
+Node: Fontification of math127449
+Node: Verbatim content129670
+Node: Faces130444
+Node: Known problems130933
+Node: Folding131862
+Node: Outline142686
+Node: Narrowing143958
+Node: Prettifying145028
+Node: Processing146264
+Node: Commands147427
+Node: Starting a Command147983
+Node: Selecting a Command152886
+Node: Processor Options161274
+Node: Viewing171554
+Node: Starting Viewers171928
+Node: I/O Correlation178505
+Node: Debugging183763
+Node: Ignoring warnings186417
+Node: Error overview188477
+Node: Checking190470
+Node: Control191632
+Node: Cleaning192359
+Node: Documentation193572
+Node: Customization194287
+Node: Modes and Hooks194780
+Node: Multifile196600
+Node: Parsing Files201412
+Node: Internationalization206324
+Node: European207496
+Node: Japanese214376
+Node: Automatic216360
+Node: Automatic Global218851
+Node: Automatic Private219983
+Node: Automatic Local221296
+Node: Style Files222328
+Node: Simple Style223121
+Node: Adding Macros226394
+Node: Adding Environments235515
+Node: Adding Other240176
+Node: Hacking the Parser240763
+Node: Appendices244632
+Node: Copying this Manual245016
+Node: GNU Free Documentation License245900
+Node: Changes271019
+Node: Development305071
+Node: Mid-term Goals305717
+Node: Wishlist306934
+Node: Bugs312375
+Node: FAQ313905
+Node: Texinfo mode320078
+Node: Exploiting321214
+Node: Superseding322034
+Node: Mapping326238
+Node: Unbinding328067
+Node: Indices328888
+Node: Key Index329113
+Node: Function Index335291
+Node: Variable Index346028
+Node: Concept Index367800
 
 End Tag Table
