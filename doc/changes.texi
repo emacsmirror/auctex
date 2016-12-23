@@ -12,6 +12,14 @@
 
 @itemize @bullet
 @item
+Parsing of format specification in various tabular environments has been
+improved.  The function @code{LaTeX-insert-item} (@kbd{C-c @key{LFD}})
+inserts suitable number of ampersands for @samp{*@{num@}@{cols@}}
+constructs.  Style files for @LaTeX{} packages @samp{tabularx},
+@samp{tabulary}, @samp{longtable}, @samp{dcolumn} and @samp{siunitx} are
+adapted to take advantage of this improvement.
+
+@item
 The style @file{graphicx.el} went through a bigger overhaul.  The
 optional argument of command @samp{\includegraphics} now supports
 key-val query; keys can independently be chosen anytime by pressing the
