@@ -4966,7 +4966,7 @@ Prompt for a @LaTeX{} counter completing with known counters.
 Prompt for a @LaTeX{} savebox completing with known saveboxes.
 
 @item TeX-arg-file
-Prompt for a filename in the current directory, and use it without the
+Prompt for a filename in the current directory, and use it with the
 extension.
 
 @item TeX-arg-file-name
