@@ -224,6 +224,9 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 
     '("flushpage" 0))
 
+   ; \switchcolumn should get its own line:
+   (LaTeX-paragraph-commands-add-locally "switchcolumn")
+
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
