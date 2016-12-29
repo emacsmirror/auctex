@@ -159,7 +159,7 @@ STYLESRC = style/prosper.el \
 	   style/framed.el    style/paracol.el   style/menukeys.el \
 	   style/bidi.el      style/FiraMono.el  style/FiraSans.el \
 	   style/bicaption.el style/amsfonts.el  style/subfiles.el \
-	   style/dcolumn.el   style/tcolorboxlib-raster.el
+	   style/dcolumn.el   style/mdframed.el  style/tcolorboxlib-raster.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
