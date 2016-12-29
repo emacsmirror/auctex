@@ -116,7 +116,7 @@ If `caption.el' is loaded, add the new floating environment to
 	       (reftex-add-label-environments
 		`((,flt ?t ,LaTeX-table-label "~\\ref{%s}" caption nil nil)))))
 	    ((string-equal type "verbatim")
-	     (LaTeX-add-environments flt)
+	     (LaTeX-add-environments `(,flt ["Float Position"]))
 	     (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 			  `(,flt current-indentation) t)
 	     (add-to-list 'LaTeX-label-alist `(,flt . "lst:") t)
@@ -124,7 +124,7 @@ If `caption.el' is loaded, add the new floating environment to
 	       (reftex-add-label-environments
 		`((,flt ?l "lst:" "~\\ref{%s}" caption nil nil)))))
 	    (t
-	     (LaTeX-add-environments flt)))
+	     (LaTeX-add-environments `(,flt ["Float Position"]))))
       (when (boundp 'LaTeX-caption-supported-float-types)
 	(add-to-list (make-local-variable 'LaTeX-caption-supported-float-types)
 		     flt))
