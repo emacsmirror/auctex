@@ -1,6 +1,6 @@
 ;;; cleveref.el --- Style hook for the `cleveref.sty' package.
 
-;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2016 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -57,10 +57,10 @@ list of defined labels."
     '("Crefrange*" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
     '("namecref" TeX-arg-label)
     '("nameCref" TeX-arg-label)
-    '("lnamecref" TeX-arg-label)
+    '("lcnamecref" TeX-arg-label)
     '("namecrefs" TeX-arg-label)
     '("nameCrefs" TeX-arg-label)
-    '("lnamecrefs" TeX-arg-label)
+    '("lcnamecrefs" TeX-arg-label)
     '("labelcref" TeX-arg-cleveref-multiple-labels)
     '("labelcpageref" TeX-arg-cleveref-multiple-labels))
 
@@ -85,10 +85,10 @@ list of defined labels."
                                 ("Cpagerefrange" "{{")
                                 ("namecref" "{")
                                 ("nameCref" "{")
-                                ("lnamecref" "{")
+                                ("lcnamecref" "{")
                                 ("namecrefs" "{")
                                 ("nameCrefs" "{")
-                                ("lnamecrefs" "{")
+                                ("lcnamecrefs" "{")
                                 ("labelcref" "{")
                                 ("labelcpageref" "{"))
 			      'reference)
