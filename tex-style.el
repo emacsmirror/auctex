@@ -272,6 +272,22 @@ produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
 
+;; style/exam.el
+
+(defcustom LaTeX-exam-reftex-quick-id-key ?x
+  "Unique letter identifying exam class macros in RefTeX.
+
+A character argument for quick identification when RefTeX inserts
+new labels with `reftex-label'.  It must be unique.  It is
+initialized to ?x."
+  :group 'LaTeX-style
+  :type 'character)
+
+(defcustom LaTeX-exam-label "exm:"
+  "Default prefix to labels in environments of exam class."
+  :group 'LaTeX-style
+  :type 'string)
+
 ;; style/fontspec.el
 
 (defcustom LaTeX-fontspec-arg-font-search t
