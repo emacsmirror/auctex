@@ -370,6 +370,10 @@ for citation keys."
 					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
     '("Citeauthor" (TeX-arg-conditional TeX-arg-cite-note-p
 					(["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("citeauthor*" (TeX-arg-conditional TeX-arg-cite-note-p
+					 (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+    '("Citeauthor*" (TeX-arg-conditional TeX-arg-cite-note-p
+					 (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
     '("citetitle" (TeX-arg-conditional TeX-arg-cite-note-p
 				       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
     '("citetitle*" (TeX-arg-conditional TeX-arg-cite-note-p
