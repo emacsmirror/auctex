@@ -325,7 +325,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      'font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
-      ("vref" "{") ("eqref" "{") ("ref" "{") ("include" "{")
+      ("vref" "*{") ("eqref" "{") ("ref" "{") ("include" "{")
       ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
       ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{"))
      'font-lock-constant-face 2 command)
