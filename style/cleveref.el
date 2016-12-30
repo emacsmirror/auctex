@@ -68,8 +68,8 @@ list of defined labels."
    ;; normal referencing.
    (TeX-declare-expert-macros
     "cleveref"
-    "namecref" "nameCref" "lnamecref" "namecrefs" "nameCrefs"
-    "lnamecrefs" "labelcref" "labelcpageref")
+    "namecref" "nameCref" "lcnamecref" "namecrefs" "nameCrefs"
+    "lcnamecrefs" "labelcref" "labelcpageref")
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
