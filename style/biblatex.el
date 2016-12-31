@@ -544,7 +544,17 @@ for citation keys."
     "NewBibliographyString")
    (LaTeX-declare-expert-environments
     "biblatex"
-    "refsection" "refsegment"))
+    "refsection" "refsegment")
+
+   ;; Tell RefTeX: The entry `biblatex' is defined in
+   ;; `reftex-cite-format-builtin' in reftex-vars.el which will be
+   ;; part of Emacs >= 25.3.  It does not issue an error for older
+   ;; Emacsen, but does not work either, i.e. it is ignored.
+   (when (fboundp 'reftex-set-cite-format)
+     (if (or (LaTeX-provided-package-options-member "biblatex" "natbib")
+	     (LaTeX-provided-package-options-member "biblatex" "natbib=true"))
+	 (reftex-set-cite-format 'natbib)
+       (reftex-set-cite-format 'biblatex))))
  LaTeX-dialect)
 
 (defvar LaTeX-biblatex-package-options-list
