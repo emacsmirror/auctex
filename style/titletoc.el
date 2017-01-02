@@ -96,12 +96,7 @@ Removal is based on the return value of function
       (TeX-arg-eval completing-read
 		     (TeX-argument-prompt optional nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-eval
-	(lambda ()
-	  (let ((length (TeX-read-string
-			 (TeX-argument-prompt nil nil "Left margin"))))
-	    (format "%s" length))) ]
-      3)
+      [ TeX-arg-length "Left margin" ] 3)
 
     ;; \titlecontents{<section>}[<left>]{<above-code>}
     ;;               {<numbered-entry-format>}{<numberless-entry-format>}
@@ -110,11 +105,7 @@ Removal is based on the return value of function
       (TeX-arg-eval completing-read
 		     (TeX-argument-prompt optional nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-eval
-	(lambda ()
-	  (let ((length (TeX-read-string
-			 (TeX-argument-prompt nil nil "Left margin"))))
-	    (format "%s" length))) ]
+      [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional below code argument? ")
 			   (4 [nil])
 			 (4)))
@@ -126,11 +117,7 @@ Removal is based on the return value of function
       (TeX-arg-eval completing-read
 		     (TeX-argument-prompt optional nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-eval
-	(lambda ()
-	  (let ((length (TeX-read-string
-			 (TeX-argument-prompt nil nil "Left margin"))))
-	    (format "%s" length))) ]
+      [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional separator argument? ")
 			   (4 [nil])
 			 (4)))
