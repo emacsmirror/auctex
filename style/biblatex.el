@@ -206,9 +206,15 @@ for citation keys."
 	     (TeX-argument-insert
 	      (TeX-read-string (TeX-argument-prompt t nil "Postnote"))
 	      (equal prenote ""))))
-      (setq items (TeX-completing-read-multiple
-		   (TeX-argument-prompt optional prompt "Key")
-		   (LaTeX-bibitem-list)))
+      (setq items (if (and (fboundp 'reftex-citation)
+			   (fboundp 'reftex-plug-flag)
+			   (reftex-plug-flag 3))
+		      ;; Use RefTeX when enabled.
+		      (reftex-citation t)
+		    ;; Multiple citation keys in each argument are allowed.
+		    (TeX-completing-read-multiple
+		     (TeX-argument-prompt optional prompt "Key(s)")
+		     (LaTeX-bibitem-list))))
       (apply 'LaTeX-add-bibitems items)
       ;; If input is empty, insert an empty group only the first time, when
       ;; `noinsert' flag is nil.
