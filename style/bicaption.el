@@ -110,11 +110,12 @@ arguments."
 	(TeX-argument-insert width t)
 	(TeX-argument-insert inpos t)))
     (LaTeX-fill-paragraph)
-    ;; Insert label
-    (when (and (not label-inside) (not star))
+    ;; Insert label -- a new line is inserted only if label is there:
+    (when (and (not label-inside) (not star)
+	       (save-excursion (LaTeX-label currenv 'environment)))
       (LaTeX-newline)
       (indent-according-to-mode)
-      (LaTeX-label currenv 'environment))))
+      (end-of-line))))
 
 (defun LaTeX-arg-bicaption-captionsetup (optional)
   "Query for 2 arguments for \"\\captionsetup\" with bicaption.sty loaded.
@@ -143,7 +144,7 @@ square brackets."
    (TeX-add-symbols
     '("bicaption"        (LaTeX-arg-bicaption-bicaption))
     '("bicaption*"       (LaTeX-arg-bicaption-bicaption  nil    t))
-    '("bicaptionbox"     (LaTeX-arg-bicaption-bicaption  nil   nil  t t)   t)
+    '("bicaptionbox"     (LaTeX-arg-bicaption-bicaption  nil   nil  t   t) t)
     '("bicaptionbox*"    (LaTeX-arg-bicaption-bicaption  nil    t   t)     t)
     '("bisubcaption"     (LaTeX-arg-bicaption-bicaption "sub-"))
     '("bisubcaption*"    (LaTeX-arg-bicaption-bicaption "sub-"  t))
