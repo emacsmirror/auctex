@@ -2198,8 +2198,10 @@ means that the scripts are raised or lowered.
 
 Another possiblity is setting this variable to the symbol
 @code{multi-level}.  In this case, in a formula @i{x^@{y^z@}}, @i{y} is
-raised above @i{x}, and @i{z} is raised above @i{y}.  With many script
-levels, the text might become too small to be readable.
+raised above and smaller than @i{x}, and @i{z} is raised above and
+smaller than @i{y}.  With many script levels, the text might become too
+small to be readable.  (See @code{font-latex-fontify-script-max-level}
+below.)
 
 Lastly, you can set this variable to @code{invisible} whose behavior is
 like @code{multi-level}, and in addition the super-/subscript characters
@@ -2209,6 +2211,30 @@ Note that this feature is not available on XEmacs, for which
 it is disabled per default.  In GNU Emacs raising and lowering is not
 enabled for versions 21.3 and before due to it working not properly.
 @end defopt
+
+
+@defopt font-latex-fontify-script-max-level
+Maximum scriptification level for which script faces are applied.
+
+The faces @code{font-latex-superscript-face} and
+@code{font-latex-subscript-face} define custom @code{:height} values <
+1.0.  Therefore, scripts are displayed with a slightly smaller font than
+normal math text.  If @code{font-latex-fontify-script} is
+@code{multi-level} or @code{invisible}, the font size becomes too small
+to be readable after a few levels.  This option allows to specify the
+maximum level after which the size of the script text won’t be shrunken
+anymore.
+
+For example, in the expression @i{x^@{y^@{z^a_b@}@}}, @i{x} has
+scriptification level 0, @i{y} has level 1, @i{z} has level 2, and both
+@i{a} and @i{b} have scriptification level 3.
+
+If @code{font-latex-fontify-script-max-level} was 2, then @i{z}, @i{a},
+and @i{b} would have the same font size.  If it was 3 or more, then
+@i{a} and @i{b} were smaller than @i{z} just in the same way as @i{z} is
+smaller than @i{y} and @i{y} is smaller than @i{x}.
+@end defopt
+
 
 @defopt font-latex-script-display
 Display specification for subscript and superscript content.  The car is

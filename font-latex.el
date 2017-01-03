@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2014  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2017  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -861,7 +861,8 @@ are equally raised over x.
 
 If this variable is set to the symbol `multi-level', then y is
 raised above x, and z is raised above y.  With many script
-levels, the text might become too small to be readable.  (The
+levels, the text might become too small to be readable, thus
+there is the option `font-latex-fontify-script-max-level'.  (The
 factors for text shrinking are defined in the faces
 `font-latex-superscript-face' and `font-latex-subscript-face' and
 the raise/lower factor in `font-latex-script-display'.)
@@ -877,6 +878,31 @@ script operators ^ and _ are not displayed."
      (lambda (val)
        (or (TeX-booleanp val)
 	   (memq val '(multi-level invisible)))))
+
+(defcustom font-latex-fontify-script-max-level 3
+  "Maximum scriptification level for which script faces are applied.
+The faces `font-latex-superscript-face' and
+`font-latex-subscript-face' define custom :height values < 1.0.
+Therefore, scripts are displayed with a slightly smaller font
+than normal math text.  If `font-latex-fontify-script' is
+`multi-level' or `invisible', the font size becomes too small to
+be readable after a few levels.  This option allows to specify
+the maximum level after which the size of the script text won't
+be shrunken anymore.
+
+For example, see this expression:
+
+  \( x^{y^{z^a_b}} \)
+
+x has scriptification level 0, y has level 1, z has level 2, and
+both a and b have scriptification level 3.
+
+If `font-latex-fontify-script-max-level' was 2, then z, a, and b
+would have the same font size.  If it was 3 or more, then a and b
+were smaller than z just in the same way as z is smaller than y
+and y is smaller than x."
+  :group 'font-latex
+  :type 'integer)
 
 (defcustom font-latex-script-display '((raise -0.5) . (raise 0.5))
   "Display specification for subscript and superscript content.
@@ -1954,14 +1980,33 @@ END marks boundaries for searching for quotation ends."
 		       (setq pos (1- pos) odd (not odd)))
 		     odd))))))
 
-(defun font-latex--get-script-props (script-type old-raise)
-  (let* ((props (copy-list (case script-type
-			     (:super (cdr font-latex-script-display))
-			     (:sub   (car font-latex-script-display)))))
-	 (new-raise (plist-get props 'raise)))
-    (if old-raise
-	(plist-put props 'raise (+ old-raise new-raise))
-      props)))
+(defun font-latex--get-script-props (pos script-type)
+  (let* ((old-raise (or (plist-get (get-text-property pos 'display) 'raise) 0.0))
+	 (new-level (1+ (or (get-text-property pos 'script-level) 0)))
+	 (disp-props (copy-list (case script-type
+				  (:super (cdr font-latex-script-display))
+				  (:sub   (car font-latex-script-display)))))
+	 (new-disp-props (let ((raise (plist-get disp-props 'raise))
+			       (nl new-level))
+			   (if raise
+			       ;; This polynom approximates that the factor
+			       ;; which is multiplied with raise is 1 for nl=1,
+			       ;; 0.8 for nl=2, 0.64 for nl=3, etc. (so always
+			       ;; about 80% of the previous value).
+			       (plist-put disp-props 'raise
+					  (+ old-raise
+					     (* raise
+						(+ 1.1965254857142873
+						   (* nl -0.21841226666666758)
+						   (* nl nl 0.012018514285714385)))))
+			     disp-props))))
+    `(face ,(if (<= new-level font-latex-fontify-script-max-level)
+		(case script-type
+		  (:super 'font-latex-superscript-face)
+		  (:sub   'font-latex-subscript-face))
+	      nil)
+	   script-level ,new-level
+	   display ,new-disp-props)))
 
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
@@ -1984,16 +2029,13 @@ END marks boundaries for searching for quotation ends."
     ;; `font-lock-extra-managed-props' was introduced and serves here
     ;; for feature checking.  XEmacs (CVS and 21.4.15) currently
     ;; (2004-08-18) does not support this feature.
-    (let* ((extra-props-flag (boundp 'font-lock-extra-managed-props))
-	   (old-raise (plist-get (get-text-property pos 'display) 'raise)))
+    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
       (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
-	      `(face font-latex-subscript-face display
-		     ,(font-latex--get-script-props :sub old-raise))
+	      (font-latex--get-script-props pos :sub)
 	    'font-latex-subscript-face)
 	(if extra-props-flag
-	    `(face font-latex-superscript-face display
-		   ,(font-latex--get-script-props :super old-raise))
+	    (font-latex--get-script-props pos :super)
 	  'font-latex-superscript-face)))))
 
 ;;; docTeX

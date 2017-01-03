@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2016 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2017 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -11,6 +11,17 @@
 @heading News since 11.89
 
 @itemize @bullet
+@item
+@AUCTeX{} is able to display several levels of super- and subscripts,
+each one raised above and a bit smaller than its basis.  For this
+feature, have a look at the customize options
+@code{font-latex-fontify-script} (especially the new values
+@code{multi-level} and @code{invisible}) and
+@code{font-latex-fontify-script-max-level}.
+@ifclear rawfile
+@xref{Fontification of math}, for details.
+@end ifclear
+
 @item
 Parsing of format specification in various tabular environments has been
 improved.  The function @code{LaTeX-insert-item} (@kbd{C-c @key{LFD}})
