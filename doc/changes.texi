@@ -12,6 +12,13 @@
 
 @itemize @bullet
 @item
+In addition to the completion performed by @code{TeX-complete-symbol},
+@AUCTeX{} now also supports the new Emacs standard completion-at-point
+facility (see the Emacs command @code{completion-at-point}).  This also
+means that modern completion UIs like @i{company-mode} work out of the
+box in @TeX{} and @LaTeX{} buffers.
+
+@item
 @AUCTeX{} is able to display several levels of super- and subscripts,
 each one raised above and a bit smaller than its basis.  For this
 feature, have a look at the customize options

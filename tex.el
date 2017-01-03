@@ -3202,6 +3202,29 @@ Or alternatively:
 		   (message "Making completion list...done")))))
       (funcall (nth 1 entry)))))
 
+(defun TeX--completion-at-point ()
+  "(La)TeX completion at point function.
+See `completion-at-point-functions'."
+  (let ((list TeX-complete-list)
+	entry)
+    (while list
+      (setq entry (car list)
+	    list (cdr list))
+      (if (TeX-looking-at-backward (car entry) 250)
+	  (setq list nil)))
+    (if (numberp (nth 1 entry))
+	(let* ((sub (nth 1 entry))
+	       (begin (match-beginning sub))
+	       (end (match-end sub))
+	       (symbol (buffer-substring-no-properties begin end))
+	       (list (funcall (nth 2 entry))))
+	  (list begin end (all-completions symbol list)))
+      ;; We intentionally don't call the fallback completion functions because
+      ;; they do completion on their own and don't work too well with things
+      ;; like company-mode.  And the default function `ispell-complete-word'
+      ;; isn't so useful anyway.
+      nil)))
+
 (defcustom TeX-default-macro "ref"
   "*The default macro when creating new ones with `TeX-insert-macro'."
   :group 'TeX-macro
@@ -3729,6 +3752,18 @@ The algorithm is as follows:
 		      #'TeX--prettify-symbols-compose-p)
       (set (make-local-variable 'prettify-symbols-compose-predicate)
 	   #'TeX--prettify-symbols-compose-p)))
+
+  ;; Standard Emacs completion-at-point support
+  (when (boundp 'completion-at-point-functions)
+    (add-hook 'completion-at-point-functions
+	      #'TeX--completion-at-point nil t)
+
+    ;; Support for company-mode
+    (when (fboundp 'company-mode)
+      ;; By default, company completions kick in after a prefix of 3 chars has
+      ;; been typed.  Since we don't have too many completions, that's too
+      ;; much.
+      (set (make-local-variable 'company-minimum-prefix-length) 1)))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the

@@ -1216,22 +1216,70 @@ If non-nil, insert braces after typing @key{^} and @key{_} in math mode.
 @cindex Arguments to @TeX{} macros
 
 Emacs lisp programmers probably know the @code{lisp-complete-symbol}
-command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
-ispell mode know and love the @code{ispell-complete-word} command from
-that package.  Similarly, @AUCTeX{} has a @code{TeX-complete-symbol}
-command, by default bound to @kbd{M-@key{TAB}} which is equivalent to
-@kbd{M-C-i}.  Using @code{TeX-complete-symbol} makes it easier to type
-and remember the names of long @LaTeX{} macros.
+command which was bound to @kbd{M-@key{TAB}} until completion-at-point
+became the new standard completion facility (see below).  Users of the
+wonderful ispell mode know and love the @code{ispell-complete-word}
+command from that package.  Similarly, @AUCTeX{} has a
+@code{TeX-complete-symbol} command, by default bound to
+@kbd{M-@key{TAB}} which is equivalent to @kbd{M-C-i}.  Using
+@code{TeX-complete-symbol} makes it easier to type and remember the
+names of long @LaTeX{} macros.
 
 In order to use @code{TeX-complete-symbol}, you should write a backslash
 and the start of the macro.  Typing @kbd{M-@key{TAB}} will now complete
 as much of the macro, as it unambiguously can.  For example, if you type
 `@samp{\renewc}' and then @kbd{M-@key{TAB}}, it will expand to
-`@samp{\renewcommand}'.
+`@samp{\renewcommand}'.  But there's more: if point is just after
+@samp{\begin@{}, then @code{TeX-complete-symbol} will complete @LaTeX{}
+environments, etc.  This is controlled by @code{TeX-complete-list}.
 
 @deffn Command TeX-complete-symbol
 @kindex M-@key{TAB}
 (@kbd{M-@key{TAB}})  Complete @TeX{} symbol before point.
+@end deffn
+
+@defvar TeX-complete-list
+List of ways to complete the preceding text.
+
+Each entry is a list with the following elements:
+
+@enumerate
+@item
+Regexp matching the preceding text.
+@item
+A number indicating the subgroup in the regexp containing the text.
+@item
+A function returning an alist of possible completions.
+@item
+Text to append after a succesful completion.
+@end enumerate
+
+Or alternatively:
+
+@enumerate
+@item
+Regexp matching the preceding text.
+@item
+Function to do the actual completion.
+@end enumerate
+@end defvar
+
+More recent Emacs versions have a new completion mechanism.  Modes may
+define and register custom completion-at-point functions and when the
+user invokes @code{completion-at-point} (usually bound to
+@kbd{M-@key{TAB}}), all such registered functions are consulted for
+checking for possible completions.  Modern completion UIs like
+@i{company-mode} support this completion-at-point facility.
+
+@deffn TeX--completion-at-point
+@AUCTeX{}'s completion-at-point function which is automatically added to
+@code{completion-at-point-functions} in @TeX{} and @LaTeX{} buffers.
+
+It offers the same completion candidates as would
+@code{TeX-complete-symbol} (and is also controlled by
+@code{TeX-complete-list}) except that it doesn't fall back on
+@code{ispell-complete-word} which would be awkward with completion UIs
+like @i{company-mode}.
 @end deffn
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
