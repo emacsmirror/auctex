@@ -892,7 +892,7 @@ be shrunken anymore.
 
 For example, see this expression:
 
-  \( x^{y^{z^a_b}} \)
+  \\( x^{y^{z^a_b}} \\)
 
 x has scriptification level 0, y has level 1, z has level 2, and
 both a and b have scriptification level 3.
