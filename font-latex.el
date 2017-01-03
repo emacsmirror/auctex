@@ -861,7 +861,10 @@ are equally raised over x.
 
 If this variable is set to the symbol `multi-level', then y is
 raised above x, and z is raised above y.  With many script
-levels, the text might become too small to be readable.
+levels, the text might become too small to be readable.  (The
+factors for text shrinking are defined in the faces
+`font-latex-superscript-face' and `font-latex-subscript-face' and
+the raise/lower factor in `font-latex-script-display'.)
 
 If this variable is set to the symbol `invisible', then the
 effect is essentially like `multi-level' but additionally the
@@ -875,7 +878,7 @@ script operators ^ and _ are not displayed."
        (or (TeX-booleanp val)
 	   (memq val '(multi-level invisible)))))
 
-(defcustom font-latex-script-display '((raise -0.3) . (raise 0.3))
+(defcustom font-latex-script-display '((raise -0.5) . (raise 0.5))
   "Display specification for subscript and superscript content.
 The car is used for subscript, the cdr is used for superscripts."
   :group 'font-latex
@@ -1118,12 +1121,12 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-superscript-face
-  '((t (:height 0.8)))
+  '((t (:height 0.85)))
   "Face used for superscripts."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-subscript-face
-  '((t (:height 0.8)))
+  '((t (:height 0.85)))
   "Face used for subscripts."
   :group 'font-latex-highlighting-faces)
 
@@ -1951,6 +1954,15 @@ END marks boundaries for searching for quotation ends."
 		       (setq pos (1- pos) odd (not odd)))
 		     odd))))))
 
+(defun font-latex--get-script-props (script-type old-raise)
+  (let* ((props (copy-list (case script-type
+			     (:super (cdr font-latex-script-display))
+			     (:sub   (car font-latex-script-display)))))
+	 (new-raise (plist-get props 'raise)))
+    (if old-raise
+	(plist-put props 'raise (+ old-raise new-raise))
+      props)))
+
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
 (defun font-latex-script (pos)
@@ -1972,15 +1984,16 @@ END marks boundaries for searching for quotation ends."
     ;; `font-lock-extra-managed-props' was introduced and serves here
     ;; for feature checking.  XEmacs (CVS and 21.4.15) currently
     ;; (2004-08-18) does not support this feature.
-    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
+    (let* ((extra-props-flag (boundp 'font-lock-extra-managed-props))
+	   (old-raise (plist-get (get-text-property pos 'display) 'raise)))
       (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
 	      `(face font-latex-subscript-face display
-		     ,(car font-latex-script-display))
+		     ,(font-latex--get-script-props :sub old-raise))
 	    'font-latex-subscript-face)
 	(if extra-props-flag
 	    `(face font-latex-superscript-face display
-		   ,(cdr font-latex-script-display))
+		   ,(font-latex--get-script-props :super old-raise))
 	  'font-latex-superscript-face)))))
 
 ;;; docTeX

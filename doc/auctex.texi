@@ -2197,13 +2197,13 @@ If non-nil, fontify subscript and superscript strings.  Concretely, this
 means that the scripts are raised or lowered.
 
 Another possiblity is setting this variable to the symbol
-@code{multi-level}.  In this case, in a formula @code{x^y^z}, y is
-raised above x, and z is raised above y.  With many script levels, the
-text might become too small to be readable.
+@code{multi-level}.  In this case, in a formula @i{x^@{y^z@}}, @i{y} is
+raised above @i{x}, and @i{z} is raised above @i{y}.  With many script
+levels, the text might become too small to be readable.
 
 Lastly, you can set this variable to @code{invisible} whose behavior is
 like @code{multi-level}, and in addition the super-/subscript characters
-@code{^} and @code{_} are not displayed.
+@i{^} and @i{_} are not displayed.
 
 Note that this feature is not available on XEmacs, for which
 it is disabled per default.  In GNU Emacs raising and lowering is not
