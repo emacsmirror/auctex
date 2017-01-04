@@ -1272,7 +1272,7 @@ user invokes @code{completion-at-point} (usually bound to
 checking for possible completions.  Modern completion UIs like
 @i{company-mode} support this completion-at-point facility.
 
-@deffn TeX--completion-at-point
+@defun TeX--completion-at-point
 @AUCTeX{}'s completion-at-point function which is automatically added to
 @code{completion-at-point-functions} in @TeX{} and @LaTeX{} buffers.
 
@@ -1281,7 +1281,7 @@ It offers the same completion candidates as would
 @code{TeX-complete-list}) except that it doesn't fall back on
 @code{ispell-complete-word} which would be awkward with completion UIs
 like @i{company-mode}.
-@end deffn
+@end defun
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
 bound to @kbd{C-c C-m} which is equivalent to @kbd{C-c @key{RET}}.  It
