@@ -3155,81 +3155,80 @@ Or alternatively:
 0. Regexp matching the preceding text.
 1. Function to do the actual completion.")
 
-(defun TeX-complete-symbol ()
-  "Perform completion on TeX/LaTeX symbol preceding point."
-  (interactive "*")
+(defun TeX--complete-find-entry ()
+  "Return the first applicable entry of `TeX-complete-list'."
   (let ((list TeX-complete-list)
 	entry)
     (while list
       (setq entry (car list)
 	    list (cdr list))
-      (if (if (functionp (car entry))
-	      (funcall (car entry))
-	    (TeX-looking-at-backward (car entry) 250))
-	  (setq list nil)))
-    (if (numberp (nth 1 entry))
-	(let* ((sub (nth 1 entry))
-	       (close (nth 3 entry))
-	       (begin (match-beginning sub))
-	       (end (match-end sub))
-	       (pattern (TeX-match-buffer 0))
-	       (symbol (buffer-substring begin end))
-	       (list (funcall (nth 2 entry)))
-	       (completion (try-completion symbol list))
-	       (buf-name "*Completions*"))
-	  (cond ((eq completion t)
-		 (and close
-		      (not (looking-at (regexp-quote close)))
-		      (insert close))
-		 (let ((window (get-buffer-window buf-name)))
-		   (when window (delete-window window))))
-		((null completion)
-		 (error "Can't find completion for \"%s\"" pattern))
-		((not (string-equal symbol completion))
-		 (delete-region begin end)
-		 (insert completion)
-		 (and close
-		      (eq (try-completion completion list) t)
-		      (not (looking-at (regexp-quote close)))
-		      (insert close))
-		 (let ((window (get-buffer-window buf-name)))
-		   (when window (delete-window window))))
-		(t
-		 (if (fboundp 'completion-in-region)
-		     (completion-in-region begin end
-					   (all-completions symbol list nil))
-		   (message "Making completion list...")
-		   (let ((list (all-completions symbol list nil)))
-		     (with-output-to-temp-buffer buf-name
-		       (display-completion-list list)))
-		   (set-window-dedicated-p (get-buffer-window buf-name) 'soft)
-		   (message "Making completion list...done")))))
-      (funcall (nth 1 entry)))))
+      (when (if (functionp (car entry))
+		(funcall (car entry))
+	      (TeX-looking-at-backward (car entry) 250))
+	(setq list nil)))
+    entry))
+
+(defun TeX-complete-symbol ()
+  "Perform completion on TeX/LaTeX symbol preceding point."
+  (interactive "*")
+  (let ((entry (TeX--complete-find-entry)))
+    (when entry
+      (if (numberp (nth 1 entry))
+	  (let* ((sub (nth 1 entry))
+		 (close (nth 3 entry))
+		 (begin (match-beginning sub))
+		 (end (match-end sub))
+		 (pattern (TeX-match-buffer 0))
+		 (symbol (buffer-substring begin end))
+		 (list (funcall (nth 2 entry)))
+		 (completion (try-completion symbol list))
+		 (buf-name "*Completions*"))
+	    (cond ((eq completion t)
+		   (and close
+			(not (looking-at (regexp-quote close)))
+			(insert close))
+		   (let ((window (get-buffer-window buf-name)))
+		     (when window (delete-window window))))
+		  ((null completion)
+		   (error "Can't find completion for \"%s\"" pattern))
+		  ((not (string-equal symbol completion))
+		   (delete-region begin end)
+		   (insert completion)
+		   (and close
+			(eq (try-completion completion list) t)
+			(not (looking-at (regexp-quote close)))
+			(insert close))
+		   (let ((window (get-buffer-window buf-name)))
+		     (when window (delete-window window))))
+		  (t
+		   (if (fboundp 'completion-in-region)
+		       (completion-in-region begin end
+					     (all-completions symbol list nil))
+		     (message "Making completion list...")
+		     (let ((list (all-completions symbol list nil)))
+		       (with-output-to-temp-buffer buf-name
+			 (display-completion-list list)))
+		     (set-window-dedicated-p (get-buffer-window buf-name) 'soft)
+		     (message "Making completion list...done")))))
+	(funcall (nth 1 entry))))))
 
 (defun TeX--completion-at-point ()
   "(La)TeX completion at point function.
 See `completion-at-point-functions'."
-  (let ((list TeX-complete-list)
-	entry)
-    (while list
-      (setq entry (car list)
-	    list (cdr list))
-      (if (if (functionp (car entry))
-	      (funcall (car entry))
-	    (TeX-looking-at-backward (car entry) 250))
-	  (setq list nil)))
-    (if (numberp (nth 1 entry))
-	(let* ((sub (nth 1 entry))
-	       (begin (match-beginning sub))
-	       (end (match-end sub))
-	       (symbol (buffer-substring-no-properties begin end))
-	       (list (funcall (nth 2 entry))))
-	  (list begin end (all-completions symbol list)))
-      ;; We intentionally don't call the fallback completion functions because
-      ;; they do completion on their own and don't work too well with things
-      ;; like company-mode.  And the default function `ispell-complete-word'
-      ;; isn't so useful anyway.
-      nil)))
+  (let ((entry (TeX--complete-find-entry)))
+    (when entry
+      (if (numberp (nth 1 entry))
+	  (let* ((sub (nth 1 entry))
+		 (begin (match-beginning sub))
+		 (end (match-end sub))
+		 (symbol (buffer-substring-no-properties begin end))
+		 (list (funcall (nth 2 entry))))
+	    (list begin end (all-completions symbol list)))
+	;; We intentionally don't call the fallback completion functions because
+	;; they do completion on their own and don't work too well with things
+	;; like company-mode.  And the default function `ispell-complete-word'
+	;; isn't so useful anyway.
+	nil))))
 
 (defcustom TeX-default-macro "ref"
   "*The default macro when creating new ones with `TeX-insert-macro'."
