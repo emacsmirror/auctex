@@ -3144,7 +3144,8 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
 Each entry is a list with the following elements:
 
 0. Regexp matching the preceding text or a predicate of arity 0
-which checks its applicability and sets `match-data'.
+which returns non-nil and sets `match-data' appropriately if it
+is applicable.
 1. A number indicating the subgroup in the regexp containing the
 text.
 2. A function returning an alist of possible completions.

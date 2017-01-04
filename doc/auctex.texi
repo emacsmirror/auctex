@@ -1245,7 +1245,8 @@ Each entry is a list with the following elements:
 
 @enumerate
 @item
-Regexp matching the preceding text.
+Regexp matching the preceding text or a predicate of arity 0 which
+returns non-nil and sets `match-data' appropriately if it is applicable.
 @item
 A number indicating the subgroup in the regexp containing the text.
 @item
@@ -1315,7 +1316,6 @@ called with prefix argument (@kbd{C-u}), it's the other way round.
 Note that for some macros, there are special mechanisms, e.g.
 @code{LaTeX-includegraphics-options-alist} and
 @code{TeX-arg-cite-note-p}.
-
 @end defopt
 
 

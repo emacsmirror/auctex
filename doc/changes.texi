@@ -17,6 +17,13 @@ In addition to the completion performed by @code{TeX-complete-symbol},
 facility (see the Emacs command @code{completion-at-point}).  This also
 means that modern completion UIs like @i{company-mode} work out of the
 box in @TeX{} and @LaTeX{} buffers.
+@ifclear rawfile
+@xref{Completion}, for details.
+@end ifclear
+
+@item
+Completion is now aware of being inside a math environment and then
+completes math macros.
 
 @item
 @AUCTeX{} is able to display several levels of super- and subscripts,
