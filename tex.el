@@ -3143,8 +3143,10 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
 
 Each entry is a list with the following elements:
 
-0. Regexp matching the preceding text.
-1. A number indicating the subgroup in the regexp containing the text.
+0. Regexp matching the preceding text or a predicate of arity 0
+which checks its applicability and sets `match-data'.
+1. A number indicating the subgroup in the regexp containing the
+text.
 2. A function returning an alist of possible completions.
 3. Text to append after a succesful completion.
 
@@ -3161,7 +3163,9 @@ Or alternatively:
     (while list
       (setq entry (car list)
 	    list (cdr list))
-      (if (TeX-looking-at-backward (car entry) 250)
+      (if (if (functionp (car entry))
+	      (funcall (car entry))
+	    (TeX-looking-at-backward (car entry) 250))
 	  (setq list nil)))
     (if (numberp (nth 1 entry))
 	(let* ((sub (nth 1 entry))
@@ -3210,7 +3214,9 @@ See `completion-at-point-functions'."
     (while list
       (setq entry (car list)
 	    list (cdr list))
-      (if (TeX-looking-at-backward (car entry) 250)
+      (if (if (functionp (car entry))
+	      (funcall (car entry))
+	    (TeX-looking-at-backward (car entry) 250))
 	  (setq list nil)))
     (if (numberp (nth 1 entry))
 	(let* ((sub (nth 1 entry))
