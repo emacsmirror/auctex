@@ -2283,6 +2283,8 @@ and @i{b} would have the same font size.  If it was 3 or more, then
 smaller than @i{y} and @i{y} is smaller than @i{x}.
 @end defopt
 
+The script characters @samp{^} and @samp{_} themselves are also
+fontified with an own face named @code{font-latex-script-char-face}.
 
 @defopt font-latex-script-display
 Display specification for subscript and superscript content.  The car is

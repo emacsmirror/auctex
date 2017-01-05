@@ -40,7 +40,9 @@ each one raised above and a bit smaller than its basis.  For this
 feature, have a look at the customize options
 @code{font-latex-fontify-script} (especially the new values
 @code{multi-level} and @code{invisible}) and
-@code{font-latex-fontify-script-max-level}.
+@code{font-latex-fontify-script-max-level}.  Also, the script characters
+@samp{^} and @samp{_} are also fontified with a special face named
+@code{font-latex-script-char-face}.
 @ifclear rawfile
 @xref{Fontification of math}, for details.
 @end ifclear
