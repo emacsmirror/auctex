@@ -552,16 +552,35 @@ for citation keys."
     "biblatex"
     "refsection" "refsegment")
 
-   ;; Tell RefTeX: The entry `biblatex' is defined in
-   ;; `reftex-cite-format-builtin' in reftex-vars.el which will be
-   ;; part of Emacs >= 25.3.  It does not issue an error for older
-   ;; Emacsen, but does not work either, i.e. it is ignored.
+   ;; Tell RefTeX: If package option `natbib' is given, activate that
+   ;; format, otherwise stick with `biblatex':
    (when (and LaTeX-reftex-cite-format-auto-activate
 	      (fboundp 'reftex-set-cite-format))
      (if (or (LaTeX-provided-package-options-member "biblatex" "natbib")
 	     (LaTeX-provided-package-options-member "biblatex" "natbib=true"))
 	 (reftex-set-cite-format 'natbib)
-       (reftex-set-cite-format 'biblatex))))
+       ;; The entry `biblatex' is defined in
+       ;; `reftex-cite-format-builtin' in reftex-vars.el which will be
+       ;; part of Emacs >= 25.3.  So check here if we find an entry,
+       ;; otherwise do it manually for older Emacsen.
+       (if (assoc 'biblatex reftex-cite-format-builtin)
+	   (reftex-set-cite-format 'biblatex)
+	 (reftex-set-cite-format
+	  '((?\C-m . "\\cite[][]{%l}")
+	    (?C    . "\\cite*[][]{%l}")
+	    (?t    . "\\textcite[][]{%l}")
+	    (?T    . "\\textcite*[][]{%l}")
+	    (?p    . "\\parencite[][]{%l}")
+	    (?P    . "\\parencite*[][]{%l}")
+	    (?f    . "\\footcite[][]{%l}")
+	    (?s    . "\\smartcite[][]{%l}")
+	    (?u    . "\\autocite[][]{%l}")
+	    (?U    . "\\autocite*[][]{%l}")
+	    (?a    . "\\citeauthor{%l}")
+	    (?A    . "\\citeauthor*{%l}")
+	    (?y    . "\\citeyear{%l}")
+	    (?Y    . "\\citeyear*{%l}")
+	    (?n    . "\\nocite{%l}")))))))
  LaTeX-dialect)
 
 (defvar LaTeX-biblatex-package-options-list
