@@ -41,6 +41,11 @@
   :type 'boolean
   :group 'LaTeX-style)
 
+(defcustom LaTeX-reftex-cite-format-auto-activate t
+  "Whether to activate automatically RefTeX citation format."
+  :type 'boolean
+  :group 'LaTeX-style)
+
 ;; style/amsmath.el
 
 (defcustom LaTeX-amsmath-label nil

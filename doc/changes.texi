@@ -12,6 +12,15 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} has a new custom option
+@code{LaTeX-reftex-cite-format-auto-activate} which controls the
+automatic activation of citation formats provided by RefTeX when a style
+file is loaded and RefTeX is enabled.  Currently, @file{biblatex.el},
+@file{harvard.el}, @file{jurabib.el} and @file{natbib.el} use this
+feature.  If you have customized @code{reftex-cite-format} and want to
+use your settings, you should set this variable to @code{nil}.
+
+@item
 In addition to the completion performed by @code{TeX-complete-symbol},
 @AUCTeX{} now also supports the new Emacs standard completion-at-point
 facility (see the Emacs command @code{completion-at-point}).  This also

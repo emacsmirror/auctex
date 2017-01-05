@@ -556,7 +556,8 @@ for citation keys."
    ;; `reftex-cite-format-builtin' in reftex-vars.el which will be
    ;; part of Emacs >= 25.3.  It does not issue an error for older
    ;; Emacsen, but does not work either, i.e. it is ignored.
-   (when (fboundp 'reftex-set-cite-format)
+   (when (and LaTeX-reftex-cite-format-auto-activate
+	      (fboundp 'reftex-set-cite-format))
      (if (or (LaTeX-provided-package-options-member "biblatex" "natbib")
 	     (LaTeX-provided-package-options-member "biblatex" "natbib=true"))
 	 (reftex-set-cite-format 'natbib)
