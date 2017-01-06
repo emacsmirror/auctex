@@ -1997,9 +1997,9 @@ END marks boundaries for searching for quotation ends."
 (defun font-latex--get-script-props (pos script-type)
   (let* ((old-raise (or (plist-get (get-text-property pos 'display) 'raise) 0.0))
 	 (new-level (1+ (or (get-text-property pos 'script-level) 0)))
-	 (disp-props (copy-list (case script-type
-				  (:super (cdr font-latex-script-display))
-				  (:sub   (car font-latex-script-display)))))
+	 (disp-props (copy-sequence (case script-type
+				      (:super (cdr font-latex-script-display))
+				      (:sub   (car font-latex-script-display)))))
 	 (new-disp-props (let ((raise (plist-get disp-props 'raise))
 			       (nl new-level))
 			   (if raise
