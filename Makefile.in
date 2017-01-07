@@ -468,34 +468,37 @@ change-history-commit:
 #    Run tests using ERT tool.  Not necessary but strongly suggested before a
 #    release.
 #
-# 1) release-commit TAG=<tag> COMMITTER=<committer>
+# 1) change-history
+#    Update the ChangeLog file.
+#
+# 2) release-commit TAG=<tag> COMMITTER=<committer>
 #    Tag the release.
 #    Pass `COMMITTER=<committer>' argument only if it is different from
 #    your git name and email.  `<committer>' should be in the form
 #        "John Doe  <john.doe@example.com>"
 #
-# 2) dist TAG=<tag>
+# 3) dist TAG=<tag>
 #    Create the tar ball and other release files and put them into $FTPDIR.
 #
-# 3) xemacs-package TAG=<tag>
+# 4) xemacs-package TAG=<tag>
 #    Create the precompiled XEmacs package.
 #
-# 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
+# 5) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
 #    This requires a compiled Emacs of the same version at location $WEMACS.
 #    NOTA BENE: you may need to use bash shell for this recipe to work.
 #
-# 5) release-sign TAG=<tag>
+# 6) release-sign TAG=<tag>
 #    Sign the tar ball and create directive files for upload.  NOTA BENE: you
 #    may need to use bash shell for this recipe to work.
 #
-# 6) release-upload
+# 7) release-upload
 #    Upload files to GNU FTP server.
 #
-# 7) www-doc TAG=<tag>
+# 8) www-doc TAG=<tag>
 #    Create documentation for AUCTeX home page.
 #
-# 8) preview-ball TAG=<tag>
+# 9) preview-ball TAG=<tag>
 #    Create preview package.  (Not for GNU FTP server but for CTAN.)
 
 dist: check-tag tar-ball
@@ -511,18 +514,18 @@ check:
 release-commit: check-tag
 	@echo "Tagging release $(TAG) in Git ..."
 	sleep 5
-	mv ChangeLog ChangeLog.old
+	mv $(CHANGELOG_N) ChangeLog.old
 	mv ChangeLog-preview ChangeLog-preview.old
 # Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
 # requires the `iconv' program.
-	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > ChangeLog
-	echo >> ChangeLog
-	echo "	* Version" $(TAG) released. >> ChangeLog
-	echo >> ChangeLog
-	cp ChangeLog ChangeLog-preview
-	cat ChangeLog.old >> ChangeLog
+	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > $(CHANGELOG_N)
+	echo >> $(CHANGELOG_N)
+	echo "	* Version" $(TAG) released. >> $(CHANGELOG_N)
+	echo >> $(CHANGELOG_N)
+	cp $(CHANGELOG_N) ChangeLog-preview.1
+	cat ChangeLog.old >> $(CHANGELOG_N)
 	cat ChangeLog-preview.old >> ChangeLog-preview
-	git commit -m 'Release_$(TAG)' -- ChangeLog ChangeLog-preview
+	git commit -m 'Release_$(TAG)' -- $(CHANGELOG_N) ChangeLog-preview
 	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	@echo
 	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."
@@ -549,7 +552,7 @@ tar-ball: doc/Makefile
 	cd doc && $(MAKE) extradist
 	rm -f doc/version.texi
 	$(CP) doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
-	$(CP) ChangeLog $(FTPDIR)
+	$(CP) $(CHANGELOG_N) $(FTPDIR)
 
 rpm-packages:
 	rpmbuild -ta $(RPM_SIGN) $(FTPDIR)/auctex-$(TAG).tar.gz
