@@ -8,18 +8,9 @@
 
 @end ifset
 
-@heading News since 11.89
+@heading News in 11.90
 
 @itemize @bullet
-@item
-@AUCTeX{} has a new custom option
-@code{LaTeX-reftex-cite-format-auto-activate} which controls the
-automatic activation of citation formats provided by RefTeX when a style
-file is loaded and RefTeX is enabled.  Currently, @file{biblatex.el},
-@file{harvard.el}, @file{jurabib.el} and @file{natbib.el} use this
-feature.  If you have customized @code{reftex-cite-format} and want to
-use your settings, you should set this variable to @code{nil}.
-
 @item
 In addition to the completion performed by @code{TeX-complete-symbol},
 @AUCTeX{} now also supports the new Emacs standard completion-at-point
@@ -56,17 +47,6 @@ constructs.  Style files for @LaTeX{} packages @samp{tabularx},
 adapted to take advantage of this improvement.
 
 @item
-The style @file{graphicx.el} went through a bigger overhaul.  The
-optional argument of command @samp{\includegraphics} now supports
-key-val query; keys can independently be chosen anytime by pressing the
-@key{,} key.  As a side effect, the variable
-@code{LaTeX-includegraphics-options-alist} is now no-op and is removed
-from @file{tex-style.el}.  You can safely remove any customization of it
-from your init file.  The mandatory argument of @samp{\includegraphics}
-knows about image file extensions supported by the used engine and
-offers them for inclusion.
-
-@item
 @AUCTeX{} has a new Ispell dictionary @file{tex-ispell.el} for macros
 and environments which will be skipped during spell checking.  The
 activiation of this feature is controlled by a new customize option
@@ -77,11 +57,6 @@ activated by default.
 @AUCTeX{} has a new customize option @code{TeX-raise-frame-function}
 that is currently only used by Evince and Atril inverse search to raise
 the Emacs frame.
-
-@item
-@AUCTeX{} now has limited support for the TikZ package.  For the moment,
-this includes some basic support for prompting the user of arguments to
-the @samp{\draw} macro.
 
 @item
 When inserting a new float, @AUCTeX{} will now prompt for a
@@ -138,6 +113,38 @@ A new function, @code{TeX-documentation-texdoc}, for reading
 documentation with @samp{texdoc} has been added.  @code{TeX-doc} is
 still available but now @kbd{C-c ?} runs
 @code{TeX-documentation-texdoc}.
+
+@item
+@AUCTeX{} has a new custom option
+@code{LaTeX-reftex-cite-format-auto-activate} which controls the
+automatic activation of citation formats provided by RefTeX when a style
+file is loaded and RefTeX is enabled.  Currently, @file{biblatex.el},
+@file{harvard.el}, @file{jurabib.el} and @file{natbib.el} use this
+feature.  If you have customized @code{reftex-cite-format} and want to
+use your settings, you should set this variable to @code{nil}.
+
+@item
+@AUCTeX{} now has limited support for the TikZ package.  For the moment,
+this includes some basic support for prompting the user of arguments to
+the @samp{\draw} macro.
+
+@item
+The style @file{graphicx.el} went through a bigger overhaul.  The
+optional argument of command @samp{\includegraphics} now supports
+key-val query; keys can independently be chosen anytime by pressing the
+@key{,} key.  As a side effect, the variable
+@code{LaTeX-includegraphics-options-alist} is now no-op and is removed
+from @file{tex-style.el}.  You can safely remove any customization of it
+from your init file.  The mandatory argument of @samp{\includegraphics}
+knows about image file extensions supported by the used engine and
+offers them for inclusion.
+
+@item
+Support for other @LaTeX{} packages was improved, and style files for
+several new packages were added.
+
+@item
+Many bugs were crushed along the way.
 @end itemize
 
 @heading News in 11.89
