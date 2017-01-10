@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2016 Free Software Foundation, Inc.
 
-;; Author: Arash Esbati <arash.esbati'at'gmail.com>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2016-02-07
 ;; Keywords: tex

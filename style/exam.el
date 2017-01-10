@@ -28,7 +28,7 @@
 ;; This file adds support for the exam class.
 
 ;; Acknowledgements
-;; Arash Esbati <arash.esbati+ml@gmail.com> for a almost complete rewrite.
+;; Arash Esbati <arash@gnu.org> for a almost complete rewrite.
 
 ;;; Code:
 

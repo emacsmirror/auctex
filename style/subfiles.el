@@ -25,7 +25,7 @@
 
 ;; Acknowledgements
 ;; Mosè Giordano <mose@gnu.org>
-;; Arash Esbati <arash.esbati+ml@gmail.com>
+;; Arash Esbati <arash@gnu.org>
 
 ;;; Commentary:
 
