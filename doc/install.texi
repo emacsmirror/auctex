@@ -20,9 +20,11 @@ the installation procedure.  That's all.  This installation procedure
 has several advantages.  Besides being platform and @acronym{OS}
 independent, you will receive intermediate releases between major
 @AUCTeX{} releases conveniently.  For past @acronym{ELPA} releases, see
-@url{https://elpa.gnu.org/packages/auctex.html}.  Once the installation
-is completed, you can skip the rest of this section and proceed to
-@ref{Quick Start}.
+@url{https://elpa.gnu.org/packages/auctex.html}.
+@ifclear rawfile
+Once the installation is completed, you can skip the rest of this
+section and proceed to @ref{Quick Start}.
+@end ifclear
 
 The remainder of this section is about installing @AUCTeX{} from a
 release tarball or from a checkout of the @AUCTeX{} repository.
