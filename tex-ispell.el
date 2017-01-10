@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2016 Free Software Foundation, Inc.
 
-;; Author: Arash Esbati <arash.esbati'at'gmail.com>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp, convenience
 
@@ -59,6 +59,7 @@
 ;; splitidx.sty
 ;; tabularx.sty
 ;; tabulary.sty
+;; tcolorbox.sty
 ;; tikz.sty
 ;; varioref.sty
 
@@ -173,6 +174,12 @@
       ("SI" . 2)
       ;; splitidx.sty
       ("sindex" . 1)
+      ;; tcolorbox.sty
+      ("tcbox" . 0)
+      ("tcbset" . 1)
+      ("tcbsetforeverylayer" . 1)
+      ;; tcolorbox.sty -- raster library
+      ("tcbitem" . 0)
       ;; varioref.sty
       ("vref" . 1)
       ("Vref" . 1)
@@ -184,11 +191,12 @@
       ("vrefrange" . 2)
       ("vrefrange*" . 2)
       ("vpagerefrange" . 2)
-      ("vpagerefrange*" . 2) )
+      ("vpagerefrange*" . 2))
     "List of commands with arguments to be skipped.
 Each element of the list is a cons cell with command name
 \(string) as car and the number of mandatory arguments to be
-skipped as cdr."))
+skipped as cdr.  If number is 0, then only skip over the optional
+argument and spell check the mandatory one."))
 
 
 ;; Add new environments with one optional argument here:
@@ -202,7 +210,12 @@ skipped as cdr."))
       "itemize"
       "itemize*"
       ;; mdframed.sty
-      "mdframed")
+      "mdframed"
+      ;; tcolorbox.sty
+      "tcolorbox"
+      ;; tcolorbox.sty -- raster library
+      "tcbraster"
+      "tcbitemize")
     "List of LaTeX environments with an opt argument to be skipped."))
 
 
@@ -235,6 +248,8 @@ skipped as cdr."))
    ("minted" . "\\\\end{minted}")
    ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
+   ;; tcolorbox.sty -- raster library
+   ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)
    ;; tikz.sty
    ("tikzpicture" . "\\\\end{tikzpicture}")
    ;; fancyvrb.sty: In practice, all verbatim environments have a *
@@ -248,12 +263,18 @@ skipped as cdr."))
 (eval-when-compile
   (defun TeX-ispell-sort-skip-cmds-list (arg)
     "Return elements from `TeX-ispell-skip-cmds-list' acc. to ARG."
-    (when (member arg '(1 2 3))
+    (when (member arg '(0 1 2 3))
       (let (cmds)
 	(dolist (elt TeX-ispell-skip-cmds-list)
 	  (when (= (cdr elt) arg)
 	    (push (car elt) cmds)))
 	cmds))))
+
+(defvar TeX-ispell-skip-cmds-opt-arg-regexp
+  (eval-when-compile
+    (concat "\\\\"
+	    (regexp-opt (TeX-ispell-sort-skip-cmds-list 0) t)))
+  "Regexp of LaTeX commands with only optional arguments to be skipped.")
 
 (defvar TeX-ispell-skip-cmds-one-arg-regexp
   (eval-when-compile
@@ -280,7 +301,8 @@ skipped as cdr."))
 
 ;; Make them available to Ispell:
 (TeX-ispell-skip-setcar
- `((,TeX-ispell-skip-cmds-one-arg-regexp ispell-tex-arg-end)
+ `((,TeX-ispell-skip-cmds-opt-arg-regexp ispell-tex-arg-end 0)
+   (,TeX-ispell-skip-cmds-one-arg-regexp ispell-tex-arg-end)
    (,TeX-ispell-skip-cmds-two-args-regexp ispell-tex-arg-end 2)
    (,TeX-ispell-skip-cmds-three-args-regexp ispell-tex-arg-end 3)))
 
