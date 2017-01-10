@@ -522,7 +522,7 @@ release-commit: check-tag
 	echo >> $(CHANGELOG_N)
 	echo "	* Version" $(TAG) released. >> $(CHANGELOG_N)
 	echo >> $(CHANGELOG_N)
-	cp $(CHANGELOG_N) ChangeLog-preview.1
+	cp $(CHANGELOG_N) ChangeLog-preview
 	cat ChangeLog.old >> $(CHANGELOG_N)
 	cat ChangeLog-preview.old >> ChangeLog-preview
 	git commit -m 'Release_$(TAG)' -- $(CHANGELOG_N) ChangeLog-preview
