@@ -25,19 +25,22 @@
 
 ;;; Code
 
-(defun TeX-arg-cleveref-multiple-labels (optional &optional prompt definition)
+(defun TeX-arg-cleveref-multiple-labels (optional &optional prompt)
   "Prompt for a series of labels completing with known labels.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If DEFINITION is non-nil, add each chosen label to the
-list of defined labels."
-  (let* ((labels (TeX-completing-read-multiple
-                  (TeX-argument-prompt optional prompt "Keys")
-                  (LaTeX-label-list)))
-         (labels-string (mapconcat 'identity labels ",")))
-    (when definition
-      (apply 'LaTeX-add-labels labels))
-    (TeX-argument-insert labels-string optional optional)))
+string."
+  (if (and (fboundp 'reftex-arg-label)
+	   (fboundp 'reftex-plug-flag)
+	   (reftex-plug-flag 2))
+      ;; Use RefTeX when enabled
+      (TeX-arg-ref optional)
+    ;; Use AUCTeX interface
+    (let* ((labels (TeX-completing-read-multiple
+		    (TeX-argument-prompt optional prompt "Keys")
+		    (LaTeX-label-list)))
+	   (labels-string (mapconcat #'identity labels ",")))
+      (TeX-argument-insert labels-string optional))))
 
 (TeX-add-style-hook
  "cleveref"
@@ -45,22 +48,22 @@ list of defined labels."
    (TeX-add-symbols
     '("cref" TeX-arg-cleveref-multiple-labels)
     '("Cref" TeX-arg-cleveref-multiple-labels)
-    '("crefrange" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
-    '("Crefrange" (TeX-arg-label "key (first)") (TeX-arg-label "Key (last)"))
+    '("crefrange" (TeX-arg-ref "Key (first)") (TeX-arg-ref "Key (last)"))
+    '("Crefrange" (TeX-arg-ref "key (first)") (TeX-arg-ref "Key (last)"))
     '("cpageref" TeX-arg-cleveref-multiple-labels)
     '("Cpageref" TeX-arg-cleveref-multiple-labels)
-    '("cpagerefrange" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
-    '("Cpagerefrange" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
+    '("cpagerefrange" (TeX-arg-ref "Key (first)") (TeX-arg-ref "Key (last)"))
+    '("Cpagerefrange" (TeX-arg-ref "Key (first)") (TeX-arg-ref "Key (last)"))
     '("cref*" TeX-arg-cleveref-multiple-labels)
     '("Cref*" TeX-arg-cleveref-multiple-labels)
-    '("crefrange*" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
-    '("Crefrange*" (TeX-arg-label "Key (first)") (TeX-arg-label "Key (last)"))
-    '("namecref" TeX-arg-label)
-    '("nameCref" TeX-arg-label)
-    '("lcnamecref" TeX-arg-label)
-    '("namecrefs" TeX-arg-label)
-    '("nameCrefs" TeX-arg-label)
-    '("lcnamecrefs" TeX-arg-label)
+    '("crefrange*" (TeX-arg-ref "Key (first)") (TeX-arg-ref "Key (last)"))
+    '("Crefrange*" (TeX-arg-ref "Key (first)") (TeX-arg-ref "Key (last)"))
+    '("namecref" TeX-arg-ref)
+    '("nameCref" TeX-arg-ref)
+    '("lcnamecref" TeX-arg-ref)
+    '("namecrefs" TeX-arg-ref)
+    '("nameCrefs" TeX-arg-ref)
+    '("lcnamecrefs" TeX-arg-ref)
     '("labelcref" TeX-arg-cleveref-multiple-labels)
     '("labelcpageref" TeX-arg-cleveref-multiple-labels))
 
@@ -73,7 +76,6 @@ list of defined labels."
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-set-syntactic-keywords)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("cref" "*{")
 				("Cref" "*{")
@@ -91,9 +93,7 @@ list of defined labels."
                                 ("lcnamecrefs" "{")
                                 ("labelcref" "{")
                                 ("labelcpageref" "{"))
-			      'reference)
-     ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-set-syntactic-keywords))
+			      'reference))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
