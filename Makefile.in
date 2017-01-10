@@ -516,9 +516,9 @@ release-commit: check-tag
 	sleep 5
 	mv $(CHANGELOG_N) ChangeLog.old
 	mv ChangeLog-preview ChangeLog-preview.old
-# Make sure the release ChangeLog entry is encoded with ISO-8859-1.  This
-# requires the `iconv' program.
-	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t ISO-8859-1 - > $(CHANGELOG_N)
+# Make sure the release ChangeLog entry is encoded with UTF-8.
+# This requires the `iconv' program.
+	echo `date "+%Y-%m-%d "`" ${COMMITTER}" | iconv -t UTF-8 - > $(CHANGELOG_N)
 	echo >> $(CHANGELOG_N)
 	echo "	* Version" $(TAG) released. >> $(CHANGELOG_N)
 	echo >> $(CHANGELOG_N)
