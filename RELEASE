@@ -21,7 +21,6 @@ AUCTeX needs volunteers in particular for non-programming tasks:
 documentation writing, tutorials, translations, reference material,
 sleuth work, testing.
 
-
 New features and fixed bugs in this release
 -------------------------------------------
 
@@ -147,15 +146,17 @@ used to speed up the conversion.
 Availability
 ------------
 
-AUCTeX can be downloaded in various formats from
+The easiest way for getting AUCTeX, for users running Emacs 24.1 or
+higher, is installing it with GNU ELPA, see
+<URL:https://elpa.gnu.org/packages/auctex.html> for more information.
+Other download options are available at
 <URL:ftp://ftp.gnu.org/gnu/auctex/>.  At release time, we provide the
-source tarball, a precompiled version for Emacs on Windows, and a
-platform-independent XEmacs package file (which you have to install
-yourself using XEmacs' own package system, after using it for removing
-the previous version of AUCTeX).  The easiest way for using AUCTeX, of
-course, is using versions of Emacs that already include AUCTeX or a
-software package management system for your operating system which
-provides you with the latest release.
+source tarball, and a platform-independent XEmacs package file (which
+you have to install yourself using XEmacs' own package system, after
+using it for removing the previous version of AUCTeX).  You can also
+use versions of Emacs that already include AUCTeX or a software
+package management system for your operating system which provides you
+with the latest release.
 
 The XEmacs package file can be discerned by `pkg' in its name.  It is
 usually more recent than what gets distributed from XEmacs servers and
@@ -170,7 +171,6 @@ You'll find more information at the web site of AUCTeX
 <URL:http://www.gnu.org/software/auctex/>, including its mailing list
 addresses.
 
-
 Future development and additional information
 ---------------------------------------------
 
@@ -182,12 +182,10 @@ contributors.  The principal authors and maintainers have already done
 so, but it would require a diligent and diplomatic volunteer to find
 and ask the rest.
 
-Current project manager is David Kastrup.  Paypal contributions to
-<URL:mailto:auctex@gnu.org> would be appreciated in order to
-compensate for time, money and hardware required for presenting AUCTeX
-at conferences.  Extensions may be commissioned: enquire on the
-developer list (see above).  Other than that, volunteering for tasks
-remains the most effective way of helping AUCTeX development.
+Current AUCTeX managers are Arash Esbati, Mosè Giordano, and Tassilo
+Horn.  Everybody is welcome to contribute to the project by reporting
+bugs and suggesting improvements, but the most effective way of
+helping AUCTeX development remains volunteering for tasks.
 
 The following people contributed to this release series (in
 alphabetical order): Ivan Andrus, Ralf Angeli, Masayuki Ataka, Fabrice
