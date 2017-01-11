@@ -525,7 +525,7 @@ release-commit: check-tag
 	cp $(CHANGELOG_N) ChangeLog-preview
 	cat ChangeLog.old >> $(CHANGELOG_N)
 	cat ChangeLog-preview.old >> ChangeLog-preview
-	git commit -m 'Release_$(TAG)' -- $(CHANGELOG_N) ChangeLog-preview
+	git commit -m '; Release_$(TAG)' -- $(CHANGELOG_N) ChangeLog-preview
 	git tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	@echo
 	@echo "Congratulations!  Release $(TAG) of AUCTeX is ready."
