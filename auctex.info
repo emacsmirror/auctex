@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.3 from auctex.texi.
 
-This manual is for AUCTeX (version 11.89.8 from 2016-12-22), a
+This manual is for AUCTeX (version 11.90.0 from 2017-01-11), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -311,11 +311,16 @@ File: auctex.info,  Node: Installation,  Next: Quick Start,  Prev: Summary,  Up:
 1.2 Installing AUCTeX
 =====================
 
-The simplest way of installing AUCTeX is by using the Emacs package
-manager integrated in Emacs 24 and greater (ELPA).  Simply do 'M-x
-package-list-packages RET', mark the auctex package for installation
-with 'i', and hit 'x' to execute the installation procedure.  That's
-all.
+The modern and strongly recommended way of installing AUCTeX is by using
+the Emacs package manager integrated in Emacs 24 and greater (ELPA).
+Simply do 'M-x list-packages RET', mark the auctex package for
+installation with 'i', and hit 'x' to execute the installation
+procedure.  That's all.  This installation procedure has several
+advantages.  Besides being platform and OS independent, you will receive
+intermediate releases between major AUCTeX releases conveniently.  For
+past ELPA releases, see <https://elpa.gnu.org/packages/auctex.html>.
+Once the installation is completed, you can skip the rest of this
+section and proceed to *note Quick Start::.
 
    The remainder of this section is about installing AUCTeX from a
 release tarball or from a checkout of the AUCTeX repository.
@@ -1154,15 +1159,19 @@ These installation instructions are available in this manual as well,
 keystrokes are written in Emacs manuals.  If not, have a look at the
 Emacs Tutorial in the Help menu.
 
-   If AUCTeX is installed, you might still need to activate it, by
-inserting
+   If AUCTeX is installed in any other way than from the Emacs package
+manager (ELPA), you might still need to activate it, by inserting
 
      (load "auctex.el" nil t t)
 
-   in your user init file.(1)  If you've installed AUCTeX from the Emacs
-package manager (ELPA), you must not have this line in your user init
-file.  The installation procedure already cares about loading AUCTeX
-correctly.
+   in your user init file.(1)
+
+   If AUCTeX is installed from ELPA, the installation procedure already
+cares about loading AUCTeX correctly and you *must not* have the line
+above in your init file.  Note that this also applies if you have the
+following line in your init file
+
+     (package-initialize)
 
    In order to get support for many of the LaTeX packages you will use
 in your documents, you should enable document parsing as well, which can
@@ -2161,20 +2170,60 @@ File: auctex.info,  Node: Completion,  Next: Marking,  Prev: Mathematics,  Up: E
 2.6 Completion
 ==============
 
-Emacs lisp programmers probably know the 'lisp-complete-symbol' command,
-usually bound to 'M-<TAB>'.  Users of the wonderful ispell mode know and
-love the 'ispell-complete-word' command from that package.  Similarly,
-AUCTeX has a 'TeX-complete-symbol' command, by default bound to
-'M-<TAB>' which is equivalent to 'M-C-i'.  Using 'TeX-complete-symbol'
-makes it easier to type and remember the names of long LaTeX macros.
+Emacs lisp programmers probably know the 'lisp-complete-symbol' command
+which was bound to 'M-<TAB>' until completion-at-point became the new
+standard completion facility (see below).  Users of the wonderful ispell
+mode know and love the 'ispell-complete-word' command from that package.
+Similarly, AUCTeX has a 'TeX-complete-symbol' command, by default bound
+to 'M-<TAB>' which is equivalent to 'M-C-i'.  Using
+'TeX-complete-symbol' makes it easier to type and remember the names of
+long LaTeX macros.
 
    In order to use 'TeX-complete-symbol', you should write a backslash
 and the start of the macro.  Typing 'M-<TAB>' will now complete as much
 of the macro, as it unambiguously can.  For example, if you type
 ''\renewc'' and then 'M-<TAB>', it will expand to ''\renewcommand''.
+But there's more: if point is just after '\begin{', then
+'TeX-complete-symbol' will complete LaTeX environments, etc.  This is
+controlled by 'TeX-complete-list'.
 
  -- Command: TeX-complete-symbol
      ('M-<TAB>') Complete TeX symbol before point.
+
+ -- Variable: TeX-complete-list
+     List of ways to complete the preceding text.
+
+     Each entry is a list with the following elements:
+
+       1. Regexp matching the preceding text or a predicate of arity 0
+          which returns non-nil and sets 'match-data' appropriately if
+          it is applicable.
+       2. A number indicating the subgroup in the regexp containing the
+          text.
+       3. A function returning an alist of possible completions.
+       4. Text to append after a succesful completion.
+
+     Or alternatively:
+
+       1. Regexp matching the preceding text.
+       2. Function to do the actual completion.
+
+   More recent Emacs versions have a new completion mechanism.  Modes
+may define and register custom completion-at-point functions and when
+the user invokes 'completion-at-point' (usually bound to 'M-<TAB>'), all
+such registered functions are consulted for checking for possible
+completions.  Modern completion UIs like company-mode support this
+completion-at-point facility.
+
+ -- Function: TeX--completion-at-point
+     AUCTeX's completion-at-point function which is automatically added
+     to 'completion-at-point-functions' in TeX and LaTeX buffers.
+
+     It offers the same completion candidates as would
+     'TeX-complete-symbol' (and is also controlled by
+     'TeX-complete-list') except that it doesn't fall back on
+     'ispell-complete-word' which would be awkward with completion UIs
+     like company-mode.
 
    A more direct way to insert a macro is with 'TeX-insert-macro', bound
 to 'C-c C-m' which is equivalent to 'C-c <RET>'.  It has the advantage
@@ -3029,18 +3078,43 @@ variables 'font-latex-fontify-script' and 'font-latex-script-display'.
      this means that the scripts are raised or lowered.
 
      Another possiblity is setting this variable to the symbol
-     'multi-level'.  In this case, in a formula 'x^y^z', y is raised
-     above x, and z is raised above y.  With many script levels, the
-     text might become too small to be readable.
+     'multi-level'.  In this case, in a formula x^{y^z}, y is raised
+     above and smaller than x, and z is raised above and smaller than y.
+     With many script levels, the text might become too small to be
+     readable.  (See 'font-latex-fontify-script-max-level' below.)
 
      Lastly, you can set this variable to 'invisible' whose behavior is
      like 'multi-level', and in addition the super-/subscript characters
-     '^' and '_' are not displayed.
+     ^ and _ are not displayed.
 
      Note that this feature is not available on XEmacs, for which it is
      disabled per default.  In GNU Emacs raising and lowering is not
      enabled for versions 21.3 and before due to it working not
      properly.
+
+ -- User Option: font-latex-fontify-script-max-level
+     Maximum scriptification level for which script faces are applied.
+
+     The faces 'font-latex-superscript-face' and
+     'font-latex-subscript-face' define custom ':height' values < 1.0.
+     Therefore, scripts are displayed with a slightly smaller font than
+     normal math text.  If 'font-latex-fontify-script' is 'multi-level'
+     or 'invisible', the font size becomes too small to be readable
+     after a few levels.  This option allows to specify the maximum
+     level after which the size of the script text won’t be shrunken
+     anymore.
+
+     For example, in the expression x^{y^{z^a_b}}, x has scriptification
+     level 0, y has level 1, z has level 2, and both a and b have
+     scriptification level 3.
+
+     If 'font-latex-fontify-script-max-level' was 2, then z, a, and b
+     would have the same font size.  If it was 3 or more, then a and b
+     were smaller than z just in the same way as z is smaller than y and
+     y is smaller than x.
+
+   The script characters '^' and '_' themselves are also fontified with
+an own face named 'font-latex-script-char-face'.
 
  -- User Option: font-latex-script-display
      Display specification for subscript and superscript content.  The
@@ -5355,8 +5429,8 @@ overwrite the default prompt.
      Prompt for a LaTeX savebox completing with known saveboxes.
 
 'TeX-arg-file'
-     Prompt for a filename in the current directory, and use it without
-     the extension.
+     Prompt for a filename in the current directory, and use it with the
+     extension.
 
 'TeX-arg-file-name'
      Prompt for a filename and use as initial input the name of the file
@@ -5749,7 +5823,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.89.8 from 2016-12-22), a
+   This manual is for AUCTeX (version 11.90.0 from 2017-01-11), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
@@ -6256,18 +6330,34 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 A.2 Changes and New Features
 ============================
 
-News since 11.89
-----------------
+News in 11.90
+-------------
 
-   * The style 'graphicx.el' went through a bigger overhaul.  The
-     optional argument of command '\includegraphics' now supports
-     key-val query; keys can independently be chosen anytime by pressing
-     the <,> key.  As a side effect, the variable
-     'LaTeX-includegraphics-options-alist' is now no-op and is removed
-     from 'tex-style.el'.  You can safely remove any customization of it
-     from your init file.  The mandatory argument of '\includegraphics'
-     knows about image file extensions supported by the used engine and
-     offers them for inclusion.
+   * In addition to the completion performed by 'TeX-complete-symbol',
+     AUCTeX now also supports the new Emacs standard completion-at-point
+     facility (see the Emacs command 'completion-at-point').  This also
+     means that modern completion UIs like company-mode work out of the
+     box in TeX and LaTeX buffers.  *Note Completion::, for details.
+
+   * Completion is now aware of being inside a math environment and then
+     completes math macros.
+
+   * AUCTeX is able to display several levels of super- and subscripts,
+     each one raised above and a bit smaller than its basis.  For this
+     feature, have a look at the customize options
+     'font-latex-fontify-script' (especially the new values
+     'multi-level' and 'invisible') and
+     'font-latex-fontify-script-max-level'.  Also, the script characters
+     '^' and '_' are also fontified with a special face named
+     'font-latex-script-char-face'.  *Note Fontification of math::, for
+     details.
+
+   * Parsing of format specification in various tabular environments has
+     been improved.  The function 'LaTeX-insert-item' ('C-c <LFD>')
+     inserts suitable number of ampersands for '*{num}{cols}'
+     constructs.  Style files for LaTeX packages 'tabularx', 'tabulary',
+     'longtable', 'dcolumn' and 'siunitx' are adapted to take advantage
+     of this improvement.
 
    * AUCTeX has a new Ispell dictionary 'tex-ispell.el' for macros and
      environments which will be skipped during spell checking.  The
@@ -6278,10 +6368,6 @@ News since 11.89
    * AUCTeX has a new customize option 'TeX-raise-frame-function' that
      is currently only used by Evince and Atril inverse search to raise
      the Emacs frame.
-
-   * AUCTeX now has limited support for the TikZ package.  For the
-     moment, this includes some basic support for prompting the user of
-     arguments to the '\draw' macro.
 
    * When inserting a new float, AUCTeX will now prompt for a
      short-caption if the length of the caption provided is greater than
@@ -6322,6 +6408,33 @@ News since 11.89
    * A new function, 'TeX-documentation-texdoc', for reading
      documentation with 'texdoc' has been added.  'TeX-doc' is still
      available but now 'C-c ?' runs 'TeX-documentation-texdoc'.
+
+   * AUCTeX has a new custom option
+     'LaTeX-reftex-cite-format-auto-activate' which controls the
+     automatic activation of citation formats provided by RefTeX when a
+     style file is loaded and RefTeX is enabled.  Currently,
+     'biblatex.el', 'harvard.el', 'jurabib.el' and 'natbib.el' use this
+     feature.  If you have customized 'reftex-cite-format' and want to
+     use your settings, you should set this variable to 'nil'.
+
+   * AUCTeX now has limited support for the TikZ package.  For the
+     moment, this includes some basic support for prompting the user of
+     arguments to the '\draw' macro.
+
+   * The style 'graphicx.el' went through a bigger overhaul.  The
+     optional argument of command '\includegraphics' now supports
+     key-val query; keys can independently be chosen anytime by pressing
+     the <,> key.  As a side effect, the variable
+     'LaTeX-includegraphics-options-alist' is now no-op and is removed
+     from 'tex-style.el'.  You can safely remove any customization of it
+     from your init file.  The mandatory argument of '\includegraphics'
+     knows about image file extensions supported by the used engine and
+     offers them for inclusion.
+
+   * Support for other LaTeX packages was improved, and style files for
+     several new packages were added.
+
+   * Many bugs were crushed along the way.
 
 News in 11.89
 -------------
@@ -7706,7 +7819,7 @@ Key Index
 * C-c C-f C-t <1>:                       Font Specifiers.     (line  34)
 * C-c C-k:                               Control.             (line  10)
 * C-c C-l:                               Control.             (line  14)
-* C-c C-m:                               Completion.          (line  29)
+* C-c C-m:                               Completion.          (line  69)
 * C-c C-n:                               Parsing Files.       (line  44)
 * C-c C-o b:                             Folding.             (line 122)
 * C-c C-o C-b:                           Folding.             (line  44)
@@ -7752,7 +7865,7 @@ Key Index
 * M-C-h:                                 Marking (Texinfo).   (line  34)
 * M-g p:                                 Debugging.           (line  27)
 * M-q:                                   Filling.             (line  89)
-* M-<TAB>:                               Completion.          (line  19)
+* M-<TAB>:                               Completion.          (line  24)
 * <TAB>:                                 Indenting.           (line  69)
 
 
@@ -7810,6 +7923,7 @@ Function Index
 * LaTeX-section-title:                   Sectioning.          (line  72)
 * LaTeX-section-toc:                     Sectioning.          (line  75)
 * plain-TeX-mode:                        Modes and Hooks.     (line  21)
+* TeX--completion-at-point:              Completion.          (line  51)
 * TeX-add-style-hook:                    Simple Style.        (line  33)
 * TeX-add-symbols:                       Adding Macros.       (line  24)
 * TeX-arg-bibliography:                  Adding Macros.       (line 210)
@@ -7859,10 +7973,10 @@ Function Index
 * TeX-command-run-all:                   Starting a Command.  (line  58)
 * TeX-comment-or-uncomment-paragraph:    Commenting.          (line  22)
 * TeX-comment-or-uncomment-region:       Commenting.          (line  14)
-* TeX-complete-symbol:                   Completion.          (line  18)
+* TeX-complete-symbol:                   Completion.          (line  23)
 * TeX-declare-expert-macros:             Adding Macros.       (line 261)
 * TeX-documentation-texdoc:              Documentation.       (line   6)
-* TeX-electric-macro:                    Completion.          (line  66)
+* TeX-electric-macro:                    Completion.          (line 106)
 * TeX-error-overview:                    Error overview.      (line  11)
 * TeX-fold-buffer:                       Folding.             (line  43)
 * TeX-fold-clearout-buffer:              Folding.             (line 121)
@@ -7882,7 +7996,7 @@ Function Index
 * TeX-home-buffer:                       Control.             (line  17)
 * TeX-insert-braces:                     Quotes.              (line 118)
 * TeX-insert-dollar:                     Quotes.              (line  60)
-* TeX-insert-macro:                      Completion.          (line  28)
+* TeX-insert-macro:                      Completion.          (line  68)
 * TeX-insert-quote:                      Quotes.              (line  14)
 * TeX-interactive-mode:                  Processor Options.   (line  29)
 * TeX-ispell-tex-arg-end:                Selecting a Command. (line 165)
@@ -7933,6 +8047,8 @@ Variable Index
                                                               (line 162)
 * font-latex-fontify-script:             Fontification of math.
                                                               (line  20)
+* font-latex-fontify-script-max-level:   Fontification of math.
+                                                              (line  39)
 * font-latex-fontify-sectioning:         Fontification of macros.
                                                               (line  95)
 * font-latex-match-bold-command-keywords: Fontification of macros.
@@ -7980,7 +8096,7 @@ Variable Index
 * font-latex-quotes:                     Fontification of quotes.
                                                               (line  15)
 * font-latex-script-display:             Fontification of math.
-                                                              (line  38)
+                                                              (line  63)
 * font-latex-sectioning-0-face:          Fontification of macros.
                                                               (line  96)
 * font-latex-sectioning-1-face:          Fontification of macros.
@@ -8117,16 +8233,17 @@ Variable Index
 * TeX-command-list <1>:                  Starting a Command.  (line  32)
 * TeX-command-list <2>:                  Selecting a Command. (line  14)
 * TeX-complete-expert-commands:          Environments.        (line  78)
-* TeX-complete-expert-commands <1>:      Completion.          (line 100)
+* TeX-complete-expert-commands <1>:      Completion.          (line 140)
+* TeX-complete-list:                     Completion.          (line  26)
 * TeX-date-format:                       Adding Macros.       (line 123)
 * TeX-debug-bad-boxes:                   Ignoring warnings.   (line  10)
 * TeX-debug-warnings:                    Ignoring warnings.   (line  15)
-* TeX-default-macro:                     Completion.          (line  51)
+* TeX-default-macro:                     Completion.          (line  91)
 * TeX-default-mode:                      Japanese.            (line   6)
 * TeX-default-mode <1>:                  Japanese.            (line  21)
 * TeX-display-help:                      Debugging.           (line  47)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
-* TeX-electric-escape:                   Completion.          (line  58)
+* TeX-electric-escape:                   Completion.          (line  98)
 * TeX-electric-math:                     Quotes.              (line  72)
 * TeX-electric-sub-and-superscript:      Mathematics.         (line  68)
 * TeX-engine:                            Processor Options.   (line 103)
@@ -8157,9 +8274,9 @@ Variable Index
 * TeX-header-end <1>:                    Starting a Command.  (line  69)
 * TeX-ignore-file:                       Automatic.           (line  52)
 * TeX-ignore-warnings:                   Ignoring warnings.   (line  25)
-* TeX-insert-braces:                     Completion.          (line  76)
-* TeX-insert-braces-alist:               Completion.          (line  79)
-* TeX-insert-macro-default-style:        Completion.          (line  36)
+* TeX-insert-braces:                     Completion.          (line 116)
+* TeX-insert-braces-alist:               Completion.          (line 119)
+* TeX-insert-macro-default-style:        Completion.          (line  76)
 * TeX-install-font-lock:                 Font Locking.        (line  13)
 * TeX-interactive-mode:                  Processor Options.   (line  30)
 * TeX-ispell-extend-skip-list:           Selecting a Command. (line  82)
@@ -8232,7 +8349,7 @@ Concept Index
 * \begin:                                Environments.        (line   6)
 * \chapter:                              Editing Facilities.  (line  26)
 * \chapter <1>:                          Sectioning.          (line   6)
-* \cite, completion of:                  Completion.          (line 112)
+* \cite, completion of:                  Completion.          (line 152)
 * \emph:                                 Editing Facilities.  (line  79)
 * \emph <1>:                             Font Specifiers.     (line  22)
 * \end:                                  Environments.        (line   6)
@@ -8241,8 +8358,8 @@ Concept Index
 * \item:                                 Itemize-like.        (line   6)
 * \label:                                Editing Facilities.  (line  26)
 * \label <1>:                            Sectioning.          (line   6)
-* \label, completion:                    Completion.          (line 112)
-* \ref, completion:                      Completion.          (line 112)
+* \label, completion:                    Completion.          (line 152)
+* \ref, completion:                      Completion.          (line 152)
 * \section:                              Editing Facilities.  (line  26)
 * \section <1>:                          Sectioning.          (line   6)
 * \subsection:                           Editing Facilities.  (line  26)
@@ -8278,7 +8395,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 398)
+* auctex.el <1>:                         Changes.             (line 437)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8290,9 +8407,9 @@ Concept Index
 * biblatex:                              Selecting a Command. (line  46)
 * Bibliographies, adding:                Adding Other.        (line   6)
 * Bibliography:                          Commands.            (line   6)
-* bibliography, completion:              Completion.          (line 112)
+* bibliography, completion:              Completion.          (line 152)
 * BibTeX:                                Commands.            (line   6)
-* BibTeX, completion:                    Completion.          (line 112)
+* BibTeX, completion:                    Completion.          (line 152)
 * book.el:                               Simple Style.        (line   6)
 * Braces:                                Quotes.              (line   6)
 * Brackets:                              Quotes.              (line   6)
@@ -8307,8 +8424,8 @@ Concept Index
 * ChinaTeX:                              Internationalization.
                                                               (line   6)
 * chktex:                                Checking.            (line   6)
-* citations, completion of:              Completion.          (line 112)
-* cite, completion of:                   Completion.          (line 112)
+* citations, completion of:              Completion.          (line 152)
+* cite, completion of:                   Completion.          (line 152)
 * CJK language:                          Internationalization.
                                                               (line   6)
 * CJK-LaTeX:                             Internationalization.
@@ -8430,7 +8547,7 @@ Concept Index
 * Labels:                                Sectioning.          (line 110)
 * Labels <1>:                            Floats.              (line  32)
 * Labels, adding:                        Adding Other.        (line   6)
-* labels, completion of:                 Completion.          (line 112)
+* labels, completion of:                 Completion.          (line 152)
 * lacheck:                               Checking.            (line   6)
 * Language Support:                      Internationalization.
                                                               (line   6)
@@ -8580,7 +8697,7 @@ Concept Index
                                                               (line 286)
 * tex-site.el:                           Loading the package. (line  14)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 398)
+* tex-site.el <2>:                       Changes.             (line 437)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8605,98 +8722,98 @@ Node: Copying7421
 Node: Introduction9377
 Node: Summary9647
 Node: Installation12388
-Node: Prerequisites13776
-Node: Configure16644
-Node: Build/install and uninstall22069
-Node: Loading the package22822
-Node: Advice for package providers24643
-Node: Advice for non-privileged users28588
-Node: Installation under MS Windows32546
-Node: Customizing47780
-Node: Quick Start49363
-Ref: Quick Start-Footnote-151353
-Node: Editing Facilities51500
-Node: Processing Facilities56303
-Node: Editing61061
-Node: Quotes62391
-Node: Font Specifiers70659
-Node: Sectioning72485
-Node: Environments76805
-Node: Equations81959
-Node: Floats82550
-Node: Itemize-like84554
-Node: Tabular-like85275
-Node: Customizing Environments87048
-Node: Mathematics87288
-Node: Completion90214
-Node: Marking95537
-Node: Marking (LaTeX)96161
-Node: Marking (Texinfo)97103
-Node: Commenting98713
-Node: Indenting100038
-Node: Filling106074
-Node: Display111946
-Node: Font Locking114441
-Node: Fontification of macros116516
-Node: Fontification of quotes125954
-Node: Fontification of math127449
-Node: Verbatim content129670
-Node: Faces130444
-Node: Known problems130933
-Node: Folding131862
-Node: Outline142686
-Node: Narrowing143958
-Node: Prettifying145028
-Node: Processing146264
-Node: Commands147427
-Node: Starting a Command147983
-Node: Selecting a Command152886
-Node: Processor Options161274
-Node: Viewing171554
-Node: Starting Viewers171928
-Node: I/O Correlation178505
-Node: Debugging183763
-Node: Ignoring warnings186417
-Node: Error overview188477
-Node: Checking190470
-Node: Control191632
-Node: Cleaning192359
-Node: Documentation193572
-Node: Customization194287
-Node: Modes and Hooks194780
-Node: Multifile196600
-Node: Parsing Files201412
-Node: Internationalization206324
-Node: European207496
-Node: Japanese214376
-Node: Automatic216360
-Node: Automatic Global218851
-Node: Automatic Private219983
-Node: Automatic Local221296
-Node: Style Files222328
-Node: Simple Style223121
-Node: Adding Macros226394
-Node: Adding Environments235515
-Node: Adding Other240176
-Node: Hacking the Parser240763
-Node: Appendices244632
-Node: Copying this Manual245016
-Node: GNU Free Documentation License245900
-Node: Changes271019
-Node: Development305071
-Node: Mid-term Goals305717
-Node: Wishlist306934
-Node: Bugs312375
-Node: FAQ313905
-Node: Texinfo mode320078
-Node: Exploiting321214
-Node: Superseding322034
-Node: Mapping326238
-Node: Unbinding328067
-Node: Indices328888
-Node: Key Index329113
-Node: Function Index335291
-Node: Variable Index346028
-Node: Concept Index367800
+Node: Prerequisites14154
+Node: Configure17022
+Node: Build/install and uninstall22447
+Node: Loading the package23200
+Node: Advice for package providers25021
+Node: Advice for non-privileged users28966
+Node: Installation under MS Windows32924
+Node: Customizing48158
+Node: Quick Start49741
+Ref: Quick Start-Footnote-151871
+Node: Editing Facilities52018
+Node: Processing Facilities56821
+Node: Editing61579
+Node: Quotes62909
+Node: Font Specifiers71177
+Node: Sectioning73003
+Node: Environments77323
+Node: Equations82477
+Node: Floats83068
+Node: Itemize-like85072
+Node: Tabular-like85793
+Node: Customizing Environments87566
+Node: Mathematics87806
+Node: Completion90732
+Node: Marking97758
+Node: Marking (LaTeX)98382
+Node: Marking (Texinfo)99324
+Node: Commenting100934
+Node: Indenting102259
+Node: Filling108295
+Node: Display114167
+Node: Font Locking116662
+Node: Fontification of macros118737
+Node: Fontification of quotes128175
+Node: Fontification of math129670
+Node: Verbatim content133121
+Node: Faces133895
+Node: Known problems134384
+Node: Folding135313
+Node: Outline146137
+Node: Narrowing147409
+Node: Prettifying148479
+Node: Processing149715
+Node: Commands150878
+Node: Starting a Command151434
+Node: Selecting a Command156337
+Node: Processor Options164725
+Node: Viewing175005
+Node: Starting Viewers175379
+Node: I/O Correlation181956
+Node: Debugging187214
+Node: Ignoring warnings189868
+Node: Error overview191928
+Node: Checking193921
+Node: Control195083
+Node: Cleaning195810
+Node: Documentation197023
+Node: Customization197738
+Node: Modes and Hooks198231
+Node: Multifile200051
+Node: Parsing Files204863
+Node: Internationalization209775
+Node: European210947
+Node: Japanese217827
+Node: Automatic219811
+Node: Automatic Global222302
+Node: Automatic Private223434
+Node: Automatic Local224747
+Node: Style Files225779
+Node: Simple Style226572
+Node: Adding Macros229845
+Node: Adding Environments238963
+Node: Adding Other243624
+Node: Hacking the Parser244211
+Node: Appendices248080
+Node: Copying this Manual248464
+Node: GNU Free Documentation License249348
+Node: Changes274467
+Node: Development310460
+Node: Mid-term Goals311106
+Node: Wishlist312323
+Node: Bugs317764
+Node: FAQ319294
+Node: Texinfo mode325467
+Node: Exploiting326603
+Node: Superseding327423
+Node: Mapping331627
+Node: Unbinding333456
+Node: Indices334277
+Node: Key Index334502
+Node: Function Index340680
+Node: Variable Index351490
+Node: Concept Index373472
 
 End Tag Table
