@@ -159,8 +159,9 @@
 			      'function))
 
    ;; Tell RefTeX
-   (if (fboundp 'reftex-set-cite-format)
-       (reftex-set-cite-format 'natbib)))
+   (when (and LaTeX-reftex-cite-format-auto-activate
+	      (fboundp 'reftex-set-cite-format))
+     (reftex-set-cite-format 'natbib)))
  LaTeX-dialect)
 
 (defun LaTeX-arg-natbib-notes (optional)

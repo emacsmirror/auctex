@@ -66,6 +66,19 @@
 	       2 LaTeX-label-list "}"))
 	    TeX-complete-list))
 
+     ;; Fontification
+     (when (and (fboundp 'font-latex-add-keywords)
+		(eq TeX-install-font-lock 'font-latex-setup))
+       (font-latex-add-keywords '(;; vref is already in font-latex.el,
+				  ;; so don't add it here again
+				  ("Vref"          "*{")
+				  ("vpageref"      "*[[{")
+				  ("vrefrange"     "*[{{")
+				  ("Ref"           "{")
+				  ("fullref"       "{")
+				  ("vpagerefrange" "*[{{"))
+				'reference))
+
      ;; Activate RefTeX reference style.
      (and LaTeX-reftex-ref-style-auto-activate
 	  (fboundp 'reftex-ref-style-activate)

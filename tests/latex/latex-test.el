@@ -118,11 +118,13 @@ line and from another directory."
              (buffer-string)))))
 
 ;; Test for inserting &'s with `M-RET' in various tabular environment.
-;; FIXME: One thing missing is running style hooks while running the test.
+;; Following styles are loaded: tabularx, tabulary, longtable,
+;; dcolumn, siunitx
 (ert-deftest LaTeX-count-ampersands-inserted-in-tabular ()
   (should (string=
 	   (with-temp-buffer
 	     (insert-file-contents tabular-count-ampersands/in)
+	     (setq TeX-parse-self t)
 	     (LaTeX-mode)
 	     (goto-char (point-min))
 	     ;; Do not ask for opt. argument in (TeX-insert-macro "\\"):

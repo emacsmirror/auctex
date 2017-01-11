@@ -24,8 +24,8 @@
 ;; 02110-1301, USA.
 
 ;; Acknowledgements
-;; Mosè Giordano  <mose@gnu.org>
-;; Arash Esbati <arash.esbati+ml@gmail.com>
+;; Mosè Giordano <mose@gnu.org>
+;; Arash Esbati <arash@gnu.org>
 
 ;;; Commentary:
 
@@ -39,18 +39,39 @@
 (TeX-add-style-hook
  "subfiles"
  (lambda ()
-   ;; The following code will fontify `\subfile{}' like  include.
-   (when (and (featurep 'font-latex)
-              (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("subfile" "{"))
-                              'reference))
-   ;; The following code will run `TeX-run-style-hooks' on the subfile master file.
-   ;; Thanks to Mosè Giordano <mose@gnu.org> for presenting a better solution using `assoc'.
+
+   ;; The following code will run `TeX-run-style-hooks' on the subfile
+   ;; master file.  Thanks to Mosè Giordano <mose@gnu.org> for
+   ;; presenting a better solution using `assoc'.
    (TeX-run-style-hooks
     (file-name-base (cadr (assoc "subfiles" LaTeX-provided-class-options))))
-   (TeX-add-symbols
-    '("subfile" TeX-arg-file)))
- LaTeX-dialect)
 
+   (TeX-add-symbols
+    '("subfile" TeX-arg-file))
+
+   ;; Ensure that \subfile stays in one line
+   (LaTeX-paragraph-commands-add-locally "subfile")
+
+   ;; Tell AUCTeX that \subfile loads a file.  regexp is the same as
+   ;; for \input or \include.  This will run `TeX-run-style-hooks' on
+   ;; subfile(s) when master file is loaded.
+   (TeX-auto-add-regexp
+    `(,(concat
+	"\\\\subfile"
+	"{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}")
+      1 TeX-auto-file))
+
+   ;; Tell RefTeX the same thing.
+   (when (and (boundp 'reftex-include-file-commands)
+	      (not (member "subfile" reftex-include-file-commands)))
+     (add-to-list 'reftex-include-file-commands "subfile" t)
+     (reftex-compile-variables))
+
+   ;; The following code will fontify `\subfile{}' like \input.
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("subfile" "{"))
+			      'reference)))
+ LaTeX-dialect)
 
 ;;; subfiles.el ends here

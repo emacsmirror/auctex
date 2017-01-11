@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2016 Free Software Foundation, Inc.
 
-;; Author: Arash Esbati <arash.esbati'at'gmail.com>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2016-05-26
 ;; Keywords: tex
@@ -223,6 +223,9 @@ If OPTIONAL is non-nil, insert the result in square brackets."
       "Column")
 
     '("flushpage" 0))
+
+   ; \switchcolumn should get its own line:
+   (LaTeX-paragraph-commands-add-locally "switchcolumn")
 
    ;; Fontification
    (when (and (featurep 'font-latex)

@@ -1216,23 +1216,72 @@ If non-nil, insert braces after typing @key{^} and @key{_} in math mode.
 @cindex Arguments to @TeX{} macros
 
 Emacs lisp programmers probably know the @code{lisp-complete-symbol}
-command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
-ispell mode know and love the @code{ispell-complete-word} command from
-that package.  Similarly, @AUCTeX{} has a @code{TeX-complete-symbol}
-command, by default bound to @kbd{M-@key{TAB}} which is equivalent to
-@kbd{M-C-i}.  Using @code{TeX-complete-symbol} makes it easier to type
-and remember the names of long @LaTeX{} macros.
+command which was bound to @kbd{M-@key{TAB}} until completion-at-point
+became the new standard completion facility (see below).  Users of the
+wonderful ispell mode know and love the @code{ispell-complete-word}
+command from that package.  Similarly, @AUCTeX{} has a
+@code{TeX-complete-symbol} command, by default bound to
+@kbd{M-@key{TAB}} which is equivalent to @kbd{M-C-i}.  Using
+@code{TeX-complete-symbol} makes it easier to type and remember the
+names of long @LaTeX{} macros.
 
 In order to use @code{TeX-complete-symbol}, you should write a backslash
 and the start of the macro.  Typing @kbd{M-@key{TAB}} will now complete
 as much of the macro, as it unambiguously can.  For example, if you type
 `@samp{\renewc}' and then @kbd{M-@key{TAB}}, it will expand to
-`@samp{\renewcommand}'.
+`@samp{\renewcommand}'.  But there's more: if point is just after
+@samp{\begin@{}, then @code{TeX-complete-symbol} will complete @LaTeX{}
+environments, etc.  This is controlled by @code{TeX-complete-list}.
 
 @deffn Command TeX-complete-symbol
 @kindex M-@key{TAB}
 (@kbd{M-@key{TAB}})  Complete @TeX{} symbol before point.
 @end deffn
+
+@defvar TeX-complete-list
+List of ways to complete the preceding text.
+
+Each entry is a list with the following elements:
+
+@enumerate
+@item
+Regexp matching the preceding text or a predicate of arity 0 which
+returns non-nil and sets `match-data' appropriately if it is applicable.
+@item
+A number indicating the subgroup in the regexp containing the text.
+@item
+A function returning an alist of possible completions.
+@item
+Text to append after a succesful completion.
+@end enumerate
+
+Or alternatively:
+
+@enumerate
+@item
+Regexp matching the preceding text.
+@item
+Function to do the actual completion.
+@end enumerate
+@end defvar
+
+More recent Emacs versions have a new completion mechanism.  Modes may
+define and register custom completion-at-point functions and when the
+user invokes @code{completion-at-point} (usually bound to
+@kbd{M-@key{TAB}}), all such registered functions are consulted for
+checking for possible completions.  Modern completion UIs like
+@i{company-mode} support this completion-at-point facility.
+
+@defun TeX--completion-at-point
+@AUCTeX{}'s completion-at-point function which is automatically added to
+@code{completion-at-point-functions} in @TeX{} and @LaTeX{} buffers.
+
+It offers the same completion candidates as would
+@code{TeX-complete-symbol} (and is also controlled by
+@code{TeX-complete-list}) except that it doesn't fall back on
+@code{ispell-complete-word} which would be awkward with completion UIs
+like @i{company-mode}.
+@end defun
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
 bound to @kbd{C-c C-m} which is equivalent to @kbd{C-c @key{RET}}.  It
@@ -1267,7 +1316,6 @@ called with prefix argument (@kbd{C-u}), it's the other way round.
 Note that for some macros, there are special mechanisms, e.g.
 @code{LaTeX-includegraphics-options-alist} and
 @code{TeX-arg-cite-note-p}.
-
 @end defopt
 
 
@@ -2197,18 +2245,46 @@ If non-nil, fontify subscript and superscript strings.  Concretely, this
 means that the scripts are raised or lowered.
 
 Another possiblity is setting this variable to the symbol
-@code{multi-level}.  In this case, in a formula @code{x^y^z}, y is
-raised above x, and z is raised above y.  With many script levels, the
-text might become too small to be readable.
+@code{multi-level}.  In this case, in a formula @i{x^@{y^z@}}, @i{y} is
+raised above and smaller than @i{x}, and @i{z} is raised above and
+smaller than @i{y}.  With many script levels, the text might become too
+small to be readable.  (See @code{font-latex-fontify-script-max-level}
+below.)
 
 Lastly, you can set this variable to @code{invisible} whose behavior is
 like @code{multi-level}, and in addition the super-/subscript characters
-@code{^} and @code{_} are not displayed.
+@i{^} and @i{_} are not displayed.
 
 Note that this feature is not available on XEmacs, for which
 it is disabled per default.  In GNU Emacs raising and lowering is not
 enabled for versions 21.3 and before due to it working not properly.
 @end defopt
+
+
+@defopt font-latex-fontify-script-max-level
+Maximum scriptification level for which script faces are applied.
+
+The faces @code{font-latex-superscript-face} and
+@code{font-latex-subscript-face} define custom @code{:height} values <
+1.0.  Therefore, scripts are displayed with a slightly smaller font than
+normal math text.  If @code{font-latex-fontify-script} is
+@code{multi-level} or @code{invisible}, the font size becomes too small
+to be readable after a few levels.  This option allows to specify the
+maximum level after which the size of the script text won’t be shrunken
+anymore.
+
+For example, in the expression @i{x^@{y^@{z^a_b@}@}}, @i{x} has
+scriptification level 0, @i{y} has level 1, @i{z} has level 2, and both
+@i{a} and @i{b} have scriptification level 3.
+
+If @code{font-latex-fontify-script-max-level} was 2, then @i{z}, @i{a},
+and @i{b} would have the same font size.  If it was 3 or more, then
+@i{a} and @i{b} were smaller than @i{z} just in the same way as @i{z} is
+smaller than @i{y} and @i{y} is smaller than @i{x}.
+@end defopt
+
+The script characters @samp{^} and @samp{_} themselves are also
+fontified with an own face named @code{font-latex-script-char-face}.
 
 @defopt font-latex-script-display
 Display specification for subscript and superscript content.  The car is
@@ -4966,7 +5042,7 @@ Prompt for a @LaTeX{} counter completing with known counters.
 Prompt for a @LaTeX{} savebox completing with known saveboxes.
 
 @item TeX-arg-file
-Prompt for a filename in the current directory, and use it without the
+Prompt for a filename in the current directory, and use it with the
 extension.
 
 @item TeX-arg-file-name

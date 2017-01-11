@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
-;; Author: Arash Esbati <arash.esbati'at'gmail.com>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2015-02-21
 ;; Keywords: tex
@@ -270,6 +270,49 @@ caption, insert only a caption."
   ;; (cf. `paragraph-start').
   (LaTeX-fill-paragraph))
 
+(defun LaTeX-arg-caption-captionof (optional &optional star)
+  "Query for the arguments of \"\\captionof\" macro and insert them.
+If OPTIONAL is non-nil, insert the arguments in brackets.  If
+STAR is non-nil, do not query for a short-caption and a label."
+  (let* ((envtype (completing-read (TeX-argument-prompt optional nil "Float type")
+				   LaTeX-caption-supported-float-types))
+	 (figtypes '("figure" "subfigure" "floatingfigure"
+		     "figwindow" "SCfigure" "measuredfigure" "wrapfigure"))
+	 (tabtypes '("table"  "subtable" "floatingtable"  "tabwindow" "SCtable"
+		     "supertabular" "xtabular" "threeparttable"  "wraptable"))
+	 (caption (TeX-read-string
+		   (TeX-argument-prompt optional nil "Caption")))
+	 (short-caption
+	  (when (and (not star)
+		     (>= (length caption) LaTeX-short-caption-prompt-length))
+	    (TeX-read-string
+	     (TeX-argument-prompt t nil "Short caption")))))
+    (indent-according-to-mode)
+    (TeX-argument-insert envtype optional)
+    (when (and short-caption (not (string= short-caption "")))
+      (insert LaTeX-optop short-caption LaTeX-optcl))
+    (TeX-argument-insert caption optional)
+    (LaTeX-fill-paragraph)
+    (unless star
+      ;; Check if `envtype' is a figure or a table, also consult
+      ;; `LaTeX-label-alist' for additions from user or newfloat.el,
+      ;; then run `LaTeX-label' w/ 'environment arg, otherwise w/o.
+      (save-excursion
+	(if (or (member envtype figtypes)
+		(member envtype tabtypes)
+		(assoc envtype LaTeX-label-alist))
+	    (LaTeX-label (cond ((member envtype figtypes)
+				"figure")
+			       ((member envtype tabtypes)
+				"table")
+			       (t envtype))
+			 'environment)
+	  (LaTeX-label envtype)))
+      (when (looking-at-p "\\\\label{")
+	(LaTeX-newline)
+	(indent-according-to-mode)
+	(end-of-line)))))
+
 (TeX-add-style-hook
  "caption"
  (lambda ()
@@ -305,15 +348,9 @@ caption, insert only a caption."
 		    LaTeX-caption-supported-float-types]
       t)
 
-    '("captionof"
-      (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-		    LaTeX-caption-supported-float-types)
-      ["Short caption"] t)
+    '("captionof" LaTeX-arg-caption-captionof)
 
-    '("captionof*"
-      (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-		    LaTeX-caption-supported-float-types)
-      t)
+    '("captionof*" (LaTeX-arg-caption-captionof t))
 
     '("captionsetup"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))

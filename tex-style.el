@@ -41,6 +41,11 @@
   :type 'boolean
   :group 'LaTeX-style)
 
+(defcustom LaTeX-reftex-cite-format-auto-activate t
+  "Whether to activate automatically RefTeX citation format."
+  :type 'boolean
+  :group 'LaTeX-style)
+
 ;; style/amsmath.el
 
 (defcustom LaTeX-amsmath-label nil
@@ -271,6 +276,22 @@ When disabled, you have to use mpost on the mp files automatically
 produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
+
+;; style/exam.el
+
+(defcustom LaTeX-exam-reftex-quick-id-key ?x
+  "Unique letter identifying exam class macros in RefTeX.
+
+A character argument for quick identification when RefTeX inserts
+new labels with `reftex-label'.  It must be unique.  It is
+initialized to ?x."
+  :group 'LaTeX-style
+  :type 'character)
+
+(defcustom LaTeX-exam-label "exm:"
+  "Default prefix to labels in environments of exam class."
+  :group 'LaTeX-style
+  :type 'string)
 
 ;; style/fontspec.el
 

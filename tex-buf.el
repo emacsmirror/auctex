@@ -3429,8 +3429,7 @@ errors.  If nil, defaults to `TeX-error-overview-active-buffer'."
 	       msg  (nth 3 entry))
 	 ;; Add the entry only if it isn't to be skipped.
 	 (unless (TeX-error-list-skip-warning-p type (nth 10 entry))
-	   (add-to-list
-	    'entries
+	   (push
 	    (list
 	     ;; ID.
 	     id
@@ -3458,15 +3457,22 @@ errors.  If nil, defaults to `TeX-error-overview-active-buffer'."
 	       (t
 		""))
 	      ;; Message.
-	      (list (if (stringp msg) msg "")
+	      (list (if (stringp msg)
+			;; Sometimes, the message can be longer than one line,
+			;; but print here only the first one.
+			(progn
+			  (string-match "^.*" msg)
+			  (match-string 0 msg))
+		      "")
 		    'face 'link
 		    'follow-link t
 		    'id id
-		    'action 'TeX-error-overview-goto-source))) t))
+		    'action 'TeX-error-overview-goto-source)))
+	    entries))
 	 ;; Increase the `id' counter in any case.
 	 (setq id (1+ id)))
        TeX-error-list)
-      entries)))
+      (reverse entries))))
 
 (defun TeX-error-overview-next-error (&optional arg)
   "Move to the next line and find the associated error.

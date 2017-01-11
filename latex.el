@@ -5966,6 +5966,17 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
+(defun LaTeX--after-math-macro-prefix-p ()
+  "Return non-nil if point is after a macro prefix in math mode.
+Also sets `match-data' so that group 1 is the already typed
+prefix.
+
+For example, in $a + \a| - 17$ with | denoting point, the
+function would return non-nil and `(match-string 1)' would return
+\"a\" afterwards."
+  (and (texmathp)
+       (TeX-looking-at-backward "\\\\\\([a-zA-Z]*\\)")))
+
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
   (VirTeX-common-initialization)
@@ -6038,7 +6049,12 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
 		   1 LaTeX-environment-list-filtered "}")
                   ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
-		   2 LaTeX-pagestyle-list "}"))
+		   2 LaTeX-pagestyle-list "}")
+		  (LaTeX--after-math-macro-prefix-p
+		   1 (lambda ()
+		       (append (mapcar #'cadr LaTeX-math-list)
+			       (mapcar #'cadr LaTeX-math-default)))
+		   (if TeX-insert-braces "{}")))
 		TeX-complete-list))
 
   (LaTeX-add-environments
