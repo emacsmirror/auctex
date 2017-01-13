@@ -60,7 +60,9 @@ AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
 PREVIEW_AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
 		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
 
-EXCLUDEDFILES=autogen.sh .cvsignore .gitignore doc/.gitignore README.GIT tests build-aux
+# Files and directories excluded from distributed tar ball.
+EXCLUDEDFILES=autogen.sh .cvsignore .gitignore doc/.gitignore doc/tex-ref.log \
+	README.GIT tests build-aux
 
 .SUFFIXES: .el .elc .texi
 
