@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2016
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2017
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -1037,7 +1037,7 @@ header is at the start of a line."
    (regexp-quote TeX-esc)
    "\\("
    (mapconcat #'ConTeXt-environment-full-start-name ConTeXt-section-block-list "\\|") "\\|"
-   (mapconcat #'car ConTeXt-numbered-section-list "\\|")
+   (mapconcat #'car ConTeXt-numbered-section-list "\\|") "\\|"
    (mapconcat #'car ConTeXt-unnumbered-section-list "\\|")
    "\\)\\b"
    (if TeX-outline-extra
