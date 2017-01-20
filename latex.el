@@ -5952,7 +5952,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   "Default start of trailer marker for LaTeX documents.")
 
 (defcustom LaTeX-clean-intermediate-suffixes
-  TeX-clean-default-intermediate-suffixes
+  (append TeX-clean-default-intermediate-suffixes
+	  ;; These are extensions of files created by makeglossaries.
+	  '("\\.acn" "\\.acr" "\\.alg" "\\.glg" "\\.ist"))
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
 i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."

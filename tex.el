@@ -155,6 +155,8 @@ If nil, none is specified."
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
      :help "Convert PostScript file to PDF")
+    ("Glossaries" "makeglossaries %s" TeX-run-command nil
+     t :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %s" TeX-run-index nil t
      :help "Run makeindex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil t
