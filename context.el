@@ -1220,7 +1220,10 @@ else.  There might be text before point."
        (condition-case err
 	   (progn
 	     (backward-sexp 1)
-	     (while (> (current-column) (current-indentation))
+	     (while (or (> (current-column) (current-indentation))
+			;; Continue going back if we are
+			;; at a hanging optional group.
+			(looking-at (regexp-quote ConTeXt-optop)))
 	       (backward-sexp 1)))
 	 (scan-error
 	  (setq up-list-pos (nth 2 err))))
