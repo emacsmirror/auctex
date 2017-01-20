@@ -66,6 +66,7 @@ the lines are outcommented, like in dtx files."
 (defun LaTeX-newline ()
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
+  (interactive)
   (if LaTeX-insert-into-comments
       (cond ((and (save-excursion (skip-chars-backward " \t") (bolp))
 		  (save-excursion
