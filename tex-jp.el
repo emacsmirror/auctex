@@ -124,8 +124,11 @@ For detail, see `TeX-command-list', to which this list is appended."
 	      TeX-command-list))
 
 ;; 暫定処置。tex.el に取り込んでもらえるとよい。
-(setcar (cdr (assoc "BibTeX" TeX-command-list)) "%(bibtex) %s")
-(setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s")
+;; Replace the entries only if they're already there.
+(when (assoc "BibTeX" TeX-command-list)
+  (setcar (cdr (assoc "BibTeX" TeX-command-list)) "%(bibtex) %s"))
+(when (assoc "Index" TeX-command-list)
+  (setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s"))
 
 ;; 暫定処置。tex.el に取り込んでもらえるとよい。
 (setq TeX-expand-list
