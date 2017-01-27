@@ -8,6 +8,25 @@
 
 @end ifset
 
+@heading News since 11.90
+
+@itemize @bullet
+@item
+The function @code{LaTeX-label} now takes a second optional argument
+@code{NO-INSERT}.  When non-@code{nil}, @code{LaTeX-label} reads a label
+and returns it as a string.  This argument is also passed to any
+function bound to @code{LaTeX-label-function} (see next item).
+
+@item
+@strong{Incompatible change:} The signature for the function passed with
+the custom variable @code{LaTeX-label-function} has changed.  The
+function bound to this variable is now expected to take an optional
+second argument @code{NO-INSERT}.  When this argument is non-@code{nil},
+the function should read and only return a label as a string; insertion
+is done by another function.
+
+@end itemize
+
 @heading News in 11.90
 
 @itemize @bullet

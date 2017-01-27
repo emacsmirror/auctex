@@ -888,9 +888,12 @@ optional argument is omitted.)"
   :group 'LaTeX)
 
 (defcustom LaTeX-label-function nil
-  "*A function inserting a label at point.
-Sole argument of the function is the environment.  The function has to return
-the label inserted, or nil if no label was inserted."
+  "*A function inserting a label at point or returning a label string.
+Sole mandatory argument of the function is the environment.  The
+function has to return the label inserted, or nil if no label was
+inserted.  If the optional argument NO-INSERT is non-nil, then
+the function has to return the label as string without any
+insertion or nil if no label was read in."
   :group 'LaTeX-label
   :type 'function)
 
@@ -987,7 +990,7 @@ corresponding entry."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defun LaTeX-label (name &optional type)
+(defun LaTeX-label (name &optional type no-insert)
   "Insert a label for NAME at point.
 The optional TYPE argument can be either environment or section:
 in the former case this function looks up `LaTeX-label-alist' to
@@ -999,7 +1002,9 @@ prefix.
 If `LaTeX-label-function' is a valid function, LaTeX label will
 transfer the job to this function.
 
-The inserted label is returned, nil if it is empty."
+If the optional NO-INSERT is non-nil, only the label is returned
+and no insertion happens.  Otherwise the inserted label is
+returned, nil if it is empty."
   (let ((TeX-read-label-prefix
 	 (cond
 	  ((eq type 'environment)
@@ -1019,22 +1024,21 @@ The inserted label is returned, nil if it is empty."
     (when (symbolp TeX-read-label-prefix)
       (setq TeX-read-label-prefix (symbol-value TeX-read-label-prefix)))
     (when TeX-read-label-prefix
-      (if (and (boundp 'LaTeX-label-function)
-	       LaTeX-label-function
-	       (fboundp LaTeX-label-function))
-	  (setq label (funcall LaTeX-label-function name))
+      (if (and (fboundp LaTeX-label-function))
+	  (funcall LaTeX-label-function name no-insert)
 	;; Use completing-read as we do with `C-c C-m \label RET'
 	(setq label (TeX-read-label t "What label" t))
 	;; No label or empty string entered?
 	(if (or (string= TeX-read-label-prefix label)
 		(string= "" label))
 	    (setq label nil)
-	  (insert TeX-esc "label" TeX-grop label TeX-grcl))
-	(if label
-	    (progn
-	      (LaTeX-add-labels label)
-	      label)
-	  nil)))))
+	  ;; If NO-INSERT, return only the label for further
+	  ;; utilization, otherwise insert \label{label} in the buffer
+	  (if no-insert
+	      label
+	    (insert TeX-esc "label" TeX-grop label TeX-grcl))
+	  (LaTeX-add-labels label)
+	  label)))))
 
 (defcustom LaTeX-short-caption-prompt-length 40
   "The length that the caption of a figure should be before
