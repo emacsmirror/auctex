@@ -1823,16 +1823,41 @@ argument, otherwise as a mandatory one."
 
 (defun TeX-read-label (optional &optional prompt definition)
   "Prompt for a label completing with known labels and return it.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If DEFINITION is non-nil, add the chosen label to the
-list of defined labels.  `TeX-read-label-prefix' is used as
-initial input for the label."
-  (let ((label (completing-read
-		(TeX-argument-prompt optional prompt "Key")
-		(LaTeX-label-list) nil nil TeX-read-label-prefix)))
-    (if (and definition (not (string-equal "" label)))
-	(LaTeX-add-labels label))
+This function always returns a string depending on user input:
+the returned value can be an empty string \"\", the value of
+`TeX-read-label-prefix' if present (e.g. \"fig:\") or a complete
+label input (e.g. \"fig:foo\").  If OPTIONAL is non-nil, indicate
+optional as part of prompt in minibuffer.  Use PROMPT as the
+prompt string.  If DEFINITION is non-nil, add the chosen label to
+the list of defined labels.  `TeX-read-label-prefix' is used as
+initial input for the label.  Also check if label is already
+defined and ask user for confirmation before proceeding."
+  (let (label valid)
+    (while (not valid)
+      (setq label
+	    (completing-read
+	     (TeX-argument-prompt optional prompt "Key")
+	     (LaTeX-label-list) nil nil TeX-read-label-prefix))
+      ;; If we're defining a label, check if it's already defined and
+      ;; ask user for confirmation, otherwise ask again
+      (cond ((and definition
+		  (assoc label (LaTeX-label-list)))
+	     (ding)
+	     (when (y-or-n-p
+		    (format-message "Label `%s' exists. Use anyway? " label))
+	       (setq valid t)))
+	    (t
+	     (setq valid t))))
+    ;; Only add a newly defined label to list of known one if it is
+    ;; not empty and not equal to `TeX-read-label-prefix', if given
+    (when (and definition
+	       (not (string-equal "" label))
+	       (if TeX-read-label-prefix
+		   (not (string-equal TeX-read-label-prefix label))
+		 t))
+      (LaTeX-add-labels label))
+    ;; Return label, can be empty string "", TeX-read-label-prefix
+    ;; only "fig:" or the real thing like "fig:foo"
     label))
 
 (defun TeX-arg-label (optional &optional prompt definition)
