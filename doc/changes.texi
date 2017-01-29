@@ -12,6 +12,27 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} can put and parse labels in optional argument of environments.
+Inserting labels is done by new function
+@code{LaTeX-env-label-as-keyval}.  A new custom variable
+@code{LaTeX-listing-label} is available as prefix to labels in code
+typesetting environments, e.g. @samp{lstlisting} environment provided by
+@samp{listings} package.  @code{LaTeX-listing-label} defaults to
+@code{lst:}.  Parsing of labels for later referencing relies on two
+requirements:
+@enumerate
+@item
+Label should come as last key-value argument, and
+@item
+label must be enclosed in braces, e.g.
+@example
+\begin@{lstlisting@}[caption=Some Caption,label=@{lst:foo@}]
+...
+\end@{lstlisting@}
+@end example
+@end enumerate
+
+@item
 The function @code{LaTeX-label} now takes a second optional argument
 @code{NO-INSERT}.  When non-@code{nil}, @code{LaTeX-label} reads a label
 and returns it as a string.  This argument is also passed to any

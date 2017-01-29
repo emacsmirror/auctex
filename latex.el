@@ -909,6 +909,14 @@ insertion or nil if no label was read in."
   :group 'LaTeX-environment
   :type 'string)
 
+(defcustom LaTeX-listing-label "lst:"
+  "Default prefix to listing labels.
+This prefix should apply to all environments which typeset
+code listings and take a caption and label."
+  :group 'LaTeX-label
+  :group 'LaTeX-environment
+  :type 'string)
+
 (defcustom LaTeX-default-format ""
   "Default format for array and tabular environments."
   :group 'LaTeX-environment
@@ -1240,6 +1248,78 @@ Just like array and tabular."
 			 exit-mark
 		       (make-marker))))
       (TeX-parse-arguments args))))
+
+(defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
+  "Query for a label and insert it in the optional argument of an environment.
+OPTIONAL is ignored.  Optional KEYWORD is a string to search for
+in the optional argument, label is only included if KEYWORD is
+found.  KEYVALS is a string with key=val's read in.  If nil, this
+function searchs for key=val's itself.  ENVIRONMENT is a string
+with the name of environment, if non-nil, don't bother to find
+out."
+  (let ((env-start (make-marker))
+	(body-start (make-marker))
+	(opt-start (make-marker))
+	(opt-end   (make-marker))
+	(currenv (or environment (LaTeX-current-environment))))
+    ;; Save the starting point as we will come back here
+    (set-marker body-start (point))
+    ;; Go to the start of the current environment and save the position
+    (LaTeX-find-matching-begin)
+    (set-marker env-start (point))
+    ;; Check if an opt. argument is there; assume that it starts in
+    ;; the same line and save the points in markers
+    (when (re-search-forward
+	   (concat "\\\\begin{" currenv "}[ \t]*\\[") body-start t)
+      (set-marker opt-start (1- (point)))
+      (goto-char opt-start)
+      (forward-sexp)
+      (set-marker opt-end (1- (point))))
+    ;; If keyword argument is given and keyvals argument is not given,
+    ;; parse the optional argument and put it into keyvals; the regexp
+    ;; takes care of multi-line arguments
+    (when (and keyword
+	       (marker-position opt-start)
+	       (not keyvals))
+      (goto-char (1+ opt-start))
+      (re-search-forward "\\(.*\\([\n\r].*\\)*\\)" opt-end t)
+      (setq keyvals (match-string-no-properties 0)))
+    ;; If keyword is given, only insert a label when keyword is found
+    ;; inside the keyvals.  If keyword is nil, then insert a label
+    ;; anyways
+    (if (stringp keyword)
+	(when (and (stringp keyvals)
+		   (not (string= keyvals ""))
+		   (string-match (concat keyword "[ \t]*=") keyvals))
+	  (goto-char opt-end)
+	  (let ((opt-label (LaTeX-label currenv 'environment t)))
+	    (when opt-label
+	      (insert (if (equal (preceding-char) ?,)
+			  "label="
+			",label=")
+		      TeX-grop opt-label TeX-grcl))))
+      (let ((opt-label (LaTeX-label currenv 'environment t)))
+	(when opt-label
+	  ;; Check if an opt. argument is found and go to the end if
+	  (if (marker-position opt-end)
+	      (progn
+		(goto-char opt-end)
+		(insert (if (equal (preceding-char) ?,)
+			    "label="
+			  ",label=")
+			TeX-grop opt-label TeX-grcl))
+	    ;; Otherwise start at the beginning of environment in
+	    ;; order to not mess with any other mandatory arguments
+	    ;; which can be there
+	    (goto-char env-start)
+	    (re-search-forward (concat "\\\\begin{" currenv "}"))
+	    (insert LaTeX-optop "label=" TeX-grop opt-label TeX-grcl LaTeX-optcl)))))
+    ;; Go to where we started and clean up the markers
+    (goto-char body-start)
+    (set-marker env-start nil)
+    (set-marker body-start nil)
+    (set-marker opt-start nil)
+    (set-marker opt-end nil)))
 
 ;;; Item hooks
 
@@ -5421,7 +5501,7 @@ char."
 (defun LaTeX-narrow-to-environment (&optional count)
   "Make text outside current environment invisible.
 With optional COUNT keep visible that number of enclosing
-environmens."
+environments."
   (interactive "p")
   (setq count (if count (abs count) 1))
   (save-excursion
