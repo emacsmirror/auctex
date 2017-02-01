@@ -1429,11 +1429,14 @@ modified.  Such variables include
 	  ;; else.  So we trigger a refresh if any of those variables has a
 	  ;; non-nil local binding.
 	  (or (and LaTeX-verbatim-environments-local
-		   (local-variable-p LaTeX-verbatim-environments-local))
+		   (local-variable-p LaTeX-verbatim-environments-local
+				     (current-buffer)))
 	      (and LaTeX-verbatim-macros-with-braces-local
-		   (local-variable-p LaTeX-verbatim-macros-with-braces-local))
+		   (local-variable-p LaTeX-verbatim-macros-with-braces-local
+				     (current-buffer)))
 	      (and LaTeX-verbatim-macros-with-delims-local
-		   (local-variable-p LaTeX-verbatim-macros-with-delims-local))))
+		   (local-variable-p LaTeX-verbatim-macros-with-delims-local
+				     (current-buffer)))))
     ;; Ok, we need to refresh fontification.
     (font-latex-update-font-lock t)))
 
