@@ -158,7 +158,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
     '("dgroup" LaTeX-breqn-env)
     '("dgroup*" LaTeX-breqn-env)
     '("darray" LaTeX-breqn-env)
-    '("darray" LaTeX-breqn-env)
+    '("darray*" LaTeX-breqn-env)
     '("dsuspend"))
 
    (TeX-add-symbols
