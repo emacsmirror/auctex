@@ -1,6 +1,6 @@
 ;;; tex-ispell.el --- AUCTeX skip additions for Ispell
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2017 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -44,6 +44,7 @@
 ;; amsmath.sty
 ;; attachfile.sty
 ;; booktabs.sty
+;; breqn.sty
 ;; cleveref.sty
 ;; enumitem.sty
 ;; fancyref.sty
@@ -242,6 +243,9 @@ argument and spell check the mandatory one."))
     "\\\\end{\\(align\\(\\*\\|at\\*?\\)?\\|flalign\\*?\\)}")
    ("gather\\*?" . "\\\\end{gather\\*?}")
    ("multline\\*?" . "\\\\end{multline\\*?}")
+   ;; breqn.sty
+   ("\\(d\\(array\\*?\\|group\\*?\\|math\\*?\\|series\\*?\\)\\)" .
+    "\\\\end{\\(d\\(array\\*?\\|group\\*?\\|math\\*?\\|series\\*?\\)\\)}")
    ;; listings.sty
    ("lstlisting" . "\\\\end{lstlisting}")
    ;; minted.sty
