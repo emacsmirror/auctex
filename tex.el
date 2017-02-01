@@ -4211,7 +4211,7 @@ alter the numbering of any ordinary, non-shy groups.")
        1 TeX-auto-file)
       (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol)))
-  "List of regular expression matching common LaTeX macro definitions.")
+  "List of regular expression matching common plain TeX macro definitions.")
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
   "Full list of regular expression matching TeX macro definitions.")
