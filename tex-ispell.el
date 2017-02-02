@@ -220,6 +220,48 @@ argument and spell check the mandatory one."))
     "List of LaTeX environments with an opt argument to be skipped."))
 
 
+;; Add new environments which should be skipped entirely here:
+(eval-when-compile
+  (defvar TeX-ispell-skip-envs-list
+    '(;; amsmath.sty
+      "align"
+      "align*"
+      "alignat"
+      "alignat*"
+      "flalign"
+      "flalign*"
+      "gather"
+      "gather*"
+      "multline"
+      "multline*"
+      ;; breqn.sty
+      "darray"
+      "darray*"
+      "dgroup"
+      "dgroup*"
+      "dmath"
+      "dmath*"
+      "dseries"
+      "dseries*"
+      ;; fancyvrb.sty
+      "BVerbatim"
+      "BVerbatim*"
+      "LVerbatim"
+      "LVerbatim*"
+      "SaveVerbatim"
+      "Verbatim"
+      "Verbatim*"
+      "VerbatimOut"
+      ;; listings.sty
+      "lstlisting"
+      ;; minted.sty
+      "minted"
+      ;; tikz.sty
+      "tikzpicture")
+    "List of LaTeX environments which will be skipped entirely.
+Environments for math or verbatim text are candidates for this list."))
+
+
 ;; Add others delimited here:
 (TeX-ispell-skip-setcar
  '(;; LaTeX-base
@@ -238,28 +280,10 @@ argument and spell check the mandatory one."))
 
 ;; Add environments here:
 (TeX-ispell-skip-setcdr
- '(;; amsmath.sty
-   ("\\(align\\(\\*\\|at\\*?\\)?\\|flalign\\*?\\)" .
-    "\\\\end{\\(align\\(\\*\\|at\\*?\\)?\\|flalign\\*?\\)}")
-   ("gather\\*?" . "\\\\end{gather\\*?}")
-   ("multline\\*?" . "\\\\end{multline\\*?}")
-   ;; breqn.sty
-   ("\\(d\\(array\\*?\\|group\\*?\\|math\\*?\\|series\\*?\\)\\)" .
-    "\\\\end{\\(d\\(array\\*?\\|group\\*?\\|math\\*?\\|series\\*?\\)\\)}")
-   ;; listings.sty
-   ("lstlisting" . "\\\\end{lstlisting}")
-   ;; minted.sty
-   ("minted" . "\\\\end{minted}")
-   ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
+ '(;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library
-   ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)
-   ;; tikz.sty
-   ("tikzpicture" . "\\\\end{tikzpicture}")
-   ;; fancyvrb.sty: In practice, all verbatim environments have a *
-   ;; variant, which sets showspaces=true
-   ("\\(Save\\|[BL]\\)?Verbatim\\(\\*\\|Out\\)?" .
-    "\\\\end{\\(Save\\|[BL]\\)?Verbatim\\(\\*\\|Out\\)?}")))
+   ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)))
 
 
 ;; No customization below this line
@@ -303,6 +327,11 @@ argument and spell check the mandatory one."))
     (regexp-opt TeX-ispell-skip-envs-opt-arg-list t))
   "Regexp of LaTeX environments with an opt argument to be skipped.")
 
+(defvar TeX-ispell-skip-envs-regexp
+  (eval-when-compile
+    (regexp-opt TeX-ispell-skip-envs-list t))
+  "Regexp of LaTeX environments which will be skipped entirely.")
+
 ;; Make them available to Ispell:
 (TeX-ispell-skip-setcar
  `((,TeX-ispell-skip-cmds-opt-arg-regexp ispell-tex-arg-end 0)
@@ -311,7 +340,9 @@ argument and spell check the mandatory one."))
    (,TeX-ispell-skip-cmds-three-args-regexp ispell-tex-arg-end 3)))
 
 (TeX-ispell-skip-setcdr
- `((,TeX-ispell-skip-envs-opt-arg-regexp ispell-tex-arg-end 0)))
+ `((,TeX-ispell-skip-envs-opt-arg-regexp ispell-tex-arg-end 0)
+   ,(cons TeX-ispell-skip-envs-regexp
+	  (concat "\\\\end{" TeX-ispell-skip-envs-regexp "}"))))
 
 (provide 'tex-ispell)
 
