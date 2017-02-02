@@ -1167,21 +1167,33 @@ all the regular expressions must match for the element to apply."
     (mode-io-correlate
      TeX-source-correlate-mode)
     (paper-landscape
-     (TeX-match-style "\\`landscape\\'"))
+     (and (fboundp 'LaTeX-provided-class-options)
+	  (LaTeX-match-class-option "\\`landscape\\'")))
     (paper-portrait
-     (not (TeX-match-style "\\`landscape\\'")))
+     (not (and (fboundp 'LaTeX-provided-class-options)
+	       (LaTeX-match-class-option "\\`landscape\\'"))))
     (paper-a4
-     (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'"))
+     (let ((regex "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'"))
+       (or (TeX-match-style regex)
+	   (and (fboundp 'LaTeX-match-class-option)
+		(LaTeX-match-class-option regex)))))
     (paper-a5
-     (TeX-match-style "\\`a5paper\\|a5comb\\'"))
+     (let ((regex "\\`a5paper\\|a5comb\\'"))
+       (or (TeX-match-style regex)
+	   (and (fboundp 'LaTeX-match-class-option)
+		(LaTeX-match-class-option regex)))))
     (paper-b5
-     (TeX-match-style "\\`b5paper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`b5paper\\'")))
     (paper-letter
-     (TeX-match-style "\\`letterpaper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`letterpaper\\'")))
     (paper-legal
-     (TeX-match-style "\\`legalpaper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`legalpaper\\'")))
     (paper-executive
-     (TeX-match-style "\\`executivepaper\\'")))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`executivepaper\\'"))))
   "Alist of built-in predicates for viewer selection and invocation.
 See the doc string of `TeX-view-predicate-list' for a short
 description of each predicate.")
