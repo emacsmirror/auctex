@@ -183,24 +183,31 @@ For detail, see `TeX-command-list', to which this list is appended."
 (unless (get 'TeX-view-predicate-list 'saved-value)
   (setq TeX-view-predicate-list
        '((paper-a4
-          (TeX-match-style
-           "\\`\\(a4j\\|a4paper\\|a4dutch\\|a4wide\\|sem-a4\\)\\'"))
+	  (let ((regex "\\`\\(?:a4j\\|a4paper\\|a4dutch\\|a4wide\\|sem-a4\\)\\'"))
+	    (or (TeX-match-style regex)
+		(and (fboundp 'LaTeX-match-class-option)
+		     (LaTeX-match-class-option regex)))))
          (paper-a5
-          (TeX-match-style
-           "\\`\\(a5j\\|a5paper\\|a5comb\\)\\'"))
+	  (let ((regex "\\`\\(?:a5j\\|a5paper\\|a5comb\\)\\'"))
+	    (or (TeX-match-style regex)
+		(and (fboundp 'LaTeX-match-class-option)
+		     (LaTeX-match-class-option regex)))))
          ;; jarticle などだと b4paper, b5paper は JIS B 系列。
          ;; j-article などの方には a4j, b5j といったオプションはない。
          (paper-b5    ; ISO B5
-          (and (TeX-match-style "\\`b5paper\\'")
-               (not (memq TeX-engine '(ptex uptex)))))
+          (and (fboundp 'LaTeX-match-class-option)
+	       (LaTeX-match-class-option "\\`b5paper\\'")
+               (not (TeX-match-style "\\`u?[jt]s?\\(?:article\\|report\\|book\\)\\'"))))
          (paper-b5jis ; JIS B5
-          (or (TeX-match-style "\\`b5j\\'")
-              (and (TeX-match-style "\\`b5paper\\'")
-                   (memq TeX-engine '(ptex uptex)))))
+	  (and (fboundp 'LaTeX-match-class-option)
+	       (or (LaTeX-match-class-option "\\`b5j\\'")
+		   (and (LaTeX-match-class-option "\\`b5paper\\'")
+			(TeX-match-style "\\`u?[jt]s?\\(?:article\\|report\\|book\\)\\'")))))
          ;; article などには b4paper というオプションはない。
          ;; b4paper というオプションがあったら JIS B4 と見なす。
          (paper-b4jis
-          (TeX-match-style "\\`\\(b4j\\|b4paper\\)\\'")))))
+	  (and (fboundp 'LaTeX-match-class-option)
+	       (LaTeX-match-class-option "\\`\\(?:b4j\\|b4paper\\)\\'"))))))
 ;; jsarticle だと他にももっと判型のオプションがあるが、
 ;; 全部面倒見てるとキリがないので、これくらいでいいだろう。
 ;; jsarticle.el や jsbook.el で追加分の処理を仕込めばいいのかも知れない。
