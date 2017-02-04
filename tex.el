@@ -1167,18 +1167,18 @@ all the regular expressions must match for the element to apply."
     (mode-io-correlate
      TeX-source-correlate-mode)
     (paper-landscape
-     (and (fboundp 'LaTeX-provided-class-options)
+     (and (fboundp 'LaTeX-match-class-option)
 	  (LaTeX-match-class-option "\\`landscape\\'")))
     (paper-portrait
-     (not (and (fboundp 'LaTeX-provided-class-options)
+     (not (and (fboundp 'LaTeX-match-class-option)
 	       (LaTeX-match-class-option "\\`landscape\\'"))))
     (paper-a4
-     (let ((regex "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'"))
+     (let ((regex "\\`\\(?:a4paper\\|a4dutch\\|a4wide\\|sem-a4\\)\\'"))
        (or (TeX-match-style regex)
 	   (and (fboundp 'LaTeX-match-class-option)
 		(LaTeX-match-class-option regex)))))
     (paper-a5
-     (let ((regex "\\`a5paper\\|a5comb\\'"))
+     (let ((regex "\\`\\(?:a5paper\\|a5comb\\)\\'"))
        (or (TeX-match-style regex)
 	   (and (fboundp 'LaTeX-match-class-option)
 		(LaTeX-match-class-option regex)))))

@@ -1799,9 +1799,10 @@ The value is actually the tail of the list of options given to PACKAGE."
 			      (list (cons style options)))))
 
 	;; The third argument if "class" indicates LaTeX2e features.
-	(cond ((equal class "class")
+	(cond ((or (string-equal class "class")
+		   (string-equal class "Class"))
 	       (add-to-list 'TeX-auto-file "latex2e"))
-	      ((equal class "style")
+	      ((string-equal class "style")
 	       (add-to-list 'TeX-auto-file "latex2"))))))
 
   ;; Cleanup optional arguments
