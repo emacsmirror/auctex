@@ -388,7 +388,7 @@
 % 
 % As an example for using this argument, you might want to specify
 % \begin{quote}
-%   |\PreviewMacro*\footnote[{[]}][#1{}]|
+%   |\PreviewMacro*[{[]}][#1{}]{\footnote}|
 % \end{quote}
 % This will replace a footnote by an empty footnote, but taking any
 % optional parameter into account, since an optional paramter changes
@@ -420,7 +420,7 @@
 % is essential for the operation of \cmd{\PreviewOpen} that the macro
 % treated with it will open an additional group even when the preview
 % falls inside of another preview or inside of a |nopreview|
-% environment.  Similarly, the macro treated with \cmd{PreviewClose}
+% environment.  Similarly, the macro treated with \cmd{\PreviewClose}
 % will close an environment even when inactive.
 % 
 % \DescribeMacro{\ifPreview} In case you need to know whether
