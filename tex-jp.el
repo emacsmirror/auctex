@@ -1,10 +1,12 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- coding: iso-2022-jp-unix; -*-
 
-;; Copyright (C) 1999, 2001-2007, 2012, 2016  Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2017
+;;   Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
 ;;             Hidenobu Nabetani <nabe@debian.or.jp>
 ;; Maintainer: Masayuki Ataka <masayuki.ataka@gmail.com>
+;;             Ikumi Keita <ikumikeita@jcom.home.ne.jp>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -261,16 +263,6 @@ For detail, see `TeX-command-list', to which this list is appended."
 	   "jlatex" '("/jtex/" "/jbibtex/bst/"))
 	  '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
-;; 順調に行けば不要になる。
-(setq LaTeX-command-style
-      (append '(("\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'"
-                "%(PDF)uplatex %S%(PDFout)")
-               ("\\`[jt]s?\\(article\\|report\\|book\\)\\'"
-                "%(PDF)platex %(kanjiopt)%S%(PDFout)")
-               ("\\`j-\\(article\\|report\\|book\\)\\'"
-                "%(PDF)jlatex %S%(PDFout)"))
-	      LaTeX-command-style))
-
 (defcustom japanese-TeX-error-messages t
   "*If non-nil, explain TeX error messages in Japanese."
   :group 'AUCTeX-jp
@@ -325,7 +317,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
     ;; for upLaTeX
     ("ujarticle") ("ujreport") ("ujbook")
     ("utarticle") ("utreport") ("utbook"))
-  "*List of Japanese document styles."
+  "*List of Japanese document classes."
   :group 'AUCTeX-jp
   :type '(repeat (group (string :format "%v"))))
 
@@ -524,14 +516,12 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
   (when japanese-TeX-mode
 ;    (setq TeX-command-default japanese-LaTeX-command-default)
     (TeX-engine-set
-     ;; class file 名に頼るのは正しいのか？
-     ;; jLaTeX にも jarticle は一応あるし、pLaTeX でも自分で j-article を
-     ;; インストールして使っていけない法はない。
      (cond
-      ((TeX-match-style "\\`u[jt]\\(article\\|report\\|book\\)\\'\\|\\`uplatex\\'")
+      ((TeX-match-style "\\`u[jt]\\(article\\|report\\|book\\)\\'")
        'uptex)
       ((TeX-match-style "\\`[jt]s?\\(article\\|report\\|book\\)\\'")
-       'ptex)
+       (if (LaTeX-match-class-option "\\`uplatex\\'")
+	   'uptex 'ptex))
       ((TeX-match-style "\\`j-\\(article\\|report\\|book\\)\\'")
        'jtex)
       (t japanese-TeX-engine-default)))
