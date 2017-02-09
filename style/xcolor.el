@@ -233,13 +233,17 @@ remainder."
 (TeX-auto-add-type "xcolor-definecolorset" "LaTeX")
 
 (defvar LaTeX-xcolor-definecolor-regexp
-  `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)?"
+  `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)"
 	     "color"
-	     "\\(?:let\\)?"
 	     "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
     1 LaTeX-auto-xcolor-definecolor)
-  "Match the argument of various color defining macros from
-xcolor package.")
+  "Match the argument of various color defining macros from xcolor package.")
+
+(defvar LaTeX-xcolor-colorlet-regexp
+  `(,(concat "\\\\colorlet"
+	     "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
+    1 LaTeX-auto-xcolor-definecolor)
+  "Match the argument of \\colorlet macro from xcolor package.")
 
 (defvar LaTeX-xcolor-definecolorset-regexp
   `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)"
@@ -367,6 +371,7 @@ xcolor.sty."
  (lambda ()
    ;; Add color to the parser.
    (TeX-auto-add-regexp LaTeX-xcolor-definecolor-regexp)
+   (TeX-auto-add-regexp LaTeX-xcolor-colorlet-regexp)
    (TeX-auto-add-regexp LaTeX-xcolor-definecolorset-regexp)
 
    ;; Add list of colors which are always available.
@@ -395,7 +400,7 @@ xcolor.sty."
     ;; \providecolor[<type>]{<name>}{<model-list>}{<spec-list>}
     '("providecolor" TeX-arg-xcolor-definecolor)
 
-    ;; \colorlet[<type>]{<name>}{<num model>}{<color>}
+    ;; \colorlet[<type>]{<name>}[<num model>]{<color>}
     '("colorlet"
       [ TeX-arg-eval completing-read
 		     (TeX-argument-prompt optional nil "Type")
