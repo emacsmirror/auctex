@@ -44,6 +44,6 @@ latex/prshowlabels.def
 latex/prtightpage.def
 latex/prtracingall.def
 preview-latex.el
-preview.el
+/preview.el
 PROBLEMS.preview
 tests/*/auto/*
