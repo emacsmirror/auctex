@@ -1,6 +1,6 @@
 ;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2017 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -233,17 +233,13 @@ remainder."
 (TeX-auto-add-type "xcolor-definecolorset" "LaTeX")
 
 (defvar LaTeX-xcolor-definecolor-regexp
-  `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)"
-	     "color"
-	     "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
-    1 LaTeX-auto-xcolor-definecolor)
+  (eval-when-compile
+    `(,(concat "\\\\"
+	       (regexp-opt '("definecolor"  "providecolor"
+			     "preparecolor" "colorlet"))
+	       "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
+      1 LaTeX-auto-xcolor-definecolor))
   "Match the argument of various color defining macros from xcolor package.")
-
-(defvar LaTeX-xcolor-colorlet-regexp
-  `(,(concat "\\\\colorlet"
-	     "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
-    1 LaTeX-auto-xcolor-definecolor)
-  "Match the argument of \\colorlet macro from xcolor package.")
 
 (defvar LaTeX-xcolor-definecolorset-regexp
   `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)"
@@ -268,7 +264,7 @@ xcolor package.")
     (let ((head (car colset))
 	  (tail (cadr colset))
 	  (cols (split-string
-		 (replace-regexp-in-string "[ %\n\r\t]*" "" (nth 2 colset))
+		 (replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
 		 "\\(,[^;]+;\\|,[^;]+$\\)" t)))
       (dolist (color cols)
 	(LaTeX-add-xcolor-definecolors (concat head color tail))))))
@@ -371,7 +367,6 @@ xcolor.sty."
  (lambda ()
    ;; Add color to the parser.
    (TeX-auto-add-regexp LaTeX-xcolor-definecolor-regexp)
-   (TeX-auto-add-regexp LaTeX-xcolor-colorlet-regexp)
    (TeX-auto-add-regexp LaTeX-xcolor-definecolorset-regexp)
 
    ;; Add list of colors which are always available.
