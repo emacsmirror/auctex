@@ -358,7 +358,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		   ((eq TeX-engine 'ptex)
 		    (cond ((eq system-type 'darwin)
 			   'utf-8)
-			  (japanese-TeX-use-kanji-opt-flag
+			  ((and japanese-TeX-use-kanji-opt-flag kanji)
 			   kanji)
 			  (t 'shift_jis)))
 		   ;; jtex なら sjis に固定する。
@@ -377,8 +377,23 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		   ;; ただし、locale が日本語をサポートしない場合は
 		   ;; euc に固定する。
 		   (t
-		    (if (japanese-TeX-coding-ejsu locale-coding-system)
-			locale-coding-system 'euc-jp))))))
+		    (let ((lcs
+			   (cond
+			    ((boundp 'locale-coding-system)
+			     locale-coding-system)
+			    ;; XEmacs doesn't have `locale-coding-system'.
+			    ;; Instead xemacs 21.5 has
+			    ;; `get-coding-system-from-locale' and
+			    ;; `current-locale'.  They aren't available on
+			    ;; xemacs 21.4.
+			    ((and
+			      (featurep 'xemacs)
+			      (fboundp 'get-coding-system-from-locale)
+			      (fboundp 'current-locale))
+			     (get-coding-system-from-locale
+			      (current-locale))))))
+		      (if (and lcs (japanese-TeX-coding-ejsu lcs))
+			  lcs 'euc-jp)))))))
 
 	   ;; process に与える入力の文字コード。
 	   (enc (cond
@@ -397,9 +412,10 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		 (t
 		  'utf-8))))
 	;; Customize 値があればそれを優先。
-	(set-process-coding-system process
-				   (or TeX-japanese-process-output-coding-system dec)
-				   (or TeX-japanese-process-input-coding-system enc))))))
+	(set-process-coding-system
+	 process
+	 (or TeX-japanese-process-output-coding-system dec)
+	 (or TeX-japanese-process-input-coding-system enc))))))
 (when (featurep 'mule)
   (setq TeX-after-start-process-function
         #'japanese-TeX-set-process-coding-system))
@@ -424,16 +440,16 @@ Return nil otherwise."
                 (mule-utf-8 . "utf8") ; for emacs 21, 22
                 ;; utf-8-auto や utf-8-emacs を入れる必要はあるのか？
 
-                ;; xemacs で jisx0213 は使えるのか？使えるとして、
-                ;; その coding system 名は？
+                ;; xemacs 21.5 with mule には、jisx0213 の charset は
+                ;; あるがそれ用の coding system はない。
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
                 (japanese-shift-jis-2004 . "sjis")
 
-                ;; xemacs に cp932 系の coding system があるのか
-                ;; どうかもよくわからない。
                 (japanese-cp932 . "sjis")
-                (eucjp-ms . "euc"))))))
+                (eucjp-ms . "euc")
+                (windows-932 . "sjis") ; for xemacs 21.5 with mule
+		)))))
 
 (defun japanese-TeX-get-encoding-string ()
   "Return coding option string for Japanese pTeX family.
