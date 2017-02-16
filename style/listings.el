@@ -320,7 +320,7 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	     (LaTeX-add-environments (list env))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env t)
-      (add-to-list 'LaTeX-label-alist (cons env LaTeX-listing-label) t)
+      (add-to-list 'LaTeX-label-alist `(,env . LaTeX-listing-label) t)
       ;; Add new env to parser for labels in opt. argument:
       (TeX-auto-add-regexp `(,(concat "\\\\begin{" env "}"
 				      LaTeX-listings-key-val-label-extract)
@@ -388,6 +388,9 @@ with user-defined values via the \"lstdefinestyle\" macro."
     '("lstlisting" LaTeX-env-args
       [TeX-arg-key-val LaTeX-listings-key-val-options-local]
       (LaTeX-env-label-as-keyval "caption")))
+
+   ;; Append "lstlisting" to `LaTeX-label-alist':
+   (add-to-list 'LaTeX-label-alist '("lstlisting" . LaTeX-listing-label) t)
 
    ;; Filling
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
