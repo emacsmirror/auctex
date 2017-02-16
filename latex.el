@@ -1040,10 +1040,10 @@ returned, nil if it is empty."
 	(if (or (string= TeX-read-label-prefix label)
 		(string= "" label))
 	    (setq label nil)
-	  ;; If NO-INSERT, return only the label for further
-	  ;; utilization, otherwise insert \label{label} in the buffer
-	  (if no-insert
-	      label
+	  ;; We have a label; when NO-INSERT is nil, insert
+	  ;; \label{label} in the buffer, add new label to list of
+	  ;; known labels and return it
+	  (unless no-insert
 	    (insert TeX-esc "label" TeX-grop label TeX-grcl))
 	  (LaTeX-add-labels label)
 	  label)))))
