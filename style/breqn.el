@@ -137,7 +137,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
    ;; Tell AUCTeX that we want to prefix the labels with `LaTeX-equation-label':
    (let ((envs '("dmath"  "dseries" "dgroup" "darray")))
      (dolist (env envs)
-       (add-to-list 'LaTeX-label-alist (cons env LaTeX-equation-label) t)))
+       (add-to-list 'LaTeX-label-alist `(,env . LaTeX-equation-label) t)))
 
    ;; For RefTeX, we must distinguish between equation and eqnarray-like:
    ;; breqn env == equivalent -- starred
