@@ -1,4 +1,4 @@
-;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v3.96)
+;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)
 
 ;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `tcolorbox.sty' (v3.96) from 2016/11/18.
+;; This file adds support for `tcolorbox.sty' (v4.00) from 2017/02/16.
 
 ;; This style file adds support for core macros and environments and
 ;; their options provided by `tcolorbox.sty'.  Macros and environments
@@ -138,10 +138,12 @@
     ;; 4.7.4 Spacing
     ("boxsep")
     ("left")
+    ("left*")
     ("lefttitle")
     ("leftupper")
     ("leftlower")
     ("right")
+    ("right*")
     ("righttitle")
     ("rightupper")
     ("rightlower")
@@ -259,6 +261,17 @@
     ("grow to left by")
     ("grow to right by")
     ("toggle enlargement" ("none" "forced" "evenpage"))
+    ("spread inwards")
+    ("spread outwards")
+    ("move upwards")
+    ("move upwards*")
+    ;; FIXME: This one should be added w/ `breakable' lib:
+    ;; ("fill downwards")
+    ("spread upwards")
+    ("spread upwards*")
+    ("spread sidewards")
+    ("spread")
+    ("spread downwards")
     ("shrink tight")
     ("extrude left by")
     ("extrude right by")
@@ -299,8 +312,9 @@
     ("check odd page" ("true" "false"))
     ("if odd page")
     ("if odd page or oneside")
-    ;; FIXME: This one should be added w/ `breakable' lib:
+    ;; FIXME: These two should be added w/ `breakable' lib:
     ;; ("if odd page*")
+    ;; ("if odd page or oneside*")
     ;; 4.24 Miscellaneous
     ("reset")
     ("only")
