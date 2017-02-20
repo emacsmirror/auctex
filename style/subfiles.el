@@ -43,8 +43,10 @@
    ;; The following code will run `TeX-run-style-hooks' on the subfile
    ;; master file.  Thanks to Mosè Giordano <mose@gnu.org> for
    ;; presenting a better solution using `assoc'.
-   (TeX-run-style-hooks
-    (file-name-base (cadr (assoc "subfiles" LaTeX-provided-class-options))))
+   (let ((master-file (cadr (assoc "subfiles" LaTeX-provided-class-options))))
+     (when (stringp master-file)
+       (TeX-run-style-hooks
+	(file-name-sans-extension master-file))))
 
    (TeX-add-symbols
     '("subfile" TeX-arg-file))
