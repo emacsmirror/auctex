@@ -850,7 +850,7 @@ The compatibility argument IGNORE is ignored."
     (save-excursion
       (while (and (not found)
 		  (re-search-backward
-		   "\\\\documentclass\\(\\[[a-z0-9A-Z\-\_,]*\\]\\)?\\({[^}]+}\\)"
+		   "\\\\documentclass\\(\\[[^]\n\r]*\\]\\)?\\({[^}]+}\\)"
 		   nil t))
 	(and (not (TeX-in-commented-line))
 	     (setq found t))))
