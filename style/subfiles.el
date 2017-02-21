@@ -36,6 +36,15 @@
 (defvar LaTeX-subfiles-package-options nil
   "Package options for the subfiles package.")
 
+(defun LaTeX-subfiles-class-options ()
+  "Return name of the main file relative to current subfile."
+  (file-relative-name
+   (read-file-name
+    "Main file: " nil nil nil nil
+    (lambda (texfiles)
+      (string-match "\\.tex$" texfiles)))
+   (TeX-master-directory)))
+
 (TeX-add-style-hook
  "subfiles"
  (lambda ()
