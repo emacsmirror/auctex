@@ -395,10 +395,17 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 			    ;; xemacs 21.4.
 			    ((and
 			      (featurep 'xemacs)
-			      (fboundp 'get-coding-system-from-locale)
-			      (fboundp 'current-locale))
+			      (fboundp 'get-coding-system-from-locale))
 			     (get-coding-system-from-locale
-			      (current-locale))))))
+			      (if (fboundp 'current-locale)
+				  (current-locale)
+				;; I don't know XEmacs well, so incorporate
+				;; the suggestion of
+				;; http://lists.gnu.org/archive/html/auctex-devel/2017-02/msg00079.html
+				;; as well.
+				(or (getenv "LC_ALL")
+				    (getenv "LC_CTYPE")
+				    (getenv "LANG"))))))))
 		      (if (and lcs (japanese-TeX-coding-ejsu lcs))
 			  lcs 'euc-jp)))))))
 
