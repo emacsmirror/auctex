@@ -478,8 +478,8 @@ string."
     ("%(file-line-error)"
      (lambda () (if TeX-file-line-error " -file-line-error" "")))
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
-    ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
-    ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
+    ("%(tex)" (lambda () (eval (nth 2 (TeX-engine-in-engine-alist TeX-engine)))))
+    ("%(latex)" (lambda () (eval (nth 3 (TeX-engine-in-engine-alist TeX-engine)))))
     ("%(cntxcom)" ConTeXt-expand-command)
     ("%(execopts)" ConTeXt-expand-options)
     ("%(extraopts)" (lambda () TeX-command-extra-options))
@@ -1663,6 +1663,17 @@ The function appends the built-in engine specs from
 `TeX-engine-alist' and deletes any entries from the built-in part
 where an entry with the same car exists in the user-defined part."
   (TeX-delete-dups-by-car (append TeX-engine-alist TeX-engine-alist-builtin)))
+
+(defun TeX-engine-in-engine-alist (engine)
+  "Return the `engine' entry in `TeX-engine-alist'.
+
+Throw an error if `engine' is not present in the alist."
+  (or
+   (assq engine (TeX-engine-alist))
+   (error "`%s' is not a known engine.  Valid values are: %s." engine
+	  (mapconcat
+	   (lambda (x) (prin1-to-string (car x)))
+	   (TeX-engine-alist) ", "))))
 
 (defcustom TeX-engine 'default
   (concat "Type of TeX engine to use.

@@ -585,7 +585,11 @@ without further expansion."
 			    (error "Nonexpansion %s" expansion)))))
       (if (stringp string)
 	  (setq command
-		(replace-match string t t command)))))
+		(replace-match string t t command))
+	;; If `string' is not a string, `command' will not be updated and
+	;; `while' would enter an infinite loop.  Prevent it by throwing an
+	;; error.
+	(error "Nonexpansion %s" expansion))))
   command)
 
 (defun TeX-check-files (derived originals extensions)

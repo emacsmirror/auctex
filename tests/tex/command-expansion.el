@@ -33,6 +33,19 @@
 				 'TeX-master-file))
            "%%  \"\\input\"")))
 
+(ert-deftest TeX-command-expansion-errors ()
+  "Test error handling in `TeX-command-expand'."
+  (should-error
+   ;; This should prevent an infinite loop.
+   (let ((TeX-expand-list '(("%(nil)" "nil"))))
+     (TeX-command-expand "%(nil)"
+  			 'TeX-master-file)))
+  (should-error
+   ;; This error is actually thrown by `TeX-engine-in-engine-alist', but we want
+   ;; to be sure that `TeX-command-expand' fails when the engine is not valid.
+   (let ((TeX-engine 'non-existing-engine))
+     (TeX-command-expand "%l" 'TeX-master-file))))
+
 (ert-deftest TeX-view-command-raw-errors ()
   "Tests to trigger errors in `TeX-view-command-raw'."
   ;; Viewer specification should be either a command line string or a Lisp
