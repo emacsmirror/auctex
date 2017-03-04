@@ -719,7 +719,7 @@ A value of `noarg' indicates commands without arguments
 specified.
 
 Setting this variable directly does not take effect;
-use \\[customize] or restart Emacs."
+restart Emacs."
   :group 'font-latex-keywords
   :type `(repeat (list (string :tag "Name")
 		       (choice (repeat :tag "Keywords" (string :tag "Keyword"))
@@ -729,8 +729,8 @@ use \\[customize] or restart Emacs."
 				       (string :tag "Format specifier"))))
 		       ,(if (featurep 'xemacs)
 			    '(face :tag "Face name")
-			  '(choice (custom-face-edit :tag "Face attributes")
-				   (face :tag "Face name")))
+			  '(choice (face :tag "Face name")
+				   (custom-face-edit :tag "Face attributes")))
 		       (choice :tag "Type"
 			       ;; Maps to
 			       ;;`font-latex-match-command-with-arguments'
