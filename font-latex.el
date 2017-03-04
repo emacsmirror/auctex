@@ -286,7 +286,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
       "appendix" "displaybreak" "allowdisplaybreaks" "include")
-     'font-latex-warning-face 1 noarg)
+     font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\{") ("settowidth" "|{\\{") ("settoheight" "{{")
       ("settodepth" "{{") ("setcounter" "{|{\\")
@@ -294,10 +294,10 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("stepcounter" "{") ("refstepcounter" "{")
       ("arabic" "{") ("roman" "{") ("Roman" "{") ("alph" "{") ("Alph" "{")
       ("fnsymbol" "{"))
-     'font-lock-variable-name-face 2 command)
+     font-lock-variable-name-face 2 command)
     ("biblatexnoarg"
      ("newrefsegment" "mancite" "pno" "ppno" "nopp" "psq" "psqq")
-     'font-lock-variable-name-face 2 noarg)
+     font-lock-variable-name-face 2 noarg)
     ("biblatex"
      (("newrefsection" "[") ("ExecuteBibliographyOptions" "[{")
       ("printbibliography" "[") ("printshorthands" "[") ("printbibheading" "[")
@@ -322,13 +322,13 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("cites" "(([[{") ("Cites" "(([[{") ("parencites" "(([[{") ("Parencites" "(([[{")
       ("footcites" "(([[{") ("footcitetexts" "(([[{") ("smartcites" "(([[{")
       ("Smartcites" "(([[{") ("textcites" "(([[{") ("Textcites" "(([[{") ("supercites" "(([[{"))
-     'font-lock-constant-face 2 command)
+     font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
       ("vref" "*{") ("eqref" "{") ("ref" "{") ("include" "{")
       ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
       ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{"))
-     'font-lock-constant-face 2 command)
+     font-lock-constant-face 2 command)
     ("function"
      (("begin" "{") ("end" "{") ("pagenumbering" "{")
       ("thispagestyle" "{") ("pagestyle" "{") ("nofiles" "")
@@ -345,7 +345,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
       ("centering" "") ("TeX" "") ("LaTeX" ""))
-     'font-lock-function-name-face 2 command)
+     font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
      (if (eq font-latex-fontify-sectioning 'color)
@@ -383,36 +383,36 @@ variable `font-latex-fontify-sectioning'." ',num)
 	 'font-lock-type-face
        'font-latex-sectioning-5-face)
      2 command)
-    ("slide-title" () 'font-latex-slide-title-face 2 command)
+    ("slide-title" () font-latex-slide-title-face 2 command)
     ("textual"
      (("item" "[") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
       ("textsuperscript" "{") ("textsubscript" "{"))
-     'font-lock-type-face 2 command)
+     font-lock-type-face 2 command)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
       ("pmb" "{"))
-     'font-latex-bold-face 1 command)
+     font-latex-bold-face 1 command)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{"))
-     'font-latex-italic-face 1 command)
+     font-latex-italic-face 1 command)
     ("math-command"
      (("ensuremath" "|{\\"))
-     'font-latex-math-face 1 command)
+     font-latex-math-face 1 command)
     ("type-command"
      (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{"))
-     'font-lock-type-face 1 command)
+     font-lock-type-face 1 command)
     ("bold-declaration"
      ("bf" "bfseries" "sc" "scshape" "upshape")
-     'font-latex-bold-face 1 declaration)
+     font-latex-bold-face 1 declaration)
     ("italic-declaration"
      ("em" "it" "itshape" "sl" "slshape")
-     'font-latex-italic-face 1 declaration)
+     font-latex-italic-face 1 declaration)
     ("type-declaration"
      ("tt" "ttfamily" "sf" "sffamily" "rm" "rmfamily" "mdseries"
       "tiny" "scriptsize" "footnotesize" "small" "normalsize"
       "large" "Large" "LARGE" "huge" "Huge")
-     'font-lock-type-face 1 declaration))
+     font-lock-type-face 1 declaration))
   "Built-in keywords and specifications for font locking.
 
 The first element of each item is the name of the keyword class.
@@ -457,7 +457,10 @@ You have to restart Emacs for a change of this variable to take effect."
 				    (mapconcat 'identity name " "))
 				  " keywords in `"
 				  ;; Name of the face
-				  (symbol-name (eval (nth 2 spec))) "'.\n"
+				  (symbol-name
+				   (let ((face (nth 2 spec)))
+				     (if (symbolp face) face (eval face))))
+				  "'.\n"
 				  ;; List of keywords
 				  (with-temp-buffer
 				    (insert "  Keywords: "
@@ -535,6 +538,11 @@ construct to be highlighted.  Currently the symbols 'command,
 This is a helper function for `font-latex-make-built-in-keywords'
 and `font-latex-make-user-keywords' and not intended for general
 use."
+  ;; Quote a list of face attributes and a face symbol
+  ;; but do not quote a form returning such value.
+  (unless (and (listp face) (fboundp (car face)))
+    (setq face `',face))
+
   ;; In an earlier version of font-latex the type could be a list like
   ;; (command 1).  This indicated a macro with one argument.  Provide
   ;; a matcher in this case but don't actually support it.
@@ -550,10 +558,7 @@ use."
 	   (7 (font-latex-matched-face 7) append t)))
 	((eq type 'noarg)
 	 `(,(intern (concat prefix name))
-	   ;; Quote a list of face properties but do not to quote a face symbol.
-	   (0 ,(if (and (listp face) (not (fboundp (car face))))
-		   `',face
-		 face))))
+	   (0 ,face)))
 	((eq type 'declaration)
 	 `(,(intern (concat prefix name))
 	   (0 'font-latex-warning-face t t)
@@ -789,7 +794,7 @@ use \\[customize] or restart Emacs."
 Generated by `font-latex-make-user-keywords'.")))
 
 	;; defun font-latex-match-*
-	(eval `(font-latex-make-match-defun prefix name '',face type))
+	(font-latex-make-match-defun prefix name face type)
 
 	;; Add the matcher to `font-latex-keywords-2'.
 	(add-to-list 'font-latex-keywords-2
