@@ -36,11 +36,6 @@
 (ert-deftest TeX-command-expansion-errors ()
   "Test error handling in `TeX-command-expand'."
   (should-error
-   ;; This should prevent an infinite loop.
-   (let ((TeX-expand-list '(("%(nil)" "nil"))))
-     (TeX-command-expand "%(nil)"
-  			 'TeX-master-file)))
-  (should-error
    ;; This error is actually thrown by `TeX-engine-in-engine-alist', but we want
    ;; to be sure that `TeX-command-expand' fails when the engine is not valid.
    (let ((TeX-engine 'non-existing-engine))
