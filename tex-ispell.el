@@ -49,6 +49,7 @@
 ;; enumitem.sty
 ;; fancyref.sty
 ;; fancyvrb.sty
+;; filecontents.sty
 ;; fontaxes.sty
 ;; fontspec.sty
 ;; listings.sty
@@ -280,7 +281,9 @@ Environments for math or verbatim text are candidates for this list."))
 
 ;; Add environments here:
 (TeX-ispell-skip-setcdr
- '(;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
+ '(;; filecontents.sty
+   ("filecontents\\*?" ispell-tex-arg-end)
+   ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library
    ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)))
