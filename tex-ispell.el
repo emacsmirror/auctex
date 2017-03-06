@@ -52,6 +52,7 @@
 ;; filecontents.sty
 ;; fontaxes.sty
 ;; fontspec.sty
+;; hyperref.sty
 ;; listings.sty
 ;; ltxtable.sty
 ;; mdframed.sty
@@ -154,6 +155,21 @@
       ("figureversion" . 1)
       ;; fontspec.sty
       ("addfontfeatures" . 1)
+      ;; hyperref.sty
+      ("hypersetup" . 1)
+      ("href" . 1)
+      ("url" . 1)
+      ("nolinkurl" . 1)
+      ("hyperbaseurl" . 1)
+      ("hyperimage" . 1)
+      ("hyperdef" . 2)
+      ("hyperref" . 3)
+      ("hyperlink" . 1)
+      ("hypertarget" . 1)
+      ("autoref" . 1)
+      ("autoref*" . 1)
+      ("autopageref" . 1)
+      ("autopageref*" . 1)
       ;; listings.sty
       ("lstinputlisting" . 1)
       ("lstset" . 1)
