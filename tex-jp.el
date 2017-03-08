@@ -406,7 +406,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		 ;; ptex で -kanji オプションありなら、その文字コード。
 		 ;; なしなら utf-8 か sjis。
 		 ((eq TeX-engine 'ptex)
-		  (if japanese-TeX-use-kanji-opt-flag
+		  (if (and japanese-TeX-use-kanji-opt-flag kanji)
 		      kanji
 		    (if (eq system-type 'windows-nt)
 			'shift_jis 'utf-8)))
