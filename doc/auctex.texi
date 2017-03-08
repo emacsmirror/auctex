@@ -4578,7 +4578,7 @@ It is recommended to enable @code{TeX-parse-self} for typical Japanese
 @LaTeX{} users.  When enabled, @code{japanese-latex-mode} selects the
 suitable Japanese @TeX{} engine automatically based on the class file
 name (such as @code{jbook}, @code{jsarticle} and @code{tjreport}) and
-its option.  @pxref{Parsing Files}
+its option.  @pxref{Parsing Files}.
 
 It is important to select the suitable Japanese @TeX{} engine because
 the selected engine determines the command name such as @samp{platex}
@@ -4586,7 +4586,7 @@ and @samp{uptex} to typeset the document.  If you find that wrong
 command is used, check the value of @code{TeX-engine} on that buffer.
 If the value does not suit the current document, change the value by the
 @samp{TeXing Options} submenu below the @samp{Command} menu.
-@pxref{Processor Options}
+@pxref{Processor Options}.
 
 To make the selected engine to persist across Emacs sessions, there are
 two ways from which you can choose one according to your needs:
@@ -4620,7 +4620,7 @@ In the both cases above, the valid value is one of @samp{ptex},
 
 You can override the command names associated with the above three
 engines or define your own engine by customizing
-@code{TeX-engine-alist}.  @xref{Processor Options}
+@code{TeX-engine-alist}.  @xref{Processor Options}.
 
 It is sometimes necessary to use an engine which differs from the one
 @AUCTeX{} selects automatically.  For example, even when you want to use
