@@ -6664,10 +6664,10 @@ function would return non-nil and `(match-string 1)' would return
 	   (t
 	    (+ 2
 	       (let ((any-col (save-excursion
-				(when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
+				(when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
 				  (current-column)))))
-		 (if (and any-col (string= "&" (match-string 0)))
-		     any-col
+		 (if (and any-col (= ?& (char-before (match-end 0))))
+		     (1+ any-col)
 		   beg-col))))))))
 
 (provide 'latex)

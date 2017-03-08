@@ -61,6 +61,8 @@ line and from another directory."
  'tabular-count-ampersands/out
  "tabular-count-ampersands-out.tex")
 
+;; Test for detecting \& in a table cell added; see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
            (with-temp-buffer

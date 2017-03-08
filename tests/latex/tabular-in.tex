@@ -38,4 +38,19 @@ detraxit          & no.        & Ne sea doming   & deserunt.
 8 &
 9
 \end{align}
+
+% Next table tests filling with a control symbol \& inside a cell; the
+% function `LaTeX-indent-tabular' now (March 2017) detects \&, see:
+% https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
+\begin{tabular}{llll}
+Lorem ipsum dolor & sit amet, ei mei \&
+paulo tation honestatis, \&
+intellegam & accommodare ne vim, ut
+mel solum putant
+atomorum. Posse & dolores has ut,\\
+prompta           & disputando & ne mel, ne
+\& viderer ceteros
+vel.            & No petentium
+\end{tabular}
+
 \end{document}
