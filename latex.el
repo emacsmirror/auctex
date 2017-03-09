@@ -6627,16 +6627,23 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-hanging-ampersand-position ()
   "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
-  (destructuring-bind (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
-    (let* ((cur-pos (point)))
-      (save-excursion
-        (if (re-search-backward "\\\\\\\\" beg-pos t)
-            (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
-              (goto-char beg-pos)
-              (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
-              (- (current-column) 1))
-          (+ 2 beg-col))))))
+  (destructuring-bind
+   (beg-pos . beg-col)
+   (LaTeX-env-beginning-pos-col)
+   (let* ((cur-pos (point)))
+     (save-excursion
+       (if (re-search-backward "\\\\\\\\" beg-pos t)
+	   (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
+	     (goto-char beg-pos)
+	     (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+	     ;; If the above searchs fails, i.e. no "&" found,
+	     ;; (- (current-column) 1) returns -1, which is wrong.  So
+	     ;; we check the result first with `natnump' and return
+	     ;; (+ 2 beg-col) as fallback.
+	     (if (natnump (- (current-column) 1))
+		 (- (current-column) 1)
+	       (+ 2 beg-col)))
+	 (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
   "Return indent column for the current tabular-like line."

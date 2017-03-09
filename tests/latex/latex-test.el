@@ -63,6 +63,8 @@ line and from another directory."
 
 ;; Test for detecting \& in a table cell added; see
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
+;; Test for missing & in row added; see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26032
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
            (with-temp-buffer
