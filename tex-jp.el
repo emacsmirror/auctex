@@ -218,22 +218,12 @@ For detail, see `TeX-command-list', to which this list is appended."
 (unless (get 'TeX-view-program-list 'saved-value)
   (setq TeX-view-program-list
        (cond
-        ;; http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?AUCTeX
-        ;; を参考にしてみた。
-        ((eq system-type 'windows-nt)
-         '(("TeXworks" "TeXworks %o" "texworks")
-           ("MuPDF" "mupdf %o" "mupdf")))
-        ;; これでいいのかどうかは不安。
-        ((eq system-type 'darwin)
-         '(("TeXShop" "open -a TeXShop.app %o" "open")
-           ("TeXworks" "open -a TeXworks.app %o" "open")
-           ("PictPrinter" "open -a PictPrinter.app %d" "open")
-           ("Mxdvi" "open -a Mxdvi.app %d" "open")))
+        ((memq system-type '(windows-nt darwin))
+	 nil)
         (t
          (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
                  "%(xdvi) -unique")
-         '(("TeXworks" "texworks %o" "texworks")
-           ("MuPDF" "mupdf %o" "mupdf"))))))
+         '(("MuPDF" "mupdf %o" "mupdf"))))))
 
 ;; これは tex.el に取り入れてもらうのは難しいか？
 ;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
@@ -243,10 +233,7 @@ For detail, see `TeX-command-list', to which this list is appended."
        (append
         (cond
          ((eq system-type 'windows-nt)
-          '((output-dvi "dviout")
-            (output-pdf "TeXworks")))
-         ((eq system-type 'darwin)
-          '((output-pdf "Preview.app")))
+          '((output-dvi "dviout")))
          (t
           nil))
         TeX-view-program-selection)))
