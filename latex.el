@@ -6638,11 +6638,9 @@ function would return non-nil and `(match-string 1)' would return
 	     (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
 	     ;; If the above searchs fails, i.e. no "&" found,
 	     ;; (- (current-column) 1) returns -1, which is wrong.  So
-	     ;; we check the result first with `natnump' and return
-	     ;; (+ 2 beg-col) as fallback.
-	     (if (natnump (- (current-column) 1))
-		 (- (current-column) 1)
-	       (+ 2 beg-col)))
+	     ;; we use a fallback (+ 2 beg-col) whenever this happens:
+	     (max (- (current-column) 1)
+		  (+ 2 beg-col)))
 	 (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
