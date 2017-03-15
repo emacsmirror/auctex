@@ -132,10 +132,9 @@ For detail, see `TeX-command-list', to which this list is appended."
 (when (assoc "Index" TeX-command-list)
   (setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s"))
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
-(setq TeX-expand-list
+(setq TeX-expand-list-builtin
       (append
-       TeX-expand-list
+       TeX-expand-list-builtin
        '(
         ;; -kanji オプションの文字列を作る。
         ("%(kanjiopt)" (lambda ()
