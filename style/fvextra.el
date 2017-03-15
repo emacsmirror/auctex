@@ -82,10 +82,9 @@
 	(assq-delete-all (car (assoc "numbers" LaTeX-fancyvrb-key-val-options-local))
 			 LaTeX-fancyvrb-key-val-options-local))
   ;; Add the key with "both" value:
-  (setq LaTeX-fancyvrb-key-val-options-local
-	(add-to-list 'LaTeX-fancyvrb-key-val-options-local
-		     '("numbers" ("none" "left" "right" "both"))))
-
+  (add-to-list 'LaTeX-fancyvrb-key-val-options-local
+	       '("numbers" ("none" "left" "right" "both")))
+  ;; Add color values to resp. keys:
   (when (or (member "xcolor" (TeX-style-list))
 	    (member "color" (TeX-style-list)))
     (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
