@@ -282,9 +282,10 @@ Environments for math or verbatim text are candidates for this list."))
 ;; Add others delimited here:
 (TeX-ispell-skip-setcar
  '(;; LaTeX-base
+   ("\\\\(" . "\\\\)")
    ("\\\\raisebox" TeX-ispell-tex-arg-end 1 2 0)
    ;; booktabs.sty
-   ("\\\\cmidrule" . "\\(([^)]*)\\)?{[-0-9]+}")
+   ("\\\\cmidrule" . "{[-0-9]+}")
    ;; fontspec.sty
    ("\\\\fontspec" TeX-ispell-tex-arg-end 1 1 0)
    ;; minted.sty
