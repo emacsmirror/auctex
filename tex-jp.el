@@ -383,7 +383,8 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 				;; as well.
 				(or (getenv "LC_ALL")
 				    (getenv "LC_CTYPE")
-				    (getenv "LANG"))))))))
+				    (getenv "LANG")
+				    "")))))))
 		      (if (and lcs (japanese-TeX-coding-ejsu lcs))
 			  lcs 'euc-jp)))))))
 
