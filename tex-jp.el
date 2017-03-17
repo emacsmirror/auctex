@@ -181,8 +181,8 @@ For detail, see `TeX-command-list', to which this list is appended."
 
 ;;; Viewing (new implementation)
 
-(unless (get 'TeX-view-predicate-list 'saved-value)
-  (setq TeX-view-predicate-list
+(setq TeX-view-predicate-list-builtin
+      (append
        '((paper-a4
 	  (let ((regex "\\`\\(?:a4j\\|a4paper\\|a4dutch\\|a4wide\\|sem-a4\\)\\'"))
 	    (or (TeX-match-style regex)
@@ -208,34 +208,28 @@ For detail, see `TeX-command-list', to which this list is appended."
          ;; b4paper というオプションがあったら JIS B4 と見なす。
          (paper-b4jis
 	  (and (fboundp 'LaTeX-match-class-option)
-	       (LaTeX-match-class-option "\\`\\(?:b4j\\|b4paper\\)\\'"))))))
-;; jsarticle だと他にももっと判型のオプションがあるが、
-;; 全部面倒見てるとキリがないので、これくらいでいいだろう。
-;; jsarticle.el や jsbook.el で追加分の処理を仕込めばいいのかも知れない。
+	       (LaTeX-match-class-option "\\`\\(?:b4j\\|b4paper\\)\\'"))))
+       ;; jsclasses だと他にももっと判型のオプションがあるが、全部面倒
+       ;; 見てるとキリがないので、これくらいでいいだろう。
+       ;; jsarticle.el や jsbook.el で追加分の処理を仕込めばいいのかも知れない。
+       TeX-view-predicate-list-builtin))
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
-(unless (get 'TeX-view-program-list 'saved-value)
-  (setq TeX-view-program-list
-       (cond
-        ((memq system-type '(windows-nt darwin))
-	 nil)
-        (t
-         (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
-                 "%(xdvi) -unique")
-         '(("MuPDF" "mupdf %o" "mupdf"))))))
+(unless (memq system-type '(windows-nt darwin))
+  (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
+	  "%(xdvi) -unique")
+  (setq TeX-view-program-list-builtin
+	(append TeX-view-program-list-builtin
+         '(("MuPDF" "mupdf %o" "mupdf")))))
 
 ;; これは tex.el に取り入れてもらうのは難しいか？
 ;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
 ;; なってしまうのは抵抗が大きいかも。
 (unless (get 'TeX-view-program-selection 'saved-value)
-  (setq TeX-view-program-selection
-       (append
-        (cond
-         ((eq system-type 'windows-nt)
-          '((output-dvi "dviout")))
-         (t
-          nil))
-        TeX-view-program-selection)))
+  (if (eq system-type 'windows-nt)
+      (setq TeX-view-program-selection
+	    (append
+	     '((output-dvi "dviout"))
+	     TeX-view-program-selection))))
 
 (mapc (lambda (dir) (add-to-list 'TeX-macro-global dir t))
       (or (TeX-tree-expand
