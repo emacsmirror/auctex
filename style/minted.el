@@ -336,7 +336,7 @@ are loaded."
 		      '("listoflistingscaption"))
      (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 		  '("listing" current-indentation) t)
-     (add-to-list 'LaTeX-label-alist '("listing" . "lst:") t)
+     (add-to-list 'LaTeX-label-alist '("listing" . LaTeX-listing-label) t)
      (when (fboundp 'reftex-add-label-environments)
        (reftex-add-label-environments
 	'(("listing" ?l "lst:" "~\\ref{%s}" caption nil nil)))))
