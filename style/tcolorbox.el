@@ -453,7 +453,7 @@ e.g. \"tcolorboxlib-raster.el\"."
   (when (LaTeX-tcolorbox-tcbuselibrary-list)
     (let (libs)
       (dolist (x (LaTeX-tcolorbox-tcbuselibrary-list))
-	(push (replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
+	(push (TeX-replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
       (setq libs (mapconcat #'identity libs ","))
       (dolist (x (split-string libs "," t))
 	(TeX-run-style-hooks (concat "tcolorboxlib-" x)))))

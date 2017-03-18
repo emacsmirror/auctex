@@ -264,7 +264,7 @@ xcolor package.")
     (let ((head (car colset))
 	  (tail (cadr colset))
 	  (cols (split-string
-		 (replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
+		 (TeX-replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
 		 "\\(,[^;]+;\\|,[^;]+$\\)" t)))
       (dolist (color cols)
 	(LaTeX-add-xcolor-definecolors (concat head color tail))))))
