@@ -1926,7 +1926,7 @@ If the Emacs frame isn't raised, customize
 		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
 		 ;; For Emacs 21 compatibility, which doesn't have the
 		 ;; url package.
-		 (file-error (replace-regexp-in-string "^file://" "" file))))
+		 (file-error (TeX-replace-regexp-in-string "^file://" "" file))))
 	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
 		  (apply #'list file linecol)))
 	 (file (car flc))
