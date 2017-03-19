@@ -1333,7 +1333,7 @@ DE is the name of the desktop environment, either \"gnome\" or
 	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (line-number-at-pos)
+	   (list :struct :int32 (TeX-line-number-at-pos)
 		 :int32 (1+ (current-column)))
 	   :uint32 0))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
@@ -2088,7 +2088,7 @@ enabled and the `synctex' binary is available."
   (let ((synctex-output
 	 (with-output-to-string
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
-			 "-i" (format "%s:%s:%s" (line-number-at-pos)
+			 "-i" (format "%s:%s:%s" (TeX-line-number-at-pos)
 				      (current-column)
 				      file)
 			 "-o" (TeX-active-master (TeX-output-extension))))))
