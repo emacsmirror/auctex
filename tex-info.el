@@ -335,7 +335,7 @@ commands. Return the resulting string."
 		 nodes
 		 :test (lambda (a b)
 			 (when (equal a b)
-			   (push (cons a (line-number-at-pos (point))) dups)
+			   (push (cons a (TeX-line-number-at-pos (point))) dups)
 			   t))))
       (when dups
 	(display-warning

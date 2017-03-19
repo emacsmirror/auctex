@@ -903,7 +903,7 @@ Does nothing in case the last command hasn't operated on the
 region."
   (when TeX-current-process-region-p
     (let ((region-buf (get-file-buffer (TeX-region-file t)))
-	  (current-line (line-number-at-pos)))
+	  (current-line (TeX-line-number-at-pos)))
       (when region-buf
 	(with-current-buffer region-buf
 	  (goto-char (point-min))
@@ -2096,7 +2096,7 @@ original file."
 	;; Position point at the line/col that corresponds to point's line in
 	;; orig-buffer in order to make forward search work.
 	(let ((line-col (with-current-buffer orig-buffer
-			  (cons (line-number-at-pos)
+			  (cons (TeX-line-number-at-pos)
 				(current-column)))))
           (goto-char (point-min))
           (forward-line (1- (abs (- header-offset (car line-col)))))
