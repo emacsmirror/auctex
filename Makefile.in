@@ -97,6 +97,8 @@ STYLESRC = style/prosper.el \
 	   style/dutch.el     style/german.el    style/dk.el \
 	   style/j-article.el style/j-book.el    style/j-report.el \
 	   style/jarticle.el  style/jbook.el     style/jreport.el \
+	   style/tarticle.el  style/tbook.el     style/treport.el \
+	   style/jsarticle.el style/jsbook.el    style/jsreport.el \
 	   style/dinbrief.el  style/virtex.el    style/plfonts.el \
 	   style/plhb.el      style/harvard.el	 style/swedish.el \
 	   style/danish.el    style/slovak.el    style/czech.el \
@@ -113,8 +115,6 @@ STYLESRC = style/prosper.el \
 	   style/alltt.el     style/italian.el   style/doc.el \
 	   style/ltxdoc.el    style/ltx-base.el	 style/units.el \
 	   style/nicefrac.el  style/url.el       style/listings.el \
-	   style/jurabib.el   style/csquotes.el  style/jsarticle.el \
-	   style/jsbook.el    style/babel.el     style/dk-bib.el \
 	   style/inputenc.el  style/frenchb.el   style/francais.el \
 	   style/MinionPro.el style/pdfsync.el   style/polish.el \
 	   style/polski.el    style/icelandic.el style/comment.el \
@@ -164,7 +164,8 @@ STYLESRC = style/prosper.el \
 	   style/dcolumn.el   style/mdframed.el  style/tcolorboxlib-raster.el \
 	   style/titleps.el   style/titlesec.el  style/titletoc.el \
 	   style/exam.el      style/breqn.el     style/sourcecodepro.el \
-	   style/preview.el   style/fvextra.el
+	   style/preview.el   style/fvextra.el   style/jurabib.el \
+	   style/csquotes.el  style/babel.el     style/dk-bib.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
