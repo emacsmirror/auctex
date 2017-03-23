@@ -290,8 +290,12 @@ are loaded."
 
    ;; New symbols
    (TeX-add-symbols
-    '("mint" LaTeX-arg-minted-language TeX-arg-verb)
-    '("mintinline" LaTeX-arg-minted-language TeX-arg-verb)
+    '("mint"
+      [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+      LaTeX-arg-minted-language TeX-arg-verb)
+    '("mintinline"
+      [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+      LaTeX-arg-minted-language TeX-arg-verb)
     '("newminted" ["Environment Name"] LaTeX-arg-minted-language
       (TeX-arg-key-val LaTeX-minted-key-val-options-local))
     '("newmint" ["Macro Name"] LaTeX-arg-minted-language
