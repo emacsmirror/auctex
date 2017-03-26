@@ -304,6 +304,13 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 (setq LaTeX-style-list
       (append japanese-LaTeX-style-list LaTeX-style-list))
 
+;; text〜系の明朝体・ゴシック体指定コマンドは jLaTeX にはないようで、
+;; (u)pLaTeX でしか使えないが、問題になることはないだろう。
+(setq LaTeX-font-list
+      (append '((?m "\\textmc{" "}" "\\mathmc{" "}")
+                (?g "\\textgt{" "}" "\\mathgt{" "}"))
+	      LaTeX-font-list))
+
 ;;; Coding system
 
 (defun japanese-TeX-set-process-coding-system (process)
@@ -510,6 +517,14 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 ;    (setq TeX-command-BibTeX
 ;        (if (and (eq TeX-engine 'ptex) (executable-find "pbibtex"))
 ;            "pBibTeX" "jBibTeX"))
+
+    (when (and (featurep 'font-latex)
+	       (eq TeX-install-font-lock 'font-latex-setup))
+      ;; jLaTeX にはないコマンドだが、それはもう気にしなくていいだろう。
+      (font-latex-add-keywords '(("textgt" "{") ("mathgt" "{"))
+			       'bold-command)
+      (font-latex-add-keywords '("gtfamily")
+			       'bold-declaration))
 
     ;; The value of `major-mode' should be `latex-mode', not
     ;; `japanese-latex-mode', because the name `latex-mode' is hard

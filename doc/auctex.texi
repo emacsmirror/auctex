@@ -4685,6 +4685,27 @@ Also, the option @code{japanese-TeX-command-list} is considered as
 semi-obsolete.  It still functions as before, but in theory, it is not
 required anymore in normal use.
 
+The following two additional font commands are available in
+@LaTeX{} mode buffer.
+
+@table @kbd
+@item C-c C-f g
+@kindex C-c C-f g
+@cindex @code{\textgt}
+Insert @b{gothic face} font command @samp{\textbf@{@point{}@}} or
+@samp{\mathbf@{@point{}@}} depending on the context.
+
+@item C-c C-f m
+@kindex C-c C-f m
+@cindex @code{\textmc}
+Insert mincho font command @samp{\textmc@{@point{}@}} or
+@samp{\mathmc@{@point{}@}} depending on the context.
+
+@end table
+
+Although they are meaningful only with @samp{ptex} and @samp{uptex}
+engines, it won't matter in buffers with other engines.
+
 See @file{tex-jp.el} for more information.
 
 @node Automatic
