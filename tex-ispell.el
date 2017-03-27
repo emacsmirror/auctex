@@ -72,6 +72,18 @@
 
 (require 'tex)
 
+(defcustom TeX-ispell-verb-opening-delimiters "{!|#\"*/+-"
+  "String with all opening delimiters for verb macros.
+The elements must match `TeX-ispell-verb-closing-delimiters'."
+  :group 'TeX-misc
+  :type 'string)
+
+(defcustom TeX-ispell-verb-closing-delimiters "}!|#\"*/+-"
+  "String with all closing delimiters for verb macros.
+The elements must match `TeX-ispell-verb-opening-delimiters'."
+  :group 'TeX-misc
+  :type 'string)
+
 ;; Add new macros here:
 (eval-when-compile
   (defvar TeX-ispell-skip-cmds-list
@@ -281,19 +293,23 @@ Environments for math or verbatim text are candidates for this list."))
 
 ;; Add others delimited here:
 (TeX-ispell-skip-setcar
- '(;; LaTeX-base
+ `(;; LaTeX-base
    ("\\\\(" . "\\\\)")
    ("\\\\raisebox" TeX-ispell-tex-arg-end 1 2 0)
    ;; booktabs.sty
    ("\\\\cmidrule" . "{[-0-9]+}")
    ;; fontspec.sty
    ("\\\\fontspec" TeX-ispell-tex-arg-end 1 1 0)
+   ;; listings.sty & fancyvrb.sty:
+   (,(concat "\\\\\\(lstinline\\|Verb\\)\\(\\[[^]]*\\]\\)?"
+	     "[" TeX-ispell-verb-opening-delimiters "]")
+    .
+    ,(concat "[" TeX-ispell-verb-closing-delimiters "]"))
    ;; minted.sty
-   ("\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}{" . "}")
-   ("\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}|" . "|")
-   ("\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}#" . "#")
-   ("\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}\\+" . "\\+")
-   ("\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}\\*" . "\\*")))
+   (,(concat "\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}"
+	     "[" TeX-ispell-verb-opening-delimiters "]")
+    .
+    ,(concat "[" TeX-ispell-verb-closing-delimiters "]"))))
 
 
 ;; Add environments here:
