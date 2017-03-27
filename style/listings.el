@@ -404,8 +404,7 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lstnewenvironment" "{[[{{")) 'function)
      (font-latex-add-keywords '(("lstinputlisting" "[{")) 'reference)
-     (font-latex-add-keywords '(("lstinline" "[{") ; The second argument should
-					; actually be verbatim.
+     (font-latex-add-keywords '(("lstinline" "[")
 				("lstlistoflistings" ""))
 			      'textual)
      (font-latex-add-keywords '(("lstalias" "{{")
