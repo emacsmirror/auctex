@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty' (v2.4.1)
 
-;; Copyright (C) 2014-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2017 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -246,29 +246,46 @@ are loaded."
       (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env)
       (add-to-list 'LaTeX-verbatim-environments-local env*)))
-  ;; \newmint{foo}{opts} => \foo|code|
-  ;; \newmint[macname]{foo}{opts} => \macname|code|
+  ;; \newmint{foo}{opts} => \foo[key=vals]|code|
+  ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code|
   (dolist (name-lang LaTeX-minted-auto-newmint)
     (let ((lang (if (> (length (car name-lang)) 0)
 		    (car name-lang)
 		  (cadr name-lang))))
-      (add-to-list 'TeX-auto-symbol lang)
-      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)))
-  ;; \newmintinline{foo}{opts} => \fooinline|code|
-  ;; \newmintinline[macname]{foo}{opts} => \macname|code|
+      (add-to-list 'TeX-auto-symbol
+		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+			   TeX-arg-verb))
+      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+      (when (and (fboundp 'font-latex-add-keywords)
+		 (fboundp 'font-latex-update-font-lock)
+		 (eq TeX-install-font-lock 'font-latex-setup))
+	(font-latex-add-keywords `((,lang "[")) 'textual))))
+  ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
+  ;;                              \fooinline[key=vals]{code}
+  ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
+  ;;                                       \macname[key=vals]{code}
   (dolist (name-lang LaTeX-minted-auto-newmintinline)
     (let ((lang (if (> (length (car name-lang)) 0)
 		    (car name-lang)
-		  (cadr name-lang))))
-      (add-to-list 'TeX-auto-symbol lang)
-      (add-to-list 'LaTeX-verbatim-macros-with-delims-local (concat lang "inline"))))
-  ;; \newmintedfile{foo}{opts} => \foofile{file-name}
-  ;; \newmintedfile[macname]{foo}{opts} => \macname{file-name}
+		  (concat (cadr name-lang) "inline"))))
+      (add-to-list 'TeX-auto-symbol
+		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+			  TeX-arg-verb))
+      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+      (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
+      (when (and (fboundp 'font-latex-add-keywords)
+		 (fboundp 'font-latex-update-font-lock)
+		 (eq TeX-install-font-lock 'font-latex-setup))
+	(font-latex-add-keywords `((,lang "[")) 'textual))))
+  ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
+  ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
   (dolist (name-lang LaTeX-minted-auto-newmintedfile)
     (let ((lang (if (> (length (car name-lang)) 0)
 		    (car name-lang)
-		  (cadr name-lang))))
-      (add-to-list 'TeX-auto-symbol (list lang 'TeX-arg-file))))
+		  (concat (cadr name-lang) "file"))))
+      (add-to-list 'TeX-auto-symbol
+		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+			   TeX-arg-file))))
   (when (and (fboundp 'font-latex-update-font-lock)
 	     (eq TeX-install-font-lock 'font-latex-setup))
     ;; Refresh font-locking so that the verbatim envs take effect.
@@ -279,6 +296,47 @@ are loaded."
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-minted-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-minted-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+
+(defun LaTeX-minted-add-syntactic-keywords-extra (type macro)
+  "Add MACRO from minted.sty to `font-latex-syntactic-keywords-extra'.
+TYPE is one of the symbols \\='brace or \\='delim indicating how
+verbatim text is enclosed after the macro.  MACRO is a string or
+a list of strings."
+  (let ((macro (if (listp macro)
+		   (regexp-opt macro)
+		 macro))
+	(syntax (if (eq type 'brace)
+		    '((1 "|") (2 "|"))
+		  '((1 "\"") (2 ".") (3 "\""))))
+	regexp)
+    (setq regexp `(,(concat
+		     ;; The backslash
+		     (regexp-quote TeX-esc)
+		     ;; Name of the macro(s)
+		     macro
+		     ;; The optional argument
+		     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+		     ;; The first mandatory argument
+		     "\\(?:{[^}]+}\\)"
+		     ;; With 'brace, allow braced sub-groups otherwise
+		     ;; we stop matching too early.  With 'delim, copy
+		     ;; font-latex.el:
+		     (if (eq type 'brace)
+			 (concat "\\({\\)"
+				   "\\(?:[^}{]*"
+				     "\\(?:{[^}{]*"
+				       "\\(?:{[^}{]*"
+					 "\\(?:{[^}{]*}[^}{]*\\)*"
+				       "}[^}{]*\\)*"
+				     "}[^}{]*\\)*"
+				   "\\)"
+				 "\\(}\\)")
+		       (concat
+			;; Opening delimiter
+			"\\([^a-z@*\n\f{]\\).*?"
+			;; Closing delimiter
+			"\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
+    (add-to-list 'font-latex-syntactic-keywords-extra (append regexp syntax))))
 
 (TeX-add-style-hook
  "minted"
@@ -355,9 +413,6 @@ are loaded."
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 		'("minted" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "minted")
-   ;; FIXME: That doesn't work because \mintinline has 2 args and only the
-   ;; second argument is verbatim.
-   ;;(add-to-list 'LaTeX-verbatim-macros-with-delims-local "mintinline")
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
@@ -368,15 +423,21 @@ are loaded."
 				("setmintedinline" "[{")
 				("newminted"       "[{{")
 				("newmint"         "[{{")
-				("newmintedinline" "[{{")
-				("newmintedfile"   "[{{")
-				;; FIXME: Those have the form \mint{lang}|code|
-				;; so ideally the verbatim arg should be
-				;; recognized.
-				"mint" "mintinline")
+				("newmintinline"   "[{{")
+				("newmintedfile"   "[{{"))
 			      'function)
-     (font-latex-add-keywords '(("inputminted" "[{{"))
+     (font-latex-add-keywords '(("inputminted" "[{{")
+				("mint"        "[{")
+				("mintinline"  "[{"))
 			      'textual)
+     ;; Add \mint & \mintinline to
+     ;; `font-latex-syntactic-keywords-extra' and cater for their
+     ;; special syntax: \mint[optional]{lang}{verbatim} or
+     ;;                 \mint[optional]{lang}|verbatim|
+     (LaTeX-minted-add-syntactic-keywords-extra 'brace
+						'("mint" "mintinline"))
+     (LaTeX-minted-add-syntactic-keywords-extra 'delim
+						'("mint" "mintinline"))
      ;; Tell font-lock about the update.
      (font-latex-update-font-lock t)))
  LaTeX-dialect)
