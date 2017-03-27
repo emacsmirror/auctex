@@ -387,7 +387,7 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("textual"
      (("item" "[") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
-      ("textsuperscript" "{") ("textsubscript" "{"))
+      ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
@@ -1005,6 +1005,10 @@ have changed."
     (unless (= (length verb-macros-with-delims) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-macros-with-delims "\\)"
+			      ;; Some macros take an optional
+			      ;; argument.  This is the same line as
+			      ;; above for environments.
+			      "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
 			      ;; An opening curly brace as delimiter
 			      ;; is valid, but allowing it might screw
 			      ;; up fontification of stuff like
@@ -1019,6 +1023,10 @@ have changed."
     (unless (= (length verb-macros-with-braces) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-macros-with-braces "\\)"
+			      ;; Some macros take an optional
+			      ;; argument.  This is the same line as
+			      ;; above for environments.
+			      "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
 			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
 		     (1 "|") (2 "|")))))
   (when font-latex-syntactic-keywords-extra
