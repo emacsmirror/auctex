@@ -518,7 +518,7 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 ;        (if (and (eq TeX-engine 'ptex) (executable-find "pbibtex"))
 ;            "pBibTeX" "jBibTeX"))
 
-    (when (and (featurep 'font-latex)
+    (when (and (fboundp 'font-latex-add-keywords)
 	       (eq TeX-install-font-lock 'font-latex-setup))
       ;; jLaTeX にはないコマンドだが、それはもう気にしなくていいだろう。
       (font-latex-add-keywords '(("textgt" "{") ("mathgt" "{"))
