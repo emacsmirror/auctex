@@ -6677,6 +6677,30 @@ skipped."
      (message "Error skipping s-expressions at point %d" (point))
      (sit-for 2))))
 
+(defun TeX-ispell-tex-arg-verb-end (&optional arg)
+  "Skip across an optional argument, ARG number of mandatory ones and verbatim content.
+This function always checks if one optional argument in brackets
+is given and skips over it.  If ARG is a number, it skips over
+that many mandatory arguments in braces.  Then it checks for
+verbatim content to skip which is enclosed by a character given
+in `TeX-ispell-verb-delimiters' or in braces, otherwise raises an
+error."
+  (condition-case nil
+      (progn
+	(when (looking-at "[ \t\n]*\\[") (forward-sexp))
+	(when (and arg (looking-at "{"))
+	  (forward-sexp arg))
+	(cond ((looking-at (concat "[" TeX-ispell-verb-delimiters "]"))
+	       (forward-char)
+	       (skip-chars-forward (concat "^" (string (char-before))))
+	       (forward-char))
+	      ((looking-at "{")
+	       (forward-sexp))
+	      (t (error nil))))
+    (error
+     (message (format "Verbatim delimiter is not one of %s"
+		      (split-string TeX-ispell-verb-delimiters "" t)))
+     (sit-for 2))))
 
 ;;; Abbrev mode
 

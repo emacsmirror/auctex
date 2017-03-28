@@ -72,18 +72,6 @@
 
 (require 'tex)
 
-(defcustom TeX-ispell-verb-opening-delimiters "{!|#\"*/+-"
-  "String with all opening delimiters for verb macros.
-The elements must match `TeX-ispell-verb-closing-delimiters'."
-  :group 'TeX-misc
-  :type 'string)
-
-(defcustom TeX-ispell-verb-closing-delimiters "}!|#\"*/+-"
-  "String with all closing delimiters for verb macros.
-The elements must match `TeX-ispell-verb-opening-delimiters'."
-  :group 'TeX-misc
-  :type 'string)
-
 ;; Add new macros here:
 (eval-when-compile
   (defvar TeX-ispell-skip-cmds-list
@@ -299,17 +287,26 @@ Environments for math or verbatim text are candidates for this list."))
    ;; booktabs.sty
    ("\\\\cmidrule" . "{[-0-9]+}")
    ;; fontspec.sty
-   ("\\\\fontspec" TeX-ispell-tex-arg-end 1 1 0)
-   ;; listings.sty & fancyvrb.sty:
-   (,(concat "\\\\\\(lstinline\\|Verb\\)\\(\\[[^]]*\\]\\)?"
-	     "[" TeX-ispell-verb-opening-delimiters "]")
-    .
-    ,(concat "[" TeX-ispell-verb-closing-delimiters "]"))
-   ;; minted.sty
-   (,(concat "\\\\mint\\(inline\\)?\\(\\[[^]]*\\]\\)?{\\([^}]+\\)}"
-	     "[" TeX-ispell-verb-opening-delimiters "]")
-    .
-    ,(concat "[" TeX-ispell-verb-closing-delimiters "]"))))
+   ("\\\\fontspec" TeX-ispell-tex-arg-end 1 1 0)))
+
+
+;; Special setup for verbatim macros:
+(defcustom TeX-ispell-verb-delimiters "!|#~\"*/+^-"
+  "String with all delimiters for verbatim macros.
+Characters special in regexps like `^' and `-' must come last and
+not be quoted.  An opening brace `{' should not be used."
+  :group 'TeX-misc
+  :type 'string)
+
+;; listings.sty & fancyvrb.sty: With opt. argument only before verb content:
+(TeX-ispell-skip-setcar
+ `((,(concat "\\\\" (regexp-opt '("Verb" "lstinline")))
+    TeX-ispell-tex-arg-verb-end)))
+
+;; minted.sty: With opt. and mandatory argument before verb content:
+(TeX-ispell-skip-setcar
+ `((,(concat "\\\\" (regexp-opt '("mint" "mintinline")))
+    TeX-ispell-tex-arg-verb-end 1)))
 
 
 ;; Add environments here:
