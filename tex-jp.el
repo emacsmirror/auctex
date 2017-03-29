@@ -113,11 +113,25 @@ For detail, see `TeX-command-list', to which this list is appended."
 				     (const :tag "AmSTeX" ams-tex-mode)))
 			(repeat :tag "Menu elements" :inline t sexp))))
 
-;; Define before first use.
-(defvar japanese-TeX-mode nil
-  "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
-(make-variable-buffer-local 'japanese-TeX-mode)
-(put 'japanese-TeX-mode 'permanent-local t)
+;; customize option の初期値や saved value そのものを改変しないように
+;; するため、setcar の使用は避ける。
+(setq TeX-command-list
+      ;; `TeX-command-list' と同じ構造の新しい list を作る。
+      ;; 各要素の list を l として、l そのものを使ったり、l を
+      ;; 若干修正した list を作ったりして `mapcar' で集める。
+      (mapcar
+       (lambda (l)
+	 (cond
+	  ;; l の第1要素が "BibTeX" や "Index" だったら、l の第2要素
+	  ;; だけを入れ替えた別の list を作る。
+	  ((equal (car l) "BibTeX")
+	   (append (list (car l) "%(bibtex) %s") (cddr l)))
+	  ((equal (car l) "Index")
+	   (append (list (car l) "%(makeindex) %s") (cddr l)))
+	  ;; それ以外の場合は l そのものを使う。
+	  (t
+	   l)))
+       TeX-command-list))
 
 ;; 順調に行けば不要になる。
 (setq TeX-command-list
@@ -125,12 +139,11 @@ For detail, see `TeX-command-list', to which this list is appended."
 	      '(("-" "" ignore nil t)) ;; separator for command menu
 	      TeX-command-list))
 
-;; 暫定処置。tex.el に取り込んでもらえるとよい。
-;; Replace the entries only if they're already there.
-(when (assoc "BibTeX" TeX-command-list)
-  (setcar (cdr (assoc "BibTeX" TeX-command-list)) "%(bibtex) %s"))
-(when (assoc "Index" TeX-command-list)
-  (setcar (cdr (assoc "Index" TeX-command-list)) "%(makeindex) %s"))
+;; Define before first use.
+(defvar japanese-TeX-mode nil
+  "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
+(make-variable-buffer-local 'japanese-TeX-mode)
+(put 'japanese-TeX-mode 'permanent-local t)
 
 (setq TeX-expand-list-builtin
       (append
@@ -215,11 +228,13 @@ For detail, see `TeX-command-list', to which this list is appended."
        TeX-view-predicate-list-builtin))
 
 (unless (memq system-type '(windows-nt darwin))
-  (setcar (cadr (assoc "xdvi" TeX-view-program-list-builtin))
-	  "%(xdvi) -unique")
+  (let ((l (assoc "xdvi" TeX-view-program-list-builtin)))
+    (when l
+      (setcar (cadr l) "%(xdvi) -unique")
+      (setcdr (cdr l) '("%(xdvi)"))))
   (setq TeX-view-program-list-builtin
 	(append TeX-view-program-list-builtin
-         '(("MuPDF" "mupdf %o" "mupdf")))))
+		'(("MuPDF" "mupdf %o" "mupdf")))))
 
 ;; これは tex.el に取り入れてもらうのは難しいか？
 ;; tex-jp.el が読み込まれるだけで、dvi viewer のデフォルトが dviout に
