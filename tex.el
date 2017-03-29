@@ -6698,8 +6698,8 @@ error."
 	       (forward-sexp))
 	      (t (error nil))))
     (error
-     (message (format "Verbatim delimiter is not one of %s"
-		      (split-string TeX-ispell-verb-delimiters "" t)))
+     (message "Verbatim delimiter is not one of %s"
+	      (split-string TeX-ispell-verb-delimiters "" t))
      (sit-for 2))))
 
 ;;; Abbrev mode
