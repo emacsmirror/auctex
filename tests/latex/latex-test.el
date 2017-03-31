@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014--2016 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2017 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -140,5 +140,20 @@ line and from another directory."
 	     (insert-file-contents tabular-count-ampersands/out)
 	     (LaTeX-mode)
 	     (buffer-string)))))
+
+(ert-deftest LaTeX-addbibresource ()
+  "Check parsing of bibliography files added with addbibresource.
+
+In particular, make sure dots are treated correctly and only the
+last extension is stripped."
+  (should
+   (equal
+    (with-temp-buffer
+      (insert "\\addbibresource{../foo-1.bar_2.qux3.ext}")
+      (LaTeX-mode)
+      (let ((TeX-parse-self t))
+	(TeX-update-style t))
+      (LaTeX-bibliography-list))
+    '(("../foo-1.bar_2.qux3")))))
 
 ;;; latex-test.el ends here
