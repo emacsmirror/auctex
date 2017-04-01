@@ -93,15 +93,24 @@ line and from another directory."
 ;; Test LaTeX code with math modes is indented as expected.  This has mostly to
 ;; do with the value of `LaTeX-fill-break-at-separators' and how
 ;; `LaTeX-fill-move-to-break-point' handles it.  If the test fails, try to look
-;; there.
+;; there.  The second part of the test looks for unambiguousness of
+;; macros starting a paragraph
+;; (http://lists.gnu.org/archive/html/auctex/2017-03/msg00009.html)
 (ert-deftest LaTeX-filling ()
   (should (string=
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/in)
              (LaTeX-mode)
 	     (let ((fill-column 70))
-	       (fill-paragraph))
-             (buffer-string))
+	       (fill-paragraph)
+	       (let ((cmds '("captionsetup" "caption"
+			     "parencite"    "par")))
+		 (dolist (cmd cmds)
+		   (search-forward (concat "\\" cmd))
+		   (save-excursion
+		     (end-of-line 0)
+		     (fill-paragraph)))))
+	     (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
              (buffer-string)))))

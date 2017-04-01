@@ -3,3 +3,26 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod \(0 = 1\) tem
 \begin{tabular}{| l | l | l | l |}
   Lorem ipsum dolor sit amet, consectetur adipisci & Lorem ipsum dolor sit amet, consectetur adipisci & Lorem ipsum dolor sit amet, consectetur adipisci & Lorem ipsum dolor sit amet, consectetur adipisci
 \end{tabular}
+
+% Test for unambiguousness of macros starting a paragraph.  E.g.
+% caption vs. captionsetup
+Lorem ipsum dolor sit amet, consectetur adipisci,
+lorem ipsum dolor
+\captionsetup{key=val}
+sit amet, consectetur adipisci
+
+Lorem ipsum dolor sit amet, consectetur adipisci,
+lorem ipsum dolor
+\caption{key=val}
+sit amet, consectetur adipisci
+
+% par vs. parencite
+Lorem ipsum dolor sit amet, consectetur adipisci,
+lorem ipsum dolor
+\parencite{key}
+sit amet, consectetur adipisci
+
+Lorem ipsum dolor sit amet, consectetur adipisci,
+lorem ipsum dolor
+\par
+sit amet, consectetur adipisci

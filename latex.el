@@ -4547,10 +4547,21 @@ value of NO-SUBSECTIONS."
   "Internal list of LaTeX macros that should have their own line.")
 
 (defun LaTeX-paragraph-commands-regexp-make ()
-  "Return a regular expression matching defined paragraph commands."
-  (concat (regexp-quote TeX-esc) "\\("
-	  (regexp-opt (append LaTeX-paragraph-commands
-			      LaTeX-paragraph-commands-internal)) "\\)"))
+  "Return a regular expression matching defined paragraph commands.
+Regexp part containing TeX control words is postfixed with `\\b'
+to avoid ambiguities (e.g. \\par vs. \\parencite)."
+  (let (cmds symbs)
+    (dolist (mac (append LaTeX-paragraph-commands
+			 LaTeX-paragraph-commands-internal))
+      (if (string-match "[^a-zA-Z]" mac)
+	  (push mac symbs)
+	(push mac cmds)))
+    (concat (regexp-quote TeX-esc) "\\(?:"
+	    (regexp-opt cmds "\\(?:")
+	    "\\b"
+	    "\\|"
+	    (regexp-opt symbs)
+	    "\\)")))
 
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
