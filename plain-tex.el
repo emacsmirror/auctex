@@ -152,30 +152,29 @@ of plain-TeX-mode-hook."
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
   (setq paragraph-start
 	(concat
-	 "\\(^[ \t]*$"
+	 "\\(?:[ \t]*$"
 	 "\\|" (regexp-quote TeX-esc) "par\\|"
-	 "^[ \t]*"
+	 "[ \t]*"
 	 (regexp-quote TeX-esc)
-	 "\\("
+	 "\\(?:"
 	 "begin\\|end\\|part\\|chapter\\|"
 	 "section\\|subsection\\|subsubsection\\|"
 	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix\\|label\\|caption\\|"
-	 "\\[\\|\\]"			; display math delimitors
+	 "tableofcontents\\|appendix\\|label\\|caption\\|\\(?:item\\)?item"
 	 "\\)"
 	 "\\|"
-	 "^[ \t]*\\$\\$"		; display math delimitor
+	 "[ \t]*\\$\\$"		; display math delimitor
 	 "\\)" ))
   (setq paragraph-separate
 	(concat
 	 "[ \t]*"
-	 "\\("
+	 "\\(?:"
 	 (regexp-quote TeX-esc) "par\\|"
 	 "%\\|"
 	 "$\\|"
 	 "\\$\\$\\|"
 	 (regexp-quote TeX-esc)
-	 "\\("
+	 "\\(?:"
 	 "begin\\|end\\|label\\|caption\\|part\\|chapter\\|"
 	 "section\\|subsection\\|subsubsection\\|"
 	 "paragraph\\|include\\|includeonly\\|"
