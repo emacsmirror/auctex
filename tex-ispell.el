@@ -291,10 +291,12 @@ Environments for math or verbatim text are candidates for this list."))
 
 
 ;; Special setup for verbatim macros:
-(defcustom TeX-ispell-verb-delimiters "!|#~\"*/+^-"
+(defcustom TeX-ispell-verb-delimiters "!|#~\"/+^-"
   "String with all delimiters for verbatim macros.
 Characters special in regexps like `^' and `-' must come last and
-not be quoted.  An opening brace `{' should not be used."
+not be quoted.  An opening brace `{', asterisk `*' and at-sign
+`@' should not be used as they are not recognized by
+`font-latex.el' correctly."
   :group 'TeX-misc
   :type 'string)
 
