@@ -3109,6 +3109,21 @@ Finally, @AUCTeX{} provides a function called
 information.
 @end defopt
 
+@AUCTeX{} also provides a facility to skip the argument of in-line
+verbatim macros like @samp{\Verb} from @file{fancyvrb.sty} or
+@samp{\mintinline} from @file{minted.sty}.  Characters delimiting the
+verbatim text are stored in @code{TeX-ispell-verb-delimiters}.
+
+@defopt TeX-ispell-verb-delimiters
+String with delimiters recognized for in-line verbatim macros.  This
+variable is initialized to @samp{!|#~\"*/+^-}.  Since this string is
+used to build a character alternative inside a regular expression,
+special characters @samp{^} and @samp{-} should come last.  Other
+characters like opening brace @samp{@{}, asterisk @samp{*} or at sign
+@samp{@@} should be avoided as they are not recognized by
+@file{font-latex.el}.
+@end defopt
+
 @node Processor Options
 @subsection Options for @TeX{} Processors
 
