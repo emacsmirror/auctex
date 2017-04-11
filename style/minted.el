@@ -299,7 +299,7 @@ are loaded."
 
 (defun LaTeX-minted-add-syntactic-keywords-extra (type macro)
   "Add MACRO from minted.sty to `font-latex-syntactic-keywords-extra'.
-TYPE is one of the symbols \\='brace or \\='delim indicating how
+TYPE is one of the symbols `brace' or `delim' indicating how
 verbatim text is enclosed after the macro.  MACRO is a string or
 a list of strings."
   (let ((macro (if (listp macro)
