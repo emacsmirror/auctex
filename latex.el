@@ -214,8 +214,7 @@ section."
 (defun LaTeX-section-list-add-locally (sections &optional clean)
   "Add SECTIONS to `LaTeX-section-list'.
 SECTIONS can be a single list containing the section macro name
-as a string and the the level as an integer or a list of such
-lists.
+as a string and the level as an integer or a list of such lists.
 
 If optional argument CLEAN is non-nil, remove any existing
 entries from `LaTeX-section-list' before adding the new ones.
