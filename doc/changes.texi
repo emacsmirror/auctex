@@ -12,6 +12,19 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} has a new customize option @code{TeX-ispell-verb-delimiters}.
+This string contains usual characters used as delimiters for in-line
+verbatim macros like @samp{\verb}.  Text between delimiters after an
+in-line verbatim macro will be skipped during spell checking.
+
+@item
+Fontification of in-line verbatim macros has been improved.
+@file{font-latex.el} recognizes an optional or a mandatory argument for
+macros like @samp{\Verb} from @file{fancyvrb.sty}, @samp{\mint} and
+@samp{\mintinline} from @file{minted.sty} and fontifies verbatim content
+correctly.
+
+@item
 @AUCTeX{} can put and parse labels in optional argument of environments.
 Inserting labels is done by new function
 @code{LaTeX-env-label-as-keyval}.  A new customize option
