@@ -302,13 +302,12 @@ are loaded."
 TYPE is one of the symbols `brace' or `delim' indicating how
 verbatim text is enclosed after the macro.  MACRO is a string or
 a list of strings."
-  (let ((macro (if (listp macro)
-		   (regexp-opt macro)
-		 macro))
-	(syntax (if (eq type 'brace)
+  (let ((syntax (if (eq type 'brace)
 		    '((1 "|") (2 "|"))
 		  '((1 "\"") (2 ".") (3 "\""))))
 	regexp)
+    (when (listp macro)
+      (setq macro (regexp-opt macro "\\(?:")))
     (setq regexp `(,(concat
 		     ;; The backslash
 		     (regexp-quote TeX-esc)
