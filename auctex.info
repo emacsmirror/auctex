@@ -1,9 +1,9 @@
 This is auctex.info, produced by makeinfo version 6.3 from auctex.texi.
 
-This manual is for AUCTeX (version 11.90.0 from 2017-01-11), a
+This manual is for AUCTeX (version 11.90.1 from 2017-04-16), a
 sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -2971,10 +2971,11 @@ font-latex ships with predefined lists of keywords for the classes
 described above.  You can disable these defaults per class by
 customizing the variable 'font-latex-deactivated-keyword-classes'.  This
 is a list of strings for keyword classes to be deactivated.  Valid
-entries are "warning", "variable", "reference", "function" ,
-"sectioning-0", "sectioning-1", "sectioning-2", "sectioning-3",
-"sectioning-4", "sectioning-5", "textual", "bold-command",
-"italic-command", "math-command", "type-command", "bold-declaration",
+entries are "warning", "variable", "biblatexnoarg", "biblatex",
+"reference", "function" , "sectioning-0", "sectioning-1",
+"sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
+"slide-title", "textual", "bold-command", "italic-command",
+"math-command", "type-command", "bold-declaration",
 "italic-declaration", "type-declaration".
 
    You can also get rid of certain keywords only.  For example if you
@@ -2984,7 +2985,9 @@ following stanza into your init file:
      (eval-after-load "font-latex"
        '(setq-default
          font-latex-match-reference-keywords-local
-         (remove "footnote" font-latex-match-reference-keywords-local)))
+         (remove (TeX-assoc-string "footnote"
+                 font-latex-match-reference-keywords-local)
+                     font-latex-match-reference-keywords-local)))
 
    But note that this means fiddling with font-latex's internals and is
 not guaranteed to work in future versions of font-latex.
@@ -3012,9 +3015,8 @@ variable 'font-latex-user-keyword-classes'.
      the command name and a string specifying the sequence of arguments
      for the command.
 
-     The face argument can either be an existing face or font
-     specifications made by you.  (The latter option is not available on
-     XEmacs.)
+     The face argument can either be an existing face or face attributes
+     made by you.  (The latter option is not available on XEmacs.)
 
      There are three alternatives for the type of keywords--"Command
      with arguments", "Declaration inside TeX group" and "Command
@@ -3807,6 +3809,19 @@ which can be added to this variable depending on the value of
      Finally, AUCTeX provides a function called 'TeX-ispell-tex-arg-end'
      which sees more arguments than 'ispell-tex-arg-end'.  Refer to its
      doc string for more information.
+
+   AUCTeX also provides a facility to skip the argument of in-line
+verbatim macros like '\Verb' from 'fancyvrb.sty' or '\mintinline' from
+'minted.sty'.  Characters delimiting the verbatim text are stored in
+'TeX-ispell-verb-delimiters'.
+
+ -- User Option: TeX-ispell-verb-delimiters
+     String with delimiters recognized for in-line verbatim macros.
+     This variable is initialized to '!|#~\"*/+^-'.  Since this string
+     is used to build a character alternative inside a regular
+     expression, special characters '^' and '-' should come last.  Other
+     characters like opening brace '{', asterisk '*' or at sign '@'
+     should be avoided as they are not recognized by 'font-latex.el'.
 
 
 File: auctex.info,  Node: Processor Options,  Prev: Selecting a Command,  Up: Commands
@@ -4991,39 +5006,104 @@ File: auctex.info,  Node: Japanese,  Prev: European,  Up: Internationalization
 5.4.2 Using AUCTeX with Japanese TeX
 ------------------------------------
 
-To write Japanese text with AUCTeX, you need to have versions of TeX and
-Emacs that support Japanese.  There exist at least two variants of TeX
-for Japanese text (NTT jTeX and ASCII pTeX).  AUCTeX can be used with
-MULE (MULtilingual Enhancement to GNU Emacs) supported Emacsen.
+To write Japanese text with AUCTeX, you need the versions of TeX and
+Emacs that support Japanese.  AUCTeX supports three Japanese TeX engines
+by default: NTT jTeX, ASCII pTeX and upTeX.  On XEmacs, AUCTeX needs
+MULE (MULtilingual Enhancement to GNU Emacs) feature to deal with
+Japanese text.
 
-   To use the Japanese TeX variants, simply activate
-'japanese-plain-tex-mode' or 'japanese-latex-mode' and everything should
-work.  If not, send mail to Masayuki Ataka
-'<ataka@milk.freemail.ne.jp>', who kindly donated the code for
-supporting Japanese in AUCTeX.  None of the primary AUCTeX maintainers
+   To use the Japanese TeX engines, activate 'japanese-plain-tex-mode'
+or 'japanese-latex-mode'.  If it doesn't work, send mail to Masayuki
+Ataka '<masayuki.ataka@gmail.com>' or Ikumi Keita
+'<ikumikeita@jcom.home.ne.jp>', who currently concern with stuff related
+to Japanese in AUCTeX.  None of the primary AUCTeX maintainers
 understand Japanese, so they cannot help you.
+
+   It is recommended to enable 'TeX-parse-self' for typical Japanese
+LaTeX users.  When enabled, 'japanese-latex-mode' selects the suitable
+Japanese TeX engine automatically based on the class file name (such as
+'jbook', 'jsarticle' and 'tjreport') and its option.  *note Parsing
+Files::.
+
+   It is important to select the suitable Japanese TeX engine because
+the selected engine determines the command name such as 'platex' and
+'uptex' to typeset the document.  If you find that wrong command is
+used, check the value of 'TeX-engine' on that buffer.  If the value does
+not suit the current document, change the value by the 'TeXing Options'
+submenu below the 'Command' menu.  *note Processor Options::.
+
+   To make the selected engine to persist across Emacs sessions, there
+are two ways from which you can choose one according to your needs:
+
+  1. If you use a specific engine (almost) exclusively, customize the
+     option 'japanese-TeX-engine-default'.
+
+      -- User Option: japanese-TeX-engine-default
+          The default TeX engine in Japanese TeX mode.
+
+          The default value is 'ptex'.
+  2. If you want to set the engine on a per file basis, use the file
+     local variables to set 'TeX-engine'.
+
+     Here is a sample code to set 'TeX-engine' to 'uptex':
+
+          %%% Local Variables:
+          %%% mode: japanese-latex
+          %%% TeX-engine: uptex
+          %%% End:
+
+   In the both cases above, the valid value is one of 'ptex', 'jtex' and
+'uptex'.
+
+   You can override the command names associated with the above three
+engines or define your own engine by customizing 'TeX-engine-alist'.
+*Note Processor Options::.
+
+   It is sometimes necessary to use an engine which differs from the one
+AUCTeX selects automatically.  For example, even when you want to use
+'j-article' document class deliberately with ASCII pLaTeX, AUCTeX
+selects NTT jLaTeX command if 'TeX-parse-self' is enabled, because
+'j-article' originally belongs to NTT jLaTeX.  In such cases, use the
+file local variable method above to select the engine you intend to use.
 
    If you usually use AUCTeX in Japanese, setting the following
 variables is useful.
 
  -- User Option: TeX-default-mode
-     Mode to enter for a new file when it cannott be determined whether
+     Mode to enter for a new file when it cannot be determined whether
      the file is plain TeX or LaTeX or what.
 
      If you want to enter Japanese LaTeX mode whenever this may happen,
      set the variable like this:
           (setq TeX-default-mode 'japanese-latex-mode)
 
- -- User Option: japanese-TeX-engine-default
-     The default TeX engine in Japanese TeX mode.
-
-     The default value is 'ptex'.
-
  -- User Option: japanese-LaTeX-default-style
      The default style/class when creating a new Japanese LaTeX
      document.
 
      The default value is '"jarticle"'.
+
+   It is recommended also for Japanese users to customize the option
+'TeX-PDF-from-DVI' to '"Dvipdfmx"'.  *Note Processor Options::
+
+   There are three customize options with regard to the encoding of
+Japanese text.
+
+ -- User Option: japanese-TeX-use-kanji-opt-flag
+     If non-nil, AUCTeX adds '-kanji' option to the typesetting command
+     when 'TeX-engine' is 'ptex'.
+
+   Usually AUCTeX guesses the right coding systems for input to and
+output from the Japanese TeX process, but you can override them by the
+following two customize options.
+
+ -- User Option: TeX-japanese-process-input-coding-system
+     If non-nil, used for encoding input to Japanese TeX process.  When
+     'nil', AUCTeX tries to choose suitable coding system.
+
+ -- User Option: TeX-japanese-process-output-coding-system
+     If non-nil, used for decoding output from Japanese TeX process.
+     When 'nil', AUCTeX tries to choose suitable coding system.
 
    The former customize options 'japanese-TeX-command-default' and
 'japanese-LaTeX-command-default' are obsolete.  Use
@@ -5034,6 +5114,20 @@ customize 'TeX-engine-alist'.
    Also, the option 'japanese-TeX-command-list' is considered as
 semi-obsolete.  It still functions as before, but in theory, it is not
 required anymore in normal use.
+
+   The following two additional font commands are available in LaTeX
+mode buffer.
+
+'C-c C-f g'
+     Insert gothic face font command '\textbf{-!-}' or '\mathbf{-!-}'
+     depending on the context.
+
+'C-c C-f m'
+     Insert mincho font command '\textmc{-!-}' or '\mathmc{-!-}'
+     depending on the context.
+
+   Although they are meaningful only with 'ptex' and 'uptex' engines, it
+won't matter in buffers with other engines.
 
    See 'tex-jp.el' for more information.
 
@@ -5823,10 +5917,10 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.90.0 from 2017-01-11), a
+   This manual is for AUCTeX (version 11.90.1 from 2017-04-16), a
 sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2016 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -6329,6 +6423,45 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 
 A.2 Changes and New Features
 ============================
+
+News since 11.90
+----------------
+
+   * AUCTeX has a new customize option 'TeX-ispell-verb-delimiters'.
+     This string contains usual characters used as delimiters for
+     in-line verbatim macros like '\verb'.  Text between delimiters
+     after an in-line verbatim macro will be skipped during spell
+     checking.
+
+   * Fontification of in-line verbatim macros has been improved.
+     'font-latex.el' recognizes an optional or a mandatory argument for
+     macros like '\Verb' from 'fancyvrb.sty', '\mint' and '\mintinline'
+     from 'minted.sty' and fontifies verbatim content correctly.
+
+   * AUCTeX can put and parse labels in optional argument of
+     environments.  Inserting labels is done by new function
+     'LaTeX-env-label-as-keyval'.  A new customize option
+     'LaTeX-listing-label' is available as prefix to labels in code
+     typesetting environments, e.g.  'lstlisting' environment provided
+     by 'listings' package.  'LaTeX-listing-label' defaults to 'lst:'.
+     Parsing of labels for later referencing relies on two requirements:
+       1. Label should come as last key-value argument, and
+       2. label must be enclosed in braces, e.g.
+               \begin{lstlisting}[caption=Some Caption,label={lst:foo}]
+               ...
+               \end{lstlisting}
+
+   * The function 'LaTeX-label' now takes a second optional argument
+     'NO-INSERT'.  When non-'nil', 'LaTeX-label' reads a label and
+     returns it as a string.  This argument is also passed to any
+     function bound to 'LaTeX-label-function' (see next item).
+
+   * *Incompatible change:* The signature for the function passed with
+     the customize option 'LaTeX-label-function' has changed.  The
+     function bound to this variable is now expected to take an optional
+     second argument 'NO-INSERT'.  When this argument is non-'nil', the
+     function should read and only return a label as a string; insertion
+     is done by another function.
 
 News in 11.90
 -------------
@@ -7817,6 +7950,8 @@ Key Index
 * C-c C-f C-s <1>:                       Font Specifiers.     (line  25)
 * C-c C-f C-t:                           Editing Facilities.  (line  91)
 * C-c C-f C-t <1>:                       Font Specifiers.     (line  34)
+* C-c C-f g:                             Japanese.            (line 119)
+* C-c C-f m:                             Japanese.            (line 123)
 * C-c C-k:                               Control.             (line  10)
 * C-c C-l:                               Control.             (line  14)
 * C-c C-m:                               Completion.          (line  69)
@@ -8112,11 +8247,13 @@ Variable Index
 * font-latex-slide-title-face:           Fontification of macros.
                                                               (line 114)
 * font-latex-user-keyword-classes:       Fontification of macros.
-                                                              (line 191)
+                                                              (line 194)
 * japanese-LaTeX-default-style:          Japanese.            (line   6)
-* japanese-LaTeX-default-style <1>:      Japanese.            (line  34)
+* japanese-LaTeX-default-style <1>:      Japanese.            (line  77)
 * japanese-TeX-engine-default:           Japanese.            (line   6)
-* japanese-TeX-engine-default <1>:       Japanese.            (line  29)
+* japanese-TeX-engine-default <1>:       Japanese.            (line  38)
+* japanese-TeX-use-kanji-opt-flag:       Japanese.            (line   6)
+* japanese-TeX-use-kanji-opt-flag <1>:   Japanese.            (line  89)
 * LaTeX-amsmath-label:                   Equations.           (line  15)
 * LaTeX-auto-class-regexp-list:          Parsing Files.       (line 105)
 * LaTeX-auto-counter-regexp-list:        Parsing Files.       (line 111)
@@ -8240,15 +8377,17 @@ Variable Index
 * TeX-debug-warnings:                    Ignoring warnings.   (line  15)
 * TeX-default-macro:                     Completion.          (line  91)
 * TeX-default-mode:                      Japanese.            (line   6)
-* TeX-default-mode <1>:                  Japanese.            (line  21)
+* TeX-default-mode <1>:                  Japanese.            (line  69)
 * TeX-display-help:                      Debugging.           (line  47)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line  98)
 * TeX-electric-math:                     Quotes.              (line  72)
 * TeX-electric-sub-and-superscript:      Mathematics.         (line  68)
 * TeX-engine:                            Processor Options.   (line 103)
+* TeX-engine <1>:                        Japanese.            (line   6)
 * TeX-engine-alist:                      Processor Options.   (line 120)
 * TeX-engine-alist <1>:                  Processor Options.   (line 131)
+* TeX-engine-alist <2>:                  Japanese.            (line   6)
 * TeX-engine-alist-builtin:              Processor Options.   (line 120)
 * TeX-error-overview-frame-parameters:   Error overview.      (line  44)
 * TeX-error-overview-open-after-TeX-run: Error overview.      (line  26)
@@ -8280,6 +8419,11 @@ Variable Index
 * TeX-install-font-lock:                 Font Locking.        (line  13)
 * TeX-interactive-mode:                  Processor Options.   (line  30)
 * TeX-ispell-extend-skip-list:           Selecting a Command. (line  82)
+* TeX-ispell-verb-delimiters:            Selecting a Command. (line 174)
+* TeX-japanese-process-input-coding-system: Japanese.         (line   6)
+* TeX-japanese-process-input-coding-system <1>: Japanese.     (line  97)
+* TeX-japanese-process-output-coding-system: Japanese.        (line   6)
+* TeX-japanese-process-output-coding-system <1>: Japanese.    (line 101)
 * TeX-language-bg-hook:                  European.            (line  53)
 * TeX-language-cz-hook:                  European.            (line  53)
 * TeX-language-de-hook:                  European.            (line  53)
@@ -8306,6 +8450,7 @@ Variable Index
 * TeX-output-view-style:                 Starting Viewers.    (line 105)
 * TeX-parse-all-errors:                  Debugging.           (line  35)
 * TeX-parse-self:                        Parsing Files.       (line  37)
+* TeX-parse-self <1>:                    Japanese.            (line   6)
 * TeX-PDF-from-DVI:                      Processor Options.   (line  71)
 * TeX-PDF-mode:                          Processor Options.   (line  16)
 * TeX-quote-after-quote:                 Quotes.              (line  29)
@@ -8366,8 +8511,10 @@ Concept Index
 * \subsection <1>:                       Sectioning.          (line   6)
 * \textbf:                               Editing Facilities.  (line  73)
 * \textbf <1>:                           Font Specifiers.     (line  16)
+* \textgt:                               Japanese.            (line 119)
 * \textit:                               Editing Facilities.  (line  76)
 * \textit <1>:                           Font Specifiers.     (line  19)
+* \textmc:                               Japanese.            (line 123)
 * \textrm:                               Editing Facilities.  (line  85)
 * \textrm <1>:                           Font Specifiers.     (line  28)
 * \textsc:                               Editing Facilities.  (line  94)
@@ -8395,7 +8542,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 437)
+* auctex.el <1>:                         Changes.             (line 476)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8697,7 +8844,7 @@ Concept Index
                                                               (line 286)
 * tex-site.el:                           Loading the package. (line  14)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 437)
+* tex-site.el <2>:                       Changes.             (line 476)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8707,6 +8854,8 @@ Concept Index
                                                               (line   6)
 * Untabify:                              Parsing Files.       (line   6)
 * Updating style hooks:                  Automatic Local.     (line   6)
+* upLaTeX:                               Japanese.            (line   6)
+* upTeX:                                 Japanese.            (line   6)
 * Verbatim, fontification of:            Verbatim content.    (line   6)
 * Viewing:                               Viewing.             (line   6)
 * Warranty:                              Copying.             (line   6)
@@ -8755,65 +8904,65 @@ Node: Filling108295
 Node: Display114167
 Node: Font Locking116662
 Node: Fontification of macros118737
-Node: Fontification of quotes128175
-Node: Fontification of math129670
-Node: Verbatim content133121
-Node: Faces133895
-Node: Known problems134384
-Node: Folding135313
-Node: Outline146137
-Node: Narrowing147409
-Node: Prettifying148479
-Node: Processing149715
-Node: Commands150878
-Node: Starting a Command151434
-Node: Selecting a Command156337
-Node: Processor Options164725
-Node: Viewing175005
-Node: Starting Viewers175379
-Node: I/O Correlation181956
-Node: Debugging187214
-Node: Ignoring warnings189868
-Node: Error overview191928
-Node: Checking193921
-Node: Control195083
-Node: Cleaning195810
-Node: Documentation197023
-Node: Customization197738
-Node: Modes and Hooks198231
-Node: Multifile200051
-Node: Parsing Files204863
-Node: Internationalization209775
-Node: European210947
-Node: Japanese217827
-Node: Automatic219811
-Node: Automatic Global222302
-Node: Automatic Private223434
-Node: Automatic Local224747
-Node: Style Files225779
-Node: Simple Style226572
-Node: Adding Macros229845
-Node: Adding Environments238963
-Node: Adding Other243624
-Node: Hacking the Parser244211
-Node: Appendices248080
-Node: Copying this Manual248464
-Node: GNU Free Documentation License249348
-Node: Changes274467
-Node: Development310460
-Node: Mid-term Goals311106
-Node: Wishlist312323
-Node: Bugs317764
-Node: FAQ319294
-Node: Texinfo mode325467
-Node: Exploiting326603
-Node: Superseding327423
-Node: Mapping331627
-Node: Unbinding333456
-Node: Indices334277
-Node: Key Index334502
-Node: Function Index340680
-Node: Variable Index351490
-Node: Concept Index373472
+Node: Fontification of quotes128309
+Node: Fontification of math129804
+Node: Verbatim content133255
+Node: Faces134029
+Node: Known problems134518
+Node: Folding135447
+Node: Outline146271
+Node: Narrowing147543
+Node: Prettifying148613
+Node: Processing149849
+Node: Commands151012
+Node: Starting a Command151568
+Node: Selecting a Command156471
+Node: Processor Options165555
+Node: Viewing175835
+Node: Starting Viewers176209
+Node: I/O Correlation182786
+Node: Debugging188044
+Node: Ignoring warnings190698
+Node: Error overview192758
+Node: Checking194751
+Node: Control195913
+Node: Cleaning196640
+Node: Documentation197853
+Node: Customization198568
+Node: Modes and Hooks199061
+Node: Multifile200881
+Node: Parsing Files205693
+Node: Internationalization210605
+Node: European211777
+Node: Japanese218657
+Node: Automatic223963
+Node: Automatic Global226454
+Node: Automatic Private227586
+Node: Automatic Local228899
+Node: Style Files229931
+Node: Simple Style230724
+Node: Adding Macros233997
+Node: Adding Environments243115
+Node: Adding Other247776
+Node: Hacking the Parser248363
+Node: Appendices252232
+Node: Copying this Manual252616
+Node: GNU Free Documentation License253500
+Node: Changes278619
+Node: Development316560
+Node: Mid-term Goals317206
+Node: Wishlist318423
+Node: Bugs323864
+Node: FAQ325394
+Node: Texinfo mode331567
+Node: Exploiting332703
+Node: Superseding333523
+Node: Mapping337727
+Node: Unbinding339556
+Node: Indices340377
+Node: Key Index340602
+Node: Function Index346926
+Node: Variable Index357736
+Node: Concept Index380448
 
 End Tag Table

@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 6.3 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.90.0 from 2017-01-11).
+(version 11.90.1 from 2017-04-16).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -1094,7 +1094,7 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
 
      As an example for using this argument, you might want to specify
 
-          \PreviewMacro*\footnote[{[]}][#1{}]
+          \PreviewMacro*[{[]}][#1{}]{\footnote}
 
      This will replace a footnote by an empty footnote, but taking any
      optional parameter into account, since an optional paramter changes
@@ -1127,8 +1127,8 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
      essential for the operation of '\PreviewOpen' that the macro
      treated with it will open an additional group even when the preview
      falls inside of another preview or inside of a 'nopreview'
-     environment.  Similarly, the macro treated with 'PreviewClose' will
-     close an environment even when inactive.
+     environment.  Similarly, the macro treated with '\PreviewClose'
+     will close an environment even when inactive.
 
 '\ifPreview'
      In case you need to know whether 'preview' is active, you can use
@@ -1900,7 +1900,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.90.0 from 2017-01-11).
+(version 11.90.1 from 2017-04-16).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -2542,19 +2542,19 @@ Node: For advanced users29783
 Node: The LaTeX style file30282
 Node: Package options32843
 Node: Provided commands43747
-Node: The Emacs interface51094
-Node: The preview images60265
-Node: Misplaced previews63748
-Node: ToDo67202
-Node: Frequently Asked Questions71973
-Node: Introduction to FAQ72374
-Node: Requirements72713
-Node: Installation Trouble75684
-Node: Customization78246
-Node: Troubleshooting81791
-Node: Other formats84309
-Node: Copying this Manual85624
-Node: GNU Free Documentation License86554
-Node: Index111676
+Node: The Emacs interface51097
+Node: The preview images60268
+Node: Misplaced previews63751
+Node: ToDo67205
+Node: Frequently Asked Questions71976
+Node: Introduction to FAQ72377
+Node: Requirements72716
+Node: Installation Trouble75687
+Node: Customization78249
+Node: Troubleshooting81794
+Node: Other formats84312
+Node: Copying this Manual85627
+Node: GNU Free Documentation License86557
+Node: Index111679
 
 End Tag Table
