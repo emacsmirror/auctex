@@ -227,8 +227,8 @@ number of ampersands if possible."
       (when (looking-at "[ \t\n\r%]*\\[")
 	(forward-sexp))
       (re-search-forward "[ \t\n\r%]*{\\([^}]+\\)}")
-      (setq match (replace-regexp-in-string "[ \t\n\r%]*" ""
-					    (match-string-no-properties 1)))
+      (setq match (TeX-replace-regexp-in-string "[ \t\n\r%]" ""
+						(match-string-no-properties 1)))
       (if (string-match "=" match)
 	  (progn
 	    (setq amsenv (car (split-string match "=")))

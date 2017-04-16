@@ -59,14 +59,12 @@ caption, insert only a caption."
     (insert TeX-grop caption TeX-grcl)
     ;; Fill the \subcaption paragraph before inserting the \label:
     (LaTeX-fill-paragraph)
-    (unless star
-      (save-excursion
-	(LaTeX-label currenv 'environment))
+    (when (and (not star)
+	       (save-excursion (LaTeX-label currenv 'environment)))
       ;; Move \label into next line if we have one:
-      (when (looking-at (regexp-quote "\\label{"))
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	(end-of-line)))))
+      (LaTeX-newline)
+      (indent-according-to-mode)
+      (end-of-line))))
 
 (defun LaTeX-arg-subcaption-subcaptionbox (optional &optional star)
   "Query for the arguments of \"\\subcaptionbox\" incl. a label and insert them.

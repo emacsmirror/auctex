@@ -155,6 +155,8 @@ If nil, none is specified."
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
      :help "Convert PostScript file to PDF")
+    ("Glossaries" "makeglossaries %s" TeX-run-command nil
+     t :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %s" TeX-run-index nil t
      :help "Run makeindex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil t
@@ -476,8 +478,8 @@ string."
     ("%(file-line-error)"
      (lambda () (if TeX-file-line-error " -file-line-error" "")))
     ("%(o?)" (lambda () (if (eq TeX-engine 'omega) "o" "")))
-    ("%(tex)" (lambda () (eval (nth 2 (assq TeX-engine (TeX-engine-alist))))))
-    ("%(latex)" (lambda () (eval (nth 3 (assq TeX-engine (TeX-engine-alist))))))
+    ("%(tex)" (lambda () (eval (nth 2 (TeX-engine-in-engine-alist TeX-engine)))))
+    ("%(latex)" (lambda () (eval (nth 3 (TeX-engine-in-engine-alist TeX-engine)))))
     ("%(cntxcom)" ConTeXt-expand-command)
     ("%(execopts)" ConTeXt-expand-options)
     ("%(extraopts)" (lambda () TeX-command-extra-options))
@@ -760,7 +762,11 @@ overlays."
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step)))) )
+	    (t TeX-overlay-priority-step))))
+
+  (defun TeX-replace-regexp-in-string (regexp rep string)
+    "Compatibility function mimicking `replace-regexp-in-string' for XEmacs."
+    (replace-in-string string regexp rep)) )
 
 ;; require crm here, because we often do
 ;;
@@ -898,7 +904,9 @@ overlays."
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step)))) )
+	    (t TeX-overlay-priority-step))))
+
+  (defalias #'TeX-replace-regexp-in-string #'replace-regexp-in-string) )
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.
@@ -1165,21 +1173,33 @@ all the regular expressions must match for the element to apply."
     (mode-io-correlate
      TeX-source-correlate-mode)
     (paper-landscape
-     (TeX-match-style "\\`landscape\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`landscape\\'")))
     (paper-portrait
-     (not (TeX-match-style "\\`landscape\\'")))
+     (not (and (fboundp 'LaTeX-match-class-option)
+	       (LaTeX-match-class-option "\\`landscape\\'"))))
     (paper-a4
-     (TeX-match-style "\\`a4paper\\|a4dutch\\|a4wide\\|sem-a4\\'"))
+     (let ((regex "\\`\\(?:a4paper\\|a4dutch\\|a4wide\\|sem-a4\\)\\'"))
+       (or (TeX-match-style regex)
+	   (and (fboundp 'LaTeX-match-class-option)
+		(LaTeX-match-class-option regex)))))
     (paper-a5
-     (TeX-match-style "\\`a5paper\\|a5comb\\'"))
+     (let ((regex "\\`\\(?:a5paper\\|a5comb\\)\\'"))
+       (or (TeX-match-style regex)
+	   (and (fboundp 'LaTeX-match-class-option)
+		(LaTeX-match-class-option regex)))))
     (paper-b5
-     (TeX-match-style "\\`b5paper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`b5paper\\'")))
     (paper-letter
-     (TeX-match-style "\\`letterpaper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`letterpaper\\'")))
     (paper-legal
-     (TeX-match-style "\\`legalpaper\\'"))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`legalpaper\\'")))
     (paper-executive
-     (TeX-match-style "\\`executivepaper\\'")))
+     (and (fboundp 'LaTeX-match-class-option)
+	  (LaTeX-match-class-option "\\`executivepaper\\'"))))
   "Alist of built-in predicates for viewer selection and invocation.
 See the doc string of `TeX-view-predicate-list' for a short
 description of each predicate.")
@@ -1313,7 +1333,7 @@ DE is the name of the desktop environment, either \"gnome\" or
 	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (line-number-at-pos)
+	   (list :struct :int32 (TeX-line-number-at-pos)
 		 :int32 (1+ (current-column)))
 	   :uint32 0))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
@@ -1650,6 +1670,17 @@ The function appends the built-in engine specs from
 where an entry with the same car exists in the user-defined part."
   (TeX-delete-dups-by-car (append TeX-engine-alist TeX-engine-alist-builtin)))
 
+(defun TeX-engine-in-engine-alist (engine)
+  "Return the `engine' entry in `TeX-engine-alist'.
+
+Throw an error if `engine' is not present in the alist."
+  (or
+   (assq engine (TeX-engine-alist))
+   (error "`%s' is not a known engine.  Valid values are: %s." engine
+	  (mapconcat
+	   (lambda (x) (prin1-to-string (car x)))
+	   (TeX-engine-alist) ", "))))
+
 (defcustom TeX-engine 'default
   (concat "Type of TeX engine to use.
 It should be one of the following symbols:\n\n"
@@ -1895,7 +1926,7 @@ If the Emacs frame isn't raised, customize
 		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
 		 ;; For Emacs 21 compatibility, which doesn't have the
 		 ;; url package.
-		 (file-error (replace-regexp-in-string "^file://" "" file))))
+		 (file-error (TeX-replace-regexp-in-string "^file://" "" file))))
 	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
 		  (apply #'list file linecol)))
 	 (file (car flc))
@@ -2057,7 +2088,7 @@ enabled and the `synctex' binary is available."
   (let ((synctex-output
 	 (with-output-to-string
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
-			 "-i" (format "%s:%s:%s" (line-number-at-pos)
+			 "-i" (format "%s:%s:%s" (TeX-line-number-at-pos)
 				      (current-column)
 				      file)
 			 "-o" (TeX-active-master (TeX-output-extension))))))
@@ -4209,7 +4240,7 @@ alter the numbering of any ordinary, non-shy groups.")
        1 TeX-auto-file)
       (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol)))
-  "List of regular expression matching common LaTeX macro definitions.")
+  "List of regular expression matching common plain TeX macro definitions.")
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
   "Full list of regular expression matching TeX macro definitions.")
@@ -6646,6 +6677,30 @@ skipped."
      (message "Error skipping s-expressions at point %d" (point))
      (sit-for 2))))
 
+(defun TeX-ispell-tex-arg-verb-end (&optional arg)
+  "Skip across an optional argument, ARG number of mandatory ones and verbatim content.
+This function always checks if one optional argument in brackets
+is given and skips over it.  If ARG is a number, it skips over
+that many mandatory arguments in braces.  Then it checks for
+verbatim content to skip which is enclosed by a character given
+in `TeX-ispell-verb-delimiters' or in braces, otherwise raises an
+error."
+  (condition-case nil
+      (progn
+	(when (looking-at "[ \t\n]*\\[") (forward-sexp))
+	(when (and arg (looking-at "{"))
+	  (forward-sexp arg))
+	(cond ((looking-at (concat "[" TeX-ispell-verb-delimiters "]"))
+	       (forward-char)
+	       (skip-chars-forward (concat "^" (string (char-before))))
+	       (forward-char))
+	      ((looking-at "{")
+	       (forward-sexp))
+	      (t (error nil))))
+    (error
+     (message "Verbatim delimiter is not one of %s"
+	      (split-string TeX-ispell-verb-delimiters "" t))
+     (sit-for 2))))
 
 ;;; Abbrev mode
 

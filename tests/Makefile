@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2014 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014, 2017 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -23,7 +23,7 @@
 ## filename.log: run tests from filename.el if .log file needs updating
 ## filename: re-run tests from filename.el, with no logging
 
-## Adapted from test/automated/Makefile.in of GNU Emacs.
+## Adapted from test/Makefile.in of GNU Emacs.
 
 ### Code:
 
@@ -77,11 +77,16 @@ endef
 $(foreach test,${TESTS},$(eval $(call test_template,${test})))
 
 ## Re-run all the tests every time.
-check:
-	-@for f in */*.log; do test ! -f $$f || mv $$f $$f~; done
-	@${MAKE} ${LOGFILES}
+check: mostlyclean check-doit
 
-.PHONY: clean
+.PHONY: check-doit
+check-doit: ${LOGFILES}
+	$(emacs) -l ert -f ert-summarize-tests-batch-and-exit $^
+
+.PHONY: mostlyclean clean
+
+mostlyclean:
+	-@for f in ${LOGFILES}; do test ! -f $$f || mv $$f $$f~; done
 
 clean:
 	-rm -f */*.log */*.log~

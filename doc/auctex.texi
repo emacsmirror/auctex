@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2016
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2017
 Free Software Foundation, Inc.
 
 @quotation
@@ -2137,10 +2137,11 @@ Face: @code{font-latex-type-face}
 described above.  You can disable these defaults per class by
 customizing the variable @code{font-latex-deactivated-keyword-classes}.
 This is a list of strings for keyword classes to be deactivated.  Valid
-entries are "warning", "variable", "reference", "function" ,
-"sectioning-0", "sectioning-1", "sectioning-2", "sectioning-3",
-"sectioning-4", "sectioning-5", "textual", "bold-command",
-"italic-command", "math-command", "type-command", "bold-declaration",
+entries are "warning", "variable", "biblatexnoarg", "biblatex",
+"reference", "function" , "sectioning-0", "sectioning-1",
+"sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
+"slide-title", "textual", "bold-command", "italic-command",
+"math-command", "type-command", "bold-declaration",
 "italic-declaration", "type-declaration".
 
 You can also get rid of certain keywords only.  For example if you want
@@ -2151,7 +2152,9 @@ following stanza into your init file:
 (eval-after-load "font-latex"
   '(setq-default
     font-latex-match-reference-keywords-local
-    (remove "footnote" font-latex-match-reference-keywords-local)))
+    (remove (TeX-assoc-string "footnote"
+            font-latex-match-reference-keywords-local)
+                font-latex-match-reference-keywords-local)))
 @end lisp
 
 But note that this means fiddling with @fontlatex{}'s internals and is
@@ -2177,7 +2180,7 @@ covered by the keyword class.  A keyword can either be a simple command
 name omitting the leading backslash or a list consisting of the command
 name and a string specifying the sequence of arguments for the command.
 
-The face argument can either be an existing face or font specifications
+The face argument can either be an existing face or face attributes
 made by you.  (The latter option is not available on XEmacs.)
 
 There are three alternatives for the type of keywords---``Command with
@@ -3104,6 +3107,21 @@ Finally, @AUCTeX{} provides a function called
 @code{TeX-ispell-tex-arg-end} which sees more arguments than
 @code{ispell-tex-arg-end}.  Refer to its doc string for more
 information.
+@end defopt
+
+@AUCTeX{} also provides a facility to skip the argument of in-line
+verbatim macros like @samp{\Verb} from @file{fancyvrb.sty} or
+@samp{\mintinline} from @file{minted.sty}.  Characters delimiting the
+verbatim text are stored in @code{TeX-ispell-verb-delimiters}.
+
+@defopt TeX-ispell-verb-delimiters
+String with delimiters recognized for in-line verbatim macros.  This
+variable is initialized to @samp{!|#~\"*/+^-}.  Since this string is
+used to build a character alternative inside a regular expression,
+special characters @samp{^} and @samp{-} should come last.  Other
+characters like opening brace @samp{@{}, asterisk @samp{*} or at sign
+@samp{@@} should be avoided as they are not recognized by
+@file{font-latex.el}.
 @end defopt
 
 @node Processor Options
@@ -4544,29 +4562,94 @@ If nil do it the other way round.
 @cindex ASCII p@TeX{}
 @cindex p@TeX{}
 @cindex p@LaTeX{}
+@cindex up@TeX{}
+@cindex up@LaTeX{}
 @cindex @file{tex-jp.el}
 @vindex TeX-default-mode
+@vindex TeX-parse-self
+@vindex TeX-engine
+@vindex TeX-engine-alist
 @vindex japanese-TeX-engine-default
 @vindex japanese-LaTeX-default-style
+@vindex japanese-TeX-use-kanji-opt-flag
+@vindex TeX-japanese-process-input-coding-system
+@vindex TeX-japanese-process-output-coding-system
 
-To write Japanese text with @AUCTeX{}, you need to have versions of
-@TeX{} and Emacs that support Japanese.  There exist at least two
-variants of @TeX{} for Japanese text (NTT j@TeX{} and ASCII p@TeX{}).
-@AUCTeX{} can be used with @acronym{MULE, MULtilingual Enhancement to GNU
-Emacs} supported Emacsen.
+To write Japanese text with @AUCTeX{}, you need the versions of
+@TeX{} and Emacs that support Japanese.  @AUCTeX{} supports three
+Japanese @TeX{} engines by default: NTT j@TeX{}, ASCII p@TeX{} and
+up@TeX{}.  On XEmacs, @AUCTeX{} needs @acronym{MULE, MULtilingual
+Enhancement to GNU Emacs} feature to deal with Japanese text.
 
-To use the Japanese @TeX{} variants, simply activate
-@code{japanese-plain-tex-mode} or @code{japanese-latex-mode} and
-everything should work.  If not, send mail to Masayuki Ataka
-@samp{<ataka@@milk.freemail.ne.jp>}, who kindly donated the code for
-supporting Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
+To use the Japanese @TeX{} engines, activate
+@code{japanese-plain-tex-mode} or @code{japanese-latex-mode}.  If it
+doesn't work, send mail to Masayuki Ataka
+@samp{<masayuki.ataka@@gmail.com>} or Ikumi Keita
+@samp{<ikumikeita@@jcom.home.ne.jp>}, who currently concern with
+stuff related to Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
 maintainers understand Japanese, so they cannot help you.
+
+It is recommended to enable @code{TeX-parse-self} for typical Japanese
+@LaTeX{} users.  When enabled, @code{japanese-latex-mode} selects the
+suitable Japanese @TeX{} engine automatically based on the class file
+name (such as @code{jbook}, @code{jsarticle} and @code{tjreport}) and
+its option.  @pxref{Parsing Files}.
+
+It is important to select the suitable Japanese @TeX{} engine because
+the selected engine determines the command name such as @samp{platex}
+and @samp{uptex} to typeset the document.  If you find that wrong
+command is used, check the value of @code{TeX-engine} on that buffer.
+If the value does not suit the current document, change the value by the
+@samp{TeXing Options} submenu below the @samp{Command} menu.
+@pxref{Processor Options}.
+
+To make the selected engine to persist across Emacs sessions, there are
+two ways from which you can choose one according to your needs:
+
+@enumerate
+@item
+If you use a specific engine (almost) exclusively, customize the option
+@code{japanese-TeX-engine-default}.
+
+@defopt japanese-TeX-engine-default
+The default TeX engine in Japanese @TeX{} mode.
+
+The default value is @samp{ptex}.
+@end defopt
+@item
+If you want to set the engine on a per file basis, use the file local
+variables to set @code{TeX-engine}.
+
+Here is a sample code to set @code{TeX-engine} to @samp{uptex}:
+
+@example
+%%% Local Variables:
+%%% mode: japanese-latex
+%%% TeX-engine: uptex
+%%% End:
+@end example
+@end enumerate
+
+In the both cases above, the valid value is one of @samp{ptex},
+@samp{jtex} and @samp{uptex}.
+
+You can override the command names associated with the above three
+engines or define your own engine by customizing
+@code{TeX-engine-alist}.  @xref{Processor Options}.
+
+It is sometimes necessary to use an engine which differs from the one
+@AUCTeX{} selects automatically.  For example, even when you want to use
+@code{j-article} document class deliberately with ASCII p@LaTeX{},
+@AUCTeX{} selects NTT j@LaTeX{} command if @code{TeX-parse-self} is
+enabled, because @code{j-article} originally belongs to NTT j@LaTeX{}.
+In such cases, use the file local variable method above to select the
+engine you intend to use.
 
 If you usually use @AUCTeX{} in Japanese, setting the following
 variables is useful.
 
 @defopt TeX-default-mode
-Mode to enter for a new file when it cannott be determined whether the
+Mode to enter for a new file when it cannot be determined whether the
 file is plain @TeX{} or @LaTeX{} or what.
 
 If you want to enter Japanese @LaTeX{} mode whenever this may happen,
@@ -4576,16 +4659,35 @@ set the variable like this:
 @end lisp
 @end defopt
 
-@defopt japanese-TeX-engine-default
-The default TeX engine in Japanese @TeX{} mode.
-
-The default value is @samp{ptex}.
-@end defopt
-
 @defopt japanese-LaTeX-default-style
 The default style/class when creating a new Japanese @LaTeX{} document.
 
 The default value is @samp{"jarticle"}.
+@end defopt
+
+It is recommended also for Japanese users to customize the option
+@code{TeX-PDF-from-DVI} to @code{"Dvipdfmx"}.  @xref{Processor Options}
+
+There are three customize options with regard to the encoding of
+Japanese text.
+
+@defopt japanese-TeX-use-kanji-opt-flag
+If non-nil, @AUCTeX{} adds @code{-kanji} option to the typesetting
+command when @code{TeX-engine} is @samp{ptex}.
+@end defopt
+
+Usually @AUCTeX{} guesses the right coding systems for input to and
+output from the Japanese @TeX{} process, but you can override them by
+the following two customize options.
+
+@defopt TeX-japanese-process-input-coding-system
+If non-nil, used for encoding input to Japanese @TeX{} process.
+When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
+@end defopt
+
+@defopt TeX-japanese-process-output-coding-system
+If non-nil, used for decoding output from Japanese @TeX{} process.
+When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
 @end defopt
 
 The former customize options @code{japanese-TeX-command-default} and
@@ -4597,6 +4699,27 @@ or both, customize @code{TeX-engine-alist}.
 Also, the option @code{japanese-TeX-command-list} is considered as
 semi-obsolete.  It still functions as before, but in theory, it is not
 required anymore in normal use.
+
+The following two additional font commands are available in
+@LaTeX{} mode buffer.
+
+@table @kbd
+@item C-c C-f g
+@kindex C-c C-f g
+@cindex @code{\textgt}
+Insert @b{gothic face} font command @samp{\textbf@{@point{}@}} or
+@samp{\mathbf@{@point{}@}} depending on the context.
+
+@item C-c C-f m
+@kindex C-c C-f m
+@cindex @code{\textmc}
+Insert mincho font command @samp{\textmc@{@point{}@}} or
+@samp{\mathmc@{@point{}@}} depending on the context.
+
+@end table
+
+Although they are meaningful only with @samp{ptex} and @samp{uptex}
+engines, it won't matter in buffers with other engines.
 
 See @file{tex-jp.el} for more information.
 

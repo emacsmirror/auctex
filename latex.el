@@ -66,6 +66,7 @@ the lines are outcommented, like in dtx files."
 (defun LaTeX-newline ()
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
+  (interactive)
   (if LaTeX-insert-into-comments
       (cond ((and (save-excursion (skip-chars-backward " \t") (bolp))
 		  (save-excursion
@@ -213,8 +214,7 @@ section."
 (defun LaTeX-section-list-add-locally (sections &optional clean)
   "Add SECTIONS to `LaTeX-section-list'.
 SECTIONS can be a single list containing the section macro name
-as a string and the the level as an integer or a list of such
-lists.
+as a string and the level as an integer or a list of such lists.
 
 If optional argument CLEAN is non-nil, remove any existing
 entries from `LaTeX-section-list' before adding the new ones.
@@ -849,7 +849,7 @@ The compatibility argument IGNORE is ignored."
     (save-excursion
       (while (and (not found)
 		  (re-search-backward
-		   "\\\\documentclass\\(\\[[a-z0-9A-Z\-\_,]*\\]\\)?\\({[^}]+}\\)"
+		   "\\\\documentclass\\(\\[[^]\n\r]*\\]\\)?\\({[^}]+}\\)"
 		   nil t))
 	(and (not (TeX-in-commented-line))
 	     (setq found t))))
@@ -887,9 +887,12 @@ optional argument is omitted.)"
   :group 'LaTeX)
 
 (defcustom LaTeX-label-function nil
-  "*A function inserting a label at point.
-Sole argument of the function is the environment.  The function has to return
-the label inserted, or nil if no label was inserted."
+  "*A function inserting a label at point or returning a label string.
+Sole mandatory argument of the function is the environment.  The
+function has to return the label inserted, or nil if no label was
+inserted.  If the optional argument NO-INSERT is non-nil, then
+the function has to return the label as string without any
+insertion or nil if no label was read in."
   :group 'LaTeX-label
   :type 'function)
 
@@ -901,6 +904,14 @@ the label inserted, or nil if no label was inserted."
 
 (defcustom LaTeX-table-label "tab:"
   "*Default prefix to table labels."
+  :group 'LaTeX-label
+  :group 'LaTeX-environment
+  :type 'string)
+
+(defcustom LaTeX-listing-label "lst:"
+  "Default prefix to listing labels.
+This prefix should apply to all environments which typeset
+code listings and take a caption and label."
   :group 'LaTeX-label
   :group 'LaTeX-environment
   :type 'string)
@@ -986,7 +997,7 @@ corresponding entry."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defun LaTeX-label (name &optional type)
+(defun LaTeX-label (name &optional type no-insert)
   "Insert a label for NAME at point.
 The optional TYPE argument can be either environment or section:
 in the former case this function looks up `LaTeX-label-alist' to
@@ -998,7 +1009,9 @@ prefix.
 If `LaTeX-label-function' is a valid function, LaTeX label will
 transfer the job to this function.
 
-The inserted label is returned, nil if it is empty."
+If the optional NO-INSERT is non-nil, only the label is returned
+and no insertion happens.  Otherwise the inserted label is
+returned, nil if it is empty."
   (let ((TeX-read-label-prefix
 	 (cond
 	  ((eq type 'environment)
@@ -1018,22 +1031,21 @@ The inserted label is returned, nil if it is empty."
     (when (symbolp TeX-read-label-prefix)
       (setq TeX-read-label-prefix (symbol-value TeX-read-label-prefix)))
     (when TeX-read-label-prefix
-      (if (and (boundp 'LaTeX-label-function)
-	       LaTeX-label-function
-	       (fboundp LaTeX-label-function))
-	  (setq label (funcall LaTeX-label-function name))
+      (if (and (fboundp LaTeX-label-function))
+	  (funcall LaTeX-label-function name no-insert)
 	;; Use completing-read as we do with `C-c C-m \label RET'
 	(setq label (TeX-read-label t "What label" t))
 	;; No label or empty string entered?
 	(if (or (string= TeX-read-label-prefix label)
 		(string= "" label))
 	    (setq label nil)
-	  (insert TeX-esc "label" TeX-grop label TeX-grcl))
-	(if label
-	    (progn
-	      (LaTeX-add-labels label)
-	      label)
-	  nil)))))
+	  ;; We have a label; when NO-INSERT is nil, insert
+	  ;; \label{label} in the buffer, add new label to list of
+	  ;; known labels and return it
+	  (unless no-insert
+	    (insert TeX-esc "label" TeX-grop label TeX-grcl))
+	  (LaTeX-add-labels label)
+	  label)))))
 
 (defcustom LaTeX-short-caption-prompt-length 40
   "The length that the caption of a figure should be before
@@ -1235,6 +1247,78 @@ Just like array and tabular."
 			 exit-mark
 		       (make-marker))))
       (TeX-parse-arguments args))))
+
+(defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
+  "Query for a label and insert it in the optional argument of an environment.
+OPTIONAL is ignored.  Optional KEYWORD is a string to search for
+in the optional argument, label is only included if KEYWORD is
+found.  KEYVALS is a string with key=val's read in.  If nil, this
+function searchs for key=val's itself.  ENVIRONMENT is a string
+with the name of environment, if non-nil, don't bother to find
+out."
+  (let ((env-start (make-marker))
+	(body-start (make-marker))
+	(opt-start (make-marker))
+	(opt-end   (make-marker))
+	(currenv (or environment (LaTeX-current-environment))))
+    ;; Save the starting point as we will come back here
+    (set-marker body-start (point))
+    ;; Go to the start of the current environment and save the position
+    (LaTeX-find-matching-begin)
+    (set-marker env-start (point))
+    ;; Check if an opt. argument is there; assume that it starts in
+    ;; the same line and save the points in markers
+    (when (re-search-forward
+	   (concat "\\\\begin{" currenv "}[ \t]*\\[") body-start t)
+      (set-marker opt-start (1- (point)))
+      (goto-char opt-start)
+      (forward-sexp)
+      (set-marker opt-end (1- (point))))
+    ;; If keyword argument is given and keyvals argument is not given,
+    ;; parse the optional argument and put it into keyvals; the regexp
+    ;; takes care of multi-line arguments
+    (when (and keyword
+	       (marker-position opt-start)
+	       (not keyvals))
+      (goto-char (1+ opt-start))
+      (re-search-forward "\\(.*\\([\n\r].*\\)*\\)" opt-end t)
+      (setq keyvals (match-string-no-properties 0)))
+    ;; If keyword is given, only insert a label when keyword is found
+    ;; inside the keyvals.  If keyword is nil, then insert a label
+    ;; anyways
+    (if (stringp keyword)
+	(when (and (stringp keyvals)
+		   (not (string= keyvals ""))
+		   (string-match (concat keyword "[ \t]*=") keyvals))
+	  (goto-char opt-end)
+	  (let ((opt-label (LaTeX-label currenv 'environment t)))
+	    (when opt-label
+	      (insert (if (equal (preceding-char) ?,)
+			  "label="
+			",label=")
+		      TeX-grop opt-label TeX-grcl))))
+      (let ((opt-label (LaTeX-label currenv 'environment t)))
+	(when opt-label
+	  ;; Check if an opt. argument is found and go to the end if
+	  (if (marker-position opt-end)
+	      (progn
+		(goto-char opt-end)
+		(insert (if (equal (preceding-char) ?,)
+			    "label="
+			  ",label=")
+			TeX-grop opt-label TeX-grcl))
+	    ;; Otherwise start at the beginning of environment in
+	    ;; order to not mess with any other mandatory arguments
+	    ;; which can be there
+	    (goto-char env-start)
+	    (re-search-forward (concat "\\\\begin{" currenv "}"))
+	    (insert LaTeX-optop "label=" TeX-grop opt-label TeX-grcl LaTeX-optcl)))))
+    ;; Go to where we started and clean up the markers
+    (goto-char body-start)
+    (set-marker env-start nil)
+    (set-marker body-start nil)
+    (set-marker opt-start nil)
+    (set-marker opt-end nil)))
 
 ;;; Item hooks
 
@@ -1522,7 +1606,7 @@ This is necessary since index entries may contain commands and stuff.")
        (, (concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
 	  1 LaTeX-auto-bibitem)
        ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
-       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\..+}"
+       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r]+\\)\\..+}"
 	1 LaTeX-auto-bibliography)
        ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
        ("\\\\newrefsection\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)
@@ -1542,9 +1626,9 @@ This is necessary since index entries may contain commands and stuff.")
 Split the string at commas and remove Biber file extensions."
   (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
     (dolist (bib bibs)
-      (LaTeX-add-bibliographies (replace-regexp-in-string
+      (LaTeX-add-bibliographies (TeX-replace-regexp-in-string
 				 (concat "\\(?:\\."
-					 (mapconcat 'regexp-quote
+					 (mapconcat #'regexp-quote
 						    TeX-Biber-file-extensions
 						    "\\|\\.")
 					 "\\)")
@@ -1617,6 +1701,12 @@ See also `LaTeX-provided-package-options'.")
   "Return non-nil if OPTION has been given to CLASS at load time.
 The value is actually the tail of the list of options given to CLASS."
   (member option (cdr (assoc class LaTeX-provided-class-options))))
+
+(defun LaTeX-match-class-option (regexp)
+  "Check if a documentclass option matching REGEXP is active."
+  (TeX-member regexp (apply #'append
+			    (mapcar #'cdr LaTeX-provided-class-options))
+	      'string-match))
 
 (defvar LaTeX-provided-package-options nil
   "Alist of options provided to LaTeX packages.
@@ -1708,9 +1798,10 @@ The value is actually the tail of the list of options given to PACKAGE."
 			      (list (cons style options)))))
 
 	;; The third argument if "class" indicates LaTeX2e features.
-	(cond ((equal class "class")
+	(cond ((or (string-equal class "class")
+		   (string-equal class "Class"))
 	       (add-to-list 'TeX-auto-file "latex2e"))
-	      ((equal class "style")
+	      ((string-equal class "style")
 	       (add-to-list 'TeX-auto-file "latex2"))))))
 
   ;; Cleanup optional arguments
@@ -1822,16 +1913,41 @@ argument, otherwise as a mandatory one."
 
 (defun TeX-read-label (optional &optional prompt definition)
   "Prompt for a label completing with known labels and return it.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If DEFINITION is non-nil, add the chosen label to the
-list of defined labels.  `TeX-read-label-prefix' is used as
-initial input for the label."
-  (let ((label (completing-read
-		(TeX-argument-prompt optional prompt "Key")
-		(LaTeX-label-list) nil nil TeX-read-label-prefix)))
-    (if (and definition (not (string-equal "" label)))
-	(LaTeX-add-labels label))
+This function always returns a string depending on user input:
+the returned value can be an empty string \"\", the value of
+`TeX-read-label-prefix' if present (e.g. \"fig:\") or a complete
+label input (e.g. \"fig:foo\").  If OPTIONAL is non-nil, indicate
+optional as part of prompt in minibuffer.  Use PROMPT as the
+prompt string.  If DEFINITION is non-nil, add the chosen label to
+the list of defined labels.  `TeX-read-label-prefix' is used as
+initial input for the label.  Also check if label is already
+defined and ask user for confirmation before proceeding."
+  (let (label valid)
+    (while (not valid)
+      (setq label
+	    (completing-read
+	     (TeX-argument-prompt optional prompt "Key")
+	     (LaTeX-label-list) nil nil TeX-read-label-prefix))
+      ;; If we're defining a label, check if it's already defined and
+      ;; ask user for confirmation, otherwise ask again
+      (cond ((and definition
+		  (assoc label (LaTeX-label-list)))
+	     (ding)
+	     (when (y-or-n-p
+		    (format-message "Label `%s' exists. Use anyway? " label))
+	       (setq valid t)))
+	    (t
+	     (setq valid t))))
+    ;; Only add a newly defined label to list of known one if it is
+    ;; not empty and not equal to `TeX-read-label-prefix', if given
+    (when (and definition
+	       (not (string-equal "" label))
+	       (if TeX-read-label-prefix
+		   (not (string-equal TeX-read-label-prefix label))
+		 t))
+      (LaTeX-add-labels label))
+    ;; Return label, can be empty string "", TeX-read-label-prefix
+    ;; only "fig:" or the real thing like "fig:foo"
     label))
 
 (defun TeX-arg-label (optional &optional prompt definition)
@@ -4430,10 +4546,21 @@ value of NO-SUBSECTIONS."
   "Internal list of LaTeX macros that should have their own line.")
 
 (defun LaTeX-paragraph-commands-regexp-make ()
-  "Return a regular expression matching defined paragraph commands."
-  (concat (regexp-quote TeX-esc) "\\("
-	  (regexp-opt (append LaTeX-paragraph-commands
-			      LaTeX-paragraph-commands-internal)) "\\)"))
+  "Return a regular expression matching defined paragraph commands.
+Regexp part containing TeX control words is postfixed with `\\b'
+to avoid ambiguities (e.g. \\par vs. \\parencite)."
+  (let (cmds symbs)
+    (dolist (mac (append LaTeX-paragraph-commands
+			 LaTeX-paragraph-commands-internal))
+      (if (string-match "[^a-zA-Z]" mac)
+	  (push mac symbs)
+	(push mac cmds)))
+    (concat (regexp-quote TeX-esc) "\\(?:"
+	    (regexp-opt cmds "\\(?:")
+	    "\\b"
+	    "\\|"
+	    (regexp-opt symbs)
+	    "\\)")))
 
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
@@ -5391,7 +5518,7 @@ char."
 (defun LaTeX-narrow-to-environment (&optional count)
   "Make text outside current environment invisible.
 With optional COUNT keep visible that number of enclosing
-environmens."
+environments."
   (interactive "p")
   (setq count (if count (abs count) 1))
   (save-excursion
@@ -5952,7 +6079,9 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   "Default start of trailer marker for LaTeX documents.")
 
 (defcustom LaTeX-clean-intermediate-suffixes
-  TeX-clean-default-intermediate-suffixes
+  (append TeX-clean-default-intermediate-suffixes
+	  ;; These are extensions of files created by makeglossaries.
+	  '("\\.acn" "\\.acr" "\\.alg" "\\.glg" "\\.ist"))
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
 i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
@@ -6508,16 +6637,21 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-hanging-ampersand-position ()
   "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
-  (destructuring-bind (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
-    (let* ((cur-pos (point)))
-      (save-excursion
-        (if (re-search-backward "\\\\\\\\" beg-pos t)
-            (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
-              (goto-char beg-pos)
-              (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
-              (- (current-column) 1))
-          (+ 2 beg-col))))))
+  (destructuring-bind
+   (beg-pos . beg-col)
+   (LaTeX-env-beginning-pos-col)
+   (let* ((cur-pos (point)))
+     (save-excursion
+       (if (re-search-backward "\\\\\\\\" beg-pos t)
+	   (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
+	     (goto-char beg-pos)
+	     (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+	     ;; If the above searchs fails, i.e. no "&" found,
+	     ;; (- (current-column) 1) returns -1, which is wrong.  So
+	     ;; we use a fallback (+ 2 beg-col) whenever this happens:
+	     (max (- (current-column) 1)
+		  (+ 2 beg-col)))
+	 (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
   "Return indent column for the current tabular-like line."
@@ -6545,10 +6679,10 @@ function would return non-nil and `(match-string 1)' would return
 	   (t
 	    (+ 2
 	       (let ((any-col (save-excursion
-				(when (re-search-backward "\\\\\\\\\\|&" beg-pos t)
+				(when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
 				  (current-column)))))
-		 (if (and any-col (string= "&" (match-string 0)))
-		     any-col
+		 (if (and any-col (= ?& (char-before (match-end 0))))
+		     (1+ any-col)
 		   beg-col))))))))
 
 (provide 'latex)

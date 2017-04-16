@@ -578,6 +578,8 @@ for citation keys."
 	    (?U    . "\\autocite*[][]{%l}")
 	    (?a    . "\\citeauthor{%l}")
 	    (?A    . "\\citeauthor*{%l}")
+	    (?i    . "\\citetitle{%l}")
+	    (?I    . "\\citetitle*{%l}")
 	    (?y    . "\\citeyear{%l}")
 	    (?Y    . "\\citeyear*{%l}")
 	    (?n    . "\\nocite{%l}")))))))

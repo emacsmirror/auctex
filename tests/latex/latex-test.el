@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014--2016 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2017 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -61,6 +61,10 @@ line and from another directory."
  'tabular-count-ampersands/out
  "tabular-count-ampersands-out.tex")
 
+;; Test for detecting \& in a table cell added; see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
+;; Test for missing & in row added; see
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26032
 (ert-deftest LaTeX-indent-tabular ()
   (should (string=
            (with-temp-buffer
@@ -89,15 +93,24 @@ line and from another directory."
 ;; Test LaTeX code with math modes is indented as expected.  This has mostly to
 ;; do with the value of `LaTeX-fill-break-at-separators' and how
 ;; `LaTeX-fill-move-to-break-point' handles it.  If the test fails, try to look
-;; there.
+;; there.  The second part of the test looks for unambiguousness of
+;; macros starting a paragraph
+;; (http://lists.gnu.org/archive/html/auctex/2017-03/msg00009.html)
 (ert-deftest LaTeX-filling ()
   (should (string=
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/in)
              (LaTeX-mode)
 	     (let ((fill-column 70))
-	       (fill-paragraph))
-             (buffer-string))
+	       (fill-paragraph)
+	       (let ((cmds '("captionsetup" "caption"
+			     "parencite"    "par")))
+		 (dolist (cmd cmds)
+		   (search-forward (concat "\\" cmd))
+		   (save-excursion
+		     (end-of-line 0)
+		     (fill-paragraph)))))
+	     (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
              (buffer-string)))))
@@ -136,5 +149,20 @@ line and from another directory."
 	     (insert-file-contents tabular-count-ampersands/out)
 	     (LaTeX-mode)
 	     (buffer-string)))))
+
+(ert-deftest LaTeX-addbibresource ()
+  "Check parsing of bibliography files added with addbibresource.
+
+In particular, make sure dots are treated correctly and only the
+last extension is stripped."
+  (should
+   (equal
+    (with-temp-buffer
+      (insert "\\addbibresource{../foo-1.bar_2.qux3.ext}")
+      (LaTeX-mode)
+      (let ((TeX-parse-self t))
+	(TeX-update-style t))
+      (LaTeX-bibliography-list))
+    '(("../foo-1.bar_2.qux3")))))
 
 ;;; latex-test.el ends here

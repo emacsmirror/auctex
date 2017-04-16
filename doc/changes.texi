@@ -8,6 +8,58 @@
 
 @end ifset
 
+@heading News since 11.90
+
+@itemize @bullet
+@item
+@AUCTeX{} has a new customize option @code{TeX-ispell-verb-delimiters}.
+This string contains usual characters used as delimiters for in-line
+verbatim macros like @samp{\verb}.  Text between delimiters after an
+in-line verbatim macro will be skipped during spell checking.
+
+@item
+Fontification of in-line verbatim macros has been improved.
+@file{font-latex.el} recognizes an optional or a mandatory argument for
+macros like @samp{\Verb} from @file{fancyvrb.sty}, @samp{\mint} and
+@samp{\mintinline} from @file{minted.sty} and fontifies verbatim content
+correctly.
+
+@item
+@AUCTeX{} can put and parse labels in optional argument of environments.
+Inserting labels is done by new function
+@code{LaTeX-env-label-as-keyval}.  A new customize option
+@code{LaTeX-listing-label} is available as prefix to labels in code
+typesetting environments, e.g. @samp{lstlisting} environment provided by
+@samp{listings} package.  @code{LaTeX-listing-label} defaults to
+@code{lst:}.  Parsing of labels for later referencing relies on two
+requirements:
+@enumerate
+@item
+Label should come as last key-value argument, and
+@item
+label must be enclosed in braces, e.g.
+@example
+\begin@{lstlisting@}[caption=Some Caption,label=@{lst:foo@}]
+...
+\end@{lstlisting@}
+@end example
+@end enumerate
+
+@item
+The function @code{LaTeX-label} now takes a second optional argument
+@code{NO-INSERT}.  When non-@code{nil}, @code{LaTeX-label} reads a label
+and returns it as a string.  This argument is also passed to any
+function bound to @code{LaTeX-label-function} (see next item).
+
+@item
+@strong{Incompatible change:} The signature for the function passed with
+the customize option @code{LaTeX-label-function} has changed.  The
+function bound to this variable is now expected to take an optional
+second argument @code{NO-INSERT}.  When this argument is non-@code{nil},
+the function should read and only return a label as a string; insertion
+is done by another function.
+@end itemize
+
 @heading News in 11.90
 
 @itemize @bullet

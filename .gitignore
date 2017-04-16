@@ -1,6 +1,8 @@
 #*
+*.aux
 *.elc
 *.log
+*.synctex.gz
 *~
 CHANGES
 ChangeLog
@@ -21,6 +23,8 @@ tex-site.el.out
 doc/preview-dtxdoc.texi
 doc/version.texi
 auto.el
+etc/auctex-logo.pdf
+etc/auto
 latex/prauctex.cfg
 latex/prauctex.def
 latex/prcounters.def
@@ -37,7 +41,7 @@ latex/prshowlabels.def
 latex/prtightpage.def
 latex/prtracingall.def
 preview-latex.el
-preview.el
+/preview.el
 PROBLEMS.preview
 # Files generated when installing/compiling the package in place.
 auctex-pkg.el

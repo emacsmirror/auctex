@@ -293,25 +293,25 @@ STAR is non-nil, do not query for a short-caption and a label."
       (insert LaTeX-optop short-caption LaTeX-optcl))
     (TeX-argument-insert caption optional)
     (LaTeX-fill-paragraph)
-    (unless star
-      ;; Check if `envtype' is a figure or a table, also consult
-      ;; `LaTeX-label-alist' for additions from user or newfloat.el,
-      ;; then run `LaTeX-label' w/ 'environment arg, otherwise w/o.
-      (save-excursion
-	(if (or (member envtype figtypes)
-		(member envtype tabtypes)
-		(assoc envtype LaTeX-label-alist))
-	    (LaTeX-label (cond ((member envtype figtypes)
-				"figure")
-			       ((member envtype tabtypes)
-				"table")
-			       (t envtype))
-			 'environment)
-	  (LaTeX-label envtype)))
-      (when (looking-at-p "\\\\label{")
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	(end-of-line)))))
+    (when (and (not star)
+	       ;; Check if `envtype' is a figure or a table, also
+	       ;; consult `LaTeX-label-alist' for additions from user
+	       ;; or newfloat.el, then run `LaTeX-label' w/
+	       ;; 'environment arg, otherwise w/o.
+	       (save-excursion
+		 (if (or (member envtype figtypes)
+			 (member envtype tabtypes)
+			 (assoc envtype LaTeX-label-alist))
+		     (LaTeX-label (cond ((member envtype figtypes)
+					 "figure")
+					((member envtype tabtypes)
+					 "table")
+					(t envtype))
+				  'environment)
+		   (LaTeX-label envtype))))
+      (LaTeX-newline)
+      (indent-according-to-mode)
+      (end-of-line))))
 
 (TeX-add-style-hook
  "caption"
