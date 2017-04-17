@@ -172,10 +172,21 @@ For detail, see `TeX-command-list', to which this list is appended."
                         ((eq TeX-engine 'jtex) "jbibtex")
                         ((eq TeX-engine 'uptex) "upbibtex")
                         (t "bibtex"))))
-        ;; mendex と makeindex の適切な方を選択する。
+        ;; mendex, upmendex, makeindex のうち適切なものを選択する。
         ("%(makeindex)" (lambda ()
-                          (if (memq TeX-engine '(ptex uptex))
-                              "mendex %(mendexkopt)" "makeindex")))
+                          (cond
+			   ;; upmendex は XeLaTeX や LuaLaTeX でも
+			   ;; 使える。see
+			   ;; http://www.t-lab.opal.ne.jp/tex/README_upmendex.md
+			   ;; FIXME: XeLaTeX や LuaLaTeX だけを使う
+			   ;; 利用者の場合は、tex-jp は load されな
+			   ;; いのでこの設定は意味がない。
+                           ((and (memq TeX-engine '(uptex xetex luatex))
+                                 (executable-find "upmendex"))
+                            "upmendex %(dic)")
+                           ((memq TeX-engine '(ptex uptex))
+                            "mendex %(mendexkopt) %(dic)")
+                           (t "makeindex"))))
         ;; mendex 用日本語コードオプション。
         ("%(mendexkopt)" (lambda ()
                            (if (and (featurep 'mule)
@@ -185,6 +196,16 @@ For detail, see `TeX-command-list', to which this list is appended."
                                  (if str (format " -%c " (upcase (aref str 0)))
                                    ""))
                              "")))
+	;; (up)mendex 用辞書指定オプション。
+	("%(dic)" (lambda ()
+		    ;; master と同名で拡張子が .dic のファイルがあれば
+		    ;; それを辞書名として -d オプションに与える。
+		    ;; C-c C-r 等の場合 _region_.dic にすべきでは
+		    ;; ないので、`TeX-master-file' を陽に呼ぶ。
+		    (let ((dicname (TeX-master-file "dic" t)))
+		      (if (file-exists-p
+			   (expand-file-name dicname (TeX-master-directory)))
+			  (format "-d %s" dicname) ""))))
         ;; pxdvi と %(o?)xdvi の適切な方を選択する。
         ("%(xdvi)" (lambda ()
                      ;; pxdvi は ptex, jtex 共用なので、

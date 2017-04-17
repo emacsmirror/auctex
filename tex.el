@@ -159,6 +159,8 @@ If nil, none is specified."
      t :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %s" TeX-run-index nil t
      :help "Run makeindex to create index file")
+    ("upMendex" "upmendex %s" TeX-run-index t t
+     :help "Run mendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil t
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
