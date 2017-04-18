@@ -205,7 +205,12 @@ For detail, see `TeX-command-list', to which this list is appended."
 		    (let ((dicname (TeX-master-file "dic" t)))
 		      (if (file-exists-p
 			   (expand-file-name dicname (TeX-master-directory)))
-			  (format "-d %s" dicname) ""))))
+			  (let ((result (format "-d %s" dicname)))
+			    ;; Advance past the file name in order to
+			    ;; prevent expanding any substring of it.
+			    (setq pos (+ pos (length result)))
+			    result)
+			""))))
         ;; pxdvi と %(o?)xdvi の適切な方を選択する。
         ("%(xdvi)" (lambda ()
                      ;; pxdvi は ptex, jtex 共用なので、
