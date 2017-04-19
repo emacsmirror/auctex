@@ -3306,7 +3306,8 @@ a bad box."
        (let ((help (cdr (nth TeX-error-pointer
 			     TeX-error-description-list))))
 	 (save-excursion
-	   (if (and (string= help "No help available")
+	   (if (and (= (1+ TeX-error-pointer)
+		       (length TeX-error-description-list))
 		    (let* ((log-buffer (find-buffer-visiting log-file)))
 		      (if log-buffer
 			  (progn
