@@ -117,4 +117,26 @@ ABD: EveryShipout initializing macros"
              (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
               0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2741 nil)))))
 
+;; See https://lists.gnu.org/archive/html/auctex/2017-04/msg00007.html.
+(ert-deftest TeX-LaTeX2e-date ()
+  "Test parsing of different LaTeX2e date formats."
+  (should
+   (equal
+    (with-temp-buffer
+      (insert "LaTeX2e <2017-04-15>")
+      (goto-char (point-min))
+      (let ((TeX-command-buffer (buffer-name)))
+	(TeX-LaTeX-sentinel nil "LaTeX")
+	TeX-command-next))
+    "View"))
+  (should
+   (equal
+    (with-temp-buffer
+      (insert "LaTeX2e <2017/01/01> patch level 3")
+      (goto-char (point-min))
+      (let ((TeX-command-buffer (buffer-name)))
+	(TeX-LaTeX-sentinel nil "LaTeX")
+	TeX-command-next))
+    "View")))
+
 ;;; error-parsing.el ends here
