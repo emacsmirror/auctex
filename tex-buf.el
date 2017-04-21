@@ -1582,7 +1582,7 @@ Rerun to get mark in right position\\." nil t)
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
-\\(Version\\|ver\\.\\|<[0-9/]*\\(?:u[^>]*\\)?>\\)" nil t)
+\\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)" nil t)
 	 (let* ((warnings (and TeX-debug-warnings
 			       (TeX-LaTeX-sentinel-has-warnings)))
 		(bad-boxes (and TeX-debug-bad-boxes
@@ -3306,7 +3306,8 @@ a bad box."
        (let ((help (cdr (nth TeX-error-pointer
 			     TeX-error-description-list))))
 	 (save-excursion
-	   (if (and (string= help "No help available")
+	   (if (and (= (1+ TeX-error-pointer)
+		       (length TeX-error-description-list))
 		    (let* ((log-buffer (find-buffer-visiting log-file)))
 		      (if log-buffer
 			  (progn
