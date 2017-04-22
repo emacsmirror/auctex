@@ -85,6 +85,7 @@ Arguments NAME and TYPE are the same as for the function
 
    (LaTeX-add-environments
     '("solution" [ "Height" ])
+    '("select")
     '("solutionorbox" [ "Height" ])
     '("solutionorlines" [ "Height" ])
     '("solutionordottedlines" [ "Height" ])
@@ -320,6 +321,8 @@ Arguments NAME and TYPE are the same as for the function
     '("pointsofquestion" 1)
     '("pointsonpage" 1)
     '("printanswers" 0)
+    '("\printselectedfalse" 0)
+    '("\printselectedtrue" 0)
     '("qformat" 1)
     '("questionlabel" 0)
     '("questionshook" 0)
