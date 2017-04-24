@@ -3,7 +3,7 @@
 %%    Developed as part of AUCTeX <URL:http://www.gnu.org/software/auctex>.
 %
 %     Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006,
-%                   2010 Free Software Foundation
+%                   2010, 2017 Free Software Foundation
 %
 %     This program is free software; you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1758}
+% \CheckSum{1760}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -37,7 +37,7 @@
 % Current uses of the package include the \previewlatex\ package for
 % WYSIWYG functionality in the AUC\TeX\ editing environment,
 % generation of previews in LyX, as part of the operation of the
-% ps4pdf package, the tbook XML system and some other tools.
+% pst-pdf package, the tbook XML system and some other tools.
 % 
 % Producing EPS files with Dvips and its derivatives using the
 % \texttt{-E} option is not a good alternative: People make do by
@@ -494,13 +494,18 @@
 %  got executed.
 %\begin{macro}{\pr@loadcfg}
 %  The macro \cmd{\pr@loadcfg} is used for loading in configuration
-%  files, unless disabled by the |noconfig| option.
+%  files, unless disabled by the |noconfig| option.  After discussion
+%  with maintainer of pst-pdf package Rolf Niepraschk (Thanks!), we
+%  add here a check for existence of |luatex85.sty| and load it if
+%  available.  With this, |preview| will also work with newer |luatex|
+%  versions.
 %    \begin{macrocode}
 %<*!active>
 \let\preview@delay=\@gobble
 \let\pr@advise=\@gobbletwo
 \long\def\pr@advise@ship#1#2#3{}
 \def\pr@loadcfg#1{\InputIfFileExists{#1.cfg}{}{}}
+\IfFileExists{luatex85.sty}{\RequirePackage{luatex85}}{}
 \DeclareOption{noconfig}{\let\pr@loadcfg=\@gobble}
 %    \end{macrocode}
 %\begin{macro}{\pr@addto@front}
