@@ -1781,10 +1781,11 @@ marks boundaries for searching for group ends."
 
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
-  ;; The \\\\[^,-] makes sure we don't highlight hyphenation as commands
-  ;; (foo\-bar) nor thin spaces (foo\,bar).  \s_ matches chars with symbol
-  ;; syntax, \sw chars with word syntax.
-  (TeX-re-search-forward-unescaped "\\\\[^,-]\\(?:\\s_\\|\\sw\\)+" limit t))
+  ;; The \\\\[^ ,-] makes sure we don't highlight hyphenation as
+  ;; commands (foo\-bar), nor thin spaces (foo\,bar) nor control
+  ;; spaces (foo\ bar).  \s_ matches chars with symbol syntax, \sw
+  ;; chars with word syntax.
+  (TeX-re-search-forward-unescaped "\\\\[^ ,-]\\(?:\\s_\\|\\sw\\)+" limit t))
 
 (defun font-latex-match-math-env (limit)
   "Match math pattern up to LIMIT.
