@@ -6429,6 +6429,7 @@ function would return non-nil and `(match-string 1)' would return
    '("tiny" -1) '("scriptsize" -1) '("footnotesize" -1) '("small" -1)
    '("normalsize" -1) '("large" -1) '("Large" -1) '("LARGE" -1) '("huge" -1)
    '("Huge" -1)
+   '("oldstylenums" "Numbers")
    "pounds" "copyright"
    "hfil" "hfill" "vfil" "vfill" "hrulefill" "dotfill"
    "indent" "noindent" "today"
