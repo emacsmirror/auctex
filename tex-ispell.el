@@ -127,6 +127,7 @@
       ("attachfilesetup" . 1)
       ("textattachfile" . 1)
       ;; booktabs.sty
+      ("addlinespace" . 0)
       ("specialrule" . 3)
       ;; cleveref.sty
       ("cref" . 1)
