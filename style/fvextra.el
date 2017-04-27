@@ -97,7 +97,7 @@
 		   "spacecolor"))
 	   (tmp (copy-alist LaTeX-fancyvrb-key-val-options-local)))
       (dolist (x keys)
-	(assq-delete-all (car (assoc x tmp)) tmp)
+	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
 	(if (string= x "highlightcolor")
 	    (pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal)
 	  (pushnew (list x (append '("none") (mapcar #'car (funcall colorcmd)))) tmp :test #'equal)))

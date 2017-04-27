@@ -241,7 +241,7 @@
 		   "subtitlebelowlinecolor"))
 	   (tmp (copy-alist LaTeX-mdframed-key-val-options-local)))
       (dolist (x keys)
-	(assq-delete-all (car (assoc x tmp)) tmp)
+	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
 	(pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal))
       (setq LaTeX-mdframed-key-val-options-local
 	    (copy-alist tmp)))))

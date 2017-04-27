@@ -196,7 +196,7 @@ are loaded."
 			"rulecolor" "spacecolor" "tabcolor"))
 	   (opts (copy-alist LaTeX-minted-key-val-options-local)))
       (dolist (key colorkeys)
-	(assq-delete-all (car (assoc key opts)) opts)
+	(setq opts (assq-delete-all (car (assoc key opts)) opts))
 	(push (list key (mapcar #'car (funcall colorcmd)))
 	      opts))
       (setq LaTeX-minted-key-val-options-local
