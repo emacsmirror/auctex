@@ -6463,7 +6463,8 @@ function would return non-nil and `(match-string 1)' would return
      "textasciicircum" "textasciitilde"
      "textregistered" "texttrademark"
      "rmfamily" "sffamily" "ttfamily" "mdseries" "bfseries"
-     "itshape" "slshape" "upshape" "scshape"))
+     "itshape" "slshape" "upshape" "scshape"
+     "eminnershape"))
 
   (TeX-run-style-hooks "LATEX")
 
