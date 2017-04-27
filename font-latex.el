@@ -1784,15 +1784,16 @@ marks boundaries for searching for group ends."
 
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
-  ;; \s_ matches chars with symbol syntax, \sw chars with word syntax.  We must
-  ;; exclude matches where the first character after the \ is a , (thin space:
-  ;; foo\,bar) or a - (hyphenation: foo\-bar).
+  ;; \s_ matches chars with symbol syntax, \sw chars with word syntax, \s. chars
+  ;; with punctuation syntax.  We must exclude matches where the first character
+  ;; after the \ is a , (thin space: foo\,bar), a - (hyphenation: foo\-bar), a /
+  ;; (italic correction \/) or other reserved chars like &, # or _ (\& \# \_)
   (let* ((search (lambda ()
 		   (TeX-re-search-forward-unescaped
-		    "\\\\\\(\\s_\\|\\sw\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
+		    "\\\\\\(\\s_\\|\\sw\\|\\s.\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
 	 (pos (funcall search)))
     (while (and pos
-		(member (match-string 1) '("-" ",")))
+		(member (match-string 1) '("-" "," "/" "&" "#" "_")))
       (setq pos (funcall search)))
     pos))
 
