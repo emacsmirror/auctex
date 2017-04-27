@@ -1613,10 +1613,13 @@ Returns nil if none of KEYWORDS is found."
 			       font-latex-command-with-args-default-spec)))
 	       (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
 	  (goto-char (match-end 0))
-	  ;; Check for starred macro if first spec is an asterisk.
-	  (when (eq (car spec-list) ?*)
+	  ;; Check for starred macro if first spec is an asterisk or a
+	  ;; plus sign in case of \defaultfontfeatures+ provided by
+	  ;; fontspec.sty
+	  (when (or (eq (car spec-list) ?*)
+		    (eq (car spec-list) ?+))
 	    (setq spec-list (cdr spec-list))
-	    (skip-chars-forward "*" (1+ (point))))
+	    (skip-chars-forward "*+" (1+ (point))))
 	  ;; Add current point to match data and use keyword face for
 	  ;; region from start to point.
 	  (nconc match-data (list (point)))
@@ -1643,7 +1646,7 @@ Returns nil if none of KEYWORDS is found."
 				     (forward-char)
 				     (if (zerop (skip-syntax-forward "_w"))
 					 (forward-char) ; Single-char macro.
-				       (skip-chars-forward "*"))
+				       (skip-chars-forward "*+"))
 				     (point))))
 		      (nconc font-latex-matched-faces (list face))
 		      (setq end (max end (point)))
