@@ -1,6 +1,6 @@
 ;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -257,7 +257,7 @@
   (dolist (env (mapcar #'car (LaTeX-mdframed-newmdenv-list)))
     (LaTeX-add-environments
      `(,env LaTeX-env-args [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ] ))
-    (TeX-ispell-skip-setcdr `((,env ispell-tex-skip-alist 0))))
+    (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0))))
   (dolist (newenv (LaTeX-mdframed-mdtheorem-list))
     (let ((env (car newenv))
 	  (new (cadr newenv)))
@@ -297,7 +297,7 @@
 	   (LaTeX-add-environments
 	    `(,env LaTeX-env-args [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]))
 	   ;; Add new env's to `ispell-tex-skip-alist': skip the optional argument
-	   (TeX-ispell-skip-setcdr `((,env ispell-tex-skip-alist 0)))
+	   (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0)))
 	   (format "%s" env)))))
 
     '("renewmdenv"
