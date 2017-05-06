@@ -2094,13 +2094,16 @@ original file."
 		trailer)
 	(setq TeX-region-orig-buffer orig-buffer)
 	;; Position point at the line/col that corresponds to point's line in
-	;; orig-buffer in order to make forward search work.
-	(let ((line-col (with-current-buffer orig-buffer
-			  (cons (TeX-line-number-at-pos)
-				(current-column)))))
-          (goto-char (point-min))
-          (forward-line (1- (abs (- header-offset (car line-col)))))
-	  (forward-char (cdr line-col)))
+	;; orig-buffer in order to make forward search work.  Move point only
+	;; when `TeX-source-correlate-mode' is non-nil, in order to work around
+	;; bug#26694.
+	(when TeX-source-correlate-mode
+	    (let ((line-col (with-current-buffer orig-buffer
+			   (cons (TeX-line-number-at-pos)
+				 (current-column)))))
+	   (goto-char (point-min))
+	   (forward-line (1- (abs (- header-offset (car line-col)))))
+	   (forward-char (cdr line-col))))
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
 	    (set-buffer-modified-p nil)
