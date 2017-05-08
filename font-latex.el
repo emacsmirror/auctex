@@ -1588,7 +1588,7 @@ XEmacs does not do this at the time of this writing."
 Set this to nil if verification of command syntax is unwanted.")
 
 (defvar font-latex-command-with-args-opt-arg-delims
-  '((?[ . ?]) (?< . ?>) (?\( . ?\)))
+  '((?\[ . ?\]) (?< . ?>) (?\( . ?\)))
   "List character pairs used as delimiters for optional arguments.")
 
 (defvar font-latex-syntax-error-modes '(latex-mode)
