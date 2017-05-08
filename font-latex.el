@@ -1782,18 +1782,30 @@ marks boundaries for searching for group ends."
 	      (throw 'extend group-start)))))
       nil)))
 
+(defvar font-latex-match-simple-exclude-list
+  '("-" "," "/" "&" "#" "_" "`" "'" "^" "~" "=" "." "\"")
+  "List of characters directly after \"\\\" excluded from fontification.
+Each character is a string.")
+
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
-  ;; \s_ matches chars with symbol syntax, \sw chars with word syntax, \s. chars
-  ;; with punctuation syntax.  We must exclude matches where the first character
-  ;; after the \ is a , (thin space: foo\,bar), a - (hyphenation: foo\-bar), a /
-  ;; (italic correction \/) or other reserved chars like &, # or _ (\& \# \_)
+  ;; \s_ matches chars with symbol syntax, \sw chars with word syntax,
+  ;; \s. chars with punctuation syntax.  We must exclude matches where
+  ;; the first character after the \ is a reserved character and
+  ;; should not be fontified (e.g. \, in foo\,bar or \- in foo\-bar).
+  ;; These characters are stored in
+  ;; `font-latex-match-simple-exclude-list'.  In docTeX mode, we
+  ;; remove "_" from this list to get correct fontification for macros
+  ;; like `\__module_foo:nnn'
   (let* ((search (lambda ()
 		   (TeX-re-search-forward-unescaped
 		    "\\\\\\(\\s_\\|\\sw\\|\\s.\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
 	 (pos (funcall search)))
     (while (and pos
-		(member (match-string 1) '("-" "," "/" "&" "#" "_")))
+		(member (match-string 1)
+			(if (eq major-mode 'doctex-mode)
+			    (remove "_" font-latex-match-simple-exclude-list)
+			  font-latex-match-simple-exclude-list)))
       (setq pos (funcall search)))
     pos))
 
