@@ -1871,18 +1871,30 @@ END marks boundaries for searching for environment ends."
 Used for patterns like:
 \\begin{equation}
  fontified stuff
-\\end{equation}
-The \\begin{equation} and \\end{equation} are not fontified here."
+\\end{equation} or
+\\begin{empheq}[X=Y\\Rightarrow]{alignat=3}
+ fontified stuff
+\\end{empheq}
+The \\begin{equation} incl. arguments in the same line and
+\\end{equation} are not fontified here."
   (when (re-search-forward (concat "\\\\begin[ \t]*{"
 				   (regexp-opt font-latex-math-environments t)
-				   "\\*?}")
+				   ;; Subexpression 2 is used to build
+				   ;; the \end{<env>} construct below
+				   "\\(\\*?}\\)"
+				   ;; Match an optional and possible
+				   ;; mandatory argument(s) as long as
+				   ;; they are on the same line with
+				   ;; no spaces in-between
+				   "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+				   "\\(?:{[^}]*}\\)*")
 			   limit t)
     (let ((beg (match-end 0)) end)
       (if (re-search-forward (concat "\\\\end[ \t]*{"
 				     (regexp-quote
 				      (buffer-substring-no-properties
 				       (match-beginning 1)
-				       (match-end 0))))
+				       (match-end 2))))
 			     ;; XXX: Should this rather be done by
 			     ;; extending the region to be fontified?
 			     (+ limit font-latex-multiline-boundary) 'move)
@@ -1905,11 +1917,16 @@ END marks boundaries for searching for environment ends."
 	      (concat "\\\\end[ \t]*{"
 		      (regexp-opt font-latex-math-environments t)
 		      "\\*?}") beg t)
-	(when (and (re-search-backward (concat  "\\\\begin[ \t]*{"
-						(buffer-substring-no-properties
-						 (match-beginning 1)
-						 (match-end 0)))
-				       (- beg font-latex-multiline-boundary) t)
+	(when (and (re-search-backward
+		    (concat  "\\\\begin[ \t]*{"
+			     (buffer-substring-no-properties
+			      (match-beginning 1)
+			      (match-end 0))
+			     ;; Match an optional and possible
+			     ;; mandatory argument(s)
+			     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+			     "\\(?:{[^}]*}\\)*")
+		    (- beg font-latex-multiline-boundary) t)
 		   (< (point) beg))
 	  (throw 'extend (point))))
       nil)))
