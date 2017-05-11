@@ -12,6 +12,21 @@
 
 @itemize @bullet
 @item
+Fontification of control symbols has been improved.  Characters defined
+in @code{font-latex-match-simple-exclude-list} do not receive any
+fontification.  In Doc@TeX{} mode, the character @samp{_} is removed
+from @code{font-latex-match-simple-exclude-list} in order to fontify
+macros like @samp{\__module_foo:nnn} correctly.
+
+@item
+Fontification of math environments has been improved.  Optional and/or
+mandatory argument(s) to environments are not fontified.
+
+@item
+@file{preview.sty} loads @file{luatex85.sty} if possible and should be
+compatible with newer lua@TeX{} versions.
+
+@item
 @AUCTeX{} has a new customize option @code{TeX-ispell-verb-delimiters}.
 This string contains usual characters used as delimiters for in-line
 verbatim macros like @samp{\verb}.  Text between delimiters after an
