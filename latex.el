@@ -1275,14 +1275,12 @@ out."
       (forward-sexp)
       (set-marker opt-end (1- (point))))
     ;; If keyword argument is given and keyvals argument is not given,
-    ;; parse the optional argument and put it into keyvals; the regexp
-    ;; takes care of multi-line arguments
+    ;; parse the optional argument and put it into keyvals
     (when (and keyword
 	       (marker-position opt-start)
 	       (not keyvals))
-      (goto-char (1+ opt-start))
-      (re-search-forward "\\(.*\\([\n\r].*\\)*\\)" opt-end t)
-      (setq keyvals (match-string-no-properties 0)))
+      (setq keyvals (buffer-substring-no-properties
+		     (1+ opt-start) opt-end)))
     ;; If keyword is given, only insert a label when keyword is found
     ;; inside the keyvals.  If keyword is nil, then insert a label
     ;; anyways
