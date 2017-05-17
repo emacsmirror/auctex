@@ -1237,7 +1237,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
     (if dir (cd dir))
     (erase-buffer)
     (let ((process (start-process (concat name " silent")
-				  nil TeX-shell
+				  (current-buffer) TeX-shell
 				  TeX-shell-command-option command)))
       (if TeX-after-start-process-function
 	  (funcall TeX-after-start-process-function process))
