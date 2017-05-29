@@ -61,6 +61,10 @@ Overfull \hbox (13.59138pt too wide) in paragraph at lines 367--368
 
 [93])
 
+! Undefined control sequence.
+l.11 \doesnotexist
+
+(./foo.aux) )
 LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48.
 
 LaTeX Warning: There were undefined references.
