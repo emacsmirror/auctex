@@ -990,6 +990,7 @@ adjusted to OS default value.  Take care of Japanese TeX, which
 requires special treatment."
   (when (featurep 'mule)
     (if (and (boundp 'japanese-TeX-mode)
+	     (fboundp 'japanese-TeX-set-process-coding-system)
 	     (with-current-buffer TeX-command-buffer
 	       japanese-TeX-mode))
 	(japanese-TeX-set-process-coding-system process)
