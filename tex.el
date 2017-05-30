@@ -1335,7 +1335,13 @@ DE is the name of the desktop environment, either \"gnome\" or
 	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (TeX-line-number-at-pos)
+	   (list :struct :int32 (1+ (TeX-current-offset))
+		 ;; FIXME: Using `current-column' here is dubious.
+		 ;; Most of CJK letters count as occupying 2 columns,
+		 ;; so the column number is not equal to the number of
+		 ;; the characters counting from the beginning of a
+		 ;; line.  What is the right number to specify here?
+		 ;; number of letters? bytes in UTF8? or other?
 		 :int32 (1+ (current-column)))
 	   :uint32 0))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
@@ -1385,7 +1391,7 @@ DE is the name of the desktop environment, either \"gnome\" or
 		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
-	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
+	(mode-io-correlate " -forward-search %b %n") " %o")
        "SumatraPDF")
       ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
@@ -2090,11 +2096,14 @@ enabled and the `synctex' binary is available."
   (let ((synctex-output
 	 (with-output-to-string
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
-			 "-i" (format "%s:%s:%s" (TeX-line-number-at-pos)
-				      (current-column)
+			 "-i" (format "%s:%s:%s" (1+ (TeX-current-offset))
+				      ;; FIXME: Using `current-column'
+				      ;; here is dubious.  See comment in
+				      ;; `TeX-evince-sync-view-1'.
+				      (1+ (current-column))
 				      file)
 			 "-o" (TeX-active-master (TeX-output-extension))))))
-    (when (string-match "Page:\\([0-9]+\\)" synctex-output)
+    (when (string-match "^Page:\\([0-9]+\\)" synctex-output)
       (match-string 1 synctex-output))))
 
 (defun TeX-synctex-output-page ()

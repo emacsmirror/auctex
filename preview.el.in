@@ -1622,11 +1622,8 @@ through `preview-region'."
 	    (unless (eq preview-state 'disabled)
 	      (preview-toggle ovr 'toggle (selected-window))
 	      (throw 'exit t)))))
-      ;; Let-bind `TeX-source-correlate-mode' to nil in order to work around
-      ;; bug#26694.
-      (let ((TeX-source-correlate-mode nil))
-	(preview-region (preview-next-border t)
-			(preview-next-border nil))))))
+      (preview-region (preview-next-border t)
+		      (preview-next-border nil)))))
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."

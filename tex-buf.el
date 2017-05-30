@@ -492,6 +492,11 @@ been set."
 	 (setq TeX-current-process-region-p t))
 	((eq file #'TeX-master-file)
 	 (setq TeX-current-process-region-p nil)))
+
+  ;; When we're operating on a region, we need to update the position
+  ;; of point in the region file so that forward search works.
+  (if (string= name "View") (TeX-region-update-point))
+
   (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
 				     file))
 	(hook (nth 2 (assoc name TeX-command-list)))
@@ -899,18 +904,22 @@ QUEUE is non-nil when we are checking for the printer queue."
 Thereafter, point in the region file is on the same text as in
 the current buffer.
 
-Does nothing in case the last command hasn't operated on the
-region."
-  (when TeX-current-process-region-p
+Do nothing in case the last command hasn't operated on the region
+or `TeX-source-correlate-mode' is disabled."
+  (when (and TeX-current-process-region-p TeX-source-correlate-mode)
     (let ((region-buf (get-file-buffer (TeX-region-file t)))
-	  (current-line (TeX-line-number-at-pos)))
+	  (orig-line (TeX-current-offset))
+	  (pos-in-line (- (point) (max (line-beginning-position)
+				       (or TeX-command-region-begin
+					   (region-beginning))))))
       (when region-buf
 	(with-current-buffer region-buf
 	  (goto-char (point-min))
-	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)")
+	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)" nil t)
 	    (let ((offset (string-to-number (match-string 1))))
 	      (goto-char (point-min))
-	      (forward-line (- current-line (1+ offset))))))))))
+	      (forward-line (- orig-line offset))
+	      (forward-char pos-in-line))))))))
 
 (defun TeX-view ()
   "Start a viewer without confirmation.
@@ -919,11 +928,7 @@ depending on the last command issued."
   (interactive)
   (let ((output-file (TeX-active-master (TeX-output-extension))))
     (if (file-exists-p output-file)
-	(progn
-	  ;; When we're operating on a region, we need to update the position
-	  ;; of point in the region file so that forward search works.
-	  (TeX-region-update-point)
-	  (TeX-command "View" 'TeX-active-master 0))
+	(TeX-command "View" 'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
 (defun TeX-output-style-check (styles)
@@ -2142,17 +2147,6 @@ original file."
 		") }\n"
 		trailer)
 	(setq TeX-region-orig-buffer orig-buffer)
-	;; Position point at the line/col that corresponds to point's line in
-	;; orig-buffer in order to make forward search work.  Move point only
-	;; when `TeX-source-correlate-mode' is non-nil, in order to work around
-	;; bug#26694.
-	(when TeX-source-correlate-mode
-	    (let ((line-col (with-current-buffer orig-buffer
-			   (cons (TeX-line-number-at-pos)
-				 (current-column)))))
-	   (goto-char (point-min))
-	   (forward-line (1- (abs (- header-offset (car line-col)))))
-	   (forward-char (cdr line-col))))
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
 	    (set-buffer-modified-p nil)
