@@ -177,11 +177,15 @@ temporary file before the region itself.  The document's header is all
 text before `TeX-header-end'.
 
 If the master file for the document has a trailer, it is written to
-the temporary file before the region itself.  The document's trailer is
+the temporary file after the region itself.  The document's trailer is
 all text after `TeX-trailer-start'."
   (interactive "P")
   (TeX-region-update)
-  (TeX-command (TeX-command-query (TeX-region-file nil t)) 'TeX-region-file
+  ;; In the next line, `TeX-region-file' should be called with nil
+  ;; `nondirectory' argument, otherwise `TeX-comand-default' called
+  ;; within `TeX-command-query' won't work in included files not
+  ;; placed in `TeX-master-directory'.
+  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
 	       override-confirm))
 
 (defun TeX-command-buffer (&optional override-confirm)
@@ -777,7 +781,7 @@ omitted) and `TeX-region-file'."
     (cond (;; name might be absolute or relative, so expand it for
 	   ;; comparison.
 	   (if (string-equal (expand-file-name name)
-			     (expand-file-name TeX-region))
+			     (expand-file-name (TeX-region-file)))
 	       (TeX-check-files (concat name "." (TeX-output-extension))
 				;; Each original will be checked for all dirs
 				;; in `TeX-check-path' so this needs to be just
