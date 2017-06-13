@@ -1531,7 +1531,7 @@ Return nil ifs no errors were found."
 ;;   Package xyz123 Warning: ...
 ;;   Class xyz123 Warning: ...
 (defvar LaTeX-warnings-regexp
-  "\\(?:LaTeX\\|Class\\|Package\\) [-A-Za-z0-9]* ?Warning:"
+  "\\(?:LaTeX\\|Class\\|Package\\|\*\\) [-A-Za-z0-9]* ?[Ww]arning:"
   "Regexp matching LaTeX warnings.")
 
 (defun TeX-LaTeX-sentinel-has-warnings ()

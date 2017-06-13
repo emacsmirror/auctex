@@ -121,6 +121,25 @@ ABD: EveryShipout initializing macros"
               0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2805 nil)
 ))))
 
+(ert-deftest TeX-error-parsing-expl3-warnings ()
+  "Test parsing of expl3 warnings."
+  (should (equal
+	   (with-temp-buffer
+	     (setq TeX-debug-warnings t
+		   TeX-debug-bad-boxes t)
+             (insert
+	      "*************************************************
+* xsim warning: \"rerun\"
+* 
+* Exercise properties may have changed. Rerun to get them synchronized.
+*************************************************
+")
+             (TeX-parse-all-errors)
+	     TeX-error-list)
+	   '((warning nil nil "* xsim warning: \"rerun\"" 0
+		      "* xsim warning: \"rerun\"\n* \n* Exercise properties may have changed. Rerun to get them synchronized.\n*************************************************\n"
+		      nil nil nil 200 nil)))))
+
 ;; See https://lists.gnu.org/archive/html/auctex/2017-04/msg00007.html.
 (ert-deftest TeX-LaTeX2e-date ()
   "Test parsing of different LaTeX2e date formats."
