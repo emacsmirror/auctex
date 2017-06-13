@@ -1638,6 +1638,10 @@ Rerun to get mark in right position\\." nil t)
 	 (message
 	  "%s" "You should run LaTeX again to get TikZ marks in right position")
 	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward "^\* xsim warning: \"rerun\"" nil t)
+	 (message
+	  "%s" "You should run LaTeX again to synchronize exercise properties")
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
 \\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)" nil t)
