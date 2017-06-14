@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty
 
-;; Copyright (C) 2000, 2004, 2005, 2014, 2016 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2017 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -51,7 +51,9 @@
     ("keepaspectratio" ("true" "false"))
     ("scale")
     ("clip"  ("true" "false"))
-    ("draft" ("true" "false")))
+    ("draft" ("true" "false"))
+    ("quiet")
+    ("interpolate" ("true" "false")))
   "Key=value options for graphicx macros.")
 
 (defvar LaTeX-includegraphics-dvips-extensions
@@ -79,7 +81,8 @@ spaces conveniently.
 
 If `TeX-engine' is set to symbol 'default (while
 `TeX-PDF-from-DVI' is set to nil) or 'luatex and `TeX-PDF-mode'
-is non-nil, add the key \"page\" to list of key-val's."
+is non-nil, add the keys \"page\" and \"pagebox\" to list of
+key-val's."
   (let ((crm-local-completion-map
 	 (remove (assoc 32 crm-local-completion-map)
 		 crm-local-completion-map))
@@ -92,7 +95,13 @@ is non-nil, add the key \"page\" to list of key-val's."
 					 (not (TeX-PDF-from-DVI)))
 				    (eq TeX-engine 'luatex))
 				TeX-PDF-mode)
-			   (append '(("page")) LaTeX-graphicx-key-val-options)
+			   (append '(("page")
+				     ("pagebox" ("mediabox"
+						 "cropbox"
+						 "bleedbox"
+						 "trimbox"
+						 "artbox")))
+				   LaTeX-graphicx-key-val-options)
 			 LaTeX-graphicx-key-val-options))
      optional)))
 
