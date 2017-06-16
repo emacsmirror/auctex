@@ -1234,33 +1234,31 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; XXX: Atril is a fork of Evince and shares an almost identical interface with
-;; it.  Instead of having different functions for each program, we keep the
-;; original *-evince-* functions and make them accept arguments to specify the
-;; actual name of the program and the desktop environment, that will be used to
-;; set up DBUS communication.
+;; XXX: Atril and xreader are forks of Evince and share an almost
+;; identical interface with it. Instead of having different functions
+;; for each program, we keep the original *-evince-* functions and
+;; make them accept arguments to specify the actual name of the
+;; program and the desktop environment, that will be used to set up
+;; DBUS communication.
 
 ;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
 ;; not being defined.
 (eval-when-compile (and (featurep 'dbusbind)
 			(require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (de app &rest options)
-  "Return non-nil, if atril or evince are installed and accessible via DBUS.
+  "Return non-nil, if an evince-compatible reader is accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
 given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of viewer."
   (let ((dbus-debug nil))
     (and (featurep 'dbusbind)
 	 (require 'dbus nil :no-error)
 	 (dbus-ignore-errors (dbus-get-unique-name :session))
 	 (dbus-ping :session (format "org.%s.%s.Daemon" de app))
-	 (executable-find app)
 	 (or (not (memq :forward options))
 	     (let ((spec (dbus-introspect-get-method
 			  :session (format "org.%s.%s.Daemon" de app)
@@ -1308,12 +1306,11 @@ entry in `TeX-view-program-list-builtin'."
 (defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
-for the Atril or Evince entries in
+for the Evince-compatible entries in
 `TeX-view-program-list-builtin' if the requirements are met.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of
+viewer."
   (require 'url-util)
   (let* ((uri (concat "file://" (url-encode-url
 				 (expand-file-name
@@ -1354,12 +1351,15 @@ DE is the name of the desktop environment, either \"gnome\" or
   "Run `TeX-evince-sync-view-1', which see, set up for Evince."
   (TeX-evince-sync-view-1 "gnome" "evince"))
 
+(defun TeX-xreader-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "x" "reader"))
+
 (defun TeX-view-program-select-evince (de app)
   "Select how to call the Evince-like viewer.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of
+viewer."
   (if (TeX-evince-dbus-p de app :forward)
       (intern (format "TeX-%s-sync-view" app))
     `(,app (mode-io-correlate
@@ -1418,6 +1418,7 @@ DE is the name of the desktop environment, either \"gnome\" or
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
       ("Evince" ,(TeX-view-program-select-evince "gnome" "evince") "evince")
       ("Atril" ,(TeX-view-program-select-evince "mate" "atril") "atril")
+      ("Xreader" ,(TeX-view-program-select-evince "x" "reader") "xreader")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
       ("xdg-open" "xdg-open %o" "xdg-open")
       ("PDF Tools" TeX-pdf-tools-sync-view)
@@ -1891,8 +1892,8 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
 (defcustom TeX-raise-frame-function #'raise-frame
   "A function which will be called to raise the Emacs frame.
 The function is called after `TeX-source-correlate-sync-source'
-has processed an inverse search DBUS request from Evince or
-Atril in order to raise the Emacs frame.
+has processed an inverse search DBUS request from
+Evince-compatible viewers in order to raise the Emacs frame.
 
 The default value is `raise-frame', however, depending on window
 manager and focus stealing policies, it might very well be that
@@ -1982,8 +1983,9 @@ SyncTeX are recognized."
 				       TeX-source-correlate-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
-  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince or Atril.
-  (dolist (de-app '(("gnome" "evince") ("mate" "atril")))
+  ;; Register Emacs for the SyncSource DBUS signal emitted by
+  ;; Evince-compatible viewers.
+  (dolist (de-app '(("gnome" "evince") ("mate" "atril") ("x" "reader")))
     (when (TeX-evince-dbus-p (car de-app) (cadr de-app))
       (dbus-register-signal
        :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
