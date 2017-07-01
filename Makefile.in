@@ -166,7 +166,7 @@ STYLESRC = style/prosper.el \
 	   style/exam.el      style/breqn.el     style/sourcecodepro.el \
 	   style/preview.el   style/fvextra.el   style/jurabib.el \
 	   style/csquotes.el  style/babel.el     style/dk-bib.el \
-	   style/floatrow.el
+	   style/floatrow.el  style/moodle.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
