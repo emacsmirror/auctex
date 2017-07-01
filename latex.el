@@ -5850,7 +5850,7 @@ and `LaTeX-babel-hyphen-after-hyphen' respectively.  The first item
 in each element is a string specifying the language as set by the
 language-specific style file.  The second item is the string to be
 used instead of `LaTeX-babel-hyphen'.  The third element is the
-value overriding `LaTeX-bybel-hyphen-after-hyphen'."
+value overriding `LaTeX-babel-hyphen-after-hyphen'."
   :group 'LaTeX-macro
   :type '(alist :key-type (string :tag "Language")
 		:value-type (group (string :tag "Hyphen string")
