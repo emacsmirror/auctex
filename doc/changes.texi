@@ -12,6 +12,16 @@
 
 @itemize @bullet
 @item
+Add support for @command{upmendex}, an extension of @command{makeindex}
+capable of sorting indexes by unicode based ICU.
+
+@item
+Fix preview-latex to interact correctly with Japanese @LaTeX{}.  The
+parsing routine was made robust not to be confused by the 7-bit encoding
+of Japanese text and the necessary option to @LaTeX{} command is kept
+even when preamble caching is enabled.
+
+@item
 Fontification of control symbols has been improved.  Characters defined
 in @code{font-latex-match-simple-exclude-list} do not receive any
 fontification.  In Doc@TeX{} mode, the character @samp{_} is removed
@@ -73,6 +83,19 @@ function bound to this variable is now expected to take an optional
 second argument @code{NO-INSERT}.  When this argument is non-@code{nil},
 the function should read and only return a label as a string; insertion
 is done by another function.
+
+@item
+Directory local variables were ineffective for
+@code{japanese-latex-mode} and @code{japanese-plain-tex-mode}.  This bug
+was fixed.  (This was actually done in @AUCTeX{} 11.90, but not
+advertised)
+
+@item
+The output of Japanese text from Japanese @TeX{} engines is decoded
+correctly for most cases, according to the encoding of the @TeX{}
+documents and the locale.  The difference between MS Windows, macOS and
+unix-like OS is taken into account.  (This was actually done in
+@AUCTeX{} 11.90, but not advertised)
 @end itemize
 
 @heading News in 11.90
