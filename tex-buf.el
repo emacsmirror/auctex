@@ -827,7 +827,7 @@ omitted) and `TeX-region-file'."
          (completion-ignore-case t)
          (answer (or TeX-command-force
                      (completing-read
-                      (concat "Command: (default " default ") ")
+                      (concat "Command (default " default "): ")
                       (TeX-mode-specific-command-list major-mode) nil t
                       nil 'TeX-command-history default))))
     ;; If the answer is "latex" it will not be expanded to "LaTeX"
@@ -855,10 +855,9 @@ QUEUE is non-nil when we are checking for the printer queue."
 	     (setq printer (if TeX-printer-list
 			       (let ((completion-ignore-case t))
 				 (completing-read
-				  (concat "Printer: "
-					  (and TeX-printer-default
-					       (concat "(default "
-						       TeX-printer-default ") ")))
+				  (format "Printer%s: "
+					  (if TeX-printer-default
+					      (format " (default %s)" TeX-printer-default) ""))
 				  TeX-printer-list))
 			     ""))
 	     (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))

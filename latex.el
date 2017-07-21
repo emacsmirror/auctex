@@ -440,7 +440,7 @@ no label is inserted."
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
-		 (concat "Level: (default " name ") ")
+		 (concat "Level (default " name "): ")
 		 LaTeX-section-list
 		 nil nil nil nil name)))
     ;; Update name
@@ -563,8 +563,8 @@ It may be customized with the following variables:
 			 (string-equal (LaTeX-current-environment) "document"))
 		    LaTeX-default-document-environment)
 		   (t LaTeX-default-environment)))
-	 (environment (completing-read (concat "Environment type: (default "
-					       default ") ")
+	 (environment (completing-read (concat "Environment type (default "
+					       default "): ")
 				       (LaTeX-environment-list-filtered) nil nil
 				       nil 'LaTeX-environment-history default)))
     ;; Use `environment' as default for the next time only if it is different
@@ -2242,12 +2242,13 @@ OPTIONAL and IGNORE are ignored."
 	    (if (if (eq TeX-arg-input-file-search 'ask)
 		    (not (y-or-n-p "Find class yourself? "))
 		  TeX-arg-input-file-search)
-		(progn
+		(prog2
 		  (message "Searching for LaTeX classes...")
-		  (TeX-search-files-by-type 'texinputs 'global t t))
+		  (TeX-search-files-by-type 'texinputs 'global t t)
+		  (message "Searching for LaTeX classes...done"))
 	      LaTeX-style-list)))
     (setq style (completing-read
-		 (concat "Document class: (default " LaTeX-default-style ") ")
+		 (concat "Document class (default " LaTeX-default-style "): ")
 		 LaTeX-global-class-files nil nil nil nil LaTeX-default-style))
     ;; Clean up hook before use.
     (setq TeX-after-document-hook nil)
@@ -2304,7 +2305,8 @@ of the options, nil otherwise."
 	    (message "Searching for LaTeX packages...")
 	    (setq TeX-global-input-files
 		  (mapcar 'list (TeX-search-files-by-type
-				 'texinputs 'global t t))))))
+				 'texinputs 'global t t)))
+	    (message "Searching for LaTeX packages...done"))))
     (setq packages (TeX-completing-read-multiple
 		    "Packages: " TeX-global-input-files))
     ;; Clean up hook before use in `LaTeX-arg-usepackage-insert'.
@@ -2436,7 +2438,8 @@ files."
 	    (message "Searching for files...")
 	    (setq TeX-global-input-files
 		  (mapcar 'list (TeX-search-files-by-type
-				 'texinputs 'global t t))))
+				 'texinputs 'global t t)))
+	    (message "Searching for files...done"))
 	  (setq file (completing-read
 		      (TeX-argument-prompt optional prompt "File")
 		      (TeX-delete-dups-by-car
@@ -2475,6 +2478,7 @@ string."
   (or BibTeX-global-style-files
       (setq BibTeX-global-style-files
 	    (mapcar 'list (TeX-search-files-by-type 'bstinputs 'global t t))))
+  (message "Searching for BibTeX styles...done")
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "BibTeX style")
 		    (append (mapcar 'list (TeX-search-files-by-type
@@ -2503,6 +2507,7 @@ string."
   (or BibTeX-global-files
       (setq BibTeX-global-files
 	    (mapcar 'list (TeX-search-files-by-type 'bibinputs 'global t t))))
+  (message "Searching for BibTeX files...done")
   (let ((styles (multi-prompt
 		 "," t
 		 (TeX-argument-prompt optional prompt "BibTeX files")
@@ -2598,8 +2603,8 @@ the list of defined pagestyles."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  IGNORE is ignored."
   (let ((del (read-quoted-char
-	      (concat "Delimiter: (default "
-		      (char-to-string LaTeX-default-verb-delimiter) ") "))))
+	      (concat "Delimiter (default "
+		      (char-to-string LaTeX-default-verb-delimiter) "): "))))
     (when (<= del ?\ ) (setq del LaTeX-default-verb-delimiter))
     (if (TeX-active-mark)
 	(progn
@@ -4367,7 +4372,7 @@ formatting."
       (setq from (point))
       (catch 'end-of-buffer
 	(while (and (< (point) to))
-	  (message "Formatting%s ... %d%%"
+	  (message "Formatting%s...%d%%"
 		   (or what "")
 		   (/ (* 100 (- (point) from)) (- to from)))
 	  (save-excursion (LaTeX-fill-paragraph justify))
@@ -4384,7 +4389,7 @@ formatting."
 			       TeX-comment-start-regexp "+[ \t]*$\\)")))
 	    (forward-line 1))))
       (set-marker to nil)))
-  (message "Finished"))
+  (message "Formatting%s...done" (or what "")))
 
 (defun LaTeX-find-matching-end ()
   "Move point to the \\end of the current environment.

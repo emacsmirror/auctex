@@ -2441,7 +2441,7 @@ this variable to \"<none>\"."
     (let* ((default (TeX-dwim-master))
 	   (name (or (and (eq 'dwim TeX-master) default)
 		     (condition-case nil
-			 (read-file-name (format "Master file: (default %s) "
+			 (read-file-name (format "Master file (default %s): "
 						 (or default "this file"))
 					 nil default)
 		       (quit "<quit>")))))
@@ -2499,7 +2499,7 @@ name of master file if it cannot be determined otherwise."
 	  (setq TeX-master
 		(let* ((default (TeX-dwim-master))
 		       (name (read-file-name
-			      (format "Master file: (default %s) "
+			      (format "Master file (default %s): "
 				      (or default "this file"))
 			      nil default)))
 		  (cond ((string= name default)
@@ -3088,7 +3088,7 @@ FORCE is not nil."
 				    TeX-style-hook-list))))
 	(TeX-auto-apply))
     (run-hooks 'TeX-update-style-hook)
-    (message "Applying style hooks... done")))
+    (message "Applying style hooks...done")))
 
 (defvar TeX-remove-style-hook nil
   "List of hooks to call when we remove the style specific information.")
@@ -3903,6 +3903,7 @@ The algorithm is as follows:
       (set local
 	   (sort (mapcar 'TeX-listify (apply 'append (symbol-value local)))
 		 'TeX-car-string-lessp))
+      (message "Sorting %s...done" name)
       ;; Make it unique
       (message "Removing duplicates...")
       (let ((entry (symbol-value local)))
@@ -3916,7 +3917,7 @@ The algorithm is as follows:
 	      (if (> (length next) (length this))
 		  (setcdr this (cdr next)))
 	      (setcdr entry (cdr (cdr entry)))))))
-      (message "Removing duplicates... done"))
+      (message "Removing duplicates...done"))
     (symbol-value local)))
 
 (defmacro TeX-auto-add-type (name prefix &optional plural)
@@ -4098,7 +4099,7 @@ If TEX is a directory, generate style files for all files in the directory."
 							t)
 				   ".el"))
 	   (kill-buffer (current-buffer))
-	   (message "Parsing %s... done" tex)))))
+	   (message "Parsing %s...done" tex)))))
 
 ;;;###autoload
 (defun TeX-auto-generate-global ()
