@@ -8,9 +8,13 @@
 
 @end ifset
 
-@heading News since 11.90
+@heading News in 11.91
 
 @itemize @bullet
+@item
+Now @AUCTeX{} has a logo.  The @LaTeX{} code to create it is available
+in the @file{etc/} directory of the package.
+
 @item
 Add support for @command{upmendex}, an extension of @command{makeindex}
 capable of sorting indexes by unicode based ICU.
@@ -20,6 +24,10 @@ Fix preview-latex to interact correctly with Japanese @LaTeX{}.  The
 parsing routine was made robust not to be confused by the 7-bit encoding
 of Japanese text and the necessary option to @LaTeX{} command is kept
 even when preamble caching is enabled.
+
+@item
+The new ``Glossaries'' entry in @code{TeX-command-list} runs the command
+@command{makeglossaries}.
 
 @item
 Fontification of control symbols has been improved.  Characters defined
@@ -96,6 +104,13 @@ correctly for most cases, according to the encoding of the @TeX{}
 documents and the locale.  The difference between MS Windows, macOS and
 unix-like OS is taken into account.  (This was actually done in
 @AUCTeX{} 11.90, but not advertised)
+
+@item
+Quite a few new @LaTeX{} packages are supported.
+
+@item
+As usual, many bugs were fixed.
+
 @end itemize
 
 @heading News in 11.90
