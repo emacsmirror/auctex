@@ -39,7 +39,7 @@
 ;;; Code:
 
 (if (< emacs-major-version 21)
-  (error "AUCTeX requires Emacs 21 or later")) ;FIXME: Really?
+    (error "AUCTeX requires Emacs 21 or later")) ;FIXME: Really?
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
@@ -157,11 +157,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.90.2"
-  "AUCTeX version.
+(defconst AUCTeX-version "11.90.2.2017-07-25"
+    "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2017-04-21"
+(defconst AUCTeX-date "2017-07-25"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer

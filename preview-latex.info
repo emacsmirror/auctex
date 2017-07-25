@@ -1,8 +1,8 @@
-This is preview-latex.info, produced by makeinfo version 6.3 from
+This is preview-latex.info, produced by makeinfo version 6.4 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.90.2 from 2017-04-21).
+(version 11.91.0 from 2017-07-25).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -576,10 +576,10 @@ newer versions of the problematic software or by simple patches.
 
 * Menu:
 
-* Font problems with Dvips::    
-* Too small bounding boxes::    
-* x-symbol interoperation::     
-* Middle-clicks paste instead of toggling::  
+* Font problems with Dvips::
+* Too small bounding boxes::
+* x-symbol interoperation::
+* Middle-clicks paste instead of toggling::
 
    If you find something not mentioned here, please send a bug report
 using 'M-x preview-report-bug <RET>', which will fill in a lot of
@@ -698,10 +698,10 @@ Emacs-lisp part integrating the thing into Emacs (aided by AUCTeX).
 
 * Menu:
 
-* The LaTeX style file::        
-* The Emacs interface::         
-* The preview images::             
-* Misplaced previews::          
+* The LaTeX style file::
+* The Emacs interface::
+* The preview images::
+* Misplaced previews::
 
 
 File: preview-latex.info,  Node: The LaTeX style file,  Next: The Emacs interface,  Prev: For advanced users,  Up: For advanced users
@@ -717,7 +717,7 @@ generating PDF files (usually also postprocessed by Ghostscript).
 
    Current uses of the package include the preview-latex package for
 WYSIWYG functionality in the AUCTeX editing environment, generation of
-previews in LyX, as part of the operation of the ps4pdf package, the
+previews in LyX, as part of the operation of the pst-pdf package, the
 tbook XML system and some other tools.
 
    Producing EPS files with Dvips and its derivatives using the '-E'
@@ -1561,12 +1561,12 @@ Appendix B Frequently Asked Questions
 
 * Menu:
 
-* Introduction to FAQ::         
-* Requirements::                
-* Installation Trouble::        
-* Customization::               
-* Troubleshooting::               
-* Other formats::               
+* Introduction to FAQ::
+* Requirements::
+* Installation Trouble::
+* Customization::
+* Troubleshooting::
+* Other formats::
 
 
 File: preview-latex.info,  Node: Introduction to FAQ,  Next: Requirements,  Prev: Frequently Asked Questions,  Up: Frequently Asked Questions
@@ -1900,7 +1900,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 11.90.2 from 2017-04-21).
+(version 11.91.0 from 2017-07-25).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software
 Foundation, Inc.
@@ -2534,27 +2534,27 @@ Node: Installation11602
 Node: Keys and lisp11803
 Node: Simple customization18467
 Node: Known problems24227
-Node: Font problems with Dvips25015
-Node: Too small bounding boxes26188
-Node: x-symbol interoperation27584
-Node: Middle-clicks paste instead of toggling28967
-Node: For advanced users29783
-Node: The LaTeX style file30282
-Node: Package options32843
-Node: Provided commands43747
-Node: The Emacs interface51097
-Node: The preview images60268
-Node: Misplaced previews63751
-Node: ToDo67205
-Node: Frequently Asked Questions71976
-Node: Introduction to FAQ72377
-Node: Requirements72716
-Node: Installation Trouble75687
-Node: Customization78249
-Node: Troubleshooting81794
-Node: Other formats84312
-Node: Copying this Manual85627
-Node: GNU Free Documentation License86557
-Node: Index111679
+Node: Font problems with Dvips25000
+Node: Too small bounding boxes26173
+Node: x-symbol interoperation27569
+Node: Middle-clicks paste instead of toggling28952
+Node: For advanced users29768
+Node: The LaTeX style file30227
+Node: Package options32789
+Node: Provided commands43693
+Node: The Emacs interface51043
+Node: The preview images60214
+Node: Misplaced previews63697
+Node: ToDo67151
+Node: Frequently Asked Questions71922
+Node: Introduction to FAQ72245
+Node: Requirements72584
+Node: Installation Trouble75555
+Node: Customization78117
+Node: Troubleshooting81662
+Node: Other formats84180
+Node: Copying this Manual85495
+Node: GNU Free Documentation License86425
+Node: Index111547
 
 End Tag Table
