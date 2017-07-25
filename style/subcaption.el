@@ -1,6 +1,6 @@
 ;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.1-100)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2017 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -143,8 +143,8 @@ caption, insert only a caption."
 		    (TeX-argument-prompt nil nil "Type")
 		    '("figure" "table"))))
 
-   ;; Everything starting with \subcaption should get its own line
-   (LaTeX-paragraph-commands-add-locally "subcaption")
+   ;; \subcaption(box)? macros should get their own lines
+   (LaTeX-paragraph-commands-add-locally '("subcaption" "subcaptionbox"))
 
    ;; The subfigure & subtable environments
    (LaTeX-add-environments

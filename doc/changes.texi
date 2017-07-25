@@ -8,9 +8,42 @@
 
 @end ifset
 
-@heading News since 11.90
+@heading News in 11.91
 
 @itemize @bullet
+@item
+Now @AUCTeX{} has a logo.  The @LaTeX{} code to create it is available
+in the @file{etc/} directory of the package.
+
+@item
+Add support for @command{upmendex}, an extension of @command{makeindex}
+capable of sorting indexes by unicode based ICU.
+
+@item
+Fix preview-latex to interact correctly with Japanese @LaTeX{}.  The
+parsing routine was made robust not to be confused by the 7-bit encoding
+of Japanese text and the necessary option to @LaTeX{} command is kept
+even when preamble caching is enabled.
+
+@item
+The new ``Glossaries'' entry in @code{TeX-command-list} runs the command
+@command{makeglossaries}.
+
+@item
+Fontification of control symbols has been improved.  Characters defined
+in @code{font-latex-match-simple-exclude-list} do not receive any
+fontification.  In Doc@TeX{} mode, the character @samp{_} is removed
+from @code{font-latex-match-simple-exclude-list} in order to fontify
+macros like @samp{\__module_foo:nnn} correctly.
+
+@item
+Fontification of math environments has been improved.  Optional and/or
+mandatory argument(s) to environments are not fontified.
+
+@item
+@file{preview.sty} loads @file{luatex85.sty} if possible and should be
+compatible with newer lua@TeX{} versions.
+
 @item
 @AUCTeX{} has a new customize option @code{TeX-ispell-verb-delimiters}.
 This string contains usual characters used as delimiters for in-line
@@ -58,6 +91,26 @@ function bound to this variable is now expected to take an optional
 second argument @code{NO-INSERT}.  When this argument is non-@code{nil},
 the function should read and only return a label as a string; insertion
 is done by another function.
+
+@item
+Directory local variables were ineffective for
+@code{japanese-latex-mode} and @code{japanese-plain-tex-mode}.  This bug
+was fixed.  (This was actually done in @AUCTeX{} 11.90, but not
+advertised)
+
+@item
+The output of Japanese text from Japanese @TeX{} engines is decoded
+correctly for most cases, according to the encoding of the @TeX{}
+documents and the locale.  The difference between MS Windows, macOS and
+unix-like OS is taken into account.  (This was actually done in
+@AUCTeX{} 11.90, but not advertised)
+
+@item
+Quite a few new @LaTeX{} packages are supported.
+
+@item
+As usual, many bugs were fixed.
+
 @end itemize
 
 @heading News in 11.90

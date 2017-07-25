@@ -110,12 +110,35 @@ ABD: EveryShipout initializing macros"
              (bad-box "./file  name/with spaces.tex" 367 "Overfull \\hbox (13.59138pt too wide) in paragraph at lines 367--368"
               0 "\n[]\\T1/pplj/m/n/10.95 Un qua-dri-vet-to-re co-va-rian-te $\\OMS/zplm/m/n/10.95 f\\OML/zplm/m/it/10.95 A[]\\OMS/zplm/m/n/10.95 g$ \\T1/pplj/m/n/10.95 e un in-sie-me di quat-tro quan-ti-ta $\\OT1/zplm/m/n/10.95 (\\OML/zplm/m/it/10.95 A[]; A[]; A[]; A[]\\OT1/zplm/m/n/10.95 )$" "$"
               368 t 2600 nil)
+             (error "./test.tex" 11 "Undefined control sequence." 0
+		    "\nl.11 \\doesnotexist\n\n(./foo.aux) )"
+		    "\\doesnotexist\n" nil nil 2682 nil)
              (warning "./test.tex" 48
               "LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48." 0
               "LaTeX Warning: Citation 'Knuth:TeXbook-1984' undefined on input line 48.\n"
-              "Knuth:TeXbook-1984" 48 nil 2692 nil)
+              "Knuth:TeXbook-1984" 48 nil 2756 nil)
              (warning "./test.tex" nil "LaTeX Warning: There were undefined references."
-              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2741 nil)))))
+              0 "LaTeX Warning: There were undefined references.\n" nil nil nil 2805 nil)
+))))
+
+(ert-deftest TeX-error-parsing-expl3-warnings ()
+  "Test parsing of expl3 warnings."
+  (should (equal
+	   (with-temp-buffer
+	     (setq TeX-debug-warnings t
+		   TeX-debug-bad-boxes t)
+             (insert
+	      "*************************************************
+* xsim warning: \"rerun\"
+* 
+* Exercise properties may have changed. Rerun to get them synchronized.
+*************************************************
+")
+             (TeX-parse-all-errors)
+	     TeX-error-list)
+	   '((warning nil nil "* xsim warning: \"rerun\"" 0
+		      "* xsim warning: \"rerun\"\n* \n* Exercise properties may have changed. Rerun to get them synchronized.\n*************************************************\n"
+		      nil nil nil 200 nil)))))
 
 ;; See https://lists.gnu.org/archive/html/auctex/2017-04/msg00007.html.
 (ert-deftest TeX-LaTeX2e-date ()

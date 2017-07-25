@@ -115,7 +115,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 	   (keys '("color" "background"))
 	   (tmp (copy-alist LaTeX-breqn-key-val-options-local)))
       (dolist (x keys)
-	(assq-delete-all (car (assoc x tmp)) tmp)
+	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
 	(push (list x (mapcar #'car (funcall colorcmd))) tmp))
       (setq LaTeX-breqn-key-val-options-local
 	    (copy-alist tmp)))))

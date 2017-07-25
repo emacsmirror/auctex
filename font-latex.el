@@ -400,7 +400,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("ensuremath" "|{\\"))
      font-latex-math-face 1 command)
     ("type-command"
-     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{"))
+     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{") ("oldstylenums" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
      ("bf" "bfseries" "sc" "scshape" "upshape")
@@ -1613,10 +1613,13 @@ Returns nil if none of KEYWORDS is found."
 			       font-latex-command-with-args-default-spec)))
 	       (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
 	  (goto-char (match-end 0))
-	  ;; Check for starred macro if first spec is an asterisk.
-	  (when (eq (car spec-list) ?*)
+	  ;; Check for starred macro if first spec is an asterisk or a
+	  ;; plus sign in case of \defaultfontfeatures+ provided by
+	  ;; fontspec.sty
+	  (when (or (eq (car spec-list) ?*)
+		    (eq (car spec-list) ?+))
 	    (setq spec-list (cdr spec-list))
-	    (skip-chars-forward "*" (1+ (point))))
+	    (skip-chars-forward "*+" (1+ (point))))
 	  ;; Add current point to match data and use keyword face for
 	  ;; region from start to point.
 	  (nconc match-data (list (point)))
@@ -1643,7 +1646,7 @@ Returns nil if none of KEYWORDS is found."
 				     (forward-char)
 				     (if (zerop (skip-syntax-forward "_w"))
 					 (forward-char) ; Single-char macro.
-				       (skip-chars-forward "*"))
+				       (skip-chars-forward "*+"))
 				     (point))))
 		      (nconc font-latex-matched-faces (list face))
 		      (setq end (max end (point)))
@@ -1779,12 +1782,32 @@ marks boundaries for searching for group ends."
 	      (throw 'extend group-start)))))
       nil)))
 
+(defvar font-latex-match-simple-exclude-list
+  '("-" "," "/" "&" "#" "_" "`" "'" "^" "~" "=" "." "\"")
+  "List of characters directly after \"\\\" excluded from fontification.
+Each character is a string.")
+
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
-  ;; The \\\\[^,-] makes sure we don't highlight hyphenation as commands
-  ;; (foo\-bar) nor thin spaces (foo\,bar).  \s_ matches chars with symbol
-  ;; syntax, \sw chars with word syntax.
-  (TeX-re-search-forward-unescaped "\\\\[^,-]\\(?:\\s_\\|\\sw\\)+" limit t))
+  ;; \s_ matches chars with symbol syntax, \sw chars with word syntax,
+  ;; \s. chars with punctuation syntax.  We must exclude matches where
+  ;; the first character after the \ is a reserved character and
+  ;; should not be fontified (e.g. \, in foo\,bar or \- in foo\-bar).
+  ;; These characters are stored in
+  ;; `font-latex-match-simple-exclude-list'.  In docTeX mode, we
+  ;; remove "_" from this list to get correct fontification for macros
+  ;; like `\__module_foo:nnn'
+  (let* ((search (lambda ()
+		   (TeX-re-search-forward-unescaped
+		    "\\\\\\(\\s_\\|\\sw\\|\\s.\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
+	 (pos (funcall search)))
+    (while (and pos
+		(member (match-string 1)
+			(if (eq major-mode 'doctex-mode)
+			    (remove "_" font-latex-match-simple-exclude-list)
+			  font-latex-match-simple-exclude-list)))
+      (setq pos (funcall search)))
+    pos))
 
 (defun font-latex-match-math-env (limit)
   "Match math pattern up to LIMIT.
@@ -1848,18 +1871,30 @@ END marks boundaries for searching for environment ends."
 Used for patterns like:
 \\begin{equation}
  fontified stuff
-\\end{equation}
-The \\begin{equation} and \\end{equation} are not fontified here."
+\\end{equation} or
+\\begin{empheq}[X=Y\\Rightarrow]{alignat=3}
+ fontified stuff
+\\end{empheq}
+The \\begin{equation} incl. arguments in the same line and
+\\end{equation} are not fontified here."
   (when (re-search-forward (concat "\\\\begin[ \t]*{"
 				   (regexp-opt font-latex-math-environments t)
-				   "\\*?}")
+				   ;; Subexpression 2 is used to build
+				   ;; the \end{<env>} construct below
+				   "\\(\\*?}\\)"
+				   ;; Match an optional and possible
+				   ;; mandatory argument(s) as long as
+				   ;; they are on the same line with
+				   ;; no spaces in-between
+				   "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+				   "\\(?:{[^}]*}\\)*")
 			   limit t)
     (let ((beg (match-end 0)) end)
       (if (re-search-forward (concat "\\\\end[ \t]*{"
 				     (regexp-quote
 				      (buffer-substring-no-properties
 				       (match-beginning 1)
-				       (match-end 0))))
+				       (match-end 2))))
 			     ;; XXX: Should this rather be done by
 			     ;; extending the region to be fontified?
 			     (+ limit font-latex-multiline-boundary) 'move)
@@ -1882,11 +1917,16 @@ END marks boundaries for searching for environment ends."
 	      (concat "\\\\end[ \t]*{"
 		      (regexp-opt font-latex-math-environments t)
 		      "\\*?}") beg t)
-	(when (and (re-search-backward (concat  "\\\\begin[ \t]*{"
-						(buffer-substring-no-properties
-						 (match-beginning 1)
-						 (match-end 0)))
-				       (- beg font-latex-multiline-boundary) t)
+	(when (and (re-search-backward
+		    (concat  "\\\\begin[ \t]*{"
+			     (buffer-substring-no-properties
+			      (match-beginning 1)
+			      (match-end 0))
+			     ;; Match an optional and possible
+			     ;; mandatory argument(s)
+			     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+			     "\\(?:{[^}]*}\\)*")
+		    (- beg font-latex-multiline-boundary) t)
 		   (< (point) beg))
 	  (throw 'extend (point))))
       nil)))

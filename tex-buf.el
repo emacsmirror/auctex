@@ -177,11 +177,15 @@ temporary file before the region itself.  The document's header is all
 text before `TeX-header-end'.
 
 If the master file for the document has a trailer, it is written to
-the temporary file before the region itself.  The document's trailer is
+the temporary file after the region itself.  The document's trailer is
 all text after `TeX-trailer-start'."
   (interactive "P")
   (TeX-region-update)
-  (TeX-command (TeX-command-query (TeX-region-file nil t)) 'TeX-region-file
+  ;; In the next line, `TeX-region-file' should be called with nil
+  ;; `nondirectory' argument, otherwise `TeX-comand-default' called
+  ;; within `TeX-command-query' won't work in included files not
+  ;; placed in `TeX-master-directory'.
+  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
 	       override-confirm))
 
 (defun TeX-command-buffer (&optional override-confirm)
@@ -492,6 +496,11 @@ been set."
 	 (setq TeX-current-process-region-p t))
 	((eq file #'TeX-master-file)
 	 (setq TeX-current-process-region-p nil)))
+
+  ;; When we're operating on a region, we need to update the position
+  ;; of point in the region file so that forward search works.
+  (if (string= name "View") (TeX-region-update-point))
+
   (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
 				     file))
 	(hook (nth 2 (assoc name TeX-command-list)))
@@ -772,7 +781,7 @@ omitted) and `TeX-region-file'."
     (cond (;; name might be absolute or relative, so expand it for
 	   ;; comparison.
 	   (if (string-equal (expand-file-name name)
-			     (expand-file-name TeX-region))
+			     (expand-file-name (TeX-region-file)))
 	       (TeX-check-files (concat name "." (TeX-output-extension))
 				;; Each original will be checked for all dirs
 				;; in `TeX-check-path' so this needs to be just
@@ -818,7 +827,7 @@ omitted) and `TeX-region-file'."
          (completion-ignore-case t)
          (answer (or TeX-command-force
                      (completing-read
-                      (concat "Command: (default " default ") ")
+                      (concat "Command (default " default "): ")
                       (TeX-mode-specific-command-list major-mode) nil t
                       nil 'TeX-command-history default))))
     ;; If the answer is "latex" it will not be expanded to "LaTeX"
@@ -846,10 +855,9 @@ QUEUE is non-nil when we are checking for the printer queue."
 	     (setq printer (if TeX-printer-list
 			       (let ((completion-ignore-case t))
 				 (completing-read
-				  (concat "Printer: "
-					  (and TeX-printer-default
-					       (concat "(default "
-						       TeX-printer-default ") ")))
+				  (format "Printer%s: "
+					  (if TeX-printer-default
+					      (format " (default %s)" TeX-printer-default) ""))
 				  TeX-printer-list))
 			     ""))
 	     (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
@@ -899,18 +907,22 @@ QUEUE is non-nil when we are checking for the printer queue."
 Thereafter, point in the region file is on the same text as in
 the current buffer.
 
-Does nothing in case the last command hasn't operated on the
-region."
-  (when TeX-current-process-region-p
+Do nothing in case the last command hasn't operated on the region
+or `TeX-source-correlate-mode' is disabled."
+  (when (and TeX-current-process-region-p TeX-source-correlate-mode)
     (let ((region-buf (get-file-buffer (TeX-region-file t)))
-	  (current-line (TeX-line-number-at-pos)))
+	  (orig-line (TeX-current-offset))
+	  (pos-in-line (- (point) (max (line-beginning-position)
+				       (or TeX-command-region-begin
+					   (region-beginning))))))
       (when region-buf
 	(with-current-buffer region-buf
 	  (goto-char (point-min))
-	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)")
+	  (when (re-search-forward "!offset(\\(-?[0-9]+\\)" nil t)
 	    (let ((offset (string-to-number (match-string 1))))
 	      (goto-char (point-min))
-	      (forward-line (- current-line (1+ offset))))))))))
+	      (forward-line (- orig-line offset))
+	      (forward-char pos-in-line))))))))
 
 (defun TeX-view ()
   "Start a viewer without confirmation.
@@ -919,11 +931,7 @@ depending on the last command issued."
   (interactive)
   (let ((output-file (TeX-active-master (TeX-output-extension))))
     (if (file-exists-p output-file)
-	(progn
-	  ;; When we're operating on a region, we need to update the position
-	  ;; of point in the region file so that forward search works.
-	  (TeX-region-update-point)
-	  (TeX-command "View" 'TeX-active-master 0))
+	(TeX-command "View" 'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
 (defun TeX-output-style-check (styles)
@@ -978,9 +986,58 @@ requires that the corresponding mode defines a sensible
       (with-current-buffer buf
 	(revert-buffer nil t t)))))
 
-(defvar TeX-after-start-process-function nil
-  "Hooks to run after starting an asynchronous process.
-Used by Japanese TeX to set the coding system.")
+(defvar TeX-after-start-process-function
+  #'TeX-adjust-process-coding-system
+  "Function to adjust coding system of an asynchronous process.
+Called with one argument PROCESS.")
+
+(defun TeX-adjust-process-coding-system (process)
+  "Adjust coding system of PROCESS to suitable value.
+Usually coding system is the same as the TeX file with eol format
+adjusted to OS default value.  Take care of Japanese TeX, which
+requires special treatment."
+  (when (featurep 'mule)
+    (if (and (boundp 'japanese-TeX-mode)
+	     (fboundp 'japanese-TeX-set-process-coding-system)
+	     (with-current-buffer TeX-command-buffer
+	       japanese-TeX-mode))
+	(japanese-TeX-set-process-coding-system process)
+      (let ((cs (with-current-buffer TeX-command-buffer
+		  buffer-file-coding-system)))
+	;; The value of `buffer-file-coding-system' is sometimes
+	;; undecided-{unix,dos,mac}.  That happens when the file
+	;; contains no multibyte chars and only end of line format is
+	;; determined.  Emacs lisp reference recommends not to use
+	;; undecided-* for process coding system, so it might seem
+	;; reasonable to change undecided-* to some fixed coding
+	;; system like this:
+	;; (if (eq 'undecided (coding-sytem-type cs))
+	;;     (setq cs 'utf-8))
+	;; However, that can lose when the following conditions are
+	;; met:
+	;; (1) The document is divided into multiple files.
+	;; (2) The command buffer contains no multibyte chars.
+	;; (3) The other files contain mutlibyte chars and saved in
+	;;     a coding system other than the coding system chosen
+	;;     above.
+	;; So we leave undecided-* unchanged here.  Although
+	;; undecided-* is not quite safe for the coding system for
+	;; encoding, i.e., keyboard input to the TeX process, we
+	;; expect that this does not raise serious problems because it
+	;; is pretty rare that TeX process needs keyboard input of
+	;; multibyte chars.
+
+	;; Eol format of TeX files can differ from OS default. TeX
+	;; binaries accept all type of eol format in the given files
+	;; and output messages according to OS default.  So we set eol
+	;; format to OS default value.
+	(setq cs (coding-system-change-eol-conversion
+		  cs
+		  ;; The eol of macosX is LF, not CR.  So we choose
+		  ;; other than `unix' only for w32 system.
+		  ;; FIXME: what should we do for cygwin?
+		  (if (eq system-type 'windows-nt) 'dos 'unix)))
+	(set-process-coding-system process cs cs)))))
 
 (defcustom TeX-show-compilation nil
   "*If non-nil, show output of TeX compilation in other window."
@@ -1237,7 +1294,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
     (if dir (cd dir))
     (erase-buffer)
     (let ((process (start-process (concat name " silent")
-				  nil TeX-shell
+				  (current-buffer) TeX-shell
 				  TeX-shell-command-option command)))
       (if TeX-after-start-process-function
 	  (funcall TeX-after-start-process-function process))
@@ -1473,7 +1530,7 @@ Return nil ifs no errors were found."
 ;;   Package xyz123 Warning: ...
 ;;   Class xyz123 Warning: ...
 (defvar LaTeX-warnings-regexp
-  "\\(?:LaTeX\\|Class\\|Package\\) [-A-Za-z0-9]* ?Warning:"
+  "\\(?:LaTeX\\|Class\\|Package\\|\*\\) [-A-Za-z0-9]* ?[Ww]arning:"
   "Regexp matching LaTeX warnings.")
 
 (defun TeX-LaTeX-sentinel-has-warnings ()
@@ -1579,6 +1636,10 @@ changed\\. Rerun LaTeX\\." nil t)
 Rerun to get mark in right position\\." nil t)
 	 (message
 	  "%s" "You should run LaTeX again to get TikZ marks in right position")
+	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward "^\* xsim warning: \"rerun\"" nil t)
+	 (message
+	  "%s" "You should run LaTeX again to synchronize exercise properties")
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
@@ -2093,14 +2154,6 @@ original file."
 		") }\n"
 		trailer)
 	(setq TeX-region-orig-buffer orig-buffer)
-	;; Position point at the line/col that corresponds to point's line in
-	;; orig-buffer in order to make forward search work.
-	(let ((line-col (with-current-buffer orig-buffer
-			  (cons (TeX-line-number-at-pos)
-				(current-column)))))
-          (goto-char (point-min))
-          (forward-line (1- (abs (- header-offset (car line-col)))))
-	  (forward-char (cdr line-col)))
 	(run-hooks 'TeX-region-hook)
 	(if (string-equal (buffer-string) original-content)
 	    (set-buffer-modified-p nil)

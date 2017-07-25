@@ -475,7 +475,7 @@ e.g. \"tcolorboxlib-raster.el\"."
 		 "coltitle"))
 	 (tmp (copy-alist LaTeX-tcolorbox-keyval-options-local)))
     (dolist (key keys)
-      (assq-delete-all (car (assoc key tmp)) tmp)
+      (setq tmp (assq-delete-all (car (assoc key tmp)) tmp))
       (pushnew
        (list key (mapcar #'car (LaTeX-xcolor-definecolor-list))) tmp :test #'equal))
     (setq LaTeX-tcolorbox-keyval-options-local (copy-alist tmp)))

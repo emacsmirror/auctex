@@ -446,14 +446,20 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		 ;; uptex なら utf-8 に固定する。
 		 (t
 		  'utf-8))))
+
+	;; 改行コードを指定。
+	(setq dec (coding-system-change-eol-conversion
+		   dec
+		   (if (eq system-type 'windows-nt) 'dos 'unix))
+	      enc (coding-system-change-eol-conversion
+		   enc
+		   (if (eq system-type 'windows-nt) 'dos 'unix)))
+
 	;; Customize 値があればそれを優先。
 	(set-process-coding-system
 	 process
 	 (or TeX-japanese-process-output-coding-system dec)
 	 (or TeX-japanese-process-input-coding-system enc))))))
-(when (featurep 'mule)
-  (setq TeX-after-start-process-function
-        #'japanese-TeX-set-process-coding-system))
 
 (defun japanese-TeX-coding-ejsu (coding-system)
   "Convert japanese CODING-SYSTEM to mnemonic string.

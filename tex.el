@@ -160,7 +160,7 @@ If nil, none is specified."
     ("Index" "makeindex %s" TeX-run-index nil t
      :help "Run makeindex to create index file")
     ("upMendex" "upmendex %s" TeX-run-index t t
-     :help "Run mendex to create index file")
+     :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil t
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
@@ -1234,33 +1234,31 @@ The following built-in predicates are available:
   :group 'TeX-view
   :type '(alist :key-type symbol :value-type (group sexp)))
 
-;; XXX: Atril is a fork of Evince and shares an almost identical interface with
-;; it.  Instead of having different functions for each program, we keep the
-;; original *-evince-* functions and make them accept arguments to specify the
-;; actual name of the program and the desktop environment, that will be used to
-;; set up DBUS communication.
+;; XXX: Atril and xreader are forks of Evince and share an almost
+;; identical interface with it. Instead of having different functions
+;; for each program, we keep the original *-evince-* functions and
+;; make them accept arguments to specify the actual name of the
+;; program and the desktop environment, that will be used to set up
+;; DBUS communication.
 
 ;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
 ;; not being defined.
 (eval-when-compile (and (featurep 'dbusbind)
 			(require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (de app &rest options)
-  "Return non-nil, if atril or evince are installed and accessible via DBUS.
+  "Return non-nil, if an evince-compatible reader is accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
 given, only the minimal requirements needed by backward search
 are checked.  If OPTIONS include `:forward', which is currently
 the only option, then additional requirements needed by forward
 search are checked, too.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of viewer."
   (let ((dbus-debug nil))
     (and (featurep 'dbusbind)
 	 (require 'dbus nil :no-error)
 	 (dbus-ignore-errors (dbus-get-unique-name :session))
 	 (dbus-ping :session (format "org.%s.%s.Daemon" de app))
-	 (executable-find app)
 	 (or (not (memq :forward options))
 	     (let ((spec (dbus-introspect-get-method
 			  :session (format "org.%s.%s.Daemon" de app)
@@ -1308,12 +1306,11 @@ entry in `TeX-view-program-list-builtin'."
 (defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
-for the Atril or Evince entries in
+for the Evince-compatible entries in
 `TeX-view-program-list-builtin' if the requirements are met.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of
+viewer."
   (require 'url-util)
   (let* ((uri (concat "file://" (url-encode-url
 				 (expand-file-name
@@ -1335,7 +1332,13 @@ DE is the name of the desktop environment, either \"gnome\" or
 	   (format "org.%s.%s.Window" de app)
 	   "SyncView"
 	   (buffer-file-name)
-	   (list :struct :int32 (TeX-line-number-at-pos)
+	   (list :struct :int32 (1+ (TeX-current-offset))
+		 ;; FIXME: Using `current-column' here is dubious.
+		 ;; Most of CJK letters count as occupying 2 columns,
+		 ;; so the column number is not equal to the number of
+		 ;; the characters counting from the beginning of a
+		 ;; line.  What is the right number to specify here?
+		 ;; number of letters? bytes in UTF8? or other?
 		 :int32 (1+ (current-column)))
 	   :uint32 0))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
@@ -1348,12 +1351,15 @@ DE is the name of the desktop environment, either \"gnome\" or
   "Run `TeX-evince-sync-view-1', which see, set up for Evince."
   (TeX-evince-sync-view-1 "gnome" "evince"))
 
+(defun TeX-xreader-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "x" "reader"))
+
 (defun TeX-view-program-select-evince (de app)
   "Select how to call the Evince-like viewer.
 
-DE is the name of the desktop environment, either \"gnome\" or
-\"mate\", APP is the name of viewer, either \"evince\" or
-\"atril\"."
+DE is the name of the desktop environment, APP is the name of
+viewer."
   (if (TeX-evince-dbus-p de app :forward)
       (intern (format "TeX-%s-sync-view" app))
     `(,app (mode-io-correlate
@@ -1385,7 +1391,7 @@ DE is the name of the desktop environment, either \"gnome\" or
 		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
-	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
+	(mode-io-correlate " -forward-search %b %n") " %o")
        "SumatraPDF")
       ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
@@ -1412,6 +1418,7 @@ DE is the name of the desktop environment, either \"gnome\" or
       ("xpdf" ("xpdf -remote %s -raise %o" (mode-io-correlate " %(outpage)")) "xpdf")
       ("Evince" ,(TeX-view-program-select-evince "gnome" "evince") "evince")
       ("Atril" ,(TeX-view-program-select-evince "mate" "atril") "atril")
+      ("Xreader" ,(TeX-view-program-select-evince "x" "reader") "xreader")
       ("Okular" ("okular --unique %o" (mode-io-correlate "#src:%n%a")) "okular")
       ("xdg-open" "xdg-open %o" "xdg-open")
       ("PDF Tools" TeX-pdf-tools-sync-view)
@@ -1885,8 +1892,8 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
 (defcustom TeX-raise-frame-function #'raise-frame
   "A function which will be called to raise the Emacs frame.
 The function is called after `TeX-source-correlate-sync-source'
-has processed an inverse search DBUS request from Evince or
-Atril in order to raise the Emacs frame.
+has processed an inverse search DBUS request from
+Evince-compatible viewers in order to raise the Emacs frame.
 
 The default value is `raise-frame', however, depending on window
 manager and focus stealing policies, it might very well be that
@@ -1976,8 +1983,9 @@ SyncTeX are recognized."
 				       TeX-source-correlate-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
-  ;; Register Emacs for the SyncSource DBUS signal emitted by Evince or Atril.
-  (dolist (de-app '(("gnome" "evince") ("mate" "atril")))
+  ;; Register Emacs for the SyncSource DBUS signal emitted by
+  ;; Evince-compatible viewers.
+  (dolist (de-app '(("gnome" "evince") ("mate" "atril") ("x" "reader")))
     (when (TeX-evince-dbus-p (car de-app) (cadr de-app))
       (dbus-register-signal
        :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
@@ -2090,11 +2098,14 @@ enabled and the `synctex' binary is available."
   (let ((synctex-output
 	 (with-output-to-string
 	   (call-process "synctex" nil (list standard-output nil) nil "view"
-			 "-i" (format "%s:%s:%s" (TeX-line-number-at-pos)
-				      (current-column)
+			 "-i" (format "%s:%s:%s" (1+ (TeX-current-offset))
+				      ;; FIXME: Using `current-column'
+				      ;; here is dubious.  See comment in
+				      ;; `TeX-evince-sync-view-1'.
+				      (1+ (current-column))
 				      file)
 			 "-o" (TeX-active-master (TeX-output-extension))))))
-    (when (string-match "Page:\\([0-9]+\\)" synctex-output)
+    (when (string-match "^Page:\\([0-9]+\\)" synctex-output)
       (match-string 1 synctex-output))))
 
 (defun TeX-synctex-output-page ()
@@ -2430,7 +2441,7 @@ this variable to \"<none>\"."
     (let* ((default (TeX-dwim-master))
 	   (name (or (and (eq 'dwim TeX-master) default)
 		     (condition-case nil
-			 (read-file-name (format "Master file: (default %s) "
+			 (read-file-name (format "Master file (default %s): "
 						 (or default "this file"))
 					 nil default)
 		       (quit "<quit>")))))
@@ -2488,7 +2499,7 @@ name of master file if it cannot be determined otherwise."
 	  (setq TeX-master
 		(let* ((default (TeX-dwim-master))
 		       (name (read-file-name
-			      (format "Master file: (default %s) "
+			      (format "Master file (default %s): "
 				      (or default "this file"))
 			      nil default)))
 		  (cond ((string= name default)
@@ -3077,7 +3088,7 @@ FORCE is not nil."
 				    TeX-style-hook-list))))
 	(TeX-auto-apply))
     (run-hooks 'TeX-update-style-hook)
-    (message "Applying style hooks... done")))
+    (message "Applying style hooks...done")))
 
 (defvar TeX-remove-style-hook nil
   "List of hooks to call when we remove the style specific information.")
@@ -3892,6 +3903,7 @@ The algorithm is as follows:
       (set local
 	   (sort (mapcar 'TeX-listify (apply 'append (symbol-value local)))
 		 'TeX-car-string-lessp))
+      (message "Sorting %s...done" name)
       ;; Make it unique
       (message "Removing duplicates...")
       (let ((entry (symbol-value local)))
@@ -3905,7 +3917,7 @@ The algorithm is as follows:
 	      (if (> (length next) (length this))
 		  (setcdr this (cdr next)))
 	      (setcdr entry (cdr (cdr entry)))))))
-      (message "Removing duplicates... done"))
+      (message "Removing duplicates...done"))
     (symbol-value local)))
 
 (defmacro TeX-auto-add-type (name prefix &optional plural)
@@ -4087,7 +4099,7 @@ If TEX is a directory, generate style files for all files in the directory."
 							t)
 				   ".el"))
 	   (kill-buffer (current-buffer))
-	   (message "Parsing %s... done" tex)))))
+	   (message "Parsing %s...done" tex)))))
 
 ;;;###autoload
 (defun TeX-auto-generate-global ()

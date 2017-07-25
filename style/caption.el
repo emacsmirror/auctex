@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.3-111)
 
-;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2017 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -426,6 +426,9 @@ STAR is non-nil, do not query for a short-caption and a label."
     '("bothIfFirst" 2)
 
     '("bothIfSecond" 2))
+
+   ;; \caption(box|of) macros should get their own lines
+   (LaTeX-paragraph-commands-add-locally '("captionbox" "captionof"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

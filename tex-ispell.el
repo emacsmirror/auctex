@@ -46,6 +46,7 @@
 ;; booktabs.sty
 ;; breqn.sty
 ;; cleveref.sty
+;; empheq.sty
 ;; enumitem.sty
 ;; fancyref.sty
 ;; fancyvrb.sty
@@ -127,6 +128,7 @@
       ("attachfilesetup" . 1)
       ("textattachfile" . 1)
       ;; booktabs.sty
+      ("addlinespace" . 0)
       ("specialrule" . 3)
       ;; cleveref.sty
       ("cref" . 1)
@@ -145,6 +147,8 @@
       ("Cpagerefrange" . 2)
       ("crefrange*" . 2)
       ("Crefrange*" . 2)
+      ;; empheq.sty
+      ("empheqset" . 1)
       ;; fancyref.sty
       ("fref" . 1)
       ("Fref" . 1)
@@ -260,6 +264,8 @@ argument and spell check the mandatory one."))
       "dmath*"
       "dseries"
       "dseries*"
+      ;; empheq.sty
+      "empheq"
       ;; fancyvrb.sty
       "BVerbatim"
       "BVerbatim*"
