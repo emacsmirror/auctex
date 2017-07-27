@@ -157,7 +157,7 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.90.2.2017-07-25"
+(defconst AUCTeX-version "11.91.0"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
