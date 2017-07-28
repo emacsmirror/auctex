@@ -42,6 +42,11 @@ GENERATED_FILES=dir			\
 
 all: $(GENERATED_FILES)
 
+# We want the tex-site.el target to be always run so that the version
+# (especially the release version grabbed from the top of the git
+# log/ChangeLog) is correct.
+.PHONY: tex-site.el
+
 clean:
 	rm -f $(GENERATED_FILES)
 
