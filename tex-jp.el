@@ -532,10 +532,10 @@ Set `japanese-TeX-mode' to t, and enter `TeX-plain-tex-mode'."
     ;; in `japanese-latex-mode-initialization'.
     (when enable-local-variables
       (setq major-mode 'japanese-plain-tex-mode)
-      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+      (add-hook 'hack-local-variables-hook #'japanese-TeX-reset-mode-name
 		nil t))))
 
-(add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
+(add-hook 'plain-TeX-mode-hook #'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
 (defun japanese-latex-mode ()
@@ -584,10 +584,10 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
     ;; `hack-local-variables' is done.
     (when enable-local-variables
       (setq major-mode 'japanese-latex-mode)
-      (add-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name
+      (add-hook 'hack-local-variables-hook #'japanese-TeX-reset-mode-name
 		nil t))))
 
-(add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
+(add-hook 'LaTeX-mode-hook #'japanese-latex-mode-initialization)
 
 ;; This function is useful only within `hack-local-variables-hook'.
 (defun japanese-TeX-reset-mode-name ()
@@ -595,7 +595,7 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 	 (setq major-mode 'latex-mode))
 	((eq major-mode 'japanese-plain-tex-mode)
 	 (setq major-mode 'plain-tex-mode)))
-  (remove-hook 'hack-local-variables-hook 'japanese-TeX-reset-mode-name t))
+  (remove-hook 'hack-local-variables-hook #'japanese-TeX-reset-mode-name t))
 
 ;; Make `hack-dir-local-variables' to regard `latex-mode' as parent
 ;; of `japanese-latex-mode', and `plain-tex-mode' as parent of
@@ -640,7 +640,7 @@ overwrite the value already set locally."
   (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
-  (call-interactively 'japanese-TeX-self-insert-command))
+  (call-interactively #'japanese-TeX-self-insert-command))
 
 ;;; Error Messages
 
