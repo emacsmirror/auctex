@@ -3548,7 +3548,7 @@ internal parameters, STR may be a log to insert into the current log."
 		      ;; (TeX-engine-alist) are dropped, give them
 		      ;; back.
 		      (list (list "\\`\\([^ ]+\\)"
-			    (TeX-command-expand "%(latex)" nil)))))
+			    (TeX-command-expand "%(PDF)%(latex)" nil)))))
 	   command) file)))
     (condition-case err
 	(progn
