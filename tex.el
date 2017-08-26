@@ -2246,7 +2246,7 @@ Programs should not use this variable directly but the function
   "Return the value of variable `TeX-PDF-from-DVI'.
 
 If `TeX-PDF-from-DVI' is not set and obsolete option
-`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"dvips-ps2pdf\"
+`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"Dvips\"
 for backward compatibility."
   (cond
    (TeX-PDF-from-DVI)
@@ -3297,7 +3297,7 @@ CDR is non-nil or nil, depending on whether a pair of braces
 should be, respectively, appended or not to the macro.
 
 If a macro has an element in this variable, `TeX-parse-macro'
-will use its value to decided what to do, whatever the value of
+will use its value to decide what to do, whatever the value of
 the variable `TeX-insert-braces'."
   :group 'TeX-macro
   :type '(repeat (cons (string :tag "Macro name")
@@ -3623,7 +3623,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 (defun TeX-arg-literal (optional &rest args)
   "Insert its arguments ARGS into the buffer.
 Used for specifying extra syntax for a macro.  The compatibility
-argument OPTION is ignored."
+argument OPTIONAL is ignored."
   (apply 'insert args))
 
 
@@ -3923,7 +3923,7 @@ The algorithm is as follows:
 (defmacro TeX-auto-add-type (name prefix &optional plural)
   "Add information about NAME to the parser using PREFIX.
 
-Optional third argument PLURAL is the plural form of TYPE.
+Optional third argument PLURAL is the plural form of NAME.
 By default just add an `s'.
 
 This macro creates a set of variables and functions to maintain a
@@ -4310,56 +4310,55 @@ you should not use something like `[\\(]' for a character range."
   "Parse TeX information according to REGEXP-LIST between BEG and END."
   (if (symbolp regexp-list)
       (setq regexp-list (and (boundp regexp-list) (symbol-value regexp-list))))
-   (if regexp-list
-       ;; Extract the information.
-       (let* (groups
-	      (count 1)
-	      (regexp (concat "\\("
-			      (mapconcat
-			       (lambda(x)
-				 (push (cons count x) groups)
-				 (setq count
-				       (+ 1 count
-					  (TeX-regexp-group-count (car x))))
-				 (car x))
-			       regexp-list "\\)\\|\\(")
-			      "\\)"))
-	      syms
-	      lst)
-	 (setq count 0)
-	 (goto-char (if end (min end (point-max)) (point-max)))
-	 (while (re-search-backward regexp beg t)
-	   (let* ((entry (cdr (TeX-member nil groups
-					  (lambda (a b)
-					    (match-beginning (car b))))))
-		  (symbol (nth 2 entry))
-		  (match (nth 1 entry)))
-	     (unless (TeX-in-comment)
-	       (looking-at (nth 0 entry))
-	       (if (fboundp symbol)
-		   (funcall symbol match)
-		 (puthash (if (listp match)
-			      (mapcar #'TeX-match-buffer match)
-			    (TeX-match-buffer match))
-			  (setq count (1- count))
-			  (cdr (or (assq symbol syms)
-				   (car (push
-					 (cons symbol
-					       (make-hash-table :test 'equal))
-					 syms)))))))))
-	 (setq count 0)
-	 (dolist (symbol syms)
-	   (setq lst (symbol-value (car symbol)))
-	   (while lst
-	     (puthash (pop lst)
-		      (setq count (1+ count))
-		      (cdr symbol)))
-	   (maphash (lambda (key value)
-		      (push (cons value key) lst))
-		    (cdr symbol))
-	   (clrhash (cdr symbol))
-	   (set (car symbol) (mapcar #'cdr (sort lst #'car-less-than-car)))))))
-
+  (if regexp-list
+      ;; Extract the information.
+      (let* (groups
+	     (count 1)
+	     (regexp (concat "\\("
+			     (mapconcat
+			      (lambda(x)
+				(push (cons count x) groups)
+				(setq count
+				      (+ 1 count
+					 (TeX-regexp-group-count (car x))))
+				(car x))
+			      regexp-list "\\)\\|\\(")
+			     "\\)"))
+	     syms
+	     lst)
+	(setq count 0)
+	(goto-char (if end (min end (point-max)) (point-max)))
+	(while (re-search-backward regexp beg t)
+	  (let* ((entry (cdr (TeX-member nil groups
+					 (lambda (a b)
+					   (match-beginning (car b))))))
+		 (symbol (nth 2 entry))
+		 (match (nth 1 entry)))
+	    (unless (TeX-in-comment)
+	      (looking-at (nth 0 entry))
+	      (if (fboundp symbol)
+		  (funcall symbol match)
+		(puthash (if (listp match)
+			     (mapcar #'TeX-match-buffer match)
+			   (TeX-match-buffer match))
+			 (setq count (1- count))
+			 (cdr (or (assq symbol syms)
+				  (car (push
+					(cons symbol
+					      (make-hash-table :test 'equal))
+					syms)))))))))
+	(setq count 0)
+	(dolist (symbol syms)
+	  (setq lst (symbol-value (car symbol)))
+	  (while lst
+	    (puthash (pop lst)
+		     (setq count (1+ count))
+		     (cdr symbol)))
+	  (maphash (lambda (key value)
+		     (push (cons value key) lst))
+		   (cdr symbol))
+	  (clrhash (cdr symbol))
+	  (set (car symbol) (mapcar #'cdr (sort lst #'car-less-than-car)))))))
 
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.
