@@ -914,12 +914,11 @@ overlays."
   "Return a list of all elements in ALIST, but each car only once.
 Elements of KEEP-LIST are not removed even if duplicate."
   ;; Copy of `reftex-uniquify-by-car' (written by David Kastrup).
-  (setq keep-list (sort (copy-sequence keep-list) #'string<))
+  (setq keep-list (TeX-sort-strings keep-list))
   (setq alist (sort (copy-sequence alist)
-		    (lambda (a b)
-		      (string< (car a) (car b)))))
+		    #'TeX-car-string-lessp))
   (let ((new alist) elt)
-    (while new
+    (while (cdr new)
       (setq elt (caar new))
       (while (and keep-list (string< (car keep-list) elt))
 	(setq keep-list (cdr keep-list)))
@@ -933,7 +932,7 @@ Elements of KEEP-LIST are not removed even if duplicate."
   "Return a list of all strings in LIST, but each only once."
   (setq list (TeX-sort-strings list))
   (let ((new list) elt)
-    (while new
+    (while (cdr new)
       (setq elt (car new))
       (while (string= elt (cadr new))
 	(setcdr new (cddr new)))
@@ -943,6 +942,11 @@ Elements of KEEP-LIST are not removed even if duplicate."
 (defun TeX-sort-strings (list)
   "Return sorted list of all strings in LIST."
   (sort (copy-sequence list) #'string<))
+
+(defun TeX-car-string-lessp (s1 s2)
+  "Compare the cars of S1 and S2 in lexicographic order.
+Return t if first is less than second in lexicographic order."
+  (string-lessp (car s1) (car s2)))
 
 ;;; Buffer
 
@@ -4736,11 +4740,6 @@ If optional argument STRIP is non-nil, remove file extension."
 ;;
 ;; Some of these functions has little to do with TeX, but nonetheless we
 ;; should use the "TeX-" prefix to avoid name clashes.
-
-(defun TeX-car-string-lessp (s1 s2)
-  "Compare the cars of S1 and S2 in lexicographic order.
-Return t if first is less than second in lexicographic order."
-  (string-lessp (car s1) (car s2)))
 
 (defun TeX-listify (elt)
   "Return a newly created list with element ELT.
