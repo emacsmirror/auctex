@@ -4580,7 +4580,7 @@ non-nil, remove file extension."
 						TeX-kpathsea-path-delimiter
 						"]+")))))
 	   (if (eq scope 'global)
-	       (delete "." dirs))
+	       (setq dirs (delete "." dirs)))
 	   (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
 		 result (apply #'append (mapcar (lambda (x)
 						  (when (file-readable-p x)
