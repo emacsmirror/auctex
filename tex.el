@@ -1305,6 +1305,15 @@ entry in `TeX-view-program-list-builtin'."
       (pop-to-buffer (or (find-buffer-visiting pdf)
 			 (find-file-noselect pdf))))))
 
+(defcustom TeX-view-evince-keep-focus nil
+  "Whether Emacs retains the focus when viewing PDF files with Evince.
+
+When calling `TeX-evince-sync-view', Evince normally captures the
+focus. If this option is set to non-nil, Emacs will retain the
+focus."
+  :group 'TeX-view
+  :type 'boolean)
+
 (defvar url-unreserved-chars)
 
 (defun TeX-evince-sync-view-1 (de app)
@@ -1344,7 +1353,14 @@ viewer."
 		 ;; line.  What is the right number to specify here?
 		 ;; number of letters? bytes in UTF8? or other?
 		 :int32 (1+ (current-column)))
-	   :uint32 0))
+	   :uint32 0)
+          (when TeX-view-evince-keep-focus
+	    (cond ((fboundp #'select-frame-set-input-focus)
+		   (select-frame-set-input-focus (selected-frame)))
+		  ((fboundp #'x-focus-frame)
+		   (x-focus-frame (selected-frame)))
+		  ((fboundp #'focus-frame)
+		   (focus-frame (selected-frame))))))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
 
 (defun TeX-atril-sync-view ()
