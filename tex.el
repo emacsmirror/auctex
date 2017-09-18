@@ -4715,7 +4715,12 @@ If optional argument STRIP is non-nil, remove file extension."
 		(error "No TeX trees available; configure `TeX-tree-roots'")
 	      ;; Expand variables.
               (setq expdirs
-                    (delete-dups
+		    ;; Don't use `delete-dups' instead of
+		    ;; `TeX-delete-duplicate-strings' here.
+		    ;; Otherwise, when the last element of `rawdirs'
+		    ;; is a variable, its value might be truncated as
+		    ;; side effect.
+                    (TeX-delete-duplicate-strings
                      (apply #'append
                             (mapcar (lambda (rawdir)
                                       (if (symbolp rawdir)
