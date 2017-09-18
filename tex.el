@@ -6465,15 +6465,7 @@ the number of the file to view, anything else to skip: ") list)))
   '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
 	    (lambda ()
 	      (when (executable-find "texdoc")
-		(TeX-search-files
-		 ;; Explicitely supply doc directory for
-		 ;; non-kpathsea-based TeX systems.
-		 (unless (stringp TeX-kpathsea-path-delimiter)
-		   (or (TeX-tree-expand
-			'("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
-			"latex" '("/doc/"))
-		       `(,@TeX-macro-global ,@TeX-macro-private)))
-		 '("dvi" "pdf" "ps" "txt" "html") t t)))
+		(TeX-search-files-by-type 'docs 'global t t)))
 	    (lambda (doc)
 	      ;; texdoc in MiKTeX requires --view in order to start
 	      ;; the viewer instead of an intermediate web page.
