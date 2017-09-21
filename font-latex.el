@@ -1241,7 +1241,6 @@ The entries are added to `font-latex-syntax-alist' and eventually
 end up in `font-lock-defaults'.  Each entry in LIST should be a
 cons pair as expected by `font-lock-defaults'.  The function also
 triggers Font Lock to recognize the change."
-  (make-local-variable 'font-latex-syntax-alist)
   (set (make-local-variable 'font-latex-syntax-alist)
        (append font-latex-syntax-alist list))
   ;; Tell font-lock about the update.
@@ -1813,7 +1812,7 @@ Each character is a string.")
   "Match math pattern up to LIMIT.
 Used for patterns like:
 \\( F = ma \\)
-\\[ F = ma \\] but not \\\\ [len]"
+\\=\\[ F = ma \\] but not \\\\=\\[len]"
   (catch 'match
     (while (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
       (unless (save-excursion
