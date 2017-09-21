@@ -3537,19 +3537,25 @@ internal parameters, STR may be a log to insert into the current log."
       ((preview-format-name (shell-quote-argument
 			     (preview-dump-file-name
 			      (file-name-nondirectory master))))
+       (process-environment process-environment)
        (process
-	(TeX-run-command
-	 "Preview-LaTeX"
-	 (if (consp (cdr dumped-cons))
-	     (preview-do-replacements
-	      command
-	      (append preview-undump-replacements
-		      ;; Since the command options provided in
-		      ;; (TeX-engine-alist) are dropped, give them
-		      ;; back.
-		      (list (list "\\`\\([^ ]+\\)"
-			    (TeX-command-expand "%(PDF)%(latex)" nil)))))
-	   command) file)))
+	(progn
+	  ;; Fix Bug#20773, Bug#27088.
+	  ;; Make LaTeX not to insert newline in lines necessary to
+	  ;; identify Bounding Boxes.
+	  (setenv "max_print_line" "1000")
+	  (TeX-run-command
+	   "Preview-LaTeX"
+	   (if (consp (cdr dumped-cons))
+	       (preview-do-replacements
+		command
+		(append preview-undump-replacements
+			;; Since the command options provided in
+			;; (TeX-engine-alist) are dropped, give them
+			;; back.
+			(list (list "\\`\\([^ ]+\\)"
+				    (TeX-command-expand "%(PDF)%(latex)" nil)))))
+	     command) file))))
     (condition-case err
 	(progn
 	  (when str
