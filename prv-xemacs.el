@@ -1,6 +1,6 @@
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
-;; Copyright (C) 2001-2006 Free Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2017 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp

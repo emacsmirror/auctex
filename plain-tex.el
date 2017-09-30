@@ -1,6 +1,6 @@
 ;;; plain-tex.el --- Support for plain TeX documents.
 
-;; Copyright (C) 2010, 2013, 2016  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2017  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex

@@ -1,7 +1,7 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006, 2011-2015
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006,
+;;               2011-2015, 2017  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
