@@ -738,10 +738,10 @@ SETUP may contain a parser setup function."
 null eq{pop{pop}bind}if def\
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
-/preview-do{[count 3 roll save]3 1 roll dup length 0 eq\
-{pop}{setpagedevice}{ifelse .runandhide}\
+/preview-do{/.preview-ST[count 4 roll save]def dup length 0 eq\
+{pop}{setpagedevice}{ifelse exec}\
 stopped{handleerror quit}if \
-aload pop restore}bind def "
+.preview-ST aload pop restore}bind def "
 		  (preview-gs-color-string preview-colors)))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
@@ -1090,7 +1090,7 @@ NONREL is not NIL."
 .locksafe} stopped pop "
 			  (mapconcat 'preview-ps-quote-filename all-files ""))
 		  preview-gs-init-string
-		  (format "[%s(r)file]aload exch %s .runandhide aload pop "
+		  (format " %s(r)file /.preview-ST 1 index def %s exec .preview-ST "
 			  (preview-ps-quote-filename file)
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
