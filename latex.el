@@ -835,7 +835,7 @@ work analogously."
 (defvar LaTeX-document-style-hook nil
   "List of hooks to run when inserting a document environment.
 
-To insert a hook here, you must insert it in the appropiate style file.")
+To insert a hook here, you must insert it in the appropriate style file.")
 
 (defun LaTeX-env-document (&optional _ignore)
   "Create new LaTeX document.
