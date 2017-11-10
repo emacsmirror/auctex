@@ -6132,9 +6132,11 @@ sign.  With optional ARG, insert that many dollar signs."
      ((insert "$")))))
   (TeX-math-input-method-off))
 
-(defvar TeX-math-input-method-off-regexp
+(defcustom TeX-math-input-method-off-regexp
   (concat "^" (regexp-opt '("chinese" "japanese" "korean" "bulgarian" "russian") t))
-  "Regexp matching input methods to be deactivated when entering math mode.")
+  "Regexp matching input methods to be deactivated when entering math mode."
+  :group 'TeX-misc
+  :type 'regexp)
 
 (defun TeX-math-input-method-off ()
   "Toggle off input method when entering math mode."
