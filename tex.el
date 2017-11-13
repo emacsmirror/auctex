@@ -2696,45 +2696,62 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (setq answers (cons entry answers))))
     answers))
 
+(defcustom TeX-kpathsea-path-delimiter path-separator
+  "Path delimiter for kpathsea output.
+nil means kpathsea is disabled."
+  :group 'TeX-file
+  :type '(choice (const ":")
+		 (const ";")
+		 (const :tag "Off" nil)))
+;; backward compatibility
+(when (eq TeX-kpathsea-path-delimiter t)
+  (setq TeX-kpathsea-path-delimiter path-separator))
+
 (defun TeX-tree-expand (vars program &optional subdirs)
   "Return directories corresponding to the kpathsea variables VARS.
 This is done calling `kpsewhich --expand-path' for the variables.
-PROGRAM is passed as the parameter for --progname.  SUBDIRS are
-subdirectories which are appended to the directories of the TeX
-trees.  Only existing directories are returned."
+PROGRAM if non-nil is passed as the parameter for --progname.
+Optional argument SUBDIRS are subdirectories which are appended
+to the directories of the TeX trees.  Only existing directories
+are returned."
   ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
   ;; and uses "filename" for the name of a file even if it contains possibly
   ;; several elements separated by "/".
-  (let* ((exit-status 1)
-	 (path-list (ignore-errors
-		      (with-output-to-string
-			(setq exit-status
-			      (call-process
-			       "kpsewhich"  nil
-			       (list standard-output nil) nil
-			       "--progname" program
-			       "--expand-path"
-			       (mapconcat #'identity vars
-					  (if (eq system-type 'windows-nt)
-					      ";" ":"))))))))
-    (when (zerop exit-status)
-      (let ((separators (if (string-match "^[A-Za-z]:" path-list)
-			    "[\n\r;]"
-			  "[\n\r:]"))
-	    path input-dir-list)
-	(dolist (item (condition-case nil
-			  (split-string path-list separators t)
-			;; COMPATIBILITY for XEmacs <= 21.4.15
-			(error (delete "" (split-string path-list separators)))))
-	  (if subdirs
-	      (dolist (subdir subdirs)
-		(setq path (file-name-as-directory (concat item subdir)))
-		(when (file-exists-p path)
-		  (pushnew path input-dir-list :test #'equal)))
-	    (setq path (file-name-as-directory item))
-	    (when (file-exists-p path)
-	      (pushnew path input-dir-list :test #'equal))))
-	(nreverse input-dir-list)))))
+  (when TeX-kpathsea-path-delimiter
+    (let* ((exit-status 1)
+	   (args `(,@(if program `("--progname" ,program))
+		   "--expand-path"
+		   ,(mapconcat #'identity vars
+			       TeX-kpathsea-path-delimiter)))
+	   (path-list (ignore-errors
+			(with-output-to-string
+			  (setq exit-status
+				(apply #'call-process
+				       "kpsewhich" nil
+				       (list standard-output nil) nil
+				       args))))))
+      (if (not (zerop exit-status))
+	  ;; kpsewhich is not available.  Disable subsequent usage.
+	  (setq TeX-kpathsea-path-delimiter nil)
+	(let ((separators (format "[\n\r%s]" TeX-kpathsea-path-delimiter))
+	      path input-dir-list)
+	  (dolist (item (condition-case nil
+			    (split-string path-list separators t)
+			  ;; COMPATIBILITY for XEmacs <= 21.4.15
+			  (error (delete "" (split-string path-list separators)))))
+	    (if subdirs
+		(dolist (subdir subdirs)
+		  (setq path (file-name-as-directory (concat item subdir)))
+		  (when (file-exists-p path)
+		    (pushnew path input-dir-list :test #'equal)))
+	      (setq path (file-name-as-directory item))
+	      (when (file-exists-p path)
+		(pushnew path input-dir-list :test #'equal))))
+	  ;; No duplication in result is assured since `pushnew' is
+	  ;; used above.  Should we introduce an option for speed just
+	  ;; to accumulate all the results without care for
+	  ;; duplicates?
+	  (nreverse input-dir-list))))))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
@@ -4557,15 +4574,6 @@ EXTENSIONS defaults to `TeX-file-extensions'."
   :group 'TeX-file
   :type '(repeat directory))
 
-(defcustom TeX-kpathsea-path-delimiter t
-  "Path delimiter for kpathsea output.
-t means autodetect, nil means kpathsea is disabled."
-  :group 'TeX-file
-  :type '(choice (const ":")
-		 (const ";")
-		 (const :tag "Autodetect" t)
-		 (const :tag "Off" nil)))
-
 ;; We keep this function in addition to `TeX-search-files' because it
 ;; is faster.  Since it does not look further into subdirectories,
 ;; this comes at the price of finding a smaller number of files.
@@ -4575,45 +4583,26 @@ Only files which match EXTENSIONS are returned.  SCOPE defines
 the scope for the search and can be `local' or `global' besides
 nil.  If NODIR is non-nil, remove directory part.  If STRIP is
 non-nil, remove file extension."
-  (and TeX-kpathsea-path-delimiter
-       (catch 'no-kpathsea
-	 (let* ((dirs (if (eq scope 'local)
-			  "."
-			(with-output-to-string
-			  (unless (zerop (call-process
-					  "kpsewhich" nil
-					  (list standard-output nil) nil
-					  (concat "-expand-path=" var)))
-			    (if (eq TeX-kpathsea-path-delimiter t)
-				(throw 'no-kpathsea
-				       (setq TeX-kpathsea-path-delimiter nil))
-			      (error "kpsewhich error"))))))
-		result)
-	   (when (eq TeX-kpathsea-path-delimiter t)
-	     (setq TeX-kpathsea-path-delimiter
-		   (if (string-match ";" dirs) ";" ":")))
-	   (unless TeX-kpathsea-path-delimiter
-	     (throw 'no-kpathsea nil))
-	   (setq dirs (TeX-delete-duplicate-strings
-		       (delete "" (split-string
-				   dirs (concat "[\n\r"
-						TeX-kpathsea-path-delimiter
-						"]+")))))
-	   (if (eq scope 'global)
-	       (setq dirs (delete "." dirs)))
-	   (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
-		 result (apply #'append (mapcar (lambda (x)
-						  (when (file-readable-p x)
-						    (directory-files
-						     x (not nodir) extensions)))
-						dirs)))
-	   (if strip
-	       (mapcar (lambda(x)
-			 (if (string-match extensions x)
-			     (substring x 0 (match-beginning 0))
-			   x))
-		       result)
-	     result)))))
+  (when TeX-kpathsea-path-delimiter
+    (let ((dirs (if (eq scope 'local)
+		    '("./")
+		  (TeX-tree-expand (list var) nil)))
+	  result)
+      (if (eq scope 'global)
+	  (setq dirs (delete "./" dirs)))
+      (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
+	    result (apply #'append (mapcar (lambda (x)
+					     (when (file-readable-p x)
+					       (directory-files
+						x (not nodir) extensions t)))
+					   dirs)))
+      (if strip
+	  (mapcar (lambda (x)
+		    (if (string-match extensions x)
+			(substring x 0 (match-beginning 0))
+		      x))
+		  result)
+	result))))
 
 (defun TeX-search-files (&optional directories extensions nodir strip)
   "Return a list of all reachable files in DIRECTORIES ending with EXTENSIONS.
