@@ -3482,6 +3482,18 @@ A built-in viewer spec from @code{TeX-view-program-list-builtin} can be
 overwritten by defining a new viewer spec with the same name.
 @end defopt
 
+After the viewer is called via either the View command or the key stroke
+@kbd{C-c C-v}, the window system focus goes and stays on the viewer.  If
+you prefer that the focus is pulled back to Emacs immediately after that
+and you are using evince-compatible viewer, customize the option
+@code{TeX-view-enince-keep-focus}.
+
+@defopt TeX-view-evince-keep-focus
+When this option is non-nil and the viewer is compatible with evince,
+the focus is pulled back to Emacs immediately after the viewer is
+invoked or refreshed from within @AUCTeX{}.
+@end defopt
+
 Note that the viewer selection and invocation as described above will
 only work if certain default settings in @AUCTeX{} are intact.  For one,
 the whole viewer selection machinery will only be triggered if there is

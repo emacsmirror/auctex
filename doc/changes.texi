@@ -21,6 +21,10 @@ In fact this variable was introduced long before, but has not been
 documented in info files nor turned into a customize option with
 @code{defcustom} until this release.
 
+@item
+The window system focus is pulled back to Emacs when viewing with
+evince-compatible viewers if a new customize option
+@code{TeX-view-evince-keep-focus} is non-nil.
 @end itemize
 
 @heading News in 11.91
