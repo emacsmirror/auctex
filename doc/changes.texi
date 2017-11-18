@@ -12,6 +12,12 @@
 
 @itemize @bullet
 @item
+@previewlatex{} is compatible with Ghostscript 9.22 where the operator
+@samp{.runandhide} is removed.  All occurrences of @samp{.runandhide} in
+@previewlatex{} are replaced by alternative code making it work with
+Ghostscript 9.22 again.
+
+@item
 @AUCTeX{} has a new customize option
 @code{TeX-math-input-method-off-regexp}.  When you begin to input a math
 formula, the current input method is turned off if its name matches this
