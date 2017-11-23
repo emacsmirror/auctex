@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2017 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -157,11 +157,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "11.91.0.2017-07-27"
+(defconst AUCTeX-version "11.91.0.2017-11-23"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2017-07-27"
+(defconst AUCTeX-date "2017-11-23"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
