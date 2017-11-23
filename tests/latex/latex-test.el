@@ -165,4 +165,20 @@ last extension is stripped."
       (LaTeX-bibliography-list))
     '(("../foo-1.bar_2.qux3")))))
 
+(ert-deftest LaTeX-auto-class-regexp ()
+  "Check parsing optional argument with comment correctly.
+
+Test against RequirePackage."
+  (with-temp-buffer
+    (insert "\\RequirePackage[
+backend=biber % here is a comment
+]{biblatex}
+")
+    (latex-mode)
+    (let ((TeX-parse-self t))
+      (TeX-update-style t))
+    (should (member "biblatex" (TeX-style-list)))
+    (should (LaTeX-provided-package-options-member
+	     "biblatex" "backend=biber"))))
+
 ;;; latex-test.el ends here

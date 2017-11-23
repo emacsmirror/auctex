@@ -189,7 +189,8 @@ to retrieve the list of fonts."
 	    (re-search-forward "^\\([^\n\r\t]*\\)\t\\([^\n\r\t]*\\)\t.*$" nil t)
 	  (add-to-list 'LaTeX-fontspec-font-list (match-string-no-properties 1))
 	  (add-to-list 'LaTeX-fontspec-font-list
-		       (match-string-no-properties 2))))))
+		       (match-string-no-properties 2))))
+      (message "Searching for fonts...done")))
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt optional prompt "Font name")

@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2016 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2017 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -835,7 +835,7 @@ work analogously."
 (defvar LaTeX-document-style-hook nil
   "List of hooks to run when inserting a document environment.
 
-To insert a hook here, you must insert it in the appropiate style file.")
+To insert a hook here, you must insert it in the appropriate style file.")
 
 (defun LaTeX-env-document (&optional _ignore)
   "Create new LaTeX document.
@@ -1530,14 +1530,14 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-class-regexp-list
   '(;; \RequirePackage[<options>]{<package>}[<date>]
-    ("\\\\Require\\(Package\\)\\(\\[\\([^#\\.%]*?\\)\\]\\)?\
+    ("\\\\Require\\(Package\\)\\(\\[\\([^\]\\]*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \RequirePackageWithOptions{<package>}[<date>],
     ("\\\\Require\\(Package\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
      (2 3 1) LaTeX-auto-style)
     ;; \LoadClass[<options>]{<package>}[<date>]
-    ("\\\\Load\\(Class\\)\\(\\[\\([^#\\.%]*?\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
+    ("\\\\Load\\(Class\\)\\(\\[\\([^\]\\]*\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \LoadClassWithOptions{<package>}[<date>]
     ("\\\\Load\\(Class\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"

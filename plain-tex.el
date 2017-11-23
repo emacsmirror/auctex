@@ -1,6 +1,6 @@
 ;;; plain-tex.el --- Support for plain TeX documents.
 
-;; Copyright (C) 2010, 2013, 2016  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2017  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -126,7 +126,7 @@ Special commands:
 
 Entering `plain-tex-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
-of plain-TeX-mode-hook."
+of `plain-TeX-mode-hook'."
   (interactive)
   (plain-TeX-common-initialization)
   (setq major-mode 'plain-tex-mode)
@@ -298,7 +298,7 @@ See info under AUCTeX for documentation.
 Special commands:
 \\{AmSTeX-mode-map}
 
-Entering AmS-tex-mode calls the value of `text-mode-hook',
+Entering `ams-tex-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `AmS-TeX-mode-hook'."
   (interactive)

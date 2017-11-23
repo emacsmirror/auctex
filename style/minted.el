@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.4.1)
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)
 
 ;; Copyright (C) 2014-2017 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `minted.sty' (v2.4.1) from 2016/10/31.
+;; This file adds support for `minted.sty' (v2.5) from 2017/07/19.
 
 ;;; Code:
 

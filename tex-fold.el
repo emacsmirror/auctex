@@ -28,7 +28,7 @@
 ;;; Commentary:
 
 ;; This file provides support for hiding and unhiding TeX, LaTeX,
-;; ContTeXt, Texinfo and similar macros and environments inside of
+;; ConTeXt, Texinfo and similar macros and environments inside of
 ;; AUCTeX.
 ;;
 ;; Caveats:

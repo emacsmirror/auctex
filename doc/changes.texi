@@ -8,6 +8,31 @@
 
 @end ifset
 
+@heading News in 11.92
+
+@itemize @bullet
+@item
+@previewlatex{} is compatible with Ghostscript 9.22 where the operator
+@samp{.runandhide} is removed.  All occurrences of @samp{.runandhide} in
+@previewlatex{} are replaced by alternative code making it work with
+Ghostscript 9.22 again.
+
+@item
+@AUCTeX{} has a new customize option
+@code{TeX-math-input-method-off-regexp}.  When you begin to input a math
+formula, the current input method is turned off if its name matches this
+regular expression.
+
+In fact this variable was introduced long before, but has not been
+documented in info files nor turned into a customize option with
+@code{defcustom} until this release.
+
+@item
+The window system focus is pulled back to Emacs when viewing with
+evince-compatible viewers if a new customize option
+@code{TeX-view-evince-keep-focus} is non-nil.
+@end itemize
+
 @heading News in 11.91
 
 @itemize @bullet

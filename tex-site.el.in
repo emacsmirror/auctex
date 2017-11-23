@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2017 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 

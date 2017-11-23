@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001-2006, 2010-2015  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2010-2015, 2017  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -738,10 +738,10 @@ SETUP may contain a parser setup function."
 null eq{pop{pop}bind}if def\
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
-/preview-do{[count 3 roll save]3 1 roll dup length 0 eq\
-{pop}{setpagedevice}{ifelse .runandhide}\
+/preview-do{/.preview-ST[count 4 roll save]def dup length 0 eq\
+{pop}{setpagedevice}{ifelse exec}\
 stopped{handleerror quit}if \
-aload pop restore}bind def "
+.preview-ST aload pop restore}bind def "
 		  (preview-gs-color-string preview-colors)))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
@@ -1090,7 +1090,7 @@ NONREL is not NIL."
 .locksafe} stopped pop "
 			  (mapconcat 'preview-ps-quote-filename all-files ""))
 		  preview-gs-init-string
-		  (format "[%s(r)file]aload exch %s .runandhide aload pop "
+		  (format " %s(r)file /.preview-ST 1 index def %s exec .preview-ST "
 			  (preview-ps-quote-filename file)
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
@@ -3537,19 +3537,28 @@ internal parameters, STR may be a log to insert into the current log."
       ((preview-format-name (shell-quote-argument
 			     (preview-dump-file-name
 			      (file-name-nondirectory master))))
+       (process-environment process-environment)
        (process
-	(TeX-run-command
-	 "Preview-LaTeX"
-	 (if (consp (cdr dumped-cons))
-	     (preview-do-replacements
-	      command
-	      (append preview-undump-replacements
-		      ;; Since the command options provided in
-		      ;; (TeX-engine-alist) are dropped, give them
-		      ;; back.
-		      (list (list "\\`\\([^ ]+\\)"
-			    (TeX-command-expand "%(latex)" nil)))))
-	   command) file)))
+	(progn
+	  ;; Fix Bug#20773, Bug#27088.
+	  ;; Make LaTeX not to insert newline in lines necessary to
+	  ;; identify Bounding Boxes.
+	  (setenv "max_print_line" "1000")
+	  (TeX-run-command
+	   "Preview-LaTeX"
+	   (if (consp (cdr dumped-cons))
+	       (preview-do-replacements
+		command
+		(append preview-undump-replacements
+			;; Since the command options provided in
+			;; (TeX-engine-alist) are dropped, give them
+			;; back.
+			(list (list "\\`\\([^ ]+\\)"
+				    (TeX-command-expand "%(PDF)%(latex)"
+							(if TeX-current-process-region-p
+							    #'TeX-region-file
+							  #'TeX-master-file))))))
+	     command) file))))
     (condition-case err
 	(progn
 	  (when str

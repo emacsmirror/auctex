@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2016 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2017 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -914,12 +914,11 @@ overlays."
   "Return a list of all elements in ALIST, but each car only once.
 Elements of KEEP-LIST are not removed even if duplicate."
   ;; Copy of `reftex-uniquify-by-car' (written by David Kastrup).
-  (setq keep-list (sort (copy-sequence keep-list) #'string<))
+  (setq keep-list (TeX-sort-strings keep-list))
   (setq alist (sort (copy-sequence alist)
-		    (lambda (a b)
-		      (string< (car a) (car b)))))
+		    #'TeX-car-string-lessp))
   (let ((new alist) elt)
-    (while new
+    (while (cdr new)
       (setq elt (caar new))
       (while (and keep-list (string< (car keep-list) elt))
 	(setq keep-list (cdr keep-list)))
@@ -933,7 +932,7 @@ Elements of KEEP-LIST are not removed even if duplicate."
   "Return a list of all strings in LIST, but each only once."
   (setq list (TeX-sort-strings list))
   (let ((new list) elt)
-    (while new
+    (while (cdr new)
       (setq elt (car new))
       (while (string= elt (cadr new))
 	(setcdr new (cddr new)))
@@ -943,6 +942,11 @@ Elements of KEEP-LIST are not removed even if duplicate."
 (defun TeX-sort-strings (list)
   "Return sorted list of all strings in LIST."
   (sort (copy-sequence list) #'string<))
+
+(defun TeX-car-string-lessp (s1 s2)
+  "Compare the cars of S1 and S2 in lexicographic order.
+Return t if first is less than second in lexicographic order."
+  (string-lessp (car s1) (car s2)))
 
 ;;; Buffer
 
@@ -1301,6 +1305,15 @@ entry in `TeX-view-program-list-builtin'."
       (pop-to-buffer (or (find-buffer-visiting pdf)
 			 (find-file-noselect pdf))))))
 
+(defcustom TeX-view-evince-keep-focus nil
+  "Whether Emacs retains the focus when viewing PDF files with Evince.
+
+When calling `TeX-evince-sync-view', Evince normally captures the
+focus. If this option is set to non-nil, Emacs will retain the
+focus."
+  :group 'TeX-view
+  :type 'boolean)
+
 (defvar url-unreserved-chars)
 
 (defun TeX-evince-sync-view-1 (de app)
@@ -1340,7 +1353,14 @@ viewer."
 		 ;; line.  What is the right number to specify here?
 		 ;; number of letters? bytes in UTF8? or other?
 		 :int32 (1+ (current-column)))
-	   :uint32 0))
+	   :uint32 0)
+          (when TeX-view-evince-keep-focus
+	    (cond ((fboundp #'select-frame-set-input-focus)
+		   (select-frame-set-input-focus (selected-frame)))
+		  ((fboundp #'x-focus-frame)
+		   (x-focus-frame (selected-frame)))
+		  ((fboundp #'focus-frame)
+		   (focus-frame (selected-frame))))))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
 
 (defun TeX-atril-sync-view ()
@@ -2246,7 +2266,7 @@ Programs should not use this variable directly but the function
   "Return the value of variable `TeX-PDF-from-DVI'.
 
 If `TeX-PDF-from-DVI' is not set and obsolete option
-`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"dvips-ps2pdf\"
+`TeX-PDF-via-dvips-ps2pdf' is non-nil, return \"Dvips\"
 for backward compatibility."
   (cond
    (TeX-PDF-from-DVI)
@@ -2676,45 +2696,62 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (setq answers (cons entry answers))))
     answers))
 
+(defcustom TeX-kpathsea-path-delimiter path-separator
+  "Path delimiter for kpathsea output.
+nil means kpathsea is disabled."
+  :group 'TeX-file
+  :type '(choice (const ":")
+		 (const ";")
+		 (const :tag "Off" nil)))
+;; backward compatibility
+(when (eq TeX-kpathsea-path-delimiter t)
+  (setq TeX-kpathsea-path-delimiter path-separator))
+
 (defun TeX-tree-expand (vars program &optional subdirs)
   "Return directories corresponding to the kpathsea variables VARS.
 This is done calling `kpsewhich --expand-path' for the variables.
-PROGRAM is passed as the parameter for --progname.  SUBDIRS are
-subdirectories which are appended to the directories of the TeX
-trees.  Only existing directories are returned."
+PROGRAM if non-nil is passed as the parameter for --progname.
+Optional argument SUBDIRS are subdirectories which are appended
+to the directories of the TeX trees.  Only existing directories
+are returned."
   ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
   ;; and uses "filename" for the name of a file even if it contains possibly
   ;; several elements separated by "/".
-  (let* ((exit-status 1)
-	 (path-list (ignore-errors
-		      (with-output-to-string
-			(setq exit-status
-			      (call-process
-			       "kpsewhich"  nil
-			       (list standard-output nil) nil
-			       "--progname" program
-			       "--expand-path"
-			       (mapconcat #'identity vars
-					  (if (eq system-type 'windows-nt)
-					      ";" ":"))))))))
-    (when (zerop exit-status)
-      (let ((separators (if (string-match "^[A-Za-z]:" path-list)
-			    "[\n\r;]"
-			  "[\n\r:]"))
-	    path input-dir-list)
-	(dolist (item (condition-case nil
-			  (split-string path-list separators t)
-			;; COMPATIBILITY for XEmacs <= 21.4.15
-			(error (delete "" (split-string path-list separators)))))
-	  (if subdirs
-	      (dolist (subdir subdirs)
-		(setq path (file-name-as-directory (concat item subdir)))
-		(when (file-exists-p path)
-		  (pushnew path input-dir-list :test #'equal)))
-	    (setq path (file-name-as-directory item))
-	    (when (file-exists-p path)
-	      (pushnew path input-dir-list :test #'equal))))
-	(nreverse input-dir-list)))))
+  (when TeX-kpathsea-path-delimiter
+    (let* ((exit-status 1)
+	   (args `(,@(if program `("--progname" ,program))
+		   "--expand-path"
+		   ,(mapconcat #'identity vars
+			       TeX-kpathsea-path-delimiter)))
+	   (path-list (ignore-errors
+			(with-output-to-string
+			  (setq exit-status
+				(apply #'call-process
+				       "kpsewhich" nil
+				       (list standard-output nil) nil
+				       args))))))
+      (if (not (zerop exit-status))
+	  ;; kpsewhich is not available.  Disable subsequent usage.
+	  (setq TeX-kpathsea-path-delimiter nil)
+	(let ((separators (format "[\n\r%s]" TeX-kpathsea-path-delimiter))
+	      path input-dir-list)
+	  (dolist (item (condition-case nil
+			    (split-string path-list separators t)
+			  ;; COMPATIBILITY for XEmacs <= 21.4.15
+			  (error (delete "" (split-string path-list separators)))))
+	    (if subdirs
+		(dolist (subdir subdirs)
+		  (setq path (file-name-as-directory (concat item subdir)))
+		  (when (file-exists-p path)
+		    (pushnew path input-dir-list :test #'equal)))
+	      (setq path (file-name-as-directory item))
+	      (when (file-exists-p path)
+		(pushnew path input-dir-list :test #'equal))))
+	  ;; No duplication in result is assured since `pushnew' is
+	  ;; used above.  Should we introduce an option for speed just
+	  ;; to accumulate all the results without care for
+	  ;; duplicates?
+	  (nreverse input-dir-list))))))
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
@@ -3297,7 +3334,7 @@ CDR is non-nil or nil, depending on whether a pair of braces
 should be, respectively, appended or not to the macro.
 
 If a macro has an element in this variable, `TeX-parse-macro'
-will use its value to decided what to do, whatever the value of
+will use its value to decide what to do, whatever the value of
 the variable `TeX-insert-braces'."
   :group 'TeX-macro
   :type '(repeat (cons (string :tag "Macro name")
@@ -3623,7 +3660,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 (defun TeX-arg-literal (optional &rest args)
   "Insert its arguments ARGS into the buffer.
 Used for specifying extra syntax for a macro.  The compatibility
-argument OPTION is ignored."
+argument OPTIONAL is ignored."
   (apply 'insert args))
 
 
@@ -3806,14 +3843,7 @@ The algorithm is as follows:
   ;; Standard Emacs completion-at-point support
   (when (boundp 'completion-at-point-functions)
     (add-hook 'completion-at-point-functions
-	      #'TeX--completion-at-point nil t)
-
-    ;; Support for company-mode
-    (when (fboundp 'company-mode)
-      ;; By default, company completions kick in after a prefix of 3 chars has
-      ;; been typed.  Since we don't have too many completions, that's too
-      ;; much.
-      (set (make-local-variable 'company-minimum-prefix-length) 1)))
+	      #'TeX--completion-at-point nil t))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
@@ -3923,7 +3953,7 @@ The algorithm is as follows:
 (defmacro TeX-auto-add-type (name prefix &optional plural)
   "Add information about NAME to the parser using PREFIX.
 
-Optional third argument PLURAL is the plural form of TYPE.
+Optional third argument PLURAL is the plural form of NAME.
 By default just add an `s'.
 
 This macro creates a set of variables and functions to maintain a
@@ -4310,56 +4340,55 @@ you should not use something like `[\\(]' for a character range."
   "Parse TeX information according to REGEXP-LIST between BEG and END."
   (if (symbolp regexp-list)
       (setq regexp-list (and (boundp regexp-list) (symbol-value regexp-list))))
-   (if regexp-list
-       ;; Extract the information.
-       (let* (groups
-	      (count 1)
-	      (regexp (concat "\\("
-			      (mapconcat
-			       (lambda(x)
-				 (push (cons count x) groups)
-				 (setq count
-				       (+ 1 count
-					  (TeX-regexp-group-count (car x))))
-				 (car x))
-			       regexp-list "\\)\\|\\(")
-			      "\\)"))
-	      syms
-	      lst)
-	 (setq count 0)
-	 (goto-char (if end (min end (point-max)) (point-max)))
-	 (while (re-search-backward regexp beg t)
-	   (let* ((entry (cdr (TeX-member nil groups
-					  (lambda (a b)
-					    (match-beginning (car b))))))
-		  (symbol (nth 2 entry))
-		  (match (nth 1 entry)))
-	     (unless (TeX-in-comment)
-	       (looking-at (nth 0 entry))
-	       (if (fboundp symbol)
-		   (funcall symbol match)
-		 (puthash (if (listp match)
-			      (mapcar #'TeX-match-buffer match)
-			    (TeX-match-buffer match))
-			  (setq count (1- count))
-			  (cdr (or (assq symbol syms)
-				   (car (push
-					 (cons symbol
-					       (make-hash-table :test 'equal))
-					 syms)))))))))
-	 (setq count 0)
-	 (dolist (symbol syms)
-	   (setq lst (symbol-value (car symbol)))
-	   (while lst
-	     (puthash (pop lst)
-		      (setq count (1+ count))
-		      (cdr symbol)))
-	   (maphash (lambda (key value)
-		      (push (cons value key) lst))
-		    (cdr symbol))
-	   (clrhash (cdr symbol))
-	   (set (car symbol) (mapcar #'cdr (sort lst #'car-less-than-car)))))))
-
+  (if regexp-list
+      ;; Extract the information.
+      (let* (groups
+	     (count 1)
+	     (regexp (concat "\\("
+			     (mapconcat
+			      (lambda(x)
+				(push (cons count x) groups)
+				(setq count
+				      (+ 1 count
+					 (TeX-regexp-group-count (car x))))
+				(car x))
+			      regexp-list "\\)\\|\\(")
+			     "\\)"))
+	     syms
+	     lst)
+	(setq count 0)
+	(goto-char (if end (min end (point-max)) (point-max)))
+	(while (re-search-backward regexp beg t)
+	  (let* ((entry (cdr (TeX-member nil groups
+					 (lambda (a b)
+					   (match-beginning (car b))))))
+		 (symbol (nth 2 entry))
+		 (match (nth 1 entry)))
+	    (unless (TeX-in-comment)
+	      (looking-at (nth 0 entry))
+	      (if (fboundp symbol)
+		  (funcall symbol match)
+		(puthash (if (listp match)
+			     (mapcar #'TeX-match-buffer match)
+			   (TeX-match-buffer match))
+			 (setq count (1- count))
+			 (cdr (or (assq symbol syms)
+				  (car (push
+					(cons symbol
+					      (make-hash-table :test 'equal))
+					syms)))))))))
+	(setq count 0)
+	(dolist (symbol syms)
+	  (setq lst (symbol-value (car symbol)))
+	  (while lst
+	    (puthash (pop lst)
+		     (setq count (1+ count))
+		     (cdr symbol)))
+	  (maphash (lambda (key value)
+		     (push (cons value key) lst))
+		   (cdr symbol))
+	  (clrhash (cdr symbol))
+	  (set (car symbol) (mapcar #'cdr (sort lst #'car-less-than-car)))))))
 
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.
@@ -4538,15 +4567,6 @@ EXTENSIONS defaults to `TeX-file-extensions'."
   :group 'TeX-file
   :type '(repeat directory))
 
-(defcustom TeX-kpathsea-path-delimiter t
-  "Path delimiter for kpathsea output.
-t means autodetect, nil means kpathsea is disabled."
-  :group 'TeX-file
-  :type '(choice (const ":")
-		 (const ";")
-		 (const :tag "Autodetect" t)
-		 (const :tag "Off" nil)))
-
 ;; We keep this function in addition to `TeX-search-files' because it
 ;; is faster.  Since it does not look further into subdirectories,
 ;; this comes at the price of finding a smaller number of files.
@@ -4556,45 +4576,26 @@ Only files which match EXTENSIONS are returned.  SCOPE defines
 the scope for the search and can be `local' or `global' besides
 nil.  If NODIR is non-nil, remove directory part.  If STRIP is
 non-nil, remove file extension."
-  (and TeX-kpathsea-path-delimiter
-       (catch 'no-kpathsea
-	 (let* ((dirs (if (eq scope 'local)
-			  "."
-			(with-output-to-string
-			  (unless (zerop (call-process
-					  "kpsewhich" nil
-					  (list standard-output nil) nil
-					  (concat "-expand-path=" var)))
-			    (if (eq TeX-kpathsea-path-delimiter t)
-				(throw 'no-kpathsea
-				       (setq TeX-kpathsea-path-delimiter nil))
-			      (error "kpsewhich error"))))))
-		result)
-	   (when (eq TeX-kpathsea-path-delimiter t)
-	     (setq TeX-kpathsea-path-delimiter
-		   (if (string-match ";" dirs) ";" ":")))
-	   (unless TeX-kpathsea-path-delimiter
-	     (throw 'no-kpathsea nil))
-	   (setq dirs (TeX-delete-duplicate-strings
-		       (delete "" (split-string
-				   dirs (concat "[\n\r"
-						TeX-kpathsea-path-delimiter
-						"]+")))))
-	   (if (eq scope 'global)
-	       (delete "." dirs))
-	   (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
-		 result (apply #'append (mapcar (lambda (x)
-						  (when (file-readable-p x)
-						    (directory-files
-						     x (not nodir) extensions)))
-						dirs)))
-	   (if strip
-	       (mapcar (lambda(x)
-			 (if (string-match extensions x)
-			     (substring x 0 (match-beginning 0))
-			   x))
-		       result)
-	     result)))))
+  (when TeX-kpathsea-path-delimiter
+    (let ((dirs (if (eq scope 'local)
+		    '("./")
+		  (TeX-tree-expand (list var) nil)))
+	  result)
+      (if (eq scope 'global)
+	  (setq dirs (delete "./" dirs)))
+      (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
+	    result (apply #'append (mapcar (lambda (x)
+					     (when (file-readable-p x)
+					       (directory-files
+						x (not nodir) extensions t)))
+					   dirs)))
+      (if strip
+	  (mapcar (lambda (x)
+		    (if (string-match extensions x)
+			(substring x 0 (match-beginning 0))
+		      x))
+		  result)
+	result))))
 
 (defun TeX-search-files (&optional directories extensions nodir strip)
   "Return a list of all reachable files in DIRECTORIES ending with EXTENSIONS.
@@ -4696,7 +4697,12 @@ If optional argument STRIP is non-nil, remove file extension."
 		(error "No TeX trees available; configure `TeX-tree-roots'")
 	      ;; Expand variables.
               (setq expdirs
-                    (delete-dups
+		    ;; Don't use `delete-dups' instead of
+		    ;; `TeX-delete-duplicate-strings' here.
+		    ;; Otherwise, when the last element of `rawdirs'
+		    ;; is a variable, its value might be truncated as
+		    ;; side effect.
+                    (TeX-delete-duplicate-strings
                      (apply #'append
                             (mapcar (lambda (rawdir)
                                       (if (symbolp rawdir)
@@ -4737,11 +4743,6 @@ If optional argument STRIP is non-nil, remove file extension."
 ;;
 ;; Some of these functions has little to do with TeX, but nonetheless we
 ;; should use the "TeX-" prefix to avoid name clashes.
-
-(defun TeX-car-string-lessp (s1 s2)
-  "Compare the cars of S1 and S2 in lexicographic order.
-Return t if first is less than second in lexicographic order."
-  (string-lessp (car s1) (car s2)))
 
 (defun TeX-listify (elt)
   "Return a newly created list with element ELT.
@@ -6113,9 +6114,11 @@ sign.  With optional ARG, insert that many dollar signs."
      ((insert "$")))))
   (TeX-math-input-method-off))
 
-(defvar TeX-math-input-method-off-regexp
+(defcustom TeX-math-input-method-off-regexp
   (concat "^" (regexp-opt '("chinese" "japanese" "korean" "bulgarian" "russian") t))
-  "Regexp matching input methods to be deactivated when entering math mode.")
+  "Regexp matching input methods to be deactivated when entering math mode."
+  :group 'TeX-misc
+  :type 'regexp)
 
 (defun TeX-math-input-method-off ()
   "Toggle off input method when entering math mode."
@@ -6446,15 +6449,7 @@ the number of the file to view, anything else to skip: ") list)))
   '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
 	    (lambda ()
 	      (when (executable-find "texdoc")
-		(TeX-search-files
-		 ;; Explicitely supply doc directory for
-		 ;; non-kpathsea-based TeX systems.
-		 (unless (stringp TeX-kpathsea-path-delimiter)
-		   (or (TeX-tree-expand
-			'("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST")
-			"latex" '("/doc/"))
-		       `(,@TeX-macro-global ,@TeX-macro-private)))
-		 '("dvi" "pdf" "ps" "txt" "html") t t)))
+		(TeX-search-files-by-type 'docs 'global t t)))
 	    (lambda (doc)
 	      ;; texdoc in MiKTeX requires --view in order to start
 	      ;; the viewer instead of an intermediate web page.
