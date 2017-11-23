@@ -3843,14 +3843,7 @@ The algorithm is as follows:
   ;; Standard Emacs completion-at-point support
   (when (boundp 'completion-at-point-functions)
     (add-hook 'completion-at-point-functions
-	      #'TeX--completion-at-point nil t)
-
-    ;; Support for company-mode
-    (when (fboundp 'company-mode)
-      ;; By default, company completions kick in after a prefix of 3 chars has
-      ;; been typed.  Since we don't have too many completions, that's too
-      ;; much.
-      (set (make-local-variable 'company-minimum-prefix-length) 1)))
+	      #'TeX--completion-at-point nil t))
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
