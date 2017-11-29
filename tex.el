@@ -2696,16 +2696,15 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (setq answers (cons entry answers))))
     answers))
 
-(defcustom TeX-kpathsea-path-delimiter path-separator
+(defcustom TeX-kpathsea-path-delimiter
+  (if (memq system-type '(windows-nt cygwin)) t path-separator)
   "Path delimiter for kpathsea output.
-nil means kpathsea is disabled."
+t means autodetect, nil means kpathsea is disabled."
   :group 'TeX-file
   :type '(choice (const ":")
 		 (const ";")
+		 (const :tag "Autodetect" t)
 		 (const :tag "Off" nil)))
-;; backward compatibility
-(when (eq TeX-kpathsea-path-delimiter t)
-  (setq TeX-kpathsea-path-delimiter path-separator))
 
 (defun TeX-tree-expand (vars program &optional subdirs)
   "Return directories corresponding to the kpathsea variables VARS.
@@ -2721,8 +2720,13 @@ are returned."
     (let* ((exit-status 1)
 	   (args `(,@(if program `("--progname" ,program))
 		   "--expand-path"
-		   ,(mapconcat #'identity vars
-			       TeX-kpathsea-path-delimiter)))
+		   ;; It seems that kpsewhich accepts semicolon as
+		   ;; path delimiter even on non-w32 platform and
+		   ;; converts it to colon if necessary.
+		   ;; Quote from texmf.cnf of TeXLive 2017:
+		   ;; "In this file, either ; or : can be used to
+		   ;; separate path components."
+		   ,(mapconcat #'identity vars ";")))
 	   (path-list (ignore-errors
 			(with-output-to-string
 			  (setq exit-status
@@ -2733,8 +2737,34 @@ are returned."
       (if (not (zerop exit-status))
 	  ;; kpsewhich is not available.  Disable subsequent usage.
 	  (setq TeX-kpathsea-path-delimiter nil)
-	(let ((separators (format "[\n\r%s]" TeX-kpathsea-path-delimiter))
-	      path input-dir-list)
+	(let* ((delim
+		(cond
+		 ;; If `TeX-kpathsea-path-delimiter' isn't t, use it
+		 ;; for path delimiter.
+		 ((not (eq TeX-kpathsea-path-delimiter t))
+		  TeX-kpathsea-path-delimiter)
+		 ;; Otherwise, if the output begins with DOS drive
+		 ;; letter or contains semicolon, we can set
+		 ;; `TeX-kpathsea-path-delimiter' to ";" and use it
+		 ;; for path delimiter.
+		 ((string-match "^[A-Za-z]:\\|;" path-list)
+		  (setq TeX-kpathsea-path-delimiter ";"))
+		 ;; Otherwise, if the output contains colon, we can set
+		 ;; `TeX-kpathsea-path-delimiter' to ":" and use it
+		 ;; for path delimiter.
+		 ((string-match ":" path-list)
+		  (setq TeX-kpathsea-path-delimiter ":"))
+		 ;; Otherwise, the output of this particular run
+		 ;; happens to contain just one component (without any
+		 ;; delimiter) of relative path (without DOS drive
+		 ;; letter).
+		 ;; It is safe to use ":" as delimiter for this case,
+		 ;; but we cannot determine the value of
+		 ;; `TeX-kpathsea-path-delimiter' now.
+		 (t
+		  ":")))
+	       (separators (format "[\n\r%s]" delim))
+	       path input-dir-list)
 	  (dolist (item (condition-case nil
 			    (split-string path-list separators t)
 			  ;; COMPATIBILITY for XEmacs <= 21.4.15
