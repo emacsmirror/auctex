@@ -284,8 +284,8 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	 (key (car elt))
 	 (temp (copy-alist LaTeX-listings-key-val-options-local))
 	 (opts (assq-delete-all (car (assoc key temp)) temp)))
-    (pushnew (list key (delete-dups
-			(mapcar 'car (LaTeX-listings-lstdefinestyle-list))))
+    (pushnew (list key (TeX-delete-duplicate-strings
+			(mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
 	     opts :test #'equal)
     (setq LaTeX-listings-key-val-options-local
 	  (copy-alist opts))))

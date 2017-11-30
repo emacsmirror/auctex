@@ -119,31 +119,31 @@ key-val's."
 		       ;; t if pdftex is used in dvi-mode
 		       TeX-DVI-via-PDFTeX)
 		     ;; We're using pdflatex in pdf-mode
-		     (delete-dups
+		     (TeX-delete-duplicate-strings
 		      (append LaTeX-includegraphics-pdftex-extensions
 			      temp))
 		   ;; We're generating a .dvi to process with dvips or dvipdfmx
 		   (progn
 		     (dolist (x '("jpe?g" "pdf" "png"))
 		       (setq temp (delete x temp)))
-		     (delete-dups
+		     (TeX-delete-duplicate-strings
 		      (append LaTeX-includegraphics-dvips-extensions
 			      temp)))))
 		;; Running luatex in pdf or dvi-mode:
 		((eq TeX-engine 'luatex)
 		 (if TeX-PDF-mode
-		     (delete-dups
+		     (TeX-delete-duplicate-strings
 		      (append LaTeX-includegraphics-pdftex-extensions
 			      temp))
 		   (progn
 		     (dolist (x '("jpe?g" "pdf" "png"))
 		       (setq temp (delete x temp)))
-		     (delete-dups
+		     (TeX-delete-duplicate-strings
 		      (append LaTeX-includegraphics-dvips-extensions
 			      temp)))))
 		;; Running xetex in any mode:
 		((eq TeX-engine 'xetex)
-		 (delete-dups (append LaTeX-includegraphics-xetex-extensions
+		 (TeX-delete-duplicate-strings (append LaTeX-includegraphics-xetex-extensions
 				      temp)))
 		;; For anything else
 		(t
