@@ -33,6 +33,13 @@
 (require 'ert)
 (require 'tex-jp)
 
+;; Add the "style/" directory to `TeX-style-path',
+;; so we can load style files inside tests.
+(add-to-list 'TeX-style-path
+             (expand-file-name "../../style"
+                               (when load-file-name
+                                 (file-name-directory load-file-name))))
+
 (defun AUCTeX-set-ert-path (&rest sym-val)
   "Set first element of SYM-VAL to the next one, and so on.
 
