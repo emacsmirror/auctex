@@ -66,6 +66,7 @@
 ;; tcolorbox.sty
 ;; tikz.sty
 ;; varioref.sty
+;; xltabular.sty
 
 ;; If you have further additions, drop a line to <auctex-devel@gnu.org>.
 
@@ -324,7 +325,9 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
    ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library
-   ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)))
+   ("tcboxed\\(raster\\|itemize\\)" ispell-tex-arg-end)
+   ;; xltabular.sty
+   ("xltabular" ispell-tex-arg-end 2)))
 
 
 ;; No customization below this line
