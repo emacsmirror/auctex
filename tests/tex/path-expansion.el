@@ -33,27 +33,4 @@
     (TeX-search-files-by-type 'abc 'global)
     (should (equal var '("str1" "str2")))))
 
-(ert-deftest TeX-kpathsea-delimiter-w32 ()
-  "Check whether `TeX-kpathsea-path-delimiter' is set to \";\" on w32 platform."
-  ;; This test is meaningful only on w32 platform.
-  (skip-unless (eq system-type 'windows-nt))
-  ;; Provide `TeX-tree-expand' with output which doesn't begin with
-  ;; dos drive letter.
-  (let ((TeX-kpathsea-path-delimiter
-	 (eval (car (get 'TeX-kpathsea-path-delimiter 'standard-value)))))
-    (TeX-tree-expand '(".") nil)
-    (should (equal TeX-kpathsea-path-delimiter ";")))
-  ;; Provide `TeX-search-files-kpathsea' with output of only one
-  ;; component (thus without a separator ";".)
-  (let ((TeX-kpathsea-path-delimiter
-	 (eval (car (get 'TeX-kpathsea-path-delimiter 'standard-value))))
-	;; Let's hope that no other files in the temp directory have
-	;; such a bizarre extension.
-	(temp-file (make-temp-file "TeX-path-expansion" nil ".xxyyzz")))
-    (unwind-protect
-	(TeX-search-files-kpathsea (file-name-directory temp-file)
-				   '("xxyyzz") nil nil nil)
-      (delete-file temp-file))
-    (should (equal TeX-kpathsea-path-delimiter ";"))))
-
 ;;; command-expansion.el ends here
