@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'ert)
-(require 'tex)
 
 (ert-deftest TeX-infinite-loop ()
   "Check whether functions don't fall into infinite loop."

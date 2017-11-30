@@ -55,7 +55,8 @@ all: check
 WRITE_LOG = 2>&1 | tee $@
 
 %.log: %.el
-	$(emacs) -l ert -l $< -f ert-run-tests-batch-and-exit ${WRITE_LOG}
+	$(emacs) -l ert -l make-test-deps.emacs-lisp -l $< \
+	-f ert-run-tests-batch-and-exit ${WRITE_LOG}
 
 ELFILES = $(wildcard */*.el)
 LOGFILES = $(patsubst %.el,%.log, ${ELFILES})

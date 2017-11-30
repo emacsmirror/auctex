@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'ert)
-(require 'tex)
 
 (ert-deftest TeX-variable-truncation ()
   "Check whether list variable is not truncated as side effect."

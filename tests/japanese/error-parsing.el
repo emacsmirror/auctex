@@ -26,13 +26,6 @@
 (setq japanese-TeX-error-messages t)
 (require 'tex-jp)
 
-;; Add the "style/" directory to `TeX-style-path',
-;; so we can load style files inside tests.
-(add-to-list 'TeX-style-path
-             (expand-file-name "../../style"
-                               (when load-file-name
-                                 (file-name-directory load-file-name))))
-
 (ert-deftest japanese-TeX-help-message ()
   "Test the fallback behavior of `TeX-help-error'.
 It should pick up error messages from the log file even if
