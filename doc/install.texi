@@ -85,13 +85,10 @@ the file @file{INSTALL.windows}.
 @end ifclear
 
 @itemize @bullet
-@item A recent version of Emacs, alternatively XEmacs
+@item GNU Emacs 24 or higher
 
-@w{Emacs 20} is no longer supported, and neither is XEmacs with a
-version of @code{xemacs-base} older than 1.84 (released in sumo from
-02/02/2004).  Using @previewlatex{} requires a version of Emacs compiled
-with image support.  While the X11 version of @w{Emacs 21} will likely
-work, @w{Emacs 22} and later is preferred.
+Using @previewlatex{} requires a version of Emacs compiled with image
+support.
 
 @table @b
 @item Windows
@@ -107,20 +104,8 @@ via their package repositories.
 Compiling Emacs yourself requires a C compiler and a number of tools and
 development libraries.  Details are beyond the scope of this manual.
 Instructions for checking out the source code can be found at
-@uref{https://savannah.gnu.org/bzr/?group=emacs}.
+@uref{https://savannah.gnu.org/git/?group=emacs}.
 @end table
-
-If you really need to use @w{Emacs 21} on platforms where this implies
-missing image support, you should disable the installation of
-@previewlatex{} (see below).
-
-While XEmacs (version 21.4.15, 21.4.17 or later) is supported, doing
-this in a satisfactory manner has proven to be difficult.  This is
-mostly due to technical shortcomings and differing API's which are hard
-to come by.  If @AUCTeX{} is your main application for XEmacs, you are
-likely to get better results and support by switching to Emacs.  Of
-course, you can improve support for your favorite editor by giving
-feedback in case you encounter bugs.
 
 @item A working @TeX{} installation
 
@@ -201,24 +186,6 @@ package as a single non-priviledged user, you will typically set
 If you are using a pretest which isn't in your @code{$PATH}, or
 @command{configure} is not finding the right Emacs executable, you can
 specify it with this option.
-
-@item --with-xemacs[=@var{/path/to/xemacs}]
-Configure for generation under XEmacs (Emacs is the default).  Again,
-the name of the right XEmacs executable can be specified, complete with
-path if necessary.
-
-@item --with-packagedir=@var{/dir}
-This XEmacs-only option configures the directory for XEmacs packages.  A
-typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
-If this directory exists and is below @var{prefix}, it should be
-detected automatically.  This will install and activate the package.
-
-@item --without-packagedir
-This XEmacs-only option switches the detection of a package directory
-and corresponding installation off.  Consequently, the Emacs
-installation scheme will be used.  This might be appropriate if you are
-using a different package system/installer than the XEmacs one and want
-to avoid conflicts.
 
 The Emacs installation scheme has the following options:
 
@@ -333,9 +300,6 @@ You can detect the successful activation of @AUCTeX{} and
 @file{preview/circ.tex}: @AUCTeX{} then gives you a @samp{Command} menu,
 and @previewlatex{} gives you a @samp{Preview} menu.
 
-For XEmacs, if the installation occured into a valid package directory
-(which is the default), then this should work out of the box.
-
 @cindex @file{auctex.el}
 @cindex @file{tex-site.el}
 With Emacs (or if you explicitly disabled use of the package system),
@@ -419,16 +383,12 @@ If the installation procedure did not achieve this already by placing
 
 @noindent in the system-wide @file{site-start.el}.
 
-If your package is intended as an XEmacs package or to accompany a
-precompiled version of Emacs, you might not know which @TeX{} system
-will be available when @previewlatex{} gets used.  In this case you
-should build using the @code{--without-texmf-dir} option described
-previously.  This can also be convenient for systems that are intended
-to support more than a single TeX distribution.  Since more often than
-not @TeX{} packages for operating system distributions are either much
-more outdated or much less complete than separately provided systems
-like @w{@TeX{} Live}, this method may be generally preferable when
-providing packages.
+The @code{--without-texmf-dir} option can be convenient for systems that
+are intended to support more than a single TeX distribution.  Since more
+often than not @TeX{} packages for operating system distributions are
+either much more outdated or much less complete than separately provided
+systems like @w{@TeX{} Live}, this method may be generally preferable
+when providing packages.
 
 The following package structure would be adequate for a typical fully
 supported Unix-like installation:
@@ -457,20 +417,6 @@ directory.  It will probably not be possible to initialize
 @samp{TeX-macro-global} to a sensible value, so running
 @samp{TeX-auto-generate-global} does not appear useful.  This package
 would neither conflict with nor provide @samp{preview-tetex}.
-@item auctex-xemacs-tetex
-@itemx auctex-xemacs
-Those are the obvious XEmacs equivalents.  For XEmacs, there is the
-additional problem that the XEmacs sumo package tree already possibly
-provides its own version of @AUCTeX{}, and the user might even have used
-the XEmacs package manager to updating this package, or even installing
-a private @AUCTeX{} version.  So you should make sure that such a
-package will not conflict with existing XEmacs packages and will be
-at an appropriate place in the load order (after site-wide and
-user-specific locations, but before a distribution-specific sumo package
-tree).  Using the @code{--without-packagedir} option might be one idea
-to avoid conflicts.  Another might be to refrain from providing an
-XEmacs package and just rely on the user or system administrator to
-instead use the XEmacs package system.
 @end table
 
 @node Advice for non-privileged users
@@ -478,11 +424,7 @@ instead use the XEmacs package system.
 
 Often people without system administration privileges want to install
 software for their private use.  In that case you need to pass more
-options to the @command{configure} script.  For XEmacs users, this is
-fairly easy, because the XEmacs package system has been designed to make
-this sort of thing practical: but GNU Emacs users (and XEmacs users for
-whom the package system is for some reason misbehaving) may need to do a
-little more work.
+options to the @command{configure} script.
 
 The main expedient is using the @option{--prefix} option to the
 @file{configure} script, and let it point to the personal home
@@ -495,12 +437,6 @@ personal software, since the prefix argument is supported by most
 You'll have to add something like
 @file{/home/myself/share/emacs/site-lisp} to your @code{load-path}
 variable, if it isn't there already.
-
-XEmacs users can achieve the same end by pointing @command{configure} at an
-appropriate package directory (normally
-@option{--with-packagedir=~/.xemacs/xemacs-packages} will serve).  The
-package directory stands a good chance at being detected automatically
-as long as it is in a subtree of the specified @var{prefix}.
 
 Now here is another thing to ponder: perhaps you want to make it easy
 for other users to share parts of your personal Emacs configuration.  In
@@ -532,12 +468,6 @@ In GNU Emacs, it should be sufficient if people just do
 where the path points to your personal installation.  The rest of the
 package should be found relative from there without further ado.
 
-In XEmacs, you should ask the other users to add symbolic links in the
-subdirectories @file{lisp}, @file{info} and @file{etc} of their
-@file{~/.xemacs/xemacs-packages/} directory.  (Alas, there is presently
-no easy programmatic way to do this, except to have a script do the
-symlinking for them.)
-
 @subheading Making the Info files available
 
 For making the info files accessible from within Elisp, something like
@@ -548,12 +478,6 @@ startup files:
 (eval-after-load 'info
    '(add-to-list 'Info-directory-list "~myself/info"))
 @end lisp
-
-In XEmacs, as long as XEmacs can see the package, there should be no
-need to do anything at all; the info files should be immediately
-visible.  However, you might want to set @env{INFOPATH} anyway, for the
-sake of standalone readers outside of XEmacs. (The info files in XEmacs
-are normally in @file{~/.xemacs/xemacs-packages/info}.)
 
 @subheading Making the @LaTeX{} style available
 

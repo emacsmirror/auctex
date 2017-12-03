@@ -131,14 +131,9 @@ environment or, as a last resort, customize the variable
 @node Middle-clicks paste instead of toggling
 @section Middle-clicks paste instead of toggling
 
-This is probably the fault of your favorite package.  @file{flyspell.el}
-and @file{mouse-drag.el} are known to be affected in versions before
-@w{Emacs 21.3}.  Upgrade to the most recent version.  What version of
-XEmacs might contain the fixes is unknown.
-
-@file{isearch.el} also shows this effect while searches are in progress,
-but the code is such a complicated mess that no patch is in sight.
-Better just end the search with @kbd{@key{RET}} before toggling and
-resume with @kbd{C-s C-s} or similar afterwards.  Since previews over
-the current match will auto-open, anyway, this should not be much of a
-problem in practice.
+This is probably the fault of your favorite package.  @file{isearch.el}
+is known to be affected while searches are in progress, but the code is
+such a complicated mess that no patch is in sight.  Better just end the
+search with @kbd{@key{RET}} before toggling and resume with @kbd{C-s
+C-s} or similar afterwards.  Since previews over the current match will
+auto-open, anyway, this should not be much of a problem in practice.

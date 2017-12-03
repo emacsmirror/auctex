@@ -258,7 +258,7 @@ Indices
 
 @c This text adapted from the Texinfo 2.16 distribution.
 
-@AUCTeX{} primarily consists of Lisp files for Emacs (and XEmacs), but
+@AUCTeX{} primarily consists of Lisp files for Emacs, but
 there are also installation scripts and files and @TeX{} support files.
 All of those are @dfn{free}; this means that everyone is free to use
 them and free to redistribute them on a free basis.  The files of
@@ -2190,7 +2190,7 @@ name omitting the leading backslash or a list consisting of the command
 name and a string specifying the sequence of arguments for the command.
 
 The face argument can either be an existing face or face attributes
-made by you.  (The latter option is not available on XEmacs.)
+made by you.
 
 There are three alternatives for the type of keywords---``Command with
 arguments'', ``Declaration inside @TeX{} group'' and ``Command without
@@ -2266,10 +2266,6 @@ below.)
 Lastly, you can set this variable to @code{invisible} whose behavior is
 like @code{multi-level}, and in addition the super-/subscript characters
 @i{^} and @i{_} are not displayed.
-
-Note that this feature is not available on XEmacs, for which
-it is disabled per default.  In GNU Emacs raising and lowering is not
-enabled for versions 21.3 and before due to it working not properly.
 @end defopt
 
 
@@ -3785,8 +3781,7 @@ all warnings are hidden in any case.
 
 When the option @code{TeX-parse-all-errors} is non-nil, you will be also
 able to open an overview of all errors and warnings reported by the TeX
-compiler.  This feature requires @code{tabulated-list-mode}, shipped
-with GNU Emacs 24 or later.
+compiler.
 
 @deffn Command TeX-error-overview
 Show an overview of the errors and warnings occurred in the last TeX
@@ -4340,17 +4335,15 @@ typesetting and editing documents in European languages.
 @c -> @abbr{MULE, MULtilingual Enhancement to GNU Emacs}
 @c -> @acronym{CJK, Chinese@comma{} Japanese@comma{} and Korean}
 
-For @acronym{CJK} (Chinese, Japanese, and Korean) languages, Emacs or
-XEmacs with @acronym{MULE} (MULtilingual Enhancement to GNU Emacs)
-support is required.  @acronym{MULE} is part of Emacs by default since
-Emacs 20.  XEmacs has to be configured with the @samp{--with-mule}
-option.  Special versions of @TeX{} are needed for @acronym{CJK}
-languages: C@TeX{} and China@TeX{} for Chinese, ASCII p@TeX{} and NTT
-j@TeX{} for Japanese, H@LaTeX{} and k@TeX{} for Korean.  The
-@acronym{CJK}-@LaTeX{} package is required for supporting multiple
-@acronym{CJK} scripts within a single document.
+For @acronym{CJK} (Chinese, Japanese, and Korean) languages, Emacs with
+@acronym{MULE} (MULtilingual Enhancement to GNU Emacs) support is
+required.  @acronym{MULE} is part of Emacs by default since Emacs 20.
+Special versions of @TeX{} are needed for @acronym{CJK} languages:
+C@TeX{} and China@TeX{} for Chinese, ASCII p@TeX{} and NTT j@TeX{} for
+Japanese, H@LaTeX{} and k@TeX{} for Korean.  The @acronym{CJK}-@LaTeX{}
+package is required for supporting multiple @acronym{CJK} scripts within
+a single document.
 
-Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
 @acronym{CJK} characters are not usable.  Please use the
 @acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 and later if
 you need @acronym{CJK}.
@@ -4384,9 +4377,9 @@ languages than Western European ones will probably have other encoding
 needs.
 
 To be able to display non-ASCII characters you will need an appropriate
-font and a version of GNU Emacs capable of displaying 8-bit characters
-(e.g. Emacs 21).  The manner in which this is supported differs between
-Emacsen, so you need to take a look at your respective documentation.
+font and a version of GNU Emacs capable of displaying 8-bit characters.
+The manner in which this is supported differs between Emacsen, so you
+need to take a look at your respective documentation.
 
 A compromise is to use an European character set when editing the file,
 and convert to @TeX{} macros when reading and writing the files.
@@ -4396,14 +4389,10 @@ and convert to @TeX{} macros when reading and writing the files.
 @cindex @file{iso-cvt.el}
 Much like @file{iso-tex.el} but is bundled with Emacs 19.23 and later.
 
-@item x-compose.el
-@cindex @file{x-compose.el}
-Similar package bundled with new versions of XEmacs.
-
 @item X-Symbol
 @cindex X-Symbol
-a much more complete package for both Emacs and XEmacs that can also
-handle a lot of mathematical characters and input methods.
+a much more complete package for Emacs that can also handle a lot of
+mathematical characters and input methods.
 @end table
 
 @subsubsection Style Files for Different Languages
@@ -4602,8 +4591,7 @@ If nil do it the other way round.
 To write Japanese text with @AUCTeX{}, you need the versions of
 @TeX{} and Emacs that support Japanese.  @AUCTeX{} supports three
 Japanese @TeX{} engines by default: NTT j@TeX{}, ASCII p@TeX{} and
-up@TeX{}.  On XEmacs, @AUCTeX{} needs @acronym{MULE, MULtilingual
-Enhancement to GNU Emacs} feature to deal with Japanese text.
+up@TeX{}.
 
 To use the Japanese @TeX{} engines, activate
 @code{japanese-plain-tex-mode} or @code{japanese-latex-mode}.  If it

@@ -36,11 +36,10 @@ with the command line @samp{emacs --debug-init} and/or put the line
 (setq debug-on-error t)
 @end lisp
 
-as the first line into your init file.  XEmacs users might want to add
-@code{(setq stack-trace-on-error t)} as well.  After Emacs has started,
-you can load a file which triggers the error and a new window should pop
-up showing the backtrace.  If you get such a backtrace, please include
-it in the bug report.
+as the first line into your init file.  After Emacs has started, you can
+load a file which triggers the error and a new window should pop up
+showing the backtrace.  If you get such a backtrace, please include it
+in the bug report.
 
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
@@ -53,24 +52,10 @@ either in the site configuration file or your personal init file for
 statements related to the problem.
 
 @item
-What versions of Emacs and XEmacs are supported?
+What versions of Emacs are supported?
 
-@AUCTeX{} was tested with @w{Emacs 21} and @w{XEmacs 21.4.15}.  Older
-versions may work but are unsupported.  Older versions of XEmacs might
-possibly made to work by updating the @file{xemacs-base} package through
-the XEmacs package system.  If you are looking for a recommendation, it
-would appear that the smoothest working platform on all operating
-systems at the current point of time would be @w{Emacs 22} or higher.
-
-Our success with XEmacs has been less than convincing.  Code for core
-functionality like formatting and syntax highlighting tends to be
-different and often older than even @w{Emacs 21.4}, and Unicode support
-as delivered is problematic at best, missing on Windows.  Both @AUCTeX{}
-and XEmacs developers don't hear much from active users of the
-combination.  Partly for that reason, problems tend to go unnoticed for
-long amounts of time and are often found, if at all, after releases.  No
-experiences or recommendations can be given for beta or developer
-versions of XEmacs.
+@AUCTeX{} was tested with @w{GNU Emacs 24}.  Older versions may work but
+are unsupported.
 
 @item
 What should I do when @code{./configure} does not find programs like latex?

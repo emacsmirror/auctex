@@ -27,8 +27,7 @@ inserting
 @end lisp
 
 in your user init file.@footnote{This usually is a file in your home
-directory called @file{.emacs} if you are utilizing GNU Emacs or
-@file{.xemacs/init.el} if you are using XEmacs.}
+directory called @file{.emacs}, or @file{.emacs.d/init.el}.}
 
 If @AUCTeX{} is installed from @acronym{ELPA}, the installation
 procedure already cares about loading @AUCTeX{} correctly and you

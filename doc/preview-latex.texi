@@ -358,9 +358,7 @@ artifacts at the edges of your previews.  Playing around with the option
 might improve things.  With some settings, the cursor may cover the
 whole background of a preview, however.
 
-This option is specific to the display engine in use.  Its default is
-different in @w{Emacs 21} and @w{Emacs 22}, and it is not available in
-XEmacs.
+This option is specific to the display engine in use.
 
 @item Showing @code{\label}s
 @cindex Showing @code{\label}s
