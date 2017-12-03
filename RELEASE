@@ -1,5 +1,5 @@
-Release notes for AUCTeX 11.92 with preview-latex
-=================================================
+Release notes for AUCTeX 12.1 with preview-latex
+================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
 environment for editing LaTeX, TeX, ConTeXt and Texinfo documents with
@@ -24,68 +24,34 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-preview-latex is compatible with Ghostscript 9.22 where the
-operator '.runandhide' is removed.  All occurrences of
-'.runandhide' in preview-latex are replaced by alternative code
-making it work with Ghostscript 9.22 again.
+AUCTeX now requires GNU Emacs 24 or higher.  Support for XEmacs has
+been dropped.
 
-AUCTeX has a new customize option
-'TeX-math-input-method-off-regexp'.  When you begin to input a math
-formula, the current input method is turned off if its name matches
-this regular expression.
-
-In fact this variable was introduced long before, but has not been
-documented in info files nor turned into a customize option with
-'defcustom' until this release.
-
-The window system focus is pulled back to Emacs when viewing with
-evince-compatible viewers if a new customize option
-'TeX-view-evince-keep-focus' is non-nil.
-
-The usual dose of bug fixes was administered.
+Besides the change in the supported version of Emacs, there has
+been no functional change in this release, which is equivalent to
+version 11.92.
 
 Requirements
 ------------
 
-It is required that you use at least GNU Emacs 21 or XEmacs 21.4.
-XEmacs requires at least version 1.84 of the xemacs-base package
-(released on 01/27/2004) or a sumo tarball dated 02/02/2004 or newer
-for compiling AUCTeX: please use the XEmacs package system for
-upgrading if necessary.
+It is required that you use at least GNU Emacs 24.
 
-The preview-latex subsystem requires image support.  This is available
-with GNU Emacs 21.3 under the X window system.  For Windows[2], Mac OS
-X (Carbon, Cocoa)[3] or native GTK+ toolkit support, at least version
-22.1 of GNU Emacs is required.  Emacs 22 and later is the recommended
-platform for AUCTeX in general.  If you prefer XEmacs, it will work in
-version 21.4.10 or later.
+The preview-latex subsystem requires image support.
 
 You'll also need a working LaTeX installation and Ghostscript.
-dvipng[4] (version 1.4 or later), a very fast DVI converter, can be
+dvipng[2] (version 1.4 or later), a very fast DVI converter, can be
 used to speed up the conversion.
-
-NOTE: This will be the last release in the 11 series.  Version 12 of
-AUCTeX, which is due to come in a few days, will support only GNU
-Emacs 24 or higher.
 
 Availability
 ------------
 
-The easiest way for getting AUCTeX, for users running Emacs 24.1 or
-higher, is installing it with GNU ELPA, see
+The easiest way for getting AUCTeX is installing it with GNU ELPA, see
 <URL:https://elpa.gnu.org/packages/auctex.html> for more information.
 Other download options are available at
 <URL:ftp://ftp.gnu.org/gnu/auctex/>.  At release time, we provide the
-source tarball, and a platform-independent XEmacs package file (which
-you have to install yourself using XEmacs' own package system, after
-using it for removing the previous version of AUCTeX).  You can also
-use versions of Emacs that already include AUCTeX or a software
-package management system for your operating system which provides you
-with the latest release.
-
-The XEmacs package file can be discerned by `pkg' in its name.  It is
-usually more recent than what gets distributed from XEmacs servers and
-as part of the Sumo tarball.
+source tarball.  You can also use versions of Emacs that already
+include AUCTeX or a software package management system for your
+operating system which provides you with the latest release.
 
 A separate directory for each release contains some stuff from the
 tarball, such as ChangeLog, printable manuals, and a reference sheet.
@@ -131,11 +97,5 @@ Footnotes:
 
 [1]  <URL:ftp://ftp.dante.de/tex-archive/macros/latex/contrib/preview/>
 
-[2]  You can get a precompiled version of Emacs for Windows at
-<URL:ftp://ftp.gnu.org/gnu/emacs/windows/>.
-
-[3]  See e.g. <URL:http://www.emacswiki.org/cgi-bin/wiki/EmacsForMacOS>
-for a list of precompiled versions of Emacs for Mac OS X.
-
-[4]  dvipng is available via its project page
+[2]  dvipng is available via its project page
 <URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
