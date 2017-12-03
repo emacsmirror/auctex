@@ -31,6 +31,9 @@ documented in info files nor turned into a customize option with
 The window system focus is pulled back to Emacs when viewing with
 evince-compatible viewers if a new customize option
 @code{TeX-view-evince-keep-focus} is non-nil.
+
+@item
+The usual dose of bug fixes was administered.
 @end itemize
 
 @heading News in 11.91

@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.91 with preview-latex
+Release notes for AUCTeX 11.92 with preview-latex
 =================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -24,82 +24,25 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-Now AUCTeX has a logo.  The LaTeX code to create it is available in
-the 'etc/' directory of the package.
+preview-latex is compatible with Ghostscript 9.22 where the
+operator '.runandhide' is removed.  All occurrences of
+'.runandhide' in preview-latex are replaced by alternative code
+making it work with Ghostscript 9.22 again.
 
-Add support for 'upmendex', an extension of 'makeindex' capable of
-sorting indexes by unicode based ICU.
+AUCTeX has a new customize option
+'TeX-math-input-method-off-regexp'.  When you begin to input a math
+formula, the current input method is turned off if its name matches
+this regular expression.
 
-Fix preview-latex to interact correctly with Japanese LaTeX.  The
-parsing routine was made robust not to be confused by the 7-bit
-encoding of Japanese text and the necessary option to LaTeX command
-is kept even when preamble caching is enabled.
+In fact this variable was introduced long before, but has not been
+documented in info files nor turned into a customize option with
+'defcustom' until this release.
 
-The new "Glossaries" entry in 'TeX-command-list' runs the command
-'makeglossaries'.
+The window system focus is pulled back to Emacs when viewing with
+evince-compatible viewers if a new customize option
+'TeX-view-evince-keep-focus' is non-nil.
 
-Fontification of control symbols has been improved.  Characters
-defined in 'font-latex-match-simple-exclude-list' do not receive
-any fontification.  In DocTeX mode, the character '_' is removed
-from 'font-latex-match-simple-exclude-list' in order to fontify
-macros like '\__module_foo:nnn' correctly.
-
-Fontification of math environments has been improved.  Optional
-and/or mandatory argument(s) to environments are not fontified.
-
-'preview.sty' loads 'luatex85.sty' if possible and should be
-compatible with newer luaTeX versions.
-
-AUCTeX has a new customize option 'TeX-ispell-verb-delimiters'.
-This string contains usual characters used as delimiters for
-in-line verbatim macros like '\verb'.  Text between delimiters
-after an in-line verbatim macro will be skipped during spell
-checking.
-
-Fontification of in-line verbatim macros has been improved.
-'font-latex.el' recognizes an optional or a mandatory argument for
-macros like '\Verb' from 'fancyvrb.sty', '\mint' and '\mintinline'
-from 'minted.sty' and fontifies verbatim content correctly.
-
-AUCTeX can put and parse labels in optional argument of
-environments.  Inserting labels is done by new function
-'LaTeX-env-label-as-keyval'.  A new customize option
-'LaTeX-listing-label' is available as prefix to labels in code
-typesetting environments, e.g.  'lstlisting' environment provided
-by 'listings' package.  'LaTeX-listing-label' defaults to 'lst:'.
-Parsing of labels for later referencing relies on two requirements:
-  1. Label should come as last key-value argument, and
-  2. label must be enclosed in braces, e.g.
-          \begin{lstlisting}[caption=Some Caption,label={lst:foo}]
-          ...
-          \end{lstlisting}
-
-The function 'LaTeX-label' now takes a second optional argument
-'NO-INSERT'.  When non-'nil', 'LaTeX-label' reads a label and
-returns it as a string.  This argument is also passed to any
-function bound to 'LaTeX-label-function' (see next item).
-
-*Incompatible change:* The signature for the function passed with
-the customize option 'LaTeX-label-function' has changed.  The
-function bound to this variable is now expected to take an optional
-second argument 'NO-INSERT'.  When this argument is non-'nil', the
-function should read and only return a label as a string; insertion
-is done by another function.
-
-Directory local variables were ineffective for
-'japanese-latex-mode' and 'japanese-plain-tex-mode'.  This bug was
-fixed.  (This was actually done in AUCTeX 11.90, but not
-advertised)
-
-The output of Japanese text from Japanese TeX engines is decoded
-correctly for most cases, according to the encoding of the TeX
-documents and the locale.  The difference between MS Windows, macOS
-and unix-like OS is taken into account.  (This was actually done in
-AUCTeX 11.90, but not advertised)
-
-Quite a few new LaTeX packages are supported.
-
-As usual, many bugs were fixed.
+The usual dose of bug fixes was administered.
 
 Requirements
 ------------
@@ -120,6 +63,10 @@ version 21.4.10 or later.
 You'll also need a working LaTeX installation and Ghostscript.
 dvipng[4] (version 1.4 or later), a very fast DVI converter, can be
 used to speed up the conversion.
+
+NOTE: This will be the last release in the 11 series.  Version 12 of
+AUCTeX, which is due to come in a few days, will support only GNU
+Emacs 24 or higher.
 
 Availability
 ------------
