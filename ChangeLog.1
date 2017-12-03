@@ -1,3 +1,433 @@
+2017-12-03  Mosè Giordano  <mose@gnu.org>
+
+	Prepare for upcoming release
+
+	* RELEASE: Update version number and release notes.
+	* doc/changes.texi: Mention bug fixes.
+	* configure.ac:
+	* doc/tex-ref.tex:
+	* latex/preview.dtx: Update version number.
+
+2017-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix auto detect of kpathsea delimeter
+
+	* tex.el (TeX-kpathsea-detect-path-delimiter): New function.
+	(TeX-kpathsea-path-delimiter): Use it to obtain the default value.
+	(TeX-tree-expand): Use it to simplify auto detection method.
+	Use `TeX-kpathsea-path-delimiter' for argument given to kpsewhich
+	command.  Using constant ";" is completely wrong for most kpsewhich
+	implementation.
+
+2017-11-30  Arash Esbati  <arash@gnu.org>
+
+	Get rid of `delete-dups'
+
+	* style/caption.el (LaTeX-caption-update-key-val-options):
+	* style/enumitem.el (LaTeX-enumitem-update-key-val-options):
+	* style/floatrow.el (LaTeX-floatrow-update-key-val-options):
+	* style/graphicx.el (LaTeX-includegraphics-extensions):
+	* style/listings.el (LaTeX-listings-update-style-key):
+	* style/mdframed.el (LaTeX-mdframed-update-style-key):
+	* style/menukeys.el (TeX-arg-menukeys-newmenumacro): Replace
+	`delete-dups' with `TeX-delete-duplicate-strings'.
+
+2017-11-30  Arash Esbati  <arash@gnu.org>
+
+	* style/longtable.el ("longtable"): Use `make-local-variable'.
+
+	* tex-ispell.el: Add entry for "xltabular" environment.
+
+2017-11-30  Arash Esbati  <arash@gnu.org>
+
+	Fix style/xltabular.el
+
+	* style/xltabular.el (LaTeX-xltabular-skipping-regexp): New variable.
+	(LaTeX-env-xltabular):
+	(LaTeX-item-xltabular): New function.
+	("xltabular"): Use the above functions in the style hook.
+
+2017-11-30  Mosè Giordano  <mose@gnu.org>
+
+	Reduce code duplication in tests
+
+	* tests/make-test-deps.emacs-lisp: New file.
+	* tests/Makefile (%.log): Load it make-test-deps.emacs-lisp when running tests.
+	* tests/context/context-test.el:
+	* tests/japanese/error-parsing.el:
+	* tests/japanese/parse-timing.el:
+	* tests/japanese/preview-latex.el:
+	* tests/latex/latex-test.el:
+	* tests/tex/error-parsing.el:
+	* tests/tex/path-expansion.el:
+	* tests/tex/utility.el: Remove code moved to make-test-deps.emacs-lisp.
+
+2017-11-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Revert wrong test
+
+	* tests/tex/path-expansion.el (TeX-kpathsea-delimiter-w32): Remove.
+
+2017-11-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add style path explicitly
+
+	* tests/japanese/error-parsing.el ():
+	* tests/japanese/parse-timing.el ():
+	* tests/japanese/preview-latex.el (): Add "style" subdirectory in the
+	repository to `TeX-style-path' so we can load style files inside tests.
+
+2017-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Re-implement auto-detect of path separator from kpsewhich output
+
+	* tex.el (TeX-kpathsea-path-delimiter): Accept t for Autodetect again
+	and make it default on w32 platform.
+	(TeX-tree-expand): Use heuristics as much as possible to determine the
+	path separator, paying attention to the case that it cannot be
+	determined.
+
+2017-11-23  Tassilo Horn  <tsdh@gnu.org>
+
+	Don't set company-minimum-prefix-length in tex mode buffers
+
+	* tex.el (VirTeX-common-initialization): Don't set
+	company-minimum-prefix-length in tex mode buffers.
+
+	AUCTeX used to set company-minimum-prefix-length to 1 initially because there
+	aren't too many TeX completions provided by AUCTeX itself.  However, some users
+	use multiple completion backends in TeX modes (like dabbrev for example), and
+	then the number of completion candidates increases dramatically.
+
+	Also see https://github.com/syl20bnr/spacemacs/issues/9388 and
+	https://github.com/alexeyr/company-auctex/issues/18.
+
+2017-11-19  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Mention compatibility of preview with GS 9.22.
+
+2017-11-18  Arash Esbati  <arash@gnu.org>
+
+	Improve style/epigraph.el
+
+	* style/epigraph.el ("epigraph"): Leave point inside first pair of
+	braces for \epigraph and \qitem.
+	Use `LaTeX-add-lengths' for skips instead of `TeX-add-symbols'.
+	Use `TeX-arg-length' instead of `TeX-arg-size' for \dropchapter.
+	Append qitem macro to `LaTeX-item-regexp'.
+	Improve fontification.
+
+2017-11-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Give proper argument to `TeX-command-expand'
+
+	* preview.el.in (TeX-inline-preview-internal): Give `TeX-region-file'
+	or `TeX-master-file' as `file' argument of `TeX-command-expand' when
+	preamble caching is enabled.  This argument used to be nil, which
+	caused error when lualatex is in use.  The fourth element of the
+	`luatex' entry of `TeX-engine-alist-builtin' contains "%s", which
+	eventually triggers the use of the `file' argument.
+
+2017-11-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add test for the recent change about `TeX-kpathsea-path-delimiter'
+
+	* tests/tex/path-expansion.el (TeX-kpathsea-delimiter-w32): New test.
+
+2017-11-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Document `TeX-view-evince-keep-focus'
+
+	* doc/auctex.texi (Starting Viewers):
+	* doc/changes.texi (News in 11.92):
+	Document `TeX-view-evince-keep-focus'.
+
+2017-11-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Document `TeX-math-input-method-off-regexp' properly.
+
+	* doc/auctex.texi (Entering Mathematics):
+	* doc/changes.texi (News in 11.92):
+	Document `TeX-math-input-method-off-regexp'.
+
+2017-11-13  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Mention the necessity of GNU make
+
+	* doc/install.texi (Prerequisites): Add an item of GNU make.
+	Fix copyright year.
+
+2017-11-13  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Bug fix and code refactoring related to kpathsea
+
+	* tex.el (TeX-kpathsea-path-delimiter): Use `path-separator' for
+	default value.  Drop t from the candidates because auto detection
+	sometimes fails for w32 platform.
+	(TeX-tree-expand): Always use `TeX-kpathsea-path-delimiter' if
+	non-nil.
+	Disable subsequent use of kpathsea if kpsewhich causes error or
+	returns non-zero exit value.
+	Accept nil for PROGRAM argument.
+	(TeX-search-files-kpathsea): Always use `TeX-kpathsea-path-delimiter' if
+	non-nil.
+	Use `TeX-tree-expand'.
+	Don't signal error even if kpsewhich causes error or returns non-zero
+	exit value.
+
+2017-11-12  Arash Esbati  <arash@gnu.org>
+
+	Add new style/xltabular.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/xltabular.el: New file.
+
+2017-11-12  Arash Esbati  <arash@gnu.org>
+
+	Add new function `LaTeX-env-longtable'
+
+	* style/longtable.el (LaTeX-env-longtable): Add new function.
+	Move the body of the anonymous function into this in order to make
+	it available for other styles loading longtable.
+
+2017-11-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex.el (TeX-math-input-method-off-regexp): Turn defvar into defcustom.
+
+2017-11-06  David Kastrup  <dak@gnu.org>
+
+	Remove use of .runandhide operator
+
+	Ghostscript bug 698680
+	<https://bugs.ghostscript.com/show_bug.cgi?id=698680> has been caused
+	by the removal of the .runandhide operator in Ghostscript 9.22
+	upstream.  Since .runandhide has no longer been used in a
+	security-critical manner, its operation can be emulated by storing the
+	respective information in a .preview-ST variable.  Potentially
+	malicious code would not be able to retrieve a non-safe "save" object
+	from here.
+
+2017-09-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix Copyright year
+
+	* context-en.el, context-nl.el, latex.el, plain-tex.el:
+	* preview.el.in, prv-xemacs.el, tex-bar.el, tex-buf.el:
+	* tex-info.el, tex-site.el.in, tex-style.el, tex.el:
+	Fix Copyright year.
+
+2017-09-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Cosmetic Change
+
+	* font-latex.el (font-latex-match-math-env): Quote "\[" with "\=" in
+	doc string.
+	(font-latex-add-to-syntax-alist): Delete duplicated line.
+
+2017-09-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix doc strings and comments
+
+	* plain-tex.el (TeX-plain-tex-mode, ams-tex-mode): Fix doc strings.
+	* tex-fold.el (): Fix typo.
+
+2017-09-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make preview-latex parsing robust to fix Bug#20773, Bug#27088
+
+	* preview.el.in (TeX-inline-preview-internal): Set environment
+	variable max_print_line to sufficiently large value of 1000 so that
+	LaTeX process does not insert newline in lines necessary to identify
+	Bounding Boxes.
+
+2017-09-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add test abount truncation of list
+
+	* tests/tex/path-expansion.el: New file to test whether
+	`TeX-search-files-by-type' does not truncate the value of list
+	variable.
+
+2017-09-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Prevent possible truncation of list value
+
+	* tex.el (TeX-search-files-by-type): Use
+	`TeX-delete-duplicate-strings' instead of `delete-dups'.
+
+2017-09-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add a new option for evince compatible viewer.
+
+	* tex.el: (TeX-view-evince-keep-focus): New option.
+	(TeX-evince-sync-view-1): Pull the focus back to Emacs if the above
+	new option is non-nil.
+
+2017-09-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make correct extensions are returned
+
+	* style/graphicx.el (LaTeX-includegraphics-extensions):
+	Fix misaligned form structure which prevented `cond' to enter clauses
+	for engines other than default.
+	Use copied list for the last argument of `append' so that
+	`delete-dups' does not alter the value of
+	`LaTeX-includegraphics-extensions'.
+	Use `delete' rather than `remove' for copied sequence.
+	():
+	(LaTeX-includegraphics-read-file-relative):
+	Fix typos.
+
+2017-09-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add test for infinite loop
+
+	* tests/tex/utility.el: New file.
+
+2017-09-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Parse package/class option with comments correctly
+
+	* latex.el: (LaTeX-auto-class-regexp-list): Replace the regexp for
+	RequirePackage/LoadClass option with the same one for usepackage.
+	* tests/latex/latex-test.el: Add test for the change above.
+
+2017-09-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Conform to elisp coding convention
+
+	* style/biblatex.el (LaTeX-arg-addbibresource)
+	(LaTeX-biblatex-package-options):
+	* style/fontspec.el (LaTeX-fontspec-arg-font):
+	Add "done" message.
+	* style/relsize.el ("relsize"): Tailor prompt string.
+	* style/bidi.el: Remove spurious execution bit.
+
+2017-08-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Prevent possible infinite loop
+
+	* tex.el (TeX-delete-duplicate-strings): Make sure that comparison is
+	done with valid list elements.
+	(TeX-delete-dups-by-car): Ditto.
+	Use `TeX-sort-strings' and `TeX-car-string-lessp'.
+	(TeX-car-string-lessp): Move the position of defun before the
+	defcustom of `TeX-engine'.  Since the defcustom requires
+	`TeX-delete-dups-by-car' at load time, all the functions used in
+	`TeX-delete-dups-by-car' must be defined before the defcustom.
+
+2017-08-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use `delete' correctly for list variable
+
+	* tex.el (TeX-search-files-kpathsea): Make sure that "." will be
+	removed from the directory list even if "." is the first element of
+	the list, when the SCOPE argument is `global'.
+
+2017-08-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add test for my commit on Aug 18
+
+	* tests/japanese/parse-timing-test.tex:
+	* tests/japanese/parse-timing.el:
+	New file.
+
+2017-08-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix doc string and indent
+
+	* tex.el (TeX-PDF-from-DVI, TeX-insert-braces-alist)
+	(TeX-arg-literal, TeX-auto-add-type):
+	Fix doc string.
+	(TeX-auto-parse-region): Fix indent.
+
+2017-08-25  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add %(PDF) when undumped format is used in preview-latex
+
+	* preview.el.in (TeX-inline-preview-internal): Make pdflatex to be
+	called when default output is PDF and dumped format is used.  Although
+	it seems that if the dumped format is created by pdflatex, the format
+	produces PDF output even when the command name is (non-pdf) latex, it
+	would be better that pdflatex is used in that case, too.
+
+2017-08-20  Arash Esbati  <arash@gnu.org>
+
+	Add new style/arabxetex.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/arabxetex.el: New file.
+
+2017-08-18  Vincent Belaïche  <vincent.b.1@hotmail.fr>
+
+	Improvements for tex-info.el
+
+	* tex-info.el (Texinfo-arg-nodename): Fix default prompt.
+	(Texinfo-arg-lrc): New function, used for commands that take Left,
+	Center, and Right entries for setting page header.
+	(Texinfo-arg-next-line): New function. Used to break line if need
+	be after entering command argument.
+	(Texinfo-arg-on|off): New function for entering boolean input.
+	(TeX-texinfo-mode): Add TeX symbols `allowcodebreak', `atchar',
+	`codequotebacktick', `codequoteundirected', `documentlanguage',
+	`documentencoding', `evenfooting', `evenheading', `everyfooting',
+	`everyheading', `LaTeX', `oddfooting', `oddheading',
+	`setchapternewpage', and `url'.
+
+2017-08-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use #' to quote function names
+
+	* tex-jp.el (japanese-plain-tex-mode-initialization,
+	add-hook, japanese-latex-mode-initialization,
+	japanese-TeX-reset-mode-name, TeX-insert-punctuation):
+	Use #' to quote function names.
+
+2017-08-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Delay setting Japanese TeX engine in `japanese-latex-mode'
+
+	* tex-jp.el (japanese-latex-mode-initialization): The part which
+	guesses and sets `TeX-engine' using `TeX-match-style' is factored out
+	and put in `TeX-update-style-hook'.  `TeX-match-style' eventually
+	triggers `TeX-update-style', which isn't appropriate in
+	`LaTeX-mode-hook'.
+	(japanese-LaTeX-guess-engine): New function.
+
+2017-08-11  Arash Esbati  <arash@gnu.org>
+
+	* style/XCharter.el ("XCharter"): Update to package v1.094 from 2017/08/08.
+
+2017-08-09  Arash Esbati  <arash@gnu.org>
+
+	* style/amsthm.el ("amsthm"): Use `LaTeX-amsthm-env-label'.
+
+2017-07-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Conform to elisp coding convention in context.el
+
+	* context.el (ConTeXt-numbered-section-heading,
+	ConTeXt-unnumbered-section-heading, ConTeXt-environment): Tailor
+	prompt string.
+	(ConTeXt-menu-update): Add "done" messages.
+
+2017-07-25  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* font-latex.el: Use the standard utf-8 rather than latin-1
+
+2017-07-25  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Fix unescaped character literals
+
+	* font-latex.el (font-latex-command-with-args-opt-arg-delims)
+	* tex-fold.el (TeX-fold-expand-spec): Escape [ and ] character literals
+
+2017-07-25  Tassilo Horn  <tsdh@gnu.org>
+
+	Manually cherry-pick commit bc0db60e
+
 2017-07-24  Mosè Giordano  <mose@gnu.org>
 
 	* Version 11.91 released.
@@ -21965,7 +22395,7 @@
 
 This file records repository revisions from
 commit c865982cacab289f4480f9145b3438ec06824232 (exclusive) to
-commit 17118fb3aabba5a158c8ff8b4f5ec4f215547d2b (inclusive).
+commit acb5cf61db33b399939997bc1088715959f575fb (inclusive).
 
 ;; Local Variables:
 ;; coding: utf-8
