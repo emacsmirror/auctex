@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.5 from auctex.texi.
 
-This manual is for AUCTeX (version 11.91.0.2017-11-23 from 2017-11-23),
+This manual is for AUCTeX (version 11.91.0.2017-12-06 from 2017-12-06),
 a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
@@ -5947,8 +5947,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.91.0.2017-11-23 from
-2017-11-23), a sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 11.91.0.2017-12-06 from
+2017-12-06), a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
 Foundation, Inc.
@@ -6474,6 +6474,8 @@ News in 11.92
    * The window system focus is pulled back to Emacs when viewing with
      evince-compatible viewers if a new customize option
      'TeX-view-evince-keep-focus' is non-nil.
+
+   * The usual dose of bug fixes was administered.
 
 News in 11.91
 -------------
@@ -8636,7 +8638,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 538)
+* auctex.el <1>:                         Changes.             (line 540)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8938,7 +8940,7 @@ Concept Index
                                                               (line 286)
 * tex-site.el:                           Loading the package. (line  14)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 538)
+* tex-site.el <2>:                       Changes.             (line 540)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9043,20 +9045,20 @@ Node: Appendices253353
 Node: Copying this Manual253649
 Node: GNU Free Documentation License254544
 Node: Changes279663
-Node: Development320230
-Node: Mid-term Goals320876
-Node: Wishlist322093
-Node: Bugs327534
-Node: FAQ329064
-Node: Texinfo mode335237
-Node: Exploiting336373
-Node: Superseding337193
-Node: Mapping341397
-Node: Unbinding343226
-Node: Indices344047
-Node: Key Index344210
-Node: Function Index350534
-Node: Variable Index361344
-Node: Concept Index384202
+Node: Development320282
+Node: Mid-term Goals320928
+Node: Wishlist322145
+Node: Bugs327586
+Node: FAQ329116
+Node: Texinfo mode335289
+Node: Exploiting336425
+Node: Superseding337245
+Node: Mapping341449
+Node: Unbinding343278
+Node: Indices344099
+Node: Key Index344262
+Node: Function Index350586
+Node: Variable Index361396
+Node: Concept Index384254
 
 End Tag Table
