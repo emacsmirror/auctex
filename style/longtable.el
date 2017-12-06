@@ -106,7 +106,7 @@ insert line break macro."
 
    ;; Use the enhanced table formatting.  Append to
    ;; `LaTeX-indent-environment-list' in order not to override custom settings.
-   (add-to-list (make-variable-buffer-local 'LaTeX-indent-environment-list)
+   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
 		'("longtable" LaTeX-indent-tabular) t)
 
    ;; Append longtable to `LaTeX-label-alist', in order not to override possible

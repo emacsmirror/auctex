@@ -214,7 +214,7 @@
 	   (val (cadr (assoc "style" LaTeX-mdframed-key-val-options)))
 	   (temp (copy-alist LaTeX-mdframed-key-val-options-local))
 	   (opts (assq-delete-all (car (assoc key temp)) temp)))
-      (pushnew (list key (delete-dups
+      (pushnew (list key (TeX-delete-duplicate-strings
 			  (append val (mapcar #'car (LaTeX-mdframed-mdfdefinestyle-list)))))
 	       opts :test #'equal)
       (setq LaTeX-mdframed-key-val-options-local

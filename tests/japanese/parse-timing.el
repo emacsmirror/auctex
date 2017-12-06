@@ -33,17 +33,6 @@
 (require 'ert)
 (require 'tex-jp)
 
-(defun AUCTeX-set-ert-path (&rest sym-val)
-  "Set first element of SYM-VAL to the next one, and so on.
-
-The value is the path to the test file, make sure it is expanded
-in the right directory even when the ERT test from the command
-line and from another directory."
-  (while sym-val
-    (set (pop sym-val)
-	 (expand-file-name (pop sym-val)
-			   (when load-file-name
-			     (file-name-directory load-file-name))))))
 (AUCTeX-set-ert-path
  'parse-timing
  "parse-timing-test.tex")

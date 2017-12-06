@@ -2696,16 +2696,35 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (setq answers (cons entry answers))))
     answers))
 
-(defcustom TeX-kpathsea-path-delimiter path-separator
+(defun TeX-kpathsea-detect-path-delimiter ()
+  "Auto detect the path delimiter for kpsewhich command.
+Usually return \":\" or \";\".  If auto detect fails for some reason,
+return nil."
+  (let ((res (ignore-errors
+	       (with-output-to-string
+		 (call-process "kpsewhich" nil
+			       (list standard-output nil) nil
+			       "--expand-path" "{.,..}")))))
+    ;; kpsewhich expands "{.,..}" to ".:SOMEDIR" or ".;SOMEDIR"
+    ;; according to its environment.
+    ;; Don't use "{.,.}" instead because kpsewhich of MiKTeX 2.9
+    ;; simplifies it to just a ".", not ".;.".
+    (and (stringp res) (> (length res) 0)
+	 ;; Check whether ; is contained.  This should work even if
+	 ;; some implementation of kpsewhich considers it sane to
+	 ;; insert drive letters or directory separators or whatever
+	 ;; else to the current directory.
+	 (if (string-match ";" res) ";" ":"))))
+
+(defcustom TeX-kpathsea-path-delimiter
+  (TeX-kpathsea-detect-path-delimiter)
   "Path delimiter for kpathsea output.
-nil means kpathsea is disabled."
+t means autodetect, nil means kpathsea is disabled."
   :group 'TeX-file
   :type '(choice (const ":")
 		 (const ";")
+		 (const :tag "Autodetect" t)
 		 (const :tag "Off" nil)))
-;; backward compatibility
-(when (eq TeX-kpathsea-path-delimiter t)
-  (setq TeX-kpathsea-path-delimiter path-separator))
 
 (defun TeX-tree-expand (vars program &optional subdirs)
   "Return directories corresponding to the kpathsea variables VARS.
@@ -2717,6 +2736,9 @@ are returned."
   ;; FIXME: The GNU convention only uses "path" to mean "list of directories"
   ;; and uses "filename" for the name of a file even if it contains possibly
   ;; several elements separated by "/".
+  (if (eq TeX-kpathsea-path-delimiter t)
+      (setq TeX-kpathsea-path-delimiter
+	    (TeX-kpathsea-detect-path-delimiter)))
   (when TeX-kpathsea-path-delimiter
     (let* ((exit-status 1)
 	   (args `(,@(if program `("--progname" ,program))

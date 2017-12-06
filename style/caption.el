@@ -176,9 +176,9 @@ in `caption'-completions."
 	      (when (and (string-equal key "labelformat")
 			 (boundp 'LaTeX-subcaption-key-val-options))
 		(pushnew (list "subrefformat"
-			       (delete-dups (apply #'append (list val) val-match)))
+			       (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
 			 opts :test #'equal))
-	      (pushnew (list key (delete-dups (apply #'append (list val) val-match)))
+	      (pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
 		       opts :test #'equal))
 	  (pushnew (list key (list val)) opts :test #'equal)))
       (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
@@ -192,7 +192,7 @@ in `caption'-completions."
 	     (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
 	     (temp (copy-alist LaTeX-caption-key-val-options-local))
 	     (opts (assq-delete-all (car (assoc key temp)) temp)))
-	(pushnew (list key (delete-dups (apply #'append val val-match)))
+	(pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
 		 opts :test #'equal)
 	(setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
 
