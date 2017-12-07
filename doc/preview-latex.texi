@@ -10,7 +10,7 @@ This manual is for preview-latex, a @LaTeX{} preview mode for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}).
 
 Copyright @copyright{} 2001, 2002, 2003,
-2004, 2005, 2006 Free Software Foundation, Inc.
+2004, 2005, 2006, 2017 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -655,14 +655,6 @@ when this is needed is in
 @code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}}, and
 accordingly @code{split} is one entry in
 @code{preview-inner-environments}.
-
-@item preview-use-balloon-help
-If you turn this XEmacs-only option `on', then moving the mouse over
-previews and icons will show appropriate help texts.  This works by
-switching on @code{balloon-help-mode} in the buffer if it is not already
-enabled.  The default now is `off' since some users reported problems
-with their version of XEmacs.  @w{GNU Emacs} has its corresponding
-@code{tooltip-mode} enabled by default and in usable condition.
 
 @end vtable
 

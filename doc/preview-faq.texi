@@ -1,5 +1,5 @@
 @c This is part of the preview-latex manual.
-@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009 Free Software
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009, 2017 Free Software
 @c   Foundation, Inc.
 @c See file preview-latex.texi for copying conditions.
 @ifset rawfile
@@ -131,14 +131,6 @@ is the correct one.
 
 @node Customization, Troubleshooting, Installation Trouble, Frequently Asked Questions
 @section Customization
-
-@subsection Why don't I get balloon help like in the screen shots?
-
-Some users have reported problems with their XEmacs version, so balloon
-help is no longer switched on by default.  Use the Preview/Customize
-menu or @kbd{@key{M-x} customize-variable} in order to customize
-@code{preview-use-balloon-help} to `On'.  This only concerns XEmacs:
-tooltips under @w{GNU Emacs} are enabled by default and unproblematic.
 
 @subsection How to include additional environments like @code{enumerate}
 

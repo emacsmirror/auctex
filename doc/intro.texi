@@ -4,7 +4,7 @@
 This is the README file for the AUCTeX distribution.
 
 @quotation
-Copyright (C) 2008 Free Software Foundation, Inc.
+Copyright (C) 2008, 2017 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification, are
 permitted in any medium without royalty provided the copyright notice
@@ -28,7 +28,7 @@ info file after installation.
 
 @AUCTeX{} is a comprehensive customizable integrated environment for
 writing input files for @TeX{}, @LaTeX{}, @ConTeXt{}, Texinfo, and
-doc@TeX{} using Emacs or XEmacs.
+doc@TeX{} using Emacs.
 
 It supports you in the insertion of macros, environments, and sectioning
 commands by providing completion alternatives and prompting for

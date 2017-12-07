@@ -57,9 +57,9 @@ the background and providing fast interactive response.
 @section Activating @previewlatex{}
 @cindex Activation
 After installation, the package may need to be activated (and remember
-to activate @AUCTeX{} too).  In XEmacs, and in any prepackaged versions
-worth their salt, activation should be automatic upon installation.  If
-this seems not the case, complain to your installation provider.
+to activate @AUCTeX{} too).  If @previewlatex{} is installed via the
+Emacs package manager (@acronym{ELPA}), activation should be automatic
+upon installation.
 
 The usual activation (if it is not done automatically) would be
 
@@ -105,9 +105,7 @@ Now you can edit the code, and generate a new preview by again pressing
 icon before the edited text).
 
 If you are using the @code{desktop} package, previews will remain from
-one session to the next as long as you don't kill your buffer.  If you
-are using XEmacs, you will probably need to upgrade the package to
-the newest one; things are being fixed just as I am writing this.
+one session to the next as long as you don't kill your buffer.
 
 @node Basic modes of operation, More documentation, Getting started, Introduction
 @section Basic modes of operation
