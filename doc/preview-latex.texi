@@ -197,9 +197,7 @@ the region with borders switched off.  As this is an asynchronous
 operation running in the background, you'll need to call this command
 explicitly again to get the newly generated images into the kill ring.
 
-Preview your articles with @code{mml-preview} (on @kbd{M-m P}, or
-@kbd{C-c C-m P} in @w{Emacs 22})
-@kindex @kbd{M-m P}
+Preview your articles with @code{mml-preview} (on @kbd{C-c C-m P})
 @kindex @kbd{C-c C-m P}
 to make sure they look fine.
 

@@ -3626,8 +3626,7 @@ leave this variable set to its default value
 settings that work for some users.
 
 @lisp
-;; Alternative 1: For some users, `x-focus-frame' works.  Note
-;; that this function requires Emacs 24+.
+;; Alternative 1: For some users, `x-focus-frame' works.
 (setq TeX-raise-frame-function #'x-focus-frame)
 
 ;; Alternative 2: Under GNOME 3.20 (and probably others), it
@@ -3663,9 +3662,9 @@ settings that work for some users.
 @cindex Underfull boxes
 
 Once you've formatted your document you may `debug' it, i.e. browse
-through the errors (La)@TeX{} reported.  If you have GNU Emacs 24 or
-later, you may also have a look at a nicely formatted list of all errors
-and warnings reported by the compiler.
+through the errors (La)@TeX{} reported.  You may also have a look at a
+nicely formatted list of all errors and warnings reported by the
+compiler.
 
 @deffn Command TeX-next-error @var{arg} @var{reparse}
 @kindex C-c `

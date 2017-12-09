@@ -298,9 +298,8 @@ may be repeated until all errors have been dealt with.  By pressing
 @AUCTeX{} should notify you of overfull and underfull boxes in addition
 to regular errors.
 
-If you have a recent version of GNU Emacs (24 or later), issue @kbd{M-x
-TeX-error-overview RET} to see a nicely formatted list of all errors and
-warnings reported by the compiler.
+Issue @kbd{M-x TeX-error-overview RET} to see a nicely formatted list of
+all errors and warnings reported by the compiler.
 
 If a command got stuck in a seemingly infinite loop, or you want to stop
 execution for other reasons, you can use @kbd{C-c C-k} (for ``kill'').
