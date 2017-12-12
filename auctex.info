@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.5 from auctex.texi.
 
-This manual is for AUCTeX (version 11.92.0 from 2017-12-06), a
+This manual is for AUCTeX (version 12.1.0 from 2017-12-12), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
@@ -199,15 +199,15 @@ File: auctex.info,  Node: Copying,  Next: Introduction,  Prev: Top,  Up: Top
 Copying
 *******
 
-AUCTeX primarily consists of Lisp files for Emacs (and XEmacs), but
-there are also installation scripts and files and TeX support files.
-All of those are "free"; this means that everyone is free to use them
-and free to redistribute them on a free basis.  The files of AUCTeX are
-not in the public domain; they are copyrighted and there are
-restrictions on their distribution, but these restrictions are designed
-to permit everything that a good cooperating citizen would want to do.
-What is not allowed is to try to prevent others from further sharing any
-version of these programs that they might get from you.
+AUCTeX primarily consists of Lisp files for Emacs, but there are also
+installation scripts and files and TeX support files.  All of those are
+"free"; this means that everyone is free to use them and free to
+redistribute them on a free basis.  The files of AUCTeX are not in the
+public domain; they are copyrighted and there are restrictions on their
+distribution, but these restrictions are designed to permit everything
+that a good cooperating citizen would want to do.  What is not allowed
+is to try to prevent others from further sharing any version of these
+programs that they might get from you.
 
    Specifically, we want to make sure that you have the right to give
 away copies of the files that constitute AUCTeX, that you receive source
@@ -252,7 +252,7 @@ File: auctex.info,  Node: Summary,  Next: Installation,  Up: Introduction
 
 AUCTeX is a comprehensive customizable integrated environment for
 writing input files for TeX, LaTeX, ConTeXt, Texinfo, and docTeX using
-Emacs or XEmacs.
+Emacs.
 
    It supports you in the insertion of macros, environments, and
 sectioning commands by providing completion alternatives and prompting
@@ -353,13 +353,10 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
 1.2.1 Prerequisites
 -------------------
 
-   * A recent version of Emacs, alternatively XEmacs
+   * GNU Emacs 24 or higher
 
-     Emacs 20 is no longer supported, and neither is XEmacs with a
-     version of 'xemacs-base' older than 1.84 (released in sumo from
-     02/02/2004).  Using preview-latex requires a version of Emacs
-     compiled with image support.  While the X11 version of Emacs 21
-     will likely work, Emacs 22 and later is preferred.
+     Using preview-latex requires a version of Emacs compiled with image
+     support.
 
      Windows
           Precompiled versions are available from
@@ -375,19 +372,7 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
           Compiling Emacs yourself requires a C compiler and a number of
           tools and development libraries.  Details are beyond the scope
           of this manual.  Instructions for checking out the source code
-          can be found at <https://savannah.gnu.org/bzr/?group=emacs>.
-
-     If you really need to use Emacs 21 on platforms where this implies
-     missing image support, you should disable the installation of
-     preview-latex (see below).
-
-     While XEmacs (version 21.4.15, 21.4.17 or later) is supported,
-     doing this in a satisfactory manner has proven to be difficult.
-     This is mostly due to technical shortcomings and differing API's
-     which are hard to come by.  If AUCTeX is your main application for
-     XEmacs, you are likely to get better results and support by
-     switching to Emacs.  Of course, you can improve support for your
-     favorite editor by giving feedback in case you encounter bugs.
+          can be found at <https://savannah.gnu.org/git/?group=emacs>.
 
    * A working TeX installation
 
@@ -460,25 +445,6 @@ it out with one of these options:
      If you are using a pretest which isn't in your '$PATH', or
      'configure' is not finding the right Emacs executable, you can
      specify it with this option.
-
-'--with-xemacs[=/PATH/TO/XEMACS]'
-     Configure for generation under XEmacs (Emacs is the default).
-     Again, the name of the right XEmacs executable can be specified,
-     complete with path if necessary.
-
-'--with-packagedir=/DIR'
-     This XEmacs-only option configures the directory for XEmacs
-     packages.  A typical user-local setting would be
-     '~/.xemacs/xemacs-packages'.  If this directory exists and is below
-     PREFIX, it should be detected automatically.  This will install and
-     activate the package.
-
-'--without-packagedir'
-     This XEmacs-only option switches the detection of a package
-     directory and corresponding installation off.  Consequently, the
-     Emacs installation scheme will be used.  This might be appropriate
-     if you are using a different package system/installer than the
-     XEmacs one and want to avoid conflicts.
 
      The Emacs installation scheme has the following options:
 
@@ -582,9 +548,6 @@ the menus after loading a LaTeX file like 'preview/circ.tex': AUCTeX
 then gives you a 'Command' menu, and preview-latex gives you a 'Preview'
 menu.
 
-   For XEmacs, if the installation occured into a valid package
-directory (which is the default), then this should work out of the box.
-
    With Emacs (or if you explicitly disabled use of the package system),
 the startup files 'auctex.el' and 'preview-latex.el' may already be in a
 directory of the 'site-start.d/' variety if your Emacs installation
@@ -647,15 +610,12 @@ therefore a good choice.
 
 in the system-wide 'site-start.el'.
 
-   If your package is intended as an XEmacs package or to accompany a
-precompiled version of Emacs, you might not know which TeX system will
-be available when preview-latex gets used.  In this case you should
-build using the '--without-texmf-dir' option described previously.  This
-can also be convenient for systems that are intended to support more
-than a single TeX distribution.  Since more often than not TeX packages
-for operating system distributions are either much more outdated or much
-less complete than separately provided systems like TeX Live, this
-method may be generally preferable when providing packages.
+   The '--without-texmf-dir' option can be convenient for systems that
+are intended to support more than a single TeX distribution.  Since more
+often than not TeX packages for operating system distributions are
+either much more outdated or much less complete than separately provided
+systems like TeX Live, this method may be generally preferable when
+providing packages.
 
    The following package structure would be adequate for a typical fully
 supported Unix-like installation:
@@ -681,21 +641,6 @@ supported Unix-like installation:
      'TeX-macro-global' to a sensible value, so running
      'TeX-auto-generate-global' does not appear useful.  This package
      would neither conflict with nor provide 'preview-tetex'.
-'auctex-xemacs-tetex'
-'auctex-xemacs'
-     Those are the obvious XEmacs equivalents.  For XEmacs, there is the
-     additional problem that the XEmacs sumo package tree already
-     possibly provides its own version of AUCTeX, and the user might
-     even have used the XEmacs package manager to updating this package,
-     or even installing a private AUCTeX version.  So you should make
-     sure that such a package will not conflict with existing XEmacs
-     packages and will be at an appropriate place in the load order
-     (after site-wide and user-specific locations, but before a
-     distribution-specific sumo package tree).  Using the
-     '--without-packagedir' option might be one idea to avoid conflicts.
-     Another might be to refrain from providing an XEmacs package and
-     just rely on the user or system administrator to instead use the
-     XEmacs package system.
 
 
 File: auctex.info,  Node: Advice for non-privileged users,  Next: Installation under MS Windows,  Prev: Advice for package providers,  Up: Installation
@@ -705,11 +650,7 @@ File: auctex.info,  Node: Advice for non-privileged users,  Next: Installation u
 
 Often people without system administration privileges want to install
 software for their private use.  In that case you need to pass more
-options to the 'configure' script.  For XEmacs users, this is fairly
-easy, because the XEmacs package system has been designed to make this
-sort of thing practical: but GNU Emacs users (and XEmacs users for whom
-the package system is for some reason misbehaving) may need to do a
-little more work.
+options to the 'configure' script.
 
    The main expedient is using the '--prefix' option to the 'configure'
 script, and let it point to the personal home directory.  In that way,
@@ -721,12 +662,6 @@ prefix argument is supported by most 'configure' scripts.
    You'll have to add something like
 '/home/myself/share/emacs/site-lisp' to your 'load-path' variable, if it
 isn't there already.
-
-   XEmacs users can achieve the same end by pointing 'configure' at an
-appropriate package directory (normally
-'--with-packagedir=~/.xemacs/xemacs-packages' will serve).  The package
-directory stands a good chance at being detected automatically as long
-as it is in a subtree of the specified PREFIX.
 
    Now here is another thing to ponder: perhaps you want to make it easy
 for other users to share parts of your personal Emacs configuration.  In
@@ -756,12 +691,6 @@ In GNU Emacs, it should be sufficient if people just do
    where the path points to your personal installation.  The rest of the
 package should be found relative from there without further ado.
 
-   In XEmacs, you should ask the other users to add symbolic links in
-the subdirectories 'lisp', 'info' and 'etc' of their
-'~/.xemacs/xemacs-packages/' directory.  (Alas, there is presently no
-easy programmatic way to do this, except to have a script do the
-symlinking for them.)
-
 Making the Info files available
 ...............................
 
@@ -771,12 +700,6 @@ startup files:
 
      (eval-after-load 'info
         '(add-to-list 'Info-directory-list "~myself/info"))
-
-   In XEmacs, as long as XEmacs can see the package, there should be no
-need to do anything at all; the info files should be immediately
-visible.  However, you might want to set 'INFOPATH' anyway, for the sake
-of standalone readers outside of XEmacs.  (The info files in XEmacs are
-normally in '~/.xemacs/xemacs-packages/info'.)
 
 Making the LaTeX style available
 ................................
@@ -799,8 +722,8 @@ case you don't understand some of this, run into trouble of some sort,
 or need more elaborate information, refer to the detailed instructions
 further below.
 
-  1. Install the prerequisites, i.e.  Emacs or XEmacs, MSYS or Cygwin, a
-     TeX system, and Ghostscript.
+  1. Install the prerequisites, i.e.  GNU Emacs, MSYS or Cygwin, a TeX
+     system, and Ghostscript.
 
   2. Open the MSYS shell or a Cygwin shell and change to the directory
      containing the unzipped file contents.
@@ -818,16 +741,7 @@ further below.
             --infodir='C:/Program Files/Emacs/info' \
             --with-texmf-dir='C:/localtexmf'
 
-     For XEmacs: You can install AUCTeX as an XEmacs package.  Assuming
-     XEmacs is installed in 'C:/Program Files/XEmacs' and the directory
-     for local additions of your TeX system, e.g.  MiKTeX, is
-     'C:/localtexmf', you can do this by typing the following command at
-     the shell prompt:
-
-          ./configure --with-xemacs='C:/Program Files/XEmacs/bin/xemacs' \
-            --with-texmf-dir='C:/localtexmf'
-
-     The commands above are examples for common usage.  More on
+     The commands above is example for common usage.  More on
      configuration options can be found in the detailed installation
      instructions below.
 
@@ -922,10 +836,8 @@ single quotes for that.
      cause trouble.  Using Cygwin either for everything or nothing might
      save headaches, _if_ things don't work out.
 
-  3. Install a current version of XEmacs from <http://www.xemacs.org/>
-     or Emacs from <ftp://ftp.gnu.org/gnu/emacs/windows/>.  Emacs is the
-     recommended choice because it is currently the primary platform for
-     AUCTeX development.
+  3. Install a current version of Emacs from
+     <ftp://ftp.gnu.org/gnu/emacs/windows/>.
 
   4. You need a working TeX installation.  One popular installation
      under Windows is MiKTeX (http://www.miktex.org).  Another much more
@@ -957,13 +869,12 @@ single quotes for that.
      Typical options you'll want to specify will be
      '--prefix=DRIVE:/PATH/TO/EMACS-HIERARCHY'
           which tells 'configure' where to perform the installation.  It
-          may also make 'configure' find Emacs or XEmacs automatically;
-          if this doesn't happen, try one of '--with-emacs' or
-          '--with-xemacs' as described below.  All automatic detection
-          of files and directories restricts itself to directories below
-          the PREFIX or in the same hierarchy as the program accessing
-          the files.  Usually, directories like 'man', 'share' and 'bin'
-          will be situated right under PREFIX.
+          may also make 'configure' find Emacs automatically; if this
+          doesn't happen, try '--with-emacs' as described below.  All
+          automatic detection of files and directories restricts itself
+          to directories below the PREFIX or in the same hierarchy as
+          the program accessing the files.  Usually, directories like
+          'man', 'share' and 'bin' will be situated right under PREFIX.
 
           This option also affects the defaults for placing the Texinfo
           documentation files (see also '--infodir' below) and
@@ -983,24 +894,10 @@ single quotes for that.
           necessary (if Emacs is not within a directory specified in
           your 'PATH' environment setting).
 
-     '--with-xemacs'
-          if you are installing for a version of XEmacs.  Again, you can
-          use '--with-xemacs=DRIVE:/PATH/TO/XEMACS' to specify the name
-          of the installed XEmacs executable complete with its path if
-          necessary.  It may also be necessary to specify this option if
-          a copy of Emacs is found in your 'PATH' environment setting,
-          but you still would like to install a copy of AUCTeX for
-          XEmacs.
-
-     '--with-packagedir=DRIVE:/DIR'
-          is an XEmacs-only option giving the location of the package
-          directory.  This will install and activate the package.  Emacs
-          uses a different installation scheme:
-
      '--with-lispdir=DRIVE:/PATH/TO/SITE-LISP'
-          This Emacs-only option tells a place in 'load-path' below
-          which the files are situated.  The startup files 'auctex.el'
-          and 'preview-latex.el' will get installed here unless a
+          This option tells a place in 'load-path' below which the files
+          are situated.  The startup files 'auctex.el' and
+          'preview-latex.el' will get installed here unless a
           subdirectory 'site-start.d' exists which will then be used
           instead.  The other files from AUCTeX will be installed in a
           subdirectory called 'auctex'.
@@ -1023,8 +920,7 @@ single quotes for that.
 
      '--disable-preview'
           Use this option if your Emacs version is unable to support
-          image display.  This will be the case if you are using a
-          native variant of Emacs 21.
+          image display.
 
      '--with-texmf-dir=DRIVE:/DIR'
           This will specify the directory where your TeX installation
@@ -1056,17 +952,16 @@ single quotes for that.
 
   10. Run 'make install' in the installation directory.
 
-  11. With XEmacs, AUCTeX and preview-latex should now be active by
-     default.  With Emacs, activation depends on a working
-     'site-start.d' directory or similar setup, since then the startup
-     files 'auctex.el' and 'preview-latex.el' will have been placed
-     there.  If this has not been done, you should be able to load the
-     startup files manually with
+  11. With Emacs, activation of AUCTeX and preview-latex depends on a
+     working 'site-start.d' directory or similar setup, since then the
+     startup files 'auctex.el' and 'preview-latex.el' will have been
+     placed there.  If this has not been done, you should be able to
+     load the startup files manually with
           (load "auctex.el" nil t t)
           (load "preview-latex.el" nil t t)
      in either a site-wide 'site-start.el' or your personal startup file
-     (usually accessible as '~/.emacs' from within Emacs and
-     '~/.xemacs/init.el' from within XEmacs).
+     (usually accessible as '~/.emacs' or '~/.emacs.d/init.el' from
+     within Emacs).
 
      The default configuration of AUCTeX is probably not the best fit
      for Windows systems with MiKTeX.  You might want to add
@@ -1080,8 +975,8 @@ single quotes for that.
 
      in order to customize more stuff, or use the 'Customize' menu.
 
-  12. Load 'preview/circ.tex' into Emacs or XEmacs and see if you get
-     the 'Command' menu.  Try using it to LaTeX the file.
+  12. Load 'preview/circ.tex' into Emacs and see if you get the
+     'Command' menu.  Try using it to LaTeX the file.
 
   13. Check whether the 'Preview' menu is available in this file.  Use
      it to generate previews for the document.
@@ -1204,9 +1099,8 @@ ask you for a master file.
 
    ---------- Footnotes ----------
 
-   (1) This usually is a file in your home directory called '.emacs' if
-you are utilizing GNU Emacs or '.xemacs/init.el' if you are using
-XEmacs.
+   (1) This usually is a file in your home directory called '.emacs', or
+'.emacs.d/init.el'.
 
 
 File: auctex.info,  Node: Editing Facilities,  Next: Processing Facilities,  Up: Quick Start
@@ -1412,9 +1306,8 @@ repeated until all errors have been dealt with.  By pressing 'C-c C-w'
 ('TeX-toggle-debug-boxes') you can toggle whether AUCTeX should notify
 you of overfull and underfull boxes in addition to regular errors.
 
-   If you have a recent version of GNU Emacs (24 or later), issue 'M-x
-TeX-error-overview RET' to see a nicely formatted list of all errors and
-warnings reported by the compiler.
+   Issue 'M-x TeX-error-overview RET' to see a nicely formatted list of
+all errors and warnings reported by the compiler.
 
    If a command got stuck in a seemingly infinite loop, or you want to
 stop execution for other reasons, you can use 'C-c C-k' (for "kill").
@@ -3032,7 +2925,7 @@ variable 'font-latex-user-keyword-classes'.
      for the command.
 
      The face argument can either be an existing face or face attributes
-     made by you.  (The latter option is not available on XEmacs.)
+     made by you.
 
      There are three alternatives for the type of keywords--"Command
      with arguments", "Declaration inside TeX group" and "Command
@@ -3104,11 +2997,6 @@ variables 'font-latex-fontify-script' and 'font-latex-script-display'.
      Lastly, you can set this variable to 'invisible' whose behavior is
      like 'multi-level', and in addition the super-/subscript characters
      ^ and _ are not displayed.
-
-     Note that this feature is not available on XEmacs, for which it is
-     disabled per default.  In GNU Emacs raising and lowering is not
-     enabled for versions 21.3 and before due to it working not
-     properly.
 
  -- User Option: font-latex-fontify-script-max-level
      Maximum scriptification level for which script faces are applied.
@@ -4273,8 +4161,7 @@ Atril, you can customize the following option.
      this variable set to its default value 'raise-frame'.  Otherwise,
      here are some alternative settings that work for some users.
 
-          ;; Alternative 1: For some users, `x-focus-frame' works.  Note
-          ;; that this function requires Emacs 24+.
+          ;; Alternative 1: For some users, `x-focus-frame' works.
           (setq TeX-raise-frame-function #'x-focus-frame)
 
           ;; Alternative 2: Under GNOME 3.20 (and probably others), it
@@ -4301,9 +4188,9 @@ File: auctex.info,  Node: Debugging,  Next: Checking,  Prev: Viewing,  Up: Proce
 =======================
 
 Once you've formatted your document you may 'debug' it, i.e.  browse
-through the errors (La)TeX reported.  If you have GNU Emacs 24 or later,
-you may also have a look at a nicely formatted list of all errors and
-warnings reported by the compiler.
+through the errors (La)TeX reported.  You may also have a look at a
+nicely formatted list of all errors and warnings reported by the
+compiler.
 
  -- Command: TeX-next-error ARG REPARSE
      ('C-c `') Go to the next error reported by TeX.  The view will be
@@ -4409,8 +4296,7 @@ File: auctex.info,  Node: Error overview,  Prev: Ignoring warnings,  Up: Debuggi
 
 When the option 'TeX-parse-all-errors' is non-nil, you will be also able
 to open an overview of all errors and warnings reported by the TeX
-compiler.  This feature requires 'tabulated-list-mode', shipped with GNU
-Emacs 24 or later.
+compiler.
 
  -- Command: TeX-error-overview
      Show an overview of the errors and warnings occurred in the last
@@ -4843,17 +4729,15 @@ TeX and Emacs are usable for European (Latin, Cyrillic, Greek) based
 languages.  Some LaTeX and EmacsLisp packages are available for easy
 typesetting and editing documents in European languages.
 
-   For CJK (Chinese, Japanese, and Korean) languages, Emacs or XEmacs
-with MULE (MULtilingual Enhancement to GNU Emacs) support is required.
-MULE is part of Emacs by default since Emacs 20.  XEmacs has to be
-configured with the '--with-mule' option.  Special versions of TeX are
+   For CJK (Chinese, Japanese, and Korean) languages, Emacs with MULE
+(MULtilingual Enhancement to GNU Emacs) support is required.  MULE is
+part of Emacs by default since Emacs 20.  Special versions of TeX are
 needed for CJK languages: CTeX and ChinaTeX for Chinese, ASCII pTeX and
 NTT jTeX for Japanese, HLaTeX and kTeX for Korean.  The CJK-LaTeX
 package is required for supporting multiple CJK scripts within a single
 document.
 
-   Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
-CJK characters are not usable.  Please use the MULE-UCS EmacsLisp
+   CJK characters are not usable.  Please use the MULE-UCS EmacsLisp
 package or Emacs 22 and later if you need CJK.
 
 * Menu:
@@ -4881,9 +4765,8 @@ needs.
 
    To be able to display non-ASCII characters you will need an
 appropriate font and a version of GNU Emacs capable of displaying 8-bit
-characters (e.g.  Emacs 21).  The manner in which this is supported
-differs between Emacsen, so you need to take a look at your respective
-documentation.
+characters.  The manner in which this is supported differs between
+Emacsen, so you need to take a look at your respective documentation.
 
    A compromise is to use an European character set when editing the
 file, and convert to TeX macros when reading and writing the files.
@@ -4891,12 +4774,9 @@ file, and convert to TeX macros when reading and writing the files.
 'iso-cvt.el'
      Much like 'iso-tex.el' but is bundled with Emacs 19.23 and later.
 
-'x-compose.el'
-     Similar package bundled with new versions of XEmacs.
-
 'X-Symbol'
-     a much more complete package for both Emacs and XEmacs that can
-     also handle a lot of mathematical characters and input methods.
+     a much more complete package for Emacs that can also handle a lot
+     of mathematical characters and input methods.
 
 5.4.1.2 Style Files for Different Languages
 ...........................................
@@ -5038,9 +4918,7 @@ File: auctex.info,  Node: Japanese,  Prev: European,  Up: Internationalization
 
 To write Japanese text with AUCTeX, you need the versions of TeX and
 Emacs that support Japanese.  AUCTeX supports three Japanese TeX engines
-by default: NTT jTeX, ASCII pTeX and upTeX.  On XEmacs, AUCTeX needs
-MULE (MULtilingual Enhancement to GNU Emacs) feature to deal with
-Japanese text.
+by default: NTT jTeX, ASCII pTeX and upTeX.
 
    To use the Japanese TeX engines, activate 'japanese-plain-tex-mode'
 or 'japanese-latex-mode'.  If it doesn't work, send mail to Masayuki
@@ -5947,7 +5825,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 11.92.0 from 2017-12-06), a
+   This manual is for AUCTeX (version 12.1.0 from 2017-12-12), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
@@ -6453,6 +6331,16 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 
 A.2 Changes and New Features
 ============================
+
+News in 12.1
+------------
+
+   * AUCTeX now requires GNU Emacs 24 or higher.  Support for XEmacs has
+     been dropped.
+
+   * Besides the change in the supported version of Emacs, there has
+     been no functional change in this release, which is equivalent to
+     version 11.92.
 
 News in 11.92
 -------------
@@ -7648,17 +7536,6 @@ A.3.3 Bugs
    * Correct indentation for tabular, tabbing, table, math, and array
      environments.
 
-   * No syntactic font locking of verbatim macros and environments.
-     (XEmacs only)
-
-   * Font locking inside of verbatim macros and environments is not
-     inhibited.  This may result in syntax highlighting of unbalanced
-     dollar signs and the like spilling out of the verbatim content.
-     (XEmacs only)
-
-   * Folding of LaTeX constructs spanning more than one line may result
-     in overfull lines.  (XEmacs only)
-
 
 File: auctex.info,  Node: FAQ,  Next: Texinfo mode,  Prev: Development,  Up: Appendices
 
@@ -7689,11 +7566,10 @@ A.4 Frequently Asked Questions
 
           (setq debug-on-error t)
 
-     as the first line into your init file.  XEmacs users might want to
-     add '(setq stack-trace-on-error t)' as well.  After Emacs has
-     started, you can load a file which triggers the error and a new
-     window should pop up showing the backtrace.  If you get such a
-     backtrace, please include it in the bug report.
+     as the first line into your init file.  After Emacs has started,
+     you can load a file which triggers the error and a new window
+     should pop up showing the backtrace.  If you get such a backtrace,
+     please include it in the bug report.
 
      Second, you can try to figure out if something in your personal or
      site configuration triggers the error by starting Emacs without
@@ -7705,25 +7581,10 @@ A.4 Frequently Asked Questions
      search either in the site configuration file or your personal init
      file for statements related to the problem.
 
-  2. What versions of Emacs and XEmacs are supported?
+  2. What versions of Emacs are supported?
 
-     AUCTeX was tested with Emacs 21 and XEmacs 21.4.15.  Older versions
-     may work but are unsupported.  Older versions of XEmacs might
-     possibly made to work by updating the 'xemacs-base' package through
-     the XEmacs package system.  If you are looking for a
-     recommendation, it would appear that the smoothest working platform
-     on all operating systems at the current point of time would be
-     Emacs 22 or higher.
-
-     Our success with XEmacs has been less than convincing.  Code for
-     core functionality like formatting and syntax highlighting tends to
-     be different and often older than even Emacs 21.4, and Unicode
-     support as delivered is problematic at best, missing on Windows.
-     Both AUCTeX and XEmacs developers don't hear much from active users
-     of the combination.  Partly for that reason, problems tend to go
-     unnoticed for long amounts of time and are often found, if at all,
-     after releases.  No experiences or recommendations can be given for
-     beta or developer versions of XEmacs.
+     AUCTeX was tested with GNU Emacs 24.  Older versions may work but
+     are unsupported.
 
   3. What should I do when './configure' does not find programs like
      latex?
@@ -8044,8 +7905,8 @@ Key Index
 * C-c C-f C-s <1>:                       Font Specifiers.     (line  25)
 * C-c C-f C-t:                           Editing Facilities.  (line  91)
 * C-c C-f C-t <1>:                       Font Specifiers.     (line  34)
-* C-c C-f g:                             Japanese.            (line 119)
-* C-c C-f m:                             Japanese.            (line 123)
+* C-c C-f g:                             Japanese.            (line 117)
+* C-c C-f m:                             Japanese.            (line 121)
 * C-c C-k:                               Control.             (line  10)
 * C-c C-l:                               Control.             (line  14)
 * C-c C-m:                               Completion.          (line  69)
@@ -8206,7 +8067,7 @@ Function Index
 * TeX-declare-expert-macros:             Adding Macros.       (line 261)
 * TeX-documentation-texdoc:              Documentation.       (line   6)
 * TeX-electric-macro:                    Completion.          (line 106)
-* TeX-error-overview:                    Error overview.      (line  11)
+* TeX-error-overview:                    Error overview.      (line  10)
 * TeX-fold-buffer:                       Folding.             (line  43)
 * TeX-fold-clearout-buffer:              Folding.             (line 121)
 * TeX-fold-clearout-item:                Folding.             (line 133)
@@ -8277,7 +8138,7 @@ Variable Index
 * font-latex-fontify-script:             Fontification of math.
                                                               (line  20)
 * font-latex-fontify-script-max-level:   Fontification of math.
-                                                              (line  39)
+                                                              (line  34)
 * font-latex-fontify-sectioning:         Fontification of macros.
                                                               (line  95)
 * font-latex-match-bold-command-keywords: Fontification of macros.
@@ -8325,7 +8186,7 @@ Variable Index
 * font-latex-quotes:                     Fontification of quotes.
                                                               (line  15)
 * font-latex-script-display:             Fontification of math.
-                                                              (line  63)
+                                                              (line  58)
 * font-latex-sectioning-0-face:          Fontification of macros.
                                                               (line  96)
 * font-latex-sectioning-1-face:          Fontification of macros.
@@ -8343,11 +8204,11 @@ Variable Index
 * font-latex-user-keyword-classes:       Fontification of macros.
                                                               (line 194)
 * japanese-LaTeX-default-style:          Japanese.            (line   6)
-* japanese-LaTeX-default-style <1>:      Japanese.            (line  77)
+* japanese-LaTeX-default-style <1>:      Japanese.            (line  75)
 * japanese-TeX-engine-default:           Japanese.            (line   6)
-* japanese-TeX-engine-default <1>:       Japanese.            (line  38)
+* japanese-TeX-engine-default <1>:       Japanese.            (line  36)
 * japanese-TeX-use-kanji-opt-flag:       Japanese.            (line   6)
-* japanese-TeX-use-kanji-opt-flag <1>:   Japanese.            (line  89)
+* japanese-TeX-use-kanji-opt-flag <1>:   Japanese.            (line  87)
 * LaTeX-amsmath-label:                   Equations.           (line  15)
 * LaTeX-auto-class-regexp-list:          Parsing Files.       (line 105)
 * LaTeX-auto-counter-regexp-list:        Parsing Files.       (line 111)
@@ -8358,9 +8219,9 @@ Variable Index
 * LaTeX-auto-pagestyle-regexp-list:      Parsing Files.       (line 108)
 * LaTeX-auto-regexp-list:                Parsing Files.       (line 120)
 * LaTeX-auto-savebox-regexp-list:        Parsing Files.       (line 117)
-* LaTeX-babel-hyphen:                    European.            (line 155)
-* LaTeX-babel-hyphen-after-hyphen:       European.            (line 163)
-* LaTeX-babel-hyphen-language-alist:     European.            (line 142)
+* LaTeX-babel-hyphen:                    European.            (line 151)
+* LaTeX-babel-hyphen-after-hyphen:       European.            (line 159)
+* LaTeX-babel-hyphen-language-alist:     European.            (line 138)
 * LaTeX-biblatex-use-Biber:              Selecting a Command. (line  51)
 * LaTeX-clean-intermediate-suffixes:     Cleaning.            (line   7)
 * LaTeX-clean-output-suffixes:           Cleaning.            (line   7)
@@ -8471,7 +8332,7 @@ Variable Index
 * TeX-debug-warnings:                    Ignoring warnings.   (line  15)
 * TeX-default-macro:                     Completion.          (line  91)
 * TeX-default-mode:                      Japanese.            (line   6)
-* TeX-default-mode <1>:                  Japanese.            (line  69)
+* TeX-default-mode <1>:                  Japanese.            (line  67)
 * TeX-display-help:                      Debugging.           (line  47)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line  98)
@@ -8483,9 +8344,9 @@ Variable Index
 * TeX-engine-alist <1>:                  Processor Options.   (line 131)
 * TeX-engine-alist <2>:                  Japanese.            (line   6)
 * TeX-engine-alist-builtin:              Processor Options.   (line 120)
-* TeX-error-overview-frame-parameters:   Error overview.      (line  44)
-* TeX-error-overview-open-after-TeX-run: Error overview.      (line  26)
-* TeX-error-overview-setup:              Error overview.      (line  35)
+* TeX-error-overview-frame-parameters:   Error overview.      (line  43)
+* TeX-error-overview-open-after-TeX-run: Error overview.      (line  25)
+* TeX-error-overview-setup:              Error overview.      (line  34)
 * TeX-expand-list:                       Selecting a Command. (line  14)
 * TeX-file-line-error:                   Processor Options.   (line 191)
 * TeX-file-recurse:                      Automatic.           (line  44)
@@ -8515,20 +8376,20 @@ Variable Index
 * TeX-ispell-extend-skip-list:           Selecting a Command. (line  82)
 * TeX-ispell-verb-delimiters:            Selecting a Command. (line 174)
 * TeX-japanese-process-input-coding-system: Japanese.         (line   6)
-* TeX-japanese-process-input-coding-system <1>: Japanese.     (line  97)
+* TeX-japanese-process-input-coding-system <1>: Japanese.     (line  95)
 * TeX-japanese-process-output-coding-system: Japanese.        (line   6)
-* TeX-japanese-process-output-coding-system <1>: Japanese.    (line 101)
-* TeX-language-bg-hook:                  European.            (line  53)
-* TeX-language-cz-hook:                  European.            (line  53)
-* TeX-language-de-hook:                  European.            (line  53)
-* TeX-language-dk-hook:                  European.            (line  53)
-* TeX-language-en-hook:                  European.            (line  53)
-* TeX-language-is-hook:                  European.            (line  53)
-* TeX-language-it-hook:                  European.            (line  53)
-* TeX-language-nl-hook:                  European.            (line  53)
-* TeX-language-pl-hook:                  European.            (line  53)
-* TeX-language-sk-hook:                  European.            (line  53)
-* TeX-language-sv-hook:                  European.            (line  53)
+* TeX-japanese-process-output-coding-system <1>: Japanese.    (line  99)
+* TeX-language-bg-hook:                  European.            (line  49)
+* TeX-language-cz-hook:                  European.            (line  49)
+* TeX-language-de-hook:                  European.            (line  49)
+* TeX-language-dk-hook:                  European.            (line  49)
+* TeX-language-en-hook:                  European.            (line  49)
+* TeX-language-is-hook:                  European.            (line  49)
+* TeX-language-it-hook:                  European.            (line  49)
+* TeX-language-nl-hook:                  European.            (line  49)
+* TeX-language-pl-hook:                  European.            (line  49)
+* TeX-language-sk-hook:                  European.            (line  49)
+* TeX-language-sv-hook:                  European.            (line  49)
 * TeX-macro-global:                      Customizing.         (line  19)
 * TeX-macro-global <1>:                  Automatic Global.    (line  16)
 * TeX-macro-private:                     Automatic Private.   (line  12)
@@ -8549,7 +8410,7 @@ Variable Index
 * TeX-PDF-from-DVI:                      Processor Options.   (line  71)
 * TeX-PDF-mode:                          Processor Options.   (line  16)
 * TeX-quote-after-quote:                 Quotes.              (line  29)
-* TeX-quote-language-alist:              European.            (line 129)
+* TeX-quote-language-alist:              European.            (line 125)
 * TeX-raise-frame-function:              I/O Correlation.     (line  76)
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  65)
@@ -8607,10 +8468,10 @@ Concept Index
 * \subsection <1>:                       Sectioning.          (line   6)
 * \textbf:                               Editing Facilities.  (line  73)
 * \textbf <1>:                           Font Specifiers.     (line  16)
-* \textgt:                               Japanese.            (line 119)
+* \textgt:                               Japanese.            (line 117)
 * \textit:                               Editing Facilities.  (line  76)
 * \textit <1>:                           Font Specifiers.     (line  19)
-* \textmc:                               Japanese.            (line 123)
+* \textmc:                               Japanese.            (line 121)
 * \textrm:                               Editing Facilities.  (line  85)
 * \textrm <1>:                           Font Specifiers.     (line  28)
 * \textsc:                               Editing Facilities.  (line  94)
@@ -8629,7 +8490,7 @@ Concept Index
 * Adding macros:                         Adding Macros.       (line   6)
 * Adding other information:              Adding Other.        (line   6)
 * Adding to PATH in Windows:             Installation under MS Windows.
-                                                              (line  51)
+                                                              (line  42)
 * amsmath:                               Equations.           (line   6)
 * amsmath <1>:                           Tabular-like.        (line   6)
 * ANSI:                                  European.            (line   5)
@@ -8637,8 +8498,8 @@ Concept Index
 * ASCII pTeX:                            Internationalization.
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
-* auctex.el:                             Loading the package. (line  14)
-* auctex.el <1>:                         Changes.             (line 540)
+* auctex.el:                             Loading the package. (line  11)
+* auctex.el <1>:                         Changes.             (line 550)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8656,7 +8517,7 @@ Concept Index
 * book.el:                               Simple Style.        (line   6)
 * Braces:                                Quotes.              (line   6)
 * Brackets:                              Quotes.              (line   6)
-* Bulgarian:                             European.            (line  53)
+* Bulgarian:                             European.            (line  49)
 * Changing font:                         Font Specifiers.     (line   6)
 * Changing the parser:                   Hacking the Parser.  (line   6)
 * Chapters:                              Editing Facilities.  (line  26)
@@ -8685,8 +8546,8 @@ Concept Index
 * Customization:                         Customizing.         (line   6)
 * Customization, personal:               Customizing.         (line   6)
 * Customization, site:                   Customizing.         (line   6)
-* Czech:                                 European.            (line  53)
-* Danish:                                European.            (line  53)
+* Czech:                                 European.            (line  49)
+* Danish:                                European.            (line  49)
 * Debugging:                             Debugging.           (line   6)
 * Default command:                       Commands.            (line   6)
 * Defining bibliographies in style hooks: Adding Other.       (line   6)
@@ -8705,8 +8566,8 @@ Concept Index
 * Dollar signs, color bleed with:        Known problems.      (line   6)
 * Dollars:                               Quotes.              (line   6)
 * Double quotes:                         Quotes.              (line   6)
-* Dutch:                                 European.            (line  53)
-* English:                               European.            (line  53)
+* Dutch:                                 European.            (line  49)
+* English:                               European.            (line  49)
 * Enumerates:                            Itemize-like.        (line   6)
 * Environments:                          Environments.        (line   6)
 * Environments, adding:                  Adding Environments. (line   6)
@@ -8744,7 +8605,7 @@ Concept Index
 * Free software:                         Copying.             (line   6)
 * General Public License:                Copying.             (line   6)
 * Generating symbols:                    Automatic.           (line   6)
-* German:                                European.            (line  53)
+* German:                                European.            (line  49)
 * Global directories:                    Automatic Global.    (line   6)
 * Global macro directory:                Automatic Global.    (line   6)
 * Global style hook directory:           Automatic Global.    (line   6)
@@ -8770,10 +8631,10 @@ Concept Index
 * Inverse search:                        I/O Correlation.     (line   6)
 * ISO 8859 Latin 1:                      European.            (line   6)
 * ISO 8859 Latin 2:                      European.            (line   6)
-* iso-cvt.el:                            European.            (line  28)
+* iso-cvt.el:                            European.            (line  27)
 * ispell:                                Selecting a Command. (line  73)
-* ispell <1>:                            European.            (line  40)
-* Italian:                               European.            (line  53)
+* ispell <1>:                            European.            (line  36)
+* Italian:                               European.            (line  49)
 * Itemize:                               Itemize-like.        (line   6)
 * Items:                                 Itemize-like.        (line   6)
 * Japan:                                 Japanese.            (line   6)
@@ -8849,7 +8710,7 @@ Concept Index
 * Parsing TeX <1>:                       Automatic.           (line   6)
 * Parsing TeX output:                    Debugging.           (line   6)
 * PATH in Windows:                       Installation under MS Windows.
-                                                              (line  51)
+                                                              (line  42)
 * PDF mode:                              Processor Options.   (line  16)
 * PDFSync:                               Processor Options.   (line  36)
 * PDFSync <1>:                           I/O Correlation.     (line   6)
@@ -8858,10 +8719,10 @@ Concept Index
 * Personal macro directory:              Automatic Private.   (line   6)
 * Personal TeX macro directory:          Automatic Private.   (line   6)
 * pLaTeX:                                Japanese.            (line   6)
-* Polish:                                European.            (line  53)
+* Polish:                                European.            (line  49)
 * Prefix for labels:                     Sectioning.          (line 110)
 * Prefix for labels <1>:                 Floats.              (line  32)
-* preview-install-styles:                Configure.           (line 102)
+* preview-install-styles:                Configure.           (line  83)
 * Previewing:                            Viewing.             (line   6)
 * Printing:                              Commands.            (line   6)
 * Private directories:                   Automatic Private.   (line   6)
@@ -8908,7 +8769,7 @@ Concept Index
 * Site initialization:                   Customizing.         (line   6)
 * Site macro directory:                  Automatic Global.    (line   6)
 * Site TeX macro directory:              Automatic Global.    (line   6)
-* Slovak:                                European.            (line  53)
+* Slovak:                                European.            (line  49)
 * Source specials:                       Processor Options.   (line  36)
 * Source specials <1>:                   I/O Correlation.     (line   6)
 * Specifying a font:                     Font Specifiers.     (line   6)
@@ -8924,7 +8785,7 @@ Concept Index
                                                               (line   6)
 * Superscript, fontification of:         Fontification of math.
                                                               (line   6)
-* Swedish:                               European.            (line  53)
+* Swedish:                               European.            (line  49)
 * Symbols:                               Mathematics.         (line   6)
 * SyncTeX:                               Processor Options.   (line  36)
 * SyncTeX <1>:                           I/O Correlation.     (line   6)
@@ -8937,10 +8798,10 @@ Concept Index
 * TeX parsing:                           Automatic.           (line   6)
 * tex-jp.el:                             Japanese.            (line   6)
 * tex-mik.el:                            Installation under MS Windows.
-                                                              (line 286)
-* tex-site.el:                           Loading the package. (line  14)
+                                                              (line 256)
+* tex-site.el:                           Loading the package. (line  11)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 540)
+* tex-site.el <2>:                       Changes.             (line 550)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8956,109 +8817,108 @@ Concept Index
 * Viewing:                               Viewing.             (line   6)
 * Warranty:                              Copying.             (line   6)
 * Writing to a printer:                  Commands.            (line   6)
-* x-compose.el:                          European.            (line  31)
-* X-Symbol:                              European.            (line  34)
+* X-Symbol:                              European.            (line  30)
 
 
 
 Tag Table:
-Node: Top918
-Node: Copying7271
-Node: Introduction9227
-Node: Summary9497
-Node: Installation12238
-Node: Prerequisites14004
-Node: Configure17185
-Node: Build/install and uninstall22610
-Node: Loading the package23363
-Node: Advice for package providers25184
-Node: Advice for non-privileged users29129
-Node: Installation under MS Windows33087
-Node: Customizing48321
-Node: Quick Start49904
-Ref: Quick Start-Footnote-152034
-Node: Editing Facilities52181
-Node: Processing Facilities56984
-Node: Editing61742
-Node: Quotes63072
-Node: Font Specifiers71340
-Node: Sectioning73166
-Node: Environments77486
-Node: Equations82640
-Node: Floats83231
-Node: Itemize-like85235
-Node: Tabular-like85956
-Node: Customizing Environments87729
-Node: Mathematics87969
-Node: Completion91255
-Node: Marking98281
-Node: Marking (LaTeX)98905
-Node: Marking (Texinfo)99847
-Node: Commenting101457
-Node: Indenting102782
-Node: Filling108818
-Node: Display114690
-Node: Font Locking117185
-Node: Fontification of macros119260
-Node: Fontification of quotes128832
-Node: Fontification of math130327
-Node: Verbatim content133778
-Node: Faces134552
-Node: Known problems135041
-Node: Folding135970
-Node: Outline146794
-Node: Narrowing148066
-Node: Prettifying149136
-Node: Processing150372
-Node: Commands151535
-Node: Starting a Command152091
-Node: Selecting a Command156994
-Node: Processor Options166078
-Node: Viewing176358
-Node: Starting Viewers176732
-Node: I/O Correlation183859
-Node: Debugging189117
-Node: Ignoring warnings191771
-Node: Error overview193831
-Node: Checking195824
-Node: Control196986
-Node: Cleaning197713
-Node: Documentation198926
-Node: Customization199641
-Node: Modes and Hooks200134
-Node: Multifile201954
-Node: Parsing Files206766
-Node: Internationalization211678
-Node: European212850
-Node: Japanese219767
-Node: Automatic225073
-Node: Automatic Global227564
-Node: Automatic Private228696
-Node: Automatic Local230009
-Node: Style Files231041
-Node: Simple Style231834
-Node: Adding Macros235107
-Node: Adding Environments244225
-Node: Adding Other248886
-Node: Hacking the Parser249473
-Node: Appendices253342
-Node: Copying this Manual253638
-Node: GNU Free Documentation License254522
-Node: Changes279641
-Node: Development320260
-Node: Mid-term Goals320906
-Node: Wishlist322123
-Node: Bugs327564
-Node: FAQ329094
-Node: Texinfo mode335267
-Node: Exploiting336403
-Node: Superseding337223
-Node: Mapping341427
-Node: Unbinding343256
-Node: Indices344077
-Node: Key Index344240
-Node: Function Index350564
-Node: Variable Index361374
-Node: Concept Index384232
+Node: Top917
+Node: Copying7270
+Node: Introduction9215
+Node: Summary9485
+Node: Installation12216
+Node: Prerequisites13982
+Node: Configure16242
+Node: Build/install and uninstall20795
+Node: Loading the package21548
+Node: Advice for package providers23232
+Node: Advice for non-privileged users26037
+Node: Installation under MS Windows28819
+Node: Customizing42559
+Node: Quick Start44142
+Ref: Quick Start-Footnote-146272
+Node: Editing Facilities46366
+Node: Processing Facilities51169
+Node: Editing55870
+Node: Quotes57200
+Node: Font Specifiers65468
+Node: Sectioning67294
+Node: Environments71614
+Node: Equations76768
+Node: Floats77359
+Node: Itemize-like79363
+Node: Tabular-like80084
+Node: Customizing Environments81857
+Node: Mathematics82097
+Node: Completion85383
+Node: Marking92409
+Node: Marking (LaTeX)93033
+Node: Marking (Texinfo)93975
+Node: Commenting95585
+Node: Indenting96910
+Node: Filling102946
+Node: Display108818
+Node: Font Locking111313
+Node: Fontification of macros113388
+Node: Fontification of quotes122911
+Node: Fontification of math124406
+Node: Verbatim content127636
+Node: Faces128410
+Node: Known problems128899
+Node: Folding129828
+Node: Outline140652
+Node: Narrowing141924
+Node: Prettifying142994
+Node: Processing144230
+Node: Commands145393
+Node: Starting a Command145949
+Node: Selecting a Command150852
+Node: Processor Options159936
+Node: Viewing170216
+Node: Starting Viewers170590
+Node: I/O Correlation177717
+Node: Debugging182917
+Node: Ignoring warnings185536
+Node: Error overview187596
+Node: Checking189507
+Node: Control190669
+Node: Cleaning191396
+Node: Documentation192609
+Node: Customization193324
+Node: Modes and Hooks193817
+Node: Multifile195637
+Node: Parsing Files200449
+Node: Internationalization205361
+Node: European206396
+Node: Japanese213206
+Node: Automatic218406
+Node: Automatic Global220897
+Node: Automatic Private222029
+Node: Automatic Local223342
+Node: Style Files224374
+Node: Simple Style225167
+Node: Adding Macros228440
+Node: Adding Environments237558
+Node: Adding Other242219
+Node: Hacking the Parser242806
+Node: Appendices246675
+Node: Copying this Manual246971
+Node: GNU Free Documentation License247854
+Node: Changes272973
+Node: Development313873
+Node: Mid-term Goals314519
+Node: Wishlist315736
+Node: Bugs321177
+Node: FAQ322280
+Node: Texinfo mode327407
+Node: Exploiting328543
+Node: Superseding329363
+Node: Mapping333567
+Node: Unbinding335396
+Node: Indices336217
+Node: Key Index336380
+Node: Function Index342704
+Node: Variable Index353514
+Node: Concept Index376372
 
 End Tag Table
