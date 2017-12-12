@@ -10,7 +10,7 @@ This manual is for preview-latex, a @LaTeX{} preview mode for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}).
 
 Copyright @copyright{} 2001, 2002, 2003,
-2004, 2005, 2006 Free Software Foundation, Inc.
+2004, 2005, 2006, 2017 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -197,9 +197,7 @@ the region with borders switched off.  As this is an asynchronous
 operation running in the background, you'll need to call this command
 explicitly again to get the newly generated images into the kill ring.
 
-Preview your articles with @code{mml-preview} (on @kbd{M-m P}, or
-@kbd{C-c C-m P} in @w{Emacs 22})
-@kindex @kbd{M-m P}
+Preview your articles with @code{mml-preview} (on @kbd{C-c C-m P})
 @kindex @kbd{C-c C-m P}
 to make sure they look fine.
 
@@ -358,9 +356,7 @@ artifacts at the edges of your previews.  Playing around with the option
 might improve things.  With some settings, the cursor may cover the
 whole background of a preview, however.
 
-This option is specific to the display engine in use.  Its default is
-different in @w{Emacs 21} and @w{Emacs 22}, and it is not available in
-XEmacs.
+This option is specific to the display engine in use.
 
 @item Showing @code{\label}s
 @cindex Showing @code{\label}s
@@ -657,14 +653,6 @@ when this is needed is in
 @code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}}, and
 accordingly @code{split} is one entry in
 @code{preview-inner-environments}.
-
-@item preview-use-balloon-help
-If you turn this XEmacs-only option `on', then moving the mouse over
-previews and icons will show appropriate help texts.  This works by
-switching on @code{balloon-help-mode} in the buffer if it is not already
-enabled.  The default now is `off' since some users reported problems
-with their version of XEmacs.  @w{GNU Emacs} has its corresponding
-@code{tooltip-mode} enabled by default and in usable condition.
 
 @end vtable
 

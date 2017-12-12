@@ -279,19 +279,6 @@ by @samp{\mbox}'es and escaped double dollar for example.
 @item
 Correct indentation for tabular, tabbing, table, math, and array
 environments.
-
-@item
-No syntactic font locking of verbatim macros and environments. (XEmacs
-only)
-
-@item
-Font locking inside of verbatim macros and environments is not
-inhibited.  This may result in syntax highlighting of unbalanced dollar
-signs and the like spilling out of the verbatim content. (XEmacs only)
-
-@item
-Folding of @LaTeX{} constructs spanning more than one line may result in
-overfull lines. (XEmacs only)
 @end itemize
 
 @c Local Variables:

@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(if (< emacs-major-version 21)
-    (error "AUCTeX requires Emacs 21 or later")) ;FIXME: Really?
+(if (< emacs-major-version 24)
+    (error "AUCTeX requires Emacs 24 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.

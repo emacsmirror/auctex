@@ -15,8 +15,8 @@ further below.
 
 @enumerate
 @item
-Install the prerequisites, i.e. Emacs or XEmacs, MSYS or Cygwin, a
-@TeX{} system, and Ghostscript.
+Install the prerequisites, i.e. GNU Emacs, MSYS or Cygwin, a @TeX{}
+system, and Ghostscript.
 
 @item
 Open the MSYS shell or a Cygwin shell and change to the directory
@@ -38,18 +38,7 @@ at the shell prompt:
   --with-texmf-dir='C:/localtexmf'
 @end example
 
-For XEmacs: You can install @AUCTeX{} as an XEmacs package.  Assuming
-XEmacs is installed in @file{C:/Program Files/XEmacs} and the directory
-for local additions of your @TeX{} system, e.g. MiK@TeX{}, is
-@file{C:/localtexmf}, you can do this by typing the following command at
-the shell prompt:
-
-@example
-./configure --with-xemacs='C:/Program Files/XEmacs/bin/xemacs' \
-  --with-texmf-dir='C:/localtexmf'
-@end example
-
-The commands above are examples for common usage.  More on configuration
+The commands above is example for common usage.  More on configuration
 options can be found in the detailed installation instructions below.
 
 If the configuration script failed to find all required programs, make
@@ -160,10 +149,8 @@ trouble.  Using Cygwin either for everything or nothing might save
 headaches, @emph{if} things don't work out.
 
 @item
-Install a current version of XEmacs from @uref{http://www.xemacs.org/}
-or @w{Emacs} from @uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
-@w{Emacs} is the recommended choice because it is currently the primary
-platform for @AUCTeX{} development.
+Install a current version of @w{Emacs} from
+@uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
@@ -203,13 +190,12 @@ Typical options you'll want to specify will be
 @table @code
 @item --prefix=@var{drive:/path/to/emacs-hierarchy}
 which tells @file{configure} where to perform the installation. It may
-also make @file{configure} find Emacs or XEmacs automatically; if this
-doesn't happen, try one of @samp{--with-emacs} or @samp{--with-xemacs}
-as described below.  All automatic detection of files and directories
-restricts itself to directories below the @var{prefix} or in the same
-hierarchy as the program accessing the files.  Usually, directories like
-@file{man}, @file{share} and @file{bin} will be situated right under
-@var{prefix}.
+also make @file{configure} find Emacs automatically; if this doesn't
+happen, try @samp{--with-emacs} as described below.  All automatic
+detection of files and directories restricts itself to directories below
+the @var{prefix} or in the same hierarchy as the program accessing the
+files.  Usually, directories like @file{man}, @file{share} and
+@file{bin} will be situated right under @var{prefix}.
 
 This option also affects the defaults for placing the Texinfo
 documentation files (see also @samp{--infodir} below) and automatically
@@ -228,21 +214,8 @@ installed Emacs executable, complete with its path if necessary (if
 Emacs is not within a directory specified in your @env{PATH} environment
 setting).
 
-@item --with-xemacs
-if you are installing for a version of XEmacs.  Again, you can use
-@samp{--with-xemacs=@var{drive:/path/to/xemacs}} to specify the name of the
-installed XEmacs executable complete with its path if necessary.  It may
-also be necessary to specify this option if a copy of Emacs is found in
-your @env{PATH} environment setting, but you still would like to install
-a copy of @AUCTeX{} for XEmacs.
-
-@item --with-packagedir=@var{drive:/dir}
-is an XEmacs-only option giving the location of the package directory.
-This will install and activate the package.  Emacs uses a different
-installation scheme:
-
 @item --with-lispdir=@var{drive:/path/to/site-lisp}
-This Emacs-only option tells a place in @code{load-path} below which the
+This option tells a place in @code{load-path} below which the
 files are situated.  The startup files @file{auctex.el} and
 @file{preview-latex.el} will get installed here unless a subdirectory
 @file{site-start.d} exists which will then be used instead.  The other
@@ -272,8 +245,7 @@ this.
 
 @item --disable-preview
 Use this option if your Emacs version is unable to support image
-display.  This will be the case if you are using a native variant of
-@w{Emacs 21}.
+display.
 
 @item --with-texmf-dir=@var{drive:/dir}
 This will specify the directory where your @TeX{} installation sits.  If
@@ -317,19 +289,18 @@ Run @command{make} in the installation directory.
 Run @code{make install} in the installation directory.
 
 @item
-With XEmacs, @AUCTeX{} and @previewlatex{} should now be active by
-default.  With Emacs, activation depends on a working
-@file{site-start.d} directory or similar setup, since then the startup
-files @file{auctex.el} and @file{preview-latex.el} will have been placed
-there.  If this has not been done, you should be able to load the
-startup files manually with
+With Emacs, activation of @AUCTeX{} and @previewlatex{} depends on a
+working @file{site-start.d} directory or similar setup, since then the
+startup files @file{auctex.el} and @file{preview-latex.el} will have
+been placed there.  If this has not been done, you should be able to
+load the startup files manually with
 @example
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
 @end example
 in either a site-wide @file{site-start.el} or your personal startup file
-(usually accessible as @file{~/.emacs} from within Emacs and
-@file{~/.xemacs/init.el} from within XEmacs).
+(usually accessible as @file{~/.emacs} or @file{~/.emacs.d/init.el} from
+within Emacs).
 
 @cindex @file{tex-mik.el}
 The default configuration of @AUCTeX{} is probably not the best fit for
@@ -349,7 +320,7 @@ You can always use
 in order to customize more stuff, or use the @samp{Customize} menu.
 
 @item
-Load @file{preview/circ.tex} into Emacs or XEmacs and see if you get the
+Load @file{preview/circ.tex} into Emacs and see if you get the
 @samp{Command} menu. Try using it to @LaTeX{} the file.
 
 @item

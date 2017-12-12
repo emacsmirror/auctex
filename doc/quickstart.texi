@@ -27,8 +27,7 @@ inserting
 @end lisp
 
 in your user init file.@footnote{This usually is a file in your home
-directory called @file{.emacs} if you are utilizing GNU Emacs or
-@file{.xemacs/init.el} if you are using XEmacs.}
+directory called @file{.emacs}, or @file{.emacs.d/init.el}.}
 
 If @AUCTeX{} is installed from @acronym{ELPA}, the installation
 procedure already cares about loading @AUCTeX{} correctly and you
@@ -299,9 +298,8 @@ may be repeated until all errors have been dealt with.  By pressing
 @AUCTeX{} should notify you of overfull and underfull boxes in addition
 to regular errors.
 
-If you have a recent version of GNU Emacs (24 or later), issue @kbd{M-x
-TeX-error-overview RET} to see a nicely formatted list of all errors and
-warnings reported by the compiler.
+Issue @kbd{M-x TeX-error-overview RET} to see a nicely formatted list of
+all errors and warnings reported by the compiler.
 
 If a command got stuck in a seemingly infinite loop, or you want to stop
 execution for other reasons, you can use @kbd{C-c C-k} (for ``kill'').

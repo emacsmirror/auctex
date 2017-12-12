@@ -8,6 +8,18 @@
 
 @end ifset
 
+@heading News in 12.1
+
+@itemize @bullet
+@item
+@AUCTeX{} now requires GNU Emacs 24 or higher.  Support for XEmacs has
+been dropped.
+
+@item
+Besides the change in the supported version of Emacs, there has been no
+functional change in this release, which is equivalent to version 11.92.
+@end itemize
+
 @heading News in 11.92
 
 @itemize @bullet
