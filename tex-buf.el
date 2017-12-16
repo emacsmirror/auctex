@@ -202,16 +202,12 @@ depend on it being positive instead of the entry in `TeX-command-list'."
 	(TeX-command-region-end (point-max)))
     (TeX-command-region override-confirm)))
 
-(unless (featurep 'xemacs)
-  ;; This variable is not defined in XEmacs because XEmacs' version of
-  ;; `pop-to-buffer' doesn't support the optional NORECORD argument.  In
-  ;; XEmacs, the third arg is ON-FRAME (Emacs: NORECORD).
-  (defcustom TeX-record-buffer nil
-    "Whether to record buffer names of generated TeX buffers.
+(defcustom TeX-record-buffer nil
+  "Whether to record buffer names of generated TeX buffers.
 When non-nil, these buffers are put at the front of the list of
 recently selected ones."
-    :group 'TeX-command
-    :type 'boolean))
+  :group 'TeX-command
+  :type 'boolean)
 
 (defun TeX-pop-to-buffer (buffer &optional other-window norecord)
   "Compatibility wrapper for `pop-to-buffer'.
@@ -230,14 +226,8 @@ This uses the function `display-buffer' as a subroutine; see the documentation
 of `display-buffer' for additional customization information.
 
 Optional third arg NORECORD non-nil means do not put this buffer
-at the front of the list of recently selected ones.
-
-NORECORD is ignored in XEmacs."
-  ;; Make sure not to use third arg in XEmacs.  In XEmacs, the third arg is
-  ;; ON-FRAME (Emacs: NORECORD), so we set it to nil.
-  (pop-to-buffer buffer other-window (and norecord
-					  (boundp 'TeX-record-buffer)
-					  TeX-record-buffer)))
+at the front of the list of recently selected ones."
+  (pop-to-buffer buffer other-window (and norecord TeX-record-buffer)))
 
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
@@ -319,9 +309,7 @@ message buffer and start at the first error."
   (if (or (null (TeX-active-buffer))
 	  (eq 'compilation-mode (with-current-buffer TeX-command-buffer
 				  major-mode)))
-      (if (featurep 'xemacs)
-	  (next-error arg)
-	(next-error arg reparse))
+      (next-error arg reparse)
 
     ;; Force reparsing when the function is called with a universal-argument.
     (if (consp arg) (setq reparse t arg nil))
@@ -2380,10 +2368,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
 		    (if (> arg 0)
 			(1+ TeX-error-last-visited)
 		      (1- TeX-error-last-visited))
-		    item (if (natnump TeX-error-last-visited)
-			     (nth TeX-error-last-visited TeX-error-list)
-			   ;; XEmacs doesn't support `nth' with a negative index.
-			   nil))
+		    item (nth TeX-error-last-visited TeX-error-list))
 	      ;; Increase or decrease `arg' only if the warning isn't to be
 	      ;; skipped.
 	      (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
@@ -2547,10 +2532,8 @@ Return non-nil if an error or warning is found."
 	    ;; Polish `file' string
 	    (setq file
 		  (let ((string file))
-		    ;; Trim whitespaces at the front.  XXX: XEmacs doesn't
-		    ;; support character classes in regexps, like "[:space:]".
 		    (setq string
-			  (if (string-match "\\'[ \t\n\r]*" string)
+			  (if (string-match "\\`[ \t\n\r]+" string)
 			      (replace-match "" t t string)
 			    string))
 		    ;; Sometimes `file' is something like
@@ -3690,70 +3673,68 @@ forward, if negative)."
   "Show an overview of the errors occurred in the last TeX run."
   (interactive)
   ;; Check requirements before start.
-  (if (fboundp 'tabulated-list-mode)
-      (if (setq TeX-error-overview-active-buffer (TeX-active-buffer))
-	  ;; `TeX-error-overview-list-entries' is going to be used only as value
-	  ;; of `tabulated-list-entries' in `TeX-error-overview-mode'.  In
-	  ;; principle, we don't need `TeX-error-overview-list-entries', but
-	  ;; `tabulated-list-entries' is buffer-local and we need the list of
-	  ;; entries before creating the error overview buffer in order to
-	  ;; decide whether we need to show anything.
-	  (if (setq TeX-error-overview-list-entries
-		    (TeX-error-overview-make-entries
-		     (TeX-master-directory)))
-	      (progn
-		(setq TeX-error-overview-orig-window (selected-window)
-		      TeX-error-overview-orig-frame
-		      (window-frame TeX-error-overview-orig-window))
-		;; Create the error overview buffer.  This is
-		;; automatically killed before running TeX commands, so if
-		;; exists it is up-to-date and doesn't need to be
-		;; re-created.
-		(unless (get-buffer TeX-error-overview-buffer-name)
-		  (with-current-buffer
-		      (get-buffer-create TeX-error-overview-buffer-name)
-		    (TeX-error-overview-mode)))
-		;; Move point to the line associated to the last visited
-		;; error.
-		(with-current-buffer TeX-error-overview-buffer-name
-		  (goto-char (point-min))
-		  (forward-line (with-current-buffer
-				    TeX-error-overview-active-buffer
-				  TeX-error-last-visited))
-		  ;; Create a new frame for the error overview or display the
-		  ;; buffer in the same frame, depending on the setup.
-		  (if (TeX-error-overview-setup)
-		      (if (frame-live-p TeX-error-overview-frame)
-			  ;; Do not create a duplicate frame if there is
-			  ;; already one, just select it.
-			  (select-frame-set-input-focus
-			   TeX-error-overview-frame)
-			;; Create a new frame and store its name.
-			(select-frame
-			 (setq TeX-error-overview-frame
-			       (make-frame
-				TeX-error-overview-frame-parameters)))
-			(set-window-buffer (selected-window)
-					   TeX-error-overview-buffer-name)
-			(set-window-dedicated-p (selected-window) t))
-		    (TeX-pop-to-buffer TeX-error-overview-buffer-name))))
-	    (error (concat "No error or warning to show"
-			   ;; Suggest to display warnings and bad boxes with the
-			   ;; appropriate key-bindings if there are such
-			   ;; messages in the output buffer.  Rationale of the
-			   ;; test: `TeX-error-overview-list-entries' is nil,
-			   ;; but if `TeX-error-list' is not nil it means that
-			   ;; there are hidden warnings/bad boxes.
-			   (when (TeX-process-get-variable (TeX-active-master)
-							   'TeX-error-list)
-			     (format ".  Type `%s' and `%s' to display \
+  (if (setq TeX-error-overview-active-buffer (TeX-active-buffer))
+      ;; `TeX-error-overview-list-entries' is going to be used only as value
+      ;; of `tabulated-list-entries' in `TeX-error-overview-mode'.  In
+      ;; principle, we don't need `TeX-error-overview-list-entries', but
+      ;; `tabulated-list-entries' is buffer-local and we need the list of
+      ;; entries before creating the error overview buffer in order to
+      ;; decide whether we need to show anything.
+      (if (setq TeX-error-overview-list-entries
+		(TeX-error-overview-make-entries
+		 (TeX-master-directory)))
+	  (progn
+	    (setq TeX-error-overview-orig-window (selected-window)
+		  TeX-error-overview-orig-frame
+		  (window-frame TeX-error-overview-orig-window))
+	    ;; Create the error overview buffer.  This is
+	    ;; automatically killed before running TeX commands, so if
+	    ;; exists it is up-to-date and doesn't need to be
+	    ;; re-created.
+	    (unless (get-buffer TeX-error-overview-buffer-name)
+	      (with-current-buffer
+		  (get-buffer-create TeX-error-overview-buffer-name)
+		(TeX-error-overview-mode)))
+	    ;; Move point to the line associated to the last visited
+	    ;; error.
+	    (with-current-buffer TeX-error-overview-buffer-name
+	      (goto-char (point-min))
+	      (forward-line (with-current-buffer
+				TeX-error-overview-active-buffer
+			      TeX-error-last-visited))
+	      ;; Create a new frame for the error overview or display the
+	      ;; buffer in the same frame, depending on the setup.
+	      (if (TeX-error-overview-setup)
+		  (if (frame-live-p TeX-error-overview-frame)
+		      ;; Do not create a duplicate frame if there is
+		      ;; already one, just select it.
+		      (select-frame-set-input-focus
+		       TeX-error-overview-frame)
+		    ;; Create a new frame and store its name.
+		    (select-frame
+		     (setq TeX-error-overview-frame
+			   (make-frame
+			    TeX-error-overview-frame-parameters)))
+		    (set-window-buffer (selected-window)
+				       TeX-error-overview-buffer-name)
+		    (set-window-dedicated-p (selected-window) t))
+		(TeX-pop-to-buffer TeX-error-overview-buffer-name))))
+	(error (concat "No error or warning to show"
+		       ;; Suggest to display warnings and bad boxes with the
+		       ;; appropriate key-bindings if there are such
+		       ;; messages in the output buffer.  Rationale of the
+		       ;; test: `TeX-error-overview-list-entries' is nil,
+		       ;; but if `TeX-error-list' is not nil it means that
+		       ;; there are hidden warnings/bad boxes.
+		       (when (TeX-process-get-variable (TeX-active-master)
+						       'TeX-error-list)
+			 (format ".  Type `%s' and `%s' to display \
 warnings and bad boxes"
-				     (substitute-command-keys
-				      "\\<TeX-mode-map>\\[TeX-toggle-debug-warnings]")
-				     (substitute-command-keys
-				      "\\<TeX-mode-map>\\[TeX-toggle-debug-bad-boxes]"))))))
-	(error "No process for this document"))
-    (error "Error overview is available only in Emacs 24 or later")))
+				 (substitute-command-keys
+				  "\\<TeX-mode-map>\\[TeX-toggle-debug-warnings]")
+				 (substitute-command-keys
+				  "\\<TeX-mode-map>\\[TeX-toggle-debug-bad-boxes]"))))))
+    (error "No process for this document")))
 
 ;;; Output mode
 
