@@ -114,7 +114,7 @@
   ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
   ;; from swapping point and mark and the \item ending up right after
   ;; \begin{...}.
-  (TeX-deactivate-mark)
+  (deactivate-mark)
   ;; Query and insert the question text.
   (let ((qtext (TeX-read-string (TeX-argument-prompt nil nil "Question Text"))))
     (when (and qtext (not (string= qtext "")))
