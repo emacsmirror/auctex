@@ -6522,7 +6522,7 @@ function would return non-nil and `(match-string 1)' would return
    (let* ((cur-pos (point)))
      (save-excursion
        (if (re-search-backward "\\\\\\\\" beg-pos t)
-	   (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
+	   (let ((cur-idx (how-many "[^\\]&" (point) cur-pos)))
 	     (goto-char beg-pos)
 	     (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
 	     ;; If the above searchs fails, i.e. no "&" found,
