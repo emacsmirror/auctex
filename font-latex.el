@@ -327,7 +327,8 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
       ("vref" "*{") ("eqref" "{") ("ref" "{") ("include" "{")
       ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
-      ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{"))
+      ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{")
+      ("marginpar" "[{"))
      font-lock-constant-face 2 command)
     ("function"
      (("begin" "{") ("end" "{") ("pagenumbering" "{")
@@ -344,7 +345,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
-      ("centering" "") ("TeX" "") ("LaTeX" ""))
+      ("centering" "") ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
@@ -385,7 +386,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      2 command)
     ("slide-title" () font-latex-slide-title-face 2 command)
     ("textual"
-     (("item" "[") ("title" "{") ("author" "{") ("date" "{")
+     (("item" "[") ("bibitem" "[{") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
       ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
