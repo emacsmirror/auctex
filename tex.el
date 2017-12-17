@@ -772,70 +772,55 @@ overlays."
 ;;   (TeX-completing-read-multiple ...))
 ;;
 ;; which results in a void-variable error if crm hasn't been loaded before.
-;; XEmacs 21.4 `require' doesn't have the third NOERROR argument, thus we handle
-;; the file-error signal with a `condition-case' also in GNU Emacs.
-(condition-case nil
-    (require 'crm)
-  (file-error
-   (error "AUCTeX requires crm.el which is included in Emacs and
-edit-utils >= 2.32 for XEmacs.")))
+(require 'crm)
 
-(if (fboundp 'completing-read-multiple)
-    (if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
-	    (>= emacs-major-version 25))
-	;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
-	;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
-	;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
-	(defun TeX-completing-read-multiple
-	    (prompt table &optional predicate require-match initial-input
-		    hist def inherit-input-method)
-	  "Like `completing-read-multiple' which see.
+(if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
+	(>= emacs-major-version 25))
+    ;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
+    ;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
+    ;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
+    (defun TeX-completing-read-multiple
+	(prompt table &optional predicate require-match initial-input
+		hist def inherit-input-method)
+      "Like `completing-read-multiple' which see.
 Retain zero-length substrings but ensure that empty input results
 in nil across different emacs versions."
-	  (unwind-protect
-	      (progn
-		(add-hook 'choose-completion-string-functions
-			  'crm--choose-completion-string)
-		(let* ((minibuffer-completion-table #'crm--collection-fn)
-		       (minibuffer-completion-predicate predicate)
-		       ;; see completing_read in src/minibuf.c
-		       (minibuffer-completion-confirm
-			(unless (eq require-match t) require-match))
-		       (crm-completion-table table)
-		       (map (if require-match
-				crm-local-must-match-map
-			      crm-local-completion-map))
-		       ;; If the user enters empty input, `read-from-minibuffer'
-		       ;; returns the empty string, not DEF.
-		       (input (read-from-minibuffer
-			       prompt initial-input map
-			       nil hist def inherit-input-method))
-		       result)
-		  (and def (string-equal input "") (setq input def))
-		  (if (equal (setq result (split-string input crm-separator))
-			     '(""))
-		      nil
-		    result)))
-	    (remove-hook 'choose-completion-string-functions
-			 'crm--choose-completion-string)))
-      ;; For GNU Emacs <= 24.3.
-      (defun TeX-completing-read-multiple
-	  (prompt table &optional predicate require-match initial-input
-		  hist def inherit-input-method)
-	"Like `completing-read-multiple' which see.
-Ensures that empty input results in nil across different emacs versions."
-	(let ((result (completing-read-multiple prompt table predicate
-						require-match initial-input
-						hist def inherit-input-method)))
-	  (if (equal result '("")) nil result))))
-  ;; For XEmacs.
+      (unwind-protect
+	  (progn
+	    (add-hook 'choose-completion-string-functions
+		      'crm--choose-completion-string)
+	    (let* ((minibuffer-completion-table #'crm--collection-fn)
+		   (minibuffer-completion-predicate predicate)
+		   ;; see completing_read in src/minibuf.c
+		   (minibuffer-completion-confirm
+		    (unless (eq require-match t) require-match))
+		   (crm-completion-table table)
+		   (map (if require-match
+			    crm-local-must-match-map
+			  crm-local-completion-map))
+		   ;; If the user enters empty input, `read-from-minibuffer'
+		   ;; returns the empty string, not DEF.
+		   (input (read-from-minibuffer
+			   prompt initial-input map
+			   nil hist def inherit-input-method))
+		   result)
+	      (and def (string-equal input "") (setq input def))
+	      (if (equal (setq result (split-string input crm-separator))
+			 '(""))
+		  nil
+		result)))
+	(remove-hook 'choose-completion-string-functions
+		     'crm--choose-completion-string)))
+  ;; For GNU Emacs <= 24.3.
   (defun TeX-completing-read-multiple
       (prompt table &optional predicate require-match initial-input
 	      hist def inherit-input-method)
-    "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs.
-The XEmacs package edit-utils-2.32 includes `crm.el'."
-    (multi-prompt (if (boundp 'crm-separator) crm-separator ",") nil prompt
-		  table predicate require-match initial-input hist)))
+    "Like `completing-read-multiple' which see.
+Ensures that empty input results in nil across different emacs versions."
+    (let ((result (completing-read-multiple prompt table predicate
+					    require-match initial-input
+					    hist def inherit-input-method)))
+      (if (equal result '("")) nil result))))
 
 ;;; Special support for GNU Emacs
 
@@ -1147,11 +1132,7 @@ all the regular expressions must match for the element to apply."
     (output-html
      (string-match "html" (TeX-output-extension)))
     (has-no-display-manager
-     ;; Compatibility for Emacs <= 22: older Emacsen don't have FRAME argument
-     ;; to `getenv', later versions have the `display-graphic-p' function.
-     (not (if (< emacs-major-version 23)
-	      (or window-system (getenv "DISPLAY"))
-	    (display-graphic-p))))
+     (not (display-graphic-p)))
     (style-pstricks
      (TeX-match-style "^pstricks$\\|^pst-\\|^psfrag$"))
     (engine-omega
@@ -1924,14 +1905,10 @@ If the Emacs frame isn't raised, customize
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let* ((file (condition-case nil
-		   (progn
-		     (require 'url-parse)
-		     (require 'url-util)
-		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
-		 ;; For Emacs 21 compatibility, which doesn't have the
-		 ;; url package.
-		 (file-error (TeX-replace-regexp-in-string "^file://" "" file))))
+  (let* ((file (progn
+		 (require 'url-parse)
+		 (require 'url-util)
+		 (url-unhex-string (aref (url-generic-parse-url file) 6))))
 	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
 		  (apply #'list file linecol)))
 	 (file (car flc))
@@ -2733,10 +2710,7 @@ are returned."
 	  (setq TeX-kpathsea-path-delimiter nil)
 	(let ((separators (format "[\n\r%s]" TeX-kpathsea-path-delimiter))
 	      path input-dir-list)
-	  (dolist (item (condition-case nil
-			    (split-string path-list separators t)
-			  ;; COMPATIBILITY for XEmacs <= 21.4.15
-			  (error (delete "" (split-string path-list separators)))))
+	  (dolist (item (split-string path-list separators t))
 	    (if subdirs
 		(dolist (subdir subdirs)
 		  (setq path (file-name-as-directory (concat item subdir)))
@@ -5398,27 +5372,12 @@ not move point to a position less than this value."
   (unless limit (setq limit (point-min)))
   (TeX-forward-comment-skip (- count) limit))
 
-;; Taken from `comment-forward' in Emacs' CVS on 2006-12-26.  Used as
-;; a compatibility function for XEmacs 21.4.
 (defun TeX-comment-forward (&optional n)
   "Skip forward over N comments.
 Just like `forward-comment' but only for positive N
 and can use regexps instead of syntax."
-  (when (fboundp 'comment-normalize-vars)
-    (comment-normalize-vars))
-  (if (fboundp 'comment-forward)
-      (comment-forward n)
-    (setq n (or n 1))
-    (if (< n 0) (error "No comment-backward")
-      (if comment-use-syntax (forward-comment n)
-	(while (> n 0)
-	  (setq n
-		(if (or (forward-comment 1)
-			(and (looking-at comment-start-skip)
-			     (goto-char (match-end 0))
-			     (re-search-forward comment-end-skip nil 'move)))
-		    (1- n) -1)))
-	(= n 0)))))
+  (comment-normalize-vars)
+  (comment-forward n))
 
 (defun TeX-comment-padding-string ()
   "Return  comment padding as a string.
