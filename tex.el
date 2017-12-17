@@ -4830,8 +4830,8 @@ element to ALIST-VAR."
   (modify-syntax-entry ?~  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
-  (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
-  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?Â«  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?Â»  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?|  "."  TeX-mode-syntax-table))
 
 ;;; Menu Support
@@ -6648,7 +6648,7 @@ Used as function for validating a variable's `safe-local-variable' property."
 (provide 'tex)
 
 ;; Local Variables:
-;; coding: iso-8859-1
+;; coding: utf-8
 ;; End:
 
 ;;; tex.el ends here
