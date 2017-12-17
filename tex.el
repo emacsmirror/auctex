@@ -5039,10 +5039,10 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\e\t"     'TeX-complete-symbol) ;*** Emacs 19 way
 
     (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
-    (define-key map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
+    (define-key map "\C-c:"    'comment-or-uncomment-region) ;*** Old way
     (define-key map "\C-c\""   'TeX-uncomment) ;*** Old way
 
-    (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
+    (define-key map "\C-c;"    'comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
 
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
@@ -5301,62 +5301,6 @@ Unlike the variable `comment-start-skip' it should not match any
 whitespace after the comment starter or any character before it.")
 (make-variable-buffer-local 'TeX-comment-start-regexp)
 
-(defun TeX-comment-region (beg end &optional arg)
-  "Comment each line in the region from BEG to END.
-Numeric prefix arg ARG means use ARG comment characters.
-If ARG is negative, delete that many comment characters instead."
-  (interactive "*r\nP")
-  ;; `comment-padding' will not be recognized in XEmacs' (21.4)
-  ;; `comment-region', so we temporarily modify `comment-start' to get
-  ;; proper spacing.  Unfortunately we have to check for the XEmacs
-  ;; version and cannot test if `comment-padding' is bound as this
-  ;; gets initialized in `VirTeX-common-initialization'.
-  (let ((comment-start (if (and (featurep 'xemacs)
-				(= emacs-major-version 21)
-				(<= emacs-minor-version 4))
-			   (concat comment-start (TeX-comment-padding-string))
-			 comment-start)))
-    (comment-region beg end arg)))
-
-(eval-and-compile
-  ;; COMPATIBILITY for Emacs <= 21.3
-  (if (fboundp 'comment-or-uncomment-region)
-      (defalias 'TeX-comment-or-uncomment-region 'comment-or-uncomment-region)
-    ;; The following function was copied from `newcomment.el' on
-    ;; 2004-01-30 and adapted accordingly
-    (defun TeX-comment-or-uncomment-region (beg end &optional arg)
-      "Comment or uncomment a the region from BEG to END.
-Call `TeX-comment-region', unless the region only consists of
-comments, in which case call `TeX-uncomment-region'.  If a prefix
-arg ARG is given, it is passed on to the respective function."
-      (interactive "*r\nP")
-      (funcall (if (save-excursion ;; check for already commented region
-		     (goto-char beg)
-		     (TeX-comment-forward (point-max))
-		     (<= end (point)))
-		   'TeX-uncomment-region 'TeX-comment-region)
-	       beg end arg)))
-
-  ;; COMPATIBILITY for Emacs <= 20.  (Introduced in 21.1?)
-  (if (fboundp 'uncomment-region)
-      (defalias 'TeX-uncomment-region 'uncomment-region)
-    (defun TeX-uncomment-region (beg end &optional arg)
-      "Remove comment characters from the beginning of each line
-in the region from BEG to END.  Numeric prefix arg ARG means use
-ARG comment characters.  If ARG is negative, delete that many
-comment characters instead."
-      (interactive "*r\nP")
-      (or arg
-	  ;; Determine the number of comment characters at the
-	  ;; beginning of the first commented line.
-	  (setq arg
-		(save-excursion
-		  (goto-char beg)
-		  (re-search-forward
-		   (concat "^" TeX-comment-start-regexp "+") end t)
-		  (length (match-string 0)))))
-      (comment-region beg end (- arg)))))
-
 (defun TeX-uncomment ()
   "Delete comment characters from the beginning of each line in a comment."
   (interactive)
@@ -5373,7 +5317,7 @@ comment characters instead."
 		  (not (eobp)))
 	(forward-line 1))
       ;; Uncomment region
-      (TeX-uncomment-region beg (point)))))
+      (uncomment-region beg (point)))))
 
 (defun TeX-comment-or-uncomment-paragraph ()
   "Comment or uncomment current paragraph."
@@ -5389,7 +5333,7 @@ comment characters instead."
       ;; commented without the user noticing.
       (unless (looking-at "^[ \t]*$")
 	(mark-paragraph)
-	(TeX-comment-region (point) (mark))))))
+	(comment-region (point) (mark))))))
 
 (defun TeX-in-comment ()
   "Return non-nil if point is in a comment."

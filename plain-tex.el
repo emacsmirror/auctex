@@ -83,7 +83,7 @@ Install tool bar if `plain-TeX-enable-toolbar' is non-nil."
       ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
      ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
      "-"
-     ["Comment or Uncomment Region" TeX-comment-or-uncomment-region
+     ["Comment or Uncomment Region" comment-or-uncomment-region
       :help "Comment or uncomment the currently selected region"]
      ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
       :help "Comment or uncomment the paragraph containing point"]

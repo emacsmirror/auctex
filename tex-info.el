@@ -585,7 +585,7 @@ is assumed by default."
      "-"
      ("Commenting"
       ["Comment or Uncomment Region"
-       TeX-comment-or-uncomment-region
+       comment-or-uncomment-region
        :help "Comment or uncomment the currently selected region"]
       ["Comment or Uncomment Paragraph"
        TeX-comment-or-uncomment-paragraph
