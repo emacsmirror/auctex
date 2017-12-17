@@ -1808,8 +1808,7 @@ search, can set the variable.")
 	      (processp gnuserv-process)))
 	((and (boundp 'server-process)
 	      (processp server-process))
-	 nil)
-	((featurep 'xemacs))))
+	 nil)))
 
 (defun TeX-source-correlate-server-enabled-p ()
   "Return non-nil if Emacs server or gnuserv is enabled."
@@ -1879,12 +1878,7 @@ If this is nil, an empty string will be returned."
 	TeX-synctex-tex-flags)
     ""))
 
-(defvar TeX-source-correlate-map
-  (let ((map (make-sparse-keymap)))
-    ;; (if (featurep 'xemacs)
-    ;;	   (define-key map [(control button1)] #'TeX-view-mouse)
-    ;;   (define-key map [C-down-mouse-1] #'TeX-view-mouse))
-    map)
+(defvar TeX-source-correlate-map (make-sparse-keymap)
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
@@ -3877,11 +3871,6 @@ The algorithm is as follows:
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
-  (when (featurep 'xemacs)
-    (unless (boundp 'find-file-hook)
-      (defvaralias 'find-file-hook 'find-file-hooks))
-    (when (not (emacs-version>= 21 5))
-      (make-local-hook 'find-file-hook)))
   (add-hook 'find-file-hook
 	    (lambda ()
 	      ;; Check if we are looking at a new or shared file.
@@ -5052,14 +5041,9 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c^" 'TeX-home-buffer)
     (define-key map "\C-c`"    'TeX-next-error)
     ;; Remap bindings of `next-error'
-    (if (featurep 'xemacs)
-	(substitute-key-definition 'next-error 'TeX-next-error map global-map)
-      (define-key map [remap next-error] 'TeX-next-error))
+    (define-key map [remap next-error] 'TeX-next-error)
     ;; Remap bindings of `previous-error'
-    (if (featurep 'xemacs)
-	(substitute-key-definition 'previous-error 'TeX-previous-error
-				   map global-map)
-      (define-key map [remap previous-error] 'TeX-previous-error))
+    (define-key map [remap previous-error] 'TeX-previous-error)
     ;; From tex-fold.el
     (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
 
@@ -5501,9 +5485,7 @@ regardless of its data type."
 ;;; Navigation
 
 (defvar TeX-search-syntax-table
-  (let ((table (make-syntax-table (make-char-table (if (featurep 'xemacs)
-						       'syntax
-						     'syntax-table)))))
+  (let ((table (make-syntax-table (make-char-table 'syntax-table))))
     ;; Preset mode-independent syntax entries.  (Mode-dependent
     ;; entries are set in the function `TeX-search-syntax-table'.)
     ;; ?\", ?\( and ?\) explicitely get whitespace syntax because
