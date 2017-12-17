@@ -671,10 +671,6 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
-;;;###autoload
-(defalias 'TeX-assoc-string
-  (symbol-function  (if (featurep 'xemacs) 'assoc 'assoc-string)))
-
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
 (eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"
@@ -3020,7 +3016,7 @@ DIALECT-EXPR can also be an expression like one of the following:
 
 When omitted DIALECT-EXPR is equivalent to `(nor )', ie all
 dialected are allowed."
-  (let ((entry (TeX-assoc-string style TeX-style-hook-list)))
+  (let ((entry (assoc-string style TeX-style-hook-list)))
     (and dialect-expr (setq hook (vector 'TeX-style-hook hook
 					 (TeX-shdex-eval dialect-expr))))
     (cond ((null entry)
@@ -3052,7 +3048,7 @@ found in DIALECT-LIST and return the list thereof."
 the STYLE is only removed for those dialects in DIALECT-LIST.
 
 See variable `TeX-style-hook-dialect' for supported dialects."
-  (let ((style-data (TeX-assoc-string style TeX-style-hook-list)))
+  (let ((style-data (assoc-string style TeX-style-hook-list)))
     (if style-data
 	(let ((hooks (and dialect-list (TeX-keep-hooks-in-dialect (cdr style-data) dialect-list))))
 	  (if hooks
@@ -3103,7 +3099,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 			    ;; styles in the order global, private, local
 			    ;; (assuming TeX-style-path has that ordering,
 			    ;; too).
-			    (reverse (cdr-safe (TeX-assoc-string style TeX-style-hook-list))))
+			    (reverse (cdr-safe (assoc-string style TeX-style-hook-list))))
 		  ;; This happens in case some style added a new parser, and
 		  ;; now the style isn't used anymore (user deleted
 		  ;; \usepackage{style}).  Then we're left over with, e.g.,
