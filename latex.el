@@ -2232,7 +2232,7 @@ To insert a hook here, you must insert it in the appropiate style file.")
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
 	 (crm-separator ",")
-	 style var options)
+	 style var options defopt optprmpt)
     (unless LaTeX-global-class-files
       (setq LaTeX-global-class-files
 	    (if (if (eq TeX-arg-input-file-search 'ask)
@@ -2250,6 +2250,12 @@ OPTIONAL and IGNORE are ignored."
     (setq TeX-after-document-hook nil)
     (TeX-run-style-hooks style)
     (setq var (intern (format "LaTeX-%s-class-options" style)))
+    (setq defopt (if (stringp LaTeX-default-options)
+		     LaTeX-default-options
+		   (mapconcat #'identity LaTeX-default-options ",")))
+    (setq optprmpt
+	  (if (and defopt (not (string-equal defopt "")))
+	      (format "Options (default %s): " defopt) "Options: "))
     (if (or (and (boundp var)
 		 (listp (symbol-value var)))
 	    (fboundp var))
@@ -2259,12 +2265,10 @@ OPTIONAL and IGNORE are ignored."
 	    (setq options
 		  (mapconcat 'identity
 			     (TeX-completing-read-multiple
-			      "Options: " (mapcar 'list (symbol-value var)) nil nil
-			      (if (stringp LaTeX-default-options)
-				  LaTeX-default-options
-				(mapconcat 'identity LaTeX-default-options ",")))
+			      optprmpt (mapcar 'list (symbol-value var)) nil nil
+			      nil nil defopt)
 			     ","))))
-      (setq options (TeX-read-string "Options: ")))
+      (setq options (TeX-read-string optprmpt nil nil defopt)))
     (unless (zerop (length options))
       (insert LaTeX-optop options LaTeX-optcl)
       (let ((opts (LaTeX-listify-package-options options)))
