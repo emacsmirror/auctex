@@ -303,20 +303,6 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
   :group 'AUCTeX-jp
   :type '(choice (const :tag "Default" nil) coding-system))
 
-;; 順調に行けば不要になる。
-(defcustom japanese-TeX-command-default "pTeX"
-  "*The default command for `TeX-command' in the japanese-TeX mode."
-  :group 'AUCTeX-jp
-  :type 'string)
-  (make-variable-buffer-local 'japanese-TeX-command-default)
-
-;; 順調に行けば不要になる。
-(defcustom japanese-LaTeX-command-default "LaTeX"
-  "*The default command for `TeX-command' in the japanese-LaTeX mode."
-  :group 'AUCTeX-jp
-  :type 'string)
-  (make-variable-buffer-local 'japanese-LaTeX-command-default)
-
 (defcustom japanese-LaTeX-default-style "jarticle"
   "*Default when creating new Japanese documents."
   :group 'AUCTeX-jp
