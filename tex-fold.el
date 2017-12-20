@@ -46,8 +46,6 @@
 
 (eval-when-compile (require 'cl))
 
-(when (featurep 'xemacs)
-  (require 'overlay))
 (require 'tex)
 (autoload 'LaTeX-forward-paragraph "latex")
 (autoload 'LaTeX-backward-paragraph "latex")
@@ -570,22 +568,20 @@ TYPE can be either 'env for environments, 'macro for macros or
   "Return t if an overfull line will result after adding an overlay.
 The overlay extends from OV-START to OV-END and will display the
 string DISPLAY-STRING."
-  (and (not (featurep 'xemacs)) ; Linebreaks in glyphs don't
-				; work in XEmacs anyway.
-       (save-excursion
-	 (goto-char ov-end)
-	 (search-backward "\n" ov-start t))
-       (not (string-match "\n" display-string))
-       (> (+ (- ov-start
-		(save-excursion
-		  (goto-char ov-start)
-		  (line-beginning-position)))
-	     (length display-string)
-	     (- (save-excursion
-		  (goto-char ov-end)
-		  (line-end-position))
-		ov-end))
-	  (current-fill-column))))
+  (save-excursion
+    (goto-char ov-end)
+    (search-backward "\n" ov-start t))
+  (not (string-match "\n" display-string))
+  (> (+ (- ov-start
+	   (save-excursion
+	     (goto-char ov-start)
+	     (line-beginning-position)))
+	(length display-string)
+	(- (save-excursion
+	     (goto-char ov-end)
+	     (line-end-position))
+	   ov-end))
+     (current-fill-column)))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end delims)
   "Return a property list of the argument number N of a macro.
@@ -635,12 +631,7 @@ of the resulting list."
 		  (setq n (1- n)))
 		t)
 	    (error nil))
-	  (list (TeX-fold-buffer-substring content-start content-end)
-		(when (and (featurep 'xemacs)
-			   (extent-at content-start))
-		  ;; A glyph in XEmacs does not seem to be able to hold more
-		  ;; than one face, so we just use the first one we get.
-		  (car (extent-property (extent-at content-start) 'face))))
+	  (list (TeX-fold-buffer-substring content-start content-end))
 	nil))))
 
 (defun TeX-fold-buffer-substring (start end)
@@ -833,34 +824,20 @@ That means, put respective properties onto overlay OV."
 				  (point))))
     (overlay-put ov 'mouse-face 'highlight)
     (overlay-put ov 'display display-string)
-    (if (featurep 'xemacs)
-	(let ((glyph (make-glyph (if (listp display-string)
-				     (car display-string)
-				   display-string))))
-	  (overlay-put ov 'invisible t)
-	  (when font-lock-mode
-	    (if face
-		(set-glyph-property glyph 'face face)
-	      (set-glyph-property glyph 'face TeX-fold-folded-face)))
-	  (set-extent-property ov 'end-glyph glyph))
-      (when font-lock-mode
-	(overlay-put ov 'face TeX-fold-folded-face))
-      (unless (zerop TeX-fold-help-echo-max-length)
-	(overlay-put ov 'help-echo (TeX-fold-make-help-echo
-				    (overlay-start ov) (overlay-end ov)))))))
+    (when font-lock-mode
+      (overlay-put ov 'face TeX-fold-folded-face))
+    (unless (zerop TeX-fold-help-echo-max-length)
+      (overlay-put ov 'help-echo (TeX-fold-make-help-echo
+				  (overlay-start ov) (overlay-end ov))))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.
 Remove the respective properties from the overlay OV."
   (overlay-put ov 'mouse-face nil)
-  (if (featurep 'xemacs)
-      (progn
-	(set-extent-property ov 'end-glyph nil)
-	(overlay-put ov 'invisible nil))
-    (overlay-put ov 'display nil)
-    (overlay-put ov 'help-echo nil)
-    (when font-lock-mode
-      (overlay-put ov 'face TeX-fold-unfolded-face))))
+  (overlay-put ov 'display nil)
+  (overlay-put ov 'help-echo nil)
+  (when font-lock-mode
+    (overlay-put ov 'face TeX-fold-unfolded-face)))
 
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
@@ -904,10 +881,7 @@ Remove the respective properties from the overlay OV."
 	      ;; Close old overlays.
 	      (dolist (ol old-ols)
 		(when (and (eq (current-buffer) (overlay-buffer ol))
-			   (not (rassq ol TeX-fold-open-spots))
-			   (or (not (featurep 'xemacs))
-			       (and (featurep 'xemacs)
-				    (not (extent-detached-p ol)))))
+			   (not (rassq ol TeX-fold-open-spots)))
 		  (if (and (>= (point) (overlay-start ol))
 			   (<= (point) (overlay-end ol)))
 		      ;; Still near the overlay: keep it open.
