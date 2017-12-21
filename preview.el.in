@@ -54,6 +54,8 @@ preview-latex buffers will not survive across sessions.")))
 preview-latex's bug reporting commands will probably not work.")))
   (require 'info))
 
+(require 'prv-emacs)
+
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUCTeX
   :prefix "preview-"
