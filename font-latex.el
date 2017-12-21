@@ -223,9 +223,11 @@ Emacs."
 			 1.1)))
   (dotimes (num max)
     (let* ((num (- max (1+ num)))
-	   (face-name (intern (format "font-latex-sectioning-%s-face" num))))
+	   (face-name (intern (format "font-latex-sectioning-%s-face" num)))
+	   (f-inherit (intern (format "font-latex-sectioning-%s-face" (1+ num)))))
       (eval
        `(defface ,face-name
+	  '((t (:height ,height-scale :inherit ,f-inherit)))
 	  (format "Face for sectioning commands at level %s.
 
 Probably you don't want to customize this face directly.  Better
@@ -699,6 +701,8 @@ restart Emacs."
 				:tag "Keywords with specs"
 				(group (string :tag "Keyword")
 				       (string :tag "Format specifier"))))
+		       ,'(choice (face :tag "Face name")
+				 (custom-face-edit :tag "Face attributes"))
 		       (choice :tag "Type"
 			       ;; Maps to
 			       ;;`font-latex-match-command-with-arguments'
@@ -1157,6 +1161,9 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-slide-title-face
+  (let* ((scale 1.2))
+    `((t (:inherit (variable-pitch font-lock-type-face)
+		   :weight bold :height ,scale))))
   "Face for slide titles."
   :group 'font-latex-highlighting-faces)
 
