@@ -152,7 +152,14 @@
     ("AmSgather"     env-on)      ("AmSgather*"    env-on)
     ("AmSmultline"   env-on)      ("AmSmultline*"  env-on)
     ("AmSflalign"    env-on)      ("AmSflalign*"   env-on)
-    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on))
+    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on)
+
+    ;; breqn
+    ("dmath"         env-on)      ("dmath*"        env-on)
+    ("dseries"       env-on)      ("dseries*"      env-on)
+    ("dgroup"        env-on)      ("dgroup*"       env-on)
+    ("darray"        env-on)      ("darray*"       env-on)
+    ("dsuspend"      env-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()
