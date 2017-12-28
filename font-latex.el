@@ -306,11 +306,12 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
       ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
-      ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
+      ("addvspace" "{") ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
-      ("centering" "") ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
+      ("centering" "") ("raggedright" "") ("raggedleft" "")
+      ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
