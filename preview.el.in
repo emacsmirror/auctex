@@ -3529,7 +3529,7 @@ internal parameters, STR may be a log to insert into the current log."
       ((preview-format-name (shell-quote-argument
 			     (preview-dump-file-name
 			      (file-name-nondirectory master))))
-       (process-environment process-environment)
+       (process-environment (copy-sequence process-environment))
        (process
 	(progn
 	  ;; Fix Bug#20773, Bug#27088.
