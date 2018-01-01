@@ -53,7 +53,8 @@
 ;;
 ;;  To configure which macros and environments influence LaTeX math mode,
 ;;  customize the variable `texmathp-tex-commands'.  By default
-;;  it recognizes the LaTeX core as well as AMS-LaTeX (see the variable
+;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX and
+;;  packages mathtools, empheq and breqn (see the variable
 ;;  `texmathp-tex-commands-default', also as an example).
 ;;
 ;;  To try out the code interactively, use `M-x texmathp RET'.
