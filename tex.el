@@ -6231,14 +6231,36 @@ information about your AUCTeX version and AUCTeX configuration."
 	   'TeX-parse-self
 	   'TeX-master
 	   'TeX-command-list)
-     nil nil
-     "Remember to cover the basics, that is, what you expected to happen and
+     nil
+     ;; reporter adds too many new lines around salutation text, that we don't
+     ;; want, since it's itself a new line.
+     (lambda ()
+       (save-excursion
+	 (goto-char (point-min))
+	 (re-search-forward mail-header-separator)
+	 (forward-char)
+	 (delete-char 1)
+	 (forward-char)
+	 (delete-char 2)))
+     (propertize
+      "\n" 'display
+      (with-temp-buffer
+	(insert
+	 "Remember to cover the basics, that is, what you expected to happen and
 what in fact did happen.
 
 Be sure to consult the FAQ section in the manual before submitting
 a bug report.  In addition check if the bug is reproducable with an
 up-to-date version of AUCTeX.  So please upgrade to the version
-available from http://www.gnu.org/software/auctex/ if your
+available from ")
+	(insert-text-button
+	 "http://www.gnu.org/software/auctex/"
+	 'face 'link
+	 'help-echo (concat "mouse-2, RET: Follow this link")
+	 'action (lambda (button)
+		   (browse-url "http://www.gnu.org/software/auctex/"))
+	 'follow-link t)
+	(insert " if your
 installation is older than the one available from the web site.
 
 If the bug is triggered by a specific \(La\)TeX file, you should try
@@ -6246,9 +6268,17 @@ to produce a minimal sample file showing the problem and include it
 in your report.
 
 Your report will be posted for the auctex package at the GNU bug
-tracker.  Visit http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex
-to browse existing AUCTeX bugs.
-------------------------------------------------------------------------")))
+tracker.  Visit ")
+	(insert-text-button
+	 "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"
+	 'face 'link
+	 'help-echo (concat "mouse-2, RET: Follow this link")
+	 'action (lambda (button)
+		   (browse-url "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"))
+	 'follow-link t)
+	(insert "\nto browse existing AUCTeX bugs.
+------------------------------------------------------------------------\n\n")
+	(buffer-string))))))
 
 
 ;;; Documentation
