@@ -705,7 +705,7 @@ Gets the usual PROCESS and STRING parameters, see
 					 preview-gs-command-line)
 					" ") "''\n")
       (setq preview-gs-answer "")
-      (process-kill-without-query process)
+      (set-process-query-on-exit-flag process nil)
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
       (process-send-string process preview-gs-init-string)

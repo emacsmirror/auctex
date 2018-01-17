@@ -1013,7 +1013,7 @@ have changed."
      ((not char) 'font-lock-comment-face)
      ((eq char ?$) 'font-latex-math-face)
      (t
-      (when (char-valid-p char)
+      (when (characterp char)
 	;; This is a \verb?...? construct.  Let's find the end and mark it.
 	(save-excursion
 	  (skip-chars-forward (string ?^ char)) ;; Use `end' ?

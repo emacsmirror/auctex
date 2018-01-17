@@ -1318,12 +1318,7 @@ viewer."
 		 :int32 (1+ (current-column)))
 	   :uint32 0)
           (when TeX-view-evince-keep-focus
-	    (cond ((fboundp #'select-frame-set-input-focus)
-		   (select-frame-set-input-focus (selected-frame)))
-		  ((fboundp #'x-focus-frame)
-		   (x-focus-frame (selected-frame)))
-		  ((fboundp #'focus-frame)
-		   (focus-frame (selected-frame))))))
+            (select-frame-set-input-focus (selected-frame))))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
 
 (defun TeX-atril-sync-view ()
@@ -1861,7 +1856,7 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
       ;; Same regexp used in `preview-parse-messages'.  XXX: XEmacs doesn't
       ;; support regexp classes, so we can't use "[:digit:]" here.
       (when (re-search-forward "!offset(\\([---0-9]+\\))" nil t)
-	(let ((offset (string-to-int (match-string-no-properties 1))))
+	(let ((offset (string-to-number (match-string-no-properties 1))))
 	  (when TeX-region-orig-buffer
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
 		  (+ line offset) col)))))))
@@ -3363,7 +3358,7 @@ is called with \\[universal-argument]."
 					      TeX-esc)
 				      (TeX-symbol-list-filtered) nil nil nil
 				      'TeX-macro-history TeX-default-macro)))
-  (when (interactive-p)
+  (when (called-interactively-p 'any)
     (setq TeX-default-macro symbol))
   (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
   (run-hooks 'TeX-after-insert-macro-hook))
@@ -6419,7 +6414,7 @@ NAME may be a package, a command, or a document."
 	    ;; Give up.
 	    (message "No documentation found")))
       ;; Ask the user about the package, command, or document.
-      (when (and (interactive-p)
+      (when (and (called-interactively-p 'any)
 		 (or (not name) (string= name "")))
 	(let ((symbol (thing-at-point 'symbol))
 	      contained completions doc)

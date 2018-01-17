@@ -310,7 +310,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 
     ;; Store info, show as message when interactive, and return
     (setq texmathp-why match)
-    (and (interactive-p)
+    (and (called-interactively-p 'any)
 	 (message "math-mode is %s: %s begins at buffer position %d"
 		  (if math-on "on" "off")
 		  (or (car match) "new paragraph")

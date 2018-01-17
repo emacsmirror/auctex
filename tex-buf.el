@@ -1273,7 +1273,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
       (if TeX-after-start-process-function
 	  (funcall TeX-after-start-process-function process))
       (set-process-filter process #'TeX-background-filter)
-      (process-kill-without-query process))))
+      (set-process-query-on-exit-flag process nil))))
 
 (defun TeX-run-silent (name command _file)
   "Start process with second argument."
@@ -1286,7 +1286,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
 				  TeX-shell-command-option command)))
       (if TeX-after-start-process-function
 	  (funcall TeX-after-start-process-function process))
-      (process-kill-without-query process))))
+      (set-process-query-on-exit-flag process nil))))
 
 (defun TeX-run-interactive (name command file)
   "Run TeX interactively.
