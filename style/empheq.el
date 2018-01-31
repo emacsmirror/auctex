@@ -31,8 +31,8 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -142,11 +142,11 @@
 	      (where (cadr delims)))
 	  (if (string= where "Left")
 	      (progn
-		(pushnew (concat TeX-esc "empheq" delim) lval :test #'equal)
-		(pushnew (concat TeX-esc "empheqbig" delim) lval :test #'equal))
+		(cl-pushnew (concat TeX-esc "empheq" delim) lval :test #'equal)
+		(cl-pushnew (concat TeX-esc "empheqbig" delim) lval :test #'equal))
 	    (progn
-	      (pushnew (concat TeX-esc "empheq" delim) rval :test #'equal)
-	      (pushnew (concat TeX-esc "empheqbig" delim) rval :test #'equal)))))
+	      (cl-pushnew (concat TeX-esc "empheq" delim) rval :test #'equal)
+	      (cl-pushnew (concat TeX-esc "empheqbig" delim) rval :test #'equal)))))
       (when lval
 	(setq tmp (assq-delete-all (car (assoc "left" tmp)) tmp))
 	(setq lvals (append lval lvals))

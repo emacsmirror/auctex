@@ -31,8 +31,9 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+;; Needed for compiling `cl-pushnew':
+(eval-when-compile
+  (require 'cl-lib))
 
 (defvar LaTeX-fvextra-key-val-options
   '(;; 3 General options
@@ -99,8 +100,8 @@
       (dolist (x keys)
 	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
 	(if (string= x "highlightcolor")
-	    (pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal)
-	  (pushnew (list x (append '("none") (mapcar #'car (funcall colorcmd)))) tmp :test #'equal)))
+	    (cl-pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal)
+	  (cl-pushnew (list x (append '("none") (mapcar #'car (funcall colorcmd)))) tmp :test #'equal)))
       (setq LaTeX-fancyvrb-key-val-options-local
 	    (copy-alist tmp)))))
 

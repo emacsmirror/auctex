@@ -40,8 +40,9 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+;; Needed for compiling `cl-pushnew':
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; The following are options taken from chapter 4 of the listings
 ;; manual (2007/02/22 Version 1.4).
@@ -284,9 +285,9 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	 (key (car elt))
 	 (temp (copy-alist LaTeX-listings-key-val-options-local))
 	 (opts (assq-delete-all (car (assoc key temp)) temp)))
-    (pushnew (list key (TeX-delete-duplicate-strings
-			(mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
-	     opts :test #'equal)
+    (cl-pushnew (list key (TeX-delete-duplicate-strings
+			   (mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
+	        opts :test #'equal)
     (setq LaTeX-listings-key-val-options-local
 	  (copy-alist opts))))
 

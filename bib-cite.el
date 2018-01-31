@@ -589,7 +589,8 @@
 ;; ----------------------------------------------------------------------------
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 (defgroup bib-cite nil
   "bib-cite, LaTeX minor-mode to display \\cite, \\ref and \\label commands."
@@ -2427,7 +2428,7 @@ bib-dos-or-os2-variable affects:
 			 (or (and (fboundp 'TeX-split-string)
 				  (TeX-split-string sep-char value))
 			     (dired-split sep-char value)))))
-      (loop for x in entries if (bib-cite-file-directory-p x) collect x))))
+      (cl-loop for x in entries if (bib-cite-file-directory-p x) collect x))))
 
 (provide 'bib-cite)
 ;;; bib-cite.el ends here

@@ -43,7 +43,7 @@
 (require 'tex)
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 
 (defgroup font-latex nil
   "Font-latex text highlighting package."

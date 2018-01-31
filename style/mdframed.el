@@ -37,8 +37,9 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+;; Needed for compiling `cl-pushnew':
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -214,9 +215,9 @@
 	   (val (cadr (assoc "style" LaTeX-mdframed-key-val-options)))
 	   (temp (copy-alist LaTeX-mdframed-key-val-options-local))
 	   (opts (assq-delete-all (car (assoc key temp)) temp)))
-      (pushnew (list key (TeX-delete-duplicate-strings
-			  (append val (mapcar #'car (LaTeX-mdframed-mdfdefinestyle-list)))))
-	       opts :test #'equal)
+      (cl-pushnew (list key (TeX-delete-duplicate-strings
+			     (append val (mapcar #'car (LaTeX-mdframed-mdfdefinestyle-list)))))
+	          opts :test #'equal)
       (setq LaTeX-mdframed-key-val-options-local
 	    (copy-alist opts))))
   ;;
@@ -242,7 +243,7 @@
 	   (tmp (copy-alist LaTeX-mdframed-key-val-options-local)))
       (dolist (x keys)
 	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
-	(pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal))
+	(cl-pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal))
       (setq LaTeX-mdframed-key-val-options-local
 	    (copy-alist tmp)))))
 

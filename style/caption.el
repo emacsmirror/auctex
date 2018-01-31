@@ -34,8 +34,8 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -168,19 +168,19 @@ in `caption'-completions."
       ;; For `\DeclareCaptionOption', only add the value
       ;; (remember:      key=^^^^^^, val="defined key")
       (if (string-equal key "option")
-	  (pushnew (list val) opts :test #'equal)
+	  (cl-pushnew (list val) opts :test #'equal)
 	;; For anything but `\DeclareCaptionOption', do the standard
 	;; procedure.  Again, take care of `subrefformat' for `subcaption.el'.
 	(if val-match
 	    (progn
 	      (when (and (string-equal key "labelformat")
 			 (boundp 'LaTeX-subcaption-key-val-options))
-		(pushnew (list "subrefformat"
-			       (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-			 opts :test #'equal))
-	      (pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-		       opts :test #'equal))
-	  (pushnew (list key (list val)) opts :test #'equal)))
+		(cl-pushnew (list "subrefformat"
+			          (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+			    opts :test #'equal))
+	      (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+		          opts :test #'equal))
+	  (cl-pushnew (list key (list val)) opts :test #'equal)))
       (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
   ;; Support for environments defined with newfloat.sty: These
   ;; environments are added to "type" and "type*" key:
@@ -192,8 +192,8 @@ in `caption'-completions."
 	     (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
 	     (temp (copy-alist LaTeX-caption-key-val-options-local))
 	     (opts (assq-delete-all (car (assoc key temp)) temp)))
-	(pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
-		 opts :test #'equal)
+	(cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
+		    opts :test #'equal)
 	(setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-arg-caption-command (optional &optional prompt)
