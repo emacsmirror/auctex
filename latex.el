@@ -31,6 +31,9 @@
 (require 'tex)
 (require 'tex-style)
 (require 'tex-ispell)
+(when (<= 26 emacs-major-version)
+  ;; latex-flymake requires Emacs 26.
+  (require 'latex-flymake))
 (eval-when-compile
   (require 'cl-lib))
 
