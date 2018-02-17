@@ -44,7 +44,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 (require 'tex)
 (autoload 'LaTeX-forward-paragraph "latex")
@@ -334,8 +335,8 @@ for macros and 'math for math macros."
 			  ((eq type 'math) TeX-fold-math-spec-list-internal)
 			  (t TeX-fold-macro-spec-list-internal)))
 	(dolist (i (cadr item))
-          (pushnew (list i (car item)) fold-list :test #'equal)
-	  (pushnew i item-list :test #'equal)))
+          (cl-pushnew (list i (car item)) fold-list :test #'equal)
+	  (cl-pushnew i item-list :test #'equal)))
       (when item-list
 	(setq regexp (cond ((and (eq type 'env)
 				 (eq major-mode 'context-mode))
@@ -701,7 +702,7 @@ breaks will be replaced by spaces."
     (dolist (ov (overlays-at (point)))
       (when (and (eq (overlay-get ov 'category) 'TeX-fold)
 		 (numberp (overlay-get ov 'TeX-fold-display-string-spec)))
-	(pushnew ov overlays)))
+	(cl-pushnew ov overlays)))
     (when overlays
       ;; Sort list according to descending starts.
       (setq overlays (sort (copy-sequence overlays)

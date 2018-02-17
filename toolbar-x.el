@@ -106,7 +106,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Note that this just gives a useful default.  Icons are expected to
 ;; be in subdirectory "images" or "toolbar" relative to the load-path.
@@ -179,7 +180,7 @@ different.  OPTION-LIST equal to nil is a good option list."
     (dotimes (i n)
       (when (> i 0)
 	(setq temp-opt-list (cddr temp-opt-list)))
-      (pushnew (car temp-opt-list) list-diff :test #'equal)
+      (cl-pushnew (car temp-opt-list) list-diff :test #'equal)
       (setq elt-in-valid (and elt-in-valid
 			      (memq (car temp-opt-list)
 				    valid-options))))

@@ -25,7 +25,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 (require 'tex)
 
@@ -327,16 +328,16 @@ commands. Return the resulting string."
     (let (nodes dups)
       (while (re-search-forward "^@node\\b" nil t)
 	(skip-chars-forward "[:blank:]")
-	(pushnew (list (Texinfo-nodename-de-escape
-			(buffer-substring-no-properties
-			 (point) (progn (skip-chars-forward "^\r\n,")
-					(skip-chars-backward "[:blank:]")
-					(point)))))
-		 nodes
-		 :test (lambda (a b)
-			 (when (equal a b)
-			   (push (cons a (line-number-at-pos (point))) dups)
-			   t))))
+	(cl-pushnew (list (Texinfo-nodename-de-escape
+			   (buffer-substring-no-properties
+			    (point) (progn (skip-chars-forward "^\r\n,")
+					   (skip-chars-backward "[:blank:]")
+					   (point)))))
+		    nodes
+		    :test (lambda (a b)
+			    (when (equal a b)
+			      (push (cons a (line-number-at-pos (point))) dups)
+			      t))))
       (when dups
 	(display-warning
 	 'AUCTeX
