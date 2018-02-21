@@ -3831,6 +3831,8 @@ will be used regardless of the value of this variable.
 @cindex Running @code{chktex}
 @cindex Style
 @cindex Problems
+@cindex Flymake
+@cindex Running Flymake
 
 Running @TeX{} or @LaTeX{} will only find regular errors in the
 document, not examples of bad style.  Furthermore, description of the
@@ -3844,10 +3846,21 @@ escape the space after an abbreviation or using @samp{...} instead of
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next error.
 
-Each of the two utilities will find some errors the other doesn't, but
-@code{chktex} is more configurable, allowing you to create your own
-errors.  You may need to install the programs before using them.  You
-can get @code{lacheck} from
+Alternatively, you may want in-buffer notation.  @AUCTeX{} provides
+support for this using the Flymake package in Emacs 26 or newer
+(@xref{Using Flymake,,,Flymake,GNU Flymake} for details).  To enable,
+call @kbd{M-x flymake-mode RET} in the buffer or enable it in all
+buffers by adding this to your init file:
+@lisp
+(add-hook 'LaTeX-mode-hook #'flymake-mode)
+@end lisp
+Note that @AUCTeX{} currently only provides support for using
+@code{chktex} as the flymake backend.
+
+Each of the two utilities @code{lacheck} and @code{chktex} will find
+some errors the other doesn't, but @code{chktex} is more configurable,
+allowing you to create your own errors.  You may need to install the
+programs before using them.  You can get @code{lacheck} from
 @file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} and
 @code{chktex} from
 @file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.
