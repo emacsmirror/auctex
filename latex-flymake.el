@@ -100,12 +100,5 @@ REPORT-FN is flymake's callback function."
       (process-send-region LaTeX--flymake-proc (point-min) (point-max))
       (process-send-eof LaTeX--flymake-proc))))
 
-(defun LaTeX-setup-flymake-backend ()
-  "Setup flymake backend for LaTeX."
-  (add-hook 'flymake-diagnostic-functions 'LaTeX-flymake nil t))
-
-(when (< 25 emacs-major-version)
-  (add-hook 'LaTeX-mode-hook #'LaTeX-setup-flymake-backend))
-
 (provide 'latex-flymake)
 ;;; latex-flymake.el ends here

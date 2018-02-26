@@ -5901,7 +5901,10 @@ of `LaTeX-mode-hook'."
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
 	   filladapt-mode)
-      (turn-off-filladapt-mode)))
+      (turn-off-filladapt-mode))
+  (when (< 25 emacs-major-version)
+    ;; Set up flymake backend, see latex-flymake.el
+    (add-hook 'flymake-diagnostic-functions 'LaTeX-flymake nil t)))
 
 (TeX-abbrev-mode-setup doctex-mode)
 
