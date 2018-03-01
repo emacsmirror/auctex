@@ -6545,35 +6545,35 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-indent-tabular ()
   "Return indent column for the current tabular-like line."
-  (destructuring-bind
-   (beg-pos . beg-col)
-   (LaTeX-env-beginning-pos-col)
-   (let ((tabular-like-end-regex
-	  (format "\\\\end{%s}"
-		  (regexp-opt
-		   (let (out)
-		     (mapc (lambda (x)
-                             (when (eq (cadr x) 'LaTeX-indent-tabular)
-                               (push (car x) out)))
-                           LaTeX-indent-environment-list)
-		     out)))))
-     (cond ((looking-at tabular-like-end-regex)
-	    beg-col)
+  (cl-destructuring-bind
+      (beg-pos . beg-col)
+      (LaTeX-env-beginning-pos-col)
+    (let ((tabular-like-end-regex
+	   (format "\\\\end{%s}"
+		   (regexp-opt
+		    (let (out)
+		      (mapc (lambda (x)
+                              (when (eq (cadr x) 'LaTeX-indent-tabular)
+                                (push (car x) out)))
+                            LaTeX-indent-environment-list)
+		      out)))))
+      (cond ((looking-at tabular-like-end-regex)
+	     beg-col)
 
-	   ((looking-at "\\\\\\\\")
-	    (+ 2 beg-col))
+	    ((looking-at "\\\\\\\\")
+	     (+ 2 beg-col))
 
-	   ((looking-at "&")
-	    (LaTeX-hanging-ampersand-position))
+	    ((looking-at "&")
+	     (LaTeX-hanging-ampersand-position))
 
-	   (t
-	    (+ 2
-	       (let ((any-col (save-excursion
-				(when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
-				  (current-column)))))
-		 (if (and any-col (= ?& (char-before (match-end 0))))
-		     (1+ any-col)
-		   beg-col))))))))
+	    (t
+	     (+ 2
+	        (let ((any-col (save-excursion
+				 (when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
+				   (current-column)))))
+		  (if (and any-col (= ?& (char-before (match-end 0))))
+		      (1+ any-col)
+		    beg-col))))))))
 
 (provide 'latex)
 

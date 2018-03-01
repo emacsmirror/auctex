@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -34,7 +34,7 @@
 (require 'custom)
 (require 'tex-site)
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -2710,11 +2710,11 @@ are returned."
 		(dolist (subdir subdirs)
 		  (setq path (file-name-as-directory (concat item subdir)))
 		  (when (file-exists-p path)
-		    (pushnew path input-dir-list :test #'equal)))
+		    (cl-pushnew path input-dir-list :test #'equal)))
 	      (setq path (file-name-as-directory item))
 	      (when (file-exists-p path)
-		(pushnew path input-dir-list :test #'equal))))
-	  ;; No duplication in result is assured since `pushnew' is
+		(cl-pushnew path input-dir-list :test #'equal))))
+	  ;; No duplication in result is assured since `cl-pushnew' is
 	  ;; used above.  Should we introduce an option for speed just
 	  ;; to accumulate all the results without care for
 	  ;; duplicates?
@@ -3131,6 +3131,7 @@ FORCE is not nil."
 
 (defcustom TeX-complete-word 'ispell-complete-word
   "*Function to call for completing non-macros in `tex-mode'."
+  :type 'function
   :group 'TeX-macro)
 
 (defcustom TeX-complete-expert-commands nil
@@ -4521,7 +4522,7 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 				    "$TEXMFDIST")
                                   "latex"))
       (when (file-readable-p dir)
-        (pushnew dir list :test #'equal)))
+        (cl-pushnew dir list :test #'equal)))
     (nreverse list)))
 
 (defcustom TeX-tree-roots (TeX-tree-roots)
@@ -6404,7 +6405,7 @@ NAME may be a package, a command, or a document."
       (when (memq major-mode (nth 1 elt))
 	(let ((completions (funcall (nth 2 elt))))
 	  (unless (null completions)
-            (pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
+            (cl-pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
     (if (null docs)
 	(progn
 	  (if (executable-find "texdoc")
@@ -6528,7 +6529,7 @@ of the car of `ispell-tex-skip-alists'.  This only happens if
     (let ((raws (car ispell-tex-skip-alists))
 	  (envs (cadr ispell-tex-skip-alists)))
       (dolist (x skip)
-	(pushnew x raws :test #'equal))
+	(cl-pushnew x raws :test #'equal))
       (setq ispell-tex-skip-alists (list raws envs)))))
 
 (defun TeX-ispell-skip-setcdr (skip)
@@ -6541,7 +6542,7 @@ of the cdr of `ispell-tex-skip-alists'.  This only happens if
     (let ((raws (car ispell-tex-skip-alists))
 	  (envs (cadr ispell-tex-skip-alists)))
       (dolist (x skip)
-	(pushnew x envs :test #'equal))
+	(cl-pushnew x envs :test #'equal))
       (setq ispell-tex-skip-alists (list raws envs)))))
 
 (defun TeX-ispell-tex-arg-end (&optional arg1 arg2 arg3)
