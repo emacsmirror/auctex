@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'
 
-;; Copyright (C) 2004, 2005, 2009, 2013-2017 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009, 2013-2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -369,7 +369,8 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	   (LaTeX-listings-update-style-key)
 	   (format "%s" name))))
       (TeX-arg-key-val LaTeX-listings-key-val-options-local))
-    '("lstinline" TeX-arg-verb)
+    '("lstinline" [TeX-arg-key-val LaTeX-listings-key-val-options-local]
+      TeX-arg-verb-delim-or-brace)
     '("lstinputlisting" [TeX-arg-key-val LaTeX-listings-key-val-options-local]
       TeX-arg-file)
     "lstlistoflistings"

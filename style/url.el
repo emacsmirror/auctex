@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -46,8 +46,8 @@
     "UrlOrds"
     "UrlRight"
     "UrlSpecials"
-    "path"
-    "url"
+    '("path" (TeX-arg-verb-delim-or-brace "Path"))
+    '("url" (TeX-arg-verb-delim-or-brace "Url"))
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
 
@@ -60,7 +60,7 @@
    (when (and (fboundp 'font-latex-add-keywords)
 	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("path" "{") ("url" "{")) 'reference)
+     (font-latex-add-keywords '(("path" "") ("url" "")) 'reference)
      (font-latex-add-keywords '(("Url" "")
 				("UrlBigBreakPenalty" "")
 				("UrlBigBreaks" "")

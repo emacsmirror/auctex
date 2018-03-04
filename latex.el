@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2617,6 +2617,38 @@ argument, otherwise as a mandatory one.  IGNORE is ignored."
 	  (insert del))
       (insert del (read-from-minibuffer "Text: ") del))
     (setq LaTeX-default-verb-delimiter del)))
+
+(defun TeX-arg-verb-delim-or-brace (optional &optional prompt)
+  "Prompt for delimiter and text.
+If OPTIONAL, indicate optional argument in minibuffer.  PROMPT is
+a string replacing the default one when asking the user for text.
+This function is intended for \\verb like macros which take their
+argument in delimiters like \"\| \|\" or braces \"\{ \}\"."
+  (let ((del (read-quoted-char
+	      (concat "Delimiter (default "
+		      (char-to-string LaTeX-default-verb-delimiter) "): "))))
+    (when (<= del ?\ )
+      (setq del LaTeX-default-verb-delimiter))
+    (if (TeX-active-mark)
+	(progn
+	  (insert del)
+	  (goto-char (mark))
+	  ;; If the delimiter was an opening brace, close it with a
+	  ;; brace, otherwise use the delimiter again
+	  (insert (if (= del ?\{)
+		      ?\}
+		    del)))
+      ;; Same thing again
+      (insert del (read-from-minibuffer
+		   (TeX-argument-prompt optional prompt "Text"))
+	      (if (= del ?\{)
+		  ?\}
+		del)))
+    ;; Do not set `LaTeX-default-verb-delimiter' if the user input was
+    ;; an opening brace.  This would give funny results for the next
+    ;; "C-c C-m \verb RET"
+    (unless (= del ?\{)
+      (setq LaTeX-default-verb-delimiter del))))
 
 (defun TeX-arg-pair (optional first second)
   "Insert a pair of number, prompted by FIRST and SECOND.

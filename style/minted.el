@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)
 
-;; Copyright (C) 2014-2017 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2018 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -286,7 +286,7 @@ are loaded."
 		  (concat (cadr name-lang) "inline"))))
       (add-to-list 'TeX-auto-symbol
 		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
-			  TeX-arg-verb))
+			  TeX-arg-verb-delim-or-brace))
       (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
       (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
       (when (and (fboundp 'font-latex-add-keywords)
@@ -368,7 +368,7 @@ a list of strings."
       LaTeX-arg-minted-language TeX-arg-verb)
     '("mintinline"
       [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
-      LaTeX-arg-minted-language TeX-arg-verb)
+      LaTeX-arg-minted-language TeX-arg-verb-delim-or-brace)
     '("newminted" ["Environment Name"] LaTeX-arg-minted-language
       (TeX-arg-key-val LaTeX-minted-key-val-options-local))
     '("newmint" ["Macro Name"] LaTeX-arg-minted-language

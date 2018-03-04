@@ -5215,7 +5215,6 @@ defined labels.
 Prompt for a @LaTeX{} length completing with known lengths.  Add length
 to list of defined lengths.
 
-
 @item TeX-arg-define-macro
 Prompt for a @TeX{} macro with completion.  Add macro to list of defined
 macros.
@@ -5275,6 +5274,11 @@ Prompt for a @LaTeX{} pagestyle with completion.
 
 @item TeX-arg-verb
 Prompt for delimiter and text.
+
+@item TeX-arg-verb-delim-or-brace
+Prompt for delimiter and text.  This function is similar to
+@code{TeX-arg-verb}, but is intended for macros which take their
+argument enclosed in delimiters or in braces.
 
 @item TeX-arg-pair
 Insert a pair of numbers, use arguments for prompt. The numbers are
