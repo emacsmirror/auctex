@@ -2023,7 +2023,7 @@ END marks boundaries for searching for quotation ends."
 (defun font-latex--get-script-props (pos script-type)
   (let* ((old-raise (or (plist-get (get-text-property pos 'display) 'raise) 0.0))
 	 (new-level (1+ (or (get-text-property pos 'script-level) 0)))
-	 (disp-props (copy-sequence (case script-type
+	 (disp-props (copy-sequence (cl-case script-type
 				      (:super (cdr font-latex-script-display))
 				      (:sub   (car font-latex-script-display)))))
 	 (new-disp-props (let ((raise (plist-get disp-props 'raise))
@@ -2041,7 +2041,7 @@ END marks boundaries for searching for quotation ends."
 						   (* nl nl 0.012018514285714385)))))
 			     disp-props))))
     `(face ,(if (<= new-level font-latex-fontify-script-max-level)
-		(case script-type
+		(cl-case script-type
 		  (:super 'font-latex-superscript-face)
 		  (:sub   'font-latex-subscript-face))
 	      nil)
