@@ -2399,7 +2399,7 @@ this variable to \"<none>\"."
       (when (with-current-buffer buf
 	      (and (equal dir default-directory)
 		   (stringp TeX-master)))
-	(return (with-current-buffer buf TeX-master))))))
+	(cl-return (with-current-buffer buf TeX-master))))))
 
 (defun TeX-master-file-ask ()
   "Ask for master file, set `TeX-master' and add local variables."
