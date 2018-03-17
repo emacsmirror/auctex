@@ -1,6 +1,7 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014  Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2018
+;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
@@ -71,7 +72,7 @@
      '("tbinom" 2)
      '("genfrac" "Left delimiter" "Right delimiter" "Thickness"
        "Mathstyle" 2)
-     '("cfrac" ["position (l or r)"] t)
+     '("cfrac" ["position (l or r)"] 2)
      '("smash" ["where (t or b)"] t)
      '("sideset" "Left" "Right")
      '("tag" "(Tag)")
