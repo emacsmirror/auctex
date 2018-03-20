@@ -53,7 +53,8 @@
 ;;
 ;;  To configure which macros and environments influence LaTeX math mode,
 ;;  customize the variable `texmathp-tex-commands'.  By default
-;;  it recognizes the LaTeX core as well as AMS-LaTeX (see the variable
+;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX and
+;;  packages mathtools, empheq and breqn (see the variable
 ;;  `texmathp-tex-commands-default', also as an example).
 ;;
 ;;  To try out the code interactively, use `M-x texmathp RET'.
@@ -152,7 +153,14 @@
     ("AmSgather"     env-on)      ("AmSgather*"    env-on)
     ("AmSmultline"   env-on)      ("AmSmultline*"  env-on)
     ("AmSflalign"    env-on)      ("AmSflalign*"   env-on)
-    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on))
+    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on)
+
+    ;; breqn
+    ("dmath"         env-on)      ("dmath*"        env-on)
+    ("dseries"       env-on)      ("dseries*"      env-on)
+    ("dgroup"        env-on)      ("dgroup*"       env-on)
+    ("darray"        env-on)      ("darray*"       env-on)
+    ("dsuspend"      env-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()
@@ -302,7 +310,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 
     ;; Store info, show as message when interactive, and return
     (setq texmathp-why match)
-    (and (interactive-p)
+    (and (called-interactively-p 'any)
 	 (message "math-mode is %s: %s begins at buffer position %d"
 		  (if math-on "on" "off")
 		  (or (car match) "new paragraph")

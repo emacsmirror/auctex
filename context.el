@@ -1527,7 +1527,7 @@ else.  There might be text before point."
      ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
      "-"
      ["Comment or Uncomment Region"
-      TeX-comment-or-uncomment-region
+      comment-or-uncomment-region
       :help "Make the selected region outcommented or active again"]
      ["Comment or Uncomment Paragraph"
       TeX-comment-or-uncomment-paragraph

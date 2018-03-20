@@ -40,8 +40,9 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+;; Needed for compiling `cl-pushnew':
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -476,7 +477,7 @@ e.g. \"tcolorboxlib-raster.el\"."
 	 (tmp (copy-alist LaTeX-tcolorbox-keyval-options-local)))
     (dolist (key keys)
       (setq tmp (assq-delete-all (car (assoc key tmp)) tmp))
-      (pushnew
+      (cl-pushnew
        (list key (mapcar #'car (LaTeX-xcolor-definecolor-list))) tmp :test #'equal))
     (setq LaTeX-tcolorbox-keyval-options-local (copy-alist tmp)))
   (setq LaTeX-tcolorbox-keyval-options-full

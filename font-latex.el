@@ -43,7 +43,7 @@
 (require 'tex)
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 
 (defgroup font-latex nil
   "Font-latex text highlighting package."
@@ -155,25 +155,15 @@ correct value from document properties."
 (defconst font-latex-sectioning-max 5
   "Highest number for font-latex-sectioning-N-face")
 (defface font-latex-sectioning-5-face
-  (if (featurep 'xemacs)
-      '((((type tty pc) (class color) (background light))
-	 (:foreground "blue4" :bold t))
-	(((type tty pc) (class color) (background dark))
-	 (:foreground "yellow" :bold t))
-	(((class color) (background light))
-	 (:bold t :foreground "blue4" :family "helvetica"))
-	(((class color) (background dark))
-	 (:bold t :foreground "yellow" :family "helvetica"))
-	(t (:bold t :family "helvetica")))
-    '((((type tty pc) (class color) (background light))
-       (:foreground "blue4" :weight bold))
-      (((type tty pc) (class color) (background dark))
-       (:foreground "yellow" :weight bold))
-      (((class color) (background light))
-       (:weight bold :inherit variable-pitch :foreground "blue4"))
-      (((class color) (background dark))
-       (:weight bold :inherit variable-pitch :foreground "yellow"))
-      (t (:weight bold :inherit variable-pitch))))
+  '((((type tty pc) (class color) (background light))
+     (:foreground "blue4" :weight bold))
+    (((type tty pc) (class color) (background dark))
+     (:foreground "yellow" :weight bold))
+    (((class color) (background light))
+     (:weight bold :inherit variable-pitch :foreground "blue4"))
+    (((class color) (background dark))
+     (:weight bold :inherit variable-pitch :foreground "yellow"))
+    (t (:weight bold :inherit variable-pitch)))
   "Face for sectioning commands at level 5."
   :group 'font-latex-highlighting-faces)
 
@@ -193,19 +183,7 @@ correct value from document properties."
 	   (num (- max (1+ num)))
 	   (face-name (intern (format "font-latex-sectioning-%s-face" num))))
       (unless (get face-name 'saved-face) ; Do not touch customized faces.
-	(if (featurep 'xemacs)
-	    (let ((size
-		   ;; Multiply with .9 because `face-height' returns a value
-		   ;; slightly larger than the actual font size.
-		   ;; `make-face-size' takes numeric points according to Aidan
-		   ;; Kehoe in <16989.15536.613916.678965@parhasard.net> (not
-		   ;; documented).
-		   (round (* 0.9
-			     (face-height 'default)
-			     (expt height-scale (- max 1 num))))))
-	      ;; (message "%s - %s" face-name size)
-	      (make-face-size face-name size))
-	  (set-face-attribute face-name nil :height  height-scale))))))
+	(set-face-attribute face-name nil :height  height-scale)))))
 
 (defcustom font-latex-fontify-sectioning 1.1
   "Whether to fontify sectioning macros with varying height or a color face.
@@ -244,31 +222,18 @@ Emacs."
 			   (float font-latex-fontify-sectioning)
 			 1.1)))
   (dotimes (num max)
-    (let* (;; reverse for XEmacs:
-	   (num (- max (1+ num)))
+    (let* ((num (- max (1+ num)))
 	   (face-name (intern (format "font-latex-sectioning-%s-face" num)))
-	   (f-inherit (intern (format "font-latex-sectioning-%s-face" (1+ num))))
-	   (size (when (featurep 'xemacs)
-		   (round (* 0.9 (face-height 'default)
-			     (expt height-scale (- max 1 num)))))))
+	   (f-inherit (intern (format "font-latex-sectioning-%s-face" (1+ num)))))
       (eval
        `(defface ,face-name
-	  (if (featurep 'xemacs)
-	      '((t (:size ,(format "%spt" size))))
-	    '((t (:height ,height-scale :inherit ,f-inherit))))
+	  '((t (:height ,height-scale :inherit ,f-inherit)))
 	  (format "Face for sectioning commands at level %s.
 
 Probably you don't want to customize this face directly.  Better
 change the base face `font-latex-sectioning-5-face' or customize the
 variable `font-latex-fontify-sectioning'." ',num)
-	  :group 'font-latex-highlighting-faces))
-      (when (and (featurep 'xemacs)
-		 ;; Do not touch customized  faces.
-		 (not (get face-name 'saved-face)))
-	(set-face-parent face-name f-inherit)
-	;; Explicitely set the size again to code around the bug that
-	;; `set-face-parent' overwrites the original face size.
-	(make-face-size face-name size)))))
+	  :group 'font-latex-highlighting-faces)))))
 
 (font-latex-make-sectioning-faces font-latex-sectioning-max)
 
@@ -327,7 +292,8 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
       ("vref" "*{") ("eqref" "{") ("ref" "{") ("include" "{")
       ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
-      ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{"))
+      ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{")
+      ("marginpar" "[{"))
      font-lock-constant-face 2 command)
     ("function"
      (("begin" "{") ("end" "{") ("pagenumbering" "{")
@@ -340,11 +306,12 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
       ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
-      ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
+      ("addvspace" "{") ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
-      ("centering" "") ("TeX" "") ("LaTeX" ""))
+      ("centering" "") ("raggedright" "") ("raggedleft" "")
+      ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
@@ -385,7 +352,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      2 command)
     ("slide-title" () font-latex-slide-title-face 2 command)
     ("textual"
-     (("item" "[") ("title" "{") ("author" "{") ("date" "{")
+     (("item" "[") ("bibitem" "[{") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")
       ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
@@ -735,10 +702,8 @@ restart Emacs."
 				:tag "Keywords with specs"
 				(group (string :tag "Keyword")
 				       (string :tag "Format specifier"))))
-		       ,(if (featurep 'xemacs)
-			    '(face :tag "Face name")
-			  '(choice (face :tag "Face name")
-				   (custom-face-edit :tag "Face attributes")))
+		       ,'(choice (face :tag "Face name")
+				 (custom-face-edit :tag "Face attributes"))
 		       (choice :tag "Type"
 			       ;; Maps to
 			       ;;`font-latex-match-command-with-arguments'
@@ -868,7 +833,7 @@ locking machinery will be triggered."
 
 ;;; Subscript and superscript
 
-(defcustom font-latex-fontify-script (not (featurep 'xemacs))
+(defcustom font-latex-fontify-script t
   "If non-nil, fontify subscript and superscript strings.
 This feature does not work in XEmacs.
 
@@ -1048,7 +1013,7 @@ have changed."
      ((not char) 'font-lock-comment-face)
      ((eq char ?$) 'font-latex-math-face)
      (t
-      (when (char-valid-p char)
+      (when (characterp char)
 	;; This is a \verb?...? construct.  Let's find the end and mark it.
 	(save-excursion
 	  (skip-chars-forward (string ?^ char)) ;; Use `end' ?
@@ -1155,9 +1120,7 @@ have changed."
 
 (defface font-latex-verbatim-face
   (let ((font (if (and (assq :inherit custom-face-attributes)
-		       (if (featurep 'xemacs)
-			   (find-face 'fixed-pitch)
-			 (facep 'fixed-pitch)))
+		       (facep 'fixed-pitch))
 		  '(:inherit fixed-pitch)
 		'(:family "courier"))))
     `((((class grayscale) (background light))
@@ -1199,19 +1162,11 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-slide-title-face
-  (let* ((scale 1.2)
-	 (size (when (featurep 'xemacs)
-		 (round (* 0.9 (face-height 'default) scale)))))
-    (if (featurep 'xemacs)
-	`((t (:bold t :family "helvetica" :size ,size)))
-      `((t (:inherit (variable-pitch font-lock-type-face)
-		     :weight bold :height ,scale)))))
+  (let* ((scale 1.2))
+    `((t (:inherit (variable-pitch font-lock-type-face)
+		   :weight bold :height ,scale))))
   "Face for slide titles."
   :group 'font-latex-highlighting-faces)
-(when (featurep 'xemacs)
-  (set-face-parent 'font-latex-slide-title-face 'font-lock-type-face
-		   nil nil 'append))
-
 
 ;;; Setup
 
@@ -1315,19 +1270,8 @@ triggers Font Lock to recognize the change."
 		       . font-latex-syntactic-face-function)
 		      (font-lock-syntactic-keywords
 		       . font-latex-syntactic-keywords)))))
-    ;; Cater for the idiosyncrasies of Emacs and XEmacs.
-    (if (featurep 'xemacs)
-	(progn
-	  ;; XEmacs does not set these variables via `font-lock-defaults'
-	  ;; but requires them to be set explicitely.
-	  (mapc (lambda (alist)
-		  (set (car alist) (cdr alist))) variables)
-	  ;; Has to be set to t as otherwise syntax properties will not be
-	  ;; be picked up during fontification.
-	  (set (make-local-variable 'lookup-syntax-properties) t))
-      (setq defaults (append defaults variables)))
     ;; Set the defaults.
-    (setq font-lock-defaults defaults))
+    (setq font-lock-defaults (append defaults variables)))
 
   ;; Make sure fontification will be refreshed if a user sets variables
   ;; influencing fontification in her file-local variables section.
@@ -2079,7 +2023,7 @@ END marks boundaries for searching for quotation ends."
 (defun font-latex--get-script-props (pos script-type)
   (let* ((old-raise (or (plist-get (get-text-property pos 'display) 'raise) 0.0))
 	 (new-level (1+ (or (get-text-property pos 'script-level) 0)))
-	 (disp-props (copy-sequence (case script-type
+	 (disp-props (copy-sequence (cl-case script-type
 				      (:super (cdr font-latex-script-display))
 				      (:sub   (car font-latex-script-display)))))
 	 (new-disp-props (let ((raise (plist-get disp-props 'raise))
@@ -2097,7 +2041,7 @@ END marks boundaries for searching for quotation ends."
 						   (* nl nl 0.012018514285714385)))))
 			     disp-props))))
     `(face ,(if (<= new-level font-latex-fontify-script-max-level)
-		(case script-type
+		(cl-case script-type
 		  (:super 'font-latex-superscript-face)
 		  (:sub   'font-latex-subscript-face))
 	      nil)

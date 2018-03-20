@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -28,13 +28,13 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 21)
-  (error "AUCTeX requires Emacs 21 or later"))
+(when (< emacs-major-version 24)
+  (error "AUCTeX requires Emacs 24 or later"))
 
 (require 'custom)
 (require 'tex-site)
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -671,10 +671,6 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
-;;;###autoload
-(defalias 'TeX-assoc-string
-  (symbol-function  (if (featurep 'xemacs) 'assoc 'assoc-string)))
-
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
 (eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"
@@ -776,84 +772,55 @@ overlays."
 ;;   (TeX-completing-read-multiple ...))
 ;;
 ;; which results in a void-variable error if crm hasn't been loaded before.
-;; XEmacs 21.4 `require' doesn't have the third NOERROR argument, thus we handle
-;; the file-error signal with a `condition-case' also in GNU Emacs.
-(condition-case nil
-    (require 'crm)
-  (file-error
-   (error "AUCTeX requires crm.el which is included in Emacs and
-edit-utils >= 2.32 for XEmacs.")))
+(require 'crm)
 
-(if (fboundp 'completing-read-multiple)
-    (if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
-	    (>= emacs-major-version 25))
-	;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
-	;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
-	;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
-	(defun TeX-completing-read-multiple
-	    (prompt table &optional predicate require-match initial-input
-		    hist def inherit-input-method)
-	  "Like `completing-read-multiple' which see.
+(if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
+	(>= emacs-major-version 25))
+    ;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
+    ;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
+    ;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
+    (defun TeX-completing-read-multiple
+	(prompt table &optional predicate require-match initial-input
+		hist def inherit-input-method)
+      "Like `completing-read-multiple' which see.
 Retain zero-length substrings but ensure that empty input results
 in nil across different emacs versions."
-	  (unwind-protect
-	      (progn
-		(add-hook 'choose-completion-string-functions
-			  'crm--choose-completion-string)
-		(let* ((minibuffer-completion-table #'crm--collection-fn)
-		       (minibuffer-completion-predicate predicate)
-		       ;; see completing_read in src/minibuf.c
-		       (minibuffer-completion-confirm
-			(unless (eq require-match t) require-match))
-		       (crm-completion-table table)
-		       (map (if require-match
-				crm-local-must-match-map
-			      crm-local-completion-map))
-		       ;; If the user enters empty input, `read-from-minibuffer'
-		       ;; returns the empty string, not DEF.
-		       (input (read-from-minibuffer
-			       prompt initial-input map
-			       nil hist def inherit-input-method))
-		       result)
-		  (and def (string-equal input "") (setq input def))
-		  (if (equal (setq result (split-string input crm-separator))
-			     '(""))
-		      nil
-		    result)))
-	    (remove-hook 'choose-completion-string-functions
-			 'crm--choose-completion-string)))
-      ;; For GNU Emacs <= 24.3.
-      (defun TeX-completing-read-multiple
-	  (prompt table &optional predicate require-match initial-input
-		  hist def inherit-input-method)
-	"Like `completing-read-multiple' which see.
-Ensures that empty input results in nil across different emacs versions."
-	(let ((result (completing-read-multiple prompt table predicate
-						require-match initial-input
-						hist def inherit-input-method)))
-	  (if (equal result '("")) nil result))))
-  ;; For XEmacs.
+      (unwind-protect
+	  (progn
+	    (add-hook 'choose-completion-string-functions
+		      'crm--choose-completion-string)
+	    (let* ((minibuffer-completion-table #'crm--collection-fn)
+		   (minibuffer-completion-predicate predicate)
+		   ;; see completing_read in src/minibuf.c
+		   (minibuffer-completion-confirm
+		    (unless (eq require-match t) require-match))
+		   (crm-completion-table table)
+		   (map (if require-match
+			    crm-local-must-match-map
+			  crm-local-completion-map))
+		   ;; If the user enters empty input, `read-from-minibuffer'
+		   ;; returns the empty string, not DEF.
+		   (input (read-from-minibuffer
+			   prompt initial-input map
+			   nil hist def inherit-input-method))
+		   result)
+	      (and def (string-equal input "") (setq input def))
+	      (if (equal (setq result (split-string input crm-separator))
+			 '(""))
+		  nil
+		result)))
+	(remove-hook 'choose-completion-string-functions
+		     'crm--choose-completion-string)))
+  ;; For GNU Emacs <= 24.3.
   (defun TeX-completing-read-multiple
       (prompt table &optional predicate require-match initial-input
 	      hist def inherit-input-method)
-    "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs.
-The XEmacs package edit-utils-2.32 includes `crm.el'."
-    (multi-prompt (if (boundp 'crm-separator) crm-separator ",") nil prompt
-		  table predicate require-match initial-input hist)))
-
-(if (fboundp 'line-number-at-pos)
-    (defalias 'TeX-line-number-at-pos 'line-number-at-pos)
-  ;; `line-number-at-pos' from `simple.el' in Emacs CVS (2006-06-07)
-  (defun TeX-line-number-at-pos (&optional pos)
-    "Return (narrowed) buffer line number at position POS.
-If POS is nil, use current buffer location."
-    (let ((opoint (or pos (point))) start)
-      (save-excursion
-	(goto-char (point-min))
-	(setq start (point))
-	(goto-char opoint)
-	(forward-line 0)
-	(1+ (count-lines start (point)))))))
+    "Like `completing-read-multiple' which see.
+Ensures that empty input results in nil across different emacs versions."
+    (let ((result (completing-read-multiple prompt table predicate
+					    require-match initial-input
+					    hist def inherit-input-method)))
+      (if (equal result '("")) nil result))))
 
 ;;; Special support for GNU Emacs
 
@@ -1165,11 +1132,7 @@ all the regular expressions must match for the element to apply."
     (output-html
      (string-match "html" (TeX-output-extension)))
     (has-no-display-manager
-     ;; Compatibility for Emacs <= 22: older Emacsen don't have FRAME argument
-     ;; to `getenv', later versions have the `display-graphic-p' function.
-     (not (if (< emacs-major-version 23)
-	      (or window-system (getenv "DISPLAY"))
-	    (display-graphic-p))))
+     (not (display-graphic-p)))
     (style-pstricks
      (TeX-match-style "^pstricks$\\|^pst-\\|^psfrag$"))
     (engine-omega
@@ -1355,12 +1318,7 @@ viewer."
 		 :int32 (1+ (current-column)))
 	   :uint32 0)
           (when TeX-view-evince-keep-focus
-	    (cond ((fboundp #'select-frame-set-input-focus)
-		   (select-frame-set-input-focus (selected-frame)))
-		  ((fboundp #'x-focus-frame)
-		   (x-focus-frame (selected-frame)))
-		  ((fboundp #'focus-frame)
-		   (focus-frame (selected-frame))))))
+            (select-frame-set-input-focus (selected-frame))))
       (error "Couldn't find the %s instance for %s" (capitalize app) uri))))
 
 (defun TeX-atril-sync-view ()
@@ -1812,8 +1770,7 @@ search, can set the variable.")
 	      (processp gnuserv-process)))
 	((and (boundp 'server-process)
 	      (processp server-process))
-	 nil)
-	((featurep 'xemacs))))
+	 nil)))
 
 (defun TeX-source-correlate-server-enabled-p ()
   "Return non-nil if Emacs server or gnuserv is enabled."
@@ -1883,12 +1840,7 @@ If this is nil, an empty string will be returned."
 	TeX-synctex-tex-flags)
     ""))
 
-(defvar TeX-source-correlate-map
-  (let ((map (make-sparse-keymap)))
-    ;; (if (featurep 'xemacs)
-    ;;	   (define-key map [(control button1)] #'TeX-view-mouse)
-    ;;   (define-key map [C-down-mouse-1] #'TeX-view-mouse))
-    map)
+(defvar TeX-source-correlate-map (make-sparse-keymap)
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
 
@@ -1904,7 +1856,7 @@ file and LINE to (+ LINE offset-of-region).  Else, return nil."
       ;; Same regexp used in `preview-parse-messages'.  XXX: XEmacs doesn't
       ;; support regexp classes, so we can't use "[:digit:]" here.
       (when (re-search-forward "!offset(\\([---0-9]+\\))" nil t)
-	(let ((offset (string-to-int (match-string-no-properties 1))))
+	(let ((offset (string-to-number (match-string-no-properties 1))))
 	  (when TeX-region-orig-buffer
 	    (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
 		  (+ line offset) col)))))))
@@ -1948,14 +1900,10 @@ If the Emacs frame isn't raised, customize
   ;; FILE may be given as relative path to the TeX-master root document or as
   ;; absolute file:// URL.  In the former case, the tex file has to be already
   ;; opened.
-  (let* ((file (condition-case nil
-		   (progn
-		     (require 'url-parse)
-		     (require 'url-util)
-		     (url-unhex-string (aref (url-generic-parse-url file) 6)))
-		 ;; For Emacs 21 compatibility, which doesn't have the
-		 ;; url package.
-		 (file-error (TeX-replace-regexp-in-string "^file://" "" file))))
+  (let* ((file (progn
+		 (require 'url-parse)
+		 (require 'url-util)
+		 (url-unhex-string (aref (url-generic-parse-url file) 6))))
 	 (flc (or (apply #'TeX-source-correlate-handle-TeX-region file linecol)
 		  (apply #'list file linecol)))
 	 (file (car flc))
@@ -2451,7 +2399,7 @@ this variable to \"<none>\"."
       (when (with-current-buffer buf
 	      (and (equal dir default-directory)
 		   (stringp TeX-master)))
-	(return (with-current-buffer buf TeX-master))))))
+	(cl-return (with-current-buffer buf TeX-master))))))
 
 (defun TeX-master-file-ask ()
   "Ask for master file, set `TeX-master' and add local variables."
@@ -2757,19 +2705,16 @@ are returned."
 	  (setq TeX-kpathsea-path-delimiter nil)
 	(let ((separators (format "[\n\r%s]" TeX-kpathsea-path-delimiter))
 	      path input-dir-list)
-	  (dolist (item (condition-case nil
-			    (split-string path-list separators t)
-			  ;; COMPATIBILITY for XEmacs <= 21.4.15
-			  (error (delete "" (split-string path-list separators)))))
+	  (dolist (item (split-string path-list separators t))
 	    (if subdirs
 		(dolist (subdir subdirs)
 		  (setq path (file-name-as-directory (concat item subdir)))
 		  (when (file-exists-p path)
-		    (pushnew path input-dir-list :test #'equal)))
+		    (cl-pushnew path input-dir-list :test #'equal)))
 	      (setq path (file-name-as-directory item))
 	      (when (file-exists-p path)
-		(pushnew path input-dir-list :test #'equal))))
-	  ;; No duplication in result is assured since `pushnew' is
+		(cl-pushnew path input-dir-list :test #'equal))))
+	  ;; No duplication in result is assured since `cl-pushnew' is
 	  ;; used above.  Should we introduce an option for speed just
 	  ;; to accumulate all the results without care for
 	  ;; duplicates?
@@ -3020,7 +2965,7 @@ DIALECT-EXPR can also be an expression like one of the following:
 
 When omitted DIALECT-EXPR is equivalent to `(nor )', ie all
 dialected are allowed."
-  (let ((entry (TeX-assoc-string style TeX-style-hook-list)))
+  (let ((entry (assoc-string style TeX-style-hook-list)))
     (and dialect-expr (setq hook (vector 'TeX-style-hook hook
 					 (TeX-shdex-eval dialect-expr))))
     (cond ((null entry)
@@ -3052,7 +2997,7 @@ found in DIALECT-LIST and return the list thereof."
 the STYLE is only removed for those dialects in DIALECT-LIST.
 
 See variable `TeX-style-hook-dialect' for supported dialects."
-  (let ((style-data (TeX-assoc-string style TeX-style-hook-list)))
+  (let ((style-data (assoc-string style TeX-style-hook-list)))
     (if style-data
 	(let ((hooks (and dialect-list (TeX-keep-hooks-in-dialect (cdr style-data) dialect-list))))
 	  (if hooks
@@ -3103,7 +3048,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 			    ;; styles in the order global, private, local
 			    ;; (assuming TeX-style-path has that ordering,
 			    ;; too).
-			    (reverse (cdr-safe (TeX-assoc-string style TeX-style-hook-list))))
+			    (reverse (cdr-safe (assoc-string style TeX-style-hook-list))))
 		  ;; This happens in case some style added a new parser, and
 		  ;; now the style isn't used anymore (user deleted
 		  ;; \usepackage{style}).  Then we're left over with, e.g.,
@@ -3186,6 +3131,7 @@ FORCE is not nil."
 
 (defcustom TeX-complete-word 'ispell-complete-word
   "*Function to call for completing non-macros in `tex-mode'."
+  :type 'function
   :group 'TeX-macro)
 
 (defcustom TeX-complete-expert-commands nil
@@ -3413,7 +3359,7 @@ is called with \\[universal-argument]."
 					      TeX-esc)
 				      (TeX-symbol-list-filtered) nil nil nil
 				      'TeX-macro-history TeX-default-macro)))
-  (when (interactive-p)
+  (when (called-interactively-p 'any)
     (setq TeX-default-macro symbol))
   (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
   (run-hooks 'TeX-after-insert-macro-hook))
@@ -3619,7 +3565,7 @@ See `TeX-parse-macro' for details."
 			     (prin1-to-string head))))))
 	  (t (error "Unknown argument type %s" (prin1-to-string arg))))
     (when (and insert-flag (not optional) (TeX-active-mark))
-      (TeX-deactivate-mark))))
+      (deactivate-mark))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
@@ -3881,11 +3827,6 @@ The algorithm is as follows:
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
-  (when (featurep 'xemacs)
-    (unless (boundp 'find-file-hook)
-      (defvaralias 'find-file-hook 'find-file-hooks))
-    (when (not (emacs-version>= 21 5))
-      (make-local-hook 'find-file-hook)))
   (add-hook 'find-file-hook
 	    (lambda ()
 	      ;; Check if we are looking at a new or shared file.
@@ -4581,7 +4522,7 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 				    "$TEXMFDIST")
                                   "latex"))
       (when (file-readable-p dir)
-        (pushnew dir list :test #'equal)))
+        (cl-pushnew dir list :test #'equal)))
     (nreverse list)))
 
 (defcustom TeX-tree-roots (TeX-tree-roots)
@@ -4832,15 +4773,6 @@ to look backward for."
     (skip-chars-backward " \t\n")
     (bobp)))
 
-(defun TeX-deactivate-mark ()
-  "Deactivate the mark.
-This is a compatibility function which works both in Emacs and
-XEmacs.  In XEmacs the region is deactivated instead of the
-mark which is sort of equivalent."
-  (if (featurep 'xemacs)
-      (zmacs-deactivate-region)
-    (deactivate-mark)))
-
 (defalias 'TeX-run-mode-hooks
   (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
 
@@ -4894,8 +4826,8 @@ element to ALIST-VAR."
   (modify-syntax-entry ?~  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
-  (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
-  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?Â«  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?Â»  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?|  "."  TeX-mode-syntax-table))
 
 ;;; Menu Support
@@ -5039,10 +4971,10 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\e\t"     'TeX-complete-symbol) ;*** Emacs 19 way
 
     (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
-    (define-key map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
+    (define-key map "\C-c:"    'comment-or-uncomment-region) ;*** Old way
     (define-key map "\C-c\""   'TeX-uncomment) ;*** Old way
 
-    (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
+    (define-key map "\C-c;"    'comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
 
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
@@ -5065,14 +4997,9 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c^" 'TeX-home-buffer)
     (define-key map "\C-c`"    'TeX-next-error)
     ;; Remap bindings of `next-error'
-    (if (featurep 'xemacs)
-	(substitute-key-definition 'next-error 'TeX-next-error map global-map)
-      (define-key map [remap next-error] 'TeX-next-error))
+    (define-key map [remap next-error] 'TeX-next-error)
     ;; Remap bindings of `previous-error'
-    (if (featurep 'xemacs)
-	(substitute-key-definition 'previous-error 'TeX-previous-error
-				   map global-map)
-      (define-key map [remap previous-error] 'TeX-previous-error))
+    (define-key map [remap previous-error] 'TeX-previous-error)
     ;; From tex-fold.el
     (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
 
@@ -5301,62 +5228,6 @@ Unlike the variable `comment-start-skip' it should not match any
 whitespace after the comment starter or any character before it.")
 (make-variable-buffer-local 'TeX-comment-start-regexp)
 
-(defun TeX-comment-region (beg end &optional arg)
-  "Comment each line in the region from BEG to END.
-Numeric prefix arg ARG means use ARG comment characters.
-If ARG is negative, delete that many comment characters instead."
-  (interactive "*r\nP")
-  ;; `comment-padding' will not be recognized in XEmacs' (21.4)
-  ;; `comment-region', so we temporarily modify `comment-start' to get
-  ;; proper spacing.  Unfortunately we have to check for the XEmacs
-  ;; version and cannot test if `comment-padding' is bound as this
-  ;; gets initialized in `VirTeX-common-initialization'.
-  (let ((comment-start (if (and (featurep 'xemacs)
-				(= emacs-major-version 21)
-				(<= emacs-minor-version 4))
-			   (concat comment-start (TeX-comment-padding-string))
-			 comment-start)))
-    (comment-region beg end arg)))
-
-(eval-and-compile
-  ;; COMPATIBILITY for Emacs <= 21.3
-  (if (fboundp 'comment-or-uncomment-region)
-      (defalias 'TeX-comment-or-uncomment-region 'comment-or-uncomment-region)
-    ;; The following function was copied from `newcomment.el' on
-    ;; 2004-01-30 and adapted accordingly
-    (defun TeX-comment-or-uncomment-region (beg end &optional arg)
-      "Comment or uncomment a the region from BEG to END.
-Call `TeX-comment-region', unless the region only consists of
-comments, in which case call `TeX-uncomment-region'.  If a prefix
-arg ARG is given, it is passed on to the respective function."
-      (interactive "*r\nP")
-      (funcall (if (save-excursion ;; check for already commented region
-		     (goto-char beg)
-		     (TeX-comment-forward (point-max))
-		     (<= end (point)))
-		   'TeX-uncomment-region 'TeX-comment-region)
-	       beg end arg)))
-
-  ;; COMPATIBILITY for Emacs <= 20.  (Introduced in 21.1?)
-  (if (fboundp 'uncomment-region)
-      (defalias 'TeX-uncomment-region 'uncomment-region)
-    (defun TeX-uncomment-region (beg end &optional arg)
-      "Remove comment characters from the beginning of each line
-in the region from BEG to END.  Numeric prefix arg ARG means use
-ARG comment characters.  If ARG is negative, delete that many
-comment characters instead."
-      (interactive "*r\nP")
-      (or arg
-	  ;; Determine the number of comment characters at the
-	  ;; beginning of the first commented line.
-	  (setq arg
-		(save-excursion
-		  (goto-char beg)
-		  (re-search-forward
-		   (concat "^" TeX-comment-start-regexp "+") end t)
-		  (length (match-string 0)))))
-      (comment-region beg end (- arg)))))
-
 (defun TeX-uncomment ()
   "Delete comment characters from the beginning of each line in a comment."
   (interactive)
@@ -5373,7 +5244,7 @@ comment characters instead."
 		  (not (eobp)))
 	(forward-line 1))
       ;; Uncomment region
-      (TeX-uncomment-region beg (point)))))
+      (uncomment-region beg (point)))))
 
 (defun TeX-comment-or-uncomment-paragraph ()
   "Comment or uncomment current paragraph."
@@ -5389,7 +5260,7 @@ comment characters instead."
       ;; commented without the user noticing.
       (unless (looking-at "^[ \t]*$")
 	(mark-paragraph)
-	(TeX-comment-region (point) (mark))))))
+	(comment-region (point) (mark))))))
 
 (defun TeX-in-comment ()
   "Return non-nil if point is in a comment."
@@ -5497,27 +5368,12 @@ not move point to a position less than this value."
   (unless limit (setq limit (point-min)))
   (TeX-forward-comment-skip (- count) limit))
 
-;; Taken from `comment-forward' in Emacs' CVS on 2006-12-26.  Used as
-;; a compatibility function for XEmacs 21.4.
 (defun TeX-comment-forward (&optional n)
   "Skip forward over N comments.
 Just like `forward-comment' but only for positive N
 and can use regexps instead of syntax."
-  (when (fboundp 'comment-normalize-vars)
-    (comment-normalize-vars))
-  (if (fboundp 'comment-forward)
-      (comment-forward n)
-    (setq n (or n 1))
-    (if (< n 0) (error "No comment-backward")
-      (if comment-use-syntax (forward-comment n)
-	(while (> n 0)
-	  (setq n
-		(if (or (forward-comment 1)
-			(and (looking-at comment-start-skip)
-			     (goto-char (match-end 0))
-			     (re-search-forward comment-end-skip nil 'move)))
-		    (1- n) -1)))
-	(= n 0)))))
+  (comment-normalize-vars)
+  (comment-forward n))
 
 (defun TeX-comment-padding-string ()
   "Return  comment padding as a string.
@@ -5570,9 +5426,7 @@ regardless of its data type."
 ;;; Navigation
 
 (defvar TeX-search-syntax-table
-  (let ((table (make-syntax-table (make-char-table (if (featurep 'xemacs)
-						       'syntax
-						     'syntax-table)))))
+  (let ((table (make-syntax-table (make-char-table 'syntax-table))))
     ;; Preset mode-independent syntax entries.  (Mode-dependent
     ;; entries are set in the function `TeX-search-syntax-table'.)
     ;; ?\", ?\( and ?\) explicitely get whitespace syntax because
@@ -6373,14 +6227,36 @@ information about your AUCTeX version and AUCTeX configuration."
 	   'TeX-parse-self
 	   'TeX-master
 	   'TeX-command-list)
-     nil nil
-     "Remember to cover the basics, that is, what you expected to happen and
+     nil
+     ;; reporter adds too many new lines around salutation text, that we don't
+     ;; want, since it's itself a new line.
+     (lambda ()
+       (save-excursion
+	 (goto-char (point-min))
+	 (re-search-forward mail-header-separator)
+	 (forward-char)
+	 (delete-char 1)
+	 (forward-char)
+	 (delete-char 2)))
+     (propertize
+      "\n" 'display
+      (with-temp-buffer
+	(insert
+	 "Remember to cover the basics, that is, what you expected to happen and
 what in fact did happen.
 
 Be sure to consult the FAQ section in the manual before submitting
 a bug report.  In addition check if the bug is reproducable with an
 up-to-date version of AUCTeX.  So please upgrade to the version
-available from http://www.gnu.org/software/auctex/ if your
+available from ")
+	(insert-text-button
+	 "http://www.gnu.org/software/auctex/"
+	 'face 'link
+	 'help-echo (concat "mouse-2, RET: Follow this link")
+	 'action (lambda (button)
+		   (browse-url "http://www.gnu.org/software/auctex/"))
+	 'follow-link t)
+	(insert " if your
 installation is older than the one available from the web site.
 
 If the bug is triggered by a specific \(La\)TeX file, you should try
@@ -6388,9 +6264,17 @@ to produce a minimal sample file showing the problem and include it
 in your report.
 
 Your report will be posted for the auctex package at the GNU bug
-tracker.  Visit http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex
-to browse existing AUCTeX bugs.
-------------------------------------------------------------------------")))
+tracker.  Visit ")
+	(insert-text-button
+	 "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"
+	 'face 'link
+	 'help-echo (concat "mouse-2, RET: Follow this link")
+	 'action (lambda (button)
+		   (browse-url "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"))
+	 'follow-link t)
+	(insert "\nto browse existing AUCTeX bugs.
+------------------------------------------------------------------------\n\n")
+	(buffer-string))))))
 
 
 ;;; Documentation
@@ -6521,7 +6405,7 @@ NAME may be a package, a command, or a document."
       (when (memq major-mode (nth 1 elt))
 	(let ((completions (funcall (nth 2 elt))))
 	  (unless (null completions)
-            (pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
+            (cl-pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
     (if (null docs)
 	(progn
 	  (if (executable-find "texdoc")
@@ -6531,7 +6415,7 @@ NAME may be a package, a command, or a document."
 	    ;; Give up.
 	    (message "No documentation found")))
       ;; Ask the user about the package, command, or document.
-      (when (and (interactive-p)
+      (when (and (called-interactively-p 'any)
 		 (or (not name) (string= name "")))
 	(let ((symbol (thing-at-point 'symbol))
 	      contained completions doc)
@@ -6645,7 +6529,7 @@ of the car of `ispell-tex-skip-alists'.  This only happens if
     (let ((raws (car ispell-tex-skip-alists))
 	  (envs (cadr ispell-tex-skip-alists)))
       (dolist (x skip)
-	(pushnew x raws :test #'equal))
+	(cl-pushnew x raws :test #'equal))
       (setq ispell-tex-skip-alists (list raws envs)))))
 
 (defun TeX-ispell-skip-setcdr (skip)
@@ -6658,7 +6542,7 @@ of the cdr of `ispell-tex-skip-alists'.  This only happens if
     (let ((raws (car ispell-tex-skip-alists))
 	  (envs (cadr ispell-tex-skip-alists)))
       (dolist (x skip)
-	(pushnew x envs :test #'equal))
+	(cl-pushnew x envs :test #'equal))
       (setq ispell-tex-skip-alists (list raws envs)))))
 
 (defun TeX-ispell-tex-arg-end (&optional arg1 arg2 arg3)
@@ -6777,34 +6661,6 @@ error."
     (put 'TeX-insert-dollar 'delete-selection
 	 (lambda () (null TeX-electric-math))))
 
-(defun TeX-how-many (regexp &optional rstart rend)
-  "Compatibily function for `how-many'.
-Supports restriction to a region where the XEmacs version doesn't
-and always returns the number of matches, also in XEmacs and GNU
-Emacs 21."
-  ;; Emacs >= 22 does what we want.
-  (if (>= emacs-major-version 22)
-      (how-many regexp rstart rend)
-    ;; XEmacs and GNU Emacs 21 don't return the number of matches but only print
-    ;; it.
-    (let ((string
-	   (if (featurep 'xemacs)
-	       ;; XEmacs doesn't even support restriction to a region.
-	       (save-excursion
-		 (save-restriction
-		   (when (and (integer-or-marker-p rstart)
-			      (integer-or-marker-p rend))
-		     (narrow-to-region rstart rend)
-		     (goto-char (point-min)))
-		   (how-many regexp)))
-	     (how-many regexp rstart rend))))
-      ;; Hide the message printed by `how-many'.
-      (message "")
-      ;; Select the number of occurrences and convert it to a number.
-      (if (string-match "\\([0-9]+\\).*" string)
-	  (string-to-number (replace-match "\\1" nil nil string))
-	0))))
-
 (defun TeX--list-of-string-p (lst)
   "Return non-nil iff `LST' is a list of strings.
 Used as function for validating a variable's `safe-local-variable' property."
@@ -6818,7 +6674,7 @@ Used as function for validating a variable's `safe-local-variable' property."
 (provide 'tex)
 
 ;; Local Variables:
-;; coding: iso-8859-1
+;; coding: utf-8
 ;; End:
 
 ;;; tex.el ends here

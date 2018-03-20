@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -31,7 +31,11 @@
 (require 'tex)
 (require 'tex-style)
 (require 'tex-ispell)
-(eval-when-compile (require 'cl))       ;FIXME: Use cl-lib.
+(when (<= 26 emacs-major-version)
+  ;; latex-flymake requires Emacs 26.
+  (require 'latex-flymake))
+(eval-when-compile
+  (require 'cl-lib))
 
 ;;; Syntax
 
@@ -296,9 +300,7 @@ Additionally the function will invalidate the section submenu in
 order to let the menu filter regenerate it."
   (setq LaTeX-largest-level (LaTeX-section-level section))
   (let ((offset (LaTeX-outline-offset)))
-    (when (and (> offset 0)
-	       ;; XEmacs does not know `outline-heading-alist'.
-	       (boundp 'outline-heading-alist))
+    (when (> offset 0)
       (let (lst)
 	(dolist (tup outline-heading-alist)
 	  (setq lst (cons (cons (car tup)
@@ -645,9 +647,7 @@ With prefix-argument, reopen environment afterwards."
 			 marker))
 	(move-marker marker nil)))))
 
-(if (featurep 'xemacs)
-    (define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook)
-  (define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook "11.89"))
+(define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook "11.89")
 
 (defvar LaTeX-after-insert-env-hook nil
   "List of functions to be run at the end of `LaTeX-insert-environment'.
@@ -963,7 +963,7 @@ If nil, act like the empty string is given, but do not prompt."
   ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
   ;; from swapping point and mark and the \item ending up right after
   ;; \begin{...}.
-  (TeX-deactivate-mark)
+  (deactivate-mark)
   (LaTeX-insert-item)
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
@@ -2236,7 +2236,7 @@ To insert a hook here, you must insert it in the appropiate style file.")
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
 	 (crm-separator ",")
-	 style var options)
+	 style var options defopt optprmpt)
     (unless LaTeX-global-class-files
       (setq LaTeX-global-class-files
 	    (if (if (eq TeX-arg-input-file-search 'ask)
@@ -2254,6 +2254,12 @@ OPTIONAL and IGNORE are ignored."
     (setq TeX-after-document-hook nil)
     (TeX-run-style-hooks style)
     (setq var (intern (format "LaTeX-%s-class-options" style)))
+    (setq defopt (if (stringp LaTeX-default-options)
+		     LaTeX-default-options
+		   (mapconcat #'identity LaTeX-default-options ",")))
+    (setq optprmpt
+	  (if (and defopt (not (string-equal defopt "")))
+	      (format "Options (default %s): " defopt) "Options: "))
     (if (or (and (boundp var)
 		 (listp (symbol-value var)))
 	    (fboundp var))
@@ -2263,12 +2269,10 @@ OPTIONAL and IGNORE are ignored."
 	    (setq options
 		  (mapconcat 'identity
 			     (TeX-completing-read-multiple
-			      "Options: " (mapcar 'list (symbol-value var)) nil nil
-			      (if (stringp LaTeX-default-options)
-				  LaTeX-default-options
-				(mapconcat 'identity LaTeX-default-options ",")))
+			      optprmpt (mapcar 'list (symbol-value var)) nil nil
+			      nil nil defopt)
 			     ","))))
-      (setq options (TeX-read-string "Options: ")))
+      (setq options (TeX-read-string optprmpt nil nil defopt)))
     (unless (zerop (length options))
       (insert LaTeX-optop options LaTeX-optcl)
       (let ((opts (LaTeX-listify-package-options options)))
@@ -2613,6 +2617,38 @@ argument, otherwise as a mandatory one.  IGNORE is ignored."
 	  (insert del))
       (insert del (read-from-minibuffer "Text: ") del))
     (setq LaTeX-default-verb-delimiter del)))
+
+(defun TeX-arg-verb-delim-or-brace (optional &optional prompt)
+  "Prompt for delimiter and text.
+If OPTIONAL, indicate optional argument in minibuffer.  PROMPT is
+a string replacing the default one when asking the user for text.
+This function is intended for \\verb like macros which take their
+argument in delimiters like \"\| \|\" or braces \"\{ \}\"."
+  (let ((del (read-quoted-char
+	      (concat "Delimiter (default "
+		      (char-to-string LaTeX-default-verb-delimiter) "): "))))
+    (when (<= del ?\ )
+      (setq del LaTeX-default-verb-delimiter))
+    (if (TeX-active-mark)
+	(progn
+	  (insert del)
+	  (goto-char (mark))
+	  ;; If the delimiter was an opening brace, close it with a
+	  ;; brace, otherwise use the delimiter again
+	  (insert (if (= del ?\{)
+		      ?\}
+		    del)))
+      ;; Same thing again
+      (insert del (read-from-minibuffer
+		   (TeX-argument-prompt optional prompt "Text"))
+	      (if (= del ?\{)
+		  ?\}
+		del)))
+    ;; Do not set `LaTeX-default-verb-delimiter' if the user input was
+    ;; an opening brace.  This would give funny results for the next
+    ;; "C-c C-m \verb RET"
+    (unless (= del ?\{)
+      (setq LaTeX-default-verb-delimiter del))))
 
 (defun TeX-arg-pair (optional first second)
   "Insert a pair of number, prompted by FIRST and SECOND.
@@ -3223,23 +3259,7 @@ Lines starting with an item is given an extra indentation of
 		 (looking-at
 		  (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
 		 (concat (match-string 0) (TeX-comment-padding-string)))))
-	 (overlays (when (featurep 'xemacs)
-		     ;; Isn't that fun?  In Emacs an `(overlays-at
-		     ;; (line-beginning-position))' would do the
-		     ;; trick.  How boring.
-		     (extent-list
-		      nil (line-beginning-position) (line-beginning-position)
-		      'all-extents-closed-open 'overlay)))
 	 ol-specs)
-    ;; XEmacs' `indent-to' function (at least in version 21.4.15) has
-    ;; a bug which leads to the insertion of whitespace in front of an
-    ;; invisible overlay.  So during indentation we temporarily remove
-    ;; the 'invisible property.
-    (dolist (ol overlays)
-      (when (extent-property ol 'invisible)
-        (pushnew (list ol (extent-property ol 'invisible))
-                 ol-specs :test #'equal)
-	(set-extent-property ol 'invisible nil)))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
@@ -3584,16 +3604,7 @@ not be subject to filling."
   :group 'LaTeX
   :type '(repeat string))
 
-(defvar LaTeX-nospace-between-char-regexp
-  (if (featurep 'xemacs)
-    (if (and (boundp 'word-across-newline) word-across-newline)
-	word-across-newline
-      ;; NOTE: Ensure not to have a value of nil for such a rare case that
-      ;; somebody removes the mule test in `LaTeX-fill-delete-newlines' so that
-      ;; it could match only "\n" and this could lead to problem.  XEmacs does
-      ;; not have a category `\c|' and `\ct' means `Chinese Taiwan' in XEmacs.
-      "\\(\\cj\\|\\cc\\|\\ct\\)")
-    "\\c|")
+(defvar LaTeX-nospace-between-char-regexp "\\c|"
   "Regexp matching a character where no interword space is necessary.
 Words formed by such characters can be broken across newlines.")
 
@@ -3783,7 +3794,7 @@ space does not end a sentence, so don't break a line there."
 	;; FROM, and point, are now before the text to fill,
 	;; but after any fill prefix on the first line.
 
-	(LaTeX-fill-delete-newlines from to justify nosqueeze squeeze-after)
+	(fill-delete-newlines from to justify nosqueeze squeeze-after)
 
 	;; This is the actual FILLING LOOP.
 	(goto-char from)
@@ -3875,100 +3886,9 @@ space does not end a sentence, so don't break a line there."
       ;; Return the fill-prefix we used
       fill-prefix)))
 
-;; Following lines are copied from `fill.el' (CVS Emacs, March 2005).
-;;   The `fill-space' property carries the string with which a newline should be
-;;   replaced when unbreaking a line (in fill-delete-newlines).  It is added to
-;;   newline characters by fill-newline when the default behavior of
-;;   fill-delete-newlines is not what we want.
-(unless (featurep 'xemacs)
-  ;; COMPATIBILITY for Emacs < 22.1
-  (add-to-list 'text-property-default-nonsticky '(fill-space . t)))
-
-(defun LaTeX-fill-delete-newlines (from to justify nosqueeze squeeze-after)
-  ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
-  (if (fboundp 'fill-delete-newlines)
-      (fill-delete-newlines from to justify nosqueeze squeeze-after)
-    (if (featurep 'xemacs)
-	(when (featurep 'mule)
-	  (goto-char from)
-	  (let ((unwished-newline (concat LaTeX-nospace-between-char-regexp "\n"
-					  LaTeX-nospace-between-char-regexp)))
-	    (while (re-search-forward unwished-newline to t)
-	      (skip-chars-backward "^\n")
-	      (delete-char -1))))
-      ;; This else-sentence was copied from the function `fill-delete-newlines'
-      ;; in `fill.el' (CVS Emacs, 2005-02-17) and adapted accordingly.
-      (while (search-forward "\n" to t)
-  	(if (get-text-property (match-beginning 0) 'fill-space)
-  	    (replace-match (get-text-property (match-beginning 0) 'fill-space))
-	  (let ((prev (char-before (match-beginning 0)))
-		(next (following-char)))
-	    (when (or (aref (char-category-set next) ?|)
-		      (aref (char-category-set prev) ?|))
-	      (delete-char -1))))))
-
-    ;; Make sure sentences ending at end of line get an extra space.
-    (if (or (not (boundp 'sentence-end-double-space))
-	    sentence-end-double-space)
-	(progn
-	  (goto-char from)
-	  (while (re-search-forward "[.?!][]})\"']*$" to t)
-	    (insert ? ))))
-    ;; Then change all newlines to spaces.
-    (let ((point-max (progn
-		       (goto-char to)
-		       (skip-chars-backward "\n")
-		       (point))))
-      (subst-char-in-region from point-max ?\n ?\ ))
-    (goto-char from)
-    (skip-chars-forward " \t")
-    ;; Remove extra spaces between words.
-    (unless (and nosqueeze (not (eq justify 'full)))
-      (canonically-space-region (or squeeze-after (point)) to)
-      ;; Remove trailing whitespace.
-      (goto-char (line-end-position))
-      (delete-char (- (skip-chars-backward " \t"))))))
-
 (defun LaTeX-fill-move-to-break-point (linebeg)
   "Move to the position where the line should be broken."
-  ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
-  (if (fboundp 'fill-move-to-break-point)
-      (fill-move-to-break-point linebeg)
-    (if (featurep 'mule)
- 	(if (TeX-looking-at-backward
-	     (concat LaTeX-nospace-between-char-regexp ".?") 2)
- 	    ;; Cancel `forward-char' which is called just before
- 	    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
- 	    ;; `LaTeX-nospace-between-char-regexp'.
- 	    (backward-char 1)
- 	  (when (re-search-backward
-		 (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp)
-		 linebeg 'move)
-	    (forward-char 1)))
-      (skip-chars-backward "^ \n"))
-    ;; Prevent infinite loops: If we cannot find a place to break
-    ;; while searching backward, search forward again.
-    (when (save-excursion
-	    (skip-chars-backward " \t%")
-	    (bolp))
-      (skip-chars-forward "^ \n" (point-max)))
-    ;; This code was copied from the function `fill-move-to-break-point'
-    ;; in `fill.el' (CVS Emacs, 2005-02-22) and adapted accordingly.
-    (when (and (< linebeg (point))
-	       ;; If we are going to break the line after or
-	       ;; before a non-ascii character, we may have to
-	       ;; run a special function for the charset of the
-	       ;; character to find the correct break point.
-	       (boundp 'enable-multibyte-characters)
-	       enable-multibyte-characters
-	       (fboundp 'charset-after) ; Non-MULE XEmacsen don't have this.
-	       (not (and (eq (charset-after (1- (point))) 'ascii)
-		         (eq (charset-after (point)) 'ascii))))
-      ;; Make sure we take SOMETHING after the fill prefix if any.
-      (if (fboundp 'fill-find-break-point)
-	  (fill-find-break-point linebeg)
-	(when (fboundp 'kinsoku-process) ;XEmacs
-	  (kinsoku-process)))))
+  (fill-move-to-break-point linebeg)
   ;; Prevent line break between 2-byte char and 1-byte char.
   (when (and (featurep 'mule)
 	     enable-multibyte-characters
@@ -4156,25 +4076,21 @@ space does not end a sentence, so don't break a line there."
   "Replace whitespace here with one newline and indent the line."
   (skip-chars-backward " \t")
   (newline 1)
-  ;; COMPATIBILITY for XEmacs
-  (unless (featurep 'xemacs)
-    ;; Give newline the properties of the space(s) it replaces
-    (set-text-properties (1- (point)) (point)
-			 (text-properties-at (point)))
-    (and (looking-at "\\( [ \t]*\\)\\(\\c|\\)?")
-	 (or (aref (char-category-set (or (char-before (1- (point))) ?\000)) ?|)
-	     (match-end 2))
-	 ;; When refilling later on, this newline would normally not
-	 ;; be replaced by a space, so we need to mark it specially to
-	 ;; re-install the space when we unfill.
-	 (put-text-property (1- (point)) (point) 'fill-space (match-string 1)))
-    ;; COMPATIBILITY for Emacs <= 21.3
-    (when (boundp 'fill-nobreak-invisible)
-      ;; If we don't want breaks in invisible text, don't insert
-      ;; an invisible newline.
-      (if fill-nobreak-invisible
-	  (remove-text-properties (1- (point)) (point)
-				  '(invisible t)))))
+  ;; Give newline the properties of the space(s) it replaces
+  (set-text-properties (1- (point)) (point)
+		       (text-properties-at (point)))
+  (and (looking-at "\\( [ \t]*\\)\\(\\c|\\)?")
+       (or (aref (char-category-set (or (char-before (1- (point))) ?\000)) ?|)
+	   (match-end 2))
+       ;; When refilling later on, this newline would normally not
+       ;; be replaced by a space, so we need to mark it specially to
+       ;; re-install the space when we unfill.
+       (put-text-property (1- (point)) (point) 'fill-space (match-string 1)))
+  ;; If we don't want breaks in invisible text, don't insert
+  ;; an invisible newline.
+  (if fill-nobreak-invisible
+      (remove-text-properties (1- (point)) (point)
+			      '(invisible t)))
   ;; Insert the fill prefix.
   (and fill-prefix (not (equal fill-prefix ""))
        ;; Markers that were after the whitespace are now at point: insert
@@ -5763,7 +5679,7 @@ regenerated by the respective menu filter."
      ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
      "-"
      ["Comment or Uncomment Region"
-      TeX-comment-or-uncomment-region
+      comment-or-uncomment-region
       :help "Make the selected region outcommented or active again"]
      ["Comment or Uncomment Paragraph"
       TeX-comment-or-uncomment-paragraph
@@ -6000,9 +5916,7 @@ of `LaTeX-mode-hook'."
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
   (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar nil t)
-  (when (if (featurep 'xemacs)
-	    (featurep 'toolbar)
-	  (and (boundp 'tool-bar-mode) tool-bar-mode))
+  (when (and (boundp 'tool-bar-mode) tool-bar-mode)
     (LaTeX-maybe-install-toolbar))
   ;; Set the value of `LaTeX-using-Biber' based on the local value of
   ;; `LaTeX-biblatex-use-Biber'.  This should be run within
@@ -6019,7 +5933,10 @@ of `LaTeX-mode-hook'."
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
 	   filladapt-mode)
-      (turn-off-filladapt-mode)))
+      (turn-off-filladapt-mode))
+  (when (< 25 emacs-major-version)
+    ;; Set up flymake backend, see latex-flymake.el
+    (add-hook 'flymake-diagnostic-functions 'LaTeX-flymake nil t)))
 
 (TeX-abbrev-mode-setup doctex-mode)
 
@@ -6642,53 +6559,53 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-hanging-ampersand-position ()
   "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
-  (destructuring-bind
-   (beg-pos . beg-col)
-   (LaTeX-env-beginning-pos-col)
-   (let* ((cur-pos (point)))
-     (save-excursion
-       (if (re-search-backward "\\\\\\\\" beg-pos t)
-	   (let ((cur-idx (TeX-how-many "[^\\]&" (point) cur-pos)))
-	     (goto-char beg-pos)
-	     (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
-	     ;; If the above searchs fails, i.e. no "&" found,
-	     ;; (- (current-column) 1) returns -1, which is wrong.  So
-	     ;; we use a fallback (+ 2 beg-col) whenever this happens:
-	     (max (- (current-column) 1)
-		  (+ 2 beg-col)))
-	 (+ 2 beg-col))))))
+  (cl-destructuring-bind
+      (beg-pos . beg-col)
+      (LaTeX-env-beginning-pos-col)
+    (let* ((cur-pos (point)))
+      (save-excursion
+	(if (re-search-backward "\\\\\\\\" beg-pos t)
+	    (let ((cur-idx (how-many "[^\\]&" (point) cur-pos)))
+	      (goto-char beg-pos)
+	      (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+	      ;; If the above searchs fails, i.e. no "&" found,
+	      ;; (- (current-column) 1) returns -1, which is wrong.  So
+	      ;; we use a fallback (+ 2 beg-col) whenever this happens:
+	      (max (- (current-column) 1)
+		   (+ 2 beg-col)))
+	  (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
   "Return indent column for the current tabular-like line."
-  (destructuring-bind
-   (beg-pos . beg-col)
-   (LaTeX-env-beginning-pos-col)
-   (let ((tabular-like-end-regex
-	  (format "\\\\end{%s}"
-		  (regexp-opt
-		   (let (out)
-		     (mapc (lambda (x)
-                             (when (eq (cadr x) 'LaTeX-indent-tabular)
-                               (push (car x) out)))
-                           LaTeX-indent-environment-list)
-		     out)))))
-     (cond ((looking-at tabular-like-end-regex)
-	    beg-col)
+  (cl-destructuring-bind
+      (beg-pos . beg-col)
+      (LaTeX-env-beginning-pos-col)
+    (let ((tabular-like-end-regex
+	   (format "\\\\end{%s}"
+		   (regexp-opt
+		    (let (out)
+		      (mapc (lambda (x)
+                              (when (eq (cadr x) 'LaTeX-indent-tabular)
+                                (push (car x) out)))
+                            LaTeX-indent-environment-list)
+		      out)))))
+      (cond ((looking-at tabular-like-end-regex)
+	     beg-col)
 
-	   ((looking-at "\\\\\\\\")
-	    (+ 2 beg-col))
+	    ((looking-at "\\\\\\\\")
+	     (+ 2 beg-col))
 
-	   ((looking-at "&")
-	    (LaTeX-hanging-ampersand-position))
+	    ((looking-at "&")
+	     (LaTeX-hanging-ampersand-position))
 
-	   (t
-	    (+ 2
-	       (let ((any-col (save-excursion
-				(when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
-				  (current-column)))))
-		 (if (and any-col (= ?& (char-before (match-end 0))))
-		     (1+ any-col)
-		   beg-col))))))))
+	    (t
+	     (+ 2
+	        (let ((any-col (save-excursion
+				 (when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
+				   (current-column)))))
+		  (if (and any-col (= ?& (char-before (match-end 0))))
+		      (1+ any-col)
+		    beg-col))))))))
 
 (provide 'latex)
 

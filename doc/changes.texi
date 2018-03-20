@@ -18,6 +18,15 @@ been dropped.
 @item
 Besides the change in the supported version of Emacs, there has been no
 functional change in this release, which is equivalent to version 11.92.
+
+@item
+@AUCTeX{} has support for the Flymake package in Emacs 26 or newer.  To
+enable, call @kbd{M-x flymake-mode RET} or add this to your
+@file{.emacs} file:
+@lisp
+(add-hook 'LaTeX-mode-hook #'flymake-mode)
+@end lisp
+
 @end itemize
 
 @heading News in 11.92

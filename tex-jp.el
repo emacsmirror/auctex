@@ -303,20 +303,6 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
   :group 'AUCTeX-jp
   :type '(choice (const :tag "Default" nil) coding-system))
 
-;; 順調に行けば不要になる。
-(defcustom japanese-TeX-command-default "pTeX"
-  "*The default command for `TeX-command' in the japanese-TeX mode."
-  :group 'AUCTeX-jp
-  :type 'string)
-  (make-variable-buffer-local 'japanese-TeX-command-default)
-
-;; 順調に行けば不要になる。
-(defcustom japanese-LaTeX-command-default "LaTeX"
-  "*The default command for `TeX-command' in the japanese-LaTeX mode."
-  :group 'AUCTeX-jp
-  :type 'string)
-  (make-variable-buffer-local 'japanese-LaTeX-command-default)
-
 (defcustom japanese-LaTeX-default-style "jarticle"
   "*Default when creating new Japanese documents."
   :group 'AUCTeX-jp
@@ -404,29 +390,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		   ;; ただし、locale が日本語をサポートしない場合は
 		   ;; euc に固定する。
 		   (t
-		    (let ((lcs
-			   (cond
-			    ((boundp 'locale-coding-system)
-			     locale-coding-system)
-			    ;; XEmacs doesn't have `locale-coding-system'.
-			    ;; Instead xemacs 21.5 has
-			    ;; `get-coding-system-from-locale' and
-			    ;; `current-locale'.  They aren't available on
-			    ;; xemacs 21.4.
-			    ((and
-			      (featurep 'xemacs)
-			      (fboundp 'get-coding-system-from-locale))
-			     (get-coding-system-from-locale
-			      (if (fboundp 'current-locale)
-				  (current-locale)
-				;; I don't know XEmacs well, so incorporate
-				;; the suggestion of
-				;; http://lists.gnu.org/archive/html/auctex-devel/2017-02/msg00079.html
-				;; as well.
-				(or (getenv "LC_ALL")
-				    (getenv "LC_CTYPE")
-				    (getenv "LANG")
-				    "")))))))
+		    (let ((lcs locale-coding-system))
 		      (if (and lcs (japanese-TeX-coding-ejsu lcs))
 			  lcs 'euc-jp)))))))
 
@@ -469,28 +433,18 @@ shift_jis: \"sjis\"
 utf-8:     \"utf8\"
 Return nil otherwise."
   (let ((base (coding-system-base coding-system)))
-    (if (featurep 'xemacs)
-	(setq base (coding-system-name base)))
     (cdr (assq base
               '((japanese-iso-8bit . "euc")
-                (euc-jp . "euc") ; for xemacs
                 (iso-2022-jp . "jis")
                 (japanese-shift-jis . "sjis")
-                (shift_jis . "sjis") ; for xemacs
                 (utf-8 . "utf8")
-                (mule-utf-8 . "utf8") ; for emacs 21, 22
-                ;; utf-8-auto や utf-8-emacs を入れる必要はあるのか？
 
-                ;; xemacs 21.5 with mule には、jisx0213 の charset は
-                ;; あるがそれ用の coding system はない。
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
                 (japanese-shift-jis-2004 . "sjis")
 
                 (japanese-cp932 . "sjis")
-                (eucjp-ms . "euc")
-                (windows-932 . "sjis") ; for xemacs 21.5 with mule
-		)))))
+                (eucjp-ms . "euc"))))))
 
 (defun japanese-TeX-get-encoding-string ()
   "Return coding option string for Japanese pTeX family.

@@ -25,7 +25,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 (require 'tex)
 
@@ -297,7 +298,7 @@ character. Return the resulting string."
     (while (and (< pos (length
 			node-name)) (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
-			       (cdr (TeX-assoc-string (match-string 1 node-name) map))
+			       (cdr (assoc-string (match-string 1 node-name) map))
 			       (substring node-name (match-end 0)))
 	    pos (1+ (match-beginning 0)))))
   node-name)
@@ -311,7 +312,7 @@ commands. Return the resulting string."
 	 (re (regexp-opt (mapcar 'car map))) )
     (while (and (< pos (length node-name)) (string-match re node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
-			       "@" (cdr (TeX-assoc-string (match-string 0 node-name) map))
+			       "@" (cdr (assoc-string (match-string 0 node-name) map))
 			       "{}"
 			       (substring node-name (match-end 0)))
 	    pos (1+ (match-beginning 0)))))
@@ -327,16 +328,16 @@ commands. Return the resulting string."
     (let (nodes dups)
       (while (re-search-forward "^@node\\b" nil t)
 	(skip-chars-forward "[:blank:]")
-	(pushnew (list (Texinfo-nodename-de-escape
-			(buffer-substring-no-properties
-			 (point) (progn (skip-chars-forward "^\r\n,")
-					(skip-chars-backward "[:blank:]")
-					(point)))))
-		 nodes
-		 :test (lambda (a b)
-			 (when (equal a b)
-			   (push (cons a (TeX-line-number-at-pos (point))) dups)
-			   t))))
+	(cl-pushnew (list (Texinfo-nodename-de-escape
+			   (buffer-substring-no-properties
+			    (point) (progn (skip-chars-forward "^\r\n,")
+					   (skip-chars-backward "[:blank:]")
+					   (point)))))
+		    nodes
+		    :test (lambda (a b)
+			    (when (equal a b)
+			      (push (cons a (line-number-at-pos (point))) dups)
+			      t))))
       (when dups
 	(display-warning
 	 'AUCTeX
@@ -585,7 +586,7 @@ is assumed by default."
      "-"
      ("Commenting"
       ["Comment or Uncomment Region"
-       TeX-comment-or-uncomment-region
+       comment-or-uncomment-region
        :help "Comment or uncomment the currently selected region"]
       ["Comment or Uncomment Paragraph"
        TeX-comment-or-uncomment-paragraph

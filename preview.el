@@ -54,15 +54,7 @@ preview-latex buffers will not survive across sessions.")))
 preview-latex's bug reporting commands will probably not work.")))
   (require 'info))
 
-;; we need the compatibility macros which do _not_ get byte-compiled.
-(eval-when-compile
-  (if (featurep 'xemacs)
-      (load-library "prv-xemacs.el")))
-
-;; if the above load-library kicked in, this will not cause anything
-;; to get loaded.
-(require (if (featurep 'xemacs)
-	     'prv-xemacs 'prv-emacs))
+(require 'prv-emacs)
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUCTeX
@@ -713,7 +705,7 @@ Gets the usual PROCESS and STRING parameters, see
 					 preview-gs-command-line)
 					" ") "''\n")
       (setq preview-gs-answer "")
-      (process-kill-without-query process)
+      (set-process-query-on-exit-flag process nil)
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
       (process-send-string process preview-gs-init-string)
@@ -3537,7 +3529,7 @@ internal parameters, STR may be a log to insert into the current log."
       ((preview-format-name (shell-quote-argument
 			     (preview-dump-file-name
 			      (file-name-nondirectory master))))
-       (process-environment process-environment)
+       (process-environment (copy-sequence process-environment))
        (process
 	(progn
 	  ;; Fix Bug#20773, Bug#27088.

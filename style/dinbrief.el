@@ -67,7 +67,7 @@
 
 (defmacro LaTeX-dinbrief-insert (&rest args)
   "Insert text ignoring active markers."
-  `(progn (if (TeX-mark-active) (TeX-deactivate-mark))
+  `(progn (if (TeX-mark-active) (deactivate-mark))
      (insert ,@args)))
 
 (defun LaTeX-dinbrief-style ()
@@ -123,7 +123,7 @@
 	    (newline-and-indent)
 	  (if (not (zerop (length retouradr)))
 	      (progn
-		(if (TeX-mark-active) (TeX-deactivate-mark))
+		(if (TeX-mark-active) (deactivate-mark))
 		(LaTeX-dinbrief-insert TeX-esc "backaddress" TeX-grop retouradr TeX-grcl)
 		(newline-and-indent)))))
       (LaTeX-dinbrief-insert TeX-esc "enabledraftstandard")

@@ -58,8 +58,9 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+;; Needed for compiling `cl-pushnew':
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -317,15 +318,15 @@
 			  (assq-delete-all (car (assoc key temp)) temp)))))
 	(cond ((string= key "precode")
 	       (dolist (x vcode-keys)
-		 (pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-			  opts :test #'equal)))
+		 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
+			     opts :test #'equal)))
 	      ((string= key "floatrowsep")
 	       (dolist (x sep-keys)
-		 (pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-			  opts :test #'equal)))
+		 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
+			     opts :test #'equal)))
 	      (t
-	       (pushnew (list key (TeX-delete-duplicate-strings (append (list val) val-match)))
-			opts :test #'equal)))
+	       (cl-pushnew (list key (TeX-delete-duplicate-strings (append (list val) val-match)))
+			   opts :test #'equal)))
 	(setq LaTeX-floatrow-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-floatrow-arg-floatbox (optional)

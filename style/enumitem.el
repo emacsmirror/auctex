@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-;; Needed for compiling `pushnew':
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -206,7 +206,7 @@ key-val and the first item."
   ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
   ;; from swapping point and mark and the \item ending up right after
   ;; \begin{...}.
-  (TeX-deactivate-mark)
+  (deactivate-mark)
   (LaTeX-insert-item)
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
@@ -266,9 +266,9 @@ in `enumitem'-completions."
 	   (temp (copy-alist LaTeX-enumitem-key-val-options-local))
 	   (opts (assq-delete-all (car (assoc key temp)) temp)))
       (if val-match
-	  (pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-		   opts :test #'equal)
-	(pushnew (list key (list val)) opts :test #'equal))
+	  (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+		      opts :test #'equal)
+	(cl-pushnew (list key (list val)) opts :test #'equal))
       (setq LaTeX-enumitem-key-val-options-local (copy-alist opts))))
   (dolist (newalign (LaTeX-enumitem-SetLabelAlign-list))
     (let* ((key "align")
@@ -276,8 +276,8 @@ in `enumitem'-completions."
 	   (val-match (cdr (assoc key LaTeX-enumitem-key-val-options-local)))
 	   (temp (copy-alist LaTeX-enumitem-key-val-options-local))
 	   (opts (assq-delete-all (car (assoc key temp)) temp)))
-      (pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-	       opts :test #'equal)
+      (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+	          opts :test #'equal)
       (setq LaTeX-enumitem-key-val-options-local (copy-alist opts)))))
 
 (TeX-add-style-hook
@@ -405,13 +405,13 @@ in `enumitem'-completions."
        (lambda ()
 	 (let ((enums '("enumerate")))
 	   (when (LaTeX-provided-package-options-member "enumitem" "inline")
-	     (pushnew "enumerate*" enums :test #'equal))
+	     (cl-pushnew "enumerate*" enums :test #'equal))
 	   (dolist (env-type (LaTeX-enumitem-newlist-list))
 	     (let ((env   (car env-type))
 		   (type  (cadr env-type)))
 	       (when (or (string-equal type "enumerate")
 			 (string-equal type "enumerate*"))
-		 (pushnew env enums :test #'equal))))
+		 (cl-pushnew env enums :test #'equal))))
 	   (completing-read "List name: " enums)))))
 
     ;; "Align" is added as new value to "align" key in key-val list.

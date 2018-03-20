@@ -30,7 +30,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl-lib))
 
 (defvar LaTeX-babel-language-list
   '("afrikaans"
@@ -109,9 +110,9 @@
 	    ;; Append element to `active-languages' to respect loading order.
 	    ;; `babel' package uses as default language the last loaded one,
 	    ;; except if it is set with the `main' option.
-	    (pushnew elt active-languages :test #'equal))))
+	    (cl-pushnew elt active-languages :test #'equal))))
     (if main-language
-        (pushnew main-language active-languages :test #'equal))
+        (cl-pushnew main-language active-languages :test #'equal))
     (nreverse active-languages)))
 
 (defun TeX-arg-babel-lang (_optional &optional _prompt)
