@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.5 from auctex.texi.
 
-This manual is for AUCTeX (version 12.1.0 from 2017-12-12), a
+This manual is for AUCTeX (version 12.1.0.2018-03-17 from 2018-03-17), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
@@ -4350,10 +4350,19 @@ with 'C-c C-c ChkTeX <RET>'.  The result will be a list of errors in the
 ('next-error', *note (emacs)Compilation::), which will move point to the
 location of the next error.
 
-   Each of the two utilities will find some errors the other doesn't,
-but 'chktex' is more configurable, allowing you to create your own
-errors.  You may need to install the programs before using them.  You
-can get 'lacheck' from
+   Alternatively, you may want in-buffer notation.  AUCTeX provides
+support for this using the Flymake package in Emacs 26 or newer (*Note
+(Flymake)Using Flymake:: for details).  To enable, call 'M-x
+flymake-mode RET' in the buffer or enable it in all buffers by adding
+this to your init file:
+     (add-hook 'LaTeX-mode-hook #'flymake-mode)
+   Note that AUCTeX currently only provides support for using 'chktex'
+as the flymake backend.
+
+   Each of the two utilities 'lacheck' and 'chktex' will find some
+errors the other doesn't, but 'chktex' is more configurable, allowing
+you to create your own errors.  You may need to install the programs
+before using them.  You can get 'lacheck' from
 '<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>' and 'chktex'
 from '<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>'.
 
@@ -5014,7 +5023,7 @@ following two customize options.
      When 'nil', AUCTeX tries to choose suitable coding system.
 
    The former customize options 'japanese-TeX-command-default' and
-'japanese-LaTeX-command-default' are obsolete.  Use
+'japanese-LaTeX-command-default' are removed from AUCTeX.  Use
 'japanese-TeX-engine-default' instead.  If you need to customize the
 executable file name such as '"latex"', the options for them, or both,
 customize 'TeX-engine-alist'.
@@ -5512,6 +5521,11 @@ overwrite the default prompt.
 'TeX-arg-verb'
      Prompt for delimiter and text.
 
+'TeX-arg-verb-delim-or-brace'
+     Prompt for delimiter and text.  This function is similar to
+     'TeX-arg-verb', but is intended for macros which take their
+     argument enclosed in delimiters or in braces.
+
 'TeX-arg-pair'
      Insert a pair of numbers, use arguments for prompt.  The numbers
      are surrounded by parentheses and separated with a comma.
@@ -5825,8 +5839,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.1.0 from 2017-12-12), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 12.1.0.2018-03-17 from
+2018-03-17), a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
 Foundation, Inc.
@@ -6341,6 +6355,11 @@ News in 12.1
    * Besides the change in the supported version of Emacs, there has
      been no functional change in this release, which is equivalent to
      version 11.92.
+
+   * AUCTeX has support for the Flymake package in Emacs 26 or newer.
+     To enable, call 'M-x flymake-mode RET' or add this to your '.emacs'
+     file:
+          (add-hook 'LaTeX-mode-hook #'flymake-mode)
 
 News in 11.92
 -------------
@@ -7973,7 +7992,7 @@ Function Index
 * LaTeX-add-bibliographies:              Adding Other.        (line  10)
 * LaTeX-add-environments:                Adding Environments. (line  66)
 * LaTeX-add-labels:                      Adding Other.        (line  13)
-* LaTeX-arg-author:                      Adding Macros.       (line 239)
+* LaTeX-arg-author:                      Adding Macros.       (line 244)
 * LaTeX-arg-usepackage:                  Adding Macros.       (line 200)
 * LaTeX-close-environment:               Environments.        (line 101)
 * LaTeX-command-section:                 Starting a Command.  (line  41)
@@ -8020,7 +8039,7 @@ Function Index
 * TeX-arg-bibstyle:                      Adding Macros.       (line 206)
 * TeX-arg-cite:                          Adding Macros.       (line 136)
 * TeX-arg-conditional:                   Adding Macros.       (line  86)
-* TeX-arg-coordinate:                    Adding Macros.       (line 236)
+* TeX-arg-coordinate:                    Adding Macros.       (line 241)
 * TeX-arg-corner:                        Adding Macros.       (line 214)
 * TeX-arg-counter:                       Adding Macros.       (line 141)
 * TeX-arg-date:                          Adding Macros.       (line 122)
@@ -8041,19 +8060,20 @@ Function Index
 * TeX-arg-index:                         Adding Macros.       (line 113)
 * TeX-arg-index-tag:                     Adding Macros.       (line 109)
 * TeX-arg-input-file:                    Adding Macros.       (line 159)
-* TeX-arg-key-val:                       Adding Macros.       (line 246)
+* TeX-arg-key-val:                       Adding Macros.       (line 251)
 * TeX-arg-label:                         Adding Macros.       (line 100)
 * TeX-arg-length:                        Adding Macros.       (line 116)
 * TeX-arg-literal:                       Adding Macros.       (line  90)
 * TeX-arg-lr:                            Adding Macros.       (line 217)
 * TeX-arg-macro:                         Adding Macros.       (line 119)
 * TeX-arg-pagestyle:                     Adding Macros.       (line 223)
-* TeX-arg-pair:                          Adding Macros.       (line 229)
+* TeX-arg-pair:                          Adding Macros.       (line 234)
 * TeX-arg-ref:                           Adding Macros.       (line 104)
 * TeX-arg-savebox:                       Adding Macros.       (line 144)
-* TeX-arg-size:                          Adding Macros.       (line 233)
+* TeX-arg-size:                          Adding Macros.       (line 238)
 * TeX-arg-tb:                            Adding Macros.       (line 220)
 * TeX-arg-verb:                          Adding Macros.       (line 226)
+* TeX-arg-verb-delim-or-brace:           Adding Macros.       (line 229)
 * TeX-arg-version:                       Adding Macros.       (line 129)
 * TeX-auto-generate:                     Automatic Private.   (line  23)
 * TeX-clean:                             Cleaning.            (line   6)
@@ -8064,7 +8084,7 @@ Function Index
 * TeX-comment-or-uncomment-paragraph:    Commenting.          (line  22)
 * TeX-comment-or-uncomment-region:       Commenting.          (line  14)
 * TeX-complete-symbol:                   Completion.          (line  23)
-* TeX-declare-expert-macros:             Adding Macros.       (line 261)
+* TeX-declare-expert-macros:             Adding Macros.       (line 266)
 * TeX-documentation-texdoc:              Documentation.       (line   6)
 * TeX-electric-macro:                    Completion.          (line 106)
 * TeX-error-overview:                    Error overview.      (line  10)
@@ -8098,7 +8118,7 @@ Function Index
 * TeX-PDF-mode:                          Processor Options.   (line  15)
 * TeX-pin-region:                        Starting a Command.  (line  84)
 * TeX-previous-error:                    Debugging.           (line  26)
-* TeX-read-key-val:                      Adding Macros.       (line 243)
+* TeX-read-key-val:                      Adding Macros.       (line 248)
 * TeX-recenter-output-buffer:            Control.             (line  13)
 * TeX-revert-document-buffer:            Modes and Hooks.     (line  38)
 * TeX-save-document:                     Multifile.           (line  99)
@@ -8229,7 +8249,7 @@ Variable Index
 * LaTeX-csquotes-close-quote:            Quotes.              (line  43)
 * LaTeX-csquotes-open-quote:             Quotes.              (line  43)
 * LaTeX-csquotes-quote-after-quote:      Quotes.              (line  43)
-* LaTeX-default-author:                  Adding Macros.       (line 240)
+* LaTeX-default-author:                  Adding Macros.       (line 245)
 * LaTeX-default-document-environment:    Environments.        (line  61)
 * LaTeX-default-environment:             Environments.        (line  56)
 * LaTeX-default-format:                  Tabular-like.        (line  10)
@@ -8499,7 +8519,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  11)
-* auctex.el <1>:                         Changes.             (line 550)
+* auctex.el <1>:                         Changes.             (line 555)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8591,6 +8611,7 @@ Concept Index
 * Finding the current file:              Control.             (line   6)
 * Finding the master file:               Control.             (line   6)
 * Floats:                                Floats.              (line   6)
+* Flymake:                               Checking.            (line   6)
 * Folding:                               Folding.             (line   6)
 * Folding <1>:                           Outline.             (line   6)
 * Font Locking:                          Font Locking.        (line   6)
@@ -8749,6 +8770,7 @@ Concept Index
 * Running BibTeX:                        Commands.            (line   6)
 * Running chktex:                        Checking.            (line   6)
 * Running commands:                      Commands.            (line   6)
+* Running Flymake:                       Checking.            (line   6)
 * Running lacheck:                       Checking.            (line   6)
 * Running LaTeX:                         Commands.            (line   6)
 * Running makeindex:                     Commands.            (line   6)
@@ -8801,7 +8823,7 @@ Concept Index
                                                               (line 256)
 * tex-site.el:                           Loading the package. (line  11)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 550)
+* tex-site.el <2>:                       Changes.             (line 555)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8822,103 +8844,103 @@ Concept Index
 
 
 Tag Table:
-Node: Top917
-Node: Copying7270
-Node: Introduction9215
-Node: Summary9485
-Node: Installation12216
-Node: Prerequisites13982
-Node: Configure16242
-Node: Build/install and uninstall20795
-Node: Loading the package21548
-Node: Advice for package providers23232
-Node: Advice for non-privileged users26037
-Node: Installation under MS Windows28819
-Node: Customizing42559
-Node: Quick Start44142
-Ref: Quick Start-Footnote-146272
-Node: Editing Facilities46366
-Node: Processing Facilities51169
-Node: Editing55870
-Node: Quotes57200
-Node: Font Specifiers65468
-Node: Sectioning67294
-Node: Environments71614
-Node: Equations76768
-Node: Floats77359
-Node: Itemize-like79363
-Node: Tabular-like80084
-Node: Customizing Environments81857
-Node: Mathematics82097
-Node: Completion85383
-Node: Marking92409
-Node: Marking (LaTeX)93033
-Node: Marking (Texinfo)93975
-Node: Commenting95585
-Node: Indenting96910
-Node: Filling102946
-Node: Display108818
-Node: Font Locking111313
-Node: Fontification of macros113388
-Node: Fontification of quotes122911
-Node: Fontification of math124406
-Node: Verbatim content127636
-Node: Faces128410
-Node: Known problems128899
-Node: Folding129828
-Node: Outline140652
-Node: Narrowing141924
-Node: Prettifying142994
-Node: Processing144230
-Node: Commands145393
-Node: Starting a Command145949
-Node: Selecting a Command150852
-Node: Processor Options159936
-Node: Viewing170216
-Node: Starting Viewers170590
-Node: I/O Correlation177717
-Node: Debugging182917
-Node: Ignoring warnings185536
-Node: Error overview187596
-Node: Checking189507
-Node: Control190669
-Node: Cleaning191396
-Node: Documentation192609
-Node: Customization193324
-Node: Modes and Hooks193817
-Node: Multifile195637
-Node: Parsing Files200449
-Node: Internationalization205361
-Node: European206396
-Node: Japanese213206
-Node: Automatic218406
-Node: Automatic Global220897
-Node: Automatic Private222029
-Node: Automatic Local223342
-Node: Style Files224374
-Node: Simple Style225167
-Node: Adding Macros228440
-Node: Adding Environments237558
-Node: Adding Other242219
-Node: Hacking the Parser242806
-Node: Appendices246675
-Node: Copying this Manual246971
-Node: GNU Free Documentation License247854
-Node: Changes272973
-Node: Development313873
-Node: Mid-term Goals314519
-Node: Wishlist315736
-Node: Bugs321177
-Node: FAQ322280
-Node: Texinfo mode327407
-Node: Exploiting328543
-Node: Superseding329363
-Node: Mapping333567
-Node: Unbinding335396
-Node: Indices336217
-Node: Key Index336380
-Node: Function Index342704
-Node: Variable Index353514
-Node: Concept Index376372
+Node: Top928
+Node: Copying7281
+Node: Introduction9226
+Node: Summary9496
+Node: Installation12227
+Node: Prerequisites13993
+Node: Configure16253
+Node: Build/install and uninstall20806
+Node: Loading the package21559
+Node: Advice for package providers23243
+Node: Advice for non-privileged users26048
+Node: Installation under MS Windows28830
+Node: Customizing42570
+Node: Quick Start44153
+Ref: Quick Start-Footnote-146283
+Node: Editing Facilities46377
+Node: Processing Facilities51180
+Node: Editing55881
+Node: Quotes57211
+Node: Font Specifiers65479
+Node: Sectioning67305
+Node: Environments71625
+Node: Equations76779
+Node: Floats77370
+Node: Itemize-like79374
+Node: Tabular-like80095
+Node: Customizing Environments81868
+Node: Mathematics82108
+Node: Completion85394
+Node: Marking92420
+Node: Marking (LaTeX)93044
+Node: Marking (Texinfo)93986
+Node: Commenting95596
+Node: Indenting96921
+Node: Filling102957
+Node: Display108829
+Node: Font Locking111324
+Node: Fontification of macros113399
+Node: Fontification of quotes122922
+Node: Fontification of math124417
+Node: Verbatim content127647
+Node: Faces128421
+Node: Known problems128910
+Node: Folding129839
+Node: Outline140663
+Node: Narrowing141935
+Node: Prettifying143005
+Node: Processing144241
+Node: Commands145404
+Node: Starting a Command145960
+Node: Selecting a Command150863
+Node: Processor Options159947
+Node: Viewing170227
+Node: Starting Viewers170601
+Node: I/O Correlation177728
+Node: Debugging182928
+Node: Ignoring warnings185547
+Node: Error overview187607
+Node: Checking189518
+Node: Control191141
+Node: Cleaning191868
+Node: Documentation193081
+Node: Customization193796
+Node: Modes and Hooks194289
+Node: Multifile196109
+Node: Parsing Files200921
+Node: Internationalization205833
+Node: European206868
+Node: Japanese213678
+Node: Automatic218889
+Node: Automatic Global221380
+Node: Automatic Private222512
+Node: Automatic Local223825
+Node: Style Files224857
+Node: Simple Style225650
+Node: Adding Macros228923
+Node: Adding Environments238253
+Node: Adding Other242914
+Node: Hacking the Parser243501
+Node: Appendices247370
+Node: Copying this Manual247666
+Node: GNU Free Documentation License248560
+Node: Changes273679
+Node: Development314787
+Node: Mid-term Goals315433
+Node: Wishlist316650
+Node: Bugs322091
+Node: FAQ323194
+Node: Texinfo mode328321
+Node: Exploiting329457
+Node: Superseding330277
+Node: Mapping334481
+Node: Unbinding336310
+Node: Indices337131
+Node: Key Index337294
+Node: Function Index343618
+Node: Variable Index354501
+Node: Concept Index377359
 
 End Tag Table
