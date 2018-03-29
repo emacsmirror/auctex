@@ -109,11 +109,6 @@ If nil, none is specified."
   :type 'hook
   :group 'TeX-misc)
 
-(defcustom AmS-TeX-mode-hook nil
-  "A hook run in AmS-TeX mode buffers."
-  :type 'hook
-  :group 'TeX-misc)
-
 ;; This is the major configuration variable.  Most sites will only need to
 ;; change the second string in each entry, which is the name of a command to
 ;; send to the shell.  If you use other formatters like AMSLaTeX or AMSTeX, you
@@ -1038,6 +1033,7 @@ If RESET is non-nil, `TeX-command-next' is reset to
 If no mode is given the current major mode is used."
   (cdr (assoc (or mode major-mode) '((plain-tex-mode . "plain-TeX")
 				     (latex-mode . "LaTeX")
+				     (ams-tex-mode . "AmSTeX")
 				     (doctex-mode . "docTeX")
 				     (texinfo-mode . "Texinfo")
 				     (context-mode . "ConTeXt")))))

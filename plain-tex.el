@@ -1,6 +1,6 @@
 ;;; plain-tex.el --- Support for plain TeX documents.
 
-;; Copyright (C) 2010, 2013, 2016-2017  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2018  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -282,13 +282,18 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 ;; Menu for AmSTeX mode
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
-    "Command menu used in AmsTeX mode."
+    "Command menu used in AmSTeX mode."
     (TeX-mode-specific-command-menu 'ams-tex-mode))
 
 (easy-menu-define AmSTeX-mode-menu
   AmSTeX-mode-map
-  "Menu used in AMS-TeX mode."
+  "Menu used in AmSTeX mode."
   (cons "AmS-TeX" plain-TeX-menu-entries))
+
+(defcustom AmS-TeX-mode-hook nil
+  "A hook run in AmS-TeX mode buffers."
+  :type 'hook
+  :group 'TeX-misc)
 
 ;;;###autoload
 (defun ams-tex-mode ()
@@ -314,6 +319,21 @@ of `AmS-TeX-mode-hook'."
   (setq TeX-command-default "AmSTeX")
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
   (TeX-set-mode-name))
+
+(defcustom AmSTeX-clean-intermediate-suffixes
+  TeX-clean-default-intermediate-suffixes
+  "List of regexps matching suffixes of intermediate files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom AmSTeX-clean-output-suffixes TeX-clean-default-output-suffixes
+  "List of regexps matching suffixes of output files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
 
 (provide 'plain-tex)
 
