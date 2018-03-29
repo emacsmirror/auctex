@@ -2391,11 +2391,12 @@ this variable to \"<none>\"."
 (defun TeX-dwim-master ()
   "Find a likely `TeX-master'."
   (let ((dir default-directory))
-    (dolist (buf (buffer-list))
-      (when (with-current-buffer buf
-	      (and (equal dir default-directory)
-		   (stringp TeX-master)))
-	(cl-return (with-current-buffer buf TeX-master))))))
+    (cl-loop for buf in (buffer-list)
+             until
+             (when (with-current-buffer buf
+	             (and (equal dir default-directory)
+		          (stringp TeX-master)))
+               (cl-return (with-current-buffer buf TeX-master))))))
 
 (defun TeX-master-file-ask ()
   "Ask for master file, set `TeX-master' and add local variables."
