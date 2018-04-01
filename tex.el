@@ -4608,7 +4608,6 @@ If optional argument EXTENSIONS is not set, use `TeX-file-extensions'"
 (defvar TeX-search-files-type-alist
   '((texinputs "${TEXINPUTS}" ("tex/") TeX-file-extensions)
     (docs "${TEXDOCS}" ("doc/") TeX-doc-extensions)
-    (graphics "${TEXINPUTS}" ("tex/") LaTeX-includegraphics-extensions)
     (bibinputs "${BIBINPUTS}" ("bibtex/bib/") BibTeX-file-extensions)
     (bstinputs "${BSTINPUTS}" ("bibtex/bst/") BibTeX-style-extensions))
   "Alist of filetypes with locations and file extensions.
@@ -6020,7 +6019,8 @@ With optional argument ARG, also reload the style hooks."
 	    BibLaTeX-global-style-files nil
 	    TeX-Biber-global-files nil
 	    TeX-global-input-files nil
-	    LaTeX-global-class-files nil))
+	    LaTeX-global-class-files nil
+	    LaTeX-includegraphics-global-files nil))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)
 	(save-buffer)
