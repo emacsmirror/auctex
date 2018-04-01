@@ -1626,7 +1626,7 @@ Split the string at commas and remove Biber file extensions."
     (dolist (bib bibs)
       (LaTeX-add-bibliographies (TeX-replace-regexp-in-string
 				 (concat "\\(?:\\."
-					 (mapconcat #'regexp-quote
+					 (mapconcat #'identity
 						    TeX-Biber-file-extensions
 						    "\\|\\.")
 					 "\\)")

@@ -4415,7 +4415,7 @@ Check for potential LaTeX environments."
 (defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "txi" "texinfo" "dtx")
   "*File extensions used by manually generated TeX files."
   :group 'TeX-file-extension
-  :type '(repeat (string :format "%v")))
+  :type '(repeat (regexp :format "%v")))
 
 (defcustom TeX-all-extensions '("[^.\n]+")
   "All possible file extensions."
@@ -4430,8 +4430,8 @@ Check for potential LaTeX environments."
   (make-variable-buffer-local 'TeX-default-extension)
 
 (defvar TeX-doc-extensions
-  '("dvi" "pdf" "ps" "txt" "html" "dvi.gz" "pdf.gz" "ps.gz" "txt.gz" "html.gz"
-    "dvi.bz2" "pdf.bz2" "ps.bz2" "txt.bz2" "html.bz2")
+  '("dvi" "pdf" "ps" "txt" "html" "dvi\\.gz" "pdf\\.gz" "ps\\.gz" "txt\\.gz"
+    "html\\.gz" "dvi\\.bz2" "pdf\\.bz2" "ps\\.bz2" "txt\\.bz2" "html\\.bz2")
   "File extensions of documentation files.")
 
 (defcustom docTeX-default-extension "dtx"
@@ -4450,22 +4450,22 @@ Access to the value should be through the function `TeX-output-extension'.")
 (defcustom TeX-Biber-file-extensions '("bib" "ris" "xml")
   "Valid file extensions for Biber files."
   :group 'TeX-file-extension
-  :type '(repeat (string :format "%v")))
+  :type '(repeat (regexp :format "%v")))
 
 (defcustom BibTeX-file-extensions '("bib")
   "Valid file extensions for BibTeX files."
   :group 'TeX-file-extension
-  :type '(repeat (string :format "%v")))
+  :type '(repeat (regexp :format "%v")))
 
 (defcustom BibLaTeX-style-extensions '("bbx")
   "Valid file extensions for BibLaTeX styles."
   :group 'TeX-file-extension
-  :type '(repeat (string :format "%v")))
+  :type '(repeat (regexp :format "%v")))
 
 (defcustom BibTeX-style-extensions '("bst")
   "Valid file extensions for BibTeX styles."
   :group 'TeX-file-extension
-  :type '(repeat (string :format "%v")))
+  :type '(repeat (regexp :format "%v")))
 
 (defun TeX-match-extension (file &optional extensions)
   "Return non-nil if FILE has one of EXTENSIONS.
@@ -4543,7 +4543,9 @@ non-nil, remove file extension."
 	  result)
       (if (eq scope 'global)
 	  (setq dirs (delete "./" dirs)))
-      (setq extensions (concat "\\." (regexp-opt extensions t) "\\'")
+      (setq extensions (concat "\\.\\(?:"
+			       (mapconcat #'identity extensions "\\|")
+			       "\\)\\'")
 	    result (apply #'append (mapcar (lambda (x)
 					     (when (file-readable-p x)
 					       (directory-files
@@ -6491,7 +6493,7 @@ NAME may be a package, a command, or a document."
 				   (cons (file-name-nondirectory name)
 					 (TeX-style-list)) "\\|")
 			"\\)\\.\\("
-			(mapconcat 'regexp-quote TeX-file-extensions "\\|")
+			(mapconcat #'identity TeX-file-extensions "\\|")
 			"\\)\\'"))
 	(buffers (buffer-list)))
     (while buffers
