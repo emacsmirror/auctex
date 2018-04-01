@@ -124,8 +124,11 @@ Return value is a list of regexps."
 			temp))
 	     ;; We're generating a .dvi to process with dvips or dvipdfmx
 	     (progn
-	       (dolist (x '("jpe?g" "pdf" "png"))
-		 (setq temp (delete x temp)))
+	       ;; dvipdfmx can handle jpeg, pdf and png for image formats.
+	       (unless (and TeX-PDF-mode
+			    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+		 (dolist (x '("jpe?g" "pdf" "png"))
+		   (setq temp (delete x temp))))
 	       (TeX-delete-duplicate-strings
 		(append LaTeX-includegraphics-dvips-extensions
 			temp)))))
@@ -148,7 +151,13 @@ Return value is a list of regexps."
 		    temp)))
 	  ;; For anything else
 	  (t
-	   temp))))
+	   (if (and TeX-PDF-mode
+		    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+	       ;; dvipdfmx can handle the same image formats as dvips.
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-dvips-extensions
+			temp))
+	     temp)))))
 
 (defun LaTeX-includegraphics-extensions (&optional list)
   "Return appropriate extensions for input files to \\includegraphics.
