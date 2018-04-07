@@ -1365,7 +1365,7 @@ viewer."
 		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
-	(mode-io-correlate " -forward-search %b %n") " %o")
+	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
        "SumatraPDF")
       ("dvips and start" "dvips %d -o && start \"\" %f" "dvips")
       ("start" "start \"\" %o")))
