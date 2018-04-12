@@ -18,6 +18,12 @@ enable, call @kbd{M-x flymake-mode RET} or add this to your
 @lisp
 (add-hook 'LaTeX-mode-hook #'flymake-mode)
 @end lisp
+
+@item
+The way the option @code{TeX-record-buffer} is used was corrected.  It
+was used in just the opposite way as the document says.  Erase the
+customization if you have customized this option since it now acts in
+reverse to your expectation.
 @end itemize
 
 @heading News in 12.1

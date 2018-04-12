@@ -227,7 +227,7 @@ of `display-buffer' for additional customization information.
 
 Optional third arg NORECORD non-nil means do not put this buffer
 at the front of the list of recently selected ones."
-  (pop-to-buffer buffer other-window (and norecord TeX-record-buffer)))
+  (pop-to-buffer buffer other-window (and norecord (not TeX-record-buffer))))
 
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
