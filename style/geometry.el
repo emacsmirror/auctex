@@ -75,7 +75,7 @@
     ("papersize") ("landscape") ("portrait")
     ("driver" ("dvips" "dvipdfm" "dvipdfmx" "xdvipdfmx"
 	       "pdftex" "luatex" "vtex" "xetex" "auto" "none"))
-    ("dvips") ("dvipdfm") ("dvipdfmx") ("xdvipdfmx") ("pdftex")
+    ("dvips") ("dvipdfm") ("dvipdfmx") ("xdvipdfmx") ("pdftex") ("luatex")
     ("xetex") ("vtex") ("verbose") ("reset")
     ("mag") ("truedimen") ("pass") ("showframe") ("showcrop"))
   "Key=value options allowed only in the preamble for geometry macros.")
