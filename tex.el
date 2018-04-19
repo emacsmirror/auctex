@@ -582,7 +582,7 @@ Programs should not use these variables directly but the function
 (defun TeX-expand-list ()
   "Complete list of expansion strings for TeX command names.
 
-Concatenate `TeX-expand-list' and `TeX-expand-list-bultin' making
+Concatenate `TeX-expand-list' and `TeX-expand-list-builtin' making
 sure \"%p\" is the first entry."
   (append
    ;; %p must be the first entry, see `TeX-print-command'.
