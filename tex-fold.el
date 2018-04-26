@@ -569,20 +569,21 @@ TYPE can be either 'env for environments, 'macro for macros or
   "Return t if an overfull line will result after adding an overlay.
 The overlay extends from OV-START to OV-END and will display the
 string DISPLAY-STRING."
-  (save-excursion
-    (goto-char ov-end)
-    (search-backward "\n" ov-start t))
-  (not (string-match "\n" display-string))
-  (> (+ (- ov-start
-	   (save-excursion
-	     (goto-char ov-start)
-	     (line-beginning-position)))
-	(length display-string)
-	(- (save-excursion
-	     (goto-char ov-end)
-	     (line-end-position))
-	   ov-end))
-     (current-fill-column)))
+  (and
+   (save-excursion
+     (goto-char ov-end)
+     (search-backward "\n" ov-start t))
+   (not (string-match "\n" display-string))
+   (> (+ (- ov-start
+	    (save-excursion
+	      (goto-char ov-start)
+	      (line-beginning-position)))
+	 (length display-string)
+	 (- (save-excursion
+	      (goto-char ov-end)
+	      (line-end-position))
+	    ov-end))
+      (current-fill-column))))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end delims)
   "Return a property list of the argument number N of a macro.
