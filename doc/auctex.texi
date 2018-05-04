@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2017
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2018
 Free Software Foundation, Inc.
 
 @quotation
@@ -3237,6 +3237,7 @@ be the default command to convert the @acronym{PS} file to
 @code{"Dvipdfmx"}: the @acronym{DVI} file is converted to @acronym{PDF}
 with @command{dvipdfmx}.
 @end itemize
+(case is significant; note the uppercase ``D'' in both strings)
 When the @acronym{PDF} file is finally ready, the next suggested command
 will be to open the viewer.
 
