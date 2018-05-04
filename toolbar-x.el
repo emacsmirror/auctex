@@ -1492,9 +1492,9 @@ this button is ignored."
 
 
 (defconst toolbarx-default-toolbar-meaning-alist
-  `((separator :image "sep" :command t :enable nil :help "")
+  '((separator :image "sep" :command t :enable nil :help "")
 
-    ('new-file
+    (new-file
      :image ["new" toolbar-file-icon]
      :command [find-file toolbar-open]
      :enable [(not (window-minibuffer-p
@@ -1502,7 +1502,7 @@ this button is ignored."
 	      t]
      :help ["Specify a new file's name, to edit the file" "Visit new file"])
 
-    '(open-file :image ["open" toolbar-file-icon]
+    (open-file :image ["open" toolbar-file-icon]
 		:command [menu-find-file-existing toolbar-open]
 		:enable [(not (window-minibuffer-p
 			       (frame-selected-window menu-updating-frame)))
