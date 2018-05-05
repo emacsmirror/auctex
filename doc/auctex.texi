@@ -4715,15 +4715,12 @@ If non-nil, used for decoding output from Japanese @TeX{} process.
 When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
 @end defopt
 
-The former customize options @code{japanese-TeX-command-default} and
-@code{japanese-LaTeX-command-default} are removed from @AUCTeX{}.  Use
+The former customize options @code{japanese-TeX-command-default},
+@code{japanese-LaTeX-command-default} and
+@code{japanese-TeX-command-list} are removed from @AUCTeX{}.  Use
 @code{japanese-TeX-engine-default} instead.  If you need to customize
 the executable file name such as @samp{"latex"}, the options for them,
 or both, customize @code{TeX-engine-alist}.
-
-Also, the option @code{japanese-TeX-command-list} is considered as
-semi-obsolete.  It still functions as before, but in theory, it is not
-required anymore in normal use.
 
 The following two additional font commands are available in
 @LaTeX{} mode buffer.

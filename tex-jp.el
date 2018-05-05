@@ -1,6 +1,6 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- coding: iso-2022-jp-unix; -*-
 
-;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2017
+;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018
 ;;   Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
@@ -64,55 +64,6 @@ systems are determined by their values regardless of the kanji option."
                (jtex "jTeX" "jtex" "jlatex" nil)
                (uptex "upTeX" "euptex" "uplatex" "euptex"))))
 
-;; 順調に行けば不要になる。
-(defcustom japanese-TeX-command-list
-  ;; Changed to double quotes for Windows afflicted people.  I don't
-  ;; use the %(latex) and %(tex) shorthands here because I have not
-  ;; clue whether Omega-related versions exist.  --dak
-  '(("jTeX" "%(PDF)jtex %`%S%(PDFout)%(mode)%' %t"
-     TeX-run-TeX nil (plain-tex-mode) :help "Run NTT jTeX")
-    ("jLaTeX" "%(PDF)jlatex %`%S%(PDFout)%(mode)%' %t"
-     TeX-run-TeX nil (latex-mode) :help "Run NTT jLaTeX")
-    ("pTeX" "%(PDF)ptex %(kanjiopt)%`%S%(PDFout)%(mode)%' %t"
-     TeX-run-TeX nil (plain-tex-mode) :help "Run ASCII pTeX")
-    ("pLaTeX" "%(PDF)platex %(kanjiopt)%`%S%(PDFout)%(mode)%' %t"
-     TeX-run-TeX nil (latex-mode) :help "Run ASCII pLaTeX")
-    ("Mendex" "mendex %(mendexkopt)%s" TeX-run-command nil t :help "Create index file with mendex")
-    ("jBibTeX" "jbibtex %s" TeX-run-BibTeX nil t :help "Run jBibTeX")
-    ("pBibTeX" "pbibtex %(kanjiopt)%s" TeX-run-BibTeX nil t :help "Run pBibTeX"))
-  "Additional list of commands, especially for Japanese.
-For detail, see `TeX-command-list', to which this list is appended."
-  :group 'AUCTeX-jp
-  :type '(repeat (group :value ("" "" TeX-run-command nil t)
-			(string :tag "Name")
-			(string :tag "Command")
-			(choice :tag "How"
-				:value TeX-run-command
-				(function-item TeX-run-command)
-				(function-item TeX-run-format)
-				(function-item TeX-run-TeX)
-				(function-item TeX-run-interactive)
-				(function-item TeX-run-BibTeX)
-				(function-item TeX-run-compile)
-				(function-item TeX-run-shell)
-				(function-item TeX-run-discard)
-				(function-item TeX-run-background)
-				(function-item TeX-run-silent)
-				(function-item TeX-run-discard-foreground)
-				(function-item TeX-run-function)
-				(function-item TeX-run-discard-or-function)
-				(function :tag "Other"))
-			(boolean :tag "Prompt")
-			(choice :tag "Modes"
-				(const :tag "All" t)
-				(set (const :tag "Plain TeX" plain-tex-mode)
-				     (const :tag "LaTeX" latex-mode)
-				     (const :tag "DocTeX" doctex-mode)
-				     (const :tag "ConTeXt" context-mode)
-				     (const :tag "Texinfo" texinfo-mode)
-				     (const :tag "AmSTeX" ams-tex-mode)))
-			(repeat :tag "Menu elements" :inline t sexp))))
-
 ;; customize option の初期値や saved value そのものを改変しないように
 ;; するため、setcar の使用は避ける。
 (setq TeX-command-list
@@ -132,12 +83,6 @@ For detail, see `TeX-command-list', to which this list is appended."
 	  (t
 	   l)))
        TeX-command-list))
-
-;; 順調に行けば不要になる。
-(setq TeX-command-list
-      (append japanese-TeX-command-list
-	      '(("-" "" ignore nil t)) ;; separator for command menu
-	      TeX-command-list))
 
 ;; Define before first use.
 (defvar japanese-TeX-mode nil
