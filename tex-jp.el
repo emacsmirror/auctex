@@ -50,7 +50,7 @@
 		 (const :tag "jTeX" jtex)
 		 (const :tag "upTeX" uptex)))
 
-(defcustom japanese-TeX-use-kanji-opt-flag (not (eq system-type 'windows-nt))
+(defcustom japanese-TeX-use-kanji-opt-flag t
   "Add kanji option to Japanese pTeX family if non-nil.
 If `TeX-japanese-process-input-coding-system' or
 `TeX-japanese-process-output-coding-system' are non-nil, the process coding
@@ -96,12 +96,7 @@ systems are determined by their values regardless of the kanji option."
        '(
         ;; -kanji オプションの文字列を作る。
         ("%(kanjiopt)" (lambda ()
-                         (if (and
-                              ;; non-mule な emacsen はそもそも日本語
-                              ;; 文書を typeset することは考えなくても
-                              ;; いいだろう、とは思うけど一応…。
-                              (featurep 'mule)
-                              japanese-TeX-use-kanji-opt-flag)
+                         (if japanese-TeX-use-kanji-opt-flag
                              (let ((str (japanese-TeX-get-encoding-string)))
                                (if str (format " -kanji=%s " str) ""))
                            "")))
@@ -134,8 +129,7 @@ systems are determined by their values regardless of the kanji option."
                            (t "makeindex"))))
         ;; mendex 用日本語コードオプション。
         ("%(mendexkopt)" (lambda ()
-                           (if (and (featurep 'mule)
-                                    japanese-TeX-use-kanji-opt-flag)
+                           (if japanese-TeX-use-kanji-opt-flag
                                (let ((str (japanese-TeX-get-encoding-string)))
                                  ;; １文字目を大文字に。
                                  (if str (format " -%c " (upcase (aref str 0)))
@@ -313,12 +307,14 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 		   ;; ptex なら mac は utf-8。
 		   ;; windows で -kanji オプションありの時はその文字コード、
 		   ;; なしの時は sjis。
+		   ;; texlive 2018 からは sjis ではなく utf-8 になったので
+		   ;; そちらに合わせる。
 		   ((eq TeX-engine 'ptex)
 		    (cond ((eq system-type 'darwin)
 			   'utf-8)
 			  ((and japanese-TeX-use-kanji-opt-flag kanji)
 			   kanji)
-			  (t 'shift_jis)))
+			  (t 'utf-8)))
 		   ;; jtex なら sjis に固定する。
 		   ((eq TeX-engine 'jtex)
 		    'shift_jis)
@@ -343,11 +339,12 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
 	   (enc (cond
 		 ;; ptex で -kanji オプションありなら、その文字コード。
 		 ;; なしなら utf-8 か sjis。
+		 ;; texlive 2018 で w32 でも utf-8 がデフォルトになっ
+		 ;; たようなので、それに合わせる。
 		 ((eq TeX-engine 'ptex)
 		  (if (and japanese-TeX-use-kanji-opt-flag kanji)
 		      kanji
-		    (if (eq system-type 'windows-nt)
-			'shift_jis 'utf-8)))
+		    'utf-8))
 		 ;; jtex なら euc か sjis に固定する。
 		 ((eq TeX-engine 'jtex)
 		  (if (memq system-type '(windows-nt darwin))
