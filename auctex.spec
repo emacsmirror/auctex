@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2002, 2004, 2005, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2004-2006, 2018 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -27,22 +27,20 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define texgroup     Productivity/Publishing/TeX/Utilities
-%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
 %define texgroup     Applications/Publishing
-%define xemacspkgdir %{_datadir}/xemacs/site-packages
 %endif
 
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
-Version: 	11.86
+Version: 	12.1
 Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
-URL: 		http://www.gnu.org/software/auctex/
-Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
+URL: 		https://www.gnu.org/software/auctex/
+Source0:        https://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
 BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
 
@@ -63,7 +61,7 @@ source buffer.
 %package emacs
 Summary: 	Enhanced TeX modes for GNU Emacs
 Group:          %{commongroup}
-Requires: 	emacs >= 21
+Requires: 	emacs >= 24
 Obsoletes:      ge_auc emacs-auctex auctex preview-latex-emacs
 Conflicts:      emacspeak < 18
 Provides:       auctex
@@ -78,8 +76,7 @@ Texinfo and basic support for ConTeXt.  Documentation can be found under
 manual is available in Emacs info (C-h i d m AUCTeX RET).  On the AUCTeX home
 page, we provide manuals in various formats.
 
-This package is for GNU Emacs.  XEmacs users should use the package system for
-installation.
+This package is for GNU Emacs.  XEmacs is no longer supported.
 
 The package enables AUCTeX modes system-wide.  The README file
 contains information how users may override this choice.

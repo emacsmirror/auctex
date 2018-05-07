@@ -3862,9 +3862,9 @@ Each of the two utilities @code{lacheck} and @code{chktex} will find
 some errors the other doesn't, but @code{chktex} is more configurable,
 allowing you to create your own errors.  You may need to install the
 programs before using them.  You can get @code{lacheck} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} and
+@file{<URL:https://www.ctan.org/pkg/lacheck>} and
 @code{chktex} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.
+@file{<URL:https://www.ctan.org/pkg/chktex>}.
 
 @node Control
 @section Controlling the output

@@ -135,7 +135,7 @@ converting @acronym{DVI} files and Ghostscript (with a @samp{PNG}
 device) for converting @acronym{PDF} files.  @samp{dvipng} is much
 faster than the combination of Dvips and Ghostscript.  You can get
 downloads, access to its @acronym{CVS} archive and further information
-from its @uref{http://savannah.nongnu.org/projects/dvipng, project
+from its @uref{https://savannah.nongnu.org/projects/dvipng, project
 site}.
 
 @node More documentation, Availability, Basic modes of operation, Introduction
@@ -191,9 +191,9 @@ will display it.
 @cindex @sc{git} access
 
 The @previewlatex{} project is now part of @AUCTeX{} and accessible as
-part of the @uref{http://savannah.gnu.org/projects/auctex,@AUCTeX{}
+part of the @uref{https://savannah.gnu.org/projects/auctex,@AUCTeX{}
 project page}.  You can get its files from the
-@uref{ftp://ftp.gnu.org/pub/gnu/auctex,@AUCTeX{} download area}.  As of
+@uref{https://ftp.gnu.org/pub/gnu/auctex/,@AUCTeX{} download area}.  As of
 @w{@AUCTeX{} 11.81}, @previewlatex{} should already be integrated into
 @AUCTeX{}, so no separate download will be necessary.
 
@@ -212,7 +212,7 @@ bugs to @email{bug-auctex@@gnu.org}.
 
 There is a general discussion list for @AUCTeX{} which also
 covers @previewlatex{}, look at
-@uref{http://lists.gnu.org/mailman/listinfo/auctex}.  For more
+@uref{https://lists.gnu.org/mailman/listinfo/auctex}.  For more
 information on the mailing list, send a message with just the word
 ``help'' as subject or body to @email{auctex-request@@gnu.org}.  For the
 developers, there is the @email{auctex-devel@@gnu.org} list; it would
