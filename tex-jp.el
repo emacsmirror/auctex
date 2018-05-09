@@ -520,15 +520,15 @@ overwrite the value already set locally."
 
 ;;; Support for various self-insert-command
 
-(fset 'japanese-TeX-self-insert-command
-      (cond ((fboundp 'can-n-egg-self-insert-command)
-	     #'can-n-egg-self-insert-command)
-	    ((fboundp 'egg-self-insert-command)
-	     #'egg-self-insert-command)
-	    ((fboundp 'canna-self-insert-command)
-	     #'canna-self-insert-command)
-	    (t
-	     #'self-insert-command)))
+(defalias 'japanese-TeX-self-insert-command
+  (cond ((fboundp 'can-n-egg-self-insert-command)
+	 #'can-n-egg-self-insert-command)
+	((fboundp 'egg-self-insert-command)
+	 #'egg-self-insert-command)
+	((fboundp 'canna-self-insert-command)
+	 #'canna-self-insert-command)
+	(t
+	 #'self-insert-command)))
 
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
