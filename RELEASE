@@ -48,7 +48,7 @@ Availability
 The easiest way for getting AUCTeX is installing it with GNU ELPA, see
 <URL:https://elpa.gnu.org/packages/auctex.html> for more information.
 Other download options are available at
-<URL:ftp://ftp.gnu.org/gnu/auctex/>.  At release time, we provide the
+<URL:https://ftp.gnu.org/gnu/auctex/>.  At release time, we provide the
 source tarball.  You can also use versions of Emacs that already
 include AUCTeX or a software package management system for your
 operating system which provides you with the latest release.
@@ -59,7 +59,7 @@ The download area is mirrored to the directory support/auctex on CTAN.
 AUCTeX is licensed under the GNU General Public License version 3.
 
 You'll find more information at the web site of AUCTeX
-<URL:http://www.gnu.org/software/auctex/>, including its mailing list
+<URL:https://www.gnu.org/software/auctex/>, including its mailing list
 addresses.
 
 Future development and additional information
@@ -95,7 +95,7 @@ we forgot somebody.)
 
 Footnotes:
 
-[1]  <URL:ftp://ftp.dante.de/tex-archive/macros/latex/contrib/preview/>
+[1]  <URL:https://www.ctan.org/pkg/preview>
 
 [2]  dvipng is available via its project page
-<URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
+<URL:https://savannah.nongnu.org/projects/dvipng> and from CTAN.

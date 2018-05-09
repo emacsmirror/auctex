@@ -61,7 +61,7 @@ preview-latex's bug reporting commands will probably not work.")))
   :prefix "preview-"
   :link '(custom-manual "(preview-latex)Top")
   :link '(info-link "(preview-latex)The Emacs interface")
-  :link '(url-link :tag "Homepage" "http://www.gnu.org/software/auctex/"))
+  :link '(url-link :tag "Homepage" "https://www.gnu.org/software/auctex/"))
 
 (defgroup preview-gs nil "Preview's Ghostscript renderer."
   :group 'preview

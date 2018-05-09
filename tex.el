@@ -6249,11 +6249,11 @@ a bug report.  In addition check if the bug is reproducable with an
 up-to-date version of AUCTeX.  So please upgrade to the version
 available from ")
 	(insert-text-button
-	 "http://www.gnu.org/software/auctex/"
+	 "https://www.gnu.org/software/auctex/"
 	 'face 'link
 	 'help-echo (concat "mouse-2, RET: Follow this link")
 	 'action (lambda (button)
-		   (browse-url "http://www.gnu.org/software/auctex/"))
+		   (browse-url "https://www.gnu.org/software/auctex/"))
 	 'follow-link t)
 	(insert " if your
 installation is older than the one available from the web site.
@@ -6265,11 +6265,11 @@ in your report.
 Your report will be posted for the auctex package at the GNU bug
 tracker.  Visit ")
 	(insert-text-button
-	 "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"
+	 "https://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"
 	 'face 'link
 	 'help-echo (concat "mouse-2, RET: Follow this link")
 	 'action (lambda (button)
-		   (browse-url "http://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"))
+		   (browse-url "https://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"))
 	 'follow-link t)
 	(insert "\nto browse existing AUCTeX bugs.
 ------------------------------------------------------------------------\n\n")

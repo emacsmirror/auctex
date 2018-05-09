@@ -619,12 +619,12 @@ windows-package: check-tag
 	test -d $(WBUILDDIR) || mkdir $(WBUILDDIR)
 	test -f $(WBUILDDIR)/$(WEMACSPACKAGE) \
 	|| { cd $(WBUILDDIR) \
-	&& wget http://ftp.gnu.org/gnu/emacs/windows/$(WEMACSPACKAGE); }
+	&& wget https://ftp.gnu.org/gnu/emacs/windows/$(WEMACSPACKAGE); }
 	test -f $(WBUILDDIR)/auctex-$(TAG).zip \
 	|| { test -f $(FTPDIR)/auctex-$(TAG).zip \
 	  && $(CP) $(FTPDIR)/auctex-$(TAG).zip $(WBUILDDIR); } \
 	|| { cd $(WBUILDDIR) \
-	  && wget http://ftp.gnu.org/gnu/auctex/auctex-$(TAG).zip; }
+	  && wget https://ftp.gnu.org/gnu/auctex/auctex-$(TAG).zip; }
 # Reset to clean state
 	cd $(WBUILDDIR) \
 	&& rm -rf emacs-$(WEMACSVER) \
@@ -685,14 +685,14 @@ www-doc: check-tag
 	mkdir -p $(WWWDIR)/manual
 	$(CP) auctex-$(TAG)/doc/*.texi $(WWWDIR)/manual
 	cd $(WWWDIR)/manual \
-	&& wget -O gendocs.sh 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh' \
-	&& wget -O gendocs.sh.patch 'http://git.savannah.gnu.org/gitweb/?p=auctex.git;a=blob_plain;f=gendocs.sh.patch;hb=gendocspatch' \
+	&& wget -O gendocs.sh 'https://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh' \
+	&& wget -O gendocs.sh.patch 'https://git.savannah.gnu.org/gitweb/?p=auctex.git;a=blob_plain;f=gendocs.sh.patch;hb=gendocspatch' \
 	&& patch <gendocs.sh.patch \
 	&& chmod u+x gendocs.sh \
-	&& wget -O gendocs_template 'http://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs_template' \
+	&& wget -O gendocs_template 'https://cvs.savannah.gnu.org/viewvc/%2acheckout%2a/texinfo/texinfo/util/gendocs_template' \
 	&& sed -i -e 's/html_node\/index\.html/%%PACKAGE%%\/index.html/' gendocs_template \
 	&& mkdir .texinfo \
-	&& echo -e "emacs split http://www.gnu.org/software/emacs/manual/html_node/emacs/\nemacs mono http://www.gnu.org/software/emacs/manual/html_mono/emacs.html\nreftex split http://www.gnu.org/software/auctex/manual/reftex/\nreftex mono http://www.gnu.org/software/auctex/manual/reftex.html\n" > .texinfo/htmlxref.cnf \
+	&& echo -e "emacs split https://www.gnu.org/software/emacs/manual/html_node/emacs/\nemacs mono https://www.gnu.org/software/emacs/manual/html_mono/emacs.html\nreftex split https://www.gnu.org/software/auctex/manual/reftex/\nreftex mono https://www.gnu.org/software/auctex/manual/reftex.html\n" > .texinfo/htmlxref.cnf \
 	&& ./gendocs.sh --email bug-auctex@gnu.org --texi2html \
 	  --html --use-nodes auctex "AUCTeX Manual" \
 	&& ./gendocs.sh --email bug-auctex@gnu.org --texi2html \

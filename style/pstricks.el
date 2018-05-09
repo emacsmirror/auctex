@@ -48,7 +48,7 @@
 ;;
 ;; 14/06/2007 rewrite of pstricks.el based on Jean-Philippe Georget's
 ;;            pstricks.el version found on <URI:
-;;            http://www.emacswiki.org/cgi-bin/wiki/pstricks.el>
+;;            https://www.emacswiki.org/emacs/pstricks.el>
 
 ;;; TODO:
 ;;

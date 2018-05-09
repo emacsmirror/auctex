@@ -791,7 +791,7 @@ omitted) and `TeX-region-file'."
 	  ((and
 	    ;; Rationale: makeindex should be run when final document is almost
 	    ;; complete (see
-	    ;; http://tex.blogoverflow.com/2012/09/dont-forget-to-run-makeindex/),
+	    ;; https://tex-talk.net/2012/09/dont-forget-to-run-makeindex/),
 	    ;; otherwise, after following latex runs, index pages may change due
 	    ;; to changes in final document, resulting in extra makeindex and
 	    ;; latex runs.
