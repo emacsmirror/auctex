@@ -380,6 +380,8 @@ Return nil otherwise."
                 (iso-2022-jp . "jis")
                 (japanese-shift-jis . "sjis")
                 (utf-8 . "utf8")
+		;; TeXLive 2018 から BOM つき UTF-8 もサポートされた。
+                (utf-8-with-signature . "utf8")
 
                 (euc-jis-2004 . "euc")
                 (iso-2022-jp-2004 . "jis")
