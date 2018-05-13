@@ -24,6 +24,11 @@ The way the option @code{TeX-record-buffer} is used was corrected.  It
 was used in just the opposite way as the document says.  Erase the
 customization if you have customized this option since it now acts in
 reverse to your expectation.
+
+@item A former customize option @code{japanese-TeX-command-list} is
+removed.  Use @code{japanese-TeX-engine-default}, or if it's really
+necessary, customize @code{TeX-command-list} directly if the task which
+the option used to carry is required.
 @end itemize
 
 @heading News in 12.1
