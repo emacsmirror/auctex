@@ -984,48 +984,53 @@ Called with one argument PROCESS.")
 Usually coding system is the same as the TeX file with eol format
 adjusted to OS default value.  Take care of Japanese TeX, which
 requires special treatment."
-  (when (featurep 'mule)
-    (if (and (boundp 'japanese-TeX-mode)
-	     (fboundp 'japanese-TeX-set-process-coding-system)
-	     (with-current-buffer TeX-command-buffer
-	       japanese-TeX-mode))
-	(japanese-TeX-set-process-coding-system process)
-      (let ((cs (with-current-buffer TeX-command-buffer
-		  buffer-file-coding-system)))
-	;; The value of `buffer-file-coding-system' is sometimes
-	;; undecided-{unix,dos,mac}.  That happens when the file
-	;; contains no multibyte chars and only end of line format is
-	;; determined.  Emacs lisp reference recommends not to use
-	;; undecided-* for process coding system, so it might seem
-	;; reasonable to change undecided-* to some fixed coding
-	;; system like this:
-	;; (if (eq 'undecided (coding-sytem-type cs))
-	;;     (setq cs 'utf-8))
-	;; However, that can lose when the following conditions are
-	;; met:
-	;; (1) The document is divided into multiple files.
-	;; (2) The command buffer contains no multibyte chars.
-	;; (3) The other files contain mutlibyte chars and saved in
-	;;     a coding system other than the coding system chosen
-	;;     above.
-	;; So we leave undecided-* unchanged here.  Although
-	;; undecided-* is not quite safe for the coding system for
-	;; encoding, i.e., keyboard input to the TeX process, we
-	;; expect that this does not raise serious problems because it
-	;; is pretty rare that TeX process needs keyboard input of
-	;; multibyte chars.
+  (if (and (boundp 'japanese-TeX-mode)
+	   (fboundp 'japanese-TeX-set-process-coding-system)
+	   (with-current-buffer TeX-command-buffer
+	     japanese-TeX-mode))
+      (japanese-TeX-set-process-coding-system process)
+    (let ((cs (coding-system-base (with-current-buffer TeX-command-buffer
+				    buffer-file-coding-system))))
+      ;; The value of `buffer-file-coding-system' is sometimes
+      ;; undecided-{unix,dos,mac}.  That happens when the file
+      ;; contains no multibyte chars and only end of line format is
+      ;; determined.  Emacs lisp reference recommends not to use
+      ;; undecided-* for process coding system, so it might seem
+      ;; reasonable to change `undecided' into some fixed coding
+      ;; system like this:
+      ;; (if (eq 'undecided cs)
+      ;;     (setq cs 'utf-8))
+      ;; However, that can lose when the following conditions are met:
+      ;; (1) The document is divided into multiple files.
+      ;; (2) The command buffer contains no multibyte chars.
+      ;; (3) The other files contain mutlibyte chars and saved in a
+      ;;     coding system other than the one chosen above.
+      ;; So we leave `undecided' unchanged here.  Although `undecided'
+      ;; is not quite safe for the coding system for encoding, i.e.,
+      ;; keyboard input to the TeX process, we expect that this does
+      ;; not raise serious problems because it is pretty rare that TeX
+      ;; process needs keyboard input of multibyte chars.
 
-	;; Eol format of TeX files can differ from OS default. TeX
-	;; binaries accept all type of eol format in the given files
-	;; and output messages according to OS default.  So we set eol
-	;; format to OS default value.
-	(setq cs (coding-system-change-eol-conversion
-		  cs
-		  ;; The eol of macosX is LF, not CR.  So we choose
-		  ;; other than `unix' only for w32 system.
-		  ;; FIXME: what should we do for cygwin?
-		  (if (eq system-type 'windows-nt) 'dos 'unix)))
-	(set-process-coding-system process cs cs)))))
+      ;; `utf-8-with-signature' (UTF-8 with BOM) doesn't suit at all
+      ;; for the coding system for encoding because it always injects
+      ;; 3-byte BOM in front of its return value (even when the string
+      ;; to be sent has only ascii characters!)  Thus we change it
+      ;; into `utf-8'.  On decoding, `utf-8' can decode UTF-8 with
+      ;; BOM.  So it is safe for both decoding and encoding.
+      (if (eq cs 'utf-8-with-signature)
+	  (setq cs 'utf-8))
+
+      ;; Eol format of TeX files can differ from OS default. TeX
+      ;; binaries accept all type of eol format in the given files
+      ;; and output messages according to OS default.  So we set eol
+      ;; format to OS default value.
+      (setq cs (coding-system-change-eol-conversion
+		cs
+		;; The eol of macosX is LF, not CR.  So we choose
+		;; other than `unix' only for w32 system.
+		;; FIXME: what should we do for cygwin?
+		(if (eq system-type 'windows-nt) 'dos 'unix)))
+      (set-process-coding-system process cs cs))))
 
 (defcustom TeX-show-compilation nil
   "*If non-nil, show output of TeX compilation in other window."
