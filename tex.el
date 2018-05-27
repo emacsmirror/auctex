@@ -1399,7 +1399,7 @@ viewer."
       ("Zathura"
        ("zathura %o"
 	(mode-io-correlate
-	 " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\""))
+	 " --synctex-forward %n:0:\"%b\" -x \"emacsclient +%{line} %{input}\""))
        "zathura"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
