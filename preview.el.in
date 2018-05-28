@@ -2217,7 +2217,14 @@ list of LaTeX commands is inserted just before \\begin{document}."
 (defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' %t")
+preview-default-preamble "\\fi}\"%' \"{\\detokenize{\" %t \"}}\"")
+  ;; Since TeXLive 2018, the default encoding for LaTeX files has been
+  ;; changed to UTF-8 if used with classic TeX or pdfTeX.  I.e.,
+  ;; \usepackage[utf8]{inputenc} is enabled by default in (pdf)latex.
+  ;; c.f. LaTeX News issue 28
+  ;; Due to this change, \detokenize is required to recognize
+  ;; non-ascii characters in the file name when \input is supplemented
+  ;; implicitly by %`-%' pair.
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -3272,8 +3279,12 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-undump-replacements
   '(("\\`\\([^ ]+\\)\
- .*? \"\\\\input\" \\(.*\\)\\'"
-     . ("\\1 -interaction=nonstopmode \"&" preview-format-name "\" \\2")))
+ .*? \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
+     . ("\\1 -interaction=nonstopmode " preview-format-name
+	" \"/AUCTEXINPUT{\" \\2 \"}\"")))
+  ;; See the ini file code below in `preview-cache-preamble' for the
+  ;; wierd /AUCTEXINPUT construct.  In short, it is crafted so that
+  ;; dumped format file can read file of non-ascii name.
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -3317,8 +3328,11 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
       ;; in the tools bundle is an empty file.
       (write-region "\\ifx\\pdfoutput\\undefined\\else\
 \\let\\PREVIEWdump\\dump\\def\\dump{%
-\\edef\\next{{\\catcode`\\ 9 \\pdfoutput=\\the\\pdfoutput\\relax\
-\\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 \\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax\n" nil dump-file)
+\\edef\\next{{\\pdfoutput=\\the\\pdfoutput\\relax\
+\\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 %
+\\catcode`/ 0 %
+\\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input{\\detokenize{##1}}}%
+\\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax%\n" nil dump-file)
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
@@ -3505,8 +3519,9 @@ internal parameters, STR may be a log to insert into the current log."
   (set-buffer commandbuff)
   (let*
       ((preview-format-name (shell-quote-argument
-			     (preview-dump-file-name
-			      (file-name-nondirectory master))))
+			     (concat "&"
+				     (preview-dump-file-name
+				      (file-name-nondirectory master)))))
        (process-environment (copy-sequence process-environment))
        (process
 	(progn
