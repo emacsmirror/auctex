@@ -2032,7 +2032,33 @@ The hooks are run in the region buffer, you may use the variable
     (while (setq pos (string-match "[~#]" file pos))
       (setq file (replace-match "\\\\string\\&" t nil file 0)
 	    pos (+ pos 8))))
-  file)
+  ;; Use \unexpanded so that \message outputs the raw file name.
+  ;; When \usepackage[utf8]{inputenc} is used in standard (pdf)latex,
+  ;; \message does not output non-ascii file name in raw form without
+  ;; \enuexpanded, which makes AUCTeX to fail to recognize the file
+  ;; names right when analysing the process output buffer.
+  ;; Note that \usepackage[utf8]{inputenc} is enabled by default in
+  ;; standard (pdf)latex since TeXLive 2018.
+  (if (and (memq major-mode '(latex-mode doctex-mode))
+	   ;; Japanese upLaTeX requires the same treatment with
+	   ;; respect to non-ascii characters other than Japanese, in
+	   ;; file names within \message{}.
+	   ;; However, pLaTeX (non u- version) does not support
+	   ;; non-ascii file name encoded in UTF-8.  So considering
+	   ;; `ptex' doesn't make sense here.  We cater for only
+	   ;; `default' and `uptex' engines.
+	   (memq TeX-engine '(default uptex)))
+      ;; It would fail to put entire `file' inside \unexpanded{} when
+      ;; the above loop injects \string before "#" and "~".  So put
+      ;; only multibyte characters inside \unexpanded{}.
+      ;; It is safe in upLaTeX to use \unexpanded{} on Japanese
+      ;; characters though they are handled by upLaTeX in a totally
+      ;; different way from inputenc.
+      ;; Thus put all multibyte characters, without considering
+      ;; whether they are Japanese or not, inside \unexpanded{}.
+      (replace-regexp-in-string "[[:multibyte:]]+"
+				"\\\\unexpanded{\\&}" file t)
+    file))
 
 (defvar font-lock-mode-enable-list)
 (defvar font-lock-auto-fontify)
