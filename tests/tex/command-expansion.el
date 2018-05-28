@@ -1,6 +1,6 @@
 ;;; command-expansion.el --- tests for TeX command expansion
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -31,7 +31,7 @@
 		  (list (cons "Test" '("%%%% %`%'" TeX-run-command t t)))))
 	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))
 				 'TeX-master-file))
-           "%%  \"\\input\"")))
+           "%% ")))
 
 (ert-deftest TeX-command-expansion-errors ()
   "Test error handling in `TeX-command-expand'."

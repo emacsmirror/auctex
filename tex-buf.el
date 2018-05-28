@@ -542,12 +542,8 @@ without further expansion."
   (let (pat
 	pos ;;FIXME: Should this be dynamically scoped?
 	entry TeX-command-text TeX-command-pos
-        ;; FIXME: This variable appears to be unused!
-	(file `(lambda (&rest args)
-		 (shell-quote-argument
-		  (concat (and (stringp TeX-command-pos) TeX-command-pos)
-			  (apply #',file args)
-			  (and (stringp TeX-command-pos) TeX-command-pos)))))
+	(orig-file file)
+	(file #'TeX--master-or-region-file-with-extra-quotes)
         expansion-res case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
@@ -584,6 +580,47 @@ without further expansion."
 	  (setq command
 		(replace-match string t t command)))))
   command)
+
+(defun TeX--master-or-region-file-with-extra-quotes
+    (&optional extension nondirectory ask extra)
+  "Return file name with quote for shell.
+Wrapper for `TeX-master-file' or `TeX-region-file' to be used in
+`TeX-command-expand'.
+It is assumed that `orig-file' has dynamic binding of the value of
+`TeX-master-file' or `TeX-region-file'.  Pass EXTENSION, NONDIRECTORY
+and ASK to that function as-is, and arrange the returned file name for
+use with command shell.
+Enclose the file name with space within quotes `\"' first when
+\" \\input\" is supplemented (indicated by dynamically binded
+variable `TeX-command-text' having string value.)
+Enclose the file name within \\detokenize{} when the following three
+conditions are met:
+1. compiling with standard (pdf)LaTeX or upLaTeX
+2. \" \\input\" is supplemented
+3. EXTRA is non-nil. (default when expanding \"%T\")"
+  (shell-quote-argument
+   (let* ((raw (funcall orig-file extension nondirectory ask))
+	  ;; String `TeX-command-text' means that the file name is
+	  ;; given through \input command.
+	  (quote-for-space (if (and (stringp TeX-command-text)
+				    (string-match " " raw))
+			       "\"" "")))
+     (format
+      (if (and extra
+	       (stringp TeX-command-text)
+	       (memq major-mode '(latex-mode doctex-mode))
+	       (memq TeX-engine '(default uptex)))
+	  ;; Since TeXLive 2018, the default encoding for LaTeX
+	  ;; files has been changed to UTF-8 if used with
+	  ;; classic TeX or pdfTeX.  I.e.,
+	  ;; \usepackage[utf8]{inputenc} is enabled by default
+	  ;; in (pdf)latex.
+	  ;; c.f. LaTeX News issue 28
+	  ;; Due to this change, \detokenize is required to
+	  ;; recognize non-ascii characters in the file name
+	  ;; when \input precedes.
+	  "\\detokenize{ %s }" "%s")
+      (concat quote-for-space raw quote-for-space)))))
 
 (defun TeX-check-files (derived originals extensions)
   "Check if DERIVED is newer than any of the ORIGINALS.
@@ -2123,8 +2160,10 @@ original file."
 			   (if (not (re-search-forward TeX-header-end nil t))
 			       ""
 			     (re-search-forward "[\r\n]" nil t)
-			     (buffer-substring (point-min) (point)))))))))
+			     (buffer-substring-no-properties
+			      (point-min) (point)))))))))
 	 (header-offset 0)
+	 first-line
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
@@ -2144,21 +2183,36 @@ original file."
 			      ;;(beginning-of-line 1)
 			      (re-search-backward "[\r\n]" nil t)
 			      (setq trailer-offset (TeX-current-offset))
-			      (buffer-substring (point) (point-max))))))))))
+			      (buffer-substring-no-properties
+			       (point) (point-max))))))))))
     ;; file name should be relative to master
     (setq original (TeX-quote-filename (file-relative-name
 					original (TeX-master-directory)))
 	  master-name (TeX-quote-filename master-name))
+
+    ;; If the first line begins with "%&", put that line separately on
+    ;; the very first line of the region file so that the first line
+    ;; parsing will work.
+    (setq first-line (if (and (> (length header) 1)
+			      (string= (substring header 0 2) "%&"))
+			 ;; This would work even if header has no newline.
+			 (substring header 0 (string-match "\n" header))
+		       ""))
+    (unless (string= first-line "")
+      ;; Remove first-line from header.
+      (setq header (substring header (length first-line)))
+      (setq first-line (concat first-line "\n")))
+
     (with-current-buffer file-buffer
       (setq buffer-read-only t
 	    buffer-undo-list t)
       (setq original-content (buffer-string))
       (let ((inhibit-read-only t))
 	(erase-buffer)
-	(when (boundp 'buffer-file-coding-system)
-	  (setq buffer-file-coding-system
-		(with-current-buffer master-buffer buffer-file-coding-system)))
-	(insert "\\message{ !name(" master-name ")}"
+	(setq buffer-file-coding-system
+	      (with-current-buffer master-buffer buffer-file-coding-system))
+	(insert first-line
+		"\\message{ !name(" master-name ")}"
 		header
 		TeX-region-extra
 		"\n\\message{ !name(" original ") !offset(")

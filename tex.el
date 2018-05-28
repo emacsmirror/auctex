@@ -116,10 +116,10 @@ If nil, none is specified."
 ;; `TeX-expand-list-builtin' for a description of the % escapes
 
 (defcustom TeX-command-list
-  '(("TeX" "%(PDF)%(tex) %(file-line-error) %(extraopts) %`%S%(PDFout)%(mode)%' %t"
+  '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
-    ("LaTeX" "%`%l%(mode)%' %t"
+    ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
     ;; Not part of standard TeX.
@@ -127,7 +127,7 @@ If nil, none is specified."
      (texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo %(extraopts) --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "amstex %(PDFout) %(extraopts) %`%S%(mode)%' %t"
+    ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %t"
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -498,8 +498,19 @@ string."
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
+    ;; If any TeX codes appear in the interval between %` and %', move
+    ;; all of them after the interval and supplement " \input".  The
+    ;; appearance is marked by leaving the bind to `TeX-command-text'
+    ;; with the TeX codes.
+    ;; Rule:
+    ;; 1. %` and %' must appear in pair.
+    ;; 2. %` and %' must not appear more than once in one command
+    ;;    line string (including the results of %-expansion).
+    ;; 3. Each TeX codes between %` and %' must be enclosed in
+    ;;    double quotes and preceded by a space.
     ("%`" (lambda nil
-	    (setq TeX-command-pos t TeX-command-text "")))
+	    (setq TeX-command-pos t TeX-command-text nil)
+	    ""))
     (" \"\\" (lambda nil
 	       (if (eq TeX-command-pos t)
 		   (setq TeX-command-pos pos
@@ -523,18 +534,13 @@ string."
 				TeX-command-pos t)
 			(setq pos (1+ pos)))))
     ("%'" (lambda nil
-	    (prog1
-		(if (stringp TeX-command-text)
-		    (progn
-		      (setq pos (+ pos (length TeX-command-text) 9)
-			    TeX-command-pos
-			    (and (string-match " "
-					       (funcall file t t))
-				 "\""))
-		      (concat TeX-command-text " \"\\input\""))
-		  (setq TeX-command-pos nil)
-		  "")
-	      (setq TeX-command-text nil))))
+	    (setq TeX-command-pos nil)
+	    (if (stringp TeX-command-text)
+		(progn
+		  (setq pos (+ pos (length TeX-command-text) 9))
+		  (concat TeX-command-text " \"\\input\""))
+	      "")))
+    ("%T" TeX--master-or-region-file-with-extra-quotes t t nil t)
     ("%n" TeX-current-line)
     ("%d" file "dvi" t)
     ("%f" file "ps" t)
