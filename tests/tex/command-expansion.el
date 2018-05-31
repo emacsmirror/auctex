@@ -84,4 +84,17 @@
        (TeX-view-command-raw)))
    :type 'error))
 
+(ert-deftest TeX-command-detokenize ()
+  "Check whether \"\\input\" and \"\\detokenize\" are supplied when necessary."
+  ;; Skip on w32 because the quoting style of `shell-quote-argument'
+  ;; is different.
+  (skip-unless (not (eq system-type 'w32)))
+  (should (string=
+           (let ((major-mode 'latex-mode)
+		 (TeX-engine 'default)
+		 (TeX-master "/tmp/abc")
+		 (TeX-command-extra-options " \"\\foo\""))
+	     (TeX-command-expand "%`%(extraopts)%' %T" #'TeX-master-file))
+	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
+
 ;;; command-expansion.el ends here

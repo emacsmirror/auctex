@@ -25,10 +25,21 @@ was used in just the opposite way as the document says.  Erase the
 customization if you have customized this option since it now acts in
 reverse to your expectation.
 
-@item A former customize option @code{japanese-TeX-command-list} is
-removed.  Use @code{japanese-TeX-engine-default}, or if it's really
-necessary, customize @code{TeX-command-list} directly if the task which
-the option used to carry is required.
+@item
+A former customize option @code{japanese-TeX-command-list} is removed.
+Use @code{japanese-TeX-engine-default}, or if it's really necessary,
+customize @code{TeX-command-list} directly if the task which the option
+used to carry is required.
+
+@item
+Support for standard @LaTeX{} without e-@TeX{} extension is now very
+limited.  It doesn't work if raw @TeX{} code is put on the command line
+to invoke latex command.  It also fails for region compilation (@kbd{C-c
+C-r} and so on) with documents of non-ascii file name.  In addition, it
+no longer works with @previewlatex{}.  We consider this incompatibility
+is permissible because e-@TeX{} extension is enabled for standard
+@LaTeX{} by default long ago.  @LaTeX{} variants such as Xe@LaTeX{} and
+Lua@LaTeX{} are not affected.
 @end itemize
 
 @heading News in 12.1
