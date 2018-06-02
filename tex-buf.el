@@ -2072,7 +2072,7 @@ The hooks are run in the region buffer, you may use the variable
   ;; Use \unexpanded so that \message outputs the raw file name.
   ;; When \usepackage[utf8]{inputenc} is used in standard (pdf)latex,
   ;; \message does not output non-ascii file name in raw form without
-  ;; \enuexpanded, which makes AUCTeX to fail to recognize the file
+  ;; \unexpanded, which makes AUCTeX to fail to recognize the file
   ;; names right when analysing the process output buffer.
   ;; Note that \usepackage[utf8]{inputenc} is enabled by default in
   ;; standard (pdf)latex since TeXLive 2018.

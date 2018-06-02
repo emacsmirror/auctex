@@ -3283,7 +3283,7 @@ This is passed through `preview-do-replacements'."
      . ("\\1 -interaction=nonstopmode " preview-format-name
 	" \"/AUCTEXINPUT{\" \\2 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
-  ;; wierd /AUCTEXINPUT construct.  In short, it is crafted so that
+  ;; weird /AUCTEXINPUT construct.  In short, it is crafted so that
   ;; dumped format file can read file of non-ascii name.
   "Use a dumped format for reading preamble."
   :group 'preview-latex
