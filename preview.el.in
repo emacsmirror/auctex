@@ -3268,9 +3268,11 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
+  ;; If -kanji option exists, pick it up as the second match.
+  ;; Discard all other options.
     ("\\`\\([^ ]+\\)\
-\\(\\( +-\\([^ \\\\\"]\\|\\\\\\.\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\1 -ini -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\5")))
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*\\(.*\\)\\'"
+     . ("\\1 -ini \\2 -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\3")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -3278,10 +3280,13 @@ This is passed through `preview-do-replacements'."
 		  (cons string (repeat (choice symbol string))))))
 
 (defcustom preview-undump-replacements
+  ;; If -kanji option exists, pick it up as the second match.
+  ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
- .*? \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
-     . ("\\1 -interaction=nonstopmode " preview-format-name
-	" \"/AUCTEXINPUT{\" \\2 \"}\"")))
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
+ \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
+     . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
+	preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
   ;; weird /AUCTEXINPUT construct.  In short, it is crafted so that
   ;; dumped format file can read file of non-ascii name.
@@ -3326,13 +3331,13 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 	(push format-cons preview-dumped-alist))
       ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
       ;; in the tools bundle is an empty file.
-      (write-region "\\ifx\\pdfoutput\\undefined\\else\
-\\let\\PREVIEWdump\\dump\\def\\dump{%
-\\edef\\next{{\\pdfoutput=\\the\\pdfoutput\\relax\
+      (write-region "\\let\\PREVIEWdump\\dump\\def\\dump{%
+\\edef\\next{{\\ifx\\pdfoutput\\undefined\\else\
+\\pdfoutput=\\the\\pdfoutput\\relax\\fi\
 \\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 %
 \\catcode`/ 0 %
-\\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input{\\detokenize{##1}}}%
-\\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax%\n" nil dump-file)
+\\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input\\detokenize{##1}\\relax}%
+\\let\\dump\\PREVIEWdump\\dump}\\input mylatex.ltx \\relax%\n" nil dump-file)
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
@@ -3534,15 +3539,7 @@ internal parameters, STR may be a log to insert into the current log."
 	   (if (consp (cdr dumped-cons))
 	       (preview-do-replacements
 		command
-		(append preview-undump-replacements
-			;; Since the command options provided in
-			;; (TeX-engine-alist) are dropped, give them
-			;; back.
-			(list (list "\\`\\([^ ]+\\)"
-				    (TeX-command-expand "%(PDF)%(latex)"
-							(if TeX-current-process-region-p
-							    #'TeX-region-file
-							  #'TeX-master-file))))))
+		preview-undump-replacements)
 	     command) file))))
     (condition-case err
 	(progn

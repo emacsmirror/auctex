@@ -191,7 +191,7 @@ Did the image come out at the correct position? ")))
 String encoded in `shift_jis' can have regexp meta characters in it."
   (let (case-fold-search
 	(buffer-file-coding-system 'shift_jis))
-    (dolist (str '("表(1)" "予{a}" "能\|" "{あ} %能" "アース" "型"))
+    (dolist (str '("表(1)" "予{a}" "能|" "{あ} %能" "アース" "型"))
       (should (string-match (preview-error-quote str) str)))))
 
 (ert-deftest japanese-preview-decode-^^ab ()
@@ -215,19 +215,59 @@ String encoded in `shift_jis' can have regexp meta characters in it."
     (should (string= (preview--convert-^^ab "^^c0^^Ab") "\xc0^^Ab"))))
 
 (ert-deftest japanese-preview-preserve-kanji-option2 ()
-  "`TeX-inline-preview-internal' preserve kanji option or not."
+  "Test command to use dumped format preserves kanji option or not."
   (let ((TeX-clean-confirm nil)
 	;; Make `preview-call-hook' inactive.
 	(preview-image-creators nil)
-	dummy process)
+	dummyfile process)
     (unwind-protect
 	(save-window-excursion
 	  (find-file preserve-kanji-option)
 	  (setq dummyfile (TeX-master-file))
 	  (delete-other-windows)
 	  (setq process (TeX-inline-preview-internal
-			 "platex" dummyfile '(nil . nil) (current-buffer)
+			 (preview-do-replacements
+			  (TeX-command-expand
+			   (preview-string-expand preview-LaTeX-command)
+			   'TeX-master-file)
+			  preview-LaTeX-command-replacements)
+			 dummyfile '(nil . nil) (current-buffer)
 			 '(nil . (t . t)) dummyfile '(nil nil nil)))
+	  (let ((cmd (process-command process)))
+	    (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
+      ;; Cleanup.
+      (accept-process-output process)
+      (set-buffer (get-file-buffer preserve-kanji-option))
+      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
+	     (process (get-buffer-process buffer)))
+	(if process (delete-process process))
+	(kill-buffer buffer))
+      (TeX-clean t)
+      (dolist (dir preview-temp-dirs)
+	(if (file-exists-p (directory-file-name dir))
+	    (delete-directory dir t)))
+      (kill-buffer))))
+
+(ert-deftest japanese-preview-preserve-kanji-option3 ()
+  "Test command to dump format file preserves kanji option or not."
+  (let ((TeX-clean-confirm nil)
+	;; Make `preview-call-hook' inactive.
+	(preview-image-creators nil)
+	(preview-format-name "dummy")
+	dummyfile process)
+    (unwind-protect
+	(save-window-excursion
+	  (find-file preserve-kanji-option)
+	  (setq dummyfile (TeX-master-file))
+	  (delete-other-windows)
+	  (setq process (TeX-inline-preview-internal
+			 (preview-do-replacements
+			  (TeX-command-expand
+			   (preview-string-expand preview-LaTeX-command)
+			   'TeX-master-file)
+			  preview-dump-replacements)
+			 dummyfile '(nil . nil) (current-buffer)
+			 nil dummyfile '(nil nil nil)))
 	  (let ((cmd (process-command process)))
 	    (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
       ;; Cleanup.

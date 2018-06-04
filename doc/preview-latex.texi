@@ -10,7 +10,7 @@ This manual is for preview-latex, a @LaTeX{} preview mode for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}).
 
 Copyright @copyright{} 2001, 2002, 2003,
-2004, 2005, 2006, 2017 Free Software Foundation, Inc.
+2004, 2005, 2006, 2017, 2018 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -294,6 +294,18 @@ necessity of that automatically when editing changes to the preamble are
 done from within Emacs, but it will not notice if the preamble
 effectively changes because some included file or style file is
 tampered with.
+
+Note that support for preamble cache is limited for @LaTeX{} variants.
+c.f. @file{<URL:https://github.com/davidcarlisle/dpctex/issues/15>}
+@itemize @bullet
+@item
+Xe@LaTeX{} cannot use preamble cache at all.  The reason is intrinsic in
+Xe@LaTeX{}, so @previewlatex{} can't help.
+@item
+Lua@LaTeX{} works with preamble cache only when the preamble is simple
+enough, i.e., when it doesn't load opentype fonts and it doesn't use lua
+codes in preamble.
+@end itemize
 
 @item @kbd{C-c C-p C-c C-f}
 @itemx @code{preview-cache-preamble-off}
