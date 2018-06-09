@@ -522,7 +522,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng -picky -noghostscript %d -o \"%m/prev%%03d.png\""
+  "dvipng -picky -noghostscript %d -o %m/prev%%03d.png"
   "*Command used for converting to separate PNG images.
 
 You might specify options for converting to other image types,
@@ -796,13 +796,13 @@ Pure borderless black-on-white will return an empty string."
        (border (aref colors 3)))
     (concat
      (and bg
-	  (format "--bg 'rgb %s' "
+	  (format "--bg \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value bg " ")))
      (and fg
-	  (format "--fg 'rgb %s' "
+	  (format "--fg \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value fg " ")))
      (and mask border
-	  (format "--bd 'rgb %s' "
+	  (format "--bd \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value mask " ")))
      (and border
 	  (format "--bd %d" (max 1 (round (/ (* res border) 72.0))))))))

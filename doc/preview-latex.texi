@@ -710,6 +710,12 @@ if the @acronym{DVI} file contains PostScript specials in which case the
 affected images will get run through Dvips and Ghostscript once
 @samp{dvipng} finishes.
 
+Note for p@LaTeX{} and up@LaTeX{} users: It is known that @code{dvipng}
+is not compatible with p@LaTeX{} and up@LaTeX{}.  If
+@code{preview-image-type} is set to @samp{dvipng} and (u)p@LaTeX{} is
+used, @samp{dvipng} just fails and @previewlatex{} falls back on Dvips
+and Ghostscript.
+
 @item preview-gs-options
 Most interesting to the user perhaps is the setting of this variable.
 It contains the default antialiasing settings @option{-dTextAlphaBits=4}
