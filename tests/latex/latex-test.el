@@ -164,6 +164,15 @@ backend=biber % here is a comment
 
 (ert-deftest LaTeX-includegraphics-extensions ()
   "Check correct extensions are generated accoding to `TeX-engine'."
+  ;; Emacs 26.1 has a bug in byte compile optimization, which makes
+  ;; compiled `LaTeX-includegraphics-extensions-list' to return wrong
+  ;; value when `TeX-engine' is neither `default', `xetex' nor
+  ;; `luatex'.
+  ;; c.f. https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31718
+  :expected-result (if (and (= emacs-major-version 26)
+			    (= emacs-minor-version 1))
+		       :failed
+		     :passed)
   (with-temp-buffer
     (LaTeX-mode)
     (TeX-load-style "graphicx")
