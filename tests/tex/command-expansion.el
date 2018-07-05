@@ -97,4 +97,33 @@
 	     (TeX-command-expand "%`%(extraopts)%' %T" #'TeX-master-file))
 	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
 
+(ert-deftest TeX-command-expand-skip-file-name ()
+  "Check whether file name is not subject to further expansion.
+File names obtained as expansion of \"%t\", \"%s\" and so on should be
+skipped for the following expansion to avoid possible endless loop.
+See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
+  (let ((TeX-master "abc-def")
+	(TeX-expand-list '(("-" (lambda () ":")))))
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-master-file)
+	     TeX-master))
+    (should (string=
+	     (TeX-command-expand "%t" #'TeX-master-file)
+	     (TeX-master-file "tex" t)))
+    (should (string=
+	     (TeX-command-expand "%T" #'TeX-master-file)
+	     (TeX-master-file "tex" t)))
+    (should (string=
+	     (TeX-command-expand "%d" #'TeX-master-file)
+	     (TeX-master-file "dvi" t)))
+    (should (string=
+	     (TeX-command-expand "%f" #'TeX-master-file)
+	     (TeX-master-file "ps" t)))
+    ;; The expander of "%o" does not yet cater for this possible endless
+    ;; loop.
+    ;; (should (string=
+    ;; 	     (TeX-command-expand "%o" #'TeX-master-file)
+    ;; 	     (TeX-master-file "pdf" t)))
+    ))
+
 ;;; command-expansion.el ends here

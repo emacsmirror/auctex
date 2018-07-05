@@ -540,7 +540,10 @@ string."
 		  (setq pos (+ pos (length TeX-command-text) 9))
 		  (concat TeX-command-text " \"\\input\""))
 	      "")))
-    ("%T" TeX--master-or-region-file-with-extra-quotes t t nil t)
+    ;; The fourth argument of t is actually for wrapper function
+    ;; `TeX--master-or-region-file-with-extra-quotes', temporally set
+    ;; as value of `file' in `TeX-command-expand'.
+    ("%T" file t t nil t)
     ("%n" TeX-current-line)
     ("%d" file "dvi" t)
     ("%f" file "ps" t)
