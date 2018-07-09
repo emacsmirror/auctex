@@ -126,4 +126,17 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
     ;; 	     (TeX-master-file "pdf" t)))
     ))
 
+(ert-deftest TeX-command-expand-active-master ()
+  "Test whether `TeX-active-master' is valid argument for `TeX-command-expand'."
+  (let ((TeX-master "abc")
+	TeX-current-process-region-p)
+    (setq TeX-current-process-region-p nil)
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-active-master)
+	     TeX-master))
+    (setq TeX-current-process-region-p t)
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-active-master)
+	     TeX-region))))
+
 ;;; command-expansion.el ends here

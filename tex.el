@@ -495,7 +495,7 @@ string."
 		    (or (if TeX-source-correlate-output-page-function
 			    (funcall TeX-source-correlate-output-page-function))
 			"1")))
-    ;; `file' means to call `TeX-master-file' or `TeX-region-file'
+    ;; `file' means to call `TeX-master-file', `TeX-region-file' or `TeX-active-master'
     ("%s" file nil t)
     ("%t" file t t)
     ;; If any TeX codes appear in the interval between %` and %', move

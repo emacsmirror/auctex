@@ -584,12 +584,12 @@ without further expansion."
 (defun TeX--master-or-region-file-with-extra-quotes
     (&optional extension nondirectory ask extra)
   "Return file name with quote for shell.
-Wrapper for `TeX-master-file' or `TeX-region-file' to be used in
-`TeX-command-expand'.
-It is assumed that `orig-file' has dynamic binding of the value of
-`TeX-master-file' or `TeX-region-file'.  Pass EXTENSION, NONDIRECTORY
-and ASK to that function as-is, and arrange the returned file name for
-use with command shell.
+Wrapper for `TeX-master-file', `TeX-region-file' or
+`TeX-active-master' to be used in `TeX-command-expand'.
+It is assumed that `orig-file' has dynamic binding of the value
+of `TeX-master-file', `TeX-region-file' or `TeX-active-master'.
+Pass EXTENSION, NONDIRECTORY and ASK to that function as-is, and
+arrange the returned file name for use with command shell.
 Enclose the file name with space within quotes `\"' first when
 \" \\input\" is supplemented (indicated by dynamically binded
 variable `TeX-command-text' having string value.)
@@ -2024,14 +2024,22 @@ command."
        (with-current-buffer TeX-command-buffer
 	 (TeX-process-buffer (TeX-active-master)))))
 
-(defun TeX-active-master (&optional extension nondirectory)
+(defun TeX-active-master (&optional extension nondirectory _ignore)
   "The master file currently being compiled.
 
 If optional argument EXTENSION is non-nil, add that file extension to
 the name.  Special value t means use `TeX-default-extension'.
 
 If optional second argument NONDIRECTORY is non-nil, do not include
-the directory."
+the directory.
+
+The compatibility argument IGNORE is ignored."
+  ;; The third argument `_ignore' is kept for symmetry with
+  ;; `TeX-master-file's third argument `ask'.  For example, it's used
+  ;; in `TeX--master-or-region-file-with-extra-quotes', where we don't
+  ;; know which function has to be called.  Keep this in mind should
+  ;; you want to use another argument here.
+  ;; See also the similar comment in `TeX-region-file'.
   (if TeX-current-process-region-p
       (TeX-region-file extension nondirectory)
     (TeX-master-file extension nondirectory)))
