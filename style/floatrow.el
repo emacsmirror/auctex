@@ -311,8 +311,8 @@
 			    (setq temp (assq-delete-all (car (assoc x temp)) temp)))
 			  temp)
 			 ((string= key "floatrowsep")
-			  (setq temp (dolist (x sep-keys)
-				       (assq-delete-all (car (assoc x temp)) temp)))
+			  (dolist (x sep-keys)
+			    (setq temp (assq-delete-all (car (assoc x temp)) temp)))
 			  temp)
 			 (t
 			  (assq-delete-all (car (assoc key temp)) temp)))))
