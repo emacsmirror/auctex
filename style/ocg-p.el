@@ -170,7 +170,7 @@ Just like array and tabular."
    (when (LaTeX-provided-package-options-member "ocg-p" "ocgtabular")
      (LaTeX-add-environments
       '("ocgtabular" LaTeX-env-ocgp-ocgtabular))
-     
+
      (TeX-add-symbols
       '("setocgtabularheader" "Column name" "Displayed header")))
 
