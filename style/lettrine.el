@@ -42,7 +42,9 @@
     ("image" ("true"))
     ("grid" ("true"))
     ("novskip")
-    ("realheight" ("true")))
+    ("realheight" ("true"))
+    ("Vone")
+    ("refstring"))
   "Key=value options for \\lettrine marco.")
 
 (TeX-add-style-hook
@@ -51,16 +53,17 @@
    (TeX-add-symbols
     '("lettrine" [ TeX-arg-key-val LaTeX-lettrine-key-val-options ]
       "Letter" "Text")
+    '("DefaultLoversize" 0)
+    '("DefaultLraise" 0)
+    '("DefaultLhang" 0)
     '("LettrineImageFalse" 0)
     '("LettrineOnGridfalse" 0)
     '("LettrineRealHeightfalse" 0)
-    ;; all of the below can be configured with \renewcommand
+    '("LettrineSelfReffalse" 0)
+    '("LettrineVonefalse" 0)
     '("LettrineFont" 0)
     '("LettrineFontHook" 0)
     '("LettrineTextFont" 0)
-    '("DefaultLhang" 0)
-    '("DefaultLoversize" 0)
-    '("DefaultLraise" 0)
     ;; above settings can also be input a file, and pointed to with
     ;; \renewcommand
     '("DefaultOptionsFile" TeX-arg-file-name))
