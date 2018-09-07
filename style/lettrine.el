@@ -1,4 +1,4 @@
-;;; lettrine.el --- AUCTeX style for `lettrine.sty' (v2.01)
+;;; lettrine.el --- AUCTeX style for `lettrine.sty' (v2.21)
 
 ;; Copyright (C) 2011, 2018 Free Software Foundation, Inc.
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `lettrine.sty' (v2.01) from 2018/07/31.
+;; This file adds support for `lettrine.sty' (v2.21) from 2018/08/28.
 
 ;;; Code:
 
@@ -43,7 +43,6 @@
     ("grid" ("true"))
     ("novskip")
     ("realheight" ("true"))
-    ("Vone")
     ("refstring"))
   "Key=value options for \\lettrine marco.")
 
@@ -60,7 +59,6 @@
     '("LettrineOnGridfalse" 0)
     '("LettrineRealHeightfalse" 0)
     '("LettrineSelfReffalse" 0)
-    '("LettrineVonefalse" 0)
     '("LettrineFont" 0)
     '("LettrineFontHook" 0)
     '("LettrineTextFont" 0)
