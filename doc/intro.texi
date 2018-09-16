@@ -4,7 +4,7 @@
 This is the README file for the AUCTeX distribution.
 
 @quotation
-Copyright (C) 2008, 2017 Free Software Foundation, Inc.
+Copyright (C) 2008, 2017, 2018 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification, are
 permitted in any medium without royalty provided the copyright notice
@@ -68,10 +68,10 @@ add new features for your own needs.  It is a GNU project and
 distributed under the `GNU General Public License Version 3'.
 
 The most recent version is always available at
-@url{http://ftp.gnu.org/pub/gnu/auctex/}.
+@url{https://ftp.gnu.org/pub/gnu/auctex/}.
 
 WWW users may want to check out the @AUCTeX{} page at
-@url{http://www.gnu.org/software/auctex/}.
+@url{https://www.gnu.org/software/auctex/}.
 
 For comprehensive information about how to install @AUCTeX{}
 @ifset rawfile

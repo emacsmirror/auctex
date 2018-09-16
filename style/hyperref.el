@@ -31,7 +31,7 @@
 ;;; Code:
 
 (defvar LaTeX-hyperref-package-options-list
-  '(;; See http://www.tug.org/applications/hyperref/manual.html#x1-40003
+  '(;; See https://www.tug.org/applications/hyperref/manual.html#x1-40003
     ;; General options
     ("draft" ("true" "false"))
     ("final" ("true" "false"))
@@ -153,7 +153,7 @@
     ("nextactionraw"))
   "Key=value options for href macro of the hyperref package.")
 
-;; See http://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-220006.2
+;; See https://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-220006.2
 
 (defvar LaTeX-hyperref-forms-options
   '(("accesskey")
@@ -262,7 +262,7 @@
     '("MakeButtonField" "Text"))
 
    ;; Form fields must be inside a "Form"-env, one per file is allowed, cf.
-   ;; http://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-200006
+   ;; https://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-200006
    ;; It is up to user to insert [<options>] after \begin{Form}
    (LaTeX-add-environments
     '("Form"))

@@ -105,65 +105,94 @@ key-val's."
 			 LaTeX-graphicx-key-val-options))
      optional)))
 
+(defun LaTeX-includegraphics-extensions-list ()
+  "Return appropriate extensions for input files to \\includegraphics.
+Return value is a list of regexps."
+  (let ((temp (copy-sequence LaTeX-includegraphics-extensions)))
+    (cond (;; 'default TeX-engine:
+	   (eq TeX-engine 'default)
+	   (if ;; we want to produce a pdf
+	       (if TeX-PDF-mode
+		   ;; Return t if default compiler produces PDF,
+		   ;; nil for "Dvips" or "Dvipdfmx"
+		   (not (TeX-PDF-from-DVI))
+		 ;; t if pdftex is used in dvi-mode
+		 TeX-DVI-via-PDFTeX)
+	       ;; We're using pdflatex in pdf-mode
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-pdftex-extensions
+			temp))
+	     ;; We're generating a .dvi to process with dvips or dvipdfmx
+	     (progn
+	       ;; dvipdfmx can handle jpeg, pdf and png for image formats.
+	       (unless (and TeX-PDF-mode
+			    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+		 (dolist (x '("jpe?g" "pdf" "png"))
+		   (setq temp (delete x temp))))
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-dvips-extensions
+			temp)))))
+	  ;; Running luatex in pdf or dvi-mode:
+	  ((eq TeX-engine 'luatex)
+	   (if TeX-PDF-mode
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-pdftex-extensions
+			temp))
+	     (progn
+	       (dolist (x '("jpe?g" "pdf" "png"))
+		 (setq temp (delete x temp)))
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-dvips-extensions
+			temp)))))
+	  ;; Running xetex in any mode:
+	  ((eq TeX-engine 'xetex)
+	   (TeX-delete-duplicate-strings
+	    (append LaTeX-includegraphics-xetex-extensions
+		    temp)))
+	  ;; For anything else
+	  (t
+	   (if (and TeX-PDF-mode
+		    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+	       ;; dvipdfmx can handle the same image formats as dvips.
+	       (TeX-delete-duplicate-strings
+		(append LaTeX-includegraphics-dvips-extensions
+			temp))
+	     temp)))))
+
 (defun LaTeX-includegraphics-extensions (&optional list)
-  "Return appropriate extensions for input files to \\includegraphics."
-  (let* ((temp (copy-sequence LaTeX-includegraphics-extensions))
-	 (LaTeX-includegraphics-extensions
-	  (cond (;; 'default TeX-engine:
-		 (eq TeX-engine 'default)
-		 (if ;; we want to produce a pdf
-		     (if TeX-PDF-mode
-			 ;; Return t if default compiler produces PDF,
-			 ;; nil for "Dvips" or "Dvipdfmx"
-			 (not (TeX-PDF-from-DVI))
-		       ;; t if pdftex is used in dvi-mode
-		       TeX-DVI-via-PDFTeX)
-		     ;; We're using pdflatex in pdf-mode
-		     (TeX-delete-duplicate-strings
-		      (append LaTeX-includegraphics-pdftex-extensions
-			      temp))
-		   ;; We're generating a .dvi to process with dvips or dvipdfmx
-		   (progn
-		     (dolist (x '("jpe?g" "pdf" "png"))
-		       (setq temp (delete x temp)))
-		     (TeX-delete-duplicate-strings
-		      (append LaTeX-includegraphics-dvips-extensions
-			      temp)))))
-		;; Running luatex in pdf or dvi-mode:
-		((eq TeX-engine 'luatex)
-		 (if TeX-PDF-mode
-		     (TeX-delete-duplicate-strings
-		      (append LaTeX-includegraphics-pdftex-extensions
-			      temp))
-		   (progn
-		     (dolist (x '("jpe?g" "pdf" "png"))
-		       (setq temp (delete x temp)))
-		     (TeX-delete-duplicate-strings
-		      (append LaTeX-includegraphics-dvips-extensions
-			      temp)))))
-		;; Running xetex in any mode:
-		((eq TeX-engine 'xetex)
-		 (TeX-delete-duplicate-strings (append LaTeX-includegraphics-xetex-extensions
-				      temp)))
-		;; For anything else
-		(t
-		 temp))))
-    (concat "\\."
-	    (mapconcat 'identity
-		       (or list LaTeX-includegraphics-extensions)
-		       "$\\|\\.")
-	    "$")))
+  "Return appropriate extensions for input files to \\includegraphics.
+Return value is a single regexp.
+Optional argument LIST if non-nil is used as list of regexps of
+extensions to be matched."
+  (unless list
+    (setq list (LaTeX-includegraphics-extensions-list)))
+  (concat "\\." (mapconcat #'identity list "$\\|\\.") "$"))
+
+(defvar LaTeX-includegraphics-global-files nil
+  "List of the non-local graphic files to include in LaTeX documents.
+Initialized once at the first time you prompt for an input file.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun LaTeX-includegraphics-read-file-TeX ()
   "Read image file for \\includegraphics.
 Offers all graphic files found in the TeX search path.  See
 `LaTeX-includegraphics-read-file' for more."
-  (completing-read
-   "Image file: "
-   (TeX-delete-dups-by-car
-    (mapcar 'list
-	    (TeX-search-files nil LaTeX-includegraphics-extensions t t)))
-   nil nil nil))
+  (let ((LaTeX-includegraphics-extensions
+	 (LaTeX-includegraphics-extensions-list)))
+    (unless LaTeX-includegraphics-global-files
+      (message "Searching for graphic files...")
+      (setq LaTeX-includegraphics-global-files
+	    (TeX-search-files-by-type
+	     'graphics 'global t
+	     LaTeX-includegraphics-strip-extension-flag))
+      (message "Searching for graphic files...done"))
+    (completing-read
+     "Image file: "
+     (append
+      (TeX-search-files-by-type 'graphics 'local t
+				LaTeX-includegraphics-strip-extension-flag)
+      LaTeX-includegraphics-global-files)
+     nil nil nil)))
 
 (defun LaTeX-includegraphics-read-file-relative ()
   "Read image file for \\includegraphics.

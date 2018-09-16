@@ -37,9 +37,9 @@
 ;; associated with \cite commands, or matching \ref and \label commands.
 
 ;; New versions of this package (if they exist) may be found at:
-;;   http://people.debian.org/~psg/elisp/bib-cite.el
+;;   https://people.debian.org/~psg/elisp/bib-cite.el
 ;; and in AUCTeX's Git archive at
-;;   http://git.savannah.gnu.org/cgit/auctex.git
+;;   https://git.savannah.gnu.org/cgit/auctex.git
 
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
@@ -47,10 +47,10 @@
 ;; AUCTeX users:
 ;;  AUCTeX is a super-charged LaTeX mode for emacs. Get it at:
 ;;
-;;    ftp://ftp.gnu.org/pub/gnu/auctex/
+;;    https://ftp.gnu.org/pub/gnu/auctex/
 ;;
 ;;  WWW users may want to check out the AUCTeX page at
-;;    http://www.gnu.org/software/auctex/
+;;    https://www.gnu.org/software/auctex/
 ;;
 ;;  bib-cite.el is included in the AUCTeX distribution.  Therefore, if
 ;;  you use AUCTeX and didn't obtained bib-cite.el separately, make sure
@@ -73,7 +73,7 @@
 ;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
 ;;  which contains a bug for MSDOS (at least for emacs 19.27 it does).
 ;;  Get the file
-;;    http://people.debian.org/~psg/elisp/bib-cite.etags-bug-report
+;;    https://people.debian.org/~psg/elisp/bib-cite.etags-bug-report
 ;;  to see what patches to make to etags.c to fix it.
 
 ;; Description:
@@ -219,7 +219,7 @@
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
 ;;  bib-cite is a minor-mode, so you could invoke it in a LaTeX-mode hook.
-;;  e.g. If you are using AUCTeX (http://www.gnu.org/software/auctex/), you
+;;  e.g. If you are using AUCTeX (https://www.gnu.org/software/auctex/), you
 ;;  could use:
 ;;
 ;;   (autoload 'turn-on-bib-cite "bib-cite")

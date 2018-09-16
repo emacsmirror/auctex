@@ -1626,7 +1626,7 @@ Split the string at commas and remove Biber file extensions."
     (dolist (bib bibs)
       (LaTeX-add-bibliographies (TeX-replace-regexp-in-string
 				 (concat "\\(?:\\."
-					 (mapconcat #'regexp-quote
+					 (mapconcat #'identity
 						    TeX-Biber-file-extensions
 						    "\\|\\.")
 					 "\\)")
@@ -1932,7 +1932,10 @@ defined and ask user for confirmation before proceeding."
 		  (assoc label (LaTeX-label-list)))
 	     (ding)
 	     (when (y-or-n-p
-		    (format-message "Label `%s' exists. Use anyway? " label))
+		    ;; Emacs 24 compatibility
+		    (if (fboundp 'format-message)
+			(format-message "Label `%s' exists. Use anyway? " label)
+		      (format "Label `%s' exists. Use anyway? " label)))
 	       (setq valid t)))
 	    (t
 	     (setq valid t))))

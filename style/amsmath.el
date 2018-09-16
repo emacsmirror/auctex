@@ -98,36 +98,35 @@
      '("lvert" TeX-arg-insert-right-brace-maybe)
      '("lVert" TeX-arg-insert-right-brace-maybe)
      "rvert" "rVert"
-     "iint" "iiint" "iiiint" "idotsint"
-     )
+     "iint" "iiint" "iiiint" "idotsint")
     
-    (setq  LaTeX-item-list 
-	   (append '(("split"    . LaTeX-item-equation)
-		     ("multline" . LaTeX-item-equation)
-		     ("multline*" . LaTeX-item-equation)
-		     ("gather"   . LaTeX-item-equation)
-		     ("gather*"  . LaTeX-item-equation)
-		     ("gathered" . LaTeX-item-equation)
-		     ("align"    . LaTeX-item-equation)
-		     ("align*"   . LaTeX-item-equation)
-		     ("aligned"  . LaTeX-item-equation)
-		     ("alignat"  . LaTeX-item-equation-alignat)
-		     ("alignat*" . LaTeX-item-equation-alignat)
-		     ("xalignat"  . LaTeX-item-equation-alignat)
-		     ("xalignat*" . LaTeX-item-equation-alignat)
-		     ("xxalignat" . LaTeX-item-equation-alignat)
-		     ("alignedat" . LaTeX-item-equation-alignat)
-		     ("flalign"  . LaTeX-item-equation)
-		     ("flalign*" . LaTeX-item-equation)
-		     ("matrix" .  LaTeX-item-equation)
-		     ("pmatrix" .  LaTeX-item-equation)
-		     ("bmatrix" .  LaTeX-item-equation)
-		     ("Bmatrix" .  LaTeX-item-equation)
-		     ("vmatrix" .  LaTeX-item-equation)
-		     ("Vmatrix" .  LaTeX-item-equation)
-		     ("subarray" . LaTeX-item-equation)
-		     ("cases"    . LaTeX-item-equation))
-		   LaTeX-item-list))
+    (setq LaTeX-item-list
+	  (append '(("split"    . LaTeX-item-equation)
+		    ("multline" . LaTeX-item-equation)
+		    ("multline*" . LaTeX-item-equation)
+		    ("gather"   . LaTeX-item-equation)
+		    ("gather*"  . LaTeX-item-equation)
+		    ("gathered" . LaTeX-item-equation)
+		    ("align"    . LaTeX-item-equation)
+		    ("align*"   . LaTeX-item-equation)
+		    ("aligned"  . LaTeX-item-equation)
+		    ("alignat"  . LaTeX-item-equation-alignat)
+		    ("alignat*" . LaTeX-item-equation-alignat)
+		    ("xalignat"  . LaTeX-item-equation-alignat)
+		    ("xalignat*" . LaTeX-item-equation-alignat)
+		    ("xxalignat" . LaTeX-item-equation-alignat)
+		    ("alignedat" . LaTeX-item-equation-alignat)
+		    ("flalign"  . LaTeX-item-equation)
+		    ("flalign*" . LaTeX-item-equation)
+		    ("matrix" .  LaTeX-item-equation)
+		    ("pmatrix" .  LaTeX-item-equation)
+		    ("bmatrix" .  LaTeX-item-equation)
+		    ("Bmatrix" .  LaTeX-item-equation)
+		    ("vmatrix" .  LaTeX-item-equation)
+		    ("Vmatrix" .  LaTeX-item-equation)
+		    ("subarray" . LaTeX-item-equation)
+		    ("cases"    . LaTeX-item-equation))
+		  LaTeX-item-list))
 
     ;; When `LaTeX-amsmath-label' is nil, use value of LaTeX-equation-label:
     (unless LaTeX-amsmath-label
@@ -156,9 +155,25 @@
     ;; So we run their hooks, too.
     (TeX-run-style-hooks "amstext" "amsbsy" "amsopn")
 
-    ;; If RefTeX is loaded, make it recognize the amsmath environments.
+    ;; RefTeX support: Tell RefTeX about amsmath environments.
     (when (fboundp 'reftex-add-to-label-alist)
-      (reftex-add-to-label-alist '(AMSTeX)))))
+      (reftex-add-to-label-alist '(AMSTeX)))
+
+    ;; Add \eqref to `reftex-ref-style-alist' and associate it to `e'
+    (when (and (boundp 'reftex-ref-style-alist)
+	       ;; check if Emacs is already equipped with this
+	       (not (assoc "AMSmath" reftex-ref-style-alist)))
+      ;; Append it to a local version in order to avoid a clash with
+      ;; user settings
+      (add-to-list (make-local-variable 'reftex-ref-style-alist)
+		   '("AMSmath" "amsmath" (("\\eqref" ?e)))
+		   t))
+
+    ;; Activate `AMSmath' when `LaTeX-reftex-ref-style-auto-activate'
+    ;; is non-nil
+    (and LaTeX-reftex-ref-style-auto-activate
+	 (fboundp 'reftex-ref-style-activate)
+	 (reftex-ref-style-activate "AMSmath"))))
  LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)

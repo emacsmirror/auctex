@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2003, 2004, 2005, 2006, 2007, 2009
+@c Copyright (C) 2003-2007, 2009, 2018
 @c   Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
@@ -138,7 +138,7 @@ should provide you with a working @samp{unzip} command.
 @item
 The installation of @AUCTeX{} will require the MSYS tool set from
 @uref{http://www.mingw.org/} or the Cygwin tool set from
-@uref{http://cygwin.com/}.  The latter is slower and larger (the download
+@uref{https://cygwin.com/}.  The latter is slower and larger (the download
 size of the base system is about 15 MB) but comes with a package manager
 that allows for updating the tool set and installing additional packages
 like, for example, the spell checker @w{aspell}.
@@ -150,16 +150,16 @@ headaches, @emph{if} things don't work out.
 
 @item
 Install a current version of @w{Emacs} from
-@uref{ftp://ftp.gnu.org/gnu/emacs/windows/}.
+@uref{https://ftp.gnu.org/gnu/emacs/windows/}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
-Windows is @uref{http://www.miktex.org,MiK@TeX{}}.  Another much more
-extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} Live}}
+Windows is @uref{https://miktex.org/,MiK@TeX{}}.  Another much more
+extensive system is @uref{https://www.tug.org/texlive/,@w{@TeX{} Live}}
 which is rather close to its Unix cousins.
 
 @item
-A working copy of @uref{http://www.cs.wisc.edu/~ghost/,Ghostscript} is
+A working copy of @uref{https://www.ghostscript.com/,Ghostscript} is
 required for @previewlatex{} operation.  Examining the output from
 @example
 gswin32c -h
@@ -169,7 +169,7 @@ supports the @code{png16m} device needed for @acronym{PNG} support.
 MiKTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
 
 @item
-@uref{http://www.perl.org,Perl} is needed for rebuilding the
+@uref{https://www.perl.org/,Perl} is needed for rebuilding the
 documentation if you are working with a copy from @acronym{Git} or have
 touched documentation source files in the @previewlatex{} part.  If the
 line endings of the file @file{preview/latex/preview.dtx} don't
@@ -333,8 +333,8 @@ choose another image format to be used by @previewlatex{}.
 
 Adding support for an image format usually involves the installation of
 a library, e.g. from @uref{http://gnuwin32.sf.net/}.  If you got your
-Emacs from @uref{http://www.gnu.org} you might want to check its
-@uref{ftp://ftp.gnu.org/gnu/emacs/windows/README,README file} for
+Emacs from @uref{https://www.gnu.org/} you might want to check its
+@uref{https://ftp.gnu.org/gnu/emacs/windows/README,README file} for
 details.
 
 A different image format can be chosen by setting the variable

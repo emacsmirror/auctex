@@ -1,6 +1,6 @@
 ;;; preview-latex.el --- tests for preview-latex compatibility
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -37,7 +37,7 @@
 
 ;; Make sure coding system output from tex process to be expected
 ;; value.
-(setq japanese-TeX-use-kanji-opt-flag t) ; assume unix or darwin.
+(setq japanese-TeX-use-kanji-opt-flag t)
 
 (setq TeX-process-asynchronous t)
 (setq TeX-after-start-process-function #'TeX-adjust-process-coding-system)
@@ -51,7 +51,7 @@ character used to cause trouble.  Such patterns are tested."
   (skip-unless (not noninteractive))
   (let ((TeX-clean-confirm nil)
 	(preview-auto-cache-preamble nil)
-	(process-environment process-environment)
+	(process-environment (copy-sequence process-environment))
 	(locale-coding-system 'shift_jis)
 	(TeX-japanese-process-output-coding-system nil)
 	(TeX-japanese-process-input-coding-system nil))
@@ -101,7 +101,7 @@ the process differ."
   (skip-unless (not noninteractive))
   (let ((TeX-clean-confirm nil)
 	(preview-auto-cache-preamble nil)
-	(process-environment process-environment)
+	(process-environment (copy-sequence process-environment))
 	(locale-coding-system 'shift_jis)
 	(TeX-japanese-process-output-coding-system nil)
 	(TeX-japanese-process-input-coding-system nil))
@@ -190,10 +190,9 @@ Did the image come out at the correct position? ")))
   "`preview-error-quote' is robust against `shift_jis' or not.
 String encoded in `shift_jis' can have regexp meta characters in it."
   (let (case-fold-search
-	(buffer-file-coding-system 'shift_jis)
-	(TeX-japanese-process-output-coding-system nil))
-    (dolist (str '("表(1)" "予{a}" "能\|" "{あ} %能" "アース" "型"))
-      (should (string-match (preview-error-quote str 'shift_jis) str)))))
+	(buffer-file-coding-system 'shift_jis))
+    (dolist (str '("表(1)" "予{a}" "能|" "{あ} %能" "アース" "型"))
+      (should (string-match (preview-error-quote str) str)))))
 
 (ert-deftest japanese-preview-decode-^^ab ()
   "`preview--decode-^^ab' doesn't leave regexp meta characters in results."
@@ -215,59 +214,60 @@ String encoded in `shift_jis' can have regexp meta characters in it."
     (should (string= (preview--convert-^^ab "^^^a0") "^\xa0"))
     (should (string= (preview--convert-^^ab "^^c0^^Ab") "\xc0^^Ab"))))
 
-(ert-deftest japanese-preview-process-coding-system ()
-  "`TeX-inline-preview-internal' records process coding system or not.
-It used to discard the coding system for decode without recording
-previously set by `japanese-TeX-set-process-coding-system'."
-  (let ((dummyfile (make-temp-file "japanese-TeX-ert"))
-	(file-cs 'japanese-shift-jis-unix)
-	(locale-cs 'japanese-iso-8bit-unix)
-	;; Make `preview-call-hook' inactive.
-	(preview-image-creators nil)
-	process)
-    (find-file dummyfile)
-    ;; Make `japanese-TeX-set-process-coding-system' to be called in
-    ;; `TeX-adjust-process-coding-system'.
-    (setq japanese-TeX-mode t)
-    (setq buffer-file-coding-system file-cs)
-    (unwind-protect
-	(progn
-	  (setq process (TeX-inline-preview-internal
-			 "echo foo" dummyfile '(nil . nil) (current-buffer)
-			 '(nil . nil) dummyfile '(nil nil nil)))
-	  ;; coding system assigned by `TeX-run-command' should be saved in
-	  ;; `preview-coding-system'.
-	  (should (coding-system-equal locale-cs preview-coding-system))
-	  ;; actual process coding system should be the one derived from the
-	  ;; original coding system via `preview-buffer-recode-system'.
-	  (should (coding-system-equal
-		   (car (process-coding-system process))
-		   (preview-buffer-recode-system locale-cs)))))
-    ;; Cleanup.
-    ;; Let process to exit before finishing test.
-    (accept-process-output process)
-    (set-buffer (get-file-buffer dummyfile))
-    (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-	   (process (get-buffer-process buffer)))
-      (if process (delete-process process))
-      (kill-buffer buffer))
-    (kill-buffer)
-    (delete-file dummyfile)))
-
 (ert-deftest japanese-preview-preserve-kanji-option2 ()
-  "`TeX-inline-preview-internal' preserve kanji option or not."
+  "Test command to use dumped format preserves kanji option or not."
   (let ((TeX-clean-confirm nil)
 	;; Make `preview-call-hook' inactive.
 	(preview-image-creators nil)
-	dummy process)
+	dummyfile process)
     (unwind-protect
 	(save-window-excursion
 	  (find-file preserve-kanji-option)
 	  (setq dummyfile (TeX-master-file))
 	  (delete-other-windows)
 	  (setq process (TeX-inline-preview-internal
-			 "platex" dummyfile '(nil . nil) (current-buffer)
+			 (preview-do-replacements
+			  (TeX-command-expand
+			   (preview-string-expand preview-LaTeX-command)
+			   'TeX-master-file)
+			  preview-LaTeX-command-replacements)
+			 dummyfile '(nil . nil) (current-buffer)
 			 '(nil . (t . t)) dummyfile '(nil nil nil)))
+	  (let ((cmd (process-command process)))
+	    (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
+      ;; Cleanup.
+      (accept-process-output process)
+      (set-buffer (get-file-buffer preserve-kanji-option))
+      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
+	     (process (get-buffer-process buffer)))
+	(if process (delete-process process))
+	(kill-buffer buffer))
+      (TeX-clean t)
+      (dolist (dir preview-temp-dirs)
+	(if (file-exists-p (directory-file-name dir))
+	    (delete-directory dir t)))
+      (kill-buffer))))
+
+(ert-deftest japanese-preview-preserve-kanji-option3 ()
+  "Test command to dump format file preserves kanji option or not."
+  (let ((TeX-clean-confirm nil)
+	;; Make `preview-call-hook' inactive.
+	(preview-image-creators nil)
+	(preview-format-name "dummy")
+	dummyfile process)
+    (unwind-protect
+	(save-window-excursion
+	  (find-file preserve-kanji-option)
+	  (setq dummyfile (TeX-master-file))
+	  (delete-other-windows)
+	  (setq process (TeX-inline-preview-internal
+			 (preview-do-replacements
+			  (TeX-command-expand
+			   (preview-string-expand preview-LaTeX-command)
+			   'TeX-master-file)
+			  preview-dump-replacements)
+			 dummyfile '(nil . nil) (current-buffer)
+			 nil dummyfile '(nil nil nil)))
 	  (let ((cmd (process-command process)))
 	    (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
       ;; Cleanup.

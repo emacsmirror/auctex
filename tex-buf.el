@@ -227,7 +227,7 @@ of `display-buffer' for additional customization information.
 
 Optional third arg NORECORD non-nil means do not put this buffer
 at the front of the list of recently selected ones."
-  (pop-to-buffer buffer other-window (and norecord TeX-record-buffer)))
+  (pop-to-buffer buffer other-window (and norecord (not TeX-record-buffer))))
 
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
@@ -542,12 +542,8 @@ without further expansion."
   (let (pat
 	pos ;;FIXME: Should this be dynamically scoped?
 	entry TeX-command-text TeX-command-pos
-        ;; FIXME: This variable appears to be unused!
-	(file `(lambda (&rest args)
-		 (shell-quote-argument
-		  (concat (and (stringp TeX-command-pos) TeX-command-pos)
-			  (apply #',file args)
-			  (and (stringp TeX-command-pos) TeX-command-pos)))))
+	(orig-file file)
+	(file #'TeX--master-or-region-file-with-extra-quotes)
         expansion-res case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
@@ -584,6 +580,47 @@ without further expansion."
 	  (setq command
 		(replace-match string t t command)))))
   command)
+
+(defun TeX--master-or-region-file-with-extra-quotes
+    (&optional extension nondirectory ask extra)
+  "Return file name with quote for shell.
+Wrapper for `TeX-master-file', `TeX-region-file' or
+`TeX-active-master' to be used in `TeX-command-expand'.
+It is assumed that `orig-file' has dynamic binding of the value
+of `TeX-master-file', `TeX-region-file' or `TeX-active-master'.
+Pass EXTENSION, NONDIRECTORY and ASK to that function as-is, and
+arrange the returned file name for use with command shell.
+Enclose the file name with space within quotes `\"' first when
+\" \\input\" is supplemented (indicated by dynamically binded
+variable `TeX-command-text' having string value.)
+Enclose the file name within \\detokenize{} when the following three
+conditions are met:
+1. compiling with standard (pdf)LaTeX or upLaTeX
+2. \" \\input\" is supplemented
+3. EXTRA is non-nil. (default when expanding \"%T\")"
+  (shell-quote-argument
+   (let* ((raw (funcall orig-file extension nondirectory ask))
+	  ;; String `TeX-command-text' means that the file name is
+	  ;; given through \input command.
+	  (quote-for-space (if (and (stringp TeX-command-text)
+				    (string-match " " raw))
+			       "\"" "")))
+     (format
+      (if (and extra
+	       (stringp TeX-command-text)
+	       (memq major-mode '(latex-mode doctex-mode))
+	       (memq TeX-engine '(default uptex)))
+	  ;; Since TeXLive 2018, the default encoding for LaTeX
+	  ;; files has been changed to UTF-8 if used with
+	  ;; classic TeX or pdfTeX.  I.e.,
+	  ;; \usepackage[utf8]{inputenc} is enabled by default
+	  ;; in (pdf)latex.
+	  ;; c.f. LaTeX News issue 28
+	  ;; Due to this change, \detokenize is required to
+	  ;; recognize non-ascii characters in the file name
+	  ;; when \input precedes.
+	  "\\detokenize{ %s }" "%s")
+      (concat quote-for-space raw quote-for-space)))))
 
 (defun TeX-check-files (derived originals extensions)
   "Check if DERIVED is newer than any of the ORIGINALS.
@@ -791,7 +828,7 @@ omitted) and `TeX-region-file'."
 	  ((and
 	    ;; Rationale: makeindex should be run when final document is almost
 	    ;; complete (see
-	    ;; http://tex.blogoverflow.com/2012/09/dont-forget-to-run-makeindex/),
+	    ;; https://tex-talk.net/2012/09/dont-forget-to-run-makeindex/),
 	    ;; otherwise, after following latex runs, index pages may change due
 	    ;; to changes in final document, resulting in extra makeindex and
 	    ;; latex runs.
@@ -984,48 +1021,53 @@ Called with one argument PROCESS.")
 Usually coding system is the same as the TeX file with eol format
 adjusted to OS default value.  Take care of Japanese TeX, which
 requires special treatment."
-  (when (featurep 'mule)
-    (if (and (boundp 'japanese-TeX-mode)
-	     (fboundp 'japanese-TeX-set-process-coding-system)
-	     (with-current-buffer TeX-command-buffer
-	       japanese-TeX-mode))
-	(japanese-TeX-set-process-coding-system process)
-      (let ((cs (with-current-buffer TeX-command-buffer
-		  buffer-file-coding-system)))
-	;; The value of `buffer-file-coding-system' is sometimes
-	;; undecided-{unix,dos,mac}.  That happens when the file
-	;; contains no multibyte chars and only end of line format is
-	;; determined.  Emacs lisp reference recommends not to use
-	;; undecided-* for process coding system, so it might seem
-	;; reasonable to change undecided-* to some fixed coding
-	;; system like this:
-	;; (if (eq 'undecided (coding-sytem-type cs))
-	;;     (setq cs 'utf-8))
-	;; However, that can lose when the following conditions are
-	;; met:
-	;; (1) The document is divided into multiple files.
-	;; (2) The command buffer contains no multibyte chars.
-	;; (3) The other files contain mutlibyte chars and saved in
-	;;     a coding system other than the coding system chosen
-	;;     above.
-	;; So we leave undecided-* unchanged here.  Although
-	;; undecided-* is not quite safe for the coding system for
-	;; encoding, i.e., keyboard input to the TeX process, we
-	;; expect that this does not raise serious problems because it
-	;; is pretty rare that TeX process needs keyboard input of
-	;; multibyte chars.
+  (if (and (boundp 'japanese-TeX-mode)
+	   (fboundp 'japanese-TeX-set-process-coding-system)
+	   (with-current-buffer TeX-command-buffer
+	     japanese-TeX-mode))
+      (japanese-TeX-set-process-coding-system process)
+    (let ((cs (coding-system-base (with-current-buffer TeX-command-buffer
+				    buffer-file-coding-system))))
+      ;; The value of `buffer-file-coding-system' is sometimes
+      ;; undecided-{unix,dos,mac}.  That happens when the file
+      ;; contains no multibyte chars and only end of line format is
+      ;; determined.  Emacs lisp reference recommends not to use
+      ;; undecided-* for process coding system, so it might seem
+      ;; reasonable to change `undecided' into some fixed coding
+      ;; system like this:
+      ;; (if (eq 'undecided cs)
+      ;;     (setq cs 'utf-8))
+      ;; However, that can lose when the following conditions are met:
+      ;; (1) The document is divided into multiple files.
+      ;; (2) The command buffer contains no multibyte chars.
+      ;; (3) The other files contain mutlibyte chars and saved in a
+      ;;     coding system other than the one chosen above.
+      ;; So we leave `undecided' unchanged here.  Although `undecided'
+      ;; is not quite safe for the coding system for encoding, i.e.,
+      ;; keyboard input to the TeX process, we expect that this does
+      ;; not raise serious problems because it is pretty rare that TeX
+      ;; process needs keyboard input of multibyte chars.
 
-	;; Eol format of TeX files can differ from OS default. TeX
-	;; binaries accept all type of eol format in the given files
-	;; and output messages according to OS default.  So we set eol
-	;; format to OS default value.
-	(setq cs (coding-system-change-eol-conversion
-		  cs
-		  ;; The eol of macosX is LF, not CR.  So we choose
-		  ;; other than `unix' only for w32 system.
-		  ;; FIXME: what should we do for cygwin?
-		  (if (eq system-type 'windows-nt) 'dos 'unix)))
-	(set-process-coding-system process cs cs)))))
+      ;; `utf-8-with-signature' (UTF-8 with BOM) doesn't suit at all
+      ;; for the coding system for encoding because it always injects
+      ;; 3-byte BOM in front of its return value (even when the string
+      ;; to be sent has only ascii characters!)  Thus we change it
+      ;; into `utf-8'.  On decoding, `utf-8' can decode UTF-8 with
+      ;; BOM.  So it is safe for both decoding and encoding.
+      (if (eq cs 'utf-8-with-signature)
+	  (setq cs 'utf-8))
+
+      ;; Eol format of TeX files can differ from OS default. TeX
+      ;; binaries accept all type of eol format in the given files
+      ;; and output messages according to OS default.  So we set eol
+      ;; format to OS default value.
+      (setq cs (coding-system-change-eol-conversion
+		cs
+		;; The eol of macosX is LF, not CR.  So we choose
+		;; other than `unix' only for w32 system.
+		;; FIXME: what should we do for cygwin?
+		(if (eq system-type 'windows-nt) 'dos 'unix)))
+      (set-process-coding-system process cs cs))))
 
 (defcustom TeX-show-compilation nil
   "*If non-nil, show output of TeX compilation in other window."
@@ -1982,14 +2024,22 @@ command."
        (with-current-buffer TeX-command-buffer
 	 (TeX-process-buffer (TeX-active-master)))))
 
-(defun TeX-active-master (&optional extension nondirectory)
+(defun TeX-active-master (&optional extension nondirectory _ignore)
   "The master file currently being compiled.
 
 If optional argument EXTENSION is non-nil, add that file extension to
 the name.  Special value t means use `TeX-default-extension'.
 
 If optional second argument NONDIRECTORY is non-nil, do not include
-the directory."
+the directory.
+
+The compatibility argument IGNORE is ignored."
+  ;; The third argument `_ignore' is kept for symmetry with
+  ;; `TeX-master-file's third argument `ask'.  For example, it's used
+  ;; in `TeX--master-or-region-file-with-extra-quotes', where we don't
+  ;; know which function has to be called.  Keep this in mind should
+  ;; you want to use another argument here.
+  ;; See also the similar comment in `TeX-region-file'.
   (if TeX-current-process-region-p
       (TeX-region-file extension nondirectory)
     (TeX-master-file extension nondirectory)))
@@ -2027,7 +2077,33 @@ The hooks are run in the region buffer, you may use the variable
     (while (setq pos (string-match "[~#]" file pos))
       (setq file (replace-match "\\\\string\\&" t nil file 0)
 	    pos (+ pos 8))))
-  file)
+  ;; Use \unexpanded so that \message outputs the raw file name.
+  ;; When \usepackage[utf8]{inputenc} is used in standard (pdf)latex,
+  ;; \message does not output non-ascii file name in raw form without
+  ;; \unexpanded, which makes AUCTeX to fail to recognize the file
+  ;; names right when analysing the process output buffer.
+  ;; Note that \usepackage[utf8]{inputenc} is enabled by default in
+  ;; standard (pdf)latex since TeXLive 2018.
+  (if (and (memq major-mode '(latex-mode doctex-mode))
+	   ;; Japanese upLaTeX requires the same treatment with
+	   ;; respect to non-ascii characters other than Japanese, in
+	   ;; file names within \message{}.
+	   ;; However, pLaTeX (non u- version) does not support
+	   ;; non-ascii file name encoded in UTF-8.  So considering
+	   ;; `ptex' doesn't make sense here.  We cater for only
+	   ;; `default' and `uptex' engines.
+	   (memq TeX-engine '(default uptex)))
+      ;; It would fail to put entire `file' inside \unexpanded{} when
+      ;; the above loop injects \string before "#" and "~".  So put
+      ;; only multibyte characters inside \unexpanded{}.
+      ;; It is safe in upLaTeX to use \unexpanded{} on Japanese
+      ;; characters though they are handled by upLaTeX in a totally
+      ;; different way from inputenc.
+      ;; Thus put all multibyte characters, without considering
+      ;; whether they are Japanese or not, inside \unexpanded{}.
+      (replace-regexp-in-string "[[:multibyte:]]+"
+				"\\\\unexpanded{\\&}" file t)
+    file))
 
 (defvar font-lock-mode-enable-list)
 (defvar font-lock-auto-fontify)
@@ -2092,8 +2168,10 @@ original file."
 			   (if (not (re-search-forward TeX-header-end nil t))
 			       ""
 			     (re-search-forward "[\r\n]" nil t)
-			     (buffer-substring (point-min) (point)))))))))
+			     (buffer-substring-no-properties
+			      (point-min) (point)))))))))
 	 (header-offset 0)
+	 first-line
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
@@ -2113,21 +2191,36 @@ original file."
 			      ;;(beginning-of-line 1)
 			      (re-search-backward "[\r\n]" nil t)
 			      (setq trailer-offset (TeX-current-offset))
-			      (buffer-substring (point) (point-max))))))))))
+			      (buffer-substring-no-properties
+			       (point) (point-max))))))))))
     ;; file name should be relative to master
     (setq original (TeX-quote-filename (file-relative-name
 					original (TeX-master-directory)))
 	  master-name (TeX-quote-filename master-name))
+
+    ;; If the first line begins with "%&", put that line separately on
+    ;; the very first line of the region file so that the first line
+    ;; parsing will work.
+    (setq first-line (if (and (> (length header) 1)
+			      (string= (substring header 0 2) "%&"))
+			 ;; This would work even if header has no newline.
+			 (substring header 0 (string-match "\n" header))
+		       ""))
+    (unless (string= first-line "")
+      ;; Remove first-line from header.
+      (setq header (substring header (length first-line)))
+      (setq first-line (concat first-line "\n")))
+
     (with-current-buffer file-buffer
       (setq buffer-read-only t
 	    buffer-undo-list t)
       (setq original-content (buffer-string))
       (let ((inhibit-read-only t))
 	(erase-buffer)
-	(when (boundp 'buffer-file-coding-system)
-	  (setq buffer-file-coding-system
-		(with-current-buffer master-buffer buffer-file-coding-system)))
-	(insert "\\message{ !name(" master-name ")}"
+	(setq buffer-file-coding-system
+	      (with-current-buffer master-buffer buffer-file-coding-system))
+	(insert first-line
+		"\\message{ !name(" master-name ")}"
 		header
 		TeX-region-extra
 		"\n\\message{ !name(" original ") !offset(")

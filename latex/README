@@ -22,13 +22,13 @@ Availability
 
 The preview package is being developed along and distributed with
 AUCTeX.  It can therefore be obtained as part of AUCTeX distribution
-files available at <URL:ftp://ftp.gnu.org/pub/gnu/auctex/> or its
+files available at <URL:https://ftp.gnu.org/pub/gnu/auctex/> or its
 mirror at <CTAN:support/auctex>.  CTAN also provides a standalone
 version at <CTAN:macros/latex/contrib/preview>.  The project page at
-<URL:http://savannah.gnu.org/projects/auctex/> offers downloads and
+<URL:https://savannah.gnu.org/projects/auctex/> offers downloads and
 anonymous CVS access for cutting edge versions.  For more information
 about the preview package please refer to the home page of AUCTeX at
-<URL:http://www.gnu.org/software/auctex/>.
+<URL:https://www.gnu.org/software/auctex/>.
 
 Installation
 ------------

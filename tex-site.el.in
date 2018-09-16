@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016-2017 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2018 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -54,7 +54,7 @@
   "A (La)TeX environment."
   :tag "AUCTeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "http://www.gnu.org/software/auctex/")
+  :link '(url-link :tag "Home Page" "https://www.gnu.org/software/auctex/")
   :prefix "TeX-"
   :group 'tex
   :load "tex" :load "latex" :load "tex-style")

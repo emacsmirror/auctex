@@ -1,6 +1,6 @@
 ;;; command-expansion.el --- tests for TeX command expansion
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -31,7 +31,7 @@
 		  (list (cons "Test" '("%%%% %`%'" TeX-run-command t t)))))
 	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))
 				 'TeX-master-file))
-           "%%  \"\\input\"")))
+           "%% ")))
 
 (ert-deftest TeX-command-expansion-errors ()
   "Test error handling in `TeX-command-expand'."
@@ -83,5 +83,60 @@
        (TeX-mode)
        (TeX-view-command-raw)))
    :type 'error))
+
+(ert-deftest TeX-command-detokenize ()
+  "Check whether \"\\input\" and \"\\detokenize\" are supplied when necessary."
+  ;; Skip on w32 because the quoting style of `shell-quote-argument'
+  ;; is different.
+  (skip-unless (not (eq system-type 'w32)))
+  (should (string=
+           (let ((major-mode 'latex-mode)
+		 (TeX-engine 'default)
+		 (TeX-master "/tmp/abc")
+		 (TeX-command-extra-options " \"\\foo\""))
+	     (TeX-command-expand "%`%(extraopts)%' %T" #'TeX-master-file))
+	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
+
+(ert-deftest TeX-command-expand-skip-file-name ()
+  "Check whether file name is not subject to further expansion.
+File names obtained as expansion of \"%t\", \"%s\" and so on should be
+skipped for the following expansion to avoid possible endless loop.
+See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
+  (let ((TeX-master "abc-def")
+	(TeX-expand-list '(("-" (lambda () ":")))))
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-master-file)
+	     TeX-master))
+    (should (string=
+	     (TeX-command-expand "%t" #'TeX-master-file)
+	     (TeX-master-file "tex" t)))
+    (should (string=
+	     (TeX-command-expand "%T" #'TeX-master-file)
+	     (TeX-master-file "tex" t)))
+    (should (string=
+	     (TeX-command-expand "%d" #'TeX-master-file)
+	     (TeX-master-file "dvi" t)))
+    (should (string=
+	     (TeX-command-expand "%f" #'TeX-master-file)
+	     (TeX-master-file "ps" t)))
+    ;; The expander of "%o" does not yet cater for this possible endless
+    ;; loop.
+    ;; (should (string=
+    ;; 	     (TeX-command-expand "%o" #'TeX-master-file)
+    ;; 	     (TeX-master-file "pdf" t)))
+    ))
+
+(ert-deftest TeX-command-expand-active-master ()
+  "Test whether `TeX-active-master' is valid argument for `TeX-command-expand'."
+  (let ((TeX-master "abc")
+	TeX-current-process-region-p)
+    (setq TeX-current-process-region-p nil)
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-active-master)
+	     TeX-master))
+    (setq TeX-current-process-region-p t)
+    (should (string=
+	     (TeX-command-expand "%s" #'TeX-active-master)
+	     TeX-region))))
 
 ;;; command-expansion.el ends here

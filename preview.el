@@ -1,6 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001-2006, 2010-2015, 2017  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2006, 2010-2015,
+;;               2017, 2018  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -61,7 +62,7 @@ preview-latex's bug reporting commands will probably not work.")))
   :prefix "preview-"
   :link '(custom-manual "(preview-latex)Top")
   :link '(info-link "(preview-latex)The Emacs interface")
-  :link '(url-link :tag "Homepage" "http://www.gnu.org/software/auctex/"))
+  :link '(url-link :tag "Homepage" "https://www.gnu.org/software/auctex/"))
 
 (defgroup preview-gs nil "Preview's Ghostscript renderer."
   :group 'preview
@@ -286,9 +287,6 @@ If `preview-fast-conversion' is set, this option is not
   :group 'preview-gs
   :type 'number)
 
-(defvar preview-coding-system nil
-  "Proper coding system to decode output from LaTeX process.")
-(make-variable-buffer-local 'preview-coding-system)
 (defvar preview-parsed-font-size nil
   "Font size as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-font-size)
@@ -524,7 +522,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng -picky -noghostscript %d -o \"%m/prev%%03d.png\""
+  "dvipng -picky -noghostscript %d -o %m/prev%%03d.png"
   "*Command used for converting to separate PNG images.
 
 You might specify options for converting to other image types,
@@ -798,13 +796,13 @@ Pure borderless black-on-white will return an empty string."
        (border (aref colors 3)))
     (concat
      (and bg
-	  (format "--bg 'rgb %s' "
+	  (format "--bg \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value bg " ")))
      (and fg
-	  (format "--fg 'rgb %s' "
+	  (format "--fg \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value fg " ")))
      (and mask border
-	  (format "--bd 'rgb %s' "
+	  (format "--bd \"rgb %s\" "
 		  (mapconcat #'preview-gs-color-value mask " ")))
      (and border
 	  (format "--bd %d" (max 1 (round (/ (* res border) 72.0))))))))
@@ -2219,7 +2217,14 @@ list of LaTeX commands is inserted just before \\begin{document}."
 (defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' %t")
+preview-default-preamble "\\fi}\"%' \"{\\detokenize{\" %t \"}}\"")
+  ;; Since TeXLive 2018, the default encoding for LaTeX files has been
+  ;; changed to UTF-8 if used with classic TeX or pdfTeX.  I.e.,
+  ;; \usepackage[utf8]{inputenc} is enabled by default in (pdf)latex.
+  ;; c.f. LaTeX News issue 28
+  ;; Due to this change, \detokenize is required to recognize
+  ;; non-ascii characters in the file name when \input is supplemented
+  ;; implicitly by %`-%' pair.
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -2599,14 +2604,11 @@ later while in use."
     ("Tightpage" preview-parsed-tightpage
      "\\` *\\(-?[0-9]+ *\\)\\{4\\}\\'" 0 preview-parse-tightpage)))
 
-(defun preview-error-quote (string run-coding-system)
+(defun preview-error-quote (string)
   "Turn STRING with potential ^^ sequences into a regexp.
 To preserve sanity, additional ^ prefixes are matched literally,
 so the character represented by ^^^ preceding extended characters
-will not get matched, usually.
-
-If decoding the process output was suppressed during receiving,
-decode first with RUN-CODING-SYSTEM."
+will not get matched, usually."
   (let (output case-fold-search)
     ;; Some coding systems (e.g. japanese-shift-jis) use regexp meta
     ;; characters on encoding.  Such meta characters would be
@@ -2614,19 +2616,12 @@ decode first with RUN-CODING-SYSTEM."
     ;; "encoding entire string beforehand and decoding it at the last
     ;; stage" does not work for such coding systems.
     ;; Rather, we work consistently with decoded text.
-    (if (and (featurep 'mule)
-	     (not (eq run-coding-system
-		      (preview-buffer-recode-system run-coding-system))))
-	(setq string
-	      (decode-coding-string string run-coding-system)))
 
-    ;; Next, bytes with value from 0x80 to 0xFF represented with ^^
-    ;; form are converted to byte sequence, and decoded by the file
-    ;; coding system.
+    ;; Bytes with value from 0x80 to 0xFF represented with ^^ form are
+    ;; converted to byte sequence, and decoded by the file coding
+    ;; system.
     (setq string
-	  (preview--decode-^^ab string
-				(if (featurep 'mule)
-				    buffer-file-coding-system nil)))
+	  (preview--decode-^^ab string buffer-file-coding-system))
 
     ;; Then, control characters are taken into account.
     (while (string-match "\\^\\{2,\\}\\([@-_?]\\)" string)
@@ -2665,9 +2660,7 @@ Return a new string."
 			   (save-match-data
 			     (preview--convert-^^ab
 			      (match-string 0 string)))))
-		      (if (featurep 'mule)
-			  (decode-coding-string text coding-system)
-			text)))
+		      (decode-coding-string text coding-system)))
 	    string (substring string (match-end 0))))
     (setq result (concat result string))
     result))
@@ -2686,12 +2679,7 @@ Return a new string."
 				 (substring string
 					    (+ (match-beginning 0) 2)
 					    (match-end 0)) 16)))
-		      ;; `char-to-string' is not appropriate in
-		      ;; Emacs >= 23 because it converts #xAB into
-		      ;; "\u00AB" (multibyte string), not "\xAB"
-		      ;; (raw 8bit unibyte string).
-		      (if (fboundp 'byte-to-string)
-			  (byte-to-string byte) (char-to-string byte))))
+		      (byte-to-string byte)))
 	    string (substring string (match-end 0))))
     (setq result (concat result string))
     result))
@@ -2712,7 +2700,6 @@ call, and in its CDR the final stuff for the placement hook."
 	  offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
-	  (run-coding-system preview-coding-system)
 	  (run-directory default-directory)
 	  tempdir
 	  close-data
@@ -2956,13 +2943,11 @@ name(\\([^)]+\\))\\)\\|\
 			 (concat "\\("
 				 (setq string
 				       (preview-error-quote
-					string
-					run-coding-system))
+					string))
 				 "\\)"
 				 (setq after-string
 				       (preview-error-quote
-					after-string
-					run-coding-system)))
+					after-string)))
 			 (line-end-position) t)
 			(goto-char (match-end 1)))
 		       ((search-forward-regexp
@@ -3283,9 +3268,11 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
+  ;; If -kanji option exists, pick it up as the second match.
+  ;; Discard all other options.
     ("\\`\\([^ ]+\\)\
-\\(\\( +-\\([^ \\\\\"]\\|\\\\\\.\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\1 -ini -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\5")))
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*\\(.*\\)\\'"
+     . ("\\1 -ini \\2 -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\3")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -3293,9 +3280,16 @@ This is passed through `preview-do-replacements'."
 		  (cons string (repeat (choice symbol string))))))
 
 (defcustom preview-undump-replacements
+  ;; If -kanji option exists, pick it up as the second match.
+  ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
- .*? \"\\\\input\" \\(.*\\)\\'"
-     . ("\\1 -interaction=nonstopmode \"&" preview-format-name "\" \\2")))
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
+ \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
+     . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
+	preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
+  ;; See the ini file code below in `preview-cache-preamble' for the
+  ;; weird /AUCTEXINPUT construct.  In short, it is crafted so that
+  ;; dumped format file can read file of non-ascii name.
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -3337,10 +3331,13 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 	(push format-cons preview-dumped-alist))
       ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
       ;; in the tools bundle is an empty file.
-      (write-region "\\ifx\\pdfoutput\\undefined\\else\
-\\let\\PREVIEWdump\\dump\\def\\dump{%
-\\edef\\next{{\\catcode`\\ 9 \\pdfoutput=\\the\\pdfoutput\\relax\
-\\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 \\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax\n" nil dump-file)
+      (write-region "\\let\\PREVIEWdump\\dump\\def\\dump{%
+\\edef\\next{{\\ifx\\pdfoutput\\undefined\\else\
+\\pdfoutput=\\the\\pdfoutput\\relax\\fi\
+\\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 %
+\\catcode`/ 0 %
+\\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input\\detokenize{##1}\\relax}%
+\\let\\dump\\PREVIEWdump\\dump}\\input mylatex.ltx \\relax%\n" nil dump-file)
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
@@ -3527,8 +3524,9 @@ internal parameters, STR may be a log to insert into the current log."
   (set-buffer commandbuff)
   (let*
       ((preview-format-name (shell-quote-argument
-			     (preview-dump-file-name
-			      (file-name-nondirectory master))))
+			     (concat "&"
+				     (preview-dump-file-name
+				      (file-name-nondirectory master)))))
        (process-environment (copy-sequence process-environment))
        (process
 	(progn
@@ -3541,15 +3539,7 @@ internal parameters, STR may be a log to insert into the current log."
 	   (if (consp (cdr dumped-cons))
 	       (preview-do-replacements
 		command
-		(append preview-undump-replacements
-			;; Since the command options provided in
-			;; (TeX-engine-alist) are dropped, give them
-			;; back.
-			(list (list "\\`\\([^ ]+\\)"
-				    (TeX-command-expand "%(PDF)%(latex)"
-							(if TeX-current-process-region-p
-							    #'TeX-region-file
-							  #'TeX-master-file))))))
+		preview-undump-replacements)
 	     command) file))))
     (condition-case err
 	(progn
@@ -3562,20 +3552,6 @@ internal parameters, STR may be a log to insert into the current log."
 	  (preview-set-geometry geometry)
 	  (setq preview-gs-file pr-file)
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
-	  ;; Postpone decoding of process output for xemacs 21.4,
-	  ;; which is rather bad at preserving incomplete multibyte
-	  ;; characters.
-	  (when (featurep 'mule)
-	    ;; Get process coding system set in `TeX-run-command'.
-	    (setq preview-coding-system (process-coding-system process))
-	    ;; Substitute coding system for decode with `raw-text' if
-	    ;; necessary and save the original coding system for
-	    ;; decode for later use in `preview-error-quote'.
-	    (set-process-coding-system process
-				       (preview-buffer-recode-system
-					(car preview-coding-system))
-				       (cdr preview-coding-system))
-	    (setq preview-coding-system (car preview-coding-system)))
 	  (TeX-parse-reset)
 	  (setq TeX-parse-function 'TeX-parse-TeX)
 	  (if TeX-process-asynchronous

@@ -162,4 +162,99 @@ backend=biber % here is a comment
     (should (LaTeX-provided-package-options-member
 	     "biblatex" "backend=biber"))))
 
+(ert-deftest LaTeX-includegraphics-extensions ()
+  "Check correct extensions are generated accoding to `TeX-engine'."
+  ;; Emacs 26.1 has a bug in byte compile optimization, which makes
+  ;; compiled `LaTeX-includegraphics-extensions-list' to return wrong
+  ;; value when `TeX-engine' is neither `default', `xetex' nor
+  ;; `luatex'.
+  ;; c.f. https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31718
+  :expected-result (if (and (= emacs-major-version 26)
+			    (= emacs-minor-version 1))
+		       :failed
+		     :passed)
+  (with-temp-buffer
+    (LaTeX-mode)
+    (TeX-load-style "graphicx")
+    (let (TeX-engine TeX-PDF-mode TeX-PDF-from-DVI
+		     TeX-PDF-via-dvips-ps2pdf TeX-DVI-via-PDFTeX)
+      ;; tests for default engine
+      (setq TeX-engine 'default)
+      ;; default 1
+      (setq TeX-PDF-mode t
+	    TeX-PDF-from-DVI nil
+	    TeX-DVI-via-PDFTeX nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+      ;; default 2
+      (setq TeX-PDF-mode t
+	    TeX-PDF-from-DVI "Dvips"
+	    TeX-DVI-via-PDFTeX nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "mps" "EPS") #'string<)))
+      ;; default 3
+      (setq TeX-PDF-mode nil
+	    TeX-PDF-from-DVI nil
+	    TeX-DVI-via-PDFTeX nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "mps" "EPS") #'string<)))
+      ;; default 4
+      (setq TeX-PDF-mode nil
+	    TeX-PDF-from-DVI nil
+	    TeX-DVI-via-PDFTeX t)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+      ;; default 5
+      (setq TeX-PDF-mode t
+	    TeX-PDF-from-DVI "Dvipdfmx"
+	    TeX-DVI-via-PDFTeX nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
+
+      ;; tests for luatex engine
+      (setq TeX-engine 'luatex)
+      ;; luatex 1
+      (setq TeX-PDF-mode t)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+      ;; luatex 2
+      (setq TeX-PDF-mode nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "mps" "EPS") #'string<)))
+
+      ;; test for xetex engine
+      (setq TeX-engine 'xetex)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jp2" "jpf"
+		      "PDF" "EPS" "MPS" "PS" "PNG" "JPE?G" "JP2" "JPF"
+		      "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
+		      "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
+		    #'string<)))
+
+      ;; test for other engine
+      (setq TeX-engine 'omega)
+      ;; other 1
+      (setq TeX-PDF-mode t
+	    TeX-PDF-from-DVI "Dvipdfmx")
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
+      ;; other 2
+      (setq TeX-PDF-mode nil
+	    TeX-PDF-from-DVI nil)
+      (should
+       (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
+	      (sort '("eps" "jpe?g" "pdf" "png") #'string<))))))
+
 ;;; latex-test.el ends here

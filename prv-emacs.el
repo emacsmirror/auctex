@@ -1,6 +1,6 @@
 ;;; prv-emacs.el --- GNU Emacs specific code for preview.el
 
-;; Copyright (C) 2001, 02, 03, 04, 05  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2005, 2018  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -368,12 +368,6 @@ purposes."
        (if (windowp event)
 	   event
 	 (posn-window (event-start event))))))
-
-(defsubst preview-buffer-recode-system (base)
-  "This is supposed to translate unrepresentable base encodings
-into something that can be used safely for byte streams in the
-run buffer.  A noop for Emacs."
-  base)
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."

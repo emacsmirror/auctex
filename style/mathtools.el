@@ -32,7 +32,7 @@
 ;;; This package serves as a wrapper for amsmath, adding more features
 ;;; and fixing a few bugs in amsmath.  The mathstyle argument for many
 ;;; of the macros is discussed at
-;;; <http://www.tug.org/TUGboat/Articles/tb22-4/tb72perlS.pdf>
+;;; <https://www.tug.org/TUGboat/Articles/tb22-4/tb72perlS.pdf>
 
 ;;; Code:
 

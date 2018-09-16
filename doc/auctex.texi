@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2017
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2018
 Free Software Foundation, Inc.
 
 @quotation
@@ -3237,6 +3237,7 @@ be the default command to convert the @acronym{PS} file to
 @code{"Dvipdfmx"}: the @acronym{DVI} file is converted to @acronym{PDF}
 with @command{dvipdfmx}.
 @end itemize
+(case is significant; note the uppercase ``D'' in both strings)
 When the @acronym{PDF} file is finally ready, the next suggested command
 will be to open the viewer.
 
@@ -3861,9 +3862,9 @@ Each of the two utilities @code{lacheck} and @code{chktex} will find
 some errors the other doesn't, but @code{chktex} is more configurable,
 allowing you to create your own errors.  You may need to install the
 programs before using them.  You can get @code{lacheck} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} and
+@file{<URL:https://www.ctan.org/pkg/lacheck>} and
 @code{chktex} from
-@file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.
+@file{<URL:https://www.ctan.org/pkg/chktex>}.
 
 @node Control
 @section Controlling the output
@@ -4714,15 +4715,12 @@ If non-nil, used for decoding output from Japanese @TeX{} process.
 When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
 @end defopt
 
-The former customize options @code{japanese-TeX-command-default} and
-@code{japanese-LaTeX-command-default} are removed from @AUCTeX{}.  Use
+The former customize options @code{japanese-TeX-command-default},
+@code{japanese-LaTeX-command-default} and
+@code{japanese-TeX-command-list} are removed from @AUCTeX{}.  Use
 @code{japanese-TeX-engine-default} instead.  If you need to customize
 the executable file name such as @samp{"latex"}, the options for them,
 or both, customize @code{TeX-engine-alist}.
-
-Also, the option @code{japanese-TeX-command-list} is considered as
-semi-obsolete.  It still functions as before, but in theory, it is not
-required anymore in normal use.
 
 The following two additional font commands are available in
 @LaTeX{} mode buffer.
