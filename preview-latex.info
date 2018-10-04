@@ -2,10 +2,10 @@ This is preview-latex.info, produced by makeinfo version 6.5 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.1 from 2018-03-20).
+(version 12.1.1.2018-09-07 from 2018-09-07).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017 Free Software
-Foundation, Inc.
+   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
+Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -199,7 +199,7 @@ case, 'dvipng' will be used for converting DVI files and Ghostscript
 (with a 'PNG' device) for converting PDF files.  'dvipng' is much faster
 than the combination of Dvips and Ghostscript.  You can get downloads,
 access to its CVS archive and further information from its project site
-(http://savannah.nongnu.org/projects/dvipng).
+(https://savannah.nongnu.org/projects/dvipng).
 
 
 File: preview-latex.info,  Node: More documentation,  Next: Availability,  Prev: Basic modes of operation,  Up: Introduction
@@ -235,11 +235,11 @@ File: preview-latex.info,  Node: Availability,  Next: Contacts,  Prev: More docu
 ================
 
 The preview-latex project is now part of AUCTeX and accessible as part
-of the AUCTeX project page (http://savannah.gnu.org/projects/auctex).
+of the AUCTeX project page (https://savannah.gnu.org/projects/auctex).
 You can get its files from the AUCTeX download area
-(ftp://ftp.gnu.org/pub/gnu/auctex).  As of AUCTeX 11.81, preview-latex
-should already be integrated into AUCTeX, so no separate download will
-be necessary.
+(https://ftp.gnu.org/pub/gnu/auctex/).  As of AUCTeX 11.81,
+preview-latex should already be integrated into AUCTeX, so no separate
+download will be necessary.
 
    You will also find '.rpm' files there for Fedora and possibly SuSE.
 Anonymous Git is available as well.
@@ -256,7 +256,7 @@ installation fails (but this should be a rare event), report bugs to
 <bug-auctex@gnu.org>.
 
    There is a general discussion list for AUCTeX which also covers
-preview-latex, look at <http://lists.gnu.org/mailman/listinfo/auctex>.
+preview-latex, look at <https://lists.gnu.org/mailman/listinfo/auctex>.
 For more information on the mailing list, send a message with just the
 word "help" as subject or body to <auctex-request@gnu.org>.  For the
 developers, there is the <auctex-devel@gnu.org> list; it would probably
@@ -416,6 +416,14 @@ Preview/Turn preamble cache on
      the preamble are done from within Emacs, but it will not notice if
      the preamble effectively changes because some included file or
      style file is tampered with.
+
+     Note that support for preamble cache is limited for LaTeX variants.
+     c.f.  '<URL:https://github.com/davidcarlisle/dpctex/issues/15>'
+        * XeLaTeX cannot use preamble cache at all.  The reason is
+          intrinsic in XeLaTeX, so preview-latex can't help.
+        * LuaLaTeX works with preamble cache only when the preamble is
+          simple enough, i.e., when it doesn't load opentype fonts and
+          it doesn't use lua codes in preamble.
 
 'C-c C-p C-c C-f'
 'preview-cache-preamble-off'
@@ -1342,6 +1350,11 @@ File: preview-latex.info,  Node: The preview images,  Next: Misplaced previews, 
      images will get run through Dvips and Ghostscript once 'dvipng'
      finishes.
 
+     Note for pLaTeX and upLaTeX users: It is known that 'dvipng' is not
+     compatible with pLaTeX and upLaTeX.  If 'preview-image-type' is set
+     to 'dvipng' and (u)pLaTeX is used, 'dvipng' just fails and
+     preview-latex falls back on Dvips and Ghostscript.
+
 'preview-gs-options'
      Most interesting to the user perhaps is the setting of this
      variable.  It contains the default antialiasing settings
@@ -1843,10 +1856,10 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.1 from 2018-03-20).
+(version 12.1.1.2018-09-07 from 2018-09-07).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017 Free Software
-Foundation, Inc.
+   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
+Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -1870,7 +1883,7 @@ C.1 GNU Free Documentation License
                      Version 1.3, 3 November 2008
 
      Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software
-     Foundation, Inc.  <http://fsf.org/>
+     Foundation, Inc.  <https://fsf.org/>
 
      Everyone is permitted to copy and distribute verbatim copies
      of this license document, but changing it is not allowed.
@@ -2267,7 +2280,7 @@ C.1 GNU Free Documentation License
      the GNU Free Documentation License from time to time.  Such new
      versions will be similar in spirit to the present version, but may
      differ in detail to address new problems or concerns.  See
-     <http://www.gnu.org/copyleft/>.
+     <https://www.gnu.org/licenses/>.
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
@@ -2356,7 +2369,7 @@ Index
 * \PreviewMacro:                         Provided commands.   (line  25)
 * Activation:                            Activating preview-latex.
                                                               (line   6)
-* C-c C-k:                               Keys and lisp.       (line 160)
+* C-c C-k:                               Keys and lisp.       (line 168)
 * C-c C-m P:                             Keys and lisp.       (line  62)
 * C-c C-p C-b:                           Keys and lisp.       (line  89)
 * C-c C-p C-c C-b:                       Keys and lisp.       (line 115)
@@ -2367,12 +2380,12 @@ Index
 * C-c C-p C-d:                           Keys and lisp.       (line  94)
 * C-c C-p C-e:                           Keys and lisp.       (line  74)
 * C-c C-p C-f:                           Keys and lisp.       (line 128)
-* C-c C-p C-i:                           Keys and lisp.       (line 147)
+* C-c C-p C-i:                           Keys and lisp.       (line 155)
 * C-c C-p C-p:                           Keys and lisp.       (line  23)
 * C-c C-p C-r:                           Keys and lisp.       (line  84)
 * C-c C-p C-s:                           Keys and lisp.       (line  79)
 * C-c C-p C-w:                           Keys and lisp.       (line  45)
-* C-u C-c C-p C-f:                       Keys and lisp.       (line 141)
+* C-u C-c C-p C-f:                       Keys and lisp.       (line 149)
 * Caching a preamble:                    Simple customization.
                                                               (line  57)
 * Contacts:                              Contacts.            (line   6)
@@ -2389,9 +2402,9 @@ Index
 * GPL:                                   Copying.             (line   6)
 * Inline math:                           Simple customization.
                                                               (line 108)
-* Kill preview-generating process:       Keys and lisp.       (line 160)
+* Kill preview-generating process:       Keys and lisp.       (line 168)
 * License:                               Copying.             (line   6)
-* M-x preview-report-bug <RET>:          Keys and lisp.       (line 152)
+* M-x preview-report-bug <RET>:          Keys and lisp.       (line 160)
 * Mailing list:                          Contacts.            (line   6)
 * Menu entries:                          Keys and lisp.       (line   6)
 * Philosophy of preview-latex:           What use is it?.     (line   6)
@@ -2401,7 +2414,7 @@ Index
                                                               (line  57)
 * preview-buffer:                        Keys and lisp.       (line  89)
 * preview-cache-preamble:                Keys and lisp.       (line 128)
-* preview-cache-preamble-off:            Keys and lisp.       (line 141)
+* preview-cache-preamble-off:            Keys and lisp.       (line 149)
 * preview-clearout:                      Keys and lisp.       (line 110)
 * preview-clearout-at-point:             Keys and lisp.       (line  99)
 * preview-clearout-buffer:               Keys and lisp.       (line 115)
@@ -2423,9 +2436,9 @@ Index
 * preview-error-icon-specs:              The Emacs interface. (line 150)
 * preview-fast-conversion:               The Emacs interface. (line  60)
 * preview-fast-dvips-command:            The Emacs interface. (line 123)
-* preview-goto-info-page:                Keys and lisp.       (line 147)
+* preview-goto-info-page:                Keys and lisp.       (line 155)
 * preview-gs-image-type-alist:           The preview images.  (line   8)
-* preview-gs-options:                    The preview images.  (line  54)
+* preview-gs-options:                    The preview images.  (line  59)
 * preview-icon-specs:                    The Emacs interface. (line 151)
 * preview-image-creators:                The preview images.  (line   7)
 * preview-image-type:                    Basic modes of operation.
@@ -2442,7 +2455,7 @@ Index
 * preview-preserve-counters <1>:         The Emacs interface. (line  47)
 * preview-reference-face:                The Emacs interface. (line  80)
 * preview-region:                        Keys and lisp.       (line  84)
-* preview-report-bug:                    Keys and lisp.       (line 152)
+* preview-report-bug:                    Keys and lisp.       (line 160)
 * preview-required-option-list:          Simple customization.
                                                               (line  61)
 * preview-required-option-list <1>:      The Emacs interface. (line  35)
@@ -2450,7 +2463,7 @@ Index
 * preview-section:                       Keys and lisp.       (line  79)
 * preview-transparent-border:            Keys and lisp.       (line  55)
 * Readme:                                Introduction.        (line   6)
-* Report a bug:                          Keys and lisp.       (line 152)
+* Report a bug:                          Keys and lisp.       (line 160)
 * Right:                                 Copying.             (line   6)
 * Showing \labels:                       Simple customization.
                                                               (line  21)
@@ -2461,41 +2474,41 @@ Index
 
 
 Tag Table:
-Node: Top948
-Node: Copying2220
-Node: Introduction2674
-Node: What use is it?3348
-Node: Activating preview-latex4737
-Node: Getting started5490
-Node: Basic modes of operation7437
-Node: More documentation8639
-Node: Availability9527
-Node: Contacts10132
-Node: Installation11404
-Node: Keys and lisp11605
-Node: Simple customization18245
-Node: Known problems23908
-Node: Font problems with Dvips24681
-Node: Too small bounding boxes25854
-Node: x-symbol interoperation27250
-Node: Middle-clicks paste instead of toggling28633
-Node: For advanced users29261
-Node: The LaTeX style file29720
-Node: Package options32282
-Node: Provided commands43186
-Node: The Emacs interface50536
-Node: The preview images59247
-Node: Misplaced previews62730
-Node: ToDo66184
-Node: Frequently Asked Questions70955
-Node: Introduction to FAQ71278
-Node: Requirements71617
-Node: Installation Trouble73449
-Node: Customization75712
-Node: Troubleshooting78804
-Node: Other formats81322
-Node: Copying this Manual82637
-Node: GNU Free Documentation License83572
-Node: Index108694
+Node: Top965
+Node: Copying2237
+Node: Introduction2691
+Node: What use is it?3365
+Node: Activating preview-latex4754
+Node: Getting started5507
+Node: Basic modes of operation7454
+Node: More documentation8657
+Node: Availability9545
+Node: Contacts10154
+Node: Installation11427
+Node: Keys and lisp11628
+Node: Simple customization18729
+Node: Known problems24392
+Node: Font problems with Dvips25165
+Node: Too small bounding boxes26338
+Node: x-symbol interoperation27734
+Node: Middle-clicks paste instead of toggling29117
+Node: For advanced users29745
+Node: The LaTeX style file30204
+Node: Package options32766
+Node: Provided commands43670
+Node: The Emacs interface51020
+Node: The preview images59731
+Node: Misplaced previews63481
+Node: ToDo66935
+Node: Frequently Asked Questions71706
+Node: Introduction to FAQ72029
+Node: Requirements72368
+Node: Installation Trouble74200
+Node: Customization76463
+Node: Troubleshooting79555
+Node: Other formats82073
+Node: Copying this Manual83388
+Node: GNU Free Documentation License84340
+Node: Index109464
 
 End Tag Table

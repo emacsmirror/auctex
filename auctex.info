@@ -1,9 +1,9 @@
 This is auctex.info, produced by makeinfo version 6.5 from auctex.texi.
 
-This manual is for AUCTeX (version 12.1.1 from 2018-03-20), a
+This manual is for AUCTeX (version 12.1.1.2018-09-07 from 2018-09-07), a
 sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2018 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -281,10 +281,10 @@ add new features for your own needs.  It is a GNU project and
 distributed under the 'GNU General Public License Version 3'.
 
    The most recent version is always available at
-<http://ftp.gnu.org/pub/gnu/auctex/>.
+<https://ftp.gnu.org/pub/gnu/auctex/>.
 
    WWW users may want to check out the AUCTeX page at
-<http://www.gnu.org/software/auctex/>.
+<https://www.gnu.org/software/auctex/>.
 
    For comprehensive information about how to install AUCTeX *Note
 Installation::, or *note Installation under MS Windows::, respectively.
@@ -360,11 +360,11 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
 
      Windows
           Precompiled versions are available from
-          <ftp://ftp.gnu.org/gnu/emacs/windows/>.
+          <https://ftp.gnu.org/gnu/emacs/windows/>.
      Mac OS X
           For an overview of precompiled versions of Emacs for Mac OS X
           see for example
-          <http://www.emacswiki.org/cgi-bin/wiki/EmacsForMacOS>.
+          <https://www.emacswiki.org/emacs/EmacsForMacOS>.
      GNU/Linux
           Most GNU/Linux distributions nowadays provide a recent variant
           of Emacs via their package repositories.
@@ -544,9 +544,8 @@ File: auctex.info,  Node: Loading the package,  Next: Advice for package provide
 -------------------------
 
 You can detect the successful activation of AUCTeX and preview-latex in
-the menus after loading a LaTeX file like 'preview/circ.tex': AUCTeX
-then gives you a 'Command' menu, and preview-latex gives you a 'Preview'
-menu.
+the menus after loading a LaTeX file like 'circ.tex': AUCTeX then gives
+you a 'Command' menu, and preview-latex gives you a 'Preview' menu.
 
    With Emacs (or if you explicitly disabled use of the package system),
 the startup files 'auctex.el' and 'preview-latex.el' may already be in a
@@ -825,7 +824,7 @@ single quotes for that.
 
   2. The installation of AUCTeX will require the MSYS tool set from
      <http://www.mingw.org/> or the Cygwin tool set from
-     <http://cygwin.com/>.  The latter is slower and larger (the
+     <https://cygwin.com/>.  The latter is slower and larger (the
      download size of the base system is about 15 MB) but comes with a
      package manager that allows for updating the tool set and
      installing additional packages like, for example, the spell checker
@@ -837,21 +836,21 @@ single quotes for that.
      save headaches, _if_ things don't work out.
 
   3. Install a current version of Emacs from
-     <ftp://ftp.gnu.org/gnu/emacs/windows/>.
+     <https://ftp.gnu.org/gnu/emacs/windows/>.
 
   4. You need a working TeX installation.  One popular installation
-     under Windows is MiKTeX (http://www.miktex.org).  Another much more
-     extensive system is TeX Live (http://www.tug.org/texlive) which is
-     rather close to its Unix cousins.
+     under Windows is MiKTeX (https://miktex.org/).  Another much more
+     extensive system is TeX Live (https://www.tug.org/texlive/) which
+     is rather close to its Unix cousins.
 
-  5. A working copy of Ghostscript (http://www.cs.wisc.edu/~ghost/) is
+  5. A working copy of Ghostscript (https://www.ghostscript.com/) is
      required for preview-latex operation.  Examining the output from
           gswin32c -h
      on a Windows command line should tell you whether your Ghostscript
      supports the 'png16m' device needed for PNG support.  MiKTeX
      apparently comes with its own Ghostscript called 'mgs.exe'.
 
-  6. Perl (http://www.perl.org) is needed for rebuilding the
+  6. Perl (https://www.perl.org/) is needed for rebuilding the
      documentation if you are working with a copy from Git or have
      touched documentation source files in the preview-latex part.  If
      the line endings of the file 'preview/latex/preview.dtx' don't
@@ -987,9 +986,9 @@ single quotes for that.
 
      Adding support for an image format usually involves the
      installation of a library, e.g.  from <http://gnuwin32.sf.net/>.
-     If you got your Emacs from <http://www.gnu.org> you might want to
-     check its README file (ftp://ftp.gnu.org/gnu/emacs/windows/README)
-     for details.
+     If you got your Emacs from <https://www.gnu.org/> you might want to
+     check its README file
+     (https://ftp.gnu.org/gnu/emacs/windows/README) for details.
 
      A different image format can be chosen by setting the variable
      'preview-image-type'.  While it is recommended to keep the 'dvipng'
@@ -3815,8 +3814,9 @@ you want to generate the final PDF by converting a DVI file.
           command to convert the PS file to PDF.
         * '"Dvipdfmx"': the DVI file is converted to PDF with
           'dvipdfmx'.
-     When the PDF file is finally ready, the next suggested command will
-     be to open the viewer.
+     (case is significant; note the uppercase "D" in both strings) When
+     the PDF file is finally ready, the next suggested command will be
+     to open the viewer.
 
      This option can also be set as a file local variable, in order to
      use this conversion on a per-document basis.
@@ -4363,8 +4363,8 @@ as the flymake backend.
 errors the other doesn't, but 'chktex' is more configurable, allowing
 you to create your own errors.  You may need to install the programs
 before using them.  You can get 'lacheck' from
-'<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>' and 'chktex'
-from '<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>'.
+'<URL:https://www.ctan.org/pkg/lacheck>' and 'chktex' from
+'<URL:https://www.ctan.org/pkg/chktex>'.
 
 
 File: auctex.info,  Node: Control,  Next: Cleaning,  Prev: Checking,  Up: Processing
@@ -5022,15 +5022,11 @@ following two customize options.
      If non-nil, used for decoding output from Japanese TeX process.
      When 'nil', AUCTeX tries to choose suitable coding system.
 
-   The former customize options 'japanese-TeX-command-default' and
-'japanese-LaTeX-command-default' are removed from AUCTeX.  Use
-'japanese-TeX-engine-default' instead.  If you need to customize the
-executable file name such as '"latex"', the options for them, or both,
-customize 'TeX-engine-alist'.
-
-   Also, the option 'japanese-TeX-command-list' is considered as
-semi-obsolete.  It still functions as before, but in theory, it is not
-required anymore in normal use.
+   The former customize options 'japanese-TeX-command-default',
+'japanese-LaTeX-command-default' and 'japanese-TeX-command-list' are
+removed from AUCTeX.  Use 'japanese-TeX-engine-default' instead.  If you
+need to customize the executable file name such as '"latex"', the
+options for them, or both, customize 'TeX-engine-alist'.
 
    The following two additional font commands are available in LaTeX
 mode buffer.
@@ -5839,10 +5835,10 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.1.1 from 2018-03-20), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 12.1.1.2018-09-07 from
+2018-09-07), a sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2017 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2018 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -5867,7 +5863,7 @@ A.1.1 GNU Free Documentation License
                      Version 1.3, 3 November 2008
 
      Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software
-     Foundation, Inc.  <http://fsf.org/>
+     Foundation, Inc.  <https://fsf.org/>
 
      Everyone is permitted to copy and distribute verbatim copies
      of this license document, but changing it is not allowed.
@@ -6264,7 +6260,7 @@ A.1.1 GNU Free Documentation License
      the GNU Free Documentation License from time to time.  Such new
      versions will be similar in spirit to the present version, but may
      differ in detail to address new problems or concerns.  See
-     <http://www.gnu.org/copyleft/>.
+     <https://www.gnu.org/licenses/>.
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
@@ -6346,6 +6342,33 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 A.2 Changes and New Features
 ============================
 
+News in 12.2
+------------
+
+   * AUCTeX has support for the Flymake package in Emacs 26 or newer.
+     To enable, call 'M-x flymake-mode RET' or add this to your '.emacs'
+     file:
+          (add-hook 'LaTeX-mode-hook #'flymake-mode)
+
+   * The way the option 'TeX-record-buffer' is used was corrected.  It
+     was used in just the opposite way as the document says.  Erase the
+     customization if you have customized this option since it now acts
+     in reverse to your expectation.
+
+   * A former customize option 'japanese-TeX-command-list' is removed.
+     Use 'japanese-TeX-engine-default', or if it's really necessary,
+     customize 'TeX-command-list' directly if the task which the option
+     used to carry is required.
+
+   * Support for standard LaTeX without e-TeX extension is now very
+     limited.  It doesn't work if raw TeX code is put on the command
+     line to invoke latex command.  It also fails for region compilation
+     ('C-c C-r' and so on) with documents of non-ascii file name.  In
+     addition, it no longer works with preview-latex.  We consider this
+     incompatibility is permissible because e-TeX extension is enabled
+     for standard LaTeX by default long ago.  LaTeX variants such as
+     XeLaTeX and LuaLaTeX are not affected.
+
 News in 12.1
 ------------
 
@@ -6355,11 +6378,6 @@ News in 12.1
    * Besides the change in the supported version of Emacs, there has
      been no functional change in this release, which is equivalent to
      version 11.92.
-
-   * AUCTeX has support for the Flymake package in Emacs 26 or newer.
-     To enable, call 'M-x flymake-mode RET' or add this to your '.emacs'
-     file:
-          (add-hook 'LaTeX-mode-hook #'flymake-mode)
 
 News in 11.92
 -------------
@@ -7924,8 +7942,8 @@ Key Index
 * C-c C-f C-s <1>:                       Font Specifiers.     (line  25)
 * C-c C-f C-t:                           Editing Facilities.  (line  91)
 * C-c C-f C-t <1>:                       Font Specifiers.     (line  34)
-* C-c C-f g:                             Japanese.            (line 117)
-* C-c C-f m:                             Japanese.            (line 121)
+* C-c C-f g:                             Japanese.            (line 113)
+* C-c C-f m:                             Japanese.            (line 117)
 * C-c C-k:                               Control.             (line  10)
 * C-c C-l:                               Control.             (line  14)
 * C-c C-m:                               Completion.          (line  69)
@@ -8146,10 +8164,10 @@ Variable Index
 * AmS-TeX-mode-hook:                     Modes and Hooks.     (line  21)
 * ConTeXt-clean-intermediate-suffixes:   Cleaning.            (line   7)
 * ConTeXt-clean-output-suffixes:         Cleaning.            (line   7)
-* ConTeXt-engine:                        Processor Options.   (line 120)
-* ConTeXt-Mark-version:                  Processor Options.   (line 197)
+* ConTeXt-engine:                        Processor Options.   (line 121)
+* ConTeXt-Mark-version:                  Processor Options.   (line 198)
 * ConTeXt-mode-hook:                     Modes and Hooks.     (line  21)
-* ConTeXt-Omega-engine:                  Processor Options.   (line 120)
+* ConTeXt-Omega-engine:                  Processor Options.   (line 121)
 * docTeX-clean-intermediate-suffixes:    Cleaning.            (line   7)
 * docTeX-clean-output-suffixes:          Cleaning.            (line   7)
 * docTeX-mode-hook:                      Modes and Hooks.     (line  21)
@@ -8245,7 +8263,7 @@ Variable Index
 * LaTeX-biblatex-use-Biber:              Selecting a Command. (line  51)
 * LaTeX-clean-intermediate-suffixes:     Cleaning.            (line   7)
 * LaTeX-clean-output-suffixes:           Cleaning.            (line   7)
-* LaTeX-command:                         Processor Options.   (line 120)
+* LaTeX-command:                         Processor Options.   (line 121)
 * LaTeX-csquotes-close-quote:            Quotes.              (line  43)
 * LaTeX-csquotes-open-quote:             Quotes.              (line  43)
 * LaTeX-csquotes-quote-after-quote:      Quotes.              (line  43)
@@ -8287,7 +8305,7 @@ Variable Index
 * LaTeX-math-list:                       Mathematics.         (line  36)
 * LaTeX-math-menu-unicode:               Mathematics.         (line  54)
 * LaTeX-mode-hook:                       Modes and Hooks.     (line  21)
-* LaTeX-Omega-command:                   Processor Options.   (line 120)
+* LaTeX-Omega-command:                   Processor Options.   (line 121)
 * LaTeX-paragraph-commands:              Filling.             (line  55)
 * LaTeX-section-hook:                    Sectioning.          (line  40)
 * LaTeX-section-hook <1>:                Sectioning.          (line  48)
@@ -8331,16 +8349,16 @@ Variable Index
 * TeX-auto-save:                         Parsing Files.       (line  40)
 * TeX-auto-untabify:                     Parsing Files.       (line  57)
 * TeX-brace-indent-level:                Indenting.           (line 102)
-* TeX-check-engine:                      Processor Options.   (line 163)
+* TeX-check-engine:                      Processor Options.   (line 164)
 * TeX-check-path:                        Selecting a Command. (line  67)
-* TeX-check-TeX:                         Processor Options.   (line 148)
-* TeX-check-TeX-command-not-found:       Processor Options.   (line 149)
+* TeX-check-TeX:                         Processor Options.   (line 149)
+* TeX-check-TeX-command-not-found:       Processor Options.   (line 150)
 * TeX-clean-confirm:                     Cleaning.            (line  26)
 * TeX-close-quote:                       Quotes.              (line  25)
-* TeX-command:                           Processor Options.   (line 120)
-* TeX-command <1>:                       Processor Options.   (line 149)
+* TeX-command:                           Processor Options.   (line 121)
+* TeX-command <1>:                       Processor Options.   (line 150)
 * TeX-command-default:                   Selecting a Command. (line  42)
-* TeX-command-extra-options:             Processor Options.   (line 171)
+* TeX-command-extra-options:             Processor Options.   (line 172)
 * TeX-command-list:                      Starting a Command.  (line  16)
 * TeX-command-list <1>:                  Starting a Command.  (line  32)
 * TeX-command-list <2>:                  Selecting a Command. (line  14)
@@ -8358,17 +8376,17 @@ Variable Index
 * TeX-electric-escape:                   Completion.          (line  98)
 * TeX-electric-math:                     Quotes.              (line  72)
 * TeX-electric-sub-and-superscript:      Mathematics.         (line  68)
-* TeX-engine:                            Processor Options.   (line 103)
+* TeX-engine:                            Processor Options.   (line 104)
 * TeX-engine <1>:                        Japanese.            (line   6)
-* TeX-engine-alist:                      Processor Options.   (line 120)
-* TeX-engine-alist <1>:                  Processor Options.   (line 131)
+* TeX-engine-alist:                      Processor Options.   (line 121)
+* TeX-engine-alist <1>:                  Processor Options.   (line 132)
 * TeX-engine-alist <2>:                  Japanese.            (line   6)
-* TeX-engine-alist-builtin:              Processor Options.   (line 120)
+* TeX-engine-alist-builtin:              Processor Options.   (line 121)
 * TeX-error-overview-frame-parameters:   Error overview.      (line  43)
 * TeX-error-overview-open-after-TeX-run: Error overview.      (line  25)
 * TeX-error-overview-setup:              Error overview.      (line  34)
 * TeX-expand-list:                       Selecting a Command. (line  14)
-* TeX-file-line-error:                   Processor Options.   (line 191)
+* TeX-file-line-error:                   Processor Options.   (line 192)
 * TeX-file-recurse:                      Automatic.           (line  44)
 * TeX-fold-auto:                         Folding.             (line  71)
 * TeX-fold-command-prefix:               Folding.             (line 146)
@@ -8419,7 +8437,7 @@ Variable Index
 * TeX-math-input-method-off-regexp:      Mathematics.         (line  74)
 * TeX-newline-function:                  Indenting.           (line  29)
 * TeX-newline-function <1>:              Indenting.           (line 110)
-* TeX-Omega-command:                     Processor Options.   (line 120)
+* TeX-Omega-command:                     Processor Options.   (line 121)
 * TeX-one-master:                        Multifile.           (line  58)
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
@@ -8435,7 +8453,7 @@ Variable Index
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  65)
 * TeX-save-query:                        Multifile.           (line 103)
-* TeX-show-compilation:                  Processor Options.   (line 184)
+* TeX-show-compilation:                  Processor Options.   (line 185)
 * TeX-source-correlate-method:           Processor Options.   (line  48)
 * TeX-source-correlate-method <1>:       I/O Correlation.     (line  21)
 * TeX-source-correlate-mode:             Processor Options.   (line  37)
@@ -8488,10 +8506,10 @@ Concept Index
 * \subsection <1>:                       Sectioning.          (line   6)
 * \textbf:                               Editing Facilities.  (line  73)
 * \textbf <1>:                           Font Specifiers.     (line  16)
-* \textgt:                               Japanese.            (line 117)
+* \textgt:                               Japanese.            (line 113)
 * \textit:                               Editing Facilities.  (line  76)
 * \textit <1>:                           Font Specifiers.     (line  19)
-* \textmc:                               Japanese.            (line 121)
+* \textmc:                               Japanese.            (line 117)
 * \textrm:                               Editing Facilities.  (line  85)
 * \textrm <1>:                           Font Specifiers.     (line  28)
 * \textsc:                               Editing Facilities.  (line  94)
@@ -8518,8 +8536,8 @@ Concept Index
 * ASCII pTeX:                            Internationalization.
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
-* auctex.el:                             Loading the package. (line  11)
-* auctex.el <1>:                         Changes.             (line 555)
+* auctex.el:                             Loading the package. (line  10)
+* auctex.el <1>:                         Changes.             (line 577)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8820,10 +8838,10 @@ Concept Index
 * TeX parsing:                           Automatic.           (line   6)
 * tex-jp.el:                             Japanese.            (line   6)
 * tex-mik.el:                            Installation under MS Windows.
-                                                              (line 256)
-* tex-site.el:                           Loading the package. (line  11)
+                                                              (line 257)
+* tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 555)
+* tex-site.el <2>:                       Changes.             (line 577)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8844,103 +8862,103 @@ Concept Index
 
 
 Tag Table:
-Node: Top917
-Node: Copying7270
-Node: Introduction9215
-Node: Summary9485
-Node: Installation12216
-Node: Prerequisites13982
-Node: Configure16242
-Node: Build/install and uninstall20795
-Node: Loading the package21548
-Node: Advice for package providers23232
-Node: Advice for non-privileged users26037
-Node: Installation under MS Windows28819
-Node: Customizing42559
-Node: Quick Start44142
-Ref: Quick Start-Footnote-146272
-Node: Editing Facilities46366
-Node: Processing Facilities51169
-Node: Editing55870
-Node: Quotes57200
-Node: Font Specifiers65468
-Node: Sectioning67294
-Node: Environments71614
-Node: Equations76768
-Node: Floats77359
-Node: Itemize-like79363
-Node: Tabular-like80084
-Node: Customizing Environments81857
-Node: Mathematics82097
-Node: Completion85383
-Node: Marking92409
-Node: Marking (LaTeX)93033
-Node: Marking (Texinfo)93975
-Node: Commenting95585
-Node: Indenting96910
-Node: Filling102946
-Node: Display108818
-Node: Font Locking111313
-Node: Fontification of macros113388
-Node: Fontification of quotes122911
-Node: Fontification of math124406
-Node: Verbatim content127636
-Node: Faces128410
-Node: Known problems128899
-Node: Folding129828
-Node: Outline140652
-Node: Narrowing141924
-Node: Prettifying142994
-Node: Processing144230
-Node: Commands145393
-Node: Starting a Command145949
-Node: Selecting a Command150852
-Node: Processor Options159936
-Node: Viewing170216
-Node: Starting Viewers170590
-Node: I/O Correlation177717
-Node: Debugging182917
-Node: Ignoring warnings185536
-Node: Error overview187596
-Node: Checking189507
-Node: Control191130
-Node: Cleaning191857
-Node: Documentation193070
-Node: Customization193785
-Node: Modes and Hooks194278
-Node: Multifile196098
-Node: Parsing Files200910
-Node: Internationalization205822
-Node: European206857
-Node: Japanese213667
-Node: Automatic218878
-Node: Automatic Global221369
-Node: Automatic Private222501
-Node: Automatic Local223814
-Node: Style Files224846
-Node: Simple Style225639
-Node: Adding Macros228912
-Node: Adding Environments238242
-Node: Adding Other242903
-Node: Hacking the Parser243490
-Node: Appendices247359
-Node: Copying this Manual247655
-Node: GNU Free Documentation License248538
-Node: Changes273657
-Node: Development314765
-Node: Mid-term Goals315411
-Node: Wishlist316628
-Node: Bugs322069
-Node: FAQ323172
-Node: Texinfo mode328299
-Node: Exploiting329435
-Node: Superseding330255
-Node: Mapping334459
-Node: Unbinding336288
-Node: Indices337109
-Node: Key Index337272
-Node: Function Index343596
-Node: Variable Index354479
-Node: Concept Index377337
+Node: Top928
+Node: Copying7281
+Node: Introduction9226
+Node: Summary9496
+Node: Installation12229
+Node: Prerequisites13995
+Node: Configure16251
+Node: Build/install and uninstall20804
+Node: Loading the package21557
+Node: Advice for package providers23233
+Node: Advice for non-privileged users26038
+Node: Installation under MS Windows28820
+Node: Customizing42567
+Node: Quick Start44150
+Ref: Quick Start-Footnote-146280
+Node: Editing Facilities46374
+Node: Processing Facilities51177
+Node: Editing55878
+Node: Quotes57208
+Node: Font Specifiers65476
+Node: Sectioning67302
+Node: Environments71622
+Node: Equations76776
+Node: Floats77367
+Node: Itemize-like79371
+Node: Tabular-like80092
+Node: Customizing Environments81865
+Node: Mathematics82105
+Node: Completion85391
+Node: Marking92417
+Node: Marking (LaTeX)93041
+Node: Marking (Texinfo)93983
+Node: Commenting95593
+Node: Indenting96918
+Node: Filling102954
+Node: Display108826
+Node: Font Locking111321
+Node: Fontification of macros113396
+Node: Fontification of quotes122919
+Node: Fontification of math124414
+Node: Verbatim content127644
+Node: Faces128418
+Node: Known problems128907
+Node: Folding129836
+Node: Outline140660
+Node: Narrowing141932
+Node: Prettifying143002
+Node: Processing144238
+Node: Commands145401
+Node: Starting a Command145957
+Node: Selecting a Command150860
+Node: Processor Options159944
+Node: Viewing170291
+Node: Starting Viewers170665
+Node: I/O Correlation177792
+Node: Debugging182992
+Node: Ignoring warnings185611
+Node: Error overview187671
+Node: Checking189582
+Node: Control191175
+Node: Cleaning191902
+Node: Documentation193115
+Node: Customization193830
+Node: Modes and Hooks194323
+Node: Multifile196143
+Node: Parsing Files200955
+Node: Internationalization205867
+Node: European206902
+Node: Japanese213712
+Node: Automatic218783
+Node: Automatic Global221274
+Node: Automatic Private222406
+Node: Automatic Local223719
+Node: Style Files224751
+Node: Simple Style225544
+Node: Adding Macros228817
+Node: Adding Environments238147
+Node: Adding Other242808
+Node: Hacking the Parser243395
+Node: Appendices247264
+Node: Copying this Manual247560
+Node: GNU Free Documentation License248454
+Node: Changes273575
+Node: Development315745
+Node: Mid-term Goals316391
+Node: Wishlist317608
+Node: Bugs323049
+Node: FAQ324152
+Node: Texinfo mode329279
+Node: Exploiting330415
+Node: Superseding331235
+Node: Mapping335439
+Node: Unbinding337268
+Node: Indices338089
+Node: Key Index338252
+Node: Function Index344576
+Node: Variable Index355459
+Node: Concept Index378317
 
 End Tag Table

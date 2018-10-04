@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016-2017 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2018 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -54,7 +54,7 @@
   "A (La)TeX environment."
   :tag "AUCTeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "http://www.gnu.org/software/auctex/")
+  :link '(url-link :tag "Home Page" "https://www.gnu.org/software/auctex/")
   :prefix "TeX-"
   :group 'tex
   :load "tex" :load "latex" :load "tex-style")
@@ -157,11 +157,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "12.1.1"
+(defconst AUCTeX-version "12.1.1.2018-09-07"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2018-03-20"
+(defconst AUCTeX-date "2018-09-07"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
