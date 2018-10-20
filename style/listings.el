@@ -36,6 +36,8 @@
 ;;
 ;; January 2017: Put label in opt. argument of environment.
 ;;
+;; October 2018: Extract label context for RefTeX.
+;;
 ;; FIXME: Please make me more sophisticated!
 
 ;;; Code:
@@ -264,7 +266,7 @@ from `listings' package.")
    "\\(?:\\[[^][]*"
      "\\(?:{[^}{]*"
        "\\(?:{[^}{]*"
-         "\\(?:{[^}{]*}[^}{]*\\)*"
+	 "\\(?:{[^}{]*}[^}{]*\\)*"
        "}[^}{]*\\)*"
      "}[^][]*\\)*"
    "label[ \t]*=[ \t]*{\\([^}]+\\)}"
@@ -287,7 +289,7 @@ with user-defined values via the \"lstdefinestyle\" macro."
 	 (opts (assq-delete-all (car (assoc key temp)) temp)))
     (cl-pushnew (list key (TeX-delete-duplicate-strings
 			   (mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
-	        opts :test #'equal)
+		opts :test #'equal)
     (setq LaTeX-listings-key-val-options-local
 	  (copy-alist opts))))
 
@@ -329,7 +331,9 @@ with user-defined values via the \"lstdefinestyle\" macro."
       ;; Tell RefTeX
       (when (fboundp 'reftex-add-label-environments)
 	(reftex-add-label-environments
-	 `((,env ?l "lst:" "~\\ref{%s}" nil (regexp "[Ll]isting")))))
+	 `((,env ?l "lst:" "~\\ref{%s}"
+		 LaTeX-listings-reftex-label-context-function
+		 (regexp "[Ll]isting")))))
       ;; Fontification
       (when (and (fboundp 'font-latex-add-keywords)
 		 (fboundp 'font-latex-update-font-lock)
@@ -344,6 +348,39 @@ with user-defined values via the \"lstdefinestyle\" macro."
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-listings-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-listings-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+
+(defun LaTeX-listings-reftex-label-context-function (env)
+  "Extract and return a context string for RefTeX.
+The context string is the value given to the caption key.  If no
+caption key is found, an error is issued."
+  (let* ((envstart (save-excursion
+		     (re-search-backward (concat "\\\\begin{" env "}")
+					 nil t)))
+	 (capt-key (save-excursion
+		     (re-search-backward "caption[ \t\n\r%]*=[ \t\n\r%]*"
+					 envstart t)))
+	 capt-start capt-end)
+    (if capt-key
+	(save-excursion
+	  (goto-char capt-key)
+	  (re-search-forward
+	   "caption[ \t\n\r%]*=[ \t\n\r%]*" nil t)
+	  (cond (;; Short caption inside [] is available, extract it only
+		 (looking-at-p (regexp-quote (concat TeX-grop LaTeX-optop)))
+		 (forward-char)
+		 (setq capt-start (1+ (point)))
+		 (setq capt-end (1- (progn (forward-sexp) (point)))))
+		;; Extract the entire caption which is enclosed in braces
+		((looking-at-p TeX-grop)
+		 (setq capt-start (1+ (point)))
+		 (setq capt-end (1- (progn (forward-sexp) (point)))))
+		;; Extract everything to next comma ,
+		(t
+		 (setq capt-start (point))
+		 (setq capt-end (progn (skip-chars-forward "^,") (point)))))
+	  ;; Return the extracted string
+	  (buffer-substring-no-properties capt-start capt-end))
+      (error "No caption found"))))
 
 (TeX-add-style-hook
  "listings"
@@ -400,6 +437,16 @@ with user-defined values via the \"lstdefinestyle\" macro."
    (add-to-list 'LaTeX-verbatim-environments-local "lstlisting")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "lstinline")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "lstinline")
+
+   ;; RefTeX support lstlistings environment via
+   ;; `reftex-label-alist-builtin'.  We add the same thing here only
+   ;; with our function as 5th element:
+   (when (fboundp 'reftex-add-label-environments)
+     (reftex-add-label-environments
+      '(("lstlisting" ?l "lst:" "~\\ref{%s}"
+	 LaTeX-listings-reftex-label-context-function
+	 (regexp "[Ll]isting")))))
+
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
 	      (fboundp 'font-latex-update-font-lock)
