@@ -34,7 +34,7 @@ AC_DEFUN(EMACS_PATH_PREFIX,[
     prefix) (error "NONE"))]],[[-no-site-file]],[[cmd]],[$2])])
 
 AC_DEFUN(EMACS_PROG_EMACS, [
-# Check for (X)Emacs, report its path, flavor and prefix
+# Check for Emacs, report its path, flavor and prefix
 
 # Apparently, if you run a shell window in Emacs, it sets the EMACS
 # environment variable to 't'.  Let's undo the damage.
@@ -44,48 +44,16 @@ fi
 AC_ARG_WITH(emacs,
   [  --with-emacs@<:@=PATH@:>@     Use Emacs to build (on PATH if given)],
   [if test "${withval}" = "yes"; then EMACS=emacs
-   elif test "${withval}" = "no"; then EMACS=xemacs
    else EMACS="${withval}"; fi])
 
-AC_ARG_WITH(xemacs,
-  [  --with-xemacs@<:@=PATH@:>@    Use XEmacs to build (on PATH if given)],
-  [if test "x${withval}" != xno
-   then
-     if test "x${with_emacs}" != xno -a "x${with_emacs}" != x
-     then
-       AC_MSG_ERROR([[cannot use both Emacs and XEmacs]])
-     fi
-     if test "x${withval}" = "xyes"
-     then
-       EMACS=xemacs
-     else
-       EMACS="${withval}"
-     fi
-   elif test "x${with_emacs}" = xno
-   then
-     AC_MSG_ERROR([[need to use either Emacs or XEmacs]])
-   fi])
-
 # "${prefix}/bin" is for Windows users
-AC_PATH_PROGS(EMACS, ${EMACS} emacs xemacs, "", ${PATH} "${prefix}/bin" )
+AC_PATH_PROGS(EMACS, ${EMACS} emacs, "", ${PATH} "${prefix}/bin" )
 if test -z "${EMACS}"; then
-  AC_MSG_ERROR([(X)Emacs not found!  Aborting!])
+  AC_MSG_ERROR([Emacs not found!  Aborting!])
 fi
 
-AC_MSG_CHECKING([if ${EMACS} is XEmacs])
-EMACS_LISP(XEMACS,
-	[[(if (featurep (quote xemacs)) \"yes\" \"no\")]],[[-no-site-file]])
-if test "${XEMACS}" = "yes"; then
-  EMACS_FLAVOR=xemacs
-  EMACS_NAME="XEmacs"
-elif test "${XEMACS}" = "no"; then
   EMACS_FLAVOR=emacs
   EMACS_NAME="Emacs"
-else
-  AC_MSG_ERROR([Unable to run ${EMACS}!  Aborting!])
-fi
-  AC_MSG_RESULT(${XEMACS})
-  AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
   AC_MSG_CHECKING([for ${EMACS_NAME} prefix])
   EMACS_PATH_PREFIX([[emacsprefix]],[["${EMACS}"]])
@@ -189,31 +157,6 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
   [prefix expanded $6],["${currentprefix}" "${expprefix}" $7])
   if test "[$]$1" != NONE; then break; fi; done])
 
-AC_DEFUN(EMACS_PATH_PACKAGEDIR,
- [AC_ARG_WITH(packagedir,
-    [  --with-packagedir=DIR   package DIR for XEmacs],
-    [packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"],
-    [if test ${EMACS_FLAVOR} = xemacs; then
-      AC_MSG_CHECKING([for XEmacs package directory])
-      EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
-        [['${datadir}/xemacs/xemacs-packages' \
-	  '${libdir}/xemacs/xemacs-packages' \
-          '${datadir}' '${libdir}' "${emacsprefix}"]],
-        [[(list \"xemacs/site-packages\" \"xemacs/xemacs-packages\"
-                \"site-packages\" \"xemacs-packages\")]],
-        [[(if (boundp 'late-packages)
-	      (append late-packages last-packages early-packages)
-	    (append late-package-hierarchies last-package-hierarchies
-		    early-package-hierarchies))]])
-      if test "x${packagedir}" = xNONE -o -z "${packagedir}"; then
-        AC_MSG_ERROR([not found, exiting!])
-      fi
-      AC_MSG_RESULT(${packagedir})
-    else
-      packagedir=no
-    fi])
-  AC_SUBST(packagedir)])
-
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
@@ -221,24 +164,19 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
                           files will be place in a subdirectory.],
     [[lispdir="${withval}"]])
   if test "X${lispdir}" = X; then
-     if test "X${packagedir}" = Xno; then
-       # Test paths relative to prefixes
-       EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
-         [['${datadir}/'${EMACS_FLAVOR} '${libdir}/'${EMACS_FLAVOR} \
-	   "${emacsprefix}/share/${EMACS_FLAVOR}" \
-           '${datadir}' '${libdir}' "${emacsprefix}"]],
-	 [[(list \"${EMACS_FLAVOR}/site-lisp\" \"${EMACS_FLAVOR}/site-packages\"
-	         \"site-lisp\" \"site-packages\")]], load-path)
-       if test "${lispdir}" = "NONE"; then
-	 # No? notify user.
-	 AC_MSG_ERROR([Cannot locate lisp directory,
+    # Test paths relative to prefixes
+    EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
+      [['${datadir}/'${EMACS_FLAVOR} '${libdir}/'${EMACS_FLAVOR} \
+	"${emacsprefix}/share/${EMACS_FLAVOR}" \
+        '${datadir}' '${libdir}' "${emacsprefix}"]],
+      [[(list \"${EMACS_FLAVOR}/site-lisp\" \"${EMACS_FLAVOR}/site-packages\"
+	      \"site-lisp\" \"site-packages\")]], load-path)
+    if test "${lispdir}" = "NONE"; then
+      # No? notify user.
+      AC_MSG_ERROR([Cannot locate lisp directory,
 use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
-       fi
-     else
-       # XEmacs
-       lispdir="${packagedir}/lisp"
-     fi
     fi
+  fi
   AC_MSG_RESULT([[${lispdir}]])
   AC_SUBST(lispdir)
 ])
@@ -508,28 +446,6 @@ Check the PROBLEMS file for details.])
 fi
 AC_MSG_RESULT(${auctexdir})
 AC_SUBST(auctexdir)
-])
-
-dnl
-dnl Check if (X)Emacs supports international characters,
-dnl i.e. provides MULE libraries and runs in multibyte mode.
-dnl
-AC_DEFUN(EMACS_CHECK_MULE, [
-AC_MSG_CHECKING(for MULE support)
-EMACS_CHECK_REQUIRE(mule,silent)
-if test "${HAVE_mule}" = "yes" && test "X${EMACS_UNIBYTE}" = X; then
-  MULESRC="tex-jp.el"
-  MULEELC="tex-jp.elc"
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  if test "X${EMACS_UNIBYTE}" != X; then
-    AC_MSG_WARN([[EMACS_UNIBYTE environment variable set.
-Disabling features requiring international character support.]])
-  fi
-fi
-AC_SUBST(MULESRC)
-AC_SUBST(MULEELC)
 ])
 
 dnl

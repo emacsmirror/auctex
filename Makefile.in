@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -37,7 +37,6 @@ auctexstartfile=@auctexstartfile@
 previewstartfile = @previewstartfile@
 packagelispdir = @packagelispdir@$(null)
 packagedatadir = @packagedatadir@$(null)
-packagedir = @packagedir@$(null)
 autodir = @autodir@$(null)
 preview_enabled=@preview_enabled@
 styledir = $(packagedatadir)/style
@@ -74,18 +73,14 @@ DIST_PREFIX=$(PWD)/auctex-dist
 FTPDIR = $(DIST_PREFIX)/ftp
 WWWDIR = $(DIST_PREFIX)/www
 CTANDIR = $(DIST_PREFIX)/ctan
-XEMACS_BUILD_DIR = xemacs-build
 PREVIEW_BUILD_DIR = preview-build
 COMMITTER="`git config --get user.name`\ \ \<`git config --get user.email`\>"
 RPMROOT = /usr/src/redhat
 RPM_SIGN = --sign
 
-MULESRC = @MULESRC@
-MULEELC = @MULEELC@
-
 AUCSRC = tex.el tex-buf.el tex-style.el plain-tex.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
-	context.el context-en.el context-nl.el tex-fold.el \
+	context.el context-en.el context-nl.el tex-fold.el tex-jp.el \
 	toolbar-x.el tex-bar.el bib-cite.el tex-ispell.el latex-flymake.el
 AUCELC = $(AUCSRC:.el=.elc)
 
@@ -177,12 +172,12 @@ STYLEELC = $(STYLESRC:.el=.elc)
 ifeq (@preview_enabled@,yes)
    PREVIEWSRC = @PLAT_LISP@ preview.el
    PREVIEWELC = $(PREVIEWSRC:.el=.elc)
-   PREVIEWLATEX = test "x$(packagedir)" != xno || $(MAKE) preview-latex.el
+   PREVIEWLATEX = $(MAKE) preview-latex.el
    TEXMF = (cd latex ; $(MAKE) all)
 
    # Install actions
    INS_TEXMF = (cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
-   PREVIEW_INS_STARTUP = test $(packagedir) != no || \
+   PREVIEW_INS_STARTUP = \
      $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(previewstartfile)
 else
    # Don't do anything with preview if the user doesn't want the
@@ -197,7 +192,7 @@ endif
 
 
 
-CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC) $(PREVIEWELC) preview-latex.el
+CLEANFILES = $(AUCELC) $(STYLEELC) $(PREVIEWELC) preview-latex.el
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
 	auto-loads.el config.* preview.el
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
@@ -207,17 +202,17 @@ NOSEARCH = style/.nosearch
 all: texmf lisp docs
 
 .PHONY: all lisp info dvi some install install-el install-lisp docs	\
-	install-docs install-auto install-metadata install-startup	\
-	install-man clean distclean maintainer-clean extraclean		\
+	install-docs install-auto install-startup			\
+	clean distclean maintainer-clean extraclean			\
 	tar-ball-clean check-tag check release-commit dist snapshot	\
-	patch tar-ball rpm-packages wc xemacs-package windows-package	\
+	patch tar-ball rpm-packages wc windows-package	\
 	release-sign release-upload preview-ball uninstall
 
 texmf: latex/Makefile
 	$(TEXMF)
 
-lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
-	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC) $(PREVIEWSRC)
+lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(PREVIEWSRC)
+	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(PREVIEWSRC)
 	$(PREVIEWLATEX)
 
 preview-latex.el: preview.el
@@ -240,9 +235,9 @@ dvi:
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat tex-site.el.out >$@
-	test X$(packagedir) != Xno || cat auto-loads.el >>$@
+	cat auto-loads.el >>$@
 	echo "(provide 'tex-site)" >>$@ ; \
-	test X$(packagedir) != Xno || echo ";;; tex-site.el ends here" >>$@
+	echo ";;; tex-site.el ends here" >>$@
 
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
@@ -265,32 +260,24 @@ doc/Makefile: doc/Makefile.in config.status ChangeLog.1
 config.status: configure
 	./config.status --recheck
 
-auto-loads.el: $(AUCSRC) $(MULESRC) Makefile
-	test X$(packagedir) != Xno || { \
-	  rm -f $@ ; \
-	  $(ELCC) $(AUTOLOAD) $(AUCSRC) $(MULESRC) || : ; \
-	  test -r $@ || { \
-	    echo ";; Auto-generated part of tex-site.el" > $@ ; \
-	    echo "" >> $@ ; \
-	    $(ELCC) $(AUTOLOAD) $(AUCSRC) $(MULESRC) ; \
-	  } ; \
+auto-loads.el: $(AUCSRC) Makefile
+	rm -f $@
+	-$(ELCC) $(AUTOLOAD) $(AUCSRC)
+	test -r $@ || { \
+	  echo ";; Auto-generated part of tex-site.el" > $@ ; \
+	  echo "" >> $@ ; \
+	  $(ELCC) $(AUTOLOAD) $(AUCSRC) ; \
 	}
 
 some:	$(AUCELC) $(STYLEELC)
 
 install: install-texmf install-lisp install-docs install-images \
          install-startup
-	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
-
-install-man: doc/Makefile
-	cd doc && $(MAKE) 'DESTDIR=$(DESTDIR)' install-man
-	$(INSTALL_DATA) RELEASE $(DESTDIR)$(packagedir)/man/auctex
 
 install-startup:
 	$(PREVIEWLATEX)
 	$(PREVIEW_INS_STARTUP)
-	test $(packagedir) != no || \
-	  $(INSTALL_DATA) auctex.el $(DESTDIR)$(auctexstartfile)
+	$(INSTALL_DATA) auctex.el $(DESTDIR)$(auctexstartfile)
 
 install-texmf:
 	$(INS_TEXMF)
@@ -306,15 +293,12 @@ install-el:
 	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/tex-site.el.save ; \
 	   fi; \
 	}
-	if test X$(packagedir) = Xno; \
-	then $(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir) ; \
-	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
-	fi
+	$(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
-	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
+	@: $(MAKE) ; for x in $(AUCSRC) $(PREVIEWSRC); do \
 	  echo '$(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
 	done
-	@for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
+	@for x in $(AUCSRC) $(PREVIEWSRC); do \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(styledir)
@@ -329,10 +313,10 @@ install-el:
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp: some install-el
-	@: $(MAKE) ; for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
+	@: $(MAKE) ; for x in $(AUCSRC) $(PREVIEWSRC); do \
 	  echo '$(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
 	done
-	@for x in $(AUCSRC) $(MULESRC) $(PREVIEWSRC); do \
+	@for x in $(AUCSRC) $(PREVIEWSRC); do \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done
 	@: $(MAKE) ; for x in $(STYLESRC) ; do \
@@ -359,28 +343,10 @@ install-docs:	doc/Makefile
 install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
-install-metadata:
-	test "x$(packagedir)" = xno || { \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
-	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el && \
-	  cd $(DESTDIR)$(packagedir) && \
-	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
-	  for i in $(PACKAGE_INFO); do \
-	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	  done && \
-	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	}
-
 uninstall:
 	rm -rf $(DESTDIR)$(packagelispdir) $(DESTDIR)$(packagedatadir) \
 		$(DESTDIR)$(autodir)
-	if test X$(packagedir) = Xno ; then \
-		rm -f $(DESTDIR)$(lispdir)/tex-site.el \
-		$(DESTDIR)$(auctexstartfile) ; \
-	else \
-		rm -f $(DESTDIR)$(packagedir)/man/auctex/RELEASE \
-		$(DESTDIR)$(packagedir)/pkginfo/MANIFEST.$(PACKAGE); \
-	fi
+	rm -f $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(auctexstartfile)
 	cd doc ; $(MAKE) DESTDIR=$(DESTDIR) uninstall
 	rm -f $(DESTDIR)$(previewstartfile)
 	rm -rf $(DESTDIR)$(packagelispdir)
@@ -408,7 +374,6 @@ extraclean: maintainer-clean
 
 tar-ball-clean: check-tag
 	rm -rf auctex-$(TAG)/
-	rm -rf $(XEMACS_BUILD_DIR)/
 
 wc:
 	wc $(AUCSRC) $(STYLESRC)
@@ -489,25 +454,22 @@ change-history-commit:
 # 3) dist TAG=<tag>
 #    Create the tar ball and other release files and put them into $FTPDIR.
 #
-# 4) xemacs-package TAG=<tag>
-#    Create the precompiled XEmacs package.
-#
-# 5) windows-package WEMACSVER=<emacs-version> TAG=<tag>
+# 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
 #    Create the precompiled AUCTeX package for Windows.
 #    This requires a compiled Emacs of the same version at location $WEMACS.
 #    NOTA BENE: you may need to use bash shell for this recipe to work.
 #
-# 6) release-sign TAG=<tag>
+# 5) release-sign TAG=<tag>
 #    Sign the tar ball and create directive files for upload.  NOTA BENE: you
 #    may need to use bash shell for this recipe to work.
 #
-# 7) release-upload
+# 6) release-upload
 #    Upload files to GNU FTP server.
 #
-# 8) www-doc TAG=<tag>
+# 7) www-doc TAG=<tag>
 #    Create documentation for AUCTeX home page.
 #
-# 9) preview-ball TAG=<tag>
+# 8) preview-ball TAG=<tag>
 #    Create preview package.  (Not for GNU FTP server but for CTAN.)
 
 dist: check-tag tar-ball
@@ -573,13 +535,6 @@ rpm-packages:
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) | gzip --best \
 		>$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch.gz
-
-xemacs-package: check-tag
-	rm -rf $(XEMACS_BUILD_DIR)
-	$(CP_A) auctex-$(TAG) $(XEMACS_BUILD_DIR)
-	cd $(XEMACS_BUILD_DIR) \
-	&& ./configure INSTALL_INFO=: TEXHASH=: --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
-	&& $(MAKE) all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
 
 # Pre-compiled AUCTeX package for Emacs on Windows
 WBUILDDIR=$(PWD)/windows-package

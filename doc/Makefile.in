@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2013-2015 Free Software Foundation, Inc.
+# Copyright (C) 2003-2008, 2013-2015, 2018 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -24,7 +24,6 @@
 prefix=@prefix@$(null)
 datarootdir=@datarootdir@$(null)
 datadir=@datadir@$(null)
-packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
 docdir=@docdir@$(null)
 TEX=@TEX@
@@ -76,21 +75,12 @@ dvi: auctex.dvi tex-ref.dvi preview-latex.dvi
 
 install: install-auctex install-preview
 
-install-man:
-	test x$(packagedir) != xno && \
-	{ $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/man/auctex ; \
-	for i in $(AUCTEXTEXIFILES) $(PREVIEWTEXIFILES) tex-ref.tex ; \
-	do echo $(INSTALL_DATA) $$i $(DESTDIR)$(packagedir)/man/auctex; \
-	   $(INSTALL_DATA) $$i $(DESTDIR)$(packagedir)/man/auctex; \
-	done ; \
-	}
-
 dist: $(DISTTEXTS) preview-latex.info auctex.info tex-ref.pdf
 
 extradist: html/$(TEXI2HTML_TOC) auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 .PHONY: all info dvi dist install-auctex disttexts clean distclean \
-	maintainer-clean install-preview install-man uninstall html-docs \
+	maintainer-clean install-preview uninstall html-docs \
 	extradist
 
 # AUCTeX
@@ -136,11 +126,9 @@ install-auctex: auctex.info tex-ref.pdf
 	  fi; \
 	done
 	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) auctex.info
-	test X$(packagedir) != Xno || { \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(docdir); \
-	  rm -f $(DESTDIR)$(docdir)/tex-ref.pdf; \
-	  $(INSTALL_DATA) tex-ref.pdf $(DESTDIR)$(docdir); \
-	}
+	$(MKINSTALLDIRS) $(DESTDIR)$(docdir)
+	rm -f $(DESTDIR)$(docdir)/tex-ref.pdf
+	$(INSTALL_DATA) tex-ref.pdf $(DESTDIR)$(docdir)
 
 # preview
 
@@ -208,7 +196,7 @@ uninstall:
 	done
 	rm -f $(DESTDIR)$(infodir)/auctex.info $(DESTDIR)$(infodir)/auctex.info-* \
 	$(DESTDIR)$(infodir)/preview-latex.info*
-	test X$(packagedir) != Xno || rm -rf -f $(DESTDIR)$(docdir)
+	rm -rf -f $(DESTDIR)$(docdir)
 
 clean:
 	rm -f *.dvi *.ps *.pdf *.aux *.cp *.fn *.ky *.log *~ \#*\# \
