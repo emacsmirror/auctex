@@ -860,7 +860,7 @@ Pure borderless black-on-white will return an empty string."
       (delete-file
        (let ((gsfile preview-gs-file))
 	 (with-current-buffer TeX-command-buffer
-	   (funcall (car gsfile) "dvi"))))
+	   (funcall (car gsfile) "dvi" t))))
     (file-error nil))
   (when preview-ps-file
       (condition-case nil
@@ -884,7 +884,7 @@ The usual PROCESS and COMMAND arguments for
 	       (condition-case nil
 		   (delete-file
 		    (with-current-buffer TeX-command-buffer
-		      (funcall (car gsfile) "dvi")))
+		      (funcall (car gsfile) "dvi" t)))
 		 (file-error nil))
 	       (if preview-ps-file
 		   (preview-prepare-fast-conversion))
@@ -1933,7 +1933,7 @@ Deletes the dvi file when finished."
 	  (let ((gsfile preview-gs-file))
 	    (delete-file
 	     (with-current-buffer TeX-command-buffer
-	       (funcall (car gsfile) "dvi"))))
+	       (funcall (car gsfile) "dvi" t))))
 	(file-error nil)))))
 
 (defun preview-active-string (ov)
@@ -3149,7 +3149,7 @@ If FAST is set, do a fast conversion."
 			(TeX-command-expand preview-pdf2dsc-command
 					    (car file))
 		      (setq tempdir TeX-active-tempdir
-			    pdfsource (funcall `,(car file) "pdf")))))
+			    pdfsource (funcall (car file) "pdf" t)))))
 	 (name "Preview-PDF2DSC"))
     (setq TeX-active-tempdir tempdir)
     (setq preview-ps-file (preview-attach-filename
@@ -3350,7 +3350,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
-	   nil (file-name-nondirectory master)
+	   nil master
 	   command)
 	(add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
 	(setq TeX-sentinel-function
@@ -3399,7 +3399,7 @@ stored in `preview-dumped-alist'."
 			    (save-excursion
 			      (goto-char begin)
 			      (if (bolp) 0 -1))))))
-  (preview-generate-preview t (TeX-region-file nil t)
+  (preview-generate-preview t (TeX-region-file)
 			    (preview-do-replacements
 			     (TeX-command-expand
 			      (preview-string-expand preview-LaTeX-command)
@@ -3439,7 +3439,7 @@ stored in `preview-dumped-alist'."
   (interactive)
   (TeX-save-document (TeX-master-file))
   (preview-generate-preview
-   nil (TeX-master-file nil t)
+   nil (TeX-master-file)
    (preview-do-replacements
     (TeX-command-expand
      (preview-string-expand preview-LaTeX-command)
@@ -3479,7 +3479,7 @@ environments is selected."
 (defun preview-generate-preview (region-p file command)
   "Generate a preview.
 REGION-P is the region flag, FILE the file (without default
-extension and directory), COMMAND is the command to use.
+extension), COMMAND is the command to use.
 
 It returns the started process."
   (setq TeX-current-process-region-p region-p)
@@ -3489,7 +3489,7 @@ It returns the started process."
 		   (if TeX-current-process-region-p
 		       'TeX-region-file
 		     'TeX-master-file)
-		   file))
+		   (file-name-nondirectory file)))
 	 (master (TeX-master-file))
 	 (master-file (expand-file-name master))
 	 (dumped-cons (assoc master-file
