@@ -2650,9 +2650,15 @@ Sequences of control characters such as ^^I are left untouched.
 Return a new string."
   ;; Since the given string can contain multibyte characters, decoding
   ;; should be performed seperately on each segment made up entirely
-  ;; with ASCII characters.
+  ;; with ASCII and raw 8-bit characters.
+  ;; Raw 8-bit characters can arise if the latex outputs multibyte
+  ;; characters with partial ^^-quoting.
   (let ((result ""))
-    (while (string-match "[\x00-\x7F]+" string)
+    (while (string-match "[\x00-\xFF]+" string)
+      ;; Strings between "\x80" and "\xFF" represent raw 8-bit, not
+      ;; unicode characters between U+0080 and U+00FF.  The latter
+      ;; are represented by "\u0080" and so on in literal string.
+      ;; See Info node `(elisp)Non-ASCII Characters in Strings'.
       (setq result
 	    (concat result
 		    (substring string 0 (match-beginning 0))
