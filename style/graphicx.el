@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2017 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2018 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -299,7 +299,11 @@ doesn't works with Emacs 21.3 or XEmacs.  See
      (font-latex-add-keywords '(("graphicspath"              "{")
 				("DeclareGraphicsExtensions" "{")
 				("DeclareGraphicsRule"       "{{{{"))
-			      'function)))
+			      'function))
+
+   ;; Option management
+   (if (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
+       (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
 (defvar LaTeX-graphicx-package-options

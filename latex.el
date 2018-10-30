@@ -5929,6 +5929,13 @@ of `LaTeX-mode-hook'."
 	    (lambda ()
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
+  (add-hook 'TeX-update-style-hook
+	    (lambda ()
+	      ;; Run style hooks associated with class options.
+	      (apply #'TeX-run-style-hooks
+		     (apply #'append
+			    (mapcar #'cdr LaTeX-provided-class-options))))
+	    nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
@@ -6449,13 +6456,20 @@ function would return non-nil and `(match-string 1)' would return
   (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on LaTeX-dialect)
   (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
   (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "dvips"
+		      (lambda ()
+			(setq TeX-PDF-from-DVI "Dvips"))
+		      LaTeX-dialect)
   ;; This is now done in style/pstricks.el because it prevents other
   ;; pstricks style files from being loaded.
   ;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
   (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off LaTeX-dialect)
   (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "dvipdfmx"
+		      (lambda ()
+			(setq TeX-PDF-from-DVI "Dvipdfmx"))
+		      LaTeX-dialect)
   ;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
   ;;
   ;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to

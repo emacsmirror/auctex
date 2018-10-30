@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014--2017 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2018 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -256,5 +256,50 @@ backend=biber % here is a comment
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
 	      (sort '("eps" "jpe?g" "pdf" "png") #'string<))))))
+
+(ert-deftest LaTeX-style-hook-with-class-option ()
+  "Check style hooks associated with class option are processed."
+  (with-temp-buffer
+    (let ((TeX-parse-self t))
+      ;; test for dvips option
+      ;; This depends on the following code in latex.el:
+      ;; (TeX-add-style-hook "dvips"
+      ;;		      (lambda ()
+      ;;			(setq TeX-PDF-from-DVI "Dvips"))
+      ;;		      LaTeX-dialect)
+      (insert "\\documentclass[dvips]{article}\n")
+      (latex-mode)
+      (TeX-update-style t)
+      (should (string-equal TeX-PDF-from-DVI "Dvips"))
+
+      ;; test for dvipdfmx option
+      (erase-buffer)
+      ;; This depends on the following code in latex.el:
+      ;;   (TeX-add-style-hook "dvipdfmx"
+      ;;		      (lambda ()
+      ;;			(setq TeX-PDF-from-DVI "Dvipdfmx"))
+      ;;		      LaTeX-dialect)
+      (insert "\\documentclass[dvipdfmx]{article}\n")
+      (latex-mode)
+      (TeX-update-style t)
+      (should (string-equal TeX-PDF-from-DVI "Dvipdfmx"))
+
+      ;; test for pdftricks option
+      (erase-buffer)
+      ;; This depends on the following code in latex.el:
+      ;; (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
+      (insert "\\documentclass[pdftricks]{article}\n")
+      (latex-mode)
+      (TeX-update-style t)
+      (should TeX-PDF-mode)
+
+      ;; test for psfrag option
+      (erase-buffer)
+      ;; This depends on the following code in latex.el:
+      ;; (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
+      (insert "\\documentclass[psfrag]{article}\n")
+      (latex-mode)
+      (TeX-update-style t)
+      (should (not TeX-PDF-mode)))))
 
 ;;; latex-test.el ends here

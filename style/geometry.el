@@ -1,6 +1,6 @@
 ;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -137,7 +137,11 @@ package.")
 				("newgeometry"   "{")
 				("savegeometry"  "{")
 				("loadgeometry"  "{"))
-			      'function)))
+			      'function))
+
+   ;; Option management
+   (if (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
+       (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
 (defun LaTeX-geometry-package-options ()
