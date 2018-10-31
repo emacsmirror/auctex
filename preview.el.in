@@ -2654,11 +2654,14 @@ Return a new string."
   ;; Raw 8-bit characters can arise if the latex outputs multibyte
   ;; characters with partial ^^-quoting.
   (let ((result ""))
-    (while (string-match "[\x00-\xFF]+" string)
-      ;; Strings between "\x80" and "\xFF" represent raw 8-bit, not
-      ;; unicode characters between U+0080 and U+00FF.  The latter
-      ;; are represented by "\u0080" and so on in literal string.
-      ;; See Info node `(elisp)Non-ASCII Characters in Strings'.
+    ;; Here we want to collect all the ASCII and raw 8-bit bytes,
+    ;; excluding proper multibyte characters.  The regexp
+    ;; [^[:multibyte:]]+ serves for that purpose.  The alternative
+    ;; [\x00-\xFF]+ does the job as well at least for emacs 24-26, so
+    ;; use it instead if the former becomes invalid in future.
+    ;; N.B. [[:unibyte:]]+ doesn't match raw 8-bit bytes, contrary to
+    ;; naive expectation.
+    (while (string-match "[^[:multibyte:]]+" string)
       (setq result
 	    (concat result
 		    (substring string 0 (match-beginning 0))
