@@ -1,4 +1,4 @@
-;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 2.8.
+;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.0.
 
 ;; Copyright (C) 2013, 2014, 2016--2018 Free Software Foundation, Inc.
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fancyvrb.sty' version 2.8.
+;; This file adds support for `fancyvrb.sty' version 3.0.
 
 ;; This style has some capabilities to parse user defined macros,
 ;; environments and saved blocks with `SaveVerbatim' environments and
@@ -47,7 +47,7 @@
 (require 'tex)
 
 (defvar LaTeX-fancyvrb-key-val-options
-  '(("commentchar" ("none"))
+  `(("commentchar" ("none"))
     ("gobble")
     ("formatcom")
     ;; Undocumented key
@@ -89,6 +89,10 @@
     ("defineactive")
     ;; Undocumented key
     ("defineactive*")
+    ;; Undocumented key and introduced in version 2.81 2011/04/06
+    ("vspace" ,(mapcar (lambda (x)
+			 (concat TeX-esc (car x)))
+		       (LaTeX-length-list)))
     ;; Actually, the following options are used only by the `BVerbatim'
     ;; environment.
     ("boxwidth" ("auto" "dimension"))
