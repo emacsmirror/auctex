@@ -6350,7 +6350,30 @@ the number of the file to view, anything else to skip: ") list)))
 	;; Called without prefix argument: just run "texdoc --view <pkg>" and
 	;; show the output, so that the user is warned in case it doesn't find
 	;; the documentation or "texdoc" is not available.
-	(message (shell-command-to-string (concat "texdoc --view " pkg)))))))
+	(message "%s"
+		 ;; The folowing code to the end of `defun' used to be
+		 ;; just
+		 ;; (shell-command-to-string (concat "texdoc --view " pkg))
+		 ;; , but in some cases it blocks emacs until the user
+		 ;; quits the viewer (bug#28905).
+		 (with-output-to-string
+		   (let* (;; Use pipe rather than pty because the
+			  ;; latter causes atril (evince variant
+			  ;; viewer) to exit before showing anything.
+			  (process-connection-type nil)
+			  (process (start-process-shell-command
+				    "Doc view" standard-output
+				    (concat "texdoc --view " pkg))))
+		     ;; Suppress the message "Process Doc view
+		     ;; finished".
+		     (set-process-sentinel process #'ignore)
+		     ;; Kill temp buffer without query.  This is
+		     ;; necessary, at least for some environment, if
+		     ;; the underlying shell can't find the texdoc
+		     ;; executable.
+		     (set-process-query-on-exit-flag process nil)
+		     ;; Don't discard shell output.
+		     (accept-process-output process))))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."
