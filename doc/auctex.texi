@@ -519,7 +519,7 @@ immediately adds the corresponding right brace @samp{)}, @samp{@}} or
 @samp{]}.  The point is left after the opening brace.  If there is an
 active region, braces are put around it.
 
-They recognize the preceeding backslash or size adjusting macros such
+They recognize the preceding backslash or size adjusting macros such
 as @samp{\left}, @samp{\bigl} etc., so the following completions will
 occur:
 @itemize @bullet

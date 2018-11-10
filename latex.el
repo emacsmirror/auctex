@@ -2764,9 +2764,8 @@ string."
 (defun TeX-arg-insert-right-brace-maybe (optional)
   "Insert the suitable right brace macro such as \\rangle.
 Insertion is done when `TeX-arg-right-insert-p' is non-nil.
-If the left brace macro is preceeded by \\left, \\bigl etc.,
-supply the corresponding macro such as \\right before the right brace macro.
-OPTIONAL is ignored."
+If the left brace macro is preceded by \\left, \\bigl etc.,
+supply the corresponding macro such as \\right before the right brace macro."
   ;; Nothing is done when TeX-arg-right-insert-p is nil.
   (when TeX-arg-right-insert-p
     (let (left-brace left-macro)
@@ -2776,9 +2775,9 @@ OPTIONAL is ignored."
 			  (point)
 			  (progn (backward-word) (backward-char)
 				 (point)))
-	      ;; Obtain the name of preceeding left macro, if any,
+	      ;; Obtain the name of preceding left macro, if any,
 	      ;; such as "left", "bigl" etc.
-	      left-macro (LaTeX-find-preceeding-left-macro-name)))
+	      left-macro (LaTeX--find-preceding-left-macro-name)))
       (save-excursion
 	(if (TeX-active-mark)
 	    (goto-char (mark)))
@@ -2817,9 +2816,9 @@ Normally bound to keys \(, { and [."
 		;; Otherwise, don't search for left macros.
 		(setq skip-p t)))
 	  (unless skip-p
-	    ;; Obtain the name of preceeding left macro, if any,
+	    ;; Obtain the name of preceding left macro, if any,
 	    ;; such as "left", "bigl" etc.
-	    (setq lmacro (LaTeX-find-preceeding-left-macro-name))))
+	    (setq lmacro (LaTeX--find-preceding-left-macro-name))))
         (let ((TeX-arg-right-insert-p t)
               ;; "{" and "}" are paired temporally so that typing
 	      ;; a single "{" should insert a pair "{}".
@@ -2867,9 +2866,9 @@ is nil, consult user which brace should be used."
 			(or rbrace "."))) TeX-left-right-braces
 			nil nil nil nil (or rbrace ".")))))))
 
-(defun LaTeX-find-preceeding-left-macro-name ()
+(defun LaTeX--find-preceding-left-macro-name ()
   "Return the left macro name just before the point, if any.
-If the preceeding macro isn't left macros such as \\left, \\bigl etc.,
+If the preceding macro isn't left macros such as \\left, \\bigl etc.,
 return nil.
 If the point is just after unescaped `TeX-esc', return the null string."
   ;; \left-!- => "left"
@@ -2891,6 +2890,10 @@ If the point is just after unescaped `TeX-esc', return the null string."
 	     (or (string= name "")
 		 (assoc name LaTeX-left-right-macros-association)))
 	name)))
+(define-obsolete-function-alias
+  'LaTeX-find-preceeding-left-macro-name
+  #'LaTeX--find-preceding-left-macro-name "AUCTeX 12.2"
+  "Compatibility function for typo in its name.")
 
 (defcustom LaTeX-default-author 'user-full-name
   "Initial input to `LaTeX-arg-author' prompt.
