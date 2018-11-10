@@ -5377,9 +5377,11 @@ commands are defined:
   "Insert \\STRING{}.  If DOLLAR is non-nil, put $'s around it.
 If `TeX-electric-math' is non-nil wrap that symbols around the
 string."
-  (if dollar (insert (or (car TeX-electric-math) "$")))
-  (funcall LaTeX-math-insert-function string)
-  (if dollar (insert (or (cdr TeX-electric-math) "$"))))
+  (when dollar
+    (insert (or (car TeX-electric-math) "$"))
+    (save-excursion
+      (insert (or (cdr TeX-electric-math) "$"))))
+  (funcall LaTeX-math-insert-function string))
 
 (defun LaTeX-math-cal (char dollar)
   "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it.
