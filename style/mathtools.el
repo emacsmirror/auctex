@@ -1,6 +1,6 @@
 ;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.
 
-;; Copyright (C) 2011-2012, 2014, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2011-2012, 2014, 2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-02-13
@@ -47,6 +47,9 @@
     ;; via nonrobust package option)
     "nonrobust")
   "Package options for the mathtools package.")
+(TeX-load-style "amsmath")
+(dolist (elt LaTeX-amsmath-package-options)
+  (add-to-list 'LaTeX-mathtools-package-options elt))
 
 (defvar LaTeX-mathtools-key-val-options
   '(("showonlyrefs")
@@ -239,9 +242,6 @@ Put line break macro on the last line.  Next, insert an ampersand."
 
    ;; mathtools requires amsmath, as some bugs in amsmath are fixed
    (TeX-run-style-hooks "amsmath")
-
-   (dolist (elt LaTeX-amsmath-package-options)
-     (add-to-list 'LaTeX-mathtools-package-options elt))
 
    (LaTeX-add-environments
     ;; 3.4.1 Matrices

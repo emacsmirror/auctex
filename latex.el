@@ -2234,7 +2234,7 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun TeX-arg-document (optional &optional _ignore)
+(defun TeX-arg-document (_optional &optional _ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
@@ -2255,7 +2255,7 @@ OPTIONAL and IGNORE are ignored."
 		 LaTeX-global-class-files nil nil nil nil LaTeX-default-style))
     ;; Clean up hook before use.
     (setq TeX-after-document-hook nil)
-    (TeX-run-style-hooks style)
+    (TeX-load-style style)
     (setq var (intern (format "LaTeX-%s-class-options" style)))
     (setq defopt (if (stringp LaTeX-default-options)
 		     LaTeX-default-options
@@ -2318,7 +2318,7 @@ of the options, nil otherwise."
 		    "Packages: " TeX-global-input-files))
     ;; Clean up hook before use in `LaTeX-arg-usepackage-insert'.
     (setq LaTeX-after-usepackage-hook nil)
-    (mapc 'TeX-run-style-hooks packages)
+    (mapc #'TeX-load-style packages)
     ;; Prompt for options only if at least one package has been supplied, return
     ;; nil otherwise.
     (when packages
@@ -2361,7 +2361,8 @@ OPTIONAL is ignored."
   (let* ((packages-options (LaTeX-arg-usepackage-read-packages-with-options))
 	 (packages (car packages-options))
 	 (options (cdr packages-options)))
-    (LaTeX-arg-usepackage-insert packages options)))
+    (LaTeX-arg-usepackage-insert packages options)
+    (apply #'TeX-run-style-hooks packages)))
 
 (defun LaTeX-insert-usepackages ()
   "Prompt for the insertion of usepackage macros until empty

@@ -36,6 +36,11 @@
   '("answers" "noanswers" "cancelspace" "nocancelspace" "addpoints")
   "Class options for the exam class.")
 
+(TeX-load-style "article")
+;; Add options from `LaTeX-article-class-options' only once:
+(dolist (opt LaTeX-article-class-options)
+  (add-to-list 'LaTeX-exam-class-options opt))
+
 (defun LaTeX-exam-insert-item ()
   "Insert a new item in an environment from exam class.
 Item inserted depends on the environment."
@@ -63,9 +68,6 @@ Arguments NAME and TYPE are the same as for the function
  "exam"
  (lambda ()
    (TeX-run-style-hooks "article")
-   ;; Add options from `LaTeX-article-class-options' only once:
-   (dolist (opt LaTeX-article-class-options)
-     (add-to-list 'LaTeX-exam-class-options opt))
    ;; Make our label prefix available ...
    (let ((envs '("questions")))
      (dolist (env envs)
