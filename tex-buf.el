@@ -480,6 +480,11 @@ Run function `TeX-check-engine' to check the correct engine has
 been set."
   (TeX-check-engine name)
 
+  ;; Make sure that `TeX-command-buffer' is set always.
+  ;; It isn't safe to remove similar lines in `TeX-run-command' etc.
+  ;; because preview-latex calls `TeX-run-command' directly.
+  (setq-default TeX-command-buffer (current-buffer))
+
   (cond ((eq file #'TeX-region-file)
 	 (setq TeX-current-process-region-p t))
 	((eq file #'TeX-master-file)
