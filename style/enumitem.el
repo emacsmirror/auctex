@@ -364,7 +364,7 @@ in `enumitem'-completions."
     '("setlist"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     "Environment(s), level(s): "
+		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
 		     `(,@LaTeX-enumitem-newlist-list-local
 		       ("1") ("2") ("3") ("4"))) ","]
       (TeX-arg-eval
@@ -377,7 +377,7 @@ in `enumitem'-completions."
     '("setlist*"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     "Environment, level: "
+		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
 		     `(,@LaTeX-enumitem-newlist-list-local
 		       ("1") ("2") ("3") ("4"))) ","]
       (TeX-arg-eval
