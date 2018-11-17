@@ -266,40 +266,58 @@ backend=biber % here is a comment
       ;; (TeX-add-style-hook "dvips"
       ;;		      (lambda ()
       ;;			(setq TeX-PDF-from-DVI "Dvips"))
-      ;;		      LaTeX-dialect)
+      ;;		      :classopt)
       (insert "\\documentclass[dvips]{article}\n")
       (latex-mode)
-      (TeX-update-style t)
-      (should (string-equal TeX-PDF-from-DVI "Dvips"))
+      (TeX-update-style)
+      (should (equal (TeX-PDF-from-DVI) "Dvips"))
+      (should (not (member "dvips" TeX-active-styles)))
 
       ;; test for dvipdfmx option
       (erase-buffer)
       ;; This depends on the following code in latex.el:
-      ;;   (TeX-add-style-hook "dvipdfmx"
-      ;;		      (lambda ()
-      ;;			(setq TeX-PDF-from-DVI "Dvipdfmx"))
-      ;;		      LaTeX-dialect)
+      ;; (TeX-add-style-hook "dvipdfmx"
+      ;; 		      (lambda ()
+      ;; 			(TeX-PDF-mode-on)
+      ;; 			;; XeLaTeX normally don't use dvipdfmx
+      ;; 			;; explicitly.
+      ;; 			(unless (eq TeX-engine 'xetex)
+      ;; 			  (setq TeX-PDF-from-DVI "Dvipdfmx")))
+      ;; 		      :classopt)
       (insert "\\documentclass[dvipdfmx]{article}\n")
       (latex-mode)
-      (TeX-update-style t)
-      (should (string-equal TeX-PDF-from-DVI "Dvipdfmx"))
+      (TeX-update-style)
+      (should TeX-PDF-mode)
+      (should (equal (TeX-PDF-from-DVI) "Dvipdfmx"))
+      (should (not (member "dvipdfmx" TeX-active-styles)))
+
+      ;; dvipdfmx option should not trigger `TeX-PDF-from-DVI' for
+      ;; XeLaTeX document
+      (latex-mode)
+      (let ((TeX-engine 'xetex))
+	(TeX-update-style))
+      (should TeX-PDF-mode)
+      (should (not (TeX-PDF-from-DVI)))
+      (should (not (member "dvipdfmx" TeX-active-styles)))
 
       ;; test for pdftricks option
       (erase-buffer)
       ;; This depends on the following code in latex.el:
-      ;; (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
+      ;; (TeX-add-style-hook "pdftricks" #'TeX-PDF-mode-on :classopt)
       (insert "\\documentclass[pdftricks]{article}\n")
       (latex-mode)
-      (TeX-update-style t)
+      (TeX-update-style)
       (should TeX-PDF-mode)
+      (should (not (member "pdftricks" TeX-active-styles)))
 
       ;; test for psfrag option
       (erase-buffer)
       ;; This depends on the following code in latex.el:
-      ;; (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
+      ;; (TeX-add-style-hook "psfrag" #'TeX-PDF-mode-off :classopt)
       (insert "\\documentclass[psfrag]{article}\n")
       (latex-mode)
-      (TeX-update-style t)
-      (should (not TeX-PDF-mode)))))
+      (TeX-update-style)
+      (should (not TeX-PDF-mode))
+      (should (not (member "psfrag" TeX-active-styles))))))
 
 ;;; latex-test.el ends here

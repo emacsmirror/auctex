@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
 
-;; Copyright (C) 2008, 2013--2016 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013--2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -304,6 +304,11 @@
 			      'function)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords))
+
+   ;; Option management
+   (if (and (LaTeX-provided-package-options-member "hyperref" "dvipdfmx")
+            (not (eq TeX-engine 'xetex)))
+       (setq TeX-PDF-from-DVI "Dvipdfmx"))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate

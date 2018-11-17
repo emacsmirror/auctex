@@ -5934,12 +5934,17 @@ of `LaTeX-mode-hook'."
 	    (lambda ()
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
+
+  ;; Run style hooks associated with class options.
   (add-hook 'TeX-update-style-hook
 	    (lambda ()
-	      ;; Run style hooks associated with class options.
-	      (apply #'TeX-run-style-hooks
-		     (apply #'append
-			    (mapcar #'cdr LaTeX-provided-class-options))))
+	      (let ((TeX-style-hook-dialect :classopt)
+		    ;; Don't record class option names in
+		    ;; `TeX-active-styles'.
+		    (TeX-active-styles nil))
+		(apply #'TeX-run-style-hooks
+		       (apply #'append
+			      (mapcar #'cdr LaTeX-provided-class-options)))))
 	    nil t)
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (when (fboundp 'LaTeX-preview-setup)
@@ -6059,7 +6064,7 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
-  (set (make-local-variable 'TeX-style-hook-dialect) :latex)
+  (set (make-local-variable 'TeX-style-hook-dialect) LaTeX-dialect)
 
   (require 'outline)
   (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
@@ -6458,30 +6463,36 @@ function would return non-nil and `(match-string 1)' would return
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak
-  (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on LaTeX-dialect)
+  (TeX-add-style-hook "pdftex" #'TeX-PDF-mode-on :classopt)
+  (TeX-add-style-hook "pdftricks" #'TeX-PDF-mode-on :classopt)
+  (TeX-add-style-hook "pst-pdf" #'TeX-PDF-mode-on :classopt)
   (TeX-add-style-hook "dvips"
 		      (lambda ()
+			;; Leave at user's choice whether to disable
+			;; `TeX-PDF-mode' or not.
 			(setq TeX-PDF-from-DVI "Dvips"))
-		      LaTeX-dialect)
+		      :classopt)
   ;; This is now done in style/pstricks.el because it prevents other
   ;; pstricks style files from being loaded.
   ;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
-  (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off LaTeX-dialect)
-  (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "psfrag" #'TeX-PDF-mode-off :classopt)
+  (TeX-add-style-hook "dvipdf" #'TeX-PDF-mode-off :classopt)
+  (TeX-add-style-hook "dvipdfm" #'TeX-PDF-mode-off :classopt)
   (TeX-add-style-hook "dvipdfmx"
 		      (lambda ()
-			(setq TeX-PDF-from-DVI "Dvipdfmx"))
-		      LaTeX-dialect)
+			(TeX-PDF-mode-on)
+			;; XeLaTeX normally don't use dvipdfmx
+			;; explicitly.
+			(unless (eq TeX-engine 'xetex)
+			  (setq TeX-PDF-from-DVI "Dvipdfmx")))
+		      :classopt)
   ;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
   ;;
   ;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
   ;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
 				(TeX-PDF-mode-on)
-				(TeX-PDF-mode-off)) LaTeX-dialect)
+				(TeX-PDF-mode-off)) :classopt)
   ;; ifpdf indicates that we cater for either.  So calling both
   ;; functions will make sure that the default will get used unless the
   ;; user overrode it.

@@ -302,7 +302,8 @@ doesn't works with Emacs 21.3 or XEmacs.  See
 			      'function))
 
    ;; Option management
-   (if (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
+   (if (and (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
+	    (not (eq (TeX-engine 'xetex))))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 

@@ -2841,6 +2841,8 @@ Supported values are described below:
 	     thereof.
 * `:plain-tex' for files in plain-TeX mode.
 * `:texinfo' for Texinfo files.
+* `:classopt' for class options of LaTeX document.  Just
+	      considered as a pseudo-dialect.
 
 Purpose is notably to prevent non-Texinfo hooks to be run in
 Texinfo files, due to ambiguous style name, as this may cause bad
@@ -2902,7 +2904,8 @@ side effect e.g. on variable `TeX-font-list'.")
 	   (load-file el)))))
 
 (defconst TeX-style-hook-dialect-weight-alist
-  '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16))
+  '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16)
+    (:classopt . 32))
   "Association list to map dialects to binary weight, in order to
   implement dialect sets as bitmaps."  )
 

@@ -4991,11 +4991,18 @@ A symbol indicating a singleton containing one basic @TeX{} dialect,
 this symbol shall be selected among:
 @table @code
 @item :latex
-For all files in @LaTeX{} mode, or any mode derived thereof
+For all files in @LaTeX{} mode, or any mode derived thereof.
 @item :bibtex
-For all files in Bib@TeX{} mode, or any mode derived thereof
+For all files in Bib@TeX{} mode, or any mode derived thereof.
 @item :texinfo
 For all files in @acronym{Texinfo} mode.
+@item :plain-tex
+For all files in plain-@TeX{} mode, or any mode derived thereof.
+@item :context
+For all files in @ConTeXt{} mode.
+@item :classopt
+For class options of @LaTeX{} document.  This is provided as
+pseudo-dialect for style hooks associated with class options.
 @end table
 @item
 A logical expression like:

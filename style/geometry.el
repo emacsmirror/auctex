@@ -140,7 +140,8 @@ package.")
 			      'function))
 
    ;; Option management
-   (if (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
+   (if (and (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
+	    (not (eq (TeX-engine 'xetex))))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
