@@ -320,8 +320,8 @@ You can always use
 in order to customize more stuff, or use the @samp{Customize} menu.
 
 @item
-Load @file{preview/circ.tex} into Emacs and see if you get the
-@samp{Command} menu. Try using it to @LaTeX{} the file.
+Load @file{circ.tex} into Emacs and see if you get the @samp{Command}
+menu. Try using it to @LaTeX{} the file.
 
 @item
 Check whether the @samp{Preview} menu is available in this file.  Use it

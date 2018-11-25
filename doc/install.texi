@@ -124,10 +124,10 @@ should work fine (version 7.0 and newer).
 @item GNU make
 
 Recent @AUCTeX{} uses GNU make specific capabilities in the Makefiles.
-If your OS's default @command{make} command is not GNU make, you have to
-obtain it in order to build @AUCTeX{} by yourself.  GNU make is
-sometimes provided under the name @command{gmake} in your OS's binary
-package system.
+If your @acronym{OS}'s default @command{make} command is not GNU make,
+you have to obtain it in order to build @AUCTeX{} by yourself.  GNU make
+is sometimes provided under the name @command{gmake} in your
+@acronym{OS}'s binary package system.
 
 @item The @code{texinfo} package
 
@@ -178,9 +178,13 @@ binary.
 @file{/usr/local} is the default @var{prefix}, intended to be suitable
 for a site-wide installation.  If you are packaging this as an
 operating system component for distribution, the setting @file{/usr}
-will probably be the right choice.  If you are planning to install the
-package as a single non-priviledged user, you will typically set
-@var{prefix} to your home directory.
+will probably be the right choice.  See @ref{Advice for package
+providers} for detail.
+
+If you are planning to install the package as a single non-priviledged
+user, you will typically set @var{prefix} to your home directory.
+Consult @ref{Advice for non-privileged users} for addtional
+instructions.
 
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
@@ -434,9 +438,31 @@ directory.  In that way, resulting binaries will be installed under the
 personal software, since the prefix argument is supported by most
 @file{configure} scripts.
 
+You often need to specify @option{--with-lispdir} option as well.
+If you haven't installed Emacs under your home directory and use Emacs
+installed in system directories, the @file{configure} script might not
+be able to figure out suitable place to install lisp files under your
+home directory.  In that case, the @file{configure} script would
+silently choose, by default, the @file{site-lisp} directory within
+@samp{load-path} for the place, where administration privileges are
+usually required to put relevant files.  Thus you will have to tell
+the @file{configure} script explicitly where to put those files by,
+e.g., @option{--with-lispdir=@file{/home/myself/share/emacs/site-lisp}}.
+
 You'll have to add something like
 @file{/home/myself/share/emacs/site-lisp} to your @code{load-path}
 variable, if it isn't there already.
+
+In addition, you will have to tell @file{configure} script where to
+install @TeX{}-related files such as @file{preview.sty} if
+@previewlatex{} isn't disabled.  It is enough to specify
+@option{--with-texmf-dir=@file{$HOME/texmf}} for most typical cases, but
+you have to create the direcotry @file{$HOME/texmf} in advance if it
+doesn't exist.  If this prescription doesn't work, consider using one or
+more of the options @option{--with-texmf-dir=@var{/dir}},
+@option{--without-texmf-dir}, @option{--with-tex-dir=@var{/dir}} and
+@option{--with-doc-dir=@var{/dir}}.  See @ref{Configure} for detail of
+these options.
 
 Now here is another thing to ponder: perhaps you want to make it easy
 for other users to share parts of your personal Emacs configuration.  In

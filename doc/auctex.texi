@@ -5076,7 +5076,7 @@ point inside braces.  Otherwise, each argument of this function should
 match an argument of the @TeX{} macro.  What is done depends on the argument
 type.
 
-If a macro is defined multiple times, @AUCTeX{} will chose the one with
+If a macro is defined multiple times, @AUCTeX{} will choose the one with
 the longest definition (i.e. the one with the most arguments).
 
 Thus, to overwrite
