@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2013-2015, 2018 Free Software Foundation, Inc.
+# Copyright (C) 2003-2008, 2013-2015, 2018-2019 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -208,5 +208,4 @@ distclean: clean
 	rm -f Makefile
 
 maintainer-clean: distclean
-	rm -f INSTALL.windows README CHANGES HISTORY TODO FAQ \
-		preview-dtxdoc.texi version.texi $(DISTTEXTS) *.info *.info-*
+	rm -f preview-dtxdoc.texi version.texi $(DISTTEXTS) *.info *.info-*

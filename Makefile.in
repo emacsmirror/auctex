@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2019 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -360,19 +360,23 @@ uninstall:
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<
 
-clean:	doc/Makefile
+clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)
 	cd doc && $(MAKE) clean
+	cd latex && $(MAKE) clean
 
-distclean: doc/Makefile
+distclean: doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) distclean
+	cd latex && $(MAKE) distclean
 
-maintainer-clean: doc/Makefile
+maintainer-clean: doc/Makefile latex/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) maintainer-clean
+	cd latex && $(MAKE) distclean
+	cd tests && $(MAKE) clean
 
 extraclean: maintainer-clean
 	rm -f *~ \#*\#

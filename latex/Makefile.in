@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2002-2006, 2008, 2014, 2015 Free Software Foundation,
+# Copyright (C) 2002-2006, 2008, 2014, 2015, 2019 Free Software Foundation,
 #   Inc.
 
 # This file is part of AUCTeX.
@@ -42,7 +42,7 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
 
-.PHONY: all install install-texmf install-texmf-doc uninstall clean
+.PHONY: all install install-texmf install-texmf-doc uninstall clean distclean
 
 all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi preview.pdf
 
@@ -93,5 +93,8 @@ preview.pdf: preview.drv preview.dtx preview.sty
 	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
 
 clean:
-	rm -f *~ *.aux *.dvi *.drv *.log
+	rm -f *~ *.aux *.dvi *.drv *.log preview.pdf
 	rm -f $(TEXMFGEN) preview.ins preview-mk.ins
+
+distclean: clean
+	rm -f Makefile
