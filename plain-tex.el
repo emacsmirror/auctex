@@ -55,40 +55,39 @@ Install tool bar if `plain-TeX-enable-toolbar' is non-nil."
   "Keymap used in plain TeX mode.")
 
 (defvar plain-TeX-menu-entries
-  (TeX-menu-with-help
-   `(["Macro..." TeX-insert-macro
-      :help "Insert a macro and possibly arguments"]
-     ["Complete" TeX-complete-symbol
-      :help "Complete the current macro"]
-     "-"
-     ("Insert Font"
-      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-     ("Replace Font"
-      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-     "-"
-     ["Comment or Uncomment Region" comment-or-uncomment-region
-      :help "Comment or uncomment the currently selected region"]
-     ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
-      :help "Comment or uncomment the paragraph containing point"]
-     ,TeX-fold-menu
-     "-" . ,TeX-common-menu-entries)))
+  `(["Macro..." TeX-insert-macro
+     :help "Insert a macro and possibly arguments"]
+    ["Complete" TeX-complete-symbol
+     :help "Complete the current macro"]
+    "-"
+    ("Insert Font"
+     ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+     ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+     ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+     ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+    ("Replace Font"
+     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+     ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+     ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+     ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+    ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+    "-"
+    ["Comment or Uncomment Region" comment-or-uncomment-region
+     :help "Comment or uncomment the currently selected region"]
+    ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
+     :help "Comment or uncomment the paragraph containing point"]
+    ,TeX-fold-menu
+    "-" . ,TeX-common-menu-entries))
 
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map

@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2017
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2018
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -1482,58 +1482,57 @@ else.  There might be text before point."
 (easy-menu-define ConTeXt-mode-menu
   ConTeXt-mode-map
   "Menu used in ConTeXt mode."
-  (TeX-menu-with-help
-   `("ConTeXt"
-     (,ConTeXt-project-structure-menu-name)
-     (,ConTeXt-section-block-menu-name)
-     (,ConTeXt-numbered-section-menu-name)
-     (,ConTeXt-unnumbered-section-menu-name)
-     ["Add Table of Contents to Emacs Menu" (imenu-add-to-menubar "TOC") t]
-     "-"
-     ["Macro ..." TeX-insert-macro
-      :help "Insert a macro and possibly arguments"]
-     ["Complete" TeX-complete-symbol
-      :help "Complete the current macro or environment name"]
-     ["Show ConTeXt Macro Definition" ConTeXt-etexshow]
-     "-"
-     (,ConTeXt-environment-menu-name)
-     (,ConTeXt-environment-modify-menu-name)
-     ["Item" ConTeXt-insert-item
-      :help "Insert a new \\item into current environment"]
-     (,ConTeXt-define-menu-name)
-     (,ConTeXt-setup-menu-name)
-     (,ConTeXt-other-macro-menu-name)
-     "-"
-     ("Insert Font"
-      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-     ("Replace Font"
-      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-     "-"
-     ["Comment or Uncomment Region"
-      comment-or-uncomment-region
-      :help "Make the selected region outcommented or active again"]
-     ["Comment or Uncomment Paragraph"
-      TeX-comment-or-uncomment-paragraph
-      :help "Make the current paragraph outcommented or active again"]
-     ,TeX-fold-menu
-     "-" . ,TeX-common-menu-entries)))
+  `("ConTeXt"
+    (,ConTeXt-project-structure-menu-name)
+    (,ConTeXt-section-block-menu-name)
+    (,ConTeXt-numbered-section-menu-name)
+    (,ConTeXt-unnumbered-section-menu-name)
+    ["Add Table of Contents to Emacs Menu" (imenu-add-to-menubar "TOC") t]
+    "-"
+    ["Macro ..." TeX-insert-macro
+     :help "Insert a macro and possibly arguments"]
+    ["Complete" TeX-complete-symbol
+     :help "Complete the current macro or environment name"]
+    ["Show ConTeXt Macro Definition" ConTeXt-etexshow]
+    "-"
+    (,ConTeXt-environment-menu-name)
+    (,ConTeXt-environment-modify-menu-name)
+    ["Item" ConTeXt-insert-item
+     :help "Insert a new \\item into current environment"]
+    (,ConTeXt-define-menu-name)
+    (,ConTeXt-setup-menu-name)
+    (,ConTeXt-other-macro-menu-name)
+    "-"
+    ("Insert Font"
+     ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+     ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+     ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+     ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+    ("Replace Font"
+     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+     ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+     ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+     ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+    ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+    "-"
+    ["Comment or Uncomment Region"
+     comment-or-uncomment-region
+     :help "Make the selected region outcommented or active again"]
+    ["Comment or Uncomment Paragraph"
+     TeX-comment-or-uncomment-paragraph
+     :help "Make the current paragraph outcommented or active again"]
+    ,TeX-fold-menu
+    "-" . ,TeX-common-menu-entries))
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."

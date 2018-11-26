@@ -535,58 +535,57 @@ is assumed by default."
 (easy-menu-define Texinfo-mode-menu
   Texinfo-mode-map
   "Menu used in Texinfo mode."
-  (TeX-menu-with-help
-   `("Texinfo"
-     ["Node ..." texinfo-insert-@node
-      :help "Insert a node"]
-     ["Macro ..." TeX-insert-macro
-      :help "Insert a macro and possibly arguments"]
-     ["Complete Macro" TeX-complete-symbol
-      :help "Complete the current macro"]
-     ["Environment ..." Texinfo-insert-environment
-      :help "Insert an environment"]
-     ["Item" texinfo-insert-@item
-      :help "Insert an @item"]
-     "-"
-     ("Insert Font"
-      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-      ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
-     ("Replace Font"
-      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-      ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
-     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-     "-"
-     ["Create Master Menu" texinfo-master-menu
-      :help "Make a master menu for the whole Texinfo file"]
-     ["Create Menu" texinfo-make-menu
-      :help "Make or update the menu for the current section"]
-     ["Update Node" texinfo-update-node
-      :help "Update the current node"]
-     ["Update Every Node" texinfo-every-node-update
-      :help "Update every node in the current file"]
-     ["Update All Menus" texinfo-all-menus-update
-      :help "Update every menu in the current file"]
-     "-"
-     ("Commenting"
-      ["Comment or Uncomment Region"
-       comment-or-uncomment-region
-       :help "Comment or uncomment the currently selected region"]
-      ["Comment or Uncomment Paragraph"
-       TeX-comment-or-uncomment-paragraph
-       :help "Comment or uncomment the current paragraph"])
-     ,TeX-fold-menu
-     "-"
-     . ,TeX-common-menu-entries)))
+  `("Texinfo"
+    ["Node ..." texinfo-insert-@node
+     :help "Insert a node"]
+    ["Macro ..." TeX-insert-macro
+     :help "Insert a macro and possibly arguments"]
+    ["Complete Macro" TeX-complete-symbol
+     :help "Complete the current macro"]
+    ["Environment ..." Texinfo-insert-environment
+     :help "Insert an environment"]
+    ["Item" texinfo-insert-@item
+     :help "Insert an @item"]
+    "-"
+    ("Insert Font"
+     ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+     ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
+    ("Replace Font"
+     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+     ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+    ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+    "-"
+    ["Create Master Menu" texinfo-master-menu
+     :help "Make a master menu for the whole Texinfo file"]
+    ["Create Menu" texinfo-make-menu
+     :help "Make or update the menu for the current section"]
+    ["Update Node" texinfo-update-node
+     :help "Update the current node"]
+    ["Update Every Node" texinfo-every-node-update
+     :help "Update every node in the current file"]
+    ["Update All Menus" texinfo-all-menus-update
+     :help "Update every menu in the current file"]
+    "-"
+    ("Commenting"
+     ["Comment or Uncomment Region"
+      comment-or-uncomment-region
+      :help "Comment or uncomment the currently selected region"]
+     ["Comment or Uncomment Paragraph"
+      TeX-comment-or-uncomment-paragraph
+      :help "Comment or uncomment the current paragraph"])
+    ,TeX-fold-menu
+    "-"
+    . ,TeX-common-menu-entries))
 
 (defvar Texinfo-font-list
   '((?\C-b "@b{" "}")

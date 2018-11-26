@@ -3694,32 +3694,31 @@ forward, if negative)."
 (easy-menu-define TeX-error-overview-menu
   TeX-error-overview-mode-map
   "Menu used in TeX error overview mode."
-  (TeX-menu-with-help
-   '("TeX errors"
-     ["Next error" TeX-error-overview-next-error
-      :help "Jump to the next error"]
-     ["Previous error" TeX-error-overview-previous-error
-      :help "Jump to the previous error"]
-     ["Go to source" TeX-error-overview-goto-source
-      :help "Show the error in the source"]
-     ["Jump to source" TeX-error-overview-jump-to-source
-      :help "Move point to the error in the source"]
-     ["Go to log" TeX-error-overview-goto-log
-      :help "Show the error in the log buffer"]
-     "-"
-     ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
-      :style toggle :selected TeX-debug-bad-boxes
-      :help "Show overfull and underfull boxes"]
-     ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
-      :style toggle :selected TeX-debug-warnings
-      :help "Show warnings"]
-     ["Ignore Unimportant Warnings"
-      TeX-error-overview-toggle-suppress-ignored-warnings
-      :style toggle :selected TeX-suppress-ignored-warnings
-      :help "Hide specified warnings"]
-     "-"
-     ["Quit" TeX-error-overview-quit
-      :help "Quit"])))
+  '("TeX errors"
+    ["Next error" TeX-error-overview-next-error
+     :help "Jump to the next error"]
+    ["Previous error" TeX-error-overview-previous-error
+     :help "Jump to the previous error"]
+    ["Go to source" TeX-error-overview-goto-source
+     :help "Show the error in the source"]
+    ["Jump to source" TeX-error-overview-jump-to-source
+     :help "Move point to the error in the source"]
+    ["Go to log" TeX-error-overview-goto-log
+     :help "Show the error in the log buffer"]
+    "-"
+    ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
+     :style toggle :selected TeX-debug-bad-boxes
+     :help "Show overfull and underfull boxes"]
+    ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
+     :style toggle :selected TeX-debug-warnings
+     :help "Show warnings"]
+    ["Ignore Unimportant Warnings"
+     TeX-error-overview-toggle-suppress-ignored-warnings
+     :style toggle :selected TeX-suppress-ignored-warnings
+     :help "Hide specified warnings"]
+    "-"
+    ["Quit" TeX-error-overview-quit
+     :help "Quit"]))
 
 (defvar TeX-error-overview-list-entries nil
   "List of errors to be used in the error overview.")
