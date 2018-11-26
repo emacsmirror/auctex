@@ -3776,21 +3776,8 @@ space does not end a sentence, so don't break a line there."
 	  (remove-text-properties from to '(hard nil)))
 	;; Make sure first line is indented (at least) to left margin...
 	(indent-according-to-mode)
-	;; COMPATIBILITY for Emacs <= 21.1
-	(if (fboundp 'fill-delete-prefix)
-	    ;; Delete the fill-prefix from every line.
-	    (fill-delete-prefix from to fill-prefix)
-	  ;; Delete the comment prefix and any whitespace from every
-	  ;; line of the region in concern except the first. (The
-	  ;; implementation is heuristic to a certain degree.)
-	  (save-excursion
-	    (goto-char from)
-	    (forward-line 1)
-	    (when (< (point) to)
-	      (while (re-search-forward (concat "^[ \t]+\\|^[ \t]*"
-						TeX-comment-start-regexp
-						"+[ \t]*") to t)
-		(delete-region (match-beginning 0) (match-end 0))))))
+	;; Delete the fill-prefix from every line.
+	(fill-delete-prefix from to fill-prefix)
 
 	(setq from (point))
 
