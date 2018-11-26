@@ -1624,7 +1624,7 @@ This is necessary since index entries may contain commands and stuff.")
 Split the string at commas and remove Biber file extensions."
   (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
     (dolist (bib bibs)
-      (LaTeX-add-bibliographies (TeX-replace-regexp-in-string
+      (LaTeX-add-bibliographies (replace-regexp-in-string
 				 (concat "\\(?:\\."
 					 (mapconcat #'identity
 						    TeX-Biber-file-extensions

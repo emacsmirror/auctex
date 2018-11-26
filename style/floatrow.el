@@ -1,6 +1,6 @@
 ;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -434,7 +434,7 @@ entries are available under \"rawfigure*?\" and \"rawtable*?\"."
   "Create raw floating ENV with floatrow.sty.
 Also insert the macro \"\\RawFloats\" when finished with user
 queries."
-  (let ((environment (TeX-replace-regexp-in-string "raw" "" env)))
+  (let ((environment (replace-regexp-in-string "raw" "" env)))
     (LaTeX-env-figure environment)
     (save-excursion
       ;; `LaTeX-find-matching-begin' will not work for us as we don't

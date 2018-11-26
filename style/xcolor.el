@@ -1,6 +1,6 @@
 ;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)
 
-;; Copyright (C) 2016--2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -264,7 +264,7 @@ xcolor package.")
     (let ((head (car colset))
 	  (tail (cadr colset))
 	  (cols (split-string
-		 (TeX-replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
+		 (replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
 		 "\\(,[^;]+;\\|,[^;]+$\\)" t)))
       (dolist (color cols)
 	(LaTeX-add-xcolor-definecolors (concat head color tail))))))

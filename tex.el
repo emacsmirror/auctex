@@ -764,11 +764,7 @@ overlays."
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step))))
-
-  (defun TeX-replace-regexp-in-string (regexp rep string)
-    "Compatibility function mimicking `replace-regexp-in-string' for XEmacs."
-    (replace-in-string string regexp rep)) )
+	    (t TeX-overlay-priority-step)))))
 
 ;; require crm here, because we often do
 ;;
@@ -877,9 +873,7 @@ overlays."
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step))))
-
-  (defalias #'TeX-replace-regexp-in-string #'replace-regexp-in-string) )
+	    (t TeX-overlay-priority-step)))))
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.
