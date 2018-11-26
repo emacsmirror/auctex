@@ -3796,10 +3796,8 @@ The algorithm is as follows:
   (funcall TeX-install-font-lock)
 
   ;; We want this to be early in the list, so we do not add it before
-  ;; we enter TeX mode  the first time.
-  (if (boundp 'local-write-file-hooks)
-      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
-    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  ;; we enter TeX mode the first time.
+  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
   (set (make-local-variable 'TeX-auto-update) t)
 
   (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)

@@ -1873,9 +1873,7 @@ The value is actually the tail of the list of options given to PACKAGE."
 It will setup BibTeX to store keys in an auto file."
   ;; We want this to be early in the list, so we do not
   ;; add it before we enter BibTeX mode the first time.
-  (if (boundp 'local-write-file-hooks)
-      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
-    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
   (TeX-bibtex-set-BibTeX-dialect)
   (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)
