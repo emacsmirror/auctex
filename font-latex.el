@@ -1383,27 +1383,14 @@ modified.  Such variables include
 `LaTeX-verbatim-environments-local',
 `LaTeX-verbatim-macros-with-braces-local',
 `LaTeX-verbatim-macros-with-delims-local'."
-  (when (if (boundp 'file-local-variables-alist)
-	    ;; In Emacs we know if the value came from file or directory
-	    ;; locals.  Note to self: directory-local variables are also added
-	    ;; to file-local-variables-alist.
-	    (let ((hacked-local-vars (mapcar #'car file-local-variables-alist)))
-	      (or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
-		  (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
-		  (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars)))
-	  ;; In XEmacs and old Emacs versions we don't know if a buffer-local
-	  ;; variable has been set by a file-local variables block or somehow
-	  ;; else.  So we trigger a refresh if any of those variables has a
-	  ;; non-nil local binding.
-	  (or (and LaTeX-verbatim-environments-local
-		   (local-variable-p LaTeX-verbatim-environments-local
-				     (current-buffer)))
-	      (and LaTeX-verbatim-macros-with-braces-local
-		   (local-variable-p LaTeX-verbatim-macros-with-braces-local
-				     (current-buffer)))
-	      (and LaTeX-verbatim-macros-with-delims-local
-		   (local-variable-p LaTeX-verbatim-macros-with-delims-local
-				     (current-buffer)))))
+  (when
+      ;; In Emacs we know if the value came from file or directory
+      ;; locals.  Note to self: directory-local variables are also added
+      ;; to file-local-variables-alist.
+      (let ((hacked-local-vars (mapcar #'car file-local-variables-alist)))
+	(or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
+	    (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
+	    (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars)))
     ;; Ok, we need to refresh fontification.
     (font-latex-update-font-lock t)))
 
