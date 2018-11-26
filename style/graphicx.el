@@ -198,14 +198,11 @@ Offers all graphic files found in the TeX search path.  See
   "Read image file for \\includegraphics.
 
 Lists all graphic files in the master directory and its
-subdirectories and inserts the relative file name.  This option
-doesn't works with Emacs 21.3 or XEmacs.  See
+subdirectories and inserts the relative file name.  See
 `LaTeX-includegraphics-read-file' for more."
   (file-relative-name
    (read-file-name
     "Image file: " nil nil nil nil
-    ;; FIXME: Emacs 21.3 and XEmacs 21.4.15 don't have PREDICATE as the sixth
-    ;; argument (Emacs 21.3: five args; XEmacs 21.4.15: sixth is HISTORY).
     (lambda (fname)
       (or (file-directory-p fname)
 	  (string-match (LaTeX-includegraphics-extensions) fname))))

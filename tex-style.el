@@ -347,8 +347,7 @@ found in the TeX search path.
 
 `LaTeX-includegraphics-read-file-relative' lists all graphic files
 in the master directory and its subdirectories and inserts the
-relative file name.  This option does not work with Emacs 21 or
-XEmacs.
+relative file name.
 
 The custom option `simple' works as
 `LaTeX-includegraphics-read-file-relative' but it lists all kind of

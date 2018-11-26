@@ -7,7 +7,7 @@
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
 ;; Version:   3.28  (Feb 23 2005)
-;; Keywords:  bibtex, cite, auctex, emacs, xemacs
+;; Keywords:  bibtex, cite, auctex, emacs
 
 ;;; This file is not part of GNU Emacs.
 

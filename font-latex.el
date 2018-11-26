@@ -201,7 +201,6 @@ this variable directly does not take effect unless you call
 Switching from `color' to a number or vice versa does not take
 effect unless you call \\[font-lock-fontify-buffer] or restart
 Emacs."
-  ;; Possibly add some words about XEmacs here. :-(
   :type '(choice (number :tag "Scale factor")
 		 (const color))
   :initialize 'custom-initialize-default
@@ -675,7 +674,7 @@ also specify two alternative arguments by prefixing them with
 \"*|{\\=\\[[{\".
 
 The face argument can either be an existing face or a face
-attribute.  (The latter option is not available in XEmacs.)
+attribute.
 
 There are three alternatives for the class type:
 
@@ -835,7 +834,6 @@ locking machinery will be triggered."
 
 (defcustom font-latex-fontify-script t
   "If non-nil, fontify subscript and superscript strings.
-This feature does not work in XEmacs.
 
 By default, super/subscripts are raised/lowered if this variable
 is non-nil.  This fontification only affects one level of
@@ -1511,8 +1509,7 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
 The text property is used to find the start or end of a multiline
 construct when unfontifying a region.  Emacs adds such a text
 property automatically if `font-lock-multiline' is set to t and
-extends the region to be unfontified automatically as well.
-XEmacs does not do this at the time of this writing."
+extends the region to be unfontified automatically as well."
   (unless (boundp 'font-lock-multiline)
     (put-text-property beg end 'font-latex-multiline t)))
 
@@ -2067,8 +2064,7 @@ END marks boundaries for searching for quotation ends."
     ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28.
     ;; With the introduction of this feature the variable
     ;; `font-lock-extra-managed-props' was introduced and serves here
-    ;; for feature checking.  XEmacs (CVS and 21.4.15) currently
-    ;; (2004-08-18) does not support this feature.
+    ;; for feature checking.
     (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
       (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
