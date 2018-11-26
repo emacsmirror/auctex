@@ -3,15 +3,15 @@ Release notes for AUCTeX 12.1 with preview-latex
 
 AUCTeX provides by far the most wide-spread and sophisticated
 environment for editing LaTeX, TeX, ConTeXt and Texinfo documents with
-Emacs or XEmacs.  Combined with packages like RefTeX, flyspell and
-others it is pretty much without peer as a comprehensive authoring
-solution for a large variety of operating system platforms and TeX
-distributions.  It supports document-dependent completion and syntax
-highlighting, easily accessible menus, jumping to error locations in
-the source file, a number of editing shortcuts, intelligent
-indentation and filling of text during entry, and WYSIWYG previews of
-graphical elements like math formulas right in the Emacs source
-buffer, by virtue of its preview-latex component.
+Emacs.  Combined with packages like RefTeX, flyspell and others it is
+pretty much without peer as a comprehensive authoring solution for a
+large variety of operating system platforms and TeX distributions.  It
+supports document-dependent completion and syntax highlighting, easily
+accessible menus, jumping to error locations in the source file, a
+number of editing shortcuts, intelligent indentation and filling of
+text during entry, and WYSIWYG previews of graphical elements like
+math formulas right in the Emacs source buffer, by virtue of its
+preview-latex component.
 
 One part of the preview-latex subsystem is the central `preview.sty'
 file that is independently useful for a number of applications and is

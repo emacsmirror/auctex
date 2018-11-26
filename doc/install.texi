@@ -191,10 +191,8 @@ If you are using a pretest which isn't in your @code{$PATH}, or
 @command{configure} is not finding the right Emacs executable, you can
 specify it with this option.
 
-The Emacs installation scheme has the following options:
-
 @item --with-lispdir=@var{/dir}
-This Emacs-only option specifies the location of the @file{site-lisp}
+This option specifies the location of the @file{site-lisp}
 directory within @samp{load-path} under which the files will get
 installed (the bulk will get installed in a subdirectory).
 @file{./configure} should figure this out by itself.
