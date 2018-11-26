@@ -908,12 +908,7 @@ the other elements.  The ordering among elements is maintained."
 
 ;;; The mode
 
-;; This autoload cookie had to be changed because of XEmacs.  This is
-;; very dissatisfactory, because we now don't have the full doc string
-;; available to tell people what to expect when using this mode before
-;; loading it.
-
-;;;###autoload (autoload 'TeX-fold-mode "tex-fold" "Minor mode for hiding and revealing macros and environments." t)
+;;;###autoload
 (define-minor-mode TeX-fold-mode
   "Minor mode for hiding and revealing macros and environments.
 
