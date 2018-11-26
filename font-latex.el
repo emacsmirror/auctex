@@ -2124,26 +2124,14 @@ END marks boundaries for searching for quotation ends."
 	     ;; syntax-table can't deal with.  We could turn it
 	     ;; into a non-comment, or use `\n%' or `%^' as the comment.
 	     ;; Instead, we include it in the ^^A comment.
-	     ;; COMPATIBILITY for Emacs 20 and XEmacs
-	     (eval-when-compile (if (fboundp 'string-to-syntax)
-				    (string-to-syntax "< b")
-				  '(2097163)))
-	   ;; COMPATIBILITY for Emacs 20 and XEmacs
-	   (eval-when-compile (if (fboundp 'string-to-syntax)
-				  (string-to-syntax ">")
-				'(12)))))
+	     (eval-when-compile (string-to-syntax "< b"))
+	   (eval-when-compile (string-to-syntax ">"))))
 	(let ((end (line-end-position)))
 	  (if (< end (point-max))
 	      (put-text-property end (1+ end) 'syntax-table
-				    ;; COMPATIBILITY for Emacs 20 and XEmacs
 				    (eval-when-compile
-				      (if (fboundp 'string-to-syntax)
-					  (string-to-syntax "> b")
-					'(2097164))))))
-	;; COMPATIBILITY for Emacs 20 and XEmacs
-	(eval-when-compile (if (fboundp 'string-to-syntax)
-			       (string-to-syntax "< b")
-			     '(2097163))))))
+				      (string-to-syntax "> b")))))
+	(eval-when-compile (string-to-syntax "< b")))))
 
 ;; Copy and adaptation of `doctex-font-lock-syntactic-face-function'
 ;; in `tex-mode.el' of CVS Emacs (March 2004)
