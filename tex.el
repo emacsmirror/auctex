@@ -5020,7 +5020,6 @@ Brace insertion is only done if point is in a math construct and
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
-  ;; COMPATIBILITY for Emacs < 21
   (list TeX-command-menu-name
         :filter `(lambda (&rest ignored)
                    (TeX-mode-specific-command-menu-entries ',mode))

@@ -3265,8 +3265,7 @@ Lines starting with an item is given an extra indentation of
 		 (beginning-of-line)
 		 (looking-at
 		  (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
-		 (concat (match-string 0) (TeX-comment-padding-string)))))
-	 ol-specs)
+		 (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
@@ -3294,9 +3293,6 @@ Lines starting with an item is given an extra indentation of
 	     (let ((outer-indent (LaTeX-indent-calculate 'outer)))
 	       (when (/= (LaTeX-current-indentation 'outer) outer-indent)
 		   (LaTeX-indent-outer-do outer-indent))))))
-    ;; Make the overlays invisible again.
-    (dolist (ol-spec ol-specs)
-      (set-extent-property (car ol-spec) 'invisible (cadr ol-spec)))
     (when (< (current-column) (save-excursion
 				(LaTeX-back-to-indentation) (current-column)))
       (LaTeX-back-to-indentation))))
