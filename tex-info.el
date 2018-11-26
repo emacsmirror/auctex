@@ -1,7 +1,7 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
 ;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006,
-;;               2011-2015, 2017  Free Software Foundation, Inc.
+;;               2011-2015, 2017, 2018  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -443,12 +443,10 @@ is assumed by default."
 (defvar reftex-label-menu-flags)
 (defvar reftex-tables-dirty)
 
-(eval-when-compile
-  (when (fboundp 'declare-function)
-    (declare-function reftex-match-string "reftex" (n))
-    (declare-function reftex-section-number "reftex-parse" (&optional level star))
-    (declare-function reftex-nicify-text "reftex" (text))
-    (declare-function reftex-ensure-compiled-variables "reftex" ())))
+(declare-function reftex-match-string "reftex" (n))
+(declare-function reftex-section-number "reftex-parse" (&optional level star))
+(declare-function reftex-nicify-text "reftex" (text))
+(declare-function reftex-ensure-compiled-variables "reftex" ())
 
 (defun Texinfo-reftex-section-info (file)
   ;; Return a section entry for the current match.

@@ -5900,8 +5900,7 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
-(when (fboundp 'declare-function)
-  (declare-function LaTeX-preview-setup "preview"))
+(declare-function LaTeX-preview-setup "preview")
 
 ;;;###autoload
 (defun TeX-latex-mode ()
