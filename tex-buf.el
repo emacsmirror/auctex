@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -3357,46 +3357,40 @@ error."
   :group 'TeX-output)
 
 (defface TeX-error-description-error
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `error' face in latest GNU Emacs versions.
-    '((((class color) (min-colors 88) (background light))
-       :foreground "Red1" :weight bold)
-      (((class color) (min-colors 88) (background dark))
-       :foreground "Pink" :weight bold)
-      (((class color) (min-colors 16) (background light))
-       :foreground "Red1" :weight bold)
-      (((class color) (min-colors 16) (background dark))
-       :foreground "Pink" :weight bold)
-      (((class color) (min-colors 8))
-       :foreground "red" :weight bold)
-      (t (:inverse-video t :weight bold))))
+  ;; This is the same as `error' face in latest GNU Emacs versions.
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 16) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 16) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 8))
+     :foreground "red" :weight bold)
+    (t (:inverse-video t :weight bold)))
   "Face for \"Error\" string in error descriptions.")
 
 (defface TeX-error-description-warning
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `warning' face in latest GNU Emacs versions.
-    '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
-      (((class color)) :foreground "yellow" :weight bold)))
+  ;; This is the same as `warning' face in latest GNU Emacs versions.
+  '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
+    (((class color)) :foreground "yellow" :weight bold))
   "Face for \"Warning\" string in error descriptions.")
 
 (defface TeX-error-description-tex-said
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `font-lock-function-name-face' face in latest GNU
-    ;; Emacs versions.
-    '((((class color) (min-colors 88) (background light))
-       :foreground "Blue1")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "LightSkyBlue")
-      (((class color) (min-colors 16) (background light))
-       :foreground "Blue")
-      (((class color) (min-colors 16) (background dark))
-       :foreground "LightSkyBlue")
-      (((class color) (min-colors 8))
-       :foreground "blue" :weight bold)
-      (t (:inverse-video t :weight bold))))
+  ;; This is the same as `font-lock-function-name-face' face in latest GNU
+  ;; Emacs versions.
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Blue1")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 16) (background light))
+     :foreground "Blue")
+    (((class color) (min-colors 16) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 8))
+     :foreground "blue" :weight bold)
+    (t (:inverse-video t :weight bold)))
   "Face for \"TeX said\" string in error descriptions.")
 
 (defface TeX-error-description-help
