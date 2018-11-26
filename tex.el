@@ -711,12 +711,6 @@ overlays between two existing ones.")
       (wrong-number-of-arguments
        (read-string prompt initial-input history default-value))))
 
-  (defun TeX-mark-active ()
-    ;; In Lucid (mark) returns nil when not active.
-    (if zmacs-regions
-	(mark)
-      (mark t)))
-
   (defun TeX-active-mark ()
     (and zmacs-regions (mark)))
 
@@ -828,10 +822,6 @@ Ensures that empty input results in nil across different emacs versions."
 
   (defun TeX-read-string (prompt &optional initial-input history default-value)
     (read-string prompt initial-input history default-value t))
-
-  (defun TeX-mark-active ()
-    ;; In FSF 19 mark-active indicates if mark is active.
-    mark-active)
 
   (defun TeX-active-mark ()
     (and transient-mark-mode mark-active))
@@ -5039,7 +5029,7 @@ Brace insertion is only done if point is in a math construct and
 			(<= (prefix-numeric-value prefix-arg) 0)
 		      (and (boundp 'TeX-command-region-begin)
 			   (markerp TeX-command-region-begin)))
-		    (TeX-mark-active))
+		    mark-active)
 	;;:visible (eq TeX-command-current 'TeX-command-region)
 	:style toggle
 	:selected (and (boundp 'TeX-command-region-begin)

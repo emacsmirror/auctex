@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.
 
-;; Copyright (C) 1994, 2013, 2014  Free Software Foundation, Inc.
+;; Copyright (C) 1994, 2013, 2014, 2018  Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -67,7 +67,7 @@
 
 (defmacro LaTeX-dinbrief-insert (&rest args)
   "Insert text ignoring active markers."
-  `(progn (if (TeX-mark-active) (deactivate-mark))
+  `(progn (if mark-active (deactivate-mark))
      (insert ,@args)))
 
 (defun LaTeX-dinbrief-style ()
@@ -123,7 +123,7 @@
 	    (newline-and-indent)
 	  (if (not (zerop (length retouradr)))
 	      (progn
-		(if (TeX-mark-active) (deactivate-mark))
+		(if mark-active (deactivate-mark))
 		(LaTeX-dinbrief-insert TeX-esc "backaddress" TeX-grop retouradr TeX-grcl)
 		(newline-and-indent)))))
       (LaTeX-dinbrief-insert TeX-esc "enabledraftstandard")
