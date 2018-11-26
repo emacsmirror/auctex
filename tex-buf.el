@@ -3836,35 +3836,7 @@ warnings and bad boxes"
 
 ;;; Output mode
 
-(defalias 'TeX-special-mode
-  (if (fboundp 'special-mode)
-      (progn
-        (defvaralias 'TeX-special-mode-map 'special-mode-map)
-        #'special-mode)
-    (defvar TeX-special-mode-map
-      (let ((map (make-sparse-keymap)))
-        (suppress-keymap map)
-        (define-key map "q" (if (fboundp 'quit-window)
-                                'quit-window
-                              'bury-buffer))
-        (define-key map " " (if (fboundp 'scroll-up-command)
-                                'scroll-up-command
-                              'scroll-up))
-        (define-key map [backspace] (if (fboundp 'scroll-down-command)
-                                        'scroll-down-command
-                                      'scroll-down))
-        (define-key map "\C-?" (if (fboundp 'scroll-down-command)
-                                   'scroll-down-command
-                                 'scroll-down))
-        (define-key map "?" 'describe-mode)
-        (define-key map "h" 'describe-mode)
-        (define-key map ">" 'end-of-buffer)
-        (define-key map "<" 'beginning-of-buffer)
-        (define-key map "g" 'revert-buffer)
-        map)
-      "Keymap for `TeX-special-mode-map'.")
-    (lambda ()
-      "Placeholder mode for Emacsen which don't have `special-mode'.")))
+(define-derived-mode TeX-special-mode special-mode "TeX")
 
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
