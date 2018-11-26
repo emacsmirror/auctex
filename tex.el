@@ -673,67 +673,6 @@ emacs 24.1 and is then later run by emacs 24.5."
 The step should be big enough to allow setting a priority for new
 overlays between two existing ones.")
 
-
-;;; Special support for XEmacs
-
-(when (featurep 'xemacs)
-
-  (defun TeX-read-string
-      (prompt &optional initial-input history default-value)
-    (condition-case nil
-	(read-string prompt initial-input history default-value t)
-      (wrong-number-of-arguments
-       (read-string prompt initial-input history default-value))))
-
-  (defun TeX-active-mark ()
-    (and zmacs-regions (mark)))
-
-  (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
-
-  ;; I am aware that this counteracts coding conventions but I am sick
-  ;; of it.
-  (unless (fboundp 'line-beginning-position)
-    (defalias 'line-beginning-position 'point-at-bol))
-  (unless (fboundp 'line-end-position)
-    (defalias 'line-end-position 'point-at-eol))
-
-  (defun TeX-overlay-prioritize (start end)
-    "Calculate a priority for an overlay extending from START to END.
-The calculated priority is lower than the minimum of priorities
-of surrounding overlays and higher than the maximum of enclosed
-overlays."
-    (let (inner-priority outer-priority
-			 (prios (cons nil nil)))
-      (map-extents
-       #'(lambda (ov prios)
-	   (and
-	    (or (eq (extent-property ov 'category) 'TeX-fold)
-		(extent-property ov 'preview-state))
-	    (setcar prios
-		    (max (or (car prios) 0)
-			 (extent-property ov 'priority))))
-	   nil)
-       nil start end prios 'start-and-end-in-region 'priority)
-      (map-extents
-       #'(lambda (ov prios)
-	   (and
-	    (or (eq (extent-property ov 'category) 'TeX-fold)
-		(extent-property ov 'preview-state))
-	    (setcdr prios
-		    (min (or (cdr prios) most-positive-fixnum)
-			 (extent-property ov 'priority))))
-	   nil)
-       nil start end prios
-       '(start-and-end-in-region negate-in-region) 'priority)
-      (setq inner-priority (car prios) outer-priority (cdr prios))
-      (cond ((and inner-priority (not outer-priority))
-	     (+ inner-priority TeX-overlay-priority-step))
-	    ((and (not inner-priority) outer-priority)
-	     (/ outer-priority 2))
-	    ((and inner-priority outer-priority)
-	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step)))))
-
 ;; require crm here, because we often do
 ;;
 ;; (let ((crm-separator ","))
@@ -790,54 +729,38 @@ Ensures that empty input results in nil across different emacs versions."
 					    hist def inherit-input-method)))
       (if (equal result '("")) nil result))))
 
-;;; Special support for GNU Emacs
+(defun TeX-read-string (prompt &optional initial-input history default-value)
+  (read-string prompt initial-input history default-value t))
 
-(unless (featurep 'xemacs)
+(defun TeX-active-mark ()
+  (and transient-mark-mode mark-active))
 
-  (defun TeX-read-string (prompt &optional initial-input history default-value)
-    (read-string prompt initial-input history default-value t))
+(defun TeX-activate-region ()
+  (setq deactivate-mark nil)
+  (activate-mark))
 
-  (defun TeX-active-mark ()
-    (and transient-mark-mode mark-active))
-
-  (defun TeX-activate-region ()
-    (setq deactivate-mark nil)
-    (if (fboundp 'activate-mark)
-	(activate-mark)
-      ;; COMPATIBILITY for Emacs <= 22
-      ;; This part is adopted from `activate-mark' of Emacs 24.5.
-      (when (mark t)
-	(unless (and transient-mark-mode mark-active
-		 (mark))
-	  (force-mode-line-update) ;Refresh toolbar (bug#16382).
-	  (setq mark-active t)
-	  (unless transient-mark-mode
-	    (setq transient-mark-mode 'lambda))
-	  (if (boundp 'activate-mark-hook)
-	      (run-hooks 'activate-mark-hook))))))
-
-  (defun TeX-overlay-prioritize (start end)
-    "Calculate a priority for an overlay extending from START to END.
+(defun TeX-overlay-prioritize (start end)
+  "Calculate a priority for an overlay extending from START to END.
 The calculated priority is lower than the minimum of priorities
 of surrounding overlays and higher than the maximum of enclosed
 overlays."
-    (let (outer-priority inner-priority ov-priority)
-      (dolist (ov (overlays-in start end))
-	(when (or (eq (overlay-get ov 'category) 'TeX-fold)
-		  (overlay-get ov 'preview-state))
-	  (setq ov-priority (overlay-get ov 'priority))
-	  (if (>= (overlay-start ov) start)
-	      (setq inner-priority (max ov-priority (or inner-priority
-							ov-priority)))
-	    (setq outer-priority (min ov-priority (or outer-priority
-						      ov-priority))))))
-      (cond ((and inner-priority (not outer-priority))
-	     (+ inner-priority TeX-overlay-priority-step))
-	    ((and (not inner-priority) outer-priority)
-	     (/ outer-priority 2))
-	    ((and inner-priority outer-priority)
-	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step)))))
+  (let (outer-priority inner-priority ov-priority)
+    (dolist (ov (overlays-in start end))
+      (when (or (eq (overlay-get ov 'category) 'TeX-fold)
+		(overlay-get ov 'preview-state))
+	(setq ov-priority (overlay-get ov 'priority))
+	(if (>= (overlay-start ov) start)
+	    (setq inner-priority (max ov-priority (or inner-priority
+						      ov-priority)))
+	  (setq outer-priority (min ov-priority (or outer-priority
+						    ov-priority))))))
+    (cond ((and inner-priority (not outer-priority))
+	   (+ inner-priority TeX-overlay-priority-step))
+	  ((and (not inner-priority) outer-priority)
+	   (/ outer-priority 2))
+	  ((and inner-priority outer-priority)
+	   (+ (/ (- outer-priority inner-priority) 2) inner-priority))
+	  (t TeX-overlay-priority-step))))
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.
