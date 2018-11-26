@@ -31,11 +31,6 @@
 (require 'tex)
 
 (require 'texinfo)
-;; Make sure the Texinfo mode of AUCTeX is still used after loading
-;; texinfo.el.  (This is only an issue on Emacs 21.)
-(when (and (boundp 'TeX-modes)
-	   (memq 'texinfo-mode TeX-modes))
-  (defalias 'texinfo-mode 'TeX-texinfo-mode))
 
 ;;; Environments:
 (defvar Texinfo-environment-list
@@ -657,15 +652,7 @@ value of `Texinfo-mode-hook'."
        texinfo-imenu-generic-expression)
 
   (set (make-local-variable 'font-lock-defaults)
-	;; COMPATIBILITY for Emacs 20
-	(if (boundp 'texinfo-font-lock-syntactic-keywords)
-	    '(texinfo-font-lock-keywords
-	      nil nil nil backward-paragraph
-	      (font-lock-syntactic-keywords
-	       . texinfo-font-lock-syntactic-keywords))
-	  ;; This is for Emacs >= 23.3, when
-	  ;; `texinfo-font-lock-syntactic-keywords' was removed.
-	  '(texinfo-font-lock-keywords nil nil nil backward-paragraph)))
+       '(texinfo-font-lock-keywords nil nil nil backward-paragraph))
 
   ;; Outline settings.
   (set (make-local-variable 'outline-regexp)

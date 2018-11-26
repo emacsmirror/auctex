@@ -6343,12 +6343,9 @@ the number of the file to view, anything else to skip: ") list)))
 		    ;; Exit gently if a `quit' signal is thrown.
 		    (quit nil)))
 		 (t (message "No documentation found for %s" pkg)))
-	      ;; In any case quit-and-kill the window.  XXX: XEmacs doesn't have
-	      ;; `quit-window', just kill the buffer in that case.
+	      ;; In any case quit-and-kill the window.
 	      (when (get-buffer-window buffer)
-		(if (fboundp 'quit-window)
-		    (quit-window t (get-buffer-window buffer))
-		  (kill-buffer buffer)))))
+		(quit-window t (get-buffer-window buffer)))))
 	;; Called without prefix argument: just run "texdoc --view <pkg>" and
 	;; show the output, so that the user is warned in case it doesn't find
 	;; the documentation or "texdoc" is not available.

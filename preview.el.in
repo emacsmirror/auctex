@@ -2037,9 +2037,6 @@ to the close hook."
   "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
 not use in advice."
-  ;; The following two lines are bug workaround for Emacs < 22.1.
-  (if (markerp begin)
-      (setq begin (marker-position begin)))
   (or (car (get-char-property begin 'preview-counters))
       (cdr (get-char-property (max (point-min)
 				   (1- begin))
