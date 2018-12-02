@@ -300,7 +300,7 @@ subdirectories and inserts the relative file name.  See
 
    ;; Option management
    (if (and (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
-	    (not (eq (TeX-engine 'xetex))))
+	    (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
