@@ -4798,7 +4798,9 @@ element to ALIST-VAR."
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
-  "If non-nil, ``\\'' will be bound to `TeX-electric-macro'."
+  "If non-nil, ``\\'' will offer on-the-fly completion.
+In Texinfo-mode, ``@'' will do that job instead and ``\\'' is not
+affected.  See `TeX-electric-macro' for detail."
   :group 'TeX-macro
   :type 'boolean)
 

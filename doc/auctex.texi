@@ -1332,13 +1332,14 @@ Note that for some macros, there are special mechanisms, e.g.
 Default macro to insert when invoking @code{TeX-insert-macro} first time.
 @end defopt
 
-A faster alternative is to bind the function @code{TeX-electric-macro}
-to @samp{\}.  This can be done by setting the variable
-@code{TeX-electric-escape}
+A faster alternative is to enable the option
+@code{TeX-electric-escape}.
 
 @defopt TeX-electric-escape
-If this is non-nil when @AUCTeX{} is loaded, the @TeX{} escape
-character @samp{\} will be bound to @code{TeX-electric-macro}
+If this is non-nil, typing the @TeX{} escape character @kbd{\} will
+invoke the command @code{TeX-electric-macro}.
+
+In Texinfo mode, the command is invoked by @kbd{@@} instead.
 @end defopt
 
 The difference between @code{TeX-insert-macro} and

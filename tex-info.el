@@ -524,6 +524,18 @@ is assumed by default."
 	(define-key map "\e\r" 'texinfo-insert-@item)) ;*** Alias
     (define-key map "\C-c\C-s" 'Texinfo-insert-node)
     (define-key map "\C-c]" 'texinfo-insert-@end)
+
+    ;; Override some bindings in `TeX-mode-map'
+    ;; FIXME: Inside @math{}, you can use all plain TeX math commands
+    ;; even in Texinfo documents.  Thus it might be nice to develop
+    ;; context sensitive command so that the following four keys
+    ;; inherit the command in `TeX-mode-map' inside @math{}.
+    (define-key map "$"  #'self-insert-command)
+    (define-key map "^"  #'self-insert-command)
+    (define-key map "_"  #'self-insert-command)
+    (define-key map "\\" #'self-insert-command)
+    ;; Users benefit from `TeX-electric-macro' even in Texinfo mode
+    (define-key map "@" #'TeX-insert-backslash)
     map)
   "Keymap for Texinfo mode.")
 
