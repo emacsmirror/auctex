@@ -34,6 +34,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
+
 (defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."
   ;; Add `fragile' as an optional argument to the frame environment if

@@ -35,6 +35,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
+
 (TeX-add-style-hook
  "url"
  (lambda ()

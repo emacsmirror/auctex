@@ -51,6 +51,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
+
 (defvar LaTeX-fancyvrb-key-val-options
   `(("commentchar" ("none"))
     ("gobble")
