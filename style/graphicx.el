@@ -32,6 +32,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-graphicx-key-val-options
   '(("bb")
     ("bbllx")

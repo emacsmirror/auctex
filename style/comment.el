@@ -1,6 +1,6 @@
 ;;; comment.el --- AUCTeX style for `comment.sty'
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,11 @@
 ;; This file adds support for `comment.sty'.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (TeX-add-style-hook
  "comment"

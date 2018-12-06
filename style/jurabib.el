@@ -1,6 +1,6 @@
 ;;; jurabib.el --- AUCTeX style for the `jurabib' package
 
-;; Copyright (C) 2004, 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2007, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,11 @@
 ;; you assign the copyright to the FSF.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (TeX-add-style-hook
  "jurabib"

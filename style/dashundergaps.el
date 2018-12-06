@@ -31,6 +31,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-dashundergaps-key-val-options
   `(;; 2.1.1 Gap modes
     ("teacher-mode" ("true" "false"))

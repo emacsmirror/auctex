@@ -37,6 +37,11 @@
 (eval-when-compile
   (require 'latex))
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-bicaption-key-val-options
   '(("bi-lang" ("first" "second" "both"))
     ("bi-singlelinecheck" ("false" "no" "off" "0" "true" "yes" "on" "1"))

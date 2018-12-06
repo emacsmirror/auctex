@@ -1,6 +1,6 @@
 ;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)
 
-;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -41,8 +41,13 @@
 (eval-when-compile
   (require 'cl-lib))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-mdframed-key-val-options
   '(;; 6.2. Restoring the settings

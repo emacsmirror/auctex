@@ -47,6 +47,11 @@
 (eval-when-compile
   (require 'latex))
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-xcolor-core-color-models
   '("rgb" "cmy" "cmyk" "hsb" "gray")
   "List of core color models provided by xcolor.sty.")

@@ -44,8 +44,13 @@
 (eval-when-compile
   (require 'cl-lib))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 ;; FIXME: Anything missing?
 (defvar LaTeX-tcolorbox-keyval-options

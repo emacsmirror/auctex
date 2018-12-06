@@ -1,6 +1,6 @@
 ;;; exam.el --- AUCTeX style for the (LaTeX) exam class
 
-;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -31,6 +31,11 @@
 ;; Arash Esbati <arash@gnu.org> for a almost complete rewrite.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-exam-class-options
   '("answers" "noanswers" "cancelspace" "nocancelspace" "addpoints")

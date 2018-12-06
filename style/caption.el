@@ -38,8 +38,13 @@
   (require 'cl-lib)
   (require 'latex))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-caption-key-val-options
   '(("aboveskip")

@@ -63,8 +63,13 @@
   (require 'cl-lib)
   (require 'latex))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-floatrow-key-val-options
   '(;; 3.1.1 Float Style

@@ -1,6 +1,6 @@
 ;;; tcolorboxlib-raster.el --- AUCTeX style for `raster' library from tcolorbox
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,11 @@
 ;; This file adds support for `raster' library from tcolorbox.sty.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-tcolorbox-lib-raster-keyval-options
   '(;; 14.3 Option Keys of the Library

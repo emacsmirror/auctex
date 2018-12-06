@@ -31,6 +31,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-geometry-always-key-val-options
   '(("layout") ("layoutwidth") ("layoutheight") ("layoutsize")
     ("layouthoffset") ("layoutvoffset") ("layoutoffset") ("hscale")

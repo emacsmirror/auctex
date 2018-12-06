@@ -31,7 +31,12 @@
 
 ;;; Code:
 
-;; Needed for auto-parsing.
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+;; Needed for auto-parsing:
 (require 'tex)
 
 ;; Setup for \declaretheoremstyle:

@@ -37,6 +37,11 @@
 (eval-when-compile
   (require 'latex))
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-color-colour-models
   '("cmyk" "gray" "named" "rgb")
   "List of color models provided by `color.sty'.")

@@ -1,6 +1,6 @@
 ;;; csquotes.el --- AUCTeX style for `csquotes.sty'
 
-;; Copyright (C) 2004, 2005, 2006, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2014, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,8 +28,12 @@
 
 ;; This file adds support for `csquotes.sty', version 3.7.
 
-
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 ;; FIXME: It would be nice to be able to dump this function in favor
 ;; of a generalized handling of additional arguments for environments

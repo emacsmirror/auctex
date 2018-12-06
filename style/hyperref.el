@@ -30,6 +30,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-hyperref-package-options-list
   '(;; See https://www.tug.org/applications/hyperref/manual.html#x1-40003
     ;; General options

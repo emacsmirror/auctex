@@ -46,6 +46,11 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 ;; The following are options taken from chapter 4 of the listings
 ;; manual (2007/02/22 Version 1.4).
 (defvar LaTeX-listings-key-val-options

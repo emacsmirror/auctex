@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class
 
-;; Copyright (C) 2003, 2004, 2005, 2008, 2013-2016 Free Software Foundation
+;; Copyright (C) 2003, 2004, 2005, 2008, 2013-2016, 2018 Free Software Foundation
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -28,6 +28,11 @@
 ;; This file adds support for the latex-beamer class.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."

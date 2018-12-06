@@ -1,6 +1,6 @@
 ;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,6 +33,11 @@
 ;; implementation of "figureversion".
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (TeX-add-style-hook
  "fontaxes"

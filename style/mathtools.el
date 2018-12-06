@@ -36,8 +36,13 @@
 
 ;;; Code:
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 ;; amsmath options which can be passed directly to mathtools are
 ;; appended in the style hook below

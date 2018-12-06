@@ -1,6 +1,6 @@
 ;;; cleveref.el --- Style hook for the `cleveref.sty' package.
 
-;; Copyright (C) 2014--2016 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,6 +24,11 @@
 ;; 02110-1301, USA.
 
 ;;; Code
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defun TeX-arg-cleveref-multiple-labels (optional &optional prompt)
   "Prompt for a series of labels completing with known labels.

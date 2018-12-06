@@ -32,6 +32,11 @@
 
 (require 'tex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-minted-key-val-options
   '(("autogobble" ("true" "false"))
     ("baselinestretch" ("auto"))
