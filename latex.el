@@ -6620,6 +6620,26 @@ function would return non-nil and `(match-string 1)' would return
 		      (1+ any-col)
 		    beg-col))))))))
 
+;; Utilities:
+
+(defmacro LaTeX-check-insert-macro-default-style (&rest body)
+  "Check for values of `TeX-insert-macro-default-style' and `current-prefix-arg'.
+This is a utility macro with code taken from
+`TeX-parse-arguments'.  It should be used inside more complex
+function within AUCTeX style files where optional and mandatory
+arguments are queried and inserted.  For examples, check the
+functions `TeX-arg-color' (style/color.el) or
+`LaTeX-arg-bicaption-bicaption' (style/bicaption.el)."
+  `(unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
+	       (equal current-prefix-arg '(4))
+	     (or
+	      (and (eq TeX-insert-macro-default-style 'show-optional-args)
+		   (equal current-prefix-arg '(4)))
+	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
+		   (null (equal current-prefix-arg '(4))))
+	      last-optional-rejected))
+     ,@body))
+
 (provide 'latex)
 
 ;;; latex.el ends here

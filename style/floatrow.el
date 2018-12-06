@@ -58,9 +58,10 @@
 
 ;;; Code:
 
-;; Needed for compiling `cl-pushnew':
+;; Needed for compiling `cl-pushnew' & `LaTeX-check-insert-macro-default-style':
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'latex))
 
 ;; Needed for auto-parsing.
 (require 'tex)
@@ -337,27 +338,33 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; `TeX-argument-insert':
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (width (completing-read
-		 (TeX-argument-prompt t nil "Width")
-		 (mapcar (lambda (x) (concat TeX-esc (car x)))
-			 (LaTeX-length-list))))
-	 (height (completing-read
-		  (TeX-argument-prompt t nil "Height")
-		 (mapcar (lambda (x) (concat TeX-esc (car x)))
-			 (LaTeX-length-list))))
-	 (vertpos (if (string= height "")
-		      ""
-		    (completing-read
-		     (TeX-argument-prompt t nil "Vertical alignment")
-		     '("t" "c" "b" "s")))))
-    (TeX-argument-insert width t)
+	 (last-optional-rejected nil)
+	 (width (LaTeX-check-insert-macro-default-style
+		 (completing-read
+		  (TeX-argument-prompt t nil "Width")
+		  (mapcar (lambda (x) (concat TeX-esc (car x)))
+			  (LaTeX-length-list)))))
+	 (last-optional-rejected (and width (string= width "")))
+	 (height (LaTeX-check-insert-macro-default-style
+		  (completing-read
+		   (TeX-argument-prompt t nil "Height")
+		   (mapcar (lambda (x) (concat TeX-esc (car x)))
+			   (LaTeX-length-list)))))
+	 (last-optional-rejected (and height (string= height "")))
+	 (vertpos (LaTeX-check-insert-macro-default-style
+		   (if (string= height "")
+		       ""
+		     (completing-read
+		      (TeX-argument-prompt t nil "Vertical alignment")
+		      '("t" "c" "b" "s"))))))
+    (and width (TeX-argument-insert width t))
     ;; Insert an extra pair of brackets if only `height' is given,
     ;; otherwise it will become `width'
-    (when (and (string= width "")
+    (when (and width (string= width "")
 	       height (not (string= height "")))
       (insert "[]"))
-    (TeX-argument-insert height t)
-    (TeX-argument-insert vertpos t))
+    (and (TeX-argument-insert height t))
+    (and (TeX-argument-insert vertpos t)))
   ;; Now query for the (short-)caption.  Also check for the
   ;; float-type; if we're inside (sub)?floatrow*?, then check for the
   ;; next outer environment:

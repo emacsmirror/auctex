@@ -3379,6 +3379,9 @@ See `TeX-parse-macro' for details."
       (if (vectorp (car args))
 	  ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro'
 	  ;; for more comments.  See `TeX-insert-macro-default-style'.
+	  ;; The macro `LaTeX-check-insert-macro-default-style' in
+	  ;; `latex.el' uses the code inside (unless ...)  This macro
+	  ;; should be adapted if the code here changs.
 	  (unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
 		      (equal current-prefix-arg '(4))
 		    (or
