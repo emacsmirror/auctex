@@ -36,6 +36,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function reftex-compile-variables
+		  "reftex"
+		  ())
+
 (defvar LaTeX-ltxtable-file-regexp
   `(,(concat "\\\\LTXtable"
 	     "{\\(?:[^}]+\\)}"

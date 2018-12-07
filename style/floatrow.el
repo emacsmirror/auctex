@@ -71,6 +71,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function reftex-compile-variables
+		  "reftex"
+		  ())
+
 (defvar LaTeX-floatrow-key-val-options
   '(;; 3.1.1 Float Style
     ("style" ("plain" "plaintop" "Plaintop"

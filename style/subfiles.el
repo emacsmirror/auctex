@@ -38,6 +38,10 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function reftex-compile-variables
+		  "reftex"
+		  ())
+
 (defvar LaTeX-subfiles-package-options nil
   "Package options for the subfiles package.")
 
