@@ -39,6 +39,9 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
 (defvar LaTeX-fontspec-font-features
   '(;; 5 Font selection
     ("Extension" (".otf" ".ttf" ".ttc" ".dfont"))

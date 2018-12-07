@@ -48,6 +48,10 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
 (defvar LaTeX-breqn-key-val-options
   '(("style" ("\\tiny" "\\scriptsize" "\\footnotesize" "\\small"
 	      "\\normalsize" "\\large" "\\Large" "\\LARGE"

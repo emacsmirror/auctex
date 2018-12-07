@@ -52,6 +52,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
 ;; FIXME: Anything missing?
 (defvar LaTeX-tcolorbox-keyval-options
   '(;; 4.1 Title

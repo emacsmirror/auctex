@@ -39,6 +39,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
 (defvar LaTeX-menukeys-input-separators-list
   '("/" "=" "*" "+" "," ";" ":" "-" ">" "<" "bslash")
   "List of input separators for macros of menukeys package.")

@@ -41,6 +41,9 @@
 		  "font-latex"
 		  (&optional syntactic-kws))
 
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
 (defvar font-latex-syntactic-keywords-extra)
 
 (defvar LaTeX-minted-key-val-options

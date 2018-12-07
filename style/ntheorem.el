@@ -41,6 +41,14 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-color-definecolor-list
+		  "color"
+		  ())
+
+(declare-function LaTeX-xcolor-definecolor-list
+		  "xcolor"
+		  ())
+
 (defvar LaTeX-ntheorem-theoremstyle-list
   '(("plain") ("break") ("change") ("changebreak") ("margin")
     ("marginbreak") ("nonumberplain") ("nonumberbreak") ("empty"))
