@@ -34,6 +34,9 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar LaTeX-tcolorbox-keyval-options-local)
+(defvar LaTeX-tcolorbox-keyval-options-full)
+
 (defvar LaTeX-tcolorbox-lib-raster-keyval-options
   '(;; 14.3 Option Keys of the Library
     ("raster columns")

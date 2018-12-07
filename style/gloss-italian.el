@@ -34,6 +34,9 @@
 		  "font-latex"
 		  (quotes))
 
+(declare-function LaTeX-polyglossia-lang-option-member
+		  "polyglossia" (language option))
+
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
 

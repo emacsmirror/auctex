@@ -43,6 +43,8 @@
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+(declare-function LaTeX-add-newfloat-DeclareFloatingEnvironments
+		  "newfloat" (&rest newfloat-declarefloatingenvironments))
 
 (defvar font-latex-syntactic-keywords-extra)
 

@@ -38,6 +38,8 @@
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
+(defvar LaTeX-fancyvrb-key-val-options-local)
+
 (defvar LaTeX-fvextra-key-val-options
   '(;; 3 General options
     ("curlyquotes" ("true" "false"))

@@ -37,6 +37,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar LaTeX-article-class-options)
+
 (defvar LaTeX-exam-class-options
   '("answers" "noanswers" "cancelspace" "nocancelspace" "addpoints")
   "Class options for the exam class.")

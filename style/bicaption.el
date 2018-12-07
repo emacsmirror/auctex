@@ -42,6 +42,12 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-babel-active-languages "babel" ())
+(declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
+
+(defvar LaTeX-caption-supported-float-types)
+(defvar LaTeX-caption-key-val-options)
+
 (defvar LaTeX-bicaption-key-val-options
   '(("bi-lang" ("first" "second" "both"))
     ("bi-singlelinecheck" ("false" "no" "off" "0" "true" "yes" "on" "1"))

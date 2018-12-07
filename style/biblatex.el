@@ -35,6 +35,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar reftex-cite-format-builtin)
+
 (defvar LaTeX-biblatex-entrytype
   '(;; Regular Types
     "article" "book" "mvbook" "inbook" "bookinbook" "suppbook" "booklet"

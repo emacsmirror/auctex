@@ -1,6 +1,6 @@
 ;;; alphanum.el --- AUCTeX style for `alphanum.sty'
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2018 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,9 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function reftex-match-string "reftex" (n))
+(defvar reftex-section-regexp)
 
 (defun TeX-arg-none (arg)
   (insert " "))

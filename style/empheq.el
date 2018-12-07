@@ -42,6 +42,12 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-item-equation-alignat
+		  "amsmath" (&optional suppress))
+
+(defvar LaTeX-mathtools-package-options)
+(defvar font-latex-math-environments)
+
 (defvar LaTeX-empheq-key-val-options
   `(("box")
     ("innerbox")

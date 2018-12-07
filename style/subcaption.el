@@ -36,6 +36,9 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar LaTeX-caption-key-val-options-local)
+(defvar LaTeX-caption-key-val-options)
+
 (defvar LaTeX-subcaption-key-val-options
   '(("subrefformat" ("default" "empty" "simple" "brace" "parens")))
   "Key=value options for subcaption package.  This key takes the

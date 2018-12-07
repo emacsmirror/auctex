@@ -46,6 +46,11 @@
 		  "font-latex"
 		  (keywords class))
 
+(declare-function LaTeX-babel-active-languages "babel" ())
+(declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
+
+(defvar LaTeX-bicaption-key-val-options)
+
 (defvar LaTeX-caption-key-val-options
   '(("aboveskip")
     ("belowskip")

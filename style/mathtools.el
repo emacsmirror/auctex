@@ -44,6 +44,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar LaTeX-amsmath-package-options)
+
 ;; amsmath options which can be passed directly to mathtools are
 ;; appended in the style hook below
 (defvar LaTeX-mathtools-package-options

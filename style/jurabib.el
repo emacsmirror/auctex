@@ -40,6 +40,8 @@
 		  "font-latex"
 		  (keywords class))
 
+(defvar reftex-cite-format-builtin)
+
 (TeX-add-style-hook
  "jurabib"
  (lambda ()
