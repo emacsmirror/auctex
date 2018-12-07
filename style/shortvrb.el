@@ -1,6 +1,6 @@
 ;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'
 
-;; Copyright (C) 2009, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2014, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -40,6 +40,11 @@
 ;; file.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-to-syntax-alist
+		  "font-latex"
+		  (list))
 
 (defcustom LaTeX-shortvrb-chars nil
   "List of characters toggling verbatim mode.
