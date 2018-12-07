@@ -39,6 +39,8 @@
 		  "font-latex"
 		  (&optional syntactic-kws))
 
+(defvar font-latex-syntactic-keywords-extra)
+
 (TeX-add-style-hook
  "comment"
  (lambda ()

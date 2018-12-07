@@ -41,6 +41,8 @@
 		  "font-latex"
 		  (&optional syntactic-kws))
 
+(defvar font-latex-syntactic-keywords-extra)
+
 (defvar LaTeX-minted-key-val-options
   '(("autogobble" ("true" "false"))
     ("baselinestretch" ("auto"))
