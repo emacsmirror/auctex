@@ -5743,7 +5743,8 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	  (regexp-quote TeX-dollar-string)))
 
 (defcustom TeX-math-toggle-off-input-method t
-  "*If non-nil, auto toggle off CJK input methods when entering math mode."
+  "If non-nil, auto turn off some input methods when entering math mode.
+See `TeX-math-input-method-off-regexp'."
   :group 'TeX-macro
   :type 'boolean)
 
