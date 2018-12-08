@@ -35,6 +35,39 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function LaTeX-pst-arrows "pstricks" ())
+(declare-function LaTeX-pst-point  "pstricks" ())
+(declare-function TeX-arg-compl-list
+		  "pstricks" (list &optional prompt hist))
+
+(defvar LaTeX-pst-parameters-completion-regexp)
+(defvar LaTeX-pst-parameters-name-list)
+
+;;; Parameters
+(defvar LaTeX-pstplot-datasets nil
+  "List of parsed data sets defined with \\savedata or \\readdata.")
+
+(defvar LaTeX-pstplot-parameters-name-list
+  '("axesstyle" "labels" "plotpoints" "plotstyle" "showorigin" "ticks"
+    "ticksize" "tickstyle")
+  "A list of parameters' name in pst-plot.")
+
+(defvar LaTeX-pst-ticks-list '(t "none" "all" "x" "y")
+  "A list of values for ticks in pst-plot.")
+
+(defvaralias 'LaTeX-pst-labels-list 'LaTeX-pst-ticks-list)
+
+(defvar LaTeX-pst-plotstyle-list
+  '(t "dots" "line" "polygon" "curve" "ecurve" "ccurve")
+  "A list of values for tickstyles in pst-plot.")
+
+(defvar LaTeX-pst-tickstyle-list '(t "full" "top" "bottom")
+  "A list of values for tickstyles in pst-plot.")
+
+(defvar LaTeX-pst-axesstyle-list '(t "axes" "frame" "none")
+  "A list of values for axesstyles in pst-plot.")
+
 ;; Self Parsing -- see (info "(auctex)Hacking the Parser")
 (defvar LaTeX-auto-pstplot-regexp-list
   '(("\\\\\\(save\\|read\\)data{?\\(\\\\[a-zA-Z]+\\)}?"
@@ -60,30 +93,6 @@
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-pstplot-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-pstplot-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
-
-;;; Parameters
-(defvar LaTeX-pstplot-datasets nil
-  "List of parsed data sets defined with \\savedata or \\readdata.")
-
-(defvar LaTeX-pstplot-parameters-name-list
-  '("axesstyle" "labels" "plotpoints" "plotstyle" "showorigin" "ticks"
-    "ticksize" "tickstyle")
-  "A list of parameters' name in pst-plot.")
-
-(defvar LaTeX-pst-ticks-list '(t "none" "all" "x" "y")
-  "A list of values for ticks in pst-plot.")
-
-(defvaralias 'LaTeX-pst-labels-list 'LaTeX-pst-ticks-list)
-
-(defvar LaTeX-pst-plotstyle-list
-  '(t "dots" "line" "polygon" "curve" "ecurve" "ccurve")
-  "A list of values for tickstyles in pst-plot.")
-
-(defvar LaTeX-pst-tickstyle-list '(t "full" "top" "bottom")
-  "A list of values for tickstyles in pst-plot.")
-
-(defvar LaTeX-pst-axesstyle-list '(t "axes" "frame" "none")
-  "A list of values for axesstyles in pst-plot.")
 
 ;;; Macros
 (defun LaTeX-pst-macro-psaxes (_optional &optional _arg)
