@@ -4348,20 +4348,25 @@ typesetting and editing documents in European languages.
 @c -> @abbr{MULE, MULtilingual Enhancement to GNU Emacs}
 @c -> @acronym{CJK, Chinese@comma{} Japanese@comma{} and Korean}
 
-For @acronym{CJK} (Chinese, Japanese, and Korean) languages, Emacs with
-@acronym{MULE} (MULtilingual Enhancement to GNU Emacs) support is
-required.  @acronym{MULE} is part of Emacs by default since Emacs 20.
-Special versions of @TeX{} are needed for @acronym{CJK} languages:
-C@TeX{} and China@TeX{} for Chinese, ASCII p@TeX{} and NTT j@TeX{} for
-Japanese, H@LaTeX{} and k@TeX{} for Korean.  The @acronym{CJK}-@LaTeX{}
-package is required for supporting multiple @acronym{CJK} scripts within
-a single document.
+All Emacs versions supported by current @AUCTeX{} can handle
+@acronym{CJK} languages by default.
 
-@acronym{CJK} characters are not usable.  Please use the
-@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 and later if
-you need @acronym{CJK}.
+In most cases, special versions of @TeX{} engines are needed for
+high-quality typesetting of @acronym{CJK} languages: C@TeX{} and
+China@TeX{} for Chinese, ASCII p@TeX{}, up@TeX{} and NTT j@TeX{} for
+Japanese, H@LaTeX{} and k@TeX{} for Korean.  They are necessary as well
+when you want to typeset documents saved in their domestic encodings
+such as @acronym{Shift-JIS}.  Currently, @AUCTeX{} offers native support
+for p@TeX{}, up@TeX{} and j@TeX{} only.
 
 @c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
+
+If you don't need fine tuning in the result with respect to the
+typesetting rules of their respective national standards, most unicode
+based @TeX{} engines e.g. Lua@TeX{} and Xe@TeX{} can handle
+@acronym{CJK} languages by default if they are encoded in
+@acronym{UTF-8}.  The @acronym{CJK}-@LaTeX{} package is provided for
+supporting @acronym{CJK} scripts in a standard @LaTeX{} document.
 
 @menu
 * European::                    Using @AUCTeX{} with European Languages
@@ -4729,12 +4734,14 @@ The following two additional font commands are available in
 @item C-c C-f g
 @kindex C-c C-f g
 @cindex @code{\textgt}
-Insert @b{gothic face} font command @samp{\textbf@{@point{}@}} or
-@samp{\mathbf@{@point{}@}} depending on the context.
+@cindex @code{\mathgt}
+Insert @b{gothic face} font command @samp{\textgt@{@point{}@}} or
+@samp{\mathgt@{@point{}@}} depending on the context.
 
 @item C-c C-f m
 @kindex C-c C-f m
 @cindex @code{\textmc}
+@cindex @code{\mathmc}
 Insert mincho font command @samp{\textmc@{@point{}@}} or
 @samp{\mathmc@{@point{}@}} depending on the context.
 
