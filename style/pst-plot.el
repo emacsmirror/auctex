@@ -79,7 +79,7 @@
   "Temporary for parsing \\*data definitions.")
 
 (defun LaTeX-pstplot-cleanup ()
-  "Move symbols from `LaTeX-auto-pstplot to `TeX-auto-symbol'."
+  "Move symbols from `LaTeX-auto-pstplot' to `TeX-auto-symbol'."
   (mapcar (lambda (symbol)
             ;; (setq TeX-symbol-list (cons (list symbol 0) TeX-symbol-list))
             ;; (setq TeX-auto-symbol (cons (list symbol 0) TeX-auto-symbol)))
