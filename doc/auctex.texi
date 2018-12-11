@@ -3645,7 +3645,7 @@ settings that work for some users.
       (lambda ()
 	(call-process
 	 "wmctrl" nil nil nil "-i" "-R"
-	 (frame-parameter (selected-frame) ’outer-window-id))))
+	 (frame-parameter (selected-frame) 'outer-window-id))))
 @end lisp
 @end defopt
 
@@ -5899,5 +5899,6 @@ used by @AUCTeX{} for sectioning.
 
 @c Local Variables:
 @c mode: texinfo
+@c coding: utf-8
 @c TeX-master: t
 @c End:
