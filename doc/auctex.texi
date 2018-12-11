@@ -1354,11 +1354,12 @@ Space will complete and exit.
 
 By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
-This can be stopped by entering @code{LaTeX-math-mode},
-@pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil.
+This is supressed inside math mode and can be disabled totally by
+setting @code{TeX-insert-braces} to nil.
 
 @defopt TeX-insert-braces
-If non-nil, append a empty pair of braces after inserting a macro.
+If non-nil, append a empty pair of braces after inserting a macro with
+no arguments.
 @end defopt
 
 @defopt TeX-insert-braces-alist
@@ -1370,7 +1371,7 @@ the macro name, and the cdr is non-nil or nil, depending on whether a
 pair of braces should be, respectively, appended or not to the macro.
 
 If a macro has an element in this variable, @code{TeX-parse-macro} will
-use its value to decided what to do, whatever the value of the variable
+use its value to decide what to do, whatever the value of the variable
 @code{TeX-insert-braces}.
 @end defopt
 
@@ -3916,6 +3917,8 @@ process was started.
 @vindex Texinfo-clean-output-suffixes
 @vindex ConTeXt-clean-intermediate-suffixes
 @vindex ConTeXt-clean-output-suffixes
+@vindex AmSTeX-clean-intermediate-suffixes
+@vindex AmSTeX-clean-output-suffixes
 Remove generated intermediate files.  In case a prefix argument is
 given, remove output files as well.
 
@@ -3933,8 +3936,10 @@ for each @AUCTeX{} mode by means of the variables
 @code{docTeX-clean-output-suffixes},
 @code{Texinfo-clean-intermediate-suffixes},
 @code{Texinfo-clean-output-suffixes},
-@code{ConTeXt-clean-intermediate-suffixes} and
-@code{ConTeXt-clean-output-suffixes}.
+@code{ConTeXt-clean-intermediate-suffixes},
+@code{ConTeXt-clean-output-suffixes},
+@code{AmSTeX-clean-intermediate-suffixes} and
+@code{AmSTeX-clean-output-suffixes}.
 @end deffn
 
 @defopt TeX-clean-confirm
