@@ -165,7 +165,7 @@ STYLESRC = style/prosper.el \
 	   style/arabxetex.el style/australian.el style/newzealand.el \
 	   style/xltabular.el style/marginnote.el style/thmtools.el \
 	   style/ocg-p.el     style/ocgx.el      style/thm-restate.el \
-	   style/dashundergaps.el
+	   style/pythontex.el style/dashundergaps.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
