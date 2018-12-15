@@ -226,8 +226,9 @@
    (TeX-add-symbols
     '("hypersetup" (TeX-arg-key-val LaTeX-hyperref-package-options-list))
     '("href" [ (TeX-arg-key-val LaTeX-hyperref-href-options) ] "URL" "Text")
-    ;; Supply dummy arg `ignore' to override the entry in url.el.
-    '("url" "URL" ignore)
+    ;; Completion for \url is provided via url.el.  Hence the entry in
+    ;; this style is commented:
+    ;; '("url" "URL" ignore)
     '("nolinkurl" t)
     '("hyperbaseurl" t)
     '("hyperimage" "Image URL" "Text")
