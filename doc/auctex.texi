@@ -1354,7 +1354,7 @@ Space will complete and exit.
 
 By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
-This is supressed inside math mode and can be disabled totally by
+This is suppressed inside math mode and can be disabled totally by
 setting @code{TeX-insert-braces} to nil.
 
 @defopt TeX-insert-braces
