@@ -1,4 +1,4 @@
-;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.5.2)
+;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.6)
 
 ;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `enumitem.sty' (v3.5.2) from 2011/09/28.
+;; This file adds support for `enumitem.sty' (v3.6) from 2018/11/30.
 ;; `enumitem.sty' is part of TeXLive.
 
 ;; Tassilo Horn's `minted.el' was a major source of inspiration for
@@ -50,36 +50,66 @@
 		  (keywords class))
 
 (defvar LaTeX-enumitem-key-val-options
-  '(;; Vertical Spacing
-    ("topsep")
-    ("partopsep")
-    ("parsep")
-    ("itemsep")
-    ;; Horizontal Spacing
+  `(;; 3.1 Label and cross references format
+    ("label"  ("\\alph*"  "\\Alph*"  "\\arabic*"
+	       "\\roman*" "\\Roman*" "\\value*"))
+    ("label*" ("\\alph*"  "\\Alph*"  "\\arabic*"
+	       "\\roman*" "\\Roman*" "\\value*"))
+    ("ref"    ("\\alph*"  "\\Alph*"  "\\arabic*"
+	       "\\roman*" "\\Roman*" "\\value*"))
+    ("font" ,(mapcar (lambda (mac)
+		       (concat TeX-esc mac))
+		     '(;; family
+		       "rmfamily" "sffamily" "ttfamily"
+		       ;; series
+		       "mdseries" "bfseries"
+		       ;; shape
+		       "upshape" "itshape" "slshape" "scshape"
+		       ;; size
+		       "tiny"  "scriptsize" "footnotesize"
+		       "small" "normalsize" "large"
+		       "Large" "LARGE" "huge" "Huge"
+		       ;; reset macro
+		       "normalfont")))
+    ("format" ,(mapcar (lambda (mac)
+			 (concat TeX-esc mac))
+		       '(;; family
+			 "rmfamily" "sffamily" "ttfamily"
+			 ;; series
+			 "mdseries" "bfseries"
+			 ;; shape
+			 "upshape" "itshape" "slshape" "scshape"
+			 ;; size
+			 "tiny"  "scriptsize" "footnotesize"
+			 "small" "normalsize" "large"
+			 "Large" "LARGE" "huge" "Huge"
+			 ;; reset macro
+			 "normalfont")))
+    ("align" ("left" "right" "parleft"))
+    ;; 3.2 Horizontal spacing of labels
+    ("labelindent" ("*" "!"))
+    ("left")
     ("leftmargin"  ("*" "!"))
     ("itemindent"  ("*" "!"))
     ("labelsep"    ("*" "!"))
     ("labelwidth"  ("*" "!"))
-    ("labelindent" ("*" "!"))
-    ("labelsep*")
-    ("labelindent*")
     ("widest")
     ("widest*")
+    ("labelsep*")
+    ("labelindent*")
     ("rightmargin")
-    ;; Labels and cross reference format
-    ("label")
-    ("label*")
-    ("ref")
-    ("font")
-    ("format")
-    ("align" ("left" "right" "parleft"))
-    ;; Numbering, stopping, resuming
+    ;; Vertical Spacing
+    ("topsep")
+    ("partopsep")
+    ("parsep")
+    ("itemsep")
+    ;; 3.3 Numbering, stopping, and resuming
     ("start")
     ("resume")
     ("resume*")
-    ;; Series
+    ;; 3.4 Series
     ("series")
-    ;; Penalties
+    ;; 3.5 Penalties
     ("beginpenalty")
     ("midpenalty")
     ("endpenalty")
@@ -87,14 +117,16 @@
     ("before*")
     ("after")
     ("after*")
-    ;; Description styles
-    ("style" ("standard" "multiline" "nextline" "sameline" "unboxed"))
-    ;; Compact lists
+    ("first")
+    ("first*")
+    ;; 3.6 Description styles
+    ("style" ("standard" "unboxed" "nextline" "sameline" "multiline"))
+    ;; 3.7 Compact lists
     ("noitemsep")
     ("nosep")
-    ;; Wide lists
+    ;; 3.8 Wide lists
     ("wide")
-    ;; Inline lists
+    ;; 4 Inline lists
     ("itemjoin")
     ("itemjoin*")
     ("afterlabel")
@@ -182,7 +214,7 @@ package.")
   ;; Now add the parsed env's to the local list.
   (when (LaTeX-enumitem-newlist-list)
     (setq LaTeX-enumitem-newlist-list-local
-	  (append (mapcar 'list (mapcar 'car (LaTeX-enumitem-newlist-list)))
+	  (append (mapcar #'list (mapcar #'car (LaTeX-enumitem-newlist-list)))
 		  LaTeX-enumitem-newlist-list-local))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-enumitem-auto-prepare t)
@@ -282,7 +314,7 @@ in `enumitem'-completions."
 	   (temp (copy-alist LaTeX-enumitem-key-val-options-local))
 	   (opts (assq-delete-all (car (assoc key temp)) temp)))
       (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-	          opts :test #'equal)
+		  opts :test #'equal)
       (setq LaTeX-enumitem-key-val-options-local (copy-alist opts)))))
 
 (TeX-add-style-hook
@@ -323,7 +355,7 @@ in `enumitem'-completions."
       '("description*" LaTeX-enumitem-env-with-opts))
      (add-to-list 'LaTeX-item-list '("description*" . LaTeX-item-argument)))
 
-   ;; Cloning lists
+   ;; 7 Cloning the basic lists
    (TeX-add-symbols
     ;; The easy way would be:
     ;; '("newlist"
@@ -370,8 +402,12 @@ in `enumitem'-completions."
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
 		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
-		     `(,@LaTeX-enumitem-newlist-list-local
-		       ("1") ("2") ("3") ("4"))) ","]
+		     (append
+		      (when (LaTeX-provided-package-options-member "enumitem"
+								   "includedisplayed")
+			'("trivlist"))
+		      LaTeX-enumitem-newlist-list-local
+		      '(("1") ("2") ("3") ("4")))) ","]
       (TeX-arg-eval
        (lambda ()
 	 (LaTeX-enumitem-update-key-val-options)
@@ -383,8 +419,12 @@ in `enumitem'-completions."
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
 		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
-		     `(,@LaTeX-enumitem-newlist-list-local
-		       ("1") ("2") ("3") ("4"))) ","]
+		     (append
+		      (when (LaTeX-provided-package-options-member "enumitem"
+								   "includedisplayed")
+			'("trivlist"))
+		      LaTeX-enumitem-newlist-list-local
+		      '(("1") ("2") ("3") ("4")))) ","]
       (TeX-arg-eval
        (lambda ()
 	 (LaTeX-enumitem-update-key-val-options)
@@ -425,8 +465,11 @@ in `enumitem'-completions."
     ;; "Key" will be parsed and added to key-val list.
     '("SetEnumitemKey" LaTeX-arg-SetEnumitemKey)
 
-    ;; "Key" and "Value" are added to our key-val list
-    '("SetEnumitemValue" LaTeX-arg-SetEnumitemValue "Replacement"))
+    ;; "Key" and "Value" are added to our key-val list.
+    '("SetEnumitemValue" LaTeX-arg-SetEnumitemValue "Replacement")
+
+    ;; v3.6 has a macro for visual debugging.
+    '("DrawEnumitemLabel" 0))
 
    ;; Setting enumerate short label
    (when (LaTeX-provided-package-options-member "enumitem" "shortlabels")
@@ -435,6 +478,9 @@ in `enumitem'-completions."
 	(TeX-arg-eval completing-read "Key: "
 		      '(("A") ("a") ("I") ("i") ("1")))
 	"Replacement")))
+
+   ;; Add \labelindent to list of known lengths:
+   (LaTeX-add-lengths "labelitem")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -454,7 +500,8 @@ in `enumitem'-completions."
  LaTeX-dialect)
 
 (defvar LaTeX-enumitem-package-options
-  '("inline" "ignoredisplayed" "shortlabels" "loadonly")
+  '("inline" "shortlabels" "loadonly" "sizes"
+    "ignoredisplayed" "includedisplayed")
   "Package options for the enumitem package.")
 
 ;;; enumitem.el ends here
