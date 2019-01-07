@@ -857,7 +857,7 @@ script operators ^ and _ are not displayed."
   :group 'font-latex)
 (put 'font-latex-fontify-script 'safe-local-variable
      (lambda (val)
-       (or (TeX-booleanp val)
+       (or (booleanp val)
 	   (memq val '(multi-level invisible)))))
 
 (defcustom font-latex-fontify-script-max-level 3

@@ -234,7 +234,7 @@ It can be a list of themes or a function.  If it is the symbol
 This variable is intended to be used as a file local variable to
 override the autodetection of the biblatex backend.")
 (make-variable-buffer-local 'LaTeX-biblatex-use-Biber)
-(put 'LaTeX-biblatex-use-Biber 'safe-local-variable 'TeX-booleanp)
+(put 'LaTeX-biblatex-use-Biber 'safe-local-variable #'booleanp)
 
 ;; style/comment.el
 

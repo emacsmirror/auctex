@@ -1850,7 +1850,7 @@ SyncTeX are recognized."
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
-(put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
+(put 'TeX-source-correlate-mode 'safe-local-variable #'booleanp)
 ;; We do not want the custom variable to require tex.el.  This is only
 ;; necessary if AUCTeX was compiled with Emacs 21.
 (put 'TeX-source-correlate-mode 'custom-requests nil)
@@ -1995,7 +1995,7 @@ enabled and the `synctex' binary is available."
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable 'TeX-booleanp)
+(put 'TeX-PDF-mode 'safe-local-variable #'booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -2093,7 +2093,7 @@ Programs should not use this variable directly but the function
   :group 'TeX-command
   :type 'boolean)
 (make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'TeX-booleanp)
+(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable #'booleanp)
 (make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
 (defun TeX-PDF-from-DVI ()
@@ -4633,10 +4633,6 @@ See `match-data' for details."
   (if (match-beginning n)
       (buffer-substring-no-properties (match-beginning n) (match-end n))
     ""))
-
-(defun TeX-booleanp (arg)
-  "Return non-nil if ARG is t or nil."
-  (memq arg '(t nil)))
 
 (defun TeX-looking-at-backward (regexp &optional limit)
   "Return non-nil if the text before point matches REGEXP.
