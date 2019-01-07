@@ -1851,9 +1851,6 @@ SyncTeX are recognized."
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable #'booleanp)
-;; We do not want the custom variable to require tex.el.  This is only
-;; necessary if AUCTeX was compiled with Emacs 21.
-(put 'TeX-source-correlate-mode 'custom-requests nil)
 (setq minor-mode-map-alist
       (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
 	    minor-mode-map-alist))
@@ -2215,14 +2212,11 @@ output files."
 		  (directory-files (or master-dir ".") nil regexp))))
     (if files
 	(when (or (not TeX-clean-confirm)
-		  (condition-case nil
-		      (dired-mark-pop-up " *Deletions*" 'delete
-					 (if (> (length files) 1)
-					     files
-					   (cons t files))
-					 'y-or-n-p "Delete files? ")
-		    (wrong-type-argument ; e.g. with Emacs 21
-		     (y-or-n-p (format "Delete %S? " (car files))))))
+		  (dired-mark-pop-up " *Deletions*" 'delete
+				     (if (> (length files) 1)
+					 files
+				       (cons t files))
+				     'y-or-n-p "Delete files? "))
 	  (dolist (file files)
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
