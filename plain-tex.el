@@ -138,7 +138,7 @@ of `plain-TeX-mode-hook'."
   (add-hook 'tool-bar-mode-on-hook 'plain-TeX-maybe-install-toolbar nil t)
   (when (and (boundp 'tool-bar-mode) tool-bar-mode)
     (plain-TeX-maybe-install-toolbar))
-  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
 (defun plain-TeX-common-initialization ()
@@ -314,7 +314,7 @@ of `AmS-TeX-mode-hook'."
 
   (setq TeX-base-mode-name "AmS-TeX")
   (setq TeX-command-default "AmSTeX")
-  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
   (TeX-set-mode-name))
 
 (defcustom AmSTeX-clean-intermediate-suffixes

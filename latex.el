@@ -5926,7 +5926,7 @@ of `LaTeX-mode-hook'."
 		       (apply #'append
 			      (mapcar #'cdr LaTeX-provided-class-options)))))
 	    nil t)
-  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
   (TeX-set-mode-name)

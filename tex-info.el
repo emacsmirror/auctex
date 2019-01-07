@@ -853,7 +853,7 @@ value of `Texinfo-mode-hook'."
   (if (and (boundp 'reftex-mode) reftex-mode)
       (Texinfo-reftex-hook))
 
-  (TeX-run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
+  (run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
 
 (defcustom Texinfo-clean-intermediate-suffixes nil

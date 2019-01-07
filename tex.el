@@ -4665,9 +4665,6 @@ to look backward for."
     (skip-chars-backward " \t\n")
     (bobp)))
 
-(defalias 'TeX-run-mode-hooks
-  (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
-
 (defun TeX-add-to-alist (alist-var new-alist)
   "Add NEW-ALIST to the ALIST-VAR.
 If an element with the same key as the key of an element of
