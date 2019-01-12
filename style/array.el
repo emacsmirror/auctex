@@ -1,6 +1,6 @@
 ;;; array.el --- AUCTeX style for `array.sty'
 
-;; Copyright (C) 2013, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2015, 2018, 2019 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -62,7 +62,7 @@ and make it buffer local. "
 		  (TeX-delete-duplicate-strings
 		   (split-string
 		    (concat LaTeX-array-column-letters
-			    (mapconcat 'car (LaTeX-array-newcolumntype-list) ""))
+			    (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
 		    "" t))
 		  "")))
 
@@ -95,7 +95,7 @@ and make it buffer local. "
 
    ;; `array.sty' adds some new column specification letters.
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "m" "b"))
+	(concat LaTeX-array-column-letters "m" "b" "w" "W"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
