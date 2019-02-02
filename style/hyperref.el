@@ -275,11 +275,12 @@
    (LaTeX-add-environments
     '("Form"))
 
-   ;; Do not indent the content of the "Form"-env; it is odd if the whole
-   ;; document is indented.  Append to `LaTeX-indent-environment-list' in order
-   ;; not to override custom settings.
-   (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list '("Form" current-indentation) t)
+   ;; Do not indent the content of the "Form"-env; it is odd if the
+   ;; whole document is indented.  Append it to a local version of
+   ;; `LaTeX-document-regexp':
+   (unless (string-match-p "Form" LaTeX-document-regexp)
+     (set (make-local-variable 'LaTeX-document-regexp)
+	  (concat LaTeX-document-regexp "\\|" "Form")))
 
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
