@@ -1,11 +1,13 @@
 ;;; auctex.el --- Integrated environment for *TeX*
 
-;; Copyright (C) 2014-2017 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2019 Free Software Foundation, Inc.
 
 ;; Version: 12.1.2
 ;; URL: http://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 ;; Notifications-To: auctex-diffs@gnu.org
+;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
+;; Keywords: TeX LaTeX Texinfo ConTeXt docTeX preview-latex
 
 ;; This file is part of GNU Emacs.
 
@@ -28,9 +30,16 @@
 ;; strange trick causes tex-site.el to be loaded in a way that can be
 ;; safely undone using (unload-feature 'tex-site).
 
+;; FIXME: I don't quite understand in which way this is better than less
+;; strange code such as
+;;     (require 'tex-site (expand-file-name "tex-site.el"
+;;                         (file-name-directory load-file-name))
+
 ;;; Code:
 
 (autoload 'TeX-load-hack
   (expand-file-name "tex-site.el"
                     (file-name-directory load-file-name)))
 (TeX-load-hack)
+
+;;; auctex.el ends here
