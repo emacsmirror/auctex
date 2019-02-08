@@ -1,6 +1,6 @@
 ;;; bidi.el --- AUCTeX style for the (XeLaTeX) bidi package
 
-;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -28,6 +28,11 @@
 ;; This file adds support for the bidi package version 31.7
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-bidi-package-options
   '("RTLdocument" "rldocument" "extrafootnotefeatures")

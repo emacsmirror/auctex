@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2017 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -479,6 +479,11 @@ asked if it is positive, and suppressed if it is not.
 Run function `TeX-check-engine' to check the correct engine has
 been set."
   (TeX-check-engine name)
+
+  ;; Make sure that `TeX-command-buffer' is set always.
+  ;; It isn't safe to remove similar lines in `TeX-run-command' etc.
+  ;; because preview-latex calls `TeX-run-command' directly.
+  (setq-default TeX-command-buffer (current-buffer))
 
   (cond ((eq file #'TeX-region-file)
 	 (setq TeX-current-process-region-p t))
@@ -3352,46 +3357,40 @@ error."
   :group 'TeX-output)
 
 (defface TeX-error-description-error
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `error' face in latest GNU Emacs versions.
-    '((((class color) (min-colors 88) (background light))
-       :foreground "Red1" :weight bold)
-      (((class color) (min-colors 88) (background dark))
-       :foreground "Pink" :weight bold)
-      (((class color) (min-colors 16) (background light))
-       :foreground "Red1" :weight bold)
-      (((class color) (min-colors 16) (background dark))
-       :foreground "Pink" :weight bold)
-      (((class color) (min-colors 8))
-       :foreground "red" :weight bold)
-      (t (:inverse-video t :weight bold))))
+  ;; This is the same as `error' face in latest GNU Emacs versions.
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 16) (background light))
+     :foreground "Red1" :weight bold)
+    (((class color) (min-colors 16) (background dark))
+     :foreground "Pink" :weight bold)
+    (((class color) (min-colors 8))
+     :foreground "red" :weight bold)
+    (t (:inverse-video t :weight bold)))
   "Face for \"Error\" string in error descriptions.")
 
 (defface TeX-error-description-warning
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `warning' face in latest GNU Emacs versions.
-    '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
-      (((class color)) :foreground "yellow" :weight bold)))
+  ;; This is the same as `warning' face in latest GNU Emacs versions.
+  '((((class color) (min-colors 16)) :foreground "DarkOrange" :weight bold)
+    (((class color)) :foreground "yellow" :weight bold))
   "Face for \"Warning\" string in error descriptions.")
 
 (defface TeX-error-description-tex-said
-  (if (< emacs-major-version 22)
-      nil
-    ;; This is the same as `font-lock-function-name-face' face in latest GNU
-    ;; Emacs versions.
-    '((((class color) (min-colors 88) (background light))
-       :foreground "Blue1")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "LightSkyBlue")
-      (((class color) (min-colors 16) (background light))
-       :foreground "Blue")
-      (((class color) (min-colors 16) (background dark))
-       :foreground "LightSkyBlue")
-      (((class color) (min-colors 8))
-       :foreground "blue" :weight bold)
-      (t (:inverse-video t :weight bold))))
+  ;; This is the same as `font-lock-function-name-face' face in latest GNU
+  ;; Emacs versions.
+  '((((class color) (min-colors 88) (background light))
+     :foreground "Blue1")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 16) (background light))
+     :foreground "Blue")
+    (((class color) (min-colors 16) (background dark))
+     :foreground "LightSkyBlue")
+    (((class color) (min-colors 8))
+     :foreground "blue" :weight bold)
+    (t (:inverse-video t :weight bold)))
   "Face for \"TeX said\" string in error descriptions.")
 
 (defface TeX-error-description-help
@@ -3695,32 +3694,31 @@ forward, if negative)."
 (easy-menu-define TeX-error-overview-menu
   TeX-error-overview-mode-map
   "Menu used in TeX error overview mode."
-  (TeX-menu-with-help
-   '("TeX errors"
-     ["Next error" TeX-error-overview-next-error
-      :help "Jump to the next error"]
-     ["Previous error" TeX-error-overview-previous-error
-      :help "Jump to the previous error"]
-     ["Go to source" TeX-error-overview-goto-source
-      :help "Show the error in the source"]
-     ["Jump to source" TeX-error-overview-jump-to-source
-      :help "Move point to the error in the source"]
-     ["Go to log" TeX-error-overview-goto-log
-      :help "Show the error in the log buffer"]
-     "-"
-     ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
-      :style toggle :selected TeX-debug-bad-boxes
-      :help "Show overfull and underfull boxes"]
-     ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
-      :style toggle :selected TeX-debug-warnings
-      :help "Show warnings"]
-     ["Ignore Unimportant Warnings"
-      TeX-error-overview-toggle-suppress-ignored-warnings
-      :style toggle :selected TeX-suppress-ignored-warnings
-      :help "Hide specified warnings"]
-     "-"
-     ["Quit" TeX-error-overview-quit
-      :help "Quit"])))
+  '("TeX errors"
+    ["Next error" TeX-error-overview-next-error
+     :help "Jump to the next error"]
+    ["Previous error" TeX-error-overview-previous-error
+     :help "Jump to the previous error"]
+    ["Go to source" TeX-error-overview-goto-source
+     :help "Show the error in the source"]
+    ["Jump to source" TeX-error-overview-jump-to-source
+     :help "Move point to the error in the source"]
+    ["Go to log" TeX-error-overview-goto-log
+     :help "Show the error in the log buffer"]
+    "-"
+    ["Debug Bad Boxes" TeX-error-overview-toggle-debug-bad-boxes
+     :style toggle :selected TeX-debug-bad-boxes
+     :help "Show overfull and underfull boxes"]
+    ["Debug Warnings" TeX-error-overview-toggle-debug-warnings
+     :style toggle :selected TeX-debug-warnings
+     :help "Show warnings"]
+    ["Ignore Unimportant Warnings"
+     TeX-error-overview-toggle-suppress-ignored-warnings
+     :style toggle :selected TeX-suppress-ignored-warnings
+     :help "Hide specified warnings"]
+    "-"
+    ["Quit" TeX-error-overview-quit
+     :help "Quit"]))
 
 (defvar TeX-error-overview-list-entries nil
   "List of errors to be used in the error overview.")
@@ -3831,35 +3829,7 @@ warnings and bad boxes"
 
 ;;; Output mode
 
-(defalias 'TeX-special-mode
-  (if (fboundp 'special-mode)
-      (progn
-        (defvaralias 'TeX-special-mode-map 'special-mode-map)
-        #'special-mode)
-    (defvar TeX-special-mode-map
-      (let ((map (make-sparse-keymap)))
-        (suppress-keymap map)
-        (define-key map "q" (if (fboundp 'quit-window)
-                                'quit-window
-                              'bury-buffer))
-        (define-key map " " (if (fboundp 'scroll-up-command)
-                                'scroll-up-command
-                              'scroll-up))
-        (define-key map [backspace] (if (fboundp 'scroll-down-command)
-                                        'scroll-down-command
-                                      'scroll-down))
-        (define-key map "\C-?" (if (fboundp 'scroll-down-command)
-                                   'scroll-down-command
-                                 'scroll-down))
-        (define-key map "?" 'describe-mode)
-        (define-key map "h" 'describe-mode)
-        (define-key map ">" 'end-of-buffer)
-        (define-key map "<" 'beginning-of-buffer)
-        (define-key map "g" 'revert-buffer)
-        map)
-      "Keymap for `TeX-special-mode-map'.")
-    (lambda ()
-      "Placeholder mode for Emacsen which don't have `special-mode'.")))
+(define-derived-mode TeX-special-mode special-mode "TeX")
 
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))

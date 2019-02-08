@@ -32,6 +32,22 @@
 
 (require 'tex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
+
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+(declare-function LaTeX-add-newfloat-DeclareFloatingEnvironments
+		  "newfloat" (&rest newfloat-declarefloatingenvironments))
+
+(defvar font-latex-syntactic-keywords-extra)
+
 (defvar LaTeX-minted-key-val-options
   '(("autogobble" ("true" "false"))
     ("baselinestretch" ("auto"))

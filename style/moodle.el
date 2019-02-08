@@ -1,6 +1,6 @@
 ;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,11 @@
 ;; easier.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-moodle-key-val-options
   '(("points")

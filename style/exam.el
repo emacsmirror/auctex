@@ -1,6 +1,6 @@
 ;;; exam.el --- AUCTeX style for the (LaTeX) exam class
 
-;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -32,9 +32,21 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(defvar LaTeX-article-class-options)
+
 (defvar LaTeX-exam-class-options
   '("answers" "noanswers" "cancelspace" "nocancelspace" "addpoints")
   "Class options for the exam class.")
+
+(TeX-load-style "article")
+;; Add options from `LaTeX-article-class-options' only once:
+(dolist (opt LaTeX-article-class-options)
+  (add-to-list 'LaTeX-exam-class-options opt))
 
 (defun LaTeX-exam-insert-item ()
   "Insert a new item in an environment from exam class.
@@ -63,9 +75,6 @@ Arguments NAME and TYPE are the same as for the function
  "exam"
  (lambda ()
    (TeX-run-style-hooks "article")
-   ;; Add options from `LaTeX-article-class-options' only once:
-   (dolist (opt LaTeX-article-class-options)
-     (add-to-list 'LaTeX-exam-class-options opt))
    ;; Make our label prefix available ...
    (let ((envs '("questions")))
      (dolist (env envs)

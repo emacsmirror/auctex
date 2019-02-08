@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.3-111)
 
-;; Copyright (C) 2015--2017 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,10 +35,21 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'latex))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function LaTeX-babel-active-languages "babel" ())
+(declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
+
+(defvar LaTeX-bicaption-key-val-options)
 
 (defvar LaTeX-caption-key-val-options
   '(("aboveskip")
@@ -176,10 +187,10 @@ in `caption'-completions."
 	      (when (and (string-equal key "labelformat")
 			 (boundp 'LaTeX-subcaption-key-val-options))
 		(cl-pushnew (list "subrefformat"
-			          (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+				  (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
 			    opts :test #'equal))
 	      (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-		          opts :test #'equal))
+			  opts :test #'equal))
 	  (cl-pushnew (list key (list val)) opts :test #'equal)))
       (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
   ;; Support for environments defined with newfloat.sty: These
@@ -255,15 +266,19 @@ caption, insert only a caption."
     (insert TeX-grcl))
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (width (completing-read (TeX-argument-prompt t nil "Width")
-				 (mapcar (lambda (elt) (concat TeX-esc (car elt)))
-					 (LaTeX-length-list))))
-	 (inpos (if (and width (not (string-equal width "")))
-		    (completing-read (TeX-argument-prompt t nil "Inner position")
-				     '("c" "l" "r" "s"))
-		  "")))
-    (TeX-argument-insert width t)
-    (TeX-argument-insert inpos t))
+	 (last-optional-rejected nil)
+	 (width (LaTeX-check-insert-macro-default-style
+		 (completing-read (TeX-argument-prompt t nil "Width")
+				  (mapcar (lambda (elt) (concat TeX-esc (car elt)))
+					  (LaTeX-length-list)))))
+	 (last-optional-rejected (and width (string= width "")))
+	 (inpos (LaTeX-check-insert-macro-default-style
+		 (if (and width (not (string-equal width "")))
+		     (completing-read (TeX-argument-prompt t nil "Inner position")
+				      '("c" "l" "r" "s"))
+		   ""))))
+    (and width (TeX-argument-insert width t))
+    (and inpos (TeX-argument-insert inpos t)))
   ;; Fill the paragraph before inserting {}.  We can use
   ;; `LaTeX-fill-paragraph' without messing up the code since
   ;; \caption starts a new paragraph with AUCTeX

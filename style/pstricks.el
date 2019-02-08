@@ -1,7 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.
 
-;; Copyright (C) 2007, 2009, 2013-2015,
-;;               2018  Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2009, 2013-2015, 2018  Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -232,7 +231,7 @@ package PNAME"
 
 (defun LaTeX-pst-point-in-parens (_optional)
   "Enclose point in parentheses."
-  (LaTeX-pst-enclose-obj 'LaTeX-pst-point ?( ?)))
+  (LaTeX-pst-enclose-obj 'LaTeX-pst-point ?\( ?\)))
 
 ;;; Angles
 (defvar LaTeX-pst-angle-list (list "0")
@@ -720,7 +719,7 @@ comma separated list. Point has to be within the sexp to modify."
         (progn
           (re-search-backward "\\\\\\([a-zA-Z]\\)")
           (forward-word 1)
-          (insert-pair nil ?[ ?]))
+          (insert-pair nil ?\[ ?\]))
       (up-list 1)
       (backward-char 1)
       (save-excursion

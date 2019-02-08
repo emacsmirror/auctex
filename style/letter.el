@@ -1,6 +1,6 @@
 ;;; letter.el - Special code for letter style.
 
-;; Copyright (C) 1993, 2012, 2013, 2014  Free Software Foundation, Inc.
+;; Copyright (C) 1993, 2012, 2013, 2014, 2018  Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,6 +24,11 @@
 ;; 02110-1301, USA.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-letter-class-options
   '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"

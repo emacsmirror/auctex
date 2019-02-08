@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2017 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2018 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -31,6 +31,11 @@
 ;;  Masayuki Akata <ataka@milk.freemail.ne.jp>
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-graphicx-key-val-options
   '(("bb")
@@ -198,14 +203,11 @@ Offers all graphic files found in the TeX search path.  See
   "Read image file for \\includegraphics.
 
 Lists all graphic files in the master directory and its
-subdirectories and inserts the relative file name.  This option
-doesn't works with Emacs 21.3 or XEmacs.  See
+subdirectories and inserts the relative file name.  See
 `LaTeX-includegraphics-read-file' for more."
   (file-relative-name
    (read-file-name
     "Image file: " nil nil nil nil
-    ;; FIXME: Emacs 21.3 and XEmacs 21.4.15 don't have PREDICATE as the sixth
-    ;; argument (Emacs 21.3: five args; XEmacs 21.4.15: sixth is HISTORY).
     (lambda (fname)
       (or (file-directory-p fname)
 	  (string-match (LaTeX-includegraphics-extensions) fname))))
@@ -299,7 +301,12 @@ doesn't works with Emacs 21.3 or XEmacs.  See
      (font-latex-add-keywords '(("graphicspath"              "{")
 				("DeclareGraphicsExtensions" "{")
 				("DeclareGraphicsRule"       "{{{{"))
-			      'function)))
+			      'function))
+
+   ;; Option management
+   (if (and (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
+	    (not (eq TeX-engine 'xetex)))
+       (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
 (defvar LaTeX-graphicx-package-options

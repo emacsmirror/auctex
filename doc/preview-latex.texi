@@ -296,7 +296,7 @@ effectively changes because some included file or style file is
 tampered with.
 
 Note that support for preamble cache is limited for @LaTeX{} variants.
-c.f. @file{<URL:https://github.com/davidcarlisle/dpctex/issues/15>}
+c.f. @url{https://github.com/davidcarlisle/dpctex/issues/15}
 @itemize @bullet
 @item
 Xe@LaTeX{} cannot use preamble cache at all.  The reason is intrinsic in

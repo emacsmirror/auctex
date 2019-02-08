@@ -1624,7 +1624,7 @@ This is necessary since index entries may contain commands and stuff.")
 Split the string at commas and remove Biber file extensions."
   (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
     (dolist (bib bibs)
-      (LaTeX-add-bibliographies (TeX-replace-regexp-in-string
+      (LaTeX-add-bibliographies (replace-regexp-in-string
 				 (concat "\\(?:\\."
 					 (mapconcat #'identity
 						    TeX-Biber-file-extensions
@@ -1873,9 +1873,7 @@ The value is actually the tail of the list of options given to PACKAGE."
 It will setup BibTeX to store keys in an auto file."
   ;; We want this to be early in the list, so we do not
   ;; add it before we enter BibTeX mode the first time.
-  (if (boundp 'local-write-file-hooks)
-      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
-    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
   (TeX-bibtex-set-BibTeX-dialect)
   (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)
@@ -2234,7 +2232,7 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
-(defun TeX-arg-document (optional &optional _ignore)
+(defun TeX-arg-document (_optional &optional _ignore)
   "Insert arguments to documentclass.
 OPTIONAL and IGNORE are ignored."
   (let* ((TeX-file-extensions '("cls"))
@@ -2255,7 +2253,7 @@ OPTIONAL and IGNORE are ignored."
 		 LaTeX-global-class-files nil nil nil nil LaTeX-default-style))
     ;; Clean up hook before use.
     (setq TeX-after-document-hook nil)
-    (TeX-run-style-hooks style)
+    (TeX-load-style style)
     (setq var (intern (format "LaTeX-%s-class-options" style)))
     (setq defopt (if (stringp LaTeX-default-options)
 		     LaTeX-default-options
@@ -2318,7 +2316,7 @@ of the options, nil otherwise."
 		    "Packages: " TeX-global-input-files))
     ;; Clean up hook before use in `LaTeX-arg-usepackage-insert'.
     (setq LaTeX-after-usepackage-hook nil)
-    (mapc 'TeX-run-style-hooks packages)
+    (mapc #'TeX-load-style packages)
     ;; Prompt for options only if at least one package has been supplied, return
     ;; nil otherwise.
     (when packages
@@ -2361,7 +2359,8 @@ OPTIONAL is ignored."
   (let* ((packages-options (LaTeX-arg-usepackage-read-packages-with-options))
 	 (packages (car packages-options))
 	 (options (cdr packages-options)))
-    (LaTeX-arg-usepackage-insert packages options)))
+    (LaTeX-arg-usepackage-insert packages options)
+    (apply #'TeX-run-style-hooks packages)))
 
 (defun LaTeX-insert-usepackages ()
   "Prompt for the insertion of usepackage macros until empty
@@ -2764,9 +2763,8 @@ string."
 (defun TeX-arg-insert-right-brace-maybe (optional)
   "Insert the suitable right brace macro such as \\rangle.
 Insertion is done when `TeX-arg-right-insert-p' is non-nil.
-If the left brace macro is preceeded by \\left, \\bigl etc.,
-supply the corresponding macro such as \\right before the right brace macro.
-OPTIONAL is ignored."
+If the left brace macro is preceded by \\left, \\bigl etc.,
+supply the corresponding macro such as \\right before the right brace macro."
   ;; Nothing is done when TeX-arg-right-insert-p is nil.
   (when TeX-arg-right-insert-p
     (let (left-brace left-macro)
@@ -2776,9 +2774,9 @@ OPTIONAL is ignored."
 			  (point)
 			  (progn (backward-word) (backward-char)
 				 (point)))
-	      ;; Obtain the name of preceeding left macro, if any,
+	      ;; Obtain the name of preceding left macro, if any,
 	      ;; such as "left", "bigl" etc.
-	      left-macro (LaTeX-find-preceeding-left-macro-name)))
+	      left-macro (LaTeX--find-preceding-left-macro-name)))
       (save-excursion
 	(if (TeX-active-mark)
 	    (goto-char (mark)))
@@ -2817,9 +2815,9 @@ Normally bound to keys \(, { and [."
 		;; Otherwise, don't search for left macros.
 		(setq skip-p t)))
 	  (unless skip-p
-	    ;; Obtain the name of preceeding left macro, if any,
+	    ;; Obtain the name of preceding left macro, if any,
 	    ;; such as "left", "bigl" etc.
-	    (setq lmacro (LaTeX-find-preceeding-left-macro-name))))
+	    (setq lmacro (LaTeX--find-preceding-left-macro-name))))
         (let ((TeX-arg-right-insert-p t)
               ;; "{" and "}" are paired temporally so that typing
 	      ;; a single "{" should insert a pair "{}".
@@ -2867,9 +2865,9 @@ is nil, consult user which brace should be used."
 			(or rbrace "."))) TeX-left-right-braces
 			nil nil nil nil (or rbrace ".")))))))
 
-(defun LaTeX-find-preceeding-left-macro-name ()
+(defun LaTeX--find-preceding-left-macro-name ()
   "Return the left macro name just before the point, if any.
-If the preceeding macro isn't left macros such as \\left, \\bigl etc.,
+If the preceding macro isn't left macros such as \\left, \\bigl etc.,
 return nil.
 If the point is just after unescaped `TeX-esc', return the null string."
   ;; \left-!- => "left"
@@ -2891,6 +2889,10 @@ If the point is just after unescaped `TeX-esc', return the null string."
 	     (or (string= name "")
 		 (assoc name LaTeX-left-right-macros-association)))
 	name)))
+(define-obsolete-function-alias
+  'LaTeX-find-preceeding-left-macro-name
+  #'LaTeX--find-preceding-left-macro-name "AUCTeX 12.2"
+  "Compatibility function for typo in its name.")
 
 (defcustom LaTeX-default-author 'user-full-name
   "Initial input to `LaTeX-arg-author' prompt.
@@ -3261,8 +3263,7 @@ Lines starting with an item is given an extra indentation of
 		 (beginning-of-line)
 		 (looking-at
 		  (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
-		 (concat (match-string 0) (TeX-comment-padding-string)))))
-	 ol-specs)
+		 (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
@@ -3290,9 +3291,6 @@ Lines starting with an item is given an extra indentation of
 	     (let ((outer-indent (LaTeX-indent-calculate 'outer)))
 	       (when (/= (LaTeX-current-indentation 'outer) outer-indent)
 		   (LaTeX-indent-outer-do outer-indent))))))
-    ;; Make the overlays invisible again.
-    (dolist (ol-spec ol-specs)
-      (set-extent-property (car ol-spec) 'invisible (cadr ol-spec)))
     (when (< (current-column) (save-excursion
 				(LaTeX-back-to-indentation) (current-column)))
       (LaTeX-back-to-indentation))))
@@ -3776,21 +3774,8 @@ space does not end a sentence, so don't break a line there."
 	  (remove-text-properties from to '(hard nil)))
 	;; Make sure first line is indented (at least) to left margin...
 	(indent-according-to-mode)
-	;; COMPATIBILITY for Emacs <= 21.1
-	(if (fboundp 'fill-delete-prefix)
-	    ;; Delete the fill-prefix from every line.
-	    (fill-delete-prefix from to fill-prefix)
-	  ;; Delete the comment prefix and any whitespace from every
-	  ;; line of the region in concern except the first. (The
-	  ;; implementation is heuristic to a certain degree.)
-	  (save-excursion
-	    (goto-char from)
-	    (forward-line 1)
-	    (when (< (point) to)
-	      (while (re-search-forward (concat "^[ \t]+\\|^[ \t]*"
-						TeX-comment-start-regexp
-						"+[ \t]*") to t)
-		(delete-region (match-beginning 0) (match-end 0))))))
+	;; Delete the fill-prefix from every line.
+	(fill-delete-prefix from to fill-prefix)
 
 	(setq from (point))
 
@@ -5377,9 +5362,11 @@ commands are defined:
   "Insert \\STRING{}.  If DOLLAR is non-nil, put $'s around it.
 If `TeX-electric-math' is non-nil wrap that symbols around the
 string."
-  (if dollar (insert (or (car TeX-electric-math) "$")))
-  (funcall LaTeX-math-insert-function string)
-  (if dollar (insert (or (cdr TeX-electric-math) "$"))))
+  (when dollar
+    (insert (or (car TeX-electric-math) "$"))
+    (save-excursion
+      (insert (or (cdr TeX-electric-math) "$"))))
+  (funcall LaTeX-math-insert-function string))
 
 (defun LaTeX-math-cal (char dollar)
   "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it.
@@ -5641,79 +5628,78 @@ regenerated by the respective menu filter."
 (easy-menu-define LaTeX-mode-menu
   LaTeX-mode-map
   "Menu used in LaTeX mode."
-  (TeX-menu-with-help
-   `("LaTeX"
-     ("Section  (C-c C-s)" :filter LaTeX-section-menu-filter)
-     ["Macro..." TeX-insert-macro
-      :help "Insert a macro and possibly arguments"]
-     ["Complete Macro" TeX-complete-symbol
-      :help "Complete the current macro or environment name"]
-     ,(list LaTeX-environment-menu-name
-	    :filter (lambda (ignored) (LaTeX-environment-menu-filter
-				       LaTeX-environment-menu-name)))
-     ,(list LaTeX-environment-modify-menu-name
-	    :filter (lambda (ignored) (LaTeX-environment-menu-filter
-				       LaTeX-environment-modify-menu-name)))
-     ["Close Environment" LaTeX-close-environment
-      :help "Insert the \\end part of the current environment"]
-     ["Item" LaTeX-insert-item
-      :help "Insert a new \\item into current environment"]
+  `("LaTeX"
+    ("Section  (C-c C-s)" :filter LaTeX-section-menu-filter)
+    ["Macro..." TeX-insert-macro
+     :help "Insert a macro and possibly arguments"]
+    ["Complete Macro" TeX-complete-symbol
+     :help "Complete the current macro or environment name"]
+    ,(list LaTeX-environment-menu-name
+	   :filter (lambda (ignored) (LaTeX-environment-menu-filter
+				      LaTeX-environment-menu-name)))
+    ,(list LaTeX-environment-modify-menu-name
+	   :filter (lambda (ignored) (LaTeX-environment-menu-filter
+				      LaTeX-environment-modify-menu-name)))
+    ["Close Environment" LaTeX-close-environment
+     :help "Insert the \\end part of the current environment"]
+    ["Item" LaTeX-insert-item
+     :help "Insert a new \\item into current environment"]
+    "-"
+    ("Insert Font"
+     ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+     ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+     ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+     ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+    ("Replace Font"
+     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+     ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+     ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+     ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+    ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+    "-"
+    ["Comment or Uncomment Region"
+     comment-or-uncomment-region
+     :help "Make the selected region outcommented or active again"]
+    ["Comment or Uncomment Paragraph"
+     TeX-comment-or-uncomment-paragraph
+     :help "Make the current paragraph outcommented or active again"]
+    ("Formatting and Marking"
+     ["Format Environment" LaTeX-fill-environment
+      :help "Fill and indent the current environment"]
+     ["Format Paragraph" LaTeX-fill-paragraph
+      :help "Fill and ident the current paragraph"]
+     ["Format Region" LaTeX-fill-region
+      :help "Fill and indent the currently selected region"]
+     ["Format Section" LaTeX-fill-section
+      :help "Fill and indent the current section"]
      "-"
-     ("Insert Font"
-      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-     ("Replace Font"
-      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     ["Mark Environment" LaTeX-mark-environment
+      :help "Mark the current environment"]
+     ["Mark Section" LaTeX-mark-section
+      :help "Mark the current section"]
      "-"
-     ["Comment or Uncomment Region"
-      comment-or-uncomment-region
-      :help "Make the selected region outcommented or active again"]
-     ["Comment or Uncomment Paragraph"
-      TeX-comment-or-uncomment-paragraph
-      :help "Make the current paragraph outcommented or active again"]
-     ("Formatting and Marking"
-      ["Format Environment" LaTeX-fill-environment
-       :help "Fill and indent the current environment"]
-      ["Format Paragraph" LaTeX-fill-paragraph
-       :help "Fill and ident the current paragraph"]
-      ["Format Region" LaTeX-fill-region
-       :help "Fill and indent the currently selected region"]
-      ["Format Section" LaTeX-fill-section
-       :help "Fill and indent the current section"]
-      "-"
-      ["Mark Environment" LaTeX-mark-environment
-       :help "Mark the current environment"]
-      ["Mark Section" LaTeX-mark-section
-       :help "Mark the current section"]
-      "-"
-      ["Beginning of Environment" LaTeX-find-matching-begin
-       :help "Move point to the beginning of the current environment"]
-      ["End of Environment" LaTeX-find-matching-end
-       :help "Move point to the end of the current environment"])
-     ,TeX-fold-menu
-     ["Math Mode" LaTeX-math-mode
-      :style toggle :selected LaTeX-math-mode
-      :help "Toggle math mode"]
-     "-"
-      [ "Convert 209 to 2e" LaTeX-209-to-2e
-        :visible (member "latex2" (TeX-style-list)) ]
-      . ,TeX-common-menu-entries)))
+     ["Beginning of Environment" LaTeX-find-matching-begin
+      :help "Move point to the beginning of the current environment"]
+     ["End of Environment" LaTeX-find-matching-end
+      :help "Move point to the end of the current environment"])
+    ,TeX-fold-menu
+    ["Math Mode" LaTeX-math-mode
+     :style toggle :selected LaTeX-math-mode
+     :help "Toggle math mode"]
+    "-"
+    [ "Convert 209 to 2e" LaTeX-209-to-2e
+      :visible (member "latex2" (TeX-style-list)) ]
+    . ,TeX-common-menu-entries))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")
@@ -5898,8 +5884,7 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
-(when (fboundp 'declare-function)
-  (declare-function LaTeX-preview-setup "preview"))
+(declare-function LaTeX-preview-setup "preview")
 
 ;;;###autoload
 (defun TeX-latex-mode ()
@@ -5929,7 +5914,19 @@ of `LaTeX-mode-hook'."
 	    (lambda ()
 	      (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
 		  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
-  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  ;; Run style hooks associated with class options.
+  (add-hook 'TeX-update-style-hook
+	    (lambda ()
+	      (let ((TeX-style-hook-dialect :classopt)
+		    ;; Don't record class option names in
+		    ;; `TeX-active-styles'.
+		    (TeX-active-styles nil))
+		(apply #'TeX-run-style-hooks
+		       (apply #'append
+			      (mapcar #'cdr LaTeX-provided-class-options)))))
+	    nil t)
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
   (TeX-set-mode-name)
@@ -6047,7 +6044,7 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
-  (set (make-local-variable 'TeX-style-hook-dialect) :latex)
+  (set (make-local-variable 'TeX-style-hook-dialect) LaTeX-dialect)
 
   (require 'outline)
   (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
@@ -6446,23 +6443,36 @@ function would return non-nil and `(match-string 1)' would return
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak
-  (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "pst-pdf" 'TeX-PDF-mode-on LaTeX-dialect)
-  (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "pdftex" #'TeX-PDF-mode-on :classopt)
+  (TeX-add-style-hook "pdftricks" #'TeX-PDF-mode-on :classopt)
+  (TeX-add-style-hook "pst-pdf" #'TeX-PDF-mode-on :classopt)
+  (TeX-add-style-hook "dvips"
+		      (lambda ()
+			;; Leave at user's choice whether to disable
+			;; `TeX-PDF-mode' or not.
+			(setq TeX-PDF-from-DVI "Dvips"))
+		      :classopt)
   ;; This is now done in style/pstricks.el because it prevents other
   ;; pstricks style files from being loaded.
   ;;   (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off LaTeX-dialect)
-  (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off LaTeX-dialect)
-  (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off LaTeX-dialect)
+  (TeX-add-style-hook "psfrag" #'TeX-PDF-mode-off :classopt)
+  (TeX-add-style-hook "dvipdf" #'TeX-PDF-mode-off :classopt)
+  (TeX-add-style-hook "dvipdfm" #'TeX-PDF-mode-off :classopt)
+  (TeX-add-style-hook "dvipdfmx"
+		      (lambda ()
+			(TeX-PDF-mode-on)
+			;; XeLaTeX normally don't use dvipdfmx
+			;; explicitly.
+			(unless (eq TeX-engine 'xetex)
+			  (setq TeX-PDF-from-DVI "Dvipdfmx")))
+		      :classopt)
   ;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
   ;;
   ;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
   ;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
 				(TeX-PDF-mode-on)
-				(TeX-PDF-mode-off)) LaTeX-dialect)
+				(TeX-PDF-mode-off)) :classopt)
   ;; ifpdf indicates that we cater for either.  So calling both
   ;; functions will make sure that the default will get used unless the
   ;; user overrode it.
@@ -6609,6 +6619,26 @@ function would return non-nil and `(match-string 1)' would return
 		  (if (and any-col (= ?& (char-before (match-end 0))))
 		      (1+ any-col)
 		    beg-col))))))))
+
+;; Utilities:
+
+(defmacro LaTeX-check-insert-macro-default-style (&rest body)
+  "Check for values of `TeX-insert-macro-default-style' and `current-prefix-arg'.
+This is a utility macro with code taken from
+`TeX-parse-arguments'.  It should be used inside more complex
+function within AUCTeX style files where optional and mandatory
+arguments are queried and inserted.  For examples, check the
+functions `TeX-arg-color' (style/color.el) or
+`LaTeX-arg-bicaption-bicaption' (style/bicaption.el)."
+  `(unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
+	       (equal current-prefix-arg '(4))
+	     (or
+	      (and (eq TeX-insert-macro-default-style 'show-optional-args)
+		   (equal current-prefix-arg '(4)))
+	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
+		   (null (equal current-prefix-arg '(4))))
+	      last-optional-rejected))
+     ,@body))
 
 (provide 'latex)
 

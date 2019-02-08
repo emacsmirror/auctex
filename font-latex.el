@@ -201,7 +201,6 @@ this variable directly does not take effect unless you call
 Switching from `color' to a number or vice versa does not take
 effect unless you call \\[font-lock-fontify-buffer] or restart
 Emacs."
-  ;; Possibly add some words about XEmacs here. :-(
   :type '(choice (number :tag "Scale factor")
 		 (const color))
   :initialize 'custom-initialize-default
@@ -675,7 +674,7 @@ also specify two alternative arguments by prefixing them with
 \"*|{\\=\\[[{\".
 
 The face argument can either be an existing face or a face
-attribute.  (The latter option is not available in XEmacs.)
+attribute.
 
 There are three alternatives for the class type:
 
@@ -835,7 +834,6 @@ locking machinery will be triggered."
 
 (defcustom font-latex-fontify-script t
   "If non-nil, fontify subscript and superscript strings.
-This feature does not work in XEmacs.
 
 By default, super/subscripts are raised/lowered if this variable
 is non-nil.  This fontification only affects one level of
@@ -859,7 +857,7 @@ script operators ^ and _ are not displayed."
   :group 'font-latex)
 (put 'font-latex-fontify-script 'safe-local-variable
      (lambda (val)
-       (or (TeX-booleanp val)
+       (or (booleanp val)
 	   (memq val '(multi-level invisible)))))
 
 (defcustom font-latex-fontify-script-max-level 3
@@ -1385,27 +1383,14 @@ modified.  Such variables include
 `LaTeX-verbatim-environments-local',
 `LaTeX-verbatim-macros-with-braces-local',
 `LaTeX-verbatim-macros-with-delims-local'."
-  (when (if (boundp 'file-local-variables-alist)
-	    ;; In Emacs we know if the value came from file or directory
-	    ;; locals.  Note to self: directory-local variables are also added
-	    ;; to file-local-variables-alist.
-	    (let ((hacked-local-vars (mapcar #'car file-local-variables-alist)))
-	      (or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
-		  (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
-		  (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars)))
-	  ;; In XEmacs and old Emacs versions we don't know if a buffer-local
-	  ;; variable has been set by a file-local variables block or somehow
-	  ;; else.  So we trigger a refresh if any of those variables has a
-	  ;; non-nil local binding.
-	  (or (and LaTeX-verbatim-environments-local
-		   (local-variable-p LaTeX-verbatim-environments-local
-				     (current-buffer)))
-	      (and LaTeX-verbatim-macros-with-braces-local
-		   (local-variable-p LaTeX-verbatim-macros-with-braces-local
-				     (current-buffer)))
-	      (and LaTeX-verbatim-macros-with-delims-local
-		   (local-variable-p LaTeX-verbatim-macros-with-delims-local
-				     (current-buffer)))))
+  (when
+      ;; In Emacs we know if the value came from file or directory
+      ;; locals.  Note to self: directory-local variables are also added
+      ;; to file-local-variables-alist.
+      (let ((hacked-local-vars (mapcar #'car file-local-variables-alist)))
+	(or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
+	    (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
+	    (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars)))
     ;; Ok, we need to refresh fontification.
     (font-latex-update-font-lock t)))
 
@@ -1511,8 +1496,7 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
 The text property is used to find the start or end of a multiline
 construct when unfontifying a region.  Emacs adds such a text
 property automatically if `font-lock-multiline' is set to t and
-extends the region to be unfontified automatically as well.
-XEmacs does not do this at the time of this writing."
+extends the region to be unfontified automatically as well."
   (unless (boundp 'font-lock-multiline)
     (put-text-property beg end 'font-latex-multiline t)))
 
@@ -2067,8 +2051,7 @@ END marks boundaries for searching for quotation ends."
     ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28.
     ;; With the introduction of this feature the variable
     ;; `font-lock-extra-managed-props' was introduced and serves here
-    ;; for feature checking.  XEmacs (CVS and 21.4.15) currently
-    ;; (2004-08-18) does not support this feature.
+    ;; for feature checking.
     (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
       (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
@@ -2128,26 +2111,14 @@ END marks boundaries for searching for quotation ends."
 	     ;; syntax-table can't deal with.  We could turn it
 	     ;; into a non-comment, or use `\n%' or `%^' as the comment.
 	     ;; Instead, we include it in the ^^A comment.
-	     ;; COMPATIBILITY for Emacs 20 and XEmacs
-	     (eval-when-compile (if (fboundp 'string-to-syntax)
-				    (string-to-syntax "< b")
-				  '(2097163)))
-	   ;; COMPATIBILITY for Emacs 20 and XEmacs
-	   (eval-when-compile (if (fboundp 'string-to-syntax)
-				  (string-to-syntax ">")
-				'(12)))))
+	     (eval-when-compile (string-to-syntax "< b"))
+	   (eval-when-compile (string-to-syntax ">"))))
 	(let ((end (line-end-position)))
 	  (if (< end (point-max))
 	      (put-text-property end (1+ end) 'syntax-table
-				    ;; COMPATIBILITY for Emacs 20 and XEmacs
 				    (eval-when-compile
-				      (if (fboundp 'string-to-syntax)
-					  (string-to-syntax "> b")
-					'(2097164))))))
-	;; COMPATIBILITY for Emacs 20 and XEmacs
-	(eval-when-compile (if (fboundp 'string-to-syntax)
-			       (string-to-syntax "< b")
-			     '(2097163))))))
+				      (string-to-syntax "> b")))))
+	(eval-when-compile (string-to-syntax "< b")))))
 
 ;; Copy and adaptation of `doctex-font-lock-syntactic-face-function'
 ;; in `tex-mode.el' of CVS Emacs (March 2004)

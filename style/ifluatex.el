@@ -1,6 +1,6 @@
 ;;; ifluatex.el --- AUCTeX style for `ifluatex.sty' version 1.3.
 
-;; Copyright (C) 2014, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,7 +29,12 @@
 
 ;;; Code:
 
-(defun LaTeX-ifluatex-set-exit-mark (optional)
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(defun LaTeX-ifluatex-set-exit-mark (_optional)
   "Discard OPTIONAL and set exit-mark to current point."
   (set-marker exit-mark (point)))
 

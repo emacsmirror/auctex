@@ -1,6 +1,6 @@
 ;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -28,6 +28,11 @@
 ;; This file adds support for `kpfonts.sty' version 3.31.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 ;;; Kpfonts Minor Mode (heavily based on LaTeX Math Minor Mode code)
 

@@ -1,6 +1,6 @@
 ;;; xparse.el --- AUCTeX style for `xparse.sty' version 4467.
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,6 +29,11 @@
 ;; doesn't parse argument specification of macros and environments.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-xparse-macro-regexp
   (concat "\\\\\\(?:Declare\\|New\\|Renew\\|Provide\\|DeclareExpandable\\)"

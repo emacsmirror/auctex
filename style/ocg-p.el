@@ -34,6 +34,11 @@
 ;; Needed for auto-parsing.
 (require 'tex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 ;; Setup for layer id's defined with
 ;; \begin{ocg}[<opt-arg>]{<layer name>}{<layer id>}{<initial visibility>}:
 

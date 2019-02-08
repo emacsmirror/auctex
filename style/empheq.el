@@ -1,6 +1,6 @@
 ;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)
 
-;; Copyright (C) 2016, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,8 +34,19 @@
 (eval-when-compile
   (require 'cl-lib))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function LaTeX-item-equation-alignat
+		  "amsmath" (&optional suppress))
+
+(defvar LaTeX-mathtools-package-options)
+(defvar font-latex-math-environments)
 
 (defvar LaTeX-empheq-key-val-options
   `(("box")
@@ -98,6 +109,11 @@
 (defvar LaTeX-empheq-package-options
   '("overload" "overload2" "ntheorem" "newmultline" "oldmultline")
   "Package options for the empheq package.")
+(TeX-load-style "mathtools")
+;; Add elements from `LaTeX-mathtools-package-options' only once
+;; and not every time the style hook runs
+(dolist (elt LaTeX-mathtools-package-options)
+  (add-to-list 'LaTeX-empheq-package-options elt))
 
 ;; Setup for \Declare(Left|Right)Delimiter:
 
@@ -227,7 +243,7 @@ number of ampersands if possible."
       (when (looking-at "[ \t\n\r%]*\\[")
 	(forward-sexp))
       (re-search-forward "[ \t\n\r%]*{\\([^}]+\\)}")
-      (setq match (TeX-replace-regexp-in-string "[ \t\n\r%]" ""
+      (setq match (replace-regexp-in-string "[ \t\n\r%]" ""
 						(match-string-no-properties 1)))
       (if (string-match "=" match)
 	  (progn
@@ -268,11 +284,6 @@ number of ampersands if possible."
 
    ;; Load amsmath.el and mathtools.el
    (TeX-run-style-hooks "amsmath" "mathtools")
-
-   ;; Add elements from `LaTeX-mathtools-package-options' only once
-   ;; and not every time the style hook runs
-   (dolist (elt LaTeX-mathtools-package-options)
-     (add-to-list 'LaTeX-empheq-package-options elt))
 
    ;; Local version of key-val options
    (setq LaTeX-empheq-key-val-options-local

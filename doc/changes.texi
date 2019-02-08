@@ -40,6 +40,23 @@ no longer works with @previewlatex{}.  We consider this incompatibility
 is permissible because e-@TeX{} extension is enabled for standard
 @LaTeX{} by default long ago.  @LaTeX{} variants such as Xe@LaTeX{} and
 Lua@LaTeX{} are not affected.
+
+@item
+Key binds in Texinfo mode are improved.  Typing @kbd{$}, @kbd{^},
+@kbd{_} and @kbd{\} now just self-inserts without pointless side effects
+in Texinfo mode.
+
+In addition, the option @code{TeX-electric-escape} is now effective in
+Texinfo mode.  When it is enabled, typing @kbd{@@} will invoke
+@code{TeX-electric-macro} offering completion in similar style with
+other TeX modes of @AUCTeX{}.
+
+@item
+Support for column specifiers @samp{w} and @samp{W} provided by
+@samp{array} package is added to @file{array.el}.  The correct counting
+of columns only works when the @samp{align} parameter is enclosed in
+braces, e.g., @samp{w@{l@}@{3cm@}}.  The short version @samp{wl@{3cm@}}
+is not supported.
 @end itemize
 
 @heading News in 12.1

@@ -37,14 +37,7 @@ AC_SUBST(PREVIEWVERSION)
 
 EMACS_PROG_EMACS
 
-if test ${EMACS_FLAVOR} = xemacs
-then
-  EMACS_CHECK_VERSION(21,4)
-else
-  EMACS_CHECK_VERSION(21,1)
-fi
-
-EMACS_CHECK_MULE
+EMACS_CHECK_VERSION(24,1)
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
 # never need to modify the default behavior.
@@ -62,59 +55,40 @@ AC_ARG_ENABLE(preview,
   [preview_enabled="yes"])
 AC_SUBST(preview_enabled)
 
-if test ${EMACS_FLAVOR} = "xemacs"  ; then
-   EMACS_PATH_PACKAGEDIR
-   PLAT_LISP=prv-xemacs.el
-else
-   packagedir=no
-   PLAT_LISP=prv-emacs.el
-fi
+PLAT_LISP=prv-emacs.el
 
-if test "X${packagedir}" = Xno
+EMACS_PATH_LISPDIR
+AC_MSG_CHECKING(what file to use for auctex startup)
+AC_ARG_WITH(auctexstartfile,
+[[  --with-auctexstartfile=FILE    What file to use for auctex startup.]],
+[[ auctexstartfile="${withval}" ]],
+[ _tmpdir_="${lispdir}"
+AC_FULL_EXPAND(_tmpdir_)
+if test -d "${_tmpdir_}/site-start.d"
 then
-   EMACS_PATH_LISPDIR
-   AC_MSG_CHECKING(what file to use for auctex startup)
-   AC_ARG_WITH(auctexstartfile,
-   [[  --with-auctexstartfile=FILE    What file to use for auctex startup.]],
-   [[ auctexstartfile="${withval}" ]],
-   [ _tmpdir_="${lispdir}"
-     AC_FULL_EXPAND(_tmpdir_)
-     if test -d "${_tmpdir_}/site-start.d"
-     then
-       auctexstartfile="${lispdir}/site-start.d/auctex.el"
-     else
-       auctexstartfile="${lispdir}/auctex.el"
-     fi])
-   AC_MSG_RESULT([[${auctexstartfile}]])
-
-   AC_MSG_CHECKING(what file to use for preview startup)
-   AC_ARG_WITH(previewstartfile,
-   [[  --with-previewstartfile=FILE    What file to use for preview startup.]],
-   [[ previewstartfile="${withval}" ]],
-   [ _tmpdir_="${lispdir}"
-     AC_FULL_EXPAND(_tmpdir_)
-     if test -d "${_tmpdir_}/site-start.d"
-     then
-       previewstartfile="${lispdir}/site-start.d/preview-latex.el"
-     else
-       previewstartfile="${lispdir}/preview-latex.el"
-     fi])
-   AC_MSG_RESULT([[${previewstartfile}]])
-
-   packagelispdir="${lispdir}/auctex"
-   packagedatadir="${packagelispdir}"
-   texsitedir="${lispdir}"
+auctexstartfile="${lispdir}/site-start.d/auctex.el"
 else
-   #lispdir is only used for determining relative files.
-   lispdir="${packagedir}"
-   packagelispdir="${packagedir}/lisp/auctex"
-   texsitedir="$packagelispdir"
-   auctexstartfile="${packagelispdir}"/auto-autoloads.el
-   previewstartfile="${packagelispdir}"/auto-autoloads.el
-   packagedatadir="${packagedir}/etc/auctex"
-   infodir="${packagedir}/info"
-   INSTALL_INFO=:
-fi
+auctexstartfile="${lispdir}/auctex.el"
+fi])
+AC_MSG_RESULT([[${auctexstartfile}]])
+
+AC_MSG_CHECKING(what file to use for preview startup)
+AC_ARG_WITH(previewstartfile,
+[[  --with-previewstartfile=FILE    What file to use for preview startup.]],
+[[ previewstartfile="${withval}" ]],
+[ _tmpdir_="${lispdir}"
+AC_FULL_EXPAND(_tmpdir_)
+if test -d "${_tmpdir_}/site-start.d"
+then
+previewstartfile="${lispdir}/site-start.d/preview-latex.el"
+else
+previewstartfile="${lispdir}/preview-latex.el"
+fi])
+AC_MSG_RESULT([[${previewstartfile}]])
+
+packagelispdir="${lispdir}/auctex"
+packagedatadir="${packagelispdir}"
+texsitedir="${lispdir}"
 
 AC_SUBST(auctexstartfile)
 AC_SUBST(previewstartfile)
@@ -139,14 +113,6 @@ AC_LISPIFY_DIR(texsite,[["${auctexstartfile}"]],tex-site.el)
 
 AC_MSG_CHECKING(where the info files go)
 AC_MSG_RESULT([[${infodir}]])
-
-AC_SUBST(packagedir)
-
-if test $EMACS_FLAVOR = "xemacs" -a "$infodir" = '${prefix}/info'; then
-  if test $packagedir != 'no'; then
-   infodir='${packagedir}/info'
-  fi
-fi
 
 AUCTEX_AUTO_DIR
 AC_LISPIFY_DIR(autodir,"${texsitedir}/tex-site.el")
@@ -278,7 +244,7 @@ AC_PATH_PROG(TEXI2HTML, texi2html, :)
 AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
 AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
 
-AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.  This is the default when installing into an XEmacs package.])
+AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
 
 if test "X${INSTALL_INFO}" = X
 then
@@ -287,7 +253,6 @@ fi
 
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(localstatedir)
-AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(packagelispdir)
 AC_SHELL_QUOTIFY(packagedatadir)
 AC_SHELL_QUOTIFY(lispdir)

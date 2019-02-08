@@ -1,6 +1,7 @@
-;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs and XEmacs
+;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs
 
-;; Copyright (C) 2004-2008, 2012-2014, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2008, 2012-2014, 2016, 2018
+;;                                  Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -88,7 +89,7 @@ If there is no help, the empty string is returned."
   "List of buttons available in `tex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
-labels a button or Emacs/XEmacs choice of buttons.
+labels a button.
 
 Type `\\[TeX-bar-TeX-buttons]' for a list of available buttons.
 
@@ -118,9 +119,6 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
 		    (const spell))
 		    ;; (const latex-symbols-experimental)
 	       (repeat (choice (symbol :tag "Label")
-			       (vector :args ((symbol :tag "Label in Emacs ")
-					      (symbol :tag "Label in XEmacs"))
-				       :tag "Emacs/XEmacs choice")
 			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 
@@ -232,7 +230,7 @@ format of the argument MEANING-ALIST in the mentioned function."
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
-labels a button or Emacs/XEmacs choice of buttons.
+labels a button.
 
 Type `\\[TeX-bar-LaTeX-buttons]' for a list of available buttons.
 
@@ -262,9 +260,6 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
 		    (const spell)
 		    (const latex-symbols-experimental))
 	       (repeat (choice (symbol :tag "Label")
-			       (vector :args ((symbol :tag "Label in Emacs ")
-					      (symbol :tag "Label in XEmacs"))
-				       :tag "Emacs/XEmacs choice")
 			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 

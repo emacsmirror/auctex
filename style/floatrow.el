@@ -1,6 +1,6 @@
 ;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -58,12 +58,22 @@
 
 ;;; Code:
 
-;; Needed for compiling `cl-pushnew':
+;; Needed for compiling `cl-pushnew' & `LaTeX-check-insert-macro-default-style':
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'latex))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function reftex-compile-variables
+		  "reftex"
+		  ())
 
 (defvar LaTeX-floatrow-key-val-options
   '(;; 3.1.1 Float Style
@@ -337,27 +347,33 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; `TeX-argument-insert':
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (width (completing-read
-		 (TeX-argument-prompt t nil "Width")
-		 (mapcar (lambda (x) (concat TeX-esc (car x)))
-			 (LaTeX-length-list))))
-	 (height (completing-read
-		  (TeX-argument-prompt t nil "Height")
-		 (mapcar (lambda (x) (concat TeX-esc (car x)))
-			 (LaTeX-length-list))))
-	 (vertpos (if (string= height "")
-		      ""
-		    (completing-read
-		     (TeX-argument-prompt t nil "Vertical alignment")
-		     '("t" "c" "b" "s")))))
-    (TeX-argument-insert width t)
+	 (last-optional-rejected nil)
+	 (width (LaTeX-check-insert-macro-default-style
+		 (completing-read
+		  (TeX-argument-prompt t nil "Width")
+		  (mapcar (lambda (x) (concat TeX-esc (car x)))
+			  (LaTeX-length-list)))))
+	 (last-optional-rejected (and width (string= width "")))
+	 (height (LaTeX-check-insert-macro-default-style
+		  (completing-read
+		   (TeX-argument-prompt t nil "Height")
+		   (mapcar (lambda (x) (concat TeX-esc (car x)))
+			   (LaTeX-length-list)))))
+	 (last-optional-rejected (and height (string= height "")))
+	 (vertpos (LaTeX-check-insert-macro-default-style
+		   (if (string= height "")
+		       ""
+		     (completing-read
+		      (TeX-argument-prompt t nil "Vertical alignment")
+		      '("t" "c" "b" "s"))))))
+    (and width (TeX-argument-insert width t))
     ;; Insert an extra pair of brackets if only `height' is given,
     ;; otherwise it will become `width'
-    (when (and (string= width "")
+    (when (and width (string= width "")
 	       height (not (string= height "")))
       (insert "[]"))
-    (TeX-argument-insert height t)
-    (TeX-argument-insert vertpos t))
+    (and (TeX-argument-insert height t))
+    (and (TeX-argument-insert vertpos t)))
   ;; Now query for the (short-)caption.  Also check for the
   ;; float-type; if we're inside (sub)?floatrow*?, then check for the
   ;; next outer environment:
@@ -434,7 +450,7 @@ entries are available under \"rawfigure*?\" and \"rawtable*?\"."
   "Create raw floating ENV with floatrow.sty.
 Also insert the macro \"\\RawFloats\" when finished with user
 queries."
-  (let ((environment (TeX-replace-regexp-in-string "raw" "" env)))
+  (let ((environment (replace-regexp-in-string "raw" "" env)))
     (LaTeX-env-figure environment)
     (save-excursion
       ;; `LaTeX-find-matching-begin' will not work for us as we don't

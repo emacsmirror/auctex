@@ -649,32 +649,6 @@ emacs 24.1 and is then later run by emacs 24.5."
 
 (require 'easymenu)
 
-(eval-and-compile
-  (if (featurep 'xemacs)
-      (defun TeX-maybe-remove-help (menu)
-      "Removes :help entries from menus, since XEmacs does not like them.
-Also does other stuff."
-      (cond ((consp menu)
-	     (cond ((eq (car menu) :help)
-		    (TeX-maybe-remove-help (cddr menu)))
-		   ((eq (car menu) :visible)
-		    (cons :included
-			  (cons (cadr menu)
-				(TeX-maybe-remove-help (cddr menu)))))
-		   (t (cons (TeX-maybe-remove-help (car menu))
-			    (TeX-maybe-remove-help (cdr menu))))))
-	    ((vectorp menu)
-	     (vconcat (TeX-maybe-remove-help (append menu nil))))
-	    (t menu)))
-    (defun TeX-maybe-remove-help (menu)
-      "Compatibility function that would remove :help entries if on XEmacs,
-but does nothing in Emacs."
-      menu))
-  (defmacro TeX-menu-with-help (menu)
-    "Compatibility macro that removes :help entries if on XEmacs.
-Also does other stuff."
-    (TeX-maybe-remove-help menu)))
-
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
 (eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"
@@ -698,77 +672,6 @@ Also does other stuff."
   "Numerical difference of priorities between nested overlays.
 The step should be big enough to allow setting a priority for new
 overlays between two existing ones.")
-
-
-;;; Special support for XEmacs
-
-(when (featurep 'xemacs)
-
-  (defun TeX-read-string
-      (prompt &optional initial-input history default-value)
-    (condition-case nil
-	(read-string prompt initial-input history default-value t)
-      (wrong-number-of-arguments
-       (read-string prompt initial-input history default-value))))
-
-  (defun TeX-mark-active ()
-    ;; In Lucid (mark) returns nil when not active.
-    (if zmacs-regions
-	(mark)
-      (mark t)))
-
-  (defun TeX-active-mark ()
-    (and zmacs-regions (mark)))
-
-  (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
-
-  ;; I am aware that this counteracts coding conventions but I am sick
-  ;; of it.
-  (unless (fboundp 'line-beginning-position)
-    (defalias 'line-beginning-position 'point-at-bol))
-  (unless (fboundp 'line-end-position)
-    (defalias 'line-end-position 'point-at-eol))
-
-  (defun TeX-overlay-prioritize (start end)
-    "Calculate a priority for an overlay extending from START to END.
-The calculated priority is lower than the minimum of priorities
-of surrounding overlays and higher than the maximum of enclosed
-overlays."
-    (let (inner-priority outer-priority
-			 (prios (cons nil nil)))
-      (map-extents
-       #'(lambda (ov prios)
-	   (and
-	    (or (eq (extent-property ov 'category) 'TeX-fold)
-		(extent-property ov 'preview-state))
-	    (setcar prios
-		    (max (or (car prios) 0)
-			 (extent-property ov 'priority))))
-	   nil)
-       nil start end prios 'start-and-end-in-region 'priority)
-      (map-extents
-       #'(lambda (ov prios)
-	   (and
-	    (or (eq (extent-property ov 'category) 'TeX-fold)
-		(extent-property ov 'preview-state))
-	    (setcdr prios
-		    (min (or (cdr prios) most-positive-fixnum)
-			 (extent-property ov 'priority))))
-	   nil)
-       nil start end prios
-       '(start-and-end-in-region negate-in-region) 'priority)
-      (setq inner-priority (car prios) outer-priority (cdr prios))
-      (cond ((and inner-priority (not outer-priority))
-	     (+ inner-priority TeX-overlay-priority-step))
-	    ((and (not inner-priority) outer-priority)
-	     (/ outer-priority 2))
-	    ((and inner-priority outer-priority)
-	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step))))
-
-  (defun TeX-replace-regexp-in-string (regexp rep string)
-    "Compatibility function mimicking `replace-regexp-in-string' for XEmacs."
-    (replace-in-string string regexp rep)) )
 
 ;; require crm here, because we often do
 ;;
@@ -826,60 +729,38 @@ Ensures that empty input results in nil across different emacs versions."
 					    hist def inherit-input-method)))
       (if (equal result '("")) nil result))))
 
-;;; Special support for GNU Emacs
+(defun TeX-read-string (prompt &optional initial-input history default-value)
+  (read-string prompt initial-input history default-value t))
 
-(unless (featurep 'xemacs)
+(defun TeX-active-mark ()
+  (and transient-mark-mode mark-active))
 
-  (defun TeX-read-string (prompt &optional initial-input history default-value)
-    (read-string prompt initial-input history default-value t))
+(defun TeX-activate-region ()
+  (setq deactivate-mark nil)
+  (activate-mark))
 
-  (defun TeX-mark-active ()
-    ;; In FSF 19 mark-active indicates if mark is active.
-    mark-active)
-
-  (defun TeX-active-mark ()
-    (and transient-mark-mode mark-active))
-
-  (defun TeX-activate-region ()
-    (setq deactivate-mark nil)
-    (if (fboundp 'activate-mark)
-	(activate-mark)
-      ;; COMPATIBILITY for Emacs <= 22
-      ;; This part is adopted from `activate-mark' of Emacs 24.5.
-      (when (mark t)
-	(unless (and transient-mark-mode mark-active
-		 (mark))
-	  (force-mode-line-update) ;Refresh toolbar (bug#16382).
-	  (setq mark-active t)
-	  (unless transient-mark-mode
-	    (setq transient-mark-mode 'lambda))
-	  (if (boundp 'activate-mark-hook)
-	      (run-hooks 'activate-mark-hook))))))
-
-  (defun TeX-overlay-prioritize (start end)
-    "Calculate a priority for an overlay extending from START to END.
+(defun TeX-overlay-prioritize (start end)
+  "Calculate a priority for an overlay extending from START to END.
 The calculated priority is lower than the minimum of priorities
 of surrounding overlays and higher than the maximum of enclosed
 overlays."
-    (let (outer-priority inner-priority ov-priority)
-      (dolist (ov (overlays-in start end))
-	(when (or (eq (overlay-get ov 'category) 'TeX-fold)
-		  (overlay-get ov 'preview-state))
-	  (setq ov-priority (overlay-get ov 'priority))
-	  (if (>= (overlay-start ov) start)
-	      (setq inner-priority (max ov-priority (or inner-priority
-							ov-priority)))
-	    (setq outer-priority (min ov-priority (or outer-priority
-						      ov-priority))))))
-      (cond ((and inner-priority (not outer-priority))
-	     (+ inner-priority TeX-overlay-priority-step))
-	    ((and (not inner-priority) outer-priority)
-	     (/ outer-priority 2))
-	    ((and inner-priority outer-priority)
-	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
-	    (t TeX-overlay-priority-step))))
-
-  (defalias #'TeX-replace-regexp-in-string #'replace-regexp-in-string) )
+  (let (outer-priority inner-priority ov-priority)
+    (dolist (ov (overlays-in start end))
+      (when (or (eq (overlay-get ov 'category) 'TeX-fold)
+		(overlay-get ov 'preview-state))
+	(setq ov-priority (overlay-get ov 'priority))
+	(if (>= (overlay-start ov) start)
+	    (setq inner-priority (max ov-priority (or inner-priority
+						      ov-priority)))
+	  (setq outer-priority (min ov-priority (or outer-priority
+						    ov-priority))))))
+    (cond ((and inner-priority (not outer-priority))
+	   (+ inner-priority TeX-overlay-priority-step))
+	  ((and (not inner-priority) outer-priority)
+	   (/ outer-priority 2))
+	  ((and inner-priority outer-priority)
+	   (+ (/ (- outer-priority inner-priority) 2) inner-priority))
+	  (t TeX-overlay-priority-step))))
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.
@@ -1969,10 +1850,7 @@ SyncTeX are recognized."
 (defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
 (defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
-(put 'TeX-source-correlate-mode 'safe-local-variable 'TeX-booleanp)
-;; We do not want the custom variable to require tex.el.  This is only
-;; necessary if AUCTeX was compiled with Emacs 21.
-(put 'TeX-source-correlate-mode 'custom-requests nil)
+(put 'TeX-source-correlate-mode 'safe-local-variable #'booleanp)
 (setq minor-mode-map-alist
       (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
 	    minor-mode-map-alist))
@@ -2114,7 +1992,7 @@ enabled and the `synctex' binary is available."
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable 'TeX-booleanp)
+(put 'TeX-PDF-mode 'safe-local-variable #'booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -2212,7 +2090,7 @@ Programs should not use this variable directly but the function
   :group 'TeX-command
   :type 'boolean)
 (make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable 'TeX-booleanp)
+(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable #'booleanp)
 (make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
 (defun TeX-PDF-from-DVI ()
@@ -2334,14 +2212,11 @@ output files."
 		  (directory-files (or master-dir ".") nil regexp))))
     (if files
 	(when (or (not TeX-clean-confirm)
-		  (condition-case nil
-		      (dired-mark-pop-up " *Deletions*" 'delete
-					 (if (> (length files) 1)
-					     files
-					   (cons t files))
-					 'y-or-n-p "Delete files? ")
-		    (wrong-type-argument ; e.g. with Emacs 21
-		     (y-or-n-p (format "Delete %S? " (car files))))))
+		  (dired-mark-pop-up " *Deletions*" 'delete
+				     (if (> (length files) 1)
+					 files
+				       (cons t files))
+				     'y-or-n-p "Delete files? "))
 	  (dolist (file files)
 	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
@@ -2841,6 +2716,8 @@ Supported values are described below:
 	     thereof.
 * `:plain-tex' for files in plain-TeX mode.
 * `:texinfo' for Texinfo files.
+* `:classopt' for class options of LaTeX document.  Just
+	      considered as a pseudo-dialect.
 
 Purpose is notably to prevent non-Texinfo hooks to be run in
 Texinfo files, due to ambiguous style name, as this may cause bad
@@ -2902,7 +2779,8 @@ side effect e.g. on variable `TeX-font-list'.")
 	   (load-file el)))))
 
 (defconst TeX-style-hook-dialect-weight-alist
-  '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16))
+  '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16)
+    (:classopt . 32))
   "Association list to map dialects to binary weight, in order to
   implement dialect sets as bitmaps."  )
 
@@ -3495,6 +3373,9 @@ See `TeX-parse-macro' for details."
       (if (vectorp (car args))
 	  ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro'
 	  ;; for more comments.  See `TeX-insert-macro-default-style'.
+	  ;; The macro `LaTeX-check-insert-macro-default-style' in
+	  ;; `latex.el' uses the code inside (unless ...)  This macro
+	  ;; should be adapted if the code here changs.
 	  (unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
 		      (equal current-prefix-arg '(4))
 		    (or
@@ -3793,10 +3674,8 @@ The algorithm is as follows:
   (funcall TeX-install-font-lock)
 
   ;; We want this to be early in the list, so we do not add it before
-  ;; we enter TeX mode  the first time.
-  (if (boundp 'local-write-file-hooks)
-      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
-    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  ;; we enter TeX mode the first time.
+  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
   (set (make-local-variable 'TeX-auto-update) t)
 
   (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)
@@ -4749,10 +4628,6 @@ See `match-data' for details."
       (buffer-substring-no-properties (match-beginning n) (match-end n))
     ""))
 
-(defun TeX-booleanp (arg)
-  "Return non-nil if ARG is t or nil."
-  (memq arg '(t nil)))
-
 (defun TeX-looking-at-backward (regexp &optional limit)
   "Return non-nil if the text before point matches REGEXP.
 Optional second argument LIMIT gives a max number of characters
@@ -4779,9 +4654,6 @@ to look backward for."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
-
-(defalias 'TeX-run-mode-hooks
-  (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
 
 (defun TeX-add-to-alist (alist-var new-alist)
   "Add NEW-ALIST to the ALIST-VAR.
@@ -4913,7 +4785,9 @@ element to ALIST-VAR."
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
-  "If non-nil, ``\\'' will be bound to `TeX-electric-macro'."
+  "If non-nil, ``\\'' will offer on-the-fly completion.
+In Texinfo-mode, ``@'' will do that job instead and ``\\'' is not
+affected.  See `TeX-electric-macro' for detail."
   :group 'TeX-macro
   :type 'boolean)
 
@@ -5017,7 +4891,6 @@ Brace insertion is only done if point is in a math construct and
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
-  ;; COMPATIBILITY for Emacs < 21
   (list TeX-command-menu-name
         :filter `(lambda (&rest ignored)
                    (TeX-mode-specific-command-menu-entries ',mode))
@@ -5026,93 +4899,91 @@ Brace insertion is only done if point is in a math construct and
 (defun TeX-mode-specific-command-menu-entries (mode)
   "Return the entries for a Command menu specific to the major MODE."
   (append
-   (TeX-menu-with-help
-    `("Command on"
-      [ "Master File" TeX-command-select-master
-	:keys "C-c C-c" :style radio
-	:selected (eq TeX-command-current 'TeX-command-master)
-	:help "Commands in this menu work on the Master File"]
-      [ "Buffer" TeX-command-select-buffer
-	:keys "C-c C-b" :style radio
-	:selected (eq TeX-command-current 'TeX-command-buffer)
-	:help "Commands in this menu work on the current buffer"]
-      [ "Region" TeX-command-select-region
-	:keys "C-c C-r" :style radio
-	:selected (eq TeX-command-current 'TeX-command-region)
-	:help "Commands in this menu work on the region"]
-      [ "Fix the Region" TeX-pin-region
-	:active (or (if prefix-arg
-			(<= (prefix-numeric-value prefix-arg) 0)
-		      (and (boundp 'TeX-command-region-begin)
-			   (markerp TeX-command-region-begin)))
-		    (TeX-mark-active))
-	;;:visible (eq TeX-command-current 'TeX-command-region)
-	:style toggle
-	:selected (and (boundp 'TeX-command-region-begin)
-		       (markerp TeX-command-region-begin))
-	:help "Fix the region for \"Command on Region\""]
+   `("Command on"
+     [ "Master File" TeX-command-select-master
+       :keys "C-c C-c" :style radio
+       :selected (eq TeX-command-current 'TeX-command-master)
+       :help "Commands in this menu work on the Master File"]
+     [ "Buffer" TeX-command-select-buffer
+       :keys "C-c C-b" :style radio
+       :selected (eq TeX-command-current 'TeX-command-buffer)
+       :help "Commands in this menu work on the current buffer"]
+     [ "Region" TeX-command-select-region
+       :keys "C-c C-r" :style radio
+       :selected (eq TeX-command-current 'TeX-command-region)
+       :help "Commands in this menu work on the region"]
+     [ "Fix the Region" TeX-pin-region
+       :active (or (if prefix-arg
+		       (<= (prefix-numeric-value prefix-arg) 0)
+		     (and (boundp 'TeX-command-region-begin)
+			  (markerp TeX-command-region-begin)))
+		   mark-active)
+       ;;:visible (eq TeX-command-current 'TeX-command-region)
+       :style toggle
+       :selected (and (boundp 'TeX-command-region-begin)
+		      (markerp TeX-command-region-begin))
+       :help "Fix the region for \"Command on Region\""]
+     "-"
+     ["Recenter Output Buffer" TeX-recenter-output-buffer
+      :help "Show the output of current TeX process"]
+     ["Kill Job" TeX-kill-job
+      :help "Kill the current TeX process"]
+     ["Next Error" TeX-next-error
+      :help "Jump to the next error of the last TeX run"]
+     ["Previous Error" TeX-previous-error
+      :help "Jump to the previous error of the last TeX run"
+      :visible TeX-parse-all-errors]
+     ["Error Overview" TeX-error-overview
+      :help "Open an overview of errors occured in the last TeX run"
+      :visible (and TeX-parse-all-errors (fboundp 'tabulated-list-mode))]
+     ["Quick View" TeX-view
+      :help "Start a viewer without prompting"]
+     "-"
+     ("TeXing Options"
+      ,@(mapcar (lambda (x)
+		  (let ((symbol (car x)) (name (nth 1 x)))
+		    `[ ,(format "Use %s engine" name) (TeX-engine-set ',symbol)
+		       :style radio :selected (eq TeX-engine ',symbol)
+		       :help ,(format "Use %s engine for compiling" name) ]))
+		(TeX-engine-alist))
       "-"
-      ["Recenter Output Buffer" TeX-recenter-output-buffer
-       :help "Show the output of current TeX process"]
-      ["Kill Job" TeX-kill-job
-       :help "Kill the current TeX process"]
-      ["Next Error" TeX-next-error
-       :help "Jump to the next error of the last TeX run"]
-      ["Previous Error" TeX-previous-error
-       :help "Jump to the previous error of the last TeX run"
-       :visible TeX-parse-all-errors]
-      ["Error Overview" TeX-error-overview
-       :help "Open an overview of errors occured in the last TeX run"
-       :visible (and TeX-parse-all-errors (fboundp 'tabulated-list-mode))]
-      ["Quick View" TeX-view
-       :help "Start a viewer without prompting"]
-      "-"
-      ("TeXing Options"
-       ,@(mapcar (lambda (x)
-		   (let ((symbol (car x)) (name (nth 1 x)))
-		     `[ ,(format "Use %s engine" name) (TeX-engine-set ',symbol)
-			:style radio :selected (eq TeX-engine ',symbol)
-			:help ,(format "Use %s engine for compiling" name) ]))
-		 (TeX-engine-alist))
-       "-"
-       [ "Generate PDF" TeX-PDF-mode
-	 :style toggle :selected TeX-PDF-mode
-	 :active (not (eq TeX-engine 'omega))
-	 :help "Use PDFTeX to generate PDF instead of DVI"]
-       ( "PDF from DVI"
-	 :visible TeX-PDF-mode
-	 :help "Compile to DVI with (La)TeX and convert to PDF"
-	 [ "Compile directly to PDF"
-	   (lambda () (interactive) (setq TeX-PDF-from-DVI nil))
-	   :style radio :selected (null (TeX-PDF-from-DVI))
-	   :help "Compile directly to PDF without intermediate conversions"]
-	 [ "dvips + ps2pdf"
-	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvips"))
-	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvips")
-	   :help "Convert DVI to PDF with dvips + ps2pdf sequence"]
-	 [ "dvipdfmx"
-	   (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvipdfmx"))
-	   :style radio :selected (equal (TeX-PDF-from-DVI) "Dvipdfmx")
-	   :help "Convert DVI to PDF with dvipdfmx"])
-       [ "Run Interactively" TeX-interactive-mode
-	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
-	 :help "Stop on errors in a TeX run"]
-       [ "Correlate I/O" TeX-source-correlate-mode
-	 :style toggle :selected TeX-source-correlate-mode
-	 :help "Enable forward and inverse search in the previewer"]
-       ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
-	:style toggle :selected TeX-debug-bad-boxes :keys "C-c C-t C-b"
-	:help "Make \"Next Error\" show overfull and underfull boxes"]
-       ["Debug Warnings" TeX-toggle-debug-warnings
-	:style toggle :selected TeX-debug-warnings
-	:help "Make \"Next Error\" show warnings"])
-      ["Compile and view" TeX-command-run-all
-       :help "Compile the document until it is ready and open the viewer"]))
+      [ "Generate PDF" TeX-PDF-mode
+	:style toggle :selected TeX-PDF-mode
+	:active (not (eq TeX-engine 'omega))
+	:help "Use PDFTeX to generate PDF instead of DVI"]
+      ( "PDF from DVI"
+	:visible TeX-PDF-mode
+	:help "Compile to DVI with (La)TeX and convert to PDF"
+	[ "Compile directly to PDF"
+	  (lambda () (interactive) (setq TeX-PDF-from-DVI nil))
+	  :style radio :selected (null (TeX-PDF-from-DVI))
+	  :help "Compile directly to PDF without intermediate conversions"]
+	[ "dvips + ps2pdf"
+	  (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvips"))
+	  :style radio :selected (equal (TeX-PDF-from-DVI) "Dvips")
+	  :help "Convert DVI to PDF with dvips + ps2pdf sequence"]
+	[ "dvipdfmx"
+	  (lambda () (interactive) (setq TeX-PDF-from-DVI "Dvipdfmx"))
+	  :style radio :selected (equal (TeX-PDF-from-DVI) "Dvipdfmx")
+	  :help "Convert DVI to PDF with dvipdfmx"])
+      [ "Run Interactively" TeX-interactive-mode
+	:style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
+	:help "Stop on errors in a TeX run"]
+      [ "Correlate I/O" TeX-source-correlate-mode
+	:style toggle :selected TeX-source-correlate-mode
+	:help "Enable forward and inverse search in the previewer"]
+      ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
+       :style toggle :selected TeX-debug-bad-boxes :keys "C-c C-t C-b"
+       :help "Make \"Next Error\" show overfull and underfull boxes"]
+      ["Debug Warnings" TeX-toggle-debug-warnings
+       :style toggle :selected TeX-debug-warnings
+       :help "Make \"Next Error\" show warnings"])
+     ["Compile and view" TeX-command-run-all
+      :help "Compile the document until it is ready and open the viewer"])
    (let ((file 'TeX-command-on-current)) ;; is this actually needed?
-     (TeX-maybe-remove-help
-      (delq nil
-	    (mapcar 'TeX-command-menu-entry
-		    (TeX-mode-specific-command-list mode)))))))
+     (delq nil
+	   (mapcar #'TeX-command-menu-entry
+		   (TeX-mode-specific-command-list mode))))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."
@@ -5128,88 +4999,86 @@ Brace insertion is only done if point is in a math construct and
     (nreverse out-list)))
 
 (defvar TeX-fold-menu
-  (TeX-menu-with-help
-   '("Show/Hide"
-     ["Fold Mode" TeX-fold-mode
-      :style toggle
-      :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Toggle folding mode"]
-     "-"
-     ["Hide All in Current Buffer" TeX-fold-buffer
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide all configured TeX constructs in the current buffer"]
-     ["Hide All in Current Region" TeX-fold-region
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide all configured TeX constructs in the marked region"]
-     ["Hide All in Current Paragraph" TeX-fold-paragraph
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide all configured TeX constructs in the paragraph containing point"]
-     ["Hide Current Macro" TeX-fold-macro
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide the macro containing point"]
-     ["Hide Current Environment" TeX-fold-env
-      :visible (not (eq major-mode 'plain-tex-mode))
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide the environment containing point"]
-     ["Hide Current Comment" TeX-fold-comment
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide the comment containing point"]
-     "-"
-     ["Show All in Current Buffer" TeX-fold-clearout-buffer
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Permanently show all folded content again"]
-     ["Show All in Current Region" TeX-fold-clearout-region
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Permanently show all folded content in marked region"]
-     ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Permanently show all folded content in paragraph containing point"]
-     ["Show Current Item" TeX-fold-clearout-item
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Permanently show the item containing point"]
-     "-"
-     ["Hide or Show Current Item" TeX-fold-dwim
-      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :help "Hide or show the item containing point"]))
-   "Menu definition for commands from tex-fold.el.")
+  '("Show/Hide"
+    ["Fold Mode" TeX-fold-mode
+     :style toggle
+     :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Toggle folding mode"]
+    "-"
+    ["Hide All in Current Buffer" TeX-fold-buffer
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide all configured TeX constructs in the current buffer"]
+    ["Hide All in Current Region" TeX-fold-region
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide all configured TeX constructs in the marked region"]
+    ["Hide All in Current Paragraph" TeX-fold-paragraph
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide all configured TeX constructs in the paragraph containing point"]
+    ["Hide Current Macro" TeX-fold-macro
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide the macro containing point"]
+    ["Hide Current Environment" TeX-fold-env
+     :visible (not (eq major-mode 'plain-tex-mode))
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide the environment containing point"]
+    ["Hide Current Comment" TeX-fold-comment
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide the comment containing point"]
+    "-"
+    ["Show All in Current Buffer" TeX-fold-clearout-buffer
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show all folded content again"]
+    ["Show All in Current Region" TeX-fold-clearout-region
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show all folded content in marked region"]
+    ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show all folded content in paragraph containing point"]
+    ["Show Current Item" TeX-fold-clearout-item
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show the item containing point"]
+    "-"
+    ["Hide or Show Current Item" TeX-fold-dwim
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide or show the item containing point"])
+  "Menu definition for commands from tex-fold.el.")
 
 (defvar TeX-customization-menu nil)
 
 (defvar TeX-common-menu-entries
-  (TeX-menu-with-help
-   `(("Multifile/Parsing"
-      ["Switch to Master File" TeX-home-buffer
-       :help "Switch to buffer of Master File, or buffer of last TeX command"]
-      ["Save Document" TeX-save-document
-       :help "Save all buffers associated with the current Master File"]
-      ["Set Master File" TeX-master-file-ask
-       :active (not (TeX-local-master-p))
-       :help "Set the main file to run TeX commands on"]
-      ["Reset Buffer" TeX-normal-mode
-       :help "Save and reparse the current buffer for style information"]
-      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
-       :help "Reset buffer and reload AUCTeX style files"])
-     ["Find Documentation..." TeX-documentation-texdoc
-      :help "Get help on commands, packages, or TeX-related topics in general"]
-     ["Read the AUCTeX Manual" TeX-goto-info-page
-      :help "Everything worth reading"]
-     ("Customize AUCTeX"
-      ["Browse Options"
-       (customize-group 'AUCTeX)
-       :help "Open the customization buffer for AUCTeX"]
-      ["Extend this Menu"
-       (progn
-	 (easy-menu-add-item
-	  nil
-	  ;; Ugly hack because docTeX mode uses the LaTeX menu.
-	  (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
-	  (or TeX-customization-menu
-	      (setq TeX-customization-menu
-		    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
-       :help "Make this menu a full-blown customization menu"])
-     ["Report AUCTeX Bug" TeX-submit-bug-report
-      :help ,(format "Problems with AUCTeX %s? Mail us!"
-		     AUCTeX-version)])))
+  `(("Multifile/Parsing"
+     ["Switch to Master File" TeX-home-buffer
+      :help "Switch to buffer of Master File, or buffer of last TeX command"]
+     ["Save Document" TeX-save-document
+      :help "Save all buffers associated with the current Master File"]
+     ["Set Master File" TeX-master-file-ask
+      :active (not (TeX-local-master-p))
+      :help "Set the main file to run TeX commands on"]
+     ["Reset Buffer" TeX-normal-mode
+      :help "Save and reparse the current buffer for style information"]
+     ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
+      :help "Reset buffer and reload AUCTeX style files"])
+    ["Find Documentation..." TeX-documentation-texdoc
+     :help "Get help on commands, packages, or TeX-related topics in general"]
+    ["Read the AUCTeX Manual" TeX-goto-info-page
+     :help "Everything worth reading"]
+    ("Customize AUCTeX"
+     ["Browse Options"
+      (customize-group 'AUCTeX)
+      :help "Open the customization buffer for AUCTeX"]
+     ["Extend this Menu"
+      (progn
+	(easy-menu-add-item
+	 nil
+	 ;; Ugly hack because docTeX mode uses the LaTeX menu.
+	 (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
+	 (or TeX-customization-menu
+	     (setq TeX-customization-menu
+		   (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
+      :help "Make this menu a full-blown customization menu"])
+    ["Report AUCTeX Bug" TeX-submit-bug-report
+     :help ,(format "Problems with AUCTeX %s? Mail us!"
+		    AUCTeX-version)]))
 
 
 ;;; Verbatim constructs
@@ -5863,7 +5732,8 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	  (regexp-quote TeX-dollar-string)))
 
 (defcustom TeX-math-toggle-off-input-method t
-  "*If non-nil, auto toggle off CJK input methods when entering math mode."
+  "If non-nil, auto turn off some input methods when entering math mode.
+See `TeX-math-input-method-off-regexp'."
   :group 'TeX-macro
   :type 'boolean)
 
@@ -6341,16 +6211,36 @@ the number of the file to view, anything else to skip: ") list)))
 		    ;; Exit gently if a `quit' signal is thrown.
 		    (quit nil)))
 		 (t (message "No documentation found for %s" pkg)))
-	      ;; In any case quit-and-kill the window.  XXX: XEmacs doesn't have
-	      ;; `quit-window', just kill the buffer in that case.
+	      ;; In any case quit-and-kill the window.
 	      (when (get-buffer-window buffer)
-		(if (fboundp 'quit-window)
-		    (quit-window t (get-buffer-window buffer))
-		  (kill-buffer buffer)))))
+		(quit-window t (get-buffer-window buffer)))))
 	;; Called without prefix argument: just run "texdoc --view <pkg>" and
 	;; show the output, so that the user is warned in case it doesn't find
 	;; the documentation or "texdoc" is not available.
-	(message (shell-command-to-string (concat "texdoc --view " pkg)))))))
+	(message "%s"
+		 ;; The folowing code to the end of `defun' used to be
+		 ;; just
+		 ;; (shell-command-to-string (concat "texdoc --view " pkg))
+		 ;; , but in some cases it blocks emacs until the user
+		 ;; quits the viewer (bug#28905).
+		 (with-output-to-string
+		   (let* (;; Use pipe rather than pty because the
+			  ;; latter causes atril (evince variant
+			  ;; viewer) to exit before showing anything.
+			  (process-connection-type nil)
+			  (process (start-process-shell-command
+				    "Doc view" standard-output
+				    (concat "texdoc --view " pkg))))
+		     ;; Suppress the message "Process Doc view
+		     ;; finished".
+		     (set-process-sentinel process #'ignore)
+		     ;; Kill temp buffer without query.  This is
+		     ;; necessary, at least for some environment, if
+		     ;; the underlying shell can't find the texdoc
+		     ;; executable.
+		     (set-process-query-on-exit-flag process nil)
+		     ;; Don't discard shell output.
+		     (accept-process-output process))))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."

@@ -519,7 +519,7 @@ immediately adds the corresponding right brace @samp{)}, @samp{@}} or
 @samp{]}.  The point is left after the opening brace.  If there is an
 active region, braces are put around it.
 
-They recognize the preceeding backslash or size adjusting macros such
+They recognize the preceding backslash or size adjusting macros such
 as @samp{\left}, @samp{\bigl} etc., so the following completions will
 occur:
 @itemize @bullet
@@ -1332,13 +1332,14 @@ Note that for some macros, there are special mechanisms, e.g.
 Default macro to insert when invoking @code{TeX-insert-macro} first time.
 @end defopt
 
-A faster alternative is to bind the function @code{TeX-electric-macro}
-to @samp{\}.  This can be done by setting the variable
-@code{TeX-electric-escape}
+A faster alternative is to enable the option
+@code{TeX-electric-escape}.
 
 @defopt TeX-electric-escape
-If this is non-nil when @AUCTeX{} is loaded, the @TeX{} escape
-character @samp{\} will be bound to @code{TeX-electric-macro}
+If this is non-nil, typing the @TeX{} escape character @kbd{\} will
+invoke the command @code{TeX-electric-macro}.
+
+In Texinfo mode, the command is invoked by @kbd{@@} instead.
 @end defopt
 
 The difference between @code{TeX-insert-macro} and
@@ -1354,11 +1355,12 @@ Space will complete and exit.
 
 By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
-This can be stopped by entering @code{LaTeX-math-mode},
-@pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil.
+This is suppressed inside math mode and can be disabled totally by
+setting @code{TeX-insert-braces} to nil.
 
 @defopt TeX-insert-braces
-If non-nil, append a empty pair of braces after inserting a macro.
+If non-nil, append a empty pair of braces after inserting a macro with
+no arguments.
 @end defopt
 
 @defopt TeX-insert-braces-alist
@@ -1370,7 +1372,7 @@ the macro name, and the cdr is non-nil or nil, depending on whether a
 pair of braces should be, respectively, appended or not to the macro.
 
 If a macro has an element in this variable, @code{TeX-parse-macro} will
-use its value to decided what to do, whatever the value of the variable
+use its value to decide what to do, whatever the value of the variable
 @code{TeX-insert-braces}.
 @end defopt
 
@@ -3645,7 +3647,7 @@ settings that work for some users.
       (lambda ()
 	(call-process
 	 "wmctrl" nil nil nil "-i" "-R"
-	 (frame-parameter (selected-frame) ’outer-window-id))))
+	 (frame-parameter (selected-frame) 'outer-window-id))))
 @end lisp
 @end defopt
 
@@ -3916,6 +3918,8 @@ process was started.
 @vindex Texinfo-clean-output-suffixes
 @vindex ConTeXt-clean-intermediate-suffixes
 @vindex ConTeXt-clean-output-suffixes
+@vindex AmSTeX-clean-intermediate-suffixes
+@vindex AmSTeX-clean-output-suffixes
 Remove generated intermediate files.  In case a prefix argument is
 given, remove output files as well.
 
@@ -3933,8 +3937,10 @@ for each @AUCTeX{} mode by means of the variables
 @code{docTeX-clean-output-suffixes},
 @code{Texinfo-clean-intermediate-suffixes},
 @code{Texinfo-clean-output-suffixes},
-@code{ConTeXt-clean-intermediate-suffixes} and
-@code{ConTeXt-clean-output-suffixes}.
+@code{ConTeXt-clean-intermediate-suffixes},
+@code{ConTeXt-clean-output-suffixes},
+@code{AmSTeX-clean-intermediate-suffixes} and
+@code{AmSTeX-clean-output-suffixes}.
 @end deffn
 
 @defopt TeX-clean-confirm
@@ -4348,20 +4354,25 @@ typesetting and editing documents in European languages.
 @c -> @abbr{MULE, MULtilingual Enhancement to GNU Emacs}
 @c -> @acronym{CJK, Chinese@comma{} Japanese@comma{} and Korean}
 
-For @acronym{CJK} (Chinese, Japanese, and Korean) languages, Emacs with
-@acronym{MULE} (MULtilingual Enhancement to GNU Emacs) support is
-required.  @acronym{MULE} is part of Emacs by default since Emacs 20.
-Special versions of @TeX{} are needed for @acronym{CJK} languages:
-C@TeX{} and China@TeX{} for Chinese, ASCII p@TeX{} and NTT j@TeX{} for
-Japanese, H@LaTeX{} and k@TeX{} for Korean.  The @acronym{CJK}-@LaTeX{}
-package is required for supporting multiple @acronym{CJK} scripts within
-a single document.
+All Emacs versions supported by current @AUCTeX{} can handle
+@acronym{CJK} languages by default.
 
-@acronym{CJK} characters are not usable.  Please use the
-@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 and later if
-you need @acronym{CJK}.
+In most cases, special versions of @TeX{} engines are needed for
+high-quality typesetting of @acronym{CJK} languages: C@TeX{} and
+China@TeX{} for Chinese, ASCII p@TeX{}, up@TeX{} and NTT j@TeX{} for
+Japanese, H@LaTeX{} and k@TeX{} for Korean.  They are necessary as well
+when you want to typeset documents saved in their domestic encodings
+such as @acronym{Shift-JIS}.  Currently, @AUCTeX{} offers native support
+for p@TeX{}, up@TeX{} and j@TeX{} only.
 
 @c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
+
+If you don't need fine tuning in the result with respect to the
+typesetting rules of their respective national standards, most unicode
+based @TeX{} engines e.g. Lua@TeX{} and Xe@TeX{} can handle
+@acronym{CJK} languages by default if they are encoded in
+@acronym{UTF-8}.  The @acronym{CJK}-@LaTeX{} package is provided for
+supporting @acronym{CJK} scripts in a standard @LaTeX{} document.
 
 @menu
 * European::                    Using @AUCTeX{} with European Languages
@@ -4729,12 +4740,14 @@ The following two additional font commands are available in
 @item C-c C-f g
 @kindex C-c C-f g
 @cindex @code{\textgt}
-Insert @b{gothic face} font command @samp{\textbf@{@point{}@}} or
-@samp{\mathbf@{@point{}@}} depending on the context.
+@cindex @code{\mathgt}
+Insert @b{gothic face} font command @samp{\textgt@{@point{}@}} or
+@samp{\mathgt@{@point{}@}} depending on the context.
 
 @item C-c C-f m
 @kindex C-c C-f m
 @cindex @code{\textmc}
+@cindex @code{\mathmc}
 Insert mincho font command @samp{\textmc@{@point{}@}} or
 @samp{\mathmc@{@point{}@}} depending on the context.
 
@@ -4991,11 +5004,18 @@ A symbol indicating a singleton containing one basic @TeX{} dialect,
 this symbol shall be selected among:
 @table @code
 @item :latex
-For all files in @LaTeX{} mode, or any mode derived thereof
+For all files in @LaTeX{} mode, or any mode derived thereof.
 @item :bibtex
-For all files in Bib@TeX{} mode, or any mode derived thereof
+For all files in Bib@TeX{} mode, or any mode derived thereof.
 @item :texinfo
 For all files in @acronym{Texinfo} mode.
+@item :plain-tex
+For all files in plain-@TeX{} mode, or any mode derived thereof.
+@item :context
+For all files in @ConTeXt{} mode.
+@item :classopt
+For class options of @LaTeX{} document.  This is provided as
+pseudo-dialect for style hooks associated with class options.
 @end table
 @item
 A logical expression like:
@@ -5069,7 +5089,7 @@ point inside braces.  Otherwise, each argument of this function should
 match an argument of the @TeX{} macro.  What is done depends on the argument
 type.
 
-If a macro is defined multiple times, @AUCTeX{} will chose the one with
+If a macro is defined multiple times, @AUCTeX{} will choose the one with
 the longest definition (i.e. the one with the most arguments).
 
 Thus, to overwrite
@@ -5885,5 +5905,6 @@ used by @AUCTeX{} for sectioning.
 
 @c Local Variables:
 @c mode: texinfo
+@c coding: utf-8
 @c TeX-master: t
 @c End:

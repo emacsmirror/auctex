@@ -35,6 +35,10 @@
 ;; Needed for auto-parsing.
 (require 'tex)
 
+;; Silence the parser:
+(declare-function LaTeX-thmtools-declaretheorem-list
+		  "thmtools" ())
+
 ;; Setup for macro names defined with
 ;; \begin{restatable}[<Heading>]{<env-name>}{<macro name>}:
 

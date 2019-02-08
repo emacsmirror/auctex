@@ -343,7 +343,7 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
       (let ((gs (executable-find "mgs")))
 	;; Check if mgs is functional for external non-MikTeX apps.
 	;; See http://blog.miktex.org/post/2005/04/07/Starting-mgsexe-at-the-DOS-Prompt.aspx
-	(when (and gs (= 0 (shell-command (concat gs " -q -dNODISPLAY -c quit"))))
+	(when (and gs (= 0 (shell-command (concat (shell-quote-argument gs) " -q -dNODISPLAY -c quit"))))
 	  gs))
       ;; Windows ghostscript
       (executable-find "GSWIN32C.EXE")
@@ -860,7 +860,7 @@ Pure borderless black-on-white will return an empty string."
       (delete-file
        (let ((gsfile preview-gs-file))
 	 (with-current-buffer TeX-command-buffer
-	   (funcall (car gsfile) "dvi"))))
+	   (funcall (car gsfile) "dvi" t))))
     (file-error nil))
   (when preview-ps-file
       (condition-case nil
@@ -884,7 +884,7 @@ The usual PROCESS and COMMAND arguments for
 	       (condition-case nil
 		   (delete-file
 		    (with-current-buffer TeX-command-buffer
-		      (funcall (car gsfile) "dvi")))
+		      (funcall (car gsfile) "dvi" t)))
 		 (file-error nil))
 	       (if preview-ps-file
 		   (preview-prepare-fast-conversion))
@@ -1933,7 +1933,7 @@ Deletes the dvi file when finished."
 	  (let ((gsfile preview-gs-file))
 	    (delete-file
 	     (with-current-buffer TeX-command-buffer
-	       (funcall (car gsfile) "dvi"))))
+	       (funcall (car gsfile) "dvi" t))))
 	(file-error nil)))))
 
 (defun preview-active-string (ov)
@@ -2037,9 +2037,6 @@ to the close hook."
   "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
 not use in advice."
-  ;; The following two lines are bug workaround for Emacs < 22.1.
-  (if (markerp begin)
-      (setq begin (marker-position begin)))
   (or (car (get-char-property begin 'preview-counters))
       (cdr (get-char-property (max (point-min)
 				   (1- begin))
@@ -2650,9 +2647,18 @@ Sequences of control characters such as ^^I are left untouched.
 Return a new string."
   ;; Since the given string can contain multibyte characters, decoding
   ;; should be performed seperately on each segment made up entirely
-  ;; with ASCII characters.
+  ;; with ASCII and raw 8-bit characters.
+  ;; Raw 8-bit characters can arise if the latex outputs multibyte
+  ;; characters with partial ^^-quoting.
   (let ((result ""))
-    (while (string-match "[\x00-\x7F]+" string)
+    ;; Here we want to collect all the ASCII and raw 8-bit bytes,
+    ;; excluding proper multibyte characters.  The regexp
+    ;; [^[:multibyte:]]+ serves for that purpose.  The alternative
+    ;; [\x00-\xFF]+ does the job as well at least for emacs 24-26, so
+    ;; use it instead if the former becomes invalid in future.
+    ;; N.B. [[:unibyte:]]+ doesn't match raw 8-bit bytes, contrary to
+    ;; naive expectation.
+    (while (string-match "[^[:multibyte:]]+" string)
       (setq result
 	    (concat result
 		    (substring string 0 (match-beginning 0))
@@ -3140,7 +3146,7 @@ If FAST is set, do a fast conversion."
 			(TeX-command-expand preview-pdf2dsc-command
 					    (car file))
 		      (setq tempdir TeX-active-tempdir
-			    pdfsource (funcall `,(car file) "pdf")))))
+			    pdfsource (funcall (car file) "pdf" t)))))
 	 (name "Preview-PDF2DSC"))
     (setq TeX-active-tempdir tempdir)
     (setq preview-ps-file (preview-attach-filename
@@ -3341,7 +3347,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
-	   nil (file-name-nondirectory master)
+	   nil master
 	   command)
 	(add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
 	(setq TeX-sentinel-function
@@ -3390,7 +3396,7 @@ stored in `preview-dumped-alist'."
 			    (save-excursion
 			      (goto-char begin)
 			      (if (bolp) 0 -1))))))
-  (preview-generate-preview t (TeX-region-file nil t)
+  (preview-generate-preview t (TeX-region-file)
 			    (preview-do-replacements
 			     (TeX-command-expand
 			      (preview-string-expand preview-LaTeX-command)
@@ -3430,7 +3436,7 @@ stored in `preview-dumped-alist'."
   (interactive)
   (TeX-save-document (TeX-master-file))
   (preview-generate-preview
-   nil (TeX-master-file nil t)
+   nil (TeX-master-file)
    (preview-do-replacements
     (TeX-command-expand
      (preview-string-expand preview-LaTeX-command)
@@ -3470,7 +3476,7 @@ environments is selected."
 (defun preview-generate-preview (region-p file command)
   "Generate a preview.
 REGION-P is the region flag, FILE the file (without default
-extension and directory), COMMAND is the command to use.
+extension), COMMAND is the command to use.
 
 It returns the started process."
   (setq TeX-current-process-region-p region-p)
@@ -3480,7 +3486,7 @@ It returns the started process."
 		   (if TeX-current-process-region-p
 		       'TeX-region-file
 		     'TeX-master-file)
-		   file))
+		   (file-name-nondirectory file)))
 	 (master (TeX-master-file))
 	 (master-file (expand-file-name master))
 	 (dumped-cons (assoc master-file

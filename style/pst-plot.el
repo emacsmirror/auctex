@@ -35,31 +35,14 @@
 
 ;;; Code:
 
-;; Self Parsing -- see (info "(auctex)Hacking the Parser")
-(defvar LaTeX-auto-pstplot-regexp-list
-  '(("\\\\\\(save\\|read\\)data{?\\(\\\\[a-zA-Z]+\\)}?"
-     2 LaTeX-auto-pstplot))
-  "List of regular expressions to extract arguments of \\*data
-  macros.")
+;; Silence the compiler:
+(declare-function LaTeX-pst-arrows "pstricks" ())
+(declare-function LaTeX-pst-point  "pstricks" ())
+(declare-function TeX-arg-compl-list
+		  "pstricks" (list &optional prompt hist))
 
-(defvar LaTeX-auto-pstplot nil
-  "Temporary for parsing \\*data definitions.")
-
-(defun LaTeX-pstplot-cleanup ()
-  "Move symbols from `LaTeX-auto-pstplot to `TeX-auto-symbol'."
-  (mapcar (lambda (symbol)
-            ;; (setq TeX-symbol-list (cons (list symbol 0) TeX-symbol-list))
-            ;; (setq TeX-auto-symbol (cons (list symbol 0) TeX-auto-symbol)))
-            (add-to-list 'LaTeX-pstplot-datasets symbol))
-            LaTeX-auto-pstplot))
-
-(defun LaTeX-pstplot-prepare ()
-  "Clear `LaTeX-auto-pstplot' before use."
-  (setq LaTeX-auto-pstplot nil))
-
-(add-hook 'TeX-auto-prepare-hook #'LaTeX-pstplot-prepare t)
-(add-hook 'TeX-auto-cleanup-hook #'LaTeX-pstplot-cleanup t)
-(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
+(defvar LaTeX-pst-parameters-completion-regexp)
+(defvar LaTeX-pst-parameters-name-list)
 
 ;;; Parameters
 (defvar LaTeX-pstplot-datasets nil
@@ -84,6 +67,32 @@
 
 (defvar LaTeX-pst-axesstyle-list '(t "axes" "frame" "none")
   "A list of values for axesstyles in pst-plot.")
+
+;; Self Parsing -- see (info "(auctex)Hacking the Parser")
+(defvar LaTeX-auto-pstplot-regexp-list
+  '(("\\\\\\(save\\|read\\)data{?\\(\\\\[a-zA-Z]+\\)}?"
+     2 LaTeX-auto-pstplot))
+  "List of regular expressions to extract arguments of \\*data
+  macros.")
+
+(defvar LaTeX-auto-pstplot nil
+  "Temporary for parsing \\*data definitions.")
+
+(defun LaTeX-pstplot-cleanup ()
+  "Move symbols from `LaTeX-auto-pstplot' to `TeX-auto-symbol'."
+  (mapcar (lambda (symbol)
+            ;; (setq TeX-symbol-list (cons (list symbol 0) TeX-symbol-list))
+            ;; (setq TeX-auto-symbol (cons (list symbol 0) TeX-auto-symbol)))
+            (add-to-list 'LaTeX-pstplot-datasets symbol))
+            LaTeX-auto-pstplot))
+
+(defun LaTeX-pstplot-prepare ()
+  "Clear `LaTeX-auto-pstplot' before use."
+  (setq LaTeX-auto-pstplot nil))
+
+(add-hook 'TeX-auto-prepare-hook #'LaTeX-pstplot-prepare t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-pstplot-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 ;;; Macros
 (defun LaTeX-pst-macro-psaxes (_optional &optional _arg)

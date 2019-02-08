@@ -30,6 +30,15 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
+
 (TeX-add-style-hook
  "url"
  (lambda ()
@@ -47,12 +56,20 @@
     "UrlRight"
     "UrlSpecials"
     '("path" (TeX-arg-verb-delim-or-brace "Path"))
-    '("url" (TeX-arg-verb-delim-or-brace "Url"))
+    ;; "hyperref" redefines \url so that the argument is only in
+    ;; braces.  We check here if hyperref is loaded:
+    '("url" (TeX-arg-conditional (member "hyperref" (TeX-style-list))
+				 ("Url")
+			       ((TeX-arg-verb-delim-or-brace "Url"))))
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
 
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   ;; hyperref.el has some code to remove "url" from
+   ;; `LaTeX-verbatim-macros-with-delims-local', but we check here as
+   ;; well if "hyperref" is already loaded:
+   (unless (member "hyperref" (TeX-style-list))
+     (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url"))
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
 

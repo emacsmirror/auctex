@@ -1,6 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.
 
-;; Copyright (C) 2004-2008, 2011-2012, 2014, 2017
+;; Copyright (C) 2004-2008, 2011-2012, 2014, 2017, 2018
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
@@ -595,11 +595,8 @@ opening and closing syntax as defined in
 `TeX-search-syntax-table'.
 
 The first item in the returned list is the string specified in
-the argument, the second item may be a face if the argument
-string was fontified.  In Emacs the string holds text properties
-as well, so the second item is always nil.  In XEmacs the string
-does not enclose any faces, so these are given in the second item
-of the resulting list."
+the argument, with text properties.  The second item is for
+backward compatibility and always nil."
   (save-excursion
     (let* ((macro-end (or macro-end
 			  (save-excursion (goto-char macro-start)
@@ -911,12 +908,7 @@ the other elements.  The ordering among elements is maintained."
 
 ;;; The mode
 
-;; This autoload cookie had to be changed because of XEmacs.  This is
-;; very dissatisfactory, because we now don't have the full doc string
-;; available to tell people what to expect when using this mode before
-;; loading it.
-
-;;;###autoload (autoload 'TeX-fold-mode "tex-fold" "Minor mode for hiding and revealing macros and environments." t)
+;;;###autoload
 (define-minor-mode TeX-fold-mode
   "Minor mode for hiding and revealing macros and environments.
 

@@ -88,7 +88,7 @@
   "Check whether \"\\input\" and \"\\detokenize\" are supplied when necessary."
   ;; Skip on w32 because the quoting style of `shell-quote-argument'
   ;; is different.
-  (skip-unless (not (eq system-type 'w32)))
+  (skip-unless (not (eq system-type 'windows-nt)))
   (should (string=
            (let ((major-mode 'latex-mode)
 		 (TeX-engine 'default)
@@ -102,6 +102,9 @@
 File names obtained as expansion of \"%t\", \"%s\" and so on should be
 skipped for the following expansion to avoid possible endless loop.
 See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
+  ;; Skip on w32 because the quoting style of `shell-quote-argument'
+  ;; is different.
+  (skip-unless (not (eq system-type 'windows-nt)))
   (let ((TeX-master "abc-def")
 	(TeX-expand-list '(("-" (lambda () ":")))))
     (should (string=
@@ -128,6 +131,9 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
 
 (ert-deftest TeX-command-expand-active-master ()
   "Test whether `TeX-active-master' is valid argument for `TeX-command-expand'."
+  ;; Skip on w32 because the quoting style of `shell-quote-argument'
+  ;; is different.
+  (skip-unless (not (eq system-type 'windows-nt)))
   (let ((TeX-master "abc")
 	TeX-current-process-region-p)
     (setq TeX-current-process-region-p nil)

@@ -29,6 +29,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-lettrine-key-val-options
   '(("lines")
     ("depth")

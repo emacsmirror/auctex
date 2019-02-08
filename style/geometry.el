@@ -1,6 +1,6 @@
 ;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,11 @@
 ;; `geometry.sty' is part of TeXLive.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-geometry-always-key-val-options
   '(("layout") ("layoutwidth") ("layoutheight") ("layoutsize")
@@ -137,7 +142,12 @@ package.")
 				("newgeometry"   "{")
 				("savegeometry"  "{")
 				("loadgeometry"  "{"))
-			      'function)))
+			      'function))
+
+   ;; Option management
+   (if (and (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
+	    (not (eq TeX-engine 'xetex)))
+       (setq TeX-PDF-from-DVI "Dvipdfmx")))
  LaTeX-dialect)
 
 (defun LaTeX-geometry-package-options ()

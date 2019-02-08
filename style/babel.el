@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty' version 3.9h.
 
-;; Copyright (C) 2005, 2007, 2013-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2007, 2013-2014, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,11 @@
 
 (eval-when-compile
   (require 'cl-lib))
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
 
 (defvar LaTeX-babel-language-list
   '("afrikaans"

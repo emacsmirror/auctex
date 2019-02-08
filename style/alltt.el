@@ -1,6 +1,6 @@
 ;;; alltt.el --- AUCTeX style for `alltt.sty'
 
-;; Copyright (C) 2004, 2005, 2014, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2014, 2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,11 @@
 ;; This file adds support for `alltt.sty'.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
 
 (TeX-add-style-hook
  "alltt"

@@ -1,6 +1,6 @@
 ;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'
 
-;; Copyright (C) 2012, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2013, 2018 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,15 @@
 ;; This file adds support for `fancyhdr.sty', version 3.2
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function font-latex-update-font-lock
+		  "font-latex"
+		  (&optional syntactic-kws))
 
 (TeX-add-style-hook
  "fancyhdr"

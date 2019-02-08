@@ -1,6 +1,6 @@
 ;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)
 
-;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -44,8 +44,15 @@
 (eval-when-compile
   (require 'cl-lib))
 
-;; Needed for auto-parsing.
+;; Needed for auto-parsing:
 (require 'tex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
 ;; FIXME: Anything missing?
 (defvar LaTeX-tcolorbox-keyval-options
@@ -454,7 +461,7 @@ e.g. \"tcolorboxlib-raster.el\"."
   (when (LaTeX-tcolorbox-tcbuselibrary-list)
     (let (libs)
       (dolist (x (LaTeX-tcolorbox-tcbuselibrary-list))
-	(push (TeX-replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
+	(push (replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
       (setq libs (mapconcat #'identity libs ","))
       (dolist (x (split-string libs "," t))
 	(TeX-run-style-hooks (concat "tcolorboxlib-" x)))))
