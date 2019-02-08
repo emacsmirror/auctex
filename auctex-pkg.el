@@ -24,7 +24,7 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-(define-package "auctex" "12.1.1" "Integrated environment for *TeX*"
+(define-package "auctex" "12.1.2" "Integrated environment for *TeX*"
   '((emacs "24.1")
     (cl-lib "0.5"))
   :url "https://www.gnu.org/software/auctex/"
