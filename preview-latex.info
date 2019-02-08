@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 6.5 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.1.2018-09-07 from 2018-09-07).
+(version 12.1.1.2019-02-08 from 2019-02-08).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
 Software Foundation, Inc.
@@ -418,7 +418,7 @@ Preview/Turn preamble cache on
      style file is tampered with.
 
      Note that support for preamble cache is limited for LaTeX variants.
-     c.f.  '<URL:https://github.com/davidcarlisle/dpctex/issues/15>'
+     c.f.  <https://github.com/davidcarlisle/dpctex/issues/15>
         * XeLaTeX cannot use preamble cache at all.  The reason is
           intrinsic in XeLaTeX, so preview-latex can't help.
         * LuaLaTeX works with preamble cache only when the preamble is
@@ -1856,7 +1856,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.1.2018-09-07 from 2018-09-07).
+(version 12.1.1.2019-02-08 from 2019-02-08).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
 Software Foundation, Inc.
@@ -2486,29 +2486,29 @@ Node: Availability9545
 Node: Contacts10154
 Node: Installation11427
 Node: Keys and lisp11628
-Node: Simple customization18729
-Node: Known problems24392
-Node: Font problems with Dvips25165
-Node: Too small bounding boxes26338
-Node: x-symbol interoperation27734
-Node: Middle-clicks paste instead of toggling29117
-Node: For advanced users29745
-Node: The LaTeX style file30204
-Node: Package options32766
-Node: Provided commands43670
-Node: The Emacs interface51020
-Node: The preview images59731
-Node: Misplaced previews63481
-Node: ToDo66935
-Node: Frequently Asked Questions71706
-Node: Introduction to FAQ72029
-Node: Requirements72368
-Node: Installation Trouble74200
-Node: Customization76463
-Node: Troubleshooting79555
-Node: Other formats82073
-Node: Copying this Manual83388
-Node: GNU Free Documentation License84340
-Node: Index109464
+Node: Simple customization18723
+Node: Known problems24386
+Node: Font problems with Dvips25159
+Node: Too small bounding boxes26332
+Node: x-symbol interoperation27728
+Node: Middle-clicks paste instead of toggling29111
+Node: For advanced users29739
+Node: The LaTeX style file30198
+Node: Package options32760
+Node: Provided commands43664
+Node: The Emacs interface51014
+Node: The preview images59725
+Node: Misplaced previews63475
+Node: ToDo66929
+Node: Frequently Asked Questions71700
+Node: Introduction to FAQ72023
+Node: Requirements72362
+Node: Installation Trouble74194
+Node: Customization76457
+Node: Troubleshooting79549
+Node: Other formats82067
+Node: Copying this Manual83382
+Node: GNU Free Documentation License84334
+Node: Index109458
 
 End Tag Table
