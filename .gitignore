@@ -44,5 +44,6 @@ preview-latex.el
 /preview.el
 PROBLEMS.preview
 # Files generated when installing/compiling the package in place.
+auctex-pkg.el
 auctex-autoloads.el
 tests/*/auto/*
