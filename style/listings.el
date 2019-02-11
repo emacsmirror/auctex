@@ -46,6 +46,9 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Needed for auto-parsing:
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
