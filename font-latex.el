@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2017  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2019  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -1714,6 +1714,14 @@ marks boundaries for searching for group ends."
   "List of characters directly after \"\\\" excluded from fontification.
 Each character is a string.")
 
+(defvar font-latex-match-simple-include-list '("@")
+  "List of characters allowed in a macro for fontification.
+Each character is a string.  This variable is initialized to
+\"@\" since internal LaTeX commands are very often redefined in a
+.tex file and the fontification should work correctly in those
+cases.")
+(make-variable-buffer-local 'font-latex-match-simple-include-list)
+
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
   ;; \s_ matches chars with symbol syntax, \sw chars with word syntax,
@@ -1726,7 +1734,20 @@ Each character is a string.")
   ;; like `\__module_foo:nnn'
   (let* ((search (lambda ()
 		   (TeX-re-search-forward-unescaped
-		    "\\\\\\(\\s_\\|\\sw\\|\\s.\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
+		    (concat
+                     ;; Chars directly after backslash
+                     "\\\\\\(\\s_\\|\\sw\\|\\s.\\)"
+                     ;; Start group of the following chars
+                     "\\(?:["
+                     ;; a-zA-Z are always allowed:
+                     "a-zA-Z"
+                     ;; Additional characters added by AUCTeX styles
+                     (mapconcat #'identity
+                                  font-latex-match-simple-include-list
+                                  "")
+                     ;; End group
+                     "]\\)*")
+		    limit t)))
 	 (pos (funcall search)))
     (while (and pos
 		(member (match-string 1)
