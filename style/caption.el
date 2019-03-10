@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.3-111)
 
-;; Copyright (C) 2015--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,8 +35,10 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl-lib)
-  (require 'latex))
+  (require 'cl-lib))
+
+;; Needed for compiling `LaTeX-check-insert-macro-default-style':
+(require 'latex)
 
 ;; Needed for auto-parsing:
 (require 'tex)
