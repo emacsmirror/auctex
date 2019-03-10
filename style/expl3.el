@@ -35,6 +35,8 @@
 		  "font-latex"
 		  (&optional syntactic-kws))
 
+(defvar font-latex-match-simple-include-list)
+
 (defvar LaTeX-expl3-syntax-table
   (let ((st (copy-syntax-table LaTeX-mode-syntax-table)))
     ;; Make _ and : symbol chars
