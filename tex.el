@@ -1579,7 +1579,9 @@ For available TYPEs, see variable `TeX-engine'."
     (setq type (intern type)))
   (setq TeX-engine type)
   ;; Automatically enable or disable TeX PDF mode as a convenience
-  (cond ((eq type 'xetex) (TeX-PDF-mode 1))
+  (cond ((eq type 'xetex)
+	 (TeX-PDF-mode 1)
+	 (setq TeX-PDF-from-DVI nil))
 	((eq type 'omega) (TeX-PDF-mode 0))))
 
 (define-minor-mode TeX-Omega-mode
