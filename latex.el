@@ -5362,11 +5362,31 @@ commands are defined:
   "Insert \\STRING{}.  If DOLLAR is non-nil, put $'s around it.
 If `TeX-electric-math' is non-nil wrap that symbols around the
 string."
-  (when dollar
-    (insert (or (car TeX-electric-math) "$"))
-    (save-excursion
-      (insert (or (cdr TeX-electric-math) "$"))))
-  (funcall LaTeX-math-insert-function string))
+  (let ((active (TeX-active-mark))
+	m closer)
+    (if (and active (> (point) (mark)))
+	(exchange-point-and-mark))
+    (when dollar
+      (insert (or (car TeX-electric-math) "$"))
+      (save-excursion
+	(if active (goto-char (mark)))
+	;; Store closer string for later reference.
+	(setq closer (or (cdr TeX-electric-math) "$"))
+	(insert closer)
+	;; Set temporal marker to decide whether to put the point
+	;; after the math mode closer or not.
+	(setq m (point-marker))))
+    (funcall LaTeX-math-insert-function string)
+    (when dollar
+      ;; If the above `LaTeX-math-insert-function' resulted in
+      ;; inserting, e.g., a pair of "\langle" and "\rangle" by
+      ;; typing "`(", keep the point between them.  Otherwise
+      ;; move the point after the math mode closer.
+      (if (= m (+ (point) (length closer)))
+	  (goto-char m))
+      ;; Make temporal marker point nowhere not to slow down the
+      ;; subsequent editing in the buffer.
+      (set-marker m nil))))
 
 (defun LaTeX-math-cal (char dollar)
   "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it.
