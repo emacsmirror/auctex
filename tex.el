@@ -3109,7 +3109,11 @@ Or alternatively:
     (when entry
       (if (numberp (nth 1 entry))
 	  (let* ((sub (nth 1 entry))
-		 (close (nth 3 entry))
+		 (close (if (and (nth 3 entry)
+                                 (listp (nth 3 entry))
+                                 (symbolp (car (nth 3 entry))))
+                            (eval (nth 3 entry))
+                          (nth 3 entry)))
 		 (begin (match-beginning sub))
 		 (end (match-end sub))
 		 (pattern (TeX-match-buffer 0))
