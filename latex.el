@@ -6040,7 +6040,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 Also sets `match-data' so that group 1 is the already typed
 prefix.
 
-For example, in $a + \a| - 17$ with | denoting point, the
+For example, in $a + \\a| - 17$ with | denoting point, the
 function would return non-nil and `(match-string 1)' would return
 \"a\" afterwards."
   (and (texmathp)

@@ -2365,7 +2365,7 @@ filename=%s>
 
 (defun preview-TeX-style-cooked ()
   "Return `preview-TeX-style-dir' in cooked form.
-This will be fine for prepending to a `TEXINPUT' style
+This will be fine for prepending to a `TEXINPUTS' style
 environment variable, including an initial `.' at the front."
   (if (or (zerop (length preview-TeX-style-dir))
 	  (member (substring preview-TeX-style-dir -1) '(";" ":")))
@@ -2422,7 +2422,7 @@ systems, or `;' on Windows-like systems.  And it should be
 preceded with .: or .; accordingly in order to have . first in
 the search path.
 
-The `TEXINPUT' environment type variables will get this prepended
+The `TEXINPUTS' environment type variables will get this prepended
 at load time calling \\[preview-set-texinputs] to reflect this.
 You can permanently install the style files using
 \\[preview-install-styles].
