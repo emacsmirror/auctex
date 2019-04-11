@@ -702,8 +702,8 @@ value of `Texinfo-mode-hook'."
 
   (when (and (boundp 'add-log-current-defun-function)
 	     (fboundp 'texinfo-current-defun-name))
-    (setq add-log-current-defun-function
-	  #'texinfo-current-defun-name))
+    (set (make-local-variable 'add-log-current-defun-function)
+	 #'texinfo-current-defun-name))
 
   (TeX-add-symbols
    '("acronym" "Acronym")
