@@ -263,29 +263,80 @@ variable `font-latex-fontify-sectioning'." ',num)
      ("newrefsegment" "mancite" "pno" "ppno" "nopp" "psq" "psqq")
      font-lock-variable-name-face 2 noarg)
     ("biblatex"
-     (("newrefsection" "[") ("ExecuteBibliographyOptions" "[{")
-      ("printbibliography" "[") ("printshorthands" "[") ("printbibheading" "[")
+     (;; 3.2.2 Setting Package Options
+      ("ExecuteBibliographyOptions" "[{")
+      ;; 3.7.1 Resources
       ("addbibresource" "[{") ("addglobalbib" "[{") ("addsectionbib" "[{")
-      ("bibbysection" "[") ("bibbysegment" "[") ("bibbycategory" "[")
-      ("DeclareBibliographyCategory" "{") ("addtocategory" "{{") ("defbibenvironment" "{{{{")
-      ("defbibheading" "{[{") ("defbibnote" "{{") ("defbibfilter" "{{") ("defbibcheck" "{{")
-      ("defbibentryset" "{{") ("Cite" "[[{") ("parencite" "*[[{") ("Parencite" "[[{")
-      ("footcite" "[[{") ("footcitetext" "[[{") ("textcite" "[[{") ("Textcite" "[[{")
-      ("smartcite" "[[{") ("Smartcite" "[[{") ("supercite" "{") ("autocite" "*[[{")
-      ("Autocite" "*[[{") ("citeauthor" "*[[{") ("Citeauthor" "*[[{") ("citetitle" "*[[{")
-      ("citeyear" "*[[{") ("citedate" "*[[{") ("citeurl" "[[{") ("parentext" "{")
-      ("brackettext" "{") ("fullcite" "[[{") ("fullfootcite" "[[{") ("volcite" "[{[[")
-      ("Volcite" "[{[[") ("pvolcite" "[{[[") ("Pvolcite" "[{[[") ("fvolcite" "[{[[")
-      ("ftvolcite" "[{[[") ("svolcite" "[{[[") ("Svolcite" "[{[[") ("tvolcite" "[{[[")
-      ("Tvolcite" "[{[[") ("avolcite" "[{[[") ("Avolcite" "[{[[") ("notecite" "[[{")
-      ("Notecite" "[[{") ("pnotecite" "[[{") ("Pnotecite" "[[{") ("fnotecite" "[[{")
-      ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{") ("citereset" "*")
-      ("RN" "{") ("Rn" "{") ("DefineBibliographyStrings" "{{") ("DefineBibliographyExtras" "{{")
+      ;; 3.7.2 The Bibliography
+      ("printbibliography" "[") ("bibbysection"    "[") ("bibbysegment" "[")
+      ("bibbycategory"     "[") ("printbibheading" "[")
+      ;; 3.7.3 Bibliography Lists
+      ("printbiblist" "[{") ("printshorthands" "[")
+      ;; 3.7.4 Bibliography Sections
+      ("newrefsection" "[")
+      ;; 3.7.6 Bibliography Categories
+      ("DeclareBibliographyCategory" "{") ("addtocategory" "{{")
+      ;; 3.7.7 Bibliography Headings and Environments
+      ("defbibenvironment" "{{{{") ("defbibheading" "{[{")
+      ;; 3.7.8 Bibliography Notes
+      ("defbibnote" "{{")
+      ;; 3.7.9 Bibliography Filters and Checks
+      ("defbibfilter" "{{") ("defbibcheck" "{{")
+      ;; 3.7.10 Reference Contexts
+      ("DeclareRefcontext"       "{{")  ("newrefcontext"        "[{")
+      ("assignrefcontextkeyws"   "*[{") ("assignrefcontextcats" "*[{")
+      ("assignrefcontextentries" "*[{")
+      ;; 3.7.11 Dynamic Entry Sets
+      ("defbibentryset" "{{")
+      ;; 3.8.1 Standard Commands
+      ("Cite" "[[{")
+      ("parencite" "*[[{") ("Parencite"    "[[{")
+      ("footcite"  "[[{")  ("footcitetext" "[[{")
+      ;; 3.8.2 Style-specific Commands
+      ("textcite"  "[[{") ("Textcite"  "[[{")
+      ("smartcite" "[[{") ("Smartcite" "[[{")
+      ("supercite" "{")
+      ;; 3.8.3 Qualified Citation Lists
+      ;; For qualified lists, fontify at least 2 mandatory arguments
+      ("cites"      "(([[{[[{") ("Cites"         "(([[{[[{")
+      ("parencites" "(([[{[[{") ("Parencites"    "(([[{[[{")
+      ("footcites"  "(([[{[[{") ("footcitetexts" "(([[{[[{")
+      ("smartcites" "(([[{[[{") ("Smartcites"    "(([[{[[{")
+      ("textcites"  "(([[{[[{") ("Textcites"     "(([[{[[{")
+      ("supercites" "(([[{[[{")
+      ;; 3.8.4 Style-independent Commands
+      ("autocite" "*[[{")      ("Autocite" "*[[{")
+      ("autocites" "(([[{[[{") ("Autocites" "(([[{[[{")
+      ;; 3.8.5 Text Commands
+      ("citeauthor" "*[[{") ("Citeauthor" "*[[{") ("citetitle" "*[[{")
+      ("citeyear"   "*[[{") ("citedate" "*[[{")
+      ("citeurl"    "[[{")  ("parentext" "{")
+      ("brackettext" "{")
+      ;; 3.8.6 Special Commands
+      ("fullcite"  "[[{")         ("footfullcite" "[[{")
+      ("volcite"   "[{[{")        ("Volcite"      "[{[{")
+      ("volcites"  "(([{[{[{[{")  ("Volcites"     "(([{[{[{[{")
+      ("pvolcite"  "[{[{")        ("Pvolcite"     "[{[{")
+      ("pvolcites" "(([{[{[{[{")  ("Pvolcites"    "(([{[{[{[{")
+      ("fvolcite"  "[{[{")        ("ftvolcite"    "[{[{")
+      ("fvolcites" "(([{[{[{[{")  ("Fvolcites"    "(([{[{[{[{")
+      ("svolcite"  "[{[{")        ("Svolcite"     "[{[{")
+      ("svolcites" "(([{[{[{[{")  ("Svolcites"    "(([{[{[{[{")
+      ("tvolcite"  "[{[{")        ("Tvolcite"     "[{[{")
+      ("tvolcites" "(([{[{[{[{")  ("Tvolcites"    "(([{[{[{[{")
+      ("avolcite"  "[{[{")        ("Avolcite"     "[{[{")
+      ("avolcites" "(([{[{[{[{")  ("Avolcites"    "(([{[{[{[{")
+      ("notecite"  "[[{")         ("Notecite"     "[[{")
+      ("pnotecite" "[[{")         ("Pnotecite"    "[[{")
+      ("fnotecite" "[[{")
+      ;; 3.8.7 Low-level Commands
+      ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{")
+      ;; 3.8.8 Miscellaneous Commands
+      ("citereset" "*") ("RN" "{") ("Rn" "{")
+      ;; 3.9 Localization Commands
+      ("DefineBibliographyStrings" "{{")  ("DefineBibliographyExtras" "{{")
       ("UndefineBibliographyExtras" "{{") ("DefineHyphenationExceptions" "{{")
-      ("NewBibliographyString" "{") ("autocites" "(([[{") ("Autocites" "(([[{")
-      ("cites" "(([[{") ("Cites" "(([[{") ("parencites" "(([[{") ("Parencites" "(([[{")
-      ("footcites" "(([[{") ("footcitetexts" "(([[{") ("smartcites" "(([[{")
-      ("Smartcites" "(([[{") ("textcites" "(([[{") ("Textcites" "(([[{") ("supercites" "(([[{"))
+      ("NewBibliographyString" "{"))
      font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
