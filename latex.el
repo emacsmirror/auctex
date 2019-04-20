@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2018 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2019 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -6516,7 +6516,11 @@ function would return non-nil and `(match-string 1)' would return
   ;; emacs 24.4.
   (when (and LaTeX-electric-left-right-brace
 	     (boundp 'electric-pair-mode))
-    (set (make-local-variable 'electric-pair-mode) nil)))
+    (set (make-local-variable 'electric-pair-mode) nil))
+
+  ;; Initialization of `add-log-current-defun-function':
+  (set (make-local-variable 'add-log-current-defun-function)
+       #'TeX-current-defun-name))
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."

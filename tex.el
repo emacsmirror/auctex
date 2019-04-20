@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2018 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2019 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -6574,6 +6574,57 @@ Used as function for validating a variable's `safe-local-variable' property."
 	   (setq all-strings (stringp (car lst)))
 	   (setq lst (cdr lst)))
 	 all-strings)))
+
+;; add-log.el: This function is a variation of
+;; `tex-current-defun-name' defined in `tex-mode.el'.  In `latex.el',
+;; the variable `add-log-current-defun-function' is set to this
+;; function.
+(defun TeX-current-defun-name ()
+  "Return the name of the TeX section/paragraph/chapter at point, or nil."
+  (save-excursion
+    (let (s1 e1 s2 e2)
+      ;; If we are now precisely at the beginning of a sectioning
+      ;; command, move forward and make sure `re-search-backward'
+      ;;  finds this one rather than the previous one:
+      (or (eobp) (progn
+                   (when (looking-at-p "\\\\")
+                     (forward-char))
+                   (unless (eolp)
+                     (forward-sexp))))
+      ;; Search backward for sectioning command.  If
+      ;; `LaTeX-section-label' is buffer-local, assume that a style
+      ;; has changed the value and recalculate the string.  Otherwise
+      ;; take the standard one:
+      (when (re-search-backward
+             (if (local-variable-p 'LaTeX-section-label)
+                 (concat (regexp-opt
+                          (remove "part" (mapcar #'car LaTeX-section-label)))
+                         "\\*?")
+               "\\\\\\(sub\\)*\\(section\\|paragraph\\|chapter\\)\\*?")
+             nil t)
+        ;; Skip over the backslash:
+        (setq s1 (1+ (point)))
+        ;; Skip over the sectioning command, incl. the *:
+        (setq e1 (goto-char (match-end 0)))
+        ;; Skip over the optional argument, if any:
+        (when (looking-at-p "[ \t]*\\[")
+          (forward-sexp))
+        ;; Skip over any chars until the mandatory argument:
+        (skip-chars-forward "^{")
+        ;; Remember the points for the mandatory argument:
+        (setq s2 (point))
+        (setq e2 (progn (forward-sexp)
+                        (point)))
+        ;; Now pick the content: For one-line title, return it
+        ;; incl. the closing brace.  For multi-line, return the first
+        ;; line of the mandatory argument incl. ellipsis and a brace;
+        (concat
+         (buffer-substring-no-properties s1 e1)
+         (buffer-substring-no-properties
+          (goto-char s2)
+          (min (line-end-position) e2))
+         (when (> e2 (line-end-position))
+           (concat "..." TeX-grcl)))))))
 
 (provide 'tex)
 
