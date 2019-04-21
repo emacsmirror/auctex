@@ -6597,7 +6597,8 @@ Used as function for validating a variable's `safe-local-variable' property."
       ;; take the standard one:
       (when (re-search-backward
              (if (local-variable-p 'LaTeX-section-label)
-                 (concat (regexp-opt
+                 (concat "\\\\"
+			 (regexp-opt
                           (remove "part" (mapcar #'car LaTeX-section-label)))
                          "\\*?")
                "\\\\\\(sub\\)*\\(section\\|paragraph\\|chapter\\)\\*?")
