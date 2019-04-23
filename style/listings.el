@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'
 
-;; Copyright (C) 2004, 2005, 2009, 2013-2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009, 2013--2019 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -48,6 +48,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -273,22 +274,9 @@ from `listings' package.")
 
 ;; Setup for parsing the labels inside optional arguments:
 
-(defvar LaTeX-listings-key-val-label-extract
-  (concat
-   "\\(?:\\[[^][]*"
-     "\\(?:{[^}{]*"
-       "\\(?:{[^}{]*"
-	 "\\(?:{[^}{]*}[^}{]*\\)*"
-       "}[^}{]*\\)*"
-     "}[^][]*\\)*"
-   "label[ \t]*=[ \t]*{\\([^}]+\\)}"
-   "\\(?:[^]]*\\)*"
-   "\\]\\)")
-  "Helper regexp to extract the label out of optional argument.")
-
 (defvar LaTeX-listings-key-val-label-regexp
   `(,(concat
-      "\\\\begin{lstlisting}" LaTeX-listings-key-val-label-extract)
+      "\\\\begin{lstlisting}" (LaTeX-extract-key-value-label))
     1 LaTeX-auto-label)
   "Matches the label inside an optional argument after \\begin{lstlisting}.")
 
@@ -338,7 +326,7 @@ with user-defined values via the \"lstdefinestyle\" macro."
       (add-to-list 'LaTeX-label-alist `(,env . LaTeX-listing-label) t)
       ;; Add new env to parser for labels in opt. argument:
       (TeX-auto-add-regexp `(,(concat "\\\\begin{" env "}"
-				      LaTeX-listings-key-val-label-extract)
+				      (LaTeX-extract-key-value-label))
 			     1 LaTeX-auto-label))
       ;; Tell RefTeX
       (when (fboundp 'reftex-add-label-environments)

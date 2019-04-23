@@ -6664,6 +6664,42 @@ functions `TeX-arg-color' (style/color.el) or
 	      last-optional-rejected))
      ,@body))
 
+(defun LaTeX-extract-key-value-label (&optional key)
+  "Return a regexp string to match a label in an optional argument.
+The optional KEY is a string which is the name of the key in the
+key=value, default is \"label\".
+
+As an extra feature, the key can be the symbol none where the
+entire matching for the key=value is skipped.  The regexp then is
+useful for skipping complex optional arguments.  It should be
+wrapped in \\(?:...\\)? then."
+  ;; The regexp produced here is ideally in sync with the complex one
+  ;; in `reftex-label-regexps'.
+  (concat
+   ;; Match the opening [ and the following chars
+   "\\[[^][]*"
+   ;; Allow nested levels of chars enclosed in braces
+   "\\(?:{[^}{]*"
+     "\\(?:{[^}{]*"
+       "\\(?:{[^}{]*}[^}{]*\\)*"
+     "}[^}{]*\\)*"
+   "}[^][]*\\)*"
+   ;; If KEY is the symbol none, don't look for any key=val:
+   (unless (eq key 'none)
+     (concat "\\<"
+	     ;; Match the key, default is label
+	     (or key "label")
+	     ;; Optional spaces
+	     "[[:space:]]*=[[:space:]]*"
+	     ;; Match the value; braces around the value are optional
+	     "{?\\("
+	     ;; One of these chars terminates the value
+	     "[^] ,}\r\n\t%]+"
+	     ;; Close the group
+	     "\\)}?"))
+   ;; We are done.  Just search until the next closing bracket
+   "[^]]*\\]"))
+
 (provide 'latex)
 
 ;;; latex.el ends here
