@@ -237,8 +237,8 @@ empty lines we go back to fix the search limit."
 
 (defcustom texmathp-allow-detached-args nil
   "*Non-nil means, allow arguments of macros to be detached by whitespace.
-When this is t, `aaa' will be interpreted as an argument of \bb in the
-following construct:  \bbb [xxx] {aaa}
+When this is t, `aaa' will be interpreted as an argument of \\bbb in the
+following construct:  \\bbb [xxx] {aaa}
 This is legal in TeX.  The disadvantage is that any number of braces expressions
 will be considered arguments of the macro independent of its definition."
   :group 'texmathp
@@ -247,7 +247,7 @@ will be considered arguments of the macro independent of its definition."
 (defvar texmathp-why nil
   "After a call to `texmathp' this variable shows why math-mode is on or off.
 The value is a cons cell (MATCH . POSITION).
-MATCH is a string like a car of an entry in `texmathp-tex-commands', e.q.
+MATCH is a string like a car of an entry in `texmathp-tex-commands', e.g.
 \"equation\" or \"\\ensuremath\" or \"\\=\\[\" or \"$\".
 POSITION is the buffer position of the match.  If there was no match,
 it points to the limit used for searches, usually two paragraphs up.")
