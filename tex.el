@@ -555,8 +555,9 @@ string."
 		  (concat TeX-command-text " \"\\input\""))
 	      "")))
     ;; The fourth argument of t is actually for wrapper function
-    ;; `TeX--master-or-region-file-with-extra-quotes', temporally set
-    ;; as value of `file' in `TeX-command-expand'.
+    ;; provided by `TeX--master-or-region-file-with-extra-quotes'.
+    ;; See its doc string as well as the comments in
+    ;; `TeX-command-expand'.
     ("%T" file t t nil t)
     ("%n" TeX-current-line)
     ("%d" file "dvi" t)
