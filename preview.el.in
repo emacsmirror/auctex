@@ -1,7 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
 ;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017, 2018  Free Software Foundation, Inc.
+;;               2017-2019  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -2497,14 +2497,14 @@ to add the preview functionality."
 	["(or toggle) at point" preview-at-point]
 	["for environment" preview-environment]
 	["for section" preview-section]
-	["for region" preview-region (preview-mark-active)]
+	["for region" preview-region mark-active]
 	["for buffer" preview-buffer]
 	["for document" preview-document]
 	"---"
 	"Remove previews"
 	["at point" preview-clearout-at-point]
 	["from section" preview-clearout-section]
-	["from region" preview-clearout (preview-mark-active)]
+	["from region" preview-clearout mark-active]
 	["from buffer" preview-clearout-buffer]
 	["from document" preview-clearout-document]
 	"---"
