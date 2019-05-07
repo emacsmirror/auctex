@@ -30,9 +30,6 @@
 (require 'tex)
 (require 'latex)
 
-(defvar preview-compatibility-macros nil
-  "List of macros only present when compiling/loading.")
-
 (defcustom preview-transparent-color '(highlight :background)
   "Color to appear transparent in previews.
 Set this to something unusual when using `preview-transparent-border',

@@ -3634,14 +3634,5 @@ If not a regular release, the date of the last change.")
 file exhibiting the problem might help."
      )))
 
-(eval-when-compile
-  (when (boundp 'preview-compatibility-macros)
-    (dolist (elt preview-compatibility-macros)
-      (if (consp elt)
-	  (fset (car elt) (cdr elt))
-	(fmakunbound elt)))))
-
-(makunbound 'preview-compatibility-macros)
-
 (provide 'preview)
 ;;; preview.el ends here
