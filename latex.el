@@ -1701,7 +1701,8 @@ The value is actually the tail of the list of options given to CLASS."
   (member option (cdr (assoc class LaTeX-provided-class-options))))
 
 (defun LaTeX-match-class-option (regexp)
-  "Check if a documentclass option matching REGEXP is active."
+  "Check if a documentclass option matching REGEXP is active.
+Return first found class option matching REGEXP, or nil if not found."
   (TeX-member regexp (apply #'append
 			    (mapcar #'cdr LaTeX-provided-class-options))
 	      'string-match))

@@ -1363,11 +1363,16 @@ This is for matching screen font size and previews."
 If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
 had let your document be parsed by AucTeX."
-  (catch 'return (dolist (option (TeX-style-list))
-		   (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
-		       (throw 'return
-			      (string-to-number
-			       (match-string 1 option)))))))
+  (let* ((regexp "\\`\\([0-9]+\\)pt\\'")
+	 (option
+	  (or
+	   (LaTeX-match-class-option regexp)
+	   ;; We don't have `LaTeX-match-package-option'.
+	   (TeX-member regexp
+		       (apply #'append
+			      (mapcar #'cdr LaTeX-provided-package-options))
+		       #'string-match))))
+    (if option (string-to-number (match-string 1 option)))))
 
 (defsubst preview-document-pt ()
   "Calculate the default font size of document."
