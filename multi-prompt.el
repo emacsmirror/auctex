@@ -1,6 +1,7 @@
 ;;; multi-prompt.el --- Completing read of multiple strings
 
-;; Copyright (C) 1996, 1997, 2000, 2009, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 1996, 1997, 2000, 2009, 2014, 2019 Free Software
+;; Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -52,10 +53,7 @@ are the arguments to `completing-read'.  See that."
 		     minibuffer-local-must-match-map
 		   minibuffer-local-completion-map))
 	(new-map (make-sparse-keymap)))
-    (if (fboundp 'set-keymap-parent)
-	;; `set-keymap-parent' was introduced in Emacs 19.32.
-	(set-keymap-parent new-map old-map)
-      (setq new-map (copy-keymap old-map)))
+    (set-keymap-parent new-map old-map)
     (define-key new-map separator (if require-match
 				      'multi-prompt-next-must-match
 				    'multi-prompt-next))
