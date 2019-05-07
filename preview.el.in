@@ -1149,25 +1149,22 @@ for the file extension."
 (defun preview-mouse-open-eps (file &optional position)
   "Display eps FILE in a view buffer on click.
 Place point at POSITION, else beginning of file."
-  (let ((default-major-mode
+  (let ((default-mode
           ;; FIXME: Yuck!  Just arrange for the file name to have the right
           ;; extension instead!
-	  (or
-	   (assoc-default "x.ps" auto-mode-alist #'string-match)
-	   (default-value 'major-mode)))
+	  (assoc-default "x.ps" auto-mode-alist #'string-match))
 	(buff (get-file-buffer file)))
     (save-excursion
       (if buff
 	  (pop-to-buffer buff)
 	(view-file-other-window file))
+      (if (and (eq major-mode (default-value 'major-mode))
+	       default-mode)
+	  (funcall default-mode))
       (goto-char (or position (point-min)))
-      (if (eq major-mode 'ps-mode)          ; Bundled with GNU Emacs
-	  (message "%s" (substitute-command-keys "\
+      (message "%s" (substitute-command-keys "\
 Try \\[ps-run-start] \\[ps-run-buffer] and \
-\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset." )))
-      (if (eq major-mode 'postscript-mode) ; Bundled with XEmacs, limited
-	  (message "%s" (substitute-command-keys "\
-Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
+\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset.")))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
