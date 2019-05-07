@@ -1177,8 +1177,6 @@ focus."
   :group 'TeX-view
   :type 'boolean)
 
-(defvar url-unreserved-chars)
-
 (defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
