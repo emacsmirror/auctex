@@ -41,7 +41,8 @@
 
 (defgroup AUCTeX-jp nil
   "Japanese support in AUCTeX."
-  :group 'AUCTeX)
+  :group 'AUCTeX
+  :link '(custom-manual "(auctex)Japanese"))
 
 (defcustom japanese-TeX-engine-default 'ptex
   "Default TeX engine for Japanese TeX."
