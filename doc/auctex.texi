@@ -2163,7 +2163,7 @@ following stanza into your init file:
 (eval-after-load "font-latex"
   '(setq-default
     font-latex-match-reference-keywords-local
-    (remove (TeX-assoc-string "footnote"
+    (remove (assoc-string "footnote"
             font-latex-match-reference-keywords-local)
                 font-latex-match-reference-keywords-local)))
 @end lisp
