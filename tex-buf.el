@@ -554,6 +554,17 @@ without further expansion."
 			     "%"))
 		(or list (TeX-expand-list)))
 	  pat (regexp-opt (mapcar #'car list)))
+    ;; `TeX-command-expand' is called with `file' argument being one
+    ;; of `TeX-master-file', `TeX-region-file' and
+    ;; `TeX-active-master'.  The return value of these functions
+    ;; sometimes needs suitable "decorations" for an argument for
+    ;; underlying shell or latex executable, or both, when the
+    ;; relavant file name involves some special characters such as
+    ;; space and multibyte characters.  Hence embed that function in a
+    ;; template prepared for that purpose.
+    (setq file (apply-partially
+		#'TeX--master-or-region-file-with-extra-quotes
+		file))
     (while (setq pos (string-match pat command pos))
       (setq string (match-string 0 command)
 	    entry (assoc string list)
@@ -570,24 +581,6 @@ without further expansion."
 				 (functionp expansion))
 			    (apply expansion arguments))
 			   ((boundp expansion)
-			    (if (eq expansion 'file)
-				;; `TeX-command-expand' is called with
-				;; `file' argument being one of
-				;; `TeX-master-file',
-				;; `TeX-region-file' and
-				;; `TeX-active-master'.  The return
-				;; value of these functions sometimes
-				;; needs suitable "decorations" for an
-				;; argument for underlying shell or
-				;; latex executable, or both, when the
-				;; relavant file name involves some
-				;; special characters such as space
-				;; and multibyte characters.  Hence
-				;; embed that function in a template
-				;; prepared for that purpose.
-				(setq file (apply-partially
-					    #'TeX--master-or-region-file-with-extra-quotes
-					    file)))
                             (setq expansion-res
                                   (apply (symbol-value expansion) arguments))
                             (when (eq expansion 'file)
