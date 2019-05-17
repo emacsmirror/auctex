@@ -2352,7 +2352,8 @@ of the options, nil otherwise."
 	    packages))
     (insert LaTeX-optop options LaTeX-optcl))
   (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)
-  (run-hooks 'LaTeX-after-usepackage-hook))
+  (run-hooks 'LaTeX-after-usepackage-hook)
+  (apply #'TeX-run-style-hooks packages))
 
 (defun LaTeX-arg-usepackage (_optional)
   "Insert arguments to usepackage.
@@ -2360,8 +2361,7 @@ OPTIONAL is ignored."
   (let* ((packages-options (LaTeX-arg-usepackage-read-packages-with-options))
 	 (packages (car packages-options))
 	 (options (cdr packages-options)))
-    (LaTeX-arg-usepackage-insert packages options)
-    (apply #'TeX-run-style-hooks packages)))
+    (LaTeX-arg-usepackage-insert packages options)))
 
 (defun LaTeX-insert-usepackages ()
   "Prompt for the insertion of usepackage macros until empty
