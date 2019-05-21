@@ -5484,10 +5484,12 @@ those will be considered part of it."
 			   ;; If we cannot find a regular end, use the
 			   ;; next whitespace.
 			   (save-excursion (skip-chars-forward "^ \t\n")
-					   (point))))
-	    (when (eobp) (throw 'found (point))))
+					   (point)))))
 	   (t
-	    (throw 'found (point)))))))))
+	    (throw 'found (point)))))
+	;; Make sure that this function does not return nil, even
+	;; when the above `while' loop is totally skipped. (bug#35638)
+	(throw 'found (point))))))
 
 (defun TeX-find-macro-start (&optional limit)
   "Return the start of a macro.
