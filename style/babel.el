@@ -136,7 +136,7 @@
 	(cl-pushnew main-language active-languages :test #'equal))
     (nreverse active-languages)))
 
-;; Setup for \babeltags: Note that the macros is \babeltags, we use
+;; Setup for \babeltags: Note that the macro is \babeltags, we use
 ;; the version without `s' in order to reduce the hassle with AUCTeX
 ;; auto-generating the plural form:
 (TeX-auto-add-type "babel-babeltag" "LaTeX")
@@ -310,7 +310,6 @@
 		      (TeX-argument-prompt optional nil "Language(s)")
 		      LaTeX-babel-language-list)
 		     "," ]
-      ;; LaTeX-arg-babel-babelfont
       (TeX-arg-eval let ((fontfam (completing-read
 				   (TeX-argument-prompt optional nil "font family")
 				   '("rm" "sf" "tt"))))
