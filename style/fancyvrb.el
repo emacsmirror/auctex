@@ -45,6 +45,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -129,14 +130,7 @@ Starred versions are not included in this list.")
 Starred versions are not included in this list.")
 
 (defvar LaTeX-fancyvrb-key-val-skip-regexp
-  (concat
-   "\\(?:\\[[^][]*"
-     "\\(?:{[^}{]*"
-       "\\(?:{[^}{]*"
-	 "\\(?:{[^}{]*}[^}{]*\\)*"
-       "}[^}{]*\\)*"
-     "}[^][]*\\)*"
-   "\\]\\)?")
+  (concat "\\(?:" (LaTeX-extract-key-value-label 'none) "\\)?")
   "Helper regexp to skip over an optional argument.")
 
 ;; Setup for defining new Verbatim commands:
