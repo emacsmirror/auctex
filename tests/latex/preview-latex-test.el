@@ -42,7 +42,7 @@ emacs' coding system later."
   (dolist (str '("prim\xC3\xA1rias" "prim^^c3\xA1rias" "prim^^c3^^a1rias"))
     (should (string= (preview--decode-^^ab str 'utf-8) "primárias"))))
 
-;;; preview-latex.el ends here
+;;; preview-latex-test.el ends here
 
 ;; Local Variables:
 ;; coding: utf-8
