@@ -2792,6 +2792,8 @@ Automatic right brace insertion is done only if no prefix ARG is given and
 `LaTeX-electric-left-right-brace' is non-nil.
 Normally bound to keys \(, { and [."
   (interactive "*P")
+  ;; If you change the condition for `auto-p', adjust the condition in
+  ;; the `delete-selection' property, just below this defun, accordingly.
   (let ((auto-p (and LaTeX-electric-left-right-brace (not arg))))
     (if (and auto-p
 	     (TeX-active-mark)
@@ -2829,6 +2831,27 @@ Normally bound to keys \(, { and [."
 		(goto-char (mark)))
 	    (LaTeX-insert-corresponding-right-macro-and-brace
 	     lmacro lbrace)))))))
+;; Cater for `delete-selection-mode' (bug#36385)
+;; See the header comment of delsel.el for detail.
+(put #'LaTeX-insert-left-brace 'delete-selection
+     (lambda ()
+       ;; Consult `delete-selection' property when
+       ;; `LaTeX-insert-left-brace' works just the same as
+       ;; `self-insert-command'.
+       (and (or (not LaTeX-electric-left-right-brace)
+		current-prefix-arg)
+	    (let ((f (get #'self-insert-command 'delete-selection)))
+	      ;; If `delete-selection' property of
+	      ;; `self-insert-command' is one of the predefined
+	      ;; special symbols, just return itself.
+	      (if (memq f '(yank supersede kill t nil))
+		  ;; FIXME: if this list of special symbols is
+		  ;; extended in future delsel.el, this discrimination
+		  ;; will become wrong.
+		  f
+		;; Otherwise, call it as a function and return
+		;; its value.
+		(funcall f))))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
   (lmacro lbrace &optional optional prompt)
