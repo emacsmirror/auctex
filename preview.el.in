@@ -602,6 +602,52 @@ tag in the mode line."
       (setq preview-error-condition nil
 	    compilation-in-progress (delq process compilation-in-progress)))))
 
+(defcustom preview-pdf-color-adjust-method 'compatible
+  "Method to adjust colors of images generated from PDF.
+It is not consulted when the latex command produces DVI files.
+
+The valid values are:
+
+t: preview-latex transfers the foreground and background colors
+of Emacs to the generated images.  This option requires that
+Ghostscript has working DELAYBIND feature, thus is invalid with
+gs 9.27 (and possibly < 9.27).
+
+`compatible': preview-latex uses another mothod to transfer
+colors.  This option is provided for compatibility with older gs.
+See the below explanation for detail.
+
+nil: no adjustment is done and \"black on white\" image is
+generated regardless of Emacs color.  This is provided for fallback for
+gs 9.27 users with customized foreground color.  See the below
+explanation for detail.
+
+When the latex command produces PDF rather than DVI and Emacs has
+non-trivial foreground color, the traditional method (`compatible')
+makes gs >= 9.27 to stop with error.  Here, \"non-trivial foreground
+color\" includes customized themes.
+
+If you use such non-trivial foreground color and the version of
+Ghostscript equals to 9.27, you have two options:
+
+- Choose the value `compatible' and customize
+`preview-reference-face' to have default (black) foreground
+color.  This makes the generated image almost non-readable on
+dark background, so the next option would be your only choice in
+that case.
+- Choose the value nil, which forces plain \"black on white\"
+appearance for the generated image.  You can at least read what
+are written in the image although they may not match with your
+Emacs color well.
+
+The default value will be changed to t after Ghostscript 9.28 is
+released."
+  :group 'preview-appearance
+  :type '(choice
+	  (const :tag "Adjust to Emacs color (gs > 9.27)" t)
+	  (const :tag "Compatibility for gs =< 9.27" compatible)
+	  (const :tag "No adjustment (B/W, for gs 9.27)" nil)))
+
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
@@ -732,7 +778,19 @@ null eq{pop{pop}bind}if def\
 {pop}{setpagedevice}{ifelse exec}\
 stopped{handleerror quit}if \
 .preview-ST aload pop restore}bind def "
-		  (preview-gs-color-string preview-colors)))
+		  (preview-gs-color-string
+		   preview-colors
+		   ;; Compatibility for gs 9.27 with non-trivial
+		   ;; foreground color and dark background.
+		   ;; Suppress color adjustment with PDF backend
+		   ;; when `preview-pdf-color-adjust-method' is nil.
+		   (and (not preview-pdf-color-adjust-method)
+			;; The switch `preview-parsed-pdfoutput' isn't
+			;; set before parsing the latex output, so use
+			;; heuristic here.
+			(with-current-buffer TeX-command-buffer
+			  (and TeX-PDF-mode
+			       (not TeX-PDF-from-DVI)))))))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
 
@@ -744,21 +802,46 @@ to Ghostscript floats."
 
 (defun preview-pdf-color-string (colors)
   "Return a string that patches PDF foreground color to work properly."
-  ;; Actually, this is rather brutal.  It will only be invoked in
-  ;; cases, however, where previously it was not expected that
-  ;; anything readable turned up, anyway.
   (let ((fg (aref colors 1)))
     (if fg
-	(concat
-	 "/GS_PDF_ProcSet GS_PDF_ProcSet dup maxlength dict copy dup begin\
+	(cond ((eq preview-pdf-color-adjust-method t)
+	       ;; New code for gs > 9.27.
+	       ;; This assumes DELAYBIND feature, which is known to be
+	       ;; broken in gs 9.27 (and possibly, < 9.27).
+	       ;; <URL:https://lists.gnu.org/archive/html/auctex-devel/2019-07/msg00000.html>
+	       ;; DELAYBIND is sometimes mentioned in association with
+	       ;; security holes in the changelog of Ghostscript:
+	       ;; <URL:https://www.ghostscript.com/doc/9.27/History9.htm>
+	       ;; Thus we might have to be prepared for removal of this
+	       ;; feature in future Ghostscript.
+	       (concat
+		"/initgraphics {
+  //initgraphics
+  /RG where {
+    pop "
+		(mapconcat #'preview-gs-color-value fg " ")
+		" 3 copy rg RG
+  } if
+} bind def .bindnow "))
+	      ((eq preview-pdf-color-adjust-method 'compatible)
+	       ;; Traditional code for gs < 9.27.
+	       (concat
+		"/GS_PDF_ProcSet GS_PDF_ProcSet dup maxlength dict copy dup begin\
 /graphicsbeginpage{//graphicsbeginpage exec "
-	 (mapconcat #'preview-gs-color-value fg " ")
-	 " 3 copy rg RG}bind store end readonly store "))))
+		(mapconcat #'preview-gs-color-value fg " ")
+		" 3 copy rg RG}bind store end readonly store "))
+	      (;; Do nothing otherwise.
+	       t
+	       "")))))
 
-(defun preview-gs-color-string (colors)
-  "Return a string setting up colors"
-  (let ((bg (aref colors 0))
-	(fg (aref colors 1))
+(defun preview-gs-color-string (colors &optional suppress-fgbg)
+  "Return a string setting up COLORS.
+If optional argument SUPPRESS-FGBG is non-nil, behave as if FG/BG
+colors were just the default value."
+  (let ((bg (and (not suppress-fgbg)
+		 (aref colors 0)))
+	(fg (and (not suppress-fgbg)
+		 (aref colors 1)))
 	(mask (aref colors 2))
 	(border (aref colors 3)))
     (concat
@@ -910,6 +993,12 @@ The usual PROCESS and COMMAND arguments for
 	(cond ((eq status 'exit)
 	       (delete-process process)
 	       (setq TeX-sentinel-function nil)
+	       ;; Add DELAYBIND option for adjustment of foreground
+	       ;; color to work.
+	       (if (eq preview-pdf-color-adjust-method t)
+		   (setq preview-gs-command-line (append
+						  preview-gs-command-line
+						  '("-dDELAYBIND"))))
 	       (setq preview-gs-init-string
 		     (concat preview-gs-init-string
 			     (preview-pdf-color-string preview-colors)))
