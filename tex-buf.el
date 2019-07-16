@@ -1293,7 +1293,21 @@ run of `TeX-run-TeX', use
 (defun TeX-run-compile (_name command _file)
   "Ignore first and third argument, start compile with second argument."
   (let ((default-directory (TeX-master-directory)))
-    (setq TeX-command-buffer (compile command))))
+    (setq TeX-command-buffer (compile command)))
+  ;; Make `compilation-mode' recognize file names with spaces.
+  ;; (bug#36483)
+  ;; FIXME: This is just an ad-hoc workaround and it's better to fix
+  ;; the regular expression in compile.el properly, if possible.  But
+  ;; there was no response to such request in emacs-devel@gnu.org.
+  (with-current-buffer TeX-command-buffer
+    (make-local-variable 'compilation-error-regexp-alist)
+    ;; Add slightly modified entry of the one associated with `comma'
+    ;; in `compilation-error-regexp-alist-alist' to pick up file names
+    ;; with spaces.
+    (add-to-list 'compilation-error-regexp-alist
+		 '("^\"\\([^,\"\n\t]+\\)\", line \\([0-9]+\\)\
+\\(?:[(. pos]+\\([0-9]+\\))?\\)?[:.,; (-]\\( warning:\\|[-0-9 ]*(W)\\)?" 1 2 3 (4))
+		 t)))
 
 (defun TeX-run-shell (_name command _file)
   "Ignore first and third argument, start shell-command with second argument."
