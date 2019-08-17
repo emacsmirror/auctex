@@ -1,6 +1,6 @@
-;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v66)
+;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v67)
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2019 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `thmtools.sty' (v66) from 2014/04/21.
+;; This file adds support for `thmtools.sty' (v67) from 2019/07/31.
 ;; `thmtools.sty' is part of TeXLive.
 
 ;;; Code:
@@ -38,6 +38,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Setup for \declaretheoremstyle:
 (TeX-auto-add-type "thmtools-declaretheoremstyle" "LaTeX")
@@ -45,13 +46,9 @@
 (defvar LaTeX-thmtools-declaretheoremstyle-regexp
   `(,(concat "\\\\declaretheoremstyle"
 	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^][]*"
-	       "\\(?:{[^}{]*"
-		 "\\(?:{[^}{]*"
-		   "\\(?:{[^}{]*}[^}{]*\\)*"
-		 "}[^}{]*\\)*"
-	       "}[^][]*\\)*"
-	     "\\]\\)?"
+	     "\\(?:"
+	     (LaTeX-extract-key-value-label 'none)
+	     "\\)?"
 	     "[ \t\n\r%]*"
 	     "{\\([^}]+\\)}")
     1 LaTeX-auto-thmtools-declaretheoremstyle)
@@ -63,13 +60,9 @@
 (defvar LaTeX-thmtools-declaretheorem-regexp
   `(,(concat "\\\\declaretheorem"
 	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^][]*"
-	       "\\(?:{[^}{]*"
-		 "\\(?:{[^}{]*"
-		   "\\(?:{[^}{]*}[^}{]*\\)*"
-		 "}[^}{]*\\)*"
-	       "}[^][]*\\)*"
-	     "\\]\\)?"
+	     "\\(?:"
+	     (LaTeX-extract-key-value-label 'none)
+	     "\\)?"
 	     "[ \t\n\r%]*"
 	     "{\\([^}]+\\)}")
     1 LaTeX-auto-thmtools-declaretheorem)
@@ -210,7 +203,8 @@ minibuffer.  PROMPT replaces the standard one."
        ("onlynamed" ,thms)
        ("show" ,thms)
        ("ignoreall" ("true" "false"))
-       ("showall" ("true" "false"))))))
+       ("showall" ("true" "false"))
+       ("title")))))
 
 (defun LaTeX-arg-thmtools-listoftheorems (optional &optional prompt)
   "Insert the key=val to \\listoftheorems macro.
@@ -300,5 +294,10 @@ RefTeX users should customize or add ENVIRONMENT to
 				("ignoretheorems"       "{"))
 			      'function)))
  LaTeX-dialect)
+
+;; The package has only one option `debug'.  We ignore that in order
+;; to make loading faster:
+(defvar LaTeX-thmtools-package-options nil
+  "Package options for the thmtools package.")
 
 ;;; thmtools.el ends here
