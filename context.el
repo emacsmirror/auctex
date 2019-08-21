@@ -619,7 +619,7 @@ inserted after the sectioning command."
 ;;; Environments
 
 (defgroup ConTeXt-environment nil
-  "Environments in AUCTeX."
+  "Environments in ConTeXt."
   :group 'ConTeXt-macro)
 
 ;; TODO: interface awareness
