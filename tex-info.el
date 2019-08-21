@@ -664,6 +664,8 @@ value of `Texinfo-mode-hook'."
 
   (set (make-local-variable 'font-lock-defaults)
        '(texinfo-font-lock-keywords nil nil nil backward-paragraph))
+  (set (make-local-variable 'syntax-propertize-function)
+       texinfo-syntax-propertize-function)
 
   ;; Outline settings.
   (set (make-local-variable 'outline-regexp)
