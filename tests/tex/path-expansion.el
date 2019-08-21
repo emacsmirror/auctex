@@ -32,4 +32,4 @@
     (TeX-search-files-by-type 'abc 'global)
     (should (equal var '("str1" "str2")))))
 
-;;; command-expansion.el ends here
+;;; path-expansion.el ends here
