@@ -64,6 +64,11 @@ Texinfo mode.  When it is enabled, typing @kbd{@@} will invoke
 other TeX modes of @AUCTeX{}.
 
 @item
+Fontification support for @samp{biblatex} package is improved and
+updated to macros provided by package version 3.12.  For qualified
+lists, at least 2 mandatory arguments are fontified.
+
+@item
 Support for column specifiers @samp{w} and @samp{W} provided by
 @samp{array} package is added to @file{array.el}.  The correct counting
 of columns only works when the @samp{align} parameter is enclosed in
