@@ -169,7 +169,7 @@ STYLESRC = style/prosper.el \
 	   style/xltabular.el style/marginnote.el style/thmtools.el \
 	   style/ocg-p.el     style/ocgx.el      style/thm-restate.el \
 	   style/pythontex.el style/dashundergaps.el style/beamerarticle.el \
-	   style/changelog.el style/beamerswitch.el
+	   style/changelog.el style/ltugboat.el  style/beamerswitch.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
