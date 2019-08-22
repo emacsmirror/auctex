@@ -6694,10 +6694,12 @@ functions `TeX-arg-color' (style/color.el) or
 	      last-optional-rejected))
      ,@body))
 
-(defun LaTeX-extract-key-value-label (&optional key)
+(defun LaTeX-extract-key-value-label (&optional key num)
   "Return a regexp string to match a label in an optional argument.
 The optional KEY is a string which is the name of the key in the
-key=value, default is \"label\".
+key=value, default is \"label\".  NUM is an integer for an
+explicitly numbered group construct, useful when adding items to
+`reftex-label-regexps'.
 
 As an extra feature, the key can be the symbol none where the
 entire matching for the key=value is skipped.  The regexp then is
@@ -6723,6 +6725,9 @@ wrapped in \\(?:...\\)? then."
 	     "[[:space:]]*=[[:space:]]*"
 	     ;; Match the value; braces around the value are optional
 	     "{?\\("
+	     ;; Cater for NUM which sets the regexp group
+	     (when (and num (integerp num))
+	       (concat "?" (number-to-string num) ":"))
 	     ;; One of these chars terminates the value
 	     "[^] ,}\r\n\t%]+"
 	     ;; Close the group
