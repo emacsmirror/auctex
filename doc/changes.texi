@@ -74,6 +74,15 @@ Support for column specifiers @samp{w} and @samp{W} provided by
 of columns only works when the @samp{align} parameter is enclosed in
 braces, e.g., @samp{w@{l@}@{3cm@}}.  The short version @samp{wl@{3cm@}}
 is not supported.
+
+@item
+Entries for @samp{PDF Tools} are added in
+@code{TeX-view-program-list-builtin} for Windows and macOS.  This viewer
+can be configured under these operating systems with an entry like this
+in an init file:
+@lisp
+(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+@end lisp
 @end itemize
 
 @heading News in 12.1

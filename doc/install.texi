@@ -94,8 +94,8 @@ support.
 @item Windows
 Precompiled versions are available from
 @uref{https://ftp.gnu.org/gnu/emacs/windows/}.
-@item Mac OS X
-For an overview of precompiled versions of Emacs for Mac OS X see for
+@item macOS
+For an overview of precompiled versions of Emacs for macOS see for
 example @uref{https://www.emacswiki.org/emacs/EmacsForMacOS}.
 @item GNU/Linux
 Most GNU/Linux distributions nowadays provide a recent variant of Emacs

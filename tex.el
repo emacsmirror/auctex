@@ -1266,6 +1266,7 @@ viewer."
 		 (paper-letter "-y=Letter ")
 		 (paper-executive "-y=Executive ")
 		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
+      ("PDF Tools" TeX-pdf-tools-sync-view)
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
 	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
@@ -1275,6 +1276,7 @@ viewer."
    ((eq system-type 'darwin)
     '(("Preview.app" "open -a Preview.app %o" "open")
       ("Skim" "open -a Skim.app %o" "open")
+      ("PDF Tools" TeX-pdf-tools-sync-view)
       ("displayline" "displayline %n %o %b" "displayline")
       ("open" "open %o" "open")))
    (t
