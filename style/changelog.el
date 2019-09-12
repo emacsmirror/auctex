@@ -31,6 +31,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+
 (defvar LaTeX-changelog-env-key-val-options
   '(("section" ("true" "false"))
     ("title"))
