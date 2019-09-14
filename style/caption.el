@@ -273,7 +273,8 @@ caption, insert only a caption."
 		 (completing-read (TeX-argument-prompt t nil "Width")
 				  (mapcar (lambda (elt) (concat TeX-esc (car elt)))
 					  (LaTeX-length-list)))))
-	 (last-optional-rejected (and width (string= width "")))
+	 (last-optional-rejected (or (not width)
+				     (and width (string= width ""))))
 	 (inpos (LaTeX-check-insert-macro-default-style
 		 (if (and width (not (string-equal width "")))
 		     (completing-read (TeX-argument-prompt t nil "Inner position")

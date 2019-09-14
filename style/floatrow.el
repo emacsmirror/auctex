@@ -355,13 +355,15 @@ If OPTIONAL is non-nil, indicate optional argument during query."
 		  (TeX-argument-prompt t nil "Width")
 		  (mapcar (lambda (x) (concat TeX-esc (car x)))
 			  (LaTeX-length-list)))))
-	 (last-optional-rejected (and width (string= width "")))
+	 (last-optional-rejected (or (not width)
+				     (and width (string= width ""))))
 	 (height (LaTeX-check-insert-macro-default-style
 		  (completing-read
 		   (TeX-argument-prompt t nil "Height")
 		   (mapcar (lambda (x) (concat TeX-esc (car x)))
 			   (LaTeX-length-list)))))
-	 (last-optional-rejected (and height (string= height "")))
+	 (last-optional-rejected (or (not height)
+				     (and height (string= height ""))))
 	 (vertpos (LaTeX-check-insert-macro-default-style
 		   (if (string= height "")
 		       ""
@@ -374,8 +376,8 @@ If OPTIONAL is non-nil, indicate optional argument during query."
     (when (and width (string= width "")
 	       height (not (string= height "")))
       (insert "[]"))
-    (and (TeX-argument-insert height t))
-    (and (TeX-argument-insert vertpos t)))
+    (and height (TeX-argument-insert height t))
+    (and vertpos (TeX-argument-insert vertpos t)))
   ;; Now query for the (short-)caption.  Also check for the
   ;; float-type; if we're inside (sub)?floatrow*?, then check for the
   ;; next outer environment:
