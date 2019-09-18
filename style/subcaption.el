@@ -1,6 +1,6 @@
-;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.1-100)
+;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.3)
 
-;; Copyright (C) 2015--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `subcaption.sty' (v1.1-100) from
-;; 2015-09-15.  `subcaption.sty' is part of TeXLive.
+;; This file adds support for `subcaption.sty' (v1.3) from 2019-08-31.
+;; `subcaption.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -130,7 +130,8 @@ caption, insert only a caption."
     ;; check if hyperref.el is loaded and make it available directly.
     '("subref*"        TeX-arg-ref)
     '("phantomcaption"    0)
-    '("phantomsubcaption" 0))
+    '("phantomsubcaption" 0)
+    '("subfloat" [ "List entry" ] [ "Sub-caption" ] t))
 
    ;; The next 2 macros are part of the kernel of caption.sty, but we
    ;; load them within subcaption.el.
@@ -151,8 +152,9 @@ caption, insert only a caption."
 		    (TeX-argument-prompt nil nil "Type")
 		    '("figure" "table"))))
 
-   ;; \subcaption(box)? macros should get their own lines
-   (LaTeX-paragraph-commands-add-locally '("subcaption" "subcaptionbox"))
+   ;; \subcaption(box)? and \subfloat macros should get their own lines
+   (LaTeX-paragraph-commands-add-locally
+    '("subcaption" "subcaptionbox" "subfloat"))
 
    ;; The subfigure & subtable environments
    (LaTeX-add-environments
@@ -175,7 +177,8 @@ caption, insert only a caption."
      (font-latex-add-keywords '(("subcaption"            "*[{")
 				("subcaptionbox"         "*[{[[")
 				("phantomcaption"        "")
-				("phantomsubcaption"     ""))
+				("phantomsubcaption"     "")
+				("subfloat"              "[["))
 			      'textual)
      (font-latex-add-keywords '(("subref"                "*{"))
 			      'reference)
