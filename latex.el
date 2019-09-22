@@ -6222,6 +6222,9 @@ function would return non-nil and `(match-string 1)' would return
    '("label" TeX-arg-define-label)
    '("pageref" TeX-arg-ref)
    '("ref" TeX-arg-ref)
+   ;; \Ref and \labelformat are part of kernel with LaTeX 2019-10-01:
+   '("Ref" TeX-arg-ref)
+   '("labelformat" TeX-arg-counter t)
    '("newcommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment" TeX-arg-define-environment
