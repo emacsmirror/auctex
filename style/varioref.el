@@ -53,9 +53,6 @@
     '("vrefrange*" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
     '("vpagerefrange*" [ "Same page text" ] TeX-arg-ref TeX-arg-ref)
 
-    '("labelformat" TeX-arg-counter t)
-
-    '("Ref" TeX-arg-ref)
     '("Vref" TeX-arg-ref)
     '("Vref*" TeX-arg-ref)
 
@@ -69,11 +66,12 @@
 
    ;; Install completion for labels.  Only offer completion for
    ;; commands that take only one reference as an argument
+   ;; FIXME: The first 3 entries can be reduced to
+   ;; ("\\\\[Vv]ref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")  ???
    (setq TeX-complete-list
 	 (append
 	  '(("\\\\[Vv]ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 	    ("\\\\vref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-	    ("\\\\Ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 	    ("\\\\vref\\*{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 	    ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 	    ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
@@ -88,12 +86,9 @@
 				("vpageref"      "*[[{")
 				("vrefrange"     "*[{{")
 				("vpagerefrange" "*[{{")
-				("Ref"           "{")
 				("Vref"          "*{")
 				("fullref"       "{"))
-			      'reference)
-     (font-latex-add-keywords '(("labelformat"   "{{"))
-			      'function))
+			      'reference))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
