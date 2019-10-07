@@ -3381,7 +3381,7 @@ This is passed through `preview-do-replacements'."
   ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
 \\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
- \"\\\\input\" \"\\\\detokenize{\" \\(.*\\)\"} \"\\'"
+ \"\\\\input\" \"\\\\detokenize{\" \\(.*\\) \"}\"\\'"
      . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
 	preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
