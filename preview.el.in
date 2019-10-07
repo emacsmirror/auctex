@@ -2305,7 +2305,7 @@ list of LaTeX commands is inserted just before \\begin{document}."
 (defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' \"{\\detokenize{\" %t \"}}\"")
+preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\"")
   ;; Since TeXLive 2018, the default encoding for LaTeX files has been
   ;; changed to UTF-8 if used with classic TeX or pdfTeX.  I.e.,
   ;; \usepackage[utf8]{inputenc} is enabled by default in (pdf)latex.
@@ -3381,7 +3381,7 @@ This is passed through `preview-do-replacements'."
   ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
 \\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
- \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
+ \"\\\\input\" \"\\\\detokenize{\" \\(.*\\)\"} \"\\'"
      . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
 	preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
