@@ -602,7 +602,7 @@ tag in the mode line."
       (setq preview-error-condition nil
 	    compilation-in-progress (delq process compilation-in-progress)))))
 
-(defcustom preview-pdf-color-adjust-method 'compatible
+(defcustom preview-pdf-color-adjust-method t
   "Method to adjust colors of images generated from PDF.
 It is not consulted when the latex command produces DVI files.
 
@@ -638,10 +638,7 @@ that case.
 - Choose the value nil, which forces plain \"black on white\"
 appearance for the generated image.  You can at least read what
 are written in the image although they may not match with your
-Emacs color well.
-
-The default value will be changed to t after Ghostscript 9.28 is
-released."
+Emacs color well."
   :group 'preview-appearance
   :type '(choice
 	  (const :tag "Adjust to Emacs color (gs > 9.27)" t)

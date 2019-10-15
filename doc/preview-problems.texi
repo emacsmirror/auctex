@@ -19,7 +19,7 @@ newer versions of the problematic software or by simple patches.
 * Too small bounding boxes::    
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
-* No images are displayed with gs 9.27 and newer::
+* No images are displayed with gs 9.27 and earlier::
 @end menu
 
 If you find something not mentioned here, please send a bug report using
@@ -139,8 +139,8 @@ search with @kbd{@key{RET}} before toggling and resume with @kbd{C-s
 C-s} or similar afterwards.  Since previews over the current match will
 auto-open, anyway, this should not be much of a problem in practice.
 
-@node No images are displayed with gs 9.27 and newer
-@section No images are displayed with gs 9.27 and newer
+@node No images are displayed with gs 9.27 and earlier
+@section No images are displayed with gs 9.27 and earlier
 
 @previewlatex{} tries to adjust the foreground and background colors of
 generated images to those of Emacs.  Unfortunately, incompatible changes
@@ -148,22 +148,21 @@ introduced in Ghostscript 9.27 breaks the traditional method partially,
 and @previewlatex{} can display no images under certain circumstances.
 
 A new method implemented alternatively works only with Ghostscript >
-9.27, so is disabled by default.  If you are using those new
-Ghostscript, customize the option
-@code{preview-pdf-adjust-color-method}.
+9.27.  If you are using Ghostscript 9.27 or earlier, customize the
+option @code{preview-pdf-adjust-color-method}.
 
 @defopt preview-pdf-adjust-color-method
 Method to adjust colors of images generated from @acronym{PDF}.  It is
 not consulted when the @LaTeX{} command produces @acronym{DVI} files.
 
-When the option is @code{t}, @previewlatex{} adjusts the FG and BG colors
-of the generated images by the new method.  This method requires that
-Ghostscript has working @code{DELAYBIND} feature, thus is invalid with
-gs 9.27 (and possibly < 9.27).
+When the option is @code{t} (default), @previewlatex{} adjusts the FG
+and BG colors of the generated images by the new method.  This method
+requires that Ghostscript has working @code{DELAYBIND} feature, thus is
+invalid with gs 9.27 (and possibly < 9.27).
 
-When it is @code{compatible} (default), @previewlatex{} uses traditional
-method.  This option is provided for backward compatibility with older
-gs.  See the below explanation for detail.
+When it is @code{compatible}, @previewlatex{} uses traditional method.
+This option is provided for backward compatibility with older gs.  See
+the below explanation for detail.
 
 When @code{nil}, no adjustment is done and ``black on white'' image is
 generated regardless of Emacs color.  This is provided for fallback for
@@ -191,6 +190,6 @@ written in the image although they may not match with your Emacs color
 well.
 @end enumerate
 
-The default value will be changed to @code{t} after Ghostscript 9.28 is
-released.
+The default value used to be @code{compatible} for short period before
+Ghostscript 9.50 was released but now is @code{t}.
 @end defopt
