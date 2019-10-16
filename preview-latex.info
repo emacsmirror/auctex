@@ -1,8 +1,8 @@
-This is preview-latex.info, produced by makeinfo version 6.5 from
+This is preview-latex.info, produced by makeinfo version 6.7 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.2 from 2019-02-08).
+(version 12.1.2.2019-10-16 from 2019-10-16).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
 Software Foundation, Inc.
@@ -584,6 +584,7 @@ newer versions of the problematic software or by simple patches.
 * Too small bounding boxes::
 * x-symbol interoperation::
 * Middle-clicks paste instead of toggling::
+* No images are displayed with gs 9.27 and earlier::
 
    If you find something not mentioned here, please send a bug report
 using 'M-x preview-report-bug <RET>', which will fill in a lot of
@@ -611,7 +612,7 @@ in order to customize this.
    One particular problem is that several printer setup files (typically
 in a file called '/usr/share/texmf/dvips/config/config.pdf' if you are
 using the '-Ppdf' switch) contain the 'G' option for 'character
-shifting'.  This option will result in 'fi' being rendered as '#'
+shifting'.  This option will result in 'fi' being rendered as '£'
 (British Pounds sign) in several fonts, unless your version of Dvips has
 a long-standing bug in its implementation fixed (only very recent
 versions of Dvips have).
@@ -673,7 +674,7 @@ environment or, as a last resort, customize the variable
 -translate-file=cp8bit'.
 
 
-File: preview-latex.info,  Node: Middle-clicks paste instead of toggling,  Prev: x-symbol interoperation,  Up: Known problems
+File: preview-latex.info,  Node: Middle-clicks paste instead of toggling,  Next: No images are displayed with gs 9.27 and earlier,  Prev: x-symbol interoperation,  Up: Known problems
 
 5.4 Middle-clicks paste instead of toggling
 ===========================================
@@ -684,6 +685,59 @@ such a complicated mess that no patch is in sight.  Better just end the
 search with '<RET>' before toggling and resume with 'C-s C-s' or similar
 afterwards.  Since previews over the current match will auto-open,
 anyway, this should not be much of a problem in practice.
+
+
+File: preview-latex.info,  Node: No images are displayed with gs 9.27 and earlier,  Prev: Middle-clicks paste instead of toggling,  Up: Known problems
+
+5.5 No images are displayed with gs 9.27 and earlier
+====================================================
+
+preview-latex tries to adjust the foreground and background colors of
+generated images to those of Emacs.  Unfortunately, incompatible changes
+introduced in Ghostscript 9.27 breaks the traditional method partially,
+and preview-latex can display no images under certain circumstances.
+
+   A new method implemented alternatively works only with Ghostscript >
+9.27.  If you are using Ghostscript 9.27 or earlier, customize the
+option 'preview-pdf-adjust-color-method'.
+
+ -- User Option: preview-pdf-adjust-color-method
+     Method to adjust colors of images generated from PDF.  It is not
+     consulted when the LaTeX command produces DVI files.
+
+     When the option is 't' (default), preview-latex adjusts the FG and
+     BG colors of the generated images by the new method.  This method
+     requires that Ghostscript has working 'DELAYBIND' feature, thus is
+     invalid with gs 9.27 (and possibly < 9.27).
+
+     When it is 'compatible', preview-latex uses traditional method.
+     This option is provided for backward compatibility with older gs.
+     See the below explanation for detail.
+
+     When 'nil', no adjustment is done and "black on white" image is
+     generated regardless of Emacs color.  This is provided for fallback
+     for gs 9.27 users with customized foreground color.  See the below
+     explanation for detail.
+
+     When the LaTeX command produces PDF rather than DVI and Emacs has
+     non-trivial foreground color, the traditional method ('compatible')
+     makes gs >= 9.27 to stop with error.  Here, "non-trivial foreground
+     color" includes customized themes.
+
+     If you use such non-trivial foreground color and the version of
+     Ghostscript equals to 9.27, you have two options:
+       1. Choose the value 'compatible' and customize
+          'preview-reference-face' to have default (black) foreground
+          color.  This makes the generated image almost non-readable on
+          dark background, so the next option would be your only choice
+          in that case.
+       2. Choose the value 'nil', which forces plain "black on white"
+          appearance for the generated image.  You can at least read
+          what are written in the image although they may not match with
+          your Emacs color well.
+
+     The default value used to be 'compatible' for short period before
+     Ghostscript 9.50 was released but now is 't'.
 
 
 File: preview-latex.info,  Node: For advanced users,  Next: ToDo,  Prev: Known problems,  Up: Top
@@ -1856,7 +1910,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 12.1.2 from 2019-02-08).
+(version 12.1.2.2019-10-16 from 2019-10-16).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
 Software Foundation, Inc.
@@ -2449,6 +2503,8 @@ Index
 * preview-LaTeX-command-replacements:    The Emacs interface. (line  25)
 * preview-nonready-icon-specs:           The Emacs interface. (line 143)
 * preview-parsed-font-size:              The Emacs interface. (line  99)
+* preview-pdf-adjust-color-method:       No images are displayed with gs 9.27 and earlier.
+                                                              (line  15)
 * preview-prefer-TeX-bb:                 The Emacs interface. (line  69)
 * preview-preserve-counters:             Simple customization.
                                                               (line  61)
@@ -2474,41 +2530,47 @@ Index
 
 
 Tag Table:
-Node: Top954
-Node: Copying2226
-Node: Introduction2680
-Node: What use is it?3354
-Node: Activating preview-latex4743
-Node: Getting started5496
-Node: Basic modes of operation7443
-Node: More documentation8646
-Node: Availability9534
-Node: Contacts10143
-Node: Installation11416
-Node: Keys and lisp11617
-Node: Simple customization18712
-Node: Known problems24375
-Node: Font problems with Dvips25148
-Node: Too small bounding boxes26321
-Node: x-symbol interoperation27717
-Node: Middle-clicks paste instead of toggling29100
-Node: For advanced users29728
-Node: The LaTeX style file30187
-Node: Package options32749
-Node: Provided commands43653
-Node: The Emacs interface51003
-Node: The preview images59714
-Node: Misplaced previews63464
-Node: ToDo66918
-Node: Frequently Asked Questions71689
-Node: Introduction to FAQ72012
-Node: Requirements72351
-Node: Installation Trouble74183
-Node: Customization76446
-Node: Troubleshooting79538
-Node: Other formats82056
-Node: Copying this Manual83371
-Node: GNU Free Documentation License84312
-Node: Index109436
+Node: Top965
+Node: Copying2237
+Node: Introduction2691
+Node: What use is it?3365
+Node: Activating preview-latex4754
+Node: Getting started5507
+Node: Basic modes of operation7454
+Node: More documentation8657
+Node: Availability9545
+Node: Contacts10154
+Node: Installation11427
+Node: Keys and lisp11628
+Node: Simple customization18723
+Node: Known problems24386
+Node: Font problems with Dvips25212
+Node: Too small bounding boxes26386
+Node: x-symbol interoperation27782
+Node: Middle-clicks paste instead of toggling29165
+Node: No images are displayed with gs 9.27 and earlier29850
+Node: For advanced users32492
+Node: The LaTeX style file32951
+Node: Package options35513
+Node: Provided commands46417
+Node: The Emacs interface53767
+Node: The preview images62478
+Node: Misplaced previews66228
+Node: ToDo69682
+Node: Frequently Asked Questions74453
+Node: Introduction to FAQ74776
+Node: Requirements75115
+Node: Installation Trouble76947
+Node: Customization79210
+Node: Troubleshooting82302
+Node: Other formats84820
+Node: Copying this Manual86135
+Node: GNU Free Documentation License87087
+Node: Index112211
 
 End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:
