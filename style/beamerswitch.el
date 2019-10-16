@@ -1,6 +1,6 @@
 ;;; beamerswitch.el --- AUCTeX style for the latex-beamerswitch class
 
-;; Copyright (C) 2019 Free Software Foundation
+;; Copyright (C) 2019 Free Software Foundation, Inc.
 
 ;; Keywords: tex
 
