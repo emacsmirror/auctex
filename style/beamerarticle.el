@@ -1,6 +1,6 @@
 ;;; beamerarticle.el --- AUCTeX style for the latex-beamerarticle class
 
-;; Copyright (C) 2019 Free Software Foundation
+;; Copyright (C) 2019 Free Software Foundation, Inc.
 
 ;; Keywords: tex
 
