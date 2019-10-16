@@ -1,6 +1,6 @@
 ;;; prv-emacs.el --- GNU Emacs specific code for preview.el
 
-;; Copyright (C) 2001-2005, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2005, 2018, 2019  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -29,9 +29,6 @@
 (require 'tex-site)
 (require 'tex)
 (require 'latex)
-
-(defvar preview-compatibility-macros nil
-  "List of macros only present when compiling/loading.")
 
 (defcustom preview-transparent-color '(highlight :background)
   "Color to appear transparent in previews.
@@ -567,10 +564,6 @@ The fourth value is the transparent border thickness."
 		 (consp mask) (integerp (car mask)))
       (setq mask nil))
     (vector bg fg mask preview-transparent-border)))
-
-(defmacro preview-mark-active ()
-  "Return t if the mark is active."
-  'mark-active)
 
 (defun preview-import-image (image)
   "Convert the printable IMAGE rendition back to an image."

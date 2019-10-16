@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2018 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2019 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -547,8 +547,6 @@ without further expansion."
   (let (pat
 	pos ;;FIXME: Should this be dynamically scoped?
 	entry TeX-command-text TeX-command-pos
-	(orig-file file)
-	(file #'TeX--master-or-region-file-with-extra-quotes)
         expansion-res case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
@@ -556,6 +554,17 @@ without further expansion."
 			     "%"))
 		(or list (TeX-expand-list)))
 	  pat (regexp-opt (mapcar #'car list)))
+    ;; `TeX-command-expand' is called with `file' argument being one
+    ;; of `TeX-master-file', `TeX-region-file' and
+    ;; `TeX-active-master'.  The return value of these functions
+    ;; sometimes needs suitable "decorations" for an argument for
+    ;; underlying shell or latex executable, or both, when the
+    ;; relavant file name involves some special characters such as
+    ;; space and multibyte characters.  Hence embed that function in a
+    ;; template prepared for that purpose.
+    (setq file (apply-partially
+		#'TeX--master-or-region-file-with-extra-quotes
+		file))
     (while (setq pos (string-match pat command pos))
       (setq string (match-string 0 command)
 	    entry (assoc string list)
@@ -587,24 +596,29 @@ without further expansion."
   command)
 
 (defun TeX--master-or-region-file-with-extra-quotes
-    (&optional extension nondirectory ask extra)
+    (file-fn &optional extension nondirectory ask extra)
   "Return file name with quote for shell.
-Wrapper for `TeX-master-file', `TeX-region-file' or
-`TeX-active-master' to be used in `TeX-command-expand'.
-It is assumed that `orig-file' has dynamic binding of the value
-of `TeX-master-file', `TeX-region-file' or `TeX-active-master'.
-Pass EXTENSION, NONDIRECTORY and ASK to that function as-is, and
-arrange the returned file name for use with command shell.
-Enclose the file name with space within quotes `\"' first when
-\" \\input\" is supplemented (indicated by dynamically binded
-variable `TeX-command-text' having string value.)
-Enclose the file name within \\detokenize{} when the following three
+Helper function of `TeX-command-expand'.
+
+This is a kind of template.  How to use:
+Fix, by `apply-partially', the first argument FILE-FN as one of
+the three functions `TeX-master-file', `TeX-region-file' or
+`TeX-active-master'.  Then the result is just a wrapper for that
+function suitable in `TeX-command-expand'.
+
+As a wrapper described above, it passes EXTENSION, NONDIRECTORY
+and ASK to the \"bare\" function as-is, and arranges the returned
+file name for use with command shell.  I.e. it encloses the file
+name with space within quotes `\"' first when \" \\input\" is
+supplemented (indicated by dynamically binded variable
+`TeX-command-text' having string value.)  It also encloses the
+file name within \\detokenize{} when the following three
 conditions are met:
 1. compiling with standard (pdf)LaTeX or upLaTeX
 2. \" \\input\" is supplemented
-3. EXTRA is non-nil. (default when expanding \"%T\")"
+3. EXTRA is non-nil (default when expanding \"%T\")"
   (shell-quote-argument
-   (let* ((raw (funcall orig-file extension nondirectory ask))
+   (let* ((raw (funcall file-fn extension nondirectory ask))
 	  ;; String `TeX-command-text' means that the file name is
 	  ;; given through \input command.
 	  (quote-for-space (if (and (stringp TeX-command-text)
@@ -1279,7 +1293,21 @@ run of `TeX-run-TeX', use
 (defun TeX-run-compile (_name command _file)
   "Ignore first and third argument, start compile with second argument."
   (let ((default-directory (TeX-master-directory)))
-    (setq TeX-command-buffer (compile command))))
+    (setq TeX-command-buffer (compile command)))
+  ;; Make `compilation-mode' recognize file names with spaces.
+  ;; (bug#36483)
+  ;; FIXME: This is just an ad-hoc workaround and it's better to fix
+  ;; the regular expression in compile.el properly, if possible.  But
+  ;; there was no response to such request in emacs-devel@gnu.org.
+  (with-current-buffer TeX-command-buffer
+    (make-local-variable 'compilation-error-regexp-alist)
+    ;; Add slightly modified entry of the one associated with `comma'
+    ;; in `compilation-error-regexp-alist-alist' to pick up file names
+    ;; with spaces.
+    (add-to-list 'compilation-error-regexp-alist
+		 '("^\"\\([^,\"\n\t]+\\)\", line \\([0-9]+\\)\
+\\(?:[(. pos]+\\([0-9]+\\))?\\)?[:.,; (-]\\( warning:\\|[-0-9 ]*(W)\\)?" 1 2 3 (4))
+		 t)))
 
 (defun TeX-run-shell (_name command _file)
   "Ignore first and third argument, start shell-command with second argument."

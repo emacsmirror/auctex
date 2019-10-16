@@ -46,6 +46,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -405,13 +406,9 @@
 (defvar LaTeX-tcolorbox-newtcolorbox-regexp
   `(,(concat "\\\\\\(re\\)?newtcolorbox"
 	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^][]*"
-	       "\\(?:{[^}{]*"
-		 "\\(?:{[^}{]*"
-		   "\\(?:{[^}{]*}[^}{]*\\)*"
-		 "}[^}{]*\\)*"
-	       "}[^][]*\\)*"
-	     "\\]\\)?"
+	     "\\(?:"
+	     (LaTeX-extract-key-value-label 'none)
+	     "\\)?"
 	     "[ \t\n\r%]*"
 	     "{\\([a-zA-Z0-9]+\\)}"
 	     "[ \t\n\r%]*"
@@ -427,13 +424,9 @@
 (defvar LaTeX-tcolorbox-newtcbox-regexp
   `(,(concat "\\\\\\(re\\)?newtcbox"
 	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^][]*"
-	       "\\(?:{[^}{]*"
-		 "\\(?:{[^}{]*"
-		   "\\(?:{[^}{]*}[^}{]*\\)*"
-		 "}[^}{]*\\)*"
-	       "}[^][]*\\)*"
-	     "\\]\\)?"
+	     "\\(?:"
+	     (LaTeX-extract-key-value-label 'none)
+	     "\\)?"
 	     "[ \t\n\r%]*"
 	     "{\\\\\\([a-zA-Z]+\\)}"
 	     "[ \t\n\r%]*"

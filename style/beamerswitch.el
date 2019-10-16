@@ -1,6 +1,8 @@
-;;; path-expansion.el --- tests for path expansion
+;;; beamerswitch.el --- AUCTeX style for the latex-beamerswitch class
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2019 Free Software Foundation
+
+;; Keywords: tex
 
 ;; This file is part of AUCTeX.
 
@@ -19,17 +21,13 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
+;;; Commentary:
+
+;; Triggers the beamer style when using the beamerswitch style.
+
 ;;; Code:
 
-(require 'ert)
-
-(ert-deftest TeX-variable-truncation ()
-  "Check whether list variable is not truncated as side effect."
-  (let ((var '("str1" "str2"))
-	(TeX-kpathsea-path-delimiter nil)
-	(TeX-search-files-type-alist
-	 '((abc "${dummy}" ("str2" var) TeX-file-extensions))))
-    (TeX-search-files-by-type 'abc 'global)
-    (should (equal var '("str1" "str2")))))
-
-;;; path-expansion.el ends here
+(TeX-add-style-hook
+ "beamerswitch"
+ (lambda ()
+   (TeX-run-style-hooks "beamer")))

@@ -1,7 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
 ;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017, 2018  Free Software Foundation, Inc.
+;;               2017-2019  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -602,6 +602,49 @@ tag in the mode line."
       (setq preview-error-condition nil
 	    compilation-in-progress (delq process compilation-in-progress)))))
 
+(defcustom preview-pdf-color-adjust-method t
+  "Method to adjust colors of images generated from PDF.
+It is not consulted when the latex command produces DVI files.
+
+The valid values are:
+
+t: preview-latex transfers the foreground and background colors
+of Emacs to the generated images.  This option requires that
+Ghostscript has working DELAYBIND feature, thus is invalid with
+gs 9.27 (and possibly < 9.27).
+
+`compatible': preview-latex uses another mothod to transfer
+colors.  This option is provided for compatibility with older gs.
+See the below explanation for detail.
+
+nil: no adjustment is done and \"black on white\" image is
+generated regardless of Emacs color.  This is provided for fallback for
+gs 9.27 users with customized foreground color.  See the below
+explanation for detail.
+
+When the latex command produces PDF rather than DVI and Emacs has
+non-trivial foreground color, the traditional method (`compatible')
+makes gs >= 9.27 to stop with error.  Here, \"non-trivial foreground
+color\" includes customized themes.
+
+If you use such non-trivial foreground color and the version of
+Ghostscript equals to 9.27, you have two options:
+
+- Choose the value `compatible' and customize
+`preview-reference-face' to have default (black) foreground
+color.  This makes the generated image almost non-readable on
+dark background, so the next option would be your only choice in
+that case.
+- Choose the value nil, which forces plain \"black on white\"
+appearance for the generated image.  You can at least read what
+are written in the image although they may not match with your
+Emacs color well."
+  :group 'preview-appearance
+  :type '(choice
+	  (const :tag "Adjust to Emacs color (gs > 9.27)" t)
+	  (const :tag "Compatibility for gs =< 9.27" compatible)
+	  (const :tag "No adjustment (B/W, for gs 9.27)" nil)))
+
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
@@ -681,8 +724,8 @@ Gets the usual PROCESS and STRING parameters, see
       (setq preview-gs-sequence (list 1)))
     (setcdr preview-gs-sequence 1)
     (let* ((process-connection-type nil)
-	   (outfile (format "-dOutputFile=%s"
-			    (preview-ps-quote-filename
+	   (outfile (format "-sOutputFile=%s"
+			    (file-relative-name
 			     (format "%s/pr%d-%%d.%s"
 				     (car TeX-active-tempdir)
 				     (car preview-gs-sequence)
@@ -732,7 +775,19 @@ null eq{pop{pop}bind}if def\
 {pop}{setpagedevice}{ifelse exec}\
 stopped{handleerror quit}if \
 .preview-ST aload pop restore}bind def "
-		  (preview-gs-color-string preview-colors)))
+		  (preview-gs-color-string
+		   preview-colors
+		   ;; Compatibility for gs 9.27 with non-trivial
+		   ;; foreground color and dark background.
+		   ;; Suppress color adjustment with PDF backend
+		   ;; when `preview-pdf-color-adjust-method' is nil.
+		   (and (not preview-pdf-color-adjust-method)
+			;; The switch `preview-parsed-pdfoutput' isn't
+			;; set before parsing the latex output, so use
+			;; heuristic here.
+			(with-current-buffer TeX-command-buffer
+			  (and TeX-PDF-mode
+			       (not TeX-PDF-from-DVI)))))))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
 
@@ -744,21 +799,46 @@ to Ghostscript floats."
 
 (defun preview-pdf-color-string (colors)
   "Return a string that patches PDF foreground color to work properly."
-  ;; Actually, this is rather brutal.  It will only be invoked in
-  ;; cases, however, where previously it was not expected that
-  ;; anything readable turned up, anyway.
   (let ((fg (aref colors 1)))
     (if fg
-	(concat
-	 "/GS_PDF_ProcSet GS_PDF_ProcSet dup maxlength dict copy dup begin\
+	(cond ((eq preview-pdf-color-adjust-method t)
+	       ;; New code for gs > 9.27.
+	       ;; This assumes DELAYBIND feature, which is known to be
+	       ;; broken in gs 9.27 (and possibly, < 9.27).
+	       ;; <URL:https://lists.gnu.org/archive/html/auctex-devel/2019-07/msg00000.html>
+	       ;; DELAYBIND is sometimes mentioned in association with
+	       ;; security holes in the changelog of Ghostscript:
+	       ;; <URL:https://www.ghostscript.com/doc/9.27/History9.htm>
+	       ;; Thus we might have to be prepared for removal of this
+	       ;; feature in future Ghostscript.
+	       (concat
+		"/initgraphics {
+  //initgraphics
+  /RG where {
+    pop "
+		(mapconcat #'preview-gs-color-value fg " ")
+		" 3 copy rg RG
+  } if
+} bind def .bindnow "))
+	      ((eq preview-pdf-color-adjust-method 'compatible)
+	       ;; Traditional code for gs < 9.27.
+	       (concat
+		"/GS_PDF_ProcSet GS_PDF_ProcSet dup maxlength dict copy dup begin\
 /graphicsbeginpage{//graphicsbeginpage exec "
-	 (mapconcat #'preview-gs-color-value fg " ")
-	 " 3 copy rg RG}bind store end readonly store "))))
+		(mapconcat #'preview-gs-color-value fg " ")
+		" 3 copy rg RG}bind store end readonly store "))
+	      (;; Do nothing otherwise.
+	       t
+	       "")))))
 
-(defun preview-gs-color-string (colors)
-  "Return a string setting up colors"
-  (let ((bg (aref colors 0))
-	(fg (aref colors 1))
+(defun preview-gs-color-string (colors &optional suppress-fgbg)
+  "Return a string setting up COLORS.
+If optional argument SUPPRESS-FGBG is non-nil, behave as if FG/BG
+colors were just the default value."
+  (let ((bg (and (not suppress-fgbg)
+		 (aref colors 0)))
+	(fg (and (not suppress-fgbg)
+		 (aref colors 1)))
 	(mask (aref colors 2))
 	(border (aref colors 3)))
     (concat
@@ -910,6 +990,12 @@ The usual PROCESS and COMMAND arguments for
 	(cond ((eq status 'exit)
 	       (delete-process process)
 	       (setq TeX-sentinel-function nil)
+	       ;; Add DELAYBIND option for adjustment of foreground
+	       ;; color to work.
+	       (if (eq preview-pdf-color-adjust-method t)
+		   (setq preview-gs-command-line (append
+						  preview-gs-command-line
+						  '("-dDELAYBIND"))))
 	       (setq preview-gs-init-string
 		     (concat preview-gs-init-string
 			     (preview-pdf-color-string preview-colors)))
@@ -1076,9 +1162,16 @@ NONREL is not NIL."
 		      (list file))))
     (setq preview-gs-dsc (preview-dsc-parse file))
     (setq preview-gs-init-string
-	  (concat (format "{<</PermitFileReading[%s]>> setuserparams \
+	  ;; Add commands for revised file access controls introduced
+	  ;; after gs 9.27 (bug#37719)
+	  (concat (format "systemdict /.addcontrolpath known {%s} if\n"
+			  (mapconcat (lambda (f)
+				       (format "/PermitFileReading %s .addcontrolpath"
+					       (preview-ps-quote-filename f)))
+				     all-files "\n"))
+		  (format "{<</PermitFileReading[%s]>> setuserparams \
 .locksafe} stopped pop "
-			  (mapconcat 'preview-ps-quote-filename all-files ""))
+			  (mapconcat #'preview-ps-quote-filename all-files ""))
 		  preview-gs-init-string
 		  (format " %s(r)file /.preview-ST 1 index def %s exec .preview-ST "
 			  (preview-ps-quote-filename file)
@@ -1149,32 +1242,37 @@ for the file extension."
 (defun preview-mouse-open-eps (file &optional position)
   "Display eps FILE in a view buffer on click.
 Place point at POSITION, else beginning of file."
-  (let ((default-major-mode
+  (let ((default-mode
           ;; FIXME: Yuck!  Just arrange for the file name to have the right
           ;; extension instead!
-	  (or
-	   (assoc-default "x.ps" auto-mode-alist #'string-match)
-	   (default-value 'major-mode)))
+	  (assoc-default "x.ps" auto-mode-alist #'string-match))
 	(buff (get-file-buffer file)))
     (save-excursion
       (if buff
 	  (pop-to-buffer buff)
 	(view-file-other-window file))
+      (if (and (eq major-mode (default-value 'major-mode))
+	       default-mode)
+	  (funcall default-mode))
       (goto-char (or position (point-min)))
-      (if (eq major-mode 'ps-mode)          ; Bundled with GNU Emacs
-	  (message "%s" (substitute-command-keys "\
+      (message "%s" (substitute-command-keys "\
 Try \\[ps-run-start] \\[ps-run-buffer] and \
-\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset." )))
-      (if (eq major-mode 'postscript-mode) ; Bundled with XEmacs, limited
-	  (message "%s" (substitute-command-keys "\
-Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
+\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset.")))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
+  ;; N.B.  Although this code shows command line of gs invocation and
+  ;; error together via mouse popup menu, they are not necessarilly
+  ;; associated with each other.  There is a case that the command
+  ;; line is for "[...].prv/tmpXXXXXX/pr1-2.png" while the error is
+  ;; raised for "[...].prv/tmpXXXXXX/pr1-1.png".  (c.f. bug#37719)
   (let* ((filenames (overlay-get ov 'filenames))
 	 (file (car (nth 0 filenames)))
-	 (outfile (format "-dOutputFile=%s"
-			  (preview-ps-quote-filename
+	 ;; FIXME: This format isn't equal to actual invocation of gs
+	 ;; command constructed in `preview-gs-restart', which
+	 ;; contains "%d".
+	 (outfile (format "-sOutputFile=%s"
+			  (file-relative-name
 			   (car (nth 1 filenames)))))
 	 (ps-open
 	  `(lambda() (interactive "@")
@@ -1366,11 +1464,16 @@ This is for matching screen font size and previews."
 If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
 had let your document be parsed by AucTeX."
-  (catch 'return (dolist (option (TeX-style-list))
-		   (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
-		       (throw 'return
-			      (string-to-number
-			       (match-string 1 option)))))))
+  (let* ((regexp "\\`\\([0-9]+\\)pt\\'")
+	 (option
+	  (or
+	   (LaTeX-match-class-option regexp)
+	   ;; We don't have `LaTeX-match-package-option'.
+	   (TeX-member regexp
+		       (apply #'append
+			      (mapcar #'cdr LaTeX-provided-package-options))
+		       #'string-match))))
+    (if option (string-to-number (match-string 1 option)))))
 
 (defsubst preview-document-pt ()
   "Calculate the default font size of document."
@@ -2214,7 +2317,7 @@ list of LaTeX commands is inserted just before \\begin{document}."
 (defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' \"{\\detokenize{\" %t \"}}\"")
+preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\"")
   ;; Since TeXLive 2018, the default encoding for LaTeX files has been
   ;; changed to UTF-8 if used with classic TeX or pdfTeX.  I.e.,
   ;; \usepackage[utf8]{inputenc} is enabled by default in (pdf)latex.
@@ -2365,7 +2468,7 @@ filename=%s>
 
 (defun preview-TeX-style-cooked ()
   "Return `preview-TeX-style-dir' in cooked form.
-This will be fine for prepending to a `TEXINPUT' style
+This will be fine for prepending to a `TEXINPUTS' style
 environment variable, including an initial `.' at the front."
   (if (or (zerop (length preview-TeX-style-dir))
 	  (member (substring preview-TeX-style-dir -1) '(";" ":")))
@@ -2422,7 +2525,7 @@ systems, or `;' on Windows-like systems.  And it should be
 preceded with .: or .; accordingly in order to have . first in
 the search path.
 
-The `TEXINPUT' environment type variables will get this prepended
+The `TEXINPUTS' environment type variables will get this prepended
 at load time calling \\[preview-set-texinputs] to reflect this.
 You can permanently install the style files using
 \\[preview-install-styles].
@@ -2497,14 +2600,14 @@ to add the preview functionality."
 	["(or toggle) at point" preview-at-point]
 	["for environment" preview-environment]
 	["for section" preview-section]
-	["for region" preview-region (preview-mark-active)]
+	["for region" preview-region mark-active]
 	["for buffer" preview-buffer]
 	["for document" preview-document]
 	"---"
 	"Remove previews"
 	["at point" preview-clearout-at-point]
 	["from section" preview-clearout-section]
-	["from region" preview-clearout (preview-mark-active)]
+	["from region" preview-clearout mark-active]
 	["from buffer" preview-clearout-buffer]
 	["from document" preview-clearout-document]
 	"---"
@@ -3290,7 +3393,7 @@ This is passed through `preview-do-replacements'."
   ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
 \\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
- \"\\\\input\" \"{\\\\detokenize{\" \\(.*\\) \"}}\"\\'"
+ \"\\\\input\" \"\\\\detokenize{\" \\(.*\\) \"}\"\\'"
      . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
 	preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
@@ -3633,15 +3736,6 @@ If not a regular release, the date of the last change.")
      "Remember to cover the basics.  Including a minimal LaTeX example
 file exhibiting the problem might help."
      )))
-
-(eval-when-compile
-  (when (boundp 'preview-compatibility-macros)
-    (dolist (elt preview-compatibility-macros)
-      (if (consp elt)
-	  (fset (car elt) (cdr elt))
-	(fmakunbound elt)))))
-
-(makunbound 'preview-compatibility-macros)
 
 (provide 'preview)
 ;;; preview.el ends here

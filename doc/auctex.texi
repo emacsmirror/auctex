@@ -459,10 +459,10 @@ and @samp{\(...\)} in @LaTeX{} files by pressing @kbd{$}, add the
 following to your init file
 @lisp
 (add-hook 'plain-TeX-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+	  (lambda () (set (make-local-variable 'TeX-electric-math)
 			  (cons "$" "$"))))
 (add-hook 'LaTeX-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+	  (lambda () (set (make-local-variable 'TeX-electric-math)
 			  (cons "\\(" "\\)"))))
 @end lisp
 
@@ -2163,7 +2163,7 @@ following stanza into your init file:
 (eval-after-load "font-latex"
   '(setq-default
     font-latex-match-reference-keywords-local
-    (remove (TeX-assoc-string "footnote"
+    (remove (assoc-string "footnote"
             font-latex-match-reference-keywords-local)
                 font-latex-match-reference-keywords-local)))
 @end lisp

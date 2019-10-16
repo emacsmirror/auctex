@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2017  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2019  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -263,33 +263,84 @@ variable `font-latex-fontify-sectioning'." ',num)
      ("newrefsegment" "mancite" "pno" "ppno" "nopp" "psq" "psqq")
      font-lock-variable-name-face 2 noarg)
     ("biblatex"
-     (("newrefsection" "[") ("ExecuteBibliographyOptions" "[{")
-      ("printbibliography" "[") ("printshorthands" "[") ("printbibheading" "[")
+     (;; 3.2.2 Setting Package Options
+      ("ExecuteBibliographyOptions" "[{")
+      ;; 3.7.1 Resources
       ("addbibresource" "[{") ("addglobalbib" "[{") ("addsectionbib" "[{")
-      ("bibbysection" "[") ("bibbysegment" "[") ("bibbycategory" "[")
-      ("DeclareBibliographyCategory" "{") ("addtocategory" "{{") ("defbibenvironment" "{{{{")
-      ("defbibheading" "{[{") ("defbibnote" "{{") ("defbibfilter" "{{") ("defbibcheck" "{{")
-      ("defbibentryset" "{{") ("Cite" "[[{") ("parencite" "*[[{") ("Parencite" "[[{")
-      ("footcite" "[[{") ("footcitetext" "[[{") ("textcite" "[[{") ("Textcite" "[[{")
-      ("smartcite" "[[{") ("Smartcite" "[[{") ("supercite" "{") ("autocite" "*[[{")
-      ("Autocite" "*[[{") ("citeauthor" "*[[{") ("Citeauthor" "*[[{") ("citetitle" "*[[{")
-      ("citeyear" "*[[{") ("citedate" "*[[{") ("citeurl" "[[{") ("parentext" "{")
-      ("brackettext" "{") ("fullcite" "[[{") ("fullfootcite" "[[{") ("volcite" "[{[[")
-      ("Volcite" "[{[[") ("pvolcite" "[{[[") ("Pvolcite" "[{[[") ("fvolcite" "[{[[")
-      ("ftvolcite" "[{[[") ("svolcite" "[{[[") ("Svolcite" "[{[[") ("tvolcite" "[{[[")
-      ("Tvolcite" "[{[[") ("avolcite" "[{[[") ("Avolcite" "[{[[") ("notecite" "[[{")
-      ("Notecite" "[[{") ("pnotecite" "[[{") ("Pnotecite" "[[{") ("fnotecite" "[[{")
-      ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{") ("citereset" "*")
-      ("RN" "{") ("Rn" "{") ("DefineBibliographyStrings" "{{") ("DefineBibliographyExtras" "{{")
+      ;; 3.7.2 The Bibliography
+      ("printbibliography" "[") ("bibbysection"    "[") ("bibbysegment" "[")
+      ("bibbycategory"     "[") ("printbibheading" "[")
+      ;; 3.7.3 Bibliography Lists
+      ("printbiblist" "[{") ("printshorthands" "[")
+      ;; 3.7.4 Bibliography Sections
+      ("newrefsection" "[")
+      ;; 3.7.6 Bibliography Categories
+      ("DeclareBibliographyCategory" "{") ("addtocategory" "{{")
+      ;; 3.7.7 Bibliography Headings and Environments
+      ("defbibenvironment" "{{{{") ("defbibheading" "{[{")
+      ;; 3.7.8 Bibliography Notes
+      ("defbibnote" "{{")
+      ;; 3.7.9 Bibliography Filters and Checks
+      ("defbibfilter" "{{") ("defbibcheck" "{{")
+      ;; 3.7.10 Reference Contexts
+      ("DeclareRefcontext"       "{{")  ("newrefcontext"        "[{")
+      ("assignrefcontextkeyws"   "*[{") ("assignrefcontextcats" "*[{")
+      ("assignrefcontextentries" "*[{")
+      ;; 3.7.11 Dynamic Entry Sets
+      ("defbibentryset" "{{")
+      ;; 3.8.1 Standard Commands
+      ("Cite" "[[{")
+      ("parencite" "*[[{") ("Parencite"    "[[{")
+      ("footcite"  "[[{")  ("footcitetext" "[[{")
+      ;; 3.8.2 Style-specific Commands
+      ("textcite"  "[[{") ("Textcite"  "[[{")
+      ("smartcite" "[[{") ("Smartcite" "[[{")
+      ("supercite" "{")
+      ;; 3.8.3 Qualified Citation Lists
+      ;; For qualified lists, fontify at least 2 mandatory arguments
+      ("cites"      "(([[{[[{") ("Cites"         "(([[{[[{")
+      ("parencites" "(([[{[[{") ("Parencites"    "(([[{[[{")
+      ("footcites"  "(([[{[[{") ("footcitetexts" "(([[{[[{")
+      ("smartcites" "(([[{[[{") ("Smartcites"    "(([[{[[{")
+      ("textcites"  "(([[{[[{") ("Textcites"     "(([[{[[{")
+      ("supercites" "(([[{[[{")
+      ;; 3.8.4 Style-independent Commands
+      ("autocite" "*[[{")      ("Autocite" "*[[{")
+      ("autocites" "(([[{[[{") ("Autocites" "(([[{[[{")
+      ;; 3.8.5 Text Commands
+      ("citeauthor" "*[[{") ("Citeauthor" "*[[{") ("citetitle" "*[[{")
+      ("citeyear"   "*[[{") ("citedate" "*[[{")
+      ("citeurl"    "[[{")  ("parentext" "{")
+      ("brackettext" "{")
+      ;; 3.8.6 Special Commands
+      ("fullcite"  "[[{")         ("footfullcite" "[[{")
+      ("volcite"   "[{[{")        ("Volcite"      "[{[{")
+      ("volcites"  "(([{[{[{[{")  ("Volcites"     "(([{[{[{[{")
+      ("pvolcite"  "[{[{")        ("Pvolcite"     "[{[{")
+      ("pvolcites" "(([{[{[{[{")  ("Pvolcites"    "(([{[{[{[{")
+      ("fvolcite"  "[{[{")        ("ftvolcite"    "[{[{")
+      ("fvolcites" "(([{[{[{[{")  ("Fvolcites"    "(([{[{[{[{")
+      ("svolcite"  "[{[{")        ("Svolcite"     "[{[{")
+      ("svolcites" "(([{[{[{[{")  ("Svolcites"    "(([{[{[{[{")
+      ("tvolcite"  "[{[{")        ("Tvolcite"     "[{[{")
+      ("tvolcites" "(([{[{[{[{")  ("Tvolcites"    "(([{[{[{[{")
+      ("avolcite"  "[{[{")        ("Avolcite"     "[{[{")
+      ("avolcites" "(([{[{[{[{")  ("Avolcites"    "(([{[{[{[{")
+      ("notecite"  "[[{")         ("Notecite"     "[[{")
+      ("pnotecite" "[[{")         ("Pnotecite"    "[[{")
+      ("fnotecite" "[[{")
+      ;; 3.8.7 Low-level Commands
+      ("citename" "[[{[{") ("citelist" "[[{[{") ("citefield" "[[{[{")
+      ;; 3.8.8 Miscellaneous Commands
+      ("citereset" "*") ("RN" "{") ("Rn" "{")
+      ;; 3.9 Localization Commands
+      ("DefineBibliographyStrings" "{{")  ("DefineBibliographyExtras" "{{")
       ("UndefineBibliographyExtras" "{{") ("DefineHyphenationExceptions" "{{")
-      ("NewBibliographyString" "{") ("autocites" "(([[{") ("Autocites" "(([[{")
-      ("cites" "(([[{") ("Cites" "(([[{") ("parencites" "(([[{") ("Parencites" "(([[{")
-      ("footcites" "(([[{") ("footcitetexts" "(([[{") ("smartcites" "(([[{")
-      ("Smartcites" "(([[{") ("textcites" "(([[{") ("Textcites" "(([[{") ("supercites" "(([[{"))
+      ("NewBibliographyString" "{"))
      font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
-      ("vref" "*{") ("eqref" "{") ("ref" "{") ("include" "{")
+      ("vref" "*{") ("eqref" "{") ("ref" "{") ("Ref" "{") ("include" "{")
       ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
       ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{")
       ("marginpar" "[{"))
@@ -305,7 +356,9 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
       ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
-      ("addvspace" "{") ("vspace" "*{") ("hspace" "*{") ("thinspace" "") ("negthinspace" "")
+      ("addvspace" "{") ("vspace" "*{") ("hspace" "*{")
+      ("thinspace" "")  ("negthinspace" "")
+      ("labelformat" "{{")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
@@ -523,7 +576,11 @@ use."
 	   (4 (font-latex-matched-face 4) append t)
 	   (5 (font-latex-matched-face 5) append t)
 	   (6 (font-latex-matched-face 6) append t)
-	   (7 (font-latex-matched-face 7) append t)))
+	   (7 (font-latex-matched-face 7) append t)
+	   (8 (font-latex-matched-face 8) append t)
+	   (9 (font-latex-matched-face 9) append t)
+	   (10 (font-latex-matched-face 10) append t)
+	   (11 (font-latex-matched-face 11) append t)))
 	((eq type 'noarg)
 	 `(,(intern (concat prefix name))
 	   (0 ,face)))
@@ -1714,6 +1771,14 @@ marks boundaries for searching for group ends."
   "List of characters directly after \"\\\" excluded from fontification.
 Each character is a string.")
 
+(defvar font-latex-match-simple-include-list '("@")
+  "List of characters allowed in a macro for fontification.
+Each character is a string.  This variable is initialized to
+\"@\" since internal LaTeX commands are very often redefined in a
+.tex file and the fontification should work correctly in those
+cases.")
+(make-variable-buffer-local 'font-latex-match-simple-include-list)
+
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
   ;; \s_ matches chars with symbol syntax, \sw chars with word syntax,
@@ -1726,7 +1791,20 @@ Each character is a string.")
   ;; like `\__module_foo:nnn'
   (let* ((search (lambda ()
 		   (TeX-re-search-forward-unescaped
-		    "\\\\\\(\\s_\\|\\sw\\|\\s.\\)\\(?:\\s_\\|\\sw\\)*" limit t)))
+		    (concat
+                     ;; Chars directly after backslash
+                     "\\\\\\(\\s_\\|\\sw\\|\\s.\\)"
+                     ;; Start group of the following chars
+                     "\\(?:["
+                     ;; a-zA-Z are always allowed:
+                     "a-zA-Z"
+                     ;; Additional characters added by AUCTeX styles
+                     (mapconcat #'identity
+                                  font-latex-match-simple-include-list
+                                  "")
+                     ;; End group
+                     "]\\)*")
+		    limit t)))
 	 (pos (funcall search)))
     (while (and pos
 		(member (match-string 1)

@@ -1,6 +1,6 @@
 ;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)
 
-;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2019 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -44,8 +44,8 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'latex))
+;; Needed for compiling `LaTeX-check-insert-macro-default-style':
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -350,7 +350,8 @@ xcolor package.")
 		     (TeX-argument-prompt t nil "(Frame) Color model")
 		     LaTeX-xcolor-color-models)))
 	 ;; Set `last-optional-rejected' acc. to `xfrmodel'
-	 (last-optional-rejected (and xfrmodel (string= xfrmodel "")))
+	 (last-optional-rejected (or (not xfrmodel)
+				     (and xfrmodel (string= xfrmodel ""))))
 	 (xfrspec  (if (or (null xfrmodel)
 			   (string= xfrmodel "")
 			   (string= xfrmodel "named"))

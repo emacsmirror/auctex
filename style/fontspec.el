@@ -215,7 +215,7 @@ to retrieve the list of fonts."
     (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
 			 #'LaTeX-xcolor-definecolor-list
 		       #'LaTeX-color-definecolor-list))
-	   (tmp (copy-alist LaTeX-fontspec-font-features-local)))
+	   (tmp (copy-alist LaTeX-fontspec-font-features)))
       (setq tmp (assq-delete-all (car (assoc "Color" tmp)) tmp))
       (push (list "Color" (mapcar #'car (funcall colorcmd))) tmp)
       (setq LaTeX-fontspec-font-features-local

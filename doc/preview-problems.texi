@@ -19,6 +19,7 @@ newer versions of the problematic software or by simple patches.
 * Too small bounding boxes::    
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
+* No images are displayed with gs 9.27 and earlier::
 @end menu
 
 If you find something not mentioned here, please send a bug report using
@@ -137,3 +138,58 @@ such a complicated mess that no patch is in sight.  Better just end the
 search with @kbd{@key{RET}} before toggling and resume with @kbd{C-s
 C-s} or similar afterwards.  Since previews over the current match will
 auto-open, anyway, this should not be much of a problem in practice.
+
+@node No images are displayed with gs 9.27 and earlier
+@section No images are displayed with gs 9.27 and earlier
+
+@previewlatex{} tries to adjust the foreground and background colors of
+generated images to those of Emacs.  Unfortunately, incompatible changes
+introduced in Ghostscript 9.27 breaks the traditional method partially,
+and @previewlatex{} can display no images under certain circumstances.
+
+A new method implemented alternatively works only with Ghostscript >
+9.27.  If you are using Ghostscript 9.27 or earlier, customize the
+option @code{preview-pdf-adjust-color-method}.
+
+@defopt preview-pdf-adjust-color-method
+Method to adjust colors of images generated from @acronym{PDF}.  It is
+not consulted when the @LaTeX{} command produces @acronym{DVI} files.
+
+When the option is @code{t} (default), @previewlatex{} adjusts the FG
+and BG colors of the generated images by the new method.  This method
+requires that Ghostscript has working @code{DELAYBIND} feature, thus is
+invalid with gs 9.27 (and possibly < 9.27).
+
+When it is @code{compatible}, @previewlatex{} uses traditional method.
+This option is provided for backward compatibility with older gs.  See
+the below explanation for detail.
+
+When @code{nil}, no adjustment is done and ``black on white'' image is
+generated regardless of Emacs color.  This is provided for fallback for
+gs 9.27 users with customized foreground color.  See the below
+explanation for detail.
+
+When the @LaTeX{} command produces @acronym{PDF} rather than
+@acronym{DVI} and Emacs has non-trivial foreground color, the
+traditional method (@code{compatible}) makes gs >= 9.27 to stop with
+error.  Here, ``non-trivial foreground color'' includes customized
+themes.
+
+If you use such non-trivial foreground color and the version of
+Ghostscript equals to 9.27, you have two options:
+@enumerate
+@item
+Choose the value @code{compatible} and customize
+@code{preview-reference-face} to have default (black) foreground color.
+This makes the generated image almost non-readable on dark background,
+so the next option would be your only choice in that case.
+@item
+Choose the value @code{nil}, which forces plain ``black on white''
+appearance for the generated image.  You can at least read what are
+written in the image although they may not match with your Emacs color
+well.
+@end enumerate
+
+The default value used to be @code{compatible} for short period before
+Ghostscript 9.50 was released but now is @code{t}.
+@end defopt

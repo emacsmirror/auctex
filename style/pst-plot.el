@@ -1,6 +1,6 @@
 ;;; pst-plot.el --- AUCTeX style for `pst-plot.sty'
 
-;; Copyright (C) 2007, 2014, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2014, 2015, 2019 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -53,10 +53,10 @@
     "ticksize" "tickstyle")
   "A list of parameters' name in pst-plot.")
 
+(defvaralias 'LaTeX-pst-labels-list 'LaTeX-pst-ticks-list)
+
 (defvar LaTeX-pst-ticks-list '(t "none" "all" "x" "y")
   "A list of values for ticks in pst-plot.")
-
-(defvaralias 'LaTeX-pst-labels-list 'LaTeX-pst-ticks-list)
 
 (defvar LaTeX-pst-plotstyle-list
   '(t "dots" "line" "polygon" "curve" "ecurve" "ccurve")

@@ -1,6 +1,11 @@
-;;; path-expansion.el --- tests for path expansion
+;;; multitoc.el --- AUCTeX style for `multitoc.sty' (v2.01)
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2019 Free Software Foundation, Inc.
+
+;; Author: Arash Esbati <arash@gnu.org>
+;; Maintainer: auctex-devel@gnu.org
+;; Created: 2019-09-07
+;; Keywords: tex
 
 ;; This file is part of AUCTeX.
 
@@ -19,17 +24,25 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
+;;; Commentary:
+
+;; This file adds support for `multitoc.sty' (v2.01) from 1999/06/08.
+;; `multitoc.sty' is part of TeXLive.
+
 ;;; Code:
 
-(require 'ert)
+(TeX-add-style-hook
+ "multitoc"
+ (lambda ()
+   (TeX-run-style-hooks "multicol" "ifthen")
+   (TeX-add-symbols
+    "multicolumntoc"
+    "multicolumnlot"
+    "multicolumnlof"))
+ LaTeX-dialect)
 
-(ert-deftest TeX-variable-truncation ()
-  "Check whether list variable is not truncated as side effect."
-  (let ((var '("str1" "str2"))
-	(TeX-kpathsea-path-delimiter nil)
-	(TeX-search-files-type-alist
-	 '((abc "${dummy}" ("str2" var) TeX-file-extensions))))
-    (TeX-search-files-by-type 'abc 'global)
-    (should (equal var '("str1" "str2")))))
+(defvar LaTeX-multitoc-package-options
+  '("toc" "lof" "lot")
+  "Package options for the multitoc package.")
 
-;;; path-expansion.el ends here
+;;; multitoc.el ends here

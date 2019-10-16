@@ -363,6 +363,7 @@ also be a string.  Then the length of the string is used."
 
 (defun LaTeX-beamer-class-options ()
   "Read the beamer class options from the user."
+  (TeX-load-style "hyperref")
   (TeX-read-key-val t '(("usepdftitle" ("false")) ("envcountsect")
 			("notheorems") ("noamsthm") ("compress") ("t") ("c")
 			("leqno") ("fleqn") ("handout") ("trans") ("pdftex")

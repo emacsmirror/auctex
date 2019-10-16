@@ -52,12 +52,15 @@ PACKAGE=auctex
 PACKAGE_INFO=auctex preview-latex
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
-AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
-  (mapcar (function update-file-autoloads) command-line-args-left) \
+AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
+  (mapcar (lambda (file) \
+            (update-file-autoloads file nil autoload-file)) \
+          command-line-args-left) \
   (save-buffers-kill-emacs t))'
 
-PREVIEW_AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
-		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
+PREVIEW_AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
+  (update-file-autoloads "preview.el" nil autoload-file) \
+  (save-buffers-kill-emacs t))'
 
 # Files and directories excluded from distributed tar ball.
 EXCLUDEDFILES=autogen.sh .gitignore doc/.gitignore doc/tex-ref.log \
@@ -165,7 +168,9 @@ STYLESRC = style/prosper.el \
 	   style/arabxetex.el style/australian.el style/newzealand.el \
 	   style/xltabular.el style/marginnote.el style/thmtools.el \
 	   style/ocg-p.el     style/ocgx.el      style/thm-restate.el \
-	   style/pythontex.el style/dashundergaps.el
+	   style/pythontex.el style/dashundergaps.el style/beamerarticle.el \
+	   style/changelog.el style/ltugboat.el  style/beamerswitch.el \
+	   style/multitoc.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2018 Free Software Foundation, Inc.
+;; Copyright (C) 1985-1987, 1991, 1993-2019 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -136,27 +136,41 @@ If nil, none is specified."
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
-    ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
-    ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
+    ("BibTeX" "bibtex %s" TeX-run-BibTeX nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
+		     context-mode)
+     :help "Run BibTeX")
+    ("Biber" "biber %s" TeX-run-Biber nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     :help "Run Biber")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
-    ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t t
+    ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Generate PostScript file")
-    ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil t
+    ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PostScript")
-    ("Dvipdfmx" "dvipdfmx %d" TeX-run-dvipdfmx nil t
+    ("Dvipdfmx" "dvipdfmx %d" TeX-run-dvipdfmx nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
-    ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil t
+    ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %s" TeX-run-command nil
-     t :help "Run makeglossaries to create glossary file")
-    ("Index" "makeindex %s" TeX-run-index nil t
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     :help "Run makeglossaries to create glossary
+     file")
+    ("Index" "makeindex %s" TeX-run-index nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeindex to create index file")
-    ("upMendex" "upmendex %s" TeX-run-index t t
+    ("upMendex" "upmendex %s" TeX-run-index t
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run upmendex to create index file")
-    ("Xindy" "texindy %s" TeX-run-command nil t
+    ("Xindy" "texindy %s" TeX-run-command nil
+     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
@@ -541,8 +555,9 @@ string."
 		  (concat TeX-command-text " \"\\input\""))
 	      "")))
     ;; The fourth argument of t is actually for wrapper function
-    ;; `TeX--master-or-region-file-with-extra-quotes', temporally set
-    ;; as value of `file' in `TeX-command-expand'.
+    ;; provided by `TeX--master-or-region-file-with-extra-quotes'.
+    ;; See its doc string as well as the comments in
+    ;; `TeX-command-expand'.
     ("%T" file t t nil t)
     ("%n" TeX-current-line)
     ("%d" file "dvi" t)
@@ -1163,8 +1178,6 @@ focus."
   :group 'TeX-view
   :type 'boolean)
 
-(defvar url-unreserved-chars)
-
 (defun TeX-evince-sync-view-1 (de app)
   "Focus the focused page/paragraph in Evince with the position
 of point in emacs by using Evince's DBUS API.  Used by default
@@ -1253,6 +1266,7 @@ viewer."
 		 (paper-letter "-y=Letter ")
 		 (paper-executive "-y=Executive ")
 		 "%d" (mode-io-correlate " \"# %n '%b'\"")) "dviout")
+      ("PDF Tools" TeX-pdf-tools-sync-view)
       ("SumatraPDF"
        ("SumatraPDF -reuse-instance"
 	(mode-io-correlate " -forward-search \"%b\" %n") " %o")
@@ -1262,6 +1276,7 @@ viewer."
    ((eq system-type 'darwin)
     '(("Preview.app" "open -a Preview.app %o" "open")
       ("Skim" "open -a Skim.app %o" "open")
+      ("PDF Tools" TeX-pdf-tools-sync-view)
       ("displayline" "displayline %n %o %b" "displayline")
       ("open" "open %o" "open")))
    (t
@@ -1579,7 +1594,9 @@ For available TYPEs, see variable `TeX-engine'."
     (setq type (intern type)))
   (setq TeX-engine type)
   ;; Automatically enable or disable TeX PDF mode as a convenience
-  (cond ((eq type 'xetex) (TeX-PDF-mode 1))
+  (cond ((eq type 'xetex)
+	 (TeX-PDF-mode 1)
+	 (setq TeX-PDF-from-DVI nil))
 	((eq type 'omega) (TeX-PDF-mode 0))))
 
 (define-minor-mode TeX-Omega-mode
@@ -2441,11 +2458,12 @@ Get `major-mode' from master file and enable it."
 	 comment-prefix "mode: " mode-string "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
 	 comment-prefix "End:\n")
-	(funcall mode)
-	;; TeX modes run `VirTeX-common-initialization' which kills all local
-	;; variables, thus `TeX-master' will be forgotten after `(funcall
-	;; mode)'.  Reparse local variables in order to bring it back.
-	(hack-local-variables)))))
+	(unless (eq mode major-mode)
+	  (funcall mode)
+	  ;; TeX modes run `VirTeX-common-initialization' which kills all local
+	  ;; variables, thus `TeX-master' will be forgotten after `(funcall
+	  ;; mode)'.  Reparse local variables in order to bring it back.
+	  (hack-local-variables))))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
@@ -3109,7 +3127,11 @@ Or alternatively:
     (when entry
       (if (numberp (nth 1 entry))
 	  (let* ((sub (nth 1 entry))
-		 (close (nth 3 entry))
+		 (close (if (and (nth 3 entry)
+                                 (listp (nth 3 entry))
+                                 (symbolp (car (nth 3 entry))))
+                            (eval (nth 3 entry))
+                          (nth 3 entry)))
 		 (begin (match-beginning sub))
 		 (end (match-end sub))
 		 (pattern (TeX-match-buffer 0))
@@ -5465,10 +5487,12 @@ those will be considered part of it."
 			   ;; If we cannot find a regular end, use the
 			   ;; next whitespace.
 			   (save-excursion (skip-chars-forward "^ \t\n")
-					   (point))))
-	    (when (eobp) (throw 'found (point))))
+					   (point)))))
 	   (t
-	    (throw 'found (point)))))))))
+	    (throw 'found (point)))))
+	;; Make sure that this function does not return nil, even
+	;; when the above `while' loop is totally skipped. (bug#35638)
+	(throw 'found (point))))))
 
 (defun TeX-find-macro-start (&optional limit)
   "Return the start of a macro.
@@ -6568,6 +6592,58 @@ Used as function for validating a variable's `safe-local-variable' property."
 	   (setq all-strings (stringp (car lst)))
 	   (setq lst (cdr lst)))
 	 all-strings)))
+
+;; add-log.el: This function is a variation of
+;; `tex-current-defun-name' defined in `tex-mode.el'.  In `latex.el',
+;; the variable `add-log-current-defun-function' is set to this
+;; function.
+(defun TeX-current-defun-name ()
+  "Return the name of the TeX section/paragraph/chapter at point, or nil."
+  (save-excursion
+    (let (s1 e1 s2 e2)
+      ;; If we are now precisely at the beginning of a sectioning
+      ;; command, move forward and make sure `re-search-backward'
+      ;;  finds this one rather than the previous one:
+      (or (eobp) (progn
+                   (when (looking-at-p "\\\\")
+                     (forward-char))
+                   (unless (eolp)
+                     (forward-sexp))))
+      ;; Search backward for sectioning command.  If
+      ;; `LaTeX-section-label' is buffer-local, assume that a style
+      ;; has changed the value and recalculate the string.  Otherwise
+      ;; take the standard one:
+      (when (re-search-backward
+             (if (local-variable-p 'LaTeX-section-label)
+                 (concat "\\\\"
+			 (regexp-opt
+                          (remove "part" (mapcar #'car LaTeX-section-label)))
+                         "\\*?")
+               "\\\\\\(sub\\)*\\(section\\|paragraph\\|chapter\\)\\*?")
+             nil t)
+        ;; Skip over the backslash:
+        (setq s1 (1+ (point)))
+        ;; Skip over the sectioning command, incl. the *:
+        (setq e1 (goto-char (match-end 0)))
+        ;; Skip over the optional argument, if any:
+        (when (looking-at-p "[ \t]*\\[")
+          (forward-sexp))
+        ;; Skip over any chars until the mandatory argument:
+        (skip-chars-forward "^{")
+        ;; Remember the points for the mandatory argument:
+        (setq s2 (point))
+        (setq e2 (progn (forward-sexp)
+                        (point)))
+        ;; Now pick the content: For one-line title, return it
+        ;; incl. the closing brace.  For multi-line, return the first
+        ;; line of the mandatory argument incl. ellipsis and a brace;
+        (concat
+         (buffer-substring-no-properties s1 e1)
+         (buffer-substring-no-properties
+          (goto-char s2)
+          (min (line-end-position) e2))
+         (when (> e2 (line-end-position))
+           (concat "..." TeX-grcl)))))))
 
 (provide 'tex)
 
