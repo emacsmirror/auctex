@@ -8,3 +8,5 @@ lpath.el
 mkinstalldirs
 prv-install.el
 README.CVS
+tests/
+build-aux/
