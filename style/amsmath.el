@@ -33,7 +33,6 @@
 (TeX-add-style-hook
  "amsmath"
  (lambda ()
-
    (LaTeX-add-environments
     '("align"      LaTeX-env-label)
     '("gather"     LaTeX-env-label)
@@ -174,7 +173,7 @@
    ;; is non-nil
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "AMSmath"))))
+	(reftex-ref-style-activate "AMSmath")))
  LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
