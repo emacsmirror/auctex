@@ -90,6 +90,9 @@ in an init file:
 @lisp
 (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
 @end lisp
+
+@item
+Several other bugs were fixed, many minor features were added.
 @end itemize
 
 @heading News in 12.1
