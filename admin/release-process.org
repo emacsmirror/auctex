@@ -1,0 +1,125 @@
+#+TITLE: How to release AUCTeX
+#+AUTHOR: Mosè Giordano
+#+DATE: [2019-10-31 Thu]
+
+This document descriptes the steps for AUCTeX maintainer to do a new release of
+the package.
+
+You will need to upload files to GNU FTP servers. In order to do so, we use an
+automated system. Before starting, [[https://www.gnu.org/prep/maintain/html_node/Automated-FTP-Uploads.html#Automated-FTP-Uploads][register for automated uploading]] if you did
+not already.
+
+** AUCTeX package [0/3]
+
+Note: I recommend iterating a few times the following steps in a test repository
+(of course excluding uploading of the package to the FTP server) to check that
+everything goes well, before actually doing the release.
+
+- [ ] Synchronise with the [[https://savannah.gnu.org/git/?group=auctex][remote repository on Savannah]]: =git pull=
+- [ ] Prepare for new release [0/3]
+
+  - [ ] Update AUCTeX version and copyright year in =configure.ac=,
+    =doc/tex-ref.tex=, and =latex/preview.dtx=
+  - [ ] Make sure that all relevant changes are mentioned in =doc/changes.texi=
+  - [ ] Update =RELEASE= [0/3]
+
+    - [ ] Update release version
+    - [ ] Update list of changes: use =CHANGES= (which is generated from
+      =doc/changes.texi=, you may need to run =make= to update it after
+      changes above)
+    - [ ] Update any other relevant information, like the list of
+      contributors
+
+- [ ] Towards the end of the top-level =Makefile= there are the instructions on
+  how to do the release. Follow them.
+
+  - The instructions may mention how to build the XEmacs and Windows packages,
+    but you do not need to do that if you decided to stop providing those
+    packages
+  - Make sure that the patch for =gendocs.sh= in the =www-docs= target applies
+    correctly, otherwise you will need to update it. Remember to update it in
+    the =gendocspath= branch of the AUCTeX remote repository too.
+  - [[https://www.nongnu.org/texi2html/][=texi2html=]] is needed to build the online documentation. So far, version
+    1.8.2 has been used and tested. Version 5.0 may not be fully compatible (in
+    particular, I have found that
+    =auctex-dist/www/manual/manual/auctex/index.html= may be a broken link using
+    =texi2html= 5.0)
+
+** Website [0/6]
+
+You now have to update the information about latest AUCTeX version on the
+website, and the online documentation. The website is maintained in a CVS
+repository on Savannah. Read the [[https://savannah.gnu.org/cvs/?group=www][Savannah instructions about how to use CVS for
+webpages]] (remember to replace =www= with =auctex= as project). The command to
+checkout the repository locally should be
+
+#+BEGIN_SRC sh
+  cvs -z3 -d:ext:YOUR_USER_NAME@cvs.savannah.gnu.org:/web/auctex co auctex
+#+END_SRC
+
+For this to work, you also need to have the environment variable =CVS_RSH= set
+to =ssh=:
+
+#+BEGIN_SRC sh
+  export CVS_RSH=ssh
+#+END_SRC
+
+You can also browse the [[http://web.cvs.savannah.gnu.org/viewvc/auctex/][content of the CVS repository]].
+
+- [ ] Remove all =manual/{auctex,preview-latex}.*= files, and replace them with
+  the =auctex-dist/www/manual/manual/{auctex,preview-latex}.*= files from AUCTeX
+  repository
+- [ ] Remove all =manual/auctex/*.html= files, and replace them with the
+  =auctex-dist/www/manual/manual/auctex.*= files from AUCTeX repository
+- [ ] Remove all =manual/preview-latex/*.html= files, and replace them with the
+  =auctex-dist/www/manual/manual/preview-latex.*= files from AUCTeX repository
+- [ ] Update AUCTeX version and date in files in =src/= directory. When you are
+  done, run the script =./genpages.sh=
+- [ ] Update the =ChangeLog=
+- [ ] Register all changes. You can use for example =vc-mode= in Emacs: [0/2]
+
+  - [ ] Register all new files with =i=
+  - [ ] Select all files and do check in/out with =v=
+
+** =preview= package to CTAN
+
+Upload the =preview= tarball generated with =make preview-ball= to CTAN as a
+"package update" using the [[https://ctan.org/upload][upload form]].
+
+My understanding is that you can use your own name and email in the "Your name"
+and "Your email" fields only if you are an authorised uploader of
+=preview=. David and Mosè are authorised, I do not know if other people are
+authorised.  If in doubt, ask them.
+
+For the other fields, re-use the details of the [[https://ctan.org/pkg/preview][=preview= page on CTAN]].
+
+- Name of your contribution: =preview=
+- Maintainer: The AUCTeX team
+- Summary: Extract bits of a LaTeX source for output
+- Suggested CTAN directory: =/macros/latex/contrib/preview=
+- License type: GNU General Public License, version 3
+- Home page: https://www.gnu.org/software/auctex/preview-latex.html
+- Bug tracker: https://debbugs.gnu.org/cgi/pkgreport.cgi?package=auctex
+- Support: https://lists.gnu.org/mailman/listinfo/auctex
+- Announcements: https://lists.gnu.org/mailman/listinfo/info-auctex
+- Repository: https://git.savannah.gnu.org/gitweb/?p=auctex.git
+- Developers: https://lists.gnu.org/mailman/listinfo/auctex-devel
+
+** Announcement email
+
+Send the announcement email to
+
+- info-auctex@gnu.org, auctex@gnu.org, info-gnu@gnu.org, ctan@dante.de
+
+Include a =Mail-Followup-To= to auctex@gnu.org. So the header of the email
+should be something like (adapt as necessary)
+
+#+BEGIN_SRC message
+  From: YOUR NAME <YOUR_EMAIL_ADDRESS@gnu.org>
+  To: info-auctex@gnu.org, auctex@gnu.org, info-gnu@gnu.org, ctan@dante.de
+  Subject: AUCTeX X.Y released
+  Mail-Followup-To: auctex@gnu.org
+  --text follows this line--
+#+END_SRC
+
+The content of the email is simply the content of the =RELEASE= file.
