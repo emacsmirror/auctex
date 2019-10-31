@@ -1,3 +1,1932 @@
+2019-10-30  Mosè Giordano  <mose@gnu.org>
+
+	* Version 12.2 released.
+
+2019-10-29  Mosè Giordano  <mose@gnu.org>
+
+	Prepare for upcoming release
+
+	* RELEASE: Update version number, release notes and list of contributors.
+	* configure.ac: Update version number.
+	* doc/auctex.texi: Update copyright years.
+	* doc/changes.texi: Mention generic bug fixes.
+	* doc/tex-ref.tex:
+	* latex/preview.dtx: Update version number and copyright years
+
+2019-10-26  Arash Esbati  <arash@gnu.org>
+
+	Add new style/xkcdcolors.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/xkcdcolors.el: New file.
+
+2019-10-26  Arash Esbati  <arash@gnu.org>
+
+	Add check for empty overlay
+
+	* tex-fold.el (TeX-fold-hide-item): Add an extra check to make
+	sure that the function runs when overlay start and end are
+	non-nil.  What is done in the end of function isn't useful with
+	evaporated overlays and used to cause bugs because `overlay-start'
+	and `overlay-end' return nil for such overlays, and functions such
+	as `TeX-fold-overfull-p` try to move point to the
+	overlay-end. (bug#37337)
+
+2019-10-20  Arash Esbati  <arash@gnu.org>
+
+	* style/amsmath.el ("amsmath"): Improve query strings.
+
+2019-10-19  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	multi-prompt.el, style/beamer*.el: Get copyright just right
+
+2019-10-18  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Mention changes in News.
+
+2019-10-18  Arash Esbati  <arash@gnu.org>
+
+	Add final adjustments for LaTeX 2019-10-01
+
+	* latex.el (LaTeX-env-contents): Adjust function to LaTeX kernel
+	2019-10-01 release.  Remove check for usage within preamble only.
+	Add query for optional argument with completion.
+	(LaTeX-verbatim-environments):
+	(LaTeX-indent-environment-list): Add filecontents(*) environments.
+
+	* style/amsmath.el ("amsmath"): Add support for \overunderset
+	macro.  Delete unnecessary `function' before `lambda'.  Re-indent
+	the code.
+
+2019-10-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Change default for new Ghostscript
+
+	* preview.el.in (preview-pdf-color-adjust-method): Change the default
+	value to t and adjust doc string.
+	* doc/preview-problems.texi (No images are displayed with gs 9.27 and
+	earlier): Adjust its contents in line with the above change and change
+	the title from "... newer".
+
+2019-10-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix for revised file access controls of gs (bug#37719)
+
+	* preview.el.in (preview-prepare-fast-conversion): Add commands for
+	revised file access controls introduced after gs 9.27.
+	(preview-gs-restart): Use "-d" option instead of "-s" because the
+	former does not accept "%d" in OutputFile parameter.
+	Don't wrap the file name into parentheses in line with this change.
+	(preview-gs-flag-error): Adjust the reconstructed gs command line
+	argument so that it matches with the above change.
+	Add comments about limitations of this function.
+
+2019-10-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* preview.el.in (preview-undump-replacements): Fix last commit.
+
+2019-10-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix preview-latex for TeXLive 2019 update
+
+	* preview.el.in (preview-LaTeX-command, preview-undump-replacements):
+	Remove the brace around the argument of \input.
+
+2019-09-23  Arash Esbati  <arash@gnu.org>
+
+	Add fontification support for ragged2e macros
+
+	* style/ragged2e.el ("ragged2e"): Add provided macros to function
+	keywords class.  This is in line with decision in `font-latex.el'
+	for corresponding kernel macros.
+
+2019-09-22  Arash Esbati  <arash@gnu.org>
+
+	Delete \Ref and \labelformat from varioref.el
+
+	* style/varioref.el ("varioref"): Delete \Ref and \labelformat
+	from style hook and fontification support.
+
+2019-09-22  Arash Esbati  <arash@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Add \Ref to `TeX-complete-list'.
+
+2019-09-22  Arash Esbati  <arash@gnu.org>
+
+	Support new kernel macros \Ref and \labelformat
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add \Ref to
+	reference and \labelformat to function class.
+
+	* latex.el (LaTeX-common-initialization): Add support for \Ref and
+	\labelformat which are part of LaTeX kernel 2019-10-01 release.
+
+2019-09-18  Arash Esbati  <arash@gnu.org>
+
+	Update style/subcaption.el to package version 1.3
+
+	* style/subcaption.el ("subcaption"): Add support for \subfloat
+	macro.
+
+2019-09-18  Arash Esbati  <arash@gnu.org>
+
+	Update style/varioref.el to package version 1.6b
+
+	* style/varioref.el ("varioref"): Rearrange macros acc. to the
+	manual.  Add missing starred version of \Vref.  Add fontification
+	support for \labelformat.
+	(LaTeX-varioref-package-options): Update package options.
+
+2019-09-14  Arash Esbati  <arash@gnu.org>
+
+	Improve detecting of rejected optional arguments
+
+	* style/bicaption.el (LaTeX-arg-bicaption-bicaption):
+	* style/caption.el (LaTeX-arg-caption-captionbox):
+	* style/floatrow.el (LaTeX-floatrow-arg-floatbox):
+	* style/xcolor.el (TeX-arg-xcolor-fcolorbox): Add an additional
+	check for detecting if last optional argument was rejected.
+
+2019-09-08  Arash Esbati  <arash@gnu.org>
+
+	Add new style/multitoc.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/multitoc.el: New file
+
+2019-08-31  Arash Esbati  <arash@gnu.org>
+
+	Make "PDF Tools" viewer available under Windows and macOS
+
+	* tex.el (TeX-view-program-list-builtin): Make entry for "PDF
+	Tools" available under Windows and macOS.  (bug#37152)
+
+	* doc/changes.texi: Mention availability of "PDF Tools" under
+	Windows and macOS in `TeX-view-program-list-builtin'.
+
+	* doc/install.texi (Prerequisites): Replace "Mac OS X" with
+	"macOS".
+
+2019-08-22  Arash Esbati  <arash@gnu.org>
+
+	Add new style/ltugboat.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/ltugboat.el: New file.
+
+2019-08-22  Arash Esbati  <arash@gnu.org>
+
+	Add new style/changelog.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/changelog.el: New file.
+
+2019-08-22  Arash Esbati  <arash@gnu.org>
+
+	Support explicitly numbered group contructs
+
+	* latex.el (LaTeX-extract-key-value-label): Add an optional
+	argument for explicitly numbered group contructs.
+
+2019-08-22  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Mention fontification improvement for biblatex.
+
+2019-08-21  Arash Esbati  <arash@gnu.org>
+
+	* context.el (ConTeXt-environment): Fix docstring.
+
+2019-08-21  Arash Esbati  <arash@gnu.org>
+
+	Fix lisp example for `TeX-electric-math'
+
+	* doc/auctex.texi (Quotes): Use `make-local-variable' instead of
+	`make-variable-buffer-local' in lisp example for init file.  (bug#37124)
+
+2019-08-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Restore syntax fontify in Texinfo mode
+
+	* tex-info.el (TeX-texinfo-mode): Set `syntax-propertize-function',
+	mimicking texinfo.el.  Now comments in Texinfo mode buffer are
+	displayed with comment face again.
+
+2019-08-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Reduce unnecessary local variable safety inquiry
+
+	* tex.el (TeX-add-local-master): Call major mode function only when
+	necessary.
+
+2019-08-18  Arash Esbati  <arash@gnu.org>
+
+	Update style/titlesec.el to package version 2.11
+
+	* style/titlesec.el ("titlesec"): Add \nostruts macro.
+	(LaTeX-titlesec-package-options): Add `nostruts' option.
+
+2019-08-17  Arash Esbati  <arash@gnu.org>
+
+	Update style/thmtools.el to package version 67
+
+	* style/thmtools.el (LaTeX-thmtools-declaretheoremstyle-regexp)
+	(LaTeX-thmtools-declaretheorem-regexp): Use the function
+	`LaTeX-extract-key-value-label' to build the regexp.
+	(LaTeX-thmtools-listoftheorems-key-val): Add new key `title'.
+	(LaTeX-thmtools-package-options): Add new variable.
+
+2019-08-17  Arash Esbati  <arash@gnu.org>
+
+	Update style/fvextra.el to package version 1.4
+
+	* style/fvextra.el (LaTeX-fvextra-key-val-options): Add new keys.
+	("fvextra"): Add new macros.  Add fontification support for
+	\EscVerb macro.
+
+2019-08-15  Arash Esbati  <arash@gnu.org>
+
+	Update style/paracol.el to package version 1.35
+
+	* style/paracol.el: Add macro \definecolumnpreamble and the length
+	\belowfootnoteskip.
+
+2019-07-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Change color adjustment method (bug#35571, bug#35696, bug#36039)
+
+	* preview.el.in (preview-pdf-color-adjust-method): New option.
+	(preview-pdf-color-string): Use new code using DELAYBIND feature when
+	the new option is t.
+	(preview-gs-color-string): Add new optional argument to suppress code
+	for explicit colors.
+	(preview-gs-open): Don't adjust color when the latex command produces
+	PDF and `preview-pdf-color-adjust-method' is nil.
+	(preview-pdf2dsc-sentinel): Add "-dDELAYBIND" option to gs invocation
+	when `preview-pdf-color-adjust-method' is t.
+	* doc/changes.texi: Add a new entiry.
+	* doc/preview-problems.texi: Add a section to explain how to do with
+	the case no images are displayed with gs 9.27 and newer.
+
+2019-07-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Enhance support for file names with spaces
+
+	* tex-buf.el (TeX-run-compile): Add an entry for file name with spaces
+	to localized `compilation-error-regexp-alist'.
+
+2019-07-14  Arash Esbati  <arash@gnu.org>
+
+	Update style/AnonymousPro.el to package version 2.2
+
+	* style/AnonymousPro.el (LaTeX-AnonymousPro-package-options): Add
+	the `scaled' key.
+
+2019-06-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Conform to `delete-selection-mode' (bug#36385)
+
+	* latex.el (LaTeX-insert-left-brace): Put `delete-selection' property
+	which obeys that of `self-insert-command' when
+	`LaTeX-electric-left-right-brace' feature is inactive.
+
+2019-06-14  Arash Esbati  <arash@gnu.org>
+
+	Support cleveref labels
+
+	* style/cleveref.el (TeX-arg-cleveref-crossref-type): New
+	function.
+	(LaTeX-cleveref-label-regexp): New variable for parsing \label
+	macros with an optional argument.
+	("cleveref"): Add missing package macros.
+	Update expert commands and fontification.
+	Update `reftex-label-regexps' enabling RefTeX to handle \label
+	with an optional argument as well.
+	Update description line and add Commentary section.  (bug#36111)
+
+2019-05-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make navigation function robust
+
+	* tex.el (TeX-find-macro-end-helper): Cater for corner case that the
+	`while' loop is exited or skipped.
+	* tests/tex/navigation.el: Add new test.
+
+2019-05-20  Arash Esbati  <arash@gnu.org>
+
+	Update style/babel.el to package version 3.31
+
+	* style/babel.el (LaTeX-babel-language-list): Add azerbaijani and
+	remove frenchb.
+	(LaTeX-babel-babelprovide-key-val-options): New variable.
+	(LaTeX-babel-babeltags-regexp, LaTeX-babel-cleanup-babeltags): Add
+	parsing support for \babeltags macro.
+	(LaTeX-babel-babelfont-regexp, LaTeX-babel-cleanup-babelfont): Add
+	parsing support for \babelfont macro.
+	(TeX-arg-babel-lang): Use the arguments optional and prompt
+	properly.
+	("babel"): Add missing macros incl. fontification.
+	(LaTeX-babel-package-options): Add missing package options.
+
+2019-05-17  Tassilo Horn  <tsdh@gnu.org>
+
+	Fix autoload generation code (bug#35758)
+
+	* Makefile.in (AUTOLOAD,PREVIEW_AUTOLOAD): Use arg instead of
+	  generated-autoload-file (bug#35758).
+
+2019-05-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix regression
+
+	* latex.el (LaTeX-arg-usepackage-insert, LaTeX-arg-usepackage): Move
+	`TeX-run-style-hooks' from `LaTeX-arg-usepackage' to
+	`LaTeX-arg-usepackage-insert'.  Due to my commit "Defer running style
+	hook until options are given actually", style hooks associated with
+	\usepackage were not run when the document is newly created with
+	`LaTeX-env-document'.
+
+2019-05-17  Arash Esbati  <arash@gnu.org>
+
+	Load hyperref.el in `LaTeX-beamer-class-options'
+
+	* style/beamer.el (LaTeX-beamer-class-options): Load "hyperref.el"
+	in order to have `LaTeX-hyperref-package-options-list' defined
+	when the document class is requested and the style hook hasn't run
+	yet.  (bug#35649)
+
+2019-05-12  Arash Esbati  <arash@gnu.org>
+
+	Improve style/mflogo.el
+
+	* style/mflogo.el ("mflogo"): Ask for Text when \textlogo is
+	invoked.  Change \logofamily into a declaration.  Add missing
+	macros \MF and \MP.  Adjust fontification for \textlogo and
+	\logofamily.
+
+2019-05-12  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix last commit
+
+	* tex-buf.el (TeX-command-expand): Redefine the value of `file' just
+	once per call of `TeX-command-expand'.  Previous code could give
+	spurious quote when the given command string contains more than one
+	"%" expanders tied with the symbol `file'.
+
+2019-05-12  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Stop depreciated usage of undeclared dynamic variable
+
+	* tex-buf.el (TeX--master-or-region-file-with-extra-quotes): Redefine
+	as template.  On accepting one of `TeX-master-file', `TeX-region-file'
+	or `TeX-active-master' as its first argument, it becomes a wrapper for
+	those three, like previous definition.
+	(TeX-command-expand): Arrage in accord with the above change.
+	With these two changes, we no longer need implicit dynamic binding of
+	non-special variable `orig-file'.
+	* tex.el (TeX-expand-list-builtin): Update supplementary comment for
+	"%T".
+
+2019-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex-jp.el (AUCTeX-jp): Add keyword :link to info node.
+
+2019-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix treatment of class and package options
+
+	* preview.el.in (preview-auctex-font-size): Consult
+	`LaTeX-provided-{class,package}-options' instead of
+	`(TeX-style-list)'.  This function has been accidentally disabled
+	since AUCTeX began not to include the class and package options into
+	the styles.  Similar problem with bug#25563.
+	* latex.el (LaTeX-match-class-option): Update doc string because the
+	above change depends on its implicit behavior.
+
+2019-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove obsolete codes
+
+	* preview.el.in (preview-mouse-open-eps): Remove xemacs compatibility
+	code.
+	Don't use obsolete variable `default-major-mode'.
+
+2019-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for xemacs
+
+	* prv-emacs.el (preview-compatibility-macros): Remove.
+	* preview.el.in (eval-when-compile,makunbound): Remove useless
+	codes.
+
+2019-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for xemacs
+
+	* prv-emacs.el (preview-mark-active): Remove.
+	(): Update Copyright year.
+	* preview.el.in (LaTeX-preview-setup): Remove the above macro.
+	(): Update Copyright year.
+
+2019-05-08  Mohammad Hossein Bateni  <bateni@google.com>
+
+	Allow the user to customize which TeX commands are available in each mode.
+
+	Commands such as Biber, DVI2PS, PS2PDF, Index, etc. are not useful in
+	ConTeXt.  ConTeXt generates a PDF directly and has its own indexing
+	mechanism.
+
+	In Mark IV (which has been the preferred version for over a decade and
+	is actively developed), a new bibliography package is also available,
+	which can process old bibtex files as well.  So there is no need for
+	BibTeX.
+
+	Having so many commands in context-mode clutters the menus.  In the
+	definition of TeX-command-list, we either provide a list of relevant
+	modes, or set the value to `t' indicating that this command should
+	always be available.  In the latter case, the user cannot customize
+	it.  Here we provide sensible defaults as well as the ability for the
+	user to customize.
+
+	* tex.el (TeX-command-list): Hide by default some commands from context-mode.
+
+2019-04-23  Arash Esbati  <arash@gnu.org>
+
+	Add new function `LaTeX-extract-key-value-label'
+
+	* latex.el (LaTeX-extract-key-value-label): Add new utility
+	function to return a regexp string to extract label value in an
+	optional key=val argument.
+
+	* style/breqn.el (LaTeX-breqn-key-val-label-regexp):
+	* style/listings.el (LaTeX-listings-key-val-label-regexp)
+	(LaTeX-listings-auto-cleanup): Use
+	`LaTeX-extract-key-value-label'.
+	Delete now unused variable `LaTeX-listings-key-val-label-extract'.
+
+2019-04-20  Arash Esbati  <arash@gnu.org>
+
+	Add support for ChangeLog entries for LaTeX files
+
+	* tex.el (TeX-current-defun-name): New function returning the name
+	of current sectioning command when `C-x 4 a' is invoked.
+
+	* latex.el (LaTeX-common-initialization): Set a local version
+	`add-log-current-defun-function' to `TeX-current-defun-name'.
+
+2019-04-19  Arash Esbati  <arash@gnu.org>
+
+	* style/xparse.el ("xparse"): Fix fontification of alternatives.
+
+2019-04-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Reset `TeX-PDF-from-DVI' if xetex engine is in use
+
+	* tex.el (TeX-engine-set): Reset `TeX-PDF-from-DVI' when the new
+	engine is `xetex'.  Fix bug#34593.
+
+2019-04-13  Arash Esbati  <arash@gnu.org>
+
+	Update keywords to biblatex v3.12
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Update
+	biblatex keywords.  For qualified lists, fontify at least 2
+	mandatory arguments.
+
+2019-04-11  Arash Esbati  <arash@gnu.org>
+
+	* tex-info.el (TeX-texinfo-mode): Set `add-log-current-defun-function' locally.
+
+2019-04-06  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Elaborate LaTeX math insertion command
+
+	* latex.el (LaTeX-math-insert): Put the point after the closing dollar
+	sign when appropriate.  This fixes bug#35128.
+	In addtion, wrap the text in the active region suitably.
+
+2019-04-05  Arash Esbati  <arash@gnu.org>
+
+	Fix handling of function entries in `TeX-complete-list'
+
+	* tex.el (TeX-complete-symbol): Check if the fourth argument of
+	entry in `TeX-complete-list' is a list and eval it.  (Bug#35074)
+
+2019-03-16  Arash Esbati  <arash@gnu.org>
+
+	Improve fontification of \href macro
+
+	* style/hyperref.el ("hyperref"): Add "href" to
+	`LaTeX-verbatim-macros-with-braces-local'.
+	Check for feature font-latex and not for functions.
+	Declare and use `font-latex-update-font-lock' instead of
+	`font-latex-set-syntactic-keywords'.
+
+2019-03-09  Tassilo Horn  <tsdh@gnu.org>
+
+	Support up to 12 command arguments.
+
+	* font-latex.el (font-latex-keyword-matcher): Support up to 12 command
+	  arguments.
+
+2019-03-04  Arash Esbati  <arash@gnu.org>
+
+	Fix fontification of simple macros
+
+	* font-latex.el (font-latex-match-simple-command): Change second
+	part of regexp in order to be less greedy.  This function now
+	fontifies only letters and characters defined in
+	`font-latex-match-simple-include-list' (bug#34712).
+	(font-latex-match-simple-include-list): New variable.
+
+	* style/expl3.el ("expl3"): Add "_" and ":" to
+	`font-latex-match-simple-include-list'.
+
+2019-02-24  Tassilo Horn  <tsdh@gnu.org>
+
+	New styles for beamerarticle & beamerswitch triggering beamer
+
+	* style/beamerarticle.el: New style.
+	* style/beamerswitch.el: New style.
+	* Makefile.in (STYLESRC): Enable them.
+
+2019-02-11  Arash Esbati  <arash@gnu.org>
+
+	* style/listings.el: Require tex.el.
+
+2019-02-08  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* auctex.el: Add requireds, keywords, and trailer
+
+	(cherry picked from commit 0c8d6703d16097eb64f014c56e4135a5a1f9600f)
+
+2019-02-08  Arash Esbati  <arash@gnu.org>
+
+	Delete auctex-pkg.el which is not needed for ELPA releases
+
+2019-02-08  Arash Esbati  <arash@gnu.org>
+
+	Add dependencies file auctex-pkg.el
+
+	* auctex-pkg.el: Add new file containing AUCTeX's dependencies for
+	ELPA releases.
+
+2019-02-02  Arash Esbati  <arash@gnu.org>
+
+	Improve indenting and filling in "Form" environments
+
+	* style/hyperref.el ("hyperref"): Add the "Form" environment to
+	`LaTeX-document-regexp'.
+
+2019-01-12  Arash Esbati  <arash@gnu.org>
+
+	Add support for w and W column specifiers
+
+	* style/array.el ("array"): Add column specifiers w and W to
+	`LaTeX-array-column-letters'.
+
+	* doc/changes.texi: Mention that counting columns is supported
+	only if the align parameter is enclosed in braces.
+
+2019-01-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove combatibility code for older emasen
+
+	* tex.el (put): Don't put unnecessary property on
+	`TeX-source-correlate-mode'.
+	(TeX-clean): Remove fallback code for emacs 21.
+
+2019-01-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* font-latex.el (put):
+	* tex-style.el (put):
+	Use `booleanp' instead of `TeX-booleanp'.
+	* tex.el (put): Use `booleanp' instead of `TeX-booleanp'.
+	(TeX-booleanp): Remove.
+
+2019-01-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* context.el (ConTeXt-mode-common-initialization):
+	* latex.el (TeX-latex-mode):
+	* plain-tex.el (TeX-plain-tex-mode, ams-tex-mode):
+	* tex-info.el (TeX-texinfo-mode):
+	Use `run-mode-hooks' instead of `TeX-run-mode-hooks'.
+	* tex.el (TeX-run-mode-hooks): Remove.
+
+2019-01-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix test conditions on w32
+
+	* tests/tex/command-expansion.el (TeX-command-detokenize): Correct
+	`system-type' for w32.
+	(TeX-command-expand-skip-file-name, TeX-command-expand-active-master):
+	Skip tests on w32.
+
+2019-01-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Override some bindings in `TeX-mode-map' in Texinfo mode
+
+	* tex-info.el (Texinfo-mode-map): Bind `self-insert-command' to
+	"$", "^", "_" and "\" because they are normal characters in Texinfo
+	documents.
+	Bind `TeX-insert-backslash' to "@" so that users benefit from
+	`TeX-electric-macro' even in Texinfo mode.
+	* tex.el (TeX-electric-escape): Update doc string.
+	* doc/auctex.texi (Completion): Update description.
+	* doc/changes.texi (News in 12.2): Mention the above changes.
+
+2019-01-06  Arash Esbati  <arash@gnu.org>
+
+	Update style/enumitem.el to package version 3.6
+
+	* style/enumitem.el (LaTeX-enumitem-key-val-options): Update
+	key=val options to v3.6.
+	(LaTeX-enumitem-auto-cleanup): Use sharp-quote notation.
+	("enumitem"): Query for trivlist environment depending of package
+	option.
+	Add macro \Drawenumitemlabel and length \labelitem.
+	(LaTeX-enumitem-package-options): Update package options.
+
+2019-01-02  Arash Esbati  <arash@gnu.org>
+
+	Skip macros and environments from pythontex
+
+	* tex-ispell.el (TeX-ispell-skip-cmds-list): Add document macros
+	of pythontex package.
+	(TeX-ispell-skip-envs-list): Add environments provided by
+	pythontex package.
+	Add general verbatim macros.
+
+2018-12-15  Arash Esbati  <arash@gnu.org>
+
+	Improve completion for \url between url.el and hyperref.el
+
+	* style/hyperref.el ("hyperref"): Comment the entry for "url"
+	since the completion is provided via url.el.
+
+	* style/url.el ("url"): Add a conditional to "url" in order to
+	check if hyperref.el is loaded and then supply the argument in
+	braces.
+	Also check for hyperref.el. before adding "url" to
+	`LaTeX-verbatim-macros-with-delims-local'.
+
+2018-12-14  Arash Esbati  <arash@gnu.org>
+
+	Add new style/pythontex.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/pythontex.el: New file.
+
+2018-12-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Drop xemacs support and mule check from configure and Makefile
+
+	* aclocal.m4:
+	* configure.ac:
+	* doc/Makefile.in: Drop xemacs support and mule check.
+	* Makefile.in: Merge mule file into main files.
+	Drop xemacs support.
+	* prv-install.el: Remove.
+
+2018-12-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix document
+
+	* doc/auctex.texi (Completion): Correct wrong description and typo.
+	(Cleaning): Add mention about variables related to AmSTeX mode.
+
+2018-12-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use ASCII apostrophe in code expample
+
+	* doc/auctex.texi (): (I/O Correlation): Use APOSTROPHE(U+0027) rather
+	than RIGHT SINGLE QUOTATION MARK(U+2019) in code example.
+	Add coding tag in Local Variables section.
+
+2018-12-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Redefine support for \url in hyperref
+
+	* style/hyperref.el ("hyperref"): Override the entry for \url macro in
+	url.el because hyperref.sty redefines the macro.
+
+2018-12-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Revise description about CJK support
+
+	* doc/auctex.texi (Internationalization): Revise description about CJK
+	support in Emacs and TeX.
+	(Japanese): Fix typo and add index entries.
+
+2018-12-06  Arash Esbati  <arash@gnu.org>
+
+	Improve handling of `TeX-insert-macro-default-style' in styles
+
+	* latex.el (LaTeX-check-insert-macro-default-style): Add new
+	macro.  This macro is intended for more complex functions in style
+	files querying multiple optional and mandatory arguments and
+	obeying the values of `TeX-insert-macro-default-style' and
+	`current-prefix-arg'.
+
+	* tex.el (TeX-parse-arguments): Add a comment about the new macro.
+
+	* style/bicaption.el (LaTeX-arg-bicaption-bicaption):
+	* style/caption.el (LaTeX-arg-caption-captionbox):
+	* style/color.el (TeX-arg-color, TeX-arg-color-fcolorbox):
+	* style/floatrow.el (LaTeX-floatrow-arg-floatbox):
+	* style/xcolor.el (TeX-arg-xcolor-definecolor)
+	(TeX-arg-xcolor-definecolorset, TeX-arg-xcolor)
+	(TeX-arg-xcolor-fcolorbox): Use
+	`LaTeX-check-insert-macro-default-style'.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* tex.el: Remove XEmacs compatibility definitions for
+	`TeX-read-string', `TeX-active-mark', `TeX-activate-region',
+	`line-beginning-position', `line-end-position' and
+	`TeX-overlay-prioritize'.
+	(TeX-activate-region): Remove compatibility code for older emacsen.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove TeX-maybe-remove-help, TeX-menu-with-help
+
+	* tex.el (TeX-maybe-remove-help, TeX-menu-with-help): Remove.
+	(TeX-mode-specific-command-menu-entries, TeX-fold-menu)
+	(TeX-common-menu-entries):
+	* context.el:
+	* latex.el:
+	* plain-tex.el:
+	* tex-buf.el:
+	* tex-info.el:
+	Remove `TeX-menu-with-help' and fix indent.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove TeX-mark-active
+
+	* tex.el (TeX-mark-active): Remove.
+	(TeX-mode-specific-command-menu-entries):
+	* style/dinbrief.el (LaTeX-dinbrief-insert)
+	(LaTeX-dinbrief-env-recipient):
+	Use the variable `mark-active' directly instead of the function
+	`TeX-mark-active'.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove TeX-replace-regexp-in-string
+
+	* tex.el (TeX-replace-regexp-in-string): Remove.
+	* latex.el:
+	* style/empheq.el:
+	* style/floatrow.el:
+	* style/tcolorbox.el:
+	* style/xcolor.el:
+	Use `replace-regexp-in-string' instead of
+	`TeX-replace-regexp-in-string'.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use `write-file-functions'
+
+	* tex.el (VirTeX-common-initialization):
+	* latex.el (BibTeX-auto-store):
+	Use `write-file-functions' instead of obsolete
+	`local-write-file-hooks' and `write-file-hooks'.  Also, use local hook.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility face
+
+	* tex-buf.el (TeX-error-description-error)
+	(TeX-error-description-warning, TeX-error-description-tex-said):
+	Remove compatibility alternatives in `defface'.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove XEmacs compatibility code in tex-bar.el
+
+	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Remove
+	Emacs/XEmacs choice of buttons.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* tex-buf.el (TeX-special-mode): Use `define-derived-mode'.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* font-latex.el (font-latex-after-hacking-local-variables): Remove
+	fallback code for case `file-local-variables-alist' isn't available.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* font-latex.el (font-latex-doctex-^^A): Remove fallback for case
+	`string-to-syntax' isn't available.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	* latex.el (LaTeX-fill-region-as-para-do): Drop fallback for case
+	`fill-delete-prefix' isn't available.
+
+2018-12-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adjust autoload cookie
+
+	* tex-fold.el (TeX-fold-mode): Set autoload cookie directly to
+	`define-minor-mode'.
+
+2018-12-02  Arash Esbati  <arash@gnu.org>
+
+	Remove unnecessary parentheses
+
+	* style/geometry.el ("geometry"):
+	* style/graphicx.el ("graphicx"): Remove unnecessary parentheses
+	in option management.
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility codes for older emacsen
+
+	* tex-info.el (when, TeX-texinfo-mode):
+	* tex.el (TeX-documentation-texdoc):
+	* plain-tex.el (TeX-plain-tex-mode):
+	* preview.el.in (preview-counter-find):
+	Remove compatibility codes for older emacsen.
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use `declare-function' without `fboundp' test
+
+	* latex.el:
+	* tex-info.el:
+	Use `declare-function' without `fboundp' test.
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove references to older emacsens in comments and doc strings
+
+	* bib-cite.el:
+	* font-latex.el:
+	* tex-fold.el:
+	* tex-style.el:
+	* style/graphicx.el
+	Remove references on older emacsens in comments and doc strings
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove references to XEmacs from the manual
+
+	* RELEASE (): Delete the words "or XEmacs" and fill the paragraph.
+	* doc/install.texi (Configure): Delete redundant line and words.
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Clean up remnants of previous removal of compatibility codes
+
+	* tex.el (TeX-mode-specific-command-menu): Delete irrelevant comment.
+	* latex.el (LaTeX-indent-line): Clear out unused lines.
+
+2018-11-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add suggestions for non-privileged installation
+
+	* doc/install.texi (Configure): Reorganize a paragraph and add @ref's.
+	(Installation for non-privileged users): Add paragraphs to suggest to
+	supply options "--with-lispdir" and "--with-texmf-dir" etc. to
+	configure when installing AUCTeX under the user's home directory.
+
+2018-11-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Defer running style hook until options are given actually
+
+	* latex.el (LaTeX-arg-usepackage-read-packages-with-options): Don't
+	run the style hooks before reading package options, just load the
+	style files for completion of package options.
+	(LaTeX-arg-usepackage): Run style hooks actually after the package
+	options are given.
+	(TeX-arg-document): Don't run the style hooks before reading class
+	options, just load the style file for completion of class options.
+	The style hooks are run afterward by `TeX-update-style' anyway.
+	* style/exam.el ("exam"): Prepare `LaTeX-exam-class-options' to have
+	its full values outside the style hook along with the above idea.
+	* style/mathtools.el ("mathtools"):
+	* style/empheq.el ("empheq"):
+	* style/graphics.el ("graphics"): Set `LaTeX-*****-package-options'
+	outside the style hook along with the above idea.
+
+2018-11-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix not to run wrong style hooks
+
+	* tex.el (TeX-style-hook-dialect-weight-alist): Add entry for
+	pseudo-dialect `:classopt'.
+	(TeX-style-hook-dialect): Add description for `:classopt' in doc
+	string.
+	* latex.el (LaTeX-common-initialization): Assign style hooks for
+	class options into pseudo-dialect `:classopt'.
+	Don't set `TeX-PDF-from-DVI' in XeLaTeX document.
+	(TeX-latex-mode): Run style hooks for class options in
+	`TeX-update-style-hook', without altering `TeX-active-list'.
+	* style/geometry.el ("geometry"):
+	* style/graphicx.el ("graphicx"): Don't set `TeX-PDF-from-DVI' in
+	XeLaTeX document.
+	* style/hyperref.el ("hyperref"): Set `TeX-PDF-from-DVI' to "Dvipdfmx"
+	when package option "dvipdfmx" is given for non-XeLaTeX document.
+	* tests/latex/latex-test.el (LaTeX-style-hook-with-class-option):
+	Refine tests.
+	* doc/auctex.texi (Simple Style): Add descriptions for available
+	dialects including `:classopt'.
+
+2018-11-24  Arash Esbati  <arash@gnu.org>
+
+	Add new style/dashundergaps.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/dashundergaps.el: New file.
+
+2018-11-16  Arash Esbati  <arash@gnu.org>
+
+	Improve behavior of `TeX-arg-beamer-overlay-spec'
+
+	* style/beamer.el (TeX-arg-beamer-overlay-spec): Use
+	`TeX-argument-insert' in the body of the function and respect the
+	OPTIONAL argument.
+	("beamer"): Enclose all occurrences of
+	`TeX-arg-beamer-overlay-spec' in brackets in order to mark them as
+	optional.
+
+2018-11-16  Arash Esbati  <arash@gnu.org>
+
+	style/enumitem.el ("enumitem"): Use `TeX-argument-prompt' for query.
+
+2018-11-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Surround both \langle and \rangle with math delimiter
+
+	* latex.el (LaTeX-math-insert): Typing "C-u ` (" used to result in
+	"$\langle$\rangle" when `LaTeX-math-mode' and
+	`LaTeX-electric-left-right-brace' are enabled.  Fix this to insert
+	"$\langle\rangle$" instead.
+
+2018-11-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Set `TeX-command-buffer' always (bug#33377)
+
+	* tex-buf.el (TeX-command): Make sure to set `TeX-command-buffer'
+	always.
+
+2018-11-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adjust preview-latex in case sub file isn't in master directory
+
+	* preview.el.in (preview-dvips-abort):
+	(preview-gs-dvips-sentinel):
+	(preview-dvipng-place-all): Make sure directory part of dvi file to be
+	deleted is removed because deletion takes place in master directory.
+	(preview-start-pdf2dsc): Make sure directory part of pdf file is
+	removed so that path for later use is constructed correctly.
+	(preview-cache-preamble):
+	(preview-region):
+	(preview-document): Retain directory part of the file name to be
+	passed to `preview-generate-preview' because `TeX-run-command' in
+	`TeX-inline-preview-internal' doesn't recognize the right path
+	otherwise.
+	(preview-generate-preview): Adjust in accord with the above change.
+
+2018-11-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't block emacs during viewing document
+
+	* tex.el (TeX-documentation-texdoc): Use asynchronous proces not to
+	block emacs during viewing document.
+	Supply "%s" to `message' argument in case the shell output contains
+	accidental %-sequence.
+
+2018-11-02  Arash Esbati  <arash@gnu.org>
+
+	* style/fancyvrb.el (LaTeX-fancyvrb-key-val-options): Add vspace key.
+
+2018-10-31  Arash Esbati  <arash@gnu.org>
+
+	Improve style/fancyvrb.el
+
+	* style/fancyvrb.el (LaTeX-fancyvrb-arg-define-macro): Refactor
+	code. Cater for starred version of user defined macros.  Add
+	missing `,' in backquote constructs.
+	(LaTeX-fancyvrb-arg-define-environment): Refactor code.
+	("fancyvrb"): Add \Verb* macro incl. fontification.
+
+2018-10-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Deal with space in path of MikTeX gs executable (Bug#32251)
+
+	* preview.el.in (preview-gs-command): Wrap gs with
+	`shell-quote-argument' in case it has space in its path.
+
+2018-10-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Change regexp for clarity
+
+	* preview.el.in (preview--decode-^^ab): Change regexp "[\x00-\xFF]+" to
+	"[^[:multibyte:]]+" for clarity that it matches raw 8-bit bytes.
+
+2018-10-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make style hooks associated with class options valid again
+
+	* latex.el (TeX-latex-mode): Add a function on `TeX-update-style-hook'
+	to run style hooks associated with class options.
+	(LaTeX-common-initialization): Set `TeX-PDF-from-DVI' to suitable
+	value when a class option "dvips" or "dvipdfmx" is given.
+	* style/geometry.el ("geometry"):
+	* style/graphicx.el ("graphicx"): Set `TeX-PDF-from-DVI' to "Dvipdfmx"
+	when a package option "dvipdfmx" is given.
+	* tests/latex/latex-test.el (LaTeX-style-hook-with-class-option): New
+	test.
+
+2018-10-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Deal with partial ^^-quoting in preview-latex
+
+	If latex outputs a multibyte character as a mixture of raw 8-bit byte
+	and byte with ^^-quoting, we have to decode them as a whole.
+
+	* preview.el.in (preview--decode-^^ab): Include raw 8-bit bytes which
+	already exist in the string as well when decoding with the given
+	coding system.
+	* tests/latex/preview-latex-test.el: New test.
+
+2018-10-20  Arash Esbati  <arash@gnu.org>
+
+	Extract caption for RefTeX's label context
+
+	* style/listings.el (LaTeX-listings-reftex-label-context-function):
+	New function.  Extract the caption in the optional argrument of
+	the lstlisting environment and return it as a string for the
+	context of a label.
+
+2018-09-07  Arash Esbati  <arash@gnu.org>
+
+	Update style/lettrine.el to package version 2.21
+
+	* style/lettrine.el (LaTeX-lettrine-key-val-options): Delete
+	"Vone" option.
+	("lettrine"): Delete \LettrineVonefalse macro.
+
+2018-08-25  Arash Esbati  <arash@gnu.org>
+
+	Update style/lettrine.el to package version 2.1
+
+	* style/lettrine.el (LaTeX-lettrine-key-val-options): Add new keys
+	"Vone" and "refstring".
+	("lettrine"): Add new macros, minor rearrangements.
+
+2018-08-09  Arash Esbati  <arash@gnu.org>
+
+	Update style/lettrine.el to package version 2.01
+
+	* style/lettrine.el (LaTeX-lettrine-key-val-options): Update
+	key=val options.
+	("lettrine"): Use correct functions on counters and
+	lengths/dimensions provided by lettrine.sty.
+	Add support for missing macros.
+
+2018-08-09  Arash Esbati  <arash@gnu.org>
+
+	Add new style/ocg-p.el and style/ocgx.el
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/ocg-p.el:
+	* style/ocgx.el: New files.
+
+2018-07-17  Arash Esbati  <arash@gnu.org>
+
+	Add \eqref to RefTeX's reference styles
+
+	* style/amsmath.el ("amsmath"): Add \eqref to
+	`reftex-ref-style-alist' when RefTeX is loaded and activate the
+	reference style.
+
+2018-07-12  Arash Esbati  <arash@gnu.org>
+
+	Add new style/thmtools.el and style/thm-restate.el
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/thmtools.el:
+	* style/thm-restate.el: New files.
+
+2018-07-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix regression of `TeX-view'
+
+	* tex-buf.el (TeX-active-master): Add dummy argument for
+	compatibility.  In `TeX-view', `TeX-commmand' is called with
+	`TeX-active-master', so the `file' argument is `TeX-active-master'
+	in subsequent call of `TeX-command-expand'.  In that case,
+	`TeX--master-or-region-file-with-extra-quotes' calls
+	`TeX-active-master' with three arguments.
+	(TeX--master-or-region-file-with-extra-quotes): Adapt doc string.
+	* tex.el (TeX-expand-list-builtin): Adapt comment.
+	* tests/tex/command-expansion.el (TeX-command-expand-active-master):
+	New test.
+
+2018-07-07  Arash Esbati  <arash@gnu.org>
+
+	Add new style/marginnote.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/marginnote.el: New file.
+
+2018-07-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix possible endless loop
+
+	* tex.el (TeX-expand-list-builtin): Use symbol `file' for the entry
+	"%T" so that special treatment for `file' about advancing matching
+	position in `TeX-command-expand' takes effect.
+	* tests/tex/command-expansion.el (TeX-command-expand-skip-file-name):
+	New test.
+
+2018-06-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adjust test for known emacs bug
+
+	* tests/latex/latex-test.el (LaTeX-includegraphics-extensions): Mark
+	emacs 26.1 as expected failure.
+
+2018-06-04  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make preamble caching robust to LuaLaTeX and (u)pLaTeX
+
+	* preview.el.in (preview-cache-preamble): Modify .ini code so that
+	LaTeX variants even without \pdfoutput can read unusual file names
+	(with space or non-ascii character, or both) when preamble cache is
+	enabled.  The modified .ini code is kindly provided by jfbu
+	<jfbu@free.fr>.
+	(preview-dump-replacements, preview-undump-replacements): Add
+	-file-line-error option to the undump- variable so that AUCTeX can
+	analyse the output from lualatex even with file name with space.
+	It turned out that -kanji option is needed for platex even when
+	dumping format file if the preamble contains Japanese characters.
+	Thus modify the both variables so that -kanji option, if any, is
+	retained.
+	(TeX-inline-preview-internal): Revert the additional post process of
+	the command line string introduced last year by me because it is no
+	longer necessary by the above change on
+	`preview-undump-replacements'.  Though this change disables -jobname
+	option again when lualatex is used with preamble cache, it would be
+	fine because that concerns only very old lualatex binaries and that
+	had always been the state before my commit just a year ago.
+	The above three modifications fix bug#31685 and bug#31686.
+	* tests/japanese/preview-latex.el
+	(japanese-preview-preserve-kanji-option2): Arrange with the above
+	change.
+	(japanese-preview-preserve-kanji-option3): New test.
+	(japanese-preview-error-quote-shift-jis): Remove spurious backslash.
+	* doc/preview-latex.texi (Key bindings and user-level lisp functions):
+	Add description about restriction of preamble cache on LaTeX variants.
+
+2018-06-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Raise robustness of call of dvipng command
+
+	* preview.el.in (preview-dvipng-command): Remove spurious quotes which
+	cause error for file names with space.  (bug#31684)
+	(preview-dvipng-color-string): Replace single quotes with double
+	quotes for w32 users.
+	* doc/preview-latex.texi: (The preview images): Add warning that
+	(u)pLaTeX is not compatible with dvipng.
+
+2018-05-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add note and test about the change involving non-ascii file name
+
+	* doc/changes.texi (News in 12.2): Add note that support for standard
+	LaTeX without e-TeX extension is now very limited.
+	* tests/tex/command-expansion.el (TeX-command-detokenize): New test to
+	check whether \input and \detokenize are supplied when necessary.
+
+2018-05-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	TL 2018 non-ascii file name fix for preview-latex
+
+	* preview.el.in (preview-LaTeX-command): Wrap file name after implicit
+	\input in \detokenize{}.
+	(preview-cache-preamble): Arrange the ini file code so that non-ascii
+	file name can be used with generated format file.  Be careful not to
+	lose capability of handling file name with space.
+	(preview-undump-replacements): Use new TeX macro defined in the above
+	ini file code to accept even unusual file name with non-ascii
+	character or space.
+	Delegate quoting of format name to `TeX-inline-preview-internal' so
+	that non-ascii character will not be quoted twice.
+	(TeX-inline-preview-internal): Adjust to the above change.
+
+2018-05-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Accept non-ascii file name in accord with change in TL 2018
+
+	* tex.el (TeX-expand-list-builtin): Add new entry %T.  Same as %t,
+	except to enclose with \detokenize{} for non UTF-8 LaTeX when \input
+	is supplmented.
+	Adjust the entries %` and %' so that \input is supplemented only when
+	any TeX code is present between them and leave the bind to
+	`TeX-command-text' for later examination.
+	The bind to `TeX-command-pos' is no longer retained.
+	(TeX-command-list): Use %T for "LaTeX".
+	Adjust "TeX" and "AmSTeX" as the same with "LaTeX" in the aspect that
+	user can supply one's own TeX code, as well as any command line
+	options, through `TeX-command-extra-options'.
+	* tex-buf.el (TeX--master-or-region-file-with-extra-quotes): New
+	function to act as a wrapper of `TeX-master-file' and
+	`TeX-region-file' inside `TeX-command-expand'.
+	(TeX-command-expand): Use the above function as the value of `file'
+	and get rid of tricky temporal overriding of `file' with lambda form.
+	(TeX-region-create): Make the first line parsing of %&FORMAT
+	construct, if any, to be valid even for region compilation.
+	Discard text properties when constructing the content of _region_.tex.
+	Drop bind check for `buffer-file-coding-system'.
+	* tests/tex/command-expansion.el (TeX-command-expansion): Reflect the
+	change that \input is not necessarily supplemented now by %`-%' pair
+	in `TeX-command-expand'.
+
+2018-05-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix region compilation with \usepackage[utf8]{inputenc}
+
+	* tex-buf.el (TeX-quote-filename): Wrap non-ascii characters in
+	\unexpanded{} for non UTF-8 LaTeX so that raw file name is recovered.
+
+2018-05-27  Arash Esbati  <arash@gnu.org>
+
+	Quote %b expansion string for Zathura
+
+	* tex.el (TeX-view-program-list-builtin): Guard %b expansion
+	string for Zathura with quotes for file names with spaces
+	(bug#31451).
+
+2018-05-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Prepare for UTF-8 with BOM
+
+	* tex-buf.el (TeX-adjust-process-coding-system): Don't use
+	`utf-8-with-signature' to encode keyboard input for TeX process.
+	Drop mule feature check.
+
+2018-05-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Drop compatibility code for older emacsen in preview-latex
+
+	We no longer need messy treatment with regard to coding system in
+	preview-latex since xemacs isn't supported anymore.
+
+	* preview.el.in (preview-coding-system): Remove.
+	(preview-error-quote): Simplify.  Discard RUN-CODING-SYSTEM argument.
+	(preview--decode-^^ab): Drop mule feature check.
+	(preview--convert-^^ab): Drop compatibility code for older emacsen.
+	(preview-parse-messages): Remove `run-coding-system' argument from
+	calls to `preview-error-quote'.
+	(TeX-inline-preview-internal): Drop codes related to coding system.
+	* prv-emacs.el (preview-buffer-recode-system): Remove.
+	* tests/japanese/preview-latex.el
+	(japanese-preview-error-quote-shift-jis): Remove `shift_jis' argument
+	from call to `preview-error-quote'.
+	Remove unnecessary let bind on `TeX-japanese-process-output-coding-system'.
+	(japanese-preview-process-coding-system): Remove.
+	(japanese-preview-shift-jis):
+	(japanese-preview-different-coding-system): Use `copy-sequence' on
+	`process-environment' in order to guard it from temporal `setenv'.
+
+2018-05-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Support UTF-8 with BOM in Japanese TeX documents
+
+	* tex-jp.el (japanese-TeX-coding-ejsu): Consider the case the document
+	is encoded in UTF-8 with BOM, which begins to be supported in TeXLive
+	2018.
+
+2018-05-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Replace another cl function with cl-lib
+
+	* style/pstricks.el (eval-when-compile): Require cl-lib.
+	(LaTeX-pst-cleanup): Replace `caddr' with `cl-caddr'.
+
+2018-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update URLs further
+
+	* COPYING:
+	* Makefile.in:
+	* RELEASE:
+	* bib-cite.el:
+	* build-aux/gitlog-to-auctexlog:
+	* latex/README:
+	* latex/preview.dtx:
+	* preview.el.in:
+	* style/foils.el:
+	* style/hyperref.el:
+	* style/ifluatex.el:
+	* style/luatextra.el:
+	* style/mathtools.el:
+	* style/pstricks.el:
+	* tests/Makefile:
+	* tex-buf.el:
+	* tex.el: Update URLs.  Use https: rather than http: or ftp: where
+	possible.
+	* build-aux/gitlog-to-changelog: Update URLs.
+	Use `before-save-hook' instead of obsolete `write-file-hooks' in
+	Local Variables section.
+
+2018-05-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update URLs
+
+	* tex-site.el.in:
+	* doc/auctex.texi:
+	* doc/fdl.texi:
+	* doc/install.texi:
+	* doc/intro.texi:
+	* doc/preview-readme.texi:
+	* doc/wininstall.texi: Update URLs.  Use https: rather than http: or
+	ftp: where possible.
+	* auctex.spec: Update URLs.  Use https: rather than http: or
+	ftp: where possible.
+	Remove xemacs support.
+	Update required emacs version.
+
+2018-05-06  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adjust coding system for Japanese pTeX engine on w32
+
+	Default coding system of Japanese pTeX engine in w32 TeXLive changed
+	from SHIFT JIS to UTF-8 in 2018.  Make tex-jp.el to work with both
+	TeXLive 2017 and 2018 on w32 platform, with higher priority on newer
+	engine with regard to the behavior in non default case.
+
+	* tex-jp.el (japanese-TeX-use-kanji-opt-flag): Set default value to t
+	even on w32 platform.
+	(japanese-TeX-set-process-coding-system): Change coding system for non
+	default case from `shift_jis' to `utf-8' on w32 platform.
+	(TeX-expand-list-builtin): Remove mule feature check.
+
+2018-05-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove obsolete option related to Japanese TeX
+
+	* tex-jp.el (japanese-TeX-command-list): Remove.  Ataka-san and I
+	(Ikumi) discussed this topic and decided to delete this option.
+	* doc/auctex.texi (Japanese): Mention the above change.
+
+2018-05-04  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix previous removal of xemacs compatibility code
+
+	* toolbar-x.el (toolbarx-default-toolbar-meaning-alist): Remove
+	spurious quote formerly inside "," construct.
+	Replace "`" with "'".
+
+2018-04-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Prevent spurious newlines to be added
+
+	* tex-fold.el (TeX-fold-overfull-p): Restore mandatory `and'.  The
+	removal of xemacs compatibility code previously done was a bit too
+	aggressive.
+
+2018-04-16  Arash Esbati  <arash@gnu.org>
+
+	Update key=val options to geometry package v5.8
+
+	* style/geometry.el (LaTeX-geometry-preamble-key-val-options): Add
+	new keys luatex, dvipdfmx and xdvipdfmx.  Delete duplicate
+	entries.
+
+2018-04-12  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Correct how `TeX-record-buffer' is used
+
+	* tex-buf.el (TeX-pop-to-buffer): Use `TeX-record-buffer' in accord with
+	the documents.
+	* doc/changes.texi: Mention the change and warn users who have
+	customized the option.
+
+2018-04-12  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Correct record in changes.texi
+
+	* doc/changes.texi (): Make a new section for release 12.2 and move
+	mention about change made after release 12.1 there.
+
+2018-04-07  Arash Esbati  <arash@gnu.org>
+
+	Quote %b expansion string for SumatraPDF
+
+	* tex.el (TeX-view-program-list-builtin): Guard %b expansion
+	string for SumatraPDF with quotes for file names with spaces
+	(bug#30999).
+
+2018-04-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add support for dvipdfmx to \includegraphics
+
+	* style/graphicx.el (LaTeX-includegraphics-extensions-list): Add
+	support for dvipdfmx.
+	* tests/latex/latex-test.el (LaTeX-includegraphics-extensions): New
+	test to check whether correct extensions are generated.
+
+2018-04-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use `TeX-search-files-by-type' to assist input \includegraphics
+
+	* style/graphicx.el (LaTeX-includegraphics-extensions-list): New
+	function.
+	(LaTeX-includegraphics-extensions): Delegate most of its task to the
+	above new function and become its wrapper.
+	(LaTeX-includegraphics-global-files): New variable.
+	(LaTeX-includegraphics-read-file-TeX): Use `TeX-search-files-by-type'
+	rather than `TeX-search-files' and cache global value in the above
+	new variable.
+	Reflect the option `LaTeX-includegraphics-strip-extension-flag'.
+	* tex.el (TeX-search-files-type-alist): Remove `graphics' entry,
+	which is supplied in latex-mode by `LaTeX-search-files-type-alist'.
+	(TeX-normal-mode): Add `LaTeX-includegraphics-global-files' to list of
+	variables to be cleared.
+
+2018-04-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Resolve conflict of argument spec between regexp and literal
+
+	* tex.el (TeX-search-files-kpathsea): Treat EXTENSIONS argument as a
+	list of regexps in accordance with other parts of AUCTeX.
+	(TeX-ispell-document): Treat `TeX-file-extensions' as a list of
+	regexps in accordance with other parts of AUCTeX.
+	(TeX-file-extensions, TeX-Biber-file-extensions):
+	(BibTeX-file-extensions, BibLaTeX-style-extensions):
+	(BibTeX-style-extensions): Change custom type to regexp from string.
+	(TeX-doc-extensions): Turn into list of regexps.
+	* latex.el (LaTeX-split-bibs): Treat `TeX-Biber-file-extensions' as a
+	list of regexps in accordance with other parts of AUCTeX.
+
+2018-03-29  Alex Branham  <branham@utexas.edu>
+
+	Fix TeX-dwim-master
+
+	* tex.el (TeX-dwim-master): `cl-return' is much easier to work with if
+	we're alerady using cl- functions, so convert `dolist' to `cl-loop.'
+
+2018-03-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make `TeX-clean' to work in ams-tex-mode
+
+	* plain-tex.el (AmSTeX-clean-intermediate-suffixes,
+	AmSTeX-clean-output-suffixes): New customize options.
+	(AmS-TeX-mode-hook): Move from tex.el.
+	(AmSTeX-mode-command-menu, AmSTeX-mode-menu): Fix doc strings.
+	(): Update copyright year.
+	* tex.el (TeX-mode-prefix): Add an entry for AmS-TeX.
+	(AmS-TeX-mode-hook): Move to plain-tex.el.
+
+2018-03-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make compatible with emacs 24
+
+	* latex.el (TeX-read-label): Use `format' instead of `format-message'
+	if the latter is not available.
+
+2018-03-29  Jonathan Underwood  <jonathan.underwood@gmail.com>
+
+	Fix incorrect FSF address
+
+	* multi-prompt.el ():
+	* style/comment.el ():
+	* style/latexinfo.el (): Fix incorrect FSF address and whitespaces.
+
+2018-03-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* style/amsmath.el ("amsmath"): Correct \cfrac spec.
+
+2018-03-16  Alex Branham  <branham@utexas.edu>
+
+	* tex.el (TeX-dwim-master): Prefer `cl-return' over `return'.
+
+2018-03-12  Arash Esbati  <arash@gnu.org>
+
+	* font-latex.el (font-latex--get-script-props): Use `cl-case' instead of `case'.
+
+2018-03-04  Arash Esbati  <arash@gnu.org>
+
+	Add new function `TeX-arg-verb-delim-or-brace'
+
+	* latex.el (TeX-arg-verb-delim-or-brace): New function for \verb
+	like macros which take their argument either in delimiters or in
+	braces.
+
+	* doc/auctex.texi (Adding Macros): Document
+	`TeX-arg-verb-delim-or-brace'.
+
+	* style/listings.el ("listings"): Use
+	`TeX-arg-verb-delim-or-brace' for \lstinline which also takes an
+	optional argument.
+
+	* style/minted.el (LaTeX-minted-auto-cleanup, "minted"): Use
+	`TeX-arg-verb-delim-or-brace' for \mintinline and new macros
+	defined with \newmintinline.
+
+	* style/url.el ("url"): Use `TeX-arg-verb-delim-or-brace' for \url
+	and \path.
+	Remove "{" from fontification or \url and \path.
+
+2018-03-01  Alex Branham  <branham@utexas.edu>
+
+	Remove cl from AUCTeX
+
+	* tex.el: replace last 'cl with 'cl-lib
+	* latex.el: replace cl function with cl-lib function
+
+2018-03-01  Alex Branham  <branham@utexas.edu>
+
+	Refine how we setup flymake backend function
+
+	* latex.el: Add LaTeX-flymake to TeX-latex-mode
+	* latex-flymake.el: Don't add to LaTeX-mode-hook
+
+2018-02-21  Alex Branham  <branham@utexas.edu>
+
+	Improve flymake documentation
+
+	* doc/changes.texi:
+	* doc/auctex.texi (Checking): Add Flymake support to manual.
+
+	* latex-flymake.el: Add copyright notice and fix a quote.
+
+2018-02-20  Arash Esbati  <arash@gnu.org>
+
+	* Makefile.in (AUCSRC): Add new file latex-flymake.el.
+
+2018-02-18  Arash Esbati  <arash@gnu.org>
+
+	* style/babel.el (LaTeX-babel-active-languages): Use `cl-pushnew'.
+
+2018-02-17  Mosè Giordano  <mose@gnu.org>
+
+	Replace cl with cl-lib in other files
+
+	* latex.el (LaTeX-hanging-ampersand-position):
+	* tex-fold.el (require):
+	(TeX-fold-region-macro-or-env):
+	(TeX-fold-update-at-point):
+	* tex-info.el (require):
+	(Texinfo-make-node-list):
+	* toolbar-x.el (require):
+	(toolbarx-good-option-list-p): Replace cl with cl-lib and corresponding macros.
+
+2018-02-17  Mosè Giordano  <mose@gnu.org>
+
+	Explicitly require Emacs 24
+
+	* tex.el: Error when Emacs < 24 is used.
+
+2018-02-17  Alex Branham  <branham@utexas.edu>
+
+	Support flymake in Emacs 26+ using chktex
+
+	* latex-flymake.el: New file.
+	* latex.el (require): Require `latex-flymake' in Emacs >= 26.
+
+2018-02-17  Alex Branham  <branham@utexas.edu>
+
+	Replace cl with cl-lib
+
+	* bib-cite.el (require):
+	(psg-list-env):
+	* font-latex.el (require):
+	* latex.el (require):
+	* style/babel.el (require):
+	* style/caption.el (require):
+	(LaTeX-caption-update-key-val-options):
+	* style/empheq.el (require):
+	(LaTeX-empheq-update-key-val-options):
+	* style/enumitem.el (require):
+	(LaTeX-enumitem-update-key-val-options):
+	("enumitem"):
+	* style/floatrow.el (require):
+	(LaTeX-floatrow-update-key-val-options):
+	* style/fvextra.el (require):
+	(LaTeX-fvextra-update-key-val):
+	* style/listings.el (require):
+	(LaTeX-listings-update-style-key):
+	* style/mdframed.el (require):
+	(LaTeX-mdframed-update-style-key):
+	* style/tcolorbox.el (require):
+	(LaTeX-tcolorbox-update-style-key): Replace cl with cl-lib.
+
+2018-01-25  Alex Branham  <branham@utexas.edu>
+
+	Remove some obsolete functions
+
+	* font-latex.el (font-latex-syntactic-face-function):
+	* preview.el.in (preview-gs-restart):
+	* tex-buf.el (TeX-run-background):
+	(TeX-run-silent):
+	* tex.el:
+	(TeX-source-correlate-handle-TeX-region):
+	(TeX-insert-macro):
+	(TeX-doc):
+	* texmathp.el (texmathp): Now that AuCTeX requires GNU Emacs 24.1 or greater, we
+	can remove some functions that are obsolete in Emacs < 24.1
+
+2018-01-12  Mosè Giordano  <mose@gnu.org>
+
+	Do not actually write bug report instructions
+
+	* tex.el (TeX-submit-bug-report): Use `propertize' to show instructions without
+	  writing them in the message.
+
+2017-12-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make sure `process-environment' is recovered after temporal setenv
+
+	* preview.el.in (TeX-inline-preview-internal): Since `setenv' operates
+	destructively on `process-environment', use `copy-sequence' for
+	maximal safety in order to guard its list structure.
+
+2017-12-28  Arash Esbati  <arash@gnu.org>
+
+	Add fontification for some core macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add macros
+	\addvspace, \raggedright and \raggedleft to function class.
+
+2017-12-27  Arash Esbati  <arash@gnu.org>
+
+	* texmathp.el (texmathp-tex-commands-default): Add entries for breqn.sty.
+
+2017-12-21  Mosè Giordano  <mose@gnu.org>
+
+	Restore some code erroneously removed from font-latex.el
+
+	* font-latex.el (font-latex-make-sectioning-faces):
+	(font-latex-user-keyword-classes):
+	(font-latex-slide-title-face): Restore code.
+
+2017-12-21  Mosè Giordano  <mose@gnu.org>
+
+	Restore loading of prv-emacs
+
+	* preview.el.in: Require prv-emacs.
+
+2017-12-20  Mosè Giordano  <mose@gnu.org>
+
+	Remove compatibility code for XEmacs in toolbar-x.el
+
+	* toolbar-x.el (toolbarx--if-when-compile): Remove macro no more needed.
+	(toolbarx-emacs-mount-popup-menu):
+	(toolbarx-mount-popup-menu):
+	(toolbarx-test-image-type):
+	(toolbarx-test-button-type):
+	(toolbarx-test-toolbar-type):
+	(toolbarx-find-image):
+	(toolbarx-emacs-add-button):
+	(toolbarx-refresh):
+	(toolbarx-install-toolbar):
+	(toolbarx-default-toolbar-meaning-alist): Remove code for compatibility with
+	XEmacs.
+	(toolbarx-xemacs-mount-popup-menu):
+	(toolbarx-xemacs-image-properties):
+	(toolbarx-xemacs-button-properties):
+	(toolbarx-xemacs-refresh-process-button-or-insert-list):
+	(toolbarx-xemacs-refresh): Remove functions.
+
+2017-12-20  Mosè Giordano  <mose@gnu.org>
+
+	Remove compatibility code for XEmacs in font-latex.el
+
+	* font-latex.el (font-latex-sectioning-5-face):
+	(font-latex-update-sectioning-faces):
+	(font-latex-make-sectioning-faces):
+	(font-latex-user-keyword-classes):
+	(font-latex-fontify-script):
+	(font-latex-verbatim-face):
+	(font-latex-slide-title-face):
+	(font-latex-setup): Remove code for compatibility with XEmacs.
+
+2017-12-20  Mosè Giordano  <mose@gnu.org>
+
+	Remove compatibility code for XEmacs in tex-fold.el
+
+	* tex-fold.el (TeX-fold-overfull-p):
+	(TeX-fold-macro-nth-arg):
+	(TeX-fold-hide-item):
+	(TeX-fold-show-item):
+	(TeX-fold-post-command): Remove code for compatibility with XEmacs.
+
+2017-12-20  Mosè Giordano  <mose@gnu.org>
+
+	Remove code for compatibility with very old emacsens in bib-cite.el
+
+	* bib-cite.el (bib-cite-minor-mode):
+	(bib-cite-setup-highlight-mouse-keymap):
+	(bib-cite-fontify-help-as-bibtex):
+	(bib-cite-fontify-help-as-latex):
+	(bib-etags):
+	(bib-highlight-mouse):
+	(bib-toggle-highlight):
+	(bib-guess-or-prompt-for-label):
+	(bib-etags-find-noselect): Remove compatibility code.
+
+2017-12-20  Mosè Giordano  <mose@gnu.org>
+
+	Delte prv-xemacs.el
+
+	* prv-xemacs.el: Delete file.
+	* preview.el.in (preview): Remove code to load prv-xemacs.
+
+2017-12-20  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove XEmacs compatibility code in tex-jp.el
+
+	* tex-jp.el (japanese-TeX-set-process-coding-system)
+	(japanese-TeX-coding-ejsu): Remove code for compatibility with
+	XEmacs.
+
+2017-12-20  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Delete unused options
+
+	* tex-jp.el (japanese-TeX-command-default,
+	japanese-LaTeX-command-default): Remove them because they are no
+	longer used anywhere in the current code.  Ataka-san and I (Ikumi)
+	discussed this matter and agreed to dismiss them.
+	* doc/auctex.texi: Reflect the above change.
+
+2017-12-19  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make sure `LaTeX-default-options' is honored
+
+	* latex.el (TeX-arg-document): Use `LaTeX-default-options' as default
+	of class options even when the respective `LaTeX-XXXX-class-options'
+	is not set.
+
+2017-12-17  Arash Esbati  <arash@gnu.org>
+
+	Update style/bidi.el to package version 31.7
+
+	* style/bidi.el (LaTeX-bidi-package-options): Add
+	"extrafootnotefeatures" option.
+	(LaTeX-env-bidi-bib): New function.
+	("bidi"): Add missing macros and environments.  Add fontification
+	support.
+
+2017-12-17  Arash Esbati  <arash@gnu.org>
+
+	Add fontification for some core macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Fontify
+	core macros \marginpar (reference), \LaTeXe (function) and
+	\bibitem (textual).
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Change encoding of Elisp source files to UTF-8
+
+	* style/alphanum.el:
+	* style/dk-bib.el:
+	* style/doc.el:
+	* style/inputenc.el:
+	* style/jura.el:
+	* style/ltx-base.el:
+	* style/ltxdoc.el:
+	* tex-font.el:
+	* tex.el: Change coding of files to UTF-8.  Now that we require Emacs >= 24 it
+	  is always possible to use this encoding.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove code for compatibility with old Emacsens in tex.el
+
+	* tex.el: Always require `crm', which is available in all supported version of
+	  Emacs.
+	(TeX-completing-read-multiple): Remove function definition for XEmacs.
+	(TeX-view-predicate-list-builtin):
+	(TeX-source-correlate-sync-source):
+	(TeX-tree-expand):
+	(TeX-comment-forward): Remove code for compatibility with old Emacsens.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove TeX-line-number-at-pos
+
+	* tex.el (TeX-line-number-at-pos): Remove function and alias.
+	* style/pdfsync.el (LaTeX-pdfsync-output-page):
+	* tex-info.el (Texinfo-make-node-list): Replace `TeX-line-number-at-pos' with
+	  `line-number-at-pos'.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove XEmacs compatibility code in tex.el
+
+	* tex.el (TeX-source-correlate-gnuserv-p):
+	(TeX-source-correlate-map):
+	(VirTeX-common-initialization):
+	(TeX-mode-map):
+	(TeX-search-syntax-table): Remove code for compatibility with XEmacs.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove TeX-how-many function
+
+	* tex.el (TeX-how-many): Remove function.
+	* latex.el (LaTeX-hanging-ampersand-position): Replace `TeX-how-many' with
+	  `how-many'.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove TeX-assoc-string
+
+	* tex.el (TeX-assoc-string): Remove alias.
+	(TeX-add-style-hook):
+	(TeX-unload-style):
+	(TeX-run-style-hooks):
+	* tex-info.el (Texinfo-nodename-de-escape):
+	(Texinfo-nodename-escape): Replace `TeX-assoc-string' with `assoc-string'.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove TeX-deactivate-mark
+
+	* tex.el (TeX-deactivate-mark): Remove function.
+	(TeX-argument-insert):
+	* latex.el (LaTeX-env-item):
+	* style/currvita.el (LaTeX-currvita-env-with-label):
+	* style/dinbrief.el (LaTeX-dinbrief-insert):
+	(LaTeX-dinbrief-env-recipient):
+	* style/enumitem.el (LaTeX-enumitem-env-with-opts):
+	* style/moodle.el (LaTeX-moodle-question-env-with-args):
+	* style/tcolorboxlib-raster.el (LaTeX-tcolorbox-lib-raster-env-item): Replace
+	  `TeX-deactivate-mark' with `deactivate-mark'.
+
+2017-12-17  Mosè Giordano  <mose@gnu.org>
+
+	Remove old compat functions for commenting and uncommenting
+
+	* tex.el (TeX-comment-regio):
+	(TeX-comment-or-uncomment-region):
+	(TeX-uncomment-region): Remove old compatibility functions.
+	* context.el (ConTeXt-mode-menu):
+	* latex.el (LaTeX-mode-menu):
+	* plain-tex.el (plain-TeX-menu-entries):
+	* tex-info.el (Texinfo-mode-menu):
+	* tex.el (TeX-mode-map):
+	(TeX-in-comment):
+	(TeX-in-commented-line): Replace compat functions with standard functions.
+
+2017-12-16  Mosè Giordano  <mose@gnu.org>
+
+	Remove XEmacs compatibility code in latex.el
+
+	* latex.el (LaTeX-largest-level-set):
+	(LaTeX-after-insert-env-hook):
+	(LaTeX-indent-line):
+	(LaTeX-fill-region-as-paragraph):
+	(LaTeX-fill-newline):
+	(LaTeX-common-initialization): Remove code for compatibility with XEmacs.
+	(LaTeX-fill-delete-newlines): Remove function, no more needed.
+	(LaTeX-fill-region-as-para-do): Replace `LaTeX-fill-delete-newlines' with
+	`fill-delete-newlines'.
+
+2017-12-16  Mosè Giordano  <mose@gnu.org>
+
+	Remove XEmacs compatibility code in tex-buf.el
+
+	* tex-buf.el (TeX-record-buffer): Always define this option.
+	(TeX-recenter-output-buffer):
+	(TeX-previous-error):
+	(TeX-parse-TeX): Remove code for compatibility with XEmacs.
+	(TeX-parse-error): Fix a bug in the regexp.
+	(TeX-error-overview): Remove check for Emacs version.  Now this works in all
+	supported versions.
+
 2017-12-10  Mosè Giordano  <mose@gnu.org>
 
 	* Version 12.1 released.
@@ -22482,7 +24411,7 @@
 
 This file records repository revisions from
 commit c865982cacab289f4480f9145b3438ec06824232 (exclusive) to
-commit d02d4f47af04d97a6f066b5cfdbf88954f64a38f (inclusive).
+commit 9a319640636d49ebe98b9f1ba2f176fa3c8b468d (inclusive).
 
 ;; Local Variables:
 ;; coding: utf-8

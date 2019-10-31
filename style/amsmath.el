@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2018
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2019
 ;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
@@ -30,150 +30,150 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "amsmath"
- (function
-  (lambda ()
+(TeX-add-style-hook
+ "amsmath"
+ (lambda ()
+   (LaTeX-add-environments
+    '("align"      LaTeX-env-label)
+    '("gather"     LaTeX-env-label)
+    '("flalign"    LaTeX-env-label)
+    '("multline"   LaTeX-env-label)
+    '("alignat"    LaTeX-amsmath-env-alignat)
+    '("alignat*"   LaTeX-amsmath-env-alignat)
+    '("xalignat"   LaTeX-amsmath-env-alignat)
+    '("xalignat*"  LaTeX-amsmath-env-alignat)
+    '("xxalignat"  LaTeX-amsmath-env-alignat)
+    '("aligned"    ["Vertical position (t or b)"])
+    '("gathered"   ["Vertical position (t or b)"])
+    '("alignedat"  LaTeX-amsmath-env-alignedat)
+    "align*" "gather*" "flalign*" "multline*" "equation*"
+    "split"
+    "cases"
+    "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"
+    "subequations"
+    '("subarray" "Alignment"))
 
-    (LaTeX-add-environments
-     '("align"      LaTeX-env-label)
-     '("gather"     LaTeX-env-label)
-     '("flalign"    LaTeX-env-label)
-     '("multline"   LaTeX-env-label)
-     '("alignat"    LaTeX-amsmath-env-alignat)
-     '("alignat*"   LaTeX-amsmath-env-alignat)
-     '("xalignat"   LaTeX-amsmath-env-alignat)
-     '("xalignat*"  LaTeX-amsmath-env-alignat)
-     '("xxalignat"  LaTeX-amsmath-env-alignat)
-     '("aligned"    ["Vertical position (t or b)"])
-     '("gathered"   ["Vertical position (t or b)"])
-     '("alignedat"  LaTeX-amsmath-env-alignedat)
-     "align*" "gather*" "flalign*" "multline*" "equation*"
-     "split"
-     "cases"
-     "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"
-     "subequations"
-     '("subarray" "Alignment"))
+   (TeX-add-symbols
+    '("eqref" TeX-arg-ref)
+    '("numberwithin" TeX-arg-counter "Section level")
+    '("raisetag" "Dimension")
+    '("shoveright" t) '("shoveleft" t)
+    '("intertext" t)
+    '("hdotsfor" ["Stretch"] "Number of columns to cover")
+    '("xleftarrow" ["Below"] "Above")
+    '("xrightarrow" ["Below"] "Above")
+    '("overset" "Above symbol" "Symbol")
+    '("underset" "Below symbol" "Symbol")
+    '("overunderset" "Above symbol" "Below symbol" "Symbol")
+    '("dfrac" 2)
+    '("tfrac" 2)
+    '("binom" 2)
+    '("dbinom" 2)
+    '("tbinom" 2)
+    '("genfrac" "Left delimiter" "Right delimiter" "Thickness"
+      "Mathstyle" 2)
+    '("cfrac" ["position (l or r)"] 2)
+    '("smash" ["where (t or b)"] t)
+    '("sideset" "Left" "Right")
+    '("tag" "(Tag)")
+    '("tag*" "Tag")
+    '("displaybreak" ["Weight (0..4)"])
+    '("allowdisplaybreaks" ["Weight (1..4)"])
+    '("substack" t)
+    '("leftroot" "Push root index left by")
+    '("uproot" "Push root index upward by")
+    '("boxed" t)
+    '("mspace" t)
+    '("mod" t)
+    '("pmod" t)
+    '("pod" t)
+    '("overleftrightarrow" t)
+    '("underleftarrow" t)
+    '("underrightarrow" t)
+    '("underleftrightarrow" t)
+    '("dddot" t)
+    '("ddddot" t)
+    "bmod" "notag"
+    "dots" "dotsb" "dotsc" "dotsi" "dotsm" "dotso" "nobreakdash"
+    '("lvert" TeX-arg-insert-right-brace-maybe)
+    '("lVert" TeX-arg-insert-right-brace-maybe)
+    "rvert" "rVert"
+    "iint" "iiint" "iiiint" "idotsint")
 
-    (TeX-add-symbols
-     '("eqref" TeX-arg-ref)
-     '("numberwithin" TeX-arg-counter "Section level")
-     '("raisetag" "Dimension")
-     '("shoveright" t) '("shoveleft" t)
-     '("intertext" t)
-     '("hdotsfor" ["Stretch"] "Number of columns to cover")
-     '("xleftarrow" ["Below"] "Above")
-     '("xrightarrow" ["Below"] "Above")
-     '("overset" "Accent symbol" "Symbol")
-     '("underset" "Accent symbol" "Symbol")
-     '("dfrac" 2)
-     '("tfrac" 2)
-     '("binom" 2)
-     '("dbinom" 2)
-     '("tbinom" 2)
-     '("genfrac" "Left delimiter" "Right delimiter" "Thickness"
-       "Mathstyle" 2)
-     '("cfrac" ["position (l or r)"] 2)
-     '("smash" ["where (t or b)"] t)
-     '("sideset" "Left" "Right")
-     '("tag" "(Tag)")
-     '("tag*" "Tag")
-     '("displaybreak" ["Weight (0..4)"])
-     '("allowdisplaybreaks" ["Weight (1..4)"])
-     '("substack" t)
-     '("leftroot" "Push root index left by")
-     '("uproot" "Push root index upward by")
-     '("boxed" t)
-     '("mspace" t)
-     '("mod" t)
-     '("pmod" t)
-     '("pod" t)
-     '("overleftrightarrow" t)
-     '("underleftarrow" t)
-     '("underrightarrow" t)
-     '("underleftrightarrow" t)
-     '("dddot" t)
-     '("ddddot" t)
-     "bmod" "notag"
-     "dots" "dotsb" "dotsc" "dotsi" "dotsm" "dotso" "nobreakdash" 
-     '("lvert" TeX-arg-insert-right-brace-maybe)
-     '("lVert" TeX-arg-insert-right-brace-maybe)
-     "rvert" "rVert"
-     "iint" "iiint" "iiiint" "idotsint")
-    
-    (setq LaTeX-item-list
-	  (append '(("split"    . LaTeX-item-equation)
-		    ("multline" . LaTeX-item-equation)
-		    ("multline*" . LaTeX-item-equation)
-		    ("gather"   . LaTeX-item-equation)
-		    ("gather*"  . LaTeX-item-equation)
-		    ("gathered" . LaTeX-item-equation)
-		    ("align"    . LaTeX-item-equation)
-		    ("align*"   . LaTeX-item-equation)
-		    ("aligned"  . LaTeX-item-equation)
-		    ("alignat"  . LaTeX-item-equation-alignat)
-		    ("alignat*" . LaTeX-item-equation-alignat)
-		    ("xalignat"  . LaTeX-item-equation-alignat)
-		    ("xalignat*" . LaTeX-item-equation-alignat)
-		    ("xxalignat" . LaTeX-item-equation-alignat)
-		    ("alignedat" . LaTeX-item-equation-alignat)
-		    ("flalign"  . LaTeX-item-equation)
-		    ("flalign*" . LaTeX-item-equation)
-		    ("matrix" .  LaTeX-item-equation)
-		    ("pmatrix" .  LaTeX-item-equation)
-		    ("bmatrix" .  LaTeX-item-equation)
-		    ("Bmatrix" .  LaTeX-item-equation)
-		    ("vmatrix" .  LaTeX-item-equation)
-		    ("Vmatrix" .  LaTeX-item-equation)
-		    ("subarray" . LaTeX-item-equation)
-		    ("cases"    . LaTeX-item-equation))
-		  LaTeX-item-list))
+   (setq LaTeX-item-list
+	 (append '(("split"    . LaTeX-item-equation)
+		   ("multline" . LaTeX-item-equation)
+		   ("multline*" . LaTeX-item-equation)
+		   ("gather"   . LaTeX-item-equation)
+		   ("gather*"  . LaTeX-item-equation)
+		   ("gathered" . LaTeX-item-equation)
+		   ("align"    . LaTeX-item-equation)
+		   ("align*"   . LaTeX-item-equation)
+		   ("aligned"  . LaTeX-item-equation)
+		   ("alignat"  . LaTeX-item-equation-alignat)
+		   ("alignat*" . LaTeX-item-equation-alignat)
+		   ("xalignat"  . LaTeX-item-equation-alignat)
+		   ("xalignat*" . LaTeX-item-equation-alignat)
+		   ("xxalignat" . LaTeX-item-equation-alignat)
+		   ("alignedat" . LaTeX-item-equation-alignat)
+		   ("flalign"  . LaTeX-item-equation)
+		   ("flalign*" . LaTeX-item-equation)
+		   ("matrix" .  LaTeX-item-equation)
+		   ("pmatrix" .  LaTeX-item-equation)
+		   ("bmatrix" .  LaTeX-item-equation)
+		   ("Bmatrix" .  LaTeX-item-equation)
+		   ("vmatrix" .  LaTeX-item-equation)
+		   ("Vmatrix" .  LaTeX-item-equation)
+		   ("subarray" . LaTeX-item-equation)
+		   ("cases"    . LaTeX-item-equation))
+		 LaTeX-item-list))
 
-    ;; When `LaTeX-amsmath-label' is nil, use value of LaTeX-equation-label:
-    (unless LaTeX-amsmath-label
-      (setq LaTeX-amsmath-label LaTeX-equation-label))
+   ;; When `LaTeX-amsmath-label' is nil, use value of LaTeX-equation-label:
+   (unless LaTeX-amsmath-label
+     (setq LaTeX-amsmath-label LaTeX-equation-label))
 
-    (setq LaTeX-label-alist
-	  ;; Append amsmath environments to `LaTeX-label-alist', in order not to
-	  ;; override possible custome values.
-	  (append LaTeX-label-alist
-		  '(("align"      . LaTeX-amsmath-label)
-		    ("alignat"    . LaTeX-amsmath-label)
-		    ("xalignat"   . LaTeX-amsmath-label)
-		    ("multline"   . LaTeX-amsmath-label)
-		    ("flalign"    . LaTeX-amsmath-label)
-		    ("gather"     . LaTeX-amsmath-label))))
+   (setq LaTeX-label-alist
+	 ;; Append amsmath environments to `LaTeX-label-alist', in order not to
+	 ;; override possible custome values.
+	 (append LaTeX-label-alist
+		 '(("align"      . LaTeX-amsmath-label)
+		   ("alignat"    . LaTeX-amsmath-label)
+		   ("xalignat"   . LaTeX-amsmath-label)
+		   ("multline"   . LaTeX-amsmath-label)
+		   ("flalign"    . LaTeX-amsmath-label)
+		   ("gather"     . LaTeX-amsmath-label))))
 
-    (set (make-local-variable 'TeX-braces-association)
-	 (append '(("\\lvert" . "\\rvert")
-		   ("\\lVert" . "\\rVert"))
-		 TeX-braces-association))
-    (set (make-local-variable 'TeX-left-right-braces)
-	 (append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
-		 TeX-left-right-braces))
+   (set (make-local-variable 'TeX-braces-association)
+	(append '(("\\lvert" . "\\rvert")
+		  ("\\lVert" . "\\rVert"))
+		TeX-braces-association))
+   (set (make-local-variable 'TeX-left-right-braces)
+	(append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
+		TeX-left-right-braces))
 
-    ;; amsmath includes amstext, amsbsy, & amsopn.
-    ;; So we run their hooks, too.
-    (TeX-run-style-hooks "amstext" "amsbsy" "amsopn")
+   ;; amsmath includes amstext, amsbsy, & amsopn.
+   ;; So we run their hooks, too.
+   (TeX-run-style-hooks "amstext" "amsbsy" "amsopn")
 
-    ;; RefTeX support: Tell RefTeX about amsmath environments.
-    (when (fboundp 'reftex-add-to-label-alist)
-      (reftex-add-to-label-alist '(AMSTeX)))
+   ;; RefTeX support: Tell RefTeX about amsmath environments.
+   (when (fboundp 'reftex-add-to-label-alist)
+     (reftex-add-to-label-alist '(AMSTeX)))
 
-    ;; Add \eqref to `reftex-ref-style-alist' and associate it to `e'
-    (when (and (boundp 'reftex-ref-style-alist)
-	       ;; check if Emacs is already equipped with this
-	       (not (assoc "AMSmath" reftex-ref-style-alist)))
-      ;; Append it to a local version in order to avoid a clash with
-      ;; user settings
-      (add-to-list (make-local-variable 'reftex-ref-style-alist)
-		   '("AMSmath" "amsmath" (("\\eqref" ?e)))
-		   t))
+   ;; Add \eqref to `reftex-ref-style-alist' and associate it to `e'
+   (when (and (boundp 'reftex-ref-style-alist)
+	      ;; check if Emacs is already equipped with this
+	      (not (assoc "AMSmath" reftex-ref-style-alist)))
+     ;; Append it to a local version in order to avoid a clash with
+     ;; user settings
+     (add-to-list (make-local-variable 'reftex-ref-style-alist)
+		  '("AMSmath" "amsmath" (("\\eqref" ?e)))
+		  t))
 
-    ;; Activate `AMSmath' when `LaTeX-reftex-ref-style-auto-activate'
-    ;; is non-nil
-    (and LaTeX-reftex-ref-style-auto-activate
-	 (fboundp 'reftex-ref-style-activate)
-	 (reftex-ref-style-activate "AMSmath"))))
+   ;; Activate `AMSmath' when `LaTeX-reftex-ref-style-auto-activate'
+   ;; is non-nil
+   (and LaTeX-reftex-ref-style-auto-activate
+	(fboundp 'reftex-ref-style-activate)
+	(reftex-ref-style-activate "AMSmath")))
  LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
@@ -240,6 +240,6 @@ START and END."
 					"alignedleftspaceyes"
 					"alignedleftspaceno"
 					"alignedleftspaceyesifneg")
-    "Package options for the amsmath package.")
+  "Package options for the amsmath package.")
 
 ;;; amsmath.el ends here.

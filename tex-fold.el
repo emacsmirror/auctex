@@ -797,7 +797,7 @@ That means, put respective properties onto overlay OV."
 		     (TeX-fold-expand-spec spec ov-start ov-end))
 		    ((functionp spec)
 		     (let (arg arg-list
-			   (n 1))
+			       (n 1))
 		       (while (setq arg (TeX-fold-macro-nth-arg
 					 n ov-start ov-end))
                          (unless (member (car arg) arg-list)
@@ -811,23 +811,25 @@ That means, put respective properties onto overlay OV."
 			   "[Error: No content found]"))))
 	 (display-string (if (listp computed) (car computed) computed))
 	 (face (when (listp computed) (cadr computed))))
-    ;; Cater for zero-length display strings.
-    (when (string= display-string "") (setq display-string TeX-fold-ellipsis))
-    ;; Add a linebreak to the display string and adjust the overlay end
-    ;; in case of an overfull line.
-    (when (TeX-fold-overfull-p ov-start ov-end display-string)
-      (setq display-string (concat display-string "\n"))
-      (move-overlay ov ov-start (save-excursion
-				  (goto-char ov-end)
-				  (skip-chars-forward " \t")
-				  (point))))
-    (overlay-put ov 'mouse-face 'highlight)
-    (overlay-put ov 'display display-string)
-    (when font-lock-mode
-      (overlay-put ov 'face TeX-fold-folded-face))
-    (unless (zerop TeX-fold-help-echo-max-length)
-      (overlay-put ov 'help-echo (TeX-fold-make-help-echo
-				  (overlay-start ov) (overlay-end ov))))))
+    ;; Do nothing if the overlay is empty.
+    (when (and ov-start ov-end)
+      ;; Cater for zero-length display strings.
+      (when (string= display-string "") (setq display-string TeX-fold-ellipsis))
+      ;; Add a linebreak to the display string and adjust the overlay end
+      ;; in case of an overfull line.
+      (when (TeX-fold-overfull-p ov-start ov-end display-string)
+	(setq display-string (concat display-string "\n"))
+	(move-overlay ov ov-start (save-excursion
+				    (goto-char ov-end)
+				    (skip-chars-forward " \t")
+				    (point))))
+      (overlay-put ov 'mouse-face 'highlight)
+      (overlay-put ov 'display display-string)
+      (when font-lock-mode
+	(overlay-put ov 'face TeX-fold-folded-face))
+      (unless (zerop TeX-fold-help-echo-max-length)
+	(overlay-put ov 'help-echo (TeX-fold-make-help-echo
+				    (overlay-start ov) (overlay-end ov)))))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.

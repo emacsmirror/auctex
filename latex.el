@@ -1227,14 +1227,22 @@ Just like array and tabular."
   (LaTeX-insert-item))
 
 (defun LaTeX-env-contents (environment)
-  "Insert ENVIRONMENT with filename for contents."
-  (save-excursion
-    (when (re-search-backward LaTeX-header-end nil t)
-      (error "Put %s environment before \\begin{document}" environment)))
-  (LaTeX-insert-environment environment
-			    (concat TeX-grop
-				    (TeX-read-string "File: ")
-				    TeX-grcl))
+  "Insert ENVIRONMENT with optional argument and filename for contents."
+  (let* ((opt '("overwrite" "force" "nosearch"))
+	 (arg (mapconcat #'identity
+			 (TeX-completing-read-multiple
+			  (TeX-argument-prompt t nil "Options")
+			  (if (string= environment "filecontents*")
+			      opt
+			    (cons "noheader" opt)))
+			 ",")))
+    (LaTeX-insert-environment environment
+			      (concat
+			       (when (and arg (not (string= arg "")))
+				 (concat LaTeX-optop arg LaTeX-optcl))
+			       TeX-grop
+			       (TeX-read-string "File: ")
+			       TeX-grcl)))
   (delete-horizontal-space))
 
 (defun LaTeX-env-args (environment &rest args)
@@ -3023,7 +3031,7 @@ including values of the variable
      #'TeX--list-of-string-p)
 
 (defcustom LaTeX-verbatim-environments
-  '("verbatim" "verbatim*")
+  '("verbatim" "verbatim*" "filecontents" "filecontents*")
   "Verbatim environments.
 
 Programs should not use this variable directly but the function
@@ -3196,6 +3204,8 @@ consideration just as is in the non-commented source code."
 (defcustom LaTeX-indent-environment-list
   '(("verbatim" current-indentation)
     ("verbatim*" current-indentation)
+    ("filecontents" current-indentation)
+    ("filecontents*" current-indentation)
     ("tabular" LaTeX-indent-tabular)
     ("tabular*" LaTeX-indent-tabular)
     ("align" LaTeX-indent-tabular)
@@ -3210,15 +3220,15 @@ consideration just as is in the non-commented source code."
     ("equation*")
     ("picture")
     ("tabbing"))
-    "Alist of environments with special indentation.
+  "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns.
 
 Environments present in this list are not filled by filling
 functions, see `LaTeX-fill-region-as-paragraph'."
-    :group 'LaTeX-indentation
-    :type '(repeat (list (string :tag "Environment")
-			 (option function))))
+  :group 'LaTeX-indentation
+  :type '(repeat (list (string :tag "Environment")
+		       (option function))))
 
 (defcustom LaTeX-indent-environment-check t
   "*If non-nil, check for any special environments."

@@ -12,6 +12,13 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} reflects the changes in LaTeX2e 2019-10-01 release.
+@samp{filecontents} environment now takes an optional argument and can
+be used anywhere in a document.  The macros @samp{\Ref} and
+@samp{\labelformat} are moved from @file{varioref.sty} to @LaTeX{}
+kernel.  amsmath has a new macro @samp{\overunderset}.
+
+@item
 A new method is implemented in @previewlatex{} to adjust the foreground
 colors of generated images to those of Emacs, when the @LaTeX{} command
 produces @acronym{PDF}.  The traditional method became invalid because
@@ -83,6 +90,9 @@ in an init file:
 @lisp
 (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
 @end lisp
+
+@item
+Several other bugs were fixed, many minor features were added.
 @end itemize
 
 @heading News in 12.1

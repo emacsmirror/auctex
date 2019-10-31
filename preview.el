@@ -1262,7 +1262,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
   ;; N.B.  Although this code shows command line of gs invocation and
-  ;; error together via mouse popup menu, they are not necessarilly
+  ;; error together via mouse popup menu, they are not necessarily
   ;; associated with each other.  There is a case that the command
   ;; line is for "[...].prv/tmpXXXXXX/pr1-2.png" while the error is
   ;; raised for "[...].prv/tmpXXXXXX/pr1-1.png".  (c.f. bug#37719)
