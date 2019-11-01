@@ -7,7 +7,7 @@ install-sh
 lpath.el
 mkinstalldirs
 prv-install.el
-README.CVS
+README.GIT
 tests/
 build-aux/
 admin/
