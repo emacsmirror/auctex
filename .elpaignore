@@ -8,6 +8,6 @@ lpath.el
 mkinstalldirs
 prv-install.el
 README.GIT
-tests/
-build-aux/
-admin/
+tests
+build-aux
+admin
