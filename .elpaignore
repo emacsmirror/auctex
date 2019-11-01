@@ -10,3 +10,4 @@ prv-install.el
 README.CVS
 tests/
 build-aux/
+admin/
