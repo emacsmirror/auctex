@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fbox.sty' (v2.01) from 2019/11/04.
+;; This file adds support for `fbox.sty' (v0.03) from 2019/11/04.
 ;; `fbox.sty' is part of TeXLive.
 
 ;; Silence the compiler:
