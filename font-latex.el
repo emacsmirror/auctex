@@ -1261,22 +1261,6 @@ triggers Font Lock to recognize the change."
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
   (font-latex-set-syntactic-keywords)
-  ;; Trickery to make $$ fontification be in `font-latex-math-face' while
-  ;; strings get whatever `font-lock-string-face' has been set to.
-  (when (fboundp 'built-in-face-specifiers)
-    ;; Cool patch from Christoph Wedler...
-    (let (instance)
-      (mapc (lambda (property)
-	      (setq instance
-		    (face-property-instance 'font-latex-math-face property
-					    nil 0 t))
-	      (if (numberp instance)
-		  (setq instance
-			(face-property-instance 'default property nil 0)))
-	      (or (numberp instance)
-		  (set-face-property 'font-lock-string-face property
-				     instance (current-buffer))))
-	    (built-in-face-specifiers))))
 
   ;; Activate multi-line fontification facilities if available.
   (when (boundp 'font-lock-multiline)
