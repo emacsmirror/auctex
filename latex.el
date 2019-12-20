@@ -668,41 +668,91 @@ environment just inserted, the buffer position just before
 	 (concat "^\\([ \t]*" TeX-comment-start-regexp "+\\)+[ \t]*"))
 	(setq prefix (match-string 0))))
     ;; What to do with the line containing point.
-    (cond ((save-excursion (beginning-of-line)
+    ;; - Open a new empty line for later insertion of "\begin{foo}" and
+    ;;   put the point there.
+    ;; - If there were at first any non-whitespace texts between the
+    ;;   point and EOL, send them into their new own line with possible
+    ;;   comment prefix.
+    (cond (;; When the entire line consists of whitespaces except
+	   ;; possible prefix...
+	   (save-excursion (beginning-of-line)
 			   (looking-at (concat prefix "[ \t]*$")))
+	   ;; ...make the line empty and put the point there.
 	   (delete-region (match-beginning 0) (match-end 0)))
-	  ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
+	  (;; When there are only whitespaces except possible prefix
+	   ;; between the point and BOL (including the case the point
+	   ;; is at BOL)...
+	   (TeX-looking-at-backward (if prefix
+					(concat "^\\(" prefix "\\)?[ \t]*")
+				      "^[ \t]*")
 				    (line-beginning-position))
+	   ;; ...in this case, we have non-whitespace texts between
+	   ;; the point and EOL, so send the entire line into a new
+	   ;; next line and put the point on the empty line just
+	   ;; created.
 	   (beginning-of-line)
 	   (newline)
 	   (beginning-of-line 0))
-	  ((bolp)
+	  (;; In all other cases...
+	   t
+	   ;; ...insert a new empty line after deleting all
+	   ;; whitespaces around the point, put the point there...
 	   (delete-horizontal-space)
-	   (newline)
-	   (beginning-of-line 0))
-	  (t
-	   (delete-horizontal-space)
-	   (newline 2)
-	   (when prefix (insert prefix))
-	   (beginning-of-line 0)))
+	   (if (eolp)
+	       (newline)
+	     ;; ...and if there were at first any non-whitespace texts
+	     ;; between (the original position of) the point and EOL,
+	     ;; send them into a new next line with possible comment
+	     ;; prefix.
+	     (newline 2)
+	     (when prefix (insert prefix))
+	     (beginning-of-line 0))))
     ;; What to do with the line containing mark.
+    ;; If there is active region...
     (when active-mark
+      ;; - Open a new empty line for later insertion of "\end{foo}"
+      ;;   and put the mark there.
+      ;; - If there were at first any non-whitespace texts between the
+      ;;   mark and EOL, pass them over the empty line and put them on
+      ;;   their own line with possible comment prefix.
       (save-excursion
 	(goto-char (mark))
-	(cond ((save-excursion (beginning-of-line)
-			       (or (looking-at (concat prefix "[ \t]*$"))
-				   (looking-at "[ \t]*$")))
+	(cond (;; When the entire line consists of whitespaces except
+	       ;; possible prefix...
+	       (save-excursion (beginning-of-line)
+			       (looking-at
+				(if prefix
+				    (concat "\\(" prefix "\\)?[ \t]*$")
+				  "[ \t]*$")))
+	       ;; ...make the line empty and put the mark there.
 	       (delete-region (match-beginning 0) (match-end 0)))
-	      ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
+	      (;; When there are only whitespaces except possible prefix
+	       ;; between the mark and BOL (including the case the mark
+	       ;; is at BOL)...
+	       (TeX-looking-at-backward (if prefix
+					    (concat "^\\(" prefix "\\)?[ \t]*")
+					  "^[ \t]*")
 					(line-beginning-position))
+	       ;; ...in this case, we have non-whitespace texts
+	       ;; between the mark and EOL, so send the entire line
+	       ;; into a new next line and put the mark on the empty
+	       ;; line just created.
 	       (beginning-of-line)
-	       (newline)
-	       (beginning-of-line 0))
-	      (t
+	       (set-mark (point))
+	       (newline))
+	      (;; In all other cases...
+	       t
+	       ;; ...make a new empty line after deleting all
+	       ;; whitespaces around the mark, put the mark there...
 	       (delete-horizontal-space)
 	       (insert-before-markers "\n")
-	       (newline)
-	       (when prefix (insert prefix))))))
+	       ;; ...and if there were at first any non-whitespace
+	       ;; texts between (the original position of) the mark
+	       ;; and EOL, send them into a new next line with
+	       ;; possible comment prefix.
+	       (unless (eolp)
+		 (newline)
+		 (when prefix (insert prefix)))))))
     ;; Now insert the environment.
     (when prefix (insert prefix))
     (setq env-start (point))
