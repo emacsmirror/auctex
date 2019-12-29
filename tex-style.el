@@ -283,8 +283,8 @@ produced by emp.sty and then re-LaTeX the document."
   "Unique letter identifying exam class macros in RefTeX.
 
 A character argument for quick identification when RefTeX inserts
-new labels with `reftex-label'.  It must be unique.  It is
-initialized to ?x."
+new references with `reftex-reference'.  It must be unique.  It
+is initialized to ?x."
   :group 'LaTeX-style
   :type 'character)
 
