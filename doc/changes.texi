@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2019 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2020 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -7,6 +7,16 @@
 @chapheading Changes and New Features in @AUCTeX{}
 
 @end ifset
+
+@heading News in 12.3
+@itemize @bullet
+@item
+Insertion of environments in @LaTeX{} documents (i.e. @kbd{C-c C-e}) was
+improved.  The former code had a few bugs, which sometimes resulted in
+either spurious empty line or spurious comment prefix, or both,
+especially when the region is active.  Those bugs are now fixed.
+
+@end itemize
 
 @heading News in 12.2
 
