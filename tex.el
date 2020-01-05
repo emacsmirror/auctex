@@ -5846,8 +5846,7 @@ sign.  With optional ARG, insert that many dollar signs."
      (t
       ;; Math mode was not entered with dollar - we cannot finish it with one.
       (message "Math mode started with `%s' cannot be closed with dollar"
-	       (car texmathp-why))
-      (insert "$"))))
+	       (car texmathp-why)))))
    (t
     ;; Just somewhere in the text.
     (cond
