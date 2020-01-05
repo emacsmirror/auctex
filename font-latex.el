@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2019  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2020  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -409,8 +409,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
     ("bold-command"
-     (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
-      ("pmb" "{"))
+     (("textbf" "{") ("textsc" "{") ("textulc" "{") ("textup" "{")
+      ("textsw" "{") ("boldsymbol" "{") ("pmb" "{"))
      font-latex-bold-face 1 command)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{"))
@@ -422,7 +422,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{") ("oldstylenums" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
-     ("bf" "bfseries" "sc" "scshape" "upshape")
+     ("bf" "bfseries" "sc" "scshape" "ulcshape" "upshape" "swshape")
      font-latex-bold-face 1 declaration)
     ("italic-declaration"
      ("em" "it" "itshape" "sl" "slshape")
@@ -430,7 +430,8 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("type-declaration"
      ("tt" "ttfamily" "sf" "sffamily" "rm" "rmfamily" "mdseries"
       "tiny" "scriptsize" "footnotesize" "small" "normalsize"
-      "large" "Large" "LARGE" "huge" "Huge")
+      "large" "Large" "LARGE" "huge" "Huge"
+      "normalfont" "normalshape")
      font-lock-type-face 1 declaration))
   "Built-in keywords and specifications for font locking.
 
