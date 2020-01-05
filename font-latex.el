@@ -31,11 +31,6 @@
 ;; font-lock mode is a minor mode that causes your comments to be
 ;; displayed in one face, strings in another, reserved words in
 ;; another, and so on.
-;;
-;; ** Infinite loops !? **
-;; If you get an infinite loop, send a bug report!
-;; Then set the following in your ~/.emacs file to keep on working:
-;;   (setq font-latex-do-multi-line nil)
 
 ;;; Code:
 
