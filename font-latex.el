@@ -1258,9 +1258,8 @@ triggers Font Lock to recognize the change."
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
   (font-latex-set-syntactic-keywords)
 
-  ;; Activate multi-line fontification facilities if available.
-  (when (boundp 'font-lock-multiline)
-    (set (make-local-variable 'font-lock-multiline) t))
+  ;; Activate multi-line fontification facilities.
+  (set (make-local-variable 'font-lock-multiline) t)
 
   ;; Functions for extending the region.
   (dolist (elt '(font-latex-extend-region-backwards-command-with-args
@@ -1372,11 +1371,6 @@ If optional argument is non-nil, print status messages."
 (defun font-latex-unfontify-region (beg end &rest ignored)
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
-  ;; XEmacs does not provide `font-lock-extra-managed-props', so
-  ;; remove the `font-latex-multiline' property manually.  (The
-  ;; property is only added if `font-lock-multiline' is bound.)
-  (unless (boundp 'font-lock-multiline)
-    (remove-text-properties beg end '(font-latex-multiline)))
   (remove-text-properties beg end '(script-level))
   (let ((start beg))
     (while (< beg end)
@@ -1387,30 +1381,6 @@ If optional argument is non-nil, print status messages."
 	    (put-text-property beg next 'display nil))
 	(setq beg next)))
     (remove-text-properties start end '(invisible))))
-
-(defadvice font-lock-after-change-function (before font-latex-after-change
-						   activate)
-  "Extend region for fontification of multiline constructs.
-This is only necessary if the editor does not provide multiline
-fontification facilities like `font-lock-multiline' itself."
-  (unless (boundp 'font-lock-multiline)
-    (let ((ad-beg (ad-get-arg 0))
-	  (ad-end (ad-get-arg 1)))
-      (save-excursion
-	(goto-char ad-beg)
-	(beginning-of-line)
-	(when (get-text-property (point) 'font-latex-multiline)
-	  (setq ad-beg (previous-single-property-change (point)
-							'font-latex-multiline))
-	  (when (numberp ad-beg)
-	    (ad-set-arg 0 ad-beg)))
-	(goto-char ad-end)
-	(end-of-line)
-	(when (get-text-property (point) 'font-latex-multiline)
-	  (setq ad-end (next-single-property-change (point)
-						    'font-latex-multiline))
-	  (when (numberp ad-end)
-	    (ad-set-arg 1 ad-end)))))))
 
 (defun font-latex-after-hacking-local-variables ()
   "Refresh fontification if required by updates of file-local variables.
@@ -1527,16 +1497,6 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
 	  (beginning-of-line 2)
 	  t))
     (forward-comment 1)))
-
-(defun font-latex-put-multiline-property-maybe (beg end)
-  "Add a multiline property if no equivalent is provided by the editor.
-The text property is used to find the start or end of a multiline
-construct when unfontifying a region.  Emacs adds such a text
-property automatically if `font-lock-multiline' is set to t and
-extends the region to be unfontified automatically as well."
-  (unless (boundp 'font-lock-multiline)
-    (put-text-property beg end 'font-latex-multiline t)))
-
 
 ;;; Match functions
 
@@ -1657,7 +1617,6 @@ Returns nil if none of KEYWORDS is found."
 					   (1+ error-indicator-pos))
 				     match-data))
 	    (push 'font-latex-warning-face font-latex-matched-faces))
-	  (font-latex-put-multiline-property-maybe beg end)
 	  (store-match-data match-data)
 	  (throw 'match t))))))
 
@@ -1710,11 +1669,9 @@ Returns nil if no command is found."
 	      (narrow-to-region (point-min) limit)
 	      (forward-char -1)		; Move on the opening bracket
 	      (if (font-latex-find-matching-close ?\{ ?\})
-		  (progn
-		    (font-latex-put-multiline-property-maybe beg (1- (point)))
-		    (store-match-data (list kbeg kbeg
-					    kbeg kend
-					    beg (1- (point)))))
+		  (store-match-data (list kbeg kbeg
+					  kbeg kend
+					  beg (1- (point))))
 		(goto-char kend)
 		(store-match-data (list (1- kbeg) kbeg
 					kbeg kend
@@ -1816,9 +1773,7 @@ Used for patterns like:
 				      limit 'move)
 		   (string= (match-string 1) close-tag))
 	      ;; Found closing tag.
-	      (progn
-		(font-latex-put-multiline-property-maybe beg (point))
-		(store-match-data (list beg beg beg (point))))
+	      (store-match-data (list beg beg beg (point)))
 	    ;; Did not find closing tag.
 	    (goto-char (+ beg 2))
 	    (store-match-data (list beg (point) (point) (point))))
@@ -1886,7 +1841,6 @@ The \\begin{equation} incl. arguments in the same line and
 	  (setq end (match-beginning 0))
 	(goto-char beg)
 	(setq end beg))
-      (font-latex-put-multiline-property-maybe beg end)
       (store-match-data (list beg end))
       t)))
 
@@ -1979,7 +1933,6 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 		(progn
 		  (goto-char after-beg)
 		  (store-match-data (list after-beg after-beg beg after-beg)))
-	      (font-latex-put-multiline-property-maybe beg (point))
 	      (store-match-data (list beg (point) (point) (point))))
 	    (throw 'match t)))))))
 
