@@ -1,6 +1,6 @@
-;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.03)
+;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fbox.sty' (v0.03) from 2019/11/04.
+;; This file adds support for `fbox.sty' (v0.04) from 2020/01/03.
 ;; `fbox.sty' is part of TeXLive.
 
 ;; Silence the compiler:
@@ -38,13 +38,16 @@
  "fbox"
  (lambda ()
    (TeX-add-symbols
-    '("fbox"  [ "Frame parts (combination of lrtb)" ] t)
-    '("fbox*" [ "Frame parts (combination of lrtb)" ] t))
+    '("fbox"     [ "Frame parts (combination of lrtb)" ] t)
+    '("fbox*"    [ "Frame parts (combination of lrtb)" ] t)
+    '("fparbox"  [ "Frame parts (combination of lrtb)" ] t)
+    '("fparbox*" [ "Frame parts (combination of lrtb)" ] t))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("fbox" "*[{"))
+     (font-latex-add-keywords '(("fbox"    "*[{")
+				("fparbox" "*[{"))
 			      'function)))
  LaTeX-dialect)
 
