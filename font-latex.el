@@ -1375,8 +1375,7 @@ If optional argument is non-nil, print status messages."
 	(if (and (eq (car-safe prop) 'raise)
 		 (null (cddr prop)))
 	    (put-text-property beg next 'display nil))
-	(setq beg next)))
-    (remove-text-properties start end '(invisible))))
+	(setq beg next)))))
 
 (defun font-latex-after-hacking-local-variables ()
   "Refresh fontification if required by updates of file-local variables.
@@ -2054,27 +2053,15 @@ END marks boundaries for searching for quotation ends."
 		    (while (eq (char-before pos) ?\\)
 		      (setq pos (1- pos) odd (not odd)))
 		    odd)))
-    ;; Adding other text properties than `face' is supported by
-    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28.
-    ;; With the introduction of this feature the variable
-    ;; `font-lock-extra-managed-props' was introduced and serves here
-    ;; for feature checking.
-    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
-      (if (eq (char-after pos) ?_)
-	  (if extra-props-flag
-	      (font-latex--get-script-props pos :sub)
-	    'font-latex-subscript-face)
-	(if extra-props-flag
-	    (font-latex--get-script-props pos :super)
-	  'font-latex-superscript-face)))))
+    (if (eq (char-after pos) ?_)
+	(font-latex--get-script-props pos :sub)
+      (font-latex--get-script-props pos :super))))
 
 (defun font-latex-script-char (pos)
   "Return face and display spec for subscript and superscript character at POS."
-  (if (boundp 'font-lock-extra-managed-props)
-      `(face font-latex-script-char-face
-	     ,@(when (eq font-latex-fontify-script 'invisible)
-		 '(invisible t)))
-    'font-latex-script-char-face))
+  `(face font-latex-script-char-face
+	 ,@(when (eq font-latex-fontify-script 'invisible)
+	     '(invisible t))))
 
 ;;; docTeX
 
