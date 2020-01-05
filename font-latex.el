@@ -1221,9 +1221,6 @@ have changed."
 
 ;;; Setup
 
-(defvar font-lock-comment-start-regexp nil
-  "Regexp to match the start of a comment.")
-
 (defvar font-latex-extend-region-functions nil
   "List of functions extending the region for multiline constructs.
 
@@ -1281,8 +1278,7 @@ triggers Font Lock to recognize the change."
 	  `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
 	    nil nil ,font-latex-syntax-alist nil))
 	(variables
-	 '((font-lock-comment-start-regexp . "%")
-	   (font-lock-mark-block-function . mark-paragraph)
+	 '((font-lock-mark-block-function . mark-paragraph)
 	   (font-lock-fontify-region-function
 	    . font-latex-fontify-region)
 	   (font-lock-unfontify-region-function
