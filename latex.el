@@ -6233,7 +6233,7 @@ function would return non-nil and `(match-string 1)' would return
    ;; The following have no special support, but are included in
    ;; case the auto files are missing.
 
-   "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
+   "sloppypar" "tabbing" "verbatim" "verbatim*"
    "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
    "center" "titlepage" "verse" "eqnarray*"
 
@@ -6495,9 +6495,11 @@ function would return non-nil and `(match-string 1)' would return
      "textbackslash" "textbar" "textless" "textgreater"
      "textasciicircum" "textasciitilde"
      "textregistered" "texttrademark"
-     "rmfamily" "sffamily" "ttfamily" "mdseries" "bfseries"
-     "itshape" "slshape" "upshape" "scshape"
-     "eminnershape"))
+     "rmfamily" "sffamily" "ttfamily"
+     '("mdseries" -1) '("bfseries" -1)
+     '("itshape"  -1) '("slshape"  -1)
+     '("upshape"  -1) '("scshape"  -1)
+     '("eminnershape" -1)))
 
   (TeX-run-style-hooks "LATEX")
 
