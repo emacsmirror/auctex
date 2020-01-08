@@ -6502,8 +6502,14 @@ function would return non-nil and `(match-string 1)' would return
      '("itshape"  -1) '("slshape"  -1)
      '("upshape"  -1) '("scshape"  -1)
      '("eminnershape" -1)
-     ;; The next 2 were added to LaTeX kernel with 2020-02-02 release:
-     '("ulcshape" -1) '("swshape"  -1)
+     ;; The next 3 were added to LaTeX kernel with 2020-02-02 release:
+     '("sscshape" -1) '("swshape"  -1) '("ulcshape" -1)
+     ;; These are for the default settings:
+     "sscdefault" "swdefault" "ulcdefault"
+     ;; This macro is for `spaced small caps'.  Currently, only some
+     ;; commercial fonts offer this.  It should be moved into
+     ;; `LaTeX-font-list' once it is needed more frequently.
+     '("textssc" t)
      ;; User level reset macros:
      '("normalfont" -1) '("normalshape" -1)))
 

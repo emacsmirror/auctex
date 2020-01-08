@@ -358,7 +358,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
       ("centering" "") ("raggedright" "") ("raggedleft" "")
-      ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
+      ("TeX" "") ("LaTeX" "") ("LaTeXe" "")
+      ("normalfont" "") ("normalshape" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
@@ -404,8 +405,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
     ("bold-command"
-     (("textbf" "{") ("textsc" "{") ("textulc" "{") ("textup" "{")
-      ("textsw" "{") ("boldsymbol" "{") ("pmb" "{"))
+     (("textbf" "{") ("textsc" "{") ("textssc" "{") ("textulc" "{")
+      ("textup" "{") ("textsw" "{") ("boldsymbol" "{") ("pmb" "{"))
      font-latex-bold-face 1 command)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{"))
@@ -417,7 +418,7 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{") ("oldstylenums" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
-     ("bf" "bfseries" "sc" "scshape" "ulcshape" "upshape" "swshape")
+     ("bf" "bfseries" "sc" "scshape" "sscshape" "ulcshape" "upshape" "swshape")
      font-latex-bold-face 1 declaration)
     ("italic-declaration"
      ("em" "it" "itshape" "sl" "slshape")
@@ -425,8 +426,7 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("type-declaration"
      ("tt" "ttfamily" "sf" "sffamily" "rm" "rmfamily" "mdseries"
       "tiny" "scriptsize" "footnotesize" "small" "normalsize"
-      "large" "Large" "LARGE" "huge" "Huge"
-      "normalfont" "normalshape")
+      "large" "Large" "LARGE" "huge" "Huge")
      font-lock-type-face 1 declaration))
   "Built-in keywords and specifications for font locking.
 
