@@ -1,7 +1,6 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files
 
-;; Copyright (C) 2005, 2007, 2009, 2012-2017
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2007, 2009, 2012-2020 Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Keywords: tex, wp, convenience
@@ -271,8 +270,8 @@ and `LaTeX-csquotes-close-quote' are non-empty strings."
 ;; style/emp.el
 
 (defcustom LaTeX-write18-enabled-p t
-  "*If non-nil, insert automatically the \\write18 calling metapost.
-When disabled, you have to use mpost on the mp files automatically 
+  "If non-nil, insert automatically the \\write18 calling metapost.
+When disabled, you have to use mpost on the mp files automatically
 produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
@@ -356,16 +355,16 @@ files.
 Inserting the subdirectory in the filename (as
 `LaTeX-includegraphics-read-file-relative') is discouraged by
 `epslatex.ps'."
-;; ,----[ epslatex.ps; Section 12; (page 26) ]
-;; | Instead of embedding the subdirectory in the filename, there are two
-;; | other options
-;; |   1. The best method is to modify the TeX search path [...]
-;; |   2. Another method is to specify sub/ in a \graphicspath command
-;; |      [...].  However this is much less efficient than modifying the
-;; |      TeX search path
-;; `----
-;; See "Inefficiency" and "Unportability" in the same section for more
-;; information.
+  ;; ,----[ epslatex.ps; Section 12; (page 26) ]
+  ;; | Instead of embedding the subdirectory in the filename, there are two
+  ;; | other options
+  ;; |   1. The best method is to modify the TeX search path [...]
+  ;; |   2. Another method is to specify sub/ in a \graphicspath command
+  ;; |      [...].  However this is much less efficient than modifying the
+  ;; |      TeX search path
+  ;; `----
+  ;; See "Inefficiency" and "Unportability" in the same section for more
+  ;; information.
   :group 'LaTeX-style
   :type '(choice (const :tag "TeX" LaTeX-includegraphics-read-file-TeX)
 		 (const :tag "relative"
@@ -375,6 +374,22 @@ Inserting the subdirectory in the filename (as
 					 (read-file-name "Image file: ")
 					 (TeX-master-directory))))
 		 (function :tag "other")))
+
+;; style/revtex4-2.el
+
+(defcustom LaTeX-revtex4-2-video-label "vid:"
+  "Default prefix to labels in video environments of REVTeX4-2 class."
+  :group 'LaTeX-label
+  :type 'string)
+
+(defcustom LaTeX-revtex4-2-video-reftex-quick-id-key ?v
+  "Unique letter identifying \"video\" environment in RefTeX.
+
+A character argument for quick identification when RefTeX inserts
+new references with `reftex-reference'.  It must be unique.  It
+is initialized to ?v."
+  :group 'LaTeX-style
+  :type 'character)
 
 ;; style/splitidx.el
 
