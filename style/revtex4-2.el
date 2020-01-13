@@ -35,6 +35,8 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(defvar LaTeX-natbib-package-options)
+(defvar LaTeX-url-package-options)
 
 (defun LaTeX-env-revtex4-2-video (environment)
   "Create ENVIRONMENT with \\caption and \\label commands.
