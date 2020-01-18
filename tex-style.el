@@ -391,6 +391,31 @@ is initialized to ?v."
   :group 'LaTeX-style
   :type 'character)
 
+;; style/shortvrb.el
+
+(defcustom LaTeX-shortvrb-chars nil
+  "List of characters toggling verbatim mode.
+When your document uses the shortvrb style and you have a
+\\MakeShortVrb{\\|} in your file to write verbatim text as
+|text|, then set this variable to the list (?|).  Then AUCTeX
+fontifies |text| as verbatim.
+
+Preferably, you should do this buffer-locally using a file
+variable near the end of your document like so:
+
+  %% Local Variables:
+  %% LaTeX-shortvrb-chars: (?|)
+  %% End:
+
+When you customize this variable to a non-nil value, then it
+becomes the default value meaning that verbatim fontification is
+always performed for the characters in the list, no matter if
+your document actually defines shortvrb chars using
+\\MakeShortVrb."
+  :group 'LaTeX-style
+  :type '(repeat character))
+(put 'LaTeX-shortvrb-chars 'safe-local-variable 'listp)
+
 ;; style/splitidx.el
 
 (defcustom LaTeX-splitidx-sindex-reftex-quick-id-key ?s
@@ -402,6 +427,10 @@ must be unique.  It is initialized to ?s when added to
 `reftex-index-macros'."
   :group 'LaTeX-style
   :type 'character)
+
+;; Don't look for file-local variables before this line, so that the
+;; example in the docstring of `LaTeX-shortvrb-chars' isn't picked up.
+
 
 (provide 'tex-style)
 
