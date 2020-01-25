@@ -415,7 +415,8 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("ensuremath" "|{\\"))
      font-latex-math-face 1 command)
     ("type-command"
-     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{") ("oldstylenums" "{"))
+     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{")
+      ("textnormal" "{") ("oldstylenums" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
      ("bf" "bfseries" "sc" "scshape" "sscshape" "ulcshape" "upshape" "swshape")
