@@ -1570,7 +1570,7 @@ right number."
 \\(\\[\\(\\([^#\\%]\\|%[^\n\r]*[\n\r]\\)*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 5 1) LaTeX-auto-style)
-    ("\\\\use\\(package\\)\\(\\[\\([^\]\\]*\\)\\]\\)?\
+    ("\\\\use\\(package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\(\\([^#}\\.%]\\|%[^\n\r]*[\n\r]\\)+?\\)}"
      (3 4 1) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
@@ -1588,14 +1588,14 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-class-regexp-list
   '(;; \RequirePackage[<options>]{<package>}[<date>]
-    ("\\\\Require\\(Package\\)\\(\\[\\([^\]\\]*\\)\\]\\)?\
+    ("\\\\Require\\(Package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \RequirePackageWithOptions{<package>}[<date>],
     ("\\\\Require\\(Package\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
      (2 3 1) LaTeX-auto-style)
     ;; \LoadClass[<options>]{<package>}[<date>]
-    ("\\\\Load\\(Class\\)\\(\\[\\([^\]\\]*\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
+    ("\\\\Load\\(Class\\)\\(\\[\\([^]]*\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \LoadClassWithOptions{<package>}[<date>]
     ("\\\\Load\\(Class\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
