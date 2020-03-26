@@ -75,6 +75,7 @@
     ("firstline")
     ("lastline")
     ("linerange")
+    ("consecutivenumbers" ("true" "false"))
     ("showlines" ("true" "false"))
     ("emptylines")
     ("gobble")
@@ -420,7 +421,8 @@ caption key is found, an error is issued."
     '("lstDeleteShortInline" "Character")
 
     "lstgrinddeffile" "lstaspectfiles" "lstlanguagefiles"
-    "lstlistingname" "lstlistlistingname")
+    "lstlistingname" "lstlistingnamestyle" "thelstlisting"
+    "lstlistlistingname")
 
    ;; New environments
    (LaTeX-add-environments
