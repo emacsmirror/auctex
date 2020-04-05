@@ -787,7 +787,7 @@ stopped{handleerror quit}if \
 			;; heuristic here.
 			(with-current-buffer TeX-command-buffer
 			  (and TeX-PDF-mode
-			       (not TeX-PDF-from-DVI)))))))
+			       (not (TeX-PDF-from-DVI))))))))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
 
