@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2019 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -422,11 +422,11 @@ to be run."
 	  ((= length 1)
 	   (setq engine (car TeX-check-engine-list))
 	   (y-or-n-p (format "%s is required to build this document.
-Do you want to use this engine?" (cdr (assoc engine name-alist)))))
+Do you want to use this engine? " (cdr (assoc engine name-alist)))))
 	  ;; More than one engine is allowed.
 	  ((> length 1)
 	   (if (y-or-n-p (format "It appears %s are required to build this document.
-Do you want to select one of these engines?"
+Do you want to select one of these engines? "
 				 (mapconcat
 				  (lambda (elt) (cdr (assoc elt name-alist)))
 				  TeX-check-engine-list ", ")))
@@ -449,7 +449,7 @@ Do you want to select one of these engines?"
 	     (setq TeX-check-engine-list nil))))
        (TeX-engine-set engine)
        (when (and (fboundp 'add-file-local-variable)
-		  (y-or-n-p "Do you want to remember the choice?"))
+		  (y-or-n-p "Do you want to remember the choice? "))
 	 (add-file-local-variable 'TeX-engine engine)
 	 (save-buffer))))))
 
