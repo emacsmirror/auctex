@@ -1,6 +1,6 @@
 ;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)
 
-;; Copyright (C) 2016--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -189,6 +189,7 @@ square brackets."
 
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."
+  (TeX-load-style "caption")
   (TeX-read-key-val t
 		    (append
 		     `(,(list "language"

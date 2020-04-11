@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.
 
-;; Copyright (C) 1991, 1993-2019 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -668,41 +668,91 @@ environment just inserted, the buffer position just before
 	 (concat "^\\([ \t]*" TeX-comment-start-regexp "+\\)+[ \t]*"))
 	(setq prefix (match-string 0))))
     ;; What to do with the line containing point.
-    (cond ((save-excursion (beginning-of-line)
+    ;; - Open a new empty line for later insertion of "\begin{foo}" and
+    ;;   put the point there.
+    ;; - If there were at first any non-whitespace texts between the
+    ;;   point and EOL, send them into their new own line with possible
+    ;;   comment prefix.
+    (cond (;; When the entire line consists of whitespaces except
+	   ;; possible prefix...
+	   (save-excursion (beginning-of-line)
 			   (looking-at (concat prefix "[ \t]*$")))
+	   ;; ...make the line empty and put the point there.
 	   (delete-region (match-beginning 0) (match-end 0)))
-	  ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
+	  (;; When there are only whitespaces except possible prefix
+	   ;; between the point and BOL (including the case the point
+	   ;; is at BOL)...
+	   (TeX-looking-at-backward (if prefix
+					(concat "^\\(" prefix "\\)?[ \t]*")
+				      "^[ \t]*")
 				    (line-beginning-position))
+	   ;; ...in this case, we have non-whitespace texts between
+	   ;; the point and EOL, so send the entire line into a new
+	   ;; next line and put the point on the empty line just
+	   ;; created.
 	   (beginning-of-line)
 	   (newline)
 	   (beginning-of-line 0))
-	  ((bolp)
+	  (;; In all other cases...
+	   t
+	   ;; ...insert a new empty line after deleting all
+	   ;; whitespaces around the point, put the point there...
 	   (delete-horizontal-space)
-	   (newline)
-	   (beginning-of-line 0))
-	  (t
-	   (delete-horizontal-space)
-	   (newline 2)
-	   (when prefix (insert prefix))
-	   (beginning-of-line 0)))
+	   (if (eolp)
+	       (newline)
+	     ;; ...and if there were at first any non-whitespace texts
+	     ;; between (the original position of) the point and EOL,
+	     ;; send them into a new next line with possible comment
+	     ;; prefix.
+	     (newline 2)
+	     (when prefix (insert prefix))
+	     (beginning-of-line 0))))
     ;; What to do with the line containing mark.
+    ;; If there is active region...
     (when active-mark
+      ;; - Open a new empty line for later insertion of "\end{foo}"
+      ;;   and put the mark there.
+      ;; - If there were at first any non-whitespace texts between the
+      ;;   mark and EOL, pass them over the empty line and put them on
+      ;;   their own line with possible comment prefix.
       (save-excursion
 	(goto-char (mark))
-	(cond ((save-excursion (beginning-of-line)
-			       (or (looking-at (concat prefix "[ \t]*$"))
-				   (looking-at "[ \t]*$")))
+	(cond (;; When the entire line consists of whitespaces except
+	       ;; possible prefix...
+	       (save-excursion (beginning-of-line)
+			       (looking-at
+				(if prefix
+				    (concat "\\(" prefix "\\)?[ \t]*$")
+				  "[ \t]*$")))
+	       ;; ...make the line empty and put the mark there.
 	       (delete-region (match-beginning 0) (match-end 0)))
-	      ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
+	      (;; When there are only whitespaces except possible prefix
+	       ;; between the mark and BOL (including the case the mark
+	       ;; is at BOL)...
+	       (TeX-looking-at-backward (if prefix
+					    (concat "^\\(" prefix "\\)?[ \t]*")
+					  "^[ \t]*")
 					(line-beginning-position))
+	       ;; ...in this case, we have non-whitespace texts
+	       ;; between the mark and EOL, so send the entire line
+	       ;; into a new next line and put the mark on the empty
+	       ;; line just created.
 	       (beginning-of-line)
-	       (newline)
-	       (beginning-of-line 0))
-	      (t
+	       (set-mark (point))
+	       (newline))
+	      (;; In all other cases...
+	       t
+	       ;; ...make a new empty line after deleting all
+	       ;; whitespaces around the mark, put the mark there...
 	       (delete-horizontal-space)
 	       (insert-before-markers "\n")
-	       (newline)
-	       (when prefix (insert prefix))))))
+	       ;; ...and if there were at first any non-whitespace
+	       ;; texts between (the original position of) the mark
+	       ;; and EOL, send them into a new next line with
+	       ;; possible comment prefix.
+	       (unless (eolp)
+		 (newline)
+		 (when prefix (insert prefix)))))))
     ;; Now insert the environment.
     (when prefix (insert prefix))
     (setq env-start (point))
@@ -1520,7 +1570,7 @@ right number."
 \\(\\[\\(\\([^#\\%]\\|%[^\n\r]*[\n\r]\\)*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 5 1) LaTeX-auto-style)
-    ("\\\\use\\(package\\)\\(\\[\\([^\]\\]*\\)\\]\\)?\
+    ("\\\\use\\(package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\(\\([^#}\\.%]\\|%[^\n\r]*[\n\r]\\)+?\\)}"
      (3 4 1) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
@@ -1538,14 +1588,14 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-class-regexp-list
   '(;; \RequirePackage[<options>]{<package>}[<date>]
-    ("\\\\Require\\(Package\\)\\(\\[\\([^\]\\]*\\)\\]\\)?\
+    ("\\\\Require\\(Package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \RequirePackageWithOptions{<package>}[<date>],
     ("\\\\Require\\(Package\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
      (2 3 1) LaTeX-auto-style)
     ;; \LoadClass[<options>]{<package>}[<date>]
-    ("\\\\Load\\(Class\\)\\(\\[\\([^\]\\]*\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
+    ("\\\\Load\\(Class\\)\\(\\[\\([^]]*\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
     ;; \LoadClassWithOptions{<package>}[<date>]
     ("\\\\Load\\(Class\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
@@ -5706,25 +5756,41 @@ regenerated by the respective menu filter."
      :help "Insert a new \\item into current environment"]
     "-"
     ("Insert Font"
-     ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-     ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-     ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-     ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-     ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-     ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+     ["Emphasize"    (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     "-"
+     ["Roman"        (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+     ["Sans Serif"   (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+     ["Typewriter"   (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+     "-"
+     ["Medium"       (TeX-font nil ?\C-m) :keys "C-c C-f C-m"]
+     ["Bold"         (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     "-"
+     ["Italic"       (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+     ["Slanted"      (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Small Caps"   (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     ["Swash"        (TeX-font nil ?\C-w) :keys "C-c C-f C-w"]
+     ["Upper Lower"  (TeX-font nil ?\C-l) :keys "C-c C-f C-l"]
+     "-"
+     ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"]
+     ["Normal"       (TeX-font nil ?\C-n) :keys "C-c C-f C-n"])
     ("Replace Font"
-     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-     ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-     ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-     ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+     ["Emphasize"    (TeX-font  t  ?\C-e) :keys "C-u C-c C-f C-e"]
+     "-"
+     ["Roman"        (TeX-font  t  ?\C-r) :keys "C-u C-c C-f C-r"]
+     ["Sans Serif"   (TeX-font  t  ?\C-f) :keys "C-u C-c C-f C-f"]
+     ["Typewriter"   (TeX-font  t  ?\C-t) :keys "C-u C-c C-f C-t"]
+     "-"
+     ["Medium"       (TeX-font  t  ?\C-m) :keys "C-u C-c C-f C-m"]
+     ["Bold"         (TeX-font  t  ?\C-b) :keys "C-u C-c C-f C-b"]
+     "-"
+     ["Italic"       (TeX-font  t  ?\C-i) :keys "C-u C-c C-f C-i"]
+     ["Slanted"      (TeX-font  t  ?\C-s) :keys "C-u C-c C-f C-s"]
+     ["Small Caps"   (TeX-font  t  ?\C-c) :keys "C-u C-c C-f C-c"]
+     ["Swash"        (TeX-font  t  ?\C-w) :keys "C-u C-c C-f C-w"]
+     ["Upper Lower"  (TeX-font  t  ?\C-l) :keys "C-u C-c C-f C-l"]
+     "-"
+     ["Calligraphic" (TeX-font  t  ?\C-a) :keys "C-u C-c C-f C-a"]
+     ["Normal"       (TeX-font  t  ?\C-n) :keys "C-u C-c C-f C-n"])
     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
     "-"
     ["Comment or Uncomment Region"
@@ -5768,26 +5834,28 @@ regenerated by the respective menu filter."
     (?\C-e "\\emph{"       "}")
     (?\C-f "\\textsf{"     "}" "\\mathsf{"     "}")
     (?\C-i "\\textit{"     "}" "\\mathit{"     "}")
+    (?\C-l "\\textulc{"    "}")
     (?\C-m "\\textmd{"     "}")
     (?\C-n "\\textnormal{" "}" "\\mathnormal{" "}")
     (?\C-r "\\textrm{"     "}" "\\mathrm{"     "}")
     (?\C-s "\\textsl{"     "}" "\\mathbb{"     "}")
     (?\C-t "\\texttt{"     "}" "\\mathtt{"     "}")
     (?\C-u "\\textup{"     "}")
+    (?\C-w "\\textsw{"     "}")
     (?\C-d "" "" t))
   "Font commands used with LaTeX2e.  See `TeX-font-list'."
   :group 'LaTeX-macro
   :type '(repeat
-	   (group
-	    :value (?\C-a "" "")
-	    (character :tag "Key")
-	    (string :tag "Prefix")
-	    (string :tag "Suffix")
-	    (option (group
-		     :inline t
-		     (string :tag "Math Prefix")
-		     (string :tag "Math Suffix")))
-	    (option (sexp :format "Replace\n" :value t)))))
+	  (group
+	   :value (?\C-a "" "")
+	   (character :tag "Key")
+	   (string :tag "Prefix")
+	   (string :tag "Suffix")
+	   (option (group
+		    :inline t
+		    (string :tag "Math Prefix")
+		    (string :tag "Math Suffix")))
+	   (option (sexp :format "Replace\n" :value t)))))
 
 
 ;;; Simple Commands
@@ -6183,7 +6251,7 @@ function would return non-nil and `(match-string 1)' would return
    ;; The following have no special support, but are included in
    ;; case the auto files are missing.
 
-   "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
+   "sloppypar" "tabbing" "verbatim" "verbatim*"
    "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
    "center" "titlepage" "verse" "eqnarray*"
 
@@ -6413,6 +6481,8 @@ function would return non-nil and `(match-string 1)' would return
    '("normalsize" -1) '("large" -1) '("Large" -1) '("LARGE" -1) '("huge" -1)
    '("Huge" -1)
    '("oldstylenums" "Numbers")
+   ;; The next macro is provided by LaTeX2e 2020-02-02 release:
+   '("legacyoldstylenums" "Numbers")
    "pounds" "copyright"
    "hfil" "hfill" "vfil" "vfill" "hrulefill" "dotfill"
    "indent" "noindent" "today"
@@ -6441,13 +6511,155 @@ function would return non-nil and `(match-string 1)' would return
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
      "textquotedblright" "textquoteleft" "textquoteright"
-     "textbullet" "textperiodcentered" "textasteriskcentered"
      "textbackslash" "textbar" "textless" "textgreater"
      "textasciicircum" "textasciitilde"
-     "textregistered" "texttrademark"
-     "rmfamily" "sffamily" "ttfamily" "mdseries" "bfseries"
-     "itshape" "slshape" "upshape" "scshape"
-     "eminnershape"))
+
+     ;; With the advent of LaTeX2e release 2020-02-02, all symbols
+     ;; provided by textcomp.sty are available out of the box by the
+     ;; kernel.  The next block is moved here from textcomp.el:
+     '("capitalgrave"             0)     ; Type: Accent -- Slot: 0
+     '("capitalacute"             0)     ; Type: Accent -- Slot: 1
+     '("capitalcircumflex"        0)     ; Type: Accent -- Slot: 2
+     '("capitaltilde"             0)     ; Type: Accent -- Slot: 3
+     '("capitaldieresis"          0)     ; Type: Accent -- Slot: 4
+     '("capitalhungarumlaut"      0)     ; Type: Accent -- Slot: 5
+     '("capitalring"              0)     ; Type: Accent -- Slot: 6
+     '("capitalcaron"             0)     ; Type: Accent -- Slot: 7
+     '("capitalbreve"             0)     ; Type: Accent -- Slot: 8
+     '("capitalmacron"            0)     ; Type: Accent -- Slot: 9
+     '("capitaldotaccent"         0)     ; Type: Accent -- Slot: 10
+     '("textquotestraightbase"    0)     ; Type: Symbol -- Slot: 13
+     '("textquotestraightdblbase" 0)     ; Type: Symbol -- Slot: 18
+     '("texttwelveudash"          0)     ; Type: Symbol -- Slot: 21
+     '("textthreequartersemdash"  0)     ; Type: Symbol -- Slot: 22
+     '("textcapitalcompwordmark"  0)     ; Type: Symbol -- Slot: 23
+     '("textleftarrow"            0)     ; Type: Symbol -- Slot: 24
+     '("textrightarrow"           0)     ; Type: Symbol -- Slot: 25
+     '("t"                        0)     ; Type: Accent -- Slot: 26
+     '("capitaltie"               0)     ; Type: Accent -- Slot: 27
+     '("newtie"                   0)     ; Type: Accent -- Slot: 28
+     '("capitalnewtie"            0)     ; Type: Accent -- Slot: 29
+     '("textascendercompwordmark" 0)     ; Type: Symbol -- Slot: 31
+     '("textblank"                0)     ; Type: Symbol -- Slot: 32
+     '("textdollar"               0)     ; Type: Symbol -- Slot: 36
+     '("textquotesingle"          0)     ; Type: Symbol -- Slot: 39
+     '("textasteriskcentered"     0)     ; Type: Symbol -- Slot: 42
+     '("textdblhyphen"            0)     ; Type: Symbol -- Slot: 45
+     '("textfractionsolidus"      0)     ; Type: Symbol -- Slot: 47
+     '("textzerooldstyle"         0)     ; Type: Symbol -- Slot: 48
+     '("textoneoldstyle"          0)     ; Type: Symbol -- Slot: 49
+     '("texttwooldstyle"          0)     ; Type: Symbol -- Slot: 50
+     '("textthreeoldstyle"        0)     ; Type: Symbol -- Slot: 51
+     '("textfouroldstyle"         0)     ; Type: Symbol -- Slot: 52
+     '("textfiveoldstyle"         0)     ; Type: Symbol -- Slot: 53
+     '("textsixoldstyle"          0)     ; Type: Symbol -- Slot: 54
+     '("textsevenoldstyle"        0)     ; Type: Symbol -- Slot: 55
+     '("texteightoldstyle"        0)     ; Type: Symbol -- Slot: 56
+     '("textnineoldstyle"         0)     ; Type: Symbol -- Slot: 57
+     '("textlangle"               0)     ; Type: Symbol -- Slot: 60
+     '("textminus"                0)     ; Type: Symbol -- Slot: 61
+     '("textrangle"               0)     ; Type: Symbol -- Slot: 62
+     '("textmho"                  0)     ; Type: Symbol -- Slot: 77
+     '("textbigcircle"            0)     ; Type: Symbol -- Slot: 79
+     '("textohm"                  0)     ; Type: Symbol -- Slot: 87
+     '("textlbrackdbl"            0)     ; Type: Symbol -- Slot: 91
+     '("textrbrackdbl"            0)     ; Type: Symbol -- Slot: 93
+     '("textuparrow"              0)     ; Type: Symbol -- Slot: 94
+     '("textdownarrow"            0)     ; Type: Symbol -- Slot: 95
+     '("textasciigrave"           0)     ; Type: Symbol -- Slot: 96
+     '("textborn"                 0)     ; Type: Symbol -- Slot: 98
+     '("textdivorced"             0)     ; Type: Symbol -- Slot: 99
+     '("textdied"                 0)     ; Type: Symbol -- Slot: 100
+     '("textleaf"                 0)     ; Type: Symbol -- Slot: 108
+     '("textmarried"              0)     ; Type: Symbol -- Slot: 109
+     '("textmusicalnote"          0)     ; Type: Symbol -- Slot: 110
+     '("texttildelow"             0)     ; Type: Symbol -- Slot: 126
+     '("textdblhyphenchar"        0)     ; Type: Symbol -- Slot: 127
+     '("textasciibreve"           0)     ; Type: Symbol -- Slot: 128
+     '("textasciicaron"           0)     ; Type: Symbol -- Slot: 129
+     '("textacutedbl"             0)     ; Type: Symbol -- Slot: 130
+     '("textgravedbl"             0)     ; Type: Symbol -- Slot: 131
+     '("textdagger"               0)     ; Type: Symbol -- Slot: 132
+     '("textdaggerdbl"            0)     ; Type: Symbol -- Slot: 133
+     '("textbardbl"               0)     ; Type: Symbol -- Slot: 134
+     '("textperthousand"          0)     ; Type: Symbol -- Slot: 135
+     '("textbullet"               0)     ; Type: Symbol -- Slot: 136
+     '("textcelsius"              0)     ; Type: Symbol -- Slot: 137
+     '("textdollaroldstyle"       0)     ; Type: Symbol -- Slot: 138
+     '("textcentoldstyle"         0)     ; Type: Symbol -- Slot: 139
+     '("textflorin"               0)     ; Type: Symbol -- Slot: 140
+     '("textcolonmonetary"        0)     ; Type: Symbol -- Slot: 141
+     '("textwon"                  0)     ; Type: Symbol -- Slot: 142
+     '("textnaira"                0)     ; Type: Symbol -- Slot: 143
+     '("textguarani"              0)     ; Type: Symbol -- Slot: 144
+     '("textpeso"                 0)     ; Type: Symbol -- Slot: 145
+     '("textlira"                 0)     ; Type: Symbol -- Slot: 146
+     '("textrecipe"               0)     ; Type: Symbol -- Slot: 147
+     '("textinterrobang"          0)     ; Type: Symbol -- Slot: 148
+     '("textinterrobangdown"      0)     ; Type: Symbol -- Slot: 149
+     '("textdong"                 0)     ; Type: Symbol -- Slot: 150
+     '("texttrademark"            0)     ; Type: Symbol -- Slot: 151
+     '("textpertenthousand"       0)     ; Type: Symbol -- Slot: 152
+     '("textpilcrow"              0)     ; Type: Symbol -- Slot: 153
+     '("textbaht"                 0)     ; Type: Symbol -- Slot: 154
+     '("textnumero"               0)     ; Type: Symbol -- Slot: 155
+     '("textdiscount"             0)     ; Type: Symbol -- Slot: 156
+     '("textestimated"            0)     ; Type: Symbol -- Slot: 157
+     '("textopenbullet"           0)     ; Type: Symbol -- Slot: 158
+     '("textservicemark"          0)     ; Type: Symbol -- Slot: 159
+     '("textlquill"               0)     ; Type: Symbol -- Slot: 160
+     '("textrquill"               0)     ; Type: Symbol -- Slot: 161
+     '("textcent"                 0)     ; Type: Symbol -- Slot: 162
+     '("textsterling"             0)     ; Type: Symbol -- Slot: 163
+     '("textcurrency"             0)     ; Type: Symbol -- Slot: 164
+     '("textyen"                  0)     ; Type: Symbol -- Slot: 165
+     '("textbrokenbar"            0)     ; Type: Symbol -- Slot: 166
+     '("textsection"              0)     ; Type: Symbol -- Slot: 167
+     '("textasciidieresis"        0)     ; Type: Symbol -- Slot: 168
+     '("textcopyright"            0)     ; Type: Symbol -- Slot: 169
+     '("textordfeminine"          0)     ; Type: Symbol -- Slot: 170
+     '("textcopyleft"             0)     ; Type: Symbol -- Slot: 171
+     '("textlnot"                 0)     ; Type: Symbol -- Slot: 172
+     '("textcircledP"             0)     ; Type: Symbol -- Slot: 173
+     '("textregistered"           0)     ; Type: Symbol -- Slot: 174
+     '("textasciimacron"          0)     ; Type: Symbol -- Slot: 175
+     '("textdegree"               0)     ; Type: Symbol -- Slot: 176
+     '("textpm"                   0)     ; Type: Symbol -- Slot: 177
+     '("texttwosuperior"          0)     ; Type: Symbol -- Slot: 178
+     '("textthreesuperior"        0)     ; Type: Symbol -- Slot: 179
+     '("textasciiacute"           0)     ; Type: Symbol -- Slot: 180
+     '("textmu"                   0)     ; Type: Symbol -- Slot: 181
+     '("textparagraph"            0)     ; Type: Symbol -- Slot: 182
+     '("textperiodcentered"       0)     ; Type: Symbol -- Slot: 183
+     '("textreferencemark"        0)     ; Type: Symbol -- Slot: 184
+     '("textonesuperior"          0)     ; Type: Symbol -- Slot: 185
+     '("textordmasculine"         0)     ; Type: Symbol -- Slot: 186
+     '("textsurd"                 0)     ; Type: Symbol -- Slot: 187
+     '("textonequarter"           0)     ; Type: Symbol -- Slot: 188
+     '("textonehalf"              0)     ; Type: Symbol -- Slot: 189
+     '("textthreequarters"        0)     ; Type: Symbol -- Slot: 190
+     '("texteuro"                 0)     ; Type: Symbol -- Slot: 191
+     '("texttimes"                0)     ; Type: Symbol -- Slot: 214
+     '("textdiv"                  0)     ; Type: Symbol -- Slot: 246
+     '("textcircled"              1)     ; Type: Command -- Slot: N/A
+     '("capitalcedilla"           1)     ; Type: Command -- Slot: N/A
+     '("capitalogonek"            1)     ; Type: Command -- Slot: N/A
+
+     "rmfamily" "sffamily" "ttfamily"
+     '("mdseries" -1) '("bfseries" -1)
+     '("itshape"  -1) '("slshape"  -1)
+     '("upshape"  -1) '("scshape"  -1)
+     '("eminnershape" -1)
+     ;; The next 3 were added to LaTeX kernel with 2020-02-02 release:
+     '("sscshape" -1) '("swshape"  -1) '("ulcshape" -1)
+     ;; These are for the default settings:
+     "sscdefault" "swdefault" "ulcdefault"
+     ;; This macro is for `spaced small caps'.  Currently, only some
+     ;; commercial fonts offer this.  It should be moved into
+     ;; `LaTeX-font-list' once it is needed more frequently.
+     '("textssc" t)
+     ;; User level reset macros:
+     '("normalfont" -1) '("normalshape" -1)))
 
   (TeX-run-style-hooks "LATEX")
 

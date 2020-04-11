@@ -605,6 +605,11 @@ will be inserted.
 @cindex @code{\textbf}
 Insert @b{bold face} @samp{\textbf@{@point{}@}} text.
 
+@item C-c C-f C-m
+@kindex C-c C-f C-m
+@cindex @code{\textmd}
+Insert @r{medium face} @samp{\textmd@{@point{}@}} text.
+
 @item C-c C-f C-i
 @kindex C-c C-f C-i
 @cindex @code{\textit}
@@ -623,7 +628,7 @@ Insert @i{slanted} @samp{\textsl@{@point{}@}} text.
 @item C-c C-f C-r
 @kindex C-c C-f C-r
 @cindex @code{\textrm}
-Insert roman @r{\textrm@{@point{}@}} text.
+Insert roman @samp{\textrm@{@point{}@}} text.
 
 @item C-c C-f C-f
 @kindex C-c C-f C-f
@@ -639,6 +644,21 @@ Insert @t{typewriter} @samp{\texttt@{@point{}@}} text.
 @kindex C-c C-f C-c
 @cindex @code{\textsc}
 Insert @sc{small caps} @samp{\textsc@{@point{}@}} text.
+
+@item C-c C-f C-l
+@kindex C-c C-f C-l
+@cindex @code{\textulc}
+Insert upper lower case @samp{\textulc@{@point{}@}} text.
+
+@item C-c C-f C-w
+@kindex C-c C-f C-w
+@cindex @code{\textsw}
+Insert @sc{swash} @samp{\textsw@{@point{}@}} text.
+
+@item C-c C-f C-n
+@kindex C-c C-f C-n
+@cindex @code{\textnormal}
+Insert normal @samp{\textnormal@{@point{}@}} text.
 
 @item C-c C-f C-d
 @kindex C-c C-f C-c

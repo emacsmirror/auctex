@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1991-1999, 2001-2019 Free Software Foundation, Inc.
+;; Copyright (C) 1991-1999, 2001-2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -422,11 +422,11 @@ to be run."
 	  ((= length 1)
 	   (setq engine (car TeX-check-engine-list))
 	   (y-or-n-p (format "%s is required to build this document.
-Do you want to use this engine?" (cdr (assoc engine name-alist)))))
+Do you want to use this engine? " (cdr (assoc engine name-alist)))))
 	  ;; More than one engine is allowed.
 	  ((> length 1)
 	   (if (y-or-n-p (format "It appears %s are required to build this document.
-Do you want to select one of these engines?"
+Do you want to select one of these engines? "
 				 (mapconcat
 				  (lambda (elt) (cdr (assoc elt name-alist)))
 				  TeX-check-engine-list ", ")))
@@ -449,7 +449,7 @@ Do you want to select one of these engines?"
 	     (setq TeX-check-engine-list nil))))
        (TeX-engine-set engine)
        (when (and (fboundp 'add-file-local-variable)
-		  (y-or-n-p "Do you want to remember the choice?"))
+		  (y-or-n-p "Do you want to remember the choice? "))
 	 (add-file-local-variable 'TeX-engine engine)
 	 (save-buffer))))))
 
@@ -1134,8 +1134,7 @@ Return the new process."
 	  (setq compilation-in-progress (cons process compilation-in-progress))
 	  process)
       (setq mode-line-process ": run")
-      (set-buffer-modified-p (buffer-modified-p))
-      (sit-for 0)				; redisplay
+      (force-mode-line-update)
       (call-process TeX-shell nil buffer nil
 		    TeX-shell-command-option command))))
 
@@ -1444,7 +1443,7 @@ reasons.  Use `TeX-run-function' instead."
       (apply TeX-sentinel-function nil name nil)
 
       ;; Force mode line redisplay soon
-      (set-buffer-modified-p (buffer-modified-p)))))
+      (force-mode-line-update))))
 
 (defun TeX-command-sentinel (process msg)
   "Process TeX command output buffer after the process dies."
@@ -1480,10 +1479,15 @@ reasons.  Use `TeX-run-function' instead."
 	     ;; If buffer and mode line will show that the process
 	     ;; is dead, we can delete it now.  Otherwise it
 	     ;; will stay around until M-x list-processes.
-	     (delete-process process)
+	     (delete-process process))
 
-	     ;; Force mode line redisplay soon
-	     (set-buffer-modified-p (buffer-modified-p))))))
+	   ;; Force mode line redisplay soon
+	   ;; Do this in the command buffer so that "Next Error" item
+	   ;; will appear in the menu bar just after compilation.
+	   ;; (bug#38058)
+	   (with-current-buffer TeX-command-buffer
+	     (force-mode-line-update)))))
+
   (setq compilation-in-progress (delq process compilation-in-progress)))
 
 
@@ -1944,7 +1948,7 @@ command."
   "Format the mode line for a buffer containing output from PROCESS."
     (setq mode-line-process (concat ": "
 				    (symbol-name (process-status process))))
-    (set-buffer-modified-p (buffer-modified-p)))
+    (force-mode-line-update))
 
 (defun TeX-command-filter (process string)
   "Filter to process normal output."
@@ -1963,7 +1967,7 @@ command."
   "Format the mode line for a buffer containing TeX output from PROCESS."
     (setq mode-line-process (concat " " TeX-current-page ": "
 				    (symbol-name (process-status process))))
-    (set-buffer-modified-p (buffer-modified-p)))
+    (force-mode-line-update))
 
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."

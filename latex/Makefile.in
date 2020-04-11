@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2002-2006, 2008, 2014, 2015 Free Software Foundation,
+# Copyright (C) 2002-2006, 2008, 2014, 2015, 2019 Free Software Foundation,
 #   Inc.
 
 # This file is part of AUCTeX.
@@ -42,9 +42,9 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
 
-.PHONY: all install install-texmf install-texmf-doc uninstall clean
+.PHONY: all install install-texmf install-texmf-doc uninstall clean distclean
 
-all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi preview.pdf
+all: $(TEXMFGEN) preview.drv preview-mk.ins preview.pdf
 
 install: install-texmf install-texmf-doc
 
@@ -63,12 +63,12 @@ install-texmf: $(TEXMFGEN)
 	  sleep 2; \
 	fi
 
-install-texmf-doc: preview.dvi
+install-texmf-doc: preview.pdf
 	$(MKINSTALLDIRS) $(DESTDIR)$(previewdocdir)
-	$(INSTALL_DATA) preview.dvi $(DESTDIR)$(previewdocdir)
+	$(INSTALL_DATA) preview.pdf $(DESTDIR)$(previewdocdir)
 
 uninstall:
-	rm -rf $(DESTDIR)$(previewdocdir)/preview.dvi $(DESTDIR)$(previewtexmfdir)
+	rm -rf $(DESTDIR)$(previewdocdir)/preview.dvi $(DESTDIR)$(previewdocdir)/preview.pdf $(DESTDIR)$(previewtexmfdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'
@@ -88,10 +88,13 @@ preview.dvi: preview.drv preview.dtx preview.sty
 	$(LATEX) '\nonstopmode \input preview.drv'
 
 preview.pdf: preview.drv preview.dtx preview.sty
-	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
-	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
-	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}'
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}'
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}'
 
 clean:
-	rm -f *~ *.aux *.dvi *.drv *.log
+	rm -f *~ *.aux *.dvi *.drv *.log preview.pdf
 	rm -f $(TEXMFGEN) preview.ins preview-mk.ins
+
+distclean: clean
+	rm -f Makefile

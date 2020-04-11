@@ -1,4 +1,4 @@
-;;; caption.el --- AUCTeX style for `caption.sty' (v3.3-111)
+;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)
 
 ;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `caption.sty' (v3.3-111) from 2015/09/17.
+;; This file adds support for `caption.sty' (v3.4a) from 2019/10/18.
 ;; `caption.sty' is part of TeXLive.
 
 ;; If things do not work or when in doubt, press `C-c C-n'.  Comments
@@ -79,7 +79,8 @@
 		      "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
 		      "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
 		      "stretch" "normalcolor" "color" "normal"))
-    ("labelformat"   ("default" "empty" "simple" "brace" "parens"))
+    ("labelformat"   ("default" "empty" "simple" "brace" "parens"
+		      "autodot" "unnumbered"))
     ("labelsep"      ("none" "colon" "period" "space" "quad" "newline" "endash"))
     ("list"          ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("listformat"    ("empty" "simple" "paren" "subsimple" "subparens"))
@@ -107,8 +108,8 @@
 		   "stretch" "normalcolor" "color" "normal"))
     ("textformat" ("empty" "simple" "period"))
     ("twoside")
-    ("type"       ("figure" "table" "ContinuedFloat"))
-    ("type*"      ("figure" "table" "ContinuedFloat"))
+    ("type"       ("figure" "table"))
+    ("type*"      ("figure" "table"))
     ("width"))
   "Key=value options for caption macros.")
 
@@ -373,17 +374,17 @@ STAR is non-nil, do not query for a short-caption and a label."
     '("captionsetup"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
 			   ([LaTeX-arg-bicaption-captionsetup])
-			 ([TeX-arg-eval completing-read
-					(TeX-argument-prompt t nil "Float type")
-					LaTeX-caption-supported-float-types]))
+			   ([TeX-arg-eval completing-read
+					  (TeX-argument-prompt t nil "Float type")
+					  LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("captionsetup*"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
 			   ([LaTeX-arg-bicaption-captionsetup])
-			 ([TeX-arg-eval completing-read
-					(TeX-argument-prompt t nil "Float type")
-					LaTeX-caption-supported-float-types]))
+			   ([TeX-arg-eval completing-read
+					  (TeX-argument-prompt t nil "Float type")
+					  LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("clearcaptionsetup"
@@ -399,9 +400,6 @@ STAR is non-nil, do not query for a short-caption and a label."
     '("captionbox"  (LaTeX-arg-caption-captionbox) t)
 
     '("captionbox*" (LaTeX-arg-caption-captionbox t) t)
-
-    '("ContinuedFloat" 0)
-    '("ContinuedFloat*" 0)
 
     '("continuedfloat" 0)
     '("continuedfloat*" 0)
@@ -458,6 +456,7 @@ STAR is non-nil, do not query for a short-caption and a label."
 			      'textual)
      (font-latex-add-keywords '(("captionsetup"                  "*[[{")
 				("clearcaptionsetup"             "*[{")
+				("continuedfloat"                "")
 				("DeclareCaptionFont"            "{{")
 				("DeclareCaptionFormat"          "*{{")
 				("DeclareCaptionJustification"   "{{")

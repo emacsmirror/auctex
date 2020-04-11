@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2019 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -170,7 +170,9 @@ STYLESRC = style/prosper.el \
 	   style/ocg-p.el     style/ocgx.el      style/thm-restate.el \
 	   style/pythontex.el style/dashundergaps.el style/beamerarticle.el \
 	   style/changelog.el style/ltugboat.el  style/beamerswitch.el \
-	   style/multitoc.el  style/xkcdcolors.el
+	   style/multitoc.el  style/fbox.el      style/xkcdcolors.el \
+	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
+	   style/tex-live.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -360,19 +362,23 @@ uninstall:
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<
 
-clean:	doc/Makefile
+clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)
 	cd doc && $(MAKE) clean
+	cd latex && $(MAKE) clean
 
-distclean: doc/Makefile
+distclean: doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) distclean
+	cd latex && $(MAKE) distclean
 
-maintainer-clean: doc/Makefile
+maintainer-clean: doc/Makefile latex/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) maintainer-clean
+	cd latex && $(MAKE) distclean
+	cd tests && $(MAKE) clean
 
 extraclean: maintainer-clean
 	rm -f *~ \#*\#

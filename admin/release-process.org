@@ -123,3 +123,87 @@ should be something like (adapt as necessary)
 #+END_SRC
 
 The content of the email is simply the content of the =RELEASE= file.
+
+** ELPA Release
+
+*** One-time setup
+
+GNU AUCTeX is hosted as a so-called "externals" package in the GNU ELPA Git
+repository.  So the first step is to add the GNU ELPA Git repository as an
+additional remote to your AUCTeX Git repository.  In the following example, the
+remote name is "elpa".
+
+#+BEGIN_SRC sh
+  git remote add elpa ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
+#+END_SRC
+
+AUCTeX is kept in the ~externals/auctex~ branch of the ELPA repository.
+
+*** Making an ELPA release
+
+1. Switch to the ~externals/auctex~ branch by issuing ~git checkout
+   externals/auctex~.
+2. Ensure you are up-to-date using ~git pull~ and ~git fetch --all~.
+3. Merge the commits which have taken place in the normal auctex development on
+   the ~master~ branch using ~git merge origin/master~.
+4. In case of conflicts, edit, and commit.
+5. Check that everything compiles by running ~make -f GNUMakefile~.
+6. Push your changes to the elpa remote (~git push~).
+
+Just updating the ~externals/auctex~ branch by merging in the changes from the
+AUCTeX ~master~ branch won't have any effect on the version one can get in
+Emacs' package manager.  To do an actual release which will be published, you
+have to do the following steps in addition.
+
+7. Edit the line ~;; Version: X.Y.Z~ in the file ~auctex.el~.  For ELPA
+   releases, Y and Y match the latest AUCTeX version and Z is incremented for
+   every ELPA release of that AUCTeX version.  Z starts with 0, so AUCTeX
+   12.2.0 should be (almost) identical to the AUCTeX release 12.2.
+8. Commit that change with this Git commit message (but do not push yet!).  The
+   ChangeLog formatted line must be written in exactly this way for the next
+   step!
+
+#+BEGIN_EXAMPLE
+Release GNU AUCTeX X.Y.Z
+
+* GNU AUCTeX Version X.Y.Z released.
+#+END_EXAMPLE
+
+9. Run ~make -f GNUMakefile~ again.  In the output you should see that the
+   above version is inserted into several files, e.g., the info documentation.
+   The version change is gotten from the current HEAD of the branch.  That's
+   the reason the commit message has to be in exactly this format.
+10. Commit again to have the version changes captured (but don't push).
+11. Now our commit from step 8 announces the release but only the commit after
+    that captures the version changes.  Therefore, we "fixup" the commit from
+    step 10 into that of step 8 using ~git rebase --interactive HEAD^^~ and
+    changing the "pick" to "fixup" for the commit of step 10.  Save and exit.
+    Now the commit of step 8 includes the one of step 10.
+12. Now push your changes, and the new GNU AUCTeX ELPA release will hopefully
+    be available within a few hours.
+
+*** Caveats
+
+It has happened in the past that a new GNU AUCTeX ELPA release didn't really
+appear although all steps in the previous section have been performed.  The
+reason was that there has been a new style file whose copyright header didn't
+have the correct format, and ELPA's tooling is pretty strict about that.
+
+In order to check that all copyrights are ok, clone/checkout the master branch
+of the ELPA Git repository.
+
+#+BEGIN_SRC sh
+  # Clone if not done before.
+  git clone ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
+  # Otherwise checkout the master brach
+  git checkout master
+  # Get the latest changes
+  git pull
+#+END_SRC
+
+To update the external packages (such as AUCTeX), run ~make externals~ in the
+root directory of the ELPA repository.  Then run ~make check_copyrights~ which
+looks for all files without FSF-copyright line which are not listed in a
+special copyright_exceptions file.  As result, it spits out a diff between the
+actual and expected copyright exceptions.  If the diff is empty (or at least
+doesn't mention an AUCTeX file), everything is fine.

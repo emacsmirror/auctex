@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2019 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2020 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -8,11 +8,39 @@
 
 @end ifset
 
+@heading News in 12.3
+
+@itemize @bullet
+@item
+@AUCTeX{} tracks changes in @LaTeX{}2e 2020-02-02 release.  @AUCTeX{}
+supports the improvements to @LaTeX{} font selection mechanism (NFSS).
+New macros like @samp{\textsw} or @samp{\textulc} are added to font
+insertion keyboard commands.
+@ifset rawfile
+See the section for inserting font specifiers for details.
+@end ifset
+@ifclear rawfile
+@xref{Font Specifiers}, for details.
+@end ifclear
+Further, the entries in the menu LaTeX, Insert Font are reorganized and
+adjusted accordingly.
+
+Macros previously provided by @file{textcomp.sty} are now part of
+@LaTeX{} kernel.  @AUCTeX{} tracks this change as well and support for
+the new macro @samp{\legacyoldstylenums} is added.
+
+@item
+Insertion of environments in @LaTeX{} documents (i.e. @kbd{C-c C-e}) was
+improved.  The former code had a few bugs, which sometimes resulted in
+either spurious empty line or spurious comment prefix, or both,
+especially when the region is active.  Those bugs are now fixed.
+@end itemize
+
 @heading News in 12.2
 
 @itemize @bullet
 @item
-@AUCTeX{} reflects the changes in LaTeX2e 2019-10-01 release.
+@AUCTeX{} reflects the changes in @LaTeX{}2e 2019-10-01 release.
 @samp{filecontents} environment now takes an optional argument and can
 be used anywhere in a document.  The macros @samp{\Ref} and
 @samp{\labelformat} are moved from @file{varioref.sty} to @LaTeX{}

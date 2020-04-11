@@ -188,8 +188,8 @@ caption, insert only a caption."
 
 (defun LaTeX-subcaption-package-options ()
   "Prompt for package options for the subcaption package."
-  (TeX-read-key-val t
-   (append LaTeX-subcaption-key-val-options
-	   LaTeX-caption-key-val-options)))
+  (TeX-load-style "caption")
+  (TeX-read-key-val t (append LaTeX-subcaption-key-val-options
+			      LaTeX-caption-key-val-options)))
 
 ;;; subcaption.el ends here

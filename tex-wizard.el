@@ -1,6 +1,6 @@
 ;;; tex-wizard.el --- Check the TeX configuration
 
-;; Copyright (C) 2003, 2006, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2006, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <dak@gnu.org>
 ;; Keywords: tex, wp, convenience
@@ -43,7 +43,7 @@ major mode for editing TeX/LaTeX files.\n")
 	(error (select-window wizwin)
 	       (switch-to-buffer wizbuf)
 	       (insert-before-markers "(I am unable to find AUCTeX's info file.)\n")))
-      (if (prog1 (y-or-n-p "Should I try enabling AUCTeX now?")
+      (if (prog1 (y-or-n-p "Should I try enabling AUCTeX now? ")
 	    (select-window wizwin)
 	    (switch-to-buffer wizbuf))
 	  (condition-case nil

@@ -1,4 +1,4 @@
-;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.21)
+;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)
 
 ;; Copyright (C) 2019 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltugboat.cls' (v2.21) from 2018/12/14.
+;; This file adds support for `ltugboat.cls' (v2.22) from 2019/11/09.
 ;; `ltugboat.cls' is part of TeXLive.
 
 ;;; Code:
@@ -147,6 +147,7 @@
     "Hawaii"
     "HTML"
     "HTTP"
+    "iOS"
     "IDE"
     "IEEE"
     "ISBN"
@@ -157,7 +158,12 @@
     "JoT"
     "KOMAScript"
     "LAMSTeX"
+    "LuaHBTeX"
+    "LuaHBLaTeX"
+    "LuaLaTeX"
+    "LuaTeX"
     "LyX"
+    "macOS"
     "MacOSX"
     "MathML"
     "mf"
@@ -176,6 +182,8 @@
     "pcMF"
     "PCteX"
     "pcTeX"
+    "pdflatex"
+    "pdftex"
     "PDF"
     "PGF"
     "PHP"

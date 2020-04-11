@@ -132,11 +132,16 @@
     ;; in a .tex file, Emacs asks to apply a variable which is not
     ;; safe and does not restore the frame; the splitted frame
     ;; remains.  I couldn't figure out why, so for now, I add the
-    ;; styles from Pygments version 2.1.3 here.
-    ("style" ("colorful" "default" "emacs" "friendly" "fruity" "igor"
-	      "lovelace" "manni" "monokai" "murphy" "native"
-	      "paraiso-dark" "paraiso-light" "pastie" "perldoc"
-	      "rrt" "tango" "trac" "vim" "vs" "xcode"))
+    ;; styles from Pygments version 2.5.2 here.
+    ("style" ("abap" "algol" "algol_nu" "arduino" "autumn"
+	      "borland" "bw" "colorful" "default" "emacs"
+	      "friendly" "fruity" "igor" "inkpot" "lovelace"
+	      "manni" "monokai" "murphy" "native" "paraiso-dark"
+	      "paraiso-light" "pastie" "perldoc"
+	      "rainbow_dash" "rrt" "sas"
+	      "solarized-dark" "solarized-light" "stata"
+	      "stata-dark" "stata-light"
+	      "tango" "trac" "vim" "vs" "xcode"))
     ("stepnumber")
     ("stepnumberfromfirst")
     ("stepnumberoffsetvalues" ("true" "false"))

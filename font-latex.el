@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2019  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2020  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -31,11 +31,6 @@
 ;; font-lock mode is a minor mode that causes your comments to be
 ;; displayed in one face, strings in another, reserved words in
 ;; another, and so on.
-;;
-;; ** Infinite loops !? **
-;; If you get an infinite loop, send a bug report!
-;; Then set the following in your ~/.emacs file to keep on working:
-;;   (setq font-latex-do-multi-line nil)
 
 ;;; Code:
 
@@ -363,7 +358,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
       ("centering" "") ("raggedright" "") ("raggedleft" "")
-      ("TeX" "") ("LaTeX" "") ("LaTeXe" ""))
+      ("TeX" "") ("LaTeX" "") ("LaTeXe" "")
+      ("normalfont" "") ("normalshape" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))
@@ -409,8 +405,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("textsuperscript" "{") ("textsubscript" "{") ("verb" "*"))
      font-lock-type-face 2 command)
     ("bold-command"
-     (("textbf" "{") ("textsc" "{") ("textup" "{") ("boldsymbol" "{")
-      ("pmb" "{"))
+     (("textbf" "{") ("textsc" "{") ("textssc" "{") ("textulc" "{")
+      ("textup" "{") ("textsw" "{") ("boldsymbol" "{") ("pmb" "{"))
      font-latex-bold-face 1 command)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{"))
@@ -419,10 +415,11 @@ variable `font-latex-fontify-sectioning'." ',num)
      (("ensuremath" "|{\\"))
      font-latex-math-face 1 command)
     ("type-command"
-     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{") ("oldstylenums" "{"))
+     (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{")
+      ("textnormal" "{") ("oldstylenums" "{") ("legacyoldstylenums" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
-     ("bf" "bfseries" "sc" "scshape" "upshape")
+     ("bf" "bfseries" "sc" "scshape" "sscshape" "ulcshape" "upshape" "swshape")
      font-latex-bold-face 1 declaration)
     ("italic-declaration"
      ("em" "it" "itshape" "sl" "slshape")
@@ -1225,9 +1222,6 @@ have changed."
 
 ;;; Setup
 
-(defvar font-lock-comment-start-regexp nil
-  "Regexp to match the start of a comment.")
-
 (defvar font-latex-extend-region-functions nil
   "List of functions extending the region for multiline constructs.
 
@@ -1261,26 +1255,9 @@ triggers Font Lock to recognize the change."
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
   (font-latex-set-syntactic-keywords)
-  ;; Trickery to make $$ fontification be in `font-latex-math-face' while
-  ;; strings get whatever `font-lock-string-face' has been set to.
-  (when (fboundp 'built-in-face-specifiers)
-    ;; Cool patch from Christoph Wedler...
-    (let (instance)
-      (mapc (lambda (property)
-	      (setq instance
-		    (face-property-instance 'font-latex-math-face property
-					    nil 0 t))
-	      (if (numberp instance)
-		  (setq instance
-			(face-property-instance 'default property nil 0)))
-	      (or (numberp instance)
-		  (set-face-property 'font-lock-string-face property
-				     instance (current-buffer))))
-	    (built-in-face-specifiers))))
 
-  ;; Activate multi-line fontification facilities if available.
-  (when (boundp 'font-lock-multiline)
-    (set (make-local-variable 'font-lock-multiline) t))
+  ;; Activate multi-line fontification facilities.
+  (set (make-local-variable 'font-lock-multiline) t)
 
   ;; Functions for extending the region.
   (dolist (elt '(font-latex-extend-region-backwards-command-with-args
@@ -1302,8 +1279,7 @@ triggers Font Lock to recognize the change."
 	  `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
 	    nil nil ,font-latex-syntax-alist nil))
 	(variables
-	 '((font-lock-comment-start-regexp . "%")
-	   (font-lock-mark-block-function . mark-paragraph)
+	 '((font-lock-mark-block-function . mark-paragraph)
 	   (font-lock-fontify-region-function
 	    . font-latex-fontify-region)
 	   (font-lock-unfontify-region-function
@@ -1392,11 +1368,6 @@ If optional argument is non-nil, print status messages."
 (defun font-latex-unfontify-region (beg end &rest ignored)
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
-  ;; XEmacs does not provide `font-lock-extra-managed-props', so
-  ;; remove the `font-latex-multiline' property manually.  (The
-  ;; property is only added if `font-lock-multiline' is bound.)
-  (unless (boundp 'font-lock-multiline)
-    (remove-text-properties beg end '(font-latex-multiline)))
   (remove-text-properties beg end '(script-level))
   (let ((start beg))
     (while (< beg end)
@@ -1405,32 +1376,7 @@ If optional argument is non-nil, print status messages."
 	(if (and (eq (car-safe prop) 'raise)
 		 (null (cddr prop)))
 	    (put-text-property beg next 'display nil))
-	(setq beg next)))
-    (remove-text-properties start end '(invisible))))
-
-(defadvice font-lock-after-change-function (before font-latex-after-change
-						   activate)
-  "Extend region for fontification of multiline constructs.
-This is only necessary if the editor does not provide multiline
-fontification facilities like `font-lock-multiline' itself."
-  (unless (boundp 'font-lock-multiline)
-    (let ((ad-beg (ad-get-arg 0))
-	  (ad-end (ad-get-arg 1)))
-      (save-excursion
-	(goto-char ad-beg)
-	(beginning-of-line)
-	(when (get-text-property (point) 'font-latex-multiline)
-	  (setq ad-beg (previous-single-property-change (point)
-							'font-latex-multiline))
-	  (when (numberp ad-beg)
-	    (ad-set-arg 0 ad-beg)))
-	(goto-char ad-end)
-	(end-of-line)
-	(when (get-text-property (point) 'font-latex-multiline)
-	  (setq ad-end (next-single-property-change (point)
-						    'font-latex-multiline))
-	  (when (numberp ad-end)
-	    (ad-set-arg 1 ad-end)))))))
+	(setq beg next)))))
 
 (defun font-latex-after-hacking-local-variables ()
   "Refresh fontification if required by updates of file-local variables.
@@ -1547,16 +1493,6 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
 	  (beginning-of-line 2)
 	  t))
     (forward-comment 1)))
-
-(defun font-latex-put-multiline-property-maybe (beg end)
-  "Add a multiline property if no equivalent is provided by the editor.
-The text property is used to find the start or end of a multiline
-construct when unfontifying a region.  Emacs adds such a text
-property automatically if `font-lock-multiline' is set to t and
-extends the region to be unfontified automatically as well."
-  (unless (boundp 'font-lock-multiline)
-    (put-text-property beg end 'font-latex-multiline t)))
-
 
 ;;; Match functions
 
@@ -1677,7 +1613,6 @@ Returns nil if none of KEYWORDS is found."
 					   (1+ error-indicator-pos))
 				     match-data))
 	    (push 'font-latex-warning-face font-latex-matched-faces))
-	  (font-latex-put-multiline-property-maybe beg end)
 	  (store-match-data match-data)
 	  (throw 'match t))))))
 
@@ -1730,11 +1665,9 @@ Returns nil if no command is found."
 	      (narrow-to-region (point-min) limit)
 	      (forward-char -1)		; Move on the opening bracket
 	      (if (font-latex-find-matching-close ?\{ ?\})
-		  (progn
-		    (font-latex-put-multiline-property-maybe beg (1- (point)))
-		    (store-match-data (list kbeg kbeg
-					    kbeg kend
-					    beg (1- (point)))))
+		  (store-match-data (list kbeg kbeg
+					  kbeg kend
+					  beg (1- (point))))
 		(goto-char kend)
 		(store-match-data (list (1- kbeg) kbeg
 					kbeg kend
@@ -1836,9 +1769,7 @@ Used for patterns like:
 				      limit 'move)
 		   (string= (match-string 1) close-tag))
 	      ;; Found closing tag.
-	      (progn
-		(font-latex-put-multiline-property-maybe beg (point))
-		(store-match-data (list beg beg beg (point))))
+	      (store-match-data (list beg beg beg (point)))
 	    ;; Did not find closing tag.
 	    (goto-char (+ beg 2))
 	    (store-match-data (list beg (point) (point) (point))))
@@ -1906,7 +1837,6 @@ The \\begin{equation} incl. arguments in the same line and
 	  (setq end (match-beginning 0))
 	(goto-char beg)
 	(setq end beg))
-      (font-latex-put-multiline-property-maybe beg end)
       (store-match-data (list beg end))
       t)))
 
@@ -1999,7 +1929,6 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 		(progn
 		  (goto-char after-beg)
 		  (store-match-data (list after-beg after-beg beg after-beg)))
-	      (font-latex-put-multiline-property-maybe beg (point))
 	      (store-match-data (list beg (point) (point) (point))))
 	    (throw 'match t)))))))
 
@@ -2125,27 +2054,15 @@ END marks boundaries for searching for quotation ends."
 		    (while (eq (char-before pos) ?\\)
 		      (setq pos (1- pos) odd (not odd)))
 		    odd)))
-    ;; Adding other text properties than `face' is supported by
-    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28.
-    ;; With the introduction of this feature the variable
-    ;; `font-lock-extra-managed-props' was introduced and serves here
-    ;; for feature checking.
-    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
-      (if (eq (char-after pos) ?_)
-	  (if extra-props-flag
-	      (font-latex--get-script-props pos :sub)
-	    'font-latex-subscript-face)
-	(if extra-props-flag
-	    (font-latex--get-script-props pos :super)
-	  'font-latex-superscript-face)))))
+    (if (eq (char-after pos) ?_)
+	(font-latex--get-script-props pos :sub)
+      (font-latex--get-script-props pos :super))))
 
 (defun font-latex-script-char (pos)
   "Return face and display spec for subscript and superscript character at POS."
-  (if (boundp 'font-lock-extra-managed-props)
-      `(face font-latex-script-char-face
-	     ,@(when (eq font-latex-fontify-script 'invisible)
-		 '(invisible t)))
-    'font-latex-script-char-face))
+  `(face font-latex-script-char-face
+	 ,@(when (eq font-latex-fontify-script 'invisible)
+	     '(invisible t))))
 
 ;;; docTeX
 

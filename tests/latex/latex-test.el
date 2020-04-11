@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode
 
-;; Copyright (C) 2014--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2019 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -319,5 +319,221 @@ backend=biber % here is a comment
       (TeX-update-style)
       (should (not TeX-PDF-mode))
       (should (not (member "psfrag" TeX-active-styles))))))
+
+(ert-deftest LaTeX-insert-environment-with-active-region ()
+  "Check environment is inserted correctly with active region."
+  ;; The former codes of `LaTeX-insert-environment' had problems about
+  ;; the management of the point and the mark, which sometimes
+  ;; resulted in additional empty line, spurious insertion of comment
+  ;; prefix, or both.
+  (with-temp-buffer
+    (let ((transient-mark-mode t)
+	  (LaTeX-insert-into-comments t))
+      (latex-mode)
+      (auto-fill-mode 1)
+
+      ;; test 1: for bug#35284
+      ;; test 1-1
+      (insert "\\begin{document}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+\\end{document}
+")
+      (set-mark (line-beginning-position 0)) ; just before \end{document}.
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "%".
+      (LaTeX-insert-environment "verbatim")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{document}
+% \\begin{verbatim}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+% \\end{verbatim}
+\\end{document}
+"))
+
+      ;; test 1-2
+      (erase-buffer)
+      (insert "\\begin{document}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+\\end{document}
+")
+      (set-mark (line-end-position -1)) ; just after "another comment"
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "%".
+      (LaTeX-insert-environment "verbatim")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{document}
+% \\begin{verbatim}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+% \\end{verbatim}
+\\end{document}
+"))
+
+      (setq LaTeX-insert-into-comments nil)
+
+      ;; test 1-3
+      (erase-buffer)
+      (insert "\\begin{document}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+\\end{document}
+")
+      (set-mark (line-beginning-position 0)) ; just before \end{document}
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "%".
+      (LaTeX-insert-environment "verbatim")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{document}
+\\begin{verbatim}
+% This is a comment
+\\def\\foo#1{foo}
+% another comment
+\\end{verbatim}
+\\end{document}
+"))
+      ;; test 2: for
+      ;; https://lists.gnu.org/archive/html/auctex/2019-11/msg00009.html
+
+      (setq LaTeX-insert-into-comments t)
+
+      ;; test 2-1
+      (erase-buffer)
+      (insert "abc def ghi")
+      (set-mark 5) ; just before "def"
+      (goto-char 8) ; just after "def"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "abc
+\\begin{center}
+  def
+\\end{center}
+ghi"))
+
+      ;; test 2-2
+      (erase-buffer)
+      (insert "abc
+def
+ghi")
+      (beginning-of-line 0) ; just before "def"
+      (set-mark (line-end-position)) ; just after "def"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "abc
+\\begin{center}
+  def
+\\end{center}
+ghi"))
+
+      ;; test 2-3
+      (erase-buffer)
+      (insert "\\begin{quote}
+  % abc
+  % def
+  % ghi
+\\end{quote}
+")
+      (set-mark (line-beginning-position 0)) ; just before \end{quote}
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "%"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{quote}
+  % \\begin{center}
+  %   abc
+  %   def
+  %   ghi
+  % \\end{center}
+\\end{quote}
+"))
+
+      ;; test 2-4
+      (erase-buffer)
+      (insert "\\begin{quote}
+  %\s
+  % abc
+  % def
+  % ghi
+  %\s
+\\end{quote}
+")
+      (set-mark (line-end-position -1)) ; just after the last "% "
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "  %"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{quote}
+  % \\begin{center}
+  %   abc
+  %   def
+  %   ghi
+  % \\end{center}
+\\end{quote}
+"))
+
+      ;; test 2-5
+      (erase-buffer)
+      (insert "\\begin{quote}
+  %\s
+  % abc
+  % def
+  % ghi
+  %\s
+\\end{quote}
+")
+      (set-mark (1- (line-end-position -1))) ; just after the last "%"
+      (goto-char (point-min))
+      (beginning-of-line 2)
+      (forward-char 2) ; just before the first "%"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{quote}
+  % \\begin{center}
+  %   abc
+  %   def
+  %   ghi
+  % \\end{center}
+\\end{quote}
+"))
+
+      (setq LaTeX-insert-into-comments nil)
+
+      ;; test 2-6
+      (erase-buffer)
+      (insert "\\begin{quote}
+  % abc
+  % def
+  % ghi
+\\end{quote}
+")
+      (set-mark (line-beginning-position 0)) ; just before \end{quote}
+      (goto-char (point-min))
+      (beginning-of-line 2) ; just before the first "  %"
+      (LaTeX-insert-environment "center")
+      (should (string=
+	       (buffer-string)
+	       "\\begin{quote}
+  \\begin{center}
+    % abc
+    % def
+    % ghi
+  \\end{center}
+\\end{quote}
+")))))
 
 ;;; latex-test.el ends here
