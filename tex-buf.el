@@ -1597,7 +1597,7 @@ Return nil ifs no errors were found."
 ;;   Package xyz123 Warning: ...
 ;;   Class xyz123 Warning: ...
 (defvar LaTeX-warnings-regexp
-  "\\(?:LaTeX\\|Class\\|Package\\|\*\\) [-A-Za-z0-9]* ?[Ww]arning:"
+  "\\(?:LaTeX\\|Class\\|Package\\|\\*\\) [-A-Za-z0-9]* ?[Ww]arning:"
   "Regexp matching LaTeX warnings.")
 
 (defun TeX-LaTeX-sentinel-has-warnings ()
@@ -1704,7 +1704,7 @@ Rerun to get mark in right position\\." nil t)
 	 (message
 	  "%s" "You should run LaTeX again to get TikZ marks in right position")
 	 (setq TeX-command-next TeX-command-default))
-	((re-search-forward "^\* xsim warning: \"rerun\"" nil t)
+	((re-search-forward "^\\* xsim warning: \"rerun\"" nil t)
 	 (message
 	  "%s" "You should run LaTeX again to synchronize exercise properties")
 	 (setq TeX-command-next TeX-command-default))
@@ -2588,7 +2588,7 @@ Return non-nil if an error or warning is found."
 	  ;; TeX error
 	  "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
 	  ;; New file
-	  "(\n?\\([^\n())]+\\)\\|"
+	  "(\n?\\([^\n()]+\\)\\|"
 	  ;; End of file.
 	  "\\()\\)\\|"
 	  ;; Hook to change line numbers
