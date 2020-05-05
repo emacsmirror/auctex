@@ -6805,13 +6805,13 @@ function would return non-nil and `(match-string 1)' would return
     (goto-char (point-min))
     (if
 	(search-forward-regexp
-	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
+	 "\\\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
 	 (point-max) t)
 	(setq optstr (TeX-match-buffer 1)
 	      docstyle (TeX-match-buffer 2)
 	      optlist (TeX-split-string "," optstr))
       (if (search-forward-regexp
-	   "\\documentstyle{\\([^}]*\\)}"
+	   "\\\\documentstyle{\\([^}]*\\)}"
 	   (point-max) t)
 	  (setq docstyle (TeX-match-buffer 1))
 	(error "No documentstyle defined")))
@@ -6837,10 +6837,10 @@ function would return non-nil and `(match-string 1)' would return
 		(mapconcat (lambda (x) x)
 			   (nreverse 2epackages) "}\n\\usepackage{") "}\n"))
     (if (equal docstyle "slides")
-      (progn
-	(goto-char (point-min))
-	(while (re-search-forward "\\\\blackandwhite{" nil t)
-      (replace-match "\\\\input{" nil nil)))))
+        (progn
+	  (goto-char (point-min))
+	  (while (re-search-forward "\\\\blackandwhite{" nil t)
+            (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
 
 (defun LaTeX-env-beginning-pos-col ()
