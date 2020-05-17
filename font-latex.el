@@ -1052,7 +1052,7 @@ have changed."
   (setq font-latex-doctex-syntactic-keywords
 	(append font-latex-syntactic-keywords
 		;; For docTeX comment-in-doc.
-		`(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
+		'(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
 
 
 ;;; Syntactic fontification
@@ -1267,7 +1267,7 @@ triggers Font Lock to recognize the change."
 	  `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
 	    nil nil ,font-latex-syntax-alist nil))
 	(variables
-	 `((font-lock-mark-block-function . mark-paragraph)
+	 '((font-lock-mark-block-function . mark-paragraph)
 	   (font-lock-unfontify-region-function
 	    . font-latex-unfontify-region)
            (font-lock-extend-region-functions
@@ -1580,7 +1580,7 @@ Returns nil if none of KEYWORDS is found."
 (defvar font-lock-end)
 
 (defun font-latex-extend-region-backwards-command-with-args ()
-  "Return position to extend region backwards for commands with args."
+  "Extend region backwards for commands with args."
   (save-excursion
     (goto-char font-lock-end)
     (catch 'extend
