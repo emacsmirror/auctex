@@ -38,7 +38,7 @@
     '("verbatiminput" TeX-arg-file))
 
    ;; Fontification:
-   ;; Code taken from `comment.sty'
+   ;; Code taken from `comment.el'
    (when (and (boundp 'font-latex-syntactic-keywords-extra)
 	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
