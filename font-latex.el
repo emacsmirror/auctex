@@ -1,4 +1,4 @@
-;;; font-latex.el --- LaTeX fontification for Font Lock mode.
+;;; font-latex.el --- LaTeX fontification for Font Lock mode.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1996-2020  Free Software Foundation, Inc.
 
@@ -162,24 +162,6 @@ correct value from document properties."
   "Face for sectioning commands at level 5."
   :group 'font-latex-highlighting-faces)
 
-(defun font-latex-update-sectioning-faces (&optional max height-scale)
-  "Update sectioning commands faces."
-  (unless height-scale
-    (setq height-scale (if (numberp font-latex-fontify-sectioning)
-			   ;; Make sure `height-scale' is a floating point
-			   ;; number because `set-face-attribute' treats
-			   ;; integers differently from floating points.
-			   (float font-latex-fontify-sectioning)
-			 1.1)))
-  (unless max
-    (setq max font-latex-sectioning-max))
-  (dotimes (num max)
-    (let* (;; reverse for XEmacs:
-	   (num (- max (1+ num)))
-	   (face-name (intern (format "font-latex-sectioning-%s-face" num))))
-      (unless (get face-name 'saved-face) ; Do not touch customized faces.
-	(set-face-attribute face-name nil :height  height-scale)))))
-
 (defcustom font-latex-fontify-sectioning 1.1
   "Whether to fontify sectioning macros with varying height or a color face.
 
@@ -204,6 +186,24 @@ Emacs."
 	 (unless (eq value 'color)
 	   (font-latex-update-sectioning-faces font-latex-sectioning-max value)))
   :group 'font-latex)
+
+(defun font-latex-update-sectioning-faces (&optional max height-scale)
+  "Update sectioning commands faces."
+  (unless height-scale
+    (setq height-scale (if (numberp font-latex-fontify-sectioning)
+			   ;; Make sure `height-scale' is a floating point
+			   ;; number because `set-face-attribute' treats
+			   ;; integers differently from floating points.
+			   (float font-latex-fontify-sectioning)
+			 1.1)))
+  (unless max
+    (setq max font-latex-sectioning-max))
+  (dotimes (num max)
+    (let* (;; reverse for XEmacs:
+	   (num (- max (1+ num)))
+	   (face-name (intern (format "font-latex-sectioning-%s-face" num))))
+      (unless (get face-name 'saved-face) ; Do not touch customized faces.
+	(set-face-attribute face-name nil :height  height-scale)))))
 
 (defun font-latex-make-sectioning-faces (max &optional height-scale)
   "Build the faces used to fontify sectioning commands."
@@ -1052,7 +1052,7 @@ have changed."
   (setq font-latex-doctex-syntactic-keywords
 	(append font-latex-syntactic-keywords
 		;; For docTeX comment-in-doc.
-		`(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
+		'(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
 
 
 ;;; Syntactic fontification
@@ -1222,17 +1222,6 @@ have changed."
 
 ;;; Setup
 
-(defvar font-latex-extend-region-functions nil
-  "List of functions extending the region for multiline constructs.
-
-Each function should accept two arguments, the begin and end of
-the region to be fontified, and return the new region start.  If
-no extension is necessary, the original region start should be
-returned.
-
-All specified functions will be called and the region extended
-backwards to the minimum over their return values.")
-
 (defvar font-latex-syntax-alist
   ;; Use word syntax for @ because we use \> for matching macros and
   ;; we don't want \foo@bar to be found if we search for \foo.
@@ -1251,6 +1240,15 @@ triggers Font Lock to recognize the change."
   (setq font-lock-set-defaults nil)
   (font-latex-setup))
 
+(defun font-latex-syntax-propertize-function (start end)
+  "The `syntax-propertize-function' for (La)TeX documents."
+  (with-no-warnings
+    (let ((font-lock-syntactic-keywords
+           (if (derived-mode-p 'doctex-mode)
+               font-latex-doctex-syntactic-keywords
+             font-latex-syntactic-keywords)))
+      (font-lock-fontify-syntactic-keywords-region start end))))
+
 ;;;###autoload
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
@@ -1259,16 +1257,6 @@ triggers Font Lock to recognize the change."
   ;; Activate multi-line fontification facilities.
   (set (make-local-variable 'font-lock-multiline) t)
 
-  ;; Functions for extending the region.
-  (dolist (elt '(font-latex-extend-region-backwards-command-with-args
-		 font-latex-extend-region-backwards-command-in-braces
-		 font-latex-extend-region-backwards-quotation
-		 font-latex-extend-region-backwards-math-env
-		 font-latex-extend-region-backwards-math-envII))
-    (add-to-list 'font-latex-extend-region-functions elt))
-
-  ;; Tell Font Lock about the support.
-  (make-local-variable 'font-lock-defaults)
   ;; The test for `major-mode' currently only works with docTeX mode
   ;; because `TeX-install-font-lock' is called explicitely in
   ;; `doctex-mode'.  In case other modes have to be distinguished as
@@ -1280,27 +1268,34 @@ triggers Font Lock to recognize the change."
 	    nil nil ,font-latex-syntax-alist nil))
 	(variables
 	 '((font-lock-mark-block-function . mark-paragraph)
-	   (font-lock-fontify-region-function
-	    . font-latex-fontify-region)
 	   (font-lock-unfontify-region-function
-	    . font-latex-unfontify-region))))
+	    . font-latex-unfontify-region)
+           (font-lock-extend-region-functions
+            font-lock-extend-region-wholelines
+            font-lock-extend-region-multiline
+            font-latex-extend-region-backwards-command-with-args
+	    font-latex-extend-region-backwards-command-in-braces
+	    font-latex-extend-region-backwards-quotation
+	    font-latex-extend-region-backwards-math-env
+	    font-latex-extend-region-backwards-math-envII)
+           (syntax-propertize-function
+            . font-latex-syntax-propertize-function)
+           (syntax-propertize-extend-region-functions
+            syntax-propertize-wholelines
+            font-latex-sp-extend-region-backwards-verb-env))))
     ;; Add the mode-dependent stuff to the basic variables defined above.
     (if (eq major-mode 'doctex-mode)
-	(progn
-	  (setcar defaults (append (car defaults)
-				   '(font-latex-doctex-keywords)))
-	  (setq variables
-		(append variables
-			'((font-lock-syntactic-face-function
-			   . font-latex-doctex-syntactic-face-function)
-			  (font-lock-syntactic-keywords
-			   . font-latex-doctex-syntactic-keywords)))))
+        (progn
+          (setcar defaults (append (car defaults)
+        			   '(font-latex-doctex-keywords)))
+          (setq variables
+        	(append variables
+        		'((font-lock-syntactic-face-function
+        		   . font-latex-doctex-syntactic-face-function)))))
       (setq variables
-	    (append variables
-		    '((font-lock-syntactic-face-function
-		       . font-latex-syntactic-face-function)
-		      (font-lock-syntactic-keywords
-		       . font-latex-syntactic-keywords)))))
+            (append variables
+        	    '((font-lock-syntactic-face-function
+        	       . font-latex-syntactic-face-function)))))
     ;; Set the defaults.
     (setq font-lock-defaults (append defaults variables)))
 
@@ -1327,41 +1322,6 @@ If SYNTACTIC-KWS is non-nil, also update
 	     prettify-symbols--keywords)
     (font-lock-add-keywords nil prettify-symbols--keywords)))
 
-(defun font-latex-jit-lock-force-redisplay (buf start end)
-  "Compatibility for Emacsen not offering `jit-lock-force-redisplay'."
-  ;; The following block is an expansion of `jit-lock-force-redisplay'
-  ;; and involved macros taken from CVS Emacs on 2007-04-28.
-  (with-current-buffer buf
-    (let ((modified (buffer-modified-p)))
-      (unwind-protect
-	  (let ((buffer-undo-list t)
-		(inhibit-read-only t)
-		(inhibit-point-motion-hooks t)
-		(inhibit-modification-hooks t)
-		deactivate-mark
-		buffer-file-name
-		buffer-file-truename)
-	    (put-text-property start end 'fontified t))
-	(unless modified
-	  (restore-buffer-modified-p nil))))))
-
-(defun font-latex-fontify-region (beg end &optional loudly)
-  "Fontify region from BEG to END.
-If optional argument is non-nil, print status messages."
-  (let ((extend-list (delq nil (mapcar (lambda (fun) (funcall fun beg end))
-				       font-latex-extend-region-functions))))
-    (when extend-list
-      (let ((orig-beg beg))
-	(setq beg (apply 'min extend-list))
-	(when (featurep 'jit-lock)
-	  ;; Stolen from `jit-lock-fontify-now' (2007-04-27) and
-	  ;; adapted.  Without this stanza only the line in which a
-	  ;; change happened will refontified.  The rest will only be
-	  ;; refontified upon redisplay.
-	  (run-with-timer 0 nil 'font-latex-jit-lock-force-redisplay
-			  (current-buffer) beg orig-beg))))
-    (font-lock-default-fontify-region beg end loudly)))
-
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
 ;; (XEmacs passes a third argument to the function.)
@@ -1369,14 +1329,13 @@ If optional argument is non-nil, print status messages."
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
   (remove-text-properties beg end '(script-level))
-  (let ((start beg))
-    (while (< beg end)
-      (let ((next (next-single-property-change beg 'display nil end))
-	    (prop (get-text-property beg 'display)))
-	(if (and (eq (car-safe prop) 'raise)
-		 (null (cddr prop)))
-	    (put-text-property beg next 'display nil))
-	(setq beg next)))))
+  (while (< beg end)
+    (let ((next (next-single-property-change beg 'display nil end))
+	  (prop (get-text-property beg 'display)))
+      (if (and (eq (car-safe prop) 'raise)
+	       (null (cddr prop)))
+	  (put-text-property beg next 'display nil))
+      (setq beg next))))
 
 (defun font-latex-after-hacking-local-variables ()
   "Refresh fontification if required by updates of file-local variables.
@@ -1616,22 +1575,24 @@ Returns nil if none of KEYWORDS is found."
 	  (store-match-data match-data)
 	  (throw 'match t))))))
 
-(defun font-latex-extend-region-backwards-command-with-args (beg end)
-  "Return position to extend region backwards for commands with args.
-Return nil if region does not have to be extended for a multiline
-macro to fit in.  The region between the positions BEG and END
-marks boundaries for searching for macro ends."
+;; Those are dynamically bound by font-lock.
+(defvar font-lock-beg)
+(defvar font-lock-end)
+
+(defun font-latex-extend-region-backwards-command-with-args ()
+  "Extend region backwards for commands with args."
   (save-excursion
-    (goto-char end)
+    (goto-char font-lock-end)
     (catch 'extend
-      (while (TeX-search-backward-unescaped "}" beg t)
-	(let ((macro-start (TeX-find-macro-start
-			    (max (point-min)
-				 (- beg font-latex-multiline-boundary)))))
+      (while (TeX-search-backward-unescaped "}" font-lock-beg t)
+	(let ((macro-start
+               (TeX-find-macro-start
+		(max (point-min)
+		     (- font-lock-beg font-latex-multiline-boundary)))))
 	  (when (and macro-start
-		     (< macro-start beg))
-	    (throw 'extend macro-start))))
-      nil)))
+		     (< macro-start font-lock-beg))
+            (setq font-lock-beg macro-start)
+	    (throw 'extend t)))))))
 
 (defun font-latex-match-command-in-braces (keywords limit)
   "Search for command like {\\bfseries fubar} before LIMIT.
@@ -1674,18 +1635,16 @@ Returns nil if no command is found."
 					kend kend)))
 	      (throw 'match t))))))))
 
-(defun font-latex-extend-region-backwards-command-in-braces (beg end)
-  "Return position to extend region backwards for commands in braces.
-Return nil if region does not have to be extended for a multiline
-group to fit in.  The region between the positions BEG and END
-marks boundaries for searching for group ends."
+(defun font-latex-extend-region-backwards-command-in-braces ()
+  "Extend region backwards for commands in braces."
   (save-excursion
-    (goto-char end)
+    (goto-char font-lock-end)
     (catch 'extend
-      (while (TeX-search-backward-unescaped "}" beg t)
-	(let ((group-start (TeX-find-opening-brace
-			    nil (max (point-min)
-				     (- beg font-latex-multiline-boundary)))))
+      (while (TeX-search-backward-unescaped "}" font-lock-beg t)
+	(let ((group-start
+               (TeX-find-opening-brace
+		nil (max (point-min)
+			 (- font-lock-beg font-latex-multiline-boundary)))))
 	  (when group-start
 	    ;; XXX: Actually we'd have to check if any of the
 	    ;; declaration-type macros can be found right after the
@@ -1695,9 +1654,9 @@ marks boundaries for searching for group ends."
 	    ;; declaration-type macros as well as the respective
 	    ;; user-defined variables could be concatenated.
 	    (goto-char group-start)
-	    (when (< group-start beg)
-	      (throw 'extend group-start)))))
-      nil)))
+	    (when (< group-start font-lock-beg)
+              (setq font-lock-beg group-start)
+	      (throw 'extend t))))))))
 
 (defvar font-latex-match-simple-exclude-list
   '("-" "," "/" "&" "#" "_" "`" "'" "^" "~" "=" "." "\"")
@@ -1775,25 +1734,22 @@ Used for patterns like:
 	    (store-match-data (list beg (point) (point) (point))))
 	  (throw 'match t))))))
 
-(defun font-latex-extend-region-backwards-math-env (beg end)
-  "Return position to extend region backwards for math environments.
-Return nil if region does not have to be extended for a multiline
-environment to fit in.  The region between the positions BEG and
-END marks boundaries for searching for environment ends."
+(defun font-latex-extend-region-backwards-math-env ()
+  "Extend region backwards for math environments."
   (save-excursion
-    (goto-char end)
+    (goto-char font-lock-end)
     (catch 'extend
-      (while (re-search-backward "\\(\\\\)\\)\\|\\(\\\\]\\)" beg t)
+      (while (re-search-backward "\\(\\\\)\\)\\|\\(\\\\]\\)" font-lock-beg t)
 	(when (and (zerop (mod (skip-chars-backward "\\\\") 2))
 		   (re-search-backward
 		    (concat "[^\\]\\(?:\\\\\\\\\\)*\\("
 			    (regexp-quote (if (match-beginning 1) "\\(" "\\["))
 			    "\\)")
-		    (- beg font-latex-multiline-boundary) t)
+		    (- font-lock-beg font-latex-multiline-boundary) t)
 		   (goto-char (match-beginning 1))
-		   (< (point) beg))
-	  (throw 'extend (point))))
-      nil)))
+		   (< (point) font-lock-beg))
+          (setq font-lock-beg (point))
+	  (throw 'extend t))))))
 
 (defcustom font-latex-math-environments
   '("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
@@ -1840,18 +1796,15 @@ The \\begin{equation} incl. arguments in the same line and
       (store-match-data (list beg end))
       t)))
 
-(defun font-latex-extend-region-backwards-math-envII (beg end)
-  "Return position to extend region backwards for math environments.
-Return nil if region does not have to be extended for a multiline
-environment to fit in.  The region between the positions BEG and
-END marks boundaries for searching for environment ends."
+(defun font-latex-extend-region-backwards-math-envII ()
+  "Extend region backwards for math environments."
   (save-excursion
-    (goto-char end)
+    (goto-char font-lock-end)
     (catch 'extend
       (while (re-search-backward
 	      (concat "\\\\end[ \t]*{"
 		      (regexp-opt font-latex-math-environments t)
-		      "\\*?}") beg t)
+		      "\\*?}") font-lock-beg t)
 	(when (and (re-search-backward
 		    (concat  "\\\\begin[ \t]*{"
 			     (buffer-substring-no-properties
@@ -1861,10 +1814,33 @@ END marks boundaries for searching for environment ends."
 			     ;; mandatory argument(s)
 			     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
 			     "\\(?:{[^}]*}\\)*")
-		    (- beg font-latex-multiline-boundary) t)
-		   (< (point) beg))
-	  (throw 'extend (point))))
-      nil)))
+		    (- font-lock-beg font-latex-multiline-boundary) t)
+		   (< (point) font-lock-beg))
+          (setq font-lock-beg (point))
+	  (throw 'extend t))))))
+
+(defun font-latex-sp-extend-region-backwards-verb-env (beg end)
+  "Extend region backwards for verbatim environments."
+  (let ((envs (and (fboundp 'LaTeX-verbatim-environments)
+                   (LaTeX-verbatim-environments))))
+    (when envs
+      (save-excursion
+        (goto-char end)
+        (catch 'extend
+          (while (re-search-backward
+	          (concat "\\\\end[ \t]*{" (regexp-opt envs t) "\\*?}") beg t)
+	    (when (and (re-search-backward
+		        (concat  "\\\\begin[ \t]*{"
+			         (buffer-substring-no-properties
+			          (match-beginning 1)
+			          (match-end 0))
+			         ;; Match an optional and possible
+			         ;; mandatory argument(s)
+			         "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+			         "\\(?:{[^}]*}\\)*")
+		        (- beg font-latex-multiline-boundary) t)
+		       (< (point) beg))
+	      (throw 'extend (cons (point) end)))))))))
 
 (defun font-latex-update-quote-list ()
   "Update quote list and regexp if value of `font-latex-quotes' changed."
@@ -1932,43 +1908,39 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 	      (store-match-data (list beg (point) (point) (point))))
 	    (throw 'match t)))))))
 
-(defun font-latex-extend-region-backwards-quotation (beg end)
-  "Return position to extend region backwards for quotations.
-Return nil if region does not have to be extended for a multiline
-quotation to fit in.  The region between the positions BEG and
-END marks boundaries for searching for quotation ends."
-  (if font-latex-quotes
-      (progn
-	(font-latex-update-quote-list)
-	(let ((regexp-end (regexp-opt (mapcar 'cadr font-latex-quote-list) t)))
-	  (save-excursion
-	    (goto-char end)
-	    (catch 'extend
-	      (while (re-search-backward regexp-end beg t)
-		(let ((closing-quote (match-string 0))
-		      (nest-count 0)
-		      (point-of-surrender (- beg font-latex-multiline-boundary))
-		      opening-quote)
-		  (catch 'found
-		    (dolist (elt font-latex-quote-list)
-		      (when (string= (cadr elt) closing-quote)
-			(setq opening-quote (car elt))
-			(throw 'found nil))))
-		  ;; Find opening quote taking nested quotes into account.
-		  (while (progn
-			   (re-search-backward (concat opening-quote "\\|"
-						       closing-quote)
-					       point-of-surrender 'move)
-			   (when (and (> (point) point-of-surrender)
-				      (not (bobp)))
-			     (if (string= (match-string 0) closing-quote)
-				 (setq nest-count (1+ nest-count))
-			       (when (/= nest-count 0)
-				 (setq nest-count (1- nest-count)))))))
-		  (when (< (point) beg)
-		    (throw 'extend (point)))))
-	      nil))))
-    nil))
+(defun font-latex-extend-region-backwards-quotation ()
+  "Extend region backwards for quotations."
+  (when font-latex-quotes
+    (font-latex-update-quote-list)
+    (let ((regexp-end (regexp-opt (mapcar 'cadr font-latex-quote-list) t)))
+      (save-excursion
+	(goto-char font-lock-end)
+	(catch 'extend
+	  (while (re-search-backward regexp-end font-lock-beg t)
+	    (let ((closing-quote (match-string 0))
+		  (nest-count 0)
+		  (point-of-surrender (- font-lock-beg
+                                         font-latex-multiline-boundary))
+		  opening-quote)
+	      (catch 'found
+		(dolist (elt font-latex-quote-list)
+		  (when (string= (cadr elt) closing-quote)
+		    (setq opening-quote (car elt))
+		    (throw 'found nil))))
+	      ;; Find opening quote taking nested quotes into account.
+	      (while (progn
+		       (re-search-backward (concat opening-quote "\\|"
+						   closing-quote)
+					   point-of-surrender 'move)
+		       (when (and (> (point) point-of-surrender)
+				  (not (bobp)))
+			 (if (string= (match-string 0) closing-quote)
+			     (setq nest-count (1+ nest-count))
+			   (when (/= nest-count 0)
+			     (setq nest-count (1- nest-count)))))))
+	      (when (< (point) font-lock-beg)
+                (setq font-lock-beg (point))
+		(throw 'extend t)))))))))
 
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."
@@ -2058,7 +2030,7 @@ END marks boundaries for searching for quotation ends."
 	(font-latex--get-script-props pos :sub)
       (font-latex--get-script-props pos :super))))
 
-(defun font-latex-script-char (pos)
+(defun font-latex-script-char (_pos)
   "Return face and display spec for subscript and superscript character at POS."
   `(face font-latex-script-char-face
 	 ,@(when (eq font-latex-fontify-script 'invisible)

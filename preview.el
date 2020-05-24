@@ -1,7 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
 ;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017-2019  Free Software Foundation, Inc.
+;;               2017-2020  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -753,7 +753,7 @@ Gets the usual PROCESS and STRING parameters, see
       (setq mode-name "Preview-Ghostscript")
       (push process compilation-in-progress)
       (TeX-command-mode-line process)
-      (set-buffer-modified-p (buffer-modified-p))
+      (force-mode-line-update)
       process)))
 
 (defun preview-gs-open (&optional setup)
@@ -3189,8 +3189,7 @@ and `preview-colors' are set as given."
 	  (sit-for 0)
 	  process)
       (setq mode-line-process ": run")
-      (set-buffer-modified-p (buffer-modified-p))
-      (sit-for 0)				; redisplay
+      (force-mode-line-update)
       (call-process TeX-shell nil (current-buffer) nil
 		    TeX-shell-command-option
 		    command))))
@@ -3233,8 +3232,7 @@ If FAST is set, do a fast conversion."
 	  (sit-for 0)
 	  process)
       (setq mode-line-process ": run")
-      (set-buffer-modified-p (buffer-modified-p))
-      (sit-for 0)				; redisplay
+      (force-mode-line-update)
       (call-process TeX-shell nil (current-buffer) nil
 		    TeX-shell-command-option
 		    command))))
@@ -3277,8 +3275,7 @@ If FAST is set, do a fast conversion."
 	  (sit-for 0)
 	  process)
       (setq mode-line-process ": run")
-      (set-buffer-modified-p (buffer-modified-p))
-      (sit-for 0)				; redisplay
+      (force-mode-line-update)
       (call-process TeX-shell nil (current-buffer) nil
 		    TeX-shell-command-option
 		    command))))

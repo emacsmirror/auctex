@@ -1482,11 +1482,8 @@ reasons.  Use `TeX-run-function' instead."
 	     (delete-process process))
 
 	   ;; Force mode line redisplay soon
-	   ;; Do this in the command buffer so that "Next Error" item
-	   ;; will appear in the menu bar just after compilation.
-	   ;; (bug#38058)
-	   (with-current-buffer TeX-command-buffer
-	     (force-mode-line-update)))))
+	   ;; Do this in all buffers (bug#38058 and bug#40965)
+	   (force-mode-line-update t))))
 
   (setq compilation-in-progress (delq process compilation-in-progress)))
 

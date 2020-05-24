@@ -92,7 +92,7 @@ OPTIONAL is ignored."
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("PreviewMacro"            "*[[{")
 				("PreviewEnvironment"      "*[[{")
-				("PreviewSnarfEnvironment" "{"))
+				("PreviewSnarfEnvironment" "[{"))
 			      'function)))
  LaTeX-dialect)
 
