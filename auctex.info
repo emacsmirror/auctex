@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 12.2.1 from 2020-05-05), a
+This manual is for AUCTeX (version 12.2.2 from 2020-05-24), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2019 Free Software
@@ -5886,7 +5886,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.2.1 from 2020-05-05), a
+   This manual is for AUCTeX (version 12.2.2 from 2020-05-24), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2019 Free Software
