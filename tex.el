@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985-1987, 1991, 1993-2019 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2998,7 +2998,6 @@ FORCE is not nil."
 
 (defvar TeX-remove-style-hook nil
   "List of hooks to call when we remove the style specific information.")
- (make-variable-buffer-local 'TeX-remove-style-hook)
 
 (defun TeX-remove-style ()
   "Remove all style specific information."
