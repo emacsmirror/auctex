@@ -185,13 +185,11 @@ customize (customize calls it when setting the variable)."
 		      ((memq type '(sw-toggle))      'togglers)))
       (set var (cons (car entry) (symbol-value var))))
     (setq texmathp-onoff-regexp
-	  (concat "[^\\\\]\\("
-		  (mapconcat 'regexp-quote switches "\\|")
-		  "\\)")
+	  (concat "\\(?:[^\\\\]\\|\\`\\)"
+		  (regexp-opt switches t))
 	  texmathp-toggle-regexp
-	  (concat "\\([^\\\\\\$]\\|\\`\\)\\("
-		  (mapconcat 'regexp-quote togglers "\\|")
-		  "\\)"))))
+	  (concat "\\([^\\\\\\$]\\|\\`\\)"
+		  (regexp-opt togglers t)))))
 
 (defcustom texmathp-tex-commands nil
   "List of environments and macros influencing (La)TeX math mode.
@@ -287,14 +285,17 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 
     ;; Select the nearer match
     (and env-match (setq match env-match))
-    (and mac-match (> (cdr mac-match) (cdr match)) (setq match mac-match))
+    ;; Use `>=' instead of `>' in case called inside \ensuremath{..}
+    ;; beginning just at (point-min).
+    (and mac-match (>= (cdr mac-match) (cdr match)) (setq match mac-match))
     (setq math-on (memq (nth 1 (assoc (car match) texmathp-tex-commands1))
 			'(env-on arg-on)))
 
     ;; Check for switches
     (and (not math-on)
 	 (setq sw-match (texmathp-match-switch bound))
-	 (> (cdr sw-match) (cdr match))
+	 ;; Use `>=' instead of `>' by similar reason as above. (bug#41559)
+	 (>= (cdr sw-match) (cdr match))
 	 (eq (nth 1 (assoc (car sw-match) texmathp-tex-commands1)) 'sw-on)
 	 (setq match sw-match math-on t))
 
