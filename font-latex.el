@@ -1328,7 +1328,7 @@ If SYNTACTIC-KWS is non-nil, also update
 (defun font-latex-unfontify-region (beg end &rest ignored)
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
-  (remove-text-properties beg end '(script-level))
+  (remove-list-of-text-properties beg end '(script-level invisible))
   (while (< beg end)
     (let ((next (next-single-property-change beg 'display nil end))
 	  (prop (get-text-property beg 'display)))
