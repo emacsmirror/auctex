@@ -185,10 +185,10 @@ customize (customize calls it when setting the variable)."
 		      ((memq type '(sw-toggle))      'togglers)))
       (set var (cons (car entry) (symbol-value var))))
     (setq texmathp-onoff-regexp
-	  (concat "\\(?:[^\\\\]\\|\\`\\)"
+	  (concat "\\(?:[^\\]\\|\\`\\)"
 		  (regexp-opt switches t))
 	  texmathp-toggle-regexp
-	  (concat "\\([^\\\\\\$]\\|\\`\\)"
+	  (concat "\\([^\\$]\\|\\`\\)"
 		  (regexp-opt togglers t)))))
 
 (defcustom texmathp-tex-commands nil
