@@ -12,6 +12,11 @@
 
 @itemize @bullet
 @item
+Math expression hilighting was improved. Hilighting for documents with a
+lot of inline math expressions @samp{$...$} won't get scrambled now
+(@samp{bug#33139}).
+
+@item
 @AUCTeX{} tracks changes in @LaTeX{}2e 2020-02-02 release.  @AUCTeX{}
 supports the improvements to @LaTeX{} font selection mechanism (NFSS).
 New macros like @samp{\textsw} or @samp{\textulc} are added to font
