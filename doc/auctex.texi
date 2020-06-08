@@ -173,6 +173,7 @@ Font Locking
 * Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
+* Known problems::              Known fontification problems
 
 Starting Processors, Viewers and Other Programs
 

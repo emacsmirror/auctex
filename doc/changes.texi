@@ -16,6 +16,16 @@ Math expression hilighting was improved. Hilighting for documents with a
 lot of inline math expressions @samp{$...$} won't get scrambled now
 (@samp{bug#33139}).
 
+There is small incompatibility due to this fix. When odd number of
+dollar signs are in a comment, the subsequent lines are hilighted as
+math until another $ appears. You can insert a commented dollar sign
+(@samp{%$}) at the next suitable end of line as a workaround@c
+@ifset rawfile
+, as mentioned in the section ``Known problems''.
+@end ifset
+@ifclear rawfile
+. @xref{Known problems}.
+@end ifclear
 @item
 @AUCTeX{} tracks changes in @LaTeX{}2e 2020-02-02 release.  @AUCTeX{}
 supports the improvements to @LaTeX{} font selection mechanism (NFSS).
