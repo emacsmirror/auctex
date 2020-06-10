@@ -1,6 +1,6 @@
 ;;; comment.el --- AUCTeX style for `comment.sty'
 
-;; Copyright (C) 2007, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,9 +35,8 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 (defvar font-latex-syntactic-keywords-extra)
 
@@ -55,7 +54,6 @@
    (mapc 'LaTeX-add-environments LaTeX-comment-env-list)
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      ;; For syntactic fontification.
      (add-to-list 'font-latex-syntactic-keywords-extra
@@ -74,7 +72,7 @@
 				("processcomment" "{{{{"))
 			      'variable)
      ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+     (font-latex-set-syntactic-keywords)))
  LaTeX-dialect)
 
 ;;; comment.el ends here

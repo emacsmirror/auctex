@@ -40,10 +40,6 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
-
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
@@ -186,13 +182,11 @@
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fvinlineset" "{"))
 			      'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
-			      'textual)
-     (font-latex-update-font-lock t)) )
+			      'textual)))
  LaTeX-dialect)
 
 (defvar LaTeX-fvextra-package-options nil

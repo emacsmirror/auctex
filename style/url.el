@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'
 
-;; Copyright (C) 2004, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,9 +35,8 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 (TeX-add-style-hook
  "url"
@@ -60,7 +59,7 @@
     ;; braces.  We check here if hyperref is loaded:
     '("url" (TeX-arg-conditional (member "hyperref" (TeX-style-list))
 				 ("Url")
-			       ((TeX-arg-verb-delim-or-brace "Url"))))
+			         ((TeX-arg-verb-delim-or-brace "Url"))))
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
 
@@ -75,7 +74,6 @@
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("path" "") ("url" "")) 'reference)
      (font-latex-add-keywords '(("Url" "")
@@ -93,7 +91,7 @@
 				("urlstyle" "{"))
 			      'variable)
      ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+     (font-latex-set-syntactic-keywords)))
  LaTeX-dialect)
 
 (defun TeX-arg-urlstyle (optional &optional prompt)

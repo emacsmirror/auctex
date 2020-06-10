@@ -1,6 +1,6 @@
 ;;; expl3.el --- AUCTeX style for `expl3.sty'
 
-;; Copyright (C) 2015, 2017-2019 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2017-2020 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,11 +30,6 @@
 
 ;;; Code:
 
-;; Silence the compiler:
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
-
 (defvar font-latex-match-simple-include-list)
 
 (defvar LaTeX-expl3-syntax-table
@@ -48,13 +43,10 @@
  "expl3"
  (lambda ()
    (set-syntax-table LaTeX-expl3-syntax-table)
-   (when (and (fboundp 'font-latex-update-font-lock)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+   (when (and (eq TeX-install-font-lock 'font-latex-setup))
      ;; Fontify _ and : as part of macros.
      (add-to-list 'font-latex-match-simple-include-list "_" t)
-     (add-to-list 'font-latex-match-simple-include-list ":" t)
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+     (add-to-list 'font-latex-match-simple-include-list ":" t)))
  LaTeX-dialect)
 
 (defun LaTeX-expl3-package-options ()

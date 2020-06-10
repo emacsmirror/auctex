@@ -35,6 +35,7 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+
 (defvar LaTeX-article-class-options)
 
 (defun LaTeX-item-ltxguide-decl ()
@@ -100,8 +101,7 @@ For decl environment provided by ltxguide.cls."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup)
-	      (fboundp 'font-latex-update-font-lock))
+	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("m"              "{")
 				("arg"            "{")
 				("oarg"           "{")
@@ -109,9 +109,7 @@ For decl environment provided by ltxguide.cls."
 				("NEWdescription" "{"))
 			      'textual)
      (font-latex-add-keywords '(("URL" ""))
-			      'reference)
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+			      'reference)))
  LaTeX-dialect)
 
 (defvar LaTeX-ltxguide-class-options

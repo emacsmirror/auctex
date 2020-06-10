@@ -42,10 +42,6 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
-
 (TeX-add-style-hook
  "tex-live"
  (lambda ()
@@ -169,9 +165,7 @@
      (font-latex-add-keywords '(("var" "{") )
 			      'italic-command)
      (font-latex-add-keywords '(("Ucom" "{"))
-			      'bold-command)
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+			      'bold-command)))
  LaTeX-dialect)
 
 ;;; tex-live.el ends here
