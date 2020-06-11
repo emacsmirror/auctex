@@ -1224,9 +1224,11 @@ cons pair as expected by `font-lock-defaults'.  The function also
 triggers Font Lock to recognize the change."
   (set (make-local-variable 'font-latex-syntax-alist)
        (append font-latex-syntax-alist list))
-  ;; Tell font-lock about the update.
-  (setq font-lock-set-defaults nil)
-  (font-latex-setup))
+  ;; We modify the `font-lock-syntax-table' directly but also call
+  ;; `font-latex-setup' in order to have `font-lock-defaults' be in sync.
+  (font-latex-setup)
+  (dolist (elt list)
+    (modify-syntax-entry (car elt) (cdr elt) font-lock-syntax-table)))
 
 (defun font-latex-syntax-propertize-function (start end)
   "The `syntax-propertize-function' for (La)TeX documents."
