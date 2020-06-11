@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2019
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
 ;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
@@ -29,6 +29,28 @@
 ;; This will also load the amstext, amsbsy and amsopn style files.
 
 ;;; Code:
+
+(defvar font-latex-math-environments)
+(declare-function font-latex-math-environments-from-texmathp
+		  "font-latex" (list))
+(require 'texmathp)
+(let ((list '(("equation*"     env-on)
+	      ("align"         env-on) ("align*"        env-on)
+	      ("gather"        env-on) ("gather*"       env-on)
+	      ("multline"      env-on) ("multline*"     env-on)
+	      ("flalign"       env-on) ("flalign*"      env-on)
+	      ("alignat"       env-on) ("alignat*"      env-on)
+	      ("xalignat"      env-on) ("xalignat*"     env-on)
+	      ("xxalignat"     env-on) ("\\boxed"       arg-on)
+	      ("\\text"        arg-off) ("\\intertext"   arg-off))))
+  (dolist (entry list)
+    (add-to-list 'texmathp-tex-commands-default entry t))
+  (texmathp-compile)
+  (when (and (featurep 'font-latex)
+	     (eq TeX-install-font-lock 'font-latex-setup))
+    (dolist (entry (font-latex-math-environments-from-texmathp list))
+      ;; Append our addition so that we don't interfere with user customizations
+      (add-to-list 'font-latex-math-environments entry t))))
 
 (TeX-add-style-hook
  "amsmath"

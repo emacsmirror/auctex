@@ -95,6 +95,24 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
+(defvar font-latex-math-environments)
+(declare-function font-latex-math-environments-from-texmathp
+		  "font-latex" (list))
+(require 'texmathp)
+(let ((list '(("dmath"         env-on) ("dmath*"        env-on)
+	      ("dseries"       env-on) ("dseries*"      env-on)
+	      ("dgroup"        env-on) ("dgroup*"       env-on)
+	      ("darray"        env-on) ("darray*"       env-on)
+	      ("dsuspend"      env-off))))
+  (dolist (entry list)
+    (add-to-list 'texmathp-tex-commands-default entry t))
+  (texmathp-compile)
+  (when (and (featurep 'font-latex)
+	     (eq TeX-install-font-lock 'font-latex-setup))
+    ;; Append our addition so that we don't interfere with user customizations
+    (dolist (entry (font-latex-math-environments-from-texmathp list))
+      (add-to-list 'font-latex-math-environments entry t))))
+
 (TeX-add-style-hook
  "breqn"
  (lambda ()
@@ -132,19 +150,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
    (TeX-add-symbols
     '("condition"  [ "Punctuation mark (default ,)" ] t)
     '("condition*" [ "Punctuation mark (default ,)" ] t)
-    '("hiderel" t))
-
-   ;; Fontification
-   (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup)
-	      (boundp 'font-latex-math-environments))
-     (make-local-variable 'font-latex-math-environments)
-     (let ((envs '(;; Do not insert the starred versions here;
-		   ;; function `font-latex-match-math-envII' takes
-		   ;; care of it
-		   "dmath" "dseries" "dgroup" "darray")))
-       (dolist (env envs)
-	 (add-to-list 'font-latex-math-environments env t)))))
+    '("hiderel" t)))
  LaTeX-dialect)
 
 (defvar LaTeX-breqn-package-options nil

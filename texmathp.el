@@ -1,6 +1,6 @@
 ;;; texmathp.el -- Code to check if point is inside LaTeX math environment
 
-;; Copyright (C) 1998, 2004, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 1998, 2004, 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -130,37 +130,7 @@
     ("\\textrm"      arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
-    ("\\ensuremath"  arg-on)
-
-    ;; AMS-LaTeX
-    ("equation*"     env-on)
-    ("align"         env-on)      ("align*"        env-on)
-    ("gather"        env-on)      ("gather*"       env-on)
-    ("multline"      env-on)      ("multline*"     env-on)
-    ("flalign"       env-on)      ("flalign*"      env-on)
-    ("alignat"       env-on)      ("alignat*"      env-on)
-    ("xalignat"      env-on)      ("xalignat*"     env-on)
-    ("xxalignat"     env-on)      ("\\boxed"       arg-on)
-    ("\\text"        arg-off)     ("\\intertext"   arg-off)
-
-    ;; mathtools
-    ("\\shortintertext"   arg-off)
-
-    ;; empheq
-    ("empheq"        env-on)
-    ("AmSequation"   env-on)      ("AmSequation*"  env-on)
-    ("AmSalign"      env-on)      ("AmSalign*"     env-on)
-    ("AmSgather"     env-on)      ("AmSgather*"    env-on)
-    ("AmSmultline"   env-on)      ("AmSmultline*"  env-on)
-    ("AmSflalign"    env-on)      ("AmSflalign*"   env-on)
-    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on)
-
-    ;; breqn
-    ("dmath"         env-on)      ("dmath*"        env-on)
-    ("dseries"       env-on)      ("dseries*"      env-on)
-    ("dgroup"        env-on)      ("dgroup*"       env-on)
-    ("darray"        env-on)      ("darray*"       env-on)
-    ("dsuspend"      env-off))
+    ("\\ensuremath"  arg-on))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()

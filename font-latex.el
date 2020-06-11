@@ -1264,9 +1264,7 @@ triggers Font Lock to recognize the change."
             font-latex-extend-region-backwards-command-with-args
 	    font-latex-extend-region-backwards-command-in-braces
 	    font-latex-extend-region-backwards-quotation
-	    font-latex-extend-region-backwards-math-env
-	    font-latex-extend-region-backwards-math-envII
-	    font-latex-extend-region-backwards-dollar-math)
+	    font-latex-extend-region-backwards-math)
            (syntax-propertize-function
             . font-latex-syntax-propertize-function)
            (syntax-propertize-extend-region-functions
@@ -1748,26 +1746,22 @@ Used for patterns like:
 	    (store-match-data (list beg (point) (point) (point))))
 	  (throw 'match t))))))
 
-(defun font-latex-extend-region-backwards-math-env ()
-  "Extend region backwards for math environments."
-  (save-excursion
-    (goto-char font-lock-end)
-    (catch 'extend
-      (while (re-search-backward "\\(\\\\)\\)\\|\\(\\\\]\\)" font-lock-beg t)
-	(when (and (zerop (mod (skip-chars-backward "\\\\") 2))
-		   (re-search-backward
-		    (concat "[^\\]\\(?:\\\\\\\\\\)*\\("
-			    (regexp-quote (if (match-beginning 1) "\\(" "\\["))
-			    "\\)")
-		    (- font-lock-beg font-latex-multiline-boundary) t)
-		   (goto-char (match-beginning 1))
-		   (< (point) font-lock-beg))
-          (setq font-lock-beg (point))
-	  (throw 'extend t))))))
+(require 'texmathp)
+(defun font-latex-math-environments-from-texmathp (list)
+  "Return list of math environments extracted from LIST.
+Utility to share data with texmathp.el.
+LIST should have the same structure as `texmathp-tex-commands'.
+Return list of environment names marked as `env-on' type in LIST,
+except starred forms."
+  (let (result)
+    (dolist (entry list)
+      (if (and (eq 'env-on (cadr entry))
+	       (not (string= "*" (substring (car entry) -1))))
+	  (push (car entry) result)))
+    result))
 
 (defcustom font-latex-math-environments
-  '("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
-    "align" "alignat" "xalignat" "xxalignat" "flalign")
+  (font-latex-math-environments-from-texmathp texmathp-tex-commands1)
   "List of math environment names for font locking."
   :type '(repeat string)
   :group 'font-latex)
@@ -1811,29 +1805,6 @@ The \\begin{equation} incl. arguments in the same line and
 	(setq end beg))
       (store-match-data (list beg end))
       t)))
-
-(defun font-latex-extend-region-backwards-math-envII ()
-  "Extend region backwards for math environments."
-  (save-excursion
-    (goto-char font-lock-end)
-    (catch 'extend
-      (while (re-search-backward
-	      (concat "\\\\end[ \t]*{"
-		      (regexp-opt font-latex-math-environments t)
-		      "\\*?}") font-lock-beg t)
-	(when (and (re-search-backward
-		    (concat  "\\\\begin[ \t]*{"
-			     (buffer-substring-no-properties
-			      (match-beginning 1)
-			      (match-end 0))
-			     ;; Match an optional and possible
-			     ;; mandatory argument(s)
-			     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-			     "\\(?:{[^}]*}\\)*")
-		    (- font-lock-beg font-latex-multiline-boundary) t)
-		   (< (point) font-lock-beg))
-          (setq font-lock-beg (point))
-	  (throw 'extend t))))))
 
 (defun font-latex-match-dollar-math (limit)
   "Match inline math $...$ or display math $$...$$ before LIMIT."
@@ -1903,7 +1874,7 @@ signs to follow the point and must be 1 or 2."
        ;; > \includegraphics{$HOME/path/to/graphic}
        ;; > \bibliography{$HOME/path/to/bib}
        ;;
-       ;; In order to spare work around of adding "%$" at the end of
+       ;; In order to spare workaround of adding "%$" at the end of
        ;; the lines for such cases, we stay away from the next syntax
        ;; state check.
        ;; ;; check 3: Else, is "$" in comments or verb-like construct?
@@ -1913,29 +1884,26 @@ signs to follow the point and must be 1 or 2."
 	;; That "$" is live one.
 	(throw 'found t))))))
 
-(require 'texmathp)
-;; FIXME: Big overhead here. We can obviously unify
-;; `font-latex-extend-region-backwards-math-env' and
-;; `font-latex-extend-region-backwards-math-envII' into
-;; this function.
-(defun font-latex-extend-region-backwards-dollar-math ()
-  "Extend region backwards for math inside $...$ or $$...$$."
-  ;; Use `texmathp' to identify whether the point is inside $...$ or
-  ;; $$...$$. Only heuristic, but it's very difficult to identify
-  ;; rigorously without syntactic support.
+(defun font-latex-extend-region-backwards-math ()
+  "Extend region backwards for math environmets.
+Take into account $...$, $$...$$, \\(...\\) and \\=\\[...\\], too."
+  ;; Use `texmathp' to identify whether the point is inside math mode.
+  ;; Only heuristic, but it's very difficult to identify rigorously
+  ;; without syntactic support.
 
-  ;; Check if `font-lock-beg' is inside "$...$" or "$$...$$".
+  ;; Check if `font-lock-beg' is inside math mode.
   (goto-char font-lock-beg)
 
-  ;; Work around bug#41522. Ensure `syntax-table' property is given to
-  ;; all verbatim like constructs up to the position before running
+  ;; Workaround bug#41522. Ensure `syntax-table' property is given to
+  ;; all verbatim-like constructs up to the position before running
   ;; `texmathp' in order to prevent wrong fontification of verbatim
   ;; face. This is necessary because `texmathp' calls `up-list' inside
   ;; narrowing.
   (syntax-propertize (point))
 
-  (when (and (texmathp) (< (cdr texmathp-why) font-lock-beg)
-	     (member (car texmathp-why) '("$" "$$")))
+  ;; XXX: Should we make the `texmathp' search honor
+  ;; `font-latex-multiline-boundary'?
+  (when (and (texmathp) (< (cdr texmathp-why) font-lock-beg))
     ;; Make its beginning a new start of font lock region.
     (setq font-lock-beg (cdr texmathp-why))
     t))

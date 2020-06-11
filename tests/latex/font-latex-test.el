@@ -38,6 +38,7 @@
 $a$")
 	      (LaTeX-mode)
 	      (goto-char (point-min))
+	      (setq font-latex--updated-region-end (point-max))
 	      (font-latex-match-dollar-math (point-max))))))
 
 ;;; font-latex-test.el ends here
