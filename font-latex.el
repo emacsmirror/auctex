@@ -1228,7 +1228,10 @@ triggers Font Lock to recognize the change."
   ;; `font-latex-setup' in order to have `font-lock-defaults' be in sync.
   (font-latex-setup)
   (dolist (elt list)
-    (modify-syntax-entry (car elt) (cdr elt) font-lock-syntax-table)))
+    (modify-syntax-entry (car elt) (cdr elt) font-lock-syntax-table))
+  ;; Trigger refontification.
+  (when (fboundp 'font-lock-flush)
+    (font-lock-flush)))
 
 (defun font-latex-syntax-propertize-function (start end)
   "The `syntax-propertize-function' for (La)TeX documents."
