@@ -1254,6 +1254,8 @@ triggers Font Lock to recognize the change."
 	    nil nil ,font-latex-syntax-alist nil))
 	(variables
 	 '((font-lock-mark-block-function . mark-paragraph)
+	   (font-lock-fontify-region-function
+	    . font-latex-fontify-region)
 	   (font-lock-unfontify-region-function
 	    . font-latex-unfontify-region)
            (font-lock-extend-region-functions
@@ -1308,6 +1310,25 @@ If SYNTACTIC-KWS is non-nil, also update
 	     prettify-symbols-mode
 	     prettify-symbols--keywords)
     (font-lock-add-keywords nil prettify-symbols--keywords)))
+
+(defvar font-latex--updated-region-end nil
+;; During hilighting of math expression, matched range sometimes exceeds
+;; the given end limit. So record the actual end in this variable to
+;; notify the font lock machinery.
+;; Initialized at each font lock operation to the end limit of font lock
+;; range. Match function of math expression should do the following two if
+;; the end of the actual match goes beyond the value of this variable:
+;; 1. Apply `font-lock-unfontify-region' between the value of this variable
+;;    and the end of the actual match.
+;; 2. Update this variable to the end of the actual match.
+;; See implementation of `font-latex-match-math-env' for actual usage.
+  "Record the end of fontification.")
+(defun font-latex-fontify-region (beg end &optional verbose)
+  "Fontify region from BEG to END.
+Take care when the actually fonfified region was extended beyond END."
+  (setq font-latex--updated-region-end end)
+  (font-lock-default-fontify-region beg end verbose)
+  `(jit-lock-bounds ,beg . ,font-latex--updated-region-end))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
@@ -1712,10 +1733,16 @@ Used for patterns like:
 	  (if (and (re-search-forward (concat "[^\\]\\(?:\\\\\\\\\\)*\\("
 					      (regexp-quote open-tag) "\\|"
 					      (regexp-quote close-tag) "\\)")
-				      limit 'move)
+				      (+ limit font-latex-multiline-boundary)
+				      'move)
 		   (string= (match-string 1) close-tag))
 	      ;; Found closing tag.
-	      (store-match-data (list beg beg beg (point)))
+	      (let ((p (point)))
+		;; If the closing tag is beyond `limit', take care of it.
+		(when (< font-latex--updated-region-end p)
+		  (font-lock-unfontify-region font-latex--updated-region-end p)
+		  (setq font-latex--updated-region-end p))
+		(store-match-data (list beg beg beg p)))
 	    ;; Did not find closing tag.
 	    (goto-char (+ beg 2))
 	    (store-match-data (list beg (point) (point) (point))))
@@ -1774,10 +1801,12 @@ The \\begin{equation} incl. arguments in the same line and
 				      (buffer-substring-no-properties
 				       (match-beginning 1)
 				       (match-end 2))))
-			     ;; XXX: Should this rather be done by
-			     ;; extending the region to be fontified?
 			     (+ limit font-latex-multiline-boundary) 'move)
-	  (setq end (match-beginning 0))
+	  (progn
+	    (setq end (match-beginning 0))
+	    (when (< font-latex--updated-region-end end)
+	      (font-lock-unfontify-region font-latex--updated-region-end end)
+	      (setq font-latex--updated-region-end end)))
 	(goto-char beg)
 	(setq end beg))
       (store-match-data (list beg end))
@@ -1817,29 +1846,25 @@ The \\begin{equation} incl. arguments in the same line and
 	      num (skip-chars-forward "$" limit))
 	;; If those are three or more consecutive $, ignore them and
 	;; search again.
-	(when (< num 3)
-	  (if ;; Let's find the same number of live dollar signs.
-	      (font-latex-find-dollar-math limit num)
-	      ;; Found.
-	      (progn
-		(forward-char num)
-		(set-match-data (list beg (point)))
-		(throw 'match t))
-	    ;; Not found. It means that there was opening "$" or
-	    ;; "$$", but we can't find the corresponding close tag
-	    ;; until LIMIT. Then it is either
-	    ;; (1) The math expression continues to the next line, or
-	    ;; (2) The buffer has unclosed "$" or "$$".
-	    ;; Regard the former case as a positive match because
-	    ;; experiments tends to imply that's more robust despite
-	    ;; of frequent false positives produced during editing.
-	    ;; N.B. It is ensured that LIMIT doesn't fall just
-	    ;; inside single "$$" because
-	    ;; `font-lock-extend-region-functions' takes care of it.
-	    (if (eobp)
-		(throw 'match nil)
-	      (set-match-data (list beg (point)))
-	      (throw 'match t))))))))
+	(if (< num 3)
+	    (if ;; Let's find the same number of live dollar signs.
+		(font-latex-find-dollar-math
+		 ;; Hope that limit+font-latex-multiline-boundary
+		 ;; doesn't fall just inside single "$$".
+		 (+ limit font-latex-multiline-boundary) num)
+		;; Found.
+		(progn
+		  (forward-char num)
+		  (let ((p (point)))
+		    (when (< font-latex--updated-region-end p)
+		      (font-lock-unfontify-region
+		       font-latex--updated-region-end p)
+		      (setq font-latex--updated-region-end p))
+		    (set-match-data (list beg p)))
+		  (throw 'match t))
+	      ;; Not found.
+	      ;; That $ or $$ is probably unclosed in the buffer.
+	      (throw 'match nil)))))))
 
 (defun font-latex-find-dollar-math (limit &optional num)
   "Find dollar sign(s) before LIMIT.
