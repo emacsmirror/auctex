@@ -1808,33 +1808,38 @@ The \\begin{equation} incl. arguments in the same line and
 
 (defun font-latex-match-dollar-math (limit)
   "Match inline math $...$ or display math $$...$$ before LIMIT."
-  (if (font-latex-find-dollar-math limit)
-      ;; Found "$" which starts $...$ or $$...$$.
-      (let ((beg (point))
-	    ;; Go inside the math expression.
-	    (num (skip-chars-forward "$" limit)))
-	(if (< num 3)
-	    (if ;; Let's find the same number of live dollar signs.
-		(font-latex-find-dollar-math limit num)
-		;; Found.
-		(progn
-		  (forward-char num)
-		  (set-match-data (list beg (point)))
-		  t)
-	      ;; Not found. It means that there was opening "$" or
-	      ;; "$$", but we can't find the corresponding close tag
-	      ;; until LIMIT. Then it is either
-	      ;; (1) The math expression continues to the next line, or
-	      ;; (2) The buffer has unclosed "$" or "$$".
-	      ;; Regard the former case as a positive match because
-	      ;; experiments tends to imply that's more robust despite
-	      ;; of frequent false positives produced during editing.
-	      ;; N.B. It is ensured that LIMIT doesn't fall just
-	      ;; inside single "$$" because
-	      ;; `font-lock-extend-region-functions' takes care of it.
-	      (unless (eobp)
+  (catch 'match
+    (let (beg num)
+      (while (font-latex-find-dollar-math limit)
+	;; Found "$" which starts $...$ or $$...$$.
+	(setq beg (point)
+	      ;; Go inside the math expression.
+	      num (skip-chars-forward "$" limit))
+	;; If those are three or more consecutive $, ignore them and
+	;; search again.
+	(when (< num 3)
+	  (if ;; Let's find the same number of live dollar signs.
+	      (font-latex-find-dollar-math limit num)
+	      ;; Found.
+	      (progn
+		(forward-char num)
 		(set-match-data (list beg (point)))
-		t))))))
+		(throw 'match t))
+	    ;; Not found. It means that there was opening "$" or
+	    ;; "$$", but we can't find the corresponding close tag
+	    ;; until LIMIT. Then it is either
+	    ;; (1) The math expression continues to the next line, or
+	    ;; (2) The buffer has unclosed "$" or "$$".
+	    ;; Regard the former case as a positive match because
+	    ;; experiments tends to imply that's more robust despite
+	    ;; of frequent false positives produced during editing.
+	    ;; N.B. It is ensured that LIMIT doesn't fall just
+	    ;; inside single "$$" because
+	    ;; `font-lock-extend-region-functions' takes care of it.
+	    (if (eobp)
+		(throw 'match nil)
+	      (set-match-data (list beg (point)))
+	      (throw 'match t))))))))
 
 (defun font-latex-find-dollar-math (limit &optional num)
   "Find dollar sign(s) before LIMIT.
