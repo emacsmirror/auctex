@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
 
-;; Copyright (C) 2008, 2013--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013-2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,9 +35,8 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 (defvar LaTeX-hyperref-package-options-list
   '(;; See https://www.tug.org/applications/hyperref/manual.html#x1-40003
@@ -316,7 +315,7 @@
      (font-latex-add-keywords '(("hypersetup" "{"))
 			      'function)
      ;; For syntactic fontification, e.g. verbatim constructs.
-     (font-latex-update-font-lock t))
+     (font-latex-set-syntactic-keywords))
 
    ;; Option management
    (if (and (LaTeX-provided-package-options-member "hyperref" "dvipdfmx")

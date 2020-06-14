@@ -1,6 +1,6 @@
 ;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -41,9 +41,8 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 ;; The next two are provided by `newfloat.el':
 (declare-function LaTeX-add-newfloat-DeclareFloatingEnvironments
@@ -193,13 +192,13 @@ a list of strings."
 		     ;; font-latex.el:
 		     (if (eq type 'brace)
 			 (concat "\\({\\)"
-				   "\\(?:[^}{]*"
-				     "\\(?:{[^}{]*"
-				       "\\(?:{[^}{]*"
-					 "\\(?:{[^}{]*}[^}{]*\\)*"
-				       "}[^}{]*\\)*"
-				     "}[^}{]*\\)*"
-				   "\\)"
+				 "\\(?:[^}{]*"
+				 "\\(?:{[^}{]*"
+				 "\\(?:{[^}{]*"
+				 "\\(?:{[^}{]*}[^}{]*\\)*"
+				 "}[^}{]*\\)*"
+				 "}[^}{]*\\)*"
+				 "\\)"
 				 "\\(}\\)")
 		       (concat
 			;; Opening delimiter
@@ -259,7 +258,7 @@ a list of strings."
 		    `(,env current-indentation) t))
      ;; Fontification
      (when (and (fboundp 'font-latex-add-keywords)
-		(fboundp 'font-latex-update-font-lock)
+		(fboundp 'font-latex-set-syntactic-keywords)
 		(boundp 'font-latex-syntactic-keywords-extra)
 		(eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords (mapcar (lambda (mac)
@@ -288,15 +287,15 @@ a list of strings."
 			       "\\)}")
 		      (1 "|" t))))
      ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t))
+     (font-latex-set-syntactic-keywords))
 
    (TeX-add-symbols
     ;; 4.2.5 Custom code
     ;; pythontexcustomc[<position>]{<family>}{<code>}
     '("pythontexcustomc"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Position")
-		     '("begin" "end") ]
+	(TeX-argument-prompt optional nil "Position")
+	'("begin" "end") ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Family")
 		    LaTeX-pythontex-family-list)
@@ -306,15 +305,15 @@ a list of strings."
     ;; \setpythontexfv[<family>]{<fancyvrb settings>}
     '("setpythontexfv"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Family")
-		     LaTeX-pythontex-family-list ]
+	(TeX-argument-prompt optional nil "Family")
+	LaTeX-pythontex-family-list ]
       (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
 
     ;; \setpythontexprettyprinter[<family>]{<printer>}
     '("setpythontexprettyprinter"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Family")
-		     (cons "auto" LaTeX-pythontex-family-list) ]
+	(TeX-argument-prompt optional nil "Family")
+	(cons "auto" LaTeX-pythontex-family-list) ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Printer")
 		    '("text" "bw" "fancyvrb" "pygments")))
@@ -322,8 +321,8 @@ a list of strings."
     ;; \setpythontexpyglexer[<family>]{<pygments lexer>}
     '("setpythontexpyglexer"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Family")
-		     LaTeX-pythontex-family-list ]
+	(TeX-argument-prompt optional nil "Family")
+	LaTeX-pythontex-family-list ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Pygments lexer")
 		    (LaTeX-pythontex-language-list)))
@@ -331,8 +330,8 @@ a list of strings."
     ;; \setpythontexpygopt[<family>]{<pygments options>}
     '("setpythontexpygopt"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Family")
-		     LaTeX-pythontex-family-list ]
+	(TeX-argument-prompt optional nil "Family")
+	LaTeX-pythontex-family-list ]
       (TeX-arg-key-val
        (("style") ("texcomments") ("mathescape"))))
 
@@ -340,15 +339,15 @@ a list of strings."
     ;; \printpythontex[<mode>][<options>]
     '("printpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
     ;; \stdoutpythontex[<mode>][<options>]
     '("stdoutpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
     ;;\saveprintpythontex{<name>}
@@ -371,8 +370,8 @@ a list of strings."
     ;; I assume <verbatim options> is meant to be <mode>
     '("useprintpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Name")
@@ -382,8 +381,8 @@ a list of strings."
     ;; I assume <verbatim options> is meant to be <mode>
     '("usestdoutpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Name")
@@ -392,8 +391,8 @@ a list of strings."
     ;; \stderrpythontex[<mode>][<fancyvrb options>]
     '("stderrpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
 
@@ -408,8 +407,8 @@ a list of strings."
     ;; \usestderrpythontex[<mode>][<fancyvrb options>]{<name>}
     '("usestderrpythontex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+	(TeX-argument-prompt optional nil "Mode")
+	'("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Name")
@@ -446,15 +445,15 @@ a list of strings."
     ;; \setpygmentsfv[<lexer>]{<fancyvrb settings>}
     '("setpygmentsfv"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Lexer")
-		     (LaTeX-pythontex-language-list) ]
+	(TeX-argument-prompt optional nil "Lexer")
+	(LaTeX-pythontex-language-list) ]
       (TeX-arg-eval LaTeX-fancyvrb-key-val-options-local))
 
     ;; \setpygmentspygopt[<lexer>]{<pygments options>}
     '("setpygmentspygopt"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Lexer")
-		     (LaTeX-pythontex-language-list) ]
+	(TeX-argument-prompt optional nil "Lexer")
+	(LaTeX-pythontex-language-list) ]
       (TeX-arg-key-val
        (("style") ("texcomments") ("mathescape"))))
 
@@ -504,8 +503,8 @@ a list of strings."
     ;; 4.2.5 Custom code
     '("pythontexcustomcode" LaTeX-env-args
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Position")
-		     '("begin" "end") ]
+	(TeX-argument-prompt optional nil "Position")
+	'("begin" "end") ]
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt optional nil "Family")
 		    LaTeX-pythontex-family-list))
@@ -527,7 +526,6 @@ a list of strings."
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("pythontexcustomc"         "[{{")
 				("setpythontexfv"           "[{")
@@ -564,7 +562,7 @@ a list of strings."
      (LaTeX-pythontex-add-syntactic-keywords-extra 'brace "pygment")
      (LaTeX-pythontex-add-syntactic-keywords-extra 'delim "pygment")
      ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+     (font-latex-set-syntactic-keywords)))
  LaTeX-dialect)
 
 ;;; pythontex.el ends here

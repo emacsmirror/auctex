@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'
 
-;; Copyright (C) 2004, 2005, 2009, 2013--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009, 2013-2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -55,9 +55,8 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 ;; The following are options taken from chapter 4 of the listings
 ;; manual (2007/02/22 Version 1.4).
@@ -337,10 +336,9 @@ with user-defined values via the \"lstdefinestyle\" macro."
 		 (regexp "[Ll]isting")))))
       ;; Fontification
       (when (and (fboundp 'font-latex-add-keywords)
-		 (fboundp 'font-latex-update-font-lock)
 		 (eq TeX-install-font-lock 'font-latex-setup))
 	;; Tell font-lock about the update.
-	(font-latex-update-font-lock t))
+	(font-latex-set-syntactic-keywords))
       ;; Add new env's to `ispell-tex-skip-alist': skip the entire env
       (TeX-ispell-skip-setcdr `(,(cons env (concat "\\\\end{" env "}"))))))
   (when (LaTeX-listings-lstdefinestyle-list)
@@ -451,7 +449,6 @@ caption key is found, an error is issued."
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lstnewenvironment" "{[[{{")) 'function)
      (font-latex-add-keywords '(("lstinputlisting" "[{")) 'reference)
@@ -461,9 +458,7 @@ caption key is found, an error is issued."
      (font-latex-add-keywords '(("lstalias" "{{")
 				("lstdefinestyle" "{{")
 				("lstset" "{"))
-			      'variable)
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+			      'variable)))
  LaTeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"

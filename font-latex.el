@@ -878,7 +878,9 @@ locking machinery will be triggered."
     (dolist (elt keywords)
       (add-to-list list elt))
     (funcall (intern (format "font-latex-match-%s-make" class)))
-    (font-latex-update-font-lock)))
+    ;; Trigger refontification.
+    (when (fboundp 'font-lock-flush)
+      (font-lock-flush))))
 
 (defvar font-latex-keywords font-latex-keywords-1
   "Default expressions to highlight in TeX mode.")
@@ -1222,9 +1224,14 @@ cons pair as expected by `font-lock-defaults'.  The function also
 triggers Font Lock to recognize the change."
   (set (make-local-variable 'font-latex-syntax-alist)
        (append font-latex-syntax-alist list))
-  ;; Tell font-lock about the update.
-  (setq font-lock-set-defaults nil)
-  (font-latex-setup))
+  ;; We modify the `font-lock-syntax-table' directly but also call
+  ;; `font-latex-setup' in order to have `font-lock-defaults' be in sync.
+  (font-latex-setup)
+  (dolist (elt list)
+    (modify-syntax-entry (car elt) (cdr elt) font-lock-syntax-table))
+  ;; Trigger refontification.
+  (when (fboundp 'font-lock-flush)
+    (font-lock-flush)))
 
 (defun font-latex-syntax-propertize-function (start end)
   "The `syntax-propertize-function' for (La)TeX documents."
@@ -1294,20 +1301,23 @@ triggers Font Lock to recognize the change."
   "Tell font-lock about updates of fontification rules.
 If SYNTACTIC-KWS is non-nil, also update
 `font-latex-syntactic-keywords'."
-  ;; Update syntactic keywords.
-  (when syntactic-kws
-    (font-latex-set-syntactic-keywords))
+  (display-warning
+   'auctex
+   (concat "`font-latex-update-font-lock' should not be called.
+It is obsolete and going to be removed.
+If you have called `font-latex-add-keywords' and want to refresh fontification,
+call `font-lock-flush' instead.
+If you changed syntactic fontification, e.g., one of the variables
+- `LaTeX-verbatim-macros-with-delims'
+- `LaTeX-verbatim-macros-with-delims-local'
+- `LaTeX-verbatim-macros-with-braces'
+- `LaTeX-verbatim-macros-with-braces-local'
+- `LaTeX-verbatim-environments'
+- `LaTeX-verbatim-environments-local'
+- `font-latex-syntactic-keywords-extra'
+then call `font-latex-set-syntactic-keywords'.")))
 
-  ;; Let font-lock recompute its fontification rules.
-  (setq font-lock-set-defaults nil)
-  (font-lock-set-defaults)
-
-  ;; Re-initialize prettification if needed.
-  (when (and (boundp 'prettify-symbols-mode)
-	     (boundp 'prettify-symbols--keywords)
-	     prettify-symbols-mode
-	     prettify-symbols--keywords)
-    (font-lock-add-keywords nil prettify-symbols--keywords)))
+(make-obsolete 'font-latex-update-font-lock nil "12.2.4")
 
 (defvar font-latex--updated-region-end nil
 ;; During hilighting of math expression, matched range sometimes exceeds
@@ -1359,8 +1369,8 @@ modified.  Such variables include
 	(or (memq 'LaTeX-verbatim-environments-local hacked-local-vars)
 	    (memq 'LaTeX-verbatim-macros-with-braces-local hacked-local-vars)
 	    (memq 'LaTeX-verbatim-macros-with-delims-local hacked-local-vars)))
-    ;; Ok, we need to refresh fontification.
-    (font-latex-update-font-lock t)))
+    ;; Ok, we need to refresh syntactic fontification.
+    (font-latex-set-syntactic-keywords)))
 
 ;;; Utility functions
 

@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.0.
 
-;; Copyright (C) 2013, 2014, 2016--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -52,9 +52,8 @@
 		  "font-latex"
 		  (keywords class))
 
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
 
 (defvar LaTeX-fancyvrb-key-val-options
   `(("commentchar" ("none"))
@@ -247,7 +246,7 @@ RECUSTOM is non-nil, delete macros from the variable
 		[ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
 		LaTeX-fancyvrb-arg-file-relative))
 	     (when (and (fboundp 'font-latex-add-keywords)
-			(fboundp 'font-latex-update-font-lock))
+			(eq TeX-install-font-lock 'font-latex-setup))
 	       (font-latex-add-keywords `((,mac-name "[{"))
 					'reference)))
 	    ;; New macros for saving verbatim text:
@@ -263,7 +262,7 @@ RECUSTOM is non-nil, delete macros from the variable
 		     (format "%s" name))))
 		TeX-arg-verb))
 	     (when (and (fboundp 'font-latex-add-keywords)
-			(fboundp 'font-latex-update-font-lock))
+			(eq TeX-install-font-lock 'font-latex-setup))
 	       (font-latex-add-keywords `((,mac-name "[{"))
 					'textual)))
 	    ;; New macros for using previously saved text:
@@ -275,7 +274,7 @@ RECUSTOM is non-nil, delete macros from the variable
 		 (TeX-argument-prompt optional nil "Saved name")
 		 (LaTeX-fancyvrb-saveverb-list))))
 	     (when (and (fboundp 'font-latex-add-keywords)
-			(fboundp 'font-latex-update-font-lock))
+			(eq TeX-install-font-lock 'font-latex-setup))
 	       (font-latex-add-keywords `((,mac-name "{"))
 					'textual)))
 	    ;; Anything else is considered as verbatim typesetting macro:
@@ -294,14 +293,13 @@ RECUSTOM is non-nil, delete macros from the variable
 	     (add-to-list 'LaTeX-verbatim-macros-with-delims-local
 			  (concat mac-name "*") t)
 	     (when (and (fboundp 'font-latex-add-keywords)
-			(fboundp 'font-latex-update-font-lock))
+			(eq TeX-install-font-lock 'font-latex-setup))
 	       (font-latex-add-keywords `((,mac-name "*["))
 					'textual))))))
   ;; Update font-lock:
-  (when (and (fboundp 'font-latex-add-keywords)
-	     (fboundp 'font-latex-update-font-lock)
+  (when (and (fboundp 'font-latex-set-syntactic-keywords)
 	     (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex-update-font-lock t)))
+    (font-latex-set-syntactic-keywords)))
 
 (defun LaTeX-fancyvrb-arg-define-environment (optional &optional cleanup)
   "Query and insert a new verbatim environment with fancyvrb package.
@@ -368,10 +366,9 @@ update only various AUCTeX variables for verbatim environments."
       (add-to-list 'LaTeX-verbatim-environments-local env)
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)))
   ;; Update font-lock:
-  (when (and (fboundp 'font-latex-add-keywords)
-	     (fboundp 'font-latex-update-font-lock)
+  (when (and (fboundp 'font-latex-set-syntactic-keywords)
 	     (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex-update-font-lock t)))
+    (font-latex-set-syntactic-keywords)))
 
 (defun LaTeX-fancyvrb-arg-file-relative (optional)
   "Query and insert a file name relative to current master file.
@@ -530,7 +527,6 @@ If OPTIONAL is non-nil, insert the file name in brackets."
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("CustomVerbatimCommand"       "|{\\{{")
 				("RecustomVerbatimCommand"     "|{\\{{")
@@ -550,9 +546,7 @@ If OPTIONAL is non-nil, insert the file name in brackets."
 				("UseVerbatim"  "{")
 				("LUseVerbatim" "{")
 				("BUseVerbatim" "{"))
-			      'textual)
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+			      'textual)))
  LaTeX-dialect)
 
 (defvar LaTeX-fancyvrb-package-options nil

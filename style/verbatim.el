@@ -29,6 +29,10 @@
 
 ;;; Code
 
+;; Silence the compiler:
+(declare-function font-latex-set-syntactic-keywords
+		  "font-latex")
+
 (TeX-add-style-hook
  "verbatim"
  (lambda ()
@@ -40,7 +44,6 @@
    ;; Fontification:
    ;; Code taken from `comment.el'
    (when (and (boundp 'font-latex-syntactic-keywords-extra)
-	      (fboundp 'font-latex-update-font-lock)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      ;; For syntactic fontification.
      (add-to-list 'font-latex-syntactic-keywords-extra
@@ -50,7 +53,7 @@
 		  '("^[ \t]*\\(\\\\\\)end *{comment}"
 		    (1 "!" t)))
      ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+     (font-latex-set-syntactic-keywords)))
  LaTeX-dialect)
 
 (defvar LaTeX-verbatim-package-options nil
