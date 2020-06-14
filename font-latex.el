@@ -1323,20 +1323,23 @@ then call `font-latex-set-syntactic-keywords'.")))
 ;; During hilighting of math expression, matched range sometimes exceeds
 ;; the given end limit. So record the actual end in this variable to
 ;; notify the font lock machinery.
-;; Initialized at each font lock operation to the end limit of font lock
-;; range. Match function of math expression should do the following two if
-;; the end of the actual match goes beyond the value of this variable:
-;; 1. Apply `font-lock-unfontify-region' between the value of this variable
-;;    and the end of the actual match.
-;; 2. Update this variable to the end of the actual match.
+;; Match function of math expression should do the following two if
+;; the end of the actual match goes beyond the limit:
+;; 1. If the value of this variable is smaller than limit, set this
+;;    variable to that limit.
+;; 2. When the end of the actual match exceeds this variable,
+;;    - apply `font-lock-unfontify-region' between the value of this
+;;      variable and the end of the actual match
+;;    - update this variable to the end of the actual match
 ;; See implementation of `font-latex-match-math-env' for actual usage.
   "Record the end of fontification.")
 (defun font-latex-fontify-region (beg end &optional verbose)
   "Fontify region from BEG to END.
 Take care when the actually fonfified region was extended beyond END."
   (setq font-latex--updated-region-end end)
-  (font-lock-default-fontify-region beg end verbose)
-  `(jit-lock-bounds ,beg . ,font-latex--updated-region-end))
+  (let ((res (font-lock-default-fontify-region beg end verbose)))
+    `(jit-lock-bounds ,(cadr res) .
+		      ,(max (cddr res) font-latex--updated-region-end))))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
@@ -1746,7 +1749,12 @@ Used for patterns like:
 		   (string= (match-string 1) close-tag))
 	      ;; Found closing tag.
 	      (let ((p (point)))
-		;; If the closing tag is beyond `limit', take care of it.
+		(if (< font-latex--updated-region-end limit)
+		    ;; *-extend-region-functions have extended the
+		    ;; limit already.
+		    (setq font-latex--updated-region-end limit))
+		;; If the closing tag is beyond the current end of
+		;; region, take care of it.
 		(when (< font-latex--updated-region-end p)
 		  (font-lock-unfontify-region font-latex--updated-region-end p)
 		  (setq font-latex--updated-region-end p))
@@ -1808,6 +1816,8 @@ The \\begin{equation} incl. arguments in the same line and
 			     (+ limit font-latex-multiline-boundary) 'move)
 	  (progn
 	    (setq end (match-beginning 0))
+	    (if (< font-latex--updated-region-end limit)
+		(setq font-latex--updated-region-end limit))
 	    (when (< font-latex--updated-region-end end)
 	      (font-lock-unfontify-region font-latex--updated-region-end end)
 	      (setq font-latex--updated-region-end end)))
@@ -1837,6 +1847,8 @@ The \\begin{equation} incl. arguments in the same line and
 		(progn
 		  (forward-char num)
 		  (let ((p (point)))
+		    (if (< font-latex--updated-region-end limit)
+			(setq font-latex--updated-region-end limit))
 		    (when (< font-latex--updated-region-end p)
 		      (font-lock-unfontify-region
 		       font-latex--updated-region-end p)
