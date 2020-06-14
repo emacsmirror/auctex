@@ -1338,8 +1338,11 @@ then call `font-latex-set-syntactic-keywords'.")))
 Take care when the actually fonfified region was extended beyond END."
   (setq font-latex--updated-region-end end)
   (let ((res (font-lock-default-fontify-region beg end verbose)))
-    `(jit-lock-bounds ,(cadr res) .
-		      ,(max (cddr res) font-latex--updated-region-end))))
+    ;; COMPATIBILITY for older emacsen. Return value for jit-lock
+    ;; is meaningful for only newer emacsen.
+    (if (eq (car-safe res) 'jit-lock-bounds)
+	`(jit-lock-bounds ,(cadr res) .
+			  ,(max (cddr res) font-latex--updated-region-end)))))
 
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
