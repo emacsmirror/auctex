@@ -88,6 +88,11 @@
 ;;  If any of the the special macros like \mbox or \ensuremath has optional
 ;;  arguments, math mode inside these optional arguments is *not* influenced
 ;;  by the macro.
+;;
+;;  Nested \(\) and \[\] can confuse texmathp. It returns nil at AAA in the
+;;  following examples:
+;;  \[ x=y \mbox{abc \(\alpha\) cba} AAA \]
+;;  \[ x=y \begin{minipage}{3cm} abc \[\alpha\] cba \end{minipage} AAA \]
 ;;--------------------------------------------------------------------------
 
 ;;; Code:
