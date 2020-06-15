@@ -1783,7 +1783,13 @@ except starred forms."
 
 (defcustom font-latex-math-environments
   (font-latex-math-environments-from-texmathp texmathp-tex-commands1)
-  "List of math environment names for font locking."
+  "List of math environment names for font locking.
+It is no longer recommended to customize this option. You should
+customize `texmathp-tex-commands' instead because it is important for
+stable operation of font lock that this option is coherent with that
+option in addition to `texmathp-tex-commands-default'.
+Actually, the default value of this option is now taken from those
+variables."
   :type '(repeat string)
   :group 'font-latex)
 

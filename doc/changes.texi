@@ -23,6 +23,13 @@ math until another $ appears. You can insert a commented dollar sign
 @ifclear rawfile
 @xref{Known problems}.
 @end ifclear
+
+In addition, it is no longer recommended to customize
+@code{font-latex-math-environments}. Use @code{texmathp-tex-commands}
+instead.
+@ifclear rawfile
+@xref{Fontification of math}.
+@end ifclear
 @item
 @AUCTeX{} tracks changes in @LaTeX{}2e 2020-02-02 release.  @AUCTeX{}
 supports the improvements to @LaTeX{} font selection mechanism (NFSS).
