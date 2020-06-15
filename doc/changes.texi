@@ -12,14 +12,14 @@
 
 @itemize @bullet
 @item
-Math expression hilighting was improved. Hilighting for documents with a
-lot of inline math expressions @samp{$...$} won't get scrambled now
-(@samp{bug#33139}).
+Math expression highlighting was improved. Highlighting for documents
+with a lot of inline math expressions @samp{$...$} won't get scrambled
+now (@samp{bug#33139}).
 
 There is small incompatibility due to this fix. When odd number of
-dollar signs are in a comment, the subsequent lines are hilighted as
-math until another $ appears. You can insert a commented dollar sign
-(@samp{%$}) at the next suitable end of line as a workaround.
+dollar signs are in a comment, the subsequent lines are highlighted as
+math until another @samp{$} appears. You can insert a commented dollar
+sign (@samp{%$}) at the next suitable end of line as a workaround.
 @ifclear rawfile
 @xref{Known problems}.
 @end ifclear
