@@ -41,14 +41,13 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-(declare-function font-latex-math-environments-from-texmathp
+(declare-function font-latex--update-math-env
 		  "font-latex" (list))
 
 (declare-function LaTeX-item-equation-alignat
 		  "amsmath" (&optional suppress))
 
 (defvar LaTeX-mathtools-package-options)
-(defvar font-latex-math-environments)
 
 (defvar LaTeX-empheq-key-val-options
   `(("box")
@@ -277,6 +276,7 @@ number of ampersands if possible."
       (save-excursion
 	(insert (make-string (+ ncols ncols -1) ?&))))))
 
+;; Fontification
 (require 'texmathp)
 (let ((list '(("empheq"        env-on)
 	      ;; XXX: Should we add the remaining entries only when
@@ -288,13 +288,11 @@ number of ampersands if possible."
 	      ("AmSflalign"    env-on) ("AmSflalign*"   env-on)
 	      ("AmSalignat"    env-on) ("AmSalignat*"   env-on))))
   (dolist (entry list)
-    (add-to-list 'texmathp-tex-commands-default entry t))
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal))
   (texmathp-compile)
   (when (and (featurep 'font-latex)
 	     (eq TeX-install-font-lock 'font-latex-setup))
-    ;; Append our addition so that we don't interfere with user customizations
-    (dolist (entry (font-latex-math-environments-from-texmathp list))
-      (add-to-list 'font-latex-math-environments entry t))))
+    (font-latex--update-math-env list)))
 
 (TeX-add-style-hook
  "empheq"

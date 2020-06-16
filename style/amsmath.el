@@ -30,8 +30,11 @@
 
 ;;; Code:
 
-(defvar font-latex-math-environments)
-(declare-function font-latex-math-environments-from-texmathp
+;; Fontification
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+(declare-function font-latex--update-math-env
 		  "font-latex" (list))
 (require 'texmathp)
 (let ((list '(("equation*"     env-on)
@@ -44,13 +47,11 @@
 	      ("xxalignat"     env-on) ("\\boxed"       arg-on)
 	      ("\\text"        arg-off) ("\\intertext"   arg-off))))
   (dolist (entry list)
-    (add-to-list 'texmathp-tex-commands-default entry t))
+    (add-to-list 'texmathp-tex-commands-default entry))
   (texmathp-compile)
   (when (and (featurep 'font-latex)
 	     (eq TeX-install-font-lock 'font-latex-setup))
-    (dolist (entry (font-latex-math-environments-from-texmathp list))
-      ;; Append our addition so that we don't interfere with user customizations
-      (add-to-list 'font-latex-math-environments entry t))))
+    (font-latex--update-math-env list)))
 
 (TeX-add-style-hook
  "amsmath"
@@ -195,7 +196,12 @@
    ;; is non-nil
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "AMSmath")))
+	(reftex-ref-style-activate "AMSmath"))
+
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("boxed" "{"))
+			      'math-command)))
  LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)

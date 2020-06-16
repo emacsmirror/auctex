@@ -235,6 +235,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
   (save-excursion
     (insert ?&)))
 
+;; Fontification
 (require 'texmathp)
 (add-to-list 'texmathp-tex-commands-default
 	     '("\\shortintertext" arg-off) t)

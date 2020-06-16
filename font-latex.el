@@ -1768,30 +1768,51 @@ Used for patterns like:
 	  (throw 'match t))))))
 
 (require 'texmathp)
-(defun font-latex-math-environments-from-texmathp (list)
-  "Return list of math environments extracted from LIST.
-Utility to share data with texmathp.el.
-LIST should have the same structure as `texmathp-tex-commands'.
-Return list of environment names marked as `env-on' type in LIST,
-except starred forms."
-  (let (result)
-    (dolist (entry list)
-      (if (and (eq 'env-on (cadr entry))
-	       (not (string= "*" (substring (car entry) -1))))
-	  (push (car entry) result)))
-    result))
-
-(defcustom font-latex-math-environments
-  (font-latex-math-environments-from-texmathp texmathp-tex-commands1)
+(defcustom font-latex-math-environments nil
   "List of math environment names for font locking.
 It is no longer recommended to customize this option. You should
-customize `texmathp-tex-commands' instead because it is important for
-stable operation of font lock that this option is coherent with that
-option in addition to `texmathp-tex-commands-default'.
-Actually, the default value of this option is now taken from those
-variables."
+customize `texmathp-tex-commands' instead because it is important
+for stable operation of font lock that this option is coherent
+with that option in addition to `texmathp-tex-commands-default'.
+See info node `(auctex)Fontification of math' to convert your
+customization into `texmathp-tex-commands'."
+  ;; This option is now used only through
+  ;; `font-latex--match-math-envII-regexp'.
   :type '(repeat string)
   :group 'font-latex)
+
+(defvar font-latex--match-math-envII-regexp nil
+  "Regular expression to match math environments.
+Set by `font-latex--update-math-env' and used in
+`font-latex-match-math-envII'.")
+
+(defun font-latex--update-math-env (list)
+  "Update variables for font locking of math environments by LIST.
+Helper function for style files such as amsmath.el.
+LIST should have the same structure as `texmathp-tex-commands'.
+Extract environments marked as `env-on' in LIST and add them to
+`font-latex-math-environments', except starred variants. Then
+update `font-latex--match-math-envII-regexp'."
+  (dolist (entry list)
+    (if (and (eq 'env-on (cadr entry))
+	     (not (string= "*" (substring (car entry) -1))))
+	;; Just push since we no longer need to care the order of entries.
+	(cl-pushnew (car entry) font-latex-math-environments :test #'equal)))
+  (setq font-latex--match-math-envII-regexp
+	(concat "\\\\begin[ \t]*{"
+		(regexp-opt font-latex-math-environments t)
+		;; Subexpression 2 is used to build the \end{<env>}
+		;; construct later.
+		"\\(\\*?}\\)"
+		;; Match an optional and possible mandatory
+		;; argument(s) as long as they are on the same line
+		;; with no spaces in-between. The content of optinal
+		;; argument can span multiple lines.
+		"\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+		"\\(?:{[^}]*}\\)*")))
+
+;; Initialize.
+(font-latex--update-math-env texmathp-tex-commands1)
 
 (defun font-latex-match-math-envII (limit)
   "Match math patterns up to LIMIT.
@@ -1804,17 +1825,7 @@ Used for patterns like:
 \\end{empheq}
 The \\begin{equation} incl. arguments in the same line and
 \\end{equation} are not fontified here."
-  (when (re-search-forward (concat "\\\\begin[ \t]*{"
-				   (regexp-opt font-latex-math-environments t)
-				   ;; Subexpression 2 is used to build
-				   ;; the \end{<env>} construct below
-				   "\\(\\*?}\\)"
-				   ;; Match an optional and possible
-				   ;; mandatory argument(s). They can
-				   ;; span multiple lines.
-				   "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-				   "\\(?:{[^}]*}\\)*")
-			   limit t)
+  (when (re-search-forward font-latex--match-math-envII-regexp limit t)
     (let ((beg (match-end 0)) end
 	  (beg-of-begin (match-beginning 0)))
       (if (re-search-forward (concat "\\\\end[ \t]*{"

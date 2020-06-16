@@ -95,9 +95,8 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defvar font-latex-math-environments)
-(declare-function font-latex-math-environments-from-texmathp
-		  "font-latex" (list))
+;; Fontification
+(declare-function font-latex--update-math-env "font-latex" (list))
 (require 'texmathp)
 (let ((list '(("dmath"         env-on) ("dmath*"        env-on)
 	      ("dseries"       env-on) ("dseries*"      env-on)
@@ -105,13 +104,11 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 	      ("darray"        env-on) ("darray*"       env-on)
 	      ("dsuspend"      env-off))))
   (dolist (entry list)
-    (add-to-list 'texmathp-tex-commands-default entry t))
+    (add-to-list texmathp-tex-commands-default entry))
   (texmathp-compile)
   (when (and (featurep 'font-latex)
 	     (eq TeX-install-font-lock 'font-latex-setup))
-    ;; Append our addition so that we don't interfere with user customizations
-    (dolist (entry (font-latex-math-environments-from-texmathp list))
-      (add-to-list 'font-latex-math-environments entry t))))
+    (font-latex--update-math-env list)))
 
 (TeX-add-style-hook
  "breqn"
