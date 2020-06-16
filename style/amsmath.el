@@ -29,13 +29,14 @@
 ;; This will also load the amstext, amsbsy and amsopn style files.
 
 ;;; Code:
+(eval-when-compile (require 'cl-lib))
 
 ;; Fontification
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-(declare-function font-latex--update-math-env
-		  "font-latex" (list))
+(declare-function font-latex-update-math-env
+		  "font-latex")
 (require 'texmathp)
 (let ((list '(("equation*"     env-on)
 	      ("align"         env-on) ("align*"        env-on)
@@ -47,11 +48,11 @@
 	      ("xxalignat"     env-on) ("\\boxed"       arg-on)
 	      ("\\text"        arg-off) ("\\intertext"   arg-off))))
   (dolist (entry list)
-    (add-to-list 'texmathp-tex-commands-default entry))
-  (texmathp-compile)
-  (when (and (featurep 'font-latex)
-	     (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex--update-math-env list)))
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
+(texmathp-compile)
+(if (and (featurep 'font-latex)
+	 (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-update-math-env))
 
 (TeX-add-style-hook
  "amsmath"

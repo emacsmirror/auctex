@@ -41,8 +41,8 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-(declare-function font-latex--update-math-env
-		  "font-latex" (list))
+(declare-function font-latex-update-math-env
+		  "font-latex")
 
 (declare-function LaTeX-item-equation-alignat
 		  "amsmath" (&optional suppress))
@@ -288,11 +288,11 @@ number of ampersands if possible."
 	      ("AmSflalign"    env-on) ("AmSflalign*"   env-on)
 	      ("AmSalignat"    env-on) ("AmSalignat*"   env-on))))
   (dolist (entry list)
-    (cl-pushnew entry texmathp-tex-commands-default :test #'equal))
-  (texmathp-compile)
-  (when (and (featurep 'font-latex)
-	     (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex--update-math-env list)))
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
+(texmathp-compile)
+(if (and (featurep 'font-latex)
+	 (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-update-math-env))
 
 (TeX-add-style-hook
  "empheq"

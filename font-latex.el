@@ -1786,33 +1786,36 @@ customization into `texmathp-tex-commands'."
 Set by `font-latex--update-math-env' and used in
 `font-latex-match-math-envII'.")
 
-(defun font-latex--update-math-env (list)
-  "Update variables for font locking of math environments by LIST.
+(defun font-latex-update-math-env ()
+  "Update regexp to search for math environments.
 Helper function for style files such as amsmath.el.
-LIST should have the same structure as `texmathp-tex-commands'.
-Extract environments marked as `env-on' in LIST and add them to
-`font-latex-math-environments', except starred variants. Then
-update `font-latex--match-math-envII-regexp'."
-  (dolist (entry list)
-    (if (and (eq 'env-on (cadr entry))
-	     (not (string= "*" (substring (car entry) -1))))
-	;; Just push since we no longer need to care the order of entries.
-	(cl-pushnew (car entry) font-latex-math-environments :test #'equal)))
-  (setq font-latex--match-math-envII-regexp
-	(concat "\\\\begin[ \t]*{"
-		(regexp-opt font-latex-math-environments t)
-		;; Subexpression 2 is used to build the \end{<env>}
-		;; construct later.
-		"\\(\\*?}\\)"
-		;; Match an optional and possible mandatory
-		;; argument(s) as long as they are on the same line
-		;; with no spaces in-between. The content of optinal
-		;; argument can span multiple lines.
-		"\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-		"\\(?:{[^}]*}\\)*")))
+Extract environments marked as `env-on' in
+`texmathp-tex-commands1' except starred variants. Then build
+`font-latex--match-math-envII-regexp' from them, appending the
+environments in `font-latex-math-environments'."
+  ;; Make sure `texmathp-tex-commands1' is up to date.
+  (texmathp-compile)
+  (let (envs)
+    (dolist (entry texmathp-tex-commands1)
+      (if (and (eq 'env-on (cadr entry))
+	       (not (string= "*" (substring (car entry) -1))))
+	  (cl-pushnew (car entry) envs :test #'equal)))
+    (setq font-latex--match-math-envII-regexp
+	  (concat "\\\\begin[ \t]*{"
+		  ;; Take user additions also into account.
+		  (regexp-opt (append font-latex-math-environments envs) t)
+		  ;; Subexpression 2 is used to build the \end{<env>}
+		  ;; construct later.
+		  "\\(\\*?}\\)"
+		  ;; Match an optional and possible mandatory
+		  ;; argument(s) as long as they are on the same line
+		  ;; with no spaces in-between. The content of optional
+		  ;; argument can span multiple lines.
+		  "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+		  "\\(?:{[^}]*}\\)*"))))
 
 ;; Initialize.
-(font-latex--update-math-env texmathp-tex-commands1)
+(font-latex-update-math-env)
 
 (defun font-latex-match-math-envII (limit)
   "Match math patterns up to LIMIT.

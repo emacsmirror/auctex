@@ -51,11 +51,12 @@
 ;;  specifying which command at what position is responsible for math
 ;;  mode being on or off.
 ;;
-;;  To configure which macros and environments influence LaTeX math mode,
-;;  customize the variable `texmathp-tex-commands'.  By default
-;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX and
-;;  packages mathtools, empheq and breqn (see the variable
-;;  `texmathp-tex-commands-default', also as an example).
+;;  To configure which macros and environments influence LaTeX math
+;;  mode, customize the variable `texmathp-tex-commands'. By default
+;;  it recognizes the plain TeX and LaTeX core (see the variable
+;;  `texmathp-tex-commands-default', also as an example). Support for
+;;  AMS-LaTeX and packages mathtools, empheq and breqn is added as
+;;  well if `TeX-parse-self' option is enabled.
 ;;
 ;;  To try out the code interactively, use `M-x texmathp RET'.
 ;;
