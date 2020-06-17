@@ -238,7 +238,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
 ;; Fontification
 (require 'texmathp)
 (add-to-list 'texmathp-tex-commands-default
-	     '("\\shortintertext" arg-off) t)
+	     '("\\shortintertext" arg-off))
 (texmathp-compile)
 
 (TeX-add-style-hook
