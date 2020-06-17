@@ -2303,8 +2303,8 @@ OPTIONAL and IGNORE are ignored."
 		    (not (y-or-n-p "Find class yourself? "))
 		  TeX-arg-input-file-search)
 		(prog2
-		  (message "Searching for LaTeX classes...")
-		  (TeX-search-files-by-type 'texinputs 'global t t)
+		    (message "Searching for LaTeX classes...")
+		    (TeX-search-files-by-type 'texinputs 'global t t)
 		  (message "Searching for LaTeX classes...done"))
 	      LaTeX-style-list)))
     (setq style (completing-read
@@ -2340,11 +2340,7 @@ OPTIONAL and IGNORE are ignored."
 			  (list (cons style opts)))))
     (insert TeX-grop style TeX-grcl))
 
-  ;; remove old information
-  (TeX-remove-style)
-
-  ;; defined in individual style hooks
-  (TeX-update-style)
+  (TeX-update-style t)
   (run-hooks 'TeX-after-document-hook))
 
 (defvar LaTeX-after-usepackage-hook nil
