@@ -104,7 +104,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 	      ("darray"        env-on) ("darray*"       env-on)
 	      ("dsuspend"      env-off))))
   (dolist (entry list)
-    (add-to-list texmathp-tex-commands-default entry))
+    (add-to-list 'texmathp-tex-commands-default entry))
   (texmathp-compile)
   (when (and (featurep 'font-latex)
 	     (eq TeX-install-font-lock 'font-latex-setup))
