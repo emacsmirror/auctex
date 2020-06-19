@@ -33,7 +33,7 @@ instead.
 @item
 Support for highlighting and in-math state detection for AMS-LaTeX
 specific environments, such as @samp{align}, @samp{gather} and
-@samp{multiline}, are refactored and put into style file
+@samp{multline}, are refactored and put into style file
 @file{amsmath.el}. So these support are available only when
 @code{TeX-parse-self} option is enabled.
 
