@@ -12,6 +12,16 @@
 
 @itemize @bullet
 @item
+The function @code{font-latex-update-font-lock} has been obsoleted in
+order to fix @samp{bug#37945}.  That function was used by several style
+files in order to refresh fontification after adding new symbols or
+verbatim constructs.  It is better to call @code{font-lock-flush} in the
+former case and @code{font-latex-set-syntactic-keywords} in the latter
+case.  The function @code{font-latex-update-font-lock} still exists as a
+no-op which only shows a warning explaining how to update font-lock as
+mentioned above.
+
+@item
 Math expression highlighting was improved. Highlighting for documents
 with a lot of inline math expressions @samp{$...$} won't get scrambled
 now (@samp{bug#33139}).
