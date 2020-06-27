@@ -1,9 +1,9 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 12.2.3 from 2020-06-02), a
+This manual is for AUCTeX (version 12.2.3.2020-06-27 from 2020-06-27), a
 sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2019 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -125,6 +125,7 @@ Font Locking
 * Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
+* Known problems::              Known fontification problems
 
 Starting Processors, Viewers and Other Programs
 
@@ -3010,8 +3011,17 @@ known by font-latex are displayed with the face 'font-latex-math-face'.
 Support for dollar signs and shorthands like '\(...\)' or '\[...\]' is
 built-in and not customizable.  Support for other math macros and
 environments can be adapted by customizing the variables
-'font-latex-match-math-command-keywords' and
-'font-latex-math-environments' respectively.
+'font-latex-match-math-command-keywords' and 'texmathp-tex-commands'
+respectively.  It is no longer recommended to customize
+'font-latex-math-environments', which is initialized according to
+'texmathp-tex-commands' and 'texmathp-tex-commands-default' by default.
+
+   To convert your customization in 'font-latex-math-environments' into
+'texmathp-tex-commands', please register your own math environments,
+together with starred variants if any, as entries of 'env-on' type in
+'texmathp-tex-commands', then clear out 'font-latex-math-environments'.
+You have to restart Emacs for this new customization to take effect for
+fontification.
 
    In order to make math constructs more readable, font-latex displays
 subscript and superscript parts in a smaller font and raised or lowered
@@ -5886,10 +5896,10 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.2.3 from 2020-06-02), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 12.2.3.2020-06-27 from
+2020-06-27), a sophisticated TeX environment for Emacs.
 
-   Copyright (C) 1992-1995, 2001, 2002, 2004-2019 Free Software
+   Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -6396,6 +6406,27 @@ A.2 Changes and New Features
 News in 12.3
 ------------
 
+   * Math expression highlighting was improved.  Highlighting for
+     documents with a lot of inline math expressions '$...$' won't get
+     scrambled now ('bug#33139').
+
+     There is small incompatibility due to this fix.  When odd number of
+     dollar signs are in a comment, the subsequent lines are highlighted
+     as math until another '$' appears.  You can insert a commented
+     dollar sign ('%$') at the next suitable end of line as a
+     workaround.  *Note Known problems::.
+
+     In addition, it is no longer recommended to customize
+     'font-latex-math-environments'.  Use 'texmathp-tex-commands'
+     instead.  *Note Fontification of math::.
+   * Support for highlighting and in-math state detection for AMS-LaTeX
+     specific environments, such as 'align', 'gather' and 'multline',
+     are refactored and put into style file 'amsmath.el'.  So these
+     support are available only when 'TeX-parse-self' option is enabled.
+
+     Support for in-math state detection for packages mathtools, empheq
+     and breqn is also moved into the respective style files, so
+     available only when 'TeX-parse-self' option is enabled.
    * AUCTeX tracks changes in LaTeX2e 2020-02-02 release.  AUCTeX
      supports the improvements to LaTeX font selection mechanism (NFSS).
      New macros like '\textsw' or '\textulc' are added to font insertion
@@ -7503,6 +7534,20 @@ A.3.1 Mid-term Goals
      Macro cross references should also be usable for document
      navigation using RefTeX.
 
+   * Fix remove-style feature
+
+     Currently 'TeX-remove-style' implementation isn't good.  It is
+     common practice that major mode functions directly add macros and
+     environments via 'TeX-add-symbols' and 'LaTeX-add-environments',
+     but those macros and environments are lost once 'TeX-remove-style'
+     runs.  It is necessary to run major mode function, by e.g.
+     'normal-mode', again to recover them, but that makes no point in
+     running 'TeX-remove-style' itself because major mode function kills
+     all buffer-local variables.
+
+     As of AUCTeX 12.3, 'TeX-remove-style' is no longer used by any
+     other codes.
+
 
 File: auctex.info,  Node: Wishlist,  Next: Bugs,  Prev: Mid-term Goals,  Up: Development
 
@@ -8294,9 +8339,9 @@ Variable Index
 * font-latex-deactivated-keyword-classes: Fontification of macros.
                                                               (line 162)
 * font-latex-fontify-script:             Fontification of math.
-                                                              (line  20)
+                                                              (line  29)
 * font-latex-fontify-script-max-level:   Fontification of math.
-                                                              (line  34)
+                                                              (line  43)
 * font-latex-fontify-sectioning:         Fontification of macros.
                                                               (line  95)
 * font-latex-match-bold-command-keywords: Fontification of macros.
@@ -8344,7 +8389,7 @@ Variable Index
 * font-latex-quotes:                     Fontification of quotes.
                                                               (line  15)
 * font-latex-script-display:             Fontification of math.
-                                                              (line  58)
+                                                              (line  67)
 * font-latex-sectioning-0-face:          Fontification of macros.
                                                               (line  96)
 * font-latex-sectioning-1-face:          Fontification of macros.
@@ -8595,6 +8640,10 @@ Variable Index
 * Texinfo-clean-intermediate-suffixes:   Cleaning.            (line   7)
 * Texinfo-clean-output-suffixes:         Cleaning.            (line   7)
 * Texinfo-mode-hook:                     Modes and Hooks.     (line  21)
+* texmathp-tex-commands:                 Fontification of math.
+                                                              (line   6)
+* texmathp-tex-commands-default:         Fontification of math.
+                                                              (line   6)
 
 
 File: auctex.info,  Node: Concept Index,  Prev: Variable Index,  Up: Indices
@@ -8663,7 +8712,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 640)
+* auctex.el <1>:                         Changes.             (line 661)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8967,7 +9016,7 @@ Concept Index
                                                               (line 257)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 640)
+* tex-site.el <2>:                       Changes.             (line 661)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -8988,104 +9037,104 @@ Concept Index
 
 
 Tag Table:
-Node: Top917
-Node: Copying7270
-Node: Introduction9215
-Node: Summary9485
-Node: Installation12218
-Node: Prerequisites13984
-Node: Configure16224
-Node: Build/install and uninstall20850
-Node: Loading the package21603
-Node: Advice for package providers23279
-Node: Advice for non-privileged users26084
-Node: Installation under MS Windows30049
-Node: Customizing43787
-Node: Quick Start45370
-Ref: Quick Start-Footnote-147500
-Node: Editing Facilities47594
-Node: Processing Facilities52397
-Node: Editing57098
-Node: Quotes58428
-Node: Font Specifiers66681
-Node: Sectioning68748
-Node: Environments73068
-Node: Equations78222
-Node: Floats78813
-Node: Itemize-like80817
-Node: Tabular-like81538
-Node: Customizing Environments83311
-Node: Mathematics83551
-Node: Completion86837
-Node: Marking93859
-Node: Marking (LaTeX)94483
-Node: Marking (Texinfo)95425
-Node: Commenting97035
-Node: Indenting98360
-Node: Filling104396
-Node: Display110268
-Node: Font Locking112763
-Node: Fontification of macros114838
-Node: Fontification of quotes124357
-Node: Fontification of math125852
-Node: Verbatim content129082
-Node: Faces129856
-Node: Known problems130345
-Node: Folding131274
-Node: Outline142098
-Node: Narrowing143370
-Node: Prettifying144440
-Node: Processing145677
-Node: Commands146840
-Node: Starting a Command147396
-Node: Selecting a Command152299
-Node: Processor Options161383
-Node: Viewing171730
-Node: Starting Viewers172104
-Node: I/O Correlation179231
-Node: Debugging184429
-Node: Ignoring warnings187048
-Node: Error overview189108
-Node: Checking191019
-Node: Control192612
-Node: Cleaning193339
-Node: Documentation194632
-Node: Customization195347
-Node: Modes and Hooks195840
-Node: Multifile197660
-Node: Parsing Files202472
-Node: Internationalization207384
-Node: European208697
-Node: Japanese215507
-Node: Automatic220578
-Node: Automatic Global223069
-Node: Automatic Private224201
-Node: Automatic Local225514
-Node: Style Files226546
-Node: Simple Style227339
-Node: Adding Macros230998
-Node: Adding Environments240329
-Node: Adding Other244990
-Node: Hacking the Parser245577
-Node: Appendices249446
-Node: Copying this Manual249742
-Node: GNU Free Documentation License250625
-Node: Changes275746
-Node: Development321060
-Node: Mid-term Goals321706
-Node: Wishlist322923
-Node: Bugs328364
-Node: FAQ329467
-Node: Texinfo mode334594
-Node: Exploiting335730
-Node: Superseding336550
-Node: Mapping340754
-Node: Unbinding342583
-Node: Indices343404
-Node: Key Index343567
-Node: Function Index350183
-Node: Variable Index361066
-Node: Concept Index384070
+Node: Top928
+Node: Copying7342
+Node: Introduction9287
+Node: Summary9557
+Node: Installation12290
+Node: Prerequisites14056
+Node: Configure16296
+Node: Build/install and uninstall20922
+Node: Loading the package21675
+Node: Advice for package providers23351
+Node: Advice for non-privileged users26156
+Node: Installation under MS Windows30121
+Node: Customizing43859
+Node: Quick Start45442
+Ref: Quick Start-Footnote-147572
+Node: Editing Facilities47666
+Node: Processing Facilities52469
+Node: Editing57170
+Node: Quotes58500
+Node: Font Specifiers66753
+Node: Sectioning68820
+Node: Environments73140
+Node: Equations78294
+Node: Floats78885
+Node: Itemize-like80889
+Node: Tabular-like81610
+Node: Customizing Environments83383
+Node: Mathematics83623
+Node: Completion86909
+Node: Marking93931
+Node: Marking (LaTeX)94555
+Node: Marking (Texinfo)95497
+Node: Commenting97107
+Node: Indenting98432
+Node: Filling104468
+Node: Display110340
+Node: Font Locking112835
+Node: Fontification of macros114910
+Node: Fontification of quotes124429
+Node: Fontification of math125924
+Node: Verbatim content129698
+Node: Faces130472
+Node: Known problems130961
+Node: Folding131890
+Node: Outline142714
+Node: Narrowing143986
+Node: Prettifying145056
+Node: Processing146293
+Node: Commands147456
+Node: Starting a Command148012
+Node: Selecting a Command152915
+Node: Processor Options161999
+Node: Viewing172346
+Node: Starting Viewers172720
+Node: I/O Correlation179847
+Node: Debugging185045
+Node: Ignoring warnings187664
+Node: Error overview189724
+Node: Checking191635
+Node: Control193228
+Node: Cleaning193955
+Node: Documentation195248
+Node: Customization195963
+Node: Modes and Hooks196456
+Node: Multifile198276
+Node: Parsing Files203088
+Node: Internationalization208000
+Node: European209313
+Node: Japanese216123
+Node: Automatic221194
+Node: Automatic Global223685
+Node: Automatic Private224817
+Node: Automatic Local226130
+Node: Style Files227162
+Node: Simple Style227955
+Node: Adding Macros231614
+Node: Adding Environments240945
+Node: Adding Other245606
+Node: Hacking the Parser246193
+Node: Appendices250062
+Node: Copying this Manual250358
+Node: GNU Free Documentation License251252
+Node: Changes276373
+Node: Development322831
+Node: Mid-term Goals323477
+Node: Wishlist325334
+Node: Bugs330775
+Node: FAQ331878
+Node: Texinfo mode337005
+Node: Exploiting338141
+Node: Superseding338961
+Node: Mapping343165
+Node: Unbinding344994
+Node: Indices345815
+Node: Key Index345978
+Node: Function Index352594
+Node: Variable Index363477
+Node: Concept Index386755
 
 End Tag Table
 
