@@ -186,8 +186,7 @@ provided by REVTeX class."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup)
-	      (fboundp 'font-latex-update-font-lock))
+	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fbox"          "*[{")
 				("keywords"      "{")
 				("preprint"      "")
@@ -209,10 +208,7 @@ provided by REVTeX class."
 				("setfloatlink" ""))
 			      'reference)
      (font-latex-add-keywords '(("appendix*" ""))
-			      'warning)
-
-     ;; Tell font-lock about the update.
-     (font-latex-update-font-lock t)))
+			      'warning)))
  LaTeX-dialect)
 
 (defvar LaTeX-revtex4-2-class-options

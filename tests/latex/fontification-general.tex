@@ -194,11 +194,11 @@ a bug report \#26630 for this issue: {\bfseries Text before, $(a+b)^2$
   is equal to \(a^2+2ab+b^2\)!}  First math expression is fontified
 with
 \begin{quote}
-\verb|(font-latex-math-face font-latex-bold-face)|
+  \verb|(font-latex-math-face font-latex-bold-face)|
 \end{quote}
 while the second with
 \begin{quote}
-\verb|(font-latex-bold-face font-latex-math-face)|
+  \verb|(font-latex-bold-face font-latex-math-face)|
 \end{quote}
 
 \part{Environments}
@@ -223,32 +223,32 @@ AUC\TeX{} fontifies the entire math content with
 should not be fontified.  Spaces or line breaks are used in order to
 distinguish argument from math content, i.e.
 \begin{quote}
-\verb|\begin{<mathenv>}[<opt-arg>]{<mand-arg>}|
+  \verb|\begin{<mathenv>}[<opt-arg>]{<mand-arg>}|
 \end{quote}
 will be fontified differently than
 \begin{quote}
-\verb|\begin{<mathenv>}[<opt-arg>] {<math-content>}|
+  \verb|\begin{<mathenv>}[<opt-arg>] {<math-content>}|
 \end{quote}
 or
 \begin{quote}
-\verb|\begin{<mathenv>} [<math-content>]{<math-content>}|
+  \verb|\begin{<mathenv>} [<math-content>]{<math-content>}|
 \end{quote}
 
-The relevant functions is \verb|font-latex.el| are
+The relevant functions in \verb|font-latex.el| are
 \begin{quote}
-\verb|font-latex-match-math-envII|\quad and \\
-\verb|font-latex-extend-region-backwards-math-envII|
+  \verb|font-latex-match-math-envII|\quad and \\
+  \verb|font-latex-extend-region-backwards-math|
 \end{quote}
 
 \subsubsection{Standard \protect\LaTeX{}}
 
 Examples taken from \cite{voss16}.
 \begin{equation}
-f(x)=\prod_{i=1}^{n}\left(i-\frac{1}{2i}\right)
+  f(x)=\prod_{i=1}^{n}\left(i-\frac{1}{2i}\right)
 \end{equation}
 or
 \begin{displaymath}
-f(x)=\prod_{i=1}^{n}\left(i-\frac{1}{2i}\right)
+  f(x)=\prod_{i=1}^{n}\left(i-\frac{1}{2i}\right)
 \end{displaymath}
 or
 \[ f(x)=\prod_{i=1}^{n}\left(i-\frac{1}{2i}\right) \]

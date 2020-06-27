@@ -1,6 +1,6 @@
 ;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)
 
-;; Copyright (C) 2016-2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -41,12 +41,13 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(declare-function font-latex-update-math-env
+		  "font-latex")
 
 (declare-function LaTeX-item-equation-alignat
 		  "amsmath" (&optional suppress))
 
 (defvar LaTeX-mathtools-package-options)
-(defvar font-latex-math-environments)
 
 (defvar LaTeX-empheq-key-val-options
   `(("box")
@@ -275,6 +276,24 @@ number of ampersands if possible."
       (save-excursion
 	(insert (make-string (+ ncols ncols -1) ?&))))))
 
+;; Fontification
+(require 'texmathp)
+(let ((list '(("empheq"        env-on)
+	      ;; XXX: Should we add the remaining entries only when
+	      ;; "overload" or "overload2" option is given?
+	      ("AmSequation"   env-on) ("AmSequation*"  env-on)
+	      ("AmSalign"      env-on) ("AmSalign*"     env-on)
+	      ("AmSgather"     env-on) ("AmSgather*"    env-on)
+	      ("AmSmultline"   env-on) ("AmSmultline*"  env-on)
+	      ("AmSflalign"    env-on) ("AmSflalign*"   env-on)
+	      ("AmSalignat"    env-on) ("AmSalignat*"   env-on))))
+  (dolist (entry list)
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
+(texmathp-compile)
+(if (and (featurep 'font-latex)
+	 (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-update-math-env))
+
 (TeX-add-style-hook
  "empheq"
  (lambda ()
@@ -489,23 +508,7 @@ number of ampersands if possible."
      (font-latex-add-keywords '(("empheqset"             "{")
 				("DeclareLeftDelimiter"  "[{")
 				("DeclareRightDelimiter" "[{"))
-			      'function)
-     ;; Append our addition so that we don't interfere with user customizations
-     (make-local-variable 'font-latex-math-environments)
-     (add-to-list 'font-latex-math-environments "empheq" t)
-     (when (or (LaTeX-provided-package-options-member "empheq" "overload")
-	       (LaTeX-provided-package-options-member "empheq" "overload2"))
-       (let ((envs '(;; Do not insert the starred versions here;
-		     ;; function `font-latex-match-math-envII' takes
-		     ;; care of it
-		     "AmSalign"
-		     "AmSalignat"
-		     "AmSequation"
-		     "AmSflalign"
-		     "AmSgather"
-		     "AmSmultline")))
-	 (dolist (env envs)
-	   (add-to-list 'font-latex-math-environments env t))))))
+			      'function)))
  LaTeX-dialect)
 
 ;;; empheq.el ends here

@@ -1,6 +1,6 @@
 ;;; texmathp.el -- Code to check if point is inside LaTeX math environment
 
-;; Copyright (C) 1998, 2004, 2017 Free Software Foundation, Inc.
+;; Copyright (C) 1998, 2004, 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -51,11 +51,12 @@
 ;;  specifying which command at what position is responsible for math
 ;;  mode being on or off.
 ;;
-;;  To configure which macros and environments influence LaTeX math mode,
-;;  customize the variable `texmathp-tex-commands'.  By default
-;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX and
-;;  packages mathtools, empheq and breqn (see the variable
-;;  `texmathp-tex-commands-default', also as an example).
+;;  To configure which macros and environments influence LaTeX math
+;;  mode, customize the variable `texmathp-tex-commands'. By default
+;;  it recognizes the plain TeX and LaTeX core (see the variable
+;;  `texmathp-tex-commands-default', also as an example). Support for
+;;  AMS-LaTeX and packages mathtools, empheq and breqn is added as
+;;  well if `TeX-parse-self' option is enabled.
 ;;
 ;;  To try out the code interactively, use `M-x texmathp RET'.
 ;;
@@ -88,6 +89,11 @@
 ;;  If any of the the special macros like \mbox or \ensuremath has optional
 ;;  arguments, math mode inside these optional arguments is *not* influenced
 ;;  by the macro.
+;;
+;;  Nested \(\) and \[\] can confuse texmathp. It returns nil at AAA in the
+;;  following examples:
+;;  \[ x=y \mbox{abc \(\alpha\) cba} AAA \]
+;;  \[ x=y \begin{minipage}{3cm} abc \[\alpha\] cba \end{minipage} AAA \]
 ;;--------------------------------------------------------------------------
 
 ;;; Code:
@@ -130,37 +136,7 @@
     ("\\textrm"      arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
-    ("\\ensuremath"  arg-on)
-
-    ;; AMS-LaTeX
-    ("equation*"     env-on)
-    ("align"         env-on)      ("align*"        env-on)
-    ("gather"        env-on)      ("gather*"       env-on)
-    ("multline"      env-on)      ("multline*"     env-on)
-    ("flalign"       env-on)      ("flalign*"      env-on)
-    ("alignat"       env-on)      ("alignat*"      env-on)
-    ("xalignat"      env-on)      ("xalignat*"     env-on)
-    ("xxalignat"     env-on)      ("\\boxed"       arg-on)
-    ("\\text"        arg-off)     ("\\intertext"   arg-off)
-
-    ;; mathtools
-    ("\\shortintertext"   arg-off)
-
-    ;; empheq
-    ("empheq"        env-on)
-    ("AmSequation"   env-on)      ("AmSequation*"  env-on)
-    ("AmSalign"      env-on)      ("AmSalign*"     env-on)
-    ("AmSgather"     env-on)      ("AmSgather*"    env-on)
-    ("AmSmultline"   env-on)      ("AmSmultline*"  env-on)
-    ("AmSflalign"    env-on)      ("AmSflalign*"   env-on)
-    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on)
-
-    ;; breqn
-    ("dmath"         env-on)      ("dmath*"        env-on)
-    ("dseries"       env-on)      ("dseries*"      env-on)
-    ("dgroup"        env-on)      ("dgroup*"       env-on)
-    ("darray"        env-on)      ("darray*"       env-on)
-    ("dsuspend"      env-off))
+    ("\\ensuremath"  arg-on))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()

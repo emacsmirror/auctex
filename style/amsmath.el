@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2019
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
 ;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
@@ -29,6 +29,30 @@
 ;; This will also load the amstext, amsbsy and amsopn style files.
 
 ;;; Code:
+(eval-when-compile (require 'cl-lib))
+
+;; Fontification
+(declare-function font-latex-add-keywords
+		  "font-latex"
+		  (keywords class))
+(declare-function font-latex-update-math-env
+		  "font-latex")
+(require 'texmathp)
+(let ((list '(("equation*"     env-on)
+	      ("align"         env-on) ("align*"        env-on)
+	      ("gather"        env-on) ("gather*"       env-on)
+	      ("multline"      env-on) ("multline*"     env-on)
+	      ("flalign"       env-on) ("flalign*"      env-on)
+	      ("alignat"       env-on) ("alignat*"      env-on)
+	      ("xalignat"      env-on) ("xalignat*"     env-on)
+	      ("xxalignat"     env-on) ("\\boxed"       arg-on)
+	      ("\\text"        arg-off) ("\\intertext"   arg-off))))
+  (dolist (entry list)
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
+(texmathp-compile)
+(if (and (featurep 'font-latex)
+	 (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-update-math-env))
 
 (TeX-add-style-hook
  "amsmath"
@@ -173,7 +197,12 @@
    ;; is non-nil
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "AMSmath")))
+	(reftex-ref-style-activate "AMSmath"))
+
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("boxed" "{"))
+			      'math-command)))
  LaTeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)

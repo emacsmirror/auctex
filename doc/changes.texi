@@ -12,6 +12,35 @@
 
 @itemize @bullet
 @item
+Math expression highlighting was improved. Highlighting for documents
+with a lot of inline math expressions @samp{$...$} won't get scrambled
+now (@samp{bug#33139}).
+
+There is small incompatibility due to this fix. When odd number of
+dollar signs are in a comment, the subsequent lines are highlighted as
+math until another @samp{$} appears. You can insert a commented dollar
+sign (@samp{%$}) at the next suitable end of line as a workaround.
+@ifclear rawfile
+@xref{Known problems}.
+@end ifclear
+
+In addition, it is no longer recommended to customize
+@code{font-latex-math-environments}. Use @code{texmathp-tex-commands}
+instead.
+@ifclear rawfile
+@xref{Fontification of math}.
+@end ifclear
+@item
+Support for highlighting and in-math state detection for AMS-LaTeX
+specific environments, such as @samp{align}, @samp{gather} and
+@samp{multline}, are refactored and put into style file
+@file{amsmath.el}. So these support are available only when
+@code{TeX-parse-self} option is enabled.
+
+Support for in-math state detection for packages mathtools, empheq and
+breqn is also moved into the respective style files, so available only
+when @code{TeX-parse-self} option is enabled.
+@item
 @AUCTeX{} tracks changes in @LaTeX{}2e 2020-02-02 release.  @AUCTeX{}
 supports the improvements to @LaTeX{} font selection mechanism (NFSS).
 New macros like @samp{\textsw} or @samp{\textulc} are added to font

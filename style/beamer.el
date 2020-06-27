@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class
 
-;; Copyright (C) 2003, 2004, 2005, 2008, 2013-2016, 2018 Free Software Foundation
+;; Copyright (C) 2003-2005, 2008, 2013-2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -33,10 +33,6 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-
-(declare-function font-latex-update-font-lock
-		  "font-latex"
-		  (&optional syntactic-kws))
 
 (defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."
@@ -189,8 +185,7 @@
 				("subtitle" "[{")
 				("author" "[{")
 				("date" "[{")
-				("frametitle" "<[{")) 'slide-title)
-     (font-latex-update-font-lock t)))
+				("frametitle" "<[{")) 'slide-title)))
  LaTeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)

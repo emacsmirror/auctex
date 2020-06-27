@@ -1,6 +1,6 @@
 ;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.
 
-;; Copyright (C) 2011-2012, 2014, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2011-2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-02-13
@@ -38,6 +38,8 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+
+(eval-when-compile (require 'cl-lib))
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -234,6 +236,12 @@ Put line break macro on the last line.  Next, insert an ampersand."
   (forward-line 1)
   (save-excursion
     (insert ?&)))
+
+;; Fontification
+(require 'texmathp)
+(cl-pushnew '("\\shortintertext" arg-off)
+	    texmathp-tex-commands-default :test #'equal)
+(texmathp-compile)
 
 (TeX-add-style-hook
  "mathtools"

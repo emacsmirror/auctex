@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2019
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2020
 Free Software Foundation, Inc.
 
 @quotation
@@ -173,6 +173,7 @@ Font Locking
 * Fontification of math::       Fontification of math constructs
 * Verbatim content::            Verbatim macros and environments
 * Faces::                       Faces used by font-latex
+* Known problems::              Known fontification problems
 
 Starting Processors, Viewers and Other Programs
 
@@ -2259,6 +2260,8 @@ fontified.
 
 @vindex font-latex-match-math-command-keywords
 @vindex font-latex-math-environments
+@vindex texmathp-tex-commands
+@vindex texmathp-tex-commands-default
 In @LaTeX{} mathematics can be indicated by a variety of different
 methods: toggles (like dollar signs), macros and environments.  Math
 constructs known by @fontlatex{} are displayed with the face
@@ -2266,7 +2269,17 @@ constructs known by @fontlatex{} are displayed with the face
 like @samp{\(...\)} or @samp{\[...\]} is built-in and not customizable.
 Support for other math macros and environments can be adapted by
 customizing the variables @code{font-latex-match-math-command-keywords}
-and @code{font-latex-math-environments} respectively.
+and @code{texmathp-tex-commands} respectively. It is no longer
+recommended to customize @code{font-latex-math-environments}, which
+is initialized according to @code{texmathp-tex-commands} and
+@code{texmathp-tex-commands-default} by default.
+
+To convert your customization in @code{font-latex-math-environments}
+into @code{texmathp-tex-commands}, please register your own math
+environments, together with starred variants if any, as entries of
+@code{env-on} type in @code{texmathp-tex-commands}, then clear out
+@code{font-latex-math-environments}. You have to restart Emacs for this
+new customization to take effect for fontification.
 
 In order to make math constructs more readable, @fontlatex{} displays
 subscript and superscript parts in a smaller font and raised or lowered

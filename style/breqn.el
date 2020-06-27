@@ -49,6 +49,7 @@
 ;;; Code:
 
 (require 'latex)
+(eval-when-compile (require 'cl-lib))
 
 (defvar LaTeX-breqn-key-val-options
   '(("style" ("\\tiny" "\\scriptsize" "\\footnotesize" "\\small"
@@ -95,6 +96,21 @@ Keys offered for key=val query depend on ENV.  \"label\" and
 
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
+;; Fontification
+(declare-function font-latex-update-math-env "font-latex")
+(require 'texmathp)
+(let ((list '(("dmath"         env-on) ("dmath*"        env-on)
+	      ("dseries"       env-on) ("dseries*"      env-on)
+	      ("dgroup"        env-on) ("dgroup*"       env-on)
+	      ("darray"        env-on) ("darray*"       env-on)
+	      ("dsuspend"      env-off))))
+  (dolist (entry list)
+    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
+(texmathp-compile)
+(if (and (featurep 'font-latex)
+	 (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-update-math-env))
+
 (TeX-add-style-hook
  "breqn"
  (lambda ()
@@ -132,19 +148,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
    (TeX-add-symbols
     '("condition"  [ "Punctuation mark (default ,)" ] t)
     '("condition*" [ "Punctuation mark (default ,)" ] t)
-    '("hiderel" t))
-
-   ;; Fontification
-   (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup)
-	      (boundp 'font-latex-math-environments))
-     (make-local-variable 'font-latex-math-environments)
-     (let ((envs '(;; Do not insert the starred versions here;
-		   ;; function `font-latex-match-math-envII' takes
-		   ;; care of it
-		   "dmath" "dseries" "dgroup" "darray")))
-       (dolist (env envs)
-	 (add-to-list 'font-latex-math-environments env t)))))
+    '("hiderel" t)))
  LaTeX-dialect)
 
 (defvar LaTeX-breqn-package-options nil
