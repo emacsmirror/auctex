@@ -2383,7 +2383,8 @@ finds a closing dollar sign or till the end of the buffer.
 As a remedy you can make the verbatim construct known to @fontlatex{},
 @pxref{Verbatim content}.  If this is not possible, you can insert a
 commented dollar sign (@samp{%$}) at the next suitable end of line as a
-quick workaround.
+quick workaround.  In docTeX documents, @samp{^^A$} is also available
+for similar purpose.
 @c As a last resort one can set `font-lock-keywords-only', but we should
 @c probably not advise users to do this.
 
