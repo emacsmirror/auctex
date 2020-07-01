@@ -4534,8 +4534,9 @@ value of NO-SUBSECTIONS."
 (defvar LaTeX-paragraph-commands-internal
   '("[" "]" ; display math
     "appendix" "begin" "caption" "chapter" "end" "include" "includeonly"
-    "label" "maketitle" "noindent" "par" "paragraph" "part" "section"
-    "subsection" "subsubsection" "tableofcontents" "newpage" "clearpage")
+    "label" "maketitle" "newblock" "noindent" "par" "paragraph" "part"
+    "section" "subsection" "subsubsection" "tableofcontents"
+    "newpage" "clearpage")
   "Internal list of LaTeX macros that should have their own line.")
 
 (defun LaTeX-paragraph-commands-regexp-make ()
@@ -6275,10 +6276,10 @@ function would return non-nil and `(match-string 1)' would return
 		      "enumiv" "footnote" "mpfootnote")
 
   (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
-		     "columnsep" "columnwidth" "doublerulesep" "evensidemargin"
-		     "linewidth" "oddsidemargin" "paperwidth" "paperheight"
-		     "parindent" "parskip" "tabcolsep" "textheight" "textwidth"
-		     "topmargin" "unitlength")
+		     "bibindent" "columnsep" "columnwidth" "doublerulesep"
+		     "evensidemargin" "linewidth" "oddsidemargin" "paperwidth"
+		     "paperheight" "parindent" "parskip" "tabcolsep"
+		     "textheight" "textwidth" "topmargin" "unitlength")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")
@@ -6367,6 +6368,7 @@ function would return non-nil and `(match-string 1)' would return
    '("nocite" TeX-arg-cite)
    '("bibliographystyle" TeX-arg-bibstyle)
    '("bibliography" TeX-arg-bibliography)
+   '("newblock" (TeX-arg-literal " "))
    '("footnote"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
      t)
