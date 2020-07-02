@@ -158,14 +158,16 @@ set it with `TeX-modes-set'."
 		     (setq list (cdr list)))))) )
 
 (defconst AUCTeX-version "12.2.4"
-    "AUCTeX version.
+  ;; FIXME: Rather than duplicate this here, we could ask package.el to
+  ;; tell us our version (e.g. with s.th.like `package-get-version').
+  "AUCTeX version.
 If not a regular release, the date of the last change.")
 
 (defconst AUCTeX-date "2020-06-29"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
+(add-hook 'bibtex-mode-hook #'BibTeX-auto-store)
 
 ;;; Code specific to ELPA packaging:
 
