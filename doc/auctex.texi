@@ -2385,9 +2385,6 @@ As a remedy you can make the verbatim construct known to @fontlatex{},
 commented dollar sign (@samp{%$}) at the next suitable end of line as a
 quick workaround.  In docTeX documents, @samp{^^A$} is also available
 for similar purpose.
-@c As a last resort one can set `font-lock-keywords-only', but we should
-@c probably not advise users to do this.
-
 
 @node Folding
 @section Folding Macros and Environments

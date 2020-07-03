@@ -1702,8 +1702,7 @@ surroundings don't extend into unmodified previews or past
 contiguous previews invalidated by modifications.
 
 Overriding any other action, if a region is
-active (`transient-mark-mode' or `zmacs-regions'), it is run
-through `preview-region'."
+active (`transient-mark-mode'), it is run through `preview-region'."
   (interactive)
   (if (TeX-active-mark)
       (preview-region (region-beginning) (region-end))
