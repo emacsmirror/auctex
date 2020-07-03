@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.
 
-;; Copyright (C) 1994, 2013, 2014, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 1994, 2013, 2014, 2018, 2020  Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -78,19 +78,17 @@
         (beginning-of-line 1))
     (open-line 2)
     (indent-relative-maybe)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-	      LaTeX-optop "latin1,utf8" LaTeX-optcl
-	      TeX-grop "inputenc" TeX-grcl)
-      (newline-and-indent)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-	      LaTeX-optop "T1" LaTeX-optcl
-	      TeX-grop "fontenc" TeX-grcl)
-      (newline-and-indent)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-	      TeX-grop "ngerman" TeX-grcl)
-      (TeX-run-style-hooks "inputenc")
-      (TeX-run-style-hooks "fontenc")
-      (TeX-run-style-hooks "ngerman")))
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+			   LaTeX-optop "latin1,utf8" LaTeX-optcl
+			   TeX-grop "inputenc" TeX-grcl)
+    (newline-and-indent)
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+			   LaTeX-optop "T1" LaTeX-optcl
+			   TeX-grop "fontenc" TeX-grcl)
+    (newline-and-indent)
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+			   TeX-grop "ngerman" TeX-grcl)
+    (TeX-run-style-hooks "inputenc" "fontenc" "ngerman")))
 
 (defun LaTeX-dinbrief-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."
@@ -216,7 +214,7 @@
 	  (goto-char (point-min)) ; insert before \end{document}
 	  (if (re-search-forward ".end.document." (point-max) t)
 	      (beginning-of-line 1))
-	  (previous-line 1)             ;FIXME: Use forward-line!
+	  (forward-line -1)
 	  (LaTeX-dinbrief-insert TeX-esc "address" TeX-grop name)
 	  (if (not (zerop (length str)))
 	      (progn
