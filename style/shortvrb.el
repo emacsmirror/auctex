@@ -49,6 +49,15 @@
 (TeX-add-style-hook
  "shortvrb"
  (lambda ()
+
+   ;; Ispell: Add entries to `ispell-tex-skip-alist':
+   (when LaTeX-shortvrb-chars
+     (TeX-ispell-skip-setcar
+      (mapcar (lambda (char)
+		(let ((str (char-to-string char)))
+		  (cons str str)))
+	      LaTeX-shortvrb-chars)))
+
    ;; Fontification
    (when (and LaTeX-shortvrb-chars
 	      (featurep 'font-latex)
