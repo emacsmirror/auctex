@@ -1,6 +1,6 @@
 ;;; letter.el - Special code for letter style.
 
-;; Copyright (C) 1993, 2012, 2013, 2014, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 1993, 2012, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -49,11 +49,11 @@
    (LaTeX-add-pagestyles "headings" "firstpage")
    (setq LaTeX-default-document-environment "letter")
    (TeX-add-symbols
-    '("name" "Sender: ")
-    '("address" "Sender address: ")
-    '("signature" "Signature: ")
-    '("opening" "Opening: ")
-    '("closing" "Closing: ")
+    '("name" "Sender")
+    '("address" "Sender address")
+    '("signature" "Signature")
+    '("opening" "Opening")
+    '("closing" "Closing")
     "location"
     "telephone"
     "makelabels"
@@ -92,13 +92,16 @@
   "Insert ENVIRONMENT and prompt for recipient and address."
   (let ((sender (TeX-read-string "Sender: " (user-full-name)))
 	(sender-address (TeX-read-string "Sender address: "
-				     LaTeX-letter-sender-address))
+					 LaTeX-letter-sender-address))
 	(recipient (TeX-read-string "Recipient: "))
 	(address (TeX-read-string "Recipient address: "))
 	(signature (TeX-read-string "Signature: "))
 	(opening (TeX-read-string "Opening: "))
 	(closing (TeX-read-string "Closing: "))
-	(date (TeX-read-string "Date: " (LaTeX-today))))
+	(date (TeX-read-string "Date: " (LaTeX-today)))
+	(func (if (fboundp 'indent-relative-first-indent-point)
+		  'indent-relative-first-indent-point
+		'indent-relative-maybe)))
 
     (insert TeX-esc "name" TeX-grop sender TeX-grcl)
     (newline-and-indent)
@@ -148,7 +151,7 @@
 	      opening)
 	    TeX-grcl "\n")
 
-    (indent-relative-maybe)
+    (funcall func)
     (save-excursion
       (insert "\n" TeX-esc "closing"
 	      TeX-grop
@@ -156,7 +159,7 @@
 		  (concat TeX-esc " ")
 		closing)
 	      TeX-grcl "\n")
-      (indent-relative-maybe))))
+      (funcall func))))
 
 (defun LaTeX-today nil
   "Return a string representing todays date according to flavor."
