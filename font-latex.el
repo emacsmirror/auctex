@@ -1320,11 +1320,11 @@ then call `font-latex-set-syntactic-keywords'.")))
 (make-obsolete 'font-latex-update-font-lock nil "12.2.4")
 
 (defvar font-latex--updated-region-end nil
-;; During hilighting of math expression, matched range sometimes exceeds
-;; the given end limit. So record the actual end in this variable to
+;; During font lock operation, matched range sometimes exceeds the
+;; given end limit. So record the actual end in this variable to
 ;; notify the font lock machinery.
-;; Match function of math expression should do the following two if
-;; the end of the actual match goes beyond the limit:
+;; Match functions should do the following two if the end of the
+;; actual match goes beyond the limit:
 ;; 1. If the value of this variable is smaller than limit, set this
 ;;    variable to that limit.
 ;; 2. When the end of the actual match exceeds this variable,
@@ -2018,12 +2018,9 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 					    (match-beginning 0))
 	  (let* ((beg (match-beginning 0))
 		 (after-beg (match-end 0))
-		 (opening-quote (match-string 0))
+		 (opening-quote (match-string-no-properties 0))
 		 (closing-quote
-		  (nth 1 (assoc (if (fboundp 'string-make-multibyte)
-				    (string-make-multibyte (match-string 0))
-				  (match-string 0))
-				font-latex-quote-list)))
+		  (nth 1 (assoc opening-quote font-latex-quote-list)))
 		 (nest-count 0)
 		 (point-of-surrender (+ beg font-latex-multiline-boundary)))
 	    ;; Find closing quote taking nested quotes into account.
@@ -2032,7 +2029,8 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 		      (concat opening-quote "\\|" closing-quote)
 		      point-of-surrender 'move)
 		     (when (and (< (point) point-of-surrender) (not (eobp)))
-		       (if (string= (match-string 0) opening-quote)
+		       (if (string= (match-string-no-properties 0)
+				    opening-quote)
 			   (setq nest-count (1+ nest-count))
 			 (when (/= nest-count 0)
 			   (setq nest-count (1- nest-count)))))))
@@ -2043,7 +2041,14 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 		(progn
 		  (goto-char after-beg)
 		  (store-match-data (list after-beg after-beg beg after-beg)))
-	      (store-match-data (list beg (point) (point) (point))))
+	      (let ((p (point)))
+		(if (< font-latex--updated-region-end limit)
+		    (setq font-latex--updated-region-end limit))
+		(when (< font-latex--updated-region-end p)
+		  (font-lock-unfontify-region
+		   font-latex--updated-region-end p)
+		  (setq font-latex--updated-region-end p))
+		(store-match-data (list beg p p p))))
 	    (throw 'match t)))))))
 
 (defun font-latex-extend-region-backwards-quotation ()
