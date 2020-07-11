@@ -2050,12 +2050,13 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
   "Extend region backwards for quotations."
   (when font-latex-quotes
     (font-latex-update-quote-list)
-    (let ((regexp-end (regexp-opt (mapcar 'cadr font-latex-quote-list) t)))
+    (let ((regexp-end (regexp-opt (mapcar #'cadr font-latex-quote-list) t)))
       (save-excursion
 	(goto-char font-lock-end)
 	(catch 'extend
 	  (while (re-search-backward regexp-end font-lock-beg t)
-	    (let ((closing-quote (match-string 0))
+	    (let ((found-end (match-beginning 0))
+		  (closing-quote (match-string-no-properties 0))
 		  (nest-count 0)
 		  (point-of-surrender (- font-lock-beg
                                          font-latex-multiline-boundary))
@@ -2066,33 +2067,41 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 		    (setq opening-quote (car elt))
 		    (throw 'found nil))))
 	      ;; Find opening quote taking nested quotes into account.
-	      (while (and (re-search-backward (concat opening-quote "\\|"
-						      closing-quote)
-					      point-of-surrender t)
-			  ;; Found quotes before point-of-surrender.
-			  (cond ((string= (match-string 0) closing-quote)
-				 ;; Encountered another closing quote.
-				 ;; Increase nest-count and continue
-				 ;; the inner loop.
-				 (setq nest-count (1+ nest-count)))
-				;; Found an opening quote.
-				((/= nest-count 0)
-				 ;; If in nest, decrease nest-count
-				 ;; and continue the inner loop.
-				 (setq nest-count (1- nest-count)))
-				;; Else we arrived at the opening quote
-				;; matching with the closing quote found
-				;; in the outer loop.
-				((< (point) font-lock-beg)
-				 ;; If that opening quote locates
-				 ;; before `font-lock-beg', break the
-				 ;; outer loop and extend the region.
-				 (setq font-lock-beg (point))
-				 (throw 'extend t))
-				(t
-				 ;; Else terminate the inner loop and
-				 ;; continue the outer loop.
-				 nil)))))))))))
+	      (while (if (re-search-backward (concat opening-quote "\\|"
+						     closing-quote)
+					     point-of-surrender 'move)
+			 ;; Found quotes before point-of-surrender.
+			 (cond ((string= (match-string-no-properties 0)
+					 closing-quote)
+				;; Encountered another closing quote.
+				;; Increase nest-count and continue
+				;; the inner loop.
+				(setq nest-count (1+ nest-count)))
+			       ;; Found an opening quote.
+			       ((/= nest-count 0)
+				;; If in nest, decrease nest-count
+				;; and continue the inner loop.
+				(setq nest-count (1- nest-count)))
+			       ;; Else we arrived at the opening quote
+			       ;; matching with the closing quote found
+			       ;; in the outer loop.
+			       ((< (point) font-lock-beg)
+				;; If that opening quote locates
+				;; before `font-lock-beg', break the
+				;; outer loop and extend the region.
+				(setq font-lock-beg (point))
+				(throw 'extend t))
+			       (t
+				;; Else terminate the inner loop and
+				;; continue the outer loop.
+				nil))
+		       ;; Didn't find quotes before
+		       ;; point-of-surrender.
+		       ;; Go back just before the closing quote,
+		       ;; terminate the inner loop and
+		       ;; continue the outer loop.
+		       (goto-char found-end)
+		       nil)))))))))
 
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."

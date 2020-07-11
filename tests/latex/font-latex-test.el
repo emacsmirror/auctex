@@ -41,4 +41,44 @@ $a$")
 	      (setq font-latex--updated-region-end (point-max))
 	      (font-latex-match-dollar-math (point-max))))))
 
+(ert-deftest font-latex-extend-region-backwards-quotation ()
+  "Test f-l-e-r-b-q doesn't extend region too eagerly."
+  (with-temp-buffer
+    (let ((TeX-install-font-lock 'font-latex-setup)
+	  (font-latex-quotes 'french)
+	  font-lock-beg font-lock-end)
+      (LaTeX-mode)
+
+      ;; Test 1: Double prime in math expression doesn't cause region
+      ;; extension.
+      (setq font-lock-beg (point))
+      (insert "$f''(x)=x^{3}$")
+      (setq font-lock-end (point))
+      (should-not (font-latex-extend-region-backwards-quotation))
+
+      (erase-buffer)
+      (insert "abc ``def ghi'' jkl ")
+      (setq font-lock-beg (point))
+      (insert "$f''(x)=x^{3}$")
+      (setq font-lock-end (point))
+      (should-not (font-latex-extend-region-backwards-quotation))
+
+      ;; Test 2: open-close pair before '' in math expression is
+      ;; picked up.
+      (erase-buffer)
+      (insert "abc ``def ")
+      (setq font-lock-beg (point))
+      (insert "ghi'' jkl $f''(x)=x^{3}$")
+      (setq font-lock-end (point))
+      (should (font-latex-extend-region-backwards-quotation))
+      (should (= font-lock-beg 5))
+
+      (erase-buffer)
+      (insert "abc <<def ")
+      (setq font-lock-beg (point))
+      (insert "ghi>> jkl $f''(x)=x^{3}$")
+      (setq font-lock-end (point))
+      (should (font-latex-extend-region-backwards-quotation))
+      (should (= font-lock-beg 5)))))
+
 ;;; font-latex-test.el ends here
