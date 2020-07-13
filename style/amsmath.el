@@ -46,7 +46,11 @@
 	      ("alignat"       env-on) ("alignat*"      env-on)
 	      ("xalignat"      env-on) ("xalignat*"     env-on)
 	      ("xxalignat"     env-on) ("\\boxed"       arg-on)
-	      ("\\text"        arg-off) ("\\intertext"   arg-off))))
+	      ;; In fact, \text macro is provided separately in
+	      ;; amstext.sty, not amsmath.sty. However, it would be
+	      ;; reasonable enough to include support for it here.
+	      ("\\text"        arg-off) ("\\intertext"   arg-off)
+	      ("\\tag"         arg-off) ("\\tag*"        arg-off))))
   (dolist (entry list)
     (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
 (texmathp-compile)
