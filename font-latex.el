@@ -1297,7 +1297,7 @@ triggers Font Lock to recognize the change."
   ;; influencing fontification in her file-local variables section.
   (add-hook 'hack-local-variables-hook #'font-latex-after-hacking-local-variables t t))
 
-(defun font-latex-update-font-lock (&optional syntactic-kws)
+(defun font-latex-update-font-lock (&optional _syntactic-kws)
   "Tell font-lock about updates of fontification rules.
 If SYNTACTIC-KWS is non-nil, also update
 `font-latex-syntactic-keywords'."
