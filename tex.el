@@ -36,6 +36,35 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Silence the compiler for functions:
+(declare-function dbus-ignore-errors "ext:dbus"
+		  (&rest body))
+(declare-function dbus-get-unique-name "ext:dbusbind.c"
+		  (bus))
+(declare-function dbus-ping "ext:dbus"
+		  (bus service &optional timeout))
+(declare-function dbus-introspect-get-method "ext:dbus"
+		  (bus service path interface method))
+(declare-function dbus-call-method "ext:dbus"
+		  (bus service path interface method &rest args))
+(declare-function dbus-register-signal "ext:dbus"
+		  (bus service path interface signal handler &rest args))
+(declare-function TeX-output-extension "tex-buf"
+		  nil)
+(declare-function TeX-command-expand "tex-buf"
+		  (command file &optional list))
+(declare-function TeX-active-master "tex-buf"
+		  (&optional extension nondirectory ignore))
+(declare-function TeX-pop-to-buffer "tex-buf"
+		  (buffer &optional other-window norecord))
+(declare-function LaTeX-environment-list "latex"
+		  nil)
+(declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
+		  (start end match))
+;; spell-buffer was removed in 2008 in favor of ispell
+(declare-function spell-buffer "ext:text-mode"
+		  t)
+
 (defgroup TeX-file nil
   "Files used by AUCTeX."
   :group 'AUCTeX)
