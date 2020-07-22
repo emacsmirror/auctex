@@ -30,19 +30,41 @@
 (require 'tex)
 (require 'latex)
 
+;; Silence the compiler for functions:
+(declare-function preview-inherited-face-attribute "prv-emacs"
+		  (face attribute &optional inherit))
+(declare-function preview-filter-specs-1 "preview"
+		  (specs))
+(declare-function preview-format-kill "preview"
+		  (format-cons))
+(declare-function preview-delete "preview"
+		  (ovr &rest ignored))
+(declare-function preview-relaxed-string= "preview"
+		  (&rest args))
+(declare-function preview-disable "preview"
+		  (ovr))
+(declare-function preview-inactive-string "preview"
+		  (ov))
+(declare-function preview-filter-specs "preview"
+		  (spec-list))
+(declare-function preview-auto-reveal-p "preview"
+		  (mode distance))
+(declare-function desktop-buffer-preview-misc-data "preview"
+		  (&rest ignored))
+
 (defcustom preview-transparent-color '(highlight :background)
   "Color to appear transparent in previews.
 Set this to something unusual when using `preview-transparent-border',
 to the default background in most other cases."
   :type '(radio (const :tag "None" nil)
-		 (const :tag "Autodetect" t)
-		 (color :tag "By name" :value "white")
-		 (list :tag "Take from face"
-		       :value (default :background)
-		       (face)
-		       (choice :tag "What to take"
-			(const :tag "Background" :value :background)
-			(const :tag "Foreground" :value :foreground))))
+		(const :tag "Autodetect" t)
+		(color :tag "By name" :value "white")
+		(list :tag "Take from face"
+		      :value (default :background)
+		      (face)
+		      (choice :tag "What to take"
+			      (const :tag "Background" :value :background)
+			      (const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
 ;;; Note that the following default introduces a border only when
