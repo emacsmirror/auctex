@@ -37,6 +37,14 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Silence the compiler for functions:
+(declare-function outline-level "ext:outline"
+		  nil)
+(declare-function outline-mark-subtree "ext:outline"
+		  nil)
+(declare-function turn-off-filladapt-mode "ext:filladapt"
+		  nil)
+
 ;;; Syntax
 
 (defvar LaTeX-optop "["
