@@ -44,6 +44,8 @@
    (TeX-run-style-hooks "amsmath" "fontspec" "bidi")
 
    ;; We need xelatex, so check for the engine here:
+   (unless (featurep 'tex-buf)
+     (require 'tex-buf))
    (TeX-check-engine-add-engines 'xetex)
 
    ;; New macros & environments:
