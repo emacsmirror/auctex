@@ -39,8 +39,6 @@
 ;; Needed for auto-parsing:
 (require 'tex)
 
-(eval-when-compile (require 'cl-lib))
-
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -236,12 +234,6 @@ Put line break macro on the last line.  Next, insert an ampersand."
   (forward-line 1)
   (save-excursion
     (insert ?&)))
-
-;; Fontification
-(require 'texmathp)
-(cl-pushnew '("\\shortintertext" arg-off)
-	    texmathp-tex-commands-default :test #'equal)
-(texmathp-compile)
 
 (TeX-add-style-hook
  "mathtools"

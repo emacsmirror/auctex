@@ -41,8 +41,6 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-(declare-function font-latex-update-math-env
-		  "font-latex")
 
 (declare-function LaTeX-item-equation-alignat
 		  "amsmath" (&optional suppress))
@@ -275,24 +273,6 @@ number of ampersands if possible."
     (when ncols
       (save-excursion
 	(insert (make-string (+ ncols ncols -1) ?&))))))
-
-;; Fontification
-(require 'texmathp)
-(let ((list '(("empheq"        env-on)
-	      ;; XXX: Should we add the remaining entries only when
-	      ;; "overload" or "overload2" option is given?
-	      ("AmSequation"   env-on) ("AmSequation*"  env-on)
-	      ("AmSalign"      env-on) ("AmSalign*"     env-on)
-	      ("AmSgather"     env-on) ("AmSgather*"    env-on)
-	      ("AmSmultline"   env-on) ("AmSmultline*"  env-on)
-	      ("AmSflalign"    env-on) ("AmSflalign*"   env-on)
-	      ("AmSalignat"    env-on) ("AmSalignat*"   env-on))))
-  (dolist (entry list)
-    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
-(texmathp-compile)
-(if (and (featurep 'font-latex)
-	 (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex-update-math-env))
 
 (TeX-add-style-hook
  "empheq"

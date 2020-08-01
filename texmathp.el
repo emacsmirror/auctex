@@ -53,10 +53,9 @@
 ;;
 ;;  To configure which macros and environments influence LaTeX math
 ;;  mode, customize the variable `texmathp-tex-commands'. By default
-;;  it recognizes the plain TeX and LaTeX core (see the variable
-;;  `texmathp-tex-commands-default', also as an example). Support for
-;;  AMS-LaTeX and packages mathtools, empheq and breqn is added as
-;;  well if `TeX-parse-self' option is enabled.
+;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX
+;;  and packages mathtools, empheq and breqn (see the variable
+;;  `texmathp-tex-commands-default', also as an example).
 ;;
 ;;  To try out the code interactively, use `M-x texmathp RET'.
 ;;
@@ -136,7 +135,38 @@
     ("\\textrm"      arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
-    ("\\ensuremath"  arg-on))
+    ("\\ensuremath"  arg-on)
+
+    ;; AMS-LaTeX
+    ("equation*"     env-on)
+    ("align"         env-on)      ("align*"        env-on)
+    ("gather"        env-on)      ("gather*"       env-on)
+    ("multline"      env-on)      ("multline*"     env-on)
+    ("flalign"       env-on)      ("flalign*"      env-on)
+    ("alignat"       env-on)      ("alignat*"      env-on)
+    ("xalignat"      env-on)      ("xalignat*"     env-on)
+    ("xxalignat"     env-on)      ("\\boxed"       arg-on)
+    ("\\text"        arg-off)     ("\\intertext"   arg-off)
+    ("\\tag"         arg-off)     ("\\tag*"        arg-off)
+
+    ;; mathtools
+    ("\\shortintertext"   arg-off)
+
+    ;; empheq
+    ("empheq"        env-on)
+    ("AmSequation"   env-on)      ("AmSequation*"  env-on)
+    ("AmSalign"      env-on)      ("AmSalign*"     env-on)
+    ("AmSgather"     env-on)      ("AmSgather*"    env-on)
+    ("AmSmultline"   env-on)      ("AmSmultline*"  env-on)
+    ("AmSflalign"    env-on)      ("AmSflalign*"   env-on)
+    ("AmSalignat"    env-on)      ("AmSalignat*"   env-on)
+
+    ;; breqn
+    ("dmath"         env-on)      ("dmath*"        env-on)
+    ("dseries"       env-on)      ("dseries*"      env-on)
+    ("dgroup"        env-on)      ("dgroup*"       env-on)
+    ("darray"        env-on)      ("darray*"       env-on)
+    ("dsuspend"      env-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
 (defun texmathp-compile ()
