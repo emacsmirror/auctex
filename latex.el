@@ -45,6 +45,11 @@
 (declare-function turn-off-filladapt-mode "ext:filladapt"
 		  nil)
 
+;; Silence the compiler for variables:
+(defvar outline-heading-alist)
+(defvar TeX-auto-file)
+(defvar LaTeX-section-list-changed)
+
 ;;; Syntax
 
 (defvar LaTeX-optop "["
@@ -121,12 +126,8 @@ This depends on `LaTeX-insert-into-comments'."
 
 ;;; Sections
 
-;; Declare dynamically scoped vars.
-(defvar title)
-(defvar name)
-(defvar level)
+;; Declare dynamically scoped var.
 (defvar done-mark)
-(defvar toc)
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -449,32 +450,35 @@ no label is inserted."
   "Hook to prompt for LaTeX section name.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[LaTeX-section]'."
-  (let ((string (completing-read
-		 (concat "Level (default " name "): ")
-		 LaTeX-section-list
-		 nil nil nil nil name)))
-    ;; Update name
-    (if (not (zerop (length string)))
-	(setq name string))
-    ;; Update level
-    (setq level (LaTeX-section-level name))))
+  (with-no-warnings
+    (let ((string (completing-read
+		   (concat "Level (default " name "): ")
+		   LaTeX-section-list
+		   nil nil nil nil name)))
+      ;; Update name
+      (if (not (zerop (length string)))
+	  (setq name string))
+      ;; Update level
+      (setq level (LaTeX-section-level name)))))
 
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (setq title (TeX-read-string "Title: " title))
-  (let ((region (and (TeX-active-mark)
-		     (cons (region-beginning) (region-end)))))
-    (when region (delete-region (car region) (cdr region)))))
+  (with-no-warnings
+    (setq title (TeX-read-string "Title: " title))
+    (let ((region (and (TeX-active-mark)
+		       (cons (region-beginning) (region-end)))))
+      (when region (delete-region (car region) (cdr region))))))
 
 (defun LaTeX-section-toc ()
   "Hook to prompt for the LaTeX section entry in the table of content .
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
 a different entry for the section in the table of content."
-  (setq toc (TeX-read-string "Toc Entry: "))
-  (if (zerop (length toc))
-      (setq toc nil)))
+  (with-no-warnings
+    (setq toc (TeX-read-string "Toc Entry: "))
+    (if (zerop (length toc))
+	(setq toc nil))))
 
 (defun LaTeX-section-section ()
   "Hook to insert LaTeX section command into the file.
@@ -491,18 +495,19 @@ assume that the section is already inserted."
 		     "begin")
 	     (line-beginning-position 0) t))
     (LaTeX-newline))
-  (insert TeX-esc name)
-  (cond ((null toc))
-	((zerop (length toc))
-	 (insert LaTeX-optop)
-	 (set-marker done-mark (point))
-	 (insert LaTeX-optcl))
-	(t
-	 (insert LaTeX-optop toc LaTeX-optcl)))
-  (insert TeX-grop)
-  (if (zerop (length title))
-      (set-marker done-mark (point)))
-  (insert title TeX-grcl)
+  (with-no-warnings
+    (insert TeX-esc name)
+    (cond ((null toc))
+	  ((zerop (length toc))
+	   (insert LaTeX-optop)
+	   (set-marker done-mark (point))
+	   (insert LaTeX-optcl))
+	  (t
+	   (insert LaTeX-optop toc LaTeX-optcl)))
+    (insert TeX-grop)
+    (if (zerop (length title))
+	(set-marker done-mark (point)))
+    (insert title TeX-grcl))
   (LaTeX-newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
@@ -514,8 +519,9 @@ Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
 The behaviour of this hook is controlled by variable `LaTeX-section-label'."
-  (and (LaTeX-label name 'section)
-       (LaTeX-newline)))
+  (with-no-warnings
+    (and (LaTeX-label name 'section)
+	 (LaTeX-newline))))
 
 ;;; Environments
 
