@@ -437,6 +437,7 @@ is assumed by default."
 (defvar reftex-level-indent)
 (defvar reftex-label-menu-flags)
 (defvar reftex-tables-dirty)
+(defvar reftex-label-alist-builtin)
 
 (declare-function reftex-match-string "reftex" (n))
 (declare-function reftex-section-number "reftex-parse" (&optional level star))

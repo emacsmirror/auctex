@@ -592,6 +592,14 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Silence the compiler:
+(declare-function dired-replace-in-string "ext:dired"
+		  (regexp newtext string))
+(declare-function dired-split "ext:dired-aux"
+		  (pat str &optional limit))
+(declare-function reftex-view-crossref "ext:reftex-dcr"
+		  (&optional arg auto-how fail-quietly))
+
 (defgroup bib-cite nil
   "bib-cite, LaTeX minor-mode to display \\cite, \\ref and \\label commands."
   :group 'tex)
@@ -973,9 +981,14 @@ documents, and the Emacs command `find-tag' doesn't allow to interactively
 find the next occurrence of a regexp."
   (interactive "P")
   (if (bib-master-file)                 ;Multi-file document
-      (if prev-p
-	  (find-tag t '- t)
-	(find-tag t t t))
+      ;; FIXME: This check for `xref-find-definitions' should be
+      ;; removed once AUCTeX requires Emacs >= 25.1
+      (let ((func (if (fboundp 'xref-find-definitions)
+		      'xref-find-definitions
+		    'find-tag)))
+	(if prev-p
+	    (funcall func t '- t)
+	  (funcall func t t t)))
     (if bib-cite-search-ring
 	;;FIXME: Should first make sure I move off initial \ref{}.
 	(let ((regexp (concat bib-ref-regexpc bib-cite-search-ring "}")))
