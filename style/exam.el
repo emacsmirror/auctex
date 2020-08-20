@@ -51,21 +51,20 @@
 (defun LaTeX-exam-insert-item ()
   "Insert a new item in an environment from exam class.
 Item inserted depends on the environment."
-  (with-no-warnings
-    (TeX-insert-macro
-     (cond ((string= environment "questions")
-            "question")
-           ((string= environment "parts")
-            "part")
-           ((string= environment "subparts")
-            "subpart")
-           ((string= environment "subsubparts")
-            "subsubpart")
-	   ((member environment '("choices" "oneparchoices"
-				  "checkboxes" "oneparcheckboxes"))
-	    "choice")
-           ;; Fallback
-           (t "item")))))
+  (TeX-insert-macro
+   (cond ((string= environment "questions")
+          "question")
+         ((string= environment "parts")
+          "part")
+         ((string= environment "subparts")
+          "subpart")
+         ((string= environment "subsubparts")
+          "subsubpart")
+	 ((member environment '("choices" "oneparchoices"
+				"checkboxes" "oneparcheckboxes"))
+	  "choice")
+         ;; Fallback
+         (t "item"))))
 
 (defun LaTeX-exam-insert-label (_optional &optional name type)
   "Indent the line and query/insert a label incl. the \"\\label\" macro.

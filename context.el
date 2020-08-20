@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2018
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2020
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -67,10 +67,20 @@
 
 ;;; variables
 
-;; Dynamically scoped vars used in certain macro's.  `done-mark' is
-;; marked special; `reference', `title', `name' and `level' are
-;; pacified via `with-no-warnings' in the respective functions.
-(defvar done-mark)     ; Position of point afterwards, default nil (meaning end)
+;; Dynamically scoped vars used in certain macro's.
+;; BEWARE: We used to give them a global nil value, but this can mess up poor
+;; unrelated packages using those same vars but expecting them to be
+;; lexically scoped.
+;; So don't give them a global value, which makes sure the effect of `defvar'
+;; localized to this file!
+;; N.B.: These forms are commented out since they produce a "lack of
+;; prefix" warning during byte-compilation.  This way they produce
+;; only a "reference to free variable" one.
+;; (defvar done-mark) ; Position of point afterwards, default nil (meaning end)
+;; (defvar reference) ; Used by `ConTeXt-section-ref' and `ConTeXt-section-section'.
+;; (defvar title) ; Used by `ConTeXt-section-title' and `ConTeXt-section-section'.
+;; (defvar name)
+;; (defvar level)
 
 ;; others
 
@@ -501,53 +511,49 @@ in your .emacs file."
   "Hook to prompt for ConTeXt section name.
 Insert this hook into `ConTeXt-numbered-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[ConTeXt-section]'."
-  (with-no-warnings
-    (let ((string (completing-read
-		   (concat "Select level (default " name "): ")
-		   ConTeXt-numbered-section-list
-		   nil nil nil)))
-      ;; Update name
-      (if (not (zerop (length string)))
-	  (setq name string)))))
+  (let ((string (completing-read
+		 (concat "Select level (default " name "): ")
+		 ConTeXt-numbered-section-list
+		 nil nil nil)))
+    ;; Update name
+    (if (not (zerop (length string)))
+	(setq name string))))
 
 (defun ConTeXt-unnumbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
 Insert this hook into `ConTeXt-unnumbered-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[ConTeXt-section]'."
-  (with-no-warnings
-    (let ((string (completing-read
-		   (concat "Select level (default " name "): ")
-		   ConTeXt-unnumbered-section-list
-		   nil nil nil)))
-      ;; Update name
-      (if (not (zerop (length string)))
-	  (setq name string)))))
+  (let ((string (completing-read
+		 (concat "Select level (default " name "): ")
+		 ConTeXt-unnumbered-section-list
+		 nil nil nil)))
+    ;; Update name
+    (if (not (zerop (length string)))
+	(setq name string))))
 
 (defun ConTeXt-section-title ()
   "Hook to prompt for ConTeXt section title.
 Insert this hook into `ConTeXt-(un)numbered-section-hook' to allow the user to change
 the title of the section inserted with `\\[ConTeXt-section]."
-  (with-no-warnings
-    (setq title (TeX-read-string "What title: "))))
+  (setq title (TeX-read-string "What title: ")))
 
 (defun ConTeXt-section-section ()
   "Hook to insert ConTeXt section command into the file.
 Insert this hook into `ConTeXt-section-hook' after those hooks which sets
 the `name', `title', and `reference' variables, but before those hooks which
 assumes the section already is inserted."
-  (with-no-warnings
-    (insert TeX-esc name)
-    (cond ((null reference))
-	  ((zerop (length reference))
-	   (insert ConTeXt-optop)
-	   (set-marker done-mark (point))
-	   (insert ConTeXt-optcl))
-	  (t
-	   (insert ConTeXt-optop reference ConTeXt-optcl)))
-    (insert TeX-grop)
-    (if (zerop (length title))
-	(set-marker done-mark (point)))
-    (insert title TeX-grcl))
+  (insert TeX-esc name)
+  (cond ((null reference))
+	((zerop (length reference))
+	 (insert ConTeXt-optop)
+	 (set-marker done-mark (point))
+	 (insert ConTeXt-optcl))
+	(t
+	 (insert ConTeXt-optop reference ConTeXt-optcl)))
+  (insert TeX-grop)
+  (if (zerop (length title))
+      (set-marker done-mark (point)))
+  (insert title TeX-grcl)
   (newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
@@ -557,14 +563,13 @@ assumes the section already is inserted."
   "Hook to insert a reference after the sectioning command.
 Insert this hook into `ConTeXt-section-hook' to prompt for a label to be
 inserted after the sectioning command."
-  (with-no-warnings
-    (setq reference (completing-read
-		     (TeX-argument-prompt t nil
-					  "Comma separated list of references")
-		     (LaTeX-label-list) nil nil))
-    ;; No reference or empty string entered?
-    (if (string-equal "" reference)
-	(setq reference nil))))
+  (setq reference (completing-read
+		   (TeX-argument-prompt t nil
+					"Comma separated list of references")
+		   (LaTeX-label-list) nil nil))
+  ;; No reference or empty string entered?
+  (if (string-equal "" reference)
+      (setq reference nil)))
 
 
 ;; Various

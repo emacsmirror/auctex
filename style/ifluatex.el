@@ -36,8 +36,7 @@
 
 (defun LaTeX-ifluatex-set-exit-mark (_optional)
   "Discard OPTIONAL and set exit-mark to current point."
-  (with-no-warnings
-    (set-marker exit-mark (point))))
+  (set-marker exit-mark (point)))
 
 (TeX-add-style-hook
     "ifluatex"
