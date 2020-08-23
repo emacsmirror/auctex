@@ -807,6 +807,12 @@ That means, put respective properties onto overlay OV."
                                     (skip-chars-forward " \t")
                                     (point))))
       (overlay-put ov 'mouse-face 'highlight)
+      (when font-lock-mode
+        ;; Add raise adjustment for superscript and subscript.
+        ;; (bug#42209)
+        (setq display-string
+              (propertize display-string
+                          'display (get-text-property ov-start 'display))))
       (overlay-put ov 'display display-string)
       (when font-lock-mode
         (overlay-put ov 'face TeX-fold-folded-face))
