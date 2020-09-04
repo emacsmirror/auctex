@@ -131,7 +131,7 @@
   ;; `TeX-insert-macro-default-style' and if `current-prefix-arg'.
   ;; `named' is removed here from completion if package option is not
   ;; given.
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
          (model (LaTeX-check-insert-macro-default-style
                  (completing-read
                   (TeX-argument-prompt t prompt "Color model")
@@ -181,7 +181,7 @@
   ;; First, ask for <model> depending on
   ;; `TeX-insert-macro-default-style' and `current-prefix-arg'.
   ;; Remove `named' if necessary.
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (model (LaTeX-check-insert-macro-default-style
                  (completing-read
                   (TeX-argument-prompt t prompt "Color model")

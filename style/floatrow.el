@@ -349,21 +349,21 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; `TeX-argument-insert':
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (last-optional-rejected nil)
+	 (TeX-last-optional-rejected nil)
 	 (width (LaTeX-check-insert-macro-default-style
 		 (completing-read
 		  (TeX-argument-prompt t nil "Width")
 		  (mapcar (lambda (x) (concat TeX-esc (car x)))
 			  (LaTeX-length-list)))))
-	 (last-optional-rejected (or (not width)
-				     (and width (string= width ""))))
+	 (TeX-last-optional-rejected (or (not width)
+				         (and width (string= width ""))))
 	 (height (LaTeX-check-insert-macro-default-style
 		  (completing-read
 		   (TeX-argument-prompt t nil "Height")
 		   (mapcar (lambda (x) (concat TeX-esc (car x)))
 			   (LaTeX-length-list)))))
-	 (last-optional-rejected (or (not height)
-				     (and height (string= height ""))))
+	 (TeX-last-optional-rejected (or (not height)
+				         (and height (string= height ""))))
 	 (vertpos (LaTeX-check-insert-macro-default-style
 		   (if (string= height "")
 		       ""

@@ -29,8 +29,7 @@
   (should (string=
            (let ((TeX-command-list
 		  (list (cons "Test" '("%%%% %`%'" TeX-run-command t t)))))
-	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))
-				 'TeX-master-file))
+	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))))
            "%% ")))
 
 (ert-deftest TeX-command-expansion-errors ()
@@ -39,7 +38,7 @@
    ;; This error is actually thrown by `TeX-engine-in-engine-alist', but we want
    ;; to be sure that `TeX-command-expand' fails when the engine is not valid.
    (let ((TeX-engine 'non-existing-engine))
-     (TeX-command-expand "%l" 'TeX-master-file))))
+     (TeX-command-expand "%l"))))
 
 (ert-deftest TeX-view-command-raw-errors ()
   "Tests to trigger errors in `TeX-view-command-raw'."
@@ -94,7 +93,7 @@
 		 (TeX-engine 'default)
 		 (TeX-master "/tmp/abc")
 		 (TeX-command-extra-options " \"\\foo\""))
-	     (TeX-command-expand "%`%(extraopts)%' %T" #'TeX-master-file))
+	     (TeX-command-expand "%`%(extraopts)%' %T"))
 	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
 
 (ert-deftest TeX-command-expand-skip-file-name ()
@@ -108,24 +107,24 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
   (let ((TeX-master "abc-def")
 	(TeX-expand-list '(("-" (lambda () ":")))))
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-master-file)
+	     (TeX-command-expand "%s")
 	     TeX-master))
     (should (string=
-	     (TeX-command-expand "%t" #'TeX-master-file)
+	     (TeX-command-expand "%t")
 	     (TeX-master-file "tex" t)))
     (should (string=
-	     (TeX-command-expand "%T" #'TeX-master-file)
+	     (TeX-command-expand "%T")
 	     (TeX-master-file "tex" t)))
     (should (string=
-	     (TeX-command-expand "%d" #'TeX-master-file)
+	     (TeX-command-expand "%d")
 	     (TeX-master-file "dvi" t)))
     (should (string=
-	     (TeX-command-expand "%f" #'TeX-master-file)
+	     (TeX-command-expand "%f")
 	     (TeX-master-file "ps" t)))
     ;; The expander of "%o" does not yet cater for this possible endless
     ;; loop.
     ;; (should (string=
-    ;; 	     (TeX-command-expand "%o" #'TeX-master-file)
+    ;; 	     (TeX-command-expand "%o")
     ;; 	     (TeX-master-file "pdf" t)))
     ))
 
@@ -138,11 +137,11 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
 	TeX-current-process-region-p)
     (setq TeX-current-process-region-p nil)
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-active-master)
+	     (TeX-command-expand "%s")
 	     TeX-master))
     (setq TeX-current-process-region-p t)
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-active-master)
+	     (TeX-command-expand "%s")
 	     TeX-region))))
 
 ;;; command-expansion.el ends here

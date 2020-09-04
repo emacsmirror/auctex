@@ -57,7 +57,7 @@ PROMPT is the value of the prompt to be shown."
     '("toprule" [ "Thickness" ])
     '("midrule" [ "Thickness" ])
     '("bottomrule" [ "Thickness" ])
-    ;; The `ignore' resets `last-optional-rejected' to nil so that the trim
+    ;; The `ignore' resets `TeX-last-optional-rejected' to nil so that the trim
     ;; argument is prompted also when the thickness is skipped.
     '("cmidrule" [ "Thickness" ] (ignore) [ LaTeX-booktabs-arg-paren "Trim" ]
       "Column(s)")

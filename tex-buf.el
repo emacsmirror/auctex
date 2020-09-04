@@ -1,4 +1,4 @@
-;;; tex-buf.el --- External commands for AUCTeX.
+;;; tex-buf.el --- External commands for AUCTeX.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1991-1999, 2001-2020 Free Software Foundation, Inc.
 
@@ -463,10 +463,10 @@ Do you want to select one of these engines? "
   :group 'TeX-command
   :type 'integer)
 
-(defun TeX-command (name file &optional override-confirm)
-  "Run command NAME on the file returned by calling FILE.
+(defun TeX-command (name file-fn &optional override-confirm)
+  "Run command NAME on the file returned by calling FILE-FN.
 
-FILE is the symbol of a function returning a file name.  The
+FILE-FN is the symbol of a function returning a file name.  The
 function has one optional argument, the extension to use on the
 file.
 
@@ -485,17 +485,16 @@ been set."
   ;; because preview-latex calls `TeX-run-command' directly.
   (setq-default TeX-command-buffer (current-buffer))
 
-  (cond ((eq file #'TeX-region-file)
+  (cond ((eq file-fn #'TeX-region-file)
 	 (setq TeX-current-process-region-p t))
-	((eq file #'TeX-master-file)
+	((eq file-fn #'TeX-master-file)
 	 (setq TeX-current-process-region-p nil)))
 
   ;; When we're operating on a region, we need to update the position
   ;; of point in the region file so that forward search works.
   (if (string= name "View") (TeX-region-update-point))
 
-  (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
-				     file))
+  (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))))
 	(hook (nth 2 (assoc name TeX-command-list)))
 	(confirm (if override-confirm
 		     (> (prefix-numeric-value override-confirm) 0)
@@ -531,94 +530,68 @@ remember to add /Library/TeX/texbin/ to your PATH"
 			  ""))))
 
     ;; Now start the process
-    (setq file (funcall file))
-    (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
-    (funcall hook name command file)))
+    (let ((file (funcall file-fn)))
+      (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
+      (funcall hook name command file))))
 
-(defvar TeX-command-text)               ;Dynamically scoped.
-(defvar TeX-command-pos)                ;Dynamically scoped.
-
-(defun TeX-command-expand (command file &optional list)
-  "Expand COMMAND for FILE as described in LIST.
+(defun TeX-command-expand (command &optional list)
+  "Expand COMMAND for `TeX-active-master' as described in LIST.
 LIST default to `TeX-expand-list'.  As a special exception,
 `%%' can be used to produce a single `%' sign in the output
 without further expansion."
-  (defvar TeX-command-pos)
-  (let (pat
-	pos ;;FIXME: Should this be dynamically scoped?
-	entry TeX-command-text TeX-command-pos
-        expansion-res case-fold-search string expansion arguments)
+  (let ((TeX-expand-command command)
+        TeX-expand-pos
+        TeX-command-text
+        TeX-command-pos
+	pat entry case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
-			     (setq pos (1+ pos))
+			     (setq TeX-expand-pos (1+ TeX-expand-pos))
 			     "%"))
 		(or list (TeX-expand-list)))
 	  pat (regexp-opt (mapcar #'car list)))
-    ;; `TeX-command-expand' is called with `file' argument being one
-    ;; of `TeX-master-file', `TeX-region-file' and
-    ;; `TeX-active-master'.  The return value of these functions
-    ;; sometimes needs suitable "decorations" for an argument for
-    ;; underlying shell or latex executable, or both, when the
-    ;; relavant file name involves some special characters such as
-    ;; space and multibyte characters.  Hence embed that function in a
-    ;; template prepared for that purpose.
-    (setq file (apply-partially
-		#'TeX--master-or-region-file-with-extra-quotes
-		file))
-    (while (setq pos (string-match pat command pos))
-      (setq string (match-string 0 command)
-	    entry (assoc string list)
-	    expansion (car (cdr entry)) ;Second element
-	    arguments (cdr (cdr entry)) ;Remaining elements
-	    string (save-match-data
-		     ;; Note regarding the special casing of `file':
-		     ;; `file' is prevented from being evaluated as a
-		     ;; function because inside of AUCTeX it only has
-		     ;; a meaning as a variable.  This makes sure that
-		     ;; a function definition made by an external
-		     ;; package (e.g. icicles) is not picked up.
-		     (cond ((and (not (eq expansion 'file))
-				 (functionp expansion))
-			    (apply expansion arguments))
-			   ((boundp expansion)
-                            (setq expansion-res
-                                  (apply (symbol-value expansion) arguments))
-                            (when (eq expansion 'file)
-                              ;; Advance past the file name in order to
-                              ;; prevent expanding any substring of it.
-                              (setq pos (+ pos (length expansion-res))))
-			    expansion-res)
-			   (t
-			    (error "Nonexpansion %s" expansion)))))
-      (if (stringp string)
-	  (setq command
-		(replace-match string t t command)))))
-  command)
+    (let ((file-fn #'TeX--master-or-region-file-with-extra-quotes))
+      (while (setq TeX-expand-pos (string-match pat TeX-expand-command TeX-expand-pos))
+        (setq string (match-string 0 TeX-expand-command)
+	      entry (assoc string list)
+	      expansion (car (cdr entry)) ;Second element
+	      arguments (cdr (cdr entry)) ;Remaining elements
+	      string (save-match-data
+		       (cond
+                        ((memq expansion (list 'TeX-active-master
+                                               #'TeX-active-master))
+                         (let ((res (apply file-fn arguments)))
+                           ;; Advance past the file name in order to
+                           ;; prevent expanding any substring of it.
+                           (setq TeX-expand-pos
+                                 (+ TeX-expand-pos (length res)))
+                           res))
+                        ((functionp expansion)
+                         (apply expansion arguments))
+		        ((boundp expansion)
+                         (apply (symbol-value expansion) arguments))
+		        (t
+		         (error "Nonexpansion %s" expansion)))))
+        (if (stringp string)
+	    (setq TeX-expand-command
+		  (replace-match string t t TeX-expand-command))))
+      TeX-expand-command)))
 
 (defun TeX--master-or-region-file-with-extra-quotes
-    (file-fn &optional extension nondirectory ask extra)
-  "Return file name with quote for shell.
-Helper function of `TeX-command-expand'.
+    (&optional extension nondirectory ask extra)
+  "Return the current master or region file name with quote for shell.
+I.e. it encloses the file name with space within quotes `\"'
+first when \" \\input\" is supplemented (indicated by dynamically
+binded variable `TeX-command-text' having string value.)  It also
+encloses the file name within \\detokenize{} when the following
+three conditions are met:
+  1. compiling with standard (pdf)LaTeX or upLaTeX
+  2. \" \\input\" is supplemented
+  3. EXTRA is non-nil (default when expanding \"%T\")
 
-This is a kind of template.  How to use:
-Fix, by `apply-partially', the first argument FILE-FN as one of
-the three functions `TeX-master-file', `TeX-region-file' or
-`TeX-active-master'.  Then the result is just a wrapper for that
-function suitable in `TeX-command-expand'.
-
-As a wrapper described above, it passes EXTENSION, NONDIRECTORY
-and ASK to the \"bare\" function as-is, and arranges the returned
-file name for use with command shell.  I.e. it encloses the file
-name with space within quotes `\"' first when \" \\input\" is
-supplemented (indicated by dynamically binded variable
-`TeX-command-text' having string value.)  It also encloses the
-file name within \\detokenize{} when the following three
-conditions are met:
-1. compiling with standard (pdf)LaTeX or upLaTeX
-2. \" \\input\" is supplemented
-3. EXTRA is non-nil (default when expanding \"%T\")"
+Helper function of `TeX-command-expand'."
   (shell-quote-argument
-   (let* ((raw (funcall file-fn extension nondirectory ask))
+   (let* ((raw (funcall #'TeX-active-master extension nondirectory ask))
 	  ;; String `TeX-command-text' means that the file name is
 	  ;; given through \input command.
 	  (quote-for-space (if (and (stringp TeX-command-text)
@@ -2475,6 +2448,7 @@ If REPARSE is non-nil, reparse the output log.
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
+        ;; FIXME: default-major-mode has been removed in Emacs 26.
 	(default-major-mode major-mode)
 	max-index item)
 
@@ -3546,6 +3520,7 @@ please restart TeX error overview")))
 	  (with-current-buffer TeX-command-buffer
 	    ;; For consistency with `TeX-parse-TeX', use the major mode of
 	    ;; `TeX-command-buffer' when visiting the error point.
+            ;; FIXME: default-major-mode has been removed in Emacs 26.
 	    (let ((default-major-mode major-mode))
 	      ;; Find the error and display the help.
 	      (apply #'TeX-find-display-help item)))

@@ -284,7 +284,7 @@ xcolor package.")
 (defun TeX-arg-xcolor-definecolor (optional)
   "Insert arguments of \\definecolor and similar macros from xcolor.sty."
   ;; \definecolor[<type>]{<name>}{<model-list>}{<spec-list>}
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (xcoltype  (LaTeX-check-insert-macro-default-style
 		     (completing-read
 		      (TeX-argument-prompt t nil "Type")
@@ -311,7 +311,7 @@ xcolor package.")
 
 (defun TeX-arg-xcolor-definecolorset (optional)
   "Insert arguments of \\definecolorset and similar macros from xcolor.sty."
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (xcoltype (LaTeX-check-insert-macro-default-style
 		    (completing-read
 		     (TeX-argument-prompt t nil "Type")
@@ -326,7 +326,7 @@ xcolor package.")
 (defun TeX-arg-xcolor (optional)
   "Insert arguments of various color commands from xcolor.sty."
   ;; \color{<name>} or \color[<model-list>]{<spec-list>}
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (xcolmodel (LaTeX-check-insert-macro-default-style
 		     (completing-read
 		      (TeX-argument-prompt t nil "Model (list)")
@@ -344,14 +344,14 @@ xcolor package.")
 (defun TeX-arg-xcolor-fcolorbox (optional)
   "Insert arguments of \\fcolorbox from xcolor.sty."
   ;;\fcolorbox[<frame model>]{<frame spec>}[<background model>]{<background spec>}{<text>}
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (xfrmodel (LaTeX-check-insert-macro-default-style
 		    (completing-read
 		     (TeX-argument-prompt t nil "(Frame) Color model")
 		     LaTeX-xcolor-color-models)))
-	 ;; Set `last-optional-rejected' acc. to `xfrmodel'
-	 (last-optional-rejected (or (not xfrmodel)
-				     (and xfrmodel (string= xfrmodel ""))))
+	 ;; Set `TeX-last-optional-rejected' acc. to `xfrmodel'
+	 (TeX-last-optional-rejected (or (not xfrmodel)
+				         (and xfrmodel (string= xfrmodel ""))))
 	 (xfrspec  (if (or (null xfrmodel)
 			   (string= xfrmodel "")
 			   (string= xfrmodel "named"))

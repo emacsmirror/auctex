@@ -1,4 +1,4 @@
-;;; latex.el --- Support for LaTeX documents.
+;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1991, 1993-2020 Free Software Foundation, Inc.
 
@@ -127,14 +127,11 @@ This depends on `LaTeX-insert-into-comments'."
 ;;; Sections
 
 ;; Declare dynamically scoped vars.
-;; N.B.: These forms are commented out since they produce a "lack of
-;; prefix" warning during byte-compilation.  This way they produce
-;; only a "reference to free variable" one.
-;; (defvar title)
-;; (defvar name)
-;; (defvar level)
-;; (defvar done-mark)
-;; (defvar toc)
+(defvar LaTeX-title nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-name nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-level nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-done-mark nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-toc nil "Dynamically bound by `LaTeX-section'.")
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -160,25 +157,25 @@ The following variables can be set to customize:
 
   (interactive "*P")
   (let* ((val (prefix-numeric-value arg))
-	 (level (cond ((null arg)
-		       (LaTeX-current-section))
-		      ((listp arg)
-		       (LaTeX-down-section))
-		      ((< val 0)
-		       (LaTeX-up-section (- val)))
-		      (t val)))
-	 (name (LaTeX-section-name level))
-	 (toc nil)
-	 (title (if (TeX-active-mark)
-		    (buffer-substring (region-beginning)
-				      (region-end))
-		  ""))
-	 (done-mark (make-marker)))
+	 (LaTeX-level (cond ((null arg)
+		             (LaTeX-current-section))
+		            ((listp arg)
+		             (LaTeX-down-section))
+		            ((< val 0)
+		             (LaTeX-up-section (- val)))
+		            (t val)))
+	 (LaTeX-name (LaTeX-section-name LaTeX-level))
+	 (LaTeX-toc nil)
+	 (LaTeX-title (if (TeX-active-mark)
+		          (buffer-substring (region-beginning)
+				            (region-end))
+		        ""))
+	 (LaTeX-done-mark (make-marker)))
     (run-hooks 'LaTeX-section-hook)
     (LaTeX-newline)
-    (if (marker-position done-mark)
-	(goto-char (marker-position done-mark)))
-    (set-marker done-mark nil)))
+    (if (marker-position LaTeX-done-mark)
+	(goto-char (marker-position LaTeX-done-mark)))
+    (set-marker LaTeX-done-mark nil)))
 
 (defun LaTeX-current-section ()
   "Return the level of the section that contain point.
@@ -371,34 +368,35 @@ If so, return the second element, otherwise return nil."
 (defcustom LaTeX-section-hook
   '(LaTeX-section-heading
     LaTeX-section-title
-;; LaTeX-section-toc		; Most people won't want this
+    ;; LaTeX-section-toc		; Most people won't want this
     LaTeX-section-section
     LaTeX-section-label)
   "List of hooks to run when a new section is inserted.
 
 The following variables are set before the hooks are run
 
-level - numeric section level, see the documentation of `LaTeX-section'.
-name - name of the sectioning command, derived from `level'.
-title - The title of the section, default to an empty string.
-toc - Entry for the table of contents list, default nil.
-done-mark - Position of point afterwards, default nil (meaning end).
+LaTeX-level - numeric section level, see the documentation of `LaTeX-section'.
+LaTeX-name - name of the sectioning command, derived from `LaTeX-level'.
+LaTeX-title - The title of the section, default to an empty string.
+LaTeX-toc - Entry for the table of contents list, default nil.
+LaTeX-done-mark - Position of point afterwards, default nil (meaning end).
 
 The following standard hook exist -
 
 LaTeX-section-heading: Query the user about the name of the
-sectioning command.  Modifies `level' and `name'.
+sectioning command.  Modifies `LaTeX-level' and `LaTeX-name'.
 
 LaTeX-section-title: Query the user about the title of the
-section.  Modifies `title'.
+section.  Modifies `LaTeX-title'.
 
 LaTeX-section-toc: Query the user for the toc entry.  Modifies
-`toc'.
+`LaTeX-toc'.
 
 LaTeX-section-section: Insert LaTeX section command according to
-`name', `title', and `toc'.  If `toc' is nil, no toc entry is
-inserted.  If `toc' or `title' are empty strings, `done-mark' will be
-placed at the point they should be inserted.
+`LaTeX-name', `LaTeX-title', and `LaTeX-toc'.  If `LaTeX-toc' is
+nil, no toc entry is inserted.  If `LaTeX-toc' or `LaTeX-title'
+are empty strings, `LaTeX-done-mark' will be placed at the point
+they should be inserted.
 
 LaTeX-section-label: Insert a label after the section command.
 Controled by the variable `LaTeX-section-label'.
@@ -458,20 +456,20 @@ no label is inserted."
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
-		 (concat "Level (default " name "): ")
+		 (concat "Level (default " LaTeX-name "): ")
 		 LaTeX-section-list
-		 nil nil nil nil name)))
-    ;; Update name
+		 nil nil nil nil LaTeX-name)))
+    ;; Update LaTeX-name
     (if (not (zerop (length string)))
-	(setq name string))
+	(setq LaTeX-name string))
     ;; Update level
-    (setq level (LaTeX-section-level name))))
+    (setq LaTeX-level (LaTeX-section-level LaTeX-name))))
 
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (setq title (TeX-read-string "Title: " title))
+  (setq LaTeX-title (TeX-read-string "Title: " LaTeX-title))
   (let ((region (and (TeX-active-mark)
 		     (cons (region-beginning) (region-end)))))
     (when region (delete-region (car region) (cdr region)))))
@@ -480,15 +478,16 @@ the title of the section inserted with `\\[LaTeX-section]."
   "Hook to prompt for the LaTeX section entry in the table of content .
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
 a different entry for the section in the table of content."
-  (setq toc (TeX-read-string "Toc Entry: "))
-  (if (zerop (length toc))
-      (setq toc nil)))
+  (setq LaTeX-toc (TeX-read-string "Toc Entry: "))
+  (if (zerop (length LaTeX-toc))
+      (setq LaTeX-toc nil)))
 
 (defun LaTeX-section-section ()
   "Hook to insert LaTeX section command into the file.
-Insert this hook into `LaTeX-section-hook' after those hooks that set
-the `name', `title', and `toc' variables, but before those hooks that
-assume that the section is already inserted."
+Insert this hook into `LaTeX-section-hook' after those hooks that
+set the `LaTeX-name', `LaTeX-title', and `LaTeX-toc' variables,
+but before those hooks that assume that the section is already
+inserted."
   ;; insert a new line if the current line and the previous line are
   ;; not empty (except for whitespace), with one exception: do not
   ;; insert a new line if the previous (or current, sigh) line starts
@@ -499,18 +498,18 @@ assume that the section is already inserted."
 		     "begin")
 	     (line-beginning-position 0) t))
     (LaTeX-newline))
-  (insert TeX-esc name)
-  (cond ((null toc))
-	((zerop (length toc))
+  (insert TeX-esc LaTeX-name)
+  (cond ((null LaTeX-toc))
+	((zerop (length LaTeX-toc))
 	 (insert LaTeX-optop)
-	 (set-marker done-mark (point))
+	 (set-marker LaTeX-done-mark (point))
 	 (insert LaTeX-optcl))
 	(t
-	 (insert LaTeX-optop toc LaTeX-optcl)))
+	 (insert LaTeX-optop LaTeX-toc LaTeX-optcl)))
   (insert TeX-grop)
-  (if (zerop (length title))
-      (set-marker done-mark (point)))
-  (insert title TeX-grcl)
+  (if (zerop (length LaTeX-title))
+      (set-marker LaTeX-done-mark (point)))
+  (insert LaTeX-title TeX-grcl)
   (LaTeX-newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
@@ -522,7 +521,7 @@ Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
 The behaviour of this hook is controlled by variable `LaTeX-section-label'."
-  (and (LaTeX-label name 'section)
+  (and (LaTeX-label LaTeX-name 'section)
        (LaTeX-newline)))
 
 ;;; Environments
@@ -1317,9 +1316,9 @@ Just like array and tabular."
   (save-excursion
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (let ((exit-mark (if (boundp 'exit-mark)
-			 exit-mark
-		       (make-marker))))
+    (let ((TeX-exit-mark (if (boundp 'TeX-exit-mark)
+			     TeX-exit-mark
+		           (make-marker))))
       (TeX-parse-arguments args))))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
@@ -2055,7 +2054,7 @@ string.  ARGS is unused."
   (TeX-argument-insert
    (TeX-read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
 
-(defun TeX-arg-index (optional &optional prompt &rest args)
+(defun TeX-arg-index (optional &optional prompt &rest _args)
   "Prompt for an index entry completing with known entries.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -2099,7 +2098,7 @@ the list of defined environments."
     (TeX-argument-insert environment optional)))
 
 ;; Why is DEFINITION unused?
-(defun TeX-arg-cite (optional &optional prompt definition)
+(defun TeX-arg-cite (optional &optional prompt _definition)
   "Prompt for a BibTeX citation with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -4479,10 +4478,10 @@ environments."
     ;; Only change point and mark after beginning and end were found.
     ;; Point should not end up in the middle of nowhere if the search fails.
     (save-excursion
-      (dotimes (c count) (LaTeX-find-matching-end))
+      (dotimes (_ count) (LaTeX-find-matching-end))
       (setq end (line-beginning-position 2))
       (goto-char cur)
-      (dotimes (c count) (LaTeX-find-matching-begin))
+      (dotimes (_ count) (LaTeX-find-matching-begin))
       (setq beg (point)))
     (push-mark end)
     (goto-char beg)
@@ -4615,7 +4614,7 @@ convenience function which can be used in style files."
   "Move forward to end of paragraph.
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
-  (dotimes (i count)
+  (dotimes (_ count)
     (let* ((macro-start (TeX-find-macro-start))
 	   (paragraph-command-start
 	    (cond
@@ -4668,7 +4667,7 @@ If COUNT is non-nil, do it COUNT times."
   "Move backward to beginning of paragraph.
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
-  (dotimes (i count)
+  (dotimes (_ count)
     (let* ((macro-start (TeX-find-macro-start)))
       (if (and macro-start
 	       ;; Point really has to be inside of the macro, not before it.
@@ -5557,10 +5556,10 @@ environments."
     (widen)
     (let ((opoint (point))
 	  beg end)
-      (dotimes (c count) (LaTeX-find-matching-end))
+      (dotimes (_ count) (LaTeX-find-matching-end))
       (setq end (point))
       (goto-char opoint)
-      (dotimes (c count) (LaTeX-find-matching-begin))
+      (dotimes (_ count) (LaTeX-find-matching-begin))
       (setq beg (point))
       (narrow-to-region beg end))))
 (put 'LaTeX-narrow-to-environment 'disabled t)
@@ -6794,7 +6793,7 @@ function would return non-nil and `(match-string 1)' would return
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
   (TeX-update-style)
-  (let (entries level
+  (let (entries
 	(regexp (LaTeX-outline-regexp)))
     (goto-char (point-max))
     (while (re-search-backward regexp nil t)
@@ -6930,7 +6929,7 @@ functions `TeX-arg-color' (style/color.el) or
 		   (equal current-prefix-arg '(4)))
 	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
 		   (null (equal current-prefix-arg '(4))))
-	      last-optional-rejected))
+	      TeX-last-optional-rejected))
      ,@body))
 
 (defun LaTeX-extract-key-value-label (&optional key num)

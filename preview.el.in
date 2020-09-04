@@ -945,9 +945,9 @@ Pure borderless black-on-white will return an empty string."
 	   (funcall (car gsfile) "dvi" t))))
     (file-error nil))
   (when preview-ps-file
-      (condition-case nil
-	  (preview-delete-file preview-ps-file)
-	(file-error nil)))
+    (condition-case nil
+	(preview-delete-file preview-ps-file)
+      (file-error nil)))
   (setq TeX-sentinel-function nil))
 
 (defalias 'preview-dvipng-abort 'preview-dvips-abort)
@@ -3671,8 +3671,7 @@ The fourth value is the transparent border thickness."
 	 (colors (preview-dvipng-color-string preview-colors res))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
-			(concat (TeX-command-expand preview-dvipng-command
-						    (car file))
+			(concat (TeX-command-expand preview-dvipng-command)
 				" " colors resolution)
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPNG"))
@@ -3710,8 +3709,7 @@ If FAST is set, do a fast conversion."
 		    (prog1
 			(TeX-command-expand (if fast
 						preview-fast-dvips-command
-					      preview-dvips-command)
-					    (car file))
+					      preview-dvips-command))
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPS"))
     (setq TeX-active-tempdir tempdir)
@@ -3751,8 +3749,7 @@ If FAST is set, do a fast conversion."
 	 pdfsource
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
-			(TeX-command-expand preview-pdf2dsc-command
-					    (car file))
+			(TeX-command-expand preview-pdf2dsc-command)
 		      (setq tempdir TeX-active-tempdir
 			    pdfsource (funcall (car file) "pdf" t)))))
 	 (name "Preview-PDF2DSC"))
@@ -3930,8 +3927,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 	 (master-file (expand-file-name (TeX-master-file t)))
 	 (command (preview-do-replacements
 		   (TeX-command-expand
-		    (preview-string-expand preview-LaTeX-command)
-		    'TeX-master-file)
+		    (preview-string-expand preview-LaTeX-command))
 		   preview-dump-replacements))
 	 (preview-auto-cache-preamble nil))
     (unless (and (consp (cdr format-cons))
@@ -3952,10 +3948,8 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 \\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input\\detokenize{##1}\\relax}%
 \\let\\dump\\PREVIEWdump\\dump}\\input mylatex.ltx \\relax%\n" nil dump-file)
       (TeX-save-document master)
-      (prog1
-	  (preview-generate-preview
-	   nil master
-	   command)
+      (setq TeX-current-process-region-p nil)
+      (prog1 (preview-generate-preview master command)
 	(add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
 	(setq TeX-sentinel-function
 	      `(lambda (process string)
@@ -4003,11 +3997,11 @@ stored in `preview-dumped-alist'."
 			    (save-excursion
 			      (goto-char begin)
 			      (if (bolp) 0 -1))))))
-  (preview-generate-preview t (TeX-region-file)
+  (setq TeX-current-process-region-p t)
+  (preview-generate-preview (TeX-region-file)
 			    (preview-do-replacements
 			     (TeX-command-expand
-			      (preview-string-expand preview-LaTeX-command)
-			      'TeX-region-file)
+			      (preview-string-expand preview-LaTeX-command))
 			     preview-LaTeX-command-replacements)))
 
 (defun preview-buffer ()
@@ -4042,12 +4036,12 @@ stored in `preview-dumped-alist'."
   "Run preview on master document."
   (interactive)
   (TeX-save-document (TeX-master-file))
+  (setq TeX-current-process-region-p nil)
   (preview-generate-preview
-   nil (TeX-master-file)
+   (TeX-master-file)
    (preview-do-replacements
     (TeX-command-expand
-     (preview-string-expand preview-LaTeX-command)
-     'TeX-master-file)
+     (preview-string-expand preview-LaTeX-command))
     preview-LaTeX-command-replacements)))
 
 (defun preview-environment (count)
@@ -4080,19 +4074,16 @@ environments is selected."
     (preview-region (region-beginning) (region-end))))
 
 
-(defun preview-generate-preview (region-p file command)
+(defun preview-generate-preview (file command)
   "Generate a preview.
-REGION-P is the region flag, FILE the file (without default
-extension), COMMAND is the command to use.
+FILE the file (without default extension), COMMAND is the command
+to use.
 
 It returns the started process."
-  (setq TeX-current-process-region-p region-p)
   (let* ((geometry (preview-get-geometry))
 	 (commandbuff (current-buffer))
 	 (pr-file (cons
-		   (if TeX-current-process-region-p
-		       'TeX-region-file
-		     'TeX-master-file)
+		   'TeX-active-master
 		   (file-name-nondirectory file)))
 	 (master (TeX-master-file))
 	 (master-file (expand-file-name master))

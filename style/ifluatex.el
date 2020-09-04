@@ -34,35 +34,35 @@
 		  "font-latex"
 		  (keywords class))
 
-(defun LaTeX-ifluatex-set-exit-mark (_optional)
-  "Discard OPTIONAL and set exit-mark to current point."
-  (set-marker exit-mark (point)))
+(defun LaTeX-ifluatex-set-TeX-exit-mark (_optional)
+  "Discard OPTIONAL and set `TeX-exit-mark' to current point."
+  (set-marker TeX-exit-mark (point)))
 
 (TeX-add-style-hook
+ "ifluatex"
+ (lambda ()
+   (TeX-add-symbols
+    '("ifluatex"
+      (TeX-arg-literal "%\n")
+      LaTeX-ifluatex-set-TeX-exit-mark
+      (TeX-arg-literal "\n\\else%\n\\fi%"))
+    '("luatexversion" 0)
+    '("luatexrevision" 0))
+   (TeX-declare-expert-macros
     "ifluatex"
-  (lambda ()
-    (TeX-add-symbols
-     '("ifluatex"
-       (TeX-arg-literal "%\n")
-       LaTeX-ifluatex-set-exit-mark
-       (TeX-arg-literal "\n\\else%\n\\fi%"))
-     '("luatexversion" 0)
-     '("luatexrevision" 0))
-    (TeX-declare-expert-macros
-     "ifluatex"
-     "ifluatex" "luatexversion" "luatexrevision")
+    "ifluatex" "luatexversion" "luatexrevision")
 
-    ;; This package is used to make it possible to compile a document with both
-    ;; LuaTeX and base TeX engines.  By setting `TeX-check-engine-list' to nil
-    ;; we ignore engine restrictions posed by other packages.
-    (setq TeX-check-engine-list nil)
+   ;; This package is used to make it possible to compile a document with both
+   ;; LuaTeX and base TeX engines.  By setting `TeX-check-engine-list' to nil
+   ;; we ignore engine restrictions posed by other packages.
+   (setq TeX-check-engine-list nil)
 
-    (when (and (featurep 'font-latex)
-	       (eq TeX-install-font-lock 'font-latex-setup))
-      (font-latex-add-keywords '(("luatexversion")
-				 ("luatexrevision"))
-			       'function)))
-  LaTeX-dialect)
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("luatexversion")
+				("luatexrevision"))
+			      'function)))
+ LaTeX-dialect)
 
 (defvar LaTeX-ifluatex-package-options nil
   "Package options for the ifluatex package.")

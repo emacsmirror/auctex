@@ -1,4 +1,4 @@
-;;; exam.el --- AUCTeX style for the (LaTeX) exam class
+;;; exam.el --- AUCTeX style for the (LaTeX) exam class  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
@@ -49,22 +49,23 @@
   (add-to-list 'LaTeX-exam-class-options opt))
 
 (defun LaTeX-exam-insert-item ()
-  "Insert a new item in an environment from exam class.
+  "Insert a new item in the current environment from exam class.
 Item inserted depends on the environment."
-  (TeX-insert-macro
-   (cond ((string= environment "questions")
-          "question")
-         ((string= environment "parts")
-          "part")
-         ((string= environment "subparts")
-          "subpart")
-         ((string= environment "subsubparts")
-          "subsubpart")
-	 ((member environment '("choices" "oneparchoices"
-				"checkboxes" "oneparcheckboxes"))
-	  "choice")
-         ;; Fallback
-         (t "item"))))
+  (let ((env (LaTeX-current-environment)))
+    (TeX-insert-macro
+     (cond ((string= env "questions")
+            "question")
+           ((string= env "parts")
+            "part")
+           ((string= env "subparts")
+            "subpart")
+           ((string= env "subsubparts")
+            "subsubpart")
+	   ((member env '("choices" "oneparchoices"
+		          "checkboxes" "oneparcheckboxes"))
+	    "choice")
+           ;; Fallback
+           (t "item")))))
 
 (defun LaTeX-exam-insert-label (_optional &optional name type)
   "Indent the line and query/insert a label incl. the \"\\label\" macro.
