@@ -1961,14 +1961,12 @@ It will setup BibTeX to store keys in an auto file."
 
 ;;; Macro Argument Hooks
 
-(defun TeX-arg-conditional (optional expr then else)
+(defun TeX-arg-conditional (_optional expr then else)
   "Implement if EXPR THEN ELSE.
 
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.
-
-If EXPR evaluate to true, parse THEN as an argument list, else parse
-ELSE as an argument list."
+If EXPR evaluate to true, parse THEN as an argument list, else
+parse ELSE as an argument list.  The compatibility argument
+OPTIONAL is ignored."
   (TeX-parse-arguments (if (eval expr) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
@@ -2673,10 +2671,9 @@ the list of defined pagestyles."
   :group 'LaTeX-macro
   :type 'character)
 
-(defun TeX-arg-verb (optional &optional _ignore)
+(defun TeX-arg-verb (_optional &optional _ignore)
   "Prompt for delimiter and text.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  IGNORE is ignored."
+The compatibility argument OPTIONAL and IGNORE are ignored."
   (let ((del (read-quoted-char
 	      (concat "Delimiter (default "
 		      (char-to-string LaTeX-default-verb-delimiter) "): "))))
@@ -2721,16 +2718,13 @@ argument in delimiters like \"\| \|\" or braces \"\{ \}\"."
     (unless (= del ?\{)
       (setq LaTeX-default-verb-delimiter del))))
 
-(defun TeX-arg-pair (optional first second)
+(defun TeX-arg-pair (_optional first second)
   "Insert a pair of number, prompted by FIRST and SECOND.
 
 The numbers are surounded by parenthesizes and separated with a
-comma.
-
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one."
+comma.  The compatibility argument OPTIONAL is ignored."
   (insert "(" (TeX-read-string (concat first  ": ")) ","
-	      (TeX-read-string (concat second ": ")) ")"))
+	  (TeX-read-string (concat second ": ")) ")"))
 
 (defun TeX-arg-size (optional)
   "Insert width and height as a pair.
