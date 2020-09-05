@@ -1316,9 +1316,8 @@ Just like array and tabular."
   (save-excursion
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (let ((TeX-exit-mark (if (boundp 'TeX-exit-mark)
-			     TeX-exit-mark
-		           (make-marker))))
+    (let ((TeX-exit-mark (or TeX-exit-mark
+		             (make-marker))))
       (TeX-parse-arguments args))))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
