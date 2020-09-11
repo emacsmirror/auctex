@@ -53,7 +53,7 @@
 (declare-function TeX-output-extension "tex-buf"
 		  nil)
 (declare-function TeX-command-expand "tex-buf"
-		  (command file &optional list))
+		  (command &optional list))
 (declare-function TeX-active-master "tex-buf"
 		  (&optional extension nondirectory ignore))
 (declare-function TeX-pop-to-buffer "tex-buf"

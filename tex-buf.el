@@ -550,48 +550,47 @@ without further expansion."
 			     "%"))
 		(or list (TeX-expand-list)))
 	  pat (regexp-opt (mapcar #'car list)))
-    (let ((file-fn #'TeX--master-or-region-file-with-extra-quotes))
-      (while (setq TeX-expand-pos (string-match pat TeX-expand-command TeX-expand-pos))
-        (setq string (match-string 0 TeX-expand-command)
-	      entry (assoc string list)
-	      expansion (car (cdr entry)) ;Second element
-	      arguments (cdr (cdr entry)) ;Remaining elements
-	      string (save-match-data
-		       (cond
-                        ((memq expansion (list 'TeX-active-master
-                                               #'TeX-active-master))
-                         (let ((res (apply file-fn arguments)))
-                           ;; Advance past the file name in order to
-                           ;; prevent expanding any substring of it.
-                           (setq TeX-expand-pos
-                                 (+ TeX-expand-pos (length res)))
-                           res))
-                        ((functionp expansion)
-                         (apply expansion arguments))
-		        ((boundp expansion)
-                         (apply (symbol-value expansion) arguments))
-		        (t
-		         (error "Nonexpansion %s" expansion)))))
-        (if (stringp string)
-	    (setq TeX-expand-command
-		  (replace-match string t t TeX-expand-command))))
-      TeX-expand-command)))
+    (while (setq TeX-expand-pos (string-match pat TeX-expand-command TeX-expand-pos))
+      (setq string (match-string 0 TeX-expand-command)
+	    entry (assoc string list)
+	    expansion (car (cdr entry)) ;Second element
+	    arguments (cdr (cdr entry)) ;Remaining elements
+	    string (save-match-data
+		     (cond
+                      ((eq expansion #'TeX-active-master)
+                       (let ((res (apply #'TeX--master-or-region-file-with-extra-quotes arguments)))
+                         ;; Advance past the file name in order to
+                         ;; prevent expanding any substring of it.
+                         (setq TeX-expand-pos
+                               (+ TeX-expand-pos (length res)))
+                         res))
+                      ((functionp expansion)
+                       (apply expansion arguments))
+		      ((boundp expansion)
+                       (apply (symbol-value expansion) arguments))
+		      (t
+		       (error "Nonexpansion %s" expansion)))))
+      (if (stringp string)
+	  (setq TeX-expand-command
+		(replace-match string t t TeX-expand-command))))
+    TeX-expand-command))
 
 (defun TeX--master-or-region-file-with-extra-quotes
     (&optional extension nondirectory ask extra)
   "Return the current master or region file name with quote for shell.
-I.e. it encloses the file name with space within quotes `\"'
-first when \" \\input\" is supplemented (indicated by dynamically
-binded variable `TeX-command-text' having string value.)  It also
-encloses the file name within \\detokenize{} when the following
-three conditions are met:
+Pass arguments EXTENSION NONDIRECTORY ASK to `TeX-active-master'.
+If the returned file name contains space, enclose it within
+quotes `\"' when \" \\input\" is supplemented (indicated by
+dynamically bound variable `TeX-command-text' having string
+value.) Also enclose the file name within \\detokenize{} when
+the following three conditions are met:
   1. compiling with standard (pdf)LaTeX or upLaTeX
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
 
 Helper function of `TeX-command-expand'."
   (shell-quote-argument
-   (let* ((raw (funcall #'TeX-active-master extension nondirectory ask))
+   (let* ((raw (TeX-active-master extension nondirectory ask))
 	  ;; String `TeX-command-text' means that the file name is
 	  ;; given through \input command.
 	  (quote-for-space (if (and (stringp TeX-command-text)
