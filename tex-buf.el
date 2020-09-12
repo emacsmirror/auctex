@@ -557,13 +557,6 @@ without further expansion."
 	    arguments (cdr (cdr entry)) ;Remaining elements
 	    string (save-match-data
 		     (cond
-                      ((eq expansion #'TeX-active-master)
-                       (let ((res (apply #'TeX--master-or-region-file-with-extra-quotes arguments)))
-                         ;; Advance past the file name in order to
-                         ;; prevent expanding any substring of it.
-                         (setq TeX-expand-pos
-                               (+ TeX-expand-pos (length res)))
-                         res))
                       ((functionp expansion)
                        (apply expansion arguments))
 		      ((boundp expansion)
@@ -575,7 +568,7 @@ without further expansion."
 		(replace-match string t t TeX-expand-command))))
     TeX-expand-command))
 
-(defun TeX--master-or-region-file-with-extra-quotes
+(defun TeX-active-master-with-quotes
     (&optional extension nondirectory ask extra)
   "Return the current master or region file name with quote for shell.
 Pass arguments EXTENSION NONDIRECTORY ASK to `TeX-active-master'.
@@ -587,31 +580,40 @@ the following three conditions are met:
   1. compiling with standard (pdf)LaTeX or upLaTeX
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
+Adjust dynamically bound variable `TeX-expand-pos' to avoid possible
+infinite loop in `TeX-command-expand'.
 
-Helper function of `TeX-command-expand'."
-  (shell-quote-argument
-   (let* ((raw (TeX-active-master extension nondirectory ask))
-	  ;; String `TeX-command-text' means that the file name is
-	  ;; given through \input command.
-	  (quote-for-space (if (and (stringp TeX-command-text)
-				    (string-match " " raw))
-			       "\"" "")))
-     (format
-      (if (and extra
-	       (stringp TeX-command-text)
-	       (memq major-mode '(latex-mode doctex-mode))
-	       (memq TeX-engine '(default uptex)))
-	  ;; Since TeXLive 2018, the default encoding for LaTeX
-	  ;; files has been changed to UTF-8 if used with
-	  ;; classic TeX or pdfTeX.  I.e.,
-	  ;; \usepackage[utf8]{inputenc} is enabled by default
-	  ;; in (pdf)latex.
-	  ;; c.f. LaTeX News issue 28
-	  ;; Due to this change, \detokenize is required to
-	  ;; recognize non-ascii characters in the file name
-	  ;; when \input precedes.
-	  "\\detokenize{ %s }" "%s")
-      (concat quote-for-space raw quote-for-space)))))
+Helper function of `TeX-command-expand'. Use only within entries in
+`TeX-expand-list-builtin' and `TeX-expand-list'."
+  (let ((res
+	 (shell-quote-argument
+	  (let* ((raw (TeX-active-master extension nondirectory ask))
+		 ;; String `TeX-command-text' means that the file name is
+		 ;; given through \input command.
+		 (quote-for-space (if (and (stringp TeX-command-text)
+					   (string-match " " raw))
+				      "\"" "")))
+	    (format
+	     (if (and extra
+		      (stringp TeX-command-text)
+		      (memq major-mode '(latex-mode doctex-mode))
+		      (memq TeX-engine '(default uptex)))
+		 ;; Since TeXLive 2018, the default encoding for LaTeX
+		 ;; files has been changed to UTF-8 if used with
+		 ;; classic TeX or pdfTeX.  I.e.,
+		 ;; \usepackage[utf8]{inputenc} is enabled by default
+		 ;; in (pdf)latex.
+		 ;; c.f. LaTeX News issue 28
+		 ;; Due to this change, \detokenize is required to
+		 ;; recognize non-ascii characters in the file name
+		 ;; when \input precedes.
+		 "\\detokenize{ %s }" "%s")
+	     (concat quote-for-space raw quote-for-space))))))
+    ;; Advance past the file name in order to
+    ;; prevent expanding any substring of it.
+    (setq TeX-expand-pos
+          (+ TeX-expand-pos (length res)))
+    res))
 
 (defun TeX-check-files (derived originals extensions)
   "Check if DERIVED is newer than any of the ORIGINALS.

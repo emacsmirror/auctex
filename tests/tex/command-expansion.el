@@ -88,13 +88,20 @@
   ;; Skip on w32 because the quoting style of `shell-quote-argument'
   ;; is different.
   (skip-unless (not (eq system-type 'windows-nt)))
-  (should (string=
-           (let ((major-mode 'latex-mode)
-		 (TeX-engine 'default)
-		 (TeX-master "/tmp/abc")
-		 (TeX-command-extra-options " \"\\foo\""))
-	     (TeX-command-expand "%`%(extraopts)%' %T"))
-	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
+  (let ((major-mode 'latex-mode)
+	(TeX-engine 'default)
+	(TeX-command-extra-options " \"\\foo\"")
+	TeX-master)
+
+    (setq TeX-master "/tmp/abc")
+    (should (string=
+	     (TeX-command-expand "%`%(extraopts)%' %T")
+	     " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}"))
+
+    (setq TeX-master "/tmp/abc def")
+    (should (string=
+	     (TeX-command-expand "%`%(extraopts)%' %T")
+	     " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ \\\"abc\\ def.tex\\\"\\ \\}"))))
 
 (ert-deftest TeX-command-expand-skip-file-name ()
   "Check whether file name is not subject to further expansion.
@@ -105,6 +112,7 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
   ;; is different.
   (skip-unless (not (eq system-type 'windows-nt)))
   (let ((TeX-master "abc-def")
+	(TeX-output-extension "pdf")
 	(TeX-expand-list '(("-" (lambda () ":")))))
     (should (string=
 	     (TeX-command-expand "%s")
@@ -121,12 +129,9 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
     (should (string=
 	     (TeX-command-expand "%f")
 	     (TeX-master-file "ps" t)))
-    ;; The expander of "%o" does not yet cater for this possible endless
-    ;; loop.
-    ;; (should (string=
-    ;; 	     (TeX-command-expand "%o")
-    ;; 	     (TeX-master-file "pdf" t)))
-    ))
+    (should (string=
+	     (TeX-command-expand "%o")
+	     (TeX-master-file "pdf" t)))))
 
 (ert-deftest TeX-command-expand-active-master ()
   "Test whether `TeX-active-master' is valid argument for `TeX-command-expand'."
@@ -143,5 +148,28 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
     (should (string=
 	     (TeX-command-expand "%s")
 	     TeX-region))))
+
+(ert-deftest TeX-command-expand-file-name-with-spaces ()
+  "Test whether file name with spaces is quoted correctly."
+  (let ((TeX-master "abc def")
+	(TeX-output-extension "pdf"))
+    (should (string=
+	     (TeX-command-expand "%s")
+	     (shell-quote-argument TeX-master)))
+    (should (string=
+	     (TeX-command-expand "%t")
+	     (shell-quote-argument (TeX-master-file "tex" t))))
+    (should (string=
+	     (TeX-command-expand "%T")
+	     (shell-quote-argument (TeX-master-file "tex" t))))
+    (should (string=
+	     (TeX-command-expand "%d")
+	     (shell-quote-argument (TeX-master-file "dvi" t))))
+    (should (string=
+	     (TeX-command-expand "%f")
+	     (shell-quote-argument (TeX-master-file "ps" t))))
+    (should (string=
+	     (TeX-command-expand "%o")
+	     (shell-quote-argument (TeX-master-file "pdf" t))))))
 
 ;;; command-expansion.el ends here

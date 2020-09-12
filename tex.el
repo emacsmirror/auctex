@@ -80,7 +80,6 @@
 (defvar TeX-mode-map)
 (defvar TeX-mode-p)
 (defvar TeX-output-extension)
-(defvar TeX-output-extension)
 (defvar TeX-source-correlate-mode)
 (defvar TeX-source-specials-places)
 (defvar TeX-source-specials-tex-flags)
@@ -590,10 +589,11 @@ string."
 		    (or (if TeX-source-correlate-output-page-function
 			    (funcall TeX-source-correlate-output-page-function))
 			"1")))
-    ;; `TeX-active-master' calls either calls`TeX-master-file' or
-    ;; `TeX-region-file' returning the master or region file.
-    ("%s" TeX-active-master nil t)
-    ("%t" TeX-active-master t t)
+    ;; `TeX-active-master-with-quotes' calls either `TeX-master-file'
+    ;; or `TeX-region-file' returning the master or region file, and
+    ;; adds suitable quotes for use in shell command line.
+    ("%s" TeX-active-master-with-quotes nil t)
+    ("%t" TeX-active-master-with-quotes t t)
     ;; If any TeX codes appear in the interval between %` and %', move
     ;; all of them after the interval and supplement " \input".  The
     ;; appearance is marked by leaving the bind to `TeX-command-text'
@@ -636,15 +636,14 @@ string."
 		  (setq TeX-expand-pos (+ TeX-expand-pos (length TeX-command-text) 9))
 		  (concat TeX-command-text " \"\\input\""))
 	      "")))
-    ;; The fourth argument of t is actually for wrapper function
-    ;; provided by `TeX--master-or-region-file-with-extra-quotes'.
-    ;; See its doc string as well as the comments in
-    ;; `TeX-command-expand'.
-    ("%T" TeX-active-master t t nil t)
+    ;; The fourth argument of t directs to supply "\detokenize{}" when
+    ;; necessary. See doc string and comment of
+    ;; `TeX-active-master-with-quotes'.
+    ("%T" TeX-active-master-with-quotes t t nil t)
     ("%n" TeX-current-line)
-    ("%d" TeX-active-master "dvi" t)
-    ("%f" TeX-active-master "ps" t)
-    ("%o" (lambda nil (TeX-active-master (TeX-output-extension) t)))
+    ("%d" TeX-active-master-with-quotes "dvi" t)
+    ("%f" TeX-active-master-with-quotes "ps" t)
+    ("%o" (lambda nil (TeX-active-master-with-quotes (TeX-output-extension) t)))
     ;; for source specials the file name generated for the xdvi
     ;; command needs to be relative to the master file, just in
     ;; case the file is in a different subdirectory
