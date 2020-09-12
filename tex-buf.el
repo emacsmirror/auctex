@@ -585,30 +585,30 @@ infinite loop in `TeX-command-expand'.
 
 Helper function of `TeX-command-expand'. Use only within entries in
 `TeX-expand-list-builtin' and `TeX-expand-list'."
-  (let ((res
-	 (shell-quote-argument
-	  (let* ((raw (TeX-active-master extension nondirectory ask))
-		 ;; String `TeX-command-text' means that the file name is
-		 ;; given through \input command.
-		 (quote-for-space (if (and (stringp TeX-command-text)
-					   (string-match " " raw))
-				      "\"" "")))
-	    (format
-	     (if (and extra
-		      (stringp TeX-command-text)
-		      (memq major-mode '(latex-mode doctex-mode))
-		      (memq TeX-engine '(default uptex)))
-		 ;; Since TeXLive 2018, the default encoding for LaTeX
-		 ;; files has been changed to UTF-8 if used with
-		 ;; classic TeX or pdfTeX.  I.e.,
-		 ;; \usepackage[utf8]{inputenc} is enabled by default
-		 ;; in (pdf)latex.
-		 ;; c.f. LaTeX News issue 28
-		 ;; Due to this change, \detokenize is required to
-		 ;; recognize non-ascii characters in the file name
-		 ;; when \input precedes.
-		 "\\detokenize{ %s }" "%s")
-	     (concat quote-for-space raw quote-for-space))))))
+  (let* ((raw (TeX-active-master extension nondirectory ask))
+	 ;; String `TeX-command-text' means that the file name is
+	 ;; given through \input command.
+	 (quote-for-space (if (and (stringp TeX-command-text)
+				   (string-match " " raw))
+			      "\"" ""))
+	 (res
+	  (shell-quote-argument
+	   (format
+	    (if (and extra
+		     (stringp TeX-command-text)
+		     (memq major-mode '(latex-mode doctex-mode))
+		     (memq TeX-engine '(default uptex)))
+		;; Since TeXLive 2018, the default encoding for LaTeX
+		;; files has been changed to UTF-8 if used with
+		;; classic TeX or pdfTeX.  I.e.,
+		;; \usepackage[utf8]{inputenc} is enabled by default
+		;; in (pdf)latex.
+		;; c.f. LaTeX News issue 28
+		;; Due to this change, \detokenize is required to
+		;; recognize non-ascii characters in the file name
+		;; when \input precedes.
+		"\\detokenize{ %s }" "%s")
+	    (concat quote-for-space raw quote-for-space)))))
     ;; Advance past the file name in order to
     ;; prevent expanding any substring of it.
     (setq TeX-expand-pos
