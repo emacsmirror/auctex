@@ -106,6 +106,7 @@
 ;; Others:
 (defvar tex--prettify-symbols-alist)	; tex-mode.el
 (defvar Info-file-list-for-emacs)	; info.el
+(defvar dbus-debug)                     ; dbus.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -2022,7 +2023,7 @@ Return the full path to the executable if possible."
 	(concat client-full " " options)
       (concat client-base " " options))))
 
-(defun TeX-source-specials-view-expand-options (&optional viewer)
+(defun TeX-source-specials-view-expand-options (&optional _viewer)
   "Return source specials command line option for viewer command.
 The return value depends on the values of
 `TeX-source-correlate-mode' and
@@ -3621,11 +3622,11 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 	(TeX-parse-argument optional (car args))
       (TeX-parse-argument optional args))))
 
-(defun TeX-arg-literal (optional &rest args)
+(defun TeX-arg-literal (_optional &rest args)
   "Insert its arguments ARGS into the buffer.
 Used for specifying extra syntax for a macro.  The compatibility
 argument OPTIONAL is ignored."
-  (apply 'insert args))
+  (apply #'insert args))
 
 
 ;;; Font Locking
