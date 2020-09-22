@@ -1,6 +1,6 @@
-;;; tex-jp.el --- Support for Japanese TeX.  -*- coding: iso-2022-jp-unix; -*-
+;;; tex-jp.el --- Support for Japanese TeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018
+;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020
 ;;   Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
@@ -148,7 +148,8 @@ systems are determined by their values regardless of the kanji option."
 			  (let ((result (format "-d %s" dicname)))
 			    ;; Advance past the file name in order to
 			    ;; prevent expanding any substring of it.
-			    (setq pos (+ pos (length result)))
+			    (setq TeX-expand-pos
+				  (+ TeX-expand-pos (length result)))
 			    result)
 			""))))
         ;; pxdvi と %(o?)xdvi の適切な方を選択する。
@@ -911,5 +912,9 @@ save size
     (".*" . "ごめんなさい．該当するヘルプメッセージがありません．"))))
 
 (provide 'tex-jp)
+
+;; Local Variables:
+;; coding: iso-2022-jp-unix
+;; End:
 
 ;;; tex-jp.el ends here
