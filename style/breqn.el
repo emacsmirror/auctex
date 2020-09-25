@@ -49,7 +49,6 @@
 ;;; Code:
 
 (require 'latex)
-(eval-when-compile (require 'cl-lib))
 
 (defvar LaTeX-breqn-key-val-options
   '(("style" ("\\tiny" "\\scriptsize" "\\footnotesize" "\\small"
@@ -95,21 +94,6 @@ Keys offered for key=val query depend on ENV.  \"label\" and
     (LaTeX-env-label-as-keyval nil nil keyvals env)))
 
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
-
-;; Fontification
-(declare-function font-latex-update-math-env "font-latex")
-(require 'texmathp)
-(let ((list '(("dmath"         env-on) ("dmath*"        env-on)
-	      ("dseries"       env-on) ("dseries*"      env-on)
-	      ("dgroup"        env-on) ("dgroup*"       env-on)
-	      ("darray"        env-on) ("darray*"       env-on)
-	      ("dsuspend"      env-off))))
-  (dolist (entry list)
-    (cl-pushnew entry texmathp-tex-commands-default :test #'equal)))
-(texmathp-compile)
-(if (and (featurep 'font-latex)
-	 (eq TeX-install-font-lock 'font-latex-setup))
-    (font-latex-update-math-env))
 
 (TeX-add-style-hook
  "breqn"

@@ -35,6 +35,78 @@
 (require 'tex-site)
 (eval-when-compile
   (require 'cl-lib))
+(require 'texmathp)
+
+;; Silence the compiler for functions:
+(declare-function dbus-ignore-errors "ext:dbus"
+		  (&rest body))
+(declare-function dbus-get-unique-name "ext:dbusbind.c"
+		  (bus))
+(declare-function dbus-ping "ext:dbus"
+		  (bus service &optional timeout))
+(declare-function dbus-introspect-get-method "ext:dbus"
+		  (bus service path interface method))
+(declare-function dbus-call-method "ext:dbus"
+		  (bus service path interface method &rest args))
+(declare-function dbus-register-signal "ext:dbus"
+		  (bus service path interface signal handler &rest args))
+(declare-function TeX-output-extension "tex-buf"
+		  nil)
+(declare-function TeX-command-expand "tex-buf"
+		  (command file &optional list))
+(declare-function TeX-active-master "tex-buf"
+		  (&optional extension nondirectory ignore))
+(declare-function TeX-pop-to-buffer "tex-buf"
+		  (buffer &optional other-window norecord))
+(declare-function LaTeX-environment-list "latex"
+		  nil)
+(declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
+		  (start end match))
+;; spell-buffer was removed in 2008 in favor of ispell
+(declare-function spell-buffer "ext:text-mode"
+		  t)
+
+;; Silence the compiler for variables:
+;; tex.el: Variables defined somewhere in this file:
+(defvar TeX-PDF-from-DVI)
+(defvar TeX-PDF-mode)
+(defvar TeX-PDF-mode-parsed)
+(defvar TeX-all-extensions)
+(defvar TeX-command-default)
+(defvar TeX-default-extension)
+(defvar TeX-esc)
+(defvar TeX-interactive-mode)
+(defvar TeX-macro-global)
+(defvar TeX-mode-map)
+(defvar TeX-mode-p)
+(defvar TeX-output-extension)
+(defvar TeX-output-extension)
+(defvar TeX-source-correlate-mode)
+(defvar TeX-source-specials-places)
+(defvar TeX-source-specials-tex-flags)
+(defvar TeX-synctex-tex-flags)
+;; Variables defined in other AUCTeX libraries:
+;; latex.el:
+(defvar BibLaTeX-global-style-files)
+(defvar BibTeX-global-files)
+(defvar BibTeX-global-style-files)
+(defvar LaTeX-default-verb-delimiter)
+(defvar LaTeX-global-class-files)
+(defvar LaTeX-optcl)
+(defvar LaTeX-optop)
+(defvar TeX-Biber-global-files)
+(defvar TeX-global-input-files)
+;; tex-buf.el
+(defvar TeX-current-process-region-p)
+(defvar TeX-region)
+(defvar TeX-region-orig-buffer)
+;; tex-ispell.el
+(defvar TeX-ispell-verb-delimiters)
+;; graphicx.el
+(defvar LaTeX-includegraphics-global-files)
+;; Others:
+(defvar tex--prettify-symbols-alist)	; tex-mode.el
+(defvar Info-file-list-for-emacs)	; info.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -1162,7 +1234,7 @@ entry in `TeX-view-program-list-builtin'."
   (if (and TeX-source-correlate-mode
 	   (fboundp 'pdf-sync-forward-search))
       (with-current-buffer (or (when TeX-current-process-region-p
-			    	 (get-file-buffer (TeX-region-file t)))
+				 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
     (let ((pdf (concat file "." (TeX-output-extension))))

@@ -2270,9 +2270,7 @@ like @samp{\(...\)} or @samp{\[...\]} is built-in and not customizable.
 Support for other math macros and environments can be adapted by
 customizing the variables @code{font-latex-match-math-command-keywords}
 and @code{texmathp-tex-commands} respectively. It is no longer
-recommended to customize @code{font-latex-math-environments}, which
-is initialized according to @code{texmathp-tex-commands} and
-@code{texmathp-tex-commands-default} by default.
+recommended to customize @code{font-latex-math-environments}.
 
 To convert your customization in @code{font-latex-math-environments}
 into @code{texmathp-tex-commands}, please register your own math
@@ -2385,9 +2383,6 @@ As a remedy you can make the verbatim construct known to @fontlatex{},
 commented dollar sign (@samp{%$}) at the next suitable end of line as a
 quick workaround.  In docTeX documents, @samp{^^A$} is also available
 for similar purpose.
-@c As a last resort one can set `font-lock-keywords-only', but we should
-@c probably not advise users to do this.
-
 
 @node Folding
 @section Folding Macros and Environments

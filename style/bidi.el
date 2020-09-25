@@ -1,6 +1,6 @@
 ;;; bidi.el --- AUCTeX style for the (XeLaTeX) bidi package
 
-;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -50,6 +50,8 @@
  "bidi"
  (lambda ()
    ;; bidi.sty requires xelatex, so set the engine
+   (unless (featurep 'tex-buf)
+     (require 'tex-buf))
    (TeX-check-engine-add-engines 'xetex)
 
    ;; 1.4 Turning TeX--XeT features on and off

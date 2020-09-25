@@ -117,34 +117,10 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
 		    (const bibtex)
 		    (const clean)
 		    (const spell))
-		    ;; (const latex-symbols-experimental)
+	       ;; (const latex-symbols-experimental)
 	       (repeat (choice (symbol :tag "Label")
 			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
-
-(defun TeX-bar-TeX-buttons ()
-  "Display in a buffer a list of buttons for `tex-bar.el'."
-  (interactive)
-  (let ((assqs-button-alists)
-	(labels))
-    (dolist (m-alist TeX-bar-TeX-all-button-alists)
-      (setq labels nil)
-      (dolist (as (eval m-alist))
-	(setq labels (cons (car as) labels)))
-      (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
-				       assqs-button-alists)))
-    (setq assqs-button-alists (nreverse assqs-button-alists))
-    ;; displaying results
-    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
-      (erase-buffer)
-      (insert "Available buttons for TeX mode
-================================")
-      (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
-	(dolist (j (cdr i))
-	  (insert (format " %s" j)))
-	(fill-region (point-at-bol) (point-at-eol))))
-    (display-buffer "*TeX tool bar buttons*" t)))
 
 (defgroup TeX-tool-bar-button-definitions nil
   "Collections of button definitions."
@@ -208,6 +184,30 @@ format of the argument MEANING-ALIST in the mentioned function."
   :type '(alist :key-type symbol :value-type sexp)
   :group 'TeX-tool-bar-button-definitions)
 
+(defun TeX-bar-TeX-buttons ()
+  "Display in a buffer a list of buttons for `tex-bar.el'."
+  (interactive)
+  (let ((assqs-button-alists)
+	(labels))
+    (dolist (m-alist TeX-bar-TeX-all-button-alists)
+      (setq labels nil)
+      (dolist (as (eval m-alist))
+	(setq labels (cons (car as) labels)))
+      (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
+				      assqs-button-alists)))
+    (setq assqs-button-alists (nreverse assqs-button-alists))
+    ;; displaying results
+    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
+      (erase-buffer)
+      (insert "Available buttons for TeX mode
+================================")
+      (dolist (i assqs-button-alists)
+	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
+	(dolist (j (cdr i))
+	  (insert (format " %s" j)))
+	(fill-region (point-at-bol) (point-at-eol))))
+    (display-buffer "*TeX tool bar buttons*" t)))
+
 ;;; Installation of the tool bar
 ;;;###autoload
 (defun TeX-install-toolbar ()
@@ -226,7 +226,7 @@ format of the argument MEANING-ALIST in the mentioned function."
 
 (defcustom TeX-bar-LaTeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-	      [separator nil] latex next-error view bibtex spell)
+	     [separator nil] latex next-error view bibtex spell)
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -262,30 +262,6 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
 	       (repeat (choice (symbol :tag "Label")
 			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
-
-(defun TeX-bar-LaTeX-buttons ()
-  "Display in a buffer a list of buttons for `tex-bar.el'."
-  (interactive)
-  (let ((assqs-button-alists)
-	(labels))
-    (dolist (m-alist TeX-bar-LaTeX-all-button-alists)
-      (setq labels nil)
-      (dolist (as (eval m-alist))
-	(setq labels (cons (car as) labels)))
-      (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
-				       assqs-button-alists)))
-    (setq assqs-button-alists (nreverse assqs-button-alists))
-    ;; displaying results
-    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
-      (erase-buffer)
-      (insert "Available buttons for LaTeX mode
-================================")
-      (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
-	(dolist (j (cdr i))
-	  (insert (format " %s" j)))
-	(fill-region (point-at-bol) (point-at-eol))))
-    (display-buffer "*TeX tool bar buttons*" t)))
 
 (defgroup TeX-tool-bar-button-definitions nil
   "Collections of button definitions."
@@ -352,6 +328,30 @@ format of PROPS, please see documentation of function
 format of the argument MEANING-ALIST in the mentioned function."
   :type '(alist :key-type symbol :value-type sexp)
   :group 'TeX-tool-bar-button-definitions)
+
+(defun TeX-bar-LaTeX-buttons ()
+  "Display in a buffer a list of buttons for `tex-bar.el'."
+  (interactive)
+  (let ((assqs-button-alists)
+	(labels))
+    (dolist (m-alist TeX-bar-LaTeX-all-button-alists)
+      (setq labels nil)
+      (dolist (as (eval m-alist))
+	(setq labels (cons (car as) labels)))
+      (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
+				      assqs-button-alists)))
+    (setq assqs-button-alists (nreverse assqs-button-alists))
+    ;; displaying results
+    (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
+      (erase-buffer)
+      (insert "Available buttons for LaTeX mode
+================================")
+      (dolist (i assqs-button-alists)
+	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
+	(dolist (j (cdr i))
+	  (insert (format " %s" j)))
+	(fill-region (point-at-bol) (point-at-eol))))
+    (display-buffer "*TeX tool bar buttons*" t)))
 
 ;;; Installation of the tool bar
 ;;;###autoload

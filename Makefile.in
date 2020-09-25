@@ -177,7 +177,7 @@ STYLESRC = style/prosper.el \
 STYLEELC = $(STYLESRC:.el=.elc)
 
 ifeq (@preview_enabled@,yes)
-   PREVIEWSRC = @PLAT_LISP@ preview.el
+   PREVIEWSRC = preview.el
    PREVIEWELC = $(PREVIEWSRC:.el=.elc)
    PREVIEWLATEX = $(MAKE) preview-latex.el
    TEXMF = (cd latex ; $(MAKE) all)

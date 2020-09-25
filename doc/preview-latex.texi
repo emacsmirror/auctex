@@ -154,8 +154,8 @@ it will run the surroundings through preview. The surroundings include
 all areas up to the next valid preview, unless invalid previews occur
 before, in which case the area will include the last such preview in
 either direction.  And overriding any other
-action, if a region is active (@code{transient-mark-mode} or
-@code{zmacs-regions}), it is run through @code{preview-region}.
+action, if a region is active (@code{transient-mark-mode}), it is run
+through @code{preview-region}.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
 

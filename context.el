@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2018
+;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2020
 ;;   Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
@@ -55,6 +55,9 @@
 (require 'latex) ; for functions like `TeX-look-at' and `LaTeX-split-long-menu'
 (require 'plain-tex) ; for `plain-TeX-common-initialization'
 
+;; Silence the compiler:
+(defvar ConTeXt-extra-paragraph-commands)
+
 (defgroup ConTeXt-macro nil
   "Special support for ConTeXt macros in AUCTeX."
   :prefix "TeX-"
@@ -70,13 +73,14 @@
 ;; lexically scoped.
 ;; So don't give them a global value, which makes sure the effect of `defvar'
 ;; localized to this file!
-(defvar done-mark)     ;Position of point afterwards, default nil (meaning end)
-
-(defvar reference);Used by `ConTeXt-section-ref' and `ConTeXt-section-section'.
-
-(defvar title); Used by `ConTeXt-section-title' and `ConTeXt-section-section'.
-(defvar name)
-(defvar level)
+;; N.B.: These forms are commented out since they produce a "lack of
+;; prefix" warning during byte-compilation.  This way they produce
+;; only a "reference to free variable" one.
+;; (defvar done-mark) ; Position of point afterwards, default nil (meaning end)
+;; (defvar reference) ; Used by `ConTeXt-section-ref' and `ConTeXt-section-section'.
+;; (defvar title) ; Used by `ConTeXt-section-title' and `ConTeXt-section-section'.
+;; (defvar name)
+;; (defvar level)
 
 ;; others
 
@@ -559,7 +563,6 @@ assumes the section already is inserted."
   "Hook to insert a reference after the sectioning command.
 Insert this hook into `ConTeXt-section-hook' to prompt for a label to be
 inserted after the sectioning command."
-
   (setq reference (completing-read
 		   (TeX-argument-prompt t nil
 					"Comma separated list of references")

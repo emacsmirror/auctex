@@ -1,11 +1,12 @@
 #!/usr/bin/perl
+# -*- coding: iso-latin-1-unix; -*-
 
 # Autoconverter from preview.dtx to preview-dtxdoc.texi
 
 # Author: Jan-Åke Larsson <jalar@mai.liu.se>
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2002, 2005 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2005, 2020 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 
@@ -52,6 +53,9 @@ $quote="";
 MAIN: while (<STDIN>) {
     s/^%//;
     s/\\%/%/g;
+
+    # Comment
+    s/\^\^A.*\n//;
 
     # Text-substitution macros
     s/\@/\@\@/g;

@@ -231,6 +231,8 @@ argument, otherwise as a mandatory one."
 (TeX-add-style-hook
  "polyglossia"
  (lambda ()
+   (unless (featurep 'tex-buf)
+     (require 'tex-buf))
    (TeX-check-engine-add-engines 'luatex 'xetex)
    (TeX-auto-add-regexp
     `(,LaTeX-polyglossia-lang-regexp (3 1 2) LaTeX-auto-polyglossia-lang))

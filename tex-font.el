@@ -148,7 +148,8 @@
 
 (defface tex-math-face
   '((t :inherit font-lock-string-face))
-  "Face used to highlight TeX math expressions.")
+  "Face used to highlight TeX math expressions."
+  :group 'tex)
 (defvar tex-math-face 'tex-math-face)
 
 ;; Use string syntax but math face for $...$.

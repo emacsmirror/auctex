@@ -55,8 +55,6 @@ AC_ARG_ENABLE(preview,
   [preview_enabled="yes"])
 AC_SUBST(preview_enabled)
 
-PLAT_LISP=prv-emacs.el
-
 EMACS_PATH_LISPDIR
 AC_MSG_CHECKING(what file to use for auctex startup)
 AC_ARG_WITH(auctexstartfile,
@@ -92,7 +90,6 @@ texsitedir="${lispdir}"
 
 AC_SUBST(auctexstartfile)
 AC_SUBST(previewstartfile)
-AC_SUBST(PLAT_LISP)
 
 AC_MSG_CHECKING([where the package lisp files go])
 AC_ARG_WITH(packagelispdir,

@@ -37,6 +37,19 @@
 (eval-when-compile
   (require 'cl-lib))
 
+;; Silence the compiler for functions:
+(declare-function outline-level "ext:outline"
+		  nil)
+(declare-function outline-mark-subtree "ext:outline"
+		  nil)
+(declare-function turn-off-filladapt-mode "ext:filladapt"
+		  nil)
+
+;; Silence the compiler for variables:
+(defvar outline-heading-alist)
+(defvar TeX-auto-file)
+(defvar LaTeX-section-list-changed)
+
 ;;; Syntax
 
 (defvar LaTeX-optop "["
@@ -114,11 +127,14 @@ This depends on `LaTeX-insert-into-comments'."
 ;;; Sections
 
 ;; Declare dynamically scoped vars.
-(defvar title)
-(defvar name)
-(defvar level)
-(defvar done-mark)
-(defvar toc)
+;; N.B.: These forms are commented out since they produce a "lack of
+;; prefix" warning during byte-compilation.  This way they produce
+;; only a "reference to free variable" one.
+;; (defvar title)
+;; (defvar name)
+;; (defvar level)
+;; (defvar done-mark)
+;; (defvar toc)
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -4534,8 +4550,9 @@ value of NO-SUBSECTIONS."
 (defvar LaTeX-paragraph-commands-internal
   '("[" "]" ; display math
     "appendix" "begin" "caption" "chapter" "end" "include" "includeonly"
-    "label" "maketitle" "noindent" "par" "paragraph" "part" "section"
-    "subsection" "subsubsection" "tableofcontents" "newpage" "clearpage")
+    "label" "maketitle" "newblock" "noindent" "par" "paragraph" "part"
+    "section" "subsection" "subsubsection" "tableofcontents"
+    "newpage" "clearpage")
   "Internal list of LaTeX macros that should have their own line.")
 
 (defun LaTeX-paragraph-commands-regexp-make ()
@@ -6275,10 +6292,10 @@ function would return non-nil and `(match-string 1)' would return
 		      "enumiv" "footnote" "mpfootnote")
 
   (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
-		     "columnsep" "columnwidth" "doublerulesep" "evensidemargin"
-		     "linewidth" "oddsidemargin" "paperwidth" "paperheight"
-		     "parindent" "parskip" "tabcolsep" "textheight" "textwidth"
-		     "topmargin" "unitlength")
+		     "bibindent" "columnsep" "columnwidth" "doublerulesep"
+		     "evensidemargin" "linewidth" "oddsidemargin" "paperwidth"
+		     "paperheight" "parindent" "parskip" "tabcolsep"
+		     "textheight" "textwidth" "topmargin" "unitlength")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")
@@ -6367,6 +6384,7 @@ function would return non-nil and `(match-string 1)' would return
    '("nocite" TeX-arg-cite)
    '("bibliographystyle" TeX-arg-bibstyle)
    '("bibliography" TeX-arg-bibliography)
+   '("newblock" (TeX-arg-literal " "))
    '("footnote"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
      t)

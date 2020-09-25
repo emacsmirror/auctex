@@ -122,14 +122,16 @@ Arguments NAME and TYPE are the same as for the function
 
    ;; Append us only once:
    (unless (and (string-match "question" LaTeX-item-regexp)
-                (string-match "subsub" LaTeX-item-regexp))
+                (string-match "sub" LaTeX-item-regexp))
      (set (make-local-variable 'LaTeX-item-regexp)
           (concat
            LaTeX-item-regexp
            "\\|"
+	   "choice\\b"
+	   "\\|"
            "\\(titled\\)?question\\b"
            "\\|"
-           "\\(sub\\|subsub\\)?part\\b"))
+           "\\(sub\\)*part\\b"))
      (LaTeX-set-paragraph-start))
 
    (TeX-add-symbols
