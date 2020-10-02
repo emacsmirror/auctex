@@ -161,7 +161,8 @@ minibuffer.  PROMPT replaces the standard one."
        ("refname")
        ("Refname")
        ("shaded" ("textwidth" "bgcolor" "rulecolor" "rulewidth" "margin"))
-       ("thmbox" ("L" "M" "S"))))))
+       ("thmbox" ("L" "M" "S")))
+     prompt)))
 
 (defun LaTeX-arg-thmtools-declaretheorem (optional &optional prompt)
   "Insert the key=val and environment name defined by \\declaretheorem.
@@ -204,7 +205,8 @@ minibuffer.  PROMPT replaces the standard one."
        ("show" ,thms)
        ("ignoreall" ("true" "false"))
        ("showall" ("true" "false"))
-       ("title")))))
+       ("title"))
+     prompt)))
 
 (defun LaTeX-arg-thmtools-listoftheorems (optional &optional prompt)
   "Insert the key=val to \\listoftheorems macro.
