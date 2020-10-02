@@ -1,6 +1,6 @@
-;; captcont.el --- AUCTeX style file for captcont.sty
+;; captcont.el --- AUCTeX style file for captcont.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org

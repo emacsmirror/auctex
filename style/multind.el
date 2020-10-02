@@ -1,6 +1,6 @@
-;;; multind.el --- AUCTeX support for multiple indices with multind.sty.
+;;; multind.el --- AUCTeX support for multiple indices with multind.sty.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; inputenc.el --- AUCTeX style for `inputenc.sty'
+;;; inputenc.el --- AUCTeX style for `inputenc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex

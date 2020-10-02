@@ -1,4 +1,4 @@
-;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)
+;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

@@ -1,6 +1,6 @@
-;;; luatextra.el --- AUCTeX style for `luatextra.sty' version 1.0.
+;;; luatextra.el --- AUCTeX style for `luatextra.sty' version 1.0.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: auctex-devel@gnu.org

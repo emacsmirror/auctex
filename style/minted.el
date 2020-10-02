@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2018, 2020 Free Software Foundation, Inc.
 

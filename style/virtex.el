@@ -1,4 +1,4 @@
-;;; virtex.el - Common code for all TeX formats.
+;;; virtex.el - Common code for all TeX formats.  -*- lexical-binding: t; -*-
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 

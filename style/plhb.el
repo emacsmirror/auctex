@@ -1,4 +1,4 @@
-;;; plhb.el - Setup AUC TeX for editing Polish text with plhb.sty
+;;; plhb.el - Setup AUC TeX for editing Polish text with plhb.sty  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

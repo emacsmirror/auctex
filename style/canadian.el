@@ -1,6 +1,6 @@
-;;; canadian.el --- AUCTeX style for the `canadian' babel option.
+;;; canadian.el --- AUCTeX style for the `canadian' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

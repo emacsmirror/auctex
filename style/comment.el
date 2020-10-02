@@ -1,4 +1,4 @@
-;;; comment.el --- AUCTeX style for `comment.sty'
+;;; comment.el --- AUCTeX style for `comment.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
 

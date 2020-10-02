@@ -1,6 +1,6 @@
-;;; amssymb.el --- AUCTeX style for `amssymb.sty'
+;;; amssymb.el --- AUCTeX style for `amssymb.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

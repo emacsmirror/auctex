@@ -1,6 +1,6 @@
-;;; alphanum.el --- AUCTeX style for `alphanum.sty'
+;;; alphanum.el --- AUCTeX style for `alphanum.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org

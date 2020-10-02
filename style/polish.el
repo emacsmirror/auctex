@@ -1,6 +1,6 @@
-;;; polish.el --- AUCTeX style for the `polish' babel option.
+;;; polish.el --- AUCTeX style for the `polish' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org

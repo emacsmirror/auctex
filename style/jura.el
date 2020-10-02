@@ -1,6 +1,6 @@
-;;; jura.el --- AUCTeX style for `jura.cls'
+;;; jura.el --- AUCTeX style for `jura.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2020 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; memoir.el --- AUCTeX style for `memoir.cls'
+;;; memoir.el --- AUCTeX style for `memoir.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

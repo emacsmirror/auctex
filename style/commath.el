@@ -1,6 +1,6 @@
-;;; commath.el --- AUCTeX style for `commath.sty' (v0.3)
+;;; commath.el --- AUCTeX style for `commath.sty' (v0.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

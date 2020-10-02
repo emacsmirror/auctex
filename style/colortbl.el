@@ -1,6 +1,6 @@
-;;; colortbl.el --- AUCTeX style for `colortbl.sty' (v1.0a)
+;;; colortbl.el --- AUCTeX style for `colortbl.sty' (v1.0a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

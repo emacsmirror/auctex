@@ -1,6 +1,6 @@
-;;; jurabib.el --- AUCTeX style for the `jurabib' package
+;;; jurabib.el --- AUCTeX style for the `jurabib' package  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2007, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2007, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

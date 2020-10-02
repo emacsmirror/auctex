@@ -1,4 +1,4 @@
-;;; overpic.el --- AUCTeX style for `overpic.sty' (v1.3)
+;;; overpic.el --- AUCTeX style for `overpic.sty' (v1.3)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

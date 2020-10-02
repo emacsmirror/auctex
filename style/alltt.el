@@ -1,4 +1,4 @@
-;;; alltt.el --- AUCTeX style for `alltt.sty'
+;;; alltt.el --- AUCTeX style for `alltt.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004, 2005, 2014, 2016, 2018, 2020 Free Software Foundation, Inc.
 

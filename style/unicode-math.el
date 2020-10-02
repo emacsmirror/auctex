@@ -1,6 +1,6 @@
-;;; unicode-math.el --- AUCTeX style for `unicode-math.sty' version 0.7e.
+;;; unicode-math.el --- AUCTeX style for `unicode-math.sty' version 0.7e.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>

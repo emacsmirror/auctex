@@ -1,6 +1,6 @@
-;;; foils.el - Special code for FoilTeX.
+;;; foils.el - Special code for FoilTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-2014 Free Software Foundation, Inc.
+;; Copyright (C) 1994-2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org

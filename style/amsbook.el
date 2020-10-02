@@ -1,4 +1,4 @@
-;;; amsbook.el --- Style hook for the AMS-LaTeX book document class.
+;;; amsbook.el --- Style hook for the AMS-LaTeX book document class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

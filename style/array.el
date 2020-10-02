@@ -1,6 +1,6 @@
-;;; array.el --- AUCTeX style for `array.sty'
+;;; array.el --- AUCTeX style for `array.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2015, 2018--2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

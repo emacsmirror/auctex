@@ -1,4 +1,4 @@
-;;; danish.el --- Setup AUCTeX for editing Danish text.
+;;; danish.el --- Setup AUCTeX for editing Danish text.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

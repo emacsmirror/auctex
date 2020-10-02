@@ -1,6 +1,6 @@
-;;; mdwlist.el --- AUCTeX style for `mdwlist.sty'
+;;; mdwlist.el --- AUCTeX style for `mdwlist.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex

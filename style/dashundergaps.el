@@ -1,6 +1,6 @@
-;;; dashundergaps.el --- AUCTeX style for `dashundergaps.sty' (v2.0d)
+;;; dashundergaps.el --- AUCTeX style for `dashundergaps.sty' (v2.0d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,4 +1,4 @@
-;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06
+;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 

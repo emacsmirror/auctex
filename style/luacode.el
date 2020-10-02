@@ -1,6 +1,6 @@
-;;; luacode.el --- AUCTeX style for `luacode.sty' version 1.2a.
+;;; luacode.el --- AUCTeX style for `luacode.sty' version 1.2a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>

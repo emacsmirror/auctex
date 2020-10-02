@@ -1,4 +1,4 @@
-;;; tikz.el --- AUCTeX style for `tikz.sty'
+;;; tikz.el --- AUCTeX style for `tikz.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
 

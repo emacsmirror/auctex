@@ -1,6 +1,6 @@
-;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.
+;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>

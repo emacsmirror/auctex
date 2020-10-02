@@ -1,4 +1,4 @@
-;;; slovak.el --- Setup AUCTeX for editing Slovak text.
+;;; slovak.el --- Setup AUCTeX for editing Slovak text.  -*- lexical-binding: t; -*-
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes

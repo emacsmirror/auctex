@@ -1,6 +1,6 @@
-;;; frenchb.el --- AUCTeX style for the `frenchb' babel option.
+;;; frenchb.el --- AUCTeX style for the `frenchb' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

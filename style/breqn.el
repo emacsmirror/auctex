@@ -1,4 +1,4 @@
-;;; breqn.el --- AUCTeX style for `breqn.sty' (v0.98j)
+;;; breqn.el --- AUCTeX style for `breqn.sty' (v0.98j)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
 

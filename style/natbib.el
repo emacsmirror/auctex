@@ -1,6 +1,6 @@
-;;; natbib.el --- AUCTeX style for `natbib.sty' version 8.31b
+;;; natbib.el --- AUCTeX style for `natbib.sty' version 8.31b  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2018 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2020 Free Software Foundation, Inc.
 
 ;; Authors: Berwin Turlach <statba@nus.edu.sg>
 ;;          Carsten Dominik <dominik@strw.leidenuniv.nl>

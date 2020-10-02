@@ -1,6 +1,6 @@
-;;; paralist.el -- AUCTeX style for paralist.sty
+;;; paralist.el -- AUCTeX style for paralist.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2005, 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2005, 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

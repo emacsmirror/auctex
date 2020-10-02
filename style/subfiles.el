@@ -1,6 +1,6 @@
-;;; subfiles.el --- AUCTeX style for the subfiles package.
+;;; subfiles.el --- AUCTeX style for the subfiles package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 07 Nov 2016

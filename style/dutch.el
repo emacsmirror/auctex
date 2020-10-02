@@ -1,4 +1,4 @@
-;;; dutch.el - Setup AUCTeX for editing Dutch text.
+;;; dutch.el - Setup AUCTeX for editing Dutch text.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

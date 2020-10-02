@@ -1,4 +1,4 @@
-;;; pstricks.el --- AUCTeX style for the `pstricks' package.
+;;; pstricks.el --- AUCTeX style for the `pstricks' package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2007, 2009, 2013-2015, 2018, 2020
 ;;                Free Software Foundation, Inc.

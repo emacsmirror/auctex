@@ -1,4 +1,4 @@
-;;; jreport.el - Special code for jreport class.
+;;; jreport.el - Special code for jreport class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

@@ -1,4 +1,4 @@
-;;; ngerman.el --- Setup AUCTeX for editing German text.
+;;; ngerman.el --- Setup AUCTeX for editing German text.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

@@ -1,6 +1,6 @@
-;;; exercise.el --- AUCTeX style for `exercise.sty'
+;;; exercise.el --- AUCTeX style for `exercise.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Nicolas Richard <theonewiththeevillook@yahoo.fr>
 ;; Created: 2014-03-17

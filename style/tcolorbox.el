@@ -1,6 +1,6 @@
-;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)
+;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,4 +1,4 @@
-;;; jsbook.el - Special code for jsbook class.
+;;; jsbook.el - Special code for jsbook class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

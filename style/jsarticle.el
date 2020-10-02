@@ -1,4 +1,4 @@
-;;; jsarticle.el - Special code for jsarticle class.
+;;; jsarticle.el - Special code for jsarticle class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

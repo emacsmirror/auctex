@@ -1,4 +1,4 @@
-;;; german.el --- Setup AUCTeX for editing German text.
+;;; german.el --- Setup AUCTeX for editing German text.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

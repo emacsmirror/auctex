@@ -1,4 +1,4 @@
-;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.
+;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2017, 2018, 2020 Free Software Foundation, Inc.
 

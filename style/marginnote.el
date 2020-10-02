@@ -1,6 +1,6 @@
-;;; marginnote.el --- AUCTeX style for `marginnote.sty' (v1.4)
+;;; marginnote.el --- AUCTeX style for `marginnote.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

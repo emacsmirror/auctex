@@ -1,4 +1,4 @@
-;;; ifluatex.el --- AUCTeX style for `ifluatex.sty' version 1.3.
+;;; ifluatex.el --- AUCTeX style for `ifluatex.sty' version 1.3.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2016, 2018, 2020 Free Software Foundation, Inc.
 

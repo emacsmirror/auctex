@@ -1,4 +1,4 @@
-;;; scrpage2.el --- AUCTeX style for scrpage2.sty.
+;;; scrpage2.el --- AUCTeX style for scrpage2.sty.  -*- lexical-binding: t; -*-
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Created:  2003-11-01

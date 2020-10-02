@@ -1,6 +1,6 @@
-;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v2.0d)
+;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v2.0d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

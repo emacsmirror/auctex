@@ -1,6 +1,6 @@
-;;; amsfonts.el --- AUCTeX style for `amsfonts.sty' version 3.01
+;;; amsfonts.el --- AUCTeX style for `amsfonts.sty' version 3.01  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>

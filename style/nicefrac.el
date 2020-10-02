@@ -1,6 +1,6 @@
-;;; nicefrac.el --- AUCTeX style for the LaTeX package `nicefrac.sty' (v0.9b)
+;;; nicefrac.el --- AUCTeX style for the LaTeX package `nicefrac.sty' (v0.9b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Christian Schlauer <cschl@arcor.de>
 ;; Maintainer: auctex-devel@gnu.org

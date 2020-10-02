@@ -1,6 +1,6 @@
-;;; mdsymbol.el --- AUCTeX style for `mdsymbol.sty' (v0.5)
+;;; mdsymbol.el --- AUCTeX style for `mdsymbol.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

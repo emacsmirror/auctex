@@ -1,4 +1,4 @@
-;;; amsbsy.el --- Style hook for the AMS-LaTeX amsbsy package.
+;;; amsbsy.el --- Style hook for the AMS-LaTeX amsbsy package.  -*- lexical-binding: t; -*-
 ;;;
 ;;; AUTHOR: Carsten Dominik <dominik@strw.leidenuniv.nl>
 

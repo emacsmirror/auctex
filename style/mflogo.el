@@ -1,6 +1,6 @@
-;;; mflogo.el --- AUCTeX style for `mflogo.sty'
+;;; mflogo.el --- AUCTeX style for `mflogo.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; graphicx.el --- AUCTeX style file for graphicx.sty
+;;; graphicx.el --- AUCTeX style file for graphicx.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2018 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2020 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20

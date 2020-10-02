@@ -1,4 +1,4 @@
-;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d
+;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 

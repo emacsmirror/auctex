@@ -1,6 +1,6 @@
-;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)
+;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2020 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org

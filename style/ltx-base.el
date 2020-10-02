@@ -1,6 +1,6 @@
-;;; ltx-base.el --- AUCTeX style for basic LaTeX commands.
+;;; ltx-base.el --- AUCTeX style for basic LaTeX commands.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org

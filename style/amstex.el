@@ -1,6 +1,6 @@
-;;; amstex.el --- AMS-LaTeX support.
+;;; amstex.el --- AMS-LaTeX support.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex

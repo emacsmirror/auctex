@@ -1,6 +1,6 @@
-;;; multido.el --- AUCTeX style for `multido.sty'
+;;; multido.el --- AUCTeX style for `multido.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007

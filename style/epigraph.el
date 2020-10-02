@@ -1,6 +1,6 @@
-;;; epigraph.el --- AUCTeX style for `epigraph.sty' v1.5c
+;;; epigraph.el --- AUCTeX style for `epigraph.sty' v1.5c  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2017, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

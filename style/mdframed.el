@@ -1,6 +1,6 @@
-;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)
+;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

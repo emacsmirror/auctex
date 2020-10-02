@@ -1,4 +1,4 @@
-;;; letter.el - Special code for letter style.
+;;; letter.el - Special code for letter style.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1993, 2012, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
 

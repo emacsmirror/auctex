@@ -1,6 +1,6 @@
-;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)
+;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

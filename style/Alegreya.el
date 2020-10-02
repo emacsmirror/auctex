@@ -1,6 +1,6 @@
-;;; Alegreya.el --- AUCTeX style for `Alegreya.sty' (v2015/10/22)
+;;; Alegreya.el --- AUCTeX style for `Alegreya.sty' (v2015/10/22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; fancyref.el --- AUCTeX style file with support for fancyref.sty
+;;; fancyref.el --- AUCTeX style file with support for fancyref.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2014, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2014, 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org

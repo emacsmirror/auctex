@@ -1,4 +1,4 @@
-;;; tex-live.el --- AUCTeX style for `tex-live.sty'
+;;; tex-live.el --- AUCTeX style for `tex-live.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

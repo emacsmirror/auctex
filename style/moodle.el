@@ -1,6 +1,6 @@
-;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)
+;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

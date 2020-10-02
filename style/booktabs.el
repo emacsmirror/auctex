@@ -1,6 +1,6 @@
-;;; booktabs.el -- AUCTeX style for booktabs.sty
+;;; booktabs.el -- AUCTeX style for booktabs.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2004, 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

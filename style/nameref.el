@@ -1,6 +1,6 @@
-;;; nameref.el --- AUCTeX style for `nameref.sty'
+;;; nameref.el --- AUCTeX style for `nameref.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

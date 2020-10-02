@@ -1,6 +1,6 @@
-;;; scrlttr2.el --- AUCTeX style for scrlttr2.cls.
+;;; scrlttr2.el --- AUCTeX style for scrlttr2.cls.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2007, 2014, 2018 Free Software Foundation
+;; Copyright (C) 2002, 2007, 2014, 2018, 2020 Free Software Foundation
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-10-26

@@ -1,4 +1,4 @@
-;;; book.el - Special code for book style.
+;;; book.el - Special code for book style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

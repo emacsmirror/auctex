@@ -1,4 +1,4 @@
-;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'
+;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012, 2013, 2018, 2020 Free Software Foundation, Inc.
 

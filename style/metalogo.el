@@ -1,6 +1,6 @@
-;;; metalogo.el --- AUCTeX style for `metalogo.sty' version 0.12.
+;;; metalogo.el --- AUCTeX style for `metalogo.sty' version 0.12.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>

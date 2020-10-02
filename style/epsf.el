@@ -1,6 +1,6 @@
-;;; epsf.el - Support for the epsf style option.
+;;; epsf.el - Support for the epsf style option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2014, 2020 Free Software Foundation, Inc.
 
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 

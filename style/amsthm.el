@@ -1,6 +1,6 @@
-;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.
+;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 2013--2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2013--2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org

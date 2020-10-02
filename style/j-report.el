@@ -1,4 +1,4 @@
-;;; j-report.el - Special code for j-report style.
+;;; j-report.el - Special code for j-report style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

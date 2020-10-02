@@ -1,6 +1,6 @@
-;;; longtable.el --- AUCTeX style for `longtable.sty'.
+;;; longtable.el --- AUCTeX style for `longtable.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2018  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2020  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>

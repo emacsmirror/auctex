@@ -1,6 +1,6 @@
-;;; ltablex.el --- AUCTeX style for `ltablex.sty' (v1.1)
+;;; ltablex.el --- AUCTeX style for `ltablex.sty' (v1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)
+;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

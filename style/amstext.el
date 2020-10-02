@@ -1,4 +1,4 @@
-;;; amstext.el --- Style hook for the AMS-LaTeX amstext package.
+;;; amstext.el --- Style hook for the AMS-LaTeX amstext package.  -*- lexical-binding: t; -*-
 ;;;
 ;;; AUTHOR: Carsten Dominik <dominik@strw.leidenuniv.nl>
 

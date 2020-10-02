@@ -1,6 +1,6 @@
-;;; fbb.el --- AUCTeX style for `fbb.sty' (v1.07)
+;;; fbb.el --- AUCTeX style for `fbb.sty' (v1.07)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

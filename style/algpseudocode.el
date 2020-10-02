@@ -1,4 +1,4 @@
-;;; algpseudocode.el --- AUCTeX style for the (LaTeX) algpseudocode package
+;;; algpseudocode.el --- AUCTeX style for the (LaTeX) algpseudocode package  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

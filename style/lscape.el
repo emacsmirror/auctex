@@ -1,6 +1,6 @@
-;;; lscape.el --- AUCTeX style for `lscape.sty'
+;;; lscape.el --- AUCTeX style for `lscape.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

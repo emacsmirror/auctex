@@ -1,6 +1,6 @@
-;;; dk-bib.el --- AUCTeX style for `dk-bib.sty'
+;;; dk-bib.el --- AUCTeX style for `dk-bib.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex

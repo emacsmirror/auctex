@@ -1,4 +1,4 @@
-;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.
+;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 

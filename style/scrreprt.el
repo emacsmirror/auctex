@@ -1,6 +1,6 @@
-;;; scrreprt.el --- AUCTeX style for scrreprt.cls.
+;;; scrreprt.el --- AUCTeX style for scrreprt.cls.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005, 2018 Free Software Foundation
+;; Copyright (C) 2002, 2005, 2018, 2020 Free Software Foundation
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26

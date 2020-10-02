@@ -1,4 +1,4 @@
-;;; prosper.el --- Prosper style file for AUCTeX
+;;; prosper.el --- Prosper style file for AUCTeX  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2001, 2002, 2014, 2020 Free Software Foundation, Inc.
 

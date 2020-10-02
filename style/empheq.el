@@ -1,4 +1,4 @@
-;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)
+;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016-2020 Free Software Foundation, Inc.
 

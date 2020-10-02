@@ -1,4 +1,4 @@
-;;; algorithm.el --- AUCTeX style for the (LaTeX) algorithm package
+;;; algorithm.el --- AUCTeX style for the (LaTeX) algorithm package  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

@@ -1,6 +1,6 @@
-;;; textpos.el --- AUCTeX style for `textpos.sty' version v1.7j
+;;; textpos.el --- AUCTeX style for `textpos.sty' version v1.7j  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

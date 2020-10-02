@@ -1,6 +1,6 @@
-;;; polski.el --- AUCTeX style for `polski.sty'.
+;;; polski.el --- AUCTeX style for `polski.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org

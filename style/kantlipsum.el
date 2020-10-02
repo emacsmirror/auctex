@@ -1,6 +1,6 @@
-;;; kantlipsum.el --- AUCTeX style for `kantlipsum.sty'.
+;;; kantlipsum.el --- AUCTeX style for `kantlipsum.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>

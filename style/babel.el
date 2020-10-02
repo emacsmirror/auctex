@@ -1,6 +1,6 @@
-;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.
+;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2007, 2013-2019 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2007, 2013-2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

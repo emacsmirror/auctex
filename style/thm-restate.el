@@ -1,6 +1,6 @@
-;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)
+;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,4 +1,4 @@
-;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.
+;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1994, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
 

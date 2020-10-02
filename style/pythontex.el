@@ -1,4 +1,4 @@
-;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)
+;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 

@@ -1,4 +1,4 @@
-;;; ltxguide.el --- AUCTeX style for `ltxguide.cls' (2001/05/28)
+;;; ltxguide.el --- AUCTeX style for `ltxguide.cls' (2001/05/28)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 

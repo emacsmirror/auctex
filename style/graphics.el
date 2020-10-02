@@ -1,4 +1,4 @@
-;;; graphics.el --- Handle graphical commands in LaTeX 2e.
+;;; graphics.el --- Handle graphical commands in LaTeX 2e.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

@@ -1,4 +1,4 @@
-;;; wrapfig.el --- AUCTeX style for `wrapfig.sty' version v3.6
+;;; wrapfig.el --- AUCTeX style for `wrapfig.sty' version v3.6  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 

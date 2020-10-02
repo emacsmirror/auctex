@@ -1,4 +1,4 @@
-;;; amsart.el --- Style hook for the AMS-LaTeX article document class.
+;;; amsart.el --- Style hook for the AMS-LaTeX article document class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

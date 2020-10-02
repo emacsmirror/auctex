@@ -1,6 +1,6 @@
-;;; color.el --- AUCTeX style for `color.sty' (v1.1a)
+;;; color.el --- AUCTeX style for `color.sty' (v1.1a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

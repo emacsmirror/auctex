@@ -1,6 +1,6 @@
-;;; tabulary.el --- AUCTeX style for the tabulary package.
+;;; tabulary.el --- AUCTeX style for the tabulary package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

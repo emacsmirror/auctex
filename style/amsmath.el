@@ -1,4 +1,4 @@
-;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
+;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
 ;;      Free Software Foundation, Inc.

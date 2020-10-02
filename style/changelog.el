@@ -1,6 +1,6 @@
-;;; changelog.el --- AUCTeX style for `changelog.sty' (v2.0.0)
+;;; changelog.el --- AUCTeX style for `changelog.sty' (v2.0.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

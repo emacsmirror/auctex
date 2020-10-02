@@ -1,6 +1,6 @@
-;;; tabularx.el --- AUCTeX style for the tabularx package.
+;;; tabularx.el --- AUCTeX style for the tabularx package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2013-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2013-2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org

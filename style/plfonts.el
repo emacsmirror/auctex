@@ -1,4 +1,4 @@
-;;; plfonts.el - Setup AUC TeX for editing Polish text with plfonts.sty
+;;; plfonts.el - Setup AUC TeX for editing Polish text with plfonts.sty  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

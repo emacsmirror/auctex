@@ -1,6 +1,6 @@
-;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)
+;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

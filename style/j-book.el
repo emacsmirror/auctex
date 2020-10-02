@@ -1,4 +1,4 @@
-;;; j-book.el - Special code for j-book style.
+;;; j-book.el - Special code for j-book style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

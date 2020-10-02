@@ -1,6 +1,6 @@
-;;; scrbase.el --- AUCTeX style for the KOMA-Script bundle.
+;;; scrbase.el --- AUCTeX style for the KOMA-Script bundle.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2004, 2005, 2007, 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2004, 2005, 2007, 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26

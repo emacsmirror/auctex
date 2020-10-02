@@ -1,6 +1,6 @@
-;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)
+;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

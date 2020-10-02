@@ -1,4 +1,4 @@
-;;; swedish.el --- Setup AUCTeX for editing Swedish text.
+;;; swedish.el --- Setup AUCTeX for editing Swedish text.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

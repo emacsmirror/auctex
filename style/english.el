@@ -1,4 +1,4 @@
-;;; english.el --- Setup AUCTeX for editing English text.
+;;; english.el --- Setup AUCTeX for editing English text.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

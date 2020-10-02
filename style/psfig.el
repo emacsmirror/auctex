@@ -1,6 +1,6 @@
-;;; psfig.el - Support for the psfig style option.
+;;; psfig.el - Support for the psfig style option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2014, 2020 Free Software Foundation, Inc.
 
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 ;; Please direct comments to him.

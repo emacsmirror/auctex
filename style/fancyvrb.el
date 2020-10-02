@@ -1,4 +1,4 @@
-;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.0.
+;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.0.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2014, 2016-2018, 2020 Free Software Foundation, Inc.
 

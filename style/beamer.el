@@ -1,4 +1,4 @@
-;;; beamer.el --- AUCTeX style for the latex-beamer class
+;;; beamer.el --- AUCTeX style for the latex-beamer class  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003-2005, 2008, 2013-2016, 2018, 2020 Free Software Foundation, Inc.
 

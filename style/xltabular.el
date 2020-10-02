@@ -1,6 +1,6 @@
-;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)
+;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org

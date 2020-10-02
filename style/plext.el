@@ -1,6 +1,6 @@
-;;; plext.el --- AUCTeX style for the plext package.
+;;; plext.el --- AUCTeX style for the plext package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org

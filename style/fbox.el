@@ -1,4 +1,4 @@
-;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)
+;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019--2020 Free Software Foundation, Inc.
 

@@ -1,4 +1,4 @@
-;;; verbatim.el --- Style hook for the verbatim package.
+;;; verbatim.el --- Style hook for the verbatim package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2001, 2020 Free Software Foundation, Inc.
 

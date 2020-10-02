@@ -1,6 +1,6 @@
-;;; ulem.el --- AUCTeX style for `ulem.sty'
+;;; ulem.el --- AUCTeX style for `ulem.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Keywords: tex

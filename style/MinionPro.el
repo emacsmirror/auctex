@@ -1,6 +1,6 @@
-;;; MinionPro.el -- AUCTeX style for MinionPro.sty
+;;; MinionPro.el -- AUCTeX style for MinionPro.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org

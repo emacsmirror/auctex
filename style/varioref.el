@@ -1,6 +1,6 @@
-;;; varioref.el --- AUCTeX style for `varioref.sty' (v1.6b)
+;;; varioref.el --- AUCTeX style for `varioref.sty' (v1.6b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2013, 2015, 2018, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2013, 2015, 2018--2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;;         Mads Jensen <mje@inducks.org>

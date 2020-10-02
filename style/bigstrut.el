@@ -1,6 +1,6 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'
+;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org

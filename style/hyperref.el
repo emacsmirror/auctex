@@ -1,4 +1,4 @@
-;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
+;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2008, 2013-2020 Free Software Foundation, Inc.
 

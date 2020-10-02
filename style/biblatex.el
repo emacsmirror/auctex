@@ -1,6 +1,6 @@
-;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.
+;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2014, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,4 +1,4 @@
-;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.
+;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2011-2020 Free Software Foundation, Inc.
 

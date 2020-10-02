@@ -1,4 +1,4 @@
-;;; jarticle.el - Special code for jarticle class.
+;;; jarticle.el - Special code for jarticle class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

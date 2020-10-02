@@ -1,4 +1,4 @@
-;;; report.el - Special code for report style.
+;;; report.el - Special code for report style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

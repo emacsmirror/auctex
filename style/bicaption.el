@@ -1,4 +1,4 @@
-;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)
+;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 

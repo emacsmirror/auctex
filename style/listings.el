@@ -1,4 +1,4 @@
-;;; listings.el --- AUCTeX style for `listings.sty'
+;;; listings.el --- AUCTeX style for `listings.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004, 2005, 2009, 2013-2020 Free Software Foundation, Inc.
 

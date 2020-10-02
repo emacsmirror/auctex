@@ -1,4 +1,4 @@
-;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)
+;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004, 2005, 2006, 2014, 2018, 2020 Free Software Foundation, Inc.
 

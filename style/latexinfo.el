@@ -1,6 +1,6 @@
-;;; latexinfo.el - Support for LaTeXinfo files.
+;;; latexinfo.el - Support for LaTeXinfo files.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 2020 Free Software Foundation, Inc.
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
 

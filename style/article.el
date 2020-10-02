@@ -1,4 +1,4 @@
-;;; article.el - Special code for article style.
+;;; article.el - Special code for article style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

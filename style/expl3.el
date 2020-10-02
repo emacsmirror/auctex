@@ -1,4 +1,4 @@
-;;; expl3.el --- AUCTeX style for `expl3.sty'
+;;; expl3.el --- AUCTeX style for `expl3.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015, 2017-2020 Free Software Foundation, Inc.
 

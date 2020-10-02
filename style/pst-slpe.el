@@ -1,6 +1,6 @@
-;;; pst-slpe.el --- AUCTeX style for `pst-slpe.sty'
+;;; pst-slpe.el --- AUCTeX style for `pst-slpe.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007

@@ -1,6 +1,6 @@
-;;; italian.el --- Setup AUCTeX for editing Italian text.
+;;; italian.el --- Setup AUCTeX for editing Italian text.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: Davide G. M. Salvetti <salve@debian.org>

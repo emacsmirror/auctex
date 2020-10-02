@@ -1,4 +1,4 @@
-;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'
+;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2009, 2014, 2018, 2020 Free Software Foundation, Inc.
 

@@ -1,6 +1,6 @@
-;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.
+;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994, 1997, 2005, 2012, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 1994, 1997, 2005, 2012, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Berwin Turlach <statba@nus.edu.sg>
 ;; Maintainer: auctex-devel@gnu.org

@@ -1,6 +1,6 @@
-;;; slides.el --- AUCTeX style for the `slides' document class
+;;; slides.el --- AUCTeX style for the `slides' document class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2013, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org

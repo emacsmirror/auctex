@@ -1,4 +1,4 @@
-;;; url.el --- AUCTeX style for `url.sty'
+;;; url.el --- AUCTeX style for `url.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004-2005, 2018, 2020 Free Software Foundation, Inc.
 

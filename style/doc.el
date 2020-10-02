@@ -1,6 +1,6 @@
-;;; doc.el --- AUCTeX style for `doc.sty'
+;;; doc.el --- AUCTeX style for `doc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2008, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2008, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org

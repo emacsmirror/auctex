@@ -1,6 +1,6 @@
-;;; multirow.el --- AUCTeX style for `multirow.sty'
+;;; multirow.el --- AUCTeX style for `multirow.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
