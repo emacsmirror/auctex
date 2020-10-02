@@ -384,8 +384,8 @@ in `enumitem'-completions."
 	   (LaTeX-add-environments `(,name LaTeX-enumitem-env-with-opts))
 	   (LaTeX-add-enumitem-newlists (list name type))
 	   (TeX-ispell-skip-setcdr `((,name ispell-tex-arg-end 0)))
-	   (TeX-argument-insert name optional)
-	   (TeX-argument-insert type optional)
+	   (TeX-argument-insert name nil)
+	   (TeX-argument-insert type nil)
 	   (format "%s" depth)))))
 
     ;; \renewlist{<name>}{<type>}{<max-depth>}
@@ -401,7 +401,7 @@ in `enumitem'-completions."
     '("setlist"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
+		     (TeX-argument-prompt t nil "Environment(s), level(s)")
 		     (append
 		      (when (LaTeX-provided-package-options-member "enumitem"
 								   "includedisplayed")
@@ -418,7 +418,7 @@ in `enumitem'-completions."
     '("setlist*"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
+		     (TeX-argument-prompt t nil "Environment(s), level(s)")
 		     (append
 		      (when (LaTeX-provided-package-options-member "enumitem"
 								   "includedisplayed")

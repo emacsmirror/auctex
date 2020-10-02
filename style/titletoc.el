@@ -99,7 +99,7 @@ Removal is based on the return value of function
     ;;                {<label width>}{<leader width>}
     '("dottedcontents"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Sectioning command")
+		     (TeX-argument-prompt nil nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ] 3)
 
@@ -108,7 +108,7 @@ Removal is based on the return value of function
     ;;               {<filler-page-format>}[<below-code>]
     '("titlecontents"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Sectioning command")
+		     (TeX-argument-prompt nil nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional below code argument? ")
@@ -120,7 +120,7 @@ Removal is based on the return value of function
     ;;                {<filler-page-format>}[<separator>]
     '("titlecontents*"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Sectioning command")
+		     (TeX-argument-prompt nil nil "Sectioning command")
 		     (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional separator argument? ")
@@ -151,11 +151,11 @@ Removal is based on the return value of function
 	 (let ((name (if (and (member "newfloat" (TeX-active-styles))
 			      (LaTeX-newfloat-DeclareFloatingEnvironment-list))
 			 (completing-read
-			  (TeX-argument-prompt optional nil "Name of contents")
+			  (TeX-argument-prompt nil nil "Name of contents")
 			  (mapcar #'car
 				  (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
 		       (TeX-read-string
-			(TeX-argument-prompt optional nil "Name of contents")))))
+			(TeX-argument-prompt nil nil "Name of contents")))))
 	   (make-local-variable 'LaTeX-titletoc-section-command-list)
 	   (add-to-list 'LaTeX-titletoc-section-command-list name)
 	   (format "%s" name))))

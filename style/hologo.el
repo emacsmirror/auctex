@@ -140,7 +140,7 @@
 					LaTeX-hologo-key-val-options-global))
 			       (t
 				LaTeX-hologo-key-val-options-global)))))
-	   (TeX-argument-insert logo optional)
+	   (TeX-argument-insert logo nil)
 	   (format "%s" keyval)))))
 
     '("hologoDriverSetup" (TeX-arg-eval completing-read
@@ -184,7 +184,7 @@
 				'(("logo")))
 			       (t
 				nil)))))
-	   (TeX-argument-insert logo optional)
+	   (TeX-argument-insert logo nil)
 	   (format "%s" keyval)))))
 
     ;; Additional user macros

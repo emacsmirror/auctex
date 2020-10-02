@@ -152,7 +152,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt optional nil "Short cut"))))
+			  (TeX-argument-prompt nil nil "Short cut"))))
 	   (LaTeX-add-splitidx-newindices shortcut)
 	   (format "%s" shortcut)))))
 
@@ -160,20 +160,20 @@
     '("sindex"
       ;; I don't use `[ TeX-arg-index-tag ]' here
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       TeX-arg-index)
 
     ;; 3.4 Customizing index entries
     '("AtWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Short cut")
+		    (TeX-argument-prompt nil nil "Short cut")
 		    (LaTeX-splitidx-newindex-list))
       t)
 
     '("AtNextWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Short cut")
+		    (TeX-argument-prompt nil nil "Short cut")
 		    (LaTeX-splitidx-newindex-list))
       t)
 
@@ -183,14 +183,14 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt optional nil "Short cut"))))
+			  (TeX-argument-prompt nil nil "Short cut"))))
 	   (LaTeX-add-splitidx-newindices shortcut)
 	   (format "%s" shortcut)))))
 
     ;; 3.7 Including the generated indices in your document
     '("printindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
@@ -198,7 +198,7 @@
 
     '("printsubindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
@@ -206,7 +206,7 @@
 
     '("setindexpreamble"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       t)
 
@@ -246,7 +246,7 @@
        (TeX-add-symbols
 	'("index"
 	  [TeX-arg-eval completing-read
-			(TeX-argument-prompt optional nil "Short cut")
+			(TeX-argument-prompt t nil "Short cut")
 			(LaTeX-splitidx-newindex-list) ]
 	  (TeX-arg-index)))
        ;; Tell RefTeX to look in the optional arg. for the index short cut

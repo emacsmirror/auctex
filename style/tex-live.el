@@ -78,7 +78,7 @@
     '("boxedverbatiminput" LaTeX-fancyvrb-arg-file-relative)
     '("listinginput"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Value of firstnumber key")
+		    (TeX-argument-prompt nil nil "Value of firstnumber key")
 		    (cadr (assoc "firstnumber" LaTeX-fancyvrb-key-val-options-local)))
       LaTeX-fancyvrb-arg-file-relative)
 
@@ -91,7 +91,7 @@
     '("filename" "Directory")
     '("envname"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Environment")
+		    (TeX-argument-prompt nil nil "Environment")
 		    '("TEXMFCACHE"
 		      "TEXMFCNF"
 		      "TEXMFCONFIG"

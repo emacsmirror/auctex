@@ -332,13 +332,13 @@ to retrieve the list of fonts."
     ;; 23 Defining new features
     '("newAATfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New option" 2)
 
     '("newopentypefeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New option" t)
 
@@ -351,7 +351,7 @@ to retrieve the list of fonts."
     ;; 26 Renaming existing features & options
     '("aliasfontfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New name")
 
@@ -359,12 +359,12 @@ to retrieve the list of fonts."
       (TeX-arg-eval
        (lambda ()
 	 (let* ((key (completing-read
-		      (TeX-argument-prompt optional nil "Feature")
+		      (TeX-argument-prompt nil nil "Feature")
 		      LaTeX-fontspec-font-features-local))
 		(val (completing-read
-		      (TeX-argument-prompt optional nil "Existing name")
+		      (TeX-argument-prompt nil nil "Existing name")
 		      (cadr (assoc key LaTeX-fontspec-font-features-local)))))
-	   (TeX-argument-insert key optional)
+	   (TeX-argument-insert key nil)
 	   (format "%s" val))))
       "New name") )
 

@@ -238,12 +238,12 @@
     ;; 10.2 Other special typesetting
     '("Dash" 0)
     '("cs" (TeX-arg-eval let ((macro (completing-read
-				      (TeX-argument-prompt optional nil
+				      (TeX-argument-prompt nil nil
 							   "Command")
 				      (TeX-symbol-list))))
 			 (format "%s" macro)))
     '("env" (TeX-arg-eval let ((env (completing-read
-				     (TeX-argument-prompt optional nil
+				     (TeX-argument-prompt nil nil
 							  "Environment")
 				     (LaTeX-environment-list))))
 			  (format "%s" env)))
@@ -254,7 +254,7 @@
     ;; 12 Bibliography
     '("SetBibJustification"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Justification")
+		    (TeX-argument-prompt nil nil "Justification")
 		    '("\\raggedright"  "\\sloppy"))))
 
    ;; Fontification

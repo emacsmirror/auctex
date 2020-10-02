@@ -78,7 +78,7 @@ Removal is based on the return value of function
       (TeX-arg-eval
        (lambda ()
 	 (let ((ps (TeX-read-string
-		    (TeX-argument-prompt optional nil "Page style"))))
+		    (TeX-argument-prompt nil nil "Page style"))))
 	   (LaTeX-add-pagestyles ps)
 	   (format "%s" ps))))
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
@@ -106,14 +106,14 @@ Removal is based on the return value of function
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Level names")
+		     (TeX-argument-prompt nil nil "Level names")
 		     (LaTeX-titleps-section-command-list))
 		    ","))
 
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Level names")
+		     (TeX-argument-prompt nil nil "Level names")
 		     (LaTeX-titleps-section-command-list))
 		    ","))
 
@@ -140,12 +140,12 @@ Removal is based on the return value of function
 
     '("TitlepsPatchSection"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list)))
 
     '("TitlepsPatchSection*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list)))
 
     ;; 5. Marks
@@ -161,13 +161,13 @@ Removal is based on the return value of function
 
     '("pretitlemark"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list))
       "Text")
 
     '("pretitlemark*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list))
       "Text")
 

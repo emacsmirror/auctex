@@ -288,7 +288,7 @@
     '("defineshorthand"
       [ TeX-arg-eval mapconcat #'identity
 		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt optional nil "Language(s)")
+		      (TeX-argument-prompt t nil "Language(s)")
 		      (LaTeX-babel-active-languages)) ""]
       t nil)
     '("aliasshorthand"   "Original" "Alias")
@@ -299,7 +299,7 @@
     ;; 1.12 The base option
     '("AfterBabelLanguage"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Language")
+		    (TeX-argument-prompt nil nil "Language")
 		    LaTeX-babel-language-list)
       t)
 
@@ -307,11 +307,11 @@
     '("babelfont"
       [ TeX-arg-eval mapconcat #'identity
 		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt optional nil "Language(s)")
+		      (TeX-argument-prompt t nil "Language(s)")
 		      LaTeX-babel-language-list)
 		     "," ]
       (TeX-arg-eval let ((fontfam (completing-read
-				   (TeX-argument-prompt optional nil "font family")
+				   (TeX-argument-prompt nil nil "font family")
 				   '("rm" "sf" "tt"))))
 		    ;; Make sure `tex-buf.el' is also loaded otherwise
 		    ;; `TeX-check-engine-add-engines' is not defined.
@@ -332,7 +332,7 @@
     '("babelprovide"
       [ TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Language")
+		    (TeX-argument-prompt nil nil "Language")
 		    LaTeX-babel-language-list))
 
     ;; 1.18 Getting the current language name
@@ -342,17 +342,17 @@
     ;; 1.19 Hyphenation and line breaking
     '("babelhyphen"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Type/Text")
+		    (TeX-argument-prompt nil nil "Type/Text")
 		    '("soft" "hard" "repeat" "empty")))
     '("babelhyphen*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Type/Text")
+		    (TeX-argument-prompt nil nil "Type/Text")
 		    '("soft" "hard" "repeat" "empty")))
 
     '("babelhyphenation"
       [ TeX-arg-eval mapconcat #'identity
 		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt optional nil "Language(s)")
+		      (TeX-argument-prompt nil nil "Language(s)")
 		      LaTeX-babel-language-list)
 		     "," ]
       t)

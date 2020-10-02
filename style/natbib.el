@@ -116,7 +116,7 @@
       "Punctuation between years for common authors")
 
     '("citestyle" (TeX-arg-eval completing-read
-				(TeX-argument-prompt optional nil "Style")
+				(TeX-argument-prompt nil nil "Style")
 				'("plain" "plainnat" "agu" "egu"
 				  "agms" "dcu" "kluwer" "cospar" "nature")))
 

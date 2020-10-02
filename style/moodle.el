@@ -188,7 +188,7 @@
     '("moodleset"
       (TeX-arg-eval
        (lambda ()
-	 (let ((opts (TeX-read-key-val optional
+	 (let ((opts (TeX-read-key-val nil
 				       (append '(("ppi")) LaTeX-moodle-key-val-options))))
 	   (format "%s" opts)))))
 

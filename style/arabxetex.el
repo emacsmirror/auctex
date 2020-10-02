@@ -65,7 +65,7 @@
 	    (lambda (symbol)
 	      (list symbol
 		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Mode")
+				   (TeX-argument-prompt t nil "Mode")
 				   LaTeX-arabxetex-package-options ]
 		    t))
 	    (mapcar (lambda (lang) (concat "text" lang)) langs)))
@@ -77,7 +77,7 @@
 	      (list environment
 		    #'LaTeX-env-args
 		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Mode")
+				   (TeX-argument-prompt t nil "Mode")
 				   LaTeX-arabxetex-package-options ]))
 	    langs))
      ;;
@@ -97,7 +97,7 @@
     ;; 3.3 Transliteration
     '("SetTranslitConvention"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Mapping")
+		    (TeX-argument-prompt nil nil "Mapping")
 		    '("dmg" "loc")))
     '("SetTranslitStyle" "Style"))
 

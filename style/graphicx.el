@@ -237,13 +237,13 @@ subdirectories and inserts the relative file name.  See
 
     '("resizebox"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Width")
+		    (TeX-argument-prompt nil nil "Width")
 		    (append '("\\width" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
 			     (LaTeX-length-list))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Height")
+		    (TeX-argument-prompt nil nil "Height")
 		    (append '("\\height" "\\totalheight" "\\depth" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
@@ -252,13 +252,13 @@ subdirectories and inserts the relative file name.  See
 
     '("resizebox*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Width")
+		    (TeX-argument-prompt nil nil "Width")
 		    (append '("\\width" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
 			     (LaTeX-length-list))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Height")
+		    (TeX-argument-prompt nil nil "Height")
 		    (append '("\\height" "\\totalheight" "\\depth" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
@@ -267,19 +267,19 @@ subdirectories and inserts the relative file name.  See
 
     '("rotatebox" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 				       ()
-				     ([ TeX-arg-key-val (("x") ("y") ("origin") ("units")) ]))
+				       ([ TeX-arg-key-val (("x") ("y") ("origin") ("units")) ]))
       "Angle" "Argument")
 
     '("scalebox" "Horizontal scale" [ "Vertical scale" ] "Argument")
 
     '("includegraphics" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 					     (["llx,lly"] ["urx,ury"])
-					   ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+					     ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
       LaTeX-arg-includegraphics)
 
     '("includegraphics*" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 					      (["llx,lly"] ["urx,ury"])
-					    ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+					      ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
       LaTeX-arg-includegraphics)
 
     '("graphicspath" t)

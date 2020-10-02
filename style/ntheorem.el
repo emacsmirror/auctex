@@ -223,7 +223,7 @@ make them available as new environments.  Update
 
     '("theoremnumbering"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Numbering scheme")
+		    (TeX-argument-prompt nil nil "Numbering scheme")
 		    '("arabic" "roman" "Roman" "alph" "Alph"
 		      "greek" "Greek" "fnsymbol")))
 
@@ -349,7 +349,7 @@ make them available as new environments.  Update
       (TeX-arg-eval
        (lambda ()
 	 (let ((style (TeX-read-string
-		       (TeX-argument-prompt optional nil "Style name"))))
+		       (TeX-argument-prompt nil nil "Style name"))))
 	   (LaTeX-add-ntheorem-newtheoremstyles style)
 	   (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
 			(list style))
@@ -366,7 +366,7 @@ make them available as new environments.  Update
       (TeX-arg-eval
        (lambda ()
 	 (let ((layout (TeX-read-string
-		       (TeX-argument-prompt optional nil "List layout name"))))
+		       (TeX-argument-prompt nil nil "List layout name"))))
 	   (LaTeX-add-ntheorem-newtheoremlisttypes layout)
 	   (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
 			(list layout))

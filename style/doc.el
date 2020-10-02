@@ -86,7 +86,7 @@
     '("DescribeMacro" (TeX-arg-eval
 		       (lambda ()
 			 (let ((name (TeX-read-string
-				      (TeX-argument-prompt optional nil "Macro")
+				      (TeX-argument-prompt nil nil "Macro")
 				      TeX-esc)))
 			   (format "%s" name)))))
     '("DescribeEnv" "Environment")
@@ -100,7 +100,7 @@
     '("cmd" (TeX-arg-eval
 	     (lambda ()
 	       (let ((name (TeX-read-string
-			    (TeX-argument-prompt optional nil "Name")
+			    (TeX-argument-prompt nil nil "Name")
 			    TeX-esc)))
 		 (format "%s" name)))))
     "makelabel"

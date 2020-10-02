@@ -270,7 +270,7 @@ RefTeX users should customize or add ENVIRONMENT to
     '("ignoretheorems"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s)")
+		     (TeX-argument-prompt nil nil "Environment(s)")
 		     (append
 		      ;; check for \newtheorem from amsthm.sty:
 		      (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
