@@ -38,9 +38,6 @@
 (declare-function reftex-match-string "reftex" (n))
 (defvar reftex-section-regexp)
 
-(defun TeX-arg-none (arg)
-  (insert " "))
-
 (defun reftex-get-section-level-alphanum ()
   (save-excursion			; preserve position
     (save-match-data		 ; preserve matching data (important!)
@@ -76,13 +73,15 @@
  "alphanum"
  (lambda ()
    (LaTeX-largest-level-set "chapter")
-   (TeX-add-symbols '("levelup" TeX-arg-none))
+   (TeX-add-symbols
+    '("levelup" (TeX-arg-literal " ")))
    (make-local-variable 'LaTeX-section-list)
    (LaTeX-section-list-add-locally
     '(("part" 0)
       ;; the levels don't make sense with alphanum, I randomly chose 0...
       ("toc" 0)
-      ("sub" 0)) t)
+      ("sub" 0))
+    t)
    (setq LaTeX-section-label
 	 '(("part" . "part:")
 	   ("toc" . "sec:")
