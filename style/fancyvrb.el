@@ -267,7 +267,7 @@ RECUSTOM is non-nil, delete macros from the variable
 		(TeX-arg-eval
 		 (lambda ()
 		   (let ((name (TeX-read-string
-				(TeX-argument-prompt optional nil "Save name"))))
+				(TeX-argument-prompt nil nil "Save name"))))
 		     (LaTeX-add-fancyvrb-saveverbs name)
 		     (format "%s" name))))
 		TeX-arg-verb))
@@ -281,7 +281,7 @@ RECUSTOM is non-nil, delete macros from the variable
 	      `(,mac-name
 		(TeX-arg-eval
 		 completing-read
-		 (TeX-argument-prompt optional nil "Saved name")
+		 (TeX-argument-prompt nil nil "Saved name")
 		 (LaTeX-fancyvrb-saveverb-list))))
 	     (when (and (fboundp 'font-latex-add-keywords)
 			(eq TeX-install-font-lock 'font-latex-setup))
@@ -536,11 +536,11 @@ ENV is the name of current environment as a string."
     '("Verb*" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local] TeX-arg-verb)
     '("DefineShortVerb" (TeX-arg-eval
 			 TeX-read-string
-			 (TeX-argument-prompt optional nil "Character")
+			 (TeX-argument-prompt nil nil "Character")
 			 TeX-esc))
     '("UndefineShortVerb" (TeX-arg-eval
 			   TeX-read-string
-			   (TeX-argument-prompt optional nil "Character")
+			   (TeX-argument-prompt nil nil "Character")
 			   TeX-esc))
     ;; Verbatim environments
     '("fvset" (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
@@ -557,10 +557,10 @@ ENV is the name of current environment as a string."
       LaTeX-fancyvrb-arg-define-environment)
     '("RecustomVerbatimEnvironment"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Verbatim environment")
+		    (TeX-argument-prompt nil nil "Verbatim environment")
 		    LaTeX-fancyvrb-base-environments)
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Based on environment")
+		    (TeX-argument-prompt nil nil "Based on environment")
 		    LaTeX-fancyvrb-base-environments)
       (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
 
@@ -575,22 +575,22 @@ ENV is the name of current environment as a string."
       (TeX-arg-eval
        (lambda ()
 	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt optional nil "Save name"))))
+		      (TeX-argument-prompt nil nil "Save name"))))
 	   (LaTeX-add-fancyvrb-saveverbs name)
 	   (format "%s" name))))
       TeX-arg-verb)
     '("UseVerb" (TeX-arg-eval
 		 completing-read
-		 (TeX-argument-prompt optional nil "Saved name")
+		 (TeX-argument-prompt nil nil "Saved name")
 		 (LaTeX-fancyvrb-saveverb-list)))
     '("UseVerbatim" (TeX-arg-eval completing-read
-				  (TeX-argument-prompt optional nil "Saved name")
+				  (TeX-argument-prompt nil nil "Saved name")
 				  (LaTeX-fancyvrb-saveverbatim-list)))
     '("LUseVerbatim" (TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Saved name")
+				   (TeX-argument-prompt nil nil "Saved name")
 				   (LaTeX-fancyvrb-saveverbatim-list)))
     '("BUseVerbatim" (TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Saved name")
+				   (TeX-argument-prompt nil nil "Saved name")
 				   (LaTeX-fancyvrb-saveverbatim-list)))
 
     ;; Writing and reading verbatim files
