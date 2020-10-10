@@ -73,6 +73,9 @@ Insertion of environments in @LaTeX{} documents (i.e. @kbd{C-c C-e}) was
 improved.  The former code had a few bugs, which sometimes resulted in
 either spurious empty line or spurious comment prefix, or both,
 especially when the region is active.  Those bugs are now fixed.
+
+@item
+More bugs fixed, other minor features implemented.
 @end itemize
 
 @heading News in 12.2

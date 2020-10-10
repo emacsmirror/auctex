@@ -1,4 +1,4 @@
-Release notes for AUCTeX 12.2 with preview-latex
+Release notes for AUCTeX 12.3 with preview-latex
 ================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -24,73 +24,53 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-AUCTeX reflects the changes in LaTeX2e 2019-10-01 release.
-'filecontents' environment now takes an optional argument and can
-be used anywhere in a document.  The macros '\Ref' and
-'\labelformat' are moved from 'varioref.sty' to LaTeX kernel.
-amsmath has a new macro '\overunderset'.
+Support for 'PSTricks' is now PDF-oriented.  AUCTeX no longer turns
+off PDF mode for 'PSTricks' documents even without 'pst-pdf'.  It
+now sets up 'TeX-PDF-from-DVI' option so that PDF output is
+generated when 'TeX-PDF-mode' is enabled (default).  Users who want
+DVI output should disable PDF mode explicitly by file local
+variable, or customize 'TeX-PDF-mode' to 'nil'.
 
-A new method is implemented in preview-latex to adjust the
-foreground colors of generated images to those of Emacs, when the
-LaTeX command produces PDF.  The traditional method became invalid
-because of the change introduced in Ghostscript 9.27.
-Unfortunately, the new method doesn't work due to a bug in
-Ghostscript 9.27 and is valid only for Ghostscript > 9.27.  There
-is also a fallback method for gs 9.27 users which displays plain
-"black on white" images.  For successful function of preview-latex,
-the users are encouraged to set up the new user option
-'preview-pdf-color-adjust-method' to choose appropriate option
-among the three: new, traditional and fallback method.
+The function 'font-latex-update-font-lock' has been obsoleted in
+order to fix 'bug#37945'.  That function was used by several style
+files in order to refresh fontification after adding new symbols or
+verbatim constructs.  It is better to call 'font-lock-flush' in the
+former case and 'font-latex-set-syntactic-keywords' in the latter
+case.  The function 'font-latex-update-font-lock' still exists as a
+no-op which only shows a warning explaining how to update font-lock
+as mentioned above.
 
-AUCTeX has support for the Flymake package in Emacs 26 or newer.
-To enable, call 'M-x flymake-mode RET' or add this to your '.emacs'
-file:
-     (add-hook 'LaTeX-mode-hook #'flymake-mode)
+Math expression highlighting was improved.  Highlighting for
+documents with a lot of inline math expressions '$...$' won't get
+scrambled now ('bug#33139').
 
-The way the option 'TeX-record-buffer' is used was corrected.  It
-was used in just the opposite way as the document says.  Erase the
-customization if you have customized this option since it now acts
-in reverse to your expectation.
+There is small incompatibility due to this fix.  When odd number of
+dollar signs are in a comment, the subsequent lines are highlighted
+as math until another '$' appears.  You can insert a commented
+dollar sign ('%$') at the next suitable end of line as a
+workaround.
 
-A former customize option 'japanese-TeX-command-list' is removed.
-Use 'japanese-TeX-engine-default', or if it's really necessary,
-customize 'TeX-command-list' directly if the task which the option
-used to carry is required.
+In addition, it is no longer recommended to customize
+'font-latex-math-environments'.  Use 'texmathp-tex-commands'
+instead.
 
-Support for standard LaTeX without e-TeX extension is now very
-limited.  It doesn't work if raw TeX code is put on the command
-line to invoke latex command.  It also fails for region compilation
-('C-c C-r' and so on) with documents of non-ascii file name.  In
-addition, it no longer works with preview-latex.  We consider this
-incompatibility is permissible because e-TeX extension is enabled
-for standard LaTeX by default long ago.  LaTeX variants such as
-XeLaTeX and LuaLaTeX are not affected.
+AUCTeX tracks changes in LaTeX2e 2020-02-02 release.  AUCTeX
+supports the improvements to LaTeX font selection mechanism (NFSS).
+New macros like '\textsw' or '\textulc' are added to font insertion
+keyboard commands.  See the section for inserting font specifiers
+for details.  Further, the entries in the menu LaTeX, Insert Font
+are reorganized and adjusted accordingly.
 
-Key binds in Texinfo mode are improved.  Typing '$', '^', '_' and
-'\' now just self-inserts without pointless side effects in Texinfo
-mode.
+Macros previously provided by 'textcomp.sty' are now part of LaTeX
+kernel.  AUCTeX tracks this change as well and support for the new
+macro '\legacyoldstylenums' is added.
 
-In addition, the option 'TeX-electric-escape' is now effective in
-Texinfo mode.  When it is enabled, typing '@' will invoke
-'TeX-electric-macro' offering completion in similar style with
-other TeX modes of AUCTeX.
+Insertion of environments in LaTeX documents (i.e.  'C-c C-e') was
+improved.  The former code had a few bugs, which sometimes resulted
+in either spurious empty line or spurious comment prefix, or both,
+especially when the region is active.  Those bugs are now fixed.
 
-Fontification support for 'biblatex' package is improved and
-updated to macros provided by package version 3.12.  For qualified
-lists, at least 2 mandatory arguments are fontified.
-
-Support for column specifiers 'w' and 'W' provided by 'array'
-package is added to 'array.el'.  The correct counting of columns
-only works when the 'align' parameter is enclosed in braces, e.g.,
-'w{l}{3cm}'.  The short version 'wl{3cm}' is not supported.
-
-Entries for 'PDF Tools' are added in
-'TeX-view-program-list-builtin' for Windows and macOS. This viewer
-can be configured under these operating systems with an entry like
-this in an init file:
-     (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-
-Several other bugs were fixed, many minor features were added.
+More bugs fixed, other minor features implemented.
 
 Requirements
 ------------
@@ -149,10 +129,11 @@ Jobst Hoffmann, Tassilo Horn, Yvon Hevel, Orlando Iovino, Mads Jensen,
 Arne Jørgensen, David Kastrup, Ikumi Keita, Philip Kime, Oleh Krehel,
 Joost Kremers, Frank Küster, Jan-Åke Larsson, Matthew Leach, Antoine
 Levitt, Leo Liu, Vladimir Lomov, Stefan Monnier, Dan Nicolaescu, Piet
-van Oostrum, Nicolas Richard, Augusto Ritter Stoffel, Florent Rougon,
-Santiago Saavedra, Davide G. M. Salvetti, Rüdiger Sonderfeld, Holger
-Sparr, Mike Sperber, Reiner Steib, Christian Schlauer, Shiro Takeda,
-Mark Trettin (Please accept our apologies if we forgot somebody.)
+van Oostrum, Pieter Pareit, Nicolas Richard, Augusto Ritter Stoffel,
+Florent Rougon, Santiago Saavedra, Davide G. M. Salvetti, Rüdiger
+Sonderfeld, Holger Sparr, Mike Sperber, Reiner Steib, Christian
+Schlauer, Shiro Takeda, Mark Trettin (Please accept our apologies if
+we forgot somebody.)
 
 Footnotes:
 
