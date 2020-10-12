@@ -172,7 +172,8 @@ STYLESRC = style/prosper.el \
 	   style/changelog.el style/ltugboat.el  style/beamerswitch.el \
 	   style/multitoc.el  style/fbox.el      style/xkcdcolors.el \
 	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
-	   style/tex-live.el  style/algorithm.el style/algpseudocode.el
+	   style/tex-live.el  style/algorithm.el style/algpseudocode.el \
+	   style/appendix.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
