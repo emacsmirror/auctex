@@ -35,6 +35,7 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(defvar reftex-label-alist)
 
 (defvar LaTeX-changelog-env-key-val-options
   '(("section" ("true" "false"))
