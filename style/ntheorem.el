@@ -77,18 +77,19 @@ defined with \"\\newtheoremlisttype\".")
   "List of font declaration commands for \"\\newtheoremstyle\".")
 
 (defun LaTeX-arg-ntheorem-fontdecl (optional &optional prompt)
-  "Prompt for font declaration commands in \"\\theorem(body\|header)font\".
+  "Prompt for font declaration commands in \"\\theorem(body|header)font\".
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
-  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
-  ;; is hard-coded to `TeX-esc'.
   (let* ((crm-separator (regexp-quote TeX-esc))
-	 (fontdecl (mapconcat 'identity
+	 (fontdecl (mapconcat #'identity
 			      (TeX-completing-read-multiple
-			       (TeX-argument-prompt optional prompt "Font declaration")
-			       LaTeX-ntheorem-fontdecl nil nil TeX-esc)
+			       (TeX-argument-prompt optional prompt "Font declaration: \\" t)
+			       LaTeX-ntheorem-fontdecl)
 			      TeX-esc)))
-    (TeX-argument-insert fontdecl optional)))
+    (TeX-argument-insert fontdecl
+			 optional
+			 (when (and fontdecl (not (string= fontdecl "")))
+			   TeX-esc))))
 
 (defun LaTeX-ntheorem-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt

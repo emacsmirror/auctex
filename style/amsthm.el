@@ -58,15 +58,16 @@
   "Prompt for font declaration commands in \"\\newtheoremstyle\".
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
-  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
-  ;; is hard-coded to `TeX-esc'.
   (let* ((crm-separator (regexp-quote TeX-esc))
 	 (fontdecl (mapconcat #'identity
 			      (TeX-completing-read-multiple
 			       (TeX-argument-prompt optional prompt "Font: \\" t)
 			       LaTeX-amsthm-fontdecl)
 			      TeX-esc)))
-    (TeX-argument-insert fontdecl optional)))
+    (TeX-argument-insert fontdecl
+			 optional
+			 (when (and fontdecl (not (string= fontdecl "")))
+			   TeX-esc))))
 
 (defun LaTeX-amsthm-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -161,7 +162,6 @@ make them available as new environments."
     '("theoremstyle"
       (TeX-arg-eval completing-read
 		    (TeX-argument-prompt nil nil "Style")
-		    ;; LaTeX-amsthm-theoremstyle-list
 		    (LaTeX-amsthm-newtheoremstyle-list)))
     "qedhere"
     "swapnumbers"
