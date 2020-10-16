@@ -171,7 +171,7 @@ Optional argument LIST if non-nil is used as list of regexps of
 extensions to be matched."
   (unless list
     (setq list (LaTeX-includegraphics-extensions-list)))
-  (concat "\\." (mapconcat #'identity list "$\\|\\.") "$"))
+  (concat "\\." (mapconcat #'identity list "\\'\\|\\.") "\\'"))
 
 (defvar LaTeX-includegraphics-global-files nil
   "List of the non-local graphic files to include in LaTeX documents.
@@ -213,21 +213,16 @@ subdirectories and inserts the relative file name.  See
 	  (string-match (LaTeX-includegraphics-extensions) fname))))
    (TeX-master-directory)))
 
-(defun LaTeX-arg-includegraphics (_prefix)
+(defun LaTeX-arg-includegraphics (optional)
   "Ask for mandantory argument for the \\includegraphics command."
-  (let* ((image-file (funcall LaTeX-includegraphics-read-file)))
-    (TeX-insert-braces 0)
-    (insert
+  (let ((image-file (funcall LaTeX-includegraphics-read-file)))
+    (TeX-argument-insert
      (if LaTeX-includegraphics-strip-extension-flag
-	 ;; We don't have `replace-regexp-in-string' in all (X)Emacs versions:
-	 (with-temp-buffer
-	   (insert image-file)
-	   (goto-char (point-max))
-	   (when (search-backward-regexp (LaTeX-includegraphics-extensions)
-					 nil t 1)
-	     (replace-match ""))
-	   (buffer-string))
-       image-file))))
+	 (replace-regexp-in-string (LaTeX-includegraphics-extensions)
+				   ""
+				   image-file)
+       image-file)
+     optional)))
 
 (TeX-add-style-hook
  "graphicx"
