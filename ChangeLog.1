@@ -1,3 +1,887 @@
+2020-10-18  Mosè Giordano  <mose@gnu.org>
+
+	Mark default argument to `LaTeX-arg-polyglossia-lang' as optional
+
+	* style/polyglossia.el (LaTeX-arg-polyglossia-lang): The `default' argument
+	  isn't currently used, mark it as ignored.
+
+2020-10-10  Mosè Giordano  <mose@gnu.org>
+
+	Prepare for upcoming release
+
+2020-08-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Simplify mode line for emacs 27
+
+	* tex-buf.el: Don't add an entry in `minor-mode-alist' for
+	`compilation-in-progress'. In emacs 27, compile.el adds a similar
+	entry in `mode-line-modes'.
+
+2020-08-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix document
+
+	* doc/auctex.texi (Fontification of math): Delete incorrect
+	description.
+
+2020-08-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Restore all math environments in texmathp.el
+
+	* texmathp.el (texmathp-tex-commands-default): Restore all math
+	environments from style files. The idea to update t-t-c-d by style
+	files afterwards fails when texmathp is used solely in external
+	packages like org mode.
+	* style/amsmath.el:
+	* style/breqn.el:
+	* style/empheq.el:
+	* style/mathtools.el:
+	Adjust in accord with the above change.
+	* doc/changes.texi: Delete relevant entry.
+
+2020-08-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Prepare for pdf output for PSTricks documents
+
+	* style/pstricks.el ("pstricks"): Prepare for pdf output rather than
+	turn off PDF mode.
+	(): Update copyright year.
+	* doc/changes.texi: Mention above change.
+
+2020-07-28  Arash Esbati  <arash@gnu.org>
+
+	Add an extra check for tex-buf.el in some style hooks
+
+	* style/arabxetex.el ("arabxetex"):
+	* style/bidi.el ("bidi"):
+	* style/fontspec.el ("fontspec"):
+	* style/polyglossia.el ("polyglossia"): Check if "tex-buf.el" is
+	loaded and require it otherwise.  `TeX-check-engine-add-engines'
+	is defined in "tex-buf.el" and the hook would exit too early if
+	the library isn't loaded.
+
+2020-07-24  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Merge prv-emacs.el into preview.el.in
+
+	* preview.el.in: Merge all contents of prv-emacs.el.
+	* prv-emacs.el: Delete.
+	* Makefile.in:
+	* configure.ac:
+	Drop prv-emacs.el.
+
+2020-07-22  Arash Esbati  <arash@gnu.org>
+
+	Treat \choice like \item
+
+	* style/exam.el ("exam"): Add "choice" to `LaTeX-item-regexp'.
+	Simplify regexp for "subpart" and "subsubpart".
+
+2020-07-19  Arash Esbati  <arash@gnu.org>
+
+	Update style/csquotes.el to package version 5.2j
+
+	* style/csquotes.el: Track changes in package version 5.2j.
+	Remove deprecated macros, improve query for language argument.
+	Add keyval query of package options.
+	(LaTeX-csquotes-insert-environment): Remove function and use
+	`LaTeX-env-args' instead.
+
+2020-07-13  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add support of \tag for texmathp
+
+	* style/amsmath.el (): Add entries for \tag and \tag* to
+	`texmathp-tex-commands-default'.
+
+2020-07-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Cater for case where fontification match goes over limit
+
+	* font-latex.el (font-latex-match-quotation): Cater for case
+	where fontification match goes over limit.
+	Drop `string-make-multibyte'. It's no longer necessary because
+	all supported emacsen handle multibyte strings well enough.
+	(font-latex--updated-region-end): Adjust comments.
+
+2020-07-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix previous commit and add new test
+
+	* font-latex.el (font-latex-extend-region-backwards-quotation): Move
+	the point back to the correct position when the inner loop search
+	fails.
+	* tests/latex/font-latex-test.el
+	(font-latex-extend-region-backwards-quotation): New test.
+
+2020-07-11  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't extend font lock region too eagerly (bug#42267)
+
+	* font-latex.el (font-latex-extend-region-backwards-quotation): If
+	there is no matching open quote, don't extend the font lock region.
+
+2020-07-03  Arash Esbati  <arash@gnu.org>
+
+	Add short verb characters to `ispell-tex-skip-alist'
+
+	* style/shortvrb.el ("shortvrb"): Add entries in
+	`LaTeX-shortvrb-chars to `ispell-tex-skip-alist' in order to skip
+	verbatim content during spell checking.
+
+2020-07-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Ajust document
+
+	* doc/preview-latex.texi (Key bindings and user-level lisp functions):
+	* preview.el.in (preview-at-point):
+	Delete mention about zmacs-regions.
+	* doc/auctex.texi (Known problems): Delete comment which is no longer
+	valid because the current highlighting of $...$ is search-based, not
+	syntactic.
+
+2020-07-01  Arash Esbati  <arash@gnu.org>
+
+	Support \newblock macro
+
+	* latex.el (LaTeX-common-initialization): Add entry for \newblock
+	marco.
+	Add "bibindent" to list of known lengths.
+	(LaTeX-paragraph-commands-internal): Add "newblock".
+
+2020-06-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Get rid of gabage in generated texi file
+
+	* doc/preview-dtxdoc.pl (MAIN): Add rule to delete dtx comment ^^A.
+	(): Add coding tag. Update copyright year.
+
+2020-06-28  Arash Esbati  <arash@gnu.org>
+
+	Update style/xparse.el to package dated 2020-03-06
+
+	* style/xparse.el: Update style to package version 2020-03-06
+	incl. auto-parsing capabilities.  Fix fontification of provided
+	macros.
+
+2020-06-27  Tassilo Horn  <tsdh@gnu.org>
+
+	Document deprecation of font-latex-update-font-lock
+
+	* doc/changes.texi: Document deprecation of font-latex-update-font-lock.
+
+2020-06-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Accommodate preview.dtx to new font-latex.el
+
+	* latex/preview.dtx: Add "^^A$" so that |$| doesn't mess up the
+	highlighting of TeX codes at later part.
+	* doc/auctex.texi: Add mention about usage of "^^A$" in docTeX
+	documents.
+
+2020-06-19  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add TODO item about remove-style feature
+
+	* doc/todo.texi (Mid-term Goals): Add an item about remove-style
+	feature.
+	* doc/changes.texi (News in 12.3): Fix typo.
+
+2020-06-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve conformance to code conventions, and documents
+
+	* font-latex.el (font-latex-update-math-env): Rename by changing "--"
+	to "-" in function name.
+	Don't alter user customize option `font-latex-math-environments'. In
+	order to achieve that, use always `texmathp-tex-commands1' for
+	input and omit argument LIST.
+	* style/empheq.el: Arrange in accord with the above changes.
+	* style/amsmath.el:
+	* style/breqn.el:
+	* style/mathtools.el:
+	Arrange in accord with the above changes.
+	Use `cl-pushnew' instead of `add-to-list' and require cl-lib in order
+	to do that.
+	* doc/changes.texi (News in 12.3):
+	* texmathp.el:
+	Mention change about support for AMS-LaTeX and packages mathtools,
+	empheq and breqn.
+
+2020-06-17  Tassilo Horn  <tsdh@gnu.org>
+
+	Don't call TeX-remove-style in TeX-arg-document.
+
+	* latex.el (TeX-arg-document): Don't call TeX-arg-document.
+
+2020-06-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use constant regexp to fontify math environments
+
+	* font-latex.el (font-latex--match-math-envII-regexp): New internal
+	variable to store regexp to search math environments such as
+	"equation".
+	(font-latex-match-math-envII): Use it.
+	(font-latex--update-math-env): New function to update
+	`font-latex-math-environments' and build
+	`font-latex--match-math-envII-regexp' from it.
+	(font-latex-math-environments-from-texmathp): Remove.
+	(font-latex-math-environments): Change default value to nil and
+	initialize at top level by new function.
+	* style/breqn.el:
+	* style/empheq.el:
+	* style/mathtools.el:
+	Arrange in accord with the above change.
+	* style/amsmath.el:
+	Arrange in accord with the above change.
+	Add fontification rule for \boxed{}.
+	* doc/auctex.texi:
+	Add instruction to convert customization.
+
+2020-06-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix regression of font lock
+
+	* font-latex.el (font-latex-match-math-envII): Store the position of
+	"\begin{foo}" as (match-beginnig 0) so that `font-lock-multiline' text
+	property covers it. Store the range of math expression as
+	subexpression 1.
+	(font-latex-make-user-keywords): Arrange in accord with the above
+	change.
+
+2020-06-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix typos
+
+	* doc/changes.texi (News in 12.3):
+	* tests/latex/fontification-general.tex (AUCTeX fontification):
+	Fix typos.
+
+2020-06-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update documents
+
+	* doc/auctex.texi (Fontification of math):
+	* doc/changes.texi (News in 12.3):
+	* font-latex.el (font-latex-math-environments):
+	Document that variable `font-latex-math-environments' is no longer
+	suitable for personal customization and recommend to use
+	`texmathp-tex-commands' instead.
+	* tests/latex/fontification-general.tex: Mention new function
+	`font-latex-extend-region-backwards-math'
+
+2020-06-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* texmathp.el: Add comment about additional bug.
+
+2020-06-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Recover compatibility for older emacsen
+
+	* font-latex.el (font-latex-fontify-region): Add check for return
+	value from `font-lock-default-fontify-region'.
+
+2020-06-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Reconsider region extension
+
+	* font-latex.el (font-latex-fontify-region): Consider cases that
+	`font-lock-extend-region-functions' extends the region inside
+	`font-lock-default-fontify-region'. Use the return value from it to
+	construct the correct region.
+	(font-latex-match-math-env):
+	(font-latex-match-math-envII):
+	(font-latex-match-dollar-math):
+	Raise `font-latex--updated-region-end' to at least LIMIT when
+	necessary.
+	(font-latex--updated-region-end): Fix comments.
+
+2020-06-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Delete overhead in extending font lock range of math expression
+
+	* font-latex.el (font-latex-math-environments-from-texmathp): New
+	helper function.
+	(font-latex-math-environments): Take default value using the above
+	function.
+	(font-latex-extend-region-backwards-math): Rename from
+	`font-latex-extend-region-backwards-dollar-math' and include the
+	functionality of `font-latex-extend-region-backwards-math-env' and
+	`font-latex-extend-region-backwards-math-envII'.
+	(font-latex-extend-region-backwards-math-env):
+	(font-latex-extend-region-backwards-math-envII):
+	Remove.
+	(font-latex-setup): Simplify according to the above change.
+	* texmathp.el (texmathp-tex-commands-default): Move entries not in
+	standard LaTeX to the respective style files.
+	* style/amsmath.el ():
+	* style/breqn.el ():
+	* style/empheq.el ():
+	* style/mathtools.el ():
+	Add package specific entries to `texmathp-tex-commands-default' and
+	take additions for `font-latex-math-environments' from it rather than
+	adding constant entries.
+
+2020-06-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update region extension in font-latex.el
+
+	* font-latex.el (font-latex--updated-region-end): New variable to
+	record the end of the region that fontification actually took place.
+	(font-latex-fontify-region): New function to utilize it.
+	(font-latex-setup): Assign it to `font-lock-fontify-region-function'.
+	(font-latex-match-math-env): Search closing tag beyond limit honoring
+	`font-latex-multiline-boundary'.
+	Use new variable.
+	(font-latex-match-math-envII):
+	(font-latex-match-dollar-math):
+	Use new variable.
+
+2020-06-14  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add support for algopseudocde style
+
+	* Makefile.in (STYLESRC): Add algopseudocde style
+
+	* style/algpseudocode.el: Add support for the algopseudocde (algorithmcx)
+		style
+
+2020-06-14  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add support for algorithm style
+
+	* Makefile.in (STYLESRC): Add algorithm style
+
+	* style/algorithm.el: Add support for the algorithm style
+
+2020-06-13  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Ignore 3 consective $'s properly
+
+	* font-latex.el (font-latex-match-dollar-math): Ignore 3 or more
+	consecutive $'s when searching opening of $...$ or $$...$$, instead of
+	stopping to return nil.
+	* tests/latex/font-latex-test.el: New test.
+
+2020-06-11  Tassilo Horn  <tsdh@gnu.org>
+
+	Trigger refontification in font-latex-add-to-syntax-alist.
+
+	* font-latex.el (font-latex-add-to-syntax-alist): Trigger refontification.
+
+2020-06-11  Tassilo Horn  <tsdh@gnu.org>
+
+	Omit hard font-lock reset also in font-latex-add-to-syntax-alist
+
+	* font-latex.el (font-latex-add-to-syntax-alist): Don't nilify
+	font-lock-set-defaults but adjust font-lock-syntax-table directly as suggested
+	by Ikumi Keita on auctex-devel.
+
+2020-06-10  Tassilo Horn  <tsdh@gnu.org>
+
+	Obsolete font-latex-update-font-lock (bug#37945)
+
+	* font-latex.el (font-latex-add-keywords): Don't call
+	font-latex-update-font-lock but font-lock-flush.
+	(font-latex-update-font-lock): Make obsolete and emit a warning when called.
+	* style/alltt.el: Adapt, i.e., don't call font-latex-update-font-lock but maybe
+	font-latex-set-syntactic-keywords.
+	* style/beamer.el: Dito.
+	* style/comment.el: Dito.
+	* style/expl3.el: Dito.
+	* style/fancyhdr.el: Dito.
+	* style/fancyvrb.el: Dito.
+	* style/fvextra.el: Dito.
+	* style/hyperref.el: Dito.
+	* style/listings.el: Dito.
+	* style/ltxguide.el: Dito.
+	* style/minted.el: Dito.
+	* style/pythontex.el: Dito.
+	* style/revtex4-2.el: Dito.
+	* style/tex-live.el: Dito.
+	* style/url.el: Dito.
+	* style/verbatim.el: Dito.
+
+2020-06-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* doc/changes.texi: Delete words inappropriate for raw file.
+
+2020-06-08  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Complement document
+
+	* doc/changes.texi: Mention workaround for new incompatibility.
+	* doc/auctex.texi: Add missing entry to TOC.
+
+2020-06-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* doc/changes.texi (News in 12.3): Add news about fix of bug#33139.
+
+2020-06-02  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use search-based fontification for $...$ (bug#33139)
+
+	It turned out that using "text quotes" syntax for "$" in
+	`font-lock-syntax-table' sometimes leads to scrambled fontification
+	about in-line math $...$ (bug#33139). That's because conflicting
+	results of `syntax-ppss' are compiled into syntax-ppss cache as
+	explained in:
+	https://lists.gnu.org/archive/html/emacs-devel/2020-05/msg02725.html
+	We, Keita, Tassilo and Arash discussed this issue and decided to use
+	search-based fontification for $...$ since syntactic fontification for
+	$...$ doesn't seem prospective with regard to this bug.
+
+	* font-latex.el (font-latex-match-dollar-math):
+	(font-latex-find-dollar-math,font-latex-extend-region-backwards-dollar-math):
+	New functions to do search-based fontification for $...$.
+	Fontification facility for $$...$$ is merged into them.
+	(font-latex-make-user-keywords,font-latex-setup): Use new functions.
+	(font-latex-syntax-alist): Don't change syntax of "$" during font lock.
+	(font-latex-syntactic-face-function): Simplify.
+
+2020-05-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Simplify regexp in texmathp.el
+
+	* texmathp.el (texmathp-compile): Simplify regexp. In [^...] backslash
+	and dollar have no special meaning so they can (should) be raw.
+
+2020-05-28  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Don't make TeX-remove-style-hook buffer-local.
+
+	* tex.el (TeX-remove-style-hook): Not buffer-local anymore.
+
+2020-05-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix false negative of texmathp (bug#41559)
+
+	* texmathp.el (texmathp-compile): Fix `texmathp-onoff-regexp' to allow
+	switch to begin at (point-min).
+	Use `regexp-opt' instead of `mapconcat'+`regexp-quote'.
+	(texmathp): Use `>=' instead of `>' so that match is updated even when
+	arg-on or sw-on begins at (point-min).
+	* tests/latex/texmathp-test.el: New test.
+
+2020-05-25  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix regression of unfontify-region
+
+	* font-latex.el (font-latex-unfontify-region): Restore `invisible' as
+	removed property. My commit on Jan 7 was partially wrong. It kept "^"
+	and "_" invisible even when commented out if
+	`font-latex-fontify-script' is `invisible'.
+
+2020-05-22  Arash Esbati  <arash@gnu.org>
+
+	Fontify content of comment environment
+
+	* style/verbatim.el ("verbatim"): Add fontification support for
+	comment environment.  Delete unnecessary `function' in the hook.
+
+2020-05-17  Tassilo Horn  <tsdh@gnu.org>
+
+	Empty commit fixing ChangeLog.
+
+	* font-latex.el (font-latex-syntax-alist): This variable has not been deleted
+	as suggested by the previous entry.
+	(font-latex-extend-region-functions): Delete defvar.  Now set via
+	`font-lock-defaults'.
+
+2020-05-17  Tassilo Horn  <tsdh@gnu.org>
+
+	Modernize font-latex.el
+
+	- Use a syntax-propertize-function.
+	- Use normal font-lock-extend-region-functions.
+	- Add a function to syntax-propertize-extend-region-functions.
+	- Use lexical-binding.
+
+	* font-latex.el: Use lexical-binding.
+	(font-latex-syntax-alist): Delete defvar.  Now set via `font-lock-defaults'.
+	(font-latex-syntax-propertize-function): New defun being set as
+	`syntax-propertize-function'.
+	(font-latex-extend-region-backwards-command-with-args,
+	font-latex-extend-region-backwards-command-in-braces,
+	font-latex-extend-region-backwards-math-env,
+	font-latex-extend-region-backwards-math-envII,
+	font-latex-extend-region-backwards-quotation): Convert to normal
+	`font-lock-extend-region-functions'.
+	(font-latex-sp-extend-region-backwards-verb-env): New defun used in
+	`syntax-propertize-extend-region-functions'.
+	(font-latex-setup): Set `font-lock-extend-region-functions',
+	`syntax-propertize-extend-region-functions', and `syntax-propertize-function'
+	via `font-lock-defaults'.
+	(font-latex-jit-lock-force-redisplay, font-latex-fontify-region): Delete
+	defuns.
+	(font-latex-unfontify-region): Remove unused lexical variable.
+	(font-latex-script-char): Mark argument as ignored to silence the
+	byte-compiler.
+
+2020-05-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update all mode lines
+
+	* tex-buf.el (TeX-command-sentinel): Supply argument t for
+	`force-mode-line-update' and discard useless `with-current-buffer'.
+	* preview.el.in: Replace all
+	`(set-buffer-modified-p (buffer-modified-p))' with
+	`(force-mode-line-update)' and remove `sit-for' calls accompanying
+	them.
+
+2020-04-20  Arash Esbati  <arash@gnu.org>
+
+	Update style/breqn.el to package version 0.98j
+
+	* style/breqn.el (LaTeX-breqn-key-val-options): Delete no-op keys
+	"background" and "color".
+	(LaTeX-breqn-key-val-options-local): Delete now unneeded variable,
+	also from the style hook.
+	(LaTeX-breqn-env): Use `LaTeX-breqn-key-val-options' instead of
+	`LaTeX-breqn-key-val-options-local'.
+	(LaTeX-breqn-update-color-keys): Delete function and entry for
+	`TeX-auto-cleanup-hook'.
+
+2020-04-11  Tassilo Horn  <tsdh@gnu.org>
+
+	Fix some regexp issues reported by relint.
+
+	* latex.el (LaTeX-209-to-2e): Fix regexp issues reported by relint.
+	* tex-buf.el (LaTeX-warnings-regexp, TeX-LaTeX-sentinel, TeX-parse-error):
+	Dito.
+
+2020-04-09  Pieter Pareit  <pieter.pareit@gmail.com>  (tiny change)
+
+	Fix y-or-n-p query prompts
+
+	* style/prosper.el (LaTeX-prosper-insert-slide): Fix query prompt.
+	("prosper"): Delete unnecessary (funtion ...) in the hook.
+
+	* tex-buf.el (TeX-check-engine):
+	* tex-wizard.el (TeX-wizard): Fix query prompt.
+
+2020-04-09  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Document latest changes.
+
+2020-04-08  Arash Esbati  <arash@gnu.org>
+
+	Track LaTeX kernel changes for textcomp package
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add entry
+	for \legacyoldstylenums to type-command class.
+
+	* latex.el (LaTeX-common-initialization): Move all entries from
+	textcomp.el into latex.el since the macros are part of kernel with
+	2020-02-02 release.
+	Add support for \legacyoldstylenums.
+
+	* style/textcomp.el: Move all entries to latex.el.
+	(LaTeX-textcomp-package-options): Update options.
+
+2020-04-07  Arash Esbati  <arash@gnu.org>
+
+	Load caption style when asking for bicaption package options
+
+	* style/bicaption.el (LaTeX-bicaption-package-options): Load
+	"caption" style when making the query for package options.
+
+2020-04-06  Arash Esbati  <arash@gnu.org>
+
+	Load caption style before asking for package options
+
+	* style/subcaption.el (LaTeX-subcaption-package-options): Load
+	"caption" style in order to make `LaTeX-caption-key-val-options'
+	defined when calling the function.  (Emacs bug#40464)
+
+2020-04-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* preview.el.in (preview-gs-open): Use wrapper function.
+
+2020-03-29  Arash Esbati  <arash@gnu.org>
+
+	Add new style/tex-live.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/tex-live.el: New file.
+
+2020-03-26  Arash Esbati  <arash@gnu.org>
+
+	Update style/listings.el
+
+	* style/listings.el (LaTeX-listings-key-val-options): Add
+	"consecutivenumbers" key.
+	("listings"): Add \lstlistingnamestyle and \thelstlisting macros.
+
+2020-03-26  Arash Esbati  <arash@gnu.org>
+
+	Add new style/overpic.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/overpic.el: New file.
+
+2020-03-23  Arash Esbati  <arash@gnu.org>
+
+	Fix regexp for parsing optional arguments
+
+	* latex.el (LaTeX-auto-minimal-regexp-list):
+	(LaTeX-auto-class-regexp-list): Fix regexp for parsing optional
+	argument of \usepackage, \RequirePackage and \LoadClass.
+
+2020-02-14  Arash Esbati  <arash@gnu.org>
+
+	Add new style/ltxguide.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/ltxguide.el: New file.
+
+2020-01-25  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add support for some missing environments
+
+	* style/exam.el (LaTeX-exam-insert-item):
+	("exam"): Add support for various "choices" and "checkboxes"
+	environments.
+
+	("exam"): Append the entries added to `LaTeX-item-list'.
+	Enter a space in the buffer after the \choice macro.
+
+2020-01-25  Arash Esbati  <arash@gnu.org>
+
+	Add fontification support \textnormal macro
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add
+	entry for \textnormal to "type-command" class.
+
+2020-01-25  Arash Esbati  <arash@gnu.org>
+
+	* doc/auctex.texi (Font Specifiers): Document new font macros.
+
+2020-01-18  Arash Esbati  <arash@gnu.org>
+
+	Move customizable variable into tex-style.el
+
+	* style/shortvrb.el: Move definition of `LaTeX-shortvrb-chars'
+	into `tex-style.el'.
+	Delete check for function `font-latex-set-syntactic-keywords' and
+	check for feature font-latex instead.
+
+	* tex-style.el (LaTeX-shortvrb-chars): Add entry for
+	`LaTeX-shortvrb-chars'.
+
+2020-01-18  Arash Esbati  <arash@gnu.org>
+
+	Add new font macros in the related menus
+
+	* latex.el (LaTeX-mode-menu): Add new entries for new kernel font
+	macros.  Reorder the entries in groups family, series, shapes and
+	miscellaneous.
+
+2020-01-11  Arash Esbati  <arash@gnu.org>
+
+	Add new style/revtex4-2.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/revtex4-2.el: New file.
+
+	* tex-style.el (LaTeX-write18-enabled-p): Delete * and whitespace
+	in docstring.
+	Indent comment.
+	Add customize entries for revtex4-2.el.
+
+2020-01-08  Arash Esbati  <arash@gnu.org>
+
+	Adjust style/fontaxes.el to LaTeX kernel
+
+	* style/fontaxes.el ("fontaxes"): Comment out entries for macros
+	which are now provided by LaTeX kernel.  Also remove fontification
+	support.
+
+2020-01-08  Arash Esbati  <arash@gnu.org>
+
+	Improve support for extended NFSS macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Move
+	entries for \normalfont and \normalshape to `function' class.
+	Add \textssc to `bold-command' and \sscshape to `bold-declaration'
+	class.
+
+	* latex.el (LaTeX-common-initialization): Add entries for `spaced
+	small caps' macros \sscshape and \textssc.  \textssc is not part
+	of `LaTeX-font-list' yet.
+
+2020-01-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	According to NEWS.22, `font-lock-extra-managed-props' is available in
+	all supported emacsen.
+
+	* font-latex.el (font-latex-script,font-latex-script-char): Remove
+	`boundp' test for `font-lock-extra-managed-props'.
+	(font-latex-unfontify-region): Don't play with `invisible' text
+	property because it is now handled by font-lock thanks to
+	`font-lock-extra-managed-props'.
+
+2020-01-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't use obsolete variable
+
+	According to NEWS.20, `font-lock' no longer supports
+	`font-lock-comment-start-regexp'.
+
+	* font-latex.el (defvar): Remove `defvar' for
+	`font-lock-comment-start-regexp'.
+	(font-latex-setup): Don't include `font-lock-comment-start-regexp' in
+	`font-lock-defaults'.
+
+2020-01-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code for older emacsen
+
+	Since `font-lock-multiline' is available in all supported emacsen, we
+	no longer need `font-latex-multiline'.
+
+	* font-latex.el (font-latex-setup): Remove `boundp' check.
+	(font-latex-unfontify-region): Delete unnecessary code.
+	(font-lock-after-change-function): Delete obsolete advice.
+	(font-latex-put-multiline-property-maybe): Remove.
+	(font-latex-match-command-with-arguments):
+	(font-latex-match-command-in-braces):
+	(font-latex-match-math-env):
+	(font-latex-match-math-envII):
+	(font-latex-match-quotation):
+	Remove call on `font-latex-put-multiline-property-maybe'.
+
+2020-01-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Delete obsolete comment
+
+	* font-latex.el: Delete obsolete comment.  `font-latex-do-multi-line'
+	was removed in 2007.
+
+2020-01-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add changelog for my previous bug fix
+
+	* doc/changes.texi (News in 12.3): Add a new entry for bug fix of
+	`LaTeX-insert-environment' (C-c C-e).
+
+2020-01-05  Arash Esbati  <arash@gnu.org>
+
+	Support extended NFSS shapes with 2020-02-02 LaTeX kernel
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add
+	\textulc and \textsw to `bold-command' class, the respective
+	declarations to `bold-declaration'.
+	Add reset \normalfont and \normalshape to `type-declaration'
+	class.
+
+	* latex.el (LaTeX-font-list): Add the macros \textulc and \textsw
+	and bind the to C-l and C-w respectively.
+	(LaTeX-common-initialization): Add the matching font declarations
+	\ulcshape and \swshape.  Add user level reset macros \normalfont
+	and \normalshape.
+
+2020-01-05  Arash Esbati  <arash@gnu.org>
+
+	Update style/fbox.el to package version 0.04
+
+	* style/fbox.el: Add support for \fparbox macro.
+
+2020-01-05  Arash Esbati  <arash@gnu.org>
+
+	Fix handling of LaTeX font declaration macros
+
+	* latex.el (LaTeX-common-initialization): Delete unnecessary and
+	duplicate entry for picture environment.
+	Add `-1' to LaTeX font declaration macros in order to work
+	correctly on active regions.
+
+2020-01-05  Arash Esbati  <arash@gnu.org>
+
+	Delete insertion of wrong dollar sign
+
+	* tex.el (TeX-insert-dollar): Remove insertion of wrong `$' as
+	reported here:
+	https://lists.gnu.org/archive/html/auctex-devel/2020-01/msg00002.html
+
+2020-01-04  Arash Esbati  <arash@gnu.org>
+
+	Update Pygments styles to version 2.5.2
+
+	* style/minted.el (LaTeX-minted-key-val-options): Update values of
+	"style" to styles provided by Pygments version 2.5.2.
+
+2019-12-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve environment insertion (bug#35284)
+
+	* latex.el (LaTeX-insert-environment): Place the point and the mark at
+	appropriate place.
+	* tests/latex/latex-test.el (LaTeX-insert-environment-with-active-region):
+	New test.
+
+2019-12-19  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use pdf rather than dvi for preview package document
+
+	* latex/Makefile.in: Generate preview.pdf with full contents and use
+	it instead of preview.dvi.
+
+2019-12-14  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adjust Makefile clean targets
+
+	* Makefile.in:
+	* doc/Makefile.in:
+	* latex/Makefile.in:
+	Adjust clean targets
+
+2019-12-08  Arash Esbati  <arash@gnu.org>
+
+	* font-latex.el (font-latex-setup): Remove XEmacs compat code.
+
+2019-12-07  Arash Esbati  <arash@gnu.org>
+
+	Update style/caption.el to package version 3.4a
+
+	* style/caption.el (LaTeX-caption-key-val-options): Add values
+	autodot and unnumbered to labelformat key.
+	Remove wrong ContinuedFloat value from type key.
+	("caption"): Delete entries for ContinuedFloat.
+	Add fontification support for \continuedfloat macro.
+
+2019-12-06  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update menu in proper timing (bug#38058)
+
+	* tex-buf.el (TeX-command-sentinel): Do `force-mode-line-update' in
+	the command buffer so that "Next Error" item will appear in the menu
+	bar just after compilation.
+	Replace all `(set-buffer-modified-p (buffer-modified-p))' with
+	`(force-mode-line-update)'
+	(TeX-run-command): Remove `sit-for' call which is no longer
+	necessary.
+
+2019-11-16  Arash Esbati  <arash@gnu.org>
+
+	Update style/ltugboat.el to class version 2.22
+
+	* style/ltugboat.el ("ltugboat"): Add new abbreviation macros.
+
+2019-11-08  Arash Esbati  <arash@gnu.org>
+
+	Add new style/fbox.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/fbox.el: New file.
+
 2019-10-30  Mosè Giordano  <mose@gnu.org>
 
 	* Version 12.2 released.
@@ -24371,7 +25255,7 @@
 
 This file records repository revisions from
 commit c865982cacab289f4480f9145b3438ec06824232 (exclusive) to
-commit 9a319640636d49ebe98b9f1ba2f176fa3c8b468d (inclusive).
+commit 869f43f9100a069719274c8a3986801e7856bb09 (inclusive).
 
 ;; Local Variables:
 ;; coding: utf-8
