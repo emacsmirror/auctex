@@ -148,7 +148,7 @@ The last language is the default one."
 The value is actually the tail of the list of options given to LANGUAGE."
   (member option (cdr (cdr (assoc language LaTeX-polyglossia-lang-list)))))
 
-(defun LaTeX-arg-polyglossia-lang (_optional default multiple setkeys)
+(defun LaTeX-arg-polyglossia-lang (_optional _default multiple setkeys)
   "Prompt for language and its options with completion and insert them
 as arguments.
 
@@ -156,14 +156,16 @@ This function is triggered by \"\setdefaultlanguage\",
 \"\setotherlanguage\", \"\setotherlanguages\", and \"\setkeys\"
 macros by polyglossia package.
 
-OPTIONAL is ignored, if DEFAULT is non-nil treat inserted
-language as default, if MULTIPLE is non-nil prompt for multiple
-languages, if SETKEYS is non-nil insert options as second
-mandatory argument."
+OPTIONAL and DEFAULT are ignored, if MULTIPLE is non-nil prompt
+for multiple languages, if SETKEYS is non-nil insert options as
+second mandatory argument."
   ;; DEFAULT =  t , MULTIPLE = nil, SETKEYS = nil: "\setdefaultlanguage".
   ;; DEFAULT = nil, MULTIPLE = nil, SETKEYS = nil: "\setotherlanguage".
   ;; DEFAULT = nil, MULTIPLE =  t , SETKEYS = nil: "\setotherlanguages".
   ;; DEFAULT = nil, MULTIPLE = nil, SETKEYS =  t : "\setkeys".
+
+  ;; Note: `DEFAULT' is currently ignored because we don't really have a
+  ;; mechanism to identify the default polyglossia language.
   (let ((language (funcall
 		   (if multiple
 		       'TeX-completing-read-multiple
