@@ -28,7 +28,7 @@
 ;; Acknowledgements
 ;;  Dr. Thomas Baumann <thomas.baumann@ch.tum.de>
 ;;  David Kastrup <David.Kastrup@t-online.de>
-;;  Masayuki Akata <ataka@milk.freemail.ne.jp>
+;;  Masayuki Ataka <masayuki.ataka@gmail.com>
 
 ;;; Code:
 
