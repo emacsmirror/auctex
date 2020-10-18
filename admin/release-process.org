@@ -57,8 +57,8 @@ checkout the repository locally should be
   cvs -z3 -d:ext:YOUR_USER_NAME@cvs.savannah.gnu.org:/web/auctex co auctex
 #+END_SRC
 
-For this to work, you also need to have the environment variable =CVS_RSH= set
-to =ssh=:
+In order to access the [[http://web.cvs.savannah.gnu.org/viewvc/auctex/auctex/][remote CVS repository]], you also need to have the
+environment variable =CVS_RSH= set to =ssh=:
 
 #+BEGIN_SRC sh
   export CVS_RSH=ssh
@@ -79,7 +79,27 @@ You can also browse the [[http://web.cvs.savannah.gnu.org/viewvc/auctex/][conten
 - [ ] Register all changes. You can use for example =vc-mode= in Emacs: [0/2]
 
   - [ ] Register all new files with =i=
-  - [ ] Select all files and do check in/out with =v=
+  - [ ] Select all files in the same state with =m= and do check in/out with =v=
+  - [ ] To delete files not needed anymore I don’t know a better way than
+    deleting them on disk, then manually running the command =cvs remove= in the
+    local repository and then in =vc-mode= select all files marked as "removed"
+    with =m= and make the change effective with =v=
+
+Simple shell commands to help replacing the old files with the new ones:
+
+#+BEGIN_SRC sh
+# Set these variables
+AUCTEX_DIR="...."
+AUCTEX_WEBPAGES_DIR="...."
+
+rm "${AUCTEX_WEBPAGES_DIR}"/manual/{auctex,preview-latex}.* \
+   "${AUCTEX_WEBPAGES_DIR}"/manual/auctex/*.html \
+   "${AUCTEX_WEBPAGES_DIR}"/manual/preview-latex/*.html
+
+cp "${AUCTEX_DIR}"/auctex-dist/www/manual/manual/{auctex,preview-latex}.* "${AUCTEX_WEBPAGES_DIR}"/manual/.
+cp "${AUCTEX_DIR}"/auctex-dist/www/manual/manual/auctex/* "${AUCTEX_WEBPAGES_DIR}"/manual/auctex/.
+cp "${AUCTEX_DIR}"/auctex-dist/www/manual/manual/preview-latex/* "${AUCTEX_WEBPAGES_DIR}"/manual/preview-latex/.
+#+END_src
 
 ** =preview= package to CTAN
 
