@@ -6458,15 +6458,6 @@ NAME may be a package, a command, or a document."
 
 ;;; Ispell Support
 
-;; FIXME: Document those functions and variables.  -- rs
-
-;; The FSF ispell.el use this.
-(defun ispell-tex-buffer-p ()
-  (and (boundp 'ispell-tex-p) ispell-tex-p))
-
-;; The FSF ispell.el might one day use this.
-(setq ispell-enable-tex-parser t)
-
 (defun TeX-run-ispell (_command _string file)
   "Run ispell on current TeX buffer."
   (cond ((and (string-equal file (TeX-region-file))
