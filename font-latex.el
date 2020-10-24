@@ -1788,7 +1788,6 @@ Set by `font-latex--update-math-env' and used in
 
 (defun font-latex-update-math-env ()
   "Update regexp to search for math environments.
-Helper function for style files such as amsmath.el.
 Extract environments marked as `env-on' in
 `texmathp-tex-commands1' except starred variants. Then build
 `font-latex--match-math-envII-regexp' from them, appending the
