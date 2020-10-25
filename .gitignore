@@ -47,3 +47,4 @@ preview-latex.el
 /preview.el
 PROBLEMS.preview
 tests/*/auto/*
+*.dynvars
