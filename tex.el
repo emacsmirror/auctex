@@ -2612,6 +2612,9 @@ If REGEXP is nil, or \"\", an error will occur."
 		       (TeX-split-string
 			(if (string-match ";" value) ";" ":")
 			value)))
+	 (global (append '("/" "\\")
+			 (mapcar #'file-name-as-directory
+				 TeX-macro-global)))
 	 entry
 	 answers)
     (while entries
@@ -2622,7 +2625,7 @@ If REGEXP is nil, or \"\", an error will occur."
 		       (substring entry 0 (match-beginning 0))
 		     entry)))
       (or (not (file-name-absolute-p entry))
-	  (member entry (append '("/" "\\") TeX-macro-global))
+	  (member entry global)
 	  (setq answers (cons entry answers))))
     answers))
 
@@ -4483,8 +4486,9 @@ If EXTENSIONS is not specified or nil, the value of
 (defun TeX-strip-extension (&optional string extensions nodir nostrip)
   "Return STRING without any trailing extension in EXTENSIONS.
 If NODIR is t, also remove directory part of STRING.
-If NODIR is `path', remove directory part of STRING if it is equal to
-the current directory, `TeX-macro-private' or `TeX-macro-global'.
+If NODIR is `path', remove directory part of STRING if it is
+equal to the current directory or is a member of
+`TeX-macro-private' or `TeX-macro-global'.
 If NOSTRIP is set, do not remove extension after all.
 STRING defaults to the name of the current buffer.
 EXTENSIONS defaults to `TeX-file-extensions'."
@@ -4502,8 +4506,8 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 	 (dir (expand-file-name (or (file-name-directory strip) "./"))))
     (if (or (eq nodir t)
 	    (string-equal dir (expand-file-name "./"))
-	    (member dir TeX-macro-global)
-	    (member dir TeX-macro-private))
+	    (member dir (mapcar #'file-name-as-directory TeX-macro-global))
+	    (member dir (mapcar #'file-name-as-directory TeX-macro-private)))
 	(file-name-nondirectory strip)
       strip)))
 
