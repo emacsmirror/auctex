@@ -5992,7 +5992,7 @@ sign.  With optional ARG, insert that many dollar signs."
        ;; inactivate-input-method is obsolete since emacs 24.3.
        (if (fboundp 'deactivate-input-method)
 	   (deactivate-input-method)
-	 (with-suppressed-warnings ((obsolete inactivate-input-method))
+	 (with-no-warnings
            (inactivate-input-method)))))
 
 ;;; Simple Commands
