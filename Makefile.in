@@ -360,7 +360,7 @@ uninstall:
 	rm -rf $(DESTDIR)$(packagelispdir)
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) uninstall)
 
-.el.elc:
+%.elc: %.el
 	$(ELCC) -f batch-byte-compile $<
 
 clean:	doc/Makefile latex/Makefile
