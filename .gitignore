@@ -48,3 +48,4 @@ preview-latex.el
 PROBLEMS.preview
 tests/*/auto/*
 *.dynvars
+auctex-dynvars

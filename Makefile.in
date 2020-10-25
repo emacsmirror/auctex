@@ -364,11 +364,11 @@ uninstall:
 	$(ELCC) -f batch-byte-compile $<
 
 dynvars-check:
-	rm -f $(AUCELC) $(STYLEELC)
+	rm -f $(AUCELC) $(STYLEELC) *.dynvars style/*.dynvars auctex-dynvars
 	EMACS_GENERATE_DYNVARS=1 make some > /dev/null 2>&1
-	cat *.dynvars style/*.dynvars > auctex.dynvars
+	cat *.dynvars style/*.dynvars > auctex-dynvars
 	rm -f $(AUCELC) $(STYLEELC)
-	EMACS_DYNVARS_FILE=auctex.dynvars make some
+	EMACS_DYNVARS_FILE=auctex-dynvars make some
 
 clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)
