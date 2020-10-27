@@ -29,10 +29,16 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(declare-function TeX-check-engine-add-engines
+                  "tex-buf"
+                  (&rest engines))
 
 (defvar LaTeX-bidi-package-options
   '("RTLdocument" "rldocument" "extrafootnotefeatures")

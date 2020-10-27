@@ -62,7 +62,7 @@
 (TeX-add-style-hook
  "beamer"
  (lambda ()
-   (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-beamer-after-insert-env nil t)
+   (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-beamer-after-insert-env nil t)
 
    (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
 			"hyperref" "inputenc" "translator" "xcolor")

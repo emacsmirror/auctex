@@ -35,6 +35,9 @@
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(declare-function TeX-check-engine-add-engines
+                  "tex-buf"
+                  (&rest engines))
 
 (TeX-add-style-hook
  "arabxetex"
