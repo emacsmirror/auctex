@@ -50,14 +50,6 @@
 		  (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
 		  (bus service path interface signal handler &rest args))
-(declare-function TeX-output-extension "tex-buf"
-		  nil)
-(declare-function TeX-command-expand "tex-buf"
-		  (command &optional list))
-(declare-function TeX-active-master "tex-buf"
-		  (&optional extension nondirectory ignore))
-(declare-function TeX-pop-to-buffer "tex-buf"
-		  (buffer &optional other-window norecord))
 (declare-function LaTeX-environment-list "latex"
 		  nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
@@ -701,25 +693,29 @@ sure \"%p\" is the first entry."
 ;; should remain unloaded as long as one is only editing files, so
 ;; requiring it here would be wrong.
 
-(autoload 'TeX-region-create "tex-buf" nil nil)
-(autoload 'TeX-save-document "tex-buf" nil t)
-(autoload 'TeX-home-buffer "tex-buf" nil t)
-(autoload 'TeX-pin-region "tex-buf" nil t)
-(autoload 'TeX-command-region "tex-buf" nil t)
-(autoload 'TeX-command-buffer "tex-buf" nil t)
-(autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
 (autoload 'LaTeX-command-section "tex-buf" nil t)
+(autoload 'TeX-active-master "tex-buf")
+(autoload 'TeX-command "tex-buf")
+(autoload 'TeX-command-buffer "tex-buf" nil t)
+(autoload 'TeX-command-expand "tex-buf")
+(autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'TeX-command-region "tex-buf" nil t)
 (autoload 'TeX-command-run-all "tex-buf" nil t)
 (autoload 'TeX-command-run-all-region "tex-buf" nil t)
-(autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
-(autoload 'TeX-command "tex-buf" nil nil)
-(autoload 'TeX-kill-job "tex-buf" nil t)
-(autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
-(autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-current-offset "tex-buf")
 (autoload 'TeX-error-overview "tex-buf" nil t)
-(autoload 'TeX-region-file "tex-buf" nil nil)
-(autoload 'TeX-current-offset "tex-buf" nil nil)
-(autoload 'TeX-process-set-variable "tex-buf" nil nil)
+(autoload 'TeX-home-buffer "tex-buf" nil t)
+(autoload 'TeX-kill-job "tex-buf" nil t)
+(autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-output-extension "tex-buf")
+(autoload 'TeX-pin-region "tex-buf" nil t)
+(autoload 'TeX-pop-to-buffer "tex-buf")
+(autoload 'TeX-process-set-variable "tex-buf")
+(autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
+(autoload 'TeX-region-create "tex-buf")
+(autoload 'TeX-region-file "tex-buf")
+(autoload 'TeX-save-document "tex-buf" nil t)
 (autoload 'TeX-view "tex-buf" nil t)
 
 ;;; Portability.
@@ -738,10 +734,10 @@ but takes care of byte-compilation issues where the byte-code for
 the latter could signal an error if it has been compiled with
 emacs 24.1 and is then later run by emacs 24.5."
   (declare (indent 2) (debug (symbolp form &rest form)))
-  (if (fboundp name)            ;If macro exists at compile-time, just use it.
+  (if (fboundp name)             ;If macro exists at compile-time, just use it.
       then
-    `(if (fboundp ',name)       ;Else, check if it exists at run-time.
-	 (eval ',then)          ;If it does, then run the then code.
+    `(if (fboundp ',name)               ;Else, check if it exists at run-time.
+	 (eval ',then)                  ;If it does, then run the then code.
        ,@else)))                ;Otherwise, run the else code.
 
 (require 'easymenu)

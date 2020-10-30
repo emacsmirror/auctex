@@ -6038,6 +6038,8 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
+(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
+
 ;;;###autoload
 (defun TeX-latex-mode ()
   "Major mode in AUCTeX for editing LaTeX files.
