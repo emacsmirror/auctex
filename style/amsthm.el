@@ -199,6 +199,6 @@ make them available as new environments."
 				("theoremstyle"    "{")
 				("newtheoremstyle" "{{{{{{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; amsthm.el ends here

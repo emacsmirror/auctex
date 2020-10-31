@@ -23,7 +23,7 @@
      '("psfigure" LaTeX-env-psfigure)
      )
     ))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-psfig (_optional)
    "Ask for file, width and length. Insert psfig macro"

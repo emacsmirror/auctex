@@ -106,7 +106,7 @@
                               'type-command)
      (font-latex-add-keywords '(("figureversion"       "{"))
                               'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fontaxes-package-options nil
   "Package options for the fontaxes package.")

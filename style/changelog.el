@@ -152,7 +152,7 @@ The keys sectioncmd and label are added in the function
 				("security"     "")
 				("shortversion" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-changelog-package-options nil
   "Package options for the changelog package.")

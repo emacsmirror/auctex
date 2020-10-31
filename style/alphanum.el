@@ -98,7 +98,7 @@
        (reftex-add-section-levels
 	'(("toc" .  reftex-get-section-level-alphanum)
 	  ("sub" .  reftex-get-section-level-alphanum)))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

@@ -62,7 +62,7 @@
      (font-latex-add-keywords '(("luatexversion")
 				("luatexrevision"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ifluatex-package-options nil
   "Package options for the ifluatex package.")

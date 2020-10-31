@@ -34,7 +34,7 @@
  (lambda ()
    (TeX-add-symbols
     '("FloatBarrier" 0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-placeins-package-options 
   '("section" "above" "below" "verbose")

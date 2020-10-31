@@ -636,6 +636,6 @@
     "volname"
     "volumename"
     "volumeofname"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; jurabib.el ends here

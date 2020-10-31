@@ -35,7 +35,7 @@
    (TeX-add-symbols
     "bigstrutsetup"
     '("bigstrut" [ TeX-arg-bigstrut ])))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-bigstrut (optional &optional _prompt)
   "Prompt for the optional argument in \\bigstrut."

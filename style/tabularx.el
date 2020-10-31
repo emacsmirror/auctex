@@ -65,6 +65,6 @@
    ;; `tabularx.sty' adds one new column specification letter.
    (set (make-local-variable 'LaTeX-array-column-letters)
 	(concat LaTeX-array-column-letters "X")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tabularx.el ends here

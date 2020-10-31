@@ -129,7 +129,7 @@ insert line break macro."
      ;; to fontify correctly also the standard `\caption[]{}' macro.
      (font-latex-add-keywords '(("caption" "*[{"))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; `longtable.sty' has two options "errorshow" and "pausing", both for
 ;; debugging purposes.  We ignore them both in order to make package

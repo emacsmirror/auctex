@@ -22,6 +22,6 @@
    ;; load basic definitons
    (TeX-run-style-hooks "scrbase")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; scrartcl.el ends here

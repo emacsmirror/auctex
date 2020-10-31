@@ -697,7 +697,7 @@ e.g. \"tcolorboxlib-raster.el\"."
 				("tcolorboxenvironment" "{{")
 				("tcbsetmanagedlayer"   "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-tcolorbox-package-options LaTeX-tcolorbox-library-list
   "Package options for the tcolorbox package.")

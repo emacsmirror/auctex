@@ -78,7 +78,7 @@
    ;; New symbols
    (TeX-add-symbols
     '("inputencoding" LaTeX-arg-inputenc-inputenc)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

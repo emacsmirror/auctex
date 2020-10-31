@@ -186,7 +186,7 @@
     "fileinfo")
    (TeX-run-style-hooks "shortvrb")
    (LaTeX-add-lengths "MacrocodeTopsep" "MacroTopsep" "MacroIndent"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

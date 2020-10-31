@@ -326,7 +326,7 @@
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Hyperref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-hyperref-package-options ()
   "Read the hyperref package options from the user."

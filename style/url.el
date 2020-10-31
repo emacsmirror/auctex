@@ -92,7 +92,7 @@
 			      'variable)
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-urlstyle (optional &optional prompt)
   "Prompt for style used in \\urlstyle with completion."

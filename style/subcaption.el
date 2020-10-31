@@ -184,7 +184,7 @@ caption, insert only a caption."
 			      'reference)
      (font-latex-add-keywords '(("DeclareCaptionSubType" "*[{"))
 			      'function)) )
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-subcaption-package-options ()
   "Prompt for package options for the subcaption package."

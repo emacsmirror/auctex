@@ -98,7 +98,7 @@
 				("setdefaultenum" "{{{{")
 				("setdefaultleftmargin" "{{{{{{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-paralist-package-options '("newitem" "olditem" "newenum"
 					 "oldenum" "alwaysadjust"

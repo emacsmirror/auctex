@@ -11,6 +11,6 @@
   (lambda ()
     (TeX-run-style-hooks "amsmath" "amsthm")
     (LaTeX-add-environments "abstract")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; amsart.el ends here.

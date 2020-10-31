@@ -412,7 +412,7 @@
 			      'sectioning-5)
      (font-latex-add-keywords '(("mdflength"            "{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mdframed-package-options-list
   '(("xcolor")

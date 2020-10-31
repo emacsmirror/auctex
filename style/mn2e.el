@@ -170,7 +170,7 @@
 				("journal")
 				("bsp"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mn2e-class-options
   '("useAMS" "usegraphicx" "usenatbib" "usedcolumn"

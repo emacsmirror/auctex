@@ -870,7 +870,7 @@ comma separated list. Point has to be within the sexp to modify."
     '("uput" LaTeX-pst-macro-uput t)
     '("multirput" (LaTeX-pst-macro-multirputps t) t)
     '("multips" (LaTeX-pst-macro-multirputps nil) t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pstricks-package-options
   '("97" "plain" "DIA" "vtex" "distiller" "noxcolor")

@@ -37,7 +37,7 @@
     "landscape")
    ;; lscape uses graphics internally to handle the work
    (TeX-run-style-hooks "graphics"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-lscape-package-options '("pdftex")
   "Package options for the lscape package.")

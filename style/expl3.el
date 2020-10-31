@@ -47,7 +47,7 @@
      ;; Fontify _ and : as part of macros.
      (add-to-list 'font-latex-match-simple-include-list "_" t)
      (add-to-list 'font-latex-match-simple-include-list ":" t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-expl3-package-options ()
   "Read the expl3 package options from the user."

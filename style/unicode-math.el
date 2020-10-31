@@ -70,7 +70,7 @@
      (font-latex-add-keywords '(("setmathfont" "[{")
 				("unimathsetup" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-unicode-math-package-options ()
   "Prompt for package options for the unicode-math package."

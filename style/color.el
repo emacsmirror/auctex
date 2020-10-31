@@ -300,7 +300,7 @@
 				'type-command)
        (font-latex-add-keywords '(("definecolor"    "{{{"))
 				'function))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-color-package-options
   '("debugshow" "dvipdf" "dvipdfm" "dvipdfmx" "dvips" "dvipsnames"

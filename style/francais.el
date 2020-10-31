@@ -37,6 +37,6 @@
  "francais"
  (lambda ()
    (TeX-run-style-hooks "frenchb"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; francais.el ends here

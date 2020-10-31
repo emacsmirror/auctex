@@ -34,7 +34,7 @@
  (lambda ()
    (TeX-run-style-hooks "doc")
    (TeX-run-style-hooks "ltx-base"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

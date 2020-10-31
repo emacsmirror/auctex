@@ -94,7 +94,7 @@ OPTIONAL is ignored."
 				("PreviewEnvironment"      "*[[{")
 				("PreviewSnarfEnvironment" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-preview-package-options
   '("active"      "noconfig"   "psfixbb"

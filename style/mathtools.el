@@ -486,6 +486,6 @@ Put line break macro on the last line.  Next, insert an ampersand."
      (font-latex-add-keywords '(("refeq"   "{")
 				("noeqref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; mathtools.el ends here

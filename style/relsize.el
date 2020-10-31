@@ -66,7 +66,7 @@
 				("textsmaller"        "[{")
 				("textscale"          "{{"))
 			      'type-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-relsize-package-options nil
   "Package options for the relsize package.")

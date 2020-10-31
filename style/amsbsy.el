@@ -13,7 +13,7 @@
    (TeX-add-symbols
     '("boldsymbol" "Symbol")
     '("pmb"        "Symbol")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-amsbsy-package-options nil
   "Package options for the amsbsy package.")

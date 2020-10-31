@@ -73,7 +73,7 @@
 				("tosfstyle" "")
 				("sustyle"   ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newpxtext-package-options
   '("defaultsups" "scosf" "largesc"

@@ -55,7 +55,7 @@
      (font-latex-add-keywords '(("smallfrac" "{{")
 				("slantfrac" "{{"))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-MinionPro-package-options
   '("smallfamily" "medfamily" "fullfamily" "noopticals" "opticals"

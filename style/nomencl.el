@@ -71,6 +71,6 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("nomenclature" "[{{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; nomencl.el ends here

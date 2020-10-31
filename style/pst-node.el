@@ -199,6 +199,6 @@
      '("pscolhook" t))
     (TeX-run-style-hooks
      "pstricks")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-node.el ends here

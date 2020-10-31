@@ -739,7 +739,7 @@ only the parsed items."
 				("DeclareNewFloatType"       "{{")
 				("RawFloats"                 ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-floatrow-package-options nil
   "Prompt for package options for the floatrow package.")

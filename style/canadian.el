@@ -35,6 +35,6 @@
  "canadian"
  (lambda ()
    (TeX-run-style-hooks "english"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; canadian.el ends here

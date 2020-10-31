@@ -12,4 +12,4 @@
 	   `("swedish" "''" ,TeX-close-quote ,TeX-quote-after-quote)))
    (setq LaTeX-babel-hyphen-language "swedish")
    (run-hooks 'TeX-language-sv-hook))
- LaTeX-dialect)
+ TeX-dialect)

@@ -497,7 +497,7 @@ in `enumitem'-completions."
 				("setlistdepth"           "{" )
 				("SetEnumerateShortLabel" "{{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-enumitem-package-options
   '("inline" "shortlabels" "loadonly" "sizes"

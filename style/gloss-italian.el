@@ -67,7 +67,7 @@
      (when (fboundp 'font-latex-add-quotes)
        (font-latex-add-quotes '("\"<" "\">" french))))
    (run-hooks 'TeX-language-it-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-polyglossia-italian-options-list
   '(("babelshorthands" ("true" "false")))

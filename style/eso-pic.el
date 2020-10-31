@@ -70,7 +70,7 @@
    (TeX-declare-expert-macros
     "eso-pic"
     "gridSetup" "LenToUnit"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-eso-pic-package-options-list
   '(("pscoord"      ("true" "false"))

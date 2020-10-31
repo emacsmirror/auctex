@@ -8,6 +8,15 @@
 
 @end ifset
 
+@heading News in 13.0
+
+@itemize @bullet
+@item
+The constant @code{LaTeX-dialect} has been renamed to @code{TeX-dialect}
+and moved from @file{latex.el} to @file{tex.el}.  @code{LaTeX-dialect}
+now is an obsolete alias.
+@end itemize
+
 @heading News in 12.3
 
 @itemize @bullet

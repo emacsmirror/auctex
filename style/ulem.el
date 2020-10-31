@@ -64,7 +64,7 @@
 				("uwave" "{")
 				("sout" "{")
 				("xout" "{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-arg-fontdecl
   (mapcar (lambda (str) (concat "\\" str))

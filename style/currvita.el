@@ -85,7 +85,7 @@
 
    ;; Add new lengths defined by currvita.sty
    (LaTeX-add-lengths "cvlabelwidth" "cvlabelskip" "cvlabelsep"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-currvita-package-options
   '("LabelsAligned" "TextAligned" "openbib" "ManyBibs" "NoDate")

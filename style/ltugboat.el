@@ -278,7 +278,7 @@
 			      'function)
      (font-latex-add-keywords '(("nameref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltugboat-class-options
   '("draft" "final" "preprint"

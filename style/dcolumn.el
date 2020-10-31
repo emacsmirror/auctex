@@ -41,7 +41,7 @@
 
    ;; Also run style hook for `array':
    (TeX-run-style-hooks "array"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-dcolumn-package-options nil
   "Package options for the dcolumn package.")

@@ -47,7 +47,7 @@
    (add-to-list 'LaTeX-auto-regexp-list
 		'("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
 		  1 TeX-auto-symbol)))
- LaTeX-dialect
+ TeX-dialect
  )
 
 (defvar LaTeX-amsopn-package-options '("namelimits" "nonamelimits")

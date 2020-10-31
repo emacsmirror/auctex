@@ -41,7 +41,7 @@
    (TeX-add-symbols
     '("keepXColumns" 0)
     '("convertXColumns" 0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltablex-package-options nil
   "Package options for the ltablex package.")

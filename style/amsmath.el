@@ -187,7 +187,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("boxed" "{"))
 			      'math-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
   "Insert ENV with column number specifications.

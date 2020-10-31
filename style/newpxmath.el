@@ -54,7 +54,7 @@
     '("varmathbb"      "Character")
     '("vmathbb"        "Character")
     '("vvmathbb"       "Character")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newpxmath-package-options
   '("varg"

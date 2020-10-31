@@ -472,7 +472,7 @@ a list of strings."
 						'("mint" "mintinline"))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-minted-package-options '("chapter"     "cache"
 				       "cachedir"    "finalizecache"

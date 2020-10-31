@@ -36,7 +36,7 @@
  (lambda ()
    ;; Load lscape.el and we are done
    (TeX-run-style-hooks "lscape"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pdflscape-package-options nil
   "Package options for the pdflscape package.")

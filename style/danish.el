@@ -18,6 +18,6 @@
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\">" "\"<" german)))
    (run-hooks 'TeX-language-dk-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; danish.el ends here

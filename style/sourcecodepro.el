@@ -68,7 +68,7 @@
 				("sourcecodeproextreme" "")
 				("sourcecodeprolf"      ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-sourcecodepro-package-options
   '("lining" "nf" "lf"

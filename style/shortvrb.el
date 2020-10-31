@@ -65,6 +65,6 @@
      (font-latex-add-to-syntax-alist
       (mapcar (lambda (char) (cons char "|"))
 	      LaTeX-shortvrb-chars))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; shortvrb.el ends here

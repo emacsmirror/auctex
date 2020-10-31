@@ -724,7 +724,7 @@ ENV is the name of current environment as a string."
 				("BUseVerbatim" "{"))
 			      'textual)
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fancyvrb-package-options nil
   "Package options for the fancyvrb package.")

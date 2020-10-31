@@ -274,7 +274,7 @@ argument, otherwise as a mandatory one."
 				("setotherlanguages" "{")
 				("setkeys" "{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; TODO: move each option variable in its specific `gloss-<lang>.el' file.
 (defvar LaTeX-polyglossia-arabic-options-list

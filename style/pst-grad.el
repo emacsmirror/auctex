@@ -66,6 +66,6 @@
     (setq LaTeX-pst-parameters-name-list
           (append LaTeX-pstgrad-parameters-name-list
                   LaTeX-pst-parameters-name-list))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-grad.el ends here

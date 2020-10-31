@@ -39,7 +39,7 @@
     "multicolumntoc"
     "multicolumnlot"
     "multicolumnlof"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-multitoc-package-options
   '("toc" "lof" "lot")

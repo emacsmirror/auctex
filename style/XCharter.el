@@ -85,7 +85,7 @@
                                 ("lfstyle"   "")
                                 ("osfstyle"  ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-XCharter-package-options
   '("lining" "lf" "oldstyle" "osf" "oldstyleI" "osfI"

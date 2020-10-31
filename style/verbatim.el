@@ -54,7 +54,7 @@
 		    (1 "!" t)))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-verbatim-package-options nil
   "Package options for the verbatim package.")

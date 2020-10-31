@@ -283,7 +283,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 				("resetbackgroundcolor"		"")
 				("addcontentsonly"		"{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-paracol-package-options nil
   "Package options for the paracol package.")

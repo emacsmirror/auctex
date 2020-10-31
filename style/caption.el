@@ -467,7 +467,7 @@ STAR is non-nil, do not query for a short-caption and a label."
 				("DeclareCaptionStyle"           "{[{")
 				("DeclareCaptionTextFormat"      "{{"))
 			      'function)) )
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-caption-package-options ()
   "Prompt for package options for the caption package."

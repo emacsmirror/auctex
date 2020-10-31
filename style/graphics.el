@@ -12,6 +12,6 @@
  (function
   (lambda ()
     (TeX-run-style-hooks "graphicx")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; graphics.el ends here.

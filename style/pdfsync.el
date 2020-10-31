@@ -85,6 +85,6 @@
  "pdfsync"
  (lambda ()
    (setq TeX-source-correlate-output-page-function 'LaTeX-pdfsync-output-page))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pdfsync.el ends here

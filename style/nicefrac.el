@@ -43,7 +43,7 @@
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("nicefrac" "[{{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-nicefrac-package-options '("nice" "ugly")
   "Package options for the nicefrac package.")

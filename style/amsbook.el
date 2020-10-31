@@ -10,6 +10,6 @@
  (lambda ()
    (TeX-run-style-hooks "amsmath" "amsthm")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; amsbook.el ends here.

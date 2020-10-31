@@ -17,6 +17,6 @@
 		       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; report.el ends here

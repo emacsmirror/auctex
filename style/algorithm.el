@@ -77,7 +77,7 @@
     '("algorithm"  LaTeX-env-algorithm ))
    (TeX-add-symbols
     '("listofalgorithms" 0))
-      LaTeX-dialect))
+      TeX-dialect))
 
 
 ;;; algorithm.el ends here

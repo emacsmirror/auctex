@@ -106,7 +106,7 @@
    (when (and LaTeX-reftex-cite-format-auto-activate
 	      (fboundp 'reftex-set-cite-format))
      (reftex-set-cite-format 'harvard)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-env-harvardbib (environment &optional _ignore)
   "Insert ENVIRONMENT with label for harvarditem."

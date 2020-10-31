@@ -103,7 +103,7 @@
      (and LaTeX-reftex-ref-style-auto-activate
 	  (fboundp 'reftex-ref-style-activate)
 	  (reftex-ref-style-activate "Fancyref")))
-   LaTeX-dialect)
+   TeX-dialect)
 
 ;; The following list keeps a list of available format names
 ;; Note that this list is only updated when a format is used, not

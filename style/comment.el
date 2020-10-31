@@ -73,6 +73,6 @@
 			      'variable)
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; comment.el ends here

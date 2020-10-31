@@ -203,7 +203,7 @@
 				"cleardoubleplainpage"
 				"cleardoubleemptypage")
 			      'warning)))
-  LaTeX-dialect)
+  TeX-dialect)
 
 (defun TeX-arg-KOMA-scrlttr-vars (optional &optional prompt)
   "Prompt for KOMA-Script's scrlttr2 predefined variables with completion."

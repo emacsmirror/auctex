@@ -86,7 +86,7 @@
 				("sufigures"              "")
 				("infigures"              ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-AlegreyaSans-package-options-list
   '(("lining"       ("true" "false"))

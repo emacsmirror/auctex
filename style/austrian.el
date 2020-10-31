@@ -35,6 +35,6 @@
  "austrian"
  (lambda ()
    (TeX-run-style-hooks "german"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; austrian.el ends here

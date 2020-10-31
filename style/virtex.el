@@ -78,6 +78,6 @@
 		     "voffset" "vrule" "vsize" "vskip" "vss" "vtop"
 		     "wd" "widowpenalty" "write" "xdef" "xleaders"
 		     "xspaceskip" "year"))
-  LaTeX-dialect)
+  TeX-dialect)
 
 ;;; virtex.el ends here

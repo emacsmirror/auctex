@@ -209,7 +209,7 @@
 				;; Cater for a fontified starred \item
 				("item"   "*["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-moodle-package-options
   '("draft")

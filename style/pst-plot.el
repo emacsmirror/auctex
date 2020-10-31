@@ -143,6 +143,6 @@
     (setq LaTeX-pst-parameters-name-list
           (append LaTeX-pstplot-parameters-name-list
                   LaTeX-pst-parameters-name-list))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-plot.el ends here

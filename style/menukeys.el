@@ -530,7 +530,7 @@ macro.  If RENEW is non-nil, query for an already defined macro."
 				("providemenumacro"         "|{\\[{")
 				("renewmenumacro"           "|{\\[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-menukeys-package-options-list
   '(("definemenumacros" ("true" "false"))

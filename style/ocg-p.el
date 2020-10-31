@@ -187,7 +187,7 @@ Just like array and tabular."
 				("hideocgs"            "[{{")
 				("setocgs"             "[{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ocg-p-package-options '("ocgtabular")
   "Package options for the ocg-p package.")

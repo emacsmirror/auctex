@@ -6170,12 +6170,6 @@ function would return non-nil and `(match-string 1)' would return
   (and (texmathp)
        (TeX-looking-at-backward "\\\\\\([a-zA-Z]*\\)")))
 
-(defconst LaTeX-dialect :latex
-  "Default dialect for use with function `TeX-add-style-hook' for
-argument DIALECT-EXPR when the hook is to be run only on LaTeX
-file, or any mode derived thereof. See variable
-`TeX-style-hook-dialect'." )
-
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
   (VirTeX-common-initialization)
@@ -6194,7 +6188,7 @@ file, or any mode derived thereof. See variable
 
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
-  (set (make-local-variable 'TeX-style-hook-dialect) LaTeX-dialect)
+  (set (make-local-variable 'TeX-style-hook-dialect) TeX-dialect)
 
   (require 'outline)
   (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
@@ -6728,7 +6722,7 @@ file, or any mode derived thereof. See variable
 			(setq TeX-font-list LaTeX-font-list)
 			(setq TeX-font-replace-function 'TeX-font-replace-macro)
 			(run-hooks 'LaTeX2e-hook))
-		      LaTeX-dialect)
+		      TeX-dialect)
 
   (TeX-add-style-hook "latex2"
 		      ;; Use old fonts for `\documentstyle' documents.
@@ -6737,7 +6731,7 @@ file, or any mode derived thereof. See variable
 			(setq TeX-font-replace-function
 			      (default-value 'TeX-font-replace-function))
 			(run-hooks 'LaTeX2-hook))
-		      LaTeX-dialect)
+		      TeX-dialect)
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak

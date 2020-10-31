@@ -997,7 +997,7 @@
    (TeX-run-style-hooks "xcolor")
    ;; Make the colors defined in xkcdcolors.sty available:
    (apply #'LaTeX-add-xcolor-definecolors LaTeX-xkcdcolors-colornames))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xkcdcolors-package-options nil
   "Package options for the xkcdcolors package.")

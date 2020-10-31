@@ -65,7 +65,7 @@
 				("hideocg"    "{{")
 				("actionsocg" "{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ocgx-package-options nil
   "Package options for the ocgx package.")

@@ -394,7 +394,7 @@
 				("aliasshorthand"     "{{")
 				("languageattribute"  "{{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-babel-package-options ()
   "Prompt for package options for the babel package."

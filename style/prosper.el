@@ -184,6 +184,6 @@
     '("onlyInPS" t)
     '("onlyInPDF" t)
     '("FromSlide" "Number")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; prosper.el ends here

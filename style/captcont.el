@@ -43,7 +43,7 @@
    ;; Fontification
    (when (featurep 'font-latex)
      (font-latex-add-keywords '(("captcont" "*[{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-captcont-package-options '("figbotcap" "figtopcap" "tabbotcap"
 					 "tabtopcap")

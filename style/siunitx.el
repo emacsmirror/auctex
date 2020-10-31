@@ -627,7 +627,7 @@ string."
 				("DeclareSIQualifier" "|{\\{")
 				("highlight" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-siunitx-package-options nil
   "Prompt for package options for the siunitx package."

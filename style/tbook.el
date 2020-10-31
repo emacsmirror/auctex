@@ -38,6 +38,6 @@
  "tbook"
  (lambda ()
    (TeX-run-style-hooks "jbook" "plext"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tbook.el ends here

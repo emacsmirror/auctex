@@ -37,7 +37,7 @@
     '("kant*" [ "Range of paragraph (max: 164)" ])
     '("kantdef" TeX-arg-define-macro "Paragraph number"))
    (TeX-run-style-hooks "xparse"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-kantlipsum-package-options
   '("par" "nopar" "numbers" "index")

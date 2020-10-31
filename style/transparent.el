@@ -50,7 +50,7 @@
 			      'type-declaration)
      (font-latex-add-keywords '(("texttransparent" "{{"))
 			      'type-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-transparent-package-options nil
   "Package options for the transparent package.")

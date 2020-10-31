@@ -35,6 +35,6 @@
  "bidibeamer"
  (lambda ()
    (TeX-run-style-hooks "beamer"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; bidibeamer.el ends here

@@ -2780,6 +2780,13 @@ Used when checking if any files have changed."
 
 ;;; Style Files
 
+(define-obsolete-variable-alias 'LaTeX-dialect 'TeX-dialect "13.0")
+(defconst TeX-dialect :latex
+  "Default dialect for use with function `TeX-add-style-hook' for
+argument DIALECT-EXPR when the hook is to be run only on LaTeX
+file, or any mode derived thereof. See variable
+`TeX-style-hook-dialect'." )
+
 (defvar TeX-style-hook-list nil
   "List of TeX style hooks currently loaded.
 

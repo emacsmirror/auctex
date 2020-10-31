@@ -55,7 +55,7 @@
     '("listofexercises")
     '("ListOfExerciseInToc")
     '("ExerciseLevelInToc")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-exercise-package-options '("noexercise" "noanswer" "exerciseonly" "answeronly" "nothing" "answerdelayed" "exercisedelayed" "lastexercise")
   "Package options for the exercise package.")

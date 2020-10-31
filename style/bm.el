@@ -52,7 +52,7 @@
 				("bmdefine" "|{\\{")
 				("hmdefine" "|{\\{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-bm-package-options nil
   "Package options for the bm package.")

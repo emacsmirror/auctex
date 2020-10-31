@@ -50,7 +50,7 @@
 				("xspaceaddexception" "{")
 				("xspaceremoveexception" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xspace-package-options nil
   "Package options for the xspace package.")

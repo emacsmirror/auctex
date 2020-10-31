@@ -133,7 +133,7 @@ Keys offered for key=val query depend on ENV.  \"label\" and
     '("condition"  [ "Punctuation mark (default ,)" ] t)
     '("condition*" [ "Punctuation mark (default ,)" ] t)
     '("hiderel" t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-breqn-package-options nil
   "Package options for the breqn package.")

@@ -563,6 +563,6 @@ a list of strings."
      (LaTeX-pythontex-add-syntactic-keywords-extra 'delim "pygment")
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pythontex.el ends here

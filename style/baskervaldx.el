@@ -79,7 +79,7 @@
 			      'type-declaration)
      (font-latex-add-keywords '(("swshape"   ""))
 			      'bold-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-baskervaldx-package-options
   '("lining" "lf" "oldstyle" "osf" "tabular" "proportional" "p"

@@ -5,6 +5,6 @@
 (TeX-add-style-hook "dutch"
  (function (lambda ()
 	     (run-hooks 'TeX-language-nl-hook)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; dutch.el ends here

@@ -54,6 +54,6 @@
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
    (run-hooks 'TeX-language-is-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; icelandic.el ends here

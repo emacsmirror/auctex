@@ -95,7 +95,7 @@
 				("TeacherModeOn"      "")
 				("TeacherModeOff"     ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-dashundergaps-package-options nil
   "Package options for the dashundergaps package.")

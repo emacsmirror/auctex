@@ -195,6 +195,6 @@
 				("XeLaTeX" "")
 				("SepMark" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; bidi.el ends here

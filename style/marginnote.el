@@ -59,7 +59,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("marginnote"  "[{["))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-marginnote-package-options
   '("fulladjust" "heightadjust" "depthadjust" "noadjust"

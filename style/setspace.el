@@ -58,7 +58,7 @@
 				("doublespacing" "")
 				("onehalfspacing" ""))
                               'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-setspace-package-options 
   '("doublespacing" "onehalfspacing" "singlespacing" "nodisplayskipstretch")

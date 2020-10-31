@@ -591,7 +591,7 @@ for citation keys."
 	    (?y    . "\\citeyear{%l}")
 	    (?Y    . "\\citeyear*{%l}")
 	    (?n    . "\\nocite{%l}")))))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-biblatex-package-options-list
   (append

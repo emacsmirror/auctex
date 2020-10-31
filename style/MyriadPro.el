@@ -71,7 +71,7 @@
 			      'textual)
      (font-latex-add-keywords '(("mathversion" "{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-MyriadPro-package-options
   '(;; Font selection

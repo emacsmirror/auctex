@@ -73,7 +73,7 @@
 				("tosfstyle" "")
 				("sustyle"   ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxtext-package-options
   '("defaultsups" "helvratio" "osf" "scaled" "scosf"

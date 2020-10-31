@@ -63,6 +63,6 @@
 			       'textual)
       ;; Sectioning keywords
       (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
-  LaTeX-dialect)
+  TeX-dialect)
 
 ;;; scrbook.el ends here

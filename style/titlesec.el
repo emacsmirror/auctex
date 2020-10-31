@@ -222,7 +222,7 @@ insert the argument in brackets."
 				("assignpagestyle"   "{{")
 				("titleclass"        "{[{["))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-titlesec-package-options
   '(;; 2.1. Format

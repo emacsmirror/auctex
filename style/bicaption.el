@@ -185,7 +185,7 @@ square brackets."
 				("bisubcaption"    "*[{[{")
 				("bisubcaptionbox" "*[{[{[["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."

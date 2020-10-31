@@ -110,7 +110,7 @@ For decl environment provided by ltxguide.cls."
 			      'textual)
      (font-latex-add-keywords '(("URL" ""))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltxguide-class-options
   (progn

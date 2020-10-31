@@ -230,7 +230,7 @@
 				("hologoList"          "")
 				("hologoEntry"         "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-hologo-package-options nil
   "Package options for the hologo package.")

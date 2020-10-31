@@ -56,6 +56,6 @@
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '(",," "''")))
    (run-hooks 'TeX-language-pl-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; polski.el ends here

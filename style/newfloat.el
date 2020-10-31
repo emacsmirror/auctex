@@ -207,7 +207,7 @@ If `caption.el' is loaded, add the new floating environment to
 				("PrepareListOf"               "{{")
 				("newfloatsetup"               "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-newfloat-package-options ()
   "Prompt for package options for the newfloat package."

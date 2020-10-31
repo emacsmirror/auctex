@@ -51,7 +51,7 @@
 			      'type-command)
      (font-latex-add-keywords '(("logofamily" ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mflogo-package-options nil
   "Package options for the mflogo package.")

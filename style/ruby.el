@@ -45,6 +45,6 @@
     '("rubysize" 0)
     '("rubysep" 0)
     '("ruby" t nil)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; ruby.el ends here

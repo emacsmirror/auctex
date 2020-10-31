@@ -114,6 +114,6 @@
    (LaTeX-add-environments
     '("restatable"  LaTeX-env-args LaTeX-env-thmrestate-restatable)
     '("restatable*" LaTeX-env-args LaTeX-env-thmrestate-restatable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; thm-restate.el ends here

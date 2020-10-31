@@ -17,6 +17,6 @@
    (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
 		       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; jbook.el ends here

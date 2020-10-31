@@ -94,7 +94,7 @@
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Varioref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-varioref-package-options
   '("afrikaans" "american" "arabic" "austrian" "naustrian" "basque"

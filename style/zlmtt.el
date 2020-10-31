@@ -53,7 +53,7 @@
                                 ("monott"   "{")
                                 ("lctt"     "{"))
                               'type-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-zlmtt-package-options
   '("light" "l" "lightcondensed" "lc" "med" "m"

@@ -433,7 +433,7 @@ make them available as new environments.  Update
 			      'function)
      (font-latex-add-keywords '(("thref"                  "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ntheorem-package-options
   '("standard" "noconfig" "framed" "thmmarks" "thref" "amsmath" "hyperref")

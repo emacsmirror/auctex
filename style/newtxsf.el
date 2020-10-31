@@ -41,7 +41,7 @@
    (TeX-add-symbols
     '("upimath"  0)
     '("upjmath"  0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxsf-package-options
   '("scaled"

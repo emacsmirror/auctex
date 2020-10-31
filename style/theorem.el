@@ -171,7 +171,7 @@ make them available as new environments."
 				("theorempreskipamount"  "{")
 				("theorempostskipamount" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-theorem-package-options nil
   "Package options for the theorem package.")

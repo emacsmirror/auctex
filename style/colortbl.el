@@ -86,7 +86,7 @@
 				("arrayrulecolor"     "[{")
 				("doublerulesepcolor" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; colortbl.sty has one option `debugshow'.  I ignore that since it
 ;; would only take more time during insertation in a buffer and I

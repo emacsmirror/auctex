@@ -49,7 +49,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-alltt-package-options nil
   "Package options for the alltt package.")

@@ -80,7 +80,7 @@
       '("circledS")
       '("lambdabar")
       '("lambdaslash"))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mdsymbol-package-options
   '(;;

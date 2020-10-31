@@ -90,7 +90,7 @@
 	  TeX-complete-list))
    (and (fboundp 'reftex-add-index-macros)
 	(reftex-add-index-macros '(default))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-imakeidx-package-options
   '("makeindex" "xindy" "texindy" "truexindy" "noautomatic" "nonewpage" "quiet"

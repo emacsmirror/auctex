@@ -68,7 +68,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("vwcolsetup" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-vwcol-package-options '("quiet")
   "Package options for the vwcol package.")

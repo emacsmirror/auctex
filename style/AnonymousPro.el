@@ -81,7 +81,7 @@
     "ANPDelta"
     "ANPverticaltab"
     "ANPNumeroSign"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-AnonymousPro-package-options
   '("ttdefault" "scale" "scaled")

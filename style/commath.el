@@ -99,7 +99,7 @@
 				("appref"  "{")
 				("assref"  "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-commath-package-options nil
   "Package options for the commath package.")

@@ -36,7 +36,7 @@
 			 ;; FIXME: yet to be written:
 			 ;; "luatexbase"
 			 "metalogo" "luacode"))
-  LaTeX-dialect)
+  TeX-dialect)
 
 (defvar LaTeX-luatextra-package-options nil
   "Package options for the ifluatex package.")

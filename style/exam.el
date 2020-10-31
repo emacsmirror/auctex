@@ -396,6 +396,6 @@ Arguments NAME and TYPE are the same as for the function
                                 ("subpart"         "[")
                                 ("subsubpart"      "["))
                               'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; exam.el ends here

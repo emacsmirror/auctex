@@ -38,6 +38,6 @@
  "treport"
  (lambda ()
    (TeX-run-style-hooks "jreport" "plext"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; treport.el ends here

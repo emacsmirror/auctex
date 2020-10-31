@@ -132,7 +132,7 @@ from `environ.sty'.")
 				("RenewEnviron"    "{[[{[")
 				("environbodyname" "|{\\"))
 			      'function)))
-  LaTeX-dialect)
+  TeX-dialect)
 
 (defvar LaTeX-environ-package-options nil
   "Package options for the environ package.")

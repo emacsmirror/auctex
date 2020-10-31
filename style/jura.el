@@ -33,7 +33,7 @@
  "jura"
  (lambda ()
    (TeX-run-style-hooks "alphanum"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

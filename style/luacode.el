@@ -60,7 +60,7 @@
 				("LuaCodeDebugOn")
 				("LuaCodeDebugOff"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-luacode-package-options nil
   "Package options for the luacode package.")

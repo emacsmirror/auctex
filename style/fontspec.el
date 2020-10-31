@@ -402,7 +402,7 @@ to retrieve the list of fonts."
 			      'type-command)
      (font-latex-add-keywords '(("strong"    "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fontspec-package-options
   '("tuenc" "euenc" "math" "no-math" "config" "no-config" "quiet" "silent")

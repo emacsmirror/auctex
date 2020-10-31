@@ -110,7 +110,7 @@
 	    (unless (string= overhang "")
 	      (format "[%s]" overhang))
 	    (format "{%s}" width))))))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-wrapfig-package-options '("verbose")
   "Package options for the wrapfig package.")

@@ -48,6 +48,6 @@
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
    (run-hooks 'TeX-language-pl-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; polish.el ends here

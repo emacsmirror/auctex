@@ -35,6 +35,6 @@
  "newzealand"
  (lambda ()
    (TeX-run-style-hooks "english"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; newzealand.el ends here

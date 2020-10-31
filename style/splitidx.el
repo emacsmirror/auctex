@@ -300,7 +300,7 @@
 			      'function)
      (font-latex-add-keywords '(("sindex"             "[{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-splitidx-package-options
   '("makeindex"

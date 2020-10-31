@@ -85,7 +85,7 @@
                                 ("footrulewidth" "")
                                 ("plainheadrulewidth" "")
                                 ("plainfootrulewidth" "")) 'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Because there can be many positions, `TeX-completing-read-multiple' is used
 ;; instead of just `completing-read', and a `collection' argument is provided as

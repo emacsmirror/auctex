@@ -302,7 +302,7 @@ subdirectories and inserts the relative file name.  See
    (if (and (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
 	    (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-graphicx-package-options
   '("draft"       "final"         "debugshow"

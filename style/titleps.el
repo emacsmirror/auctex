@@ -219,7 +219,7 @@ Removal is based on the return value of function
 				("nextfloathead"        "*[[[{{{{[")
 				("nextfloatfoot"        "*[[[{{{{["))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-titleps-package-options
   '(;; 4. Headline/footline width

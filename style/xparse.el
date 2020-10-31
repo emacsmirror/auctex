@@ -302,7 +302,7 @@ TYPE is one of the symobols mac or env."
 				("ProvideDocumentEnvironment" "{{{{")
 				("RenewDocumentEnvironment"   "{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-xparse-package-options ()
   "Read the xparse package options from the user."

@@ -623,7 +623,7 @@ xcolor package.")
 				("convertcolorspec"  "{{{{")
 				("rowcolors"         "*[{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xcolor-package-options
   '(;; options that determine the color driver

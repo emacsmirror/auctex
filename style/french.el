@@ -44,6 +44,6 @@
 	      (not (member "frenchle" TeX-active-styles))
 	      (not (member "mlp" TeX-active-styles)))
      (TeX-run-style-hooks "frenchb")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; french.el ends here

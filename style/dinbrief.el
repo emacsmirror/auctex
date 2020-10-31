@@ -63,7 +63,7 @@
     '("signature" "Unterschrift")
     '("opening" "Anrede")
     '("closing" "Schluss")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defmacro LaTeX-dinbrief-insert (&rest args)
   "Insert text ignoring active markers."

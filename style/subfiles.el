@@ -92,6 +92,6 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("subfile" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; subfiles.el ends here

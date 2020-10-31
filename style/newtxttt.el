@@ -57,7 +57,7 @@
      (font-latex-add-keywords '(("ttzfamily"  "")
 				("ttz"        ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxtt-package-options
   '("scaled" "zerostyle" "nomono" "straightquotes"

@@ -45,7 +45,7 @@
 		'("filecontents" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
 		'("filecontents*" current-indentation) t))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-env-filecontents (environment)
   "Insert ENVIRONMENT with filename for contents."

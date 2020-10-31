@@ -5,6 +5,6 @@
 (TeX-add-style-hook "dk"
  (function (lambda ()
 	     (run-hooks 'TeX-language-dk-hook)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; dk.el ends here

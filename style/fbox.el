@@ -49,6 +49,6 @@
      (font-latex-add-keywords '(("fbox"    "*[{")
 				("fparbox" "*[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; fbox.el ends here

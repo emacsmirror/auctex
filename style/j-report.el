@@ -6,6 +6,6 @@
  "j-report"
  (lambda ()
    (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; j-report.el ends here

@@ -82,7 +82,7 @@
 				("firaextrabold"    "")
 				("firaheavy"        ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-FiraSans-package-options
   '("scaled" "scale"

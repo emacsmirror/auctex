@@ -295,7 +295,7 @@ RefTeX users should customize or add ENVIRONMENT to
 				("listoftheorems"       "[")
 				("ignoretheorems"       "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; The package has only one option `debug'.  We ignore that in order
 ;; to make loading faster:

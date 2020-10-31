@@ -209,7 +209,7 @@ provided by REVTeX class."
 			      'reference)
      (font-latex-add-keywords '(("appendix*" ""))
 			      'warning)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-revtex4-2-class-options
   (progn

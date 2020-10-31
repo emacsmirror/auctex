@@ -68,6 +68,6 @@
     (setq LaTeX-pst-parameters-name-list
           (append LaTeX-pstslpe-parameters-name-list
                   LaTeX-pst-parameters-name-list))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-slpe.el ends here

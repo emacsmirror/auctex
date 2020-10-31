@@ -90,7 +90,7 @@
 			      'variable)
      (font-latex-add-keywords '("cleartoevenpage")
 			      'warning)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-epigraph-package-options nil
   "Package options for the epigraph package.")

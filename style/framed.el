@@ -44,7 +44,7 @@
     '("snugshade*")
     '("leftbar")
     '("titled-frame" "Title")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-framed-package-options nil
   "Package options for the framed package.")

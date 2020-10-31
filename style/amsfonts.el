@@ -52,7 +52,7 @@
    	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("bold" "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; The `psamsfonts' option is obsolete in AMSFonts v3
 (defvar LaTeX-amsfonts-package-options nil

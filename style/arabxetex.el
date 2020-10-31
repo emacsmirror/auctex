@@ -114,7 +114,7 @@
      (font-latex-add-keywords '(("SetTranslitConvention" "{")
 				("SetTranslitStyle"      "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-arabxetex-package-options
   '("novoc" "voc" "fullvoc" "trans" "utf")

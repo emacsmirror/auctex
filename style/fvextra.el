@@ -187,7 +187,7 @@
 			      'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fvextra-package-options nil
   "Package options for the fvextra package.")

@@ -189,7 +189,7 @@
       (font-latex-add-keywords '(("addpart" "[{")) 'sectioning-1)
       (font-latex-add-keywords '(("addsec" "[{")) 'sectioning-2)
       (font-latex-add-keywords '(("minisec" "[{")) 'sectioning-4)))
-  LaTeX-dialect)
+  TeX-dialect)
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."

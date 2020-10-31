@@ -6,6 +6,6 @@
  "j-book"
  (lambda ()
    (LaTeX-largest-level-set "part"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; j-book.el ends here

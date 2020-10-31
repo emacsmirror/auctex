@@ -33,7 +33,7 @@
     (setq LaTeX-default-options '("landscape"))
     (TeX-add-symbols
      '("foilhead" [ "Rubric-body separation" ] "Foil rubric"))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-style-foils nil
   "Prompt for and insert foiltex options."

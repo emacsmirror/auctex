@@ -61,7 +61,7 @@
 				("suspend" "[{")
 				("resume" "[{["))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mdwlist-package-options nil
   "Package options for the mdwlist package.")

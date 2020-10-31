@@ -459,7 +459,7 @@ caption key is found, an error is issued."
 				("lstdefinestyle" "{{")
 				("lstset" "{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"
 					 "noaspects"

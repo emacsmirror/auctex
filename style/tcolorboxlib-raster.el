@@ -195,6 +195,6 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("tcbitem" "["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tcolorboxlib-raster.el ends here

@@ -55,7 +55,7 @@
     '("existsAlt"      0)
     '("nexistsAlt"     0)
     '("vvmathbb"       "Character")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxmath-package-options
   '("varg"

@@ -84,7 +84,7 @@ The regexp for the 2. argument is the same as for \"input\" and
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("LTXtable"  "{{"))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltxtable-package-options nil
   "Package options for the ltxtable package.")

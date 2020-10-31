@@ -6,6 +6,6 @@
  "j-article"
  (lambda ()
    (LaTeX-largest-level-set "section"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; j-article.el ends here

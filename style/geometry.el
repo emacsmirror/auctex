@@ -148,7 +148,7 @@ package.")
    (if (and (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
 	    (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-geometry-package-options ()
   "Prompt for package options for the geometry package."

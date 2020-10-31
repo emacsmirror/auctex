@@ -579,7 +579,7 @@ following commands are defined:
      (font-latex-add-keywords '(("scslshape")
 				("otherscslshape"))
 			      'italic-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-kpfonts-package-options
   '(;; Main global options

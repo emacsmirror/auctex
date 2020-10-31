@@ -69,7 +69,7 @@
 				("RaggedRight"  "")
 				("RaggedLeft"   ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ragged2e-package-options
   '("originalcommands" "newcommands" "originalparameters" "document"

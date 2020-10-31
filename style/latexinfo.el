@@ -177,6 +177,6 @@ This fails when the user types in the label of something else"
     ;; need the following stuff to let xref and pxref work
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label "")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; latexinfo.el ends here

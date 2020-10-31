@@ -166,6 +166,6 @@
 			      'italic-command)
      (font-latex-add-keywords '(("Ucom" "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tex-live.el ends here

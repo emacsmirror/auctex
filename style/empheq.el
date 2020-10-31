@@ -489,6 +489,6 @@ number of ampersands if possible."
 				("DeclareLeftDelimiter"  "[{")
 				("DeclareRightDelimiter" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; empheq.el ends here

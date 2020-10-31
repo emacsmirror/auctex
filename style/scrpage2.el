@@ -116,7 +116,7 @@
 				("renewpagestyle" "{{{")
 				("providepagestyle" "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-scrpage2-package-options '("headinclude" "headexclude"
 					 "footinclude" "footexclude"

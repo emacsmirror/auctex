@@ -38,6 +38,6 @@
  "tarticle"
  (lambda ()
    (TeX-run-style-hooks "jarticle" "plext"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tarticle.el ends here

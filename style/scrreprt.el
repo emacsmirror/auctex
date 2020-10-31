@@ -65,6 +65,6 @@
 			      'textual)
      ;; Sectioning keywords
      (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; scrreprt.el ends here

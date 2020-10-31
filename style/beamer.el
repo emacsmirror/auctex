@@ -186,7 +186,7 @@
 				("author" "[{")
 				("date" "[{")
 				("frametitle" "<[{")) 'slide-title)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
   "Prompt for overlay specification.

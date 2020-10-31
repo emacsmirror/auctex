@@ -106,7 +106,7 @@ ones provided by `LaTeX-graphicx-key-val-options'."
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("setOverpic" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-overpic-package-options
   (progn

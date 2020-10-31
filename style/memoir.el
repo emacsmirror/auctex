@@ -80,6 +80,6 @@
     "verbatim" "verse")
 
    (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; memoir.el ends here

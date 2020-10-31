@@ -189,7 +189,7 @@ Removal is based on the return value of function
 				("contentsmargin"  "[{")
 				("contentsuse"     "{{"))
 			      'function)) )
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-titletoc-package-options
   '("leftlabels" "rightlabels" "dotinlabels")

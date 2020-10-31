@@ -117,7 +117,7 @@
 				("textattachfile"   "[{{")
 				("notextattachfile" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-attachfile-package-options nil
   "Prompt for package options for the attachfile package.")

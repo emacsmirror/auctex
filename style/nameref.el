@@ -54,7 +54,7 @@
      (font-latex-add-keywords '(("nameref" "*{")
 				("Nameref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-nameref-package-options nil
   "Package options for nameref.")

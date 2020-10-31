@@ -62,7 +62,7 @@
 				("firamonolining"   "")
 				("firamonomedium"   ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-FiraMono-package-options '("scaled" "scale"
 					 "type1"

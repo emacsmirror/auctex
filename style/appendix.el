@@ -67,7 +67,7 @@
    (unless (string-match "appendices" LaTeX-document-regexp)
      (set (make-local-variable 'LaTeX-document-regexp)
 	  (concat LaTeX-document-regexp "\\|\\(?:sub\\)?appendices"))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-appendix-package-options '("toc" "page" "title"
 					 "titletoc" "header")

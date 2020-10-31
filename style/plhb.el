@@ -25,6 +25,6 @@
    (setq TeX-quote-after-quote t)
    (setq TeX-command-default "plLaTeX")
    (run-hooks 'TeX-language-pl-hook)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; plhb.el ends here

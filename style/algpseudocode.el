@@ -71,6 +71,6 @@
     '("Call" 0))
    (LaTeX-add-environments
     '("algorithmic" [ "Number" ]))
-   LaTeX-dialect))
+   TeX-dialect))
 
 ;;; algpseudocode.el ends here

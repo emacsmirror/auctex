@@ -102,7 +102,7 @@ and make it buffer local. "
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newcolumntype" "{[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-array-package-options nil
   "Package options for array.")

@@ -76,7 +76,7 @@ PROMPT is the value of the prompt to be shown."
 				("morecmidrules" "")
 				("specialrule" "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-booktabs-package-options nil
   "Package options for the booktabs package.")

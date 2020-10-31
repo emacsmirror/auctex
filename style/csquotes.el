@@ -314,7 +314,7 @@ PROMPT replaces the standard one \"Language\"."
 				  ("SetBlockEnvironment"   "{")
 				  ("SetCiteCommand"        "{"))
 				'variable))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-csquotes-package-options ()
   "Prompt for package options for the csquotes package."

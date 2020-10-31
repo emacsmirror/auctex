@@ -167,7 +167,7 @@
    (when (and LaTeX-reftex-cite-format-auto-activate
 	      (fboundp 'reftex-set-cite-format))
      (reftex-set-cite-format 'natbib)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-arg-natbib-notes (optional)
   "Prompt for two note arguments a natbib citation command.

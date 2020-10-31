@@ -86,7 +86,7 @@
 			      'type-declaration)
      (font-latex-add-keywords '(("textfrac"  "{{"))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-erewhon-package-options
   '("lining" "lf" "oldstyle" "osf" "tabular" "p" "proportional"

@@ -5001,7 +5001,7 @@ Here is a simple example of a style file.
  "book"
  (lambda () 
    (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+ TeX-dialect)
 @end lisp
 
 The example is from the @AUCTeX{} sources and is loaded for any @LaTeX{}
@@ -5070,10 +5070,10 @@ relatively to the set of all supported dialects
 
 In case of adding a style hook for @LaTeX{}, when calling function
 @code{TeX-add-style-hook} it is thought more futureproof for argument
-@var{dialect-expr} to pass constant @code{LaTeX-dialect} currently
+@var{dialect-expr} to pass constant @code{TeX-dialect} currently
 defined to @code{:latex}, rather than passing @code{:latex} directly.
 
-@defvr Constant LaTeX-dialect
+@defvr Constant TeX-dialect
 Default dialect for use with function @code{TeX-add-style-hook} for
 argument @var{dialect-expr} when the hook is to be run only on LaTeX
 file, or any mode derived thereof.

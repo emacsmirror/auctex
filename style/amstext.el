@@ -12,7 +12,7 @@
  (lambda ()
    (TeX-add-symbols
     '("text" t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-amstext-package-options nil
   "Package options for the amstext package.")

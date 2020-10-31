@@ -132,7 +132,7 @@
      (font-latex-add-keywords '(("includepdf"       "[{")
 				("includepdfmerge"  "[{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pdfpages-package-options
   '("final" "draft" "enable-survey")

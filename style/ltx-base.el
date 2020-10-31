@@ -80,7 +80,7 @@
      '("@ifundefined" "Macro Name" 2)
      '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "character") 2 )
      "expandafter")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

@@ -120,7 +120,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
    (when (fboundp 'reftex-add-label-environments)
      (reftex-add-label-environments
       '(("xltabular" ?t nil nil caption)))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xltabular-package-options nil
   "Package options for the xltabular package.")

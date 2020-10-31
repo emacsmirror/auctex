@@ -114,7 +114,7 @@ them."
 
    ;; Add the lengths defined by textpos.sty
    (LaTeX-add-lengths "TPHorizModule" "TPVertModule" "TPboxrulesize"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-textpos-package-options
   '("showboxes" "noshowtext" "absolute" "overlay" "verbose" "quiet")

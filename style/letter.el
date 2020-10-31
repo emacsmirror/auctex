@@ -86,7 +86,7 @@
 				("encl" "{")
 				("ps" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."

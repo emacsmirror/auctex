@@ -193,7 +193,7 @@ Use PROMPT as the prompt string."
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Cleveref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-cleveref-package-options
   '("capitalise" "nameinlink" "noabbrev" "poorman")

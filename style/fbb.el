@@ -76,7 +76,7 @@
 				("tosfstyle" "")
 				("sufigures" ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fbb-package-options
   '("lining" "osf" "oldstyle" "tabular" "p" "proportional"
