@@ -25,6 +25,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "emp"
  (lambda ()

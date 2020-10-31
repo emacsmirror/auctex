@@ -2,9 +2,12 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "dutch"
- (function (lambda ()
-	     (run-hooks 'TeX-language-nl-hook)))
+(require 'tex)
+
+(TeX-add-style-hook
+ "dutch"
+ (lambda ()
+   (run-hooks 'TeX-language-nl-hook))
  TeX-dialect)
 
 ;;; dutch.el ends here

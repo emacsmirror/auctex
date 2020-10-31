@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar font-latex-match-simple-include-list)
 
 (defvar LaTeX-expl3-syntax-table

@@ -2,6 +2,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "english"
  (lambda ()

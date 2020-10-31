@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defun LaTeX-dk-bib-package-options nil
   "Prompt for package options for the dk-bib package."
   (let ((options

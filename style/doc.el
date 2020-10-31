@@ -29,6 +29,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defun LaTeX-env-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
   (LaTeX-insert-environment environment

@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "epsf"
  (lambda ()

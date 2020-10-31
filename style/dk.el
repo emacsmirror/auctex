@@ -2,9 +2,12 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "dk"
- (function (lambda ()
-	     (run-hooks 'TeX-language-dk-hook)))
+(require 'tex)
+
+(TeX-add-style-hook
+ "dk"
+ (lambda ()
+   (run-hooks 'TeX-language-dk-hook))
  TeX-dialect)
 
 ;;; dk.el ends here

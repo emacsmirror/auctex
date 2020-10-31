@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 (eval-when-compile
   (require 'cl-lib))
 
