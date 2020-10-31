@@ -27,6 +27,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "beamerarticle"
  (lambda ()

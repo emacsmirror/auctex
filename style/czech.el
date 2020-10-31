@@ -1,5 +1,7 @@
 ;;; czech.el --- Setup AUCTeX for editing Czech text.  -*- lexical-binding: t; -*-
 
+(require 'tex)
+
 (TeX-add-style-hook
  "czech"
  (lambda ()

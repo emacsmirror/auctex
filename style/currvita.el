@@ -31,13 +31,16 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; This is a modified version of `LaTeX-env-item'.
 (defun LaTeX-currvita-env-with-label (env)
   "Insert ENV, a mandatory label and the first item."
   (LaTeX-insert-environment
    env
    (let ((heading (TeX-read-string "Heading of list: ")))
-       (format "{%s}" heading)))
+     (format "{%s}" heading)))
   (if (TeX-active-mark)
       (progn
 	(LaTeX-find-matching-begin)
