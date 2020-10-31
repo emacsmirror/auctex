@@ -29,6 +29,10 @@
 ;; This file adds support for `fbox.sty' (v0.04) from 2020/01/03.
 ;; `fbox.sty' is part of TeXLive.
 
+;;; Code
+
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"

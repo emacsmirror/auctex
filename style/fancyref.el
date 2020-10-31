@@ -24,86 +24,89 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
 
-(TeX-add-style-hook "fancyref"
-   (lambda ()
-     
-     (TeX-add-symbols
+(TeX-add-style-hook
+ "fancyref"
+ (lambda ()
+   (TeX-add-symbols
 
-      ;; The macros with label arguments
-      '("fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
-      '("Fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
+    ;; The macros with label arguments
+    '("fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
+    '("Fref" [ TeX-arg-fancyref-format ] TeX-arg-ref)
 
-      ;; The macros which define new prefixes and formats
-      '("fancyrefchangeprefix" TeX-arg-macro "Prefix")
-      '("Frefformat" TeX-arg-fancyref-format TeX-arg-macro "Output")
-      '("frefformat" TeX-arg-fancyref-format TeX-arg-macro "Output")
+    ;; The macros which define new prefixes and formats
+    '("fancyrefchangeprefix" TeX-arg-macro "Prefix")
+    '("Frefformat" TeX-arg-fancyref-format TeX-arg-macro "Output")
+    '("frefformat" TeX-arg-fancyref-format TeX-arg-macro "Output")
 
-      ;; The delimiter
-      "fancyrefargdelim"
+    ;; The delimiter
+    "fancyrefargdelim"
 
-      ;; All those names and abbreviations.
-      ;; Part
-      "fancyrefpartlabelprefix" 
-      "Frefpartname" "frefpartname"   
-      ;; Chapter
-      "fancyrefchalabelprefix"
-      "Frefchaname" "frefchaname"   
-      ;; Section
-      "fancyrefseclabelprefix"
-      "Frefsecname" "frefsecname"
-      ;; Equation
-      "fancyrefeqlabelprefix"
-      "Frefeqname" "frefeqname"   
-      ;; Figure
-      "fancyreffiglabelprefix"
-      "Freffigname" "freffigname" "Freffigshortname"
-      ;; Footnote
-      "fancyreffnlabelprefix"
-      "Freffnname" "freffnname"   
-      ;; Item
-      "fancyrefitemlabelprefix"
-      "Frefitemname" "frefitemname" 
-      ;; Table
-      "fancyreftablabelprefix"
-      "Freftabname" "freftabname" "Freftabshortname"
-      ;; Page
-      "Frefpgname" "frefpgname" "Frefpgshortname"
-      ;; On
-      "Frefonname" "frefonname" 
-      ;; See
-      "Frefseename" "frefseename"
+    ;; All those names and abbreviations.
+    ;; Part
+    "fancyrefpartlabelprefix" 
+    "Frefpartname" "frefpartname"   
+    ;; Chapter
+    "fancyrefchalabelprefix"
+    "Frefchaname" "frefchaname"   
+    ;; Section
+    "fancyrefseclabelprefix"
+    "Frefsecname" "frefsecname"
+    ;; Equation
+    "fancyrefeqlabelprefix"
+    "Frefeqname" "frefeqname"   
+    ;; Figure
+    "fancyreffiglabelprefix"
+    "Freffigname" "freffigname" "Freffigshortname"
+    ;; Footnote
+    "fancyreffnlabelprefix"
+    "Freffnname" "freffnname"   
+    ;; Item
+    "fancyrefitemlabelprefix"
+    "Frefitemname" "frefitemname" 
+    ;; Table
+    "fancyreftablabelprefix"
+    "Freftabname" "freftabname" "Freftabshortname"
+    ;; Page
+    "Frefpgname" "frefpgname" "Frefpgshortname"
+    ;; On
+    "Frefonname" "frefonname" 
+    ;; See
+    "Frefseename" "frefseename"
 
-      ;; The spacing macros
-      "fancyrefloosespacing" "fancyreftightspacing" "fancyrefdefaultspacing"
+    ;; The spacing macros
+    "fancyrefloosespacing" "fancyreftightspacing" "fancyrefdefaultspacing"
 
-      ;; And the hook
-      "fancyrefhook")
+    ;; And the hook
+    "fancyrefhook")
 
-     ;; Insatall completion for labels and formats
-     (setq TeX-complete-list
-	   (append
-	    '(("\\\\[fF]ref\\(\\[[^]]*\\]\\)?{\\([^{}\n\r\\%,]*\\)" 
-	       2 LaTeX-label-list "}")
-	      ("\\\\[fF]ref\\[\\([^{}\n\r\\%,]*\\)" 
-	       1 LaTeX-fancyref-formats "]")
-	      ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"
-	       1 LaTeX-fancyref-formats "}"))
-	    TeX-complete-list))
-     ;; Fontification
-     (when (and (featurep 'font-latex)
-		(eq TeX-install-font-lock 'font-latex-setup))
-       (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference))
+   ;; Insatall completion for labels and formats
+   (setq TeX-complete-list
+	 (append
+	  '(("\\\\[fF]ref\\(\\[[^]]*\\]\\)?{\\([^{}\n\r\\%,]*\\)" 
+	     2 LaTeX-label-list "}")
+	    ("\\\\[fF]ref\\[\\([^{}\n\r\\%,]*\\)" 
+	     1 LaTeX-fancyref-formats "]")
+	    ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"
+	     1 LaTeX-fancyref-formats "}"))
+	  TeX-complete-list))
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference))
 
-     ;; Activate RefTeX reference style.
-     (and LaTeX-reftex-ref-style-auto-activate
-	  (fboundp 'reftex-ref-style-activate)
-	  (reftex-ref-style-activate "Fancyref")))
-   TeX-dialect)
+   ;; Activate RefTeX reference style.
+   (and LaTeX-reftex-ref-style-auto-activate
+	(fboundp 'reftex-ref-style-activate)
+	(reftex-ref-style-activate "Fancyref")))
+ TeX-dialect)
 
 ;; The following list keeps a list of available format names
 ;; Note that this list is only updated when a format is used, not

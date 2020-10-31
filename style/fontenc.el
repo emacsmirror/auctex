@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defvar LaTeX-fontenc-package-options-list
   '(;; 128+ glyph encodings (text)
     "OT1" "OT2" "OT3" "OT4" "OT6"

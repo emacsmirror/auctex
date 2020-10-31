@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Needed for compiling `cl-pushnew':
 (eval-when-compile
   (require 'cl-lib))

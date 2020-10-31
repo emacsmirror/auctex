@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 (require 'timezone)
 
 (TeX-add-style-hook "foils"

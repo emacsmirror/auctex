@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "fancynum"
  (lambda ()

@@ -38,6 +38,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "frenchb"
  (lambda ()
@@ -52,20 +54,20 @@
     "ieme"
     "iemes"
     '("bsc" t)
-     "primo"
-     "secundo"
-     "tertio"
-     "quarto"
-     "No"
-     "no"
-     "degre"
-     "degres"
-     "DecimalMathComma"
-     "StandardMathComma"
-     '("nombre" "Nombre")
-     "ThinSpaceInFrenchNumbers"
-     "FrenchLayout"
-     "StandardLayout")
+    "primo"
+    "secundo"
+    "tertio"
+    "quarto"
+    "No"
+    "no"
+    "degre"
+    "degres"
+    "DecimalMathComma"
+    "StandardMathComma"
+    '("nombre" "Nombre")
+    "ThinSpaceInFrenchNumbers"
+    "FrenchLayout"
+    "StandardLayout")
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language
 	   `("french" "\\og "

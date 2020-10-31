@@ -29,12 +29,14 @@
 ;; Set up AUCTeX for editing French text in connection with the
 ;; `french' babel option.  The file basically loads the style file for
 ;; the `frenchb' babel option.
-;; 
+;;
 ;; Support for the FrenchPro package by Bernard Gaulle is _not_
 ;; included.  If the presence of FrenchPro is detected, the `frenchb'
 ;; support is not loaded.
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "french"

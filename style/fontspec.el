@@ -34,6 +34,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -41,6 +44,7 @@
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+(declare-function TeX-check-engine-add-engines "tex-buf" (&rest engines))
 
 (defvar LaTeX-fontspec-font-features
   '(;; 5 Font selection
