@@ -4,13 +4,15 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "amsbsy"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("boldsymbol" "Symbol")
-     '("pmb"        "Symbol")
-     )))
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amsbsy"
+ (lambda ()
+   (TeX-add-symbols
+    '("boldsymbol" "Symbol")
+    '("pmb"        "Symbol")))
  LaTeX-dialect)
 
 (defvar LaTeX-amsbsy-package-options nil

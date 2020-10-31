@@ -2,7 +2,11 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "amsart"
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amsart"
  (function
   (lambda ()
     (TeX-run-style-hooks "amsmath" "amsthm")

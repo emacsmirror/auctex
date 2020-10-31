@@ -4,11 +4,14 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "amstext"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("text" t))))
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amstext"
+ (lambda ()
+   (TeX-add-symbols
+    '("text" t)))
  LaTeX-dialect)
 
 (defvar LaTeX-amstext-package-options nil

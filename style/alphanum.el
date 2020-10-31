@@ -34,6 +34,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function reftex-match-string "reftex" (n))
 (defvar reftex-section-regexp)

@@ -2,11 +2,14 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "amsbook"
- (function
-  (lambda ()
-    (TeX-run-style-hooks "amsmath" "amsthm")
-    (LaTeX-add-environments "abstract")))
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amsbook"
+ (lambda ()
+   (TeX-run-style-hooks "amsmath" "amsthm")
+   (LaTeX-add-environments "abstract"))
  LaTeX-dialect)
 
 ;;; amsbook.el ends here.

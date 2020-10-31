@@ -28,6 +28,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-algpseudocode-package-options
   '("compatible" "nocompatible")
   "Package options for the algpseudocode package.")

@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Fontification
 (declare-function font-latex-add-keywords
 		  "font-latex"

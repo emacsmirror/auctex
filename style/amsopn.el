@@ -28,22 +28,25 @@
 
 ;; This file adds support for `amsnopn.sty'
 
+(require 'tex)
+(require 'latex)
+
 ;;; Code:
 
-(TeX-add-style-hook "amsopn"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("DeclareMathOperator"  (TeX-arg-define-macro "Math Operator: \\")
-       "Expansion text for the math operator")
-     '("DeclareMathOperator*" (TeX-arg-define-macro "Math Operator: \\")
-       "Expansion text for the math operator")
-     '("operatorname" t)
-     '("operatorname*" t))
+(TeX-add-style-hook
+ "amsopn"
+ (lambda ()
+   (TeX-add-symbols
+    '("DeclareMathOperator"  (TeX-arg-define-macro "Math Operator: \\")
+      "Expansion text for the math operator")
+    '("DeclareMathOperator*" (TeX-arg-define-macro "Math Operator: \\")
+      "Expansion text for the math operator")
+    '("operatorname" t)
+    '("operatorname*" t))
 
-    (add-to-list 'LaTeX-auto-regexp-list
-		 '("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
-		   1 TeX-auto-symbol))))
+   (add-to-list 'LaTeX-auto-regexp-list
+		'("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
+		  1 TeX-auto-symbol)))
  LaTeX-dialect
  )
 

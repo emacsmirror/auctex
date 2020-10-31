@@ -28,6 +28,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-algorithm-package-options
   '("section")
   "Package options for the algorithm package.")
