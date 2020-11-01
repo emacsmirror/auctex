@@ -34,6 +34,7 @@
 
 ;; Needed for auto-parsing.
 (require 'tex)
+(require 'latex)
 
 ;; Silence the parser:
 (declare-function LaTeX-thmtools-declaretheorem-list

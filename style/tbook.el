@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-load-style "jbook")
 (defvar LaTeX-tbook-class-options LaTeX-jbook-class-options
   "Class options for the tbook class.")

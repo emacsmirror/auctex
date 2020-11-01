@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-tabularx-package-options
   '("infoshow" "debugshow")
   "Package options for the tabularx package.")

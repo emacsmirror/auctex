@@ -33,6 +33,11 @@
 ;; fontification is not ideal.  But this might be a starting point for
 ;; TeXLive documentation editors who use AUCTeX.
 
+;;; Code:
+
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function LaTeX-add-fancyvrb-environments
 		  "fancyvrb"

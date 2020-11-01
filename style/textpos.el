@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())

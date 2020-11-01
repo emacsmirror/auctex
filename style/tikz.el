@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defcustom TeX-TikZ-point-name-regexp
   "(\\([A-Za-z0-9]+\\))"
   "A regexp that matches TikZ names."

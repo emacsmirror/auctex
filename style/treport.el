@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-load-style "jreport")
 (defvar LaTeX-treport-class-options LaTeX-jreport-class-options
   "Class options for the treport class.")

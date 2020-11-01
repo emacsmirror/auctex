@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-load-style "jarticle")
 (defvar LaTeX-tarticle-class-options LaTeX-jarticle-class-options
   "Class options for the tarticle class.")
