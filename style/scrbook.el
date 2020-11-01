@@ -23,12 +23,15 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; This file adds support for `scrbook.cls'. This file needs
 ;; `scrbase.el'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

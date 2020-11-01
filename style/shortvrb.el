@@ -41,6 +41,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'tex-style)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-to-syntax-alist
 		  "font-latex"

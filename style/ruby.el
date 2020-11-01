@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defvar LaTeX-ruby-package-options
   '("overlap" "nooverlap" "CJK" "latin")
   "Package options for the ruby package.")

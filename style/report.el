@@ -2,6 +2,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-report-class-options
   '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
     "landscape" "10pt" "11pt" "12pt" "oneside" "twoside" "draft" "final"

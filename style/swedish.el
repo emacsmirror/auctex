@@ -4,6 +4,9 @@
 ;;
 ;; Apparently the Swedes use ''this style'' quotations.
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "swedish"
  (lambda ()

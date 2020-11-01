@@ -14,6 +14,9 @@
 
 ;; This file is part of  AUCTeX.
 
+(require 'tex)
+(require 'latex)
+
 ;;; Code:
 (TeX-add-style-hook
  "scrartcl"

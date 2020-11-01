@@ -23,7 +23,7 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; This file adds support for `scrlttr2.cls'.
 
@@ -37,111 +37,115 @@
 
 ;;; Code
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
 
-(TeX-add-style-hook "scrlttr2"
-  (lambda ()
-    (TeX-add-symbols
-     '("AtBeginLetter" t)
-     '("KOMAoptions" t)
-     '("LetterOptionNeedsPapersize" "Name of lco file" "Paper size")
-     '("LoadLetterOption" "Name of lco file")
-     '("addrchar" "Initial letter")
-     '("addrentry" "Lastname" "Firstname" "Address" "Telephone" "F1"
-       "F2" "F3" "F4" "Key")
-     '("addtokomafont" TeX-arg-KOMA-scrlttr-fontelements t)
-     '("addtolengthplength" [ "Factor" ] "Name of length"
-       "Name of pseudo length")
-     '("addtoreffields" TeX-arg-KOMA-scrlttr-vars)
-     '("adrchar" "Initial letter")
-     '("adrentry" "Lastname" "Firstname" "Address" "Telephone" "F1"
-       "F2" "Comment" "Key")
-     '("bankname" t)
-     '("captionsUKenglish" nil)
-     '("captionsUSenglish" nil)
-     '("captionsamerican" nil)
-     '("captionsaustrian" nil)
-     '("captionsbritish" nil)
-     '("captionscroatian" nil)
-     '("captionsdutch" nil)
-     '("captionsenglish" nil)
-     '("captionsfrench" nil)
-     '("captionsgerman" nil)
-     '("captionsitalian" nil)
-     '("captionsngerman" nil)
-     '("captionsspanish" nil)
-     '("cc" t)
-     '("ccname" t)
-     '("cleardoubleemptypage")
-     '("cleardoubleplainpage")
-     '("cleardoublestandardpage")
-     '("closing" "Closing Phrase")
-     '("customername" t)
-     '("dateUKenglish" nil)
-     '("dateUSenglish" nil)
-     '("dateamerican" nil)
-     '("dateaustrian" nil)
-     '("datebritish" nil)
-     '("datecroatian" nil)
-     '("datedutch" nil)
-     '("dateenglish" nil)
-     '("datefrench" nil)
-     '("dategerman" nil)
-     '("dateitalian" nil)
-     '("datename" t)
-     '("datengerman" nil)
-     '("datespanish" nil)
-     '("emailname" t)
-     '("encl" t)
-     '("enclname" t)
-     '("faxname" t)
-     '("firstfoot" t)
-     '("firsthead" t)
-     '("headfromname" t)
-     '("headtoname" t)
-     '("ifkomavarempty" TeX-arg-KOMA-scrlttr-vars 2)
-     '("ifkomavarempty*" TeX-arg-KOMA-scrlttr-vars 2)
-     '("invoicename" t)
-     '("myrefname" t)
-     '("newcaptionname" "Language" "Term" "Definition")
-     '("newkomavar" [ "Description" ] "Name")
-     '("newkomavar*" [ "Description" ] "Name")
-     '("nextfoot" t)
-     '("nexthead" t)
-     '("opening" "Opening")
-     '("pagename" t)
-     '("phonename" t)
-     '("providecaptionname" "Language" "Term" "Definition")
-     '("ps")
-     '("raggedsignature" nil)
-     '("renewcaptionname" "Language" "Term" "Definition")
-     '("setkomafont" TeX-arg-KOMA-scrlttr-fontelements t)
-     '("setkomavar" TeX-arg-KOMA-scrlttr-vars [ "Description" ] t)
-     '("setkomavar*" TeX-arg-KOMA-scrlttr-vars "Description")
-     '("setlengthtoplength" [ "Factor" ] "Name of length"
-       "Name of pseudo length")
-     '("subjectname" t)
-     '("usekomafont" TeX-arg-KOMA-scrlttr-fontelements)
-     '("usekomavar" [ "Command" ] TeX-arg-KOMA-scrlttr-vars)
-     '("usekomavar*" [ "Command" ] TeX-arg-KOMA-scrlttr-vars)
-     '("useplength" "Name")
-     '("wwwname" t)
-     '("yourmailname" t)
-     '("yourrefname" t))
-    (LaTeX-add-environments
-     '("letter" (lambda (env &rest ignore)
-		  (LaTeX-insert-environment
-		   env
-		   (let ((options (TeX-read-string "Optional options: "))
-			 (recip (TeX-read-string "Recipient: ")))
-		     (concat
-		      (if (not (zerop (length options)))
-			  (format "[%s]" options))
-		      (format "{%s}" recip)))))))
-    ;; Definitions for font-latex
+(TeX-add-style-hook
+ "scrlttr2"
+ (lambda ()
+   (TeX-add-symbols
+    '("AtBeginLetter" t)
+    '("KOMAoptions" t)
+    '("LetterOptionNeedsPapersize" "Name of lco file" "Paper size")
+    '("LoadLetterOption" "Name of lco file")
+    '("addrchar" "Initial letter")
+    '("addrentry" "Lastname" "Firstname" "Address" "Telephone" "F1"
+      "F2" "F3" "F4" "Key")
+    '("addtokomafont" TeX-arg-KOMA-scrlttr-fontelements t)
+    '("addtolengthplength" [ "Factor" ] "Name of length"
+      "Name of pseudo length")
+    '("addtoreffields" TeX-arg-KOMA-scrlttr-vars)
+    '("adrchar" "Initial letter")
+    '("adrentry" "Lastname" "Firstname" "Address" "Telephone" "F1"
+      "F2" "Comment" "Key")
+    '("bankname" t)
+    '("captionsUKenglish" nil)
+    '("captionsUSenglish" nil)
+    '("captionsamerican" nil)
+    '("captionsaustrian" nil)
+    '("captionsbritish" nil)
+    '("captionscroatian" nil)
+    '("captionsdutch" nil)
+    '("captionsenglish" nil)
+    '("captionsfrench" nil)
+    '("captionsgerman" nil)
+    '("captionsitalian" nil)
+    '("captionsngerman" nil)
+    '("captionsspanish" nil)
+    '("cc" t)
+    '("ccname" t)
+    '("cleardoubleemptypage")
+    '("cleardoubleplainpage")
+    '("cleardoublestandardpage")
+    '("closing" "Closing Phrase")
+    '("customername" t)
+    '("dateUKenglish" nil)
+    '("dateUSenglish" nil)
+    '("dateamerican" nil)
+    '("dateaustrian" nil)
+    '("datebritish" nil)
+    '("datecroatian" nil)
+    '("datedutch" nil)
+    '("dateenglish" nil)
+    '("datefrench" nil)
+    '("dategerman" nil)
+    '("dateitalian" nil)
+    '("datename" t)
+    '("datengerman" nil)
+    '("datespanish" nil)
+    '("emailname" t)
+    '("encl" t)
+    '("enclname" t)
+    '("faxname" t)
+    '("firstfoot" t)
+    '("firsthead" t)
+    '("headfromname" t)
+    '("headtoname" t)
+    '("ifkomavarempty" TeX-arg-KOMA-scrlttr-vars 2)
+    '("ifkomavarempty*" TeX-arg-KOMA-scrlttr-vars 2)
+    '("invoicename" t)
+    '("myrefname" t)
+    '("newcaptionname" "Language" "Term" "Definition")
+    '("newkomavar" [ "Description" ] "Name")
+    '("newkomavar*" [ "Description" ] "Name")
+    '("nextfoot" t)
+    '("nexthead" t)
+    '("opening" "Opening")
+    '("pagename" t)
+    '("phonename" t)
+    '("providecaptionname" "Language" "Term" "Definition")
+    '("ps")
+    '("raggedsignature" nil)
+    '("renewcaptionname" "Language" "Term" "Definition")
+    '("setkomafont" TeX-arg-KOMA-scrlttr-fontelements t)
+    '("setkomavar" TeX-arg-KOMA-scrlttr-vars [ "Description" ] t)
+    '("setkomavar*" TeX-arg-KOMA-scrlttr-vars "Description")
+    '("setlengthtoplength" [ "Factor" ] "Name of length"
+      "Name of pseudo length")
+    '("subjectname" t)
+    '("usekomafont" TeX-arg-KOMA-scrlttr-fontelements)
+    '("usekomavar" [ "Command" ] TeX-arg-KOMA-scrlttr-vars)
+    '("usekomavar*" [ "Command" ] TeX-arg-KOMA-scrlttr-vars)
+    '("useplength" "Name")
+    '("wwwname" t)
+    '("yourmailname" t)
+    '("yourrefname" t))
+   (LaTeX-add-environments
+    '("letter" (lambda (env &rest ignore)
+		 (LaTeX-insert-environment
+		  env
+		  (let ((options (TeX-read-string "Optional options: "))
+			(recip (TeX-read-string "Recipient: ")))
+		    (concat
+		     (if (not (zerop (length options)))
+			 (format "[%s]" options))
+		     (format "{%s}" recip)))))))
+   ;; Definitions for font-latex
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      ;; Textual keywords
@@ -203,7 +207,7 @@
 				"cleardoubleplainpage"
 				"cleardoubleemptypage")
 			      'warning)))
-  TeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-KOMA-scrlttr-vars (optional &optional prompt)
   "Prompt for KOMA-Script's scrlttr2 predefined variables with completion."
