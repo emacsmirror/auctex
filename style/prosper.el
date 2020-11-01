@@ -59,7 +59,8 @@
 ;; auctex. I shall have to download the latest version, and see if
 ;; its already been fixed.
 
-
+(require 'tex)
+(require 'latex)
 
 (defconst LaTeX-prosper-version "2008-05-25"
   "prosper.el version.")

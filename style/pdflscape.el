@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "pdflscape"
  (lambda ()

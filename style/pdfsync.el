@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defun LaTeX-pdfsync-output-page ()
   "Return page number in output file corresponding to buffer position."
   (let* ((line (line-number-at-pos))

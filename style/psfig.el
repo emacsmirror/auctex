@@ -7,39 +7,38 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "psfig"
- (function
-  (lambda ()
-	;; probable some of the following symbols may be removed
-    (TeX-add-symbols "protect" "figurepath"  "fbox"
-		     "other" "letter" "other" "then" "Sine" "Cosine"
-		     "psdraft" "psfull" "psscalefirst" "psrotatefirst"
-		     "psnodraftbox" "psdraftbox" "pssilent" "psnoisy"
-		     "minmaxtest"
-     '("psfig" TeX-arg-psfig)
-     '("psfigurepath" t)
-		     )
-    (LaTeX-add-environments
-     '("psfigure" LaTeX-env-psfigure)
-     )
-    ))
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "psfig"
+ (lambda ()
+   ;; probable some of the following symbols may be removed
+   (TeX-add-symbols "protect" "figurepath"  "fbox"
+		    "other" "letter" "other" "then" "Sine" "Cosine"
+		    "psdraft" "psfull" "psscalefirst" "psrotatefirst"
+		    "psnodraftbox" "psdraftbox" "pssilent" "psnoisy"
+		    "minmaxtest"
+                    '("psfig" TeX-arg-psfig)
+                    '("psfigurepath" t)
+		    )
+   (LaTeX-add-environments
+    '("psfigure" LaTeX-env-psfigure)))
  TeX-dialect)
 
 (defun TeX-arg-psfig (_optional)
-   "Ask for file, width and length. Insert psfig macro"
-   (let ((psfile (read-file-name "PS-file: " "" "" nil))
-	 (figwidth (TeX-read-string "Figure width: "))
-	 (figheight (TeX-read-string "Figure height: "))
-	 )
+  "Ask for file, width and length. Insert psfig macro"
+  (let ((psfile (read-file-name "PS-file: " "" "" nil))
+	(figwidth (TeX-read-string "Figure width: "))
+	(figheight (TeX-read-string "Figure height: "))
+	)
 
-     (insert TeX-grop "figure=" psfile)
-     (if (not (zerop (length figwidth)))
-	 (insert ",width=" figwidth))
-     (if (not (zerop (length figheight)))
-	 (insert ",height=" figheight))
-     (insert TeX-grcl)
-     )
-   )
+    (insert TeX-grop "figure=" psfile)
+    (if (not (zerop (length figwidth)))
+	(insert ",width=" figwidth))
+    (if (not (zerop (length figheight)))
+	(insert ",height=" figheight))
+    (insert TeX-grcl)))
 
 
 (defun LaTeX-env-psfigure (_environment)

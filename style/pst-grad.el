@@ -33,6 +33,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (defvar LaTeX-pst-fillstyle-list)
 (defvar LaTeX-pst-parameters-completion-regexp)

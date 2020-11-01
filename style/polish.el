@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-polish-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)
   "Syntax table used in LaTeX mode when using `polish.sty'.")

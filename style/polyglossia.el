@@ -36,6 +36,7 @@
 ;;; Code:
 
 (require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
