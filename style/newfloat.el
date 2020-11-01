@@ -56,6 +56,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
