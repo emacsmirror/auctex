@@ -35,6 +35,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function LaTeX-pst-arrows "pstricks" ())
 (declare-function LaTeX-pst-point  "pstricks" ())

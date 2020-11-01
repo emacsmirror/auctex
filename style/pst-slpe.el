@@ -33,6 +33,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (defvar LaTeX-pst-fillstyle-list)
 (defvar LaTeX-pst-parameters-completion-regexp)
@@ -51,23 +53,22 @@
 ;;; Define hook
 (TeX-add-style-hook
  "pst-slpe"
- (function
-  (lambda ()
-    (TeX-run-style-hooks
-     "pstricks")
-    (unless (member "slope" LaTeX-pst-fillstyle-list)
-      (setq LaTeX-pst-fillstyle-list
-            (append LaTeX-pst-fillstyle-list
-                    '("slope" "slopes" "ccslope" "ccslopes" "radslope"
-                    "radslopes")))
-      (setq LaTeX-pst-parameters-completion-regexp
-            (concat
-             (substring LaTeX-pst-parameters-completion-regexp 0 -2)
-             "\\|slopebegin\\|slopeend\\)")))
-    (make-local-variable 'LaTeX-pst-parameters-name-list)
-    (setq LaTeX-pst-parameters-name-list
-          (append LaTeX-pstslpe-parameters-name-list
-                  LaTeX-pst-parameters-name-list))))
+ (lambda ()
+   (TeX-run-style-hooks
+    "pstricks")
+   (unless (member "slope" LaTeX-pst-fillstyle-list)
+     (setq LaTeX-pst-fillstyle-list
+           (append LaTeX-pst-fillstyle-list
+                   '("slope" "slopes" "ccslope" "ccslopes" "radslope"
+                     "radslopes")))
+     (setq LaTeX-pst-parameters-completion-regexp
+           (concat
+            (substring LaTeX-pst-parameters-completion-regexp 0 -2)
+            "\\|slopebegin\\|slopeend\\)")))
+   (make-local-variable 'LaTeX-pst-parameters-name-list)
+   (setq LaTeX-pst-parameters-name-list
+         (append LaTeX-pstslpe-parameters-name-list
+                 LaTeX-pst-parameters-name-list)))
  TeX-dialect)
 
 ;;; pst-slpe.el ends here

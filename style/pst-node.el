@@ -35,6 +35,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function LaTeX-package-parameter-value
 		  "pstricks" (param pname))

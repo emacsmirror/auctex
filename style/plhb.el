@@ -8,6 +8,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 (defvar LaTeX-plhb-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)

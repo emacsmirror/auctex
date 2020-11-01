@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 ;; `LaTeX-fancyvrb-key-val-options-local' will be defined after
 ;; loading `fvextra.el' which loads `fancyvrb.el' in return:
