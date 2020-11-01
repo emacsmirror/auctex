@@ -34,6 +34,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "ltablex"
  (lambda ()

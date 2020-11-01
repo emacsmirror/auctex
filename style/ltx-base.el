@@ -31,55 +31,56 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "ltx-base"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("DeclareRobustCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-     '("CheckCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-     '("@addtoreset" TeX-arg-counter "Within counter" "counter")
-     '("addvspace" "space")
-     '("addpenalty" "penalty")
-     '("ProvidesClass" "name" [ "release information" ])
-     '("ProvidesPackage" "name" [ "release information" ])
-     '("ProvidesFile" "filename" [ "release information" ])
-     '("NeedsTeXFormat" "format" [ "release" ])
-     '("DeclareOption" "option" t)
-     ;; would be great if DeclareOption RET * RET would give
-     ;; \DeclareOption*!
-     '("DeclareOption*" t)
-     '("CurrentOption" 0)
-     '("PassOptionsToPackage" "option list" "package")
-     '("ExecuteOptions" "option list")
-     '("ProcessOptions" (TeX-arg-literal "\\relax"))
-     "ProcessOptions*"
-     '("OptionNotUsed" 0)
-      ;; candidate for opt/mand toggling
-     '("RequirePackage" [ "option list" ] "package" [ "release" ])
-     '("LoadClass" [ "option list" ] "class" [ "release" ])
-     '("AtEndOfPackage" t)
-     '("AtEndOfClass" t)
-     '("AtBeginDocument" t)
-     '("AtEndDocument" t)
-     '("IfFileExists" "filename" 2)
-     '("InputIfFileExists" "filename" 2)
-     '("PackageWarning" "name" t)
-     '("PackageWarningNoLine" "name" t)
-     '("PackageInfo" "name" t)
-     '("PackageError" "name" "short text" t)
-     '("ClassWarning" "name" t)
-     '("ClassWarningNoLine" "name" t)
-     '("ClassInfo" "name" t)
-     '("ClassError" "name" "short text" t)
-     '("MessageBreak" 0)
-     '("@ifpackageloaded" "package" 2)
-     '("@ifpackagelater" "package" "date" 2)
-     '("@ifpackagewith" "package" "options" 2)
-     '("message" "Log Message")
-     '("@ifundefined" "Macro Name" 2)
-     '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "character") 2 )
-     "expandafter")))
+ (lambda ()
+   (TeX-add-symbols
+    '("DeclareRobustCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+    '("CheckCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+    '("@addtoreset" TeX-arg-counter "Within counter" "counter")
+    '("addvspace" "space")
+    '("addpenalty" "penalty")
+    '("ProvidesClass" "name" [ "release information" ])
+    '("ProvidesPackage" "name" [ "release information" ])
+    '("ProvidesFile" "filename" [ "release information" ])
+    '("NeedsTeXFormat" "format" [ "release" ])
+    '("DeclareOption" "option" t)
+    ;; would be great if DeclareOption RET * RET would give
+    ;; \DeclareOption*!
+    '("DeclareOption*" t)
+    '("CurrentOption" 0)
+    '("PassOptionsToPackage" "option list" "package")
+    '("ExecuteOptions" "option list")
+    '("ProcessOptions" (TeX-arg-literal "\\relax"))
+    "ProcessOptions*"
+    '("OptionNotUsed" 0)
+    ;; candidate for opt/mand toggling
+    '("RequirePackage" [ "option list" ] "package" [ "release" ])
+    '("LoadClass" [ "option list" ] "class" [ "release" ])
+    '("AtEndOfPackage" t)
+    '("AtEndOfClass" t)
+    '("AtBeginDocument" t)
+    '("AtEndDocument" t)
+    '("IfFileExists" "filename" 2)
+    '("InputIfFileExists" "filename" 2)
+    '("PackageWarning" "name" t)
+    '("PackageWarningNoLine" "name" t)
+    '("PackageInfo" "name" t)
+    '("PackageError" "name" "short text" t)
+    '("ClassWarning" "name" t)
+    '("ClassWarningNoLine" "name" t)
+    '("ClassInfo" "name" t)
+    '("ClassError" "name" "short text" t)
+    '("MessageBreak" 0)
+    '("@ifpackageloaded" "package" 2)
+    '("@ifpackagelater" "package" "date" 2)
+    '("@ifpackagewith" "package" "options" 2)
+    '("message" "Log Message")
+    '("@ifundefined" "Macro Name" 2)
+    '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "character") 2 )
+    "expandafter"))
  TeX-dialect)
 
 ;; Local Variables:

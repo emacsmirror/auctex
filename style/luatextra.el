@@ -29,14 +29,16 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
-    "luatextra"
-  (lambda ()
-    (TeX-run-style-hooks "ifluatex" "fontspec"
-			 ;; FIXME: yet to be written:
-			 ;; "luatexbase"
-			 "metalogo" "luacode"))
-  TeX-dialect)
+ "luatextra"
+ (lambda ()
+   (TeX-run-style-hooks "ifluatex" "fontspec"
+			;; FIXME: yet to be written:
+			;; "luatexbase"
+			"metalogo" "luacode"))
+ TeX-dialect)
 
 (defvar LaTeX-luatextra-package-options nil
   "Package options for the ifluatex package.")

@@ -21,6 +21,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;;; LaTeXinfo mode
 
 (defvar TeX-latexinfo-node-regexp
