@@ -2,6 +2,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "j-report"
  (lambda ()

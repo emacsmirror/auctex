@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-jsreport-class-options
   '("a3paper" "a4paper" "a5paper" "a6paper" "b4paper" "b5paper" "b6paper"
     "a4j" "a5j" "b4j" "b5j" "a4var" "b5var" "letterpaper" "legalpaper"
