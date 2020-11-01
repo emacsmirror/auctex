@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function LaTeX-add-xcolor-definecolors
 		  "xcolor"

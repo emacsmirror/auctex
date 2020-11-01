@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'tex-style)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"

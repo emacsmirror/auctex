@@ -29,6 +29,11 @@
 ;; This file adds support for `xltabular.sty' (v0.05) from 2017/10/26.
 ;; `xltabular.sty' is part of TeXLive.
 
+;;; Code:
+
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-xltabular-skipping-regexp
   (concat "[ \t]*" (regexp-opt '("[l]" "[r]" "[c]" "")) "[ \t]*{[^}]*}[ \t]*")
   "Regexp matching between \\begin{xltabular} and column specification.
