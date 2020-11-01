@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-CJK-package-options
   '("lowercase" "global" "local" "active" "encapsulated")
   "Package options for the CJK package.")

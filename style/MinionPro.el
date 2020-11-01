@@ -24,13 +24,15 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; This file adds support for `MinionPro.sty' (v2.3) from 2012/08/03.
 ;; The latest version of MinionPro is available as part of FontPro
 ;; bundle from <https://www.github.com/sebschub>.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
