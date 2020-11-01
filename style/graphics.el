@@ -5,6 +5,9 @@
 ;; Load "graphicx" explicitly to access `LaTeX-graphicx-package-options'
 ;; before running style hook "graphics".  This is necessary to have
 ;; support for completion of package options of "usepackage".
+
+(require 'tex)
+
 (TeX-load-style "graphicx")
 (defvar LaTeX-graphics-package-options LaTeX-graphicx-package-options)
 

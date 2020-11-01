@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -84,9 +87,6 @@
     ("xetex") ("vtex") ("verbose") ("reset")
     ("mag") ("truedimen") ("pass") ("showframe") ("showcrop"))
   "Key=value options allowed only in the preamble for geometry macros.")
-
-;; Needed for auto-parsing.
-(require 'tex)
 
 ;; Setup for \savegeometry:
 (TeX-auto-add-type "geometry-savegeometry" "LaTeX" "geometry-savegeometries")
