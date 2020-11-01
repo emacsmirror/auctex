@@ -32,6 +32,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "mdsymbol"
  (lambda ()

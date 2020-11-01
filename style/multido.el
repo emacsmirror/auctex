@@ -35,19 +35,20 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "multido"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("multido" "\var=<start value>+-<inc>" "Repititions" t)
-     '("Multido" "\var=<start value>+-<inc>" "Repititions" t)
-     '("mmultido" "\var=<start value>+-<inc>" "Repititions" t)
-     '("MMultido" "\var=<start value>+-<inc>" "Repititions" t)
-     "multidostop"
-     "multidocount"
-     '("fpAdd" "Summand 1" "Summand 2" "Register")
-     '("fpSub" "Minuend" "Subtrahend" "Register"))))
+ (lambda ()
+   (TeX-add-symbols
+    '("multido" "\var=<start value>+-<inc>" "Repititions" t)
+    '("Multido" "\var=<start value>+-<inc>" "Repititions" t)
+    '("mmultido" "\var=<start value>+-<inc>" "Repititions" t)
+    '("MMultido" "\var=<start value>+-<inc>" "Repititions" t)
+    "multidostop"
+    "multidocount"
+    '("fpAdd" "Summand 1" "Summand 2" "Register")
+    '("fpSub" "Minuend" "Subtrahend" "Register")))
  TeX-dialect)
 
 ;;; multido.el ends here

@@ -24,24 +24,27 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "makeidx"
-  (lambda ()
-    (TeX-add-symbols 
-     "printindex" "indexspace")
+(require 'tex)
 
-    ;; Parsing the default index macro is defined in latex.el
-    ;; The same is true form completion in the index macro
+(TeX-add-style-hook
+ "makeidx"
+ (lambda ()
+   (TeX-add-symbols
+    "printindex" "indexspace")
 
-    ;; Completion for the |see macro
-    (setq TeX-complete-list
-	  (append
-	   '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
-	   TeX-complete-list))
+   ;; Parsing the default index macro is defined in latex.el
+   ;; The same is true form completion in the index macro
 
-    ;; RefTeX support
-    (and (fboundp 'reftex-add-index-macros)
-	 (reftex-add-index-macros '(default))))
-  TeX-dialect)
+   ;; Completion for the |see macro
+   (setq TeX-complete-list
+	 (append
+	  '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
+	  TeX-complete-list))
+
+   ;; RefTeX support
+   (and (fboundp 'reftex-add-index-macros)
+	(reftex-add-index-macros '(default))))
+ TeX-dialect)
 
 (defvar LaTeX-makeidx-package-options nil
   "Package options for the makeidx package.")
