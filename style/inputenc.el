@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defun LaTeX-inputenc-package-options nil
   "Prompt for package options for the inputenc package."
   ;; separate the condition in three to silence the byte compiler

@@ -29,6 +29,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-imakeidx-makeindex-options
   '(("name")
     ("title")

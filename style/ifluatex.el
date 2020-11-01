@@ -29,6 +29,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'tex-buf)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
