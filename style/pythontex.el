@@ -54,9 +54,6 @@
 (declare-function LaTeX-newfloat-auto-cleanup
 		  "newfloat" ())
 
-;; Needed for auto-parsing:
-(require 'tex)
-
 (defvar LaTeX-pythontex-pygmentize-program (executable-find "pygmentize")
   "Path to pygmentize executable.")
 

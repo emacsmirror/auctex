@@ -62,9 +62,6 @@ Removal is based on the return value of function
       (symbol-value 'LaTeX-titletoc-section-command-list)
     (remove "chapter" LaTeX-titletoc-section-command-list)))
 
-;; Needed for auto-parsing.
-(require 'tex)
-
 ;; Setup for \contentsuse:
 (TeX-auto-add-type "titletoc-contentsuse" "LaTeX")
 

@@ -119,9 +119,6 @@ RefTeX users should customize or add ENVIRONMENT to
     (LaTeX-newline)
     (indent-according-to-mode)))
 
-;; Needed for auto-parsing
-(require 'tex)
-
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "ntheorem-newtheorem" "LaTeX")
 

@@ -43,9 +43,6 @@
 		  "font-latex"
 		  (keywords class))
 
-;; Needed for auto-parsing.
-(require 'tex)
-
 (TeX-auto-add-type "xparse-macro" "LaTeX")
 
 (defvar LaTeX-xparse-macro-regexp
