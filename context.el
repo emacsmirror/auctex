@@ -421,7 +421,7 @@ ConTeXt-section-title: Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
 ConTeXt-section-section: Insert ConTeXt section command according
-to `ConTeXt-name', `ConTeXt-title', and `LaTeX-reference'.  If
+to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
@@ -469,7 +469,7 @@ ConTeXt-section-title: Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
 ConTeXt-section-section: Insert ConTeXt section command according
-to `ConTeXt-name', `ConTeXt-title', and `LaTeX-reference'.  If
+to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
