@@ -1,7 +1,6 @@
-;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs
+;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2008, 2012-2014, 2016, 2018
-;;                                  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2008, 2012-2020 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -39,7 +38,6 @@
 ;; -  You should have a folder called "symb-pics" with the pics of the
 ;;    symbols (xpm format is a good one), and the *parent* of this
 ;;    folder should be in `load-path'.
-
 ;; Did you read carefully this item?  I will say again: the folder
 ;; "symb-pics" should *not* be in `load-path', but its *parent*.
 
