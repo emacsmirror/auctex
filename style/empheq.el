@@ -191,7 +191,7 @@
       TeX-grop
       (if (and ncols (not (string= ncols "")))
 	  (concat amsenv "=" ncols)
-	(symbol-value 'amsenv))
+	amsenv)
       TeX-grcl))
     (when (and (assoc amsenv LaTeX-label-alist)
 	       (LaTeX-label amsenv 'environment))
