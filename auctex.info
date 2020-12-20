@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 12.3.1 from 2020-10-22), a
+This manual is for AUCTeX (version 12.3.1.2020-12-20 from 2020-12-20), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -1701,16 +1701,16 @@ label will be prefixed by the value specified in 'LaTeX-section-hook'.
 
      The following variables are set before the hooks are run
 
-     LEVEL
+     LATEX-LEVEL
           Numeric section level, default set by prefix arg to
           'LaTeX-section'.
-     NAME
+     LATEX-NAME
           Name of the sectioning command, derived from LEVEL.
-     TITLE
+     LATEX-TITLE
           The title of the section, default to an empty string.
-     TOC
+     LATEX-TOC
           Entry for the table of contents list, default nil.
-     DONE-MARK
+     LATEX-DONE-MARK
           Position of point afterwards, default nil meaning after the
           inserted text.
 
@@ -1719,17 +1719,18 @@ label will be prefixed by the value specified in 'LaTeX-section-hook'.
 
      'LaTeX-section-heading'
           Query the user about the name of the sectioning command.
-          Modifies LEVEL and NAME.
+          Modifies LATEX-LEVEL and LATEX-NAME.
      'LaTeX-section-title'
           Query the user about the title of the section.  Modifies
-          TITLE.
+          LATEX-TITLE.
      'LaTeX-section-toc'
-          Query the user for the toc entry.  Modifies TOC.
+          Query the user for the toc entry.  Modifies LATEX-TOC.
      'LaTeX-section-section'
-          Insert LaTeX section command according to NAME, TITLE, and
-          TOC.  If TOC is nil, no toc entry is inserted.  If TOC or
-          TITLE are empty strings, DONE-MARK will be placed at the point
-          they should be inserted.
+          Insert LaTeX section command according to LATEX-NAME,
+          LATEX-TITLE, and LATEX-TOC.  If LATEX-TOC is nil, no toc entry
+          is inserted.  If LATEX-TOC or LATEX-TITLE are empty strings,
+          LATEX-DONE-MARK will be placed at the point they should be
+          inserted.
      'LaTeX-section-label'
           Insert a label after the section command.  Controlled by the
           variable 'LaTeX-section-label'.
@@ -5277,7 +5278,7 @@ Here is a simple example of a style file.
       "book"
       (lambda ()
         (LaTeX-largest-level-set "chapter"))
-      LaTeX-dialect)
+      TeX-dialect)
 
    The example is from the AUCTeX sources and is loaded for any LaTeX
 document using the book document class (or style before LaTeX2e).  The
@@ -5341,10 +5342,10 @@ hook should usually be identical.
 
    In case of adding a style hook for LaTeX, when calling function
 'TeX-add-style-hook' it is thought more futureproof for argument
-DIALECT-EXPR to pass constant 'LaTeX-dialect' currently defined to
+DIALECT-EXPR to pass constant 'TeX-dialect' currently defined to
 ':latex', rather than passing ':latex' directly.
 
- -- Constant: LaTeX-dialect
+ -- Constant: TeX-dialect
      Default dialect for use with function 'TeX-add-style-hook' for
      argument DIALECT-EXPR when the hook is to be run only on LaTeX
      file, or any mode derived thereof.
@@ -5608,8 +5609,8 @@ overwrite the default prompt.
 after the previous argument, or after the macro name if this is the
 first argument.  Please leave point located after the argument you are
 inserting.  If you want point to be located somewhere else after all
-hooks have been processed, set the value of 'exit-mark'.  It will point
-nowhere, until the argument hook sets it.
+hooks have been processed, set the value of 'TeX-exit-mark'.  It will
+point nowhere, until the argument hook sets it.
 
    Some packages provide macros that are rarely useful to non-expert
 users.  Those should be marked as expert macros using
@@ -5896,8 +5897,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.3.1 from 2020-10-22), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 12.3.1.2020-12-20 from
+2020-12-20), a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
 Foundation, Inc.
@@ -6402,6 +6403,44 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 
 A.2 Changes and New Features
 ============================
+
+News in 13.0
+------------
+
+   * AUCTeX now uses lexical binding which has been introduced in Emacs
+     24.  This change should have no user-visible effect and require no
+     manual adaptions except in the following cases.
+
+        * Entries added to the customization variable 'TeX-expand-list'
+          also had access to variables 'command' and 'pos'.  Those are
+          now properly declared and named 'TeX-expand-command' and
+          'TeX-expand-pos'.
+
+        * Entries added to the customization variable 'TeX-expand-list'
+          had access to a variable 'file' which was bound to
+          'TeX-active-master', i.e., it evaluated to either the master
+          or region file.  This usage must be replaced with either
+          'TeX-active-master' or 'TeX-active-master-with-quotes'.
+
+        * Viewer entries in 'TeX-view-program-list' also had access to a
+          variable 'file' which was bound to the name of the master or
+          region file without extension.  Instead, the function
+          'TeX-active-master' has to be used now.
+
+        * Macro argument parsing functions could set a variable
+          'exit-mark' to the buffer position where point should be left
+          after all arguments have been read.  This variable is now
+          named 'TeX-exit-mark'.
+
+        * The functions in 'LaTeX-section-hook' had access or modified
+          the previously undeclared variables 'title', 'name', 'level',
+          'done-mark', and 'toc'.  These variables are now properly
+          declared and have the 'LaTeX-' prefix, e.g.,
+          'LaTeX-done-mark'.
+
+   * The constant 'LaTeX-dialect' has been renamed to 'TeX-dialect' and
+     moved from 'latex.el' to 'tex.el'.  'LaTeX-dialect' now is an
+     obsolete alias.
 
 News in 12.3
 ------------
@@ -8219,7 +8258,7 @@ Function Index
 * LaTeX-narrow-to-environment:           Narrowing.           (line  16)
 * LaTeX-section:                         Sectioning.          (line  21)
 * LaTeX-section-heading:                 Sectioning.          (line  69)
-* LaTeX-section-label:                   Sectioning.          (line  82)
+* LaTeX-section-label:                   Sectioning.          (line  83)
 * LaTeX-section-section:                 Sectioning.          (line  77)
 * LaTeX-section-title:                   Sectioning.          (line  72)
 * LaTeX-section-toc:                     Sectioning.          (line  75)
@@ -8451,7 +8490,6 @@ Variable Index
 * LaTeX-default-position:                Tabular-like.        (line  16)
 * LaTeX-default-style:                   Adding Macros.       (line 192)
 * LaTeX-default-width:                   Tabular-like.        (line  13)
-* LaTeX-dialect:                         Simple Style.        (line  81)
 * LaTeX-electric-left-right-brace:       Quotes.              (line 154)
 * LaTeX-enable-toolbar:                  Processing.          (line  11)
 * LaTeX-eqnarray-label:                  Equations.           (line  12)
@@ -8486,7 +8524,7 @@ Variable Index
 * LaTeX-section-hook:                    Sectioning.          (line  40)
 * LaTeX-section-hook <1>:                Sectioning.          (line  48)
 * LaTeX-section-label:                   Sectioning.          (line  42)
-* LaTeX-section-label <1>:               Sectioning.          (line 100)
+* LaTeX-section-label <1>:               Sectioning.          (line 101)
 * LaTeX-short-caption-prompt-length:     Floats.              (line  27)
 * LaTeX-short-caption-prompt-length <1>: Floats.              (line  51)
 * LaTeX-style-list:                      Adding Macros.       (line 192)
@@ -8547,6 +8585,7 @@ Variable Index
 * TeX-default-macro:                     Completion.          (line  91)
 * TeX-default-mode:                      Japanese.            (line   6)
 * TeX-default-mode <1>:                  Japanese.            (line  67)
+* TeX-dialect:                           Simple Style.        (line  81)
 * TeX-display-help:                      Debugging.           (line  47)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line  97)
@@ -8723,7 +8762,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 672)
+* auctex.el <1>:                         Changes.             (line 710)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -8871,9 +8910,9 @@ Concept Index
 * Killing a process:                     Control.             (line   6)
 * kTeX:                                  Internationalization.
                                                               (line   6)
-* Label prefix:                          Sectioning.          (line 110)
+* Label prefix:                          Sectioning.          (line 111)
 * Label prefix <1>:                      Floats.              (line  32)
-* Labels:                                Sectioning.          (line 110)
+* Labels:                                Sectioning.          (line 111)
 * Labels <1>:                            Floats.              (line  32)
 * Labels, adding:                        Adding Other.        (line   6)
 * labels, completion of:                 Completion.          (line 154)
@@ -8945,7 +8984,7 @@ Concept Index
 * Personal TeX macro directory:          Automatic Private.   (line   6)
 * pLaTeX:                                Japanese.            (line   6)
 * Polish:                                European.            (line  49)
-* Prefix for labels:                     Sectioning.          (line 110)
+* Prefix for labels:                     Sectioning.          (line 111)
 * Prefix for labels <1>:                 Floats.              (line  32)
 * preview-install-styles:                Configure.           (line  85)
 * Previewing:                            Viewing.             (line   6)
@@ -9027,7 +9066,7 @@ Concept Index
                                                               (line 257)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 672)
+* tex-site.el <2>:                       Changes.             (line 710)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9048,104 +9087,104 @@ Concept Index
 
 
 Tag Table:
-Node: Top917
-Node: Copying7331
-Node: Introduction9276
-Node: Summary9546
-Node: Installation12279
-Node: Prerequisites14045
-Node: Configure16285
-Node: Build/install and uninstall20911
-Node: Loading the package21664
-Node: Advice for package providers23340
-Node: Advice for non-privileged users26145
-Node: Installation under MS Windows30110
-Node: Customizing43848
-Node: Quick Start45431
-Ref: Quick Start-Footnote-147561
-Node: Editing Facilities47655
-Node: Processing Facilities52458
-Node: Editing57159
-Node: Quotes58489
-Node: Font Specifiers66742
-Node: Sectioning68809
-Node: Environments73129
-Node: Equations78283
-Node: Floats78874
-Node: Itemize-like80878
-Node: Tabular-like81599
-Node: Customizing Environments83372
-Node: Mathematics83612
-Node: Completion86898
-Node: Marking93920
-Node: Marking (LaTeX)94544
-Node: Marking (Texinfo)95486
-Node: Commenting97096
-Node: Indenting98421
-Node: Filling104457
-Node: Display110329
-Node: Font Locking112824
-Node: Fontification of macros114899
-Node: Fontification of quotes124418
-Node: Fontification of math125913
-Node: Verbatim content129581
-Node: Faces130355
-Node: Known problems130844
-Node: Folding131841
-Node: Outline142665
-Node: Narrowing143937
-Node: Prettifying145007
-Node: Processing146244
-Node: Commands147407
-Node: Starting a Command147963
-Node: Selecting a Command152866
-Node: Processor Options161950
-Node: Viewing172297
-Node: Starting Viewers172671
-Node: I/O Correlation179798
-Node: Debugging184996
-Node: Ignoring warnings187615
-Node: Error overview189675
-Node: Checking191586
-Node: Control193179
-Node: Cleaning193906
-Node: Documentation195199
-Node: Customization195914
-Node: Modes and Hooks196407
-Node: Multifile198227
-Node: Parsing Files203039
-Node: Internationalization207951
-Node: European209264
-Node: Japanese216074
-Node: Automatic221145
-Node: Automatic Global223636
-Node: Automatic Private224768
-Node: Automatic Local226081
-Node: Style Files227113
-Node: Simple Style227906
-Node: Adding Macros231565
-Node: Adding Environments240896
-Node: Adding Other245557
-Node: Hacking the Parser246144
-Node: Appendices250013
-Node: Copying this Manual250309
-Node: GNU Free Documentation License251192
-Node: Changes276313
-Node: Development323279
-Node: Mid-term Goals323925
-Node: Wishlist325782
-Node: Bugs331223
-Node: FAQ332326
-Node: Texinfo mode337453
-Node: Exploiting338589
-Node: Superseding339409
-Node: Mapping343613
-Node: Unbinding345442
-Node: Indices346263
-Node: Key Index346426
-Node: Function Index353042
-Node: Variable Index363925
-Node: Concept Index387203
+Node: Top928
+Node: Copying7342
+Node: Introduction9287
+Node: Summary9557
+Node: Installation12290
+Node: Prerequisites14056
+Node: Configure16296
+Node: Build/install and uninstall20922
+Node: Loading the package21675
+Node: Advice for package providers23351
+Node: Advice for non-privileged users26156
+Node: Installation under MS Windows30121
+Node: Customizing43859
+Node: Quick Start45442
+Ref: Quick Start-Footnote-147572
+Node: Editing Facilities47666
+Node: Processing Facilities52469
+Node: Editing57170
+Node: Quotes58500
+Node: Font Specifiers66753
+Node: Sectioning68820
+Node: Environments73246
+Node: Equations78400
+Node: Floats78991
+Node: Itemize-like80995
+Node: Tabular-like81716
+Node: Customizing Environments83489
+Node: Mathematics83729
+Node: Completion87015
+Node: Marking94037
+Node: Marking (LaTeX)94661
+Node: Marking (Texinfo)95603
+Node: Commenting97213
+Node: Indenting98538
+Node: Filling104574
+Node: Display110446
+Node: Font Locking112941
+Node: Fontification of macros115016
+Node: Fontification of quotes124535
+Node: Fontification of math126030
+Node: Verbatim content129698
+Node: Faces130472
+Node: Known problems130961
+Node: Folding131958
+Node: Outline142782
+Node: Narrowing144054
+Node: Prettifying145124
+Node: Processing146361
+Node: Commands147524
+Node: Starting a Command148080
+Node: Selecting a Command152983
+Node: Processor Options162067
+Node: Viewing172414
+Node: Starting Viewers172788
+Node: I/O Correlation179915
+Node: Debugging185113
+Node: Ignoring warnings187732
+Node: Error overview189792
+Node: Checking191703
+Node: Control193296
+Node: Cleaning194023
+Node: Documentation195316
+Node: Customization196031
+Node: Modes and Hooks196524
+Node: Multifile198344
+Node: Parsing Files203156
+Node: Internationalization208068
+Node: European209381
+Node: Japanese216191
+Node: Automatic221262
+Node: Automatic Global223753
+Node: Automatic Private224885
+Node: Automatic Local226198
+Node: Style Files227230
+Node: Simple Style228023
+Node: Adding Macros231676
+Node: Adding Environments241011
+Node: Adding Other245672
+Node: Hacking the Parser246259
+Node: Appendices250128
+Node: Copying this Manual250424
+Node: GNU Free Documentation License251318
+Node: Changes276439
+Node: Development325161
+Node: Mid-term Goals325807
+Node: Wishlist327664
+Node: Bugs333105
+Node: FAQ334208
+Node: Texinfo mode339335
+Node: Exploiting340471
+Node: Superseding341291
+Node: Mapping345495
+Node: Unbinding347324
+Node: Indices348145
+Node: Key Index348308
+Node: Function Index354924
+Node: Variable Index365807
+Node: Concept Index389085
 
 End Tag Table
 

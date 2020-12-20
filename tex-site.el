@@ -75,7 +75,6 @@ TeX-auto-* (automatically generated lisp).")
 (defcustom TeX-auto-global
     (if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")
   "*Directory containing automatically generated information.
-Must end with a directory separator.
 
 For storing automatic extracted information about the TeX macros
 shared by all users of a site."
@@ -157,11 +156,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "12.3.1"
+(defconst AUCTeX-version "12.3.1.2020-12-20"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2020-10-22"
+(defconst AUCTeX-date "2020-12-20"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
