@@ -1,6 +1,6 @@
-;;; arabxetex.el --- AUCTeX style for `arabxetex.sty' (v1.2.1)
+;;; arabxetex.el --- AUCTeX style for `arabxetex.sty' (v1.2.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,16 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(declare-function TeX-check-engine-add-engines
+                  "tex-buf"
+                  (&rest engines))
 
 (TeX-add-style-hook
  "arabxetex"
@@ -65,7 +71,7 @@
 	    (lambda (symbol)
 	      (list symbol
 		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Mode")
+				   (TeX-argument-prompt t nil "Mode")
 				   LaTeX-arabxetex-package-options ]
 		    t))
 	    (mapcar (lambda (lang) (concat "text" lang)) langs)))
@@ -77,7 +83,7 @@
 	      (list environment
 		    #'LaTeX-env-args
 		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt optional nil "Mode")
+				   (TeX-argument-prompt t nil "Mode")
 				   LaTeX-arabxetex-package-options ]))
 	    langs))
      ;;
@@ -97,7 +103,7 @@
     ;; 3.3 Transliteration
     '("SetTranslitConvention"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Mapping")
+		    (TeX-argument-prompt nil nil "Mapping")
 		    '("dmg" "loc")))
     '("SetTranslitStyle" "Style"))
 
@@ -111,7 +117,7 @@
      (font-latex-add-keywords '(("SetTranslitConvention" "{")
 				("SetTranslitStyle"      "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-arabxetex-package-options
   '("novoc" "voc" "fullvoc" "trans" "utf")

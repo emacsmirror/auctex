@@ -1,6 +1,9 @@
-;;; article.el - Special code for article style.
+;;; article.el - Special code for article style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-article-class-options
   '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
@@ -16,6 +19,6 @@
 		       "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; article.el ends here

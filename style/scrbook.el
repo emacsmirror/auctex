@@ -1,6 +1,6 @@
-;;; scrbook.el --- AUCTeX style for scrbook.cls
+;;; scrbook.el --- AUCTeX style for scrbook.cls  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005, 2018 Free Software Foundation
+;; Copyright (C) 2002, 2005, 2018, 2020 Free Software Foundation
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
@@ -23,12 +23,15 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; This file adds support for `scrbook.cls'. This file needs
 ;; `scrbase.el'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -63,6 +66,6 @@
 			       'textual)
       ;; Sectioning keywords
       (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
-  LaTeX-dialect)
+  TeX-dialect)
 
 ;;; scrbook.el ends here

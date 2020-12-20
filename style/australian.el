@@ -1,6 +1,6 @@
-;;; australian.el --- AUCTeX style for the `australian' babel option.
+;;; australian.el --- AUCTeX style for the `australian' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "australian"
  (lambda ()
    (TeX-run-style-hooks "english"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; australian.el ends here

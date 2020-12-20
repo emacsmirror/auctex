@@ -1,6 +1,6 @@
-;;; footmisc.el --- AUCTeX style for `footmisc.sty'
+;;; footmisc.el --- AUCTeX style for `footmisc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-04-08
@@ -28,6 +28,8 @@
 ;; This file adds support for `footmisc.sty'.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -66,7 +68,7 @@
                                 ("DefineFNsymbolsTM*" "{{")
         			("setfnsymbol" "{")) 'function)
      (font-latex-add-keywords '(("footnoteref")) 'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-footmisc-package-options '("perpage" "side" "ragged"
                                          "para" "symbol" "symbol*"

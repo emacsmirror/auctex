@@ -1,6 +1,6 @@
-;;; zlmtt.el --- AUCTeX style for `zlmtt.sty' (v1.01)
+;;; zlmtt.el --- AUCTeX style for `zlmtt.sty' (v1.01)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -53,7 +55,7 @@
                                 ("monott"   "{")
                                 ("lctt"     "{"))
                               'type-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-zlmtt-package-options
   '("light" "l" "lightcondensed" "lc" "med" "m"

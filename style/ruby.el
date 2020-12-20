@@ -1,6 +1,6 @@
-;;; ruby.el --- AUCTeX style for the ruby package.
+;;; ruby.el --- AUCTeX style for the ruby package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (defvar LaTeX-ruby-package-options
   '("overlap" "nooverlap" "CJK" "latin")
   "Package options for the ruby package.")
@@ -45,6 +47,6 @@
     '("rubysize" 0)
     '("rubysep" 0)
     '("ruby" t nil)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; ruby.el ends here

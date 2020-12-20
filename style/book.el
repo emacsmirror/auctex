@@ -1,6 +1,9 @@
-;;; book.el - Special code for book style.
+;;; book.el - Special code for book style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-book-class-options
   '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
@@ -16,6 +19,6 @@
    (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
 		       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; book.el ends here

@@ -1,6 +1,6 @@
-;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.10)
+;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.10)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;;  `hologo.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -140,7 +142,7 @@
 					LaTeX-hologo-key-val-options-global))
 			       (t
 				LaTeX-hologo-key-val-options-global)))))
-	   (TeX-argument-insert logo optional)
+	   (TeX-argument-insert logo nil)
 	   (format "%s" keyval)))))
 
     '("hologoDriverSetup" (TeX-arg-eval completing-read
@@ -184,7 +186,7 @@
 				'(("logo")))
 			       (t
 				nil)))))
-	   (TeX-argument-insert logo optional)
+	   (TeX-argument-insert logo nil)
 	   (format "%s" keyval)))))
 
     ;; Additional user macros
@@ -230,7 +232,7 @@
 				("hologoList"          "")
 				("hologoEntry"         "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-hologo-package-options nil
   "Package options for the hologo package.")

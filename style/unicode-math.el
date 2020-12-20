@@ -1,6 +1,6 @@
-;;; unicode-math.el --- AUCTeX style for `unicode-math.sty' version 0.7e.
+;;; unicode-math.el --- AUCTeX style for `unicode-math.sty' version 0.7e.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -28,6 +28,9 @@
 ;; This file adds support for `unicode-math.sty' version 0.7e.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -70,7 +73,7 @@
      (font-latex-add-keywords '(("setmathfont" "[{")
 				("unimathsetup" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-unicode-math-package-options ()
   "Prompt for package options for the unicode-math package."

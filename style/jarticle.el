@@ -1,6 +1,9 @@
-;;; jarticle.el - Special code for jarticle class.
+;;; jarticle.el - Special code for jarticle class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-jarticle-class-options
   '("a4paper" "a5paper" "b4paper" "b5paper" "a4j" "a5j" "b4j" "b5j"
@@ -18,6 +21,6 @@
 		       "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; jarticle.el ends here

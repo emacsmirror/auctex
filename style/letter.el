@@ -1,4 +1,4 @@
-;;; letter.el - Special code for letter style.
+;;; letter.el - Special code for letter style.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1993, 2012, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
 
@@ -24,6 +24,9 @@
 ;; 02110-1301, USA.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -86,7 +89,7 @@
 				("encl" "{")
 				("ps" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."

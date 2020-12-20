@@ -1,6 +1,6 @@
-;;; graphicx.el --- AUCTeX style file for graphicx.sty
+;;; graphicx.el --- AUCTeX style file for graphicx.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2018 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2020 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -28,9 +28,13 @@
 ;; Acknowledgements
 ;;  Dr. Thomas Baumann <thomas.baumann@ch.tum.de>
 ;;  David Kastrup <David.Kastrup@t-online.de>
-;;  Masayuki Akata <ataka@milk.freemail.ne.jp>
+;;  Masayuki Ataka <masayuki.ataka@gmail.com>
 
 ;;; Code:
+
+(require 'crm)
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -171,7 +175,7 @@ Optional argument LIST if non-nil is used as list of regexps of
 extensions to be matched."
   (unless list
     (setq list (LaTeX-includegraphics-extensions-list)))
-  (concat "\\." (mapconcat #'identity list "$\\|\\.") "$"))
+  (concat "\\." (mapconcat #'identity list "\\'\\|\\.") "\\'"))
 
 (defvar LaTeX-includegraphics-global-files nil
   "List of the non-local graphic files to include in LaTeX documents.
@@ -213,21 +217,16 @@ subdirectories and inserts the relative file name.  See
 	  (string-match (LaTeX-includegraphics-extensions) fname))))
    (TeX-master-directory)))
 
-(defun LaTeX-arg-includegraphics (_prefix)
+(defun LaTeX-arg-includegraphics (optional)
   "Ask for mandantory argument for the \\includegraphics command."
-  (let* ((image-file (funcall LaTeX-includegraphics-read-file)))
-    (TeX-insert-braces 0)
-    (insert
+  (let ((image-file (funcall LaTeX-includegraphics-read-file)))
+    (TeX-argument-insert
      (if LaTeX-includegraphics-strip-extension-flag
-	 ;; We don't have `replace-regexp-in-string' in all (X)Emacs versions:
-	 (with-temp-buffer
-	   (insert image-file)
-	   (goto-char (point-max))
-	   (when (search-backward-regexp (LaTeX-includegraphics-extensions)
-					 nil t 1)
-	     (replace-match ""))
-	   (buffer-string))
-       image-file))))
+	 (replace-regexp-in-string (LaTeX-includegraphics-extensions)
+				   ""
+				   image-file)
+       image-file)
+     optional)))
 
 (TeX-add-style-hook
  "graphicx"
@@ -237,13 +236,13 @@ subdirectories and inserts the relative file name.  See
 
     '("resizebox"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Width")
+		    (TeX-argument-prompt nil nil "Width")
 		    (append '("\\width" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
 			     (LaTeX-length-list))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Height")
+		    (TeX-argument-prompt nil nil "Height")
 		    (append '("\\height" "\\totalheight" "\\depth" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
@@ -252,13 +251,13 @@ subdirectories and inserts the relative file name.  See
 
     '("resizebox*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Width")
+		    (TeX-argument-prompt nil nil "Width")
 		    (append '("\\width" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
 			     (LaTeX-length-list))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Height")
+		    (TeX-argument-prompt nil nil "Height")
 		    (append '("\\height" "\\totalheight" "\\depth" "!")
 			    (mapcar
 			     (lambda (x) (concat TeX-esc (car x)))
@@ -267,19 +266,19 @@ subdirectories and inserts the relative file name.  See
 
     '("rotatebox" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 				       ()
-				     ([ TeX-arg-key-val (("x") ("y") ("origin") ("units")) ]))
+				       ([ TeX-arg-key-val (("x") ("y") ("origin") ("units")) ]))
       "Angle" "Argument")
 
     '("scalebox" "Horizontal scale" [ "Vertical scale" ] "Argument")
 
     '("includegraphics" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 					     (["llx,lly"] ["urx,ury"])
-					   ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+					     ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
       LaTeX-arg-includegraphics)
 
     '("includegraphics*" (TeX-arg-conditional (member "graphics" (TeX-style-list))
 					      (["llx,lly"] ["urx,ury"])
-					    ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+					      ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
       LaTeX-arg-includegraphics)
 
     '("graphicspath" t)
@@ -307,7 +306,7 @@ subdirectories and inserts the relative file name.  See
    (if (and (LaTeX-provided-package-options-member "graphicx" "dvipdfmx")
 	    (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-graphicx-package-options
   '("draft"       "final"         "debugshow"

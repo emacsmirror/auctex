@@ -1,6 +1,6 @@
-;;; splitidx.el --- AUCTeX style for `splitidx.sty' (v1.2a)
+;;; splitidx.el --- AUCTeX style for `splitidx.sty' (v1.2a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -90,6 +90,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -152,7 +153,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt optional nil "Short cut"))))
+			  (TeX-argument-prompt nil nil "Short cut"))))
 	   (LaTeX-add-splitidx-newindices shortcut)
 	   (format "%s" shortcut)))))
 
@@ -160,20 +161,20 @@
     '("sindex"
       ;; I don't use `[ TeX-arg-index-tag ]' here
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       TeX-arg-index)
 
     ;; 3.4 Customizing index entries
     '("AtWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Short cut")
+		    (TeX-argument-prompt nil nil "Short cut")
 		    (LaTeX-splitidx-newindex-list))
       t)
 
     '("AtNextWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Short cut")
+		    (TeX-argument-prompt nil nil "Short cut")
 		    (LaTeX-splitidx-newindex-list))
       t)
 
@@ -183,14 +184,14 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt optional nil "Short cut"))))
+			  (TeX-argument-prompt nil nil "Short cut"))))
 	   (LaTeX-add-splitidx-newindices shortcut)
 	   (format "%s" shortcut)))))
 
     ;; 3.7 Including the generated indices in your document
     '("printindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
@@ -198,7 +199,7 @@
 
     '("printsubindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
@@ -206,7 +207,7 @@
 
     '("setindexpreamble"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Short cut")
+		     (TeX-argument-prompt t nil "Short cut")
 		     (LaTeX-splitidx-newindex-list) ]
       t)
 
@@ -246,7 +247,7 @@
        (TeX-add-symbols
 	'("index"
 	  [TeX-arg-eval completing-read
-			(TeX-argument-prompt optional nil "Short cut")
+			(TeX-argument-prompt t nil "Short cut")
 			(LaTeX-splitidx-newindex-list) ]
 	  (TeX-arg-index)))
        ;; Tell RefTeX to look in the optional arg. for the index short cut
@@ -300,7 +301,7 @@
 			      'function)
      (font-latex-add-keywords '(("sindex"             "[{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-splitidx-package-options
   '("makeindex"

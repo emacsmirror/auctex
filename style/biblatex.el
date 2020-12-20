@@ -1,6 +1,6 @@
-;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.
+;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2014, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; This file adds support for `biblatex.sty' version 2.8a.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -591,7 +594,7 @@ for citation keys."
 	    (?y    . "\\citeyear{%l}")
 	    (?Y    . "\\citeyear*{%l}")
 	    (?n    . "\\nocite{%l}")))))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-biblatex-package-options-list
   (append

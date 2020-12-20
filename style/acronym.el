@@ -1,6 +1,6 @@
-;;; acronym.el --- AUCTeX style for `acronym.sty' version 1.38.
+;;; acronym.el --- AUCTeX style for `acronym.sty' version 1.38.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -175,7 +176,7 @@ string."
 				("acrodefplural" "{[{")
 				("newacroplural" "{[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-acronym-package-options
   '("footnote" "nohyperlinks" "printonlyused" "withpage" "smaller" "dua" "nolist")

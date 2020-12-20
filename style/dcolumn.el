@@ -1,6 +1,6 @@
-;;; dcolumn.el --- AUCTeX style for `dcolumn.sty' (v1.06)
+;;; dcolumn.el --- AUCTeX style for `dcolumn.sty' (v1.06)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "dcolumn"
  (lambda ()
@@ -41,7 +43,7 @@
 
    ;; Also run style hook for `array':
    (TeX-run-style-hooks "array"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-dcolumn-package-options nil
   "Package options for the dcolumn package.")

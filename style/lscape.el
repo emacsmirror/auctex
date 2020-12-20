@@ -1,6 +1,6 @@
-;;; lscape.el --- AUCTeX style for `lscape.sty'
+;;; lscape.el --- AUCTeX style for `lscape.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "lscape"
  (lambda ()
@@ -37,7 +40,7 @@
     "landscape")
    ;; lscape uses graphics internally to handle the work
    (TeX-run-style-hooks "graphics"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-lscape-package-options '("pdftex")
   "Package options for the lscape package.")

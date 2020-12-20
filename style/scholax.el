@@ -1,10 +1,10 @@
-;;; erewhon.el --- AUCTeX style for `erewhon.sty' (v1.04)  -*- lexical-binding: t; -*-
+;;; scholax.el --- AUCTeX style for `scholax.sty' (v1.027)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2014-11-18
+;; Created: 2020-11-29
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `erewhon.sty' (v1.04) from 2015/04/07.
-;; `erewhon.sty' is part of TeXLive.
+;; This file adds support for `scholax.sty' (v1.027) from 2020/11/30.
+;; `scholax.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -39,10 +39,10 @@
 		  (keywords class))
 
 (TeX-add-style-hook
- "erewhon"
+ "scholax"
  (lambda ()
 
-   ;; Run style hook for various packages loaded by erewhon
+   ;; Run style hook for various packages loaded by scholax
    (TeX-run-style-hooks "textcomp" "fontaxes")
 
    ;; New symbols
@@ -51,48 +51,56 @@
     ;; Only preamble commands
     '("useosf"  0)
     '("useproportional" 0)
+    '("thfamily" 0)
 
     ;; Text commands
-    '("lfstyle"   -1)   ; lf declaration
-    '("tlfstyle"  -1)   ; tlf declaration
-    '("osfstyle"  -1)   ; osf declaration
-    '("tosfstyle" -1)   ; tosf declaration
-    '("sufigures" -1)   ; superior figures declaration
-    '("textlf"     t)   ; proportional lining figures
-    '("texttlf"    t)   ; tabular lining figures
-    '("textosf"    t)   ; proportional oldstyle figures
-    '("texttosf"   t)   ; tabular oldstyle figures
     '("textsu"     t)   ; superior figures
+    '("sustyle"   -1)
     '("textin"     t)   ; inferior figures
-    '("textnu"     t)   ; numerator figures
-    '("textde"     t)   ; denominator figures
-    '("textfrac" "Numerator" "Denominator"))
+    '("instyle"   -1)
+
+    '("textlf"     t)   ; lining figures
+    '("lfstyle"   -1)
+
+    '("texttlf"    t)   ; tabular lining figures
+    '("tlfstyle"  -1)
+
+    '("textosf"    t)   ; oldstyle figures
+    '("osfstyle"  -1)
+
+    '("texttosf"   t)   ; tabular oldstyle figures
+    '("tosfstyle" -1)
+
+    '("textfrac"  "Numerator" "Denominator"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("textlf"    "{")
+     (font-latex-add-keywords '(("textsu"    "{")
+				("textin"    "{")
+				("textlf"    "{")
 				("texttlf"   "{")
 				("textosf"   "{")
 				("texttosf"  "{")
-				("textsu"    "{")
-				("textin"    "{")
-				("textnu"    "{")
-				("textde"    "{"))
+				("textfrac"  "{{"))
 			      'type-command)
-     (font-latex-add-keywords '(("lfstyle"   "")
+     (font-latex-add-keywords '(("sustyle"   "")
+				("instyle"   "")
+				("lfstyle"   "")
 				("tlfstyle"  "")
 				("osfstyle"  "")
-				("tosfstyle" "")
-				("sufigures" ""))
-			      'type-declaration)
-     (font-latex-add-keywords '(("textfrac"  "{{"))
-			      'textual)))
+				("tosfstyle" ""))
+			      'type-declaration)))
  TeX-dialect)
 
-(defvar LaTeX-erewhon-package-options
-  '("lining" "lf" "oldstyle" "osf" "tabular" "p" "proportional"
-    "scale" "scaled" "scosf" "space" "sups")
-  "Package options for the erewhon package.")
+(defvar LaTeX-scholax-package-options
+  '("scale"       "scaled"
+    "spacing"     "stretch"    "shrink"
+    "foresolidus" "aftsolidus" "raisefrac"
+    "theoremfont"
+    "scosf"    "sups" "lining"  "lf"
+    "oldstyle" "osf"  "tabular" "p" "proportional"
+    "looser"   "loosest")
+  "Package options for the scholax package.")
 
-;;; erewhon.el ends here
+;;; scholax.el ends here

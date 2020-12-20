@@ -1,4 +1,4 @@
-;;; context.el --- Support for ConTeXt documents.
+;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2020
 ;;   Free Software Foundation, Inc.
@@ -63,24 +63,6 @@
   :prefix "TeX-"
   :group 'ConTeXt
   :group 'TeX-macro)
-
-
-;;; variables
-
-;; Dynamically scoped vars used in certain macro's.
-;; BEWARE: We used to give them a global nil value, but this can mess up poor
-;; unrelated packages using those same vars but expecting them to be
-;; lexically scoped.
-;; So don't give them a global value, which makes sure the effect of `defvar'
-;; localized to this file!
-;; N.B.: These forms are commented out since they produce a "lack of
-;; prefix" warning during byte-compilation.  This way they produce
-;; only a "reference to free variable" one.
-;; (defvar done-mark) ; Position of point afterwards, default nil (meaning end)
-;; (defvar reference) ; Used by `ConTeXt-section-ref' and `ConTeXt-section-section'.
-;; (defvar title) ; Used by `ConTeXt-section-title' and `ConTeXt-section-section'.
-;; (defvar name)
-;; (defvar level)
 
 ;; others
 
@@ -271,6 +253,13 @@
 
 ;;; Sections
 
+;; Declare dynamically scoped vars.
+(defvar ConTeXt-title nil "Dynamically bound by `ConTeXt-section'.")
+(defvar ConTeXt-name nil "Dynamically bound by `ConTeXt-section'.")
+(defvar ConTeXt-level nil "Dynamically bound by `ConTeXt-section'.")
+(defvar ConTeXt-done-mark nil "Dynamically bound by `ConTeXt-section'.")
+(defvar ConTeXt-reference nil "Dynamically bound by `ConTeXt-section'.")
+
 (defun ConTeXt-section (arg)
   "Insert a template for a ConTeXt section.
 Determinate the type of section to be inserted, by the argument ARG.
@@ -301,23 +290,23 @@ The following variables can be set to customize:
 
   (interactive "*P")
   (let* ((val (prefix-numeric-value arg))
-	 (level (cond ((null arg)
-		       (ConTeXt-current-section))
-		      ((listp arg)
-		       (ConTeXt-down-section))
-		      ((< val 0)
-		       (ConTeXt-up-section (- val)))
-		      (t val)))
-	 (name (ConTeXt-numbered-section-name level))
-	 (title "")
-         (reference nil)
-	 (done-mark (make-marker)))
+	 (ConTeXt-level (cond ((null arg)
+		               (ConTeXt-current-section))
+		              ((listp arg)
+		               (ConTeXt-down-section))
+		              ((< val 0)
+		               (ConTeXt-up-section (- val)))
+		              (t val)))
+	 (ConTeXt-name (ConTeXt-numbered-section-name ConTeXt-level))
+	 (ConTeXt-title "")
+         (ConTeXt-reference nil)
+	 (ConTeXt-done-mark (make-marker)))
     (newline)
     (run-hooks 'ConTeXt-numbered-section-hook)
     (newline)
-    (if (marker-position done-mark)
-	(goto-char (marker-position done-mark)))
-    (set-marker done-mark nil)))
+    (if (marker-position ConTeXt-done-mark)
+	(goto-char (marker-position ConTeXt-done-mark)))
+    (set-marker ConTeXt-done-mark nil)))
 
 ;; LaTeX has a max function here, which makes no sense.
 ;; I think you want to insert a section that is max ConTeXt-largest-level
@@ -417,22 +406,24 @@ section."
 
 The following variables are set before the hooks are run
 
-`level' - numeric section level, see the documentation of `ConTeXt-section'.
-`name' - name of the sectioning command, derived from `level'.
-`title' - The title of the section, default to an empty string.
-`done-mark' - Position of point afterwards, default nil (meaning end).
+`ConTeXt-level' - numeric section level, see the documentation of `ConTeXt-section'.
+`ConTeXt-name' - name of the sectioning command, derived from `level'.
+`ConTeXt-title' - The title of the section, default to an empty string.
+`ConTeXt-done-mark' - Position of point afterwards, default nil (meaning end).
 
 The following standard hook exist -
 
-ConTeXt-section-heading: Query the user about the name of the
-sectioning command.  Modifies `level' and `name'.
+ConTeXt-numbered-section-heading: Query the user about the name
+of the sectioning command.  Modifies `ConTeXt-level' and
+`ConTeXt-name'.
 
 ConTeXt-section-title: Query the user about the title of the
-section.  Modifies `title'.
+section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according to
-`name', `title', and `reference'.  If `title' is an empty string,
-`done-mark' will be placed at the point they should be inserted.
+ConTeXt-section-section: Insert ConTeXt section command according
+to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
+`ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
+placed at the point they should be inserted.
 
 ConTeXt-section-ref: Insert a reference for this section command.
 
@@ -463,22 +454,24 @@ in your .emacs file."
 
 The following variables are set before the hooks are run
 
-`level' - numeric section level, see the documentation of `ConTeXt-section'.
-`name' - name of the sectioning command, derived from `level'.
-`title' - The title of the section, default to an empty string.
-`done-mark' - Position of point afterwards, default nil (meaning end).
+`ConTeXt-level' - numeric section level, see the documentation of `ConTeXt-section'.
+`ConTeXt-name' - name of the sectioning command, derived from `ConTeXt-level'.
+`ConTeXt-title' - The title of the section, default to an empty string.
+`ConTeXt-done-mark' - Position of point afterwards, default nil (meaning end).
 
 The following standard hook exist -
 
-ConTeXt-section-heading: Query the user about the name of the
-sectioning command.  Modifies `level' and `name'.
+ConTeXt-unnumbered-section-heading: Query the user about the name
+of the sectioning command.  Modifies `ConTeXt-level' and
+`ConTeXt-name'.
 
 ConTeXt-section-title: Query the user about the title of the
-section.  Modifies `title'.
+section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according to
-`name', `title', and `reference'.  If `title' is an empty string,
-`done-mark' will be placed at the point they should be inserted.
+ConTeXt-section-section: Insert ConTeXt section command according
+to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
+`ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
+placed at the point they should be inserted.
 
 ConTeXt-section-ref: Insert a reference for this section command.
 
@@ -512,48 +505,49 @@ in your .emacs file."
 Insert this hook into `ConTeXt-numbered-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[ConTeXt-section]'."
   (let ((string (completing-read
-		 (concat "Select level (default " name "): ")
+		 (concat "Select level (default " ConTeXt-name "): ")
 		 ConTeXt-numbered-section-list
 		 nil nil nil)))
     ;; Update name
     (if (not (zerop (length string)))
-	(setq name string))))
+	(setq ConTeXt-name string))))
 
 (defun ConTeXt-unnumbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
 Insert this hook into `ConTeXt-unnumbered-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[ConTeXt-section]'."
   (let ((string (completing-read
-		 (concat "Select level (default " name "): ")
+		 (concat "Select level (default " ConTeXt-name "): ")
 		 ConTeXt-unnumbered-section-list
 		 nil nil nil)))
     ;; Update name
     (if (not (zerop (length string)))
-	(setq name string))))
+	(setq ConTeXt-name string))))
 
 (defun ConTeXt-section-title ()
   "Hook to prompt for ConTeXt section title.
 Insert this hook into `ConTeXt-(un)numbered-section-hook' to allow the user to change
 the title of the section inserted with `\\[ConTeXt-section]."
-  (setq title (TeX-read-string "What title: ")))
+  (setq ConTeXt-title (TeX-read-string "What title: ")))
 
 (defun ConTeXt-section-section ()
   "Hook to insert ConTeXt section command into the file.
-Insert this hook into `ConTeXt-section-hook' after those hooks which sets
-the `name', `title', and `reference' variables, but before those hooks which
+Insert this hook into `ConTeXt-section-hook' after those hooks
+which sets the `ConTeXt-name', `ConTeXt-title', and
+`ConTeXt-reference' variables, but before those hooks which
 assumes the section already is inserted."
-  (insert TeX-esc name)
-  (cond ((null reference))
-	((zerop (length reference))
+  (insert TeX-esc ConTeXt-name)
+  (cond ((null ConTeXt-reference))
+	((zerop (length ConTeXt-reference))
 	 (insert ConTeXt-optop)
-	 (set-marker done-mark (point))
+	 (set-marker ConTeXt-done-mark (point))
 	 (insert ConTeXt-optcl))
 	(t
-	 (insert ConTeXt-optop reference ConTeXt-optcl)))
+	 (insert ConTeXt-optop ConTeXt-reference ConTeXt-optcl)))
   (insert TeX-grop)
-  (if (zerop (length title))
-      (set-marker done-mark (point)))
-  (insert title TeX-grcl)
+  (if (zerop (length ConTeXt-title))
+      (set-marker ConTeXt-done-mark (point)))
+  (insert ConTeXt-title TeX-grcl)
   (newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
@@ -563,13 +557,14 @@ assumes the section already is inserted."
   "Hook to insert a reference after the sectioning command.
 Insert this hook into `ConTeXt-section-hook' to prompt for a label to be
 inserted after the sectioning command."
-  (setq reference (completing-read
-		   (TeX-argument-prompt t nil
-					"Comma separated list of references")
-		   (LaTeX-label-list) nil nil))
+  (setq ConTeXt-reference
+        (completing-read
+	 (TeX-argument-prompt t nil
+			      "Comma separated list of references")
+	 (LaTeX-label-list) nil nil))
   ;; No reference or empty string entered?
-  (if (string-equal "" reference)
-      (setq reference nil)))
+  (if (string-equal "" ConTeXt-reference)
+      (setq ConTeXt-reference nil)))
 
 
 ;; Various
@@ -1147,7 +1142,8 @@ An optional fourth (or sixth) element means always replace if t."
 (defun ConTeXt-imenu-create-index-function ()
   "Imenu support function for ConTeXt."
   (TeX-update-style)
-  (let (entries level (regexp (ConTeXt-outline-regexp)))
+  (let (entries
+        (regexp (ConTeXt-outline-regexp)))
     (goto-char (point-max))
     (while (re-search-backward regexp nil t)
       (let* ((name (ConTeXt-outline-name))

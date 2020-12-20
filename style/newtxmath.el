@@ -1,6 +1,6 @@
-;;; newtxmath.el --- AUCTeX style for `newtxmath.sty' (v1.321)
+;;; newtxmath.el --- AUCTeX style for `newtxmath.sty' (v1.321)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "newtxmath"
  (lambda ()
@@ -55,7 +57,7 @@
     '("existsAlt"      0)
     '("nexistsAlt"     0)
     '("vvmathbb"       "Character")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxmath-package-options
   '("varg"

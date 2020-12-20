@@ -1,6 +1,6 @@
-;;; transparent.el --- AUCTeX style for `transparent.sty' (v1.0)
+;;; transparent.el --- AUCTeX style for `transparent.sty' (v1.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -50,7 +52,7 @@
 			      'type-declaration)
      (font-latex-add-keywords '(("texttransparent" "{{"))
 			      'type-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-transparent-package-options nil
   "Package options for the transparent package.")

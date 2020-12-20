@@ -1,6 +1,6 @@
-;;; vwcol.el --- AUCTeX style for `vwcol.sty' (v0.2)
+;;; vwcol.el --- AUCTeX style for `vwcol.sty' (v0.2)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `vwcol.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -68,7 +71,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("vwcolsetup" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-vwcol-package-options '("quiet")
   "Package options for the vwcol package.")

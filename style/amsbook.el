@@ -1,12 +1,15 @@
-;;; amsbook.el --- Style hook for the AMS-LaTeX book document class.
+;;; amsbook.el --- Style hook for the AMS-LaTeX book document class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 
-(TeX-add-style-hook "amsbook"
- (function
-  (lambda ()
-    (TeX-run-style-hooks "amsmath" "amsthm")
-    (LaTeX-add-environments "abstract")))
- LaTeX-dialect)
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amsbook"
+ (lambda ()
+   (TeX-run-style-hooks "amsmath" "amsthm")
+   (LaTeX-add-environments "abstract"))
+ TeX-dialect)
 
 ;;; amsbook.el ends here.

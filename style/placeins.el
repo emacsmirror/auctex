@@ -1,6 +1,6 @@
-;;; placeins.el --- AUCTeX style for `placeins.sty'
+;;; placeins.el --- AUCTeX style for `placeins.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,12 +29,14 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "placeins"
  (lambda ()
    (TeX-add-symbols
     '("FloatBarrier" 0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-placeins-package-options 
   '("section" "above" "below" "verbose")

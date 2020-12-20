@@ -1,6 +1,6 @@
-;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)
+;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,7 @@
 
 ;; Needed for auto-parsing.
 (require 'tex)
+(require 'latex)
 
 ;; Silence the parser:
 (declare-function LaTeX-thmtools-declaretheorem-list
@@ -114,6 +115,6 @@
    (LaTeX-add-environments
     '("restatable"  LaTeX-env-args LaTeX-env-thmrestate-restatable)
     '("restatable*" LaTeX-env-args LaTeX-env-thmrestate-restatable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; thm-restate.el ends here

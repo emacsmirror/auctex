@@ -1,6 +1,6 @@
-;;; french.el --- AUCTeX style for the `french' babel option.
+;;; french.el --- AUCTeX style for the `french' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010 Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,12 +29,14 @@
 ;; Set up AUCTeX for editing French text in connection with the
 ;; `french' babel option.  The file basically loads the style file for
 ;; the `frenchb' babel option.
-;; 
+;;
 ;; Support for the FrenchPro package by Bernard Gaulle is _not_
 ;; included.  If the presence of FrenchPro is detected, the `frenchb'
 ;; support is not loaded.
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "french"
@@ -44,6 +46,6 @@
 	      (not (member "frenchle" TeX-active-styles))
 	      (not (member "mlp" TeX-active-styles)))
      (TeX-run-style-hooks "frenchb")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; french.el ends here

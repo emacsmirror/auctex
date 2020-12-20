@@ -1,6 +1,6 @@
-;;; memoir.el --- AUCTeX style for `memoir.cls'
+;;; memoir.el --- AUCTeX style for `memoir.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,9 @@
 ;; loads (emulates) a lot of classes.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "memoir"
@@ -80,6 +83,6 @@
     "verbatim" "verse")
 
    (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; memoir.el ends here

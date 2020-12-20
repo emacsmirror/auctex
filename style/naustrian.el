@@ -1,6 +1,6 @@
-;;; naustrian.el --- AUCTeX style for the `naustrian' babel option.
+;;; naustrian.el --- AUCTeX style for the `naustrian' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "naustrian"
  (lambda ()
    (TeX-run-style-hooks "ngerman"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; naustrian.el ends here

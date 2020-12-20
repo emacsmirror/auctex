@@ -1,6 +1,6 @@
-;; captcont.el --- AUCTeX style file for captcont.sty
+;; captcont.el --- AUCTeX style file for captcont.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2005, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2005, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -43,7 +45,7 @@
    ;; Fontification
    (when (featurep 'font-latex)
      (font-latex-add-keywords '(("captcont" "*[{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-captcont-package-options '("figbotcap" "figtopcap" "tabbotcap"
 					 "tabtopcap")

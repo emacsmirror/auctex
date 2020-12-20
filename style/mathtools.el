@@ -1,4 +1,4 @@
-;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.
+;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2011-2020 Free Software Foundation, Inc.
 
@@ -38,6 +38,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -486,6 +487,6 @@ Put line break macro on the last line.  Next, insert an ampersand."
      (font-latex-add-keywords '(("refeq"   "{")
 				("noeqref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; mathtools.el ends here

@@ -1,6 +1,6 @@
-;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)
+;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `geometry.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -84,9 +87,6 @@
     ("xetex") ("vtex") ("verbose") ("reset")
     ("mag") ("truedimen") ("pass") ("showframe") ("showcrop"))
   "Key=value options allowed only in the preamble for geometry macros.")
-
-;; Needed for auto-parsing.
-(require 'tex)
 
 ;; Setup for \savegeometry:
 (TeX-auto-add-type "geometry-savegeometry" "LaTeX" "geometry-savegeometries")
@@ -148,7 +148,7 @@ package.")
    (if (and (LaTeX-provided-package-options-member "geometry" "dvipdfmx")
 	    (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-geometry-package-options ()
   "Prompt for package options for the geometry package."

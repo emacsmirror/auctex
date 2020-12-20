@@ -1,6 +1,6 @@
-;;; amsfonts.el --- AUCTeX style for `amsfonts.sty' version 3.01
+;;; amsfonts.el --- AUCTeX style for `amsfonts.sty' version 3.01  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -29,6 +29,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -49,7 +52,7 @@
    	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("bold" "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; The `psamsfonts' option is obsolete in AMSFonts v3
 (defvar LaTeX-amsfonts-package-options nil

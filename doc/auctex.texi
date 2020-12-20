@@ -770,16 +770,16 @@ List of hooks to run when a new section is inserted.
 The following variables are set before the hooks are run
 
 @table @var
-@item level
+@item LaTeX-level
 Numeric section level, default set by prefix arg to
 @code{LaTeX-section}.
-@item name
+@item LaTeX-name
 Name of the sectioning command, derived from @var{level}.
-@item title
+@item LaTeX-title
 The title of the section, default to an empty string.
-@item toc
+@item LaTeX-toc
 Entry for the table of contents list, default nil.
-@item done-mark
+@item LaTeX-done-mark
 Position of point afterwards, default nil meaning after the inserted
 text.
 @end table
@@ -790,16 +790,17 @@ get the desired functionality by choosing from these hooks.
 @ftable @code
 @item LaTeX-section-heading
 Query the user about the name of the sectioning command.  Modifies
-@var{level} and @var{name}.
+@var{LaTeX-level} and @var{LaTeX-name}.
 @item LaTeX-section-title
-Query the user about the title of the section. Modifies @var{title}.
+Query the user about the title of the section. Modifies @var{LaTeX-title}.
 @item LaTeX-section-toc
-Query the user for the toc entry.  Modifies @var{toc}.
+Query the user for the toc entry.  Modifies @var{LaTeX-toc}.
 @item LaTeX-section-section
-Insert @LaTeX{} section command according to @var{name}, @var{title},
-and @var{toc}.  If @var{toc} is nil, no toc entry is inserted.  If
-@var{toc} or @var{title} are empty strings, @var{done-mark} will be
-placed at the point they should be inserted.
+Insert @LaTeX{} section command according to @var{LaTeX-name},
+@var{LaTeX-title}, and @var{LaTeX-toc}.  If @var{LaTeX-toc} is nil, no
+toc entry is inserted.  If @var{LaTeX-toc} or @var{LaTeX-title} are
+empty strings, @var{LaTeX-done-mark} will be placed at the point they
+should be inserted.
 @item LaTeX-section-label
 Insert a label after the section command.  Controlled by the variable
 @code{LaTeX-section-label}.
@@ -5000,7 +5001,7 @@ Here is a simple example of a style file.
  "book"
  (lambda () 
    (LaTeX-largest-level-set "chapter"))
- LaTeX-dialect)
+ TeX-dialect)
 @end lisp
 
 The example is from the @AUCTeX{} sources and is loaded for any @LaTeX{}
@@ -5069,10 +5070,10 @@ relatively to the set of all supported dialects
 
 In case of adding a style hook for @LaTeX{}, when calling function
 @code{TeX-add-style-hook} it is thought more futureproof for argument
-@var{dialect-expr} to pass constant @code{LaTeX-dialect} currently
+@var{dialect-expr} to pass constant @code{TeX-dialect} currently
 defined to @code{:latex}, rather than passing @code{:latex} directly.
 
-@defvr Constant LaTeX-dialect
+@defvr Constant TeX-dialect
 Default dialect for use with function @code{TeX-add-style-hook} for
 argument @var{dialect-expr} when the hook is to be run only on LaTeX
 file, or any mode derived thereof.
@@ -5354,8 +5355,8 @@ If you add new hooks, you can assume that point is placed directly after
 the previous argument, or after the macro name if this is the first
 argument.  Please leave point located after the argument you are
 inserting.  If you want point to be located somewhere else after all
-hooks have been processed, set the value of @code{exit-mark}.  It will
-point nowhere, until the argument hook sets it.
+hooks have been processed, set the value of @code{TeX-exit-mark}.  It
+will point nowhere, until the argument hook sets it.
 
 Some packages provide macros that are rarely useful to non-expert users.
 Those should be marked as expert macros using

@@ -1,6 +1,6 @@
-;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5s.
+;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5s.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -627,7 +628,7 @@ string."
 				("DeclareSIQualifier" "|{\\{")
 				("highlight" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-siunitx-package-options nil
   "Prompt for package options for the siunitx package."

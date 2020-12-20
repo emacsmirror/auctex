@@ -1,4 +1,4 @@
-;;; ltxguide.el --- AUCTeX style for `ltxguide.cls' (2001/05/28)
+;;; ltxguide.el --- AUCTeX style for `ltxguide.cls' (2001/05/28)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 ;; `ltxguide.cls' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -110,7 +113,7 @@ For decl environment provided by ltxguide.cls."
 			      'textual)
      (font-latex-add-keywords '(("URL" ""))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltxguide-class-options
   (progn

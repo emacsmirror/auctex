@@ -1,6 +1,6 @@
-;;; colortbl.el --- AUCTeX style for `colortbl.sty' (v1.0a)
+;;; colortbl.el --- AUCTeX style for `colortbl.sty' (v1.0a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `colortbl.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -86,7 +89,7 @@
 				("arrayrulecolor"     "[{")
 				("doublerulesepcolor" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; colortbl.sty has one option `debugshow'.  I ignore that since it
 ;; would only take more time during insertation in a buffer and I

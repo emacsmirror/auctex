@@ -1,6 +1,6 @@
-;;; color.el --- AUCTeX style for `color.sty' (v1.1a)
+;;; color.el --- AUCTeX style for `color.sty' (v1.1a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -131,7 +131,7 @@
   ;; `TeX-insert-macro-default-style' and if `current-prefix-arg'.
   ;; `named' is removed here from completion if package option is not
   ;; given.
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
          (model (LaTeX-check-insert-macro-default-style
                  (completing-read
                   (TeX-argument-prompt t prompt "Color model")
@@ -181,7 +181,7 @@
   ;; First, ask for <model> depending on
   ;; `TeX-insert-macro-default-style' and `current-prefix-arg'.
   ;; Remove `named' if necessary.
-  (let* ((last-optional-rejected nil)
+  (let* ((TeX-last-optional-rejected nil)
 	 (model (LaTeX-check-insert-macro-default-style
                  (completing-read
                   (TeX-argument-prompt t prompt "Color model")
@@ -300,7 +300,7 @@
 				'type-command)
        (font-latex-add-keywords '(("definecolor"    "{{{"))
 				'function))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-color-package-options
   '("debugshow" "dvipdf" "dvipdfm" "dvipdfmx" "dvips" "dvipsnames"

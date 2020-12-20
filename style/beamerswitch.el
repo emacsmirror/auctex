@@ -1,6 +1,6 @@
-;;; beamerswitch.el --- AUCTeX style for the latex-beamerswitch class
+;;; beamerswitch.el --- AUCTeX style for the latex-beamerswitch class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Keywords: tex
 
@@ -26,6 +26,8 @@
 ;; Triggers the beamer style when using the beamerswitch style.
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "beamerswitch"

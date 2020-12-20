@@ -47,3 +47,5 @@ PROBLEMS.preview
 auctex-pkg.el
 auctex-autoloads.el
 tests/*/auto/*
+*.dynvars
+auctex-dynvars

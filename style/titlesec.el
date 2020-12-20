@@ -1,6 +1,6 @@
-;;; titlesec.el --- AUCTeX style for `titlesec.sty' (v2.11)
+;;; titlesec.el --- AUCTeX style for `titlesec.sty' (v2.11)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; 2019/07/16.  `titlesec.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -121,7 +124,7 @@ insert the argument in brackets."
     '("titleformat"
       (LaTeX-arg-titlesec-titlespec)
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Shape")
+		    (TeX-argument-prompt t nil "Shape")
 		    LaTeX-titlesec-section-shape-list]
       (TeX-arg-conditional (y-or-n-p "With optional after-code? ")
 			   (4 [nil])
@@ -158,7 +161,7 @@ insert the argument in brackets."
     ;; 3.4. Rules
     '("titleline"
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Alignment")
+		    (TeX-argument-prompt t nil "Alignment")
 		    '("l" "r" "c")]
       t)
 
@@ -171,20 +174,20 @@ insert the argument in brackets."
     ;; 3.5. Page styles
     '("assignpagestyle"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titlesec-section-command-list))
       (TeX-arg-pagestyle))
 
     ;; 3.9. Creating new levels and changing the class
     '("titleclass"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titlesec-section-command-list))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Class")
+		    (TeX-argument-prompt nil nil "Class")
 		    '("page" "top" "straight"))
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Super level command")
+		    (TeX-argument-prompt t nil "Super level command")
 		    (LaTeX-titlesec-section-command-list)]) )
 
    ;; 3.4. Rules: A variant of \titleline to be used only with calcwidth
@@ -192,7 +195,7 @@ insert the argument in brackets."
      (TeX-add-symbols
       '("titleline*"
 	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt optional nil "Alignment")
+		      (TeX-argument-prompt nil nil "Alignment")
 		      '("l" "r" "c"))
 	t)))
 
@@ -222,7 +225,7 @@ insert the argument in brackets."
 				("assignpagestyle"   "{{")
 				("titleclass"        "{[{["))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-titlesec-package-options
   '(;; 2.1. Format

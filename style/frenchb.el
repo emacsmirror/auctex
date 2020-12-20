@@ -1,6 +1,6 @@
-;;; frenchb.el --- AUCTeX style for the `frenchb' babel option.
+;;; frenchb.el --- AUCTeX style for the `frenchb' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,6 +38,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "frenchb"
  (lambda ()
@@ -52,20 +54,20 @@
     "ieme"
     "iemes"
     '("bsc" t)
-     "primo"
-     "secundo"
-     "tertio"
-     "quarto"
-     "No"
-     "no"
-     "degre"
-     "degres"
-     "DecimalMathComma"
-     "StandardMathComma"
-     '("nombre" "Nombre")
-     "ThinSpaceInFrenchNumbers"
-     "FrenchLayout"
-     "StandardLayout")
+    "primo"
+    "secundo"
+    "tertio"
+    "quarto"
+    "No"
+    "no"
+    "degre"
+    "degres"
+    "DecimalMathComma"
+    "StandardMathComma"
+    '("nombre" "Nombre")
+    "ThinSpaceInFrenchNumbers"
+    "FrenchLayout"
+    "StandardLayout")
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language
 	   `("french" "\\og "
@@ -74,6 +76,6 @@
 		       (unless (member "xspace" TeX-active-styles) "{}")))
 	     ,TeX-quote-after-quote)))
    (run-hooks 'TeX-language-fr-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; frenchb.el ends here

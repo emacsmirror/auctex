@@ -1,4 +1,4 @@
-;;; wrapfig.el --- AUCTeX style for `wrapfig.sty' version v3.6
+;;; wrapfig.el --- AUCTeX style for `wrapfig.sty' version v3.6  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2015 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 ;; 2003/01/31.  `wrapfig.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "wrapfig"
@@ -110,7 +113,7 @@
 	    (unless (string= overhang "")
 	      (format "[%s]" overhang))
 	    (format "{%s}" width))))))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-wrapfig-package-options '("verbose")
   "Package options for the wrapfig package.")

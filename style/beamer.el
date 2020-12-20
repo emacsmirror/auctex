@@ -1,4 +1,4 @@
-;;; beamer.el --- AUCTeX style for the latex-beamer class
+;;; beamer.el --- AUCTeX style for the latex-beamer class  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003-2005, 2008, 2013-2016, 2018, 2020 Free Software Foundation, Inc.
 
@@ -28,6 +28,9 @@
 ;; This file adds support for the latex-beamer class.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -62,7 +65,7 @@
 (TeX-add-style-hook
  "beamer"
  (lambda ()
-   (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-beamer-after-insert-env nil t)
+   (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-beamer-after-insert-env nil t)
 
    (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
 			"hyperref" "inputenc" "translator" "xcolor")
@@ -186,7 +189,7 @@
 				("author" "[{")
 				("date" "[{")
 				("frametitle" "<[{")) 'slide-title)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
   "Prompt for overlay specification.

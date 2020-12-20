@@ -1,6 +1,6 @@
-;;; booktabs.el -- AUCTeX style for booktabs.sty
+;;; booktabs.el -- AUCTeX style for booktabs.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2004, 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -57,7 +59,7 @@ PROMPT is the value of the prompt to be shown."
     '("toprule" [ "Thickness" ])
     '("midrule" [ "Thickness" ])
     '("bottomrule" [ "Thickness" ])
-    ;; The `ignore' resets `last-optional-rejected' to nil so that the trim
+    ;; The `ignore' resets `TeX-last-optional-rejected' to nil so that the trim
     ;; argument is prompted also when the thickness is skipped.
     '("cmidrule" [ "Thickness" ] (ignore) [ LaTeX-booktabs-arg-paren "Trim" ]
       "Column(s)")
@@ -76,7 +78,7 @@ PROMPT is the value of the prompt to be shown."
 				("morecmidrules" "")
 				("specialrule" "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-booktabs-package-options nil
   "Package options for the booktabs package.")

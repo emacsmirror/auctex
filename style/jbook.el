@@ -1,6 +1,9 @@
-;;; jbook.el - Special code for jbook class.
+;;; jbook.el - Special code for jbook class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-jbook-class-options
   '("a4paper" "a5paper" "b4paper" "b5paper" "a4j" "a5j" "b4j" "b5j"
@@ -17,6 +20,6 @@
    (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
 		       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; jbook.el ends here

@@ -1,6 +1,6 @@
-;;; varioref.el --- AUCTeX style for `varioref.sty' (v1.6b)
+;;; varioref.el --- AUCTeX style for `varioref.sty' (v1.6b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2013, 2015, 2018, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2013, 2015, 2018--2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;;         Mads Jensen <mje@inducks.org>
@@ -29,6 +29,9 @@
 ;; `varioref.sty' is a standard LaTeX package and part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'tex-style)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -94,7 +97,7 @@
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Varioref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-varioref-package-options
   '("afrikaans" "american" "arabic" "austrian" "naustrian" "basque"

@@ -1,6 +1,6 @@
-;;; titleps.el --- AUCTeX style for `titleps.sty' (v1.1.1)
+;;; titleps.el --- AUCTeX style for `titleps.sty' (v1.1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `titleps.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -78,7 +81,7 @@ Removal is based on the return value of function
       (TeX-arg-eval
        (lambda ()
 	 (let ((ps (TeX-read-string
-		    (TeX-argument-prompt optional nil "Page style"))))
+		    (TeX-argument-prompt nil nil "Page style"))))
 	   (LaTeX-add-pagestyles ps)
 	   (format "%s" ps))))
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
@@ -106,14 +109,14 @@ Removal is based on the return value of function
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Level names")
+		     (TeX-argument-prompt nil nil "Level names")
 		     (LaTeX-titleps-section-command-list))
 		    ","))
 
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Level names")
+		     (TeX-argument-prompt nil nil "Level names")
 		     (LaTeX-titleps-section-command-list))
 		    ","))
 
@@ -140,12 +143,12 @@ Removal is based on the return value of function
 
     '("TitlepsPatchSection"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list)))
 
     '("TitlepsPatchSection*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list)))
 
     ;; 5. Marks
@@ -161,13 +164,13 @@ Removal is based on the return value of function
 
     '("pretitlemark"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list))
       "Text")
 
     '("pretitlemark*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Sectioning command")
+		    (TeX-argument-prompt nil nil "Sectioning command")
 		    (LaTeX-titleps-section-command-list))
       "Text")
 
@@ -219,7 +222,7 @@ Removal is based on the return value of function
 				("nextfloathead"        "*[[[{{{{[")
 				("nextfloatfoot"        "*[[[{{{{["))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-titleps-package-options
   '(;; 4. Headline/footline width

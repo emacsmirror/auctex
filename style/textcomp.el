@@ -1,4 +1,4 @@
-;;; textcomp.el --- AUCTeX style for `textcomp.sty' (v2.0n)
+;;; textcomp.el --- AUCTeX style for `textcomp.sty' (v2.0n)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2017, 2020 Free Software Foundation, Inc.
 

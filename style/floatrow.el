@@ -1,6 +1,6 @@
-;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)
+;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -349,21 +349,21 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; `TeX-argument-insert':
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (last-optional-rejected nil)
+	 (TeX-last-optional-rejected nil)
 	 (width (LaTeX-check-insert-macro-default-style
 		 (completing-read
 		  (TeX-argument-prompt t nil "Width")
 		  (mapcar (lambda (x) (concat TeX-esc (car x)))
 			  (LaTeX-length-list)))))
-	 (last-optional-rejected (or (not width)
-				     (and width (string= width ""))))
+	 (TeX-last-optional-rejected (or (not width)
+				         (and width (string= width ""))))
 	 (height (LaTeX-check-insert-macro-default-style
 		  (completing-read
 		   (TeX-argument-prompt t nil "Height")
 		   (mapcar (lambda (x) (concat TeX-esc (car x)))
 			   (LaTeX-length-list)))))
-	 (last-optional-rejected (or (not height)
-				     (and height (string= height ""))))
+	 (TeX-last-optional-rejected (or (not height)
+				         (and height (string= height ""))))
 	 (vertpos (LaTeX-check-insert-macro-default-style
 		   (if (string= height "")
 		       ""
@@ -557,10 +557,10 @@ only the parsed items."
     ;; \floatbox[<preamble>]{<captype>}[<width>][<height>][<vert pos>]{<caption>}{<object>}
     '("floatbox"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Preamble")
+		     (TeX-argument-prompt t nil "Preamble")
 		     '("\\capbeside" "\\nocapbeside" "\\captop") ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Float type")
+		    (TeX-argument-prompt nil nil "Float type")
 		    LaTeX-floatrow-supported-float-types)
       LaTeX-floatrow-arg-floatbox)
 
@@ -569,22 +569,22 @@ only the parsed items."
       (TeX-arg-eval
        (lambda ()
 	 (let ((cmd (TeX-read-string
-		     (TeX-argument-prompt optional nil "Command"))))
+		     (TeX-argument-prompt nil nil "Command"))))
 	   (LaTeX-add-floatrow-newfloatcommands cmd)
 	   (TeX-add-symbols
 	    `(,cmd LaTeX-floatrow-arg-floatbox))
 	   (format "%s" cmd))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Float type")
+		    (TeX-argument-prompt nil nil "Float type")
 		    '("figure" "table"))
       [ 2 ])
 
     '("renewfloatcommand"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Command")
+		    (TeX-argument-prompt nil nil "Command")
 		    (LaTeX-floatrow-newfloatcommand-list))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Float type")
+		    (TeX-argument-prompt nil nil "Float type")
 		    '("figure" "table"))
       [ 2 ])
 
@@ -609,7 +609,7 @@ only the parsed items."
     ;; 3 Float Layout Settings
     '("floatsetup"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Float type")
+		     (TeX-argument-prompt t nil "Float type")
 		     LaTeX-floatrow-supported-float-types ]
       (TeX-arg-key-val LaTeX-floatrow-key-val-options-local))
 
@@ -620,7 +620,7 @@ only the parsed items."
     ;; 3.3 Clearing of Settings for Current Float Type
     '("clearfloatsetup"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Float type")
+		     (TeX-argument-prompt nil nil "Float type")
 		     LaTeX-floatrow-supported-float-types))
 
     ;; 3.4 Temporary Clearing of All Float Settings
@@ -739,7 +739,7 @@ only the parsed items."
 				("DeclareNewFloatType"       "{{")
 				("RawFloats"                 ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-floatrow-package-options nil
   "Prompt for package options for the floatrow package.")

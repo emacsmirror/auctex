@@ -1,6 +1,6 @@
-;;; ltablex.el --- AUCTeX style for `ltablex.sty' (v1.1)
+;;; ltablex.el --- AUCTeX style for `ltablex.sty' (v1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "ltablex"
  (lambda ()
@@ -41,7 +43,7 @@
    (TeX-add-symbols
     '("keepXColumns" 0)
     '("convertXColumns" 0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltablex-package-options nil
   "Package options for the ltablex package.")

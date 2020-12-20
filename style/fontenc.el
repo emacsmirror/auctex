@@ -1,6 +1,6 @@
-;;; fontenc.el --- AUCTeX style for `fontenc.sty' (v1.99g)
+;;; fontenc.el --- AUCTeX style for `fontenc.sty' (v1.99g)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `fontenc.sty' is a standard LaTeX package and part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 (defvar LaTeX-fontenc-package-options-list
   '(;; 128+ glyph encodings (text)

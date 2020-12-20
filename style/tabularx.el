@@ -1,6 +1,6 @@
-;;; tabularx.el --- AUCTeX style for the tabularx package.
+;;; tabularx.el --- AUCTeX style for the tabularx package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2013-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2013-2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; This file adds support for the tabularx package.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-tabularx-package-options
   '("infoshow" "debugshow")
@@ -65,6 +68,6 @@
    ;; `tabularx.sty' adds one new column specification letter.
    (set (make-local-variable 'LaTeX-array-column-letters)
 	(concat LaTeX-array-column-letters "X")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tabularx.el ends here

@@ -1,6 +1,6 @@
-;;; currvita.el --- AUCTeX style for `currvita.sty' (v0.9i)
+;;; currvita.el --- AUCTeX style for `currvita.sty' (v0.9i)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,13 +31,16 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; This is a modified version of `LaTeX-env-item'.
 (defun LaTeX-currvita-env-with-label (env)
   "Insert ENV, a mandatory label and the first item."
   (LaTeX-insert-environment
    env
    (let ((heading (TeX-read-string "Heading of list: ")))
-       (format "{%s}" heading)))
+     (format "{%s}" heading)))
   (if (TeX-active-mark)
       (progn
 	(LaTeX-find-matching-begin)
@@ -85,7 +88,7 @@
 
    ;; Add new lengths defined by currvita.sty
    (LaTeX-add-lengths "cvlabelwidth" "cvlabelskip" "cvlabelsep"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-currvita-package-options
   '("LabelsAligned" "TextAligned" "openbib" "ManyBibs" "NoDate")

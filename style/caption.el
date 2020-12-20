@@ -1,6 +1,6 @@
-;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)
+;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -269,13 +269,13 @@ caption, insert only a caption."
     (insert TeX-grcl))
   (let* ((TeX-arg-opening-brace "[")
 	 (TeX-arg-closing-brace "]")
-	 (last-optional-rejected nil)
+	 (TeX-last-optional-rejected nil)
 	 (width (LaTeX-check-insert-macro-default-style
 		 (completing-read (TeX-argument-prompt t nil "Width")
 				  (mapcar (lambda (elt) (concat TeX-esc (car elt)))
 					  (LaTeX-length-list)))))
-	 (last-optional-rejected (or (not width)
-				     (and width (string= width ""))))
+	 (TeX-last-optional-rejected (or (not width)
+				         (and width (string= width ""))))
 	 (inpos (LaTeX-check-insert-macro-default-style
 		 (if (and width (not (string-equal width "")))
 		     (completing-read (TeX-argument-prompt t nil "Inner position")
@@ -467,7 +467,7 @@ STAR is non-nil, do not query for a short-caption and a label."
 				("DeclareCaptionStyle"           "{[{")
 				("DeclareCaptionTextFormat"      "{{"))
 			      'function)) )
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-caption-package-options ()
   "Prompt for package options for the caption package."

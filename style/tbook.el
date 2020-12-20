@@ -1,6 +1,6 @@
-;;; tbook.el - Special code for tbook class.
+;;; tbook.el - Special code for tbook class.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-load-style "jbook")
 (defvar LaTeX-tbook-class-options LaTeX-jbook-class-options
   "Class options for the tbook class.")
@@ -38,6 +40,6 @@
  "tbook"
  (lambda ()
    (TeX-run-style-hooks "jbook" "plext"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tbook.el ends here

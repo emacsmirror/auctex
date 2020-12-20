@@ -1,6 +1,6 @@
-;;; ocgx.el --- AUCTeX style for `ocgx.sty' (v0.5)
+;;; ocgx.el --- AUCTeX style for `ocgx.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `ocgx.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -65,7 +67,7 @@
 				("hideocg"    "{{")
 				("actionsocg" "{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ocgx-package-options nil
   "Package options for the ocgx package.")

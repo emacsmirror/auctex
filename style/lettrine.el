@@ -1,6 +1,6 @@
-;;; lettrine.el --- AUCTeX style for `lettrine.sty' (v2.21)
+;;; lettrine.el --- AUCTeX style for `lettrine.sty' (v2.21)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,9 @@
 ;; This file adds support for `lettrine.sty' (v2.21) from 2018/08/28.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -87,7 +90,7 @@
    (when (and (fboundp 'font-latex-add-keywords)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lettrine" "[{{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-lettrine-package-options nil
   "Package options for the lettrine package.")

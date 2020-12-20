@@ -1,6 +1,6 @@
-;;; newpxtext.el --- AUCTeX style for `newpxtext.sty' (v1.232)
+;;; newpxtext.el --- AUCTeX style for `newpxtext.sty' (v1.232)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `newpxtext.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -73,7 +75,7 @@
 				("tosfstyle" "")
 				("sustyle"   ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newpxtext-package-options
   '("defaultsups" "scosf" "largesc"

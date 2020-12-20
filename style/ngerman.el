@@ -1,4 +1,4 @@
-;;; ngerman.el --- Setup AUCTeX for editing German text.
+;;; ngerman.el --- Setup AUCTeX for editing German text.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -7,6 +7,9 @@
 ;; umlaut.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
@@ -54,6 +57,6 @@
      ;; Prevent "| from leading to color bleed.
      (font-latex-add-to-syntax-alist (list (cons ?\" "\\"))))
    (run-hooks 'TeX-language-de-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; ngerman.el ends here

@@ -1,6 +1,6 @@
-;;; AnonymousPro.el --- AUCTeX style for `AnonymousPro.sty' (v2.2)
+;;; AnonymousPro.el --- AUCTeX style for `AnonymousPro.sty' (v2.2)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; 2019/07/07.  `AnonymousPro.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "AnonymousPro"
@@ -81,7 +83,7 @@
     "ANPDelta"
     "ANPverticaltab"
     "ANPNumeroSign"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-AnonymousPro-package-options
   '("ttdefault" "scale" "scaled")

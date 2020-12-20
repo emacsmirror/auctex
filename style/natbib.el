@@ -1,6 +1,6 @@
-;;; natbib.el --- AUCTeX style for `natbib.sty' version 8.31b
+;;; natbib.el --- AUCTeX style for `natbib.sty' version 8.31b  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2018 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2020 Free Software Foundation, Inc.
 
 ;; Authors: Berwin Turlach <statba@nus.edu.sg>
 ;;          Carsten Dominik <dominik@strw.leidenuniv.nl>
@@ -25,6 +25,9 @@
 ;; 02110-1301, USA.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -116,7 +119,7 @@
       "Punctuation between years for common authors")
 
     '("citestyle" (TeX-arg-eval completing-read
-				(TeX-argument-prompt optional nil "Style")
+				(TeX-argument-prompt nil nil "Style")
 				'("plain" "plainnat" "agu" "egu"
 				  "agms" "dcu" "kluwer" "cospar" "nature")))
 
@@ -167,7 +170,7 @@
    (when (and LaTeX-reftex-cite-format-auto-activate
 	      (fboundp 'reftex-set-cite-format))
      (reftex-set-cite-format 'natbib)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-arg-natbib-notes (optional)
   "Prompt for two note arguments a natbib citation command.

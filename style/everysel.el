@@ -1,6 +1,6 @@
-;;; everysel.el --- AUCTeX style for `everysel.sty'
+;;; everysel.el --- AUCTeX style for `everysel.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2015, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2012-12-25
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "everysel"
  (lambda ()
@@ -37,7 +39,7 @@
     '("EverySelectfont" 1)
     ;; adds a hook to be called after the next \\selectfont
     '("AtNextSelectfont" 1)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-everysel-package-options nil
   "Package options for the everysel package.")

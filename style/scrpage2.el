@@ -1,4 +1,4 @@
-;;; scrpage2.el --- AUCTeX style for scrpage2.sty.
+;;; scrpage2.el --- AUCTeX style for scrpage2.sty.  -*- lexical-binding: t; -*-
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Created:  2003-11-01
@@ -26,6 +26,8 @@
 ;; This file adds support for `scrpage2.sty'.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -116,7 +118,7 @@
 				("renewpagestyle" "{{{")
 				("providepagestyle" "{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-scrpage2-package-options '("headinclude" "headexclude"
 					 "footinclude" "footexclude"

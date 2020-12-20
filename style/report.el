@@ -1,6 +1,9 @@
-;;; report.el - Special code for report style.
+;;; report.el - Special code for report style.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-report-class-options
   '("a4paper" "a5paper" "b5paper" "letterpaper" "legalpaper" "executivepaper"
@@ -17,6 +20,6 @@
 		       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings")
    (LaTeX-add-environments "abstract"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; report.el ends here

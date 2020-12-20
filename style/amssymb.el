@@ -1,6 +1,6 @@
-;;; amssymb.el --- AUCTeX style for `amssymb.sty'
+;;; amssymb.el --- AUCTeX style for `amssymb.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,9 @@
 ;; \mathrel
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "amssymb"
@@ -242,7 +245,7 @@
     "Bbbk"
     "hslash"
     "backepsilon"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-amssymb-package-options '("psamsfonts")
   "Package options for the amssymb package.")

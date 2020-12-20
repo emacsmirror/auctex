@@ -1,6 +1,6 @@
-;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.6)
+;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,11 +38,10 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 (eval-when-compile
   (require 'cl-lib))
-
-;; Needed for auto-parsing:
-(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -384,8 +383,8 @@ in `enumitem'-completions."
 	   (LaTeX-add-environments `(,name LaTeX-enumitem-env-with-opts))
 	   (LaTeX-add-enumitem-newlists (list name type))
 	   (TeX-ispell-skip-setcdr `((,name ispell-tex-arg-end 0)))
-	   (TeX-argument-insert name optional)
-	   (TeX-argument-insert type optional)
+	   (TeX-argument-insert name nil)
+	   (TeX-argument-insert type nil)
 	   (format "%s" depth)))))
 
     ;; \renewlist{<name>}{<type>}{<max-depth>}
@@ -401,7 +400,7 @@ in `enumitem'-completions."
     '("setlist"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
+		     (TeX-argument-prompt t nil "Environment(s), level(s)")
 		     (append
 		      (when (LaTeX-provided-package-options-member "enumitem"
 								   "includedisplayed")
@@ -418,7 +417,7 @@ in `enumitem'-completions."
     '("setlist*"
       [TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s), level(s)")
+		     (TeX-argument-prompt t nil "Environment(s), level(s)")
 		     (append
 		      (when (LaTeX-provided-package-options-member "enumitem"
 								   "includedisplayed")
@@ -497,7 +496,7 @@ in `enumitem'-completions."
 				("setlistdepth"           "{" )
 				("SetEnumerateShortLabel" "{{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-enumitem-package-options
   '("inline" "shortlabels" "loadonly" "sizes"

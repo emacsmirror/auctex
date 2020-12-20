@@ -1,4 +1,4 @@
-;;; tikz.el --- AUCTeX style for `tikz.sty'
+;;; tikz.el --- AUCTeX style for `tikz.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,9 @@
 ;; This file adds some support for `tikz.sty'
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defcustom TeX-TikZ-point-name-regexp
   "(\\([A-Za-z0-9]+\\))"

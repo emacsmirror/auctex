@@ -1,6 +1,6 @@
-;;; exercise.el --- AUCTeX style for `exercise.sty'
+;;; exercise.el --- AUCTeX style for `exercise.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Nicolas Richard <theonewiththeevillook@yahoo.fr>
 ;; Created: 2014-03-17
@@ -29,6 +29,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "exercise"
  (lambda ()
@@ -55,7 +58,7 @@
     '("listofexercises")
     '("ListOfExerciseInToc")
     '("ExerciseLevelInToc")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-exercise-package-options '("noexercise" "noanswer" "exerciseonly" "answeronly" "nothing" "answerdelayed" "exercisedelayed" "lastexercise")
   "Package options for the exercise package.")

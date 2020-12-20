@@ -1,6 +1,6 @@
-;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)
+;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,10 @@
 ;; `ltugboat.cls' is part of TeXLive.
 
 ;;; Code:
+
+(require 'crm)
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -238,12 +242,12 @@
     ;; 10.2 Other special typesetting
     '("Dash" 0)
     '("cs" (TeX-arg-eval let ((macro (completing-read
-				      (TeX-argument-prompt optional nil
+				      (TeX-argument-prompt nil nil
 							   "Command")
 				      (TeX-symbol-list))))
 			 (format "%s" macro)))
     '("env" (TeX-arg-eval let ((env (completing-read
-				     (TeX-argument-prompt optional nil
+				     (TeX-argument-prompt nil nil
 							  "Environment")
 				     (LaTeX-environment-list))))
 			  (format "%s" env)))
@@ -254,7 +258,7 @@
     ;; 12 Bibliography
     '("SetBibJustification"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Justification")
+		    (TeX-argument-prompt nil nil "Justification")
 		    '("\\raggedright"  "\\sloppy"))))
 
    ;; Fontification
@@ -278,7 +282,7 @@
 			      'function)
      (font-latex-add-keywords '(("nameref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ltugboat-class-options
   '("draft" "final" "preprint"

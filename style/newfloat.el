@@ -1,6 +1,6 @@
-;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)
+;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -56,6 +56,7 @@
 
 ;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -207,7 +208,7 @@ If `caption.el' is loaded, add the new floating environment to
 				("PrepareListOf"               "{{")
 				("newfloatsetup"               "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-newfloat-package-options ()
   "Prompt for package options for the newfloat package."

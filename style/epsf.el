@@ -1,10 +1,12 @@
-;;; epsf.el - Support for the epsf style option.
+;;; epsf.el - Support for the epsf style option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2014, 2020 Free Software Foundation, Inc.
 
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "epsf"
@@ -17,7 +19,7 @@
     "epsfnormal" "epsfgetbb" "other" "epsfsetgraph"
     "PsFragSpecialArgs" "epsfaux" "testit" "epsfgrab"
     "epsfllx" "epsflly" "epsfury" "epsfverbosetrue"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-epsfsize (_optional &optional _prompt _definition)
   "Create a line that print epsf figures at a certain percentage"

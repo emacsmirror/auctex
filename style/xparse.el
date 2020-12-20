@@ -1,4 +1,4 @@
-;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06
+;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
@@ -35,13 +35,13 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
-
-;; Needed for auto-parsing.
-(require 'tex)
 
 (TeX-auto-add-type "xparse-macro" "LaTeX")
 
@@ -302,7 +302,7 @@ TYPE is one of the symobols mac or env."
 				("ProvideDocumentEnvironment" "{{{{")
 				("RenewDocumentEnvironment"   "{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-xparse-package-options ()
   "Read the xparse package options from the user."

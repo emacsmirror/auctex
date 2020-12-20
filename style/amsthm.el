@@ -1,6 +1,6 @@
-;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.
+;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 2013--2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2013--2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -38,11 +41,6 @@
 
 (defvar LaTeX-amsthm-package-options nil
   "Package options for the amsthm package.")
-
-(defvar LaTeX-amsthm-theoremstyle-list
-  '(("plain") ("definition") ("remark"))
-  "List of theorem styles provided by `amsthm.el' and new ones
-defined with \"\\newtheoremstyle\".")
 
 (defvar LaTeX-amsthm-fontdecl
   '(;; family
@@ -63,15 +61,16 @@ defined with \"\\newtheoremstyle\".")
   "Prompt for font declaration commands in \"\\newtheoremstyle\".
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
-  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
-  ;; is hard-coded to `TeX-esc'.
   (let* ((crm-separator (regexp-quote TeX-esc))
-	 (fontdecl (mapconcat 'identity
+	 (fontdecl (mapconcat #'identity
 			      (TeX-completing-read-multiple
-			       (TeX-argument-prompt optional prompt "Font")
-			       LaTeX-amsthm-fontdecl nil nil TeX-esc)
+			       (TeX-argument-prompt optional prompt "Font: \\" t)
+			       LaTeX-amsthm-fontdecl)
 			      TeX-esc)))
-    (TeX-argument-insert fontdecl optional)))
+    (TeX-argument-insert fontdecl
+			 optional
+			 (when (and fontdecl (not (string= fontdecl "")))
+			   TeX-esc))))
 
 (defun LaTeX-amsthm-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -97,9 +96,6 @@ RefTeX users should customize or add ENVIRONMENT to
     (LaTeX-newline)
     (indent-according-to-mode)))
 
-;; Needed for auto-parsing
-(require 'tex)
-
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "amsthm-newtheorem" "LaTeX")
 
@@ -114,14 +110,9 @@ RefTeX users should customize or add ENVIRONMENT to
 
 (defun LaTeX-amsthm-auto-cleanup ()
   "Move parsed results from `LaTeX-auto-amsthm-newtheorem' and
-make them available as new environments.  Update
-`LaTeX-amsthm-theoremstyle-list' with styles defined with
-\"\\newtheoremstyle\"."
-  (dolist (newthm (mapcar 'car (LaTeX-amsthm-newtheorem-list)))
-    (LaTeX-add-environments (list newthm 'LaTeX-amsthm-env-label)))
-  (dolist (newthmstyle (LaTeX-amsthm-newtheoremstyle-list))
-    (add-to-list (make-local-variable 'LaTeX-amsthm-theoremstyle-list)
-		 newthmstyle)))
+make them available as new environments."
+  (dolist (newthm (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
+    (LaTeX-add-environments (list newthm 'LaTeX-amsthm-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-amsthm-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-amsthm-auto-cleanup t)
@@ -130,8 +121,14 @@ make them available as new environments.  Update
 (TeX-add-style-hook
  "amsthm"
  (lambda ()
+   ;; Add the pre-defined styles:
+   (LaTeX-add-amsthm-newtheoremstyles "definition"
+				      "plain"
+				      "remark")
+
    (LaTeX-add-environments
     '("proof" LaTeX-amsthm-env-label))
+
    (TeX-add-symbols
     ;; Overrule the defintion in `latex.el':
     '("newtheorem"
@@ -163,8 +160,9 @@ make them available as new environments.  Update
 	   (format "%s" heading)))))
 
     '("theoremstyle"
-      (TeX-arg-eval completing-read "Style: "
-		    LaTeX-amsthm-theoremstyle-list))
+      (TeX-arg-eval completing-read
+		    (TeX-argument-prompt nil nil "Style")
+		    (LaTeX-amsthm-newtheoremstyle-list)))
     "qedhere"
     "swapnumbers"
 
@@ -174,14 +172,12 @@ make them available as new environments.  Update
 	 (let ((nthmstyle (TeX-read-string
 			   (TeX-argument-prompt nil nil "Style name"))))
 	   (LaTeX-add-amsthm-newtheoremstyles nthmstyle)
-	   (add-to-list (make-local-variable 'LaTeX-amsthm-theoremstyle-list)
-			(list nthmstyle))
 	   (format "%s" nthmstyle))))
       (TeX-arg-length "Space above")
       (TeX-arg-length "Space below")
-      (LaTeX-arg-amsthm-fontdecl "Body font")
+      (LaTeX-arg-amsthm-fontdecl "Body font: \\")
       "Indent amount"
-      (LaTeX-arg-amsthm-fontdecl "Theorem head font")
+      (LaTeX-arg-amsthm-fontdecl "Theorem head font: \\")
       "Punctuation after head"
       (TeX-arg-length "Space after head")
       "Theorem head spec"))
@@ -200,6 +196,6 @@ make them available as new environments.  Update
 				("theoremstyle"    "{")
 				("newtheoremstyle" "{{{{{{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; amsthm.el ends here

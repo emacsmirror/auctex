@@ -1,6 +1,6 @@
-;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)
+;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,9 @@
 ;; easier.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -188,7 +191,7 @@
     '("moodleset"
       (TeX-arg-eval
        (lambda ()
-	 (let ((opts (TeX-read-key-val optional
+	 (let ((opts (TeX-read-key-val nil
 				       (append '(("ppi")) LaTeX-moodle-key-val-options))))
 	   (format "%s" opts)))))
 
@@ -209,7 +212,7 @@
 				;; Cater for a fontified starred \item
 				("item"   "*["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-moodle-package-options
   '("draft")

@@ -1,6 +1,6 @@
-;;; acro.el --- AUCTeX style for `acro.sty' version 1.2a.
+;;; acro.el --- AUCTeX style for `acro.sty' version 1.2a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,7 +29,8 @@
 
 ;;; Code:
 
-(require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -290,7 +291,7 @@ be a list with strings to be used as values for the key."
 				("Iacflike" "*{")
 				("acuse" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-acro-package-options ()
   "Prompt for package options for the acro package."

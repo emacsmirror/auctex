@@ -1,6 +1,6 @@
-;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v67)
+;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v67)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -161,7 +161,8 @@ minibuffer.  PROMPT replaces the standard one."
        ("refname")
        ("Refname")
        ("shaded" ("textwidth" "bgcolor" "rulecolor" "rulewidth" "margin"))
-       ("thmbox" ("L" "M" "S"))))))
+       ("thmbox" ("L" "M" "S")))
+     prompt)))
 
 (defun LaTeX-arg-thmtools-declaretheorem (optional &optional prompt)
   "Insert the key=val and environment name defined by \\declaretheorem.
@@ -204,7 +205,8 @@ minibuffer.  PROMPT replaces the standard one."
        ("show" ,thms)
        ("ignoreall" ("true" "false"))
        ("showall" ("true" "false"))
-       ("title")))))
+       ("title"))
+     prompt)))
 
 (defun LaTeX-arg-thmtools-listoftheorems (optional &optional prompt)
   "Insert the key=val to \\listoftheorems macro.
@@ -270,7 +272,7 @@ RefTeX users should customize or add ENVIRONMENT to
     '("ignoretheorems"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Environment(s)")
+		     (TeX-argument-prompt nil nil "Environment(s)")
 		     (append
 		      ;; check for \newtheorem from amsthm.sty:
 		      (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
@@ -293,7 +295,7 @@ RefTeX users should customize or add ENVIRONMENT to
 				("listoftheorems"       "[")
 				("ignoretheorems"       "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; The package has only one option `debug'.  We ignore that in order
 ;; to make loading faster:

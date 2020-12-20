@@ -1,6 +1,6 @@
-;;; subfigure.el --- AUCTeX style file for subfigure.sty
+;;; subfigure.el --- AUCTeX style file for subfigure.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2005, 2013, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2005, 2013, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib  <Reiner.Steib@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,9 @@
 ;; AUCTeX style file for `subfigure.sty'
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -64,7 +67,7 @@
      (font-latex-add-keywords '(("Subref" "{")
 				("subref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-subfigure-package-options '("normal" "hang" "center"
 					  "centerlast" "nooneline"

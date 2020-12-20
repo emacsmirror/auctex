@@ -1,6 +1,6 @@
-;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)
+;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2020 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; 2018/03/27.
 
 ;;; Code
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -193,7 +196,7 @@ Use PROMPT as the prompt string."
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Cleveref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-cleveref-package-options
   '("capitalise" "nameinlink" "noabbrev" "poorman")

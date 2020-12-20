@@ -1,4 +1,4 @@
-;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'
+;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2009, 2014, 2018, 2020 Free Software Foundation, Inc.
 
@@ -41,6 +41,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'tex-style)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-to-syntax-alist
 		  "font-latex"
@@ -65,6 +68,6 @@
      (font-latex-add-to-syntax-alist
       (mapcar (lambda (char) (cons char "|"))
 	      LaTeX-shortvrb-chars))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; shortvrb.el ends here

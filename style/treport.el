@@ -1,6 +1,6 @@
-;;; treport.el - Special code for treport class.
+;;; treport.el - Special code for treport class.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-load-style "jreport")
 (defvar LaTeX-treport-class-options LaTeX-jreport-class-options
   "Class options for the treport class.")
@@ -38,6 +40,6 @@
  "treport"
  (lambda ()
    (TeX-run-style-hooks "jreport" "plext"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; treport.el ends here

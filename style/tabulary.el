@@ -1,6 +1,6 @@
-;;; tabulary.el --- AUCTeX style for the tabulary package.
+;;; tabulary.el --- AUCTeX style for the tabulary package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; This file adds support for the tabulary package.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-tabulary-package-options
   '("debugshow")
@@ -62,6 +65,6 @@
    ;; `tabulary.sty' adds some new column specification letters.
    (set (make-local-variable 'LaTeX-array-column-letters)
 	(concat LaTeX-array-column-letters "L" "C" "R" "J")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tabulary.el ends here

@@ -1,6 +1,6 @@
-;;; amsopn.el --- AUCTeX style for the `amsnopn.sty' AMS-LaTeX package
+;;; amsopn.el --- AUCTeX style for the `amsnopn.sty' AMS-LaTeX package  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 2002, 2005, 2013 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2002, 2005, 2013, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;;         Mads Jensen <mje@inducks.org>
@@ -28,23 +28,26 @@
 
 ;; This file adds support for `amsnopn.sty'
 
+(require 'tex)
+(require 'latex)
+
 ;;; Code:
 
-(TeX-add-style-hook "amsopn"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("DeclareMathOperator"  (TeX-arg-define-macro "Math Operator: \\")
-       "Expansion text for the math operator")
-     '("DeclareMathOperator*" (TeX-arg-define-macro "Math Operator: \\")
-       "Expansion text for the math operator")
-     '("operatorname" t)
-     '("operatorname*" t))
+(TeX-add-style-hook
+ "amsopn"
+ (lambda ()
+   (TeX-add-symbols
+    '("DeclareMathOperator"  (TeX-arg-define-macro "Math Operator: \\")
+      "Expansion text for the math operator")
+    '("DeclareMathOperator*" (TeX-arg-define-macro "Math Operator: \\")
+      "Expansion text for the math operator")
+    '("operatorname" t)
+    '("operatorname*" t))
 
-    (add-to-list 'LaTeX-auto-regexp-list
-		 '("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
-		   1 TeX-auto-symbol))))
- LaTeX-dialect
+   (add-to-list 'LaTeX-auto-regexp-list
+		'("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
+		  1 TeX-auto-symbol)))
+ TeX-dialect
  )
 
 (defvar LaTeX-amsopn-package-options '("namelimits" "nonamelimits")

@@ -1,6 +1,6 @@
-;;; kantlipsum.el --- AUCTeX style for `kantlipsum.sty'.
+;;; kantlipsum.el --- AUCTeX style for `kantlipsum.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "kantlipsum"
  (lambda ()
@@ -37,7 +39,7 @@
     '("kant*" [ "Range of paragraph (max: 164)" ])
     '("kantdef" TeX-arg-define-macro "Paragraph number"))
    (TeX-run-style-hooks "xparse"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-kantlipsum-package-options
   '("par" "nopar" "numbers" "index")

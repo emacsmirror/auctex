@@ -1,4 +1,4 @@
-;;; comment.el --- AUCTeX style for `comment.sty'
+;;; comment.el --- AUCTeX style for `comment.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,9 @@
 ;; This file adds support for `comment.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'tex-style)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -73,6 +76,6 @@
 			      'variable)
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; comment.el ends here

@@ -1,4 +1,4 @@
-;;; tex.el --- Support for TeX documents.
+;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1985-2020 Free Software Foundation, Inc.
 
@@ -50,14 +50,6 @@
 		  (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
 		  (bus service path interface signal handler &rest args))
-(declare-function TeX-output-extension "tex-buf"
-		  nil)
-(declare-function TeX-command-expand "tex-buf"
-		  (command file &optional list))
-(declare-function TeX-active-master "tex-buf"
-		  (&optional extension nondirectory ignore))
-(declare-function TeX-pop-to-buffer "tex-buf"
-		  (buffer &optional other-window norecord))
 (declare-function LaTeX-environment-list "latex"
 		  nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
@@ -79,7 +71,6 @@
 (defvar TeX-macro-global)
 (defvar TeX-mode-map)
 (defvar TeX-mode-p)
-(defvar TeX-output-extension)
 (defvar TeX-output-extension)
 (defvar TeX-source-correlate-mode)
 (defvar TeX-source-specials-places)
@@ -107,6 +98,7 @@
 ;; Others:
 (defvar tex--prettify-symbols-alist)	; tex-mode.el
 (defvar Info-file-list-for-emacs)	; info.el
+(defvar dbus-debug)                     ; dbus.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -511,6 +503,15 @@ string."
   :type 'string)
 (make-variable-buffer-local 'TeX-command-extra-options)
 
+(defvar TeX-command-text nil
+  "Dynamically bound by `TeX-command-expand'.")
+(defvar TeX-command-pos nil
+  "Dynamically bound by `TeX-command-expand'.")
+(defvar TeX-expand-pos nil
+  "Dynamically bound by `TeX-command-expand'.")
+(defvar TeX-expand-command nil
+  "Dynamically bound by `TeX-command-expand'.")
+
 ;; This is the list of expansion for the commands in
 ;; TeX-command-list.  Not likely to be changed, but you may e.g. want
 ;; to handle .ps files.
@@ -581,9 +582,11 @@ string."
 		    (or (if TeX-source-correlate-output-page-function
 			    (funcall TeX-source-correlate-output-page-function))
 			"1")))
-    ;; `file' means to call `TeX-master-file', `TeX-region-file' or `TeX-active-master'
-    ("%s" file nil t)
-    ("%t" file t t)
+    ;; `TeX-active-master-with-quotes' calls either `TeX-master-file'
+    ;; or `TeX-region-file' returning the master or region file, and
+    ;; adds suitable quotes for use in shell command line.
+    ("%s" TeX-active-master-with-quotes nil t)
+    ("%t" TeX-active-master-with-quotes t t)
     ;; If any TeX codes appear in the interval between %` and %', move
     ;; all of them after the interval and supplement " \input".  The
     ;; appearance is marked by leaving the bind to `TeX-command-text'
@@ -599,42 +602,41 @@ string."
 	    ""))
     (" \"\\" (lambda nil
 	       (if (eq TeX-command-pos t)
-		   (setq TeX-command-pos pos
-			 pos (+ 3 pos))
-		 (setq pos (1+ pos)))))
+		   (setq TeX-command-pos TeX-expand-pos
+			 TeX-expand-pos (+ 3 TeX-expand-pos))
+		 (setq TeX-expand-pos (1+ TeX-expand-pos)))))
     ("\"" (lambda nil (if (numberp TeX-command-pos)
 			  (setq TeX-command-text
 				(concat
 				 TeX-command-text
-				 (substring command
+				 (substring TeX-expand-command
 					    TeX-command-pos
-					    (1+ pos)))
-				command
+					    (1+ TeX-expand-pos)))
+				TeX-expand-command
 				(concat
-				 (substring command
+				 (substring TeX-expand-command
 					    0
 					    TeX-command-pos)
-				 (substring command
-					    (1+ pos)))
-				pos TeX-command-pos
+				 (substring TeX-expand-command
+					    (1+ TeX-expand-pos)))
+				TeX-expand-pos TeX-command-pos
 				TeX-command-pos t)
-			(setq pos (1+ pos)))))
+			(setq TeX-expand-pos (1+ TeX-expand-pos)))))
     ("%'" (lambda nil
 	    (setq TeX-command-pos nil)
 	    (if (stringp TeX-command-text)
 		(progn
-		  (setq pos (+ pos (length TeX-command-text) 9))
+		  (setq TeX-expand-pos (+ TeX-expand-pos (length TeX-command-text) 9))
 		  (concat TeX-command-text " \"\\input\""))
 	      "")))
-    ;; The fourth argument of t is actually for wrapper function
-    ;; provided by `TeX--master-or-region-file-with-extra-quotes'.
-    ;; See its doc string as well as the comments in
-    ;; `TeX-command-expand'.
-    ("%T" file t t nil t)
+    ;; The fourth argument of t directs to supply "\detokenize{}" when
+    ;; necessary. See doc string and comment of
+    ;; `TeX-active-master-with-quotes'.
+    ("%T" TeX-active-master-with-quotes t t nil t)
     ("%n" TeX-current-line)
-    ("%d" file "dvi" t)
-    ("%f" file "ps" t)
-    ("%o" (lambda nil (funcall file (TeX-output-extension) t)))
+    ("%d" TeX-active-master-with-quotes "dvi" t)
+    ("%f" TeX-active-master-with-quotes "ps" t)
+    ("%o" (lambda nil (TeX-active-master-with-quotes (TeX-output-extension) t)))
     ;; for source specials the file name generated for the xdvi
     ;; command needs to be relative to the master file, just in
     ;; case the file is in a different subdirectory
@@ -691,25 +693,29 @@ sure \"%p\" is the first entry."
 ;; should remain unloaded as long as one is only editing files, so
 ;; requiring it here would be wrong.
 
-(autoload 'TeX-region-create "tex-buf" nil nil)
-(autoload 'TeX-save-document "tex-buf" nil t)
-(autoload 'TeX-home-buffer "tex-buf" nil t)
-(autoload 'TeX-pin-region "tex-buf" nil t)
-(autoload 'TeX-command-region "tex-buf" nil t)
-(autoload 'TeX-command-buffer "tex-buf" nil t)
-(autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
 (autoload 'LaTeX-command-section "tex-buf" nil t)
+(autoload 'TeX-active-master "tex-buf")
+(autoload 'TeX-command "tex-buf")
+(autoload 'TeX-command-buffer "tex-buf" nil t)
+(autoload 'TeX-command-expand "tex-buf")
+(autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'TeX-command-region "tex-buf" nil t)
 (autoload 'TeX-command-run-all "tex-buf" nil t)
 (autoload 'TeX-command-run-all-region "tex-buf" nil t)
-(autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
-(autoload 'TeX-command "tex-buf" nil nil)
-(autoload 'TeX-kill-job "tex-buf" nil t)
-(autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
-(autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-current-offset "tex-buf")
 (autoload 'TeX-error-overview "tex-buf" nil t)
-(autoload 'TeX-region-file "tex-buf" nil nil)
-(autoload 'TeX-current-offset "tex-buf" nil nil)
-(autoload 'TeX-process-set-variable "tex-buf" nil nil)
+(autoload 'TeX-home-buffer "tex-buf" nil t)
+(autoload 'TeX-kill-job "tex-buf" nil t)
+(autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-output-extension "tex-buf")
+(autoload 'TeX-pin-region "tex-buf" nil t)
+(autoload 'TeX-pop-to-buffer "tex-buf")
+(autoload 'TeX-process-set-variable "tex-buf")
+(autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
+(autoload 'TeX-region-create "tex-buf")
+(autoload 'TeX-region-file "tex-buf")
+(autoload 'TeX-save-document "tex-buf" nil t)
 (autoload 'TeX-view "tex-buf" nil t)
 
 ;;; Portability.
@@ -728,10 +734,10 @@ but takes care of byte-compilation issues where the byte-code for
 the latter could signal an error if it has been compiled with
 emacs 24.1 and is then later run by emacs 24.5."
   (declare (indent 2) (debug (symbolp form &rest form)))
-  (if (fboundp name)            ;If macro exists at compile-time, just use it.
+  (if (fboundp name)             ;If macro exists at compile-time, just use it.
       then
-    `(if (fboundp ',name)       ;Else, check if it exists at run-time.
-	 (eval ',then)          ;If it does, then run the then code.
+    `(if (fboundp ',name)               ;Else, check if it exists at run-time.
+	 (eval ',then)                  ;If it does, then run the then code.
        ,@else)))                ;Otherwise, run the else code.
 
 (require 'easymenu)
@@ -1237,7 +1243,7 @@ entry in `TeX-view-program-list-builtin'."
 				 (get-file-buffer (TeX-region-file t)))
 			       (current-buffer))
 	(pdf-sync-forward-search))
-    (let ((pdf (concat file "." (TeX-output-extension))))
+    (let ((pdf (TeX-active-master (TeX-output-extension))))
       (pop-to-buffer (or (find-buffer-visiting pdf)
 			 (find-file-noselect pdf))))))
 
@@ -1259,9 +1265,10 @@ for the Evince-compatible entries in
 DE is the name of the desktop environment, APP is the name of
 viewer."
   (require 'url-util)
-  (let* ((uri (concat "file://" (url-encode-url
-				 (expand-file-name
-				  (concat file "." (TeX-output-extension))))))
+  (let* ((uri (concat "file://"
+                      (url-encode-url
+		       (expand-file-name
+			(TeX-active-master (TeX-output-extension))))))
 	 (owner (dbus-call-method
 		 :session (format "org.%s.%s.Daemon" de app)
 		 (format "/org/%s/%s/Daemon" de app)
@@ -1556,11 +1563,11 @@ predicates are true, nil otherwise."
     (unless (or (null executable)
 		(cond
 		 ((stringp executable)
-		  (executable-find (TeX-command-expand executable nil)))
+		  (executable-find (TeX-command-expand executable)))
 		 ((listp executable)
 		  (catch 'notfound
 		    (dolist (exec executable t)
-		      (unless (executable-find (TeX-command-expand exec nil))
+		      (unless (executable-find (TeX-command-expand exec))
 			(throw 'notfound nil)))))))
       (error (format "Cannot find %S viewer.  \
 Select another one in `TeX-view-program-selection'" viewer)))
@@ -2012,7 +2019,7 @@ Return the full path to the executable if possible."
 	(concat client-full " " options)
       (concat client-base " " options))))
 
-(defun TeX-source-specials-view-expand-options (&optional viewer)
+(defun TeX-source-specials-view-expand-options (&optional _viewer)
   "Return source specials command line option for viewer command.
 The return value depends on the values of
 `TeX-source-correlate-mode' and
@@ -2601,6 +2608,9 @@ If REGEXP is nil, or \"\", an error will occur."
 		       (TeX-split-string
 			(if (string-match ";" value) ";" ":")
 			value)))
+	 (global (append '("/" "\\")
+			 (mapcar #'file-name-as-directory
+				 TeX-macro-global)))
 	 entry
 	 answers)
     (while entries
@@ -2611,7 +2621,7 @@ If REGEXP is nil, or \"\", an error will occur."
 		       (substring entry 0 (match-beginning 0))
 		     entry)))
       (or (not (file-name-absolute-p entry))
-	  (member entry (append '("/" "\\") TeX-macro-global))
+	  (member entry global)
 	  (setq answers (cons entry answers))))
     answers))
 
@@ -2769,6 +2779,13 @@ Used when checking if any files have changed."
   :type '(repeat (file :format "%v")))
 
 ;;; Style Files
+
+(define-obsolete-variable-alias 'LaTeX-dialect 'TeX-dialect "13.0")
+(defconst TeX-dialect :latex
+  "Default dialect for use with function `TeX-add-style-hook' for
+argument DIALECT-EXPR when the hook is to be run only on LaTeX
+file, or any mode derived thereof. See variable
+`TeX-style-hook-dialect'." )
 
 (defvar TeX-style-hook-list nil
   "List of TeX style hooks currently loaded.
@@ -3122,7 +3139,6 @@ Possible values are nil, t, or a list of style names.
 
 (defmacro TeX-complete-make-expert-command-functions (thing list-var prefix)
   (let* ((plural (concat thing "s"))
-	 (upcase (upcase thing))
 	 (upcase-plural (upcase plural)))
     `(progn
        (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
@@ -3363,6 +3379,9 @@ Space will complete and exit."
 	 (let ((minibuffer-local-completion-map TeX-electric-macro-map))
 	   (call-interactively 'TeX-insert-macro)))))
 
+(defvar TeX-exit-mark nil
+  "Dynamically bound by `TeX-parse-macro' and `LaTeX-env-args'.")
+
 (defun TeX-parse-macro (symbol args)
   "How to parse TeX macros which takes one or more arguments.
 
@@ -3386,9 +3405,10 @@ TeX macro.  What is done depend on the type of the element:
   after the previous argument, or after the macro name if this is
   the first argument.  Please leave point located after the
   argument you are inserting.  If you want point to be located
-  somewhere else after all hooks have been processed, set the value
-  of `exit-mark'.  It will point nowhere, until the argument hook
-  set it.  By convention, these hooks all start with `TeX-arg-'.
+  somewhere else after all hooks have been processed, set the
+  value of `TeX-exit-mark'.  It will point nowhere, until the
+  argument hook set it.  By convention, these hooks all start
+  with `TeX-arg-'.
 
   list: If the car is a string, insert it as a prompt and the next
   element as initial input.  Otherwise, call the car of the list
@@ -3412,12 +3432,12 @@ TeX macro.  What is done depend on the type of the element:
 	     (> (point) (mark)))
 	(exchange-point-and-mark))
     (insert TeX-esc symbol)
-    (let ((exit-mark (make-marker))
+    (let ((TeX-exit-mark (make-marker))
 	  (position (point)))
       (TeX-parse-arguments args)
-      (cond ((marker-position exit-mark)
-	     (goto-char (marker-position exit-mark))
-	     (set-marker exit-mark nil))
+      (cond ((marker-position TeX-exit-mark)
+	     (goto-char (marker-position TeX-exit-mark))
+	     (set-marker TeX-exit-mark nil))
 	    ((let ((element (assoc symbol TeX-insert-braces-alist)))
 	       ;; If in `TeX-insert-braces-alist' there is an element associated
 	       ;; to the current macro, use its value to decide whether inserting
@@ -3457,11 +3477,14 @@ INITIAL-INPUT is a string to insert before reading input."
      (TeX-read-string (TeX-argument-prompt optional prompt "Text") initial-input))
    optional))
 
+(defvar TeX-last-optional-rejected nil
+  "Dynamically bound by `TeX-parse-arguments'.")
+
 (defun TeX-parse-arguments (args)
   "Parse TeX macro arguments ARGS.
 
 See `TeX-parse-macro' for details."
-  (let ((last-optional-rejected nil))
+  (let ((TeX-last-optional-rejected nil))
     (while args
       (if (vectorp (car args))
 	  ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro'
@@ -3476,7 +3499,7 @@ See `TeX-parse-macro' for details."
 			  (equal current-prefix-arg '(4)))
 		     (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
 			  (null (equal current-prefix-arg '(4))))
-		     last-optional-rejected))
+		     TeX-last-optional-rejected))
 	    (let ((TeX-arg-opening-brace LaTeX-optop)
 		  (TeX-arg-closing-brace LaTeX-optcl))
 	      (TeX-parse-argument t (if (equal (length (car args)) 1)
@@ -3484,7 +3507,7 @@ See `TeX-parse-macro' for details."
 				      (append (car args) nil)))))
 	(let ((TeX-arg-opening-brace TeX-grop)
 	      (TeX-arg-closing-brace TeX-grcl))
-	  (setq last-optional-rejected nil)
+	  (setq TeX-last-optional-rejected nil)
 	  (TeX-parse-argument nil (car args))))
       (setq args (cdr args)))))
 
@@ -3529,7 +3552,7 @@ See `TeX-parse-macro' for details."
 	   (if (and (not optional) (TeX-active-mark))
 	       (progn
 		 (exchange-point-and-mark))
-	     (set-marker exit-mark (point)))
+	     (set-marker TeX-exit-mark (point)))
 	   (insert TeX-arg-closing-brace)
 	   (setq insert-flag t))
 	  ((symbolp arg)
@@ -3553,13 +3576,13 @@ See `TeX-parse-macro' for details."
 If OPTIONAL, only insert it if not empty, and then use square brackets.
 If PREFIX is given, insert it before NAME."
   (if (and optional (string-equal name ""))
-      (setq last-optional-rejected t)
+      (setq TeX-last-optional-rejected t)
     (insert TeX-arg-opening-brace)
     (if prefix
 	(insert prefix))
     (if (and (string-equal name "")
-	     (null (marker-position exit-mark)))
-	(set-marker exit-mark (point))
+	     (null (marker-position TeX-exit-mark)))
+	(set-marker TeX-exit-mark (point))
       (insert name))
     (insert TeX-arg-closing-brace)))
 
@@ -3605,11 +3628,11 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 	(TeX-parse-argument optional (car args))
       (TeX-parse-argument optional args))))
 
-(defun TeX-arg-literal (optional &rest args)
+(defun TeX-arg-literal (_optional &rest args)
   "Insert its arguments ARGS into the buffer.
 Used for specifying extra syntax for a macro.  The compatibility
 argument OPTIONAL is ignored."
-  (apply 'insert args))
+  (apply #'insert args))
 
 
 ;;; Font Locking
@@ -3949,7 +3972,7 @@ Generated by `TeX-auto-add-type'.")
 
 (defun TeX-safe-auto-write ()
   "Call `TeX-auto-write' safely."
-  (condition-case name
+  (condition-case _ignored
       (and (boundp 'TeX-auto-update)
 	   TeX-auto-update
 	   (TeX-auto-write))
@@ -3981,7 +4004,7 @@ Generated by `TeX-auto-add-type'.")
 	     (dir (file-name-directory file)))
 	;; Create auto directory if possible.
 	(if (not (file-exists-p dir))
-	    (condition-case name
+	    (condition-case _ignored
 		(make-directory dir)
 	      (error nil)))
 	(if (file-writable-p file)
@@ -4301,7 +4324,7 @@ you should not use something like `[\\(]' for a character range."
 	(goto-char (if end (min end (point-max)) (point-max)))
 	(while (re-search-backward regexp beg t)
 	  (let* ((entry (cdr (TeX-member nil groups
-					 (lambda (a b)
+					 (lambda (_a b)
 					   (match-beginning (car b))))))
 		 (symbol (nth 2 entry))
 		 (match (nth 1 entry)))
@@ -4466,8 +4489,9 @@ If EXTENSIONS is not specified or nil, the value of
 (defun TeX-strip-extension (&optional string extensions nodir nostrip)
   "Return STRING without any trailing extension in EXTENSIONS.
 If NODIR is t, also remove directory part of STRING.
-If NODIR is `path', remove directory part of STRING if it is equal to
-the current directory, `TeX-macro-private' or `TeX-macro-global'.
+If NODIR is `path', remove directory part of STRING if it is
+equal to the current directory or is a member of
+`TeX-macro-private' or `TeX-macro-global'.
 If NOSTRIP is set, do not remove extension after all.
 STRING defaults to the name of the current buffer.
 EXTENSIONS defaults to `TeX-file-extensions'."
@@ -4485,8 +4509,8 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 	 (dir (expand-file-name (or (file-name-directory strip) "./"))))
     (if (or (eq nodir t)
 	    (string-equal dir (expand-file-name "./"))
-	    (member dir TeX-macro-global)
-	    (member dir TeX-macro-private))
+	    (member dir (mapcar #'file-name-as-directory TeX-macro-global))
+	    (member dir (mapcar #'file-name-as-directory TeX-macro-private)))
 	(file-name-nondirectory strip)
       strip)))
 
@@ -5073,10 +5097,9 @@ Brace insertion is only done if point is in a math construct and
        :help "Make \"Next Error\" show warnings"])
      ["Compile and view" TeX-command-run-all
       :help "Compile the document until it is ready and open the viewer"])
-   (let ((file 'TeX-command-on-current)) ;; is this actually needed?
-     (delq nil
-	   (mapcar #'TeX-command-menu-entry
-		   (TeX-mode-specific-command-list mode))))))
+   (delq nil
+	 (mapcar #'TeX-command-menu-entry
+		 (TeX-mode-specific-command-list mode)))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."
@@ -5181,7 +5204,7 @@ Brace insertion is only done if point is in a math construct and
 (make-variable-buffer-local 'TeX-verbatim-p-function)
 
 ;; XXX: We only have an implementation for LaTeX mode at the moment (Oct 2009).
-(defun TeX-verbatim-p (&optional pos)
+(defun TeX-verbatim-p (&optional _pos)
   "Return non-nil if position POS is in a verbatim-like construct.
 A mode-specific implementation is required.  If it is not
 available, the function always returns nil."
@@ -5289,7 +5312,7 @@ not move point further than this value."
   ;; A value of 0 is nonsense.
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-max)))
-  (dotimes (i (abs count))
+  (dotimes (_ (abs count))
     (if (< count 0)
 	(forward-line -1)
       (beginning-of-line))
@@ -5976,7 +5999,8 @@ sign.  With optional ARG, insert that many dollar signs."
        ;; inactivate-input-method is obsolete since emacs 24.3.
        (if (fboundp 'deactivate-input-method)
 	   (deactivate-input-method)
-	 (inactivate-input-method))))
+	 (with-no-warnings
+           (inactivate-input-method)))))
 
 ;;; Simple Commands
 
@@ -6225,7 +6249,7 @@ available from ")
 	 "https://www.gnu.org/software/auctex/"
 	 'face 'link
 	 'help-echo (concat "mouse-2, RET: Follow this link")
-	 'action (lambda (button)
+	 'action (lambda (_button)
 		   (browse-url "https://www.gnu.org/software/auctex/"))
 	 'follow-link t)
 	(insert " if your
@@ -6241,7 +6265,7 @@ tracker.  Visit ")
 	 "https://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"
 	 'face 'link
 	 'help-echo (concat "mouse-2, RET: Follow this link")
-	 'action (lambda (button)
+	 'action (lambda (_button)
 		   (browse-url "https://debbugs.gnu.org/cgi/pkgreport.cgi?pkg=auctex"))
 	 'follow-link t)
 	(insert "\nto browse existing AUCTeX bugs.
@@ -6410,7 +6434,7 @@ NAME may be a package, a command, or a document."
       (when (and (called-interactively-p 'any)
 		 (or (not name) (string= name "")))
 	(let ((symbol (thing-at-point 'symbol))
-	      contained completions doc)
+	      contained completions)
 	  ;; Is the symbol at point contained in the lists of available
 	  ;; documentation?
 	  (setq contained (catch 'found
@@ -6442,16 +6466,7 @@ NAME may be a package, a command, or a document."
 
 ;;; Ispell Support
 
-;; FIXME: Document those functions and variables.  -- rs
-
-;; The FSF ispell.el use this.
-(defun ispell-tex-buffer-p ()
-  (and (boundp 'ispell-tex-p) ispell-tex-p))
-
-;; The FSF ispell.el might one day use this.
-(setq ispell-enable-tex-parser t)
-
-(defun TeX-run-ispell (command string file)
+(defun TeX-run-ispell (_command _string file)
   "Run ispell on current TeX buffer."
   (cond ((and (string-equal file (TeX-region-file))
 	      (fboundp 'ispell-region))
@@ -6471,8 +6486,7 @@ NAME may be a package, a command, or a document."
   (if (string-equal name "")
       (setq name (TeX-master-file)))
 
-  (let ((found nil)
-	(regexp (concat "\\`\\("
+  (let ((regexp (concat "\\`\\("
 			(mapconcat (lambda (dir)
 				     (regexp-quote
 				      (expand-file-name
@@ -6493,10 +6507,9 @@ NAME may be a package, a command, or a document."
       (let* ((buffer (car buffers))
 	     (name (buffer-file-name buffer)))
 	(setq buffers (cdr buffers))
-	(if (and name (string-match regexp name))
-	    (progn
-	      (save-excursion (switch-to-buffer buffer) (ispell-buffer))
-	      (setq found t)))))))
+	(when (and name (string-match regexp name))
+	  (save-excursion (switch-to-buffer buffer) (ispell-buffer))
+          t)))))
 
 ;; Some versions of ispell 3 use this.
 (defvar ispell-tex-major-modes nil)

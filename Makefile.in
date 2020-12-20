@@ -172,7 +172,8 @@ STYLESRC = style/prosper.el \
 	   style/changelog.el style/ltugboat.el  style/beamerswitch.el \
 	   style/multitoc.el  style/fbox.el      style/xkcdcolors.el \
 	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
-	   style/tex-live.el  style/algorithm.el style/algpseudocode.el
+	   style/tex-live.el  style/algorithm.el style/algpseudocode.el \
+	   style/appendix.el  style/scholax.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -359,8 +360,15 @@ uninstall:
 	rm -rf $(DESTDIR)$(packagelispdir)
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) uninstall)
 
-.el.elc:
+%.elc: %.el
 	$(ELCC) -f batch-byte-compile $<
+
+dynvars-check:
+	rm -f $(AUCELC) $(STYLEELC) *.dynvars style/*.dynvars auctex-dynvars
+	EMACS_GENERATE_DYNVARS=1 make some > /dev/null 2>&1
+	cat *.dynvars style/*.dynvars > auctex-dynvars
+	rm -f $(AUCELC) $(STYLEELC)
+	EMACS_DYNVARS_FILE=auctex-dynvars make some
 
 clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)

@@ -1,6 +1,8 @@
-;;; english.el --- Setup AUCTeX for editing English text.
+;;; english.el --- Setup AUCTeX for editing English text.  -*- lexical-binding: t; -*-
 
 ;;; Code:
+
+(require 'tex)
 
 (TeX-add-style-hook
  "english"
@@ -8,6 +10,6 @@
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language nil))
    (run-hooks 'TeX-language-en-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; english.el ends here

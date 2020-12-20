@@ -1,4 +1,4 @@
-;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)
+;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
@@ -117,13 +117,13 @@ arguments."
     (when cap-box
       (let* ((TeX-arg-opening-brace "[")
 	     (TeX-arg-closing-brace "]")
-	     (last-optional-rejected nil)
+	     (TeX-last-optional-rejected nil)
 	     (width (LaTeX-check-insert-macro-default-style
 		     (completing-read (TeX-argument-prompt t nil "Width")
 				      (mapcar (lambda (elt) (concat TeX-esc (car elt)))
 					      (LaTeX-length-list)))))
-	     (last-optional-rejected (or (not width)
-					 (and width (string= width ""))))
+	     (TeX-last-optional-rejected (or (not width)
+					     (and width (string= width ""))))
 	     (inpos (LaTeX-check-insert-macro-default-style
 		     (if (and width (not (string-equal width "")))
 			 (completing-read (TeX-argument-prompt t nil "Inner position")
@@ -185,7 +185,7 @@ square brackets."
 				("bisubcaption"    "*[{[{")
 				("bisubcaptionbox" "*[{[{[["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."

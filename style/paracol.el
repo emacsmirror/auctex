@@ -1,6 +1,6 @@
-;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.35)
+;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.35)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2019 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,6 +45,9 @@
 ;; actually used.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -155,7 +158,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; 7.6 Page-Wise Footnotes
     '("footnotelayout"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Layout")
+		    (TeX-argument-prompt nil nil "Layout")
 		    '("c" "m" "p")))
 
     ;; \footnote*[num]{text}
@@ -204,7 +207,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; \backgroundcolor{region(x0,y0)(x1,y1)}[mode]{color}
     '("backgroundcolor"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Region")
+		    (TeX-argument-prompt nil nil "Region")
 		    '("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
 		      "C" "G" "S" "F" "N" "P" "T" "B" "L" "R"))
       (TeX-arg-conditional (member "xcolor" (TeX-style-list))
@@ -214,7 +217,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; \nobackgroundcolor{region}
     '("nobackgroundcolor"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Region")
+		    (TeX-argument-prompt nil nil "Region")
 		    '("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
 		      "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")))
 
@@ -225,7 +228,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; \addcontentsonly{file}{col}
     '("addcontentsonly"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Content file")
+		    (TeX-argument-prompt nil nil "Content file")
 		    '("toc" "lof" "lot"))
       "Column")
 
@@ -283,7 +286,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 				("resetbackgroundcolor"		"")
 				("addcontentsonly"		"{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-paracol-package-options nil
   "Package options for the paracol package.")

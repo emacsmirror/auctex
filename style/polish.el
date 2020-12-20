@@ -1,6 +1,6 @@
-;;; polish.el --- AUCTeX style for the `polish' babel option.
+;;; polish.el --- AUCTeX style for the `polish' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (defvar LaTeX-polish-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)
   "Syntax table used in LaTeX mode when using `polish.sty'.")
@@ -48,6 +51,6 @@
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
    (run-hooks 'TeX-language-pl-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; polish.el ends here

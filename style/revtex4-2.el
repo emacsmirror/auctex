@@ -1,4 +1,4 @@
-;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)
+;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 ;; `revtex4-2.cls' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -209,7 +212,7 @@ provided by REVTeX class."
 			      'reference)
      (font-latex-add-keywords '(("appendix*" ""))
 			      'warning)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-revtex4-2-class-options
   (progn

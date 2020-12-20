@@ -1,6 +1,6 @@
-;;; bm.el --- AUCTeX style for `bm.sty'.
+;;; bm.el --- AUCTeX style for `bm.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -52,7 +54,7 @@
 				("bmdefine" "|{\\{")
 				("hmdefine" "|{\\{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-bm-package-options nil
   "Package options for the bm package.")

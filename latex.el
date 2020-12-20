@@ -1,4 +1,4 @@
-;;; latex.el --- Support for LaTeX documents.
+;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1991, 1993-2020 Free Software Foundation, Inc.
 
@@ -127,14 +127,11 @@ This depends on `LaTeX-insert-into-comments'."
 ;;; Sections
 
 ;; Declare dynamically scoped vars.
-;; N.B.: These forms are commented out since they produce a "lack of
-;; prefix" warning during byte-compilation.  This way they produce
-;; only a "reference to free variable" one.
-;; (defvar title)
-;; (defvar name)
-;; (defvar level)
-;; (defvar done-mark)
-;; (defvar toc)
+(defvar LaTeX-title nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-name nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-level nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-done-mark nil "Dynamically bound by `LaTeX-section'.")
+(defvar LaTeX-toc nil "Dynamically bound by `LaTeX-section'.")
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
@@ -160,25 +157,25 @@ The following variables can be set to customize:
 
   (interactive "*P")
   (let* ((val (prefix-numeric-value arg))
-	 (level (cond ((null arg)
-		       (LaTeX-current-section))
-		      ((listp arg)
-		       (LaTeX-down-section))
-		      ((< val 0)
-		       (LaTeX-up-section (- val)))
-		      (t val)))
-	 (name (LaTeX-section-name level))
-	 (toc nil)
-	 (title (if (TeX-active-mark)
-		    (buffer-substring (region-beginning)
-				      (region-end))
-		  ""))
-	 (done-mark (make-marker)))
+	 (LaTeX-level (cond ((null arg)
+		             (LaTeX-current-section))
+		            ((listp arg)
+		             (LaTeX-down-section))
+		            ((< val 0)
+		             (LaTeX-up-section (- val)))
+		            (t val)))
+	 (LaTeX-name (LaTeX-section-name LaTeX-level))
+	 (LaTeX-toc nil)
+	 (LaTeX-title (if (TeX-active-mark)
+		          (buffer-substring (region-beginning)
+				            (region-end))
+		        ""))
+	 (LaTeX-done-mark (make-marker)))
     (run-hooks 'LaTeX-section-hook)
     (LaTeX-newline)
-    (if (marker-position done-mark)
-	(goto-char (marker-position done-mark)))
-    (set-marker done-mark nil)))
+    (if (marker-position LaTeX-done-mark)
+	(goto-char (marker-position LaTeX-done-mark)))
+    (set-marker LaTeX-done-mark nil)))
 
 (defun LaTeX-current-section ()
   "Return the level of the section that contain point.
@@ -230,6 +227,9 @@ section."
 			     ("paragraph" 5)
 			     ("subparagraph" 6))
   "List which elements is the names of the sections used by LaTeX.")
+
+(defvar LaTeX-section-menu nil)
+(make-variable-buffer-local 'LaTeX-section-menu)
 
 (defun LaTeX-section-list-add-locally (sections &optional clean)
   "Add SECTIONS to `LaTeX-section-list'.
@@ -339,6 +339,16 @@ If so, return the second element, otherwise return nil."
       (nth 1 (car list))
     nil))
 
+(defvar LaTeX-header-end
+  (concat "^[^%\n]*" (regexp-quote TeX-esc) "begin *"
+	  TeX-grop "document" TeX-grcl)
+  "Default end of header marker for LaTeX documents.")
+
+(defvar LaTeX-trailer-start
+  (concat "^[^%\n]*" (regexp-quote TeX-esc) "end *"
+	  TeX-grop "document" TeX-grcl)
+  "Default start of trailer marker for LaTeX documents.")
+
 (defun LaTeX-outline-level ()
   "Find the level of current outline heading in an LaTeX document."
   (cond ((looking-at LaTeX-header-end) 1)
@@ -348,15 +358,15 @@ If so, return the second element, otherwise return nil."
 		   (LaTeX-outline-offset))))
 	(t
 	 (save-excursion
-	  (skip-chars-forward " \t")
-	  (forward-char 1)
-	  (cond ((looking-at "appendix") 1)
-		((looking-at "documentstyle") 1)
-		((looking-at "documentclass") 1)
-		((TeX-look-at LaTeX-section-list)
-		 (max 1 (+ (TeX-look-at LaTeX-section-list)
-			   (LaTeX-outline-offset))))
-		(t (outline-level)))))))
+	   (skip-chars-forward " \t")
+	   (forward-char 1)
+	   (cond ((looking-at "appendix") 1)
+		 ((looking-at "documentstyle") 1)
+		 ((looking-at "documentclass") 1)
+		 ((TeX-look-at LaTeX-section-list)
+		  (max 1 (+ (TeX-look-at LaTeX-section-list)
+			    (LaTeX-outline-offset))))
+		 (t (outline-level)))))))
 
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
@@ -371,34 +381,35 @@ If so, return the second element, otherwise return nil."
 (defcustom LaTeX-section-hook
   '(LaTeX-section-heading
     LaTeX-section-title
-;; LaTeX-section-toc		; Most people won't want this
+    ;; LaTeX-section-toc		; Most people won't want this
     LaTeX-section-section
     LaTeX-section-label)
   "List of hooks to run when a new section is inserted.
 
 The following variables are set before the hooks are run
 
-level - numeric section level, see the documentation of `LaTeX-section'.
-name - name of the sectioning command, derived from `level'.
-title - The title of the section, default to an empty string.
-toc - Entry for the table of contents list, default nil.
-done-mark - Position of point afterwards, default nil (meaning end).
+LaTeX-level - numeric section level, see the documentation of `LaTeX-section'.
+LaTeX-name - name of the sectioning command, derived from `LaTeX-level'.
+LaTeX-title - The title of the section, default to an empty string.
+LaTeX-toc - Entry for the table of contents list, default nil.
+LaTeX-done-mark - Position of point afterwards, default nil (meaning end).
 
 The following standard hook exist -
 
 LaTeX-section-heading: Query the user about the name of the
-sectioning command.  Modifies `level' and `name'.
+sectioning command.  Modifies `LaTeX-level' and `LaTeX-name'.
 
 LaTeX-section-title: Query the user about the title of the
-section.  Modifies `title'.
+section.  Modifies `LaTeX-title'.
 
 LaTeX-section-toc: Query the user for the toc entry.  Modifies
-`toc'.
+`LaTeX-toc'.
 
 LaTeX-section-section: Insert LaTeX section command according to
-`name', `title', and `toc'.  If `toc' is nil, no toc entry is
-inserted.  If `toc' or `title' are empty strings, `done-mark' will be
-placed at the point they should be inserted.
+`LaTeX-name', `LaTeX-title', and `LaTeX-toc'.  If `LaTeX-toc' is
+nil, no toc entry is inserted.  If `LaTeX-toc' or `LaTeX-title'
+are empty strings, `LaTeX-done-mark' will be placed at the point
+they should be inserted.
 
 LaTeX-section-label: Insert a label after the section command.
 Controled by the variable `LaTeX-section-label'.
@@ -458,20 +469,20 @@ no label is inserted."
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
-		 (concat "Level (default " name "): ")
+		 (concat "Level (default " LaTeX-name "): ")
 		 LaTeX-section-list
-		 nil nil nil nil name)))
-    ;; Update name
+		 nil nil nil nil LaTeX-name)))
+    ;; Update LaTeX-name
     (if (not (zerop (length string)))
-	(setq name string))
+	(setq LaTeX-name string))
     ;; Update level
-    (setq level (LaTeX-section-level name))))
+    (setq LaTeX-level (LaTeX-section-level LaTeX-name))))
 
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (setq title (TeX-read-string "Title: " title))
+  (setq LaTeX-title (TeX-read-string "Title: " LaTeX-title))
   (let ((region (and (TeX-active-mark)
 		     (cons (region-beginning) (region-end)))))
     (when region (delete-region (car region) (cdr region)))))
@@ -480,15 +491,16 @@ the title of the section inserted with `\\[LaTeX-section]."
   "Hook to prompt for the LaTeX section entry in the table of content .
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
 a different entry for the section in the table of content."
-  (setq toc (TeX-read-string "Toc Entry: "))
-  (if (zerop (length toc))
-      (setq toc nil)))
+  (setq LaTeX-toc (TeX-read-string "Toc Entry: "))
+  (if (zerop (length LaTeX-toc))
+      (setq LaTeX-toc nil)))
 
 (defun LaTeX-section-section ()
   "Hook to insert LaTeX section command into the file.
-Insert this hook into `LaTeX-section-hook' after those hooks that set
-the `name', `title', and `toc' variables, but before those hooks that
-assume that the section is already inserted."
+Insert this hook into `LaTeX-section-hook' after those hooks that
+set the `LaTeX-name', `LaTeX-title', and `LaTeX-toc' variables,
+but before those hooks that assume that the section is already
+inserted."
   ;; insert a new line if the current line and the previous line are
   ;; not empty (except for whitespace), with one exception: do not
   ;; insert a new line if the previous (or current, sigh) line starts
@@ -499,18 +511,18 @@ assume that the section is already inserted."
 		     "begin")
 	     (line-beginning-position 0) t))
     (LaTeX-newline))
-  (insert TeX-esc name)
-  (cond ((null toc))
-	((zerop (length toc))
+  (insert TeX-esc LaTeX-name)
+  (cond ((null LaTeX-toc))
+	((zerop (length LaTeX-toc))
 	 (insert LaTeX-optop)
-	 (set-marker done-mark (point))
+	 (set-marker LaTeX-done-mark (point))
 	 (insert LaTeX-optcl))
 	(t
-	 (insert LaTeX-optop toc LaTeX-optcl)))
+	 (insert LaTeX-optop LaTeX-toc LaTeX-optcl)))
   (insert TeX-grop)
-  (if (zerop (length title))
-      (set-marker done-mark (point)))
-  (insert title TeX-grcl)
+  (if (zerop (length LaTeX-title))
+      (set-marker LaTeX-done-mark (point)))
+  (insert LaTeX-title TeX-grcl)
   (LaTeX-newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
@@ -522,7 +534,7 @@ Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
 The behaviour of this hook is controlled by variable `LaTeX-section-label'."
-  (and (LaTeX-label name 'section)
+  (and (LaTeX-label LaTeX-name 'section)
        (LaTeX-newline)))
 
 ;;; Environments
@@ -664,6 +676,8 @@ With prefix-argument, reopen environment afterwards."
 	(move-marker marker nil)))))
 
 (define-obsolete-variable-alias 'LaTeX-after-insert-env-hooks 'LaTeX-after-insert-env-hook "11.89")
+
+(defvar LaTeX-indent-environment-list) ;; Defined further below.
 
 (defvar LaTeX-after-insert-env-hook nil
   "List of functions to be run at the end of `LaTeX-insert-environment'.
@@ -853,6 +867,8 @@ position just before \\begin and the position just before
 			    environment old-env
 			    (save-excursion (funcall goto-begin))
 			    (progn (funcall goto-end) (point)))))))
+
+(defvar LaTeX-syntactic-comments) ;; Defined further below.
 
 (defun LaTeX-current-environment (&optional arg)
   "Return the name (a string) of the enclosing LaTeX environment.
@@ -1062,6 +1078,8 @@ corresponding entry."
 			       (symbol :tag "Label prefix symbol")))))
 
 (make-variable-buffer-local 'LaTeX-label-alist)
+
+(defvar TeX-read-label-prefix) ;; Defined further below.
 
 (defun LaTeX-label (name &optional type no-insert)
   "Insert a label for NAME at point.
@@ -1317,9 +1335,8 @@ Just like array and tabular."
   (save-excursion
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (let ((exit-mark (if (boundp 'exit-mark)
-			 exit-mark
-		       (make-marker))))
+    (let ((TeX-exit-mark (or TeX-exit-mark
+		             (make-marker))))
       (TeX-parse-arguments args))))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
@@ -1412,7 +1429,7 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
       (TeX-insert-macro "item"))
     (indent-according-to-mode)))
 
-(defvar TeX-arg-item-label-p)
+(defvar TeX-arg-item-label-p) ;; Defined further below.
 
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
@@ -1942,6 +1959,11 @@ The value is actually the tail of the list of options given to PACKAGE."
 
 ;;; BibTeX
 
+(defvar BibTeX-auto-regexp-list
+  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
+    ("@[a-zA-Z]+[{(][ \t]*\\([^, \n\r\t%\"#'()={}]*\\)" 1 LaTeX-auto-bibitem))
+  "List of regexp-list expressions matching BibTeX items.")
+
 ;;;###autoload
 (defun BibTeX-auto-store ()
   "This function should be called from `bibtex-mode-hook'.
@@ -1956,21 +1978,14 @@ It will setup BibTeX to store keys in an auto file."
   (set (make-local-variable 'TeX-auto-regexp-list) BibTeX-auto-regexp-list)
   (set (make-local-variable 'TeX-master) t))
 
-(defvar BibTeX-auto-regexp-list
-  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+[{(][ \t]*\\([^, \n\r\t%\"#'()={}]*\\)" 1 LaTeX-auto-bibitem))
-  "List of regexp-list expressions matching BibTeX items.")
-
 ;;; Macro Argument Hooks
 
-(defun TeX-arg-conditional (optional expr then else)
+(defun TeX-arg-conditional (_optional expr then else)
   "Implement if EXPR THEN ELSE.
 
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.
-
-If EXPR evaluate to true, parse THEN as an argument list, else parse
-ELSE as an argument list."
+If EXPR evaluate to true, parse THEN as an argument list, else
+parse ELSE as an argument list.  The compatibility argument
+OPTIONAL is ignored."
   (TeX-parse-arguments (if (eval expr) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
@@ -2055,7 +2070,7 @@ string.  ARGS is unused."
   (TeX-argument-insert
    (TeX-read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
 
-(defun TeX-arg-index (optional &optional prompt &rest args)
+(defun TeX-arg-index (optional &optional prompt &rest _args)
   "Prompt for an index entry completing with known entries.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -2099,7 +2114,7 @@ the list of defined environments."
     (TeX-argument-insert environment optional)))
 
 ;; Why is DEFINITION unused?
-(defun TeX-arg-cite (optional &optional prompt definition)
+(defun TeX-arg-cite (optional &optional prompt _definition)
   "Prompt for a BibTeX citation with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -2302,6 +2317,18 @@ and this variable will be ignored."
 Initialized once at the first time you prompt for a LaTeX class.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+(defcustom TeX-arg-input-file-search t
+  "If `TeX-arg-input-file' should search for files.
+If the value is t, files in TeX's search path are searched for
+and provided for completion.  The file name is then inserted
+without directory and extension.  If the value is nil, the file
+name can be specified manually and is inserted with a path
+relative to the directory of the current buffer's file and with
+extension.  If the value is `ask', you are asked for the method
+to use every time `TeX-arg-input-file' is called."
+  :group 'LaTeX-macro
+  :type '(choice (const t) (const nil) (const ask)))
+
 (defvar TeX-after-document-hook nil
   "List of functions to be run at the end of `TeX-arg-document'.
 
@@ -2363,6 +2390,11 @@ OPTIONAL and IGNORE are ignored."
   "List of functions to be run at the end of `LaTeX-arg-usepackage'.
 
 To insert a hook here, you must insert it in the appropiate style file.")
+
+(defvar TeX-global-input-files nil
+  "List of the non-local TeX input files.
+Initialized once at the first time you prompt for an input file.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun LaTeX-arg-usepackage-read-packages-with-options ()
   "Read the packages and the options for the usepackage macro.
@@ -2481,23 +2513,6 @@ Reset the mode for a change of this variable to take effect."
 			       (repeat :tag "Variables" variable))
 		       (choice :tag "Extensions"
 			       variable (repeat string)))))
-
-(defcustom TeX-arg-input-file-search t
-  "If `TeX-arg-input-file' should search for files.
-If the value is t, files in TeX's search path are searched for
-and provided for completion.  The file name is then inserted
-without directory and extension.  If the value is nil, the file
-name can be specified manually and is inserted with a path
-relative to the directory of the current buffer's file and with
-extension.  If the value is `ask', you are asked for the method
-to use every time `TeX-arg-input-file' is called."
-  :group 'LaTeX-macro
-  :type '(choice (const t) (const nil) (const ask)))
-
-(defvar TeX-global-input-files nil
-  "List of the non-local TeX input files.
-Initialized once at the first time you prompt for an input file.
-May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-input-file (optional &optional prompt local)
   "Prompt for a tex or sty file.
@@ -2675,10 +2690,9 @@ the list of defined pagestyles."
   :group 'LaTeX-macro
   :type 'character)
 
-(defun TeX-arg-verb (optional &optional _ignore)
+(defun TeX-arg-verb (_optional &optional _ignore)
   "Prompt for delimiter and text.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  IGNORE is ignored."
+The compatibility argument OPTIONAL and IGNORE are ignored."
   (let ((del (read-quoted-char
 	      (concat "Delimiter (default "
 		      (char-to-string LaTeX-default-verb-delimiter) "): "))))
@@ -2723,16 +2737,13 @@ argument in delimiters like \"\| \|\" or braces \"\{ \}\"."
     (unless (= del ?\{)
       (setq LaTeX-default-verb-delimiter del))))
 
-(defun TeX-arg-pair (optional first second)
+(defun TeX-arg-pair (_optional first second)
   "Insert a pair of number, prompted by FIRST and SECOND.
 
 The numbers are surounded by parenthesizes and separated with a
-comma.
-
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one."
+comma.  The compatibility argument OPTIONAL is ignored."
   (insert "(" (TeX-read-string (concat first  ": ")) ","
-	      (TeX-read-string (concat second ": ")) ")"))
+	  (TeX-read-string (concat second ": ")) ")"))
 
 (defun TeX-arg-size (optional)
   "Insert width and height as a pair.
@@ -2831,6 +2842,8 @@ string."
         (indent-according-to-mode))
       (indent-according-to-mode))))
 
+(defvar TeX-arg-right-insert-p) ;; Defined further below.
+
 (defun TeX-arg-insert-right-brace-maybe (optional)
   "Insert the suitable right brace macro such as \\rangle.
 Insertion is done when `TeX-arg-right-insert-p' is non-nil.
@@ -2854,8 +2867,6 @@ supply the corresponding macro such as \\right before the right brace macro."
 	(LaTeX-insert-corresponding-right-macro-and-brace
 	 left-macro left-brace optional)))))
 
-(defvar TeX-arg-right-insert-p)
-
 (defun LaTeX-insert-left-brace (arg)
   "Insert typed left brace ARG times and possibly a correspondig right brace.
 Automatic right brace insertion is done only if no prefix ARG is given and
@@ -2871,36 +2882,36 @@ Normally bound to keys \(, { and [."
 	(exchange-point-and-mark))
     (self-insert-command (prefix-numeric-value arg))
     (if auto-p
-      (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
-        (save-excursion
-          (backward-char)
-	  ;; The brace "{" is exceptional in two aspects.
-	  ;; 1. "\{" should be considered as a single brace
-	  ;;    like "(" and "[".
-	  ;; 2. "\left{" is nonsense while "\left\{" and
-	  ;;    "\left(" are not.
-	  (if (string= lbrace TeX-grop)
-	      ;; If "{" follows "\", set lbrace to "\{".
-	      (if (TeX-escaped-p)
-		  (progn
-		    (backward-char)
-		    (setq lbrace (concat TeX-esc TeX-grop)))
-		;; Otherwise, don't search for left macros.
-		(setq skip-p t)))
-	  (unless skip-p
-	    ;; Obtain the name of preceding left macro, if any,
-	    ;; such as "left", "bigl" etc.
-	    (setq lmacro (LaTeX--find-preceding-left-macro-name))))
-        (let ((TeX-arg-right-insert-p t)
-              ;; "{" and "}" are paired temporally so that typing
-	      ;; a single "{" should insert a pair "{}".
-              (TeX-braces-association
-               (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
-	  (save-excursion
-	    (if (TeX-active-mark)
-		(goto-char (mark)))
-	    (LaTeX-insert-corresponding-right-macro-and-brace
-	     lmacro lbrace)))))))
+        (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
+          (save-excursion
+            (backward-char)
+	    ;; The brace "{" is exceptional in two aspects.
+	    ;; 1. "\{" should be considered as a single brace
+	    ;;    like "(" and "[".
+	    ;; 2. "\left{" is nonsense while "\left\{" and
+	    ;;    "\left(" are not.
+	    (if (string= lbrace TeX-grop)
+	        ;; If "{" follows "\", set lbrace to "\{".
+	        (if (TeX-escaped-p)
+		    (progn
+		      (backward-char)
+		      (setq lbrace (concat TeX-esc TeX-grop)))
+		  ;; Otherwise, don't search for left macros.
+		  (setq skip-p t)))
+	    (unless skip-p
+	      ;; Obtain the name of preceding left macro, if any,
+	      ;; such as "left", "bigl" etc.
+	      (setq lmacro (LaTeX--find-preceding-left-macro-name))))
+          (let ((TeX-arg-right-insert-p t)
+                ;; "{" and "}" are paired temporally so that typing
+	        ;; a single "{" should insert a pair "{}".
+                (TeX-braces-association
+                 (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
+	    (save-excursion
+	      (if (TeX-active-mark)
+		  (goto-char (mark)))
+	      (LaTeX-insert-corresponding-right-macro-and-brace
+	       lmacro lbrace)))))))
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
 (put #'LaTeX-insert-left-brace 'delete-selection
@@ -4479,10 +4490,10 @@ environments."
     ;; Only change point and mark after beginning and end were found.
     ;; Point should not end up in the middle of nowhere if the search fails.
     (save-excursion
-      (dotimes (c count) (LaTeX-find-matching-end))
+      (dotimes (_ count) (LaTeX-find-matching-end))
       (setq end (line-beginning-position 2))
       (goto-char cur)
-      (dotimes (c count) (LaTeX-find-matching-begin))
+      (dotimes (_ count) (LaTeX-find-matching-begin))
       (setq beg (point)))
     (push-mark end)
     (goto-char beg)
@@ -4555,6 +4566,8 @@ value of NO-SUBSECTIONS."
     "newpage" "clearpage")
   "Internal list of LaTeX macros that should have their own line.")
 
+(defvar LaTeX-paragraph-commands)
+
 (defun LaTeX-paragraph-commands-regexp-make ()
   "Return a regular expression matching defined paragraph commands.
 Regexp part containing TeX control words is postfixed with `\\b'
@@ -4572,6 +4585,8 @@ to avoid ambiguities (e.g. \\par vs. \\parencite)."
 	    (regexp-opt symbs)
 	    "\\)")))
 
+(defvar LaTeX-paragraph-commands-regexp)
+
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
 The list should contain macro names without the leading backslash."
@@ -4583,7 +4598,7 @@ The list should contain macro names without the leading backslash."
 	       (LaTeX-paragraph-commands-regexp-make))))
 
 (defvar LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)
-    "Regular expression matching LaTeX macros that should have their own line.")
+  "Regular expression matching LaTeX macros that should have their own line.")
 
 (defun LaTeX-set-paragraph-start ()
   "Set `paragraph-start'."
@@ -4592,8 +4607,8 @@ The list should contain macro names without the leading backslash."
 	 "[ \t]*%*[ \t]*\\("
 	 LaTeX-paragraph-commands-regexp "\\|"
 	 (regexp-quote TeX-esc) "\\(" LaTeX-item-regexp "\\)\\|"
-	 "\\$\\$\\|" ; Plain TeX display math (Some people actually
-		     ; use this with LaTeX.  Yuck.)
+	 "\\$\\$\\|"    ; Plain TeX display math (Some people actually use this
+                                        ; with LaTeX.  Yuck.)
 	 "$\\)")))
 
 (defun LaTeX-paragraph-commands-add-locally (commands)
@@ -4615,7 +4630,7 @@ convenience function which can be used in style files."
   "Move forward to end of paragraph.
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
-  (dotimes (i count)
+  (dotimes (_ count)
     (let* ((macro-start (TeX-find-macro-start))
 	   (paragraph-command-start
 	    (cond
@@ -4668,7 +4683,7 @@ If COUNT is non-nil, do it COUNT times."
   "Move backward to beginning of paragraph.
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
-  (dotimes (i count)
+  (dotimes (_ count)
     (let* ((macro-start (TeX-find-macro-start)))
       (if (and macro-start
 	       ;; Point really has to be inside of the macro, not before it.
@@ -4760,28 +4775,6 @@ of verbatim constructs are not considered."
 (defvar LaTeX-math-keymap (make-sparse-keymap)
   "Keymap used for `LaTeX-math-mode' commands.")
 
-(defun LaTeX-math-abbrev-prefix ()
-  "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
-  (if (stringp LaTeX-math-abbrev-prefix)
-      (read-kbd-macro LaTeX-math-abbrev-prefix)
-    LaTeX-math-abbrev-prefix))
-
-(defvar LaTeX-math-menu
-  '("Math"
-    ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
-    ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
-    ("Delimiters") ("Constructs") ("Accents") ("AMS"))
-  "Menu containing LaTeX math commands.
-The menu entries will be generated dynamically, but you can specify
-the sequence by initializing this variable.")
-
-(defcustom LaTeX-math-menu-unicode
-  (or (string-match "\\<GTK\\>" (emacs-version))
-      (eq window-system 'w32))
-  "Whether the LaTeX menu should try using Unicode for effect."
-  :type 'boolean
-  :group 'LaTeX-math)
-
 (defcustom LaTeX-math-abbrev-prefix "`"
   "Prefix key for use in `LaTeX-math-mode'.
 This has to be a string representing a key sequence in a format
@@ -4799,72 +4792,20 @@ use \\[customize]."
 	    (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   :type '(string :tag "Key sequence"))
 
-(defun LaTeX-math-initialize ()
-  (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
-	(map LaTeX-math-keymap)
-	(unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
-    (while math
-      (let* ((entry (car math))
-	     (key (nth 0 entry))
-	     (prefix
-	      (and unicode
-		   (nth 3 entry)))
-	     value menu name)
-	(setq math (cdr math))
-	(if (and prefix
-		 (setq prefix (decode-char 'ucs (nth 3 entry))))
-	    (setq prefix (concat (string prefix) " \\"))
-	  (setq prefix "\\"))
-	(if (listp (cdr entry))
-	    (setq value (nth 1 entry)
-		  menu (nth 2 entry))
-	  (setq value (cdr entry)
-		menu nil))
-	(if (stringp value)
-	    (progn
-	      (setq name (intern (concat "LaTeX-math-" value)))
-	      (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-			       (list 'LaTeX-math-insert value 'arg))))
-	  (setq name value))
-	(if key
-	    (progn
-	      (setq key (cond ((numberp key) (char-to-string key))
-			      ((stringp key) (read-kbd-macro key))
-			      (t (vector key))))
-	      (define-key map key name)))
-	(if menu
-	    (let ((parent LaTeX-math-menu))
-	      (if (listp menu)
-		  (progn
-		    (while (cdr menu)
-		      (let ((sub (assoc (car menu) LaTeX-math-menu)))
-			(if sub
-			    (setq parent sub)
-			  (setcdr parent (cons (list (car menu)) (cdr parent))))
-			(setq menu (cdr menu))))
-		    (setq menu (car menu))))
-	      (let ((sub (assoc menu parent)))
-		(if sub
-		    (if (stringp value)
-			(setcdr sub (cons (vector (concat prefix value)
-						  name t)
-					  (cdr sub)))
-		      (error "Cannot have multiple special math menu items"))
-		  (setcdr parent
-			  (cons (if (stringp value)
-				    (list menu (vector (concat prefix value)
-						       name t))
-				  (vector menu name t))
-				(cdr parent)))))))))
-    ;; Make the math prefix char available if it has not been used as a prefix.
-    (unless (lookup-key map (LaTeX-math-abbrev-prefix))
-      (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
+(defun LaTeX-math-abbrev-prefix ()
+  "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
+  (if (stringp LaTeX-math-abbrev-prefix)
+      (read-kbd-macro LaTeX-math-abbrev-prefix)
+    LaTeX-math-abbrev-prefix))
 
-(defconst LaTeX-dialect :latex
-  "Default dialect for use with function `TeX-add-style-hook' for
-argument DIALECT-EXPR when the hook is to be run only on LaTeX
-file, or any mode derived thereof. See variable
-`TeX-style-hook-dialect'." )
+(defvar LaTeX-math-menu
+  '("Math"
+    ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
+    ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
+    ("Delimiters") ("Constructs") ("Accents") ("AMS"))
+  "Menu containing LaTeX math commands.
+The menu entries will be generated dynamically, but you can specify
+the sequence by initializing this variable.")
 
 (defconst LaTeX-math-default
   '((?a "alpha" "Greek Lowercase" 945) ;; #X03B1
@@ -5394,6 +5335,76 @@ file, or any mode derived thereof. See variable
 Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
+(defcustom LaTeX-math-menu-unicode
+  (or (string-match "\\<GTK\\>" (emacs-version))
+      (eq window-system 'w32))
+  "Whether the LaTeX menu should try using Unicode for effect."
+  :type 'boolean
+  :group 'LaTeX-math)
+
+(defvar LaTeX-math-list) ;; Defined further below.
+
+(defun LaTeX-math-initialize ()
+  (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
+	(map LaTeX-math-keymap)
+	(unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+    (while math
+      (let* ((entry (car math))
+	     (key (nth 0 entry))
+	     (prefix
+	      (and unicode
+		   (nth 3 entry)))
+	     value menu name)
+	(setq math (cdr math))
+	(if (and prefix
+		 (setq prefix (decode-char 'ucs (nth 3 entry))))
+	    (setq prefix (concat (string prefix) " \\"))
+	  (setq prefix "\\"))
+	(if (listp (cdr entry))
+	    (setq value (nth 1 entry)
+		  menu (nth 2 entry))
+	  (setq value (cdr entry)
+		menu nil))
+	(if (stringp value)
+	    (progn
+	      (setq name (intern (concat "LaTeX-math-" value)))
+	      (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
+			       (list 'LaTeX-math-insert value 'arg))))
+	  (setq name value))
+	(if key
+	    (progn
+	      (setq key (cond ((numberp key) (char-to-string key))
+			      ((stringp key) (read-kbd-macro key))
+			      (t (vector key))))
+	      (define-key map key name)))
+	(if menu
+	    (let ((parent LaTeX-math-menu))
+	      (if (listp menu)
+		  (progn
+		    (while (cdr menu)
+		      (let ((sub (assoc (car menu) LaTeX-math-menu)))
+			(if sub
+			    (setq parent sub)
+			  (setcdr parent (cons (list (car menu)) (cdr parent))))
+			(setq menu (cdr menu))))
+		    (setq menu (car menu))))
+	      (let ((sub (assoc menu parent)))
+		(if sub
+		    (if (stringp value)
+			(setcdr sub (cons (vector (concat prefix value)
+						  name t)
+					  (cdr sub)))
+		      (error "Cannot have multiple special math menu items"))
+		  (setcdr parent
+			  (cons (if (stringp value)
+				    (list menu (vector (concat prefix value)
+						       name t))
+				  (vector menu name t))
+				(cdr parent)))))))))
+    ;; Make the math prefix char available if it has not been used as a prefix.
+    (unless (lookup-key map (LaTeX-math-abbrev-prefix))
+      (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
+
 (defcustom LaTeX-math-list nil
   "Alist of your personal LaTeX math symbols.
 
@@ -5436,6 +5447,8 @@ See also `LaTeX-math-menu'."
 				(const :tag "none" nil)
 				(integer :tag "Number")))))
 
+(defvar LaTeX-math-mode-menu)
+(defvar LaTeX-math-mode-map)
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy access to TeX math macros.
 
@@ -5452,8 +5465,8 @@ commands are defined:
 (defalias 'latex-math-mode 'LaTeX-math-mode)
 
 (easy-menu-define LaTeX-math-mode-menu
-    LaTeX-math-mode-map
-    "Menu used in math minor mode."
+  LaTeX-math-mode-map
+  "Menu used in math minor mode."
   LaTeX-math-menu)
 
 (defcustom LaTeX-math-insert-function 'TeX-insert-macro
@@ -5557,10 +5570,10 @@ environments."
     (widen)
     (let ((opoint (point))
 	  beg end)
-      (dotimes (c count) (LaTeX-find-matching-end))
+      (dotimes (_ count) (LaTeX-find-matching-end))
       (setq end (point))
       (goto-char opoint)
-      (dotimes (c count) (LaTeX-find-matching-begin))
+      (dotimes (_ count) (LaTeX-find-matching-begin))
       (setq beg (point))
       (narrow-to-region beg end))))
 (put 'LaTeX-narrow-to-environment 'disabled t)
@@ -5699,8 +5712,6 @@ the last entry in the menu."
 	    (if (= rest outer) (setq inner (1+ inner)))))
 	result))))
 
-(defvar LaTeX-section-menu nil)
-(make-variable-buffer-local 'LaTeX-section-menu)
 (defun LaTeX-section-menu-filter (ignored)
   "Filter function for the section submenu in the mode menu.
 The argument IGNORED is not used in any way."
@@ -6027,6 +6038,8 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
+(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
+
 ;;;###autoload
 (defun TeX-latex-mode ()
   "Major mode in AUCTeX for editing LaTeX files.
@@ -6129,16 +6142,6 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
-(defvar LaTeX-header-end
-  (concat "^[^%\n]*" (regexp-quote TeX-esc) "begin *"
-	  TeX-grop "document" TeX-grcl)
-  "Default end of header marker for LaTeX documents.")
-
-(defvar LaTeX-trailer-start
-  (concat "^[^%\n]*" (regexp-quote TeX-esc) "end *"
-	  TeX-grop "document" TeX-grcl)
-  "Default start of trailer marker for LaTeX documents.")
-
 (defcustom LaTeX-clean-intermediate-suffixes
   (append TeX-clean-default-intermediate-suffixes
 	  ;; These are extensions of files created by makeglossaries.
@@ -6185,7 +6188,7 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
-  (set (make-local-variable 'TeX-style-hook-dialect) LaTeX-dialect)
+  (set (make-local-variable 'TeX-style-hook-dialect) TeX-dialect)
 
   (require 'outline)
   (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
@@ -6531,133 +6534,133 @@ function would return non-nil and `(match-string 1)' would return
      ;; With the advent of LaTeX2e release 2020-02-02, all symbols
      ;; provided by textcomp.sty are available out of the box by the
      ;; kernel.  The next block is moved here from textcomp.el:
-     '("capitalgrave"             0)     ; Type: Accent -- Slot: 0
-     '("capitalacute"             0)     ; Type: Accent -- Slot: 1
-     '("capitalcircumflex"        0)     ; Type: Accent -- Slot: 2
-     '("capitaltilde"             0)     ; Type: Accent -- Slot: 3
-     '("capitaldieresis"          0)     ; Type: Accent -- Slot: 4
-     '("capitalhungarumlaut"      0)     ; Type: Accent -- Slot: 5
-     '("capitalring"              0)     ; Type: Accent -- Slot: 6
-     '("capitalcaron"             0)     ; Type: Accent -- Slot: 7
-     '("capitalbreve"             0)     ; Type: Accent -- Slot: 8
-     '("capitalmacron"            0)     ; Type: Accent -- Slot: 9
-     '("capitaldotaccent"         0)     ; Type: Accent -- Slot: 10
-     '("textquotestraightbase"    0)     ; Type: Symbol -- Slot: 13
-     '("textquotestraightdblbase" 0)     ; Type: Symbol -- Slot: 18
-     '("texttwelveudash"          0)     ; Type: Symbol -- Slot: 21
-     '("textthreequartersemdash"  0)     ; Type: Symbol -- Slot: 22
-     '("textcapitalcompwordmark"  0)     ; Type: Symbol -- Slot: 23
-     '("textleftarrow"            0)     ; Type: Symbol -- Slot: 24
-     '("textrightarrow"           0)     ; Type: Symbol -- Slot: 25
-     '("t"                        0)     ; Type: Accent -- Slot: 26
-     '("capitaltie"               0)     ; Type: Accent -- Slot: 27
-     '("newtie"                   0)     ; Type: Accent -- Slot: 28
-     '("capitalnewtie"            0)     ; Type: Accent -- Slot: 29
-     '("textascendercompwordmark" 0)     ; Type: Symbol -- Slot: 31
-     '("textblank"                0)     ; Type: Symbol -- Slot: 32
-     '("textdollar"               0)     ; Type: Symbol -- Slot: 36
-     '("textquotesingle"          0)     ; Type: Symbol -- Slot: 39
-     '("textasteriskcentered"     0)     ; Type: Symbol -- Slot: 42
-     '("textdblhyphen"            0)     ; Type: Symbol -- Slot: 45
-     '("textfractionsolidus"      0)     ; Type: Symbol -- Slot: 47
-     '("textzerooldstyle"         0)     ; Type: Symbol -- Slot: 48
-     '("textoneoldstyle"          0)     ; Type: Symbol -- Slot: 49
-     '("texttwooldstyle"          0)     ; Type: Symbol -- Slot: 50
-     '("textthreeoldstyle"        0)     ; Type: Symbol -- Slot: 51
-     '("textfouroldstyle"         0)     ; Type: Symbol -- Slot: 52
-     '("textfiveoldstyle"         0)     ; Type: Symbol -- Slot: 53
-     '("textsixoldstyle"          0)     ; Type: Symbol -- Slot: 54
-     '("textsevenoldstyle"        0)     ; Type: Symbol -- Slot: 55
-     '("texteightoldstyle"        0)     ; Type: Symbol -- Slot: 56
-     '("textnineoldstyle"         0)     ; Type: Symbol -- Slot: 57
-     '("textlangle"               0)     ; Type: Symbol -- Slot: 60
-     '("textminus"                0)     ; Type: Symbol -- Slot: 61
-     '("textrangle"               0)     ; Type: Symbol -- Slot: 62
-     '("textmho"                  0)     ; Type: Symbol -- Slot: 77
-     '("textbigcircle"            0)     ; Type: Symbol -- Slot: 79
-     '("textohm"                  0)     ; Type: Symbol -- Slot: 87
-     '("textlbrackdbl"            0)     ; Type: Symbol -- Slot: 91
-     '("textrbrackdbl"            0)     ; Type: Symbol -- Slot: 93
-     '("textuparrow"              0)     ; Type: Symbol -- Slot: 94
-     '("textdownarrow"            0)     ; Type: Symbol -- Slot: 95
-     '("textasciigrave"           0)     ; Type: Symbol -- Slot: 96
-     '("textborn"                 0)     ; Type: Symbol -- Slot: 98
-     '("textdivorced"             0)     ; Type: Symbol -- Slot: 99
-     '("textdied"                 0)     ; Type: Symbol -- Slot: 100
-     '("textleaf"                 0)     ; Type: Symbol -- Slot: 108
-     '("textmarried"              0)     ; Type: Symbol -- Slot: 109
-     '("textmusicalnote"          0)     ; Type: Symbol -- Slot: 110
-     '("texttildelow"             0)     ; Type: Symbol -- Slot: 126
-     '("textdblhyphenchar"        0)     ; Type: Symbol -- Slot: 127
-     '("textasciibreve"           0)     ; Type: Symbol -- Slot: 128
-     '("textasciicaron"           0)     ; Type: Symbol -- Slot: 129
-     '("textacutedbl"             0)     ; Type: Symbol -- Slot: 130
-     '("textgravedbl"             0)     ; Type: Symbol -- Slot: 131
-     '("textdagger"               0)     ; Type: Symbol -- Slot: 132
-     '("textdaggerdbl"            0)     ; Type: Symbol -- Slot: 133
-     '("textbardbl"               0)     ; Type: Symbol -- Slot: 134
-     '("textperthousand"          0)     ; Type: Symbol -- Slot: 135
-     '("textbullet"               0)     ; Type: Symbol -- Slot: 136
-     '("textcelsius"              0)     ; Type: Symbol -- Slot: 137
-     '("textdollaroldstyle"       0)     ; Type: Symbol -- Slot: 138
-     '("textcentoldstyle"         0)     ; Type: Symbol -- Slot: 139
-     '("textflorin"               0)     ; Type: Symbol -- Slot: 140
-     '("textcolonmonetary"        0)     ; Type: Symbol -- Slot: 141
-     '("textwon"                  0)     ; Type: Symbol -- Slot: 142
-     '("textnaira"                0)     ; Type: Symbol -- Slot: 143
-     '("textguarani"              0)     ; Type: Symbol -- Slot: 144
-     '("textpeso"                 0)     ; Type: Symbol -- Slot: 145
-     '("textlira"                 0)     ; Type: Symbol -- Slot: 146
-     '("textrecipe"               0)     ; Type: Symbol -- Slot: 147
-     '("textinterrobang"          0)     ; Type: Symbol -- Slot: 148
-     '("textinterrobangdown"      0)     ; Type: Symbol -- Slot: 149
-     '("textdong"                 0)     ; Type: Symbol -- Slot: 150
-     '("texttrademark"            0)     ; Type: Symbol -- Slot: 151
-     '("textpertenthousand"       0)     ; Type: Symbol -- Slot: 152
-     '("textpilcrow"              0)     ; Type: Symbol -- Slot: 153
-     '("textbaht"                 0)     ; Type: Symbol -- Slot: 154
-     '("textnumero"               0)     ; Type: Symbol -- Slot: 155
-     '("textdiscount"             0)     ; Type: Symbol -- Slot: 156
-     '("textestimated"            0)     ; Type: Symbol -- Slot: 157
-     '("textopenbullet"           0)     ; Type: Symbol -- Slot: 158
-     '("textservicemark"          0)     ; Type: Symbol -- Slot: 159
-     '("textlquill"               0)     ; Type: Symbol -- Slot: 160
-     '("textrquill"               0)     ; Type: Symbol -- Slot: 161
-     '("textcent"                 0)     ; Type: Symbol -- Slot: 162
-     '("textsterling"             0)     ; Type: Symbol -- Slot: 163
-     '("textcurrency"             0)     ; Type: Symbol -- Slot: 164
-     '("textyen"                  0)     ; Type: Symbol -- Slot: 165
-     '("textbrokenbar"            0)     ; Type: Symbol -- Slot: 166
-     '("textsection"              0)     ; Type: Symbol -- Slot: 167
-     '("textasciidieresis"        0)     ; Type: Symbol -- Slot: 168
-     '("textcopyright"            0)     ; Type: Symbol -- Slot: 169
-     '("textordfeminine"          0)     ; Type: Symbol -- Slot: 170
-     '("textcopyleft"             0)     ; Type: Symbol -- Slot: 171
-     '("textlnot"                 0)     ; Type: Symbol -- Slot: 172
-     '("textcircledP"             0)     ; Type: Symbol -- Slot: 173
-     '("textregistered"           0)     ; Type: Symbol -- Slot: 174
-     '("textasciimacron"          0)     ; Type: Symbol -- Slot: 175
-     '("textdegree"               0)     ; Type: Symbol -- Slot: 176
-     '("textpm"                   0)     ; Type: Symbol -- Slot: 177
-     '("texttwosuperior"          0)     ; Type: Symbol -- Slot: 178
-     '("textthreesuperior"        0)     ; Type: Symbol -- Slot: 179
-     '("textasciiacute"           0)     ; Type: Symbol -- Slot: 180
-     '("textmu"                   0)     ; Type: Symbol -- Slot: 181
-     '("textparagraph"            0)     ; Type: Symbol -- Slot: 182
-     '("textperiodcentered"       0)     ; Type: Symbol -- Slot: 183
-     '("textreferencemark"        0)     ; Type: Symbol -- Slot: 184
-     '("textonesuperior"          0)     ; Type: Symbol -- Slot: 185
-     '("textordmasculine"         0)     ; Type: Symbol -- Slot: 186
-     '("textsurd"                 0)     ; Type: Symbol -- Slot: 187
-     '("textonequarter"           0)     ; Type: Symbol -- Slot: 188
-     '("textonehalf"              0)     ; Type: Symbol -- Slot: 189
-     '("textthreequarters"        0)     ; Type: Symbol -- Slot: 190
-     '("texteuro"                 0)     ; Type: Symbol -- Slot: 191
-     '("texttimes"                0)     ; Type: Symbol -- Slot: 214
-     '("textdiv"                  0)     ; Type: Symbol -- Slot: 246
-     '("textcircled"              1)     ; Type: Command -- Slot: N/A
-     '("capitalcedilla"           1)     ; Type: Command -- Slot: N/A
-     '("capitalogonek"            1)     ; Type: Command -- Slot: N/A
+     '("capitalgrave"             0)    ; Type: Accent -- Slot: 0
+     '("capitalacute"             0)    ; Type: Accent -- Slot: 1
+     '("capitalcircumflex"        0)    ; Type: Accent -- Slot: 2
+     '("capitaltilde"             0)    ; Type: Accent -- Slot: 3
+     '("capitaldieresis"          0)    ; Type: Accent -- Slot: 4
+     '("capitalhungarumlaut"      0)    ; Type: Accent -- Slot: 5
+     '("capitalring"              0)    ; Type: Accent -- Slot: 6
+     '("capitalcaron"             0)    ; Type: Accent -- Slot: 7
+     '("capitalbreve"             0)    ; Type: Accent -- Slot: 8
+     '("capitalmacron"            0)    ; Type: Accent -- Slot: 9
+     '("capitaldotaccent"         0)    ; Type: Accent -- Slot: 10
+     '("textquotestraightbase"    0)    ; Type: Symbol -- Slot: 13
+     '("textquotestraightdblbase" 0)    ; Type: Symbol -- Slot: 18
+     '("texttwelveudash"          0)    ; Type: Symbol -- Slot: 21
+     '("textthreequartersemdash"  0)    ; Type: Symbol -- Slot: 22
+     '("textcapitalcompwordmark"  0)    ; Type: Symbol -- Slot: 23
+     '("textleftarrow"            0)    ; Type: Symbol -- Slot: 24
+     '("textrightarrow"           0)    ; Type: Symbol -- Slot: 25
+     '("t"                        0)    ; Type: Accent -- Slot: 26
+     '("capitaltie"               0)    ; Type: Accent -- Slot: 27
+     '("newtie"                   0)    ; Type: Accent -- Slot: 28
+     '("capitalnewtie"            0)    ; Type: Accent -- Slot: 29
+     '("textascendercompwordmark" 0)    ; Type: Symbol -- Slot: 31
+     '("textblank"                0)    ; Type: Symbol -- Slot: 32
+     '("textdollar"               0)    ; Type: Symbol -- Slot: 36
+     '("textquotesingle"          0)    ; Type: Symbol -- Slot: 39
+     '("textasteriskcentered"     0)    ; Type: Symbol -- Slot: 42
+     '("textdblhyphen"            0)    ; Type: Symbol -- Slot: 45
+     '("textfractionsolidus"      0)    ; Type: Symbol -- Slot: 47
+     '("textzerooldstyle"         0)    ; Type: Symbol -- Slot: 48
+     '("textoneoldstyle"          0)    ; Type: Symbol -- Slot: 49
+     '("texttwooldstyle"          0)    ; Type: Symbol -- Slot: 50
+     '("textthreeoldstyle"        0)    ; Type: Symbol -- Slot: 51
+     '("textfouroldstyle"         0)    ; Type: Symbol -- Slot: 52
+     '("textfiveoldstyle"         0)    ; Type: Symbol -- Slot: 53
+     '("textsixoldstyle"          0)    ; Type: Symbol -- Slot: 54
+     '("textsevenoldstyle"        0)    ; Type: Symbol -- Slot: 55
+     '("texteightoldstyle"        0)    ; Type: Symbol -- Slot: 56
+     '("textnineoldstyle"         0)    ; Type: Symbol -- Slot: 57
+     '("textlangle"               0)    ; Type: Symbol -- Slot: 60
+     '("textminus"                0)    ; Type: Symbol -- Slot: 61
+     '("textrangle"               0)    ; Type: Symbol -- Slot: 62
+     '("textmho"                  0)    ; Type: Symbol -- Slot: 77
+     '("textbigcircle"            0)    ; Type: Symbol -- Slot: 79
+     '("textohm"                  0)    ; Type: Symbol -- Slot: 87
+     '("textlbrackdbl"            0)    ; Type: Symbol -- Slot: 91
+     '("textrbrackdbl"            0)    ; Type: Symbol -- Slot: 93
+     '("textuparrow"              0)    ; Type: Symbol -- Slot: 94
+     '("textdownarrow"            0)    ; Type: Symbol -- Slot: 95
+     '("textasciigrave"           0)    ; Type: Symbol -- Slot: 96
+     '("textborn"                 0)    ; Type: Symbol -- Slot: 98
+     '("textdivorced"             0)    ; Type: Symbol -- Slot: 99
+     '("textdied"                 0)    ; Type: Symbol -- Slot: 100
+     '("textleaf"                 0)    ; Type: Symbol -- Slot: 108
+     '("textmarried"              0)    ; Type: Symbol -- Slot: 109
+     '("textmusicalnote"          0)    ; Type: Symbol -- Slot: 110
+     '("texttildelow"             0)    ; Type: Symbol -- Slot: 126
+     '("textdblhyphenchar"        0)    ; Type: Symbol -- Slot: 127
+     '("textasciibreve"           0)    ; Type: Symbol -- Slot: 128
+     '("textasciicaron"           0)    ; Type: Symbol -- Slot: 129
+     '("textacutedbl"             0)    ; Type: Symbol -- Slot: 130
+     '("textgravedbl"             0)    ; Type: Symbol -- Slot: 131
+     '("textdagger"               0)    ; Type: Symbol -- Slot: 132
+     '("textdaggerdbl"            0)    ; Type: Symbol -- Slot: 133
+     '("textbardbl"               0)    ; Type: Symbol -- Slot: 134
+     '("textperthousand"          0)    ; Type: Symbol -- Slot: 135
+     '("textbullet"               0)    ; Type: Symbol -- Slot: 136
+     '("textcelsius"              0)    ; Type: Symbol -- Slot: 137
+     '("textdollaroldstyle"       0)    ; Type: Symbol -- Slot: 138
+     '("textcentoldstyle"         0)    ; Type: Symbol -- Slot: 139
+     '("textflorin"               0)    ; Type: Symbol -- Slot: 140
+     '("textcolonmonetary"        0)    ; Type: Symbol -- Slot: 141
+     '("textwon"                  0)    ; Type: Symbol -- Slot: 142
+     '("textnaira"                0)    ; Type: Symbol -- Slot: 143
+     '("textguarani"              0)    ; Type: Symbol -- Slot: 144
+     '("textpeso"                 0)    ; Type: Symbol -- Slot: 145
+     '("textlira"                 0)    ; Type: Symbol -- Slot: 146
+     '("textrecipe"               0)    ; Type: Symbol -- Slot: 147
+     '("textinterrobang"          0)    ; Type: Symbol -- Slot: 148
+     '("textinterrobangdown"      0)    ; Type: Symbol -- Slot: 149
+     '("textdong"                 0)    ; Type: Symbol -- Slot: 150
+     '("texttrademark"            0)    ; Type: Symbol -- Slot: 151
+     '("textpertenthousand"       0)    ; Type: Symbol -- Slot: 152
+     '("textpilcrow"              0)    ; Type: Symbol -- Slot: 153
+     '("textbaht"                 0)    ; Type: Symbol -- Slot: 154
+     '("textnumero"               0)    ; Type: Symbol -- Slot: 155
+     '("textdiscount"             0)    ; Type: Symbol -- Slot: 156
+     '("textestimated"            0)    ; Type: Symbol -- Slot: 157
+     '("textopenbullet"           0)    ; Type: Symbol -- Slot: 158
+     '("textservicemark"          0)    ; Type: Symbol -- Slot: 159
+     '("textlquill"               0)    ; Type: Symbol -- Slot: 160
+     '("textrquill"               0)    ; Type: Symbol -- Slot: 161
+     '("textcent"                 0)    ; Type: Symbol -- Slot: 162
+     '("textsterling"             0)    ; Type: Symbol -- Slot: 163
+     '("textcurrency"             0)    ; Type: Symbol -- Slot: 164
+     '("textyen"                  0)    ; Type: Symbol -- Slot: 165
+     '("textbrokenbar"            0)    ; Type: Symbol -- Slot: 166
+     '("textsection"              0)    ; Type: Symbol -- Slot: 167
+     '("textasciidieresis"        0)    ; Type: Symbol -- Slot: 168
+     '("textcopyright"            0)    ; Type: Symbol -- Slot: 169
+     '("textordfeminine"          0)    ; Type: Symbol -- Slot: 170
+     '("textcopyleft"             0)    ; Type: Symbol -- Slot: 171
+     '("textlnot"                 0)    ; Type: Symbol -- Slot: 172
+     '("textcircledP"             0)    ; Type: Symbol -- Slot: 173
+     '("textregistered"           0)    ; Type: Symbol -- Slot: 174
+     '("textasciimacron"          0)    ; Type: Symbol -- Slot: 175
+     '("textdegree"               0)    ; Type: Symbol -- Slot: 176
+     '("textpm"                   0)    ; Type: Symbol -- Slot: 177
+     '("texttwosuperior"          0)    ; Type: Symbol -- Slot: 178
+     '("textthreesuperior"        0)    ; Type: Symbol -- Slot: 179
+     '("textasciiacute"           0)    ; Type: Symbol -- Slot: 180
+     '("textmu"                   0)    ; Type: Symbol -- Slot: 181
+     '("textparagraph"            0)    ; Type: Symbol -- Slot: 182
+     '("textperiodcentered"       0)    ; Type: Symbol -- Slot: 183
+     '("textreferencemark"        0)    ; Type: Symbol -- Slot: 184
+     '("textonesuperior"          0)    ; Type: Symbol -- Slot: 185
+     '("textordmasculine"         0)    ; Type: Symbol -- Slot: 186
+     '("textsurd"                 0)    ; Type: Symbol -- Slot: 187
+     '("textonequarter"           0)    ; Type: Symbol -- Slot: 188
+     '("textonehalf"              0)    ; Type: Symbol -- Slot: 189
+     '("textthreequarters"        0)    ; Type: Symbol -- Slot: 190
+     '("texteuro"                 0)    ; Type: Symbol -- Slot: 191
+     '("texttimes"                0)    ; Type: Symbol -- Slot: 214
+     '("textdiv"                  0)    ; Type: Symbol -- Slot: 246
+     '("textcircled"              1)    ; Type: Command -- Slot: N/A
+     '("capitalcedilla"           1)    ; Type: Command -- Slot: N/A
+     '("capitalogonek"            1)    ; Type: Command -- Slot: N/A
 
      "rmfamily" "sffamily" "ttfamily"
      '("mdseries" -1) '("bfseries" -1)
@@ -6704,13 +6707,13 @@ function would return non-nil and `(match-string 1)' would return
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-			     ([ TeX-arg-version ]) nil])
+	 ([ TeX-arg-version ]) nil])
      '("ProvidesClass" (TeX-arg-file-name-sans-extension "Class name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-			     ([ TeX-arg-version ]) nil])
+	 ([ TeX-arg-version ]) nil])
      '("ProvidesFile" (TeX-arg-file-name "File name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-			     ([ TeX-arg-version ]) nil ])
+	 ([ TeX-arg-version ]) nil ])
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"
@@ -6719,7 +6722,7 @@ function would return non-nil and `(match-string 1)' would return
 			(setq TeX-font-list LaTeX-font-list)
 			(setq TeX-font-replace-function 'TeX-font-replace-macro)
 			(run-hooks 'LaTeX2e-hook))
-		      LaTeX-dialect)
+		      TeX-dialect)
 
   (TeX-add-style-hook "latex2"
 		      ;; Use old fonts for `\documentstyle' documents.
@@ -6728,7 +6731,7 @@ function would return non-nil and `(match-string 1)' would return
 			(setq TeX-font-replace-function
 			      (default-value 'TeX-font-replace-function))
 			(run-hooks 'LaTeX2-hook))
-		      LaTeX-dialect)
+		      TeX-dialect)
 
   ;; There must be something better-suited, but I don't understand the
   ;; parsing properly.  -- dak
@@ -6794,7 +6797,7 @@ function would return non-nil and `(match-string 1)' would return
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
   (TeX-update-style)
-  (let (entries level
+  (let (entries
 	(regexp (LaTeX-outline-regexp)))
     (goto-char (point-max))
     (while (re-search-backward regexp nil t)
@@ -6930,7 +6933,7 @@ functions `TeX-arg-color' (style/color.el) or
 		   (equal current-prefix-arg '(4)))
 	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
 		   (null (equal current-prefix-arg '(4))))
-	      last-optional-rejected))
+	      TeX-last-optional-rejected))
      ,@body))
 
 (defun LaTeX-extract-key-value-label (&optional key num)

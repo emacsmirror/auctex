@@ -1,6 +1,6 @@
-;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)
+;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,11 @@
 
 ;; This file adds support for `xltabular.sty' (v0.05) from 2017/10/26.
 ;; `xltabular.sty' is part of TeXLive.
+
+;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-xltabular-skipping-regexp
   (concat "[ \t]*" (regexp-opt '("[l]" "[r]" "[c]" "")) "[ \t]*{[^}]*}[ \t]*")
@@ -120,7 +125,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
    (when (fboundp 'reftex-add-label-environments)
      (reftex-add-label-environments
       '(("xltabular" ?t nil nil caption)))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xltabular-package-options nil
   "Package options for the xltabular package.")

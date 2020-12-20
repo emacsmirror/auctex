@@ -1,6 +1,6 @@
-;;; multind.el --- AUCTeX support for multiple indices with multind.sty.
+;;; multind.el --- AUCTeX support for multiple indices with multind.sty.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2020 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,37 +24,41 @@
 
 ;;; Code:
 
-(TeX-add-style-hook "multind"
-  (lambda ()
+(require 'tex)
+(require 'latex)
 
-    ;; Commands
-    (TeX-add-symbols
-     '("makeindex" "Indextag")
-     '("index" TeX-arg-index-tag TeX-arg-index)
-     '("printindex" TeX-arg-index-tag "Title")
-     "printindex" "indexspace")
+(TeX-add-style-hook
+ "multind"
+ (lambda ()
 
-    ;; Parsing index macros
-    (setq LaTeX-auto-regexp-list
-	  (append
-	   ;; The first regexp is faster, but less accurate
-	   ;; '(("\\\\index\\*?{[^{}]*}{\\([^}]*\\)" 1 LaTeX-auto-index-entry))
-	   ;; The second regexp is very good, but slower
-	   '(("\\\\index\\*?{[^{}]*}{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-	      1 LaTeX-auto-index-entry))
-	   LaTeX-auto-regexp-list))
+   ;; Commands
+   (TeX-add-symbols
+    '("makeindex" "Indextag")
+    '("index" TeX-arg-index-tag TeX-arg-index)
+    '("printindex" TeX-arg-index-tag "Title")
+    "printindex" "indexspace")
 
-    ;; Completion for index entries in the |see and \index commands
-    (setq TeX-complete-list 
-	  (append
-	   '(("\\\\index{[^{}]*}{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list)
-	     ("|see{\\([^}]*\\)" 1 LaTeX-index-entry-list))
-	   TeX-complete-list))
+   ;; Parsing index macros
+   (setq LaTeX-auto-regexp-list
+	 (append
+	  ;; The first regexp is faster, but less accurate
+	  ;; '(("\\\\index\\*?{[^{}]*}{\\([^}]*\\)" 1 LaTeX-auto-index-entry))
+	  ;; The second regexp is very good, but slower
+	  '(("\\\\index\\*?{[^{}]*}{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
+	     1 LaTeX-auto-index-entry))
+	  LaTeX-auto-regexp-list))
 
-    ;; RefTeX support
-    (and (fboundp 'reftex-add-index-macros)
-	 (reftex-add-index-macros '(multind))))
-  LaTeX-dialect)
+   ;; Completion for index entries in the |see and \index commands
+   (setq TeX-complete-list 
+	 (append
+	  '(("\\\\index{[^{}]*}{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list)
+	    ("|see{\\([^}]*\\)" 1 LaTeX-index-entry-list))
+	  TeX-complete-list))
+
+   ;; RefTeX support
+   (and (fboundp 'reftex-add-index-macros)
+	(reftex-add-index-macros '(multind))))
+ TeX-dialect)
 
 (defvar LaTeX-multind-package-options nil
   "Package options for the multind package.")

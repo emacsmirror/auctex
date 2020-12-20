@@ -1,6 +1,6 @@
-;;; xkcdcolors.el --- AUCTeX style for `xkcdcolors.sty' (v1.0.1)
+;;; xkcdcolors.el --- AUCTeX style for `xkcdcolors.sty' (v1.0.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; 2019/10/21.  `xkcdcolors.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function LaTeX-add-xcolor-definecolors
@@ -997,7 +999,7 @@
    (TeX-run-style-hooks "xcolor")
    ;; Make the colors defined in xkcdcolors.sty available:
    (apply #'LaTeX-add-xcolor-definecolors LaTeX-xkcdcolors-colornames))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-xkcdcolors-package-options nil
   "Package options for the xkcdcolors package.")

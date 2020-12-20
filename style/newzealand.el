@@ -1,6 +1,6 @@
-;;; newzealand.el --- AUCTeX style for the `newzealand' babel option.
+;;; newzealand.el --- AUCTeX style for the `newzealand' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "newzealand"
  (lambda ()
    (TeX-run-style-hooks "english"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; newzealand.el ends here

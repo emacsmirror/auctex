@@ -1,4 +1,4 @@
-;;; algpseudocode.el --- AUCTeX style for the (LaTeX) algpseudocode package
+;;; algpseudocode.el --- AUCTeX style for the (LaTeX) algpseudocode package  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -27,6 +27,9 @@
 ;; This file adds support for the algpseudocode package.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-algpseudocode-package-options
   '("compatible" "nocompatible")
@@ -68,6 +71,6 @@
     '("Call" 0))
    (LaTeX-add-environments
     '("algorithmic" [ "Number" ]))
-   LaTeX-dialect))
+   TeX-dialect))
 
 ;;; algpseudocode.el ends here

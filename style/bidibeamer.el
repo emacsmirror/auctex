@@ -1,6 +1,6 @@
-;;; bidibeamer.el --- AUCTeX style for the bidibeamer class
+;;; bidibeamer.el --- AUCTeX style for the bidibeamer class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation
+;; Copyright (C) 2015, 2020 Free Software Foundation
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Created: 2015-03-08
@@ -31,10 +31,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "bidibeamer"
  (lambda ()
    (TeX-run-style-hooks "beamer"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; bidibeamer.el ends here

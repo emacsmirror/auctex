@@ -1,6 +1,6 @@
-;;; changelog.el --- AUCTeX style for `changelog.sty' (v2.0.0)
+;;; changelog.el --- AUCTeX style for `changelog.sty' (v2.0.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,14 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(defvar reftex-label-alist)
 
 (defvar LaTeX-changelog-env-key-val-options
   '(("section" ("true" "false"))
@@ -151,7 +155,7 @@ The keys sectioncmd and label are added in the function
 				("security"     "")
 				("shortversion" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-changelog-package-options nil
   "Package options for the changelog package.")

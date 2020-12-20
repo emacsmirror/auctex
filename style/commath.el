@@ -1,6 +1,6 @@
-;;; commath.el --- AUCTeX style for `commath.sty' (v0.3)
+;;; commath.el --- AUCTeX style for `commath.sty' (v0.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `commath.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -99,7 +101,7 @@
 				("appref"  "{")
 				("assref"  "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-commath-package-options nil
   "Package options for the commath package.")

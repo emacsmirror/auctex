@@ -1,6 +1,6 @@
-;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)
+;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `fvextra.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Needed for compiling `cl-pushnew':
 (eval-when-compile
@@ -187,7 +190,7 @@
 			      'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fvextra-package-options nil
   "Package options for the fvextra package.")

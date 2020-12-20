@@ -1,4 +1,4 @@
-;;; overpic.el --- AUCTeX style for `overpic.sty' (v1.3)
+;;; overpic.el --- AUCTeX style for `overpic.sty' (v1.3)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 ;; `overpic.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler
 (declare-function font-latex-add-keywords
@@ -106,7 +109,7 @@ ones provided by `LaTeX-graphicx-key-val-options'."
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("setOverpic" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-overpic-package-options
   (progn

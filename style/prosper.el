@@ -1,4 +1,4 @@
-;;; prosper.el --- Prosper style file for AUCTeX
+;;; prosper.el --- Prosper style file for AUCTeX  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2001, 2002, 2014, 2020 Free Software Foundation, Inc.
 
@@ -59,7 +59,8 @@
 ;; auctex. I shall have to download the latest version, and see if
 ;; its already been fixed.
 
-
+(require 'tex)
+(require 'latex)
 
 (defconst LaTeX-prosper-version "2008-05-25"
   "prosper.el version.")
@@ -184,6 +185,6 @@
     '("onlyInPS" t)
     '("onlyInPDF" t)
     '("FromSlide" "Number")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; prosper.el ends here

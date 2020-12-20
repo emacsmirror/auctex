@@ -1,6 +1,6 @@
-;;; ocg-p.el --- AUCTeX style for `ocg-p.sty' (v0.4)
+;;; ocg-p.el --- AUCTeX style for `ocg-p.sty' (v0.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,6 +33,7 @@
 
 ;; Needed for auto-parsing.
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -187,7 +188,7 @@ Just like array and tabular."
 				("hideocgs"            "[{{")
 				("setocgs"             "[{{{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ocg-p-package-options '("ocgtabular")
   "Package options for the ocg-p package.")

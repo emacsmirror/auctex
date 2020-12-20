@@ -8,6 +8,53 @@
 
 @end ifset
 
+@heading News in 13.0
+
+@itemize @bullet
+@item
+@AUCTeX{} now uses lexical binding which has been introduced in Emacs
+24.  This change should have no user-visible effect and require no
+manual adaptions except in the following cases.
+
+@itemize @bullet
+@item
+Entries added to the customization variable @code{TeX-expand-list} also
+had access to variables @code{command} and @code{pos}.  Those are now
+properly declared and named @code{TeX-expand-command} and
+@code{TeX-expand-pos}.
+
+@item
+Entries added to the customization variable @code{TeX-expand-list} had
+access to a variable @code{file} which was bound to
+@code{TeX-active-master}, i.e., it evaluated to either the master or
+region file.  This usage must be replaced with either
+@code{TeX-active-master} or @code{TeX-active-master-with-quotes}.
+
+@item
+Viewer entries in @code{TeX-view-program-list} also had access to a
+variable @code{file} which was bound to the name of the master or region
+file without extension.  Instead, the function @code{TeX-active-master}
+has to be used now.
+
+@item
+Macro argument parsing functions could set a variable @code{exit-mark}
+to the buffer position where point should be left after all arguments
+have been read.  This variable is now named @code{TeX-exit-mark}.
+
+@item
+The functions in @code{LaTeX-section-hook} had access or modified the
+previously undeclared variables @code{title}, @code{name}, @code{level},
+@code{done-mark}, and @code{toc}.  These variables are now properly
+declared and have the @code{LaTeX-} prefix, e.g.,
+@code{LaTeX-done-mark}.
+@end itemize
+
+@item
+The constant @code{LaTeX-dialect} has been renamed to @code{TeX-dialect}
+and moved from @file{latex.el} to @file{tex.el}.  @code{LaTeX-dialect}
+now is an obsolete alias.
+@end itemize
+
 @heading News in 12.3
 
 @itemize @bullet

@@ -1,6 +1,6 @@
 ;;; command-expansion.el --- tests for TeX command expansion
 
-;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -29,8 +29,7 @@
   (should (string=
            (let ((TeX-command-list
 		  (list (cons "Test" '("%%%% %`%'" TeX-run-command t t)))))
-	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))
-				 'TeX-master-file))
+	     (TeX-command-expand (nth 1 (assoc "Test" TeX-command-list))))
            "%% ")))
 
 (ert-deftest TeX-command-expansion-errors ()
@@ -39,7 +38,7 @@
    ;; This error is actually thrown by `TeX-engine-in-engine-alist', but we want
    ;; to be sure that `TeX-command-expand' fails when the engine is not valid.
    (let ((TeX-engine 'non-existing-engine))
-     (TeX-command-expand "%l" 'TeX-master-file))))
+     (TeX-command-expand "%l"))))
 
 (ert-deftest TeX-view-command-raw-errors ()
   "Tests to trigger errors in `TeX-view-command-raw'."
@@ -89,13 +88,20 @@
   ;; Skip on w32 because the quoting style of `shell-quote-argument'
   ;; is different.
   (skip-unless (not (eq system-type 'windows-nt)))
-  (should (string=
-           (let ((major-mode 'latex-mode)
-		 (TeX-engine 'default)
-		 (TeX-master "/tmp/abc")
-		 (TeX-command-extra-options " \"\\foo\""))
-	     (TeX-command-expand "%`%(extraopts)%' %T" #'TeX-master-file))
-	   " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}")))
+  (let ((major-mode 'latex-mode)
+	(TeX-engine 'default)
+	(TeX-command-extra-options " \"\\foo\"")
+	TeX-master)
+
+    (setq TeX-master "/tmp/abc")
+    (should (string=
+	     (TeX-command-expand "%`%(extraopts)%' %T")
+	     " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ abc.tex\\ \\}"))
+
+    (setq TeX-master "/tmp/abc def")
+    (should (string=
+	     (TeX-command-expand "%`%(extraopts)%' %T")
+	     " \"\\foo\" \"\\input\" \\\\detokenize\\{\\ \\\"abc\\ def.tex\\\"\\ \\}"))))
 
 (ert-deftest TeX-command-expand-skip-file-name ()
   "Check whether file name is not subject to further expansion.
@@ -106,28 +112,26 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
   ;; is different.
   (skip-unless (not (eq system-type 'windows-nt)))
   (let ((TeX-master "abc-def")
+	(TeX-output-extension "pdf")
 	(TeX-expand-list '(("-" (lambda () ":")))))
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-master-file)
+	     (TeX-command-expand "%s")
 	     TeX-master))
     (should (string=
-	     (TeX-command-expand "%t" #'TeX-master-file)
+	     (TeX-command-expand "%t")
 	     (TeX-master-file "tex" t)))
     (should (string=
-	     (TeX-command-expand "%T" #'TeX-master-file)
+	     (TeX-command-expand "%T")
 	     (TeX-master-file "tex" t)))
     (should (string=
-	     (TeX-command-expand "%d" #'TeX-master-file)
+	     (TeX-command-expand "%d")
 	     (TeX-master-file "dvi" t)))
     (should (string=
-	     (TeX-command-expand "%f" #'TeX-master-file)
+	     (TeX-command-expand "%f")
 	     (TeX-master-file "ps" t)))
-    ;; The expander of "%o" does not yet cater for this possible endless
-    ;; loop.
-    ;; (should (string=
-    ;; 	     (TeX-command-expand "%o" #'TeX-master-file)
-    ;; 	     (TeX-master-file "pdf" t)))
-    ))
+    (should (string=
+	     (TeX-command-expand "%o")
+	     (TeX-master-file "pdf" t)))))
 
 (ert-deftest TeX-command-expand-active-master ()
   "Test whether `TeX-active-master' is valid argument for `TeX-command-expand'."
@@ -138,11 +142,34 @@ See <https://lists.gnu.org/r/bug-auctex/2014-08/msg00012.html>."
 	TeX-current-process-region-p)
     (setq TeX-current-process-region-p nil)
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-active-master)
+	     (TeX-command-expand "%s")
 	     TeX-master))
     (setq TeX-current-process-region-p t)
     (should (string=
-	     (TeX-command-expand "%s" #'TeX-active-master)
+	     (TeX-command-expand "%s")
 	     TeX-region))))
+
+(ert-deftest TeX-command-expand-file-name-with-spaces ()
+  "Test whether file name with spaces is quoted correctly."
+  (let ((TeX-master "abc def")
+	(TeX-output-extension "pdf"))
+    (should (string=
+	     (TeX-command-expand "%s")
+	     (shell-quote-argument TeX-master)))
+    (should (string=
+	     (TeX-command-expand "%t")
+	     (shell-quote-argument (TeX-master-file "tex" t))))
+    (should (string=
+	     (TeX-command-expand "%T")
+	     (shell-quote-argument (TeX-master-file "tex" t))))
+    (should (string=
+	     (TeX-command-expand "%d")
+	     (shell-quote-argument (TeX-master-file "dvi" t))))
+    (should (string=
+	     (TeX-command-expand "%f")
+	     (shell-quote-argument (TeX-master-file "ps" t))))
+    (should (string=
+	     (TeX-command-expand "%o")
+	     (shell-quote-argument (TeX-master-file "pdf" t))))))
 
 ;;; command-expansion.el ends here

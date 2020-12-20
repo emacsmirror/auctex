@@ -1,6 +1,6 @@
-;;; pdfpages.el --- AUCTeX style for `pdfpages.sty' (v0.4v)
+;;; pdfpages.el --- AUCTeX style for `pdfpages.sty' (v0.4v)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,6 +33,8 @@
 ;; `pdfpages.sty' in the first place.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -132,7 +134,7 @@
      (font-latex-add-keywords '(("includepdf"       "[{")
 				("includepdfmerge"  "[{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pdfpages-package-options
   '("final" "draft" "enable-survey")

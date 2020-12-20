@@ -1,4 +1,4 @@
-;;; verbatim.el --- Style hook for the verbatim package.
+;;; verbatim.el --- Style hook for the verbatim package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2001, 2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,9 @@
 
 ;;; Code
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-set-syntactic-keywords
 		  "font-latex")
@@ -54,7 +57,7 @@
 		    (1 "!" t)))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-verbatim-package-options nil
   "Package options for the verbatim package.")

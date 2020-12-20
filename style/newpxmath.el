@@ -1,6 +1,6 @@
-;;; newpxmath.el --- AUCTeX style for `newpxmath.sty' (v1.232)
+;;; newpxmath.el --- AUCTeX style for `newpxmath.sty' (v1.232)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "newpxmath"
  (lambda ()
@@ -54,7 +56,7 @@
     '("varmathbb"      "Character")
     '("vmathbb"        "Character")
     '("vvmathbb"       "Character")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newpxmath-package-options
   '("varg"

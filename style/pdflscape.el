@@ -1,6 +1,6 @@
-;;; pdflscape.el --- AUCTeX style for `pdflscape.sty' (v0.11)
+;;; pdflscape.el --- AUCTeX style for `pdflscape.sty' (v0.11)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,12 +31,14 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "pdflscape"
  (lambda ()
    ;; Load lscape.el and we are done
    (TeX-run-style-hooks "lscape"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pdflscape-package-options nil
   "Package options for the pdflscape package.")

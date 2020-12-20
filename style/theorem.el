@@ -1,6 +1,6 @@
-;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)
+;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,6 +35,10 @@
 ;; docstring of `LaTeX-theorem-env-label' for instructions.
 
 ;;; Code:
+
+(require 'crm)
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -98,9 +102,6 @@ RefTeX users should customize or add ENVIRONMENT to
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
     (indent-according-to-mode)))
-
-;; Needed for auto-parsing
-(require 'tex)
 
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "theorem-newtheorem" "LaTeX")
@@ -171,7 +172,7 @@ make them available as new environments."
 				("theorempreskipamount"  "{")
 				("theorempostskipamount" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-theorem-package-options nil
   "Package options for the theorem package.")

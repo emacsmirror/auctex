@@ -1,6 +1,6 @@
-;;; AlegreyaSans.el --- AUCTeX style for `AlegreyaSans.sty' (v2015/10/22)
+;;; AlegreyaSans.el --- AUCTeX style for `AlegreyaSans.sty' (v2015/10/22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `AlegreyaSans.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -86,7 +89,7 @@
 				("sufigures"              "")
 				("infigures"              ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-AlegreyaSans-package-options-list
   '(("lining"       ("true" "false"))

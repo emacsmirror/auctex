@@ -1,6 +1,6 @@
-;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.
+;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -36,6 +36,8 @@
 ;;; Code:
 
 (require 'tex) ;Indispensable when compiling the call to `TeX-auto-add-type'.
+(require 'latex)
+(require 'tex-buf)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -274,7 +276,7 @@ argument, otherwise as a mandatory one."
 				("setotherlanguages" "{")
 				("setkeys" "{{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; TODO: move each option variable in its specific `gloss-<lang>.el' file.
 (defvar LaTeX-polyglossia-arabic-options-list

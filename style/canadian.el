@@ -1,6 +1,6 @@
-;;; canadian.el --- AUCTeX style for the `canadian' babel option.
+;;; canadian.el --- AUCTeX style for the `canadian' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,10 +31,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "canadian"
  (lambda ()
    (TeX-run-style-hooks "english"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; canadian.el ends here

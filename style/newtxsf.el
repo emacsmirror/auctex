@@ -1,6 +1,6 @@
-;;; newtxsf.el --- AUCTeX style for `newtxsf.sty' (v1.0)
+;;; newtxsf.el --- AUCTeX style for `newtxsf.sty' (v1.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "newtxsf"
  (lambda ()
@@ -41,7 +43,7 @@
    (TeX-add-symbols
     '("upimath"  0)
     '("upjmath"  0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxsf-package-options
   '("scaled"

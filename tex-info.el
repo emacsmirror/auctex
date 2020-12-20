@@ -624,6 +624,8 @@ is assumed by default."
 ;;;###autoload
 (defalias 'Texinfo-mode 'texinfo-mode)
 
+(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
+
 ;;;###autoload
 (defun TeX-texinfo-mode ()
   "Major mode in AUCTeX for editing Texinfo files.
@@ -691,8 +693,8 @@ value of `Texinfo-mode-hook'."
   (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
 
   (set (make-local-variable 'TeX-complete-list)
-	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list-filtered nil)
-	      (list "" TeX-complete-word)))
+       (list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list-filtered nil)
+	     (list "" TeX-complete-word)))
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
   (set (make-local-variable 'TeX-font-replace-function) 'TeX-font-replace-macro)

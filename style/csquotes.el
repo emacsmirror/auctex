@@ -1,4 +1,4 @@
-;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)
+;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004, 2005, 2006, 2014, 2018, 2020 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 ;; 2019/12/06.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -314,7 +317,7 @@ PROMPT replaces the standard one \"Language\"."
 				  ("SetBlockEnvironment"   "{")
 				  ("SetCiteCommand"        "{"))
 				'variable))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-csquotes-package-options ()
   "Prompt for package options for the csquotes package."

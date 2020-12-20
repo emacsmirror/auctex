@@ -1,6 +1,6 @@
-;;; mn2e.el --- AUCTeX style for `mn2e.cls' version 2.2.
+;;; mn2e.el --- AUCTeX style for `mn2e.cls' version 2.2.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -28,6 +28,9 @@
 ;; This file adds support for `mn2e.cls' version 2.2.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -170,7 +173,7 @@
 				("journal")
 				("bsp"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mn2e-class-options
   '("useAMS" "usegraphicx" "usenatbib" "usedcolumn"

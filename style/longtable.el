@@ -1,6 +1,6 @@
-;;; longtable.el --- AUCTeX style for `longtable.sty'.
+;;; longtable.el --- AUCTeX style for `longtable.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2018  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2020  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -28,6 +28,9 @@
 ;; This file adds support for `longtable.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -129,7 +132,7 @@ insert line break macro."
      ;; to fontify correctly also the standard `\caption[]{}' macro.
      (font-latex-add-keywords '(("caption" "*[{"))
 			      'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; `longtable.sty' has two options "errorshow" and "pausing", both for
 ;; debugging purposes.  We ignore them both in order to make package

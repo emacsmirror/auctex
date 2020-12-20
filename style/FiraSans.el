@@ -1,6 +1,6 @@
-;;; FiraSans.el --- AUCTeX style for `FiraSans.sty' (v2016/11/20)
+;;; FiraSans.el --- AUCTeX style for `FiraSans.sty' (v2016/11/20)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `FiraSans.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -82,7 +85,7 @@
 				("firaextrabold"    "")
 				("firaheavy"        ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-FiraSans-package-options
   '("scaled" "scale"

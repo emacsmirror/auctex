@@ -1,6 +1,6 @@
-;;; plext.el --- AUCTeX style for the plext package.
+;;; plext.el --- AUCTeX style for the plext package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "plext"
  (lambda ()
@@ -47,7 +50,7 @@
    (set (make-local-variable 'LaTeX-tabular*-skipping-regexp)
 	(concat "\\(?:<[tyz]>\\)?[ \t]*{[^}]*}[ \t]*"
 		(regexp-opt '("[t]" "[b]" "")))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-plext-env-array (env)
   (let ((dir (TeX-read-string "(Optional) Direction (t or y or z): "))

@@ -1,12 +1,16 @@
-;;; amsart.el --- Style hook for the AMS-LaTeX article document class.
+;;; amsart.el --- Style hook for the AMS-LaTeX article document class.  -*- lexical-binding: t; -*-
 
 ;;; Code:
 
-(TeX-add-style-hook "amsart"
+(require 'tex)
+(require 'latex)
+
+(TeX-add-style-hook
+ "amsart"
  (function
   (lambda ()
     (TeX-run-style-hooks "amsmath" "amsthm")
     (LaTeX-add-environments "abstract")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; amsart.el ends here.

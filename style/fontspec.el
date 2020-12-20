@@ -1,4 +1,4 @@
-;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.
+;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2017, 2018, 2020 Free Software Foundation, Inc.
 
@@ -34,6 +34,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -41,6 +44,7 @@
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+(declare-function TeX-check-engine-add-engines "tex-buf" (&rest engines))
 
 (defvar LaTeX-fontspec-font-features
   '(;; 5 Font selection
@@ -332,13 +336,13 @@ to retrieve the list of fonts."
     ;; 23 Defining new features
     '("newAATfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New option" 2)
 
     '("newopentypefeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New option" t)
 
@@ -351,7 +355,7 @@ to retrieve the list of fonts."
     ;; 26 Renaming existing features & options
     '("aliasfontfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Existing feature")
+		    (TeX-argument-prompt nil nil "Existing feature")
 		    LaTeX-fontspec-font-features-local)
       "New name")
 
@@ -359,12 +363,12 @@ to retrieve the list of fonts."
       (TeX-arg-eval
        (lambda ()
 	 (let* ((key (completing-read
-		      (TeX-argument-prompt optional nil "Feature")
+		      (TeX-argument-prompt nil nil "Feature")
 		      LaTeX-fontspec-font-features-local))
 		(val (completing-read
-		      (TeX-argument-prompt optional nil "Existing name")
+		      (TeX-argument-prompt nil nil "Existing name")
 		      (cadr (assoc key LaTeX-fontspec-font-features-local)))))
-	   (TeX-argument-insert key optional)
+	   (TeX-argument-insert key nil)
 	   (format "%s" val))))
       "New name") )
 
@@ -402,7 +406,7 @@ to retrieve the list of fonts."
 			      'type-command)
      (font-latex-add-keywords '(("strong"    "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fontspec-package-options
   '("tuenc" "euenc" "math" "no-math" "config" "no-config" "quiet" "silent")

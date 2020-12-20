@@ -1,6 +1,6 @@
-;;; inputenc.el --- AUCTeX style for `inputenc.sty'
+;;; inputenc.el --- AUCTeX style for `inputenc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
@@ -27,6 +27,8 @@
 ;; This file adds support for `inputenc.sty'.
 
 ;;; Code:
+
+(require 'tex)
 
 (defun LaTeX-inputenc-package-options nil
   "Prompt for package options for the inputenc package."
@@ -78,7 +80,7 @@
    ;; New symbols
    (TeX-add-symbols
     '("inputencoding" LaTeX-arg-inputenc-inputenc)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

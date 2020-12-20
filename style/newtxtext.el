@@ -1,6 +1,6 @@
-;;; newtxtext.el --- AUCTeX style for `newtxtext.sty' (v1.434)
+;;; newtxtext.el --- AUCTeX style for `newtxtext.sty' (v1.434)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `newtxtext.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -73,7 +75,7 @@
 				("tosfstyle" "")
 				("sustyle"   ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxtext-package-options
   '("defaultsups" "helvratio" "osf" "scaled" "scosf"

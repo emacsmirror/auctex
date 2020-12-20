@@ -1,6 +1,6 @@
-;;; multirow.el --- AUCTeX style for `multirow.sty'
+;;; multirow.el --- AUCTeX style for `multirow.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -49,7 +51,7 @@
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("multirow" "{[{")) 'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-multirow-package-options nil
   "Package options for the multirow package.")

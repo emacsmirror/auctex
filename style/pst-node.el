@@ -1,6 +1,6 @@
-;;; pst-node.el --- AUCTeX style for `pst-node.sty'
+;;; pst-node.el --- AUCTeX style for `pst-node.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2013, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2013, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -34,6 +34,9 @@
 ;; -- adding more macro support
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function LaTeX-package-parameter-value
@@ -199,6 +202,6 @@
      '("pscolhook" t))
     (TeX-run-style-hooks
      "pstricks")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-node.el ends here

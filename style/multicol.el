@@ -1,6 +1,6 @@
-;;; multicol.el --- AUCTeX style for `multicol.sty'
+;;; multicol.el --- AUCTeX style for `multicol.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "multicol"
  (lambda ()
@@ -54,7 +57,7 @@
     '("raggedcolumns" 0)
     '("flushcolumns" 0)
     "columnbreak"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-multicol-package-options
   '("errorshow" "infoshow" "balancingshow" "markshow" "debugshow" "grid")

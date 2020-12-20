@@ -1,6 +1,6 @@
-;;; array.el --- AUCTeX style for `array.sty'
+;;; array.el --- AUCTeX style for `array.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2015, 2018--2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -102,7 +103,7 @@ and make it buffer local. "
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newcolumntype" "{[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-array-package-options nil
   "Package options for array.")

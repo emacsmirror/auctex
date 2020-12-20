@@ -1,6 +1,6 @@
-;;; XCharter.el --- AUCTeX style for `XCharter.sty' (v1.094)
+;;; XCharter.el --- AUCTeX style for `XCharter.sty' (v1.094)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2017, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 ;; `XCharter.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -85,7 +87,7 @@
                                 ("lfstyle"   "")
                                 ("osfstyle"  ""))
                               'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-XCharter-package-options
   '("lining" "lf" "oldstyle" "osf" "oldstyleI" "osfI"

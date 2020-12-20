@@ -1,6 +1,6 @@
-;;; francais.el --- AUCTeX style for the `francais' babel option.
+;;; francais.el --- AUCTeX style for the `francais' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,10 +33,12 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "francais"
  (lambda ()
    (TeX-run-style-hooks "frenchb"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; francais.el ends here

@@ -1,6 +1,6 @@
-;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)
+;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,6 +35,10 @@
 ;; docstring of `LaTeX-ntheorem-env-label' for instructions.
 
 ;;; Code
+
+(require 'crm)
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -77,18 +81,19 @@ defined with \"\\newtheoremlisttype\".")
   "List of font declaration commands for \"\\newtheoremstyle\".")
 
 (defun LaTeX-arg-ntheorem-fontdecl (optional &optional prompt)
-  "Prompt for font declaration commands in \"\\theorem(body\|header)font\".
+  "Prompt for font declaration commands in \"\\theorem(body|header)font\".
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
-  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
-  ;; is hard-coded to `TeX-esc'.
   (let* ((crm-separator (regexp-quote TeX-esc))
-	 (fontdecl (mapconcat 'identity
+	 (fontdecl (mapconcat #'identity
 			      (TeX-completing-read-multiple
-			       (TeX-argument-prompt optional prompt "Font declaration")
-			       LaTeX-ntheorem-fontdecl nil nil TeX-esc)
+			       (TeX-argument-prompt optional prompt "Font declaration: \\" t)
+			       LaTeX-ntheorem-fontdecl)
 			      TeX-esc)))
-    (TeX-argument-insert fontdecl optional)))
+    (TeX-argument-insert fontdecl
+			 optional
+			 (when (and fontdecl (not (string= fontdecl "")))
+			   TeX-esc))))
 
 (defun LaTeX-ntheorem-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -113,9 +118,6 @@ RefTeX users should customize or add ENVIRONMENT to
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
     (indent-according-to-mode)))
-
-;; Needed for auto-parsing
-(require 'tex)
 
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "ntheorem-newtheorem" "LaTeX")
@@ -223,7 +225,7 @@ make them available as new environments.  Update
 
     '("theoremnumbering"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Numbering scheme")
+		    (TeX-argument-prompt nil nil "Numbering scheme")
 		    '("arabic" "roman" "Roman" "alph" "Alph"
 		      "greek" "Greek" "fnsymbol")))
 
@@ -349,7 +351,7 @@ make them available as new environments.  Update
       (TeX-arg-eval
        (lambda ()
 	 (let ((style (TeX-read-string
-		       (TeX-argument-prompt optional nil "Style name"))))
+		       (TeX-argument-prompt nil nil "Style name"))))
 	   (LaTeX-add-ntheorem-newtheoremstyles style)
 	   (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
 			(list style))
@@ -366,7 +368,7 @@ make them available as new environments.  Update
       (TeX-arg-eval
        (lambda ()
 	 (let ((layout (TeX-read-string
-		       (TeX-argument-prompt optional nil "List layout name"))))
+		       (TeX-argument-prompt nil nil "List layout name"))))
 	   (LaTeX-add-ntheorem-newtheoremlisttypes layout)
 	   (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
 			(list layout))
@@ -432,7 +434,7 @@ make them available as new environments.  Update
 			      'function)
      (font-latex-add-keywords '(("thref"                  "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ntheorem-package-options
   '("standard" "noconfig" "framed" "thmmarks" "thref" "amsmath" "hyperref")

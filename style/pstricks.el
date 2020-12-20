@@ -1,4 +1,4 @@
-;;; pstricks.el --- AUCTeX style for the `pstricks' package.
+;;; pstricks.el --- AUCTeX style for the `pstricks' package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2007, 2009, 2013-2015, 2018, 2020
 ;;                Free Software Foundation, Inc.
@@ -61,6 +61,8 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 (eval-when-compile
   (require 'cl-lib))
 
@@ -870,7 +872,7 @@ comma separated list. Point has to be within the sexp to modify."
     '("uput" LaTeX-pst-macro-uput t)
     '("multirput" (LaTeX-pst-macro-multirputps t) t)
     '("multips" (LaTeX-pst-macro-multirputps nil) t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-pstricks-package-options
   '("97" "plain" "DIA" "vtex" "distiller" "noxcolor")

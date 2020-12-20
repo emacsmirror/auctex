@@ -1,6 +1,6 @@
-;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)
+;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -586,7 +586,7 @@ e.g. \"tcolorboxlib-raster.el\"."
     '("tcbuselibrary"
       (TeX-arg-eval mapconcat #'identity
 		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt optional nil "Libraries")
+		     (TeX-argument-prompt nil nil "Libraries")
 		     LaTeX-tcolorbox-library-list) ","))
 
     ;; 3 Macros for Box Creation
@@ -599,7 +599,7 @@ e.g. \"tcolorboxlib-raster.el\"."
       (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
 
     '("tcbox"
-      [ TeX-arg-eval TeX-read-key-val optional
+      [ TeX-arg-eval TeX-read-key-val t
 		     (append
 		      LaTeX-tcolorbox-tcbox-options
 		      LaTeX-tcolorbox-keyval-options-local) ]
@@ -614,7 +614,7 @@ e.g. \"tcolorboxlib-raster.el\"."
     '("renewtcolorbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Color box")
+		    (TeX-argument-prompt nil nil "Color box")
 		    (LaTeX-tcolorbox-newtcolorbox-list))
       [ TeX-arg-define-macro-arguments ]
       (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
@@ -630,7 +630,7 @@ e.g. \"tcolorboxlib-raster.el\"."
       (TeX-arg-eval
        (lambda ()
 	 (let ((macro (completing-read
-		       (TeX-argument-prompt optional nil "Macro: \\" t)
+		       (TeX-argument-prompt nil nil "Macro: \\" t)
 		       (LaTeX-tcolorbox-newtcbox-list))))
 	   (concat TeX-esc macro))))
       [ TeX-arg-define-macro-arguments ]
@@ -652,7 +652,7 @@ e.g. \"tcolorboxlib-raster.el\"."
     ;; 5.2 Lists of tcolorboxes
     '("tcblistof"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt optional nil "Macro")
+		     (TeX-argument-prompt t nil "Macro")
 		     (if (< (LaTeX-largest-level) 2)
 			 '("\\chapter" "\\section" "\\subsection" "\\subsubsection")
 		       '("\\section" "\\subsection" "\\subsubsection")) ]
@@ -697,7 +697,7 @@ e.g. \"tcolorboxlib-raster.el\"."
 				("tcolorboxenvironment" "{{")
 				("tcbsetmanagedlayer"   "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-tcolorbox-package-options LaTeX-tcolorbox-library-list
   "Package options for the tcolorbox package.")

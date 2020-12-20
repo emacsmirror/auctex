@@ -1,6 +1,6 @@
-;;; doc.el --- AUCTeX style for `doc.sty'
+;;; doc.el --- AUCTeX style for `doc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2008, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2008, 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -28,6 +28,9 @@
 ;; This file adds support for `doc.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defun LaTeX-env-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
@@ -69,7 +72,7 @@
 		'("macrocode*" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
 		'("macro" current-indentation) t)
-   (add-hook 'LaTeX-after-insert-env-hooks 'LaTeX-doc-after-insert-macrocode
+   (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-doc-after-insert-macrocode
 	     nil t)
    (LaTeX-add-environments
     "theglossary"
@@ -86,7 +89,7 @@
     '("DescribeMacro" (TeX-arg-eval
 		       (lambda ()
 			 (let ((name (TeX-read-string
-				      (TeX-argument-prompt optional nil "Macro")
+				      (TeX-argument-prompt nil nil "Macro")
 				      TeX-esc)))
 			   (format "%s" name)))))
     '("DescribeEnv" "Environment")
@@ -100,7 +103,7 @@
     '("cmd" (TeX-arg-eval
 	     (lambda ()
 	       (let ((name (TeX-read-string
-			    (TeX-argument-prompt optional nil "Name")
+			    (TeX-argument-prompt nil nil "Name")
 			    TeX-esc)))
 		 (format "%s" name)))))
     "makelabel"
@@ -186,7 +189,7 @@
     "fileinfo")
    (TeX-run-style-hooks "shortvrb")
    (LaTeX-add-lengths "MacrocodeTopsep" "MacroTopsep" "MacroIndent"))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8

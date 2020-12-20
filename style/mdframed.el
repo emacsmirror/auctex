@@ -1,6 +1,6 @@
-;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)
+;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2018 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,12 +37,11 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 ;; Needed for compiling `cl-pushnew':
 (eval-when-compile
   (require 'cl-lib))
-
-;; Needed for auto-parsing:
-(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -302,7 +301,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((env (TeX-read-string
-		     (TeX-argument-prompt optional nil "Environment"))))
+		     (TeX-argument-prompt nil nil "Environment"))))
 	   (LaTeX-add-environments
 	    `(,env LaTeX-env-args [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]))
 	   ;; Add new env's to `ispell-tex-skip-alist': skip the optional argument
@@ -312,7 +311,7 @@
     '("renewmdenv"
       [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Environment")
+		    (TeX-argument-prompt nil nil "Environment")
 		    (LaTeX-mdframed-newmdenv-list)))
 
     '("surroundwithmdframed"
@@ -321,7 +320,7 @@
 
     '("mdflength"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Length")
+		    (TeX-argument-prompt nil nil "Length")
 		    '(("skipabove")
 		      ("skipbelow")
 		      ("leftmargin")
@@ -340,7 +339,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((style (TeX-read-string
-		       (TeX-argument-prompt optional nil "Style name"))))
+		       (TeX-argument-prompt nil nil "Style name"))))
 	   (LaTeX-add-mdframed-mdfdefinestyles style)
 	   (LaTeX-mdframed-update-style-key)
 	   (format "%s" style))))
@@ -348,7 +347,7 @@
 
     '("mdfapptodefinestyle"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Style name")
+		    (TeX-argument-prompt nil nil "Style name")
 		    (LaTeX-mdframed-mdfdefinestyle-list))
       (TeX-arg-key-val LaTeX-mdframed-key-val-options-local))
 
@@ -363,7 +362,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt optional nil "Environment"))))
+		      (TeX-argument-prompt nil nil "Environment"))))
 	   (LaTeX-add-environments (list nthm (vector "Heading")))
 	   (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
@@ -379,7 +378,7 @@
       (TeX-arg-eval
        (lambda ()
 	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt optional nil "Environment"))))
+		      (TeX-argument-prompt nil nil "Environment"))))
 	   (LaTeX-add-environments (list nthm (vector "Heading"))
 				   (list (concat nthm "*") (vector "Heading")))
 	   (format "%s" nthm))))
@@ -412,7 +411,7 @@
 			      'sectioning-5)
      (font-latex-add-keywords '(("mdflength"            "{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-mdframed-package-options-list
   '(("xcolor")

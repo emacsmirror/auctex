@@ -1,4 +1,4 @@
-;;; tex-live.el --- AUCTeX style for `tex-live.sty'
+;;; tex-live.el --- AUCTeX style for `tex-live.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -32,6 +32,11 @@
 ;; Chances are high that this style is not feature complete, and
 ;; fontification is not ideal.  But this might be a starting point for
 ;; TeXLive documentation editors who use AUCTeX.
+
+;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function LaTeX-add-fancyvrb-environments
@@ -78,7 +83,7 @@
     '("boxedverbatiminput" LaTeX-fancyvrb-arg-file-relative)
     '("listinginput"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Value of firstnumber key")
+		    (TeX-argument-prompt nil nil "Value of firstnumber key")
 		    (cadr (assoc "firstnumber" LaTeX-fancyvrb-key-val-options-local)))
       LaTeX-fancyvrb-arg-file-relative)
 
@@ -91,7 +96,7 @@
     '("filename" "Directory")
     '("envname"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt optional nil "Environment")
+		    (TeX-argument-prompt nil nil "Environment")
 		    '("TEXMFCACHE"
 		      "TEXMFCNF"
 		      "TEXMFCONFIG"
@@ -166,6 +171,6 @@
 			      'italic-command)
      (font-latex-add-keywords '(("Ucom" "{"))
 			      'bold-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tex-live.el ends here

@@ -1,6 +1,6 @@
-;;; paralist.el -- AUCTeX style for paralist.sty
+;;; paralist.el -- AUCTeX style for paralist.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2005, 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2005, 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; This file adds support for `paralist.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -98,7 +101,7 @@
 				("setdefaultenum" "{{{{")
 				("setdefaultleftmargin" "{{{{{{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-paralist-package-options '("newitem" "olditem" "newenum"
 					 "oldenum" "alwaysadjust"

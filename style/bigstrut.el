@@ -1,6 +1,6 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'
+;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,13 +29,15 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "bigstrut"
  (lambda ()
    (TeX-add-symbols
     "bigstrutsetup"
     '("bigstrut" [ TeX-arg-bigstrut ])))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-bigstrut (optional &optional _prompt)
   "Prompt for the optional argument in \\bigstrut."

@@ -1,6 +1,6 @@
-;;; ulem.el --- AUCTeX style for `ulem.sty'
+;;; ulem.el --- AUCTeX style for `ulem.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Keywords: tex
@@ -27,6 +27,8 @@
 ;; This file adds support for `ulem.sty'.
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -64,7 +66,7 @@
 				("uwave" "{")
 				("sout" "{")
 				("xout" "{")) 'textual)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-arg-fontdecl
   (mapcar (lambda (str) (concat "\\" str))

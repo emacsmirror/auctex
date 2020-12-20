@@ -1,4 +1,4 @@
-;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.
+;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
 ;;      Free Software Foundation, Inc.
@@ -29,6 +29,9 @@
 ;; This will also load the amstext, amsbsy and amsopn style files.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Fontification
 (declare-function font-latex-add-keywords
@@ -184,7 +187,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("boxed" "{"))
 			      'math-command)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
   "Insert ENV with column number specifications.

@@ -1,6 +1,6 @@
-;;; lipsum.el --- AUCTeX style for `lipsum.sty'.
+;;; lipsum.el --- AUCTeX style for `lipsum.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "lipsum"
  (lambda ()
@@ -37,7 +39,7 @@
     '("lipsum*" [ "Range of paragraph (max: 150)" ])
     '("setlipsumdefault" [ "Default range of paragraph (max: 150)" ])
     '("ChangeLipsumPar" 0)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-lipsum-package-options
   '("nopar")

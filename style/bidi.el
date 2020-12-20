@@ -1,4 +1,4 @@
-;;; bidi.el --- AUCTeX style for the (XeLaTeX) bidi package
+;;; bidi.el --- AUCTeX style for the (XeLaTeX) bidi package  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
 
@@ -29,10 +29,16 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
 		  (keywords class))
+(declare-function TeX-check-engine-add-engines
+                  "tex-buf"
+                  (&rest engines))
 
 (defvar LaTeX-bidi-package-options
   '("RTLdocument" "rldocument" "extrafootnotefeatures")
@@ -189,6 +195,6 @@
 				("XeLaTeX" "")
 				("SepMark" "{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; bidi.el ends here

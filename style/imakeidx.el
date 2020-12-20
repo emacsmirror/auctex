@@ -1,6 +1,6 @@
-;;; imakeidx.el --- AUCTeX style for `imakeidx.sty'.
+;;; imakeidx.el --- AUCTeX style for `imakeidx.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2013, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -28,6 +28,9 @@
 ;; This file adds support for `imakeidx.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-imakeidx-makeindex-options
   '(("name")
@@ -90,7 +93,7 @@
 	  TeX-complete-list))
    (and (fboundp 'reftex-add-index-macros)
 	(reftex-add-index-macros '(default))))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-imakeidx-package-options
   '("makeindex" "xindy" "texindy" "truexindy" "noautomatic" "nonewpage" "quiet"

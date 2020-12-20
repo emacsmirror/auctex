@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2018, 2020 Free Software Foundation, Inc.
 
@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -472,7 +473,7 @@ a list of strings."
 						'("mint" "mintinline"))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-minted-package-options '("chapter"     "cache"
 				       "cachedir"    "finalizecache"

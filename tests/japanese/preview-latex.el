@@ -228,8 +228,7 @@ String encoded in `shift_jis' can have regexp meta characters in it."
 	  (setq process (TeX-inline-preview-internal
 			 (preview-do-replacements
 			  (TeX-command-expand
-			   (preview-string-expand preview-LaTeX-command)
-			   'TeX-master-file)
+			   (preview-string-expand preview-LaTeX-command))
 			  preview-LaTeX-command-replacements)
 			 dummyfile '(nil . nil) (current-buffer)
 			 '(nil . (t . t)) dummyfile '(nil nil nil)))
@@ -263,8 +262,7 @@ String encoded in `shift_jis' can have regexp meta characters in it."
 	  (setq process (TeX-inline-preview-internal
 			 (preview-do-replacements
 			  (TeX-command-expand
-			   (preview-string-expand preview-LaTeX-command)
-			   'TeX-master-file)
+			   (preview-string-expand preview-LaTeX-command))
 			  preview-dump-replacements)
 			 dummyfile '(nil . nil) (current-buffer)
 			 nil dummyfile '(nil nil nil)))

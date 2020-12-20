@@ -1,4 +1,4 @@
-;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d
+;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 
@@ -33,6 +33,8 @@
 ;; implementation of "figureversion".
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -106,7 +108,7 @@
                               'type-command)
      (font-latex-add-keywords '(("figureversion"       "{"))
                               'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fontaxes-package-options nil
   "Package options for the fontaxes package.")

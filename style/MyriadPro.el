@@ -1,6 +1,6 @@
-;;; MyriadPro.el --- AUCTeX style for `MyriadPro.sty' (v0.5)
+;;; MyriadPro.el --- AUCTeX style for `MyriadPro.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,9 @@
 ;; not part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -71,7 +74,7 @@
 			      'textual)
      (font-latex-add-keywords '(("mathversion" "{"))
 			      'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-MyriadPro-package-options
   '(;; Font selection

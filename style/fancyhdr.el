@@ -1,4 +1,4 @@
-;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'
+;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012, 2013, 2018, 2020 Free Software Foundation, Inc.
 
@@ -28,6 +28,9 @@
 ;; This file adds support for `fancyhdr.sty', version 3.2
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -85,7 +88,7 @@
                                 ("footrulewidth" "")
                                 ("plainheadrulewidth" "")
                                 ("plainfootrulewidth" "")) 'variable)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;; Because there can be many positions, `TeX-completing-read-multiple' is used
 ;; instead of just `completing-read', and a `collection' argument is provided as

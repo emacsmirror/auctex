@@ -1,4 +1,4 @@
-;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)
+;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016-2020 Free Software Foundation, Inc.
 
@@ -31,11 +31,10 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
 (eval-when-compile
   (require 'cl-lib))
-
-;; Needed for auto-parsing:
-(require 'tex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -192,7 +191,7 @@
       TeX-grop
       (if (and ncols (not (string= ncols "")))
 	  (concat amsenv "=" ncols)
-	(symbol-value 'amsenv))
+	amsenv)
       TeX-grcl))
     (when (and (assoc amsenv LaTeX-label-alist)
 	       (LaTeX-label amsenv 'environment))
@@ -489,6 +488,6 @@ number of ampersands if possible."
 				("DeclareLeftDelimiter"  "[{")
 				("DeclareRightDelimiter" "[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; empheq.el ends here

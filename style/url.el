@@ -1,4 +1,4 @@
-;;; url.el --- AUCTeX style for `url.sty'
+;;; url.el --- AUCTeX style for `url.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004-2005, 2018, 2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,9 @@
 ;; This file adds support for `url.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -92,7 +95,7 @@
 			      'variable)
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-urlstyle (optional &optional prompt)
   "Prompt for style used in \\urlstyle with completion."

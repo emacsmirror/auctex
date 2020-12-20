@@ -1,6 +1,6 @@
-;;; pdfsync.el --- AUCTeX style for `pdfsync.sty'
+;;; pdfsync.el --- AUCTeX style for `pdfsync.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2008, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2008, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,8 @@
 ;; This file adds support for `pdfsync.sty'.
 
 ;;; Code:
+
+(require 'tex)
 
 (defun LaTeX-pdfsync-output-page ()
   "Return page number in output file corresponding to buffer position."
@@ -85,6 +87,6 @@
  "pdfsync"
  (lambda ()
    (setq TeX-source-correlate-output-page-function 'LaTeX-pdfsync-output-page))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pdfsync.el ends here

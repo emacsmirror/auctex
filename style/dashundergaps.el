@@ -1,6 +1,6 @@
-;;; dashundergaps.el --- AUCTeX style for `dashundergaps.sty' (v2.0d)
+;;; dashundergaps.el --- AUCTeX style for `dashundergaps.sty' (v2.0d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; 2018/11/18.  `dashundergaps.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -95,7 +98,7 @@
 				("TeacherModeOn"      "")
 				("TeacherModeOff"     ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-dashundergaps-package-options nil
   "Package options for the dashundergaps package.")

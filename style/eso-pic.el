@@ -1,6 +1,6 @@
-;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v2.0d)
+;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v2.0d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; `eso-pic.sty' is part of TeXLive.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "eso-pic"
@@ -70,7 +73,7 @@
    (TeX-declare-expert-macros
     "eso-pic"
     "gridSetup" "LenToUnit"))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-eso-pic-package-options-list
   '(("pscoord"      ("true" "false"))

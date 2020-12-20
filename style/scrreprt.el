@@ -1,6 +1,6 @@
-;;; scrreprt.el --- AUCTeX style for scrreprt.cls.
+;;; scrreprt.el --- AUCTeX style for scrreprt.cls.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005, 2018 Free Software Foundation
+;; Copyright (C) 2002, 2005, 2018, 2020 Free Software Foundation
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
@@ -29,6 +29,9 @@
 ;; `scrbase.el'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -65,6 +68,6 @@
 			      'textual)
      ;; Sectioning keywords
      (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; scrreprt.el ends here

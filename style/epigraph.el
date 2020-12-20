@@ -1,6 +1,6 @@
-;;; epigraph.el --- AUCTeX style for `epigraph.sty' v1.5c
+;;; epigraph.el --- AUCTeX style for `epigraph.sty' v1.5c  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2017, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,9 @@
 ;; This file adds support for `epigraph.sty' v1.5c from 2009/09/02.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -90,7 +93,7 @@
 			      'variable)
      (font-latex-add-keywords '("cleartoevenpage")
 			      'warning)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-epigraph-package-options nil
   "Package options for the epigraph package.")

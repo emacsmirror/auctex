@@ -1,6 +1,6 @@
-;;; pst-grad.el --- AUCTeX style for `pst-grad.sty'
+;;; pst-grad.el --- AUCTeX style for `pst-grad.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -32,6 +32,8 @@
 ;; -- 
 
 ;;; Code:
+
+(require 'tex)
 
 ;; Silence the compiler:
 (defvar LaTeX-pst-fillstyle-list)
@@ -66,6 +68,6 @@
     (setq LaTeX-pst-parameters-name-list
           (append LaTeX-pstgrad-parameters-name-list
                   LaTeX-pst-parameters-name-list))))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; pst-grad.el ends here

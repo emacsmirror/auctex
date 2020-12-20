@@ -1,6 +1,6 @@
-;;; emp.el --- AUCTeX support for emp.sty
+;;; emp.el --- AUCTeX support for emp.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2014  Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Yvon Henel aka TeXnicien de surface <Yvon.Henel@wanadoo.fr>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,6 +25,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "emp"
  (lambda ()
@@ -36,7 +39,7 @@
     '("empdef" LaTeX-env-emp-gen)
     '("empgraph" LaTeX-env-emp-gen)
     '("empcmds")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-env-emp-gen (environment-name)
    "Ask for file, width and length. Insert environment-name environment

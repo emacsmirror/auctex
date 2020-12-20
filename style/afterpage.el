@@ -1,6 +1,6 @@
-;;; afterpage.el --- AUCTeX style for `afterpage.sty'
+;;; afterpage.el --- AUCTeX style for `afterpage.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,12 +30,15 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "afterpage"
  (lambda ()
    (TeX-add-symbols
     '("afterpage" t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-afterpage-package-options nil
   "Package options for afterpage.")

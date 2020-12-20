@@ -1,6 +1,6 @@
-;;; newtxtt.el --- AUCTeX style for `newtxtt.sty' (v1.05)
+;;; newtxtt.el --- AUCTeX style for `newtxtt.sty' (v1.05)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -57,7 +59,7 @@
      (font-latex-add-keywords '(("ttzfamily"  "")
 				("ttz"        ""))
 			      'type-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-newtxtt-package-options
   '("scaled" "zerostyle" "nomono" "straightquotes"

@@ -1,6 +1,6 @@
-;;; framed.el --- AUCTeX style for `framed.sty' (v0.96)
+;;; framed.el --- AUCTeX style for `framed.sty' (v0.96)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 (TeX-add-style-hook
  "framed"
  (lambda ()
@@ -44,7 +47,7 @@
     '("snugshade*")
     '("leftbar")
     '("titled-frame" "Title")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-framed-package-options nil
   "Package options for the framed package.")

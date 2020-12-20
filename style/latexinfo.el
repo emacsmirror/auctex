@@ -1,6 +1,6 @@
-;;; latexinfo.el - Support for LaTeXinfo files.
+;;; latexinfo.el - Support for LaTeXinfo files.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 2020 Free Software Foundation, Inc.
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
 
@@ -20,6 +20,9 @@
 ;; MA 02110-1301 USA.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;;; LaTeXinfo mode
 
@@ -177,6 +180,6 @@ This fails when the user types in the label of something else"
     ;; need the following stuff to let xref and pxref work
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label "")))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; latexinfo.el ends here

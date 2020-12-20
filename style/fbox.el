@@ -1,4 +1,4 @@
-;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)
+;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019--2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,10 @@
 ;; This file adds support for `fbox.sty' (v0.04) from 2020/01/03.
 ;; `fbox.sty' is part of TeXLive.
 
+;;; Code
+
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -49,6 +53,6 @@
      (font-latex-add-keywords '(("fbox"    "*[{")
 				("fparbox" "*[{"))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; fbox.el ends here

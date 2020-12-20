@@ -1,4 +1,4 @@
-;;; alltt.el --- AUCTeX style for `alltt.sty'
+;;; alltt.el --- AUCTeX style for `alltt.sty'  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004, 2005, 2014, 2016, 2018, 2020 Free Software Foundation, Inc.
 
@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-set-syntactic-keywords
 		  "font-latex")
@@ -46,7 +49,7 @@
 	      (eq TeX-install-font-lock 'font-latex-setup))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-alltt-package-options nil
   "Package options for the alltt package.")

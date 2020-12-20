@@ -1,6 +1,6 @@
-;;; fancynum.el --- AUCTeX style for `fancynum.sty'
+;;; fancynum.el --- AUCTeX style for `fancynum.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "fancynum"
  (lambda ()
@@ -37,7 +39,7 @@
     '("setfnumdsym" t)
     '("setfnummsym" t)
     '("setfnumgsym" t)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-fancynum-package-options
   '("english" "french" "tight" "loose" "commas" "thinspaces" "plain")

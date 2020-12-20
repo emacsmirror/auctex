@@ -1,4 +1,4 @@
-;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.
+;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
 
@@ -28,6 +28,9 @@
 ;; This file adds support for `kpfonts.sty' version 3.31.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -579,7 +582,7 @@ following commands are defined:
      (font-latex-add-keywords '(("scslshape")
 				("otherscslshape"))
 			      'italic-declaration)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-kpfonts-package-options
   '(;; Main global options

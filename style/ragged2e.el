@@ -1,6 +1,6 @@
-;;; ragged2e.el --- AUCTeX style for `ragged2e.sty'
+;;; ragged2e.el --- AUCTeX style for `ragged2e.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2015, 2019 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2015, 2019, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-04-16
@@ -28,6 +28,9 @@
 ;; This file adds support for `ragged2e.sty'.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -69,7 +72,7 @@
 				("RaggedRight"  "")
 				("RaggedLeft"   ""))
 			      'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-ragged2e-package-options
   '("originalcommands" "newcommands" "originalparameters" "document"

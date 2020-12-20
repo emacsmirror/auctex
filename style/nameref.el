@@ -1,6 +1,6 @@
-;;; nameref.el --- AUCTeX style for `nameref.sty'
+;;; nameref.el --- AUCTeX style for `nameref.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2015, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
 		  "font-latex"
@@ -54,7 +56,7 @@
      (font-latex-add-keywords '(("nameref" "*{")
 				("Nameref" "{"))
 			      'reference)))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defvar LaTeX-nameref-package-options nil
   "Package options for nameref.")

@@ -1,4 +1,4 @@
-;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m
+;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2008, 2013-2020 Free Software Foundation, Inc.
 
@@ -29,6 +29,9 @@
 ;; This file adds support for the hyperref package.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -326,7 +329,7 @@
    (and LaTeX-reftex-ref-style-auto-activate
 	(fboundp 'reftex-ref-style-activate)
 	(reftex-ref-style-activate "Hyperref")))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun LaTeX-hyperref-package-options ()
   "Read the hyperref package options from the user."

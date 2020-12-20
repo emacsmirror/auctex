@@ -1,6 +1,6 @@
-;;; bigdelim.el --- AUCTeX style for `bigdelim.sty'
+;;; bigdelim.el --- AUCTeX style for `bigdelim.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2020 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'tex)
+
 (TeX-add-style-hook
  "bigdelim"
  (lambda ()
@@ -38,7 +40,7 @@
       "Width in multirow" [ "Text in multirow" ])
     '("rdelim" TeX-arg-bigdelim-brace "Number of rows for multirow"
       "Width in multirow" [ "Text in multirow" ])))
- LaTeX-dialect)
+ TeX-dialect)
 
 (defun TeX-arg-bigdelim-brace (optional &optional prompt)
   "Prompt for a single brace, and do not insert the matching

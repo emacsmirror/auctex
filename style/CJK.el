@@ -1,6 +1,6 @@
-;;; CJK.el --- AUCTeX style for the CJK package.
+;;; CJK.el --- AUCTeX style for the CJK package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2014, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,9 @@
 ;; (22-May-2008).
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-CJK-package-options
   '("lowercase" "global" "local" "active" "encapsulated")
@@ -89,6 +92,6 @@ The function can be used for CJK and CJK* environments."
    (LaTeX-add-environments
     '("CJK" LaTeX-env-CJK)
     '("CJK*" LaTeX-env-CJK)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; CJK.el ends here

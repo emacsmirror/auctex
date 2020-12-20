@@ -1,4 +1,4 @@
-;;; algorithm.el --- AUCTeX style for the (LaTeX) algorithm package
+;;; algorithm.el --- AUCTeX style for the (LaTeX) algorithm package  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020 Free Software Foundation, Inc.
 
@@ -27,6 +27,9 @@
 ;; This file adds support for the algorithm package.
 
 ;;; Code:
+
+(require 'tex)
+(require 'latex)
 
 (defvar LaTeX-algorithm-package-options
   '("section")
@@ -74,7 +77,7 @@
     '("algorithm"  LaTeX-env-algorithm ))
    (TeX-add-symbols
     '("listofalgorithms" 0))
-      LaTeX-dialect))
+      TeX-dialect))
 
 
 ;;; algorithm.el ends here

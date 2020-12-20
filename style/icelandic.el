@@ -1,6 +1,6 @@
-;;; icelandic.el --- AUCTeX style for the `icelandic' babel option.
+;;; icelandic.el --- AUCTeX style for the `icelandic' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,9 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
 		  "font-latex"
@@ -54,6 +57,6 @@
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\"<" "\">" french)))
    (run-hooks 'TeX-language-is-hook))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; icelandic.el ends here
