@@ -285,7 +285,7 @@ Or:
 
 The following variables can be set to customize:
 
-`ConTeXt-section-hook'    Hooks to run when inserting a section.
+`ConTeXt-numbered-section-hook'    Hooks to run when inserting a section.
 `ConTeXt-section-ref'   Prefix to all section references."
 
   (interactive "*P")
@@ -532,7 +532,7 @@ the title of the section inserted with `\\[ConTeXt-section]."
 
 (defun ConTeXt-section-section ()
   "Hook to insert ConTeXt section command into the file.
-Insert this hook into `ConTeXt-section-hook' after those hooks
+Insert this hook into `ConTeXt-numbered-section-hook' after those hooks
 which sets the `ConTeXt-name', `ConTeXt-title', and
 `ConTeXt-reference' variables, but before those hooks which
 assumes the section already is inserted."
@@ -555,7 +555,7 @@ assumes the section already is inserted."
 
 (defun ConTeXt-section-ref ()
   "Hook to insert a reference after the sectioning command.
-Insert this hook into `ConTeXt-section-hook' to prompt for a label to be
+Insert this hook into `ConTeXt-numbered-section-hook' to prompt for a label to be
 inserted after the sectioning command."
   (setq ConTeXt-reference
         (completing-read
@@ -1433,14 +1433,16 @@ else.  There might be text before point."
 
 (defun ConTeXt-numbered-section-menu (level)
   "Insert numbered section from menu."
-  (let ((ConTeXt-numbered-section-hook (delq 'ConTeXt-numbered-section-heading
-				    (copy-sequence ConTeXt-numbered-section-hook))))
+  (let ((ConTeXt-numbered-section-hook
+         (delq 'ConTeXt-numbered-section-heading
+	       (copy-sequence ConTeXt-numbered-section-hook))))
     (ConTeXt-section level)))
 
 (defun ConTeXt-unnumbered-section-menu (level)
   "Insert unnumbered section from menu."
-  (let ((ConTeXt-unnumbered-section-hook (delq 'ConTeXt-unnumbered-section-heading
-				    (copy-sequence ConTeXt-unnumbered-section-hook))))
+  (let ((ConTeXt-unnumbered-section-hook
+         (delq 'ConTeXt-unnumbered-section-heading
+	       (copy-sequence ConTeXt-unnumbered-section-hook))))
     (ConTeXt-section level)))
 
 (defun ConTeXt-numbered-section-menu-entry (entry)

@@ -47,6 +47,14 @@ previously undeclared variables @code{title}, @code{name}, @code{level},
 @code{done-mark}, and @code{toc}.  These variables are now properly
 declared and have the @code{LaTeX-} prefix, e.g.,
 @code{LaTeX-done-mark}.
+
+@item
+The functions in @code{ConTeXt-numbered-section-hook} and
+@code{ConTeXt-unnumbered-section-hook} had access or modified the
+previously undeclared variables @code{title}, @code{name}, @code{level},
+@code{done-mark}, and @code{reference}.  These variables are now
+properly declared and have the @code{ConTeXt-} prefix, e.g.,
+@code{ConTeXt-title}.
 @end itemize
 
 @item
