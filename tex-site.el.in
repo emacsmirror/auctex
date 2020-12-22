@@ -38,8 +38,9 @@
 
 ;;; Code:
 
-(if (< emacs-major-version 24)
-    (error "AUCTeX requires Emacs 24 or later"))
+(if (and (< emacs-major-version 24)
+	 (< emacs-minor-version 3))
+    (error "AUCTeX requires Emacs 24.3 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.

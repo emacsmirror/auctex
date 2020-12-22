@@ -12,6 +12,9 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now requires GNU Emacs 24.3 or higher.
+
+@item
 Old implementations for viewers were discarded, as stated long before.
 The variables @code{TeX-output-view-style} and @code{TeX-view-style}
 have no effect now. The former placeholders @samp{%v} and @samp{%vv} in
