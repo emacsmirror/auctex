@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016-2018 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2018, 2020 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -74,7 +74,7 @@ TeX-auto-* (automatically generated lisp).")
 
 (defcustom TeX-auto-global
     @lispautodir@
-  "*Directory containing automatically generated information.
+  "Directory containing automatically generated information.
 
 For storing automatic extracted information about the TeX macros
 shared by all users of a site."

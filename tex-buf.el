@@ -35,7 +35,7 @@
 ;;; Customization:
 
 (defcustom TeX-process-asynchronous (not (eq system-type 'ms-dos))
-  "*Use asynchronous processes."
+  "Use asynchronous processes."
   :group 'TeX-command
   :type 'boolean)
 
@@ -787,7 +787,7 @@ omitted) and `TeX-region-file'."
                                    #'TeX-command-sequence-sentinel)))))))
 
 (defcustom TeX-save-query t
-  "*If non-nil, ask user for permission to save files before starting TeX."
+  "If non-nil, ask user for permission to save files before starting TeX."
   :group 'TeX-command
   :type 'boolean)
 
@@ -1063,7 +1063,7 @@ requires special treatment."
       (set-process-coding-system process cs cs))))
 
 (defcustom TeX-show-compilation nil
-  "*If non-nil, show output of TeX compilation in other window."
+  "If non-nil, show output of TeX compilation in other window."
   :group 'TeX-command
   :type 'boolean)
 
@@ -2054,7 +2054,7 @@ The compatibility argument IGNORE is ignored."
 ;;; Region File
 
 (defcustom TeX-region-extra ""
-  "*String to insert in the region file between the header and the text."
+  "String to insert in the region file between the header and the text."
   :group 'TeX-command
   :type 'string)
 
@@ -2263,7 +2263,7 @@ The compatibility argument IGNORE is ignored."
 		 TeX-region))))
 
 (defcustom TeX-region "_region_"
-  "*Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
+  "Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
   :group 'TeX-command
   :type 'string)
 

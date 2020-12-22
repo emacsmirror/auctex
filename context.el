@@ -622,7 +622,7 @@ inserted after the sectioning command."
 
 ;; TODO: interface awareness
 (defcustom ConTeXt-default-environment "itemize"
-  "*The default environment when creating new ones with `ConTeXt-environment'."
+  "The default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-environment
   :type 'string)
 (make-variable-buffer-local 'ConTeXt-default-environment)

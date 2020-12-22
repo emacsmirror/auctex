@@ -228,7 +228,7 @@ The structure of each entry is (NAME TYPE)
       (const :tag "Switch: toggles math mode of following text" sw-toggle)))))
 
 (defcustom texmathp-search-n-paragraphs 2
-  "*Number of paragraphs to check before point.
+  "Number of paragraphs to check before point.
 Normally, you cannot have an empty line in a math environment in (La)TeX.
 The fastest method to test for math mode is then limiting the search
 backward to the nearest empty line.
@@ -239,7 +239,7 @@ empty lines we go back to fix the search limit."
   :type 'number)
 
 (defcustom texmathp-allow-detached-args nil
-  "*Non-nil means, allow arguments of macros to be detached by whitespace.
+  "Non-nil means, allow arguments of macros to be detached by whitespace.
 When this is t, `aaa' will be interpreted as an argument of \\bbb in the
 following construct:  \\bbb [xxx] {aaa}
 This is legal in TeX.  The disadvantage is that any number of braces expressions

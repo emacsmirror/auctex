@@ -210,7 +210,7 @@ function args" :inline t sexp))
     (jpeg jpeg "-sDEVICE=jpeg")
     (pnm pbm "-sDEVICE=pnmraw")
     (tiff tiff "-sDEVICE=tiff12nc"))
-  "*Alist of image types and corresponding Ghostscript options.
+  "Alist of image types and corresponding Ghostscript options.
 The `dvipng' and `postscript' (don't use) entries really specify
 a fallback device when images can't be processed by the requested
 method, like when PDFTeX was used."
@@ -220,7 +220,7 @@ method, like when PDFTeX was used."
 		       (repeat :inline t :tag "Ghostscript options" string))))
 
 (defcustom preview-image-type 'png
-  "*Image type to be used in images."
+  "Image type to be used in images."
   :group 'preview-gs
   :type (append '(choice)
 		(mapcar (lambda (symbol) (list 'const (car symbol)))
@@ -250,7 +250,7 @@ that is."
   :group 'preview-gs :type 'integer)
 
 (defcustom preview-preserve-indentation t
-  "*Whether to keep additional whitespace at the left of a line."
+  "Whether to keep additional whitespace at the left of a line."
   :group 'preview-appearance :type 'boolean)
 
 (defun preview-extract-bb (filename)
@@ -274,14 +274,14 @@ that is."
        ))))
 
 (defcustom preview-prefer-TeX-bb nil
-  "*Prefer TeX bounding box to EPS one if available.
+  "Prefer TeX bounding box to EPS one if available.
 If `preview-fast-conversion' is set, this option is not
  consulted since the TeX bounding box has to be used anyway."
   :group 'preview-gs
   :type 'boolean)
 
 (defcustom preview-TeX-bb-border 0.5
-  "*Additional space in pt around Bounding Box from TeX."
+  "Additional space in pt around Bounding Box from TeX."
   :group 'preview-gs
   :type 'number)
 
@@ -347,7 +347,7 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
       (executable-find "GSWIN32C.EXE")
       ;; standard GhostScript
       (executable-find "gs"))
-  "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
+  "How to call gs for conversion from EPS.  See also `preview-gs-options'."
   :group 'preview-gs
   :type 'string)
 
@@ -355,7 +355,7 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
 				"-DNOPLATFONTS" "-dPrinted"
 				"-dTextAlphaBits=4"
 				"-dGraphicsAlphaBits=4")
-  "*Options with which to call gs for conversion from EPS.
+  "Options with which to call gs for conversion from EPS.
 See also `preview-gs-command'."
   :group 'preview-gs
   :type '(repeat string))
@@ -370,7 +370,7 @@ Buffer-local to the appropriate TeX process buffer.")
 (make-variable-buffer-local 'preview-gs-outstanding)
 
 (defcustom preview-gs-outstanding-limit 2
-  "*Number of requests allowed to be outstanding.
+  "Number of requests allowed to be outstanding.
 This is the number of not-yet-completed requests we
 might at any time have piped into Ghostscript.  If
 this number is larger, the probability of Ghostscript
@@ -454,7 +454,7 @@ show as response of Ghostscript."
 (make-variable-buffer-local 'preview-gs-file)
 
 (defcustom preview-fast-conversion t
-  "*Set this for single-file PostScript conversion.
+  "Set this for single-file PostScript conversion.
 This will have no effect when `preview-image-type' is
 set to `postscript'."
   :group 'preview-latex
@@ -521,7 +521,7 @@ be consulted recursively.")
 
 (defcustom preview-dvipng-command
   "dvipng -picky -noghostscript %d -o %m/prev%%03d.png"
-  "*Command used for converting to separate PNG images.
+  "Command used for converting to separate PNG images.
 
 You might specify options for converting to other image types,
 but then you'll need to adapt `preview-dvipng-image-type'."
@@ -530,7 +530,7 @@ but then you'll need to adapt `preview-dvipng-image-type'."
 
 (defcustom preview-dvipng-image-type
   'png
-  "*Image type that dvipng produces.
+  "Image type that dvipng produces.
 
 You'll need to change `preview-dvipng-command' too,
 if you customize this."
@@ -541,19 +541,19 @@ if you customize this."
 
 (defcustom preview-dvips-command
   "dvips -Pwww -i -E %d -o %m/preview.000"
-  "*Command used for converting to separate EPS images."
+  "Command used for converting to separate EPS images."
   :group 'preview-latex
   :type 'string)
 
 (defcustom preview-fast-dvips-command
   "dvips -Pwww %d -o %m/preview.ps"
-  "*Command used for converting to a single PS file."
+  "Command used for converting to a single PS file."
   :group 'preview-latex
   :type 'string)
 
 (defcustom preview-pdf2dsc-command
   "pdf2dsc %s.pdf %m/preview.dsc"
-  "*Command used for generating dsc from a PDF file."
+  "Command used for generating dsc from a PDF file."
   :group 'preview-latex
   :type 'string)
 
@@ -1482,7 +1482,7 @@ argument of function `face-attribute' for details."
   (face-attribute face attribute nil inherit))
 
 (defcustom preview-scale-function #'preview-scale-from-face
-  "*Scale factor for included previews.
+  "Scale factor for included previews.
 This can be either a function to calculate the scale, or
 a fixed number."
   :group 'preview-appearance
@@ -1492,22 +1492,21 @@ a fixed number."
 		 (function :value preview-scale-from-face)))
 
 (defcustom preview-default-document-pt 10
-  "*Assumed document point size for `preview-scale-from-face'.
+  "Assumed document point size for `preview-scale-from-face'.
 If the point size (such as 11pt) of the document cannot be
 determined from the document options itself, assume this size.
 This is for matching screen font size and previews."
   :group 'preview-appearance
   :type
-          '(choice (const :tag "10pt" 10)
-                  (const :tag "11pt" 11)
-                  (const :tag "12pt" 12)
-                  (number :tag "Other" :value 11.0))
-)
+  '(choice (const :tag "10pt" 10)
+           (const :tag "11pt" 11)
+           (const :tag "12pt" 12)
+           (number :tag "Other" :value 11.0)))
 
 (defcustom preview-document-pt-list '(preview-parsed-font-size
-  preview-auctex-font-size
-  preview-default-document-pt)
-  "*How `preview-document-pt' figures out the document size."
+				      preview-auctex-font-size
+				      preview-default-document-pt)
+  "How `preview-document-pt' figures out the document size."
   :group 'preview-appearance
   :type
   '(repeat (choice
@@ -1625,7 +1624,7 @@ Fallback to :inherit and 'default implemented."
 (defcustom preview-auto-reveal
   '(eval (preview-arrived-via (key-binding [left]) (key-binding [right])
 			      'backward-char 'forward-char))
-  "*Cause previews to open automatically when entered.
+  "Cause previews to open automatically when entered.
 Possibilities are:
 T autoopens,
 NIL doesn't,
@@ -1817,7 +1816,7 @@ if there was any urgentization."
 
 (defcustom preview-dump-threshold
   "^ *\\\\begin *{document}[ %]*$"
-  "*Regexp denoting end of preamble.
+  "Regexp denoting end of preamble.
 This is the location up to which preamble changes are considered
 to require redumping of a format."
   :group 'preview-latex
@@ -2072,7 +2071,7 @@ overlays not in the active window."
    (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
 
 (defcustom preview-query-replace-reveal t
-  "*Make `query-replace' autoreveal previews."
+  "Make `query-replace' autoreveal previews."
   :group 'preview-appearance
   :type 'boolean
   :require 'preview
@@ -2403,7 +2402,7 @@ BUFFER-MISC is the appropriate data to be used."
 					    desktop-buffer-misc)))))
 
 (defcustom preview-auto-cache-preamble 'ask
-  "*Whether to generate a preamble cache format automatically.
+  "Whether to generate a preamble cache format automatically.
 Possible values are nil, t, and `ask'."
   :group 'preview-latex
   :type '(choice (const :tag "Cache" t)
@@ -2733,7 +2732,7 @@ These are passed regardless of whether there is an explicit
 (defcustom preview-default-option-list '("displaymath" "floats"
 					 "graphics" "textmath" "sections"
 					 "footnotes")
-  "*Specifies default options to pass to preview package.
+  "Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
 on a document not configured for preview.  \"auctex\", \"active\",
@@ -2767,7 +2766,7 @@ are selected."
 (defcustom preview-default-preamble
   '("\\RequirePackage[" ("," . preview-default-option-list)
 				      "]{preview}[2004/11/05]")
-  "*Specifies default preamble code to add to a LaTeX document.
+  "Specifies default preamble code to add to a LaTeX document.
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
 list of LaTeX commands is inserted just before \\begin{document}."
@@ -2785,7 +2784,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\"")
   ;; Due to this change, \detokenize is required to recognize
   ;; non-ascii characters in the file name when \input is supplemented
   ;; implicitly by %`-%' pair.
-  "*Command used for starting a preview.
+  "Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
   :type preview-expandable-string)
