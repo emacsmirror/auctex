@@ -1851,12 +1851,6 @@ variable is nil."
 
 ;;; Process Control
 
-
-;; This variable is shared with `compile.el'.
-;; FIXME: Then it should not be defvar'd here!
-(defvar compilation-in-progress nil
-  "List of compilation processes now running.")
-
 ;; COMPATIBILITY for emacs < 27
 (if (< emacs-major-version 27)
     (or (assq 'compilation-in-progress minor-mode-alist)
