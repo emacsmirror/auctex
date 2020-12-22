@@ -3533,34 +3533,6 @@ function in @code{TeX-view-program-list} only works if the View command
 in @code{TeX-command-list} makes use of the hook
 @code{TeX-run-discard-or-function}.
 
-Note also that the implementation described above replaces an older one
-which was less flexible.  This old implementation works with the
-variables @code{TeX-output-view-style} and @code{TeX-view-style} which
-are used to associate file types and style options with viewers.  If
-desired you can reactivate it by using the placeholder @samp{%vv} for
-the View command in @code{TeX-command-list}.  Note however, that it is
-bound to be removed from @AUCTeX{} once the new implementation proved to
-be satisfactory.  For the time being, find a short description of the
-mentioned customization options below.
-
-@defopt TeX-output-view-style
-List of output file extensions, style options and view options.  Each
-item of the list consists of three elements.  If the first element (a
-regular expression) matches the output file extension, and the second
-element (a regular expression) matches the name of one of the style
-options, any occurrence of the string @code{%V} in a command in
-@code{TeX-command-list} will be replaced with the third element.
-@end defopt
-
-@defopt TeX-view-style
-List of style options and view options.  This is the predecessor of
-@code{TeX-output-view-style} which does not provide the possibility to
-specify output file extensions.  It is used as a fallback in case none
-of the alternatives specified in @code{TeX-output-view-style} match.  In
-case none of the entries in @code{TeX-view-style} match either, no
-suggestion for a viewer is made.
-@end defopt
-
 @node I/O Correlation
 @subsection Forward and Inverse Search
 @cindex Inverse search

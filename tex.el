@@ -522,12 +522,6 @@ string."
     ("%V" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-view-command-raw)))
-    ("%vv" (lambda ()
-	     (TeX-source-correlate-start-server-maybe)
-	     (TeX-output-style-check TeX-output-view-style)))
-    ("%v" (lambda ()
-	    (TeX-source-correlate-start-server-maybe)
-	    (TeX-style-check TeX-view-style)))
     ("%r" (lambda ()
 	    (TeX-style-check TeX-print-style)))
     ("%l" (lambda ()
@@ -1026,82 +1020,6 @@ If no mode is given the current major mode is used."
 (defgroup TeX-view nil
   "Calling viewers from AUCTeX."
   :group 'TeX-command)
-
-(defcustom TeX-view-style
-  `((,(concat
-      "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ;; The latest xdvi can show embedded postscript.  If you don't
-    ;; have that, uncomment next line.
-    ;; ("^epsf$" "ghostview %f")
-    ("." "%(o?)xdvi %dS %d"))
-  "List of style options and view options.
-
-If the first element (a regular expression) matches the name of
-one of the style files, any occurrence of the string `%v' in a
-command in `TeX-command-list' will be replaced with the second
-element.  The first match is used, if no match is found the `%v'
-is replaced with the empty string.
-
-As a default, the \"View\" command in `TeX-command-list' is set
-to `%V'.  This means that `TeX-output-view-style' will be
-consulted before `TeX-view-style'.  Only if no match is found in
-`TeX-output-view-style' the settings in `TeX-view-style' will be
-considered.  If you want to bypass `TeX-output-view-style', which
-is not recommended because it is more powerful than
-`TeX-view-style', use `%v' in the \"View\" command."
-  :group 'TeX-view
-  :type '(repeat (group regexp (string :tag "Command"))))
-
-(defcustom TeX-output-view-style
-  `(("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
-     "%(o?)dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
-    ("^dvi$" (,(concat
-		"^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ("^dvi$" ,(concat
-	       "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a5r -s 0 %d")
-    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
-    ("^html?$" "." "netscape %o"))
-  "List of output file extensions and view options.
-
-If the first element (a regular expression) matches the output
-file extension, and the second element (a regular expression)
-matches the name of one of the style options, any occurrence of
-the string `%V' in a command in `TeX-command-list' will be
-replaced with the third element.  The first match is used; if no
-match is found the `%V' is replaced with `%v'.  The outcome of `%v'
-is determined by the settings in `TeX-view-style' which therefore
-serves as a fallback for `TeX-output-view-style'.  The second
-element may also be a list of regular expressions, in which case
-all the regular expressions must match for the element to apply."
-  :group 'TeX-view
-  :type '(repeat (group
-		  (regexp :tag "Extension")
-		  (choice regexp (repeat :tag "List" regexp))
-		  (string :tag "Command"))))
-
-;;; Viewing (new implementation)
 
 (defvar TeX-view-predicate-list-builtin
   '((output-dvi
