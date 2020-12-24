@@ -28,8 +28,10 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 24)
-  (error "AUCTeX requires Emacs 24 or later"))
+(when (or (< emacs-major-version 24)
+	  (and (= emacs-major-version 24)
+	       (< emacs-minor-version 3)))
+  (error "AUCTeX requires Emacs 24.3 or later"))
 
 (require 'custom)
 (require 'tex-site)
@@ -522,12 +524,6 @@ string."
     ("%V" (lambda ()
 	    (TeX-source-correlate-start-server-maybe)
 	    (TeX-view-command-raw)))
-    ("%vv" (lambda ()
-	     (TeX-source-correlate-start-server-maybe)
-	     (TeX-output-style-check TeX-output-view-style)))
-    ("%v" (lambda ()
-	    (TeX-source-correlate-start-server-maybe)
-	    (TeX-style-check TeX-view-style)))
     ("%r" (lambda ()
 	    (TeX-style-check TeX-print-style)))
     ("%l" (lambda ()
@@ -1026,82 +1022,6 @@ If no mode is given the current major mode is used."
 (defgroup TeX-view nil
   "Calling viewers from AUCTeX."
   :group 'TeX-command)
-
-(defcustom TeX-view-style
-  `((,(concat
-      "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ;; The latest xdvi can show embedded postscript.  If you don't
-    ;; have that, uncomment next line.
-    ;; ("^epsf$" "ghostview %f")
-    ("." "%(o?)xdvi %dS %d"))
-  "List of style options and view options.
-
-If the first element (a regular expression) matches the name of
-one of the style files, any occurrence of the string `%v' in a
-command in `TeX-command-list' will be replaced with the second
-element.  The first match is used, if no match is found the `%v'
-is replaced with the empty string.
-
-As a default, the \"View\" command in `TeX-command-list' is set
-to `%V'.  This means that `TeX-output-view-style' will be
-consulted before `TeX-view-style'.  Only if no match is found in
-`TeX-output-view-style' the settings in `TeX-view-style' will be
-considered.  If you want to bypass `TeX-output-view-style', which
-is not recommended because it is more powerful than
-`TeX-view-style', use `%v' in the \"View\" command."
-  :group 'TeX-view
-  :type '(repeat (group regexp (string :tag "Command"))))
-
-(defcustom TeX-output-view-style
-  `(("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
-     "%(o?)dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
-    ("^dvi$" (,(concat
-		"^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a4r -s 0 %d")
-    ("^dvi$" ,(concat
-	       "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
-     "%(o?)xdvi %dS -paper a4 %d")
-    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-	      "^landscape$")
-     "%(o?)xdvi %dS -paper a5r -s 0 %d")
-    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
-     "%(o?)xdvi %dS -paper a5 %d")
-    ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
-    ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
-    ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
-    ("^html?$" "." "netscape %o"))
-  "List of output file extensions and view options.
-
-If the first element (a regular expression) matches the output
-file extension, and the second element (a regular expression)
-matches the name of one of the style options, any occurrence of
-the string `%V' in a command in `TeX-command-list' will be
-replaced with the third element.  The first match is used; if no
-match is found the `%V' is replaced with `%v'.  The outcome of `%v'
-is determined by the settings in `TeX-view-style' which therefore
-serves as a fallback for `TeX-output-view-style'.  The second
-element may also be a list of regular expressions, in which case
-all the regular expressions must match for the element to apply."
-  :group 'TeX-view
-  :type '(repeat (group
-		  (regexp :tag "Extension")
-		  (choice regexp (repeat :tag "List" regexp))
-		  (string :tag "Command"))))
-
-;;; Viewing (new implementation)
 
 (defvar TeX-view-predicate-list-builtin
   '((output-dvi
@@ -2215,19 +2135,19 @@ for backward compatibility."
   :group 'TeX-command)
 
 (defcustom TeX-command-BibTeX "BibTeX"
-  "*The name of the BibTeX entry in `TeX-command-list'."
+  "The name of the BibTeX entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
   (make-variable-buffer-local 'TeX-command-BibTeX)
 
 (defcustom TeX-command-Biber "Biber"
-  "*The name of the Biber entry in `TeX-command-list'."
+  "The name of the Biber entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
   (make-variable-buffer-local 'TeX-command-Biber)
 
 (defcustom TeX-command-Show "View"
-  "*The default command to show (view or print) a TeX file.
+  "The default command to show (view or print) a TeX file.
 Must be the car of an entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
@@ -2320,7 +2240,7 @@ output files."
 ;;; Master File
 
 (defcustom TeX-master t
-  "*The master file associated with the current buffer.
+  "The master file associated with the current buffer.
 If the file being edited is actually included from another file, you
 can tell AUCTeX the name of the master file by setting this variable.
 If there are multiple levels of nesting, specify the top level file.
@@ -2352,7 +2272,7 @@ the Emacs manual) to set this variable permanently for each file."
 	    (member x (quote (t nil shared dwim))))))
 
 (defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
-  "*Regular expression matching ordinary TeX files.
+  "Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, where
 automatically adding a file variable with the name of the master file
@@ -2556,14 +2476,14 @@ Return nil otherwise."
 ;;; Style Paths
 
 (defcustom TeX-style-global (expand-file-name "style" TeX-data-directory)
-  "*Directory containing hand generated TeX information.
+  "Directory containing hand generated TeX information.
 
 These correspond to TeX macros shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
 (defcustom TeX-auto-local "auto"
-  "*Directory containing automatically generated TeX information.
+  "Directory containing automatically generated TeX information.
 
 This correspond to TeX macros found in the current directory, and must
 be relative to that."
@@ -2571,7 +2491,7 @@ be relative to that."
   :type 'string)
 
 (defcustom TeX-style-local "style"
-  "*Directory containing hand generated TeX information.
+  "Directory containing hand generated TeX information.
 
 These correspond to TeX macros found in the current directory, and must
 be relative to that."
@@ -2831,7 +2751,7 @@ Texinfo files, due to ambiguous style name, as this may cause bad
 side effect e.g. on variable `TeX-font-list'.")
 
 (defcustom TeX-byte-compile nil
-  "*Not nil means try to byte compile auto files before loading."
+  "Not nil means try to byte compile auto files before loading."
   :group 'TeX-parse
   :type 'boolean)
 
@@ -3120,7 +3040,7 @@ FORCE is not nil."
   :group 'AUCTeX)
 
 (defcustom TeX-complete-word 'ispell-complete-word
-  "*Function to call for completing non-macros in `tex-mode'."
+  "Function to call for completing non-macros in `tex-mode'."
   :type 'function
   :group 'TeX-macro)
 
@@ -3274,14 +3194,14 @@ See `completion-at-point-functions'."
 	nil))))
 
 (defcustom TeX-default-macro "ref"
-  "*The default macro when creating new ones with `TeX-insert-macro'."
+  "The default macro when creating new ones with `TeX-insert-macro'."
   :group 'TeX-macro
   :type 'string)
 
 (make-variable-buffer-local 'TeX-default-macro)
 
 (defcustom TeX-insert-braces t
-  "*If non-nil, append a empty pair of braces after inserting a macro.
+  "If non-nil, append a empty pair of braces after inserting a macro.
 
 See also `TeX-insert-braces-alist'."
   :group 'TeX-macro
@@ -3666,7 +3586,7 @@ component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
      "\\\\\\(begin\\|\\(?:sub\\)\\{0,2\\}section\\|chapter\\|documentstyle\\|\
 documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
-  "*List of format packages to consider when choosing a TeX mode.
+  "List of format packages to consider when choosing a TeX mode.
 
 A list with an entry for each format package available at the site.
 
@@ -3680,14 +3600,14 @@ When entering `tex-mode', each regexp is tried in turn in order to find
 the major mode to be used.")
 
 (defcustom TeX-default-mode 'latex-mode
-  "*Mode to enter for a new file when it can't be determined otherwise."
+  "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
   :type '(radio (function-item latex-mode)
 		(function-item plain-tex-mode)
 		(function :tag "Other")))
 
 (defcustom TeX-force-default-mode nil
-  "*If set to nil, try to infer the mode of the file from its content."
+  "If set to nil, try to infer the mode of the file from its content."
   :group 'TeX-misc
   :type 'boolean)
 
@@ -3981,12 +3901,12 @@ Generated by `TeX-auto-add-type'.")
   nil)
 
 (defcustom TeX-auto-save nil
-  "*Automatically save style information when saving the buffer."
+  "Automatically save style information when saving the buffer."
   :group 'TeX-parse
   :type 'boolean)
 
 (defcustom TeX-auto-untabify nil
-  "*Automatically untabify when saving the buffer."
+  "Automatically untabify when saving the buffer."
   :group 'TeX-parse
   :type 'boolean)
 
@@ -4014,12 +3934,12 @@ Generated by `TeX-auto-add-type'.")
 	  (message "Can't write style information.")))))
 
 (defcustom TeX-macro-default (car-safe TeX-macro-private)
-  "*Default directory to search for TeX macros."
+  "Default directory to search for TeX macros."
   :group 'TeX-file
   :type 'directory)
 
 (defcustom TeX-auto-default (car-safe TeX-auto-private)
-  "*Default directory to place automatically generated TeX information."
+  "Default directory to place automatically generated TeX information."
   :group 'TeX-file
   :type 'directory)
 
@@ -4417,7 +4337,7 @@ Check for potential LaTeX environments."
   :group 'TeX-file)
 
 (defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "txi" "texinfo" "dtx")
-  "*File extensions used by manually generated TeX files."
+  "File extensions used by manually generated TeX files."
   :group 'TeX-file-extension
   :type '(repeat (regexp :format "%v")))
 
@@ -4427,7 +4347,7 @@ Check for potential LaTeX environments."
   :type '(repeat (regexp :format "%v")))
 
 (defcustom TeX-default-extension "tex"
-  "*Default extension for TeX files."
+  "Default extension for TeX files."
   :group 'TeX-file-extension
   :type 'string)
 
@@ -4439,7 +4359,7 @@ Check for potential LaTeX environments."
   "File extensions of documentation files.")
 
 (defcustom docTeX-default-extension "dtx"
-  "*Default extension for docTeX files."
+  "Default extension for docTeX files."
   :group 'TeX-file-extension
   :type 'string)
 
@@ -5384,7 +5304,7 @@ regardless of its data type."
   :group 'AUCTeX)
 
 (defcustom TeX-brace-indent-level 2
-  "*The level of indentation produced by an open brace."
+  "The level of indentation produced by an open brace."
   :group 'TeX-indentation
   :type 'integer)
 
@@ -5843,7 +5763,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 ;; The following constants are no longer used, but kept in case some
 ;; foreign code uses any of them.
 (defvar TeX-dollar-sign ?$
-  "*Character used to enter and leave math mode in TeX.")
+  "Character used to enter and leave math mode in TeX.")
 (defconst TeX-dollar-string (char-to-string TeX-dollar-sign))
 (defconst TeX-dollar-regexp
   (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"

@@ -12,6 +12,15 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now requires GNU Emacs 24.3 or higher.
+
+@item
+Old implementations for viewers were discarded, as stated long before.
+The variables @code{TeX-output-view-style} and @code{TeX-view-style}
+have no effect now. The former placeholders @samp{%v} and @samp{%vv} in
+@code{TeX-command-list} are ignored.
+
+@item
 @AUCTeX{} now uses lexical binding which has been introduced in Emacs
 24.  This change should have no user-visible effect and require no
 manual adaptions except in the following cases.
@@ -47,6 +56,14 @@ previously undeclared variables @code{title}, @code{name}, @code{level},
 @code{done-mark}, and @code{toc}.  These variables are now properly
 declared and have the @code{LaTeX-} prefix, e.g.,
 @code{LaTeX-done-mark}.
+
+@item
+The functions in @code{ConTeXt-numbered-section-hook} and
+@code{ConTeXt-unnumbered-section-hook} had access or modified the
+previously undeclared variables @code{title}, @code{name}, @code{level},
+@code{done-mark}, and @code{reference}.  These variables are now
+properly declared and have the @code{ConTeXt-} prefix, e.g.,
+@code{ConTeXt-title}.
 @end itemize
 
 @item

@@ -1,6 +1,6 @@
 ;;; context-nl.el --- Support for the ConTeXt dutch interface.
 
-;; Copyright (C) 2003, 2004, 2006, 2010, 2015 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2006, 2010, 2015, 2020 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -143,7 +143,7 @@
   "The ConTeXt macro's that are variants of item.")
 
 (defcustom ConTeXt-default-environment-nl "opsomming"
-  "*The default environment when creating new ones with `ConTeXt-environment'."
+  "The default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-nl-environment
   :type 'string)
 

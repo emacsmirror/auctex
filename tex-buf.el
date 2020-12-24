@@ -35,7 +35,7 @@
 ;;; Customization:
 
 (defcustom TeX-process-asynchronous (not (eq system-type 'ms-dos))
-  "*Use asynchronous processes."
+  "Use asynchronous processes."
   :group 'TeX-command
   :type 'boolean)
 
@@ -787,7 +787,7 @@ omitted) and `TeX-region-file'."
                                    #'TeX-command-sequence-sentinel)))))))
 
 (defcustom TeX-save-query t
-  "*If non-nil, ask user for permission to save files before starting TeX."
+  "If non-nil, ask user for permission to save files before starting TeX."
   :group 'TeX-command
   :type 'boolean)
 
@@ -952,29 +952,6 @@ depending on the last command issued."
 	(TeX-command "View" 'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
-(defun TeX-output-style-check (styles)
-  "Check STYLES compared to the current view output file extension and
-the current style options."
-  (let ((ext  (TeX-output-extension))
-	(files (TeX-style-list)))
-    (while (and
-	    styles
-	    (or
-	     (not (string-match (car (car styles)) ext))
-	     (let ((style (nth 1 (car styles))))
-	       (cond
-		((listp style)
-		 (while
-		     (and style
-			  (TeX-member (car style) files 'string-match))
-		   (setq style (cdr style)))
-		 style)
-		((not (TeX-member style files 'string-match)))))))
-      (setq styles (cdr styles)))
-    (if styles
-	(nth 2 (car styles))
-      "%v")))
-
 ;;; Command Hooks
 
 (defvar TeX-after-compilation-finished-functions nil
@@ -1063,7 +1040,7 @@ requires special treatment."
       (set-process-coding-system process cs cs))))
 
 (defcustom TeX-show-compilation nil
-  "*If non-nil, show output of TeX compilation in other window."
+  "If non-nil, show output of TeX compilation in other window."
   :group 'TeX-command
   :type 'boolean)
 
@@ -1851,12 +1828,6 @@ variable is nil."
 
 ;;; Process Control
 
-
-;; This variable is shared with `compile.el'.
-;; FIXME: Then it should not be defvar'd here!
-(defvar compilation-in-progress nil
-  "List of compilation processes now running.")
-
 ;; COMPATIBILITY for emacs < 27
 (if (< emacs-major-version 27)
     (or (assq 'compilation-in-progress minor-mode-alist)
@@ -2060,7 +2031,7 @@ The compatibility argument IGNORE is ignored."
 ;;; Region File
 
 (defcustom TeX-region-extra ""
-  "*String to insert in the region file between the header and the text."
+  "String to insert in the region file between the header and the text."
   :group 'TeX-command
   :type 'string)
 
@@ -2269,7 +2240,7 @@ The compatibility argument IGNORE is ignored."
 		 TeX-region))))
 
 (defcustom TeX-region "_region_"
-  "*Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
+  "Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
   :group 'TeX-command
   :type 'string)
 

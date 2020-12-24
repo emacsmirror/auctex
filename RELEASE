@@ -75,7 +75,7 @@ More bugs fixed, other minor features implemented.
 Requirements
 ------------
 
-It is required that you use at least GNU Emacs 24.
+It is required that you use at least GNU Emacs 24.3.
 
 The preview-latex subsystem requires image support.
 

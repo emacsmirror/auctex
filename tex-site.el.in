@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016-2018 Free Software Foundation, Inc.
+;; Copyright (C) 2005, 2013, 2016-2018, 2020 Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -38,8 +38,10 @@
 
 ;;; Code:
 
-(if (< emacs-major-version 24)
-    (error "AUCTeX requires Emacs 24 or later"))
+(when (or (< emacs-major-version 24)
+	  (and (= emacs-major-version 24)
+	       (< emacs-minor-version 3)))
+  (error "AUCTeX requires Emacs 24.3 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
@@ -74,7 +76,7 @@ TeX-auto-* (automatically generated lisp).")
 
 (defcustom TeX-auto-global
     @lispautodir@
-  "*Directory containing automatically generated information.
+  "Directory containing automatically generated information.
 
 For storing automatic extracted information about the TeX macros
 shared by all users of a site."

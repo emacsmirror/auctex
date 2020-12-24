@@ -226,7 +226,7 @@ systems are determined by their values regardless of the kanji option."
 	  '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
 (defcustom japanese-TeX-error-messages t
-  "*If non-nil, explain TeX error messages in Japanese."
+  "If non-nil, explain TeX error messages in Japanese."
   :group 'AUCTeX-jp
   :type 'boolean)
 
@@ -245,7 +245,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
   :type '(choice (const :tag "Default" nil) coding-system))
 
 (defcustom japanese-LaTeX-default-style "jarticle"
-  "*Default when creating new Japanese documents."
+  "Default when creating new Japanese documents."
   :group 'AUCTeX-jp
   :type 'string)
 
@@ -265,7 +265,7 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
     ;; for upLaTeX
     ("ujarticle") ("ujreport") ("ujbook")
     ("utarticle") ("utreport") ("utbook"))
-  "*List of Japanese document classes."
+  "List of Japanese document classes."
   :group 'AUCTeX-jp
   :type '(repeat (group (string :format "%v"))))
 

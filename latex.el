@@ -61,7 +61,7 @@
 ;;; Style
 
 (defcustom LaTeX-default-style "article"
-  "*Default when creating new documents."
+  "Default when creating new documents."
   :group 'LaTeX-environment
   :type 'string)
 
@@ -74,7 +74,7 @@ A comma-seperated list of strings."
 (make-variable-buffer-local 'LaTeX-default-options)
 
 (defcustom LaTeX-insert-into-comments t
-  "*Whether insertion commands stay in comments.
+  "Whether insertion commands stay in comments.
 This allows using the insertion commands even when
 the lines are outcommented, like in dtx files."
   :group 'LaTeX-environment
@@ -544,7 +544,7 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
   :group 'LaTeX-macro)
 
 (defcustom LaTeX-default-environment "itemize"
-  "*The default environment when creating new ones with `LaTeX-environment'.
+  "The default environment when creating new ones with `LaTeX-environment'.
 It is overridden by `LaTeX-default-document-environment' when it
 is non-nil and the current environment is \"document\"."
   :group 'LaTeX-environment
@@ -960,7 +960,7 @@ optional argument is omitted.)"
 (make-variable-buffer-local 'LaTeX-float)
 
 (defcustom LaTeX-top-caption-list nil
-  "*List of float environments with top caption."
+  "List of float environments with top caption."
   :group 'LaTeX-environment
   :type '(repeat (string :format "%v")))
 
@@ -969,7 +969,7 @@ optional argument is omitted.)"
   :group 'LaTeX)
 
 (defcustom LaTeX-label-function nil
-  "*A function inserting a label at point or returning a label string.
+  "A function inserting a label at point or returning a label string.
 Sole mandatory argument of the function is the environment.  The
 function has to return the label inserted, or nil if no label was
 inserted.  If the optional argument NO-INSERT is non-nil, then
@@ -979,13 +979,13 @@ insertion or nil if no label was read in."
   :type 'function)
 
 (defcustom LaTeX-figure-label "fig:"
-  "*Default prefix to figure labels."
+  "Default prefix to figure labels."
   :group 'LaTeX-label
   :group 'LaTeX-environment
   :type 'string)
 
 (defcustom LaTeX-table-label "tab:"
-  "*Default prefix to table labels."
+  "Default prefix to table labels."
   :group 'LaTeX-label
   :group 'LaTeX-environment
   :type 'string)
@@ -1020,12 +1020,12 @@ If nil, act like the empty string is given, but do not prompt."
 (make-variable-buffer-local 'LaTeX-default-position)
 
 (defcustom LaTeX-equation-label "eq:"
-  "*Default prefix to equation labels."
+  "Default prefix to equation labels."
   :group 'LaTeX-label
   :type 'string)
 
 (defcustom LaTeX-eqnarray-label LaTeX-equation-label
-  "*Default prefix to eqnarray labels."
+  "Default prefix to eqnarray labels."
   :group 'LaTeX-label
   :type 'string)
 
@@ -3260,17 +3260,17 @@ consideration just as is in the non-commented source code."
   :group 'TeX-indentation)
 
 (defcustom LaTeX-indent-level 2
-  "*Indentation of begin-end blocks in LaTeX."
+  "Indentation of begin-end blocks in LaTeX."
   :group 'LaTeX-indentation
   :type 'integer)
 
 (defcustom LaTeX-item-indent (- LaTeX-indent-level)
-  "*Extra indentation for lines beginning with an item."
+  "Extra indentation for lines beginning with an item."
   :group 'LaTeX-indentation
   :type 'integer)
 
 (defcustom LaTeX-item-regexp "\\(bib\\)?item\\b"
-  "*Regular expression matching macros considered items."
+  "Regular expression matching macros considered items."
   :group 'LaTeX-indentation
   :type 'regexp)
 
@@ -3304,7 +3304,7 @@ functions, see `LaTeX-fill-region-as-paragraph'."
 		       (option function))))
 
 (defcustom LaTeX-indent-environment-check t
-  "*If non-nil, check for any special environments."
+  "If non-nil, check for any special environments."
   :group 'LaTeX-indentation
   :type 'boolean)
 
@@ -3314,29 +3314,29 @@ functions, see `LaTeX-fill-region-as-paragraph'."
   :type 'regexp)
 
 (defcustom LaTeX-verbatim-regexp "verbatim\\*?"
-  "*Regexp matching environments with indentation at col 0 for begin/end."
+  "Regexp matching environments with indentation at col 0 for begin/end."
   :group 'LaTeX-indentation
   :type 'regexp)
 (make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
 			"2014-12-19")
 
 (defcustom LaTeX-begin-regexp "begin\\b\\|\\["
-  "*Regexp matching macros considered begins."
+  "Regexp matching macros considered begins."
   :group 'LaTeX-indentation
   :type 'regexp)
 
 (defcustom LaTeX-end-regexp "end\\b\\|\\]"
-  "*Regexp matching macros considered ends."
+  "Regexp matching macros considered ends."
   :group 'LaTeX-indentation
   :type 'regexp)
 
 (defcustom LaTeX-left-right-indent-level LaTeX-indent-level
-  "*The level of indentation produced by a \\left macro."
+  "The level of indentation produced by a \\left macro."
   :group 'LaTeX-indentation
   :type 'integer)
 
 (defcustom LaTeX-indent-comment-start-regexp "%"
-  "*Regexp matching comments ending the indent level count.
+  "Regexp matching comments ending the indent level count.
 This means, we just count the LaTeX tokens \\left, \\right, \\begin,
 and \\end up to the first occurence of text matching this regexp.
 Thus, the default \"%\" stops counting the tokens at a comment.  A
@@ -5657,7 +5657,7 @@ environments."
     (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
 
 (defcustom LaTeX-menu-max-items 25
-  "*Maximum number of items in the menu for LaTeX environments.
+  "Maximum number of items in the menu for LaTeX environments.
 If number of entries in a menu is larger than this value, split menu
 into submenus of nearly equal length.  If nil, never split menu into
 submenus."
@@ -5666,7 +5666,7 @@ submenus."
 		 (integer)))
 
 (defcustom LaTeX-submenu-name-format "%-12.12s ... %.12s"
-  "*Format specification of the submenu name.
+  "Format specification of the submenu name.
 Used by `LaTeX-split-long-menu' if the number of entries in a menu is
 larger than `LaTeX-menu-max-items'.
 This string should contain one %s for the name of the first entry and
@@ -6001,23 +6001,23 @@ Install tool bar if `LaTeX-enable-toolbar' is non-nil."
   :group 'TeX-macro)
 
 (defcustom TeX-arg-cite-note-p nil
-  "*If non-nil, ask for optional note in citations."
+  "If non-nil, ask for optional note in citations."
   :type 'boolean
   :group 'LaTeX-macro)
 
 (defcustom TeX-arg-footnote-number-p nil
-  "*If non-nil, ask for optional number in footnotes."
+  "If non-nil, ask for optional number in footnotes."
   :type 'boolean
   :group 'LaTeX-macro)
 
 (defcustom TeX-arg-item-label-p nil
-  "*If non-nil, always ask for optional label in items.
+  "If non-nil, always ask for optional label in items.
 Otherwise, only ask in description environments."
   :type 'boolean
   :group 'LaTeX-macro)
 
 (defcustom TeX-arg-right-insert-p t
-  "*If non-nil, always insert automatically the corresponding \\right.
+  "If non-nil, always insert automatically the corresponding \\right.
 This happens when \\left is inserted."
   :type 'boolean
   :group 'LaTeX-macro)
