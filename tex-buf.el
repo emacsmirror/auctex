@@ -952,29 +952,6 @@ depending on the last command issued."
 	(TeX-command "View" 'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
-(defun TeX-output-style-check (styles)
-  "Check STYLES compared to the current view output file extension and
-the current style options."
-  (let ((ext  (TeX-output-extension))
-	(files (TeX-style-list)))
-    (while (and
-	    styles
-	    (or
-	     (not (string-match (car (car styles)) ext))
-	     (let ((style (nth 1 (car styles))))
-	       (cond
-		((listp style)
-		 (while
-		     (and style
-			  (TeX-member (car style) files 'string-match))
-		   (setq style (cdr style)))
-		 style)
-		((not (TeX-member style files 'string-match)))))))
-      (setq styles (cdr styles)))
-    (if styles
-	(nth 2 (car styles))
-      "%v")))
-
 ;;; Command Hooks
 
 (defvar TeX-after-compilation-finished-functions nil
