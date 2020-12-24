@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 12.3.1.2020-12-20 from 2020-12-20), a
+This manual is for AUCTeX (version 12.3.1.2020-12-24 from 2020-12-24), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -4095,33 +4095,6 @@ the variable in place.  In addition, the use of a function in
 'TeX-view-program-list' only works if the View command in
 'TeX-command-list' makes use of the hook 'TeX-run-discard-or-function'.
 
-   Note also that the implementation described above replaces an older
-one which was less flexible.  This old implementation works with the
-variables 'TeX-output-view-style' and 'TeX-view-style' which are used to
-associate file types and style options with viewers.  If desired you can
-reactivate it by using the placeholder '%vv' for the View command in
-'TeX-command-list'.  Note however, that it is bound to be removed from
-AUCTeX once the new implementation proved to be satisfactory.  For the
-time being, find a short description of the mentioned customization
-options below.
-
- -- User Option: TeX-output-view-style
-     List of output file extensions, style options and view options.
-     Each item of the list consists of three elements.  If the first
-     element (a regular expression) matches the output file extension,
-     and the second element (a regular expression) matches the name of
-     one of the style options, any occurrence of the string '%V' in a
-     command in 'TeX-command-list' will be replaced with the third
-     element.
-
- -- User Option: TeX-view-style
-     List of style options and view options.  This is the predecessor of
-     'TeX-output-view-style' which does not provide the possibility to
-     specify output file extensions.  It is used as a fallback in case
-     none of the alternatives specified in 'TeX-output-view-style'
-     match.  In case none of the entries in 'TeX-view-style' match
-     either, no suggestion for a viewer is made.
-
 
 File: auctex.info,  Node: I/O Correlation,  Prev: Starting Viewers,  Up: Viewing
 
@@ -5897,8 +5870,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 12.3.1.2020-12-20 from
-2020-12-20), a sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 12.3.1.2020-12-24 from
+2020-12-24), a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
 Foundation, Inc.
@@ -6407,6 +6380,13 @@ A.2 Changes and New Features
 News in 13.0
 ------------
 
+   * AUCTeX now requires GNU Emacs 24.3 or higher.
+
+   * Old implementations for viewers were discarded, as stated long
+     before.  The variables 'TeX-output-view-style' and 'TeX-view-style'
+     have no effect now.  The former placeholders '%v' and '%vv' in
+     'TeX-command-list' are ignored.
+
    * AUCTeX now uses lexical binding which has been introduced in Emacs
      24.  This change should have no user-visible effect and require no
      manual adaptions except in the following cases.
@@ -6437,6 +6417,13 @@ News in 13.0
           'done-mark', and 'toc'.  These variables are now properly
           declared and have the 'LaTeX-' prefix, e.g.,
           'LaTeX-done-mark'.
+
+        * The functions in 'ConTeXt-numbered-section-hook' and
+          'ConTeXt-unnumbered-section-hook' had access or modified the
+          previously undeclared variables 'title', 'name', 'level',
+          'done-mark', and 'reference'.  These variables are now
+          properly declared and have the 'ConTeXt-' prefix, e.g.,
+          'ConTeXt-title'.
 
    * The constant 'LaTeX-dialect' has been renamed to 'TeX-dialect' and
      moved from 'latex.el' to 'tex.el'.  'LaTeX-dialect' now is an
@@ -7829,7 +7816,7 @@ A.4 Frequently Asked Questions
 
   2. What versions of Emacs are supported?
 
-     AUCTeX was tested with GNU Emacs 24.  Older versions may work but
+     AUCTeX was tested with GNU Emacs 24.3.  Older versions may work but
      are unsupported.
 
   3. What should I do when './configure' does not find programs like
@@ -8656,7 +8643,6 @@ Variable Index
 * TeX-one-master:                        Multifile.           (line  58)
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
-* TeX-output-view-style:                 Starting Viewers.    (line 116)
 * TeX-parse-all-errors:                  Debugging.           (line  35)
 * TeX-parse-self:                        Parsing Files.       (line  37)
 * TeX-parse-self <1>:                    Japanese.            (line   6)
@@ -8686,7 +8672,6 @@ Variable Index
 * TeX-view-predicate-list:               Starting Viewers.    (line  56)
 * TeX-view-program-list:                 Starting Viewers.    (line  65)
 * TeX-view-program-selection:            Starting Viewers.    (line  36)
-* TeX-view-style:                        Starting Viewers.    (line 125)
 * Texinfo-clean-intermediate-suffixes:   Cleaning.            (line   7)
 * Texinfo-clean-output-suffixes:         Cleaning.            (line   7)
 * Texinfo-mode-hook:                     Modes and Hooks.     (line  21)
@@ -8762,7 +8747,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 710)
+* auctex.el <1>:                         Changes.             (line 724)
 * auto directories.:                     Automatic.           (line   6)
 * Auto-Reveal:                           Folding.             (line   6)
 * Automatic:                             Automatic.           (line   6)
@@ -9066,7 +9051,7 @@ Concept Index
                                                               (line 257)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 710)
+* tex-site.el <2>:                       Changes.             (line 724)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9141,50 +9126,50 @@ Node: Selecting a Command152983
 Node: Processor Options162067
 Node: Viewing172414
 Node: Starting Viewers172788
-Node: I/O Correlation179915
-Node: Debugging185113
-Node: Ignoring warnings187732
-Node: Error overview189792
-Node: Checking191703
-Node: Control193296
-Node: Cleaning194023
-Node: Documentation195316
-Node: Customization196031
-Node: Modes and Hooks196524
-Node: Multifile198344
-Node: Parsing Files203156
-Node: Internationalization208068
-Node: European209381
-Node: Japanese216191
-Node: Automatic221262
-Node: Automatic Global223753
-Node: Automatic Private224885
-Node: Automatic Local226198
-Node: Style Files227230
-Node: Simple Style228023
-Node: Adding Macros231676
-Node: Adding Environments241011
-Node: Adding Other245672
-Node: Hacking the Parser246259
-Node: Appendices250128
-Node: Copying this Manual250424
-Node: GNU Free Documentation License251318
-Node: Changes276439
-Node: Development325161
-Node: Mid-term Goals325807
-Node: Wishlist327664
-Node: Bugs333105
-Node: FAQ334208
-Node: Texinfo mode339335
-Node: Exploiting340471
-Node: Superseding341291
-Node: Mapping345495
-Node: Unbinding347324
-Node: Indices348145
-Node: Key Index348308
-Node: Function Index354924
-Node: Variable Index365807
-Node: Concept Index389085
+Node: I/O Correlation178432
+Node: Debugging183630
+Node: Ignoring warnings186249
+Node: Error overview188309
+Node: Checking190220
+Node: Control191813
+Node: Cleaning192540
+Node: Documentation193833
+Node: Customization194548
+Node: Modes and Hooks195041
+Node: Multifile196861
+Node: Parsing Files201673
+Node: Internationalization206585
+Node: European207898
+Node: Japanese214708
+Node: Automatic219779
+Node: Automatic Global222270
+Node: Automatic Private223402
+Node: Automatic Local224715
+Node: Style Files225747
+Node: Simple Style226540
+Node: Adding Macros230193
+Node: Adding Environments239528
+Node: Adding Other244189
+Node: Hacking the Parser244776
+Node: Appendices248645
+Node: Copying this Manual248941
+Node: GNU Free Documentation License249835
+Node: Changes274956
+Node: Development324338
+Node: Mid-term Goals324984
+Node: Wishlist326841
+Node: Bugs332282
+Node: FAQ333385
+Node: Texinfo mode338514
+Node: Exploiting339650
+Node: Superseding340470
+Node: Mapping344674
+Node: Unbinding346503
+Node: Indices347324
+Node: Key Index347487
+Node: Function Index354103
+Node: Variable Index364986
+Node: Concept Index388118
 
 End Tag Table
 
