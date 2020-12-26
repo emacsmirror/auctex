@@ -688,7 +688,7 @@ environment just inserted, the buffer position just before
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert LaTeX ENVIRONMENT with optional argument EXTRA."
   (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
-	prefix content-start env-start env-end)
+	prefix content-start env-start env-end additional-indent)
     (when (and active-mark (< (mark) (point))) (exchange-point-and-mark))
     ;; Compute the prefix.
     (when (and LaTeX-insert-into-comments (TeX-in-commented-line))
@@ -722,7 +722,11 @@ environment just inserted, the buffer position just before
 	   ;; created.
 	   (beginning-of-line)
 	   (newline)
-	   (beginning-of-line 0))
+	   (beginning-of-line 0)
+	   ;; Take note that there are texts to be indented later
+	   ;; unless the region is activated.
+	   (unless active-mark
+	     (setq additional-indent t)))
 	  (;; In all other cases...
 	   t
 	   ;; ...insert a new empty line after deleting all
@@ -736,7 +740,11 @@ environment just inserted, the buffer position just before
 	     ;; prefix.
 	     (newline 2)
 	     (when prefix (insert prefix))
-	     (beginning-of-line 0))))
+	     (beginning-of-line 0)
+	     ;; Take note that there are texts to be indented later
+	     ;; unless the region is activated.
+	     (unless active-mark
+	       (setq additional-indent t)))))
     ;; What to do with the line containing mark.
     ;; If there is active region...
     (when active-mark
@@ -769,7 +777,9 @@ environment just inserted, the buffer position just before
 	       ;; line just created.
 	       (beginning-of-line)
 	       (set-mark (point))
-	       (newline))
+	       (newline)
+	       ;; Take note that there are texts to be indented later.
+	       (setq additional-indent t))
 	      (;; In all other cases...
 	       t
 	       ;; ...make a new empty line after deleting all
@@ -782,7 +792,10 @@ environment just inserted, the buffer position just before
 	       ;; possible comment prefix.
 	       (unless (eolp)
 		 (newline)
-		 (when prefix (insert prefix)))))))
+		 (when prefix (insert prefix))
+		 ;; Take note that there are texts to be indented
+		 ;; later.
+		 (setq additional-indent t))))))
     ;; Now insert the environment.
     (when prefix (insert prefix))
     (setq env-start (point))
@@ -806,7 +819,12 @@ environment just inserted, the buffer position just before
 		  (LaTeX-fill-region content-start (line-beginning-position 2))))
 	  (set-mark content-start))
       (indent-according-to-mode))
-    (save-excursion (beginning-of-line 2) (indent-according-to-mode))
+    ;; Indent \end{foo}.
+    (save-excursion (beginning-of-line 2) (indent-according-to-mode)
+		    (when additional-indent
+		      ;; Indent texts sent after the inserted
+		      ;; environment.
+		      (forward-line 1) (indent-according-to-mode)))
     (TeX-math-input-method-off)
     (setq env-end (save-excursion
 		    (search-forward
