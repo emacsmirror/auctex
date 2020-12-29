@@ -35,9 +35,9 @@
  "luatextra"
  (lambda ()
    (TeX-run-style-hooks "ifluatex" "fontspec"
-			;; FIXME: yet to be written:
-			;; "luatexbase"
-			"metalogo" "luacode"))
+                        ;; FIXME: yet to be written:
+                        ;; "luatexbase"
+                        "metalogo" "luacode"))
  TeX-dialect)
 
 (defvar LaTeX-luatextra-package-options nil

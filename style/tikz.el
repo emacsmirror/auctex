@@ -47,12 +47,12 @@
 
 (defconst TeX-TikZ-relative-point-function-map
   (apply #'append (mapcar
-		   (lambda (point-map)
-		     (let ((key (car point-map))
-			   (value (cadr point-map)))
-		       `((,(concat "+" key) ,value "+")
-			 (,(concat "++" key) ,value "++"))))
-		   TeX-TikZ-point-function-map))
+                   (lambda (point-map)
+                     (let ((key (car point-map))
+                           (value (cadr point-map)))
+                       `((,(concat "+" key) ,value "+")
+                         (,(concat "++" key) ,value "++"))))
+                   TeX-TikZ-point-function-map))
   "`TeX-TikZ-point-function-map' with \"+\" and \"++\" as a
 prefix.")
 

@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-tcolorbox-keyval-options-local)
 (defvar LaTeX-tcolorbox-keyval-options-full)
@@ -90,26 +90,26 @@
   (LaTeX-insert-environment
    environment
    (let ((opts (TeX-read-key-val t (append
-				    LaTeX-tcolorbox-lib-raster-keyval-options
-				    LaTeX-tcolorbox-keyval-options-local)
-				 (when (string= environment "tcboxeditemize")
-				   "Raster options (k=v)")))
-	 (box-opts (when (string= environment "tcboxeditemize")
-		     (TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
-				       "Box options (k=v)"))))
+                                    LaTeX-tcolorbox-lib-raster-keyval-options
+                                    LaTeX-tcolorbox-keyval-options-local)
+                                 (when (string= environment "tcboxeditemize")
+                                   "Raster options (k=v)")))
+         (box-opts (when (string= environment "tcboxeditemize")
+                     (TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
+                                       "Box options (k=v)"))))
      (concat
       (when (and opts (not (string= opts "")))
-	(format "[%s]" opts))
+        (format "[%s]" opts))
       (when (string= environment "tcboxeditemize")
-	(format "{%s}" box-opts)))))
+        (format "{%s}" box-opts)))))
   (if (TeX-active-mark)
       (progn
-	(LaTeX-find-matching-begin)
-	(end-of-line 1))
+        (LaTeX-find-matching-begin)
+        (end-of-line 1))
     (end-of-line 0))
   (delete-char 1)
   (when (looking-at (concat "^[ \t]+$\\|"
-			    "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
+                            "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
     (delete-region (point) (line-end-position)))
   (delete-horizontal-space)
   ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
@@ -120,9 +120,9 @@
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
   (when (and (not (looking-at "$"))
-	     (not (assoc environment LaTeX-indent-environment-list))
-	     (> (- (line-end-position) (line-beginning-position))
-		(current-fill-column)))
+             (not (assoc environment LaTeX-indent-environment-list))
+             (> (- (line-end-position) (line-beginning-position))
+                (current-fill-column)))
     (LaTeX-fill-paragraph nil)))
 
 (defun LaTeX-tcolorbox-lib-raster-insert-item ()
@@ -135,8 +135,8 @@
 
    ;; Append key-vals from library to `LaTeX-tcolorbox-keyval-options-full':
    (setq LaTeX-tcolorbox-keyval-options-full
-	 (append LaTeX-tcolorbox-lib-raster-keyval-options
-		 LaTeX-tcolorbox-keyval-options-full))
+         (append LaTeX-tcolorbox-lib-raster-keyval-options
+                 LaTeX-tcolorbox-keyval-options-full))
 
    (TeX-add-symbols
     ;; 14.2 Macros of the Library
@@ -148,56 +148,56 @@
     ;; 14.2 Macros of the Library
     '("tcbraster"
       (lambda (env)
-	(LaTeX-insert-environment
-	 env
-	 (let ((raster-opts
-		(TeX-read-key-val t (append
-				     LaTeX-tcolorbox-lib-raster-keyval-options
-				     LaTeX-tcolorbox-keyval-options-local))))
-	   (when (and raster-opts (not (string= raster-opts "")))
-	     (concat LaTeX-optop raster-opts LaTeX-optcl))))))
+        (LaTeX-insert-environment
+         env
+         (let ((raster-opts
+                (TeX-read-key-val t (append
+                                     LaTeX-tcolorbox-lib-raster-keyval-options
+                                     LaTeX-tcolorbox-keyval-options-local))))
+           (when (and raster-opts (not (string= raster-opts "")))
+             (concat LaTeX-optop raster-opts LaTeX-optcl))))))
 
     '("tcbitemize" LaTeX-tcolorbox-lib-raster-env-item)
 
     '("tcboxedraster"
       (lambda (env)
-	(LaTeX-insert-environment
-	 env
-	 (let ((raster-opts
-		(TeX-read-key-val t (append
-				     LaTeX-tcolorbox-lib-raster-keyval-options
-				     LaTeX-tcolorbox-keyval-options-local)
-				  "Raster options (k=v)"))
-	       (box-opts
-		(TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
-				  "Box options (k=v)")))
-	   (concat
-	    (when (and raster-opts (not (string= raster-opts "")))
-	      (concat LaTeX-optop raster-opts LaTeX-optcl))
-	    TeX-grop box-opts TeX-grcl)))))
+        (LaTeX-insert-environment
+         env
+         (let ((raster-opts
+                (TeX-read-key-val t (append
+                                     LaTeX-tcolorbox-lib-raster-keyval-options
+                                     LaTeX-tcolorbox-keyval-options-local)
+                                  "Raster options (k=v)"))
+               (box-opts
+                (TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
+                                  "Box options (k=v)")))
+           (concat
+            (when (and raster-opts (not (string= raster-opts "")))
+              (concat LaTeX-optop raster-opts LaTeX-optcl))
+            TeX-grop box-opts TeX-grcl)))))
 
     '("tcboxeditemize" LaTeX-tcolorbox-lib-raster-env-item))
 
    ;; Append tcb(oxed)?itemize to `LaTeX-item-list':
    (add-to-list 'LaTeX-item-list
-		'("tcbitemize" . LaTeX-tcolorbox-lib-raster-insert-item) t)
+                '("tcbitemize" . LaTeX-tcolorbox-lib-raster-insert-item) t)
    (add-to-list 'LaTeX-item-list
-		'("tcboxeditemize" . LaTeX-tcolorbox-lib-raster-insert-item) t)
+                '("tcboxeditemize" . LaTeX-tcolorbox-lib-raster-insert-item) t)
 
    ;; Append tcbitem to `LaTeX-item-regexp':
    (unless (string-match "tcbitem" LaTeX-item-regexp)
      (set (make-local-variable 'LaTeX-item-regexp)
-	  (concat
-	   LaTeX-item-regexp
-	   "\\|"
-	   "tcbitem\\b"))
+          (concat
+           LaTeX-item-regexp
+           "\\|"
+           "tcbitem\\b"))
      (LaTeX-set-paragraph-start))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("tcbitem" "["))
-			      'textual)))
+                              'textual)))
  TeX-dialect)
 
 ;;; tcolorboxlib-raster.el ends here

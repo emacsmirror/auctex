@@ -82,16 +82,16 @@
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/in)
              (LaTeX-mode)
-	     (let ((fill-column 70))
-	       (fill-paragraph)
-	       (let ((cmds '("captionsetup" "caption"
-			     "parencite"    "par")))
-		 (dolist (cmd cmds)
-		   (search-forward (concat "\\" cmd))
-		   (save-excursion
-		     (end-of-line 0)
-		     (fill-paragraph)))))
-	     (buffer-string))
+             (let ((fill-column 70))
+               (fill-paragraph)
+               (let ((cmds '("captionsetup" "caption"
+                             "parencite"    "par")))
+                 (dolist (cmd cmds)
+                   (search-forward (concat "\\" cmd))
+                   (save-excursion
+                     (end-of-line 0)
+                     (fill-paragraph)))))
+             (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
              (buffer-string)))))
@@ -103,12 +103,12 @@
   (should (string=
            (with-temp-buffer
              (LaTeX-mode)
-	     (LaTeX-insert-environment (concat TeX-esc "foo{bar}"))
-	     (LaTeX-modify-environment "foobar")
+             (LaTeX-insert-environment (concat TeX-esc "foo{bar}"))
+             (LaTeX-modify-environment "foobar")
              (buffer-string))
            (with-temp-buffer
              (LaTeX-mode)
-	     (LaTeX-insert-environment "foobar")
+             (LaTeX-insert-environment "foobar")
              (buffer-string)))))
 
 ;; Test for inserting &'s with `M-RET' in various tabular environment.
@@ -116,20 +116,20 @@
 ;; dcolumn, siunitx
 (ert-deftest LaTeX-count-ampersands-inserted-in-tabular ()
   (should (string=
-	   (with-temp-buffer
-	     (insert-file-contents tabular-count-ampersands/in)
-	     (setq TeX-parse-self t)
-	     (LaTeX-mode)
-	     (goto-char (point-min))
-	     ;; Do not ask for opt. argument in (TeX-insert-macro "\\"):
-	     (let ((TeX-insert-macro-default-style 'mandatory-args-only))
-	       (while (search-forward "LaTeX-insert-item" nil t)
-		 (LaTeX-insert-item)))
-	     (buffer-string))
-	   (with-temp-buffer
-	     (insert-file-contents tabular-count-ampersands/out)
-	     (LaTeX-mode)
-	     (buffer-string)))))
+           (with-temp-buffer
+             (insert-file-contents tabular-count-ampersands/in)
+             (setq TeX-parse-self t)
+             (LaTeX-mode)
+             (goto-char (point-min))
+             ;; Do not ask for opt. argument in (TeX-insert-macro "\\"):
+             (let ((TeX-insert-macro-default-style 'mandatory-args-only))
+               (while (search-forward "LaTeX-insert-item" nil t)
+                 (LaTeX-insert-item)))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents tabular-count-ampersands/out)
+             (LaTeX-mode)
+             (buffer-string)))))
 
 (ert-deftest LaTeX-addbibresource ()
   "Check parsing of bibliography files added with addbibresource.
@@ -142,7 +142,7 @@ last extension is stripped."
       (insert "\\addbibresource{../foo-1.bar_2.qux3.ext}")
       (LaTeX-mode)
       (let ((TeX-parse-self t))
-	(TeX-update-style t))
+        (TeX-update-style t))
       (LaTeX-bibliography-list))
     '(("../foo-1.bar_2.qux3")))))
 
@@ -160,7 +160,7 @@ backend=biber % here is a comment
       (TeX-update-style t))
     (should (member "biblatex" (TeX-style-list)))
     (should (LaTeX-provided-package-options-member
-	     "biblatex" "backend=biber"))))
+             "biblatex" "backend=biber"))))
 
 (ert-deftest LaTeX-includegraphics-extensions ()
   "Check correct extensions are generated accoding to `TeX-engine'."
@@ -170,53 +170,53 @@ backend=biber % here is a comment
   ;; `luatex'.
   ;; c.f. https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31718
   :expected-result (if (and (= emacs-major-version 26)
-			    (= emacs-minor-version 1))
-		       :failed
-		     :passed)
+                            (= emacs-minor-version 1))
+                       :failed
+                     :passed)
   (with-temp-buffer
     (LaTeX-mode)
     (TeX-load-style "graphicx")
     (let (TeX-engine TeX-PDF-mode TeX-PDF-from-DVI
-		     TeX-PDF-via-dvips-ps2pdf TeX-DVI-via-PDFTeX)
+                     TeX-PDF-via-dvips-ps2pdf TeX-DVI-via-PDFTeX)
       ;; tests for default engine
       (setq TeX-engine 'default)
       ;; default 1
       (setq TeX-PDF-mode t
-	    TeX-PDF-from-DVI nil
-	    TeX-DVI-via-PDFTeX nil)
+            TeX-PDF-from-DVI nil
+            TeX-DVI-via-PDFTeX nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
       ;; default 2
       (setq TeX-PDF-mode t
-	    TeX-PDF-from-DVI "Dvips"
-	    TeX-DVI-via-PDFTeX nil)
+            TeX-PDF-from-DVI "Dvips"
+            TeX-DVI-via-PDFTeX nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "mps" "EPS") #'string<)))
+              (sort '("eps" "mps" "EPS") #'string<)))
       ;; default 3
       (setq TeX-PDF-mode nil
-	    TeX-PDF-from-DVI nil
-	    TeX-DVI-via-PDFTeX nil)
+            TeX-PDF-from-DVI nil
+            TeX-DVI-via-PDFTeX nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "mps" "EPS") #'string<)))
+              (sort '("eps" "mps" "EPS") #'string<)))
       ;; default 4
       (setq TeX-PDF-mode nil
-	    TeX-PDF-from-DVI nil
-	    TeX-DVI-via-PDFTeX t)
+            TeX-PDF-from-DVI nil
+            TeX-DVI-via-PDFTeX t)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
       ;; default 5
       (setq TeX-PDF-mode t
-	    TeX-PDF-from-DVI "Dvipdfmx"
-	    TeX-DVI-via-PDFTeX nil)
+            TeX-PDF-from-DVI "Dvipdfmx"
+            TeX-DVI-via-PDFTeX nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
+              (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
 
       ;; tests for luatex engine
       (setq TeX-engine 'luatex)
@@ -224,38 +224,38 @@ backend=biber % here is a comment
       (setq TeX-PDF-mode t)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-		      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
+                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
       ;; luatex 2
       (setq TeX-PDF-mode nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "mps" "EPS") #'string<)))
+              (sort '("eps" "mps" "EPS") #'string<)))
 
       ;; test for xetex engine
       (setq TeX-engine 'xetex)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jp2" "jpf"
-		      "PDF" "EPS" "MPS" "PS" "PNG" "JPE?G" "JP2" "JPF"
-		      "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
-		      "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
-		    #'string<)))
+              (sort '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jp2" "jpf"
+                      "PDF" "EPS" "MPS" "PS" "PNG" "JPE?G" "JP2" "JPF"
+                      "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
+                      "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
+                    #'string<)))
 
       ;; test for other engine
       (setq TeX-engine 'omega)
       ;; other 1
       (setq TeX-PDF-mode t
-	    TeX-PDF-from-DVI "Dvipdfmx")
+            TeX-PDF-from-DVI "Dvipdfmx")
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
+              (sort '("eps" "mps" "EPS" "jpe?g" "pdf" "png") #'string<)))
       ;; other 2
       (setq TeX-PDF-mode nil
-	    TeX-PDF-from-DVI nil)
+            TeX-PDF-from-DVI nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-	      (sort '("eps" "jpe?g" "pdf" "png") #'string<))))))
+              (sort '("eps" "jpe?g" "pdf" "png") #'string<))))))
 
 (ert-deftest LaTeX-style-hook-with-class-option ()
   "Check style hooks associated with class option are processed."
@@ -264,9 +264,9 @@ backend=biber % here is a comment
       ;; test for dvips option
       ;; This depends on the following code in latex.el:
       ;; (TeX-add-style-hook "dvips"
-      ;;		      (lambda ()
-      ;;			(setq TeX-PDF-from-DVI "Dvips"))
-      ;;		      :classopt)
+      ;;                      (lambda ()
+      ;;                        (setq TeX-PDF-from-DVI "Dvips"))
+      ;;                      :classopt)
       (insert "\\documentclass[dvips]{article}\n")
       (latex-mode)
       (TeX-update-style)
@@ -277,13 +277,13 @@ backend=biber % here is a comment
       (erase-buffer)
       ;; This depends on the following code in latex.el:
       ;; (TeX-add-style-hook "dvipdfmx"
-      ;; 		      (lambda ()
-      ;; 			(TeX-PDF-mode-on)
-      ;; 			;; XeLaTeX normally don't use dvipdfmx
-      ;; 			;; explicitly.
-      ;; 			(unless (eq TeX-engine 'xetex)
-      ;; 			  (setq TeX-PDF-from-DVI "Dvipdfmx")))
-      ;; 		      :classopt)
+      ;;                      (lambda ()
+      ;;                        (TeX-PDF-mode-on)
+      ;;                        ;; XeLaTeX normally don't use dvipdfmx
+      ;;                        ;; explicitly.
+      ;;                        (unless (eq TeX-engine 'xetex)
+      ;;                          (setq TeX-PDF-from-DVI "Dvipdfmx")))
+      ;;                      :classopt)
       (insert "\\documentclass[dvipdfmx]{article}\n")
       (latex-mode)
       (TeX-update-style)
@@ -295,7 +295,7 @@ backend=biber % here is a comment
       ;; XeLaTeX document
       (latex-mode)
       (let ((TeX-engine 'xetex))
-	(TeX-update-style))
+        (TeX-update-style))
       (should TeX-PDF-mode)
       (should (not (TeX-PDF-from-DVI)))
       (should (not (member "dvipdfmx" TeX-active-styles)))
@@ -328,7 +328,7 @@ backend=biber % here is a comment
   ;; prefix, or both.
   (with-temp-buffer
     (let ((transient-mark-mode t)
-	  (LaTeX-insert-into-comments t))
+          (LaTeX-insert-into-comments t))
       (latex-mode)
       (auto-fill-mode 1)
 
@@ -345,8 +345,8 @@ backend=biber % here is a comment
       (beginning-of-line 2) ; just before the first "%".
       (LaTeX-insert-environment "verbatim")
       (should (string=
-	       (buffer-string)
-	       "\\begin{document}
+               (buffer-string)
+               "\\begin{document}
 % \\begin{verbatim}
 % This is a comment
 \\def\\foo#1{foo}
@@ -368,8 +368,8 @@ backend=biber % here is a comment
       (beginning-of-line 2) ; just before the first "%".
       (LaTeX-insert-environment "verbatim")
       (should (string=
-	       (buffer-string)
-	       "\\begin{document}
+               (buffer-string)
+               "\\begin{document}
 % \\begin{verbatim}
 % This is a comment
 \\def\\foo#1{foo}
@@ -393,8 +393,8 @@ backend=biber % here is a comment
       (beginning-of-line 2) ; just before the first "%".
       (LaTeX-insert-environment "verbatim")
       (should (string=
-	       (buffer-string)
-	       "\\begin{document}
+               (buffer-string)
+               "\\begin{document}
 \\begin{verbatim}
 % This is a comment
 \\def\\foo#1{foo}
@@ -414,8 +414,8 @@ backend=biber % here is a comment
       (goto-char 8) ; just after "def"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "abc
+               (buffer-string)
+               "abc
 \\begin{center}
   def
 \\end{center}
@@ -430,8 +430,8 @@ ghi")
       (set-mark (line-end-position)) ; just after "def"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "abc
+               (buffer-string)
+               "abc
 \\begin{center}
   def
 \\end{center}
@@ -450,8 +450,8 @@ ghi"))
       (beginning-of-line 2) ; just before the first "%"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "\\begin{quote}
+               (buffer-string)
+               "\\begin{quote}
   % \\begin{center}
   %   abc
   %   def
@@ -475,8 +475,8 @@ ghi"))
       (beginning-of-line 2) ; just before the first "  %"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "\\begin{quote}
+               (buffer-string)
+               "\\begin{quote}
   % \\begin{center}
   %   abc
   %   def
@@ -501,8 +501,8 @@ ghi"))
       (forward-char 2) ; just before the first "%"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "\\begin{quote}
+               (buffer-string)
+               "\\begin{quote}
   % \\begin{center}
   %   abc
   %   def
@@ -526,8 +526,8 @@ ghi"))
       (beginning-of-line 2) ; just before the first "  %"
       (LaTeX-insert-environment "center")
       (should (string=
-	       (buffer-string)
-	       "\\begin{quote}
+               (buffer-string)
+               "\\begin{quote}
   \\begin{center}
     % abc
     % def

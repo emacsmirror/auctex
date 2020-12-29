@@ -38,12 +38,12 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function reftex-compile-variables
-		  "reftex"
-		  ())
+                  "reftex"
+                  ())
 
 (defvar LaTeX-subfiles-package-options nil
   "Package options for the subfiles package.")
@@ -67,7 +67,7 @@
    (let ((master-file (cadr (assoc "subfiles" LaTeX-provided-class-options))))
      (when (stringp master-file)
        (TeX-run-style-hooks
-	(file-name-sans-extension master-file))))
+        (file-name-sans-extension master-file))))
 
    (TeX-add-symbols
     '("subfile" TeX-arg-file)
@@ -81,16 +81,16 @@
    ;; subfile(s) when master file is loaded.
    (TeX-auto-add-regexp
     `(,(concat
-	"\\\\subfile\\(?:include\\)?"
-	"{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}")
+        "\\\\subfile\\(?:include\\)?"
+        "{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}")
       1 TeX-auto-file))
 
    ;; Tell RefTeX the same thing.
    (when (and (boundp 'reftex-include-file-commands)
-	      (not (string-match "subfile"
-				 (mapconcat #'identity
-					    reftex-include-file-commands
-					    "|"))))
+              (not (string-match "subfile"
+                                 (mapconcat #'identity
+                                            reftex-include-file-commands
+                                            "|"))))
      (make-local-variable 'reftex-include-file-commands)
      (add-to-list 'reftex-include-file-commands "subfile\\(?:include\\)?" t)
      (reftex-compile-variables))
@@ -98,10 +98,10 @@
    ;; The following code will fontify \subfile{} and
    ;; \subfileinclude{} like \input.
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("subfile"        "{")
-				("subfileinclude" "{"))
-			      'reference)))
+                                ("subfileinclude" "{"))
+                              'reference)))
  TeX-dialect)
 
 ;;; subfiles.el ends here

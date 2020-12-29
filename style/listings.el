@@ -52,18 +52,18 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 ;; The following are options taken from chapter 4 of the listings
 ;; manual (2007/02/22 Version 1.4).
 (defvar LaTeX-listings-key-val-options
   '(;; Space and placement
     ("float" ("t" "b" "p" "h")) ; Support [*] as an optional prefix and that
-				; tbph are not exclusive.
+                                ; tbph are not exclusive.
     ("floatplacement" ("t" "b" "p" "h"))
     ("aboveskip")
     ("belowskip")
@@ -147,10 +147,10 @@
     ("breakautoindent" ("true" "false"))
     ;; Frames
     ("frame" ("none" "leftline" "topline" "bottomline" "lines" "single"
-	      "shadowbox"
-	      ;; Alternative to the above values.  A subset of trblTRBL can be
-	      ;; given.
-	      "t" "r" "b" "l" "T" "R" "B" "L"))
+              "shadowbox"
+              ;; Alternative to the above values.  A subset of trblTRBL can be
+              ;; given.
+              "t" "r" "b" "l" "T" "R" "B" "L"))
     ("frameround" ("t" "f")) ; The input actually has to be four times {t,f}.
     ("framesep")
     ("rulesep")
@@ -171,8 +171,8 @@
     ("indexstyle")
     ;; Column alignment
     ("columns" ("fixed" "flexible" "fullflexible" "spaceflexible")) ;
-					; Also supports an optional
-					; argument with {c,l,r}.
+                                        ; Also supports an optional
+                                        ; argument with {c,l,r}.
     ("flexiblecolumns" ("true" "false"))
     ("keepspaces" ("true" "false"))
     ("basewidth")
@@ -257,9 +257,9 @@ from `listings' package.")
 
 (defvar LaTeX-listings-lstnewenvironment-regexp
   `(,(concat "\\\\lstnewenvironment"
-	     "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
-	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
-	     "[ \t\n\r]*\\(\\[\\)?")
+             "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
+             "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
+             "[ \t\n\r]*\\(\\[\\)?")
     (1 2 3) LaTeX-auto-listings-lstnewenvironment)
   "Matches the argument of `\\lstnewenvironment' from `listings.sty'.")
 
@@ -284,14 +284,14 @@ from `listings' package.")
   "Update the \"style\" key from `LaTeX-listings-key-val-options-local'
 with user-defined values via the \"lstdefinestyle\" macro."
   (let* ((elt (assoc "style" LaTeX-listings-key-val-options-local))
-	 (key (car elt))
-	 (temp (copy-alist LaTeX-listings-key-val-options-local))
-	 (opts (assq-delete-all (car (assoc key temp)) temp)))
+         (key (car elt))
+         (temp (copy-alist LaTeX-listings-key-val-options-local))
+         (opts (assq-delete-all (car (assoc key temp)) temp)))
     (cl-pushnew (list key (TeX-delete-duplicate-strings
-			   (mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
-		opts :test #'equal)
+                           (mapcar #'car (LaTeX-listings-lstdefinestyle-list))))
+                opts :test #'equal)
     (setq LaTeX-listings-key-val-options-local
-	  (copy-alist opts))))
+          (copy-alist opts))))
 
 (defun LaTeX-listings-auto-prepare ()
   "Clear temporary variable from `listings.sty' before parsing."
@@ -303,42 +303,42 @@ with user-defined values via the \"lstdefinestyle\" macro."
 \"\\lstdefinestyle\"."
   (dolist (env-args LaTeX-auto-listings-lstnewenvironment)
     (let ((env  (car   env-args))
-	  (args (cadr  env-args))
-	  (opt  (nth 2 env-args)))
+          (args (cadr  env-args))
+          (opt  (nth 2 env-args)))
       (cond (;; opt. 1st argument and mandatory argument(s)
-	     (and args (not (string-equal args ""))
-		  opt  (not (string-equal opt  "")))
-	     (LaTeX-add-environments
-	      `(,env
-		LaTeX-env-args
-		[TeX-arg-key-val LaTeX-listings-key-val-options-local]
-		(LaTeX-env-label-as-keyval "caption")
-		,(1- (string-to-number args)))))
-	    (;; mandatory argument(s) only
-	     (and args (not (string-equal args ""))
-		  (string-equal opt ""))
-	     (LaTeX-add-environments
-	      (list env (string-to-number args))))
-	    (t ; No args
-	     (LaTeX-add-environments (list env))))
+             (and args (not (string-equal args ""))
+                  opt  (not (string-equal opt  "")))
+             (LaTeX-add-environments
+              `(,env
+                LaTeX-env-args
+                [TeX-arg-key-val LaTeX-listings-key-val-options-local]
+                (LaTeX-env-label-as-keyval "caption")
+                ,(1- (string-to-number args)))))
+            (;; mandatory argument(s) only
+             (and args (not (string-equal args ""))
+                  (string-equal opt ""))
+             (LaTeX-add-environments
+              (list env (string-to-number args))))
+            (t ; No args
+             (LaTeX-add-environments (list env))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env t)
       (add-to-list 'LaTeX-label-alist `(,env . LaTeX-listing-label) t)
       ;; Add new env to parser for labels in opt. argument:
       (TeX-auto-add-regexp `(,(concat "\\\\begin{" env "}"
-				      (LaTeX-extract-key-value-label))
-			     1 LaTeX-auto-label))
+                                      (LaTeX-extract-key-value-label))
+                             1 LaTeX-auto-label))
       ;; Tell RefTeX
       (when (fboundp 'reftex-add-label-environments)
-	(reftex-add-label-environments
-	 `((,env ?l "lst:" "~\\ref{%s}"
-		 LaTeX-listings-reftex-label-context-function
-		 (regexp "[Ll]isting")))))
+        (reftex-add-label-environments
+         `((,env ?l "lst:" "~\\ref{%s}"
+                 LaTeX-listings-reftex-label-context-function
+                 (regexp "[Ll]isting")))))
       ;; Fontification
       (when (and (fboundp 'font-latex-add-keywords)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	;; Tell font-lock about the update.
-	(font-latex-set-syntactic-keywords))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        ;; Tell font-lock about the update.
+        (font-latex-set-syntactic-keywords))
       ;; Add new env's to `ispell-tex-skip-alist': skip the entire env
       (TeX-ispell-skip-setcdr `(,(cons env (concat "\\\\end{" env "}"))))))
   (when (LaTeX-listings-lstdefinestyle-list)
@@ -353,32 +353,32 @@ with user-defined values via the \"lstdefinestyle\" macro."
 The context string is the value given to the caption key.  If no
 caption key is found, an error is issued."
   (let* ((envstart (save-excursion
-		     (re-search-backward (concat "\\\\begin{" env "}")
-					 nil t)))
-	 (capt-key (save-excursion
-		     (re-search-backward "caption[ \t\n\r%]*=[ \t\n\r%]*"
-					 envstart t)))
-	 capt-start capt-end)
+                     (re-search-backward (concat "\\\\begin{" env "}")
+                                         nil t)))
+         (capt-key (save-excursion
+                     (re-search-backward "caption[ \t\n\r%]*=[ \t\n\r%]*"
+                                         envstart t)))
+         capt-start capt-end)
     (if capt-key
-	(save-excursion
-	  (goto-char capt-key)
-	  (re-search-forward
-	   "caption[ \t\n\r%]*=[ \t\n\r%]*" nil t)
-	  (cond (;; Short caption inside [] is available, extract it only
-		 (looking-at-p (regexp-quote (concat TeX-grop LaTeX-optop)))
-		 (forward-char)
-		 (setq capt-start (1+ (point)))
-		 (setq capt-end (1- (progn (forward-sexp) (point)))))
-		;; Extract the entire caption which is enclosed in braces
-		((looking-at-p TeX-grop)
-		 (setq capt-start (1+ (point)))
-		 (setq capt-end (1- (progn (forward-sexp) (point)))))
-		;; Extract everything to next comma ,
-		(t
-		 (setq capt-start (point))
-		 (setq capt-end (progn (skip-chars-forward "^,") (point)))))
-	  ;; Return the extracted string
-	  (buffer-substring-no-properties capt-start capt-end))
+        (save-excursion
+          (goto-char capt-key)
+          (re-search-forward
+           "caption[ \t\n\r%]*=[ \t\n\r%]*" nil t)
+          (cond (;; Short caption inside [] is available, extract it only
+                 (looking-at-p (regexp-quote (concat TeX-grop LaTeX-optop)))
+                 (forward-char)
+                 (setq capt-start (1+ (point)))
+                 (setq capt-end (1- (progn (forward-sexp) (point)))))
+                ;; Extract the entire caption which is enclosed in braces
+                ((looking-at-p TeX-grop)
+                 (setq capt-start (1+ (point)))
+                 (setq capt-end (1- (progn (forward-sexp) (point)))))
+                ;; Extract everything to next comma ,
+                (t
+                 (setq capt-start (point))
+                 (setq capt-end (progn (skip-chars-forward "^,") (point)))))
+          ;; Return the extracted string
+          (buffer-substring-no-properties capt-start capt-end))
       (error "No caption found"))))
 
 (TeX-add-style-hook
@@ -392,7 +392,7 @@ caption key is found, an error is issued."
 
    ;; Local version of key-val options:
    (setq LaTeX-listings-key-val-options-local
-	 (copy-alist LaTeX-listings-key-val-options))
+         (copy-alist LaTeX-listings-key-val-options))
 
    ;; New symbols
    (TeX-add-symbols
@@ -400,10 +400,10 @@ caption key is found, an error is issued."
     '("lstdefinestyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string "Style name: ")))
-	   (LaTeX-add-listings-lstdefinestyles name)
-	   (LaTeX-listings-update-style-key)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string "Style name: ")))
+           (LaTeX-add-listings-lstdefinestyles name)
+           (LaTeX-listings-update-style-key)
+           (format "%s" name))))
       (TeX-arg-key-val LaTeX-listings-key-val-options-local))
     '("lstinline" [TeX-arg-key-val LaTeX-listings-key-val-options-local]
       TeX-arg-verb-delim-or-brace)
@@ -433,7 +433,7 @@ caption key is found, an error is issued."
 
    ;; Filling
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("lstlisting" current-indentation) t)
+                '("lstlisting" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "lstlisting")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "lstinline")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "lstinline")
@@ -444,28 +444,28 @@ caption key is found, an error is issued."
    (when (fboundp 'reftex-add-label-environments)
      (reftex-add-label-environments
       '(("lstlisting" ?l "lst:" "~\\ref{%s}"
-	 LaTeX-listings-reftex-label-context-function
-	 (regexp "[Ll]isting")))))
+         LaTeX-listings-reftex-label-context-function
+         (regexp "[Ll]isting")))))
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lstnewenvironment" "{[[{{")) 'function)
      (font-latex-add-keywords '(("lstinputlisting" "[{")) 'reference)
      (font-latex-add-keywords '(("lstinline" "[")
-				("lstlistoflistings" ""))
-			      'textual)
+                                ("lstlistoflistings" ""))
+                              'textual)
      (font-latex-add-keywords '(("lstalias" "{{")
-				("lstdefinestyle" "{{")
-				("lstset" "{"))
-			      'variable)))
+                                ("lstdefinestyle" "{{")
+                                ("lstset" "{"))
+                              'variable)))
  TeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"
-					 "noaspects"
-					 ;; procnames is mentioned in
-					 ;; Section 5.2
-					 "procnames")
+                                         "noaspects"
+                                         ;; procnames is mentioned in
+                                         ;; Section 5.2
+                                         "procnames")
   "Package options for the listings package.")
 
 ;;; listings.el ends here

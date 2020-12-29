@@ -37,7 +37,7 @@
 
 ;; * Supported properties:
 ;; - All editors: `:insert', `:image', `:command', `:help', `:enable',
-;;		  `:append-command' and `:prepend-command';
+;;                `:append-command' and `:prepend-command';
 ;; - Emacs only: `:visible' and `:button';
 ;; - XEmacs only: `:toolbar'.
 ;; For the precise value-type for each property, see documentation of
@@ -63,7 +63,7 @@
 ;; Properties can be distributed to several buttons, using \`groups\'.
 ;; Example: (for (bar baz :toolbar (bottom . top) :insert foo-form)
 ;; means that `foo', `bar' and `baz' have `:insert foo-form' and `bar' and
-;; `baz' have the property `:toolbar (bottom .	top)'.	(ps: this type
+;; `baz' have the property `:toolbar (bottom .  top)'.  (ps: this type
 ;; of value for the `:toolbar' property (XEmacs only) means that the
 ;; buttons will be in the bottom toolbar unless the default toolbar is
 ;; in the bottom, and in this case, this buttons go to the top
@@ -120,14 +120,14 @@
 (defvar toolbarx-image-path
   (nconc
    (delq nil (mapcar #'(lambda(x)
-			 (and x
-			      (member
-			       (file-name-nondirectory
-				(directory-file-name x))
-			       '("toolbar" "images"))
-			      ;;(file-directory-p x)
-			      x))
-		     load-path))
+                         (and x
+                              (member
+                               (file-name-nondirectory
+                                (directory-file-name x))
+                               '("toolbar" "images"))
+                              ;;(file-directory-p x)
+                              x))
+                     load-path))
    (list data-directory))
   "List of directories where toolbarx finds its images.")
 
@@ -151,22 +151,22 @@
   "Return a string from the name of a SYMBOL.
 Upcase initials and replace dashes by spaces."
   (let* ((str (upcase-initials (symbol-name symbol)))
-	 (str2))
+         (str2))
     (dolist (i (append str nil))
-      (if (eq i 45)			; if dash, push space
-	  (push 32 str2)
-	(push i str2)))			; else push identical
+      (if (eq i 45)                     ; if dash, push space
+          (push 32 str2)
+        (push i str2)))                 ; else push identical
     (concat (nreverse str2))))
 
 (defun toolbarx-make-symbol-from-string (string)
   "Return a (intern) symbol from STRING.
 Downcase string and replace spaces by dashes."
   (let* ((str1 (append (downcase string) nil))
-	 (str2))
+         (str2))
     (dolist (i str1)
-      (if (eq i 32)			; if dash, push space
-	  (push 45 str2)
-	(push i str2)))
+      (if (eq i 32)                     ; if dash, push space
+          (push 45 str2)
+        (push i str2)))
     (intern (concat (nreverse str2)))))
 
 (defun toolbarx-good-option-list-p (option-list valid-options)
@@ -174,41 +174,41 @@ Downcase string and replace spaces by dashes."
 Each OPT is member of VALID-OPTIONS and OPT are pairwise
 different.  OPTION-LIST equal to nil is a good option list."
   (let ((elt-in-valid t)
-	(temp-opt-list option-list)
-	(list-diff)
-	(n (/ (length option-list) 2)))
+        (temp-opt-list option-list)
+        (list-diff)
+        (n (/ (length option-list) 2)))
     (dotimes (i n)
       (when (> i 0)
-	(setq temp-opt-list (cddr temp-opt-list)))
+        (setq temp-opt-list (cddr temp-opt-list)))
       (cl-pushnew (car temp-opt-list) list-diff :test #'equal)
       (setq elt-in-valid (and elt-in-valid
-			      (memq (car temp-opt-list)
-				    valid-options))))
-    (and elt-in-valid			; options are on VALID-OPTOPNS
-	 ;; OPTION-LIST has all option different from each other
-	 (eq (length list-diff) n)
-	 ;; OPTION-LIST has even number of elements
-	 (eq (% (length option-list) 2) 0))))
+                              (memq (car temp-opt-list)
+                                    valid-options))))
+    (and elt-in-valid                   ; options are on VALID-OPTOPNS
+         ;; OPTION-LIST has all option different from each other
+         (eq (length list-diff) n)
+         ;; OPTION-LIST has even number of elements
+         (eq (% (length option-list) 2) 0))))
 
 (defun toolbarx-separate-options (group-list valid-options &optional check)
   "Return a cons cell with non-options and options of GROUP-LIST.
 The options-part is the largest tail of the list GROUP-LIST that
 has an element of VALID-OPTIONS (the comparation is made with
 `memq'.)  The non-options-part is the beginning of GROUP-LIST
-less its tail.	Return a cons cell which `car' is the
+less its tail.  Return a cons cell which `car' is the
 non-options-part and the `cdr' is the options-part.
 
 If CHECK is non-nil, the tail is the largest that yield non-nil
 when applied to `toolbarx-good-option-list-p'."
   (let ((maximal)
-	(temp))
+        (temp))
     (dolist (i valid-options)
       (setq temp (memq i group-list))
       (when (and (> (length temp) (length maximal))
-		 (if check
-		     (toolbarx-good-option-list-p temp valid-options)
-		   t))
-	(setq maximal (memq i group-list))))
+                 (if check
+                     (toolbarx-good-option-list-p temp valid-options)
+                   t))
+        (setq maximal (memq i group-list))))
     (cons (butlast group-list (length maximal)) maximal)))
 
 
@@ -225,33 +225,33 @@ INNER-PROPS is used.  The value of a property in ADD will be a
 list with first element the symbol `:add-value-list' and the rest
 are the properties, inner properties first."
   (let* ((merged)
-	 (inner-prop)
-	 (outer-prop))
+         (inner-prop)
+         (outer-prop))
     (dolist (prop override)
       (if (memq prop inner-props)
-	  (setq merged (append merged
-			       (list prop (cadr (memq prop inner-props)))))
-	(when (memq prop outer-props)
-	  (setq merged (append merged
-			       (list prop (cadr (memq prop outer-props))))))))
+          (setq merged (append merged
+                               (list prop (cadr (memq prop inner-props)))))
+        (when (memq prop outer-props)
+          (setq merged (append merged
+                               (list prop (cadr (memq prop outer-props))))))))
     (dolist (prop add merged)
       (setq inner-prop (memq prop inner-props))
       (when inner-prop
-	(if (and (listp (cadr inner-prop))
-		 (eq (car (cadr inner-prop)) :add-value-list))
-	    (setq inner-prop (cdr (cadr inner-prop)))
-	  (setq inner-prop (list (cadr inner-prop)))))
+        (if (and (listp (cadr inner-prop))
+                 (eq (car (cadr inner-prop)) :add-value-list))
+            (setq inner-prop (cdr (cadr inner-prop)))
+          (setq inner-prop (list (cadr inner-prop)))))
       (setq outer-prop (memq prop outer-props))
       (when outer-prop
-	(if (and (listp (cadr outer-prop))
-		 (eq (car (cadr outer-prop)) :add-value-list))
-	    (setq outer-prop (cdr (cadr outer-prop)))
-	  (setq outer-prop (list (cadr outer-prop)))))
+        (if (and (listp (cadr outer-prop))
+                 (eq (car (cadr outer-prop)) :add-value-list))
+            (setq outer-prop (cdr (cadr outer-prop)))
+          (setq outer-prop (list (cadr outer-prop)))))
       (when (append inner-prop outer-prop)
-	(setq merged (append merged
-			     (list prop (cons :add-value-list
-					      (append inner-prop
-						      outer-prop)))))))))
+        (setq merged (append merged
+                             (list prop (cons :add-value-list
+                                              (append inner-prop
+                                                      outer-prop)))))))))
 
 (defun toolbarx-make-command (comm prep app)
   "Return a command made from COMM, PREP and APP.
@@ -261,16 +261,16 @@ beginning and end, respectively.  If both are nil and COMM is a
 command, COMM is returned."
   (let ((comm-is-command (commandp comm)))
     (if (and (not prep)
-	     (not app)
-	     comm-is-command)
-	comm
+             (not app)
+             comm-is-command)
+        comm
       (append '(lambda nil (interactive))
-	      (when prep (list prep))
-	      (when comm
-		(if comm-is-command
-		    `((call-interactively (function ,comm)))
-		  (list comm)))
-	      (when app (list app))))))
+              (when prep (list prep))
+              (when comm
+                (if comm-is-command
+                    `((call-interactively (function ,comm)))
+                  (list comm)))
+              (when app (list app))))))
 
 ;; in Emacs, menus are made of keymaps (vectors are possible, but editors
 ;; handle `menu titles' differently) meanwhile in XEmacs, menus are lists of
@@ -284,65 +284,65 @@ inside Emacs. See documentation of that function for more."
   ;; making the menu keymap by adding each menu-item definition
   ;; see (info "(elisp)Menu keymaps")
   (let* ((keymap (make-sparse-keymap title))
-	 (count 1)
-	 (used-symbols '(nil))
-	 (key)
-	 (real-type (if (eq type 'toggle) 'toggle 'radio))
-	 (real-save (when save (if (eq save 'offer) 'offer 'always))))
+         (count 1)
+         (used-symbols '(nil))
+         (key)
+         (real-type (if (eq type 'toggle) 'toggle 'radio))
+         (real-save (when save (if (eq save 'offer) 'offer 'always))))
     ;; warn if type is not `radio' ot `toggle'; use `radio' if incorrect.
     (unless (eq type real-type)
       (display-warning 'toolbarx
-		       (format (concat "TYPE should be symbols `radio' or "
-				       "`toggle', but %s found; using `radio'")
-			       type)))
+                       (format (concat "TYPE should be symbols `radio' or "
+                                       "`toggle', but %s found; using `radio'")
+                               type)))
     ;; warn if save is not `nil', `offer' or `always'; use nil when incorrect
     (unless (eq save real-save)
       (setq real-save nil)
       (display-warning 'toolbarx
-		       (format (concat "SAVE should be symbols `nil', "
-				       "`offer' or `always', but %s found; "
-				       "using `nil'")
-			       save)))
+                       (format (concat "SAVE should be symbols `nil', "
+                                       "`offer' or `always', but %s found; "
+                                       "using `nil'")
+                               save)))
     (dolist (i strings)
       ;; finding a new symbol
       (let* ((aux-count 0)
-	     (i-symb (toolbarx-make-symbol-from-string i)))
-	(setq key i-symb)
-	(while (memq key used-symbols)
-	  (setq aux-count (1+ aux-count))
-	  (setq key (intern (format "%s-%d" i-symb aux-count))))
-	(setq used-symbols (cons key used-symbols)))
+             (i-symb (toolbarx-make-symbol-from-string i)))
+        (setq key i-symb)
+        (while (memq key used-symbols)
+          (setq aux-count (1+ aux-count))
+          (setq key (intern (format "%s-%d" i-symb aux-count))))
+        (setq used-symbols (cons key used-symbols)))
       (define-key-after keymap (vector key)
-	`(menu-item ,i
-		    ,(append
-		      `(lambda nil (interactive)
-			 ,(if (eq real-type 'radio)
-			      `(setq ,var ,count)
-			    `(if (memq ,count ,var)
-				 (setq ,var (delete ,count ,var))
-			       (setq ,var (sort (cons ,count ,var) '<))))
-			 (toolbarx-refresh))
-		      (when (eq real-save 'always)
-			`((customize-save-variable
-			   (quote ,var) ,var)))
-		      `(,var))
-		    :button ,(if (eq real-type 'radio)
-				 `(:radio eq ,var ,count)
-			       `(:toggle memq ,count ,var))))
+        `(menu-item ,i
+                    ,(append
+                      `(lambda nil (interactive)
+                         ,(if (eq real-type 'radio)
+                              `(setq ,var ,count)
+                            `(if (memq ,count ,var)
+                                 (setq ,var (delete ,count ,var))
+                               (setq ,var (sort (cons ,count ,var) '<))))
+                         (toolbarx-refresh))
+                      (when (eq real-save 'always)
+                        `((customize-save-variable
+                           (quote ,var) ,var)))
+                      `(,var))
+                    :button ,(if (eq real-type 'radio)
+                                 `(:radio eq ,var ,count)
+                               `(:toggle memq ,count ,var))))
       (setq count (1+ count)))
     (when (eq real-save 'offer)
       (define-key-after keymap [sep] '(menu-item "--shadow-etched-in-dash"))
       (let* ((aux-count 0)
-	     (i-symb 'custom-save))
-	(setq key i-symb)
-	(while (memq key used-symbols)
-	  (setq aux-count (1+ aux-count))
-	  (setq key (intern (format "%s-%d" i-symb aux-count))))
-	(setq used-symbols (cons key used-symbols)))
+             (i-symb 'custom-save))
+        (setq key i-symb)
+        (while (memq key used-symbols)
+          (setq aux-count (1+ aux-count))
+          (setq key (intern (format "%s-%d" i-symb aux-count))))
+        (setq used-symbols (cons key used-symbols)))
       (define-key-after keymap (vector key)
-	`(menu-item "Save state of this menu"
-		    (lambda nil (interactive)
-		      (customize-save-variable (quote ,var) ,var)))))
+        `(menu-item "Save state of this menu"
+                    (lambda nil (interactive)
+                      (customize-save-variable (quote ,var) ,var)))))
     ;; returns a `lambda'-expression
     `(lambda nil (interactive) (popup-menu (quote ,keymap)))))
 
@@ -356,7 +356,7 @@ VAR is a symbol that is set when an item is clicked.  TYPE should
 be one of the symbols `radio' or `toggle': `radio' means that the
 nth item is selected if VAR is `n' and this item sets VAR to `n';
 `toggle' means that VAR should be a list of integers and the nth
-item is selected if `n' belongs to VAR.	 The item inserts or
+item is selected if `n' belongs to VAR.  The item inserts or
 deletes `n' from VAR.
 
 TITLE is a string (the title of the popup menu) or nil for no
@@ -375,7 +375,7 @@ If OPT is vector and length is smaller than the necessary, then
 nil is returned."
   (if (vectorp opt)
       (when (> (length opt) 0)
-	(aref opt 0))
+        (aref opt 0))
     opt))
 
 (defun toolbarx-eval-function-or-symbol (object type-test-func)
@@ -386,21 +386,21 @@ cons cell in the same format as the return of this function.
 
 If OBJECT applied to TYPE-TEST-FUNC return (GOOD-OBJ . VAL), and
 GOOD-OBJ is non-nil, return that.  Else, check if OBJECT is a
-function.  If so, evaluate and test again with TYPE-TEST-FUNC.	If
+function.  If so, evaluate and test again with TYPE-TEST-FUNC.  If
 not a function or if GOOD-OBJ is again nil, test if OBJECT is a
 bound symbol, evaluate that and return the result of
 TYPE-TEST-FUNC."
   (let* ((ret (funcall type-test-func object)))
     (unless (car ret)
       (if (functionp object)
-	  (progn
-	    (setq ret (funcall type-test-func (funcall object)))
-	    (unless (car ret)
-	      (when (and (symbolp object) (boundp object))
-		(setq ret (funcall type-test-func (symbol-value object))))))
-	;; ok, obj is not function; try symbol
-	(when (and (symbolp object) (boundp object))
-	  (setq ret (funcall type-test-func (symbol-value object))))))
+          (progn
+            (setq ret (funcall type-test-func (funcall object)))
+            (unless (car ret)
+              (when (and (symbolp object) (boundp object))
+                (setq ret (funcall type-test-func (symbol-value object))))))
+        ;; ok, obj is not function; try symbol
+        (when (and (symbolp object) (boundp object))
+          (setq ret (funcall type-test-func (symbol-value object))))))
     ret))
 
 (defun toolbarx-test-image-type (obj)
@@ -408,29 +408,29 @@ TYPE-TEST-FUNC."
 GOOD-OBJ is non-nil if OBJ yields a valid image object VAL (see
 documentation of function `toolbarx-process-symbol')."
   (let ((toolbarx-test-image-type-simple
-	 (lambda (img)
-	   (let* ((val (toolbarx-option-value img))
-		  (all-obj-ok t)
-		  (good-obj
-		   (or (stringp val)	  ; string
-		       (and (consp val) ; or image descriptor
-			    (eq (car val) 'image))
-		       (and (symbolp val) ; or a symbol bound to a
-			    (boundp val)  ; image descriptor
-					; (defined with `defimage')
-			    (consp (eval val))
-			    (eq (car (eval val)) 'image))
-		       (and (listp val) ; or list with 4 strings or
-					; image descriptors
-			    (= (length val) 4)
-			    (dolist (i val all-obj-ok)
-			      (setq all-obj-ok
-				    (and all-obj-ok
-					 (or (stringp i)
-					     (and (consp i)
-						  (eq (car i)
-						      'image))))))))))
-	     (cons good-obj val)))))
+         (lambda (img)
+           (let* ((val (toolbarx-option-value img))
+                  (all-obj-ok t)
+                  (good-obj
+                   (or (stringp val)      ; string
+                       (and (consp val) ; or image descriptor
+                            (eq (car val) 'image))
+                       (and (symbolp val) ; or a symbol bound to a
+                            (boundp val)  ; image descriptor
+                                        ; (defined with `defimage')
+                            (consp (eval val))
+                            (eq (car (eval val)) 'image))
+                       (and (listp val) ; or list with 4 strings or
+                                        ; image descriptors
+                            (= (length val) 4)
+                            (dolist (i val all-obj-ok)
+                              (setq all-obj-ok
+                                    (and all-obj-ok
+                                         (or (stringp i)
+                                             (and (consp i)
+                                                  (eq (car i)
+                                                      'image))))))))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-image-type-simple)))
 
 (defun toolbarx-test-button-type (obj)
@@ -438,12 +438,12 @@ documentation of function `toolbarx-process-symbol')."
 GOOD-OBJ is non-nil if OBJ yields a valid button object VAL (see
 documentation of function `toolbarx-process-symbol')."
   (let ((toolbarx-test-button-type-simple
-	 (lambda (but)
-	   (let* ((val (toolbarx-option-value but))
-		  (good-obj
-		   (and (consp val)
-			(memq (car val) '(:toggle :radio)))))
-	     (cons good-obj val)))))
+         (lambda (but)
+           (let* ((val (toolbarx-option-value but))
+                  (good-obj
+                   (and (consp val)
+                        (memq (car val) '(:toggle :radio)))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-button-type-simple)))
 
 (defun toolbarx-test-any-type (obj)
@@ -457,11 +457,11 @@ OBJ, because it is a form anyway."
 GOOD-OBJ is non-nil if OBJ yields a valid help object VAL (see
 documentation of function `toolbarx-process-symbol')."
   (let ((toolbarx-test-string-or-nil-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (good-obj (or (stringp val)
-				(not val))))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (good-obj (or (stringp val)
+                                (not val))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-string-or-nil-simple)))
 
 (defun toolbarx-test-toolbar-type (obj)
@@ -469,12 +469,12 @@ documentation of function `toolbarx-process-symbol')."
 GOOD-OBJ is non-nil if OBJ yields a valid toolbar property object
 VAL (see documentation of function `toolbarx-process-symbol')."
   (let ((toolbarx-test-toolbar-type-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (all-but-def-opts '(top bottom left right))
-		  (all-opts '(default top bottom left right))
-		  (good-obj t))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (all-but-def-opts '(top bottom left right))
+                  (all-opts '(default top bottom left right))
+                  (good-obj t))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-toolbar-type-simple)))
 
 (defun toolbarx-test-dropdown-type (obj)
@@ -483,10 +483,10 @@ GOOD-OBJ is non-nil if OBJ yields a valid `:type' property object
 VAL of a dropdown group (see documentation of function
 `toolbarx-process-dropdown-group'."
   (let ((toolbarx-test-dropdown-type-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (good-obj (memq val '(radio toggle))))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (good-obj (memq val '(radio toggle))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-dropdown-type-simple)))
 
 (defun toolbarx-test-symbol (obj)
@@ -495,10 +495,10 @@ GOOD-OBJ is non-nil if OBJ yields a valid `:variable' property
 object VAL of a dropdown group (see documentation of function
 `toolbarx-process-dropdown-group'."
   (let ((toolbarx-test-symbol-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (good-obj (symbolp val)))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (good-obj (symbolp val)))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-symbol-simple)))
 
 (defun toolbarx-test-dropdown-default (obj)
@@ -507,16 +507,16 @@ GOOD-OBJ is non-nil if OBJ yields a valid `:default' property
 object VAL of a dropdown group (see documentation of function
 `toolbarx-process-dropdown-group'."
   (let ((toolbarx-test-dropdown-default-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (good-obj (or (integerp val)
-				(and (listp val)
-				     (let ((ok t))
-				       (dolist (i val ok)
-					 (setq ok (and ok (integerp i)))))))))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (good-obj (or (integerp val)
+                                (and (listp val)
+                                     (let ((ok t))
+                                       (dolist (i val ok)
+                                         (setq ok (and ok (integerp i)))))))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj
-				      toolbarx-test-dropdown-default-simple)))
+                                      toolbarx-test-dropdown-default-simple)))
 
 (defun toolbarx-test-dropdown-save (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
@@ -524,35 +524,35 @@ GOOD-OBJ is non-nil if OBJ yields a valid `:save' property
 object VAL of a dropdown group (see documentation of function
 `toolbarx-process-dropdown-group'."
   (let ((toolbarx-test-dropdown-save-simple
-	 (lambda (obj)
-	   (let* ((val (toolbarx-option-value obj))
-		  (good-obj (memq val '(nil offer always))))
-	     (cons good-obj val)))))
+         (lambda (obj)
+           (let* ((val (toolbarx-option-value obj))
+                  (good-obj (memq val '(nil offer always))))
+             (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-dropdown-save-simple)))
 
 (defconst toolbarx-button-props
   (let* ((props-types-alist
-	  '((:image	      toolbarx-test-image-type)
-	    (:command	      toolbarx-test-any-type)
-	    (:enable	      toolbarx-test-any-type)
-	    (:visible	      toolbarx-test-any-type)
-	    (:help	      toolbarx-test-string-or-nil)
-	    (:insert	      toolbarx-test-any-type	   . and)
-	    (:toolbar	      toolbarx-test-toolbar-type)
-	    (:button	      toolbarx-test-button-type)
-	    (:append-command  toolbarx-test-any-type	   . progn)
-	    (:prepend-command toolbarx-test-any-type	   . progn)))
-	 (possible-props (nreverse (let* ((props ()))
-				     (dolist (p props-types-alist props)
-				       (setq props (cons (car p) props))))))
-	 (props-override (nreverse (let* ((props ()))
-				     (dolist (p props-types-alist props)
-				       (unless (cddr p)
-					 (setq props (cons (car p) props)))))))
-	 (props-add (nreverse (let* ((props ()))
-				(dolist (p props-types-alist props)
-				  (when (cddr p)
-				    (setq props (cons (car p) props))))))))
+          '((:image           toolbarx-test-image-type)
+            (:command         toolbarx-test-any-type)
+            (:enable          toolbarx-test-any-type)
+            (:visible         toolbarx-test-any-type)
+            (:help            toolbarx-test-string-or-nil)
+            (:insert          toolbarx-test-any-type       . and)
+            (:toolbar         toolbarx-test-toolbar-type)
+            (:button          toolbarx-test-button-type)
+            (:append-command  toolbarx-test-any-type       . progn)
+            (:prepend-command toolbarx-test-any-type       . progn)))
+         (possible-props (nreverse (let* ((props ()))
+                                     (dolist (p props-types-alist props)
+                                       (setq props (cons (car p) props))))))
+         (props-override (nreverse (let* ((props ()))
+                                     (dolist (p props-types-alist props)
+                                       (unless (cddr p)
+                                         (setq props (cons (car p) props)))))))
+         (props-add (nreverse (let* ((props ()))
+                                (dolist (p props-types-alist props)
+                                  (when (cddr p)
+                                    (setq props (cons (car p) props))))))))
     (list props-types-alist possible-props props-override props-add))
   "List yielding all encarnations of properties of a button.
 First element: alist, where each element is of form
@@ -564,30 +564,30 @@ Fourth, a list of lists, each in the format (PROP ADD).")
 (defconst toolbarx-dropdown-props
   ;; for naming dropdown properties see `Convention' in the doc string
   (let* ((props-types-alist
-	  '((:type		       toolbarx-test-dropdown-type)
-	    (:variable		       toolbarx-test-symbol)
-	    (:default		       toolbarx-test-dropdown-default)
-	    (:save		       toolbarx-test-dropdown-save)
-	    (:title		       toolbarx-test-string-or-nil)
-	    (:dropdown-image	       toolbarx-test-image-type)
-	    (:dropdown-enable	       toolbarx-test-any-type)
-	    (:dropdown-visible	       toolbarx-test-any-type)
-	    (:dropdown-insert	       toolbarx-test-any-type	    . and)
-	    (:dropdown-help	       toolbarx-test-string-or-nil)
-	    (:dropdown-toolbar	       toolbarx-test-toolbar-type)
-	    (:dropdown-append-command  toolbarx-test-any-type	    . progn)
-	    (:dropdown-prepend-command toolbarx-test-any-type	    . progn)))
-	 (possible-props (nreverse (let* ((props ()))
-				     (dolist (p props-types-alist props)
-				       (setq props (cons (car p) props))))))
-	 (props-override (nreverse (let* ((props ()))
-				     (dolist (p props-types-alist props)
-				       (unless (cddr p)
-					 (setq props (cons (car p) props)))))))
-	 (props-add (nreverse (let* ((props ()))
-				(dolist (p props-types-alist props)
-				  (when (cddr p)
-				    (setq props (cons (car p) props))))))))
+          '((:type                     toolbarx-test-dropdown-type)
+            (:variable                 toolbarx-test-symbol)
+            (:default                  toolbarx-test-dropdown-default)
+            (:save                     toolbarx-test-dropdown-save)
+            (:title                    toolbarx-test-string-or-nil)
+            (:dropdown-image           toolbarx-test-image-type)
+            (:dropdown-enable          toolbarx-test-any-type)
+            (:dropdown-visible         toolbarx-test-any-type)
+            (:dropdown-insert          toolbarx-test-any-type       . and)
+            (:dropdown-help            toolbarx-test-string-or-nil)
+            (:dropdown-toolbar         toolbarx-test-toolbar-type)
+            (:dropdown-append-command  toolbarx-test-any-type       . progn)
+            (:dropdown-prepend-command toolbarx-test-any-type       . progn)))
+         (possible-props (nreverse (let* ((props ()))
+                                     (dolist (p props-types-alist props)
+                                       (setq props (cons (car p) props))))))
+         (props-override (nreverse (let* ((props ()))
+                                     (dolist (p props-types-alist props)
+                                       (unless (cddr p)
+                                         (setq props (cons (car p) props)))))))
+         (props-add (nreverse (let* ((props ()))
+                                (dolist (p props-types-alist props)
+                                  (when (cddr p)
+                                    (setq props (cons (car p) props))))))))
     (list props-types-alist possible-props props-override props-add))
   "List yielding all encarnations of properties of a dropdown group.
 First element: alist, where each element is of form
@@ -601,8 +601,8 @@ with the strings \":dropdown-\" with the button property name
 without `:'. This is used on the implementation.")
 
 (defun toolbarx-process-group-without-insert (group-without-props
-					      merged-props-without-insert
-					      meaning-alist switches)
+                                              merged-props-without-insert
+                                              meaning-alist switches)
   "Return an updated version of SWITCHES.
 GROUP-WITHOUT-PROPS and MERGED-PROPS-WITHOUT-INSERT are
 preprocessed variables in `toolbarx-process-group'."
@@ -610,15 +610,15 @@ preprocessed variables in `toolbarx-process-group'."
     (dolist (i group-without-props current-switches)
       (setq i (toolbarx-option-value i))
       (if (symbolp i)
-	  (setq current-switches
-		(toolbarx-process-symbol i meaning-alist
-					 merged-props-without-insert
-					 current-switches))
-	(when (listp i)
-	  (setq current-switches
-		(toolbarx-process-group i meaning-alist
-					merged-props-without-insert
-					current-switches)))))))
+          (setq current-switches
+                (toolbarx-process-symbol i meaning-alist
+                                         merged-props-without-insert
+                                         current-switches))
+        (when (listp i)
+          (setq current-switches
+                (toolbarx-process-group i meaning-alist
+                                        merged-props-without-insert
+                                        current-switches)))))))
 
 (defun toolbarx-process-group (group meaning-alist props switches)
   "Return an updated version of SWITCHES.
@@ -637,67 +637,67 @@ value, and after that a list in the same format as SWITCHES."
    ((eq (car group) :eval-group)
     (let ((current-switches switches))
       (dolist (elt (cdr group) current-switches)
-	(let ((eval-elt (eval elt)))
-	  (setq current-switches
-		(toolbarx-process-group (if (listp eval-elt)
-					    eval-elt
-					  (list eval-elt))
-					meaning-alist props
-					current-switches))))))
+        (let ((eval-elt (eval elt)))
+          (setq current-switches
+                (toolbarx-process-group (if (listp eval-elt)
+                                            eval-elt
+                                          (list eval-elt))
+                                        meaning-alist props
+                                        current-switches))))))
    ;; if normal group
    (t
     (let* ((splited-props
-	    (toolbarx-separate-options
-	     group (append (nth 1 toolbarx-button-props)
-			   (nth 1 toolbarx-dropdown-props))))
-	   (intern-props (cdr splited-props))
-	   (group-without-props (car splited-props))
-	   (merged-props
-	    (toolbarx-merge-props intern-props props
-				  (append (nth 2 toolbarx-button-props)
-					  (nth 2 toolbarx-dropdown-props))
-				  (append (nth 3 toolbarx-button-props)
-					  (nth 3 toolbarx-dropdown-props)))))
+            (toolbarx-separate-options
+             group (append (nth 1 toolbarx-button-props)
+                           (nth 1 toolbarx-dropdown-props))))
+           (intern-props (cdr splited-props))
+           (group-without-props (car splited-props))
+           (merged-props
+            (toolbarx-merge-props intern-props props
+                                  (append (nth 2 toolbarx-button-props)
+                                          (nth 2 toolbarx-dropdown-props))
+                                  (append (nth 3 toolbarx-button-props)
+                                          (nth 3 toolbarx-dropdown-props)))))
       ;; check whether merged props have an `:insert'
       (if (memq :insert merged-props)
-	  ;; if yes, prepend switches with a (:insert cond elements)
-	  (let* ((memq-ins (memq :insert merged-props))
-		 (ins-val (if (and (listp (cadr memq-ins))
-				   (eq :add-value-list
-				       (car (cadr memq-ins))))
-			      ;; if property is add-value property
-			      (let* ((p (assq
-					 :insert
-					 (nth 0 toolbarx-button-props)))
-				     (add-list (list (cddr p)))
-				     (prop-good-val))
-				(dolist (val (cdr (cadr memq-ins)))
-				  (setq prop-good-val (funcall (cadr p) val))
-				  (when (car prop-good-val)
-				    (setq add-list (cons (cdr prop-good-val)
-							 add-list))))
-				;; return: (nreverse add-list)
-				(setq add-list (nreverse add-list))
-				(if (eq 2 (length add-list))
-				    (cadr add-list) ; just 1 value, no
-				  add-list))	    ; add-function
-			    ;; if property is not add-value
-			    (cadr memq-ins)))
-		 (merged-props-without-insert
-		  (append (butlast merged-props (length memq-ins))
-			  (cddr memq-ins)))
-		 (group-switches
-		  (toolbarx-process-group-without-insert
-		   group-without-props merged-props-without-insert
-		   meaning-alist nil)))
-	    ;; return
-	    (nreverse (cons (append (list :insert ins-val)
-				    group-switches)
-			    (nreverse switches))))
-	;; if not, just append what is processed to switches
-	(toolbarx-process-group-without-insert group-without-props
-					       merged-props meaning-alist
-					       switches))))))
+          ;; if yes, prepend switches with a (:insert cond elements)
+          (let* ((memq-ins (memq :insert merged-props))
+                 (ins-val (if (and (listp (cadr memq-ins))
+                                   (eq :add-value-list
+                                       (car (cadr memq-ins))))
+                              ;; if property is add-value property
+                              (let* ((p (assq
+                                         :insert
+                                         (nth 0 toolbarx-button-props)))
+                                     (add-list (list (cddr p)))
+                                     (prop-good-val))
+                                (dolist (val (cdr (cadr memq-ins)))
+                                  (setq prop-good-val (funcall (cadr p) val))
+                                  (when (car prop-good-val)
+                                    (setq add-list (cons (cdr prop-good-val)
+                                                         add-list))))
+                                ;; return: (nreverse add-list)
+                                (setq add-list (nreverse add-list))
+                                (if (eq 2 (length add-list))
+                                    (cadr add-list) ; just 1 value, no
+                                  add-list))        ; add-function
+                            ;; if property is not add-value
+                            (cadr memq-ins)))
+                 (merged-props-without-insert
+                  (append (butlast merged-props (length memq-ins))
+                          (cddr memq-ins)))
+                 (group-switches
+                  (toolbarx-process-group-without-insert
+                   group-without-props merged-props-without-insert
+                   meaning-alist nil)))
+            ;; return
+            (nreverse (cons (append (list :insert ins-val)
+                                    group-switches)
+                            (nreverse switches))))
+        ;; if not, just append what is processed to switches
+        (toolbarx-process-group-without-insert group-without-props
+                                               merged-props meaning-alist
+                                               switches))))))
 
 (defun toolbarx-process-symbol (symbol meaning-alist props switches)
   "Process a button given by SYMBOL in MEANING-ALIST.
@@ -705,7 +705,7 @@ The processed button is appended in SWITCHES, which is returned.
 Look for a association of SYMBOL in MEANING-ALIST for collecting
 properties.  Such association is a list that represents either a
 normal button (a description of the button) or an alias
-group (the symbol is an alias for a group of buttons).	PROPS is
+group (the symbol is an alias for a group of buttons).  PROPS is
 a externel list of properties that are merged and then applied to
 the button.  Scope is given by GLOBAL-FLAG."
   ;; there are 3 situations: symbol is :new-line, there is an alias group
@@ -723,282 +723,282 @@ the button.  Scope is given by GLOBAL-FLAG."
       ;; properties need to be processed, that is, merge internal
       ;; and external (given by PROPS) properties
       (let* (;; button properties defined in `toolbarx-button-props'
-	     (props-override	(nth 2 toolbarx-button-props))
-	     (props-add		(nth 3 toolbarx-button-props))
-	     ;; split considering also dropdown-group properties
-	     (button-assq-split
-	      (toolbarx-separate-options
-	       button-assq
-	       (append (nth 1 toolbarx-button-props)
-		       (nth 1 toolbarx-dropdown-props))))
-	     (button-split-no-props (car button-assq-split))
-	     (button-split-props (cdr button-assq-split))
-	     ;; if there is no :image or :command in the props,
-	     ;; try to get them from no-props part
-	     (button-image-no-prop
-	      (unless (memq :image button-split-props)
-		(when (> (length button-split-no-props) 0)
-		  (list :image (nth 0 button-split-no-props)))))
-	     (button-command-no-prop
-	      (unless (memq :command button-split-props)
-		(when (> (length button-split-no-props) 1)
-		  (list :command (nth 1 button-split-no-props)))))
-	     (button-props (append button-split-props
-				   button-image-no-prop
-				   button-command-no-prop))
-	     ;; merge props
-	     (merged-props (toolbarx-merge-props button-props props
-						 props-override
-						 props-add)))
-	;; return:
-	(nreverse (cons (cons symbol merged-props) (nreverse switches))))))))
+             (props-override    (nth 2 toolbarx-button-props))
+             (props-add         (nth 3 toolbarx-button-props))
+             ;; split considering also dropdown-group properties
+             (button-assq-split
+              (toolbarx-separate-options
+               button-assq
+               (append (nth 1 toolbarx-button-props)
+                       (nth 1 toolbarx-dropdown-props))))
+             (button-split-no-props (car button-assq-split))
+             (button-split-props (cdr button-assq-split))
+             ;; if there is no :image or :command in the props,
+             ;; try to get them from no-props part
+             (button-image-no-prop
+              (unless (memq :image button-split-props)
+                (when (> (length button-split-no-props) 0)
+                  (list :image (nth 0 button-split-no-props)))))
+             (button-command-no-prop
+              (unless (memq :command button-split-props)
+                (when (> (length button-split-no-props) 1)
+                  (list :command (nth 1 button-split-no-props)))))
+             (button-props (append button-split-props
+                                   button-image-no-prop
+                                   button-command-no-prop))
+             ;; merge props
+             (merged-props (toolbarx-merge-props button-props props
+                                                 props-override
+                                                 props-add)))
+        ;; return:
+        (nreverse (cons (cons symbol merged-props) (nreverse switches))))))))
 
 (defun toolbarx-process-dropdown-group (dropdown meaning-alist props switches)
   "Process buttons that appear according to dropdown menu.
 Process a dropdown group DROPDOWN with meaning alist
 MEANING-ALIST, external property list PROP and GLOBAL-FLAG
 specifying scope. For a complete description, see documentation
-of `toolbarx-install-toolbar'.	The processed buttons are stored
+of `toolbarx-install-toolbar'.  The processed buttons are stored
 in the end of SWITCHES, which is returned."
   (let* ((dropdown-group (if (eq (car dropdown) :dropdown-group)
-			     (cdr dropdown)
-			   dropdown))
-	 (dropdown-list-splited
-	  (toolbarx-separate-options dropdown-group
-				     (append
-				      (nth 1 toolbarx-button-props)
-				      (nth 1 toolbarx-dropdown-props))))
-	 (dropdown-list	 (car dropdown-list-splited))
-	 (dropdown-props (cdr dropdown-list-splited))
-	 (merged-props
-	  (toolbarx-merge-props dropdown-props props
-				(append (nth 2 toolbarx-button-props)
-					(nth 2 toolbarx-dropdown-props))
-				(append (nth 3 toolbarx-button-props)
-					(nth 3 toolbarx-dropdown-props))))
-	 (merged-props-button-only
-	  (let* ((props-button-only)
-		 (prop))
-	    (dolist (p (nth 1 toolbarx-button-props) props-button-only)
-	      (setq prop (memq p merged-props))
-	      (when prop
-		(setq props-button-only
-		      (append (list p (cadr prop))
-			      props-button-only))))))
-	 (merged-props-dropdown-only
-	  (let* ((props-dropdown-only)
-		 (prop))
-	    (dolist (p (nth 1 toolbarx-dropdown-props) props-dropdown-only)
-	      (setq prop (memq p merged-props))
-	      (when prop
-		(setq props-dropdown-only
-		      (append (list p (cadr prop))
-			      props-dropdown-only))))))
-	 ;; get value for each property and check type ONLY for props that do
-	 ;; not concern the dropdown button, like `:type', `:save', etc. The
-	 ;; props that concern the button are going to be handled in refresh
-	 ;; time.
-	 (filtered-dropdown-group-props-only
-	  (let* ((filtered-props-temp)
-		 (prop-good-val)
-		 (prop))
-	    (save-match-data
-	      (dolist (p (nth 0 toolbarx-dropdown-props) filtered-props-temp)
-		(unless (string-match "^:dropdown-.*$"
-				      (symbol-name (car p)))
-		  ;;	property	   -> (car p)
-		  ;;	test type function -> (cadr p)
-		  (setq prop (memq (car p) merged-props-dropdown-only))
-		  ;; if so, check if value is of correct type
-		  (when prop
-		    (setq prop-good-val (funcall (cadr p) (cadr prop)))
-		    (if (car prop-good-val)
-			(setq filtered-props-temp
-			      (append filtered-props-temp
-				      (list (car p) (cdr prop-good-val))))
-		      (display-warning
-		       'toolbarx
-		       (format (concat "Wrong type for value in "
-				       "property `%s' in dropdown group")
-			       (car p))))))))))
-	 ;; properties for the dropdown button from dropdown merged properties
-	 (dropdown-button-props
-	  (let* ((props))
-	    (save-match-data
-	      (dolist (pr (nth 1 toolbarx-dropdown-props))
-		(when (and (memq pr merged-props-dropdown-only)
-			   (string-match "^:dropdown-\\(.*\\)$"
-					 (symbol-name pr)))
-		  (let* ((new-pr (intern (concat ":"
-						 (substring (symbol-name pr)
-							    (match-beginning 1)
-							    (match-end 1)))))
-			 (val (cadr (memq pr merged-props-dropdown-only))))
-		    (setq props (append (list new-pr val) props))))))
-	    (unless (memq :image props)
-	      (setq props (append (list :image "dropdown") props)))
-	    props))
-	 (dropdown-button-without-command
-	  (cons 'dropdown dropdown-button-props))
-	 ;; `:type' defaults to `radio'
-	 (type (if (memq :type filtered-dropdown-group-props-only)
-		   (cadr (memq :type filtered-dropdown-group-props-only))
-		 'radio))
-	 ;; `:default' defaults to 1 or nil depending on `type'
-	 ;; if type is toggle and default is not a list, but a
-	 ;; integer, set as the list with integer
-	 (default
-	   (let* ((memq-default (memq :default
-				      filtered-dropdown-group-props-only))
-		  (def-temp (cadr memq-default))
-		  (default-temp (if memq-default
-				    def-temp
-				  (if (eq type 'radio) 1 (list 1)))))
-	     default-temp))
-	 ;; `:save' defaults to nil and require `:variable'
-	 (save (let* ((save-temp
-		       (when (memq :save filtered-dropdown-group-props-only)
-			 (cadr (memq :save
-				     filtered-dropdown-group-props-only)))))
-		 (if (and save-temp
-			  (not (memq :variable
-				     filtered-dropdown-group-props-only)))
-		     (progn
-		       (display-warning
-			'toolbarx
-			(concat "`:save' property with non-nil value should "
-				"be used only with the `:variable' property; "
-				"using value nil for `:save'."))
-		       nil)
-		   save-temp)))
-	 ;; `:title' defaults to nil
-	 (title (when (memq :title filtered-dropdown-group-props-only)
-		  (cadr (memq :title filtered-dropdown-group-props-only))))
-	 ;; the menu variable is buildt from the `:variable' option or
-	 ;; make a symbol not used
-	 (variable (if (memq :variable filtered-dropdown-group-props-only)
-		       (cadr (memq :variable
-				   filtered-dropdown-group-props-only))
-		     (let* ((count 0)
-			    (symb (intern (format
-					   "toolbarx-internal-menu-var-%d"
-					   count))))
-		       (while (boundp symb)
-			 (setq count (1+ count))
-			 (setq symb
-			       (intern (format "toolbarx-internal-menu-var-%d"
-					       count))))
-		       symb)))
-	 ;; auxiliary variables
-	 (list-strings)
-	 (list-buttons))
+                             (cdr dropdown)
+                           dropdown))
+         (dropdown-list-splited
+          (toolbarx-separate-options dropdown-group
+                                     (append
+                                      (nth 1 toolbarx-button-props)
+                                      (nth 1 toolbarx-dropdown-props))))
+         (dropdown-list  (car dropdown-list-splited))
+         (dropdown-props (cdr dropdown-list-splited))
+         (merged-props
+          (toolbarx-merge-props dropdown-props props
+                                (append (nth 2 toolbarx-button-props)
+                                        (nth 2 toolbarx-dropdown-props))
+                                (append (nth 3 toolbarx-button-props)
+                                        (nth 3 toolbarx-dropdown-props))))
+         (merged-props-button-only
+          (let* ((props-button-only)
+                 (prop))
+            (dolist (p (nth 1 toolbarx-button-props) props-button-only)
+              (setq prop (memq p merged-props))
+              (when prop
+                (setq props-button-only
+                      (append (list p (cadr prop))
+                              props-button-only))))))
+         (merged-props-dropdown-only
+          (let* ((props-dropdown-only)
+                 (prop))
+            (dolist (p (nth 1 toolbarx-dropdown-props) props-dropdown-only)
+              (setq prop (memq p merged-props))
+              (when prop
+                (setq props-dropdown-only
+                      (append (list p (cadr prop))
+                              props-dropdown-only))))))
+         ;; get value for each property and check type ONLY for props that do
+         ;; not concern the dropdown button, like `:type', `:save', etc. The
+         ;; props that concern the button are going to be handled in refresh
+         ;; time.
+         (filtered-dropdown-group-props-only
+          (let* ((filtered-props-temp)
+                 (prop-good-val)
+                 (prop))
+            (save-match-data
+              (dolist (p (nth 0 toolbarx-dropdown-props) filtered-props-temp)
+                (unless (string-match "^:dropdown-.*$"
+                                      (symbol-name (car p)))
+                  ;;    property           -> (car p)
+                  ;;    test type function -> (cadr p)
+                  (setq prop (memq (car p) merged-props-dropdown-only))
+                  ;; if so, check if value is of correct type
+                  (when prop
+                    (setq prop-good-val (funcall (cadr p) (cadr prop)))
+                    (if (car prop-good-val)
+                        (setq filtered-props-temp
+                              (append filtered-props-temp
+                                      (list (car p) (cdr prop-good-val))))
+                      (display-warning
+                       'toolbarx
+                       (format (concat "Wrong type for value in "
+                                       "property `%s' in dropdown group")
+                               (car p))))))))))
+         ;; properties for the dropdown button from dropdown merged properties
+         (dropdown-button-props
+          (let* ((props))
+            (save-match-data
+              (dolist (pr (nth 1 toolbarx-dropdown-props))
+                (when (and (memq pr merged-props-dropdown-only)
+                           (string-match "^:dropdown-\\(.*\\)$"
+                                         (symbol-name pr)))
+                  (let* ((new-pr (intern (concat ":"
+                                                 (substring (symbol-name pr)
+                                                            (match-beginning 1)
+                                                            (match-end 1)))))
+                         (val (cadr (memq pr merged-props-dropdown-only))))
+                    (setq props (append (list new-pr val) props))))))
+            (unless (memq :image props)
+              (setq props (append (list :image "dropdown") props)))
+            props))
+         (dropdown-button-without-command
+          (cons 'dropdown dropdown-button-props))
+         ;; `:type' defaults to `radio'
+         (type (if (memq :type filtered-dropdown-group-props-only)
+                   (cadr (memq :type filtered-dropdown-group-props-only))
+                 'radio))
+         ;; `:default' defaults to 1 or nil depending on `type'
+         ;; if type is toggle and default is not a list, but a
+         ;; integer, set as the list with integer
+         (default
+           (let* ((memq-default (memq :default
+                                      filtered-dropdown-group-props-only))
+                  (def-temp (cadr memq-default))
+                  (default-temp (if memq-default
+                                    def-temp
+                                  (if (eq type 'radio) 1 (list 1)))))
+             default-temp))
+         ;; `:save' defaults to nil and require `:variable'
+         (save (let* ((save-temp
+                       (when (memq :save filtered-dropdown-group-props-only)
+                         (cadr (memq :save
+                                     filtered-dropdown-group-props-only)))))
+                 (if (and save-temp
+                          (not (memq :variable
+                                     filtered-dropdown-group-props-only)))
+                     (progn
+                       (display-warning
+                        'toolbarx
+                        (concat "`:save' property with non-nil value should "
+                                "be used only with the `:variable' property; "
+                                "using value nil for `:save'."))
+                       nil)
+                   save-temp)))
+         ;; `:title' defaults to nil
+         (title (when (memq :title filtered-dropdown-group-props-only)
+                  (cadr (memq :title filtered-dropdown-group-props-only))))
+         ;; the menu variable is buildt from the `:variable' option or
+         ;; make a symbol not used
+         (variable (if (memq :variable filtered-dropdown-group-props-only)
+                       (cadr (memq :variable
+                                   filtered-dropdown-group-props-only))
+                     (let* ((count 0)
+                            (symb (intern (format
+                                           "toolbarx-internal-menu-var-%d"
+                                           count))))
+                       (while (boundp symb)
+                         (setq count (1+ count))
+                         (setq symb
+                               (intern (format "toolbarx-internal-menu-var-%d"
+                                               count))))
+                       symb)))
+         ;; auxiliary variables
+         (list-strings)
+         (list-buttons))
     ;; setting `variable'
     (if save
-	(custom-declare-variable
-	 variable default
-	 "Used as variable of dropdown menu defined with `toolbarx'.")
+        (custom-declare-variable
+         variable default
+         "Used as variable of dropdown menu defined with `toolbarx'.")
       (when (not (boundp variable))
-	(set variable default)))
+        (set variable default)))
     ;; now check `variable' content
     (set variable
-	 (let ((val (eval variable)))
-	   (if (eq type 'toggle)
-	       (if (listp val)
-		   val
-		 (if (integerp val)
-		     (list val)
-		   (list 1)))
-	     ;; then, type is radio
-	     (if (integerp val)
-		 val
-	       (if (and val
-			(listp val)
-			(integerp (car val)))
-		   (car val)
-		 1)))))
+         (let ((val (eval variable)))
+           (if (eq type 'toggle)
+               (if (listp val)
+                   val
+                 (if (integerp val)
+                     (list val)
+                   (list 1)))
+             ;; then, type is radio
+             (if (integerp val)
+                 val
+               (if (and val
+                        (listp val)
+                        (integerp (car val)))
+                   (car val)
+                 1)))))
     ;; === buiding `list-strings' and `list-buttons' ===
     ;; if only symbols, build `list-strings' and `list-buttons' from symbols
     (if (let ((only-symbols-flag t))
-	  (dolist (i dropdown-list only-symbols-flag)
-	    (setq only-symbols-flag (and only-symbols-flag (symbolp i)))))
-	(let ((count 0))
-	  (dolist (i dropdown-list)
-	    ;; list-strings and list-buttons are buildt reversed
-	    (setq list-strings (cons (toolbarx-make-string-from-symbol i)
-				     list-strings))
-	    (setq count (1+ count))
-	    (setq list-buttons (cons (list i
-					   :insert
-					   (if (eq type 'radio)
-					       (list 'eq count variable)
-					     (list 'memq count variable)))
-				     list-buttons))))
+          (dolist (i dropdown-list only-symbols-flag)
+            (setq only-symbols-flag (and only-symbols-flag (symbolp i)))))
+        (let ((count 0))
+          (dolist (i dropdown-list)
+            ;; list-strings and list-buttons are buildt reversed
+            (setq list-strings (cons (toolbarx-make-string-from-symbol i)
+                                     list-strings))
+            (setq count (1+ count))
+            (setq list-buttons (cons (list i
+                                           :insert
+                                           (if (eq type 'radio)
+                                               (list 'eq count variable)
+                                             (list 'memq count variable)))
+                                     list-buttons))))
       ;; if not, the it must start with string
       (unless (stringp (car dropdown-list))
-	(error "%s %s %s"
-	       "If not all itens on dropdown are symbols, then a string"
-	       "must come before each set of buttons; no string found"
-	       "in first position."))
+        (error "%s %s %s"
+               "If not all itens on dropdown are symbols, then a string"
+               "must come before each set of buttons; no string found"
+               "in first position."))
       (let ((count 0)
-	    (elem)
-	    (temp-list-buttons))
-	(while dropdown-list
-	  (setq elem (car dropdown-list))
-	  (setq dropdown-list (cdr dropdown-list))
-	  (if (stringp elem)
-	      ;; if string, output `temp-list-buttons' and prepair it again
-	      (progn
-		;; list-strings and list-buttons are buildt reversed
-		(setq list-strings (cons elem list-strings))
-		(when temp-list-buttons
-		  (setq list-buttons (cons (append (nreverse temp-list-buttons)
-						   (list :insert
-							 (if (eq type 'radio)
-							     (list 'eq count
-								   variable)
-							   (list 'memq count
-								 variable))))
-					   list-buttons)))
-		(setq temp-list-buttons nil)
-		(setq count (1+ count)))
-	    ;; else, if not string, just insert it to `temp-list-buttons'
-	    ;; which is also buildt reversed
-	    (setq temp-list-buttons (cons elem temp-list-buttons))))
-	;; output last temp list, left behind
-	(when temp-list-buttons
-	  (setq list-buttons (cons (append (nreverse
-					    temp-list-buttons)
-					   (list
-					    :insert (if (eq type 'radio)
-							(list 'eq count
-							      variable)
-						      (list 'memq count
-							    variable))))
-				   list-buttons)))))
+            (elem)
+            (temp-list-buttons))
+        (while dropdown-list
+          (setq elem (car dropdown-list))
+          (setq dropdown-list (cdr dropdown-list))
+          (if (stringp elem)
+              ;; if string, output `temp-list-buttons' and prepair it again
+              (progn
+                ;; list-strings and list-buttons are buildt reversed
+                (setq list-strings (cons elem list-strings))
+                (when temp-list-buttons
+                  (setq list-buttons (cons (append (nreverse temp-list-buttons)
+                                                   (list :insert
+                                                         (if (eq type 'radio)
+                                                             (list 'eq count
+                                                                   variable)
+                                                           (list 'memq count
+                                                                 variable))))
+                                           list-buttons)))
+                (setq temp-list-buttons nil)
+                (setq count (1+ count)))
+            ;; else, if not string, just insert it to `temp-list-buttons'
+            ;; which is also buildt reversed
+            (setq temp-list-buttons (cons elem temp-list-buttons))))
+        ;; output last temp list, left behind
+        (when temp-list-buttons
+          (setq list-buttons (cons (append (nreverse
+                                            temp-list-buttons)
+                                           (list
+                                            :insert (if (eq type 'radio)
+                                                        (list 'eq count
+                                                              variable)
+                                                      (list 'memq count
+                                                            variable))))
+                                   list-buttons)))))
     ;; lists were made reversed (elements inserted at the beginning)
     (setq list-strings (nreverse list-strings))
     (setq list-buttons (nreverse list-buttons))
     ;; now, pass `list-buttons' as a group to `toolbarx-process-group'
     (let ((current-switches switches))
       (setq current-switches
-	    (toolbarx-process-group list-buttons meaning-alist
-				    merged-props ; pass non-processed props
-				    current-switches))
+            (toolbarx-process-group list-buttons meaning-alist
+                                    merged-props ; pass non-processed props
+                                    current-switches))
       (setq current-switches
-	    ;; outputing dropdown button
-	    (toolbarx-process-group (append dropdown-button-without-command
-					    (list :command
-						  (toolbarx-mount-popup-menu
-						   list-strings variable type
-						   title save)))
-				    meaning-alist merged-props-button-only
-				    switches))
+            ;; outputing dropdown button
+            (toolbarx-process-group (append dropdown-button-without-command
+                                            (list :command
+                                                  (toolbarx-mount-popup-menu
+                                                   list-strings variable type
+                                                   title save)))
+                                    meaning-alist merged-props-button-only
+                                    switches))
       current-switches)))
 
 
 
 ;; Still functions `toolbarx-install-toolbar' and `toolbarx-refresh'to
-;; complete the parsing engine.	 Since they interface with other engines,
+;; complete the parsing engine.  Since they interface with other engines,
 ;; they must come in the end.
 
 ;;; How a image is made, giving a string as (part of) file name.
@@ -1015,12 +1015,12 @@ an extension.  If the extension is omitted, `xpm', `xbm' and
   (let ((file))
     (dolist (i '("" ".xpm" ".xbm" ".pbm"))
       (unless file
-	(setq file (locate-library (concat image i) t toolbarx-image-path))))
+        (setq file (locate-library (concat image i) t toolbarx-image-path))))
     (if file
-	(create-image file)
+        (create-image file)
       (find-image `((:type xpm :file ,(concat image ".xpm"))
-		    (:type xbm :file ,(concat image ".xbm"))
-		    (:type pbm :file ,(concat image ".pbm")))))))
+                    (:type xbm :file ,(concat image ".xbm"))
+                    (:type pbm :file ,(concat image ".pbm")))))))
 
 ;; next variable interfaces between parsing and display engines
 (defvar toolbarx-internal-button-switches nil
@@ -1042,121 +1042,121 @@ the end of KEYMAP.
 
 BUTTON should be a list of form (SYMBOL . PROP-LIST).  SYMBOL is
 a symbol that \"names\" this button.  PROP-LIST is a list in the
-format (PROP VAL ... PROP VAL).	 The supported properties are
+format (PROP VAL ... PROP VAL).  The supported properties are
 `:image', `:command', `:append-command', `:prepend-command',
 `:help', `:enable', `:visible', `:button', `:insert' and
 `:toolbar'. For a description of properties, see documentation of
 function `toolbar-install-toolbar'."
   (let* ((symbol (nth 0 button))
-	 (used-keys-list (when used-keys
-			   (cdr used-keys)))
-	 (filtered-props
-	  (let* ((filtered-props-temp)
-		 (prop-good-val)
-		 (prop))
-	    (dolist (p (nth 0 toolbarx-button-props) filtered-props-temp)
-	      ;;    property	       -> (car p)
-	      ;;    test type function -> (cadr p)
-	      ;;    add-function       -> (cddr p)
-	      (setq prop (memq (car p) button))
-	      ;; if so, check if value is of correct type
-	      (when prop
-		;; if property is of add-type, them the value is a list
-		;; (:add-value-list VAL VAL). Each VAL should be checked.
-		(if (and (cddr p) (eq :add-value-list (car (cadr prop))))
-		    (let* ((add-list (list (cddr p))))
-		      (dolist (val (cdr (cadr prop)))
-			(setq prop-good-val (funcall (cadr p) val))
-			(when (car prop-good-val)
-			  (setq add-list (cons (cdr prop-good-val) add-list))))
-		      (setq add-list (nreverse add-list))
-		      (when (eq 2 (length add-list)) ; just 1 value, no
-					; add-function
-			(setq add-list (cadr add-list)))
-		      (setq filtered-props-temp (append
-						 (list (car p) add-list)
-						 filtered-props-temp)))
-		  ;; if override-property
-		  (setq prop-good-val (funcall (cadr p) (cadr prop)))
-		  (when (car prop-good-val)
-		    (setq filtered-props-temp (append
-					       (list (car p)
-						     (cdr prop-good-val))
-					       filtered-props-temp))))))))
-	 (insert (or (not (memq :insert filtered-props))
-		     ;; (memq :insert filtered-props)
-		     (eval (nth 1 (memq :insert filtered-props))))))
+         (used-keys-list (when used-keys
+                           (cdr used-keys)))
+         (filtered-props
+          (let* ((filtered-props-temp)
+                 (prop-good-val)
+                 (prop))
+            (dolist (p (nth 0 toolbarx-button-props) filtered-props-temp)
+              ;;    property           -> (car p)
+              ;;    test type function -> (cadr p)
+              ;;    add-function       -> (cddr p)
+              (setq prop (memq (car p) button))
+              ;; if so, check if value is of correct type
+              (when prop
+                ;; if property is of add-type, them the value is a list
+                ;; (:add-value-list VAL VAL). Each VAL should be checked.
+                (if (and (cddr p) (eq :add-value-list (car (cadr prop))))
+                    (let* ((add-list (list (cddr p))))
+                      (dolist (val (cdr (cadr prop)))
+                        (setq prop-good-val (funcall (cadr p) val))
+                        (when (car prop-good-val)
+                          (setq add-list (cons (cdr prop-good-val) add-list))))
+                      (setq add-list (nreverse add-list))
+                      (when (eq 2 (length add-list)) ; just 1 value, no
+                                        ; add-function
+                        (setq add-list (cadr add-list)))
+                      (setq filtered-props-temp (append
+                                                 (list (car p) add-list)
+                                                 filtered-props-temp)))
+                  ;; if override-property
+                  (setq prop-good-val (funcall (cadr p) (cadr prop)))
+                  (when (car prop-good-val)
+                    (setq filtered-props-temp (append
+                                               (list (car p)
+                                                     (cdr prop-good-val))
+                                               filtered-props-temp))))))))
+         (insert (or (not (memq :insert filtered-props))
+                     ;; (memq :insert filtered-props)
+                     (eval (nth 1 (memq :insert filtered-props))))))
     (when insert
       (cond
        (t
-	;; symbol is not :new-line, therefore a normal button
-	(let* ((image (cadr (memq :image filtered-props)))
-	       (image-descriptor
-		(when (memq :image filtered-props)
-		  (cond
-		   ((stringp image) 	; string
-		    (toolbarx-find-image image))
-		   ((and (consp image)	; or image descriptor
-			 (eq (car image) 'image))
-		    image)
-		   ((and (symbolp image) ; or a symbol bound to a
-			 (boundp image)  ; image descriptor (defined
-					; with `defimage')g
-			 (consp (eval image))
-			 (eq (car (eval image)) 'image))
-		    (eval image))
-		   (t			; otherwise, must be a list
-					; with 4 strings or image
-					; descriptors
-		    (apply 'vector (mapcar (lambda (img)
-					     (if (stringp img)
-						 (toolbarx-find-image img)
-					       img))
-					   image))))))
-	       (command
-		(let* ((com (nth 1 (memq :command filtered-props)))
-		       (app (nth 1 (memq :append-command filtered-props)))
-		       (prep (nth 1 (memq :prepend-command filtered-props))))
-		  (when (or com app prep)
-		    (toolbarx-make-command com prep app))))
-	       (help (cons (memq :help filtered-props)
-			   (cadr (memq :help filtered-props))))
-	       (enable (cons (memq :enable filtered-props)
-			     (cadr (memq :enable filtered-props))))
-	       (visible (cons (memq :visible filtered-props)
-			      (cadr (memq :visible filtered-props))))
-	       (button (cons (memq :button filtered-props)
-			     (cadr (memq :button filtered-props))))
-	       (menuitem (append
-			  (list 'menu-item
-				(toolbarx-make-string-from-symbol symbol)
-				command
-				:image image-descriptor)
-			  (when (car help)
-			    (list :help (cdr help)))
-			  (when (car enable)
-			    (list :enable (cdr enable)))
-			  (when (car visible)
-			    (list :visible (cdr visible)))
-			  (when (car button)
-			    (list :button (cdr button)))))
-	       (key-not-used
-		(let* ((count 0)
-		       (symb symbol))
-		  (while (memq symb used-keys-list)
-		    (setq count (1+ count))
-		    (setq symb (intern (format "%s-%d" symbol count))))
-		  symb)))
-	  (when (and image-descriptor command)
-	    (setq used-keys-list (cons key-not-used used-keys-list))
-	    (define-key-after keymap
-	      (vector key-not-used) menuitem))))))
+        ;; symbol is not :new-line, therefore a normal button
+        (let* ((image (cadr (memq :image filtered-props)))
+               (image-descriptor
+                (when (memq :image filtered-props)
+                  (cond
+                   ((stringp image)     ; string
+                    (toolbarx-find-image image))
+                   ((and (consp image)  ; or image descriptor
+                         (eq (car image) 'image))
+                    image)
+                   ((and (symbolp image) ; or a symbol bound to a
+                         (boundp image)  ; image descriptor (defined
+                                        ; with `defimage')g
+                         (consp (eval image))
+                         (eq (car (eval image)) 'image))
+                    (eval image))
+                   (t                   ; otherwise, must be a list
+                                        ; with 4 strings or image
+                                        ; descriptors
+                    (apply 'vector (mapcar (lambda (img)
+                                             (if (stringp img)
+                                                 (toolbarx-find-image img)
+                                               img))
+                                           image))))))
+               (command
+                (let* ((com (nth 1 (memq :command filtered-props)))
+                       (app (nth 1 (memq :append-command filtered-props)))
+                       (prep (nth 1 (memq :prepend-command filtered-props))))
+                  (when (or com app prep)
+                    (toolbarx-make-command com prep app))))
+               (help (cons (memq :help filtered-props)
+                           (cadr (memq :help filtered-props))))
+               (enable (cons (memq :enable filtered-props)
+                             (cadr (memq :enable filtered-props))))
+               (visible (cons (memq :visible filtered-props)
+                              (cadr (memq :visible filtered-props))))
+               (button (cons (memq :button filtered-props)
+                             (cadr (memq :button filtered-props))))
+               (menuitem (append
+                          (list 'menu-item
+                                (toolbarx-make-string-from-symbol symbol)
+                                command
+                                :image image-descriptor)
+                          (when (car help)
+                            (list :help (cdr help)))
+                          (when (car enable)
+                            (list :enable (cdr enable)))
+                          (when (car visible)
+                            (list :visible (cdr visible)))
+                          (when (car button)
+                            (list :button (cdr button)))))
+               (key-not-used
+                (let* ((count 0)
+                       (symb symbol))
+                  (while (memq symb used-keys-list)
+                    (setq count (1+ count))
+                    (setq symb (intern (format "%s-%d" symbol count))))
+                  symb)))
+          (when (and image-descriptor command)
+            (setq used-keys-list (cons key-not-used used-keys-list))
+            (define-key-after keymap
+              (vector key-not-used) menuitem))))))
     (when used-keys (setcdr used-keys used-keys-list))))
 
 
 (defun toolbarx-emacs-refresh-process-button-or-insert-list (switches
-							     used-keys
-							     keymap)
+                                                             used-keys
+                                                             keymap)
   "Process SWITCHES, inserting buttons in `tool-bar-map'.
 If a button is actually a `:insert' clause group (if `car' is
 `:insert') and evaluation of `cdr' yields non-nil, process `cddr'
@@ -1165,10 +1165,10 @@ recursively as SWITCHES.  USED-KEYS is a list which `car' is
 been used as keys in the keymap `tool-bar-map'."
   (dolist (button switches)
     (if (eq (car button) :insert)
-	(when (eval (cadr button))
-	  (toolbarx-emacs-refresh-process-button-or-insert-list (cddr button)
-								used-keys
-								keymap))
+        (when (eval (cadr button))
+          (toolbarx-emacs-refresh-process-button-or-insert-list (cddr button)
+                                                                used-keys
+                                                                keymap))
       (toolbarx-emacs-add-button button used-keys keymap))))
 
 
@@ -1178,16 +1178,16 @@ been used as keys in the keymap `tool-bar-map'."
 If GLOBAL-FLAG is non-nil, the default value of toolbar switches
 is used and the default value of `toolbarx-map' is changed."
   (let* ((switches (if global-flag
-		       (if (default-boundp 'toolbarx-internal-button-switches)
-			   (default-value 'toolbarx-internal-button-switches)
-			 toolbarx-internal-button-switches)
-		     toolbarx-internal-button-switches))
-	 (used-keys (list :used-symbols nil))
-	 (tool-bar-map-temp (make-sparse-keymap)))
+                       (if (default-boundp 'toolbarx-internal-button-switches)
+                           (default-value 'toolbarx-internal-button-switches)
+                         toolbarx-internal-button-switches)
+                     toolbarx-internal-button-switches))
+         (used-keys (list :used-symbols nil))
+         (tool-bar-map-temp (make-sparse-keymap)))
     (toolbarx-emacs-refresh-process-button-or-insert-list switches used-keys
-							  tool-bar-map-temp)
+                                                          tool-bar-map-temp)
     (if global-flag
-	(setq-default tool-bar-map tool-bar-map-temp)
+        (setq-default tool-bar-map tool-bar-map-temp)
       (setq tool-bar-map tool-bar-map-temp))))
 
 
@@ -1245,7 +1245,7 @@ and the cdr shall be processed as a group.
 
 However, a symbol is not required to have an association in
 MEANING-ALIST, which is only a way to specify properties to a
-button.	 One can use groups to specify properties.  Nil is a good
+button.  One can use groups to specify properties.  Nil is a good
 MEANING-ALIST.
 
 Buttons
@@ -1363,7 +1363,7 @@ For each property PROP, its value should be either:
       and the return should be ot type i) or ii) above
   iv) a symbol bound to a element of type i) or ii).
 
-The type is cheched in the order i), ii) iii) and iv).	This
+The type is cheched in the order i), ii) iii) and iv).  This
 evaluations are done every time that the oolbar is refresh.
 
 Ps.: in order to specify a vector as value of a property (like
@@ -1378,7 +1378,7 @@ Eval groups
 
 If the first element of a group is the symbol `:eval-group', each
 element is evaluated (with `eval'), put inside a list and
-processed like a group.	 Eval groups are useful to store
+processed like a group.  Eval groups are useful to store
 definition of buttons in a variable.
 
 Dropdown groups
@@ -1398,7 +1398,7 @@ or
   (:dropdown-group
      STRING-1 ITEM-11 ... ITEM-1n
      STRING-2 ITEM-21 ... ITEM-2m
-	   . . .
+           . . .
      STRING-n ITEM-n1 ... ITEM-np
        PROP-1 VAL-1 ... PROP-j VAL-j)
 where
@@ -1411,7 +1411,7 @@ second by making strings from the symbols and each symbol is the
 item)
 
 The same rules for obtaining property values, described above,
-apply here.  Properties are also distributed by groups.	 The
+apply here.  Properties are also distributed by groups.  The
 supported properties and their basic type are:
 
  :type -- one of the symbols `radio' (default) or `toggle'; if
@@ -1431,11 +1431,11 @@ supported properties and their basic type are:
 
  :save -- one of the symbols nil (default), `offer' or
    `always'; determined if it is possible for the user to save
-   the which menu itens are active, for a next session.	 If value
+   the which menu itens are active, for a next session.  If value
    is `offer', a item (offering to save) is added to the
-   popup menu.	If the value is `always', every time that a item
-   is selected, the variable is saved.	If value is nil, variable
-   shall not be saved.	If value is non-nil then `:variable' is
+   popup menu.  If the value is `always', every time that a item
+   is selected, the variable is saved.  If value is nil, variable
+   shall not be saved.  If value is non-nil then `:variable' is
    mandatory.
 
  :title -- a string or nil; if a string, the popup menu will show
@@ -1483,10 +1483,10 @@ line of buttons.  The only property supported for this button is
 this button is ignored."
   (let ((switches (toolbarx-process-group buttons meaning-alist nil nil)))
     (if global-flag
-	(setq-default toolbarx-internal-button-switches
-		      switches)
+        (setq-default toolbarx-internal-button-switches
+                      switches)
       (set (make-local-variable 'toolbarx-internal-button-switches)
-	   switches)
+           switches)
       (make-local-variable 'tool-bar-map)))
   (toolbarx-refresh global-flag))
 
@@ -1498,145 +1498,145 @@ this button is ignored."
      :image ["new" toolbar-file-icon]
      :command [find-file toolbar-open]
      :enable [(not (window-minibuffer-p
-		    (frame-selected-window menu-updating-frame)))
-	      t]
+                    (frame-selected-window menu-updating-frame)))
+              t]
      :help ["Specify a new file's name, to edit the file" "Visit new file"])
 
     (open-file :image ["open" toolbar-file-icon]
-		:command [menu-find-file-existing toolbar-open]
-		:enable [(not (window-minibuffer-p
-			       (frame-selected-window menu-updating-frame)))
-			 t]
-		:help ["Read a file into an Emacs buffer" "Open a file"])
+               :command [menu-find-file-existing toolbar-open]
+               :enable [(not (window-minibuffer-p
+                              (frame-selected-window menu-updating-frame)))
+                        t]
+               :help ["Read a file into an Emacs buffer" "Open a file"])
 
     (dired :image ["diropen"
-		   toolbar-folder-icon]
-	   :command [dired toolbar-dired]
-	   :help ["Read a directory, operate on its files" "Edit a directory"])
+                   toolbar-folder-icon]
+           :command [dired toolbar-dired]
+           :help ["Read a directory, operate on its files" "Edit a directory"])
 
     (save-buffer :image ["save" toolbar-disk-icon]
-		 :command [save-buffer toolbar-save]
-		 :enable [(and
-			   (buffer-modified-p)
-			   (buffer-file-name)
-			   (not (window-minibuffer-p
-				 (frame-selected-window menu-updating-frame))))
-			  t]
-		 :help ["Save current buffer to its file"  "Save buffer"]
-		 :visible (or buffer-file-name
-			      (not (eq 'special
-				       (get major-mode 'mode-class)))))
+                 :command [save-buffer toolbar-save]
+                 :enable [(and
+                           (buffer-modified-p)
+                           (buffer-file-name)
+                           (not (window-minibuffer-p
+                                 (frame-selected-window menu-updating-frame))))
+                          t]
+                 :help ["Save current buffer to its file"  "Save buffer"]
+                 :visible (or buffer-file-name
+                              (not (eq 'special
+                                       (get major-mode 'mode-class)))))
 
     ;; Emacs only
     (write-file :image "saveas"
-		:command write-file
-		:enable (not
-			 (window-minibuffer-p
-			  (frame-selected-window menu-updating-frame)))
-		:insert [t nil]
-		:help "Write current buffer to another file"
-		:visible (or buffer-file-name
-			     (not (eq 'special (get major-mode 'mode-class)))))
+                :command write-file
+                :enable (not
+                         (window-minibuffer-p
+                          (frame-selected-window menu-updating-frame)))
+                :insert [t nil]
+                :help "Write current buffer to another file"
+                :visible (or buffer-file-name
+                             (not (eq 'special (get major-mode 'mode-class)))))
 
     (undo :image ["undo" toolbar-undo-icon]
-	  :command [undo toolbar-undo]
-	  :enable [(and (not buffer-read-only)
-			(not (eq t buffer-undo-list))
-			(if (eq last-command 'undo)
-			    pending-undo-list
-			  (consp buffer-undo-list)))
-		   t]
-	  :help ["Undo last operation" "Undo edit"]
-	  :visible (not (eq 'special (get major-mode 'mode-class))))
+          :command [undo toolbar-undo]
+          :enable [(and (not buffer-read-only)
+                        (not (eq t buffer-undo-list))
+                        (if (eq last-command 'undo)
+                            pending-undo-list
+                          (consp buffer-undo-list)))
+                   t]
+          :help ["Undo last operation" "Undo edit"]
+          :visible (not (eq 'special (get major-mode 'mode-class))))
 
     (cut :image ["cut" toolbar-cut-icon]
-	 :help ["Delete text in region and copy it to the clipboard"
-		"Kill region"]
-	 :command [clipboard-kill-region toolbar-cut]
-	 :visible (not (eq 'special (get major-mode 'mode-class))))
+         :help ["Delete text in region and copy it to the clipboard"
+                "Kill region"]
+         :command [clipboard-kill-region toolbar-cut]
+         :visible (not (eq 'special (get major-mode 'mode-class))))
 
     (copy :image ["copy" toolbar-copy-icon]
-	  :help ["Copy text in region to the clipboard" "Copy region"]
-	  :command [clipboard-kill-ring-save toolbar-copy])
+          :help ["Copy text in region to the clipboard" "Copy region"]
+          :command [clipboard-kill-ring-save toolbar-copy])
 
     (paste :image ["paste" toolbar-paste-icon]
-	   :help ["Paste text from clipboard" "Paste from clipboard"]
-	   :command [clipboard-yank toolbar-paste]
-	   :visible (not (eq 'special (get major-mode 'mode-class))))
+           :help ["Paste text from clipboard" "Paste from clipboard"]
+           :command [clipboard-yank toolbar-paste]
+           :visible (not (eq 'special (get major-mode 'mode-class))))
 
     ;; Emacs only
     (search-forward :command nonincremental-search-forward
-		    :help "Search forward for a string"
-		    :image "search"
-		    :insert [t nil])
+                    :help "Search forward for a string"
+                    :image "search"
+                    :insert [t nil])
 
     (search-replace
      :image ["search-replace" toolbar-replace-icon]
      :command [query-replace toolbar-replace]
      :help ["Replace string interactively, ask about each occurrence"
-	    "Search & Replace"])
+            "Search & Replace"])
 
     (print-buffer :image ["print" toolbar-printer-icon]
-		  :command [print-buffer toolbar-print]
-		  :help ["Print current buffer with page headings"
-			 "Print buffer"])
+                  :command [print-buffer toolbar-print]
+                  :help ["Print current buffer with page headings"
+                         "Print buffer"])
 
     ;; Emacs only
     (customize :image "preferences"
-	       :command customize
-	       :help "Edit preferences (customize)"
-	       :insert [t nil])
+               :command customize
+               :help "Edit preferences (customize)"
+               :insert [t nil])
 
     ;; Emacs only
     (help :image "help"
-	  :command (lambda () (interactive) (popup-menu menu-bar-help-menu))
-	  :help "Pop up the Help menu"
-	  :insert [t nil])
+          :command (lambda () (interactive) (popup-menu menu-bar-help-menu))
+          :help "Pop up the Help menu"
+          :insert [t nil])
 
     ;; Emacs only
     (kill-buffer :command kill-this-buffer
-		 :enable (kill-this-buffer-enabled-p)
-		 :help "Discard current buffer"
-		 :image "close"
-		 :insert [t nil])
+                 :enable (kill-this-buffer-enabled-p)
+                 :help "Discard current buffer"
+                 :image "close"
+                 :insert [t nil])
 
     ;; Emacs only
     (exit-emacs :image "exit"
-		:command save-buffers-kill-emacs
-		:help "Offer to save unsaved buffers, then exit Emacs"
-		:insert [t nil])
+                :command save-buffers-kill-emacs
+                :help "Offer to save unsaved buffers, then exit Emacs"
+                :insert [t nil])
 
     (spell-buffer :image ["spell" toolbar-spell-icon]
-		  :command [ispell-buffer toolbar-ispell]
-		  :help ["Check spelling of selected buffer" "Check spelling"])
+                  :command [ispell-buffer toolbar-ispell]
+                  :help ["Check spelling of selected buffer" "Check spelling"])
 
     (info :image ["info" toolbar-info-icon]
-	  :command [info toolbar-info]
-	  :help ["Enter Info, the documentation browser" "Info documentation"])
+          :command [info toolbar-info]
+          :help ["Enter Info, the documentation browser" "Info documentation"])
 
     ;; XEmacs only
     (mail :image toolbar-mail-icon
-	  :command toolbar-mail
-	  :help "Read mail"
-	  :insert [nil t])
+          :command toolbar-mail
+          :help "Read mail"
+          :insert [nil t])
 
     ;; XEmacs only
     (compile :image toolbar-compile-icon
-	     :command toolbar-compile
-	     :help "Start a compilation"
-	     :insert [nil t])
+             :command toolbar-compile
+             :help "Start a compilation"
+             :insert [nil t])
 
     ;; XEmacs only
     (debug :image toolbar-debug-icon
-	   :command toolbar-debug
-	   :help "Start a debugger"
-	   :insert [nil t])
+           :command toolbar-debug
+           :help "Start a debugger"
+           :insert [nil t])
 
     ;; XEmacs only
     (news :image toolbar-news-icon
-	  :command toolbar-news
-	  :help "Read news"
-	  :insert [nil t]))
+          :command toolbar-news
+          :help "Read news"
+          :insert [nil t]))
   "A meaning alist with definition of the default buttons.
 The following buttons are available:
 

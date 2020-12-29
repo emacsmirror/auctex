@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-longtable-skipping-regexp
   (regexp-opt '("[l]" "[r]" "[c]" ""))
@@ -57,23 +57,23 @@ insert line break macro."
 (defun LaTeX-env-longtable (environment)
   "Insert a longtable-like ENVIRONMENT with caption and label."
   (let* ((pos (completing-read (TeX-argument-prompt t nil "Position")
-			       '(("l") ("r") ("c"))))
-	 (fmt (TeX-read-string "Format: " LaTeX-default-format))
-	 (caption (TeX-read-string "Caption: "))
-	 (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
-			  (TeX-read-string "(Optional) Short caption: "))))
+                               '(("l") ("r") ("c"))))
+         (fmt (TeX-read-string "Format: " LaTeX-default-format))
+         (caption (TeX-read-string "Caption: "))
+         (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
+                          (TeX-read-string "(Optional) Short caption: "))))
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
-			      (concat
-			       (unless (zerop (length pos))
-				 (concat LaTeX-optop pos LaTeX-optcl))
-			       (concat TeX-grop fmt TeX-grcl)))
+                              (concat
+                               (unless (zerop (length pos))
+                                 (concat LaTeX-optop pos LaTeX-optcl))
+                               (concat TeX-grop fmt TeX-grcl)))
     ;; top caption -- do nothing if user skips caption
     (unless (zerop (length caption))
       ;; insert `\caption[short-caption]{caption':
       (insert TeX-esc "caption")
       (when (and short-caption (not (string= short-caption "")))
-	(insert LaTeX-optop short-caption LaTeX-optcl))
+        (insert LaTeX-optop short-caption LaTeX-optcl))
       (insert TeX-grop caption)
       ;; ask for a label and insert it
       (LaTeX-label environment 'environment)
@@ -115,7 +115,7 @@ insert line break macro."
    ;; Use the enhanced table formatting.  Append to
    ;; `LaTeX-indent-environment-list' in order not to override custom settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("longtable" LaTeX-indent-tabular) t)
+                '("longtable" LaTeX-indent-tabular) t)
 
    ;; Append longtable to `LaTeX-label-alist', in order not to override possible
    ;; custome values.
@@ -126,12 +126,12 @@ insert line break macro."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; Actually, `\caption*{}' macro takes only one mandatory
      ;; argument, not an optional one, the following is a workaround
      ;; to fontify correctly also the standard `\caption[]{}' macro.
      (font-latex-add-keywords '(("caption" "*[{"))
-			      'textual)))
+                              'textual)))
  TeX-dialect)
 
 ;; `longtable.sty' has two options "errorshow" and "pausing", both for

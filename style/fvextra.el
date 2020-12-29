@@ -40,8 +40,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
@@ -55,15 +55,15 @@
     ("curlyquotes" ("true" "false"))
     ("extra" ("true" "false"))
     ("fontencoding" (;; Reset to default document font encoding
-		     "none"
-		     ;; 128+ glyph encodings (text)
-		     "OT1" "OT2" "OT3" "OT4" "OT6"
-		     ;; 256 glyph encodings (text)
-		     "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
-		     ;; 256 glyph encodings (text extended)
-		     "X2"
-		     ;; Other encodings
-		     "LY1" "LV1" "LGR"))
+                     "none"
+                     ;; 128+ glyph encodings (text)
+                     "OT1" "OT2" "OT3" "OT4" "OT6"
+                     ;; 256 glyph encodings (text)
+                     "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
+                     ;; 256 glyph encodings (text extended)
+                     "X2"
+                     ;; Other encodings
+                     "LY1" "LV1" "LGR"))
     ("highlightcolor")
     ("highlightlines")
     ("linenos" ("true" "false"))
@@ -114,30 +114,30 @@
   "Update `LaTeX-fancyvrb-key-val-options-local' with key=vals from \"fvextra.sty\"."
   ;; Delete the key "numbers" from `LaTeX-fancyvrb-key-val-options-local':
   (setq LaTeX-fancyvrb-key-val-options-local
-	(assq-delete-all (car (assoc "numbers" LaTeX-fancyvrb-key-val-options-local))
-			 LaTeX-fancyvrb-key-val-options-local))
+        (assq-delete-all (car (assoc "numbers" LaTeX-fancyvrb-key-val-options-local))
+                         LaTeX-fancyvrb-key-val-options-local))
   ;; Add the key with "both" value:
   (add-to-list 'LaTeX-fancyvrb-key-val-options-local
-	       '("numbers" ("none" "left" "right" "both")))
+               '("numbers" ("none" "left" "right" "both")))
   ;; Add color values to resp. keys:
   (when (or (member "xcolor" (TeX-style-list))
-	    (member "color" (TeX-style-list)))
+            (member "color" (TeX-style-list)))
     (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
-			 #'LaTeX-xcolor-definecolor-list
-		       #'LaTeX-color-definecolor-list))
-	   (keys '("highlightcolor"
-		   "rulecolor"
-		   "fillcolor"
-		   "tabcolor"
-		   "spacecolor"))
-	   (tmp (copy-alist LaTeX-fancyvrb-key-val-options-local)))
+                         #'LaTeX-xcolor-definecolor-list
+                       #'LaTeX-color-definecolor-list))
+           (keys '("highlightcolor"
+                   "rulecolor"
+                   "fillcolor"
+                   "tabcolor"
+                   "spacecolor"))
+           (tmp (copy-alist LaTeX-fancyvrb-key-val-options-local)))
       (dolist (x keys)
-	(setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
-	(if (string= x "highlightcolor")
-	    (cl-pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal)
-	  (cl-pushnew (list x (append '("none") (mapcar #'car (funcall colorcmd)))) tmp :test #'equal)))
+        (setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
+        (if (string= x "highlightcolor")
+            (cl-pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal)
+          (cl-pushnew (list x (append '("none") (mapcar #'car (funcall colorcmd)))) tmp :test #'equal)))
       (setq LaTeX-fancyvrb-key-val-options-local
-	    (copy-alist tmp)))))
+            (copy-alist tmp)))))
 
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-fvextra-update-key-val t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
@@ -151,8 +151,8 @@
 
    ;; Append `LaTeX-fvextra-key-val' to `LaTeX-fancyvrb-key-val-options-local':
    (setq LaTeX-fancyvrb-key-val-options-local
-	 (append LaTeX-fvextra-key-val-options
-		 LaTeX-fancyvrb-key-val-options-local))
+         (append LaTeX-fvextra-key-val-options
+                 LaTeX-fancyvrb-key-val-options-local))
 
    (TeX-add-symbols
     ;; 4.1 Inline formatting with \fvinlineset
@@ -179,17 +179,17 @@
 
    ;; Add \EscVerb*? to `LaTeX-verbatim-macros-with-braces-local':
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local
-		"EscVerb" t)
+                "EscVerb" t)
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local
-		"EscVerb*" t)
+                "EscVerb*" t)
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fvinlineset" "{"))
-			      'function)
+                              'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
-			      'textual)))
+                              'textual)))
  TeX-dialect)
 
 (defvar LaTeX-fvextra-package-options nil

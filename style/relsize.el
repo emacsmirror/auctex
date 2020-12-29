@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "relsize"
@@ -55,19 +55,19 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; This is not easy, are the first 2 'variable oder rather
      ;; 'type-declaration?  I start with 'type-declaration, let the
      ;; users decide
      (font-latex-add-keywords '(("relsize"            "")
-				("relscale"           "")
-				("larger"             "")
-				("smaller"            ""))
-			      'type-declaration)
+                                ("relscale"           "")
+                                ("larger"             "")
+                                ("smaller"            ""))
+                              'type-declaration)
      (font-latex-add-keywords '(("textlarger"         "[{")
-				("textsmaller"        "[{")
-				("textscale"          "{{"))
-			      'type-command)))
+                                ("textsmaller"        "[{")
+                                ("textscale"          "{{"))
+                              'type-command)))
  TeX-dialect)
 
 (defvar LaTeX-relsize-package-options nil

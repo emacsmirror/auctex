@@ -42,8 +42,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-amsmath-package-options)
 
@@ -102,10 +102,10 @@
 
 (defvar LaTeX-mathtools-DeclarePairedDelimiter-regexp
   `(,(concat "\\\\DeclarePairedDelimiter\\(?:X\\|XPP\\)?"
-	     "{?"
-	     "\\\\\\([a-zA-Z]+\\)"
-	     "}?"
-	     "\\(?:\\[\\([0-9]+\\)\\]\\)?")
+             "{?"
+             "\\\\\\([a-zA-Z]+\\)"
+             "}?"
+             "\\(?:\\[\\([0-9]+\\)\\]\\)?")
     (1 2) LaTeX-auto-mathtools-DeclarePairedDelimiter)
   "Match the arguments of \\DeclarePairedDelimiterX? from mathtools package.")
 
@@ -120,32 +120,32 @@
 (defun LaTeX-mathtools-auto-prepare ()
   "Clear various variables for mathtools package before parsing."
   (setq LaTeX-auto-mathtools-newtagform             nil
-	LaTeX-auto-mathtools-DeclarePairedDelimiter nil
-	LaTeX-auto-mathtools-newgathered            nil))
+        LaTeX-auto-mathtools-DeclarePairedDelimiter nil
+        LaTeX-auto-mathtools-newgathered            nil))
 
 (defun LaTeX-mathtools-auto-cleanup ()
   "Process the parsed elements for mathtools package."
   (when (LaTeX-mathtools-DeclarePairedDelimiter-list)
     (dolist (delim (LaTeX-mathtools-DeclarePairedDelimiter-list))
       (let ((cmd (car delim))
-	    (arg (cadr delim)))
-	(TeX-add-symbols `(,cmd [ LaTeX-mathtools-arg-mathsize-completion ]
-				,(if (string= arg "")
-				     1
-				   (string-to-number arg)))
-			 `(,(concat cmd "*")
-			   ,(if (string= arg "")
-				1
-			      (string-to-number arg)))))))
+            (arg (cadr delim)))
+        (TeX-add-symbols `(,cmd [ LaTeX-mathtools-arg-mathsize-completion ]
+                                ,(if (string= arg "")
+                                     1
+                                   (string-to-number arg)))
+                         `(,(concat cmd "*")
+                           ,(if (string= arg "")
+                                1
+                              (string-to-number arg)))))))
   (when (LaTeX-mathtools-newgathered-list)
     (dolist (env (mapcar #'car (LaTeX-mathtools-newgathered-list)))
       (LaTeX-add-environments env)
       (add-to-list 'LaTeX-item-list
-		   `(,env . LaTeX-item-equation) t)
+                   `(,env . LaTeX-item-equation) t)
       (add-to-list 'LaTeX-label-alist
-		   `(,env . LaTeX-amsmath-label) t)
+                   `(,env . LaTeX-amsmath-label) t)
       (when (fboundp 'reftex-add-label-environments)
-	(reftex-add-label-environments `((,env ?e nil nil t)))))))
+        (reftex-add-label-environments `((,env ?e nil nil t)))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-mathtools-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-mathtools-auto-cleanup t)
@@ -157,7 +157,7 @@ If OPTIONAL, insert it as optional argument in brackets."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt optional nil
-			 (concat "Math style: " TeX-esc) t)
+                         (concat "Math style: " TeX-esc) t)
     '("displaystyle" "textstyle"
       "scriptstyle"  "scriptscriptstyle"))
    optional TeX-esc))
@@ -168,24 +168,24 @@ If OPTIONAL, insert it as optional argument in brackets."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt optional nil
-			 (concat "Size command: " TeX-esc) t)
+                         (concat "Size command: " TeX-esc) t)
     '("big" "Big" "bigg" "Bigg"))
    optional TeX-esc))
 
 (defun LaTeX-mathtools-arg-declarepaireddelimiter (optional &optional X)
   "Query and insert various \\DeclarePairedDelimiter macros from mathtools package."
   (let ((cmd (TeX-read-string (concat "Command: " TeX-esc)))
-	(arg (when X (TeX-read-string
-		      (TeX-argument-prompt t nil "Number of arguments")))))
+        (arg (when X (TeX-read-string
+                      (TeX-argument-prompt t nil "Number of arguments")))))
     (TeX-add-symbols `(,cmd [ LaTeX-mathtools-arg-mathsize-completion ]
-			    ,(if X
-				 ;; This is no precaution, arg has to be > 0
-				 (string-to-number arg)
-			       1))
-		     `(,(concat cmd "*")
-		       ,(if X
-			    (string-to-number arg)
-			  1)))
+                            ,(if X
+                                 ;; This is no precaution, arg has to be > 0
+                                 (string-to-number arg)
+                               1))
+                     `(,(concat cmd "*")
+                       ,(if X
+                            (string-to-number arg)
+                          1)))
     (LaTeX-add-mathtools-DeclarePairedDelimiters
      `(,cmd ,(if X arg "")))
     (TeX-argument-insert cmd optional TeX-esc)
@@ -198,27 +198,27 @@ If both arguments are given, insert them in brackets.  If only a
 width is given, insert it prefixed with a pair of empty
 brackets."
   (let ((pos (TeX-read-string
-	      (TeX-argument-prompt t nil "Position (t, b or c (default))")))
-	(width (completing-read
-		(TeX-argument-prompt t nil "Width")
-		(mapcar
-		 (lambda (x) (concat TeX-esc (car x)))
-		 (LaTeX-length-list)))))
+              (TeX-argument-prompt t nil "Position (t, b or c (default))")))
+        (width (completing-read
+                (TeX-argument-prompt t nil "Width")
+                (mapcar
+                 (lambda (x) (concat TeX-esc (car x)))
+                 (LaTeX-length-list)))))
     (LaTeX-insert-environment
      env
      (cond (;; both arguments
-	    (and pos   (not (string= pos ""))
-		 width (not (string= width "")))
-	    (format "[%s][%s]" pos width))
-	   (;; pos not empty, width empty
-	    (and pos (not (string= pos ""))
-		 (string= width ""))
-	    (format "[%s]" pos))
-	   (;; pos empty, width not
-	    (and (string= pos "")
-		 width (not (string= width "")))
-	    (format "[][%s]" width))
-	   (t nil)))))
+            (and pos   (not (string= pos ""))
+                 width (not (string= width "")))
+            (format "[%s][%s]" pos width))
+           (;; pos not empty, width empty
+            (and pos (not (string= pos ""))
+                 (string= width ""))
+            (format "[%s]" pos))
+           (;; pos empty, width not
+            (and (string= pos "")
+                 width (not (string= width "")))
+            (format "[][%s]" width))
+           (t nil)))))
 
 (defun LaTeX-mathtools-env-cases (env)
   "Insert various cases ENVs incl. an ampersand from mathtools package."
@@ -310,20 +310,20 @@ Put line break macro on the last line.  Next, insert an ampersand."
     '("newtagform"
       (TeX-arg-eval
        (lambda ()
-	 (let ((newtag (TeX-read-string
-			(TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-mathtools-newtagforms newtag)
-	   (format "%s" newtag))))
-       [ "Inner format" ] "Left" "Right")
+         (let ((newtag (TeX-read-string
+                        (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-mathtools-newtagforms newtag)
+           (format "%s" newtag))))
+      [ "Inner format" ] "Left" "Right")
     '("renewtagform"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-mathtools-newtagform-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-mathtools-newtagform-list))
       [ "Inner format" ] "Left" "Right")
     '("usetagform"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-mathtools-newtagform-list)))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-mathtools-newtagform-list)))
     ;; 3.2.2 Showing only referenced tags
     '("refeq" TeX-arg-ref)
     '("noeqref" TeX-arg-ref)
@@ -343,9 +343,9 @@ Put line break macro on the last line.  Next, insert an ampersand."
     '("xleftrightharpoons" ["Below"] "Above")
     ;; 3.3.2 Braces and brackets
     '("underbracket" [ (TeX-arg-length "Rule thickness") ]
-		     [ (TeX-arg-length "Bracket height") ] t)
+      [ (TeX-arg-length "Bracket height") ] t)
     '("overbracket"  [ (TeX-arg-length "Rule thickness") ]
-		     [ (TeX-arg-length "Bracket height") ] t)
+      [ (TeX-arg-length "Bracket height") ] t)
     '("underbrace" 1)
     '("overbrace" 1)
     '("LaTeXunderbrace" 1)
@@ -384,13 +384,13 @@ Put line break macro on the last line.  Next, insert an ampersand."
     '("reDeclarePairedDelimiterInnerWrapper"
       (TeX-arg-eval
        (lambda ()
-	 (let ((cmd (completing-read
-		     (concat "Command: " TeX-esc)
-		     (mapcar #'car (LaTeX-mathtools-DeclarePairedDelimiter-list)))))
-	   (concat TeX-esc cmd))))
+         (let ((cmd (completing-read
+                     (concat "Command: " TeX-esc)
+                     (mapcar #'car (LaTeX-mathtools-DeclarePairedDelimiter-list)))))
+           (concat TeX-esc cmd))))
       (TeX-arg-eval completing-read
-		    "star or nostar: "
-		    '("star" "nostar"))
+                    "star or nostar: "
+                    '("star" "nostar"))
       t)
     ;; 3.7.1 Left and right parentheses
     '("lparen" TeX-arg-insert-right-brace-maybe)
@@ -410,20 +410,20 @@ Put line break macro on the last line.  Next, insert an ampersand."
     '("newgathered"
       (TeX-arg-eval
        (lambda ()
-	 (let ((env (TeX-read-string
-		     (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-environments env)
-	   (LaTeX-add-mathtools-newgathereds env)
-	   (add-to-list 'LaTeX-item-list
-			`(,env . LaTeX-item-equation) t)
-	   (add-to-list 'LaTeX-label-alist
-			`(,env . LaTeX-amsmath-label) t)
-	   (format "%s" env))))
+         (let ((env (TeX-read-string
+                     (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-environments env)
+           (LaTeX-add-mathtools-newgathereds env)
+           (add-to-list 'LaTeX-item-list
+                        `(,env . LaTeX-item-equation) t)
+           (add-to-list 'LaTeX-label-alist
+                        `(,env . LaTeX-amsmath-label) t)
+           (format "%s" env))))
       3)
     '("renewgathered"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-mathtools-newgathered-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-mathtools-newgathered-list))
       3)
     ;; 4.6 Split fractions
     '("splitfrac" 2)
@@ -435,58 +435,58 @@ Put line break macro on the last line.  Next, insert an ampersand."
    (add-to-list 'TeX-braces-association '("\\lparen" . "\\rparen") t)
 
    (setq LaTeX-item-list
-	 (append '(("multlined"   . LaTeX-item-equation)
-		   ("lgathered"   . LaTeX-item-equation)
-		   ("rgathered"   . LaTeX-item-equation)
-		   ("spreadlines" . LaTeX-item-equation)
-		   ("matrix*"     . LaTeX-item-equation)
-		   ("pmatrix*"    . LaTeX-item-equation)
-		   ("bmatrix*"    . LaTeX-item-equation)
-		   ("Bmatrix*"    . LaTeX-item-equation)
-		   ("vmatrix*"    . LaTeX-item-equation)
-		   ("Vmatrix*"    . LaTeX-item-equation)
-		   ("dcases"      . LaTeX-mathtools-item-cases)
-		   ("dcases*"     . LaTeX-mathtools-item-cases)
-		   ("rcases"      . LaTeX-mathtools-item-cases)
-		   ("rcases*"     . LaTeX-mathtools-item-cases)
-		   ("drcases"     . LaTeX-mathtools-item-cases)
-		   ("drcases*"    . LaTeX-mathtools-item-cases)
-		   ("cases*"      . LaTeX-mathtools-item-cases))
-		 LaTeX-item-list))
+         (append '(("multlined"   . LaTeX-item-equation)
+                   ("lgathered"   . LaTeX-item-equation)
+                   ("rgathered"   . LaTeX-item-equation)
+                   ("spreadlines" . LaTeX-item-equation)
+                   ("matrix*"     . LaTeX-item-equation)
+                   ("pmatrix*"    . LaTeX-item-equation)
+                   ("bmatrix*"    . LaTeX-item-equation)
+                   ("Bmatrix*"    . LaTeX-item-equation)
+                   ("vmatrix*"    . LaTeX-item-equation)
+                   ("Vmatrix*"    . LaTeX-item-equation)
+                   ("dcases"      . LaTeX-mathtools-item-cases)
+                   ("dcases*"     . LaTeX-mathtools-item-cases)
+                   ("rcases"      . LaTeX-mathtools-item-cases)
+                   ("rcases*"     . LaTeX-mathtools-item-cases)
+                   ("drcases"     . LaTeX-mathtools-item-cases)
+                   ("drcases*"    . LaTeX-mathtools-item-cases)
+                   ("cases*"      . LaTeX-mathtools-item-cases))
+                 LaTeX-item-list))
 
    (setq LaTeX-label-alist
-	 (append '(("lgathered" . LaTeX-amsmath-label)
-		   ("rgathered" . LaTeX-amsmath-label)
-		   ("multlined" . LaTeX-amsmath-label))
-		 LaTeX-label-alist))
+         (append '(("lgathered" . LaTeX-amsmath-label)
+                   ("rgathered" . LaTeX-amsmath-label)
+                   ("multlined" . LaTeX-amsmath-label))
+                 LaTeX-label-alist))
 
    ;; RefTeX support: Add env's with `reftex-add-label-environments'
    (when (fboundp 'reftex-add-label-environments)
      (let ((envs '(("lgathered"  ?e nil nil t)
-		   ("rgathered"  ?e nil nil t)
-		   ("multlined"  ?e nil nil t))))
+                   ("rgathered"  ?e nil nil t)
+                   ("multlined"  ?e nil nil t))))
        (dolist (env envs)
-	 (reftex-add-label-environments `(,env)))))
+         (reftex-add-label-environments `(,env)))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("mathtoolsset"  "{")
-				("newtagform"    "{[{{")
-				("renewtagform"  "{[{{")
-				("DeclarePairedDelimiter"     "|{\\{{")
-				("DeclarePairedDelimiterX"    "|{\\[{{{")
-				("DeclarePairedDelimiterXPP"  "|{\\[{{{{{")
-				("reDeclarePairedDelimiterInnerWrapper" "|{\\{{")
-				("DeclareMathSizes"           "{{{{")
-				("newgathered"                "{{{{")
-				("renewgathered"              "{{{{"))
-			      'function)
+                                ("newtagform"    "{[{{")
+                                ("renewtagform"  "{[{{")
+                                ("DeclarePairedDelimiter"     "|{\\{{")
+                                ("DeclarePairedDelimiterX"    "|{\\[{{{")
+                                ("DeclarePairedDelimiterXPP"  "|{\\[{{{{{")
+                                ("reDeclarePairedDelimiterInnerWrapper" "|{\\{{")
+                                ("DeclareMathSizes"           "{{{{")
+                                ("newgathered"                "{{{{")
+                                ("renewgathered"              "{{{{"))
+                              'function)
      (font-latex-add-keywords '(("usetagform" "{"))
-			      'variable)
+                              'variable)
      (font-latex-add-keywords '(("refeq"   "{")
-				("noeqref" "{"))
-			      'reference)))
+                                ("noeqref" "{"))
+                              'reference)))
  TeX-dialect)
 
 ;;; mathtools.el ends here

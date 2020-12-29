@@ -69,11 +69,11 @@
    ;; Don't indent the content inside \(sub\)?appendices environments:
    (unless (string-match "appendices" LaTeX-document-regexp)
      (set (make-local-variable 'LaTeX-document-regexp)
-	  (concat LaTeX-document-regexp "\\|\\(?:sub\\)?appendices"))))
+          (concat LaTeX-document-regexp "\\|\\(?:sub\\)?appendices"))))
  TeX-dialect)
 
 (defvar LaTeX-appendix-package-options '("toc" "page" "title"
-					 "titletoc" "header")
+                                         "titletoc" "header")
   "Package options for the appendix package.")
 
 ;;; appendix.el ends here

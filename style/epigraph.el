@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "epigraph"
@@ -65,34 +65,34 @@
 
    ;; The value of these lengths can be changed with \setlength
    (LaTeX-add-lengths "epigraphwidth" "epigraphrule"
-		      "beforeepigraphskip"
-		      "afterepigraphskip")
+                      "beforeepigraphskip"
+                      "afterepigraphskip")
 
    ;; Append epigraphs to `LaTeX-item-list':
    (add-to-list 'LaTeX-item-list
-		'("epigraphs" . LaTeX-epigraph-qitem) t)
+                '("epigraphs" . LaTeX-epigraph-qitem) t)
 
    ;; Append qitem to `LaTeX-item-regexp':
    (unless (string-match "qitem" LaTeX-item-regexp)
      (set (make-local-variable 'LaTeX-item-regexp)
-	  (concat
-	   LaTeX-item-regexp
-	   "\\|"
-	   "qitem\\b"))
+          (concat
+           LaTeX-item-regexp
+           "\\|"
+           "qitem\\b"))
      (LaTeX-set-paragraph-start))
 
    ;; Fontification:
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("epigraph"     "{{")
-				("qitem"        "{{")
-				("epigraphhead" "[{"))
-			      'textual)
+                                ("qitem"        "{{")
+                                ("epigraphhead" "[{"))
+                              'textual)
      (font-latex-add-keywords '(("dropchapter"  "{")
-				("undodrop"     ""))
-			      'variable)
+                                ("undodrop"     ""))
+                              'variable)
      (font-latex-add-keywords '("cleartoevenpage")
-			      'warning)))
+                              'warning)))
  TeX-dialect)
 
 (defvar LaTeX-epigraph-package-options nil

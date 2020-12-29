@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-auto-add-type "siunitx-unit" "LaTeX")
 
@@ -44,9 +44,9 @@
 ;; wrapped in `[...]'.
 (defvar LaTeX-siunitx-regexp
   (concat "\\\\Declare"
-	  "\\(?:SIUnit\\|SIPrefix\\|BinaryPrefix\\|SIPostPower\\|SIPrepower\\|"
-	  "SIQualifier\\)"
-	  "[ \t\n\r]*\\(?:\\[.*\\]\\)?[ \t\n\r]*{?\\\\\\([A-Za-z]+\\)}?")
+          "\\(?:SIUnit\\|SIPrefix\\|BinaryPrefix\\|SIPostPower\\|SIPrepower\\|"
+          "SIQualifier\\)"
+          "[ \t\n\r]*\\(?:\\[.*\\]\\)?[ \t\n\r]*{?\\\\\\([A-Za-z]+\\)}?")
   "Matches new siunitx unit, prefix, power, and qualifier definitions.")
 
 (defvar LaTeX-auto-siunitx-unit nil
@@ -59,8 +59,8 @@
 (defun LaTeX-siunitx-cleanup ()
   "Move symbols from `LaTeX-auto-siunitx-unit' to `LaTeX-siunitx-unit-list'."
   (mapcar (lambda (symbol)
-	    (add-to-list 'LaTeX-siunitx-unit-list (list symbol)))
-	  LaTeX-auto-siunitx-unit))
+            (add-to-list 'LaTeX-siunitx-unit-list (list symbol)))
+          LaTeX-auto-siunitx-unit))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-siunitx-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-siunitx-cleanup t)
@@ -70,7 +70,7 @@
   "History of units in siunitx.")
 
 (defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input
-					definition prefix)
+                                        definition prefix)
   "Prompt for siunitx units, prefixes, powers, and qualifiers.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -83,19 +83,19 @@ PREFIX is non-nil, insert it before the given input."
   ;; `completing-read-multiple' is bound, `minibuffer-local-completion-map'
   ;; otherwise) and set completion separator to the TeX escape character.
   (let* ((crm-local-completion-map
-	  (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
-	 (minibuffer-local-completion-map
-	  (remove (assoc 32 minibuffer-local-completion-map)
-		  minibuffer-local-completion-map))
-	 (crm-separator (regexp-quote TeX-esc))
-	 (unit (mapconcat 'identity
-			  (TeX-completing-read-multiple
-			   (TeX-argument-prompt optional prompt "Unit: " t)
-			   (LaTeX-siunitx-unit-list) nil nil initial-input
-			   'LaTeX-siunitx-unit-history)
-			  TeX-esc)))
+          (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
+         (minibuffer-local-completion-map
+          (remove (assoc 32 minibuffer-local-completion-map)
+                  minibuffer-local-completion-map))
+         (crm-separator (regexp-quote TeX-esc))
+         (unit (mapconcat 'identity
+                          (TeX-completing-read-multiple
+                           (TeX-argument-prompt optional prompt "Unit: " t)
+                           (LaTeX-siunitx-unit-list) nil nil initial-input
+                           'LaTeX-siunitx-unit-history)
+                          TeX-esc)))
     (if (and definition (not (string-equal "" unit)))
-	(LaTeX-add-siunitx-units unit))
+        (LaTeX-add-siunitx-units unit))
     (TeX-argument-insert unit optional prefix)))
 
 (defun LaTeX-arg-define-siunitx-unit (optional &optional prompt)
@@ -104,8 +104,8 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (LaTeX-arg-siunitx-unit optional
-			  (unless prompt (concat "Unit: " TeX-esc))
-			  nil t TeX-esc))
+                          (unless prompt (concat "Unit: " TeX-esc))
+                          nil t TeX-esc))
 
 (defvar LaTeX-siunitx-package-options
   '(;; Detecting fonts
@@ -218,7 +218,7 @@ string."
     ("inter-unit-product")
     ("parse-units" ("true" "false"))
     ("per-mode" ("reciprocal" "fraction" "reciprocal-positive-first" "symbol"
-		 "repeated-symbol" "symbol-or-fraction"))
+                 "repeated-symbol" "symbol-or-fraction"))
     ("per-symbol")
     ("power-font" ("number" "unit"))
     ("prefixes-as-symbols" ("true" "false"))
@@ -232,7 +232,7 @@ string."
     ("multi-part-units" ("brackets" "repeat" "single"))
     ("number-unit-product")
     ("product-units" ("repeat" "brackets" "brackets-power" "power" "repeat"
-		      "single"))
+                      "single"))
     ("range-units" ("brackets" "repeat" "single"))
     ;; Tabular material
     ("table-align-comparator" ("true" "false"))
@@ -506,7 +506,7 @@ string."
       "dB"))
    ;; Binary prefixes and units available when `binary-units' option is used
    (when (or (LaTeX-provided-package-options-member "siunitx" "binary-units")
-	     (LaTeX-provided-package-options-member "siunitx" "binary-units=true"))
+             (LaTeX-provided-package-options-member "siunitx" "binary-units=true"))
      (LaTeX-add-siunitx-units
       "kibi"
       "mebi"
@@ -529,9 +529,9 @@ string."
     "SIUnitSymbolOhm")
    ;; Macros available when `version-1-compatibility' option is used
    (when (or (LaTeX-provided-package-options-member
-	      "siunitx" "version-1-compatibility")
-	     (LaTeX-provided-package-options-member
-	      "siunitx" "version-1-compatibility=true"))
+              "siunitx" "version-1-compatibility")
+             (LaTeX-provided-package-options-member
+              "siunitx" "version-1-compatibility=true"))
      (LaTeX-add-siunitx-units
       "Square"
       "ssquare"
@@ -599,35 +599,35 @@ string."
 
    ;; `siunitx.sty' adds new column specification letters
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "s" "S"))
+        (concat LaTeX-array-column-letters "s" "S"))
 
    (TeX-run-style-hooks "l3keys2e"
-			"array"
-			"amstext"
-			"xparse"
-			"expl3")
+                        "array"
+                        "amstext"
+                        "xparse"
+                        "expl3")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("ang" "[{")
-				("num" "[{")
-				("si" "[{")
-				("SI" "[{[{")
-				("numlist" "[{")
-				("numrange" "[{{")
-				("SIlist" "[{{")
-				("SIrange" "[{{{")
-				("sisetup" "{")
-				("tablenum" "[{")
-				("DeclareSIUnit" "[|{\\{")
-				("DeclareSIPrefix" "|{\\{{")
-				("DeclareBinaryPrefix" "|{\\{{")
-				("DeclareSIPostPower" "|{\\{")
-				("DeclareSIPrePower" "|{\\{")
-				("DeclareSIQualifier" "|{\\{")
-				("highlight" "{"))
-			      'function)))
+                                ("num" "[{")
+                                ("si" "[{")
+                                ("SI" "[{[{")
+                                ("numlist" "[{")
+                                ("numrange" "[{{")
+                                ("SIlist" "[{{")
+                                ("SIrange" "[{{{")
+                                ("sisetup" "{")
+                                ("tablenum" "[{")
+                                ("DeclareSIUnit" "[|{\\{")
+                                ("DeclareSIPrefix" "|{\\{{")
+                                ("DeclareBinaryPrefix" "|{\\{{")
+                                ("DeclareSIPostPower" "|{\\{")
+                                ("DeclareSIPrePower" "|{\\{")
+                                ("DeclareSIQualifier" "|{\\{")
+                                ("highlight" "{"))
+                              'function)))
  TeX-dialect)
 
 (defun LaTeX-siunitx-package-options nil

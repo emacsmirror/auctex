@@ -42,17 +42,17 @@
 ;; These are provided by `font-latex.el':
 (defvar font-latex-syntactic-keywords-extra)
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 ;; The next two are provided by `newfloat.el':
 (declare-function LaTeX-add-newfloat-DeclareFloatingEnvironments
-		  "newfloat"
-		  (&rest newfloat-declarefloatingenvironments))
+                  "newfloat"
+                  (&rest newfloat-declarefloatingenvironments))
 (declare-function LaTeX-newfloat-auto-cleanup
-		  "newfloat" ())
+                  "newfloat" ())
 
 (defvar LaTeX-pythontex-pygmentize-program (executable-find "pygmentize")
   "Path to pygmentize executable.")
@@ -65,15 +65,15 @@
 Update the variable `LaTeX-pythontex-language-list' if still nil."
   (or LaTeX-pythontex-language-list
       (when LaTeX-pythontex-pygmentize-program
-	(with-temp-buffer
-	  (shell-command (concat LaTeX-pythontex-pygmentize-program " -L lexers")
-			 (current-buffer))
-	  (goto-char (point-min))
-	  (let (languages)
-	    (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
-	      (dolist (lang (split-string (match-string 1) "[[:space:],]" t))
-		(push lang languages)))
-	    (setq LaTeX-pythontex-language-list languages))))))
+        (with-temp-buffer
+          (shell-command (concat LaTeX-pythontex-pygmentize-program " -L lexers")
+                         (current-buffer))
+          (goto-char (point-min))
+          (let (languages)
+            (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
+              (dolist (lang (split-string (match-string 1) "[[:space:],]" t))
+                (push lang languages)))
+            (setq LaTeX-pythontex-language-list languages))))))
 
 (defvar LaTeX-pythontex-package-options-list
   `(("usefamily"         ("py" "sympy" "pylab" "rb" "ruby" "jl" "julia" "octave"))
@@ -115,20 +115,20 @@ Update the variable `LaTeX-pythontex-language-list' if still nil."
 (defun LaTeX-env-pythontex (environment)
   "Insert ENVIRONMENT provided by pythontex package."
   (let ((session (TeX-read-string
-		  (TeX-argument-prompt t nil "Session")))
-	(fvkeyval (TeX-read-key-val t LaTeX-fancyvrb-key-val-options-local)))
+                  (TeX-argument-prompt t nil "Session")))
+        (fvkeyval (TeX-read-key-val t LaTeX-fancyvrb-key-val-options-local)))
     (LaTeX-insert-environment environment
-			      (concat
-			       (when (and session (not (string= session "")))
-				 (concat LaTeX-optop session LaTeX-optcl))
-			       ;; We need an extra pair of brackets
-			       ;; when no session is given but
-			       ;; key=vals are available
-			       (when (and session (string= session "")
-					  fvkeyval (not (string= fvkeyval "")))
-				 (concat LaTeX-optop LaTeX-optcl))
-			       (when (and fvkeyval (not (string= fvkeyval "")))
-				 (concat LaTeX-optop fvkeyval LaTeX-optcl))))))
+                              (concat
+                               (when (and session (not (string= session "")))
+                                 (concat LaTeX-optop session LaTeX-optcl))
+                               ;; We need an extra pair of brackets
+                               ;; when no session is given but
+                               ;; key=vals are available
+                               (when (and session (string= session "")
+                                          fvkeyval (not (string= fvkeyval "")))
+                                 (concat LaTeX-optop LaTeX-optcl))
+                               (when (and fvkeyval (not (string= fvkeyval "")))
+                                 (concat LaTeX-optop fvkeyval LaTeX-optcl))))))
 
 ;; Setup for \saveprintpythontex & \savestdoutpythontex &
 ;; \savestderrpythontex
@@ -136,11 +136,11 @@ Update the variable `LaTeX-pythontex-language-list' if still nil."
 
 (defvar LaTeX-pythontex-savecontent-regexp
   `(,(concat "\\\\"
-	     (regexp-opt '("saveprintpythontex"
-			   "savestdoutpythontex"
-			   "savestderrpythontex")
-			 "\\(?:")
-	     "{\\([^}]+\\)}")
+             (regexp-opt '("saveprintpythontex"
+                           "savestdoutpythontex"
+                           "savestderrpythontex")
+                         "\\(?:")
+             "{\\([^}]+\\)}")
     1 LaTeX-auto-pythontex-savecontent)
   "Matches the argument of \\save(print|stdout|stderr)pythontex macros.")
 
@@ -155,7 +155,7 @@ Update the variable `LaTeX-pythontex-language-list' if still nil."
 (defun LaTeX-pythontex-auto-prepare ()
   "Clear various `LaTeX-auto-pythontex-*' before parsing."
   (setq LaTeX-auto-pythontex-savecontent nil
-	LaTeX-auto-pythontex-setpythontexlistingenv nil))
+        LaTeX-auto-pythontex-setpythontexlistingenv nil))
 
 (defun LaTeX-pythontex-auto-cleanup ()
   "Process the parsing results for \\setpythontexlistingenv macro."
@@ -175,36 +175,36 @@ TYPE is one of the symbols `brace' or `delim' indicating how
 verbatim text is enclosed after the macro.  MACRO is a string or
 a list of strings."
   (let ((syntax (if (eq type 'brace)
-		    '((1 "|") (2 "|"))
-		  '((1 "\"") (2 ".") (3 "\""))))
-	regexp)
+                    '((1 "|") (2 "|"))
+                  '((1 "\"") (2 ".") (3 "\""))))
+        regexp)
     (when (listp macro)
       (setq macro (regexp-opt macro "\\(?:")))
     (setq regexp `(,(concat
-		     ;; The backslash
-		     (regexp-quote TeX-esc)
-		     ;; Name of the macro(s)
-		     macro
-		     ;; The first mandatory argument is the lexer
-		     "\\(?:{[^}]+}\\)"
-		     ;; With 'brace, allow braced sub-groups otherwise
-		     ;; we stop matching too early.  With 'delim, copy
-		     ;; font-latex.el:
-		     (if (eq type 'brace)
-			 (concat "\\({\\)"
-				 "\\(?:[^}{]*"
-				 "\\(?:{[^}{]*"
-				 "\\(?:{[^}{]*"
-				 "\\(?:{[^}{]*}[^}{]*\\)*"
-				 "}[^}{]*\\)*"
-				 "}[^}{]*\\)*"
-				 "\\)"
-				 "\\(}\\)")
-		       (concat
-			;; Opening delimiter
-			"\\([^a-z@*\n\f{]\\).*?"
-			;; Closing delimiter
-			"\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
+                     ;; The backslash
+                     (regexp-quote TeX-esc)
+                     ;; Name of the macro(s)
+                     macro
+                     ;; The first mandatory argument is the lexer
+                     "\\(?:{[^}]+}\\)"
+                     ;; With 'brace, allow braced sub-groups otherwise
+                     ;; we stop matching too early.  With 'delim, copy
+                     ;; font-latex.el:
+                     (if (eq type 'brace)
+                         (concat "\\({\\)"
+                                 "\\(?:[^}{]*"
+                                 "\\(?:{[^}{]*"
+                                 "\\(?:{[^}{]*"
+                                 "\\(?:{[^}{]*}[^}{]*\\)*"
+                                 "}[^}{]*\\)*"
+                                 "}[^}{]*\\)*"
+                                 "\\)"
+                                 "\\(}\\)")
+                       (concat
+                        ;; Opening delimiter
+                        "\\([^a-z@*\n\f{]\\).*?"
+                        ;; Closing delimiter
+                        "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
     (add-to-list 'font-latex-syntactic-keywords-extra (append regexp syntax))))
 
 (TeX-add-style-hook
@@ -223,48 +223,48 @@ a list of strings."
 
    ;; 4.2.4 Default families
    (let* ((verb-macs '(;; python
-		       "py" "pyc" "pys" "pyv" "pyb"
-		       "pycon" "pyconc" "pyconv"
-		       ;; Python + pylab (matplotlib module)
-		       "pylab" "pylabc" "pylabs" "pylabv" "pylabb"
-		       "pylabcon" "pylabconc" "pylabconv"
-		       ;; Python + SymPy
-		       "sympy" "sympyc" "sympys" "sympyv" "sympyb"
-		       "sympycon" "sympyconc" "sympyconv"))
-	  (verb-envs '(;;python
-		       "pycode" "pysub" "pyverbatim" "pyblock"
-		       "pyconsole" "pyconcode" "pyconverbatim"
-		       ;; Python + pylab (matplotlib module)
-		       "pylabcode" "pylabsub" "pylabverbatim" "pylabblock"
-		       "pylabconsole" "pylabconcode" "pylabconverbatim"
-		       ;; Python + SymPy
-		       "sympycode" "sympysub" "sympyverbatim" "sympyblock"
-		       "sympyconsole" "sympyconcode" "sympyconverbatim"))
-	  (verb-envs-regexp (regexp-opt verb-envs "\\(?:")))
+                       "py" "pyc" "pys" "pyv" "pyb"
+                       "pycon" "pyconc" "pyconv"
+                       ;; Python + pylab (matplotlib module)
+                       "pylab" "pylabc" "pylabs" "pylabv" "pylabb"
+                       "pylabcon" "pylabconc" "pylabconv"
+                       ;; Python + SymPy
+                       "sympy" "sympyc" "sympys" "sympyv" "sympyb"
+                       "sympycon" "sympyconc" "sympyconv"))
+          (verb-envs '(;;python
+                       "pycode" "pysub" "pyverbatim" "pyblock"
+                       "pyconsole" "pyconcode" "pyconverbatim"
+                       ;; Python + pylab (matplotlib module)
+                       "pylabcode" "pylabsub" "pylabverbatim" "pylabblock"
+                       "pylabconsole" "pylabconcode" "pylabconverbatim"
+                       ;; Python + SymPy
+                       "sympycode" "sympysub" "sympyverbatim" "sympyblock"
+                       "sympyconsole" "sympyconcode" "sympyconverbatim"))
+          (verb-envs-regexp (regexp-opt verb-envs "\\(?:")))
      (apply #'TeX-add-symbols
-	    (mapcar (lambda (mac)
-		      (list mac [ "Session" ] 'TeX-arg-verb-delim-or-brace))
-		    verb-macs))
+            (mapcar (lambda (mac)
+                      (list mac [ "Session" ] 'TeX-arg-verb-delim-or-brace))
+                    verb-macs))
      (apply #'LaTeX-add-environments
-	    (mapcar (lambda (env)
-		      (list env 'LaTeX-env-pythontex))
-		    verb-envs))
+            (mapcar (lambda (env)
+                      (list env 'LaTeX-env-pythontex))
+                    verb-envs))
      ;; Filling:
      (dolist (mac verb-macs)
        (add-to-list 'LaTeX-verbatim-macros-with-delims-local mac)
        (add-to-list 'LaTeX-verbatim-macros-with-braces-local mac))
      (dolist (env verb-envs)
        (add-to-list 'LaTeX-indent-environment-list
-		    `(,env current-indentation) t))
+                    `(,env current-indentation) t))
      ;; Fontification
      (when (and (fboundp 'font-latex-add-keywords)
-		(fboundp 'font-latex-set-syntactic-keywords)
-		(boundp 'font-latex-syntactic-keywords-extra)
-		(eq TeX-install-font-lock 'font-latex-setup))
+                (fboundp 'font-latex-set-syntactic-keywords)
+                (boundp 'font-latex-syntactic-keywords-extra)
+                (eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords (mapcar (lambda (mac)
-					  (list mac "["))
-					verb-macs)
-				'textual)
+                                          (list mac "["))
+                                        verb-macs)
+                                'textual)
        ;; We can't use the fontification provided when verbatim
        ;; environments are added to
        ;; `LaTeX-verbatim-environments-local' -- pythontex
@@ -273,19 +273,19 @@ a list of strings."
        ;; We add the envs to `font-latex-syntactic-keywords-extra' and
        ;; define a customized regexp to match 2 optional arguments.
        (add-to-list 'font-latex-syntactic-keywords-extra
-		    `(,(concat
-			"^[ \t]*\\\\begin *{\\(?:"
-			verb-envs-regexp
-			"\\)}"
-			"[ \t]*\\(?:%.*\n[ \t]*\\)?"
-			"\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)\\{0,2\\}"
-			"\\(\n\\|.\\)")
-		      (1 "|" t)))
+                    `(,(concat
+                        "^[ \t]*\\\\begin *{\\(?:"
+                        verb-envs-regexp
+                        "\\)}"
+                        "[ \t]*\\(?:%.*\n[ \t]*\\)?"
+                        "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)\\{0,2\\}"
+                        "\\(\n\\|.\\)")
+                      (1 "|" t)))
        (add-to-list 'font-latex-syntactic-keywords-extra
-		    `(,(concat "\\(\\\\\\)end *{\\(?:"
-			       verb-envs-regexp
-			       "\\)}")
-		      (1 "|" t))))
+                    `(,(concat "\\(\\\\\\)end *{\\(?:"
+                               verb-envs-regexp
+                               "\\)}")
+                      (1 "|" t))))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords))
 
@@ -294,44 +294,44 @@ a list of strings."
     ;; pythontexcustomc[<position>]{<family>}{<code>}
     '("pythontexcustomc"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Position")
-		     '("begin" "end") ]
+        (TeX-argument-prompt t nil "Position")
+        '("begin" "end") ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Family")
-		    LaTeX-pythontex-family-list)
+                    (TeX-argument-prompt nil nil "Family")
+                    LaTeX-pythontex-family-list)
       t)
 
     ;; 4.2.7 Formatting of typeset code
     ;; \setpythontexfv[<family>]{<fancyvrb settings>}
     '("setpythontexfv"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Family")
-		     LaTeX-pythontex-family-list ]
+        (TeX-argument-prompt t nil "Family")
+        LaTeX-pythontex-family-list ]
       (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
 
     ;; \setpythontexprettyprinter[<family>]{<printer>}
     '("setpythontexprettyprinter"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Family")
-		     (cons "auto" LaTeX-pythontex-family-list) ]
+        (TeX-argument-prompt t nil "Family")
+        (cons "auto" LaTeX-pythontex-family-list) ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Printer")
-		    '("text" "bw" "fancyvrb" "pygments")))
+                    (TeX-argument-prompt nil nil "Printer")
+                    '("text" "bw" "fancyvrb" "pygments")))
 
     ;; \setpythontexpyglexer[<family>]{<pygments lexer>}
     '("setpythontexpyglexer"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Family")
-		     LaTeX-pythontex-family-list ]
+        (TeX-argument-prompt t nil "Family")
+        LaTeX-pythontex-family-list ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Pygments lexer")
-		    (LaTeX-pythontex-language-list)))
+                    (TeX-argument-prompt nil nil "Pygments lexer")
+                    (LaTeX-pythontex-language-list)))
 
     ;; \setpythontexpygopt[<family>]{<pygments options>}
     '("setpythontexpygopt"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Family")
-		     LaTeX-pythontex-family-list ]
+        (TeX-argument-prompt t nil "Family")
+        LaTeX-pythontex-family-list ]
       (TeX-arg-key-val
        (("style") ("texcomments") ("mathescape"))))
 
@@ -339,129 +339,129 @@ a list of strings."
     ;; \printpythontex[<mode>][<options>]
     '("printpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
     ;; \stdoutpythontex[<mode>][<options>]
     '("stdoutpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
     ;;\saveprintpythontex{<name>}
     '("saveprintpythontex"
       (TeX-arg-eval (lambda ()
-		      (let ((name (TeX-read-string
-				   (TeX-argument-prompt nil nil "Name"))))
-			(LaTeX-add-pythontex-savecontents name)
-			(format "%s" name)))))
+                      (let ((name (TeX-read-string
+                                   (TeX-argument-prompt nil nil "Name"))))
+                        (LaTeX-add-pythontex-savecontents name)
+                        (format "%s" name)))))
 
     ;;\savestdoutpythontex{<name>}
     '("savestdoutpythontex"
       (TeX-arg-eval (lambda ()
-		      (let ((name (TeX-read-string
-				   (TeX-argument-prompt nil nil "Name"))))
-			(LaTeX-add-pythontex-savecontents name)
-			(format "%s" name)))))
+                      (let ((name (TeX-read-string
+                                   (TeX-argument-prompt nil nil "Name"))))
+                        (LaTeX-add-pythontex-savecontents name)
+                        (format "%s" name)))))
 
     ;; \useprintpythontex[<verbatim options>][<fancyvrb options>]{<name>}
     ;; I assume <verbatim options> is meant to be <mode>
     '("useprintpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-pythontex-savecontent-list)))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-pythontex-savecontent-list)))
 
     ;; \usestdoutpythontex[<verbatim options>][<fancyvrb options>]{<name>}
     ;; I assume <verbatim options> is meant to be <mode>
     '("usestdoutpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-pythontex-savecontent-list)))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-pythontex-savecontent-list)))
 
     ;; \stderrpythontex[<mode>][<fancyvrb options>]
     '("stderrpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
 
 
     ;;\savestderrpythontex{<name>}
     '("savestderrpythontex"
       (TeX-arg-eval (lambda ()
-		      (let ((name (TeX-read-string
-				   (TeX-argument-prompt nil nil "Name"))))
-			(LaTeX-add-pythontex-savecontents name)
-			(format "%s" name)))))
+                      (let ((name (TeX-read-string
+                                   (TeX-argument-prompt nil nil "Name"))))
+                        (LaTeX-add-pythontex-savecontents name)
+                        (format "%s" name)))))
 
     ;; \usestderrpythontex[<mode>][<fancyvrb options>]{<name>}
     '("usestderrpythontex"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Mode")
-		     '("raw" "verb" "verbatim") ]
+        (TeX-argument-prompt t nil "Mode")
+        '("raw" "verb" "verbatim") ]
       [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-pythontex-savecontent-list)))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-pythontex-savecontent-list)))
 
     ;;\setpythontexautoprint{<boolean>}
     '("setpythontexautoprint"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Boolean value")
-		    '("true" "false")))
+                    (TeX-argument-prompt nil nil "Boolean value")
+                    '("true" "false")))
 
     ;; \setpythontexautostdout{<boolean>}
     '("setpythontexautostdout"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Boolean value")
-		    '("true" "false")))
+                    (TeX-argument-prompt nil nil "Boolean value")
+                    '("true" "false")))
 
     ;; 4.3 Pygments commands and environments
     ;; \pygment{<lexer>}<opening delim><code><closing delim>
     '("pygment"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Lexer")
-		    (LaTeX-pythontex-language-list))
+                    (TeX-argument-prompt nil nil "Lexer")
+                    (LaTeX-pythontex-language-list))
       TeX-arg-verb-delim-or-brace)
 
     ;; \inputpygments[<fancyvrb settings>]{<lexer>}{<external file>}
     '("inputpygments"
       [ TeX-arg-eval LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Lexer")
-		    (LaTeX-pythontex-language-list))
+                    (TeX-argument-prompt nil nil "Lexer")
+                    (LaTeX-pythontex-language-list))
       TeX-arg-file-name)
 
     ;; \setpygmentsfv[<lexer>]{<fancyvrb settings>}
     '("setpygmentsfv"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Lexer")
-		     (LaTeX-pythontex-language-list) ]
+        (TeX-argument-prompt t nil "Lexer")
+        (LaTeX-pythontex-language-list) ]
       (TeX-arg-eval LaTeX-fancyvrb-key-val-options-local))
 
     ;; \setpygmentspygopt[<lexer>]{<pygments options>}
     '("setpygmentspygopt"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Lexer")
-		     (LaTeX-pythontex-language-list) ]
+        (TeX-argument-prompt t nil "Lexer")
+        (LaTeX-pythontex-language-list) ]
       (TeX-arg-key-val
        (("style") ("texcomments") ("mathescape"))))
 
     ;; \setpygmentsprettyprinter{<printer>}
     '("setpygmentsprettyprinter"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Printer")
-		    '("text" "bw" "fancyvrb" "pygments")))
+                    (TeX-argument-prompt nil nil "Printer")
+                    '("text" "bw" "fancyvrb" "pygments")))
 
     ;; 4.5  Advanced PythonTeX usage
     ;; \setpythontexcontext{<key-value pairs>}
@@ -493,72 +493,72 @@ a list of strings."
     '("setpythontexlistingenv"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Listing environment name"))))
-	   (LaTeX-add-newfloat-DeclareFloatingEnvironments `(,name "verbatim"))
-	   (LaTeX-newfloat-auto-cleanup)
-	   (format "%s" name))))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Listing environment name"))))
+           (LaTeX-add-newfloat-DeclareFloatingEnvironments `(,name "verbatim"))
+           (LaTeX-newfloat-auto-cleanup)
+           (format "%s" name))))))
 
    (LaTeX-add-environments
     ;; 4.2.5 Custom code
     '("pythontexcustomcode" LaTeX-env-args
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Position")
-		     '("begin" "end") ]
+        (TeX-argument-prompt t nil "Position")
+        '("begin" "end") ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Family")
-		    LaTeX-pythontex-family-list))
+                    (TeX-argument-prompt nil nil "Family")
+                    LaTeX-pythontex-family-list))
 
     ;; \begin{pygments}[<fancyvrb settings>]{<lexer>}
     '("pygments" LaTeX-env-args
       [ TeX-arg-eval LaTeX-fancyvrb-key-val-options-local ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Lexer")
-		    (LaTeX-pythontex-language-list))) )
+                    (TeX-argument-prompt nil nil "Lexer")
+                    (LaTeX-pythontex-language-list))) )
 
    ;; Filling
    (add-to-list 'LaTeX-indent-environment-list
-		'("pythontexcustomcode" current-indentation) t)
+                '("pythontexcustomcode" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("pygments" current-indentation) t)
+                '("pygments" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "pythontexcustomcode")
    (add-to-list 'LaTeX-verbatim-environments-local "pygments")
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("pythontexcustomc"         "[{{")
-				("setpythontexfv"           "[{")
-				("setpythontexprettyprinter" "[{")
-				("setpythontexpyglexer"     "[{")
-				("setpythontexpygopt"       "[{")
-				("printpythontex"           "[[")
-				("stdoutpythontex"          "[[")
-				("saveprintpythontex"       "{")
-				("savestdoutpythontex"      "{")
-				("useprintpythontex"        "[[{")
-				("usestdoutpythontex"       "[[{")
-				("stderrpythontex"          "[[")
-				("savestderrpythontex"      "{")
-				("usestderrpythontex"       "[[{")
-				("setpythontexautoprint"    "{")
-				("setpythontexautostdout"   "{")
-				("inputpygments"            "[{{")
-				("setpygmentsfv"            "[{")
-				("setpygmentspygopt"        "[{")
-				("setpygmentsprettyprinter" "{")
-				("setpythontexcontext"      "{")
-				("restartpythontexsession"  "{")
-				("setpythontexoutputdir"    "{")
-				("setpythontexworkingdir"   "{")
-				("setpythontexlistingenv"   "{")
-				("setpythontexcontext"      "{")
-				("restartpythontexsession"  "{")
-				("setpythontexoutputdir"    "{")
-				("setpythontexworkingdir"   "{"))
-			      'function)
+                                ("setpythontexfv"           "[{")
+                                ("setpythontexprettyprinter" "[{")
+                                ("setpythontexpyglexer"     "[{")
+                                ("setpythontexpygopt"       "[{")
+                                ("printpythontex"           "[[")
+                                ("stdoutpythontex"          "[[")
+                                ("saveprintpythontex"       "{")
+                                ("savestdoutpythontex"      "{")
+                                ("useprintpythontex"        "[[{")
+                                ("usestdoutpythontex"       "[[{")
+                                ("stderrpythontex"          "[[")
+                                ("savestderrpythontex"      "{")
+                                ("usestderrpythontex"       "[[{")
+                                ("setpythontexautoprint"    "{")
+                                ("setpythontexautostdout"   "{")
+                                ("inputpygments"            "[{{")
+                                ("setpygmentsfv"            "[{")
+                                ("setpygmentspygopt"        "[{")
+                                ("setpygmentsprettyprinter" "{")
+                                ("setpythontexcontext"      "{")
+                                ("restartpythontexsession"  "{")
+                                ("setpythontexoutputdir"    "{")
+                                ("setpythontexworkingdir"   "{")
+                                ("setpythontexlistingenv"   "{")
+                                ("setpythontexcontext"      "{")
+                                ("restartpythontexsession"  "{")
+                                ("setpythontexoutputdir"    "{")
+                                ("setpythontexworkingdir"   "{"))
+                              'function)
      (font-latex-add-keywords '(("pygment" "{"))
-			      'textual)
+                              'textual)
      (LaTeX-pythontex-add-syntactic-keywords-extra 'brace "pygment")
      (LaTeX-pythontex-add-syntactic-keywords-extra 'delim "pygment")
      ;; Tell font-lock about the update.

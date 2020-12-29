@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "MinionPro"
@@ -53,10 +53,10 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("smallfrac" "{{")
-				("slantfrac" "{{"))
-			      'textual)))
+                                ("slantfrac" "{{"))
+                              'textual)))
  TeX-dialect)
 
 (defvar LaTeX-MinionPro-package-options

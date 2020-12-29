@@ -41,7 +41,7 @@
 
 (unless (get 'TeX-print-command 'saved-value)
   (setq TeX-print-command
-	"start \"\" %f"))
+        "start \"\" %f"))
 
 (unless (get 'TeX-source-specials-view-position-flags 'saved-value)
   (setq TeX-source-specials-view-position-flags "-s %n%b"))

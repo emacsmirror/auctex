@@ -40,8 +40,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar reftex-cite-format-builtin)
 
@@ -50,58 +50,58 @@
  (lambda ()
    ;; Taken from natbib.el and adapted.
    (let ((citecmds
-	  '(("cite" . 2) ("cite*" . 2)
-	    ("citetitle" . 2) ("fullcite" . 2)
-	    ("citet" . 1) ("citealt" . 1)
-	    ("citep" . 2) ("citealp" . 2)
-	    ("citeauthor" . 2) ("citeyear" . 2)
-	    ("footcite" . 2) ("footcite*" . 2)
-	    ("footcitetitle" . 2) ("footfullcite" . 2)
-	    ("footcitet" . 1) ("footcitealt" . 1)
-	    ("footcitep" . 2) ("footcitealp" . 2)
-	    ("footciteauthor" . 2) ("footciteyear" . 2))))
+          '(("cite" . 2) ("cite*" . 2)
+            ("citetitle" . 2) ("fullcite" . 2)
+            ("citet" . 1) ("citealt" . 1)
+            ("citep" . 2) ("citealp" . 2)
+            ("citeauthor" . 2) ("citeyear" . 2)
+            ("footcite" . 2) ("footcite*" . 2)
+            ("footcitetitle" . 2) ("footfullcite" . 2)
+            ("footcitet" . 1) ("footcitealt" . 1)
+            ("footcitep" . 2) ("footcitealp" . 2)
+            ("footciteauthor" . 2) ("footciteyear" . 2))))
      ;; Add these symbols
      (apply 
       'TeX-add-symbols
       (mapcar
        (lambda (cmd)
-	 (cond 
-	  ((= (cdr cmd) 0)
-	   ;; No optional arguments
-	   (list (car cmd) 'TeX-arg-cite))
-	  ((= (cdr cmd) 1)
-	   ;; Just one optional argument, the post note
-	   (list
-	    (car cmd)
-	    '(TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
-	    'TeX-arg-cite))
-	  ((= (cdr cmd) 2)
-	   ;; Pre and post notes
-	   (list
-	    (car cmd)
-	    '(TeX-arg-conditional TeX-arg-cite-note-p (natbib-note-args) nil)
-	    'TeX-arg-cite))))
+         (cond 
+          ((= (cdr cmd) 0)
+           ;; No optional arguments
+           (list (car cmd) 'TeX-arg-cite))
+          ((= (cdr cmd) 1)
+           ;; Just one optional argument, the post note
+           (list
+            (car cmd)
+            '(TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
+            'TeX-arg-cite))
+          ((= (cdr cmd) 2)
+           ;; Pre and post notes
+           (list
+            (car cmd)
+            '(TeX-arg-conditional TeX-arg-cite-note-p (natbib-note-args) nil)
+            'TeX-arg-cite))))
        citecmds))
      ;; Special cases
      (TeX-add-symbols
       ;; FIXME: Completing read for field.
       '("citefield" ; \citefield[]{}{}
-	(TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
-	"Field" TeX-arg-cite)
+        (TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
+        "Field" TeX-arg-cite)
       '("footcitefield" ; \footcitefield[]{}{}
-	(TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
-	"Field" TeX-arg-cite))
+        (TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
+        "Field" TeX-arg-cite))
 
      ;; Make an entry in TeX-complete-list
      (add-to-list
       'TeX-complete-list
       (list
        (concat "\\\\\\(" 
-	       (mapconcat (lambda (x) (regexp-quote (car x)))
-			  (append citecmds
-				  '(("citefield") ("footcitefield"))) "\\|")
-	       "\\)\\(\\[[^]\n\r\\%]*\\]\\)*{\\([^{}\n\r\\%,]*,\\)*"
-	       "\\([^{}\n\r\\%,]*\\)")
+               (mapconcat (lambda (x) (regexp-quote (car x)))
+                          (append citecmds
+                                  '(("citefield") ("footcitefield"))) "\\|")
+               "\\)\\(\\[[^]\n\r\\%]*\\]\\)*{\\([^{}\n\r\\%,]*,\\)*"
+               "\\([^{}\n\r\\%,]*\\)")
        4 'LaTeX-bibitem-list "}"))
 
      ;; Add further symbols
@@ -119,63 +119,63 @@
 
      ;; Fontification
      (when (and (featurep 'font-latex)
-		(eq TeX-install-font-lock 'font-latex-setup))
+                (eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords '(("cite" "*[[{")
-				  ("citetitle" "[[{")
-				  ("fullcite" "[[{")
-				  ("citet" "[{")
-				  ("citealt" "[{")
-				  ("citep" "[[{")
-				  ("citealp" "[[{")
-				  ("citeauthor" "[[{")
-				  ("citeyear" "[[{")
-				  ("footcite" "[[{")
-				  ("footcite*" "[[{")
-				  ("footcitetitle" "[[{")
-				  ("footfullcite" "[[{")
-				  ("footcitet" "[{")
-				  ("footcitealt" "[{")
-				  ("footcitep" "[[{")
-				  ("footcitealp" "[[{")
-				  ("footciteauthor" "[[{")
-				  ("footciteyear" "[[{")
-				  ("citefield" "[{{")
-				  ("footcitefield" "[{{"))
-				'reference)
+                                  ("citetitle" "[[{")
+                                  ("fullcite" "[[{")
+                                  ("citet" "[{")
+                                  ("citealt" "[{")
+                                  ("citep" "[[{")
+                                  ("citealp" "[[{")
+                                  ("citeauthor" "[[{")
+                                  ("citeyear" "[[{")
+                                  ("footcite" "[[{")
+                                  ("footcite*" "[[{")
+                                  ("footcitetitle" "[[{")
+                                  ("footfullcite" "[[{")
+                                  ("footcitet" "[{")
+                                  ("footcitealt" "[{")
+                                  ("footcitep" "[[{")
+                                  ("footcitealp" "[[{")
+                                  ("footciteauthor" "[[{")
+                                  ("footciteyear" "[[{")
+                                  ("citefield" "[{{")
+                                  ("footcitefield" "[{{"))
+                                'reference)
        (font-latex-add-keywords '(("citeswithoutentry" "{")
-				  ("nextcitefull" "{")
-				  ("nextcitenotitle" "{")
-				  ("nextcitereset" "{")
-				  ("nextciteshort" "{"))
-				'function)
+                                  ("nextcitefull" "{")
+                                  ("nextcitenotitle" "{")
+                                  ("nextcitereset" "{")
+                                  ("nextciteshort" "{"))
+                                'function)
        (font-latex-add-keywords '(("citenotitlefortype" "{")
-				  ("citetitlefortype" "{")
-				  ("jurabibsetup" "{"))
-				'variable))
+                                  ("citetitlefortype" "{")
+                                  ("jurabibsetup" "{"))
+                                'variable))
 
      ;; Tell RefTeX (Thanks, Carsten)
      (when (and LaTeX-reftex-cite-format-auto-activate
-		(fboundp 'reftex-set-cite-format))
+                (fboundp 'reftex-set-cite-format))
        ;; Check if RefTeX supports jurabib.
        (if (assoc 'jurabib reftex-cite-format-builtin)
-	   ;; Yes, use the provided default.
-	   (reftex-set-cite-format 'jurabib)
-	 ;; No, set it by hand.
-	 (reftex-set-cite-format
-	  '((?\C-m . "\\cite{%l}")
-	    (?c    . "\\cite[?][]{%l}")
-	    (?t    . "\\citet{%l}")
-	    (?p    . "\\citep{%l}")
-	    (?e    . "\\citep[e.g.][?]{%l}")
-	    (?s    . "\\citep[see][?]{%l}")
-	    (?u    . "\\fullcite{%l}")
-	    (?i    . "\\citetitle{%l}")
-	    (?a    . "\\citeauthor{%l}")
-	    (?e    . "\\citefield{?}{%l}")
-	    (?y    . "\\citeyear{%l}")
-	    (?f    . "\\footcite{%l}")
-	    (?F    . "\\footcite[?][]{%l}")
-	    (?l    . "\\footfullcite{%l}"))))))
+           ;; Yes, use the provided default.
+           (reftex-set-cite-format 'jurabib)
+         ;; No, set it by hand.
+         (reftex-set-cite-format
+          '((?\C-m . "\\cite{%l}")
+            (?c    . "\\cite[?][]{%l}")
+            (?t    . "\\citet{%l}")
+            (?p    . "\\citep{%l}")
+            (?e    . "\\citep[e.g.][?]{%l}")
+            (?s    . "\\citep[see][?]{%l}")
+            (?u    . "\\fullcite{%l}")
+            (?i    . "\\citetitle{%l}")
+            (?a    . "\\citeauthor{%l}")
+            (?e    . "\\citefield{?}{%l}")
+            (?y    . "\\citeyear{%l}")
+            (?f    . "\\footcite{%l}")
+            (?F    . "\\footcite[?][]{%l}")
+            (?l    . "\\footfullcite{%l}"))))))
 
    ;; FIXME: The following list is the edited output of
    ;; `TeX-auto-generate' which probably includes internal macros of

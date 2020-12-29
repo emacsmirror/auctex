@@ -42,30 +42,30 @@
   "Query for the arguments of `textblock' environment and insert
 them."
   (let* ((hsize (TeX-read-string "Width: "))
-	 (ho    (TeX-read-string "(Optional) X reference point: "))
-	 (vo    (when (not (string-equal ho ""))
-		  (TeX-read-string "Y reference point: ")))
-	 (hpos  (TeX-read-string "X placement point: "))
-	 (vpos  (TeX-read-string "Y placement point: ")))
+         (ho    (TeX-read-string "(Optional) X reference point: "))
+         (vo    (when (not (string-equal ho ""))
+                  (TeX-read-string "Y reference point: ")))
+         (hpos  (TeX-read-string "X placement point: "))
+         (vpos  (TeX-read-string "Y placement point: ")))
     (LaTeX-insert-environment
      env
      (concat
       (when (and hsize (not (string-equal hsize "")))
-	(format "{%s}" hsize))
+        (format "{%s}" hsize))
       (when (and ho (not (string-equal ho ""))
-		 vo (not (string-equal vo "")))
-	(format "[%s,%s]" ho vo))
+                 vo (not (string-equal vo "")))
+        (format "[%s,%s]" ho vo))
       (when (and hpos (not (string-equal hpos ""))
-		 vpos (not (string-equal vpos "")))
-	(format "(%s,%s)" hpos vpos))))))
+                 vpos (not (string-equal vpos "")))
+        (format "(%s,%s)" hpos vpos))))))
 
 (defun LaTeX-arg-textpos-tpgrid (optional)
   "Query and insert the optional argument of `\\TPGrid'."
   (let* ((x (TeX-read-string "(Optional) X start coordinate: "))
-	 (y (when (not (string-equal x ""))
-	      (TeX-read-string "Y start coordinate: "))))
+         (y (when (not (string-equal x ""))
+              (TeX-read-string "Y start coordinate: "))))
     (when (and (not (string-equal x ""))
-	       (not (string-equal y "")))
+               (not (string-equal y "")))
       (TeX-argument-insert (format "%s,%s" x y) optional))))
 
 (TeX-add-style-hook
@@ -81,7 +81,7 @@ them."
 
    (TeX-add-symbols
     '("TPGrid" [ LaTeX-arg-textpos-tpgrid ]
-	       "Horizontal fraction" "Vertical fraction")
+      "Horizontal fraction" "Vertical fraction")
 
     '("TPMargin"  (TeX-arg-length "Margin around textblock"))
     '("TPMargin*" (TeX-arg-length "Margin around textblock"))
@@ -90,30 +90,30 @@ them."
     '("textblockcolour"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color (cond ((member "xcolor" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
-			    ((member "color" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
-			    (t
-			     (TeX-read-string "Color name: ")))))
-	   (format "%s" color)))))
+         (let ((color (cond ((member "xcolor" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+                            ((member "color" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+                            (t
+                             (TeX-read-string "Color name: ")))))
+           (format "%s" color)))))
 
     '("textblockrulecolour"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color (cond ((member "xcolor" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
-			    ((member "color" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
-			    (t
-			     (TeX-read-string "Color name: ")))))
-	   (format "%s" color)))))
+         (let ((color (cond ((member "xcolor" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+                            ((member "color" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+                            (t
+                             (TeX-read-string "Color name: ")))))
+           (format "%s" color)))))
 
-   '("TPshowboxestrue")
-   '("TPshowboxesfalse")
+    '("TPshowboxestrue")
+    '("TPshowboxesfalse")
 
-   '("textblocklabel" t)
-   '("textblockorigin" "Horizontal position" "Vertical position"))
+    '("textblocklabel" t)
+    '("textblockorigin" "Horizontal position" "Vertical position"))
 
    ;; Add the lengths defined by textpos.sty
    (LaTeX-add-lengths "TPHorizModule" "TPVertModule" "TPboxrulesize"))

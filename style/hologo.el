@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-hologo-logo-names
   '("(La)TeX"
@@ -101,9 +101,9 @@
 
 (defvar LaTeX-hologo-key-val-options-local
   '(("variant" ("sf" "sc"                          ; BibTeX
-		"lift"                             ; SliTeX
-		"narrow" "simple"                  ; SliTeX, ConTeXt
-		"space"  "hyphen" "runtogether"))) ; plainTeX
+                "lift"                             ; SliTeX
+                "narrow" "simple"                  ; SliTeX, ConTeXt
+                "space"  "hyphen" "runtogether"))) ; plainTeX
   "Local key=value options for hologo macros.")
 
 (TeX-add-style-hook
@@ -113,10 +113,10 @@
 
     ;; Insert logo macros
     '("hologo" (TeX-arg-eval completing-read
-			     "Logo name: " LaTeX-hologo-logo-names))
+                             "Logo name: " LaTeX-hologo-logo-names))
 
     '("Hologo" (TeX-arg-eval completing-read
-			     "Logo name: " LaTeX-hologo-logo-names))
+                             "Logo name: " LaTeX-hologo-logo-names))
 
     ;; Setup macros
     '("hologoSetup" (TeX-arg-key-val LaTeX-hologo-key-val-options-global))
@@ -124,93 +124,93 @@
     '("hologoLogoSetup"
       (TeX-arg-eval
        (lambda ()
-	 (let* ((logo   (completing-read "Logo name: " LaTeX-hologo-logo-names))
-		(keyval (TeX-read-key-val
-			 nil
-			 (cond ((string= logo "BibTeX")
-				(append '(("variant" ("sf" "sc")))
-					LaTeX-hologo-key-val-options-global))
-			       ((string= logo "ConTeXt")
-				(append '(("variant" ("narrow" "simple")))
-					LaTeX-hologo-key-val-options-global))
-			       ((string= logo "plainTeX")
-				(append '(("variant" ("space" "hyphen" "runtogether")))
-					LaTeX-hologo-key-val-options-global))
-			       ((or (string= logo "SLiTeX")
-				    (string= logo "SliTeX"))
-				(append '(("variant" ("lift" "narrow" "lift")))
-					LaTeX-hologo-key-val-options-global))
-			       (t
-				LaTeX-hologo-key-val-options-global)))))
-	   (TeX-argument-insert logo nil)
-	   (format "%s" keyval)))))
+         (let* ((logo   (completing-read "Logo name: " LaTeX-hologo-logo-names))
+                (keyval (TeX-read-key-val
+                         nil
+                         (cond ((string= logo "BibTeX")
+                                (append '(("variant" ("sf" "sc")))
+                                        LaTeX-hologo-key-val-options-global))
+                               ((string= logo "ConTeXt")
+                                (append '(("variant" ("narrow" "simple")))
+                                        LaTeX-hologo-key-val-options-global))
+                               ((string= logo "plainTeX")
+                                (append '(("variant" ("space" "hyphen" "runtogether")))
+                                        LaTeX-hologo-key-val-options-global))
+                               ((or (string= logo "SLiTeX")
+                                    (string= logo "SliTeX"))
+                                (append '(("variant" ("lift" "narrow" "lift")))
+                                        LaTeX-hologo-key-val-options-global))
+                               (t
+                                LaTeX-hologo-key-val-options-global)))))
+           (TeX-argument-insert logo nil)
+           (format "%s" keyval)))))
 
     '("hologoDriverSetup" (TeX-arg-eval completing-read
-					"Driver: "
-					'("pdftex"  "luatex"
-					  "dvipdfm" "dvipdfmx"
-					  "dvips"   "dvipsone" "xdvi"
-					  "xetex"   "vtex"     "driverfallback")))
+                                        "Driver: "
+                                        '("pdftex"  "luatex"
+                                          "dvipdfm" "dvipdfmx"
+                                          "dvips"   "dvipsone" "xdvi"
+                                          "xetex"   "vtex"     "driverfallback")))
 
     '("hologoFontSetup"
       (TeX-arg-key-val (("general") ("bibsf")
-			("rm") ("sc") ("sf") ("sy") ("logo"))))
+                        ("rm") ("sc") ("sf") ("sy") ("logo"))))
 
     '("hologoLogoFontSetup"
       (TeX-arg-eval
        (lambda ()
-	 (let* ((logo   (completing-read "Logo name: "
-					 '("BibTeX"
-					   "ExTeX"
-					   "SliTeX"
-					   "AmS"
-					   "NTS"
-					   "KOMAScript"
-					   "METAFONT"
-					   "METAPOST")))
-		(keyval (TeX-read-key-val
-			 nil
-			 (cond ((string= logo "BibTeX")
-				'(("bibsf") ("sc")))
-			       ((string= logo "ExTeX")
-				'(("rm") ("sy")))
-			       ((string= logo "SliTeX")
-				'(("rm") ("sc")))
-			       ((or (string= logo "AmS")
-				    (string= logo "NTS"))
-				'(("sy")))
-			       ((string= logo "KOMAScript")
-				'(("sf")))
-			       ((or (string= logo "METAFONT")
-				    (string= logo "METAPOST"))
-				'(("logo")))
-			       (t
-				nil)))))
-	   (TeX-argument-insert logo nil)
-	   (format "%s" keyval)))))
+         (let* ((logo   (completing-read "Logo name: "
+                                         '("BibTeX"
+                                           "ExTeX"
+                                           "SliTeX"
+                                           "AmS"
+                                           "NTS"
+                                           "KOMAScript"
+                                           "METAFONT"
+                                           "METAPOST")))
+                (keyval (TeX-read-key-val
+                         nil
+                         (cond ((string= logo "BibTeX")
+                                '(("bibsf") ("sc")))
+                               ((string= logo "ExTeX")
+                                '(("rm") ("sy")))
+                               ((string= logo "SliTeX")
+                                '(("rm") ("sc")))
+                               ((or (string= logo "AmS")
+                                    (string= logo "NTS"))
+                                '(("sy")))
+                               ((string= logo "KOMAScript")
+                                '(("sf")))
+                               ((or (string= logo "METAFONT")
+                                    (string= logo "METAPOST"))
+                                '(("logo")))
+                               (t
+                                nil)))))
+           (TeX-argument-insert logo nil)
+           (format "%s" keyval)))))
 
     ;; Additional user macros
     '("hologoVariant"
       (TeX-arg-eval completing-read
-		    "Logo name: " LaTeX-hologo-logo-names)
+                    "Logo name: " LaTeX-hologo-logo-names)
       (TeX-arg-eval
        (lambda ()
-	 (let ((setup (TeX-read-key-val
-		       nil
-		       (append LaTeX-hologo-key-val-options-local
-			       LaTeX-hologo-key-val-options-global))))
-	   (format "%s" setup)))))
+         (let ((setup (TeX-read-key-val
+                       nil
+                       (append LaTeX-hologo-key-val-options-local
+                               LaTeX-hologo-key-val-options-global))))
+           (format "%s" setup)))))
 
     '("HologoVariant"
       (TeX-arg-eval completing-read
-		    "Logo name: " LaTeX-hologo-logo-names)
+                    "Logo name: " LaTeX-hologo-logo-names)
       (TeX-arg-eval
        (lambda ()
-	 (let ((setup (TeX-read-key-val
-		       nil
-		       (append LaTeX-hologo-key-val-options-local
-			       LaTeX-hologo-key-val-options-global))))
-	   (format "%s" setup)))))
+         (let ((setup (TeX-read-key-val
+                       nil
+                       (append LaTeX-hologo-key-val-options-local
+                               LaTeX-hologo-key-val-options-global))))
+           (format "%s" setup)))))
 
     '("hologoList" 0)
 
@@ -218,20 +218,20 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("hologo"   "{")
-				("Hologo"   "{"))
-			      'textual)
+                                ("Hologo"   "{"))
+                              'textual)
      (font-latex-add-keywords '(("hologoSetup"         "{")
-				("hologoLogoSetup"     "{{")
-				("hologoDriverSetup"   "{")
-				("hologoFontSetup"     "{")
-				("hologoLogoFontSetup" "{{")
-				("hologoVariant"       "{{")
-				("HologoVariant"       "{{")
-				("hologoList"          "")
-				("hologoEntry"         "{{{"))
-			      'function)))
+                                ("hologoLogoSetup"     "{{")
+                                ("hologoDriverSetup"   "{")
+                                ("hologoFontSetup"     "{")
+                                ("hologoLogoFontSetup" "{{")
+                                ("hologoVariant"       "{{")
+                                ("HologoVariant"       "{{")
+                                ("hologoList"          "")
+                                ("hologoEntry"         "{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-hologo-package-options nil

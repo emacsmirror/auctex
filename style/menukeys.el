@@ -37,8 +37,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
@@ -89,8 +89,8 @@
 (defun LaTeX-menukeys-auto-prepare ()
   "Clear various `LaTeX-auto-menukeys-*' variables before parsing."
   (setq LaTeX-auto-menukeys-newmenustyle nil
-	LaTeX-auto-menukeys-newmenucolortheme nil
-	LaTeX-auto-menukeys-newmenumacro nil))
+        LaTeX-auto-menukeys-newmenucolortheme nil
+        LaTeX-auto-menukeys-newmenumacro nil))
 
 (defun LaTeX-menukeys-auto-cleanup ()
   "Process the parsed elements for menukeys package.
@@ -104,28 +104,28 @@ current separator.  These renew-commands are also removed first
 from the variable `TeX-symbol-list' before being re-added."
   (dolist (x (apply #'append LaTeX-menukeys-newmenumacro-list))
     (let ((macro (nth 0 x))
-	  (sep   (nth 1 x))
-	  (renew (when (string= (nth 2 x) "renew")
-		   (nth 2 x))))
+          (sep   (nth 1 x))
+          (renew (when (string= (nth 2 x) "renew")
+                   (nth 2 x))))
       ;; When we are renewmenumacro'ing, delete the entry first from the
       ;; variable `TeX-symbol-list' and then add the new spec:
       (when renew
-	(setq TeX-symbol-list
-	      (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
+        (setq TeX-symbol-list
+              (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
       (TeX-add-symbols
        `(,macro [ TeX-arg-eval completing-read
-			       (TeX-argument-prompt t nil
-						    ,(concat "Input separator "
-							     "(default "
-							     (if (and sep (not (string= sep "")))
-								 sep
-							       ",")
-							     ")"))
-			       LaTeX-menukeys-input-separators-list ] t ))
+                               (TeX-argument-prompt t nil
+                                                    ,(concat "Input separator "
+                                                             "(default "
+                                                             (if (and sep (not (string= sep "")))
+                                                                 sep
+                                                               ",")
+                                                             ")"))
+                               LaTeX-menukeys-input-separators-list ] t ))
       (when (and (featurep 'font-latex)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords `((,macro "[{"))
-				 'textual)))))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords `((,macro "[{"))
+                                 'textual)))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-menukeys-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-menukeys-auto-cleanup t)
@@ -138,16 +138,16 @@ to the name of known macros via `TeX-add-symbols'.  If
 font-latex.el is loaded, also use `font-latex-add-keywords' on
 macro.  If RENEW is non-nil, query for an already defined macro."
   (let ((macro (if renew
-		   (completing-read
-		    (concat "Macro: " TeX-esc)
-		    (TeX-delete-duplicate-strings (mapcar #'car (LaTeX-menukeys-newmenumacro-list))))
-		 (TeX-read-string (concat "Macro: " TeX-esc))))
-	(sep   (completing-read
-		(TeX-argument-prompt optional nil "Input separator (default ,)")
-		LaTeX-menukeys-input-separators-list))
-	(style (completing-read
-		(TeX-argument-prompt optional nil "Style")
-		(LaTeX-menukeys-newmenustyle-list))))
+                   (completing-read
+                    (concat "Macro: " TeX-esc)
+                    (TeX-delete-duplicate-strings (mapcar #'car (LaTeX-menukeys-newmenumacro-list))))
+                 (TeX-read-string (concat "Macro: " TeX-esc))))
+        (sep   (completing-read
+                (TeX-argument-prompt optional nil "Input separator (default ,)")
+                LaTeX-menukeys-input-separators-list))
+        (style (completing-read
+                (TeX-argument-prompt optional nil "Style")
+                (LaTeX-menukeys-newmenustyle-list))))
     (TeX-argument-insert (concat TeX-esc macro) optional)
     (when (and sep (not (string= sep "")))
       (insert (format "[%s]" sep)))
@@ -156,21 +156,21 @@ macro.  If RENEW is non-nil, query for an already defined macro."
     ;; variable `TeX-symbol-list' and then add the new spec:
     (when renew
       (setq TeX-symbol-list
-	    (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
+            (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
     (TeX-add-symbols
      `(,macro [ TeX-arg-eval completing-read
-			     (TeX-argument-prompt t nil
-						  ,(concat "Input separator "
-							  "(default "
-							  (if (and sep (not (string= sep "")))
-							      sep
-							    ",")
-							  ")"))
-			     LaTeX-menukeys-input-separators-list ] t ))
+                             (TeX-argument-prompt t nil
+                                                  ,(concat "Input separator "
+                                                          "(default "
+                                                          (if (and sep (not (string= sep "")))
+                                                              sep
+                                                            ",")
+                                                          ")"))
+                             LaTeX-menukeys-input-separators-list ] t ))
     (when (and (featurep 'font-latex)
-	       (eq TeX-install-font-lock 'font-latex-setup))
+               (eq TeX-install-font-lock 'font-latex-setup))
       (font-latex-add-keywords `((,macro       "[{"))
-			       'textual))))
+                               'textual))))
 
 (TeX-add-style-hook
  "menukeys"
@@ -197,84 +197,84 @@ macro.  If RENEW is non-nil, query for an already defined macro."
       ;; \directory [<separator>]{path}
       ;; \keys      [<separator>]{keystrokes}
       '("menu"
-	[ TeX-arg-eval completing-read
-		       (TeX-argument-prompt t nil "Input separator")
-		       LaTeX-menukeys-input-separators-list ]
-	t)
+        [ TeX-arg-eval completing-read
+          (TeX-argument-prompt t nil "Input separator")
+          LaTeX-menukeys-input-separators-list ]
+        t)
 
       '("directory"
-	[ TeX-arg-eval completing-read
-		       (TeX-argument-prompt t nil "Input separator")
-		       LaTeX-menukeys-input-separators-list ]
-	t)
+        [ TeX-arg-eval completing-read
+          (TeX-argument-prompt t nil "Input separator")
+          LaTeX-menukeys-input-separators-list ]
+        t)
 
       '("keys"
-	[ TeX-arg-eval completing-read
-		       (TeX-argument-prompt t nil "Input separator")
-		       LaTeX-menukeys-input-separators-list ]
-	t)))
+        [ TeX-arg-eval completing-read
+          (TeX-argument-prompt t nil "Input separator")
+          LaTeX-menukeys-input-separators-list ]
+        t)))
 
    (TeX-add-symbols
     ;; 4.2.1 Predefined styles
     ;; \drawtikzfolder[<front fill>][<draw>]
     '("drawtikzfolder"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Front color")
-		     (LaTeX-xcolor-definecolor-list) ]
+        (TeX-argument-prompt t nil "Front color")
+        (LaTeX-xcolor-definecolor-list) ]
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Line color")
-		     (LaTeX-xcolor-definecolor-list) ] )
+        (TeX-argument-prompt t nil "Line color")
+        (LaTeX-xcolor-definecolor-list) ] )
 
     ;; 4.2.2 Declaring styles
     ;; \newmenustylesimple*{<name>}[<pre>]{<style>}[<sep>][<post>]{<theme>}
     '("newmenustylesimple"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     '("newmenustylesimple*"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     ;; \newmenustyle*{<name>}[<pre>]{<first>}[<sep>]{<mid>}{<last>}{<single>}[<post>]{<theme>}
     '("newmenustyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     '("newmenustyle*"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     '("CurrentMenuElement" 0)
 
@@ -282,72 +282,72 @@ macro.  If RENEW is non-nil, query for an already defined macro."
     '("copymenustyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((copy (TeX-read-string
-		      (TeX-argument-prompt nil nil "Copy")))
-	       (orig (completing-read
-		      (TeX-argument-prompt nil nil "Original")
-		      (LaTeX-menukeys-newmenustyle-list))))
-	   (LaTeX-add-menukeys-newmenustyles copy)
-	   (TeX-argument-insert copy nil)
-	   (format "%s" orig)))))
+         (let ((copy (TeX-read-string
+                      (TeX-argument-prompt nil nil "Copy")))
+               (orig (completing-read
+                      (TeX-argument-prompt nil nil "Original")
+                      (LaTeX-menukeys-newmenustyle-list))))
+           (LaTeX-add-menukeys-newmenustyles copy)
+           (TeX-argument-insert copy nil)
+           (format "%s" orig)))))
 
     ;; 4.2.4 Changing styles
     ;; \changemenuelement*{name}{element}{definition}
     '("changemenuelement"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-menukeys-newmenustyle-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-menukeys-newmenustyle-list))
       2)
 
     '("changemenuelement*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-menukeys-newmenustyle-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-menukeys-newmenustyle-list))
       2)
 
     ;; Same arguments as \newmenustylesimple
     '("renewmenustylesimple"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-menukeys-newmenustyle-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-menukeys-newmenustyle-list))
       [ t ] nil [ nil ] [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     '("providemenustylesimple"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     ;; Same arguments as \newmenustyle
     '("providemenustyle"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-menukeys-newmenustyle-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-menukeys-newmenustyle-list))
       [ t ] nil [ nil ] nil nil nil [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     '("renewmenustyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenustyles name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenustyles name)
+           (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color theme")
-		    (LaTeX-menukeys-newmenucolortheme-list)))
+                    (TeX-argument-prompt nil nil "Color theme")
+                    (LaTeX-menukeys-newmenucolortheme-list)))
 
     ;; 4.3 Color themes
     ;; 4.3.2 Create a theme
@@ -355,117 +355,117 @@ macro.  If RENEW is non-nil, query for an already defined macro."
     '("newmenucolortheme"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenucolorthemes name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenucolorthemes name)
+           (format "%s" name))))
       (TeX-arg-eval
        (lambda ()
-	 (let ((model (completing-read
-		       (TeX-argument-prompt nil nil "Model")
-		       (LaTeX-xcolor-color-models))))
-	   (TeX-argument-insert model nil)
-	   (if (string= model "named")
-	       (let ((bg (completing-read
-			  (TeX-argument-prompt nil nil "Node background color")
-			  (LaTeX-xcolor-definecolor-list)))
-		     (br (completing-read
-			  (TeX-argument-prompt nil nil "Node border color")
-			  (LaTeX-xcolor-definecolor-list)))
-		     (txt (completing-read
-			   (TeX-argument-prompt nil nil "Node text color")
-			   (LaTeX-xcolor-definecolor-list))))
-		 (TeX-argument-insert bg nil)
-		 (TeX-argument-insert br nil)
-		 (format "%s" txt))
-	     (let ((bg (TeX-read-string
-			(TeX-argument-prompt nil nil "Node background color spec")))
-		   (br (TeX-read-string
-			(TeX-argument-prompt nil nil "Node border color spec")))
-		   (txt (TeX-read-string
-			 (TeX-argument-prompt nil nil "Node text color spec"))))
-	       (TeX-argument-insert bg nil)
-	       (TeX-argument-insert br nil)
-	       (format "%s" txt))))))
+         (let ((model (completing-read
+                       (TeX-argument-prompt nil nil "Model")
+                       (LaTeX-xcolor-color-models))))
+           (TeX-argument-insert model nil)
+           (if (string= model "named")
+               (let ((bg (completing-read
+                          (TeX-argument-prompt nil nil "Node background color")
+                          (LaTeX-xcolor-definecolor-list)))
+                     (br (completing-read
+                          (TeX-argument-prompt nil nil "Node border color")
+                          (LaTeX-xcolor-definecolor-list)))
+                     (txt (completing-read
+                           (TeX-argument-prompt nil nil "Node text color")
+                           (LaTeX-xcolor-definecolor-list))))
+                 (TeX-argument-insert bg nil)
+                 (TeX-argument-insert br nil)
+                 (format "%s" txt))
+             (let ((bg (TeX-read-string
+                        (TeX-argument-prompt nil nil "Node background color spec")))
+                   (br (TeX-read-string
+                        (TeX-argument-prompt nil nil "Node border color spec")))
+                   (txt (TeX-read-string
+                         (TeX-argument-prompt nil nil "Node text color spec"))))
+               (TeX-argument-insert bg nil)
+               (TeX-argument-insert br nil)
+               (format "%s" txt))))))
       (TeX-arg-conditional (y-or-n-p "With additional optional arguments? ")
-			   ( [ 3 ] )
-			 (ignore)))
+                           ( [ 3 ] )
+                           (ignore)))
 
     ;; 4.3.3 Copy a theme
     '("copymenucolortheme"
       (TeX-arg-eval
        (lambda ()
-	 (let ((copy (TeX-read-string
-		      (TeX-argument-prompt nil nil "Copy")))
-	       (orig (completing-read
-		      (TeX-argument-prompt nil nil "Original")
-		      (LaTeX-menukeys-newmenucolortheme-list))))
-	   (LaTeX-add-menukeys-newmenucolorthemes copy)
-	   (TeX-argument-insert copy nil)
-	   (format "%s" orig)))))
+         (let ((copy (TeX-read-string
+                      (TeX-argument-prompt nil nil "Copy")))
+               (orig (completing-read
+                      (TeX-argument-prompt nil nil "Original")
+                      (LaTeX-menukeys-newmenucolortheme-list))))
+           (LaTeX-add-menukeys-newmenucolorthemes copy)
+           (TeX-argument-insert copy nil)
+           (format "%s" orig)))))
 
     ;; 4.3.4 Change a theme
     '("changemenucolor"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Name")
-		    (LaTeX-menukeys-newmenucolortheme-list))
+                    (TeX-argument-prompt nil nil "Name")
+                    (LaTeX-menukeys-newmenucolortheme-list))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Element")
-		    '("bg" "br" "txt"))
+                    (TeX-argument-prompt nil nil "Element")
+                    '("bg" "br" "txt"))
       (TeX-arg-eval
        (lambda ()
-	 (let ((model (completing-read
-		       (TeX-argument-prompt nil nil "Model")
-		       (LaTeX-xcolor-color-models))))
-	   (TeX-argument-insert model nil)
-	   (if (string= model "named")
-	       (let ((color (completing-read
-			     (TeX-argument-prompt nil nil "Color")
-			     (LaTeX-xcolor-definecolor-list))))
-		 (format "%s" color))
-	     (let ((color (TeX-read-string
-			   (TeX-argument-prompt nil nil "Color spec"))))
-	       (format "%s" color)))))))
+         (let ((model (completing-read
+                       (TeX-argument-prompt nil nil "Model")
+                       (LaTeX-xcolor-color-models))))
+           (TeX-argument-insert model nil)
+           (if (string= model "named")
+               (let ((color (completing-read
+                             (TeX-argument-prompt nil nil "Color")
+                             (LaTeX-xcolor-definecolor-list))))
+                 (format "%s" color))
+             (let ((color (TeX-read-string
+                           (TeX-argument-prompt nil nil "Color spec"))))
+               (format "%s" color)))))))
 
     ;; Same arguments as \newmenucolortheme
     '("renewmenucolortheme"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (TeX-read-string
-		      (TeX-argument-prompt nil nil "Name"))))
-	   (LaTeX-add-menukeys-newmenucolorthemes name)
-	   (format "%s" name))))
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt nil nil "Name"))))
+           (LaTeX-add-menukeys-newmenucolorthemes name)
+           (format "%s" name))))
       (TeX-arg-eval
        (lambda ()
-	 (let ((model (completing-read
-		       (TeX-argument-prompt nil nil "Model")
-		       (LaTeX-xcolor-color-models))))
-	   (TeX-argument-insert model nil)
-	   (if (string= model "named")
-	       (let ((bg (completing-read
-			  (TeX-argument-prompt nil nil "Node background color")
-			  (LaTeX-xcolor-definecolor-list)))
-		     (br (completing-read
-			  (TeX-argument-prompt nil nil "Node border color")
-			  (LaTeX-xcolor-definecolor-list)))
-		     (txt (completing-read
-			   (TeX-argument-prompt nil nil "Node text color")
-			   (LaTeX-xcolor-definecolor-list))))
-		 (TeX-argument-insert bg nil)
-		 (TeX-argument-insert br nil)
-		 (format "%s" txt))
-	     (let ((bg (TeX-read-string
-			(TeX-argument-prompt nil nil "Node background color spec")))
-		   (br (TeX-read-string
-			(TeX-argument-prompt nil nil "Node border color spec")))
-		   (txt (TeX-read-string
-			 (TeX-argument-prompt nil nil "Node text color spec"))))
-	       (TeX-argument-insert bg nil)
-	       (TeX-argument-insert br nil)
-	       (format "%s" txt))))))
+         (let ((model (completing-read
+                       (TeX-argument-prompt nil nil "Model")
+                       (LaTeX-xcolor-color-models))))
+           (TeX-argument-insert model nil)
+           (if (string= model "named")
+               (let ((bg (completing-read
+                          (TeX-argument-prompt nil nil "Node background color")
+                          (LaTeX-xcolor-definecolor-list)))
+                     (br (completing-read
+                          (TeX-argument-prompt nil nil "Node border color")
+                          (LaTeX-xcolor-definecolor-list)))
+                     (txt (completing-read
+                           (TeX-argument-prompt nil nil "Node text color")
+                           (LaTeX-xcolor-definecolor-list))))
+                 (TeX-argument-insert bg nil)
+                 (TeX-argument-insert br nil)
+                 (format "%s" txt))
+             (let ((bg (TeX-read-string
+                        (TeX-argument-prompt nil nil "Node background color spec")))
+                   (br (TeX-read-string
+                        (TeX-argument-prompt nil nil "Node border color spec")))
+                   (txt (TeX-read-string
+                         (TeX-argument-prompt nil nil "Node text color spec"))))
+               (TeX-argument-insert bg nil)
+               (TeX-argument-insert br nil)
+               (format "%s" txt))))))
       (TeX-arg-conditional (y-or-n-p "With additional optional arguments? ")
-			   ( [ 3 ] )
-			 (ignore)))
+                           ( [ 3 ] )
+                           (ignore)))
 
     ;; 4.4 Menu macros
     ;; 4.4.2 Defining or changing menu macros
@@ -481,56 +481,56 @@ macro.  If RENEW is non-nil, query for an already defined macro."
    ;; 2 : No argment, three macros: \<key>, \<key>win, \<key>mac
    (unless (LaTeX-provided-package-options-member "menukeys" "definekeys=false")
      (let ((keycmds '(("shift" . 0)   ("capslock" . 2)  ("tab" . 2)
-		      ("esc" . 2)     ("ctrl" . 2)      ("alt" . 2)
-		      ("AltGr" . 0)   ("cmd"   . 0)     ("Space" . 0)
-		      ("SPACE" . 0)   ("return" . 2)    ("enter"  . 2)
-		      ("winmenu" . 0) ("backspace" . 0) ("del" . 0)
-		      ("arrowkeyup" . 0)   ("arrowkeydown" . 0)
-		      ("arrowkeyleft" . 0) ("arrowkeyright" . 0)
-		      ("arrowkey" . 1)
-		      ;; Text inside some keys:
-		      ("ctrlname" . 0) ("delname" . 0) ("spacename" . 0)))
-	   (os '("mac" "win"))
-	   collector)
+                      ("esc" . 2)     ("ctrl" . 2)      ("alt" . 2)
+                      ("AltGr" . 0)   ("cmd"   . 0)     ("Space" . 0)
+                      ("SPACE" . 0)   ("return" . 2)    ("enter"  . 2)
+                      ("winmenu" . 0) ("backspace" . 0) ("del" . 0)
+                      ("arrowkeyup" . 0)   ("arrowkeydown" . 0)
+                      ("arrowkeyleft" . 0) ("arrowkeyright" . 0)
+                      ("arrowkey" . 1)
+                      ;; Text inside some keys:
+                      ("ctrlname" . 0) ("delname" . 0) ("spacename" . 0)))
+           (os '("mac" "win"))
+           collector)
        (dolist (cmd keycmds)
-	 (cond
-	  ((= (cdr cmd) 0)
-	   (push (car cmd) collector))
-	  ((= (cdr cmd) 1)
-	   (push (list (car cmd) '(TeX-arg-eval completing-read
-						   "Direction: "
-						   '("^" "v" ">" "<")))
-		    collector))
-	  ((= (cdr cmd) 2)
-	   (push (car cmd) collector)
-	   (dolist (x os)
-	     (push (concat (car cmd) x) collector)))))
+         (cond
+          ((= (cdr cmd) 0)
+           (push (car cmd) collector))
+          ((= (cdr cmd) 1)
+           (push (list (car cmd) '(TeX-arg-eval completing-read
+                                                "Direction: "
+                                                '("^" "v" ">" "<")))
+                 collector))
+          ((= (cdr cmd) 2)
+           (push (car cmd) collector)
+           (dolist (x os)
+             (push (concat (car cmd) x) collector)))))
        (apply #'TeX-add-symbols collector)))
 
    ;; Fontification:
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("menu"            "[{")
-				("directory"       "[{")
-				("keys"            "[{")
-				("drawtikzfolder"  "[["))
-			      'textual)
+                                ("directory"       "[{")
+                                ("keys"            "[{")
+                                ("drawtikzfolder"  "[["))
+                              'textual)
      (font-latex-add-keywords '(("newmenustylesimple"       "*{[{[[{")
-				("newmenustyle"             "*{[{[{{{[{")
-				("copymenustyle"            "{{")
-				("changemenuelement"        "*{{{")
-				("renewmenustylesimple"     "{[{[[{")
-				("providemenustylesimple"   "{[{[[{")
-				("providemenustyle"         "{[{[{{{[{")
-				("renewmenustyle"           "{[{[{{{[{")
-				("newmenucolortheme"        "{{{{{[[[")
-				("copymenucolortheme"       "{{")
-				("changemenucolor"          "{{{{")
-				("renewmenucolortheme"      "{{{{{[[[")
-				("newmenumacro"             "|{\\[{")
-				("providemenumacro"         "|{\\[{")
-				("renewmenumacro"           "|{\\[{"))
-			      'function)))
+                                ("newmenustyle"             "*{[{[{{{[{")
+                                ("copymenustyle"            "{{")
+                                ("changemenuelement"        "*{{{")
+                                ("renewmenustylesimple"     "{[{[[{")
+                                ("providemenustylesimple"   "{[{[[{")
+                                ("providemenustyle"         "{[{[{{{[{")
+                                ("renewmenustyle"           "{[{[{{{[{")
+                                ("newmenucolortheme"        "{{{{{[[[")
+                                ("copymenucolortheme"       "{{")
+                                ("changemenucolor"          "{{{{")
+                                ("renewmenucolortheme"      "{{{{{[[[")
+                                ("newmenumacro"             "|{\\[{")
+                                ("providemenumacro"         "|{\\[{")
+                                ("renewmenumacro"           "|{\\[{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-menukeys-package-options-list

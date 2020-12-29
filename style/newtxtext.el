@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "newtxtext"
@@ -67,13 +67,13 @@
                                 ("texttlf"   "{")
                                 ("textosf"   "{")
                                 ("texttosf"  "{")
-				("textsu"    "{"))
+                                ("textsu"    "{"))
                               'type-command)
      (font-latex-add-keywords '(("lfstyle"   "")
                                 ("tlfstyle"  "")
                                 ("osfstyle"  "")
-				("tosfstyle" "")
-				("sustyle"   ""))
+                                ("tosfstyle" "")
+                                ("sustyle"   ""))
                               'type-declaration)))
  TeX-dialect)
 

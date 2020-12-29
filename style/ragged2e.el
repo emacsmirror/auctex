@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "ragged2e"
@@ -66,12 +66,12 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("Centering"    "")
-				("justifying"   "")
-				("RaggedRight"  "")
-				("RaggedLeft"   ""))
-			      'function)))
+                                ("justifying"   "")
+                                ("RaggedRight"  "")
+                                ("RaggedLeft"   ""))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-ragged2e-package-options

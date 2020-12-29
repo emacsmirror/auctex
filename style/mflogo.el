@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "mflogo"
@@ -48,11 +48,11 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("textlogo" "{"))
-			      'type-command)
+                              'type-command)
      (font-latex-add-keywords '(("logofamily" ""))
-			      'type-declaration)))
+                              'type-declaration)))
  TeX-dialect)
 
 (defvar LaTeX-mflogo-package-options nil

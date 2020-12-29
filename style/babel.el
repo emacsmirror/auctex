@@ -38,8 +38,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-babel-language-list
   '("afrikaans"
@@ -109,31 +109,31 @@
   (let (main-language active-languages)
     ;; Loop over options provided to class and `babel' package at load time.
     (dolist (elt (append
-		  ;; In most cases there is only one element in the alist, if
-		  ;; there is more than one element, the first one should
-		  ;; contain the class options of the current buffer.  So we can
-		  ;; take the car of `LaTeX-provided-class-options'.
-		  (cdr (car LaTeX-provided-class-options))
-		  (cdr (assoc "babel" LaTeX-provided-package-options))))
+                  ;; In most cases there is only one element in the alist, if
+                  ;; there is more than one element, the first one should
+                  ;; contain the class options of the current buffer.  So we can
+                  ;; take the car of `LaTeX-provided-class-options'.
+                  (cdr (car LaTeX-provided-class-options))
+                  (cdr (assoc "babel" LaTeX-provided-package-options))))
       (setq elt (TeX-split-string "=" elt))
       (if (equal (car elt) "main")
-	  ;; Starting from version 3.9 of `babel' package, languages can be set
-	  ;; with the following syntax:
-	  ;;   \usepackage[latin.medieval,main=danish,spanish.notilde]{babel}
-	  ;; with `danish' being the default language.  When the default
-	  ;; language is set with the `main' option, we record it and append to
-	  ;; the list at the end.
-	  (setq main-language (car (cdr elt)))
-	;; Get rid of the modifiers (`medieval' and `notilde' in the above
-	;; example).
-	(setq elt (car (TeX-split-string "\\." (car elt))))
-	(if (member elt LaTeX-babel-language-list)
-	    ;; Append element to `active-languages' to respect loading order.
-	    ;; `babel' package uses as default language the last loaded one,
-	    ;; except if it is set with the `main' option.
-	    (cl-pushnew elt active-languages :test #'equal))))
+          ;; Starting from version 3.9 of `babel' package, languages can be set
+          ;; with the following syntax:
+          ;;   \usepackage[latin.medieval,main=danish,spanish.notilde]{babel}
+          ;; with `danish' being the default language.  When the default
+          ;; language is set with the `main' option, we record it and append to
+          ;; the list at the end.
+          (setq main-language (car (cdr elt)))
+        ;; Get rid of the modifiers (`medieval' and `notilde' in the above
+        ;; example).
+        (setq elt (car (TeX-split-string "\\." (car elt))))
+        (if (member elt LaTeX-babel-language-list)
+            ;; Append element to `active-languages' to respect loading order.
+            ;; `babel' package uses as default language the last loaded one,
+            ;; except if it is set with the `main' option.
+            (cl-pushnew elt active-languages :test #'equal))))
     (if main-language
-	(cl-pushnew main-language active-languages :test #'equal))
+        (cl-pushnew main-language active-languages :test #'equal))
     (nreverse active-languages)))
 
 ;; Setup for \babeltags: Note that the macro is \babeltags, we use
@@ -153,36 +153,36 @@
       ;; Clean up the parsed results from characters we don't want;
       ;; also remove possible comment lines
       (setq results
-	    (replace-regexp-in-string
-	     "\\(%.*$\\|[ \n\r\t]\\)" ""
-	     (mapconcat #'car (LaTeX-babel-babeltag-list) ",")))
+            (replace-regexp-in-string
+             "\\(%.*$\\|[ \n\r\t]\\)" ""
+             (mapconcat #'car (LaTeX-babel-babeltag-list) ",")))
       ;; Look if \babeltags was issued once with multiple entries or
       ;; more than once in the document:
       (if (string-match-p "," results)
-	  (progn
-	    (dolist (elt (split-string results "," t))
-	      (setq tag (car (split-string elt "=" t)))
-	      (push tag tags)
-	      (push (list (concat "text" tag) t) cmds)
-	      (push (list tag -1) cmds)))
-	;; One \babeltags with one entry only
-	(setq tag (car (split-string results "=" t)))
-	(push tag tags)
-	(push (list (concat "text" tag) t) cmds)
-	(push (list tag -1) cmds))
+          (progn
+            (dolist (elt (split-string results "," t))
+              (setq tag (car (split-string elt "=" t)))
+              (push tag tags)
+              (push (list (concat "text" tag) t) cmds)
+              (push (list tag -1) cmds)))
+        ;; One \babeltags with one entry only
+        (setq tag (car (split-string results "=" t)))
+        (push tag tags)
+        (push (list (concat "text" tag) t) cmds)
+        (push (list tag -1) cmds))
       (mapc #'TeX-add-symbols cmds)
       (mapc #'LaTeX-add-environments tags)
       ;; Fontification
       (when (and (featurep 'font-latex)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords (mapcar (lambda (x)
-					   (list (concat "text" x)  "{"))
-					 tags)
-				 'textual)
-	(font-latex-add-keywords (mapcar (lambda (x)
-					   (list x  ""))
-					 tags)
-				 'type-declaration)))))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords (mapcar (lambda (x)
+                                           (list (concat "text" x)  "{"))
+                                         tags)
+                                 'textual)
+        (font-latex-add-keywords (mapcar (lambda (x)
+                                           (list x  ""))
+                                         tags)
+                                 'type-declaration)))))
 
 ;; Setup for \babelfont:
 (TeX-auto-add-type "babel-babelfont" "LaTeX")
@@ -198,27 +198,27 @@
     (dolist (elt (mapcar #'car (LaTeX-babel-babelfont-list)))
       ;; Don't do anything for standard font-families:
       (unless (member elt '("rm" "sf" "tt"))
-	;; Define \<font>family, \<font>default and \text<font>:
-	(let ((fam (concat elt "family"))
-	      (def (concat elt "default"))
-	      (mac (concat "text" elt)))
-	  (apply #'TeX-add-symbols
-		 `((,fam -1)
-		   (,def -1)
-		   (,mac t)))
-	  ;; Cater for fontification:
-	  (when (and (featurep 'font-latex)
-		     (eq TeX-install-font-lock 'font-latex-setup))
-	    (font-latex-add-keywords `((,fam "")
-				       (,def ""))
-				     'type-declaration)
-	    (font-latex-add-keywords `((,mac "{"))
-				     'type-command)))))))
+        ;; Define \<font>family, \<font>default and \text<font>:
+        (let ((fam (concat elt "family"))
+              (def (concat elt "default"))
+              (mac (concat "text" elt)))
+          (apply #'TeX-add-symbols
+                 `((,fam -1)
+                   (,def -1)
+                   (,mac t)))
+          ;; Cater for fontification:
+          (when (and (featurep 'font-latex)
+                     (eq TeX-install-font-lock 'font-latex-setup))
+            (font-latex-add-keywords `((,fam "")
+                                       (,def ""))
+                                     'type-declaration)
+            (font-latex-add-keywords `((,mac "{"))
+                                     'type-command)))))))
 
 (defun LaTeX-babel-auto-prepare ()
   "Clear `LaTeX-auto-babel-babel*' before parsing."
   (setq LaTeX-auto-babel-babeltag  nil
-	LaTeX-auto-babel-babelfont nil))
+        LaTeX-auto-babel-babelfont nil))
 
 (defun LaTeX-babel-auto-cleanup ()
   "Process parsed elements."
@@ -241,7 +241,7 @@
   "Prompt for a language and insert it as an argument of ENV."
   (LaTeX-insert-environment
    env (format "{%s}" (completing-read "Language: "
-				       (LaTeX-babel-active-languages)))))
+                                       (LaTeX-babel-active-languages)))))
 
 (defun LaTeX-babel-load-languages ()
   "Load style files of babel active languages."
@@ -269,15 +269,15 @@
     ;; 1.9 More on selection
     '("babeltags" t)
     '("babelensure" (TeX-arg-key-val
-		     (("include") ("exclude")
-		      ("fontenc" (;; 128+ glyph encodings (text)
-				  "OT1" "OT2" "OT3" "OT4" "OT6"
-				  ;; 256 glyph encodings (text)
-				  "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
-				  ;; 256 glyph encodings (text extended)
-				  "X2"
-				  ;; Other encodings
-				  "LY1" "LV1" "LGR"))))
+                     (("include") ("exclude")
+                      ("fontenc" (;; 128+ glyph encodings (text)
+                                  "OT1" "OT2" "OT3" "OT4" "OT6"
+                                  ;; 256 glyph encodings (text)
+                                  "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
+                                  ;; 256 glyph encodings (text extended)
+                                  "X2"
+                                  ;; Other encodings
+                                  "LY1" "LV1" "LGR"))))
       TeX-arg-babel-lang)
     ;; 1.10 Shorthands
     '("shorthandon"    "Shorthands list")
@@ -287,9 +287,9 @@
     '("useshorthands*" "Character")
     '("defineshorthand"
       [ TeX-arg-eval mapconcat #'identity
-		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt t nil "Language(s)")
-		      (LaTeX-babel-active-languages)) ""]
+        (TeX-completing-read-multiple
+         (TeX-argument-prompt t nil "Language(s)")
+         (LaTeX-babel-active-languages)) ""]
       t nil)
     '("aliasshorthand"   "Original" "Alias")
     '("languageshorthands" TeX-arg-babel-lang)
@@ -299,32 +299,32 @@
     ;; 1.12 The base option
     '("AfterBabelLanguage"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Language")
-		    LaTeX-babel-language-list)
+                    (TeX-argument-prompt nil nil "Language")
+                    LaTeX-babel-language-list)
       t)
 
     ;; 1.14 Selecting fonts
     '("babelfont"
       [ TeX-arg-eval mapconcat #'identity
-		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt t nil "Language(s)")
-		      LaTeX-babel-language-list)
-		     "," ]
+        (TeX-completing-read-multiple
+         (TeX-argument-prompt t nil "Language(s)")
+         LaTeX-babel-language-list)
+        "," ]
       (TeX-arg-eval let ((fontfam (completing-read
-				   (TeX-argument-prompt nil nil "font family")
-				   '("rm" "sf" "tt"))))
-		    ;; Make sure `tex-buf.el' is also loaded otherwise
-		    ;; `TeX-check-engine-add-engines' is not defined.
-		    ;; Then load `fontspec.el' and make sure the
-		    ;; key-vals are up to date.
-		    (unless (member "fontspec" (TeX-style-list))
-		      (require 'tex-buf)
-		      (TeX-check-engine-add-engines 'luatex 'xetex)
-		      (TeX-run-style-hooks "fontspec")
-		      (LaTeX-fontspec-auto-cleanup))
-		    (LaTeX-add-babel-babelfonts fontfam)
-		    (LaTeX-babel-cleanup-babelfont)
-		    (format "%s" fontfam))
+                                   (TeX-argument-prompt nil nil "font family")
+                                   '("rm" "sf" "tt"))))
+                    ;; Make sure `tex-buf.el' is also loaded otherwise
+                    ;; `TeX-check-engine-add-engines' is not defined.
+                    ;; Then load `fontspec.el' and make sure the
+                    ;; key-vals are up to date.
+                    (unless (member "fontspec" (TeX-style-list))
+                      (require 'tex-buf)
+                      (TeX-check-engine-add-engines 'luatex 'xetex)
+                      (TeX-run-style-hooks "fontspec")
+                      (LaTeX-fontspec-auto-cleanup))
+                    (LaTeX-add-babel-babelfonts fontfam)
+                    (LaTeX-babel-cleanup-babelfont)
+                    (format "%s" fontfam))
       [ TeX-arg-key-val LaTeX-fontspec-font-features-local]
       LaTeX-fontspec-arg-font)
 
@@ -332,8 +332,8 @@
     '("babelprovide"
       [ TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Language")
-		    LaTeX-babel-language-list))
+                    (TeX-argument-prompt nil nil "Language")
+                    LaTeX-babel-language-list))
 
     ;; 1.18 Getting the current language name
     '("languagename" 0)
@@ -342,19 +342,19 @@
     ;; 1.19 Hyphenation and line breaking
     '("babelhyphen"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Type/Text")
-		    '("soft" "hard" "repeat" "empty")))
+                    (TeX-argument-prompt nil nil "Type/Text")
+                    '("soft" "hard" "repeat" "empty")))
     '("babelhyphen*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Type/Text")
-		    '("soft" "hard" "repeat" "empty")))
+                    (TeX-argument-prompt nil nil "Type/Text")
+                    '("soft" "hard" "repeat" "empty")))
 
     '("babelhyphenation"
       [ TeX-arg-eval mapconcat #'identity
-		     (TeX-completing-read-multiple
-		      (TeX-argument-prompt nil nil "Language(s)")
-		      LaTeX-babel-language-list)
-		     "," ]
+        (TeX-completing-read-multiple
+         (TeX-argument-prompt nil nil "Language(s)")
+         LaTeX-babel-language-list)
+        "," ]
       t)
 
     ;; 1.20 Selecting scripts
@@ -371,29 +371,29 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("selectlanguage"     "{")
-				("foreignlanguage"    "{{")
-				("babeltags"          "{")
-				("babelensure"        "{{")
-				("shorthandon"        "{")
-				("shorthandoff"       "*{")
-				("useshorthands"      "*{")
-				("languageshorthands" "{")
-				("babelshorthand"     "{")
-				("AfterBabelLanguage" "{")
-				("babelfont"          "[{[{")
-				("babelprovide"       "[{")
-				("languagename"       "")
-				("iflanguage"         "{{{")
-				("babelhyphen"        "*{")
-				("babelhyphenation"   "[{")
-				("ensureascii"        "{"))
-			      'function)
+                                ("foreignlanguage"    "{{")
+                                ("babeltags"          "{")
+                                ("babelensure"        "{{")
+                                ("shorthandon"        "{")
+                                ("shorthandoff"       "*{")
+                                ("useshorthands"      "*{")
+                                ("languageshorthands" "{")
+                                ("babelshorthand"     "{")
+                                ("AfterBabelLanguage" "{")
+                                ("babelfont"          "[{[{")
+                                ("babelprovide"       "[{")
+                                ("languagename"       "")
+                                ("iflanguage"         "{{{")
+                                ("babelhyphen"        "*{")
+                                ("babelhyphenation"   "[{")
+                                ("ensureascii"        "{"))
+                              'function)
      (font-latex-add-keywords '(("defineshorthand"    "[{{")
-				("aliasshorthand"     "{{")
-				("languageattribute"  "{{"))
-			      'variable)))
+                                ("aliasshorthand"     "{{")
+                                ("languageattribute"  "{{"))
+                              'variable)))
  TeX-dialect)
 
 (defun LaTeX-babel-package-options ()
@@ -417,13 +417,13 @@
       ("nocase")
       ("silent")
       ("strings" ("generic" "unicode" "encoded"
-		  "OT1" "OT2" "OT3" "OT4" "OT6"
-		  "T1"  "T2A" "T2B" "T2C" "T3" "T4" "T5"
-		  "X2"  "LY1" "LV1" "LGR"))
+                  "OT1" "OT2" "OT3" "OT4" "OT6"
+                  "T1"  "T2A" "T2B" "T2C" "T3" "T4" "T5"
+                  "X2"  "LY1" "LV1" "LGR"))
       ("hyphenmap" ("off" "main" "select" "other" "other*"))
       ("bidi" ("default" "basic" "basic-r" "bidi-l" "bidi-r"))
       ("layout" ("sectioning" "counters" "lists" "captions"
-		 "contents" "footnotes" "columns" "extras"))
+                 "contents" "footnotes" "columns" "extras"))
       ("base"))
     (mapcar #'list LaTeX-babel-language-list))))
 

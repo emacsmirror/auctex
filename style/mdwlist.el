@@ -33,8 +33,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "mdwlist"
@@ -54,16 +54,16 @@
    (setq LaTeX-end-regexp (concat LaTeX-end-regexp "\\|suspend\\b"))
    (make-local-variable 'paragraph-start)
    (setq paragraph-start (concat paragraph-start
-				 "\\|[ \t]*" TeX-comment-start-regexp "*[ \t]*"
-				 (regexp-quote TeX-esc)
-				 "\\(resume\\b\\|suspend\\b\\)"))
+                                 "\\|[ \t]*" TeX-comment-start-regexp "*[ \t]*"
+                                 (regexp-quote TeX-esc)
+                                 "\\(resume\\b\\|suspend\\b\\)"))
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("makecompactlist" "{{")
-				("suspend" "[{")
-				("resume" "[{["))
-			      'function)))
+                                ("suspend" "[{")
+                                ("resume" "[{["))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-mdwlist-package-options nil

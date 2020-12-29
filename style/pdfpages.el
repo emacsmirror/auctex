@@ -38,8 +38,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-pdfpages-key-val-options
   '(;; Main options:
@@ -107,12 +107,12 @@
       (TeX-arg-eval
        (lambda ()
          (let ((pdffile (file-relative-name
-			 (read-file-name
-			  "File to include: " nil nil nil nil
-			  (lambda (pdfs)
-			    (string-match "\\.pdf$" pdfs)))
-			 (TeX-master-directory))))
-	   (format "%s" pdffile)))))
+                         (read-file-name
+                          "File to include: " nil nil nil nil
+                          (lambda (pdfs)
+                            (string-match "\\.pdf$" pdfs)))
+                         (TeX-master-directory))))
+           (format "%s" pdffile)))))
 
     ;; \includepdfmerge[<options>]{<file-page-list>}
     ;; The mandatory argument is complex, we just insert a pair of
@@ -128,12 +128,12 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("includepdfset"    "{"))
-			      'function)
+                              'function)
      (font-latex-add-keywords '(("includepdf"       "[{")
-				("includepdfmerge"  "[{"))
-			      'reference)))
+                                ("includepdfmerge"  "[{"))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-pdfpages-package-options

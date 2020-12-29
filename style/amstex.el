@@ -51,13 +51,13 @@
  TeX-dialect)
 
 (defvar LaTeX-amstex-package-options '("noamsfonts" "psamsfonts" 
-				       "intlimits" "nointlimits"
-				       "sumlimits" "nosumlimits"
-				       "namelimits" "nonamelimits"
-				       "leqno" "reqno" "centertags"
-				       "tbtags" "fleqn" "righttag"
-				       "ctagsplt" "intlim" "nosumlim"
-				       "nonamelm")
-    "Package options for the amstex package.")
+                                       "intlimits" "nointlimits"
+                                       "sumlimits" "nosumlimits"
+                                       "namelimits" "nonamelimits"
+                                       "leqno" "reqno" "centertags"
+                                       "tbtags" "fleqn" "righttag"
+                                       "ctagsplt" "intlim" "nosumlim"
+                                       "nonamelm")
+  "Package options for the amstex package.")
 
 ;;; amstex.el ends here.

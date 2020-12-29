@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "transparent"
@@ -47,11 +47,11 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("transparent"     "{"))
-			      'type-declaration)
+                              'type-declaration)
      (font-latex-add-keywords '(("texttransparent" "{{"))
-			      'type-command)))
+                              'type-command)))
  TeX-dialect)
 
 (defvar LaTeX-transparent-package-options nil

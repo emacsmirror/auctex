@@ -33,8 +33,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "captcont"
@@ -48,7 +48,7 @@
  TeX-dialect)
 
 (defvar LaTeX-captcont-package-options '("figbotcap" "figtopcap" "tabbotcap"
-					 "tabtopcap")
+                                         "tabtopcap")
   "Package options for the captcont package.")
 
 ;;; captcont.el ends here

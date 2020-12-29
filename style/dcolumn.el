@@ -39,7 +39,7 @@
 
    ;; `dcolumn.sty' adds one new column specification letter:
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "D"))
+        (concat LaTeX-array-column-letters "D"))
 
    ;; Also run style hook for `array':
    (TeX-run-style-hooks "array"))

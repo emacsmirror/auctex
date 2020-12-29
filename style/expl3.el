@@ -55,9 +55,9 @@
 (defun LaTeX-expl3-package-options ()
   "Read the expl3 package options from the user."
   (TeX-read-key-val t '(("check-declarations" ("true" "false"))
-			("log-functions" ("true" "false"))
-			("driver" ("auto"    "latex2e"
-				   "dvips"   "dvipdfmx"
-				   "pdfmode" "xdvipdfmx")))))
+                        ("log-functions" ("true" "false"))
+                        ("driver" ("auto"    "latex2e"
+                                   "dvips"   "dvipdfmx"
+                                   "pdfmode" "xdvipdfmx")))))
 
 ;;; expl3.el ends here

@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-attachfile-key-val-options
   '(("appearance" ("true" "false"))
@@ -84,9 +84,9 @@
       [TeX-arg-key-val LaTeX-attachfile-key-val-options]
       (TeX-arg-eval
        (lambda ()
-	 (let ((atfi (file-relative-name
-		      (read-file-name "File to attach: "))))
-	   (format "%s" atfi)))))
+         (let ((atfi (file-relative-name
+                      (read-file-name "File to attach: "))))
+           (format "%s" atfi)))))
 
     ;; \noattachfile[<options>]
     '("noattachfile"
@@ -97,9 +97,9 @@
       [TeX-arg-key-val LaTeX-attachfile-key-val-options]
       (TeX-arg-eval
        (lambda ()
-	 (let ((atfi (file-relative-name
-		      (read-file-name "File to attach: "))))
-	   (format "%s" atfi))))
+         (let ((atfi (file-relative-name
+                      (read-file-name "File to attach: "))))
+           (format "%s" atfi))))
       t)
 
     ;; \notextattachfile[<options>]{<text>}
@@ -112,13 +112,13 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("attachfilesetup"  "{")
-				("attachfile"       "[{")
-				("noattachfile"     "[")
-				("textattachfile"   "[{{")
-				("notextattachfile" "[{"))
-			      'function)))
+                                ("attachfile"       "[{")
+                                ("noattachfile"     "[")
+                                ("textattachfile"   "[{{")
+                                ("notextattachfile" "[{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-attachfile-package-options nil

@@ -33,8 +33,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "footmisc"
@@ -66,7 +66,7 @@
                                 ("DefineFNsymbols*" "{[{")
                                 ("DefineFNsymbolsTM" "{{")
                                 ("DefineFNsymbolsTM*" "{{")
-        			("setfnsymbol" "{")) 'function)
+                                ("setfnsymbol" "{")) 'function)
      (font-latex-add-keywords '(("footnoteref")) 'reference)))
  TeX-dialect)
 

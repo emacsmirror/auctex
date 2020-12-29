@@ -35,8 +35,8 @@
 
 ;; Fontification
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "amsmath"
@@ -109,55 +109,55 @@
     "iint" "iiint" "iiiint" "idotsint")
 
    (setq LaTeX-item-list
-	 (append '(("split"    . LaTeX-item-equation)
-		   ("multline" . LaTeX-item-equation)
-		   ("multline*" . LaTeX-item-equation)
-		   ("gather"   . LaTeX-item-equation)
-		   ("gather*"  . LaTeX-item-equation)
-		   ("gathered" . LaTeX-item-equation)
-		   ("align"    . LaTeX-item-equation)
-		   ("align*"   . LaTeX-item-equation)
-		   ("aligned"  . LaTeX-item-equation)
-		   ("alignat"  . LaTeX-item-equation-alignat)
-		   ("alignat*" . LaTeX-item-equation-alignat)
-		   ("xalignat"  . LaTeX-item-equation-alignat)
-		   ("xalignat*" . LaTeX-item-equation-alignat)
-		   ("xxalignat" . LaTeX-item-equation-alignat)
-		   ("alignedat" . LaTeX-item-equation-alignat)
-		   ("flalign"  . LaTeX-item-equation)
-		   ("flalign*" . LaTeX-item-equation)
-		   ("matrix" .  LaTeX-item-equation)
-		   ("pmatrix" .  LaTeX-item-equation)
-		   ("bmatrix" .  LaTeX-item-equation)
-		   ("Bmatrix" .  LaTeX-item-equation)
-		   ("vmatrix" .  LaTeX-item-equation)
-		   ("Vmatrix" .  LaTeX-item-equation)
-		   ("subarray" . LaTeX-item-equation)
-		   ("cases"    . LaTeX-item-equation))
-		 LaTeX-item-list))
+         (append '(("split"    . LaTeX-item-equation)
+                   ("multline" . LaTeX-item-equation)
+                   ("multline*" . LaTeX-item-equation)
+                   ("gather"   . LaTeX-item-equation)
+                   ("gather*"  . LaTeX-item-equation)
+                   ("gathered" . LaTeX-item-equation)
+                   ("align"    . LaTeX-item-equation)
+                   ("align*"   . LaTeX-item-equation)
+                   ("aligned"  . LaTeX-item-equation)
+                   ("alignat"  . LaTeX-item-equation-alignat)
+                   ("alignat*" . LaTeX-item-equation-alignat)
+                   ("xalignat"  . LaTeX-item-equation-alignat)
+                   ("xalignat*" . LaTeX-item-equation-alignat)
+                   ("xxalignat" . LaTeX-item-equation-alignat)
+                   ("alignedat" . LaTeX-item-equation-alignat)
+                   ("flalign"  . LaTeX-item-equation)
+                   ("flalign*" . LaTeX-item-equation)
+                   ("matrix" .  LaTeX-item-equation)
+                   ("pmatrix" .  LaTeX-item-equation)
+                   ("bmatrix" .  LaTeX-item-equation)
+                   ("Bmatrix" .  LaTeX-item-equation)
+                   ("vmatrix" .  LaTeX-item-equation)
+                   ("Vmatrix" .  LaTeX-item-equation)
+                   ("subarray" . LaTeX-item-equation)
+                   ("cases"    . LaTeX-item-equation))
+                 LaTeX-item-list))
 
    ;; When `LaTeX-amsmath-label' is nil, use value of LaTeX-equation-label:
    (unless LaTeX-amsmath-label
      (setq LaTeX-amsmath-label LaTeX-equation-label))
 
    (setq LaTeX-label-alist
-	 ;; Append amsmath environments to `LaTeX-label-alist', in order not to
-	 ;; override possible custome values.
-	 (append LaTeX-label-alist
-		 '(("align"      . LaTeX-amsmath-label)
-		   ("alignat"    . LaTeX-amsmath-label)
-		   ("xalignat"   . LaTeX-amsmath-label)
-		   ("multline"   . LaTeX-amsmath-label)
-		   ("flalign"    . LaTeX-amsmath-label)
-		   ("gather"     . LaTeX-amsmath-label))))
+         ;; Append amsmath environments to `LaTeX-label-alist', in order not to
+         ;; override possible custome values.
+         (append LaTeX-label-alist
+                 '(("align"      . LaTeX-amsmath-label)
+                   ("alignat"    . LaTeX-amsmath-label)
+                   ("xalignat"   . LaTeX-amsmath-label)
+                   ("multline"   . LaTeX-amsmath-label)
+                   ("flalign"    . LaTeX-amsmath-label)
+                   ("gather"     . LaTeX-amsmath-label))))
 
    (set (make-local-variable 'TeX-braces-association)
-	(append '(("\\lvert" . "\\rvert")
-		  ("\\lVert" . "\\rVert"))
-		TeX-braces-association))
+        (append '(("\\lvert" . "\\rvert")
+                  ("\\lVert" . "\\rVert"))
+                TeX-braces-association))
    (set (make-local-variable 'TeX-left-right-braces)
-	(append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
-		TeX-left-right-braces))
+        (append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
+                TeX-left-right-braces))
 
    ;; amsmath includes amstext, amsbsy, & amsopn.
    ;; So we run their hooks, too.
@@ -169,24 +169,24 @@
 
    ;; Add \eqref to `reftex-ref-style-alist' and associate it to `e'
    (when (and (boundp 'reftex-ref-style-alist)
-	      ;; check if Emacs is already equipped with this
-	      (not (assoc "AMSmath" reftex-ref-style-alist)))
+              ;; check if Emacs is already equipped with this
+              (not (assoc "AMSmath" reftex-ref-style-alist)))
      ;; Append it to a local version in order to avoid a clash with
      ;; user settings
      (add-to-list (make-local-variable 'reftex-ref-style-alist)
-		  '("AMSmath" "amsmath" (("\\eqref" ?e)))
-		  t))
+                  '("AMSmath" "amsmath" (("\\eqref" ?e)))
+                  t))
 
    ;; Activate `AMSmath' when `LaTeX-reftex-ref-style-auto-activate'
    ;; is non-nil
    (and LaTeX-reftex-ref-style-auto-activate
-	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "AMSmath"))
+        (fboundp 'reftex-ref-style-activate)
+        (reftex-ref-style-activate "AMSmath"))
 
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("boxed" "{"))
-			      'math-command)))
+                              'math-command)))
  TeX-dialect)
 
 (defun LaTeX-amsmath-env-alignat (env)
@@ -200,7 +200,7 @@ Insert suitable number of ampersands also if possible."
   "Insert ENV with position and column number specifications.
 Insert suitable number of ampersands also if possible."
   (let ((where (TeX-read-string "(Optional) Vertical position (t or b): "))
-	(ncols (TeX-read-string "Number of columns: ")))
+        (ncols (TeX-read-string "Number of columns: ")))
     (unless (string= where "")
       (setq where (concat LaTeX-optop where LaTeX-optcl)))
     (LaTeX-insert-environment env (concat where TeX-grop ncols TeX-grcl))
@@ -220,7 +220,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
     (indent-according-to-mode))
   (let ((env (LaTeX-current-environment)))
     (when (and (assoc env LaTeX-label-alist)
-	       (LaTeX-label env 'environment))
+               (LaTeX-label env 'environment))
       (LaTeX-newline)
       (indent-according-to-mode))))
 
@@ -234,8 +234,8 @@ If SUPPRESS is non-nil, do not insert line break macro."
   (LaTeX-item-equation suppress)
   (LaTeX-insert-ampersands
    (concat "\\(?:"
-	   (regexp-quote LaTeX-optop) "[tb]" (regexp-quote LaTeX-optcl)
-	   "\\)?")
+           (regexp-quote LaTeX-optop) "[tb]" (regexp-quote LaTeX-optcl)
+           "\\)?")
    'LaTeX-amsmath-alignat-number-of-ampersands))
 
 (defun LaTeX-amsmath-alignat-number-of-ampersands (start end)
@@ -246,13 +246,13 @@ START and END."
     (if (integerp num) (+ num num -1))))
 
 (defvar LaTeX-amsmath-package-options '("intlimits" "nointlimits"
-					"sumlimits" "nosumlimits"
-					"namelimits" "nonamelimits"
-					"leqno" "reqno" "centertags"
-					"tbtags" "cmex10" "fleqn" "?"
-					"alignedleftspaceyes"
-					"alignedleftspaceno"
-					"alignedleftspaceyesifneg")
+                                        "sumlimits" "nosumlimits"
+                                        "namelimits" "nonamelimits"
+                                        "leqno" "reqno" "centertags"
+                                        "tbtags" "cmex10" "fleqn" "?"
+                                        "alignedleftspaceyes"
+                                        "alignedleftspaceno"
+                                        "alignedleftspaceyesifneg")
   "Package options for the amsmath package.")
 
 ;;; amsmath.el ends here.

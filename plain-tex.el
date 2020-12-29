@@ -148,36 +148,36 @@ of `plain-TeX-mode-hook'."
   (setq local-abbrev-table plain-tex-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
   (setq paragraph-start
-	(concat
-	 "\\(?:[ \t]*$"
-	 "\\|" (regexp-quote TeX-esc) "par\\|"
-	 "[ \t]*"
-	 (regexp-quote TeX-esc)
-	 "\\(?:"
-	 "begin\\|end\\|part\\|chapter\\|"
-	 "section\\|subsection\\|subsubsection\\|"
-	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix\\|label\\|caption\\|\\(?:item\\)?item"
-	 "\\)"
-	 "\\|"
-	 "[ \t]*\\$\\$"		; display math delimitor
-	 "\\)" ))
+        (concat
+         "\\(?:[ \t]*$"
+         "\\|" (regexp-quote TeX-esc) "par\\|"
+         "[ \t]*"
+         (regexp-quote TeX-esc)
+         "\\(?:"
+         "begin\\|end\\|part\\|chapter\\|"
+         "section\\|subsection\\|subsubsection\\|"
+         "paragraph\\|include\\|includeonly\\|"
+         "tableofcontents\\|appendix\\|label\\|caption\\|\\(?:item\\)?item"
+         "\\)"
+         "\\|"
+         "[ \t]*\\$\\$"         ; display math delimitor
+         "\\)" ))
   (setq paragraph-separate
-	(concat
-	 "[ \t]*"
-	 "\\(?:"
-	 (regexp-quote TeX-esc) "par\\|"
-	 "%\\|"
-	 "$\\|"
-	 "\\$\\$\\|"
-	 (regexp-quote TeX-esc)
-	 "\\(?:"
-	 "begin\\|end\\|label\\|caption\\|part\\|chapter\\|"
-	 "section\\|subsection\\|subsubsection\\|"
-	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
-	 "\\)"
-	 "\\)"))
+        (concat
+         "[ \t]*"
+         "\\(?:"
+         (regexp-quote TeX-esc) "par\\|"
+         "%\\|"
+         "$\\|"
+         "\\$\\$\\|"
+         (regexp-quote TeX-esc)
+         "\\(?:"
+         "begin\\|end\\|label\\|caption\\|part\\|chapter\\|"
+         "section\\|subsection\\|subsubsection\\|"
+         "paragraph\\|include\\|includeonly\\|"
+         "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
+         "\\)"
+         "\\)"))
   (setq TeX-header-end (regexp-quote "%**end of header"))
   (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
   (TeX-add-symbols

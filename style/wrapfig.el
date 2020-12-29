@@ -41,44 +41,44 @@
     ;; \begin{wrapfigure}[No.lines]{Placement}[Overhang]{Width} ... \end{wrapfigure}
     '("wrapfigure"
       (lambda (env &rest ignore)
-	(LaTeX-insert-environment
-	 env
-	 (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
-	       (placement (completing-read
-			   "Placement: " '(("r") ("R")
-					   ("l") ("L")
-					   ("i") ("I")
-					   ("o") ("O"))))
-	       (overhang  (TeX-read-string "(Optional) Overhang: "))
-	       (width     (TeX-read-string "Width: ")))
-	   (concat
-	    (unless (string= narrow "")
-	      (format "[%s]" narrow))
-	    (format "{%s}" placement)
-	    (unless (string= overhang "")
-	      (format "[%s]" overhang))
-	    (format "{%s}" width))))))
+        (LaTeX-insert-environment
+         env
+         (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
+               (placement (completing-read
+                           "Placement: " '(("r") ("R")
+                                           ("l") ("L")
+                                           ("i") ("I")
+                                           ("o") ("O"))))
+               (overhang  (TeX-read-string "(Optional) Overhang: "))
+               (width     (TeX-read-string "Width: ")))
+           (concat
+            (unless (string= narrow "")
+              (format "[%s]" narrow))
+            (format "{%s}" placement)
+            (unless (string= overhang "")
+              (format "[%s]" overhang))
+            (format "{%s}" width))))))
     ;;
     ;; \begin{wraptable}[No.lines]{Placement}[Overhang]{Width} ... \end{wraptable}
     '("wraptable"
       (lambda (env &rest ignore)
-	(LaTeX-insert-environment
-	 env
-	 (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
-	       (placement (completing-read
-			   "Placement: " '(("r") ("R")
-					   ("l") ("L")
-					   ("i") ("I")
-					   ("o") ("O"))))
-	       (overhang  (TeX-read-string "(Optional) Overhang: "))
-	       (width     (TeX-read-string "Width: ")))
-	   (concat
-	    (unless (string= narrow "")
-	      (format "[%s]" narrow))
-	    (format "{%s}" placement)
-	    (unless (string= overhang "")
-	      (format "[%s]" overhang))
-	    (format "{%s}" width))))))
+        (LaTeX-insert-environment
+         env
+         (let ((narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
+               (placement (completing-read
+                           "Placement: " '(("r") ("R")
+                                           ("l") ("L")
+                                           ("i") ("I")
+                                           ("o") ("O"))))
+               (overhang  (TeX-read-string "(Optional) Overhang: "))
+               (width     (TeX-read-string "Width: ")))
+           (concat
+            (unless (string= narrow "")
+              (format "[%s]" narrow))
+            (format "{%s}" placement)
+            (unless (string= overhang "")
+              (format "[%s]" overhang))
+            (format "{%s}" width))))))
     ;;
     ;; \begin{wrapfloat}{<Type>}[No.lines]{Placement}[Overhang]{Width} ... \end{wrapfloat}
     ;;
@@ -89,30 +89,30 @@
     ;; completion.  Otherwise, just ask user without completion.
     '("wrapfloat"
       (lambda (env &rest ignore)
-	(LaTeX-insert-environment
-	 env
-	 (let ((floattype (if (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
-				   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-			      (completing-read
-			       "Float type: "
-			       (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-			    (TeX-read-string "Float type: ")))
-	       (narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
-	       (placement (completing-read
-			   "Placement: " '(("r") ("R")
-					   ("l") ("L")
-					   ("i") ("I")
-					   ("o") ("O"))))
-	       (overhang  (TeX-read-string "(Optional) Overhang: "))
-	       (width     (TeX-read-string "Width: ")))
-	   (concat
-	    (format "{%s}" floattype)
-	    (unless (string= narrow "")
-	      (format "[%s]" narrow))
-	    (format "{%s}" placement)
-	    (unless (string= overhang "")
-	      (format "[%s]" overhang))
-	    (format "{%s}" width))))))))
+        (LaTeX-insert-environment
+         env
+         (let ((floattype (if (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+                                   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+                              (completing-read
+                               "Float type: "
+                               (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                            (TeX-read-string "Float type: ")))
+               (narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
+               (placement (completing-read
+                           "Placement: " '(("r") ("R")
+                                           ("l") ("L")
+                                           ("i") ("I")
+                                           ("o") ("O"))))
+               (overhang  (TeX-read-string "(Optional) Overhang: "))
+               (width     (TeX-read-string "Width: ")))
+           (concat
+            (format "{%s}" floattype)
+            (unless (string= narrow "")
+              (format "[%s]" narrow))
+            (format "{%s}" placement)
+            (unless (string= overhang "")
+              (format "[%s]" overhang))
+            (format "{%s}" width))))))))
  TeX-dialect)
 
 (defvar LaTeX-wrapfig-package-options '("verbose")

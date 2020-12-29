@@ -83,7 +83,7 @@ If there is no help, the empty string is returned."
 
 (defcustom TeX-bar-TeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-	     [separator nil] tex next-error view bibtex spell)
+             [separator nil] tex next-error view bibtex spell)
   "List of buttons available in `tex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -95,29 +95,29 @@ Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-TeX-all-button-alists'."
   :type '(list (set :inline t
-		    (const new-file)
-		    (const open-file)
-		    (const dired)
-		    (const kill-buffer)
-		    (const save-buffer)
-		    (const write-file)
-		    (const undo)
-		    (const cut)
-		    (const copy)
-		    (const paste)
-		    (const search-forward)
-		    (const print-buffer)
-		    (const [separator nil])
-		    (const tex)
-		    (const next-error)
-		    (const view)
-		    (const file)
-		    (const bibtex)
-		    (const clean)
-		    (const spell))
-	       ;; (const latex-symbols-experimental)
-	       (repeat (choice (symbol :tag "Label")
-			       (sexp :tag "General element"))))
+                    (const new-file)
+                    (const open-file)
+                    (const dired)
+                    (const kill-buffer)
+                    (const save-buffer)
+                    (const write-file)
+                    (const undo)
+                    (const cut)
+                    (const copy)
+                    (const paste)
+                    (const search-forward)
+                    (const print-buffer)
+                    (const [separator nil])
+                    (const tex)
+                    (const next-error)
+                    (const view)
+                    (const file)
+                    (const bibtex)
+                    (const clean)
+                    (const spell))
+               ;; (const latex-symbols-experimental)
+               (repeat (choice (symbol :tag "Label")
+                               (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 
 (defgroup TeX-tool-bar-button-definitions nil
@@ -135,42 +135,42 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 
 (defcustom TeX-bar-TeX-button-alist
   '((tex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
-	 :command (progn
-		    (TeX-save-document (TeX-master-file))
-		    (TeX-command "TeX" 'TeX-master-file -1))
-	 :help (lambda (&rest ignored)
-		 (TeX-bar-help-from-command-list "TeX")))
+         :command (progn
+                    (TeX-save-document (TeX-master-file))
+                    (TeX-command "TeX" 'TeX-master-file -1))
+         :help (lambda (&rest ignored)
+                 (TeX-bar-help-from-command-list "TeX")))
     (pdftex :image "pdftex"
-	    :command (progn
-		       (TeX-save-document (TeX-master-file))
-		       (TeX-command "PDFTeX" 'TeX-master-file -1))
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "PDFTeX")))
+            :command (progn
+                       (TeX-save-document (TeX-master-file))
+                       (TeX-command "PDFTeX" 'TeX-master-file -1))
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "PDFTeX")))
     (next-error :image "error"
-		:command TeX-next-error
-		:enable (TeX-error-report-has-errors-p)
-		:visible (TeX-error-report-has-errors-p))
+                :command TeX-next-error
+                :enable (TeX-error-report-has-errors-p)
+                :visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
-	  :command (TeX-command "View" 'TeX-master-file -1)
-	  :help (lambda (&rest ignored)
-		  (TeX-bar-help-from-command-list "View")))
+          :command (TeX-command "View" 'TeX-master-file -1)
+          :help (lambda (&rest ignored)
+                  (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
-	  :command (TeX-command "File" 'TeX-master-file -1)
-	  :visible (not TeX-PDF-mode)
-	  :help (lambda (&rest ignored)
-		  (TeX-bar-help-from-command-list "File")))
+          :command (TeX-command "File" 'TeX-master-file -1)
+          :visible (not TeX-PDF-mode)
+          :help (lambda (&rest ignored)
+                  (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
-	    :command (TeX-command "BibTeX" 'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "BibTeX")))
+            :command (TeX-command "BibTeX" 'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "BibTeX")))
     (clean  :image "delete"
-	    :command (TeX-command "Clean" 'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "Clean")))
+            :command (TeX-command "Clean" 'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
-	    :command (TeX-command "Spell" 'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "Spell"))))
+            :command (TeX-command "Spell" 'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "Spell"))))
   ;; latex-symbols-experimental?
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
@@ -186,13 +186,13 @@ format of the argument MEANING-ALIST in the mentioned function."
   "Display in a buffer a list of buttons for `tex-bar.el'."
   (interactive)
   (let ((assqs-button-alists)
-	(labels))
+        (labels))
     (dolist (m-alist TeX-bar-TeX-all-button-alists)
       (setq labels nil)
       (dolist (as (eval m-alist))
-	(setq labels (cons (car as) labels)))
+        (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
-				      assqs-button-alists)))
+                                      assqs-button-alists)))
     (setq assqs-button-alists (nreverse assqs-button-alists))
     ;; displaying results
     (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
@@ -200,10 +200,10 @@ format of the argument MEANING-ALIST in the mentioned function."
       (insert "Available buttons for TeX mode
 ================================")
       (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
-	(dolist (j (cdr i))
-	  (insert (format " %s" j)))
-	(fill-region (point-at-bol) (point-at-eol))))
+        (insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
+        (dolist (j (cdr i))
+          (insert (format " %s" j)))
+        (fill-region (point-at-bol) (point-at-eol))))
     (display-buffer "*TeX tool bar buttons*" t)))
 
 ;;; Installation of the tool bar
@@ -213,18 +213,18 @@ format of the argument MEANING-ALIST in the mentioned function."
   (interactive)
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
-	       (expand-file-name "images" TeX-data-directory))
+               (expand-file-name "images" TeX-data-directory))
   (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
   (toolbarx-install-toolbar TeX-bar-TeX-buttons
-			    (let ((append-list))
-			      (dolist (elt TeX-bar-TeX-all-button-alists)
-				(setq append-list (append append-list
-							  (eval elt))))
-			      append-list)))
+                            (let ((append-list))
+                              (dolist (elt TeX-bar-TeX-all-button-alists)
+                                (setq append-list (append append-list
+                                                          (eval elt))))
+                              append-list)))
 
 (defcustom TeX-bar-LaTeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-	     [separator nil] latex next-error view bibtex spell)
+             [separator nil] latex next-error view bibtex spell)
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -236,29 +236,29 @@ Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-LaTeX-all-button-alists'."
   :type '(list (set :inline t
-		    (const new-file)
-		    (const open-file)
-		    (const dired)
-		    (const kill-buffer)
-		    (const save-buffer)
-		    (const write-file)
-		    (const undo)
-		    (const cut)
-		    (const copy)
-		    (const paste)
-		    (const search-forward)
-		    (const print-buffer)
-		    (const [separator nil])
-		    (const latex)
-		    (const next-error)
-		    (const view)
-		    (const file)
-		    (const bibtex)
-		    (const clean)
-		    (const spell)
-		    (const latex-symbols-experimental))
-	       (repeat (choice (symbol :tag "Label")
-			       (sexp :tag "General element"))))
+                    (const new-file)
+                    (const open-file)
+                    (const dired)
+                    (const kill-buffer)
+                    (const save-buffer)
+                    (const write-file)
+                    (const undo)
+                    (const cut)
+                    (const copy)
+                    (const paste)
+                    (const search-forward)
+                    (const print-buffer)
+                    (const [separator nil])
+                    (const latex)
+                    (const next-error)
+                    (const view)
+                    (const file)
+                    (const bibtex)
+                    (const clean)
+                    (const spell)
+                    (const latex-symbols-experimental))
+               (repeat (choice (symbol :tag "Label")
+                               (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 
 (defgroup TeX-tool-bar-button-definitions nil
@@ -276,47 +276,47 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 
 (defcustom TeX-bar-LaTeX-button-alist
   '((latex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
-	   :command (progn
-		      (TeX-save-document (TeX-master-file))
-		      (TeX-command "LaTeX" 'TeX-master-file -1))
-	   :help (lambda (&rest ignored)
-		   (TeX-bar-help-from-command-list "LaTeX")))
+           :command (progn
+                      (TeX-save-document (TeX-master-file))
+                      (TeX-command "LaTeX" 'TeX-master-file -1))
+           :help (lambda (&rest ignored)
+                   (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
-	      :command (progn
-			 (TeX-save-document (TeX-master-file))
-			 (TeX-command "PDFLaTeX" 'TeX-master-file -1))
-	      :help (lambda (&rest ignored)
-		      (TeX-bar-help-from-command-list "PDFLaTeX")))
+              :command (progn
+                         (TeX-save-document (TeX-master-file))
+                         (TeX-command "PDFLaTeX" 'TeX-master-file -1))
+              :help (lambda (&rest ignored)
+                      (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
-		:command TeX-next-error
-		:enable (TeX-error-report-has-errors-p)
-		:visible (TeX-error-report-has-errors-p))
+                :command TeX-next-error
+                :enable (TeX-error-report-has-errors-p)
+                :visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
-	  :command (TeX-command "View" 'TeX-master-file -1)
-	  :help (lambda (&rest ignored)
-		  (TeX-bar-help-from-command-list "View")))
+          :command (TeX-command "View" 'TeX-master-file -1)
+          :help (lambda (&rest ignored)
+                  (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
-	  :command (TeX-command "File" 'TeX-master-file -1)
-	  :visible (not TeX-PDF-mode)
-	  :help (lambda (&rest ignored)
-		  (TeX-bar-help-from-command-list "File")))
+          :command (TeX-command "File" 'TeX-master-file -1)
+          :visible (not TeX-PDF-mode)
+          :help (lambda (&rest ignored)
+                  (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
-	    :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
-				  'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list
-		     (if LaTeX-using-Biber "Biber" "BibTeX"))))
+            :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
+                                  'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list
+                     (if LaTeX-using-Biber "Biber" "BibTeX"))))
     (clean  :image "delete"
-	    :command (TeX-command "Clean" 'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "Clean")))
+            :command (TeX-command "Clean" 'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
-	    :command (TeX-command "Spell" 'TeX-master-file -1)
-	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "Spell")))
+            :command (TeX-command "Spell" 'TeX-master-file -1)
+            :help (lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "Spell")))
     (latex-symbols-experimental . (:alias :eval-group
-					  LaTeX-symbols-toolbar-switch-contents
-					  LaTeX-symbols-toolbar-contents)))
+                                          LaTeX-symbols-toolbar-switch-contents
+                                          LaTeX-symbols-toolbar-contents)))
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
 PROPS), where KEY is a symbol that labels the button and PROPS is
@@ -331,13 +331,13 @@ format of the argument MEANING-ALIST in the mentioned function."
   "Display in a buffer a list of buttons for `tex-bar.el'."
   (interactive)
   (let ((assqs-button-alists)
-	(labels))
+        (labels))
     (dolist (m-alist TeX-bar-LaTeX-all-button-alists)
       (setq labels nil)
       (dolist (as (eval m-alist))
-	(setq labels (cons (car as) labels)))
+        (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
-				      assqs-button-alists)))
+                                      assqs-button-alists)))
     (setq assqs-button-alists (nreverse assqs-button-alists))
     ;; displaying results
     (with-current-buffer (get-buffer-create "*TeX tool bar buttons*")
@@ -345,10 +345,10 @@ format of the argument MEANING-ALIST in the mentioned function."
       (insert "Available buttons for LaTeX mode
 ================================")
       (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
-	(dolist (j (cdr i))
-	  (insert (format " %s" j)))
-	(fill-region (point-at-bol) (point-at-eol))))
+        (insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
+        (dolist (j (cdr i))
+          (insert (format " %s" j)))
+        (fill-region (point-at-bol) (point-at-eol))))
     (display-buffer "*TeX tool bar buttons*" t)))
 
 ;;; Installation of the tool bar
@@ -358,18 +358,18 @@ format of the argument MEANING-ALIST in the mentioned function."
   (interactive)
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
-	       (expand-file-name "images" TeX-data-directory))
+               (expand-file-name "images" TeX-data-directory))
   (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
   ;; Refresh the toolbar after styles update because `LaTeX-using-Biber' value
   ;; could have been changed.  Append the refresh to the hook so it is run after
   ;; the other styles-related changes.
   (add-hook 'TeX-update-style-hook 'toolbarx-refresh t t)
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
-			    (let ((append-list))
-			      (dolist (elt TeX-bar-LaTeX-all-button-alists)
-				(setq append-list (append append-list
-							  (eval elt))))
-			      append-list)))
+                            (let ((append-list))
+                              (dolist (elt TeX-bar-LaTeX-all-button-alists)
+                                (setq append-list (append append-list
+                                                          (eval elt))))
+                              append-list)))
 
 ;;; Experimental Symbol Toolbar
 
@@ -377,94 +377,94 @@ format of the argument MEANING-ALIST in the mentioned function."
 (defun TeX-bar-img-filename (tex-command)
   "Return the filename (no extension) for the image button of TEX-COMMAND."
   (let ((str-list (append tex-command nil))
-	(str-result))
+        (str-result))
     (dolist (i str-list)
       (cond
        ;; capital letter -> letter + "-"
        ((and (>= i ?A) (<= i ?Z))
-	(setq str-result (cons ?- (cons i str-result))))
+        (setq str-result (cons ?- (cons i str-result))))
        ;; lowercase letter -> letter
        ((and (>= i ?a) (<= i ?z))
         (setq str-result (cons i str-result)))
        ;; open curly brackets `{' -> "ocb--"
        ((eq i ?{)
-	(setq str-result (cons ?o str-result))
-	(setq str-result (cons ?c str-result))
-	(setq str-result (cons ?b str-result))
-	(setq str-result (cons ?- str-result))
-	(setq str-result (cons ?- str-result)))
+        (setq str-result (cons ?o str-result))
+        (setq str-result (cons ?c str-result))
+        (setq str-result (cons ?b str-result))
+        (setq str-result (cons ?- str-result))
+        (setq str-result (cons ?- str-result)))
        ;; close curly brackets `}' -> "ccb--"
        ((eq i ?})
-	(setq str-result (cons ?c str-result))
-	(setq str-result (cons ?c str-result))
-	(setq str-result (cons ?b str-result))
-	(setq str-result (cons ?- str-result))
-	(setq str-result (cons ?- str-result)))
+        (setq str-result (cons ?c str-result))
+        (setq str-result (cons ?c str-result))
+        (setq str-result (cons ?b str-result))
+        (setq str-result (cons ?- str-result))
+        (setq str-result (cons ?- str-result)))
        ;; vertical bar `|' -> "v--"
        ((eq i ?|)
-	(setq str-result (cons ?v str-result))
-	(setq str-result (cons ?- str-result))
-	(setq str-result (cons ?- str-result)))
+        (setq str-result (cons ?v str-result))
+        (setq str-result (cons ?- str-result))
+        (setq str-result (cons ?- str-result)))
        ;; slash `/' -> "s--"
        ((eq i ?/)
-	(setq str-result (cons ?s str-result))
-	(setq str-result (cons ?- str-result))
-	(setq str-result (cons ?- str-result)))))
+        (setq str-result (cons ?s str-result))
+        (setq str-result (cons ?- str-result))
+        (setq str-result (cons ?- str-result)))))
     (concat (nreverse str-result))))
 
 (let* ((menu-strings-buttons-alist
-	;; make a alist os strings with the symbol classes and store it in
-	;; `menu-strings-alist'
-	(let* ((menu-strings-alist-temp))
-	  (dolist (item-external (cdr LaTeX-math-menu)
-				 (nreverse menu-strings-alist-temp))
-	    (when (listp item-external)
-	      ;; if first element is vector, I am supposing that all are
-	      ;; vectors as well
-	      (if (vectorp (cadr item-external))
-		  (let* ((menu-str (car item-external))
-			 (menu-buttons))
-		    (dolist (button (cdr item-external))
-		      (setq menu-buttons
-			    (cons (list (intern (TeX-bar-img-filename
-						 (aref button 0)))
-					:image
-					(concat "symb-pics/"
-						(TeX-bar-img-filename
-						 (aref button 0)))
-					:help (aref button 0)
-					:command (aref button 1))
-				  menu-buttons)))
-		    (setq menu-buttons (nreverse menu-buttons))
-		    (setq menu-strings-alist-temp
-			  (cons (cons menu-str (list menu-buttons))
-				menu-strings-alist-temp)))
-		;; if another list (therefore, up to second level menu)
-		(let ((parent-str (concat (car item-external) " ")))
-		  (dolist (item-internal (cdr item-external))
-		    (unless (equal (car item-internal) "Special")
-		      (let* ((menu-str (concat parent-str
-					       (car item-internal)))
-			     (menu-buttons))
-			(dolist (button (cdr item-internal))
-			  (setq menu-buttons
-				(cons (list (intern (aref button 0))
-					    :image
-					    (concat "symb-pics/"
-						    (TeX-bar-img-filename
-						     (aref button 0)))
-					    :help (aref button 0)
-					    :command (aref button 1))
-				      menu-buttons)))
-			(setq menu-buttons (nreverse menu-buttons))
-			(setq menu-strings-alist-temp
-			      (cons (cons menu-str (list menu-buttons))
-				    menu-strings-alist-temp)))))))))))
+        ;; make a alist os strings with the symbol classes and store it in
+        ;; `menu-strings-alist'
+        (let* ((menu-strings-alist-temp))
+          (dolist (item-external (cdr LaTeX-math-menu)
+                                 (nreverse menu-strings-alist-temp))
+            (when (listp item-external)
+              ;; if first element is vector, I am supposing that all are
+              ;; vectors as well
+              (if (vectorp (cadr item-external))
+                  (let* ((menu-str (car item-external))
+                         (menu-buttons))
+                    (dolist (button (cdr item-external))
+                      (setq menu-buttons
+                            (cons (list (intern (TeX-bar-img-filename
+                                                 (aref button 0)))
+                                        :image
+                                        (concat "symb-pics/"
+                                                (TeX-bar-img-filename
+                                                 (aref button 0)))
+                                        :help (aref button 0)
+                                        :command (aref button 1))
+                                  menu-buttons)))
+                    (setq menu-buttons (nreverse menu-buttons))
+                    (setq menu-strings-alist-temp
+                          (cons (cons menu-str (list menu-buttons))
+                                menu-strings-alist-temp)))
+                ;; if another list (therefore, up to second level menu)
+                (let ((parent-str (concat (car item-external) " ")))
+                  (dolist (item-internal (cdr item-external))
+                    (unless (equal (car item-internal) "Special")
+                      (let* ((menu-str (concat parent-str
+                                               (car item-internal)))
+                             (menu-buttons))
+                        (dolist (button (cdr item-internal))
+                          (setq menu-buttons
+                                (cons (list (intern (aref button 0))
+                                            :image
+                                            (concat "symb-pics/"
+                                                    (TeX-bar-img-filename
+                                                     (aref button 0)))
+                                            :help (aref button 0)
+                                            :command (aref button 1))
+                                      menu-buttons)))
+                        (setq menu-buttons (nreverse menu-buttons))
+                        (setq menu-strings-alist-temp
+                              (cons (cons menu-str (list menu-buttons))
+                                    menu-strings-alist-temp)))))))))))
        (list-strings (let* ((list-str-temp))
-		       (dolist (i menu-strings-buttons-alist
-				  (nreverse list-str-temp))
-			 (setq list-str-temp (cons (car i)
-						   list-str-temp))))))
+                       (dolist (i menu-strings-buttons-alist
+                                  (nreverse list-str-temp))
+                         (setq list-str-temp (cons (car i)
+                                                   list-str-temp))))))
   (defvar LaTeX-symbols-toolbar-visible-flag nil
     "Non-nil means that the LaTeX symbols on toolbar are visible.
 Internal variable.")
@@ -472,44 +472,44 @@ Internal variable.")
     `(;; the on-off switch button
       (latex-symbols-switch
        :image (lambda nil (if LaTeX-symbols-toolbar-visible-flag
-			      "ltx-symb-turn-off"
-			    "ltx-symb-turn-on"))
+                              "ltx-symb-turn-off"
+                            "ltx-symb-turn-on"))
        :command (progn
-		  (setq LaTeX-symbols-toolbar-visible-flag
-			(not LaTeX-symbols-toolbar-visible-flag))
-		  (toolbarx-refresh))
+                  (setq LaTeX-symbols-toolbar-visible-flag
+                        (not LaTeX-symbols-toolbar-visible-flag))
+                  (toolbarx-refresh))
        ;; help message depends on if symb-toolbar is on or off, and in
        ;; the name of the current class of symbols
        :help (lambda (&rest ignore)
-	       (concat "Turn "
-		       (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
-		       "the toolbar of LaTeX symbols (current class: "
-		       (nth (1- LaTeX-symbols-active-menuitem)
-			    (quote ,list-strings))
-		       ")")))
+               (concat "Turn "
+                       (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
+                       "the toolbar of LaTeX symbols (current class: "
+                       (nth (1- LaTeX-symbols-active-menuitem)
+                            (quote ,list-strings))
+                       ")")))
       ;; the dropdown button, that also switch on the symbols
       ,(append '(:dropdown-group)
-	       list-strings
-	       '(:variable
-		 LaTeX-symbols-active-menuitem
-		 :save offer
-		 :dropdown-prepend-command
-		 (setq LaTeX-symbols-toolbar-visible-flag t)
-		 :dropdown-help "Select a class of symbols to be displayed"))))
+               list-strings
+               '(:variable
+                 LaTeX-symbols-active-menuitem
+                 :save offer
+                 :dropdown-prepend-command
+                 (setq LaTeX-symbols-toolbar-visible-flag t)
+                 :dropdown-help "Select a class of symbols to be displayed"))))
   (defconst LaTeX-symbols-toolbar-contents
     (let* ((ltx-symb)
-	   (count 0))
+           (count 0))
       (dolist (i menu-strings-buttons-alist
-		 (append (nreverse ltx-symb)
-			 '(:insert
-			   LaTeX-symbols-toolbar-visible-flag
-			   :toolbar (bottom . top))))
-	(setq count (1+ count))
-	(setq ltx-symb
-	      (cons (append (cdr i)
-			    `(:insert (eq LaTeX-symbols-active-menuitem
-					  ,count)))
-		    ltx-symb))))))
+                 (append (nreverse ltx-symb)
+                         '(:insert
+                           LaTeX-symbols-toolbar-visible-flag
+                           :toolbar (bottom . top))))
+        (setq count (1+ count))
+        (setq ltx-symb
+              (cons (append (cdr i)
+                            `(:insert (eq LaTeX-symbols-active-menuitem
+                                          ,count)))
+                    ltx-symb))))))
 
 (provide 'tex-bar)
 

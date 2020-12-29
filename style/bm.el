@@ -33,28 +33,28 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook "bm"
- (lambda ()
-   (TeX-add-symbols
-    '("bm" 1)
-    '("hm" 1)
-    '("DeclareBoldMathCommand" [ "Math version" ] TeX-arg-define-macro "Math expression")
-    '("bmdefine" TeX-arg-define-macro "Math expression")
-    '("hmdefine" TeX-arg-define-macro "Math expression"))
-   ;; Fontification
-   (when (and (featurep 'font-latex)
-   	      (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("bm" "{")
-				("hm" "{"))
-			      'bold-command)
-     (font-latex-add-keywords '(("DeclareBoldMathCommand" "[|{\\{")
-				("bmdefine" "|{\\{")
-				("hmdefine" "|{\\{"))
-			      'function)))
- TeX-dialect)
+                    (lambda ()
+                      (TeX-add-symbols
+                       '("bm" 1)
+                       '("hm" 1)
+                       '("DeclareBoldMathCommand" [ "Math version" ] TeX-arg-define-macro "Math expression")
+                       '("bmdefine" TeX-arg-define-macro "Math expression")
+                       '("hmdefine" TeX-arg-define-macro "Math expression"))
+                      ;; Fontification
+                      (when (and (featurep 'font-latex)
+                                 (eq TeX-install-font-lock 'font-latex-setup))
+                        (font-latex-add-keywords '(("bm" "{")
+                                                   ("hm" "{"))
+                                                 'bold-command)
+                        (font-latex-add-keywords '(("DeclareBoldMathCommand" "[|{\\{")
+                                                   ("bmdefine" "|{\\{")
+                                                   ("hmdefine" "|{\\{"))
+                                                 'function)))
+                    TeX-dialect)
 
 (defvar LaTeX-bm-package-options nil
   "Package options for the bm package.")

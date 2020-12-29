@@ -41,7 +41,7 @@
 (declare-function LaTeX-pst-arrows "pstricks" ())
 (declare-function LaTeX-pst-point  "pstricks" ())
 (declare-function TeX-arg-compl-list
-		  "pstricks" (list &optional prompt hist))
+                  "pstricks" (list &optional prompt hist))
 
 (defvar LaTeX-pst-parameters-completion-regexp)
 (defvar LaTeX-pst-parameters-name-list)

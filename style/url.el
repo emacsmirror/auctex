@@ -35,11 +35,11 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 (TeX-add-style-hook
  "url"
@@ -61,8 +61,8 @@
     ;; "hyperref" redefines \url so that the argument is only in
     ;; braces.  We check here if hyperref is loaded:
     '("url" (TeX-arg-conditional (member "hyperref" (TeX-style-list))
-				 ("Url")
-			         ((TeX-arg-verb-delim-or-brace "Url"))))
+                                 ("Url")
+                                 ((TeX-arg-verb-delim-or-brace "Url"))))
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
 
@@ -77,22 +77,22 @@
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("path" "") ("url" "")) 'reference)
      (font-latex-add-keywords '(("Url" "")
-				("UrlBigBreakPenalty" "")
-				("UrlBigBreaks" "")
-				("UrlBreakPenalty" "")
-				("UrlBreaks" "")
-				("UrlFont" "")
-				("UrlLeft" "")
-				("UrlNoBreaks" "")
-				("UrlOrds" "")
-				("UrlRight" "")
-				("UrlSpecials" "")
-				("urldef" "")
-				("urlstyle" "{"))
-			      'variable)
+                                ("UrlBigBreakPenalty" "")
+                                ("UrlBigBreaks" "")
+                                ("UrlBreakPenalty" "")
+                                ("UrlBreaks" "")
+                                ("UrlFont" "")
+                                ("UrlLeft" "")
+                                ("UrlNoBreaks" "")
+                                ("UrlOrds" "")
+                                ("UrlRight" "")
+                                ("UrlSpecials" "")
+                                ("urldef" "")
+                                ("urlstyle" "{"))
+                              'variable)
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
@@ -101,12 +101,12 @@
   "Prompt for style used in \\urlstyle with completion."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Style")
-		    (mapcar 'list '("rm" "same" "sf" "tt"))
-		    nil t)
+                    (mapcar 'list '("rm" "same" "sf" "tt"))
+                    nil t)
    optional))
 
 (defvar LaTeX-url-package-options '("hyphens" "obeyspaces" "spaces" "LY1"
-				    "T1" "allowmove")
+                                    "T1" "allowmove")
   "Package options for the url package.")
 
 ;;; url.el ends here

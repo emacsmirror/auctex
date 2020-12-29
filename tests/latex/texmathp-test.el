@@ -29,23 +29,23 @@
 (ert-deftest texmathp-bob ()
   "Test math expressions beginning at BOB are identified correctly."
   (should (with-temp-buffer
-	    (insert "\\(")
-	    (LaTeX-mode)
-	    (texmathp)))
+            (insert "\\(")
+            (LaTeX-mode)
+            (texmathp)))
 
   (should (with-temp-buffer
-	    (insert "\\[")
-	    (LaTeX-mode)
-	    (texmathp)))
+            (insert "\\[")
+            (LaTeX-mode)
+            (texmathp)))
 
   (should (with-temp-buffer
-	    (insert "\\ensuremath{")
-	    (LaTeX-mode)
-	    (texmathp)))
+            (insert "\\ensuremath{")
+            (LaTeX-mode)
+            (texmathp)))
 
   (should (with-temp-buffer
-	    (insert "$")
-	    (LaTeX-mode)
-	    (texmathp))))
+            (insert "$")
+            (LaTeX-mode)
+            (texmathp))))
 
 ;;; texmathp-test.el ends here

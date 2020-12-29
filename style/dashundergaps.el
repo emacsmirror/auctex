@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-dashundergaps-key-val-options
   `(;; 2.1.1 Gap modes
@@ -46,17 +46,17 @@
     ("teachermode"  ("true" "false"))
     ;; 2.1.2 Gap formatting
     ("gap-format"        ("underline" "double-underline"
-			  "dash" "dot" "wave" "blank"))
+                          "dash" "dot" "wave" "blank"))
     ("gap-format-adjust"  ("true" "false"))
     ("teacher-gap-format" ("underline" "double-underline"
-			   "dash" "dot" "wave" "blank"))
+                           "dash" "dot" "wave" "blank"))
     ("gap-font" ,(mapcar (lambda (x)
-			   (concat TeX-esc x))
-			 '("rmfamily" "sffamily" "ttfamily" "mdseries" "bfseries"
-			   "upshape" "itshape" "slshape" "scshape"
-			   "tiny"  "scriptsize" "footnotesize"
-			   "small" "normalsize" "large"
-			   "Large" "LARGE" "huge" "Huge" "normalfont")))
+                           (concat TeX-esc x))
+                         '("rmfamily" "sffamily" "ttfamily" "mdseries" "bfseries"
+                           "upshape" "itshape" "slshape" "scshape"
+                           "tiny"  "scriptsize" "footnotesize"
+                           "small" "normalsize" "large"
+                           "Large" "LARGE" "huge" "Huge" "normalfont")))
     ("dash")
     ("dot")
     ;; 2.1.3 Gap numbers
@@ -68,8 +68,8 @@
     ;; 2.1.4 Gap widening
     ("gap-widen"          ("true" "false"))
     ("gap-extend-minimum" ,(mapcar (lambda (x)
-				     (concat TeX-esc x))
-				   (mapcar #'car (LaTeX-length-list))))
+                                     (concat TeX-esc x))
+                                   (mapcar #'car (LaTeX-length-list))))
     ("gap-extend-percent")
     ("widen"))
   "Key=value options for dashundergaps macro.")
@@ -91,13 +91,13 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("gap" "*[{"))
-			      'textual)
+                              'textual)
      (font-latex-add-keywords '(("dashundergapssetup" "{")
-				("TeacherModeOn"      "")
-				("TeacherModeOff"     ""))
-			      'function)))
+                                ("TeacherModeOn"      "")
+                                ("TeacherModeOff"     ""))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-dashundergaps-package-options nil

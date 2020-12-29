@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (defvar LaTeX-icelandic-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)

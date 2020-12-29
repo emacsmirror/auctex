@@ -35,16 +35,16 @@
 (defun LaTeX-env-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
   (LaTeX-insert-environment environment
-			    (when (string-equal environment "macro")
-			      (let ((macroname (TeX-read-string
-						(TeX-argument-prompt nil nil "Macro")
-						TeX-esc)))
-				(format "{%s}" macroname))))
+                            (when (string-equal environment "macro")
+                              (let ((macroname (TeX-read-string
+                                                (TeX-argument-prompt nil nil "Macro")
+                                                TeX-esc)))
+                                (format "{%s}" macroname))))
   (unless (TeX-active-mark)
     (when (save-excursion
-	    (beginning-of-line)
-	    (looking-at (concat "[ \t]+$\\|[ \t]*"
-				TeX-comment-start-regexp "+[ \t]*$")))
+            (beginning-of-line)
+            (looking-at (concat "[ \t]+$\\|[ \t]*"
+                                TeX-comment-start-regexp "+[ \t]*$")))
       (delete-region (line-beginning-position) (line-end-position))
       (indent-according-to-mode))))
 
@@ -55,25 +55,25 @@
       (goto-char end)
       (skip-chars-backward " \t")
       (when (bolp)
-	(insert "%")
-	(indent-according-to-mode))
+        (insert "%")
+        (indent-according-to-mode))
       (goto-char start)
       (skip-chars-backward " \t")
       (when (bolp)
-	(insert "%")
-	(indent-according-to-mode)))))
+        (insert "%")
+        (indent-according-to-mode)))))
 
 (TeX-add-style-hook
  "doc"
  (lambda ()
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("macrocode" current-indentation) t)
+                '("macrocode" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("macrocode*" current-indentation) t)
+                '("macrocode*" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("macro" current-indentation) t)
+                '("macro" current-indentation) t)
    (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-doc-after-insert-macrocode
-	     nil t)
+             nil t)
    (LaTeX-add-environments
     "theglossary"
     '("macrocode" LaTeX-env-no-comment)
@@ -87,11 +87,11 @@
     "CheckModules"
     "Module"
     '("DescribeMacro" (TeX-arg-eval
-		       (lambda ()
-			 (let ((name (TeX-read-string
-				      (TeX-argument-prompt nil nil "Macro")
-				      TeX-esc)))
-			   (format "%s" name)))))
+                       (lambda ()
+                         (let ((name (TeX-read-string
+                                      (TeX-argument-prompt nil nil "Macro")
+                                      TeX-esc)))
+                           (format "%s" name)))))
     '("DescribeEnv" "Environment")
     "verbatim"
     "verb"
@@ -101,11 +101,11 @@
     '("meta" "Text")
     '("cs" "Name")
     '("cmd" (TeX-arg-eval
-	     (lambda ()
-	       (let ((name (TeX-read-string
-			    (TeX-argument-prompt nil nil "Name")
-			    TeX-esc)))
-		 (format "%s" name)))))
+             (lambda ()
+               (let ((name (TeX-read-string
+                            (TeX-argument-prompt nil nil "Name")
+                            TeX-esc)))
+                 (format "%s" name)))))
     "makelabel"
     '("MacroFont" t)
     '("AltMacroFont" t)
@@ -167,23 +167,23 @@
     '("DocInput"
       (TeX-arg-eval
        (lambda ()
-	 (let ((file (file-relative-name
-		      (read-file-name
-		       "File to input: " nil nil nil nil
-		       (lambda (x)
-			 (string-match "\\.fdd$\\|\\.dtx$" x)))
-		      (TeX-master-directory))))
-	   (format "%s" file)))))
+         (let ((file (file-relative-name
+                      (read-file-name
+                       "File to input: " nil nil nil nil
+                       (lambda (x)
+                         (string-match "\\.fdd$\\|\\.dtx$" x)))
+                      (TeX-master-directory))))
+           (format "%s" file)))))
     '("DocInclude"
       (TeX-arg-eval
        (lambda ()
-	 (let ((file (file-relative-name
-		      (read-file-name
-		       "File to include: " nil nil nil nil
-		       (lambda (x)
-			 (string-match "\\.fdd$\\|\\.dtx$" x)))
-		      (TeX-master-directory))))
-	   (format "%s" file)))))
+         (let ((file (file-relative-name
+                      (read-file-name
+                       "File to include: " nil nil nil nil
+                       (lambda (x)
+                         (string-match "\\.fdd$\\|\\.dtx$" x)))
+                      (TeX-master-directory))))
+           (format "%s" file)))))
     "GetFileInfo"
     "filename"
     "fileinfo")

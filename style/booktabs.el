@@ -34,15 +34,15 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun LaTeX-booktabs-arg-paren (optional prompt)
   "Prompt for a value and use parentheses when it is inserted.
 If OPTIONAL is non-nil the parameter is labeled as optional.
 PROMPT is the value of the prompt to be shown."
   (let ((TeX-arg-opening-brace "\(")
-	(TeX-arg-closing-brace "\)"))
+        (TeX-arg-closing-brace "\)"))
     (TeX-parse-argument optional prompt)))
 
 (TeX-add-style-hook
@@ -51,9 +51,9 @@ PROMPT is the value of the prompt to be shown."
    ;; Do not append an empty group to toprule, midrule, and bottomrule macros,
    ;; otherwise one gets a wrong spacing in the table.
    (setq TeX-insert-braces-alist (append TeX-insert-braces-alist
-					 '(("toprule" . nil)
-					   ("midrule" . nil)
-					   ("bottomrule" . nil))))
+                                         '(("toprule" . nil)
+                                           ("midrule" . nil)
+                                           ("bottomrule" . nil))))
    ;; New symbols
    (TeX-add-symbols
     '("toprule" [ "Thickness" ])
@@ -69,15 +69,15 @@ PROMPT is the value of the prompt to be shown."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("toprule" "[")
-				("midrule" "[")
-				("bottomrule" "[")
-				("cmidrule" "[({")
-				("addlinespace" "[")
-				("morecmidrules" "")
-				("specialrule" "{{{"))
-			      'function)))
+                                ("midrule" "[")
+                                ("bottomrule" "[")
+                                ("cmidrule" "[({")
+                                ("addlinespace" "[")
+                                ("morecmidrules" "")
+                                ("specialrule" "{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-booktabs-package-options nil

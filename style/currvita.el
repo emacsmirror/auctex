@@ -43,12 +43,12 @@
      (format "{%s}" heading)))
   (if (TeX-active-mark)
       (progn
-	(LaTeX-find-matching-begin)
-	(end-of-line 1))
+        (LaTeX-find-matching-begin)
+        (end-of-line 1))
     (end-of-line 0))
   (delete-char 1)
   (when (looking-at (concat "^[ \t]+$\\|"
-			    "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
+                            "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
     (delete-region (point) (line-end-position)))
   (delete-horizontal-space)
   ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
@@ -59,9 +59,9 @@
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
   (when (and (not (looking-at "$"))
-	     (not (assoc env LaTeX-indent-environment-list))
-	     (> (- (line-end-position) (line-beginning-position))
-		(current-fill-column)))
+             (not (assoc env LaTeX-indent-environment-list))
+             (> (- (line-end-position) (line-beginning-position))
+                (current-fill-column)))
     (LaTeX-fill-paragraph nil)))
 
 

@@ -23,11 +23,11 @@
  (lambda ()
    (if (LaTeX-provided-class-options-member "jsbook" "report")
        (progn
-	 (LaTeX-largest-level-set "chapter")
-	 (LaTeX-add-environments "abstract"))
+         (LaTeX-largest-level-set "chapter")
+         (LaTeX-add-environments "abstract"))
      (LaTeX-largest-level-set "part"))
    (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
-		       "paragraph" "subparagraph" "figure" "table")
+                       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings"))
  TeX-dialect)
 

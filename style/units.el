@@ -33,8 +33,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "units"
@@ -47,7 +47,7 @@
    (TeX-run-style-hooks "nicefrac")
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("unit" "[{") ("unitfrac" "[{{")) 'textual)))
  TeX-dialect)
 

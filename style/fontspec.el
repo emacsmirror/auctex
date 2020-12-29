@@ -39,8 +39,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
@@ -85,88 +85,88 @@
     ("LetterSpace")
     ;; 16 OpenType options
     ("Ligatures" ("Required"      "RequiredOff"
-		  "Common"        "CommonOff"
-		  "Contextual"    "ContextualOff"
-		  "Rare"          "RareOff"
-		  "Discretionary" "DiscretionaryOff"
-		  "Historic"      "HistoricOff"
-		  "TeX"
-		  "ResetAll"))
+                  "Common"        "CommonOff"
+                  "Contextual"    "ContextualOff"
+                  "Rare"          "RareOff"
+                  "Discretionary" "DiscretionaryOff"
+                  "Historic"      "HistoricOff"
+                  "TeX"
+                  "ResetAll"))
     ("Letters" ("Uppercase"           "UppercaseOff"
-		"SmallCaps"           "SmallCapsOff"
-		"PetiteCaps"          "PetiteCapsOff"
-		"UppercaseSmallCaps"  "UppercaseSmallCapsOff"
-		"UppercasePetiteCaps" "UppercasePetiteCapsOff"
-		"Unicase"             "UnicaseOff"
-		"ResetAll"))
+                "SmallCaps"           "SmallCapsOff"
+                "PetiteCaps"          "PetiteCapsOff"
+                "UppercaseSmallCaps"  "UppercaseSmallCapsOff"
+                "UppercasePetiteCaps" "UppercasePetiteCapsOff"
+                "Unicase"             "UnicaseOff"
+                "ResetAll"))
     ("Numbers" ("Uppercase"    "UppercaseOff"
-		"Lowercase"    "LowercaseOff"
-		"Lining"       "LiningOff"
-		"OldStyle"     "OldStyleOff"
-		"Proportional" "ProportionalOff"
-		"Monospaced"   "MonospacedOff"
-		"SlashedZero"  "SlashedZeroOff"
-		"Arabic"       "ArabicOff"
-		"ResetAll"))
+                "Lowercase"    "LowercaseOff"
+                "Lining"       "LiningOff"
+                "OldStyle"     "OldStyleOff"
+                "Proportional" "ProportionalOff"
+                "Monospaced"   "MonospacedOff"
+                "SlashedZero"  "SlashedZeroOff"
+                "Arabic"       "ArabicOff"
+                "ResetAll"))
     ("Contextuals" ("Swash"       "SwashOff"
-		    "Alternate"   "AlternateOff"
-		    "WordInitial" "WordInitialOff"
-		    "WordFinal"   "WordFinalOff"
-		    "LineFinal"   "LineFinalOff"
-		    "Inner"       "InnerOff"
-		    "ResetAll"))
+                    "Alternate"   "AlternateOff"
+                    "WordInitial" "WordInitialOff"
+                    "WordFinal"   "WordFinalOff"
+                    "LineFinal"   "LineFinalOff"
+                    "Inner"       "InnerOff"
+                    "ResetAll"))
     ("VerticalPosition" ("Superior"           "SuperiorOff"
-			 "Inferior"           "InferiorOff"
-			 "Numerator"          "NumeratorOff"
-			 "Denominator"        "DenominatorOff"
-			 "ScientificInferior" "ScientificInferiorOff"
-			 "Ordinal"            "OrdinalOff"
-			 "ResetAll"))
+                         "Inferior"           "InferiorOff"
+                         "Numerator"          "NumeratorOff"
+                         "Denominator"        "DenominatorOff"
+                         "ScientificInferior" "ScientificInferiorOff"
+                         "Ordinal"            "OrdinalOff"
+                         "ResetAll"))
     ("Fraction" ("On" "Off" "Reset" "Alternate" "AlternateOff" "ResetAll"))
     ("StylisticSet")
     ("CharacterVariant")
     ("Alternate" ("Random"))
     ("Style" ("Alternate"      "AlternateOff"
-	      "Italic"         "ItalicOff"
-	      "Ruby"           "RubyOff"
-	      "Swash"          "SwashOff"
-	      "Cursive"        "CursiveOff"
-	      "Historic"       "HistoricOff"
-	      "TitlingCaps"    "TitlingCapsOff"
-	      "HorizontalKana" "HorizontalKanaOff"
-	      "VerticalKana"   "VerticalKanaOff"
-	      "ResetAll"))
+              "Italic"         "ItalicOff"
+              "Ruby"           "RubyOff"
+              "Swash"          "SwashOff"
+              "Cursive"        "CursiveOff"
+              "Historic"       "HistoricOff"
+              "TitlingCaps"    "TitlingCapsOff"
+              "HorizontalKana" "HorizontalKanaOff"
+              "VerticalKana"   "VerticalKanaOff"
+              "ResetAll"))
     ("Diacritics" ("MarkToBase" "MarkToBaseOff"
-		   "MarkToMark" "MarkToMarkOff"
-		   "AboveBase"  "AboveBaseOff"
-		   "BelowBase"  "BelowBaseOff"
-		   "ResetAll"))
+                   "MarkToMark" "MarkToMarkOff"
+                   "AboveBase"  "AboveBaseOff"
+                   "BelowBase"  "BelowBaseOff"
+                   "ResetAll"))
     ("Kerning" ("Uppercase" "UppercaseOff" "On" "Off" "Reset" "ResetAll"))
     ("CharacterWidth" ("Proportional"          "ProportionalOff"
-		       "Full"                  "FullOff"
-		       "Half"                  "HalfOff"
-		       "Third"                 "ThirdOff"
-		       "Quarter"               "QuarterOff"
-		       "AlternateProportional" "AlternateProportionalOff"
-		       "AlternateHalf"         "AlternateHalfOff"
-		       "ResetAll"))
+                       "Full"                  "FullOff"
+                       "Half"                  "HalfOff"
+                       "Third"                 "ThirdOff"
+                       "Quarter"               "QuarterOff"
+                       "AlternateProportional" "AlternateProportionalOff"
+                       "AlternateHalf"         "AlternateHalfOff"
+                       "ResetAll"))
     ("Annotation")
     ("CJKShape" ("Traditional"
-		 "Simplified"
-		 "JIS1978"
-		 "JIS1983"
-		 "JIS1990"
-		 "Expert"
-		 "NLC"))
+                 "Simplified"
+                 "JIS1978"
+                 "JIS1983"
+                 "JIS1990"
+                 "Expert"
+                 "NLC"))
     ("Vertical" ("RotatedGlyphs"         "RotatedGlyphsOff"
-		 "AlternatesForRotation" "AlternatesForRotationOff"
-		 "Alternates"            "AlternatesOff"
-		 "KanaAlternates"        "KanaAlternatesOff"
-		 "Kerning"               "KerningOff"
-		 "AlternateMetrics"      "AlternateMetricsOff"
-		 "HalfMetrics"           "HalfMetricsOff"
-		 "ProportionalMetrics"   "ProportionalMetricsOff"
-		 "ResetAll"))
+                 "AlternatesForRotation" "AlternatesForRotationOff"
+                 "Alternates"            "AlternatesOff"
+                 "KanaAlternates"        "KanaAlternatesOff"
+                 "Kerning"               "KerningOff"
+                 "AlternateMetrics"      "AlternateMetricsOff"
+                 "HalfMetrics"           "HalfMetricsOff"
+                 "ProportionalMetrics"   "ProportionalMetricsOff"
+                 "ResetAll"))
     ;; 25 Going behind fontspec's back: Offer only an excerpt of all
     ;; possible tags:
     ("RawFeature" ("frac" "lnum" "onum" "pnum" "smcp" "tnum" "zero")))
@@ -189,19 +189,19 @@ Customize `LaTeX-fontspec-arg-font-search' in order to decide how
 to retrieve the list of fonts."
   (unless LaTeX-fontspec-font-list
     (when (if (eq LaTeX-fontspec-arg-font-search 'ask)
-	      (not (y-or-n-p "Find font yourself? "))
-	    LaTeX-fontspec-arg-font-search)
+              (not (y-or-n-p "Find font yourself? "))
+            LaTeX-fontspec-arg-font-search)
       (message "Searching for fonts...")
       (with-temp-buffer
-	(shell-command "luaotfload-tool --list=basename" t)
-	;; Search for the font base names and full names, and add them to
-	;; `LaTeX-fontspec-font-list'.  The list is in the form
-	;;     <base name><TAB><full name><TAB><version>
-	(while
-	    (re-search-forward "^\\([^\n\r\t]*\\)\t\\([^\n\r\t]*\\)\t.*$" nil t)
-	  (add-to-list 'LaTeX-fontspec-font-list (match-string-no-properties 1))
-	  (add-to-list 'LaTeX-fontspec-font-list
-		       (match-string-no-properties 2))))
+        (shell-command "luaotfload-tool --list=basename" t)
+        ;; Search for the font base names and full names, and add them to
+        ;; `LaTeX-fontspec-font-list'.  The list is in the form
+        ;;     <base name><TAB><full name><TAB><version>
+        (while
+            (re-search-forward "^\\([^\n\r\t]*\\)\t\\([^\n\r\t]*\\)\t.*$" nil t)
+          (add-to-list 'LaTeX-fontspec-font-list (match-string-no-properties 1))
+          (add-to-list 'LaTeX-fontspec-font-list
+                       (match-string-no-properties 2))))
       (message "Searching for fonts...done")))
   (TeX-argument-insert
    (completing-read
@@ -215,15 +215,15 @@ to retrieve the list of fonts."
   ;; key=values for coloring.  Prefer xcolor.sty if both packages are
   ;; loaded.
   (when (or (member "xcolor" (TeX-style-list))
-	    (member "color" (TeX-style-list)))
+            (member "color" (TeX-style-list)))
     (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
-			 #'LaTeX-xcolor-definecolor-list
-		       #'LaTeX-color-definecolor-list))
-	   (tmp (copy-alist LaTeX-fontspec-font-features)))
+                         #'LaTeX-xcolor-definecolor-list
+                       #'LaTeX-color-definecolor-list))
+           (tmp (copy-alist LaTeX-fontspec-font-features)))
       (setq tmp (assq-delete-all (car (assoc "Color" tmp)) tmp))
       (push (list "Color" (mapcar #'car (funcall colorcmd))) tmp)
       (setq LaTeX-fontspec-font-features-local
-	    (copy-alist tmp)))))
+            (copy-alist tmp)))))
 
 ;; Setup for \newfontfamily and \newfontface:
 (TeX-auto-add-type "fontspec-newfontcmd" "LaTeX")
@@ -244,9 +244,9 @@ to retrieve the list of fonts."
     (TeX-add-symbols mac)
     ;; Cater for fontification
     (when (and (featurep 'font-latex)
-	       (eq TeX-install-font-lock 'font-latex-setup))
+               (eq TeX-install-font-lock 'font-latex-setup))
       (font-latex-add-keywords `((,mac ""))
-			       'type-declaration)))
+                               'type-declaration)))
   ;; Update values of Color key:
   (LaTeX-fontspec-update-font-features))
 
@@ -267,7 +267,7 @@ to retrieve the list of fonts."
 
    ;; Activate the buffer local version of font features:
    (setq LaTeX-fontspec-font-features-local
-	 (copy-alist LaTeX-fontspec-font-features))
+         (copy-alist LaTeX-fontspec-font-features))
 
    (TeX-add-symbols
     ;; 4.3 Commands for old-style and lining numbers: \oldstylenums is
@@ -336,14 +336,14 @@ to retrieve the list of fonts."
     ;; 23 Defining new features
     '("newAATfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Existing feature")
-		    LaTeX-fontspec-font-features-local)
+                    (TeX-argument-prompt nil nil "Existing feature")
+                    LaTeX-fontspec-font-features-local)
       "New option" 2)
 
     '("newopentypefeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Existing feature")
-		    LaTeX-fontspec-font-features-local)
+                    (TeX-argument-prompt nil nil "Existing feature")
+                    LaTeX-fontspec-font-features-local)
       "New option" t)
 
     '("newfontfeature" "New feature" t)
@@ -355,21 +355,21 @@ to retrieve the list of fonts."
     ;; 26 Renaming existing features & options
     '("aliasfontfeature"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Existing feature")
-		    LaTeX-fontspec-font-features-local)
+                    (TeX-argument-prompt nil nil "Existing feature")
+                    LaTeX-fontspec-font-features-local)
       "New name")
 
     '("aliasfontfeatureoption"
       (TeX-arg-eval
        (lambda ()
-	 (let* ((key (completing-read
-		      (TeX-argument-prompt nil nil "Feature")
-		      LaTeX-fontspec-font-features-local))
-		(val (completing-read
-		      (TeX-argument-prompt nil nil "Existing name")
-		      (cadr (assoc key LaTeX-fontspec-font-features-local)))))
-	   (TeX-argument-insert key nil)
-	   (format "%s" val))))
+         (let* ((key (completing-read
+                      (TeX-argument-prompt nil nil "Feature")
+                      LaTeX-fontspec-font-features-local))
+                (val (completing-read
+                      (TeX-argument-prompt nil nil "Existing name")
+                      (cadr (assoc key LaTeX-fontspec-font-features-local)))))
+           (TeX-argument-insert key nil)
+           (format "%s" val))))
       "New name") )
 
    (LaTeX-add-environments
@@ -378,34 +378,34 @@ to retrieve the list of fonts."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fontspec"    "[{[")
-				("setmainfont" "[{[")
-				("setsansfont" "[{[")
-				("setmonofont" "[{[")
-				("newfontfamily" "\\[{[")
-				("newfontface"   "\\[{[")
-				("setmathrm" "[{[")
-				("setmathsf" "[{[")
-				("setmathtt" "[{[")
-				("setboldmathrm" "[{[")
-				("defaultfontfeatures" "+[{")
-				("addfontfeature"  "{")
-				("addfontfeatures" "{")
-				("newfontscript"   "{{")
-				("newfontlanguage" "{{")
-				("emfontdeclare"   "{")
-				("strongfontdeclare"  "{")
-				("newAATfeature"      "{{{{")
-				("newopentypefeature" "{{{")
-				("newfontfeature"     "{{")
-				("aliasfontfeature"   "{{")
-				("aliasfontfeatureoption" "{{{"))
-			      'function)
+                                ("setmainfont" "[{[")
+                                ("setsansfont" "[{[")
+                                ("setmonofont" "[{[")
+                                ("newfontfamily" "\\[{[")
+                                ("newfontface"   "\\[{[")
+                                ("setmathrm" "[{[")
+                                ("setmathsf" "[{[")
+                                ("setmathtt" "[{[")
+                                ("setboldmathrm" "[{[")
+                                ("defaultfontfeatures" "+[{")
+                                ("addfontfeature"  "{")
+                                ("addfontfeatures" "{")
+                                ("newfontscript"   "{{")
+                                ("newfontlanguage" "{{")
+                                ("emfontdeclare"   "{")
+                                ("strongfontdeclare"  "{")
+                                ("newAATfeature"      "{{{{")
+                                ("newopentypefeature" "{{{")
+                                ("newfontfeature"     "{{")
+                                ("aliasfontfeature"   "{{")
+                                ("aliasfontfeatureoption" "{{{"))
+                              'function)
      (font-latex-add-keywords '(("liningnums"    "{"))
-			      'type-command)
+                              'type-command)
      (font-latex-add-keywords '(("strong"    "{"))
-			      'bold-command)))
+                              'bold-command)))
  TeX-dialect)
 
 (defvar LaTeX-fontspec-package-options

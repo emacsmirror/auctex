@@ -60,9 +60,9 @@
    ;; if `imakeidx' is loaded after `fancyhdr'.
    (unless (member "fancyhdr" TeX-active-styles)
      (setq LaTeX-imakeidx-indexsetup-options
-	   (append LaTeX-imakeidx-indexsetup-options
-		   `(("firstpagestyle" ,(LaTeX-pagestyle-list)))
-		   '(("headers")))))
+           (append LaTeX-imakeidx-indexsetup-options
+                   `(("firstpagestyle" ,(LaTeX-pagestyle-list)))
+                   '(("headers")))))
 
    (TeX-add-symbols
     '("makeindex" [ (TeX-arg-key-val LaTeX-imakeidx-makeindex-options) ])
@@ -88,11 +88,11 @@
    ;; Completion for the |see macro and RefTeX support taken from
    ;; `makeidx.el'
    (setq TeX-complete-list
-	 (append
-	  '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
-	  TeX-complete-list))
+         (append
+          '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
+          TeX-complete-list))
    (and (fboundp 'reftex-add-index-macros)
-	(reftex-add-index-macros '(default))))
+        (reftex-add-index-macros '(default))))
  TeX-dialect)
 
 (defvar LaTeX-imakeidx-package-options

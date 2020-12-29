@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun LaTeX-csquotes-read-language (optional &optional prompt)
   "Read and return a language for csquotes macros.
@@ -48,18 +48,18 @@ or `LaTeX-polyglossia-active-languages' are bound and use them to
 retrieve the active languages.  If none available, user is
 requested to enter a language."
   (cond ((and (fboundp 'LaTeX-babel-active-languages)
-	      (LaTeX-babel-active-languages))
-	 (completing-read
-	  (TeX-argument-prompt optional prompt "Language")
-	  (LaTeX-babel-active-languages)))
-	((and (fboundp 'LaTeX-polyglossia-active-languages)
-	      (LaTeX-polyglossia-active-languages))
-	 (completing-read
-	  (TeX-argument-prompt optional prompt "Language")
-	  (LaTeX-polyglossia-active-languages)))
-	(t
-	 (TeX-read-string
-	  (TeX-argument-prompt optional prompt "Language")))))
+              (LaTeX-babel-active-languages))
+         (completing-read
+          (TeX-argument-prompt optional prompt "Language")
+          (LaTeX-babel-active-languages)))
+        ((and (fboundp 'LaTeX-polyglossia-active-languages)
+              (LaTeX-polyglossia-active-languages))
+         (completing-read
+          (TeX-argument-prompt optional prompt "Language")
+          (LaTeX-polyglossia-active-languages)))
+        (t
+         (TeX-read-string
+          (TeX-argument-prompt optional prompt "Language")))))
 
 (defun LaTeX-arg-csquotes-language (optional &optional prompt)
   "Insert a language for csquotes macros.
@@ -73,17 +73,17 @@ PROMPT replaces the standard one \"Language\"."
  "csquotes"
  (lambda ()
    (let ((quote-style-variant-list '(("american")   ("brazilian")
-				     ("british")    ("german")
-				     ("guillemets") ("guillemets*")
-				     ("mexican")    ("portuguese")
-				     ("quotes")     ("quotes*")
-				     ("spanish")    ("swiss")))
-	 (quote-style-name-list '(("austrian")   ("croatian") ("czech")
-				  ("danish")     ("dutch")    ("english")
-				  ("finnish")    ("french")   ("german")
-				  ("greek")      ("italian")  ("norwegian")
-				  ("portuguese") ("russian")  ("serbian")
-				  ("spanish")    ("swedish"))))
+                                     ("british")    ("german")
+                                     ("guillemets") ("guillemets*")
+                                     ("mexican")    ("portuguese")
+                                     ("quotes")     ("quotes*")
+                                     ("spanish")    ("swiss")))
+         (quote-style-name-list '(("austrian")   ("croatian") ("czech")
+                                  ("danish")     ("dutch")    ("english")
+                                  ("finnish")    ("french")   ("german")
+                                  ("greek")      ("italian")  ("norwegian")
+                                  ("portuguese") ("russian")  ("serbian")
+                                  ("spanish")    ("swedish"))))
      ;; New symbols
      (TeX-add-symbols
 
@@ -103,31 +103,31 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 3.4 Formal Quoting of Text in a Foreign Language
       '("foreigntextquote"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
       '("foreigntextquote*"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
       '("hyphentextquote"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
       '("hyphentextquote*"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
 
       ;; 3.5 Block Quoting of Regular Text
       '("blockquote" ["Citation"] ["Punctuation"] t)
 
       ;; 3.6 Block Quoting of Text in a Foreign Language
       '("foreignblockquote"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
       '("hyphenblockquote"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
       '("hybridblockquote"
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
 
       ;; 3.7 Selecting Quote Styles
       `("setquotestyle"
-	[ (TeX-arg-eval completing-read "Quote style variant: "
-			',quote-style-variant-list) ]
-	(TeX-arg-eval completing-read "Quote style name or alias: "
-		      ',quote-style-name-list))
+        [ (TeX-arg-eval completing-read "Quote style variant: "
+                        ',quote-style-variant-list) ]
+        (TeX-arg-eval completing-read "Quote style name or alias: "
+                      ',quote-style-name-list))
       "setquotestyle*"
 
       ;; 4.1 Quoting Regular Text
@@ -138,26 +138,26 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 4.2 Quoting Text in a Foreign Language
       '("MakeForeignQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Closing quotation mark")
+        "Opening quotation mark" "Closing quotation mark")
       '("MakeForeignQuote*" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Closing quotation mark")
+        "Opening quotation mark" "Closing quotation mark")
 
       '("MakeHyphenQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Closing quotation mark")
+        "Opening quotation mark" "Closing quotation mark")
       '("MakeHyphenQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Closing quotation mark")
+        "Opening quotation mark" "Closing quotation mark")
 
       ;; 4.3 Block Quoting of Regular Text
       '("MakeBlockQuote" "Opening quotation mark" "Delimiter for citation"
-	"Closing quotation mark")
+        "Closing quotation mark")
 
       ;; 4.4 Block Quoting of Text in a Foreign Language
       '("MakeForeignBlockQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
+        "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
       '("MakeHyphenBlockQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
+        "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
       '("MakeHybridBlockQuote" LaTeX-arg-csquotes-language
-	"Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
+        "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
 
       ;; 4.5 Controlling Active Quotes
       "EnableQuotes"
@@ -171,24 +171,24 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 5.2 Formal Quoting of Text in a Foreign Language
       '("foreigntextcquote" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("foreigntextcquote*" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("hyphentextcquote" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("hyphentextcquote*" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 5.3 Block Quoting of Regular Text
       '("blockcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 5.4 Block Quoting of Text in a Foreign Language
       '("foreignblockcquote" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("hyphenblockcquote" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("hybridblockcquote" LaTeX-arg-csquotes-language
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 7 Auxiliary Commands
       '("textelp" 1)
@@ -199,26 +199,26 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 8.1 Defining Quote Styles
       `("DeclareQuoteStyle"
-	[ (TeX-arg-eval completing-read "Quote style variant: "
-			',quote-style-variant-list) ]
-	(TeX-arg-eval completing-read "Quote style name: "
-		      ',quote-style-name-list)
-	["Outer quote initialization"] ["Inner quote initialization"]
-	"Opening outer quotation mark" ["Middle outer quotation mark"]
-	"Closing outer quotation mark" ["Kerning between adjoining marks"]
-	"Opening inner quotation mark" ["Middle inner quotation mark"]
-	"Closing inner quotation mark")
+        [ (TeX-arg-eval completing-read "Quote style variant: "
+                        ',quote-style-variant-list) ]
+        (TeX-arg-eval completing-read "Quote style name: "
+                      ',quote-style-name-list)
+        ["Outer quote initialization"] ["Inner quote initialization"]
+        "Opening outer quotation mark" ["Middle outer quotation mark"]
+        "Closing outer quotation mark" ["Kerning between adjoining marks"]
+        "Opening inner quotation mark" ["Middle inner quotation mark"]
+        "Closing inner quotation mark")
       `("DeclareQuoteAlias"
-	[ (TeX-arg-eval completing-read "Quote style variant: "
-			',quote-style-variant-list) ]
-	(TeX-arg-eval completing-read "Quote style name: "
-		      ',quote-style-name-list)
-	"Alias name")
+        [ (TeX-arg-eval completing-read "Quote style variant: "
+                        ',quote-style-variant-list) ]
+        (TeX-arg-eval completing-read "Quote style name: "
+                      ',quote-style-name-list)
+        "Alias name")
       '("DeclareQuoteOption" 1)
       '("ExecuteQuoteOptions" 1)
       '("DeclarePlainStyle" "Opening outer quotation mark"
-	"Closing outer quotation mark" "Opening inner quotation mark"
-	"Closing inner quotation mark")
+        "Closing outer quotation mark" "Opening inner quotation mark"
+        "Closing inner quotation mark")
       '("SetBlockThreshold" "Number of lines")
       '("SetBlockEnvironment" "Environment")
       '("SetCiteCommand" "Command")
@@ -250,142 +250,142 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 6.1 Basic Display Environments
       '("displayquote" LaTeX-env-args
-	["Citation"] ["Punctuation"])
+        ["Citation"] ["Punctuation"])
 
       '("foreigndisplayquote" LaTeX-env-args
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
 
       '("hyphendisplayquote" LaTeX-env-args
-	LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
+        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
 
       ;; 6.2 Integrated Display Environments
       '("displaycquote" LaTeX-env-args
-	["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
 
       '("foreigndisplaycquote" LaTeX-env-args
-	LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
+        LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
 
       '("hyphendisplaycquote" LaTeX-env-args
-	LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
+        LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
 
      ;; Quotation marks
      (when (and (> (length LaTeX-csquotes-open-quote) 0)
-		(> (length LaTeX-csquotes-close-quote) 0))
+                (> (length LaTeX-csquotes-close-quote) 0))
        (setq TeX-quote-language
-	     `(override ,LaTeX-csquotes-open-quote ,LaTeX-csquotes-close-quote
-			,LaTeX-csquotes-quote-after-quote)))
+             `(override ,LaTeX-csquotes-open-quote ,LaTeX-csquotes-close-quote
+                        ,LaTeX-csquotes-quote-after-quote)))
      ;; Fontification
      (when (and (featurep 'font-latex)
-		(eq TeX-install-font-lock 'font-latex-setup))
+                (eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords '(("EnableQuotes"   "")
-				  ("DisableQuotes"  "")
-				  ("VerbatimQuotes" "")
-				  ("DeleteQuotes"   ""))
-				'function)
+                                  ("DisableQuotes"  "")
+                                  ("VerbatimQuotes" "")
+                                  ("DeleteQuotes"   ""))
+                                'function)
        (font-latex-add-keywords '(("enquote"            "*{")
-				  ("foreignquote"       "*{{")
-				  ("hyphenquote"        "*{{")
-				  ("textquote"          "*[[{")
-				  ("foreigntextquote"   "*{[[{")
-				  ("hyphentextquote"    "*{[[{")
-				  ("blockquote"         "[[{")
-				  ("foreignblockquote"  "{[[{")
-				  ("hyphenblockquote"   "{[[{")
-				  ("hybridblockquote"   "{[[{")
-				  ("textcquote"         "*[[{[{")
-				  ("foreigntextcquote"  "*{[[{[{")
-				  ("hyphentextcquote"   "*{[[{[{")
-				  ("blockcquote"        "[[{[{")
-				  ("foreignblockcquote" "{[[{[{")
-				  ("hyphenblockcquote"  "{[[{[{")
-				  ("hybridblockcquote"  "{[[{[{"))
-				'textual)
+                                  ("foreignquote"       "*{{")
+                                  ("hyphenquote"        "*{{")
+                                  ("textquote"          "*[[{")
+                                  ("foreigntextquote"   "*{[[{")
+                                  ("hyphentextquote"    "*{[[{")
+                                  ("blockquote"         "[[{")
+                                  ("foreignblockquote"  "{[[{")
+                                  ("hyphenblockquote"   "{[[{")
+                                  ("hybridblockquote"   "{[[{")
+                                  ("textcquote"         "*[[{[{")
+                                  ("foreigntextcquote"  "*{[[{[{")
+                                  ("hyphentextcquote"   "*{[[{[{")
+                                  ("blockcquote"        "[[{[{")
+                                  ("foreignblockcquote" "{[[{[{")
+                                  ("hyphenblockcquote"  "{[[{[{")
+                                  ("hybridblockcquote"  "{[[{[{"))
+                                'textual)
        (font-latex-add-keywords '(("setquotestyle"         "[{")
-				  ("MakeOuterQuote"        "{")
-				  ("MakeInnerQuote"        "{")
-				  ("MakeAutoQuote"         "*{{")
-				  ("MakeForeignQuote"      "*{{{")
-				  ("MakeHyphenQuote"       "*{{{")
-				  ("MakeBlockQuote"        "{{{")
-				  ("MakeForeignBlockQuote" "{{{{")
-				  ("MakeHyphenBlockQuote"  "{{{{")
-				  ("DeclareQuoteStyle"     "[{[[{[{[{[{")
-				  ("DeclareQuoteAlias"     "[{{")
-				  ("DeclareQuoteOption"    "{")
-				  ("DeclarePlainStyle"     "{{{{")
-				  ("SetBlockThreshold"     "{")
-				  ("SetBlockEnvironment"   "{")
-				  ("SetCiteCommand"        "{"))
-				'variable))))
+                                  ("MakeOuterQuote"        "{")
+                                  ("MakeInnerQuote"        "{")
+                                  ("MakeAutoQuote"         "*{{")
+                                  ("MakeForeignQuote"      "*{{{")
+                                  ("MakeHyphenQuote"       "*{{{")
+                                  ("MakeBlockQuote"        "{{{")
+                                  ("MakeForeignBlockQuote" "{{{{")
+                                  ("MakeHyphenBlockQuote"  "{{{{")
+                                  ("DeclareQuoteStyle"     "[{[[{[{[{[{")
+                                  ("DeclareQuoteAlias"     "[{{")
+                                  ("DeclareQuoteOption"    "{")
+                                  ("DeclarePlainStyle"     "{{{{")
+                                  ("SetBlockThreshold"     "{")
+                                  ("SetBlockEnvironment"   "{")
+                                  ("SetCiteCommand"        "{"))
+                                'variable))))
  TeX-dialect)
 
 (defun LaTeX-csquotes-package-options ()
   "Prompt for package options for the csquotes package."
   (TeX-read-key-val t '(("strict"     ("true" "false"))
-			("style"      ("american"
-				       "australian"
-				       "austrian"
-				       "brazil"
-				       "brazilian"
-				       "british"
-				       "canadian"
-				       "croatian"
-				       "czech"
-				       "danish"
-				       "dutch"
-				       "english"
-				       "finnish"
-				       "french"
-				       "german"
-				       "greek"
-				       "italian"
-				       "mexican"
-				       "naustrian"
-				       "newzealand"
-				       "ngerman"
-				       "norsk"
-				       "norwegian"
-				       "nswissgerman"
-				       "nynorsk"
-				       "portuges"
-				       "portuguese"
-				       "russian"
-				       "serbian"
-				       "spanish"
-				       "swedish"
-				       "swiss"
-				       "swissgerman"
-				       "UKenglish"
-				       "USenglish"))
-			("autostyle"  ("true" "false" "try" "once" "tryonce"))
-			("austrian"   ("quotes" "guillemets"))
-			("croatian"   ("quotes" "guillemets" "guillemets*"))
-			("czech"      ("quotes" "guillemets"))
-			("danish"     ("quotes" "guillemets" "topquotes"))
-			("english"    ("american" "british"))
-			("estonian")
-			("french"     ("quotes" "quotes*" "guillemets" "guillemets*"))
-			("galician"   ("quotes" "guillemets"))
-			("german"     ("quotes" "guillemets" "swiss"))
-			("hungarian")
-			("italian"    ("guillemets" "quotes"))
-			("latvian")
-			("norwegian"  ("guillemets" "quotes"))
-			("polish"     ("guillemets" "guillemets*"))
-			("portuguese" ("portuguese" "brazilian"))
-			("serbian"    ("quotes" "guillemets" "german"))
-			("spanish"    ("spanish" "mexican"))
-			("swedish"    ("quotes" "guillemets" "guillemets*"))
-			("maxlevel")
-			("autopunct"     ("true" "false"))
-			("threshold")
-			("thresholdtype" ("lines" "words"))
-			("parthreshold"  ("true" "false"))
-			("splitcomp"     ("true" "false"))
-			("csdisplay"     ("true" "false"))
-			("debug"         ("true" "false"))
-			;; "babel" key is deprecated, replaced by "autostyle":
-			;; ("babel" ("true" "false" "try" "once" "tryonce"))
-			("version"       ("4.4" "3.6" "3.0")))))
+                        ("style"      ("american"
+                                       "australian"
+                                       "austrian"
+                                       "brazil"
+                                       "brazilian"
+                                       "british"
+                                       "canadian"
+                                       "croatian"
+                                       "czech"
+                                       "danish"
+                                       "dutch"
+                                       "english"
+                                       "finnish"
+                                       "french"
+                                       "german"
+                                       "greek"
+                                       "italian"
+                                       "mexican"
+                                       "naustrian"
+                                       "newzealand"
+                                       "ngerman"
+                                       "norsk"
+                                       "norwegian"
+                                       "nswissgerman"
+                                       "nynorsk"
+                                       "portuges"
+                                       "portuguese"
+                                       "russian"
+                                       "serbian"
+                                       "spanish"
+                                       "swedish"
+                                       "swiss"
+                                       "swissgerman"
+                                       "UKenglish"
+                                       "USenglish"))
+                        ("autostyle"  ("true" "false" "try" "once" "tryonce"))
+                        ("austrian"   ("quotes" "guillemets"))
+                        ("croatian"   ("quotes" "guillemets" "guillemets*"))
+                        ("czech"      ("quotes" "guillemets"))
+                        ("danish"     ("quotes" "guillemets" "topquotes"))
+                        ("english"    ("american" "british"))
+                        ("estonian")
+                        ("french"     ("quotes" "quotes*" "guillemets" "guillemets*"))
+                        ("galician"   ("quotes" "guillemets"))
+                        ("german"     ("quotes" "guillemets" "swiss"))
+                        ("hungarian")
+                        ("italian"    ("guillemets" "quotes"))
+                        ("latvian")
+                        ("norwegian"  ("guillemets" "quotes"))
+                        ("polish"     ("guillemets" "guillemets*"))
+                        ("portuguese" ("portuguese" "brazilian"))
+                        ("serbian"    ("quotes" "guillemets" "german"))
+                        ("spanish"    ("spanish" "mexican"))
+                        ("swedish"    ("quotes" "guillemets" "guillemets*"))
+                        ("maxlevel")
+                        ("autopunct"     ("true" "false"))
+                        ("threshold")
+                        ("thresholdtype" ("lines" "words"))
+                        ("parthreshold"  ("true" "false"))
+                        ("splitcomp"     ("true" "false"))
+                        ("csdisplay"     ("true" "false"))
+                        ("debug"         ("true" "false"))
+                        ;; "babel" key is deprecated, replaced by "autostyle":
+                        ;; ("babel" ("true" "false" "try" "once" "tryonce"))
+                        ("version"       ("4.4" "3.6" "3.0")))))
 
 ;;; csquotes.el ends here

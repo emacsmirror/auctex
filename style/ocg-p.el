@@ -37,8 +37,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 ;; Setup for layer id's defined with
 ;; \begin{ocg}[<opt-arg>]{<layer name>}{<layer id>}{<initial visibility>}:
@@ -47,12 +47,12 @@
 
 (defvar LaTeX-ocgp-ocg-layer-id-regexp
   `(,(concat "\\\\begin{ocg}"
-	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^]]*\\]\\)?"
-	     "[ \t\n\r%]*"
-	     "\\(?:{[^}]+}\\)"
-	     "[ \t\n\r%]*"
-	     "{\\([^}]+\\)}")
+             "[ \t\n\r%]*"
+             "\\(?:\\[[^]]*\\]\\)?"
+             "[ \t\n\r%]*"
+             "\\(?:{[^}]+}\\)"
+             "[ \t\n\r%]*"
+             "{\\([^}]+\\)}")
     1 LaTeX-auto-ocgp-ocg-layer-id))
 
 (defun LaTeX-ocgp-auto-prepare ()
@@ -72,7 +72,7 @@
   "Insert arguments for ocg environment from ocg-p package."
   ;; The optional key-val argument:
   (let ((TeX-arg-opening-brace LaTeX-optop)
-	(TeX-arg-closing-brace LaTeX-optcl))
+        (TeX-arg-closing-brace LaTeX-optcl))
     (TeX-argument-insert
      (TeX-read-key-val t LaTeX-ocgp-env-key-val-options)
      t))
@@ -86,8 +86,8 @@
   ;; Then add the new id to list of know id's and insert it
   (TeX-argument-insert
    (let ((id (completing-read
-	      (TeX-argument-prompt optional nil "Layer id")
-	      (LaTeX-ocgp-ocg-layer-id-list))))
+              (TeX-argument-prompt optional nil "Layer id")
+              (LaTeX-ocgp-ocg-layer-id-list))))
      (LaTeX-add-ocgp-ocg-layer-ids id)
      id)
    optional)
@@ -100,7 +100,7 @@
 
 (defvar LaTeX-ocgp-mac-key-val-options
   '(("triggerocg" ("onareaenter" "onareaexit" "onmousedown"
-		   "onmouseup"   "allactions")))
+                   "onmouseup"   "allactions")))
   "Key=value options for macros provided by ocg-p package.")
 
 (defun LaTeX-arg-ocgp-layer-id (optional &optional prompt)
@@ -108,33 +108,33 @@
 <SPC> key binding in minibuffer is removed temporarily.
 Completion is still available with <TAB> key."
   (let* ((crm-separator "[ \t]+")
-	 (crm-local-completion-map
-	  (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
-	 (ids (mapconcat #'identity
-			 (TeX-completing-read-multiple
-			  (TeX-argument-prompt optional prompt "Layer id ('s space separated)")
-			  (LaTeX-ocgp-ocg-layer-id-list))
-			 " ")))
+         (crm-local-completion-map
+          (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
+         (ids (mapconcat #'identity
+                         (TeX-completing-read-multiple
+                          (TeX-argument-prompt optional prompt "Layer id ('s space separated)")
+                          (LaTeX-ocgp-ocg-layer-id-list))
+                         " ")))
     (TeX-argument-insert ids optional)))
 
 (defun LaTeX-env-ocgp-ocgtabular (environment)
   "Insert ocgtabular ENVIRONMENT with position, column spec's and 2 more arguments.
 Just like array and tabular."
   (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
-					; be nil, i.e. do not prompt
-		  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-	(fmt (TeX-read-string "Format: " LaTeX-default-format))
-	(dbase (TeX-read-string "Database name: "))
-	(opts (TeX-read-string "Additional options: ")))
+                                        ; be nil, i.e. do not prompt
+                  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
+        (fmt (TeX-read-string "Format: " LaTeX-default-format))
+        (dbase (TeX-read-string "Database name: "))
+        (opts (TeX-read-string "Additional options: ")))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
-			      (concat
-			       (unless (zerop (length pos))
-				 (concat LaTeX-optop pos LaTeX-optcl))
-			       (concat TeX-grop fmt TeX-grcl)
-			       (concat TeX-grop dbase TeX-grcl)
-			       (concat TeX-grop opts TeX-grcl)))
+                              (concat
+                               (unless (zerop (length pos))
+                                 (concat LaTeX-optop pos LaTeX-optcl))
+                               (concat TeX-grop fmt TeX-grcl)
+                               (concat TeX-grop dbase TeX-grcl)
+                               (concat TeX-grop opts TeX-grcl)))
     (LaTeX-item-array t)))
 
 (TeX-add-style-hook
@@ -182,12 +182,12 @@ Just like array and tabular."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("toggleocgs"          "[{{")
-				("showocgs"            "[{{")
-				("hideocgs"            "[{{")
-				("setocgs"             "[{{{{"))
-			      'function)))
+                                ("showocgs"            "[{{")
+                                ("hideocgs"            "[{{")
+                                ("setocgs"             "[{{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-ocg-p-package-options '("ocgtabular")

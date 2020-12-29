@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "luacode"
@@ -54,15 +54,15 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("luadirect" "{")
-				("luaexec" "{")
-				("luastring" "{")
-				("luastringN" "{")
-				("luastringO" "{")
-				("LuaCodeDebugOn")
-				("LuaCodeDebugOff"))
-			      'function)))
+                                ("luaexec" "{")
+                                ("luastring" "{")
+                                ("luastringN" "{")
+                                ("luastringO" "{")
+                                ("LuaCodeDebugOn")
+                                ("LuaCodeDebugOff"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-luacode-package-options nil

@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-auto-add-type "array-newcolumntype" "LaTeX")
 
@@ -47,7 +47,7 @@ package.")
 
 (defun LaTeX-array-auto-prepare ()
   "Clear `LaTeX-auto-array-newcolumntype' before parsing."
-  (setq	LaTeX-auto-array-newcolumntype nil))
+  (setq LaTeX-auto-array-newcolumntype nil))
 
 (defun LaTeX-array-auto-cleanup ()
   "Move parsed column specification from
@@ -60,12 +60,12 @@ package.")
 and make it buffer local. "
   (set (make-local-variable 'LaTeX-array-column-letters)
        (mapconcat 'identity
-		  (TeX-delete-duplicate-strings
-		   (split-string
-		    (concat LaTeX-array-column-letters
-			    (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
-		    "" t))
-		  "")))
+                  (TeX-delete-duplicate-strings
+                   (split-string
+                    (concat LaTeX-array-column-letters
+                            (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
+                    "" t))
+                  "")))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-array-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-array-auto-cleanup t)
@@ -81,10 +81,10 @@ and make it buffer local. "
     '("newcolumntype"
       (TeX-arg-eval
        (lambda ()
-	 (let ((col (TeX-read-string "Column type: ")))
-	   (LaTeX-add-array-newcolumntypes col)
-	   (LaTeX-array-update-column-letters)
-	   (format "%s" col))))
+         (let ((col (TeX-read-string "Column type: ")))
+           (LaTeX-add-array-newcolumntypes col)
+           (LaTeX-array-update-column-letters)
+           (format "%s" col))))
       [ "Number of arguments" ] t)
     '("showcols" 0)
     '("firsthline" 0)
@@ -96,13 +96,13 @@ and make it buffer local. "
 
    ;; `array.sty' adds some new column specification letters.
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "m" "b" "w" "W"))
+        (concat LaTeX-array-column-letters "m" "b" "w" "W"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newcolumntype" "{[{"))
-			      'function)))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-array-package-options nil

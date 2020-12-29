@@ -39,8 +39,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-babel-active-languages "babel" ())
 (declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
@@ -68,35 +68,35 @@ arguments."
   ;; \bicaptionbox[<list entry #1>]{<heading #1>}[<list entry #2>]{<heading #2>}
   ;;              [<width>][<inner-pos>]{<contents>}
   (let* (;; \bisubcaption needs an environment, "minipage" will be
-	 ;; popular.  If so, check next higher environment to find out
-	 ;; where we are
-	 (currenv (if (string= (LaTeX-current-environment) "minipage")
-		      (LaTeX-current-environment 2)
-		    (LaTeX-current-environment)))
-	 (captionI (TeX-read-string
-		    (TeX-argument-prompt
-		     optional (when prompt
-				(concat "1. " prompt "bicaption"))
-		     "1. bicaption")))
-	 (short-captionI
-	  (when (and (not star)
-		     (>= (length captionI) LaTeX-short-caption-prompt-length))
-	    (TeX-read-string
-	     (TeX-argument-prompt t (when prompt
-				      (concat "Short 1. " prompt "bicaption"))
-				  "Short 1. bicaption"))))
-	 (captionII (TeX-read-string
-		     (TeX-argument-prompt
-		      optional (when prompt
-				 (concat "2. " prompt "bicaption"))
-		      "2. bicaption")))
-	 (short-captionII
-	  (when (and (not star)
-		     (>= (length captionII) LaTeX-short-caption-prompt-length))
-	    (TeX-read-string
-	     (TeX-argument-prompt t (when prompt
-				      (concat "Short 2. " prompt "bicaption"))
-				  "Short 2. bicaption")))))
+         ;; popular.  If so, check next higher environment to find out
+         ;; where we are
+         (currenv (if (string= (LaTeX-current-environment) "minipage")
+                      (LaTeX-current-environment 2)
+                    (LaTeX-current-environment)))
+         (captionI (TeX-read-string
+                    (TeX-argument-prompt
+                     optional (when prompt
+                                (concat "1. " prompt "bicaption"))
+                     "1. bicaption")))
+         (short-captionI
+          (when (and (not star)
+                     (>= (length captionI) LaTeX-short-caption-prompt-length))
+            (TeX-read-string
+             (TeX-argument-prompt t (when prompt
+                                      (concat "Short 1. " prompt "bicaption"))
+                                  "Short 1. bicaption"))))
+         (captionII (TeX-read-string
+                     (TeX-argument-prompt
+                      optional (when prompt
+                                 (concat "2. " prompt "bicaption"))
+                      "2. bicaption")))
+         (short-captionII
+          (when (and (not star)
+                     (>= (length captionII) LaTeX-short-caption-prompt-length))
+            (TeX-read-string
+             (TeX-argument-prompt t (when prompt
+                                      (concat "Short 2. " prompt "bicaption"))
+                                  "Short 2. bicaption")))))
     (indent-according-to-mode)
     ;; Insert short & regular 1. caption
     (when (and short-captionI (not (string= short-captionI "")))
@@ -116,25 +116,25 @@ arguments."
     ;; Insert width & pos in case of captionbox macros:
     (when cap-box
       (let* ((TeX-arg-opening-brace "[")
-	     (TeX-arg-closing-brace "]")
-	     (TeX-last-optional-rejected nil)
-	     (width (LaTeX-check-insert-macro-default-style
-		     (completing-read (TeX-argument-prompt t nil "Width")
-				      (mapcar (lambda (elt) (concat TeX-esc (car elt)))
-					      (LaTeX-length-list)))))
-	     (TeX-last-optional-rejected (or (not width)
-					     (and width (string= width ""))))
-	     (inpos (LaTeX-check-insert-macro-default-style
-		     (if (and width (not (string-equal width "")))
-			 (completing-read (TeX-argument-prompt t nil "Inner position")
-					  '("c" "l" "r" "s"))
-		       ""))))
-	(and width (TeX-argument-insert width t))
-	(and inpos (TeX-argument-insert inpos t))))
+             (TeX-arg-closing-brace "]")
+             (TeX-last-optional-rejected nil)
+             (width (LaTeX-check-insert-macro-default-style
+                     (completing-read (TeX-argument-prompt t nil "Width")
+                                      (mapcar (lambda (elt) (concat TeX-esc (car elt)))
+                                              (LaTeX-length-list)))))
+             (TeX-last-optional-rejected (or (not width)
+                                             (and width (string= width ""))))
+             (inpos (LaTeX-check-insert-macro-default-style
+                     (if (and width (not (string-equal width "")))
+                         (completing-read (TeX-argument-prompt t nil "Inner position")
+                                          '("c" "l" "r" "s"))
+                       ""))))
+        (and width (TeX-argument-insert width t))
+        (and inpos (TeX-argument-insert inpos t))))
     (LaTeX-fill-paragraph)
     ;; Insert label -- a new line is inserted only if label is there:
     (when (and (not label-inside) (not star)
-	       (save-excursion (LaTeX-label currenv 'environment)))
+               (save-excursion (LaTeX-label currenv 'environment)))
       (LaTeX-newline)
       (indent-according-to-mode)
       (end-of-line))))
@@ -144,14 +144,14 @@ arguments."
 When OPTIONAL is non-nil, include both as optional arguments in
 square brackets."
   (let* ((flttype (completing-read (TeX-argument-prompt optional nil "Float type")
-				  LaTeX-caption-supported-float-types))
-	 (biflt (if (and (not (or (string= flttype "bi")
-				  (string= flttype "bi-first")
-				  (string= flttype "bi-second")))
-			 flttype (not (string= flttype "")))
-		    (completing-read (TeX-argument-prompt optional nil "Bicaption type")
-				     '("bi" "bi-first" "bi-second"))
-		  "")))
+                                  LaTeX-caption-supported-float-types))
+         (biflt (if (and (not (or (string= flttype "bi")
+                                  (string= flttype "bi-first")
+                                  (string= flttype "bi-second")))
+                         flttype (not (string= flttype "")))
+                    (completing-read (TeX-argument-prompt optional nil "Bicaption type")
+                                     '("bi" "bi-first" "bi-second"))
+                  "")))
     (TeX-argument-insert flttype optional)
     (TeX-argument-insert biflt optional)))
 
@@ -175,32 +175,32 @@ square brackets."
 
    ;; \bi(sub)?caption(box)? macros should get their own lines
    (LaTeX-paragraph-commands-add-locally '("bicaption"    "bicaptionbox"
-					   "bisubcaption" "bisubcaptionbox"))
+                                           "bisubcaption" "bisubcaptionbox"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("bicaption"       "*[{[{")
-				("bicaptionbox"    "*[{[{[[")
-				("bisubcaption"    "*[{[{")
-				("bisubcaptionbox" "*[{[{[["))
-			      'textual)))
+                                ("bicaptionbox"    "*[{[{[[")
+                                ("bisubcaption"    "*[{[{")
+                                ("bisubcaptionbox" "*[{[{[["))
+                              'textual)))
  TeX-dialect)
 
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."
   (TeX-load-style "caption")
   (TeX-read-key-val t
-		    (append
-		     `(,(list "language"
-			      (cond ((and (member "babel" (TeX-style-list))
-					  (LaTeX-babel-active-languages))
-				     (butlast (LaTeX-babel-active-languages)))
-				    ((and (member "polyglossia" (TeX-style-list))
-					  (LaTeX-polyglossia-active-languages))
-				     (butlast (LaTeX-babel-active-languages)))
-				    (t nil))))
-		     LaTeX-bicaption-key-val-options
-		     LaTeX-caption-key-val-options)))
+                    (append
+                     `(,(list "language"
+                              (cond ((and (member "babel" (TeX-style-list))
+                                          (LaTeX-babel-active-languages))
+                                     (butlast (LaTeX-babel-active-languages)))
+                                    ((and (member "polyglossia" (TeX-style-list))
+                                          (LaTeX-polyglossia-active-languages))
+                                     (butlast (LaTeX-babel-active-languages)))
+                                    (t nil))))
+                     LaTeX-bicaption-key-val-options
+                     LaTeX-caption-key-val-options)))
 
 ;;; bicaption.el ends here

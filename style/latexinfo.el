@@ -50,15 +50,15 @@ We ignore next, previous and up fields.")
 
 (or (assq 'LaTeXinfo-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
-	  (cons (cons 'LaTeXinfo-mode LaTeXinfo-mode-map)
-		minor-mode-map-alist)))
+          (cons (cons 'LaTeXinfo-mode LaTeXinfo-mode-map)
+                minor-mode-map-alist)))
 
 (defun TeX-arg-latexinfo-index (optional &optional prompt)
   "Prompt for a LaTeXinfo index type with completion."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Index")
-		    '(("cp") ("vr") ("fn") ("tp") ("pg") ("ky"))
-		    nil t)
+                    '(("cp") ("vr") ("fn") ("tp") ("pg") ("ky"))
+                    nil t)
    optional))
 
 (defun LaTeX-item-latexinfo-menu ()
@@ -73,113 +73,113 @@ This fails when the user types in the label of something else"
   (let ((node-name (completing-read "Goto Node: " (LaTeX-label-list))))
     (goto-char (point-min))
     (if (re-search-forward
-	 (concat
-	  TeX-esc "node[ \\t]+" node-name ","
-	  "\\|"
-	  TeX-esc "label{" LaTeX-section-label node-name
-	  "\\|"
-	  TeX-esc "label{" node-name
-	  )
-	 (point-max) t)
-	(beginning-of-line 1)
+         (concat
+          TeX-esc "node[ \\t]+" node-name ","
+          "\\|"
+          TeX-esc "label{" LaTeX-section-label node-name
+          "\\|"
+          TeX-esc "label{" node-name
+          )
+         (point-max) t)
+        (beginning-of-line 1)
     (error "No such node"))))
 
 ;;; Hook
 
 (TeX-add-style-hook "latexinfo"
- (function
-  (lambda ()
-    (require 'latexinfo)
-    (require 'latexinfo-structure)
+                    (function
+                     (lambda ()
+                       (require 'latexinfo)
+                       (require 'latexinfo-structure)
 
-    (require 'min-map)
-    (setq LaTeXinfo-mode t)
-    
-    (TeX-auto-add-regexp TeX-latexinfo-node-regexp)
+                       (require 'min-map)
+                       (setq LaTeXinfo-mode t)
+                       
+                       (TeX-auto-add-regexp TeX-latexinfo-node-regexp)
 
-    (TeX-add-symbols
-     '("node"
-       (TeX-arg-literal " ")
-       (TeX-arg-free TeX-arg-define-label "Node name")
-       (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Next node")
-       (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Previous node")
-       (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-ref "Up node"))
-     '("setfilename" TeX-arg-file)
+                       (TeX-add-symbols
+                        '("node"
+                          (TeX-arg-literal " ")
+                          (TeX-arg-free TeX-arg-define-label "Node name")
+                          (TeX-arg-literal ", ")
+                          (TeX-arg-free TeX-arg-ref "Next node")
+                          (TeX-arg-literal ", ")
+                          (TeX-arg-free TeX-arg-ref "Previous node")
+                          (TeX-arg-literal ", ")
+                          (TeX-arg-free TeX-arg-ref "Up node"))
+                        '("setfilename" TeX-arg-file)
 
-     '("var" t)
-     '("dfn" t)
-     '("emph" t)
-     '("kbd" t)
-     '("code" t)
-     '("samp" t)
-     '("key" t)
-     '("ctrl" t)
-     '("file" t)
+                        '("var" t)
+                        '("dfn" t)
+                        '("emph" t)
+                        '("kbd" t)
+                        '("code" t)
+                        '("samp" t)
+                        '("key" t)
+                        '("ctrl" t)
+                        '("file" t)
 
-     '("comment"
-       (TeX-arg-literal " ")
-       (TeX-arg-free "Comment"))
-     '("c"
-       (TeX-arg-literal " ")
-       (TeX-arg-free "Comment"))
+                        '("comment"
+                          (TeX-arg-literal " ")
+                          (TeX-arg-free "Comment"))
+                        '("c"
+                          (TeX-arg-literal " ")
+                          (TeX-arg-free "Comment"))
 
-     '("cindex" t)
-     '("cpsubindex" 2)
-     '("cpindexbold" t)
+                        '("cindex" t)
+                        '("cpsubindex" 2)
+                        '("cpindexbold" t)
 
-     '("newindex" TeX-arg-latexinfo-index)
+                        '("newindex" TeX-arg-latexinfo-index)
 
-     '("br" nil)
-     '("w" "Text")
-     '("dots" nil)
-     '("refill" nil)
-     '("bullet" nil)
-     '("copyright" nil)
-     '("sp" nil)
+                        '("br" nil)
+                        '("w" "Text")
+                        '("dots" nil)
+                        '("refill" nil)
+                        '("bullet" nil)
+                        '("copyright" nil)
+                        '("sp" nil)
 
-     '("xref" TeX-arg-ref)
-     '("pxref" TeX-arg-ref)
-     '("inforef"
-       (TeX-arg-literal "{")
-       (TeX-arg-free "Name of node")
-       (TeX-arg-literal ", ")
-       (TeX-arg-free "Name for note")
-       (TeX-arg-literal ", ")
-       (TeX-arg-free TeX-arg-file "Info file")
-       (TeX-arg-literal "}")))
+                        '("xref" TeX-arg-ref)
+                        '("pxref" TeX-arg-ref)
+                        '("inforef"
+                          (TeX-arg-literal "{")
+                          (TeX-arg-free "Name of node")
+                          (TeX-arg-literal ", ")
+                          (TeX-arg-free "Name for note")
+                          (TeX-arg-literal ", ")
+                          (TeX-arg-free TeX-arg-file "Info file")
+                          (TeX-arg-literal "}")))
 
-    (LaTeX-add-environments "menu" "tex" "ignore" "ifinfo" "iftex"
-			    "example" "same" "display" "format")
+                       (LaTeX-add-environments "menu" "tex" "ignore" "ifinfo" "iftex"
+                                               "example" "same" "display" "format")
 
-    ; Menu's have a special kind of items
-    (make-local-variable 'LaTeX-item-list)
-    (setq LaTeX-item-list (cons '("menu" . LaTeX-item-latexinfo-menu)
-				LaTeX-item-list))
+                                        ; Menu's have a special kind of items
+                       (make-local-variable 'LaTeX-item-list)
+                       (setq LaTeX-item-list (cons '("menu" . LaTeX-item-latexinfo-menu)
+                                                   LaTeX-item-list))
 
-    (make-local-variable 'TeX-font-list)
-    (setq TeX-font-list
-	  (list (list ?\C-b (concat TeX-esc "b{") "}")
-		(list ?\C-c (concat TeX-esc "sc{") "}")
-		(list ?\C-e (concat TeX-esc "emph{") "}")
-		(list ?\C-i (concat TeX-esc "i{") "}")
-		(list ?\C-r (concat TeX-esc "r{") "}")
-		(list ?\C-s (concat TeX-esc "samp{") "}")
-		(list ?\C-t (concat TeX-esc "t{") "}")
-		(list ?s    (concat TeX-esc "strong{") "}")
-		(list ?\C-f (concat TeX-esc "file{") "}")
-		(list ?\C-d (concat TeX-esc "dfn{") "}")
-		(list ?\C-v (concat TeX-esc "var{") "}")
-		(list ?k    (concat TeX-esc "key{") "}")
-		(list ?\C-k (concat TeX-esc "kbd{") "}")
-		(list ?c    (concat TeX-esc "code{") "}")
-		(list ?C    (concat TeX-esc "cite{") "}")))
+                       (make-local-variable 'TeX-font-list)
+                       (setq TeX-font-list
+                             (list (list ?\C-b (concat TeX-esc "b{") "}")
+                                   (list ?\C-c (concat TeX-esc "sc{") "}")
+                                   (list ?\C-e (concat TeX-esc "emph{") "}")
+                                   (list ?\C-i (concat TeX-esc "i{") "}")
+                                   (list ?\C-r (concat TeX-esc "r{") "}")
+                                   (list ?\C-s (concat TeX-esc "samp{") "}")
+                                   (list ?\C-t (concat TeX-esc "t{") "}")
+                                   (list ?s    (concat TeX-esc "strong{") "}")
+                                   (list ?\C-f (concat TeX-esc "file{") "}")
+                                   (list ?\C-d (concat TeX-esc "dfn{") "}")
+                                   (list ?\C-v (concat TeX-esc "var{") "}")
+                                   (list ?k    (concat TeX-esc "key{") "}")
+                                   (list ?\C-k (concat TeX-esc "kbd{") "}")
+                                   (list ?c    (concat TeX-esc "code{") "}")
+                                   (list ?C    (concat TeX-esc "cite{") "}")))
 
-    ;; need the following stuff to let xref and pxref work
-    (make-local-variable 'LaTeX-section-label)
-    (setq LaTeX-section-label "")))
- TeX-dialect)
+                       ;; need the following stuff to let xref and pxref work
+                       (make-local-variable 'LaTeX-section-label)
+                       (setq LaTeX-section-label "")))
+                    TeX-dialect)
 
 ;;; latexinfo.el ends here

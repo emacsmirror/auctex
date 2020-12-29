@@ -34,11 +34,11 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (declare-function LaTeX-polyglossia-lang-option-member
-		  "polyglossia" (language option))
+                  "polyglossia" (language option))
 
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
@@ -53,18 +53,18 @@
       LaTeX-env-args [TeX-arg-key-val LaTeX-polyglossia-italian-options-list]))
 
    (when (or (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands=true")
-	     (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands"))
+             (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands"))
      (unless (eq (car TeX-quote-language) 'override)
        (let ((open-quote (if (and (boundp 'LaTeX-italian-open-quote)
-				  LaTeX-italian-open-quote)
-			     LaTeX-italian-open-quote
-			   "\"<"))
-	     (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
-				   LaTeX-italian-close-quote)
-			      LaTeX-italian-close-quote
-			    "\">")))
-	 (setq TeX-quote-language
-	       `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
+                                  LaTeX-italian-open-quote)
+                             LaTeX-italian-open-quote
+                           "\"<"))
+             (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
+                                   LaTeX-italian-close-quote)
+                              LaTeX-italian-close-quote
+                            "\">")))
+         (setq TeX-quote-language
+               `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
 
      ;; Fontification of quotation marks.
      (when (fboundp 'font-latex-add-quotes)

@@ -34,30 +34,30 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."
   ;; Add `fragile' as an optional argument to the frame environment if
   ;; a verbatim environment is inserted.
   (when (and (TeX-member env (LaTeX-verbatim-environments) 'string-equal)
-	     (save-excursion
-	       (goto-char start)
-	       (string-equal (LaTeX-current-environment) "frame")))
+             (save-excursion
+               (goto-char start)
+               (string-equal (LaTeX-current-environment) "frame")))
     (save-excursion
       (when (re-search-backward "\\\\begin[ \t]*{frame}" nil t)
-	(let ((end-of-begin (match-end 0)))
-	  (goto-char end-of-begin)
-	  (while (forward-comment 1))
-	  (if (eq (char-after) (string-to-char LaTeX-optop))
-	      (progn
-		(forward-char)
-		(insert "fragile")
-		(unless (looking-at (concat "[ \t]*" LaTeX-optcl))
-		  (insert ",")))
-	    (goto-char end-of-begin)
-	    (insert "[fragile]")))))))
+        (let ((end-of-begin (match-end 0)))
+          (goto-char end-of-begin)
+          (while (forward-comment 1))
+          (if (eq (char-after) (string-to-char LaTeX-optop))
+              (progn
+                (forward-char)
+                (insert "fragile")
+                (unless (looking-at (concat "[ \t]*" LaTeX-optcl))
+                  (insert ",")))
+            (goto-char end-of-begin)
+            (insert "[fragile]")))))))
 
 (defvar LaTeX-beamer-frametitle-history nil
   "History of frame titles in beamer.")
@@ -68,19 +68,19 @@
    (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-beamer-after-insert-env nil t)
 
    (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
-			"hyperref" "inputenc" "translator" "xcolor")
+                        "hyperref" "inputenc" "translator" "xcolor")
 
    (unless LaTeX-beamer-section-labels-flag
      (make-local-variable 'LaTeX-section-hook)
      (setq LaTeX-section-hook
-	   '(LaTeX-section-heading
-	     LaTeX-section-title
-	     LaTeX-section-section)))
+           '(LaTeX-section-heading
+             LaTeX-section-title
+             LaTeX-section-section)))
 
    (setq LaTeX-item-list
-	 (append '(("itemize" . LaTeX-item-beamer)
-		   ("enumerate" . LaTeX-item-beamer))
-		 LaTeX-item-list))
+         (append '(("itemize" . LaTeX-item-beamer)
+                   ("enumerate" . LaTeX-item-beamer))
+                 LaTeX-item-list))
 
    (setq LaTeX-default-document-environment "frame")
 
@@ -137,58 +137,58 @@
     '("alertblock" 1)
     '("beamerboxesrounded" 1)
     '("block" (lambda (env &rest ignore)
-		(LaTeX-insert-environment
-		 env (format "{%s}" (TeX-read-string "Title: ")))))
+                (LaTeX-insert-environment
+                 env (format "{%s}" (TeX-read-string "Title: ")))))
     '("column" "Width")
     "columns"
     "columnsonlytextwidth"
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
-		 (let ((title (TeX-read-string "(Optional) Title: " nil
-					       'LaTeX-beamer-frametitle-history)))
-		   (LaTeX-insert-environment env)
-		   (unless (zerop (length title))
-		     (save-excursion
-		       (LaTeX-find-matching-begin)
-		       (end-of-line)
-		       (LaTeX-newline)
-		       (insert (format "\\frametitle{%s}" title))
-		       ;; This works because \frametitle is a
-		       ;; paragraph command.
-		       (backward-char)
-		       (LaTeX-fill-paragraph))))))
+                 (let ((title (TeX-read-string "(Optional) Title: " nil
+                                               'LaTeX-beamer-frametitle-history)))
+                   (LaTeX-insert-environment env)
+                   (unless (zerop (length title))
+                     (save-excursion
+                       (LaTeX-find-matching-begin)
+                       (end-of-line)
+                       (LaTeX-newline)
+                       (insert (format "\\frametitle{%s}" title))
+                       ;; This works because \frametitle is a
+                       ;; paragraph command.
+                       (backward-char)
+                       (LaTeX-fill-paragraph))))))
     '("onlyenv" (lambda (env &rest ignore)
-		  (LaTeX-insert-environment
-		   env
-		   (let ((overlay (TeX-read-string "(Optional) Overlay: ")))
-		     (unless (zerop (length overlay))
-		       (format "<%s>" overlay))))))
+                  (LaTeX-insert-environment
+                   env
+                   (let ((overlay (TeX-read-string "(Optional) Overlay: ")))
+                     (unless (zerop (length overlay))
+                       (format "<%s>" overlay))))))
     '("overlayarea" "Area width" "Area height")
     '("overprint"  (lambda (env &rest ignore)
-		     (LaTeX-insert-environment
-		      env
-		      (let ((width (TeX-read-string "(Optional) Area width: ")))
-			(unless (zerop (length width))
-			  (format "[%s]" width))))))
+                     (LaTeX-insert-environment
+                      env
+                      (let ((width (TeX-read-string "(Optional) Area width: ")))
+                        (unless (zerop (length width))
+                          (format "[%s]" width))))))
     "semiverbatim")
 
    (LaTeX-largest-level-set "section")
    (LaTeX-add-counters "lecture" "part" "section" "subsection" "subsubsection"
-		       "subsectionslide" "framenumber" "figure" "table"
-		       "beamerpauses")
+                       "subsectionslide" "framenumber" "figure" "table"
+                       "beamerpauses")
    (LaTeX-add-pagestyles "navigation")
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("semiverbatim" current-indentation) t)
+                '("semiverbatim" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("title" "[{")
-				("subtitle" "[{")
-				("author" "[{")
-				("date" "[{")
-				("frametitle" "<[{")) 'slide-title)))
+                                ("subtitle" "[{")
+                                ("author" "[{")
+                                ("date" "[{")
+                                ("frametitle" "<[{")) 'slide-title)))
  TeX-dialect)
 
 (defun TeX-arg-beamer-overlay-spec (optional &optional prompt)
@@ -209,7 +209,7 @@ one."
   (let ((title (TeX-read-string "Title: " nil 'LaTeX-beamer-frametitle-history)))
     (if (not (zerop (length title)))
         (insert TeX-grop TeX-esc "frametitle" TeX-grop
-		title TeX-grcl TeX-grcl)
+                title TeX-grcl TeX-grcl)
       (insert TeX-grop TeX-grcl))))
 
 (defun LaTeX-item-beamer ()
@@ -244,25 +244,25 @@ The function removes the first LENGTH characters and the
 extension of the file and returns a list of strings.  LENGTH may
 also be a string.  Then the length of the string is used."
   (let* ((match (or regexp "^beamertheme[A-Z]"))
-	 (exts  (or extensions '("tex" "sty")))
-	 (chars (cond ((integerp length)
-		       length)
-		      ((stringp length)
-		       (string-width length))
-		      ;; Try some DWIM magic...
-		      ((and (not length)
-			    (string-match "beamer[A-Za-z0-9]*theme" match))
-		       (- (match-end 0) (match-beginning 0)))
-		      (t (error "Invalid length: `%s'" length)))))
+         (exts  (or extensions '("tex" "sty")))
+         (chars (cond ((integerp length)
+                       length)
+                      ((stringp length)
+                       (string-width length))
+                      ;; Try some DWIM magic...
+                      ((and (not length)
+                            (string-match "beamer[A-Za-z0-9]*theme" match))
+                       (- (match-end 0) (match-beginning 0)))
+                      (t (error "Invalid length: `%s'" length)))))
     ;; (message "match=`%s' chars=`%s'" match chars)
     (TeX-delete-duplicate-strings
      (delete nil
-	     (mapcar
-	      (lambda (file)
-		(let ((case-fold-search nil))
-		  (and (numberp (string-match match file))
-		       (substring file chars))))
-	      (TeX-search-files nil exts t t))))))
+             (mapcar
+              (lambda (file)
+                (let ((case-fold-search nil))
+                  (and (numberp (string-match match file))
+                       (substring file chars))))
+              (TeX-search-files nil exts t t))))))
 
 (defun LaTeX-arg-beamer-theme (&rest _ignore)
   "Prompt for beamer theme with completion."
@@ -270,16 +270,16 @@ also be a string.  Then the length of the string is used."
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
     (mapcar 'list
-	    (cond ((eq LaTeX-beamer-themes 'local)
-		   (set (make-local-variable 'LaTeX-beamer-themes)
-			(LaTeX-beamer-search-themes)))
-		  ((functionp LaTeX-beamer-themes)
-		   (funcall LaTeX-beamer-themes))
-		  ((listp LaTeX-beamer-themes)
-		   LaTeX-beamer-themes)
-		  (t (error
-		      "`LaTeX-beamer-themes' should be a list: `%s'"
-		      LaTeX-beamer-themes))))
+            (cond ((eq LaTeX-beamer-themes 'local)
+                   (set (make-local-variable 'LaTeX-beamer-themes)
+                        (LaTeX-beamer-search-themes)))
+                  ((functionp LaTeX-beamer-themes)
+                   (funcall LaTeX-beamer-themes))
+                  ((listp LaTeX-beamer-themes)
+                   LaTeX-beamer-themes)
+                  (t (error
+                      "`LaTeX-beamer-themes' should be a list: `%s'"
+                      LaTeX-beamer-themes))))
     nil nil nil)
    t))
 
@@ -289,16 +289,16 @@ also be a string.  Then the length of the string is used."
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
     (mapcar 'list
-	    (cond ((eq LaTeX-beamer-inner-themes 'local)
-		   (set (make-local-variable 'LaTeX-beamer-inner-themes)
-			(LaTeX-beamer-search-themes "^beamerinnertheme")))
-		  ((functionp LaTeX-beamer-inner-themes)
-		   (funcall LaTeX-beamer-inner-themes))
-		  ((listp LaTeX-beamer-inner-themes)
-		   LaTeX-beamer-inner-themes)
-		  (t (error
-		      "`LaTeX-beamer-inner-themes' should be a list: `%s'"
-		      LaTeX-beamer-inner-themes))))
+            (cond ((eq LaTeX-beamer-inner-themes 'local)
+                   (set (make-local-variable 'LaTeX-beamer-inner-themes)
+                        (LaTeX-beamer-search-themes "^beamerinnertheme")))
+                  ((functionp LaTeX-beamer-inner-themes)
+                   (funcall LaTeX-beamer-inner-themes))
+                  ((listp LaTeX-beamer-inner-themes)
+                   LaTeX-beamer-inner-themes)
+                  (t (error
+                      "`LaTeX-beamer-inner-themes' should be a list: `%s'"
+                      LaTeX-beamer-inner-themes))))
     nil nil nil)
    t))
 
@@ -308,16 +308,16 @@ also be a string.  Then the length of the string is used."
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
     (mapcar 'list
-	    (cond ((eq LaTeX-beamer-outer-themes 'local)
-		   (set (make-local-variable 'LaTeX-beamer-outer-themes)
-			(LaTeX-beamer-search-themes "^beameroutertheme")))
-		  ((functionp LaTeX-beamer-outer-themes)
-		   (funcall LaTeX-beamer-outer-themes))
-		  ((listp LaTeX-beamer-outer-themes)
-		   LaTeX-beamer-outer-themes)
-		  (t (error
-		      "`LaTeX-beamer-outer-themes' should be a list: `%s'"
-		      LaTeX-beamer-outer-themes))))
+            (cond ((eq LaTeX-beamer-outer-themes 'local)
+                   (set (make-local-variable 'LaTeX-beamer-outer-themes)
+                        (LaTeX-beamer-search-themes "^beameroutertheme")))
+                  ((functionp LaTeX-beamer-outer-themes)
+                   (funcall LaTeX-beamer-outer-themes))
+                  ((listp LaTeX-beamer-outer-themes)
+                   LaTeX-beamer-outer-themes)
+                  (t (error
+                      "`LaTeX-beamer-outer-themes' should be a list: `%s'"
+                      LaTeX-beamer-outer-themes))))
     nil nil nil)
    t))
 
@@ -327,16 +327,16 @@ also be a string.  Then the length of the string is used."
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
     (mapcar 'list
-	    (cond ((eq LaTeX-beamer-color-themes 'local)
-		   (set (make-local-variable 'LaTeX-beamer-color-themes)
-			(LaTeX-beamer-search-themes "^beamercolortheme")))
-		  ((functionp LaTeX-beamer-color-themes)
-		   (funcall LaTeX-beamer-color-themes))
-		  ((listp LaTeX-beamer-color-themes)
-		   LaTeX-beamer-color-themes)
-		  (t (error
-		      "`LaTeX-beamer-color-themes' should be a list: `%s'"
-		      LaTeX-beamer-color-themes))))
+            (cond ((eq LaTeX-beamer-color-themes 'local)
+                   (set (make-local-variable 'LaTeX-beamer-color-themes)
+                        (LaTeX-beamer-search-themes "^beamercolortheme")))
+                  ((functionp LaTeX-beamer-color-themes)
+                   (funcall LaTeX-beamer-color-themes))
+                  ((listp LaTeX-beamer-color-themes)
+                   LaTeX-beamer-color-themes)
+                  (t (error
+                      "`LaTeX-beamer-color-themes' should be a list: `%s'"
+                      LaTeX-beamer-color-themes))))
     nil nil nil)
    t))
 
@@ -346,16 +346,16 @@ also be a string.  Then the length of the string is used."
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
     (mapcar 'list
-	    (cond ((eq LaTeX-beamer-font-themes 'local)
-		   (set (make-local-variable 'LaTeX-beamer-font-themes)
-			(LaTeX-beamer-search-themes "^beamerfonttheme")))
-		  ((functionp LaTeX-beamer-font-themes)
-		   (funcall LaTeX-beamer-font-themes))
-		  ((listp LaTeX-beamer-font-themes)
-		   LaTeX-beamer-font-themes)
-		  (t (error
-		      "`LaTeX-beamer-font-themes' should be a list: `%s'"
-		      LaTeX-beamer-font-themes))))
+            (cond ((eq LaTeX-beamer-font-themes 'local)
+                   (set (make-local-variable 'LaTeX-beamer-font-themes)
+                        (LaTeX-beamer-search-themes "^beamerfonttheme")))
+                  ((functionp LaTeX-beamer-font-themes)
+                   (funcall LaTeX-beamer-font-themes))
+                  ((listp LaTeX-beamer-font-themes)
+                   LaTeX-beamer-font-themes)
+                  (t (error
+                      "`LaTeX-beamer-font-themes' should be a list: `%s'"
+                      LaTeX-beamer-font-themes))))
     nil nil nil)
    t))
 
@@ -363,15 +363,15 @@ also be a string.  Then the length of the string is used."
   "Read the beamer class options from the user."
   (TeX-load-style "hyperref")
   (TeX-read-key-val t '(("usepdftitle" ("false")) ("envcountsect")
-			("notheorems") ("noamsthm") ("compress") ("t") ("c")
-			("leqno") ("fleqn") ("handout") ("trans") ("pdftex")
-			("nativepdf") ("pdfmark") ("dvips") ("dviwindo")
-			("dvipsone") ("vtex") ("ps2pdf") ("ignorenonframetext")
-			("noamssymb") ("bigger") ("smaller") ("8pt") ("9pt")
-			("10pt") ("11pt") ("12pt") ("14pt") ("17pt") ("20pt")
-			("draft") ("CJK") ("cjk") ("pgf")
-			("hyperref" LaTeX-hyperref-package-options-list)
-			("color") ("xcolor") ("ucs") ("utf8x") ("utf8")
-			("aspectratio" ("1610" "169" "149" "54" "43" "32")))))
+                        ("notheorems") ("noamsthm") ("compress") ("t") ("c")
+                        ("leqno") ("fleqn") ("handout") ("trans") ("pdftex")
+                        ("nativepdf") ("pdfmark") ("dvips") ("dviwindo")
+                        ("dvipsone") ("vtex") ("ps2pdf") ("ignorenonframetext")
+                        ("noamssymb") ("bigger") ("smaller") ("8pt") ("9pt")
+                        ("10pt") ("11pt") ("12pt") ("14pt") ("17pt") ("20pt")
+                        ("draft") ("CJK") ("cjk") ("pgf")
+                        ("hyperref" LaTeX-hyperref-package-options-list)
+                        ("color") ("xcolor") ("ucs") ("utf8x") ("utf8")
+                        ("aspectratio" ("1610" "169" "149" "54" "43" "32")))))
 
 ;;; beamer.el ends here

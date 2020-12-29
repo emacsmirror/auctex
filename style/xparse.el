@@ -40,8 +40,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-auto-add-type "xparse-macro" "LaTeX")
 
@@ -87,7 +87,7 @@ If OPTIONAL is non-nil, indicate it in minibuffer.  OP-BRACE sets
 the opening brace, CL-BRACE sets the closing one.  PROMPT
 replaces the standard one."
   (let ((TeX-arg-opening-brace op-brace)
-	(TeX-arg-closing-brace cl-brace))
+        (TeX-arg-closing-brace cl-brace))
     (TeX-argument-insert
      (TeX-read-string (TeX-argument-prompt optional prompt "Text"))
      optional)))
@@ -96,121 +96,121 @@ replaces the standard one."
   "Process parsed macro and environment definitions.
 TYPE is one of the symobols mac or env."
   (dolist (xcmd (if (eq type 'mac)
-		    (LaTeX-xparse-macro-list)
-		  (LaTeX-xparse-environment-list)))
+                    (LaTeX-xparse-macro-list)
+                  (LaTeX-xparse-environment-list)))
     (let ((name (car xcmd))
-	  (spec (cadr xcmd))
-	  args opt-star opt-token)
+          (spec (cadr xcmd))
+          args opt-star opt-token)
       (with-temp-buffer
-	(set-syntax-table LaTeX-mode-syntax-table)
-	;; This one is probably not really needed?
-	(goto-char (point-min))
-	(insert (replace-regexp-in-string "[ \t\r\n%]" "" spec))
-	(goto-char (point-min))
-	(while (looking-at-p "[+!>bmrRvodODsteE]")
-	  (cond (;; + or !: Long argument or space aware: Move over
-		 ;; them.  b is special; only available for
-		 ;; enviroments
-		 (looking-at-p "[+!b]")
-		 (forward-char 1))
-		((looking-at-p ">")
-		 ;; Argument processors: Move over > and a balanced
-		 ;; {}
-		 (forward-char 1)
-		 (forward-sexp))
-		;; Mandatory arguments:
-		;; m: Ask for input with "Text" as prompt
-		((looking-at-p "m")
-		 (forward-char 1)
-		 (push "Text" args))
-		;; r<token1><token2>
-		((looking-at-p "r")
-		 (re-search-forward "r\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
-		 (push `(LaTeX-arg-xparse-query
-			 ,(match-string-no-properties 1)
-			 ,(match-string-no-properties 2))
-		       args))
-		;; R<token1><token2>{default}
-		((looking-at-p "R")
-		 (re-search-forward "R\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
-		 (forward-sexp)
-		 (push `(LaTeX-arg-xparse-query
-			 ,(match-string-no-properties 1)
-			 ,(match-string-no-properties 2))
-		       args))
-		;; v: Use `TeX-arg-verb-delim-or-brace'
-		((looking-at-p "v")
-		 (forward-char 1)
-		 (push 'TeX-arg-verb-delim-or-brace args))
-		;; Optional arguments:
-		;; o standard LaTeX optional in square brackets
-		((looking-at-p "o")
-		 (forward-char 1)
-		 (push (vector "Text") args))
-		;; d<token1><token2>
-		((looking-at-p "d")
-		 (re-search-forward "d\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
-		 (push (vector 'LaTeX-arg-xparse-query
-			       (match-string-no-properties 1)
-			       (match-string-no-properties 2))
-		       args))
-		;; O{default}
-		((looking-at-p "O")
-		 (forward-char 1)
-		 (forward-sexp)
-		 (push (vector "Text") args))
-		;; D<token1><token2>{default}
-		((looking-at-p "D")
-		 (re-search-forward "D\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
-		 (forward-sexp)
-		 (push (vector 'LaTeX-arg-xparse-query
-			       (match-string-no-properties 1)
-			       (match-string-no-properties 2))
-		       args))
-		;; s: optional star
-		((looking-at-p "s")
-		 (forward-char 1)
-		 (setq opt-star t))
-		;; t: optional <token>
-		((looking-at-p "t")
-		 (re-search-forward "t\\(.\\)" (+ (point) 2) t)
-		 (setq opt-token (match-string-no-properties 1)))
-		;; e & E are currently ignored.  e: If looking at a
-		;; {, move one balanced expression, otherwise only
-		;; one character.
-		((looking-at-p "e")
-		 (forward-char)
-		 (if (looking-at-p TeX-grop)
-		     (forward-sexp)
-		   (forward-char)))
-		;; E
-		((looking-at-p "E")
-		 (forward-char)
-		 (if (looking-at-p TeX-grop)
-		     (forward-sexp)
-		   (forward-char))
-		 (if (looking-at-p TeX-grop)
-		     (forward-sexp)
-		   (forward-char)))
-		;; Finished:
-		(t nil))))
+        (set-syntax-table LaTeX-mode-syntax-table)
+        ;; This one is probably not really needed?
+        (goto-char (point-min))
+        (insert (replace-regexp-in-string "[ \t\r\n%]" "" spec))
+        (goto-char (point-min))
+        (while (looking-at-p "[+!>bmrRvodODsteE]")
+          (cond (;; + or !: Long argument or space aware: Move over
+                 ;; them.  b is special; only available for
+                 ;; enviroments
+                 (looking-at-p "[+!b]")
+                 (forward-char 1))
+                ((looking-at-p ">")
+                 ;; Argument processors: Move over > and a balanced
+                 ;; {}
+                 (forward-char 1)
+                 (forward-sexp))
+                ;; Mandatory arguments:
+                ;; m: Ask for input with "Text" as prompt
+                ((looking-at-p "m")
+                 (forward-char 1)
+                 (push "Text" args))
+                ;; r<token1><token2>
+                ((looking-at-p "r")
+                 (re-search-forward "r\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (push `(LaTeX-arg-xparse-query
+                         ,(match-string-no-properties 1)
+                         ,(match-string-no-properties 2))
+                       args))
+                ;; R<token1><token2>{default}
+                ((looking-at-p "R")
+                 (re-search-forward "R\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (forward-sexp)
+                 (push `(LaTeX-arg-xparse-query
+                         ,(match-string-no-properties 1)
+                         ,(match-string-no-properties 2))
+                       args))
+                ;; v: Use `TeX-arg-verb-delim-or-brace'
+                ((looking-at-p "v")
+                 (forward-char 1)
+                 (push 'TeX-arg-verb-delim-or-brace args))
+                ;; Optional arguments:
+                ;; o standard LaTeX optional in square brackets
+                ((looking-at-p "o")
+                 (forward-char 1)
+                 (push (vector "Text") args))
+                ;; d<token1><token2>
+                ((looking-at-p "d")
+                 (re-search-forward "d\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (push (vector 'LaTeX-arg-xparse-query
+                               (match-string-no-properties 1)
+                               (match-string-no-properties 2))
+                       args))
+                ;; O{default}
+                ((looking-at-p "O")
+                 (forward-char 1)
+                 (forward-sexp)
+                 (push (vector "Text") args))
+                ;; D<token1><token2>{default}
+                ((looking-at-p "D")
+                 (re-search-forward "D\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (forward-sexp)
+                 (push (vector 'LaTeX-arg-xparse-query
+                               (match-string-no-properties 1)
+                               (match-string-no-properties 2))
+                       args))
+                ;; s: optional star
+                ((looking-at-p "s")
+                 (forward-char 1)
+                 (setq opt-star t))
+                ;; t: optional <token>
+                ((looking-at-p "t")
+                 (re-search-forward "t\\(.\\)" (+ (point) 2) t)
+                 (setq opt-token (match-string-no-properties 1)))
+                ;; e & E are currently ignored.  e: If looking at a
+                ;; {, move one balanced expression, otherwise only
+                ;; one character.
+                ((looking-at-p "e")
+                 (forward-char)
+                 (if (looking-at-p TeX-grop)
+                     (forward-sexp)
+                   (forward-char)))
+                ;; E
+                ((looking-at-p "E")
+                 (forward-char)
+                 (if (looking-at-p TeX-grop)
+                     (forward-sexp)
+                   (forward-char))
+                 (if (looking-at-p TeX-grop)
+                     (forward-sexp)
+                   (forward-char)))
+                ;; Finished:
+                (t nil))))
       (if (eq type 'env)
-	  (LaTeX-add-environments `(,name
-				    LaTeX-env-args
-				    ,@(reverse (copy-sequence args))))
-	(TeX-add-symbols (cons name
-			       (reverse (copy-sequence args))))
-	(when opt-star
-	  (TeX-add-symbols (cons (concat name "*")
-				 (reverse (copy-sequence args)))))
-	(when opt-token
-	  (TeX-add-symbols (cons (concat name opt-token)
-				 (reverse (copy-sequence args)))))))))
+          (LaTeX-add-environments `(,name
+                                    LaTeX-env-args
+                                    ,@(reverse (copy-sequence args))))
+        (TeX-add-symbols (cons name
+                               (reverse (copy-sequence args))))
+        (when opt-star
+          (TeX-add-symbols (cons (concat name "*")
+                                 (reverse (copy-sequence args)))))
+        (when opt-token
+          (TeX-add-symbols (cons (concat name opt-token)
+                                 (reverse (copy-sequence args)))))))))
 
 (defun LaTeX-xparse-auto-prepare ()
   "Clear various `LaTeX-auto-xparse-*' variables before parsing."
   (setq LaTeX-auto-xparse-macro nil
-	LaTeX-auto-xparse-environment nil))
+        LaTeX-auto-xparse-environment nil))
 
 (defun LaTeX-xparse-auto-cleanup ()
   "Process parsed elements for xparse package."
@@ -286,22 +286,22 @@ TYPE is one of the symobols mac or env."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("DeclareDocumentCommand" "|{\\{{")
-				("NewDocumentCommand"     "|{\\{{")
-				("ProvideDocumentCommand" "|{\\{{")
-				("RenewDocumentCommand"   "|{\\{{")
-				;;
-				("DeclareExpandableDocumentCommand" "|{\\{{")
-				("NewExpandableDocumentCommand"     "|{\\{{")
-				("ProvideExpandableDocumentCommand" "|{\\{{")
-				("RenewExpandableDocumentCommand"   "|{\\{{")
-				;;
-				("DeclareDocumentEnvironment" "{{{{")
-				("NewDocumentEnvironment"     "{{{{")
-				("ProvideDocumentEnvironment" "{{{{")
-				("RenewDocumentEnvironment"   "{{{{"))
-			      'function)))
+                                ("NewDocumentCommand"     "|{\\{{")
+                                ("ProvideDocumentCommand" "|{\\{{")
+                                ("RenewDocumentCommand"   "|{\\{{")
+                                ;;
+                                ("DeclareExpandableDocumentCommand" "|{\\{{")
+                                ("NewExpandableDocumentCommand"     "|{\\{{")
+                                ("ProvideExpandableDocumentCommand" "|{\\{{")
+                                ("RenewExpandableDocumentCommand"   "|{\\{{")
+                                ;;
+                                ("DeclareDocumentEnvironment" "{{{{")
+                                ("NewDocumentEnvironment"     "{{{{")
+                                ("ProvideDocumentEnvironment" "{{{{")
+                                ("RenewDocumentEnvironment"   "{{{{"))
+                              'function)))
  TeX-dialect)
 
 (defun LaTeX-xparse-package-options ()

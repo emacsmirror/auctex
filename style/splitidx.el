@@ -94,16 +94,16 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 ;; Setup parsing for \newindex:
 (TeX-auto-add-type "splitidx-newindex" "LaTeX" "splitidx-newindices")
 
 (defvar LaTeX-splitidx-newindex-regex
   `(,(concat "\\\\new\\(?:protected\\)?index"
-	     "\\(?:\\[[^]]*\\]\\)?"
-	     "{\\([^}]+\\)}")
+             "\\(?:\\[[^]]*\\]\\)?"
+             "{\\([^}]+\\)}")
     1 LaTeX-auto-splitidx-newindex)
   "Matches the argument of `\\newindex' from `splitidx.sty'.")
 
@@ -121,21 +121,21 @@
       (TeX-ispell-skip-setcar `((,elt ispell-tex-arg-end)))
       ;; font-locking
       (when (and (featurep 'font-latex)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords `((,elt  "{"))
-				 'reference))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords `((,elt  "{"))
+                                 'reference))
       ;; Prepare for parsing
       (add-to-list 'LaTeX-auto-regexp-list
-		   `(,(concat
-		       "\\\\"
-		       elt
-		       "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
-		       "}[^}{]*\\)*}[^}{]*\\)*\\)}")
-		     1 LaTeX-auto-index-entry))
+                   `(,(concat
+                       "\\\\"
+                       elt
+                       "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
+                       "}[^}{]*\\)*}[^}{]*\\)*\\)}")
+                     1 LaTeX-auto-index-entry))
       ;; Cater for completion
       (add-to-list 'TeX-complete-list
-		   `(,(concat "\\\\" elt "{\\([^{}\n\r]*\\)")
-		     1 LaTeX-index-entry-list "}")) )))
+                   `(,(concat "\\\\" elt "{\\([^{}\n\r]*\\)")
+                     1 LaTeX-index-entry-list "}")) )))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-splitidx-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-splitidx-auto-cleanup t)
@@ -152,30 +152,30 @@
       [ "Index name" ]
       (TeX-arg-eval
        (lambda ()
-	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt nil nil "Short cut"))))
-	   (LaTeX-add-splitidx-newindices shortcut)
-	   (format "%s" shortcut)))))
+         (let ((shortcut (TeX-read-string
+                          (TeX-argument-prompt nil nil "Short cut"))))
+           (LaTeX-add-splitidx-newindices shortcut)
+           (format "%s" shortcut)))))
 
     ;; 3.2 Marking up index entries
     '("sindex"
       ;; I don't use `[ TeX-arg-index-tag ]' here
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Short cut")
-		     (LaTeX-splitidx-newindex-list) ]
+        (TeX-argument-prompt t nil "Short cut")
+        (LaTeX-splitidx-newindex-list) ]
       TeX-arg-index)
 
     ;; 3.4 Customizing index entries
     '("AtWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Short cut")
-		    (LaTeX-splitidx-newindex-list))
+                    (TeX-argument-prompt nil nil "Short cut")
+                    (LaTeX-splitidx-newindex-list))
       t)
 
     '("AtNextWriteToIndex"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Short cut")
-		    (LaTeX-splitidx-newindex-list))
+                    (TeX-argument-prompt nil nil "Short cut")
+                    (LaTeX-splitidx-newindex-list))
       t)
 
     ;; 3.6 Preventing premature expansion of index entries
@@ -183,32 +183,32 @@
       [ "Index name" ]
       (TeX-arg-eval
        (lambda ()
-	 (let ((shortcut (TeX-read-string
-			  (TeX-argument-prompt nil nil "Short cut"))))
-	   (LaTeX-add-splitidx-newindices shortcut)
-	   (format "%s" shortcut)))))
+         (let ((shortcut (TeX-read-string
+                          (TeX-argument-prompt nil nil "Short cut"))))
+           (LaTeX-add-splitidx-newindices shortcut)
+           (format "%s" shortcut)))))
 
     ;; 3.7 Including the generated indices in your document
     '("printindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Short cut")
-		     (LaTeX-splitidx-newindex-list) ]
+        (TeX-argument-prompt t nil "Short cut")
+        (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
     '("printindex*" 0)
 
     '("printsubindex"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Short cut")
-		     (LaTeX-splitidx-newindex-list) ]
+        (TeX-argument-prompt t nil "Short cut")
+        (LaTeX-splitidx-newindex-list) ]
       [ "Index name" ])
 
     '("printsubindex*" 0)
 
     '("setindexpreamble"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Short cut")
-		     (LaTeX-splitidx-newindex-list) ]
+        (TeX-argument-prompt t nil "Short cut")
+        (LaTeX-splitidx-newindex-list) ]
       t)
 
     '("useindexpreamble" [ TeX-arg-macro ])
@@ -222,19 +222,19 @@
 
    ;; Borrowed from index.el
    (add-to-list 'LaTeX-auto-regexp-list
-		`(,(concat "\\\\sindex\\(?:\\[[^{}]*\\]\\)?"
-			   "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
-			   "}[^}{]*\\)*}[^}{]*\\)*\\)}")
-		  1 LaTeX-auto-index-entry))
+                `(,(concat "\\\\sindex\\(?:\\[[^{}]*\\]\\)?"
+                           "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
+                           "}[^}{]*\\)*}[^}{]*\\)*\\)}")
+                  1 LaTeX-auto-index-entry))
 
    ;; Completion for \sindex entries
    (add-to-list 'TeX-complete-list
-		'("\\\\sindex\\(\\[[^][{}]*\\]\\)?{\\([^{}\n\r]*\\)"
-		  2 LaTeX-index-entry-list "}"))
+                '("\\\\sindex\\(\\[[^][{}]*\\]\\)?{\\([^{}\n\r]*\\)"
+                  2 LaTeX-index-entry-list "}"))
 
    ;; Completion for the |see macro
    (add-to-list 'TeX-complete-list
-		'("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
+                '("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
 
    ;; Tell RefTeX with `reftex-add-index-macros'
    (when (fboundp 'reftex-add-index-macros)
@@ -244,31 +244,31 @@
    ;; 3.2 Marking up index entries
    ;; \index should be an alias for \sindex
    (when (LaTeX-provided-package-options-member "splitidx" "useindex")
-       (TeX-add-symbols
-	'("index"
-	  [TeX-arg-eval completing-read
-			(TeX-argument-prompt t nil "Short cut")
-			(LaTeX-splitidx-newindex-list) ]
-	  (TeX-arg-index)))
-       ;; Tell RefTeX to look in the optional arg. for the index short cut
-       (when (fboundp 'reftex-add-index-macros)
-	 (reftex-add-index-macros '(("\\index[]{*}" 1 ?i "" nil t))))
-       (add-to-list 'LaTeX-auto-regexp-list
-		    `(,(concat
-			"\\\\index\\(?:\\[[^{}]*\\]\\)?"
-			"{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
-			"}[^}{]*\\)*}[^}{]*\\)*\\)}")
-		      1 LaTeX-auto-index-entry))
-       (when (and (featurep 'font-latex)
-		  (eq TeX-install-font-lock 'font-latex-setup))
-	 (font-latex-add-keywords '(("index" "[{"))
-				  'reference)))
+     (TeX-add-symbols
+      '("index"
+        [TeX-arg-eval completing-read
+                      (TeX-argument-prompt t nil "Short cut")
+                      (LaTeX-splitidx-newindex-list) ]
+        (TeX-arg-index)))
+     ;; Tell RefTeX to look in the optional arg. for the index short cut
+     (when (fboundp 'reftex-add-index-macros)
+       (reftex-add-index-macros '(("\\index[]{*}" 1 ?i "" nil t))))
+     (add-to-list 'LaTeX-auto-regexp-list
+                  `(,(concat
+                      "\\\\index\\(?:\\[[^{}]*\\]\\)?"
+                      "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
+                      "}[^}{]*\\)*}[^}{]*\\)*\\)}")
+                    1 LaTeX-auto-index-entry))
+     (when (and (featurep 'font-latex)
+                (eq TeX-install-font-lock 'font-latex-setup))
+       (font-latex-add-keywords '(("index" "[{"))
+                                'reference)))
 
    ;; 3.5 Automatic custom index commands
    ;; With package option `idxcommands', one can write \foo{<entry>}
    ;; instead of \sindex[foo]{<entry>}
    (when (and (LaTeX-provided-package-options-member "splitidx" "idxcommands")
-	      (LaTeX-splitidx-newindex-list))
+              (LaTeX-splitidx-newindex-list))
      (dolist (elt (mapcar #'car (LaTeX-splitidx-newindex-list)))
        ;; Make every `foo' available as a command
        (TeX-add-symbols `(,elt TeX-arg-index))
@@ -276,31 +276,31 @@
        (TeX-ispell-skip-setcar `((,elt ispell-tex-arg-end)))
        ;; Cater for font-locking
        (when (and (featurep 'font-latex)
-		  (eq TeX-install-font-lock 'font-latex-setup))
-	 (font-latex-add-keywords `((,elt  "{"))
-				  'reference))
+                  (eq TeX-install-font-lock 'font-latex-setup))
+         (font-latex-add-keywords `((,elt  "{"))
+                                  'reference))
        ;; Add defined <entry> to `LaTeX-index-entry-list'
        (add-to-list 'LaTeX-auto-regexp-list
-		    `(,(concat
-			"\\\\"
-			elt
-			"{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
-			"}[^}{]*\\)*}[^}{]*\\)*\\)}")
-		      1 LaTeX-auto-index-entry)) ))
+                    `(,(concat
+                        "\\\\"
+                        elt
+                        "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*"
+                        "}[^}{]*\\)*}[^}{]*\\)*\\)}")
+                      1 LaTeX-auto-index-entry)) ))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newindex"           "[{")
-				("AtWriteToIndex"     "{{")
-				("AtNextWriteToIndex" "{{")
-				("newprotectedindex"  "[{")
-				("setindexpreamble"   "[{")
-				("useindexpreamble"   "[")
-				("extendtheindex"     "{{{{"))
-			      'function)
+                                ("AtWriteToIndex"     "{{")
+                                ("AtNextWriteToIndex" "{{")
+                                ("newprotectedindex"  "[{")
+                                ("setindexpreamble"   "[{")
+                                ("useindexpreamble"   "[")
+                                ("extendtheindex"     "{{{{"))
+                              'function)
      (font-latex-add-keywords '(("sindex"             "[{"))
-			      'reference)))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-splitidx-package-options
