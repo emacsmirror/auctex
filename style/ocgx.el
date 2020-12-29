@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "ocgx"
@@ -61,12 +61,12 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("switchocg"  "{{")
-				("showocg"    "{{")
-				("hideocg"    "{{")
-				("actionsocg" "{{{{"))
-			      'function)))
+                                ("showocg"    "{{")
+                                ("hideocg"    "{{")
+                                ("actionsocg" "{{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-ocgx-package-options nil

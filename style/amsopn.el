@@ -45,8 +45,8 @@
     '("operatorname*" t))
 
    (add-to-list 'LaTeX-auto-regexp-list
-		'("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
-		  1 TeX-auto-symbol)))
+                '("\\\\DeclareMathOperator\\*?{?\\\\\\([A-Za-z0-9]+\\)}?"
+                  1 TeX-auto-symbol)))
  TeX-dialect
  )
 

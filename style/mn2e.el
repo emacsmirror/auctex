@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "mn2e"
@@ -127,14 +127,14 @@
     "bsp")
    (if (LaTeX-provided-class-options-member "mn2e" "useAMS")
        (TeX-add-symbols
-	;; 4.5.4 Upright Greek characters
-	"upi"
-	"umu"
-	"upartial"
-	"leqslant"
-	"geqslant"
-	"la"
-	"ga"))
+        ;; 4.5.4 Upright Greek characters
+        "upi"
+        "umu"
+        "upartial"
+        "leqslant"
+        "geqslant"
+        "la"
+        "ga"))
    (LaTeX-add-environments
     "keywords"
     "abstract"
@@ -160,19 +160,19 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("author" "[{")
-				("title" "[{")
-				("newauthor")
-				("nokeywords" "{")
-				("plate" "{")
-				("contcaption" "{")
-				("pagerange" "{")
-				("volume" "{")
-				("pubyear" "{")
-				("journal")
-				("bsp"))
-			      'function)))
+                                ("title" "[{")
+                                ("newauthor")
+                                ("nokeywords" "{")
+                                ("plate" "{")
+                                ("contcaption" "{")
+                                ("pagerange" "{")
+                                ("volume" "{")
+                                ("pubyear" "{")
+                                ("journal")
+                                ("bsp"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-mn2e-class-options

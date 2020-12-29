@@ -35,11 +35,11 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 (defvar LaTeX-hyperref-package-options-list
   '(;; See https://www.tug.org/applications/hyperref/manual.html#x1-40003
@@ -286,7 +286,7 @@
    ;; `LaTeX-document-regexp':
    (unless (string-match-p "Form" LaTeX-document-regexp)
      (set (make-local-variable 'LaTeX-document-regexp)
-	  (concat LaTeX-document-regexp "\\|" "Form")))
+          (concat LaTeX-document-regexp "\\|" "Form")))
 
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
@@ -297,26 +297,26 @@
    ;; In hyperref package, \url macro is redefined and \url|...| can't be used,
    ;; while it's possible when only url package (required by hyperref) is loaded
    (setq LaTeX-verbatim-macros-with-delims-local
-	 (remove "url"  LaTeX-verbatim-macros-with-delims-local))
+         (remove "url"  LaTeX-verbatim-macros-with-delims-local))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("href" "[{{")
-				("nolinkurl" "{")
-				("hyperbaseurl" "{")
-				("hyperimage" "{{")
-				("hyperdef" "{{{")
-				("hyperref" "{{{{")
-				("hyperlink" "{{")
-				("hypertarget" "{{")
-				("autoref" "*{")
-				("ref" "*{")
-				("pageref" "*{")
-				("autopageref" "*{"))
-			      'reference)
+                                ("nolinkurl" "{")
+                                ("hyperbaseurl" "{")
+                                ("hyperimage" "{{")
+                                ("hyperdef" "{{{")
+                                ("hyperref" "{{{{")
+                                ("hyperlink" "{{")
+                                ("hypertarget" "{{")
+                                ("autoref" "*{")
+                                ("ref" "*{")
+                                ("pageref" "*{")
+                                ("autopageref" "*{"))
+                              'reference)
      (font-latex-add-keywords '(("hypersetup" "{"))
-			      'function)
+                              'function)
      ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords))
 
@@ -327,8 +327,8 @@
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
-	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "Hyperref")))
+        (fboundp 'reftex-ref-style-activate)
+        (reftex-ref-style-activate "Hyperref")))
  TeX-dialect)
 
 (defun LaTeX-hyperref-package-options ()

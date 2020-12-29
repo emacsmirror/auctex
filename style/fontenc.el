@@ -47,8 +47,8 @@
 (defun LaTeX-fontenc-package-options ()
   "Prompt for package options for the fontenc package."
   (mapconcat 'identity
-	     (TeX-completing-read-multiple
-	      "Encoding(s): "
-	      LaTeX-fontenc-package-options-list) ","))
+             (TeX-completing-read-multiple
+              "Encoding(s): "
+              LaTeX-fontenc-package-options-list) ","))
 
 ;;; fontenc.el ends here

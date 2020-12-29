@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-titlesec-key-val-options
   '(("page" ("even" "odd"))
@@ -74,9 +74,9 @@ Removal is based on the return value of function
 `LaTeX-largest-level'.  Items returned are prefixed with
 `TeX-esc'."
   (mapcar (lambda (elt) (concat TeX-esc elt))
-	  (if (< (LaTeX-largest-level) 2)
-	      (symbol-value 'LaTeX-titlesec-section-command-list)
-	    (remove "chapter" LaTeX-titlesec-section-command-list))))
+          (if (< (LaTeX-largest-level) 2)
+              (symbol-value 'LaTeX-titlesec-section-command-list)
+            (remove "chapter" LaTeX-titlesec-section-command-list))))
 
 (defun LaTeX-arg-titlesec-titlespec (optional)
   "Insert the first argument of \"\\titleformat\" and \"\\titlespacing\".
@@ -87,21 +87,21 @@ append a \"name\" key with corresponding values to
 are also added stand-alone as keys.  If OPTIONAL is non-nil,
 insert the argument in brackets."
   (let ((keyvals
-	 (TeX-read-key-val
-	  optional
-	  (append
-	   `(("name"
-	      ,(mapcar (lambda (elt) (concat TeX-esc elt))
-		       (if (< (LaTeX-largest-level) 2)
-			   (symbol-value 'LaTeX-titlesec-section-command-list)
-			 (remove "chapter" LaTeX-titlesec-section-command-list)))))
-	   (mapcar #'list
-		   (mapcar (lambda (elt) (concat TeX-esc elt))
-			   (if (< (LaTeX-largest-level) 2)
-			       (symbol-value 'LaTeX-titlesec-section-command-list)
-			     (remove "chapter" LaTeX-titlesec-section-command-list))))
-	   LaTeX-titlesec-key-val-options)
-	  "Sectioning command")))
+         (TeX-read-key-val
+          optional
+          (append
+           `(("name"
+              ,(mapcar (lambda (elt) (concat TeX-esc elt))
+                       (if (< (LaTeX-largest-level) 2)
+                           (symbol-value 'LaTeX-titlesec-section-command-list)
+                         (remove "chapter" LaTeX-titlesec-section-command-list)))))
+           (mapcar #'list
+                   (mapcar (lambda (elt) (concat TeX-esc elt))
+                           (if (< (LaTeX-largest-level) 2)
+                               (symbol-value 'LaTeX-titlesec-section-command-list)
+                             (remove "chapter" LaTeX-titlesec-section-command-list))))
+           LaTeX-titlesec-key-val-options)
+          "Sectioning command")))
     (TeX-argument-insert keyvals optional)))
 
 (TeX-add-style-hook
@@ -124,11 +124,11 @@ insert the argument in brackets."
     '("titleformat"
       (LaTeX-arg-titlesec-titlespec)
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt t nil "Shape")
-		    LaTeX-titlesec-section-shape-list]
+                    (TeX-argument-prompt t nil "Shape")
+                    LaTeX-titlesec-section-shape-list]
       (TeX-arg-conditional (y-or-n-p "With optional after-code? ")
-			   (4 [nil])
-			   (4)))
+                           (4 [nil])
+                           (4)))
 
     '("chaptertitlename" 0)
 
@@ -151,7 +151,7 @@ insert the argument in brackets."
     ;; 3.3. Spacing related tools
     '("filright"  0)
     '("filcenter" 0)
-    '("filleft"	  0)
+    '("filleft"   0)
     '("fillast"   0)
     '("filinner"  0)
     '("filouter"  0)
@@ -161,8 +161,8 @@ insert the argument in brackets."
     ;; 3.4. Rules
     '("titleline"
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt t nil "Alignment")
-		    '("l" "r" "c")]
+                    (TeX-argument-prompt t nil "Alignment")
+                    '("l" "r" "c")]
       t)
 
     '("titlerule" [TeX-arg-length "Rule height"])
@@ -174,57 +174,57 @@ insert the argument in brackets."
     ;; 3.5. Page styles
     '("assignpagestyle"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titlesec-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titlesec-section-command-list))
       (TeX-arg-pagestyle))
 
     ;; 3.9. Creating new levels and changing the class
     '("titleclass"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titlesec-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titlesec-section-command-list))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Class")
-		    '("page" "top" "straight"))
+                    (TeX-argument-prompt nil nil "Class")
+                    '("page" "top" "straight"))
       [TeX-arg-eval completing-read
-		    (TeX-argument-prompt t nil "Super level command")
-		    (LaTeX-titlesec-section-command-list)]) )
+                    (TeX-argument-prompt t nil "Super level command")
+                    (LaTeX-titlesec-section-command-list)]) )
 
    ;; 3.4. Rules: A variant of \titleline to be used only with calcwidth
    (when (LaTeX-provided-package-options-member "titlesec" "calcwidth")
      (TeX-add-symbols
       '("titleline*"
-	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt nil nil "Alignment")
-		      '("l" "r" "c"))
-	t)))
+        (TeX-arg-eval completing-read
+                      (TeX-argument-prompt nil nil "Alignment")
+                      '("l" "r" "c"))
+        t)))
 
    ;; The length of the longest line is returned in \titlewidth
    (LaTeX-add-lengths "titlewidth"
-		      "titlewidthlast"
-		      "titlewidthfirst")
+                      "titlewidthlast"
+                      "titlewidthfirst")
 
    ;; Fontification: We only add macros which are used at top level;
    ;; most of macros definded above are intended to be used in
    ;; arguments of \titleformat
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("titlelabel"        "{")
-				;;
-				;; \titleformat comes in 2 flavors:
-				;; with *, it takes only 2 mandatory
-				;; argument; w/o *, a lot more.  It is
-				;; not (yet) possible to realize this
-				;; behaviour within font-latex.  Hence
-				;; we reduce the fontification to the
-				;; first 2 mandatory arguments and
-				;; ignore the rest.  *[ are optional anyway.
-				("titleformat"       "*{[{")
-				("titlespacing"      "*{{{{[")
-				("iftitlemeasuring"  "{{")
-				("assignpagestyle"   "{{")
-				("titleclass"        "{[{["))
-			      'function)))
+                                ;;
+                                ;; \titleformat comes in 2 flavors:
+                                ;; with *, it takes only 2 mandatory
+                                ;; argument; w/o *, a lot more.  It is
+                                ;; not (yet) possible to realize this
+                                ;; behaviour within font-latex.  Hence
+                                ;; we reduce the fontification to the
+                                ;; first 2 mandatory arguments and
+                                ;; ignore the rest.  *[ are optional anyway.
+                                ("titleformat"       "*{[{")
+                                ("titlespacing"      "*{{{{[")
+                                ("iftitlemeasuring"  "{{")
+                                ("assignpagestyle"   "{{")
+                                ("titleclass"        "{[{["))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-titlesec-package-options

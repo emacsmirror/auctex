@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "AlegreyaSans"
@@ -48,7 +48,7 @@
 
    ;; Load `fontaxes' or `fontspec' dep. on `type1' option:
    (if (or (LaTeX-provided-package-options-member "AlegreyaSans" "type1")
-	   (LaTeX-provided-package-options-member "AlegreyaSans" "type1=true"))
+           (LaTeX-provided-package-options-member "AlegreyaSans" "type1=true"))
        (TeX-run-style-hooks "fontaxes")
      (TeX-run-style-hooks "fontspec"))
 
@@ -73,22 +73,22 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("textsu"    "{")
-				("textin"    "{"))
-			      'type-command)
+                                ("textin"    "{"))
+                              'type-command)
      (font-latex-add-keywords '(("AlegreyaSans"           "")
-				("AlegreyaSansLF"         "")
-				("AlegreyaSansOsF"        "")
-				("AlegreyaSansTLF"        "")
-				("AlegreyaSansTOsF"       "")
-				("AlegreyaSansLight"      "")
-				("AlegreyaSansMedium"     "")
-				("AlegreyaSansExtraBold"  "")
-				("AlegreyaSansBlack"      "")
-				("sufigures"              "")
-				("infigures"              ""))
-			      'type-declaration)))
+                                ("AlegreyaSansLF"         "")
+                                ("AlegreyaSansOsF"        "")
+                                ("AlegreyaSansTLF"        "")
+                                ("AlegreyaSansTOsF"       "")
+                                ("AlegreyaSansLight"      "")
+                                ("AlegreyaSansMedium"     "")
+                                ("AlegreyaSansExtraBold"  "")
+                                ("AlegreyaSansBlack"      "")
+                                ("sufigures"              "")
+                                ("infigures"              ""))
+                              'type-declaration)))
  TeX-dialect)
 
 (defvar LaTeX-AlegreyaSans-package-options-list

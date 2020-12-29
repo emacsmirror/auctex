@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "scrreprt"
@@ -55,17 +55,17 @@
    (LaTeX-section-list-add-locally '("addchap" 1))
    (make-local-variable 'LaTeX-section-label)
    (setq LaTeX-section-label (append
-			      LaTeX-section-label
-			      '(("addchap" . nil))))
+                              LaTeX-section-label
+                              '(("addchap" . nil))))
    ;; Definitions for font-latex
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; Textual keywords
      (font-latex-add-keywords '(("addchap" "[{")
-				("setpartpreamble" "[[{")
-				("setchapterpreamble" "[[{")
-				("dictum" "[{"))
-			      'textual)
+                                ("setpartpreamble" "[[{")
+                                ("setchapterpreamble" "[[{")
+                                ("dictum" "[{"))
+                              'textual)
      ;; Sectioning keywords
      (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
  TeX-dialect)

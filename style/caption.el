@@ -45,8 +45,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-babel-active-languages "babel" ())
 (declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
@@ -57,30 +57,30 @@
   '(("aboveskip")
     ("belowskip")
     ("font"   ("scriptsize" "footnotesize" "small" "normalsize" "large"
-	       "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-	       "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-	       "stretch" "normalcolor" "color" "normal"))
+               "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+               "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+               "stretch" "normalcolor" "color" "normal"))
     ("font+"  ("scriptsize" "footnotesize" "small" "normalsize" "large"
-	       "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-	       "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-	       "stretch" "normalcolor" "color" "normal"))
+               "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+               "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+               "stretch" "normalcolor" "color" "normal"))
     ("format" ("plain" "hang"))
     ("hangindent")
     ("hypcap" ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("hypcapspace")
     ("indention")
     ("justification" ("justified" "centering" "centerlast" "centerfirst"
-		      "raggedright" "RaggedRight" "raggedleft"))
+                      "raggedright" "RaggedRight" "raggedleft"))
     ("labelfont"     ("scriptsize" "footnotesize" "small" "normalsize" "large"
-		      "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-		      "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-		      "stretch" "normalcolor" "color" "normal"))
+                      "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+                      "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+                      "stretch" "normalcolor" "color" "normal"))
     ("labelfont+"    ("scriptsize" "footnotesize" "small" "normalsize" "large"
-		      "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-		      "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-		      "stretch" "normalcolor" "color" "normal"))
+                      "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+                      "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+                      "stretch" "normalcolor" "color" "normal"))
     ("labelformat"   ("default" "empty" "simple" "brace" "parens"
-		      "autodot" "unnumbered"))
+                      "autodot" "unnumbered"))
     ("labelsep"      ("none" "colon" "period" "space" "quad" "newline" "endash"))
     ("list"          ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("listformat"    ("empty" "simple" "paren" "subsimple" "subparens"))
@@ -99,13 +99,13 @@
     ("strut"      ("false" "no" "off" "0" "true" "yes" "on" "1"))
     ("style"      ("base" "default"))
     ("textfont"   ("scriptsize" "footnotesize" "small" "normalsize" "large"
-		   "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-		   "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-		   "stretch" "normalcolor" "color" "normal"))
+                   "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+                   "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+                   "stretch" "normalcolor" "color" "normal"))
     ("textfont+"  ("scriptsize" "footnotesize" "small" "normalsize" "large"
-		   "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
-		   "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
-		   "stretch" "normalcolor" "color" "normal"))
+                   "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf" "rm"
+                   "sf" "tt" "singlespacing" "onehalfspacing" "doublespacing"
+                   "stretch" "normalcolor" "color" "normal"))
     ("textformat" ("empty" "simple" "period"))
     ("twoside")
     ("type"       ("figure" "table"))
@@ -118,19 +118,19 @@
 (make-variable-buffer-local 'LaTeX-caption-key-val-options-local)
 
 (defvar LaTeX-caption-supported-float-types
-  '("figure" "table" "ContinuedFloat"	; Standard caption.sty
+  '("figure" "table" "ContinuedFloat"   ; Standard caption.sty
     "sub" "subtable" "subfigure"        ; subcaption.sty
     "bi" "bi-first" "bi-second"         ; bicaption.sty
-    "ruled" "boxed"			; float.sty
-    "floatingfigure" "floatingtable"	; floatflt.sty
-    "lstlisting"			; listings.sty
-    "longtable"				; longtable.sty
-    "figwindow" "tabwindow"		; picinpar.sty
-    "parpic"				; picins.sty
-    "SCfigure" "SCtable"		; sidecap.sty
-    "supertabular" "xtabular"		; supertabular.sty & xtab.sty
+    "ruled" "boxed"                     ; float.sty
+    "floatingfigure" "floatingtable"    ; floatflt.sty
+    "lstlisting"                        ; listings.sty
+    "longtable"                         ; longtable.sty
+    "figwindow" "tabwindow"             ; picinpar.sty
+    "parpic"                            ; picins.sty
+    "SCfigure" "SCtable"                ; sidecap.sty
+    "supertabular" "xtabular"           ; supertabular.sty & xtab.sty
     "threeparttable" "measuredfigure"   ; threeparttable.sty
-    "wrapfigure" "wraptable")		; wrapfigure
+    "wrapfigure" "wraptable")           ; wrapfigure
   "List of float types provided by other LaTeX packages and
 supported by `caption.sty'.")
 
@@ -143,18 +143,18 @@ supported by `caption.sty'.")
 ;; `docname.el' file.
 (defvar LaTeX-caption-DeclareCaption-regexp
   `(,(concat "\\\\DeclareCaption\\(Font\\|Format\\|Justification"
-	     "\\|LabelFormat\\|LabelSeparator\\|ListFormat"
-	     "\\|Option\\|Style\\|TextFormat\\)"
-	     "\\*?"
-	     "[ \t\n\r%]*"
-	     "{\\([^}]+\\)}")
+             "\\|LabelFormat\\|LabelSeparator\\|ListFormat"
+             "\\|Option\\|Style\\|TextFormat\\)"
+             "\\*?"
+             "[ \t\n\r%]*"
+             "{\\([^}]+\\)}")
     (0 1 2) LaTeX-auto-caption-DeclareCaption)
   "Matches the arguments of different `\\DeclareCaption*' from
 `caption.sty'.")
 
 (defun LaTeX-caption-auto-prepare ()
   "Clear `LaTeX-auto-caption-DeclareCaption' before parsing."
-  (setq	LaTeX-auto-caption-DeclareCaption nil))
+  (setq LaTeX-auto-caption-DeclareCaption nil))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-caption-auto-prepare t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
@@ -164,51 +164,51 @@ supported by `caption.sty'.")
 in `caption'-completions."
   (dolist (keyvals (LaTeX-caption-DeclareCaption-list))
     (let* ((key (cond ((string-equal (nth 1 keyvals) "LabelSeparator")
-		       (downcase (substring (nth 1 keyvals) 0 8)))
-		      (t (downcase (nth 1 keyvals)))))
-	   (val (nth 2 keyvals))
-	   (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
-	   (temp (copy-alist LaTeX-caption-key-val-options-local))
-	   ;; If `subcaption.el' is loaded, delete and update also the
-	   ;; entry for `subrefformat' when processing the `labelformat'.
-	   (opts (progn
-		   (when (and (string-equal key "labelformat")
-			      (boundp 'LaTeX-subcaption-key-val-options))
-		     (setq temp
-			   (assq-delete-all
-			    (car (assoc (caar LaTeX-subcaption-key-val-options) temp))
-			    temp)))
-		   (assq-delete-all (car (assoc key temp)) temp))))
+                       (downcase (substring (nth 1 keyvals) 0 8)))
+                      (t (downcase (nth 1 keyvals)))))
+           (val (nth 2 keyvals))
+           (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
+           (temp (copy-alist LaTeX-caption-key-val-options-local))
+           ;; If `subcaption.el' is loaded, delete and update also the
+           ;; entry for `subrefformat' when processing the `labelformat'.
+           (opts (progn
+                   (when (and (string-equal key "labelformat")
+                              (boundp 'LaTeX-subcaption-key-val-options))
+                     (setq temp
+                           (assq-delete-all
+                            (car (assoc (caar LaTeX-subcaption-key-val-options) temp))
+                            temp)))
+                   (assq-delete-all (car (assoc key temp)) temp))))
       ;; For `\DeclareCaptionOption', only add the value
       ;; (remember:      key=^^^^^^, val="defined key")
       (if (string-equal key "option")
-	  (cl-pushnew (list val) opts :test #'equal)
-	;; For anything but `\DeclareCaptionOption', do the standard
-	;; procedure.  Again, take care of `subrefformat' for `subcaption.el'.
-	(if val-match
-	    (progn
-	      (when (and (string-equal key "labelformat")
-			 (boundp 'LaTeX-subcaption-key-val-options))
-		(cl-pushnew (list "subrefformat"
-				  (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-			    opts :test #'equal))
-	      (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-			  opts :test #'equal))
-	  (cl-pushnew (list key (list val)) opts :test #'equal)))
+          (cl-pushnew (list val) opts :test #'equal)
+        ;; For anything but `\DeclareCaptionOption', do the standard
+        ;; procedure.  Again, take care of `subrefformat' for `subcaption.el'.
+        (if val-match
+            (progn
+              (when (and (string-equal key "labelformat")
+                         (boundp 'LaTeX-subcaption-key-val-options))
+                (cl-pushnew (list "subrefformat"
+                                  (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+                            opts :test #'equal))
+              (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
+                          opts :test #'equal))
+          (cl-pushnew (list key (list val)) opts :test #'equal)))
       (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
   ;; Support for environments defined with newfloat.sty: These
   ;; environments are added to "type" and "type*" key:
   (when (and (member "newfloat" (TeX-style-list))
-	     (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
-	     (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+             (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+             (LaTeX-newfloat-DeclareFloatingEnvironment-list))
     (dolist (key '("type" "type*"))
       (let* ((val (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-	     (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
-	     (temp (copy-alist LaTeX-caption-key-val-options-local))
-	     (opts (assq-delete-all (car (assoc key temp)) temp)))
-	(cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
-		    opts :test #'equal)
-	(setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
+             (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
+             (temp (copy-alist LaTeX-caption-key-val-options-local))
+             (opts (assq-delete-all (car (assoc key temp)) temp)))
+        (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
+                    opts :test #'equal)
+        (setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-arg-caption-command (optional &optional prompt)
   "Insert caption-commands from `caption.sty'. If OPTIONAL,
@@ -216,8 +216,8 @@ indicate `(Optional)' while reading key=val and insert it in
 square brackets.  PROMPT replaces the standard one."
   (LaTeX-caption-update-key-val-options)
   (let ((opts (TeX-read-key-val optional
-				LaTeX-caption-key-val-options-local
-				prompt)))
+                                LaTeX-caption-key-val-options-local
+                                prompt)))
     (TeX-argument-insert opts optional)))
 
 ;; In `LaTeX-caption-DeclareCaption-regexp', we match (0 1 2).  When
@@ -231,7 +231,7 @@ suffix of the command."
   (let ((name (TeX-read-string "Name: ")))
     (LaTeX-add-caption-DeclareCaptions
      (list (concat "\\DeclareCaption" format "{" name "}")
-	   format name))
+           format name))
     (TeX-argument-insert name optional)))
 
 ;; Support for an undocumented feature of caption.sty:
@@ -254,13 +254,13 @@ suffix of the command."
 If STAR is non-nil, then do not query for a \\label and a short
 caption, insert only a caption."
   (let* ((currenv (LaTeX-current-environment))
-	 (caption (TeX-read-string
-		   (TeX-argument-prompt optional nil "Caption")))
-	 (short-caption
-	  (when (and (not star)
-		     (>= (length caption) LaTeX-short-caption-prompt-length))
-	    (TeX-read-string
-	     (TeX-argument-prompt t nil "Short caption")))))
+         (caption (TeX-read-string
+                   (TeX-argument-prompt optional nil "Caption")))
+         (short-caption
+          (when (and (not star)
+                     (>= (length caption) LaTeX-short-caption-prompt-length))
+            (TeX-read-string
+             (TeX-argument-prompt t nil "Short caption")))))
     (indent-according-to-mode)
     (when (and short-caption (not (string= short-caption "")))
       (insert LaTeX-optop short-caption LaTeX-optcl))
@@ -268,19 +268,19 @@ caption, insert only a caption."
     (unless star (LaTeX-label currenv 'environment))
     (insert TeX-grcl))
   (let* ((TeX-arg-opening-brace "[")
-	 (TeX-arg-closing-brace "]")
-	 (TeX-last-optional-rejected nil)
-	 (width (LaTeX-check-insert-macro-default-style
-		 (completing-read (TeX-argument-prompt t nil "Width")
-				  (mapcar (lambda (elt) (concat TeX-esc (car elt)))
-					  (LaTeX-length-list)))))
-	 (TeX-last-optional-rejected (or (not width)
-				         (and width (string= width ""))))
-	 (inpos (LaTeX-check-insert-macro-default-style
-		 (if (and width (not (string-equal width "")))
-		     (completing-read (TeX-argument-prompt t nil "Inner position")
-				      '("c" "l" "r" "s"))
-		   ""))))
+         (TeX-arg-closing-brace "]")
+         (TeX-last-optional-rejected nil)
+         (width (LaTeX-check-insert-macro-default-style
+                 (completing-read (TeX-argument-prompt t nil "Width")
+                                  (mapcar (lambda (elt) (concat TeX-esc (car elt)))
+                                          (LaTeX-length-list)))))
+         (TeX-last-optional-rejected (or (not width)
+                                         (and width (string= width ""))))
+         (inpos (LaTeX-check-insert-macro-default-style
+                 (if (and width (not (string-equal width "")))
+                     (completing-read (TeX-argument-prompt t nil "Inner position")
+                                      '("c" "l" "r" "s"))
+                   ""))))
     (and width (TeX-argument-insert width t))
     (and inpos (TeX-argument-insert inpos t)))
   ;; Fill the paragraph before inserting {}.  We can use
@@ -294,18 +294,18 @@ caption, insert only a caption."
 If OPTIONAL is non-nil, insert the arguments in brackets.  If
 STAR is non-nil, do not query for a short-caption and a label."
   (let* ((envtype (completing-read (TeX-argument-prompt optional nil "Float type")
-				   LaTeX-caption-supported-float-types))
-	 (figtypes '("figure" "subfigure" "floatingfigure"
-		     "figwindow" "SCfigure" "measuredfigure" "wrapfigure"))
-	 (tabtypes '("table"  "subtable" "floatingtable"  "tabwindow" "SCtable"
-		     "supertabular" "xtabular" "threeparttable"  "wraptable"))
-	 (caption (TeX-read-string
-		   (TeX-argument-prompt optional nil "Caption")))
-	 (short-caption
-	  (when (and (not star)
-		     (>= (length caption) LaTeX-short-caption-prompt-length))
-	    (TeX-read-string
-	     (TeX-argument-prompt t nil "Short caption")))))
+                                   LaTeX-caption-supported-float-types))
+         (figtypes '("figure" "subfigure" "floatingfigure"
+                     "figwindow" "SCfigure" "measuredfigure" "wrapfigure"))
+         (tabtypes '("table"  "subtable" "floatingtable"  "tabwindow" "SCtable"
+                     "supertabular" "xtabular" "threeparttable"  "wraptable"))
+         (caption (TeX-read-string
+                   (TeX-argument-prompt optional nil "Caption")))
+         (short-caption
+          (when (and (not star)
+                     (>= (length caption) LaTeX-short-caption-prompt-length))
+            (TeX-read-string
+             (TeX-argument-prompt t nil "Short caption")))))
     (indent-according-to-mode)
     (TeX-argument-insert envtype optional)
     (when (and short-caption (not (string= short-caption "")))
@@ -313,21 +313,21 @@ STAR is non-nil, do not query for a short-caption and a label."
     (TeX-argument-insert caption optional)
     (LaTeX-fill-paragraph)
     (when (and (not star)
-	       ;; Check if `envtype' is a figure or a table, also
-	       ;; consult `LaTeX-label-alist' for additions from user
-	       ;; or newfloat.el, then run `LaTeX-label' w/
-	       ;; 'environment arg, otherwise w/o.
-	       (save-excursion
-		 (if (or (member envtype figtypes)
-			 (member envtype tabtypes)
-			 (assoc envtype LaTeX-label-alist))
-		     (LaTeX-label (cond ((member envtype figtypes)
-					 "figure")
-					((member envtype tabtypes)
-					 "table")
-					(t envtype))
-				  'environment)
-		   (LaTeX-label envtype))))
+               ;; Check if `envtype' is a figure or a table, also
+               ;; consult `LaTeX-label-alist' for additions from user
+               ;; or newfloat.el, then run `LaTeX-label' w/
+               ;; 'environment arg, otherwise w/o.
+               (save-excursion
+                 (if (or (member envtype figtypes)
+                         (member envtype tabtypes)
+                         (assoc envtype LaTeX-label-alist))
+                     (LaTeX-label (cond ((member envtype figtypes)
+                                         "figure")
+                                        ((member envtype tabtypes)
+                                         "table")
+                                        (t envtype))
+                                  'environment)
+                   (LaTeX-label envtype))))
       (LaTeX-newline)
       (indent-according-to-mode)
       (end-of-line))))
@@ -341,22 +341,22 @@ STAR is non-nil, do not query for a short-caption and a label."
 
    ;; Activate the buffer-local version of key-vals.
    (setq LaTeX-caption-key-val-options-local
-	 (copy-alist LaTeX-caption-key-val-options))
+         (copy-alist LaTeX-caption-key-val-options))
 
    ;; Append key=vals from bicaption.sty if loaded: "language" key
    ;; depends on the active languages, it is appended extra where main
    ;; language is removed from the list:
    (when (and (member "bicaption" (TeX-style-list))
-	      ;; Make sure that one of these packages is loaded:
-	      (or (fboundp 'LaTeX-babel-active-languages)
-		  (fboundp 'LaTeX-polyglossia-active-languages)))
+              ;; Make sure that one of these packages is loaded:
+              (or (fboundp 'LaTeX-babel-active-languages)
+                  (fboundp 'LaTeX-polyglossia-active-languages)))
      (setq LaTeX-caption-key-val-options-local
-	   (append
-	    `(,(list "language"
-		     (or (butlast (LaTeX-babel-active-languages))
-			 (butlast (LaTeX-polyglossia-active-languages)))))
-	    LaTeX-bicaption-key-val-options
-	    LaTeX-caption-key-val-options-local)))
+           (append
+            `(,(list "language"
+                     (or (butlast (LaTeX-babel-active-languages))
+                         (butlast (LaTeX-polyglossia-active-languages)))))
+            LaTeX-bicaption-key-val-options
+            LaTeX-caption-key-val-options-local)))
 
    ;; Caption commands:
    (TeX-add-symbols
@@ -364,7 +364,7 @@ STAR is non-nil, do not query for a short-caption and a label."
 
     '("captionlistentry"
       [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
-		    LaTeX-caption-supported-float-types]
+                    LaTeX-caption-supported-float-types]
       t)
 
     '("captionof" LaTeX-arg-caption-captionof)
@@ -373,29 +373,29 @@ STAR is non-nil, do not query for a short-caption and a label."
 
     '("captionsetup"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
-			   ([LaTeX-arg-bicaption-captionsetup])
-			   ([TeX-arg-eval completing-read
-					  (TeX-argument-prompt t nil "Float type")
-					  LaTeX-caption-supported-float-types]))
+                           ([LaTeX-arg-bicaption-captionsetup])
+                           ([TeX-arg-eval completing-read
+                                          (TeX-argument-prompt t nil "Float type")
+                                          LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("captionsetup*"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
-			   ([LaTeX-arg-bicaption-captionsetup])
-			   ([TeX-arg-eval completing-read
-					  (TeX-argument-prompt t nil "Float type")
-					  LaTeX-caption-supported-float-types]))
+                           ([LaTeX-arg-bicaption-captionsetup])
+                           ([TeX-arg-eval completing-read
+                                          (TeX-argument-prompt t nil "Float type")
+                                          LaTeX-caption-supported-float-types]))
       (LaTeX-arg-caption-command))
 
     '("clearcaptionsetup"
       [LaTeX-arg-caption-command "Single key"]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-		    LaTeX-caption-supported-float-types))
+                    LaTeX-caption-supported-float-types))
 
     '("clearcaptionsetup*"
       [LaTeX-arg-caption-command "Single key"]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-		    LaTeX-caption-supported-float-types))
+                    LaTeX-caption-supported-float-types))
 
     '("captionbox"  (LaTeX-arg-caption-captionbox) t)
 
@@ -448,33 +448,33 @@ STAR is non-nil, do not query for a short-caption and a label."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("caption"           "*[{")
-				("captionlistentry"  "[{")
-				("captionof"         "*{[{")
-				("captionbox"        "*[{[["))
-			      'textual)
+                                ("captionlistentry"  "[{")
+                                ("captionof"         "*{[{")
+                                ("captionbox"        "*[{[["))
+                              'textual)
      (font-latex-add-keywords '(("captionsetup"                  "*[[{")
-				("clearcaptionsetup"             "*[{")
-				("continuedfloat"                "")
-				("DeclareCaptionFont"            "{{")
-				("DeclareCaptionFormat"          "*{{")
-				("DeclareCaptionJustification"   "{{")
-				("DeclareCaptionLabelFormat"     "{{")
-				("DeclareCaptionLabelSeparator"  "*{{")
-				("DeclareCaptionListFormat"      "{{")
-				("DeclareCaptionOption"          "{{")
-				("DeclareCaptionStyle"           "{[{")
-				("DeclareCaptionTextFormat"      "{{"))
-			      'function)) )
+                                ("clearcaptionsetup"             "*[{")
+                                ("continuedfloat"                "")
+                                ("DeclareCaptionFont"            "{{")
+                                ("DeclareCaptionFormat"          "*{{")
+                                ("DeclareCaptionJustification"   "{{")
+                                ("DeclareCaptionLabelFormat"     "{{")
+                                ("DeclareCaptionLabelSeparator"  "*{{")
+                                ("DeclareCaptionListFormat"      "{{")
+                                ("DeclareCaptionOption"          "{{")
+                                ("DeclareCaptionStyle"           "{[{")
+                                ("DeclareCaptionTextFormat"      "{{"))
+                              'function)) )
  TeX-dialect)
 
 (defun LaTeX-caption-package-options ()
   "Prompt for package options for the caption package."
   (TeX-read-key-val t
-   (append '(("compatibility"  ("true" "false")))
-	   '(("figureposition" ("top" "above" "bottom" "below")))
-	   '(("tableposition"  ("top" "above" "bottom" "below")))
-	   LaTeX-caption-key-val-options)))
+                    (append '(("compatibility"  ("true" "false")))
+                            '(("figureposition" ("top" "above" "bottom" "below")))
+                            '(("tableposition"  ("top" "above" "bottom" "below")))
+                            LaTeX-caption-key-val-options)))
 
 ;;; caption.el ends here

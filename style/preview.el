@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun LaTeX-preview-arg-ifpreview (_optional)
   "Insert \\else and \\fi part of \\ifPreview command from preview.sty.
@@ -64,23 +64,23 @@ OPTIONAL is ignored."
 
    (TeX-add-symbols
     '("PreviewMacro" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-					  ( [ t ] [ nil ] )
-					())
+                                          ( [ t ] [ nil ] )
+                                          ())
       TeX-arg-macro)
 
     '("PreviewMacro*" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-					   ( [ t ] [ nil ] )
-					 ())
+                                           ( [ t ] [ nil ] )
+                                           ())
       TeX-arg-macro)
 
     '("PreviewEnvironment" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-						( [ t ] [ nil ] )
-					      ())
+                                                ( [ t ] [ nil ] )
+                                                ())
       TeX-arg-environment)
 
     '("PreviewEnvironment*" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-						 ( [ t ] [ nil ] )
-					       ())
+                                                 ( [ t ] [ nil ] )
+                                                 ())
       TeX-arg-environment)
 
     '("PreviewSnarfEnvironment" TeX-arg-environment)
@@ -92,11 +92,11 @@ OPTIONAL is ignored."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("PreviewMacro"            "*[[{")
-				("PreviewEnvironment"      "*[[{")
-				("PreviewSnarfEnvironment" "[{"))
-			      'function)))
+                                ("PreviewEnvironment"      "*[[{")
+                                ("PreviewSnarfEnvironment" "[{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-preview-package-options

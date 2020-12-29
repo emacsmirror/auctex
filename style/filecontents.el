@@ -45,17 +45,17 @@
 
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
-		'("filecontents" current-indentation) t)
+                '("filecontents" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("filecontents*" current-indentation) t))
+                '("filecontents*" current-indentation) t))
  TeX-dialect)
 
 (defun LaTeX-env-filecontents (environment)
   "Insert ENVIRONMENT with filename for contents."
   (LaTeX-insert-environment environment
-			    (concat TeX-grop
-				    (TeX-read-string "File: ")
-				    TeX-grcl))
+                            (concat TeX-grop
+                                    (TeX-read-string "File: ")
+                                    TeX-grcl))
   (delete-horizontal-space))
 
 (defvar LaTeX-filecontents-package-options nil

@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 (declare-function TeX-check-engine-add-engines
                   "tex-buf"
                   (&rest engines))
@@ -176,25 +176,25 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("LR"        "{")
-				("LRE"       "{")
-				("RLE"       "{")
-				("RL"        "{")
-				("LTRthanks" "{")
-				("RTLthanks" "{"))
-			      'textual)
+                                ("LRE"       "{")
+                                ("RLE"       "{")
+                                ("RL"        "{")
+                                ("LTRthanks" "{")
+                                ("RTLthanks" "{"))
+                              'textual)
      (font-latex-add-keywords '(("LTRfootnote"     "[{")
-				("RTLfootnote"     "[{")
-				("LTRfootnotetext" "[{")
-				("RTLfootnotetext" "[{")
-				("LTRmarginpar"    "[{")
-				("RTLmarginpar"    "[{"))
-			      'reference)
+                                ("RTLfootnote"     "[{")
+                                ("LTRfootnotetext" "[{")
+                                ("RTLfootnotetext" "[{")
+                                ("LTRmarginpar"    "[{")
+                                ("RTLmarginpar"    "[{"))
+                              'reference)
      (font-latex-add-keywords '(("XeTeX"   "")
-				("XeLaTeX" "")
-				("SepMark" "{"))
-			      'function)))
+                                ("XeLaTeX" "")
+                                ("SepMark" "{"))
+                              'function)))
  TeX-dialect)
 
 ;;; bidi.el ends here

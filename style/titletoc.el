@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-titletoc-section-command-list
   '("part"
@@ -99,8 +99,8 @@ Removal is based on the return value of function
     ;;                {<label width>}{<leader width>}
     '("dottedcontents"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt nil nil "Sectioning command")
-		     (LaTeX-titletoc-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ] 3)
 
     ;; \titlecontents{<section>}[<left>]{<above-code>}
@@ -108,24 +108,24 @@ Removal is based on the return value of function
     ;;               {<filler-page-format>}[<below-code>]
     '("titlecontents"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt nil nil "Sectioning command")
-		     (LaTeX-titletoc-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional below code argument? ")
-			   (4 [nil])
-			 (4)))
+                           (4 [nil])
+                           (4)))
 
     ;; \titlecontents*{<section>}[<left>]{<above-code>}
     ;;                {<numbered-entry-format>}{<numberless-entry-format>}
     ;;                {<filler-page-format>}[<separator>]
     '("titlecontents*"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt nil nil "Sectioning command")
-		     (LaTeX-titletoc-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titletoc-section-command-list))
       [ TeX-arg-length "Left margin" ]
       (TeX-arg-conditional (y-or-n-p "With optional separator argument? ")
-			   (4 [nil])
-			 (4)))
+                           (4 [nil])
+                           (4)))
 
     ;; \contentsmargin[<correction>]{<right>}
     '("contentsmargin" [ "Correction" ] "Right margin")
@@ -148,17 +148,17 @@ Removal is based on the return value of function
     '("contentsuse"
       (TeX-arg-eval
        (lambda ()
-	 (let ((name (if (and (member "newfloat" (TeX-active-styles))
-			      (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-			 (completing-read
-			  (TeX-argument-prompt nil nil "Name of contents")
-			  (mapcar #'car
-				  (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-		       (TeX-read-string
-			(TeX-argument-prompt nil nil "Name of contents")))))
-	   (make-local-variable 'LaTeX-titletoc-section-command-list)
-	   (add-to-list 'LaTeX-titletoc-section-command-list name)
-	   (format "%s" name))))
+         (let ((name (if (and (member "newfloat" (TeX-active-styles))
+                              (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+                         (completing-read
+                          (TeX-argument-prompt nil nil "Name of contents")
+                          (mapcar #'car
+                                  (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                       (TeX-read-string
+                        (TeX-argument-prompt nil nil "Name of contents")))))
+           (make-local-variable 'LaTeX-titletoc-section-command-list)
+           (add-to-list 'LaTeX-titletoc-section-command-list name)
+           (format "%s" name))))
       "File extension")
 
     ;; 6.3. Partial TOC's
@@ -183,12 +183,12 @@ Removal is based on the return value of function
    ;; most of macros definded above are intended to be used in
    ;; arguments of \dottedcontents or \titlecontents
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("dottedcontents"  "{[{{{")
-				("titlecontents"   "*{[{{{[[[")
-				("contentsmargin"  "[{")
-				("contentsuse"     "{{"))
-			      'function)) )
+                                ("titlecontents"   "*{[{{{[[[")
+                                ("contentsmargin"  "[{")
+                                ("contentsuse"     "{{"))
+                              'function)) )
  TeX-dialect)
 
 (defvar LaTeX-titletoc-package-options

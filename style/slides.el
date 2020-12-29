@@ -44,8 +44,8 @@
  "slides"
  (lambda ()
    (LaTeX-add-environments "slide"
-			   "overlay"
-			   "note")
+                           "overlay"
+                           "note")
    (LaTeX-add-counters "minutes" "seconds")
    (LaTeX-add-pagestyles "headings" "slide" "overlay" "note")
    (setq LaTeX-default-document-environment "slide"))

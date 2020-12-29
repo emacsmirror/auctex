@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "mnras"
@@ -170,11 +170,11 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("author" "[{")
-				("title" "[{")
-				("newauthor"))
-			      'function))))
+                                ("title" "[{")
+                                ("newauthor"))
+                              'function))))
 
 (defvar LaTeX-mnras-class-options
   '("letters"  "onecolumn" "doublespacing" "referee" "galley" "landscape"

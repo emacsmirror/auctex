@@ -17,7 +17,7 @@
  (lambda ()
    (LaTeX-largest-level-set "part")
    (LaTeX-add-counters "part" "chapter" "section" "subsection" "subsubsection"
-		       "paragraph" "subparagraph" "figure" "table")
+                       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-pagestyles "headings" "myheadings"))
  TeX-dialect)
 

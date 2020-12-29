@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-amsthm-package-options nil
   "Package options for the amsthm package.")
@@ -62,15 +62,15 @@
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
   (let* ((crm-separator (regexp-quote TeX-esc))
-	 (fontdecl (mapconcat #'identity
-			      (TeX-completing-read-multiple
-			       (TeX-argument-prompt optional prompt "Font: \\" t)
-			       LaTeX-amsthm-fontdecl)
-			      TeX-esc)))
+         (fontdecl (mapconcat #'identity
+                              (TeX-completing-read-multiple
+                               (TeX-argument-prompt optional prompt "Font: \\" t)
+                               LaTeX-amsthm-fontdecl)
+                              TeX-esc)))
     (TeX-argument-insert fontdecl
-			 optional
-			 (when (and fontdecl (not (string= fontdecl "")))
-			   TeX-esc))))
+                         optional
+                         (when (and fontdecl (not (string= fontdecl "")))
+                           TeX-esc))))
 
 (defun LaTeX-amsthm-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -84,14 +84,14 @@ RefTeX users should customize or add ENVIRONMENT to
 
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
   (add-to-list \\='reftex-label-alist
-	       \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
-		 nil (\"Lemma\" \"lemma\") nil))"
+               \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
+                 nil (\"Lemma\" \"lemma\") nil))"
   (let ((opthead (TeX-read-string
-		  (TeX-argument-prompt t nil "Heading"))))
+                  (TeX-argument-prompt t nil "Heading"))))
     (LaTeX-insert-environment environment
-			      (when (and opthead
-					 (not (string= opthead "")))
-				(format "[%s]" opthead))))
+                              (when (and opthead
+                                         (not (string= opthead "")))
+                                (format "[%s]" opthead))))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
     (indent-according-to-mode)))
@@ -123,8 +123,8 @@ make them available as new environments."
  (lambda ()
    ;; Add the pre-defined styles:
    (LaTeX-add-amsthm-newtheoremstyles "definition"
-				      "plain"
-				      "remark")
+                                      "plain"
+                                      "remark")
 
    (LaTeX-add-environments
     '("proof" LaTeX-amsthm-env-label))
@@ -134,45 +134,45 @@ make them available as new environments."
     '("newtheorem"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt nil nil "Environment"))))
-	   (LaTeX-add-amsthm-newtheorems nthm)
-	   (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
-	   (format "%s" nthm))))
+         (let ((nthm (TeX-read-string
+                      (TeX-argument-prompt nil nil "Environment"))))
+           (LaTeX-add-amsthm-newtheorems nthm)
+           (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
+           (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
-					(backward-char 2)
-					(preceding-char)) ?\])
-				  ()
-				(TeX-arg-counter t "Within counter"))
-			"") ])
+                                        (backward-char 2)
+                                        (preceding-char)) ?\])
+                                  ()
+                                (TeX-arg-counter t "Within counter"))
+                        "") ])
 
     '("newtheorem*"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt nil nil "Environment")))
-	       (heading (TeX-read-string
-			 (TeX-argument-prompt nil nil "Heading"))))
-	   (LaTeX-add-amsthm-newtheorems nthm)
-	   (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
-	   (insert (concat TeX-grop nthm TeX-grcl))
-	   (format "%s" heading)))))
+         (let ((nthm (TeX-read-string
+                      (TeX-argument-prompt nil nil "Environment")))
+               (heading (TeX-read-string
+                         (TeX-argument-prompt nil nil "Heading"))))
+           (LaTeX-add-amsthm-newtheorems nthm)
+           (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
+           (insert (concat TeX-grop nthm TeX-grcl))
+           (format "%s" heading)))))
 
     '("theoremstyle"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Style")
-		    (LaTeX-amsthm-newtheoremstyle-list)))
+                    (TeX-argument-prompt nil nil "Style")
+                    (LaTeX-amsthm-newtheoremstyle-list)))
     "qedhere"
     "swapnumbers"
 
     '("newtheoremstyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthmstyle (TeX-read-string
-			   (TeX-argument-prompt nil nil "Style name"))))
-	   (LaTeX-add-amsthm-newtheoremstyles nthmstyle)
-	   (format "%s" nthmstyle))))
+         (let ((nthmstyle (TeX-read-string
+                           (TeX-argument-prompt nil nil "Style name"))))
+           (LaTeX-add-amsthm-newtheoremstyles nthmstyle)
+           (format "%s" nthmstyle))))
       (TeX-arg-length "Space above")
       (TeX-arg-length "Space below")
       (LaTeX-arg-amsthm-fontdecl "Body font: \\")
@@ -191,11 +191,11 @@ make them available as new environments."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newtheorem"      "*{[{[")
-				("theoremstyle"    "{")
-				("newtheoremstyle" "{{{{{{{{{"))
-			      'function)))
+                                ("theoremstyle"    "{")
+                                ("newtheoremstyle" "{{{{{{{{{"))
+                              'function)))
  TeX-dialect)
 
 ;;; amsthm.el ends here

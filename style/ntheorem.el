@@ -42,16 +42,16 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-color-definecolor-list
-		  "color"
-		  ())
+                  "color"
+                  ())
 
 (declare-function LaTeX-xcolor-definecolor-list
-		  "xcolor"
-		  ())
+                  "xcolor"
+                  ())
 
 (defvar LaTeX-ntheorem-theoremstyle-list
   '(("plain") ("break") ("change") ("changebreak") ("margin")
@@ -85,15 +85,15 @@ defined with \"\\newtheoremlisttype\".")
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
   (let* ((crm-separator (regexp-quote TeX-esc))
-	 (fontdecl (mapconcat #'identity
-			      (TeX-completing-read-multiple
-			       (TeX-argument-prompt optional prompt "Font declaration: \\" t)
-			       LaTeX-ntheorem-fontdecl)
-			      TeX-esc)))
+         (fontdecl (mapconcat #'identity
+                              (TeX-completing-read-multiple
+                               (TeX-argument-prompt optional prompt "Font declaration: \\" t)
+                               LaTeX-ntheorem-fontdecl)
+                              TeX-esc)))
     (TeX-argument-insert fontdecl
-			 optional
-			 (when (and fontdecl (not (string= fontdecl "")))
-			   TeX-esc))))
+                         optional
+                         (when (and fontdecl (not (string= fontdecl "")))
+                           TeX-esc))))
 
 (defun LaTeX-ntheorem-env-label (environment)
   "Insert ENVIRONMENT, query for an optional argument and prompt
@@ -107,14 +107,14 @@ RefTeX users should customize or add ENVIRONMENT to
 
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
   (add-to-list \\='reftex-label-alist
-	       \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
-		 nil (\"Lemma\" \"lemma\") nil))"
+               \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
+                 nil (\"Lemma\" \"lemma\") nil))"
   (let ((opthead (TeX-read-string
-		  (TeX-argument-prompt t nil "Heading"))))
+                  (TeX-argument-prompt t nil "Heading"))))
     (LaTeX-insert-environment environment
-			      (when (and opthead
-					 (not (string= opthead "")))
-				(format "[%s]" opthead))))
+                              (when (and opthead
+                                         (not (string= opthead "")))
+                                (format "[%s]" opthead))))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
     (indent-according-to-mode)))
@@ -143,13 +143,13 @@ make them available as new environments.  Update
   (dolist (newthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
     (LaTeX-add-environments (list newthm 'LaTeX-ntheorem-env-label))
     (LaTeX-add-environments (list (concat newthm "*")
-				  'LaTeX-ntheorem-env-label)))
+                                  'LaTeX-ntheorem-env-label)))
   (dolist (newthmstyle (LaTeX-ntheorem-newtheoremstyle-list))
     (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
-		 newthmstyle))
+                 newthmstyle))
   (dolist (newthmlist (LaTeX-ntheorem-newtheoremlisttype-list))
     (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
-		 newthmlist))
+                 newthmlist))
   (when (LaTeX-provided-package-options-member "ntheorem" "thmmarks")
     (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
       (TeX-add-symbols (concat nthm "Symbol"))))
@@ -186,36 +186,36 @@ make them available as new environments.  Update
     '("newtheorem"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt nil nil "Environment"))))
-	   (LaTeX-add-ntheorem-newtheorems nthm)
-	   (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
-	   (LaTeX-add-environments (list (concat nthm "*")
-					 'LaTeX-ntheorem-env-label))
-	   (format "%s" nthm))))
+         (let ((nthm (TeX-read-string
+                      (TeX-argument-prompt nil nil "Environment"))))
+           (LaTeX-add-ntheorem-newtheorems nthm)
+           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list (concat nthm "*")
+                                         'LaTeX-ntheorem-env-label))
+           (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
-					(backward-char 2)
-					(preceding-char)) ?\])
-				  ()
-				(TeX-arg-counter t "Within counter"))
-			"") ])
+                                        (backward-char 2)
+                                        (preceding-char)) ?\])
+                                  ()
+                                (TeX-arg-counter t "Within counter"))
+                        "") ])
 
     '("renewtheorem"
       (TeX-arg-eval completing-read "Environment: "
-		    (LaTeX-ntheorem-newtheorem-list))
+                    (LaTeX-ntheorem-newtheorem-list))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
-					(backward-char 2)
-					(preceding-char)) ?\])
-				  ()
-				(TeX-arg-counter t "Within counter"))
-			"") ])
+                                        (backward-char 2)
+                                        (preceding-char)) ?\])
+                                  ()
+                                (TeX-arg-counter t "Within counter"))
+                        "") ])
 
     ;; 2.3 Defining the Layout of Theorem Sets
     '("theoremstyle"
       (TeX-arg-eval completing-read "Style: "
-		    LaTeX-ntheorem-theoremstyle-list))
+                    LaTeX-ntheorem-theoremstyle-list))
 
     '("theorembodyfont"
       (LaTeX-arg-ntheorem-fontdecl "Body font"))
@@ -225,9 +225,9 @@ make them available as new environments.  Update
 
     '("theoremnumbering"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Numbering scheme")
-		    '("arabic" "roman" "Roman" "alph" "Alph"
-		      "greek" "Greek" "fnsymbol")))
+                    (TeX-argument-prompt nil nil "Numbering scheme")
+                    '("arabic" "roman" "Roman" "alph" "Alph"
+                      "greek" "Greek" "fnsymbol")))
 
     '("theoremseparator" "Separator")
 
@@ -248,68 +248,68 @@ make them available as new environments.  Update
 
     '("theoremclass"
       (TeX-arg-eval completing-read "Theorem type: "
-		    (append '(("LaTeX"))
-			    (LaTeX-ntheorem-newtheorem-list))))
+                    (append '(("LaTeX"))
+                            (LaTeX-ntheorem-newtheorem-list))))
 
     ;; 2.3.6 A Standard Set of Theorems
     (when (LaTeX-provided-package-options-member "ntheorem" "standard")
       (let ((env '("Theorem"    "Lemma"     "Proposition"
-		   "Corollary"  "Satz"      "Korollar"
-		   "Definition" "Example"   "Beispiel"
-		   "Anmerkung"  "Bemerkung" "Remark"
-		   "Proof"      "Beweis")))
-	(dolist (elt env)
-	  (LaTeX-add-ntheorem-newtheorems elt)
-	  (LaTeX-add-environments (list elt 'LaTeX-ntheorem-env-label))
-	  (LaTeX-add-environments (list (concat elt "*")
-					'LaTeX-ntheorem-env-label)))))
+                   "Corollary"  "Satz"      "Korollar"
+                   "Definition" "Example"   "Beispiel"
+                   "Anmerkung"  "Bemerkung" "Remark"
+                   "Proof"      "Beweis")))
+        (dolist (elt env)
+          (LaTeX-add-ntheorem-newtheorems elt)
+          (LaTeX-add-environments (list elt 'LaTeX-ntheorem-env-label))
+          (LaTeX-add-environments (list (concat elt "*")
+                                        'LaTeX-ntheorem-env-label)))))
 
     ;; 2.3.7 Framed and Boxed Theorems
     '("newframedtheorem"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt nil nil "Environment"))))
-	   (LaTeX-add-ntheorem-newtheorems nthm)
-	   (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
-	   (LaTeX-add-environments (list (concat nthm "*")
-					 'LaTeX-ntheorem-env-label))
-	   (format "%s" nthm))))
+         (let ((nthm (TeX-read-string
+                      (TeX-argument-prompt nil nil "Environment"))))
+           (LaTeX-add-ntheorem-newtheorems nthm)
+           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list (concat nthm "*")
+                                         'LaTeX-ntheorem-env-label))
+           (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
-					(backward-char 2)
-					(preceding-char)) ?\])
-				  ()
-				(TeX-arg-counter t "Within counter"))
-			"") ])
+                                        (backward-char 2)
+                                        (preceding-char)) ?\])
+                                  ()
+                                (TeX-arg-counter t "Within counter"))
+                        "") ])
 
     '("newshadedtheorem"
       (TeX-arg-eval
        (lambda ()
-	 (let ((nthm (TeX-read-string
-		      (TeX-argument-prompt nil nil "Environment"))))
-	   (LaTeX-add-ntheorem-newtheorems nthm)
-	   (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
-	   (LaTeX-add-environments (list (concat nthm "*")
-					 'LaTeX-ntheorem-env-label))
-	   (format "%s" nthm))))
+         (let ((nthm (TeX-read-string
+                      (TeX-argument-prompt nil nil "Environment"))))
+           (LaTeX-add-ntheorem-newtheorems nthm)
+           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list (concat nthm "*")
+                                         'LaTeX-ntheorem-env-label))
+           (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
-					(backward-char 2)
-					(preceding-char)) ?\])
-				  ()
-				(TeX-arg-counter t "Within counter"))
-			"") ])
+                                        (backward-char 2)
+                                        (preceding-char)) ?\])
+                                  ()
+                                (TeX-arg-counter t "Within counter"))
+                        "") ])
     '("shadecolor"
       (TeX-arg-eval
        (lambda ()
-	 (let ((color (cond ((member "xcolor" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
-			    ((member "color" (TeX-style-list))
-			     (completing-read "Color name: " (LaTeX-color-definecolor-list)))
-			    (t
-			     (TeX-read-string "Color name: ")))))
-	   (format "%s" color)))))
+         (let ((color (cond ((member "xcolor" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
+                            ((member "color" (TeX-style-list))
+                             (completing-read "Color name: " (LaTeX-color-definecolor-list)))
+                            (t
+                             (TeX-read-string "Color name: ")))))
+           (format "%s" color)))))
 
     '("theoremframepreskip"
       (TeX-arg-length "Skip before framed theorem"))
@@ -326,58 +326,58 @@ make them available as new environments.  Update
     ;; 2.4 Generating Theoremlists
     '("listtheorems"
       (TeX-arg-eval mapconcat 'identity
-		    (TeX-completing-read-multiple
-		     "Lists: "
-		     (LaTeX-ntheorem-newtheorem-list)) ","))
+                    (TeX-completing-read-multiple
+                     "Lists: "
+                     (LaTeX-ntheorem-newtheorem-list)) ","))
 
     ;; 2.4.2 Writing Extra Stuff to the Theorem File
     '("addtheoremline"
       (TeX-arg-eval completing-read "Environment: "
-		    (LaTeX-ntheorem-newtheorem-list))
+                    (LaTeX-ntheorem-newtheorem-list))
       t)
 
     '("addtheoremline*"
       (TeX-arg-eval completing-read "Environment: "
-		    (LaTeX-ntheorem-newtheorem-list))
+                    (LaTeX-ntheorem-newtheorem-list))
       t)
 
     '("addtotheoremfile"
       [ TeX-arg-eval completing-read "Environment: "
-		     (LaTeX-ntheorem-newtheorem-list) ]
+        (LaTeX-ntheorem-newtheorem-list) ]
       t)
 
     ;; 2.5.1 Defining New Theorem Layouts
     '("newtheoremstyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((style (TeX-read-string
-		       (TeX-argument-prompt nil nil "Style name"))))
-	   (LaTeX-add-ntheorem-newtheoremstyles style)
-	   (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
-			(list style))
-	   (format "%s" style))))
+         (let ((style (TeX-read-string
+                       (TeX-argument-prompt nil nil "Style name"))))
+           (LaTeX-add-ntheorem-newtheoremstyles style)
+           (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
+                        (list style))
+           (format "%s" style))))
       2)
 
     '("renewtheoremstyle"
       (TeX-arg-eval completing-read "Style name: "
-		    LaTeX-ntheorem-theoremstyle-list)
+                    LaTeX-ntheorem-theoremstyle-list)
       2)
 
     ;; 2.5.2 Defining New Theorem List Layouts
     '("newtheoremlisttype"
       (TeX-arg-eval
        (lambda ()
-	 (let ((layout (TeX-read-string
-		       (TeX-argument-prompt nil nil "List layout name"))))
-	   (LaTeX-add-ntheorem-newtheoremlisttypes layout)
-	   (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
-			(list layout))
-	   (format "%s" layout))))
+         (let ((layout (TeX-read-string
+                        (TeX-argument-prompt nil nil "List layout name"))))
+           (LaTeX-add-ntheorem-newtheoremlisttypes layout)
+           (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
+                        (list layout))
+           (format "%s" layout))))
       3)
 
     '("renewtheoremlisttype"
       (TeX-arg-eval completing-read "Style name: "
-		    LaTeX-ntheorem-listtype-list)
+                    LaTeX-ntheorem-listtype-list)
       3)
 
     ;; 2.6 Setting End Marks
@@ -400,40 +400,40 @@ make them available as new environments.  Update
    (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
      (TeX-add-symbols (concat nthm "name")))
 
-;; Fontification
+   ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newtheorem"             "{[{[")
-				("renewtheorem"           "{[{[")
-				("theoremstyle"           "{")
-				("theorembodyfont"        "{")
-				("theoremheaderfont"      "{")
-				("theoremnumbering"       "{")
-				("theoremseparator"       "{")
-				("theorempreskip"         "{")
-				("theorempostskip"        "{")
-				("theoremsymbol"          "{")
-				("theoremindent"          "")
-				("theoremprework"         "{")
-				("theorempostwork"        "{")
-				("theoremclass"           "{")
-				("newframedtheorem"       "{[{[")
-				("newshadedtheorem"       "*{[{[")
-				("shadecolor"             "{")
-				("theoremframepreskip"    "{")
-				("theoremframepostskip"   "{")
-				("theoreminframepreskip"  "{")
-				("theoreminframepostskip" "{")
-				("listtheorems"           "{")
-				("addtheoremline"         "*{{")
-				("addtotheoremfile"       "[{")
-				("newtheoremstyle"        "{{{")
-				("renewtheoremstyle"      "{{{")
-				("newtheoremlisttype"     "{{{{")
-				("renewtheoremlisttype"   "{{{{"))
-			      'function)
+                                ("renewtheorem"           "{[{[")
+                                ("theoremstyle"           "{")
+                                ("theorembodyfont"        "{")
+                                ("theoremheaderfont"      "{")
+                                ("theoremnumbering"       "{")
+                                ("theoremseparator"       "{")
+                                ("theorempreskip"         "{")
+                                ("theorempostskip"        "{")
+                                ("theoremsymbol"          "{")
+                                ("theoremindent"          "")
+                                ("theoremprework"         "{")
+                                ("theorempostwork"        "{")
+                                ("theoremclass"           "{")
+                                ("newframedtheorem"       "{[{[")
+                                ("newshadedtheorem"       "*{[{[")
+                                ("shadecolor"             "{")
+                                ("theoremframepreskip"    "{")
+                                ("theoremframepostskip"   "{")
+                                ("theoreminframepreskip"  "{")
+                                ("theoreminframepostskip" "{")
+                                ("listtheorems"           "{")
+                                ("addtheoremline"         "*{{")
+                                ("addtotheoremfile"       "[{")
+                                ("newtheoremstyle"        "{{{")
+                                ("renewtheoremstyle"      "{{{")
+                                ("newtheoremlisttype"     "{{{{")
+                                ("renewtheoremlisttype"   "{{{{"))
+                              'function)
      (font-latex-add-keywords '(("thref"                  "{"))
-			      'reference)))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-ntheorem-package-options

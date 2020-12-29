@@ -37,13 +37,13 @@
 
    ;; Completion for the |see macro
    (setq TeX-complete-list
-	 (append
-	  '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
-	  TeX-complete-list))
+         (append
+          '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
+          TeX-complete-list))
 
    ;; RefTeX support
    (and (fboundp 'reftex-add-index-macros)
-	(reftex-add-index-macros '(default))))
+        (reftex-add-index-macros '(default))))
  TeX-dialect)
 
 (defvar LaTeX-makeidx-package-options nil

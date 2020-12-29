@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (defvar LaTeX-polski-package-options
   '("plmath" "nomathsymbols" "MeX" "T1" "QX" "OT1" "OT4" "prefixinginverb"

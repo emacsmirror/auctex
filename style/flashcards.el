@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "flashcards"
@@ -57,13 +57,13 @@
    (LaTeX-add-environments '("flashcard" ["Header"] "Front side"))
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("cardfrontstyle" "[{")
-				("cardfrontfoot" "{")
-				("cardbackstyle" "[{")
-				("cardfrontheadstyle" "[{")
-				("cardfrontfootstyle" "[{"))
-			      'variable)))
+                                ("cardfrontfoot" "{")
+                                ("cardbackstyle" "[{")
+                                ("cardfrontheadstyle" "[{")
+                                ("cardfrontfootstyle" "[{"))
+                              'variable)))
  TeX-dialect)
 
 ;;; flashcards.el ends here

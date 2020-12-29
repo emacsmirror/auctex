@@ -35,16 +35,16 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 (declare-function LaTeX-add-newfloat-DeclareFloatingEnvironments
-		  "newfloat" (&rest newfloat-declarefloatingenvironments))
+                  "newfloat" (&rest newfloat-declarefloatingenvironments))
 
 (defvar font-latex-syntactic-keywords-extra)
 
@@ -94,8 +94,8 @@
     ("fontfamily" ("tt" "courier" "helvetica"))
     ("fontseries" ("auto"))
     ("fontsize" ("auto" "\\tiny" "\\large" "\\scriptsize" "\\Large"
-		 "\\footnotesize" "\\LARGE" "\\small" "\\huge"
-		 "\\normalsize" "\\Huge"))
+                 "\\footnotesize" "\\LARGE" "\\small" "\\huge"
+                 "\\normalsize" "\\Huge"))
     ("fontshape" ("auto"))
     ("formatcom")
     ("frame" ("none" "leftline" "topline" "bottomline" "lines" "single"))
@@ -134,14 +134,14 @@
     ;; remains.  I couldn't figure out why, so for now, I add the
     ;; styles from Pygments version 2.5.2 here.
     ("style" ("abap" "algol" "algol_nu" "arduino" "autumn"
-	      "borland" "bw" "colorful" "default" "emacs"
-	      "friendly" "fruity" "igor" "inkpot" "lovelace"
-	      "manni" "monokai" "murphy" "native" "paraiso-dark"
-	      "paraiso-light" "pastie" "perldoc"
-	      "rainbow_dash" "rrt" "sas"
-	      "solarized-dark" "solarized-light" "stata"
-	      "stata-dark" "stata-light"
-	      "tango" "trac" "vim" "vs" "xcode"))
+              "borland" "bw" "colorful" "default" "emacs"
+              "friendly" "fruity" "igor" "inkpot" "lovelace"
+              "manni" "monokai" "murphy" "native" "paraiso-dark"
+              "paraiso-light" "pastie" "perldoc"
+              "rainbow_dash" "rrt" "sas"
+              "solarized-dark" "solarized-light" "stata"
+              "stata-dark" "stata-light"
+              "tango" "trac" "vim" "vs" "xcode"))
     ("stepnumber")
     ("stepnumberfromfirst")
     ("stepnumberoffsetvalues" ("true" "false"))
@@ -170,16 +170,16 @@
 Update the variable `LaTeX-minted-language-list' if still nil."
   (or LaTeX-minted-language-list
       (when LaTeX-minted-pygmentize-program
-	(with-temp-buffer
-	  (shell-command (concat LaTeX-minted-pygmentize-program " -L lexers")
-			 (current-buffer))
-	  (goto-char (point-min))
-	  (let (languages)
-	    (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
-	      (dolist (lang (split-string (match-string 1) "[[:space:],]" t))
-		(push lang languages)))
-	    (setq LaTeX-minted-language-list languages))
-	  LaTeX-minted-language-list))))
+        (with-temp-buffer
+          (shell-command (concat LaTeX-minted-pygmentize-program " -L lexers")
+                         (current-buffer))
+          (goto-char (point-min))
+          (let (languages)
+            (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
+              (dolist (lang (split-string (match-string 1) "[[:space:],]" t))
+                (push lang languages)))
+            (setq LaTeX-minted-language-list languages))
+          LaTeX-minted-language-list))))
 
 (defun LaTeX-arg-minted-language (optional &optional prompt)
     "Insert a selected pygmentize language as argument for macros from minted.sty.
@@ -187,7 +187,7 @@ If OPTIONAL is non-nil, insert it as optional argument in
 brackets.  PROMPT replaces the standard one."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Language")
-		    (LaTeX-minted-language-list))
+                    (LaTeX-minted-language-list))
    optional))
 
 (defvar LaTeX-minted-style-list nil
@@ -198,16 +198,16 @@ brackets.  PROMPT replaces the standard one."
 Update the variable `LaTeX-minted-style-list' if still nil."
   (or LaTeX-minted-style-list
       (when LaTeX-minted-pygmentize-program
-	(with-temp-buffer
-	  (shell-command (concat LaTeX-minted-pygmentize-program " -L styles")
-			 (current-buffer))
-	  (goto-char (point-min))
-	  (let (styles)
-	    (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
-	      (dolist (style (split-string (match-string 1) "[[:space:],]" t))
-		(push style styles)))
-	    (setq LaTeX-minted-style-list styles))
-	  LaTeX-minted-style-list))))
+        (with-temp-buffer
+          (shell-command (concat LaTeX-minted-pygmentize-program " -L styles")
+                         (current-buffer))
+          (goto-char (point-min))
+          (let (styles)
+            (while (re-search-forward "^\\*[[:space:]]\\([^:]+\\):" nil t)
+              (dolist (style (split-string (match-string 1) "[[:space:],]" t))
+                (push style styles)))
+            (setq LaTeX-minted-style-list styles))
+          LaTeX-minted-style-list))))
 
 (defun LaTeX-arg-minted-style (optional &optional prompt)
   "Insert a selected pygmentize style as argument for macros from minted.sty.
@@ -215,7 +215,7 @@ If OPTIONAL is non-nil, insert it as optional argument in
 brackets.  PROMPT replaces the standard one."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Style")
-		    (LaTeX-minted-style-list))
+                    (LaTeX-minted-style-list))
    optional))
 
 (defun LaTeX-minted-update-key-vals ()
@@ -225,19 +225,19 @@ This function checks if one of the packages \"xcolor.sty\" or
 color related key.  \"xcolor.sty\" is preferred if both packages
 are loaded."
   (when (or (member "xcolor" (TeX-style-list))
-	    (member "color" (TeX-style-list)))
+            (member "color" (TeX-style-list)))
     (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
-			 #'LaTeX-xcolor-definecolor-list
-		       #'LaTeX-color-definecolor-list))
-	   (colorkeys '("bgcolor" "highlightcolor"
-			"rulecolor" "spacecolor" "tabcolor"))
-	   (opts (copy-alist LaTeX-minted-key-val-options-local)))
+                         #'LaTeX-xcolor-definecolor-list
+                       #'LaTeX-color-definecolor-list))
+           (colorkeys '("bgcolor" "highlightcolor"
+                        "rulecolor" "spacecolor" "tabcolor"))
+           (opts (copy-alist LaTeX-minted-key-val-options-local)))
       (dolist (key colorkeys)
-	(setq opts (assq-delete-all (car (assoc key opts)) opts))
-	(push (list key (mapcar #'car (funcall colorcmd)))
-	      opts))
+        (setq opts (assq-delete-all (car (assoc key opts)) opts))
+        (push (list key (mapcar #'car (funcall colorcmd)))
+              opts))
       (setq LaTeX-minted-key-val-options-local
-	    (copy-alist opts)))))
+            (copy-alist opts)))))
 
 (defvar LaTeX-minted-auto-newminted nil)
 (defvar LaTeX-minted-newminted-regexp
@@ -261,24 +261,24 @@ are loaded."
 
 (defun LaTeX-minted-auto-prepare ()
   (setq LaTeX-minted-auto-newminted     nil
-	LaTeX-minted-auto-newmint       nil
-	LaTeX-minted-auto-newmintinline nil
-	LaTeX-minted-auto-newmintedfile nil
-	LaTeX-minted-language-list      nil
-	LaTeX-minted-style-list         nil))
+        LaTeX-minted-auto-newmint       nil
+        LaTeX-minted-auto-newmintinline nil
+        LaTeX-minted-auto-newmintedfile nil
+        LaTeX-minted-language-list      nil
+        LaTeX-minted-style-list         nil))
 
 (defun LaTeX-minted-auto-cleanup ()
   ;; \newminted{lang}{opts} => new langcode and langcode* envs.
   ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
   (dolist (name-lang LaTeX-minted-auto-newminted)
     (let* ((env (if (> (length (car name-lang)) 0)
-		    (car name-lang)
-		  (concat (cadr name-lang) "code")))
-	   (env* (concat env "*")))
+                    (car name-lang)
+                  (concat (cadr name-lang) "code")))
+           (env* (concat env "*")))
       (add-to-list 'LaTeX-auto-environment (list env))
       (add-to-list 'LaTeX-auto-environment
-		   (list env* 'LaTeX-env-args
-			 '(TeX-arg-key-val LaTeX-minted-key-val-options-local)))
+                   (list env* 'LaTeX-env-args
+                         '(TeX-arg-key-val LaTeX-minted-key-val-options-local)))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
       (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env)
@@ -287,42 +287,42 @@ are loaded."
   ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code|
   (dolist (name-lang LaTeX-minted-auto-newmint)
     (let ((lang (if (> (length (car name-lang)) 0)
-		    (car name-lang)
-		  (cadr name-lang))))
+                    (car name-lang)
+                  (cadr name-lang))))
       (add-to-list 'TeX-auto-symbol
-		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
-			   TeX-arg-verb))
+                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                           TeX-arg-verb))
       (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
       (when (and (fboundp 'font-latex-add-keywords)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords `((,lang "[")) 'textual))))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords `((,lang "[")) 'textual))))
   ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
   ;;                              \fooinline[key=vals]{code}
   ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
   ;;                                       \macname[key=vals]{code}
   (dolist (name-lang LaTeX-minted-auto-newmintinline)
     (let ((lang (if (> (length (car name-lang)) 0)
-		    (car name-lang)
-		  (concat (cadr name-lang) "inline"))))
+                    (car name-lang)
+                  (concat (cadr name-lang) "inline"))))
       (add-to-list 'TeX-auto-symbol
-		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
-			   TeX-arg-verb-delim-or-brace))
+                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                           TeX-arg-verb-delim-or-brace))
       (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
       (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
       (when (and (fboundp 'font-latex-add-keywords)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords `((,lang "[")) 'textual))))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords `((,lang "[")) 'textual))))
   ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
   ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
   (dolist (name-lang LaTeX-minted-auto-newmintedfile)
     (let ((lang (if (> (length (car name-lang)) 0)
-		    (car name-lang)
-		  (concat (cadr name-lang) "file"))))
+                    (car name-lang)
+                  (concat (cadr name-lang) "file"))))
       (add-to-list 'TeX-auto-symbol
-		   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
-			   TeX-arg-file))))
+                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                           TeX-arg-file))))
   (when (and (fboundp 'font-latex-set-syntactic-keywords)
-	     (eq TeX-install-font-lock 'font-latex-setup))
+             (eq TeX-install-font-lock 'font-latex-setup))
     ;; Refresh font-locking so that the verbatim envs take effect.
     (font-latex-set-syntactic-keywords))
   ;; Also update the key=vals
@@ -338,38 +338,38 @@ TYPE is one of the symbols `brace' or `delim' indicating how
 verbatim text is enclosed after the macro.  MACRO is a string or
 a list of strings."
   (let ((syntax (if (eq type 'brace)
-		    '((1 "|") (2 "|"))
-		  '((1 "\"") (2 ".") (3 "\""))))
-	regexp)
+                    '((1 "|") (2 "|"))
+                  '((1 "\"") (2 ".") (3 "\""))))
+        regexp)
     (when (listp macro)
       (setq macro (regexp-opt macro "\\(?:")))
     (setq regexp `(,(concat
-		     ;; The backslash
-		     (regexp-quote TeX-esc)
-		     ;; Name of the macro(s)
-		     macro
-		     ;; The optional argument
-		     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-		     ;; The first mandatory argument
-		     "\\(?:{[^}]+}\\)"
-		     ;; With 'brace, allow braced sub-groups otherwise
-		     ;; we stop matching too early.  With 'delim, copy
-		     ;; font-latex.el:
-		     (if (eq type 'brace)
-			 (concat "\\({\\)"
-				   "\\(?:[^}{]*"
-				     "\\(?:{[^}{]*"
-				       "\\(?:{[^}{]*"
-					 "\\(?:{[^}{]*}[^}{]*\\)*"
-				       "}[^}{]*\\)*"
-				     "}[^}{]*\\)*"
-				   "\\)"
-				 "\\(}\\)")
-		       (concat
-			;; Opening delimiter
-			"\\([^a-z@*\n\f{]\\).*?"
-			;; Closing delimiter
-			"\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
+                     ;; The backslash
+                     (regexp-quote TeX-esc)
+                     ;; Name of the macro(s)
+                     macro
+                     ;; The optional argument
+                     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+                     ;; The first mandatory argument
+                     "\\(?:{[^}]+}\\)"
+                     ;; With 'brace, allow braced sub-groups otherwise
+                     ;; we stop matching too early.  With 'delim, copy
+                     ;; font-latex.el:
+                     (if (eq type 'brace)
+                         (concat "\\({\\)"
+                                   "\\(?:[^}{]*"
+                                     "\\(?:{[^}{]*"
+                                       "\\(?:{[^}{]*"
+                                         "\\(?:{[^}{]*}[^}{]*\\)*"
+                                       "}[^}{]*\\)*"
+                                     "}[^}{]*\\)*"
+                                   "\\)"
+                                 "\\(}\\)")
+                       (concat
+                        ;; Opening delimiter
+                        "\\([^a-z@*\n\f{]\\).*?"
+                        ;; Closing delimiter
+                        "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
     (add-to-list 'font-latex-syntactic-keywords-extra (append regexp syntax))))
 
 (TeX-add-style-hook
@@ -378,7 +378,7 @@ a list of strings."
 
    ;; Activate local-version of key=vals
    (setq LaTeX-minted-key-val-options-local
-	 (copy-alist LaTeX-minted-key-val-options))
+         (copy-alist LaTeX-minted-key-val-options))
 
    ;; New symbols
    (TeX-add-symbols
@@ -421,21 +421,21 @@ a list of strings."
    ;; style hook and use the interface provided by the style,
    ;; otherwise add "listing" manually
    (if (or (LaTeX-provided-package-options-member "minted" "newfloat")
-	   (LaTeX-provided-package-options-member "minted" "newfloat=true"))
+           (LaTeX-provided-package-options-member "minted" "newfloat=true"))
        (progn
-	 (TeX-run-style-hooks "newfloat")
-	 (LaTeX-add-newfloat-DeclareFloatingEnvironments
-	  '("listing" "verbatim")))
+         (TeX-run-style-hooks "newfloat")
+         (LaTeX-add-newfloat-DeclareFloatingEnvironments
+          '("listing" "verbatim")))
      (LaTeX-add-environments '("listing" ["Float Position"]))
      (TeX-add-symbols '("listoflistings")
-		      '("listingscaption")
-		      '("listoflistingscaption"))
+                      '("listingscaption")
+                      '("listoflistingscaption"))
      (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		  '("listing" current-indentation) t)
+                  '("listing" current-indentation) t)
      (add-to-list 'LaTeX-label-alist '("listing" . LaTeX-listing-label) t)
      (when (fboundp 'reftex-add-label-environments)
        (reftex-add-label-environments
-	'(("listing" ?l "lst:" "~\\ref{%s}" caption nil nil)))))
+        '(("listing" ?l "lst:" "~\\ref{%s}" caption nil nil)))))
 
    ;; Add to the auto parser
    (TeX-auto-add-regexp LaTeX-minted-newminted-regexp)
@@ -445,42 +445,42 @@ a list of strings."
 
    ;; Filling
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("minted" current-indentation) t)
+                '("minted" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "minted")
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("usemintedstyle"  "[{")
-				("setminted"       "[{")
-				("setmintedinline" "[{")
-				("newminted"       "[{{")
-				("newmint"         "[{{")
-				("newmintinline"   "[{{")
-				("newmintedfile"   "[{{"))
-			      'function)
+                                ("setminted"       "[{")
+                                ("setmintedinline" "[{")
+                                ("newminted"       "[{{")
+                                ("newmint"         "[{{")
+                                ("newmintinline"   "[{{")
+                                ("newmintedfile"   "[{{"))
+                              'function)
      (font-latex-add-keywords '(("inputminted" "[{{")
-				("mint"        "[{")
-				("mintinline"  "[{"))
-			      'textual)
+                                ("mint"        "[{")
+                                ("mintinline"  "[{"))
+                              'textual)
      ;; Add \mint & \mintinline to
      ;; `font-latex-syntactic-keywords-extra' and cater for their
      ;; special syntax: \mint[optional]{lang}{verbatim} or
      ;;                 \mint[optional]{lang}|verbatim|
      (LaTeX-minted-add-syntactic-keywords-extra 'brace
-						'("mint" "mintinline"))
+                                                '("mint" "mintinline"))
      (LaTeX-minted-add-syntactic-keywords-extra 'delim
-						'("mint" "mintinline"))
+                                                '("mint" "mintinline"))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-minted-package-options '("chapter"     "cache"
-				       "cachedir"    "finalizecache"
-				       "frozencache" "draft"
-				       "final"       "kpsewhich"
-				       "langlinenos" "newfloat"
-				       "outputdir"   "section")
+                                       "cachedir"    "finalizecache"
+                                       "frozencache" "draft"
+                                       "final"       "kpsewhich"
+                                       "langlinenos" "newfloat"
+                                       "outputdir"   "section")
   "Package options for the minted package.")
 
 ;;; minted.el ends here

@@ -13,12 +13,12 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (declare-function font-latex-add-to-syntax-alist
-		  "font-latex"
-		  (list))
+                  "font-latex"
+                  (list))
 
 (defvar LaTeX-german-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)
@@ -35,23 +35,23 @@
    ;; variables are to be deleted in future versions. (now = 2005-04-01)
    (unless (eq (car TeX-quote-language) 'override)
      (let ((open-quote (if (and (boundp 'LaTeX-german-open-quote)
-				LaTeX-german-open-quote)
-			   LaTeX-german-open-quote
-			 "\"`"))
-	   (close-quote (if (and (boundp 'LaTeX-german-close-quote)
-				 LaTeX-german-close-quote)
-			    LaTeX-german-close-quote
-			  "\"'"))
-	   (q-after-q (if (and (boundp 'LaTeX-german-quote-after-quote)
-			       LaTeX-german-quote-after-quote)
-			  LaTeX-german-quote-after-quote
-			t)))
+                                LaTeX-german-open-quote)
+                           LaTeX-german-open-quote
+                         "\"`"))
+           (close-quote (if (and (boundp 'LaTeX-german-close-quote)
+                                 LaTeX-german-close-quote)
+                            LaTeX-german-close-quote
+                          "\"'"))
+           (q-after-q (if (and (boundp 'LaTeX-german-quote-after-quote)
+                               LaTeX-german-quote-after-quote)
+                          LaTeX-german-quote-after-quote
+                        t)))
        (setq TeX-quote-language
-	     `("ngerman" ,open-quote ,close-quote ,q-after-q))))
+             `("ngerman" ,open-quote ,close-quote ,q-after-q))))
    (setq LaTeX-babel-hyphen-language "ngerman")
    ;; Fontification
    (when (and (eq TeX-install-font-lock 'font-latex-setup)
-	      (featurep 'font-latex))
+              (featurep 'font-latex))
      (font-latex-add-quotes '("\"`" "\"'"))
      (font-latex-add-quotes '("\">" "\"<" german))
      ;; Prevent "| from leading to color bleed.

@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-article-class-options)
 
@@ -92,27 +92,27 @@ For decl environment provided by ltxguide.cls."
 
    ;; Enable `LaTeX-insert-item' in decl-environments:
    (add-to-list 'LaTeX-item-list
-		'("decl" . LaTeX-item-ltxguide-decl)
-		t)
+                '("decl" . LaTeX-item-ltxguide-decl)
+                t)
 
    ;; Make the next 2 macros stay in their own line:
    (LaTeX-paragraph-commands-add-locally '("NEWdescription"
-					   "NEWfeature"))
+                                           "NEWfeature"))
 
    ;; Verbatim-like macros with braces as delimiters:
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "URL")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("m"              "{")
-				("arg"            "{")
-				("oarg"           "{")
-				("NEWfeature"     "{")
-				("NEWdescription" "{"))
-			      'textual)
+                                ("arg"            "{")
+                                ("oarg"           "{")
+                                ("NEWfeature"     "{")
+                                ("NEWdescription" "{"))
+                              'textual)
      (font-latex-add-keywords '(("URL" ""))
-			      'reference)))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-ltxguide-class-options

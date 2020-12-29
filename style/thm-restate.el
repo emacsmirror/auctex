@@ -38,7 +38,7 @@
 
 ;; Silence the parser:
 (declare-function LaTeX-thmtools-declaretheorem-list
-		  "thmtools" ())
+                  "thmtools" ())
 
 ;; Setup for macro names defined with
 ;; \begin{restatable}[<Heading>]{<env-name>}{<macro name>}:
@@ -47,12 +47,12 @@
 
 (defvar LaTeX-thmrestate-restatable-marco-regexp
   `(,(concat "\\\\begin{restatable}"
-	     "[ \t\n\r%]*"
-	     "\\(?:\\[[^]]*\\]\\)?"
-	     "[ \t\n\r%]*"
-	     "\\(?:{[^}]+}\\)"
-	     "[ \t\n\r%]*"
-	     "{\\([^}]+\\)}")
+             "[ \t\n\r%]*"
+             "\\(?:\\[[^]]*\\]\\)?"
+             "[ \t\n\r%]*"
+             "\\(?:{[^}]+}\\)"
+             "[ \t\n\r%]*"
+             "{\\([^}]+\\)}")
     1 LaTeX-auto-thmrestate-restatable-macro))
 
 (defun LaTeX-thmrestate-auto-prepare ()
@@ -63,7 +63,7 @@
   "Process parsed elements from thm-restate package."
   (dolist (newmac (mapcar #'car (LaTeX-thmrestate-restatable-macro-list)))
     (TeX-add-symbols `(,newmac 0)
-		     `(,(concat newmac "*") 0))))
+                     `(,(concat newmac "*") 0))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-thmrestate-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-thmrestate-auto-cleanup t)
@@ -73,7 +73,7 @@
   "Insert arguments for restatable environment from thm-restate package."
   ;; The optional heading argument:
   (let ((TeX-arg-opening-brace LaTeX-optop)
-	(TeX-arg-closing-brace LaTeX-optcl))
+        (TeX-arg-closing-brace LaTeX-optcl))
     (TeX-argument-insert
      (TeX-read-string
       (TeX-argument-prompt t nil "Heading"))
@@ -86,19 +86,19 @@
     (append
      ;; Cater for environments defined with amsthm's \newtheorem
      (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
-		(LaTeX-amsthm-newtheorem-list))
+                (LaTeX-amsthm-newtheorem-list))
        (LaTeX-amsthm-newtheorem-list))
      ;; Cater for environments defined with ntheorem's \newtheorem
      (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
-		(LaTeX-ntheorem-newtheorem-list))
+                (LaTeX-ntheorem-newtheorem-list))
        (LaTeX-ntheorem-newtheorem-list))
      ;; Environments defined with \declaretheorem
      (LaTeX-thmtools-declaretheorem-list)))
    optional)
   (let ((mac (TeX-read-string
-	      (TeX-argument-prompt optional nil "Macro"))))
+              (TeX-argument-prompt optional nil "Macro"))))
     (TeX-add-symbols `(,mac 0)
-		     `(,(concat mac "*") 0))
+                     `(,(concat mac "*") 0))
     (TeX-argument-insert mac optional)))
 
 (TeX-add-style-hook

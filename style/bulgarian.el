@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (defvar LaTeX-bulgarian-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)
@@ -51,7 +51,7 @@
    (set-syntax-table LaTeX-bulgarian-mode-syntax-table)
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language
-	   `("bulgarian" "\"`" "\"'" ,TeX-quote-after-quote)))
+           `("bulgarian" "\"`" "\"'" ,TeX-quote-after-quote)))
    (setq LaTeX-babel-hyphen-language "bulgarian")
    ;; Fontification of quotation marks.
    (when (fboundp 'font-latex-add-quotes)

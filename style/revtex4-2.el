@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 (defvar LaTeX-natbib-package-options)
 (defvar LaTeX-url-package-options)
 
@@ -46,18 +46,18 @@
 This function is meant to be used for \"video\" environment
 provided by REVTeX class."
   (let* ((float (and LaTeX-float ; LaTeX-float can be nil, i.e. do not prompt
-		     (TeX-read-string
-		      (TeX-argument-prompt t nil "Float position")
-		      LaTeX-float)))
-	 (caption (TeX-read-string
-		   (TeX-argument-prompt nil nil "Caption")))
-	 (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
-			  (TeX-read-string
-			   (TeX-argument-prompt t nil "Short caption")))))
+                     (TeX-read-string
+                      (TeX-argument-prompt t nil "Float position")
+                      LaTeX-float)))
+         (caption (TeX-read-string
+                   (TeX-argument-prompt nil nil "Caption")))
+         (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
+                          (TeX-read-string
+                           (TeX-argument-prompt t nil "Short caption")))))
     (setq LaTeX-float float)
     (LaTeX-insert-environment environment
-			      (unless (zerop (length float))
-				(concat LaTeX-optop float LaTeX-optcl)))
+                              (unless (zerop (length float))
+                                (concat LaTeX-optop float LaTeX-optcl)))
     ;; Save the place where we've started:
     (save-excursion
       ;; Add a new line and add the \setfloatlink macro:
@@ -67,16 +67,16 @@ provided by REVTeX class."
       ;; Insert caption and ask for a label, do nothing if user skips
       ;; caption:
       (when (and caption (not (string= caption "")))
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	(insert (LaTeX-compose-caption-macro caption short-caption))
-	;; If `auto-fill-mode' is active, fill the caption.
-	(when auto-fill-function (LaTeX-fill-paragraph))
-	(LaTeX-newline)
-	(indent-according-to-mode)
-	;; Ask for a label and indent only if it is inserted:
-	(when (LaTeX-label environment 'environment)
-	  (indent-according-to-mode))))))
+        (LaTeX-newline)
+        (indent-according-to-mode)
+        (insert (LaTeX-compose-caption-macro caption short-caption))
+        ;; If `auto-fill-mode' is active, fill the caption.
+        (when auto-fill-function (LaTeX-fill-paragraph))
+        (LaTeX-newline)
+        (indent-according-to-mode)
+        ;; Ask for a label and indent only if it is inserted:
+        (when (LaTeX-label environment 'environment)
+          (indent-according-to-mode))))))
 
 (TeX-add-style-hook
  "revtex4-2"
@@ -85,7 +85,7 @@ provided by REVTeX class."
    ;; Add standard stuff taken from `article.el':
    (LaTeX-largest-level-set "section")
    (LaTeX-add-counters "part" "section" "subsection" "subsubsection"
-		       "paragraph" "subparagraph" "figure" "table")
+                       "paragraph" "subparagraph" "figure" "table")
    (LaTeX-add-environments "abstract")
 
    ;; Run style hooks for packages loaded by default:
@@ -95,12 +95,12 @@ provided by REVTeX class."
    ;; respectively.  car of the cons is the REVTeX class option, cdr
    ;; the name of AUCTeX style:
    (let ((opt-style '(("amsfonts" . "amsfonts")
-		      ("amsmath" . "amsmath")
-		      ("linenumbers" . "lineno")))
-	 (opt-cls (cdar LaTeX-provided-class-options)))
+                      ("amsmath" . "amsmath")
+                      ("linenumbers" . "lineno")))
+         (opt-cls (cdar LaTeX-provided-class-options)))
      (dolist (opt opt-style)
        (when (member (car opt) opt-cls)
-	 (TeX-run-style-hooks (cdr opt)))))
+         (TeX-run-style-hooks (cdr opt)))))
 
    (TeX-add-symbols
     ;; IV.3. Specifying authors and affiliations
@@ -166,16 +166,16 @@ provided by REVTeX class."
 
    ;; Append entry for `video' to `LaTeX-label-alist':
    (add-to-list 'LaTeX-label-alist
-		(cons "video" 'LaTeX-revtex4-2-video-label)
-		t)
+                (cons "video" 'LaTeX-revtex4-2-video-label)
+                t)
 
    ;; Tell RefTeX about `video' environment:
    (when (fboundp 'reftex-add-label-environments)
      (reftex-add-label-environments
       `(("video"
-	 ,LaTeX-revtex4-2-video-reftex-quick-id-key
-	 ,LaTeX-revtex4-2-video-label
-	 "~\\ref{%s}" caption))))
+         ,LaTeX-revtex4-2-video-reftex-quick-id-key
+         ,LaTeX-revtex4-2-video-label
+         "~\\ref{%s}" caption))))
 
    ;; X.3. Dealing with Long Tables
    (when (member "longtable" (TeX-style-list))
@@ -189,29 +189,29 @@ provided by REVTeX class."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fbox"          "*[{")
-				("keywords"      "{")
-				("preprint"      "")
-				("onecolumngrid" "")
-				("twocolumngrid" "")
-				("squeezetable"  "")
-				("printtables"   "*")
-				("printfigures"  "*"))
-			      'function)
+                                ("keywords"      "{")
+                                ("preprint"      "")
+                                ("onecolumngrid" "")
+                                ("twocolumngrid" "")
+                                ("squeezetable"  "")
+                                ("printtables"   "*")
+                                ("printfigures"  "*"))
+                              'function)
      (font-latex-add-keywords '(("affiliation"    "{")
-				("noaffiliation"  "")
-				("collaboration"  "{")
-				("altaffiliation" "[{"))
-			      'textual)
+                                ("noaffiliation"  "")
+                                ("collaboration"  "{")
+                                ("altaffiliation" "[{"))
+                              'textual)
      (font-latex-add-keywords '(("email"        "[")
-				("homepage"     "[")
-				("onlinecite"   "[[{")
-				("textcite"     "[[{")
-				("setfloatlink" ""))
-			      'reference)
+                                ("homepage"     "[")
+                                ("onlinecite"   "[[{")
+                                ("textcite"     "[[{")
+                                ("setfloatlink" ""))
+                              'reference)
      (font-latex-add-keywords '(("appendix*" ""))
-			      'warning)))
+                              'warning)))
  TeX-dialect)
 
 (defvar LaTeX-revtex4-2-class-options

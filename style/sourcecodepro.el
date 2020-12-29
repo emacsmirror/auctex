@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "sourcecodepro"
@@ -45,9 +45,9 @@
 
    ;; Load "fontspec" with package options "opentype" or "otf":
    (when (or (LaTeX-provided-package-options-member "sourcecodepro" "opentype")
-	     (LaTeX-provided-package-options-member "sourcecodepro" "opentype=true")
-	     (LaTeX-provided-package-options-member "sourcecodepro" "otf")
-	     (LaTeX-provided-package-options-member "sourcecodepro" "otf=true"))
+             (LaTeX-provided-package-options-member "sourcecodepro" "opentype=true")
+             (LaTeX-provided-package-options-member "sourcecodepro" "otf")
+             (LaTeX-provided-package-options-member "sourcecodepro" "otf=true"))
      (TeX-run-style-hooks "fontspec"))
 
    ;; The next set of macros is only available when package "fontspec"
@@ -63,14 +63,14 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup)
-	      (member "fontspec" (TeX-style-list)))
+              (eq TeX-install-font-lock 'font-latex-setup)
+              (member "fontspec" (TeX-style-list)))
      (font-latex-add-keywords '(("sourcecodepro"        "")
-				("sourcecodepromedium"  "")
-				("sourcecodeprolight"   "")
-				("sourcecodeproextreme" "")
-				("sourcecodeprolf"      ""))
-			      'type-declaration)))
+                                ("sourcecodepromedium"  "")
+                                ("sourcecodeprolight"   "")
+                                ("sourcecodeproextreme" "")
+                                ("sourcecodeprolf"      ""))
+                              'type-declaration)))
  TeX-dialect)
 
 (defvar LaTeX-sourcecodepro-package-options

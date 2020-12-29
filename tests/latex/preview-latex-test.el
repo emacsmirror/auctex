@@ -30,11 +30,11 @@ If a utf-8 byte sequence is partially ^^-quoted in latex output, we have
 to decode ^^ab as raw 8-bit character first and decode in the sense of
 emacs' coding system later."
   (let (case-fold-search
-	(buffer-file-coding-system 'utf-8))
+        (buffer-file-coding-system 'utf-8))
     (dolist (str '("primárias"
-		   ;; Unicode character á is encoded in utf-8 as
-		   ;; a byte sequence \xC3 \xA1.
-		   "prim\xC3\xA1rias" "prim^^c3\xA1rias" "prim^^c3^^a1rias"))
+                   ;; Unicode character á is encoded in utf-8 as
+                   ;; a byte sequence \xC3 \xA1.
+                   "prim\xC3\xA1rias" "prim^^c3\xA1rias" "prim^^c3^^a1rias"))
       (should (string-match (preview-error-quote str) "primárias")))))
 
 (ert-deftest preview-decode-^^ab-utf-8 ()

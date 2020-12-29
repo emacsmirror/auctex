@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-titleps-section-command-list
   '("part"
@@ -76,49 +76,49 @@ Removal is based on the return value of function
      (TeX-add-symbols `(,(concat sec "title") 0)))
 
    (TeX-add-symbols
-   ;; 2. Defining Page Styles
+    ;; 2. Defining Page Styles
     '("newpagestyle"
       (TeX-arg-eval
        (lambda ()
-	 (let ((ps (TeX-read-string
-		    (TeX-argument-prompt nil nil "Page style"))))
-	   (LaTeX-add-pagestyles ps)
-	   (format "%s" ps))))
+         (let ((ps (TeX-read-string
+                    (TeX-argument-prompt nil nil "Page style"))))
+           (LaTeX-add-pagestyles ps)
+           (format "%s" ps))))
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
-			   ( [ t ] nil)
-			 ( t )))
+                           ( [ t ] nil)
+                           ( t )))
 
     '("renewpagestyle" TeX-arg-pagestyle
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
-			   ( [ t ] nil)
-			 ( t )))
+                           ( [ t ] nil)
+                           ( t )))
 
     '("sethead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil)
-			 ( 3 )))
+                           ( [ 3 ] nil nil nil)
+                           ( 3 )))
 
     '("setfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil)
-			 ( 3 )))
+                           ( [ 3 ] nil nil nil)
+                           ( 3 )))
 
     '("sethead*" 3)
     '("setfoot*" 3)
 
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
-		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt nil nil "Level names")
-		     (LaTeX-titleps-section-command-list))
-		    ","))
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt nil nil "Level names")
+                     (LaTeX-titleps-section-command-list))
+                    ","))
 
     '("settitlemarks"
       (TeX-arg-eval mapconcat #'identity
-		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt nil nil "Level names")
-		     (LaTeX-titleps-section-command-list))
-		    ","))
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt nil nil "Level names")
+                     (LaTeX-titleps-section-command-list))
+                    ","))
 
     '("headrule" 0)
     '("setheadrule" "Thickness")
@@ -136,25 +136,25 @@ Removal is based on the return value of function
     ;; 4. Headline/footline width
     '("widenhead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 2 ] nil nil)
-			 ( 2 )))
+                           ( [ 2 ] nil nil)
+                           ( 2 )))
 
     '("widenhead*" 2)
 
     '("TitlepsPatchSection"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titleps-section-command-list)))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titleps-section-command-list)))
 
     '("TitlepsPatchSection*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titleps-section-command-list)))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titleps-section-command-list)))
 
     ;; 5. Marks
     '("bottitlemarks"     0)
     '("toptitlemarks"     0)
-    '("firsttitlemarks"	  0)
+    '("firsttitlemarks"   0)
     '("nexttoptitlemarks" 0)
     '("outertitlemarks"   0)
     '("innertitlemarks"   0)
@@ -164,14 +164,14 @@ Removal is based on the return value of function
 
     '("pretitlemark"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titleps-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titleps-section-command-list))
       "Text")
 
     '("pretitlemark*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Sectioning command")
-		    (LaTeX-titleps-section-command-list))
+                    (TeX-argument-prompt nil nil "Sectioning command")
+                    (LaTeX-titleps-section-command-list))
       "Text")
 
     '("ifsamemark"
@@ -182,26 +182,26 @@ Removal is based on the return value of function
     ;; 6. Running heads with floats
     '("setfloathead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil nil [ nil ] )
-			 ( 4 [ nil ] )))
+                           ( [ 3 ] nil nil nil nil [ nil ] )
+                           ( 4 [ nil ] )))
 
     '("setfloatfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil nil [ nil ] )
-			 ( 4 [ nil ] )))
+                           ( [ 3 ] nil nil nil nil [ nil ] )
+                           ( 4 [ nil ] )))
 
     '("setfloathead*" 4 [ nil ] )
     '("setfloatfoot*" 4 [ nil ] )
 
     '("nextfloathead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil nil [ nil ] )
-			 ( 4 [ nil ] )))
+                           ( [ 3 ] nil nil nil nil [ nil ] )
+                           ( 4 [ nil ] )))
 
     '("nextfloatfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-			   ( [ 3 ] nil nil nil nil [ nil ] )
-			 ( 4 [ nil ] )))
+                           ( [ 3 ] nil nil nil nil [ nil ] )
+                           ( 4 [ nil ] )))
 
     '("nextfloathead*" 4 [ nil ] )
     '("nextfloatfoot*" 4 [ nil ] )
@@ -211,17 +211,17 @@ Removal is based on the return value of function
     )
 
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("newpagestyle"         "{[{")
-				("renewpagestyle"       "{[{")
-				("settitlemarks"        "*{")
-				("widenhead"            "*[[{{")
-				("TitlepsPatchSection"  "*{")
-				("newtitlemark"         "*{")
-				("pretitlemark"         "*{{")
-				("nextfloathead"        "*[[[{{{{[")
-				("nextfloatfoot"        "*[[[{{{{["))
-			      'function)))
+                                ("renewpagestyle"       "{[{")
+                                ("settitlemarks"        "*{")
+                                ("widenhead"            "*[[{{")
+                                ("TitlepsPatchSection"  "*{")
+                                ("newtitlemark"         "*{")
+                                ("pretitlemark"         "*{{")
+                                ("nextfloathead"        "*[[[{{{{[")
+                                ("nextfloatfoot"        "*[[[{{{{["))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-titleps-package-options

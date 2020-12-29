@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 ;; Insert an itemize-ish environment and ask for an optional label
 (defun LaTeX-paralist-env-item-opt-label (environment)
@@ -96,20 +96,20 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("setdefaultitem" "{{{{")
-				("setdefaultenum" "{{{{")
-				("setdefaultleftmargin" "{{{{{{"))
-			      'variable)))
+                                ("setdefaultenum" "{{{{")
+                                ("setdefaultleftmargin" "{{{{{{"))
+                              'variable)))
  TeX-dialect)
 
 (defvar LaTeX-paralist-package-options '("newitem" "olditem" "newenum"
-					 "oldenum" "alwaysadjust"
-					 "neveradjust" "neverdecrease"
-					 "increaseonly" "defblank"
-					 "pointedenum" "pointlessenum"
-					 "cfg" "nocfg" "flushright"
-					 "flushleft")
+                                         "oldenum" "alwaysadjust"
+                                         "neveradjust" "neverdecrease"
+                                         "increaseonly" "defblank"
+                                         "pointedenum" "pointlessenum"
+                                         "cfg" "nocfg" "flushright"
+                                         "flushleft")
   "Package options for the paralist package.")
 
 ;;; paralist.el ends here

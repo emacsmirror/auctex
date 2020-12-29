@@ -66,9 +66,9 @@
 Valid items are the symbols 'env for environments, 'macro for
 macros, 'math for math macros and 'comment for comments."
   :type '(set (const :tag "Environments" env)
-	      (const :tag "Macros" macro)
-	      (const :tag "Math Macros" math)
-	      (const :tag "Comments" comment))
+              (const :tag "Macros" macro)
+              (const :tag "Math Macros" math)
+              (const :tag "Comments" comment))
   :group 'TeX-fold)
 
 (defcustom TeX-fold-macro-spec-list
@@ -83,11 +83,11 @@ macros, 'math for math macros and 'comment for comments."
     ("(R)" ("textregistered"))
     ("TM"  ("texttrademark"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
-	"paragraph" "subparagraph"
-	"part*" "chapter*" "section*" "subsection*" "subsubsection*"
-	"paragraph*" "subparagraph*"
-	"emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
-	"textbf" "textsc" "textup")))
+        "paragraph" "subparagraph"
+        "part*" "chapter*" "section*" "subsection*" "subsubsection*"
+        "paragraph*" "subparagraph*"
+        "emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
+        "textbf" "textsc" "textup")))
   "List of replacement specifiers and macros to fold.
 
 The first element of each item can be a string, an integer or a
@@ -117,9 +117,9 @@ of the function call will be used as a replacement for the macro.
 Setting this variable does not take effect immediately.  Use
 Customize or reset the mode."
   :type '(repeat (group (choice (string :tag "Display String")
-				(integer :tag "Number of argument" :value 1)
-				(function :tag "Function to execute"))
-			(repeat :tag "Macros" (string))))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
+                        (repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
 (defvar TeX-fold-macro-spec-list-internal nil
@@ -134,8 +134,8 @@ and <mode-prefix>-fold-macro-spec-list.")
   '(("[comment]" ("comment")))
   "List of display strings and environments to fold."
   :type '(repeat (group (choice (string :tag "Display String")
-				(integer :tag "Number of argument" :value 1))
-			(repeat :tag "Environments" (string))))
+                                (integer :tag "Number of argument" :value 1))
+                        (repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
 (defvar TeX-fold-env-spec-list-internal nil
@@ -149,8 +149,8 @@ and <mode-prefix>-fold-env-spec-list.")
 (defcustom TeX-fold-math-spec-list nil
   "List of display strings and math macros to fold."
   :type '(repeat (group (choice (string :tag "Display String")
-				(integer :tag "Number of argument" :value 1))
-			(repeat :tag "Math Macros" (string))))
+                                (integer :tag "Number of argument" :value 1))
+                        (repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
 (defvar TeX-fold-math-spec-list-internal nil
@@ -280,11 +280,11 @@ region, fold all configured content in this region.  If there is
 no folded content but a macro or environment, fold it."
   (interactive)
   (cond ((TeX-fold-clearout-item))
-	((TeX-active-mark) (TeX-fold-region (mark) (point)))
-	((TeX-fold-item 'macro))
-	((TeX-fold-item 'math))
-	((TeX-fold-item 'env))
-	((TeX-fold-comment))))
+        ((TeX-active-mark) (TeX-fold-region (mark) (point)))
+        ((TeX-fold-item 'macro))
+        ((TeX-fold-item 'math))
+        ((TeX-fold-item 'env))
+        ((TeX-fold-comment))))
 
 (defun TeX-fold-buffer ()
   "Hide all configured macros and environments in the current buffer.
@@ -293,9 +293,9 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (TeX-fold-clearout-region (point-min) (point-max))
   (when (and TeX-fold-force-fontify
-	     (boundp 'jit-lock-mode)
-	     jit-lock-mode
-	     (fboundp 'jit-lock-fontify-now))
+             (boundp 'jit-lock-mode)
+             jit-lock-mode
+             (fboundp 'jit-lock-fontify-now))
     ;; We force fontification here only because it should rarely be
     ;; needed for the other folding commands.
     (jit-lock-fontify-now))
@@ -308,7 +308,7 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (save-excursion
     (let ((end (progn (LaTeX-forward-paragraph) (point)))
-	  (start (progn (LaTeX-backward-paragraph) (point))))
+          (start (progn (LaTeX-backward-paragraph) (point))))
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
@@ -316,7 +316,7 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   "Fold all items in region from START to END."
   (interactive "r")
   (when (and (memq 'env TeX-fold-type-list)
-	     (not (eq major-mode 'plain-tex-mode)))
+             (not (eq major-mode 'plain-tex-mode)))
     (TeX-fold-region-macro-or-env start end 'env))
   (when (memq 'macro TeX-fold-type-list)
     (TeX-fold-region-macro-or-env start end 'macro))
@@ -332,58 +332,58 @@ for macros and 'math for math macros."
   (save-excursion
     (let (fold-list item-list regexp)
       (dolist (item (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
-			  ((eq type 'math) TeX-fold-math-spec-list-internal)
-			  (t TeX-fold-macro-spec-list-internal)))
-	(dolist (i (cadr item))
+                          ((eq type 'math) TeX-fold-math-spec-list-internal)
+                          (t TeX-fold-macro-spec-list-internal)))
+        (dolist (i (cadr item))
           (cl-pushnew (list i (car item)) fold-list :test #'equal)
-	  (cl-pushnew i item-list :test #'equal)))
+          (cl-pushnew i item-list :test #'equal)))
       (when item-list
-	(setq regexp (cond ((and (eq type 'env)
-				 (eq major-mode 'context-mode))
-			    (concat (regexp-quote TeX-esc)
-				    "start" (regexp-opt item-list t)))
-			   ((and (eq type 'env)
-				 (eq major-mode 'texinfo-mode))
-			    (concat (regexp-quote TeX-esc)
-				    (regexp-opt item-list t)))
-			   ((eq type 'env)
-			    (concat (regexp-quote TeX-esc)
-				    "begin[ \t]*{"
-				    (regexp-opt item-list t) "}"))
-			   (t
-			    (concat (regexp-quote TeX-esc)
-				    (regexp-opt item-list t)))))
-	(save-restriction
-	  (narrow-to-region start end)
-	  ;; Start from the bottom so that it is easier to prioritize
-	  ;; nested macros.
-	  (goto-char (point-max))
-	  (let ((case-fold-search nil)
-		item-name)
-	    (while (re-search-backward regexp nil t)
-	      (setq item-name (match-string 1))
-	      (unless (or (and TeX-fold-preserve-comments
-			       (TeX-in-commented-line))
-			  ;; Make sure no partially matched macros are
-			  ;; folded.  For macros consisting of letters
-			  ;; this means there should be none of the
-			  ;; characters [A-Za-z@*] after the matched
-			  ;; string.  Single-char non-letter macros like
-			  ;; \, don't have this requirement.
-			  (and (memq type '(macro math))
-			       (save-match-data
-				 (string-match "[A-Za-z]" item-name))
-			       (save-match-data
-				 (string-match "[A-Za-z@*]"
-					       (string (char-after
-							(match-end 0)))))))
-		(let* ((item-start (match-beginning 0))
-		       (display-string-spec (cadr (assoc item-name
-							 fold-list)))
-		       (item-end (TeX-fold-item-end item-start type))
-		       (ov (TeX-fold-make-overlay item-start item-end type
-						  display-string-spec)))
-		  (TeX-fold-hide-item ov))))))))))
+        (setq regexp (cond ((and (eq type 'env)
+                                 (eq major-mode 'context-mode))
+                            (concat (regexp-quote TeX-esc)
+                                    "start" (regexp-opt item-list t)))
+                           ((and (eq type 'env)
+                                 (eq major-mode 'texinfo-mode))
+                            (concat (regexp-quote TeX-esc)
+                                    (regexp-opt item-list t)))
+                           ((eq type 'env)
+                            (concat (regexp-quote TeX-esc)
+                                    "begin[ \t]*{"
+                                    (regexp-opt item-list t) "}"))
+                           (t
+                            (concat (regexp-quote TeX-esc)
+                                    (regexp-opt item-list t)))))
+        (save-restriction
+          (narrow-to-region start end)
+          ;; Start from the bottom so that it is easier to prioritize
+          ;; nested macros.
+          (goto-char (point-max))
+          (let ((case-fold-search nil)
+                item-name)
+            (while (re-search-backward regexp nil t)
+              (setq item-name (match-string 1))
+              (unless (or (and TeX-fold-preserve-comments
+                               (TeX-in-commented-line))
+                          ;; Make sure no partially matched macros are
+                          ;; folded.  For macros consisting of letters
+                          ;; this means there should be none of the
+                          ;; characters [A-Za-z@*] after the matched
+                          ;; string.  Single-char non-letter macros like
+                          ;; \, don't have this requirement.
+                          (and (memq type '(macro math))
+                               (save-match-data
+                                 (string-match "[A-Za-z]" item-name))
+                               (save-match-data
+                                 (string-match "[A-Za-z@*]"
+                                               (string (char-after
+                                                        (match-end 0)))))))
+                (let* ((item-start (match-beginning 0))
+                       (display-string-spec (cadr (assoc item-name
+                                                         fold-list)))
+                       (item-end (TeX-fold-item-end item-start type))
+                       (ov (TeX-fold-make-overlay item-start item-end type
+                                                  display-string-spec)))
+                  (TeX-fold-hide-item ov))))))))))
 
 (defun TeX-fold-region-comment (start end)
   "Fold all comments in region from START to END."
@@ -391,17 +391,17 @@ for macros and 'math for math macros."
     (goto-char start)
     (let (beg)
       (while (setq beg (TeX-search-forward-comment-start end))
-	(goto-char beg)
-	;; Determine the start of the region to be folded just behind
-	;; the comment starter.
-	(looking-at TeX-comment-start-regexp)
-	(setq beg (match-end 0))
-	;; Search for the end of the comment.
-	(while (TeX-comment-forward))
-	(end-of-line 0)
-	;; Hide the whole region.
-	(TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
-						   TeX-fold-ellipsis))))))
+        (goto-char beg)
+        ;; Determine the start of the region to be folded just behind
+        ;; the comment starter.
+        (looking-at TeX-comment-start-regexp)
+        (setq beg (match-end 0))
+        ;; Search for the end of the comment.
+        (while (TeX-comment-forward))
+        (end-of-line 0)
+        ;; Hide the whole region.
+        (TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
+                                                   TeX-fold-ellipsis))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
@@ -434,68 +434,68 @@ TYPE specifies the type of item and can be one of the symbols
 macros.
 Return non-nil if an item was found and folded, nil otherwise."
   (if (and (eq type 'env)
-	   (eq major-mode 'plain-tex-mode))
+           (eq major-mode 'plain-tex-mode))
       (message
        "Folding of environments is not supported in current mode")
     (let ((item-start (cond ((and (eq type 'env)
-				  (eq major-mode 'context-mode))
-			     (save-excursion
-			       (ConTeXt-find-matching-start) (point)))
-			    ((and (eq type 'env)
-				  (eq major-mode 'texinfo-mode))
-			     (save-excursion
-			       (Texinfo-find-env-start) (point)))
-			    ((eq type 'env)
-			     (condition-case nil
-				 (save-excursion
-				   (LaTeX-find-matching-begin) (point))
-			       (error nil)))
-			    (t
-			     (TeX-find-macro-start)))))
+                                  (eq major-mode 'context-mode))
+                             (save-excursion
+                               (ConTeXt-find-matching-start) (point)))
+                            ((and (eq type 'env)
+                                  (eq major-mode 'texinfo-mode))
+                             (save-excursion
+                               (Texinfo-find-env-start) (point)))
+                            ((eq type 'env)
+                             (condition-case nil
+                                 (save-excursion
+                                   (LaTeX-find-matching-begin) (point))
+                               (error nil)))
+                            (t
+                             (TeX-find-macro-start)))))
       (when item-start
-	(let* ((item-name (save-excursion
-			    (goto-char item-start)
-			    (looking-at
-			     (cond ((and (eq type 'env)
-					 (eq major-mode 'context-mode))
-				    (concat (regexp-quote TeX-esc)
-					    "start\\([A-Za-z]+\\)"))
-				   ((and (eq type 'env)
-					 (eq major-mode 'texinfo-mode))
-				    (concat (regexp-quote TeX-esc)
-					    "\\([A-Za-z]+\\)"))
-				   ((eq type 'env)
-				    (concat (regexp-quote TeX-esc)
-					    "begin[ \t]*{"
-					    "\\([A-Za-z*]+\\)}"))
-				   (t
-				    (concat (regexp-quote TeX-esc)
-					    "\\([A-Za-z@*]+\\)"))))
-			    (if (fboundp 'match-string-no-properties)
-				(match-string-no-properties 1)
-			      (match-string 1))))
-	       (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
-				((eq type 'math)
-				 TeX-fold-math-spec-list-internal)
-				(t TeX-fold-macro-spec-list-internal)))
-	       fold-item
-	       (display-string-spec
-		(or (catch 'found
-		      (while fold-list
-			(setq fold-item (car fold-list))
-			(setq fold-list (cdr fold-list))
-			(when (member item-name (cadr fold-item))
-			  (throw 'found (car fold-item)))))
-		    ;; Item is not specified.
-		    (if TeX-fold-unspec-use-name
-			(concat "[" item-name "]")
-		      (if (eq type 'env)
-			  TeX-fold-unspec-env-display-string
-			TeX-fold-unspec-macro-display-string))))
-	       (item-end (TeX-fold-item-end item-start type))
-	       (ov (TeX-fold-make-overlay item-start item-end type
-					  display-string-spec)))
-	  (TeX-fold-hide-item ov))))))
+        (let* ((item-name (save-excursion
+                            (goto-char item-start)
+                            (looking-at
+                             (cond ((and (eq type 'env)
+                                         (eq major-mode 'context-mode))
+                                    (concat (regexp-quote TeX-esc)
+                                            "start\\([A-Za-z]+\\)"))
+                                   ((and (eq type 'env)
+                                         (eq major-mode 'texinfo-mode))
+                                    (concat (regexp-quote TeX-esc)
+                                            "\\([A-Za-z]+\\)"))
+                                   ((eq type 'env)
+                                    (concat (regexp-quote TeX-esc)
+                                            "begin[ \t]*{"
+                                            "\\([A-Za-z*]+\\)}"))
+                                   (t
+                                    (concat (regexp-quote TeX-esc)
+                                            "\\([A-Za-z@*]+\\)"))))
+                            (if (fboundp 'match-string-no-properties)
+                                (match-string-no-properties 1)
+                              (match-string 1))))
+               (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
+                                ((eq type 'math)
+                                 TeX-fold-math-spec-list-internal)
+                                (t TeX-fold-macro-spec-list-internal)))
+               fold-item
+               (display-string-spec
+                (or (catch 'found
+                      (while fold-list
+                        (setq fold-item (car fold-list))
+                        (setq fold-list (cdr fold-list))
+                        (when (member item-name (cadr fold-item))
+                          (throw 'found (car fold-item)))))
+                    ;; Item is not specified.
+                    (if TeX-fold-unspec-use-name
+                        (concat "[" item-name "]")
+                      (if (eq type 'env)
+                          TeX-fold-unspec-env-display-string
+                        TeX-fold-unspec-macro-display-string))))
+               (item-end (TeX-fold-item-end item-start type))
+               (ov (TeX-fold-make-overlay item-start item-end type
+                                          display-string-spec)))
+          (TeX-fold-hide-item ov))))))
 
 (defun TeX-fold-comment-do ()
   "Hide the comment on which point currently is located.
@@ -507,18 +507,18 @@ Return non-nil if a comment was found and folded, nil otherwise."
       nil
     (let (beg)
       (save-excursion
-	(while (progn
-		 (beginning-of-line 0)
-		 (and (TeX-in-line-comment)
-		      (not (bobp)))))
-	(goto-char (TeX-search-forward-comment-start (line-end-position 2)))
-	(looking-at TeX-comment-start-regexp)
-	(setq beg (match-end 0))
-	(while (TeX-comment-forward))
-	(end-of-line 0)
-	(when (> (point) beg)
-	  (TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
-						     TeX-fold-ellipsis)))))))
+        (while (progn
+                 (beginning-of-line 0)
+                 (and (TeX-in-line-comment)
+                      (not (bobp)))))
+        (goto-char (TeX-search-forward-comment-start (line-end-position 2)))
+        (looking-at TeX-comment-start-regexp)
+        (setq beg (match-end 0))
+        (while (TeX-comment-forward))
+        (end-of-line 0)
+        (when (> (point) beg)
+          (TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
+                                                     TeX-fold-ellipsis)))))))
 
 
 ;;; Utilities
@@ -534,7 +534,7 @@ string in the variables `TeX-fold-macro-spec-list' or
   ;; Calculate priority before the overlay is instantiated.  We don't
   ;; want `TeX-overlay-prioritize' to pick up a non-prioritized one.
   (let ((priority (TeX-overlay-prioritize ov-start ov-end))
-	(ov (make-overlay ov-start ov-end (current-buffer) t nil)))
+        (ov (make-overlay ov-start ov-end (current-buffer) t nil)))
     (overlay-put ov 'category 'TeX-fold)
     (overlay-put ov 'priority priority)
     (overlay-put ov 'evaporate t)
@@ -548,22 +548,22 @@ TYPE can be either 'env for environments, 'macro for macros or
 'math for math macros."
   (save-excursion
     (cond ((and (eq type 'env)
-		(eq major-mode 'context-mode))
-	   (goto-char start)
-	   (ConTeXt-find-matching-stop)
-	   (point))
-	  ((and (eq type 'env)
-		(eq major-mode 'texinfo-mode))
-	   (goto-char (1+ start))
-	   (Texinfo-find-env-end)
-	   (point))
-	  ((eq type 'env)
-	   (goto-char (1+ start))
-	   (LaTeX-find-matching-end)
-	   (point))
-	  (t
-	   (goto-char start)
-	   (TeX-find-macro-end)))))
+                (eq major-mode 'context-mode))
+           (goto-char start)
+           (ConTeXt-find-matching-stop)
+           (point))
+          ((and (eq type 'env)
+                (eq major-mode 'texinfo-mode))
+           (goto-char (1+ start))
+           (Texinfo-find-env-end)
+           (point))
+          ((eq type 'env)
+           (goto-char (1+ start))
+           (LaTeX-find-matching-end)
+           (point))
+          (t
+           (goto-char start)
+           (TeX-find-macro-end)))))
 
 (defun TeX-fold-overfull-p (ov-start ov-end display-string)
   "Return t if an overfull line will result after adding an overlay.
@@ -575,14 +575,14 @@ string DISPLAY-STRING."
      (search-backward "\n" ov-start t))
    (not (string-match "\n" display-string))
    (> (+ (- ov-start
-	    (save-excursion
-	      (goto-char ov-start)
-	      (line-beginning-position)))
-	 (length display-string)
-	 (- (save-excursion
-	      (goto-char ov-end)
-	      (line-end-position))
-	    ov-end))
+            (save-excursion
+              (goto-char ov-start)
+              (line-beginning-position)))
+         (length display-string)
+         (- (save-excursion
+              (goto-char ov-end)
+              (line-end-position))
+            ov-end))
       (current-fill-column))))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end delims)
@@ -599,39 +599,39 @@ the argument, with text properties.  The second item is for
 backward compatibility and always nil."
   (save-excursion
     (let* ((macro-end (or macro-end
-			  (save-excursion (goto-char macro-start)
-					  (TeX-find-macro-end))))
-	   (open-char (if delims (car delims) ?{))
-	   (open-string (char-to-string open-char))
-	   (close-char (if delims (cdr delims) ?}))
-	   (close-string (char-to-string close-char))
-	   content-start content-end)
+                          (save-excursion (goto-char macro-start)
+                                          (TeX-find-macro-end))))
+           (open-char (if delims (car delims) ?{))
+           (open-string (char-to-string open-char))
+           (close-char (if delims (cdr delims) ?}))
+           (close-string (char-to-string close-char))
+           content-start content-end)
       (goto-char macro-start)
       (if (condition-case nil
-	      (progn
-		(while (> n 0)
-		  (skip-chars-forward (concat "^" open-string) macro-end)
-		  (when (= (point) macro-end)
-		    (error nil))
-		  (setq content-start (progn
-					(skip-chars-forward
-					 (concat open-string " \t"))
-					(point)))
-		  (goto-char
-		   (if delims
-		       (with-syntax-table
-			   (TeX-search-syntax-table open-char close-char)
-			 (scan-lists (point) 1 1))
-		     (TeX-find-closing-brace)))
-		  (setq content-end (save-excursion
-				      (backward-char)
-				      (skip-chars-backward " \t")
-				      (point)))
-		  (setq n (1- n)))
-		t)
-	    (error nil))
-	  (list (TeX-fold-buffer-substring content-start content-end))
-	nil))))
+              (progn
+                (while (> n 0)
+                  (skip-chars-forward (concat "^" open-string) macro-end)
+                  (when (= (point) macro-end)
+                    (error nil))
+                  (setq content-start (progn
+                                        (skip-chars-forward
+                                         (concat open-string " \t"))
+                                        (point)))
+                  (goto-char
+                   (if delims
+                       (with-syntax-table
+                           (TeX-search-syntax-table open-char close-char)
+                         (scan-lists (point) 1 1))
+                     (TeX-find-closing-brace)))
+                  (setq content-end (save-excursion
+                                      (backward-char)
+                                      (skip-chars-backward " \t")
+                                      (point)))
+                  (setq n (1- n)))
+                t)
+            (error nil))
+          (list (TeX-fold-buffer-substring content-start content-end))
+        nil))))
 
 (defun TeX-fold-buffer-substring (start end)
   "Return the contents of buffer from START to END as a string.
@@ -639,39 +639,39 @@ Like `buffer-substring' but copy overlay display strings as well."
   ;; Swap values of `start' and `end' if necessary.
   (when (> start end) (let ((tmp start)) (setq start end end tmp)))
   (let ((overlays (overlays-in start end))
-	result)
+        result)
     ;; Get rid of overlays not under our control or not completely
     ;; inside the specified region.
     (dolist (ov overlays)
       (when (or (not (eq (overlay-get ov 'category) 'TeX-fold))
-		(< (overlay-start ov) start)
-		(> (overlay-end ov) end))
-	(setq overlays (remove ov overlays))))
+                (< (overlay-start ov) start)
+                (> (overlay-end ov) end))
+        (setq overlays (remove ov overlays))))
     (if (null overlays)
-	(buffer-substring start end)
+        (buffer-substring start end)
       ;; Sort list according to ascending starts.
       (setq overlays (sort (copy-sequence overlays)
-			   (lambda (a b)
-			     (< (overlay-start a) (overlay-start b)))))
+                           (lambda (a b)
+                             (< (overlay-start a) (overlay-start b)))))
       ;; Get the string from the start of the region up to the first overlay.
       (setq result (buffer-substring start (overlay-start (car overlays))))
       (let (ov)
-	(while overlays
-	  (setq ov (car overlays)
-		overlays (cdr overlays))
-	  ;; Add the display string of the overlay.
-	  (setq result (concat result (overlay-get ov 'display)))
-	  ;; Remove overlays contained in the current one.
-	  (dolist (elt overlays)
-	    (when (< (overlay-start elt) (overlay-end ov))
-	      (setq overlays (remove elt overlays))))
-	  ;; Add the string from the end of the current overlay up to
-	  ;; the next overlay or the end of the specified region.
-	  (setq result (concat result (buffer-substring (overlay-end ov)
-							(if overlays
-							    (overlay-start
-							     (car overlays))
-							  end))))))
+        (while overlays
+          (setq ov (car overlays)
+                overlays (cdr overlays))
+          ;; Add the display string of the overlay.
+          (setq result (concat result (overlay-get ov 'display)))
+          ;; Remove overlays contained in the current one.
+          (dolist (elt overlays)
+            (when (< (overlay-start elt) (overlay-end ov))
+              (setq overlays (remove elt overlays))))
+          ;; Add the string from the end of the current overlay up to
+          ;; the next overlay or the end of the specified region.
+          (setq result (concat result (buffer-substring (overlay-end ov)
+                                                        (if overlays
+                                                            (overlay-start
+                                                             (car overlays))
+                                                          end))))))
       result)))
 
 (defun TeX-fold-make-help-echo (start end)
@@ -680,15 +680,15 @@ The text between START and END will be used for this but cropped
 to the length defined by `TeX-fold-help-echo-max-length'.  Line
 breaks will be replaced by spaces."
   (let* ((spill (+ start TeX-fold-help-echo-max-length))
-	 (lines (split-string (buffer-substring start (min end spill)) "\n"))
-	 (result (pop lines)))
+         (lines (split-string (buffer-substring start (min end spill)) "\n"))
+         (result (pop lines)))
     (dolist (line lines)
       ;; Strip leading whitespace
       (when (string-match "^[ \t]+" line)
-	(setq line (replace-match "" nil nil line)))
+        (setq line (replace-match "" nil nil line)))
       ;; Strip trailing whitespace
       (when (string-match "[ \t]+$" line)
-	(setq line (replace-match "" nil nil line)))
+        (setq line (replace-match "" nil nil line)))
       (setq result (concat result " " line)))
     (when (> end spill) (setq result (concat result "...")))
     result))
@@ -699,15 +699,15 @@ breaks will be replaced by spaces."
     ;; Get all overlays at point under our control.
     (dolist (ov (overlays-at (point)))
       (when (and (eq (overlay-get ov 'category) 'TeX-fold)
-		 (numberp (overlay-get ov 'TeX-fold-display-string-spec)))
-	(cl-pushnew ov overlays)))
+                 (numberp (overlay-get ov 'TeX-fold-display-string-spec)))
+        (cl-pushnew ov overlays)))
     (when overlays
       ;; Sort list according to descending starts.
       (setq overlays (sort (copy-sequence overlays)
-			   (lambda (a b)
-			     (> (overlay-start a) (overlay-start b)))))
+                           (lambda (a b)
+                             (> (overlay-start a) (overlay-start b)))))
       (dolist (ov overlays)
-	(TeX-fold-hide-item ov)))))
+        (TeX-fold-hide-item ov)))))
 
 
 ;;; Removal
@@ -722,7 +722,7 @@ breaks will be replaced by spaces."
   (interactive)
   (save-excursion
     (let ((end (progn (LaTeX-forward-paragraph) (point)))
-	  (start (progn (LaTeX-backward-paragraph) (point))))
+          (start (progn (LaTeX-backward-paragraph) (point))))
       (TeX-fold-clearout-region start end))))
 
 (defun TeX-fold-clearout-region (start end)
@@ -743,8 +743,8 @@ Return non-nil if a removal happened, nil otherwise."
   (let (found)
     (while overlays
       (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
-	(delete-overlay (car overlays))
-	(setq found t))
+        (delete-overlay (car overlays))
+        (setq found t))
       (setq overlays (cdr overlays)))
     found))
 
@@ -755,62 +755,62 @@ Return non-nil if a removal happened, nil otherwise."
   "Expand instances of {<num>}, [<num>], <<num>>, and (<num>).
 Replace them with the respective macro argument."
   (let ((spec-list (split-string spec "||"))
-	(delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\))))
-	index success)
+        (delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\))))
+        index success)
     (catch 'success
       ;; Iterate over alternatives.
       (dolist (elt spec-list)
-	(setq spec elt
-	      index nil)
-	;; Find and expand every placeholder.
-	(while (and (string-match "\\([[{<]\\)\\([1-9]\\)\\([]}>]\\)" elt index)
-		    ;; Does the closing delim match the opening one?
-		    (string-equal
-		     (match-string 3 elt)
-		     (char-to-string
-		      (cdr (assq (string-to-char (match-string 1 elt))
-				 delims)))))
-	  (setq index (match-end 0))
-	  (let ((arg (car (save-match-data
-			    ;; Get the argument.
-			    (TeX-fold-macro-nth-arg
-			     (string-to-number (match-string 2 elt))
-			     ov-start ov-end
-			     (assoc (string-to-char (match-string 1 elt))
-				    delims))))))
-	    (when arg (setq success t))
-	    ;; Replace the placeholder in the string.
-	    (setq elt (replace-match (or arg TeX-fold-ellipsis) nil t elt)
-		  index (+ index (- (length elt) (length spec)))
-		  spec elt)))
-	(when success (throw 'success nil))))
+        (setq spec elt
+              index nil)
+        ;; Find and expand every placeholder.
+        (while (and (string-match "\\([[{<]\\)\\([1-9]\\)\\([]}>]\\)" elt index)
+                    ;; Does the closing delim match the opening one?
+                    (string-equal
+                     (match-string 3 elt)
+                     (char-to-string
+                      (cdr (assq (string-to-char (match-string 1 elt))
+                                 delims)))))
+          (setq index (match-end 0))
+          (let ((arg (car (save-match-data
+                            ;; Get the argument.
+                            (TeX-fold-macro-nth-arg
+                             (string-to-number (match-string 2 elt))
+                             ov-start ov-end
+                             (assoc (string-to-char (match-string 1 elt))
+                                    delims))))))
+            (when arg (setq success t))
+            ;; Replace the placeholder in the string.
+            (setq elt (replace-match (or arg TeX-fold-ellipsis) nil t elt)
+                  index (+ index (- (length elt) (length spec)))
+                  spec elt)))
+        (when success (throw 'success nil))))
     spec))
 
 (defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.
 That means, put respective properties onto overlay OV."
   (let* ((ov-start (overlay-start ov))
-	 (ov-end (overlay-end ov))
-	 (spec (overlay-get ov 'TeX-fold-display-string-spec))
-	 (computed (cond
-		    ((stringp spec)
-		     (TeX-fold-expand-spec spec ov-start ov-end))
-		    ((functionp spec)
-		     (let (arg arg-list
-			       (n 1))
-		       (while (setq arg (TeX-fold-macro-nth-arg
-					 n ov-start ov-end))
+         (ov-end (overlay-end ov))
+         (spec (overlay-get ov 'TeX-fold-display-string-spec))
+         (computed (cond
+                    ((stringp spec)
+                     (TeX-fold-expand-spec spec ov-start ov-end))
+                    ((functionp spec)
+                     (let (arg arg-list
+                               (n 1))
+                       (while (setq arg (TeX-fold-macro-nth-arg
+                                         n ov-start ov-end))
                          (unless (member (car arg) arg-list)
                            (setq arg-list (append arg-list (list (car arg)))))
-			 (setq n (1+ n)))
-		       (or (condition-case nil
-			       (apply spec arg-list)
-			     (error nil))
-			   "[Error: No content or function found]")))
-		    (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
-			   "[Error: No content found]"))))
-	 (display-string (if (listp computed) (car computed) computed))
-	 (face (when (listp computed) (cadr computed))))
+                         (setq n (1+ n)))
+                       (or (condition-case nil
+                               (apply spec arg-list)
+                             (error nil))
+                           "[Error: No content or function found]")))
+                    (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
+                           "[Error: No content found]"))))
+         (display-string (if (listp computed) (car computed) computed))
+         (face (when (listp computed) (cadr computed))))
     ;; Do nothing if the overlay is empty.
     (when (and ov-start ov-end)
       ;; Cater for zero-length display strings.
@@ -818,18 +818,18 @@ That means, put respective properties onto overlay OV."
       ;; Add a linebreak to the display string and adjust the overlay end
       ;; in case of an overfull line.
       (when (TeX-fold-overfull-p ov-start ov-end display-string)
-	(setq display-string (concat display-string "\n"))
-	(move-overlay ov ov-start (save-excursion
-				    (goto-char ov-end)
-				    (skip-chars-forward " \t")
-				    (point))))
+        (setq display-string (concat display-string "\n"))
+        (move-overlay ov ov-start (save-excursion
+                                    (goto-char ov-end)
+                                    (skip-chars-forward " \t")
+                                    (point))))
       (overlay-put ov 'mouse-face 'highlight)
       (overlay-put ov 'display display-string)
       (when font-lock-mode
-	(overlay-put ov 'face TeX-fold-folded-face))
+        (overlay-put ov 'face TeX-fold-folded-face))
       (unless (zerop TeX-fold-help-echo-max-length)
-	(overlay-put ov 'help-echo (TeX-fold-make-help-echo
-				    (overlay-start ov) (overlay-end ov)))))))
+        (overlay-put ov 'help-echo (TeX-fold-make-help-echo
+                                    (overlay-start ov) (overlay-end ov)))))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.
@@ -846,50 +846,50 @@ Remove the respective properties from the overlay OV."
   ;; `with-local-quit' is not supported in XEmacs.
   (condition-case nil
       (let ((inhibit-quit nil))
-	(condition-case err
-	    (let* ((spots (TeX-fold-partition-list
-			   (lambda (x)
-			     ;; We refresh any spot in the current
-			     ;; window as well as any spots associated
-			     ;; with a dead window or a window which
-			     ;; does not show this buffer any more.
-			     (or (eq (car x) (selected-window))
-				 (not (window-live-p (car x)))
-				 (not (eq (window-buffer (car x))
-					  (current-buffer)))))
-			   TeX-fold-open-spots))
-		   (old-ols (mapcar 'cdr (car spots))))
-	      (setq TeX-fold-open-spots (cdr spots))
-	      (when (or (and (boundp 'disable-point-adjustment)
-			     disable-point-adjustment)
-			(and (boundp 'global-disable-point-adjustment)
-			     global-disable-point-adjustment)
-			;; See preview.el on how to make this configurable.
-			(memq this-command
-			      (list (key-binding [left]) (key-binding [right])
-				    'backward-char 'forward-char
-				    'mouse-set-point)))
-		;; Open new overlays.
-		(dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
-					      (boundp 'mark-active)
-					      mark-active)
-				     (overlays-at (mark)))
-				   (overlays-at (point))))
-		  (when (eq (overlay-get ol 'category) 'TeX-fold)
-		    (push (cons (selected-window) ol) TeX-fold-open-spots)
-		    (setq old-ols (delq ol old-ols))
-		    (TeX-fold-show-item ol))))
-	      ;; Close old overlays.
-	      (dolist (ol old-ols)
-		(when (and (eq (current-buffer) (overlay-buffer ol))
-			   (not (rassq ol TeX-fold-open-spots)))
-		  (if (and (>= (point) (overlay-start ol))
-			   (<= (point) (overlay-end ol)))
-		      ;; Still near the overlay: keep it open.
-		      (push (cons (selected-window) ol) TeX-fold-open-spots)
-		    ;; Really close it.
-		    (TeX-fold-hide-item ol)))))
-	  (error (message "TeX-fold: %s" err))))
+        (condition-case err
+            (let* ((spots (TeX-fold-partition-list
+                           (lambda (x)
+                             ;; We refresh any spot in the current
+                             ;; window as well as any spots associated
+                             ;; with a dead window or a window which
+                             ;; does not show this buffer any more.
+                             (or (eq (car x) (selected-window))
+                                 (not (window-live-p (car x)))
+                                 (not (eq (window-buffer (car x))
+                                          (current-buffer)))))
+                           TeX-fold-open-spots))
+                   (old-ols (mapcar 'cdr (car spots))))
+              (setq TeX-fold-open-spots (cdr spots))
+              (when (or (and (boundp 'disable-point-adjustment)
+                             disable-point-adjustment)
+                        (and (boundp 'global-disable-point-adjustment)
+                             global-disable-point-adjustment)
+                        ;; See preview.el on how to make this configurable.
+                        (memq this-command
+                              (list (key-binding [left]) (key-binding [right])
+                                    'backward-char 'forward-char
+                                    'mouse-set-point)))
+                ;; Open new overlays.
+                (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
+                                              (boundp 'mark-active)
+                                              mark-active)
+                                     (overlays-at (mark)))
+                                   (overlays-at (point))))
+                  (when (eq (overlay-get ol 'category) 'TeX-fold)
+                    (push (cons (selected-window) ol) TeX-fold-open-spots)
+                    (setq old-ols (delq ol old-ols))
+                    (TeX-fold-show-item ol))))
+              ;; Close old overlays.
+              (dolist (ol old-ols)
+                (when (and (eq (current-buffer) (overlay-buffer ol))
+                           (not (rassq ol TeX-fold-open-spots)))
+                  (if (and (>= (point) (overlay-start ol))
+                           (<= (point) (overlay-end ol)))
+                      ;; Still near the overlay: keep it open.
+                      (push (cons (selected-window) ol) TeX-fold-open-spots)
+                    ;; Really close it.
+                    (TeX-fold-hide-item ol)))))
+          (error (message "TeX-fold: %s" err))))
     (quit (setq quit-flag t))))
 
 
@@ -920,28 +920,28 @@ With zero or negative ARG turn mode off."
   nil nil (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
-	(set (make-local-variable 'search-invisible) t)
-	(add-hook 'post-command-hook 'TeX-fold-post-command nil t)
-	(add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
-	(add-hook 'TeX-after-insert-macro-hook
-		  (lambda ()
-		    (when (and TeX-fold-mode TeX-fold-auto)
-		      (save-excursion
-			(backward-char)
-			(or (TeX-fold-item 'macro)
-			    (TeX-fold-item 'math)
-			    (TeX-fold-item 'env))))))
-	;; Update the `TeX-fold-*-spec-list-internal' variables.
-	(dolist (elt '("macro" "env" "math"))
-	  (set (intern (format "TeX-fold-%s-spec-list-internal" elt))
-	       ;; Append the value of `TeX-fold-*-spec-list' to the
-	       ;; mode-specific `<mode-prefix>-fold-*-spec-list' variable.
-	       (append (symbol-value (intern (format "TeX-fold-%s-spec-list"
-						     elt)))
-		       (let ((symbol (intern (format "%s-fold-%s-spec-list"
-						     (TeX-mode-prefix) elt))))
-			 (when (boundp symbol)
-			   (symbol-value symbol)))))))
+        (set (make-local-variable 'search-invisible) t)
+        (add-hook 'post-command-hook 'TeX-fold-post-command nil t)
+        (add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
+        (add-hook 'TeX-after-insert-macro-hook
+                  (lambda ()
+                    (when (and TeX-fold-mode TeX-fold-auto)
+                      (save-excursion
+                        (backward-char)
+                        (or (TeX-fold-item 'macro)
+                            (TeX-fold-item 'math)
+                            (TeX-fold-item 'env))))))
+        ;; Update the `TeX-fold-*-spec-list-internal' variables.
+        (dolist (elt '("macro" "env" "math"))
+          (set (intern (format "TeX-fold-%s-spec-list-internal" elt))
+               ;; Append the value of `TeX-fold-*-spec-list' to the
+               ;; mode-specific `<mode-prefix>-fold-*-spec-list' variable.
+               (append (symbol-value (intern (format "TeX-fold-%s-spec-list"
+                                                     elt)))
+                       (let ((symbol (intern (format "%s-fold-%s-spec-list"
+                                                     (TeX-mode-prefix) elt))))
+                         (when (boundp symbol)
+                           (symbol-value symbol)))))))
     (kill-local-variable 'search-invisible)
     (remove-hook 'post-command-hook 'TeX-fold-post-command t)
     (remove-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point t)

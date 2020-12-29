@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "varioref"
@@ -72,31 +72,31 @@
    ;; FIXME: The first 3 entries can be reduced to
    ;; ("\\\\[Vv]ref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")  ???
    (setq TeX-complete-list
-	 (append
-	  '(("\\\\[Vv]ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-	    ("\\\\vref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-	    ("\\\\vref\\*{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-	    ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-	    ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
-	     2 LaTeX-label-list "}"))
-	  TeX-complete-list))
+         (append
+          '(("\\\\[Vv]ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+            ("\\\\vref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+            ("\\\\vref\\*{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+            ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+            ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
+             2 LaTeX-label-list "}"))
+          TeX-complete-list))
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(;; vref is already in font-latex.el,
-				;; so don't add it here again
-				("vpageref"      "*[[{")
-				("vrefrange"     "*[{{")
-				("vpagerefrange" "*[{{")
-				("Vref"          "*{")
-				("fullref"       "{"))
-			      'reference))
+                                ;; so don't add it here again
+                                ("vpageref"      "*[[{")
+                                ("vrefrange"     "*[{{")
+                                ("vpagerefrange" "*[{{")
+                                ("Vref"          "*{")
+                                ("fullref"       "{"))
+                              'reference))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
-	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "Varioref")))
+        (fboundp 'reftex-ref-style-activate)
+        (reftex-ref-style-activate "Varioref")))
  TeX-dialect)
 
 (defvar LaTeX-varioref-package-options

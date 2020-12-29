@@ -45,7 +45,7 @@
    ;; Use the enhanced tabular indentation.  Append to
    ;; `LaTeX-indent-environment-list' in order not to override custom settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("tabularx" LaTeX-indent-tabular) t)
+                '("tabularx" LaTeX-indent-tabular) t)
 
    ;; Append tabularx to `LaTeX-item-list' with `LaTeX-item-tabular*'
    (add-to-list 'LaTeX-item-list '("tabularx" . LaTeX-item-tabular*) t)
@@ -67,7 +67,7 @@
 
    ;; `tabularx.sty' adds one new column specification letter.
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "X")))
+        (concat LaTeX-array-column-letters "X")))
  TeX-dialect)
 
 ;;; tabularx.el ends here

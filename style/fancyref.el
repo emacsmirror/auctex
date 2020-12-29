@@ -29,8 +29,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "fancyref"
@@ -89,23 +89,23 @@
 
    ;; Insatall completion for labels and formats
    (setq TeX-complete-list
-	 (append
-	  '(("\\\\[fF]ref\\(\\[[^]]*\\]\\)?{\\([^{}\n\r\\%,]*\\)" 
-	     2 LaTeX-label-list "}")
-	    ("\\\\[fF]ref\\[\\([^{}\n\r\\%,]*\\)" 
-	     1 LaTeX-fancyref-formats "]")
-	    ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"
-	     1 LaTeX-fancyref-formats "}"))
-	  TeX-complete-list))
+         (append
+          '(("\\\\[fF]ref\\(\\[[^]]*\\]\\)?{\\([^{}\n\r\\%,]*\\)" 
+             2 LaTeX-label-list "}")
+            ("\\\\[fF]ref\\[\\([^{}\n\r\\%,]*\\)" 
+             1 LaTeX-fancyref-formats "]")
+            ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"
+             1 LaTeX-fancyref-formats "}"))
+          TeX-complete-list))
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fref" "[{") ("Fref" "[{")) 'reference))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
-	(fboundp 'reftex-ref-style-activate)
-	(reftex-ref-style-activate "Fancyref")))
+        (fboundp 'reftex-ref-style-activate)
+        (reftex-ref-style-activate "Fancyref")))
  TeX-dialect)
 
 ;; The following list keeps a list of available format names
@@ -123,14 +123,14 @@
   "Prompt for a fancyref format name.
 If the user gives an unknown name, add it to the list."
   (let ((format (completing-read (TeX-argument-prompt optional prompt "Format")
-				 LaTeX-fancyref-formats)))
+                                 LaTeX-fancyref-formats)))
     (if (not (string-equal "" format))
-	(add-to-list 'LaTeX-fancyref-formats (list format)))
+        (add-to-list 'LaTeX-fancyref-formats (list format)))
     (TeX-argument-insert format optional)))
 
 (defvar LaTeX-fancyref-package-options '("english" "german" "loose"
-					 "margin" "paren" "plain" "tight"
-					 "vario")
+                                         "margin" "paren" "plain" "tight"
+                                         "vario")
   "Package options for the fancyref package.")
 
 ;;; fancyref.el ends here

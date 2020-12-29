@@ -56,29 +56,29 @@
 
    ;; Parsing index macros
    (setq LaTeX-auto-regexp-list
-	 (append
+         (append
 
-	  ;; The first regexp is faster, but less accurate
-	  ;;'(("\\\\index\\*?\\[[^{}]*\\]{\\([^}]*\\)"
-	  ;;   1 LaTeX-auto-index-entry))
+          ;; The first regexp is faster, but less accurate
+          ;;'(("\\\\index\\*?\\[[^{}]*\\]{\\([^}]*\\)"
+          ;;   1 LaTeX-auto-index-entry))
 
-	  ;; The second regexp is very good, but slower.
-	  '(("\\\\index\\*?\\[[^{}]*\\]{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-	     1 LaTeX-auto-index-entry))
+          ;; The second regexp is very good, but slower.
+          '(("\\\\index\\*?\\[[^{}]*\\]{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
+             1 LaTeX-auto-index-entry))
 
-	  LaTeX-auto-regexp-list))
+          LaTeX-auto-regexp-list))
 
    ;; Completion for the index entries in \index and |see commands
    (setq TeX-complete-list
-	 (append
-	  '(("\\\\index\\*?\\(\\[[^][{}]*\\]\\)?{\\([^{}\n\r]*\\)" 
-	     2 LaTeX-index-entry-list)
-	    ("|see{\\([^}]*\\)" 1 LaTeX-index-entry-list))
-	  TeX-complete-list))
+         (append
+          '(("\\\\index\\*?\\(\\[[^][{}]*\\]\\)?{\\([^{}\n\r]*\\)" 
+             2 LaTeX-index-entry-list)
+            ("|see{\\([^}]*\\)" 1 LaTeX-index-entry-list))
+          TeX-complete-list))
 
    ;; RefTeX support
    (and (fboundp 'reftex-add-index-macros)
-	(reftex-add-index-macros '(index))))
+        (reftex-add-index-macros '(index))))
  TeX-dialect)
 
 (defvar LaTeX-index-package-options nil

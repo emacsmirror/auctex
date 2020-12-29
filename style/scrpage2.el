@@ -31,8 +31,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "scrpage2"
@@ -85,53 +85,53 @@
 
     ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lehead" "[{")
-				("cehead" "[{")
-				("rehead" "[{")
-				("lefoot" "[{")
-				("cefoot" "[{")
-				("refoot" "[{")
-				("lohead" "[{")
-				("cohead" "[{")
-				("rohead" "[{")
-				("lofoot" "[{")
-				("cofoot" "[{")
-				("rofoot" "[{")
-				("ihead" "[{")
-				("chead" "[{")
-				("ohead" "[{")
-				("ifoot" "[{")
-				("cfoot" "[{")
-				("ofoot" "[{")
-				("automark" "[{")
-				("setfootwidth" "[{")
-				("setheadwidth" "[{")
-				("setfootbotline" "[{")
-				("setfootsepline" "[{")
-				("setheadtopline" "[{")
-				("setheadsepline" "[{"))
-			      'variable)
+                                ("cehead" "[{")
+                                ("rehead" "[{")
+                                ("lefoot" "[{")
+                                ("cefoot" "[{")
+                                ("refoot" "[{")
+                                ("lohead" "[{")
+                                ("cohead" "[{")
+                                ("rohead" "[{")
+                                ("lofoot" "[{")
+                                ("cofoot" "[{")
+                                ("rofoot" "[{")
+                                ("ihead" "[{")
+                                ("chead" "[{")
+                                ("ohead" "[{")
+                                ("ifoot" "[{")
+                                ("cfoot" "[{")
+                                ("ofoot" "[{")
+                                ("automark" "[{")
+                                ("setfootwidth" "[{")
+                                ("setheadwidth" "[{")
+                                ("setfootbotline" "[{")
+                                ("setfootsepline" "[{")
+                                ("setheadtopline" "[{")
+                                ("setheadsepline" "[{"))
+                              'variable)
      (font-latex-add-keywords '(("deftripstyle" "{[[{{{{{{")
-				("defpagestyle" "{{{")
-				("newpagestyle" "{{{")
-				("renewpagestyle" "{{{")
-				("providepagestyle" "{{{"))
-			      'function)))
+                                ("defpagestyle" "{{{")
+                                ("newpagestyle" "{{{")
+                                ("renewpagestyle" "{{{")
+                                ("providepagestyle" "{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-scrpage2-package-options '("headinclude" "headexclude"
-					 "footinclude" "footexclude"
-					 "mpinclude" "mpexclude"
-					 "headtopline" "headsepline"
-					 "footsepline" "footbotline"
-					 "plainheadtopline" "plainheadsepline"
-					 "plainfootsepline" "plainfootbotline"
-					 "ilines" "clines" "olines"
-					 "automark" "manualmark"
-					 "autooneside" "markuppercase"
-					 "markusedcase" "nouppercase"
-					 "komastyle" "standardstyle")
+                                         "footinclude" "footexclude"
+                                         "mpinclude" "mpexclude"
+                                         "headtopline" "headsepline"
+                                         "footsepline" "footbotline"
+                                         "plainheadtopline" "plainheadsepline"
+                                         "plainfootsepline" "plainfootbotline"
+                                         "ilines" "clines" "olines"
+                                         "automark" "manualmark"
+                                         "autooneside" "markuppercase"
+                                         "markusedcase" "nouppercase"
+                                         "komastyle" "standardstyle")
   "Package options for the scrpage2 package.")
 
 ;;; scrpage2.el ends here

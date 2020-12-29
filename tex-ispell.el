@@ -343,12 +343,12 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
 ;; before verb content:
 (TeX-ispell-skip-setcar
  `((,(concat "\\\\" (regexp-opt '("Verb"     "lstinline"
-				  "py"       "pyc"       "pys"    "pyv" "pyb"
-				  "pycon"    "pyconc"    "pyconv"
-				  "pylab"    "pylabc"    "pylabs" "pylabv" "pylabb"
-				  "pylabcon" "pylabconc" "pylabconv"
-				  "sympy"    "sympyc"    "sympys" "sympyv" "sympyb"
-				  "sympycon" "sympyconc" "sympyconv")))
+                                  "py"       "pyc"       "pys"    "pyv" "pyb"
+                                  "pycon"    "pyconc"    "pyconv"
+                                  "pylab"    "pylabc"    "pylabs" "pylabv" "pylabb"
+                                  "pylabcon" "pylabconc" "pylabconv"
+                                  "sympy"    "sympyc"    "sympys" "sympyv" "sympyb"
+                                  "sympycon" "sympyconc" "sympyconv")))
     TeX-ispell-tex-arg-verb-end)))
 
 ;; minted.sty: With opt. and mandatory argument before verb content.
@@ -377,33 +377,33 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
     "Return elements from `TeX-ispell-skip-cmds-list' acc. to ARG."
     (when (member arg '(0 1 2 3))
       (let (cmds)
-	(dolist (elt TeX-ispell-skip-cmds-list)
-	  (when (= (cdr elt) arg)
-	    (push (car elt) cmds)))
-	cmds))))
+        (dolist (elt TeX-ispell-skip-cmds-list)
+          (when (= (cdr elt) arg)
+            (push (car elt) cmds)))
+        cmds))))
 
 (defvar TeX-ispell-skip-cmds-opt-arg-regexp
   (eval-when-compile
     (concat "\\\\"
-	    (regexp-opt (TeX-ispell-sort-skip-cmds-list 0) t)))
+            (regexp-opt (TeX-ispell-sort-skip-cmds-list 0) t)))
   "Regexp of LaTeX commands with only optional arguments to be skipped.")
 
 (defvar TeX-ispell-skip-cmds-one-arg-regexp
   (eval-when-compile
     (concat "\\\\"
-	    (regexp-opt (TeX-ispell-sort-skip-cmds-list 1) t)))
+            (regexp-opt (TeX-ispell-sort-skip-cmds-list 1) t)))
   "Regexp of LaTeX commands with one argument to be skipped.")
 
 (defvar TeX-ispell-skip-cmds-two-args-regexp
   (eval-when-compile
     (concat "\\\\"
-	    (regexp-opt (TeX-ispell-sort-skip-cmds-list 2) t)))
+            (regexp-opt (TeX-ispell-sort-skip-cmds-list 2) t)))
   "Regexp of LaTeX commands with two arguments to be skipped.")
 
 (defvar TeX-ispell-skip-cmds-three-args-regexp
   (eval-when-compile
     (concat "\\\\"
-	    (regexp-opt (TeX-ispell-sort-skip-cmds-list 3) t)))
+            (regexp-opt (TeX-ispell-sort-skip-cmds-list 3) t)))
   "Regexp of LaTeX commands with three arguments to be skipped.")
 
 (defvar TeX-ispell-skip-envs-opt-arg-regexp
@@ -426,7 +426,7 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
 (TeX-ispell-skip-setcdr
  `((,TeX-ispell-skip-envs-opt-arg-regexp ispell-tex-arg-end 0)
    ,(cons TeX-ispell-skip-envs-regexp
-	  (concat "\\\\end{" TeX-ispell-skip-envs-regexp "}"))))
+          (concat "\\\\end{" TeX-ispell-skip-envs-regexp "}"))))
 
 (provide 'tex-ispell)
 

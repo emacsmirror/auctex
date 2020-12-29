@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-acro-package-options-list
   '(;; General Options
@@ -63,7 +63,7 @@
     ("list-long-format")
     ("extra-format")
     ("first-style" ("default" "plain" "empty" "square" "short" "reversed"
-		    "plain-reversed" "footnote" "sidenote"))
+                    "plain-reversed" "footnote" "sidenote"))
     ("extra-style" ("default" "plain" "comma" "paren" "bracket"))
     ("plural-ending")
     ;; Options Regarding the List
@@ -75,9 +75,9 @@
     ("next-pages")
     ("list-type" ("table" "itemize" "description"))
     ("list-style" ("list" "tabular" "longtable" "extra-tabular" "extra-longtable"
-		   "extra-tabular-rev" "extra-longtable-rev"))
+                   "extra-tabular-rev" "extra-longtable-rev"))
     ("list-header" ("chapter" "chapter*" "section" "section*" "subsection"
-		    "subsection*" "addchap" "addsec"))
+                    "subsection*" "addchap" "addsec"))
     ("list-name")
     ("list-table-width")
     ("list-caps" ("true" "false")))
@@ -102,10 +102,10 @@
 `LaTeX-acro-list' and to `TeX-auto-symbol' if option `macros' is
 set to `true'."
   (mapc (lambda (acronym)
-	  (add-to-list 'LaTeX-acro-acronym-list (list acronym)))
-	LaTeX-auto-acro-acronym)
+          (add-to-list 'LaTeX-acro-acronym-list (list acronym)))
+        LaTeX-auto-acro-acronym)
   (when (or (LaTeX-provided-package-options-member "acro" "macros")
-	    (LaTeX-provided-package-options-member "acro" "macros=true"))
+            (LaTeX-provided-package-options-member "acro" "macros=true"))
     (add-to-list 'TeX-auto-symbol LaTeX-auto-acro-acronym)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-acro-prepare t)
@@ -122,10 +122,10 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If DEFINITION is non-nil, add the chosen acronym to the
 list of defined acronyms."
   (let ((acronym (completing-read (TeX-argument-prompt optional prompt "Acronym")
-				  (LaTeX-acro-acronym-list) nil nil nil
-				  'LaTeX-acro-acronym-history)))
+                                  (LaTeX-acro-acronym-list) nil nil nil
+                                  'LaTeX-acro-acronym-history)))
     (if (and definition (not (string-equal "" acronym)))
-	(LaTeX-add-acro-acronyms acronym))
+        (LaTeX-add-acro-acronyms acronym))
     (TeX-argument-insert acronym optional optional)))
 
 (defun LaTeX-arg-define-acro-acronym (optional &optional prompt)
@@ -160,7 +160,7 @@ be a list with strings to be used as values for the key."
   ;; Remove <SPC> key binding from map used in `multi-prompt-key-value' (called
   ;; by `TeX-arg-key-val') with `require-match' set to `nil'.
   (let ((crm-local-completion-map
-	 (remove (assoc 32 crm-local-completion-map) crm-local-completion-map)))
+         (remove (assoc 32 crm-local-completion-map) crm-local-completion-map)))
     (TeX-arg-key-val optional key-val-alist prompt)))
 
 (TeX-add-style-hook
@@ -171,7 +171,7 @@ be a list with strings to be used as values for the key."
     ;; Creating New Acronyms
     '("DeclareAcronym" LaTeX-arg-define-acro-acronym
       (LaTeX-arg-acro-key-val "Definition of acronym (k=v)"
-			      LaTeX-acro-declareacronym-keys))
+                              LaTeX-acro-declareacronym-keys))
     ;; Using the Acronyms
     '("ac" LaTeX-arg-acro-acronym)
     '("ac*" LaTeX-arg-acro-acronym)
@@ -257,40 +257,40 @@ be a list with strings to be used as values for the key."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("DeclareAcronym" "{{")
-				("ac" "*{")
-				("Ac" "*{")
-				("acs" "*{")
-				("acl" "*{")
-				("Acl" "*{")
-				("aca" "*{")
-				("acf" "*{")
-				("Acf" "*{")
-				("acp" "*{")
-				("Acp" "*{")
-				("acsp" "*{")
-				("aclp" "*{")
-				("Aclp" "*{")
-				("acap" "*{")
-				("acfp" "*{")
-				("Acfp" "*{")
-				("acflike" "*{")
-				("acfplike" "*{")
-				("iac" "*{")
-				("Iac" "*{")
-				("iacs" "*{")
-				("Iacs" "*{")
-				("iaca" "*{")
-				("Iaca" "*{")
-				("iacl" "*{")
-				("Iacl" "*{")
-				("iacf" "*{")
-				("Iacf" "*{")
-				("iacflike" "*{")
-				("Iacflike" "*{")
-				("acuse" "{"))
-			      'function)))
+                                ("ac" "*{")
+                                ("Ac" "*{")
+                                ("acs" "*{")
+                                ("acl" "*{")
+                                ("Acl" "*{")
+                                ("aca" "*{")
+                                ("acf" "*{")
+                                ("Acf" "*{")
+                                ("acp" "*{")
+                                ("Acp" "*{")
+                                ("acsp" "*{")
+                                ("aclp" "*{")
+                                ("Aclp" "*{")
+                                ("acap" "*{")
+                                ("acfp" "*{")
+                                ("Acfp" "*{")
+                                ("acflike" "*{")
+                                ("acfplike" "*{")
+                                ("iac" "*{")
+                                ("Iac" "*{")
+                                ("iacs" "*{")
+                                ("Iacs" "*{")
+                                ("iaca" "*{")
+                                ("Iaca" "*{")
+                                ("iacl" "*{")
+                                ("Iacl" "*{")
+                                ("iacf" "*{")
+                                ("Iacf" "*{")
+                                ("iacflike" "*{")
+                                ("Iacflike" "*{")
+                                ("acuse" "{"))
+                              'function)))
  TeX-dialect)
 
 (defun LaTeX-acro-package-options ()

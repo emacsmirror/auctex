@@ -32,8 +32,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "ulem"
@@ -59,53 +59,53 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; Tell font-lock about the update.
      (font-latex-add-keywords '(("useunder" "{{{")) 'function)
      (font-latex-add-keywords '(("uline" "{")
-				("uwave" "{")
-				("sout" "{")
-				("xout" "{")) 'textual)))
+                                ("uwave" "{")
+                                ("sout" "{")
+                                ("xout" "{")) 'textual)))
  TeX-dialect)
 
 (defvar LaTeX-arg-fontdecl
   (mapcar (lambda (str) (concat "\\" str))
-	  '("itshape" "bfseries" "scshape"
-	    "ttfamily" "upshape" "mdseries"
-	    "rmfamily" "sffamily" "slshape"))
+          '("itshape" "bfseries" "scshape"
+            "ttfamily" "upshape" "mdseries"
+            "rmfamily" "sffamily" "slshape"))
   "List of font declaration commands in LaTeX")
 
 (defvar LaTeX-arg-fontcmd
   (mapcar (lambda (str) (concat "\\" str))
-	  '("textit" "textbf" "textsc"
-	    "texttt" "textup" "textmd"
-	    "textrm" "textsf" "textsl"))
+          '("textit" "textbf" "textsc"
+            "texttt" "textup" "textmd"
+            "textrm" "textsf" "textsl"))
   "List of font commands in LaTeX")
 
 (defun TeX-arg-ulem-fontdecl (optional &optional prompt)
   "Prompt for the font-declaration un \\useunder"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt
-		     optional prompt "Font declaration")
-		    LaTeX-arg-fontdecl nil t) optional))
+                     optional prompt "Font declaration")
+                    LaTeX-arg-fontdecl nil t) optional))
 
 (defun TeX-arg-ulem-fontcmd (optional &optional prompt)
   "Prompt for the font-declaration un \\useunder"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt
-		     optional prompt "Font command")
-		    LaTeX-arg-fontcmd nil t) optional))
+                     optional prompt "Font command")
+                    LaTeX-arg-fontcmd nil t) optional))
 
 ;; adapted from url.el:TeX-arg-urlstyle
 (defun TeX-arg-ulem-useunder (optional &optional prompt)
   "Prompt for underline command used in \\useunder"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Underline command")
-		    (mapcar 'list
-			    (mapcar (lambda (str) (concat "\\" str))
-				    '("uline" "uuline"
-				      "uwave" "sout" "xout")))
-		    nil t) optional))
+                    (mapcar 'list
+                            (mapcar (lambda (str) (concat "\\" str))
+                                    '("uline" "uuline"
+                                      "uwave" "sout" "xout")))
+                    nil t) optional))
 
 (defvar LaTeX-ulem-package-options
   '("UWforbf" "ULforem" "normalbf" "normalem")

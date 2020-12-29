@@ -390,9 +390,9 @@ package PNAME"
     ("curvature")
     ;; Dots
     ("dotstyle" ("*" "o" "Bo" "x" "+" "B+" "asterisk" "Basterisk" "oplus"
-		 "otimes" "|" "B|" "square" "Bsquare" "square*" "diamond"
-		 "Bdiamond" "diamond*" "triangle" "Btriangle" "triangle*"
-		 "pentagon" "Bpentagon" "pentagon*"))
+                 "otimes" "|" "B|" "square" "Bsquare" "square*" "diamond"
+                 "Bdiamond" "diamond*" "triangle" "Btriangle" "triangle*"
+                 "pentagon" "Bpentagon" "pentagon*"))
     ("dotsize")
     ("dotscale")
     ("dotangle")
@@ -643,8 +643,8 @@ package PNAME"
 (defun LaTeX-pst-macro-newpsobject (&optional _arg)
   "Return \\newpsobject arguments after querying."
   (insert "{" (TeX-read-string "New PSObject Name: ") "}"
-	  ;; FIXME: It would be better to use something more confined
-	  ;; than `TeX-symbol-list'.
+          ;; FIXME: It would be better to use something more confined
+          ;; than `TeX-symbol-list'.
           "{" (completing-read "Parent Object: " (TeX-symbol-list))
           "}"))
 
@@ -652,9 +652,9 @@ package PNAME"
 (defun LaTeX-pst-env-pspicture (env)
   "Create new pspicure environment."
   (let ((opt (multi-prompt-key-value
-	      (TeX-argument-prompt t "Options" nil)
-	      '(("showgrid") ("shift"))))
-	(p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
+              (TeX-argument-prompt t "Options" nil)
+              '(("showgrid") ("shift"))))
+        (p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
         (p1 (LaTeX-pst-what "point" "Upper right (default 1,1)" "1,1"))
         corn)
     (setq corn (concat (unless (string= "" opt) (format "[%s]" opt))
@@ -688,7 +688,7 @@ package PNAME"
               (setq TeX-auto-symbol
                     (cons (list (nth 1 list)
                                 (cl-caddr (assoc (nth 2 list)
-                                              (TeX-symbol-list))))
+                                                 (TeX-symbol-list))))
                           TeX-auto-symbol)))
              ((string= type "fontdot")
               (add-to-list 'LaTeX-pst-dotstyle-list (nth 1 list) t))
@@ -696,7 +696,7 @@ package PNAME"
               (add-to-list 'LaTeX-pst-style-list (nth 1 list) t))
              ((string= type "color")
               (add-to-list 'LaTeX-pst-color-list (nth 1 list) t)
-	      ;; FIXME: Why is an entry with "-" in front added?
+              ;; FIXME: Why is an entry with "-" in front added?
               (add-to-list 'LaTeX-pst-color-list
                            (concat "-" (nth 1 list)) t)))))
    LaTeX-auto-pstricks))
@@ -783,7 +783,7 @@ comma separated list. Point has to be within the sexp to modify."
  "pstricks"
  (lambda ()
    (unless (or (member "pst-pdf" TeX-active-styles)
-	       (eq TeX-engine 'xetex))
+               (eq TeX-engine 'xetex))
      ;; Leave at user's choice whether to disable `TeX-PDF-mode' or
      ;; not. Instead set up `TeX-PDF-from-DVI' option so that AUCTeX
      ;; takes dvips+ps2pdf route when `TeX-PDF-mode' is enabled.

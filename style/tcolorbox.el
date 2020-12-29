@@ -50,8 +50,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
@@ -89,27 +89,27 @@
     ("coltext")
     ("coltitle")
     ("fontupper" ("\\rmfamily" "\\sffamily" "\\ttfamily" "\\mdseries" "\\bfseries"
-		  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
-		  "\\tiny"  "\\scriptsize" "\\footnotesize"
-		  "\\small" "\\normalsize" "\\large"
-		  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
+                  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
+                  "\\tiny"  "\\scriptsize" "\\footnotesize"
+                  "\\small" "\\normalsize" "\\large"
+                  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
     ("fontlower" ("\\rmfamily" "\\sffamily" "\\ttfamily" "\\mdseries" "\\bfseries"
-		  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
-		  "\\tiny"  "\\scriptsize" "\\footnotesize"
-		  "\\small" "\\normalsize" "\\large"
-		  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
+                  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
+                  "\\tiny"  "\\scriptsize" "\\footnotesize"
+                  "\\small" "\\normalsize" "\\large"
+                  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
     ("fonttitle" ("\\rmfamily" "\\sffamily" "\\ttfamily" "\\mdseries" "\\bfseries"
-		  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
-		  "\\tiny"  "\\scriptsize" "\\footnotesize"
-		  "\\small" "\\normalsize" "\\large"
-		  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
+                  "\\upshape" "\\itshape" "\\slshape" "\\scshape"
+                  "\\tiny"  "\\scriptsize" "\\footnotesize"
+                  "\\small" "\\normalsize" "\\large"
+                  "\\Large" "\\LARGE" "\\huge" "\\Huge" "\\normalfont"))
     ;; 4.6 Text Alignment
     ("halign" ("justify" "left" "flush left" "right"
-	       "flush right" "center" "flush center"))
+               "flush right" "center" "flush center"))
     ("halign lower" ("justify" "left" "flush left" "right"
-		     "flush right" "center" "flush center"))
+                     "flush right" "center" "flush center"))
     ("halign title" ("justify" "left" "flush left" "right"
-		     "flush right" "center" "flush center"))
+                     "flush right" "center" "flush center"))
     ("flushleft upper")
     ("center upper")
     ("flushright upper")
@@ -167,9 +167,9 @@
     ("toggle left and right" ("none" "forced" "evenpage"))
     ;; 4.8 Corners
     ("sharp corners" ("northwest" "northeast" "southwest" "southeast"
-		      "north" "south" "east" "west" "downhill" "uphill" "all"))
+                      "north" "south" "east" "west" "downhill" "uphill" "all"))
     ("rounded corners" ("northwest" "northeast" "southwest" "southeast"
-			"north" "south" "east" "west" "downhill" "uphill" "all"))
+                        "north" "south" "east" "west" "downhill" "uphill" "all"))
     ("sharpish corners")
     ;; 4.9 Transparency
     ("opacityframe")
@@ -332,7 +332,7 @@
     ;; 6 Side by Side
     ("sidebyside" ("true" "false"))
     ("sidebyside align" ("center" "top" "bottom" "center seam"
-			 "top seam" "bottom seam"))
+                         "top seam" "bottom seam"))
     ("sidebyside gap")
     ("lefthand width")
     ("righthand width")
@@ -357,8 +357,8 @@
     ("tcbox raise base")
     ("on line")
     ("tcbox width" ("auto" "auto limited" "forced center"
-		    "forced left" "forced right" "minimum center"
-		    "minimum left" "minimum right")))
+                    "forced left" "forced right" "minimum center"
+                    "minimum left" "minimum right")))
   "Key=value options only for \\tcbox and \\tcboxmath from tcolorbox.sty.")
 
 (defvar LaTeX-tcolorbox-init-options
@@ -405,16 +405,16 @@
 
 (defvar LaTeX-tcolorbox-newtcolorbox-regexp
   `(,(concat "\\\\\\(re\\)?newtcolorbox"
-	     "[ \t\n\r%]*"
-	     "\\(?:"
-	     (LaTeX-extract-key-value-label 'none)
-	     "\\)?"
-	     "[ \t\n\r%]*"
-	     "{\\([a-zA-Z0-9]+\\)}"
-	     "[ \t\n\r%]*"
-	     "\\(?:\\[\\([0-9]*\\)\\]\\)?"
-	     "[ \t\n\r%]*"
-	     "\\(\\[\\)?")
+             "[ \t\n\r%]*"
+             "\\(?:"
+             (LaTeX-extract-key-value-label 'none)
+             "\\)?"
+             "[ \t\n\r%]*"
+             "{\\([a-zA-Z0-9]+\\)}"
+             "[ \t\n\r%]*"
+             "\\(?:\\[\\([0-9]*\\)\\]\\)?"
+             "[ \t\n\r%]*"
+             "\\(\\[\\)?")
     (2 3 4 1) LaTeX-auto-tcolorbox-newtcolorbox)
   "Matches the arguments of \\newtcolorbox from tcolorbox package.")
 
@@ -423,16 +423,16 @@
 
 (defvar LaTeX-tcolorbox-newtcbox-regexp
   `(,(concat "\\\\\\(re\\)?newtcbox"
-	     "[ \t\n\r%]*"
-	     "\\(?:"
-	     (LaTeX-extract-key-value-label 'none)
-	     "\\)?"
-	     "[ \t\n\r%]*"
-	     "{\\\\\\([a-zA-Z]+\\)}"
-	     "[ \t\n\r%]*"
-	     "\\(?:\\[\\([0-9]*\\)\\]\\)?"
-	     "[ \t\n\r%]*"
-	     "\\(\\[\\)?")
+             "[ \t\n\r%]*"
+             "\\(?:"
+             (LaTeX-extract-key-value-label 'none)
+             "\\)?"
+             "[ \t\n\r%]*"
+             "{\\\\\\([a-zA-Z]+\\)}"
+             "[ \t\n\r%]*"
+             "\\(?:\\[\\([0-9]*\\)\\]\\)?"
+             "[ \t\n\r%]*"
+             "\\(\\[\\)?")
     (2 3 4 1) LaTeX-auto-tcolorbox-newtcbox)
   "Matches the arguments of \\newtcbox from tcolorbox package.")
 
@@ -454,99 +454,99 @@ e.g. \"tcolorboxlib-raster.el\"."
   (when (LaTeX-tcolorbox-tcbuselibrary-list)
     (let (libs)
       (dolist (x (LaTeX-tcolorbox-tcbuselibrary-list))
-	(push (replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
+        (push (replace-regexp-in-string "[ %\n\r\t]" "" (car x)) libs))
       (setq libs (mapconcat #'identity libs ","))
       (dolist (x (split-string libs "," t))
-	(TeX-run-style-hooks (concat "tcolorboxlib-" x)))))
+        (TeX-run-style-hooks (concat "tcolorboxlib-" x)))))
   (when (assoc "tcolorbox" LaTeX-provided-package-options)
     (let ((opts (cdr (assoc "tcolorbox" LaTeX-provided-package-options))))
       (dolist (x opts)
-	(when (member x LaTeX-tcolorbox-library-list)
-	  (TeX-run-style-hooks (concat "tcolorboxlib-" x)))))))
+        (when (member x LaTeX-tcolorbox-library-list)
+          (TeX-run-style-hooks (concat "tcolorboxlib-" x)))))))
 
 (defun LaTeX-tcolorbox-update-style-key ()
   "Update some key=values in `LaTeX-tcolorbox-keyval-options-local'."
   ;; Update the key=values for coloring.
   (let* ((keys '("colframe"
-		 "colback"
-		 "colbacktitle"
-		 "colupper"
-		 "collower"
-		 "coltext"
-		 "coltitle"))
-	 (tmp (copy-alist LaTeX-tcolorbox-keyval-options-local)))
+                 "colback"
+                 "colbacktitle"
+                 "colupper"
+                 "collower"
+                 "coltext"
+                 "coltitle"))
+         (tmp (copy-alist LaTeX-tcolorbox-keyval-options-local)))
     (dolist (key keys)
       (setq tmp (assq-delete-all (car (assoc key tmp)) tmp))
       (cl-pushnew
        (list key (mapcar #'car (LaTeX-xcolor-definecolor-list))) tmp :test #'equal))
     (setq LaTeX-tcolorbox-keyval-options-local (copy-alist tmp)))
   (setq LaTeX-tcolorbox-keyval-options-full
-	(copy-alist LaTeX-tcolorbox-keyval-options-local)))
+        (copy-alist LaTeX-tcolorbox-keyval-options-local)))
 
 (defun LaTeX-tcolorbox-auto-prepare ()
   "Clear various LaTeX-tcolorbox-* variables before parsing."
   (setq LaTeX-auto-tcolorbox-newtcolorbox  nil
-	LaTeX-auto-tcolorbox-newtcbox      nil
-	LaTeX-auto-tcolorbox-tcbuselibrary nil))
+        LaTeX-auto-tcolorbox-newtcbox      nil
+        LaTeX-auto-tcolorbox-tcbuselibrary nil))
 
 (defun LaTeX-tcolorbox-auto-cleanup ()
   "Process parsed results."
   ;; Process new env's from \newtcolorbox
   (dolist (newtcbox (apply #'append LaTeX-tcolorbox-newtcolorbox-list))
     (let ((box (nth 0 newtcbox))
-	  (arg (nth 1 newtcbox))
-	  (opt (nth 2 newtcbox))
-	  (renew (when (string= (nth 3 newtcbox) "re")
-		   (nth 3 newtcbox))))
+          (arg (nth 1 newtcbox))
+          (opt (nth 2 newtcbox))
+          (renew (when (string= (nth 3 newtcbox) "re")
+                   (nth 3 newtcbox))))
       ;; When renew'ing, delete any entry from
       ;; `LaTeX-environment-list' first:
       (when renew
-	(setq LaTeX-environment-list
-	      (assq-delete-all
-	       (car (assoc box (LaTeX-environment-list)))
-	       LaTeX-environment-list)))
+        (setq LaTeX-environment-list
+              (assq-delete-all
+               (car (assoc box (LaTeX-environment-list)))
+               LaTeX-environment-list)))
       (cond (;; opt. 1st argument and mandatory argument(s)
-	     (and arg (not (string= arg ""))
-		  opt (not (string= opt  "")))
-	     (LaTeX-add-environments
-	      (list box
-		    'LaTeX-env-args
-		    (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
-		    (1- (string-to-number arg)))))
-	    (;; mandatory argument(s) only
-	     (and arg (not (string= arg ""))
-		  (string-equal opt ""))
-	     (LaTeX-add-environments
-	      (list box (string-to-number arg))))
-	    (t ; No args
-	     (LaTeX-add-environments (list box))))))
+             (and arg (not (string= arg ""))
+                  opt (not (string= opt  "")))
+             (LaTeX-add-environments
+              (list box
+                    'LaTeX-env-args
+                    (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
+                    (1- (string-to-number arg)))))
+            (;; mandatory argument(s) only
+             (and arg (not (string= arg ""))
+                  (string-equal opt ""))
+             (LaTeX-add-environments
+              (list box (string-to-number arg))))
+            (t ; No args
+             (LaTeX-add-environments (list box))))))
   ;;
   ;; Process new macros from \newtcbox
   (dolist (newtcbox (apply #'append LaTeX-tcolorbox-newtcbox-list))
     (let ((box (nth 0 newtcbox))
-	  (arg (nth 1 newtcbox))
-	  (opt (nth 2 newtcbox))
-	  (renew (when (string= (nth 3 newtcbox) "re")
-		   (nth 3 newtcbox))))
+          (arg (nth 1 newtcbox))
+          (opt (nth 2 newtcbox))
+          (renew (when (string= (nth 3 newtcbox) "re")
+                   (nth 3 newtcbox))))
       ;; When renew'ing, delete any entry from `TeX-symbol-list'
       ;; first:
       (when renew
-	(setq TeX-symbol-list
-	      (assq-delete-all
-	       (car (assoc box (TeX-symbol-list)))
-	       TeX-symbol-list)))
+        (setq TeX-symbol-list
+              (assq-delete-all
+               (car (assoc box (TeX-symbol-list)))
+               TeX-symbol-list)))
       (cond (;; opt. 1st argument and mandatory argument(s)
-	     (and arg (not (string= arg ""))
-		  opt (not (string= opt  "")))
-	     (TeX-add-symbols (list box
-			       (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
-			       (1- (string-to-number arg)))))
-	    (;; mandatory argument(s) only
-	     (and arg (not (string= arg ""))
-		  (string-equal opt ""))
-	     (TeX-add-symbols (list box (string-to-number arg))))
-	    (t ; No args -- in pratice, this will probably never happen
-	     (TeX-add-symbols (list box))))))
+             (and arg (not (string= arg ""))
+                  opt (not (string= opt  "")))
+             (TeX-add-symbols (list box
+                               (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
+                               (1- (string-to-number arg)))))
+            (;; mandatory argument(s) only
+             (and arg (not (string= arg ""))
+                  (string-equal opt ""))
+             (TeX-add-symbols (list box (string-to-number arg))))
+            (t ; No args -- in pratice, this will probably never happen
+             (TeX-add-symbols (list box))))))
   ;;
   ;; Update key=vals
   (LaTeX-tcolorbox-update-style-key)
@@ -564,12 +564,12 @@ e.g. \"tcolorboxlib-raster.el\"."
 
    ;; Activate the buffer-local version of key-vals.
    (setq LaTeX-tcolorbox-keyval-options-local
-	 (copy-alist LaTeX-tcolorbox-keyval-options))
+         (copy-alist LaTeX-tcolorbox-keyval-options))
 
    ;; Collect key=val's from libraries in
    ;; `LaTeX-tcolorbox-keyval-options-full'; \tcbset needs this:
    (setq LaTeX-tcolorbox-keyval-options-full
-	 (copy-alist LaTeX-tcolorbox-keyval-options-local))
+         (copy-alist LaTeX-tcolorbox-keyval-options-local))
 
    ;; Add tcolorbox to the parser.
    (TeX-auto-add-regexp LaTeX-tcolorbox-newtcolorbox-regexp)
@@ -585,9 +585,9 @@ e.g. \"tcolorboxlib-raster.el\"."
     ;; 1.3 Libraries
     '("tcbuselibrary"
       (TeX-arg-eval mapconcat #'identity
-		    (TeX-completing-read-multiple
-		     (TeX-argument-prompt nil nil "Libraries")
-		     LaTeX-tcolorbox-library-list) ","))
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt nil nil "Libraries")
+                     LaTeX-tcolorbox-library-list) ","))
 
     ;; 3 Macros for Box Creation
     '("tcblower" 0)
@@ -600,9 +600,9 @@ e.g. \"tcolorboxlib-raster.el\"."
 
     '("tcbox"
       [ TeX-arg-eval TeX-read-key-val t
-		     (append
-		      LaTeX-tcolorbox-tcbox-options
-		      LaTeX-tcolorbox-keyval-options-local) ]
+        (append
+         LaTeX-tcolorbox-tcbox-options
+         LaTeX-tcolorbox-keyval-options-local) ]
       t)
 
     '("newtcolorbox"
@@ -614,8 +614,8 @@ e.g. \"tcolorboxlib-raster.el\"."
     '("renewtcolorbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color box")
-		    (LaTeX-tcolorbox-newtcolorbox-list))
+                    (TeX-argument-prompt nil nil "Color box")
+                    (LaTeX-tcolorbox-newtcolorbox-list))
       [ TeX-arg-define-macro-arguments ]
       (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
 
@@ -629,10 +629,10 @@ e.g. \"tcolorboxlib-raster.el\"."
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
       (TeX-arg-eval
        (lambda ()
-	 (let ((macro (completing-read
-		       (TeX-argument-prompt nil nil "Macro: \\" t)
-		       (LaTeX-tcolorbox-newtcbox-list))))
-	   (concat TeX-esc macro))))
+         (let ((macro (completing-read
+                       (TeX-argument-prompt nil nil "Macro: \\" t)
+                       (LaTeX-tcolorbox-newtcbox-list))))
+           (concat TeX-esc macro))))
       [ TeX-arg-define-macro-arguments ]
       (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
 
@@ -652,10 +652,10 @@ e.g. \"tcolorboxlib-raster.el\"."
     ;; 5.2 Lists of tcolorboxes
     '("tcblistof"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Macro")
-		     (if (< (LaTeX-largest-level) 2)
-			 '("\\chapter" "\\section" "\\subsection" "\\subsubsection")
-		       '("\\section" "\\subsection" "\\subsubsection")) ]
+        (TeX-argument-prompt t nil "Macro")
+        (if (< (LaTeX-largest-level) 2)
+            '("\\chapter" "\\section" "\\subsection" "\\subsubsection")
+          '("\\section" "\\subsection" "\\subsubsection")) ]
       2)
 
     ;; 7 Saving and Loading of Verbatim Texts
@@ -679,24 +679,24 @@ e.g. \"tcolorboxlib-raster.el\"."
    ;; Do not indent text in verbatim environments:
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
-		'("tcbverbatimwrite" current-indentation) t)
+                '("tcbverbatimwrite" current-indentation) t)
    (add-to-list 'LaTeX-indent-environment-list
-		'("tcbwritetemp" current-indentation) t)
+                '("tcbwritetemp" current-indentation) t)
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("tcbuselibrary"        "{")
-				("tcbset"               "{")
-				("tcbsetforeverylayer"  "{")
-				("tcbox"                "[{")
-				("newtcolorbox"         "[{[[{")
-				("renewtcolorbox"       "[{[[{")
-				("newtcbox"             "[{[[{")
-				("renewtcbox"           "[{[[{")
-				("tcolorboxenvironment" "{{")
-				("tcbsetmanagedlayer"   "{"))
-			      'function)))
+                                ("tcbset"               "{")
+                                ("tcbsetforeverylayer"  "{")
+                                ("tcbox"                "[{")
+                                ("newtcolorbox"         "[{[[{")
+                                ("renewtcolorbox"       "[{[[{")
+                                ("newtcbox"             "[{[[{")
+                                ("renewtcbox"           "[{[[{")
+                                ("tcolorboxenvironment" "{{")
+                                ("tcbsetmanagedlayer"   "{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-tcolorbox-package-options LaTeX-tcolorbox-library-list

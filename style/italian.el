@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-quotes
-		  "font-latex"
-		  (quotes))
+                  "font-latex"
+                  (quotes))
 
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
@@ -49,15 +49,15 @@
    ;; variables are to be deleted in future versions. (now = 2005-04-01)
    (unless (eq (car TeX-quote-language) 'override)
      (let ((open-quote (if (and (boundp 'LaTeX-italian-open-quote)
-				LaTeX-italian-open-quote)
-			   LaTeX-italian-open-quote
-			 "\"<"))
-	   (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
-				 LaTeX-italian-close-quote)
-			    LaTeX-italian-close-quote
-			  "\">")))
+                                LaTeX-italian-open-quote)
+                           LaTeX-italian-open-quote
+                         "\"<"))
+           (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
+                                 LaTeX-italian-close-quote)
+                            LaTeX-italian-close-quote
+                          "\">")))
        (setq TeX-quote-language
-	     `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
+             `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
    ;; Fontification of quotation marks.
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '("\"<" "\">" french)))

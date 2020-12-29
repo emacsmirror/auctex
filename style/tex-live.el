@@ -40,12 +40,12 @@
 
 ;; Silence the compiler:
 (declare-function LaTeX-add-fancyvrb-environments
-		  "fancyvrb"
-		  (&rest fancyvrb-environments))
+                  "fancyvrb"
+                  (&rest fancyvrb-environments))
 
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "tex-live"
@@ -53,18 +53,18 @@
 
    ;; Run hooks for required packages:
    (TeX-run-style-hooks "geometry"
-			"alltt"
-			"array"
-			"colortbl"
-			"comment"
-			"float"
-			"graphicx"
-			"longtable"
-			"ulem"
-			"url"
-			"xspace"
-			"relsize"
-			"fancyvrb")
+                        "alltt"
+                        "array"
+                        "colortbl"
+                        "comment"
+                        "float"
+                        "graphicx"
+                        "longtable"
+                        "ulem"
+                        "url"
+                        "xspace"
+                        "relsize"
+                        "fancyvrb")
 
    ;; Add | to a local version of `LaTeX-shortvrb-chars' before
    ;; running the style hook `shortvrb.el':
@@ -83,8 +83,8 @@
     '("boxedverbatiminput" LaTeX-fancyvrb-arg-file-relative)
     '("listinginput"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Value of firstnumber key")
-		    (cadr (assoc "firstnumber" LaTeX-fancyvrb-key-val-options-local)))
+                    (TeX-argument-prompt nil nil "Value of firstnumber key")
+                    (cadr (assoc "firstnumber" LaTeX-fancyvrb-key-val-options-local)))
       LaTeX-fancyvrb-arg-file-relative)
 
     ;; Various sorts of names:
@@ -96,22 +96,22 @@
     '("filename" "Directory")
     '("envname"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Environment")
-		    '("TEXMFCACHE"
-		      "TEXMFCNF"
-		      "TEXMFCONFIG"
-		      "TEXMFDIST"
-		      "TEXMFHOME"
-		      "TEXMFLOCAL"
-		      "TEXMFMAIN"
-		      "TEXMFOUTPUT"
-		      "TEXMFSYSCONFIG"
-		      "TEXMFSYSVAR"
-		      "TEXMFVAR"
-		      "TEXINPUTS"
-		      "TEXFONTMAPS"
-		      "ENCFONTS"
-		      "PATH" "MANPATH" "INFOPATH" "DISPLAY")))
+                    (TeX-argument-prompt nil nil "Environment")
+                    '("TEXMFCACHE"
+                      "TEXMFCNF"
+                      "TEXMFCONFIG"
+                      "TEXMFDIST"
+                      "TEXMFHOME"
+                      "TEXMFLOCAL"
+                      "TEXMFMAIN"
+                      "TEXMFOUTPUT"
+                      "TEXMFSYSCONFIG"
+                      "TEXMFSYSVAR"
+                      "TEXMFVAR"
+                      "TEXINPUTS"
+                      "TEXFONTMAPS"
+                      "ENCFONTS"
+                      "PATH" "MANPATH" "INFOPATH" "DISPLAY")))
     '("code" "Code")
     '("file" "File")
     '("prog" "Program")
@@ -139,7 +139,7 @@
 
    ;; `tex-live.sty' adds one new column specification letter P:
    (set (make-local-variable 'LaTeX-array-column-letters)
-	(concat LaTeX-array-column-letters "P"))
+        (concat LaTeX-array-column-letters "P"))
 
    ;; Custom env's where \item takes an opt. argument:
    (let ((envs '("ttdescription" "cmddescription")))
@@ -148,29 +148,29 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("verbatiminput"      "{")
-				("boxedverbatiminput" "{")
-				("listinginput"       "{{")
-				("pkgname"       "{")
-				("optname"       "{")
-				("cmdname"       "{")
-				("colname"       "{")
-				("dirname"       "")
-				("filename"      "")
-				("envname"       "{")
-				("cs"            "{"))
-			      'reference)
+                                ("boxedverbatiminput" "{")
+                                ("listinginput"       "{{")
+                                ("pkgname"       "{")
+                                ("optname"       "{")
+                                ("cmdname"       "{")
+                                ("colname"       "{")
+                                ("dirname"       "")
+                                ("filename"      "")
+                                ("envname"       "{")
+                                ("cs"            "{"))
+                              'reference)
      (font-latex-add-keywords '(("code" "{")
-				("file" "{")
-				("prog" "{")
-				("samp" "{")
-				("ttvar" "{"))
-			      'type-command)
+                                ("file" "{")
+                                ("prog" "{")
+                                ("samp" "{")
+                                ("ttvar" "{"))
+                              'type-command)
      (font-latex-add-keywords '(("var" "{") )
-			      'italic-command)
+                              'italic-command)
      (font-latex-add-keywords '(("Ucom" "{"))
-			      'bold-command)))
+                              'bold-command)))
  TeX-dialect)
 
 ;;; tex-live.el ends here

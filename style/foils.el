@@ -40,20 +40,20 @@
 (defun LaTeX-style-foils nil
   "Prompt for and insert foiltex options."
   (let* ((date (timezone-parse-date (current-time-string)))
-	 (year   (string-to-number (aref date 0)))
-	 (month  (string-to-number (aref date 1)))
-	 (day    (string-to-number (aref date 2)))
-	 (title (TeX-read-string "Title: ")))
+         (year   (string-to-number (aref date 0)))
+         (month  (string-to-number (aref date 1)))
+         (day    (string-to-number (aref date 2)))
+         (title (TeX-read-string "Title: ")))
     (save-excursion
       (goto-char (point-max))
       (re-search-backward ".begin.document.")
       (insert TeX-esc "title"
-	      TeX-grop title TeX-grcl "\n")
+              TeX-grop title TeX-grcl "\n")
       (insert TeX-esc "author"
-	      TeX-grop (user-full-name) TeX-grcl "\n")
+              TeX-grop (user-full-name) TeX-grcl "\n")
       (insert TeX-esc "date" TeX-grop
-	      (format "%d-%02d-%02d" year month day)
-	      TeX-grcl "\n")
+              (format "%d-%02d-%02d" year month day)
+              TeX-grcl "\n")
       (insert "" TeX-esc "MyLogo" TeX-grop TeX-grcl "\n")
       (insert "%" TeX-esc "Restriction" TeX-grop TeX-grcl "\n")
       (insert "%" TeX-esc "rightfooter" TeX-grop TeX-grcl "\n")

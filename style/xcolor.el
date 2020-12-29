@@ -49,8 +49,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-xcolor-core-color-models
   '("rgb" "cmy" "cmyk" "hsb" "gray")
@@ -220,8 +220,8 @@
 
 (defvar LaTeX-xcolor-color-models
   (append LaTeX-xcolor-core-color-models
-	  LaTeX-xcolor-num-color-models
-	  LaTeX-xcolor-pseudo-color-models)
+          LaTeX-xcolor-num-color-models
+          LaTeX-xcolor-pseudo-color-models)
   "Combine three variables `LaTeX-xcolor-core-color-models',
 `LaTeX-xcolor-num-color-models' and `LaTeX-xcolor-pseudo-color-models'.")
 
@@ -243,20 +243,20 @@ remainder."
 (defvar LaTeX-xcolor-definecolor-regexp
   (eval-when-compile
     `(,(concat "\\\\"
-	       (regexp-opt '("definecolor"  "providecolor"
-			     "preparecolor" "colorlet"))
-	       "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
+               (regexp-opt '("definecolor"  "providecolor"
+                             "preparecolor" "colorlet"))
+               "\\(?:\\[\\(?:[^]]*\\)\\]\\)?{\\([^}]+\\)}")
       1 LaTeX-auto-xcolor-definecolor))
   "Match the argument of various color defining macros from xcolor package.")
 
 (defvar LaTeX-xcolor-definecolorset-regexp
   `(,(concat "\\\\\\(?:define\\|provide\\|prepare\\)"
-	     "colorset"
-	     "\\(?:\\[\\(?:[^]]*\\)\\]\\)?"
-	     "{\\(?:[^}]+\\)}"
-	     "{\\([^}]+\\)}"
-	     "{\\([^}]+\\)}"
-	     "{\\([^}]+\\)}")
+             "colorset"
+             "\\(?:\\[\\(?:[^]]*\\)\\]\\)?"
+             "{\\(?:[^}]+\\)}"
+             "{\\([^}]+\\)}"
+             "{\\([^}]+\\)}"
+             "{\\([^}]+\\)}")
     (1 2 3) LaTeX-auto-xcolor-definecolorset)
   "Match the argument of various color-set defining macros from
 xcolor package.")
@@ -264,18 +264,18 @@ xcolor package.")
 (defun LaTeX-xcolor-auto-prepare ()
   "Clear `LaTeX-auto-xcolor-definecolor' before parsing."
   (setq LaTeX-auto-xcolor-definecolor nil
-	LaTeX-auto-xcolor-definecolorset nil))
+        LaTeX-auto-xcolor-definecolorset nil))
 
 (defun LaTeX-xcolor-auto-cleanup ()
   "Process the parsed elements from `LaTeX-auto-xcolor-definecolorset'."
   (dolist (colset (LaTeX-xcolor-definecolorset-list))
     (let ((head (car colset))
-	  (tail (cadr colset))
-	  (cols (split-string
-		 (replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
-		 "\\(,[^;]+;\\|,[^;]+$\\)" t)))
+          (tail (cadr colset))
+          (cols (split-string
+                 (replace-regexp-in-string "[ %\n\r\t]" "" (nth 2 colset))
+                 "\\(,[^;]+;\\|,[^;]+$\\)" t)))
       (dolist (color cols)
-	(LaTeX-add-xcolor-definecolors (concat head color tail))))))
+        (LaTeX-add-xcolor-definecolors (concat head color tail))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-xcolor-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-xcolor-auto-cleanup t)
@@ -285,23 +285,23 @@ xcolor package.")
   "Insert arguments of \\definecolor and similar macros from xcolor.sty."
   ;; \definecolor[<type>]{<name>}{<model-list>}{<spec-list>}
   (let* ((TeX-last-optional-rejected nil)
-	 (xcoltype  (LaTeX-check-insert-macro-default-style
-		     (completing-read
-		      (TeX-argument-prompt t nil "Type")
-		      LaTeX-xcolor-type-color-models)))
-	 (xcolname  (TeX-read-string
-		     (TeX-argument-prompt optional nil "Color name")))
-	 (xcolmodel (completing-read
-		     (TeX-argument-prompt optional nil "Model (list)")
-		     (if (string= xcoltype "named")
-			 (LaTeX-xcolor-color-models t)
-		       LaTeX-xcolor-color-models)))
-	 (xcolspec  (if (string= xcolmodel "named")
-			(completing-read
-			 (TeX-argument-prompt optional nil "Color")
-			 (LaTeX-xcolor-definecolor-list))
-		      (TeX-read-string
-		       (TeX-argument-prompt optional nil (concat xcolmodel " spec (list)"))))))
+         (xcoltype  (LaTeX-check-insert-macro-default-style
+                     (completing-read
+                      (TeX-argument-prompt t nil "Type")
+                      LaTeX-xcolor-type-color-models)))
+         (xcolname  (TeX-read-string
+                     (TeX-argument-prompt optional nil "Color name")))
+         (xcolmodel (completing-read
+                     (TeX-argument-prompt optional nil "Model (list)")
+                     (if (string= xcoltype "named")
+                         (LaTeX-xcolor-color-models t)
+                       LaTeX-xcolor-color-models)))
+         (xcolspec  (if (string= xcolmodel "named")
+                        (completing-read
+                         (TeX-argument-prompt optional nil "Color")
+                         (LaTeX-xcolor-definecolor-list))
+                      (TeX-read-string
+                       (TeX-argument-prompt optional nil (concat xcolmodel " spec (list)"))))))
     (when (and xcoltype (not (string= xcoltype "")))
       (insert (format "[%s]" xcoltype)))
     (TeX-argument-insert xcolname optional)
@@ -312,13 +312,13 @@ xcolor package.")
 (defun TeX-arg-xcolor-definecolorset (optional)
   "Insert arguments of \\definecolorset and similar macros from xcolor.sty."
   (let* ((TeX-last-optional-rejected nil)
-	 (xcoltype (LaTeX-check-insert-macro-default-style
-		    (completing-read
-		     (TeX-argument-prompt t nil "Type")
-		     LaTeX-xcolor-type-color-models)))
-	 (xcolmodel (completing-read
-		     (TeX-argument-prompt optional nil "Model")
-		     (LaTeX-xcolor-color-models t))))
+         (xcoltype (LaTeX-check-insert-macro-default-style
+                    (completing-read
+                     (TeX-argument-prompt t nil "Type")
+                     LaTeX-xcolor-type-color-models)))
+         (xcolmodel (completing-read
+                     (TeX-argument-prompt optional nil "Model")
+                     (LaTeX-xcolor-color-models t))))
     (when (and xcoltype (not (string= xcoltype "")))
       (insert (format "[%s]" xcoltype)))
     (TeX-argument-insert xcolmodel optional)))
@@ -327,16 +327,16 @@ xcolor package.")
   "Insert arguments of various color commands from xcolor.sty."
   ;; \color{<name>} or \color[<model-list>]{<spec-list>}
   (let* ((TeX-last-optional-rejected nil)
-	 (xcolmodel (LaTeX-check-insert-macro-default-style
-		     (completing-read
-		      (TeX-argument-prompt t nil "Model (list)")
-		      (LaTeX-xcolor-color-models t))))
-	 (xcolor (if (and xcolmodel (not (string= xcolmodel "")))
-		     (TeX-read-string
-		      (TeX-argument-prompt optional nil (concat xcolmodel " spec (list)")))
-		   (completing-read
-		    (TeX-argument-prompt optional nil "Color")
-		    (LaTeX-xcolor-definecolor-list)))))
+         (xcolmodel (LaTeX-check-insert-macro-default-style
+                     (completing-read
+                      (TeX-argument-prompt t nil "Model (list)")
+                      (LaTeX-xcolor-color-models t))))
+         (xcolor (if (and xcolmodel (not (string= xcolmodel "")))
+                     (TeX-read-string
+                      (TeX-argument-prompt optional nil (concat xcolmodel " spec (list)")))
+                   (completing-read
+                    (TeX-argument-prompt optional nil "Color")
+                    (LaTeX-xcolor-definecolor-list)))))
     (when (and xcolmodel (not (string= xcolmodel "")))
       (insert (format "[%s]" xcolmodel)))
     (TeX-argument-insert xcolor optional)))
@@ -345,36 +345,36 @@ xcolor package.")
   "Insert arguments of \\fcolorbox from xcolor.sty."
   ;;\fcolorbox[<frame model>]{<frame spec>}[<background model>]{<background spec>}{<text>}
   (let* ((TeX-last-optional-rejected nil)
-	 (xfrmodel (LaTeX-check-insert-macro-default-style
-		    (completing-read
-		     (TeX-argument-prompt t nil "(Frame) Color model")
-		     LaTeX-xcolor-color-models)))
-	 ;; Set `TeX-last-optional-rejected' acc. to `xfrmodel'
-	 (TeX-last-optional-rejected (or (not xfrmodel)
-				         (and xfrmodel (string= xfrmodel ""))))
-	 (xfrspec  (if (or (null xfrmodel)
-			   (string= xfrmodel "")
-			   (string= xfrmodel "named"))
-		       (completing-read
-			(TeX-argument-prompt optional nil "Frame color spec")
-			(LaTeX-xcolor-definecolor-list))
-		     (TeX-read-string
-		      (TeX-argument-prompt optional nil "Frame color spec"))))
-	 (xbgmodel (LaTeX-check-insert-macro-default-style
-		    (completing-read
-		     (TeX-argument-prompt t nil "Background Color model")
-		     LaTeX-xcolor-color-models)))
-	 (xbgspec  (if (or (null xfrmodel)
-			   (string= xfrmodel "")
-			   (string= xfrmodel "named")
-			   (null xbgmodel)
-			   (string= xbgmodel "")
-			   (string= xbgmodel "named"))
-		       (completing-read
-			(TeX-argument-prompt optional nil "Background color spec")
-			(LaTeX-xcolor-definecolor-list))
-		     (TeX-read-string
-		      (TeX-argument-prompt optional nil "Background color spec")))))
+         (xfrmodel (LaTeX-check-insert-macro-default-style
+                    (completing-read
+                     (TeX-argument-prompt t nil "(Frame) Color model")
+                     LaTeX-xcolor-color-models)))
+         ;; Set `TeX-last-optional-rejected' acc. to `xfrmodel'
+         (TeX-last-optional-rejected (or (not xfrmodel)
+                                         (and xfrmodel (string= xfrmodel ""))))
+         (xfrspec  (if (or (null xfrmodel)
+                           (string= xfrmodel "")
+                           (string= xfrmodel "named"))
+                       (completing-read
+                        (TeX-argument-prompt optional nil "Frame color spec")
+                        (LaTeX-xcolor-definecolor-list))
+                     (TeX-read-string
+                      (TeX-argument-prompt optional nil "Frame color spec"))))
+         (xbgmodel (LaTeX-check-insert-macro-default-style
+                    (completing-read
+                     (TeX-argument-prompt t nil "Background Color model")
+                     LaTeX-xcolor-color-models)))
+         (xbgspec  (if (or (null xfrmodel)
+                           (string= xfrmodel "")
+                           (string= xfrmodel "named")
+                           (null xbgmodel)
+                           (string= xbgmodel "")
+                           (string= xbgmodel "named"))
+                       (completing-read
+                        (TeX-argument-prompt optional nil "Background color spec")
+                        (LaTeX-xcolor-definecolor-list))
+                     (TeX-read-string
+                      (TeX-argument-prompt optional nil "Background color spec")))))
     (when (and xfrmodel (not (string= xfrmodel "")))
       (insert (format "[%s]" xfrmodel)))
     (TeX-argument-insert xfrspec optional)
@@ -394,17 +394,17 @@ xcolor package.")
 
    ;; Add dvips colors in conjunction with `dvipsnames*?'.
    (when (or (LaTeX-provided-package-options-member "xcolor" "dvipsnames")
-	     (LaTeX-provided-package-options-member "xcolor" "dvipsnames*"))
+             (LaTeX-provided-package-options-member "xcolor" "dvipsnames*"))
      (apply #'LaTeX-add-xcolor-definecolors LaTeX-xcolor-dvipsnames-colors))
 
    ;; For `svgnames*?'
    (when (or (LaTeX-provided-package-options-member "xcolor" "svgnames")
-	     (LaTeX-provided-package-options-member "xcolor" "svgnames*"))
+             (LaTeX-provided-package-options-member "xcolor" "svgnames*"))
      (apply #'LaTeX-add-xcolor-definecolors LaTeX-xcolor-svgnames-colors))
 
    ;; For `x11ames*?'
    (when (or (LaTeX-provided-package-options-member "xcolor" "x11names")
-	     (LaTeX-provided-package-options-member "xcolor" "x11names*"))
+             (LaTeX-provided-package-options-member "xcolor" "x11names*"))
      (apply #'LaTeX-add-xcolor-definecolors LaTeX-xcolor-x11names-colors))
 
    (TeX-add-symbols
@@ -418,20 +418,20 @@ xcolor package.")
     ;; \colorlet[<type>]{<name>}[<num model>]{<color>}
     '("colorlet"
       [ TeX-arg-eval completing-read
-	(TeX-argument-prompt t nil "Type")
-	LaTeX-xcolor-type-color-models ]
+        (TeX-argument-prompt t nil "Type")
+        LaTeX-xcolor-type-color-models ]
       (TeX-arg-eval
        (lambda ()
-	 (let ((xcolor (TeX-read-string
-			(TeX-argument-prompt nil nil "Color"))))
-	   (LaTeX-add-xcolor-definecolors xcolor)
-	   (format "%s" xcolor))))
+         (let ((xcolor (TeX-read-string
+                        (TeX-argument-prompt nil nil "Color"))))
+           (LaTeX-add-xcolor-definecolors xcolor)
+           (format "%s" xcolor))))
       [ TeX-arg-eval completing-read
-	(TeX-argument-prompt t nil "Model")
-	(LaTeX-xcolor-color-models t) ]
+        (TeX-argument-prompt t nil "Model")
+        (LaTeX-xcolor-color-models t) ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color")
-		    (LaTeX-xcolor-definecolor-list)))
+                    (TeX-argument-prompt nil nil "Color")
+                    (LaTeX-xcolor-definecolor-list)))
 
     ;; 2.5.3 Defining sets of colors
     ;; \definecolorset[<type>]{<model-list>}{<head>}{<tail>}{<set spec>}
@@ -488,31 +488,31 @@ xcolor package.")
     ;; 2.7 Color blending
     '("blendcolors"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Mix expr")
-		    (LaTeX-xcolor-definecolor-list)))
+                    (TeX-argument-prompt nil nil "Mix expr")
+                    (LaTeX-xcolor-definecolor-list)))
     '("blendcolors*"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Mix expr")
-		    (LaTeX-xcolor-definecolor-list)))
+                    (TeX-argument-prompt nil nil "Mix expr")
+                    (LaTeX-xcolor-definecolor-list)))
 
     ;; 2.8 Color masks and separation
     '("maskcolors"
       [ TeX-arg-eval completing-read
-	             (TeX-argument-prompt t nil "Model")
-		     (LaTeX-xcolor-color-models t) ]
+        (TeX-argument-prompt t nil "Model")
+        (LaTeX-xcolor-color-models t) ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color")
-		    (LaTeX-xcolor-definecolor-list)))
+                    (TeX-argument-prompt nil nil "Color")
+                    (LaTeX-xcolor-definecolor-list)))
 
     ;; 2.9 Color series
     '("definecolorseries"
       "Name"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Core model")
-		    LaTeX-xcolor-core-color-models)
+                    (TeX-argument-prompt nil nil "Core model")
+                    LaTeX-xcolor-core-color-models)
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Method")
-		    '("step" "grad" "last"))
+                    (TeX-argument-prompt nil nil "Method")
+                    '("step" "grad" "last"))
       [ t ] nil [ nil ] nil)
 
     '("resetcolorseries" [ "Div." ] "Name")
@@ -521,15 +521,15 @@ xcolor package.")
     ;; \extractcolorspec{<color>}{<cmd>}
     '("extractcolorspec"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color")
-		    (LaTeX-xcolor-definecolor-list))
+                    (TeX-argument-prompt nil nil "Color")
+                    (LaTeX-xcolor-definecolor-list))
       (TeX-arg-define-macro "Command: \\"))
 
     ;; \extractcolorspecs{<color>}{<model-cmd>}{<color-cmd>}
     '("extractcolorspecs"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Color")
-		    (LaTeX-xcolor-definecolor-list))
+                    (TeX-argument-prompt nil nil "Color")
+                    (LaTeX-xcolor-definecolor-list))
       (TeX-arg-define-macro "Model command: \\")
       (TeX-arg-define-macro "Color command: \\"))
 
@@ -541,13 +541,13 @@ xcolor package.")
     ;; \convertcolorspec{<model>}{<spec>}{<target model>}{cmd>}
     '("convertcolorspec"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Model")
-		    (LaTeX-xcolor-color-models))
+                    (TeX-argument-prompt nil nil "Model")
+                    (LaTeX-xcolor-color-models))
       (TeX-arg-eval TeX-read-string
-		    (TeX-argument-prompt nil nil "Spec"))
+                    (TeX-argument-prompt nil nil "Spec"))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Model")
-		    (LaTeX-xcolor-color-models t))
+                    (TeX-argument-prompt nil nil "Model")
+                    (LaTeX-xcolor-color-models t))
       (TeX-arg-define-macro "Macro: \\")) ) ; close TeX-add-symbols
 
    ;; 2.12 Color in tables
@@ -560,27 +560,27 @@ xcolor package.")
      (TeX-add-symbols
       ;; \rowcolors[<commands>]{<row>}{<odd-row color>}{<even-row color>}
       '("rowcolors"
-	(TeX-arg-conditional (y-or-n-p "With optional commands? ")
-			     ( [ t ] )
-			     (ignore))
-	"Row"
-	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt nil nil "Odd-row color")
-		      (LaTeX-xcolor-definecolor-list))
-	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt nil nil "Even-row color")
-		      (LaTeX-xcolor-definecolor-list)))
+        (TeX-arg-conditional (y-or-n-p "With optional commands? ")
+                             ( [ t ] )
+                             (ignore))
+        "Row"
+        (TeX-arg-eval completing-read
+                      (TeX-argument-prompt nil nil "Odd-row color")
+                      (LaTeX-xcolor-definecolor-list))
+        (TeX-arg-eval completing-read
+                      (TeX-argument-prompt nil nil "Even-row color")
+                      (LaTeX-xcolor-definecolor-list)))
       '("rowcolors*"
-	(TeX-arg-conditional (y-or-n-p "With optional commands? ")
-			     ( [ t ] )
-			     (ignore))
-	"Row"
-	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt nil nil "Odd-row color")
-		      (LaTeX-xcolor-definecolor-list))
-	(TeX-arg-eval completing-read
-		      (TeX-argument-prompt nil nil "Even-row color")
-		      (LaTeX-xcolor-definecolor-list)))
+        (TeX-arg-conditional (y-or-n-p "With optional commands? ")
+                             ( [ t ] )
+                             (ignore))
+        "Row"
+        (TeX-arg-eval completing-read
+                      (TeX-argument-prompt nil nil "Odd-row color")
+                      (LaTeX-xcolor-definecolor-list))
+        (TeX-arg-eval completing-read
+                      (TeX-argument-prompt nil nil "Even-row color")
+                      (LaTeX-xcolor-definecolor-list)))
       '("showrowcolors" 0)
       '("hiderowcolors" 0))
      (LaTeX-add-counters "rownum"))
@@ -589,40 +589,40 @@ xcolor package.")
    (LaTeX-add-environments
     '("testcolors" LaTeX-env-args
       [ TeX-arg-eval mapconcat #'identity
-	             (TeX-completing-read-multiple
-		      (TeX-argument-prompt t nil "Color models")
-		      (LaTeX-xcolor-color-models t))
-		     "," ] ))
+        (TeX-completing-read-multiple
+         (TeX-argument-prompt t nil "Color models")
+         (LaTeX-xcolor-color-models t))
+        "," ] ))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("color"             "[{")
-				("pagecolor"         "[{"))
-			      'type-declaration)
+                                ("pagecolor"         "[{"))
+                              'type-declaration)
      (font-latex-add-keywords '(("textcolor"         "[{{")
-				("colorbox"          "[{{" )
-				("fcolorbox"         "[{[{{"))
-			      'type-command)
+                                ("colorbox"          "[{{" )
+                                ("fcolorbox"         "[{[{{"))
+                              'type-command)
      (font-latex-add-keywords '(("definecolor"       "[{{{")
-				("providecolor"      "[{{{")
-				("colorlet"          "[{[{")
-				("definecolorset"    "[{{{{")
-				("providecolorset"   "[{{{{")
-				("preparecolor"      "[{{{")
-				("preparecolorset"   "[{{{{")
-				("definecolors"      "{")
-				("providecolors"     "{")
-				("testcolor"         "[{")
-				("blendcolors"       "*{")
-				("maskcolors"        "[{")
-				("definecolorseries" "{{{[{[{")
-				("resetcolorseries"  "[{")
-				("extractcolorspec"  "{{")
-				("extractcolorspecs" "{{{")
-				("convertcolorspec"  "{{{{")
-				("rowcolors"         "*[{{{"))
-			      'function)))
+                                ("providecolor"      "[{{{")
+                                ("colorlet"          "[{[{")
+                                ("definecolorset"    "[{{{{")
+                                ("providecolorset"   "[{{{{")
+                                ("preparecolor"      "[{{{")
+                                ("preparecolorset"   "[{{{{")
+                                ("definecolors"      "{")
+                                ("providecolors"     "{")
+                                ("testcolor"         "[{")
+                                ("blendcolors"       "*{")
+                                ("maskcolors"        "[{")
+                                ("definecolorseries" "{{{[{[{")
+                                ("resetcolorseries"  "[{")
+                                ("extractcolorspec"  "{{")
+                                ("extractcolorspecs" "{{{")
+                                ("convertcolorspec"  "{{{{")
+                                ("rowcolors"         "*[{{{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-xcolor-package-options

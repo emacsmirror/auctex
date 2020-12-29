@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "amsfonts"
@@ -44,14 +44,14 @@
     '("bold" 1))
    ;; New math font by `amsfonts'.
    (setq TeX-font-list
-	 (append
-	  TeX-font-list
-	  '((?\C-k "" "" "\\mathfrak{" "}"))))
+         (append
+          TeX-font-list
+          '((?\C-k "" "" "\\mathfrak{" "}"))))
    ;; Fontification
    (when (and (featurep 'font-latex)
-   	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("bold" "{"))
-			      'bold-command)))
+                              'bold-command)))
  TeX-dialect)
 
 ;; The `psamsfonts' option is obsolete in AMSFonts v3

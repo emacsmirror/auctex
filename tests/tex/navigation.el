@@ -29,7 +29,7 @@
   (with-temp-buffer
     (insert string)
     (should (= (or position (point-max))
-	       (TeX-find-macro-end-helper (point-min))))))
+               (TeX-find-macro-end-helper (point-min))))))
 
 (ert-deftest TeX-find-macro-end-helper-single ()
   ;; single macro ending at EOB

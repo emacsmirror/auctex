@@ -40,13 +40,13 @@
 (ert-deftest japanese-TeX-style-hook-timing ()
   "Test style hooks are not called too early."
   (let ((TeX-parse-self t)
-	(TeX-master t)
-	(LaTeX-mode-hook '(japanese-latex-mode-initialization
-			   turn-on-reftex)))
+        (TeX-master t)
+        (LaTeX-mode-hook '(japanese-latex-mode-initialization
+                           turn-on-reftex)))
     (find-file parse-timing)
     (should (memq 'AMSTeX
-		  (get reftex-docstruct-symbol
-		       'reftex-label-alist-style)))
+                  (get reftex-docstruct-symbol
+                       'reftex-label-alist-style)))
     (kill-buffer)))
 
 ;;; parse-timing.el ends here

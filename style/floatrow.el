@@ -70,33 +70,33 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function reftex-compile-variables
-		  "reftex"
-		  ())
+                  "reftex"
+                  ())
 
 (defvar LaTeX-floatrow-key-val-options
   '(;; 3.1.1 Float Style
     ("style" ("plain" "plaintop" "Plaintop"
-	      "ruled" "Ruled"
-	      "boxed" "Boxed" "BOXED"
-	      "shadowbox" "Shadowbox" "SHADOWBOX"
-	      "doublebox" "Doublebox" "DOUBLEBOX"
-	      "wshadowbox" "Wshadowbox" "WSHADOWBOX"))
+              "ruled" "Ruled"
+              "boxed" "Boxed" "BOXED"
+              "shadowbox" "Shadowbox" "SHADOWBOX"
+              "doublebox" "Doublebox" "DOUBLEBOX"
+              "wshadowbox" "Wshadowbox" "WSHADOWBOX"))
     ;; 3.1.2 Font Settings
     ("font" ("scriptsize" "footnotesize" "small" "normalsize" "large"
-	     "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf"
-	     "rm" "sf" "tt"))
+             "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf"
+             "rm" "sf" "tt"))
     ("footfont" ("scriptsize" "footnotesize" "small" "normalsize" "large"
-		 "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf"
-		 "rm" "sf" "tt"))
+                 "Large" "normalfont" "up" "it" "sl" "sc" "md" "bf"
+                 "rm" "sf" "tt"))
     ;; 3.1.3 Position of Caption
     ("capposition" ("top" "TOP" "bottom" "beside"))
     ;; 3.1.4 Position of Beside Caption
     ("capbesideposition" ("left" "right" "inside" "outside"
-			  "top" "bottom" "center"))
+                          "top" "bottom" "center"))
     ;; 3.1.5 Defining The Width of Beside Caption
     ("capbesidewidth" ("none" "sidefil"))
     ;; 3.1.6 Defining Width of Object
@@ -114,7 +114,7 @@
     ("objectset" ("justified" "centering" "raggedright" "RaggedRight" "raggedleft"))
     ;; 3.1.12 Defining Float Margins
     ("margins" ("centering" "raggedright" "raggedleft"
-		"hangright" "hanginside" "hangoutside"))
+                "hangright" "hanginside" "hangoutside"))
     ;; 3.1.13 Defining Float Separators
     ("floatrowsep" ("columnsep" "quad" "qquad" "hfil" "hfill" "none"))
     ("capbesidesep" ("columnsep" "quad" "qquad" "hfil" "hfill" "none"))
@@ -126,7 +126,7 @@
     ("rowpostcode" ("none" "thickrule" "rule" "lowrule" "captionskip"))
     ;; 3.1.15 Defining Float Frames
     ("framestyle" ("fbox" "colorbox" "FRcolorbox" "corners"
-		   "doublebox" "shadowbox" "wshadowbox"))
+                   "doublebox" "shadowbox" "wshadowbox"))
     ("frameset")
     ("framearound" ("none" "object" "all" "row" "none"))
     ("framefit" ("yes" "no"))
@@ -151,15 +151,15 @@
 (make-variable-buffer-local 'LaTeX-floatrow-key-val-options-local)
 
 (defvar LaTeX-floatrow-supported-float-types
-  '("figure" "table"				  ; Standard LaTeX
-    "widefigure" "widetable" "widefloat"	  ; Standard figure* & table*
-    "wrapfigure" "wraptable" "wrapfloat"	  ; wrapfig.sty
+  '("figure" "table"                              ; Standard LaTeX
+    "widefigure" "widetable" "widefloat"          ; Standard figure* & table*
+    "wrapfigure" "wraptable" "wrapfloat"          ; wrapfig.sty
     "rotfigure"  "rottable"  "rotfloat"           ; rotating.sty
     "widerotfigure" "widerottable" "widerotfloat" ; for 2-col & wide
     "figurerow"  "tablerow"  "floatrow"           ; inside floatrow env's
     "capbesidefigure" "capbesidetable"            ; floats with beside captions
     "capbesidefloat"
-    "longtable"					  ; longtable.sty
+    "longtable"                                   ; longtable.sty
     "subfigure" "subtable" "sub")                 ; subcaption.sty
   "List of float types supported by floatrow.sty.")
 
@@ -178,16 +178,16 @@
       "\\\\Declare"
       "\\("
       (mapconcat #'identity
-		 '("FloatStyle"         ; 3.6.1 Float Style Option (style=)
-		   "FloatFont"          ; 3.6.2 Float Font Option (font=)
-		   "FloatVCode"         ; 3.6.3 Option for Float Rules/Skips (precode= etc.)
-		   "ColorBox"           ; 3.6.4 Settings for Colored Frame (colorframeset=)
-		   "CBoxCorners"        ;       colorframecorners=
-		   "ObjectSet"          ; 3.6.5 Object Justification Option (objectset=)
-		   "MarginSet"          ; 3.6.6 Option for Float Box Alignment/Settings (margins=)
-		   "FloatSeparators"    ; 3.6.7 Float Separators Options (floatrowsep=, capbesidesep=)
-		   "FloatFootnoterule") ; 3.6.8 Option for Footnote Rule's Style (footnoterule=)
-		 "\\|")
+                 '("FloatStyle"         ; 3.6.1 Float Style Option (style=)
+                   "FloatFont"          ; 3.6.2 Float Font Option (font=)
+                   "FloatVCode"         ; 3.6.3 Option for Float Rules/Skips (precode= etc.)
+                   "ColorBox"           ; 3.6.4 Settings for Colored Frame (colorframeset=)
+                   "CBoxCorners"        ;       colorframecorners=
+                   "ObjectSet"          ; 3.6.5 Object Justification Option (objectset=)
+                   "MarginSet"          ; 3.6.6 Option for Float Box Alignment/Settings (margins=)
+                   "FloatSeparators"    ; 3.6.7 Float Separators Options (floatrowsep=, capbesidesep=)
+                   "FloatFootnoterule") ; 3.6.8 Option for Footnote Rule's Style (footnoterule=)
+                 "\\|")
       "\\)"
       "{\\([^}]+\\)}")
     (0 1 2) LaTeX-auto-floatrow-DeclareNewOption)
@@ -219,9 +219,9 @@
 (defun LaTeX-floatrow-auto-prepare ()
   "Clear various \"LaTeX-floatrow\" variables before parsing."
   (setq LaTeX-auto-floatrow-newfloatcommand       nil
-	LaTeX-auto-floatrow-DeclareNewOption      nil
-	LaTeX-auto-floatrow-newseparatedlabel-ref nil
-	LaTeX-auto-floatrow-DeclareNewFloatType   nil))
+        LaTeX-auto-floatrow-DeclareNewOption      nil
+        LaTeX-auto-floatrow-newseparatedlabel-ref nil
+        LaTeX-auto-floatrow-DeclareNewFloatType   nil))
 
 (defun LaTeX-floatrow-auto-cleanup ()
   "Process parsed results from floatrow package."
@@ -237,44 +237,44 @@
     (dolist (cmd (mapcar #'car (LaTeX-floatrow-newfloatcommand-list)))
       (TeX-add-symbols `(,cmd LaTeX-floatrow-arg-floatbox))
       (when (and (featurep 'font-latex)
-		 (eq TeX-install-font-lock 'font-latex-setup))
-	(font-latex-add-keywords `((,cmd "[[["))
-				 'textual))))
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        (font-latex-add-keywords `((,cmd "[[["))
+                                 'textual))))
   ;;
   ;; Process new label/ref commands:
   (when (LaTeX-floatrow-newseparatedlabel-ref-list)
     (let (floatrow-run-reftex-compile-vars)
       (dolist (elt (LaTeX-floatrow-newseparatedlabel-ref-list))
-	(let ((cmd (car elt))
-	      (type (cadr elt)))
-	  (if (string= type "ref")
-	      ;; More fun w/ referencing macros:
-	      (TeX-add-symbols `(,cmd TeX-arg-ref))
-	    ;; Less fun w/ label defining macros.  Add cmd to
-	    ;; TeX-symbol-list:
-	    (TeX-add-symbols `(,cmd TeX-arg-define-label))
-	    ;; For AUCTeX, parse the argument of the new macro and add
-	    ;; it to `LaTeX-auto-label':
-	    (TeX-auto-add-regexp
-	     `(,(concat "\\\\" cmd "{\\([^\n\r%\\{}]+\\)}") 1 LaTeX-auto-label))
-	    ;; For RefTeX, append cmd to `reftex-label-regexps and set
-	    ;; floatrow-run-reftex-compile-vars to t:
-	    (when (and (boundp 'reftex-label-regexps)
-		       (fboundp 'reftex-compile-variables)
-		       (not (string-match
-			     cmd
-			     (mapconcat #'identity reftex-label-regexps "|"))))
-	      (add-to-list (make-local-variable 'reftex-label-regexps)
-			   (concat "\\\\" cmd "{\\(?1:[^}]*\\)}") t)
-	      (setq floatrow-run-reftex-compile-vars t)))
-	  ;; Fontify macros as reference:
-	  (when (and (featurep 'font-latex)
-		     (eq TeX-install-font-lock 'font-latex-setup))
-	    (font-latex-add-keywords `((,cmd "{"))
-				     'reference))))
+        (let ((cmd (car elt))
+              (type (cadr elt)))
+          (if (string= type "ref")
+              ;; More fun w/ referencing macros:
+              (TeX-add-symbols `(,cmd TeX-arg-ref))
+            ;; Less fun w/ label defining macros.  Add cmd to
+            ;; TeX-symbol-list:
+            (TeX-add-symbols `(,cmd TeX-arg-define-label))
+            ;; For AUCTeX, parse the argument of the new macro and add
+            ;; it to `LaTeX-auto-label':
+            (TeX-auto-add-regexp
+             `(,(concat "\\\\" cmd "{\\([^\n\r%\\{}]+\\)}") 1 LaTeX-auto-label))
+            ;; For RefTeX, append cmd to `reftex-label-regexps and set
+            ;; floatrow-run-reftex-compile-vars to t:
+            (when (and (boundp 'reftex-label-regexps)
+                       (fboundp 'reftex-compile-variables)
+                       (not (string-match
+                             cmd
+                             (mapconcat #'identity reftex-label-regexps "|"))))
+              (add-to-list (make-local-variable 'reftex-label-regexps)
+                           (concat "\\\\" cmd "{\\(?1:[^}]*\\)}") t)
+              (setq floatrow-run-reftex-compile-vars t)))
+          ;; Fontify macros as reference:
+          (when (and (featurep 'font-latex)
+                     (eq TeX-install-font-lock 'font-latex-setup))
+            (font-latex-add-keywords `((,cmd "{"))
+                                     'reference))))
       ;; Run `reftex-compile-variables' if needed only once:
       (when floatrow-run-reftex-compile-vars
-	(reftex-compile-variables))))
+        (reftex-compile-variables))))
   ;;
   ;; Process new floattypes:
   (when (LaTeX-floatrow-DeclareNewFloatType-list)
@@ -294,52 +294,52 @@
 (defun LaTeX-floatrow-update-key-val-options ()
   "Update buffer-local key-val options before offering for completion."
   (let ((vcode-keys '("precode" "rowprecode" "midcode" "postcode" "rowpostcode"))
-	(sep-keys '("floatrowsep" "capbesidesep")))
+        (sep-keys '("floatrowsep" "capbesidesep")))
     (dolist (keyvals (LaTeX-floatrow-DeclareNewOption-list))
       (let* ((key (cond ((string= (nth 1 keyvals) "FloatStyle")
-			 "style")
-			((string= (nth 1 keyvals) "FloatFont")
-			 "font")
-			((string= (nth 1 keyvals) "FloatVCode")
-			 "precode")
-			((string= (nth 1 keyvals) "ColorBox")
-			 "colorframeset")
-			((string= (nth 1 keyvals) "CBoxCorners")
-			 "colorframecorners")
-			((string= (nth 1 keyvals) "ObjectSet")
-			 "objectset")
-			((string= (nth 1 keyvals) "MarginSet")
-			 "margins")
-			((string= (nth 1 keyvals) "FloatSeparators")
-			 "floatrowsep")
-			((string= (nth 1 keyvals) "FloatFootnoterule")
-			 "footnoterule")
-			(t nil)))
-	     (val (nth 2 keyvals))
-	     (val-match (cadr (assoc key LaTeX-floatrow-key-val-options-local)))
-	     (temp (copy-alist LaTeX-floatrow-key-val-options-local))
-	     (opts (cond ((string= key "precode")
-			  (dolist (x vcode-keys)
-			    (setq temp (assq-delete-all (car (assoc x temp)) temp)))
-			  temp)
-			 ((string= key "floatrowsep")
-			  (dolist (x sep-keys)
-			    (setq temp (assq-delete-all (car (assoc x temp)) temp)))
-			  temp)
-			 (t
-			  (assq-delete-all (car (assoc key temp)) temp)))))
-	(cond ((string= key "precode")
-	       (dolist (x vcode-keys)
-		 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-			     opts :test #'equal)))
-	      ((string= key "floatrowsep")
-	       (dolist (x sep-keys)
-		 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-			     opts :test #'equal)))
-	      (t
-	       (cl-pushnew (list key (TeX-delete-duplicate-strings (append (list val) val-match)))
-			   opts :test #'equal)))
-	(setq LaTeX-floatrow-key-val-options-local (copy-alist opts))))))
+                         "style")
+                        ((string= (nth 1 keyvals) "FloatFont")
+                         "font")
+                        ((string= (nth 1 keyvals) "FloatVCode")
+                         "precode")
+                        ((string= (nth 1 keyvals) "ColorBox")
+                         "colorframeset")
+                        ((string= (nth 1 keyvals) "CBoxCorners")
+                         "colorframecorners")
+                        ((string= (nth 1 keyvals) "ObjectSet")
+                         "objectset")
+                        ((string= (nth 1 keyvals) "MarginSet")
+                         "margins")
+                        ((string= (nth 1 keyvals) "FloatSeparators")
+                         "floatrowsep")
+                        ((string= (nth 1 keyvals) "FloatFootnoterule")
+                         "footnoterule")
+                        (t nil)))
+             (val (nth 2 keyvals))
+             (val-match (cadr (assoc key LaTeX-floatrow-key-val-options-local)))
+             (temp (copy-alist LaTeX-floatrow-key-val-options-local))
+             (opts (cond ((string= key "precode")
+                          (dolist (x vcode-keys)
+                            (setq temp (assq-delete-all (car (assoc x temp)) temp)))
+                          temp)
+                         ((string= key "floatrowsep")
+                          (dolist (x sep-keys)
+                            (setq temp (assq-delete-all (car (assoc x temp)) temp)))
+                          temp)
+                         (t
+                          (assq-delete-all (car (assoc key temp)) temp)))))
+        (cond ((string= key "precode")
+               (dolist (x vcode-keys)
+                 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
+                             opts :test #'equal)))
+              ((string= key "floatrowsep")
+               (dolist (x sep-keys)
+                 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
+                             opts :test #'equal)))
+              (t
+               (cl-pushnew (list key (TeX-delete-duplicate-strings (append (list val) val-match)))
+                           opts :test #'equal)))
+        (setq LaTeX-floatrow-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-floatrow-arg-floatbox (optional)
   "Query and insert arguments of float box commands from floatrow.sty.
@@ -348,33 +348,33 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; "height" is given.  let-bind `TeX-arg-*-brace' for
   ;; `TeX-argument-insert':
   (let* ((TeX-arg-opening-brace "[")
-	 (TeX-arg-closing-brace "]")
-	 (TeX-last-optional-rejected nil)
-	 (width (LaTeX-check-insert-macro-default-style
-		 (completing-read
-		  (TeX-argument-prompt t nil "Width")
-		  (mapcar (lambda (x) (concat TeX-esc (car x)))
-			  (LaTeX-length-list)))))
-	 (TeX-last-optional-rejected (or (not width)
-				         (and width (string= width ""))))
-	 (height (LaTeX-check-insert-macro-default-style
-		  (completing-read
-		   (TeX-argument-prompt t nil "Height")
-		   (mapcar (lambda (x) (concat TeX-esc (car x)))
-			   (LaTeX-length-list)))))
-	 (TeX-last-optional-rejected (or (not height)
-				         (and height (string= height ""))))
-	 (vertpos (LaTeX-check-insert-macro-default-style
-		   (if (string= height "")
-		       ""
-		     (completing-read
-		      (TeX-argument-prompt t nil "Vertical alignment")
-		      '("t" "c" "b" "s"))))))
+         (TeX-arg-closing-brace "]")
+         (TeX-last-optional-rejected nil)
+         (width (LaTeX-check-insert-macro-default-style
+                 (completing-read
+                  (TeX-argument-prompt t nil "Width")
+                  (mapcar (lambda (x) (concat TeX-esc (car x)))
+                          (LaTeX-length-list)))))
+         (TeX-last-optional-rejected (or (not width)
+                                         (and width (string= width ""))))
+         (height (LaTeX-check-insert-macro-default-style
+                  (completing-read
+                   (TeX-argument-prompt t nil "Height")
+                   (mapcar (lambda (x) (concat TeX-esc (car x)))
+                           (LaTeX-length-list)))))
+         (TeX-last-optional-rejected (or (not height)
+                                         (and height (string= height ""))))
+         (vertpos (LaTeX-check-insert-macro-default-style
+                   (if (string= height "")
+                       ""
+                     (completing-read
+                      (TeX-argument-prompt t nil "Vertical alignment")
+                      '("t" "c" "b" "s"))))))
     (and width (TeX-argument-insert width t))
     ;; Insert an extra pair of brackets if only `height' is given,
     ;; otherwise it will become `width'
     (when (and width (string= width "")
-	       height (not (string= height "")))
+               height (not (string= height "")))
       (insert "[]"))
     (and height (TeX-argument-insert height t))
     (and vertpos (TeX-argument-insert vertpos t)))
@@ -382,14 +382,14 @@ If OPTIONAL is non-nil, indicate optional argument during query."
   ;; float-type; if we're inside (sub)?floatrow*?, then check for the
   ;; next outer environment:
   (let* ((currenv (if (string-match "floatrow\\*?\\_>" (LaTeX-current-environment))
-		      (LaTeX-current-environment 2)
-		    (LaTeX-current-environment)))
-	 (caption (TeX-read-string
-		   (TeX-argument-prompt optional nil "Caption")))
-	 (short-caption
-	  (when (>= (length caption) LaTeX-short-caption-prompt-length)
-	    (TeX-read-string
-	     (TeX-argument-prompt t nil "Short caption")))))
+                      (LaTeX-current-environment 2)
+                    (LaTeX-current-environment)))
+         (caption (TeX-read-string
+                   (TeX-argument-prompt optional nil "Caption")))
+         (short-caption
+          (when (>= (length caption) LaTeX-short-caption-prompt-length)
+            (TeX-read-string
+             (TeX-argument-prompt t nil "Short caption")))))
     (indent-according-to-mode)
     ;; The final result will look like this with * being point:
     ;;   \ffigbox{*}{%
@@ -401,30 +401,30 @@ If OPTIONAL is non-nil, indicate optional argument during query."
       ;; We are inside the 1. mandatory arg: Save the pos & insert `}{':
       (insert TeX-grcl TeX-grop)
       (if (and caption (not (string= caption "")))
-	  (progn
-	    ;; If caption, move to EOL, delete any spaces and hide the line end
-	    (end-of-line)
-	    (delete-horizontal-space)
-	    (insert "%")
-	    ;; Add a newline and the caption
-	    (newline-and-indent)
-	    (insert (LaTeX-compose-caption-macro caption short-caption))
-	    ;; If we have a caption, then we probably also want a
-	    ;; label.  Hide EOL end and proceed to enter a label
-	    (insert "%")
-	    (newline-and-indent)
-	    (when (LaTeX-label currenv 'environment)
-	      ;; Move point to end of line and hide EOL
-	      (end-of-line)
-	      (delete-horizontal-space)
-	      (insert "%")
-	      (newline-and-indent))
-	    ;; Now close the group
-	    (insert TeX-grcl)
-	    (indent-according-to-mode)
-	    (end-of-line))
-	;; Otherwise, only insert a }
-	(insert TeX-grcl)))))
+          (progn
+            ;; If caption, move to EOL, delete any spaces and hide the line end
+            (end-of-line)
+            (delete-horizontal-space)
+            (insert "%")
+            ;; Add a newline and the caption
+            (newline-and-indent)
+            (insert (LaTeX-compose-caption-macro caption short-caption))
+            ;; If we have a caption, then we probably also want a
+            ;; label.  Hide EOL end and proceed to enter a label
+            (insert "%")
+            (newline-and-indent)
+            (when (LaTeX-label currenv 'environment)
+              ;; Move point to end of line and hide EOL
+              (end-of-line)
+              (delete-horizontal-space)
+              (insert "%")
+              (newline-and-indent))
+            ;; Now close the group
+            (insert TeX-grcl)
+            (indent-according-to-mode)
+            (end-of-line))
+        ;; Otherwise, only insert a }
+        (insert TeX-grcl)))))
 
 (defun LaTeX-floatrow-env-init ()
   "Replace AUCTeX entries in the variable `LaTeX-environment-list'.
@@ -434,21 +434,21 @@ replace them with the ones offered by the style.  Original
 entries are available under \"rawfigure*?\" and \"rawtable*?\"."
   (LaTeX-environment-list)
   (dolist (env '("figure" "figure*" "table" "table*"))
-	  (setq LaTeX-environment-list
-		(assq-delete-all (car (assoc env LaTeX-environment-list))
-				 LaTeX-environment-list))
-	  (LaTeX-add-environments `(,env LaTeX-floatrow-env-figure)
-				  `(,(concat "raw" env) LaTeX-floatrow-env-figure-raw))))
+          (setq LaTeX-environment-list
+                (assq-delete-all (car (assoc env LaTeX-environment-list))
+                                 LaTeX-environment-list))
+          (LaTeX-add-environments `(,env LaTeX-floatrow-env-figure)
+                                  `(,(concat "raw" env) LaTeX-floatrow-env-figure-raw))))
 
 (defun LaTeX-floatrow-env-figure (environment)
   "Create floating ENVIRONMENT suitable for floatrow macros."
   (let ((float (and LaTeX-float
-		    (TeX-read-string
-		     (TeX-argument-prompt t nil "Float position")
-		     LaTeX-float))))
+                    (TeX-read-string
+                     (TeX-argument-prompt t nil "Float position")
+                     LaTeX-float))))
     (LaTeX-insert-environment environment
-			      (unless (zerop (length float))
-				(concat LaTeX-optop float LaTeX-optcl)))))
+                              (unless (zerop (length float))
+                                (concat LaTeX-optop float LaTeX-optcl)))))
 
 (defun LaTeX-floatrow-env-figure-raw (env)
   "Create raw floating ENV with floatrow.sty.
@@ -473,10 +473,10 @@ it in square brackets.  PROMPT replaces the standard one.  KEY is
 a string and corresponds to first parsed element in
 `LaTeX-floatrow-DeclareNewOption-regexp'."
   (let ((val (TeX-read-string
-	      (TeX-argument-prompt optional prompt "New value option"))))
+              (TeX-argument-prompt optional prompt "New value option"))))
     (LaTeX-add-floatrow-DeclareNewOptions
      (list (concat TeX-esc "Declare" key TeX-grop val TeX-grcl)
-	   key val))
+           key val))
     (LaTeX-floatrow-update-key-val-options)
     (TeX-argument-insert val optional)
     (TeX-argument-insert
@@ -487,12 +487,12 @@ a string and corresponds to first parsed element in
 If OPTIONAL is non-nil, insert the argument in brackets.  TYPE is
 the string \"label\" or \"ref\"."
   (let ((cmd (TeX-read-string
-	      (if (string= type "label")
-		  (TeX-argument-prompt optional nil "Label command: \\" t)
-		(TeX-argument-prompt optional nil "Reference command: \\" t)))))
+              (if (string= type "label")
+                  (TeX-argument-prompt optional nil "Label command: \\" t)
+                (TeX-argument-prompt optional nil "Reference command: \\" t)))))
     (LaTeX-add-floatrow-newseparatedlabel-refs (list cmd type))
     (if (string= type "label")
-	(TeX-add-symbols `(,cmd TeX-arg-define-label))
+        (TeX-add-symbols `(,cmd TeX-arg-define-label))
       (TeX-add-symbols `(,cmd TeX-arg-ref)))
     (TeX-argument-insert cmd optional TeX-esc)))
 
@@ -503,9 +503,9 @@ CLEANUP in non-nil, skip the query and insert process as we are
 inside the function `LaTeX-floatrow-auto-cleanup' and process
 only the parsed items."
   (let ((type (if cleanup
-		  (mapcar #'car (LaTeX-floatrow-DeclareNewFloatType-list))
-		(list (TeX-read-string
-		       (TeX-argument-prompt optional nil "Environment type"))))))
+                  (mapcar #'car (LaTeX-floatrow-DeclareNewFloatType-list))
+                (list (TeX-read-string
+                       (TeX-argument-prompt optional nil "Environment type"))))))
     ;; If not inside `LaTeX-floatrow-auto-cleanup', add user input to
     ;; list of new floats and insert it
     (unless cleanup
@@ -522,16 +522,16 @@ only the parsed items."
     ;; different flavors of type to it as well
     (dolist (elt type)
       (LaTeX-add-environments `(,elt LaTeX-floatrow-env-figure)
-			      `(,(concat "raw" elt) LaTeX-floatrow-env-figure-raw))
+                              `(,(concat "raw" elt) LaTeX-floatrow-env-figure-raw))
       (add-to-list 'LaTeX-floatrow-supported-float-types elt t)
       (add-to-list 'LaTeX-floatrow-supported-float-types (concat "wide" elt) t)
       (add-to-list 'LaTeX-floatrow-supported-float-types (concat elt "row") t)
       (add-to-list 'LaTeX-floatrow-supported-float-types (concat "capbeside" elt) t)
       (when (boundp 'LaTeX-caption-supported-float-types)
-	(add-to-list 'LaTeX-caption-supported-float-types elt t)
-	(add-to-list 'LaTeX-caption-supported-float-types (concat "wide" elt) t)
-	(add-to-list 'LaTeX-caption-supported-float-types (concat elt "row") t)
-	(add-to-list 'LaTeX-caption-supported-float-types (concat "capbeside" elt) t)))))
+        (add-to-list 'LaTeX-caption-supported-float-types elt t)
+        (add-to-list 'LaTeX-caption-supported-float-types (concat "wide" elt) t)
+        (add-to-list 'LaTeX-caption-supported-float-types (concat elt "row") t)
+        (add-to-list 'LaTeX-caption-supported-float-types (concat "capbeside" elt) t)))))
 
 (TeX-add-style-hook
  "floatrow"
@@ -545,7 +545,7 @@ only the parsed items."
 
    ;; Activate the buffer-local version of key-vals
    (setq LaTeX-floatrow-key-val-options-local
-	 (copy-alist LaTeX-floatrow-key-val-options))
+         (copy-alist LaTeX-floatrow-key-val-options))
 
    ;; Add pre-defined float commands:
    (LaTeX-add-floatrow-newfloatcommands
@@ -557,35 +557,35 @@ only the parsed items."
     ;; \floatbox[<preamble>]{<captype>}[<width>][<height>][<vert pos>]{<caption>}{<object>}
     '("floatbox"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Preamble")
-		     '("\\capbeside" "\\nocapbeside" "\\captop") ]
+        (TeX-argument-prompt t nil "Preamble")
+        '("\\capbeside" "\\nocapbeside" "\\captop") ]
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Float type")
-		    LaTeX-floatrow-supported-float-types)
+                    (TeX-argument-prompt nil nil "Float type")
+                    LaTeX-floatrow-supported-float-types)
       LaTeX-floatrow-arg-floatbox)
 
     ;; 2.2 Creation of Personal Commands for Float Boxes
     '("newfloatcommand"
       (TeX-arg-eval
        (lambda ()
-	 (let ((cmd (TeX-read-string
-		     (TeX-argument-prompt nil nil "Command"))))
-	   (LaTeX-add-floatrow-newfloatcommands cmd)
-	   (TeX-add-symbols
-	    `(,cmd LaTeX-floatrow-arg-floatbox))
-	   (format "%s" cmd))))
+         (let ((cmd (TeX-read-string
+                     (TeX-argument-prompt nil nil "Command"))))
+           (LaTeX-add-floatrow-newfloatcommands cmd)
+           (TeX-add-symbols
+            `(,cmd LaTeX-floatrow-arg-floatbox))
+           (format "%s" cmd))))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Float type")
-		    '("figure" "table"))
+                    (TeX-argument-prompt nil nil "Float type")
+                    '("figure" "table"))
       [ 2 ])
 
     '("renewfloatcommand"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Command")
-		    (LaTeX-floatrow-newfloatcommand-list))
+                    (TeX-argument-prompt nil nil "Command")
+                    (LaTeX-floatrow-newfloatcommand-list))
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Float type")
-		    '("figure" "table"))
+                    (TeX-argument-prompt nil nil "Float type")
+                    '("figure" "table"))
       [ 2 ])
 
 
@@ -609,8 +609,8 @@ only the parsed items."
     ;; 3 Float Layout Settings
     '("floatsetup"
       [ TeX-arg-eval completing-read
-		     (TeX-argument-prompt t nil "Float type")
-		     LaTeX-floatrow-supported-float-types ]
+        (TeX-argument-prompt t nil "Float type")
+        LaTeX-floatrow-supported-float-types ]
       (TeX-arg-key-val LaTeX-floatrow-key-val-options-local))
 
     ;; 3.2 Settings for Current Float Environment
@@ -620,8 +620,8 @@ only the parsed items."
     ;; 3.3 Clearing of Settings for Current Float Type
     '("clearfloatsetup"
       (TeX-arg-eval completing-read
-		     (TeX-argument-prompt nil nil "Float type")
-		     LaTeX-floatrow-supported-float-types))
+                    (TeX-argument-prompt nil nil "Float type")
+                    LaTeX-floatrow-supported-float-types))
 
     ;; 3.4 Temporary Clearing of All Float Settings
     '("killfloatstyle" 0)
@@ -629,37 +629,37 @@ only the parsed items."
     ;; 3.6.1 Float Style Option (style=)
     '("DeclareFloatStyle"
       (LaTeX-floatrow-arg-declare-new-options "New style option"
-					      "FloatStyle"))
+                                              "FloatStyle"))
 
     ;; 3.6.2 Float Font Option (font=)
     '("DeclareFloatFont"
       (LaTeX-floatrow-arg-declare-new-options "New font option"
-					      "FloatFont"))
+                                              "FloatFont"))
 
     ;; 3.6.3 Option for Float Rules/Skips (precode= etc.)
     '("DeclareFloatVCode"
       (LaTeX-floatrow-arg-declare-new-options "New rules/skip option"
-					      "FloatVCode"))
+                                              "FloatVCode"))
 
     ;; 3.6.4 Settings for Colored Frame (colorframeset=)
     '("DeclareColorBox"
       (LaTeX-floatrow-arg-declare-new-options "New colored frame option"
-					      "ColorBox"))
+                                              "ColorBox"))
 
     ;; (colorframecorners=)
     '("DeclareCBoxCorners"
       (LaTeX-floatrow-arg-declare-new-options "New colored corner option"
-					      "CBoxCorners"))
+                                              "CBoxCorners"))
 
     ;; 3.6.5 Object Justification Option (objectset=)
     '("DeclareObjectSet"
       (LaTeX-floatrow-arg-declare-new-options "New object justification"
-					      "ObjectSet"))
+                                              "ObjectSet"))
 
     ;; 3.6.6 Option for Float Box Alignment/Settings (margins=)
     '("DeclareMarginSet"
       (LaTeX-floatrow-arg-declare-new-options "New alignment option"
-					      "MarginSet"))
+                                              "MarginSet"))
 
     '("setfloatmargins" 2)
     '("setfloatmargins*" 2)
@@ -672,21 +672,21 @@ only the parsed items."
     ;; 3.6.7 Float Separators Options (floatrowsep=, capbesidesep=)
     '("DeclareFloatSeparators"
       (LaTeX-floatrow-arg-declare-new-options "New separator option"
-					      "FloatSeparators"))
+                                              "FloatSeparators"))
 
     ;; 3.6.8 Option for Footnote Rule's Style (footnoterule=)
     '("DeclareFloatFootnoterule"
       (LaTeX-floatrow-arg-declare-new-options "New footnote rule option"
-					      "FloatFootnoterule"))
+                                              "FloatFootnoterule"))
 
     ;; 4 Creation of New Float Types
     '("DeclareNewFloatType"
       (LaTeX-floatrow-arg-declare-new-floattype)
       (TeX-arg-key-val (("placement" ("tbp" "t" "b" "p"))
-			("name")
-			("fileext")
-			("within" ("chapter" "section" "subsection"))
-			("relatedcapstyle" ("yes" "no")))))
+                        ("name")
+                        ("fileext")
+                        ("within" ("chapter" "section" "subsection"))
+                        ("relatedcapstyle" ("yes" "no")))))
 
     ;; 6.2 Support of The Label-Sublabel References
     '("newseparatedlabel"
@@ -711,34 +711,34 @@ only the parsed items."
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("floatbox"  "[{[[[")
-				("ffigbox"   "[[[")
-				("ttabbox"   "[[[")
-				("fcapside"  "[[["))
-			      'textual)
+                                ("ffigbox"   "[[[")
+                                ("ttabbox"   "[[[")
+                                ("fcapside"  "[[["))
+                              'textual)
      (font-latex-add-keywords '(("newfloatcommand"           "{{[[")
-				("renewfloatcommand"         "{{[[")
-				("buildFBBOX"                "{{")
-				("floatsetup"                "[{")
-				("thisfloatsetup"            "{")
-				("clearfloatsetup"           "{")
-				("killfloatstyle"            "")
-				("DeclareFloatStyle"         "{{")
-				("DeclareFloatFont"          "{{")
-				("DeclareFloatVCode"         "{{")
-				("DeclareColorBox"           "{{")
-				("DeclareCBoxCorners"        "{{")
-				("DeclareObjectSet"          "{{")
-				("DeclareMarginSet"          "{{")
-				("DeclareFloatSeparators"    "{{")
-				("DeclareFloatFootnoterule"  "{{")
-				("newseparatedlabel"         "{{{")
-				("newseparatedref"           "{{")
-				("makelabelseparator"        "{")
-				("DeclareNewFloatType"       "{{")
-				("RawFloats"                 ""))
-			      'function)))
+                                ("renewfloatcommand"         "{{[[")
+                                ("buildFBBOX"                "{{")
+                                ("floatsetup"                "[{")
+                                ("thisfloatsetup"            "{")
+                                ("clearfloatsetup"           "{")
+                                ("killfloatstyle"            "")
+                                ("DeclareFloatStyle"         "{{")
+                                ("DeclareFloatFont"          "{{")
+                                ("DeclareFloatVCode"         "{{")
+                                ("DeclareColorBox"           "{{")
+                                ("DeclareCBoxCorners"        "{{")
+                                ("DeclareObjectSet"          "{{")
+                                ("DeclareMarginSet"          "{{")
+                                ("DeclareFloatSeparators"    "{{")
+                                ("DeclareFloatFootnoterule"  "{{")
+                                ("newseparatedlabel"         "{{{")
+                                ("newseparatedref"           "{{")
+                                ("makelabelseparator"        "{")
+                                ("DeclareNewFloatType"       "{{")
+                                ("RawFloats"                 ""))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-floatrow-package-options nil

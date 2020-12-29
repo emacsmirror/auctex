@@ -33,8 +33,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "nameref"
@@ -45,17 +45,17 @@
     '("Nameref" TeX-arg-ref))
 
    (setq TeX-complete-list
-	 (append
-	  '(("\\\\\\(?:N\\|n\\)ameref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
-	  TeX-complete-list))
+         (append
+          '(("\\\\\\(?:N\\|n\\)ameref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
+          TeX-complete-list))
 
-   ;, Fontification
+                                        ;, Fontification
    (when (and (fboundp 'font-latex-add-keywords)
-	      (fboundp 'font-latex-set-syntactic-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (fboundp 'font-latex-set-syntactic-keywords)
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("nameref" "*{")
-				("Nameref" "{"))
-			      'reference)))
+                                ("Nameref" "{"))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-nameref-package-options nil

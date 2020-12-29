@@ -50,8 +50,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defvar LaTeX-auto-environ-NewEnviron nil
   "Temporary for parsing the arguments of `\\NewEnviron'
@@ -59,9 +59,9 @@ from `environ' package.")
 
 (defvar LaTeX-environ-NewEnviron-regexp
   `(,(concat "\\\\\\(?:Ren\\|N\\)ewEnviron"
-	     "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
-	     "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
-	     "[ \t\n\r]*\\(\\[\\)?")
+             "[ \t\n\r]*{\\([A-Za-z0-9]+\\)}%?"
+             "[ \t\n\r]*\\[?\\([0-9]?\\)\\]?%?"
+             "[ \t\n\r]*\\(\\[\\)?")
     (1 2 3) LaTeX-auto-environ-NewEnviron)
   "Matches the argument of `\\NewEnviron' and `\\RenewEnviron'
 from `environ.sty'.")
@@ -74,21 +74,21 @@ from `environ.sty'.")
   "Process the parsed results of `\\NewEnviron'."
   (dolist (env-args LaTeX-auto-environ-NewEnviron)
     (let ((env  (car   env-args))
-	  (args (cadr  env-args))
-	  (opt  (nth 2 env-args)))
+          (args (cadr  env-args))
+          (opt  (nth 2 env-args)))
       (cond (;; opt. 1st argument and mandatory argument(s)
-	     (and args (not (string-equal args ""))
-		  opt  (not (string-equal opt  "")))
-	     (add-to-list 'LaTeX-auto-environment
-			  (list env 'LaTeX-env-args (vector "argument")
-				(1- (string-to-number args)))))
-	    (;; mandatory argument(s) only
-	     (and args (not (string-equal args ""))
-		  (string-equal opt ""))
-	     (add-to-list 'LaTeX-auto-environment
-			  (list env (string-to-number args))))
-	    (t ; No args
-	     (add-to-list 'LaTeX-auto-environment (list env)))))))
+             (and args (not (string-equal args ""))
+                  opt  (not (string-equal opt  "")))
+             (add-to-list 'LaTeX-auto-environment
+                          (list env 'LaTeX-env-args (vector "argument")
+                                (1- (string-to-number args)))))
+            (;; mandatory argument(s) only
+             (and args (not (string-equal args ""))
+                  (string-equal opt ""))
+             (add-to-list 'LaTeX-auto-environment
+                          (list env (string-to-number args))))
+            (t ; No args
+             (add-to-list 'LaTeX-auto-environment (list env)))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-environ-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-environ-auto-cleanup t)
@@ -99,7 +99,7 @@ from `environ.sty'.")
 `\\NewEnviron' and insert the appropriate brackets."
   (let ((fincode (y-or-n-p "With optional final code? ")))
     (when fincode
-	(insert "[]"))))
+      (insert "[]"))))
 
 (TeX-add-style-hook
  "environ"
@@ -130,12 +130,12 @@ from `environ.sty'.")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("NewEnviron"      "{[[{[")
-				("RenewEnviron"    "{[[{[")
-				("environbodyname" "|{\\"))
-			      'function)))
-  TeX-dialect)
+                                ("RenewEnviron"    "{[[{[")
+                                ("environbodyname" "|{\\"))
+                              'function)))
+ TeX-dialect)
 
 (defvar LaTeX-environ-package-options nil
   "Package options for the environ package.")

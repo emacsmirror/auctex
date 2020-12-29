@@ -41,59 +41,59 @@
 
 ;;;###autoload
 (defun multi-prompt (separator
-		     unique prompt table
-		     &optional mp-predicate require-match initial history)
+                     unique prompt table
+                     &optional mp-predicate require-match initial history)
   "Completing prompt for a list of strings.  
 The first argument SEPARATOR should be the string (of length 1) to
 separate the elements in the list.  The second argument UNIQUE should
 be non-nil, if each element must be unique.  The remaining elements
 are the arguments to `completing-read'.  See that."
   (let ((old-map (if require-match
-		     minibuffer-local-must-match-map
-		   minibuffer-local-completion-map))
-	(new-map (make-sparse-keymap)))
+                     minibuffer-local-must-match-map
+                   minibuffer-local-completion-map))
+        (new-map (make-sparse-keymap)))
     (set-keymap-parent new-map old-map)
     (define-key new-map separator (if require-match
-				      'multi-prompt-next-must-match
-				    'multi-prompt-next))
+                                      'multi-prompt-next-must-match
+                                    'multi-prompt-next))
     (define-key new-map "\C-?" 'multi-prompt-delete)
     (let* ((minibuffer-local-completion-map new-map)
-	   (minibuffer-local-must-match-map new-map)
-	   (multi-prompt-found nil)
-	   (filter (cond (unique
-			  (lambda (x)
-			    (and (not (member (car x) multi-prompt-found))
-				 (or (null mp-predicate)
-				     (funcall mp-predicate x)))))
-			 (mp-predicate)))
-	   (answer (catch 'multi-prompt-exit
-		     (while t
-		       (let ((extra (catch 'multi-prompt-next
-				      (throw 'multi-prompt-exit
-					     (completing-read prompt 
-							      table
-							      filter
-							      require-match
-							      initial
-							      history)))))
-			 (cond ((eq extra 'back)
-				(when multi-prompt-found
-				  (setq prompt (substring 
-						prompt 0 
-						(- 0 (length separator)
-						   (length
-						    (car multi-prompt-found))))
-					initial (car multi-prompt-found))
-				  (setq multi-prompt-found 
-					(cdr multi-prompt-found))))
-			       (t
-				(setq prompt (concat prompt extra separator)
-				      initial nil)
-				(setq multi-prompt-found
-				      (cons extra multi-prompt-found)))))))))
+           (minibuffer-local-must-match-map new-map)
+           (multi-prompt-found nil)
+           (filter (cond (unique
+                          (lambda (x)
+                            (and (not (member (car x) multi-prompt-found))
+                                 (or (null mp-predicate)
+                                     (funcall mp-predicate x)))))
+                         (mp-predicate)))
+           (answer (catch 'multi-prompt-exit
+                     (while t
+                       (let ((extra (catch 'multi-prompt-next
+                                      (throw 'multi-prompt-exit
+                                             (completing-read prompt 
+                                                              table
+                                                              filter
+                                                              require-match
+                                                              initial
+                                                              history)))))
+                         (cond ((eq extra 'back)
+                                (when multi-prompt-found
+                                  (setq prompt (substring 
+                                                prompt 0 
+                                                (- 0 (length separator)
+                                                   (length
+                                                    (car multi-prompt-found))))
+                                        initial (car multi-prompt-found))
+                                  (setq multi-prompt-found 
+                                        (cdr multi-prompt-found))))
+                               (t
+                                (setq prompt (concat prompt extra separator)
+                                      initial nil)
+                                (setq multi-prompt-found
+                                      (cons extra multi-prompt-found)))))))))
       (if (string= answer "")
-	  multi-prompt-found
-	(nreverse (cons answer multi-prompt-found))))))
+          multi-prompt-found
+        (nreverse (cons answer multi-prompt-found))))))
 
 (defun multi-prompt-delete ()
   (interactive)
@@ -118,7 +118,7 @@ are the arguments to `completing-read'.  See that."
     (let ((content (buffer-substring-no-properties (point-min) (point-max))))
       (when (or ;; (not require-match)
                 (assoc content minibuffer-completion-table))
-	(throw 'multi-prompt-next content)))))
+        (throw 'multi-prompt-next content)))))
 
 
 ;;; Support for key=value completion
@@ -156,14 +156,14 @@ Functions'."
   (let ((beg 0) (last 0) matched)
     (while (string-match multi-prompt-key-value-sep string beg)
       (setq matched t
-	    last beg
-	    beg (match-end 0)))
+            last beg
+            beg (match-end 0)))
     (completion-table-with-context
      (substring string 0 beg)
      (if (not matched)
-	 multi-prompt-completion-table
+         multi-prompt-completion-table
        (cadr (assoc (substring string last (1- beg))
-		    multi-prompt-completion-table)))
+                    multi-prompt-completion-table)))
      (substring string beg)
      predicate
      flag)))
@@ -173,10 +173,10 @@ Functions'."
 This is achieved by eval'ing all variables in the value parts of
 the alist elements."
   (mapcar (lambda (x)
-	    (if (and (cadr x) (symbolp (cadr x)) (not (functionp (cadr x))))
-		(cons (car x) (list (eval (cadr x))))
-	      x))
-	  table))
+            (if (and (cadr x) (symbolp (cadr x)) (not (functionp (cadr x))))
+                (cons (car x) (list (eval (cadr x))))
+              x))
+          table))
 
 ;; Silence the byte compiler.
 (defvar crm-local-must-match-map)
@@ -184,8 +184,8 @@ the alist elements."
 
 ;;;###autoload
 (defun multi-prompt-key-value
-  (prompt table &optional predicate require-match initial-input
-	  hist def inherit-input-method)
+    (prompt table &optional predicate require-match initial-input
+            hist def inherit-input-method)
   "Read multiple strings, with completion and key=value support.
 PROMPT is a string to prompt with, usually ending with a colon
 and a space.  TABLE is an alist.  The car of each element should
@@ -198,22 +198,22 @@ DEF, and INHERIT-INPUT-METHOD.
 
 The return value is the string as entered in the minibuffer."
   (let* ((minibuffer-completion-table #'multi-prompt-key-value-collection-fn)
-	 (minibuffer-completion-predicate predicate)
-	 (minibuffer-completion-confirm
-	  (unless (eq require-match t) require-match))
-	 (multi-prompt-completion-table
-	  ;; Expand the table here because completion would otherwise
-	  ;; interpret symbols in the table as functions.  However, it
-	  ;; would be nicer if this could be done during the actual
-	  ;; completion in order to avoid walking through the whole
-	  ;; table.
-	  (multi-prompt-expand-completion-table table))
-	 (map (if require-match
-		  crm-local-must-match-map
-		crm-local-completion-map))
-	 (input (read-from-minibuffer
-		 prompt initial-input map
-		 nil hist def inherit-input-method)))
+         (minibuffer-completion-predicate predicate)
+         (minibuffer-completion-confirm
+          (unless (eq require-match t) require-match))
+         (multi-prompt-completion-table
+          ;; Expand the table here because completion would otherwise
+          ;; interpret symbols in the table as functions.  However, it
+          ;; would be nicer if this could be done during the actual
+          ;; completion in order to avoid walking through the whole
+          ;; table.
+          (multi-prompt-expand-completion-table table))
+         (map (if require-match
+                  crm-local-must-match-map
+                crm-local-completion-map))
+         (input (read-from-minibuffer
+                 prompt initial-input map
+                 nil hist def inherit-input-method)))
     (and def (string-equal input "") (setq input def))
     input))
 

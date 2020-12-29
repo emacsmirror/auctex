@@ -35,8 +35,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "baskervaldx"
@@ -66,21 +66,21 @@
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("textlf"    "{")
-				("texttlf"   "{")
-				("textosf"   "{")
-				("texttosf"  "{")
-				("textsu"    "{"))
-			      'type-command)
+                                ("texttlf"   "{")
+                                ("textosf"   "{")
+                                ("texttosf"  "{")
+                                ("textsu"    "{"))
+                              'type-command)
      (font-latex-add-keywords '(("lfstyle"   "")
-				("tlfstyle"  "")
-				("osfstyle"  "")
-				("tosfstyle" "")
-				("sufigures" ""))
-			      'type-declaration)
+                                ("tlfstyle"  "")
+                                ("osfstyle"  "")
+                                ("tosfstyle" "")
+                                ("sufigures" ""))
+                              'type-declaration)
      (font-latex-add-keywords '(("swshape"   ""))
-			      'bold-declaration)))
+                              'bold-declaration)))
  TeX-dialect)
 
 (defvar LaTeX-baskervaldx-package-options

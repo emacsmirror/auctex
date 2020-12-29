@@ -36,8 +36,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 (declare-function TeX-check-engine-add-engines
                   "tex-buf"
                   (&rest engines))
@@ -56,44 +56,44 @@
 
    ;; New macros & environments:
    (let ((langs '("arab"
-		  "farsi" "persian"
-		  "urdu"
-		  "sindhi"
-		  "pashto"
-		  "ottoman" "turk"
-		  "kurdisch"
-		  "kashmiri"
-		  "malay" "jawi"
-		  "uighur")))
+                  "farsi" "persian"
+                  "urdu"
+                  "sindhi"
+                  "pashto"
+                  "ottoman" "turk"
+                  "kurdisch"
+                  "kashmiri"
+                  "malay" "jawi"
+                  "uighur")))
      ;; Add \text<language>[option]{...}
      (mapc #'TeX-add-symbols
-	   (mapcar
-	    (lambda (symbol)
-	      (list symbol
-		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt t nil "Mode")
-				   LaTeX-arabxetex-package-options ]
-		    t))
-	    (mapcar (lambda (lang) (concat "text" lang)) langs)))
+           (mapcar
+            (lambda (symbol)
+              (list symbol
+                    [ TeX-arg-eval completing-read
+                      (TeX-argument-prompt t nil "Mode")
+                      LaTeX-arabxetex-package-options ]
+                    t))
+            (mapcar (lambda (lang) (concat "text" lang)) langs)))
      ;;
      ;; Add \begin{<language>}[option] ... \end{<language>}
      (mapc #'LaTeX-add-environments
-	   (mapcar
-	    (lambda (environment)
-	      (list environment
-		    #'LaTeX-env-args
-		    [ TeX-arg-eval completing-read
-				   (TeX-argument-prompt t nil "Mode")
-				   LaTeX-arabxetex-package-options ]))
-	    langs))
+           (mapcar
+            (lambda (environment)
+              (list environment
+                    #'LaTeX-env-args
+                    [ TeX-arg-eval completing-read
+                      (TeX-argument-prompt t nil "Mode")
+                      LaTeX-arabxetex-package-options ]))
+            langs))
      ;;
      ;; Fontification
      (when (and (featurep 'font-latex)
-		(eq TeX-install-font-lock 'font-latex-setup))
+                (eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords (mapcar (lambda (lang)
-					  (list (concat "text" lang) "[{"))
-					langs)
-				'textual)))
+                                          (list (concat "text" lang) "[{"))
+                                        langs)
+                                'textual)))
 
    ;; Other macros:
    (TeX-add-symbols
@@ -103,20 +103,20 @@
     ;; 3.3 Transliteration
     '("SetTranslitConvention"
       (TeX-arg-eval completing-read
-		    (TeX-argument-prompt nil nil "Mapping")
-		    '("dmg" "loc")))
+                    (TeX-argument-prompt nil nil "Mapping")
+                    '("dmg" "loc")))
     '("SetTranslitStyle" "Style"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("textLR" "{"))
-			      'textual)
+                              'textual)
      (font-latex-add-keywords '(("aemph"  "{"))
-			      'italic-command)
+                              'italic-command)
      (font-latex-add-keywords '(("SetTranslitConvention" "{")
-				("SetTranslitStyle"      "{"))
-			      'function)))
+                                ("SetTranslitStyle"      "{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-arabxetex-package-options

@@ -112,7 +112,7 @@
 (defvar texmathp-tex-commands1 nil)
 (defvar texmathp-memory nil)
 
-(defvar texmathp-tex-commands)		; silence the compiler
+(defvar texmathp-tex-commands)          ; silence the compiler
 
 (defvar texmathp-tex-commands-default
   '(;; Plain TeX
@@ -177,24 +177,24 @@ customize (customize calls it when setting the variable)."
   ;; Extract lists and regexp.
   (setq texmathp-macros nil texmathp-environments nil)
   (setq texmathp-memory
-	(cons texmathp-tex-commands texmathp-tex-commands-default))
+        (cons texmathp-tex-commands texmathp-tex-commands-default))
   (setq texmathp-tex-commands1 (append texmathp-tex-commands
-				       texmathp-tex-commands-default))
+                                       texmathp-tex-commands-default))
   (let ((list (reverse texmathp-tex-commands1))
-	entry type switches togglers)
+        entry type switches togglers)
     (while (setq entry (car list))
       (setq type (nth 1 entry)
-	    list (cdr list))
+            list (cdr list))
       (cond ((memq type '(env-on env-off)) (push (car entry) texmathp-environments))
-	    ((memq type '(arg-on arg-off)) (push (car entry) texmathp-macros))
-	    ((memq type '(sw-on sw-off))   (push (car entry) switches))
-	    ((memq type '(sw-toggle))      (push (car entry) togglers))))
+            ((memq type '(arg-on arg-off)) (push (car entry) texmathp-macros))
+            ((memq type '(sw-on sw-off))   (push (car entry) switches))
+            ((memq type '(sw-toggle))      (push (car entry) togglers))))
     (setq texmathp-onoff-regexp
-	  (concat "\\(?:[^\\]\\|\\`\\)"
-		  (regexp-opt switches t))
-	  texmathp-toggle-regexp
-	  (concat "\\([^\\$]\\|\\`\\)"
-		  (regexp-opt togglers t)))))
+          (concat "\\(?:[^\\]\\|\\`\\)"
+                  (regexp-opt switches t))
+          texmathp-toggle-regexp
+          (concat "\\([^\\$]\\|\\`\\)"
+                  (regexp-opt togglers t)))))
 
 (defcustom texmathp-tex-commands nil
   "List of environments and macros influencing (La)TeX math mode.
@@ -260,10 +260,10 @@ it points to the limit used for searches, usually two paragraphs up.")
 (defvar texmathp-syntax-table
   (let ((table (make-syntax-table)))
     (mapc (lambda (x) (modify-syntax-entry (car x) (cdr x) table))
-	  '((?\\ . "\\") (?\f .">")  (?\n . ">")  (?% . "<")
-	    (?\[ . ".")  (?\] . ".") (?\{ . "(}") (?\} . "){")
-	    (?\( . ".")  (?\) . ".") (?\" . ".")  (?& . ".")   (?_ . ".")
-	    (?@ . "_")   (?~ . " ")  (?$ . "$")   (?' . "w")))
+          '((?\\ . "\\") (?\f .">")  (?\n . ">")  (?% . "<")
+            (?\[ . ".")  (?\] . ".") (?\{ . "(}") (?\} . "){")
+            (?\( . ".")  (?\) . ".") (?\" . ".")  (?& . ".")   (?_ . ".")
+            (?@ . "_")   (?~ . " ")  (?$ . "$")   (?' . "w")))
     table)
   "Syntax table used while texmathp is parsing.")
 
@@ -276,17 +276,17 @@ the buffer.
 See the variable `texmathp-tex-commands' about which commands are checked."
   (interactive)
   (let* ((pos (point)) math-on sw-match
-	 (bound (save-excursion
-		  (if (re-search-backward "[\n\r][ \t]*[\n\r]"
-					  nil 1 texmathp-search-n-paragraphs)
-		      (match-beginning 0)
-		    (point-min))))
-	 (mac-match (texmathp-match-macro bound))
-	 (env-match (texmathp-match-environment
-		     (if (and mac-match (> (cdr mac-match) bound))
-			 (cdr mac-match)
-		       bound)))
-	 (match (cons nil bound)))
+         (bound (save-excursion
+                  (if (re-search-backward "[\n\r][ \t]*[\n\r]"
+                                          nil 1 texmathp-search-n-paragraphs)
+                      (match-beginning 0)
+                    (point-min))))
+         (mac-match (texmathp-match-macro bound))
+         (env-match (texmathp-match-environment
+                     (if (and mac-match (> (cdr mac-match) bound))
+                         (cdr mac-match)
+                       bound)))
+         (match (cons nil bound)))
 
     ;; Select the nearer match
     (and env-match (setq match env-match))
@@ -294,33 +294,33 @@ See the variable `texmathp-tex-commands' about which commands are checked."
     ;; beginning just at (point-min).
     (and mac-match (>= (cdr mac-match) (cdr match)) (setq match mac-match))
     (setq math-on (memq (nth 1 (assoc (car match) texmathp-tex-commands1))
-			'(env-on arg-on)))
+                        '(env-on arg-on)))
 
     ;; Check for switches
     (and (not math-on)
-	 (setq sw-match (texmathp-match-switch bound))
-	 ;; Use `>=' instead of `>' by similar reason as above. (bug#41559)
-	 (>= (cdr sw-match) (cdr match))
-	 (eq (nth 1 (assoc (car sw-match) texmathp-tex-commands1)) 'sw-on)
-	 (setq match sw-match math-on t))
+         (setq sw-match (texmathp-match-switch bound))
+         ;; Use `>=' instead of `>' by similar reason as above. (bug#41559)
+         (>= (cdr sw-match) (cdr match))
+         (eq (nth 1 (assoc (car sw-match) texmathp-tex-commands1)) 'sw-on)
+         (setq match sw-match math-on t))
 
     ;; Check for togglers
     (if (not math-on)
-	(save-excursion
-	  (goto-char (cdr match))
-	  (while (re-search-forward texmathp-toggle-regexp pos t)
-	    (if (setq math-on (not math-on))
-		(setq sw-match (cons (match-string-no-properties 2) (match-beginning 2)))
-	      (setq sw-match nil)))
-	  (and math-on sw-match (setq match sw-match))))
+        (save-excursion
+          (goto-char (cdr match))
+          (while (re-search-forward texmathp-toggle-regexp pos t)
+            (if (setq math-on (not math-on))
+                (setq sw-match (cons (match-string-no-properties 2) (match-beginning 2)))
+              (setq sw-match nil)))
+          (and math-on sw-match (setq match sw-match))))
 
     ;; Store info, show as message when interactive, and return
     (setq texmathp-why match)
     (and (called-interactively-p 'any)
-	 (message "math-mode is %s: %s begins at buffer position %d"
-		  (if math-on "on" "off")
-		  (or (car match) "new paragraph")
-		  (cdr match)))
+         (message "math-mode is %s: %s begins at buffer position %d"
+                  (if math-on "on" "off")
+                  (or (car match) "new paragraph")
+                  (cdr match)))
     (and math-on t)))
 
 (defun texmathp-match-environment (bound)
@@ -331,41 +331,41 @@ Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
       (and (null texmathp-environments) (throw 'exit nil))
       ;; Check if the line we are starting with is a commented one.
       (let ((orig-comment-flag
-	     ;; Could be replaced by `TeX-in-commented-line'.
-	     (progn
-	       (save-excursion
-		 (beginning-of-line)
-		 (skip-chars-forward " \t")
-		 (string= (buffer-substring-no-properties
-			   (point) (min (point-max)
-					(+ (point) (length comment-start))))
-			  comment-start))))
-	    end-list env)
-	(while (re-search-backward "\\\\\\(begin\\|end\\)[ \t]*{\\([^}]+\\)}"
-				   bound t)
-	  ;; Check if the match found is inside of a comment.
-	  (let ((current-comment-flag
-		 ;; Could be replaced by `TeX-in-comment'.
-		 (when (save-match-data
-			 (re-search-backward comment-start-skip
-					     (line-beginning-position) t))
-		   ;; We need a t for comparison with `orig-comment-flag',
-		   ;; not a number.
-		   t)))
-	    ;; Only consider matching alternatives with respect to
-	    ;; "in-commentness", i.e. if we started with a comment
-	    ;; only consider matches which are in comments as well and
-	    ;; vice versa.
-	    (when (eq orig-comment-flag current-comment-flag)
-	      (setq env (buffer-substring-no-properties
-			 (match-beginning 2) (match-end 2)))
-	      (cond ((string= (match-string-no-properties 1) "end")
-		     (setq end-list (cons env end-list)))
-		    ((equal env (car end-list))
-		     (setq end-list (cdr end-list)))
-		    ((member env texmathp-environments)
-		     (throw 'exit (cons env (point))))))))
-	nil))))
+             ;; Could be replaced by `TeX-in-commented-line'.
+             (progn
+               (save-excursion
+                 (beginning-of-line)
+                 (skip-chars-forward " \t")
+                 (string= (buffer-substring-no-properties
+                           (point) (min (point-max)
+                                        (+ (point) (length comment-start))))
+                          comment-start))))
+            end-list env)
+        (while (re-search-backward "\\\\\\(begin\\|end\\)[ \t]*{\\([^}]+\\)}"
+                                   bound t)
+          ;; Check if the match found is inside of a comment.
+          (let ((current-comment-flag
+                 ;; Could be replaced by `TeX-in-comment'.
+                 (when (save-match-data
+                         (re-search-backward comment-start-skip
+                                             (line-beginning-position) t))
+                   ;; We need a t for comparison with `orig-comment-flag',
+                   ;; not a number.
+                   t)))
+            ;; Only consider matching alternatives with respect to
+            ;; "in-commentness", i.e. if we started with a comment
+            ;; only consider matches which are in comments as well and
+            ;; vice versa.
+            (when (eq orig-comment-flag current-comment-flag)
+              (setq env (buffer-substring-no-properties
+                         (match-beginning 2) (match-end 2)))
+              (cond ((string= (match-string-no-properties 1) "end")
+                     (setq end-list (cons env end-list)))
+                    ((equal env (car end-list))
+                     (setq end-list (cdr end-list)))
+                    ((member env texmathp-environments)
+                     (throw 'exit (cons env (point))))))))
+        nil))))
 
 (defun texmathp-match-macro (bound)
   "Find out if point is within the arguments of any of the Math macros.
@@ -374,53 +374,53 @@ Limit searches to BOUND.  The return value is like (\"\\macro\" . (point))."
     (and (null texmathp-macros) (throw 'exit nil))
     (let (pos cmd (syntax-table (syntax-table)))
       (unwind-protect
-	  (save-restriction
-	    (save-excursion
-	      (set-syntax-table texmathp-syntax-table)
-	      (narrow-to-region (max 1 bound) (point))
-	      ;; Move back out of the current parenthesis
-	      (while (condition-case nil (progn (up-list -1) t) (error nil))
-		;; Move back over any touching sexps (in fact also non-touching)
-		(while
-		    (and
-		     (cond
-		      ((memq (preceding-char) '(?\] ?\})))
-		      ((and
-			texmathp-allow-detached-args
-			(re-search-backward
-			"[]}][ \t]*[\n\r]?\\([ \t]*%[^\n\r]*[\n\r]\\)*[ \t]*\\="
-			bound t))
-		       (goto-char (1+ (match-beginning 0))) t))
-		     (if (eq (preceding-char) ?\})
-			 ;; Jump back over {}
-			 (condition-case nil
-			     (progn (backward-sexp) t)
-			   (error nil))
-		       ;; Jump back over []. Modify syntax temporarily for this.
-		       (unwind-protect
-			   (progn
-			     (modify-syntax-entry ?\{ ".")
-			     (modify-syntax-entry ?\} ".")
-			     (modify-syntax-entry ?\[ "(]")
-			     (modify-syntax-entry ?\] ")[")
-			     (condition-case nil
-				 (progn (backward-sexp) t)
-			       (error nil)))
-			 (modify-syntax-entry ?\{ "(}")
-			 (modify-syntax-entry ?\} "){")
-			 (modify-syntax-entry ?\[ ".")
-			 (modify-syntax-entry ?\] ".")
-			 nil))))
-		(setq pos (point))
-		(and (memq (following-char) '(?\[ ?\{))
-		     (re-search-backward "\\\\[*a-zA-Z]+\\=" nil t)
-		     (setq cmd (buffer-substring-no-properties
-				(match-beginning 0) (match-end 0)))
-		     (member cmd texmathp-macros)
-		     (throw 'exit (cons cmd (point))))
-		(goto-char pos))
-	      (throw 'exit nil)))
-	(set-syntax-table syntax-table)))))
+          (save-restriction
+            (save-excursion
+              (set-syntax-table texmathp-syntax-table)
+              (narrow-to-region (max 1 bound) (point))
+              ;; Move back out of the current parenthesis
+              (while (condition-case nil (progn (up-list -1) t) (error nil))
+                ;; Move back over any touching sexps (in fact also non-touching)
+                (while
+                    (and
+                     (cond
+                      ((memq (preceding-char) '(?\] ?\})))
+                      ((and
+                        texmathp-allow-detached-args
+                        (re-search-backward
+                         "[]}][ \t]*[\n\r]?\\([ \t]*%[^\n\r]*[\n\r]\\)*[ \t]*\\="
+                         bound t))
+                       (goto-char (1+ (match-beginning 0))) t))
+                     (if (eq (preceding-char) ?\})
+                         ;; Jump back over {}
+                         (condition-case nil
+                             (progn (backward-sexp) t)
+                           (error nil))
+                       ;; Jump back over []. Modify syntax temporarily for this.
+                       (unwind-protect
+                           (progn
+                             (modify-syntax-entry ?\{ ".")
+                             (modify-syntax-entry ?\} ".")
+                             (modify-syntax-entry ?\[ "(]")
+                             (modify-syntax-entry ?\] ")[")
+                             (condition-case nil
+                                 (progn (backward-sexp) t)
+                               (error nil)))
+                         (modify-syntax-entry ?\{ "(}")
+                         (modify-syntax-entry ?\} "){")
+                         (modify-syntax-entry ?\[ ".")
+                         (modify-syntax-entry ?\] ".")
+                         nil))))
+                (setq pos (point))
+                (and (memq (following-char) '(?\[ ?\{))
+                     (re-search-backward "\\\\[*a-zA-Z]+\\=" nil t)
+                     (setq cmd (buffer-substring-no-properties
+                                (match-beginning 0) (match-end 0)))
+                     (member cmd texmathp-macros)
+                     (throw 'exit (cons cmd (point))))
+                (goto-char pos))
+              (throw 'exit nil)))
+        (set-syntax-table syntax-table)))))
 
 ;;;###autoload
 (defun texmathp-match-switch (bound)
@@ -429,8 +429,8 @@ Limit searched to BOUND."
   ;; The return value is like ("\\(" . (point)).
   (save-excursion
     (if (re-search-backward texmathp-onoff-regexp bound t)
-	(cons (buffer-substring-no-properties (match-beginning 1) (match-end 1))
-	      (match-beginning 1))
+        (cons (buffer-substring-no-properties (match-beginning 1) (match-end 1))
+              (match-beginning 1))
       nil)))
 
 (provide 'texmathp)

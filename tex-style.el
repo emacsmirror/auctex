@@ -55,7 +55,7 @@ Amsmath equations include \"align\", \"alignat\", \"xalignat\",
 `LaTeX-equation-label' is used."
   :group 'LaTeX-label
   :type '(choice (const :tag "Use `LaTeX-equation-label'" nil)
-		 (string)))
+                 (string)))
 
 ;; style/beamer.el
 
@@ -89,33 +89,33 @@ It can be a list of themes or a function.  If it is the symbol
       "Montpellier" "PaloAlto" "Pittsburgh" "Rochester" "Singapore"
       "Szeged" "Warsaw")
      (set :inline t
-	  (const "Antibes")
-	  (const "Bergen")
-	  (const "Berkeley")
-	  (const "Berlin")
-	  (const "Boadilla")
-	  (const "Copenhagen")
-	  (const "Darmstadt")
-	  (const "Dresden")
-	  (const "Frankfurt")
-	  (const "Goettingen")
-	  (const "Hannover")
-	  (const "Ilmenau")
-	  (const "JuanLesPins")
-	  (const "Luebeck")
-	  (const "Madrid")
-	  (const "Malmoe")
-	  (const "Marburg")
-	  (const "Montpellier")
-	  (const "PaloAlto")
-	  (const "Pittsburgh")
-	  (const "Rochester")
-	  (const "Singapore")
-	  (const "Szeged")
-	  (const "Warsaw"))
+          (const "Antibes")
+          (const "Bergen")
+          (const "Berkeley")
+          (const "Berlin")
+          (const "Boadilla")
+          (const "Copenhagen")
+          (const "Darmstadt")
+          (const "Dresden")
+          (const "Frankfurt")
+          (const "Goettingen")
+          (const "Hannover")
+          (const "Ilmenau")
+          (const "JuanLesPins")
+          (const "Luebeck")
+          (const "Madrid")
+          (const "Malmoe")
+          (const "Marburg")
+          (const "Montpellier")
+          (const "PaloAlto")
+          (const "Pittsburgh")
+          (const "Rochester")
+          (const "Singapore")
+          (const "Szeged")
+          (const "Warsaw"))
      (repeat :inline t
-	     :tag "Other"
-	     (string)))))
+             :tag "Other"
+             (string)))))
 
 (defcustom LaTeX-beamer-inner-themes 'local
   "Presentation inner themes for the LaTeX beamer package.
@@ -129,14 +129,14 @@ It can be a list of themes or a function.  If it is the symbol
     (list
      :value ("circles" "default" "inmargin" "rectangles" "rounded")
      (set :inline t
-	  (const "circles")
-	  (const "default")
-	  (const "inmargin")
-	  (const "rectangles")
-	  (const "rounded"))
+          (const "circles")
+          (const "default")
+          (const "inmargin")
+          (const "rectangles")
+          (const "rounded"))
      (repeat :inline t
-	     :tag "Other"
-	     (string)))))
+             :tag "Other"
+             (string)))))
 
 (defcustom LaTeX-beamer-outer-themes 'local
   "Presentation outer themes for the LaTeX beamer package.
@@ -153,18 +153,18 @@ It can be a list of themes or a function.  If it is the symbol
      ("default" "infolines" "miniframes" "shadow" "sidebar" "smoothbars"
       "smoothtree" "split" "tree")
      (set :inline t
-	  (const "default")
-	  (const "infolines")
-	  (const "miniframes")
-	  (const "shadow")
-	  (const "sidebar")
-	  (const "smoothbars")
-	  (const "smoothtree")
-	  (const "split")
-	  (const "tree"))
+          (const "default")
+          (const "infolines")
+          (const "miniframes")
+          (const "shadow")
+          (const "sidebar")
+          (const "smoothbars")
+          (const "smoothtree")
+          (const "split")
+          (const "tree"))
      (repeat :inline t
-	     :tag "Other"
-	     (string)))))
+             :tag "Other"
+             (string)))))
 
 (defcustom LaTeX-beamer-color-themes 'local
   "Presentation color themes for the LaTeX beamer package.
@@ -181,24 +181,24 @@ It can be a list of themes or a function.  If it is the symbol
      ("albatross" "beetle" "crane" "default" "dolphin" "dove" "fly" "lily"
       "orchid" "rose" "seagull" "seahorse" "sidebartab" "structure" "whale")
      (set :inline t
-	  (const "albatross")
-	  (const "beetle")
-	  (const "crane")
-	  (const "default")
-	  (const "dolphin")
-	  (const "dove")
-	  (const "fly")
-	  (const "lily")
-	  (const "orchid")
-	  (const "rose")
-	  (const "seagull")
-	  (const "seahorse")
-	  (const "sidebartab")
-	  (const "structure")
-	  (const "whale"))
+          (const "albatross")
+          (const "beetle")
+          (const "crane")
+          (const "default")
+          (const "dolphin")
+          (const "dove")
+          (const "fly")
+          (const "lily")
+          (const "orchid")
+          (const "rose")
+          (const "seagull")
+          (const "seahorse")
+          (const "sidebartab")
+          (const "structure")
+          (const "whale"))
      (repeat :inline t
-	     :tag "Other"
-	     (string)))))
+             :tag "Other"
+             (string)))))
 
 (defcustom LaTeX-beamer-font-themes 'local
   "Presentation font themes for the LaTeX beamer package.
@@ -215,15 +215,15 @@ It can be a list of themes or a function.  If it is the symbol
      ("default" "professionalfonts" "serif" "structurebold"
       "structureitalicserif" "structuresmallcapsserif")
      (set :inline t
-	  (const "default")
-	  (const "professionalfonts")
-	  (const "serif")
-	  (const "structurebold")
-	  (const "structureitalicserif")
-	  (const "structuresmallcapsserif"))
+          (const "default")
+          (const "professionalfonts")
+          (const "serif")
+          (const "structurebold")
+          (const "structureitalicserif")
+          (const "structuresmallcapsserif"))
      (repeat :inline t
-	     :tag "Other"
-	     (string)))))
+             :tag "Other"
+             (string)))))
 
 ;; style/biblatex.el
 
@@ -307,9 +307,9 @@ automatically get the list of fonts.  This requires
 `luaotfload-tool' version 2.3 or higher in order to work."
   :group 'LaTeX-style
   :type '(choice
-	  (const :tag "Search automatically" t)
-	  (const :tag "Use default font list" nil)
-	  (const :tag "Ask what to do" ask)))
+          (const :tag "Search automatically" t)
+          (const :tag "Use default font list" nil)
+          (const :tag "Ask what to do" ask)))
 
 (defcustom LaTeX-fontspec-font-list-default nil
   "List of default fonts to be used as completion for
@@ -324,13 +324,13 @@ automatically get the list of fonts.  This requires
   "Extensions for images files used by \\includegraphics."
   :group 'LaTeX-style
   :type '(list (set :inline t
-		    (const "eps")
-		    (const "jpe?g")
-		    (const "pdf")
-		    (const "png"))
-	       (repeat :inline t
-		       :tag "Other"
-		       (string))))
+                    (const "eps")
+                    (const "jpe?g")
+                    (const "pdf")
+                    (const "png"))
+               (repeat :inline t
+                       :tag "Other"
+                       (string))))
 
 (defcustom LaTeX-includegraphics-strip-extension-flag t
   "Non-nil means to strip known extensions from image file name."
@@ -367,13 +367,13 @@ Inserting the subdirectory in the filename (as
   ;; information.
   :group 'LaTeX-style
   :type '(choice (const :tag "TeX" LaTeX-includegraphics-read-file-TeX)
-		 (const :tag "relative"
-			LaTeX-includegraphics-read-file-relative)
-		 (const :tag "simple" (lambda ()
-					(file-relative-name
-					 (read-file-name "Image file: ")
-					 (TeX-master-directory))))
-		 (function :tag "other")))
+                 (const :tag "relative"
+                        LaTeX-includegraphics-read-file-relative)
+                 (const :tag "simple" (lambda ()
+                                        (file-relative-name
+                                         (read-file-name "Image file: ")
+                                         (TeX-master-directory))))
+                 (function :tag "other")))
 
 ;; style/revtex4-2.el
 

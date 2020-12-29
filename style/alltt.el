@@ -35,18 +35,18 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-set-syntactic-keywords
-		  "font-latex")
+                  "font-latex")
 
 (TeX-add-style-hook
  "alltt"
  (lambda ()
    (LaTeX-add-environments "alltt")
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-		'("alltt" current-indentation) t)
+                '("alltt" current-indentation) t)
    (add-to-list 'LaTeX-verbatim-environments-local "alltt")
    ;; Fontification
    (when (and (fboundp 'font-latex-set-syntactic-keywords)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)

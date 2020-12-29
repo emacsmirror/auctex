@@ -36,17 +36,17 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (declare-function reftex-compile-variables
-		  "reftex"
-		  ())
+                  "reftex"
+                  ())
 
 (defvar LaTeX-ltxtable-file-regexp
   `(,(concat "\\\\LTXtable"
-	     "{\\(?:[^}]+\\)}"
-	     "{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}")
+             "{\\(?:[^}]+\\)}"
+             "{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}")
     1 TeX-auto-file)
   "Matches the file argument of \\LTXtable marco from ltxtable package.
 The regexp for the 2. argument is the same as for \"input\" and
@@ -62,9 +62,9 @@ The regexp for the 2. argument is the same as for \"input\" and
       (TeX-arg-length "Width" "1.0\\linewidth")
       (TeX-arg-eval
        (lambda ()
-	 (let ((longtable (file-relative-name
-			   (read-file-name "File with longtable: "))))
-	   (format "%s" longtable))))))
+         (let ((longtable (file-relative-name
+                           (read-file-name "File with longtable: "))))
+           (format "%s" longtable))))))
 
    ;; Make sure that \LTXtable stays in its own line:
    (LaTeX-paragraph-commands-add-locally "LTXtable")
@@ -77,16 +77,16 @@ The regexp for the 2. argument is the same as for \"input\" and
    ;; `reftex-include-file-commands' and run
    ;; `reftex-compile-variables'.  Do this all only once.
    (when (and (boundp 'reftex-include-file-commands)
-	      (not (string-match "LTXtable"
-				 (mapconcat #'identity reftex-include-file-commands "|"))))
+              (not (string-match "LTXtable"
+                                 (mapconcat #'identity reftex-include-file-commands "|"))))
      (add-to-list 'reftex-include-file-commands "LTXtable{\\(?:[^}]+\\)}" t)
      (reftex-compile-variables))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("LTXtable"  "{{"))
-			      'textual)))
+                              'textual)))
  TeX-dialect)
 
 (defvar LaTeX-ltxtable-package-options nil

@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun LaTeX-ifluatex-set-TeX-exit-mark (_optional)
   "Discard OPTIONAL and set `TeX-exit-mark' to current point."
@@ -61,10 +61,10 @@
    (setq TeX-check-engine-list nil)
 
    (when (and (featurep 'font-latex)
-	      (eq TeX-install-font-lock 'font-latex-setup))
+              (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("luatexversion")
-				("luatexrevision"))
-			      'function)))
+                                ("luatexrevision"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-ifluatex-package-options nil

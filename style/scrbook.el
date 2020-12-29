@@ -35,37 +35,37 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook "scrbook"
-  (lambda ()
-    (LaTeX-largest-level-set "chapter")
-    ;; load basic definitons
-    (TeX-run-style-hooks "scrbase")
-    (TeX-add-symbols
-     "chapapp"
-     "raggeddictum"
-     '("chapappifchapterprefix" "Additional text")
-     '("setpartpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
-     '("setchapterpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
-     '("dictum" [ "Author" ] t))
-    (LaTeX-section-list-add-locally '("addchap" 1))
-    (make-local-variable 'LaTeX-section-label)
-    (setq LaTeX-section-label (append
-			       LaTeX-section-label
-			       '(("addchap" . nil))))
-    ;; Definitions for font-latex
-    (when (and (featurep 'font-latex)
-	       (eq TeX-install-font-lock 'font-latex-setup))
-      ;; Textual keywords
-      (font-latex-add-keywords '(("addchap" "[{")
-				 ("setpartpreamble" "[[{")
-				 ("setchapterpreamble" "[[{")
-				 ("dictum" "[{"))
-			       'textual)
-      ;; Sectioning keywords
-      (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
-  TeX-dialect)
+                    (lambda ()
+                      (LaTeX-largest-level-set "chapter")
+                      ;; load basic definitons
+                      (TeX-run-style-hooks "scrbase")
+                      (TeX-add-symbols
+                       "chapapp"
+                       "raggeddictum"
+                       '("chapappifchapterprefix" "Additional text")
+                       '("setpartpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
+                       '("setchapterpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
+                       '("dictum" [ "Author" ] t))
+                      (LaTeX-section-list-add-locally '("addchap" 1))
+                      (make-local-variable 'LaTeX-section-label)
+                      (setq LaTeX-section-label (append
+                                                 LaTeX-section-label
+                                                 '(("addchap" . nil))))
+                      ;; Definitions for font-latex
+                      (when (and (featurep 'font-latex)
+                                 (eq TeX-install-font-lock 'font-latex-setup))
+                        ;; Textual keywords
+                        (font-latex-add-keywords '(("addchap" "[{")
+                                                   ("setpartpreamble" "[[{")
+                                                   ("setchapterpreamble" "[[{")
+                                                   ("dictum" "[{"))
+                                                 'textual)
+                        ;; Sectioning keywords
+                        (font-latex-add-keywords '(("addchap" "[{")) 'sectioning-1)))
+                    TeX-dialect)
 
 ;;; scrbook.el ends here

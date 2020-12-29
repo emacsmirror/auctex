@@ -33,20 +33,20 @@
   ;; ignore them and search another occurence of $. That is the
   ;; behavior expected for MATCHER function of `font-lock-keywords'.
   (should (let ((TeX-install-font-lock 'font-latex-setup))
-	    (with-temp-buffer
-	      (insert "% $$$ $$$
+            (with-temp-buffer
+              (insert "% $$$ $$$
 $a$")
-	      (LaTeX-mode)
-	      (goto-char (point-min))
-	      (setq font-latex--updated-region-end (point-max))
-	      (font-latex-match-dollar-math (point-max))))))
+              (LaTeX-mode)
+              (goto-char (point-min))
+              (setq font-latex--updated-region-end (point-max))
+              (font-latex-match-dollar-math (point-max))))))
 
 (ert-deftest font-latex-extend-region-backwards-quotation ()
   "Test f-l-e-r-b-q doesn't extend region too eagerly."
   (with-temp-buffer
     (let ((TeX-install-font-lock 'font-latex-setup)
-	  (font-latex-quotes 'french)
-	  font-lock-beg font-lock-end)
+          (font-latex-quotes 'french)
+          font-lock-beg font-lock-end)
       (LaTeX-mode)
 
       ;; Test 1: Double prime in math expression doesn't cause region
