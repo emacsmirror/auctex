@@ -39,8 +39,8 @@
 ;;; Code:
 
 (when (or (< emacs-major-version 24)
-	  (and (= emacs-major-version 24)
-	       (< emacs-minor-version 3)))
+          (and (= emacs-major-version 24)
+               (< emacs-minor-version 3)))
   (error "AUCTeX requires Emacs 24.3 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
@@ -94,25 +94,25 @@ shared by all users of a site."
 (defalias 'TeX-load-hack 'ignore)
 
 (add-hook 'tex-site-unload-hook
-	  (lambda ()
-	    (if (fboundp 'advice-add)
-		(TeX-modes-set 'TeX-modes nil)
-	      (let ((list after-load-alist))
-		(while list
-		  ;; Adapted copy of the definition of `assq-delete-all'
-		  ;; from Emacs 21 as substitute for
-		  ;; `(assq-delete-all'TeX-modes-set (car list))' which
-		  ;; fails on non-list elements in Emacs 21.
-		  (let* ((alist (car list))
-			 (tail alist)
-			 (key 'TeX-modes-set))
-		    (while tail
-		      (if (and (consp (car tail))
-			       (eq (car (car tail)) key))
-			  (setq alist (delq (car tail) alist)))
-		      (setq tail (cdr tail))))
-		  (setq list (cdr list)))))
-	    (setq load-path (delq TeX-lisp-directory load-path))))
+          (lambda ()
+            (if (fboundp 'advice-add)
+                (TeX-modes-set 'TeX-modes nil)
+              (let ((list after-load-alist))
+                (while list
+                  ;; Adapted copy of the definition of `assq-delete-all'
+                  ;; from Emacs 21 as substitute for
+                  ;; `(assq-delete-all'TeX-modes-set (car list))' which
+                  ;; fails on non-list elements in Emacs 21.
+                  (let* ((alist (car list))
+                         (tail alist)
+                         (key 'TeX-modes-set))
+                    (while tail
+                      (if (and (consp (car tail))
+                               (eq (car (car tail)) key))
+                          (setq alist (delq (car tail) alist)))
+                      (setq tail (cdr tail))))
+                  (setq list (cdr list)))))
+            (setq load-path (delq TeX-lisp-directory load-path))))
 
 (defun TeX-modes-set (var value &optional update)
   "Set VAR (which should be `TeX-modes') to VALUE.
@@ -146,23 +146,23 @@ definition."
 This variable can't be set normally; use customize for that, or
 set it with `TeX-modes-set'."
   :type (cons 'set
-	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
+              (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set #'TeX-modes-set
   :group 'AUCTeX
   :initialize(lambda (var value)
-	       (custom-initialize-reset var value)
-	       (unless (fboundp 'advice-add)
-		 (let ((list TeX-mode-alist))
-		   (while list
-		     (eval-after-load (cdar list)
-		       `(TeX-modes-set ',var ,var t))
-		     (setq list (cdr list)))))) )
+               (custom-initialize-reset var value)
+               (unless (fboundp 'advice-add)
+                 (let ((list TeX-mode-alist))
+                   (while list
+                     (eval-after-load (cdar list)
+                       `(TeX-modes-set ',var ,var t))
+                     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "13.0.0"
+(defconst AUCTeX-version "13.0.1"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2020-12-24"
+(defconst AUCTeX-date "2020-12-29"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
