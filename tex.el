@@ -1186,9 +1186,13 @@ DE is the name of the desktop environment, APP is the name of
 viewer."
   (require 'url-util)
   (let* ((uri (concat "file://"
-                      (url-encode-url
-                       (expand-file-name
-                        (TeX-active-master (TeX-output-extension))))))
+                      ;; bug#45510: ? in filenames must be escaped as
+                      ;; %3F to be a proper URI.
+                      (replace-regexp-in-string
+                       "[?]" "%3F"
+                       (url-encode-url
+                        (expand-file-name
+                         (TeX-active-master (TeX-output-extension)))))))
          (owner (dbus-call-method
                  :session (format "org.%s.%s.Daemon" de app)
                  (format "/org/%s/%s/Daemon" de app)
