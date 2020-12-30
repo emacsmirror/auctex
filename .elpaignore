@@ -11,3 +11,4 @@ README.GIT
 tests
 build-aux
 admin
+.dir-locals.el
