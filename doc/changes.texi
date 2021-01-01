@@ -12,6 +12,11 @@
 
 @itemize @bullet
 @item
+Since @AUCTeX{} 12.2, @kbd{C-x C-w} accidentally disabled the parse on
+save in that buffer, even when you enabled @code{TeX-auto-save} option.
+This bug was fixed.
+
+@item
 @AUCTeX{} now requires GNU Emacs 24.3 or higher.
 
 @item
