@@ -1,6 +1,6 @@
 ;;; baskervaldx.el --- AUCTeX style for `baskervaldx.sty' (v1.07)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -61,8 +61,7 @@
     '("texttlf"    t)   ; tabular lining figures
     '("textosf"    t)   ; proportional oldstyle figures
     '("texttosf"   t)   ; tabular oldstyle figures
-    '("textsu"     t)   ; superior figures
-    '("swshape"   -1))  ; italic shape with ligatures activated
+    '("textsu"     t))   ; superior figures
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -78,9 +77,7 @@
                                 ("osfstyle"  "")
                                 ("tosfstyle" "")
                                 ("sufigures" ""))
-                              'type-declaration)
-     (font-latex-add-keywords '(("swshape"   ""))
-                              'bold-declaration)))
+                              'type-declaration)))
  TeX-dialect)
 
 (defvar LaTeX-baskervaldx-package-options
