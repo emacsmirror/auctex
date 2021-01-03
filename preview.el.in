@@ -1166,7 +1166,7 @@ NONREL is not NIL."
     (setq preview-gs-init-string
           ;; Add commands for revised file access controls introduced
           ;; after gs 9.27 (bug#37719)
-          (concat (format "systemdict /.addcontrolpath known {%s} if\n"
+          (concat (format "systemdict /.addcontrolpath known {%s} if "
                           (mapconcat (lambda (f)
                                        (format "/PermitFileReading %s .addcontrolpath"
                                                (preview-ps-quote-filename f)))
@@ -1312,11 +1312,6 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
-  ;; N.B.  Although this code shows command line of gs invocation and
-  ;; error together via mouse popup menu, they are not necessarily
-  ;; associated with each other.  There is a case that the command
-  ;; line is for "[...].prv/tmpXXXXXX/pr1-2.png" while the error is
-  ;; raised for "[...].prv/tmpXXXXXX/pr1-1.png".  (c.f. bug#37719)
   (let* ((filenames (overlay-get ov 'filenames))
          (file (car (nth 0 filenames)))
          ;; FIXME: This format isn't equal to actual invocation of gs
