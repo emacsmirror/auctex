@@ -430,7 +430,7 @@ less correct.
 
 If you have a certain macro or environment that you want to preview,
 first check if it can be chosen by cutomizing
-@code{preview-default-options-list} in the @code{Preview Latex} group.
+@code{preview-default-option-list} in the @code{Preview Latex} group.
 
 If it is not available there, you can add it to
 @code{preview-default-preamble} also in the @code{Preview Latex} group,
@@ -684,7 +684,7 @@ in @code{preview-gs-image-type-alist}.
 @code{preview-image-type} defaults to @code{png}.  For this to work,
 your version of Ghostscript needs to support the @option{png16m} device.
 If you are experiencing problems here, you might want to reconfigure
-@code{gs-image-type-alist} or @code{preview-image-type}.  Reconfiguring
+@code{preview-gs-image-type-alist} or @code{preview-image-type}.  Reconfiguring
 @code{preview-image-creators} is only necessary for adding additional
 image types.
 
