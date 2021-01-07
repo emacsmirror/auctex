@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2020 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
