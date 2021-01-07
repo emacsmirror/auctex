@@ -1,8 +1,7 @@
 ;;; bib-cite.el --- test
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014, 2020
-;; Free Software Foundation, Inc.
+;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2021 Free Software Foundation, Inc.
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
@@ -983,14 +982,11 @@ documents, and the Emacs command `find-tag' doesn't allow to interactively
 find the next occurrence of a regexp."
   (interactive "P")
   (if (bib-master-file)                 ;Multi-file document
-      ;; FIXME: This check for `xref-find-definitions' should be
-      ;; removed once AUCTeX requires Emacs >= 25.1
-      (let ((func (if (fboundp 'xref-find-definitions)
-                      'xref-find-definitions
-                    'find-tag)))
-        (if prev-p
-            (funcall func t '- t)
-          (funcall func t t t)))
+      ;; FIXME: `find-tag' is replaced by `xref-find-definitions' in
+      ;; Emacs 25.1.  AUCTeX should track this change, sometime ...
+      (if prev-p
+          (find-tag t '- t)
+        (find-tag t t t))
     (if bib-cite-search-ring
         ;;FIXME: Should first make sure I move off initial \ref{}.
         (let ((regexp (concat bib-ref-regexpc bib-cite-search-ring "}")))
