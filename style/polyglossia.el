@@ -141,7 +141,10 @@ The last language is the default one."
        (setq default (or (string-equal "defaultlanguage" (nth 1 elt))
                          (string-equal "mainlanguage" (nth 1 elt))))
        ;; Append the language to the list if it's the default one.
-       (add-to-list 'active-languages (car elt) default))
+       (if default
+           (setq active-languages (append active-languages
+                                          (list (car elt))))
+         (push active-languages (car elt))))
      LaTeX-polyglossia-lang-list)
     active-languages))
 
