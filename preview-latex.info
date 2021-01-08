@@ -2,10 +2,10 @@ This is preview-latex.info, produced by makeinfo version 6.7 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.0.1 from 2020-12-29).
+(version 13.0.1.2021-01-08 from 2021-01-08).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
-Software Foundation, Inc.
+   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
+Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -529,7 +529,7 @@ in *note For advanced users::), but some are:
 
      If you have a certain macro or environment that you want to
      preview, first check if it can be chosen by cutomizing
-     'preview-default-options-list' in the 'Preview Latex' group.
+     'preview-default-option-list' in the 'Preview Latex' group.
 
      If it is not available there, you can add it to
      'preview-default-preamble' also in the 'Preview Latex' group, by
@@ -1368,9 +1368,9 @@ File: preview-latex.info,  Node: The preview images,  Next: Misplaced previews, 
      'preview-image-type' defaults to 'png'.  For this to work, your
      version of Ghostscript needs to support the 'png16m' device.  If
      you are experiencing problems here, you might want to reconfigure
-     'gs-image-type-alist' or 'preview-image-type'.  Reconfiguring
-     'preview-image-creators' is only necessary for adding additional
-     image types.
+     'preview-gs-image-type-alist' or 'preview-image-type'.
+     Reconfiguring 'preview-image-creators' is only necessary for adding
+     additional image types.
 
      Most devices make preview-latex start up a single Ghostscript
      process for the entire preview run (as opposed to one per image)
@@ -1910,10 +1910,10 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.0.1 from 2020-12-29).
+(version 13.0.1.2021-01-08 from 2021-01-08).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017, 2018 Free
-Software Foundation, Inc.
+   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
+Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -2530,43 +2530,43 @@ Index
 
 
 Tag Table:
-Node: Top954
-Node: Copying2226
-Node: Introduction2680
-Node: What use is it?3354
-Node: Activating preview-latex4743
-Node: Getting started5496
-Node: Basic modes of operation7443
-Node: More documentation8646
-Node: Availability9534
-Node: Contacts10143
-Node: Installation11416
-Node: Keys and lisp11617
-Node: Simple customization18693
-Node: Known problems24356
-Node: Font problems with Dvips25182
-Node: Too small bounding boxes26356
-Node: x-symbol interoperation27752
-Node: Middle-clicks paste instead of toggling29135
-Node: No images are displayed with gs 9.27 and earlier29820
-Node: For advanced users32462
-Node: The LaTeX style file32921
-Node: Package options35483
-Node: Provided commands46387
-Node: The Emacs interface53732
-Node: The preview images62443
-Node: Misplaced previews66193
-Node: ToDo69647
-Node: Frequently Asked Questions74418
-Node: Introduction to FAQ74741
-Node: Requirements75080
-Node: Installation Trouble76912
-Node: Customization79175
-Node: Troubleshooting82267
-Node: Other formats84785
-Node: Copying this Manual86100
-Node: GNU Free Documentation License87041
-Node: Index112165
+Node: Top970
+Node: Copying2242
+Node: Introduction2696
+Node: What use is it?3370
+Node: Activating preview-latex4759
+Node: Getting started5512
+Node: Basic modes of operation7459
+Node: More documentation8662
+Node: Availability9550
+Node: Contacts10159
+Node: Installation11432
+Node: Keys and lisp11633
+Node: Simple customization18709
+Node: Known problems24371
+Node: Font problems with Dvips25197
+Node: Too small bounding boxes26371
+Node: x-symbol interoperation27767
+Node: Middle-clicks paste instead of toggling29150
+Node: No images are displayed with gs 9.27 and earlier29835
+Node: For advanced users32477
+Node: The LaTeX style file32936
+Node: Package options35498
+Node: Provided commands46402
+Node: The Emacs interface53747
+Node: The preview images62458
+Node: Misplaced previews66215
+Node: ToDo69669
+Node: Frequently Asked Questions74440
+Node: Introduction to FAQ74763
+Node: Requirements75102
+Node: Installation Trouble76934
+Node: Customization79197
+Node: Troubleshooting82289
+Node: Other formats84807
+Node: Copying this Manual86122
+Node: GNU Free Documentation License87079
+Node: Index112203
 
 End Tag Table
 
