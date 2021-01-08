@@ -831,7 +831,7 @@ environment just inserted, the buffer position just before
                      (concat TeX-esc "end" TeX-grop
                              environment TeX-grcl))
                     (match-beginning 0)))
-    (run-hook-with-args 'LaTeX-after-insert-env-hooks
+    (run-hook-with-args 'LaTeX-after-insert-env-hook
                         environment env-start env-end)))
 
 (defun LaTeX-environment-name-regexp ()
