@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2020 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -3715,7 +3715,7 @@ The algorithm is as follows:
 
   ;; We want this to be early in the list, so we do not add it before
   ;; we enter TeX mode the first time.
-  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
+  (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
   (set (make-local-variable 'TeX-auto-update) t)
 
   (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)

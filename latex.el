@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2020 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -831,7 +831,7 @@ environment just inserted, the buffer position just before
                      (concat TeX-esc "end" TeX-grop
                              environment TeX-grcl))
                     (match-beginning 0)))
-    (run-hook-with-args 'LaTeX-after-insert-env-hooks
+    (run-hook-with-args 'LaTeX-after-insert-env-hook
                         environment env-start env-end)))
 
 (defun LaTeX-environment-name-regexp ()
@@ -1988,7 +1988,7 @@ The value is actually the tail of the list of options given to PACKAGE."
 It will setup BibTeX to store keys in an auto file."
   ;; We want this to be early in the list, so we do not
   ;; add it before we enter BibTeX mode the first time.
-  (add-hook 'write-file-functions #'TeX-safe-auto-write nil t)
+  (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
   (TeX-bibtex-set-BibTeX-dialect)
   (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)

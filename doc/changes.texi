@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2020 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2021 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -11,6 +11,11 @@
 @heading News in 13.0
 
 @itemize @bullet
+@item
+Since @AUCTeX{} 12.2, @kbd{C-x C-w} accidentally disabled the parse on
+save in that buffer, even when you enabled @code{TeX-auto-save} option.
+This bug was fixed.
+
 @item
 @AUCTeX{} now requires GNU Emacs 24.3 or higher.
 
@@ -64,6 +69,13 @@ previously undeclared variables @code{title}, @code{name}, @code{level},
 @code{done-mark}, and @code{reference}.  These variables are now
 properly declared and have the @code{ConTeXt-} prefix, e.g.,
 @code{ConTeXt-title}.
+
+@item
+The functions in @code{TeX-translate-location-hook} could access and
+modify the free variables @code{file}, @code{line}, @code{error},
+@code{offset}, @code{context}, and @code{string}.  Those are now properly
+declared variables with the prefix @code{TeX-translate-location-}, e.g.,
+@code{TeX-translate-location-file}.
 @end itemize
 
 @item
