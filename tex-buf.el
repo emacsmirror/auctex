@@ -2469,11 +2469,25 @@ already in an Emacs buffer) and the cursor is placed at the error."
 
 ;;; - Parsing (La)TeX
 
+(defvar TeX-translate-location-file nil)
+(defvar TeX-translate-location-offset nil)
+(defvar TeX-translate-location-line nil)
+(defvar TeX-translate-location-string nil)
+(defvar TeX-translate-location-error nil)
+(defvar TeX-translate-location-context nil)
+
 (defvar TeX-translate-location-hook nil
   "List of functions to be called before showing an error or warning.
 
-You might want to examine and modify the free variables `file',
-`offset', `line', `string', `error', and `context' from this hook.")
+You might want to examine and modify the dynamically bound
+variables
+  `TeX-translate-location-file',
+  `TeX-translate-location-offset',
+  `TeX-translate-location-line',
+  `TeX-translate-location-string',
+  `TeX-translate-location-error', and
+  `TeX-translate-location-context'
+from this hook.")
 
 ;; `ignore' flag should be the always the last one in the list of information
 ;; for each error/warning, because it can be set within `TeX-warning' by a
@@ -2657,39 +2671,51 @@ value is not used here."
         (master (with-current-buffer TeX-command-buffer
                   (expand-file-name (TeX-master-file))))
         (command-buffer TeX-command-buffer)
+        (TeX-translate-location-file file)
+        (TeX-translate-location-line line)
+        (TeX-translate-location-error error)
+        (TeX-translate-location-offset offset)
+        (TeX-translate-location-context context)
+        (TeX-translate-location-string string)
         error-file-buffer start)
+
     (run-hooks 'TeX-translate-location-hook)
 
-    (if file
+    (if TeX-translate-location-file
         (progn
           (setq error-file-buffer
                 (find-file
-                 (expand-file-name file (file-name-directory master))))
-          ;; Set the value of `TeX-command-buffer' in the next file with an
-          ;; error to be displayed to the value it has in the current buffer.
+                 (expand-file-name TeX-translate-location-file
+                                   (file-name-directory master))))
+          ;; Set the value of `TeX-command-buffer' in the next file
+          ;; with an error to be displayed to the value it has in the
+          ;; current buffer.
           (with-current-buffer error-file-buffer
-            (set (make-local-variable 'TeX-command-buffer) command-buffer))
+            (setq-local TeX-command-buffer command-buffer))
 
           ;; Find the location of the error or warning.
-          (when line
+          (when TeX-translate-location-line
             (goto-char (point-min))
-            (forward-line (+ offset line -1))
+            (forward-line (+ TeX-translate-location-offset
+                             TeX-translate-location-line -1))
             (cond
              ;; Error.
              ((equal type 'error)
-              (if (not (string= string " "))
-                  (search-forward string nil t)))
+              (if (not (string= TeX-translate-location-string " "))
+                  (search-forward TeX-translate-location-string nil t)))
              ;; Warning or bad box.
              (t
               (beginning-of-line 0)
               (setq start (point))
               (goto-char (point-min))
-              (forward-line (+ offset line-end -1))
+              (forward-line (+ TeX-translate-location-offset
+                               line-end -1))
               (end-of-line)
-              (when string
-                (search-backward string start t)
-                (search-forward string nil t))))))
-      ;; When the file cannot be determined stay here but issue a warning.
+              (when TeX-translate-location-string
+                (search-backward TeX-translate-location-string start t)
+                (search-forward TeX-translate-location-string nil t))))))
+      ;; When the file cannot be determined stay here but issue a
+      ;; warning.
       (message (concat "Could not determine file for "
                        (cond ((equal type 'error) "error")
                              (t "warning"))))
@@ -2702,11 +2728,13 @@ value is not used here."
            (TeX-pop-to-buffer error-file-buffer nil t))
           (TeX-display-help
            (TeX-help-error
-            error
-            (if (equal type 'warning) (concat "\n" context) context)
+            TeX-translate-location-error
+            (if (equal type 'warning)
+                (concat "\n" TeX-translate-location-context)
+              TeX-translate-location-context)
             runbuf type))
           (t
-           (message (concat "! " error))))))
+           (message (concat "! " TeX-translate-location-error))))))
 
 (defun TeX-error (&optional store)
   "Display an error.
