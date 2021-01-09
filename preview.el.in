@@ -1,7 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
 ;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017-2020  Free Software Foundation, Inc.
+;;               2017-2021  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -3299,7 +3299,13 @@ call, and in its CDR the final stuff for the placement hook."
           close-data
           open-data
           fast-hook
-          slow-hook)
+          slow-hook
+          TeX-translate-location-file
+          TeX-translate-location-line
+          TeX-translate-location-error
+          TeX-translate-location-offset
+          TeX-translate-location-context
+          TeX-translate-location-string)
       ;; clear parsing variables
       (dolist (var preview-parse-variables)
         (set (nth 1 var) nil))
@@ -3422,9 +3428,23 @@ name(\\([^)]+\\))\\)\\|\
                                         (nconc fast-hook (list fast)))
                                 (setq slow-hook
                                       (nconc slow-hook (list lst)))))))
+                        ;; Functions in `TeX-translate-location-hook'
+                        ;; may examine and modify the following variables.
+                        (setq TeX-translate-location-file file
+                              TeX-translate-location-line line
+                              ;; TeX-translate-location-error error
+                              TeX-translate-location-offset offset
+                              ;; TeX-translate-location-context context
+                              TeX-translate-location-string string)
                         (condition-case err
                             (save-excursion (mapc #'funcall slow-hook))
                           (error (preview-log-error err "Translation hook")))
+                        (setq file TeX-translate-location-file
+                              line TeX-translate-location-line
+                              ;; error TeX-translate-location-error
+                              offset TeX-translate-location-offset
+                              ;; context TeX-translate-location-context
+                              string TeX-translate-location-string)
                         (push (vector file (+ line offset)
                                       string after-string
                                       snippet box counters)
