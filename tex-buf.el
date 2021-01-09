@@ -359,7 +359,7 @@ Car is the idx file, cdr is whether idx changed after LaTeX
 run.")
 
 (defcustom TeX-check-engine t
-  "Whether AUCTeX should check the correct engine has been set before running LaTeX commands."
+  "Check the correct engine has been set before running TeX commands."
   :group 'TeX-command
   :type 'boolean)
 

@@ -108,11 +108,13 @@
 
 (defvar ConTeXt-project-structure-list-nl
   '("project" "omgeving" "produkt" "onderdeel")
-  "List of the names of ConTeXt project structure elements for its nl interface.  List should be in logical order.")
+  "List of ConTeXt project structure elements for its nl interface.
+List should be in logical order.")
 
 (defvar ConTeXt-section-block-list-nl
   '("inleidingen" "hoofdteksten" "bijlagen" "uitleidingen")
-  "List of the names of ConTeXt section blocks for its nl interface.  List should be in logical order.")
+  "List of ConTeXt section block names for its nl interface.
+List should be in logical order.")
 
 
 ;; TODO:
