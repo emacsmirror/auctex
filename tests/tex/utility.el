@@ -1,6 +1,6 @@
-;;; utility.el --- tests for AUCTeX utility functions
+;;; utility.el --- tests for AUCTeX utility functions -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2021 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -27,5 +27,32 @@
   "Check whether functions don't fall into infinite loop."
   (should (TeX-delete-duplicate-strings '("nil")))
   (should (TeX-delete-dups-by-car '(("nil" . 1)))))
+
+;; `TeX-add-to-alist' needs dynamic scope variable as its first
+;; argument.
+(defvar TeX-dummy-alist nil)
+
+(ert-deftest TeX-adding-to-alist ()
+  "Check whether `TeX-add-to-alist' works as expected."
+  (TeX-add-to-alist 'TeX-dummy-alist '((a 1)))
+  (should (equal TeX-dummy-alist '((a 1))))
+
+  (TeX-add-to-alist 'TeX-dummy-alist '((b 2 3)))
+  (should (equal TeX-dummy-alist '((a 1) (b 2 3))))
+
+  ;; Append new value(s) of the same key. The target cons is moved to
+  ;; the last of the alist.
+  (TeX-add-to-alist 'TeX-dummy-alist '((a 4)))
+  (should (equal TeX-dummy-alist '((b 2 3) (a 1 4))))
+
+  ;; Adding the same value again should not create duplicated
+  ;; elements.
+  (TeX-add-to-alist 'TeX-dummy-alist '((a 1)))
+  (should (equal TeX-dummy-alist '((b 2 3) (a 1 4))))
+
+  ;; A value which is the same as the key should be included in the
+  ;; result.
+  (TeX-add-to-alist 'TeX-dummy-alist '((a a)))
+  (should (equal TeX-dummy-alist '((b 2 3) (a 1 4 a)))))
 
 ;;; utility.el ends here

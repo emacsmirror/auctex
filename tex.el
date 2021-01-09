@@ -1365,7 +1365,7 @@ restarting Emacs."
                      ,(let (list)
                         ;; Build the list of available predicates.
                         (mapc (lambda (spec)
-                                (add-to-list 'list `(const ,(car spec))))
+                                (cl-pushnew `(const ,(car spec)) list :test #'equal))
                               (append TeX-view-predicate-list
                                       TeX-view-predicate-list-builtin))
                         ;; Sort the list alphabetically.
@@ -1421,7 +1421,7 @@ are evaluated positively is chosen."
                 ;; Offer list of defined predicates.
                 ,(let (list)
                    (mapc (lambda (spec)
-                           (add-to-list 'list `(const ,(car spec))))
+                           (cl-pushnew `(const ,(car spec)) list :test #'equal))
                          (append TeX-view-predicate-list
                                  TeX-view-predicate-list-builtin))
                    (setq list (sort list
@@ -1437,8 +1437,8 @@ are evaluated positively is chosen."
                 (group (choice :tag "Viewer"
                                ,@(let (list)
                                    (mapc (lambda (spec)
-                                           (add-to-list 'list
-                                                        `(const ,(car spec))))
+                                           (cl-pushnew `(const ,(car spec))
+                                                       list :test #'equal))
                                          (append TeX-view-program-list
                                                  TeX-view-program-list-builtin))
                                    (sort list
@@ -4713,9 +4713,11 @@ element to ALIST-VAR."
             (set alist-var (delete old-element (symbol-value alist-var)))
             ;; Append to `old-element' the values of the current element of
             ;; NEW-ALIST.
-            (mapc (lambda (elt) (add-to-list 'old-element elt t))
+            (mapc (lambda (elt)
+                    (unless (member elt (cdr old-element))
+                      (setq old-element (append old-element (list elt)))))
                   (cdr new-element))
-            (set alist-var (add-to-list alist-var old-element t)))
+            (add-to-list alist-var old-element t))
         (add-to-list alist-var new-element t)))
     ;; Next element of NEW-ALIST.
     (setq new-alist (cdr new-alist))))
