@@ -6540,9 +6540,18 @@ function would return non-nil and `(match-string 1)' would return
      '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
+     '("MakeUppercase" t)
+     '("MakeLowercase" t)
+     '("chaptermark" "Text")
+     '("sectionmark" "Text")
+     '("subsectionmark" "Text")
+     '("subsubsectionmark" "Text")
+     '("paragraphmark" "Text")
+     '("subparagraphmark" "Text")
 
      "LaTeXe"
      "listfiles" "frontmatter" "mainmatter" "backmatter"
+     "leftmark" "rightmark"
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
      "textquotedblright" "textquoteleft" "textquoteright"
