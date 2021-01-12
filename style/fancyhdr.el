@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fancyhdr.sty', v4.0 from 2020/01/04.
+;; This file adds support for `fancyhdr.sty', v4.0 from 2021/01/04.
 
 ;;; Code:
 
