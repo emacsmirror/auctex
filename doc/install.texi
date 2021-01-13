@@ -24,7 +24,7 @@ the installation procedure.  That's all.
 installation explained above.
 
 @example
-(use-package tex-site
+(use-package tex
   :ensure auctex)
 @end example
 
