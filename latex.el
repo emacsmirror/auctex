@@ -6217,8 +6217,9 @@ function would return non-nil and `(match-string 1)' would return
                     (cons (concat "\\" (nth 0 x)) (nth 1 x)))
                   LaTeX-section-list)))
 
-  (set (make-local-variable 'TeX-auto-full-regexp-list)
-       (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
+  (setq-local TeX-auto-full-regexp-list
+              (delete-dups (append LaTeX-auto-regexp-list
+                                   plain-TeX-auto-regexp-list)))
 
   (LaTeX-set-paragraph-start)
   (setq paragraph-separate

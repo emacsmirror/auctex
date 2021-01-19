@@ -4244,6 +4244,15 @@ you should not use something like `[\\(]' for a character range."
                              "\\)"))
              syms
              lst)
+        ;; TODO: Emacs allows at most 255 groups in a regexp, see the
+        ;; "#define MAX_REGNUM 255" in regex-emacs.c.  If our regex
+        ;; has more groups, bad things may happen, e.g.,
+        ;; (match-beginning 271) returns nil although the regexp that
+        ;; matched contains group number 271.  Sadly, MAX_REGNUM is
+        ;; not exposed to Lisp, so we need to hard-code it here (and
+        ;; sometimes check if it increased in newer Emacs versions).
+        (when (> count 255)
+          (error "The TeX auto-parser's regexp has too many groups (%d)" count))
         (setq count 0)
         (goto-char (if end (min end (point-max)) (point-max)))
         (while (re-search-backward regexp beg t)
