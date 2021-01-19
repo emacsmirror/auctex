@@ -4138,7 +4138,7 @@ If SKIP is not-nil, don't insert code for SKIP."
   "Add REGEXP to `TeX-auto-regexp-list' if not already a member."
   (if (symbolp TeX-auto-regexp-list)
       (setq TeX-auto-regexp-list (symbol-value TeX-auto-regexp-list)))
-  (or (memq regexp TeX-auto-regexp-list)
+  (or (member regexp TeX-auto-regexp-list)
       (setq TeX-auto-regexp-list (cons regexp TeX-auto-regexp-list))))
 
 (defvar TeX-auto-empty-regexp-list
