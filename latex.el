@@ -6219,7 +6219,10 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
-                                   plain-TeX-auto-regexp-list)))
+                                   ;; Prevent inadvertent destruction
+                                   ;; of `plain-TeX-auto-regexp-list'.
+                                   (copy-sequence
+                                    plain-TeX-auto-regexp-list))))
 
   (LaTeX-set-paragraph-start)
   (setq paragraph-separate
