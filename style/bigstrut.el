@@ -1,6 +1,6 @@
 ;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2014--2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bigstrut.sty'.
+;; This file adds support for `bigstrut.sty', v2.6 from 2021/01/02.
 
 ;;; Code:
 
@@ -35,16 +35,26 @@
  "bigstrut"
  (lambda ()
    (TeX-add-symbols
-    "bigstrutsetup"
-    '("bigstrut" [ TeX-arg-bigstrut ])))
+    '("bigstrut" [ TeX-arg-bigstrut ]))
+
+   (LaTeX-add-lengths "bigstrutjot")
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("bigstrut" "["))
+                              'function)))
  TeX-dialect)
 
-(defun TeX-arg-bigstrut (optional &optional _prompt)
-  "Prompt for the optional argument in \\bigstrut."
+(defun TeX-arg-bigstrut (optional &optional prompt)
+  "Prompt for the optional argument in \\bigstrut.
+If OPTIONAL is non-nil, insert the argument in brackets.  PROMPT
+replaces the standard one."
   (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-     optional "Strut to top (t) or bottom (b)" nil t)
-                    (mapcar 'list '("t" "b")) nil t)
+   (completing-read
+    (TeX-argument-prompt
+     optional prompt "Strut to top (t) or bottom (b)")
+    '("t" "b"))
    optional))
 
 (defvar LaTeX-bigstrut-package-options nil
