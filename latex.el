@@ -6048,7 +6048,7 @@ This happens when \\left is inserted."
 (TeX-abbrev-mode-setup latex-mode)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
+(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
 
 ;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
 ;;;###autoload
