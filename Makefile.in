@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2019 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2021 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -173,7 +173,7 @@ STYLESRC = style/prosper.el \
 	   style/multitoc.el  style/fbox.el      style/xkcdcolors.el \
 	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
 	   style/tex-live.el  style/algorithm.el style/algpseudocode.el \
-	   style/appendix.el  style/scholax.el
+	   style/appendix.el  style/scholax.el   style/extramarks.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

@@ -1,6 +1,6 @@
 ;;; multirow.el --- AUCTeX style for `multirow.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018--2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `multirow.sty'.
+;; This file adds support for `multirow.sty', v2.6 from 2021/01/02.
 
 ;;; Code:
 
@@ -40,20 +40,47 @@
  "multirow"
  (lambda ()
    (TeX-add-symbols
-    '("multirow" "Number of rows"
-      [ "Big struts" ] "Width" [ "Fixup" ] t)
-    "multirowsetup")
+    ;; \multirow[<vpos>]{<nrows>}[<bigstruts>]{<width>}[<vmove>]{<text>}
+    '("multirow"
+      [TeX-arg-eval completing-read
+                    (TeX-argument-prompt t nil "Vertical position")
+                    '("c" "b" "t")]
+      "Number of rows"
+      [ "Big struts" ]
+      (TeX-arg-eval completing-read
+                    (TeX-argument-prompt nil nil "Width")
+                    (append
+                     '("*" "=")
+                     (mapcar (lambda (x)
+                               (concat TeX-esc (car x)))
+                             (LaTeX-length-list))))
+      [TeX-arg-length "Vertical fix-up"]
+      t)
+    "multirowsetup"
+    "multirowdebugtrue"
+    "multirowdebugfalse")
 
-   (if (not (boundp 'LaTeX-bigstrut-package-options))
-       (TeX-add-symbols "bigstrutjot"))
+   ;; \bigstrutjot is a length defined both in multirow.sty and
+   ;; bigstrut.sty.  It doesn't make a difference within AUCTeX since
+   ;; dupes are removed by the function `LaTeX-length-list'.
+   (LaTeX-add-lengths "bigstrutjot")
+
+   ;; \STneed is only defined with package option `supertabular':
+   (when (LaTeX-provided-package-options-member "multirow"
+                                                "supertabular")
+     (TeX-add-symbols
+      '("STneed" TeX-arg-length)))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("multirow" "{[{")) 'function)))
+     (font-latex-add-keywords '(("multirow" "[{[{[{"))
+                              'function)))
  TeX-dialect)
 
-(defvar LaTeX-multirow-package-options nil
+(defvar LaTeX-multirow-package-options '("debug"
+                                         "longtable"
+                                         "supertabular")
   "Package options for the multirow package.")
 
 ;;; multirow.el ends here

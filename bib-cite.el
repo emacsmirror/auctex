@@ -675,7 +675,8 @@ a path separator and to translate DOS' backslash to slash.
 
 e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
 
-\(You can change the environment variable which is searched by setting the  elisp variable bib-bibtex-env-variable)"
+\(You can change the environment variable which is searched by
+setting the elisp variable bib-bibtex-env-variable)"
   :group 'bib-cite
   :type 'boolean)
 

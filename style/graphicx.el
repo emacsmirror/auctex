@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2020 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2021 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -102,7 +102,10 @@ key-val's."
      (TeX-read-key-val optional
                        (if (and (or (and (eq TeX-engine 'default)
                                          (not (TeX-PDF-from-DVI)))
-                                    (eq TeX-engine 'luatex))
+                                    (eq TeX-engine 'luatex)
+                                    ;; dvipdfmx can handle page and
+                                    ;; pagebox options.
+                                    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
                                 TeX-PDF-mode)
                            (append '(("page")
                                      ("pagebox" ("mediabox"

@@ -1,9 +1,10 @@
-;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'  -*- lexical-binding: t; -*-
+;;; extramarks.el --- AUCTeX style for `extramarks.sty' (v4.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2014--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021 Free Software Foundation, Inc.
 
-;; Author: Mads Jensen <mje@inducks.org>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
+;; Created: 2021-01-12
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -25,7 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bigstrut.sty', v2.6 from 2021/01/02.
+;; This file adds support for `extramarks.sty' (v4.0) from 2021/01/04.
+;; `extramarks.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -37,32 +39,34 @@
                   (keywords class))
 
 (TeX-add-style-hook
- "bigstrut"
+ "extramarks"
  (lambda ()
-   (TeX-add-symbols
-    '("bigstrut" [ TeX-arg-bigstrut ]))
 
-   (LaTeX-add-lengths "bigstrutjot")
+   ;; New symbols
+   (TeX-add-symbols
+    "firstleftmark"
+    "lastrightmark"
+    "firstrightmark"
+    "lastleftmark"
+    "firstleftxmark"
+    "firstrightxmark"
+    "topleftxmark"
+    "toprightxmark"
+    "lastleftxmark"
+    "lastrightxmark"
+    "firstxmark"
+    "lastxmark"
+    "topxmark"
+    '("extramarks" 2))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("bigstrut" "["))
-                              'function)))
+     (font-latex-add-keywords '(("extramarks" "{{"))
+                              'reference)))
  TeX-dialect)
 
-(defun TeX-arg-bigstrut (optional &optional prompt)
-  "Prompt for the optional argument in \\bigstrut.
-If OPTIONAL is non-nil, insert the argument in brackets.  PROMPT
-replaces the standard one."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt
-     optional prompt "Strut to top (t) or bottom (b)")
-    '("t" "b"))
-   optional))
+(defvar LaTeX-extramarks-package-options nil
+  "Package options for the extramarks package.")
 
-(defvar LaTeX-bigstrut-package-options nil
-  "Package options for the bigstrut package.")
-
-;;; bigstrut.el ends here
+;;; extramarks.el ends here

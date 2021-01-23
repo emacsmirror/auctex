@@ -1,6 +1,6 @@
-;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v67)  -*- lexical-binding: t; -*-
+;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v0.72)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `thmtools.sty' (v67) from 2019/07/31.
+;; This file adds support for `thmtools.sty' (v0.72) from 2020/08/01.
 ;; `thmtools.sty' is part of TeXLive.
 
 ;;; Code:
@@ -169,15 +169,15 @@ minibuffer.  PROMPT replaces the standard one."
 If OPTIONAL is non-nil, also insert the second argument in square
 brackets.  PROMPT replaces the standard one for the second
 argument."
+  (let ((env (TeX-read-string
+              (TeX-argument-prompt optional prompt "Environment"))))
+    (LaTeX-add-environments `(,env LaTeX-thmtools-env-label))
+    (TeX-argument-insert env optional))
   (let ((TeX-arg-opening-brace "[")
         (TeX-arg-closing-brace "]"))
     (TeX-argument-insert
      (LaTeX-thmtools-declaretheorem-key-val t)
-     t))
-  (let ((env (TeX-read-string
-              (TeX-argument-prompt optional prompt "Environment"))))
-    (LaTeX-add-environments `(,env LaTeX-thmtools-env-label))
-    (TeX-argument-insert env optional)))
+     t)))
 
 (defun LaTeX-thmtools-listoftheorems-key-val (optional &optional prompt)
   "Query and return a key=val string for \\listoftheorems macro.
@@ -199,13 +199,14 @@ minibuffer.  PROMPT replaces the standard one."
                (mapcar #'car (LaTeX-thmtools-declaretheorem-list)))))
     (TeX-read-key-val
      optional
-     `(("numwidth" ,lengths)
+     `(("title")
        ("ignore" ,thms)
-       ("onlynamed" ,thms)
-       ("show" ,thms)
        ("ignoreall" ("true" "false"))
+       ("show" ,thms)
        ("showall" ("true" "false"))
-       ("title"))
+       ("onlynamed" ,thms)
+       ("swapnumber" ("true" "false"))
+       ("numwidth" ,lengths))
      prompt)))
 
 (defun LaTeX-arg-thmtools-listoftheorems (optional &optional prompt)
@@ -230,8 +231,15 @@ RefTeX users should customize or add ENVIRONMENT to
   (add-to-list \\='reftex-label-alist
                \\='(\"theorem\" ?m \"thm:\" \"~\\ref{%s}\"
                  nil (\"Theorem\" \"theorem\") nil))"
-  (let* ((choice (read-char
-                  (TeX-argument-prompt nil nil "Heading (h), Key=val (k), Empty (RET)")))
+  (let* ((help-form "\
+Select the content of the optional argument with a key:
+`h' in order to insert a plain heading,
+`k' in order to insert key=value pairs with completion,
+RET in order to leave it empty.")
+         (choice (read-char-choice
+                  (TeX-argument-prompt
+                   nil nil "Heading (h), Key=val (k), Empty (RET)")
+                  '(?h ?k)))
          (opthead (cond ((= choice ?h)
                          (TeX-read-string
                           (TeX-argument-prompt t nil "Heading")))
@@ -291,7 +299,7 @@ RefTeX users should customize or add ENVIRONMENT to
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("declaretheoremstyle"  "[{")
-                                ("declaretheorem"       "[{")
+                                ("declaretheorem"       "[{[")
                                 ("listoftheorems"       "[")
                                 ("ignoretheorems"       "{"))
                               'function)))

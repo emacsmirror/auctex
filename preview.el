@@ -1,7 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
 ;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017-2020  Free Software Foundation, Inc.
+;;               2017-2021  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -1166,7 +1166,7 @@ NONREL is not NIL."
     (setq preview-gs-init-string
           ;; Add commands for revised file access controls introduced
           ;; after gs 9.27 (bug#37719)
-          (concat (format "systemdict /.addcontrolpath known {%s} if\n"
+          (concat (format "systemdict /.addcontrolpath known {%s} if "
                           (mapconcat (lambda (f)
                                        (format "/PermitFileReading %s .addcontrolpath"
                                                (preview-ps-quote-filename f)))
@@ -1312,11 +1312,6 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
-  ;; N.B.  Although this code shows command line of gs invocation and
-  ;; error together via mouse popup menu, they are not necessarily
-  ;; associated with each other.  There is a case that the command
-  ;; line is for "[...].prv/tmpXXXXXX/pr1-2.png" while the error is
-  ;; raised for "[...].prv/tmpXXXXXX/pr1-1.png".  (c.f. bug#37719)
   (let* ((filenames (overlay-get ov 'filenames))
          (file (car (nth 0 filenames)))
          ;; FIXME: This format isn't equal to actual invocation of gs
@@ -3299,7 +3294,13 @@ call, and in its CDR the final stuff for the placement hook."
           close-data
           open-data
           fast-hook
-          slow-hook)
+          slow-hook
+          TeX-translate-location-file
+          TeX-translate-location-line
+          TeX-translate-location-error
+          TeX-translate-location-offset
+          TeX-translate-location-context
+          TeX-translate-location-string)
       ;; clear parsing variables
       (dolist (var preview-parse-variables)
         (set (nth 1 var) nil))
@@ -3422,9 +3423,23 @@ name(\\([^)]+\\))\\)\\|\
                                         (nconc fast-hook (list fast)))
                                 (setq slow-hook
                                       (nconc slow-hook (list lst)))))))
+                        ;; Functions in `TeX-translate-location-hook'
+                        ;; may examine and modify the following variables.
+                        (setq TeX-translate-location-file file
+                              TeX-translate-location-line line
+                              ;; TeX-translate-location-error error
+                              TeX-translate-location-offset offset
+                              ;; TeX-translate-location-context context
+                              TeX-translate-location-string string)
                         (condition-case err
                             (save-excursion (mapc #'funcall slow-hook))
                           (error (preview-log-error err "Translation hook")))
+                        (setq file TeX-translate-location-file
+                              line TeX-translate-location-line
+                              ;; error TeX-translate-location-error
+                              offset TeX-translate-location-offset
+                              ;; context TeX-translate-location-context
+                              string TeX-translate-location-string)
                         (push (vector file (+ line offset)
                                       string after-string
                                       snippet box counters)

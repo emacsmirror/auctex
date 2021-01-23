@@ -65,8 +65,6 @@
     '("headmark")
     '("manualmark")
     '("pagemark")
-    '("leftmark")
-    '("rightmark")
     '("setfootwidth" [ "Offset" ] "Width")
     '("setheadwidth" [ "Offset" ] "Width")
     '("setfootbotline" [ "Length" ] "Thickness")
@@ -83,7 +81,7 @@
     '("renewpagestyle" "Name" "Head definition" "Foot definition")
     '("providepagestyle" "Name" "Head definition" "Foot definition"))
 
-    ;; Fontification
+   ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("lehead" "[{")

@@ -6217,8 +6217,12 @@ function would return non-nil and `(match-string 1)' would return
                     (cons (concat "\\" (nth 0 x)) (nth 1 x)))
                   LaTeX-section-list)))
 
-  (set (make-local-variable 'TeX-auto-full-regexp-list)
-       (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
+  (setq-local TeX-auto-full-regexp-list
+              (delete-dups (append LaTeX-auto-regexp-list
+                                   ;; Prevent inadvertent destruction
+                                   ;; of `plain-TeX-auto-regexp-list'.
+                                   (copy-sequence
+                                    plain-TeX-auto-regexp-list))))
 
   (LaTeX-set-paragraph-start)
   (setq paragraph-separate
@@ -6540,9 +6544,18 @@ function would return non-nil and `(match-string 1)' would return
      '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
+     '("MakeUppercase" t)
+     '("MakeLowercase" t)
+     '("chaptermark" "Text")
+     '("sectionmark" "Text")
+     '("subsectionmark" "Text")
+     '("subsubsectionmark" "Text")
+     '("paragraphmark" "Text")
+     '("subparagraphmark" "Text")
 
      "LaTeXe"
      "listfiles" "frontmatter" "mainmatter" "backmatter"
+     "leftmark" "rightmark"
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
      "textquotedblright" "textquoteleft" "textquoteright"

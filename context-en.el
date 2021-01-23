@@ -128,11 +128,13 @@
 
 (defvar ConTeXt-project-structure-list-en
   '("project" "environment" "product" "component")
-  "List of the names of ConTeXt project structure elements for its en interface.  List should be in logical order.")
+  "List of ConTeXt project structure elements for its en interface.
+List should be in logical order.")
 
 (defvar ConTeXt-section-block-list-en
   '("frontmatter" "bodymatter" "appendices" "backmatter")
-  "List of the names of ConTeXt section blocks for its en interface.  List should be in logical order.")
+  "List of ConTeXt section block names for its en interface.
+List should be in logical order.")
 
 
 ;; TODO:

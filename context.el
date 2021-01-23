@@ -406,10 +406,14 @@ section."
 
 The following variables are set before the hooks are run
 
-`ConTeXt-level' - numeric section level, see the documentation of `ConTeXt-section'.
-`ConTeXt-name' - name of the sectioning command, derived from `level'.
-`ConTeXt-title' - The title of the section, default to an empty string.
-`ConTeXt-done-mark' - Position of point afterwards, default nil (meaning end).
+`ConTeXt-level'     - numeric section level, see the documentation of
+                      `ConTeXt-section'.
+`ConTeXt-name'      - name of the sectioning command, derived from
+                      `level'.
+`ConTeXt-title'     - The title of the section, default to an empty
+                      string.
+`ConTeXt-done-mark' - Position of point afterwards, default nil
+                      (meaning end).
 
 The following standard hook exist -
 
@@ -454,10 +458,14 @@ in your .emacs file."
 
 The following variables are set before the hooks are run
 
-`ConTeXt-level' - numeric section level, see the documentation of `ConTeXt-section'.
-`ConTeXt-name' - name of the sectioning command, derived from `ConTeXt-level'.
-`ConTeXt-title' - The title of the section, default to an empty string.
-`ConTeXt-done-mark' - Position of point afterwards, default nil (meaning end).
+`ConTeXt-level'     - numeric section level, see the documentation of
+                      `ConTeXt-section'.
+`ConTeXt-name'      - name of the sectioning command, derived from
+                      `ConTeXt-level'.
+`ConTeXt-title'     - The title of the section, default to an empty
+                      string.
+`ConTeXt-done-mark' - Position of point afterwards, default nil
+                      (meaning end).
 
 The following standard hook exist -
 

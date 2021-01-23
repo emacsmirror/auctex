@@ -1,6 +1,6 @@
 ;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2013, 2018-2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fancyhdr.sty', version 3.2
+;; This file adds support for `fancyhdr.sty', v4.0 from 2021/01/04.
 
 ;;; Code:
 
@@ -37,83 +37,142 @@
                   "font-latex"
                   (keywords class))
 
+;; Because there can be many places, `TeX-completing-read-multiple' is
+;; used instead of just `completing-read', and a `collection' argument
+;; is provided as the list of places differs between the macros
+(defun TeX-arg-fancyhdr-place (optional
+                               &optional prompt collection full)
+  "Prompt for fancyhdr places with completion.
+If OPTIONAL is non-nil, insert the resulting value as an optional
+argument, otherwise as a mandatory one.  If non-nil, PROMPT is
+used as the prompt.  If non-nil, COLLECTION is used as the
+completion list for the place.
+
+If FULL is non-nil, a full list of places is offered for
+completion, otherwise a reduced one omitting place combinations
+for H(eader) or F(ooter)."
+  (let* ((places (or collection
+                     ;; Standard places with no restrictions.
+                     ;; Lower-case versions, and reverse versions
+                     ;; (e.g., OC) are left out for simplicity.
+                     (if full
+                         '("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
+                           "C" "CO" "CE" "COH" "COF" "CEH" "CEF"
+                           "R" "RO" "RE" "ROH" "ROF" "REH" "REF")
+                       '("L" "LO" "LE" "C" "CO" "CE" "R" "RE" "RO"))))
+         (arguments (mapconcat #'identity
+                               (TeX-completing-read-multiple
+                                (TeX-argument-prompt optional
+                                                     prompt
+                                                     "Places")
+                                places)
+                               ",")))
+    (TeX-argument-insert arguments optional)))
+
+(defvar LaTeX-fancyhdr-fancypagestyle-regexp
+  '("\\\\fancypagestyle{\\([^}]+\\)}"
+    1 LaTeX-auto-pagestyle)
+  "Regexp matching the first argument of \\fancypagestyle macro.")
+
 (TeX-add-style-hook
  "fancyhdr"
  (lambda ()
    (TeX-add-symbols
-    '("lhead" t)
-    '("lfoot" t)
-    '("chead" t)
-    '("cfoot" t)
-    '("rhead" t)
-    '("rfoot" t)
-    '("nouppercase" t)
-    '("MakeUppercase" t)
-    '("fancyhead" [ TeX-arg-fancyhdr-position ] t)
-    '("fancyfoot" [ TeX-arg-fancyhdr-position ] t)
+
+    ;; 2 Using fancyhdr
+    '("fancyhead" [ TeX-arg-fancyhdr-place ] t)
+    '("fancyfoot" [ TeX-arg-fancyhdr-place ] t)
+    '("fancyhf"   [ (TeX-arg-fancyhdr-place nil nil t) ] t)
+
     '("fancyheadoffset"
-      [ (TeX-arg-fancyhdr-position
-         "Position" ("LO" "LE" "L" "RE" "RO" "R" "0")) ] t)
+      [ (TeX-arg-fancyhdr-place nil ("L" "LO" "LE" "R" "RO" "RE")) ]
+      TeX-arg-length)
     '("fancyfootoffset"
-      [ (TeX-arg-fancyhdr-position
-         "Position" ("LO" "LE" "L" "RE" "RO" "R" "O")) ] t)
+      [ (TeX-arg-fancyhdr-place nil ("LO" "LE" "L" "RO" "RE" "R")) ]
+      TeX-arg-length)
     '("fancyhfoffset"
-      [ (TeX-arg-fancyhdr-position "Position" ("E" "O" "L" "R")) ] t)
-    '("fancypagestyle" TeX-arg-pagestyle t)
+      [ (TeX-arg-fancyhdr-place nil ("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
+                                     "R" "RO" "RE" "ROH" "ROF" "REH" "REF")) ]
+      TeX-arg-length)
 
-    "headrulewidth" "footrulewidth" "plainfootrulewidth"
-    "plainheadrulewidth" "leftmark" "rightmark"
-    ;; the manual does not mention any subsubsectionmark (!)
-    "chaptermark" "sectionmark" "subsectionmark" "paragraphmark"
-    "subparagraphmark" "footrule" "headrule")
+    "headrulewidth" "footrulewidth"
+    "headruleskip"  "footruleskip"
+    "headrule"      "footrule"
+    "headwidth"
 
-   ;; `fancyhdr.sty' supplies these two pagestyles
-   (LaTeX-add-pagestyles "fancy" "fancyplain")
+    '("fancyheadinit" t)
+    '("fancyfootinit" t)
+    '("fancyhfinit"   t)
+
+    '("fancycenter"
+      [ TeX-arg-length "Distance" ] [ "Stretch" ] 3)
+
+    '("iftopfloat"  2)
+    '("ifbotfloat"  2)
+    '("iffloatpage" 2)
+    '("iffootnote"  2)
+
+    '("fancypagestyle"
+      ;; Always add the chosen pagestyle to list of known pagestyles,
+      ;; dupes are removed when retrieving with the function
+      ;; `LaTeX-pagestyle-list':
+      (TeX-arg-pagestyle nil t)
+      [ TeX-arg-pagestyle "Base pagestyle" ]
+      t)
+
+    ;; 15 The scoop on LATEX’s marks
+    '("nouppercase" t))
+
+   ;; 30 Deprecated commands
+   ;; Don't offer deprecated commands in V4.0 for completion anymore.
+   ;; '("lhead" t)
+   ;; '("lfoot" t)
+   ;; '("chead" t)
+   ;; '("cfoot" t)
+   ;; '("rhead" t)
+   ;; '("rfoot" t)
+   ;; "plainfootrulewidth"
+   ;; "plainheadrulewidth"
+
+   ;; `fancyhdr.sty' supplies these two pagestyles.  Pagestyle
+   ;; `fancyplain' is now deprecated.
+   (LaTeX-add-pagestyles "fancy" "fancydefault")
+
+   ;; Add \fancypagestyle{pagestyle} to AUCTeX parser
+   (TeX-auto-add-regexp LaTeX-fancyhdr-fancypagestyle-regexp)
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fancyhead" "[{")
                                 ("fancyfoot" "[{")
-                                ("lhead" "{")
-                                ("lfoot" "{")
-                                ("chead" "{")
-                                ("cfoot" "{")
-                                ("rhead" "{")
-                                ("rfoot" "{")
+                                ("fancyhf"   "[{")
                                 ("fancyheadoffset" "[{")
                                 ("fancyfootoffset" "[{")
-                                ("fancypagestyle" "{{")) 'function)
-     (font-latex-add-keywords '(("headrulewidth" "")
-                                ("footrulewidth" "")
-                                ("plainheadrulewidth" "")
-                                ("plainfootrulewidth" "")) 'variable)))
+                                ("fancyhfoffset"   "[{")
+                                ("fancyheadinit"   "{")
+                                ("fancyfootinit"   "{")
+                                ("fancyhfinit"     "{")
+                                ;; Fontify deprecated commands for
+                                ;; older documents; to be removed
+                                ;; sometimes ...
+                                ("lhead" "[{")
+                                ("lfoot" "[{")
+                                ("chead" "[{")
+                                ("cfoot" "[{")
+                                ("rhead" "[{")
+                                ("rfoot" "[{")
+                                ;; Don't fontify the last argument;
+                                ;; all macros used there should have
+                                ;; their own fontification since they
+                                ;; can also be used in a document
+                                ;; top-level.
+                                ("fancypagestyle"  "{["))
+                              'function)))
  TeX-dialect)
 
-;; Because there can be many positions, `TeX-completing-read-multiple' is used
-;; instead of just `completing-read', and a `collection' argument is provided as
-;; the list of positions differs between the macros
-(defun TeX-arg-fancyhdr-position (optional &optional prompt collection)
-  "Prompt for a fancyhdr position with completion.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  If non-nil, PROMPT is
-used as the prompt.  If non-nil, COLLECTION is used as the
-completion list for the position."
-  (let* ((positions (if (not collection)
-                        ;; Standard positions with no restrictions.  Lower-case
-                        ;; versions, and reverse versions (e.g., OC) are left
-                        ;; out for simplicity.
-                        '("LO" "LE" "L" "CO" "CE" "C" "RE" "RO" "R")
-                      collection))
-        (arguments
-         (mapconcat 'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt optional prompt "Position")
-                     (mapcar 'list positions)) ",")))
-    (TeX-argument-insert arguments optional)))
-
-(defvar LaTeX-fancyhdr-package-options nil
-  "Package options for fancyhdr.")
+(defvar LaTeX-fancyhdr-package-options
+  '("nocheck" "compatV3" "headings" "myheadings")
+  "Package options for fancyhdr package.")
 
 ;;; fancyhdr.el ends here
-
