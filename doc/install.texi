@@ -520,6 +520,60 @@ If you want others to be able to share your installation, you should
 configure it using @samp{--without-texmf-dir}, in which case things
 should work as well for them as for you.
 
+@subsubsection Using @AUCTeX{} from local Git repo
+
+With the techniques described above, it is also possible to use @AUCTeX{}
+directly from a local Git repository.  Let's assume you have your Git
+repositories under
+@example
+~/development/
+@end example
+
+First, you have to fetch a copy of the @AUCTeX{} Git repository.  In a
+shell, change directory to @samp{~/development/} and do:
+@example
+git clone https://git.savannah.gnu.org/git/auctex.git
+@end example
+
+Now change directory to @samp{~/development/auctex} and run
+@samp{./autogen.sh}.  Next thing is to run @command{configure} like this:
+@example
+./configure --without-texmf-dir --with-lispdir=.
+@end example
+
+@noindent
+When finished, simply enter
+@example
+make
+@end example
+@noindent
+and you're finished.  Note that the @samp{make install} step is not
+necessary.
+
+Now you have to tell Emacs about the plan.  The following variables must
+be set in your init file because their normal values are only correct when
+@AUCTeX{} is installed:
+@lisp
+(setq TeX-data-directory "~/development/auctex"
+      TeX-lisp-directory TeX-data-directory)
+@end lisp
+
+@noindent
+The info files will be available with this:
+@lisp
+(eval-after-load 'info
+   '(add-to-list 'Info-additional-directory-list
+                 "~/development/auctex/doc"))
+@end lisp
+
+@noindent
+Now you're ready to load @file{auctex.el} and @file{preview-latex.el} out
+of this directory:
+@lisp
+(load "~/development/auctex/auctex.el" nil t t)
+(load "~/development/auctex/preview-latex.el" nil t t)
+@end lisp
+
 @ifclear rawfile
 @node Installation under MS Windows
 @section Installation under MS Windows
