@@ -520,14 +520,11 @@ If you want others to be able to share your installation, you should
 configure it using @samp{--without-texmf-dir}, in which case things
 should work as well for them as for you.
 
-@subsubsection Using @AUCTeX{} from local Git repo
+@subsubheading Using @AUCTeX{} from local Git repo
 
 With the techniques described above, it is also possible to use @AUCTeX{}
 directly from a local Git repository.  Let's assume you have your Git
-repositories under
-@example
-~/development/
-@end example
+repositories under @samp{~/development/}.
 
 First, you have to fetch a copy of the @AUCTeX{} Git repository.  In a
 shell, change directory to @samp{~/development/} and do:
