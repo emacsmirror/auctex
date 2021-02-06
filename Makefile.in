@@ -174,7 +174,7 @@ STYLESRC = style/prosper.el \
 	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
 	   style/tex-live.el  style/algorithm.el style/algpseudocode.el \
 	   style/appendix.el  style/scholax.el   style/extramarks.el \
-	   style/truncate.el
+	   style/truncate.el  style/footnotehyper.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
