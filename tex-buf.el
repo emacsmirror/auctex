@@ -2017,9 +2017,8 @@ the directory.
 The compatibility argument IGNORE is ignored."
   ;; The third argument `_ignore' is kept for symmetry with
   ;; `TeX-master-file's third argument `ask'.  For example, it's used
-  ;; in `TeX--master-or-region-file-with-extra-quotes', where we don't
-  ;; know which function has to be called.  Keep this in mind should
-  ;; you want to use another argument here.
+  ;; in `TeX-active-master-with-quotes' for backward compatibility.
+  ;; Keep this in mind should you want to use another argument here.
   ;; See also the similar comment in `TeX-region-file'.
   (if TeX-current-process-region-p
       (TeX-region-file extension nondirectory)
