@@ -1274,9 +1274,18 @@ Just like array and tabular."
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
   (LaTeX-insert-environment environment)
+  (when (TeX-active-mark)
+    ;; Point is at the end of the region.  Move it back to the
+    ;; beginning of the region.
+    (exchange-point-and-mark)
+    (indent-according-to-mode))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
-    (indent-according-to-mode)))
+    (indent-according-to-mode))
+  (when (TeX-active-mark)
+    (indent-region (point) (mark))
+    ;; Restore the positions of point and mark.
+    (exchange-point-and-mark)))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
