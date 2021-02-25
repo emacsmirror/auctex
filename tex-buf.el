@@ -182,7 +182,7 @@ all text after `TeX-trailer-start'."
   (interactive "P")
   (TeX-region-update)
   ;; In the next line, `TeX-region-file' should be called with nil
-  ;; `nondirectory' argument, otherwise `TeX-comand-default' called
+  ;; `nondirectory' argument, otherwise `TeX-command-default' called
   ;; within `TeX-command-query' won't work in included files not
   ;; placed in `TeX-master-directory'.
   (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
