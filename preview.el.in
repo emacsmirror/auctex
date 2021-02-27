@@ -3947,6 +3947,7 @@ format available.
 
 If FORMAT-CONS is non-nil, a previous format may get reused."
   (interactive)
+  (setq TeX-current-process-region-p nil)
   (let* ((dump-file
           (expand-file-name (preview-dump-file-name (TeX-master-file "ini"))))
          (master (TeX-master-file))
@@ -3978,7 +3979,6 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 \\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input\\detokenize{##1}\\relax}%
 \\let\\dump\\PREVIEWdump\\dump}\\input mylatex.ltx \\relax%\n" nil dump-file)
       (TeX-save-document master)
-      (setq TeX-current-process-region-p nil)
       (prog1 (preview-generate-preview master command)
         (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
         (setq TeX-sentinel-function
