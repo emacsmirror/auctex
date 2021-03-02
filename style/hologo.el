@@ -106,17 +106,23 @@
                 "space"  "hyphen" "runtogether"))) ; plainTeX
   "Local key=value options for hologo macros.")
 
+(defun LaTeX-hologo--arg-use-region-or-query-logo-name (optional)
+  (if (and (use-region-p)
+           (member (buffer-substring (region-beginning) (region-end))
+                   LaTeX-hologo-logo-names))
+      ""
+    (TeX-argument-insert
+     (completing-read "Logo name: " LaTeX-hologo-logo-names)
+     optional)))
+
 (TeX-add-style-hook
  "hologo"
  (lambda ()
    (TeX-add-symbols
 
     ;; Insert logo macros
-    '("hologo" (TeX-arg-eval completing-read
-                             "Logo name: " LaTeX-hologo-logo-names))
-
-    '("Hologo" (TeX-arg-eval completing-read
-                             "Logo name: " LaTeX-hologo-logo-names))
+    '("hologo" LaTeX-hologo--arg-use-region-or-query-logo-name)
+    '("Hologo" LaTeX-hologo--arg-use-region-or-query-logo-name)
 
     ;; Setup macros
     '("hologoSetup" (TeX-arg-key-val LaTeX-hologo-key-val-options-global))
