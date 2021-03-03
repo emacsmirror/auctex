@@ -200,8 +200,7 @@
 
     ;; Additional user macros
     '("hologoVariant"
-      (TeX-arg-eval completing-read
-                    "Logo name: " LaTeX-hologo-logo-names)
+      LaTeX-hologo--arg-use-region-or-query-logo-name
       (TeX-arg-eval
        (lambda ()
          (let ((setup (TeX-read-key-val
@@ -211,8 +210,7 @@
            (format "%s" setup)))))
 
     '("HologoVariant"
-      (TeX-arg-eval completing-read
-                    "Logo name: " LaTeX-hologo-logo-names)
+      LaTeX-hologo--arg-use-region-or-query-logo-name
       (TeX-arg-eval
        (lambda ()
          (let ((setup (TeX-read-key-val
