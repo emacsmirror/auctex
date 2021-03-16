@@ -3905,6 +3905,39 @@ the current buffer, or if already there, to the file where the current
 process was started.
 @end deffn
 
+Additionally, output files produced by @AUCTeX{} can be placed in a
+separate directory.
+
+@defopt TeX-output-dir
+Set this option to the path of a directory where output files will be
+placed. The output files include those that are produced by applications
+running under @AUCTeX{}, temporary files related to region processing and
+the @previewlatex{} files. If a relative path is specified, it is
+interpreted as being relative to the master file in a mutlifile document.
+
+This is a buffer local variable and must be set separately for all
+documents and all files in a multifile document. For example,
+
+@example
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-output-dir: "build"
+%%% End:
+@end example
+
+Alternatively, you may use @code{setq-default} to set the default value of
+this option or set it as a directory local variable (see
+@code{add-dir-local-variable}).
+
+Note that a non-nil value of @code{TeX-output-dir} might be incompatible
+with some @TeX{} commands and macros. In particular, the @LaTeX{} macro
+@samp{\include} is known to not work with this option. Some @TeX{}
+packages which produce intermediary files might also be incompatible. A
+possible workaround for those packages is to append the value of
+@code{TeX-output-dir} to the environment variables @samp{TEXINPUTS} and
+@samp{BIBINPUTS}.
+@end defopt
+
 @node Cleaning
 @section Cleaning intermediate and output files
 @cindex Cleaning

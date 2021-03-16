@@ -75,16 +75,27 @@
 ;; THEN ``the'' process is the region process
 ;; ELSE ``the'' process is the master file (of the current buffer) process
 
-(defun TeX-save-document (name)
+(defun TeX-save-document (name-or-file-fn)
   "Save all files belonging to the current document.
 Return non-nil if document needs to be re-TeX'ed."
-  (interactive (list (TeX-master-file)))
-  (if (string-equal name "")
-      (setq name (TeX-master-file)))
-
-  (TeX-check-files (concat name "." (TeX-output-extension))
-                   (cons name (TeX-style-list))
+  (interactive (list #'TeX-master-file))
+  (TeX-check-files (TeX--concat-ext name-or-file-fn (TeX-output-extension))
+                   (cons (TeX--concat-ext name-or-file-fn) (TeX-style-list))
                    TeX-file-extensions))
+
+(defun TeX--concat-ext (name-or-file-fn &optional extension)
+  "Append EXTENSION to a filename specified by NAME-OR-FILE-FN.
+
+If NAME-OR-FILE-FN is a string, interpret it as the filename.
+Otherwise, assume it is a callable function and call it with
+EXTENSION as an argument and return the result without
+modification. EXTENSION is a string which should not start with
+'.'."
+  (if (stringp name-or-file-fn)
+      (if extension
+          (concat name-or-file-fn "." extension)
+        name-or-file-fn)
+    (funcall name-or-file-fn extension)))
 
 (defun TeX-command-master (&optional override-confirm)
   "Run command on the current document.
@@ -92,7 +103,8 @@ Return non-nil if document needs to be re-TeX'ed."
 If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in `TeX-command-list'."
   (interactive "P")
-  (TeX-command (TeX-command-query (TeX-master-file nil nil t))
+  (TeX-master-file nil nil t)  ;; call to ask if necessary
+  (TeX-command (TeX-command-query #'TeX-master-file)
                'TeX-master-file override-confirm))
 
 (defvar TeX-command-region-begin nil)
@@ -185,7 +197,7 @@ all text after `TeX-trailer-start'."
   ;; `nondirectory' argument, otherwise `TeX-command-default' called
   ;; within `TeX-command-query' won't work in included files not
   ;; placed in `TeX-master-directory'.
-  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
+  (TeX-command (TeX-command-query #'TeX-region-file) #'TeX-region-file
                override-confirm))
 
 (defun TeX-command-buffer (&optional override-confirm)
@@ -468,7 +480,7 @@ Do you want to select one of these engines? "
 
 FILE-FN is the symbol of a function returning a file name.  The
 function has one optional argument, the extension to use on the
-file.
+file. Valid choices are `TeX-master-file' and `TeX-region-file'
 
 Use the information in `TeX-command-list' to determine how to run
 the command.
@@ -569,7 +581,7 @@ without further expansion."
     TeX-expand-command))
 
 (defun TeX-active-master-with-quotes
-    (&optional extension nondirectory ask extra)
+    (&optional extension nondirectory ask extra preprocess-fn)
   "Return the current master or region file name with quote for shell.
 Pass arguments EXTENSION NONDIRECTORY ASK to `TeX-active-master'.
 If the returned file name contains space, enclose it within
@@ -581,7 +593,9 @@ the following three conditions are met:
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
 Adjust dynamically bound variable `TeX-expand-pos' to avoid possible
-infinite loop in `TeX-command-expand'.
+infinite loop in `TeX-command-expand'. If PREPROCESS-FN is non-nil then
+it is called with the filename as an argument and the results is
+enclosed instead of the filename.
 
 Helper function of `TeX-command-expand'. Use only within entries in
 `TeX-expand-list-builtin' and `TeX-expand-list'."
@@ -608,7 +622,11 @@ Helper function of `TeX-command-expand'. Use only within entries in
                 ;; recognize non-ascii characters in the file name
                 ;; when \input precedes.
                 "\\detokenize{ %s }" "%s")
-            (concat quote-for-space raw quote-for-space)))))
+            (concat quote-for-space
+                    (if preprocess-fn
+                        (funcall preprocess-fn raw)
+                      raw)
+                    quote-for-space)))))
     ;; Advance past the file name in order to
     ;; prevent expanding any substring of it.
     (setq TeX-expand-pos
@@ -743,15 +761,11 @@ omitted) and `TeX-region-file'."
         (setq cmd (funcall command)
               TeX-command-sequence-command command))
        (t
-        (setq cmd (TeX-command-default
-                   ;; File function should be called with nil `nondirectory'
-                   ;; argument, otherwise `TeX-command-sequence' won't work in
-                   ;; included files not placed in `TeX-master-directory'.  In
-                   ;; addition, `TeX-master-file' is called with the third
-                   ;; argument (`ask') set to t, so that the master file is
-                   ;; properly set.  This is also what `TeX-command-master'
-                   ;; does.
-                   (funcall TeX-command-sequence-file-function nil nil t))
+        ;; We first call `TeX-master-file' with the third argument
+        ;; (`ask') set to t, so that the master file is properly set.
+        ;; This is also what `TeX-command-master' does.
+        (funcall TeX-command-sequence-file-function nil nil t)
+        (setq cmd (TeX-command-default TeX-command-sequence-file-function)
               TeX-command-sequence-command t)))
       (TeX-command cmd TeX-command-sequence-file-function 0)
       (when reset
@@ -793,25 +807,23 @@ omitted) and `TeX-region-file'."
 
 (defvar TeX-command-history nil)
 
-(defun TeX-command-default (name)
+(defun TeX-command-default (name-or-file-fn)
   "Guess the next command to be run on NAME."
-  (let ((command-next nil))
-    (cond (;; name might be absolute or relative, so expand it for
-           ;; comparison.
-           (if (string-equal (expand-file-name name)
-                             (expand-file-name (TeX-region-file)))
-               (TeX-check-files (concat name "." (TeX-output-extension))
+  (let ((command-next nil)
+        (name (TeX--concat-ext name-or-file-fn)))
+    (cond ((if (eq name-or-file-fn #'TeX-region-file)
+               (TeX-check-files (TeX-region-file (TeX-output-extension))
                                 ;; Each original will be checked for all dirs
                                 ;; in `TeX-check-path' so this needs to be just
                                 ;; a filename without directory.
-                                (list (file-name-nondirectory name))
+                                (list (file-relative-name name))
                                 TeX-file-extensions)
-             (TeX-save-document (TeX-master-file)))
+             (TeX-save-document name-or-file-fn))
            TeX-command-default)
           ((and (memq major-mode '(doctex-mode latex-mode))
                 ;; Want to know if bib file is newer than .bbl
                 ;; We don't care whether the bib files are open in emacs
-                (TeX-check-files (concat name ".bbl")
+                (TeX-check-files (TeX--concat-ext name-or-file-fn "bbl")
                                  (mapcar #'car
                                          (LaTeX-bibliography-list))
                                  (append BibTeX-file-extensions
@@ -833,15 +845,15 @@ omitted) and `TeX-region-file'."
                     (or (and TeX-PDF-mode (TeX-PDF-from-DVI))
                         TeX-command-Show)))
              (list "Dvips" "Dvipdfmx" TeX-command-Show))
-            (cdr (assoc (expand-file-name (concat name ".idx"))
+            (cdr (assoc (expand-file-name (TeX--concat-ext name-or-file-fn "idx"))
                         LaTeX-idx-changed-alist)))
            "Index")
           (command-next)
           (TeX-command-Show))))
 
-(defun TeX-command-query (name)
+(defun TeX-command-query (name-or-file-fn)
   "Query the user for what TeX command to use."
-  (let* ((default (TeX-command-default name))
+  (let* ((default (TeX-command-default name-or-file-fn))
          (completion-ignore-case t)
          (answer (or TeX-command-force
                      (completing-read
@@ -1151,7 +1163,7 @@ run of `TeX-run-TeX', use
     ;; Store md5 hash of the index file before running LaTeX.
     (and (memq major-mode '(doctex-mode latex-mode))
          (prog1 (file-exists-p
-                 (setq idx-file (expand-file-name (concat file ".idx"))))
+                 (setq idx-file (expand-file-name (TeX-active-master "idx"))))
            ;; In order to avoid confusion and pollution of
            ;; `LaTeX-idx-md5-alist', remove from this alist all md5 hashes of
            ;; the current index file.  Note `assq-delete-all' doesn't work with
@@ -1233,7 +1245,7 @@ run of `TeX-run-TeX', use
                  ;; `default-directory', then we have to expand `file' file-name
                  ;; in the same directory of `TeX-command-buffer'.
                  (assoc (with-current-buffer TeX-command-buffer
-                            (expand-file-name (concat file ".idx")))
+                            (expand-file-name (TeX-active-master "idx")))
                         LaTeX-idx-changed-alist))
       (setq LaTeX-idx-changed-alist (delq element LaTeX-idx-changed-alist)))
     (if TeX-process-asynchronous
@@ -1681,17 +1693,18 @@ Rerun to get mark in right position\\." nil t)
          (setq TeX-command-next TeX-command-default)))
 
   ;; Check whether the idx file changed.
-  (let ((idx-file nil) (master nil))
+  (let (idx-file)
     (and (file-exists-p
           (setq idx-file
-                (concat
-                 (setq master
-                       (with-current-buffer TeX-command-buffer
-                         (expand-file-name (TeX-active-master)))) ".idx")))
+                (with-current-buffer TeX-command-buffer
+                  (expand-file-name (TeX-active-master "idx")))))
          ;; imakeidx package automatically runs makeindex, thus, we need to be
          ;; sure .ind file isn't newer than .idx.
-         (TeX-check-files (concat master ".ind")
-                          (list (file-name-nondirectory master)) '("idx"))
+         (TeX-check-files (with-current-buffer TeX-command-buffer
+                            (expand-file-name (TeX-active-master "ind")))
+                          (with-current-buffer TeX-command-buffer
+                            (list (file-name-nondirectory (TeX-active-master))))
+                          '("idx"))
          (with-temp-buffer
            (insert-file-contents idx-file)
            (not (equal
@@ -2230,13 +2243,15 @@ The compatibility argument IGNORE is ignored."
   ;; third argument `ask'.  For example, it's used in `TeX-command-sequence',
   ;; where we don't know which function has to be called.  Keep this in mind
   ;; should you want to use another argument here.
-  (concat (if nondirectory "" (TeX-master-directory))
-          (cond ((eq extension t)
-                 (concat TeX-region "." TeX-default-extension))
-                (extension
-                 (concat TeX-region "." extension))
-                (t
-                 TeX-region))))
+  (let ((master-dir (TeX-master-directory)))
+    (concat (or (TeX--master-output-dir master-dir nondirectory)
+                (if nondirectory "" master-dir))
+            (cond ((eq extension t)
+                   (concat TeX-region "." TeX-default-extension))
+                  (extension
+                   (concat TeX-region "." extension))
+                  (t
+                   TeX-region)))))
 
 (defcustom TeX-region "_region_"
   "Base name of temporary file for `TeX-command-region' and `TeX-command-buffer'."
