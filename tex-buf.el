@@ -2103,10 +2103,6 @@ The hooks are run in the region buffer, you may use the variable
                                 "\\\\unexpanded{\\&}" file t)
     file))
 
-(defvar font-lock-mode-enable-list)
-(defvar font-lock-auto-fontify)
-(defvar font-lock-defaults-alist)
-
 (defvar TeX-region-orig-buffer nil
   "The original buffer in which the TeX-region was created.")
 (make-variable-buffer-local 'TeX-region-orig-buffer)
@@ -2138,12 +2134,7 @@ original file."
          (master-buffer (find-file-noselect master-name))
 
          ;; Attempt to disable font lock.
-         (font-lock-defaults-alist nil)
-         (font-lock-defaults nil)
-         ;; (font-lock-maximum-size 0) ; Obsolete since Emacs 24.1
          (font-lock-mode-hook nil)
-         (font-lock-auto-fontify nil)
-         (font-lock-mode-enable-list nil)
          ;; And insert them into the FILE buffer.
          (file-buffer (let (;; Don't query for master file
                             (TeX-transient-master t)
@@ -2153,7 +2144,7 @@ original file."
                             (enable-local-variables nil)
                             ;; Don't run any f-f hooks
                             (find-file-hook nil))
-                        (find-file-noselect file)))
+                        (find-file-noselect file t)))
          ;; But remember original content.
          original-content
 
