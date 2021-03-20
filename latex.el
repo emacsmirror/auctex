@@ -3746,7 +3746,7 @@ Words formed by such characters can be broken across newlines.")
   "Fill region as one paragraph.
 Break lines to fit `fill-column', but leave all lines ending with
 \\\\ \(plus its optional argument) alone.  Lines with code
-comments and lines ending with `\par' are included in filling but
+comments and lines ending with `\\par' are included in filling but
 act as boundaries.  Prefix arg means justify too.  From program,
 pass args FROM, TO and JUSTIFY-FLAG.
 
