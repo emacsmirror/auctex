@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 13.0.4 from 2021-01-23), a
+This manual is for AUCTeX (version 13.0.5 from 2021-03-21), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -738,6 +738,42 @@ If you want others to be able to share your installation, you should
 configure it using '--without-texmf-dir', in which case things should
 work as well for them as for you.
 
+1.2.6.1 Using AUCTeX from local Git repo
+........................................
+
+With the techniques described above, it is also possible to use AUCTeX
+directly from a local Git repository.  Let's assume you have your Git
+repositories under '~/development/'.
+
+   First, you have to fetch a copy of the AUCTeX Git repository.  In a
+shell, change directory to '~/development/' and do:
+     git clone https://git.savannah.gnu.org/git/auctex.git
+
+   Now change directory to '~/development/auctex' and run
+'./autogen.sh'.  Next thing is to run 'configure' like this:
+     ./configure --without-texmf-dir --with-lispdir=.
+
+When finished, simply enter
+     make
+and you're finished.  Note that the 'make install' step is not
+necessary.
+
+   Now you have to tell Emacs about the plan.  The following variables
+must be set in your init file because their normal values are only
+correct when AUCTeX is installed:
+     (setq TeX-data-directory "~/development/auctex"
+           TeX-lisp-directory TeX-data-directory)
+
+The info files will be available with this:
+     (eval-after-load 'info
+        '(add-to-list 'Info-additional-directory-list
+                      "~/development/auctex/doc"))
+
+Now you're ready to load 'auctex.el' and 'preview-latex.el' out of this
+directory:
+     (load "~/development/auctex/auctex.el" nil t t)
+     (load "~/development/auctex/preview-latex.el" nil t t)
+
 
 File: auctex.info,  Node: Installation under MS Windows,  Next: Customizing,  Prev: Advice for non-privileged users,  Up: Installation
 
@@ -1217,7 +1253,7 @@ which font you want:
      Insert slanted '\textsl{-!-}' text.
 
 'C-c C-f C-r'
-     Insert roman \textrm{-!-} text.
+     Insert roman '\textrm{-!-}' text.
 
 'C-c C-f C-f'
      Insert sans serif '\textsf{-!-}' text.
@@ -4415,6 +4451,37 @@ application running under AUCTeX
      the current buffer, or if already there, to the file where the
      current process was started.
 
+   Additionally, output files produced by AUCTeX can be placed in a
+separate directory.
+
+ -- User Option: TeX-output-dir
+     Set this option to the path of a directory where output files will
+     be placed.  The output files include those that are produced by
+     applications running under AUCTeX, temporary files related to
+     region processing and the preview-latex files.  If a relative path
+     is specified, it is interpreted as being relative to the master
+     file in a mutlifile document.
+
+     This is a buffer local variable and must be set separately for all
+     documents and all files in a multifile document.  For example,
+
+          %%% Local Variables:
+          %%% mode: latex
+          %%% TeX-output-dir: "build"
+          %%% End:
+
+     Alternatively, you may use 'setq-default' to set the default value
+     of this option or set it as a directory local variable (see
+     'add-dir-local-variable').
+
+     Note that a non-nil value of 'TeX-output-dir' might be incompatible
+     with some TeX commands and macros.  In particular, the LaTeX macro
+     '\include' is known to not work with this option.  Some TeX
+     packages which produce intermediary files might also be
+     incompatible.  A possible workaround for those packages is to
+     append the value of 'TeX-output-dir' to the environment variables
+     'TEXINPUTS' and 'BIBINPUTS'.
+
 
 File: auctex.info,  Node: Cleaning,  Next: Documentation,  Prev: Control,  Up: Processing
 
@@ -5879,7 +5946,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.0.4 from 2021-01-23), a
+   This manual is for AUCTeX (version 13.0.5 from 2021-03-21), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -8662,6 +8729,7 @@ Variable Index
 * TeX-one-master:                        Multifile.           (line  58)
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
+* TeX-output-dir:                        Control.             (line  25)
 * TeX-parse-all-errors:                  Debugging.           (line  35)
 * TeX-parse-self:                        Parsing Files.       (line  37)
 * TeX-parse-self <1>:                    Japanese.            (line   6)
@@ -9102,93 +9170,93 @@ Node: Build/install and uninstall21116
 Node: Loading the package21869
 Node: Advice for package providers23545
 Node: Advice for non-privileged users26350
-Node: Installation under MS Windows30315
-Node: Customizing44053
-Node: Quick Start45636
-Ref: Quick Start-Footnote-147766
-Node: Editing Facilities47860
-Node: Processing Facilities52663
-Node: Editing57364
-Node: Quotes58694
-Node: Font Specifiers66947
-Node: Sectioning69014
-Node: Environments73440
-Node: Equations78594
-Node: Floats79185
-Node: Itemize-like81189
-Node: Tabular-like81910
-Node: Customizing Environments83683
-Node: Mathematics83923
-Node: Completion87209
-Node: Marking94231
-Node: Marking (LaTeX)94855
-Node: Marking (Texinfo)95797
-Node: Commenting97407
-Node: Indenting98732
-Node: Filling104768
-Node: Display110640
-Node: Font Locking113135
-Node: Fontification of macros115210
-Node: Fontification of quotes124729
-Node: Fontification of math126224
-Node: Verbatim content129892
-Node: Faces130666
-Node: Known problems131155
-Node: Folding132152
-Node: Outline142976
-Node: Narrowing144248
-Node: Prettifying145318
-Node: Processing146555
-Node: Commands147718
-Node: Starting a Command148274
-Node: Selecting a Command153177
-Node: Processor Options162261
-Node: Viewing172608
-Node: Starting Viewers172982
-Node: I/O Correlation178626
-Node: Debugging183824
-Node: Ignoring warnings186443
-Node: Error overview188503
-Node: Checking190414
-Node: Control192007
-Node: Cleaning192734
-Node: Documentation194027
-Node: Customization194742
-Node: Modes and Hooks195235
-Node: Multifile197055
-Node: Parsing Files201867
-Node: Internationalization206779
-Node: European208092
-Node: Japanese214902
-Node: Automatic219973
-Node: Automatic Global222464
-Node: Automatic Private223596
-Node: Automatic Local224909
-Node: Style Files225941
-Node: Simple Style226734
-Node: Adding Macros230387
-Node: Adding Environments239722
-Node: Adding Other244383
-Node: Hacking the Parser244970
-Node: Appendices248839
-Node: Copying this Manual249135
-Node: GNU Free Documentation License250018
-Node: Changes275139
-Node: Development325012
-Node: Mid-term Goals325658
-Node: Wishlist327515
-Node: Bugs332956
-Node: FAQ334059
-Node: Texinfo mode339188
-Node: Exploiting340324
-Node: Superseding341144
-Node: Mapping345348
-Node: Unbinding347177
-Node: Indices347998
-Node: Key Index348161
-Node: Function Index354777
-Node: Variable Index365660
-Node: Concept Index388792
+Node: Installation under MS Windows31698
+Node: Customizing45436
+Node: Quick Start47019
+Ref: Quick Start-Footnote-149149
+Node: Editing Facilities49243
+Node: Processing Facilities54048
+Node: Editing58749
+Node: Quotes60079
+Node: Font Specifiers68332
+Node: Sectioning70399
+Node: Environments74825
+Node: Equations79979
+Node: Floats80570
+Node: Itemize-like82574
+Node: Tabular-like83295
+Node: Customizing Environments85068
+Node: Mathematics85308
+Node: Completion88594
+Node: Marking95616
+Node: Marking (LaTeX)96240
+Node: Marking (Texinfo)97182
+Node: Commenting98792
+Node: Indenting100117
+Node: Filling106153
+Node: Display112025
+Node: Font Locking114520
+Node: Fontification of macros116595
+Node: Fontification of quotes126114
+Node: Fontification of math127609
+Node: Verbatim content131277
+Node: Faces132051
+Node: Known problems132540
+Node: Folding133537
+Node: Outline144361
+Node: Narrowing145633
+Node: Prettifying146703
+Node: Processing147940
+Node: Commands149103
+Node: Starting a Command149659
+Node: Selecting a Command154562
+Node: Processor Options163646
+Node: Viewing173993
+Node: Starting Viewers174367
+Node: I/O Correlation180011
+Node: Debugging185209
+Node: Ignoring warnings187828
+Node: Error overview189888
+Node: Checking191799
+Node: Control193392
+Node: Cleaning195495
+Node: Documentation196788
+Node: Customization197503
+Node: Modes and Hooks197996
+Node: Multifile199816
+Node: Parsing Files204628
+Node: Internationalization209540
+Node: European210853
+Node: Japanese217663
+Node: Automatic222734
+Node: Automatic Global225225
+Node: Automatic Private226357
+Node: Automatic Local227670
+Node: Style Files228702
+Node: Simple Style229495
+Node: Adding Macros233148
+Node: Adding Environments242483
+Node: Adding Other247144
+Node: Hacking the Parser247731
+Node: Appendices251600
+Node: Copying this Manual251896
+Node: GNU Free Documentation License252779
+Node: Changes277900
+Node: Development327773
+Node: Mid-term Goals328419
+Node: Wishlist330276
+Node: Bugs335717
+Node: FAQ336820
+Node: Texinfo mode341949
+Node: Exploiting343085
+Node: Superseding343905
+Node: Mapping348109
+Node: Unbinding349938
+Node: Indices350759
+Node: Key Index350922
+Node: Function Index357538
+Node: Variable Index368421
+Node: Concept Index391626
 
 End Tag Table
 
