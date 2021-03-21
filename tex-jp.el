@@ -1,6 +1,6 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020
+;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020-2021
 ;;   Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
@@ -914,7 +914,7 @@ save size
 (provide 'tex-jp)
 
 ;; Local Variables:
-;; coding: iso-2022-jp-unix
+;; coding: iso-2022-jp
 ;; End:
 
 ;;; tex-jp.el ends here

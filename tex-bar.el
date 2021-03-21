@@ -136,13 +136,13 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 (defcustom TeX-bar-TeX-button-alist
   '((tex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
          :command (progn
-                    (TeX-save-document (TeX-master-file))
+                    (TeX-save-document #'TeX-master-file)
                     (TeX-command "TeX" 'TeX-master-file -1))
          :help (lambda (&rest ignored)
                  (TeX-bar-help-from-command-list "TeX")))
     (pdftex :image "pdftex"
             :command (progn
-                       (TeX-save-document (TeX-master-file))
+                       (TeX-save-document #'TeX-master-file)
                        (TeX-command "PDFTeX" 'TeX-master-file -1))
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "PDFTeX")))
@@ -277,13 +277,13 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 (defcustom TeX-bar-LaTeX-button-alist
   '((latex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
            :command (progn
-                      (TeX-save-document (TeX-master-file))
+                      (TeX-save-document #'TeX-master-file)
                       (TeX-command "LaTeX" 'TeX-master-file -1))
            :help (lambda (&rest ignored)
                    (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
               :command (progn
-                         (TeX-save-document (TeX-master-file))
+                         (TeX-save-document #'TeX-master-file)
                          (TeX-command "PDFLaTeX" 'TeX-master-file -1))
               :help (lambda (&rest ignored)
                       (TeX-bar-help-from-command-list "PDFLaTeX")))

@@ -89,6 +89,7 @@
 (defvar LaTeX-optop)
 (defvar TeX-Biber-global-files)
 (defvar TeX-global-input-files)
+(defvar TeX-output-dir)
 ;; tex-buf.el
 (defvar TeX-current-process-region-p)
 (defvar TeX-region)
@@ -182,18 +183,18 @@ If nil, none is specified."
 ;; `TeX-expand-list-builtin' for a description of the % escapes
 
 (defcustom TeX-command-list
-  '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %t"
+  '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
     ;; Not part of standard TeX.
-    ("Makeinfo" "makeinfo %(extraopts) %t" TeX-run-compile nil
+    ("Makeinfo" "makeinfo %(extraopts) %(o-dir) %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with Info output")
-    ("Makeinfo HTML" "makeinfo %(extraopts) --html %t" TeX-run-compile nil
+    ("Makeinfo HTML" "makeinfo %(extraopts) %(o-dir) --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %t"
+    ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -202,11 +203,11 @@ If nil, none is specified."
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
-    ("BibTeX" "bibtex %s" TeX-run-BibTeX nil
+    ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
                      context-mode)
      :help "Run BibTeX")
-    ("Biber" "biber %s" TeX-run-Biber nil
+    ("Biber" "biber %s %(output-dir)" TeX-run-Biber nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run Biber")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
@@ -219,20 +220,20 @@ If nil, none is specified."
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PostScript")
-    ("Dvipdfmx" "dvipdfmx %d" TeX-run-dvipdfmx nil
+    ("Dvipdfmx" "dvipdfmx %d -o %(O?pdf)" TeX-run-dvipdfmx nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
-    ("Ps2pdf" "ps2pdf %f" TeX-run-ps2pdf nil
+    ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert PostScript file to PDF")
-    ("Glossaries" "makeglossaries %s" TeX-run-command nil
+    ("Glossaries" "makeglossaries %(O?aux)" TeX-run-command nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeglossaries to create glossary
      file")
-    ("Index" "makeindex %s" TeX-run-index nil
+    ("Index" "makeindex %(O?idx)" TeX-run-index nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeindex to create index file")
-    ("upMendex" "upmendex %s" TeX-run-index t
+    ("upMendex" "upmendex %(O?idx)" TeX-run-index t
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil
@@ -393,7 +394,7 @@ The executable `latex' is LaTeX version 2e."
 
 (defcustom LaTeX-command-style
   ;; They have all been combined in LaTeX 2e.
-  '(("" "%(PDF)%(latex) %(file-line-error) %(extraopts) %S%(PDFout)"))
+  '(("" "%(PDF)%(latex) %(file-line-error) %(extraopts) %(output-dir) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
 If the first element (a regular expression) matches the name of one of
@@ -420,7 +421,7 @@ string."
 ;; TeX-print-command.
 
 (defcustom TeX-print-command
-  "{ test -e %s.dvi && %(o?)dvips -P%p %r %s; } || lpr -P%p %o"
+  "{ test -e %d && %(o?)dvips -P%p %r %s; } || lpr -P%p %o"
   "Command used to print a file.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
@@ -448,7 +449,7 @@ the printer has no corresponding command."
      ;; Print to the (unnamed) default printer.  If there is a DVI
      ;; file print via Dvips.  If not, pass the output file (which
      ;; should then be a Postscript or PDF file) directly to lpr.
-     "{ test -e %s.dvi && %(o?)dvips -f %r %s | lpr; } || lpr %o"
+     "{ test -e %d && %(o?)dvips -f %r %s | lpr; } || lpr %o"
      ;; Show the queue for the (unnamed) default printer.
      "lpq"))
   "List of available printers.
@@ -563,6 +564,8 @@ string."
     ("%(cntxcom)" ConTeXt-expand-command)
     ("%(execopts)" ConTeXt-expand-options)
     ("%(extraopts)" (lambda () TeX-command-extra-options))
+    ("%(output-dir)" (lambda () (TeX--output-dir-arg "--output-directory=")))
+    ("%(o-dir)" (lambda () (TeX--output-dir-arg "-o ")))
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
@@ -583,6 +586,7 @@ string."
     ;; adds suitable quotes for use in shell command line.
     ("%s" TeX-active-master-with-quotes nil t)
     ("%t" TeX-active-master-with-quotes t t)
+    ("%(t-filename-only)" TeX-active-master-with-quotes t t nil nil file-name-nondirectory)
     ;; If any TeX codes appear in the interval between %` and %', move
     ;; all of them after the interval and supplement " \input".  The
     ;; appearance is marked by leaving the bind to `TeX-command-text'
@@ -632,6 +636,9 @@ string."
     ("%n" TeX-current-line)
     ("%d" TeX-active-master-with-quotes "dvi" t)
     ("%f" TeX-active-master-with-quotes "ps" t)
+    ("%(O?aux)" TeX-active-master-with-quotes "aux" t)
+    ("%(O?idx)" TeX-active-master-with-quotes "idx" t)
+    ("%(O?pdf)" TeX-active-master-with-quotes "pdf" t)
     ("%o" (lambda nil (TeX-active-master-with-quotes (TeX-output-extension) t)))
     ;; for source specials the file name generated for the xdvi
     ;; command needs to be relative to the master file, just in
@@ -2210,25 +2217,20 @@ Used as a default in TeX, LaTeX and docTeX mode.")
 If prefix ARG is non-nil, not only remove intermediate but also
 output files."
   (interactive "P")
-  (let* ((mode-prefix (TeX-mode-prefix))
-         (suffixes (append (symbol-value
-                            (intern (concat mode-prefix
-                                            "-clean-intermediate-suffixes")))
-                           (when arg
-                             (symbol-value
-                              (intern (concat mode-prefix
-                                              "-clean-output-suffixes"))))))
-         (master (TeX-active-master))
+  (let* (;; Call with output extension then remove it, to make sure we
+         ;; get the correct directory in cases TeX-output-dir is
+         ;; non-nil
+         (master (file-name-sans-extension (TeX-active-master (TeX-output-extension))))
          (master-dir (file-name-directory master))
          (regexp (concat "\\("
                          (regexp-quote (file-name-nondirectory master)) "\\|"
-                         (regexp-quote (TeX-region-file nil t))
+                         (regexp-quote (file-name-nondirectory (TeX-region-file nil t)))
                          "\\)"
                          "\\("
-                         (mapconcat 'identity suffixes "\\|")
+                         (TeX--clean-extensions-regexp arg)
                          "\\)\\'"
-                         "\\|" (regexp-quote (TeX-region-file t t))))
-         (files (when regexp
+                         "\\|" (regexp-quote (file-name-nondirectory (TeX-region-file t t)))))
+         (files (when (and regexp (or (not master-dir) (file-exists-p master-dir)))
                   (directory-files (or master-dir ".") nil regexp))))
     (if files
         (when (or (not TeX-clean-confirm)
@@ -2240,6 +2242,22 @@ output files."
           (dolist (file files)
             (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
+
+(defun TeX--clean-extensions-regexp (&optional arg)
+  "Return a regexp to match extensions that should be cleaned by `TeX-clean'.
+If the optional argument ARG is non-nil then output files are
+also included in the regexp."
+  (let* ((mode-prefix (TeX-mode-prefix))
+         (suffixes (and mode-prefix
+                        (append (symbol-value
+                                 (intern (concat mode-prefix
+                                                 "-clean-intermediate-suffixes")))
+                                (when arg
+                                  (symbol-value
+                                   (intern (concat mode-prefix
+                                                   "-clean-output-suffixes"))))))))
+    (when suffixes
+      (mapconcat 'identity suffixes "\\|"))))
 
 ;;; Master File
 
@@ -2406,10 +2424,19 @@ name of master file if it cannot be determined otherwise."
             ;; Otherwise drop it.
             (setq name (TeX-strip-extension name))))
 
-      ;; Remove directory if needed.
-      (if nondirectory
-          (setq name (file-name-nondirectory name)))
-
+      (let* ((reg (TeX--clean-extensions-regexp t))
+             (is-output-ext (and reg
+                                 (or (string-match-p reg (concat "." extension))
+                                     (string= "prv" extension))))
+             (output-dir (and is-output-ext
+                              (TeX--master-output-dir
+                               (file-name-directory name)
+                               nondirectory))))
+        (if output-dir
+            (setq name (concat output-dir (file-name-nondirectory name)))
+          ;; Remove directory if needed.
+          (if nondirectory
+              (setq name (file-name-nondirectory name)))))
       (if extension
           (concat name "." extension)
         name))))
@@ -2494,6 +2521,50 @@ be relative to that."
   :group 'TeX-file
   :type 'string)
 
+(defcustom TeX-output-dir nil
+  "The path of the directory where output files should be placed.
+
+A relative path is interpreted as being relative to the master
+file in `TeX-master'. The path cannot contain a directory that
+starts with '.'. If this variable is nil, the output directory is
+assumed to be the same as the directory of `TeX-master'."
+  :group 'TeX-file
+  :safe 'string-or-null-p
+  :type '(choice (const :tag "Directory of master file" nil)
+                 (string :tag "Custom" "build")))
+(make-variable-buffer-local 'TeX-output-dir)
+
+(defun TeX--master-output-dir (master-dir relative-to-master)
+  "Return the directory path where output files should be placed.
+If `TeX-output-dir' is nil, then return nil.
+
+MASTER-DIR is the directory path where the master file is
+located. If RELATIVE-TO-MASTER is non-nil, make the returned path
+relative to the directory in MASTER-DIR."
+  (when TeX-output-dir
+    (let* ((master-dir (expand-file-name (or master-dir "")))
+           (out-dir (file-name-as-directory
+                     (abbreviate-file-name
+                      (substitute-in-file-name
+                       (expand-file-name
+                        TeX-output-dir
+                        master-dir))))))
+      ;; Make sure the directory exists
+      (unless (file-exists-p out-dir)
+        (make-directory (file-name-as-directory out-dir) t))
+      (if relative-to-master
+          (file-relative-name out-dir master-dir)
+        out-dir))))
+
+(defun TeX--output-dir-arg (argname)
+  "Format the output directory as a command argument.
+ARGNAME is prepended to the quoted output directory. If
+`TeX-output-dir' is nil then return an empty string."
+  (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t)))
+    (if out-dir
+        (concat argname "\"" out-dir "\"")
+      "")))
+
 (defcustom TeX-style-local "style"
   "Directory containing hand generated TeX information.
 
@@ -2505,7 +2576,7 @@ be relative to that."
 (defun TeX-split-string (regexp string)
   "Return a list of strings.
 Given REGEXP the STRING is split into sections which in string was
-seperated by REGEXP.
+separated by REGEXP.
 
 Examples:
 
@@ -2989,8 +3060,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
 
 Only do this if it has not been done before, or if optional argument
 FORCE is not nil."
-  (unless (or (and (boundp 'TeX-auto-update)
-                   (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
+  (unless (or (eq major-mode 'bibtex-mode) ; Not a real TeX buffer
               (and (not force)
                    TeX-style-hook-applied-p))
     (setq TeX-style-hook-applied-p t)
@@ -3716,7 +3786,6 @@ The algorithm is as follows:
   ;; We want this to be early in the list, so we do not add it before
   ;; we enter TeX mode the first time.
   (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
-  (set (make-local-variable 'TeX-auto-update) t)
 
   (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)
 
@@ -3897,9 +3966,7 @@ Generated by `TeX-auto-add-type'.")
 (defun TeX-safe-auto-write ()
   "Call `TeX-auto-write' safely."
   (condition-case _ignored
-      (and (boundp 'TeX-auto-update)
-           TeX-auto-update
-           (TeX-auto-write))
+      (TeX-auto-write)
     (error nil))
   ;; Continue with the other write file hooks.
   nil)

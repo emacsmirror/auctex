@@ -1990,7 +1990,6 @@ It will setup BibTeX to store keys in an auto file."
   ;; add it before we enter BibTeX mode the first time.
   (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
   (TeX-bibtex-set-BibTeX-dialect)
-  (set (make-local-variable 'TeX-auto-update) 'BibTeX)
   (set (make-local-variable 'TeX-auto-untabify) nil)
   (set (make-local-variable 'TeX-auto-parse-length) 999999)
   (set (make-local-variable 'TeX-auto-regexp-list) BibTeX-auto-regexp-list)
@@ -6048,7 +6047,7 @@ This happens when \\left is inserted."
 (TeX-abbrev-mode-setup latex-mode)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
+(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
 
 ;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
 ;;;###autoload

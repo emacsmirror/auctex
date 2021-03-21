@@ -1,12 +1,12 @@
 #!/usr/bin/perl
-# -*- coding: iso-latin-1-unix; -*-
+# -*- coding: iso-latin-1; -*-
 
 # Autoconverter from preview.dtx to preview-dtxdoc.texi
 
 # Author: Jan-Åke Larsson <jalar@mai.liu.se>
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2002, 2005, 2020 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2005, 2020, 2021 Free Software Foundation, Inc.
 
 # This file is part of AUCTeX.
 

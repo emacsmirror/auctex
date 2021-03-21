@@ -1022,7 +1022,9 @@ cases, *it* is searched.  This allows you to trim down a search further
 by using bib-apropos sequentially."
   ;;(interactive "sBibTeX apropos: ")
   (interactive)
-  (let* ((keylist (and (boundp 'TeX-auto-update) ;Avoid error in FRAMEPOP
+  (let* ((keylist (and (boundp 'TeX-mode-p)
+                       (or TeX-mode-p
+                           (eq major-mode 'bibtex-mode)) ;Avoid error in FRAMEPOP
                        (fboundp 'LaTeX-bibitem-list) ;Use this if using auctex
                        (LaTeX-bibitem-list)))
          (keyword (bib-apropos-keyword-at-point))
@@ -2166,7 +2168,7 @@ of each bib file.
 Puts the buffer in text-mode such that forward-sexp works with german \"
 accents embeded in bibtex entries."
   (let ((bib-list (or (and (fboundp 'LaTeX-bibliography-list)
-                           (boundp 'TeX-auto-update)
+                           (boundp 'TeX-mode-p) TeX-mode-p
                            (LaTeX-bibliography-list))
 ;; LaTeX-bibliography-list (if bound) returns an unformatted list of
 ;; bib files used in the document, but only if parsing is turned on
@@ -2250,7 +2252,6 @@ although BiBTeX doesn't allow it!"
         (mapcar 'list the-list)))))
 
 (defvar TeX-auto-save)
-(defvar TeX-auto-update)
 (defvar TeX-auto-regexp-list)
 
 ;; BibTeX-mode key def to create AUCTeX's parsing file.
@@ -2260,7 +2261,6 @@ although BiBTeX doesn't allow it!"
   (if (not (require 'latex))
       (error "Sorry, This is only useful if you have AUCTeX"))
   (let ((TeX-auto-save t)
-        (TeX-auto-update t)
         (TeX-auto-regexp-list BibTeX-auto-regexp-list))
     ;; TeX-auto-write
     ;; -> calls TeX-auto-store

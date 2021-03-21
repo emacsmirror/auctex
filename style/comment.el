@@ -1,6 +1,6 @@
 ;;; comment.el --- AUCTeX style for `comment.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018--2021 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,24 +37,108 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
-
 (declare-function font-latex-set-syntactic-keywords
                   "font-latex")
-
 (defvar font-latex-syntactic-keywords-extra)
+
+;; Prepare for parsing:
+(TeX-auto-add-type "comment-incl-excl" "LaTeX")
+
+(defvar LaTeX-comment-include-exclude-regexp
+  '("\\\\\\(include\\|exclude\\|special\\)comment[ \t\n\r%]*{\\([^}]+\\)}"
+    (2 1) LaTeX-auto-comment-incl-excl)
+  "Matches the name of environments defined by comment macros.")
+
+(defun LaTeX-comment-auto-prepare ()
+  "Reset the value of `LaTeX-auto-comment-incl-excl'."
+  (setq LaTeX-auto-comment-incl-excl nil))
+
+(defun LaTeX-comment-auto-cleanup ()
+  "Process parsed elements for comment package."
+  (dolist (elt (LaTeX-comment-incl-excl-list))
+    (let ((env (car elt))
+          (type (cadr elt)))
+      ;; Make the environment available for completion
+      (LaTeX-add-environments env)
+      ;; Fontification
+      (when (and (boundp 'font-latex-syntactic-keywords-extra)
+                 (eq TeX-install-font-lock 'font-latex-setup))
+        ;; For syntactic fontification.
+        (if (string= type "exclude")
+            ;; Argument of \excludecomment:
+            (progn
+              (add-to-list 'font-latex-syntactic-keywords-extra
+                           ;; \begin is supposed to start at the
+                           ;; beginning of a line.
+                           `(,(format "^\\\\begin *{%s}.*\\(\n\\)"
+                                      env)
+                             (1 "!" t)))
+              (add-to-list 'font-latex-syntactic-keywords-extra
+                           ;; \end is supposed to start at the
+                           ;; beginning of a line.
+                           `(,(format "^\\(\\\\\\)end *{%s}"
+                                      env)
+                             (1 "!" t))))
+          ;; Delete the entry from
+          ;; `font-latex-syntactic-keywords-extra' if argument of
+          ;; \includecomment or \specialcomment:
+          (setq font-latex-syntactic-keywords-extra
+                (delete `(,(format "^\\\\begin *{%s}.*\\(\n\\)"
+                                   env)
+                          (1 "!" t))
+                        font-latex-syntactic-keywords-extra))
+          (setq font-latex-syntactic-keywords-extra
+                (delete `(,(format "^\\(\\\\\\)end *{%s}"
+                                   env)
+                          (1 "!" t))
+                        font-latex-syntactic-keywords-extra))))))
+  ;; Recalculate the fontification rules once at the end:
+  (when (and (LaTeX-comment-incl-excl-list)
+             (fboundp 'font-latex-set-syntactic-keywords)
+             (eq TeX-install-font-lock 'font-latex-setup))
+    (font-latex-set-syntactic-keywords)))
+
+(add-hook 'TeX-auto-prepare-hook #'LaTeX-comment-auto-prepare t)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-comment-auto-cleanup t)
+(add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (TeX-add-style-hook
  "comment"
  (lambda ()
+
+   ;; Add comment to the parser.
+   (TeX-auto-add-regexp LaTeX-comment-include-exclude-regexp)
+
    ;; New symbols
    (TeX-add-symbols
-    '("includecomment" "Name")
-    '("excludecomment" "Name")
-    '("specialcomment" "Name" "Before commands" "After commands")
+    '("includecomment"
+      (TeX-arg-eval let ((env (TeX-read-string
+                               (TeX-argument-prompt nil nil "Name"))))
+                    (LaTeX-add-comment-incl-excls `(,env "include"))
+                    (LaTeX-comment-auto-cleanup)
+                    (format "%s" env)))
+
+    '("excludecomment"
+      (TeX-arg-eval let ((env (TeX-read-string
+                               (TeX-argument-prompt nil nil "Name"))))
+                    (LaTeX-add-comment-incl-excls `(,env "exclude"))
+                    (LaTeX-comment-auto-cleanup)
+                    (format "%s" env)))
+
+    '("specialcomment"
+      (TeX-arg-eval let ((env (TeX-read-string
+                               (TeX-argument-prompt nil nil "Name"))))
+                    (LaTeX-add-comment-incl-excls `(,env "special"))
+                    (LaTeX-comment-auto-cleanup)
+                    (format "%s" env))
+      "Before commands" "After commands")
+
     '("processcomment" "Name" "Each-line commands"
       "Before commands" "After commands"))
+
    ;; New environments
-   (mapc 'LaTeX-add-environments LaTeX-comment-env-list)
+   (mapc #'LaTeX-add-environments LaTeX-comment-env-list)
+
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (eq TeX-install-font-lock 'font-latex-setup))
@@ -77,5 +161,8 @@
      ;; Tell font-lock about the update.
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
+
+(defvar LaTeX-comment-package-options nil
+  "Package options for the comment package.")
 
 ;;; comment.el ends here

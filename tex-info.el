@@ -686,7 +686,6 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'TeX-esc) "@")
 
   (set (make-local-variable 'TeX-auto-regexp-list) 'TeX-auto-empty-regexp-list)
-  (set (make-local-variable 'TeX-auto-update) t)
 
   (setq TeX-command-default "TeX")
   (setq TeX-header-end "%*end")

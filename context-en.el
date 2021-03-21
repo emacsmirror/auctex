@@ -1,6 +1,7 @@
-;;; context-en.el --- Support for the ConTeXt english interface.
+;;; context-en.el --- Support for the ConTeXt english interface. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2004, 2006, 2008, 2010, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2004, 2006, 2008
+;;               2010, 2014, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex

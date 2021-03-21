@@ -552,7 +552,7 @@ if you customize this."
   :type 'string)
 
 (defcustom preview-pdf2dsc-command
-  "pdf2dsc %s.pdf %m/preview.dsc"
+  "pdf2dsc %(O?pdf) %m/preview.dsc"
   "Command used for generating dsc from a PDF file."
   :group 'preview-latex
   :type 'string)
@@ -2771,7 +2771,7 @@ list of LaTeX commands is inserted just before \\begin{document}."
 (defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\"")
+preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %(t-filename-only) \"}\"")
   ;; Since TeXLive 2018, the default encoding for LaTeX files has been
   ;; changed to UTF-8 if used with classic TeX or pdfTeX.  I.e.,
   ;; \usepackage[utf8]{inputenc} is enabled by default in (pdf)latex.
@@ -3155,7 +3155,10 @@ later while in use."
                 topdir
                 0))
     (shell-quote-argument
-     (concat (file-name-as-directory (file-name-nondirectory topdir))
+     (concat (file-name-as-directory
+              ;; Don't use topdir, because %m expects the path to be
+              ;; relative to master
+              (TeX-active-master "prv" t))
              (file-name-nondirectory (nth 0 TeX-active-tempdir))))))
 
 (defun preview-parse-counters (string)
@@ -3911,8 +3914,8 @@ This is passed through `preview-do-replacements'."
   ;; If -kanji option exists, pick it up as the second match.
   ;; Discard all other options.
     ("\\`\\([^ ]+\\)\
-\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*\\(.*\\)\\'"
-     . ("\\1 -ini \\2 -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\3")))
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|\\(--?output-directory[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*\\(.*\\)\\'"
+     . ("\\1 -ini \\2 \\3 -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\4")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -3923,10 +3926,10 @@ This is passed through `preview-do-replacements'."
   ;; If -kanji option exists, pick it up as the second match.
   ;; Discard all other options.
   '(("\\`\\([^ ]+\\)\
-\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
+\\(?: +\\(?:\\(--?kanji[= ][^ ]+\\)\\|\\(--?output-directory[= ][^ ]+\\)\\|-\\(?:[^ \\\"]\\|\\\\.\\|\"[^\"]*\"\\)*\\)\\)*.*\
  \"\\\\input\" \"\\\\detokenize{\" \\(.*\\) \"}\"\\'"
-     . ("\\1 \\2 -interaction=nonstopmode -file-line-error "
-        preview-format-name " \"/AUCTEXINPUT{\" \\3 \"}\"")))
+     . ("\\1 \\2 \\3 -interaction=nonstopmode -file-line-error "
+        preview-format-name " \"/AUCTEXINPUT{\" \\4 \"}\"")))
   ;; See the ini file code below in `preview-cache-preamble' for the
   ;; weird /AUCTEXINPUT construct.  In short, it is crafted so that
   ;; dumped format file can read file of non-ascii name.
@@ -3947,6 +3950,7 @@ format available.
 
 If FORMAT-CONS is non-nil, a previous format may get reused."
   (interactive)
+  (setq TeX-current-process-region-p nil)
   (let* ((dump-file
           (expand-file-name (preview-dump-file-name (TeX-master-file "ini"))))
          (master (TeX-master-file))
@@ -3977,8 +3981,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 \\catcode`/ 0 %
 \\def\\AUCTEXINPUT##1{\\catcode`/ 12\\relax\\catcode`\\ 9\\relax\\input\\detokenize{##1}\\relax}%
 \\let\\dump\\PREVIEWdump\\dump}\\input mylatex.ltx \\relax%\n" nil dump-file)
-      (TeX-save-document master)
-      (setq TeX-current-process-region-p nil)
+      (TeX-save-document #'TeX-master-file)
       (prog1 (preview-generate-preview master command)
         (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
         (setq TeX-sentinel-function
@@ -4065,7 +4068,7 @@ stored in `preview-dumped-alist'."
 (defun preview-document ()
   "Run preview on master document."
   (interactive)
-  (TeX-save-document (TeX-master-file))
+  (TeX-save-document #'TeX-master-file)
   (setq TeX-current-process-region-p nil)
   (preview-generate-preview
    (TeX-master-file)
@@ -4160,7 +4163,12 @@ internal parameters, STR may be a log to insert into the current log."
       ((preview-format-name (shell-quote-argument
                              (concat "&"
                                      (preview-dump-file-name
-                                      (file-name-nondirectory master)))))
+                                      ;; Get the filename from
+                                      ;; `TeX-master-file' with prv to
+                                      ;; get the correct path but then
+                                      ;; strip the extension
+                                      (file-name-sans-extension
+				       (TeX-master-file "prv" t))))))
        (process-environment (copy-sequence process-environment))
        (process
         (progn

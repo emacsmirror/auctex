@@ -1,6 +1,7 @@
-;;; context-nl.el --- Support for the ConTeXt dutch interface.
+;;; context-nl.el --- Support for the ConTeXt dutch interface. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2004, 2006, 2010, 2015, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2006, 2010,
+;;               2015, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex

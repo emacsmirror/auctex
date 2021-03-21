@@ -168,7 +168,7 @@ Insert @i{slanted} @samp{\textsl@{@point{}@}} text.
 @item C-c C-f C-r
 @kindex C-c C-f C-r
 @cindex @code{\textrm}
-Insert roman @r{\textrm@{@point{}@}} text.
+Insert roman @samp{\textrm@{@point{}@}} text.
 
 @item C-c C-f C-f
 @kindex C-c C-f C-f

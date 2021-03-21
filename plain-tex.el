@@ -1,6 +1,6 @@
-;;; plain-tex.el --- Support for plain TeX documents.
+;;; plain-tex.el --- Support for plain TeX documents. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010, 2013, 2016-2018  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2018, 2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
