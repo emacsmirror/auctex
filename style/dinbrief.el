@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1994-2021  Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,7 +38,7 @@
  "dinbrief"
  (lambda ()
    (add-hook 'LaTeX-document-style-hook
-             'LaTeX-dinbrief-style)
+             #'LaTeX-dinbrief-style)
    (LaTeX-add-environments
     '("letter" LaTeX-dinbrief-env-recipient)
     "dinquote")

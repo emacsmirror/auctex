@@ -1,6 +1,6 @@
 ;;; pst-node.el --- AUCTeX style for `pst-node.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2013, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2007-2021  Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -49,7 +49,7 @@
 (declare-function LaTeX-pst-point  "pstricks" ())
 (declare-function LaTeX-pst-arrows "pstricks" ())
 
-(defalias 'LaTeX-pst-node 'LaTeX-pst-point)
+(defalias 'LaTeX-pst-node #'LaTeX-pst-point)
 
 (defvar LaTeX-pstnode-parameters-completion-regexp
   "\\(npos\\|nrot\\)"

@@ -1,6 +1,6 @@
 ;;; multi-prompt.el --- Completing read of multiple strings
 
-;; Copyright (C) 1996-2019 Free Software Foundation, Inc.
+;; Copyright (C) 1996-2021 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -56,7 +56,7 @@ are the arguments to `completing-read'.  See that."
     (define-key new-map separator (if require-match
                                       'multi-prompt-next-must-match
                                     'multi-prompt-next))
-    (define-key new-map "\C-?" 'multi-prompt-delete)
+    (define-key new-map "\C-?" #'multi-prompt-delete)
     (let* ((minibuffer-local-completion-map new-map)
            (minibuffer-local-must-match-map new-map)
            (multi-prompt-found nil)

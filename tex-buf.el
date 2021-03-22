@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991-1999, 2001-2020 Free Software Foundation, Inc.
+;; Copyright (C) 1991-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -1206,7 +1206,7 @@ run of `TeX-run-TeX', use
 
 ;; backward compatibilty
 
-(defalias 'TeX-run-LaTeX 'TeX-run-TeX)
+(defalias 'TeX-run-LaTeX #'TeX-run-TeX)
 
 
 (defun TeX-run-BibTeX (name command file)
@@ -1312,7 +1312,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
                 TeX-shell-command-option command)
   (if (eq system-type 'ms-dos)
       (redraw-display)))
-(defalias 'TeX-run-dviout 'TeX-run-discard-foreground)
+(defalias 'TeX-run-dviout #'TeX-run-discard-foreground)
 
 (defun TeX-run-background (name command _file)
   "Start process with second argument, show output when and if it arrives."
@@ -3711,15 +3711,15 @@ forward, if negative)."
 
 (defvar TeX-error-overview-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "b"    'TeX-error-overview-toggle-debug-bad-boxes)
-    (define-key map "j"    'TeX-error-overview-jump-to-source)
-    (define-key map "l"    'TeX-error-overview-goto-log)
-    (define-key map "n"    'TeX-error-overview-next-error)
-    (define-key map "p"    'TeX-error-overview-previous-error)
-    (define-key map "q"    'TeX-error-overview-quit)
-    (define-key map "w"    'TeX-error-overview-toggle-debug-warnings)
-    (define-key map "x"    'TeX-error-overview-toggle-suppress-ignored-warnings)
-    (define-key map "\C-m" 'TeX-error-overview-goto-source)
+    (define-key map "b"    #'TeX-error-overview-toggle-debug-bad-boxes)
+    (define-key map "j"    #'TeX-error-overview-jump-to-source)
+    (define-key map "l"    #'TeX-error-overview-goto-log)
+    (define-key map "n"    #'TeX-error-overview-next-error)
+    (define-key map "p"    #'TeX-error-overview-previous-error)
+    (define-key map "q"    #'TeX-error-overview-quit)
+    (define-key map "w"    #'TeX-error-overview-toggle-debug-warnings)
+    (define-key map "x"    #'TeX-error-overview-toggle-suppress-ignored-warnings)
+    (define-key map "\C-m" #'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
 
@@ -3866,10 +3866,10 @@ warnings and bad boxes"
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-special-mode-map)
-    (define-key map "n" 'TeX-next-error)
-    (define-key map "p" 'TeX-previous-error)
-    (define-key map "b" 'TeX-toggle-debug-bad-boxes)
-    (define-key map "w" 'TeX-toggle-debug-warnings)
+    (define-key map "n" #'TeX-next-error)
+    (define-key map "p" #'TeX-previous-error)
+    (define-key map "b" #'TeX-toggle-debug-bad-boxes)
+    (define-key map "w" #'TeX-toggle-debug-warnings)
     (define-key map "i" (lambda ()
                           (interactive)
                           (with-current-buffer TeX-command-buffer

@@ -1,6 +1,6 @@
 ;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -173,8 +173,8 @@ second mandatory argument."
   ;; mechanism to identify the default polyglossia language.
   (let ((language (funcall
                    (if multiple
-                       'TeX-completing-read-multiple
-                     'completing-read)
+                       #'TeX-completing-read-multiple
+                     #'completing-read)
                    (if multiple "Languages: " "Language: ")
                    (if setkeys
                        (LaTeX-polyglossia-active-languages)
@@ -201,7 +201,7 @@ second mandatory argument."
             (TeX-arg-closing-brace LaTeX-optcl))
         (TeX-argument-insert options t)))
     (if multiple
-        (setq language (mapconcat 'identity language ",")))
+        (setq language (mapconcat #'identity language ",")))
     (TeX-argument-insert language nil)
     (if setkeys
         (TeX-argument-insert options nil))))

@@ -1,6 +1,6 @@
 ;;; prosper.el --- Prosper style file for AUCTeX  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001, 2002, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2001-2021  Free Software Foundation, Inc.
 
 ;; Authors:  Phillip Lord<p.lord@russet.org.uk>
 ;;           Nevin Kapur <nevin@jhu.edu>
@@ -103,7 +103,7 @@
       (TeX-argument-prompt nil
                            (format "Transition (Default %s) " default)
                            t)
-      (mapcar 'list LaTeX-prosper-transition-styles)
+      (mapcar #'list LaTeX-prosper-transition-styles)
       nil
       t
       nil

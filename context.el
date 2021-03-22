@@ -1,7 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2006, 2008, 2010, 2012, 2014-2020
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 2003-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -506,7 +505,7 @@ in your .emacs file."
   :type 'string
   :group 'TeX-command)
 (make-variable-buffer-local 'ConTeXt-Mark-version)
-(put 'ConTeXt-Mark-version 'safe-local-variable 'stringp)
+(put 'ConTeXt-Mark-version 'safe-local-variable #'stringp)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -1310,18 +1309,18 @@ else.  There might be text before point."
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
 
-    (define-key map "\e\C-a"  'ConTeXt-find-matching-start)
-    (define-key map "\e\C-e"  'ConTeXt-find-matching-stop)
+    (define-key map "\e\C-a"  #'ConTeXt-find-matching-start)
+    (define-key map "\e\C-e"  #'ConTeXt-find-matching-stop)
     ;; likely to change in the future
-    (define-key map "\C-c!"    'ConTeXt-work-on-environment)
-    (define-key map "\C-c\C-e" 'ConTeXt-environment)
-    (define-key map "\C-c\n"   'ConTeXt-insert-item)
+    (define-key map "\C-c!"    #'ConTeXt-work-on-environment)
+    (define-key map "\C-c\C-e" #'ConTeXt-environment)
+    (define-key map "\C-c\n"   #'ConTeXt-insert-item)
     (or (key-binding "\e\r")
-        (define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
-    (define-key map "\C-c]" 'ConTeXt-close-environment)
-    (define-key map "\C-c\C-s" 'ConTeXt-section)
+        (define-key map "\e\r"    #'ConTeXt-insert-item)) ;*** Alias
+    (define-key map "\C-c]" #'ConTeXt-close-environment)
+    (define-key map "\C-c\C-s" #'ConTeXt-section)
     ;; XML in ConTeXt support
-    (define-key map "\C-c/" 'ConTeXt-close-xml-tag)
+    (define-key map "\C-c/" #'ConTeXt-close-xml-tag)
     map)
   "Keymap used in `ConTeXt-mode'.")
 
@@ -1741,7 +1740,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (use-local-map ConTeXt-mode-map)
 
   ;; Indenting
-  (set (make-local-variable 'indent-line-function) 'ConTeXt-indent-line)
+  (set (make-local-variable 'indent-line-function) #'ConTeXt-indent-line)
   (set (make-local-variable 'fill-indent-according-to-mode) t)
 
   ;; Paragraph formatting
@@ -1749,7 +1748,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
        (ConTeXt-paragraph-commands-regexp))
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  (set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
+  (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
   (setq paragraph-start
         (concat
@@ -1771,7 +1770,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   (if (fboundp 'make-local-hook)
       (make-local-hook 'activate-menubar-hook))
-  (add-hook 'activate-menubar-hook 'ConTeXt-menu-update nil t)
+  (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
   ;; Outline support
   (require 'outline)
@@ -1786,11 +1785,11 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   ;; imenu support
   (set (make-local-variable 'imenu-create-index-function)
-       'ConTeXt-imenu-create-index-function)
+       #'ConTeXt-imenu-create-index-function)
 
   ;; run hooks
   (setq TeX-command-default "ConTeXt")
-  (setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
+  (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
 
 (defun context-guess-current-interface ()
@@ -1811,7 +1810,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
                  ConTeXt-default-interface)))))
 
 ;;;###autoload
-(defalias 'ConTeXt-mode 'context-mode)
+(defalias 'ConTeXt-mode #'context-mode)
 
 ;;;###autoload
 (defun context-mode ()

@@ -1,6 +1,6 @@
 ;;; tex-wizard.el --- Check the TeX configuration
 
-;; Copyright (C) 2003, 2006, 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2021 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <dak@gnu.org>
 ;; Keywords: tex, wp, convenience
@@ -76,19 +76,19 @@ and bibliographics references.\n")
                     (format "Enable RefTeX in `%s'" user-init-file))
               (select-window wizwin)
               (switch-to-buffer wizbuf))
-        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-        (add-hook 'latex-mode-hook 'turn-on-reftex)
+        (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+        (add-hook 'latex-mode-hook #'turn-on-reftex)
         (condition-case nil
             (write-region "\
 ;;; Enable RefTeX
-\(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-\(add-hook 'latex-mode-hook 'turn-on-reftex)
+\(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+\(add-hook 'latex-mode-hook #'turn-on-reftex)
 " nil user-init-file t)
           (error (insert-before-markers
                   (format "Unable to write to file `%s'\n" user-init-file))))))
     (when (and (featurep 'tex-site)
                (boundp 'LaTeX-mode-hook)
-               (memq 'turn-on-reftex LaTeX-mode-hook))
+               (memq #'turn-on-reftex LaTeX-mode-hook))
       (if (and (boundp 'reftex-plug-into-AUCTeX)
                reftex-plug-into-AUCTeX)
           (insert-before-markers

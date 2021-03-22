@@ -1,6 +1,6 @@
 ;;; toolbar-x.el --- fancy toolbar handling in Emacs and XEmacs
 
-;; Copyright (C) 2004, 2005, 2008, 2014, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -320,7 +320,7 @@ inside Emacs. See documentation of that function for more."
                               `(setq ,var ,count)
                             `(if (memq ,count ,var)
                                  (setq ,var (delete ,count ,var))
-                               (setq ,var (sort (cons ,count ,var) '<))))
+                               (setq ,var (sort (cons ,count ,var) #'<))))
                          (toolbarx-refresh))
                       (when (eq real-save 'always)
                         `((customize-save-variable
@@ -1108,11 +1108,11 @@ function `toolbar-install-toolbar'."
                    (t                   ; otherwise, must be a list
                                         ; with 4 strings or image
                                         ; descriptors
-                    (apply 'vector (mapcar (lambda (img)
-                                             (if (stringp img)
-                                                 (toolbarx-find-image img)
-                                               img))
-                                           image))))))
+                    (apply #'vector (mapcar (lambda (img)
+                                              (if (stringp img)
+                                                  (toolbarx-find-image img)
+                                                img))
+                                            image))))))
                (command
                 (let* ((com (nth 1 (memq :command filtered-props)))
                        (app (nth 1 (memq :append-command filtered-props)))

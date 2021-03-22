@@ -1,7 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006,
-;;               2011-2015, 2017-2019  Free Software Foundation, Inc.
+;; Copyright (C) 1993-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -52,7 +51,7 @@
 (defconst texinfo-environment-regexp
   ;; Overwrite version from `texinfo.el'.
   (concat "^@\\("
-          (mapconcat 'car Texinfo-environment-list "\\|")
+          (mapconcat #'car Texinfo-environment-list "\\|")
           "\\|end\\)\\>")
   "Regexp for environment-like Texinfo list commands.
 Subexpression 1 is what goes into the corresponding `@end' statement.")
@@ -106,7 +105,7 @@ With optional ARG, modify current environment."
 (defun Texinfo-find-env-end ()
   "Move point to the end of the current environment."
   (interactive)
-  (let* ((envs (mapcar 'car Texinfo-environment-list))
+  (let* ((envs (mapcar #'car Texinfo-environment-list))
          (regexp (concat "^[ \t]*" (regexp-quote TeX-esc) "\\(end \\)*"
                          (regexp-opt envs t) "\\b"))
          (orig-pos (point))
@@ -133,7 +132,7 @@ With optional ARG, modify current environment."
 (defun Texinfo-find-env-start ()
   "Move point to the start of the current environment."
   (interactive)
-  (let* ((envs (mapcar 'car Texinfo-environment-list))
+  (let* ((envs (mapcar #'car Texinfo-environment-list))
          (regexp (concat "^[ \t]*\\(" (regexp-quote TeX-esc) "\\)\\(end \\)*"
                          (regexp-opt envs t) "\\b"))
          (level 1)
@@ -304,7 +303,7 @@ character. Return the resulting string."
 commands. Return the resulting string."
   (let* ((pos 0)
          (map '(("," . "comma")))
-         (re (regexp-opt (mapcar 'car map))) )
+         (re (regexp-opt (mapcar #'car map))) )
     (while (and (< pos (length node-name)) (string-match re node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
                                "@" (cdr (assoc-string (match-string 0 node-name) map))
@@ -509,22 +508,22 @@ is assumed by default."
 
     ;; From texinfo.el
     ;; bindings for updating nodes and menus
-    (define-key map "\C-c\C-um"      'texinfo-master-menu)
-    (define-key map "\C-c\C-u\C-m"   'texinfo-make-menu)
-    (define-key map "\C-c\C-u\C-n"   'texinfo-update-node)
-    (define-key map "\C-c\C-u\C-e"   'texinfo-every-node-update)
-    (define-key map "\C-c\C-u\C-a"   'texinfo-all-menus-update)
+    (define-key map "\C-c\C-um"      #'texinfo-master-menu)
+    (define-key map "\C-c\C-u\C-m"   #'texinfo-make-menu)
+    (define-key map "\C-c\C-u\C-n"   #'texinfo-update-node)
+    (define-key map "\C-c\C-u\C-e"   #'texinfo-every-node-update)
+    (define-key map "\C-c\C-u\C-a"   #'texinfo-all-menus-update)
 
     ;; Simulating LaTeX-mode
-    (define-key map "\C-c\C-e" 'Texinfo-environment)
-    (define-key map "\C-c." 'Texinfo-mark-environment)
-    (define-key map "\C-c*" 'Texinfo-mark-section)
-    (define-key map "\M-\C-h" 'Texinfo-mark-node)
-    (define-key map "\C-c\n"   'texinfo-insert-@item)
+    (define-key map "\C-c\C-e" #'Texinfo-environment)
+    (define-key map "\C-c." #'Texinfo-mark-environment)
+    (define-key map "\C-c*" #'Texinfo-mark-section)
+    (define-key map "\M-\C-h" #'Texinfo-mark-node)
+    (define-key map "\C-c\n"   #'texinfo-insert-@item)
     (or (key-binding "\e\r")
-        (define-key map "\e\r" 'texinfo-insert-@item)) ;*** Alias
-    (define-key map "\C-c\C-s" 'Texinfo-insert-node)
-    (define-key map "\C-c]" 'texinfo-insert-@end)
+        (define-key map "\e\r" #'texinfo-insert-@item)) ;*** Alias
+    (define-key map "\C-c\C-s" #'Texinfo-insert-node)
+    (define-key map "\C-c]" #'texinfo-insert-@end)
 
     ;; Override some bindings in `TeX-mode-map'
     ;; FIXME: Inside @math{}, you can use all plain TeX math commands
@@ -622,7 +621,7 @@ is assumed by default."
 ;;; Mode:
 
 ;;;###autoload
-(defalias 'Texinfo-mode 'texinfo-mode)
+(defalias 'Texinfo-mode #'texinfo-mode)
 
 (defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
 
@@ -639,7 +638,7 @@ value of `Texinfo-mode-hook'."
   (kill-all-local-variables)
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
-  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
+  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name "Texinfo")
   (setq major-mode 'texinfo-mode)
@@ -673,7 +672,7 @@ value of `Texinfo-mode-hook'."
   ;; Outline settings.
   (set (make-local-variable 'outline-regexp)
        (concat "@\\("
-               (mapconcat 'car texinfo-section-list "\\>\\|")
+               (mapconcat #'car texinfo-section-list "\\>\\|")
                "\\>\\)"))
   (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
@@ -696,7 +695,8 @@ value of `Texinfo-mode-hook'."
              (list "" TeX-complete-word)))
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
-  (set (make-local-variable 'TeX-font-replace-function) 'TeX-font-replace-macro)
+  (set (make-local-variable 'TeX-font-replace-function)
+       #'TeX-font-replace-macro)
   (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
 
   (add-hook 'find-file-hook (lambda ()
@@ -853,7 +853,7 @@ value of `Texinfo-mode-hook'."
    '("xref" (Texinfo-arg-nodename "Node name")))
 
   ;; RefTeX plugging
-  (add-hook 'reftex-mode-hook 'Texinfo-reftex-hook)
+  (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook)
   (if (and (boundp 'reftex-mode) reftex-mode)
       (Texinfo-reftex-hook))
 

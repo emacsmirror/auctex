@@ -1,6 +1,6 @@
 ;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -498,7 +498,7 @@ the sequence by initializing this variable.")
                               (cdr parent)))))))))
   ;; Make the kpfonts prefix char available if it has not been used as a prefix.
   (unless (lookup-key map (LaTeX-kpfonts-abbrev-prefix))
-    (define-key map (LaTeX-kpfonts-abbrev-prefix) 'self-insert-command)))
+    (define-key map (LaTeX-kpfonts-abbrev-prefix) #'self-insert-command)))
 
 (define-minor-mode LaTeX-kpfonts-mode
   "A minor mode with easy access to kpfonts macros.

@@ -1,6 +1,6 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files
 
-;; Copyright (C) 2005, 2007, 2009, 2012-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Keywords: tex, wp, convenience
@@ -414,7 +414,7 @@ your document actually defines shortvrb chars using
 \\MakeShortVrb."
   :group 'LaTeX-style
   :type '(repeat character))
-(put 'LaTeX-shortvrb-chars 'safe-local-variable 'listp)
+(put 'LaTeX-shortvrb-chars 'safe-local-variable #'listp)
 
 ;; style/splitidx.el
 

@@ -1,7 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2009, 2013-2015, 2018, 2020
-;;                Free Software Foundation, Inc.
+;; Copyright (C) 2007-2021  Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -79,10 +78,10 @@
               (crm-separator (nth 4 first))
               res)
           (setq list (cdr list))
-          (cond ((eq func 'completing-read-multiple)
+          (cond ((eq func #'completing-read-multiple)
                  (setq res (funcall func prompt list nil compl nil hist))
-                 (mapconcat 'identity res crm-separator))
-                ((eq func 'completing-read)
+                 (mapconcat #'identity res crm-separator))
+                ((eq func #'completing-read)
                  (setq res
                        (funcall func prompt list nil compl nil hist)))))
       (completing-read (concat prompt ": ") list nil nil nil hist))))
@@ -789,7 +788,7 @@ comma separated list. Point has to be within the sexp to modify."
      ;; takes dvips+ps2pdf route when `TeX-PDF-mode' is enabled.
      ;; (TeX-PDF-mode-off)
      (setq TeX-PDF-from-DVI "Dvips"))
-   (mapc 'TeX-auto-add-regexp LaTeX-auto-pstricks-regexp-list)
+   (mapc #'TeX-auto-add-regexp LaTeX-auto-pstricks-regexp-list)
    (LaTeX-add-environments
     '("pspicture" LaTeX-pst-env-pspicture)
     "overlaybox" "psclip")

@@ -771,11 +771,11 @@ runs bib-find, and [mouse-3] runs bib-display."
           (bib-cite-setup-highlight-mouse-keymap)
           (bib-highlight-mouse)
           (add-hook 'after-change-functions
-                    'bib-cite-setup-mouse-function nil t))))
+                    #'bib-cite-setup-mouse-function nil t))))
    (t
    ;;;Undo the minor-mode
     ;; mouse overlay
-    (remove-hook 'after-change-functions 'bib-cite-setup-mouse-function t)
+    (remove-hook 'after-change-functions #'bib-cite-setup-mouse-function t)
     (let ((before-change-functions) (after-change-functions))
       ;; FIXME This detroys all mouse-faces and local-maps!
       ;; FIXME Hope no other package is using them in this buffer!
@@ -809,8 +809,8 @@ runs bib-find, and [mouse-3] runs bib-display."
             (substitute-key-definition 'assist-key-depress-emacs19
                                        nil m global-map))
            (t                               ; emacs 19, not hyperbole
-            (define-key m [down-mouse-3] 'bib-display-mouse)
-            (define-key m [mouse-2] 'bib-find-mouse)))
+            (define-key m [down-mouse-3] #'bib-display-mouse)
+            (define-key m [mouse-2] #'bib-find-mouse)))
           m)))
 
 ;;;###autoload
@@ -829,13 +829,13 @@ runs bib-find, and [mouse-3] runs bib-display."
 
 (defvar bib-cite-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "\C-cba" 'bib-apropos)
-    (define-key map "\C-cbb" 'bib-make-bibliography)
-    (define-key map "\C-cbd" 'bib-display)
-    (define-key map "\C-cbe" 'bib-etags)
-    (define-key map "\C-cbf" 'bib-find)
-    (define-key map "\C-cbn" 'bib-find-next)
-    (define-key map "\C-cbh" 'bib-highlight-mouse)
+    (define-key map "\C-cba" #'bib-apropos)
+    (define-key map "\C-cbb" #'bib-make-bibliography)
+    (define-key map "\C-cbd" #'bib-display)
+    (define-key map "\C-cbe" #'bib-etags)
+    (define-key map "\C-cbf" #'bib-find)
+    (define-key map "\C-cbn" #'bib-find-next)
+    (define-key map "\C-cbh" #'bib-highlight-mouse)
     map)
   "Bib-cite minor-mode keymap.")
 
@@ -1500,7 +1500,7 @@ If within a multi-file document (in auctex only)
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map minibuffer-local-completion-map)
-    (define-key map " " 'self-insert-command)
+    (define-key map " " #'self-insert-command)
     map))
 
 (defun bib-guess-or-prompt-for-label ()
@@ -1644,7 +1644,7 @@ e.g. turns
 '((\"label3\" \"label4\")(\"label1\" \"label2\") \"label\")
 into
 '((\"label3\") (\"label4\") (\"label1\") (\"label2\") (\"label\"))"
-  (mapcar 'list (bib-cite-mh-list-to-string the-list)))
+  (mapcar #'list (bib-cite-mh-list-to-string the-list)))
 
 ;;
 ;; Following two functions from mh-utils.el (part of GNU emacs)
@@ -2249,7 +2249,7 @@ although BiBTeX doesn't allow it!"
                                           (skip-chars-backward ", ")
                                           (point))))))
             (setq doNext nil)))
-        (mapcar 'list the-list)))))
+        (mapcar #'list the-list)))))
 
 (defvar TeX-auto-save)
 (defvar TeX-auto-regexp-list)

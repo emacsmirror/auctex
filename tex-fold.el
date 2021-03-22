@@ -1,7 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.
 
-;; Copyright (C) 2004-2008, 2011-2012, 2014, 2017, 2018
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -257,17 +256,17 @@ After that, changing the prefix key requires manipulating keymaps."
 
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map "\C-o" 'TeX-fold-dwim)
-    (define-key map "\C-b" 'TeX-fold-buffer)
-    (define-key map "\C-r" 'TeX-fold-region)
-    (define-key map "\C-p" 'TeX-fold-paragraph)
-    (define-key map "\C-m" 'TeX-fold-macro)
-    (define-key map "\C-e" 'TeX-fold-env)
-    (define-key map "\C-c" 'TeX-fold-comment)
-    (define-key map "b"    'TeX-fold-clearout-buffer)
-    (define-key map "r"    'TeX-fold-clearout-region)
-    (define-key map "p"    'TeX-fold-clearout-paragraph)
-    (define-key map "i"    'TeX-fold-clearout-item)
+    (define-key map "\C-o" #'TeX-fold-dwim)
+    (define-key map "\C-b" #'TeX-fold-buffer)
+    (define-key map "\C-r" #'TeX-fold-region)
+    (define-key map "\C-p" #'TeX-fold-paragraph)
+    (define-key map "\C-m" #'TeX-fold-macro)
+    (define-key map "\C-e" #'TeX-fold-env)
+    (define-key map "\C-c" #'TeX-fold-comment)
+    (define-key map "b"    #'TeX-fold-clearout-buffer)
+    (define-key map "r"    #'TeX-fold-clearout-region)
+    (define-key map "p"    #'TeX-fold-clearout-paragraph)
+    (define-key map "i"    #'TeX-fold-clearout-item)
     map))
 
 
@@ -858,7 +857,7 @@ Remove the respective properties from the overlay OV."
                                  (not (eq (window-buffer (car x))
                                           (current-buffer)))))
                            TeX-fold-open-spots))
-                   (old-ols (mapcar 'cdr (car spots))))
+                   (old-ols (mapcar #'cdr (car spots))))
               (setq TeX-fold-open-spots (cdr spots))
               (when (or (and (boundp 'disable-point-adjustment)
                              disable-point-adjustment)
@@ -921,8 +920,8 @@ With zero or negative ARG turn mode off."
   (if TeX-fold-mode
       (progn
         (set (make-local-variable 'search-invisible) t)
-        (add-hook 'post-command-hook 'TeX-fold-post-command nil t)
-        (add-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point nil t)
+        (add-hook 'post-command-hook #'TeX-fold-post-command nil t)
+        (add-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point nil t)
         (add-hook 'TeX-after-insert-macro-hook
                   (lambda ()
                     (when (and TeX-fold-mode TeX-fold-auto)
@@ -943,13 +942,13 @@ With zero or negative ARG turn mode off."
                          (when (boundp symbol)
                            (symbol-value symbol)))))))
     (kill-local-variable 'search-invisible)
-    (remove-hook 'post-command-hook 'TeX-fold-post-command t)
-    (remove-hook 'LaTeX-fill-newline-hook 'TeX-fold-update-at-point t)
+    (remove-hook 'post-command-hook #'TeX-fold-post-command t)
+    (remove-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point t)
     (TeX-fold-clearout-buffer))
   (TeX-set-mode-name))
 
 ;;;###autoload
-(defalias 'tex-fold-mode 'TeX-fold-mode)
+(defalias 'tex-fold-mode #'TeX-fold-mode)
 
 (provide 'tex-fold)
 

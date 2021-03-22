@@ -1,6 +1,6 @@
 ;;; latexinfo.el - Support for LaTeXinfo files.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1993-2021  Free Software Foundation, Inc.
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
 
@@ -41,12 +41,12 @@ We ignore next, previous and up fields.")
 (if LaTeXinfo-mode-map
     ()
   (setq LaTeXinfo-mode-map (make-sparse-keymap))
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-b" 'latexinfo-format-buffer)
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-r" 'latexinfo-format-region)
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-s" 'latexinfo-show-structure)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ud" 'makke:latexinfo-delete-structure)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ug" 'latexinfo-goto-node)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ui" 'makke:latexinfo-structure))
+  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-b" #'latexinfo-format-buffer)
+  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-r" #'latexinfo-format-region)
+  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-s" #'latexinfo-show-structure)
+  (define-key LaTeXinfo-mode-map "\C-c\C-ud" #'makke:latexinfo-delete-structure)
+  (define-key LaTeXinfo-mode-map "\C-c\C-ug" #'latexinfo-goto-node)
+  (define-key LaTeXinfo-mode-map "\C-c\C-ui" #'makke:latexinfo-structure))
 
 (or (assq 'LaTeXinfo-mode minor-mode-map-alist)
     (setq minor-mode-map-alist

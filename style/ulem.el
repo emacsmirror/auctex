@@ -1,6 +1,6 @@
 ;;; ulem.el --- AUCTeX style for `ulem.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Keywords: tex
@@ -101,7 +101,7 @@
   "Prompt for underline command used in \\useunder"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Underline command")
-                    (mapcar 'list
+                    (mapcar #'list
                             (mapcar (lambda (str) (concat "\\" str))
                                     '("uline" "uuline"
                                       "uwave" "sout" "xout")))

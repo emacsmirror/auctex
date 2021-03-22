@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 2005, 2013, 2016-2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -91,7 +91,7 @@ shared by all users of a site."
     (doctex-mode . tex-mode))
   "Alist of built-in TeX modes and their load files.")
 
-(defalias 'TeX-load-hack 'ignore)
+(defalias 'TeX-load-hack #'ignore)
 
 (add-hook 'tex-site-unload-hook
           (lambda ()
@@ -166,5 +166,5 @@ If not a regular release, the date of the last change.")
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
+(add-hook 'bibtex-mode-hook #'BibTeX-auto-store)
 

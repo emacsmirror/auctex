@@ -289,12 +289,12 @@ header is at the start of a line."
           "[ \t]*"
           (regexp-quote TeX-esc)
           "\\(appendix\\|documentstyle\\|documentclass\\|"
-          (mapconcat 'car LaTeX-section-list "\\|")
+          (mapconcat #'car LaTeX-section-list "\\|")
           "\\)\\b"
           (if TeX-outline-extra
               "\\|"
             "")
-          (mapconcat 'car TeX-outline-extra "\\|")
+          (mapconcat #'car TeX-outline-extra "\\|")
           "\\|" TeX-header-end
           "\\|" TeX-trailer-start))
 
@@ -1749,7 +1749,7 @@ Split the string at commas and remove Biber file extensions."
         LaTeX-auto-style nil
         LaTeX-auto-end-symbol nil))
 
-(add-hook 'TeX-auto-prepare-hook 'LaTeX-auto-prepare)
+(add-hook 'TeX-auto-prepare-hook #'LaTeX-auto-prepare)
 
 (defun LaTeX-listify-package-options (options)
   "Return a list from a comma-separated string of package OPTIONS.
@@ -1838,9 +1838,9 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup BibTeX/Biber files
   (setq LaTeX-auto-bibliography
-        (apply 'append (mapcar (lambda (arg)
-                                 (TeX-split-string "," arg))
-                               LaTeX-auto-bibliography)))
+        (apply #'append (mapcar (lambda (arg)
+                                  (TeX-split-string "," arg))
+                                LaTeX-auto-bibliography)))
 
   ;; Reset class and packages options for the current buffer
   (setq LaTeX-provided-class-options nil)
@@ -1963,11 +1963,11 @@ The value is actually the tail of the list of options given to PACKAGE."
             (add-to-list 'LaTeX-auto-environment symbol)))
         LaTeX-auto-end-symbol))
 
-(add-hook 'TeX-auto-cleanup-hook 'LaTeX-auto-cleanup)
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-auto-cleanup)
 
 (defadvice LaTeX-add-bibliographies (after run-bib-style-hooks (&rest bibliographies) activate)
   "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
-  (apply 'TeX-run-style-hooks bibliographies))
+  (apply #'TeX-run-style-hooks bibliographies))
 
 ;;; Biber support
 
@@ -2099,7 +2099,7 @@ string.  ARGS is unused."
         (LaTeX-add-index-entries entry))
     (TeX-argument-insert entry optional optional)))
 
-(defalias 'TeX-arg-define-index 'TeX-arg-index)
+(defalias 'TeX-arg-define-index #'TeX-arg-index)
 
 (defun TeX-arg-macro (optional &optional prompt definition)
   "Prompt for a TeX macro with completion.
@@ -2138,8 +2138,8 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  DEFINITION is unused."
   (let ((items (multi-prompt "," t (TeX-argument-prompt optional prompt "Key")
                              (LaTeX-bibitem-list))))
-    (apply 'LaTeX-add-bibitems items)
-    (TeX-argument-insert (mapconcat 'identity items ",") optional optional)))
+    (apply #'LaTeX-add-bibitems items)
+    (TeX-argument-insert (mapconcat #'identity items ",") optional optional)))
 
 (defun TeX-arg-counter (optional &optional prompt definition)
   "Prompt for a LaTeX counter.
@@ -2387,10 +2387,10 @@ OPTIONAL and IGNORE are ignored."
             (setq options (funcall var))
           (when (symbol-value var)
             (setq options
-                  (mapconcat 'identity
+                  (mapconcat #'identity
                              (TeX-completing-read-multiple
-                              optprmpt (mapcar 'list (symbol-value var)) nil nil
-                              nil nil defopt)
+                              optprmpt (mapcar #'list (symbol-value var))
+                              nil nil nil nil defopt)
                              ","))))
       (setq options (TeX-read-string optprmpt nil nil defopt)))
     (unless (zerop (length options))
@@ -2429,7 +2429,7 @@ of the options, nil otherwise."
           (progn
             (message "Searching for LaTeX packages...")
             (setq TeX-global-input-files
-                  (mapcar 'list (TeX-search-files-by-type
+                  (mapcar #'list (TeX-search-files-by-type
                                  'texinputs 'global t t)))
             (message "Searching for LaTeX packages...done"))))
     (setq packages (TeX-completing-read-multiple
@@ -2454,9 +2454,9 @@ of the options, nil otherwise."
               (setq options (funcall var))
             (when (symbol-value var)
               (setq options
-                    (mapconcat 'identity
+                    (mapconcat #'identity
                                (TeX-completing-read-multiple
-                                "Options: " (mapcar 'list (symbol-value var)))
+                                "Options: " (mapcar #'list (symbol-value var)))
                                ","))))
         (setq options (TeX-read-string "Options: ")))
       (cons packages options))))
@@ -2470,7 +2470,7 @@ of the options, nil otherwise."
                                 (list (cons elt opts))))
             packages))
     (insert LaTeX-optop options LaTeX-optcl))
-  (insert TeX-grop (mapconcat 'identity packages ",") TeX-grcl)
+  (insert TeX-grop (mapconcat #'identity packages ",") TeX-grcl)
   (run-hooks 'LaTeX-after-usepackage-hook)
   (apply #'TeX-run-style-hooks packages))
 
@@ -2546,13 +2546,13 @@ files."
           (unless (or TeX-global-input-files local)
             (message "Searching for files...")
             (setq TeX-global-input-files
-                  (mapcar 'list (TeX-search-files-by-type
+                  (mapcar #'list (TeX-search-files-by-type
                                  'texinputs 'global t t)))
             (message "Searching for files...done"))
           (setq file (completing-read
                       (TeX-argument-prompt optional prompt "File")
                       (TeX-delete-dups-by-car
-                       (append (mapcar 'list (TeX-search-files-by-type
+                       (append (mapcar #'list (TeX-search-files-by-type
                                               'texinputs 'local t t))
                                (unless local
                                  TeX-global-input-files))))
@@ -2586,11 +2586,11 @@ string."
   (message "Searching for BibTeX styles...")
   (or BibTeX-global-style-files
       (setq BibTeX-global-style-files
-            (mapcar 'list (TeX-search-files-by-type 'bstinputs 'global t t))))
+            (mapcar #'list (TeX-search-files-by-type 'bstinputs 'global t t))))
   (message "Searching for BibTeX styles...done")
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "BibTeX style")
-                    (append (mapcar 'list (TeX-search-files-by-type
+                    (append (mapcar #'list (TeX-search-files-by-type
                                            'bstinputs 'local t t))
                             BibTeX-global-style-files))
    optional))
@@ -2615,19 +2615,19 @@ string."
   (message "Searching for BibTeX files...")
   (or BibTeX-global-files
       (setq BibTeX-global-files
-            (mapcar 'list (TeX-search-files-by-type 'bibinputs 'global t t))))
+            (mapcar #'list (TeX-search-files-by-type 'bibinputs 'global t t))))
   (message "Searching for BibTeX files...done")
   (let ((styles (multi-prompt
                  "," t
                  (TeX-argument-prompt optional prompt "BibTeX files")
-                 (append (mapcar 'list (TeX-search-files-by-type
-                                        'bibinputs 'local t t))
+                 (append (mapcar #'list (TeX-search-files-by-type
+                                         'bibinputs 'local t t))
                          BibTeX-global-files))))
-    (apply 'LaTeX-add-bibliographies styles)
+    (apply #'LaTeX-add-bibliographies styles)
     ;; Run style files associated to the bibliography database files in order to
     ;; immediately fill `LaTeX-bibitem-list'.
-    (mapc 'TeX-run-style-hooks styles)
-    (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
+    (mapc #'TeX-run-style-hooks styles)
+    (TeX-argument-insert (mapconcat #'identity styles ",") optional)))
 
 (defun TeX-arg-corner (optional &optional prompt)
   "Prompt for a LaTeX side or corner position with completion.
@@ -4801,7 +4801,7 @@ usually used in the Emacs and Elisp manuals.
 Setting this variable directly does not take effect;
 use \\[customize]."
   :group 'LaTeX-math
-  :initialize 'custom-initialize-default
+  :initialize #'custom-initialize-default
   :set '(lambda (symbol value)
           (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
           (set-default symbol value)
@@ -5420,7 +5420,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
                                 (cdr parent)))))))))
     ;; Make the math prefix char available if it has not been used as a prefix.
     (unless (lookup-key map (LaTeX-math-abbrev-prefix))
-      (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
+      (define-key map (LaTeX-math-abbrev-prefix) #'self-insert-command))))
 
 (defcustom LaTeX-math-list nil
   "Alist of your personal LaTeX math symbols.
@@ -5479,7 +5479,7 @@ commands are defined:
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-mode-map)
     (easy-menu-remove LaTeX-math-mode-menu))
   (TeX-set-mode-name))
-(defalias 'latex-math-mode 'LaTeX-math-mode)
+(defalias 'latex-math-mode #'LaTeX-math-mode)
 
 (easy-menu-define LaTeX-math-mode-menu
   LaTeX-math-mode-map
@@ -5602,40 +5602,40 @@ environments."
     (set-keymap-parent map TeX-mode-map)
 
     ;; Standard
-    (define-key map "\n"      'reindent-then-newline-and-indent)
+    (define-key map "\n"      #'reindent-then-newline-and-indent)
 
     ;; From latex.el
     ;; We now set `fill-paragraph-function' instead.
     ;; (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
     ;; This key is now used by Emacs for face settings.
     ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
-    (define-key map "\e\C-e"  'LaTeX-find-matching-end)
-    (define-key map "\e\C-a"  'LaTeX-find-matching-begin)
+    (define-key map "\e\C-e"  #'LaTeX-find-matching-end)
+    (define-key map "\e\C-a"  #'LaTeX-find-matching-begin)
 
-    (define-key map "\C-c\C-q\C-p" 'LaTeX-fill-paragraph)
-    (define-key map "\C-c\C-q\C-r" 'LaTeX-fill-region)
-    (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
-    (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
+    (define-key map "\C-c\C-q\C-p" #'LaTeX-fill-paragraph)
+    (define-key map "\C-c\C-q\C-r" #'LaTeX-fill-region)
+    (define-key map "\C-c\C-q\C-s" #'LaTeX-fill-section)
+    (define-key map "\C-c\C-q\C-e" #'LaTeX-fill-environment)
 
-    (define-key map "\C-c\C-z" 'LaTeX-command-section)
-    (define-key map "\C-c\M-z" 'LaTeX-command-section-change-level)
+    (define-key map "\C-c\C-z" #'LaTeX-command-section)
+    (define-key map "\C-c\M-z" #'LaTeX-command-section-change-level)
 
-    (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
-    (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
+    (define-key map "\C-c."    #'LaTeX-mark-environment) ;*** Dubious
+    (define-key map "\C-c*"    #'LaTeX-mark-section) ;*** Dubious
 
-    (define-key map "\C-c\C-e" 'LaTeX-environment)
-    (define-key map "\C-c\n"   'LaTeX-insert-item)
+    (define-key map "\C-c\C-e" #'LaTeX-environment)
+    (define-key map "\C-c\n"   #'LaTeX-insert-item)
     (or (key-binding "\e\r")
-        (define-key map "\e\r"    'LaTeX-insert-item)) ;*** Alias
-    (define-key map "\C-c]" 'LaTeX-close-environment)
-    (define-key map "\C-c\C-s" 'LaTeX-section)
+        (define-key map "\e\r"    #'LaTeX-insert-item)) ;*** Alias
+    (define-key map "\C-c]" #'LaTeX-close-environment)
+    (define-key map "\C-c\C-s" #'LaTeX-section)
 
-    (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
+    (define-key map "\C-c~"    #'LaTeX-math-mode) ;*** Dubious
 
-    (define-key map "-" 'LaTeX-babel-insert-hyphen)
-    (define-key map "(" 'LaTeX-insert-left-brace)
-    (define-key map "{" 'LaTeX-insert-left-brace)
-    (define-key map "[" 'LaTeX-insert-left-brace)
+    (define-key map "-" #'LaTeX-babel-insert-hyphen)
+    (define-key map "(" #'LaTeX-insert-left-brace)
+    (define-key map "{" #'LaTeX-insert-left-brace)
+    (define-key map "[" #'LaTeX-insert-left-brace)
     map)
   "Keymap used in `LaTeX-mode'.")
 
@@ -5736,9 +5736,9 @@ The argument IGNORED is not used in any way."
   (or LaTeX-section-menu
       (progn
         (setq LaTeX-section-list-changed nil)
-        (mapc 'LaTeX-section-enable LaTeX-section-list)
+        (mapc #'LaTeX-section-enable LaTeX-section-list)
         (setq LaTeX-section-menu
-              (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))))
+              (mapcar #'LaTeX-section-menu-entry LaTeX-section-list)))))
 
 (defvar LaTeX-environment-menu nil)
 (make-variable-buffer-local 'LaTeX-environment-menu)
@@ -5755,13 +5755,13 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     (or LaTeX-environment-menu
         (setq LaTeX-environment-menu
               (LaTeX-split-long-menu
-               (mapcar 'LaTeX-environment-menu-entry
+               (mapcar #'LaTeX-environment-menu-entry
                        (LaTeX-environment-list))))))
    ((string= menu LaTeX-environment-modify-menu-name)
     (or LaTeX-environment-modify-menu
         (setq LaTeX-environment-modify-menu
               (LaTeX-split-long-menu
-               (mapcar 'LaTeX-environment-modify-menu-entry
+               (mapcar #'LaTeX-environment-modify-menu-entry
                        (LaTeX-environment-list))))))))
 
 (defadvice LaTeX-add-environments (after LaTeX-invalidate-environment-menu (&rest environments) activate)
@@ -6073,8 +6073,8 @@ of `LaTeX-mode-hook'."
   (setq TeX-base-mode-name "LaTeX")
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
-  (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar nil t)
+  (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
+  (add-hook 'tool-bar-mode-on-hook #'LaTeX-maybe-install-toolbar nil t)
   (when (and (boundp 'tool-bar-mode) tool-bar-mode)
     (LaTeX-maybe-install-toolbar))
   ;; Set the value of `LaTeX-using-Biber' based on the local value of
@@ -6107,7 +6107,7 @@ of `LaTeX-mode-hook'."
       (turn-off-filladapt-mode))
   (when (< 25 emacs-major-version)
     ;; Set up flymake backend, see latex-flymake.el
-    (add-hook 'flymake-diagnostic-functions 'LaTeX-flymake nil t)))
+    (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t)))
 
 (TeX-abbrev-mode-setup doctex-mode)
 
@@ -6142,7 +6142,7 @@ runs the hooks in `docTeX-mode-hook'."
 ;;disabled) as would be normal for our scheme.
 
 ;;;###autoload
-(defalias 'TeX-doctex-mode 'docTeX-mode)
+(defalias 'TeX-doctex-mode #'docTeX-mode)
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
@@ -6191,13 +6191,13 @@ function would return non-nil and `(match-string 1)' would return
   "Common initialization for LaTeX derived modes."
   (VirTeX-common-initialization)
   (set-syntax-table LaTeX-mode-syntax-table)
-  (set (make-local-variable 'indent-line-function) 'LaTeX-indent-line)
+  (set (make-local-variable 'indent-line-function) #'LaTeX-indent-line)
 
   (setq local-abbrev-table latex-mode-abbrev-table)
 
   ;; Filling
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  (set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
+  (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
 
   (or LaTeX-largest-level
@@ -6208,7 +6208,7 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'TeX-style-hook-dialect) TeX-dialect)
 
   (require 'outline)
-  (set (make-local-variable 'outline-level) 'LaTeX-outline-level)
+  (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
   (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
   (when (boundp 'outline-heading-alist)
     (setq outline-heading-alist
@@ -6230,9 +6230,9 @@ function would return non-nil and `(match-string 1)' would return
          "\\$\\$"                       ; Plain TeX display math
          "\\|$\\)"))
 
-  (setq TeX-verbatim-p-function 'LaTeX-verbatim-p)
+  (setq TeX-verbatim-p-function #'LaTeX-verbatim-p)
   (setq TeX-search-forward-comment-start-function
-        'LaTeX-search-forward-comment-start)
+        #'LaTeX-search-forward-comment-start)
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
 
@@ -6715,7 +6715,7 @@ function would return non-nil and `(match-string 1)' would return
   (if (string-equal LaTeX-version "2")
       ()
     (setq TeX-font-list LaTeX-font-list)
-    (setq TeX-font-replace-function 'TeX-font-replace-macro)
+    (setq TeX-font-replace-function #'TeX-font-replace-macro)
     (TeX-add-symbols
      '("newcommand" TeX-arg-define-macro
        [ TeX-arg-define-macro-arguments ] t)
@@ -6750,7 +6750,7 @@ function would return non-nil and `(match-string 1)' would return
                       ;; Use new fonts for `\documentclass' documents.
                       (lambda ()
                         (setq TeX-font-list LaTeX-font-list)
-                        (setq TeX-font-replace-function 'TeX-font-replace-macro)
+                        (setq TeX-font-replace-function #'TeX-font-replace-macro)
                         (run-hooks 'LaTeX2e-hook))
                       TeX-dialect)
 
@@ -6800,7 +6800,7 @@ function would return non-nil and `(match-string 1)' would return
   ;; user overrode it.
 
   (set (make-local-variable 'imenu-create-index-function)
-       'LaTeX-imenu-create-index-function)
+       #'LaTeX-imenu-create-index-function)
 
   (use-local-map LaTeX-mode-map)
 
@@ -6811,7 +6811,7 @@ function would return non-nil and `(match-string 1)' would return
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
 
-  (define-key LaTeX-mode-map "\C-xne" 'LaTeX-narrow-to-environment)
+  (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
 
   ;; AUCTeX's brace pairing feature (`LaTeX-electric-left-right-brace') doesn't
   ;; play nice with `electric-pair-mode' which is a global minor mode as of

@@ -1,6 +1,6 @@
 ;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -72,7 +72,7 @@ argument.  Use PROMPT as the prompt string."
   ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
   ;; is hard-coded to `TeX-esc'.
   (let* ((crm-separator (regexp-quote TeX-esc))
-         (fontdecl (mapconcat 'identity
+         (fontdecl (mapconcat #'identity
                               (TeX-completing-read-multiple
                                (TeX-argument-prompt optional prompt "Font")
                                LaTeX-theorem-fontdecl nil nil TeX-esc)
@@ -113,7 +113,7 @@ RefTeX users should customize or add ENVIRONMENT to
 (defun LaTeX-theorem-auto-cleanup ()
   "Move parsed results from `LaTeX-auto-theorem-newtheorem' and
 make them available as new environments."
-  (dolist (newthm (mapcar 'car (LaTeX-theorem-newtheorem-list)))
+  (dolist (newthm (mapcar #'car (LaTeX-theorem-newtheorem-list)))
     (LaTeX-add-environments (list newthm 'LaTeX-theorem-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-theorem-auto-prepare t)

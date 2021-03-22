@@ -791,7 +791,7 @@ in nil across different emacs versions."
       (unwind-protect
           (progn
             (add-hook 'choose-completion-string-functions
-                      'crm--choose-completion-string)
+                      #'crm--choose-completion-string)
             (let* ((minibuffer-completion-table #'crm--collection-fn)
                    (minibuffer-completion-predicate predicate)
                    ;; see completing_read in src/minibuf.c
@@ -813,7 +813,7 @@ in nil across different emacs versions."
                   nil
                 result)))
         (remove-hook 'choose-completion-string-functions
-                     'crm--choose-completion-string)))
+                     #'crm--choose-completion-string)))
   ;; For GNU Emacs <= 24.3.
   (defun TeX-completing-read-multiple
       (prompt table &optional predicate require-match initial-input
@@ -1590,7 +1590,7 @@ It should be one of the following symbols:\n\n"
                            (TeX-engine-alist))))
 (make-variable-buffer-local 'TeX-engine)
 (put 'TeX-engine 'safe-local-variable
-     (lambda (arg) (memq arg (mapcar 'car TeX-engine-alist-builtin))))
+     (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin))))
 
 (defun TeX-engine-set (type)
   "Set TeX engine to TYPE.
@@ -1614,7 +1614,7 @@ For available TYPEs, see variable `TeX-engine'."
   nil nil nil
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
-(defalias 'tex-omega-mode 'TeX-Omega-mode)
+(defalias 'tex-omega-mode #'TeX-Omega-mode)
 (make-obsolete 'TeX-Omega-mode 'TeX-engine-set "11.86")
 (make-obsolete-variable 'TeX-Omega-mode 'TeX-engine "11.86")
 
@@ -1748,7 +1748,7 @@ If this is nil, an empty string will be returned."
                       ;; in certain places of the DVI file. WHERE is a
                       ;; comma-separated value list: cr display hbox
                       ;; math par parend vbox
-                      (concat "=" (mapconcat 'identity
+                      (concat "=" (mapconcat #'identity
                                              TeX-source-specials-places ","))))
         TeX-synctex-tex-flags)
     ""))
@@ -1874,9 +1874,9 @@ SyncTeX are recognized."
        "SyncSource"
        'TeX-source-correlate-sync-source))))
 
-(defalias 'TeX-source-specials-mode 'TeX-source-correlate-mode)
+(defalias 'TeX-source-specials-mode #'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
-(defalias 'tex-source-correlate-mode 'TeX-source-correlate-mode)
+(defalias 'tex-source-correlate-mode #'TeX-source-correlate-mode)
 (put 'TeX-source-correlate-mode 'safe-local-variable #'booleanp)
 (setq minor-mode-map-alist
       (delq (assq 'TeX-source-correlate-mode minor-mode-map-alist)
@@ -2017,7 +2017,7 @@ enabled and the `synctex' binary is available."
 
 (defcustom TeX-PDF-mode t nil
   :group 'TeX-command
-  :set 'TeX-mode-set
+  :set #'TeX-mode-set
   :type 'boolean)
 (put 'TeX-PDF-mode 'safe-local-variable #'booleanp)
 
@@ -2045,7 +2045,7 @@ function `TeX-global-PDF-mode' for toggling this value."
                       (not (default-value 'TeX-PDF-mode))))
     (TeX-set-mode-name 'TeX-PDF-mode nil t)))
 
-(defalias 'tex-pdf-mode 'TeX-PDF-mode)
+(defalias 'tex-pdf-mode #'TeX-PDF-mode)
 
 (defvar TeX-PDF-mode-parsed nil
   "Set if `TeX-PDF-mode' has come about by parsing.")
@@ -2136,7 +2136,7 @@ for backward compatibility."
   nil nil nil
   :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
-(defalias 'tex-interactive-mode 'TeX-interactive-mode)
+(defalias 'tex-interactive-mode #'TeX-interactive-mode)
 (add-to-list 'minor-mode-alist '(TeX-interactive-mode ""))
 
 ;;; Commands
@@ -2189,7 +2189,7 @@ Must be the car of an entry in `TeX-command-list'."
 
  (make-variable-buffer-local 'TeX-command-default)
 
-(put 'TeX-command-default 'safe-local-variable 'stringp)
+(put 'TeX-command-default 'safe-local-variable #'stringp)
 
 (defvar TeX-clean-default-intermediate-suffixes
   '("\\.aux" "\\.bbl" "\\.blg" "\\.brf" "\\.fot"
@@ -2257,7 +2257,7 @@ also included in the regexp."
                                    (intern (concat mode-prefix
                                                    "-clean-output-suffixes"))))))))
     (when suffixes
-      (mapconcat 'identity suffixes "\\|"))))
+      (mapconcat #'identity suffixes "\\|"))))
 
 ;;; Master File
 
@@ -2903,15 +2903,15 @@ side effect e.g. on variable `TeX-font-list'.")
 
 (defsubst TeX-shdex-or (&rest args)
   "OR operator for style hook dialect expressions."
-  (apply 'logior (mapcar 'TeX-shdex-eval args)))
+  (apply #'logior (mapcar #'TeX-shdex-eval args)))
 
 (defsubst TeX-shdex-and (&rest args)
   "AND operator for style hook dialect expressions."
-  (apply 'logand (mapcar 'TeX-shdex-eval args)))
+  (apply #'logand (mapcar #'TeX-shdex-eval args)))
 
 (defsubst TeX-shdex-nor (&rest args)
   "NOR operator for style hook dialect expressions."
-  (lognot (apply 'TeX-shdex-or args)))
+  (lognot (apply #'TeX-shdex-or args)))
 
 (defsubst TeX-shdex-not (arg)
   "NOT operator for style hook dialect expressions."
@@ -3354,7 +3354,7 @@ is called with \\[universal-argument]."
 (defvar TeX-electric-macro-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map minibuffer-local-completion-map)
-    (define-key map " " 'minibuffer-complete-and-exit)
+    (define-key map " " #'minibuffer-complete-and-exit)
     map))
 
 (defun TeX-electric-macro ()
@@ -3555,7 +3555,7 @@ See `TeX-parse-macro' for details."
            (let ((head (car arg))
                  (tail (cdr arg)))
              (cond ((stringp head)
-                    (apply 'TeX-arg-string optional arg))
+                    (apply #'TeX-arg-string optional arg))
                    ((symbolp head)
                     (apply head optional tail))
                    (t (error "Unknown list argument type %s"
@@ -3760,7 +3760,7 @@ The algorithm is as follows:
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
-  (set (make-local-variable 'comment-indent-function) 'TeX-comment-indent)
+  (set (make-local-variable 'comment-indent-function) #'TeX-comment-indent)
   (set (make-local-variable 'comment-multi-line) nil)
   (make-local-variable 'compile-command)
   (unless (boundp 'compile-command)
@@ -3787,7 +3787,7 @@ The algorithm is as follows:
   ;; we enter TeX mode the first time.
   (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
 
-  (define-key TeX-mode-map "\C-xng" 'TeX-narrow-to-group)
+  (define-key TeX-mode-map "\C-xng" #'TeX-narrow-to-group)
 
   ;; Minor modes
   (when TeX-source-correlate-mode
@@ -3888,8 +3888,8 @@ The algorithm is as follows:
       ;; Sort it
       (message "Sorting %s..." name)
       (set local
-           (sort (mapcar 'TeX-listify (apply 'append (symbol-value local)))
-                 'TeX-car-string-lessp))
+           (sort (mapcar #'TeX-listify (apply #'append (symbol-value local)))
+                 #'TeX-car-string-lessp))
       (message "Sorting %s...done" name)
       ;; Make it unique
       (message "Removing duplicates...")
@@ -3955,7 +3955,7 @@ Generated by `TeX-auto-add-type'.")
   "Parse and apply TeX information in the current buffer."
   (TeX-auto-parse)
   (run-hooks 'TeX-auto-apply-hook)
-  (mapcar 'TeX-auto-apply-entry TeX-auto-parser))
+  (mapcar #'TeX-auto-apply-entry TeX-auto-parser))
 
 (defun TeX-auto-apply-entry (entry)
   "Apply the information in ENTRY in `TeX-auto-parser'."
@@ -4103,7 +4103,7 @@ If TEX is a directory, generate style files for all files in the directory."
   "Extract information for AUCTeX from current buffer and store it in FILE."
   (TeX-auto-parse)
 
-  (if (member nil (mapcar 'TeX-auto-entry-clear-p TeX-auto-parser))
+  (if (member nil (mapcar #'TeX-auto-entry-clear-p TeX-auto-parser))
       (let ((style (TeX-strip-extension nil TeX-all-extensions t))
             (class-opts (if (boundp 'LaTeX-provided-class-options)
                             LaTeX-provided-class-options))
@@ -4362,7 +4362,7 @@ functions in `TeX-auto-cleanup-hook' after parsing."
 
   (let ((case-fold-search nil))
 
-    (mapc 'TeX-auto-clear-entry TeX-auto-parser)
+    (mapc #'TeX-auto-clear-entry TeX-auto-parser)
     (run-hooks 'TeX-auto-prepare-hook)
 
     (save-excursion
@@ -4398,7 +4398,7 @@ functions in `TeX-auto-cleanup-hook' after parsing."
   "Add MATCH to TeX-auto-symbols.
 Check for potential LaTeX environments."
   (let ((symbol (if (listp match)
-                    (mapcar 'TeX-match-buffer match)
+                    (mapcar #'TeX-match-buffer match)
                   (TeX-match-buffer match))))
     (if (and (stringp symbol)
              (string-match "^end\\(.+\\)$" symbol))
@@ -4481,7 +4481,7 @@ If EXTENSIONS is not specified or nil, the value of
       (setq extensions TeX-file-extensions))
 
   (let ((regexp (concat "\\.\\("
-                        (mapconcat 'identity extensions "\\|")
+                        (mapconcat #'identity extensions "\\|")
                         "\\)$"))
         (case-fold-search t))
     (string-match regexp file)))
@@ -4948,63 +4948,63 @@ Brace insertion is only done if point is in a math construct and
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Standard
-    ;; (define-key map "\177"     'backward-delete-char-untabify)
-    (define-key map "\C-c}"    'up-list)
-    (define-key map "\C-c#"    'TeX-normal-mode)
-    (define-key map "\C-c\C-n" 'TeX-normal-mode)
-    (define-key map "\C-c?"    'TeX-documentation-texdoc)
-    (define-key map "\C-c\C-i" 'TeX-goto-info-page)
-    (define-key map "\r"       'TeX-newline)
+    ;; (define-key map "\177"     #'backward-delete-char-untabify)
+    (define-key map "\C-c}"    #'up-list)
+    (define-key map "\C-c#"    #'TeX-normal-mode)
+    (define-key map "\C-c\C-n" #'TeX-normal-mode)
+    (define-key map "\C-c?"    #'TeX-documentation-texdoc)
+    (define-key map "\C-c\C-i" #'TeX-goto-info-page)
+    (define-key map "\r"       #'TeX-newline)
 
     ;; From tex.el
-    (define-key map "\""       'TeX-insert-quote)
-    (define-key map "$"        'TeX-insert-dollar)
+    (define-key map "\""       #'TeX-insert-quote)
+    (define-key map "$"        #'TeX-insert-dollar)
     ;; Removed because LaTeX 2e have a better solution to italic correction.
-    ;; (define-key map "."        'TeX-insert-punctuation)
-    ;; (define-key map ","        'TeX-insert-punctuation)
-    (define-key map "\C-c{"    'TeX-insert-braces)
-    (define-key map "\C-c\C-f" 'TeX-font)
-    (define-key map "\C-c\C-m" 'TeX-insert-macro)
-    (define-key map "\\"       'TeX-insert-backslash)
-    (define-key map "^"        'TeX-insert-sub-or-superscript)
-    (define-key map "_"        'TeX-insert-sub-or-superscript)
-    (define-key map "\e\t"     'TeX-complete-symbol) ;*** Emacs 19 way
+    ;; (define-key map "."        #'TeX-insert-punctuation)
+    ;; (define-key map ","        #'TeX-insert-punctuation)
+    (define-key map "\C-c{"    #'TeX-insert-braces)
+    (define-key map "\C-c\C-f" #'TeX-font)
+    (define-key map "\C-c\C-m" #'TeX-insert-macro)
+    (define-key map "\\"       #'TeX-insert-backslash)
+    (define-key map "^"        #'TeX-insert-sub-or-superscript)
+    (define-key map "_"        #'TeX-insert-sub-or-superscript)
+    (define-key map "\e\t"     #'TeX-complete-symbol) ;*** Emacs 19 way
 
-    (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
-    (define-key map "\C-c:"    'comment-or-uncomment-region) ;*** Old way
-    (define-key map "\C-c\""   'TeX-uncomment) ;*** Old way
+    (define-key map "\C-c'"    #'TeX-comment-or-uncomment-paragraph) ;*** Old way
+    (define-key map "\C-c:"    #'comment-or-uncomment-region) ;*** Old way
+    (define-key map "\C-c\""   #'TeX-uncomment) ;*** Old way
 
-    (define-key map "\C-c;"    'comment-or-uncomment-region)
-    (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
+    (define-key map "\C-c;"    #'comment-or-uncomment-region)
+    (define-key map "\C-c%"    #'TeX-comment-or-uncomment-paragraph)
 
-    (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
-    (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
-    (define-key map "\C-c\C-t\C-s"   'TeX-source-correlate-mode)
-    (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
-    (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
-    (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
-    (define-key map "\C-c\C-t\C-w"   'TeX-toggle-debug-warnings)
-    (define-key map "\C-c\C-t\C-x"   'TeX-toggle-suppress-ignored-warnings)
-    (define-key map "\C-c\C-v" 'TeX-view)
+    (define-key map "\C-c\C-t\C-p"   #'TeX-PDF-mode)
+    (define-key map "\C-c\C-t\C-i"   #'TeX-interactive-mode)
+    (define-key map "\C-c\C-t\C-s"   #'TeX-source-correlate-mode)
+    (define-key map "\C-c\C-t\C-r"   #'TeX-pin-region)
+    (define-key map "\C-c\C-w"       #'TeX-toggle-debug-bad-boxes); to be removed
+    (define-key map "\C-c\C-t\C-b"   #'TeX-toggle-debug-bad-boxes)
+    (define-key map "\C-c\C-t\C-w"   #'TeX-toggle-debug-warnings)
+    (define-key map "\C-c\C-t\C-x"   #'TeX-toggle-suppress-ignored-warnings)
+    (define-key map "\C-c\C-v" #'TeX-view)
     ;; From tex-buf.el
-    (define-key map "\C-c\C-d" 'TeX-save-document)
-    (define-key map "\C-c\C-r" 'TeX-command-region)
-    (define-key map "\C-c\C-b" 'TeX-command-buffer)
-    (define-key map "\C-c\C-c" 'TeX-command-master)
-    (define-key map "\C-c\C-a" 'TeX-command-run-all)
-    (define-key map "\C-c\C-k" 'TeX-kill-job)
-    (define-key map "\C-c\C-l" 'TeX-recenter-output-buffer)
-    (define-key map "\C-c^" 'TeX-home-buffer)
-    (define-key map "\C-c`"    'TeX-next-error)
+    (define-key map "\C-c\C-d" #'TeX-save-document)
+    (define-key map "\C-c\C-r" #'TeX-command-region)
+    (define-key map "\C-c\C-b" #'TeX-command-buffer)
+    (define-key map "\C-c\C-c" #'TeX-command-master)
+    (define-key map "\C-c\C-a" #'TeX-command-run-all)
+    (define-key map "\C-c\C-k" #'TeX-kill-job)
+    (define-key map "\C-c\C-l" #'TeX-recenter-output-buffer)
+    (define-key map "\C-c^" #'TeX-home-buffer)
+    (define-key map "\C-c`"    #'TeX-next-error)
     ;; Remap bindings of `next-error'
-    (define-key map [remap next-error] 'TeX-next-error)
+    (define-key map [remap next-error] #'TeX-next-error)
     ;; Remap bindings of `previous-error'
-    (define-key map [remap previous-error] 'TeX-previous-error)
+    (define-key map [remap previous-error] #'TeX-previous-error)
     ;; From tex-fold.el
-    (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
+    (define-key map "\C-c\C-o\C-f" #'TeX-fold-mode)
 
     ;; Multifile
-    (define-key map "\C-c_" 'TeX-master-file-ask)  ;*** temporary
+    (define-key map "\C-c_" #'TeX-master-file-ask)  ;*** temporary
     map)
   "Keymap for common TeX and LaTeX commands.")
 
@@ -5759,7 +5759,7 @@ to use, as specified by `TeX-font-list'."
            (let ((help (concat
                         "Font list:   "
                         "KEY        TEXTFONT           MATHFONT\n\n"
-                        (mapconcat 'TeX-describe-font-entry
+                        (mapconcat #'TeX-describe-font-entry
                                    TeX-font-list "\n"))))
              (with-output-to-temp-buffer "*Help*"
                (set-buffer "*Help*")
@@ -5815,7 +5815,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
       (setq strings (cdr (cdr strings)))
       (and (stringp (car strings)) (null (string= (car strings) ""))
            (setq cmds (cons (car strings) cmds))))
-    (setq regexp (mapconcat 'regexp-quote cmds "\\|"))
+    (setq regexp (mapconcat #'regexp-quote cmds "\\|"))
     (save-excursion
       (catch 'done
         (while t
@@ -6445,7 +6445,7 @@ NAME may be a package, a command, or a document."
                                 (throw 'found t)))))
           ;; Setup completion list in a format suitable for `completing-read'.
           (dolist (elt docs)
-            (setq completions (nconc (mapcar 'list (car elt)) completions)))
+            (setq completions (nconc (mapcar #'list (car elt)) completions)))
           ;; Query user.
           (setq name (completing-read
                       (if contained
@@ -6498,7 +6498,7 @@ NAME may be a package, a command, or a document."
                                            TeX-check-path)
                                    "\\|")
                         "\\).*\\("
-                        (mapconcat 'regexp-quote
+                        (mapconcat #'regexp-quote
                                    (cons (file-name-nondirectory name)
                                          (TeX-style-list)) "\\|")
                         "\\)\\.\\("

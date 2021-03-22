@@ -1,6 +1,6 @@
 ;;; pdfsync.el --- AUCTeX style for `pdfsync.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2008, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -86,7 +86,7 @@
 (TeX-add-style-hook
  "pdfsync"
  (lambda ()
-   (setq TeX-source-correlate-output-page-function 'LaTeX-pdfsync-output-page))
+   (setq TeX-source-correlate-output-page-function #'LaTeX-pdfsync-output-page))
  TeX-dialect)
 
 ;;; pdfsync.el ends here

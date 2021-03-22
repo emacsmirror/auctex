@@ -950,7 +950,7 @@ Pure borderless black-on-white will return an empty string."
       (file-error nil)))
   (setq TeX-sentinel-function nil))
 
-(defalias 'preview-dvipng-abort 'preview-dvips-abort)
+(defalias 'preview-dvipng-abort #'preview-dvips-abort)
 ;  "Abort a DviPNG run.")
 
 (defun preview-gs-dvips-sentinel (process _command &optional gsstart)
@@ -1033,8 +1033,8 @@ The usual PROCESS and COMMAND arguments for
                 (setq TeX-sentinel-function
                       `(lambda (process command)
                          (,(if preview-parsed-pdfoutput
-                               'preview-pdf2dsc-sentinel
-                             'preview-gs-dvips-sentinel)
+                               #'preview-pdf2dsc-sentinel
+                             #'preview-gs-dvips-sentinel)
                           process
                           command
                           t))))
@@ -1968,7 +1968,7 @@ purposes."
           (setcdr strings (preview-inactive-string ov)))
         (overlay-put ov 'before-string (cdr strings)))
       (if old-urgent
-          (apply 'preview-add-urgentization old-urgent))))
+          (apply #'preview-add-urgentization old-urgent))))
   (if event
       (preview-restore-position
        ov
@@ -3717,8 +3717,8 @@ The fourth value is the transparent border thickness."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -3759,8 +3759,8 @@ If FAST is set, do a fast conversion."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -3801,8 +3801,8 @@ If FAST is set, do a fast conversion."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -4188,9 +4188,9 @@ internal parameters, STR may be a log to insert into the current log."
                 (set-marker (process-mark process) (point)))))
           (preview-set-geometry geometry)
           (setq preview-gs-file pr-file)
-          (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
+          (setq TeX-sentinel-function #'preview-TeX-inline-sentinel)
           (TeX-parse-reset)
-          (setq TeX-parse-function 'TeX-parse-TeX)
+          (setq TeX-parse-function #'TeX-parse-TeX)
           (if TeX-process-asynchronous
               process
             (TeX-synchronous-sentinel "Preview-LaTeX" file process)))
