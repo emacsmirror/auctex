@@ -5475,9 +5475,6 @@ commands are defined:
 
 \\{LaTeX-math-mode-map}"
   nil nil (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
-  (if LaTeX-math-mode
-      (easy-menu-add LaTeX-math-mode-menu LaTeX-math-mode-map)
-    (easy-menu-remove LaTeX-math-mode-menu))
   (TeX-set-mode-name))
 (defalias 'latex-math-mode #'LaTeX-math-mode)
 
@@ -6803,13 +6800,6 @@ function would return non-nil and `(match-string 1)' would return
        #'LaTeX-imenu-create-index-function)
 
   (use-local-map LaTeX-mode-map)
-
-  ;; Calling `easy-menu-add' may result in the menu filters being
-  ;; executed which call `TeX-update-style'.  So this is placed very
-  ;; late in mode initialization to assure that all relevant variables
-  ;; are properly initialized before style files try to alter them.
-  (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
 
   (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
 

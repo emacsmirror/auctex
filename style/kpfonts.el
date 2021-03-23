@@ -509,9 +509,6 @@ following commands are defined:
 
 \\{LaTeX-kpfonts-mode-map}"
   nil nil (list (cons (LaTeX-kpfonts-abbrev-prefix) LaTeX-kpfonts-keymap))
-  (if LaTeX-kpfonts-mode
-      (easy-menu-add LaTeX-kpfonts-mode-menu LaTeX-kpfonts-mode-map)
-    (easy-menu-remove LaTeX-kpfonts-mode-menu))
   (TeX-set-mode-name))
 
 (easy-menu-define LaTeX-kpfonts-mode-menu

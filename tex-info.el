@@ -677,8 +677,6 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
   ;; Mostly AUCTeX stuff
-  (easy-menu-add Texinfo-mode-menu Texinfo-mode-map)
-  (easy-menu-add Texinfo-command-menu Texinfo-mode-map)
   (set (make-local-variable 'TeX-command-current) 'TeX-command-master)
 
   (setq TeX-default-extension "texi")

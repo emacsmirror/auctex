@@ -2140,7 +2140,7 @@ original file."
          ;; Attempt to disable font lock.
          (font-lock-defaults-alist nil)
          (font-lock-defaults nil)
-         (font-lock-maximum-size 0)
+         ;; (font-lock-maximum-size 0) ; Obsolete since Emacs 24.1
          (font-lock-mode-hook nil)
          (font-lock-auto-fontify nil)
          (font-lock-mode-enable-list nil)
@@ -3765,8 +3765,7 @@ forward, if negative)."
         tabulated-list-padding 1
         tabulated-list-entries TeX-error-overview-list-entries)
   (tabulated-list-init-header)
-  (tabulated-list-print)
-  (easy-menu-add TeX-error-overview-menu TeX-error-overview-mode-map))
+  (tabulated-list-print))
 
 (defcustom TeX-error-overview-frame-parameters
   '((name . "TeX errors")

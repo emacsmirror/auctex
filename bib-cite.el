@@ -773,30 +773,16 @@ runs bib-find, and [mouse-3] runs bib-display."
 (defun bib-cite-setup-highlight-mouse-keymap ()
   "Set up the bib-cite text in the current buffer to be clickable."
   (set (make-local-variable 'bib-highlight-mouse-keymap)
-   ;;; First, copy the local keymap so we don't have `disappearing' menus
-   ;;; when the mouse is moved over a \ref, \label or \cite command.
+       ;; First, copy the local keymap so we don't have `disappearing' menus
+       ;; when the mouse is moved over a \ref, \label or \cite command.
 
-   ;;; FIXME: Check out (mouse-major-mode-menu) to see how it grabs the local
-   ;;;        menus to display.  Maybe on `highlighted' commands we could only
-   ;;;        display the bib-cite stuff (or a subset of it).
-        (let ((m (copy-keymap (current-local-map))))
-          ;; emacs 19
-          (cond
-           ((commandp 'action-key)
-            (substitute-key-definition 'action-key 'bib-find m global-map)
-            (substitute-key-definition 'assist-key 'bib-display m global-map)
-            (substitute-key-definition 'action-mouse-key-emacs19
-                                       'bib-find-mouse m global-map)
-            (substitute-key-definition 'assist-mouse-key-emacs19
-                                       'bib-display-mouse m global-map)
-            (substitute-key-definition 'action-key-depress-emacs19
-                                       nil m global-map)
-            (substitute-key-definition 'assist-key-depress-emacs19
-                                       nil m global-map))
-           (t                               ; emacs 19, not hyperbole
-            (define-key m [down-mouse-3] #'bib-display-mouse)
-            (define-key m [mouse-2] #'bib-find-mouse)))
-          m)))
+       ;; FIXME: Check out (mouse-major-mode-menu) to see how it grabs the local
+       ;;        menus to display.  Maybe on `highlighted' commands we could
+       ;;        only display the bib-cite stuff (or a subset of it).
+       (let ((m (copy-keymap (current-local-map))))
+         (define-key m [down-mouse-3] #'bib-display-mouse)
+         (define-key m [mouse-2] #'bib-find-mouse)
+         m)))
 
 ;;;###autoload
 (defun turn-on-bib-cite ()

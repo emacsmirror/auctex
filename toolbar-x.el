@@ -1,4 +1,4 @@
-;;; toolbar-x.el --- fancy toolbar handling in Emacs and XEmacs
+;;; toolbar-x.el --- fancy toolbar handling in Emacs
 
 ;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 ;; This program implements a common interface to display toolbar
-;; buttons in both Emacs and XEmacs.  A toolbar should be basicly
+;; buttons.  A toolbar should be basically
 ;; defined by a image and a command to run when the button is pressed,
 ;; and additional properties could be added.  This is the idea of this
 ;; program.  See the documentation of function
@@ -36,18 +36,13 @@
 ;; `toolbarx-install-toolbar').
 
 ;; * Supported properties:
-;; - All editors: `:insert', `:image', `:command', `:help', `:enable',
+;; - All editors: `:image', `:command', `:help', `:enable',
 ;;                `:append-command' and `:prepend-command';
 ;; - Emacs only: `:visible' and `:button';
-;; - XEmacs only: `:toolbar'.
 ;; For the precise value-type for each property, see documentation of
 ;; the function `toolbarx-install-toolbar'.
 ;; (ps: properties that are particular to an editor are just ignored
 ;; the other editor flavour.)
-
-;; * Button properties may depend on the editor flavour, if the value
-;; is a vector; the first element will be used for Emacs and the 2nd
-;; for XEmacs. Example: `:image ["new" toolbar-file-icon]'
 
 ;; * Properties can have value specified by function (with no
 ;; argument) or variables that evaluate to an object of the correct
@@ -56,18 +51,10 @@
 ;; (ps: this is valid only for properties that *not* have \`form\' as
 ;; value type.)
 
-;; * On `refresh time' (a call `toolbarx-refresh', necessary when the
-;; toolbar should change), the `:insert' property (if present) is
-;; evaluated to decide if button will be displayed.
-
 ;; Properties can be distributed to several buttons, using \`groups\'.
-;; Example: (for (bar baz :toolbar (bottom . top) :insert foo-form)
-;; means that `foo', `bar' and `baz' have `:insert foo-form' and `bar' and
-;; `baz' have the property `:toolbar (bottom .  top)'.  (ps: this type
-;; of value for the `:toolbar' property (XEmacs only) means that the
-;; buttons will be in the bottom toolbar unless the default toolbar is
-;; in the bottom, and in this case, this buttons go to the top
-;; toolbar).
+;; Example: (foo (bar baz :enable (mytest)) :help "please")
+;; means that `foo', `bar' and `baz' have `:help "please"' and `bar' and
+;; `baz' have the property `:enable (mytest)'.
 
 ;; * (Part of) the toolbar definition can be stored in a variable,
 ;; evaluated in `installation time'.  See `:eval-group' on the
@@ -78,7 +65,7 @@
 ;; the documentation of the function `toolbarx-install-toolbar'.
 
 ;;; Rough description of the implementation
-;; There are 3 \`engines\' implemented:
+;; There are 2 \`engines\' implemented:
 
 ;; == the 1st one (parsing) parses the toolbar definition
 ;; independently of editor flavour and store the parsed buttons with
@@ -87,18 +74,14 @@
 
 ;; == the 2nd one (refresh for Emacs) inserts buttons in the Emacs
 ;; toolbar in the same order that they appear in the definitions;
-;; buttons with a `:insert' property value that evaluates to nil are
-;; ignored; if a (real) button does not have at least (valid) image
+;; if a (real) button does not have at least (valid) image
 ;; and command properties, they are silently ignored;
-
-;; == the 3rd engine (refresh for XEmacs) is similar to the 2nd, but
-;; inserts buttons in XEmacs.
 
 ;;; History:
 
 ;; This program was motivated by the intention of implementation of a
 ;; good toolbar for AUCTeX, that would work in both Emacs and XEmacs.
-;; Since toolbars are very different in behaviour and implementation
+;; Since toolbars were very different in behaviour and implementation
 ;; (for instance, in Emacs one can display as many toolbar buttons as
 ;; wanted, because it becomes mult-line, and in XEmacs, there is one
 ;; line, but toolbars and all sides of a frame.)
@@ -373,6 +356,10 @@ is `always', state is saved every time that a item is clicked."
   "If OPT is a vector, return first element, otherwise, return OPT.
 If OPT is vector and length is smaller than the necessary, then
 nil is returned."
+  ;; FIXME: This is backward compatibility for when we supported XEmacs
+  ;; and entries could take the shape [FOO BAR] where FOO was the
+  ;; value to use for Emacs and BAR the value to use for XEmacs.
+  ;; This is unused since Mar 2021.
   (if (vectorp opt)
       (when (> (length opt) 0)
         (aref opt 0))
@@ -538,7 +525,7 @@ object VAL of a dropdown group (see documentation of function
             (:visible         toolbarx-test-any-type)
             (:help            toolbarx-test-string-or-nil)
             (:insert          toolbarx-test-any-type       . and)
-            (:toolbar         toolbarx-test-toolbar-type)
+            ;; (:toolbar         toolbarx-test-toolbar-type)
             (:button          toolbarx-test-button-type)
             (:append-command  toolbarx-test-any-type       . progn)
             (:prepend-command toolbarx-test-any-type       . progn)))
@@ -574,7 +561,7 @@ Fourth, a list of lists, each in the format (PROP ADD).")
             (:dropdown-visible         toolbarx-test-any-type)
             (:dropdown-insert          toolbarx-test-any-type       . and)
             (:dropdown-help            toolbarx-test-string-or-nil)
-            (:dropdown-toolbar         toolbarx-test-toolbar-type)
+            ;; (:dropdown-toolbar         toolbarx-test-toolbar-type)
             (:dropdown-append-command  toolbarx-test-any-type       . progn)
             (:dropdown-prepend-command toolbarx-test-any-type       . progn)))
          (possible-props (nreverse (let* ((props ()))
@@ -1044,8 +1031,8 @@ BUTTON should be a list of form (SYMBOL . PROP-LIST).  SYMBOL is
 a symbol that \"names\" this button.  PROP-LIST is a list in the
 format (PROP VAL ... PROP VAL).  The supported properties are
 `:image', `:command', `:append-command', `:prepend-command',
-`:help', `:enable', `:visible', `:button', `:insert' and
-`:toolbar'. For a description of properties, see documentation of
+`:help', `:enable', `:visible', `:button', and `:insert'.
+For a description of properties, see documentation of
 function `toolbar-install-toolbar'."
   (let* ((symbol (nth 0 button))
          (used-keys-list (when used-keys
@@ -1222,12 +1209,6 @@ where each ELEM is either
    list of button properties (symbol + properties = a *button*)
    or associated to a special kind of group (an *alias group*).
 
- - a vector, which elements are on the previous formats (but not
-   another vector); this is useful to specify different
-   ingredients to the toolbar depending if editor is Emacs or
-   XEmacs; the first element will be used in Emacs; the second
-   element is going to be used in XEmacs.
-
 Meaning alist
 =============
 
@@ -1258,21 +1239,18 @@ elements that a button should have.)  The supported properties
 for buttons and their `basic types' (see note on how values of
 properties are obtained!) are:
 
- :image -- in Emacs, either a string or image descriptor (see
+ :image -- either a string or image descriptor (see
    info for a definition), or a variable bound to a image
    descriptor (like those defined with `defimage') or a list of 4
-   strings or image descriptors; in XEmacs, either a string or a
-   glyph, or a symbol bount to a glyph, or a list of at least 1
-   and at most 6 strings or glyphs or nil (not the first element
-   though); defines the image file displayed by the button.  If
+   strings or image descriptors;
+   defines the image file displayed by the button.  If
    it is a string, the image file found with that name (always
    using the function `toolbarx-find-image' to make the
    \`internal\' image descriptor) is used as button image.  For
    the other formats, the button image is handled in the same way
    as it is treated by the editors; see info nodes bellow for a
-   description of the capabilities of each editor
-      Emacs: info file \"elisp\", node \"Tool Bar\" (see `:image'
-             property);
+   description of the capabilities:
+             info file \"elisp\", node \"Tool Bar\" (see `:image' property);
              PS: a *vector* of four strings is used in the Emacs
              Lisp documentation as the `more ellaborated' image
              property format, but here we reserve vectors to
@@ -1280,10 +1258,6 @@ properties are obtained!) are:
              choice for a list instead of vector (however,
              internally the list becomes a vector when displaying
              the button).
-     XEmacs: info file \"lispref\", node \"Toolbar Descriptor
-             Format\" (see GLYPH-LIST) or the documentation of
-             the variable `default-toolbar'; check the inheritage
-             in case of a ommited glyph or nil instead of glyph.
 
  :command -- a form; if the form happens to be a command, it will
    be called with `call-interactively'.
@@ -1301,37 +1275,16 @@ properties are obtained!) are:
    determine if a button is active (enabled) or not.
 
  :visible -- in Emacs, a form that is evaluated constantly to
-   determine if a button is visible; in XEmacs, this property is
-   ignored.
+   determine if a button is visible.
 
  :button -- in Emacs, a cons cell (TYPE .  SELECTED) where the
    TYPE should be `:toggle' or `:radio' and the cdr should be a
    form.  SELECTED is evaluated to determine when the button is
-   selected.  This property is ignored in XEmacs.
+   selected..
 
  :insert -- a form that is evaluated every time that the toolbar
    is refresh (a call of `toolbarx-refresh') to determine if the
    button is inserted or just ignored (until next refresh).
-
- :toolbar -- in XEmacs, either one of the symbols `default',
-   `top', `bottom', `left', `right', or a cons cell
-   (POS . POS-AVOID-DEFAULT) where POS and POS-AVOID-DEFAULT
-   should be one of the symbols `top', `bottom', `left', `right';
-   if a symbol, the button will be inserted in one of these
-   toolbars; if a cons cell, button will be inserted in toolbar
-   POS unless the position of the default toolbar is POS (then,
-   the default toolbar would override the position-specific
-   toolbar), and in this case, button will be inserted in toolbar
-   POS-AVOID-DEFAULT; in Emacs, this property is meaningless, and
-   therefore ignored.  Hint of use of this property: in a
-   program, use or everything with `default' and the cons format
-   to avoid the default toolbar, or use only the position
-   specific buttons (symbols that are not `default'), because of
-   the `overriding' system in XEmacs, when a position-specific
-   toolbar overrides the default toolbar; for instance, if you
-   put a button in the default toolbar and another in the top
-   toolbar (and the default toolbar is in the top), then *only*
-   the ones in the top toolbar will be visible!
 
 How to specify a button
 =======================
@@ -1340,7 +1293,7 @@ One can specify a button by its symbol or by a group to specify
 properties.  For example,
   BUTTON =
     ( foo
-      (bar :image [\"bar-Emacs\" \"bar-XEmacs\"]
+      (bar :image \"bar\"
            :command bar-function :help \"Bar help string\")
       :insert foo-bar )
   MEANING-ALIST = ( (foo :image \"foo\" :command foo-function) )
@@ -1348,9 +1301,7 @@ specifiy two buttons `foo' and `bar', each one with its necessary
 :image and :command properties, and both use the :insert property
 specified ate the end of BUTTONS (because groups distribute
 properties to all its elements).  `foo' and `bar' will be
-inserted only if `foo-bar' evaluation yields non-nil.  `bar' used
-a different :image property depending if editor is Emacs or
-XEmacs.
+inserted only if `foo-bar' evaluation yields non-nil.
 
 Note on how values of properties are obtained
 =============================================
@@ -1444,11 +1395,9 @@ supported properties and their basic type are:
  :dropdown-help -- a string or nil; the help string of the
    dropdown button.
 
- :dropdown-image -- in Emacs, either a string or a vector of 4
-   strings; in XEmacs, either a string or a glyph or a list of at
-   least 1 and at most 6 strings or glyphs; defines the image
-   file displayed by the dropdown button; by default, it is the
-   string \"dropdown\".
+ :dropdown-image -- either a string or a vector of 4 strings;
+   defines the image   file displayed by the dropdown button;
+   by default, it is the string \"dropdown\".
 
  :dropdown-append-command,
  :dropdownprepend-command -- a form; append or prepend forms to
@@ -1461,13 +1410,7 @@ supported properties and their basic type are:
    not.
 
  :dropdown-visible -- a form; in Emacs, it is evaluated
-   constantly to determine if the dropdown button is visible; in
-   XEmacs, this property is ignored.
-
- :dropdown-toolbar -- in XEmacs, one of the symbols `default',
-   `opposite', `top', `bottom', `left' or `right'; ignored in
-   Emacs; in XEmacs, the toolbar where the dropdown button will
-   appear.
+   constantly to determine if the dropdown button is visible.
 
 Also, if the symbol `dropdown' is associted in MEANING-ALIST
 with some properties, these properties override (or add) with
@@ -1479,8 +1422,7 @@ Special buttons
 If the symbol of a button is `:new-line', it is inserted
 a (faked) return, and the next button will be displayed a next
 line of buttons.  The only property supported for this button is
-`:insert'.  This feature is available only in Emacs.  In XEmacs,
-this button is ignored."
+`:insert'."
   (let ((switches (toolbarx-process-group buttons meaning-alist nil nil)))
     (if global-flag
         (setq-default toolbarx-internal-button-switches
@@ -1495,34 +1437,30 @@ this button is ignored."
   '((separator :image "sep" :command t :enable nil :help "")
 
     (new-file
-     :image ["new" toolbar-file-icon]
-     :command [find-file toolbar-open]
-     :enable [(not (window-minibuffer-p
+     :image "new"
+     :command find-file
+     :enable (not (window-minibuffer-p
                     (frame-selected-window menu-updating-frame)))
-              t]
-     :help ["Specify a new file's name, to edit the file" "Visit new file"])
+     :help "Specify a new file's name, to edit the file")
 
-    (open-file :image ["open" toolbar-file-icon]
-               :command [menu-find-file-existing toolbar-open]
-               :enable [(not (window-minibuffer-p
-                              (frame-selected-window menu-updating-frame)))
-                        t]
-               :help ["Read a file into an Emacs buffer" "Open a file"])
+    (open-file :image "open"
+               :command menu-find-file-existing
+               :enable (not (window-minibuffer-p
+                             (frame-selected-window menu-updating-frame)))
+               :help "Read a file into an Emacs buffer")
 
-    (dired :image ["diropen"
-                   toolbar-folder-icon]
-           :command [dired toolbar-dired]
-           :help ["Read a directory, operate on its files" "Edit a directory"])
+    (dired :image "diropen"
+           :command dired
+           :help "Read a directory, operate on its files")
 
-    (save-buffer :image ["save" toolbar-disk-icon]
-                 :command [save-buffer toolbar-save]
-                 :enable [(and
+    (save-buffer :image "save"
+                 :command save-buffer
+                 :enable (and
                            (buffer-modified-p)
                            (buffer-file-name)
                            (not (window-minibuffer-p
                                  (frame-selected-window menu-updating-frame))))
-                          t]
-                 :help ["Save current buffer to its file"  "Save buffer"]
+                 :help "Save current buffer to its file"
                  :visible (or buffer-file-name
                               (not (eq 'special
                                        (get major-mode 'mode-class)))))
@@ -1533,130 +1471,91 @@ this button is ignored."
                 :enable (not
                          (window-minibuffer-p
                           (frame-selected-window menu-updating-frame)))
-                :insert [t nil]
                 :help "Write current buffer to another file"
                 :visible (or buffer-file-name
                              (not (eq 'special (get major-mode 'mode-class)))))
 
-    (undo :image ["undo" toolbar-undo-icon]
-          :command [undo toolbar-undo]
-          :enable [(and (not buffer-read-only)
+    (undo :image "undo"
+          :command undo
+          :enable (and (not buffer-read-only)
                         (not (eq t buffer-undo-list))
                         (if (eq last-command 'undo)
                             pending-undo-list
                           (consp buffer-undo-list)))
-                   t]
-          :help ["Undo last operation" "Undo edit"]
+          :help "Undo last operation"
           :visible (not (eq 'special (get major-mode 'mode-class))))
 
-    (cut :image ["cut" toolbar-cut-icon]
-         :help ["Delete text in region and copy it to the clipboard"
-                "Kill region"]
-         :command [clipboard-kill-region toolbar-cut]
+    (cut :image "cut"
+         :help "Delete text in region and copy it to the clipboard"
+         :command clipboard-kill-region
          :visible (not (eq 'special (get major-mode 'mode-class))))
 
-    (copy :image ["copy" toolbar-copy-icon]
-          :help ["Copy text in region to the clipboard" "Copy region"]
-          :command [clipboard-kill-ring-save toolbar-copy])
+    (copy :image "copy"
+          :help "Copy text in region to the clipboard"
+          :command clipboard-kill-ring-save)
 
-    (paste :image ["paste" toolbar-paste-icon]
-           :help ["Paste text from clipboard" "Paste from clipboard"]
-           :command [clipboard-yank toolbar-paste]
+    (paste :image "paste"
+           :help "Paste text from clipboard"
+           :command clipboard-yank
            :visible (not (eq 'special (get major-mode 'mode-class))))
 
     ;; Emacs only
     (search-forward :command nonincremental-search-forward
                     :help "Search forward for a string"
-                    :image "search"
-                    :insert [t nil])
+                    :image "search")
 
     (search-replace
-     :image ["search-replace" toolbar-replace-icon]
-     :command [query-replace toolbar-replace]
-     :help ["Replace string interactively, ask about each occurrence"
-            "Search & Replace"])
+     :image "search-replace"
+     :command query-replace
+     :help "Replace string interactively, ask about each occurrence")
 
-    (print-buffer :image ["print" toolbar-printer-icon]
-                  :command [print-buffer toolbar-print]
-                  :help ["Print current buffer with page headings"
-                         "Print buffer"])
+    (print-buffer :image "print"
+                  :command print-buffer
+                  :help "Print current buffer with page headings")
 
     ;; Emacs only
     (customize :image "preferences"
                :command customize
-               :help "Edit preferences (customize)"
-               :insert [t nil])
+               :help "Edit preferences (customize)")
 
     ;; Emacs only
     (help :image "help"
           :command (lambda () (interactive) (popup-menu menu-bar-help-menu))
-          :help "Pop up the Help menu"
-          :insert [t nil])
+          :help "Pop up the Help menu")
 
     ;; Emacs only
     (kill-buffer :command kill-this-buffer
                  :enable (kill-this-buffer-enabled-p)
                  :help "Discard current buffer"
-                 :image "close"
-                 :insert [t nil])
+                 :image "close")
 
     ;; Emacs only
     (exit-emacs :image "exit"
                 :command save-buffers-kill-emacs
-                :help "Offer to save unsaved buffers, then exit Emacs"
-                :insert [t nil])
+                :help "Offer to save unsaved buffers, then exit Emacs")
 
-    (spell-buffer :image ["spell" toolbar-spell-icon]
-                  :command [ispell-buffer toolbar-ispell]
-                  :help ["Check spelling of selected buffer" "Check spelling"])
+    (spell-buffer :image "spell"
+                  :command ispell-buffer
+                  :help "Check spelling of selected buffer")
 
-    (info :image ["info" toolbar-info-icon]
-          :command [info toolbar-info]
-          :help ["Enter Info, the documentation browser" "Info documentation"])
-
-    ;; XEmacs only
-    (mail :image toolbar-mail-icon
-          :command toolbar-mail
-          :help "Read mail"
-          :insert [nil t])
-
-    ;; XEmacs only
-    (compile :image toolbar-compile-icon
-             :command toolbar-compile
-             :help "Start a compilation"
-             :insert [nil t])
-
-    ;; XEmacs only
-    (debug :image toolbar-debug-icon
-           :command toolbar-debug
-           :help "Start a debugger"
-           :insert [nil t])
-
-    ;; XEmacs only
-    (news :image toolbar-news-icon
-          :command toolbar-news
-          :help "Read news"
-          :insert [nil t]))
+    (info :image "info"
+          :command info
+          :help "Enter Info, the documentation browser"))
   "A meaning alist with definition of the default buttons.
 The following buttons are available:
 
-* Both Emacs and XEmacs: `open-file', `dired', `save-buffer',
+  `open-file', `dired', `save-buffer',
   `undo', `cut', `copy', `paste', `search-replace', `print-buffer',
   `spell-buffer', `info'.
-
-* Emacs only: `new-file' (Emacs 22+) `write-file', `search-forward',
+  `new-file' (Emacs 22+) `write-file', `search-forward',
   `customize', `help', `kill-buffer', `exit-emacs'.
 
-* XEmacs only: `mail', `compile', `debug', `news'.
-
-To reproduce the default toolbar in both editors with use as BUTTON
+To reproduce the default toolbar with use as BUTTON
 in `toolbarx-install-toolbar':
 
 \(toolbarx-install-toolbar
- '([(open-file dired kill-buffer save-buffer write-file undo cut
-               copy paste search-forward print-buffer customize help)
-    (open-file dired save-buffer print-buffer cut copy paste undo
-               spell-buffer search-replace mail info compile debug news)])
+ '((open-file dired kill-buffer save-buffer write-file undo cut
+               copy paste search-forward print-buffer customize help))
  toolbarx-default-toolbar-meaning-alist)
 
 Ps.: there are more buttons available than suggested in the

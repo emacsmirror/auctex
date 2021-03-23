@@ -1764,8 +1764,6 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
   ;; Keybindings and menu
   (use-local-map ConTeXt-mode-map)
-  (easy-menu-add ConTeXt-mode-menu ConTeXt-mode-map)
-  (easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
   (if (fboundp 'make-local-hook)
