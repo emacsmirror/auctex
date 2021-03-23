@@ -2390,11 +2390,14 @@ BUFFER-MISC is the appropriate data to be used."
   '(if (boundp 'desktop-buffer-mode-handlers)
        (add-to-list 'desktop-buffer-mode-handlers
                     '(latex-mode . desktop-buffer-preview))
-     (add-hook 'desktop-buffer-handlers '(lambda ()
-                                           (desktop-buffer-preview
-                                            desktop-buffer-file-name
-                                            desktop-buffer-name
-                                            desktop-buffer-misc)))))
+     (defvar desktop-buffer-file-name)
+     (defvar desktop-buffer-name)
+     (defvar desktop-buffer-misc)
+     (add-hook 'desktop-buffer-handlers (lambda ()
+                                          (desktop-buffer-preview
+                                           desktop-buffer-file-name
+                                           desktop-buffer-name
+                                           desktop-buffer-misc)))))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.

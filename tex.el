@@ -2289,9 +2289,9 @@ the Emacs manual) to set this variable permanently for each file."
                  (string :format "%v")))
 (make-variable-buffer-local 'TeX-master)
 (put 'TeX-master 'safe-local-variable
-     '(lambda (x)
-        (or (stringp x)
-            (member x (quote (t nil shared dwim))))))
+     (lambda (x)
+       (or (stringp x)
+           (member x (quote (t nil shared dwim))))))
 
 (defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
   "Regular expression matching ordinary TeX files.
@@ -6648,8 +6648,8 @@ error."
        (unless (member elt (default-value 'desktop-locals-to-save))
          (setq-default desktop-locals-to-save
                        (cons elt (default-value 'desktop-locals-to-save)))))
-     (add-hook 'desktop-after-read-hook '(lambda ()
-                                           (TeX-set-mode-name t)))))
+     (add-hook 'desktop-after-read-hook (lambda ()
+                                          (TeX-set-mode-name t)))))
 
 ;; delsel.el, `delete-selection-mode'
 (put 'TeX-newline 'delete-selection t)

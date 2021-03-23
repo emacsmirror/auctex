@@ -115,7 +115,7 @@ If nil, quoted content will not be fontified."
   :type '(choice (const auto) (const french) (const german) (const nil))
   :group 'font-latex)
 (put 'font-latex-quotes 'safe-local-variable
-     '(lambda (x) (memq x '(auto french german nil))))
+     (lambda (x) (memq x '(auto french german nil))))
 
 (defun font-latex-add-quotes (quotes)
   "Add QUOTES to `font-latex-quote-list'.

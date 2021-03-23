@@ -4802,11 +4802,11 @@ Setting this variable directly does not take effect;
 use \\[customize]."
   :group 'LaTeX-math
   :initialize #'custom-initialize-default
-  :set '(lambda (symbol value)
-          (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
-          (set-default symbol value)
-          (define-key LaTeX-math-mode-map
-            (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  :set (lambda (symbol value)
+         (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
+         (set-default symbol value)
+         (define-key LaTeX-math-mode-map
+           (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   :type '(string :tag "Key sequence"))
 
 (defun LaTeX-math-abbrev-prefix ()
