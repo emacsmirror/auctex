@@ -636,8 +636,12 @@ inserted after the sectioning command."
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
-(defadvice ConTeXt-add-environments (after ConTeXt-invalidate-menu (&rest environments) activate)
-  "Add ENVIRONMENTS to the list of known environments."
+(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
+    (advice-add 'ConTeXt-add-environments :after #'ConTeXt--invalidate-menu)
+  (defadvice ConTeXt-add-environments (after ConTeXt-invalidate-menu (&rest environments) activate)
+    (ConTeXt--invalidate-menu)))
+(defun ConTeXt--invalidate-menu (&rest _)
+  "Mark the menu as being in need of a refresh."
   (setq ConTeXt-menu-changed t))
 
 ;; (defvar ConTeXt-environment-list ()

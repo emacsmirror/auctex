@@ -752,17 +752,19 @@ emacs 24.1 and is then later run by emacs 24.5."
                           (add-to-list 'Info-file-list-for-emacs
                                        (cons elt "AUCTeX"))))
 
-(defadvice hack-one-local-variable (after TeX-hack-one-local-variable-after
+(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
+    (advice-add 'hack-one-local-variable :after #'tex--call-minor-mode)
+  (defadvice hack-one-local-variable (after TeX-hack-one-local-variable-after
                                           activate)
+    (tex--call-minor-mode (ad-get-arg 0) (ad-get-arg 1))))
+(defun tex--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
-  (let ((var (ad-get-arg 0))
-        (val (ad-get-arg 1)))
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
     (when (memq var '(TeX-PDF-mode
                       TeX-source-correlate-mode TeX-interactive-mode
                       TeX-fold-mode LaTeX-math-mode))
-      (if (symbol-value val) (funcall var 1) (funcall var 0)))))
+      (funcall var (if (symbol-value val) 1 0))))
 
 (defvar TeX-overlay-priority-step 16
   "Numerical difference of priorities between nested overlays.

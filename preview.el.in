@@ -2060,10 +2060,14 @@ overlays not in the active window."
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
 
-(defadvice replace-highlight (before preview)
+(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
+    (advice-add 'replace-highlight :before #'preview--open-for-replace)
+  (defadvice replace-highlight (before preview)
+    (preview--open-for-replace (ad-get-arg 0) (ad-get-arg 1))))
+
+(defun preview--open-for-replace (beg end &rest _)
   "Make `query-replace' open preview text about to be replaced."
-  (preview-open-overlays
-   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+  (preview-open-overlays (overlays-in beg end)))
 
 (defcustom preview-query-replace-reveal t
   "Make `query-replace' autoreveal previews."
