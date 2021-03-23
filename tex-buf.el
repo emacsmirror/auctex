@@ -107,6 +107,17 @@ depend on it being positive instead of the entry in `TeX-command-list'."
   (TeX-command (TeX-command-query #'TeX-master-file)
                'TeX-master-file override-confirm))
 
+(defcustom TeX-region-extra ""
+  "String to insert in the region file between the header and the text."
+  :group 'TeX-command
+  :type 'string)
+
+;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
+;;           \\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}\
+;;           {\\AucTeX@cite{}[]}}}\n"
+;; However, that string is inappropriate for plain TeX and ConTeXt.
+;; This needs reconsideration.
+
 (defvar TeX-command-region-begin nil)
 (defvar TeX-command-region-end nil)
 ;; Used for marking the last region.
@@ -164,10 +175,15 @@ pinned region will get unpinned and vice versa."
            (markerp TeX-command-region-begin))
        (TeX-active-mark)
        (TeX-pin-region (region-beginning) (region-end)))
-  (let ((begin (or TeX-command-region-begin (region-beginning)))
-        (end (or TeX-command-region-end (region-end))))
+  (let* ((begin (or TeX-command-region-begin (region-beginning)))
+         (end (or TeX-command-region-end (region-end)))
+         (TeX-region-extra
+         ;; Write out counter information to region.
+         (concat (and (fboundp 'preview--counter-information)
+                      (preview--counter-information begin))
+                 TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
-                       (buffer-substring begin end)
+                       (buffer-substring-no-properties begin end)
                        (file-name-nondirectory (buffer-file-name))
                        (TeX-current-offset begin))))
 
@@ -2042,17 +2058,6 @@ The compatibility argument IGNORE is ignored."
 
 ;;; Region File
 
-(defcustom TeX-region-extra ""
-  "String to insert in the region file between the header and the text."
-  :group 'TeX-command
-  :type 'string)
-
-;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
-;;           \\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}\
-;;           {\\AucTeX@cite{}[]}}}\n"
-;; However, that string is inappropriate for plain TeX and ConTeXt.
-;; This needs reconsideration.
-
 
 (defvar TeX-region-hook nil
   "List of hooks to run before the region file is saved.
@@ -2115,6 +2120,13 @@ that the TeX header and trailer information is also included.
 
 The OFFSET is used to provide the debugger with information about the
 original file."
+  (if (fboundp 'preview--skip-preamble-region)
+      (let ((temp (preview--skip-preamble-region region offset)))
+        (if temp
+            ;; Skip preamble for the sake of predumped formats.
+            (setq region (car temp)
+                  offset (cdr temp)))))
+
   (let* (;; We shift buffer a lot, so we must keep track of the buffer
          ;; local variables.
          (header-end TeX-header-end)

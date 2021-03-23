@@ -2586,10 +2586,6 @@ to the close hook."
                    (list (preview-active-string ov)))
       (preview-toggle ov t))))
 
-;; The following is a brutal hack.  It relies on `begin' being let to
-;; the start of the interesting area when TeX-region-create is being
-;; called.
-
 (defun preview-counter-find (begin)
   "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
@@ -2608,20 +2604,20 @@ not use in advice."
             (next-single-char-property-change begin 'preview-counters)
             'preview-counters))))
 
-(defadvice TeX-region-create (around preview-counters)
-  "Write out counter information to region."
-  (let ((TeX-region-extra
-         (concat
-          (and (boundp 'begin)
-               preview-buffer-has-counters
-               (mapconcat
-                #'identity
-                (cons
-                 ""
-                 (preview-counter-find (symbol-value 'begin)))
-                "\\setcounter"))
-          TeX-region-extra)))
-    ad-do-it))
+(defun preview--counter-information (begin)
+  "Return repeated \\setcounter declaration based on point BEGIN.
+If `preview-buffer-has-counters' is non-nil, return string to
+insert into region tex file containing as many
+\\setcounter{COUNTER}{VALUE} as possible built from
+`preview-counters' property near the point BEGIN.  Otherwise,
+return nil."
+  (if preview-buffer-has-counters
+      (mapconcat
+       #'identity
+       (cons
+        ""
+        (preview-counter-find begin))
+       "\\setcounter")))
 
 (defun preview-reinstate-preview (tempdirlist timestamp start end
   image filename &optional counters)
@@ -4017,19 +4013,16 @@ stored in `preview-dumped-alist'."
 (defun preview-region (begin end)
   "Run preview on region between BEGIN and END."
   (interactive "r")
-  (TeX-region-create (TeX-region-file TeX-default-extension)
-                     (buffer-substring begin end)
-                     (if buffer-file-name
-                         (file-name-nondirectory buffer-file-name)
-                       "<none>")
-                     (save-restriction
-                       (widen)
-                       (let ((inhibit-point-motion-hooks t)
-                             (inhibit-field-text-motion t))
-                         (+ (count-lines (point-min) begin)
-                            (save-excursion
-                              (goto-char begin)
-                              (if (bolp) 0 -1))))))
+  (let ((TeX-region-extra
+         ;; Write out counter information to region.
+         (concat (preview--counter-information begin)
+                 TeX-region-extra)))
+    (TeX-region-create (TeX-region-file TeX-default-extension)
+                       (buffer-substring-no-properties begin end)
+                       (if buffer-file-name
+                           (file-name-nondirectory buffer-file-name)
+                         "<none>")
+                       (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
@@ -4052,18 +4045,20 @@ stored in `preview-dumped-alist'."
 ;; This will fail if the region is to contain just part of the
 ;; preamble -- a bad idea anyhow.
 
-(defadvice TeX-region-create (before preview-preamble preactivate activate)
-  "Skip preamble for the sake of predumped formats."
-  (when (string-match TeX-header-end (ad-get-arg 1))
-    (ad-set-arg 1
-                (prog1 (substring (ad-get-arg 1) (match-end 0))
-                  (ad-set-arg 3
-                              (with-temp-buffer
-                                (insert (substring (ad-get-arg 1)
-                                                   0 (match-end 0)))
-                                (+ (ad-get-arg 3)
-                                   (count-lines (point-min) (point-max))
-                                   (if (bolp) 0 -1))))))))
+(defun preview--skip-preamble-region (region-text region-offset)
+  "Skip preamble for the sake of predumped formats.
+Helper function of `TeX-region-create'.
+
+If REGION-TEXT doesn't contain preamble, it returns nil.
+Otherwise, it returns cons (ALTERED-TEXT . ALTERED-OFFSET) where
+ALTERED-TEXT is REGION-TEXT without the preamble part and
+ALTERED-OFFSET is REGION-OFFSET increased by the number of lines
+of the preamble part of REGION-TEXT."
+  (if (string-match TeX-header-end region-text)
+      (cons (substring region-text (match-end 0))
+            (with-temp-buffer
+              (insert (substring region-text 0 (match-end 0)))
+              (+ region-offset (TeX-current-offset))))))
 
 (defun preview-document ()
   "Run preview on master document."
