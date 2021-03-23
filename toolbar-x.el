@@ -299,18 +299,18 @@ inside Emacs. See documentation of that function for more."
         (setq used-symbols (cons key used-symbols)))
       (define-key-after keymap (vector key)
         `(menu-item ,i
-                    ,(append
-                      `(lambda nil (interactive)
-                         ,(if (eq real-type 'radio)
-                              `(setq ,var ,count)
-                            `(if (memq ,count ,var)
-                                 (setq ,var (delete ,count ,var))
-                               (setq ,var (sort (cons ,count ,var) #'<))))
-                         (toolbarx-refresh))
-                      (when (eq real-save 'always)
-                        `((customize-save-variable
-                           (quote ,var) ,var)))
-                      `(,var))
+                    ,(let ((count count))
+                       (lambda () (interactive)
+                         (set var
+                              (if (eq real-type 'radio)
+                                  count
+                                (if (memq count (symbol-value var))
+                                    (delete count (symbol-value var))
+                                  (sort (cons count (symbol-value var)) #'<))))
+                         (toolbarx-refresh)
+                         (when (eq real-save 'always)
+                           (customize-save-variable var (symbol-value var)))
+                         (symbol-value var)))
                     :button ,(if (eq real-type 'radio)
                                  `(:radio eq ,var ,count)
                                `(:toggle memq ,count ,var))))
@@ -329,7 +329,7 @@ inside Emacs. See documentation of that function for more."
                     (lambda nil (interactive)
                       (customize-save-variable (quote ,var) ,var)))))
     ;; returns a `lambda'-expression
-    `(lambda nil (interactive) (popup-menu (quote ,keymap)))))
+    (lambda () (interactive) (popup-menu keymap))))
 
 (defun toolbarx-mount-popup-menu (strings var type &optional title save)
   "Return a command that show a popup menu.
