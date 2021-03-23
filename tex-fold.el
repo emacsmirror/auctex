@@ -1,4 +1,4 @@
-;;; tex-fold.el --- Fold TeX macros.
+;;; tex-fold.el --- Fold TeX macros.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
@@ -588,7 +588,7 @@ backward compatibility and always nil."
            (open-char (if delims (car delims) ?{))
            (open-string (char-to-string open-char))
            (close-char (if delims (cdr delims) ?}))
-           (close-string (char-to-string close-char))
+           ;; (close-string (char-to-string close-char))
            content-start content-end)
       (goto-char macro-start)
       (if (condition-case nil
@@ -794,7 +794,8 @@ That means, put respective properties onto overlay OV."
                     (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
                            "[Error: No content found]"))))
          (display-string (if (listp computed) (car computed) computed))
-         (face (when (listp computed) (cadr computed))))
+         ;; (face (when (listp computed) (cadr computed)))
+         )
     ;; Do nothing if the overlay is empty.
     (when (and ov-start ov-end)
       ;; Cater for zero-length display strings.

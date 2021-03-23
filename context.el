@@ -1646,7 +1646,7 @@ Use `ConTeXt-Mark-version' to choose the command."
    ;; In any other case fall back on Mark II.
    (t
     (concat
-     (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)))))
+     (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)) t)))
        (when engine
          (format "--engine=%s " engine)))
      (unless (eq ConTeXt-current-interface "en")

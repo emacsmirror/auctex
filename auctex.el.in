@@ -1,4 +1,4 @@
-;;; auctex.el --- Integrated environment for *TeX*
+;;; auctex.el --- Integrated environment for *TeX*  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2020 Free Software Foundation, Inc.
 

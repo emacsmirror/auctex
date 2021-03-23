@@ -1,4 +1,4 @@
-;;; tex-info.el --- Support for editing Texinfo source.
+;;; tex-info.el --- Support for editing Texinfo source.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1993-2021  Free Software Foundation, Inc.
 
@@ -171,7 +171,7 @@ environments."
     ;; Only change point and mark after beginning and end were found.
     ;; Point should not end up in the middle of nowhere if the search fails.
     (save-excursion
-      (dotimes (c count)
+      (dotimes (_ count)
         (Texinfo-find-env-end))
       (setq end (line-beginning-position 2))
       (goto-char cur)
@@ -247,20 +247,22 @@ the section."
                     (point)))))));  (if ...)
     (when (and beg end)
       ;; now take also enclosing node of beg and end
-      (dolist
-          (boundary '(beg end))
-        (when (symbol-value (intern (concat "is-" (symbol-name boundary)
-                                            "-section")))
-          (save-excursion
-            (goto-char (symbol-value boundary))
-            (while
-                (and
-                 (null (bobp))
-                 (progn
-                   (beginning-of-line 0)
-                   (looking-at "^\\s-*\\($\\|@\\(c\\|comment\\)\\_>\\)"))))
-            (when  (looking-at "^\\s-*@node\\_>")
-              (set boundary (point))))))
+      (let ((before-@node
+             (lambda (pos)
+               (save-excursion
+                 (goto-char pos)
+                 (while (and
+                         (null (bobp))
+                         (progn
+                           (beginning-of-line 0)
+                           (looking-at
+                            "^\\s-*\\($\\|@\\(c\\|comment\\)\\_>\\)"))))
+                 (when (looking-at "^\\s-*@node\\_>")
+                   (point))))))
+        (when is-beg-section
+          (setq beg (or (funcall before-@node beg) beg)))
+        (when is-end-section
+          (setq end (or (funcall before-@node end) end))))
 
       (push-mark end)
       (goto-char beg)
@@ -391,7 +393,7 @@ for @node."
               (progn (skip-chars-forward "^,") (forward-char 2))
             (throw 'break nil)))))))
 
-(defun Texinfo-arg-nodename (optional &optional prompt definition)
+(defun Texinfo-arg-nodename (optional &optional prompt _definition)
   "Prompt for a node name completing with known node names.
 OPTIONAL is ignored.
 Use PROMPT as the prompt string.
@@ -403,13 +405,13 @@ each invocation."
                                     (Texinfo-make-node-list))))
     (insert "{" (Texinfo-nodename-escape node-name) "}" )))
 
-(defun Texinfo-arg-lrc (optional &rest args)
+(defun Texinfo-arg-lrc (_optional &rest _args)
   (let ((l (read-from-minibuffer "Enter left part: "))
         (c (read-from-minibuffer "Enter center part: "))
         (r (read-from-minibuffer "Enter right part: ")))
     (insert " " l " @| " c " @| " r)))
 
-(defun Texinfo-arg-next-line (optional &rest args)
+(defun Texinfo-arg-next-line (_optional &rest _args)
   "Go to the beginning of next line if we are at the end of line. Otherwise insert an end-of-line."
   (if (eolp)  (forward-line) (insert "\n")))
 

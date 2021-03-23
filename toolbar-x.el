@@ -1,4 +1,4 @@
-;;; toolbar-x.el --- fancy toolbar handling in Emacs
+;;; toolbar-x.el --- fancy toolbar handling in Emacs  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
@@ -457,10 +457,11 @@ VAL (see documentation of function `toolbarx-process-symbol')."
   (let ((toolbarx-test-toolbar-type-simple
          (lambda (obj)
            (let* ((val (toolbarx-option-value obj))
-                  (all-but-def-opts '(top bottom left right))
-                  (all-opts '(default top bottom left right))
-                  (good-obj t))
-             (cons good-obj val)))))
+                  ;; (all-but-def-opts '(top bottom left right))
+                  ;; (all-opts '(default top bottom left right))
+                  ;; (good-obj t)
+                  )
+             (cons t val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-toolbar-type-simple)))
 
 (defun toolbarx-test-dropdown-type (obj)
@@ -623,7 +624,7 @@ value, and after that a list in the same format as SWITCHES."
    ((eq (car group) :eval-group)
     (let ((current-switches switches))
       (dolist (elt (cdr group) current-switches)
-        (let ((eval-elt (eval elt)))
+        (let ((eval-elt (eval elt t)))
           (setq current-switches
                 (toolbarx-process-group (if (listp eval-elt)
                                             eval-elt
@@ -1071,7 +1072,7 @@ function `toolbar-install-toolbar'."
                                                filtered-props-temp))))))))
          (insert (or (not (memq :insert filtered-props))
                      ;; (memq :insert filtered-props)
-                     (eval (nth 1 (memq :insert filtered-props))))))
+                     (eval (nth 1 (memq :insert filtered-props)) t))))
     (when insert
       (cond
        (t
@@ -1151,7 +1152,7 @@ recursively as SWITCHES.  USED-KEYS is a list which `car' is
 been used as keys in the keymap `tool-bar-map'."
   (dolist (button switches)
     (if (eq (car button) :insert)
-        (when (eval (cadr button))
+        (when (eval (cadr button) t)
           (toolbarx-emacs-refresh-process-button-or-insert-list (cddr button)
                                                                 used-keys
                                                                 keymap))

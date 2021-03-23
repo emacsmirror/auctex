@@ -1,4 +1,4 @@
-;;; tex-wizard.el --- Check the TeX configuration
+;;; tex-wizard.el --- Check the TeX configuration  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003-2021 Free Software Foundation, Inc.
 

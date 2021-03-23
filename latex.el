@@ -1129,7 +1129,7 @@ returned, nil if it is empty."
            "")
           (t
            nil)))
-        label)
+        ) ;; label
     (when (symbolp TeX-read-label-prefix)
       (setq TeX-read-label-prefix (symbol-value TeX-read-label-prefix)))
     (when TeX-read-label-prefix
@@ -2007,13 +2007,13 @@ It will setup BibTeX to store keys in an auto file."
 If EXPR evaluate to true, parse THEN as an argument list, else
 parse ELSE as an argument list.  The compatibility argument
 OPTIONAL is ignored."
-  (TeX-parse-arguments (if (eval expr) then else)))
+  (TeX-parse-arguments (if (eval expr t) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
   "Evaluate ARGS and insert value in buffer.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one."
-  (TeX-argument-insert (eval args) optional))
+  (TeX-argument-insert (eval args t) optional))
 
 (defvar TeX-read-label-prefix nil
   "Initial input for the label in `TeX-read-label.'")
@@ -3058,7 +3058,7 @@ for the key.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
    (if (symbolp key-val-alist)
-       (eval key-val-alist)
+       (eval key-val-alist t)
      key-val-alist)))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
@@ -4787,6 +4787,8 @@ of verbatim constructs are not considered."
 
 ;;; Math Minor Mode
 
+(defvar LaTeX-math-mode-map)
+
 (defgroup LaTeX-math nil
   "Mathematics in AUCTeX."
   :group 'LaTeX-macro)
@@ -5467,7 +5469,6 @@ See also `LaTeX-math-menu'."
                                 (integer :tag "Number")))))
 
 (defvar LaTeX-math-mode-menu)
-(defvar LaTeX-math-mode-map)
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy access to TeX math macros.
 
@@ -5728,7 +5729,7 @@ the last entry in the menu."
             (if (= rest outer) (setq inner (1+ inner)))))
         result))))
 
-(defun LaTeX-section-menu-filter (ignored)
+(defun LaTeX-section-menu-filter (_ignored)
   "Filter function for the section submenu in the mode menu.
 The argument IGNORED is not used in any way."
   (TeX-update-style)
@@ -5787,11 +5788,13 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     ["Complete Macro" TeX-complete-symbol
      :help "Complete the current macro or environment name"]
     ,(list LaTeX-environment-menu-name
-           :filter (lambda (ignored) (LaTeX-environment-menu-filter
-                                      LaTeX-environment-menu-name)))
+           :filter (lambda (_ignored)
+                     (LaTeX-environment-menu-filter
+                      LaTeX-environment-menu-name)))
     ,(list LaTeX-environment-modify-menu-name
-           :filter (lambda (ignored) (LaTeX-environment-menu-filter
-                                      LaTeX-environment-modify-menu-name)))
+           :filter (lambda (_ignored)
+                     (LaTeX-environment-menu-filter
+                      LaTeX-environment-modify-menu-name)))
     ["Close Environment" LaTeX-close-environment
      :help "Insert the \\end part of the current environment"]
     ["Item" LaTeX-insert-item

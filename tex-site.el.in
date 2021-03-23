@@ -1,4 +1,4 @@
-;;; tex-site.el - Site specific variables.  Don't edit.
+;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 ;;

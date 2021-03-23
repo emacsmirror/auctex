@@ -1,4 +1,4 @@
-;;; tex-style.el --- Customizable variables for AUCTeX style files
+;;; tex-style.el --- Customizable variables for AUCTeX style files  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 

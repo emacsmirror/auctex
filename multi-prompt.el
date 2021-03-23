@@ -1,4 +1,4 @@
-;;; multi-prompt.el --- Completing read of multiple strings
+;;; multi-prompt.el --- Completing read of multiple strings  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1996-2021 Free Software Foundation, Inc.
 
@@ -174,7 +174,7 @@ This is achieved by eval'ing all variables in the value parts of
 the alist elements."
   (mapcar (lambda (x)
             (if (and (cadr x) (symbolp (cadr x)) (not (functionp (cadr x))))
-                (cons (car x) (list (eval (cadr x))))
+                (cons (car x) (list (eval (cadr x) t)))
               x))
           table))
 

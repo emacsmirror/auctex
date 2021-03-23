@@ -1,6 +1,6 @@
-;;; tex-mik.el --- MiKTeX support for AUCTeX.
+;;; tex-mik.el --- MiKTeX support for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2000, 2001, 2004, 2016 Free Software Foundation, Inc.
+;; Copyright (C) 1999-2021  Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org

@@ -189,7 +189,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (labels))
     (dolist (m-alist TeX-bar-TeX-all-button-alists)
       (setq labels nil)
-      (dolist (as (eval m-alist))
+      (dolist (as (eval m-alist t))
         (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
                                       assqs-button-alists)))
@@ -219,7 +219,7 @@ format of the argument MEANING-ALIST in the mentioned function."
                             (let ((append-list))
                               (dolist (elt TeX-bar-TeX-all-button-alists)
                                 (setq append-list (append append-list
-                                                          (eval elt))))
+                                                          (eval elt t))))
                               append-list)))
 
 (defcustom TeX-bar-LaTeX-buttons
@@ -334,7 +334,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (labels))
     (dolist (m-alist TeX-bar-LaTeX-all-button-alists)
       (setq labels nil)
-      (dolist (as (eval m-alist))
+      (dolist (as (eval m-alist t))
         (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
                                       assqs-button-alists)))
@@ -368,7 +368,7 @@ format of the argument MEANING-ALIST in the mentioned function."
                             (let ((append-list))
                               (dolist (elt TeX-bar-LaTeX-all-button-alists)
                                 (setq append-list (append append-list
-                                                          (eval elt))))
+                                                          (eval elt t))))
                               append-list)))
 
 ;;; Experimental Symbol Toolbar

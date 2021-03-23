@@ -1,4 +1,4 @@
-;;; bib-cite.el --- test
+;;; bib-cite.el --- test  -*- lexical-binding: t; -*-
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
 ;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2021 Free Software Foundation, Inc.
@@ -1220,7 +1220,7 @@ See variables bib-etags-command and bib-etags-filename"
   ;; *all of code was here*
   ;;      )
   (save-excursion
-    (let ((s)(e)(extent)(local-extent-list bib-ext-list)
+    (let ((s)(e);; (extent) (local-extent-list bib-ext-list)
           (inhibit-read-only t)
           (modified (buffer-modified-p))) ;put-text-property changing this?
       ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face

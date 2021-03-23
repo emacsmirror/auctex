@@ -1472,7 +1472,7 @@ predicates are true, nil otherwise."
         (result t)
         elt)
     (while (and (setq elt (pop pred-symbols)) result)
-      (unless (eval (cadr (assq elt pred-defs)))
+      (unless (eval (cadr (assq elt pred-defs)) t)
         (setq result nil)))
     result))
 
@@ -1803,7 +1803,7 @@ raise the Emacs frame like so:
   :type 'function
   :group 'TeX-view)
 
-(defun TeX-source-correlate-sync-source (file linecol &rest ignored)
+(defun TeX-source-correlate-sync-source (file linecol &rest _ignored)
   "Show TeX FILE with point at LINECOL.
 This function is called when emacs receives a SyncSource signal
 emitted from the Evince document viewer.  IGNORED absorbs an
@@ -3213,7 +3213,7 @@ Or alternatively:
                  (close (if (and (nth 3 entry)
                                  (listp (nth 3 entry))
                                  (symbolp (car (nth 3 entry))))
-                            (eval (nth 3 entry))
+                            (eval (nth 3 entry) t)
                           (nth 3 entry)))
                  (begin (match-beginning sub))
                  (end (match-end sub))
@@ -3614,7 +3614,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 (defun TeX-arg-maybe (symbol list form)
   "Evaluates FORM, if SYMBOL is an element of LIST."
   (when (memq symbol list)
-    (eval form)))
+    (eval form t)))
 
 (defun TeX-arg-free (optional &rest args)
   "Parse its arguments but use no braces when they are inserted."
@@ -4652,7 +4652,7 @@ If optional argument STRIP is non-nil, remove file extension."
          (rawdirs (nth 2 spec))
          (exts (nth 3 spec))
          expdirs dirs local-files)
-    (setq exts (if (symbolp exts) (eval exts) exts))
+    (setq exts (if (symbolp exts) (eval exts t) exts))
     (or (TeX-search-files-kpathsea kpse-var exts scope nodir strip)
         (progn
           (unless (eq scope 'global)

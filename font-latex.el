@@ -227,7 +227,8 @@ Emacs."
 Probably you don't want to customize this face directly.  Better
 change the base face `font-latex-sectioning-5-face' or customize the
 variable `font-latex-fontify-sectioning'." ',num)
-          :group 'font-latex-highlighting-faces)))))
+          :group 'font-latex-highlighting-faces)
+       t))))
 
 (font-latex-make-sectioning-faces font-latex-sectioning-max)
 
@@ -474,7 +475,7 @@ You have to restart Emacs for a change of this variable to take effect."
                                   ;; Name of the face
                                   (symbol-name
                                    (let ((face (nth 2 spec)))
-                                     (if (symbolp face) face (eval face))))
+                                     (if (symbolp face) face (eval face t))))
                                   "'.\n"
                                   ;; List of keywords
                                   (with-temp-buffer
@@ -1352,7 +1353,7 @@ Take care when the actually fonfified region was extended beyond END."
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
 ;; (XEmacs passes a third argument to the function.)
-(defun font-latex-unfontify-region (beg end &rest ignored)
+(defun font-latex-unfontify-region (beg end &rest _ignored)
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
   (remove-list-of-text-properties beg end '(script-level invisible))

@@ -178,14 +178,14 @@ pinned region will get unpinned and vice versa."
   (let* ((begin (or TeX-command-region-begin (region-beginning)))
          (end (or TeX-command-region-end (region-end)))
          (TeX-region-extra
-         ;; Write out counter information to region.
-         (concat (and (fboundp 'preview--counter-information)
-                      (preview--counter-information begin))
-                 TeX-region-extra)))
+          ;; Write out counter information to region.
+          (concat (and (fboundp 'preview--counter-information)
+                       (preview--counter-information begin))
+                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
                        (buffer-substring-no-properties begin end)
                        (file-name-nondirectory (buffer-file-name))
-                       (TeX-current-offset begin))))
+                       (TeX-current-offset TeX--begin))))
 
 (defun TeX-command-region (&optional override-confirm)
   "Run TeX on the current region.
@@ -1384,7 +1384,7 @@ Error parsing on \\[next-error] should work with a bit of luck."
   "Execute Lisp function or function call given as the string COMMAND.
 Parameters NAME and FILE are ignored."
   (let ((fun (car (read-from-string command))))
-    (if (functionp fun) (funcall fun) (eval fun))))
+    (if (functionp fun) (funcall fun) (eval fun t))))
 
 (defun TeX-run-discard-or-function (name command file)
   "Start COMMAND as process or execute it as a Lisp function.

@@ -1,7 +1,6 @@
-;;; preview.el --- embed preview LaTeX images in source buffer
+;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2021  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -1737,7 +1736,7 @@ Consults `preview-transparent-color'."
    file type ascent border))
 
 (put 'preview-filter-specs :type
-     (lambda (keyword value &rest args)
+     (lambda (_keyword value &rest args)
        (if (image-type-available-p value)
            `(image :type ,value
                    ,@(preview-filter-specs-1 args))
@@ -1818,7 +1817,7 @@ to require redumping of a format."
   :type 'string)
 
 (defun preview-preamble-changed-function
-  (ov after-change beg end &optional length)
+  (ov _after-change _beg _end &optional _length)
   "Hook function for change hooks on preamble.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -1903,7 +1902,7 @@ Disable it if that is the case.  Ignores text properties."
   (setq preview-change-list nil))
 
 (defun preview-handle-insert-in-front
-  (ov after-change beg end &optional length)
+  (ov after-change _beg end &optional _length)
   "Hook function for `insert-in-front-hooks' property.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -1914,7 +1913,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
     (preview-register-change ov)))
 
 (defun preview-handle-insert-behind
-  (ov after-change beg end &optional length)
+  (ov after-change beg _end &optional _length)
   "Hook function for `insert-behind-hooks' property.
 This is needed in case `insert-before-markers' is used at the
 end of the overlay.  See info node `(elisp) Overlay Properties'
@@ -1926,7 +1925,7 @@ for definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
     (preview-register-change ov)))
 
 (defun preview-handle-modification
-  (ov after-change beg end &optional length)
+  (ov after-change _beg _end &optional _length)
   "Hook function for `modification-hooks' property.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -2208,7 +2207,7 @@ active (`transient-mark-mode'), it is run through `preview-region'."
       (file-error nil))
     (overlay-put ovr 'filenames nil)))
 
-(defun preview-delete (ovr &rest ignored)
+(defun preview-delete (ovr &rest _ignored)
   "Delete preview overlay OVR, taking any associated file along.
 IGNORED arguments are ignored, making this function usable as
 a hook in some cases"
@@ -2305,7 +2304,7 @@ kept."
             (setq ctr (delete elt ctr)))))
   (apply #'concat ctr))
 
-(defun desktop-buffer-preview-misc-data (&rest ignored)
+(defun desktop-buffer-preview-misc-data (&rest _ignored)
   "Hook function that extracts previews for persistent sessions."
   (unless (buffer-modified-p)
     (setq preview-last-counter nil)
@@ -3698,7 +3697,7 @@ The fourth value is the transparent border thickness."
 
 (defun preview-start-dvipng ()
   "Start a DviPNG process.."
-  (let* ((file preview-gs-file)
+  (let* (;; (file preview-gs-file)
          tempdir
          (res (/ (* (car preview-resolution)
                     (preview-hook-enquiry preview-scale))
@@ -3739,7 +3738,7 @@ The fourth value is the transparent border thickness."
 (defun preview-start-dvips (&optional fast)
   "Start a DviPS process.
 If FAST is set, do a fast conversion."
-  (let* ((file preview-gs-file)
+  (let* (;; (file preview-gs-file)
          tempdir
          (command (with-current-buffer TeX-command-buffer
                     (prog1
@@ -4088,7 +4087,7 @@ environments is selected."
   (interactive "p")
   (save-excursion
     (let (currenv)
-      (dotimes (i (1- count))
+      (dotimes (_ (1- count))
         (setq currenv (LaTeX-current-environment))
         (if (string= currenv "document")
             (error "No enclosing outer environment found"))
@@ -4152,7 +4151,7 @@ It returns the started process."
                                      geometry))))
 
 (defun TeX-inline-preview-internal (command file pr-file
-                                    commandbuff dumped-cons master
+                                    commandbuff dumped-cons _master
                                     geometry
                                     &optional str)
   "Internal stuff for previewing.
