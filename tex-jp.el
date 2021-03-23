@@ -46,7 +46,6 @@
 
 (defcustom japanese-TeX-engine-default 'ptex
   "Default TeX engine for Japanese TeX."
-  :group 'AUCTeX-jp
   :type '(choice (const :tag "pTeX" ptex)
                  (const :tag "jTeX" jtex)
                  (const :tag "upTeX" uptex)))
@@ -56,7 +55,6 @@
 If `TeX-japanese-process-input-coding-system' or
 `TeX-japanese-process-output-coding-system' are non-nil, the process coding
 systems are determined by their values regardless of the kanji option."
-  :group 'AUCTeX-jp
   :type 'boolean)
 
 (setq TeX-engine-alist-builtin
@@ -227,26 +225,22 @@ systems are determined by their values regardless of the kanji option."
 
 (defcustom japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese."
-  :group 'AUCTeX-jp
   :type 'boolean)
 
 (defcustom TeX-japanese-process-input-coding-system nil
   "If non-nil, used for encoding input to Japanese TeX process.
 When nil, AUCTeX tries to choose suitable coding system.
 See also a user custom option `TeX-japanese-process-output-coding-system'."
-  :group 'AUCTeX-jp
   :type '(choice (const :tag "Default" nil) coding-system))
 
 (defcustom TeX-japanese-process-output-coding-system nil
   "If non-nil, used for decoding output from Japanese TeX process.
 When nil, AUCTeX tries to choose suitable coding system.
 See also a user custom option `TeX-japanese-process-input-coding-system'."
-  :group 'AUCTeX-jp
   :type '(choice (const :tag "Default" nil) coding-system))
 
 (defcustom japanese-LaTeX-default-style "jarticle"
   "Default when creating new Japanese documents."
-  :group 'AUCTeX-jp
   :type 'string)
 
 (defcustom japanese-LaTeX-style-list
@@ -266,7 +260,6 @@ See also a user custom option `TeX-japanese-process-input-coding-system'."
     ("ujarticle") ("ujreport") ("ujbook")
     ("utarticle") ("utreport") ("utbook"))
   "List of Japanese document classes."
-  :group 'AUCTeX-jp
   :type '(repeat (group (string :format "%v"))))
 
 (setq LaTeX-style-list

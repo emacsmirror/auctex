@@ -1,6 +1,6 @@
 ;;; texmathp.el -- Code to check if point is inside LaTeX math environment  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1998, 2004, 2017, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1998-2021  Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -212,7 +212,6 @@ The structure of each entry is (NAME TYPE)
     `sw-on'      Switch: turns math-mode of following text  on
     `sw-off'     Switch: turns math-mode of following text  off
     `sw-toggle'  Switch: toggles math mode of following text"
-  :group 'texmathp
   :set '(lambda (symbol value) (set-default symbol value) (texmathp-compile))
   :type
   '(repeat
@@ -235,7 +234,6 @@ backward to the nearest empty line.
 However, during editing it happens that such lines exist temporarily.
 Therefore we look a little further.  This variable determines how many
 empty lines we go back to fix the search limit."
-  :group 'texmathp
   :type 'number)
 
 (defcustom texmathp-allow-detached-args nil
@@ -244,7 +242,6 @@ When this is t, `aaa' will be interpreted as an argument of \\bbb in the
 following construct:  \\bbb [xxx] {aaa}
 This is legal in TeX.  The disadvantage is that any number of braces expressions
 will be considered arguments of the macro independent of its definition."
-  :group 'texmathp
   :type 'boolean)
 
 (defvar texmathp-why nil

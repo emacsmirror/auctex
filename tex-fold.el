@@ -67,8 +67,7 @@ macros, 'math for math macros and 'comment for comments."
   :type '(set (const :tag "Environments" env)
               (const :tag "Macros" macro)
               (const :tag "Math Macros" math)
-              (const :tag "Comments" comment))
-  :group 'TeX-fold)
+              (const :tag "Comments" comment)))
 
 (defcustom TeX-fold-macro-spec-list
   `(("[f]" ("footnote" "marginpar"))
@@ -118,8 +117,7 @@ Customize or reset the mode."
   :type '(repeat (group (choice (string :tag "Display String")
                                 (integer :tag "Number of argument" :value 1)
                                 (function :tag "Function to execute"))
-                        (repeat :tag "Macros" (string))))
-  :group 'TeX-fold)
+                        (repeat :tag "Macros" (string)))))
 
 (defvar TeX-fold-macro-spec-list-internal nil
   "Internal list of display strings and macros to fold.
@@ -134,8 +132,7 @@ and <mode-prefix>-fold-macro-spec-list.")
   "List of display strings and environments to fold."
   :type '(repeat (group (choice (string :tag "Display String")
                                 (integer :tag "Number of argument" :value 1))
-                        (repeat :tag "Environments" (string))))
-  :group 'TeX-fold)
+                        (repeat :tag "Environments" (string)))))
 
 (defvar TeX-fold-env-spec-list-internal nil
   "Internal list of display strings and environments to fold.
@@ -149,8 +146,7 @@ and <mode-prefix>-fold-env-spec-list.")
   "List of display strings and math macros to fold."
   :type '(repeat (group (choice (string :tag "Display String")
                                 (integer :tag "Number of argument" :value 1))
-                        (repeat :tag "Math Macros" (string))))
-  :group 'TeX-fold)
+                        (repeat :tag "Math Macros" (string)))))
 
 (defvar TeX-fold-math-spec-list-internal nil
   "Internal list of display strings and math macros to fold.
@@ -164,15 +160,13 @@ and <mode-prefix>-fold-math-spec-list.")
   "Display string for unspecified macros.
 This string will be displayed if a single macro is being hidden
 which is not specified in `TeX-fold-macro-spec-list'."
-  :type '(string)
-  :group 'TeX-fold)
+  :type '(string))
 
 (defcustom TeX-fold-unspec-env-display-string "[env]"
   "Display string for unspecified environments.
 This string will be displayed if a single environment is being
 hidden which is not specified in `TeX-fold-env-spec-list'."
-  :type '(string)
-  :group 'TeX-fold)
+  :type '(string))
 
 (defcustom TeX-fold-unspec-use-name t
   "If non-nil use the name of an unspecified item as display string.
@@ -180,33 +174,27 @@ Set it to nil if you want to use the values of the variables
 `TeX-fold-unspec-macro-display-string' or
 `TeX-fold-unspec-env-display-string' respectively as a display
 string for any unspecified macro or environment."
-  :type 'boolean
-  :group 'TeX-fold)
+  :type 'boolean)
 
 (defcustom TeX-fold-preserve-comments nil
   "If non-nil do not fold in comments."
-  :type 'boolean
-  :group 'TeX-fold)
+  :type 'boolean)
 
 (defcustom TeX-fold-unfold-around-mark t
   "Unfold text around the mark, if active."
-  :type 'boolean
-  :group 'TeX-fold)
+  :type 'boolean)
 
 (defcustom TeX-fold-help-echo-max-length 70
   "Maximum length of help echo message for folded overlays.
 Set it to zero in order to disable help echos."
-  :type 'integer
-  :group 'TeX-fold)
+  :type 'integer)
 
 (defcustom TeX-fold-force-fontify t
   "Force the buffer to be fully fontified by folding it."
-  :group 'TeX-fold
   :type 'boolean)
 
 (defcustom TeX-fold-auto nil
   "If non-nil, fold macros automatically after `TeX-insert-macro'."
-  :group 'TeX-fold
   :type 'boolean)
 
 (defface TeX-fold-folded-face
@@ -219,8 +207,7 @@ Set it to zero in order to disable help echos."
     (((class grayscale) (background dark))
      (:foreground "LightGray"))
     (t (:slant italic)))
-  "Face for the display string of folded content."
-  :group 'TeX-fold)
+  "Face for the display string of folded content.")
 
 (defvar TeX-fold-folded-face 'TeX-fold-folded-face
   "Face for the display string of folded content.")
@@ -235,8 +222,7 @@ Set it to zero in order to disable help echos."
     (((class grayscale) (background dark))
      (:background "DimGray"))
     (t (:inverse-video t)))
-  "Face for folded content when it is temporarily opened."
-  :group 'TeX-fold)
+  "Face for folded content when it is temporarily opened.")
 
 (defvar TeX-fold-unfolded-face 'TeX-fold-unfolded-face
   "Face for folded content when it is temporarily opened.")
@@ -251,8 +237,7 @@ Set it to zero in order to disable help echos."
   "Prefix key to use for commands in TeX Fold mode.
 The value of this variable is checked as part of loading TeX Fold mode.
 After that, changing the prefix key requires manipulating keymaps."
-  :type 'string
-  :group 'TeX-fold)
+  :type 'string)
 
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
