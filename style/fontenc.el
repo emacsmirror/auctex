@@ -49,6 +49,7 @@
   (mapconcat #'identity
              (TeX-completing-read-multiple
               "Encoding(s): "
-              LaTeX-fontenc-package-options-list) ","))
+              LaTeX-fontenc-package-options-list)
+             ","))
 
 ;;; fontenc.el ends here

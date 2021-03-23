@@ -855,7 +855,6 @@ Remove the respective properties from the overlay OV."
                                     'mouse-set-point)))
                 ;; Open new overlays.
                 (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
-                                              (boundp 'mark-active)
                                               mark-active)
                                      (overlays-at (mark)))
                                    (overlays-at (point))))

@@ -105,7 +105,8 @@
                             (mapcar (lambda (str) (concat "\\" str))
                                     '("uline" "uuline"
                                       "uwave" "sout" "xout")))
-                    nil t) optional))
+                    nil t)
+   optional))
 
 (defvar LaTeX-ulem-package-options
   '("UWforbf" "ULforem" "normalbf" "normalem")

@@ -216,7 +216,8 @@ the section."
                     (beginning-of-line)
                     (when
                         (re-search-forward (concat section-re
-                                                   "\\|^\\s-*@bye\\_>" ) nil t)
+                                                   "\\|^\\s-*@bye\\_>" )
+                                           nil t)
                       (save-match-data
                         (beginning-of-line)
                         (point))))

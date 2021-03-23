@@ -35,18 +35,16 @@ We ignore next, previous and up fields.")
   "Non-nil means LaTeXinfo minor mode is active.")
   (make-variable-buffer-local 'LaTeXinfo-mode)
 
-(defvar LaTeXinfo-mode-map nil
+(defvar LaTeXinfo-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-u\C-b" #'latexinfo-format-buffer)
+    (define-key map "\C-c\C-u\C-r" #'latexinfo-format-region)
+    (define-key map "\C-c\C-u\C-s" #'latexinfo-show-structure)
+    (define-key map "\C-c\C-ud" #'makke:latexinfo-delete-structure)
+    (define-key map "\C-c\C-ug" #'latexinfo-goto-node)
+    (define-key map "\C-c\C-ui" #'makke:latexinfo-structure)
+    map)
   "Keymap containing LaTeXinfo commands.")
-
-(if LaTeXinfo-mode-map
-    ()
-  (setq LaTeXinfo-mode-map (make-sparse-keymap))
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-b" #'latexinfo-format-buffer)
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-r" #'latexinfo-format-region)
-  (define-key LaTeXinfo-mode-map "\C-c\C-u\C-s" #'latexinfo-show-structure)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ud" #'makke:latexinfo-delete-structure)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ug" #'latexinfo-goto-node)
-  (define-key LaTeXinfo-mode-map "\C-c\C-ui" #'makke:latexinfo-structure))
 
 (or (assq 'LaTeXinfo-mode minor-mode-map-alist)
     (setq minor-mode-map-alist

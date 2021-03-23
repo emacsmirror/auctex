@@ -986,10 +986,10 @@ optional argument is omitted.)"
   "Adding labels for LaTeX commands in AUCTeX."
   :group 'LaTeX)
 
-(defcustom LaTeX-label-function nil
+(defcustom LaTeX-label-function #'LaTeX-label--default
   "A function inserting a label at point or returning a label string.
-Sole mandatory argument of the function is the environment.  The
-function has to return the label inserted, or nil if no label was
+Called with two argument NAME and NO-INSERT where NAME is the environment.
+The function has to return the label inserted, or nil if no label was
 inserted.  If the optional argument NO-INSERT is non-nil, then
 the function has to return the label as string without any
 insertion or nil if no label was read in."
@@ -1133,21 +1133,23 @@ returned, nil if it is empty."
     (when (symbolp TeX-read-label-prefix)
       (setq TeX-read-label-prefix (symbol-value TeX-read-label-prefix)))
     (when TeX-read-label-prefix
-      (if (and (fboundp LaTeX-label-function))
-          (funcall LaTeX-label-function name no-insert)
-        ;; Use completing-read as we do with `C-c C-m \label RET'
-        (setq label (TeX-read-label t "What label" t))
-        ;; No label or empty string entered?
-        (if (or (string= TeX-read-label-prefix label)
-                (string= "" label))
-            (setq label nil)
-          ;; We have a label; when NO-INSERT is nil, insert
-          ;; \label{label} in the buffer, add new label to list of
-          ;; known labels and return it
-          (unless no-insert
-            (insert TeX-esc "label" TeX-grop label TeX-grcl))
-          (LaTeX-add-labels label)
-          label)))))
+      (funcall (or LaTeX-label-function #'LaTeX-label--default)
+               name no-insert))))
+
+(defun LaTeX-label--default (_name no-insert)
+  ;; Use completing-read as we do with `C-c C-m \label RET'
+  (let ((label (TeX-read-label t "What label" t)))
+    ;; No label or empty string entered?
+    (if (or (string= TeX-read-label-prefix label)
+            (string= "" label))
+        (setq label nil)
+      ;; We have a label; when NO-INSERT is nil, insert
+      ;; \label{label} in the buffer, add new label to list of
+      ;; known labels and return it
+      (unless no-insert
+        (insert TeX-esc "label" TeX-grop label TeX-grcl))
+      (LaTeX-add-labels label)
+      label)))
 
 (defcustom LaTeX-short-caption-prompt-length 40
   "The length that the caption of a figure should be before
@@ -4554,9 +4556,7 @@ value of NO-SUBSECTIONS."
         (re-search-backward (concat "\\(" (LaTeX-outline-regexp)
                                     "\\|\\`\\)")))
     (outline-mark-subtree)
-    (when (and (boundp 'transient-mark-mode)
-               transient-mark-mode
-               (boundp 'mark-active)
+    (when (and transient-mark-mode
                (not mark-active))
       (setq mark-active t)
       (run-hooks 'activate-mark-hook)))
@@ -6056,6 +6056,7 @@ This happens when \\left is inserted."
 
 ;;;###autoload
 (defun TeX-latex-mode ()
+  ;; FIXME: Use `define-derived-mode'.
   "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
 
@@ -6081,7 +6082,8 @@ of `LaTeX-mode-hook'."
   (add-hook 'TeX-update-style-hook
             (lambda ()
               (if (local-variable-p 'LaTeX-biblatex-use-Biber (current-buffer))
-                  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber))) nil t)
+                  (setq LaTeX-using-Biber LaTeX-biblatex-use-Biber)))
+            nil t)
 
   ;; Run style hooks associated with class options.
   (add-hook 'TeX-update-style-hook
@@ -6791,7 +6793,8 @@ function would return non-nil and `(match-string 1)' would return
   ;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
                                 (TeX-PDF-mode-on)
-                                (TeX-PDF-mode-off)) :classopt)
+                                (TeX-PDF-mode-off))
+                      :classopt)
   ;; ifpdf indicates that we cater for either.  So calling both
   ;; functions will make sure that the default will get used unless the
   ;; user overrode it.

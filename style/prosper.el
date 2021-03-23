@@ -114,7 +114,7 @@
 (defun LaTeX-prosper-slide-style-prompt()
   (completing-read
    "Slide Style?"
-   (mapcar 'list LaTeX-prosper-slide-styles)
+   LaTeX-prosper-slide-styles
    nil nil nil nil "default" ))
 
 

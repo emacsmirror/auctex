@@ -737,7 +737,7 @@ A opening curly bracket is appended to the regexp.")
   "Toggle bib-cite mode.
 When bib-cite mode is enabled, citations, labels and refs are highlighted
 when the mouse is over them.  Clicking on these highlights with [mouse-2]
-runs bib-find, and [mouse-3] runs bib-display."
+runs `bib-find', and [mouse-3] runs `bib-display'."
   (interactive "P")
   (set (make-local-variable 'bib-cite-minor-mode)
        (if arg
@@ -956,9 +956,7 @@ find the next occurrence of a regexp."
   (if (bib-master-file)                 ;Multi-file document
       ;; FIXME: `find-tag' is replaced by `xref-find-definitions' in
       ;; Emacs 25.1.  AUCTeX should track this change, sometime ...
-      (if prev-p
-          (find-tag t '- t)
-        (find-tag t t t))
+      (find-tag t (if prev-p '- t) t)
     (if bib-cite-search-ring
         ;;FIXME: Should first make sure I move off initial \ref{}.
         (let ((regexp (concat bib-ref-regexpc bib-cite-search-ring "}")))
@@ -1284,7 +1282,8 @@ Use mouse button 3 to display the %s."))
     (let* ((string (extent-string object))
            (type (cond ((string-match "^\\\\[A-Za-z]*cite[A-Za-z]*" string) "citation")
                        ((string-match
-                         (concat "^" bib-ref-regexp) string) "\\label{}")
+                         (concat "^" bib-ref-regexp) string)
+                        "\\label{}")
                        ((string-match "^\\\\label" string) "\\ref{}")
                        (t "this (unknown) reference"))))
       (format format type type))))

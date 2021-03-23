@@ -1,6 +1,6 @@
 ;;; tikz.el --- AUCTeX style for `tikz.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2021  Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -161,14 +161,14 @@ optional input."
          (selected-mapping (assoc selected-argument-type
                                   fn-alist-with-optional-elm)))
 
-    (eval
-     ;; Build the form we wish to evaluate.  This will be the function
-     ;; to be called (the second element in the assoc element),
-     ;; followed by the type name (the first element), followed by any
-     ;; other elements in the list as extra arguments.
-     `(,(cadr selected-mapping)
-       ,(car selected-mapping)
-       ,@(cddr selected-mapping)))))
+    ;; Build the funcall we wish to evaluate.  This will be the function
+    ;; to be called (the second element in the assoc element),
+    ;; followed by the type name (the first element), followed by any
+    ;; other elements in the list as extra arguments.
+    (apply
+     (cadr selected-mapping)
+     (car selected-mapping)
+     (cddr selected-mapping))))
 
 
 (defun TeX-TikZ-macro-arg (function-alist)

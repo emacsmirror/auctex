@@ -1,7 +1,6 @@
 ;;; tex-font.el --- Font-Lock support stolen from Emacs 21.
 ;;
-;; Copyright (C) 1985, 86, 89, 92, 94, 95, 96, 97, 98, 1999
-;;       Free Software Foundation, Inc.
+;; Copyright (C) 1985-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, faces
@@ -89,7 +88,8 @@
             (let* (;;
                    ;; Names of commands whose arg should be fontified with fonts.
                    (bold (regexp-opt '("textbf" "textsc" "textup"
-                                       "boldsymbol" "pmb") t))
+                                       "boldsymbol" "pmb")
+                                     t))
                    (italic (regexp-opt '("textit" "textsl" "emph") t))
                    (type (regexp-opt '("texttt" "textmd" "textrm" "textsf") t))
                    ;;

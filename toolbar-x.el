@@ -270,22 +270,24 @@ inside Emacs. See documentation of that function for more."
          (count 1)
          (used-symbols '(nil))
          (key)
-         (real-type (if (eq type 'toggle) 'toggle 'radio))
-         (real-save (when save (if (eq save 'offer) 'offer 'always))))
-    ;; warn if type is not `radio' ot `toggle'; use `radio' if incorrect.
-    (unless (eq type real-type)
-      (display-warning 'toolbarx
-                       (format (concat "TYPE should be symbols `radio' or "
-                                       "`toggle', but %s found; using `radio'")
-                               type)))
-    ;; warn if save is not `nil', `offer' or `always'; use nil when incorrect
-    (unless (eq save real-save)
-      (setq real-save nil)
-      (display-warning 'toolbarx
-                       (format (concat "SAVE should be symbols `nil', "
-                                       "`offer' or `always', but %s found; "
-                                       "using `nil'")
-                               save)))
+         (real-type
+          (pcase type
+            ((or `toggle `radio) type)
+            ;; Warn if type is not `radio' or `toggle'.
+            (_ (display-warning 'toolbarx
+                                (format "TYPE should be symbols `radio' or `toggle', but %s found; using `radio'"
+                                        type))
+               ;; Use `radio' if incorrect.
+               'radio)))
+         (real-save
+          (pcase save
+            ((or `nil `offer `always) save)
+            ;; Warn if save is not `nil', `offer' or ;; `always'.
+            (_ (display-warning 'toolbarx
+                                (format "SAVE should be symbols `nil', `offer' or `always', but %s found; using `nil'"
+                                        save))
+               ;; Use nil when incorrect.
+               nil))))
     (dolist (i strings)
       ;; finding a new symbol
       (let* ((aux-count 0)
@@ -400,13 +402,12 @@ documentation of function `toolbarx-process-symbol')."
                   (all-obj-ok t)
                   (good-obj
                    (or (stringp val)      ; string
-                       (and (consp val) ; or image descriptor
-                            (eq (car val) 'image))
+                       (eq (car-safe val) 'image) ; or image descriptor
                        (and (symbolp val) ; or a symbol bound to a
                             (boundp val)  ; image descriptor
                                         ; (defined with `defimage')
-                            (consp (eval val))
-                            (eq (car (eval val)) 'image))
+                            (consp (symbol-value val))
+                            (eq (car (symbol-value val)) 'image))
                        (and (listp val) ; or list with 4 strings or
                                         ; image descriptors
                             (= (length val) 4)
@@ -414,9 +415,7 @@ documentation of function `toolbarx-process-symbol')."
                               (setq all-obj-ok
                                     (and all-obj-ok
                                          (or (stringp i)
-                                             (and (consp i)
-                                                  (eq (car i)
-                                                      'image))))))))))
+                                             (eq (car-safe i) 'image)))))))))
              (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-image-type-simple)))
 
@@ -888,7 +887,7 @@ in the end of SWITCHES, which is returned."
         (set variable default)))
     ;; now check `variable' content
     (set variable
-         (let ((val (eval variable)))
+         (let ((val (symbol-value variable)))
            (if (eq type 'toggle)
                (if (listp val)
                    val
@@ -1089,9 +1088,9 @@ function `toolbar-install-toolbar'."
                    ((and (symbolp image) ; or a symbol bound to a
                          (boundp image)  ; image descriptor (defined
                                         ; with `defimage')g
-                         (consp (eval image))
-                         (eq (car (eval image)) 'image))
-                    (eval image))
+                         (consp (symbol-value image))
+                         (eq (car (symbol-value image)) 'image))
+                    (symbol-value image))
                    (t                   ; otherwise, must be a list
                                         ; with 4 strings or image
                                         ; descriptors

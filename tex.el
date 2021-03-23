@@ -6445,6 +6445,7 @@ NAME may be a package, a command, or a document."
                                 (throw 'found t)))))
           ;; Setup completion list in a format suitable for `completing-read'.
           (dolist (elt docs)
+            ;; FIXME: Probably not needed!
             (setq completions (nconc (mapcar #'list (car elt)) completions)))
           ;; Query user.
           (setq name (completing-read
@@ -6500,7 +6501,8 @@ NAME may be a package, a command, or a document."
                         "\\).*\\("
                         (mapconcat #'regexp-quote
                                    (cons (file-name-nondirectory name)
-                                         (TeX-style-list)) "\\|")
+                                         (TeX-style-list))
+                                   "\\|")
                         "\\)\\.\\("
                         (mapconcat #'identity TeX-file-extensions "\\|")
                         "\\)\\'"))

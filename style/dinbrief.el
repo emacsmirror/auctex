@@ -23,8 +23,6 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; dinbrief.el - Special code for LaTeX class dinbrief.
-
 ;;; Commentary:
 
 ;; LaTeX Class: dinbrief.cls
