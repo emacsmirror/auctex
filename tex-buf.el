@@ -185,7 +185,7 @@ pinned region will get unpinned and vice versa."
     (TeX-region-create (TeX-region-file TeX-default-extension)
                        (buffer-substring-no-properties begin end)
                        (file-name-nondirectory (buffer-file-name))
-                       (TeX-current-offset TeX--begin))))
+                       (TeX-current-offset begin))))
 
 (defun TeX-command-region (&optional override-confirm)
   "Run TeX on the current region.

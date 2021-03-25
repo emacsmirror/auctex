@@ -711,6 +711,7 @@ sure \"%p\" is the first entry."
 (autoload 'TeX-home-buffer "tex-buf" nil t)
 (autoload 'TeX-kill-job "tex-buf" nil t)
 (autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-previous-error "tex-buf" nil t)
 (autoload 'TeX-output-extension "tex-buf")
 (autoload 'TeX-pin-region "tex-buf" nil t)
 (autoload 'TeX-pop-to-buffer "tex-buf")
@@ -753,11 +754,11 @@ emacs 24.1 and is then later run by emacs 24.5."
                                        (cons elt "AUCTeX"))))
 
 (if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'hack-one-local-variable :after #'tex--call-minor-mode)
+    (advice-add 'hack-one-local-variable :after #'TeX--call-minor-mode)
   (defadvice hack-one-local-variable (after TeX-hack-one-local-variable-after
                                           activate)
-    (tex--call-minor-mode (ad-get-arg 0) (ad-get-arg 1))))
-(defun tex--call-minor-mode (var val &rest _)
+    (TeX--call-minor-mode (ad-get-arg 0) (ad-get-arg 1))))
+(defun TeX--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
     ;; Instead of checking for each mode explicitely `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
@@ -2531,7 +2532,7 @@ file in `TeX-master'. The path cannot contain a directory that
 starts with '.'. If this variable is nil, the output directory is
 assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
-  :safe 'string-or-null-p
+  :safe #'string-or-null-p
   :type '(choice (const :tag "Directory of master file" nil)
                  (string :tag "Custom" "build")))
 (make-variable-buffer-local 'TeX-output-dir)
