@@ -56,9 +56,6 @@
                   nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
-;; spell-buffer was removed in 2008 in favor of ispell
-(declare-function spell-buffer "ext:text-mode"
-                  t)
 
 ;; Silence the compiler for variables:
 ;; tex.el: Variables defined somewhere in this file:
@@ -102,6 +99,7 @@
 (defvar tex--prettify-symbols-alist)    ; tex-mode.el
 (defvar Info-file-list-for-emacs)       ; info.el
 (defvar dbus-debug)                     ; dbus.el
+(defvar ispell-parser)                  ; ispell.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -3743,7 +3741,6 @@ The algorithm is as follows:
 
   ;; Ispell support
   (set (make-local-variable 'ispell-parser) 'tex)
-  (set (make-local-variable 'ispell-tex-p) t)
 
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
@@ -6474,17 +6471,10 @@ NAME may be a package, a command, or a document."
 
 (defun TeX-run-ispell (_command _string file)
   "Run ispell on current TeX buffer."
-  (cond ((and (string-equal file (TeX-region-file))
-              (fboundp 'ispell-region))
+  (cond ((string-equal file (TeX-region-file))
          (call-interactively #'ispell-region))
-        ((string-equal file (TeX-region-file))
-         (call-interactively #'spell-region))
-        ((fboundp 'ispell-buffer)
-         (ispell-buffer))
-        ((fboundp 'ispell)
-         (ispell))
         (t
-         (spell-buffer))))
+         (ispell-buffer))))
 
 (defun TeX-ispell-document (name)
   "Run ispell on all open files belonging to the current document."
@@ -6517,12 +6507,6 @@ NAME may be a package, a command, or a document."
         (when (and name (string-match regexp name))
           (save-excursion (switch-to-buffer buffer) (ispell-buffer))
           t)))))
-
-;; Some versions of ispell 3 use this.
-(defvar ispell-tex-major-modes nil)
-(setq ispell-tex-major-modes
-      (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
-              ispell-tex-major-modes))
 
 (defcustom TeX-ispell-extend-skip-list t
   "Whether to extend regions selected for skipping during spell checking."
