@@ -5968,7 +5968,7 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
                                              font-lock-comment-face)))
           (texmathp)
           (TeX-in-comment))
-      (call-interactively 'self-insert-command)
+      (call-interactively #'self-insert-command)
     (let* ((lang (assoc LaTeX-babel-hyphen-language
                         LaTeX-babel-hyphen-language-alist))
            (hyphen (if lang (nth 1 lang) LaTeX-babel-hyphen))
@@ -5983,20 +5983,20 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
             (progn (delete-char (- hyphen-length))
                    (insert "--"))
           (delete-char (- hyphen-length))
-          (call-interactively 'self-insert-command)))
+          (call-interactively #'self-insert-command)))
        ;; -- --> [+]-
        ((string= (buffer-substring (max (- (point) 2) (point-min))
                                    (point))
                  "--")
-        (call-interactively 'self-insert-command))
+        (call-interactively #'self-insert-command))
        ;; - --> "= / [+]-
        ((eq (char-before) ?-)
         (if h-after-h
             (progn (delete-char -1)
                    (insert hyphen))
-          (call-interactively 'self-insert-command)))
+          (call-interactively #'self-insert-command)))
        (h-after-h
-        (call-interactively 'self-insert-command))
+        (call-interactively #'self-insert-command))
        (t (insert hyphen))))))
 ;; Cater for Delete Selection mode
 (put 'LaTeX-babel-insert-hyphen 'delete-selection t)

@@ -3367,14 +3367,14 @@ AUCTeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
   (cond ((eq (preceding-char) ?\\)
-         (call-interactively 'self-insert-command))
+         (call-interactively #'self-insert-command))
         ((eq (preceding-char) ?.)
          (let ((TeX-default-macro " ")
                (minibuffer-local-completion-map TeX-electric-macro-map))
-           (call-interactively 'TeX-insert-macro)))
+           (call-interactively #'TeX-insert-macro)))
         (t
          (let ((minibuffer-local-completion-map TeX-electric-macro-map))
-           (call-interactively 'TeX-insert-macro)))))
+           (call-interactively #'TeX-insert-macro)))))
 
 (defvar TeX-exit-mark nil
   "Dynamically bound by `TeX-parse-macro' and `LaTeX-env-args'.")
@@ -6180,7 +6180,7 @@ With prefix argument FORCE, always inserts \" characters."
   (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
-  (call-interactively 'self-insert-command))
+  (call-interactively #'self-insert-command))
 
 (defun TeX-insert-braces (arg)
   "Make a pair of braces around next ARG sexps and leave point inside.
@@ -6476,9 +6476,9 @@ NAME may be a package, a command, or a document."
   "Run ispell on current TeX buffer."
   (cond ((and (string-equal file (TeX-region-file))
               (fboundp 'ispell-region))
-         (call-interactively 'ispell-region))
+         (call-interactively #'ispell-region))
         ((string-equal file (TeX-region-file))
-         (call-interactively 'spell-region))
+         (call-interactively #'spell-region))
         ((fboundp 'ispell-buffer)
          (ispell-buffer))
         ((fboundp 'ispell)
