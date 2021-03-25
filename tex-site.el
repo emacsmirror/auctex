@@ -1,6 +1,6 @@
-;;; tex-site.el - Site specific variables.  Don't edit.
+;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2013, 2016-2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -91,7 +91,7 @@ shared by all users of a site."
     (doctex-mode . tex-mode))
   "Alist of built-in TeX modes and their load files.")
 
-(defalias 'TeX-load-hack 'ignore)
+(defalias 'TeX-load-hack #'ignore)
 
 (add-hook 'tex-site-unload-hook
           (lambda ()
@@ -148,7 +148,6 @@ set it with `TeX-modes-set'."
   :type (cons 'set
               (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set #'TeX-modes-set
-  :group 'AUCTeX
   :initialize(lambda (var value)
                (custom-initialize-reset var value)
                (unless (fboundp 'advice-add)
@@ -158,15 +157,15 @@ set it with `TeX-modes-set'."
                        `(TeX-modes-set ',var ,var t))
                      (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "13.0.5"
+(defconst AUCTeX-version "13.0.5.2021-03-25"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2021-03-21"
+(defconst AUCTeX-date "2021-03-25"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
+(add-hook 'bibtex-mode-hook #'BibTeX-auto-store)
 
 ;;; Code specific to ELPA packaging:
 
