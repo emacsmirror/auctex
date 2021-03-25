@@ -628,12 +628,6 @@ You may use `switch-to-buffer' `switch-to-buffer-other-window' or
   "Call bib-highlight-mouse from `LaTeX-mode-hook' to add green highlight."
   :type 'boolean)
 
-(defcustom bib-label-help-echo-format "button2 finds %s, button3 displays %s"
-  "Format string for info if the mouse is over LaTeX commands.
-If nil, do not display info."
-  :type '(radio (const :tag "Don't display info" nil)
-                string))
-
 (defcustom bib-bibtex-env-variable "BIBINPUTS"
   "Environment variable setting the path where BiBTeX input files are found.
 BiBTeX 0.99b manual says this should be TEXBIB.
@@ -673,7 +667,7 @@ setting the elisp variable bib-bibtex-env-variable)"
 
 (defcustom bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -o "
   "Variable for the etags command and its output option.
-In unix, this is usually \"etags -r '/.*\\\(eq\|page\|[fvF]\)ref.*/' -o \"
+In unix, this is usually \"etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -o \"
 \(we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
 In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
 If so, set it this variable."
@@ -681,7 +675,7 @@ If so, set it this variable."
 
 (defcustom bib-etags-append-command "etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -a -o "
   "Variable for the etags command and its append and output option.
-In unix, this is usually \"etags -r '/.*\\\(eq\|page\|[fvF]\)ref.*/' -a -o \"
+In unix, this is usually \"etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -a -o \"
 In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable."
   :type 'string)
 
@@ -724,11 +718,6 @@ A opening curly bracket is appended to the regexp.")
 
 (defvar bib-highlight-mouse-keymap (make-sparse-keymap)
   "Keymap for mouse bindings in highlighted texts in bicite.")
-
-(defvar bib-ext-list nil
-  "Xemacs buffer-local list of bib-cite extents.")
-(make-variable-buffer-local 'bib-ext-list)
-(put 'bib-ext-list 'permanent-local t)
 
 (defvar bib-cite-minor-mode-menu nil)
 
@@ -884,7 +873,7 @@ runs `bib-find', and [mouse-3] runs `bib-display'."
 If text under cursor is a \\cite command, then display its BibTeX info from
 \\bibliography input file.
    Example with cursor located over cite command or arguments:
-     \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+     \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
         ^Display-all-citations          ^Display-this-citation
 
 If text under cursor is a \\ref command, then display environment associated
@@ -917,7 +906,7 @@ A TAGS file is created and used for multi-file documents under auctex."
 
 For multi-entry cite commands, the cursor should be on the actual cite key
 desired (otherwise a random entry will be selected).
-e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
                         ^Display-this-citation
 
 If text under cursor is a \\ref command, then point is moved to its matching
@@ -948,7 +937,7 @@ A TAGS file is created and used for multi-file documents under auctex."
   "Bib-cite intenal variable to hold last \\ref or \\eqref find.")
 
 (defun bib-find-next (&optional prev-p)
-  "Find next occurrence of a \ref or \eqref.
+  "Find next occurrence of a \\ref or \\eqref.
 This is made necessary because we now use a regexp to find tags in multi-file
 documents, and the Emacs command `find-tag' doesn't allow to interactively
 find the next occurrence of a regexp."
@@ -1033,7 +1022,7 @@ by using bib-apropos sequentially."
   "Bib-cite internal variable.")
 
 (defun bib-make-bibliography ()
-  "Extract citations used in the current document from \bibliography{} file(s).
+  "Extract citations used in the current document from \\bibliography{} file(s).
 Put them into a buffer named after the current buffer, with extension .bib.
 
 In an AUCTeX multi-file document, parsing must be on and the citation keys
@@ -1220,12 +1209,11 @@ See variables bib-etags-command and bib-etags-filename"
   ;; *all of code was here*
   ;;      )
   (save-excursion
-    (let ((s)(e);; (extent) (local-extent-list bib-ext-list)
+    (let ((s)(e)
           (inhibit-read-only t)
           (modified (buffer-modified-p))) ;put-text-property changing this?
       ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
       ;;   properties first.
-      (setq bib-ext-list nil)           ;Reconstructed below...
       ;; Remove properties for regular emacs
       ;; FIXME This detroys all mouse-faces and local-maps!
       ;; FIXME Hope no other package is using them in this buffer!
@@ -1269,32 +1257,13 @@ See variables bib-etags-command and bib-etags-filename"
                                 '(mouse-face local-map)))
       (set-buffer-modified-p modified))))
 
-(defun bib-label-help-echo (object)
-  (if bib-label-help-echo-format
-      (bib-label-help object bib-label-help-echo-format)))
-
-;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
-;;             Patched by Bruce Ravel <bruce.ravel@nist.gov>
-(defun bib-label-help (object &optional format)
-  (or format (setq format "Use mouse button 2 to find the %s.
-Use mouse button 3 to display the %s."))
-  (save-match-data
-    (let* ((string (extent-string object))
-           (type (cond ((string-match "^\\\\[A-Za-z]*cite[A-Za-z]*" string) "citation")
-                       ((string-match
-                         (concat "^" bib-ref-regexp) string)
-                        "\\label{}")
-                       ((string-match "^\\\\label" string) "\\ref{}")
-                       (t "this (unknown) reference"))))
-      (format format type type))))
-
 ;;----------------------------------------------------------------------------
 ;; Routines to display or edit a citation's bibliography
 
 (defun bib-display-citation ()
   "Do the displaying of cite info.  Return t if found cite key, nil otherwise.
 Example with cursor located over cite command or arguments:
-\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+\\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
    ^Display-all-citations          ^Display-this-citation"
   (save-excursion
     (let* ((the-keys-obarray (bib-get-citekeys-obarray)) ;1st in case of error
@@ -1325,10 +1294,10 @@ Example with cursor located over cite command or arguments:
 (defun bib-edit-citation ()
   "Do the edit of cite info.  Return t if found cite key, nil otherwise.
 Find and and put edit point in bib file associated with a BibTeX citation
-under cursor from \bibliography input file.
+under cursor from \\bibliography input file.
 In a multi-entry cite command, the cursor should be on the actual cite key
 desired (otherwise a random entry will be selected).
-e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
                         ^Display-this-citation"
   (let ((the-keys-obarray (bib-get-citekeys-obarray)) ;1st in case of error
         (bib-buffer (bib-get-bibliography t))
@@ -2127,9 +2096,9 @@ Makes sure TAGS file exists, etc."
 
 If using AUCTeX, and either TeX-parse-self is set or C-c C-n is used to
 parse the document, then the entire multifile document will be searched
-for \bibliography commands.
+for \\bibliography commands.
 
-If this fails, the current buffer is searched for the first \bibliography
+If this fails, the current buffer is searched for the first \\bibliography
 command.
 
 If include-filenames-f is true, include as a special header the filename
