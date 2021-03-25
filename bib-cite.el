@@ -1,5 +1,4 @@
-;;; bib-cite.el --- test  -*- lexical-binding: t; -*-
-;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
+;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2021 Free Software Foundation, Inc.
 
@@ -594,10 +593,6 @@
   (require 'cl-lib))
 
 ;; Silence the compiler:
-(declare-function dired-replace-in-string "ext:dired"
-                  (regexp newtext string))
-(declare-function dired-split "ext:dired-aux"
-                  (pat str &optional limit))
 (declare-function reftex-view-crossref "ext:reftex-dcr"
                   (&optional arg auto-how fail-quietly))
 
@@ -1434,7 +1429,11 @@ If within a multi-file document (in auctex only)
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
-          (show-entry)))))
+	  ;; COMPATIBILITY for emacs<25.
+	  (if (fboundp 'outline-show-entry)
+	      (outline-show-entry)
+            (with-no-warnings
+	      (show-entry)))))))
 
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))
@@ -1761,8 +1760,8 @@ Return the-warnings as text."
                 (let* ((the-key (car (car string-alist)))
                        (the-string (cdr (car string-alist)))
                        (slashed-string  ; "J. of Geo.\" -> "J. of Geo.\\\\"
-                        (dired-replace-in-string
-                         "\\\\" "\\\\" the-string)))
+			(replace-regexp-in-string
+			 "\\\\" "\\\\" the-string t t)))
 
                   (while (re-search-forward
                           (concat "\\(^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\)"
@@ -2310,50 +2309,6 @@ If FIRST-FILE is t, stop after first file is found."
 ;;         (setq the-list (cdr the-list))))
 ;;     filespec))
 
-(or (fboundp 'dired-replace-in-string)
-    ;; This code is part of GNU emacs
-    (defun dired-replace-in-string (regexp newtext string)
-      ;; Replace REGEXP with NEWTEXT everywhere in STRING and return result.
-      ;; NEWTEXT is taken literally---no \\DIGIT escapes will be recognized.
-      (let ((result "") (start 0) mb me)
-        (while (string-match regexp string start)
-          (setq mb (match-beginning 0)
-                me (match-end 0)
-                result (concat result (substring string start mb) newtext)
-                start me))
-        (concat result (substring string start)))))
-
-
-;; Could use fset here to equal TeX-split-string to dired-split if only
-;; dired-split is defined.  That would eliminate a check in psg-list-env.
-(and (not (fboundp 'TeX-split-string))
-     (not (fboundp 'dired-split))
-     ;; This code is part of AUCTeX
-     (defun TeX-split-string (char string)
-       "Returns a list of strings. given REGEXP the STRING is split into
-sections which in string was seperated by REGEXP.
-
-Examples:
-
-      (TeX-split-string \"\:\" \"abc:def:ghi\")
-          -> (\"abc\" \"def\" \"ghi\")
-
-      (TeX-split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
-
-          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
-
-If CHAR is nil, or \"\", an error will occur."
-
-       (let ((regexp char)
-             (start 0)
-             (result '()))
-         (while (string-match regexp string start)
-           (let ((match (string-match regexp string start)))
-             (setq result (cons (substring string start match) result))
-             (setq start (match-end 0))))
-         (setq result (cons (substring string start nil) result))
-         (nreverse result))))
-
 (defun bib-cite-file-directory-p (file)
   "Like default `file-directory-p' but allow FILE to end in // for ms-windows."
   (save-match-data
@@ -2370,15 +2325,12 @@ bib-dos-or-os2-variable affects:
   path separator used (: or ;)
   whether backslashes are converted to slashes"
   (if (not (getenv env))
-      nil                               ;Because dired-replace-in-string fails
+      nil                               ;Because replace-regexp-in-string fails
     (let* ((value (if bib-dos-or-os2-variable
-                      (dired-replace-in-string "\\\\" "/" (getenv env))
+		      (replace-regexp-in-string "\\\\" "/" (getenv env) t t)
                     (getenv env)))
            (sep-char (or (and bib-dos-or-os2-variable ";") ":"))
-           (entries (and value
-                         (or (and (fboundp 'TeX-split-string)
-                                  (TeX-split-string sep-char value))
-                             (dired-split sep-char value)))))
+	   (entries (split-string value sep-char)))
       (cl-loop for x in entries if (bib-cite-file-directory-p x) collect x))))
 
 (provide 'bib-cite)
