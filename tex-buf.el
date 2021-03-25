@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991-1999, 2001-2020 Free Software Foundation, Inc.
+;; Copyright (C) 1991-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -107,6 +107,17 @@ depend on it being positive instead of the entry in `TeX-command-list'."
   (TeX-command (TeX-command-query #'TeX-master-file)
                'TeX-master-file override-confirm))
 
+(defcustom TeX-region-extra ""
+  "String to insert in the region file between the header and the text."
+  :group 'TeX-command
+  :type 'string)
+
+;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
+;;           \\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}\
+;;           {\\AucTeX@cite{}[]}}}\n"
+;; However, that string is inappropriate for plain TeX and ConTeXt.
+;; This needs reconsideration.
+
 (defvar TeX-command-region-begin nil)
 (defvar TeX-command-region-end nil)
 ;; Used for marking the last region.
@@ -164,10 +175,15 @@ pinned region will get unpinned and vice versa."
            (markerp TeX-command-region-begin))
        (TeX-active-mark)
        (TeX-pin-region (region-beginning) (region-end)))
-  (let ((begin (or TeX-command-region-begin (region-beginning)))
-        (end (or TeX-command-region-end (region-end))))
+  (let* ((begin (or TeX-command-region-begin (region-beginning)))
+         (end (or TeX-command-region-end (region-end)))
+         (TeX-region-extra
+          ;; Write out counter information to region.
+          (concat (and (fboundp 'preview--counter-information)
+                       (preview--counter-information begin))
+                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
-                       (buffer-substring begin end)
+                       (buffer-substring-no-properties begin end)
                        (file-name-nondirectory (buffer-file-name))
                        (TeX-current-offset begin))))
 
@@ -1190,7 +1206,7 @@ run of `TeX-run-TeX', use
 
 ;; backward compatibilty
 
-(defalias 'TeX-run-LaTeX 'TeX-run-TeX)
+(defalias 'TeX-run-LaTeX #'TeX-run-TeX)
 
 
 (defun TeX-run-BibTeX (name command file)
@@ -1296,7 +1312,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
                 TeX-shell-command-option command)
   (if (eq system-type 'ms-dos)
       (redraw-display)))
-(defalias 'TeX-run-dviout 'TeX-run-discard-foreground)
+(defalias 'TeX-run-dviout #'TeX-run-discard-foreground)
 
 (defun TeX-run-background (name command _file)
   "Start process with second argument, show output when and if it arrives."
@@ -1368,7 +1384,7 @@ Error parsing on \\[next-error] should work with a bit of luck."
   "Execute Lisp function or function call given as the string COMMAND.
 Parameters NAME and FILE are ignored."
   (let ((fun (car (read-from-string command))))
-    (if (functionp fun) (funcall fun) (eval fun))))
+    (if (functionp fun) (funcall fun) (eval fun t))))
 
 (defun TeX-run-discard-or-function (name command file)
   "Start COMMAND as process or execute it as a Lisp function.
@@ -2042,17 +2058,6 @@ The compatibility argument IGNORE is ignored."
 
 ;;; Region File
 
-(defcustom TeX-region-extra ""
-  "String to insert in the region file between the header and the text."
-  :group 'TeX-command
-  :type 'string)
-
-;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
-;;           \\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}\
-;;           {\\AucTeX@cite{}[]}}}\n"
-;; However, that string is inappropriate for plain TeX and ConTeXt.
-;; This needs reconsideration.
-
 
 (defvar TeX-region-hook nil
   "List of hooks to run before the region file is saved.
@@ -2098,10 +2103,6 @@ The hooks are run in the region buffer, you may use the variable
                                 "\\\\unexpanded{\\&}" file t)
     file))
 
-(defvar font-lock-mode-enable-list)
-(defvar font-lock-auto-fontify)
-(defvar font-lock-defaults-alist)
-
 (defvar TeX-region-orig-buffer nil
   "The original buffer in which the TeX-region was created.")
 (make-variable-buffer-local 'TeX-region-orig-buffer)
@@ -2115,6 +2116,13 @@ that the TeX header and trailer information is also included.
 
 The OFFSET is used to provide the debugger with information about the
 original file."
+  (if (fboundp 'preview--skip-preamble-region)
+      (let ((temp (preview--skip-preamble-region region offset)))
+        (if temp
+            ;; Skip preamble for the sake of predumped formats.
+            (setq region (car temp)
+                  offset (cdr temp)))))
+
   (let* (;; We shift buffer a lot, so we must keep track of the buffer
          ;; local variables.
          (header-end TeX-header-end)
@@ -2126,12 +2134,7 @@ original file."
          (master-buffer (find-file-noselect master-name))
 
          ;; Attempt to disable font lock.
-         (font-lock-defaults-alist nil)
-         (font-lock-defaults nil)
-         (font-lock-maximum-size 0)
          (font-lock-mode-hook nil)
-         (font-lock-auto-fontify nil)
-         (font-lock-mode-enable-list nil)
          ;; And insert them into the FILE buffer.
          (file-buffer (let (;; Don't query for master file
                             (TeX-transient-master t)
@@ -2141,7 +2144,7 @@ original file."
                             (enable-local-variables nil)
                             ;; Don't run any f-f hooks
                             (find-file-hook nil))
-                        (find-file-noselect file)))
+                        (find-file-noselect file t)))
          ;; But remember original content.
          original-content
 
@@ -3699,15 +3702,15 @@ forward, if negative)."
 
 (defvar TeX-error-overview-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "b"    'TeX-error-overview-toggle-debug-bad-boxes)
-    (define-key map "j"    'TeX-error-overview-jump-to-source)
-    (define-key map "l"    'TeX-error-overview-goto-log)
-    (define-key map "n"    'TeX-error-overview-next-error)
-    (define-key map "p"    'TeX-error-overview-previous-error)
-    (define-key map "q"    'TeX-error-overview-quit)
-    (define-key map "w"    'TeX-error-overview-toggle-debug-warnings)
-    (define-key map "x"    'TeX-error-overview-toggle-suppress-ignored-warnings)
-    (define-key map "\C-m" 'TeX-error-overview-goto-source)
+    (define-key map "b"    #'TeX-error-overview-toggle-debug-bad-boxes)
+    (define-key map "j"    #'TeX-error-overview-jump-to-source)
+    (define-key map "l"    #'TeX-error-overview-goto-log)
+    (define-key map "n"    #'TeX-error-overview-next-error)
+    (define-key map "p"    #'TeX-error-overview-previous-error)
+    (define-key map "q"    #'TeX-error-overview-quit)
+    (define-key map "w"    #'TeX-error-overview-toggle-debug-warnings)
+    (define-key map "x"    #'TeX-error-overview-toggle-suppress-ignored-warnings)
+    (define-key map "\C-m" #'TeX-error-overview-goto-source)
     map)
   "Local keymap for `TeX-error-overview-mode' buffers.")
 
@@ -3753,8 +3756,7 @@ forward, if negative)."
         tabulated-list-padding 1
         tabulated-list-entries TeX-error-overview-list-entries)
   (tabulated-list-init-header)
-  (tabulated-list-print)
-  (easy-menu-add TeX-error-overview-menu TeX-error-overview-mode-map))
+  (tabulated-list-print))
 
 (defcustom TeX-error-overview-frame-parameters
   '((name . "TeX errors")
@@ -3854,10 +3856,10 @@ warnings and bad boxes"
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-special-mode-map)
-    (define-key map "n" 'TeX-next-error)
-    (define-key map "p" 'TeX-previous-error)
-    (define-key map "b" 'TeX-toggle-debug-bad-boxes)
-    (define-key map "w" 'TeX-toggle-debug-warnings)
+    (define-key map "n" #'TeX-next-error)
+    (define-key map "p" #'TeX-previous-error)
+    (define-key map "b" #'TeX-toggle-debug-bad-boxes)
+    (define-key map "w" #'TeX-toggle-debug-warnings)
     (define-key map "i" (lambda ()
                           (interactive)
                           (with-current-buffer TeX-command-buffer

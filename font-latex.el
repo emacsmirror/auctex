@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1996-2020  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2021  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -115,7 +115,7 @@ If nil, quoted content will not be fontified."
   :type '(choice (const auto) (const french) (const german) (const nil))
   :group 'font-latex)
 (put 'font-latex-quotes 'safe-local-variable
-     '(lambda (x) (memq x '(auto french german nil))))
+     (lambda (x) (memq x '(auto french german nil))))
 
 (defun font-latex-add-quotes (quotes)
   "Add QUOTES to `font-latex-quote-list'.
@@ -140,7 +140,7 @@ correct value from document properties."
           font-latex-quotes)))
 ;; Update the value of `font-latex-quotes-internal' when the list of
 ;; styles changes.
-(add-hook 'TeX-update-style-hook 'font-latex-quotes-set-internal)
+(add-hook 'TeX-update-style-hook #'font-latex-quotes-set-internal)
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -180,7 +180,7 @@ effect unless you call \\[font-lock-fontify-buffer] or restart
 Emacs."
   :type '(choice (number :tag "Scale factor")
                  (const color))
-  :initialize 'custom-initialize-default
+  :initialize #'custom-initialize-default
   :set (lambda (symbol value)
          (set-default symbol value)
          (unless (eq value 'color)
@@ -227,20 +227,16 @@ Emacs."
 Probably you don't want to customize this face directly.  Better
 change the base face `font-latex-sectioning-5-face' or customize the
 variable `font-latex-fontify-sectioning'." ',num)
-          :group 'font-latex-highlighting-faces)))))
+          :group 'font-latex-highlighting-faces)
+       t))))
 
 (font-latex-make-sectioning-faces font-latex-sectioning-max)
 
 
 ;;; Keywords
 
-(defvar font-latex-keywords-1 nil
-  "Subdued level highlighting for LaTeX modes.")
-
-(defvar font-latex-keywords-2 nil
-  "High level highlighting for LaTeX modes.")
-
-(defvar font-latex-built-in-keyword-classes
+(eval-and-compile
+(defconst font-latex-built-in-keyword-classes
   '(("warning"
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
@@ -453,7 +449,7 @@ The fifth element is the type of construct to be matched.  It can
 be one of 'noarg which will match simple macros without
 arguments (like \"\\foo\"), 'declaration which will match macros
 inside a TeX group (like \"{\\bfseries foo}\"), or 'command which
-will match macros of the form \"\\foo[bar]{baz}\".")
+will match macros of the form \"\\foo[bar]{baz}\"."))
 
 (defcustom font-latex-deactivated-keyword-classes nil
   "List of strings for built-in keyword classes to be deactivated.
@@ -474,12 +470,12 @@ You have to restart Emacs for a change of this variable to take effect."
                                   ;; Name of the keyword class
                                   (let ((name (split-string (car spec) "-")))
                                     (setcar name (capitalize (car name)))
-                                    (mapconcat 'identity name " "))
+                                    (mapconcat #'identity name " "))
                                   " keywords in `"
                                   ;; Name of the face
                                   (symbol-name
                                    (let ((face (nth 2 spec)))
-                                     (if (symbolp face) face (eval face))))
+                                     (if (symbolp face) face (eval face t))))
                                   "'.\n"
                                   ;; List of keywords
                                   (with-temp-buffer
@@ -494,7 +490,8 @@ You have to restart Emacs for a change of this variable to take effect."
                            ,(car spec)))
                  font-latex-built-in-keyword-classes)))
 
-(defun font-latex-make-match-defun (prefix name face type)
+(eval-and-compile
+(defun font-latex--make-match-defun (prefix name face type)
   "Return a function definition for keyword matching.
 The variable holding the keywords to match are determined by the
 strings PREFIX and NAME.  The type of matcher is determined by
@@ -503,47 +500,46 @@ the symbol TYPE.
 This is a helper function for `font-latex-make-built-in-keywords'
 and `font-latex-make-user-keywords' and not intended for general
 use."
-  ;; Note: The functions are byte-compiled at the end of font-latex.el.
   ;; FIXME: Is the cond-clause possible inside of the defun?
 
   ;; In an earlier version of font-latex the type could be a list like
   ;; (command 1).  This indicated a macro with one argument.  Provide
   ;; a match function in this case but don't actually support it.
   (cond ((or (eq type 'command) (listp type))
-         (eval `(defun ,(intern (concat prefix name)) (limit)
-                  ,(concat "Fontify `" prefix name "' up to LIMIT.
+         `(defun ,(intern (concat prefix name)) (limit)
+            ,(concat "Fontify `" prefix name "' up to LIMIT.
 
-Generated by `font-latex-make-match-defun'.")
-                  (when ,(intern (concat prefix name))
-                    (font-latex-match-command-with-arguments
-                     ,(intern (concat prefix name))
-                     (append
-                      (when (boundp ',(intern (concat prefix name
-                                                      "-keywords-local")))
-                        ,(intern (concat prefix name "-keywords-local")))
-                      ,(intern (concat prefix name "-keywords")))
-                     ;; `face' can be a face symbol, a form returning
-                     ;; a face symbol, or a list of face attributes.
-                     ,(if (and (listp face) (fboundp (car face)))
-                         face
-                        `',face)
-                     limit)))))
+Generated by `font-latex--make-match-defun'.")
+            (when ,(intern (concat prefix name))
+              (font-latex-match-command-with-arguments
+               ,(intern (concat prefix name))
+               (append
+                (when (boundp ',(intern (concat prefix name
+                                                "-keywords-local")))
+                  ,(intern (concat prefix name "-keywords-local")))
+                ,(intern (concat prefix name "-keywords")))
+               ;; `face' can be a face symbol, a form returning
+               ;; a face symbol, or a list of face attributes.
+               ,(if (and (listp face) (fboundp (car face)))
+                    face
+                  `',face)
+               limit))))
         ((eq type 'declaration)
-         (eval `(defun ,(intern (concat prefix name)) (limit)
-                  ,(concat "Fontify `" prefix name "' up to LIMIT.
+         `(defun ,(intern (concat prefix name)) (limit)
+            ,(concat "Fontify `" prefix name "' up to LIMIT.
 
-Generated by `font-latex-make-match-defun'.")
-                  (when ,(intern (concat prefix name))
-                    (font-latex-match-command-in-braces
-                     ,(intern (concat prefix name)) limit)))))
+Generated by `font-latex--make-match-defun'.")
+            (when ,(intern (concat prefix name))
+              (font-latex-match-command-in-braces
+               ,(intern (concat prefix name)) limit))))
         ((eq type 'noarg)
-         (eval `(defun ,(intern (concat prefix name)) (limit)
-                  ,(concat "Fontify `" prefix name "' up to LIMIT.
+         `(defun ,(intern (concat prefix name)) (limit)
+            ,(concat "Fontify `" prefix name "' up to LIMIT.
 
-Generated by `font-latex-make-match-defun'.")
-                  (when ,(intern (concat prefix name))
-                    (re-search-forward
-                     ,(intern (concat prefix name)) limit t)))))))
+Generated by `font-latex--make-match-defun'.")
+            (when ,(intern (concat prefix name))
+              (re-search-forward
+               ,(intern (concat prefix name)) limit t))))))
 
 (defun font-latex-keyword-matcher (prefix name face type)
   "Return a matcher and highlighter as required by `font-lock-keywords'.
@@ -587,11 +583,13 @@ use."
          `(,(intern (concat prefix name))
            (0 'font-latex-warning-face t t)
            (1 'font-lock-keyword-face append t)
-           (2 ,face append t)))))
+           (2 ,face append t))))))
 
-(defun font-latex-make-built-in-keywords ()
+(defmacro font-latex-make-built-in-keywords ()
   "Build defuns, defvars and defcustoms for built-in keyword fontification."
-  (dolist (item font-latex-built-in-keyword-classes)
+  (let ((flks '())
+        (defs '()))
+    (dolist (item font-latex-built-in-keyword-classes)
     (let ((prefix "font-latex-match-")
           (name (nth 0 item))
           (keywords (nth 1 item))
@@ -600,7 +598,7 @@ use."
           (type (nth 4 item)))
 
       ;; defvar font-latex-match-*-keywords-local
-      (eval `(defvar ,(intern (concat prefix name "-keywords-local"))
+      (push `(defvar-local ,(intern (concat prefix name "-keywords-local"))
                ',keywords
                ,(concat "Buffer-local keywords to add to `"
                         prefix name "-keywords'.\n\n"
@@ -618,13 +616,32 @@ regular expression\) omitting the leading backslash.")
 This is an internal variable which should not be set directly.
 Use `font-latex-add-keywords' instead.
 
-Generated by `font-latex-make-built-in-keywords'.")))
-      (make-variable-buffer-local
-       (intern (concat prefix name "-keywords-local")))
+Generated by `font-latex-make-built-in-keywords'."))
+            defs)
+
+      ;; defvar font-latex-match-*
+      ;; We make this variable buffer local later, but don't use
+      ;; `defvar-local' here because it shouldn't have nil as its
+      ;; default value.  Its true default value is set by
+      ;; through font-latex-match-*-make in :set specification of
+      ;; defcustom of font-latex-match-*-keywords below.  It's
+      ;; only after that this variable can be buffer local.
+      (push `(defvar ,(intern (concat prefix name)) nil
+               ,(concat "Regular expression to match " name
+                        " keywords.
+
+Generated by `font-latex-make-built-in-keywords'"))
+            defs)
+
+      ;; This defvar (without value) is here just to suppress compiler
+      ;; warnings.  Its true definition is done by defcustom following
+      ;; the next defun because its :set function depends on the
+      ;; function defined by that defun.
+      (push `(defvar ,(intern (concat prefix name "-keywords")))
+            defs)
 
       ;; defun font-latex-match-*-make
-      ;; Note: The functions are byte-compiled at the end of font-latex.el.
-      (eval `(defun ,(intern (concat prefix name "-make")) ()
+      (push `(defun ,(intern (concat prefix name "-make")) ()
                ,(concat "Make or remake the variable `" prefix name "'.
 
 Generated by `font-latex-make-built-in-keywords'.")
@@ -651,10 +668,11 @@ Generated by `font-latex-make-built-in-keywords'.")
                             (concat
                              (when multi-char-macros "\\|")
                              "\\(?:" (regexp-opt single-char-macros) "\\)"))
-                          "\\)"))))))
+                          "\\)")))))
+            defs)
 
       ;; defcustom font-latex-match-*-keywords
-      (eval `(defcustom ,(intern (concat prefix name "-keywords")) nil
+      (push `(defcustom ,(intern (concat prefix name "-keywords")) nil
                ,(concat "List of keywords "
                         (when (eq type 'command) "and formats ")
                         "for " name " face.\n"
@@ -678,28 +696,31 @@ Generated by `font-latex-make-built-in-keywords'.")
                :set (lambda (symbol value)
                       (set-default symbol value)
                       (funcall ',(intern (concat prefix name "-make"))))
-               :group 'font-latex-keywords))
+               :group 'font-latex-keywords)
+            defs)
 
-      ;; defvar font-latex-match-*
-      (eval `(defvar ,(intern (concat prefix name)) nil
-               ,(concat "Regular expression to match " name
-                        " keywords.
-
-Generated by `font-latex-make-built-in-keywords'")))
-      (make-variable-buffer-local (intern (concat prefix name)))
+      ;; Now that font-latex-match-* has attained proper default
+      ;; value, make it buffer local.
+      (push `(make-variable-buffer-local ',(intern (concat prefix name)))
+            defs)
 
       ;; defun font-latex-match-*
-      (font-latex-make-match-defun prefix name face type)
+      (push (font-latex--make-match-defun prefix name face type) defs)
 
       ;; Add matchers and highlighters to `font-latex-keywords-{1,2}'.
       (let ((keywords-entry (font-latex-keyword-matcher
                              prefix name face type)))
-        (add-to-list (intern (concat "font-latex-keywords-"
-                                     (number-to-string level)))
-                     keywords-entry t)
-        (when (= level 1)
-          (add-to-list 'font-latex-keywords-2
-                       keywords-entry t))))))
+        (push (cons level keywords-entry) flks))))
+    `(progn
+       ,@(nreverse defs)
+       (defvar font-latex-keywords-1
+         ',(nreverse (delq nil (mapcar (lambda (x) (if (eq 1 (car x)) (cdr x)))
+                                       flks)))
+         "Subdued level highlighting for LaTeX modes.")
+       (defvar font-latex-keywords-2
+         ',(nreverse (mapcar #'cdr flks))
+         "High level highlighting for LaTeX modes."))))
+
 (font-latex-make-built-in-keywords)
 
 (defcustom font-latex-user-keyword-classes nil
@@ -796,7 +817,7 @@ Generated by `font-latex-user-keyword-classes'"))))
              (let ((keywords (nth 1 elt))
                    single-char-macro-flag)
                (setq keywords (if (listp (car keywords))
-                                  (mapcar 'car keywords)
+                                  (mapcar #'car keywords)
                                 keywords))
                (catch 'single-char
                  (dolist (keyword keywords)
@@ -826,7 +847,7 @@ Generated by `font-latex-user-keyword-classes'"))))
 Generated by `font-latex-make-user-keywords'.")))
 
         ;; defun font-latex-match-*
-        (font-latex-make-match-defun prefix name face type)
+        (eval (font-latex--make-match-defun prefix name face type) t)
 
         ;; Add the matcher to `font-latex-keywords-2'.
         (add-to-list 'font-latex-keywords-2
@@ -1349,7 +1370,7 @@ Take care when the actually fonfified region was extended beyond END."
 ;; Copy and adaption of `tex-font-lock-unfontify-region' from
 ;; tex-mode.el in GNU Emacs on 2004-08-04.
 ;; (XEmacs passes a third argument to the function.)
-(defun font-latex-unfontify-region (beg end &rest ignored)
+(defun font-latex-unfontify-region (beg end &rest _ignored)
   "Unfontify region from BEG to END."
   (font-lock-default-unfontify-region beg end)
   (remove-list-of-text-properties beg end '(script-level invisible))
@@ -1998,7 +2019,7 @@ Take into account $...$, $$...$$, \\(...\\) and \\=\\[...\\], too."
                              font-latex-quotes-internal)))
         (setq tail (cdr tail))))
     (setq font-latex-quote-regexp-beg
-          (regexp-opt (mapcar 'car font-latex-quote-list) t))))
+          (regexp-opt (mapcar #'car font-latex-quote-list) t))))
 
 (defun font-latex-match-quotation (limit)
   "Match quote patterns up to LIMIT.
@@ -2246,6 +2267,9 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
              ;; into a non-comment, or use `\n%' or `%^' as the comment.
              ;; Instead, we include it in the ^^A comment.
              (eval-when-compile (string-to-syntax "< b"))
+           ;; FIXME: Those `eval-when-compile' shouldn't be needed any
+           ;; more since the byte-compiler will precompute those calls
+           ;; anyway (because `string-to-syntax'  is marked as pure).
            (eval-when-compile (string-to-syntax ">"))))
         (let ((end (line-end-position)))
           (if (< end (point-max))
@@ -2275,13 +2299,13 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 ;; yourself.
 
 ;;; Byte-compilation of generated functions
-
-(when (byte-code-function-p
-       (symbol-function 'font-latex-make-built-in-keywords))
-  (dolist (elt font-latex-built-in-keyword-classes)
-    (let ((name (nth 0 elt)))
-      (byte-compile (intern (concat "font-latex-match-" name)))
-      (byte-compile (intern (concat "font-latex-match-" name "-make"))))))
+;; Not needed now that we generate the code via a macro.
+;; (when (byte-code-function-p
+;;        (symbol-function 'font-latex-make-built-in-keywords))
+;;   (dolist (elt font-latex-built-in-keyword-classes)
+;;     (let ((name (nth 0 elt)))
+;;       (byte-compile (intern (concat "font-latex-match-" name)))
+;;       (byte-compile (intern (concat "font-latex-match-" name "-make"))))))
 
 
 ;; Provide ourselves:

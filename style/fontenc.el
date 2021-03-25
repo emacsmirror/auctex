@@ -1,6 +1,6 @@
 ;;; fontenc.el --- AUCTeX style for `fontenc.sty' (v1.99g)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -46,9 +46,10 @@
 
 (defun LaTeX-fontenc-package-options ()
   "Prompt for package options for the fontenc package."
-  (mapconcat 'identity
+  (mapconcat #'identity
              (TeX-completing-read-multiple
               "Encoding(s): "
-              LaTeX-fontenc-package-options-list) ","))
+              LaTeX-fontenc-package-options-list)
+             ","))
 
 ;;; fontenc.el ends here

@@ -1,6 +1,6 @@
 ;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2008, 2012-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -189,7 +189,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (labels))
     (dolist (m-alist TeX-bar-TeX-all-button-alists)
       (setq labels nil)
-      (dolist (as (eval m-alist))
+      (dolist (as (eval m-alist t))
         (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
                                       assqs-button-alists)))
@@ -214,12 +214,12 @@ format of the argument MEANING-ALIST in the mentioned function."
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
                (expand-file-name "images" TeX-data-directory))
-  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
+  (add-hook 'TeX-PDF-mode-hook #'toolbarx-refresh nil t)
   (toolbarx-install-toolbar TeX-bar-TeX-buttons
                             (let ((append-list))
                               (dolist (elt TeX-bar-TeX-all-button-alists)
                                 (setq append-list (append append-list
-                                                          (eval elt))))
+                                                          (eval elt t))))
                               append-list)))
 
 (defcustom TeX-bar-LaTeX-buttons
@@ -334,7 +334,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (labels))
     (dolist (m-alist TeX-bar-LaTeX-all-button-alists)
       (setq labels nil)
-      (dolist (as (eval m-alist))
+      (dolist (as (eval m-alist t))
         (setq labels (cons (car as) labels)))
       (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
                                       assqs-button-alists)))
@@ -359,16 +359,16 @@ format of the argument MEANING-ALIST in the mentioned function."
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
                (expand-file-name "images" TeX-data-directory))
-  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh nil t)
+  (add-hook 'TeX-PDF-mode-hook #'toolbarx-refresh nil t)
   ;; Refresh the toolbar after styles update because `LaTeX-using-Biber' value
   ;; could have been changed.  Append the refresh to the hook so it is run after
   ;; the other styles-related changes.
-  (add-hook 'TeX-update-style-hook 'toolbarx-refresh t t)
+  (add-hook 'TeX-update-style-hook #'toolbarx-refresh t t)
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
                             (let ((append-list))
                               (dolist (elt TeX-bar-LaTeX-all-button-alists)
                                 (setq append-list (append append-list
-                                                          (eval elt))))
+                                                          (eval elt t))))
                               append-list)))
 
 ;;; Experimental Symbol Toolbar

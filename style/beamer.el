@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2005, 2008, 2013-2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2021  Free Software Foundation, Inc.
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
@@ -65,7 +65,7 @@
 (TeX-add-style-hook
  "beamer"
  (lambda ()
-   (add-hook 'LaTeX-after-insert-env-hook 'LaTeX-beamer-after-insert-env nil t)
+   (add-hook 'LaTeX-after-insert-env-hook #'LaTeX-beamer-after-insert-env nil t)
 
    (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
                         "hyperref" "inputenc" "translator" "xcolor")
@@ -269,7 +269,7 @@ also be a string.  Then the length of the string is used."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
-    (mapcar 'list
+    (mapcar #'list
             (cond ((eq LaTeX-beamer-themes 'local)
                    (set (make-local-variable 'LaTeX-beamer-themes)
                         (LaTeX-beamer-search-themes)))
@@ -288,7 +288,7 @@ also be a string.  Then the length of the string is used."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
-    (mapcar 'list
+    (mapcar #'list
             (cond ((eq LaTeX-beamer-inner-themes 'local)
                    (set (make-local-variable 'LaTeX-beamer-inner-themes)
                         (LaTeX-beamer-search-themes "^beamerinnertheme")))
@@ -307,7 +307,7 @@ also be a string.  Then the length of the string is used."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
-    (mapcar 'list
+    (mapcar #'list
             (cond ((eq LaTeX-beamer-outer-themes 'local)
                    (set (make-local-variable 'LaTeX-beamer-outer-themes)
                         (LaTeX-beamer-search-themes "^beameroutertheme")))
@@ -326,7 +326,7 @@ also be a string.  Then the length of the string is used."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
-    (mapcar 'list
+    (mapcar #'list
             (cond ((eq LaTeX-beamer-color-themes 'local)
                    (set (make-local-variable 'LaTeX-beamer-color-themes)
                         (LaTeX-beamer-search-themes "^beamercolortheme")))
@@ -345,7 +345,7 @@ also be a string.  Then the length of the string is used."
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt nil nil "Theme")
-    (mapcar 'list
+    (mapcar #'list
             (cond ((eq LaTeX-beamer-font-themes 'local)
                    (set (make-local-variable 'LaTeX-beamer-font-themes)
                         (LaTeX-beamer-search-themes "^beamerfonttheme")))

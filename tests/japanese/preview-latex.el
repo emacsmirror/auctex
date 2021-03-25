@@ -1,6 +1,6 @@
-;;; preview-latex.el --- tests for preview-latex compatibility
+;;; preview-latex.el --- tests for preview-latex compatibility  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018 Free Software Foundation, Inc.
+;; Copyright (C) 2017-2021 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -191,20 +191,20 @@ Did the image come out at the correct position? ")))
 String encoded in `shift_jis' can have regexp meta characters in it."
   (let (case-fold-search
         (buffer-file-coding-system 'shift_jis))
-    (dolist (str '("$BI=(B(1)" "$BM=(B{a}" "$BG=(B|" "{$B$"(B} %$BG=(B" "$B%"!<%9(B" "$B7?(B"))
+    (dolist (str '("表(1)" "予{a}" "能|" "{あ} %能" "アース" "型"))
       (should (string-match (preview-error-quote str) str)))))
 
 (ert-deftest japanese-preview-decode-^^ab ()
   "`preview--decode-^^ab' doesn't leave regexp meta characters in results."
   (let (case-fold-search)
-    ;; "$B$"(B" is encoded as \x82 \xa0 in SJIS.
-    (should (string= (preview--decode-^^ab "^^82^^a0" 'shift_jis) "$B$"(B"))
-    ;; "$BI=(B" is encoded as \x95 '\' in SJIS.
-    (should (string= (preview--decode-^^ab "^^95\\" 'shift_jis) "$BI=(B"))
-    ;; "$B!<(B" is encoded as \x81 '[' in SJIS.
-    (should (string= (preview--decode-^^ab "^^81[^^Ab" 'shift_jis) "$B!<(B^^Ab"))
-    ;; "$B7?(B" is encoded as \x8c '^' in SJIS.
-    (should (string= (preview--decode-^^ab "$B7?(B^ab" 'shift_jis) "$B7?(B^ab"))))
+    ;; "あ" is encoded as \x82 \xa0 in SJIS.
+    (should (string= (preview--decode-^^ab "^^82^^a0" 'shift_jis) "あ"))
+    ;; "表" is encoded as \x95 '\' in SJIS.
+    (should (string= (preview--decode-^^ab "^^95\\" 'shift_jis) "表"))
+    ;; "ー" is encoded as \x81 '[' in SJIS.
+    (should (string= (preview--decode-^^ab "^^81[^^Ab" 'shift_jis) "ー^^Ab"))
+    ;; "型" is encoded as \x8c '^' in SJIS.
+    (should (string= (preview--decode-^^ab "型^ab" 'shift_jis) "型^ab"))))
 
 (ert-deftest japanese-preview-convert-^^ab ()
   "`preview--convert-^^ab' converts ^^ab to raw 8bits and leaves ^^Ab."
@@ -282,7 +282,3 @@ String encoded in `shift_jis' can have regexp meta characters in it."
       (kill-buffer))))
 
 ;;; preview-latex.el ends here
-
-;; Local Variables:
-;; coding: iso-2022-jp
-;; End:

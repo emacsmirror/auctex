@@ -45,8 +45,7 @@ to @email{auctex-devel@@gnu.org}.
 @node Requirements, Installation Trouble, Introduction to FAQ, Frequently Asked Questions
 @section Requirements
 
-@subsection Which version of (X)Emacs is needed?
-See also the table at the end of the section.
+@subsection Which version of Emacs is needed?
 
 @previewlatex{} nominally requires @w{GNU Emacs} with a version of at
 least 24.3.
@@ -82,7 +81,10 @@ flavors of Unix: we have reports for HP and Solaris.
 There are several development versions of Emacs around for native MacOS
 Carbon, and @previewlatex{} is working with them, too.
 
-With Windows, Cygwin should work.
+With Windows, both native Emacs and Cygwin Emacs should work.  However, it
+is known that @url{https://miktex.org/,MiK@TeX{}} sometimes doesn't work
+with @previewlatex{}.  In that case, use
+@url{https://tug.org/texlive/,@TeX{}live} instead.
 
 @node Installation Trouble, Customization, Requirements, Frequently Asked Questions
 @section Installation Trouble

@@ -1,6 +1,6 @@
 ;;; array.el --- AUCTeX style for `array.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -59,7 +59,7 @@ package.")
   "Update and uniquify the value of `LaTeX-array-column-letters'
 and make it buffer local. "
   (set (make-local-variable 'LaTeX-array-column-letters)
-       (mapconcat 'identity
+       (mapconcat #'identity
                   (TeX-delete-duplicate-strings
                    (split-string
                     (concat LaTeX-array-column-letters

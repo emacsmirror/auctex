@@ -1,7 +1,6 @@
-;;; preview.el --- embed preview LaTeX images in source buffer
+;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2006, 2010-2015,
-;;               2017-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2021  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -950,7 +949,7 @@ Pure borderless black-on-white will return an empty string."
       (file-error nil)))
   (setq TeX-sentinel-function nil))
 
-(defalias 'preview-dvipng-abort 'preview-dvips-abort)
+(defalias 'preview-dvipng-abort #'preview-dvips-abort)
 ;  "Abort a DviPNG run.")
 
 (defun preview-gs-dvips-sentinel (process _command &optional gsstart)
@@ -1031,13 +1030,11 @@ The usual PROCESS and COMMAND arguments for
                         (file-error nil)))
                     (preview-gs-restart))
                 (setq TeX-sentinel-function
-                      `(lambda (process command)
-                         (,(if preview-parsed-pdfoutput
-                               'preview-pdf2dsc-sentinel
-                             'preview-gs-dvips-sentinel)
-                          process
-                          command
-                          t))))
+                      (let ((fun (if preview-parsed-pdfoutput
+                                     #'preview-pdf2dsc-sentinel
+                                   #'preview-gs-dvips-sentinel)))
+                        (lambda (process command)
+                          (funcall fun process command t)))))
             (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
                                       process))
     ;; pathological case: no previews although we sure thought so.
@@ -1321,9 +1318,8 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                           (file-relative-name
                            (car (nth 1 filenames)))))
          (ps-open
-          `(lambda() (interactive "@")
-             (preview-mouse-open-error
-              ,(concat
+          (let ((str
+                 (concat
                 (mapconcat #'shell-quote-argument
                             (append (list
                                      preview-gs-command
@@ -1333,7 +1329,8 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                  "\nGS>"
                  preview-gs-init-string
                  (aref (overlay-get ov 'queued) 1)
-                 err))))
+                 err)))
+            (lambda () (interactive "@") (preview-mouse-open-error str))))
          (str
           (preview-make-clickable
            nil
@@ -1341,20 +1338,20 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
            "%s views error message
 %s more options"
            ps-open
-           `(lambda() (interactive)
-              (popup-menu
-               '("PostScript error"
-                 ["View error" ,ps-open]
-                 ["View source"
-                  (lambda () (interactive "@")
-                    ,(if preview-ps-file
-                         `(preview-mouse-open-eps
-                           ,(if (consp (car file))
-                                (nth 1 (car file))
-                              (car file))
-                           ,(nth 0 (aref preview-gs-dsc
-                                         (aref (overlay-get ov 'queued) 2))))
-                       `(preview-mouse-open-eps ,file)))]))))))
+           (let ((args
+                  (if preview-ps-file
+                      (list
+                       (if (consp (car file)) (nth 1 (car file)) (car file))
+                       (nth 0 (aref preview-gs-dsc
+                                    (aref (overlay-get ov 'queued) 2))))
+                    (list file))))
+             (lambda () (interactive)
+               (popup-menu
+                `("PostScript error"
+                  ["View error" ,ps-open]
+                  ["View source" ,(lambda () (interactive "@")
+                                    (apply #'preview-mouse-open-eps
+                                           args))])))))))
     (overlay-put ov 'strings (cons str str))
     (preview-toggle ov)))
 
@@ -1536,10 +1533,10 @@ had let your document be parsed by AucTeX."
 This calculates the scale of EPS images from a document assumed
 to have a default font size given by function `preview-document-pt'
 so that they match the reference face in height."
-  `(lambda nil
-     (/ ,(/ (preview-inherited-face-attribute 'preview-reference-face :height
-                                              'default) 10.0)
-        (preview-document-pt))))
+  (let ((d (/ (preview-inherited-face-attribute 'preview-reference-face :height
+                                                'default)
+              10.0)))
+    (lambda () (/ d (preview-document-pt)))))
 
 (defvar preview-min-spec)
 
@@ -1690,10 +1687,10 @@ to the default background in most other cases."
                         (const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
-;;; Note that the following default introduces a border only when
-;;; Emacs blinks politely when point is on an image (the tested
-;;; unrelated function was introduced at about the time image blinking
-;;; became tolerable).
+;; Note that the following default introduces a border only when
+;; Emacs blinks politely when point is on an image (the tested
+;; unrelated function was introduced at about the time image blinking
+;; became tolerable).
 (defcustom preview-transparent-border (unless (fboundp 'posn-object-x-y) 1.5)
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
@@ -1737,7 +1734,7 @@ Consults `preview-transparent-color'."
    file type ascent border))
 
 (put 'preview-filter-specs :type
-     (lambda (keyword value &rest args)
+     (lambda (_keyword value &rest args)
        (if (image-type-available-p value)
            `(image :type ,value
                    ,@(preview-filter-specs-1 args))
@@ -1818,7 +1815,7 @@ to require redumping of a format."
   :type 'string)
 
 (defun preview-preamble-changed-function
-  (ov after-change beg end &optional length)
+  (ov _after-change _beg _end &optional _length)
   "Hook function for change hooks on preamble.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -1903,7 +1900,7 @@ Disable it if that is the case.  Ignores text properties."
   (setq preview-change-list nil))
 
 (defun preview-handle-insert-in-front
-  (ov after-change beg end &optional length)
+  (ov after-change _beg end &optional _length)
   "Hook function for `insert-in-front-hooks' property.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -1914,7 +1911,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
     (preview-register-change ov)))
 
 (defun preview-handle-insert-behind
-  (ov after-change beg end &optional length)
+  (ov after-change beg _end &optional _length)
   "Hook function for `insert-behind-hooks' property.
 This is needed in case `insert-before-markers' is used at the
 end of the overlay.  See info node `(elisp) Overlay Properties'
@@ -1926,7 +1923,7 @@ for definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
     (preview-register-change ov)))
 
 (defun preview-handle-modification
-  (ov after-change beg end &optional length)
+  (ov after-change _beg _end &optional _length)
   "Hook function for `modification-hooks' property.
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
@@ -1968,7 +1965,7 @@ purposes."
           (setcdr strings (preview-inactive-string ov)))
         (overlay-put ov 'before-string (cdr strings)))
       (if old-urgent
-          (apply 'preview-add-urgentization old-urgent))))
+          (apply #'preview-add-urgentization old-urgent))))
   (if event
       (preview-restore-position
        ov
@@ -2060,10 +2057,14 @@ overlays not in the active window."
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
 
-(defadvice replace-highlight (before preview)
+(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
+    (advice-add 'replace-highlight :before #'preview--open-for-replace)
+  (defadvice replace-highlight (before preview)
+    (preview--open-for-replace (ad-get-arg 0) (ad-get-arg 1))))
+
+(defun preview--open-for-replace (beg end &rest _)
   "Make `query-replace' open preview text about to be replaced."
-  (preview-open-overlays
-   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+  (preview-open-overlays (overlays-in beg end)))
 
 (defcustom preview-query-replace-reveal t
   "Make `query-replace' autoreveal previews."
@@ -2180,7 +2181,7 @@ active (`transient-mark-mode'), it is run through `preview-region'."
            "\
 %s regenerates preview
 %s more options"
-           `(lambda() (interactive) (preview-regenerate ,ov)))
+           (lambda () (interactive) (preview-regenerate ov)))
 ;; icon on separate line only for stuff starting on its own line
           (with-current-buffer (overlay-buffer ov)
             (save-excursion
@@ -2204,7 +2205,7 @@ active (`transient-mark-mode'), it is run through `preview-region'."
       (file-error nil))
     (overlay-put ovr 'filenames nil)))
 
-(defun preview-delete (ovr &rest ignored)
+(defun preview-delete (ovr &rest _ignored)
   "Delete preview overlay OVR, taking any associated file along.
 IGNORED arguments are ignored, making this function usable as
 a hook in some cases"
@@ -2301,7 +2302,7 @@ kept."
             (setq ctr (delete elt ctr)))))
   (apply #'concat ctr))
 
-(defun desktop-buffer-preview-misc-data (&rest ignored)
+(defun desktop-buffer-preview-misc-data (&rest _ignored)
   "Hook function that extracts previews for persistent sessions."
   (unless (buffer-modified-p)
     (setq preview-last-counter nil)
@@ -2371,10 +2372,12 @@ Remove them if they have expired."
 This delay is so that minor modes changing buffer positions
 \(like `x-symbol-mode' does) will not wreak havoc.
 BUFFER-MISC is the appropriate data to be used."
-  (add-hook 'desktop-delay-hook `(lambda ()
-                                   (with-current-buffer ,(current-buffer)
-                                     (preview-buffer-restore-internal
-                                      ',buffer-misc)))))
+  (add-hook 'desktop-delay-hook
+            (let ((buf (current-buffer)))
+              (lambda ()
+                (with-current-buffer buf
+                  (preview-buffer-restore-internal
+                   buffer-misc))))))
 
 (defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
@@ -2390,11 +2393,14 @@ BUFFER-MISC is the appropriate data to be used."
   '(if (boundp 'desktop-buffer-mode-handlers)
        (add-to-list 'desktop-buffer-mode-handlers
                     '(latex-mode . desktop-buffer-preview))
-     (add-hook 'desktop-buffer-handlers '(lambda ()
-                                           (desktop-buffer-preview
-                                            desktop-buffer-file-name
-                                            desktop-buffer-name
-                                            desktop-buffer-misc)))))
+     (defvar desktop-buffer-file-name)
+     (defvar desktop-buffer-name)
+     (defvar desktop-buffer-misc)
+     (add-hook 'desktop-buffer-handlers (lambda ()
+                                          (desktop-buffer-preview
+                                           desktop-buffer-file-name
+                                           desktop-buffer-name
+                                           desktop-buffer-misc)))))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.
@@ -2572,10 +2578,10 @@ to the close hook."
     (overlay-put ov 'preview-map
                  (preview-make-clickable
                   nil nil nil
-                  `(lambda(event) (interactive "e")
-                     (preview-toggle ,ov 'toggle event))
-                  `(lambda(event) (interactive "e")
-                     (preview-context-menu ,ov event))))
+                  (lambda (event) (interactive "e")
+                    (preview-toggle ov 'toggle event))
+                  (lambda (event) (interactive "e")
+                    (preview-context-menu ov event))))
     (overlay-put ov 'timestamp tempdir)
     (when (cdr counters)
       (overlay-put ov 'preview-counters counters)
@@ -2585,10 +2591,6 @@ to the close hook."
       (overlay-put ov 'strings
                    (list (preview-active-string ov)))
       (preview-toggle ov t))))
-
-;; The following is a brutal hack.  It relies on `begin' being let to
-;; the start of the interesting area when TeX-region-create is being
-;; called.
 
 (defun preview-counter-find (begin)
   "Fetch the next preceding or next preview-counters property.
@@ -2608,20 +2610,20 @@ not use in advice."
             (next-single-char-property-change begin 'preview-counters)
             'preview-counters))))
 
-(defadvice TeX-region-create (around preview-counters)
-  "Write out counter information to region."
-  (let ((TeX-region-extra
-         (concat
-          (and (boundp 'begin)
-               preview-buffer-has-counters
-               (mapconcat
-                #'identity
-                (cons
-                 ""
-                 (preview-counter-find (symbol-value 'begin)))
-                "\\setcounter"))
-          TeX-region-extra)))
-    ad-do-it))
+(defun preview--counter-information (begin)
+  "Return repeated \\setcounter declaration based on point BEGIN.
+If `preview-buffer-has-counters' is non-nil, return string to
+insert into region tex file containing as many
+\\setcounter{COUNTER}{VALUE} as possible built from
+`preview-counters' property near the point BEGIN.  Otherwise,
+return nil."
+  (if preview-buffer-has-counters
+      (mapconcat
+       #'identity
+       (cons
+        ""
+        (preview-counter-find begin))
+       "\\setcounter")))
 
 (defun preview-reinstate-preview (tempdirlist timestamp start end
   image filename &optional counters)
@@ -2660,10 +2662,10 @@ if any."
       (overlay-put ov 'preview-map
                    (preview-make-clickable
                     nil nil nil
-                    `(lambda(event) (interactive "e")
-                       (preview-toggle ,ov 'toggle event))
-                    `(lambda(event) (interactive "e")
-                       (preview-context-menu ,ov event))))
+                    (lambda (event) (interactive "e")
+                      (preview-toggle ov 'toggle event))
+                    (lambda (event) (interactive "e")
+                      (preview-context-menu ov event))))
       (when counters
         (overlay-put
          ov 'preview-counters
@@ -3695,7 +3697,7 @@ The fourth value is the transparent border thickness."
 
 (defun preview-start-dvipng ()
   "Start a DviPNG process.."
-  (let* ((file preview-gs-file)
+  (let* (;; (file preview-gs-file)
          tempdir
          (res (/ (* (car preview-resolution)
                     (preview-hook-enquiry preview-scale))
@@ -3721,8 +3723,8 @@ The fourth value is the transparent border thickness."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -3736,7 +3738,7 @@ The fourth value is the transparent border thickness."
 (defun preview-start-dvips (&optional fast)
   "Start a DviPS process.
 If FAST is set, do a fast conversion."
-  (let* ((file preview-gs-file)
+  (let* (;; (file preview-gs-file)
          tempdir
          (command (with-current-buffer TeX-command-buffer
                     (prog1
@@ -3763,8 +3765,8 @@ If FAST is set, do a fast conversion."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -3805,8 +3807,8 @@ If FAST is set, do a fast conversion."
           (if TeX-after-start-process-function
               (funcall TeX-after-start-process-function process))
           (TeX-command-mode-line process)
-          (set-process-filter process 'TeX-command-filter)
-          (set-process-sentinel process 'TeX-command-sentinel)
+          (set-process-filter process #'TeX-command-filter)
+          (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
           (push process compilation-in-progress)
           (sit-for 0)
@@ -3985,19 +3987,19 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
       (prog1 (preview-generate-preview master command)
         (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
         (setq TeX-sentinel-function
-              `(lambda (process string)
-                 (condition-case err
-                     (progn
-                       (if (and (eq (process-status process) 'exit)
-                                (zerop (process-exit-status process)))
-                           (preview-watch-preamble
-                            ',master-file
-                            ',command
-                            ',format-cons)
-                         (preview-format-kill ',format-cons))
-                       (delete-file ',dump-file))
-                   (error (preview-log-error err "Dumping" process)))
-                 (preview-reraise-error process)))))))
+              (lambda (process _status)
+                (condition-case err
+                    (progn
+                      (if (and (eq (process-status process) 'exit)
+                               (zerop (process-exit-status process)))
+                          (preview-watch-preamble
+                           master-file
+                           command
+                           format-cons)
+                        (preview-format-kill format-cons))
+                      (delete-file ',dump-file))
+                  (error (preview-log-error err "Dumping" process)))
+                (preview-reraise-error process)))))))
 
 (defun preview-cache-preamble-off (&optional old-format)
   "Clear the pregenerated format file.
@@ -4017,19 +4019,16 @@ stored in `preview-dumped-alist'."
 (defun preview-region (begin end)
   "Run preview on region between BEGIN and END."
   (interactive "r")
-  (TeX-region-create (TeX-region-file TeX-default-extension)
-                     (buffer-substring begin end)
-                     (if buffer-file-name
-                         (file-name-nondirectory buffer-file-name)
-                       "<none>")
-                     (save-restriction
-                       (widen)
-                       (let ((inhibit-point-motion-hooks t)
-                             (inhibit-field-text-motion t))
-                         (+ (count-lines (point-min) begin)
-                            (save-excursion
-                              (goto-char begin)
-                              (if (bolp) 0 -1))))))
+  (let ((TeX-region-extra
+         ;; Write out counter information to region.
+         (concat (preview--counter-information begin)
+                 TeX-region-extra)))
+    (TeX-region-create (TeX-region-file TeX-default-extension)
+                       (buffer-substring-no-properties begin end)
+                       (if buffer-file-name
+                           (file-name-nondirectory buffer-file-name)
+                         "<none>")
+                       (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
@@ -4052,18 +4051,20 @@ stored in `preview-dumped-alist'."
 ;; This will fail if the region is to contain just part of the
 ;; preamble -- a bad idea anyhow.
 
-(defadvice TeX-region-create (before preview-preamble preactivate activate)
-  "Skip preamble for the sake of predumped formats."
-  (when (string-match TeX-header-end (ad-get-arg 1))
-    (ad-set-arg 1
-                (prog1 (substring (ad-get-arg 1) (match-end 0))
-                  (ad-set-arg 3
-                              (with-temp-buffer
-                                (insert (substring (ad-get-arg 1)
-                                                   0 (match-end 0)))
-                                (+ (ad-get-arg 3)
-                                   (count-lines (point-min) (point-max))
-                                   (if (bolp) 0 -1))))))))
+(defun preview--skip-preamble-region (region-text region-offset)
+  "Skip preamble for the sake of predumped formats.
+Helper function of `TeX-region-create'.
+
+If REGION-TEXT doesn't contain preamble, it returns nil.
+Otherwise, it returns cons (ALTERED-TEXT . ALTERED-OFFSET) where
+ALTERED-TEXT is REGION-TEXT without the preamble part and
+ALTERED-OFFSET is REGION-OFFSET increased by the number of lines
+of the preamble part of REGION-TEXT."
+  (if (string-match TeX-header-end region-text)
+      (cons (substring region-text (match-end 0))
+            (with-temp-buffer
+              (insert (substring region-text 0 (match-end 0)))
+              (+ region-offset (TeX-current-offset))))))
 
 (defun preview-document ()
   "Run preview on master document."
@@ -4086,7 +4087,7 @@ environments is selected."
   (interactive "p")
   (save-excursion
     (let (currenv)
-      (dotimes (i (1- count))
+      (dotimes (_ (1- count))
         (setq currenv (LaTeX-current-environment))
         (if (string= currenv "document")
             (error "No enclosing outer environment found"))
@@ -4133,16 +4134,18 @@ It returns the started process."
       (let* (TeX-current-process-region-p)
         (setq process (preview-cache-preamble dumped-cons))
         (if process
+            ;; FIXME: Use `add-function'.
             (setq TeX-sentinel-function
-                  `(lambda (process string)
-                     (funcall ,TeX-sentinel-function process string)
-                     (TeX-inline-preview-internal
-                      ,command ,file
-                      ',pr-file ,commandbuff
-                      ',dumped-cons
-                      ',master
-                      ',geometry
-                      (buffer-string)))))))
+                  (let ((prev-fun TeX-sentinel-function))
+                    (lambda (process string)
+                      (funcall prev-fun process string)
+                      (TeX-inline-preview-internal
+                       command file
+                       pr-file commandbuff
+                       dumped-cons
+                       master
+                       geometry
+                       (buffer-string))))))))
     (or process
         (TeX-inline-preview-internal command file
                                      pr-file commandbuff
@@ -4150,7 +4153,7 @@ It returns the started process."
                                      geometry))))
 
 (defun TeX-inline-preview-internal (command file pr-file
-                                    commandbuff dumped-cons master
+                                    commandbuff dumped-cons _master
                                     geometry
                                     &optional str)
   "Internal stuff for previewing.
@@ -4182,7 +4185,8 @@ internal parameters, STR may be a log to insert into the current log."
                (preview-do-replacements
                 command
                 preview-undump-replacements)
-             command) file))))
+             command)
+           file))))
     (condition-case err
         (progn
           (when str
@@ -4193,9 +4197,9 @@ internal parameters, STR may be a log to insert into the current log."
                 (set-marker (process-mark process) (point)))))
           (preview-set-geometry geometry)
           (setq preview-gs-file pr-file)
-          (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
+          (setq TeX-sentinel-function #'preview-TeX-inline-sentinel)
           (TeX-parse-reset)
-          (setq TeX-parse-function 'TeX-parse-TeX)
+          (setq TeX-parse-function #'TeX-parse-TeX)
           (if TeX-process-asynchronous
               process
             (TeX-synchronous-sentinel "Preview-LaTeX" file process)))
@@ -4260,7 +4264,8 @@ If not a regular release, the date of the last change.")
             preview-undump-replacements
             preview-auto-cache-preamble
             preview-TeX-style-dir)
-          `(lambda () (preview-dump-state ,(current-buffer)))
+          (let ((buf (current-buffer)))
+            (lambda () (preview-dump-state buf)))
           (lambda ()
             (insert (format "\nOutput from running `%s -h':\n"
                             preview-gs-command))

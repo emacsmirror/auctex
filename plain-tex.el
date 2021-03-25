@@ -130,12 +130,10 @@ of `plain-TeX-mode-hook'."
   (plain-TeX-common-initialization)
   (setq major-mode 'plain-tex-mode)
   (use-local-map plain-TeX-mode-map)
-  (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
-  (easy-menu-add plain-TeX-mode-command-menu plain-TeX-mode-map)
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
-  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook 'plain-TeX-maybe-install-toolbar nil t)
+  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
+  (add-hook 'tool-bar-mode-on-hook #'plain-TeX-maybe-install-toolbar nil t)
   (when (and (boundp 'tool-bar-mode) tool-bar-mode)
     (plain-TeX-maybe-install-toolbar))
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
@@ -307,10 +305,6 @@ of `AmS-TeX-mode-hook'."
   (plain-TeX-common-initialization)
   (setq major-mode 'ams-tex-mode)
   (use-local-map AmSTeX-mode-map)
-
-  ;; Menu
-  (easy-menu-add AmSTeX-mode-menu AmSTeX-mode-map)
-  (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
 
   (setq TeX-base-mode-name "AmS-TeX")
   (setq TeX-command-default "AmSTeX")

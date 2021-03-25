@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2007, 2013-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -253,7 +253,7 @@
  "babel"
  (lambda ()
    (LaTeX-babel-load-languages)
-   (add-hook 'LaTeX-after-usepackage-hook 'LaTeX-babel-load-languages nil t)
+   (add-hook 'LaTeX-after-usepackage-hook #'LaTeX-babel-load-languages nil t)
 
    ;; Add babel to the parser.
    (TeX-auto-add-regexp LaTeX-babel-babeltags-regexp)

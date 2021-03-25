@@ -1,6 +1,6 @@
 ;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5s.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -88,7 +88,7 @@ PREFIX is non-nil, insert it before the given input."
           (remove (assoc 32 minibuffer-local-completion-map)
                   minibuffer-local-completion-map))
          (crm-separator (regexp-quote TeX-esc))
-         (unit (mapconcat 'identity
+         (unit (mapconcat #'identity
                           (TeX-completing-read-multiple
                            (TeX-argument-prompt optional prompt "Unit: " t)
                            (LaTeX-siunitx-unit-list) nil nil initial-input

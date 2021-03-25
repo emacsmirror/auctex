@@ -1,6 +1,6 @@
 ;;; dk-bib.el --- AUCTeX style for `dk-bib.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
@@ -33,7 +33,7 @@
 (defun LaTeX-dk-bib-package-options nil
   "Prompt for package options for the dk-bib package."
   (let ((options
-         (mapconcat 'identity
+         (mapconcat #'identity
                     (TeX-completing-read-multiple
                      "Options: "
                      '(("isbn") ("issn") ("url") ("annote")

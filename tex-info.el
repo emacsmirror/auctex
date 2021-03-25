@@ -1,7 +1,6 @@
-;;; tex-info.el --- Support for editing Texinfo source.
+;;; tex-info.el --- Support for editing Texinfo source.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001, 2004, 2005, 2006,
-;;               2011-2015, 2017-2019  Free Software Foundation, Inc.
+;; Copyright (C) 1993-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -52,7 +51,7 @@
 (defconst texinfo-environment-regexp
   ;; Overwrite version from `texinfo.el'.
   (concat "^@\\("
-          (mapconcat 'car Texinfo-environment-list "\\|")
+          (mapconcat #'car Texinfo-environment-list "\\|")
           "\\|end\\)\\>")
   "Regexp for environment-like Texinfo list commands.
 Subexpression 1 is what goes into the corresponding `@end' statement.")
@@ -106,7 +105,7 @@ With optional ARG, modify current environment."
 (defun Texinfo-find-env-end ()
   "Move point to the end of the current environment."
   (interactive)
-  (let* ((envs (mapcar 'car Texinfo-environment-list))
+  (let* ((envs (mapcar #'car Texinfo-environment-list))
          (regexp (concat "^[ \t]*" (regexp-quote TeX-esc) "\\(end \\)*"
                          (regexp-opt envs t) "\\b"))
          (orig-pos (point))
@@ -133,7 +132,7 @@ With optional ARG, modify current environment."
 (defun Texinfo-find-env-start ()
   "Move point to the start of the current environment."
   (interactive)
-  (let* ((envs (mapcar 'car Texinfo-environment-list))
+  (let* ((envs (mapcar #'car Texinfo-environment-list))
          (regexp (concat "^[ \t]*\\(" (regexp-quote TeX-esc) "\\)\\(end \\)*"
                          (regexp-opt envs t) "\\b"))
          (level 1)
@@ -172,7 +171,7 @@ environments."
     ;; Only change point and mark after beginning and end were found.
     ;; Point should not end up in the middle of nowhere if the search fails.
     (save-excursion
-      (dotimes (c count)
+      (dotimes (_ count)
         (Texinfo-find-env-end))
       (setq end (line-beginning-position 2))
       (goto-char cur)
@@ -217,7 +216,8 @@ the section."
                     (beginning-of-line)
                     (when
                         (re-search-forward (concat section-re
-                                                   "\\|^\\s-*@bye\\_>" ) nil t)
+                                                   "\\|^\\s-*@bye\\_>" )
+                                           nil t)
                       (save-match-data
                         (beginning-of-line)
                         (point))))
@@ -247,20 +247,22 @@ the section."
                     (point)))))));  (if ...)
     (when (and beg end)
       ;; now take also enclosing node of beg and end
-      (dolist
-          (boundary '(beg end))
-        (when (symbol-value (intern (concat "is-" (symbol-name boundary)
-                                            "-section")))
-          (save-excursion
-            (goto-char (symbol-value boundary))
-            (while
-                (and
-                 (null (bobp))
-                 (progn
-                   (beginning-of-line 0)
-                   (looking-at "^\\s-*\\($\\|@\\(c\\|comment\\)\\_>\\)"))))
-            (when  (looking-at "^\\s-*@node\\_>")
-              (set boundary (point))))))
+      (let ((before-@node
+             (lambda (pos)
+               (save-excursion
+                 (goto-char pos)
+                 (while (and
+                         (null (bobp))
+                         (progn
+                           (beginning-of-line 0)
+                           (looking-at
+                            "^\\s-*\\($\\|@\\(c\\|comment\\)\\_>\\)"))))
+                 (when (looking-at "^\\s-*@node\\_>")
+                   (point))))))
+        (when is-beg-section
+          (setq beg (or (funcall before-@node beg) beg)))
+        (when is-end-section
+          (setq end (or (funcall before-@node end) end))))
 
       (push-mark end)
       (goto-char beg)
@@ -304,7 +306,7 @@ character. Return the resulting string."
 commands. Return the resulting string."
   (let* ((pos 0)
          (map '(("," . "comma")))
-         (re (regexp-opt (mapcar 'car map))) )
+         (re (regexp-opt (mapcar #'car map))) )
     (while (and (< pos (length node-name)) (string-match re node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
                                "@" (cdr (assoc-string (match-string 0 node-name) map))
@@ -391,7 +393,7 @@ for @node."
               (progn (skip-chars-forward "^,") (forward-char 2))
             (throw 'break nil)))))))
 
-(defun Texinfo-arg-nodename (optional &optional prompt definition)
+(defun Texinfo-arg-nodename (optional &optional prompt _definition)
   "Prompt for a node name completing with known node names.
 OPTIONAL is ignored.
 Use PROMPT as the prompt string.
@@ -403,13 +405,13 @@ each invocation."
                                     (Texinfo-make-node-list))))
     (insert "{" (Texinfo-nodename-escape node-name) "}" )))
 
-(defun Texinfo-arg-lrc (optional &rest args)
+(defun Texinfo-arg-lrc (_optional &rest _args)
   (let ((l (read-from-minibuffer "Enter left part: "))
         (c (read-from-minibuffer "Enter center part: "))
         (r (read-from-minibuffer "Enter right part: ")))
     (insert " " l " @| " c " @| " r)))
 
-(defun Texinfo-arg-next-line (optional &rest args)
+(defun Texinfo-arg-next-line (_optional &rest _args)
   "Go to the beginning of next line if we are at the end of line. Otherwise insert an end-of-line."
   (if (eolp)  (forward-line) (insert "\n")))
 
@@ -509,22 +511,22 @@ is assumed by default."
 
     ;; From texinfo.el
     ;; bindings for updating nodes and menus
-    (define-key map "\C-c\C-um"      'texinfo-master-menu)
-    (define-key map "\C-c\C-u\C-m"   'texinfo-make-menu)
-    (define-key map "\C-c\C-u\C-n"   'texinfo-update-node)
-    (define-key map "\C-c\C-u\C-e"   'texinfo-every-node-update)
-    (define-key map "\C-c\C-u\C-a"   'texinfo-all-menus-update)
+    (define-key map "\C-c\C-um"      #'texinfo-master-menu)
+    (define-key map "\C-c\C-u\C-m"   #'texinfo-make-menu)
+    (define-key map "\C-c\C-u\C-n"   #'texinfo-update-node)
+    (define-key map "\C-c\C-u\C-e"   #'texinfo-every-node-update)
+    (define-key map "\C-c\C-u\C-a"   #'texinfo-all-menus-update)
 
     ;; Simulating LaTeX-mode
-    (define-key map "\C-c\C-e" 'Texinfo-environment)
-    (define-key map "\C-c." 'Texinfo-mark-environment)
-    (define-key map "\C-c*" 'Texinfo-mark-section)
-    (define-key map "\M-\C-h" 'Texinfo-mark-node)
-    (define-key map "\C-c\n"   'texinfo-insert-@item)
+    (define-key map "\C-c\C-e" #'Texinfo-environment)
+    (define-key map "\C-c." #'Texinfo-mark-environment)
+    (define-key map "\C-c*" #'Texinfo-mark-section)
+    (define-key map "\M-\C-h" #'Texinfo-mark-node)
+    (define-key map "\C-c\n"   #'texinfo-insert-@item)
     (or (key-binding "\e\r")
-        (define-key map "\e\r" 'texinfo-insert-@item)) ;*** Alias
-    (define-key map "\C-c\C-s" 'Texinfo-insert-node)
-    (define-key map "\C-c]" 'texinfo-insert-@end)
+        (define-key map "\e\r" #'texinfo-insert-@item)) ;*** Alias
+    (define-key map "\C-c\C-s" #'Texinfo-insert-node)
+    (define-key map "\C-c]" #'texinfo-insert-@end)
 
     ;; Override some bindings in `TeX-mode-map'
     ;; FIXME: Inside @math{}, you can use all plain TeX math commands
@@ -622,7 +624,7 @@ is assumed by default."
 ;;; Mode:
 
 ;;;###autoload
-(defalias 'Texinfo-mode 'texinfo-mode)
+(defalias 'Texinfo-mode #'texinfo-mode)
 
 (defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
 
@@ -639,7 +641,7 @@ value of `Texinfo-mode-hook'."
   (kill-all-local-variables)
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
-  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
+  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name "Texinfo")
   (setq major-mode 'texinfo-mode)
@@ -673,13 +675,11 @@ value of `Texinfo-mode-hook'."
   ;; Outline settings.
   (set (make-local-variable 'outline-regexp)
        (concat "@\\("
-               (mapconcat 'car texinfo-section-list "\\>\\|")
+               (mapconcat #'car texinfo-section-list "\\>\\|")
                "\\>\\)"))
   (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
   ;; Mostly AUCTeX stuff
-  (easy-menu-add Texinfo-mode-menu Texinfo-mode-map)
-  (easy-menu-add Texinfo-command-menu Texinfo-mode-map)
   (set (make-local-variable 'TeX-command-current) 'TeX-command-master)
 
   (setq TeX-default-extension "texi")
@@ -696,7 +696,8 @@ value of `Texinfo-mode-hook'."
              (list "" TeX-complete-word)))
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
-  (set (make-local-variable 'TeX-font-replace-function) 'TeX-font-replace-macro)
+  (set (make-local-variable 'TeX-font-replace-function)
+       #'TeX-font-replace-macro)
   (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
 
   (add-hook 'find-file-hook (lambda ()
@@ -853,7 +854,7 @@ value of `Texinfo-mode-hook'."
    '("xref" (Texinfo-arg-nodename "Node name")))
 
   ;; RefTeX plugging
-  (add-hook 'reftex-mode-hook 'Texinfo-reftex-hook)
+  (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook)
   (if (and (boundp 'reftex-mode) reftex-mode)
       (Texinfo-reftex-hook))
 

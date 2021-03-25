@@ -1,6 +1,6 @@
 ;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2014, 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -169,13 +169,13 @@ string."
           inputs 'biberinputs)
     (message "Searching for BibLaTeX files...")
     (or (symbol-value files)
-        (set files (mapcar 'list (TeX-search-files-by-type
-                                  'biberinputs 'global t nil))))
+        (set files (mapcar #'list (TeX-search-files-by-type
+                                   'biberinputs 'global t nil))))
     (message "Searching for BibLaTeX files...done")
     (setq database (completing-read
                     (TeX-argument-prompt optional prompt "BibLaTeX files")
-                    (append (mapcar 'list (TeX-search-files-by-type
-                                           inputs 'local t nil))
+                    (append (mapcar #'list (TeX-search-files-by-type
+                                            inputs 'local t nil))
                             (symbol-value files))))
     (LaTeX-add-bibliographies database)
     ;; Run style file associated to the bibliography database file in order to
@@ -226,11 +226,11 @@ for citation keys."
                     (TeX-completing-read-multiple
                      (TeX-argument-prompt optional prompt "Key(s)")
                      (LaTeX-bibitem-list))))
-      (apply 'LaTeX-add-bibitems items)
+      (apply #'LaTeX-add-bibitems items)
       ;; If input is empty, insert an empty group only the first time, when
       ;; `noinsert' flag is nil.
       (unless (and (not items) noinsert)
-        (TeX-argument-insert (mapconcat 'identity items ",") optional))
+        (TeX-argument-insert (mapconcat #'identity items ",") optional))
       (setq noinsert t))))
 
 (defun LaTeX-arg-biblatex-natbib-notes (optional)

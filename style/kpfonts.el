@@ -1,6 +1,6 @@
 ;;; kpfonts.el --- AUCTeX style for `kpfonts.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -451,10 +451,10 @@ the sequence by initializing this variable.")
                  (nth 3 entry)))
            value menu name)
       (setq math (cdr math))
-      (if (and prefix
-               (setq prefix (decode-char 'ucs (nth 3 entry))))
-          (setq prefix (concat (string prefix) " \\"))
-        (setq prefix "\\"))
+      (setq prefix (if (and prefix
+                            (setq prefix (decode-char 'ucs (nth 3 entry))))
+                       (concat (string prefix) " \\")
+                     "\\"))
       (if (listp (cdr entry))
           (setq value (nth 1 entry)
                 menu (nth 2 entry))
@@ -498,7 +498,7 @@ the sequence by initializing this variable.")
                               (cdr parent)))))))))
   ;; Make the kpfonts prefix char available if it has not been used as a prefix.
   (unless (lookup-key map (LaTeX-kpfonts-abbrev-prefix))
-    (define-key map (LaTeX-kpfonts-abbrev-prefix) 'self-insert-command)))
+    (define-key map (LaTeX-kpfonts-abbrev-prefix) #'self-insert-command)))
 
 (define-minor-mode LaTeX-kpfonts-mode
   "A minor mode with easy access to kpfonts macros.
@@ -509,9 +509,6 @@ following commands are defined:
 
 \\{LaTeX-kpfonts-mode-map}"
   nil nil (list (cons (LaTeX-kpfonts-abbrev-prefix) LaTeX-kpfonts-keymap))
-  (if LaTeX-kpfonts-mode
-      (easy-menu-add LaTeX-kpfonts-mode-menu LaTeX-kpfonts-mode-map)
-    (easy-menu-remove LaTeX-kpfonts-mode-menu))
   (TeX-set-mode-name))
 
 (easy-menu-define LaTeX-kpfonts-mode-menu

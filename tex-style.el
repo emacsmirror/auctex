@@ -1,6 +1,6 @@
-;;; tex-style.el --- Customizable variables for AUCTeX style files
+;;; tex-style.el --- Customizable variables for AUCTeX style files  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005, 2007, 2009, 2012-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Keywords: tex, wp, convenience
@@ -37,13 +37,11 @@
 
 (defcustom LaTeX-reftex-ref-style-auto-activate t
   "Whether to activate automatically RefTeX reference styles."
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 (defcustom LaTeX-reftex-cite-format-auto-activate t
   "Whether to activate automatically RefTeX citation format."
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 ;; style/amsmath.el
 
@@ -61,19 +59,16 @@ Amsmath equations include \"align\", \"alignat\", \"xalignat\",
 
 (defcustom LaTeX-beamer-section-labels-flag nil
   "If non-nil section labels are added"
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 (defcustom LaTeX-beamer-item-overlay-flag t
   "If non-nil do prompt for an overlay in itemize-like environments."
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 (defcustom LaTeX-beamer-themes 'local
   "Presentation themes for the LaTeX beamer package.
 It can be a list of themes or a function.  If it is the symbol
 `local', search only once per buffer."
-  :group 'LaTeX-style
   :type
   '(choice
     (const :tag "TeX search" LaTeX-beamer-search-themes)
@@ -121,7 +116,6 @@ It can be a list of themes or a function.  If it is the symbol
   "Presentation inner themes for the LaTeX beamer package.
 It can be a list of themes or a function.  If it is the symbol
 `local', search only once per buffer."
-  :group 'LaTeX-style
   :type '(choice
     (const :tag "TeX search" LaTeX-beamer-search-inner-themes)
     (const :tag "Search once per buffer" local)
@@ -142,7 +136,6 @@ It can be a list of themes or a function.  If it is the symbol
   "Presentation outer themes for the LaTeX beamer package.
 It can be a list of themes or a function.  If it is the symbol
 `local', search only once per buffer."
-  :group 'LaTeX-style
   :type
   '(choice
     (const :tag "TeX search" LaTeX-beamer-search-outer-themes)
@@ -170,7 +163,6 @@ It can be a list of themes or a function.  If it is the symbol
   "Presentation color themes for the LaTeX beamer package.
 It can be a list of themes or a function.  If it is the symbol
 `local', search only once per buffer."
-  :group 'LaTeX-style
   :type
   '(choice
     (const :tag "TeX search" LaTeX-beamer-search-color-themes)
@@ -204,7 +196,6 @@ It can be a list of themes or a function.  If it is the symbol
   "Presentation font themes for the LaTeX beamer package.
 It can be a list of themes or a function.  If it is the symbol
 `local', search only once per buffer."
-  :group 'LaTeX-style
   :type
   '(choice
     (const :tag "TeX search" LaTeX-beamer-search-font-themes)
@@ -241,31 +232,27 @@ override the autodetection of the biblatex backend.")
   "List of environment names defined with comment.sty.
 Setting this variable does not take effect unless you
 reinitialize affected buffers."
-  :type '(repeat string)
-  :group 'LaTeX-style)
+  :type '(repeat string))
 
 ;; style/csquotes.el
 
 (defcustom LaTeX-csquotes-quote-after-quote nil
   "Initial value of `TeX-quote-after-quote' for `csquotes.el'"
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 (defcustom LaTeX-csquotes-open-quote ""
   "Opening quotation mark to be used with the csquotes package.
 The specified string will be used for `TeX-open-quote' (and override
 any language-specific setting) only if both `LaTeX-csquotes-open-quote'
 and `LaTeX-csquotes-close-quote' are non-empty strings."
-  :type 'string
-  :group 'LaTeX-style)
+  :type 'string)
 
 (defcustom LaTeX-csquotes-close-quote ""
   "Closing quotation mark to be used with the csquotes package.
 The specified string will be used for `TeX-close-quote' (and override
 any language-specific setting) only if both `LaTeX-csquotes-open-quote'
 and `LaTeX-csquotes-close-quote' are non-empty strings."
-  :type 'string
-  :group 'LaTeX-style)
+  :type 'string)
 
 ;; style/emp.el
 
@@ -273,8 +260,7 @@ and `LaTeX-csquotes-close-quote' are non-empty strings."
   "If non-nil, insert automatically the \\write18 calling metapost.
 When disabled, you have to use mpost on the mp files automatically
 produced by emp.sty and then re-LaTeX the document."
-  :type 'boolean
-  :group 'LaTeX-style)
+  :type 'boolean)
 
 ;; style/exam.el
 
@@ -284,12 +270,10 @@ produced by emp.sty and then re-LaTeX the document."
 A character argument for quick identification when RefTeX inserts
 new references with `reftex-reference'.  It must be unique.  It
 is initialized to ?x."
-  :group 'LaTeX-style
   :type 'character)
 
 (defcustom LaTeX-exam-label "exm:"
   "Default prefix to labels in environments of exam class."
-  :group 'LaTeX-style
   :type 'string)
 
 ;; style/fontspec.el
@@ -305,7 +289,6 @@ time `LaTeX-fontspec-arg-font' is called.
 `LaTeX-fontspec-arg-font' calls `luaotf-load --list=basename' to
 automatically get the list of fonts.  This requires
 `luaotfload-tool' version 2.3 or higher in order to work."
-  :group 'LaTeX-style
   :type '(choice
           (const :tag "Search automatically" t)
           (const :tag "Use default font list" nil)
@@ -314,7 +297,6 @@ automatically get the list of fonts.  This requires
 (defcustom LaTeX-fontspec-font-list-default nil
   "List of default fonts to be used as completion for
 `LaTeX-fontspec-arg-font'."
-  :group 'LaTeX-style
   :type '(repeat (string :tag "Font")))
 
 ;; style/graphicx.el
@@ -322,7 +304,6 @@ automatically get the list of fonts.  This requires
 (defcustom LaTeX-includegraphics-extensions
   '("eps" "jpe?g" "pdf" "png")
   "Extensions for images files used by \\includegraphics."
-  :group 'LaTeX-style
   :type '(list (set :inline t
                     (const "eps")
                     (const "jpe?g")
@@ -334,7 +315,6 @@ automatically get the list of fonts.  This requires
 
 (defcustom LaTeX-includegraphics-strip-extension-flag t
   "Non-nil means to strip known extensions from image file name."
-  :group 'LaTeX-style
   :type 'boolean)
 
 (defcustom LaTeX-includegraphics-read-file
@@ -365,7 +345,6 @@ Inserting the subdirectory in the filename (as
   ;; `----
   ;; See "Inefficiency" and "Unportability" in the same section for more
   ;; information.
-  :group 'LaTeX-style
   :type '(choice (const :tag "TeX" LaTeX-includegraphics-read-file-TeX)
                  (const :tag "relative"
                         LaTeX-includegraphics-read-file-relative)
@@ -388,7 +367,6 @@ Inserting the subdirectory in the filename (as
 A character argument for quick identification when RefTeX inserts
 new references with `reftex-reference'.  It must be unique.  It
 is initialized to ?v."
-  :group 'LaTeX-style
   :type 'character)
 
 ;; style/shortvrb.el
@@ -412,9 +390,8 @@ becomes the default value meaning that verbatim fontification is
 always performed for the characters in the list, no matter if
 your document actually defines shortvrb chars using
 \\MakeShortVrb."
-  :group 'LaTeX-style
   :type '(repeat character))
-(put 'LaTeX-shortvrb-chars 'safe-local-variable 'listp)
+(put 'LaTeX-shortvrb-chars 'safe-local-variable #'listp)
 
 ;; style/splitidx.el
 
@@ -425,7 +402,6 @@ A character argument for quick identification of \"\\sindex\"
 when RefTeX inserts new index entries with `reftex-index'.  It
 must be unique.  It is initialized to ?s when added to
 `reftex-index-macros'."
-  :group 'LaTeX-style
   :type 'character)
 
 ;; Don't look for file-local variables before this line, so that the

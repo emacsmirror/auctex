@@ -1,6 +1,6 @@
 ;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -140,7 +140,7 @@ RefTeX users should customize or add ENVIRONMENT to
 make them available as new environments.  Update
 `LaTeX-ntheorem-theoremstyle-list' with styles defined with
 \"\\newtheoremstyle\"."
-  (dolist (newthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
+  (dolist (newthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
     (LaTeX-add-environments (list newthm 'LaTeX-ntheorem-env-label))
     (LaTeX-add-environments (list (concat newthm "*")
                                   'LaTeX-ntheorem-env-label)))
@@ -151,9 +151,9 @@ make them available as new environments.  Update
     (add-to-list (make-local-variable 'LaTeX-ntheorem-listtype-list)
                  newthmlist))
   (when (LaTeX-provided-package-options-member "ntheorem" "thmmarks")
-    (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
+    (dolist (nthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
       (TeX-add-symbols (concat nthm "Symbol"))))
-  (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
+  (dolist (nthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
     (TeX-add-symbols (concat nthm "name"))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-ntheorem-auto-prepare t)
@@ -391,13 +391,13 @@ make them available as new environments.  Update
    ;; 2.6 Setting End Marks
    ;; ... the endmark can manually be set by just saying \<name>Symbol.
    (when (LaTeX-provided-package-options-member "ntheorem" "thmmarks")
-     (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
+     (dolist (nthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
        (TeX-add-symbols (concat nthm "Symbol"))))
 
    ;; 2.8 Miscellaneous
    ;; Inside a theorem-like environment <env>, the name given as
    ;; optional argument is accessible by \<env>name
-   (dolist (nthm (mapcar 'car (LaTeX-ntheorem-newtheorem-list)))
+   (dolist (nthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
      (TeX-add-symbols (concat nthm "name")))
 
    ;; Fontification

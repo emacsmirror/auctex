@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2005, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -101,7 +101,7 @@
   "Prompt for style used in \\urlstyle with completion."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Style")
-                    (mapcar 'list '("rm" "same" "sf" "tt"))
+                    '("rm" "same" "sf" "tt")
                     nil t)
    optional))
 
