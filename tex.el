@@ -38,10 +38,11 @@
 (eval-when-compile
   (require 'cl-lib))
 (require 'texmathp)
+;; Require dbus at compile time to get macro definition of
+;; `dbus-ignore-errors'.
+(eval-when-compile (require 'dbus))
 
 ;; Silence the compiler for functions:
-(declare-function dbus-ignore-errors "ext:dbus"
-                  (&rest body))
 (declare-function dbus-get-unique-name "ext:dbusbind.c"
                   (bus))
 (declare-function dbus-ping "ext:dbus"
@@ -98,7 +99,6 @@
 ;; Others:
 (defvar tex--prettify-symbols-alist)    ; tex-mode.el
 (defvar Info-file-list-for-emacs)       ; info.el
-(defvar dbus-debug)                     ; dbus.el
 (defvar ispell-parser)                  ; ispell.el
 
 (defgroup TeX-file nil
@@ -1115,10 +1115,6 @@ The following built-in predicates are available:
 ;; program and the desktop environment, that will be used to set up
 ;; DBUS communication.
 
-;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
-;; not being defined.
-(eval-when-compile (and (featurep 'dbusbind)
-                        (require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (de app &rest options)
   "Return non-nil, if an evince-compatible reader is accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
