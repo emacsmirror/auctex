@@ -1,5 +1,6 @@
 #*
 *.aux
+*.orig
 *.elc
 *.log
 *.synctex.gz
@@ -49,3 +50,7 @@ auctex-autoloads.el
 tests/*/auto/*
 *.dynvars
 auctex-dynvars
+
+# ELPA-generated files
+/auctex-autoloads.el
+/auctex-pkg.el
