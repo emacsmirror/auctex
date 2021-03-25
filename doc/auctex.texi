@@ -998,7 +998,7 @@ Prefix to use for `eqnarray' labels.
 
 @defopt LaTeX-amsmath-label
 Prefix to use for amsmath equation labels.  Amsmath equations include
-@samp{align}, @samp{alignat}, @samp{xalignat}, @samp{aligned},
+@samp{align}, @samp{alignat}, @samp{xalignat}, @samp{multline},
 @samp{flalign} and @samp{gather}.
 @end defopt
 
@@ -3791,7 +3791,7 @@ compiler.
 Show an overview of the errors and warnings occurred in the last TeX
 run.
 
-In this window you can visit the error on which point is on by pressing
+In this window you can visit the error on which point is by pressing
 @key{RET}, and visit the next or previous issue by pressing @key{n} or
 @key{p} respectively.  A prefix argument to these keys specifies how
 many errors to move forward or backward.  You can visit an error also by
