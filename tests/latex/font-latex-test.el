@@ -24,6 +24,8 @@
 (require 'ert)
 (require 'latex)
 (require 'font-latex)
+(defvar font-lock-beg)
+(defvar font-lock-end)
 
 (ert-deftest font-latex-three-dollars ()
   "Test three consecutive dollar is ignored."

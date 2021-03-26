@@ -25,11 +25,12 @@
 
 (ert-deftest TeX-variable-truncation ()
   "Check whether list variable is not truncated as side effect."
-  (let ((var '("str1" "str2"))
+  (defvar TeX--var)
+  (let ((TeX--var '("str1" "str2"))
         (TeX-kpathsea-path-delimiter nil)
         (TeX-search-files-type-alist
-         '((abc "${dummy}" ("str2" var) TeX-file-extensions))))
+         '((abc "${dummy}" ("str2" TeX--var) TeX-file-extensions))))
     (TeX-search-files-by-type 'abc 'global)
-    (should (equal var '("str1" "str2")))))
+    (should (equal TeX--var '("str1" "str2")))))
 
 ;;; path-expansion.el ends here
