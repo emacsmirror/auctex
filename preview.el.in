@@ -1324,7 +1324,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                           (file-relative-name
                            (car (nth 1 filenames)))))
          (ps-open
-          (let ((str
+          (let ((string
                  (concat
                 (mapconcat #'shell-quote-argument
                             (append (list
@@ -1336,7 +1336,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                  preview-gs-init-string
                  (aref (overlay-get ov 'queued) 1)
                  err)))
-            (lambda () (interactive "@") (preview-mouse-open-error str))))
+            (lambda () (interactive "@") (preview-mouse-open-error string))))
          (str
           (preview-make-clickable
            nil
@@ -4015,7 +4015,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
                            command
                            format-cons)
                         (preview-format-kill format-cons))
-                      (delete-file ',dump-file))
+                      (delete-file dump-file))
                   (error (preview-log-error err "Dumping" process)))
                 (preview-reraise-error process)))))))
 
