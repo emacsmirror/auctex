@@ -661,9 +661,9 @@ Programs should not use these variables directly but the function
 Each entry is a list with two or more elements.  The first
 element is the string to be expanded.  The second element is the
 name of a function returning the expanded string when called with
-the remaining elements as arguments.  The special value `file'
-will be expanded to the name of the file being processed, with an
-optional extension.
+the remaining elements as arguments.
+The second element can also be a variable name whose value is
+such function.
 
 Built-in expansions provided in `TeX-expand-list-builtin' can be
 overwritten by defining expansions strings with the same
