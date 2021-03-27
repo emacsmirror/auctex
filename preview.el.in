@@ -2981,7 +2981,7 @@ With prefix argument REMOVE, remove it again."
       (setq pattern (regexp-quote preview-TeX-style-dir))
       (dolist (env (cons "TEXINPUTS=" (copy-sequence process-environment)))
         (if (string-match "\\`\\(TEXINPUTS[^=]*\\)=" env)
-            (unless (string-match pattern env)
+            (unless (save-match-data (string-match pattern env))
               (setenv (match-string 1 env)
                       (concat preview-TeX-style-dir
                               (substring env (match-end 0))))))))))
