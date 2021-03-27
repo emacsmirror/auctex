@@ -3351,7 +3351,7 @@ name(\\([^)]+\\))\\)\\|\
 ;;;   Too ugly to describe in detail.  In short, we try to catch file
 ;;;   names built from path components that don't contain spaces or
 ;;;   other special characters once the file extension has started.
-;;;  
+;;;
 ;;;   Position for searching immediately after the file name so as to
 ;;;   not miss closing parens or something.
 ;;;   (match-string 3) is the file name.
@@ -4189,7 +4189,7 @@ internal parameters, STR may be a log to insert into the current log."
                                       ;; get the correct path but then
                                       ;; strip the extension
                                       (file-name-sans-extension
-				       (TeX-master-file "prv" t))))))
+                                       (TeX-master-file "prv" t))))))
        (process-environment (copy-sequence process-environment))
        (process
         (progn

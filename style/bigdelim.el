@@ -34,8 +34,8 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
-		  "font-latex"
-		  (keywords class))
+                  "font-latex"
+                  (keywords class))
 
 (defun TeX-arg-bigdelim-brace (optional side &optional prompt)
   "Prompt for a single brace, and do not insert the matching one.
@@ -53,7 +53,7 @@ standard one."
                                   TeX-grop))
          (TeX-arg-closing-brace (if (string= TeX-arg-opening-brace TeX-grop)
                                     TeX-grcl
-				  "")))
+                                  "")))
     (TeX-argument-insert brace optional (when (member brace '("{" "}"))
                                           TeX-esc))))
 

@@ -1429,11 +1429,11 @@ If within a multi-file document (in auctex only)
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
-	  ;; COMPATIBILITY for emacs<25.
-	  (if (fboundp 'outline-show-entry)
-	      (outline-show-entry)
+          ;; COMPATIBILITY for emacs<25.
+          (if (fboundp 'outline-show-entry)
+              (outline-show-entry)
             (with-no-warnings
-	      (show-entry)))))))
+              (show-entry)))))))
 
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))
@@ -1760,8 +1760,8 @@ Return the-warnings as text."
                 (let* ((the-key (car (car string-alist)))
                        (the-string (cdr (car string-alist)))
                        (slashed-string  ; "J. of Geo.\" -> "J. of Geo.\\\\"
-			(replace-regexp-in-string
-			 "\\\\" "\\\\" the-string t t)))
+                        (replace-regexp-in-string
+                         "\\\\" "\\\\" the-string t t)))
 
                   (while (re-search-forward
                           (concat "\\(^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\)"
@@ -2327,10 +2327,10 @@ bib-dos-or-os2-variable affects:
   (if (not (getenv env))
       nil                               ;Because replace-regexp-in-string fails
     (let* ((value (if bib-dos-or-os2-variable
-		      (replace-regexp-in-string "\\\\" "/" (getenv env) t t)
+                      (replace-regexp-in-string "\\\\" "/" (getenv env) t t)
                     (getenv env)))
            (sep-char (or (and bib-dos-or-os2-variable ";") ":"))
-	   (entries (split-string value sep-char)))
+           (entries (split-string value sep-char)))
       (cl-loop for x in entries if (bib-cite-file-directory-p x) collect x))))
 
 (provide 'bib-cite)

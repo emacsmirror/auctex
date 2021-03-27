@@ -111,9 +111,9 @@
            (member (buffer-substring (region-beginning) (region-end))
                    LaTeX-hologo-logo-names))
       (progn
-	(insert TeX-grop)
-	(goto-char (region-end))
-	(insert TeX-grcl))
+        (insert TeX-grop)
+        (goto-char (region-end))
+        (insert TeX-grcl))
     (TeX-argument-insert
      (completing-read "Logo name: " LaTeX-hologo-logo-names)
      optional)))
