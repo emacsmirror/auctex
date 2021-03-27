@@ -463,8 +463,8 @@ the sequence by initializing this variable.")
       (if (stringp value)
           (progn
             (setq name (intern (concat "LaTeX-kpfonts-" value)))
-            (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-                             (list 'LaTeX-math-insert value 'arg))))
+            (fset name (lambda (arg) (interactive "*P")
+                         (LaTeX-math-insert value arg))))
         (setq name value))
       (if key
           (progn

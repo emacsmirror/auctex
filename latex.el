@@ -5389,8 +5389,8 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
         (if (stringp value)
             (progn
               (setq name (intern (concat "LaTeX-math-" value)))
-              (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-                               (list 'LaTeX-math-insert value 'arg))))
+              (fset name (lambda (arg) (interactive "*P")
+                           (LaTeX-math-insert value arg))))
           (setq name value))
         (if key
             (progn
