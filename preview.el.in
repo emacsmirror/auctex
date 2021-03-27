@@ -1625,7 +1625,7 @@ Fallback to :inherit and 'default implemented."
 
 (defcustom preview-auto-reveal
   '(eval (preview-arrived-via (key-binding [left]) (key-binding [right])
-                              'backward-char 'forward-char))
+                              #'backward-char #'forward-char))
   "Cause previews to open automatically when entered.
 Possibilities are:
 T autoopens,
@@ -2843,7 +2843,7 @@ using MML mode."
   (when (catch 'badcolor
           (let ((str (car (preview-format-mml ov))))
             (if str
-                (if (eq last-command 'kill-region)
+                (if (eq last-command #'kill-region)
                     (kill-append str nil)
                   (kill-new str))
               (error "No image file available")))
@@ -2869,7 +2869,7 @@ using MML mode."
               (setq str (concat (substring str 0 (nth 0 elt))
                                 (nth 2 elt)
                                 (substring str (nth 1 elt)))))
-            (if (eq last-command 'kill-region)
+            (if (eq last-command #'kill-region)
                 (kill-append str nil)
               (kill-new str)))
           nil)
@@ -4135,7 +4135,7 @@ It returns the started process."
   (let* ((geometry (preview-get-geometry))
          (commandbuff (current-buffer))
          (pr-file (cons
-                   'TeX-active-master
+                   #'TeX-active-master
                    (file-name-nondirectory file)))
          (master (TeX-master-file))
          (master-file (expand-file-name master))

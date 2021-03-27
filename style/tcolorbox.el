@@ -510,8 +510,8 @@ e.g. \"tcolorboxlib-raster.el\"."
                   opt (not (string= opt  "")))
              (LaTeX-add-environments
               (list box
-                    'LaTeX-env-args
-                    (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
+                    #'LaTeX-env-args
+                    [TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local]
                     (1- (string-to-number arg)))))
             (;; mandatory argument(s) only
              (and arg (not (string= arg ""))
@@ -539,7 +539,7 @@ e.g. \"tcolorboxlib-raster.el\"."
              (and arg (not (string= arg ""))
                   opt (not (string= opt  "")))
              (TeX-add-symbols (list box
-                               (vector 'TeX-arg-key-val 'LaTeX-tcolorbox-keyval-options-local)
+                               [TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local]
                                (1- (string-to-number arg)))))
             (;; mandatory argument(s) only
              (and arg (not (string= arg ""))

@@ -680,7 +680,7 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
   ;; Mostly AUCTeX stuff
-  (set (make-local-variable 'TeX-command-current) 'TeX-command-master)
+  (set (make-local-variable 'TeX-command-current) #'TeX-command-master)
 
   (setq TeX-default-extension "texi")
   (set (make-local-variable 'TeX-esc) "@")

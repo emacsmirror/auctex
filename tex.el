@@ -57,6 +57,8 @@
                   nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
+(declare-function gnuserv-start "ext:gnuserv"
+                  (&optional leave-dead) t)
 
 ;; Silence the compiler for variables:
 ;; tex.el: Variables defined somewhere in this file:
@@ -575,7 +577,7 @@ string."
                          (null TeX-source-correlate-output-page-function)
                          (eq (TeX-source-correlate-method-active) 'synctex)
                          (setq TeX-source-correlate-output-page-function
-                               'TeX-synctex-output-page))
+                               #'TeX-synctex-output-page))
                     (or (if TeX-source-correlate-output-page-function
                             (funcall TeX-source-correlate-output-page-function))
                         "1")))
@@ -1612,7 +1614,7 @@ For available TYPEs, see variable `TeX-engine'."
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode #'TeX-Omega-mode)
-(make-obsolete 'TeX-Omega-mode 'TeX-engine-set "11.86")
+(make-obsolete 'TeX-Omega-mode #'TeX-engine-set "11.86")
 (make-obsolete-variable 'TeX-Omega-mode 'TeX-engine "11.86")
 
 ;;; Forward and inverse search
@@ -1694,7 +1696,7 @@ This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
   (when (and TeX-source-correlate-start-server-flag
              (not (TeX-source-correlate-server-enabled-p)))
     (let* ((gnuserv-p (TeX-source-correlate-gnuserv-p))
-           (start (if gnuserv-p 'gnuserv-start 'server-start)))
+           (start (if gnuserv-p #'gnuserv-start #'server-start)))
       (cond
        ;; Server should be started unconditionally
        ((eq TeX-source-correlate-start-server t)
@@ -3611,7 +3613,7 @@ argument OPTIONAL is ignored."
 
 ;;; Font Locking
 
-(defcustom TeX-install-font-lock 'font-latex-setup
+(defcustom TeX-install-font-lock #'font-latex-setup
   "Function to call to install font lock support.
 Choose `ignore' if you don't want AUCTeX to install support for font locking."
   :group 'TeX-misc
@@ -4806,7 +4808,7 @@ element to ALIST-VAR."
 
 ;;; Menu Support
 
-(defvar TeX-command-current 'TeX-command-master
+(defvar TeX-command-current #'TeX-command-master
   "Specify whether to run command on master, buffer or region.")
 ;; Function used to run external command.
 
@@ -4814,19 +4816,19 @@ element to ALIST-VAR."
   "Determine that the next command will be on the master file."
   (interactive)
   (message "Next command will be on the master file.")
-  (setq TeX-command-current 'TeX-command-master))
+  (setq TeX-command-current #'TeX-command-master))
 
 (defun TeX-command-select-buffer ()
   "Determine that the next command will be on the buffer."
   (interactive)
   (message "Next command will be on the buffer")
-  (setq TeX-command-current 'TeX-command-buffer))
+  (setq TeX-command-current #'TeX-command-buffer))
 
 (defun TeX-command-select-region ()
   "Determine that the next command will be on the region."
   (interactive)
   (message "Next command will be on the region")
-  (setq TeX-command-current 'TeX-command-region))
+  (setq TeX-command-current #'TeX-command-region))
 
 (defvar TeX-command-force nil)
 ;; If non-nil, TeX-command-query will return the value of this
@@ -4891,7 +4893,7 @@ affected.  See `TeX-electric-macro' for detail."
   :group 'TeX-macro
   :type 'boolean)
 
-(defcustom TeX-newline-function 'newline
+(defcustom TeX-newline-function #'newline
   "Function to be called upon pressing `RET'."
   :group 'TeX-indentation
   :type '(choice (const newline)
@@ -4997,15 +4999,15 @@ Brace insertion is only done if point is in a math construct and
    `("Command on"
      [ "Master File" TeX-command-select-master
        :keys "C-c C-c" :style radio
-       :selected (eq TeX-command-current 'TeX-command-master)
+       :selected (eq TeX-command-current #'TeX-command-master)
        :help "Commands in this menu work on the Master File"]
      [ "Buffer" TeX-command-select-buffer
        :keys "C-c C-b" :style radio
-       :selected (eq TeX-command-current 'TeX-command-buffer)
+       :selected (eq TeX-command-current #'TeX-command-buffer)
        :help "Commands in this menu work on the current buffer"]
      [ "Region" TeX-command-select-region
        :keys "C-c C-r" :style radio
-       :selected (eq TeX-command-current 'TeX-command-region)
+       :selected (eq TeX-command-current #'TeX-command-region)
        :help "Commands in this menu work on the region"]
      [ "Fix the Region" TeX-pin-region
        :active (or (if prefix-arg
@@ -5704,7 +5706,7 @@ An optional fourth (or sixth) element means always replace if t."
                      (string :tag "Math Suffix")))
             (option (sexp :format "Replace\n" :value t)))))
 
-(defvar TeX-font-replace-function 'TeX-font-replace
+(defvar TeX-font-replace-function #'TeX-font-replace
   "Determines the function which is called when a font should be replaced.")
 
 (defun TeX-describe-font-entry (entry)
@@ -5927,17 +5929,17 @@ sign.  With optional ARG, insert that many dollar signs."
           (exchange-point-and-mark))
       (cond
        ;; $...$ to $$...$$
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
         (replace-match "$$\\1$$")
         (set-mark (match-beginning 0)))
        ;; \(...\) to \[...\]
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
         (replace-match "\\\\[\\1\\\\]")
         (set-mark (match-beginning 0)))
        ;; Strip \[...\] or $$...$$
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
                  (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
         (replace-match "\\1")

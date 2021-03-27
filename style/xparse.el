@@ -141,7 +141,7 @@ TYPE is one of the symobols mac or env."
                 ;; v: Use `TeX-arg-verb-delim-or-brace'
                 ((looking-at-p "v")
                  (forward-char 1)
-                 (push 'TeX-arg-verb-delim-or-brace args))
+                 (push #'TeX-arg-verb-delim-or-brace args))
                 ;; Optional arguments:
                 ;; o standard LaTeX optional in square brackets
                 ((looking-at-p "o")
@@ -150,7 +150,7 @@ TYPE is one of the symobols mac or env."
                 ;; d<token1><token2>
                 ((looking-at-p "d")
                  (re-search-forward "d\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
-                 (push (vector 'LaTeX-arg-xparse-query
+                 (push (vector #'LaTeX-arg-xparse-query
                                (match-string-no-properties 1)
                                (match-string-no-properties 2))
                        args))
@@ -163,7 +163,7 @@ TYPE is one of the symobols mac or env."
                 ((looking-at-p "D")
                  (re-search-forward "D\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
                  (forward-sexp)
-                 (push (vector 'LaTeX-arg-xparse-query
+                 (push (vector #'LaTeX-arg-xparse-query
                                (match-string-no-properties 1)
                                (match-string-no-properties 2))
                        args))

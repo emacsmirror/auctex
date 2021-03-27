@@ -1484,7 +1484,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
       (just-one-space)
       (TeX-insert-macro "\\")))
   (LaTeX-insert-ampersands
-   LaTeX-array-skipping-regexp 'LaTeX-array-count-columns))
+   LaTeX-array-skipping-regexp #'LaTeX-array-count-columns))
 
 (defun LaTeX-item-tabular* (&optional suppress)
   "Insert line break macro on the last line and suitable number of &'s.
@@ -1497,7 +1497,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
       (just-one-space)
       (TeX-insert-macro "\\")))
   (LaTeX-insert-ampersands
-   LaTeX-tabular*-skipping-regexp 'LaTeX-array-count-columns))
+   LaTeX-tabular*-skipping-regexp #'LaTeX-array-count-columns))
 
 (defun LaTeX-insert-ampersands (regexp func)
   "Insert suitable number of ampersands for the current environment.
@@ -5486,7 +5486,7 @@ commands are defined:
   "Menu used in math minor mode."
   LaTeX-math-menu)
 
-(defcustom LaTeX-math-insert-function 'TeX-insert-macro
+(defcustom LaTeX-math-insert-function #'TeX-insert-macro
   "Function called with argument STRING to insert \\STRING."
   :group 'LaTeX-math
   :type 'function)
@@ -5643,13 +5643,13 @@ environments."
 
 (defun LaTeX-environment-menu-entry (entry)
   "Create an entry for the environment menu."
-  (vector (car entry) (list 'LaTeX-environment-menu (car entry)) t))
+  (vector (car entry) (list #'LaTeX-environment-menu (car entry)) t))
 
 (defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
 
 (defun LaTeX-environment-modify-menu-entry (entry)
   "Create an entry for the change environment menu."
-  (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
+  (vector (car entry) (list #'LaTeX-modify-environment (car entry)) t))
 
 (defun LaTeX-section-enable-symbol (level)
   "Symbol used to enable section LEVEL in the menu bar."
@@ -5671,7 +5671,7 @@ environments."
 (defun LaTeX-section-menu-entry (entry)
   "Create an ENTRY for the section menu."
   (let ((enable (LaTeX-section-enable-symbol (nth 1 entry))))
-    (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
+    (vector (car entry) (list #'LaTeX-section-menu (nth 1 entry)) enable)))
 
 (defcustom LaTeX-menu-max-items 25
   "Maximum number of items in the menu for LaTeX environments.
@@ -6924,7 +6924,7 @@ function would return non-nil and `(match-string 1)' would return
                    (regexp-opt
                     (let (out)
                       (mapc (lambda (x)
-                              (when (eq (cadr x) 'LaTeX-indent-tabular)
+                              (when (eq (cadr x) #'LaTeX-indent-tabular)
                                 (push (car x) out)))
                             LaTeX-indent-environment-list)
                       out)))))

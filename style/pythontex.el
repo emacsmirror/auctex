@@ -243,11 +243,11 @@ a list of strings."
           (verb-envs-regexp (regexp-opt verb-envs "\\(?:")))
      (apply #'TeX-add-symbols
             (mapcar (lambda (mac)
-                      (list mac [ "Session" ] 'TeX-arg-verb-delim-or-brace))
+                      (list mac [ "Session" ] #'TeX-arg-verb-delim-or-brace))
                     verb-macs))
      (apply #'LaTeX-add-environments
             (mapcar (lambda (env)
-                      (list env 'LaTeX-env-pythontex))
+                      (list env #'LaTeX-env-pythontex))
                     verb-envs))
      ;; Filling:
      (dolist (mac verb-macs)

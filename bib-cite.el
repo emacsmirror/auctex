@@ -611,7 +611,7 @@ call a function in RefTeX to find or display the cross reference of a
   "Give advice to novice users about what commands to use next."
   :type 'boolean)
 
-(defcustom bib-switch-to-buffer-function 'switch-to-buffer
+(defcustom bib-switch-to-buffer-function #'switch-to-buffer
   "Function used to select buffers if they differ from the original.
 You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 `switch-to-buffer-other-frame'."

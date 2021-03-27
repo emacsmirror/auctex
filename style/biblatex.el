@@ -515,7 +515,7 @@ for citation keys."
              (list
               (car cmd)
               '(TeX-arg-conditional TeX-arg-cite-note-p (["Postnote"]) nil)
-              'TeX-arg-cite))
+              #'TeX-arg-cite))
             ((= (cdr cmd) 2)
              ;; Pre and post notes
              (list
@@ -523,7 +523,7 @@ for citation keys."
               '(TeX-arg-conditional TeX-arg-cite-note-p
                                     ([LaTeX-arg-biblatex-natbib-notes])
                                   nil)
-              'TeX-arg-cite))))
+              #'TeX-arg-cite))))
          cmds))
 
      ;; Fontification for compat macros does not go into `font-latex.el':

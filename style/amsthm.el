@@ -112,7 +112,7 @@ RefTeX users should customize or add ENVIRONMENT to
   "Move parsed results from `LaTeX-auto-amsthm-newtheorem' and
 make them available as new environments."
   (dolist (newthm (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
-    (LaTeX-add-environments (list newthm 'LaTeX-amsthm-env-label))))
+    (LaTeX-add-environments (list newthm #'LaTeX-amsthm-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-amsthm-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-amsthm-auto-cleanup t)
@@ -137,7 +137,7 @@ make them available as new environments."
          (let ((nthm (TeX-read-string
                       (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-amsthm-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-amsthm-env-label))
            (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
@@ -155,7 +155,7 @@ make them available as new environments."
                (heading (TeX-read-string
                          (TeX-argument-prompt nil nil "Heading"))))
            (LaTeX-add-amsthm-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-amsthm-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-amsthm-env-label))
            (insert (concat TeX-grop nthm TeX-grcl))
            (format "%s" heading)))))
 

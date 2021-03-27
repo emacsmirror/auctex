@@ -105,7 +105,7 @@ shared by all users of a site."
                   ;; fails on non-list elements in Emacs 21.
                   (let* ((alist (car list))
                          (tail alist)
-                         (key 'TeX-modes-set))
+                         (key #'TeX-modes-set))
                     (while tail
                       (if (and (consp (car tail))
                                (eq (car (car tail)) key))

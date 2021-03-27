@@ -34,7 +34,7 @@
   ;; it should not stop there and return nil, but instead should
   ;; ignore them and search another occurence of $. That is the
   ;; behavior expected for MATCHER function of `font-lock-keywords'.
-  (should (let ((TeX-install-font-lock 'font-latex-setup))
+  (should (let ((TeX-install-font-lock #'font-latex-setup))
             (with-temp-buffer
               (insert "% $$$ $$$
 $a$")
@@ -46,7 +46,7 @@ $a$")
 (ert-deftest font-latex-extend-region-backwards-quotation ()
   "Test f-l-e-r-b-q doesn't extend region too eagerly."
   (with-temp-buffer
-    (let ((TeX-install-font-lock 'font-latex-setup)
+    (let ((TeX-install-font-lock #'font-latex-setup)
           (font-latex-quotes 'french)
           font-lock-beg font-lock-end)
       (LaTeX-mode)
@@ -86,7 +86,7 @@ $a$")
 (ert-deftest font-latex-general-fontification ()
   "Test general fontification in a LaTeX file."
   (with-temp-buffer
-    (let ((TeX-install-font-lock 'font-latex-setup)
+    (let ((TeX-install-font-lock #'font-latex-setup)
           (font-latex-fontify-sectioning 'color))
       (insert "\
 \\documentclass[10pt]{article}

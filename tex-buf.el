@@ -105,7 +105,7 @@ depend on it being positive instead of the entry in `TeX-command-list'."
   (interactive "P")
   (TeX-master-file nil nil t)  ;; call to ask if necessary
   (TeX-command (TeX-command-query #'TeX-master-file)
-               'TeX-master-file override-confirm))
+               #'TeX-master-file override-confirm))
 
 (defcustom TeX-region-extra ""
   "String to insert in the region file between the header and the text."
@@ -977,7 +977,7 @@ depending on the last command issued."
   (interactive)
   (let ((output-file (TeX-active-master (TeX-output-extension))))
     (if (file-exists-p output-file)
-        (TeX-command "View" 'TeX-active-master 0)
+        (TeX-command "View" #'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
 ;;; Command Hooks

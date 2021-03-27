@@ -277,7 +277,7 @@ are loaded."
            (env* (concat env "*")))
       (add-to-list 'LaTeX-auto-environment (list env))
       (add-to-list 'LaTeX-auto-environment
-                   (list env* 'LaTeX-env-args
+                   (list env* #'LaTeX-env-args
                          '(TeX-arg-key-val LaTeX-minted-key-val-options-local)))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
       (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)

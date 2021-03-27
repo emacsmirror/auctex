@@ -68,19 +68,19 @@
          (cond 
           ((= (cdr cmd) 0)
            ;; No optional arguments
-           (list (car cmd) 'TeX-arg-cite))
+           (list (car cmd) #'TeX-arg-cite))
           ((= (cdr cmd) 1)
            ;; Just one optional argument, the post note
            (list
             (car cmd)
             '(TeX-arg-conditional TeX-arg-cite-note-p (["Post-note"]) nil)
-            'TeX-arg-cite))
+            #'TeX-arg-cite))
           ((= (cdr cmd) 2)
            ;; Pre and post notes
            (list
             (car cmd)
             '(TeX-arg-conditional TeX-arg-cite-note-p (natbib-note-args) nil)
-            'TeX-arg-cite))))
+            #'TeX-arg-cite))))
        citecmds))
      ;; Special cases
      (TeX-add-symbols

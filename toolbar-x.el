@@ -1480,7 +1480,7 @@ line of buttons.  The only property supported for this button is
           :command undo
           :enable (and (not buffer-read-only)
                         (not (eq t buffer-undo-list))
-                        (if (eq last-command 'undo)
+                        (if (eq last-command #'undo)
                             pending-undo-list
                           (consp buffer-undo-list)))
           :help "Undo last operation"

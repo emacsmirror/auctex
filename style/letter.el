@@ -102,8 +102,10 @@
         (opening (TeX-read-string "Opening: "))
         (closing (TeX-read-string "Closing: "))
         (date (TeX-read-string "Date: " (LaTeX-today)))
+        ;; COMPATIBILITY for EMACS<26
         (func (if (fboundp 'indent-relative-first-indent-point)
-                  'indent-relative-first-indent-point
+                  #'indent-relative-first-indent-point
+                ;; Stay away from using #' to avoid compiler warning.
                 'indent-relative-maybe)))
 
     (insert TeX-esc "name" TeX-grop sender TeX-grcl)
