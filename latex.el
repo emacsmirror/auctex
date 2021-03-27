@@ -2936,30 +2936,24 @@ Normally bound to keys \(, { and [."
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
 (put #'LaTeX-insert-left-brace 'delete-selection
-     ;; COMPATIBILITY for Emacs < 24.3
-     (if (and (= emacs-major-version 24)
-              (< emacs-minor-version 3))
-         ;; Emacs < 24.3 doesn't support a function as value of
-         ;; `delete-selection' property.
-         nil
-       (lambda ()
-         ;; Consult `delete-selection' property when
-         ;; `LaTeX-insert-left-brace' works just the same as
-         ;; `self-insert-command'.
-         (and (or (not LaTeX-electric-left-right-brace)
-                  current-prefix-arg)
-              (let ((f (get #'self-insert-command 'delete-selection)))
-                ;; If `delete-selection' property of
-                ;; `self-insert-command' is one of the predefined
-                ;; special symbols, just return itself.
-                (if (memq f '(yank supersede kill t nil))
-                    ;; FIXME: if this list of special symbols is
-                    ;; extended in future delsel.el, this discrimination
-                    ;; will become wrong.
-                    f
-                  ;; Otherwise, call it as a function and return
-                  ;; its value.
-                  (funcall f)))))))
+     (lambda ()
+       ;; Consult `delete-selection' property when
+       ;; `LaTeX-insert-left-brace' works just the same as
+       ;; `self-insert-command'.
+       (and (or (not LaTeX-electric-left-right-brace)
+                current-prefix-arg)
+            (let ((f (get #'self-insert-command 'delete-selection)))
+              ;; If `delete-selection' property of
+              ;; `self-insert-command' is one of the predefined
+              ;; special symbols, just return itself.
+              (if (memq f '(yank supersede kill t nil))
+                  ;; FIXME: if this list of special symbols is
+                  ;; extended in future delsel.el, this discrimination
+                  ;; will become wrong.
+                  f
+                ;; Otherwise, call it as a function and return
+                ;; its value.
+                (funcall f))))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
   (lmacro lbrace &optional optional prompt)

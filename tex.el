@@ -3735,9 +3735,7 @@ The algorithm is as follows:
         "\\)*\\)\\(%+[ \t]*\\)"))
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
   (set (make-local-variable 'comment-use-syntax) t)
-  ;; `comment-padding' is defined here as an integer for compatibility
-  ;; reasons because older Emacsen could not cope with a string.
-  (set (make-local-variable 'comment-padding) 1)
+  (set (make-local-variable 'comment-padding) " ")
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
@@ -5976,11 +5974,7 @@ sign.  With optional ARG, insert that many dollar signs."
        (texmathp)
        (boundp 'current-input-method) current-input-method
        (string-match TeX-math-input-method-off-regexp current-input-method)
-       ;; inactivate-input-method is obsolete since emacs 24.3.
-       (if (fboundp 'deactivate-input-method)
-           (deactivate-input-method)
-         (with-no-warnings
-           (inactivate-input-method)))))
+       (deactivate-input-method)))
 
 ;;; Simple Commands
 
@@ -6626,14 +6620,9 @@ error."
 ;; `delete-selection-mode', but when it's nil users may want to be able to
 ;; delete active region if `delete-selection-mode' is active, see bug#23177.  We
 ;; can dynamically determine the behavior of `delete-selection' with
-;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.  This
-;; dynamicity has been introduced in Emacs 24.3, for previous versions keep
-;; `TeX-insert-dollar' without this property.
-(if (or (> emacs-major-version 24)
-        (and (= emacs-major-version 24)
-             (>= emacs-minor-version 3)))
-    (put 'TeX-insert-dollar 'delete-selection
-         (lambda () (null TeX-electric-math))))
+;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.
+(put 'TeX-insert-dollar 'delete-selection
+     (lambda () (null TeX-electric-math)))
 
 (defun TeX--list-of-string-p (lst)
   "Return non-nil iff `LST' is a list of strings.
