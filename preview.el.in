@@ -1556,9 +1556,9 @@ display in use.")
 (defun preview-make-image (symbol)
   "Make an image from a preview spec list.
 The first spec that is workable (given the current setting of
-`preview-min-spec') from the given symbol is used here.  The
-icon is cached in the property list of the symbol."
-  (let ((alist (get 'preview-min-alist symbol)))
+`preview-min-spec') from the given SYMBOL is used here.  The
+icon is cached in the property list of the SYMBOL."
+  (let ((alist (get symbol 'preview-min-alist)))
     (cdr (or
           (assq preview-min-spec alist)
           (car (put symbol 'preview-min-alist
