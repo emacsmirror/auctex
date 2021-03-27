@@ -1331,9 +1331,7 @@ e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
        ((and (re-search-backward "[\n{, ]" nil t)
              (string-equal "{" (buffer-substring (match-beginning 0)
                                                  (match-end 0))))
-        (if (fboundp 'buffer-substring-no-properties)
-            (buffer-substring-no-properties (1+ (point)) here)
-        (buffer-substring (1+ (point)) here)))))))
+        (buffer-substring-no-properties (1+ (point)) here))))))
 
 ;;--------------------------------------------------------------------------
 ;; Functions for Displaying or moving to matching \ref or \label command

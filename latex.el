@@ -4006,9 +4006,7 @@ space does not end a sentence, so don't break a line there."
   "Move to the position where the line should be broken."
   (fill-move-to-break-point linebeg)
   ;; Prevent line break between 2-byte char and 1-byte char.
-  (when (and (featurep 'mule)
-             enable-multibyte-characters
-             (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
+  (when (and (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
                       (TeX-looking-at-backward
                        LaTeX-nospace-between-char-regexp 1))
                  (and (not (TeX-looking-at-backward
@@ -5362,7 +5360,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 (defun LaTeX-math-initialize ()
   (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
         (map LaTeX-math-keymap)
-        (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+        (unicode LaTeX-math-menu-unicode))
     (while math
       (let* ((entry (car math))
              (key (nth 0 entry))
@@ -5372,7 +5370,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
              value menu name)
         (setq math (cdr math))
         (if (and prefix
-                 (setq prefix (decode-char 'ucs (nth 3 entry))))
+                 (setq prefix (nth 3 entry)))
             (setq prefix (concat (string prefix) " \\"))
           (setq prefix "\\"))
         (if (listp (cdr entry))
@@ -5550,8 +5548,8 @@ char."
                           (submenu   (nth 2 elt))
                           (unicode   (nth 3 elt))
                           uchar noargp)
-                      (when (and (fboundp 'decode-char) (integerp unicode))
-                        (setq uchar (decode-char 'ucs unicode)))
+                      (when (integerp unicode)
+                        (setq uchar unicode))
                       (when (listp submenu) (setq submenu (nth 1 submenu)))
                       (setq noargp
                             (not (string-match

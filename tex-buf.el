@@ -48,13 +48,8 @@
   :type 'file)
 
 (defcustom TeX-shell-command-option
-  (cond ((memq system-type '(ms-dos emx windows-nt) )
-         (cond ((boundp 'shell-command-option)
-                shell-command-option)
-               ((boundp 'shell-command-switch)
-                shell-command-switch)
-               (t
-                "/c")))
+  (cond ((memq system-type '(ms-dos emx windows-nt))
+         shell-command-switch)
         (t                              ;Unix & EMX (Emacs 19 port to OS/2)
          "-c"))
   "Shell argument indicating that next argument is the command."
@@ -476,8 +471,7 @@ Do you want to select one of these engines? "
              ;; make it nil.
              (setq TeX-check-engine-list nil))))
        (TeX-engine-set engine)
-       (when (and (fboundp 'add-file-local-variable)
-                  (y-or-n-p "Do you want to remember the choice? "))
+       (when (y-or-n-p "Do you want to remember the choice? ")
          (add-file-local-variable 'TeX-engine engine)
          (save-buffer))))))
 

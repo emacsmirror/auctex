@@ -1658,15 +1658,14 @@ The function should take no arguments and return the page numer
 as a string.")
 (make-variable-buffer-local 'TeX-source-correlate-output-page-function)
 
+(define-obsolete-variable-alias 'TeX-source-specials-view-start-server
+  'TeX-source-correlate-start-server)
 (defcustom TeX-source-correlate-start-server 'ask
   "Control if server should be started for inverse search."
   :type '(choice (const :tag "Always" t)
                  (const :tag "Never" nil)
                  (const :tag "Ask" ask))
   :group 'TeX-view)
-(when (fboundp 'defvaralias)
-  (defvaralias 'TeX-source-specials-view-start-server
-    'TeX-source-correlate-start-server))
 
 (defvar TeX-source-correlate-start-server-asked nil
   "Keep track if question about server start search was asked.")
@@ -2702,8 +2701,7 @@ are returned."
 
 (defcustom TeX-auto-private
   (list (expand-file-name TeX-auto-local
-                          (or (and (boundp 'user-emacs-directory)
-                                   (concat user-emacs-directory "auctex/"))
+                          (or (concat user-emacs-directory "auctex/")
                               "~/.emacs.d/auctex/")))
   "List of directories containing automatically generated AUCTeX style files.
 
@@ -2716,8 +2714,7 @@ These correspond to the personal TeX macros."
 
 (defcustom TeX-style-private
   (list (expand-file-name TeX-style-local
-                          (or (and (boundp 'user-emacs-directory)
-                                   (concat user-emacs-directory "auctex/"))
+                          (or (concat user-emacs-directory "auctex/")
                               "~/.emacs.d/auctex/")))
   "List of directories containing hand-generated AUCTeX style files.
 
@@ -3220,15 +3217,8 @@ Or alternatively:
                    (let ((window (get-buffer-window buf-name)))
                      (when window (delete-window window))))
                   (t
-                   (if (fboundp 'completion-in-region)
-                       (completion-in-region begin end
-                                             (all-completions symbol list nil))
-                     (message "Making completion list...")
-                     (let ((list (all-completions symbol list nil)))
-                       (with-output-to-temp-buffer buf-name
-                         (display-completion-list list)))
-                     (set-window-dedicated-p (get-buffer-window buf-name) 'soft)
-                     (message "Making completion list...done")))))
+                   (completion-in-region begin end
+                                         (all-completions symbol list nil)))))
         (funcall (nth 1 entry))))))
 
 (defun TeX--completion-at-point ()
@@ -3782,9 +3772,8 @@ The algorithm is as follows:
            #'TeX--prettify-symbols-compose-p)))
 
   ;; Standard Emacs completion-at-point support
-  (when (boundp 'completion-at-point-functions)
-    (add-hook 'completion-at-point-functions
-              #'TeX--completion-at-point nil t))
+  (add-hook 'completion-at-point-functions
+            #'TeX--completion-at-point nil t)
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
@@ -3811,6 +3800,7 @@ The algorithm is as follows:
 
 ;;; Hilighting
 
+;; FIXME: It's likely that `hilit-patterns-alist' is much obsolete.
 (if (boundp 'hilit-patterns-alist)
     (let ((latex-patterns (cdr-safe (assq 'latex-mode hilit-patterns-alist)))
           (plain-tex-patterns (cdr-safe (assq 'plain-tex-mode
@@ -4192,9 +4182,7 @@ If SKIP is not-nil, don't insert code for SKIP."
   "List of regular expressions guaranteed to match nothing.")
 
 (defvar TeX-token-char
-  (if (featurep 'mule)
-      "\\(?:[a-zA-Z]\\|\\cj\\)"
-    "[a-zA-Z]")
+  "\\(?:[a-zA-Z]\\|\\cj\\)"
   "Regexp matching a character in a TeX macro.
 
 Please use a shy group if you use a grouping construct, because
@@ -5030,7 +5018,7 @@ Brace insertion is only done if point is in a math construct and
       :visible TeX-parse-all-errors]
      ["Error Overview" TeX-error-overview
       :help "Open an overview of errors occured in the last TeX run"
-      :visible (and TeX-parse-all-errors (fboundp 'tabulated-list-mode))]
+      :visible TeX-parse-all-errors]
      ["Quick View" TeX-view
       :help "Start a viewer without prompting"]
      "-"
@@ -5972,7 +5960,7 @@ sign.  With optional ARG, insert that many dollar signs."
   "Toggle off input method when entering math mode."
   (and TeX-math-toggle-off-input-method
        (texmathp)
-       (boundp 'current-input-method) current-input-method
+       current-input-method
        (string-match TeX-math-input-method-off-regexp current-input-method)
        (deactivate-input-method)))
 
@@ -6595,8 +6583,7 @@ error."
        (defvar ,symbol nil
          ,(format "Abbrev table for %s mode." name))
        (define-abbrev-table ',symbol nil)
-       (when (fboundp 'abbrev-table-put)
-         (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table))))))
+       (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table)))))
 
 
 ;;; Special provisions for other modes and libraries

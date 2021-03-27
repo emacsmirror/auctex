@@ -1701,7 +1701,7 @@ to the default background in most other cases."
 ;; Emacs blinks politely when point is on an image (the tested
 ;; unrelated function was introduced at about the time image blinking
 ;; became tolerable).
-(defcustom preview-transparent-border (unless (fboundp 'posn-object-x-y) 1.5)
+(defcustom preview-transparent-border nil
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
@@ -2590,8 +2590,7 @@ Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
-    (when (fboundp 'TeX-overlay-prioritize)
-      (overlay-put ov 'priority (TeX-overlay-prioritize start end)))
+    (overlay-put ov 'priority (TeX-overlay-prioritize start end))
     (overlay-put ov 'preview-map
                  (preview-make-clickable
                   nil nil nil
@@ -2674,8 +2673,7 @@ if any."
       (setcdr filename TeX-active-tempdir)
       (setq filename (list filename)))
     (let ((ov (make-overlay start end nil nil nil)))
-      (when (fboundp 'TeX-overlay-prioritize)
-        (overlay-put ov 'priority (TeX-overlay-prioritize start end)))
+      (overlay-put ov 'priority (TeX-overlay-prioritize start end))
       (overlay-put ov 'preview-map
                    (preview-make-clickable
                     nil nil nil
