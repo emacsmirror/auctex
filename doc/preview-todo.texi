@@ -7,10 +7,10 @@
 
 @item Support other formats than just @LaTeX{}
 
-plain @TeX{} users and Con@TeX{}t users should not have to feel left
-out.  While Con@TeX{}t is not supported yet by released versions of
+plain @TeX{} users and @ConTeXt{} users should not have to feel left
+out.  While @ConTeXt{} is not supported yet by released versions of
 @AUCTeX{}, at least supporting plain would help people, and be a start
-for Con@TeX{}t as well.  There are plain-based formats like MusiX@TeX{}
+for @ConTeXt{} as well.  There are plain-based formats like MusiX@TeX{}
 that could benefit a lot from @previewlatex{}.  The main part of the
 difficulties here is to adapt @file{preview.dtx} to produce stuff not
 requiring @LaTeX{}.
@@ -73,12 +73,12 @@ Various stuff appears several times.
 
 @item Implement rendering pipelines for Emacs
 
-The current @file{gs.el} interface is fundamentally flawed, not only
+The current @previewlatex{} interface is fundamentally flawed, not only
 because of a broken implementation.  A general batchable and
 daemonizable rendering infrastructure that can work on all kinds of
 preview images for embedding into buffers is warranted.  The current
 implementation has a rather adhoc flavor and is not easily extended.
-It will not work outside of AUCTeX, either.
+It will not work outside of @AUCTeX{}, either.
 
 @item Integrate into Ref@TeX{}
 
@@ -93,7 +93,7 @@ Previews on erroneous @LaTeX{} passages might gain a red border or similar.
 
 @item Pop up relevant online documentation for frequent errors
 
-A lot of errors are of the "badly configured" variety.  Perhaps the
+A lot of errors are of the ``badly configured'' variety.  Perhaps the
 relevant info pages should be delivered in addition to the error
 message.
 

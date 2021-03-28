@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2003-2007, 2009, 2018
+@c Copyright (C) 2003-2007, 2009, 2018, 2021
 @c   Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
@@ -15,7 +15,7 @@ further below.
 
 @enumerate
 @item
-Install the prerequisites, i.e. GNU Emacs, MSYS or Cygwin, a @TeX{}
+Install the prerequisites, i.e.@: GNU Emacs, MSYS or Cygwin, a @TeX{}
 system, and Ghostscript.
 
 @item
@@ -28,7 +28,7 @@ Configure @AUCTeX{}:
 For Emacs: Many people like to install @AUCTeX{} into the pseudo file
 system hierarchy set up by the Emacs installation.  Assuming Emacs is
 installed in @file{C:/Program Files/Emacs} and the directory for local
-additions of your @TeX{} system, e.g. MiK@TeX{}, is
+additions of your @TeX{} system, e.g.@: MiK@TeX{}, is
 @file{C:/localtexmf}, you can do this by typing the following statement
 at the shell prompt:
 
@@ -166,11 +166,11 @@ gswin32c -h
 @end example
 on a Windows command line should tell you whether your Ghostscript
 supports the @code{png16m} device needed for @acronym{PNG} support.
-MiKTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
+MiK@TeX{} apparently comes with its own Ghostscript called @file{mgs.exe}.
 
 @item
 @uref{https://www.perl.org/,Perl} is needed for rebuilding the
-documentation if you are working with a copy from @acronym{Git} or have
+documentation if you are working with a copy from Git or have
 touched documentation source files in the @previewlatex{} part.  If the
 line endings of the file @file{preview/latex/preview.dtx} don't
 correspond with what Perl calls @code{\n} when reading text files,
@@ -182,23 +182,23 @@ Now the fun stuff starts.  If you have not yet done so, unpack the
 instructions for unpacking above.
 
 @item
-Ready for takeoff. Start some shell (typically @command{bash}) capable of
+Ready for takeoff.  Start some shell (typically @command{bash}) capable of
 running @command{configure}, change into the installation directory and
 call @command{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
 @item --prefix=@var{drive:/path/to/emacs-hierarchy}
-which tells @file{configure} where to perform the installation. It may
-also make @file{configure} find Emacs automatically; if this doesn't
-happen, try @samp{--with-emacs} as described below.  All automatic
+which tells @command{configure} where to perform the installation.  It may
+also make @command{configure} find Emacs automatically; if this doesn't
+happen, try @option{--with-emacs} as described below.  All automatic
 detection of files and directories restricts itself to directories below
 the @var{prefix} or in the same hierarchy as the program accessing the
 files.  Usually, directories like @file{man}, @file{share} and
 @file{bin} will be situated right under @var{prefix}.
 
 This option also affects the defaults for placing the Texinfo
-documentation files (see also @samp{--infodir} below) and automatically
+documentation files (see also @option{--infodir} below) and automatically
 generated style hooks.
 
 If you have a central directory hierarchy (not untypical with Cygwin)
@@ -249,7 +249,7 @@ display.
 
 @item --with-texmf-dir=@var{drive:/dir}
 This will specify the directory where your @TeX{} installation sits.  If
-your @TeX{} installation does not conform to the TDS (@TeX{} directory
+your @TeX{} installation does not conform to the @acronym{TDS} (@TeX{} directory
 standard), you may need to specify more options to get everything in
 place.
 @end table
@@ -262,13 +262,14 @@ the `Configure' section in the @file{INSTALL} file.
 @ref{Configure}.
 @end ifclear
 
-Calling
-@file{./configure --help=recursive}
-will tell about other options, but those are almost never required.
+@c FIXME: It seems this no longer holds.
+@c Calling
+@c @file{./configure --help=recursive}
+@c will tell about other options, but those are almost never required.
 
 Some executables might not be found in your path.  That is not a good
 idea, but you can get around by specifying environment variables to
-@file{configure}:
+@command{configure}:
 @example
 GS="@var{drive:/path/to/gswin32c.exe}" ./configure @dots{}
 @end example
@@ -276,7 +277,7 @@ should work for this purpose.  @file{gswin32c.exe} is the usual name for
 the required @emph{command line} executable under Windows; in contrast,
 @file{gswin32.exe} is likely to fail.
 
-As an alternative to specifying variables for the @file{configure} call
+As an alternative to specifying variables for the @command{configure} call
 you can add directories containing the required executables to the
 @env{PATH} variable of your Windows system.  This is especially a good
 idea if Emacs has trouble finding the respective programs later during
@@ -294,10 +295,10 @@ working @file{site-start.d} directory or similar setup, since then the
 startup files @file{auctex.el} and @file{preview-latex.el} will have
 been placed there.  If this has not been done, you should be able to
 load the startup files manually with
-@example
+@lisp
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
-@end example
+@end lisp
 in either a site-wide @file{site-start.el} or your personal startup file
 (usually accessible as @file{~/.emacs} or @file{~/.emacs.d/init.el} from
 within Emacs).
@@ -305,23 +306,23 @@ within Emacs).
 @cindex @file{tex-mik.el}
 The default configuration of @AUCTeX{} is probably not the best fit for
 Windows systems with MiK@TeX{}.  You might want to add
-@example
+@lisp
 (require 'tex-mik)
-@end example
+@end lisp
 after loading @file{auctex.el} and @file{preview-latex.el} in order to
 get more appropriate values for some customization options.
 
 You can always use
 
 @example
-@kbd{M-x customize-group RET AUCTeX RET}
+@kbd{M-x customize-group @key{RET} AUCTeX @key{RET}}
 @end example
 
 in order to customize more stuff, or use the @samp{Customize} menu.
 
 @item
 Load @file{circ.tex} into Emacs and see if you get the @samp{Command}
-menu. Try using it to @LaTeX{} the file.
+menu.  Try using it to @LaTeX{} the file.
 
 @item
 Check whether the @samp{Preview} menu is available in this file.  Use it
@@ -332,7 +333,7 @@ you can either add @acronym{PNG} support to your Emacs installation or
 choose another image format to be used by @previewlatex{}.
 
 Adding support for an image format usually involves the installation of
-a library, e.g. from @uref{http://gnuwin32.sf.net/}.  If you got your
+a library, e.g.@: from @uref{http://gnuwin32.sf.net/}.  If you got your
 Emacs from @uref{https://www.gnu.org/} you might want to check its
 @uref{https://ftp.gnu.org/gnu/emacs/windows/README,README file} for
 details.
@@ -345,9 +346,9 @@ support is the only problem with your Emacs installation.
 
 Try adding the line
 
-@example
+@lisp
 (setq preview-image-type 'pnm)
-@end example
+@end lisp
 
 to your init file for a quick test.  You should remove the line after
 the test again, because @acronym{PNM} files take away @strong{vast}
