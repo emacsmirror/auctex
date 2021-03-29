@@ -2488,11 +2488,7 @@ Get `major-mode' from master file and enable it."
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
 Return nil otherwise."
-  (save-excursion
-    ;; XXX: Checking -*- line necessary as well?
-    (goto-char (point-max))
-    (search-backward "\n\^L" (max (- (point-max) 3000) (point-min)) 'move)
-    (re-search-forward "^%+ *TeX-master:" nil t)))
+  (assq 'TeX-master file-local-variables-alist))
 
 ;;; Style Paths
 
