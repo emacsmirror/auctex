@@ -22,8 +22,10 @@
 ;;; Code:
 
 (require 'ert)
-(let ((japanese-TeX-error-messages nil))
-  (require 'tex-jp))
+(let (_)
+  (defvar japanese-TeX-error-messages)
+  (let ((japanese-TeX-error-messages nil))
+    (require 'tex-jp)))
 (require 'preview)
 
 (AUCTeX-set-ert-path
