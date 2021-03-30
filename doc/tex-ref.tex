@@ -194,6 +194,8 @@ are preserved on all copies.
 \def\<#1>{$\langle${\rm #1}$\rangle$}
 
 \def\kbd#1{{\tt#1}\null}        %\null so not an abbrev even if period follows
+\def\var#1{{\tt #1}}
+\def\file#1{{\tt #1}}
 
 \def\beginexample{\par\leavevmode\begingroup
   \obeylines\obeyspaces\parskip0pt\tt}
@@ -341,10 +343,10 @@ indicated in the mode line.
 \section{Variables}
 
 All math mode commands are under the prefix key specified by
-LaTeX-math-abbrev-prefix, default is "`".
+\var{LaTeX-math-abbrev-prefix}, default is ``\kbd{`}''.
 
 You can define your own math mode commands by setting the variable
-LaTeX-math-list before loading LaTeX-math-mode.
+\var{LaTeX-math-list} before enabling \var{LaTeX-math-mode}.
 
 \section{Greek Letters}
 
@@ -450,7 +452,7 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \previewlatex\ is part of AUC\TeX.  If it is active, you should see an
 entry ``Preview'' in the menu bar when editing \LaTeX{} files.  If you
 have a ``LaTeX'', but no ``Preview'' menu, add the following to your
-{\tt .emacs} file:
+init file (usually \file{\string~/.emacs.d/init.el}):
 \beginexample
 (load "preview-latex.el" nil t t)
 \endexample
@@ -479,29 +481,29 @@ area up to the next preview.
 \key{Copy region as MML}{C-c C-p C-w}
 
 The last keysequence will copy a region with previews into the kill
-buffer in a form fit for sending in Emacs' message-mode.
+ring in a form fit for sending in Emacs' {\tt message-mode}.
 
 \section{Customization within Emacs}
 
 You can use \kbd{M-x customize-variable RET} or the ``Preview\slash
 Customize'' menu for customization.  Worthwhile settings:
 
-\halign to \hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\kbd{#}\tabskip0pt\cr
+\halign to \hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\var{#}\tabskip0pt\cr
 \noalign{\medskip If you have dvipng available:}
 Set to \kbd{dvipng}&preview-image-type\cr
 \noalign{\medskip \vbox{Keep counter values when regenerating
   single previews:}}
 Set to \kbd{t}&preview-preserve-counters\cr
 \noalign{\medskip \vbox{Cache/Don't cache preamble without query
-(preamble caching is done using {\tt mylatex.ltx} and might not always
+(preamble caching is done using \file{mylatex.ltx} and might not always
 work.  Use the appropriate key sequences for overriding the following
 setting):}}
 Set to \kbd{t}/\kbd{nil}&preview-auto-cache-preamble\cr}
 
 \section{Customization from \LaTeX{}}
-Customization is done in the document preamble (you need to load {\tt
-preview.sty} explicitly) or in {\tt prauctex.cfg} (which should load
-the system {prauctex.cfg} first).  Commands:
+Customization is done in the document preamble (you need to load
+\file{preview.sty} explicitly) or in \file{prauctex.cfg} (which should
+load the system \file{prauctex.cfg} first).  Commands:
 
 \halign to \hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\kbd{#}\tabskip0pt\cr
 Preview macro&\string\PreviewMacro[\{\<args>\}]\{\<macro>\}\cr
@@ -523,7 +525,7 @@ Skip next token&-\cr
 Transformation&\#\{\<macro args>\}\{\<replacement>\}\cr
 }
 
-More options and explanations can be found in {\tt preview.dvi} or the
+More options and explanations can be found in \file{preview.pdf} or the
 Texinfo manual.
 
 \vskip 5ex plus 6ex minus 1ex
@@ -549,8 +551,8 @@ Texinfo manual.
 AUC\TeX\ supports outline mode by defining section, subsection,
 etc. as heading levels. You can use \kbd{M-x outline-minor-mode RET}
 to toggle outline minor mode. All outline minor mode commands are
-under the prefix key specified by outline-minor-mode-prefix, default
-is ``C-c @''.
+under the prefix key specified by \var{outline-minor-mode-prefix}, default
+is \kbd{C-c @}.
 
 \key{Hide all of buffer except headings}{C-c @ C-t}
 \key{Show all text in buffer}{C-c @ C-a}
@@ -574,8 +576,8 @@ is ``C-c @''.
 
 \section{Activation}
 
-RefTeX is part of [X]Emacs.  To activate and make it interact with
-AUCTeX, insert the following lines in .emacs.
+RefTeX is part of Emacs.  To activate and make it interact with
+AUCTeX, insert the following lines in \file{init.el}.
 \vskip-3mm
 \beginexample
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -616,7 +618,7 @@ RefTeX's special buffers have many active keys.  The common ones are:
 
 \section{Multifile actions}
 Since RefTeX scans the entire (multifile) document, it can provide
-commands that act on all files of a document.  Check the {\tt
+commands that act on all files of a document.  Check the \kbd{
 Ref->Global Actions} menu for these commands.
 
 \section{Variables}
@@ -640,12 +642,12 @@ consistent.
 
 \csname title\endcsname{RefTeX}
 
-\section{Activation in .emacs}
+\section{Activation in init.el}
 
 \vskip-4mm
 \beginexample
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-auctex t)
+(setq reftex-plug-into-AUCTeX t)
 \endexample
 
 \section{Table of Contents}
