@@ -772,13 +772,13 @@ specified.
 Setting this variable directly does not take effect;
 restart Emacs."
   :group 'font-latex-keywords
-  :type `(repeat (list (string :tag "Name")
+  :type '(repeat (list (string :tag "Name")
                        (choice (repeat :tag "Keywords" (string :tag "Keyword"))
                                (repeat
                                 :tag "Keywords with specs"
                                 (group (string :tag "Keyword")
                                        (string :tag "Format specifier"))))
-                       ,'(choice (face :tag "Face name")
+                       (choice (face :tag "Face name")
                                  (custom-face-edit :tag "Face attributes"))
                        (choice :tag "Type"
                                ;; Maps to
@@ -1225,9 +1225,8 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-slide-title-face
-  (let* ((scale 1.2))
-    `((t (:inherit (variable-pitch font-lock-type-face)
-                   :weight bold :height ,scale))))
+  '((t (:inherit (variable-pitch font-lock-type-face)
+                   :weight bold :height 1.2)))
   "Face for slide titles."
   :group 'font-latex-highlighting-faces)
 
