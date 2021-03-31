@@ -1733,7 +1733,7 @@ This is necessary since index entries may contain commands and stuff.")
 (defun LaTeX-split-bibs (match)
   "Extract bibliography resources from MATCH.
 Split the string at commas and remove Biber file extensions."
-  (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
+  (let ((bibs (split-string (TeX-match-buffer match) " *, *")))
     (dolist (bib bibs)
       (LaTeX-add-bibliographies (replace-regexp-in-string
                                  (concat "\\(?:\\."
@@ -1841,7 +1841,7 @@ The value is actually the tail of the list of options given to PACKAGE."
   ;; Cleanup BibTeX/Biber files
   (setq LaTeX-auto-bibliography
         (apply #'append (mapcar (lambda (arg)
-                                  (TeX-split-string "," arg))
+                                  (split-string arg ","))
                                 LaTeX-auto-bibliography)))
 
   ;; Reset class and packages options for the current buffer
@@ -1865,8 +1865,8 @@ The value is actually the tail of the list of options given to PACKAGE."
         ;; Treat documentclass/documentstyle specially.
         (if (or (string-equal "package" class)
                 (string-equal "Package" class))
-            (dolist (elt (TeX-split-string
-                          "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
+            (dolist (elt (split-string
+                          style "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+"))
               ;; Append style to the style list.
               (add-to-list 'TeX-auto-file elt t)
               ;; Append to `LaTeX-provided-package-options' the name of the
@@ -6856,7 +6856,7 @@ function would return non-nil and `(match-string 1)' would return
          (point-max) t)
         (setq optstr (TeX-match-buffer 1)
               docstyle (TeX-match-buffer 2)
-              optlist (TeX-split-string "," optstr))
+              optlist (split-string optstr ","))
       (if (search-forward-regexp
            "\\\\documentstyle{\\([^}]*\\)}"
            (point-max) t)

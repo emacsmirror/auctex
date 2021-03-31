@@ -2570,36 +2570,19 @@ be relative to that."
   :group 'TeX-file
   :type 'string)
 
+;; Compatibility alias
 (defun TeX-split-string (regexp string)
-  "Return a list of strings.
-Given REGEXP the STRING is split into sections which in string was
-separated by REGEXP.
-
-Examples:
-
-      (TeX-split-string \"\:\" \"abc:def:ghi\")
-          -> (\"abc\" \"def\" \"ghi\")
-
-      (TeX-split-string \" +\" \"dvips  -Plw -p3 -c4 testfile.dvi\")
-
-          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
-
-If REGEXP is nil, or \"\", an error will occur."
-
-  (let ((start 0) result match)
-    (while (setq match (string-match regexp string start))
-      (push (substring string start match) result)
-      (setq start (match-end 0)))
-    (push (substring string start) result)
-    (nreverse result)))
+  (split-string string regexp))
+(make-obsolete 'TeX-split-string
+               "use (split-string STRING REGEXP) instead." "AUCTeX 13.0")
 
 (defun TeX-parse-path (env)
   "Return a list if private TeX directories found in environment variable ENV."
   (let* ((value (getenv env))
          (entries (and value
-                       (TeX-split-string
-                        (if (string-match ";" value) ";" ":")
-                        value)))
+                       (split-string
+                        value
+                        (if (string-match ";" value) ";" ":"))))
          (global (append '("/" "\\")
                          (mapcar #'file-name-as-directory
                                  TeX-macro-global)))
@@ -4725,14 +4708,11 @@ Return nil if ELT is not a member of LIST."
       (when (member elt list)
         (throw 'found t)))))
 
+;; Compatibility alias
 (defun TeX-assoc (key list)
-  "Return non-nil if KEY is `equal' to the car of an element of LIST.
-Like assoc, except case insensitive."
-  (let ((case-fold-search t))
-    (TeX-member key list
-                (lambda (a b)
-                  (string-match (concat "^" (regexp-quote a) "$")
-                                (car b))))))
+  (assoc-string key list t))
+(make-obsolete 'TeX-assoc
+               "use (assoc-string KEY LIST t) instead." "AUCTeX 13.0")
 
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.

@@ -115,7 +115,7 @@
                   ;; take the car of `LaTeX-provided-class-options'.
                   (cdr (car LaTeX-provided-class-options))
                   (cdr (assoc "babel" LaTeX-provided-package-options))))
-      (setq elt (TeX-split-string "=" elt))
+      (setq elt (split-string elt "="))
       (if (equal (car elt) "main")
           ;; Starting from version 3.9 of `babel' package, languages can be set
           ;; with the following syntax:
@@ -126,7 +126,7 @@
           (setq main-language (car (cdr elt)))
         ;; Get rid of the modifiers (`medieval' and `notilde' in the above
         ;; example).
-        (setq elt (car (TeX-split-string "\\." (car elt))))
+        (setq elt (car (split-string (car elt) "\\.")))
         (if (member elt LaTeX-babel-language-list)
             ;; Append element to `active-languages' to respect loading order.
             ;; `babel' package uses as default language the last loaded one,
