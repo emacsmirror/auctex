@@ -36,9 +36,9 @@
 ;; `toolbarx-install-toolbar').
 
 ;; * Supported properties:
-;; - All editors: `:image', `:command', `:help', `:enable',
-;;                `:append-command' and `:prepend-command';
-;; - Emacs only: `:visible' and `:button';
+;; - `:insert', `:image', `:command', `:help', `:enable',
+;;   `:append-command', `:prepend-command',
+;;   `:visible' and `:button';
 ;; For the precise value-type for each property, see documentation of
 ;; the function `toolbarx-install-toolbar'.
 ;; (ps: properties that are particular to an editor are just ignored
@@ -50,6 +50,10 @@
 ;; roolbar is refresh (a call of `toolbarx-refresh'.)
 ;; (ps: this is valid only for properties that *not* have \`form\' as
 ;; value type.)
+
+;; * On `refresh time' (a call `toolbarx-refresh', necessary when the
+;; toolbar should change), the `:insert' property (if present) is
+;; evaluated to decide if button will be displayed.
 
 ;; Properties can be distributed to several buttons, using \`groups\'.
 ;; Example: (foo (bar baz :enable (mytest)) :help "please")
@@ -254,10 +258,6 @@ command, COMM is returned."
                     `((call-interactively (function ,comm)))
                   (list comm)))
               (when app (list app))))))
-
-;; in Emacs, menus are made of keymaps (vectors are possible, but editors
-;; handle `menu titles' differently) meanwhile in XEmacs, menus are lists of
-;; vectors
 
 (defun toolbarx-emacs-mount-popup-menu
     (strings var type &optional title save)
@@ -1274,13 +1274,13 @@ properties are obtained!) are:
  :enable -- a form, evaluated constantly by both editors to
    determine if a button is active (enabled) or not.
 
- :visible -- in Emacs, a form that is evaluated constantly to
+ :visible -- a form that is evaluated constantly to
    determine if a button is visible.
 
- :button -- in Emacs, a cons cell (TYPE .  SELECTED) where the
+ :button -- a cons cell (TYPE .  SELECTED) where the
    TYPE should be `:toggle' or `:radio' and the cdr should be a
    form.  SELECTED is evaluated to determine when the button is
-   selected..
+   selected.
 
  :insert -- a form that is evaluated every time that the toolbar
    is refresh (a call of `toolbarx-refresh') to determine if the
@@ -1409,7 +1409,7 @@ supported properties and their basic type are:
    to determine if the dropdown button is active (enabled) or
    not.
 
- :dropdown-visible -- a form; in Emacs, it is evaluated
+ :dropdown-visible -- a form; it is evaluated
    constantly to determine if the dropdown button is visible.
 
 Also, if the symbol `dropdown' is associted in MEANING-ALIST
@@ -1465,7 +1465,6 @@ line of buttons.  The only property supported for this button is
                               (not (eq 'special
                                        (get major-mode 'mode-class)))))
 
-    ;; Emacs only
     (write-file :image "saveas"
                 :command write-file
                 :enable (not
@@ -1499,7 +1498,6 @@ line of buttons.  The only property supported for this button is
            :command clipboard-yank
            :visible (not (eq 'special (get major-mode 'mode-class))))
 
-    ;; Emacs only
     (search-forward :command nonincremental-search-forward
                     :help "Search forward for a string"
                     :image "search")
@@ -1513,23 +1511,19 @@ line of buttons.  The only property supported for this button is
                   :command print-buffer
                   :help "Print current buffer with page headings")
 
-    ;; Emacs only
     (customize :image "preferences"
                :command customize
                :help "Edit preferences (customize)")
 
-    ;; Emacs only
     (help :image "help"
           :command (lambda () (interactive) (popup-menu menu-bar-help-menu))
           :help "Pop up the Help menu")
 
-    ;; Emacs only
     (kill-buffer :command kill-this-buffer
                  :enable (kill-this-buffer-enabled-p)
                  :help "Discard current buffer"
                  :image "close")
 
-    ;; Emacs only
     (exit-emacs :image "exit"
                 :command save-buffers-kill-emacs
                 :help "Offer to save unsaved buffers, then exit Emacs")
@@ -1547,7 +1541,7 @@ The following buttons are available:
   `open-file', `dired', `save-buffer',
   `undo', `cut', `copy', `paste', `search-replace', `print-buffer',
   `spell-buffer', `info'.
-  `new-file' (Emacs 22+) `write-file', `search-forward',
+  `new-file', `write-file', `search-forward',
   `customize', `help', `kill-buffer', `exit-emacs'.
 
 To reproduce the default toolbar with use as BUTTON
