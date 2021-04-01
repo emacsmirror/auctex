@@ -1090,9 +1090,7 @@ have changed."
 ;;; Faces
 
 (defface font-latex-bold-face
-  (let ((font (cond ((assq :inherit custom-face-attributes) '(:inherit bold))
-                    ((assq :weight custom-face-attributes) '(:weight bold))
-                    (t '(:bold t)))))
+  (let ((font '(:inherit bold)))
     `((((class grayscale) (background light))
        (:foreground "DimGray" ,@font))
       (((class grayscale) (background dark))
@@ -1106,9 +1104,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-italic-face
-  (let ((font (cond ((assq :inherit custom-face-attributes) '(:inherit italic))
-                    ((assq :slant custom-face-attributes) '(:slant italic))
-                    (t '(:italic t)))))
+  (let ((font '(:inherit italic)))
     `((((class grayscale) (background light))
        (:foreground "DimGray" ,@font))
       (((class grayscale) (background dark))
@@ -1122,9 +1118,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-math-face
-  (let ((font (cond ((assq :inherit custom-face-attributes)
-                     '(:inherit underline))
-                    (t '(:underline t)))))
+  (let ((font '(:inherit underline)))
     `((((class grayscale) (background light))
        (:foreground "DimGray" ,@font))
       (((class grayscale) (background dark))
@@ -1148,9 +1142,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-string-face
-  (let ((font (cond ((assq :inherit custom-face-attributes) '(:inherit italic))
-                    ((assq :slant custom-face-attributes) '(:slant italic))
-                    (t '(:italic t)))))
+  (let ((font '(:inherit italic)))
     `((((type tty) (class color))
        (:foreground "green"))
       (((class grayscale) (background light))
@@ -1166,9 +1158,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-warning-face
-  (let ((font (cond ((assq :inherit custom-face-attributes) '(:inherit bold))
-                    ((assq :weight custom-face-attributes) '(:weight bold))
-                    (t '(:bold t)))))
+  (let ((font '(:inherit bold)))
     `((((class grayscale)(background light))
        (:foreground "DimGray" ,@font))
       (((class grayscale)(background dark))
@@ -1182,10 +1172,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-verbatim-face
-  (let ((font (if (and (assq :inherit custom-face-attributes)
-                       (facep 'fixed-pitch))
-                  '(:inherit fixed-pitch)
-                '(:family "courier"))))
+  (let ((font '(:inherit fixed-pitch)))
     `((((class grayscale) (background light))
        (:foreground "DimGray" ,@font))
       (((class grayscale) (background dark))
@@ -1209,9 +1196,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-script-char-face
-  (let ((font (cond ((assq :inherit custom-face-attributes)
-                     '(:inherit underline))
-                    (t '(:underline t)))))
+  (let ((font '(:inherit underline)))
     `((((class grayscale) (background light))
        (:foreground "DarkGray" ,@font))
       (((class grayscale) (background dark))
