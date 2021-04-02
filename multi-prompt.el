@@ -99,7 +99,7 @@ are the arguments to `completing-read'.  See that."
   (interactive)
   (if (bobp)
       (throw 'multi-prompt-next 'back)
-    (call-interactively 'backward-delete-char)))
+    (call-interactively #'backward-delete-char)))
 
 (defun multi-prompt-next ()
   (interactive)
@@ -114,7 +114,7 @@ are the arguments to `completing-read'.  See that."
          
 (defun multi-prompt-next-must-match ()
   (interactive)
-  (when  (call-interactively 'minibuffer-complete)
+  (when  (call-interactively #'minibuffer-complete)
     (let ((content (buffer-substring-no-properties (point-min) (point-max))))
       (when (or ;; (not require-match)
                 (assoc content minibuffer-completion-table))

@@ -1,5 +1,4 @@
-;;; bib-cite.el --- test  -*- lexical-binding: t; -*-
-;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
+;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2021 Free Software Foundation, Inc.
 
@@ -594,10 +593,6 @@
   (require 'cl-lib))
 
 ;; Silence the compiler:
-(declare-function dired-replace-in-string "ext:dired"
-                  (regexp newtext string))
-(declare-function dired-split "ext:dired-aux"
-                  (pat str &optional limit))
 (declare-function reftex-view-crossref "ext:reftex-dcr"
                   (&optional arg auto-how fail-quietly))
 
@@ -627,12 +622,6 @@ You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 (defcustom bib-highlight-mouse-t t
   "Call bib-highlight-mouse from `LaTeX-mode-hook' to add green highlight."
   :type 'boolean)
-
-(defcustom bib-label-help-echo-format "button2 finds %s, button3 displays %s"
-  "Format string for info if the mouse is over LaTeX commands.
-If nil, do not display info."
-  :type '(radio (const :tag "Don't display info" nil)
-                string))
 
 (defcustom bib-bibtex-env-variable "BIBINPUTS"
   "Environment variable setting the path where BiBTeX input files are found.
@@ -673,7 +662,7 @@ setting the elisp variable bib-bibtex-env-variable)"
 
 (defcustom bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -o "
   "Variable for the etags command and its output option.
-In unix, this is usually \"etags -r '/.*\\\(eq\|page\|[fvF]\)ref.*/' -o \"
+In unix, this is usually \"etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -o \"
 \(we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
 In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
 If so, set it this variable."
@@ -681,7 +670,7 @@ If so, set it this variable."
 
 (defcustom bib-etags-append-command "etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -a -o "
   "Variable for the etags command and its append and output option.
-In unix, this is usually \"etags -r '/.*\\\(eq\|page\|[fvF]\)ref.*/' -a -o \"
+In unix, this is usually \"etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -a -o \"
 In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable."
   :type 'string)
 
@@ -724,11 +713,6 @@ A opening curly bracket is appended to the regexp.")
 
 (defvar bib-highlight-mouse-keymap (make-sparse-keymap)
   "Keymap for mouse bindings in highlighted texts in bicite.")
-
-(defvar bib-ext-list nil
-  "Xemacs buffer-local list of bib-cite extents.")
-(make-variable-buffer-local 'bib-ext-list)
-(put 'bib-ext-list 'permanent-local t)
 
 (defvar bib-cite-minor-mode-menu nil)
 
@@ -884,7 +868,7 @@ runs `bib-find', and [mouse-3] runs `bib-display'."
 If text under cursor is a \\cite command, then display its BibTeX info from
 \\bibliography input file.
    Example with cursor located over cite command or arguments:
-     \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+     \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
         ^Display-all-citations          ^Display-this-citation
 
 If text under cursor is a \\ref command, then display environment associated
@@ -917,7 +901,7 @@ A TAGS file is created and used for multi-file documents under auctex."
 
 For multi-entry cite commands, the cursor should be on the actual cite key
 desired (otherwise a random entry will be selected).
-e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
                         ^Display-this-citation
 
 If text under cursor is a \\ref command, then point is moved to its matching
@@ -948,7 +932,7 @@ A TAGS file is created and used for multi-file documents under auctex."
   "Bib-cite intenal variable to hold last \\ref or \\eqref find.")
 
 (defun bib-find-next (&optional prev-p)
-  "Find next occurrence of a \ref or \eqref.
+  "Find next occurrence of a \\ref or \\eqref.
 This is made necessary because we now use a regexp to find tags in multi-file
 documents, and the Emacs command `find-tag' doesn't allow to interactively
 find the next occurrence of a regexp."
@@ -1033,7 +1017,7 @@ by using bib-apropos sequentially."
   "Bib-cite internal variable.")
 
 (defun bib-make-bibliography ()
-  "Extract citations used in the current document from \bibliography{} file(s).
+  "Extract citations used in the current document from \\bibliography{} file(s).
 Put them into a buffer named after the current buffer, with extension .bib.
 
 In an AUCTeX multi-file document, parsing must be on and the citation keys
@@ -1220,12 +1204,11 @@ See variables bib-etags-command and bib-etags-filename"
   ;; *all of code was here*
   ;;      )
   (save-excursion
-    (let ((s)(e);; (extent) (local-extent-list bib-ext-list)
+    (let ((s)(e)
           (inhibit-read-only t)
           (modified (buffer-modified-p))) ;put-text-property changing this?
       ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
       ;;   properties first.
-      (setq bib-ext-list nil)           ;Reconstructed below...
       ;; Remove properties for regular emacs
       ;; FIXME This detroys all mouse-faces and local-maps!
       ;; FIXME Hope no other package is using them in this buffer!
@@ -1269,32 +1252,13 @@ See variables bib-etags-command and bib-etags-filename"
                                 '(mouse-face local-map)))
       (set-buffer-modified-p modified))))
 
-(defun bib-label-help-echo (object)
-  (if bib-label-help-echo-format
-      (bib-label-help object bib-label-help-echo-format)))
-
-;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
-;;             Patched by Bruce Ravel <bruce.ravel@nist.gov>
-(defun bib-label-help (object &optional format)
-  (or format (setq format "Use mouse button 2 to find the %s.
-Use mouse button 3 to display the %s."))
-  (save-match-data
-    (let* ((string (extent-string object))
-           (type (cond ((string-match "^\\\\[A-Za-z]*cite[A-Za-z]*" string) "citation")
-                       ((string-match
-                         (concat "^" bib-ref-regexp) string)
-                        "\\label{}")
-                       ((string-match "^\\\\label" string) "\\ref{}")
-                       (t "this (unknown) reference"))))
-      (format format type type))))
-
 ;;----------------------------------------------------------------------------
 ;; Routines to display or edit a citation's bibliography
 
 (defun bib-display-citation ()
   "Do the displaying of cite info.  Return t if found cite key, nil otherwise.
 Example with cursor located over cite command or arguments:
-\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+\\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
    ^Display-all-citations          ^Display-this-citation"
   (save-excursion
     (let* ((the-keys-obarray (bib-get-citekeys-obarray)) ;1st in case of error
@@ -1325,10 +1289,10 @@ Example with cursor located over cite command or arguments:
 (defun bib-edit-citation ()
   "Do the edit of cite info.  Return t if found cite key, nil otherwise.
 Find and and put edit point in bib file associated with a BibTeX citation
-under cursor from \bibliography input file.
+under cursor from \\bibliography input file.
 In a multi-entry cite command, the cursor should be on the actual cite key
 desired (otherwise a random entry will be selected).
-e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
+e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
                         ^Display-this-citation"
   (let ((the-keys-obarray (bib-get-citekeys-obarray)) ;1st in case of error
         (bib-buffer (bib-get-bibliography t))
@@ -1465,7 +1429,11 @@ If within a multi-file document (in auctex only)
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
-          (show-entry)))))
+          ;; COMPATIBILITY for emacs<25.
+          (if (fboundp 'outline-show-entry)
+              (outline-show-entry)
+            (with-no-warnings
+              (show-entry)))))))
 
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))
@@ -1792,8 +1760,8 @@ Return the-warnings as text."
                 (let* ((the-key (car (car string-alist)))
                        (the-string (cdr (car string-alist)))
                        (slashed-string  ; "J. of Geo.\" -> "J. of Geo.\\\\"
-                        (dired-replace-in-string
-                         "\\\\" "\\\\" the-string)))
+                        (replace-regexp-in-string
+                         "\\\\" "\\\\" the-string t t)))
 
                   (while (re-search-forward
                           (concat "\\(^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\)"
@@ -2127,9 +2095,9 @@ Makes sure TAGS file exists, etc."
 
 If using AUCTeX, and either TeX-parse-self is set or C-c C-n is used to
 parse the document, then the entire multifile document will be searched
-for \bibliography commands.
+for \\bibliography commands.
 
-If this fails, the current buffer is searched for the first \bibliography
+If this fails, the current buffer is searched for the first \\bibliography
 command.
 
 If include-filenames-f is true, include as a special header the filename
@@ -2341,50 +2309,6 @@ If FIRST-FILE is t, stop after first file is found."
 ;;         (setq the-list (cdr the-list))))
 ;;     filespec))
 
-(or (fboundp 'dired-replace-in-string)
-    ;; This code is part of GNU emacs
-    (defun dired-replace-in-string (regexp newtext string)
-      ;; Replace REGEXP with NEWTEXT everywhere in STRING and return result.
-      ;; NEWTEXT is taken literally---no \\DIGIT escapes will be recognized.
-      (let ((result "") (start 0) mb me)
-        (while (string-match regexp string start)
-          (setq mb (match-beginning 0)
-                me (match-end 0)
-                result (concat result (substring string start mb) newtext)
-                start me))
-        (concat result (substring string start)))))
-
-
-;; Could use fset here to equal TeX-split-string to dired-split if only
-;; dired-split is defined.  That would eliminate a check in psg-list-env.
-(and (not (fboundp 'TeX-split-string))
-     (not (fboundp 'dired-split))
-     ;; This code is part of AUCTeX
-     (defun TeX-split-string (char string)
-       "Returns a list of strings. given REGEXP the STRING is split into
-sections which in string was seperated by REGEXP.
-
-Examples:
-
-      (TeX-split-string \"\:\" \"abc:def:ghi\")
-          -> (\"abc\" \"def\" \"ghi\")
-
-      (TeX-split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
-
-          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
-
-If CHAR is nil, or \"\", an error will occur."
-
-       (let ((regexp char)
-             (start 0)
-             (result '()))
-         (while (string-match regexp string start)
-           (let ((match (string-match regexp string start)))
-             (setq result (cons (substring string start match) result))
-             (setq start (match-end 0))))
-         (setq result (cons (substring string start nil) result))
-         (nreverse result))))
-
 (defun bib-cite-file-directory-p (file)
   "Like default `file-directory-p' but allow FILE to end in // for ms-windows."
   (save-match-data
@@ -2401,15 +2325,12 @@ bib-dos-or-os2-variable affects:
   path separator used (: or ;)
   whether backslashes are converted to slashes"
   (if (not (getenv env))
-      nil                               ;Because dired-replace-in-string fails
+      nil                               ;Because replace-regexp-in-string fails
     (let* ((value (if bib-dos-or-os2-variable
-                      (dired-replace-in-string "\\\\" "/" (getenv env))
+                      (replace-regexp-in-string "\\\\" "/" (getenv env) t t)
                     (getenv env)))
            (sep-char (or (and bib-dos-or-os2-variable ";") ":"))
-           (entries (and value
-                         (or (and (fboundp 'TeX-split-string)
-                                  (TeX-split-string sep-char value))
-                             (dired-split sep-char value)))))
+           (entries (split-string value sep-char)))
       (cl-loop for x in entries if (bib-cite-file-directory-p x) collect x))))
 
 (provide 'bib-cite)

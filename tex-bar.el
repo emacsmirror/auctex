@@ -83,7 +83,7 @@ If there is no help, the empty string is returned."
 
 (defcustom TeX-bar-TeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-             [separator nil] tex next-error view bibtex spell)
+             separator tex next-error view bibtex spell)
   "List of buttons available in `tex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -107,7 +107,7 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
                     (const paste)
                     (const search-forward)
                     (const print-buffer)
-                    (const [separator nil])
+                    (const separator)
                     (const tex)
                     (const next-error)
                     (const view)
@@ -224,7 +224,7 @@ format of the argument MEANING-ALIST in the mentioned function."
 
 (defcustom TeX-bar-LaTeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
-             [separator nil] latex next-error view bibtex spell)
+             separator latex next-error view bibtex spell)
   "List of buttons available in `latex-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
@@ -248,7 +248,7 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
                     (const paste)
                     (const search-forward)
                     (const print-buffer)
-                    (const [separator nil])
+                    (const separator)
                     (const latex)
                     (const next-error)
                     (const view)

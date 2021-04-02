@@ -38,10 +38,11 @@
 (eval-when-compile
   (require 'cl-lib))
 (require 'texmathp)
+;; Require dbus at compile time to get macro definition of
+;; `dbus-ignore-errors'.
+(eval-when-compile (require 'dbus))
 
 ;; Silence the compiler for functions:
-(declare-function dbus-ignore-errors "ext:dbus"
-                  (&rest body))
 (declare-function dbus-get-unique-name "ext:dbusbind.c"
                   (bus))
 (declare-function dbus-ping "ext:dbus"
@@ -56,9 +57,6 @@
                   nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
-;; spell-buffer was removed in 2008 in favor of ispell
-(declare-function spell-buffer "ext:text-mode"
-                  t)
 
 ;; Silence the compiler for variables:
 ;; tex.el: Variables defined somewhere in this file:
@@ -101,7 +99,7 @@
 ;; Others:
 (defvar tex--prettify-symbols-alist)    ; tex-mode.el
 (defvar Info-file-list-for-emacs)       ; info.el
-(defvar dbus-debug)                     ; dbus.el
+(defvar ispell-parser)                  ; ispell.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -564,8 +562,8 @@ string."
     ("%(cntxcom)" ConTeXt-expand-command)
     ("%(execopts)" ConTeXt-expand-options)
     ("%(extraopts)" (lambda () TeX-command-extra-options))
-    ("%(output-dir)" (lambda () (TeX--output-dir-arg "--output-directory=")))
-    ("%(o-dir)" (lambda () (TeX--output-dir-arg "-o ")))
+    ("%(output-dir)" TeX--output-dir-arg "--output-directory=")
+    ("%(o-dir)" TeX--output-dir-arg "-o ")
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
@@ -663,9 +661,9 @@ Programs should not use these variables directly but the function
 Each entry is a list with two or more elements.  The first
 element is the string to be expanded.  The second element is the
 name of a function returning the expanded string when called with
-the remaining elements as arguments.  The special value `file'
-will be expanded to the name of the file being processed, with an
-optional extension.
+the remaining elements as arguments.
+The second element can also be a variable name whose value is
+such function.
 
 Built-in expansions provided in `TeX-expand-list-builtin' can be
 overwritten by defining expansions strings with the same
@@ -1117,10 +1115,6 @@ The following built-in predicates are available:
 ;; program and the desktop environment, that will be used to set up
 ;; DBUS communication.
 
-;; Require dbus at compile time to prevent errors due to `dbus-ignore-errors'
-;; not being defined.
-(eval-when-compile (and (featurep 'dbusbind)
-                        (require 'dbus nil :no-error)))
 (defun TeX-evince-dbus-p (de app &rest options)
   "Return non-nil, if an evince-compatible reader is accessible via DBUS.
 Additional OPTIONS may be given to extend the check.  If none are
@@ -2576,36 +2570,19 @@ be relative to that."
   :group 'TeX-file
   :type 'string)
 
+;; Compatibility alias
 (defun TeX-split-string (regexp string)
-  "Return a list of strings.
-Given REGEXP the STRING is split into sections which in string was
-separated by REGEXP.
-
-Examples:
-
-      (TeX-split-string \"\:\" \"abc:def:ghi\")
-          -> (\"abc\" \"def\" \"ghi\")
-
-      (TeX-split-string \" +\" \"dvips  -Plw -p3 -c4 testfile.dvi\")
-
-          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
-
-If REGEXP is nil, or \"\", an error will occur."
-
-  (let ((start 0) result match)
-    (while (setq match (string-match regexp string start))
-      (push (substring string start match) result)
-      (setq start (match-end 0)))
-    (push (substring string start) result)
-    (nreverse result)))
+  (split-string string regexp))
+(make-obsolete 'TeX-split-string
+               "use (split-string STRING REGEXP) instead." "AUCTeX 13.0")
 
 (defun TeX-parse-path (env)
   "Return a list if private TeX directories found in environment variable ENV."
   (let* ((value (getenv env))
          (entries (and value
-                       (TeX-split-string
-                        (if (string-match ";" value) ";" ":")
-                        value)))
+                       (split-string
+                        value
+                        (if (string-match ";" value) ";" ":"))))
          (global (append '("/" "\\")
                          (mapcar #'file-name-as-directory
                                  TeX-macro-global)))
@@ -3367,14 +3344,14 @@ AUCTeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
   (cond ((eq (preceding-char) ?\\)
-         (call-interactively 'self-insert-command))
+         (call-interactively #'self-insert-command))
         ((eq (preceding-char) ?.)
          (let ((TeX-default-macro " ")
                (minibuffer-local-completion-map TeX-electric-macro-map))
-           (call-interactively 'TeX-insert-macro)))
+           (call-interactively #'TeX-insert-macro)))
         (t
          (let ((minibuffer-local-completion-map TeX-electric-macro-map))
-           (call-interactively 'TeX-insert-macro)))))
+           (call-interactively #'TeX-insert-macro)))))
 
 (defvar TeX-exit-mark nil
   "Dynamically bound by `TeX-parse-macro' and `LaTeX-env-args'.")
@@ -3743,7 +3720,6 @@ The algorithm is as follows:
 
   ;; Ispell support
   (set (make-local-variable 'ispell-parser) 'tex)
-  (set (make-local-variable 'ispell-tex-p) t)
 
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
@@ -4732,14 +4708,11 @@ Return nil if ELT is not a member of LIST."
       (when (member elt list)
         (throw 'found t)))))
 
+;; Compatibility alias
 (defun TeX-assoc (key list)
-  "Return non-nil if KEY is `equal' to the car of an element of LIST.
-Like assoc, except case insensitive."
-  (let ((case-fold-search t))
-    (TeX-member key list
-                (lambda (a b)
-                  (string-match (concat "^" (regexp-quote a) "$")
-                                (car b))))))
+  (assoc-string key list t))
+(make-obsolete 'TeX-assoc
+               "use (assoc-string KEY LIST t) instead." "AUCTeX 13.0")
 
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
@@ -6180,7 +6153,7 @@ With prefix argument FORCE, always inserts \" characters."
   (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
-  (call-interactively 'self-insert-command))
+  (call-interactively #'self-insert-command))
 
 (defun TeX-insert-braces (arg)
   "Make a pair of braces around next ARG sexps and leave point inside.
@@ -6474,17 +6447,10 @@ NAME may be a package, a command, or a document."
 
 (defun TeX-run-ispell (_command _string file)
   "Run ispell on current TeX buffer."
-  (cond ((and (string-equal file (TeX-region-file))
-              (fboundp 'ispell-region))
-         (call-interactively 'ispell-region))
-        ((string-equal file (TeX-region-file))
-         (call-interactively 'spell-region))
-        ((fboundp 'ispell-buffer)
-         (ispell-buffer))
-        ((fboundp 'ispell)
-         (ispell))
+  (cond ((string-equal file (TeX-region-file))
+         (call-interactively #'ispell-region))
         (t
-         (spell-buffer))))
+         (ispell-buffer))))
 
 (defun TeX-ispell-document (name)
   "Run ispell on all open files belonging to the current document."
@@ -6517,12 +6483,6 @@ NAME may be a package, a command, or a document."
         (when (and name (string-match regexp name))
           (save-excursion (switch-to-buffer buffer) (ispell-buffer))
           t)))))
-
-;; Some versions of ispell 3 use this.
-(defvar ispell-tex-major-modes nil)
-(setq ispell-tex-major-modes
-      (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
-              ispell-tex-major-modes))
 
 (defcustom TeX-ispell-extend-skip-list t
   "Whether to extend regions selected for skipping during spell checking."

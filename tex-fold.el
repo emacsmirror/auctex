@@ -70,7 +70,7 @@ macros, 'math for math macros and 'comment for comments."
               (const :tag "Comments" comment)))
 
 (defcustom TeX-fold-macro-spec-list
-  `(("[f]" ("footnote" "marginpar"))
+  '(("[f]" ("footnote" "marginpar"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
     ("[r]" ("ref" "pageref" "eqref"))
@@ -89,7 +89,7 @@ macros, 'math for math macros and 'comment for comments."
   "List of replacement specifiers and macros to fold.
 
 The first element of each item can be a string, an integer or a
-function symbol.  The second element is a list of macros two fold
+function symbol.  The second element is a list of macros to fold
 without the leading backslash.
 
 If the first element is a string, it will be used as a display

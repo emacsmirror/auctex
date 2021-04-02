@@ -116,7 +116,9 @@ spec to avoid unnecessary evaluation time."
   :type preview-specs-type
   :set #'preview-specs-setter)
 
-(defvar preview-nonready-icon)
+(defvar preview-nonready-icon nil
+  "The icon used for previews to be generated.
+Suitable spec is chosen from `preview-nonready-icon-specs'.")
 
 (defcustom preview-error-icon-specs
   '((:type xpm :min 22 :file "prverr24.xpm" :ascent 90)
@@ -135,7 +137,9 @@ spec to avoid unnecessary evaluation time."
   :set #'preview-specs-setter
 )
 
-(defvar preview-error-icon)
+(defvar preview-error-icon nil
+  "The icon used for PostScript errors.
+Suitable spec is chosen from `preview-error-icon-specs'.")
 
 (defcustom preview-icon-specs
   '((:type xpm :min 24 :file "prvtex24.xpm" :ascent 75)
@@ -156,7 +160,9 @@ spec to avoid unnecessary evaluation time."
   :type preview-specs-type
   :set #'preview-specs-setter)
 
-(defvar preview-icon)
+(defvar preview-icon nil
+  "The icon used for an open preview.
+Suitable spec is chosen from `preview-icon-specs'.")
 
 (defgroup preview-latex nil "LaTeX options for preview."
   :group 'preview
@@ -1318,7 +1324,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                           (file-relative-name
                            (car (nth 1 filenames)))))
          (ps-open
-          (let ((str
+          (let ((string
                  (concat
                 (mapconcat #'shell-quote-argument
                             (append (list
@@ -1330,7 +1336,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
                  preview-gs-init-string
                  (aref (overlay-get ov 'queued) 1)
                  err)))
-            (lambda () (interactive "@") (preview-mouse-open-error str))))
+            (lambda () (interactive "@") (preview-mouse-open-error string))))
          (str
           (preview-make-clickable
            nil
@@ -1538,7 +1544,11 @@ so that they match the reference face in height."
               10.0)))
     (lambda () (/ d (preview-document-pt)))))
 
-(defvar preview-min-spec)
+(defvar preview-min-spec nil
+  "Value to filter out too large icons.
+Icon specs with :size larger than this value is not used.
+Appropriate value is determined at run time according to the
+display in use.")
 
 (defun preview-make-image (symbol)
   "Make an image from a preview spec list.
@@ -2058,7 +2068,7 @@ overlays not in the active window."
       (push ovr preview-temporary-opened))))
 
 (if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'replace-highlight :before #'preview--open-for-replace)
+    nil ; See the defcustom below.
   (defadvice replace-highlight (before preview)
     (preview--open-for-replace (ad-get-arg 0) (ad-get-arg 1))))
 
@@ -2073,10 +2083,16 @@ overlays not in the active window."
   :require 'preview
   :set (lambda (symbol value)
          (set-default symbol value)
-         (if value
-             (ad-enable-advice 'replace-highlight 'before 'preview)
-           (ad-disable-advice 'replace-highlight 'before 'preview))
-         (ad-activate 'replace-highlight))
+         (if (fboundp 'advice-add) ; COMPATIBILITY for Emacs<24.4
+             (if value
+                 (advice-add 'replace-highlight :before
+                             #'preview--open-for-replace)
+               (advice-remove 'replace-highlight
+                              #'preview--open-for-replace))
+           (if value
+               (ad-enable-advice 'replace-highlight 'before 'preview)
+             (ad-disable-advice 'replace-highlight 'before 'preview))
+           (ad-activate 'replace-highlight)))
   :initialize #'custom-initialize-reset)
 
 (defun preview-relaxed-string= (&rest args)
@@ -2293,7 +2309,8 @@ kept."
 (add-hook 'kill-buffer-hook #'preview-kill-buffer-cleanup)
 (add-hook 'before-revert-hook #'preview-kill-buffer-cleanup)
 
-(defvar preview-last-counter)
+(defvar preview-last-counter nil
+  "Last counter information.")
 
 (defun preview-extract-counters (ctr)
   (setq preview-last-counter
@@ -3909,7 +3926,8 @@ This is passed through `preview-do-replacements'."
                          (choice (symbol :tag "Variable with literal string")
                                  (string :tag "non-literal regexp replacement")))))))
 
-(defvar preview-format-name)
+(defvar preview-format-name nil
+  "Format name when enabling preamble cache.")
 
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
@@ -3997,7 +4015,7 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
                            command
                            format-cons)
                         (preview-format-kill format-cons))
-                      (delete-file ',dump-file))
+                      (delete-file dump-file))
                   (error (preview-log-error err "Dumping" process)))
                 (preview-reraise-error process)))))))
 
@@ -4171,7 +4189,7 @@ internal parameters, STR may be a log to insert into the current log."
                                       ;; get the correct path but then
                                       ;; strip the extension
                                       (file-name-sans-extension
-				       (TeX-master-file "prv" t))))))
+                                       (TeX-master-file "prv" t))))))
        (process-environment (copy-sequence process-environment))
        (process
         (progn

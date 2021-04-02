@@ -1733,7 +1733,7 @@ This is necessary since index entries may contain commands and stuff.")
 (defun LaTeX-split-bibs (match)
   "Extract bibliography resources from MATCH.
 Split the string at commas and remove Biber file extensions."
-  (let ((bibs (TeX-split-string " *, *" (TeX-match-buffer match))))
+  (let ((bibs (split-string (TeX-match-buffer match) " *, *")))
     (dolist (bib bibs)
       (LaTeX-add-bibliographies (replace-regexp-in-string
                                  (concat "\\(?:\\."
@@ -1841,7 +1841,7 @@ The value is actually the tail of the list of options given to PACKAGE."
   ;; Cleanup BibTeX/Biber files
   (setq LaTeX-auto-bibliography
         (apply #'append (mapcar (lambda (arg)
-                                  (TeX-split-string "," arg))
+                                  (split-string arg ","))
                                 LaTeX-auto-bibliography)))
 
   ;; Reset class and packages options for the current buffer
@@ -1865,8 +1865,8 @@ The value is actually the tail of the list of options given to PACKAGE."
         ;; Treat documentclass/documentstyle specially.
         (if (or (string-equal "package" class)
                 (string-equal "Package" class))
-            (dolist (elt (TeX-split-string
-                          "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
+            (dolist (elt (split-string
+                          style "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+"))
               ;; Append style to the style list.
               (add-to-list 'TeX-auto-file elt t)
               ;; Append to `LaTeX-provided-package-options' the name of the
@@ -5968,7 +5968,7 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
                                              font-lock-comment-face)))
           (texmathp)
           (TeX-in-comment))
-      (call-interactively 'self-insert-command)
+      (call-interactively #'self-insert-command)
     (let* ((lang (assoc LaTeX-babel-hyphen-language
                         LaTeX-babel-hyphen-language-alist))
            (hyphen (if lang (nth 1 lang) LaTeX-babel-hyphen))
@@ -5983,20 +5983,20 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
             (progn (delete-char (- hyphen-length))
                    (insert "--"))
           (delete-char (- hyphen-length))
-          (call-interactively 'self-insert-command)))
+          (call-interactively #'self-insert-command)))
        ;; -- --> [+]-
        ((string= (buffer-substring (max (- (point) 2) (point-min))
                                    (point))
                  "--")
-        (call-interactively 'self-insert-command))
+        (call-interactively #'self-insert-command))
        ;; - --> "= / [+]-
        ((eq (char-before) ?-)
         (if h-after-h
             (progn (delete-char -1)
                    (insert hyphen))
-          (call-interactively 'self-insert-command)))
+          (call-interactively #'self-insert-command)))
        (h-after-h
-        (call-interactively 'self-insert-command))
+        (call-interactively #'self-insert-command))
        (t (insert hyphen))))))
 ;; Cater for Delete Selection mode
 (put 'LaTeX-babel-insert-hyphen 'delete-selection t)
@@ -6856,7 +6856,7 @@ function would return non-nil and `(match-string 1)' would return
          (point-max) t)
         (setq optstr (TeX-match-buffer 1)
               docstyle (TeX-match-buffer 2)
-              optlist (TeX-split-string "," optstr))
+              optlist (split-string optstr ","))
       (if (search-forward-regexp
            "\\\\documentstyle{\\([^}]*\\)}"
            (point-max) t)

@@ -95,7 +95,7 @@
                                    (LaTeX-newfloat-DeclareFloatingEnvironment-list))
                               (completing-read
                                "Float type: "
-                               (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                               (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
                             (TeX-read-string "Float type: ")))
                (narrow    (TeX-read-string "(Optional) Number of narrow lines: "))
                (placement (completing-read

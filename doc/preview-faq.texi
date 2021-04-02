@@ -84,7 +84,7 @@ Carbon, and @previewlatex{} is working with them, too.
 With Windows, both native Emacs and Cygwin Emacs should work.  However, it
 is known that @url{https://miktex.org/,MiK@TeX{}} sometimes doesn't work
 with @previewlatex{}.  In that case, use
-@url{https://tug.org/texlive/,@TeX{}live} instead.
+@url{https://tug.org/texlive/,@TeX{} Live} instead.
 
 @node Installation Trouble, Customization, Requirements, Frequently Asked Questions
 @section Installation Trouble

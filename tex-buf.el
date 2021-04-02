@@ -877,7 +877,7 @@ omitted) and `TeX-region-file'."
                       (TeX-mode-specific-command-list major-mode) nil t
                       nil 'TeX-command-history default))))
     ;; If the answer is "latex" it will not be expanded to "LaTeX"
-    (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
+    (setq answer (car-safe (assoc-string answer TeX-command-list t)))
     (if (and answer
              (not (string-equal answer "")))
         answer
@@ -906,7 +906,7 @@ QUEUE is non-nil when we are checking for the printer queue."
                                               (format " (default %s)" TeX-printer-default) ""))
                                   TeX-printer-list))
                              ""))
-             (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
+             (setq printer (or (car-safe (assoc-string printer TeX-printer-list t))
                                printer))
              (not (if (or (null printer) (string-equal "" printer))
                       (setq printer TeX-printer-default)

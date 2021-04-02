@@ -176,7 +176,7 @@ If `caption.el' is loaded, add the new floating environment to
     '("SetupFloatingEnvironment"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Floating environment")
-                    (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                    (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
       (TeX-arg-key-val LaTeX-newfloat-key-val-options-local))
 
     '("ForEachFloatingEnvironment" t)
@@ -185,7 +185,7 @@ If `caption.el' is loaded, add the new floating environment to
     '("PrepareListOf"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Floating environment")
-                    (mapcar 'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                    (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
       t)
 
     '("newfloatsetup"

@@ -12,6 +12,12 @@
 
 @itemize @bullet
 @item
+Two functions @code{TeX-split-string} and @code{TeX-assoc} are now
+obsolete and will be removed in future release.  If your personal code
+uses these functions, use @code{split-string} and @code{assoc-string}
+instead.
+
+@item
 Since @AUCTeX{} 12.2, @kbd{C-x C-w} accidentally disabled the parse on
 save in that buffer, even when you enabled @code{TeX-auto-save} option.
 This bug was fixed.
@@ -20,9 +26,9 @@ This bug was fixed.
 @AUCTeX{} now requires GNU Emacs 24.3 or higher.
 
 @item
-Old implementations for viewers were discarded, as stated long before.
-The variables @code{TeX-output-view-style} and @code{TeX-view-style}
-have no effect now. The former placeholders @samp{%v} and @samp{%vv} in
+Old implementations for viewers were discarded, as announced long before.
+The variables @code{TeX-output-view-style} and @code{TeX-view-style} have
+no effect now.  The former placeholders @samp{%v} and @samp{%vv} in
 @code{TeX-command-list} are ignored.
 
 @item

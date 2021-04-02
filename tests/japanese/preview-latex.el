@@ -22,8 +22,10 @@
 ;;; Code:
 
 (require 'ert)
-(let ((japanese-TeX-error-messages nil))
-  (require 'tex-jp))
+(let (_)
+  (defvar japanese-TeX-error-messages)
+  (let ((japanese-TeX-error-messages nil))
+    (require 'tex-jp)))
 (require 'preview)
 
 (AUCTeX-set-ert-path
@@ -54,7 +56,8 @@ character used to cause trouble.  Such patterns are tested."
         (process-environment (copy-sequence process-environment))
         (locale-coding-system 'shift_jis)
         (TeX-japanese-process-output-coding-system nil)
-        (TeX-japanese-process-input-coding-system nil))
+        (TeX-japanese-process-input-coding-system nil)
+        buffer1 buffer2)
     ;; Make platex binary to output in `shift_jis' encoding.
     (setenv "LC_ALL" "ja_JP.SJIS")
     ;; If your startup script for `TeX-shell' (normally "/bin/sh")
@@ -63,9 +66,10 @@ character used to cause trouble.  Such patterns are tested."
     ;; negative can be as positive.
     (unwind-protect
         (save-window-excursion
-          (find-file platex-shift-jis)
+          (setq buffer1 (find-file platex-shift-jis))
           (delete-other-windows)
           (preview-document)
+          (setq buffer2 (TeX-active-buffer))
           (message "Please wait for asynchronous process to finish...")
           (sleep-for 5)
           ;; Actually, this type of trouble seems to be captured early by
@@ -79,17 +83,16 @@ character used to cause trouble.  Such patterns are tested."
           (should (yes-or-no-p "\
 Did all images come out at the correct position? ")))
       ;; Cleanup.
-      (set-buffer (get-file-buffer platex-shift-jis))
-      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-             (process (get-buffer-process buffer)))
-        (if process (delete-process process))
-        (kill-buffer buffer))
-      (preview-clearout-document)
-      (TeX-clean t)
-      (dolist (dir preview-temp-dirs)
-        (if (file-exists-p (directory-file-name dir))
-            (delete-directory dir t)))
-      (kill-buffer))))
+      (if (buffer-live-p buffer2)
+          (kill-buffer buffer2))
+      (when (buffer-live-p buffer1)
+        (set-buffer buffer1)
+        (preview-clearout-document)
+        (TeX-clean t)
+        (dolist (dir preview-temp-dirs)
+          (if (file-exists-p (directory-file-name dir))
+              (delete-directory dir t)))
+        (kill-buffer buffer1)))))
 
 (ert-deftest japanese-preview-different-coding-system ()
   "Different coding systems between file and process are OK or not.
@@ -104,7 +107,8 @@ the process differ."
         (process-environment (copy-sequence process-environment))
         (locale-coding-system 'shift_jis)
         (TeX-japanese-process-output-coding-system nil)
-        (TeX-japanese-process-input-coding-system nil))
+        (TeX-japanese-process-input-coding-system nil)
+        buffer1 buffer2)
     ;; Make platex binary to output in `shift_jis' encoding.
     (setenv "LC_ALL" "ja_JP.SJIS")
     ;; If your startup script for `TeX-shell' (normally "/bin/sh")
@@ -113,9 +117,10 @@ the process differ."
     ;; negative can be as positive.
     (unwind-protect
         (save-window-excursion
-          (find-file different-coding-system)
+          (setq buffer1 (find-file different-coding-system))
           (delete-other-windows)
           (preview-document)
+          (setq buffer2 (TeX-active-buffer))
           (message "Please wait for asynchronous process to finish...")
           (sleep-for 5)
           ;; Actually, this type of trouble seems to be captured early by
@@ -129,17 +134,16 @@ the process differ."
           (should (yes-or-no-p "\
 Did all images come out at the correct position? ")))
       ;; Cleanup.
-      (set-buffer (get-file-buffer different-coding-system))
-      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-             (process (get-buffer-process buffer)))
-        (if process (delete-process process))
-        (kill-buffer buffer))
-      (preview-clearout-document)
-      (TeX-clean t)
-      (dolist (dir preview-temp-dirs)
-        (if (file-exists-p (directory-file-name dir))
-            (delete-directory dir t)))
-      (kill-buffer))))
+      (if (buffer-live-p buffer2)
+          (kill-buffer buffer2))
+      (when (buffer-live-p buffer1)
+        (set-buffer buffer1)
+        (preview-clearout-document)
+        (TeX-clean t)
+        (dolist (dir preview-temp-dirs)
+          (if (file-exists-p (directory-file-name dir))
+              (delete-directory dir t)))
+        (kill-buffer buffer1)))))
 
 (ert-deftest japanese-preview-preserve-kanji-option ()
   "`TeX-inline-preview-internal' preserves kanji option or not.
@@ -154,12 +158,14 @@ is enabled."
   (let ((TeX-clean-confirm nil)
         (preview-auto-cache-preamble t)
         (TeX-japanese-process-output-coding-system nil)
-        (TeX-japanese-process-input-coding-system nil))
+        (TeX-japanese-process-input-coding-system nil)
+        buffer1 buffer2)
     (unwind-protect
         (save-window-excursion
-          (find-file preserve-kanji-option)
+          (setq buffer1 (find-file preserve-kanji-option))
           (delete-other-windows)
           (preview-document)
+          (setq buffer2 (TeX-active-buffer))
           (message "Please wait for asynchronous process to finish...")
           (sleep-for 3)
           (message "Please wait for asynchronous process to finish...done")
@@ -169,17 +175,16 @@ is enabled."
           (should (yes-or-no-p "\
 Did the image come out at the correct position? ")))
       ;; Cleanup.
-      (set-buffer (get-file-buffer preserve-kanji-option))
-      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-             (process (get-buffer-process buffer)))
-        (if process (delete-process process))
-        (kill-buffer buffer))
-      (preview-clearout-document)
-      (TeX-clean t)
-      (dolist (dir preview-temp-dirs)
-        (if (file-exists-p (directory-file-name dir))
-            (delete-directory dir t)))
-      (kill-buffer))))
+      (if (buffer-live-p buffer2)
+          (kill-buffer buffer2))
+      (when (buffer-live-p buffer1)
+        (set-buffer buffer1)
+        (preview-clearout-document)
+        (TeX-clean t)
+        (dolist (dir preview-temp-dirs)
+          (if (file-exists-p (directory-file-name dir))
+              (delete-directory dir t)))
+        (kill-buffer buffer1)))))
 
 ;; The following tests the individual parts fixed in May 2017 and can be
 ;; automated with batch mode.  Note that these tests just check specific
@@ -219,10 +224,10 @@ String encoded in `shift_jis' can have regexp meta characters in it."
   (let ((TeX-clean-confirm nil)
         ;; Make `preview-call-hook' inactive.
         (preview-image-creators nil)
-        dummyfile process)
+        dummyfile process buffer1 buffer2)
     (unwind-protect
         (save-window-excursion
-          (find-file preserve-kanji-option)
+          (setq buffer1 (find-file preserve-kanji-option))
           (setq dummyfile (TeX-master-file))
           (delete-other-windows)
           (setq process (TeX-inline-preview-internal
@@ -235,17 +240,19 @@ String encoded in `shift_jis' can have regexp meta characters in it."
           (let ((cmd (process-command process)))
             (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
       ;; Cleanup.
-      (accept-process-output process)
-      (set-buffer (get-file-buffer preserve-kanji-option))
-      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-             (process (get-buffer-process buffer)))
-        (if process (delete-process process))
-        (kill-buffer buffer))
-      (TeX-clean t)
-      (dolist (dir preview-temp-dirs)
-        (if (file-exists-p (directory-file-name dir))
-            (delete-directory dir t)))
-      (kill-buffer))))
+      (when (processp process)
+        (setq buffer2 (process-buffer process))
+        (accept-process-output process)
+        (delete-process process))
+      (if (buffer-live-p buffer2)
+          (kill-buffer buffer2))
+      (when (buffer-live-p buffer1)
+        (set-buffer buffer1)
+        (TeX-clean t)
+        (dolist (dir preview-temp-dirs)
+          (if (file-exists-p (directory-file-name dir))
+              (delete-directory dir t)))
+        (kill-buffer buffer1)))))
 
 (ert-deftest japanese-preview-preserve-kanji-option3 ()
   "Test command to dump format file preserves kanji option or not."
@@ -253,10 +260,10 @@ String encoded in `shift_jis' can have regexp meta characters in it."
         ;; Make `preview-call-hook' inactive.
         (preview-image-creators nil)
         (preview-format-name "dummy")
-        dummyfile process)
+        dummyfile process buffer1 buffer2)
     (unwind-protect
         (save-window-excursion
-          (find-file preserve-kanji-option)
+          (setq buffer1 (find-file preserve-kanji-option))
           (setq dummyfile (TeX-master-file))
           (delete-other-windows)
           (setq process (TeX-inline-preview-internal
@@ -269,16 +276,19 @@ String encoded in `shift_jis' can have regexp meta characters in it."
           (let ((cmd (process-command process)))
             (should (string-match "-kanji" (nth (1- (length cmd)) cmd)))))
       ;; Cleanup.
-      (accept-process-output process)
-      (set-buffer (get-file-buffer preserve-kanji-option))
-      (let* ((buffer (TeX-process-buffer-name (TeX-master-file nil t)))
-             (process (get-buffer-process buffer)))
-        (if process (delete-process process))
-        (kill-buffer buffer))
-      (TeX-clean t)
-      (dolist (dir preview-temp-dirs)
-        (if (file-exists-p (directory-file-name dir))
-            (delete-directory dir t)))
-      (kill-buffer))))
+      (when (processp process)
+        (setq buffer2 (process-buffer process))
+        (accept-process-output process)
+        (delete-process process))
+      (if (buffer-live-p buffer2)
+          (kill-buffer buffer2))
+      (when (buffer-live-p buffer1)
+        (set-buffer buffer1)
+        (TeX-clean t)
+        (mapc #'preview-format-kill preview-dumped-alist)
+        (dolist (dir preview-temp-dirs)
+          (if (file-exists-p (directory-file-name dir))
+              (delete-directory dir t)))
+        (kill-buffer buffer1)))))
 
 ;;; preview-latex.el ends here
