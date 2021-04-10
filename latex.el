@@ -1097,7 +1097,8 @@ corresponding entry."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defvar TeX-read-label-prefix) ;; Defined further below.
+(defvar TeX-read-label-prefix nil
+  "Initial input for the label in `TeX-read-label'.")
 
 (defun LaTeX-label (name &optional type no-insert)
   "Insert a label for NAME at point.
@@ -2014,9 +2015,6 @@ OPTIONAL is ignored."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one."
   (TeX-argument-insert (eval args t) optional))
-
-(defvar TeX-read-label-prefix nil
-  "Initial input for the label in `TeX-read-label.'")
 
 (defun TeX-read-label (optional &optional prompt definition)
   "Prompt for a label completing with known labels and return it.

@@ -6167,7 +6167,7 @@ closing brace."
 
 Don't hesitate to report any problems or inaccurate documentation.
 
-If you don't have setup sending mail from (X)Emacs, please copy the
+If you don't have setup sending mail from Emacs, please copy the
 output buffer into your mail program, as it gives us important
 information about your AUCTeX version and AUCTeX configuration."
   (interactive)
