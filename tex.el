@@ -1659,7 +1659,8 @@ as a string.")
 (make-variable-buffer-local 'TeX-source-correlate-output-page-function)
 
 (define-obsolete-variable-alias 'TeX-source-specials-view-start-server
-  'TeX-source-correlate-start-server)
+  'TeX-source-correlate-start-server "11.86")
+
 (defcustom TeX-source-correlate-start-server 'ask
   "Control if server should be started for inverse search."
   :type '(choice (const :tag "Always" t)
