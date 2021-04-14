@@ -3681,16 +3681,25 @@ outer indentation in case of a commented line.  The symbols
   "Move point to the first non-whitespace character on this line.
 If it is commented and comments are formatted syntax-aware move
 point to the first non-whitespace character after the comment
-character(s).  The optional argument FORCE-TYPE can be used to
-force point being moved to the inner or outer indentation in case
-of a commented line.  The symbols 'inner and 'outer are
-recognized."
+character(s), but only if `this-command' is an actual indentation
+command.  The optional argument FORCE-TYPE can be used to force
+point being moved to the inner or outer indentation in case of a
+commented line.  The symbols 'inner and 'outer are recognized."
   (if (or (and force-type
                (eq force-type 'inner))
           (and (not force-type)
                (or (and (TeX-in-line-comment)
                         (eq major-mode 'doctex-mode))
                    (and (TeX-in-commented-line)
+                        ;; Only move after the % if we're actually
+                        ;; performing an indent command and something
+                        ;; else like our `TeX-newline-function' which
+                        ;; will be invoked automatically by
+                        ;; `electric-indent-mode' (bug#47757).
+                        (memq this-command
+                              `(,indent-line-function
+                                indent-for-tab-command
+                                LaTeX-indent-line))
                         LaTeX-syntactic-comments))))
       (progn
         (beginning-of-line)
