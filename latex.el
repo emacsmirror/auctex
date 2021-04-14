@@ -3692,9 +3692,9 @@ commented line.  The symbols 'inner and 'outer are recognized."
                         (eq major-mode 'doctex-mode))
                    (and (TeX-in-commented-line)
                         ;; Only move after the % if we're actually
-                        ;; performing an indent command and something
-                        ;; else like our `TeX-newline-function' which
-                        ;; will be invoked automatically by
+                        ;; performing an indent command and not, e.g.,
+                        ;; our `TeX-newline-function' which will be
+                        ;; invoked automatically by
                         ;; `electric-indent-mode' (bug#47757).
                         (memq this-command
                               `(,indent-line-function
