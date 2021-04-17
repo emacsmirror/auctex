@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
 
-This manual is for AUCTeX (version 13.0.6 from 2021-04-02), a
+This manual is for AUCTeX (version 13.0.7 from 2021-04-17), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -2097,7 +2097,7 @@ variable 'LaTeX-math-abbrev-prefix'.
 
    To enable LaTeX Math mode by default, add the following in your
 '.emacs' file:
-     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+     (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
 
  -- User Option: LaTeX-math-abbrev-prefix
      A string containing the prefix of 'LaTeX-math-mode' commands; This
@@ -2569,7 +2569,7 @@ you write it.
 and Hooks::.  As an example, if you want to enable 'auto-fill-mode' in
 'LaTeX-mode', put the following into your init file:
 
-     (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+     (add-hook 'LaTeX-mode-hook #'turn-on-auto-fill)
 
    You can manually fill explicitely marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
@@ -3221,7 +3221,7 @@ and show macros, environments and comments:
      font locking is set up for the buffer.  The following code should
      accomplish this:
 
-          (add-hook 'find-file-hook 'TeX-fold-buffer t)
+          (add-hook 'find-file-hook #'TeX-fold-buffer t)
 
      The command can be used any time to refresh the whole buffer and
      fold any new macros and environments which were inserted after the
@@ -5869,8 +5869,8 @@ specify this information in a style hook file.
        "Clear `Tex-auto-multi' before use."
        (setq TeX-auto-multi nil))
 
-     (add-hook 'TeX-auto-prepare-hook 'TeX-macro-prepare)
-     (add-hook 'TeX-auto-cleanup-hook 'TeX-macro-cleanup)
+     (add-hook 'TeX-auto-prepare-hook #'TeX-macro-prepare)
+     (add-hook 'TeX-auto-cleanup-hook #'TeX-macro-cleanup)
 
      (TeX-add-style-hook
       "macro"
@@ -5946,7 +5946,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.0.6 from 2021-04-02), a
+   This manual is for AUCTeX (version 13.0.7 from 2021-04-17), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2020 Free Software
@@ -9191,76 +9191,76 @@ Node: Itemize-like82577
 Node: Tabular-like83298
 Node: Customizing Environments85071
 Node: Mathematics85311
-Node: Completion88597
-Node: Marking95619
-Node: Marking (LaTeX)96243
-Node: Marking (Texinfo)97185
-Node: Commenting98795
-Node: Indenting100120
-Node: Filling106156
-Node: Display112028
-Node: Font Locking114523
-Node: Fontification of macros116598
-Node: Fontification of quotes126117
-Node: Fontification of math127612
-Node: Verbatim content131280
-Node: Faces132054
-Node: Known problems132543
-Node: Folding133540
-Node: Outline144364
-Node: Narrowing145636
-Node: Prettifying146706
-Node: Processing147943
-Node: Commands149106
-Node: Starting a Command149662
-Node: Selecting a Command154565
-Node: Processor Options163649
-Node: Viewing173996
-Node: Starting Viewers174370
-Node: I/O Correlation180014
-Node: Debugging185212
-Node: Ignoring warnings187831
-Node: Error overview189891
-Node: Checking191799
-Node: Control193392
-Node: Cleaning195495
-Node: Documentation196788
-Node: Customization197503
-Node: Modes and Hooks197996
-Node: Multifile199816
-Node: Parsing Files204628
-Node: Internationalization209540
-Node: European210853
-Node: Japanese217663
-Node: Automatic222734
-Node: Automatic Global225225
-Node: Automatic Private226357
-Node: Automatic Local227670
-Node: Style Files228702
-Node: Simple Style229495
-Node: Adding Macros233148
-Node: Adding Environments242483
-Node: Adding Other247144
-Node: Hacking the Parser247731
-Node: Appendices251600
-Node: Copying this Manual251896
-Node: GNU Free Documentation License252779
-Node: Changes277900
-Node: Development327989
-Node: Mid-term Goals328635
-Node: Wishlist330492
-Node: Bugs335933
-Node: FAQ337036
-Node: Texinfo mode342165
-Node: Exploiting343301
-Node: Superseding344121
-Node: Mapping348325
-Node: Unbinding350154
-Node: Indices350975
-Node: Key Index351138
-Node: Function Index357754
-Node: Variable Index368637
-Node: Concept Index391842
+Node: Completion88598
+Node: Marking95620
+Node: Marking (LaTeX)96244
+Node: Marking (Texinfo)97186
+Node: Commenting98796
+Node: Indenting100121
+Node: Filling106157
+Node: Display112030
+Node: Font Locking114525
+Node: Fontification of macros116600
+Node: Fontification of quotes126119
+Node: Fontification of math127614
+Node: Verbatim content131282
+Node: Faces132056
+Node: Known problems132545
+Node: Folding133542
+Node: Outline144367
+Node: Narrowing145639
+Node: Prettifying146709
+Node: Processing147946
+Node: Commands149109
+Node: Starting a Command149665
+Node: Selecting a Command154568
+Node: Processor Options163652
+Node: Viewing173999
+Node: Starting Viewers174373
+Node: I/O Correlation180017
+Node: Debugging185215
+Node: Ignoring warnings187834
+Node: Error overview189894
+Node: Checking191802
+Node: Control193395
+Node: Cleaning195498
+Node: Documentation196791
+Node: Customization197506
+Node: Modes and Hooks197999
+Node: Multifile199819
+Node: Parsing Files204631
+Node: Internationalization209543
+Node: European210856
+Node: Japanese217666
+Node: Automatic222737
+Node: Automatic Global225228
+Node: Automatic Private226360
+Node: Automatic Local227673
+Node: Style Files228705
+Node: Simple Style229498
+Node: Adding Macros233151
+Node: Adding Environments242486
+Node: Adding Other247147
+Node: Hacking the Parser247734
+Node: Appendices251605
+Node: Copying this Manual251901
+Node: GNU Free Documentation License252784
+Node: Changes277905
+Node: Development327994
+Node: Mid-term Goals328640
+Node: Wishlist330497
+Node: Bugs335938
+Node: FAQ337041
+Node: Texinfo mode342170
+Node: Exploiting343306
+Node: Superseding344126
+Node: Mapping348330
+Node: Unbinding350159
+Node: Indices350980
+Node: Key Index351143
+Node: Function Index357759
+Node: Variable Index368642
+Node: Concept Index391847
 
 End Tag Table
 

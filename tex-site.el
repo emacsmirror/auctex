@@ -105,7 +105,7 @@ shared by all users of a site."
                   ;; fails on non-list elements in Emacs 21.
                   (let* ((alist (car list))
                          (tail alist)
-                         (key 'TeX-modes-set))
+                         (key #'TeX-modes-set))
                     (while tail
                       (if (and (consp (car tail))
                                (eq (car (car tail)) key))
@@ -157,11 +157,11 @@ set it with `TeX-modes-set'."
                        `(TeX-modes-set ',var ,var t))
                      (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "13.0.6"
+(defconst AUCTeX-version "13.0.7"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2021-04-02"
+(defconst AUCTeX-date "2021-04-17"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
