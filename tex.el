@@ -1238,7 +1238,7 @@ viewer."
   (TeX-evince-sync-view-1 "gnome" "evince"))
 
 (defun TeX-reader-sync-view ()
-  "Run `TeX-evince-sync-view-1', which see, set up for XReader."
+  "Run `TeX-evince-sync-view-1', which see, set up for Xreader."
   (TeX-evince-sync-view-1 "x" "reader"))
 
 (defun TeX-view-program-select-evince (de app)
