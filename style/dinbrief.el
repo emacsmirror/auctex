@@ -71,8 +71,10 @@
 
 (defun LaTeX-dinbrief-style ()
   "Insert some useful packages for writing german letters."
+  ;; COMPATIBILITY for EMACS<26
   (let ((func (if (fboundp 'indent-relative-first-indent-point)
-                  'indent-relative-first-indent-point
+                  #'indent-relative-first-indent-point
+                ;; Stay away from using #' to avoid compiler warning.
                 'indent-relative-maybe)))
     (save-excursion
       (goto-char (point-min)) ; insert before \begin{document}
@@ -107,8 +109,10 @@
         (closing (TeX-read-string "Schluss: "))
         (signature (TeX-read-string "Unterschrift: "))
         (anlage (TeX-read-string "Anlagen: "))
+        ;; COMPATIBILITY for EMACS<26
         (func (if (fboundp 'indent-relative-first-indent-point)
-                  'indent-relative-first-indent-point
+                  #'indent-relative-first-indent-point
+                ;; Stay away from using #' to avoid compiler warning.
                 'indent-relative-maybe)))
     (if (string= fenster "ja")
         (progn

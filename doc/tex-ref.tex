@@ -580,7 +580,7 @@ RefTeX is part of Emacs.  To activate and make it interact with
 AUCTeX, insert the following lines in \file{init.el}.
 \vskip-3mm
 \beginexample
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook \#'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
 \endexample
 
@@ -646,7 +646,7 @@ consistent.
 
 \vskip-4mm
 \beginexample
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook \#'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
 \endexample
 

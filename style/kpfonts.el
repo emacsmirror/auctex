@@ -442,7 +442,7 @@ the sequence by initializing this variable.")
 
 (let ((math (reverse LaTeX-kpfonts-default))
       (map LaTeX-kpfonts-keymap)
-      (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+      (unicode LaTeX-math-menu-unicode))
   (while math
     (let* ((entry (car math))
            (key (nth 0 entry))
@@ -452,7 +452,7 @@ the sequence by initializing this variable.")
            value menu name)
       (setq math (cdr math))
       (setq prefix (if (and prefix
-                            (setq prefix (decode-char 'ucs (nth 3 entry))))
+                            (setq prefix (nth 3 entry)))
                        (concat (string prefix) " \\")
                      "\\"))
       (if (listp (cdr entry))
@@ -463,8 +463,8 @@ the sequence by initializing this variable.")
       (if (stringp value)
           (progn
             (setq name (intern (concat "LaTeX-kpfonts-" value)))
-            (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-                             (list 'LaTeX-math-insert value 'arg))))
+            (fset name (lambda (arg) (interactive "*P")
+                         (LaTeX-math-insert value arg))))
         (setq name value))
       (if key
           (progn

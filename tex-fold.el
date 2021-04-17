@@ -455,9 +455,7 @@ Return non-nil if an item was found and folded, nil otherwise."
                                    (t
                                     (concat (regexp-quote TeX-esc)
                                             "\\([A-Za-z@*]+\\)"))))
-                            (if (fboundp 'match-string-no-properties)
-                                (match-string-no-properties 1)
-                              (match-string 1))))
+                            (match-string-no-properties 1)))
                (fold-list (cond ((eq type 'env) TeX-fold-env-spec-list-internal)
                                 ((eq type 'math)
                                  TeX-fold-math-spec-list-internal)
@@ -845,15 +843,13 @@ Remove the respective properties from the overlay OV."
                            TeX-fold-open-spots))
                    (old-ols (mapcar #'cdr (car spots))))
               (setq TeX-fold-open-spots (cdr spots))
-              (when (or (and (boundp 'disable-point-adjustment)
-                             disable-point-adjustment)
-                        (and (boundp 'global-disable-point-adjustment)
-                             global-disable-point-adjustment)
+              (when (or disable-point-adjustment
+                        global-disable-point-adjustment
                         ;; See preview.el on how to make this configurable.
                         (memq this-command
                               (list (key-binding [left]) (key-binding [right])
-                                    'backward-char 'forward-char
-                                    'mouse-set-point)))
+                                    #'backward-char #'forward-char
+                                    #'mouse-set-point)))
                 ;; Open new overlays.
                 (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
                                               mark-active)

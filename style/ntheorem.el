@@ -141,9 +141,9 @@ make them available as new environments.  Update
 `LaTeX-ntheorem-theoremstyle-list' with styles defined with
 \"\\newtheoremstyle\"."
   (dolist (newthm (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
-    (LaTeX-add-environments (list newthm 'LaTeX-ntheorem-env-label))
+    (LaTeX-add-environments (list newthm #'LaTeX-ntheorem-env-label))
     (LaTeX-add-environments (list (concat newthm "*")
-                                  'LaTeX-ntheorem-env-label)))
+                                  #'LaTeX-ntheorem-env-label)))
   (dolist (newthmstyle (LaTeX-ntheorem-newtheoremstyle-list))
     (add-to-list (make-local-variable 'LaTeX-ntheorem-theoremstyle-list)
                  newthmstyle))
@@ -189,9 +189,9 @@ make them available as new environments.  Update
          (let ((nthm (TeX-read-string
                       (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-ntheorem-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-ntheorem-env-label))
            (LaTeX-add-environments (list (concat nthm "*")
-                                         'LaTeX-ntheorem-env-label))
+                                         #'LaTeX-ntheorem-env-label))
            (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
@@ -260,9 +260,9 @@ make them available as new environments.  Update
                    "Proof"      "Beweis")))
         (dolist (elt env)
           (LaTeX-add-ntheorem-newtheorems elt)
-          (LaTeX-add-environments (list elt 'LaTeX-ntheorem-env-label))
+          (LaTeX-add-environments (list elt #'LaTeX-ntheorem-env-label))
           (LaTeX-add-environments (list (concat elt "*")
-                                        'LaTeX-ntheorem-env-label)))))
+                                        #'LaTeX-ntheorem-env-label)))))
 
     ;; 2.3.7 Framed and Boxed Theorems
     '("newframedtheorem"
@@ -271,9 +271,9 @@ make them available as new environments.  Update
          (let ((nthm (TeX-read-string
                       (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-ntheorem-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-ntheorem-env-label))
            (LaTeX-add-environments (list (concat nthm "*")
-                                         'LaTeX-ntheorem-env-label))
+                                         #'LaTeX-ntheorem-env-label))
            (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
@@ -289,9 +289,9 @@ make them available as new environments.  Update
          (let ((nthm (TeX-read-string
                       (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-ntheorem-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-ntheorem-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-ntheorem-env-label))
            (LaTeX-add-environments (list (concat nthm "*")
-                                         'LaTeX-ntheorem-env-label))
+                                         #'LaTeX-ntheorem-env-label))
            (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion

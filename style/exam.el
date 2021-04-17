@@ -121,7 +121,7 @@ Arguments NAME and TYPE are the same as for the function
                  "checkboxes" "oneparcheckboxes")))
      (dolist (env envs)
        (add-to-list 'LaTeX-item-list
-                    (cons env 'LaTeX-exam-insert-item)
+                    (cons env #'LaTeX-exam-insert-item)
                     t)))
 
    ;; Append us only once:

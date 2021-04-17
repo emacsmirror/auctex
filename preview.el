@@ -1625,7 +1625,7 @@ Fallback to :inherit and 'default implemented."
 
 (defcustom preview-auto-reveal
   '(eval (preview-arrived-via (key-binding [left]) (key-binding [right])
-                              'backward-char 'forward-char))
+                              #'backward-char #'forward-char))
   "Cause previews to open automatically when entered.
 Possibilities are:
 T autoopens,
@@ -1701,7 +1701,7 @@ to the default background in most other cases."
 ;; Emacs blinks politely when point is on an image (the tested
 ;; unrelated function was introduced at about the time image blinking
 ;; became tolerable).
-(defcustom preview-transparent-border (unless (fboundp 'posn-object-x-y) 1.5)
+(defcustom preview-transparent-border nil
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
@@ -2590,8 +2590,7 @@ Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
-    (when (fboundp 'TeX-overlay-prioritize)
-      (overlay-put ov 'priority (TeX-overlay-prioritize start end)))
+    (overlay-put ov 'priority (TeX-overlay-prioritize start end))
     (overlay-put ov 'preview-map
                  (preview-make-clickable
                   nil nil nil
@@ -2674,8 +2673,7 @@ if any."
       (setcdr filename TeX-active-tempdir)
       (setq filename (list filename)))
     (let ((ov (make-overlay start end nil nil nil)))
-      (when (fboundp 'TeX-overlay-prioritize)
-        (overlay-put ov 'priority (TeX-overlay-prioritize start end)))
+      (overlay-put ov 'priority (TeX-overlay-prioritize start end))
       (overlay-put ov 'preview-map
                    (preview-make-clickable
                     nil nil nil
@@ -2843,7 +2841,7 @@ using MML mode."
   (when (catch 'badcolor
           (let ((str (car (preview-format-mml ov))))
             (if str
-                (if (eq last-command 'kill-region)
+                (if (eq last-command #'kill-region)
                     (kill-append str nil)
                   (kill-new str))
               (error "No image file available")))
@@ -2869,7 +2867,7 @@ using MML mode."
               (setq str (concat (substring str 0 (nth 0 elt))
                                 (nth 2 elt)
                                 (substring str (nth 1 elt)))))
-            (if (eq last-command 'kill-region)
+            (if (eq last-command #'kill-region)
                 (kill-append str nil)
               (kill-new str)))
           nil)
@@ -4135,7 +4133,7 @@ It returns the started process."
   (let* ((geometry (preview-get-geometry))
          (commandbuff (current-buffer))
          (pr-file (cons
-                   'TeX-active-master
+                   #'TeX-active-master
                    (file-name-nondirectory file)))
          (master (TeX-master-file))
          (master-file (expand-file-name master))

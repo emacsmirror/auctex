@@ -57,6 +57,8 @@
                   nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
+(declare-function gnuserv-start "ext:gnuserv"
+                  (&optional leave-dead) t)
 
 ;; Silence the compiler for variables:
 ;; tex.el: Variables defined somewhere in this file:
@@ -575,7 +577,7 @@ string."
                          (null TeX-source-correlate-output-page-function)
                          (eq (TeX-source-correlate-method-active) 'synctex)
                          (setq TeX-source-correlate-output-page-function
-                               'TeX-synctex-output-page))
+                               #'TeX-synctex-output-page))
                     (or (if TeX-source-correlate-output-page-function
                             (funcall TeX-source-correlate-output-page-function))
                         "1")))
@@ -1235,8 +1237,8 @@ viewer."
   "Run `TeX-evince-sync-view-1', which see, set up for Evince."
   (TeX-evince-sync-view-1 "gnome" "evince"))
 
-(defun TeX-xreader-sync-view ()
-  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+(defun TeX-reader-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Xreader."
   (TeX-evince-sync-view-1 "x" "reader"))
 
 (defun TeX-view-program-select-evince (de app)
@@ -1612,7 +1614,7 @@ For available TYPEs, see variable `TeX-engine'."
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode #'TeX-Omega-mode)
-(make-obsolete 'TeX-Omega-mode 'TeX-engine-set "11.86")
+(make-obsolete 'TeX-Omega-mode #'TeX-engine-set "11.86")
 (make-obsolete-variable 'TeX-Omega-mode 'TeX-engine "11.86")
 
 ;;; Forward and inverse search
@@ -1656,15 +1658,15 @@ The function should take no arguments and return the page numer
 as a string.")
 (make-variable-buffer-local 'TeX-source-correlate-output-page-function)
 
+(define-obsolete-variable-alias 'TeX-source-specials-view-start-server
+  'TeX-source-correlate-start-server "11.86")
+
 (defcustom TeX-source-correlate-start-server 'ask
   "Control if server should be started for inverse search."
   :type '(choice (const :tag "Always" t)
                  (const :tag "Never" nil)
                  (const :tag "Ask" ask))
   :group 'TeX-view)
-(when (fboundp 'defvaralias)
-  (defvaralias 'TeX-source-specials-view-start-server
-    'TeX-source-correlate-start-server))
 
 (defvar TeX-source-correlate-start-server-asked nil
   "Keep track if question about server start search was asked.")
@@ -1694,7 +1696,7 @@ This is the case if `TeX-source-correlate-start-server-flag' is non-nil."
   (when (and TeX-source-correlate-start-server-flag
              (not (TeX-source-correlate-server-enabled-p)))
     (let* ((gnuserv-p (TeX-source-correlate-gnuserv-p))
-           (start (if gnuserv-p 'gnuserv-start 'server-start)))
+           (start (if gnuserv-p #'gnuserv-start #'server-start)))
       (cond
        ;; Server should be started unconditionally
        ((eq TeX-source-correlate-start-server t)
@@ -2700,8 +2702,7 @@ are returned."
 
 (defcustom TeX-auto-private
   (list (expand-file-name TeX-auto-local
-                          (or (and (boundp 'user-emacs-directory)
-                                   (concat user-emacs-directory "auctex/"))
+                          (or (concat user-emacs-directory "auctex/")
                               "~/.emacs.d/auctex/")))
   "List of directories containing automatically generated AUCTeX style files.
 
@@ -2714,8 +2715,7 @@ These correspond to the personal TeX macros."
 
 (defcustom TeX-style-private
   (list (expand-file-name TeX-style-local
-                          (or (and (boundp 'user-emacs-directory)
-                                   (concat user-emacs-directory "auctex/"))
+                          (or (concat user-emacs-directory "auctex/")
                               "~/.emacs.d/auctex/")))
   "List of directories containing hand-generated AUCTeX style files.
 
@@ -3218,15 +3218,8 @@ Or alternatively:
                    (let ((window (get-buffer-window buf-name)))
                      (when window (delete-window window))))
                   (t
-                   (if (fboundp 'completion-in-region)
-                       (completion-in-region begin end
-                                             (all-completions symbol list nil))
-                     (message "Making completion list...")
-                     (let ((list (all-completions symbol list nil)))
-                       (with-output-to-temp-buffer buf-name
-                         (display-completion-list list)))
-                     (set-window-dedicated-p (get-buffer-window buf-name) 'soft)
-                     (message "Making completion list...done")))))
+                   (completion-in-region begin end
+                                         (all-completions symbol list nil)))))
         (funcall (nth 1 entry))))))
 
 (defun TeX--completion-at-point ()
@@ -3611,7 +3604,7 @@ argument OPTIONAL is ignored."
 
 ;;; Font Locking
 
-(defcustom TeX-install-font-lock 'font-latex-setup
+(defcustom TeX-install-font-lock #'font-latex-setup
   "Function to call to install font lock support.
 Choose `ignore' if you don't want AUCTeX to install support for font locking."
   :group 'TeX-misc
@@ -3733,9 +3726,7 @@ The algorithm is as follows:
         "\\)*\\)\\(%+[ \t]*\\)"))
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
   (set (make-local-variable 'comment-use-syntax) t)
-  ;; `comment-padding' is defined here as an integer for compatibility
-  ;; reasons because older Emacsen could not cope with a string.
-  (set (make-local-variable 'comment-padding) 1)
+  (set (make-local-variable 'comment-padding) " ")
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
@@ -3782,9 +3773,8 @@ The algorithm is as follows:
            #'TeX--prettify-symbols-compose-p)))
 
   ;; Standard Emacs completion-at-point support
-  (when (boundp 'completion-at-point-functions)
-    (add-hook 'completion-at-point-functions
-              #'TeX--completion-at-point nil t))
+  (add-hook 'completion-at-point-functions
+            #'TeX--completion-at-point nil t)
 
   ;; Let `TeX-master-file' be called after a new file was opened and
   ;; call `TeX-update-style' on any file opened.  (The addition to the
@@ -3811,6 +3801,7 @@ The algorithm is as follows:
 
 ;;; Hilighting
 
+;; FIXME: It's likely that `hilit-patterns-alist' is much obsolete.
 (if (boundp 'hilit-patterns-alist)
     (let ((latex-patterns (cdr-safe (assq 'latex-mode hilit-patterns-alist)))
           (plain-tex-patterns (cdr-safe (assq 'plain-tex-mode
@@ -4192,9 +4183,7 @@ If SKIP is not-nil, don't insert code for SKIP."
   "List of regular expressions guaranteed to match nothing.")
 
 (defvar TeX-token-char
-  (if (featurep 'mule)
-      "\\(?:[a-zA-Z]\\|\\cj\\)"
-    "[a-zA-Z]")
+  "\\(?:[a-zA-Z]\\|\\cj\\)"
   "Regexp matching a character in a TeX macro.
 
 Please use a shy group if you use a grouping construct, because
@@ -4806,7 +4795,7 @@ element to ALIST-VAR."
 
 ;;; Menu Support
 
-(defvar TeX-command-current 'TeX-command-master
+(defvar TeX-command-current #'TeX-command-master
   "Specify whether to run command on master, buffer or region.")
 ;; Function used to run external command.
 
@@ -4814,19 +4803,19 @@ element to ALIST-VAR."
   "Determine that the next command will be on the master file."
   (interactive)
   (message "Next command will be on the master file.")
-  (setq TeX-command-current 'TeX-command-master))
+  (setq TeX-command-current #'TeX-command-master))
 
 (defun TeX-command-select-buffer ()
   "Determine that the next command will be on the buffer."
   (interactive)
   (message "Next command will be on the buffer")
-  (setq TeX-command-current 'TeX-command-buffer))
+  (setq TeX-command-current #'TeX-command-buffer))
 
 (defun TeX-command-select-region ()
   "Determine that the next command will be on the region."
   (interactive)
   (message "Next command will be on the region")
-  (setq TeX-command-current 'TeX-command-region))
+  (setq TeX-command-current #'TeX-command-region))
 
 (defvar TeX-command-force nil)
 ;; If non-nil, TeX-command-query will return the value of this
@@ -4891,7 +4880,7 @@ affected.  See `TeX-electric-macro' for detail."
   :group 'TeX-macro
   :type 'boolean)
 
-(defcustom TeX-newline-function 'newline
+(defcustom TeX-newline-function #'newline
   "Function to be called upon pressing `RET'."
   :group 'TeX-indentation
   :type '(choice (const newline)
@@ -4997,15 +4986,15 @@ Brace insertion is only done if point is in a math construct and
    `("Command on"
      [ "Master File" TeX-command-select-master
        :keys "C-c C-c" :style radio
-       :selected (eq TeX-command-current 'TeX-command-master)
+       :selected (eq TeX-command-current #'TeX-command-master)
        :help "Commands in this menu work on the Master File"]
      [ "Buffer" TeX-command-select-buffer
        :keys "C-c C-b" :style radio
-       :selected (eq TeX-command-current 'TeX-command-buffer)
+       :selected (eq TeX-command-current #'TeX-command-buffer)
        :help "Commands in this menu work on the current buffer"]
      [ "Region" TeX-command-select-region
        :keys "C-c C-r" :style radio
-       :selected (eq TeX-command-current 'TeX-command-region)
+       :selected (eq TeX-command-current #'TeX-command-region)
        :help "Commands in this menu work on the region"]
      [ "Fix the Region" TeX-pin-region
        :active (or (if prefix-arg
@@ -5030,7 +5019,7 @@ Brace insertion is only done if point is in a math construct and
       :visible TeX-parse-all-errors]
      ["Error Overview" TeX-error-overview
       :help "Open an overview of errors occured in the last TeX run"
-      :visible (and TeX-parse-all-errors (fboundp 'tabulated-list-mode))]
+      :visible TeX-parse-all-errors]
      ["Quick View" TeX-view
       :help "Start a viewer without prompting"]
      "-"
@@ -5704,7 +5693,7 @@ An optional fourth (or sixth) element means always replace if t."
                      (string :tag "Math Suffix")))
             (option (sexp :format "Replace\n" :value t)))))
 
-(defvar TeX-font-replace-function 'TeX-font-replace
+(defvar TeX-font-replace-function #'TeX-font-replace
   "Determines the function which is called when a font should be replaced.")
 
 (defun TeX-describe-font-entry (entry)
@@ -5927,17 +5916,17 @@ sign.  With optional ARG, insert that many dollar signs."
           (exchange-point-and-mark))
       (cond
        ;; $...$ to $$...$$
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
         (replace-match "$$\\1$$")
         (set-mark (match-beginning 0)))
        ;; \(...\) to \[...\]
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
         (replace-match "\\\\[\\1\\\\]")
         (set-mark (match-beginning 0)))
        ;; Strip \[...\] or $$...$$
-       ((and (eq last-command 'TeX-insert-dollar)
+       ((and (eq last-command #'TeX-insert-dollar)
              (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
                  (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
         (replace-match "\\1")
@@ -5972,13 +5961,9 @@ sign.  With optional ARG, insert that many dollar signs."
   "Toggle off input method when entering math mode."
   (and TeX-math-toggle-off-input-method
        (texmathp)
-       (boundp 'current-input-method) current-input-method
+       current-input-method
        (string-match TeX-math-input-method-off-regexp current-input-method)
-       ;; inactivate-input-method is obsolete since emacs 24.3.
-       (if (fboundp 'deactivate-input-method)
-           (deactivate-input-method)
-         (with-no-warnings
-           (inactivate-input-method)))))
+       (deactivate-input-method)))
 
 ;;; Simple Commands
 
@@ -6183,7 +6168,7 @@ closing brace."
 
 Don't hesitate to report any problems or inaccurate documentation.
 
-If you don't have setup sending mail from (X)Emacs, please copy the
+If you don't have setup sending mail from Emacs, please copy the
 output buffer into your mail program, as it gives us important
 information about your AUCTeX version and AUCTeX configuration."
   (interactive)
@@ -6599,8 +6584,7 @@ error."
        (defvar ,symbol nil
          ,(format "Abbrev table for %s mode." name))
        (define-abbrev-table ',symbol nil)
-       (when (fboundp 'abbrev-table-put)
-         (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table))))))
+       (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table)))))
 
 
 ;;; Special provisions for other modes and libraries
@@ -6624,14 +6608,9 @@ error."
 ;; `delete-selection-mode', but when it's nil users may want to be able to
 ;; delete active region if `delete-selection-mode' is active, see bug#23177.  We
 ;; can dynamically determine the behavior of `delete-selection' with
-;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.  This
-;; dynamicity has been introduced in Emacs 24.3, for previous versions keep
-;; `TeX-insert-dollar' without this property.
-(if (or (> emacs-major-version 24)
-        (and (= emacs-major-version 24)
-             (>= emacs-minor-version 3)))
-    (put 'TeX-insert-dollar 'delete-selection
-         (lambda () (null TeX-electric-math))))
+;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.
+(put 'TeX-insert-dollar 'delete-selection
+     (lambda () (null TeX-electric-math)))
 
 (defun TeX--list-of-string-p (lst)
   "Return non-nil iff `LST' is a list of strings.

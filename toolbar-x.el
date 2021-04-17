@@ -251,13 +251,15 @@ command, COMM is returned."
              (not app)
              comm-is-command)
         comm
-      (append '(lambda nil (interactive))
-              (when prep (list prep))
-              (when comm
-                (if comm-is-command
-                    `((call-interactively (function ,comm)))
-                  (list comm)))
-              (when app (list app))))))
+      (lambda () (interactive)
+        (let (result)
+          (when prep (setq result (eval prep t)))
+          (when comm (setq result
+                           (if comm-is-command
+                               (call-interactively comm)
+                             (eval comm t))))
+          (when app  (setq result (eval app  t)))
+          result)))))
 
 (defun toolbarx-emacs-mount-popup-menu
     (strings var type &optional title save)
@@ -1478,7 +1480,7 @@ line of buttons.  The only property supported for this button is
           :command undo
           :enable (and (not buffer-read-only)
                         (not (eq t buffer-undo-list))
-                        (if (eq last-command 'undo)
+                        (if (eq last-command #'undo)
                             pending-undo-list
                           (consp buffer-undo-list)))
           :help "Undo last operation"

@@ -1177,7 +1177,7 @@ variable @code{LaTeX-math-abbrev-prefix}.
 To enable LaTeX Math mode by default, add the following in your
 @file{.emacs} file:
 @lisp
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
 @end lisp
 
 @defopt LaTeX-math-abbrev-prefix
@@ -1721,7 +1721,7 @@ automatically as you write it.
 init file:
 
 @lisp
-(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+(add-hook 'LaTeX-mode-hook #'turn-on-auto-fill)
 @end lisp
 
 You can manually fill explicitely marked regions, paragraphs,
@@ -2444,7 +2444,7 @@ add it to a hook and make sure the function is called after font locking
 is set up for the buffer.  The following code should accomplish this:
 
 @lisp
-(add-hook 'find-file-hook 'TeX-fold-buffer t)
+(add-hook 'find-file-hook #'TeX-fold-buffer t)
 @end lisp
 
 The command can be used any time to refresh the whole buffer and fold
@@ -5599,8 +5599,8 @@ defined.  We can specify this information in a style hook file.
   "Clear `Tex-auto-multi' before use."
   (setq TeX-auto-multi nil))
 
-(add-hook 'TeX-auto-prepare-hook 'TeX-macro-prepare)
-(add-hook 'TeX-auto-cleanup-hook 'TeX-macro-cleanup)
+(add-hook 'TeX-auto-prepare-hook #'TeX-macro-prepare)
+(add-hook 'TeX-auto-cleanup-hook #'TeX-macro-cleanup)
 
 (TeX-add-style-hook
  "macro"

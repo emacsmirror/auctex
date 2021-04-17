@@ -611,7 +611,7 @@ call a function in RefTeX to find or display the cross reference of a
   "Give advice to novice users about what commands to use next."
   :type 'boolean)
 
-(defcustom bib-switch-to-buffer-function 'switch-to-buffer
+(defcustom bib-switch-to-buffer-function #'switch-to-buffer
   "Function used to select buffers if they differ from the original.
 You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 `switch-to-buffer-other-frame'."
@@ -1331,9 +1331,7 @@ e.g.: \\cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
        ((and (re-search-backward "[\n{, ]" nil t)
              (string-equal "{" (buffer-substring (match-beginning 0)
                                                  (match-end 0))))
-        (if (fboundp 'buffer-substring-no-properties)
-            (buffer-substring-no-properties (1+ (point)) here)
-        (buffer-substring (1+ (point)) here)))))))
+        (buffer-substring-no-properties (1+ (point)) here))))))
 
 ;;--------------------------------------------------------------------------
 ;; Functions for Displaying or moving to matching \ref or \label command

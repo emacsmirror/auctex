@@ -236,7 +236,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
    (concat "\\(?:"
            (regexp-quote LaTeX-optop) "[tb]" (regexp-quote LaTeX-optcl)
            "\\)?")
-   'LaTeX-amsmath-alignat-number-of-ampersands))
+   #'LaTeX-amsmath-alignat-number-of-ampersands))
 
 (defun LaTeX-amsmath-alignat-number-of-ampersands (start end)
   "Return the number of ampersands to insert.

@@ -39,6 +39,9 @@
 (defvar multi-prompt-found nil
   "List of entries currently added during a `multi-prompt'.")
 
+;; FIXME: Modify all caller (including ones in reftex-auc.el) to use
+;; more sophisticated crm.el.  After that, we no longer need the
+;; former half of this file.
 ;;;###autoload
 (defun multi-prompt (separator
                      unique prompt table
@@ -54,8 +57,8 @@ are the arguments to `completing-read'.  See that."
         (new-map (make-sparse-keymap)))
     (set-keymap-parent new-map old-map)
     (define-key new-map separator (if require-match
-                                      'multi-prompt-next-must-match
-                                    'multi-prompt-next))
+                                      #'multi-prompt-next-must-match
+                                    #'multi-prompt-next))
     (define-key new-map "\C-?" #'multi-prompt-delete)
     (let* ((minibuffer-local-completion-map new-map)
            (minibuffer-local-must-match-map new-map)
@@ -104,18 +107,12 @@ are the arguments to `completing-read'.  See that."
 (defun multi-prompt-next ()
   (interactive)
   (throw 'multi-prompt-next
-         (cond
-          ((fboundp 'minibuffer-contents-no-properties)
-           ;; buffer-substring no longer works in emacs-21, it returns 
-           ;; the whole prompt line. Use this instead.
-           (minibuffer-contents-no-properties))
-          (t
-           (buffer-substring-no-properties (point-min) (point-max))))))
+         (minibuffer-contents-no-properties)))
          
 (defun multi-prompt-next-must-match ()
   (interactive)
   (when  (call-interactively #'minibuffer-complete)
-    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+    (let ((content (minibuffer-contents-no-properties)))
       (when (or ;; (not require-match)
                 (assoc content minibuffer-completion-table))
         (throw 'multi-prompt-next content)))))

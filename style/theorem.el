@@ -114,7 +114,7 @@ RefTeX users should customize or add ENVIRONMENT to
   "Move parsed results from `LaTeX-auto-theorem-newtheorem' and
 make them available as new environments."
   (dolist (newthm (mapcar #'car (LaTeX-theorem-newtheorem-list)))
-    (LaTeX-add-environments (list newthm 'LaTeX-theorem-env-label))))
+    (LaTeX-add-environments (list newthm #'LaTeX-theorem-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-theorem-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-theorem-auto-cleanup t)
@@ -136,7 +136,7 @@ make them available as new environments."
          (let ((nthm (TeX-read-string
                       (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-theorem-newtheorems nthm)
-           (LaTeX-add-environments (list nthm 'LaTeX-theorem-env-label))
+           (LaTeX-add-environments (list nthm #'LaTeX-theorem-env-label))
            (format "%s" nthm))))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion

@@ -48,13 +48,8 @@
   :type 'file)
 
 (defcustom TeX-shell-command-option
-  (cond ((memq system-type '(ms-dos emx windows-nt) )
-         (cond ((boundp 'shell-command-option)
-                shell-command-option)
-               ((boundp 'shell-command-switch)
-                shell-command-switch)
-               (t
-                "/c")))
+  (cond ((memq system-type '(ms-dos emx windows-nt))
+         shell-command-switch)
         (t                              ;Unix & EMX (Emacs 19 port to OS/2)
          "-c"))
   "Shell argument indicating that next argument is the command."
@@ -105,7 +100,7 @@ depend on it being positive instead of the entry in `TeX-command-list'."
   (interactive "P")
   (TeX-master-file nil nil t)  ;; call to ask if necessary
   (TeX-command (TeX-command-query #'TeX-master-file)
-               'TeX-master-file override-confirm))
+               #'TeX-master-file override-confirm))
 
 (defcustom TeX-region-extra ""
   "String to insert in the region file between the header and the text."
@@ -476,8 +471,7 @@ Do you want to select one of these engines? "
              ;; make it nil.
              (setq TeX-check-engine-list nil))))
        (TeX-engine-set engine)
-       (when (and (fboundp 'add-file-local-variable)
-                  (y-or-n-p "Do you want to remember the choice? "))
+       (when (y-or-n-p "Do you want to remember the choice? ")
          (add-file-local-variable 'TeX-engine engine)
          (save-buffer))))))
 
@@ -977,7 +971,7 @@ depending on the last command issued."
   (interactive)
   (let ((output-file (TeX-active-master (TeX-output-extension))))
     (if (file-exists-p output-file)
-        (TeX-command "View" 'TeX-active-master 0)
+        (TeX-command "View" #'TeX-active-master 0)
       (message "Output file %S does not exist." output-file))))
 
 ;;; Command Hooks

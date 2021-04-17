@@ -137,13 +137,13 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
   '((tex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
          :command (progn
                     (TeX-save-document #'TeX-master-file)
-                    (TeX-command "TeX" 'TeX-master-file -1))
+                    (TeX-command "TeX" #'TeX-master-file -1))
          :help (lambda (&rest ignored)
                  (TeX-bar-help-from-command-list "TeX")))
     (pdftex :image "pdftex"
             :command (progn
                        (TeX-save-document #'TeX-master-file)
-                       (TeX-command "PDFTeX" 'TeX-master-file -1))
+                       (TeX-command "PDFTeX" #'TeX-master-file -1))
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "PDFTeX")))
     (next-error :image "error"
@@ -151,24 +151,24 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
                 :enable (TeX-error-report-has-errors-p)
                 :visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
-          :command (TeX-command "View" 'TeX-master-file -1)
+          :command (TeX-command "View" #'TeX-master-file -1)
           :help (lambda (&rest ignored)
                   (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
-          :command (TeX-command "File" 'TeX-master-file -1)
+          :command (TeX-command "File" #'TeX-master-file -1)
           :visible (not TeX-PDF-mode)
           :help (lambda (&rest ignored)
                   (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
-            :command (TeX-command "BibTeX" 'TeX-master-file -1)
+            :command (TeX-command "BibTeX" #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "BibTeX")))
     (clean  :image "delete"
-            :command (TeX-command "Clean" 'TeX-master-file -1)
+            :command (TeX-command "Clean" #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
-            :command (TeX-command "Spell" 'TeX-master-file -1)
+            :command (TeX-command "Spell" #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "Spell"))))
   ;; latex-symbols-experimental?
@@ -278,13 +278,13 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
   '((latex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
            :command (progn
                       (TeX-save-document #'TeX-master-file)
-                      (TeX-command "LaTeX" 'TeX-master-file -1))
+                      (TeX-command "LaTeX" #'TeX-master-file -1))
            :help (lambda (&rest ignored)
                    (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
               :command (progn
                          (TeX-save-document #'TeX-master-file)
-                         (TeX-command "PDFLaTeX" 'TeX-master-file -1))
+                         (TeX-command "PDFLaTeX" #'TeX-master-file -1))
               :help (lambda (&rest ignored)
                       (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
@@ -292,26 +292,26 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
                 :enable (TeX-error-report-has-errors-p)
                 :visible (TeX-error-report-has-errors-p))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
-          :command (TeX-command "View" 'TeX-master-file -1)
+          :command (TeX-command "View" #'TeX-master-file -1)
           :help (lambda (&rest ignored)
                   (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
-          :command (TeX-command "File" 'TeX-master-file -1)
+          :command (TeX-command "File" #'TeX-master-file -1)
           :visible (not TeX-PDF-mode)
           :help (lambda (&rest ignored)
                   (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
             :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
-                                  'TeX-master-file -1)
+                                  #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list
                      (if LaTeX-using-Biber "Biber" "BibTeX"))))
     (clean  :image "delete"
-            :command (TeX-command "Clean" 'TeX-master-file -1)
+            :command (TeX-command "Clean" #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
-            :command (TeX-command "Spell" 'TeX-master-file -1)
+            :command (TeX-command "Spell" #'TeX-master-file -1)
             :help (lambda (&rest ignored)
                     (TeX-bar-help-from-command-list "Spell")))
     (latex-symbols-experimental . (:alias :eval-group

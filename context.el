@@ -1550,7 +1550,6 @@ else.  There might be text before point."
   "Update entries on AUCTeX menu."
   (or (not (memq major-mode '(context-mode)))
       (null ConTeXt-menu-changed)
-      (not (fboundp 'easy-menu-change))
       (progn
         (TeX-update-style)
         (setq ConTeXt-menu-changed nil)
@@ -1770,8 +1769,6 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (use-local-map ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
-  (if (fboundp 'make-local-hook)
-      (make-local-hook 'activate-menubar-hook))
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
   ;; Outline support

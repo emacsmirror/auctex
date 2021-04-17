@@ -1097,7 +1097,8 @@ corresponding entry."
 
 (make-variable-buffer-local 'LaTeX-label-alist)
 
-(defvar TeX-read-label-prefix) ;; Defined further below.
+(defvar TeX-read-label-prefix nil
+  "Initial input for the label in `TeX-read-label'.")
 
 (defun LaTeX-label (name &optional type no-insert)
   "Insert a label for NAME at point.
@@ -1484,7 +1485,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
       (just-one-space)
       (TeX-insert-macro "\\")))
   (LaTeX-insert-ampersands
-   LaTeX-array-skipping-regexp 'LaTeX-array-count-columns))
+   LaTeX-array-skipping-regexp #'LaTeX-array-count-columns))
 
 (defun LaTeX-item-tabular* (&optional suppress)
   "Insert line break macro on the last line and suitable number of &'s.
@@ -1497,7 +1498,7 @@ If SUPPRESS is non-nil, do not insert line break macro."
       (just-one-space)
       (TeX-insert-macro "\\")))
   (LaTeX-insert-ampersands
-   LaTeX-tabular*-skipping-regexp 'LaTeX-array-count-columns))
+   LaTeX-tabular*-skipping-regexp #'LaTeX-array-count-columns))
 
 (defun LaTeX-insert-ampersands (regexp func)
   "Insert suitable number of ampersands for the current environment.
@@ -2014,9 +2015,6 @@ OPTIONAL is ignored."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one."
   (TeX-argument-insert (eval args t) optional))
-
-(defvar TeX-read-label-prefix nil
-  "Initial input for the label in `TeX-read-label.'")
 
 (defun TeX-read-label (optional &optional prompt definition)
   "Prompt for a label completing with known labels and return it.
@@ -2936,30 +2934,24 @@ Normally bound to keys \(, { and [."
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
 (put #'LaTeX-insert-left-brace 'delete-selection
-     ;; COMPATIBILITY for Emacs < 24.3
-     (if (and (= emacs-major-version 24)
-              (< emacs-minor-version 3))
-         ;; Emacs < 24.3 doesn't support a function as value of
-         ;; `delete-selection' property.
-         nil
-       (lambda ()
-         ;; Consult `delete-selection' property when
-         ;; `LaTeX-insert-left-brace' works just the same as
-         ;; `self-insert-command'.
-         (and (or (not LaTeX-electric-left-right-brace)
-                  current-prefix-arg)
-              (let ((f (get #'self-insert-command 'delete-selection)))
-                ;; If `delete-selection' property of
-                ;; `self-insert-command' is one of the predefined
-                ;; special symbols, just return itself.
-                (if (memq f '(yank supersede kill t nil))
-                    ;; FIXME: if this list of special symbols is
-                    ;; extended in future delsel.el, this discrimination
-                    ;; will become wrong.
-                    f
-                  ;; Otherwise, call it as a function and return
-                  ;; its value.
-                  (funcall f)))))))
+     (lambda ()
+       ;; Consult `delete-selection' property when
+       ;; `LaTeX-insert-left-brace' works just the same as
+       ;; `self-insert-command'.
+       (and (or (not LaTeX-electric-left-right-brace)
+                current-prefix-arg)
+            (let ((f (get #'self-insert-command 'delete-selection)))
+              ;; If `delete-selection' property of
+              ;; `self-insert-command' is one of the predefined
+              ;; special symbols, just return itself.
+              (if (memq f '(yank supersede kill t nil))
+                  ;; FIXME: if this list of special symbols is
+                  ;; extended in future delsel.el, this discrimination
+                  ;; will become wrong.
+                  f
+                ;; Otherwise, call it as a function and return
+                ;; its value.
+                (funcall f))))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
   (lmacro lbrace &optional optional prompt)
@@ -3689,16 +3681,25 @@ outer indentation in case of a commented line.  The symbols
   "Move point to the first non-whitespace character on this line.
 If it is commented and comments are formatted syntax-aware move
 point to the first non-whitespace character after the comment
-character(s).  The optional argument FORCE-TYPE can be used to
-force point being moved to the inner or outer indentation in case
-of a commented line.  The symbols 'inner and 'outer are
-recognized."
+character(s), but only if `this-command' is an actual indentation
+command.  The optional argument FORCE-TYPE can be used to force
+point being moved to the inner or outer indentation in case of a
+commented line.  The symbols 'inner and 'outer are recognized."
   (if (or (and force-type
                (eq force-type 'inner))
           (and (not force-type)
                (or (and (TeX-in-line-comment)
                         (eq major-mode 'doctex-mode))
                    (and (TeX-in-commented-line)
+                        ;; Only move after the % if we're actually
+                        ;; performing an indent command and not, e.g.,
+                        ;; our `TeX-newline-function' which will be
+                        ;; invoked automatically by
+                        ;; `electric-indent-mode' (bug#47757).
+                        (memq this-command
+                              `(,indent-line-function
+                                indent-for-tab-command
+                                LaTeX-indent-line))
                         LaTeX-syntactic-comments))))
       (progn
         (beginning-of-line)
@@ -4012,9 +4013,7 @@ space does not end a sentence, so don't break a line there."
   "Move to the position where the line should be broken."
   (fill-move-to-break-point linebeg)
   ;; Prevent line break between 2-byte char and 1-byte char.
-  (when (and (featurep 'mule)
-             enable-multibyte-characters
-             (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
+  (when (and (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
                       (TeX-looking-at-backward
                        LaTeX-nospace-between-char-regexp 1))
                  (and (not (TeX-looking-at-backward
@@ -5368,7 +5367,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 (defun LaTeX-math-initialize ()
   (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
         (map LaTeX-math-keymap)
-        (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+        (unicode LaTeX-math-menu-unicode))
     (while math
       (let* ((entry (car math))
              (key (nth 0 entry))
@@ -5378,7 +5377,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
              value menu name)
         (setq math (cdr math))
         (if (and prefix
-                 (setq prefix (decode-char 'ucs (nth 3 entry))))
+                 (setq prefix (nth 3 entry)))
             (setq prefix (concat (string prefix) " \\"))
           (setq prefix "\\"))
         (if (listp (cdr entry))
@@ -5389,8 +5388,8 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
         (if (stringp value)
             (progn
               (setq name (intern (concat "LaTeX-math-" value)))
-              (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-                               (list 'LaTeX-math-insert value 'arg))))
+              (fset name (lambda (arg) (interactive "*P")
+                           (LaTeX-math-insert value arg))))
           (setq name value))
         (if key
             (progn
@@ -5486,7 +5485,7 @@ commands are defined:
   "Menu used in math minor mode."
   LaTeX-math-menu)
 
-(defcustom LaTeX-math-insert-function 'TeX-insert-macro
+(defcustom LaTeX-math-insert-function #'TeX-insert-macro
   "Function called with argument STRING to insert \\STRING."
   :group 'LaTeX-math
   :type 'function)
@@ -5556,8 +5555,8 @@ char."
                           (submenu   (nth 2 elt))
                           (unicode   (nth 3 elt))
                           uchar noargp)
-                      (when (and (fboundp 'decode-char) (integerp unicode))
-                        (setq uchar (decode-char 'ucs unicode)))
+                      (when (integerp unicode)
+                        (setq uchar unicode))
                       (when (listp submenu) (setq submenu (nth 1 submenu)))
                       (setq noargp
                             (not (string-match
@@ -5643,13 +5642,13 @@ environments."
 
 (defun LaTeX-environment-menu-entry (entry)
   "Create an entry for the environment menu."
-  (vector (car entry) (list 'LaTeX-environment-menu (car entry)) t))
+  (vector (car entry) (list #'LaTeX-environment-menu (car entry)) t))
 
 (defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
 
 (defun LaTeX-environment-modify-menu-entry (entry)
   "Create an entry for the change environment menu."
-  (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
+  (vector (car entry) (list #'LaTeX-modify-environment (car entry)) t))
 
 (defun LaTeX-section-enable-symbol (level)
   "Symbol used to enable section LEVEL in the menu bar."
@@ -5671,7 +5670,7 @@ environments."
 (defun LaTeX-section-menu-entry (entry)
   "Create an ENTRY for the section menu."
   (let ((enable (LaTeX-section-enable-symbol (nth 1 entry))))
-    (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
+    (vector (car entry) (list #'LaTeX-section-menu (nth 1 entry)) enable)))
 
 (defcustom LaTeX-menu-max-items 25
   "Maximum number of items in the menu for LaTeX environments.
@@ -6924,7 +6923,7 @@ function would return non-nil and `(match-string 1)' would return
                    (regexp-opt
                     (let (out)
                       (mapc (lambda (x)
-                              (when (eq (cadr x) 'LaTeX-indent-tabular)
+                              (when (eq (cadr x) #'LaTeX-indent-tabular)
                                 (push (car x) out)))
                             LaTeX-indent-environment-list)
                       out)))))
