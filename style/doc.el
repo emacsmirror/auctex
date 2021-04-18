@@ -50,7 +50,7 @@
 
 (defun LaTeX-doc-after-insert-macrocode (env start end)
   "Make sure the macrocode environment is properly formatted after insertion."
-  (when (TeX-member env '("macro" "macrocode" "macrocode*") 'string-equal)
+  (when (TeX-member env '("macro" "macrocode" "macrocode*") #'string-equal)
     (save-excursion
       (goto-char end)
       (skip-chars-backward " \t")

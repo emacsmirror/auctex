@@ -1828,7 +1828,7 @@ The value is actually the tail of the list of options given to CLASS."
 Return first found class option matching REGEXP, or nil if not found."
   (TeX-member regexp (apply #'append
                             (mapcar #'cdr LaTeX-provided-class-options))
-              'string-match))
+              #'string-match))
 
 (defvar LaTeX-provided-package-options nil
   "Alist of options provided to LaTeX packages.
@@ -1958,7 +1958,7 @@ The value is actually the tail of the list of options given to PACKAGE."
   ;; NOTE: This uses an O(N^2) algorithm, while an O(N log N)
   ;; algorithm is possible.
   (mapc (lambda (symbol)
-          (if (not (TeX-member symbol TeX-auto-symbol 'equal))
+          (if (not (TeX-member symbol TeX-auto-symbol #'equal))
               ;; No matching symbol, insert in list
               (add-to-list 'TeX-auto-symbol (concat "end" symbol))
             ;; Matching symbol found, remove from list

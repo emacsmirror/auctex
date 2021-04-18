@@ -1445,7 +1445,7 @@ are evaluated positively is chosen."
 
 (defun TeX-match-style (regexp)
   "Check if a style matching REGEXP is active."
-  (TeX-member regexp (TeX-style-list) 'string-match))
+  (TeX-member regexp (TeX-style-list) #'string-match))
 
 (defun TeX-view-match-predicate (predicate)
   "Check if PREDICATE is true.
@@ -2977,7 +2977,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
   "Run the TeX style hooks STYLES."
   (mapcar (lambda (style)
             ;; Avoid recursion.
-            (unless (TeX-member style TeX-active-styles 'string-equal)
+            (unless (TeX-member style TeX-active-styles #'string-equal)
               (setq TeX-active-styles
                     (cons style TeX-active-styles))
               (TeX-load-style style)
@@ -3084,7 +3084,7 @@ FORCE is not nil."
   :prefix "TeX-"
   :group 'AUCTeX)
 
-(defcustom TeX-complete-word 'ispell-complete-word
+(defcustom TeX-complete-word #'ispell-complete-word
   "Function to call for completing non-macros in `tex-mode'."
   :type 'function
   :group 'TeX-macro)
@@ -3107,7 +3107,7 @@ Possible values are nil, t, or a list of style names.
          (upcase-plural (upcase plural)))
     `(progn
        (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
-         (make-hash-table :test 'equal)
+         (make-hash-table :test #'equal)
          ,(format "A hash-table mapping %s names to the style name providing it.
 
 A %s occuring in this table is considered an expert %s and
@@ -3637,7 +3637,7 @@ Each entry is a list with three elements.
 When entering `tex-mode', each regexp is tried in turn in order to find
 the major mode to be used.")
 
-(defcustom TeX-default-mode 'latex-mode
+(defcustom TeX-default-mode #'latex-mode
   "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
   :type '(radio (function-item latex-mode)
@@ -4298,7 +4298,7 @@ you should not use something like `[\\(]' for a character range."
                          (cdr (or (assq symbol syms)
                                   (car (push
                                         (cons symbol
-                                              (make-hash-table :test 'equal))
+                                              (make-hash-table :test #'equal))
                                         syms)))))))))
         (setq count 0)
         (dolist (symbol syms)

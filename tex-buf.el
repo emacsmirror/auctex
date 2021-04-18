@@ -919,7 +919,7 @@ QUEUE is non-nil when we are checking for the printer queue."
   "Check STYLES compared to the current style options."
   (let ((files (TeX-style-list)))
     (while (and styles
-                (not (TeX-member (car (car styles)) files 'string-match)))
+                (not (TeX-member (car (car styles)) files #'string-match)))
       (setq styles (cdr styles))))
   (if styles
       (nth 1 (car styles))
@@ -3616,7 +3616,7 @@ errors.  If nil, defaults to `TeX-error-overview-active-buffer'."
                     'face 'link
                     'follow-link t
                     'id id
-                    'action 'TeX-error-overview-goto-source)))
+                    'action #'TeX-error-overview-goto-source)))
             entries))
          ;; Increase the `id' counter in any case.
          (setq id (1+ id)))

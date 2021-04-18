@@ -41,7 +41,7 @@
   "Do beamer-specific stuff after the insertion of an environment."
   ;; Add `fragile' as an optional argument to the frame environment if
   ;; a verbatim environment is inserted.
-  (when (and (TeX-member env (LaTeX-verbatim-environments) 'string-equal)
+  (when (and (TeX-member env (LaTeX-verbatim-environments) #'string-equal)
              (save-excursion
                (goto-char start)
                (string-equal (LaTeX-current-environment) "frame")))
