@@ -2954,7 +2954,7 @@ Normally bound to keys \(, { and [."
                 (funcall f))))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
-  (lmacro lbrace &optional optional prompt)
+    (lmacro lbrace &optional optional prompt)
   "Insert right macro and brace correspoinding to LMACRO and LBRACE.
 Left-right association is determined through
 `LaTeX-left-right-macros-association' and `TeX-braces-association'.
@@ -2979,6 +2979,10 @@ is nil, consult user which brace should be used."
     (if rmacro
         (insert TeX-esc rmacro))
     (cond
+     ((and electric-pair-mode
+           (string= (char-to-string last-command-event) lbrace))
+      ;; Do nothing as `electric-pair-mode' closes for us.
+      nil)
      ((and TeX-arg-right-insert-p rbrace)
       (insert rbrace))
      (rmacro
@@ -2987,7 +2991,7 @@ is nil, consult user which brace should be used."
                 optional prompt
                 (format "Which brace (default %s)"
                         (or rbrace "."))) TeX-left-right-braces
-                        nil nil nil nil (or rbrace ".")))))))
+               nil nil nil nil (or rbrace ".")))))))
 
 (defun LaTeX--find-preceding-left-macro-name ()
   "Return the left macro name just before the point, if any.
