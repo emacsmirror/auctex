@@ -2899,9 +2899,9 @@ Normally bound to keys \(, { and [."
              (TeX-active-mark)
              (> (point) (mark)))
         (exchange-point-and-mark))
-    (insert (make-string (prefix-numeric-value arg) last-command-event))
     (if auto-p
         (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
+          (insert last-command-event)
           (save-excursion
             (backward-char)
             ;; The brace "{" is exceptional in two aspects.
@@ -2930,7 +2930,8 @@ Normally bound to keys \(, { and [."
               (if (TeX-active-mark)
                   (goto-char (mark)))
               (LaTeX-insert-corresponding-right-macro-and-brace
-               lmacro lbrace)))))))
+               lmacro lbrace))))
+      (self-insert-command (prefix-numeric-value arg)))))
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
 (put #'LaTeX-insert-left-brace 'delete-selection
