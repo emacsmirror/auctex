@@ -2899,7 +2899,7 @@ Normally bound to keys \(, { and [."
              (TeX-active-mark)
              (> (point) (mark)))
         (exchange-point-and-mark))
-    (self-insert-command (prefix-numeric-value arg))
+    (insert (make-string (prefix-numeric-value arg) last-command-event))
     (if auto-p
         (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
           (save-excursion
@@ -2979,10 +2979,6 @@ is nil, consult user which brace should be used."
     (if rmacro
         (insert TeX-esc rmacro))
     (cond
-     ((and electric-pair-mode
-           (string= (char-to-string last-command-event) lbrace))
-      ;; Do nothing as `electric-pair-mode' closes for us.
-      nil)
      ((and TeX-arg-right-insert-p rbrace)
       (insert rbrace))
      (rmacro
@@ -6813,13 +6809,6 @@ function would return non-nil and `(match-string 1)' would return
   (use-local-map LaTeX-mode-map)
 
   (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
-
-  ;; AUCTeX's brace pairing feature (`LaTeX-electric-left-right-brace') doesn't
-  ;; play nice with `electric-pair-mode' which is a global minor mode as of
-  ;; emacs 24.4.
-  (when (and LaTeX-electric-left-right-brace
-             (boundp 'electric-pair-mode))
-    (set (make-local-variable 'electric-pair-mode) nil))
 
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)
