@@ -3783,7 +3783,7 @@ performed in that case."
           (if (re-search-forward
                (concat "\\("
                        ;; Code comments.
-                       "[^\r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
+                       "[^ \r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
                        TeX-comment-start-regexp
                        "\\|"
                        ;; Lines ending with `\par'.
