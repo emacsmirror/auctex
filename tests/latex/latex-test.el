@@ -33,6 +33,10 @@
  "latex-filling-in.tex"
  'LaTeX-filling/out
  "latex-filling-out.tex"
+ 'LaTeX-comment-filling/in
+ "latex-comment-filling-in.tex"
+ 'LaTeX-comment-filling/out
+ "latex-comment-filling-out.tex"
  'LaTeX-math-indent/in
  "math-indent-in.tex"
  'LaTeX-math-indent/out
@@ -94,6 +98,27 @@
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
+             (buffer-string)))))
+
+;; Test for comment filling, especially with
+;; `LaTeX-syntactic-comments' which is t by default.
+(ert-deftest LaTeX-comment-filling ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-comment-filling/in)
+             (LaTeX-mode)
+             (let ((fill-column 70)
+                   (code-comment-test nil))
+               (fill-paragraph)
+               (while (= 0 (forward-line 1))
+                 (when (looking-at "% Code comments.")
+                   (setq code-comment-test t))
+                 (when code-comment-test
+                   (LaTeX-back-to-indentation 'inner))
+                 (fill-paragraph)))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-comment-filling/out)
              (buffer-string)))))
 
 ;; Test for bug#19281 (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19281):
@@ -453,9 +478,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -478,9 +501,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -504,9 +525,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -529,9 +548,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   \\begin{center}
-    % abc
-    % def
-    % ghi
+    % abc def ghi
   \\end{center}
 \\end{quote}
 ")))))

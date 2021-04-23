@@ -3929,7 +3929,7 @@ space does not end a sentence, so don't break a line there."
         (goto-char from)
         (let* (linebeg
                (code-comment-start (save-excursion
-                                     (LaTeX-back-to-indentation)
+                                     (LaTeX-back-to-indentation 'inner)
                                      (TeX-search-forward-comment-start
                                       (line-end-position))))
                (end-marker (save-excursion
@@ -4040,7 +4040,7 @@ space does not end a sentence, so don't break a line there."
              (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "*")
                                       (1- (- (point) linebeg)))
              (not (TeX-escaped-p (match-beginning 0))))
-      (goto-char (match-beginning 0)))
+    (goto-char (match-beginning 0)))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
   ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
@@ -4081,7 +4081,7 @@ space does not end a sentence, so don't break a line there."
           start-point)
       (save-excursion
         (beginning-of-line)
-        (LaTeX-back-to-indentation)
+        (LaTeX-back-to-indentation 'outer)
         (setq start-point (point))
         ;; Find occurences of [, $, {, }, \(, \), \[, \] or $$.
         (while (and (= final-breakpoint orig-breakpoint)
