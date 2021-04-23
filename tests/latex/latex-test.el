@@ -536,4 +536,34 @@ ghi"))
 \\end{quote}
 ")))))
 
+(ert-deftest LaTeX-electric-pair-interaction ()
+  "Whether `LaTeX-insert-left-brace' is compatible with `electric-pair-mode'."
+  (require 'elec-pair)
+  (let ((LaTeX-electric-left-right-brace t)
+        (orig-mode electric-pair-mode))
+    (unwind-protect
+        (with-temp-buffer
+          ;; Temporally enable electric pair mode, if not enabled
+          ;; already.
+          (or orig-mode
+              (electric-pair-mode 1))
+          (latex-mode)
+
+          ;; When `LaTeX-insert-left-brace' supplies right brace,
+          ;; `electric-pair-mode' shoudn't come into play.
+          (setq last-command-event ?\()
+          (LaTeX-insert-left-brace nil)
+          (should (string= "()" (buffer-string)))
+
+          (erase-buffer)
+          ;; When there is a prefix argument, `LaTeX-insert-left-brace'
+          ;; just calls `self-insert-command' and `electric-pair-mode'
+          ;; should work.
+          (setq last-command-event ?\()
+          (LaTeX-insert-left-brace 2)
+          (should (string= "(()" (buffer-string))))
+      ;; Restore electric pair mode.
+      (or orig-mode
+          (electric-pair-mode -1)))))
+
 ;;; latex-test.el ends here

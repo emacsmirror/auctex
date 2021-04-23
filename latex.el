@@ -2900,7 +2900,12 @@ Normally bound to keys \(, { and [."
              (> (point) (mark)))
         (exchange-point-and-mark))
     (if auto-p
+        ;; Should supply corresponding right brace with possible
+        ;; \right-like macro.
         (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
+          ;; Use `insert' rather than `self-insert-command' so that
+          ;; unexcpected side effects, e.g. `electric-pair-mode',
+          ;; won't mess up the following outcomes. (bug#47936)
           (insert last-command-event)
           (save-excursion
             (backward-char)
@@ -2931,6 +2936,8 @@ Normally bound to keys \(, { and [."
                   (goto-char (mark)))
               (LaTeX-insert-corresponding-right-macro-and-brace
                lmacro lbrace))))
+      ;; Don't supply right brace and just act as ordinary
+      ;; `self-insert-command'.
       (self-insert-command (prefix-numeric-value arg)))))
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
