@@ -2899,9 +2899,14 @@ Normally bound to keys \(, { and [."
              (TeX-active-mark)
              (> (point) (mark)))
         (exchange-point-and-mark))
-    (self-insert-command (prefix-numeric-value arg))
     (if auto-p
+        ;; Should supply corresponding right brace with possible
+        ;; \right-like macro.
         (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
+          ;; Use `insert' rather than `self-insert-command' so that
+          ;; unexcpected side effects, e.g. `electric-pair-mode',
+          ;; won't mess up the following outcomes. (bug#47936)
+          (insert last-command-event)
           (save-excursion
             (backward-char)
             ;; The brace "{" is exceptional in two aspects.
@@ -2930,7 +2935,10 @@ Normally bound to keys \(, { and [."
               (if (TeX-active-mark)
                   (goto-char (mark)))
               (LaTeX-insert-corresponding-right-macro-and-brace
-               lmacro lbrace)))))))
+               lmacro lbrace))))
+      ;; Don't supply right brace and just act as ordinary
+      ;; `self-insert-command'.
+      (self-insert-command (prefix-numeric-value arg)))))
 ;; Cater for `delete-selection-mode' (bug#36385)
 ;; See the header comment of delsel.el for detail.
 (put #'LaTeX-insert-left-brace 'delete-selection
@@ -2954,7 +2962,7 @@ Normally bound to keys \(, { and [."
                 (funcall f))))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
-  (lmacro lbrace &optional optional prompt)
+    (lmacro lbrace &optional optional prompt)
   "Insert right macro and brace correspoinding to LMACRO and LBRACE.
 Left-right association is determined through
 `LaTeX-left-right-macros-association' and `TeX-braces-association'.
@@ -2987,7 +2995,7 @@ is nil, consult user which brace should be used."
                 optional prompt
                 (format "Which brace (default %s)"
                         (or rbrace "."))) TeX-left-right-braces
-                        nil nil nil nil (or rbrace ".")))))))
+               nil nil nil nil (or rbrace ".")))))))
 
 (defun LaTeX--find-preceding-left-macro-name ()
   "Return the left macro name just before the point, if any.
@@ -3775,7 +3783,7 @@ performed in that case."
           (if (re-search-forward
                (concat "\\("
                        ;; Code comments.
-                       "[^\r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
+                       "[^ \r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
                        TeX-comment-start-regexp
                        "\\|"
                        ;; Lines ending with `\par'.
@@ -3921,7 +3929,7 @@ space does not end a sentence, so don't break a line there."
         (goto-char from)
         (let* (linebeg
                (code-comment-start (save-excursion
-                                     (LaTeX-back-to-indentation)
+                                     (LaTeX-back-to-indentation 'inner)
                                      (TeX-search-forward-comment-start
                                       (line-end-position))))
                (end-marker (save-excursion
@@ -4032,7 +4040,7 @@ space does not end a sentence, so don't break a line there."
              (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "*")
                                       (1- (- (point) linebeg)))
              (not (TeX-escaped-p (match-beginning 0))))
-      (goto-char (match-beginning 0)))
+    (goto-char (match-beginning 0)))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
   ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
@@ -4073,7 +4081,7 @@ space does not end a sentence, so don't break a line there."
           start-point)
       (save-excursion
         (beginning-of-line)
-        (LaTeX-back-to-indentation)
+        (LaTeX-back-to-indentation 'outer)
         (setq start-point (point))
         ;; Find occurences of [, $, {, }, \(, \), \[, \] or $$.
         (while (and (= final-breakpoint orig-breakpoint)
@@ -6809,13 +6817,6 @@ function would return non-nil and `(match-string 1)' would return
   (use-local-map LaTeX-mode-map)
 
   (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
-
-  ;; AUCTeX's brace pairing feature (`LaTeX-electric-left-right-brace') doesn't
-  ;; play nice with `electric-pair-mode' which is a global minor mode as of
-  ;; emacs 24.4.
-  (when (and LaTeX-electric-left-right-brace
-             (boundp 'electric-pair-mode))
-    (set (make-local-variable 'electric-pair-mode) nil))
 
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)

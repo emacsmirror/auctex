@@ -1,0 +1,38 @@
+% This is a very long comment which should be wrapped around after
+% fill-column characters.  We'll see if that works.
+
+% \begin{itemize}
+% \item This is a long item text which should be wrapped around after
+%   fill-column characters even though it is commented.
+% \item This is short.  This also.  So all 3 gonna be joined.
+% \end{itemize}
+
+\begin{quote}
+  % This is a very long comment which should be wrapped around after
+  % fill-column characters.  We'll see if that works.
+\end{quote}
+
+\begin{quote}
+  % \begin{itemize}
+  % \item This is a long item text which should be wrapped around
+  %   after fill-column characters even though it is commented.  This
+  %   should still work although we're already indented.
+  % \item This is short.  This also.  So all 3 gonna be joined.
+  % \end{itemize}
+\end{quote}
+
+% This is short.\\
+% But no join because the backslashes.
+
+% This is short.\par
+% But no join because the par.
+
+% Code comments.
+
+\foo\bar % This is a code comment.
+\baz     % This also.
+\quux    % So lines must not be joined.
+\foobar  % But very long lines, such as this one, well, you know, they
+% may be wrapped around.  TODO: It would be cool if this was indented
+% as much as the previous line.
+\bar     % This is short.

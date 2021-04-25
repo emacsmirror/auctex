@@ -33,6 +33,10 @@
  "latex-filling-in.tex"
  'LaTeX-filling/out
  "latex-filling-out.tex"
+ 'LaTeX-comment-filling/in
+ "latex-comment-filling-in.tex"
+ 'LaTeX-comment-filling/out
+ "latex-comment-filling-out.tex"
  'LaTeX-math-indent/in
  "math-indent-in.tex"
  'LaTeX-math-indent/out
@@ -94,6 +98,27 @@
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
+             (buffer-string)))))
+
+;; Test for comment filling, especially with
+;; `LaTeX-syntactic-comments' which is t by default.
+(ert-deftest LaTeX-comment-filling ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-comment-filling/in)
+             (LaTeX-mode)
+             (let ((fill-column 70)
+                   (code-comment-test nil))
+               (fill-paragraph)
+               (while (= 0 (forward-line 1))
+                 (when (looking-at "% Code comments.")
+                   (setq code-comment-test t))
+                 (when code-comment-test
+                   (LaTeX-back-to-indentation 'inner))
+                 (fill-paragraph)))
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-comment-filling/out)
              (buffer-string)))))
 
 ;; Test for bug#19281 (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19281):
@@ -453,9 +478,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -478,9 +501,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -504,9 +525,7 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   % \\begin{center}
-  %   abc
-  %   def
-  %   ghi
+  %   abc def ghi
   % \\end{center}
 \\end{quote}
 "))
@@ -529,11 +548,39 @@ ghi"))
                (buffer-string)
                "\\begin{quote}
   \\begin{center}
-    % abc
-    % def
-    % ghi
+    % abc def ghi
   \\end{center}
 \\end{quote}
 ")))))
+
+(ert-deftest LaTeX-electric-pair-interaction ()
+  "Whether `LaTeX-insert-left-brace' is compatible with `electric-pair-mode'."
+  (require 'elec-pair)
+  (let ((LaTeX-electric-left-right-brace t)
+        (orig-mode electric-pair-mode))
+    (unwind-protect
+        (with-temp-buffer
+          ;; Temporally enable electric pair mode, if not enabled
+          ;; already.
+          (or orig-mode
+              (electric-pair-mode 1))
+          (latex-mode)
+
+          ;; When `LaTeX-insert-left-brace' supplies right brace,
+          ;; `electric-pair-mode' shoudn't come into play.
+          (setq last-command-event ?\()
+          (LaTeX-insert-left-brace nil)
+          (should (string= "()" (buffer-string)))
+
+          (erase-buffer)
+          ;; When there is a prefix argument, `LaTeX-insert-left-brace'
+          ;; just calls `self-insert-command' and `electric-pair-mode'
+          ;; should work.
+          (setq last-command-event ?\()
+          (LaTeX-insert-left-brace 2)
+          (should (string= "(()" (buffer-string))))
+      ;; Restore electric pair mode.
+      (or orig-mode
+          (electric-pair-mode -1)))))
 
 ;;; latex-test.el ends here
