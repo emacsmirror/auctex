@@ -2141,19 +2141,21 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
 
 (defun font-latex-match-script-chars (limit)
   "Match subscript and superscript chars up to LIMIT."
-  (and (re-search-forward "[^_^]\\([_^]\\)" limit t)
-       (let ((pos (match-beginning 1)))
-         (and (font-latex-faces-present-p 'font-latex-math-face pos)
-              (not (font-latex-faces-present-p '(font-lock-constant-face
-                                                 font-lock-builtin-face
-                                                 font-lock-comment-face
-                                                 font-latex-verbatim-face) pos))
-              ;; Check for backslash quoting
-              (not (let ((odd nil)
-                         (pos pos))
-                     (while (eq (char-before pos) ?\\)
-                       (setq pos (1- pos) odd (not odd)))
-                     odd))))))
+  (catch 'found
+    (while (re-search-forward "[^_^]\\([_^]\\)" limit t)
+      (let ((pos (match-beginning 1)))
+        (when (and (font-latex-faces-present-p 'font-latex-math-face pos)
+                   (not (font-latex-faces-present-p '(font-lock-constant-face
+                                                      font-lock-builtin-face
+                                                      font-lock-comment-face
+                                                      font-latex-verbatim-face) pos))
+                   ;; Check for backslash quoting
+                   (not (let ((odd nil)
+                              (pos pos))
+                          (while (eq (char-before pos) ?\\)
+                            (setq pos (1- pos) odd (not odd)))
+                          odd)))
+          (throw 'found t))))))
 
 (defun font-latex--get-script-props (pos script-type)
   (let* ((old-raise (or (plist-get (get-text-property pos 'display) 'raise) 0.0))
