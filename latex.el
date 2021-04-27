@@ -3929,7 +3929,7 @@ space does not end a sentence, so don't break a line there."
         (goto-char from)
         (let* (linebeg
                (code-comment-start (save-excursion
-                                     (LaTeX-back-to-indentation 'inner)
+                                     (LaTeX-back-to-indentation)
                                      (TeX-search-forward-comment-start
                                       (line-end-position))))
                (end-marker (save-excursion
