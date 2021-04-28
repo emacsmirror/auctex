@@ -1010,67 +1010,67 @@ have changed."
                                        (regexp-opt verb-macros-with-braces))
           font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
-      (add-to-list 'font-latex-syntactic-keywords
-                   `(,(concat
-                       "^[ \t]*\\\\begin *{\\(?:" verb-envs "\\)}"
-                       ;; Some environments accept an optional and/or mandatory
-                       ;; argument that can span over more lines.  Between
-                       ;; "\begin{<envname>}" and the optional argument there
-                       ;; can be whitespaces and the newline can be commented
-                       ;; by a "%" character.
-                       "[ \t]*\\(?:%.*\n[ \t]*\\)?"
-                       ;; The following line of the regexp matches the optional
-                       ;; argument and allows for up to one level of brackets
-                       ;; inside the argument (e.g., the dialect of a language
-                       ;; in the `lstlisting' environment by the `listings'
-                       ;; package).
-                       "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
-                       ;; After the optional argument, there may also be
-                       ;; another mandatory argument(s) (e.g. with VerbatimOut or
-                       ;; the minted envs or defined with `lstnewenvironment').
-                       "\\(?:{[^}]*}\\)*"
-                       ;; Now match the final newline.  The "." alternative
-                       ;; catches the case where verbatim content is written
-                       ;; immediately after the \begin{verbatim}.
-                       "\\(\n\\|.\\)")
-                     (1 "|" t)))
-      (add-to-list 'font-latex-syntactic-keywords
-                   ;; Using the newline character for the syntax
-                   ;; property often resulted in fontification
-                   ;; problems when text was inserted at the end of
-                   ;; the verbatim environment.  That's why we now use
-                   ;; the starting backslash of \end.  There is a hack
-                   ;; in `font-latex-make-user-keywords' to remove the
-                   ;; spurious fontification of the backslash.
-                   `(,(concat "\\(\\\\\\)end *{\\(?:" verb-envs "\\)}")
-                     (1 "|" t))))
+      (add-to-list
+       'font-latex-syntactic-keywords
+       `(,(concat
+           "^[ \t]*\\\\begin *{\\(?:" verb-envs "\\)}"
+           ;; Some environments accept an optional and/or mandatory
+           ;; argument that can span over more lines.  Between
+           ;; "\begin{<envname>}" and the optional argument there can
+           ;; be whitespaces and the newline can be commented by a "%"
+           ;; character.
+           "[ \t]*\\(?:%.*\n[ \t]*\\)?"
+           ;; The following line of the regexp matches the optional
+           ;; argument and allows for up to one level of brackets
+           ;; inside the argument (e.g., the dialect of a language in
+           ;; the `lstlisting' environment by the `listings' package).
+           "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
+           ;; After the optional argument, there may also be another
+           ;; mandatory argument(s) (e.g. with VerbatimOut or the
+           ;; minted envs or defined with `lstnewenvironment').  Use
+           ;; the same trick as above in order to allow one level of
+           ;; braces in the argument.
+           "\\(?:{[^{}]*\\(?:{[^{}]*}[^{}]*\\)*}\\)*"
+           ;; Now match the final newline.  The "." alternative
+           ;; catches the case where verbatim content is written
+           ;; immediately after the \begin{verbatim}.
+           "\\(\n\\|.\\)")
+         (1 "|" t)))
+      (add-to-list
+       'font-latex-syntactic-keywords
+       ;; Using the newline character for the syntax property often
+       ;; resulted in fontification problems when text was inserted at
+       ;; the end of the verbatim environment.  That's why we now use
+       ;; the starting backslash of \end.  There is a hack in
+       ;; `font-latex-make-user-keywords' to remove the spurious
+       ;; fontification of the backslash.
+       `(,(concat "\\(\\\\\\)end *{\\(?:" verb-envs "\\)}")
+         (1 "|" t))))
     (unless (= (length verb-macros-with-delims) 0)
-      (add-to-list 'font-latex-syntactic-keywords
-                   `(,(concat "\\\\\\(?:" verb-macros-with-delims "\\)"
-                              ;; Some macros take an optional
-                              ;; argument.  This is the same line as
-                              ;; above for environments.
-                              "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-                              ;; An opening curly brace as delimiter
-                              ;; is valid, but allowing it might screw
-                              ;; up fontification of stuff like
-                              ;; "\url{...} foo \textbf{<--!...}".
-                              "\\([^a-z@*\n\f{]\\).*?"
-                              ;; Give an escape char at the end of the
-                              ;; verbatim construct punctuation syntax.
-                              ;; Prevents wrong fontification of stuff
-                              ;; like "\verb|foo\|".
-                              "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")
-                     (1 "\"") (2 ".") (3 "\""))))
+      (add-to-list
+       'font-latex-syntactic-keywords
+       `(,(concat "\\\\\\(?:" verb-macros-with-delims "\\)"
+                  ;; Some macros take an optional argument.  This is
+                  ;; the same line as above for environments.
+                  "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+                  ;; An opening curly brace as delimiter is valid, but
+                  ;; allowing it might screw up fontification of stuff
+                  ;; like "\url{...} foo \textbf{<--!...}".
+                  "\\([^a-z@*\n\f{]\\).*?"
+                  ;; Give an escape char at the end of the verbatim
+                  ;; construct punctuation syntax.  Prevents wrong
+                  ;; fontification of stuff like "\verb|foo\|".
+                  "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")
+         (1 "\"") (2 ".") (3 "\""))))
     (unless (= (length verb-macros-with-braces) 0)
-      (add-to-list 'font-latex-syntactic-keywords
-                   `(,(concat "\\\\\\(?:" verb-macros-with-braces "\\)"
-                              ;; Some macros take an optional
-                              ;; argument.  This is the same line as
-                              ;; above for environments.
-                              "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-                              "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
-                     (1 "|") (2 "|")))))
+      (add-to-list
+       'font-latex-syntactic-keywords
+       `(,(concat "\\\\\\(?:" verb-macros-with-braces "\\)"
+                  ;; Some macros take an optional argument.  This is
+                  ;; the same line as above for environments.
+                  "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+                  "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
+         (1 "|") (2 "|")))))
   (when font-latex-syntactic-keywords-extra
     (nconc font-latex-syntactic-keywords font-latex-syntactic-keywords-extra))
   ;; Cater for docTeX mode.
