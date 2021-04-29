@@ -1024,7 +1024,7 @@ have changed."
            ;; argument and allows for up to one level of brackets
            ;; inside the argument (e.g., the dialect of a language in
            ;; the `lstlisting' environment by the `listings' package).
-           "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
+           "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
            ;; After the optional argument, there may also be another
            ;; mandatory argument(s) (e.g. with VerbatimOut or the
            ;; minted envs or defined with `lstnewenvironment').  Use
