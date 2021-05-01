@@ -45,6 +45,15 @@
 (declare-function turn-off-filladapt-mode "ext:filladapt"
                   nil)
 
+;; These functions are reported to be unknown when built
+;; `with-native-compilation':
+(declare-function LaTeX-command-section-change-level "tex-buf"
+                  (arg))
+(declare-function TeX-LaTeX-sentinel "tex-buf"
+                  (process name))
+(declare-function LaTeX-flymake "latex-flymake"
+                  (report-fn &rest _args))
+
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)
 (defvar TeX-auto-file)
