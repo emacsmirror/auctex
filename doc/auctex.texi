@@ -4482,8 +4482,11 @@ The following style files are recognized:
 @vindex TeX-language-it-hook
 @vindex TeX-language-is-hook
 @vindex TeX-language-pl-hook
+@vindex TeX-language-pt-br-hook
+@vindex TeX-language-pt-hook
 @vindex TeX-language-sk-hook
 @vindex TeX-language-sv-hook
+@cindex Brazilian Portuguese
 @cindex Bulgarian
 @cindex Czech
 @cindex Italian
@@ -4492,14 +4495,22 @@ The following style files are recognized:
 @cindex English
 @cindex German
 @cindex Polish
+@cindex Portuguese
 @cindex Slovak
 @cindex Swedish
 @table @file
+@item brazilian
+@itemx brazil
+Runs style hook @code{TeX-language-pt-br-hook}.  Gives @samp{"} word
+syntax, makes the @key{"} key inserts @samp{``} or @samp{''} depending on
+context.  Typing @key{"} twice will insert a literal @samp{"}.  Typing
+@key{-} twice will insert @samp{"=}, three times @samp{--}.
+
 @item bulgarian
-Runs style hook @code{TeX-language-bg-hook}.  Gives @samp{"} word
-syntax, makes the @key{"} key insert a literal @samp{"}.  Typing @key{"}
-twice will insert insert @samp{"`} or @samp{"'} depending on context.
-Typing @key{-} twice will insert @samp{"=}, three times @samp{--}.
+Runs style hook @code{TeX-language-bg-hook}.  Gives @samp{"} word syntax,
+makes the @key{"} key insert a literal @samp{"}.  Typing @key{"} twice
+will insert @samp{"`} or @samp{"'} depending on context.  Typing @key{-}
+twice will insert @samp{"=}, three times @samp{--}.
 
 @item czech
 Runs style hook @code{TeX-language-cz-hook}.  Pressing @key{"} will
@@ -4540,10 +4551,10 @@ key twice will give you opening or closing German quotes (@samp{"`} or
 @samp{--}.
 
 @item icelandic
-Runs style hook @code{TeX-language-is-hook}.  Gives @samp{"} word
-syntax, makes the @key{"} key insert a literal @samp{"}.  Typing @key{"}
-twice will insert insert @samp{"`} or @samp{"'} depending on context.
-Typing @key{-} twice will insert @samp{"=}, three times @samp{--}.
+Runs style hook @code{TeX-language-is-hook}.  Gives @samp{"} word syntax,
+makes the @key{"} key insert a literal @samp{"}.  Typing @key{"} twice
+will insert @samp{"`} or @samp{"'} depending on context.  Typing @key{-}
+twice will insert @samp{"=}, three times @samp{--}.
 
 @item italian
 Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
@@ -4558,6 +4569,14 @@ twice will insert @samp{"`} or @samp{"'} depending on context.
 Runs style hook @code{TeX-language-pl-hook}.  Makes the @key{"} key
 insert a literal @samp{"}.  Pressing @key{"} twice will insert @samp{,,}
 or @samp{''} depending on context.
+
+@item portuguese
+@itemx portuges
+Runs style hook @code{TeX-language-pt-hook}.  Gives @samp{"} word syntax,
+makes the @key{"} key inserts @samp{"<} or @samp{">} depending on context.
+Typing @key{"} twice will insert a literal @samp{"}.  Typing @key{-} twice
+will insert @samp{"=}, three times @samp{--}.  Note that the language name
+for customizing @code{TeX-quote-language-alist} is @samp{portuguese}.
 
 @item slovak
 Runs style hook @code{TeX-language-sk-hook}.  Pressing @key{"} will

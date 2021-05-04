@@ -6032,6 +6032,7 @@ valid languages."
                          (const "french") ;; not frenchb or francais
                          (const "italian")
                          (const "polish")
+                         (const "portuguese")
                          (const "slovak")
                          (const "swedish")
                          (string :tag "Other Language"))
