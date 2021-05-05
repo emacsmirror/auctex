@@ -6360,6 +6360,8 @@ function would return non-nil and `(match-string 1)' would return
    ;; \Ref and \labelformat are part of kernel with LaTeX 2019-10-01:
    '("Ref" TeX-arg-ref)
    '("labelformat" TeX-arg-counter t)
+   ;; \footref is part of kernel with LaTeX 2021-06-01:
+   '("footref" TeX-arg-ref)
    '("newcommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment" TeX-arg-define-environment
