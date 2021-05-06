@@ -1185,7 +1185,7 @@ run of `TeX-run-format', use
            (while (setq element (assoc idx-file LaTeX-idx-md5-alist))
              (setq LaTeX-idx-md5-alist (delq element LaTeX-idx-md5-alist))))
          (with-temp-buffer
-           (insert-file-contents idx-file)
+           (insert-file-contents-literally idx-file)
            (push (cons idx-file (md5 (current-buffer))) LaTeX-idx-md5-alist))))
 
   ;; can we assume that TeX-sentinel-function will not be changed
@@ -1465,7 +1465,7 @@ reasons.  Use `TeX-run-function' instead."
 
 
 (defvar TeX-sentinel-function (lambda (_process _name) nil)
-  "Hook to cleanup TeX command buffer after temination of PROCESS.
+  "Hook to cleanup TeX command buffer after termination of PROCESS.
 NAME is the name of the process.")
 
 (make-variable-buffer-local 'TeX-sentinel-function)
@@ -1473,7 +1473,7 @@ NAME is the name of the process.")
 
 (defvar TeX-sentinel-default-function (lambda (_process _name) nil)
   "Default for `TeX-sentinel-function'.  To be set in major mode.
-Hook to cleanup TeX command buffer after temination of PROCESS.
+Hook to cleanup TeX command buffer after termination of PROCESS.
 NAME is the name of the process.")
 
 (make-variable-buffer-local 'TeX-sentinel-default-function)
