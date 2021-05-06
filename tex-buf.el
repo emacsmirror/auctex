@@ -1124,11 +1124,38 @@ Return the new process."
                 lst nil)
         (setq lst (cdr lst))))))
 
+(defvar TeX-error-report-switches nil
+  "Reports presence of errors after `TeX-run-TeX'.
+Actually, `TeX-run-format' sets it.
+To test whether the current buffer has a compile error from last
+run of `TeX-run-format', use
+  (TeX-error-report-has-errors-p)")
+
+(defun TeX-error-report-has-errors-p ()
+  "Return non-nil if current buffer has compile errors from last TeX run."
+  (plist-get TeX-error-report-switches (intern (TeX-master-file))))
+
 (defun TeX-run-format (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (TeX-run-set-command name command)
-  (let ((buffer (TeX-process-buffer-name file))
+  (let ((current-master (TeX-master-file))
+        (buffer (TeX-process-buffer-name file))
         (process (TeX-run-command name command file)))
+
+    ;; Save information in TeX-error-report-switches
+    ;; Initialize error to nil (no error) for current master.
+    ;; Presence of error is reported inside `TeX-TeX-sentinel-check'
+
+    ;; the current master file is saved because error routines are
+    ;; parsed in other buffers;
+    (setq TeX-error-report-switches
+          (plist-put TeX-error-report-switches
+                     'TeX-current-master current-master))
+    ;; reset error to nil (no error)
+    (setq TeX-error-report-switches
+          (plist-put TeX-error-report-switches
+                     (intern current-master) nil))
+
     ;; Hook to TeX debugger.
     (with-current-buffer buffer
       (TeX-parse-reset)
@@ -1142,34 +1169,10 @@ Return the new process."
             (set-process-filter process #'TeX-format-filter)))
       process)))
 
-(defvar TeX-error-report-switches nil
-  "Reports presence of errors after `TeX-run-TeX'.
-To test whether the current buffer has a compile error from last
-run of `TeX-run-TeX', use
-  (TeX-error-report-has-errors-p)")
-
-(defun TeX-error-report-has-errors-p ()
-  "Return non-nil if current buffer has compile errors from last TeX run."
-  (plist-get TeX-error-report-switches (intern (TeX-master-file))))
-
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
 
-  ;; Save information in TeX-error-report-switches
-  ;; Initialize error to nil (no error) for current master.
-  ;; Presence of error is reported inside `TeX-TeX-sentinel-check'
-  (let ((current-master (TeX-master-file))
-        (idx-file nil) (element nil))
-    ;; the current master file is saved because error routines are
-    ;; parsed in other buffers;
-    (setq TeX-error-report-switches
-          (plist-put TeX-error-report-switches
-                     'TeX-current-master current-master))
-    ;; reset error to nil (no error)
-    (setq TeX-error-report-switches
-          (plist-put TeX-error-report-switches
-                     (intern current-master) nil))
-
+  (let ((idx-file nil) (element nil))
     ;; Store md5 hash of the index file before running LaTeX.
     (and (memq major-mode '(doctex-mode latex-mode))
          (prog1 (file-exists-p
