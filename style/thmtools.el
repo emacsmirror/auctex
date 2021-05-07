@@ -233,8 +233,8 @@ RefTeX users should customize or add ENVIRONMENT to
                  nil (\"Theorem\" \"theorem\") nil))"
   (let* ((help-form "\
 Select the content of the optional argument with a key:
-`h' in order to insert a plain heading,
-`k' in order to insert key=value pairs with completion,
+'h' in order to insert a plain heading,
+'k' in order to insert key=value pairs with completion,
 RET in order to leave it empty.")
          (choice (read-char-choice
                   (TeX-argument-prompt
