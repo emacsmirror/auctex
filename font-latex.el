@@ -1909,7 +1909,15 @@ signs to follow the point and must be 1 or 2."
        ;; check 1: Are we in a verbatim construct or comment?
        ((let ((ppss (syntax-ppss)))
           (or (nth 3 ppss)
-              (nth 4 ppss)))
+              (and (nth 4 ppss)
+                   ;; Ok, we are in a comment, so basically we should
+                   ;; ignore this $.  However, we need to keep our %$
+                   ;; workaround intact if there has been a valid
+                   ;; occurrence of $ in a non-math context.
+                   (not (and
+                         (looking-back
+                          (concat TeX-comment-start-regexp "[ \t]*"))
+                         (looking-at "[$][ \t]*\n"))))))
         (skip-chars-forward "$" limit))
        ;; check 2: Else, is "$" escaped?
        ((TeX-escaped-p)
