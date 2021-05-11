@@ -85,6 +85,7 @@
 (defvar BibTeX-global-style-files)
 (defvar LaTeX-default-verb-delimiter)
 (defvar LaTeX-global-class-files)
+(defvar LaTeX-global-package-files)
 (defvar LaTeX-optcl)
 (defvar LaTeX-optop)
 (defvar TeX-Biber-global-files)
@@ -5980,6 +5981,7 @@ With optional argument ARG, also reload the style hooks."
             TeX-Biber-global-files nil
             TeX-global-input-files nil
             LaTeX-global-class-files nil
+            LaTeX-global-package-files nil
             LaTeX-includegraphics-global-files nil))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)

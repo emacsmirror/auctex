@@ -2424,6 +2424,11 @@ To insert a hook here, you must insert it in the appropiate style file.")
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+(defvar LaTeX-global-package-files nil
+  "List of the LaTeX package files.
+Initialized once at the first time you prompt for a LaTeX package.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
 (defun LaTeX-arg-usepackage-read-packages-with-options ()
   "Read the packages and the options for the usepackage macro.
 
@@ -2433,18 +2438,18 @@ of the options, nil otherwise."
   (let* ((TeX-file-extensions '("sty"))
          (crm-separator ",")
          packages var options)
-    (unless TeX-global-input-files
+    (unless LaTeX-global-package-files
       (if (if (eq TeX-arg-input-file-search 'ask)
               (not (y-or-n-p "Find packages yourself? "))
             TeX-arg-input-file-search)
           (progn
             (message "Searching for LaTeX packages...")
-            (setq TeX-global-input-files
+            (setq LaTeX-global-package-files
                   (mapcar #'list (TeX-search-files-by-type
-                                 'texinputs 'global t t)))
+                                  'texinputs 'global t t)))
             (message "Searching for LaTeX packages...done"))))
     (setq packages (TeX-completing-read-multiple
-                    "Packages: " TeX-global-input-files))
+                    "Packages: " LaTeX-global-package-files))
     ;; Clean up hook before use in `LaTeX-arg-usepackage-insert'.
     (setq LaTeX-after-usepackage-hook nil)
     (mapc #'TeX-load-style packages)
