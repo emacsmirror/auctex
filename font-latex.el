@@ -1906,8 +1906,10 @@ signs to follow the point and must be 1 or 2."
       ;; If that "$" is not our target, skip over it and search
       ;; again.
       (cond
-       ;; check 1: Are we in a verbatim construct?
-       ((nth 3 (syntax-ppss))
+       ;; check 1: Are we in a verbatim construct or comment?
+       ((let ((ppss (syntax-ppss)))
+          (or (nth 3 ppss)
+              (nth 4 ppss)))
         (skip-chars-forward "$" limit))
        ;; check 2: Else, is "$" escaped?
        ((TeX-escaped-p)
