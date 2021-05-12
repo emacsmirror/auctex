@@ -1909,15 +1909,14 @@ signs to follow the point and must be 1 or 2."
        ;; check 1: Are we in a verbatim construct or comment?
        ((let ((ppss (syntax-ppss)))
           (or (nth 3 ppss)
+              ;; Ignore $ in comments...
               (and (nth 4 ppss)
-                   ;; Ok, we are in a comment, so basically we should
-                   ;; ignore this $.  However, we need to keep our %$
-                   ;; workaround intact if there has been a valid
-                   ;; occurrence of $ in a non-math context.
-                   (not (and
-                         (looking-back
-                          (concat TeX-comment-start-regexp "[ \t]*"))
-                         (looking-at "[$][ \t]*\n"))))))
+                   ;; ... except if we're looking for the end of the
+                   ;; inline math.  We need to consider this %$
+                   ;; comments because they are the workaround for
+                   ;; falsely triggered math mode due to valid,
+                   ;; non-math occurrences of $.
+                   (not num))))
         (skip-chars-forward "$" limit))
        ;; check 2: Else, is "$" escaped?
        ((TeX-escaped-p)
