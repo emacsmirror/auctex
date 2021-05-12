@@ -1876,7 +1876,8 @@ The \\begin{equation} incl. arguments in the same line and
                 (font-latex-find-dollar-math
                  ;; Hope that limit+font-latex-multiline-boundary
                  ;; doesn't fall just inside single "$$".
-                 (+ limit font-latex-multiline-boundary) num)
+                 (min (point-max) (+ limit font-latex-multiline-boundary))
+                 num)
                 ;; Found.
                 (progn
                   (forward-char num)
