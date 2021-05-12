@@ -80,16 +80,9 @@
 (defvar TeX-synctex-tex-flags)
 ;; Variables defined in other AUCTeX libraries:
 ;; latex.el:
-(defvar BibLaTeX-global-style-files)
-(defvar BibTeX-global-files)
-(defvar BibTeX-global-style-files)
 (defvar LaTeX-default-verb-delimiter)
-(defvar LaTeX-global-class-files)
-(defvar LaTeX-global-package-files)
 (defvar LaTeX-optcl)
 (defvar LaTeX-optop)
-(defvar TeX-Biber-global-files)
-(defvar TeX-global-input-files)
 (defvar TeX-output-dir)
 ;; tex-buf.el
 (defvar TeX-current-process-region-p)
@@ -97,8 +90,6 @@
 (defvar TeX-region-orig-buffer)
 ;; tex-ispell.el
 (defvar TeX-ispell-verb-delimiters)
-;; graphicx.el
-(defvar LaTeX-includegraphics-global-files)
 ;; Others:
 (defvar tex--prettify-symbols-alist)    ; tex-mode.el
 (defvar Info-file-list-for-emacs)       ; info.el
@@ -5968,21 +5959,19 @@ sign.  With optional ARG, insert that many dollar signs."
 
 ;;; Simple Commands
 
+(defvar TeX-normal-mode-reset-list '(TeX-style-hook-list)
+  "List of variables to reset with `\\[universal-argument] \\[TeX-normal-mode]'.
+AUCTeX libraries and styles should add variables for reset to
+this list.")
+
 (defun TeX-normal-mode (&optional arg)
   "Remove all information about this buffer, and apply the style hooks again.
 Save buffer first including style information.
 With optional argument ARG, also reload the style hooks."
   (interactive "*P")
   (if arg
-      (setq TeX-style-hook-list nil
-            BibTeX-global-style-files nil
-            BibTeX-global-files nil
-            BibLaTeX-global-style-files nil
-            TeX-Biber-global-files nil
-            TeX-global-input-files nil
-            LaTeX-global-class-files nil
-            LaTeX-global-package-files nil
-            LaTeX-includegraphics-global-files nil))
+      (dolist (var TeX-normal-mode-reset-list)
+        (set var nil)))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)
         (save-buffer)

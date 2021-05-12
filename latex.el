@@ -2345,6 +2345,9 @@ and this variable will be ignored."
 Initialized once at the first time you prompt for a LaTeX class.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'TeX-global-class-files)
+
 (defcustom TeX-arg-input-file-search t
   "If `TeX-arg-input-file' should search for files.
 If the value is t, files in TeX's search path are searched for
@@ -2428,6 +2431,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
   "List of the LaTeX package files.
 Initialized once at the first time you prompt for a LaTeX package.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+;; Add both variables to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'TeX-global-input-files)
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-global-package-files)
 
 (defun LaTeX-arg-usepackage-read-packages-with-options ()
   "Read the packages and the options for the usepackage macro.
@@ -2594,6 +2601,10 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 Initialized once at the first time you prompt for a BibLaTeX
 style.  May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+;; Add both variables to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'BibTeX-global-style-files)
+(add-to-list 'TeX-normal-mode-reset-list 'BibLaTeX-global-style-files)
+
 (defun TeX-arg-bibstyle (optional &optional prompt)
   "Prompt for a BibTeX style file.
 If OPTIONAL is non-nil, insert the resulting value as an optional
@@ -2607,7 +2618,7 @@ string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "BibTeX style")
                     (append (mapcar #'list (TeX-search-files-by-type
-                                           'bstinputs 'local t t))
+                                            'bstinputs 'local t t))
                             BibTeX-global-style-files))
    optional))
 
@@ -2622,6 +2633,9 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 Initialized once at the first time you prompt for an Biber file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+(add-to-list 'TeX-normal-mode-reset-list 'BibTeX-global-files)
+(add-to-list 'TeX-normal-mode-reset-list 'TeX-Biber-global-files)
 
 (defun TeX-arg-bibliography (optional &optional prompt)
   "Prompt for a BibTeX database file.
