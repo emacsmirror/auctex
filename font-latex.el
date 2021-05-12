@@ -1898,7 +1898,8 @@ The \\begin{equation} incl. arguments in the same line and
   "Find dollar sign(s) before LIMIT.
 Set point just before the found $. Ignore escaped $ (\"\\$\").
 Optional argument NUM, if non-nil, specifies the number of dollar
-signs to follow the point and must be 1 or 2."
+signs to follow the point and must be 1 or 2.
+LIMIT must not exceed the end of buffer."
   (catch 'found
     (while (progn
              (skip-chars-forward "^$" limit)
@@ -1916,7 +1917,7 @@ signs to follow the point and must be 1 or 2."
                    ;; inline math.  We need to consider this %$
                    ;; comments because they are the workaround for
                    ;; falsely triggered math mode due to valid,
-                   ;; non-math occurrences of $.
+                   ;; non-math occurrences of $.  (bug#48365)
                    (not num))))
         (skip-chars-forward "$" limit))
        ;; check 2: Else, is "$" escaped?
@@ -1931,21 +1932,6 @@ signs to follow the point and must be 1 or 2."
         ;; followed by $$ because expressions like "$1+1$$2+2$" and
         ;; "$1+2$$$3+3$$" are legal.
         (forward-char 1))
-       ;; (Quote from bug#19589, with a bit of adaptation)
-       ;;
-       ;; > When I use environment variables (such as $HOME) in a .tex
-       ;; > file, the $ triggers math mode syntax highlighting. The
-       ;; > result is that the rest of the buffer, until the next $,
-       ;; > is highlighted as if it were in math mode. Some examples:
-       ;; > \includegraphics{$HOME/path/to/graphic}
-       ;; > \bibliography{$HOME/path/to/bib}
-       ;;
-       ;; In order to spare workaround of adding "%$" at the end of
-       ;; the lines for such cases, we stay away from the next syntax
-       ;; state check.
-       ;; ;; check 3: Else, is "$" in comments or verb-like construct?
-       ;; ((nth 8 (syntax-ppss))
-       ;;       (skip-chars-forward "$" limit))
        (t
         ;; That "$" is live one.
         (throw 'found t))))))
