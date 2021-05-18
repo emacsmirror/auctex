@@ -210,6 +210,7 @@ CLEANFILES = $(AUCELC) $(STYLEELC) $(PREVIEWELC) preview-latex.el
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
 	auto-loads.el config.* preview.el
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
+DYNVARSFILES = *.dynvars style/*.dynvars auctex-dynvars
 
 NOSEARCH = style/.nosearch
 
@@ -370,11 +371,11 @@ uninstall:
 	$(ELCC) -f batch-byte-compile $<
 
 dynvars-check:
-	rm -f $(AUCELC) $(STYLEELC) *.dynvars style/*.dynvars auctex-dynvars
-	EMACS_GENERATE_DYNVARS=1 make some > /dev/null 2>&1
+	rm -f $(AUCELC) $(STYLEELC) $(DYNVARSFILES)
+	EMACS_GENERATE_DYNVARS=1 $(MAKE) some > /dev/null 2>&1
 	cat *.dynvars style/*.dynvars > auctex-dynvars
 	rm -f $(AUCELC) $(STYLEELC)
-	EMACS_DYNVARS_FILE=auctex-dynvars make some
+	EMACS_DYNVARS_FILE=auctex-dynvars $(MAKE) some
 
 clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)
@@ -389,7 +390,7 @@ distclean: doc/Makefile latex/Makefile
 maintainer-clean: doc/Makefile latex/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
-	rm -f $(CLEANFILES) $(DISTCLEANFILES)
+	rm -f $(CLEANFILES) $(DISTCLEANFILES) $(DYNVARSFILES)
 	cd doc && $(MAKE) maintainer-clean
 	cd latex && $(MAKE) distclean
 	cd tests && $(MAKE) clean
