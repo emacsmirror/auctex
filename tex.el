@@ -220,8 +220,7 @@ If nil, none is specified."
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(O?aux)" TeX-run-command nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
-     :help "Run makeglossaries to create glossary
-     file")
+     :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeindex to create index file")
