@@ -825,7 +825,9 @@ environment just inserted, the buffer position just before
           (or (assoc environment LaTeX-indent-environment-list)
               (if auto-fill-function
                   ;; Fill the region only when `auto-fill-mode' is active.
-                  (LaTeX-fill-region content-start (line-beginning-position 2))))
+                  (LaTeX-fill-region content-start (line-beginning-position 2))
+                ;; Else just indent the region. (bug#48518)
+                (indent-region content-start (line-beginning-position 2))))
           (set-mark content-start))
       (indent-according-to-mode))
     ;; Indent \end{foo}.
