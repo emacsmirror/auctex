@@ -908,7 +908,11 @@ With zero or negative ARG turn mode off."
   :keymap (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
-        (set (make-local-variable 'search-invisible) t)
+        ;; The value t cause problem when body text is hidden in
+        ;; outline-minor-mode. (bug#36651)
+        ;; In addition, it's better not to override user preference
+        ;; without good reason.
+        ;; (set (make-local-variable 'search-invisible) t)
         (add-hook 'post-command-hook #'TeX-fold-post-command nil t)
         (add-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point nil t)
         (add-hook 'TeX-after-insert-macro-hook
@@ -930,7 +934,7 @@ With zero or negative ARG turn mode off."
                                                      (TeX-mode-prefix) elt))))
                          (when (boundp symbol)
                            (symbol-value symbol)))))))
-    (kill-local-variable 'search-invisible)
+    ;; (kill-local-variable 'search-invisible)
     (remove-hook 'post-command-hook #'TeX-fold-post-command t)
     (remove-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point t)
     (TeX-fold-clearout-buffer))
