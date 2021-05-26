@@ -12,6 +12,18 @@
 
 @itemize @bullet
 @item
+@AUCTeX{}'s own help messages for @LaTeX{} errors are now shown only for
+@LaTeX{} runs.  @AUCTeX{} shows raw error/warning messages found in
+@file{.log} files for runs of formats other than @LaTeX{}, such as plain
+@TeX{}, @ConTeXt{} and Texinfo, as it does even for @LaTeX{} runs when it
+can't find a matching entry in its own help message catalogue.
+
+Due to this change, customize option @code{TeX-error-description-list} can
+no longer have a fallback entry that matches any error.  If your
+customized value includes such entry, typically @samp{(".*" . "No help
+available")}, please remove it.
+
+@item
 Two functions @code{TeX-split-string} and @code{TeX-assoc} are now
 obsolete and will be removed in future release.  If your personal code
 uses these functions, use @code{split-string} and @code{assoc-string}

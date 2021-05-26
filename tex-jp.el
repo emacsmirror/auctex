@@ -538,7 +538,7 @@ overwrite the value already set locally."
 ;;; Error Messages
 
 (if japanese-TeX-error-messages
-    (setq TeX-error-description-list
+    (setq LaTeX-error-description-list
           '(("\\(?:Package Preview Error\\|Preview\\):.*" .
              "`preview'へ`auctex'オプションを直接与えるのは避けてください．
 プレビューの実行時以外でこのエラーが出た場合，余りにこみいったことを
