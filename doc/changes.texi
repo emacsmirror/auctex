@@ -88,6 +88,11 @@ declared variables with the prefix @samp{TeX-translate-location-}, e.g.,
 The constant @code{LaTeX-dialect} has been renamed to @code{TeX-dialect}
 and moved from @file{latex.el} to @file{tex.el}.  @code{LaTeX-dialect}
 now is an obsolete alias.
+
+@item
+The style @file{latexinfo.el} is removed from @AUCTeX{}.
+@file{latexinfo.el} was meant to support latexinfo which in return was a
+@LaTeX{}-2.09 extension of Texinfo, but didn't manage to replace Texinfo.
 @end itemize
 
 @heading News in 12.3
