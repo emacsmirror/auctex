@@ -4457,7 +4457,7 @@ high-quality typesetting of @acronym{CJK} languages: C@TeX{} and
 China@TeX{} for Chinese, ASCII p@TeX{}, up@TeX{} and NTT j@TeX{} for
 Japanese, H@LaTeX{} and k@TeX{} for Korean.  They are necessary as well
 when you want to typeset documents saved in their domestic encodings
-such as @acronym{Shift-JIS}.  Currently, @AUCTeX{} offers native support
+such as @samp{Shift-JIS}.  Currently, @AUCTeX{} offers native support
 for p@TeX{}, up@TeX{} and j@TeX{} only.
 
 @c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
@@ -4466,7 +4466,7 @@ If you don't need fine tuning in the result with respect to the
 typesetting rules of their respective national standards, most unicode
 based @TeX{} engines, e.g.@: Lua@TeX{} and Xe@TeX{}, can handle
 @acronym{CJK} languages by default if they are encoded in
-@acronym{UTF-8}.  The @acronym{CJK}-@LaTeX{} package is provided for
+@acronym{UTF}-8.  The @acronym{CJK}-@LaTeX{} package is provided for
 supporting @acronym{CJK} scripts in a standard @LaTeX{} document.
 
 @menu
@@ -4729,12 +4729,11 @@ To write Japanese text with @AUCTeX{}, you need the versions of
 Japanese @TeX{} engines by default: NTT j@TeX{}, ASCII p@TeX{} and
 up@TeX{}.
 
-To use the Japanese @TeX{} engines, activate
-@code{japanese-plain-tex-mode} or @code{japanese-latex-mode}.  If it
-doesn't work, send mail to Masayuki Ataka
-@email{masayuki.ataka@@gmail.com} or Ikumi Keita
-@email{ikumikeita@@jcom.home.ne.jp}, who currently concern with
-stuff related to Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
+Activate @code{japanese-plain-tex-mode} or @code{japanese-latex-mode} to
+use the Japanese @TeX{} engines.  If it doesn't work, send mail to
+Masayuki Ataka @email{masayuki.ataka@@gmail.com} or Ikumi Keita
+@email{ikumikeita@@jcom.home.ne.jp}, who currently concern with stuff
+related to Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
 maintainers understand Japanese, so they cannot help you.
 
 It is recommended to enable @code{TeX-parse-self} for typical Japanese
