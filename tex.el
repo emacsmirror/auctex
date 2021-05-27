@@ -3327,7 +3327,7 @@ is called with \\[universal-argument]."
 AUCTeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
-  (cond ((eq (preceding-char) ?\\)
+  (cond ((eq (preceding-char) last-command-event)
          (call-interactively #'self-insert-command))
         ((eq (preceding-char) ?.)
          (let ((TeX-default-macro " ")
