@@ -1719,7 +1719,7 @@ Rerun to get mark in right position\\." nil t)
                             (list (file-name-nondirectory (TeX-active-master))))
                           '("idx"))
          (with-temp-buffer
-           (insert-file-contents idx-file)
+           (insert-file-contents-literally idx-file)
            (not (equal
                  ;; Compare old md5 hash of the idx file with the new one.
                  (cdr (assoc idx-file LaTeX-idx-md5-alist))
