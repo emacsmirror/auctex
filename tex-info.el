@@ -31,6 +31,10 @@
 
 (require 'texinfo)
 
+;; Silence the compiler for Emacs compiled `--with-native-compilation':
+(declare-function TeX-TeX-sentinel "tex-buf"
+                  (process name))
+
 ;;; Environments:
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
