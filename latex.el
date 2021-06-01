@@ -2338,7 +2338,7 @@ string."
                               ("slides"))
   "List of document classes offered when inserting a document environment.
 
-If `TeX-arg-input-file-search' is set to `t', you will get
+If `TeX-arg-input-file-search' is set to t, you will get
 completion with all LaTeX classes available in your distribution
 and this variable will be ignored."
   :group 'LaTeX-environment

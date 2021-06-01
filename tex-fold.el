@@ -908,7 +908,7 @@ With zero or negative ARG turn mode off."
   :keymap (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
-        ;; The value t cause problem when body text is hidden in
+        ;; The value t causes problem when body text is hidden in
         ;; outline-minor-mode. (bug#36651)
         ;; In addition, it's better not to override user preference
         ;; without good reason.

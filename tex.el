@@ -2282,8 +2282,8 @@ change the file.
 If the variable is 'dwim, AUCTeX will try to avoid querying by
 attempting to `do what I mean'; and then change the file.
 
-It is suggested that you use the File Variables (see the info node in
-the Emacs manual) to set this variable permanently for each file."
+It is suggested that you use the File Variables (see the info node
+`File Variables') to set this variable permanently for each file."
   :group 'TeX-command
   :group 'TeX-parse
   :type '(choice (const :tag "Query" nil)
@@ -2525,9 +2525,9 @@ be relative to that."
   "The path of the directory where output files should be placed.
 
 A relative path is interpreted as being relative to the master
-file in `TeX-master'. The path cannot contain a directory that
-starts with '.'. If this variable is nil, the output directory is
-assumed to be the same as the directory of `TeX-master'."
+file in `TeX-master'.  The path cannot contain a directory that
+starts with '.'.  If this variable is nil, the output directory
+is assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
   :safe #'string-or-null-p
   :type '(choice (const :tag "Directory of master file" nil)
@@ -2539,8 +2539,8 @@ assumed to be the same as the directory of `TeX-master'."
 If `TeX-output-dir' is nil, then return nil.
 
 MASTER-DIR is the directory path where the master file is
-located. If RELATIVE-TO-MASTER is non-nil, make the returned path
-relative to the directory in MASTER-DIR."
+located.  If RELATIVE-TO-MASTER is non-nil, make the returned
+path relative to the directory in MASTER-DIR."
   (when TeX-output-dir
     (let* ((master-dir (expand-file-name (or master-dir "")))
            (out-dir (file-name-as-directory
@@ -2558,7 +2558,7 @@ relative to the directory in MASTER-DIR."
 
 (defun TeX--output-dir-arg (argname)
   "Format the output directory as a command argument.
-ARGNAME is prepended to the quoted output directory. If
+ARGNAME is prepended to the quoted output directory.  If
 `TeX-output-dir' is nil then return an empty string."
   (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t)))
     (if out-dir
@@ -4157,14 +4157,15 @@ If SKIP is not-nil, don't insert code for SKIP."
   "List of symbols to ignore when scanning a TeX style file.")
 
 (defcustom TeX-auto-regexp-list 'TeX-auto-full-regexp-list
-  "List of regular expressions used for parsing the current file."
+  "List of regular expressions used for parsing the current file.
+It can also be a name of a variable having such value."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
                 (variable-item TeX-auto-full-regexp-list)
                 (variable-item plain-TeX-auto-regexp-list)
                 (variable-item LaTeX-auto-minimal-regexp-list)
                 (variable-item LaTeX-auto-label-regexp-list)
                 (variable-item LaTeX-auto-regexp-list)
-                (symbol :tag "Other")
+                (variable :tag "Other")
                 (repeat :tag "Specify"
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
@@ -4235,6 +4236,7 @@ Use `TeX-auto-x-regexp-list' for parsing the region between
 
 (defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
   "List of regular expressions used for additional parsing.
+It can also be a name of a variable having such value.
 See `TeX-auto-x-parse-length'."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
                 (variable-item TeX-auto-full-regexp-list)
@@ -4242,7 +4244,7 @@ See `TeX-auto-x-parse-length'."
                 (variable-item LaTeX-auto-minimal-regexp-list)
                 (variable-item LaTeX-auto-label-regexp-list)
                 (variable-item LaTeX-auto-regexp-list)
-                (symbol :tag "Other")
+                (variable :tag "Other")
                 (repeat :tag "Specify"
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
