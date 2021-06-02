@@ -47,17 +47,17 @@ development efforts and avoid redundant work.
 @item Error help catalogs
 
 Currently, the help for errors is more or less hardwired into
-@file{tex.el}.  For supporting error help in other languages, it would
+@file{latex.el}.  For supporting error help in other languages, it would
 be sensible to instead arrange error messages in language-specific
 files, make a common info file from all such catalogs in a given
 language and look the error texts up in an appropriate index.  The user
 would then specify a preference list of languages, and the errors would
 be looked up in the catalogs in sequence until they were identified.
 
-@item Combining @samp{docTeX} with RefTeX
+@item Combining @samp{docTeX} with Ref@TeX{}
 
 Macro cross references should also be usable for document navigation
-using RefTeX.
+using Ref@TeX{}.
 
 @item Fix remove-style feature
 
@@ -73,6 +73,9 @@ major mode function kills all buffer-local variables.
 As of @AUCTeX{} 12.3, @code{TeX-remove-style} is no longer used by any
 other codes.
 
+@item
+Document @code{LaTeX-insert-into-commments} and
+@code{TeX-translate-location-hook}.
 @end itemize
 
 @node Wishlist
@@ -97,7 +100,7 @@ Fringe indicators for errors in the main text would be nice.
 
 A separate frame with a table of math character graphics to click on in
 order to insert the respective sequence into the buffer (cf. the
-``grid'' of x-symbol).
+``grid'' of @samp{x-symbol}).
 
 @item Crossreferencing support
 
@@ -166,7 +169,7 @@ document.
 
 @item
 A nice hierarchical by-topic organization of all officially documented
-LaTeX macros, available from the menu bar.
+@LaTeX{} macros, available from the menu bar.
 
 @item
 @code{TeX-command-default} should be set from the master file, if not
@@ -275,7 +278,7 @@ Do not overwrite emacs warnings about existing auto-save files when
 loading a new file.
 
 @item
-Maybe the regexp for matching a TeX symbol during parsing should be
+Maybe the regexp for matching a @TeX{} symbol during parsing should be
 @samp{"\\\\\\([a-zA-Z]+\\|.\\)"} ---
 @email{thiemann@@informatik.uni-tuebingen.de} Peter Thiemann.
 
