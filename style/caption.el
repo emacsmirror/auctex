@@ -287,7 +287,7 @@ caption, insert only a caption."
   ;; `LaTeX-fill-paragraph' without messing up the code since
   ;; \caption starts a new paragraph with AUCTeX
   ;; (cf. `paragraph-start').
-  (LaTeX-fill-paragraph))
+  (when auto-fill-function (LaTeX-fill-paragraph)))
 
 (defun LaTeX-arg-caption-captionof (optional &optional star)
   "Query for the arguments of \"\\captionof\" macro and insert them.
@@ -311,7 +311,7 @@ STAR is non-nil, do not query for a short-caption and a label."
     (when (and short-caption (not (string= short-caption "")))
       (insert LaTeX-optop short-caption LaTeX-optcl))
     (TeX-argument-insert caption optional)
-    (LaTeX-fill-paragraph)
+    (when auto-fill-function (LaTeX-fill-paragraph))
     (when (and (not star)
                ;; Check if `envtype' is a figure or a table, also
                ;; consult `LaTeX-label-alist' for additions from user

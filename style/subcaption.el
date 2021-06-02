@@ -69,7 +69,7 @@ caption, insert only a caption."
       (insert LaTeX-optop short-caption LaTeX-optcl))
     (insert TeX-grop caption TeX-grcl)
     ;; Fill the \subcaption paragraph before inserting the \label:
-    (LaTeX-fill-paragraph)
+    (when auto-fill-function (LaTeX-fill-paragraph))
     (when (and (not star)
                (save-excursion (LaTeX-label currenv 'environment)))
       ;; Move \label into next line if we have one:
@@ -109,7 +109,7 @@ caption, insert only a caption."
   ;; Fill the paragraph before inserting {}.  We use this function
   ;; since we add \subcaption to `paragraph-start' in the style hook
   ;; below.
-  (LaTeX-fill-paragraph))
+  (when auto-fill-function (LaTeX-fill-paragraph)))
 
 (TeX-add-style-hook
  "subcaption"

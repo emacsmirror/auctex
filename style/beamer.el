@@ -155,8 +155,9 @@
                        (insert (format "\\frametitle{%s}" title))
                        ;; This works because \frametitle is a
                        ;; paragraph command.
-                       (backward-char)
-                       (LaTeX-fill-paragraph))))))
+                       (when auto-fill-function
+                         (backward-char)
+                         (LaTeX-fill-paragraph)))))))
     '("onlyenv" (lambda (env &rest ignore)
                   (LaTeX-insert-environment
                    env

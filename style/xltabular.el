@@ -79,7 +79,7 @@ nested curly brace pair nor escaped \"}\".")
       ;; close `\caption{'
       (insert TeX-grcl "\\\\")
       ;; fill the caption
-      (LaTeX-fill-paragraph)
+      (when auto-fill-function (LaTeX-fill-paragraph))
       ;; Insert a new line and indent
       (LaTeX-newline)
       (indent-according-to-mode))
