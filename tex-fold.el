@@ -897,7 +897,9 @@ the other elements.  The ordering among elements is maintained."
 Called interactively, with no prefix argument, toggle the mode.
 With universal prefix ARG (or if ARG is nil) turn mode on.
 With zero or negative ARG turn mode off."
-  nil nil (list (cons TeX-fold-command-prefix TeX-fold-keymap))
+  :init-value nil
+  :lighter nil
+  :keymap (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
         (set (make-local-variable 'search-invisible) t)

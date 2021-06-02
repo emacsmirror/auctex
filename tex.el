@@ -1601,7 +1601,7 @@ For available TYPEs, see variable `TeX-engine'."
 
 (define-minor-mode TeX-Omega-mode
   "Minor mode for using the Omega engine."
-  nil nil nil
+  :init-value nil :lighter nil :keymap nil
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode #'TeX-Omega-mode)
@@ -2123,7 +2123,7 @@ for backward compatibility."
 
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
-  nil nil nil
+  :init-value nil :lighter nil :keymap nil
   :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode #'TeX-interactive-mode)

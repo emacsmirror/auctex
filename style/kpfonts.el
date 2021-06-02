@@ -508,7 +508,9 @@ argument, the symbols will be surrounded by dollar signs.  The
 following commands are defined:
 
 \\{LaTeX-kpfonts-mode-map}"
-  nil nil (list (cons (LaTeX-kpfonts-abbrev-prefix) LaTeX-kpfonts-keymap))
+  :init-value nil
+  :lighter nil
+  :keymap (list (cons (LaTeX-kpfonts-abbrev-prefix) LaTeX-kpfonts-keymap))
   (TeX-set-mode-name))
 
 (easy-menu-define LaTeX-kpfonts-mode-menu

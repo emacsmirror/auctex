@@ -5513,7 +5513,9 @@ the symbols will be surrounded by dollar signs.  The following
 commands are defined:
 
 \\{LaTeX-math-mode-map}"
-  nil nil (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  :init-value nil
+  :lighter nil
+  :keymap (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   (TeX-set-mode-name))
 (defalias 'latex-math-mode #'LaTeX-math-mode)
 
