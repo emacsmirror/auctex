@@ -106,7 +106,7 @@ arguments."
     (when (and label-inside (not star))
       (LaTeX-label currenv 'environment))
     (insert TeX-grcl)
-    (LaTeX-fill-paragraph)
+    (when auto-fill-function (LaTeX-fill-paragraph))
     (LaTeX-newline)
     (indent-according-to-mode)
     ;; Insert short & regular 2. caption
@@ -131,7 +131,7 @@ arguments."
                        ""))))
         (and width (TeX-argument-insert width t))
         (and inpos (TeX-argument-insert inpos t))))
-    (LaTeX-fill-paragraph)
+    (when auto-fill-function (LaTeX-fill-paragraph))
     ;; Insert label -- a new line is inserted only if label is there:
     (when (and (not label-inside) (not star)
                (save-excursion (LaTeX-label currenv 'environment)))

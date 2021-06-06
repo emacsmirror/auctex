@@ -185,6 +185,9 @@ extensions to be matched."
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-includegraphics-global-files)
+
 (defun LaTeX-includegraphics-read-file-TeX ()
   "Read image file for \\includegraphics.
 Offers all graphic files found in the TeX search path.  See

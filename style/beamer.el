@@ -41,7 +41,7 @@
   "Do beamer-specific stuff after the insertion of an environment."
   ;; Add `fragile' as an optional argument to the frame environment if
   ;; a verbatim environment is inserted.
-  (when (and (TeX-member env (LaTeX-verbatim-environments) 'string-equal)
+  (when (and (TeX-member env (LaTeX-verbatim-environments) #'string-equal)
              (save-excursion
                (goto-char start)
                (string-equal (LaTeX-current-environment) "frame")))
@@ -155,8 +155,9 @@
                        (insert (format "\\frametitle{%s}" title))
                        ;; This works because \frametitle is a
                        ;; paragraph command.
-                       (backward-char)
-                       (LaTeX-fill-paragraph))))))
+                       (when auto-fill-function
+                         (backward-char)
+                         (LaTeX-fill-paragraph)))))))
     '("onlyenv" (lambda (env &rest ignore)
                   (LaTeX-insert-environment
                    env

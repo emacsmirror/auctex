@@ -11,7 +11,7 @@
 @c @cindex @code{preview-report-bug}
 @c @cindex Report a bug
 A number of issues are known concerning the interoperation with various
-other software. Some of the known problems can be solved by moving to
+other software.  Some of the known problems can be solved by moving to
 newer versions of the problematic software or by simple patches.
 
 @menu
@@ -46,12 +46,12 @@ with bitmapped fonts, anyway.  You might try @option{-Ppdf} for another
 stab at scalable fonts, or other printer definitions.  Use
 
 @display
-@kbd{M-x customize-variable @key{RET} preview-fast-dvips-command @key{RET}}
+@kbd{M-x customize-option @key{RET} preview-fast-dvips-command @key{RET}}
 @end display
 @noindent
 and
 @display
-@kbd{M-x customize-variable @key{RET} preview-dvips-command @key{RET}}
+@kbd{M-x customize-option @key{RET} preview-dvips-command @key{RET}}
 @end display
 @noindent
 in order to customize this.
@@ -102,6 +102,7 @@ which will tag the corners of the included @TeX{} box.  This will mostly
 be convenient for @emph{pure} PostScript stuff like that created by
 PSTricks, which Dvips would otherwise reserve no space for.
 
+@c FIXME: It seems that x-symbol is much outdated.
 @node x-symbol interoperation
 @section x-symbol interoperation
 

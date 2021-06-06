@@ -80,15 +80,9 @@
 (defvar TeX-synctex-tex-flags)
 ;; Variables defined in other AUCTeX libraries:
 ;; latex.el:
-(defvar BibLaTeX-global-style-files)
-(defvar BibTeX-global-files)
-(defvar BibTeX-global-style-files)
 (defvar LaTeX-default-verb-delimiter)
-(defvar LaTeX-global-class-files)
 (defvar LaTeX-optcl)
 (defvar LaTeX-optop)
-(defvar TeX-Biber-global-files)
-(defvar TeX-global-input-files)
 (defvar TeX-output-dir)
 ;; tex-buf.el
 (defvar TeX-current-process-region-p)
@@ -96,8 +90,6 @@
 (defvar TeX-region-orig-buffer)
 ;; tex-ispell.el
 (defvar TeX-ispell-verb-delimiters)
-;; graphicx.el
-(defvar LaTeX-includegraphics-global-files)
 ;; Others:
 (defvar tex--prettify-symbols-alist)    ; tex-mode.el
 (defvar Info-file-list-for-emacs)       ; info.el
@@ -228,8 +220,7 @@ If nil, none is specified."
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(O?aux)" TeX-run-command nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
-     :help "Run makeglossaries to create glossary
-     file")
+     :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeindex to create index file")
@@ -1454,7 +1445,7 @@ are evaluated positively is chosen."
 
 (defun TeX-match-style (regexp)
   "Check if a style matching REGEXP is active."
-  (TeX-member regexp (TeX-style-list) 'string-match))
+  (TeX-member regexp (TeX-style-list) #'string-match))
 
 (defun TeX-view-match-predicate (predicate)
   "Check if PREDICATE is true.
@@ -1610,7 +1601,7 @@ For available TYPEs, see variable `TeX-engine'."
 
 (define-minor-mode TeX-Omega-mode
   "Minor mode for using the Omega engine."
-  nil nil nil
+  :init-value nil :lighter nil :keymap nil
   :group 'TeX-command
   (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
 (defalias 'tex-omega-mode #'TeX-Omega-mode)
@@ -2132,7 +2123,7 @@ for backward compatibility."
 
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
-  nil nil nil
+  :init-value nil :lighter nil :keymap nil
   :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode #'TeX-interactive-mode)
@@ -2497,11 +2488,7 @@ Get `major-mode' from master file and enable it."
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
 Return nil otherwise."
-  (save-excursion
-    ;; XXX: Checking -*- line necessary as well?
-    (goto-char (point-max))
-    (search-backward "\n\^L" (max (- (point-max) 3000) (point-min)) 'move)
-    (re-search-forward "^%+ *TeX-master:" nil t)))
+  (assq 'TeX-master file-local-variables-alist))
 
 ;;; Style Paths
 
@@ -2986,7 +2973,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
   "Run the TeX style hooks STYLES."
   (mapcar (lambda (style)
             ;; Avoid recursion.
-            (unless (TeX-member style TeX-active-styles 'string-equal)
+            (unless (TeX-member style TeX-active-styles #'string-equal)
               (setq TeX-active-styles
                     (cons style TeX-active-styles))
               (TeX-load-style style)
@@ -3093,7 +3080,7 @@ FORCE is not nil."
   :prefix "TeX-"
   :group 'AUCTeX)
 
-(defcustom TeX-complete-word 'ispell-complete-word
+(defcustom TeX-complete-word #'ispell-complete-word
   "Function to call for completing non-macros in `tex-mode'."
   :type 'function
   :group 'TeX-macro)
@@ -3116,7 +3103,7 @@ Possible values are nil, t, or a list of style names.
          (upcase-plural (upcase plural)))
     `(progn
        (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
-         (make-hash-table :test 'equal)
+         (make-hash-table :test #'equal)
          ,(format "A hash-table mapping %s names to the style name providing it.
 
 A %s occuring in this table is considered an expert %s and
@@ -3336,7 +3323,7 @@ is called with \\[universal-argument]."
 AUCTeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
-  (cond ((eq (preceding-char) ?\\)
+  (cond ((eq (preceding-char) last-command-event)
          (call-interactively #'self-insert-command))
         ((eq (preceding-char) ?.)
          (let ((TeX-default-macro " ")
@@ -3646,7 +3633,7 @@ Each entry is a list with three elements.
 When entering `tex-mode', each regexp is tried in turn in order to find
 the major mode to be used.")
 
-(defcustom TeX-default-mode 'latex-mode
+(defcustom TeX-default-mode #'latex-mode
   "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
   :type '(radio (function-item latex-mode)
@@ -4307,7 +4294,7 @@ you should not use something like `[\\(]' for a character range."
                          (cdr (or (assq symbol syms)
                                   (car (push
                                         (cons symbol
-                                              (make-hash-table :test 'equal))
+                                              (make-hash-table :test #'equal))
                                         syms)))))))))
         (setq count 0)
         (dolist (symbol syms)
@@ -5967,20 +5954,19 @@ sign.  With optional ARG, insert that many dollar signs."
 
 ;;; Simple Commands
 
+(defvar TeX-normal-mode-reset-list '(TeX-style-hook-list)
+  "List of variables to reset with `\\[universal-argument] \\[TeX-normal-mode]'.
+AUCTeX libraries and styles should add variables for reset to
+this list.")
+
 (defun TeX-normal-mode (&optional arg)
   "Remove all information about this buffer, and apply the style hooks again.
 Save buffer first including style information.
 With optional argument ARG, also reload the style hooks."
   (interactive "*P")
   (if arg
-      (setq TeX-style-hook-list nil
-            BibTeX-global-style-files nil
-            BibTeX-global-files nil
-            BibLaTeX-global-style-files nil
-            TeX-Biber-global-files nil
-            TeX-global-input-files nil
-            LaTeX-global-class-files nil
-            LaTeX-includegraphics-global-files nil))
+      (dolist (var TeX-normal-mode-reset-list)
+        (set var nil)))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)
         (save-buffer)
@@ -6032,6 +6018,7 @@ valid languages."
                          (const "french") ;; not frenchb or francais
                          (const "italian")
                          (const "polish")
+                         (const "portuguese")
                          (const "slovak")
                          (const "swedish")
                          (string :tag "Other Language"))

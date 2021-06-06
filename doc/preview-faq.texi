@@ -1,6 +1,6 @@
 @c This is part of the preview-latex manual.
-@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009, 2017 Free Software
-@c   Foundation, Inc.
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009
+@c               2017, 2021 Free Software Foundation, Inc.
 @c See file preview-latex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -63,7 +63,7 @@ got it from.
 @subsection I have trouble with the display format...
 We recommend keeping the variable @code{preview-image-type} set to
 @code{dvipng} (if you have it installed) or @code{png}.  This is the
-default and can be set via the Preview/Customize menu.
+default and can be set via the @samp{Preview/Customize} menu.
 
 All other formats are known to have inconveniences, either in file size
 or quality.  There are some Emacs versions around not supporting
@@ -121,7 +121,7 @@ generate any errors, but they will not produce any previews, either.
 
 @item An outdated @file{preview} installation
 The @file{preview.sty} package is useful for more than just
-@previewlatex{}.  For example, it is part of @TeX{}live.  So you have
+@previewlatex{}.  For example, it is part of @w{@TeX{} Live}.  So you have
 to make sure that @previewlatex{} does not get to work with outdated
 style and configuration files: some newer features will not work with
 older @TeX{} style files, and really old files will make
@@ -145,7 +145,7 @@ You can include them however manually by adding the lines:
 \usepackage[displaymath,textmath,sections,graphics,floats]@{preview@}
 \PreviewEnvironment@{enumerate@}
 @end example
-
+@noindent
 in your document header, that is before 
 
 @example
@@ -160,14 +160,14 @@ Be aware that
 @example
 \PreviewEnvironment@{...@}
 @end example
-
+@noindent
 does not accept a comma separated
 list!  Also note that by putting more and more 
 
 @example
 \PreviewEnvironment@{...@}
 @end example
-
+@noindent
 in your document, it will look more and more like a @acronym{DVI} file
 preview when running @previewlatex{}.  Since each preview is treated as
 one large monolithic block by Emacs, one should really restrict
@@ -185,7 +185,7 @@ us assume you use the latter.  In that case you should write something like
 \InputIfFileExists@{preview/prauctex.cfg@}@{@}@{@}
 \PreviewEnvironment@{enumerate@}
 @end example
-
+@noindent
 in it.  The first line inputs the system-wide default configuration
 (the file name should match that, but not your own
 @file{prauctex.cfg}), then you add your own stuff.
@@ -230,7 +230,7 @@ l.52 \item Sie lassen sich als Funktion $
 l.52 \item Sie lassen sich als Funktion $y = f(x)$
                                                    darstellen.
 @end example
-
+@noindent
 appear (previous versions generated messages looking even more like
 errors).  Those are not real errors (as will be noted in the log
 file).  Or rather, while they @strong{are} really @TeX{} error
@@ -241,6 +241,7 @@ Since they are actual errors, you will also get @AUCTeX{} to state
 @example
 Preview-LaTeX exited as expected with code 1 at Wed Sep  4 17:03:30
 @end example
+@noindent
 after the @LaTeX{} run in the run buffer.  This merely indicates that
 errors were present, and errors will always be present when
 @previewlatex{} is operating.  There might be also real errors, so in
@@ -261,9 +262,9 @@ As mentioned in the previews @acronym{FAQ} entry, @previewlatex{} might
 use the file name of the original output file for the creation of
 preview images.  If the original output file is being displayed with a
 viewer when this happens, you might see strange effects depending on the
-viewer, e.g. a message about the file being corrupted or the display of
+viewer, e.g.@: a message about the file being corrupted or the display of
 all the preview images instead of your typeset document.  (Also
-@xref{Customization}.)
+@pxref{Customization}.)
 
 
 @node Other formats, , Troubleshooting, Frequently Asked Questions
@@ -286,7 +287,7 @@ In short, no.  The @samp{preview} package is
 @LaTeX{}-dependent.  Adding support for other formats requires
 volunteers.
 
-@subsection Does @previewlatex{} work with plain TeX?
+@subsection Does @previewlatex{} work with plain @TeX{}?
 
 Again, no.  Restructuring the @samp{preview} package for @samp{plain}
 operation would be required.  Volunteers welcome.

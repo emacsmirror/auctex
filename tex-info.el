@@ -31,6 +31,10 @@
 
 (require 'texinfo)
 
+;; Silence the compiler for Emacs compiled `--with-native-compilation':
+(declare-function TeX-TeX-sentinel "tex-buf"
+                  (process name))
+
 ;;; Environments:
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
@@ -656,9 +660,9 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'require-final-newline) t)
   (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'paragraph-separate)
-       (concat "\b\\|@[a-zA-Z]*[ \n]\\|" paragraph-separate))
+       (concat "@[a-zA-Z]*[ \n]\\|" paragraph-separate))
   (set (make-local-variable 'paragraph-start)
-       (concat "\b\\|@[a-zA-Z]*[ \n]\\|" paragraph-start))
+       (concat "@[a-zA-Z]*[ \n]\\|" paragraph-start))
   (set (make-local-variable 'fill-column) 72)
   (set (make-local-variable 'comment-start) "@c ")
   (set (make-local-variable 'comment-start-skip) "@c +\\|@comment +")

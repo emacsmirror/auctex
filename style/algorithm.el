@@ -32,9 +32,11 @@
 (require 'latex)
 
 (defvar LaTeX-algorithm-package-options
-  '("section")
+  '(;; Appearance options:
+    "plain" "ruled" "boxed"
+    ;; Numbering convention:
+    "part" "chapter" "section" "subsection" "subsubsection" "nothing")
   "Package options for the algorithm package.")
-
 
 (defun LaTeX-env-algorithm (environment)
   "Insert a algorithm-like ENVIRONMENT with caption and label."
@@ -54,30 +56,25 @@
       (when (and short-caption (not (string= short-caption "")))
         (insert LaTeX-optop short-caption LaTeX-optcl))
       (insert TeX-grop caption)
-      ;; ask for a label and insert it
-                                        ;      (LaTeX-label environment 'environment)
-      ;; the longtable `\caption' is equivalent to a
-      ;; `\multicolumn', so it needs a `\\' at the
-      ;; end of the line.  Prior to that, add } to
-      ;; close `\caption{'
-      (insert TeX-grcl "")
+      ;; Add } to close `\caption{'
+      (insert TeX-grcl)
       ;; fill the caption
-      (LaTeX-fill-paragraph)
+      (when auto-fill-function (LaTeX-fill-paragraph))
       ;; Insert a new line and indent
       (LaTeX-newline)
-      (LaTeX-label environment 'environment)
-      (LaTeX-newline)
-      (indent-according-to-mode))))
-
+      (indent-according-to-mode)
+      ;; Finally add a \label:
+      (when (LaTeX-label environment 'environment)
+        (LaTeX-newline)
+        (indent-according-to-mode)))))
 
 (TeX-add-style-hook
  "algorithm"
  (lambda ()
    (LaTeX-add-environments
-    '("algorithm"  LaTeX-env-algorithm ))
+    '("algorithm" LaTeX-env-algorithm))
    (TeX-add-symbols
-    '("listofalgorithms" 0))
-      TeX-dialect))
-
+    '("listofalgorithms" 0)))
+ TeX-dialect)
 
 ;;; algorithm.el ends here

@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004-2014 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2014, 2021 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -23,7 +23,7 @@ encountered a bug or the relevant sections in the manual for other
 related problems.
 
 If this did not help, you can send a bug report to the @AUCTeX{} bug
-reporting list by using the command @kbd{M-x TeX-submit-bug-report RET}.
+reporting list by using the command @kbd{M-x TeX-submit-bug-report @key{RET}}.
 But before you do this, you can try to get more information about the
 problem at hand which might also help you locate the cause of the error
 yourself.
@@ -44,8 +44,8 @@ in the bug report.
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
 customizations.  You can do this by invoking Emacs with the command line
-@samp{emacs -q -no-site-file -l auctex}.  The @samp{-l} option
-@samp{auctex.el} which you normally do in your init file.  After you
+@samp{emacs -q -no-site-file -l auctex}.  The @option{-l} option
+loads @file{auctex.el} which you normally do in your init file.  After you
 have started Emacs like this, you can load the file triggering the
 error.  If everything is working now, you know that you have to search
 either in the site configuration file or your personal init file for
@@ -58,7 +58,7 @@ What versions of Emacs are supported?
 are unsupported.
 
 @item
-What should I do when @code{./configure} does not find programs like latex?
+What should I do when @command{./configure} does not find programs like @command{latex}?
 
 This is problem often encountered on Windows.  Make sure that the
 @env{PATH} environment variable includes the directories containing the
@@ -83,11 +83,14 @@ It must be enabled first, insert this in your init file:
 
 Read also the chapters about parsing and multifile documents in the
 manual.
+@ifclear rawfile
+@xref{Parsing Files} and @ref{Multifile}.
+@end ifclear
 
 @item
 Why doesn't @code{TeX-save-document} work?
 
-@code{TeX-check-path} has to contain "./" somewhere.
+@code{TeX-check-path} has to contain "@file{./}" somewhere.
 
 @item
 Why is the information in @file{foo.tex} forgotten when I save
@@ -95,7 +98,7 @@ Why is the information in @file{foo.tex} forgotten when I save
 
 For various reasons, @AUCTeX{} ignores the extension when it stores
 information about a file, so you should use unique base names for your
-files.  E.g. rename @file{foo.bib} to @file{foob.bib}.
+files.  E.g.@: rename @file{foo.bib} to @file{foob.bib}.
 
 @item
 Why doesn't @AUCTeX{} signal when processing a document is done?
@@ -121,7 +124,7 @@ determines the file where the error happened by parsing the log file and
 counting the parentheses.  This can fail when there are other,
 unbalanced parentheses present.
 
-Activating so-called file:line:error messages for the log file usually
+Activating so-called @samp{file:line:error} messages for the log file usually
 solves this issue, as these kind of messages are are easier to parse;
 however, they may lack some details.  Activation can be done either in
 the configuration of your @TeX{} system (consult its manual to see where

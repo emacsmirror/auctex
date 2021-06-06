@@ -71,8 +71,6 @@ This manual may be copied under the conditions spelled out in
 @insertcopying
 @end ifhtml
 
-@contents
-
 @iftex
 @unnumbered @previewlatex{}
 @end iftex
@@ -115,7 +113,7 @@ sans-serif font to visually offset it.
 @cindex Warranty
 
 For the conditions for copying parts of @previewlatex{}, see the General
-Public Licenses referres to in the copyright notices of the files, the
+Public Licenses referred to in the copyright notices of the files, the
 General Public Licenses accompanying them and the explanatory section in
 @ref{Copying,,,auctex,the @AUCTeX{} manual}.
 
@@ -149,8 +147,8 @@ strings with @kbd{C-h f} if you need the Lisp information.
 @itemx @code{preview-at-point}
 @itemx Preview/Generate previews (or toggle) at point
 If the cursor is positioned on or inside of a preview area, this
-toggles its visibility, regenerating the preview if necessary. If not,
-it will run the surroundings through preview. The surroundings include
+toggles its visibility, regenerating the preview if necessary.  If not,
+it will run the surroundings through preview.  The surroundings include
 all areas up to the next valid preview, unless invalid previews occur
 before, in which case the area will include the last such preview in
 either direction.  And overriding any other
@@ -159,7 +157,7 @@ through @code{preview-region}.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
 
-@item @kbd{<mouse-2>}
+@item @kbd{@key{mouse-2}}
 The middle mouse button has a similar action bound to it as
 @code{preview-at-point}, only that it knows which preview to apply it to
 according to the position of the click.  You can click either anywhere
@@ -168,7 +166,7 @@ source text, you can click on the icon preceding the source text.  In
 other areas, the usual mouse key action (typically: paste) is not
 affected.
 
-@item @kbd{<mouse-3>}
+@item @kbd{@key{mouse-3}}
 The right mouse key pops up a context menu with several options:
 toggling the preview, regenerating it, removing it (leaving the
 unpreviewed text), copying the text inside of the preview, and copying
@@ -268,7 +266,7 @@ Clear out all previews in the current region.
 @itemx Preview/Remove previews from buffer
 @kindex @kbd{C-c C-p C-c C-b}
 @findex preview-clearout-buffer
-Clear out all previews in current buffer. This makes the current buffer
+Clear out all previews in current buffer.  This makes the current buffer
 lose all previews.
 
 @item @kbd{C-c C-p C-c C-d}
@@ -296,7 +294,7 @@ effectively changes because some included file or style file is
 tampered with.
 
 Note that support for preamble cache is limited for @LaTeX{} variants.
-c.f. @url{https://github.com/davidcarlisle/dpctex/issues/15}
+c.f.@: @url{https://github.com/davidcarlisle/dpctex/issues/15}
 @itemize @bullet
 @item
 Xe@LaTeX{} cannot use preamble cache at all.  The reason is intrinsic in
@@ -313,7 +311,7 @@ codes in preamble.
 @kindex @kbd{C-u C-c C-p C-f}
 @findex preview-cache-preamble-off
 Clear the pregenerated format file and stop using preambles for the
-current document. If the caching gives you problems, use this.
+current document.  If the caching gives you problems, use this.
 
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
@@ -338,15 +336,15 @@ info manual.
 This is the preferred way of reporting bugs as it will fill in what
 version of @previewlatex{} you are using as well as versions of
 relevant other software, and also some of the more important
-settings. Please use this method of reporting, if at all possible and
+settings.  Please use this method of reporting, if at all possible and
 before reporting a bug, have a look at @ref{Known problems}.
 
 @item @kbd{C-c C-k}
 @itemx LaTeX/TeX Output/Kill Job
 @kindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
-Kills the preview-generating process. This is really an @AUCTeX{}
-keybinding, but it is included here as a hint. If you are generating
+Kills the preview-generating process.  This is really an @AUCTeX{}
+keybinding, but it is included here as a hint.  If you are generating
 a preview and then make a change to the buffer, @previewlatex{} may be
 confused and place the previews wrong.
 @end table
@@ -355,8 +353,8 @@ confused and place the previews wrong.
 @chapter Simple customization
 
 Customization options can be found by typing @kbd{M-x customize-group
-@key{RET} preview @key{RET}}. Remember to set the option when you have
-changed it. The list of suggestions can be made very long (and is
+@key{RET} preview @key{RET}}.  Remember to set the option when you have
+changed it.  The list of suggestions can be made very long (and is
 covered in detail in @ref{For advanced users}), but some are:
 
 @itemize @bullet
@@ -364,7 +362,7 @@ covered in detail in @ref{For advanced users}), but some are:
 
 If you use a non-white background in Emacs, you might have color
 artifacts at the edges of your previews.  Playing around with the option
-@code{preview-transparent-color} in the @code{Preview Appearance} group
+@code{preview-transparent-color} in the @samp{Preview Appearance} group
 might improve things.  With some settings, the cursor may cover the
 whole background of a preview, however.
 
@@ -380,7 +378,8 @@ by using the @LaTeX{} package @code{showkeys} alternatively
 the region @previewlatex{} considers as the preview image.  To enable a
 similar mechanism internal to @previewlatex{}, enable the
 @code{showlabels} option in the variable
-@code{preview-default-option-list} in the @code{Preview Latex} group.
+@code{preview-default-option-list} in the @samp{Preview Latex} group.
+@vindex preview-default-option-list
 
 It must be noted, however, that a much better idea may be to use the
 Ref@TeX{} package for managing references.  @xref{RefTeX in a
@@ -428,12 +427,14 @@ less correct.
 
 @item Preview your favourite @LaTeX{} constructs
 
+@vindex preview-default-option-list
+@vindex preview-default-preamble
 If you have a certain macro or environment that you want to preview,
 first check if it can be chosen by cutomizing
-@code{preview-default-option-list} in the @code{Preview Latex} group.
+@code{preview-default-option-list} in the @samp{Preview Latex} group.
 
 If it is not available there, you can add it to
-@code{preview-default-preamble} also in the @code{Preview Latex} group,
+@code{preview-default-preamble} also in the @samp{Preview Latex} group,
 by adding a @code{\PreviewMacro} or @code{\PreviewEnvironment} entry
 (@pxref{Provided commands}) @emph{after} the @code{\RequirePackage}
 line.  For example, if you want to preview the @code{center}
@@ -470,11 +471,12 @@ subdirectory @file{preview}, the default behavior).
 
 @item Don't preview inline math
 @cindex Inline math
+@vindex preview-default-option-list
 
 If you have performance problems because your document is full of inline
 math (@code{$@dots{}$}), or if your usage of @code{$} conflicts with
-@previewlatex{}'s, you can turn off inline math previews. In the
-@code{Preview Latex} group, remove @code{textmath} from
+@previewlatex{}'s, you can turn off inline math previews.  In the
+@samp{Preview Latex} group, remove @code{textmath} from
 @code{preview-default-option-list} by customizing this variable.
 @end itemize
 
@@ -500,7 +502,7 @@ an Emacs-lisp part integrating the thing into Emacs (aided by
 
 @node The LaTeX style file, The Emacs interface, For advanced users, For advanced users
 @section The @LaTeX{} style file
-@c Autogenerated from ../preview.dtx
+@c Autogenerated from ../latex/preview.dtx
 @include preview-dtxdoc.texi
 
 @node The Emacs interface, The preview images, The LaTeX style file, For advanced users
@@ -523,17 +525,17 @@ only do after the @LaTeX{} run completes.  This run produces a host of
 pseudo-error messages that get parsed by @previewlatex{} at the end of
 the @LaTeX{} run and give it the necessary information about where in
 the source file the @LaTeX{} code for the various previews is located
-exactly. The parsing takes a moment and will render Emacs busy.
+exactly.  The parsing takes a moment and will render Emacs busy.
 
 @item preview-LaTeX-command-replacements
 This variable specifies transformations to be used before calling the
 configured command.  One possibility is to have @samp{\pdfoutput=0 }
 appended to every command starting with @samp{pdf}.  This particular
 setting is available as the shortcut
-@samp{preview-LaTeX-disable-pdfoutput}.  Since @previewlatex{} can work
+@code{preview-LaTeX-disable-pdfoutput}.  Since @previewlatex{} can work
 with @acronym{PDF} files by now, there is little incentive for using
 this option, anymore (for projects not requiring @acronym{PDF} output,
-the added speed of @samp{dvipng} might make this somewhat attractive).
+the added speed of @command{dvipng} might make this somewhat attractive).
 
 @item preview-required-option-list
 @code{preview-LaTeX-command} uses @code{preview-required-option-list} in
@@ -616,7 +618,7 @@ changes after that, it will not get reported.  If you have an outdated
 version of @file{preview.sty} in your path, the size might not be
 reported at all.  If in this case @AUCTeX{} is unable to find a size
 specification, and if you are using a document class with a different
-default value (like KomaScript), the default fallback assumption will
+default value (like @samp{KomaScript}), the default fallback assumption will
 probably be wrong and @previewlatex{} will scale up things too large.
 So better specify those size options even when you know that @LaTeX{}
 does not need them: @previewlatex{} might benefit from them.  Another
@@ -633,9 +635,9 @@ PostScript file is @code{preview-fast-dvips-command}, while
 @code{preview-dvips-command} is used for cranking out a @acronym{DVI}
 file where every preview is in a separate @acronym{EPS} file.  Which of
 the two commands gets used depends on the setting of
-@code{preview-fast-conversion}.  The printer specified here by default
+@code{preview-fast-conversion}.  The printer specified here
 is @option{-Pwww} by default, which will usually get you scalable fonts
-where available. If you are experiencing problems, you might want to try
+where available.  If you are experiencing problems, you might want to try
 playing around with Dvips options (@inforef{Command-line options,,dvips}).
 
 The conversion of the previews into PostScript or @acronym{EPS} files
@@ -660,7 +662,7 @@ normal open preview in text representation.
 
 @item preview-inner-environments
 This is a list of environments that are regarded as inner levels of an
-outer environment when doing @code{preview-environment}. One example
+outer environment when doing @code{preview-environment}.  One example
 when this is needed is in
 @code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}}, and
 accordingly @code{split} is one entry in
@@ -697,12 +699,12 @@ which can be displayed much faster by Emacs.  Actually, not in sequence
 but backwards since you are most likely editing at the end of the
 document.  And as an added convenience, any preview that happens to be
 on-screen is given higher priority so that @previewlatex{} will first
-cater for the images that are displayed. There are various options
+cater for the images that are displayed.  There are various options
 customizable concerning aspects of that operation, see the customization
-group @code{Preview Gs} for this.
+group @samp{Preview Gs} for this.
 
 Another noteworthy setting of @code{preview-image-type} is
-@samp{dvipng}: in this case, the @samp{dvipng}
+@samp{dvipng}: in this case, the @command{dvipng}
 @pindex dvipng 
 program will get run on @acronym{DVI} output (see below for @acronym{PDF}).
 This is in general much faster than Dvips and Ghostscript.  In that
@@ -722,7 +724,7 @@ if the @acronym{DVI} file contains PostScript specials in which case the
 affected images will get run through Dvips and Ghostscript once
 @samp{dvipng} finishes.
 
-Note for p@LaTeX{} and up@LaTeX{} users: It is known that @code{dvipng}
+Note for p@LaTeX{} and up@LaTeX{} users: It is known that @command{dvipng}
 is not compatible with p@LaTeX{} and up@LaTeX{}.  If
 @code{preview-image-type} is set to @samp{dvipng} and (u)p@LaTeX{} is
 used, @samp{dvipng} just fails and @previewlatex{} falls back on Dvips
@@ -755,21 +757,21 @@ As explained previously, Emacs uses pseudo-error messages generated by
 the @samp{preview} package in order to pinpoint the exact source
 location where a preview originated.  This works in running text, but
 fails when preview material happens to lie in macro arguments, like the
-contents of @code{\emph}. Those macros first read in their entire
+contents of @code{\emph}.  Those macros first read in their entire
 argument, munge it through, perhaps transform it somehow, process it and
-perhaps then typeset something. When they finally typeset something,
+perhaps then typeset something.  When they finally typeset something,
 where is the location where the stuff originated? @TeX{}, having read in
 the entire argument before, does not know and actually there would be no
 sane way of defining it.
 
 For previews contained inside such a macro argument, the default
 behaviour of @previewlatex{} is to use a position immediately after the
-closing brace of the argument. All the previews get placed there, all at
+closing brace of the argument.  All the previews get placed there, all at
 a zero-width position, which means that Emacs displays it in an order
 that @previewlatex{} cannot influence (currently in Emacs it is even
-possible that the order changes between runs). And since the placement
+possible that the order changes between runs).  And since the placement
 of those previews is goofed up, you will not be able to regenerate them
-by clicking on them. The default behaviour is thus somewhat undesirable.
+by clicking on them.  The default behaviour is thus somewhat undesirable.
 
 The solution (like with other preview problems) is to tell the @LaTeX{}
 @samp{preview} package how to tackle this problem (@pxref{The LaTeX
@@ -778,20 +780,20 @@ during previews! You only want the text math previewed, so the solution
 is to use @code{\PreviewMacro*\emph} in the preamble of your document
 which will make @LaTeX{} ignore @code{\emph} completely as long as it is
 not part of a larger preview (in which case it gets typeset as
-usual). Its argument thus becomes ordinary text and gets treated like
+usual).  Its argument thus becomes ordinary text and gets treated like
 ordinary text.
 
 Note that it would be a bad idea to declare
 @code{\PreviewMacro*[@{@{@}@}]\emph} since then both @code{\emph} as
-well as its argument would be ignored instead of previewed. For
+well as its argument would be ignored instead of previewed.  For
 user-level macros, this is almost never wanted, but there may be
 internal macros where you might want to ignore internal arguments.
 
 The same mechanism can be used for a number of other text-formatting
-commands like @code{\textrm}, @code{\textit} and the like. While they
+commands like @code{\textrm}, @code{\textit} and the like.  While they
 all use the same internal macro @code{\text@@command}, it will not do to
 redefine just that, since they call it only after having read their
-argument in, and then it already is too late. So you need to disable
+argument in, and then it already is too late.  So you need to disable
 every of those commands by hand in your document preamble.
 
 Actually, we wrote all of the above just to scare you.  At least all of
@@ -806,7 +808,7 @@ or alternatively do the
 manual disabling of your favorite macro in
 @code{preview-default-preamble},
 @vindex preview-default-preamble
-which is customizable in the Preview Latex group.
+which is customizable in the @samp{Preview Latex} group.
 
 @node ToDo, Frequently Asked Questions, For advanced users, top
 @c Also used as TODO: in separate file

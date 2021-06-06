@@ -8,9 +8,21 @@
 
 @end ifset
 
-@heading News in 13.0
+@heading News in 13.1
 
 @itemize @bullet
+@item
+@AUCTeX{}'s own help messages for @LaTeX{} errors are now shown only for
+@LaTeX{} runs.  @AUCTeX{} shows raw error/warning messages found in
+@file{.log} files for runs of formats other than @LaTeX{}, such as plain
+@TeX{}, @ConTeXt{} and Texinfo, as it does even for @LaTeX{} runs when it
+can't find a matching entry in its own help message catalogue.
+
+Due to this change, customize option @code{TeX-error-description-list} can
+no longer have a fallback entry that matches any error.  If your
+customized value includes such entry, typically @samp{(".*" . "No help
+available")}, please remove it.
+
 @item
 Two functions @code{TeX-split-string} and @code{TeX-assoc} are now
 obsolete and will be removed in future release.  If your personal code
@@ -36,7 +48,7 @@ no effect now.  The former placeholders @samp{%v} and @samp{%vv} in
 24.  This change should have no user-visible effect and require no
 manual adaptions except in the following cases.
 
-@itemize @bullet
+@itemize @minus
 @item
 Entries added to the customization variable @code{TeX-expand-list} also
 had access to variables @code{command} and @code{pos}.  Those are now
@@ -65,7 +77,7 @@ have been read.  This variable is now named @code{TeX-exit-mark}.
 The functions in @code{LaTeX-section-hook} had access or modified the
 previously undeclared variables @code{title}, @code{name}, @code{level},
 @code{done-mark}, and @code{toc}.  These variables are now properly
-declared and have the @code{LaTeX-} prefix, e.g.,
+declared and have the @samp{LaTeX-} prefix, e.g.,
 @code{LaTeX-done-mark}.
 
 @item
@@ -73,14 +85,14 @@ The functions in @code{ConTeXt-numbered-section-hook} and
 @code{ConTeXt-unnumbered-section-hook} had access or modified the
 previously undeclared variables @code{title}, @code{name}, @code{level},
 @code{done-mark}, and @code{reference}.  These variables are now
-properly declared and have the @code{ConTeXt-} prefix, e.g.,
+properly declared and have the @samp{ConTeXt-} prefix, e.g.,
 @code{ConTeXt-title}.
 
 @item
 The functions in @code{TeX-translate-location-hook} could access and
 modify the free variables @code{file}, @code{line}, @code{error},
 @code{offset}, @code{context}, and @code{string}.  Those are now properly
-declared variables with the prefix @code{TeX-translate-location-}, e.g.,
+declared variables with the prefix @samp{TeX-translate-location-}, e.g.,
 @code{TeX-translate-location-file}.
 @end itemize
 
@@ -88,17 +100,22 @@ declared variables with the prefix @code{TeX-translate-location-}, e.g.,
 The constant @code{LaTeX-dialect} has been renamed to @code{TeX-dialect}
 and moved from @file{latex.el} to @file{tex.el}.  @code{LaTeX-dialect}
 now is an obsolete alias.
+
+@item
+The style @file{latexinfo.el} is removed from @AUCTeX{}.
+@file{latexinfo.el} was meant to support latexinfo which in return was a
+@LaTeX{}-2.09 extension of Texinfo, but didn't manage to replace Texinfo.
 @end itemize
 
 @heading News in 12.3
 
 @itemize @bullet
 @item
-Support for @samp{PSTricks} is now @acronym{PDF}-oriented. @AUCTeX{} no
+Support for @samp{PSTricks} is now @acronym{PDF}-oriented.  @AUCTeX{} no
 longer turns off PDF mode for @samp{PSTricks} documents even without
-@samp{pst-pdf}. It now sets up @code{TeX-PDF-from-DVI} option so that
+@samp{pst-pdf}.  It now sets up @code{TeX-PDF-from-DVI} option so that
 @acronym{PDF} output is generated when @code{TeX-PDF-mode} is enabled
-(default). Users who want @acronym{DVI} output should disable PDF mode
+(default).  Users who want @acronym{DVI} output should disable PDF mode
 explicitly by file local variable, or customize @code{TeX-PDF-mode} to
 @code{nil}.
 
@@ -113,20 +130,12 @@ no-op which only shows a warning explaining how to update font-lock as
 mentioned above.
 
 @item
-Math expression highlighting was improved. Highlighting for documents
+Math expression highlighting was improved.  Highlighting for documents
 with a lot of inline math expressions @samp{$...$} won't get scrambled
 now (@samp{bug#33139}).
 
-There is small incompatibility due to this fix. When odd number of
-dollar signs are in a comment, the subsequent lines are highlighted as
-math until another @samp{$} appears. You can insert a commented dollar
-sign (@samp{%$}) at the next suitable end of line as a workaround.
-@ifclear rawfile
-@xref{Known problems}.
-@end ifclear
-
 In addition, it is no longer recommended to customize
-@code{font-latex-math-environments}. Use @code{texmathp-tex-commands}
+@code{font-latex-math-environments}.  Use @code{texmathp-tex-commands}
 instead.
 @ifclear rawfile
 @xref{Fontification of math}.
@@ -143,7 +152,7 @@ See the section for inserting font specifiers for details.
 @ifclear rawfile
 @xref{Font Specifiers}, for details.
 @end ifclear
-Further, the entries in the menu LaTeX, Insert Font are reorganized and
+Further, the entries in the menu @samp{LaTeX}, @samp{Insert Font} are reorganized and
 adjusted accordingly.
 
 Macros previously provided by @file{textcomp.sty} are now part of
@@ -151,7 +160,7 @@ Macros previously provided by @file{textcomp.sty} are now part of
 the new macro @samp{\legacyoldstylenums} is added.
 
 @item
-Insertion of environments in @LaTeX{} documents (i.e. @kbd{C-c C-e}) was
+Insertion of environments in @LaTeX{} documents (i.e.@: @kbd{C-c C-e}) was
 improved.  The former code had a few bugs, which sometimes resulted in
 either spurious empty line or spurious comment prefix, or both,
 especially when the region is active.  Those bugs are now fixed.
@@ -184,7 +193,7 @@ option among the three: new, traditional and fallback method.
 
 @item
 @AUCTeX{} has support for the Flymake package in Emacs 26 or newer.  To
-enable, call @kbd{M-x flymake-mode RET} or add this to your
+enable, call @kbd{M-x flymake-mode @key{RET}} or add this to your
 @file{.emacs} file:
 @lisp
 (add-hook 'LaTeX-mode-hook #'flymake-mode)
@@ -205,7 +214,7 @@ used to carry is required.
 @item
 Support for standard @LaTeX{} without e-@TeX{} extension is now very
 limited.  It doesn't work if raw @TeX{} code is put on the command line
-to invoke latex command.  It also fails for region compilation (@kbd{C-c
+to invoke @command{latex} command.  It also fails for region compilation (@kbd{C-c
 C-r} and so on) with documents of non-ascii file name.  In addition, it
 no longer works with @previewlatex{}.  We consider this incompatibility
 is permissible because e-@TeX{} extension is enabled for standard
@@ -299,7 +308,7 @@ Add support for @command{upmendex}, an extension of @command{makeindex}
 capable of sorting indexes by unicode based ICU.
 
 @item
-Fix preview-latex to interact correctly with Japanese @LaTeX{}.  The
+Fix @previewlatex{} to interact correctly with Japanese @LaTeX{}.  The
 parsing routine was made robust not to be confused by the 7-bit encoding
 of Japanese text and the necessary option to @LaTeX{} command is kept
 even when preamble caching is enabled.
@@ -341,7 +350,7 @@ correctly.
 Inserting labels is done by new function
 @code{LaTeX-env-label-as-keyval}.  A new customize option
 @code{LaTeX-listing-label} is available as prefix to labels in code
-typesetting environments, e.g. @samp{lstlisting} environment provided by
+typesetting environments, e.g.@: @samp{lstlisting} environment provided by
 @samp{listings} package.  @code{LaTeX-listing-label} defaults to
 @code{lst:}.  Parsing of labels for later referencing relies on two
 requirements:
@@ -501,8 +510,8 @@ still available but now @kbd{C-c ?} runs
 @item
 @AUCTeX{} has a new custom option
 @code{LaTeX-reftex-cite-format-auto-activate} which controls the
-automatic activation of citation formats provided by RefTeX when a style
-file is loaded and RefTeX is enabled.  Currently, @file{biblatex.el},
+automatic activation of citation formats provided by Ref@TeX{} when a style
+file is loaded and Ref@TeX{} is enabled.  Currently, @file{biblatex.el},
 @file{harvard.el}, @file{jurabib.el} and @file{natbib.el} use this
 feature.  If you have customized @code{reftex-cite-format} and want to
 use your settings, you should set this variable to @code{nil}.
@@ -540,7 +549,7 @@ the viewer with a single command: @code{TeX-command-run-all}, bound to
 @kbd{C-c C-a}.
 
 @item
-Commands such as LaTeX and View can now be executed conveniently on the
+Commands such as @samp{LaTeX} and @samp{View} can now be executed conveniently on the
 current section (or part, chapter, subsection, etc).  See
 @code{LaTeX-command-section} and
 @code{LaTeX-command-section-change-level}.
@@ -615,7 +624,7 @@ Numbers of bugs have been fixed, many minor features have been added.
 Now @code{TeX-previous-error} works with @TeX{} commands if the new
 option @code{TeX-parse-all-errors} is non-nil, which is the default.
 When this option is non-nil, an overview of errors and warnings reported
-by the TeX compiler can be opened with @kbd{M-x TeX-error-overview
+by the @TeX{} compiler can be opened with @kbd{M-x TeX-error-overview
 @key{RET}}.
 @ifclear rawfile
 @xref{Debugging}, for details.
@@ -661,7 +670,7 @@ New user options @code{LaTeX-default-author},
 @item
 @samp{biblatex} support was greatly expanded.  If parsing is enabled,
 @AUCTeX{} looks at @samp{backend} option to decide whether to use Biber
-or BibTeX.  The @code{LaTeX-biblatex-use-Biber} variable was changed to
+or Bib@TeX{}.  The @code{LaTeX-biblatex-use-Biber} variable was changed to
 be file local only and is no more customizable.
 
 @item
@@ -693,19 +702,19 @@ the left part of the paired braces, are treated similarly as @samp{(},
 Support for dozens of @LaTeX{} packages was added.
 
 @item
-Tabular-like environments (tabular, tabular*, tabularx, tabulary, array,
-align, ...) are indented in a nicer and more informative way when the
+Tabular-like environments (@samp{tabular}, @samp{tabular*}, @samp{tabularx}, @samp{tabulary}, @samp{array},
+@samp{align}, ...) are indented in a nicer and more informative way when the
 column values of a table line are written across multiple lines in the
 tex file.
 
 @item
-The suitable number of ampersands are inserted when you insert array,
-tabular and tabular* environments with @kbd{C-c C-e}.  Similar
+The suitable number of ampersands are inserted when you insert @samp{array},
+@samp{tabular} and @samp{tabular*} environments with @kbd{C-c C-e}.  Similar
 experience is obtained if you terminate rows in these environments with
 @kbd{C-c @key{LFD}}.  It supplies line break macro @samp{\\} and inserts
 the suitable number of ampersands on the next line.
 
-Similar supports are provided for various amsmath environments.
+Similar supports are provided for various @samp{amsmath} environments.
 
 @ifclear rawfile
 @xref{Tabular-like}, for details.
@@ -727,8 +736,8 @@ Now @kbd{C-c C-e document @key{RET}}, in an empty document, prompts for
 @samp{\usepackage} macros in addition to @samp{\documentclass}.
 
 @item
-@code{TeX-add-style-hook} has now a third argument to tell AUCTeX for
-which dialect (LaTeX, Texinfo or BibTeX) the style hook is
+@code{TeX-add-style-hook} has now a third argument to tell @AUCTeX{} for
+which dialect (@LaTeX{}, Texinfo or Bib@TeX{}) the style hook is
 registers. Labelling style hook by dialect will avoid applying them not
 in the right context.
 
@@ -741,7 +750,7 @@ There have been lots of bug fixes and feature additions.
 @itemize @bullet
 @item
 @AUCTeX{} now supports Biber in conjunction with biblatex in addition to
-BibTeX.
+Bib@TeX{}.
 
 @item
 Each @AUCTeX{} mode now has its own abbrev table.  On Emacsen which
@@ -760,7 +769,7 @@ command line, resulting in more accurate positioning of point in Emacs
 and highlighting of the target paragraph in Evince.
 
 @item
-A problem where Ghostscript threw an /invalidfileaccess error when
+A problem where Ghostscript threw an @samp{/invalidfileaccess} error when
 running @previewlatex{} was fixed.
 
 @item
@@ -792,7 +801,7 @@ See the section on viewers in the manual for details.
 Comprehensive editing support for PSTricks was added.
 
 @item
-Support for various @LaTeX{} packages was added, e.g. @samp{tabularx},
+Support for various @LaTeX{} packages was added, e.g.@: @samp{tabularx},
 @samp{CJK}, and @samp{hyperref}.
 
 @item
@@ -843,13 +852,13 @@ Lots of minor bugs in features and documentation fixed.
 @itemize @bullet
 
 @item
-There have been problems with the @samp{-without-texmf-dir} option to
-@samp{configure} when the value of @samp{-with-kpathsea-sep} was set or
+There have been problems with the @option{-without-texmf-dir} option to
+@samp{configure} when the value of @option{-with-kpathsea-sep} was set or
 determined for an installation system with a default different from that
 of the runtime system.  @code{with-kpathsea-sep} has been removed; the
 setting is now usually determined at runtime.
 
-Due to this and other problems, preview-latex in the released XEmacs
+Due to this and other problems, @previewlatex{} in the released XEmacs
 package failed under Windows or with anything except recent 21.5
 XEmacsen.
 
@@ -866,10 +875,10 @@ specials.
 Support for folding of comments was added.
 
 @item
-The @code{polish} language option of the babel LaTeX package as well as
-the polski LaTeX package are now supported.  Most notably this means
-that AUCTeX will help to insert quotation marks as defined by polish.sty
-(@code{"`..."'}) and polski.sty (@code{,,...''}).
+The @code{polish} language option of the babel @LaTeX{} package as well as
+the polski @LaTeX{} package are now supported.  Most notably this means
+that @AUCTeX{} will help to insert quotation marks as defined by @file{polish.sty}
+(@code{"`..."'}) and @file{polski.sty} (@code{,,...''}).
 
 @item
 The @TeX{} tool bar is now available and enabled by default in plain
@@ -933,7 +942,7 @@ incorporate the changes into your customizations if you want to use this
 feature.
 
 @item
-@TeX{} error messages of the @code{-file-line-error} kind are now
+@TeX{} error messages of the @option{-file-line-error} kind are now
 understood in @AUCTeX{} and @previewlatex{} (parsers are still
 separate).
 
@@ -952,7 +961,7 @@ The @LaTeX{} tool bar is now enabled by default.
 
 @itemize @bullet
 @item
-Support for the MinionPro LaTeX package was added.
+Support for the MinionPro @LaTeX{} package was added.
 
 @item
 Warnings and underfull/overfull boxes are now being indicated in the
@@ -975,11 +984,11 @@ deprecated.
 Some language-specific support for French was added.  There now is
 completion support for the commands provided by the @samp{frenchb} (and
 @samp{francais}) options of the babel @LaTeX{} package and easier input
-of French quotation marks (@code{\\og ...\\fg}) which can now be
+of French quotation marks (@code{\og ...\fg}) which can now be
 inserted by typing @key{"}.
 
 @item
-Completion support for options of some LaTeX packages was added.
+Completion support for options of some @LaTeX{} packages was added.
 
 @item
 @cindex @file{auctex.el}
@@ -993,14 +1002,14 @@ means if you used only @code{(require 'tex-mik)} in order to activate
 latter statement.
 @ifset rawfile
 More detailed information can be found in the installation instructions
-(file INSTALL).
+(file @file{INSTALL}).
 @end ifset
 @ifclear rawfile
 @xref{Loading the package}.
 @end ifclear
 
 @item
-Handling of verbatim constructs was consolidated across AUCTeX.  This
+Handling of verbatim constructs was consolidated across @AUCTeX{}.  This
 resulted in the @fontlatex{}-specific variables
 @code{font-latex-verb-like-commands}, @code{font-latex-verbatim-macros},
 and @code{font-latex-verbatim-environments} being removed and the more
@@ -1122,7 +1131,7 @@ during filling.  In particular extra spaces were added to sentence
 endings at the end of lines.  You can make this whitespace visible by
 setting the variable @code{show-trailing-whitespace} to @code{t}.  If
 you want to delete all trailing whitespace in a buffer, type @kbd{M-x
-delete-trailing-whitespace RET}.
+delete-trailing-whitespace @key{RET}}.
 
 @item
 A bug was fixed which lead to a @samp{*Compile-Log*} buffer popping up
@@ -1138,7 +1147,7 @@ upgrade or uninstall the outdated Emacspeak package.
 @item
 The value of @code{TeX-macro-global} is not determined during
 configuration anymore but at load time of @AUCTeX{}.  Consequently the
-associated configuration option @samp{--with-tex-input-dirs} was
+associated configuration option @option{--with-tex-input-dirs} was
 removed.
 
 @item
@@ -1150,7 +1159,7 @@ Support for the @LaTeX{} Japanese classes @samp{jsarticle} and
 
 @itemize @bullet
 @item
-The parser (used e.g. for @code{TeX-auto-generate-global}) was extended
+The parser (used e.g.@: for @code{TeX-auto-generate-global}) was extended
 to recognize keywords common in @LaTeX{} packages and classes, like
 ``\DeclareRobustCommand'' or ``\RequirePackage''.  Additionally a bug
 was fixed which led to duplicate entries in @AUCTeX{} style files.
@@ -1189,9 +1198,9 @@ the new chapter ``Display''.
 Keywords for syntax highlighting of @LaTeX{} constructs to be typeset in
 bold, italic or typewriter fonts may now be customized.  Besides the
 built-in classes, new keyword classes may be added by customizing the
-variable @samp{font-latex-user-keyword-classes}.  The customization
+variable @code{font-latex-user-keyword-classes}.  The customization
 options can be found in the customization group
-@samp{font-latex-keywords}.
+@code{font-latex-keywords}.
 
 @item
 Verbatim content is now displayed with the @samp{fixed-pitch} face. (GNU
@@ -1225,7 +1234,7 @@ node names.
 Setting the variable @code{LaTeX-float} to @code{nil} now means that you
 will not be prompted for the float position of figures and tables.  You
 can get the old behaviour of @code{nil} by setting the variable to
-@code{""}, i.e. an empty string.
+@code{""}, i.e.@: an empty string.
 @ifclear rawfile
 See also @ref{Floats}.
 @end ifclear
@@ -1255,7 +1264,7 @@ Bug fixes for XEmacs.
 
 @c The following items weren't present at release time of 11.53:
 @item
-Completion for graphic files in the TeX search path has been added.
+Completion for graphic files in the @TeX{} search path has been added.
 
 @item
 @command{start} is used for the viewer for MiK@TeX{} and fp@TeX{}.
@@ -1286,7 +1295,7 @@ Bug fixes in the build process.
 
 @itemize @bullet
 @item
-PDFTeX and Source Special support did not work with ConTeXt,
+PDF@TeX{} and Source Special support did not work with @ConTeXt{},
 this has been fixed.  Similar for Source Special support under Windows.
 
 @item
@@ -1309,7 +1318,7 @@ which can be toggled via an entry in the Command menu or the key binding
 @kbd{C-c C-t C-s}.  If you have customized the variable
 @code{TeX-command-list}, you have to re-initialize it for this to work.
 This means to open a customization buffer for the variable by typing
-@code{M-x customize-variable RET TeX-command-list RET}, selecting
+@kbd{M-x customize-variable @key{RET} TeX-command-list @key{RET}}, selecting
 ``Erase Customization'' and do your customization again with the new
 default.
 
@@ -1320,7 +1329,7 @@ The content of the command menu now depends on the mode (plain @TeX{},
 and the customization will not work correctly.
 
 @item
-Support for hiding and auto-revealing macros, e.g. footnotes or
+Support for hiding and auto-revealing macros, e.g.@: footnotes or
 citations, and environments in a buffer was
 @ifset rawfile
 added.
@@ -1366,7 +1375,7 @@ available functionality and customization options are explained in the
 manual.
 
 @item
-Filling and indentation in XEmacs with preview-latex and activated
+Filling and indentation in XEmacs with @previewlatex{} and activated
 previews lead to the insertion of whitespace before multi-line previews.
 @AUCTeX{} now contains facilities to prevent this problem.
 
@@ -1380,7 +1389,7 @@ _} is provided for adding the variable manually.
 Sectioning commands are now shown in a larger font on display devices
 which support such fontification.  The variable
 @code{font-latex-title-fontify} can be customized to restore the old
-appearance, i.e. the usage of a different color instead of a change in
+appearance, i.e.@: the usage of a different color instead of a change in
 size.
 
 @item
@@ -1391,7 +1400,7 @@ Credits go to the authors mentioned in the respective @AUCTeX{} style
 files.
 
 @item
-Inserting graphics with @kbd{C-c RET \includegraphics RET} was improved.
+Inserting graphics with @kbd{C-c @key{RET} includegraphics @key{RET}} was improved.
 See the variable @code{LaTeX-includegraphics-options-alist}.
 @c FIXME: Document this in the main part of the manual
 
@@ -1406,8 +1415,8 @@ environments, see @ref{Tabular-like}.
 @end ifclear
 
 @item
-Completion for available packages when using @kbd{C-c RET \usepackage
-RET} was improved on systems using the kpathsea library.
+Completion for available packages when using @kbd{C-c @key{RET} usepackage
+@key{RET}} was improved on systems using the kpathsea library.
 
 @item
 The commenting functionality was fixed.  The separate functions for
@@ -1445,7 +1454,7 @@ behavior can be adapted or extended respectively by customizing the
 variable @code{TeX-output-view-style}.
 
 @item
-You can control whether @code{TeX-insert-macro} (@kbd{C-c RET}) ask for
+You can control whether @code{TeX-insert-macro} (@kbd{C-c @key{RET}}) ask for
 all optional arguments by customizing the variable
 @ifset rawfile
 @code{TeX-insert-macro-default-style}.
@@ -1460,7 +1469,7 @@ it started.
 
 @item
 The build process was enhanced and is now based on @code{autoconf}
-making installing AUC@TeX{} a mostly automatic process.  See
+making installing @AUCTeX{} a mostly automatic process.  See
 @ifset rawfile
 the files @file{INSTALL} and @file{INSTALL.windows}
 @end ifset
@@ -1474,8 +1483,8 @@ for details.
 
 @itemize @bullet
 @item
-Many more LaTeX and LaTeX2e commands are supported.
-Done by Masayuki Ataka  <ataka@@milk.freemail.ne.jp>
+Many more @LaTeX{} and @LaTeX{}2e commands are supported.
+Done by Masayuki Ataka @email{ataka@@milk.freemail.ne.jp}
 @end itemize
 
 @heading News in 11.12
@@ -1483,7 +1492,7 @@ Done by Masayuki Ataka  <ataka@@milk.freemail.ne.jp>
 @itemize @bullet
 @item
 Support for the KOMA-Script classes.
-Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
+Contributed by Mark Trettin @email{Mark.Trettin@@gmx.de}.
 @end itemize
 
 @heading News in 11.11
@@ -1491,7 +1500,7 @@ Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
 @itemize @bullet
 @item
 Support for @file{prosper.sty}, see @url{http://prosper.sourceforge.net/}.
-Contributed by Phillip Lord <p.lord@@russet.org.uk>.
+Contributed by Phillip Lord @email{p.lord@@russet.org.uk}.
 @end itemize
 
 @heading News in 11.10
@@ -1499,7 +1508,7 @@ Contributed by Phillip Lord <p.lord@@russet.org.uk>.
 @itemize @bullet
 @item
 @code{comment-region} now inserts @t{%%} by default.
-Suggested by "Davide G. M. Salvetti" <salve@@debian.org>.
+Suggested by "Davide G. M. Salvetti" @email{salve@@debian.org>}.
 @end itemize
 
 @heading News in 11.06
@@ -1516,15 +1525,15 @@ locking.  Customize @code{TeX-install-font-lock} for this.
 @itemize @bullet
 @item
 Now use @t{-t landscape} by default when landscape option appears.
-Suggested by Erik Frisk <frisk@@isy.liu.se>.
+Suggested by Erik Frisk @email{frisk@@isy.liu.se}.
 @end itemize
 
 @heading News in 11.03
 
 @itemize @bullet
 @item
-Use @file{tex-fptex.el} for fpTeX support.
-Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
+Use @file{tex-fptex.el} for fp@TeX{} support.
+Contributed by Fabrice Popineau @email{Fabrice.Popineau@@supelec.fr}.
 @end itemize
 
 @heading News in 11.02
@@ -1533,23 +1542,23 @@ Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
 @item
 New user option @code{LaTeX-top-caption-list} specifies environments
 where the caption should go at top.
-Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+Contributed by @email{ataka@@milk.freemail.ne.jp} (Masayuki Ataka).
 
 @item
 Allow explicit dimensions in @file{graphicx.sty}.
-Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+Contributed by @email{ataka@@milk.freemail.ne.jp} (Masayuki Ataka).
 
 @item
 Limited support for @file{verbatim.sty}.
-Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+Contributed by @email{ataka@@milk.freemail.ne.jp} (Masayuki Ataka).
 
 @item
-Better support for asmmath items.
-Patch by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+Better support for amsmath items.
+Patch by @email{ataka@@milk.freemail.ne.jp} (Masayuki Ataka).
 
 @item
 More accurate error parsing.
-Added by David Kastrup <David.Kastrup@@t-online.de>.
+Added by David Kastrup @email{David.Kastrup@@t-online.de}.
 @end itemize
 
 @heading News in 11.01

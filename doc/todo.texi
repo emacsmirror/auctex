@@ -1,6 +1,6 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004-2006, 2008, 2009, 2013-2015, 2020 Free Software
-@c Foundation, Inc.
+@c Copyright (C) 2004-2006, 2008, 2009, 2013-2015,
+@c               2020, 2021 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -66,7 +66,7 @@ common practice that major mode functions directly add macros and
 environments via @code{TeX-add-symbols} and
 @code{LaTeX-add-environments}, but those macros and environments are
 lost once @code{TeX-remove-style} runs. It is necessary to run major
-mode function, by e.g. @code{normal-mode}, again to recover them, but
+mode function, by e.g.@: @code{normal-mode}, again to recover them, but
 that makes no point in running @code{TeX-remove-style} itself because
 major mode function kills all buffer-local variables.
 
@@ -102,12 +102,12 @@ order to insert the respective sequence into the buffer (cf. the
 @item Crossreferencing support
 
 It would be nice if you could index process your favorite collection of
-@file{.dtx} files (such as the LaTeX source), just call a command on
-arbitrary control sequence, and get either the DVI viewer opened right
+@file{.dtx} files (such as the @LaTeX{} source), just call a command on
+arbitrary control sequence, and get either the @acronym{DVI} viewer opened right
 at the definition of that macro (using Source Specials), or the source
 code of the @file{.dtx} file.
 
-@item Better plain TeX support
+@item Better plain @TeX{} support
 
 For starters, @code{LaTeX-math-mode} is not very @LaTeX{}-specific in
 the first place, and similar holds for indentation and formatting.
@@ -116,12 +116,12 @@ the first place, and similar holds for indentation and formatting.
 Page count when compiling should (optionally) go to modeline of the
 window where the compilation command was invoked, instead of the output
 window.  Suggested by Karsten Tinnefeld
-<tinnefeld@@irb.informatik.uni-dortmund.de>.
+@email{tinnefeld@@irb.informatik.uni-dortmund.de}.
 
 @item
 Command to insert a macrodefinition in the preamble, without moving
 point from the current location.  Suggested by
-"Jeffrey C. Ely" <ely@@nwu.edu>.
+"Jeffrey C. Ely" @email{ely@@nwu.edu}.
 
 @item
 A database of all commands defined in all stylefiles.  When a command or
@@ -130,20 +130,20 @@ the appropriate @code{\usepackage} in the preamble.
 
 @item
 A way to add and overwrite math mode entries in style files, and to
-decide where they should be.  Suggested by Remo Badii <Remo.Badii@@psi.ch>.
+decide where they should be.  Suggested by Remo Badii @email{Remo.Badii@@psi.ch}.
 
 @item
 Create template for (first) line of tabular environment.
 
 @item
-@c Already fixed?
+@c FIXME: Already fixed?
 I think prompting for the master is the intended behaviour.  It
-corresponds to a `shared' value for TeX-master.
+corresponds to a `shared' value for @code{TeX-master}.
 
 There should probably be a `none' value which wouldn't query for the
-master, but instead disable all features that relies on TeX-master.
+master, but instead disable all features that relies on @code{TeX-master}.
 
-This default value for TeX-master could then be controled with mapping
+This default value for @code{TeX-master} could then be controled with mapping
 based on the extension.
 
 @item
@@ -170,11 +170,11 @@ LaTeX macros, available from the menu bar.
 
 @item
 @code{TeX-command-default} should be set from the master file, if not
-set locally.  Suggested by Peter Whaite @samp{<peta@@cim.mcgill.ca>}.
+set locally.  Suggested by Peter Whaite @email{peta@@cim.mcgill.ca}.
 
 @item
 Make @AUCTeX{} work with @samp{crypt++}.  Suggested by Chris Moore
-@samp{<Chris.Moore@@src.bae.co.uk>}.
+@email{Chris.Moore@@src.bae.co.uk}.
 
 @item
 Make @AUCTeX{} work with @samp{longlines}.  This would also apply to
@@ -182,9 +182,10 @@ Make @AUCTeX{} work with @samp{longlines}.  This would also apply to
 before attempting this.
 
 @item
+@c FIXME: Already achieved?
 The @samp{Spell} command should apply to all files in a document.  Maybe
 it could try to restrict to files that have been modified since last
-spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@@ucsd.edu>}.
+spell check?  Suggested by Ravinder Bhumbla @email{rbhumbla@@ucsd.edu}.
 
 @item
 Make @key{.} check for abbreviations and sentences ending with capital
@@ -193,7 +194,7 @@ letters.
 @item
 Use Emacs 19 minibuffer history to choose between previewers, and other
 stuff.  Suggested by John Interrante
-@samp{<interran@@uluru.Stanford.EDU>}.
+@email{interran@@uluru.Stanford.EDU}.
 
 @item
 Documentation of variables that can be set in a style hook.
@@ -220,7 +221,7 @@ Here is the start of such a list.
 @item
 Outline should be (better) supported in @TeX{} mode.
 
-At least, support headers, trailers, as well as TeX-outline-extra.
+At least, support headers, trailers, as well as @code{TeX-outline-extra}.
 
 @item
 @code{TeX-header-start} and @code{TeX-trailer-end}.
@@ -276,7 +277,7 @@ loading a new file.
 @item
 Maybe the regexp for matching a TeX symbol during parsing should be
 @samp{"\\\\\\([a-zA-Z]+\\|.\\)"} ---
-@samp{<thiemann@@informatik.uni-tuebingen.de>} Peter Thiemann.
+@email{thiemann@@informatik.uni-tuebingen.de} Peter Thiemann.
 
 @item
 @AUCTeX{} should not parse verbatim environments.

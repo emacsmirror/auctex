@@ -25,7 +25,7 @@ inserting
 @lisp
 (load "auctex.el" nil t t)
 @end lisp
-
+@noindent
 in your user init file.@footnote{This usually is a file in your home
 directory called @file{.emacs}, or @file{.emacs.d/init.el}.}
 
@@ -46,7 +46,7 @@ be achieved by putting
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 @end lisp
-
+@noindent
 into your init file.  Finally, if you often use @code{\include} or
 @code{\input}, you should make @AUCTeX{} aware of the multi-file
 document structure.  You can do this by inserting
@@ -77,17 +77,15 @@ and for viewing and debugging.
 @subsection Making your @TeX{} code more readable
 
 @AUCTeX{} can do syntax highlighting of your source code, that means
-commands will get special colors or fonts.  You can enable it locally by
-typing @kbd{M-x font-lock-mode RET}.  If you want to have font locking
-activated generally, enable @code{global-font-lock-mode}, e.g. with
-@kbd{M-x customize-variable RET global-font-lock-mode RET}.
+commands will get special colors or fonts.  This is enabled by default.
+You can disable it locally by typing @kbd{M-x font-lock-mode @key{RET}}.
 
 @AUCTeX{} will indent new lines to indicate their syntactical
 relationship to the surrounding text.  For example, the text of a
 @code{\footnote} or text inside of an environment will be indented
 relative to the text around it.  If the indenting has gotten wrong after
 adding or deleting some characters, use @key{TAB} to reindent the line,
-@kbd{M-q} for the whole paragraph, or @kbd{M-x LaTeX-fill-buffer RET}
+@kbd{M-q} for the whole paragraph, or @kbd{M-x LaTeX-fill-buffer @key{RET}}
 for the whole buffer.
 
 @subsection Entering sectioning commands
@@ -100,7 +98,7 @@ for the whole buffer.
 @cindex @code{\label}
 
 Insertion of sectioning macros, that is @samp{\chapter},
-@samp{\section}, @samp{\subsection}, etc. and accompanying @samp{\label}
+@samp{\section}, @samp{\subsection}, etc.@: and accompanying @samp{\label}
 commands may be eased by using @kbd{C-c C-s}.  You will be asked for the
 section level.  As nearly everywhere in @AUCTeX{}, you can use the
 @key{TAB} or @key{SPC} key to get a list of available level names, and
@@ -117,8 +115,8 @@ list, and to complete what you type.  Actually, the list will not only
 provide standard @LaTeX{} environments, but also take your
 @samp{\documentclass} and @samp{\usepackage} commands into account if
 you have parsing enabled by setting @code{TeX-parse-self} to @code{t}.
-If you use a couple of environments frequently, you can use the up and
-down arrow keys (or @kbd{M-p} and @kbd{M-n}) in the minibuffer to get
+If you use a couple of environments frequently, you can use the @key{up} and
+@key{down} arrow keys (or @kbd{M-p} and @kbd{M-n}) in the minibuffer to get
 back to the previously inserted commands.
 
 Some environments need additional arguments.  Often, @AUCTeX{} knows about
@@ -128,14 +126,14 @@ this and asks you to enter a value.
 
 @kbd{C-c C-m}, or simply @kbd{C-c RET} will give you a prompt that asks
 you for a @LaTeX{} macro.  You can use @key{TAB} for completion, or the
-up/down arrow keys (or @kbd{M-p} and @kbd{M-n}) to browse the command
+@key{up}/@key{down} arrow keys (or @kbd{M-p} and @kbd{M-n}) to browse the command
 history.  In many cases, @AUCTeX{} knows which arguments a macro needs
 and will ask you for that.  It even can differentiate between mandatory
 and optional arguments---for details, see @ref{Completion}.
 
 An additional help for inserting macros is provided by the possibility
 to complete macros right in the buffer.  With point at the end of a
-partially written macro, you can complete it by typing @kbd{M-TAB}.
+partially written macro, you can complete it by typing @kbd{M-@key{TAB}}.
 
 @subsection Changing the font 
 
@@ -158,17 +156,17 @@ Insert @i{italics} @samp{\textit@{@point{}@}} text.
 @item C-c C-f C-e
 @kindex C-c C-f C-e
 @cindex @code{\emph}
-Insert @i{emphasized} @samp{\emph@{@point{}@}} text.
+Insert @emph{emphasized} @samp{\emph@{@point{}@}} text.
 
 @item C-c C-f C-s
 @kindex C-c C-f C-s
 @cindex @code{\textsl}
-Insert @i{slanted} @samp{\textsl@{@point{}@}} text.
+Insert @slanted{slanted} @samp{\textsl@{@point{}@}} text.
 
 @item C-c C-f C-r
 @kindex C-c C-f C-r
 @cindex @code{\textrm}
-Insert roman @samp{\textrm@{@point{}@}} text.
+Insert @r{roman} @samp{\textrm@{@point{}@}} text.
 
 @item C-c C-f C-f
 @kindex C-c C-f C-f
@@ -209,7 +207,7 @@ braces.  It offers shortcuts for commenting out text (@kbd{C-c ;} for
 the current region or @kbd{C-c %} for the paragraph you are in).  The
 same keystrokes will remove the % signs, if the region or paragraph is
 commented out yet.  With @code{TeX-fold-mode}, you can hide certain
-parts (like footnotes, references etc.) that you do not edit currently.
+parts (like footnotes, references etc.)@: that you do not edit currently.
 Support for Emacs' outline mode is provided as well.  And there's more,
 but this is beyond the scope of this Quick Start Guide.
 
@@ -253,23 +251,27 @@ Ah, you didn't know you can do both?  That brings us to the next topic.
 From a @LaTeX{} file, you can produce @acronym{DVI} output, or a
 @acronym{PDF} file directly @i{via} @command{pdflatex}.  You can switch
 on source specials for easier navigation in the output file, or tell
-@command{latex} to stop after an error (usually @code{\noninteractive}
+@command{latex} to stop after an error (usually @option{--noninteractive}
 is used, to allow you to detect all errors in a single run).
 
 These options are controlled by toggles, the keystrokes should be easy
 to memorize:
 
 @table @kbd
-@item @kbd{C-c C-t C-p}
+@item C-c C-t C-p
+@kindex C-c C-t C-p
 This command toggles between @acronym{DVI} and @acronym{PDF} output
 
-@item @kbd{C-c C-t C-i}
+@item C-c C-t C-i
+@kindex C-c C-t C-i
 toggles interactive mode
 
-@item @kbd{C-c C-t C-s}
-toggles source specials support
+@item C-c C-t C-s
+@kindex C-c C-t C-s
+toggles Sync@TeX{} (or source specials) support
 
-@item @kbd{C-c C-t C-o}
+@item C-c C-t C-o
+@kindex C-c C-t C-o
 toggles usage of Omega/lambda.
 
 @end table
@@ -277,10 +279,10 @@ toggles usage of Omega/lambda.
 There is also another possibility: compile the document with
 @command{tex} (or @command{latex}) and then convert the resulting
 @acronym{DVI} file to @acronym{PDF} using
-@command{dvips}--@command{ps2pdf} sequence.  If you want to go by this
-route, when @code{TeX-PDF-via-dvips-ps2pdf} variable is non-nil,
-@AUCTeX{} will suggest you to run the appropriate command when you type
-@kbd{C-C C-c}.  For details, see @ref{Processor Options}.
+@command{dvips}--@command{ps2pdf} sequence or @command{dvipdfmx} command.
+If you want to go by this route, customize @code{TeX-PDF-from-DVI} option.
+Then @AUCTeX{} will suggest you to run the appropriate command when
+you type @kbd{C-C C-c}.  For details, see @ref{Processor Options}.
 
 @subsection Debugging @LaTeX{}
 
@@ -298,7 +300,7 @@ may be repeated until all errors have been dealt with.  By pressing
 @AUCTeX{} should notify you of overfull and underfull boxes in addition
 to regular errors.
 
-Issue @kbd{M-x TeX-error-overview RET} to see a nicely formatted list of
+Issue @kbd{M-x TeX-error-overview @key{RET}} to see a nicely formatted list of
 all errors and warnings reported by the compiler.
 
 If a command got stuck in a seemingly infinite loop, or you want to stop
@@ -318,7 +320,6 @@ If you are using @code{\include} or @code{\input} to structure your
 document, try @kbd{C-c C-b} while you are editing one of the included
 files.  It will run @command{latex} only on the current buffer, using the
 preamble from the master file.
-@c does this also work with input? why not?
 
 @c Local Variables: 
 @c mode: texinfo

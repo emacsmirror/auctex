@@ -331,8 +331,9 @@ variable `font-latex-fontify-sectioning'." ',num)
      font-lock-constant-face 2 command)
     ("reference"
      (("nocite" "*{") ("cite" "*[[{") ("label" "{") ("pageref" "{")
-      ("vref" "*{") ("eqref" "{") ("ref" "{") ("Ref" "{") ("include" "{")
-      ("input" "{") ("bibliography" "{") ("index" "{") ("glossary" "{")
+      ("vref" "*{") ("eqref" "{") ("ref" "{") ("Ref" "{")
+      ("footref" "{") ("include" "{") ("input" "{")
+      ("bibliography" "{") ("index" "{") ("glossary" "{")
       ("footnote" "[{") ("footnotemark" "[") ("footnotetext" "[{")
       ("marginpar" "[{") ("chaptermark" "{") ("sectionmark" "{")
       ("subsectionmark" "{") ("subsubsectionmark" "{")
@@ -1024,7 +1025,7 @@ have changed."
            ;; argument and allows for up to one level of brackets
            ;; inside the argument (e.g., the dialect of a language in
            ;; the `lstlisting' environment by the `listings' package).
-           "\\(?:\\[[^\]\[]*\\(?:\\[[^\]\[]*\\][^\]\[]*\\)*\\]\\)?"
+           "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
            ;; After the optional argument, there may also be another
            ;; mandatory argument(s) (e.g. with VerbatimOut or the
            ;; minted envs or defined with `lstnewenvironment').  Use
@@ -1875,7 +1876,8 @@ The \\begin{equation} incl. arguments in the same line and
                 (font-latex-find-dollar-math
                  ;; Hope that limit+font-latex-multiline-boundary
                  ;; doesn't fall just inside single "$$".
-                 (+ limit font-latex-multiline-boundary) num)
+                 (min (point-max) (+ limit font-latex-multiline-boundary))
+                 num)
                 ;; Found.
                 (progn
                   (forward-char num)
@@ -1896,7 +1898,8 @@ The \\begin{equation} incl. arguments in the same line and
   "Find dollar sign(s) before LIMIT.
 Set point just before the found $. Ignore escaped $ (\"\\$\").
 Optional argument NUM, if non-nil, specifies the number of dollar
-signs to follow the point and must be 1 or 2."
+signs to follow the point and must be 1 or 2.
+LIMIT must not exceed the end of buffer."
   (catch 'found
     (while (progn
              (skip-chars-forward "^$" limit)
@@ -1905,8 +1908,17 @@ signs to follow the point and must be 1 or 2."
       ;; If that "$" is not our target, skip over it and search
       ;; again.
       (cond
-       ;; check 1: Are we in a verbatim construct?
-       ((nth 3 (syntax-ppss))
+       ;; check 1: Are we in a verbatim construct or comment?
+       ((let ((ppss (syntax-ppss)))
+          (or (nth 3 ppss)
+              ;; Ignore $ in comments...
+              (and (nth 4 ppss)
+                   ;; ... except if we're looking for the end of the
+                   ;; inline math.  We need to consider this %$
+                   ;; comments because they are the workaround for
+                   ;; falsely triggered math mode due to valid,
+                   ;; non-math occurrences of $.  (bug#48365)
+                   (not num))))
         (skip-chars-forward "$" limit))
        ;; check 2: Else, is "$" escaped?
        ((TeX-escaped-p)
@@ -1920,21 +1932,6 @@ signs to follow the point and must be 1 or 2."
         ;; followed by $$ because expressions like "$1+1$$2+2$" and
         ;; "$1+2$$$3+3$$" are legal.
         (forward-char 1))
-       ;; (Quote from bug#19589, with a bit of adaptation)
-       ;;
-       ;; > When I use environment variables (such as $HOME) in a .tex
-       ;; > file, the $ triggers math mode syntax highlighting. The
-       ;; > result is that the rest of the buffer, until the next $,
-       ;; > is highlighted as if it were in math mode. Some examples:
-       ;; > \includegraphics{$HOME/path/to/graphic}
-       ;; > \bibliography{$HOME/path/to/bib}
-       ;;
-       ;; In order to spare workaround of adding "%$" at the end of
-       ;; the lines for such cases, we stay away from the next syntax
-       ;; state check.
-       ;; ;; check 3: Else, is "$" in comments or verb-like construct?
-       ;; ((nth 8 (syntax-ppss))
-       ;;       (skip-chars-forward "$" limit))
        (t
         ;; That "$" is live one.
         (throw 'found t))))))

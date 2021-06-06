@@ -246,7 +246,8 @@ key-val and the first item."
   (LaTeX-insert-item)
   ;; The inserted \item may have outdented the first line to the
   ;; right.  Fill it, if appropriate.
-  (when (and (not (looking-at "$"))
+  (when (and auto-fill-function
+             (not (looking-at "$"))
              (not (assoc env LaTeX-indent-environment-list))
              (> (- (line-end-position) (line-beginning-position))
                 (current-fill-column)))

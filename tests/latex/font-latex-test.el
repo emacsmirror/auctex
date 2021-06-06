@@ -43,6 +43,23 @@ $a$")
               (setq font-latex--updated-region-end (point-max))
               (font-latex-match-dollar-math (point-max))))))
 
+(ert-deftest font-latex-unclosed-dollars ()
+  "Test unclosed dollar doesn't cause error."
+  (let ((TeX-install-font-lock #'font-latex-setup))
+    (with-temp-buffer
+      (LaTeX-mode)
+
+      (insert "a$")
+      (goto-char (point-min))
+      (setq font-latex--updated-region-end (point-max))
+      (should (not (font-latex-match-dollar-math (point-max))))
+
+      (erase-buffer)
+      (insert "a$$")
+      (goto-char (point-min))
+      (setq font-latex--updated-region-end (point-max))
+      (should (not (font-latex-match-dollar-math (point-max)))))))
+
 (ert-deftest font-latex-extend-region-backwards-quotation ()
   "Test f-l-e-r-b-q doesn't extend region too eagerly."
   (with-temp-buffer

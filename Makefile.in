@@ -91,7 +91,7 @@ STYLESRC = style/prosper.el \
 	   style/slides.el    style/foils.el     style/amstex.el \
 	   style/article.el   style/book.el      style/letter.el \
 	   style/report.el    style/amsart.el    style/amsbook.el \
-	   style/epsf.el      style/psfig.el     style/latexinfo.el \
+	   style/epsf.el      style/psfig.el                      \
 	   style/dutch.el     style/german.el    style/dk.el \
 	   style/j-article.el style/j-book.el    style/j-report.el \
 	   style/jarticle.el  style/jbook.el     style/jreport.el \
@@ -174,7 +174,9 @@ STYLESRC = style/prosper.el \
 	   style/ltxguide.el  style/revtex4-2.el style/overpic.el \
 	   style/tex-live.el  style/algorithm.el style/algpseudocode.el \
 	   style/appendix.el  style/scholax.el   style/extramarks.el \
-	   style/truncate.el  style/changes.el   style/footnotehyper.el
+	   style/truncate.el  style/changes.el   style/footnotehyper.el \
+	   style/brazil.el    style/brazilian.el style/portuguese.el \
+	   style/portuges.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

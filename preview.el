@@ -999,7 +999,8 @@ The usual PROCESS and COMMAND arguments for
                (setq TeX-sentinel-function nil)
                ;; Add DELAYBIND option for adjustment of foreground
                ;; color to work.
-               (if (eq preview-pdf-color-adjust-method t)
+               (if (and (eq preview-pdf-color-adjust-method t)
+                        (aref preview-colors 1))
                    (setq preview-gs-command-line (append
                                                   preview-gs-command-line
                                                   '("-dDELAYBIND"))))

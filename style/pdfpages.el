@@ -110,7 +110,8 @@
                          (read-file-name
                           "File to include: " nil nil nil nil
                           (lambda (pdfs)
-                            (string-match "\\.pdf$" pdfs)))
+                            (or (file-directory-p pdfs)
+                                (string-match "\\.pdf\\'" pdfs))))
                          (TeX-master-directory))))
            (format "%s" pdffile)))))
 
