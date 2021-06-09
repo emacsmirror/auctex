@@ -3814,8 +3814,8 @@ performed in that case."
           (if (re-search-forward
                (concat "\\("
                        ;; Code comments.
-                       "[^ \r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
-                       TeX-comment-start-regexp
+                       "\\([^ \r\n%\\]\\|\\\\%\\)\\([ \t]\\|\\\\\\\\\\)*"
+                       "[^\r\n\\]" TeX-comment-start-regexp
                        "\\|"
                        ;; Lines ending with `\par'.
                        "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
