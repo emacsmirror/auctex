@@ -1205,7 +1205,9 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
                               (unless (zerop (length float))
                                 (concat LaTeX-optop float
                                         LaTeX-optcl)))
-    (when active-mark (goto-char start-marker))
+    (when active-mark
+      (goto-char start-marker)
+      (set-marker start-marker nil))
     (when center
       (insert TeX-esc "centering")
       (indent-according-to-mode)
@@ -1227,7 +1229,9 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
               (LaTeX-newline)
               (indent-according-to-mode)))
         ;; bottom caption (default)
-        (when active-mark (goto-char end-marker))
+        (when active-mark
+          (goto-char end-marker)
+          (set-marker end-marker nil))
         (save-excursion
           (LaTeX-newline)
           (indent-according-to-mode)
@@ -4026,7 +4030,8 @@ performed in that case."
             ;; ELSE part follows - loop termination relies on a fact
             ;; that (LaTeX-fill-region-as-para-do) moves point past
             ;; the filled region
-            (LaTeX-fill-region-as-para-do from end-marker justify-flag)))))))
+            (LaTeX-fill-region-as-para-do from end-marker justify-flag)))))
+    (set-marker end-marker nil)))
 
 ;; The content of `LaTeX-fill-region-as-para-do' was copied from the
 ;; function `fill-region-as-paragraph' in `fill.el' (CVS Emacs,
@@ -4086,7 +4091,10 @@ space does not end a sentence, so don't break a line there."
     (goto-char from-plus-indent))
 
   (if (not (> to (point)))
-      nil ;; There is no paragraph, only whitespace: exit now.
+      ;; There is no paragraph, only whitespace: exit now.
+      (progn
+        (set-marker to nil)
+        nil)
 
     (or justify (setq justify (current-justification)))
 
@@ -4211,10 +4219,12 @@ space does not end a sentence, so don't break a line there."
                          (concat "^\\([ \t]*" TeX-comment-start-regexp "+\\)*"
                                  "[ \t]*")
                          (line-beginning-position)))
-              (LaTeX-fill-newline)))))
+              (LaTeX-fill-newline)))
+          (set-marker end-marker nil)))
       ;; Leave point after final newline.
       (goto-char to)
       (unless (eobp) (forward-char 1))
+      (set-marker to nil)
       ;; Return the fill-prefix we used
       fill-prefix)))
 
@@ -4492,7 +4502,8 @@ depends on the value of `LaTeX-syntactic-comments'."
                                               (line-beginning-position 2)
                                               justify)
               (goto-char end-marker)
-              (beginning-of-line)))
+              (beginning-of-line)
+              (set-marker end-marker nil)))
           (LaTeX-fill-code-comment justify)))
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
@@ -4634,6 +4645,7 @@ formatting."
                        (concat "^\\($\\|[ \t]+$\\|[ \t]*"
                                TeX-comment-start-regexp "+[ \t]*$\\)")))
             (forward-line 1))))
+      (set-marker next-par nil)
       (set-marker to nil)))
   (message "Formatting%s...done" (or what "")))
 

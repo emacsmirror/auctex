@@ -478,8 +478,10 @@ is assumed by default."
            (if (nth 1 reftex-label-menu-flags) ; section number flag
                (concat section-number " "))
            text))
-    (list 'toc "toc" text file marker level section-number
-          literal (marker-position marker))))
+    (prog1
+        (list 'toc "toc" text file marker level section-number
+              literal (marker-position marker))
+      (set-marker marker nil))))
 
 (defun Texinfo-reftex-hook ()
   "Hook function to plug Texinfo into RefTeX."

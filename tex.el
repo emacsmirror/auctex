@@ -3502,7 +3502,8 @@ See `TeX-parse-macro' for details."
                       (insert TeX-arg-opening-brace)
                       (goto-char (marker-position end))
                       (insert TeX-arg-closing-brace)
-                      (setq insert-flag t))))
+                      (setq insert-flag t)
+                      (set-marker end nil))))
                  ((= arg 0)) ; nop for clarity
                  ((> arg 0)
                   (TeX-parse-argument optional t)
