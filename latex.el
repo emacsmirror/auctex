@@ -3815,7 +3815,7 @@ performed in that case."
                (concat "\\("
                        ;; Code comments.
                        "\\([^ \r\n%\\]\\|\\\\%\\)\\([ \t]\\|\\\\\\\\\\)*"
-                       "[^\r\n\\]" TeX-comment-start-regexp
+                       TeX-comment-start-regexp
                        "\\|"
                        ;; Lines ending with `\par'.
                        "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
