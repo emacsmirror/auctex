@@ -291,7 +291,6 @@ at bottom if LINE is nil."
 (defvar TeX-current-page)
 (defvar TeX-error-overview-open-after-TeX-run)
 (defvar TeX-error-list)
-(defvar TeX-parse-all-errors)
 (defvar TeX-command-buffer)
 (defvar TeX-region)
 
@@ -2529,14 +2528,6 @@ error or warning.  This is the structure of each element:
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
 (make-variable-buffer-local 'TeX-error-list)
-
-(defcustom TeX-parse-all-errors t
-  "Whether to automatically collect all warning and errors after running TeX.
-
-If t, it makes it possible to use `TeX-previous-error' with TeX
-commands."
-  :group 'TeX-command
-  :type 'boolean)
 
 (defun TeX-parse-all-errors ()
   "Parse TeX output buffer to collect all warnings and errors."

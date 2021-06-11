@@ -713,6 +713,19 @@ sure \"%p\" is the first entry."
 (autoload 'TeX-save-document "tex-buf" nil t)
 (autoload 'TeX-view "tex-buf" nil t)
 
+;; This variable used to be defined in tex-buf.el.  It is used in
+;; `TeX-mode-specific-command-menu-entries' in this file.  It is now
+;; (June 2021) moved into this file to avoid `void-variable' errors
+;; with the "Command" menu if tex-buf.el is not loaded yet for reasons
+;; mentioned above.
+(defcustom TeX-parse-all-errors t
+  "Whether to automatically collect all warning and errors after running TeX.
+
+If t, it makes it possible to use `TeX-previous-error' with TeX
+commands."
+  :group 'TeX-command
+  :type 'boolean)
+
 ;;; Portability.
 
 (defmacro TeX--if-macro-fboundp (name then &rest else)
