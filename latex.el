@@ -58,6 +58,7 @@
 (defvar outline-heading-alist)
 (defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
+(defvar TeX-error-description-list-local)
 
 ;;; Syntax
 
