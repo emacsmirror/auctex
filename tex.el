@@ -199,7 +199,7 @@ If nil, none is specified."
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
                      context-mode)
      :help "Run BibTeX")
-    ("Biber" "biber %s %(output-dir)" TeX-run-Biber nil
+    ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run Biber")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
@@ -212,13 +212,13 @@ If nil, none is specified."
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PostScript")
-    ("Dvipdfmx" "dvipdfmx %d -o %(O?pdf)" TeX-run-dvipdfmx nil
+    ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert PostScript file to PDF")
-    ("Glossaries" "makeglossaries %(O?aux)" TeX-run-command nil
+    ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
@@ -557,6 +557,7 @@ string."
     ("%(extraopts)" (lambda () TeX-command-extra-options))
     ("%(output-dir)" TeX--output-dir-arg "--output-directory=")
     ("%(o-dir)" TeX--output-dir-arg "-o ")
+    ("%(d-dir)" TeX--output-dir-arg "-d ")
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
