@@ -4161,17 +4161,12 @@ advanced algorithm.
 (setq-default TeX-master nil) ; @r{Query for master file.}
 @end lisp
 
-@c FIXME: It doesn't seem that current implementation has this
-@c TeX-header-end aware feature.
-If @AUCTeX{} finds the line indicating the end of the header in a master
-file (@code{TeX-header-end}), it can figure out for itself that this is
-a master file.  Otherwise, it will ask for the name of the master file
+In this case, @AUCTeX{} will ask for the name of the master file
 associated with the buffer.  To avoid asking you again, @AUCTeX{} will
 automatically insert the name of the master file as a file variable
 (@pxref{File Variables,,,emacs,The Emacs Editor}).  You can also insert
 the file variable yourself, by putting the following text at the end of
 your files.
-@vindex TeX-header-end
 
 @example
 %%% Local Variables:
