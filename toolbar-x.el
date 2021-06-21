@@ -1116,19 +1116,22 @@ function `toolbar-install-toolbar'."
                               (cadr (memq :visible filtered-props))))
                (button (cons (memq :button filtered-props)
                              (cadr (memq :button filtered-props))))
-               (menuitem (append
-                          (list 'menu-item
-                                (toolbarx-make-string-from-symbol symbol)
-                                command
-                                :image image-descriptor)
-                          (when (car help)
-                            (list :help (cdr help)))
-                          (when (car enable)
-                            (list :enable (cdr enable)))
-                          (when (car visible)
-                            (list :visible (cdr visible)))
-                          (when (car button)
-                            (list :button (cdr button)))))
+               (menuitem (if (eq symbol 'separator)
+                             '(menu-item "--")
+                           (append
+                            (list 'menu-item
+                                  (toolbarx-make-string-from-symbol symbol)
+                                  command
+                                  :image image-descriptor)
+                            (when (car help)
+                              (list :help (cdr help)))
+                            (when (car enable)
+                              (list :enable (cdr enable)))
+                            (when (car visible)
+                              (list :visible (cdr visible)))
+                            (when (car button)
+                              (list :button (cdr button)))
+                            '(:vert-only t))))
                (key-not-used
                 (let* ((count 0)
                        (symb symbol))

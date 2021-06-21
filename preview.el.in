@@ -3068,7 +3068,8 @@ pp")
     (define-key LaTeX-mode-map [tool-bar preview]
       `(menu-item "Preview at point" preview-at-point
                   :image ,preview-tb-icon
-                  :help "Preview on/off at point")))
+                  :help "Preview on/off at point"
+                  :vert-only t)))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
            format-cons)
