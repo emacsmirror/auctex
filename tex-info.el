@@ -867,7 +867,8 @@ value of `Texinfo-mode-hook'."
   (run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
 
-(defcustom Texinfo-clean-intermediate-suffixes nil
+(defcustom Texinfo-clean-intermediate-suffixes
+  '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
 i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
