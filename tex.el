@@ -202,6 +202,17 @@ If nil, none is specified."
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run Biber")
+    ;; Not part of standard TeX.
+    ;; It seems that texindex doesn't support "--output-dir" option.
+    ("Texindex" "texindex %s.??" TeX-run-command nil
+     (texinfo-mode) :help "Run Texindex")
+    ;; TODO:
+    ;; 1. Supply "--dvipdf" option if `TeX-PDF-mode' and
+    ;;    `TeX-PDF-from-DVI' are non-nil.
+    ;; 2. Supply "--build-dir=DIR" option when `TeX-output-dir' is
+    ;;    non-nil.
+    ("Texi2dvi" "%(PDF)texi2dvi %t" TeX-run-command nil
+     (texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"

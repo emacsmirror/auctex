@@ -5973,10 +5973,8 @@ The native Texinfo mode provides the binding @kbd{C-c C-t C-i}
 @kbd{C-c C-t C-p} (@code{texinfo-tex-print}) and @kbd{C-c C-t C-q}
 (@code{tex-show-print-queue}) for printing and showing the printer
 queue.  These are superseded by the respective commands available
-through @kbd{C-c C-c} (@code{TeX-command-master}) in @AUCTeX{}: @samp{Index},
+through @kbd{C-c C-c} (@code{TeX-command-master}) in @AUCTeX{}: @samp{Texindex},
 @samp{Print}, and @samp{Queue}.
-@c FIXME: "Index" runs makeindex, not texindex.  No entry in
-@c TeX-command-list runs texindex.
 
 @item Kill jobs
 The command @kbd{C-c C-t C-k} (@code{tex-kill-job}) in the native mode
