@@ -5253,8 +5253,9 @@ prompt.
 
 @ftable @code
 @item TeX-arg-conditional
-Implements if @var{expr} @var{then} @var{else}.  If @var{expr} evaluates to true, parse @var{then} as an
-argument list, else parse @var{else} as an argument list.
+Implements if @var{expr} @var{then} @var{else}.  If @var{expr} evaluates
+to true, parse @var{then} as an argument list, else parse @var{else} as an
+argument list.
 
 @item TeX-arg-literal
 Insert its arguments into the buffer.  Used for specifying extra syntax
@@ -5420,12 +5421,18 @@ Insert x and y coordinates as a pair.  No arguments.
 Prompt for document author, using @code{LaTeX-default-author} as initial
 input.
 
+@item TeX-read-hook
+Prompt for a @LaTeX{} hook and return it.
+
+@item TeX-arg-hook
+Prompt for a @LaTeX{} hook and insert it as a @TeX{} macro argument.
+
 @item TeX-read-key-val
 Prompt for a @samp{key=value} list of options and return them.
 
 @item TeX-arg-key-val
-Prompt for a @samp{key=value} list of options and insert it as a @TeX{} macro
-argument.
+Prompt for a @samp{key=value} list of options and insert it as a @TeX{}
+macro argument.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after

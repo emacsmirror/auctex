@@ -2431,13 +2431,20 @@ To insert a hook here, you must insert it in the appropiate style file.")
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+(defvar TeX-global-input-files-with-extension nil
+  "List of the non-local TeX input files with extension.
+Initialized once at the first time you prompt for an input file
+inside a file hook command.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
 (defvar LaTeX-global-package-files nil
   "List of the LaTeX package files.
 Initialized once at the first time you prompt for a LaTeX package.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
-;; Add both variables to `TeX-normal-mode-reset-list':
+;; Add the variables to `TeX-normal-mode-reset-list':
 (add-to-list 'TeX-normal-mode-reset-list 'TeX-global-input-files)
+(add-to-list 'TeX-normal-mode-reset-list 'TeX-global-input-files-with-extension)
 (add-to-list 'TeX-normal-mode-reset-list 'LaTeX-global-package-files)
 
 (defun LaTeX-arg-usepackage-read-packages-with-options ()
@@ -3103,6 +3110,170 @@ as values for the key.  Use PROMPT as the prompt string."
   (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
 
+(defun TeX-read-hook ()
+  "Read a LaTeX hook and return it as a string."
+  (let* ((hook (completing-read
+	        (TeX-argument-prompt nil nil "Hook")
+	        '("cmd"
+		  "env"
+		  ;; From ltfilehook-doc.pdf
+		  "file/before"        "file/after"
+		  "include/before"     "include/end"   "include/after"
+		  "class/before"       "class/after"
+		  "package/before"     "package/after"
+		  ;; From lthooks-doc.pdf
+		  "begindocument"
+		  "begindocument/before"
+		  "begindocument/end"
+		  "enddocument"
+		  "enddocument/afterlastpage"
+		  "enddocument/afteraux"
+		  "enddocument/info"
+		  "enddocument/end"
+		  "rmfamily"           "sffamily"
+		  "ttfamily"           "normalfont"
+		  "bfseries"           "bfseries/defaults"
+		  "mdseries"           "mdseries/defaults"
+		  ;; From ltshipout-doc.pdf
+		  "shipout/before"     "shipout/after"
+		  "shipout/foreground" "shipout/background"
+		  "shipout/firstpage"  "shipout/lastpage"
+		  ;; From ltpara-doc.pdf
+		  "para/before"         "para/begin"
+		  "para/end"            "para/after")))
+	 (place (lambda ()
+		  (completing-read
+		   (TeX-argument-prompt nil nil "Where")
+		   (if (string= hook "cmd")
+		       '("after" "before")
+		     '("before" "begin" "end" "after")))))
+	 (search (lambda ()
+		   (if (eq TeX-arg-input-file-search 'ask)
+		       (not (y-or-n-p "Find file yourself? "))
+		     TeX-arg-input-file-search)))
+	 name where files ); result
+    (cond ((string= hook "cmd")
+	   ;; cmd/<name>/<where>
+	   (setq name (completing-read
+		       (TeX-argument-prompt nil nil "Command")
+		       (TeX-symbol-list)))
+	   (setq where (funcall place)))
+
+	  ;; env/<name>/<where>
+	  ((string= hook "env")
+	   (setq name (completing-read
+		       (TeX-argument-prompt nil nil "Environment")
+		       (LaTeX-environment-list)))
+	   (setq where (funcall place)))
+
+	  ;; file/(before|after)/<file-name.xxx> where <file-name> is
+	  ;; optional and must be with extension
+	  ((member hook '("file/before" "file/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless TeX-global-input-files-with-extension
+		   (setq TeX-global-input-files-with-extension
+			 (prog2
+			     (message "Searching for files...")
+			     (mapcar #'list
+				     (TeX-search-files-by-type 'texinputs
+							       'global
+							       t nil))
+			   (message "Searching for files...done"))))
+		 (setq name
+		       (completing-read
+			(TeX-argument-prompt t nil "File")
+			TeX-global-input-files-with-extension)))
+	     (setq name
+		   (file-name-nondirectory
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; include/(before|after|end)/<file-name> where <file-name>
+	  ;; is optional
+	  ((member hook '("include/before" "include/end" "include/after"))
+	   (if (funcall search)
+	       (progn
+		 (setq files
+		       (prog2
+			   (message "Searching for files...")
+			   ;; \include looks for files with TeX content,
+			   ;; so limit the search:
+			   (let* ((TeX-file-extensions '("tex" "ltx")))
+			     (TeX-search-files-by-type 'texinputs 'local t t))
+			 (message "Searching for files...done")))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "File")
+			     files)))
+	     (setq name
+		   (file-name-base
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; class/(before|after)/<doc-class> where <doc-class> is
+	  ;; optional
+	  ((member hook '("class/before" "class/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless LaTeX-global-class-files
+		   (setq LaTeX-global-class-files
+			 (prog2
+			     (message "Searching for LaTeX classes...")
+			     (let* ((TeX-file-extensions '("cls")))
+			       (mapcar #'list
+				       (TeX-search-files-by-type 'texinputs
+								 'global
+								 t t)))
+			   (message "Searching for LaTeX classes...done"))))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "Document class")
+			     LaTeX-global-class-files)))
+	     (setq name
+		   (file-name-base
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; package/(before|after)/<pack-name> where
+	  ;; <pack-name> is optional
+	  ((member hook '("package/before" "package/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless LaTeX-global-package-files
+		   (setq LaTeX-global-package-files
+			 (prog2
+			     (message "Searching for LaTeX packages...")
+			     (let* ((TeX-file-extensions '("sty")))
+			       (mapcar #'list
+				       (TeX-search-files-by-type 'texinputs
+								 'global
+								 t t)))
+			   (message "Searching for LaTeX packages...done"))))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "Package")
+			     LaTeX-global-package-files)))
+	     (setq name (file-name-base
+			 (read-file-name
+			  (TeX-argument-prompt t nil "File")
+			  nil "")))))
+
+	  ;; User specific input for the hook, do nothing:
+	  (t nil))
+    ;; Process the input: For cmd or env, concat the elements with a
+    ;; slash.  For other hooks, check if the optional name is given
+    ;; and append it with a backslash to the hook:
+    (if (member hook '("cmd" "env"))
+	(concat hook "/" name "/" where)
+      (concat hook (when (and name (not (string= name "")))
+		     (concat "/" name))))))
+
+(defun TeX-arg-hook (optional)
+  "Prompt for a LaTeX hook.
+Insert the given hook as a TeX macro argument.  If OPTIONAL is
+non-nil, insert it as an optional argument."
+  (TeX-argument-insert (TeX-read-hook) optional))
 
 ;;; Verbatim constructs
 
@@ -7167,7 +7338,12 @@ function would return non-nil and `(match-string 1)' would return
      ;; `LaTeX-font-list' once it is needed more frequently.
      '("textssc" t)
      ;; User level reset macros:
-     '("normalfont" -1) '("normalshape" -1)))
+     '("normalfont" -1) '("normalshape" -1)
+
+     ;; LaTeX hook macros:
+     '("AddToHook"      TeX-arg-hook [ "Label" ] t)
+     '("RemoveFromHook" TeX-arg-hook [ "Label" ])
+     '("AddToHookNext"  TeX-arg-hook t)))
 
   (TeX-run-style-hooks "LATEX")
 

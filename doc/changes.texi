@@ -105,6 +105,11 @@ now is an obsolete alias.
 The style @file{latexinfo.el} is removed from @AUCTeX{}.
 @file{latexinfo.el} was meant to support latexinfo which in return was a
 @LaTeX{}-2.09 extension of Texinfo, but didn't manage to replace Texinfo.
+
+@item
+@AUCTeX{} has preliminary support for @LaTeX{}-hooks.  Hooks provided by
+@LaTeX{} kernel are known and available for completion in
+@samp{\AddToHook}, @samp{\RemoveFromHook} and @samp{\AddToHookNext}.
 @end itemize
 
 @heading News in 12.3
