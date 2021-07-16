@@ -73,7 +73,7 @@ macros, 'math for math macros and 'comment for comments."
   '(("[f]" ("footnote" "marginpar"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
-    ("[r]" ("ref" "pageref" "eqref"))
+    ("[r]" ("ref" "pageref" "eqref" "footref"))
     ("[i]" ("index" "glossary"))
     ("[1]:||*" ("item"))
     ("..." ("dots"))
