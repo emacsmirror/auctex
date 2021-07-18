@@ -1203,9 +1203,11 @@ The variable @code{LaTeX-math-list} allows you to add your own mappings.
 A list containing user-defined keys and commands to be used in @LaTeX{}
 Math mode.  Each entry should be a list of two to four elements.
 
-First, the key to be used after @code{LaTeX-math-abbrev-prefix} for
-macro insertion.  If it is nil, the symbol has no associated
-keystroke (it is available in the menu, though).
+First, the key to be used after @code{LaTeX-math-abbrev-prefix} for macro
+insertion.  The key can be a character (e.g. @samp{?o}) for a single
+stroke or a string (e.g. @samp{"o a"}) for a multi-stroke binding.  If it
+is nil, the symbol has no associated keystroke (it is available in the
+menu, though).
 
 Second, a string representing the name of the macro (without a leading
 backslash.)

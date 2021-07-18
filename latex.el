@@ -5653,8 +5653,14 @@ Each entry should be a list with up to four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
-in math minor mode.  If KEY is nil, the symbol has no associated
-keystroke \(it is available in the menu, though\).
+in math minor mode.  KEY can be a character (e.g. ?o) for a
+single stroke or a string (e.g. \"o a\") for a multi-stroke
+binding.  If KEY is nil, the symbol has no associated
+keystroke (it is available in the menu, though).  Note that
+predefined keys in `LaTeX-math-default' cannot be overridden in
+this variable.  Currently, only the lowercase letter 'o' is free
+for user customization, more options are available in uppercase
+area.
 
 VALUE can be a string with the name of the macro to be inserted,
 or a function to be called.  The macro must be given without the
@@ -5662,8 +5668,8 @@ leading backslash.
 
 The third element MENU is the name of the submenu where the
 command should be added.  MENU can be either a string
-\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
-nil.  If MENU is nil, no menu item will be created.
+\(e.g. \"greek\"), a list (e.g. (\"AMS\" \"Delimiters\")) or nil.
+If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.
