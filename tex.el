@@ -1893,7 +1893,7 @@ SyncTeX are recognized."
        :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
        (format "org.%s.%s.Window" (car de-app) (cadr de-app))
        "SyncSource"
-       'TeX-source-correlate-sync-source))))
+       #'TeX-source-correlate-sync-source))))
 
 (defalias 'TeX-source-specials-mode #'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
