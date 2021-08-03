@@ -2545,13 +2545,14 @@ is assumed to be the same as the directory of `TeX-master'."
                  (string :tag "Custom" "build")))
 (make-variable-buffer-local 'TeX-output-dir)
 
-(defun TeX--master-output-dir (master-dir relative-to-master)
+(defun TeX--master-output-dir (master-dir relative-to-master &optional ensure)
   "Return the directory path where output files should be placed.
 If `TeX-output-dir' is nil, then return nil.
 
 MASTER-DIR is the directory path where the master file is
 located.  If RELATIVE-TO-MASTER is non-nil, make the returned
-path relative to the directory in MASTER-DIR."
+path relative to the directory in MASTER-DIR.  If ENSURE is
+non-nil, the output directory is created if it does not exist."
   (when TeX-output-dir
     (let* ((master-dir (expand-file-name (or master-dir "")))
            (out-dir (file-name-as-directory
@@ -2561,7 +2562,7 @@ path relative to the directory in MASTER-DIR."
                         TeX-output-dir
                         master-dir))))))
       ;; Make sure the directory exists
-      (unless (file-exists-p out-dir)
+      (unless (or (not ensure) (file-exists-p out-dir))
         (make-directory (file-name-as-directory out-dir) t))
       (if relative-to-master
           (file-relative-name out-dir master-dir)
@@ -2571,7 +2572,7 @@ path relative to the directory in MASTER-DIR."
   "Format the output directory as a command argument.
 ARGNAME is prepended to the quoted output directory.  If
 `TeX-output-dir' is nil then return an empty string."
-  (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t)))
+  (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t t)))
     (if out-dir
         (concat argname "\"" out-dir "\"")
       "")))
