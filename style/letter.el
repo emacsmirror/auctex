@@ -146,7 +146,8 @@
                             (marker-position addr-end) 'move)
                       (progn
                         (newline)
-                        (indent-to addr-column))))))))
+                        (indent-to addr-column)))))
+              (set-marker addr-end nil))))
       (insert "\n")
       (indent-to indentation))
     (insert TeX-esc "opening"

@@ -478,8 +478,10 @@ is assumed by default."
            (if (nth 1 reftex-label-menu-flags) ; section number flag
                (concat section-number " "))
            text))
-    (list 'toc "toc" text file marker level section-number
-          literal (marker-position marker))))
+    (prog1
+        (list 'toc "toc" text file marker level section-number
+              literal (marker-position marker))
+      (set-marker marker nil))))
 
 (defun Texinfo-reftex-hook ()
   "Hook function to plug Texinfo into RefTeX."
@@ -865,7 +867,8 @@ value of `Texinfo-mode-hook'."
   (run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
 
-(defcustom Texinfo-clean-intermediate-suffixes nil
+(defcustom Texinfo-clean-intermediate-suffixes
+  '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
 i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."

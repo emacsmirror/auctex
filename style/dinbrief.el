@@ -169,7 +169,8 @@
                             (marker-position addr-end) 'move)
                       (progn
                         (newline)
-                        (indent-to addr-column))))))))
+                        (indent-to addr-column)))))
+              (set-marker addr-end nil))))
       (LaTeX-dinbrief-insert "\n")
       (indent-to indentation))
     (if (not (zerop (length postremark)))

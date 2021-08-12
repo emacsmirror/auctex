@@ -84,7 +84,7 @@ Return non-nil if document needs to be re-TeX'ed."
 If NAME-OR-FILE-FN is a string, interpret it as the filename.
 Otherwise, assume it is a callable function and call it with
 EXTENSION as an argument and return the result without
-modification. EXTENSION is a string which should not start with
+modification.  EXTENSION is a string which should not start with
 '.'."
   (if (stringp name-or-file-fn)
       (if extension
@@ -291,7 +291,6 @@ at bottom if LINE is nil."
 (defvar TeX-current-page)
 (defvar TeX-error-overview-open-after-TeX-run)
 (defvar TeX-error-list)
-(defvar TeX-parse-all-errors)
 (defvar TeX-command-buffer)
 (defvar TeX-region)
 
@@ -490,7 +489,7 @@ Do you want to select one of these engines? "
 
 FILE-FN is the symbol of a function returning a file name.  The
 function has one optional argument, the extension to use on the
-file. Valid choices are `TeX-master-file' and `TeX-region-file'
+file.  Valid choices are `TeX-master-file' and `TeX-region-file'.
 
 Use the information in `TeX-command-list' to determine how to run
 the command.
@@ -603,9 +602,10 @@ the following three conditions are met:
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
 Adjust dynamically bound variable `TeX-expand-pos' to avoid possible
-infinite loop in `TeX-command-expand'. If PREPROCESS-FN is non-nil then
-it is called with the filename as an argument and the results is
-enclosed instead of the filename.
+infinite loop in `TeX-command-expand'.
+If PREPROCESS-FN is non-nil then it is called with the filename
+as an argument and the result is enclosed instead of the
+filename.
 
 Helper function of `TeX-command-expand'. Use only within entries in
 `TeX-expand-list-builtin' and `TeX-expand-list'."
@@ -2529,14 +2529,6 @@ error or warning.  This is the structure of each element:
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
 (make-variable-buffer-local 'TeX-error-list)
-
-(defcustom TeX-parse-all-errors t
-  "Whether to automatically collect all warning and errors after running TeX.
-
-If t, it makes it possible to use `TeX-previous-error' with TeX
-commands."
-  :group 'TeX-command
-  :type 'boolean)
 
 (defun TeX-parse-all-errors ()
   "Parse TeX output buffer to collect all warnings and errors."

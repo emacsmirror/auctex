@@ -1203,9 +1203,11 @@ The variable @code{LaTeX-math-list} allows you to add your own mappings.
 A list containing user-defined keys and commands to be used in @LaTeX{}
 Math mode.  Each entry should be a list of two to four elements.
 
-First, the key to be used after @code{LaTeX-math-abbrev-prefix} for
-macro insertion.  If it is nil, the symbol has no associated
-keystroke (it is available in the menu, though).
+First, the key to be used after @code{LaTeX-math-abbrev-prefix} for macro
+insertion.  The key can be a character (e.g.@: @samp{?o}) for a single
+stroke or a string (e.g.@: @samp{"o a"}) for a multi-stroke binding.  If it
+is nil, the symbol has no associated keystroke (it is available in the
+menu, though).
 
 Second, a string representing the name of the macro (without a leading
 backslash.)
@@ -4116,7 +4118,7 @@ and if it is relevant for all text modes, append it to
 
 Other useful hooks are listed below.
 
-@defvr Variable TeX-after-compilation-finished-hook
+@defvr Variable TeX-after-compilation-finished-functions
 Hook which is run after the @TeX{}/@LaTeX{} processor has successfully
 finished compiling your document.  (@xref{Processing}, for finding out
 how to compile your document.)  Each function in the hook is run with
@@ -4127,7 +4129,7 @@ re-compilation especially when using Emacs viewers such as DocView or
 PDF Tools.  The function @code{TeX-revert-document-buffer} can be added
 to the hook for this purpose.
 @end defvr
-@vindex TeX-after-compilation-finished-hook
+@vindex TeX-after-compilation-finished-functions
 @findex TeX-revert-document-buffer
 
 @node Multifile
@@ -4161,17 +4163,12 @@ advanced algorithm.
 (setq-default TeX-master nil) ; @r{Query for master file.}
 @end lisp
 
-@c FIXME: It doesn't seem that current implementation has this
-@c TeX-header-end aware feature.
-If @AUCTeX{} finds the line indicating the end of the header in a master
-file (@code{TeX-header-end}), it can figure out for itself that this is
-a master file.  Otherwise, it will ask for the name of the master file
+In this case, @AUCTeX{} will ask for the name of the master file
 associated with the buffer.  To avoid asking you again, @AUCTeX{} will
 automatically insert the name of the master file as a file variable
 (@pxref{File Variables,,,emacs,The Emacs Editor}).  You can also insert
 the file variable yourself, by putting the following text at the end of
 your files.
-@vindex TeX-header-end
 
 @example
 %%% Local Variables:
@@ -5258,8 +5255,9 @@ prompt.
 
 @ftable @code
 @item TeX-arg-conditional
-Implements if @var{expr} @var{then} @var{else}.  If @var{expr} evaluates to true, parse @var{then} as an
-argument list, else parse @var{else} as an argument list.
+Implements if @var{expr} @var{then} @var{else}.  If @var{expr} evaluates
+to true, parse @var{then} as an argument list, else parse @var{else} as an
+argument list.
 
 @item TeX-arg-literal
 Insert its arguments into the buffer.  Used for specifying extra syntax
@@ -5425,12 +5423,18 @@ Insert x and y coordinates as a pair.  No arguments.
 Prompt for document author, using @code{LaTeX-default-author} as initial
 input.
 
+@item TeX-read-hook
+Prompt for a @LaTeX{} hook and return it.
+
+@item TeX-arg-hook
+Prompt for a @LaTeX{} hook and insert it as a @TeX{} macro argument.
+
 @item TeX-read-key-val
 Prompt for a @samp{key=value} list of options and return them.
 
 @item TeX-arg-key-val
-Prompt for a @samp{key=value} list of options and insert it as a @TeX{} macro
-argument.
+Prompt for a @samp{key=value} list of options and insert it as a @TeX{}
+macro argument.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after
@@ -5969,10 +5973,8 @@ The native Texinfo mode provides the binding @kbd{C-c C-t C-i}
 @kbd{C-c C-t C-p} (@code{texinfo-tex-print}) and @kbd{C-c C-t C-q}
 (@code{tex-show-print-queue}) for printing and showing the printer
 queue.  These are superseded by the respective commands available
-through @kbd{C-c C-c} (@code{TeX-command-master}) in @AUCTeX{}: @samp{Index},
+through @kbd{C-c C-c} (@code{TeX-command-master}) in @AUCTeX{}: @samp{Texindex},
 @samp{Print}, and @samp{Queue}.
-@c FIXME: "Index" runs makeindex, not texindex.  No entry in
-@c TeX-command-list runs texindex.
 
 @item Kill jobs
 The command @kbd{C-c C-t C-k} (@code{tex-kill-job}) in the native mode

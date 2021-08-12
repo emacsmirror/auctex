@@ -274,7 +274,10 @@ See the variable `texmathp-tex-commands' about which commands are checked."
   (interactive)
   (let* ((pos (point)) math-on sw-match
          (bound (save-excursion
-                  (if (re-search-backward "[\n\r][ \t]*[\n\r]"
+                  (if (re-search-backward
+                       (if (eq major-mode 'doctex-mode)
+                           "[\n\r]%*[ \t]*[\n\r]"
+                         "[\n\r][ \t]*[\n\r]")
                                           nil 1 texmathp-search-n-paragraphs)
                       (match-beginning 0)
                     (point-min))))

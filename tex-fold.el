@@ -73,7 +73,7 @@ macros, 'math for math macros and 'comment for comments."
   '(("[f]" ("footnote" "marginpar"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
-    ("[r]" ("ref" "pageref" "eqref"))
+    ("[r]" ("ref" "pageref" "eqref" "footref"))
     ("[i]" ("index" "glossary"))
     ("[1]:||*" ("item"))
     ("..." ("dots"))
@@ -807,6 +807,12 @@ That means, put respective properties onto overlay OV."
                                     (skip-chars-forward " \t")
                                     (point))))
       (overlay-put ov 'mouse-face 'highlight)
+      (when font-lock-mode
+        ;; Add raise adjustment for superscript and subscript.
+        ;; (bug#42209)
+        (setq display-string
+              (propertize display-string
+                          'display (get-text-property ov-start 'display))))
       (overlay-put ov 'display display-string)
       (when font-lock-mode
         (overlay-put ov 'face TeX-fold-folded-face))
@@ -902,7 +908,11 @@ With zero or negative ARG turn mode off."
   :keymap (list (cons TeX-fold-command-prefix TeX-fold-keymap))
   (if TeX-fold-mode
       (progn
-        (set (make-local-variable 'search-invisible) t)
+        ;; The value t causes problem when body text is hidden in
+        ;; outline-minor-mode. (bug#36651)
+        ;; In addition, it's better not to override user preference
+        ;; without good reason.
+        ;; (set (make-local-variable 'search-invisible) t)
         (add-hook 'post-command-hook #'TeX-fold-post-command nil t)
         (add-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point nil t)
         (add-hook 'TeX-after-insert-macro-hook
@@ -924,7 +934,7 @@ With zero or negative ARG turn mode off."
                                                      (TeX-mode-prefix) elt))))
                          (when (boundp symbol)
                            (symbol-value symbol)))))))
-    (kill-local-variable 'search-invisible)
+    ;; (kill-local-variable 'search-invisible)
     (remove-hook 'post-command-hook #'TeX-fold-post-command t)
     (remove-hook 'LaTeX-fill-newline-hook #'TeX-fold-update-at-point t)
     (TeX-fold-clearout-buffer))

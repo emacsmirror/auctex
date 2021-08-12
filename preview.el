@@ -1509,6 +1509,8 @@ This is for matching screen font size and previews."
   :group 'preview-appearance
   :type
   '(repeat (choice
+            ;; FIXME: It seems that the bug mentioned below doesn't exist
+            ;;        at least for emacs 27.2.
             ;; This is a bug: type function seems to match variables, too.
             (restricted-sexp :match-alternatives (functionp)
                              :tag "Function" :value preview-auctex-font-size)
@@ -1554,9 +1556,9 @@ display in use.")
 (defun preview-make-image (symbol)
   "Make an image from a preview spec list.
 The first spec that is workable (given the current setting of
-`preview-min-spec') from the given symbol is used here.  The
-icon is cached in the property list of the symbol."
-  (let ((alist (get 'preview-min-alist symbol)))
+`preview-min-spec') from the given SYMBOL is used here.  The
+icon is cached in the property list of the SYMBOL."
+  (let ((alist (get symbol 'preview-min-alist)))
     (cdr (or
           (assq preview-min-spec alist)
           (car (put symbol 'preview-min-alist
@@ -2979,7 +2981,7 @@ With prefix argument REMOVE, remove it again."
       (setq pattern (regexp-quote preview-TeX-style-dir))
       (dolist (env (cons "TEXINPUTS=" (copy-sequence process-environment)))
         (if (string-match "\\`\\(TEXINPUTS[^=]*\\)=" env)
-            (unless (string-match pattern env)
+            (unless (save-match-data (string-match pattern env))
               (setenv (match-string 1 env)
                       (concat preview-TeX-style-dir
                               (substring env (match-end 0))))))))))
@@ -3066,7 +3068,8 @@ pp")
     (define-key LaTeX-mode-map [tool-bar preview]
       `(menu-item "Preview at point" preview-at-point
                   :image ,preview-tb-icon
-                  :help "Preview on/off at point")))
+                  :help "Preview on/off at point"
+                  :vert-only t)))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
            format-cons)

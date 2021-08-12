@@ -199,9 +199,20 @@ If nil, none is specified."
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
                      context-mode)
      :help "Run BibTeX")
-    ("Biber" "biber %s %(output-dir)" TeX-run-Biber nil
+    ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run Biber")
+    ;; Not part of standard TeX.
+    ;; It seems that texindex doesn't support "--output-dir" option.
+    ("Texindex" "texindex %s.??" TeX-run-command nil
+     (texinfo-mode) :help "Run Texindex")
+    ;; TODO:
+    ;; 1. Supply "--dvipdf" option if `TeX-PDF-mode' and
+    ;;    `TeX-PDF-from-DVI' are non-nil.
+    ;; 2. Supply "--build-dir=DIR" option when `TeX-output-dir' is
+    ;;    non-nil.
+    ("Texi2dvi" "%(PDF)texi2dvi %t" TeX-run-command nil
+     (texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
@@ -212,13 +223,13 @@ If nil, none is specified."
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PostScript")
-    ("Dvipdfmx" "dvipdfmx %d -o %(O?pdf)" TeX-run-dvipdfmx nil
+    ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Convert PostScript file to PDF")
-    ("Glossaries" "makeglossaries %(O?aux)" TeX-run-command nil
+    ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
      (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
@@ -557,6 +568,7 @@ string."
     ("%(extraopts)" (lambda () TeX-command-extra-options))
     ("%(output-dir)" TeX--output-dir-arg "--output-directory=")
     ("%(o-dir)" TeX--output-dir-arg "-o ")
+    ("%(d-dir)" TeX--output-dir-arg "-d ")
     ("%S" TeX-source-correlate-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
@@ -712,6 +724,19 @@ sure \"%p\" is the first entry."
 (autoload 'TeX-region-file "tex-buf")
 (autoload 'TeX-save-document "tex-buf" nil t)
 (autoload 'TeX-view "tex-buf" nil t)
+
+;; This variable used to be defined in tex-buf.el.  It is used in
+;; `TeX-mode-specific-command-menu-entries' in this file.  It is now
+;; (June 2021) moved into this file to avoid `void-variable' errors
+;; with the "Command" menu if tex-buf.el is not loaded yet for reasons
+;; mentioned above.
+(defcustom TeX-parse-all-errors t
+  "Whether to automatically collect all warning and errors after running TeX.
+
+If t, it makes it possible to use `TeX-previous-error' with TeX
+commands."
+  :group 'TeX-command
+  :type 'boolean)
 
 ;;; Portability.
 
@@ -2268,8 +2293,8 @@ change the file.
 If the variable is 'dwim, AUCTeX will try to avoid querying by
 attempting to `do what I mean'; and then change the file.
 
-It is suggested that you use the File Variables (see the info node in
-the Emacs manual) to set this variable permanently for each file."
+It is suggested that you use the File Variables (see the info node
+`File Variables') to set this variable permanently for each file."
   :group 'TeX-command
   :group 'TeX-parse
   :type '(choice (const :tag "Query" nil)
@@ -2511,22 +2536,23 @@ be relative to that."
   "The path of the directory where output files should be placed.
 
 A relative path is interpreted as being relative to the master
-file in `TeX-master'. The path cannot contain a directory that
-starts with '.'. If this variable is nil, the output directory is
-assumed to be the same as the directory of `TeX-master'."
+file in `TeX-master'.  The path cannot contain a directory that
+starts with '.'.  If this variable is nil, the output directory
+is assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
   :safe #'string-or-null-p
   :type '(choice (const :tag "Directory of master file" nil)
                  (string :tag "Custom" "build")))
 (make-variable-buffer-local 'TeX-output-dir)
 
-(defun TeX--master-output-dir (master-dir relative-to-master)
+(defun TeX--master-output-dir (master-dir relative-to-master &optional ensure)
   "Return the directory path where output files should be placed.
 If `TeX-output-dir' is nil, then return nil.
 
 MASTER-DIR is the directory path where the master file is
-located. If RELATIVE-TO-MASTER is non-nil, make the returned path
-relative to the directory in MASTER-DIR."
+located.  If RELATIVE-TO-MASTER is non-nil, make the returned
+path relative to the directory in MASTER-DIR.  If ENSURE is
+non-nil, the output directory is created if it does not exist."
   (when TeX-output-dir
     (let* ((master-dir (expand-file-name (or master-dir "")))
            (out-dir (file-name-as-directory
@@ -2536,7 +2562,7 @@ relative to the directory in MASTER-DIR."
                         TeX-output-dir
                         master-dir))))))
       ;; Make sure the directory exists
-      (unless (file-exists-p out-dir)
+      (unless (or (not ensure) (file-exists-p out-dir))
         (make-directory (file-name-as-directory out-dir) t))
       (if relative-to-master
           (file-relative-name out-dir master-dir)
@@ -2544,9 +2570,9 @@ relative to the directory in MASTER-DIR."
 
 (defun TeX--output-dir-arg (argname)
   "Format the output directory as a command argument.
-ARGNAME is prepended to the quoted output directory. If
+ARGNAME is prepended to the quoted output directory.  If
 `TeX-output-dir' is nil then return an empty string."
-  (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t)))
+  (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t t)))
     (if out-dir
         (concat argname "\"" out-dir "\"")
       "")))
@@ -3488,7 +3514,8 @@ See `TeX-parse-macro' for details."
                       (insert TeX-arg-opening-brace)
                       (goto-char (marker-position end))
                       (insert TeX-arg-closing-brace)
-                      (setq insert-flag t))))
+                      (setq insert-flag t)
+                      (set-marker end nil))))
                  ((= arg 0)) ; nop for clarity
                  ((> arg 0)
                   (TeX-parse-argument optional t)
@@ -4143,14 +4170,15 @@ If SKIP is not-nil, don't insert code for SKIP."
   "List of symbols to ignore when scanning a TeX style file.")
 
 (defcustom TeX-auto-regexp-list 'TeX-auto-full-regexp-list
-  "List of regular expressions used for parsing the current file."
+  "List of regular expressions used for parsing the current file.
+It can also be a name of a variable having such value."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
                 (variable-item TeX-auto-full-regexp-list)
                 (variable-item plain-TeX-auto-regexp-list)
                 (variable-item LaTeX-auto-minimal-regexp-list)
                 (variable-item LaTeX-auto-label-regexp-list)
                 (variable-item LaTeX-auto-regexp-list)
-                (symbol :tag "Other")
+                (variable :tag "Other")
                 (repeat :tag "Specify"
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
@@ -4221,6 +4249,7 @@ Use `TeX-auto-x-regexp-list' for parsing the region between
 
 (defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
   "List of regular expressions used for additional parsing.
+It can also be a name of a variable having such value.
 See `TeX-auto-x-parse-length'."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
                 (variable-item TeX-auto-full-regexp-list)
@@ -4228,7 +4257,7 @@ See `TeX-auto-x-parse-length'."
                 (variable-item LaTeX-auto-minimal-regexp-list)
                 (variable-item LaTeX-auto-label-regexp-list)
                 (variable-item LaTeX-auto-regexp-list)
-                (symbol :tag "Other")
+                (variable :tag "Other")
                 (repeat :tag "Specify"
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")

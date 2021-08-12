@@ -58,6 +58,7 @@
 (defvar outline-heading-alist)
 (defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
+(defvar TeX-error-description-list-local)
 
 ;;; Syntax
 
@@ -1204,7 +1205,9 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
                               (unless (zerop (length float))
                                 (concat LaTeX-optop float
                                         LaTeX-optcl)))
-    (when active-mark (goto-char start-marker))
+    (when active-mark
+      (goto-char start-marker)
+      (set-marker start-marker nil))
     (when center
       (insert TeX-esc "centering")
       (indent-according-to-mode)
@@ -1226,7 +1229,9 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
               (LaTeX-newline)
               (indent-according-to-mode)))
         ;; bottom caption (default)
-        (when active-mark (goto-char end-marker))
+        (when active-mark
+          (goto-char end-marker)
+          (set-marker end-marker nil))
         (save-excursion
           (LaTeX-newline)
           (indent-according-to-mode)
@@ -2337,7 +2342,7 @@ string."
                               ("slides"))
   "List of document classes offered when inserting a document environment.
 
-If `TeX-arg-input-file-search' is set to `t', you will get
+If `TeX-arg-input-file-search' is set to t, you will get
 completion with all LaTeX classes available in your distribution
 and this variable will be ignored."
   :group 'LaTeX-environment
@@ -2430,13 +2435,20 @@ To insert a hook here, you must insert it in the appropiate style file.")
 Initialized once at the first time you prompt for an input file.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
+(defvar TeX-global-input-files-with-extension nil
+  "List of the non-local TeX input files with extension.
+Initialized once at the first time you prompt for an input file
+inside a file hook command.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
 (defvar LaTeX-global-package-files nil
   "List of the LaTeX package files.
 Initialized once at the first time you prompt for a LaTeX package.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
-;; Add both variables to `TeX-normal-mode-reset-list':
+;; Add the variables to `TeX-normal-mode-reset-list':
 (add-to-list 'TeX-normal-mode-reset-list 'TeX-global-input-files)
+(add-to-list 'TeX-normal-mode-reset-list 'TeX-global-input-files-with-extension)
 (add-to-list 'TeX-normal-mode-reset-list 'LaTeX-global-package-files)
 
 (defun LaTeX-arg-usepackage-read-packages-with-options ()
@@ -3102,6 +3114,170 @@ as values for the key.  Use PROMPT as the prompt string."
   (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
 
+(defun TeX-read-hook ()
+  "Read a LaTeX hook and return it as a string."
+  (let* ((hook (completing-read
+	        (TeX-argument-prompt nil nil "Hook")
+	        '("cmd"
+		  "env"
+		  ;; From ltfilehook-doc.pdf
+		  "file/before"        "file/after"
+		  "include/before"     "include/end"   "include/after"
+		  "class/before"       "class/after"
+		  "package/before"     "package/after"
+		  ;; From lthooks-doc.pdf
+		  "begindocument"
+		  "begindocument/before"
+		  "begindocument/end"
+		  "enddocument"
+		  "enddocument/afterlastpage"
+		  "enddocument/afteraux"
+		  "enddocument/info"
+		  "enddocument/end"
+		  "rmfamily"           "sffamily"
+		  "ttfamily"           "normalfont"
+		  "bfseries"           "bfseries/defaults"
+		  "mdseries"           "mdseries/defaults"
+		  ;; From ltshipout-doc.pdf
+		  "shipout/before"     "shipout/after"
+		  "shipout/foreground" "shipout/background"
+		  "shipout/firstpage"  "shipout/lastpage"
+		  ;; From ltpara-doc.pdf
+		  "para/before"         "para/begin"
+		  "para/end"            "para/after")))
+	 (place (lambda ()
+		  (completing-read
+		   (TeX-argument-prompt nil nil "Where")
+		   (if (string= hook "cmd")
+		       '("after" "before")
+		     '("before" "begin" "end" "after")))))
+	 (search (lambda ()
+		   (if (eq TeX-arg-input-file-search 'ask)
+		       (not (y-or-n-p "Find file yourself? "))
+		     TeX-arg-input-file-search)))
+	 name where files ); result
+    (cond ((string= hook "cmd")
+	   ;; cmd/<name>/<where>
+	   (setq name (completing-read
+		       (TeX-argument-prompt nil nil "Command")
+		       (TeX-symbol-list)))
+	   (setq where (funcall place)))
+
+	  ;; env/<name>/<where>
+	  ((string= hook "env")
+	   (setq name (completing-read
+		       (TeX-argument-prompt nil nil "Environment")
+		       (LaTeX-environment-list)))
+	   (setq where (funcall place)))
+
+	  ;; file/(before|after)/<file-name.xxx> where <file-name> is
+	  ;; optional and must be with extension
+	  ((member hook '("file/before" "file/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless TeX-global-input-files-with-extension
+		   (setq TeX-global-input-files-with-extension
+			 (prog2
+			     (message "Searching for files...")
+			     (mapcar #'list
+				     (TeX-search-files-by-type 'texinputs
+							       'global
+							       t nil))
+			   (message "Searching for files...done"))))
+		 (setq name
+		       (completing-read
+			(TeX-argument-prompt t nil "File")
+			TeX-global-input-files-with-extension)))
+	     (setq name
+		   (file-name-nondirectory
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; include/(before|after|end)/<file-name> where <file-name>
+	  ;; is optional
+	  ((member hook '("include/before" "include/end" "include/after"))
+	   (if (funcall search)
+	       (progn
+		 (setq files
+		       (prog2
+			   (message "Searching for files...")
+			   ;; \include looks for files with TeX content,
+			   ;; so limit the search:
+			   (let* ((TeX-file-extensions '("tex" "ltx")))
+			     (TeX-search-files-by-type 'texinputs 'local t t))
+			 (message "Searching for files...done")))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "File")
+			     files)))
+	     (setq name
+		   (file-name-base
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; class/(before|after)/<doc-class> where <doc-class> is
+	  ;; optional
+	  ((member hook '("class/before" "class/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless LaTeX-global-class-files
+		   (setq LaTeX-global-class-files
+			 (prog2
+			     (message "Searching for LaTeX classes...")
+			     (let* ((TeX-file-extensions '("cls")))
+			       (mapcar #'list
+				       (TeX-search-files-by-type 'texinputs
+								 'global
+								 t t)))
+			   (message "Searching for LaTeX classes...done"))))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "Document class")
+			     LaTeX-global-class-files)))
+	     (setq name
+		   (file-name-base
+		    (read-file-name
+		     (TeX-argument-prompt t nil "File")
+		     nil "")))))
+
+	  ;; package/(before|after)/<pack-name> where
+	  ;; <pack-name> is optional
+	  ((member hook '("package/before" "package/after"))
+	   (if (funcall search)
+	       (progn
+		 (unless LaTeX-global-package-files
+		   (setq LaTeX-global-package-files
+			 (prog2
+			     (message "Searching for LaTeX packages...")
+			     (let* ((TeX-file-extensions '("sty")))
+			       (mapcar #'list
+				       (TeX-search-files-by-type 'texinputs
+								 'global
+								 t t)))
+			   (message "Searching for LaTeX packages...done"))))
+		 (setq name (completing-read
+			     (TeX-argument-prompt t nil "Package")
+			     LaTeX-global-package-files)))
+	     (setq name (file-name-base
+			 (read-file-name
+			  (TeX-argument-prompt t nil "File")
+			  nil "")))))
+
+	  ;; User specific input for the hook, do nothing:
+	  (t nil))
+    ;; Process the input: For cmd or env, concat the elements with a
+    ;; slash.  For other hooks, check if the optional name is given
+    ;; and append it with a backslash to the hook:
+    (if (member hook '("cmd" "env"))
+	(concat hook "/" name "/" where)
+      (concat hook (when (and name (not (string= name "")))
+		     (concat "/" name))))))
+
+(defun TeX-arg-hook (optional)
+  "Prompt for a LaTeX hook.
+Insert the given hook as a TeX macro argument.  If OPTIONAL is
+non-nil, insert it as an optional argument."
+  (TeX-argument-insert (TeX-read-hook) optional))
 
 ;;; Verbatim constructs
 
@@ -3814,7 +3990,7 @@ performed in that case."
           (if (re-search-forward
                (concat "\\("
                        ;; Code comments.
-                       "[^ \r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
+                       "\\([^ \r\n%\\]\\|\\\\%\\)\\([ \t]\\|\\\\\\\\\\)*"
                        TeX-comment-start-regexp
                        "\\|"
                        ;; Lines ending with `\par'.
@@ -3854,7 +4030,8 @@ performed in that case."
             ;; ELSE part follows - loop termination relies on a fact
             ;; that (LaTeX-fill-region-as-para-do) moves point past
             ;; the filled region
-            (LaTeX-fill-region-as-para-do from end-marker justify-flag)))))))
+            (LaTeX-fill-region-as-para-do from end-marker justify-flag)))))
+    (set-marker end-marker nil)))
 
 ;; The content of `LaTeX-fill-region-as-para-do' was copied from the
 ;; function `fill-region-as-paragraph' in `fill.el' (CVS Emacs,
@@ -3914,7 +4091,10 @@ space does not end a sentence, so don't break a line there."
     (goto-char from-plus-indent))
 
   (if (not (> to (point)))
-      nil ;; There is no paragraph, only whitespace: exit now.
+      ;; There is no paragraph, only whitespace: exit now.
+      (progn
+        (set-marker to nil)
+        nil)
 
     (or justify (setq justify (current-justification)))
 
@@ -4039,10 +4219,12 @@ space does not end a sentence, so don't break a line there."
                          (concat "^\\([ \t]*" TeX-comment-start-regexp "+\\)*"
                                  "[ \t]*")
                          (line-beginning-position)))
-              (LaTeX-fill-newline)))))
+              (LaTeX-fill-newline)))
+          (set-marker end-marker nil)))
       ;; Leave point after final newline.
       (goto-char to)
       (unless (eobp) (forward-char 1))
+      (set-marker to nil)
       ;; Return the fill-prefix we used
       fill-prefix)))
 
@@ -4320,7 +4502,8 @@ depends on the value of `LaTeX-syntactic-comments'."
                                               (line-beginning-position 2)
                                               justify)
               (goto-char end-marker)
-              (beginning-of-line)))
+              (beginning-of-line)
+              (set-marker end-marker nil)))
           (LaTeX-fill-code-comment justify)))
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
@@ -4462,6 +4645,7 @@ formatting."
                        (concat "^\\($\\|[ \t]+$\\|[ \t]*"
                                TeX-comment-start-regexp "+[ \t]*$\\)")))
             (forward-line 1))))
+      (set-marker next-par nil)
       (set-marker to nil)))
   (message "Formatting%s...done" (or what "")))
 
@@ -5469,8 +5653,14 @@ Each entry should be a list with up to four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
-in math minor mode.  If KEY is nil, the symbol has no associated
-keystroke \(it is available in the menu, though\).
+in math minor mode.  KEY can be a character (e.g. ?o) for a
+single stroke or a string (e.g. \"o a\") for a multi-stroke
+binding.  If KEY is nil, the symbol has no associated
+keystroke (it is available in the menu, though).  Note that
+predefined keys in `LaTeX-math-default' cannot be overridden in
+this variable.  Currently, only the lowercase letter 'o' is free
+for user customization, more options are available in uppercase
+area.
 
 VALUE can be a string with the name of the macro to be inserted,
 or a function to be called.  The macro must be given without the
@@ -5478,8 +5668,8 @@ leading backslash.
 
 The third element MENU is the name of the submenu where the
 command should be added.  MENU can be either a string
-\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
-nil.  If MENU is nil, no menu item will be created.
+\(e.g. \"greek\"), a list (e.g. (\"AMS\" \"Delimiters\")) or nil.
+If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.
@@ -7166,7 +7356,12 @@ function would return non-nil and `(match-string 1)' would return
      ;; `LaTeX-font-list' once it is needed more frequently.
      '("textssc" t)
      ;; User level reset macros:
-     '("normalfont" -1) '("normalshape" -1)))
+     '("normalfont" -1) '("normalshape" -1)
+
+     ;; LaTeX hook macros:
+     '("AddToHook"      TeX-arg-hook [ "Label" ] t)
+     '("RemoveFromHook" TeX-arg-hook [ "Label" ])
+     '("AddToHookNext"  TeX-arg-hook t)))
 
   (TeX-run-style-hooks "LATEX")
 
