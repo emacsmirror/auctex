@@ -1,7 +1,7 @@
-This is auctex.info, produced by makeinfo version 6.7 from auctex.texi.
+This is auctex.info, produced by makeinfo version 6.8 from auctex.texi.
 
-This manual is for AUCTeX (version 13.0.12 from 2021-06-06), a
-sophisticated TeX environment for Emacs.
+This manual is for AUCTeX (version 13.0.12.2021-08-12 from 2021-08-12),
+a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2021 Free Software
 Foundation, Inc.
@@ -2109,8 +2109,10 @@ file such as 'init.el' or '.emacs':
      elements.
 
      First, the key to be used after 'LaTeX-math-abbrev-prefix' for
-     macro insertion.  If it is nil, the symbol has no associated
-     keystroke (it is available in the menu, though).
+     macro insertion.  The key can be a character (e.g. '?o') for a
+     single stroke or a string (e.g. '"o a"') for a multi-stroke
+     binding.  If it is nil, the symbol has no associated keystroke (it
+     is available in the menu, though).
 
      Second, a string representing the name of the macro (without a
      leading backslash.)
@@ -4575,7 +4577,7 @@ it is relevant for all text modes, append it to 'text-mode-hook'.
 
    Other useful hooks are listed below.
 
- -- Variable: TeX-after-compilation-finished-hook
+ -- Variable: TeX-after-compilation-finished-functions
      Hook which is run after the TeX/LaTeX processor has successfully
      finished compiling your document.  (*Note Processing::, for finding
      out how to compile your document.)  Each function in the hook is
@@ -4608,9 +4610,7 @@ a more advanced algorithm.
 
      (setq-default TeX-master nil) ; Query for master file.
 
-   If AUCTeX finds the line indicating the end of the header in a master
-file ('TeX-header-end'), it can figure out for itself that this is a
-master file.  Otherwise, it will ask for the name of the master file
+   In this case, AUCTeX will ask for the name of the master file
 associated with the buffer.  To avoid asking you again, AUCTeX will
 automatically insert the name of the master file as a file variable
 (*note (emacs)File Variables::).  You can also insert the file variable
@@ -5665,6 +5665,12 @@ overwrite the default prompt.
      Prompt for document author, using 'LaTeX-default-author' as initial
      input.
 
+'TeX-read-hook'
+     Prompt for a LaTeX hook and return it.
+
+'TeX-arg-hook'
+     Prompt for a LaTeX hook and insert it as a TeX macro argument.
+
 'TeX-read-key-val'
      Prompt for a 'key=value' list of options and return them.
 
@@ -6010,8 +6016,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.0.12 from 2021-06-06), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 13.0.12.2021-08-12 from
+2021-08-12), a sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2021 Free Software
 Foundation, Inc.
@@ -6598,6 +6604,10 @@ News in 13.1
      was meant to support latexinfo which in return was a LaTeX-2.09
      extension of Texinfo, but didn't manage to replace Texinfo.
 
+   * AUCTeX has preliminary support for LaTeX-hooks.  Hooks provided by
+     LaTeX kernel are known and available for completion in
+     '\AddToHook', '\RemoveFromHook' and '\AddToHookNext'.
+
 News in 12.3
 ------------
 
@@ -6650,7 +6660,7 @@ News in 12.2
      'filecontents' environment now takes an optional argument and can
      be used anywhere in a document.  The macros '\Ref' and
      '\labelformat' are moved from 'varioref.sty' to LaTeX kernel.
-     amsmath has a new macro '\overunderset'.
+     'amsmath' has a new macro '\overunderset'.
 
    * A new method is implemented in preview-latex to adjust the
      foreground colors of generated images to those of Emacs, when the
@@ -7722,7 +7732,7 @@ A.3.1 Mid-term Goals
    * Error help catalogs
 
      Currently, the help for errors is more or less hardwired into
-     'tex.el'.  For supporting error help in other languages, it would
+     'latex.el'.  For supporting error help in other languages, it would
      be sensible to instead arrange error messages in language-specific
      files, make a common info file from all such catalogs in a given
      language and look the error texts up in an appropriate index.  The
@@ -7749,6 +7759,9 @@ A.3.1 Mid-term Goals
      As of AUCTeX 12.3, 'TeX-remove-style' is no longer used by any
      other codes.
 
+   * Document 'LaTeX-insert-into-commments' and
+     'TeX-translate-location-hook'.
+
 
 File: auctex.info,  Node: Wishlist,  Next: Bugs,  Prev: Mid-term Goals,  Up: Development
 
@@ -7773,7 +7786,7 @@ A.3.2 Wishlist
 
      A separate frame with a table of math character graphics to click
      on in order to insert the respective sequence into the buffer (cf.
-     the "grid" of x-symbol).
+     the "grid" of 'x-symbol').
 
    * Crossreferencing support
 
@@ -8177,7 +8190,7 @@ Produce indexes and print
      C-t C-p' ('texinfo-tex-print') and 'C-c C-t C-q'
      ('tex-show-print-queue') for printing and showing the printer
      queue.  These are superseded by the respective commands available
-     through 'C-c C-c' ('TeX-command-master') in AUCTeX: 'Index',
+     through 'C-c C-c' ('TeX-command-master') in AUCTeX: 'Texindex',
      'Print', and 'Queue'.
 
 Kill jobs
@@ -8275,8 +8288,8 @@ Key Index
 * $:                                     Quotes.              (line  61)
 * (:                                     Quotes.              (line 154)
 * [:                                     Quotes.              (line 154)
-* ^:                                     Mathematics.         (line  62)
-* _:                                     Mathematics.         (line  62)
+* ^:                                     Mathematics.         (line  64)
+* _:                                     Mathematics.         (line  64)
 * {:                                     Quotes.              (line 154)
 * C-c %:                                 Commenting.          (line  23)
 * C-c *:                                 Marking (LaTeX).     (line   7)
@@ -8288,7 +8301,7 @@ Key Index
 * C-c C-a:                               Starting a Command.  (line  59)
 * C-c C-b:                               Starting a Command.  (line  35)
 * C-c C-c:                               Starting a Command.  (line  13)
-* C-c C-d:                               Multifile.           (line 101)
+* C-c C-d:                               Multifile.           (line  99)
 * C-c C-e:                               Environments.        (line  23)
 * C-c C-f:                               Font Specifiers.     (line  55)
 * C-c C-f C-b:                           Editing Facilities.  (line  72)
@@ -8358,7 +8371,7 @@ Key Index
 * C-c <LFD> <1>:                         Tabular-like.        (line  33)
 * C-c ]:                                 Environments.        (line 102)
 * C-c ^:                                 Control.             (line  18)
-* C-c _:                                 Multifile.           (line  73)
+* C-c _:                                 Multifile.           (line  71)
 * C-c `:                                 Debugging.           (line  12)
 * C-c {:                                 Quotes.              (line 122)
 * C-c ~:                                 Mathematics.         (line  12)
@@ -8462,10 +8475,11 @@ Function Index
 * TeX-arg-file-name:                     Adding Macros.       (line 151)
 * TeX-arg-file-name-sans-extension:      Adding Macros.       (line 155)
 * TeX-arg-free:                          Adding Macros.       (line  94)
+* TeX-arg-hook:                          Adding Macros.       (line 251)
 * TeX-arg-index:                         Adding Macros.       (line 113)
 * TeX-arg-index-tag:                     Adding Macros.       (line 109)
 * TeX-arg-input-file:                    Adding Macros.       (line 159)
-* TeX-arg-key-val:                       Adding Macros.       (line 251)
+* TeX-arg-key-val:                       Adding Macros.       (line 257)
 * TeX-arg-label:                         Adding Macros.       (line 100)
 * TeX-arg-length:                        Adding Macros.       (line 116)
 * TeX-arg-literal:                       Adding Macros.       (line  90)
@@ -8489,7 +8503,7 @@ Function Index
 * TeX-comment-or-uncomment-paragraph:    Commenting.          (line  22)
 * TeX-comment-or-uncomment-region:       Commenting.          (line  14)
 * TeX-complete-symbol:                   Completion.          (line  23)
-* TeX-declare-expert-macros:             Adding Macros.       (line 266)
+* TeX-declare-expert-macros:             Adding Macros.       (line 272)
 * TeX-documentation-texdoc:              Documentation.       (line   6)
 * TeX-electric-macro:                    Completion.          (line 107)
 * TeX-error-overview:                    Error overview.      (line  10)
@@ -8517,17 +8531,18 @@ Function Index
 * TeX-ispell-skip-setcdr:                Selecting a Command. (line 146)
 * TeX-ispell-tex-arg-end:                Selecting a Command. (line 166)
 * TeX-kill-job:                          Control.             (line   9)
-* TeX-master-file-ask:                   Multifile.           (line  72)
+* TeX-master-file-ask:                   Multifile.           (line  70)
 * TeX-narrow-to-group:                   Narrowing.           (line  13)
 * TeX-next-error:                        Debugging.           (line  11)
 * TeX-normal-mode:                       Parsing Files.       (line  44)
 * TeX-PDF-mode:                          Processor Options.   (line  15)
 * TeX-pin-region:                        Starting a Command.  (line  84)
 * TeX-previous-error:                    Debugging.           (line  26)
-* TeX-read-key-val:                      Adding Macros.       (line 248)
+* TeX-read-hook:                         Adding Macros.       (line 248)
+* TeX-read-key-val:                      Adding Macros.       (line 254)
 * TeX-recenter-output-buffer:            Control.             (line  13)
 * TeX-revert-document-buffer:            Modes and Hooks.     (line  39)
-* TeX-save-document:                     Multifile.           (line 100)
+* TeX-save-document:                     Multifile.           (line  98)
 * TeX-source-correlate-mode:             Processor Options.   (line  36)
 * TeX-source-correlate-mode <1>:         I/O Correlation.     (line  12)
 * TeX-toggle-debug-bad-boxes:            Ignoring warnings.   (line   9)
@@ -8703,7 +8718,7 @@ Variable Index
 * LaTeX-math-abbrev-prefix:              Mathematics.         (line  26)
 * LaTeX-math-default:                    Mathematics.         (line   6)
 * LaTeX-math-list:                       Mathematics.         (line  36)
-* LaTeX-math-menu-unicode:               Mathematics.         (line  54)
+* LaTeX-math-menu-unicode:               Mathematics.         (line  56)
 * LaTeX-mode-hook:                       Modes and Hooks.     (line  22)
 * LaTeX-name:                            Sectioning.          (line  56)
 * LaTeX-Omega-command:                   Processor Options.   (line 121)
@@ -8734,8 +8749,9 @@ Variable Index
 * plain-TeX-clean-output-suffixes:       Cleaning.            (line   7)
 * plain-TeX-enable-toolbar:              Processing.          (line  11)
 * plain-TeX-mode-hook:                   Modes and Hooks.     (line  22)
-* TeX-after-compilation-finished-hook:   Modes and Hooks.     (line  30)
-* TeX-after-compilation-finished-hook <1>: Modes and Hooks.   (line  40)
+* TeX-after-compilation-finished-functions: Modes and Hooks.  (line  30)
+* TeX-after-compilation-finished-functions <1>: Modes and Hooks.
+                                                              (line  40)
 * TeX-arg-cite-note-p:                   Adding Macros.       (line 137)
 * TeX-arg-input-file-search:             Adding Macros.       (line 160)
 * TeX-arg-input-file-search <1>:         Adding Macros.       (line 192)
@@ -8786,7 +8802,7 @@ Variable Index
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line  97)
 * TeX-electric-math:                     Quotes.              (line  72)
-* TeX-electric-sub-and-superscript:      Mathematics.         (line  68)
+* TeX-electric-sub-and-superscript:      Mathematics.         (line  70)
 * TeX-engine:                            Processor Options.   (line 104)
 * TeX-engine <1>:                        Japanese.            (line   6)
 * TeX-engine-alist:                      Processor Options.   (line 121)
@@ -8815,7 +8831,6 @@ Variable Index
 * TeX-font-list:                         Font Specifiers.     (line  60)
 * TeX-header-end:                        Starting a Command.  (line  32)
 * TeX-header-end <1>:                    Starting a Command.  (line  69)
-* TeX-header-end <2>:                    Multifile.           (line  28)
 * TeX-ignore-file:                       Automatic.           (line  52)
 * TeX-ignore-warnings:                   Ignoring warnings.   (line  25)
 * TeX-insert-braces:                     Completion.          (line 117)
@@ -8845,12 +8860,12 @@ Variable Index
 * TeX-macro-private:                     Automatic Private.   (line  12)
 * TeX-master:                            Starting a Command.  (line  16)
 * TeX-master <1>:                        Starting a Command.  (line  32)
-* TeX-master <2>:                        Multifile.           (line  41)
-* TeX-math-input-method-off-regexp:      Mathematics.         (line  74)
+* TeX-master <2>:                        Multifile.           (line  39)
+* TeX-math-input-method-off-regexp:      Mathematics.         (line  76)
 * TeX-newline-function:                  Indenting.           (line  29)
 * TeX-newline-function <1>:              Indenting.           (line 108)
 * TeX-Omega-command:                     Processor Options.   (line 121)
-* TeX-one-master:                        Multifile.           (line  59)
+* TeX-one-master:                        Multifile.           (line  57)
 * TeX-open-quote:                        Quotes.              (line  21)
 * TeX-outline-extra:                     Outline.             (line  13)
 * TeX-output-dir:                        Control.             (line  25)
@@ -8864,7 +8879,7 @@ Variable Index
 * TeX-raise-frame-function:              I/O Correlation.     (line  76)
 * TeX-region:                            Starting a Command.  (line  32)
 * TeX-region <1>:                        Starting a Command.  (line  65)
-* TeX-save-query:                        Multifile.           (line 104)
+* TeX-save-query:                        Multifile.           (line 102)
 * TeX-show-compilation:                  Processor Options.   (line 185)
 * TeX-source-correlate-method:           Processor Options.   (line  48)
 * TeX-source-correlate-method <1>:       I/O Correlation.     (line  21)
@@ -8959,7 +8974,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 748)
+* auctex.el <1>:                         Changes.             (line 752)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9086,7 +9101,7 @@ Concept Index
 * Indexing:                              Commands.            (line   6)
 * init.el:                               Loading the package. (line   6)
 * Initialization:                        Customizing.         (line   6)
-* input method:                          Mathematics.         (line  71)
+* input method:                          Mathematics.         (line  73)
 * Inputing:                              Multifile.           (line   6)
 * Installation:                          Build/install and uninstall.
                                                               (line   6)
@@ -9240,10 +9255,10 @@ Concept Index
 * Style files:                           Style Files.         (line   6)
 * Style hook:                            Simple Style.        (line   6)
 * Style hooks:                           Style Files.         (line   6)
-* subscript:                             Mathematics.         (line  62)
+* subscript:                             Mathematics.         (line  64)
 * Subscript, fontification of:           Fontification of math.
                                                               (line   6)
-* superscript:                           Mathematics.         (line  62)
+* superscript:                           Mathematics.         (line  64)
 * Superscript, fontification of:         Fontification of math.
                                                               (line   6)
 * Swedish:                               European.            (line  51)
@@ -9259,10 +9274,10 @@ Concept Index
 * TeX parsing:                           Automatic.           (line   6)
 * tex-jp.el:                             Japanese.            (line   6)
 * tex-mik.el:                            Installation under MS Windows.
-                                                              (line 254)
+                                                              (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 748)
+* tex-site.el <2>:                       Changes.             (line 752)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9284,104 +9299,104 @@ Concept Index
 
 
 Tag Table:
-Node: Top918
-Node: Copying7375
-Node: Introduction9320
-Node: Summary9590
-Node: Installation12323
-Node: Prerequisites14296
-Node: Configure16495
-Node: Build/install and uninstall21073
-Node: Loading the package21826
-Node: Advice for package providers23519
-Node: Advice for non-privileged users26324
-Node: Installation under MS Windows31670
-Node: Customizing45292
-Node: Quick Start46877
-Ref: Quick Start-Footnote-148999
-Node: Editing Facilities49093
-Node: Processing Facilities53788
-Node: Editing58517
-Node: Quotes59847
-Node: Font Specifiers68287
-Node: Sectioning70355
-Node: Environments74874
-Node: Equations80027
-Node: Floats80619
-Node: Itemize-like82623
-Node: Tabular-like83345
-Node: Customizing Environments85118
-Node: Mathematics85358
-Node: Completion88669
-Node: Marking95700
-Node: Marking (LaTeX)96324
-Node: Marking (Texinfo)97266
-Node: Commenting98877
-Node: Indenting100202
-Node: Filling106216
-Node: Display112088
-Node: Font Locking114583
-Node: Fontification of macros116662
-Node: Fontification of quotes126178
-Node: Fontification of math127672
-Node: Verbatim content131340
-Node: Faces132114
-Node: Known problems132611
-Node: Folding133608
-Node: Outline144381
-Node: Narrowing145660
-Node: Prettifying146729
-Node: Processing147966
-Node: Commands149294
-Node: Starting a Command149850
-Node: Selecting a Command154765
-Node: Processor Options163863
-Node: Viewing174256
-Node: Starting Viewers174630
-Node: I/O Correlation180280
-Node: Debugging185509
-Node: Ignoring warnings188127
-Node: Error overview190186
-Node: Checking192094
-Node: Control193710
-Node: Cleaning195819
-Node: Documentation197178
-Node: Customization197893
-Node: Modes and Hooks198386
-Node: Multifile200269
-Node: Parsing Files205147
-Node: Internationalization210136
-Node: European211484
-Node: Japanese218963
-Node: Automatic224027
-Node: Automatic Global226518
-Node: Automatic Private227650
-Node: Automatic Local228986
-Node: Style Files230017
-Node: Simple Style230823
-Node: Adding Macros234544
-Node: Adding Environments243898
-Node: Adding Other248562
-Node: Hacking the Parser251111
-Node: Appendices255100
-Node: Copying this Manual255396
-Node: GNU Free Documentation License256280
-Node: Changes281401
-Node: Development332036
-Node: Mid-term Goals332682
-Node: Wishlist334539
-Node: Bugs339985
-Node: FAQ341086
-Node: Texinfo mode346274
-Node: Exploiting347408
-Node: Superseding348226
-Node: Mapping352454
-Node: Unbinding354289
-Node: Indices355110
-Node: Key Index355273
-Node: Function Index362802
-Node: Variable Index374415
-Node: Concept Index399199
+Node: Top929
+Node: Copying7386
+Node: Introduction9331
+Node: Summary9601
+Node: Installation12334
+Node: Prerequisites14307
+Node: Configure16506
+Node: Build/install and uninstall21084
+Node: Loading the package21837
+Node: Advice for package providers23530
+Node: Advice for non-privileged users26335
+Node: Installation under MS Windows31681
+Node: Customizing45303
+Node: Quick Start46888
+Ref: Quick Start-Footnote-149010
+Node: Editing Facilities49104
+Node: Processing Facilities53799
+Node: Editing58528
+Node: Quotes59858
+Node: Font Specifiers68298
+Node: Sectioning70366
+Node: Environments74885
+Node: Equations80038
+Node: Floats80630
+Node: Itemize-like82634
+Node: Tabular-like83356
+Node: Customizing Environments85129
+Node: Mathematics85369
+Node: Completion88805
+Node: Marking95836
+Node: Marking (LaTeX)96460
+Node: Marking (Texinfo)97402
+Node: Commenting99013
+Node: Indenting100338
+Node: Filling106352
+Node: Display112224
+Node: Font Locking114719
+Node: Fontification of macros116798
+Node: Fontification of quotes126314
+Node: Fontification of math127808
+Node: Verbatim content131476
+Node: Faces132250
+Node: Known problems132747
+Node: Folding133744
+Node: Outline144517
+Node: Narrowing145796
+Node: Prettifying146865
+Node: Processing148102
+Node: Commands149430
+Node: Starting a Command149986
+Node: Selecting a Command154901
+Node: Processor Options163999
+Node: Viewing174392
+Node: Starting Viewers174766
+Node: I/O Correlation180416
+Node: Debugging185645
+Node: Ignoring warnings188263
+Node: Error overview190322
+Node: Checking192230
+Node: Control193846
+Node: Cleaning195955
+Node: Documentation197314
+Node: Customization198029
+Node: Modes and Hooks198522
+Node: Multifile200410
+Node: Parsing Files205142
+Node: Internationalization210131
+Node: European211479
+Node: Japanese218958
+Node: Automatic224022
+Node: Automatic Global226513
+Node: Automatic Private227645
+Node: Automatic Local228981
+Node: Style Files230012
+Node: Simple Style230818
+Node: Adding Macros234539
+Node: Adding Environments244038
+Node: Adding Other248702
+Node: Hacking the Parser251251
+Node: Appendices255240
+Node: Copying this Manual255536
+Node: GNU Free Documentation License256431
+Node: Changes281552
+Node: Development332381
+Node: Mid-term Goals333027
+Node: Wishlist334971
+Node: Bugs340419
+Node: FAQ341520
+Node: Texinfo mode346708
+Node: Exploiting347842
+Node: Superseding348660
+Node: Mapping352891
+Node: Unbinding354726
+Node: Indices355547
+Node: Key Index355710
+Node: Function Index363239
+Node: Variable Index374998
+Node: Concept Index399774
 
 End Tag Table
 
