@@ -125,14 +125,14 @@ TYPE is one of the symobols mac or env."
                  (push "Text" args))
                 ;; r<token1><token2>
                 ((looking-at-p "r")
-                 (re-search-forward "r\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (re-search-forward "r\\(.\\)\\(.\\)" (+ (point) 3) t)
                  (push `(LaTeX-arg-xparse-query
                          ,(match-string-no-properties 1)
                          ,(match-string-no-properties 2))
                        args))
                 ;; R<token1><token2>{default}
                 ((looking-at-p "R")
-                 (re-search-forward "R\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (re-search-forward "R\\(.\\)\\(.\\)" (+ (point) 3) t)
                  (forward-sexp)
                  (push `(LaTeX-arg-xparse-query
                          ,(match-string-no-properties 1)
@@ -149,7 +149,7 @@ TYPE is one of the symobols mac or env."
                  (push (vector "Text") args))
                 ;; d<token1><token2>
                 ((looking-at-p "d")
-                 (re-search-forward "d\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (re-search-forward "d\\(.\\)\\(.\\)" (+ (point) 3) t)
                  (push (vector #'LaTeX-arg-xparse-query
                                (match-string-no-properties 1)
                                (match-string-no-properties 2))
@@ -161,7 +161,7 @@ TYPE is one of the symobols mac or env."
                  (push (vector "Text") args))
                 ;; D<token1><token2>{default}
                 ((looking-at-p "D")
-                 (re-search-forward "D\\(?:\\(.\\)\\(.\\)\\)" (+ (point) 3) t)
+                 (re-search-forward "D\\(.\\)\\(.\\)" (+ (point) 3) t)
                  (forward-sexp)
                  (push (vector #'LaTeX-arg-xparse-query
                                (match-string-no-properties 1)
@@ -261,14 +261,14 @@ TYPE is one of the symobols mac or env."
 
     ;; Testing special values
     '("IfBooleanTF" 3)
-    '("IfBooleanT" 3)
-    '("IfBooleanF" 3)
+    '("IfBooleanT" 2)
+    '("IfBooleanF" 2)
     '("IfNoValueTF" 3)
-    '("IfNoValueT" 3)
-    '("IfNoValueF" 3)
+    '("IfNoValueT" 2)
+    '("IfNoValueF" 2)
     '("IfValueTF" 3)
-    '("IfValueT" 3)
-    '("IfValueF" 3)
+    '("IfValueT" 2)
+    '("IfValueF" 2)
     "BooleanTrue"
     "BooleanFalse"
     ;; Argument processors
