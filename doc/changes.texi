@@ -110,6 +110,15 @@ The style @file{latexinfo.el} is removed from @AUCTeX{}.
 @AUCTeX{} has preliminary support for @LaTeX{}-hooks.  Hooks provided by
 @LaTeX{} kernel are known and available for completion in
 @samp{\AddToHook}, @samp{\RemoveFromHook} and @samp{\AddToHookNext}.
+
+@item
+@AUCTeX{} is now able to place all generated output files, including those
+that are produced by applications running under @AUCTeX{}, temporary files
+related to region processing and @previewlatex{} files, in an output
+directory. To use this feature, set the new user option
+@code{TeX-output-dir} to the absolute path of the output directory or a
+relative path which would be interpreted as being relative to the master
+file in a mutlifile document.
 @end itemize
 
 @heading News in 12.3
