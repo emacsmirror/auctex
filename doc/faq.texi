@@ -71,7 +71,7 @@ the file @file{INSTALL.windows}
 @end ifclear
 
 @item
-Why doesn't the completion, style file, or multi-file stuff work?
+Why doesn't the completion, style file, or multifile stuff work?
 
 It must be enabled first, insert this in your init file:
 

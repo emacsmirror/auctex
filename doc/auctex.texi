@@ -87,7 +87,7 @@ it easy to find the errors that may slip through anyway.
 It is a good idea to make a printout of @AUCTeX{}'s reference card
 @file{tex-ref.tex} or one of its typeset versions.
 
-If you want to make @AUCTeX{} aware of style files and multi-file
+If you want to make @AUCTeX{} aware of style files and multifile
 documents right away, insert the following in your init file (usually
 @file{~/.emacs.d/init.el}).
 
