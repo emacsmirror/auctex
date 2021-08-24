@@ -6964,7 +6964,7 @@ function would return non-nil and `(match-string 1)' would return
                       "enumiv" "footnote" "mpfootnote")
 
   (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
-                     "bibindent" "columnsep" "columnwidth" "doublerulesep"
+                     "bibindent" "columnsep" "columnseprule" "columnwidth" "doublerulesep"
                      "evensidemargin" "linewidth" "oddsidemargin" "paperwidth"
                      "paperheight" "parindent" "parskip" "tabcolsep"
                      "textheight" "textwidth" "topmargin" "unitlength")
@@ -7214,133 +7214,133 @@ function would return non-nil and `(match-string 1)' would return
      ;; With the advent of LaTeX2e release 2020-02-02, all symbols
      ;; provided by textcomp.sty are available out of the box by the
      ;; kernel.  The next block is moved here from textcomp.el:
-     '("capitalgrave"             0)    ; Type: Accent -- Slot: 0
-     '("capitalacute"             0)    ; Type: Accent -- Slot: 1
-     '("capitalcircumflex"        0)    ; Type: Accent -- Slot: 2
-     '("capitaltilde"             0)    ; Type: Accent -- Slot: 3
-     '("capitaldieresis"          0)    ; Type: Accent -- Slot: 4
-     '("capitalhungarumlaut"      0)    ; Type: Accent -- Slot: 5
-     '("capitalring"              0)    ; Type: Accent -- Slot: 6
-     '("capitalcaron"             0)    ; Type: Accent -- Slot: 7
-     '("capitalbreve"             0)    ; Type: Accent -- Slot: 8
-     '("capitalmacron"            0)    ; Type: Accent -- Slot: 9
-     '("capitaldotaccent"         0)    ; Type: Accent -- Slot: 10
-     '("textquotestraightbase"    0)    ; Type: Symbol -- Slot: 13
-     '("textquotestraightdblbase" 0)    ; Type: Symbol -- Slot: 18
-     '("texttwelveudash"          0)    ; Type: Symbol -- Slot: 21
-     '("textthreequartersemdash"  0)    ; Type: Symbol -- Slot: 22
-     '("textcapitalcompwordmark"  0)    ; Type: Symbol -- Slot: 23
-     '("textleftarrow"            0)    ; Type: Symbol -- Slot: 24
-     '("textrightarrow"           0)    ; Type: Symbol -- Slot: 25
-     '("t"                        0)    ; Type: Accent -- Slot: 26
-     '("capitaltie"               0)    ; Type: Accent -- Slot: 27
-     '("newtie"                   0)    ; Type: Accent -- Slot: 28
-     '("capitalnewtie"            0)    ; Type: Accent -- Slot: 29
-     '("textascendercompwordmark" 0)    ; Type: Symbol -- Slot: 31
-     '("textblank"                0)    ; Type: Symbol -- Slot: 32
-     '("textdollar"               0)    ; Type: Symbol -- Slot: 36
-     '("textquotesingle"          0)    ; Type: Symbol -- Slot: 39
-     '("textasteriskcentered"     0)    ; Type: Symbol -- Slot: 42
-     '("textdblhyphen"            0)    ; Type: Symbol -- Slot: 45
-     '("textfractionsolidus"      0)    ; Type: Symbol -- Slot: 47
-     '("textzerooldstyle"         0)    ; Type: Symbol -- Slot: 48
-     '("textoneoldstyle"          0)    ; Type: Symbol -- Slot: 49
-     '("texttwooldstyle"          0)    ; Type: Symbol -- Slot: 50
-     '("textthreeoldstyle"        0)    ; Type: Symbol -- Slot: 51
-     '("textfouroldstyle"         0)    ; Type: Symbol -- Slot: 52
-     '("textfiveoldstyle"         0)    ; Type: Symbol -- Slot: 53
-     '("textsixoldstyle"          0)    ; Type: Symbol -- Slot: 54
-     '("textsevenoldstyle"        0)    ; Type: Symbol -- Slot: 55
-     '("texteightoldstyle"        0)    ; Type: Symbol -- Slot: 56
-     '("textnineoldstyle"         0)    ; Type: Symbol -- Slot: 57
-     '("textlangle"               0)    ; Type: Symbol -- Slot: 60
-     '("textminus"                0)    ; Type: Symbol -- Slot: 61
-     '("textrangle"               0)    ; Type: Symbol -- Slot: 62
-     '("textmho"                  0)    ; Type: Symbol -- Slot: 77
-     '("textbigcircle"            0)    ; Type: Symbol -- Slot: 79
-     '("textohm"                  0)    ; Type: Symbol -- Slot: 87
-     '("textlbrackdbl"            0)    ; Type: Symbol -- Slot: 91
-     '("textrbrackdbl"            0)    ; Type: Symbol -- Slot: 93
-     '("textuparrow"              0)    ; Type: Symbol -- Slot: 94
-     '("textdownarrow"            0)    ; Type: Symbol -- Slot: 95
-     '("textasciigrave"           0)    ; Type: Symbol -- Slot: 96
-     '("textborn"                 0)    ; Type: Symbol -- Slot: 98
-     '("textdivorced"             0)    ; Type: Symbol -- Slot: 99
-     '("textdied"                 0)    ; Type: Symbol -- Slot: 100
-     '("textleaf"                 0)    ; Type: Symbol -- Slot: 108
-     '("textmarried"              0)    ; Type: Symbol -- Slot: 109
-     '("textmusicalnote"          0)    ; Type: Symbol -- Slot: 110
-     '("texttildelow"             0)    ; Type: Symbol -- Slot: 126
-     '("textdblhyphenchar"        0)    ; Type: Symbol -- Slot: 127
-     '("textasciibreve"           0)    ; Type: Symbol -- Slot: 128
-     '("textasciicaron"           0)    ; Type: Symbol -- Slot: 129
-     '("textacutedbl"             0)    ; Type: Symbol -- Slot: 130
-     '("textgravedbl"             0)    ; Type: Symbol -- Slot: 131
-     '("textdagger"               0)    ; Type: Symbol -- Slot: 132
-     '("textdaggerdbl"            0)    ; Type: Symbol -- Slot: 133
-     '("textbardbl"               0)    ; Type: Symbol -- Slot: 134
-     '("textperthousand"          0)    ; Type: Symbol -- Slot: 135
-     '("textbullet"               0)    ; Type: Symbol -- Slot: 136
-     '("textcelsius"              0)    ; Type: Symbol -- Slot: 137
-     '("textdollaroldstyle"       0)    ; Type: Symbol -- Slot: 138
-     '("textcentoldstyle"         0)    ; Type: Symbol -- Slot: 139
-     '("textflorin"               0)    ; Type: Symbol -- Slot: 140
-     '("textcolonmonetary"        0)    ; Type: Symbol -- Slot: 141
-     '("textwon"                  0)    ; Type: Symbol -- Slot: 142
-     '("textnaira"                0)    ; Type: Symbol -- Slot: 143
-     '("textguarani"              0)    ; Type: Symbol -- Slot: 144
-     '("textpeso"                 0)    ; Type: Symbol -- Slot: 145
-     '("textlira"                 0)    ; Type: Symbol -- Slot: 146
-     '("textrecipe"               0)    ; Type: Symbol -- Slot: 147
-     '("textinterrobang"          0)    ; Type: Symbol -- Slot: 148
-     '("textinterrobangdown"      0)    ; Type: Symbol -- Slot: 149
-     '("textdong"                 0)    ; Type: Symbol -- Slot: 150
-     '("texttrademark"            0)    ; Type: Symbol -- Slot: 151
-     '("textpertenthousand"       0)    ; Type: Symbol -- Slot: 152
-     '("textpilcrow"              0)    ; Type: Symbol -- Slot: 153
-     '("textbaht"                 0)    ; Type: Symbol -- Slot: 154
-     '("textnumero"               0)    ; Type: Symbol -- Slot: 155
-     '("textdiscount"             0)    ; Type: Symbol -- Slot: 156
-     '("textestimated"            0)    ; Type: Symbol -- Slot: 157
-     '("textopenbullet"           0)    ; Type: Symbol -- Slot: 158
-     '("textservicemark"          0)    ; Type: Symbol -- Slot: 159
-     '("textlquill"               0)    ; Type: Symbol -- Slot: 160
-     '("textrquill"               0)    ; Type: Symbol -- Slot: 161
-     '("textcent"                 0)    ; Type: Symbol -- Slot: 162
-     '("textsterling"             0)    ; Type: Symbol -- Slot: 163
-     '("textcurrency"             0)    ; Type: Symbol -- Slot: 164
-     '("textyen"                  0)    ; Type: Symbol -- Slot: 165
-     '("textbrokenbar"            0)    ; Type: Symbol -- Slot: 166
-     '("textsection"              0)    ; Type: Symbol -- Slot: 167
-     '("textasciidieresis"        0)    ; Type: Symbol -- Slot: 168
-     '("textcopyright"            0)    ; Type: Symbol -- Slot: 169
-     '("textordfeminine"          0)    ; Type: Symbol -- Slot: 170
-     '("textcopyleft"             0)    ; Type: Symbol -- Slot: 171
-     '("textlnot"                 0)    ; Type: Symbol -- Slot: 172
-     '("textcircledP"             0)    ; Type: Symbol -- Slot: 173
-     '("textregistered"           0)    ; Type: Symbol -- Slot: 174
-     '("textasciimacron"          0)    ; Type: Symbol -- Slot: 175
-     '("textdegree"               0)    ; Type: Symbol -- Slot: 176
-     '("textpm"                   0)    ; Type: Symbol -- Slot: 177
-     '("texttwosuperior"          0)    ; Type: Symbol -- Slot: 178
-     '("textthreesuperior"        0)    ; Type: Symbol -- Slot: 179
-     '("textasciiacute"           0)    ; Type: Symbol -- Slot: 180
-     '("textmu"                   0)    ; Type: Symbol -- Slot: 181
-     '("textparagraph"            0)    ; Type: Symbol -- Slot: 182
-     '("textperiodcentered"       0)    ; Type: Symbol -- Slot: 183
-     '("textreferencemark"        0)    ; Type: Symbol -- Slot: 184
-     '("textonesuperior"          0)    ; Type: Symbol -- Slot: 185
-     '("textordmasculine"         0)    ; Type: Symbol -- Slot: 186
-     '("textsurd"                 0)    ; Type: Symbol -- Slot: 187
-     '("textonequarter"           0)    ; Type: Symbol -- Slot: 188
-     '("textonehalf"              0)    ; Type: Symbol -- Slot: 189
-     '("textthreequarters"        0)    ; Type: Symbol -- Slot: 190
-     '("texteuro"                 0)    ; Type: Symbol -- Slot: 191
-     '("texttimes"                0)    ; Type: Symbol -- Slot: 214
-     '("textdiv"                  0)    ; Type: Symbol -- Slot: 246
-     '("textcircled"              1)    ; Type: Command -- Slot: N/A
-     '("capitalcedilla"           1)    ; Type: Command -- Slot: N/A
-     '("capitalogonek"            1)    ; Type: Command -- Slot: N/A
+     "capitalgrave"                 ; Type: Accent -- Slot: 0
+     "capitalacute"                 ; Type: Accent -- Slot: 1
+     "capitalcircumflex"            ; Type: Accent -- Slot: 2
+     "capitaltilde"                 ; Type: Accent -- Slot: 3
+     "capitaldieresis"              ; Type: Accent -- Slot: 4
+     "capitalhungarumlaut"          ; Type: Accent -- Slot: 5
+     "capitalring"                  ; Type: Accent -- Slot: 6
+     "capitalcaron"                 ; Type: Accent -- Slot: 7
+     "capitalbreve"                 ; Type: Accent -- Slot: 8
+     "capitalmacron"                ; Type: Accent -- Slot: 9
+     "capitaldotaccent"             ; Type: Accent -- Slot: 10
+     "textquotestraightbase"        ; Type: Symbol -- Slot: 13
+     "textquotestraightdblbase"     ; Type: Symbol -- Slot: 18
+     "texttwelveudash"              ; Type: Symbol -- Slot: 21
+     "textthreequartersemdash"      ; Type: Symbol -- Slot: 22
+     "textcapitalcompwordmark"      ; Type: Symbol -- Slot: 23
+     "textleftarrow"                ; Type: Symbol -- Slot: 24
+     "textrightarrow"               ; Type: Symbol -- Slot: 25
+     "t"                            ; Type: Accent -- Slot: 26
+     "capitaltie"                   ; Type: Accent -- Slot: 27
+     "newtie"                       ; Type: Accent -- Slot: 28
+     "capitalnewtie"                ; Type: Accent -- Slot: 29
+     "textascendercompwordmark"     ; Type: Symbol -- Slot: 31
+     "textblank"                    ; Type: Symbol -- Slot: 32
+     "textdollar"                   ; Type: Symbol -- Slot: 36
+     "textquotesingle"              ; Type: Symbol -- Slot: 39
+     "textasteriskcentered"         ; Type: Symbol -- Slot: 42
+     "textdblhyphen"                ; Type: Symbol -- Slot: 45
+     "textfractionsolidus"          ; Type: Symbol -- Slot: 47
+     "textzerooldstyle"             ; Type: Symbol -- Slot: 48
+     "textoneoldstyle"              ; Type: Symbol -- Slot: 49
+     "texttwooldstyle"              ; Type: Symbol -- Slot: 50
+     "textthreeoldstyle"            ; Type: Symbol -- Slot: 51
+     "textfouroldstyle"             ; Type: Symbol -- Slot: 52
+     "textfiveoldstyle"             ; Type: Symbol -- Slot: 53
+     "textsixoldstyle"              ; Type: Symbol -- Slot: 54
+     "textsevenoldstyle"            ; Type: Symbol -- Slot: 55
+     "texteightoldstyle"            ; Type: Symbol -- Slot: 56
+     "textnineoldstyle"             ; Type: Symbol -- Slot: 57
+     "textlangle"                   ; Type: Symbol -- Slot: 60
+     "textminus"                    ; Type: Symbol -- Slot: 61
+     "textrangle"                   ; Type: Symbol -- Slot: 62
+     "textmho"                      ; Type: Symbol -- Slot: 77
+     "textbigcircle"                ; Type: Symbol -- Slot: 79
+     "textohm"                      ; Type: Symbol -- Slot: 87
+     "textlbrackdbl"                ; Type: Symbol -- Slot: 91
+     "textrbrackdbl"                ; Type: Symbol -- Slot: 93
+     "textuparrow"                  ; Type: Symbol -- Slot: 94
+     "textdownarrow"                ; Type: Symbol -- Slot: 95
+     "textasciigrave"               ; Type: Symbol -- Slot: 96
+     "textborn"                     ; Type: Symbol -- Slot: 98
+     "textdivorced"                 ; Type: Symbol -- Slot: 99
+     "textdied"                     ; Type: Symbol -- Slot: 100
+     "textleaf"                     ; Type: Symbol -- Slot: 108
+     "textmarried"                  ; Type: Symbol -- Slot: 109
+     "textmusicalnote"              ; Type: Symbol -- Slot: 110
+     "texttildelow"                 ; Type: Symbol -- Slot: 126
+     "textdblhyphenchar"            ; Type: Symbol -- Slot: 127
+     "textasciibreve"               ; Type: Symbol -- Slot: 128
+     "textasciicaron"               ; Type: Symbol -- Slot: 129
+     "textacutedbl"                 ; Type: Symbol -- Slot: 130
+     "textgravedbl"                 ; Type: Symbol -- Slot: 131
+     "textdagger"                   ; Type: Symbol -- Slot: 132
+     "textdaggerdbl"                ; Type: Symbol -- Slot: 133
+     "textbardbl"                   ; Type: Symbol -- Slot: 134
+     "textperthousand"              ; Type: Symbol -- Slot: 135
+     "textbullet"                   ; Type: Symbol -- Slot: 136
+     "textcelsius"                  ; Type: Symbol -- Slot: 137
+     "textdollaroldstyle"           ; Type: Symbol -- Slot: 138
+     "textcentoldstyle"             ; Type: Symbol -- Slot: 139
+     "textflorin"                   ; Type: Symbol -- Slot: 140
+     "textcolonmonetary"            ; Type: Symbol -- Slot: 141
+     "textwon"                      ; Type: Symbol -- Slot: 142
+     "textnaira"                    ; Type: Symbol -- Slot: 143
+     "textguarani"                  ; Type: Symbol -- Slot: 144
+     "textpeso"                     ; Type: Symbol -- Slot: 145
+     "textlira"                     ; Type: Symbol -- Slot: 146
+     "textrecipe"                   ; Type: Symbol -- Slot: 147
+     "textinterrobang"              ; Type: Symbol -- Slot: 148
+     "textinterrobangdown"          ; Type: Symbol -- Slot: 149
+     "textdong"                     ; Type: Symbol -- Slot: 150
+     "texttrademark"                ; Type: Symbol -- Slot: 151
+     "textpertenthousand"           ; Type: Symbol -- Slot: 152
+     "textpilcrow"                  ; Type: Symbol -- Slot: 153
+     "textbaht"                     ; Type: Symbol -- Slot: 154
+     "textnumero"                   ; Type: Symbol -- Slot: 155
+     "textdiscount"                 ; Type: Symbol -- Slot: 156
+     "textestimated"                ; Type: Symbol -- Slot: 157
+     "textopenbullet"               ; Type: Symbol -- Slot: 158
+     "textservicemark"              ; Type: Symbol -- Slot: 159
+     "textlquill"                   ; Type: Symbol -- Slot: 160
+     "textrquill"                   ; Type: Symbol -- Slot: 161
+     "textcent"                     ; Type: Symbol -- Slot: 162
+     "textsterling"                 ; Type: Symbol -- Slot: 163
+     "textcurrency"                 ; Type: Symbol -- Slot: 164
+     "textyen"                      ; Type: Symbol -- Slot: 165
+     "textbrokenbar"                ; Type: Symbol -- Slot: 166
+     "textsection"                  ; Type: Symbol -- Slot: 167
+     "textasciidieresis"            ; Type: Symbol -- Slot: 168
+     "textcopyright"                ; Type: Symbol -- Slot: 169
+     "textordfeminine"              ; Type: Symbol -- Slot: 170
+     "textcopyleft"                 ; Type: Symbol -- Slot: 171
+     "textlnot"                     ; Type: Symbol -- Slot: 172
+     "textcircledP"                 ; Type: Symbol -- Slot: 173
+     "textregistered"               ; Type: Symbol -- Slot: 174
+     "textasciimacron"              ; Type: Symbol -- Slot: 175
+     "textdegree"                   ; Type: Symbol -- Slot: 176
+     "textpm"                       ; Type: Symbol -- Slot: 177
+     "texttwosuperior"              ; Type: Symbol -- Slot: 178
+     "textthreesuperior"            ; Type: Symbol -- Slot: 179
+     "textasciiacute"               ; Type: Symbol -- Slot: 180
+     "textmu"                       ; Type: Symbol -- Slot: 181
+     "textparagraph"                ; Type: Symbol -- Slot: 182
+     "textperiodcentered"           ; Type: Symbol -- Slot: 183
+     "textreferencemark"            ; Type: Symbol -- Slot: 184
+     "textonesuperior"              ; Type: Symbol -- Slot: 185
+     "textordmasculine"             ; Type: Symbol -- Slot: 186
+     "textsurd"                     ; Type: Symbol -- Slot: 187
+     "textonequarter"               ; Type: Symbol -- Slot: 188
+     "textonehalf"                  ; Type: Symbol -- Slot: 189
+     "textthreequarters"            ; Type: Symbol -- Slot: 190
+     "texteuro"                     ; Type: Symbol -- Slot: 191
+     "texttimes"                    ; Type: Symbol -- Slot: 214
+     "textdiv"                      ; Type: Symbol -- Slot: 246
+     '("textcircled"          1)    ; Type: Command -- Slot: N/A
+     '("capitalcedilla"       1)    ; Type: Command -- Slot: N/A
+     '("capitalogonek"        1)    ; Type: Command -- Slot: N/A
 
      "rmfamily" "sffamily" "ttfamily"
      '("mdseries" -1) '("bfseries" -1)

@@ -1,6 +1,6 @@
 ;;; marginnote.el --- AUCTeX style for `marginnote.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -46,15 +46,11 @@
     '("marginnote" [ "Left margin text" ] "Text"
       [ TeX-arg-length "Vertical offset" ] )
 
-    '("marginnotetextwidth" 0)
-
-    '("marginnotevadjust" 0)
-
-    '("raggedleftmarginnote" 0)
-
-    '("raggedrightmarginnote" 0)
-
-    '("marginfont" 0))
+    "marginnotetextwidth"
+    "marginnotevadjust"
+    "raggedleftmarginnote"
+    "raggedrightmarginnote"
+    "marginfont")
 
    ;; Fontification
    (when (and (featurep 'font-latex)

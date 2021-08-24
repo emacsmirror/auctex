@@ -1,6 +1,6 @@
 ;;; currvita.el --- AUCTeX style for `currvita.sty' (v0.9i)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -81,11 +81,11 @@
 
    ;; General commands: "\date" is already provided by AUCTeX
    (TeX-add-symbols
-    '("cvplace"           t)
-    '("cvheadingfont"     0)
-    '("cvlistheadingfont" 0)
-    '("cvlabelfont"       0)
-    '("cvbibname"         0))
+    '("cvplace" t)
+    "cvheadingfont"
+    "cvlistheadingfont"
+    "cvlabelfont"
+    "cvbibname")
 
    ;; Add new lengths defined by currvita.sty
    (LaTeX-add-lengths "cvlabelwidth" "cvlabelskip" "cvlabelsep"))

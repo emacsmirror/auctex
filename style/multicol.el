@@ -1,6 +1,6 @@
 ;;; multicol.el --- AUCTeX style for `multicol.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -43,20 +43,19 @@
       [ "Local value for \\premulticols" ]))
 
    (TeX-add-symbols
-    '("multicoltolerance" 0)
-    '("multicolpretolerance" 0)
-    '("premulticols" 0)
-    '("postmulticols" 0)
-    '("multicolsep" 0)
-    '("multicolbaselineskip" 0)
-    '("multicolovershoot" 0)
-    '("multicolundershoot" 0)
-    '("columnsep" 0)
-    '("columnseprule" 0)
-    '("columnseprulecolor" 0)
+    '("multicoltolerance"    (TeX-arg-literal " = "))
+    '("multicolpretolerance" (TeX-arg-literal " = "))
+    "columnseprulecolor"
     '("raggedcolumns" 0)
-    '("flushcolumns" 0)
-    "columnbreak"))
+    '("flushcolumns"  0)
+    '("columnbreak"   0))
+
+   (LaTeX-add-lengths "premulticols"
+                      "postmulticols"
+                      "multicolsep"
+                      "multicolbaselineskip"
+                      "multicolovershoot"
+                      "multicolundershoot"))
  TeX-dialect)
 
 (defvar LaTeX-multicol-package-options
