@@ -62,10 +62,10 @@
            `("portuguese" "\"<" "\">" ,TeX-quote-after-quote)))
    (setq LaTeX-babel-hyphen-language "portuguese")
    (TeX-add-symbols
-    '("ord"  0)
-    '("ro"   0)
-    '("orda" 0)
-    '("ra"   0))
+    "ord"
+    "ro"
+    "orda"
+    "ra")
    ;; Fontification
    (when (and (eq TeX-install-font-lock 'font-latex-setup)
               (featurep 'font-latex))

@@ -152,6 +152,9 @@
                        (LaTeX-find-matching-begin)
                        (end-of-line)
                        (LaTeX-newline)
+                       ;; Indent the next macro insertion and don't
+                       ;; rely on the fill-function to do it:
+                       (indent-according-to-mode)
                        (insert (format "\\frametitle{%s}" title))
                        ;; This works because \frametitle is a
                        ;; paragraph command.

@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2021 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -132,16 +132,15 @@
     ;; in a .tex file, Emacs asks to apply a variable which is not
     ;; safe and does not restore the frame; the splitted frame
     ;; remains.  I couldn't figure out why, so for now, I add the
-    ;; styles from Pygments version 2.5.2 here.
+    ;; styles from Pygments version 2.9 here.
     ("style" ("abap" "algol" "algol_nu" "arduino" "autumn"
               "borland" "bw" "colorful" "default" "emacs"
-              "friendly" "fruity" "igor" "inkpot" "lovelace"
-              "manni" "monokai" "murphy" "native" "paraiso-dark"
-              "paraiso-light" "pastie" "perldoc"
-              "rainbow_dash" "rrt" "sas"
-              "solarized-dark" "solarized-light" "stata"
-              "stata-dark" "stata-light"
-              "tango" "trac" "vim" "vs" "xcode"))
+              "friendly" "fruity" "gruvbox-dark" "gruvbox-light"
+              "igor" "inkpot" "lovelace" "manni" "material" "monokai"
+              "murphy" "native" "paraiso-dark" "paraiso-light"
+              "pastie" "perldoc" "rainbow_dash" "rrt" "sas"
+              "solarized-dark" "solarized-light" "stata" "stata-dark"
+              "stata-light" "tango" "trac" "vim" "vs" "xcode" "zenburn"))
     ("stepnumber")
     ("stepnumberfromfirst")
     ("stepnumberoffsetvalues" ("true" "false"))

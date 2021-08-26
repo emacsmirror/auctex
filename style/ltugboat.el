@@ -1,6 +1,6 @@
 ;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -240,7 +240,7 @@
     "XSLT"
 
     ;; 10.2 Other special typesetting
-    '("Dash" 0)
+    "Dash"
     '("cs" (TeX-arg-eval let ((macro (completing-read
                                       (TeX-argument-prompt nil nil
                                                            "Command")

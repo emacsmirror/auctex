@@ -48,7 +48,7 @@ be achieved by putting
 @end lisp
 @noindent
 into your init file.  Finally, if you often use @code{\include} or
-@code{\input}, you should make @AUCTeX{} aware of the multi-file
+@code{\input}, you should make @AUCTeX{} aware of the multifile
 document structure.  You can do this by inserting
 
 @lisp

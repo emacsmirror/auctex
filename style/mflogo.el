@@ -1,6 +1,6 @@
 ;;; mflogo.el --- AUCTeX style for `mflogo.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2019, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2019, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -43,8 +43,8 @@
    (TeX-add-symbols
     '("textlogo"   "Text")
     '("logofamily" -1)
-    '("MF"          0)
-    '("MP"          0))
+    "MF"
+    "MP")
 
    ;; Fontification
    (when (and (featurep 'font-latex)

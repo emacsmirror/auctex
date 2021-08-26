@@ -1,6 +1,6 @@
 ;;; ltxguide.el --- AUCTeX style for `ltxguide.cls' (2001/05/28)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020, 2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,6 +38,8 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function font-latex-set-syntactic-keywords
+                  "font-latex")
 
 (defvar LaTeX-article-class-options)
 
@@ -112,7 +114,9 @@ For decl environment provided by ltxguide.cls."
                                 ("NEWdescription" "{"))
                               'textual)
      (font-latex-add-keywords '(("URL" ""))
-                              'reference)))
+                              'reference)
+     ;; Tell font-lock about the update.
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-ltxguide-class-options
