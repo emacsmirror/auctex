@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.8 from auctex.texi.
 
-This manual is for AUCTeX (version 13.0.13 from 2021-08-13), a
+This manual is for AUCTeX (version 13.0.14 from 2021-08-26), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2021 Free Software
@@ -45,7 +45,7 @@ errors that may slip through anyway.
    It is a good idea to make a printout of AUCTeX's reference card
 'tex-ref.tex' or one of its typeset versions.
 
-   If you want to make AUCTeX aware of style files and multi-file
+   If you want to make AUCTeX aware of style files and multifile
 documents right away, insert the following in your init file (usually
 '~/.emacs.d/init.el').
 
@@ -1142,7 +1142,7 @@ be achieved by putting
      (setq TeX-auto-save t)
      (setq TeX-parse-self t)
 into your init file.  Finally, if you often use '\include' or '\input',
-you should make AUCTeX aware of the multi-file document structure.  You
+you should make AUCTeX aware of the multifile document structure.  You
 can do this by inserting
 
      (setq-default TeX-master nil)
@@ -6016,7 +6016,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.0.13 from 2021-08-13), a
+   This manual is for AUCTeX (version 13.0.14 from 2021-08-26), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2021 Free Software
@@ -6607,6 +6607,14 @@ News in 13.1
    * AUCTeX has preliminary support for LaTeX-hooks.  Hooks provided by
      LaTeX kernel are known and available for completion in
      '\AddToHook', '\RemoveFromHook' and '\AddToHookNext'.
+
+   * AUCTeX is now able to place all generated output files, including
+     those that are produced by applications running under AUCTeX,
+     temporary files related to region processing and preview-latex
+     files, in an output directory.  To use this feature, set the new
+     user option 'TeX-output-dir' to the absolute path of the output
+     directory or a relative path which would be interpreted as being
+     relative to the master file in a multifile document.
 
 News in 12.3
 ------------
@@ -8005,7 +8013,7 @@ A.4 Frequently Asked Questions
      relevant programs, as described in *note (auctex)Installation under
      MS Windows::.
 
-  4. Why doesn't the completion, style file, or multi-file stuff work?
+  4. Why doesn't the completion, style file, or multifile stuff work?
 
      It must be enabled first, insert this in your init file:
 
@@ -8974,7 +8982,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 752)
+* auctex.el <1>:                         Changes.             (line 760)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9277,7 +9285,7 @@ Concept Index
                                                               (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 752)
+* tex-site.el <2>:                       Changes.             (line 760)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9300,103 +9308,103 @@ Concept Index
 
 Tag Table:
 Node: Top918
-Node: Copying7375
-Node: Introduction9320
-Node: Summary9590
-Node: Installation12323
-Node: Prerequisites14296
-Node: Configure16495
-Node: Build/install and uninstall21073
-Node: Loading the package21826
-Node: Advice for package providers23519
-Node: Advice for non-privileged users26324
-Node: Installation under MS Windows31670
-Node: Customizing45292
-Node: Quick Start46877
-Ref: Quick Start-Footnote-148999
-Node: Editing Facilities49093
-Node: Processing Facilities53788
-Node: Editing58517
-Node: Quotes59847
-Node: Font Specifiers68287
-Node: Sectioning70355
-Node: Environments74874
-Node: Equations80027
-Node: Floats80619
-Node: Itemize-like82623
-Node: Tabular-like83345
-Node: Customizing Environments85118
-Node: Mathematics85358
-Node: Completion88794
-Node: Marking95825
-Node: Marking (LaTeX)96449
-Node: Marking (Texinfo)97391
-Node: Commenting99002
-Node: Indenting100327
-Node: Filling106341
-Node: Display112213
-Node: Font Locking114708
-Node: Fontification of macros116787
-Node: Fontification of quotes126303
-Node: Fontification of math127797
-Node: Verbatim content131465
-Node: Faces132239
-Node: Known problems132736
-Node: Folding133733
-Node: Outline144506
-Node: Narrowing145785
-Node: Prettifying146854
-Node: Processing148091
-Node: Commands149419
-Node: Starting a Command149975
-Node: Selecting a Command154890
-Node: Processor Options163988
-Node: Viewing174381
-Node: Starting Viewers174755
-Node: I/O Correlation180405
-Node: Debugging185634
-Node: Ignoring warnings188252
-Node: Error overview190311
-Node: Checking192219
-Node: Control193835
-Node: Cleaning195944
-Node: Documentation197303
-Node: Customization198018
-Node: Modes and Hooks198511
-Node: Multifile200399
-Node: Parsing Files205131
-Node: Internationalization210120
-Node: European211468
-Node: Japanese218947
-Node: Automatic224011
-Node: Automatic Global226502
-Node: Automatic Private227634
-Node: Automatic Local228970
-Node: Style Files230001
-Node: Simple Style230807
-Node: Adding Macros234528
-Node: Adding Environments244027
-Node: Adding Other248691
-Node: Hacking the Parser251240
-Node: Appendices255229
-Node: Copying this Manual255525
-Node: GNU Free Documentation License256409
-Node: Changes281530
-Node: Development332359
-Node: Mid-term Goals333005
-Node: Wishlist334949
-Node: Bugs340397
-Node: FAQ341498
-Node: Texinfo mode346686
-Node: Exploiting347820
-Node: Superseding348638
-Node: Mapping352869
-Node: Unbinding354704
-Node: Indices355525
-Node: Key Index355688
-Node: Function Index363217
-Node: Variable Index374976
-Node: Concept Index399752
+Node: Copying7374
+Node: Introduction9319
+Node: Summary9589
+Node: Installation12322
+Node: Prerequisites14295
+Node: Configure16494
+Node: Build/install and uninstall21072
+Node: Loading the package21825
+Node: Advice for package providers23518
+Node: Advice for non-privileged users26323
+Node: Installation under MS Windows31669
+Node: Customizing45291
+Node: Quick Start46876
+Ref: Quick Start-Footnote-148997
+Node: Editing Facilities49091
+Node: Processing Facilities53786
+Node: Editing58515
+Node: Quotes59845
+Node: Font Specifiers68285
+Node: Sectioning70353
+Node: Environments74872
+Node: Equations80025
+Node: Floats80617
+Node: Itemize-like82621
+Node: Tabular-like83343
+Node: Customizing Environments85116
+Node: Mathematics85356
+Node: Completion88792
+Node: Marking95823
+Node: Marking (LaTeX)96447
+Node: Marking (Texinfo)97389
+Node: Commenting99000
+Node: Indenting100325
+Node: Filling106339
+Node: Display112211
+Node: Font Locking114706
+Node: Fontification of macros116785
+Node: Fontification of quotes126301
+Node: Fontification of math127795
+Node: Verbatim content131463
+Node: Faces132237
+Node: Known problems132734
+Node: Folding133731
+Node: Outline144504
+Node: Narrowing145783
+Node: Prettifying146852
+Node: Processing148089
+Node: Commands149417
+Node: Starting a Command149973
+Node: Selecting a Command154888
+Node: Processor Options163986
+Node: Viewing174379
+Node: Starting Viewers174753
+Node: I/O Correlation180403
+Node: Debugging185632
+Node: Ignoring warnings188250
+Node: Error overview190309
+Node: Checking192217
+Node: Control193833
+Node: Cleaning195942
+Node: Documentation197301
+Node: Customization198016
+Node: Modes and Hooks198509
+Node: Multifile200397
+Node: Parsing Files205129
+Node: Internationalization210118
+Node: European211466
+Node: Japanese218945
+Node: Automatic224009
+Node: Automatic Global226500
+Node: Automatic Private227632
+Node: Automatic Local228968
+Node: Style Files229999
+Node: Simple Style230805
+Node: Adding Macros234526
+Node: Adding Environments244025
+Node: Adding Other248689
+Node: Hacking the Parser251238
+Node: Appendices255227
+Node: Copying this Manual255523
+Node: GNU Free Documentation License256407
+Node: Changes281528
+Node: Development332831
+Node: Mid-term Goals333477
+Node: Wishlist335421
+Node: Bugs340869
+Node: FAQ341970
+Node: Texinfo mode347157
+Node: Exploiting348291
+Node: Superseding349109
+Node: Mapping353340
+Node: Unbinding355175
+Node: Indices355996
+Node: Key Index356159
+Node: Function Index363688
+Node: Variable Index375447
+Node: Concept Index400223
 
 End Tag Table
 
