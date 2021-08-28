@@ -57,10 +57,6 @@
     "backreflastsep"
     "backrefentrycount")
 
-   (LaTeX-paragraph-commands-add-locally '("backrefparscanfalse"
-                                           "backrefparscantrue"
-                                           "backrefprint"))
-
    ;; This is a hack: We want to have the 2 macros
    ;; \backrefparscanfalse and \backrefparscantrue indented like
    ;; \bibitem, hence we add them to a local version of
@@ -69,6 +65,11 @@
      (setq-local LaTeX-item-regexp
                  (concat LaTeX-item-regexp
                          "\\|" "backrefparscan\\(false\\|true\\)\\b")))
+
+   ;; Only add "backrefprint" here, "backrefparscan*" will be added
+   ;; via `LaTeX-item-regexp' when `LaTeX-set-paragraph-start' is
+   ;; called:
+   (LaTeX-paragraph-commands-add-locally '("backrefprint"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
