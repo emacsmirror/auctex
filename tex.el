@@ -1265,12 +1265,18 @@ viewer."
   (if (TeX-evince-dbus-p de app :forward)
       (intern (format "TeX-%s-sync-view" app))
     `(,app (mode-io-correlate
-            ;; With evince 3, -p N opens the page *labeled* N,
-            ;; and -i,--page-index the physical page N.
-            ,(if (string-match "--page-index"
-                               (shell-command-to-string (concat app " --help")))
-                 " -i %(outpage)"
-               " -p %(outpage)")) " %o")))
+            ;; When tex.el is loaded as response to opening a tex file
+            ;; in a non-existent directory, we need to make sure
+            ;; `default-directory' exists, otherwise the shell-command
+            ;; below will error (bug#50225).
+            ,(let ((default-directory (file-name-as-directory
+                                       (expand-file-name "~"))))
+               ;; With evince 3, -p N opens the page *labeled* N,
+               ;; and -i,--page-index the physical page N.
+               (if (string-match "--page-index"
+                                 (shell-command-to-string (concat app " --help")))
+                   " -i %(outpage)"
+                 " -p %(outpage)"))) " %o")))
 
 (defvar TeX-view-program-list-builtin
   (cond
