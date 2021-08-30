@@ -176,7 +176,7 @@
     ("borderwidth")
     ;; "borderstyle" is not mentioned in the original hyperref-doc, it
     ;; can be seen in action in
-    ;; http://mirrors.ctan.org/macros/latex/contrib/hyperref/test/testform.tex
+    ;; https://github.com/latex3/hyperref/blob/main/test/testform.tex
     ;; S=Solid (default), D=Dashed, B=Beveled, I=Inset, U=Underline
     ("borderstyle"    ("S" "D" "B" "I" "U"))
     ("calculate")
