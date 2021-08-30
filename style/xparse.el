@@ -1,6 +1,6 @@
 ;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -28,10 +28,8 @@
 ;; This file adds basic support for `xparse.sty' version 2020-03-06.
 ;; It parses argument specification of macros and environments.
 
-;; Currently, this style doesn't parse the embellishments specifiers
-;; `e' and `E'.  The "yet not more supported" specifiers `l', `u', `g'
-;; and `G' are ignored completely and may lead to wrong parsing
-;; results.
+;; The "yet not more supported" specifiers `l', `u', `g' and `G' are
+;; ignored completely and may lead to wrong parsing results.
 
 ;;; Code:
 
@@ -48,7 +46,7 @@
 (defvar LaTeX-xparse-macro-regexp
   `(,(concat
       (regexp-quote TeX-esc)
-      "\\(?:New\\|Renew\\|Provide\\|Declare\\)"
+      "\\(New\\|Renew\\|Provide\\|Declare\\)"
       "\\(?:Expandable\\)?"
       "DocumentCommand"
       "[ \t\n\r]*"
@@ -60,7 +58,7 @@
       "}?"
       "[ \t\n\r]*"
       "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}")
-    (1 2) LaTeX-auto-xparse-macro)
+    (0 2 3 1) LaTeX-auto-xparse-macro)
   "Matches macros by xparse package.")
 
 (TeX-auto-add-type "xparse-environment" "LaTeX")
@@ -68,7 +66,7 @@
 (defvar LaTeX-xparse-environment-regexp
   `(,(concat
       (regexp-quote TeX-esc)
-      "\\(?:New\\|Renew\\|Provide\\|Declare\\)"
+      "\\(New\\|Renew\\|Provide\\|Declare\\)"
       "DocumentEnvironment"
       "[ \t\n\r]*"
       "{"
@@ -78,7 +76,7 @@
       "}"
       "[ \t\n\r]*"
       "{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}")
-    (1 2) LaTeX-auto-xparse-environment)
+    (0 2 3 1) LaTeX-auto-xparse-environment)
   "Matches environments by xparse package.")
 
 (defun LaTeX-arg-xparse-query (optional op-brace cl-brace &optional prompt)
@@ -92,14 +90,27 @@ replaces the standard one."
      (TeX-read-string (TeX-argument-prompt optional prompt "Text"))
      optional)))
 
+(defun LaTeX-arg-xparse-embellishment-query (_optional embellish)
+  "Special insert function for embellishments from xparse package.
+Compatibility argument OPTIONAL is ignored.  EMBELLISH is a
+string with parsed elements inserted in the buffer.  This
+function also sets the value of `TeX-exit-mark' where the point
+will be once the insertion is completed."
+  (let (p)
+    (just-one-space)
+    (setq p (point))
+    (insert embellish)
+    (set-marker TeX-exit-mark (1+ p))))
+
 (defun LaTeX-xparse-macro-parse (type)
   "Process parsed macro and environment definitions.
-TYPE is one of the symobols mac or env."
+TYPE is one of the symbols mac or env."
   (dolist (xcmd (if (eq type 'mac)
                     (LaTeX-xparse-macro-list)
                   (LaTeX-xparse-environment-list)))
-    (let ((name (car xcmd))
-          (spec (cadr xcmd))
+    (let ((name (nth 1 xcmd))
+          (spec (nth 2 xcmd))
+          (what (nth 3 xcmd))
           args opt-star opt-token)
       (with-temp-buffer
         (set-syntax-table LaTeX-mode-syntax-table)
@@ -175,29 +186,56 @@ TYPE is one of the symobols mac or env."
                 ((looking-at-p "t")
                  (re-search-forward "t\\(.\\)" (+ (point) 2) t)
                  (setq opt-token (match-string-no-properties 1)))
-                ;; e & E are currently ignored.  e: If looking at a
-                ;; {, move one balanced expression, otherwise only
-                ;; one character.
+                ;; e{tokes} a set of optional embellishments
                 ((looking-at-p "e")
                  (forward-char)
                  (if (looking-at-p TeX-grop)
-                     (forward-sexp)
-                   (forward-char)))
-                ;; E
+                     (re-search-forward "{\\([^}]+\\)}" nil t)
+                   (re-search-forward "\\(.\\)" (1+ (point)) t))
+                 (push `(LaTeX-arg-xparse-embellishment-query
+                         ,(match-string-no-properties 1))
+                       args))
+                ;; E{tokes}{defaults}
                 ((looking-at-p "E")
                  (forward-char)
                  (if (looking-at-p TeX-grop)
-                     (forward-sexp)
-                   (forward-char))
-                 (if (looking-at-p TeX-grop)
-                     (forward-sexp)
-                   (forward-char)))
+                     (re-search-forward "{\\([^}]+\\)}" nil t)
+                   (re-search-forward "\\(.\\)" (1+ (point)) t))
+                 (push `(LaTeX-arg-xparse-embellishment-query
+                         ,(match-string-no-properties 1))
+                       args)
+                 (when (looking-at-p TeX-grop)
+                   (forward-sexp)))
                 ;; Finished:
                 (t nil))))
       (if (eq type 'env)
-          (LaTeX-add-environments `(,name
-                                    LaTeX-env-args
-                                    ,@(reverse (copy-sequence args))))
+          ;; Parsed enviroments: If we are Renew'ing or Delare'ing, we
+          ;; delete the enviroment first from `LaTeX-environment-list'
+          ;; before adding the new one.  We have to sort the value of
+          ;; `LaTeX-environment-list' by running the function of the
+          ;; same name:
+          (progn
+            (when (member what '("Renew" "Declare"))
+              (LaTeX-environment-list)
+              (setq LaTeX-environment-list
+                    (assoc-delete-all name LaTeX-environment-list)))
+            (LaTeX-add-environments `(,name
+                                      LaTeX-env-args
+                                      ,@(reverse (copy-sequence args)))))
+        ;; Parsed macros: If we are Renew'ing or Delare'ing, we delete
+        ;; the macros first from `TeX-symbol-list' before adding the
+        ;; new ones.  We have to sort the value of `TeX-symbol-list'
+        ;; by running the function of the same name:
+        (when (member what '("Renew" "Declare"))
+          (TeX-symbol-list)
+          (setq TeX-symbol-list
+                (assoc-delete-all name TeX-symbol-list))
+          (when opt-star
+            (setq TeX-symbol-list
+                  (assoc-delete-all (concat name "*" TeX-symbol-list))))
+          (when opt-token
+            (setq TeX-symbol-list
+                  (assoc-delete-all (concat name opt-token TeX-symbol-list)))))
         (TeX-add-symbols (cons name
                                (reverse (copy-sequence args))))
         (when opt-star
@@ -275,9 +313,9 @@ TYPE is one of the symobols mac or env."
     "ProcessedArgument"
     "ReverseBoolean"
     '("SplitArgument" "Number" "Token")
-    "SplitList"
+    '("SplitList" "Token")
     "TrimSpaces"
-    '("ProcessList" "List" "Functiom")
+    '("ProcessList" "List" "Function")
     ;; Access to the argument specification
     '("GetDocumentCommandArgSpec" TeX-arg-macro)
     '("GetDocumentEnvironmmentArgSpec" TeX-arg-environment)
