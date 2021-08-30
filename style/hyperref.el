@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2008, 2013-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013-2021 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -259,7 +259,7 @@
     '("Acrobatmenu" "Menu option" "Text")
     ;; The next 6 macros take Key-vals defined in
     ;; "LaTeX-hyperref-forms-options".  For an example, see
-    ;; http://mirrors.ctan.org/macros/latex/contrib/hyperref/test/testform.tex
+    ;; https://github.com/latex3/hyperref/blob/main/test/testform.tex
     '("TextField"  [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
     '("CheckBox"   [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
     '("ChoiceMenu" [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label" "Choices")
@@ -324,6 +324,17 @@
    (if (and (LaTeX-provided-package-options-member "hyperref" "dvipdfmx")
             (not (eq TeX-engine 'xetex)))
        (setq TeX-PDF-from-DVI "Dvipdfmx"))
+
+   ;; Loop over the possible options and load backref.el:
+   (let ((opts '("backref"
+                 "backref=section"
+                 "backref=slide"
+                 "backref=page"
+                 "pagebackref"
+                 "pagebackref=true")))
+     (dolist (opt opts)
+       (when (LaTeX-provided-package-options-member "hyperref" opt)
+         (TeX-run-style-hooks "backref"))))
 
    ;; Activate RefTeX reference style.
    (and LaTeX-reftex-ref-style-auto-activate
