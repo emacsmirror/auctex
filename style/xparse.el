@@ -221,7 +221,7 @@ TYPE is one of the symbols mac or env."
                     (assoc-delete-all name LaTeX-environment-list)))
             (LaTeX-add-environments `(,name
                                       LaTeX-env-args
-                                      ,@(reverse (copy-sequence args)))))
+                                      ,@(reverse args))))
         ;; Parsed macros: If we are Renew'ing or Delare'ing, we delete
         ;; the macros first from `TeX-symbol-list' before adding the
         ;; new ones.  We have to sort the value of `TeX-symbol-list'
@@ -232,18 +232,18 @@ TYPE is one of the symbols mac or env."
                 (assoc-delete-all name TeX-symbol-list))
           (when opt-star
             (setq TeX-symbol-list
-                  (assoc-delete-all (concat name "*" TeX-symbol-list))))
+                  (assoc-delete-all (concat name "*") TeX-symbol-list)))
           (when opt-token
             (setq TeX-symbol-list
-                  (assoc-delete-all (concat name opt-token TeX-symbol-list)))))
+                  (assoc-delete-all (concat name opt-token) TeX-symbol-list))))
         (TeX-add-symbols (cons name
-                               (reverse (copy-sequence args))))
+                               (reverse args)))
         (when opt-star
           (TeX-add-symbols (cons (concat name "*")
-                                 (reverse (copy-sequence args)))))
+                                 (reverse args))))
         (when opt-token
           (TeX-add-symbols (cons (concat name opt-token)
-                                 (reverse (copy-sequence args)))))))))
+                                 (reverse args))))))))
 
 (defun LaTeX-xparse-auto-prepare ()
   "Clear various `LaTeX-auto-xparse-*' variables before parsing."
