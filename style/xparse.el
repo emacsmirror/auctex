@@ -218,7 +218,8 @@ TYPE is one of the symbols mac or env."
             (when (member what '("Renew" "Declare"))
               (LaTeX-environment-list)
               (setq LaTeX-environment-list
-                    (assoc-delete-all name LaTeX-environment-list)))
+                    (assq-delete-all (car (assoc name LaTeX-environment-list))
+                                     LaTeX-environment-list)))
             (LaTeX-add-environments `(,name
                                       LaTeX-env-args
                                       ,@(reverse args))))
@@ -229,13 +230,16 @@ TYPE is one of the symbols mac or env."
         (when (member what '("Renew" "Declare"))
           (TeX-symbol-list)
           (setq TeX-symbol-list
-                (assoc-delete-all name TeX-symbol-list))
+                (assq-delete-all (car (assoc name TeX-symbol-list))
+                                 TeX-symbol-list))
           (when opt-star
             (setq TeX-symbol-list
-                  (assoc-delete-all (concat name "*") TeX-symbol-list)))
+                  (assq-delete-all (car (assoc (concat name "*") TeX-symbol-list))
+                                   TeX-symbol-list)))
           (when opt-token
             (setq TeX-symbol-list
-                  (assoc-delete-all (concat name opt-token) TeX-symbol-list))))
+                  (assq-delete-all (car (assoc (concat name opt-token) TeX-symbol-list))
+                                   TeX-symbol-list))))
         (TeX-add-symbols (cons name
                                (reverse args)))
         (when opt-star
