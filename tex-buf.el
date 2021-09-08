@@ -2815,7 +2815,10 @@ warning."
   (let* ( ;; line-string: match 1 is beginning line, match 2 is end line
          (line-string (if bad-box
                           "at lines? \\([0-9]*\\)\\(?:--\\([0-9]*\\)\\)?"
-                        "on input line \\([0-9]*\\)\\."))
+                        ;; Traditional messages say "on input line X",
+                        ;; the LaTeX3 \msg_line_context:. just reads
+                        ;; "on line X".
+                        "on \\(?:input \\)?line \\([0-9]*\\)\\."))
          ;; word-string: match 1 is the word
          (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
                         ;; Match "ref" in both "Reference `ref' on page NN
