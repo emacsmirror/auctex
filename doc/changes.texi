@@ -12,6 +12,16 @@
 
 @itemize @bullet
 @item
+Now two commands @samp{Texindex} and @samp{Texi2dvi} are available when
+you type @kbd{C-c C-c} in Texinfo mode.  The command @samp{Texindex} runs
+@command{texindex} on index files and @samp{Texi2dvi} runs
+@command{pdftexi2dvi} or @command{texi2dvi} according to the value of
+@code{TeX-PDF-mode}.
+
+So you can typeset Texinfo documents into @acronym{PDF} or @acronym{DVI}
+format from within @AUCTeX{}.
+
+@item
 @AUCTeX{}'s own help messages for @LaTeX{} errors are now shown only for
 @LaTeX{} runs.  @AUCTeX{} shows raw error/warning messages found in
 @file{.log} files for runs of formats other than @LaTeX{}, such as plain
