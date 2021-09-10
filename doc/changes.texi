@@ -131,7 +131,7 @@ relative path which would be interpreted as being relative to the master
 file in a multifile document.
 
 Note that this feature doesn't work if the document includes sub file
-placed in sub directory below the main file via @code{\include} command.
+placed in sub directory below the main file via @samp{\include} command.
 @end itemize
 
 @heading News in 12.3
