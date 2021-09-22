@@ -3564,13 +3564,6 @@ functions, see `LaTeX-fill-region-as-paragraph'."
   :group 'LaTeX-indentation
   :type 'regexp)
 
-(defcustom LaTeX-verbatim-regexp "verbatim\\*?"
-  "Regexp matching environments with indentation at col 0 for begin/end."
-  :group 'LaTeX-indentation
-  :type 'regexp)
-(make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
-                        "2014-12-19")
-
 (defcustom LaTeX-begin-regexp "begin\\b\\|\\["
   "Regexp matching macros considered begins."
   :group 'LaTeX-indentation
@@ -3850,12 +3843,12 @@ outer indentation in case of a commented line.  The symbols
            ;; environment.
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
-                               "begin *{\\("
+                               "begin *{"
                                ;; Don't give optional argument here
                                ;; because indent would be disabled
                                ;; inside comment env otherwise.
                                (LaTeX-verbatim-regexp)
-                               "\\)}"))
+                               "}"))
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
                                "end *{"
