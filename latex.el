@@ -3681,9 +3681,12 @@ Lines starting with an item is given an extra indentation of
   (delete-region (line-beginning-position) (point))
   (indent-to outer-indent))
 
-(defun LaTeX-verbatim-regexp ()
-  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'."
-  (regexp-opt (LaTeX-verbatim-environments)))
+(defun LaTeX-verbatim-regexp (&optional comment)
+  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'.
+If optional argument COMMENT is non-nil, include comment env from
+`LaTeX-comment-env-list'."
+  (regexp-opt (append (LaTeX-verbatim-environments)
+                      (if comment LaTeX-comment-env-list))))
 
 (defun LaTeX-indent-calculate (&optional force-type)
   "Return the indentation of a line of LaTeX source.
@@ -3715,9 +3718,9 @@ outer indentation in case of a commented line.  The symbols
                                     (length comment-padding)))
                (nth 1 entry)))
             ((looking-at (concat (regexp-quote TeX-esc)
-                                 "\\(begin\\|end\\){\\("
-                                 (LaTeX-verbatim-regexp)
-                                 "\\)}"))
+                                 "\\(begin\\|end\\){"
+                                 (LaTeX-verbatim-regexp t)
+                                 "}"))
              ;; \end{verbatim} must be flush left, otherwise an unwanted
              ;; empty line appears in LaTeX's output.
              0)
@@ -3848,20 +3851,23 @@ outer indentation in case of a commented line.  The symbols
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
                                "begin *{\\("
+                               ;; Don't give optional argument here
+                               ;; because indent would be disabled
+                               ;; inside comment env otherwise.
                                (LaTeX-verbatim-regexp)
                                "\\)}"))
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
-                               "end *{\\("
-                               (LaTeX-verbatim-regexp)
-                               "\\)}"))
+                               "end *{"
+                               (LaTeX-verbatim-regexp t)
+                               "}"))
            ;; If I see an \end{verbatim} in the previous line I skip
            ;; back to the preceding \begin{verbatim}.
            (save-excursion
              (if (re-search-backward (concat (regexp-quote TeX-esc)
-                                             "begin *{\\("
-                                             (LaTeX-verbatim-regexp)
-                                             "\\)}") 0 t)
+                                             "begin *{"
+                                             (LaTeX-verbatim-regexp t)
+                                             "}") 0 t)
                  (LaTeX-indent-calculate-last force-type)
                0)))
           (t (+ (LaTeX-current-indentation force-type)
