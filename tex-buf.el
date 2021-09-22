@@ -2434,8 +2434,6 @@ If REPARSE is non-nil, reparse the output log.
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
-        ;; FIXME: default-major-mode has been removed in Emacs 26.
-        (default-major-mode major-mode)
         max-index item)
 
     ;; Switch to the output buffer.
@@ -2693,6 +2691,10 @@ value is not used here."
                 (find-file
                  (expand-file-name TeX-translate-location-file
                                    (file-name-directory master))))
+          ;; Use the major mode of `TeX-command-buffer' when visiting
+          ;; the error point.
+          (if (eq major-mode (default-value 'major-mode))
+              (funcall (buffer-local-value 'major-mode command-buffer)))
           ;; Set the value of `TeX-command-buffer' in the next file
           ;; with an error to be displayed to the value it has in the
           ;; current buffer.
@@ -3141,12 +3143,8 @@ please restart TeX error overview")))
                   TeX-error-last-visited index))
           ;; Find the error and display the help.
           (with-current-buffer TeX-command-buffer
-            ;; For consistency with `TeX-parse-TeX', use the major mode of
-            ;; `TeX-command-buffer' when visiting the error point.
-            ;; FIXME: default-major-mode has been removed in Emacs 26.
-            (let ((default-major-mode major-mode))
-              ;; Find the error and display the help.
-              (apply #'TeX-find-display-help item)))
+            ;; Find the error and display the help.
+            (apply #'TeX-find-display-help item))
           ;; Return to the error overview.
           (if (TeX-error-overview-setup)
               (select-frame TeX-error-overview-frame)
