@@ -2698,8 +2698,7 @@ value is not used here."
           ;; Set the value of `TeX-command-buffer' in the next file
           ;; with an error to be displayed to the value it has in the
           ;; current buffer.
-          (with-current-buffer error-file-buffer
-            (setq-local TeX-command-buffer command-buffer))
+          (setq-local TeX-command-buffer command-buffer)
 
           ;; Find the location of the error or warning.
           (when TeX-translate-location-line
@@ -2724,16 +2723,16 @@ value is not used here."
                 (search-forward TeX-translate-location-string nil t))))))
       ;; When the file cannot be determined stay here but issue a
       ;; warning.
-      (message (concat "Could not determine file for "
-                       (cond ((equal type 'error) "error")
-                             (t "warning"))))
+      (message "Could not determine file for %s"
+               (if (eq type 'error) "error" "warning"))
       (beep))
 
     ;; Display the help.
     (cond ((eq TeX-display-help 'expert)
            (TeX-pop-to-buffer runbuf nil t)
            (goto-char error-point)
-           (TeX-pop-to-buffer error-file-buffer nil t))
+           (if error-file-buffer
+               (TeX-pop-to-buffer error-file-buffer nil t)))
           (TeX-display-help
            (TeX-help-error
             TeX-translate-location-error
@@ -2742,7 +2741,7 @@ value is not used here."
               TeX-translate-location-context)
             runbuf type))
           (t
-           (message (concat "! " TeX-translate-location-error))))))
+           (message "! %s" TeX-translate-location-error)))))
 
 (defun TeX-error (&optional store)
   "Display an error.
