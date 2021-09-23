@@ -75,6 +75,58 @@
              (insert-file-contents LaTeX-math-indent/out)
              (buffer-string)))))
 
+;; Test for flush-left type indentation.  The begin/end line of
+;; verbatim-like environments and comment-like environments (provided
+;; by comment.sty) must be flush left.
+;; We also test the indent inside these environments and after them.
+(ert-deftest LaTeX-flush-left-indent ()
+  (with-temp-buffer
+    (LaTeX-mode)
+    (let ((LaTeX-verbatim-environments
+           '("verbatim" "verbatim*" "filecontents" "filecontents*"))
+          (LaTeX-comment-env-list '("comment")))
+
+      ;; Test 1: verbatim environment
+      (insert "\
+\\begin{itemize}
+\\item abc")
+      (LaTeX-insert-environment "verbatim")
+      ;; Check indent inside verbatim env.
+      (should (= (current-column) 0))
+      ;; Check indent of verbatim env itself.
+      (should (string= "\
+\\begin{itemize}
+\\item abc
+\\begin{verbatim}
+
+\\end{verbatim}"
+                       (buffer-string)))
+      ;; Check indent after verbatim env.
+      (goto-char (point-max))
+      (newline-and-indent)
+      (should (= (current-column) 2))
+
+      ;; Test 2: comment environment
+      (erase-buffer)
+      (insert "\
+\\begin{itemize}
+\\item abc")
+      (LaTeX-insert-environment "comment")
+      ;; Check indent inside comment env.
+      (should (= (current-column) 2))
+      ;; Check indent of comment env itself.
+      (should (string= "\
+\\begin{itemize}
+\\item abc
+\\begin{comment}
+\s\s
+\\end{comment}"
+                       (buffer-string)))
+      ;; Check indent after comment env.
+      (goto-char (point-max))
+      (newline-and-indent)
+      (should (= (current-column) 2)))))
+
 ;; Test LaTeX code with math modes is indented as expected.  This has mostly to
 ;; do with the value of `LaTeX-fill-break-at-separators' and how
 ;; `LaTeX-fill-move-to-break-point' handles it.  If the test fails, try to look
