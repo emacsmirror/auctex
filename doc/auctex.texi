@@ -3637,6 +3637,21 @@ bring it to front and display the output page corresponding to the
 position of point in the source file.  @AUCTeX{} will automatically pass
 the necessary command line options to the viewer for this to happen.
 
+@vindex TeX-source-correlate-map
+@findex TeX-view-mouse
+You can also make special mouse event do forward search at the clicked
+position.  Use @code{TeX-source-correlate-map}@footnote{The keymap name is
+@code{TeX-source-correlate-map}, not @code{TeX-source-correlate-mode-map}.
+Actually, this keymap isn't implemented as minor mode map of
+@code{TeX-source-correlate-mode}, in order that its bindings don't affect
+buffers outside of @AUCTeX{}.} and @code{TeX-view-mouse} like this:
+@lisp
+(eval-after-load "tex"
+  '(define-key TeX-source-correlate-map [C-down-mouse-1] #'TeX-view-mouse))
+@end lisp
+This example binds @kbd{C-down-mouse-1}, which usually opens a concise
+menu to select buffer, to the command to do forward search.
+
 @vindex TeX-source-correlate-start-server
 Upon opening the viewer you will be asked if you want to start a server
 process (Gnuserv or Emacs server) which is necessary for inverse search.
