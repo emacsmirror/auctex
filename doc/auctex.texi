@@ -2712,7 +2712,7 @@ expression matching a header, and the second is the level of the header.
 A @samp{^} is automatically prepended to the regular expressions in the
 list, so they must match text at the beginning of the line.
 
-See @code{LaTeX-section-list} or @code{ConTeXt-INTERFACE-section-list}
+See @code{LaTeX-section-list} or @code{ConTeXt-@var{interface}-section-list}
 for existing header levels.
 @end defvar
 
@@ -4119,7 +4119,7 @@ functions and hooks.
 @vindex LaTeX-mode-hook
 @findex ams-tex-mode
 @vindex AmS-TeX-mode-hook
-@findex ConTeXt-mode
+@findex context-mode
 @vindex ConTeXt-mode-hook
 @findex texinfo-mode
 @vindex Texinfo-mode-hook

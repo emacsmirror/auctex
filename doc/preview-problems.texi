@@ -109,16 +109,16 @@ PSTricks, which Dvips would otherwise reserve no space for.
 Thanks to the work of Christoph Wedler, starting with version
 @samp{4.0h/beta} of x-symbol, the line parsing of @AUCTeX{} and
 @previewlatex{} is fully supported.  Earlier versions exhibit problems.
-However, versions before 4.2.2 will cause a drastic slowdown of
+However, versions before @samp{4.2.2} will cause a drastic slowdown of
 @previewlatex{}'s parsing pass, so we don't recommend to use versions
 earlier than that.
 
 If you wonder what x-symbol is, it is a package that transforms various
 tokens and subscripts to a more readable form while editing and offers a
 few input methods handy especially for dealing with math. Take a look at
-@uref{http://x-symbol.sourceforge.net}.
+@uref{http://x-symbol.sourceforge.net/}.
 
-x-symbol versions up to 4.5.1-beta at least require an 8bit-clean @TeX{}
+x-symbol versions up to @samp{4.5.1-beta} at least require an 8bit-clean @TeX{}
 implementation (meaning that its terminal output should not use
 @samp{^^}-started escape sequences) for cooperation with
 @previewlatex{}.  Later versions may get along without it, like

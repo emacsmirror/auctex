@@ -74,8 +74,8 @@ As of @AUCTeX{} 12.3, @code{TeX-remove-style} is no longer used by any
 other codes.
 
 @item
-Document @code{LaTeX-insert-into-commments} and
-@code{TeX-translate-location-hook}.
+Document @code{LaTeX-insert-into-commments},
+@code{TeX-translate-location-hook}, and usage of @ConTeXt{} mode.
 @end itemize
 
 @node Wishlist

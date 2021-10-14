@@ -197,7 +197,7 @@ structuring commands matched by regexp in variable
 of variable `texinfo-section-list'.
 
 If optional argument NO-SUBSECTION is set to any integer or is a
-non nil empty argument (i.e. `C-u \\[Texinfo-mark-section]'),
+non nil empty argument (i.e. `\\[universal-argument] \\[Texinfo-mark-section]'),
 then mark the current section with exclusion of any subsections.
 
 Otherwise, any included subsections are also marked along with
@@ -643,7 +643,7 @@ is assumed by default."
 Special commands:
 \\{Texinfo-mode-map}
 
-Entering Texinfo mode calls the value of `text-mode-hook'  and then the
+Entering Texinfo mode calls the value of `text-mode-hook' and then the
 value of `Texinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)

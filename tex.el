@@ -5357,7 +5357,7 @@ and can use regexps instead of syntax."
   (comment-forward n))
 
 (defun TeX-comment-padding-string ()
-  "Return  comment padding as a string.
+  "Return comment padding as a string.
 The variable `comment-padding' can hold an integer or a string.
 This function will return the appropriate string representation
 regardless of its data type."
@@ -5675,8 +5675,8 @@ If LIMIT is omitted, search till the end of the buffer.
 The search relies on `TeX-comment-start-regexp' being set
 correctly for the current mode.
 
-Set `TeX-search-forward-comment-start-defun' in order to override
-the default implementation."
+Set `TeX-search-forward-comment-start-function' in order to
+override the default implementation."
   (if TeX-search-forward-comment-start-function
       (funcall TeX-search-forward-comment-start-function limit)
     (setq limit (or limit (point-max)))
