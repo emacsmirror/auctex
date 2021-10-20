@@ -3152,7 +3152,7 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
              (puthash x style TeX-expert-macro-table))))
 
        (defun ,(intern (format "%s-filtered" list-var)) ()
-         ,(format "Return (%s) filtered depending on `TeX-complete-expert-commands'."
+         ,(format "Filter (%s) depending on `TeX-complete-expert-commands'."
                   list-var)
          (delq nil
                (mapcar
@@ -6572,7 +6572,7 @@ skipped."
      (sit-for 2))))
 
 (defun TeX-ispell-tex-arg-verb-end (&optional arg)
-  "Skip across an optional argument, ARG number of mandatory ones and verbatim content.
+  "Skip an optional argument, ARG number of mandatory ones and verbatim content.
 This function always checks if one optional argument in brackets
 is given and skips over it.  If ARG is a number, it skips over
 that many mandatory arguments in braces.  Then it checks for

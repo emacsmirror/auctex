@@ -497,7 +497,7 @@ the string \"label\" or \"ref\"."
     (TeX-argument-insert cmd optional TeX-esc)))
 
 (defun LaTeX-floatrow-arg-declare-new-floattype (optional &optional cleanup)
-  "Query and insert the first argument of \"DeclareNewFloatType\" macro from floatrow.sty.
+  "Query and insert the first argument of \"DeclareNewFloatType\" macro.
 If OPTIONAL is non-nil, insert the argument in brackets.  If
 CLEANUP in non-nil, skip the query and insert process as we are
 inside the function `LaTeX-floatrow-auto-cleanup' and process
