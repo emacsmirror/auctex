@@ -6000,8 +6000,10 @@ environments."
     ;; (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
     ;; This key is now used by Emacs for face settings.
     ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
-    (define-key map "\e\C-e"  #'LaTeX-find-matching-end)
-    (define-key map "\e\C-a"  #'LaTeX-find-matching-begin)
+    ;; We now set `beginning-of-defun-function' and
+    ;; `end-of-defun-function' instead.
+    ;; (define-key map "\e\C-e"  #'LaTeX-find-matching-end)
+    ;; (define-key map "\e\C-a"  #'LaTeX-find-matching-begin)
 
     (define-key map "\C-c\C-q\C-p" #'LaTeX-fill-paragraph)
     (define-key map "\C-c\C-q\C-r" #'LaTeX-fill-region)
@@ -6027,6 +6029,8 @@ environments."
     (define-key map "(" #'LaTeX-insert-left-brace)
     (define-key map "{" #'LaTeX-insert-left-brace)
     (define-key map "[" #'LaTeX-insert-left-brace)
+
+    (define-key map "\C-xne" #'LaTeX-narrow-to-environment)
     map)
   "Keymap used in `LaTeX-mode'.")
 
@@ -7047,6 +7051,9 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
 
+  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin
+              end-of-defun-function       #'LaTeX-find-matching-end)
+
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)
                                                 ("array" . LaTeX-item-array)
@@ -7653,8 +7660,6 @@ function would return non-nil and `(match-string 1)' would return
        #'LaTeX-imenu-create-index-function)
 
   (use-local-map LaTeX-mode-map)
-
-  (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
 
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)

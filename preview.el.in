@@ -3062,14 +3062,6 @@ pp")
        #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (unless preview-tb-icon
-    (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
-  (when preview-tb-icon
-    (define-key LaTeX-mode-map [tool-bar preview]
-      `(menu-item "Preview at point" preview-at-point
-                  :image ,preview-tb-icon
-                  :help "Preview on/off at point"
-                  :vert-only t)))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
            format-cons)
@@ -3127,6 +3119,14 @@ to add the preview functionality."
         ["Report Bug" preview-report-bug]))
     (if (eq major-mode 'latex-mode)
         (preview-mode-setup))
+    (unless preview-tb-icon
+      (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
+    (when preview-tb-icon
+      (define-key LaTeX-mode-map [tool-bar preview]
+        `(menu-item "Preview at point" preview-at-point
+                    :image ,preview-tb-icon
+                    :help "Preview on/off at point"
+                    :vert-only t)))
     (if (boundp 'desktop-buffer-misc)
         (preview-buffer-restore desktop-buffer-misc))))
 

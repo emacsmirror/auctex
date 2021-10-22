@@ -3809,8 +3809,6 @@ The algorithm is as follows:
   ;; we enter TeX mode the first time.
   (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
 
-  (define-key TeX-mode-map "\C-xng" #'TeX-narrow-to-group)
-
   ;; Minor modes
   (when TeX-source-correlate-mode
     (TeX-source-correlate-mode 1))
@@ -5024,6 +5022,8 @@ Brace insertion is only done if point is in a math construct and
 
     ;; Multifile
     (define-key map "\C-c_" #'TeX-master-file-ask)  ;*** temporary
+
+    (define-key map "\C-xng" #'TeX-narrow-to-group)
     map)
   "Keymap for common TeX and LaTeX commands.")
 
