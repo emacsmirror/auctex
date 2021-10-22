@@ -273,7 +273,7 @@ the section."
       (TeX-activate-region) )))
 
 (defun Texinfo-mark-node ()
-  "Mark the current node.  \
+  "Mark the current node.
 This is the node in which the pointer is.  It is starting at
 previous beginning of keyword `@node' and ending at next
 beginning of keyword `@node' or `@bye'."
@@ -297,7 +297,8 @@ beginning of keyword `@node' or `@bye'."
 character. Return the resulting string."
   (let ((pos 0) (map '(("comma" . ","))))
     (while (and (< pos (length
-                        node-name)) (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
+                        node-name))
+                (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
                                (cdr (assoc-string (match-string 1 node-name) map))
                                (substring node-name (match-end 0)))
@@ -416,7 +417,8 @@ each invocation."
     (insert " " l " @| " c " @| " r)))
 
 (defun Texinfo-arg-next-line (_optional &rest _args)
-  "Go to the beginning of next line if we are at the end of line. Otherwise insert an end-of-line."
+  "Go to the beginning of next line if we are at the end of line.
+Otherwise insert an end-of-line."
   (if (eolp)  (forward-line) (insert "\n")))
 
 (defun Texinfo-arg-on|off (optional &optional prompt style)

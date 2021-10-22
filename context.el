@@ -174,7 +174,8 @@
   "Calls ConTeXt-XX-project-structure where XX is the current interface.")
 
 (defun ConTeXt-project-structure (N)
-  "Insert a ConTeXt project structure where N is in index into `ConTeXt-project-structure-list'."
+  "Insert a ConTeXt project structure.
+N is in index into `ConTeXt-project-structure-list'."
   (funcall (intern(concat
                    "ConTeXt-project-"
                    (nth N ConTeXt-project-structure-list)
@@ -509,8 +510,9 @@ in your .emacs file."
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
-Insert this hook into `ConTeXt-numbered-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[ConTeXt-section]'."
+Insert this hook into `ConTeXt-numbered-section-hook' to allow
+the user to change the name of the sectioning command inserted
+with `\\[ConTeXt-section]'."
   (let ((string (completing-read
                  (concat "Select level (default " ConTeXt-name "): ")
                  ConTeXt-numbered-section-list
@@ -521,8 +523,9 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 
 (defun ConTeXt-unnumbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
-Insert this hook into `ConTeXt-unnumbered-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[ConTeXt-section]'."
+Insert this hook into `ConTeXt-unnumbered-section-hook' to allow
+the user to change the name of the sectioning command inserted
+with `\\[ConTeXt-section]'."
   (let ((string (completing-read
                  (concat "Select level (default " ConTeXt-name "): ")
                  ConTeXt-unnumbered-section-list
@@ -533,8 +536,9 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 
 (defun ConTeXt-section-title ()
   "Hook to prompt for ConTeXt section title.
-Insert this hook into `ConTeXt-(un)numbered-section-hook' to allow the user to change
-the title of the section inserted with `\\[ConTeXt-section]."
+Insert this hook into `ConTeXt-(un)numbered-section-hook' to
+allow the user to change the title of the section inserted with
+`\\[ConTeXt-section]."
   (setq ConTeXt-title (TeX-read-string "What title: ")))
 
 (defun ConTeXt-section-section ()
@@ -562,8 +566,8 @@ assumes the section already is inserted."
 
 (defun ConTeXt-section-ref ()
   "Hook to insert a reference after the sectioning command.
-Insert this hook into `ConTeXt-numbered-section-hook' to prompt for a label to be
-inserted after the sectioning command."
+Insert this hook into `ConTeXt-numbered-section-hook' to prompt
+for a label to be inserted after the sectioning command."
   (setq ConTeXt-reference
         (completing-read
          (TeX-argument-prompt t nil
@@ -860,7 +864,8 @@ An entry looks like: (\"environment\" . function)")
       (buffer-substring beg (point)))))
 
 (defun ConTeXt-last-unended-start ()
-  "Leave point at the beginning of the last `\\start...' that is unstopped looking from the current cursor."
+  "Leave point at the beginning of the last `\\start...'.
+That is unstopped looking from the current cursor."
   (while (and (re-search-backward "\\\\start[a-zA-Z]*\\|\\\\stop[a-zA-Z]*")
               (looking-at "\\\\stop[a-zA-Z]*"))
     (ConTeXt-last-unended-start)))
