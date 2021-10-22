@@ -1366,8 +1366,7 @@ called with prefix argument (@kbd{C-u}), it's the other way round.
 @c other way round" means.
 
 Note that for some macros, there are special mechanisms, e.g.@:
-@code{LaTeX-includegraphics-options-alist} and
-@code{TeX-arg-cite-note-p}.
+@code{TeX-arg-cite-note-p} and @code{LaTeX-includegraphics-options-alist}.
 @end defopt
 
 
@@ -3023,7 +3022,8 @@ following form.
 @lisp
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-                '("Foo" "foo %s" TeX-run-command t t :help "Run foo") t))
+                '("Foo" "foo %s" TeX-run-command t t :help "Run foo")
+                t))
 @end lisp
 
 As mentioned before, @AUCTeX{} will try to guess what command you want
@@ -3647,7 +3647,8 @@ Actually, this keymap isn't implemented as minor mode map of
 buffers outside of @AUCTeX{}.} and @code{TeX-view-mouse} like this:
 @lisp
 (eval-after-load "tex"
-  '(define-key TeX-source-correlate-map [C-down-mouse-1] #'TeX-view-mouse))
+  '(define-key TeX-source-correlate-map [C-down-mouse-1]
+               #'TeX-view-mouse))
 @end lisp
 This example binds @kbd{C-down-mouse-1}, which usually opens a concise
 menu to select buffer, to the command to do forward search.
@@ -5662,7 +5663,7 @@ packages.  Each element is a cons cell @code{(@var{package}
 . @var{option-list})}.  For example, its value will be
 @lisp
   (("babel" . ("german"))
-   ("geometry" . ("a4paper" "top=2cm" "bottom=2cm" "left=2.5cm" "right=2.5cm"))
+   ("geometry" . ("a4paper" "top=2cm" "left=2.5cm" "right=2.5cm"))
    ...)
 @end lisp
 @end defvar
@@ -5715,7 +5716,8 @@ List of optional arguments available for the package.
 Here is an excerption from @samp{acronym.el}:
 @lisp
 (defvar LaTeX-acronym-package-options
-  '("footnote" "nohyperlinks" "printonlyused" "withpage" "smaller" "dua" "nolist")
+  '("footnote" "nohyperlinks" "printonlyused" "withpage"
+    "smaller" "dua" "nolist")
   "Package options for the acronym package.")
 @end lisp
 
