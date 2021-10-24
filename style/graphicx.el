@@ -62,7 +62,8 @@
     ("clip"  ("true" "false"))
     ("draft" ("true" "false"))
     ("quiet")
-    ("interpolate" ("true" "false")))
+    ("interpolate" ("true" "false"))
+    ("alt"))
   "Key=value options for graphicx macros.")
 
 (defvar LaTeX-includegraphics-dvips-extensions
