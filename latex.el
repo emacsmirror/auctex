@@ -1524,7 +1524,7 @@ The number is calculated from REGEXP and FUNC.
 Example 1:
 Consider the case that the current environment begins with
 \\begin{array}[t]{|lcr|}
-.  REGEXP must be chosen to match \"[t]\", i.e., the text between just
+.  REGEXP must be chosen to match \"[t]\", that is, the text between just
 after \"\\begin{array}\" and just before \"{|lcr|}\", which encloses
 the column specification.  FUNC must return the number of ampersands to
 be inserted, which is 2 since this example specifies three columns.
@@ -1818,7 +1818,7 @@ The input string may include LaTeX comments and newlines."
 For each element, the CAR is the name of the class, the CDR is
 the list of options provided to it.
 
-E.g., its value will be
+For example, its value will be
   \(\(\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\"\)
    ...\)
 See also `LaTeX-provided-package-options'.")
@@ -1841,7 +1841,7 @@ Return first found class option matching REGEXP, or nil if not found."
 For each element, the CAR is the name of the package, the CDR is
 the list of options provided to it.
 
-E.g., its value will be
+For example, its value will be
   \(\(\"babel\" \"german\"\)
    \(\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\"\)
    ...\)
@@ -2037,13 +2037,14 @@ argument, otherwise as a mandatory one."
   "Prompt for a label completing with known labels and return it.
 This function always returns a string depending on user input:
 the returned value can be an empty string \"\", the value of
-`TeX-read-label-prefix' if present (e.g. \"fig:\") or a complete
-label input (e.g. \"fig:foo\").  If OPTIONAL is non-nil, indicate
-optional as part of prompt in minibuffer.  Use PROMPT as the
-prompt string.  If DEFINITION is non-nil, add the chosen label to
-the list of defined labels.  `TeX-read-label-prefix' is used as
-initial input for the label.  Also check if label is already
-defined and ask user for confirmation before proceeding."
+`TeX-read-label-prefix' if present (for example, \"fig:\") or a
+complete label input (for example, \"fig:foo\").  If OPTIONAL is
+non-nil, indicate optional as part of prompt in minibuffer.  Use
+PROMPT as the prompt string.  If DEFINITION is non-nil, add the
+chosen label to the list of defined labels.
+`TeX-read-label-prefix' is used as initial input for the label.
+Also check if label is already defined and ask user for
+confirmation before proceeding."
   (let (label valid)
     (while (not valid)
       (setq label
@@ -3375,7 +3376,7 @@ buffer-local keyword additions via
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-environments-local nil
-  "Buffer-local variable for inline verbatim environments.
+  "Buffer-local variable for verbatim environments.
 
 Style files should add constructs to this variable and not to
 `LaTeX-verbatim-environments'.
@@ -3594,8 +3595,8 @@ This means, we just count the LaTeX tokens \\left, \\right, \\begin,
 and \\end up to the first occurence of text matching this regexp.
 Thus, the default \"%\" stops counting the tokens at a comment.  A
 value of \"%[^>]\" would allow you to alter the indentation with
-comments, e.g. with comment `%> \\begin'.
-Lines which start with `%' are not considered at all, regardless if this
+comments, for example with comment `%> \\begin'.
+Lines which start with `%' are not considered at all, regardless of this
 value."
   :group 'LaTeX-indentation
   :type 'regexp)
@@ -3928,7 +3929,7 @@ outer indentation in case of a commented line.  The symbols
 If it is commented and comments are formatted syntax-aware move
 point to the first non-whitespace character after the comment
 character(s), but only if `this-command' is not a newline
-command, i.e., `TeX-newline' or the value of
+command, that is, `TeX-newline' or the value of
 `TeX-newline-function'.  The optional argument FORCE-TYPE can be
 used to force point being moved to the inner or outer indentation
 in case of a commented line.  The symbols 'inner and 'outer are
@@ -4473,7 +4474,7 @@ space does not end a sentence, so don't break a line there."
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like `fill-paragraph', but handle LaTeX comments.
 If any of the current line is a comment, fill the comment or the
-paragraph of it that point is in.  Code comments, i.e. comments
+paragraph of it that point is in.  Code comments, that is, comments
 with uncommented code preceding them in the same line, will not
 be filled unless the cursor is placed on the line with the
 code comment.
@@ -4841,7 +4842,7 @@ value of NO-SUBSECTIONS."
 (defun LaTeX-paragraph-commands-regexp-make ()
   "Return a regular expression matching defined paragraph commands.
 Regexp part containing TeX control words is postfixed with `\\b'
-to avoid ambiguities (e.g. \\par vs. \\parencite)."
+to avoid ambiguities (for example, \\par vs. \\parencite)."
   (let (cmds symbs)
     (dolist (mac (append LaTeX-paragraph-commands
                          LaTeX-paragraph-commands-internal))
@@ -5684,8 +5685,8 @@ Each entry should be a list with up to four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
-in math minor mode.  KEY can be a character (e.g. ?o) for a
-single stroke or a string (e.g. \"o a\") for a multi-stroke
+in math minor mode.  KEY can be a character (for example ?o) for a
+single stroke or a string (for example \"o a\") for a multi-stroke
 binding.  If KEY is nil, the symbol has no associated
 keystroke (it is available in the menu, though).  Note that
 predefined keys in `LaTeX-math-default' cannot be overridden in
@@ -5698,9 +5699,9 @@ or a function to be called.  The macro must be given without the
 leading backslash.
 
 The third element MENU is the name of the submenu where the
-command should be added.  MENU can be either a string
-\(e.g. \"greek\"), a list (e.g. (\"AMS\" \"Delimiters\")) or nil.
-If MENU is nil, no menu item will be created.
+command should be added.  MENU can be either a string (for
+example \"greek\"), a list (for example (\"AMS\" \"Delimiters\"))
+or nil.  If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.
@@ -6827,14 +6828,14 @@ runs the hooks in `docTeX-mode-hook'."
   TeX-clean-default-intermediate-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom docTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -6844,14 +6845,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
           '("\\.acn" "\\.acr" "\\.alg" "\\.glg" "\\.ist"))
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom LaTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -7575,7 +7576,7 @@ function would return non-nil and `(match-string 1)' would return
     (cons (point) (current-column))))
 
 (defun LaTeX-hanging-ampersand-position ()
-  "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
+  "Return indent column for a hanging ampersand (that is, ^\\s-*&)."
   (cl-destructuring-bind
       (beg-pos . beg-col)
       (LaTeX-env-beginning-pos-col)

@@ -1696,7 +1696,7 @@ as a string.")
 
 (defvar TeX-source-correlate-start-server-flag nil
   "If non-nil, `TeX-source-correlate-start-server-maybe' will start a server.
-Code related to features requiring a server, e.g. for inverse
+Code related to features requiring a server, for example, for inverse
 search, can set the variable.")
 
 (defun TeX-source-correlate-gnuserv-p ()
@@ -2823,7 +2823,7 @@ Supported values are described below:
 
 Purpose is notably to prevent non-Texinfo hooks to be run in
 Texinfo files, due to ambiguous style name, as this may cause bad
-side effect e.g. on variable `TeX-font-list'.")
+side effect for example on variable `TeX-font-list'.")
 
 (defcustom TeX-byte-compile nil
   "Not nil means try to byte compile auto files before loading."
@@ -3302,7 +3302,7 @@ optional arguments.  If set to `mandatory-args-only',
 When `TeX-insert-macro' is called with \\[universal-argument], it's the other
 way round.
 
-Note that for some macros, there are special mechanisms, see e.g.
+Note that for some macros, there are special mechanisms, see for example
 `LaTeX-includegraphics-options-alist' and `TeX-arg-cite-note-p'."
   :group 'TeX-macro
   :type '(choice (const mandatory-args-only)
@@ -4755,7 +4755,7 @@ to look backward for."
    (TeX-master-directory)))
 
 (defun TeX-near-bobp ()
-  "Return t iff there's nothing but whitespace between (bob) and (point)."
+  "Return t if there's nothing but whitespace between (bob) and (point)."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
@@ -5274,7 +5274,7 @@ whitespace as well."
 
 (defun TeX-in-line-comment ()
   "Return non-nil if point is in a line comment.
-A line comment is a comment starting in column one, i.e. there is
+A line comment is a comment starting in column one, that is, there is
 no whitespace before the comment sign."
   (save-excursion
     (forward-line 0)
@@ -5475,7 +5475,7 @@ do not search further than this position in the buffer."
 
 (defun TeX-find-closing-brace (&optional depth limit)
   "Return the position of the closing brace in a TeX group.
-The function assumes that point is inside the group, i.e. after
+The function assumes that point is inside the group, that is, after
 an opening brace.  With optional DEPTH>=1, find that outer level.
 If LIMIT is non-nil, do not search further down than this
 position in the buffer."
@@ -5483,7 +5483,7 @@ position in the buffer."
 
 (defun TeX-find-opening-brace (&optional depth limit)
   "Return the position of the opening brace in a TeX group.
-The function assumes that point is inside the group, i.e. before
+The function assumes that point is inside the group, that is, before
 a closing brace.  With optional DEPTH>=1, find that outer level.
 If LIMIT is non-nil, do not search further up than this position
 in the buffer."
@@ -6390,7 +6390,7 @@ The second is a list of modes the backend should be activated in.
 
 The third is a function returning a list of documents available
 to the backend.  It should return nil if the backend is not
-available, e.g. if a required executable is not present on the
+available, for example if a required executable is not present on the
 system in question.
 
 The fourth is a function for displaying the documentation.  The
@@ -6636,7 +6636,7 @@ error."
      (lambda () (null TeX-electric-math)))
 
 (defun TeX--list-of-string-p (lst)
-  "Return non-nil iff `LST' is a list of strings.
+  "Return non-nil if LST is a list of strings.
 Used as function for validating a variable's `safe-local-variable' property."
   (and (listp lst)
        (let ((all-strings t))

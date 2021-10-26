@@ -197,7 +197,7 @@ structuring commands matched by regexp in variable
 of variable `texinfo-section-list'.
 
 If optional argument NO-SUBSECTION is set to any integer or is a
-non nil empty argument (i.e. `\\[universal-argument] \\[Texinfo-mark-section]'),
+non nil empty argument (that is, `\\[universal-argument] \\[Texinfo-mark-section]'),
 then mark the current section with exclusion of any subsections.
 
 Otherwise, any included subsections are also marked along with
@@ -873,7 +873,7 @@ value of `Texinfo-mode-hook'."
   '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -883,7 +883,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
     "_toc\\.html" "_fot\\.html" "_abt\\.html" "_[0-9]+\\.html" "_l2h_img.+")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 

@@ -193,7 +193,7 @@ if present.
 
 If a prefix argument OVERRIDE-CONFIRM is given, prompting will
 ignore the prompting flag from `TeX-command-list' and instead
-will prompt iff the prefix is positive.
+will prompt only if the prefix is positive.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The document's header is all
@@ -1513,7 +1513,7 @@ errors or warnings to show."
 
 (defun TeX-TeX-sentinel-check (process name)
   "Cleanup TeX output buffer after running TeX.
-Return nil ifs no errors were found."
+Return nil only if no errors were found."
   (save-excursion
     (goto-char (point-max))
     (cond
@@ -1874,7 +1874,7 @@ defined."
 
 (defun TeX-process-set-variable (name symbol value)
   "Set the variable SYMBOL in the process buffer to VALUE.
-Return nil iff no process buffer exist."
+Return nil only if no process buffer exists."
   (let ((buffer (TeX-process-buffer name)))
     (if buffer
         (with-current-buffer buffer
@@ -2019,7 +2019,7 @@ command."
 ;;; Active Process
 
 (defvar TeX-current-process-region-p nil
-  "This variable is set to t iff the last TeX command is on a region.")
+  "Non-nil means that the last TeX command is on a region.")
 
 (defun TeX-active-process ()
   "Return the active process for the current buffer."
@@ -2354,10 +2354,10 @@ depend on it being positive instead of the entry in
 (defun TeX-command-run-all (arg)
   "Compile the current document until an error occurs or it is finished.
 With a prefix ARG (`\\[universal-argument] \\[TeX-command-run-all]'),
-compile the current region instead, e.g, call
+compile the current region instead, that is, call
 `TeX-command-run-all-region'.  With multiple prefix
 arguments (`\\[universal-argument] \\[universal-argument] \\[TeX-command-run-all]'),
-compile the current section instead, e.g. call
+compile the current section instead, that is, call
 `LaTeX-command-run-all-section'."
   (interactive "P")
   (cond
@@ -2518,7 +2518,7 @@ error or warning.  This is the structure of each element:
  *  5: context, to be displayed in the help window
  *  6: string to search in the buffer, in order to find location
        of the error or warning
- *  7: for warnings referring to multiple lines (e.g. bad boxes),
+ *  7: for warnings referring to multiple lines (for exapmle, bad boxes),
        the last line mentioned in the warning message
  *  8: t if it is a bad-box, nil otherwise
  *  9: value of `TeX-error-point'
@@ -2969,7 +2969,7 @@ Major modes of AUCTeX can set its own catalogue as buffer local
 value of this variable, as LaTeX mode does.
 Style files of AUCTeX can also add their own entries to buffer local
 value of this variable to provide their own help messages.
-It must end with a fallback entry that matches any error, e.g.
+It must end with a fallback entry that matches any error, for example
 \(\".*\" . \"No help available\")")
 
 ;;; - Help

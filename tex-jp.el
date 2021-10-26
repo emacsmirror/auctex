@@ -224,7 +224,7 @@ systems are determined by their values regardless of the kanji option."
           '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
 (defcustom japanese-TeX-error-messages t
-  "If non-nil, explain TeX error messages in Japanese."
+  "If non-nil, explain LaTeX error messages in Japanese."
   :type 'boolean)
 
 (defcustom TeX-japanese-process-input-coding-system nil

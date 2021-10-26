@@ -450,7 +450,7 @@ This functions checks the arguments of \\tcbuselibrary and the
 name of libraries given in the optional argument of \\usepackage
 call for tcolorbox and runs the style hook for them.  The file
 for style must have the prefix \"tcolorboxlib-\" in the name,
-e.g. \"tcolorboxlib-raster.el\"."
+for example \"tcolorboxlib-raster.el\"."
   (when (LaTeX-tcolorbox-tcbuselibrary-list)
     (let (libs)
       (dolist (x (LaTeX-tcolorbox-tcbuselibrary-list))

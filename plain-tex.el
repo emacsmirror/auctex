@@ -254,14 +254,14 @@ of `plain-TeX-mode-hook'."
   TeX-clean-default-intermediate-suffixes
   "List of regexps matching suffixes of intermediate files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom plain-TeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of output files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -315,14 +315,14 @@ of `AmS-TeX-mode-hook'."
   TeX-clean-default-intermediate-suffixes
   "List of regexps matching suffixes of intermediate files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom AmSTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of output files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 

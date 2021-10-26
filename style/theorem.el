@@ -87,7 +87,7 @@ for label.  AUCTeX users should add ENVIRONMENT to
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
 
 RefTeX users should customize or add ENVIRONMENT to
-`LaTeX-label-alist' and `reftex-label-alist', e.g.
+`LaTeX-label-alist' and `reftex-label-alist', for example
 
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
   (add-to-list \\='reftex-label-alist

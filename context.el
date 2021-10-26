@@ -1409,7 +1409,7 @@ else.  There might be text before point."
 (defvar ConTeXt-project-structure-menu-name "Project Structure")
 
 (defun ConTeXt-project-structure-menu (project-structure)
-  "Insert PROJECT STRUCTURE from menu."
+  "Insert PROJECT-STRUCTURE from menu."
   (ConTeXt-project-structure
    (let ((l ConTeXt-project-structure-list))
      (- (length l) (length (member project-structure l))))))
@@ -1424,7 +1424,7 @@ else.  There might be text before point."
 (defvar ConTeXt-section-block-menu-name "Section Block")
 
 (defun ConTeXt-section-block-menu (section-block)
-  "Insert SECTION BLOCK from menu."
+  "Insert SECTION-BLOCK from menu."
   (ConTeXt-section-block section-block))
 
 (defun ConTeXt-section-block-menu-entry (entry)
@@ -1698,7 +1698,7 @@ file, or any mode derived thereof. See variable
     "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -1706,7 +1706,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   '("\\.dvi" "\\.pdf" "\\.ps")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 

@@ -385,9 +385,9 @@ or a function to be called.  The macro must be given without the
 leading backslash.
 
 The third element MENU is the name of the submenu where the
-command should be added.  MENU can be either a string
-\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
-nil.  If MENU is nil, no menu item will be created.
+command should be added.  MENU can be either a string (for
+example \"greek\"), a list (for example (\"AMS\" \"Delimiters\"))
+or nil.  If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.

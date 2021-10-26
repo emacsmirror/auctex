@@ -123,7 +123,7 @@ Customize or reset the mode."
   "Internal list of display strings and macros to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
-respectively, i.e. contents of both `TeX-fold-macro-spec-list'
+respectively, that is, contents of both `TeX-fold-macro-spec-list'
 and <mode-prefix>-fold-macro-spec-list.")
 (make-variable-buffer-local 'TeX-fold-macro-spec-list-internal)
 
@@ -138,7 +138,7 @@ and <mode-prefix>-fold-macro-spec-list.")
   "Internal list of display strings and environments to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
-respectively, i.e. contents of both `TeX-fold-env-spec-list'
+respectively, that is, contents of both `TeX-fold-env-spec-list'
 and <mode-prefix>-fold-env-spec-list.")
 (make-variable-buffer-local 'TeX-fold-env-spec-list-internal)
 
@@ -152,7 +152,7 @@ and <mode-prefix>-fold-env-spec-list.")
   "Internal list of display strings and math macros to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
-respectively, i.e. contents of both `TeX-fold-math-spec-list'
+respectively, that is, contents of both `TeX-fold-math-spec-list'
 and <mode-prefix>-fold-math-spec-list.")
 (make-variable-buffer-local 'TeX-fold-math-spec-list-internal)
 
