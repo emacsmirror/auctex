@@ -3097,12 +3097,21 @@ If OPTIONAL is non-nil, indicate in the prompt that we are
 reading an optional argument.  KEY-VAL-ALIST is an alist.  The
 car of each element should be a string representing a key and the
 optional cdr should be a list with strings to be used as values
-for the key.  Use PROMPT as the prompt string."
+for the key.  KEY-VAL-ALIST can be a symbol or a function call
+returning an alist.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
-   (if (symbolp key-val-alist)
-       (eval key-val-alist t)
-     key-val-alist)))
+   (cond ((and (symbolp key-val-alist)
+	       (boundp key-val-alist))
+	  (symbol-value key-val-alist))
+	 ((and (listp key-val-alist)
+	       (symbolp (car key-val-alist))
+	       (fboundp (car key-val-alist)))
+	  (let ((head (car key-val-alist))
+		(tail (cdr key-val-alist)))
+	    (apply head tail)))
+	 (t
+	  key-val-alist))))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.

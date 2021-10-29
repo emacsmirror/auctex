@@ -40,6 +40,18 @@ uses these functions, use @code{split-string} and @code{assoc-string}
 instead.
 
 @item
+The function @code{TeX-read-key-val} now accepts a function call as second
+argument.  This change should help @AUCTeX{} style writers who use
+@code{TeX-arg-key-val} and have to deal with dynamic key-values.  Example
+of usage:
+@lisp
+(TeX-add-style-hook "foo"
+ (lambda ()
+   (TeX-add-symbols
+    '("bar" (TeX-arg-key-val (function-returning-key-val))))))
+@end lisp
+
+@item
 Since @AUCTeX{} 12.2, @kbd{C-x C-w} accidentally disabled the parse on
 save in that buffer, even when you enabled @code{TeX-auto-save} option.
 This bug was fixed.
