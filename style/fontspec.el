@@ -1,6 +1,6 @@
 ;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2017, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -44,7 +44,6 @@
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
-(declare-function TeX-check-engine-add-engines "tex-buf" (&rest engines))
 
 (defvar LaTeX-fontspec-font-features
   '(;; 5 Font selection
@@ -257,8 +256,7 @@ to retrieve the list of fonts."
 (TeX-add-style-hook
  "fontspec"
  (lambda ()
-   (unless (featurep 'tex-buf)
-     (require 'tex-buf))
+
    (TeX-check-engine-add-engines 'luatex 'xetex)
    (TeX-run-style-hooks "expl3" "xparse")
 

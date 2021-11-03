@@ -286,10 +286,11 @@
     '("useshorthands"  "Character")
     '("useshorthands*" "Character")
     '("defineshorthand"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt t nil "Language(s)")
-         (LaTeX-babel-active-languages)) ""]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt t nil "Language(s)")
+                     (LaTeX-babel-active-languages))
+                    ""]
       t nil)
     '("aliasshorthand"   "Original" "Alias")
     '("languageshorthands" TeX-arg-babel-lang)
@@ -305,32 +306,30 @@
 
     ;; 1.14 Selecting fonts
     '("babelfont"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt t nil "Language(s)")
-         LaTeX-babel-language-list)
-        "," ]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt t nil "Language(s)")
+                     LaTeX-babel-language-list)
+                    ","]
       (TeX-arg-eval let ((fontfam (completing-read
                                    (TeX-argument-prompt nil nil "font family")
                                    '("rm" "sf" "tt"))))
-                    ;; Make sure `tex-buf.el' is also loaded otherwise
-                    ;; `TeX-check-engine-add-engines' is not defined.
-                    ;; Then load `fontspec.el' and make sure the
-                    ;; key-vals are up to date.
+                    ;; Run `TeX-check-engine-add-engines' and then
+                    ;; load `fontspec.el' if not already loaded and
+                    ;; make sure the key-vals are up to date.
                     (unless (member "fontspec" (TeX-style-list))
-                      (require 'tex-buf)
                       (TeX-check-engine-add-engines 'luatex 'xetex)
                       (TeX-run-style-hooks "fontspec")
                       (LaTeX-fontspec-auto-cleanup))
                     (LaTeX-add-babel-babelfonts fontfam)
                     (LaTeX-babel-cleanup-babelfont)
                     (format "%s" fontfam))
-      [ TeX-arg-key-val LaTeX-fontspec-font-features-local]
+      [TeX-arg-key-val LaTeX-fontspec-font-features-local]
       LaTeX-fontspec-arg-font)
 
     ;; 1.16 Creating a language
     '("babelprovide"
-      [ TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options ]
+      [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Language")
                     LaTeX-babel-language-list))
@@ -350,11 +349,11 @@
                     '("soft" "hard" "repeat" "empty")))
 
     '("babelhyphenation"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt nil nil "Language(s)")
-         LaTeX-babel-language-list)
-        "," ]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt nil nil "Language(s)")
+                     LaTeX-babel-language-list)
+                    ","]
       t)
 
     ;; 1.20 Selecting scripts

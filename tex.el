@@ -702,6 +702,7 @@ sure \"%p\" is the first entry."
 (autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
 (autoload 'LaTeX-command-section "tex-buf" nil t)
 (autoload 'TeX-active-master "tex-buf")
+(autoload 'TeX-check-engine-add-engines "tex-buf")
 (autoload 'TeX-command "tex-buf")
 (autoload 'TeX-command-buffer "tex-buf" nil t)
 (autoload 'TeX-command-expand "tex-buf")
