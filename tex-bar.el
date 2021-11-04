@@ -211,7 +211,6 @@ format of the argument MEANING-ALIST in the mentioned function."
 (defun TeX-install-toolbar ()
   "Install toolbar buttons for TeX mode."
   (interactive)
-  (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
                (expand-file-name "images" TeX-data-directory))
   (add-hook 'TeX-PDF-mode-hook #'toolbarx-refresh nil t)
@@ -259,10 +258,6 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
                     (const latex-symbols-experimental))
                (repeat (choice (symbol :tag "Label")
                                (sexp :tag "General element"))))
-  :group 'TeX-tool-bar)
-
-(defgroup TeX-tool-bar-button-definitions nil
-  "Collections of button definitions."
   :group 'TeX-tool-bar)
 
 (defcustom TeX-bar-LaTeX-all-button-alists
@@ -356,7 +351,6 @@ format of the argument MEANING-ALIST in the mentioned function."
 (defun LaTeX-install-toolbar ()
   "Install toolbar buttons for LaTeX mode."
   (interactive)
-  (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
                (expand-file-name "images" TeX-data-directory))
   (add-hook 'TeX-PDF-mode-hook #'toolbarx-refresh nil t)
