@@ -285,7 +285,6 @@ at bottom if LINE is nil."
 ;; far down (i.e. further down than their first use), so we have to pre-declare
 ;; them here to explain it to the compiler.
 ;; We should move those vars's definitions earlier instead!
-(defvar TeX-current-process-region-p)
 (defvar TeX-save-query)
 (defvar TeX-parse-function)
 (defvar TeX-sentinel-function)
@@ -487,6 +486,11 @@ Do you want to select one of these engines? "
   :group 'TeX-command
   :type 'integer)
 
+(defvar TeX-current-process-region-p nil
+  "Non-nil means that the last TeX command is on a region.")
+(defvar-local TeX--this-process-region-flag nil
+  "Per process value of `TeX-current-process-region-p'.")
+
 (defun TeX-command (name file-fn &optional override-confirm)
   "Run command NAME on the file returned by calling FILE-FN.
 
@@ -556,7 +560,9 @@ remember to add /Library/TeX/texbin/ to your PATH"
     ;; Now start the process
     (let ((file (funcall file-fn)))
       (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
-      (funcall hook name command file))))
+      (funcall hook name command file)
+      (TeX-process-set-variable file 'TeX--this-process-region-flag
+                                TeX-current-process-region-p))))
 
 (defun TeX-command-expand (command &optional list)
   "Expand COMMAND for `TeX-active-master' as described in LIST.
@@ -1453,8 +1459,8 @@ Insert MSG with some additional information."
              (TeX-command-mode-line process)
              (setq TeX-command-next TeX-command-Show)
              (goto-char (point-min))
-             (apply TeX-sentinel-function process name nil)
-
+             (let ((TeX-current-process-region-p TeX--this-process-region-flag))
+               (funcall TeX-sentinel-function process name))
 
              ;; If buffer and mode line will show that the process
              ;; is dead, we can delete it now.  Otherwise it
@@ -2027,9 +2033,6 @@ command."
 
 
 ;;; Active Process
-
-(defvar TeX-current-process-region-p nil
-  "Non-nil means that the last TeX command is on a region.")
 
 (defun TeX-active-process ()
   "Return the active process for the current buffer."
