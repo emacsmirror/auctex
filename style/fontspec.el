@@ -1,4 +1,4 @@
-;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.6a.  -*- lexical-binding: t; -*-
+;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.7i.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013--2021 Free Software Foundation, Inc.
 
@@ -25,12 +25,12 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fontspec.sty' version 2.6a.  Starting
+;; This file adds support for `fontspec.sty' version 2.7i.  Starting
 ;; with `fontspec.sty' v2.4, the order of mandatory font names and
 ;; optional font features in related macros has changed, i.e. optional
 ;; argument comes after the mandatory one.  This change is now (April
 ;; 2017) implemented in this file.  Fontification support retains
-;; backward compatibilty.
+;; backward compatibility.
 
 ;;; Code:
 
@@ -46,35 +46,37 @@
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
 (defvar LaTeX-fontspec-font-features
-  '(;; 5 Font selection
+  '(;; I General font selection
     ("Extension" (".otf" ".ttf" ".ttc" ".dfont"))
     ("Path")
-    ;; 6.1 More control over font shape selection
+    ;; I 4.1 More control over font shape selection
+    ("UprightFont")
     ("BoldFont")
     ("ItalicFont")
     ("BoldItalicFont")
     ("SlantedFont")
     ("BoldSlantedFont")
     ("SmallCapsFont")
-    ;; 6.2 Specifically choosing the NFSS family
+    ;; I 4.2 Specifically choosing the NFSS family
     ("NFSSFamily")
+    ;; I 4.3 Choosing additional NFSS font faces
     ("FontFace")
-    ;; 11 Different features for different font shapes
-    ("UprightFeatures")
+    ;; III 3. Different features for different font shapes
     ("BoldFeatures")
     ("ItalicFeatures")
     ("BoldItalicFeatures")
     ("SlantedFeatures")
     ("BoldSlantedFeatures")
     ("SmallCapsFeatures")
-    ;; 13 Different features for different font sizes
+    ("UprightFeatures")
+    ;; III 4. Different features for different font sizes
     ("SizeFeatures")
-    ;; 14 Font independent options
+    ;; III 6. Font independent options
     ("Color")
     ("Scale" ("MatchLowercase" "MatchUppercase"))
     ("WordSpace")
     ("PunctuationSpace")
-    ("HyphenChar")
+    ("HyphenChar" ("None"))
     ("OpticalSize")
     ("AutoFakeBold")
     ("AutoFakeSlant")
@@ -82,74 +84,97 @@
     ("FakeStretch")
     ("FakeBold")
     ("LetterSpace")
-    ;; 16 OpenType options
-    ("Ligatures" ("Required"      "RequiredOff"
-                  "Common"        "CommonOff"
-                  "Contextual"    "ContextualOff"
-                  "Rare"          "RareOff"
-                  "Discretionary" "DiscretionaryOff"
-                  "Historic"      "HistoricOff"
-                  "TeX"
-                  "ResetAll"))
-    ("Letters" ("Uppercase"           "UppercaseOff"
-                "SmallCaps"           "SmallCapsOff"
-                "PetiteCaps"          "PetiteCapsOff"
-                "UppercaseSmallCaps"  "UppercaseSmallCapsOff"
-                "UppercasePetiteCaps" "UppercasePetiteCapsOff"
-                "Unicase"             "UnicaseOff"
-                "ResetAll"))
-    ("Numbers" ("Uppercase"    "UppercaseOff"
-                "Lowercase"    "LowercaseOff"
-                "Lining"       "LiningOff"
-                "OldStyle"     "OldStyleOff"
-                "Proportional" "ProportionalOff"
-                "Monospaced"   "MonospacedOff"
-                "SlashedZero"  "SlashedZeroOff"
-                "Arabic"       "ArabicOff"
-                "ResetAll"))
-    ("Contextuals" ("Swash"       "SwashOff"
-                    "Alternate"   "AlternateOff"
-                    "WordInitial" "WordInitialOff"
-                    "WordFinal"   "WordFinalOff"
-                    "LineFinal"   "LineFinalOff"
-                    "Inner"       "InnerOff"
-                    "ResetAll"))
-    ("VerticalPosition" ("Superior"           "SuperiorOff"
-                         "Inferior"           "InferiorOff"
-                         "Numerator"          "NumeratorOff"
-                         "Denominator"        "DenominatorOff"
-                         "ScientificInferior" "ScientificInferiorOff"
-                         "Ordinal"            "OrdinalOff"
-                         "ResetAll"))
-    ("Fraction" ("On" "Off" "Reset" "Alternate" "AlternateOff" "ResetAll"))
-    ("StylisticSet")
-    ("CharacterVariant")
+    ;; IV.3 OpenType options
+    ;; IV.3.1.1 Alternates.  The next 2 are synonyms:
     ("Alternate" ("Random"))
-    ("Style" ("Alternate"      "AlternateOff"
-              "Italic"         "ItalicOff"
-              "Ruby"           "RubyOff"
-              "Swash"          "SwashOff"
-              "Cursive"        "CursiveOff"
-              "Historic"       "HistoricOff"
-              "TitlingCaps"    "TitlingCapsOff"
-              "HorizontalKana" "HorizontalKanaOff"
-              "VerticalKana"   "VerticalKanaOff"
-              "ResetAll"))
-    ("Diacritics" ("MarkToBase" "MarkToBaseOff"
-                   "MarkToMark" "MarkToMarkOff"
-                   "AboveBase"  "AboveBaseOff"
-                   "BelowBase"  "BelowBaseOff"
+    ("StylisticAlternate" ("Random"))
+    ;; IV.3.1.2 Character Variants
+    ("CharacterVariant")
+    ;; IV 3.1.3 Contextuals
+    ("Contextuals" ("Swash"       "SwashOff"       "SwashReset"
+                    "Alternate"   "AlternateOff"   "AlternateReset"
+                    "WordInitial" "WordInitialOff" "WordInitialReset"
+                    "WordFinal"   "WordFinalOff"   "WordFinalReset"
+                    "LineFinal"   "LineFinalOff"   "LineFinal"
+                    "Inner"       "InnerOff"       "InnerReset"
+                    "ResetAll"))
+    ;; IV 3.1.4 Diacritics
+    ("Diacritics" ("MarkToBase" "MarkToBaseOff" "MarkToBaseReset"
+                   "MarkToMark" "MarkToMarkOff" "MarkToMarkReset"
+                   "AboveBase"  "AboveBaseOff"  "AboveBaseReset"
+                   "BelowBase"  "BelowBaseOff"  "BelowBaseReset"
                    "ResetAll"))
-    ("Kerning" ("Uppercase" "UppercaseOff" "On" "Off" "Reset" "ResetAll"))
-    ("CharacterWidth" ("Proportional"          "ProportionalOff"
-                       "Full"                  "FullOff"
-                       "Half"                  "HalfOff"
-                       "Third"                 "ThirdOff"
-                       "Quarter"               "QuarterOff"
-                       "AlternateProportional" "AlternateProportionalOff"
-                       "AlternateHalf"         "AlternateHalfOff"
-                       "ResetAll"))
+    ;; IV 3.1.5 Fractions
+    ("Fractions" ("On" "Off" "Reset" "Alternate"
+                  "AlternateOff" "AlternateReset" "ResetAll"))
+    ;; IV 3.1.6 Kerning
+    ("Kerning" ("On" "Off" "Reset" "ResetAll"
+                "Uppercase" "UppercaseOff" "UppercaseReset"))
+    ;; IV 3.1.7 Letters
+    ("Letters" ("SmallCaps"           "SmallCapsOff"           "SmallCapsReset"
+                "PetiteCaps"          "PetiteCapsOff"          "PetiteCapsReset"
+                "UppercaseSmallCaps"  "UppercaseSmallCapsOff"  "UppercaseSmallCapsReset"
+                "UppercasePetiteCaps" "UppercasePetiteCapsOff" "UppercasePetiteCapsReset"
+                "Unicase"             "UnicaseOff"             "UnicaseReset"
+                "ResetAll"))
+    ;; IV 3.1.8 Ligatures
+    ("Ligatures" ("Required"      "RequiredOff"      "RequiredReset"
+                  "Common"        "CommonOff"        "CommonReset"
+                  "Contextual"    "ContextualOff"    "ContextualReset"
+                  "Rare"          "RareOff"          "RareReset"
+                  "Discretionary" "DiscretionaryOff" "DiscretionaryReset"
+                  "Historic"      "HistoricOff"      "HistoricReset"
+                  "TeX"           "TeXOff"           "TeXReset"
+                  "ResetAll"))
+    ;; IV 3.1.9 Localised Forms
+    ("LocalForms" ("On" "Off" "Reset"))
+    ;; IV 3.1.10 Numbers
+    ("Numbers" ("Uppercase"    "UppercaseOff"    "UppercaseReset"
+                "Lowercase"    "LowercaseOff"    "LowercaseReset"
+                "Lining"       "LiningOff"       "LiningReset"
+                "OldStyle"     "OldStyleOff"     "OldStyleReset"
+                "Proportional" "ProportionalOff" "ProportionalReset"
+                "Monospaced"   "MonospacedOff"   "MonospacedReset"
+                "SlashedZero"  "SlashedZeroOff"  "SlashedZeroReset"
+                "Arabic"       "ArabicOff"       "ArabicReset"
+                "ResetAll"))
+    ;; IV 3.1.11 Ornament
+    ("Ornament")
+    ;; IV 3.1.12 Style
+    ("Style" ("Alternate"      "AlternateOff"      "AlternateReset"
+              "Italic"         "ItalicOff"         "ItalicReset"
+              "Ruby"           "RubyOff"           "RubyReset"
+              "Swash"          "SwashOff"          "SwashReset"
+              "Cursive"        "CursiveOff"        "CursiveReset"
+              "Historic"       "HistoricOff"       "HistoricReset"
+              "Titling"        "TitlingOff"        "TitlingReset"
+              "HorizontalKana" "HorizontalKanaOff" "HorizontalKanaReset"
+              "VerticalKana"   "VerticalKanaOff"   "VerticalKanaReset"
+              "Uppercase"      "UppercaseOff"      "UppercaseReset"
+              "ResetAll"))
+    ;; IV 3.1.13 Stylistic Set variations.   The next 2 are synonyms:
+    ("StylisticSet")
+    ("Variant")
+    ;; IV 3.1.14 Vertical Position
+    ("VerticalPosition" ("Superior"           "SuperiorOff"           "SuperiorReset"
+                         "Inferior"           "InferiorOff"           "InferiorReset"
+                         "Numerator"          "NumeratorOff"          "NumeratorReset"
+                         "Denominator"        "DenominatorOff"        "DenominatorReset"
+                         "ScientificInferior" "ScientificInferiorOff" "ScientificInferiorReset"
+                         "Ordinal"            "OrdinalOff"            "OrdinalReset"
+                         "ResetAll"))
+    ;; IV 3.2.1 Annotation
     ("Annotation")
+    ;; IV 3.2.2 Character width
+    ("CharacterWidth" ("Proportional"          "ProportionalOff"          "ProportionalReset"
+                       "Full"                  "FullOff"                  "FullReset"
+                       "Half"                  "HalfOff"                  "HalfReset"
+                       "Third"                 "ThirdOff"                 "ThirdReset"
+                       "Quarter"               "QuarterOff"               "QuarterReset"
+                       "AlternateProportional" "AlternateProportionalOff" "AlternateProportionalReset"
+                       "AlternateHalf"         "AlternateHalfOff"         "AlternateHalfReset"
+                       "ResetAll"))
+    ;; IV 3.2.3 CJK shape
     ("CJKShape" ("Traditional"
                  "Simplified"
                  "JIS1978"
@@ -157,23 +182,20 @@
                  "JIS1990"
                  "Expert"
                  "NLC"))
-    ("Vertical" ("RotatedGlyphs"         "RotatedGlyphsOff"
-                 "AlternatesForRotation" "AlternatesForRotationOff"
-                 "Alternates"            "AlternatesOff"
-                 "KanaAlternates"        "KanaAlternatesOff"
-                 "Kerning"               "KerningOff"
-                 "AlternateMetrics"      "AlternateMetricsOff"
-                 "HalfMetrics"           "HalfMetricsOff"
-                 "ProportionalMetrics"   "ProportionalMetricsOff"
+    ;; IV 3.2.4 Vertical typesetting
+    ("Vertical" ("RotatedGlyphs"         "RotatedGlyphsOff"         "RotatedGlyphsReset"
+                 "AlternatesForRotation" "AlternatesForRotationOff" "AlternatesForRotationReset"
+                 "Alternates"            "AlternatesOff"            "AlternatesReset"
+                 "KanaAlternates"        "KanaAlternatesOff"        "KanaAlternatesReset"
+                 "Kerning"               "KerningOff"               "KerningReset"
+                 "AlternateMetrics"      "AlternateMetricsOff"      "AlternateMetricsReset"
+                 "HalfMetrics"           "HalfMetricsOff"           "HalfMetricsReset"
+                 "ProportionalMetrics"   "ProportionalMetricsOff"   "ProportionalMetricsReset"
                  "ResetAll"))
-    ;; 25 Going behind fontspec's back: Offer only an excerpt of all
-    ;; possible tags:
+    ;; VIII 3. Going behind fontspec's back: Offer only an excerpt of
+    ;; all possible tags:
     ("RawFeature" ("frac" "lnum" "onum" "pnum" "smcp" "tnum" "zero")))
   "Font features options for macros of the fontspec package.")
-
-(defvar LaTeX-fontspec-font-features-local nil
-  "Buffer-local font features options for macros of the fontspec package.")
-(make-variable-buffer-local 'LaTeX-fontspec-font-features-local)
 
 (defvar LaTeX-fontspec-font-list nil
   "List of the fonts accessible to fontspec.")
@@ -208,21 +230,41 @@ to retrieve the list of fonts."
     (or LaTeX-fontspec-font-list LaTeX-fontspec-font-list-default))
    optional))
 
-(defun LaTeX-fontspec-update-font-features ()
-  "Update Color key=values in `LaTeX-fontspec-font-features-local'."
-  ;; Check if any color defininig package is loaded and update the
-  ;; key=values for coloring.  Prefer xcolor.sty if both packages are
-  ;; loaded.
-  (when (or (member "xcolor" (TeX-style-list))
-            (member "color" (TeX-style-list)))
-    (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
+(defun LaTeX-fontspec-font-features ()
+  "Return an updated list of font features.
+This function retrieves values from various sources and adds them
+to appropriate keys which are eventually prepended to
+`LaTeX-fontspec-font-features' shadowing the predefined one."
+  (append
+   ;; Check for color packages, prefer xcolor over color.  Note that
+   ;; we run the function `TeX-style-list' only once and after that we
+   ;; use the updated `TeX-active-styles'.
+   (when (or (member "xcolor" (TeX-style-list))
+             (member "color" TeX-active-styles))
+     (let ((colorcmd (if (member "xcolor" TeX-active-styles)
                          #'LaTeX-xcolor-definecolor-list
-                       #'LaTeX-color-definecolor-list))
-           (tmp (copy-alist LaTeX-fontspec-font-features)))
-      (setq tmp (assq-delete-all (car (assoc "Color" tmp)) tmp))
-      (push (list "Color" (mapcar #'car (funcall colorcmd))) tmp)
-      (setq LaTeX-fontspec-font-features-local
-            (copy-alist tmp)))))
+                       #'LaTeX-color-definecolor-list)))
+       `(("Color" ,(mapcar #'car (funcall colorcmd))))))
+   ;; If `LaTeX-fontspec-font-list' is set, use it for other `*Font'
+   ;; related keys:
+   (when LaTeX-fontspec-font-list
+     `(("UprightFont"     ,LaTeX-fontspec-font-list)
+       ("BoldFont"        ,LaTeX-fontspec-font-list)
+       ("ItalicFont"      ,LaTeX-fontspec-font-list)
+       ("BoldItalicFont"  ,LaTeX-fontspec-font-list)
+       ("SlantedFont"     ,LaTeX-fontspec-font-list)
+       ("BoldSlantedFont" ,LaTeX-fontspec-font-list)
+       ("SmallCapsFont"   ,LaTeX-fontspec-font-list)))
+   ;; This is a LuaTeX only feature.  VI. 1 Different font
+   ;; technologies and shapers
+   (when (eq TeX-engine 'luatex)
+     '(("Renderer" ("Harfbuzz" "OpenType" "AAT" "Graphite"))))
+   ;; This is a XeTeX only feature.  VII. 1 Different font
+   ;; technologies
+   (when (eq TeX-engine 'xetex)
+     '(("Renderer" ("OpenType" "AAT" "Graphite"))))
+   ;; Predefined features:
+   LaTeX-fontspec-font-features))
 
 ;; Setup for \newfontfamily and \newfontface:
 (TeX-auto-add-type "fontspec-newfontcmd" "LaTeX")
@@ -245,9 +287,7 @@ to retrieve the list of fonts."
     (when (and (featurep 'font-latex)
                (eq TeX-install-font-lock 'font-latex-setup))
       (font-latex-add-keywords `((,mac ""))
-                               'type-declaration)))
-  ;; Update values of Color key:
-  (LaTeX-fontspec-update-font-features))
+                               'type-declaration))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-fontspec-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-fontspec-auto-cleanup t)
@@ -262,10 +302,6 @@ to retrieve the list of fonts."
 
    ;; Add fontspec to the parser.
    (TeX-auto-add-regexp LaTeX-fontspec-newfontcmd-regexp)
-
-   ;; Activate the buffer local version of font features:
-   (setq LaTeX-fontspec-font-features-local
-         (copy-alist LaTeX-fontspec-font-features))
 
    (TeX-add-symbols
     ;; 4.3 Commands for old-style and lining numbers: \oldstylenums is
@@ -286,18 +322,18 @@ to retrieve the list of fonts."
     ;; 5 Font selection
     '("fontspec"
       LaTeX-fontspec-arg-font
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
 
     ;; Default font families
     '("setmainfont"
       (LaTeX-fontspec-arg-font "Main font name")
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
     '("setsansfont"
       (LaTeX-fontspec-arg-font "Sans font name")
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
     '("setmonofont"
       (LaTeX-fontspec-arg-font "Mono font name")
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
 
     ;; 5.3 Querying whether a font exists
     '("IfFontExistsTF" LaTeX-fontspec-arg-font 2)
@@ -305,11 +341,11 @@ to retrieve the list of fonts."
     ;; 6 commands to select font families
     '("newfontfamily" TeX-arg-define-macro
       LaTeX-fontspec-arg-font
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
 
     '("newfontface" TeX-arg-define-macro
       LaTeX-fontspec-arg-font
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"])
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
 
     ;; 6.4 Math(s) fonts
     '("setmathrm" "Font name" [ "Font features" ])
@@ -319,29 +355,29 @@ to retrieve the list of fonts."
 
     ;; 8 Default settings
     '("defaultfontfeatures" [ LaTeX-fontspec-arg-font ]
-      (TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"))
+      (TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"))
     '("defaultfontfeatures+" [ LaTeX-fontspec-arg-font ]
-      (TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"))
+      (TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"))
 
     ;; 10 Working with the currently selected features
     '("IfFontFeatureActiveTF"
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local "Font feature"] 2)
+      [TeX-arg-key-val (LaTeX-fontspec-font-features) "Font feature"] 2)
 
     ;; Changing the currently selected features
     '("addfontfeatures"
-      (TeX-arg-key-val LaTeX-fontspec-font-features-local "Font features"))
+      (TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"))
 
     ;; 23 Defining new features
     '("newAATfeature"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Existing feature")
-                    LaTeX-fontspec-font-features-local)
+                    (LaTeX-fontspec-font-features))
       "New option" 2)
 
     '("newopentypefeature"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Existing feature")
-                    LaTeX-fontspec-font-features-local)
+                    (LaTeX-fontspec-font-features))
       "New option" t)
 
     '("newfontfeature" "New feature" t)
@@ -354,7 +390,7 @@ to retrieve the list of fonts."
     '("aliasfontfeature"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Existing feature")
-                    LaTeX-fontspec-font-features-local)
+                    (LaTeX-fontspec-font-features))
       "New name")
 
     '("aliasfontfeatureoption"
@@ -362,10 +398,10 @@ to retrieve the list of fonts."
        (lambda ()
          (let* ((key (completing-read
                       (TeX-argument-prompt nil nil "Feature")
-                      LaTeX-fontspec-font-features-local))
+                      (LaTeX-fontspec-font-features)))
                 (val (completing-read
                       (TeX-argument-prompt nil nil "Existing name")
-                      (cadr (assoc key LaTeX-fontspec-font-features-local)))))
+                      (cadr (assoc key (LaTeX-fontspec-font-features))))))
            (TeX-argument-insert key nil)
            (format "%s" val))))
       "New name") )
