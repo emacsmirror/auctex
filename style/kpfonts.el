@@ -377,8 +377,10 @@ Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-kpfonts-abbrev-prefix') to be
-redefined in kpfonts minor mode.  If KEY is nil, the symbol has
-no associated keystroke \(it is available in the menu, though\).
+redefined in kpfonts minor mode.  KEY can be a character (for
+example ?o) for a single stroke or a string (for example \"o a\")
+for a multi-stroke binding.  If KEY is nil, the symbol has no
+associated keystroke (it is available in the menu, though).
 
 VALUE can be a string with the name of the macro to be inserted,
 or a function to be called.  The macro must be given without the
