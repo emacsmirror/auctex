@@ -324,7 +324,7 @@
                     (LaTeX-add-babel-babelfonts fontfam)
                     (LaTeX-babel-cleanup-babelfont)
                     (format "%s" fontfam))
-      [TeX-arg-key-val LaTeX-fontspec-font-features-local]
+      [TeX-arg-key-val (LaTeX-fontspec-font-features)]
       LaTeX-fontspec-arg-font)
 
     ;; 1.16 Creating a language
