@@ -154,7 +154,7 @@
       ;; also remove possible comment lines
       (setq results
             (replace-regexp-in-string
-             "\\(%.*$\\|[ \n\r\t]\\)" ""
+             "%.*\\'\\|[ \n\r\t]" ""
              (mapconcat #'car (LaTeX-babel-babeltag-list) ",")))
       ;; Look if \babeltags was issued once with multiple entries or
       ;; more than once in the document:
@@ -290,12 +290,12 @@
                     (TeX-completing-read-multiple
                      (TeX-argument-prompt t nil "Language(s)")
                      (LaTeX-babel-active-languages))
-                    ""]
+                    ","]
       t nil)
-    '("aliasshorthand"   "Original" "Alias")
     '("languageshorthands" TeX-arg-babel-lang)
     '("babelshorthand"   "Short hand")
     '("ifbabelshorthand" "Character" t nil)
+    '("aliasshorthand"   "Original" "Alias")
 
     ;; 1.12 The base option
     '("AfterBabelLanguage"
@@ -334,19 +334,19 @@
                     (TeX-argument-prompt nil nil "Language")
                     LaTeX-babel-language-list))
 
-    ;; 1.18 Getting the current language name
+    ;; 1.19 Accessing language info
     '("languagename" 0)
     '("iflanguage" TeX-arg-babel-lang t nil)
 
-    ;; 1.19 Hyphenation and line breaking
+    ;; 1.20 Hyphenation and line breaking
     '("babelhyphen"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "empty")))
+                    '("soft" "hard" "repeat" "nobreak" "empty")))
     '("babelhyphen*"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "empty")))
+                    '("soft" "hard" "repeat" "nobreak" "empty")))
 
     '("babelhyphenation"
       [TeX-arg-eval mapconcat #'identity
@@ -356,10 +356,10 @@
                     ","]
       t)
 
-    ;; 1.20 Selecting scripts
+    ;; 1.23 Selecting scripts
     '("ensureascii" "Text")
 
-    ;; 1.22 Language attributes
+    ;; 1.25 Language attributes
     '("languageattribute" TeX-arg-babel-lang t))
 
    ;; New environments: 1.8 Auxiliary language selectors
@@ -419,10 +419,10 @@
                   "OT1" "OT2" "OT3" "OT4" "OT6"
                   "T1"  "T2A" "T2B" "T2C" "T3" "T4" "T5"
                   "X2"  "LY1" "LV1" "LGR"))
-      ("hyphenmap" ("off" "main" "select" "other" "other*"))
+      ("hyphenmap" ("off" "first" "select" "other" "other*"))
       ("bidi" ("default" "basic" "basic-r" "bidi-l" "bidi-r"))
-      ("layout" ("sectioning" "counters" "lists" "captions"
-                 "contents" "footnotes" "columns" "extras"))
+      ("layout" ("sectioning" "counters" "lists" "contents" "footnotes"
+                 "captions"  "columns" "graphics" "extras"))
       ("base"))
     (mapcar #'list LaTeX-babel-language-list))))
 
