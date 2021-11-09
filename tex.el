@@ -4101,7 +4101,8 @@ If TEX is a directory, generate style files for all files in the directory."
                                   LaTeX-verbatim-macros-with-delims-local))
             (verb-macros-braces (when (boundp 'LaTeX-verbatim-macros-with-braces-local)
                                   LaTeX-verbatim-macros-with-braces-local))
-            (dialect TeX-style-hook-dialect))
+            (dialect TeX-style-hook-dialect)
+            (bibtex-p (eq major-mode 'bibtex-mode)))
         (TeX-unload-style style)
         (with-current-buffer (generate-new-buffer file)
           (erase-buffer)
@@ -4131,7 +4132,21 @@ If TEX is a directory, generate style files for all files in the directory."
           (mapc (lambda (el) (TeX-auto-insert el style))
                 TeX-auto-parser)
           (insert ")")
-          (if dialect (insert (concat "\n " (prin1-to-string dialect))))
+          (if dialect (insert (concat
+                               "\n "
+                               (prin1-to-string
+                                (if bibtex-p
+                                    ;; Add :latex since functions such
+                                    ;; as `LaTeX-add-bibitems' are
+                                    ;; only meaningful in LaTeX
+                                    ;; document buffer.
+                                    ;; FIXME: BibTeX is available to
+                                    ;; plain TeX through eplain
+                                    ;; (<URL:https://tug.org/eplain/doc/eplain.html#Citations>).
+                                    ;; It would be nice if AUCTeX
+                                    ;; supports such usage.
+                                    `'(or ,dialect :latex)
+                                  dialect)))))
           (insert ")\n\n")
           (write-region (point-min) (point-max) file nil 'silent)
           (kill-buffer (current-buffer))))
