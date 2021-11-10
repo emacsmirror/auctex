@@ -155,9 +155,23 @@
     ("xrightmargin"))
   "Key=value options for minted macros and environments.")
 
-(defvar LaTeX-minted-key-val-options-local nil
-  "Buffer-local key=value options for minted macros and environments.")
-(make-variable-buffer-local 'LaTeX-minted-key-val-options-local)
+(defun LaTeX-minted-key-val-options ()
+  "Return an updated list of key=vals from minted package.
+This function retrieves values of (user) defined colors and
+prepends them to variable `LaTeX-minted-key-val-options'."
+  (append
+   (when (or (member "xcolor" (TeX-style-list))
+             (member "color" TeX-active-styles))
+     (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
+                          #'LaTeX-xcolor-definecolor-list
+                        #'LaTeX-color-definecolor-list))
+            (colors (mapcar #'car (funcall colorcmd)))
+            (keys '("bgcolor" "highlightcolor"
+                    "rulecolor" "spacecolor" "tabcolor"))
+            result)
+       (dolist (key keys result)
+         (push (list key colors) result))))
+   LaTeX-minted-key-val-options))
 
 (defvar LaTeX-minted-pygmentize-program (executable-find "pygmentize"))
 
@@ -217,27 +231,6 @@ brackets.  PROMPT replaces the standard one."
                     (LaTeX-minted-style-list))
    optional))
 
-(defun LaTeX-minted-update-key-vals ()
-  "Update color related key-vals in `LaTeX-minted-key-val-options-local'.
-This function checks if one of the packages \"xcolor.sty\" or
-\"xcolor.sty\" is loaded and appends defined colors as values to
-color related key.  \"xcolor.sty\" is preferred if both packages
-are loaded."
-  (when (or (member "xcolor" (TeX-style-list))
-            (member "color" (TeX-style-list)))
-    (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
-                         #'LaTeX-xcolor-definecolor-list
-                       #'LaTeX-color-definecolor-list))
-           (colorkeys '("bgcolor" "highlightcolor"
-                        "rulecolor" "spacecolor" "tabcolor"))
-           (opts (copy-alist LaTeX-minted-key-val-options-local)))
-      (dolist (key colorkeys)
-        (setq opts (assq-delete-all (car (assoc key opts)) opts))
-        (push (list key (mapcar #'car (funcall colorcmd)))
-              opts))
-      (setq LaTeX-minted-key-val-options-local
-            (copy-alist opts)))))
-
 (defvar LaTeX-minted-auto-newminted nil)
 (defvar LaTeX-minted-newminted-regexp
   '("\\\\newminted\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
@@ -277,7 +270,7 @@ are loaded."
       (add-to-list 'LaTeX-auto-environment (list env))
       (add-to-list 'LaTeX-auto-environment
                    (list env* #'LaTeX-env-args
-                         '(TeX-arg-key-val LaTeX-minted-key-val-options-local)))
+                         '(TeX-arg-key-val (LaTeX-minted-key-val-options))))
       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
       (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)
       (add-to-list 'LaTeX-verbatim-environments-local env)
@@ -289,7 +282,7 @@ are loaded."
                     (car name-lang)
                   (cadr name-lang))))
       (add-to-list 'TeX-auto-symbol
-                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
                            TeX-arg-verb))
       (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
       (when (and (fboundp 'font-latex-add-keywords)
@@ -304,7 +297,7 @@ are loaded."
                     (car name-lang)
                   (concat (cadr name-lang) "inline"))))
       (add-to-list 'TeX-auto-symbol
-                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
                            TeX-arg-verb-delim-or-brace))
       (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
       (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
@@ -318,14 +311,12 @@ are loaded."
                     (car name-lang)
                   (concat (cadr name-lang) "file"))))
       (add-to-list 'TeX-auto-symbol
-                   `(,lang [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
                            TeX-arg-file))))
   (when (and (fboundp 'font-latex-set-syntactic-keywords)
              (eq TeX-install-font-lock 'font-latex-setup))
     ;; Refresh font-locking so that the verbatim envs take effect.
-    (font-latex-set-syntactic-keywords))
-  ;; Also update the key=vals
-  (LaTeX-minted-update-key-vals))
+    (font-latex-set-syntactic-keywords)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-minted-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-minted-auto-cleanup t)
@@ -375,29 +366,25 @@ a list of strings."
  "minted"
  (lambda ()
 
-   ;; Activate local-version of key=vals
-   (setq LaTeX-minted-key-val-options-local
-         (copy-alist LaTeX-minted-key-val-options))
-
    ;; New symbols
    (TeX-add-symbols
     '("mint"
-      [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       LaTeX-arg-minted-language TeX-arg-verb)
     '("mintinline"
-      [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       LaTeX-arg-minted-language TeX-arg-verb-delim-or-brace)
     '("newminted" ["Environment Name"] LaTeX-arg-minted-language
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     '("newmint" ["Macro Name"] LaTeX-arg-minted-language
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     '("newmintinline" ["Macro Name"] LaTeX-arg-minted-language
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     '("newmintedfile" ["Macro Name"] LaTeX-arg-minted-language
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     ;; 3.3 Formatting source code
     '("inputminted"
-      [ TeX-arg-key-val LaTeX-minted-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       (LaTeX-arg-minted-language)
       TeX-arg-file)
     ;; 3.4 Using different styles
@@ -406,14 +393,14 @@ a list of strings."
     ;; 5.2 Macro option usage
     '("setminted"
       [ LaTeX-arg-minted-language ]
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     '("setmintedinline"
       [ LaTeX-arg-minted-language ]
-      (TeX-arg-key-val LaTeX-minted-key-val-options-local)))
+      (TeX-arg-key-val (LaTeX-minted-key-val-options))))
 
    ;; New environments
    (LaTeX-add-environments
-    '("minted" LaTeX-env-args [TeX-arg-key-val LaTeX-minted-key-val-options-local]
+    '("minted" LaTeX-env-args [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       LaTeX-arg-minted-language))
 
    ;; 4 Floating listings: If option "newfloat" is given, run the
