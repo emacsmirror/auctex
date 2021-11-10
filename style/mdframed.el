@@ -1,6 +1,6 @@
 ;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -161,10 +161,6 @@
     ("theoremspace"))
   "Key=value options for mdframed macros and environments.")
 
-(defvar LaTeX-mdframed-key-val-options-local nil
-  "Buffer-local key=value options for mdframed macros and environments.")
-(make-variable-buffer-local 'LaTeX-mdframed-key-val-options-local)
-
 ;; Setup for \newmdenv
 
 (TeX-auto-add-type "mdframed-newmdenv" "LaTeX")
@@ -173,13 +169,9 @@
   `(,(concat
       "\\\\newmdenv"
       "[ \t\n\r%]*"
-      "\\(?:\\[[^][]*"
-        "\\(?:{[^}{]*"
-          "\\(?:{[^}{]*"
-            "\\(?:{[^}{]*}[^}{]*\\)*"
-          "}[^}{]*\\)*"
-        "}[^][]*\\)*"
-      "\\]\\)?"
+      "\\(?:"
+      (LaTeX-extract-key-value-label 'none)
+      "\\)?"
       "[ \t\n\r%]*"
       "{\\([^}]+\\)}")
     1 LaTeX-auto-mdframed-newmdenv)
@@ -202,57 +194,50 @@
   `(,(concat
       "\\\\\\(new\\)?mdtheorem\\(?:env\\)?"
       "[ \t\n\r%]*"
-      "\\(?:\\[[^][]*"
-        "\\(?:{[^}{]*"
-          "\\(?:{[^}{]*"
-            "\\(?:{[^}{]*}[^}{]*\\)*"
-          "}[^}{]*\\)*"
-        "}[^][]*\\)*"
-      "\\]\\)?"
+      "\\(?:"
+      (LaTeX-extract-key-value-label 'none)
+      "\\)?"
       "[ \t\n\r%]*"
       "{\\([^}]+\\)}")
     (2 1) LaTeX-auto-mdframed-mdtheorem)
   "Matches the argument of \\newmdtheoremenv and \\mdtheorem from mdframed package.")
 
-(defun LaTeX-mdframed-update-style-key ()
-  "Update some key=values in `LaTeX-mdframed-key-val-options-local'."
-  ;; Add new "style"s to key=vals:
-  (when (LaTeX-mdframed-mdfdefinestyle-list)
-    (let* ((key (car (assoc "style" LaTeX-mdframed-key-val-options-local)))
-           (val (cadr (assoc "style" LaTeX-mdframed-key-val-options)))
-           (temp (copy-alist LaTeX-mdframed-key-val-options-local))
-           (opts (assq-delete-all (car (assoc key temp)) temp)))
-      (cl-pushnew (list key (TeX-delete-duplicate-strings
-                             (append val (mapcar #'car (LaTeX-mdframed-mdfdefinestyle-list)))))
-                  opts :test #'equal)
-      (setq LaTeX-mdframed-key-val-options-local
-            (copy-alist opts))))
-  ;;
-  ;; Check if any color defininig package is loaded and update the
-  ;; key=values for coloring.  Prefer xcolor.sty if both packages are
-  ;; loaded.
-  (when (or (member "xcolor" (TeX-style-list))
-            (member "color" (TeX-style-list)))
-    (let* ((colorcmd (if (member "xcolor" (TeX-style-list))
-                         #'LaTeX-xcolor-definecolor-list
-                       #'LaTeX-color-definecolor-list))
-           (keys '("linecolor"
-                   "innerlinecolor"
-                   "middlelinecolor"
-                   "outerlinecolor"
-                   "backgroundcolor"
-                   "fontcolor"
-                   "shadowcolor"
-                   "frametitlebackgroundcolor"
-                   "subtitlebackgroundcolor"
-                   "subtitleabovelinecolor"
-                   "subtitlebelowlinecolor"))
-           (tmp (copy-alist LaTeX-mdframed-key-val-options-local)))
-      (dolist (x keys)
-        (setq tmp (assq-delete-all (car (assoc x tmp)) tmp))
-        (cl-pushnew (list x (mapcar #'car (funcall colorcmd))) tmp :test #'equal))
-      (setq LaTeX-mdframed-key-val-options-local
-            (copy-alist tmp)))))
+(defun LaTeX-mdframed-key-val-options ()
+  "Return an updated list of key=vals from mdframed package.
+This function retrieves values of user defined styles and colors
+and prepends them to variable `LaTeX-mdframed-key-val-options'."
+  (append
+   (when (LaTeX-mdframed-mdfdefinestyle-list)
+     (let ((val (copy-sequence
+                 (cadr (assoc "style" LaTeX-mdframed-key-val-options)))))
+       `(("style" ,(append
+                    (mapcar #'car (LaTeX-mdframed-mdfdefinestyle-list))
+                    val)))))
+   ;; Check if any color defininig package is loaded and update the
+   ;; key=values for coloring.  Prefer xcolor.sty if both packages are
+   ;; loaded.  Run `TeX-style-list' only once and use
+   ;; `TeX-active-styles' afterwards:
+   (when (or (member "xcolor" (TeX-style-list))
+             (member "color" TeX-active-styles))
+     (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
+                          #'LaTeX-xcolor-definecolor-list
+                        #'LaTeX-color-definecolor-list))
+            (colors (mapcar #'car (funcall colorcmd)))
+            (keys '("linecolor"
+                    "innerlinecolor"
+                    "middlelinecolor"
+                    "outerlinecolor"
+                    "backgroundcolor"
+                    "fontcolor"
+                    "shadowcolor"
+                    "frametitlebackgroundcolor"
+                    "subtitlebackgroundcolor"
+                    "subtitleabovelinecolor"
+                    "subtitlebelowlinecolor"))
+            result)
+       (dolist (key keys result)
+         (cl-pushnew (list key colors) result :test #'equal))))
+   LaTeX-mdframed-key-val-options))
 
 (defun LaTeX-mdframed-auto-prepare ()
   "Clear variables before parsing for mdframed package."
@@ -264,15 +249,14 @@
   "Process parsed elements for mdframed package."
   (dolist (env (mapcar #'car (LaTeX-mdframed-newmdenv-list)))
     (LaTeX-add-environments
-     `(,env LaTeX-env-args [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ] ))
+     `(,env LaTeX-env-args [TeX-arg-key-val (LaTeX-mdframed-key-val-options)] ))
     (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0))))
   (dolist (newenv (LaTeX-mdframed-mdtheorem-list))
     (let ((env (car newenv))
           (new (cadr newenv)))
       (LaTeX-add-environments (list env (vector "Heading")))
       (unless (and new (not (string= new "")))
-        (LaTeX-add-environments (list (concat env "*") (vector "Heading"))))))
-  (LaTeX-mdframed-update-style-key))
+        (LaTeX-add-environments (list (concat env "*") (vector "Heading")))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-mdframed-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-mdframed-auto-cleanup t)
@@ -287,35 +271,31 @@
    (TeX-auto-add-regexp LaTeX-mdframed-mdfdefinestyle-regexp)
    (TeX-auto-add-regexp LaTeX-mdframed-mdtheorem-regexp)
 
-   ;; Local version of key-val options
-   (setq LaTeX-mdframed-key-val-options-local
-         (copy-alist LaTeX-mdframed-key-val-options))
-
    ;; 4. Commands
    (TeX-add-symbols
     '("mdfsetup"
-      (TeX-arg-key-val LaTeX-mdframed-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     '("newmdenv"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       (TeX-arg-eval
        (lambda ()
          (let ((env (TeX-read-string
                      (TeX-argument-prompt nil nil "Environment"))))
            (LaTeX-add-environments
-            `(,env LaTeX-env-args [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]))
+            `(,env LaTeX-env-args [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]))
            ;; Add new env's to `ispell-tex-skip-alist': skip the optional argument
            (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0)))
            (format "%s" env)))))
 
     '("renewmdenv"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Environment")
                     (LaTeX-mdframed-newmdenv-list)))
 
     '("surroundwithmdframed"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       TeX-arg-environment)
 
     '("mdflength"
@@ -341,24 +321,23 @@
          (let ((style (TeX-read-string
                        (TeX-argument-prompt nil nil "Style name"))))
            (LaTeX-add-mdframed-mdfdefinestyles style)
-           (LaTeX-mdframed-update-style-key)
            (format "%s" style))))
-      (TeX-arg-key-val LaTeX-mdframed-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     '("mdfapptodefinestyle"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Style name")
                     (LaTeX-mdframed-mdfdefinestyle-list))
-      (TeX-arg-key-val LaTeX-mdframed-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     ;; 6.11. Title commands inside the environment
     '("mdfsubtitle"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       "Subtitle")
 
     ;; 8. Theorems
     '("newmdtheoremenv"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       (TeX-arg-eval
        (lambda ()
          (let ((nthm (TeX-read-string
@@ -368,13 +347,14 @@
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
-                                        (preceding-char)) ?\])
+                                        (preceding-char))
+                                      ?\])
                                   ()
                                 (TeX-arg-counter t "Within counter"))
                         "") ])
 
     '("mdtheorem"
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ]
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       (TeX-arg-eval
        (lambda ()
          (let ((nthm (TeX-read-string
@@ -385,7 +365,8 @@
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
-                                        (preceding-char)) ?\])
+                                        (preceding-char))
+                                      ?\])
                                   ()
                                 (TeX-arg-counter t "Within counter"))
                         "") ]))
@@ -393,7 +374,7 @@
    ;; Main environment defined by mdframed.sty
    (LaTeX-add-environments
     '("mdframed" LaTeX-env-args
-      [ TeX-arg-key-val LaTeX-mdframed-key-val-options-local ] ))
+      [TeX-arg-key-val (LaTeX-mdframed-key-val-options)] ))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
