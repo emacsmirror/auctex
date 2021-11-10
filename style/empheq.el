@@ -1,6 +1,6 @@
 ;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -91,10 +91,6 @@
     ("marginbox"))
   "Key=value options for environments from empheq.sty.")
 
-(defvar LaTeX-empheq-key-val-options-local nil
-  "Buffer-local key=value options for environments from empheq.sty.")
-(make-local-variable 'LaTeX-empheq-key-val-options-local)
-
 (defvar LaTeX-empheq-supported-amsmath-envs
   '("equation"  "equation*"
     "align"     "align*"
@@ -136,45 +132,40 @@
   "Process parsed delimiters."
   (dolist (delim (mapcar #'car (LaTeX-empheq-declaredelimiter-list)))
     (TeX-add-symbols (concat "empheq" delim)
-                     (concat "empheqbig" delim)))
-  (LaTeX-empheq-update-key-val-options))
+                     (concat "empheqbig" delim))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-empheq-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-empheq-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-empheq-update-key-val-options ()
-  "Update `LaTeX-empheq-key-val-options-local' if the function
-`LaTeX-empheq-declaredelimiter-list' returns non-nil."
-  (when (LaTeX-empheq-declaredelimiter-list)
-    (let ((lvals (cadr (assoc "left" LaTeX-empheq-key-val-options)))
-          (rvals (cadr (assoc "right" LaTeX-empheq-key-val-options)))
-          (tmp (copy-alist LaTeX-empheq-key-val-options))
-          lval rval)
-      (dolist (delims (LaTeX-empheq-declaredelimiter-list))
-        (let ((delim (car delims))
-              (where (cadr delims)))
-          (if (string= where "Left")
-              (progn
-                (cl-pushnew (concat TeX-esc "empheq" delim) lval :test #'equal)
-                (cl-pushnew (concat TeX-esc "empheqbig" delim) lval :test #'equal))
-            (progn
-              (cl-pushnew (concat TeX-esc "empheq" delim) rval :test #'equal)
-              (cl-pushnew (concat TeX-esc "empheqbig" delim) rval :test #'equal)))))
-      (when lval
-        (setq tmp (assq-delete-all (car (assoc "left" tmp)) tmp))
-        (setq lvals (append lval lvals))
-        (push (list "left" lvals) tmp))
-      (when rval
-        (setq tmp (assq-delete-all (car (assoc "right" tmp)) tmp))
-        (setq rvals (append rval rvals))
-        (push (list "right" rvals) tmp))
-      (setq LaTeX-empheq-key-val-options-local
-            (copy-alist tmp)))))
+(defun LaTeX-empheq-key-val-options ()
+  "Return an updated list of key=vals from empheq package.
+This function retrieves values of user defined left and right
+delimiters and prepends them to variable
+`LaTeX-empheq-key-val-options'."
+  (append
+   (when (LaTeX-empheq-declaredelimiter-list)
+     (let ((lvals (copy-sequence
+                   (cadr (assoc "left" LaTeX-empheq-key-val-options))))
+           (rvals (copy-sequence
+                   (cadr (assoc "right" LaTeX-empheq-key-val-options)))))
+       (dolist (delims (LaTeX-empheq-declaredelimiter-list))
+         (let ((delim (car delims))
+               (where (cadr delims)))
+           (if (string= where "Left")
+               (progn
+                 (cl-pushnew (concat TeX-esc "empheq" delim)    lvals :test #'equal)
+                 (cl-pushnew (concat TeX-esc "empheqbig" delim) lvals :test #'equal))
+             (cl-pushnew (concat TeX-esc "empheq" delim)    rvals :test #'equal)
+             (cl-pushnew (concat TeX-esc "empheqbig" delim) rvals :test #'equal))))
+       `(("left" ,lvals)
+         ("right" ,rvals))))
+   LaTeX-empheq-key-val-options))
 
 (defun LaTeX-empheq-env (env)
-  "Query for a supported amsmath environment and insert it accordingly."
-  (let* ((keyvals (TeX-read-key-val t LaTeX-empheq-key-val-options-local))
+  "Query for a supported amsmath environment and insert it accordingly.
+ENV is the name of environment passed to the function in the style hook."
+  (let* ((keyvals (TeX-read-key-val t (LaTeX-empheq-key-val-options)))
          (amsenv (completing-read
                   (TeX-argument-prompt nil nil "amsmath environment")
                   LaTeX-empheq-supported-amsmath-envs))
@@ -212,16 +203,26 @@ This function combines the capabilities of `LaTeX-env-label' and
       (let ((ncols (TeX-read-string
                     (TeX-argument-prompt nil nil "Number of columns")))
             (keyvals (TeX-read-key-val t
-                                       LaTeX-empheq-key-val-options-local
+                                       (LaTeX-empheq-key-val-options)
                                        "empheq options (k=v)")))
-        (LaTeX-insert-environment env (concat TeX-grop ncols TeX-grcl
-                                              (when (and keyvals (not (string= keyvals "")))
-                                                (concat LaTeX-optop keyvals LaTeX-optcl))))
+        (LaTeX-insert-environment env
+                                  (concat TeX-grop ncols TeX-grcl
+                                          (when (and keyvals
+                                                     (not (string= keyvals "")))
+                                            (concat LaTeX-optop
+                                                    keyvals
+                                                    LaTeX-optcl))))
         (LaTeX-item-equation-alignat t))
     (let ((keyvals
-           (TeX-read-key-val t LaTeX-empheq-key-val-options-local "empheq options (k=v)")))
-      (LaTeX-insert-environment env (when (and keyvals (not (string= keyvals "")))
-                                      (concat LaTeX-optop keyvals LaTeX-optcl)))
+           (TeX-read-key-val t
+                             (LaTeX-empheq-key-val-options)
+                             "empheq options (k=v)")))
+      (LaTeX-insert-environment env
+                                (when (and keyvals
+                                           (not (string= keyvals "")))
+                                  (concat LaTeX-optop
+                                          keyvals
+                                          LaTeX-optcl)))
       (when (and (assoc env LaTeX-label-alist)
                  (LaTeX-label env 'environment))
         (LaTeX-newline)
@@ -283,13 +284,6 @@ number of ampersands if possible."
    ;; Load amsmath.el and mathtools.el
    (TeX-run-style-hooks "amsmath" "mathtools")
 
-   ;; Local version of key-val options
-   (setq LaTeX-empheq-key-val-options-local
-         (copy-alist LaTeX-empheq-key-val-options))
-
-   ;; Initial update of key-vals
-   (LaTeX-empheq-update-key-val-options)
-
    (LaTeX-add-environments
     '("empheq" LaTeX-empheq-env))
 
@@ -302,7 +296,7 @@ number of ampersands if possible."
      (reftex-add-label-environments '(("empheq" ?e nil nil t))))
 
    (TeX-add-symbols
-    '("empheqset" (TeX-arg-key-val LaTeX-empheq-key-val-options-local))
+    '("empheqset" (TeX-arg-key-val (LaTeX-empheq-key-val-options)))
 
     ;; 1.4 Special delimiters
     ;; Normal
@@ -377,12 +371,12 @@ number of ampersands if possible."
       '("flalign"    LaTeX-empheq-env-overload)
       '("gather"     LaTeX-empheq-env-overload)
       '("multline"   LaTeX-empheq-env-overload)
-      '("align*"     LaTeX-env-args [TeX-arg-key-val LaTeX-empheq-key-val-options-local])
+      '("align*"     LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
       '("alignat*"   LaTeX-empheq-env-overload)
-      '("equation*"  LaTeX-env-args [TeX-arg-key-val LaTeX-empheq-key-val-options-local])
-      '("flalign*"   LaTeX-env-args [TeX-arg-key-val LaTeX-empheq-key-val-options-local])
-      '("gather*"    LaTeX-env-args [TeX-arg-key-val LaTeX-empheq-key-val-options-local])
-      '("multline*"  LaTeX-env-args [TeX-arg-key-val LaTeX-empheq-key-val-options-local])
+      '("equation*"  LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
+      '("flalign*"   LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
+      '("gather*"    LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
+      '("multline*"  LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
 
       ;; Original definitions are stored prefixed with "AmS"
       '("AmSalign"      LaTeX-env-label)
@@ -455,7 +449,6 @@ number of ampersands if possible."
            (TeX-add-symbols (concat "empheq" delim)
                             (concat "empheqbig" delim))
            (LaTeX-add-empheq-declaredelimiters `(,delim "Left"))
-           (LaTeX-empheq-update-key-val-options)
            (concat TeX-esc delim)))))
 
     '("DeclareRightDelimiter"
@@ -466,7 +459,6 @@ number of ampersands if possible."
            (TeX-add-symbols (concat "empheq" delim)
                             (concat "empheqbig" delim))
            (LaTeX-add-empheq-declaredelimiters `(,delim "Right"))
-           (LaTeX-empheq-update-key-val-options)
            (concat TeX-esc delim))))))
 
    ;; 4.2 Fine-tuning of delimiters
