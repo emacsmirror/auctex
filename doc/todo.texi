@@ -82,6 +82,13 @@ Document @code{LaTeX-insert-into-commments},
 @section Wishlist
 
 @itemize @bullet
+@item
+Simplify tool bar implementation.  The library @file{toolbar-x.el} was
+developed as an abstraction layer to absorb difference between XEmacs
+and @acronym{GNU} Emacs.  Now that XEmacs is no longer supported, the
+library, together with @file{tex-bar.el} as a whole, can be much
+simplified (or even unified).
+
 @item Documentation lookup for macros
 
 A parser could gather information about which macros are defined in
