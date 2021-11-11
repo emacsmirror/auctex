@@ -2328,11 +2328,6 @@ kept."
         (and save-info
              (cons 'preview (cons timestamp (nreverse save-info))))))))
 
-(eval-after-load "desktop"
-  '(add-hook
-    'desktop-buffer-misc-functions
-    #'desktop-buffer-preview-misc-data))
-
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
 Any directory not in this list will be cleared out by preview
@@ -2388,6 +2383,18 @@ BUFFER-MISC is the appropriate data to be used."
                   (preview-buffer-restore-internal
                    buffer-misc))))))
 
+;; Add autoload cookies explicitly for desktop.el.
+;; <Background> preview-latex doesn't conform to the following
+;; assumptions of desktop.el:
+;; (1) The file associated with the major mode by autoload has defun
+;;     of handler, which restores the state of the buffer.
+;; (2) The file has suitable `add-to-list' form also for
+;;     `desktop-buffer-mode-handlers' to register the entry of the
+;;     handler.
+;; This isn't the case here because the file associated with
+;; `latex-mode' is tex-mode.el, neither preview.el nor latex.el.  Thus
+;; we include both of them as explicit autoloads in preview-latex.el.
+;;;###autoload
 (defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
   (when (and file-name (file-readable-p file-name))
@@ -2398,18 +2405,9 @@ BUFFER-MISC is the appropriate data to be used."
             buf)
         buf))))
 
-(eval-after-load "desktop"
-  '(if (boundp 'desktop-buffer-mode-handlers)
-       (add-to-list 'desktop-buffer-mode-handlers
-                    '(latex-mode . desktop-buffer-preview))
-     (defvar desktop-buffer-file-name)
-     (defvar desktop-buffer-name)
-     (defvar desktop-buffer-misc)
-     (add-hook 'desktop-buffer-handlers (lambda ()
-                                          (desktop-buffer-preview
-                                           desktop-buffer-file-name
-                                           desktop-buffer-name
-                                           desktop-buffer-misc)))))
+;;;###autoload
+(add-to-list 'desktop-buffer-mode-handlers
+             '(latex-mode . desktop-buffer-preview))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.
@@ -3115,9 +3113,7 @@ to add the preview functionality."
         `(menu-item "Preview at point" preview-at-point
                     :image ,preview-tb-icon
                     :help "Preview on/off at point"
-                    :vert-only t)))
-    (if (boundp 'desktop-buffer-misc)
-        (preview-buffer-restore desktop-buffer-misc))))
+                    :vert-only t)))))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
