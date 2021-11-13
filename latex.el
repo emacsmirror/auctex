@@ -4004,7 +4004,7 @@ You can disable filling inside a specific environment by adding
 it to `LaTeX-indent-environment-list', only indentation is
 performed in that case."
   (interactive "*r\nP")
-  (let ((end-marker (save-excursion (goto-char to) (point-marker))))
+  (let ((end-marker (copy-marker to)) has-code-comment)
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
             (member (TeX-current-macro) LaTeX-fill-excluded-macros)
             ;; This could be generalized, if there are more cases where
@@ -4016,29 +4016,47 @@ performed in that case."
                                                        "Local Variables:")))))
         ;; Filling disabled, only do indentation.
         (indent-region from to nil)
+      ;; XXX: This `save-restriction' is a leftover of older codes and
+      ;; can now be removed.
       (save-restriction
         (goto-char from)
         (while (< (point) end-marker)
-          (if (re-search-forward
-               (concat "\\("
-                       ;; Code comments.
-                       "\\([^ \r\n%\\]\\|\\\\%\\)\\([ \t]\\|\\\\\\\\\\)*"
-                       TeX-comment-start-regexp
-                       "\\|"
-                       ;; Lines ending with `\par'.
-                       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
-                       (regexp-quote (concat TeX-esc TeX-esc))
-                       "\\)*"
-                       (regexp-quote TeX-esc) "par[ \t]*"
-                       "\\({[ \t]*}\\)?[ \t]*$"
-                       "\\)\\|\\("
-                       ;; Lines ending with `\\'.
-                       (regexp-quote TeX-esc)
-                       (regexp-quote TeX-esc)
-                       "\\(\\s-*\\*\\)?"
-                       "\\(\\s-*\\[[^]]*\\]\\)?"
-                       "\\s-*$\\)")
-               end-marker t)
+          (if (or
+               ;; Code comments.
+               (when (setq has-code-comment
+                           (TeX-search-forward-comment-start end-marker))
+                 (goto-char has-code-comment)
+                 (when
+                     ;; See if there is at least one non-whitespace
+                     ;; character before the comment starts.
+                     (save-excursion
+                       (skip-chars-backward " \t" (line-beginning-position))
+                       (bolp))
+                   ;; Not a code comment.  Go back to the former
+                   ;; point.
+                   (setq has-code-comment nil)
+                   (goto-char from))
+                 has-code-comment)
+               (re-search-forward
+                (concat "\\("
+                        ;; Lines ending with `\par'.
+                        ;; XXX: Why exclude \n?  vv
+                        "\\(?:\\=\\|[^" TeX-esc "\n]\\)\\(?:"
+                        (regexp-quote (concat TeX-esc TeX-esc))
+                        "\\)*"
+                        (regexp-quote TeX-esc) "par[ \t]*"
+                        ;; XXX: What's this "whitespaces in braces" ?
+                        ;;    vvvvvvvv
+                        "\\(?:{[ \t]*}\\)?[ \t]*$"
+                        "\\)\\|"
+                        ;; Lines ending with `\\'.
+                        (regexp-quote (concat TeX-esc TeX-esc))
+                        ;; XXX: Why not just "\\s-*\\*?" ?
+                        "\\(?:\\s-*\\*\\)?"
+                        ;; XXX: Why not "\\s-*\\(?:\\[[^]]*\\]\\)?" ?
+                        "\\(?:\\s-*\\[[^]]*\\]\\)?"
+                        "\\s-*$")
+                end-marker t))
               (progn
                 (goto-char (line-end-position))
                 (delete-horizontal-space)
@@ -4052,7 +4070,8 @@ performed in that case."
                   ;; Code comments and lines ending with `\par' are
                   ;; included in filling.  Lines ending with `\\' are
                   ;; skipped.
-                  (if (match-string 1)
+                  (if (or has-code-comment
+                          (match-beginning 1))
                       (LaTeX-fill-region-as-para-do from (point) justify-flag)
                     (LaTeX-fill-region-as-para-do
                      from (line-beginning-position 0) justify-flag)

@@ -140,13 +140,18 @@
              (LaTeX-mode)
              (let ((fill-column 70))
                (fill-paragraph)
+
                (let ((cmds '("captionsetup" "caption"
                              "parencite"    "par")))
                  (dolist (cmd cmds)
                    (search-forward (concat "\\" cmd))
                    (save-excursion
                      (end-of-line 0)
-                     (fill-paragraph)))))
+                     (fill-paragraph))))
+
+               (while (search-forward "% bug#" nil t)
+                 (forward-line 1)
+                 (fill-paragraph)))
              (buffer-string))
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/out)
