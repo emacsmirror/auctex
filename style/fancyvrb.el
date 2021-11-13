@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.6.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2021 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -67,6 +67,10 @@
 (declare-function font-latex-set-syntactic-keywords
                   "font-latex")
 
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+(defvar LaTeX-fvextra-key-val-options)
+
 (defvar LaTeX-fancyvrb-key-val-options
   `(("commentchar" ("none"))
     ("gobble")
@@ -120,12 +124,52 @@
     ("aftersave"))
   "Key=value options for fancyvrb macros and environments.")
 
-(defvar LaTeX-fancyvrb-key-val-options-local nil
-  "Buffer-local key=value options for fancyvrb macros and environments.
-This variable is intended for packages like \"fvextra\" which
-provide new key=values for fancyvrb environments.  New key=values
-should be appended to this variable.")
-(make-variable-buffer-local 'LaTeX-fancyvrb-key-val-options-local)
+(defun LaTeX-fancyvrb-key-val-options ()
+  "Return an updated list of key=vals from fancyvrb package.
+This function also checks if the package fvextra is used and
+takes its key=vals into account."
+  (append
+   ;; Check if fvextra is loaded in combination with x?color:
+   (when (and (member "fvextra" (TeX-style-list))
+              (or (member "xcolor" TeX-active-styles)
+                  (member "color" TeX-active-styles)))
+     (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
+                          #'LaTeX-xcolor-definecolor-list
+                        #'LaTeX-color-definecolor-list))
+            (keys '("highlightcolor"
+                    "rulecolor"
+                    "fillcolor"
+                    "tabcolor"
+                    "spacecolor"))
+            (colors (mapcar #'car (funcall colorcmd)))
+            result)
+       (dolist (key keys result)
+         (if (string= key "highlightcolor")
+             (push (list key colors) result)
+           (push (list key (cons "none" colors)) result)))))
+
+   ;; Check if fvextra is loaded:
+   (when (member "fvextra" TeX-active-styles)
+     LaTeX-fvextra-key-val-options)
+
+   ;; Check if fancyvrb is loaded in combination with x?color:
+   (when (and (not (member "fvextra" TeX-active-styles))
+              (or (member "xcolor" TeX-active-styles)
+                  (member "color" TeX-active-styles)))
+     (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
+                          #'LaTeX-xcolor-definecolor-list
+                        #'LaTeX-color-definecolor-list))
+            (colors (mapcar (lambda (x)
+                              (concat TeX-esc "color" TeX-grop x TeX-grcl))
+                            (mapcar #'car (funcall colorcmd))))
+            (keys '("rulecolor" "fillcolor"))
+            val result)
+       (dolist (key keys result)
+         (setq val (cadr (assoc key LaTeX-fancyvrb-key-val-options)))
+         (push (list key (append val colors)) result))))
+
+   ;; Plain fancyvrb:
+   LaTeX-fancyvrb-key-val-options))
 
 (defvar LaTeX-fancyvrb-base-macros
   '("VerbatimInput" "BVerbatimInput" "LVerbatimInput"
@@ -232,7 +276,7 @@ RECUSTOM is non-nil, delete macros from the variable
         (TeX-argument-insert new-mac optional TeX-esc))
       (TeX-argument-insert base-mac optional)
       (TeX-argument-insert
-       (TeX-read-key-val optional LaTeX-fancyvrb-key-val-options-local) optional)
+       (TeX-read-key-val optional (LaTeX-fancyvrb-key-val-options)) optional)
       (LaTeX-add-fancyvrb-macros `(,new-mac ,base-mac ,rec-flag))))
   ;;
   ;; Now run the procdure: Do not use the function
@@ -253,7 +297,7 @@ RECUSTOM is non-nil, delete macros from the variable
       (cond ((member base-mac '("VerbatimInput" "BVerbatimInput" "LVerbatimInput"))
              (TeX-add-symbols
               `(,mac-name
-                [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 LaTeX-fancyvrb-arg-file-relative))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
@@ -263,7 +307,7 @@ RECUSTOM is non-nil, delete macros from the variable
             ((string= base-mac "SaveVerb")
              (TeX-add-symbols
               `(,mac-name
-                [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 (TeX-arg-eval
                  (lambda ()
                    (let ((name (TeX-read-string
@@ -291,12 +335,12 @@ RECUSTOM is non-nil, delete macros from the variable
             (t
              (TeX-add-symbols
               `(,mac-name
-                [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 TeX-arg-verb)
               ;; Defined macros have a starred version where the
               ;; `showspaces' key is set to true
               `(,(concat mac-name "*")
-                [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 TeX-arg-verb))
              (add-to-list 'LaTeX-verbatim-macros-with-delims-local
                           mac-name t)
@@ -329,7 +373,7 @@ update only various AUCTeX variables for verbatim environments."
       (TeX-argument-insert new-env optional)
       (TeX-argument-insert base-env optional)
       (TeX-argument-insert
-       (TeX-read-key-val optional LaTeX-fancyvrb-key-val-options-local) optional)
+       (TeX-read-key-val optional (LaTeX-fancyvrb-key-val-options)) optional)
       (LaTeX-add-fancyvrb-environments `(,new-env ,base-env))
       (when (string= base-env "SaveVerbatim")
         (LaTeX-add-fancyvrb-saveverbatims new-env))))
@@ -342,7 +386,7 @@ update only various AUCTeX variables for verbatim environments."
              (LaTeX-add-environments
               `(,env (lambda (env)
                        (let ((options (TeX-read-key-val
-                                       t LaTeX-fancyvrb-key-val-options-local))
+                                       t (LaTeX-fancyvrb-key-val-options)))
                              (file (TeX-read-string "Output file: ")))
                          (LaTeX-insert-environment
                           env
@@ -365,11 +409,11 @@ update only various AUCTeX variables for verbatim environments."
              ;; (cond ...):
              (LaTeX-add-environments
               `(,env LaTeX-env-args
-                     [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                     [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                      LaTeX-fancyvrb-env-reflabel-key-val))
              (LaTeX-add-environments
               `(,(concat env "*") LaTeX-env-args
-                [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 LaTeX-fancyvrb-env-reflabel-key-val))
              (add-to-list 'LaTeX-verbatim-environments-local (concat env "*"))
              (add-to-list 'LaTeX-indent-environment-list
@@ -523,17 +567,13 @@ ENV is the name of current environment as a string."
    (TeX-run-style-hooks
     "keyval")
 
-   ;; Activate the buffer-local version of key-vals.
-   (setq LaTeX-fancyvrb-key-val-options-local
-         (copy-alist LaTeX-fancyvrb-key-val-options))
-
    (TeX-add-symbols
     ;; Verbatim material in footnotes
     "VerbatimFootnotes"
     ;; Improved verbatim commands
-    '("Verb" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local] TeX-arg-verb)
+    '("Verb" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] TeX-arg-verb)
     ;; \Verb also has a starred version:
-    '("Verb*" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local] TeX-arg-verb)
+    '("Verb*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] TeX-arg-verb)
     '("DefineShortVerb" (TeX-arg-eval
                          TeX-read-string
                          (TeX-argument-prompt nil nil "Character")
@@ -543,7 +583,7 @@ ENV is the name of current environment as a string."
                            (TeX-argument-prompt nil nil "Character")
                            TeX-esc))
     ;; Verbatim environments
-    '("fvset" (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
+    '("fvset" (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
     ;; Changing individual line formatting
     "FancyVerbFormatLine"
     ;; Line numbering
@@ -562,7 +602,7 @@ ENV is the name of current environment as a string."
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Based on environment")
                     LaTeX-fancyvrb-base-environments)
-      (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     '("CustomVerbatimCommand"
       LaTeX-fancyvrb-arg-define-macro)
@@ -571,7 +611,7 @@ ENV is the name of current environment as a string."
 
     ;; Saving and restoring verbatim text and environments
     '("SaveVerb"
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       (TeX-arg-eval
        (lambda ()
          (let ((name (TeX-read-string
@@ -594,35 +634,35 @@ ENV is the name of current environment as a string."
                                    (LaTeX-fancyvrb-saveverbatim-list)))
 
     ;; Writing and reading verbatim files
-    '("VerbatimInput" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+    '("VerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative)
-    '("BVerbatimInput" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+    '("BVerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative)
-    '("LVerbatimInput" [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+    '("LVerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative))
 
    (LaTeX-add-environments
     '("Verbatim" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("Verbatim*" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("BVerbatim" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("BVerbatim*" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("LVerbatim" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("LVerbatim*" LaTeX-env-args
-      [TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
     '("SaveVerbatim"
       (lambda (env)
-        (let ((options (TeX-read-key-val t LaTeX-fancyvrb-key-val-options-local))
+        (let ((options (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options)))
               (name (TeX-read-string "Save name: ")))
           (LaTeX-insert-environment
            env
@@ -633,7 +673,7 @@ ENV is the name of current environment as a string."
           (LaTeX-add-fancyvrb-saveverbatims name))))
     '("VerbatimOut"
       (lambda (env)
-        (let ((options (TeX-read-key-val t LaTeX-fancyvrb-key-val-options-local))
+        (let ((options (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options)))
               (file (TeX-read-string "Output file: ")))
           (LaTeX-insert-environment
            env
