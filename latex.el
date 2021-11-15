@@ -477,7 +477,7 @@ no label is inserted."
 (defun LaTeX-section-heading ()
   "Hook to prompt for LaTeX section name.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[LaTeX-section]'."
+the name of the sectioning command inserted with \\[LaTeX-section]."
   (let ((string (completing-read
                  (concat "Level (default " LaTeX-name "): ")
                  LaTeX-section-list
@@ -491,16 +491,16 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
-the title of the section inserted with `\\[LaTeX-section]."
+the title of the section inserted with \\[LaTeX-section]."
   (setq LaTeX-title (TeX-read-string "Title: " LaTeX-title))
   (let ((region (and (TeX-active-mark)
                      (cons (region-beginning) (region-end)))))
     (when region (delete-region (car region) (cdr region)))))
 
 (defun LaTeX-section-toc ()
-  "Hook to prompt for the LaTeX section entry in the table of content .
+  "Hook to prompt for the LaTeX section entry in the table of contents.
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
-a different entry for the section in the table of content."
+a different entry for the section in the table of contents."
   (setq LaTeX-toc (TeX-read-string "Toc Entry: "))
   (if (zerop (length LaTeX-toc))
       (setq LaTeX-toc nil)))
@@ -1167,7 +1167,7 @@ returned, nil if it is empty."
 
 (defcustom LaTeX-short-caption-prompt-length 40
   "The length that the caption of a figure should be before
-  propting for \\caption's optional short-version."
+propting for \\caption's optional short-version."
   :group 'LaTeX-environment
   :type 'integer)
 
@@ -5952,13 +5952,13 @@ environments."
 (defvar LaTeX-environment-menu-name "Insert Environment  (C-c C-e)")
 
 (defun LaTeX-environment-menu-entry (entry)
-  "Create an entry for the environment menu."
+  "Create an ENTRY for the environment menu."
   (vector (car entry) (list #'LaTeX-environment-menu (car entry)) t))
 
 (defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
 
 (defun LaTeX-environment-modify-menu-entry (entry)
-  "Create an entry for the change environment menu."
+  "Create an ENTRY for the change environment menu."
   (vector (car entry) (list #'LaTeX-modify-environment (car entry)) t))
 
 (defun LaTeX-section-enable-symbol (level)

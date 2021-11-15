@@ -72,7 +72,10 @@
 
 (defun TeX-save-document (name-or-file-fn)
   "Save all files belonging to the current document.
-Return non-nil if document needs to be re-TeX'ed."
+Return non-nil if document needs to be re-TeX'ed.
+In Lisp program, NAME-OR-FILE-FN specifies the current document.
+It is either the master name without extension or the function
+`TeX-master-file'."
   (interactive (list #'TeX-master-file))
   (TeX-check-files (TeX--concat-ext name-or-file-fn (TeX-output-extension))
                    (cons (TeX--concat-ext name-or-file-fn) (TeX-style-list))
@@ -818,7 +821,7 @@ omitted) and `TeX-region-file'."
 (defvar TeX-command-history nil)
 
 (defun TeX-command-default (name-or-file-fn)
-  "Guess the next command to be run on NAME."
+  "Guess the next command to be run on NAME-OR-FILE-FN."
   (let ((command-next nil)
         (name (TeX--concat-ext name-or-file-fn)))
     (cond ((if (eq name-or-file-fn #'TeX-region-file)
@@ -1392,7 +1395,7 @@ expected to be a string.  NAME and FILE are ignored."
     (TeX-run-discard name command file)))
 
 (defun TeX-run-ispell-on-document (_command _ignored _name)
-  "Run ispell on all open files belonging to the current document.
+  "Run Ispell on all open files belonging to the current document.
 This function is *obsolete* and only here for compatibility
 reasons.  Use `TeX-run-function' instead."
   (interactive)
@@ -1422,7 +1425,8 @@ reasons.  Use `TeX-run-function' instead."
       (force-mode-line-update))))
 
 (defun TeX-command-sentinel (process msg)
-  "Process TeX command output buffer after the process dies."
+  "Process TeX command output buffer after the PROCESS dies.
+Insert MSG with some additional information."
   ;; Set `TeX-transient-master' here because `preview-parse-messages'
   ;; may open files and thereby trigger master file questions which we
   ;; don't want and need because we already know the master.  Use
@@ -1836,7 +1840,8 @@ Rerun to get mark in right position\\." nil t)
                      "Run LaTeX again to get index right.")))))
 
 (defun TeX-command-sequence-sentinel (process string)
-  "Call the appropriate sentinel for the current process.
+  "Call the appropriate sentinel for the current PROCESS.
+Pass two arguments PROCESS and STRING to the sentinel.
 
 If there are no errors, call back `TeX-command-sequence' using
 `TeX-command-sequence-command' as command argument, unless this
@@ -3245,7 +3250,7 @@ means move back to previous error messages."
 (defun TeX-error-overview-previous-error (&optional arg)
   "Move to the previous line and find the associated error.
 
-Prefix arg N says how many error messages to move backward (or
+Prefix ARG says how many error messages to move backward (or
 forward, if negative)."
   (interactive "p")
   (TeX-error-overview-next-error (- arg)))

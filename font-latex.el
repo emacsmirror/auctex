@@ -1780,7 +1780,7 @@ Used for patterns like:
 (require 'texmathp)
 (defcustom font-latex-math-environments nil
   "List of math environment names for font locking.
-It is no longer recommended to customize this option. You should
+It is no longer recommended to customize this option.  You should
 customize `texmathp-tex-commands' instead because it is important
 for stable operation of font lock that this option is coherent
 with that option in addition to `texmathp-tex-commands-default'.
@@ -1799,7 +1799,7 @@ Set by `font-latex--update-math-env' and used in
 (defun font-latex-update-math-env ()
   "Update regexp to search for math environments.
 Extract environments marked as `env-on' in
-`texmathp-tex-commands1' except starred variants. Then build
+`texmathp-tex-commands1' except starred variants.  Then build
 `font-latex--match-math-envII-regexp' from them, appending the
 environments in `font-latex-math-environments'."
   ;; Make sure `texmathp-tex-commands1' is up to date.
@@ -1898,7 +1898,7 @@ The \\begin{equation} incl. arguments in the same line and
 
 (defun font-latex-find-dollar-math (limit &optional num)
   "Find dollar sign(s) before LIMIT.
-Set point just before the found $. Ignore escaped $ (\"\\$\").
+Set point just before the found $.  Ignore escaped $ (\"\\$\").
 Optional argument NUM, if non-nil, specifies the number of dollar
 signs to follow the point and must be 1 or 2.
 LIMIT must not exceed the end of buffer."

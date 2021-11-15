@@ -403,7 +403,7 @@ for @node."
 OPTIONAL is ignored.
 Use PROMPT as the prompt string.
 If DEFINITION is non-nil, then chosen node name is a node name to be
-added to the list of defined node names. Current implementation
+added to the list of defined node names.  Current implementation
 ignored DEFINITION as the full document is scanned for node names at
 each invocation."
   (let ((node-name (completing-read (TeX-argument-prompt optional prompt "Node")

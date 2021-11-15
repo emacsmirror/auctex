@@ -132,7 +132,7 @@
 ;; `LaTeX-fill-move-to-break-point' handles it.  If the test fails, try to look
 ;; there.  The second part of the test looks for unambiguousness of
 ;; macros starting a paragraph
-;; (http://lists.gnu.org/archive/html/auctex/2017-03/msg00009.html)
+;; (https://lists.gnu.org/archive/html/auctex/2017-03/msg00009.html)
 (ert-deftest LaTeX-filling ()
   (should (string=
            (with-temp-buffer
@@ -624,7 +624,7 @@ ghi"))
           (latex-mode)
 
           ;; When `LaTeX-insert-left-brace' supplies right brace,
-          ;; `electric-pair-mode' shoudn't come into play.
+          ;; `electric-pair-mode' shouldn't come into play.
           (setq last-command-event ?\()
           (LaTeX-insert-left-brace nil)
           (should (string= "()" (buffer-string)))

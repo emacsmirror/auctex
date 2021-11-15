@@ -52,7 +52,7 @@
 ;;  mode being on or off.
 ;;
 ;;  To configure which macros and environments influence LaTeX math
-;;  mode, customize the variable `texmathp-tex-commands'. By default
+;;  mode, customize the variable `texmathp-tex-commands'.  By default
 ;;  it recognizes the plain TeX and LaTeX core as well as AMS-LaTeX
 ;;  and packages mathtools, empheq and breqn (see the variable
 ;;  `texmathp-tex-commands-default', also as an example).
@@ -89,8 +89,8 @@
 ;;  arguments, math mode inside these optional arguments is *not* influenced
 ;;  by the macro.
 ;;
-;;  Nested \(\) and \[\] can confuse texmathp. It returns nil at AAA in the
-;;  following examples:
+;;  Nested \(\) and \[\] can confuse texmathp.  It returns nil at AAA
+;;  in the following examples:
 ;;  \[ x=y \mbox{abc \(\alpha\) cba} AAA \]
 ;;  \[ x=y \begin{minipage}{3cm} abc \[\alpha\] cba \end{minipage} AAA \]
 ;;--------------------------------------------------------------------------
