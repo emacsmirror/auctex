@@ -671,6 +671,7 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'comment-start) "@c ")
   (set (make-local-variable 'comment-start-skip) "@c +\\|@comment +")
   (set (make-local-variable 'comment-use-syntax) nil)
+  (setq TeX-comment-start-regexp "@c\\(?:omment\\)?\\>")
   (set (make-local-variable 'words-include-escapes) t)
   (set (make-local-variable 'imenu-generic-expression)
        texinfo-imenu-generic-expression)

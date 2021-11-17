@@ -1229,9 +1229,7 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
               (LaTeX-newline)
               (indent-according-to-mode)))
         ;; bottom caption (default)
-        (when active-mark
-          (goto-char end-marker)
-          (set-marker end-marker nil))
+        (when active-mark (goto-char end-marker))
         (save-excursion
           (LaTeX-newline)
           (indent-according-to-mode)
@@ -1249,6 +1247,7 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
         ;; Insert an empty line between caption and marked region, if any.
         (when active-mark (LaTeX-newline) (forward-line -1))
         (indent-according-to-mode)))
+    (set-marker end-marker nil)
     (when (and (member environment '("table" "table*"))
                ;; Suppose an existing tabular environment should just
                ;; be wrapped into a table if there is an active region.
@@ -3451,7 +3450,7 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
         (goto-char (car macro-boundaries))
         (forward-char (length TeX-esc))
         (buffer-substring-no-properties
-         (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
+         (point) (progn (skip-chars-forward "@A-Za-z*") (point)))))))
 
 (defun LaTeX-verbatim-p (&optional pos)
   "Return non-nil if position POS is in a verbatim-like construct."

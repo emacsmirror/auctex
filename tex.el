@@ -5190,16 +5190,17 @@ Brace insertion is only done if point is in a math construct and
 ;;; Verbatim constructs
 
 (defvar TeX-verbatim-p-function nil
-  "Mode-specific function to be called by `TeX-verbatim-p'.")
+  "Mode-specific function to be called by `TeX-verbatim-p'.
+It must accept optional argument POS for position.")
 (make-variable-buffer-local 'TeX-verbatim-p-function)
 
 ;; XXX: We only have an implementation for LaTeX mode at the moment (Oct 2009).
-(defun TeX-verbatim-p (&optional _pos)
+(defun TeX-verbatim-p (&optional pos)
   "Return non-nil if position POS is in a verbatim-like construct.
 A mode-specific implementation is required.  If it is not
 available, the function always returns nil."
   (when TeX-verbatim-p-function
-    (funcall TeX-verbatim-p-function)))
+    (funcall TeX-verbatim-p-function pos)))
 
 
 ;;; Comments
