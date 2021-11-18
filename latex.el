@@ -4004,7 +4004,7 @@ You can disable filling inside a specific environment by adding
 it to `LaTeX-indent-environment-list', only indentation is
 performed in that case."
   (interactive "*r\nP")
-  (let ((end-marker (copy-marker to)) has-code-comment)
+  (let ((end-marker (copy-marker to)) has-code-comment has-regexp-match)
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
             (member (TeX-current-macro) LaTeX-fill-excluded-macros)
             ;; This could be generalized, if there are more cases where
@@ -4021,24 +4021,24 @@ performed in that case."
       (save-restriction
         (goto-char from)
         (while (< (point) end-marker)
-          (if (or
-               ;; Code comments.
-               (when (setq has-code-comment
-                           (TeX-search-forward-comment-start end-marker))
-                 (goto-char has-code-comment)
-                 (when
-                     ;; See if there is at least one non-whitespace
-                     ;; character before the comment starts.
-                     (save-excursion
-                       (skip-chars-backward " \t" (line-beginning-position))
-                       (bolp))
-                   ;; Not a code comment.  Go back to the former
-                   ;; point.
-                   (setq has-code-comment nil)
-                   (goto-char from))
-                 has-code-comment)
-               (re-search-forward
-                (concat "\\("
+          ;; Code comments.
+          (when (setq has-code-comment
+                      (TeX-search-forward-comment-start end-marker))
+            ;; See if there is at least one non-whitespace
+            ;; character before the comment starts.
+            (goto-char has-code-comment)
+            (skip-chars-backward " \t" (line-beginning-position))
+            (if (bolp)
+                ;; Not a code comment.
+                (setq has-code-comment nil)))
+
+          ;; Go back to the former point for the next regexp search.
+          (goto-char from)
+
+          (when (setq has-regexp-match
+                      (re-search-forward
+                       (concat
+                        "\\("
                         ;; Lines ending with `\par'.
                         ;; XXX: Why exclude \n?  vv
                         "\\(?:\\=\\|[^" TeX-esc "\n]\\)\\(?:"
@@ -4056,8 +4056,18 @@ performed in that case."
                         ;; XXX: Why not "\\s-*\\(?:\\[[^]]*\\]\\)?" ?
                         "\\(?:\\s-*\\[[^]]*\\]\\)?"
                         "\\s-*$")
-                end-marker t))
+                       (or has-code-comment end-marker) t))
+            ;; The regexp matched before the code comment (if any).
+            (setq has-code-comment nil))
+
+          ;; Here no need to go back to the former position because
+          ;; "ELSE" part of the following `if' doesn't rely on the
+          ;; current point.
+          ;; (goto-char from)
+
+          (if (or has-code-comment has-regexp-match)
               (progn
+                (goto-char (or has-code-comment has-regexp-match))
                 (goto-char (line-end-position))
                 (delete-horizontal-space)
                 ;; I doubt very much if we want justify -

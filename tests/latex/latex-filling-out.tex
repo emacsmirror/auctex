@@ -58,3 +58,21 @@ Cum sociis natoque penatibus et magnis \verb|a%b| dis parturient
 montes, nascetur ridiculus mus. Nulla posuere. Donec vitae
 dolor. Nullam tristique diam non turpis.  Cras placerat accumsan
 nulla. Nullam rutrum. Nam vestibulum accumsan nisl.
+
+% bug#51762-4 "\par" before code comment shouldn't be skipped.
+Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis,
+lorem a tempus semper, dui dui euismod elit, vitae placerat urna
+tortor vitae lacus.\par
+Fusce sagittis, libero non molestie mollis, magna orci ultrices dolor,
+at vulputate neque nulla lacinia eros.  Aliquam posuere.  Cum sociis
+natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+mus.%
+
+% bug#51762-5 "\\" before code comment shouldn't be skipped.
+Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis,
+lorem a
+tempus semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus.\\
+Fusce sagittis, libero non molestie mollis, magna orci ultrices dolor,
+at vulputate neque nulla lacinia eros.  Aliquam posuere.  Cum sociis
+natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+mus.%
