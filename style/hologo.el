@@ -1,6 +1,6 @@
 ;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.10)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -199,25 +199,15 @@
            (format "%s" keyval)))))
 
     ;; Additional user macros
-    '("hologoVariant"
+    `("hologoVariant"
       LaTeX-hologo--arg-use-region-or-query-logo-name
-      (TeX-arg-eval
-       (lambda ()
-         (let ((setup (TeX-read-key-val
-                       nil
-                       (append LaTeX-hologo-key-val-options-local
-                               LaTeX-hologo-key-val-options-global))))
-           (format "%s" setup)))))
+      (TeX-arg-key-val (append ,LaTeX-hologo-key-val-options-local
+                               ,LaTeX-hologo-key-val-options-global)))
 
-    '("HologoVariant"
+    `("HologoVariant"
       LaTeX-hologo--arg-use-region-or-query-logo-name
-      (TeX-arg-eval
-       (lambda ()
-         (let ((setup (TeX-read-key-val
-                       nil
-                       (append LaTeX-hologo-key-val-options-local
-                               LaTeX-hologo-key-val-options-global))))
-           (format "%s" setup)))))
+      (TeX-arg-key-val (append ,LaTeX-hologo-key-val-options-local
+                               ,LaTeX-hologo-key-val-options-global)))
 
     '("hologoList" 0)
 
