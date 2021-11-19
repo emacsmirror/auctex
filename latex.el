@@ -4022,15 +4022,20 @@ performed in that case."
         (goto-char from)
         (while (< (point) end-marker)
           ;; Code comments.
-          (when (setq has-code-comment
-                      (TeX-search-forward-comment-start end-marker))
-            ;; See if there is at least one non-whitespace
-            ;; character before the comment starts.
-            (goto-char has-code-comment)
-            (skip-chars-backward " \t" (line-beginning-position))
-            (if (bolp)
-                ;; Not a code comment.
-                (setq has-code-comment nil)))
+          (catch 'found
+            (while (setq has-code-comment
+                         (TeX-search-forward-comment-start end-marker))
+              ;; See if there is at least one non-whitespace
+              ;; character before the comment starts.
+              (goto-char has-code-comment)
+              (skip-chars-backward " \t" (line-beginning-position))
+              (if (not (bolp))
+                  ;; A real code comment.
+                  (throw 'found t)
+                ;; Not a code comment.  Continue the loop.
+                (forward-line 1)
+                (if (> (point) end-marker)
+                    (goto-char end-marker)))))
 
           ;; Go back to the former point for the next regexp search.
           (goto-char from)
@@ -4050,6 +4055,8 @@ performed in that case."
                         "\\(?:{[ \t]*}\\)?[ \t]*$"
                         "\\)\\|"
                         ;; Lines ending with `\\'.
+                        ;; XXX: This matches a line ending with "\\\ ".
+                        ;; Should we avoid such corner case?
                         (regexp-quote (concat TeX-esc TeX-esc))
                         ;; XXX: Why not just "\\s-*\\*?" ?
                         "\\(?:\\s-*\\*\\)?"
