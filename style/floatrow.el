@@ -1,6 +1,6 @@
 ;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -146,9 +146,74 @@
     ("LTcapwidth" ("table" "contents")))
   "Key=value options for floatrow macros and environments.")
 
-(defvar LaTeX-floatrow-key-val-options-local nil
-  "Buffer-local key=value options for floatrow macros and environments.")
-(make-variable-buffer-local 'LaTeX-floatrow-key-val-options-local)
+(defun LaTeX-floatrow-key-val-options ()
+  "Return an updated list of key=vals from floatrow package."
+  (append
+   (when (LaTeX-floatrow-DeclareNewOption-list)
+     (let ((vcode-keys '("precode" "rowprecode" "midcode" "postcode" "rowpostcode"))
+           (sep-keys '("floatrowsep" "capbesidesep"))
+           result)
+       (dolist (keyvals (LaTeX-floatrow-DeclareNewOption-list) result)
+         (let* ((key (cond ((string= (nth 1 keyvals) "FloatStyle")
+                            "style")
+                           ((string= (nth 1 keyvals) "FloatFont")
+                            "font")
+                           ((string= (nth 1 keyvals) "FloatVCode")
+                            "precode")
+                           ((string= (nth 1 keyvals) "ColorBox")
+                            "colorframeset")
+                           ((string= (nth 1 keyvals) "CBoxCorners")
+                            "colorframecorners")
+                           ((string= (nth 1 keyvals) "ObjectSet")
+                            "objectset")
+                           ((string= (nth 1 keyvals) "MarginSet")
+                            "margins")
+                           ((string= (nth 1 keyvals) "FloatSeparators")
+                            "floatrowsep")
+                           ((string= (nth 1 keyvals) "FloatFootnoterule")
+                            "footnoterule")
+                           (t nil)))
+                (val (nth 2 keyvals))
+                (vals-predefined
+                 (cadr (assoc key LaTeX-floatrow-key-val-options)))
+                (vals-parsed (cadr (assoc key result))))
+           ;; Remove entry in `result' if there is one for the `key'.
+           ;; `precode' and `floatrowsep' are special here since they
+           ;; are placeholders for other keys (see above):
+           (cond ((string= key "precode")
+                  (dolist (x vcode-keys)
+                    (when (assoc x result)
+                      (setq result (assq-delete-all (car (assoc x result)) result)))))
+                 ((string= key "floatrowsep")
+                  (dolist (x sep-keys)
+                    (when (assoc x result)
+                      (setq result (assq-delete-all (car (assoc x result)) result)))))
+                 (t
+                  (when (assoc key result)
+                    (setq result (assq-delete-all (car (assoc key result)) result)))))
+           ;; Add the entrie to `result'.  Again, watch for `precode'
+           ;; and `floatrowsep'.  Also delete any dupes:
+           (cond ((string= key "precode")
+                  (dolist (x vcode-keys)
+                    (cl-pushnew (list x (TeX-delete-duplicate-strings
+                                         (append vals-parsed
+                                                 vals-predefined
+                                                 (list val))))
+                                result :test #'equal)))
+                 ((string= key "floatrowsep")
+                  (dolist (x sep-keys)
+                    (cl-pushnew (list x (TeX-delete-duplicate-strings
+                                         (append vals-parsed
+                                                 vals-predefined
+                                                 (list val))))
+                                result :test #'equal)))
+                 (t
+                  (cl-pushnew (list key (TeX-delete-duplicate-strings
+                                         (append vals-parsed
+                                                 vals-predefined
+                                                 (list val))))
+                              result :test #'equal)))))))
+   LaTeX-floatrow-key-val-options))
 
 (defvar LaTeX-floatrow-supported-float-types
   '("figure" "table"                              ; Standard LaTeX
@@ -228,10 +293,6 @@
   ;; Replace initially the way fig & tab env's are inserted:
   (LaTeX-floatrow-env-init)
   ;;
-  ;; Process new key=val options:
-  (when (LaTeX-floatrow-DeclareNewOption-list)
-    (LaTeX-floatrow-update-key-val-options))
-  ;;
   ;; Process new float commands like \ffigbox:
   (when (LaTeX-floatrow-newfloatcommand-list)
     (dolist (cmd (mapcar #'car (LaTeX-floatrow-newfloatcommand-list)))
@@ -290,56 +351,6 @@
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-floatrow-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-floatrow-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
-
-(defun LaTeX-floatrow-update-key-val-options ()
-  "Update buffer-local key-val options before offering for completion."
-  (let ((vcode-keys '("precode" "rowprecode" "midcode" "postcode" "rowpostcode"))
-        (sep-keys '("floatrowsep" "capbesidesep")))
-    (dolist (keyvals (LaTeX-floatrow-DeclareNewOption-list))
-      (let* ((key (cond ((string= (nth 1 keyvals) "FloatStyle")
-                         "style")
-                        ((string= (nth 1 keyvals) "FloatFont")
-                         "font")
-                        ((string= (nth 1 keyvals) "FloatVCode")
-                         "precode")
-                        ((string= (nth 1 keyvals) "ColorBox")
-                         "colorframeset")
-                        ((string= (nth 1 keyvals) "CBoxCorners")
-                         "colorframecorners")
-                        ((string= (nth 1 keyvals) "ObjectSet")
-                         "objectset")
-                        ((string= (nth 1 keyvals) "MarginSet")
-                         "margins")
-                        ((string= (nth 1 keyvals) "FloatSeparators")
-                         "floatrowsep")
-                        ((string= (nth 1 keyvals) "FloatFootnoterule")
-                         "footnoterule")
-                        (t nil)))
-             (val (nth 2 keyvals))
-             (val-match (cadr (assoc key LaTeX-floatrow-key-val-options-local)))
-             (temp (copy-alist LaTeX-floatrow-key-val-options-local))
-             (opts (cond ((string= key "precode")
-                          (dolist (x vcode-keys)
-                            (setq temp (assq-delete-all (car (assoc x temp)) temp)))
-                          temp)
-                         ((string= key "floatrowsep")
-                          (dolist (x sep-keys)
-                            (setq temp (assq-delete-all (car (assoc x temp)) temp)))
-                          temp)
-                         (t
-                          (assq-delete-all (car (assoc key temp)) temp)))))
-        (cond ((string= key "precode")
-               (dolist (x vcode-keys)
-                 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-                             opts :test #'equal)))
-              ((string= key "floatrowsep")
-               (dolist (x sep-keys)
-                 (cl-pushnew (list x (TeX-delete-duplicate-strings (append (list val) val-match)))
-                             opts :test #'equal)))
-              (t
-               (cl-pushnew (list key (TeX-delete-duplicate-strings (append (list val) val-match)))
-                           opts :test #'equal)))
-        (setq LaTeX-floatrow-key-val-options-local (copy-alist opts))))))
 
 (defun LaTeX-floatrow-arg-floatbox (optional)
   "Query and insert arguments of float box commands from floatrow.sty.
@@ -477,10 +488,9 @@ a string and corresponds to first parsed element in
     (LaTeX-add-floatrow-DeclareNewOptions
      (list (concat TeX-esc "Declare" key TeX-grop val TeX-grcl)
            key val))
-    (LaTeX-floatrow-update-key-val-options)
     (TeX-argument-insert val optional)
     (TeX-argument-insert
-     (TeX-read-key-val optional LaTeX-floatrow-key-val-options-local) optional)))
+     (TeX-read-key-val optional (LaTeX-floatrow-key-val-options)) optional)))
 
 (defun LaTeX-floatrow-arg-newseparatedlabel/ref (optional type)
   "Query and insert user defined label and reference macros from floatrow.sty.
@@ -543,10 +553,6 @@ only the parsed items."
    (TeX-auto-add-regexp LaTeX-floatrow-newseparatedlabel-ref-regexp)
    (TeX-auto-add-regexp LaTeX-floatrow-DeclareNewFloatType-regexp)
 
-   ;; Activate the buffer-local version of key-vals
-   (setq LaTeX-floatrow-key-val-options-local
-         (copy-alist LaTeX-floatrow-key-val-options))
-
    ;; Add pre-defined float commands:
    (LaTeX-add-floatrow-newfloatcommands
     "ffigbox" "fcapside" "ttabbox")
@@ -556,9 +562,9 @@ only the parsed items."
     ;; 2.1 The \floatbox Macro
     ;; \floatbox[<preamble>]{<captype>}[<width>][<height>][<vert pos>]{<caption>}{<object>}
     '("floatbox"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Preamble")
-        '("\\capbeside" "\\nocapbeside" "\\captop") ]
+      [TeX-arg-eval completing-read
+                    (TeX-argument-prompt t nil "Preamble")
+                    '("\\capbeside" "\\nocapbeside" "\\captop")]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Float type")
                     LaTeX-floatrow-supported-float-types)
@@ -608,14 +614,14 @@ only the parsed items."
 
     ;; 3 Float Layout Settings
     '("floatsetup"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Float type")
-        LaTeX-floatrow-supported-float-types ]
-      (TeX-arg-key-val LaTeX-floatrow-key-val-options-local))
+      [TeX-arg-eval completing-read
+                    (TeX-argument-prompt t nil "Float type")
+                    LaTeX-floatrow-supported-float-types]
+      (TeX-arg-key-val (LaTeX-floatrow-key-val-options)))
 
     ;; 3.2 Settings for Current Float Environment
     '("thisfloatsetup"
-      (TeX-arg-key-val LaTeX-floatrow-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-floatrow-key-val-options)))
 
     ;; 3.3 Clearing of Settings for Current Float Type
     '("clearfloatsetup"
