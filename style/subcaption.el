@@ -1,6 +1,6 @@
 ;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,17 +38,17 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
-
-(defvar LaTeX-caption-key-val-options-local)
 (defvar LaTeX-caption-key-val-options)
 
 (defvar LaTeX-subcaption-key-val-options
   '(("subrefformat" ("default" "empty" "simple" "brace" "parens")))
-  "Key=value options for subcaption package.  This key takes the
-same values as \"labelformat\" from caption package.")
+  "Key=value options for subcaption package.
+This key takes the same values as \"labelformat\" from caption
+package.")
 
 (defun LaTeX-arg-subcaption-subcaption (optional &optional star)
   "Query for the arguments of \"\\subcaption\" incl. a label and insert them.
+If OPTIONAL is non-nil, indicate it while reading the caption.
 If STAR is non-nil, then do not query for a \\label and a short
 caption, insert only a caption."
   (let* (;; \subcaption needs an environment, "minipage" will be
@@ -79,6 +79,7 @@ caption, insert only a caption."
 
 (defun LaTeX-arg-subcaption-subcaptionbox (optional &optional star)
   "Query for the arguments of \"\\subcaptionbox\" incl. a label and insert them.
+If OPTIONAL is non-nil, indicate it while reading the caption.
 If STAR is non-nil, then do not query for a \\label and a short
 caption, insert only a caption."
   (let* ((currenv (LaTeX-current-environment))
@@ -117,17 +118,13 @@ caption, insert only a caption."
    ;; Run style hook for caption.el
    (TeX-run-style-hooks "caption")
 
-   ;; Make "subrefformat" available in key-vals of caption.el:
-   (setq LaTeX-caption-key-val-options-local
-         (append LaTeX-subcaption-key-val-options
-                 LaTeX-caption-key-val-options-local))
 
    (TeX-add-symbols
     ;; Basic commands
     '("subcaption"     (LaTeX-arg-subcaption-subcaption))
-    '("subcaption*"    (LaTeX-arg-subcaption-subcaption t))
+    '("subcaption*"    (LaTeX-arg-subcaption-subcaption     t)  )
     '("subcaptionbox"  (LaTeX-arg-subcaption-subcaptionbox) t)
-    '("subcaptionbox*" (LaTeX-arg-subcaption-subcaptionbox t) t)
+    '("subcaptionbox*" (LaTeX-arg-subcaption-subcaptionbox  t) t)
     '("subref"         TeX-arg-ref)
     ;; \subref* is only available with hyperref.sty loaded, we don't
     ;; check if hyperref.el is loaded and make it available directly.
