@@ -240,7 +240,7 @@ variable `font-latex-fontify-sectioning'." ',num)
   '(("warning"
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
-      "appendix" "displaybreak" "allowdisplaybreaks" "include")
+      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline" "include")
      font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\{") ("settowidth" "|{\\{") ("settoheight" "{{")
