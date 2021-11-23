@@ -174,7 +174,7 @@ STYLESRC = style/prosper.el \
 	   style/appendix.el  style/scholax.el   style/extramarks.el \
 	   style/truncate.el  style/changes.el   style/footnotehyper.el \
 	   style/brazil.el    style/brazilian.el style/portuguese.el \
-	   style/portuges.el  style/backref.el
+	   style/portuges.el  style/backref.el   style/xr-hyper.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
