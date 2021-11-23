@@ -1,6 +1,6 @@
 ;;; tcolorboxlib-raster.el --- AUCTeX style for `raster' library from tcolorbox  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -36,8 +36,7 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
-
-(defvar LaTeX-tcolorbox-keyval-options-local)
+(declare-function LaTeX-tcolorbox-keyval-options "tcolorbox" ())
 (defvar LaTeX-tcolorbox-keyval-options-full)
 
 (defvar LaTeX-tcolorbox-lib-raster-keyval-options
@@ -91,11 +90,11 @@
    environment
    (let ((opts (TeX-read-key-val t (append
                                     LaTeX-tcolorbox-lib-raster-keyval-options
-                                    LaTeX-tcolorbox-keyval-options-local)
+                                    (LaTeX-tcolorbox-keyval-options))
                                  (when (string= environment "tcboxeditemize")
                                    "Raster options (k=v)")))
          (box-opts (when (string= environment "tcboxeditemize")
-                     (TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
+                     (TeX-read-key-val nil (LaTeX-tcolorbox-keyval-options)
                                        "Box options (k=v)"))))
      (concat
       (when (and opts (not (string= opts "")))
@@ -134,15 +133,14 @@
  "tcolorboxlib-raster"
  (lambda ()
 
-   ;; Append key-vals from library to `LaTeX-tcolorbox-keyval-options-full':
-   (setq LaTeX-tcolorbox-keyval-options-full
-         (append LaTeX-tcolorbox-lib-raster-keyval-options
-                 LaTeX-tcolorbox-keyval-options-full))
+   ;; Register key-vals from library to `LaTeX-tcolorbox-keyval-options-full':
+   (add-to-list 'LaTeX-tcolorbox-keyval-options-full
+                'LaTeX-tcolorbox-lib-raster-keyval-options)
 
    (TeX-add-symbols
     ;; 14.2 Macros of the Library
     '("tcbitem"
-      [ TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local "Item options (k=v)" ]
+      [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options) "Item options (k=v)" ]
       (TeX-arg-literal " ")))
 
    (LaTeX-add-environments
@@ -154,7 +152,7 @@
          (let ((raster-opts
                 (TeX-read-key-val t (append
                                      LaTeX-tcolorbox-lib-raster-keyval-options
-                                     LaTeX-tcolorbox-keyval-options-local))))
+                                     (LaTeX-tcolorbox-keyval-options)))))
            (when (and raster-opts (not (string= raster-opts "")))
              (concat LaTeX-optop raster-opts LaTeX-optcl))))))
 
@@ -167,10 +165,10 @@
          (let ((raster-opts
                 (TeX-read-key-val t (append
                                      LaTeX-tcolorbox-lib-raster-keyval-options
-                                     LaTeX-tcolorbox-keyval-options-local)
+                                     (LaTeX-tcolorbox-keyval-options))
                                   "Raster options (k=v)"))
                (box-opts
-                (TeX-read-key-val nil LaTeX-tcolorbox-keyval-options-local
+                (TeX-read-key-val nil (LaTeX-tcolorbox-keyval-options)
                                   "Box options (k=v)")))
            (concat
             (when (and raster-opts (not (string= raster-opts "")))
