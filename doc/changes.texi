@@ -129,6 +129,11 @@ The style @file{latexinfo.el} is removed from @AUCTeX{}.
 @LaTeX{}-2.09 extension of Texinfo, but didn't manage to replace Texinfo.
 
 @item
+The style @file{siunitx.el} is updated to support package version 3.
+Key-value options provided by older package versions are removed,
+deprecated macros and units are not supported anymore.
+
+@item
 @AUCTeX{} has preliminary support for @LaTeX{}-hooks.  Hooks provided by
 @LaTeX{} kernel are known and available for completion in
 @samp{\AddToHook}, @samp{\RemoveFromHook} and @samp{\AddToHookNext}.
