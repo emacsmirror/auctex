@@ -7428,7 +7428,34 @@ function would return non-nil and `(match-string 1)' would return
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
      '("RemoveFromHook" TeX-arg-hook [ "Label" ])
-     '("AddToHookNext"  TeX-arg-hook t)))
+     '("AddToHookNext"  TeX-arg-hook t)
+
+     ;; Added in LaTeX 2021-11-15
+     '("counterwithin"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+     '("counterwithin*"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+
+     '("counterwithout"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+     '("counterwithout*"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))))
 
   (TeX-run-style-hooks "LATEX")
 
