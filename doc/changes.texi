@@ -149,6 +149,9 @@ file in a multifile document.
 
 Note that this feature doesn't work if the document includes sub file
 placed in sub directory below the main file via @samp{\include} command.
+
+@item
+Many other bugs were fixed.
 @end itemize
 
 @heading News in 12.3
