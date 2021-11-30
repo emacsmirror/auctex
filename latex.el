@@ -1247,7 +1247,8 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
         ;; Insert an empty line between caption and marked region, if any.
         (when active-mark (LaTeX-newline) (forward-line -1))
         (indent-according-to-mode)))
-    (set-marker end-marker nil)
+    (when (markerp end-marker)
+      (set-marker end-marker nil))
     (when (and (member environment '("table" "table*"))
                ;; Suppose an existing tabular environment should just
                ;; be wrapped into a table if there is an active region.
