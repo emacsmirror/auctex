@@ -190,9 +190,9 @@ standard one."
 
    ;; For '\path', use the facilities provided by this style.  Also
    ;; don't add "path" for fontification below since
-   ;; `LaTeX-url-urldef-prepare' takes care of it.
+   ;; `LaTeX-url-DeclareUrlCommand-prepare' takes care of it.
    (LaTeX-add-url-DeclareUrlCommands "path")
-   (LaTeX-url-urldef-prepare)
+   (LaTeX-url-DeclareUrlCommand-prepare)
 
    ;; Don't do the same for '\url' because hyperref.el has some code
    ;; to remove "url" from `LaTeX-verbatim-macros-with-delims-local',
