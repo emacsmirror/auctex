@@ -5691,7 +5691,7 @@ escape characters, such as \"\\\" in LaTeX."
         (goto-char macro-start)
         (forward-char (length TeX-esc))
         (buffer-substring-no-properties
-         (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
+         (point) (progn (skip-chars-forward "@A-Za-z*") (point)))))))
 
 (defvar TeX-search-forward-comment-start-function nil
   "Function to find the start of a comment.
