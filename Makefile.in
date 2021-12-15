@@ -177,7 +177,8 @@ STYLESRC = style/prosper.el \
 	   style/portuges.el  style/backref.el   style/xr-hyper.el \
 	   style/xr.el        style/cancel.el    style/unicodefonttable.el \
 	   style/cuted.el     style/floatpag.el  style/flushend.el \
-	   style/midfloat.el  style/stabular.el  style/stfloats.el
+	   style/midfloat.el  style/stabular.el  style/stfloats.el \
+	   style/rotating.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
