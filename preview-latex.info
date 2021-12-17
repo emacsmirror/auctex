@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 6.8 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.0.14 from 2021-08-26).
+(version 13.0.14.2021-12-17 from 2021-12-17).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
 Free Software Foundation, Inc.
@@ -241,8 +241,10 @@ You can get its files from the AUCTeX download area
 preview-latex should already be integrated into AUCTeX, so no separate
 download will be necessary.
 
-   You will also find '.rpm' files there for Fedora and possibly SuSE.
-Anonymous Git is available as well.
+   Anonymous Git is available at <git://git.savannah.gnu.org/auctex.git>
+or <https://git.savannah.gnu.org/git/auctex.git>.  You can also browse
+the repository (https://git.savannah.gnu.org/cgit/auctex.git) via web
+interface.
 
 
 File: preview-latex.info,  Node: Contacts,  Prev: Availability,  Up: Introduction
@@ -286,7 +288,7 @@ File: preview-latex.info,  Node: Keys and lisp,  Next: Simple customization,  Pr
 ********************************************
 
 preview-latex adds key bindings starting with 'C-c C-p' to the supported
-modes of AUCTeX (*note (auctex)Key Index::).  It will also add its own
+modes of AUCTeX (*Note (auctex)Key Index::).  It will also add its own
 'Preview' menu in the menu bar, as well as an icon in the toolbar.
 
    The following only describes the interactive use: view the
@@ -654,16 +656,16 @@ File: preview-latex.info,  Node: x-symbol interoperation,  Next: Middle-clicks p
 Thanks to the work of Christoph Wedler, starting with version
 '4.0h/beta' of x-symbol, the line parsing of AUCTeX and preview-latex is
 fully supported.  Earlier versions exhibit problems.  However, versions
-before 4.2.2 will cause a drastic slowdown of preview-latex's parsing
+before '4.2.2' will cause a drastic slowdown of preview-latex's parsing
 pass, so we don't recommend to use versions earlier than that.
 
    If you wonder what x-symbol is, it is a package that transforms
 various tokens and subscripts to a more readable form while editing and
 offers a few input methods handy especially for dealing with math.  Take
-a look at <http://x-symbol.sourceforge.net>.
+a look at <http://x-symbol.sourceforge.net/>.
 
-   x-symbol versions up to 4.5.1-beta at least require an 8bit-clean TeX
-implementation (meaning that its terminal output should not use
+   x-symbol versions up to '4.5.1-beta' at least require an 8bit-clean
+TeX implementation (meaning that its terminal output should not use
 '^^'-started escape sequences) for cooperation with preview-latex.
 Later versions may get along without it, like preview-latex does now.
 
@@ -1319,7 +1321,7 @@ together in making preview-latex work as intended.
      the setting of 'preview-fast-conversion'.  The printer specified
      here is '-Pwww' by default, which will usually get you scalable
      fonts where available.  If you are experiencing problems, you might
-     want to try playing around with Dvips options (*note
+     want to try playing around with Dvips options (*Note
      (dvips)Command-line options::).
 
      The conversion of the previews into PostScript or EPS files gets
@@ -1906,7 +1908,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.0.14 from 2021-08-26).
+(version 13.0.14.2021-12-17 from 2021-12-17).
 
    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
 Free Software Foundation, Inc.
@@ -2534,43 +2536,43 @@ Index
 
 
 Tag Table:
-Node: Top960
-Node: Copying2232
-Node: Introduction2686
-Node: What use is it?3360
-Node: Activating preview-latex4749
-Node: Getting started5500
-Node: Basic modes of operation7447
-Node: More documentation8652
-Node: Availability9521
-Node: Contacts10130
-Node: Installation11403
-Node: Keys and lisp11604
-Node: Simple customization18679
-Node: Known problems24341
-Node: Font problems with Dvips25167
-Node: Too small bounding boxes26337
-Node: x-symbol interoperation27733
-Node: Middle-clicks paste instead of toggling29116
-Node: No images are displayed with gs 9.27 and earlier29801
-Node: For advanced users32443
-Node: The LaTeX style file32902
-Node: Package options35464
-Node: Provided commands46368
-Node: The Emacs interface53713
-Node: The preview images62415
-Node: Misplaced previews66172
-Node: ToDo69628
-Node: Frequently Asked Questions74405
-Node: Introduction to FAQ74728
-Node: Requirements75067
-Node: Installation Trouble77035
-Node: Customization79299
-Node: Troubleshooting82375
-Node: Other formats84885
-Node: Copying this Manual86200
-Node: GNU Free Documentation License87147
-Node: Index112271
+Node: Top971
+Node: Copying2243
+Node: Introduction2697
+Node: What use is it?3371
+Node: Activating preview-latex4760
+Node: Getting started5511
+Node: Basic modes of operation7458
+Node: More documentation8663
+Node: Availability9532
+Node: Contacts10259
+Node: Installation11532
+Node: Keys and lisp11733
+Node: Simple customization18808
+Node: Known problems24470
+Node: Font problems with Dvips25296
+Node: Too small bounding boxes26466
+Node: x-symbol interoperation27862
+Node: Middle-clicks paste instead of toggling29250
+Node: No images are displayed with gs 9.27 and earlier29935
+Node: For advanced users32577
+Node: The LaTeX style file33036
+Node: Package options35598
+Node: Provided commands46502
+Node: The Emacs interface53847
+Node: The preview images62549
+Node: Misplaced previews66306
+Node: ToDo69762
+Node: Frequently Asked Questions74539
+Node: Introduction to FAQ74862
+Node: Requirements75201
+Node: Installation Trouble77169
+Node: Customization79433
+Node: Troubleshooting82509
+Node: Other formats85019
+Node: Copying this Manual86334
+Node: GNU Free Documentation License87292
+Node: Index112416
 
 End Tag Table
 
