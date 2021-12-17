@@ -137,14 +137,14 @@
 ;; Referencing ConTeXt macro's
 
 (defvar ConTeXt-referencing-list ()
-  "Calls ConTeXt-XX-other-macro-list where XX is the current interface.")
+  "Calls ConTeXt-XX-referencing-list where XX is the current interface.")
 
 (defun ConTeXt-referencing-command (what)
   "The ConTeXt macro to call WHAT is itself, no interface specific calls."
   what)
 
 (defun ConTeXt-insert-referencing (what)
-  "Insert the ConTeXt referencing SETUP."
+  "Insert the ConTeXt referencing WHAT."
   (insert TeX-esc (ConTeXt-referencing-command what))
   (newline)
   (indent-according-to-mode)
@@ -174,7 +174,8 @@
   "Calls ConTeXt-XX-project-structure where XX is the current interface.")
 
 (defun ConTeXt-project-structure (N)
-  "Insert a ConTeXt project structure where N is in index into `ConTeXt-project-structure-list'."
+  "Insert a ConTeXt project structure.
+N is in index into `ConTeXt-project-structure-list'."
   (funcall (intern(concat
                    "ConTeXt-project-"
                    (nth N ConTeXt-project-structure-list)
@@ -352,10 +353,10 @@ section."
         (ConTeXt-up-section (1- arg))))))
 
 (defvar ConTeXt-numbered-section-list ()
-  "ConTeXt-XX-section-list where XX is the current interface.")
+  "ConTeXt-XX-numbered-section-list where XX is the current interface.")
 
 (defvar ConTeXt-unnumbered-section-list ()
-  "ConTeXt-XX-section-list where XX is the current interface.")
+  "ConTeXt-XX-unnumbered-section-list where XX is the current interface.")
 
 (defvar ConTeXt-section-list
   (append ConTeXt-numbered-section-list ConTeXt-unnumbered-section-list)
@@ -387,7 +388,7 @@ section."
 
 (defun ConTeXt-unnumbered-section-level (name)
   "Return the level of the section NAME."
-  (let ((entry (TeX-member name ConTeXt-numbered-section-list
+  (let ((entry (TeX-member name ConTeXt-unnumbered-section-list
                            (function (lambda (a b) (equal a (nth 0 b)))))))
     (if entry
         (nth 1 entry)
@@ -408,7 +409,7 @@ The following variables are set before the hooks are run
 `ConTeXt-level'     - numeric section level, see the documentation of
                       `ConTeXt-section'.
 `ConTeXt-name'      - name of the sectioning command, derived from
-                      `level'.
+                      `ConTeXt-level'.
 `ConTeXt-title'     - The title of the section, default to an empty
                       string.
 `ConTeXt-done-mark' - Position of point afterwards, default nil
@@ -509,8 +510,9 @@ in your .emacs file."
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
-Insert this hook into `ConTeXt-numbered-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[ConTeXt-section]'."
+Insert this hook into `ConTeXt-numbered-section-hook' to allow
+the user to change the name of the sectioning command inserted
+with `\\[ConTeXt-section]'."
   (let ((string (completing-read
                  (concat "Select level (default " ConTeXt-name "): ")
                  ConTeXt-numbered-section-list
@@ -521,8 +523,9 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 
 (defun ConTeXt-unnumbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
-Insert this hook into `ConTeXt-unnumbered-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[ConTeXt-section]'."
+Insert this hook into `ConTeXt-unnumbered-section-hook' to allow
+the user to change the name of the sectioning command inserted
+with `\\[ConTeXt-section]'."
   (let ((string (completing-read
                  (concat "Select level (default " ConTeXt-name "): ")
                  ConTeXt-unnumbered-section-list
@@ -533,8 +536,9 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 
 (defun ConTeXt-section-title ()
   "Hook to prompt for ConTeXt section title.
-Insert this hook into `ConTeXt-(un)numbered-section-hook' to allow the user to change
-the title of the section inserted with `\\[ConTeXt-section]."
+Insert this hook into `ConTeXt-(un)numbered-section-hook' to
+allow the user to change the title of the section inserted with
+`\\[ConTeXt-section]."
   (setq ConTeXt-title (TeX-read-string "What title: ")))
 
 (defun ConTeXt-section-section ()
@@ -562,8 +566,8 @@ assumes the section already is inserted."
 
 (defun ConTeXt-section-ref ()
   "Hook to insert a reference after the sectioning command.
-Insert this hook into `ConTeXt-numbered-section-hook' to prompt for a label to be
-inserted after the sectioning command."
+Insert this hook into `ConTeXt-numbered-section-hook' to prompt
+for a label to be inserted after the sectioning command."
   (setq ConTeXt-reference
         (completing-read
          (TeX-argument-prompt t nil
@@ -860,7 +864,8 @@ An entry looks like: (\"environment\" . function)")
       (buffer-substring beg (point)))))
 
 (defun ConTeXt-last-unended-start ()
-  "Leave point at the beginning of the last `\\start...' that is unstopped looking from the current cursor."
+  "Leave point at the beginning of the last unstopped `\\start...'.
+Look back from the current cursor."
   (while (and (re-search-backward "\\\\start[a-zA-Z]*\\|\\\\stop[a-zA-Z]*")
               (looking-at "\\\\stop[a-zA-Z]*"))
     (ConTeXt-last-unended-start)))
@@ -1345,20 +1350,20 @@ else.  There might be text before point."
 (defvar ConTeXt-environment-menu-name "Insert Environment   (C-c C-e)")
 
 (defun ConTeXt-environment-menu-entry (entry)
-  "Create an entry for the environment menu."
+  "Create an ENTRY for the environment menu."
   (vector (car entry) (list 'ConTeXt-environment-menu (car entry)) t))
 
 (defvar ConTeXt-environment-modify-menu-name "Change Environment   (C-u C-c C-e)")
 
 (defun ConTeXt-environment-modify-menu-entry (entry)
-  "Create an entry for the change environment menu."
+  "Create an ENTRY for the change environment menu."
   (vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
 
 ;; ConTeXt define macros
 (defvar ConTeXt-define-menu-name "Define")
 
 (defun ConTeXt-define-menu-entry (entry)
-  "Create an entry for the define menu."
+  "Create an ENTRY for the define menu."
   (vector entry (list 'ConTeXt-define-menu entry)))
 
 (defun ConTeXt-define-menu (define)
@@ -1369,7 +1374,7 @@ else.  There might be text before point."
 (defvar ConTeXt-setup-menu-name "Setup")
 
 (defun ConTeXt-setup-menu-entry (entry)
-  "Create an entry for the setup menu."
+  "Create an ENTRY for the setup menu."
   (vector entry (list 'ConTeXt-setup-menu entry)))
 
 (defun ConTeXt-setup-menu (setup)
@@ -1380,7 +1385,7 @@ else.  There might be text before point."
 (defvar ConTeXt-referencing-menu-name "Referencing")
 
 (defun ConTeXt-referencing-menu-entry (entry)
-  "Create an entry for the referencing menu."
+  "Create an ENTRY for the referencing menu."
   (vector entry (list 'ConTeXt-referencing-menu entry)))
 
 (defun ConTeXt-referencing-menu (referencing)
@@ -1391,7 +1396,7 @@ else.  There might be text before point."
 (defvar ConTeXt-other-macro-menu-name "Other macro")
 
 (defun ConTeXt-other-macro-menu-entry (entry)
-  "Create an entry for the other macro menu."
+  "Create an ENTRY for the other macro menu."
   (vector entry (list 'ConTeXt-other-macro-menu entry)))
 
 (defun ConTeXt-other-macro-menu (other-macro)
@@ -1404,7 +1409,7 @@ else.  There might be text before point."
 (defvar ConTeXt-project-structure-menu-name "Project Structure")
 
 (defun ConTeXt-project-structure-menu (project-structure)
-  "Insert project structure from menu."
+  "Insert PROJECT-STRUCTURE from menu."
   (ConTeXt-project-structure
    (let ((l ConTeXt-project-structure-list))
      (- (length l) (length (member project-structure l))))))
@@ -1419,7 +1424,7 @@ else.  There might be text before point."
 (defvar ConTeXt-section-block-menu-name "Section Block")
 
 (defun ConTeXt-section-block-menu (section-block)
-  "Insert section block from menu."
+  "Insert SECTION-BLOCK from menu."
   (ConTeXt-section-block section-block))
 
 (defun ConTeXt-section-block-menu-entry (entry)
@@ -1693,7 +1698,7 @@ file, or any mode derived thereof. See variable
     "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -1701,7 +1706,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   '("\\.dvi" "\\.pdf" "\\.ps")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -1820,7 +1825,7 @@ Special commands:
 
 Entering `context-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
-of ConTeXt-mode-hook."
+of `ConTeXt-mode-hook'."
   (interactive)
   (context-guess-current-interface)
   (require (intern (concat "context-" ConTeXt-current-interface)))

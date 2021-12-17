@@ -247,8 +247,8 @@ will be considered arguments of the macro independent of its definition."
 (defvar texmathp-why nil
   "After a call to `texmathp' this variable shows why math-mode is on or off.
 The value is a cons cell (MATCH . POSITION).
-MATCH is a string like a car of an entry in `texmathp-tex-commands', e.g.
-\"equation\" or \"\\ensuremath\" or \"\\=\\[\" or \"$\".
+MATCH is a string like a car of an entry in `texmathp-tex-commands', for
+example \"equation\" or \"\\ensuremath\" or \"\\=\\[\" or \"$\".
 POSITION is the buffer position of the match.  If there was no match,
 it points to the limit used for searches, usually two paragraphs up.")
 

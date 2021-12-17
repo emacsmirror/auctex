@@ -1,6 +1,6 @@
 ;;; tex-live.el --- AUCTeX style for `tex-live.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -42,6 +42,7 @@
 (declare-function LaTeX-add-fancyvrb-environments
                   "fancyvrb"
                   (&rest fancyvrb-environments))
+(declare-function LaTeX-fancyvrb-key-val-options "fancyvrb" ())
 
 (declare-function font-latex-add-keywords
                   "font-latex"
@@ -84,7 +85,7 @@
     '("listinginput"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Value of firstnumber key")
-                    (cadr (assoc "firstnumber" LaTeX-fancyvrb-key-val-options-local)))
+                    (cadr (assoc "firstnumber" (LaTeX-fancyvrb-key-val-options))))
       LaTeX-fancyvrb-arg-file-relative)
 
     ;; Various sorts of names:

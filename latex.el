@@ -1229,9 +1229,7 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
               (LaTeX-newline)
               (indent-according-to-mode)))
         ;; bottom caption (default)
-        (when active-mark
-          (goto-char end-marker)
-          (set-marker end-marker nil))
+        (when active-mark (goto-char end-marker))
         (save-excursion
           (LaTeX-newline)
           (indent-according-to-mode)
@@ -1249,6 +1247,8 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
         ;; Insert an empty line between caption and marked region, if any.
         (when active-mark (LaTeX-newline) (forward-line -1))
         (indent-according-to-mode)))
+    (when (markerp end-marker)
+      (set-marker end-marker nil))
     (when (and (member environment '("table" "table*"))
                ;; Suppose an existing tabular environment should just
                ;; be wrapped into a table if there is an active region.
@@ -1524,7 +1524,7 @@ The number is calculated from REGEXP and FUNC.
 Example 1:
 Consider the case that the current environment begins with
 \\begin{array}[t]{|lcr|}
-.  REGEXP must be chosen to match \"[t]\", i.e., the text between just
+.  REGEXP must be chosen to match \"[t]\", that is, the text between just
 after \"\\begin{array}\" and just before \"{|lcr|}\", which encloses
 the column specification.  FUNC must return the number of ampersands to
 be inserted, which is 2 since this example specifies three columns.
@@ -1818,7 +1818,7 @@ The input string may include LaTeX comments and newlines."
 For each element, the CAR is the name of the class, the CDR is
 the list of options provided to it.
 
-E.g., its value will be
+For example, its value will be
   \(\(\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\"\)
    ...\)
 See also `LaTeX-provided-package-options'.")
@@ -1841,7 +1841,7 @@ Return first found class option matching REGEXP, or nil if not found."
 For each element, the CAR is the name of the package, the CDR is
 the list of options provided to it.
 
-E.g., its value will be
+For example, its value will be
   \(\(\"babel\" \"german\"\)
    \(\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\"\)
    ...\)
@@ -2037,13 +2037,14 @@ argument, otherwise as a mandatory one."
   "Prompt for a label completing with known labels and return it.
 This function always returns a string depending on user input:
 the returned value can be an empty string \"\", the value of
-`TeX-read-label-prefix' if present (e.g. \"fig:\") or a complete
-label input (e.g. \"fig:foo\").  If OPTIONAL is non-nil, indicate
-optional as part of prompt in minibuffer.  Use PROMPT as the
-prompt string.  If DEFINITION is non-nil, add the chosen label to
-the list of defined labels.  `TeX-read-label-prefix' is used as
-initial input for the label.  Also check if label is already
-defined and ask user for confirmation before proceeding."
+`TeX-read-label-prefix' if present (for example, \"fig:\") or a
+complete label input (for example, \"fig:foo\").  If OPTIONAL is
+non-nil, indicate optional as part of prompt in minibuffer.  Use
+PROMPT as the prompt string.  If DEFINITION is non-nil, add the
+chosen label to the list of defined labels.
+`TeX-read-label-prefix' is used as initial input for the label.
+Also check if label is already defined and ask user for
+confirmation before proceeding."
   (let (label valid)
     (while (not valid)
       (setq label
@@ -3097,12 +3098,21 @@ If OPTIONAL is non-nil, indicate in the prompt that we are
 reading an optional argument.  KEY-VAL-ALIST is an alist.  The
 car of each element should be a string representing a key and the
 optional cdr should be a list with strings to be used as values
-for the key.  Use PROMPT as the prompt string."
+for the key.  KEY-VAL-ALIST can be a symbol or a function call
+returning an alist.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
-   (if (symbolp key-val-alist)
-       (eval key-val-alist t)
-     key-val-alist)))
+   (cond ((and (symbolp key-val-alist)
+	       (boundp key-val-alist))
+	  (symbol-value key-val-alist))
+	 ((and (listp key-val-alist)
+	       (symbolp (car key-val-alist))
+	       (fboundp (car key-val-alist)))
+	  (let ((head (car key-val-alist))
+		(tail (cdr key-val-alist)))
+	    (apply head tail)))
+	 (t
+	  key-val-alist))))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
@@ -3117,161 +3127,184 @@ as values for the key.  Use PROMPT as the prompt string."
 (defun TeX-read-hook ()
   "Read a LaTeX hook and return it as a string."
   (let* ((hook (completing-read
-	        (TeX-argument-prompt nil nil "Hook")
-	        '("cmd"
-		  "env"
-		  ;; From ltfilehook-doc.pdf
-		  "file/before"        "file/after"
-		  "include/before"     "include/end"   "include/after"
-		  "class/before"       "class/after"
-		  "package/before"     "package/after"
-		  ;; From lthooks-doc.pdf
-		  "begindocument"
-		  "begindocument/before"
-		  "begindocument/end"
-		  "enddocument"
-		  "enddocument/afterlastpage"
-		  "enddocument/afteraux"
-		  "enddocument/info"
-		  "enddocument/end"
-		  "rmfamily"           "sffamily"
-		  "ttfamily"           "normalfont"
-		  "bfseries"           "bfseries/defaults"
-		  "mdseries"           "mdseries/defaults"
-		  ;; From ltshipout-doc.pdf
-		  "shipout/before"     "shipout/after"
-		  "shipout/foreground" "shipout/background"
-		  "shipout/firstpage"  "shipout/lastpage"
-		  ;; From ltpara-doc.pdf
-		  "para/before"         "para/begin"
-		  "para/end"            "para/after")))
-	 (place (lambda ()
-		  (completing-read
-		   (TeX-argument-prompt nil nil "Where")
-		   (if (string= hook "cmd")
-		       '("after" "before")
-		     '("before" "begin" "end" "after")))))
-	 (search (lambda ()
-		   (if (eq TeX-arg-input-file-search 'ask)
-		       (not (y-or-n-p "Find file yourself? "))
-		     TeX-arg-input-file-search)))
-	 name where files ); result
+                (TeX-argument-prompt nil nil "Hook")
+                '("cmd"
+                  "env"
+                  ;; From ltfilehook-doc.pdf
+                  "file" "include" "class" "package"
+                  ;; From lthooks-doc.pdf
+                  "begindocument"  "enddocument"
+                  "rmfamily"       "sffamily"
+                  "ttfamily"       "normalfont"
+                  "bfseries"       "mdseries"
+                  ;; From ltshipout-doc.pdf
+                  "shipout"
+                  ;; From ltpara-doc.pdf
+                  "para")))
+         (place (lambda (&optional opt pr)
+                  (completing-read
+                   (TeX-argument-prompt opt pr "Where")
+                   (cond ((member hook '("env" "para"))
+                          '("after" "before" "begin" "end"))
+                         ((string= hook "include")
+                          '("after" "before" "end"))
+                         ((string= hook "begindocument")
+                          '("before" "end"))
+                         ((string= hook "enddocument")
+                          '("afterlastpage" "afteraux" "info" "end"))
+                         ((member hook '("bfseries" "mdseries"))
+                          '("defaults"))
+                         ((string= hook "shipout")
+                          '("before"     "after"
+                            "foreground" "background"
+                            "firstpage"  "lastpage"))
+                         (t
+                          '("after" "before"))))))
+         (search (lambda ()
+                   (if (eq TeX-arg-input-file-search 'ask)
+                       (not (y-or-n-p "Find file yourself? "))
+                     TeX-arg-input-file-search)))
+         name where files)
     (cond ((string= hook "cmd")
-	   ;; cmd/<name>/<where>
-	   (setq name (completing-read
-		       (TeX-argument-prompt nil nil "Command")
-		       (TeX-symbol-list)))
-	   (setq where (funcall place)))
+           ;; cmd/<name>/<where>: <where> is one of (before|after)
+           (setq name (completing-read
+                       (TeX-argument-prompt nil nil "Command")
+                       (TeX-symbol-list)))
+           (setq where (funcall place)))
 
-	  ;; env/<name>/<where>
-	  ((string= hook "env")
-	   (setq name (completing-read
-		       (TeX-argument-prompt nil nil "Environment")
-		       (LaTeX-environment-list)))
-	   (setq where (funcall place)))
+          ;; env/<name>/<where>: <where> is one of (before|after|begin|end)
+          ((string= hook "env")
+           (setq name (completing-read
+                       (TeX-argument-prompt nil nil "Environment")
+                       (LaTeX-environment-list)))
+           (setq where (funcall place)))
 
-	  ;; file/(before|after)/<file-name.xxx> where <file-name> is
-	  ;; optional and must be with extension
-	  ((member hook '("file/before" "file/after"))
-	   (if (funcall search)
-	       (progn
-		 (unless TeX-global-input-files-with-extension
-		   (setq TeX-global-input-files-with-extension
-			 (prog2
-			     (message "Searching for files...")
-			     (mapcar #'list
-				     (TeX-search-files-by-type 'texinputs
-							       'global
-							       t nil))
-			   (message "Searching for files...done"))))
-		 (setq name
-		       (completing-read
-			(TeX-argument-prompt t nil "File")
-			TeX-global-input-files-with-extension)))
-	     (setq name
-		   (file-name-nondirectory
-		    (read-file-name
-		     (TeX-argument-prompt t nil "File")
-		     nil "")))))
+          ;; file/<file-name.xxx>/<where>: <file-name> is optional and
+          ;; must be with extension and <where> is one of
+          ;; (before|after)
+          ((string= hook "file")
+           (if (funcall search)
+               (progn
+                 (unless TeX-global-input-files-with-extension
+                   (setq TeX-global-input-files-with-extension
+                         (prog2
+                             (message "Searching for files...")
+                             (mapcar #'list
+                                     (TeX-search-files-by-type 'texinputs
+                                                               'global
+                                                               t nil))
+                           (message "Searching for files...done"))))
+                 (setq name
+                       (completing-read
+                        (TeX-argument-prompt t nil "File")
+                        TeX-global-input-files-with-extension)))
+             (setq name
+                   (file-name-nondirectory
+                    (read-file-name
+                     (TeX-argument-prompt t nil "File")
+                     nil ""))))
+           (setq where (funcall place)))
 
-	  ;; include/(before|after|end)/<file-name> where <file-name>
-	  ;; is optional
-	  ((member hook '("include/before" "include/end" "include/after"))
-	   (if (funcall search)
-	       (progn
-		 (setq files
-		       (prog2
-			   (message "Searching for files...")
-			   ;; \include looks for files with TeX content,
-			   ;; so limit the search:
-			   (let* ((TeX-file-extensions '("tex" "ltx")))
-			     (TeX-search-files-by-type 'texinputs 'local t t))
-			 (message "Searching for files...done")))
-		 (setq name (completing-read
-			     (TeX-argument-prompt t nil "File")
-			     files)))
-	     (setq name
-		   (file-name-base
-		    (read-file-name
-		     (TeX-argument-prompt t nil "File")
-		     nil "")))))
+          ;; include/<file-name>/<where>: <file-name> is optional and
+          ;; <where> is one of (before|after|end)
+          ((string= hook "include")
+           (if (funcall search)
+               (progn
+                 (setq files
+                       (prog2
+                           (message "Searching for files...")
+                           ;; \include looks for files with TeX content,
+                           ;; so limit the search:
+                           (let* ((TeX-file-extensions '("tex" "ltx")))
+                             (TeX-search-files-by-type 'texinputs 'local t t))
+                         (message "Searching for files...done")))
+                 (setq name (completing-read
+                             (TeX-argument-prompt t nil "File")
+                             files)))
+             (setq name
+                   (file-name-base
+                    (read-file-name
+                     (TeX-argument-prompt t nil "File")
+                     nil ""))))
+           (setq where (funcall place)))
 
-	  ;; class/(before|after)/<doc-class> where <doc-class> is
-	  ;; optional
-	  ((member hook '("class/before" "class/after"))
-	   (if (funcall search)
-	       (progn
-		 (unless LaTeX-global-class-files
-		   (setq LaTeX-global-class-files
-			 (prog2
-			     (message "Searching for LaTeX classes...")
-			     (let* ((TeX-file-extensions '("cls")))
-			       (mapcar #'list
-				       (TeX-search-files-by-type 'texinputs
-								 'global
-								 t t)))
-			   (message "Searching for LaTeX classes...done"))))
-		 (setq name (completing-read
-			     (TeX-argument-prompt t nil "Document class")
-			     LaTeX-global-class-files)))
-	     (setq name
-		   (file-name-base
-		    (read-file-name
-		     (TeX-argument-prompt t nil "File")
-		     nil "")))))
+          ;; class/<doc-class>/<where>: <doc-class> is optional and
+          ;; <where> is one of (before|after)
+          ((string= hook "class")
+           (if (funcall search)
+               (progn
+                 (unless LaTeX-global-class-files
+                   (setq LaTeX-global-class-files
+                         (prog2
+                             (message "Searching for LaTeX classes...")
+                             (let* ((TeX-file-extensions '("cls")))
+                               (mapcar #'list
+                                       (TeX-search-files-by-type 'texinputs
+                                                                 'global
+                                                                 t t)))
+                           (message "Searching for LaTeX classes...done"))))
+                 (setq name (completing-read
+                             (TeX-argument-prompt t nil "Document class")
+                             LaTeX-global-class-files)))
+             (setq name
+                   (file-name-base
+                    (read-file-name
+                     (TeX-argument-prompt t nil "Document class")
+                     nil ""))))
+           (setq where (funcall place)))
 
-	  ;; package/(before|after)/<pack-name> where
-	  ;; <pack-name> is optional
-	  ((member hook '("package/before" "package/after"))
-	   (if (funcall search)
-	       (progn
-		 (unless LaTeX-global-package-files
-		   (setq LaTeX-global-package-files
-			 (prog2
-			     (message "Searching for LaTeX packages...")
-			     (let* ((TeX-file-extensions '("sty")))
-			       (mapcar #'list
-				       (TeX-search-files-by-type 'texinputs
-								 'global
-								 t t)))
-			   (message "Searching for LaTeX packages...done"))))
-		 (setq name (completing-read
-			     (TeX-argument-prompt t nil "Package")
-			     LaTeX-global-package-files)))
-	     (setq name (file-name-base
-			 (read-file-name
-			  (TeX-argument-prompt t nil "File")
-			  nil "")))))
+          ;; package/<pack-name>/<where>: <pack-name> is optional and
+          ;; <where> is one of (before|after)
+          ((string= hook "package")
+           (if (funcall search)
+               (progn
+                 (unless LaTeX-global-package-files
+                   (setq LaTeX-global-package-files
+                         (prog2
+                             (message "Searching for LaTeX packages...")
+                             (let* ((TeX-file-extensions '("sty")))
+                               (mapcar #'list
+                                       (TeX-search-files-by-type 'texinputs
+                                                                 'global
+                                                                 t t)))
+                           (message "Searching for LaTeX packages...done"))))
+                 (setq name (completing-read
+                             (TeX-argument-prompt t nil "Package")
+                             LaTeX-global-package-files)))
+             (setq name (file-name-base
+                         (read-file-name
+                          (TeX-argument-prompt t nil "Package")
+                          nil ""))))
+           (setq where (funcall place)))
 
-	  ;; User specific input for the hook, do nothing:
-	  (t nil))
-    ;; Process the input: For cmd or env, concat the elements with a
-    ;; slash.  For other hooks, check if the optional name is given
-    ;; and append it with a backslash to the hook:
-    (if (member hook '("cmd" "env"))
-	(concat hook "/" name "/" where)
-      (concat hook (when (and name (not (string= name "")))
-		     (concat "/" name))))))
+          ;; begindocument/<where>: <where> is empty or one of
+          ;; (before|end)
+          ((string= hook "begindocument")
+           (setq where (funcall place t)))
+
+          ;; enddocument/<where>: <where> is empty or one of
+          ;; (afterlastpage|afteraux|info|end)
+          ((string= hook "enddocument")
+           (setq where (funcall place t)))
+
+          ;; bfseries|mdseries/<where>: <where> is empty or defaults
+          ((member hook '("bfseries" "mdseries"))
+           (setq where (funcall place t)))
+
+          ;; shipout/<where>: <where> is one of
+          ;; (before|after|foreground|background|firstpage|lastpage)
+          ((string= hook "shipout")
+           (setq where (funcall place)))
+
+          ;; Other hooks or user specific input, do nothing:
+          (t nil))
+
+    ;; Process the input: Concat the given parts and return it
+    (concat hook
+            (when (and name (not (string= name "")))
+              (concat "/" name))
+            (when (and where (not (string= where "")))
+              (concat "/" where)))))
 
 (defun TeX-arg-hook (optional)
   "Prompt for a LaTeX hook.
@@ -3343,7 +3376,7 @@ buffer-local keyword additions via
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-environments-local nil
-  "Buffer-local variable for inline verbatim environments.
+  "Buffer-local variable for verbatim environments.
 
 Style files should add constructs to this variable and not to
 `LaTeX-verbatim-environments'.
@@ -3418,7 +3451,7 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
         (goto-char (car macro-boundaries))
         (forward-char (length TeX-esc))
         (buffer-substring-no-properties
-         (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
+         (point) (progn (skip-chars-forward "@A-Za-z*") (point)))))))
 
 (defun LaTeX-verbatim-p (&optional pos)
   "Return non-nil if position POS is in a verbatim-like construct."
@@ -3541,13 +3574,6 @@ functions, see `LaTeX-fill-region-as-paragraph'."
   :group 'LaTeX-indentation
   :type 'regexp)
 
-(defcustom LaTeX-verbatim-regexp "verbatim\\*?"
-  "Regexp matching environments with indentation at col 0 for begin/end."
-  :group 'LaTeX-indentation
-  :type 'regexp)
-(make-obsolete-variable 'LaTeX-verbatim-regexp 'LaTeX-verbatim-environments-local
-                        "2014-12-19")
-
 (defcustom LaTeX-begin-regexp "begin\\b\\|\\["
   "Regexp matching macros considered begins."
   :group 'LaTeX-indentation
@@ -3569,8 +3595,8 @@ This means, we just count the LaTeX tokens \\left, \\right, \\begin,
 and \\end up to the first occurence of text matching this regexp.
 Thus, the default \"%\" stops counting the tokens at a comment.  A
 value of \"%[^>]\" would allow you to alter the indentation with
-comments, e.g. with comment `%> \\begin'.
-Lines which start with `%' are not considered at all, regardless if this
+comments, for example with comment `%> \\begin'.
+Lines which start with `%' are not considered at all, regardless of this
 value."
   :group 'LaTeX-indentation
   :type 'regexp)
@@ -3658,9 +3684,12 @@ Lines starting with an item is given an extra indentation of
   (delete-region (line-beginning-position) (point))
   (indent-to outer-indent))
 
-(defun LaTeX-verbatim-regexp ()
-  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'."
-  (regexp-opt (LaTeX-verbatim-environments)))
+(defun LaTeX-verbatim-regexp (&optional comment)
+  "Calculate the verbatim env regex from `LaTeX-verbatim-environments'.
+If optional argument COMMENT is non-nil, include comment env from
+`LaTeX-comment-env-list'."
+  (regexp-opt (append (LaTeX-verbatim-environments)
+                      (if comment LaTeX-comment-env-list))))
 
 (defun LaTeX-indent-calculate (&optional force-type)
   "Return the indentation of a line of LaTeX source.
@@ -3692,9 +3721,9 @@ outer indentation in case of a commented line.  The symbols
                                     (length comment-padding)))
                (nth 1 entry)))
             ((looking-at (concat (regexp-quote TeX-esc)
-                                 "\\(begin\\|end\\){\\("
-                                 (LaTeX-verbatim-regexp)
-                                 "\\)}"))
+                                 "\\(begin\\|end\\){"
+                                 (LaTeX-verbatim-regexp t)
+                                 "}"))
              ;; \end{verbatim} must be flush left, otherwise an unwanted
              ;; empty line appears in LaTeX's output.
              0)
@@ -3824,21 +3853,24 @@ outer indentation in case of a commented line.  The symbols
            ;; environment.
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
-                               "begin *{\\("
+                               "begin *{"
+                               ;; Don't give optional argument here
+                               ;; because indent would be disabled
+                               ;; inside comment env otherwise.
                                (LaTeX-verbatim-regexp)
-                               "\\)}"))
+                               "}"))
            0)
           ((looking-at (concat (regexp-quote TeX-esc)
-                               "end *{\\("
-                               (LaTeX-verbatim-regexp)
-                               "\\)}"))
+                               "end *{"
+                               (LaTeX-verbatim-regexp t)
+                               "}"))
            ;; If I see an \end{verbatim} in the previous line I skip
            ;; back to the preceding \begin{verbatim}.
            (save-excursion
              (if (re-search-backward (concat (regexp-quote TeX-esc)
-                                             "begin *{\\("
-                                             (LaTeX-verbatim-regexp)
-                                             "\\)}") 0 t)
+                                             "begin *{"
+                                             (LaTeX-verbatim-regexp t)
+                                             "}") 0 t)
                  (LaTeX-indent-calculate-last force-type)
                0)))
           (t (+ (LaTeX-current-indentation force-type)
@@ -3897,7 +3929,7 @@ outer indentation in case of a commented line.  The symbols
 If it is commented and comments are formatted syntax-aware move
 point to the first non-whitespace character after the comment
 character(s), but only if `this-command' is not a newline
-command, i.e., `TeX-newline' or the value of
+command, that is, `TeX-newline' or the value of
 `TeX-newline-function'.  The optional argument FORCE-TYPE can be
 used to force point being moved to the inner or outer indentation
 in case of a commented line.  The symbols 'inner and 'outer are
@@ -3972,7 +4004,7 @@ You can disable filling inside a specific environment by adding
 it to `LaTeX-indent-environment-list', only indentation is
 performed in that case."
   (interactive "*r\nP")
-  (let ((end-marker (save-excursion (goto-char to) (point-marker))))
+  (let ((end-marker (copy-marker to)) has-code-comment has-regexp-match)
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
             (member (TeX-current-macro) LaTeX-fill-excluded-macros)
             ;; This could be generalized, if there are more cases where
@@ -3984,30 +4016,65 @@ performed in that case."
                                                        "Local Variables:")))))
         ;; Filling disabled, only do indentation.
         (indent-region from to nil)
+      ;; XXX: This `save-restriction' is a leftover of older codes and
+      ;; can now be removed.
       (save-restriction
         (goto-char from)
         (while (< (point) end-marker)
-          (if (re-search-forward
-               (concat "\\("
-                       ;; Code comments.
-                       "\\([^ \r\n%\\]\\|\\\\%\\)\\([ \t]\\|\\\\\\\\\\)*"
-                       TeX-comment-start-regexp
-                       "\\|"
-                       ;; Lines ending with `\par'.
-                       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
-                       (regexp-quote (concat TeX-esc TeX-esc))
-                       "\\)*"
-                       (regexp-quote TeX-esc) "par[ \t]*"
-                       "\\({[ \t]*}\\)?[ \t]*$"
-                       "\\)\\|\\("
-                       ;; Lines ending with `\\'.
-                       (regexp-quote TeX-esc)
-                       (regexp-quote TeX-esc)
-                       "\\(\\s-*\\*\\)?"
-                       "\\(\\s-*\\[[^]]*\\]\\)?"
-                       "\\s-*$\\)")
-               end-marker t)
+          ;; Code comments.
+          (catch 'found
+            (while (setq has-code-comment
+                         (TeX-search-forward-comment-start end-marker))
+              ;; See if there is at least one non-whitespace
+              ;; character before the comment starts.
+              (goto-char has-code-comment)
+              (skip-chars-backward " \t" (line-beginning-position))
+              (if (not (bolp))
+                  ;; A real code comment.
+                  (throw 'found t)
+                ;; Not a code comment.  Continue the loop.
+                (forward-line 1)
+                (if (> (point) end-marker)
+                    (goto-char end-marker)))))
+
+          ;; Go back to the former point for the next regexp search.
+          (goto-char from)
+
+          (when (setq has-regexp-match
+                      (re-search-forward
+                       (concat
+                        "\\("
+                        ;; Lines ending with `\par'.
+                        ;; XXX: Why exclude \n?  vv
+                        "\\(?:\\=\\|[^" TeX-esc "\n]\\)\\(?:"
+                        (regexp-quote (concat TeX-esc TeX-esc))
+                        "\\)*"
+                        (regexp-quote TeX-esc) "par[ \t]*"
+                        ;; XXX: What's this "whitespaces in braces" ?
+                        ;;    vvvvvvvv
+                        "\\(?:{[ \t]*}\\)?[ \t]*$"
+                        "\\)\\|"
+                        ;; Lines ending with `\\'.
+                        ;; XXX: This matches a line ending with "\\\ ".
+                        ;; Should we avoid such corner case?
+                        (regexp-quote (concat TeX-esc TeX-esc))
+                        ;; XXX: Why not just "\\s-*\\*?" ?
+                        "\\(?:\\s-*\\*\\)?"
+                        ;; XXX: Why not "\\s-*\\(?:\\[[^]]*\\]\\)?" ?
+                        "\\(?:\\s-*\\[[^]]*\\]\\)?"
+                        "\\s-*$")
+                       (or has-code-comment end-marker) t))
+            ;; The regexp matched before the code comment (if any).
+            (setq has-code-comment nil))
+
+          ;; Here no need to go back to the former position because
+          ;; "ELSE" part of the following `if' doesn't rely on the
+          ;; current point.
+          ;; (goto-char from)
+
+          (if (or has-code-comment has-regexp-match)
               (progn
+                (goto-char (or has-code-comment has-regexp-match))
                 (goto-char (line-end-position))
                 (delete-horizontal-space)
                 ;; I doubt very much if we want justify -
@@ -4020,7 +4087,8 @@ performed in that case."
                   ;; Code comments and lines ending with `\par' are
                   ;; included in filling.  Lines ending with `\\' are
                   ;; skipped.
-                  (if (match-string 1)
+                  (if (or has-code-comment
+                          (match-beginning 1))
                       (LaTeX-fill-region-as-para-do from (point) justify-flag)
                     (LaTeX-fill-region-as-para-do
                      from (line-beginning-position 0) justify-flag)
@@ -4442,7 +4510,7 @@ space does not end a sentence, so don't break a line there."
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like `fill-paragraph', but handle LaTeX comments.
 If any of the current line is a comment, fill the comment or the
-paragraph of it that point is in.  Code comments, i.e. comments
+paragraph of it that point is in.  Code comments, that is, comments
 with uncommented code preceding them in the same line, will not
 be filled unless the cursor is placed on the line with the
 code comment.
@@ -4810,7 +4878,7 @@ value of NO-SUBSECTIONS."
 (defun LaTeX-paragraph-commands-regexp-make ()
   "Return a regular expression matching defined paragraph commands.
 Regexp part containing TeX control words is postfixed with `\\b'
-to avoid ambiguities (e.g. \\par vs. \\parencite)."
+to avoid ambiguities (for example, \\par vs. \\parencite)."
   (let (cmds symbs)
     (dolist (mac (append LaTeX-paragraph-commands
                          LaTeX-paragraph-commands-internal))
@@ -5653,8 +5721,8 @@ Each entry should be a list with up to four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
-in math minor mode.  KEY can be a character (e.g. ?o) for a
-single stroke or a string (e.g. \"o a\") for a multi-stroke
+in math minor mode.  KEY can be a character (for example ?o) for a
+single stroke or a string (for example \"o a\") for a multi-stroke
 binding.  If KEY is nil, the symbol has no associated
 keystroke (it is available in the menu, though).  Note that
 predefined keys in `LaTeX-math-default' cannot be overridden in
@@ -5667,9 +5735,9 @@ or a function to be called.  The macro must be given without the
 leading backslash.
 
 The third element MENU is the name of the submenu where the
-command should be added.  MENU can be either a string
-\(e.g. \"greek\"), a list (e.g. (\"AMS\" \"Delimiters\")) or nil.
-If MENU is nil, no menu item will be created.
+command should be added.  MENU can be either a string (for
+example \"greek\"), a list (for example (\"AMS\" \"Delimiters\"))
+or nil.  If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.
@@ -6796,14 +6864,14 @@ runs the hooks in `docTeX-mode-hook'."
   TeX-clean-default-intermediate-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom docTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -6813,14 +6881,14 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
           '("\\.acn" "\\.acr" "\\.alg" "\\.glg" "\\.ist"))
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom LaTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -7361,7 +7429,34 @@ function would return non-nil and `(match-string 1)' would return
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
      '("RemoveFromHook" TeX-arg-hook [ "Label" ])
-     '("AddToHookNext"  TeX-arg-hook t)))
+     '("AddToHookNext"  TeX-arg-hook t)
+
+     ;; Added in LaTeX 2021-11-15
+     '("counterwithin"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+     '("counterwithin*"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+
+     '("counterwithout"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))
+     '("counterwithout*"
+       [TeX-arg-eval completing-read
+                     (TeX-argument-prompt t nil "Format")
+                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       (TeX-arg-counter)
+       (TeX-arg-counter "Within counter"))))
 
   (TeX-run-style-hooks "LATEX")
 
@@ -7544,7 +7639,7 @@ function would return non-nil and `(match-string 1)' would return
     (cons (point) (current-column))))
 
 (defun LaTeX-hanging-ampersand-position ()
-  "Return indent column for a hanging ampersand (i.e. ^\\s-*&)."
+  "Return indent column for a hanging ampersand (that is, ^\\s-*&)."
   (cl-destructuring-bind
       (beg-pos . beg-col)
       (LaTeX-env-beginning-pos-col)

@@ -24,3 +24,55 @@ Lorem ipsum dolor sit amet, consectetur adipisci, lorem ipsum dolor
 Lorem ipsum dolor sit amet, consectetur adipisci, lorem ipsum dolor
 \par
 sit amet, consectetur adipisci
+
+% bug#48937-1 "\% %" should be considered as comment
+Donec vehicula augue eu neque.  Pellentesque habitant morbi tristique
+senectus et netus et malesuada fames ac turpis egestas.
+35\% % FIXME check this number
+Mauris ut leo.  Cras viverra metus rhoncus sem.  Nulla et lectus
+vestibulum urna fringilla ultrices.
+
+% bug#48937-2 "\%%" should be considered as comment
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit.  Ut purus
+elit, vestibulum ut, placerat ac, adipiscing vitae, felis.  Curabitur
+dictum gravida mauris.  Nam arcu libero, nonummy eget, consectetuer
+id, vulputate a, magna.  Donec vehicula augue eu neque.  Pellentesque
+habitant morbi tristique senectus et netus et malesuada fames ac
+turpis egestas. 35\%% FIXME check this number
+Mauris ut leo.  Cras viverra metus rhoncus sem.  Nulla et lectus
+vestibulum urna fringilla ultrices.
+
+% bug#51762-1 "\ %" should be considered as comment
+$$ \fundefline p{A \times B}{A}{(x,y)}{x}\ %%
+\et\ \fundefline q{A \times B}{B}{(x,y)}{y}\ %%
+\text{les projections canoniques}\ .$$
+
+% bug#51762-2 another form of code comment
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
+hendrerit tempor tellus. Donec pretium posuere tellus. Proin quam
+nisl, tincidunt et, \\% This is a code comment.
+mattis eget, convallis nec, purus.
+
+% bug#51762-3 "%" in \verb should not introduce code comment
+Cum sociis natoque penatibus et magnis \verb|a%b| dis parturient
+montes, nascetur ridiculus mus. Nulla posuere. Donec vitae
+dolor. Nullam tristique diam non turpis.  Cras placerat accumsan
+nulla. Nullam rutrum. Nam vestibulum accumsan nisl.
+
+% bug#51762-4 "\par" before code comment shouldn't be skipped.
+Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis,
+lorem a tempus semper, dui dui euismod elit, vitae placerat urna
+tortor vitae lacus.\par
+Fusce sagittis, libero non molestie mollis, magna orci ultrices dolor,
+at vulputate neque nulla lacinia eros.  Aliquam posuere.  Cum sociis
+natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+mus.%
+
+% bug#51762-5 "\\" before code comment shouldn't be skipped.
+Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis,
+lorem a
+tempus semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus.\\
+Fusce sagittis, libero non molestie mollis, magna orci ultrices dolor,
+at vulputate neque nulla lacinia eros.  Aliquam posuere.  Cum sociis
+natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+mus.%

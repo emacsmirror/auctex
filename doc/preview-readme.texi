@@ -196,8 +196,10 @@ project page}.  You can get its files from the
 @w{@AUCTeX{} 11.81}, @previewlatex{} should already be integrated into
 @AUCTeX{}, so no separate download will be necessary.
 
-You will also find @file{.rpm} files there for Fedora and possibly
-SuSE.  Anonymous Git is available as well.
+Anonymous Git is available at @uref{git://git.savannah.gnu.org/auctex.git}
+or @uref{https://git.savannah.gnu.org/git/auctex.git}.  You can also
+@uref{https://git.savannah.gnu.org/cgit/auctex.git,browse the repository}
+via web interface.
 
 @node  Contacts,  , Availability, Introduction
 @section Contacts

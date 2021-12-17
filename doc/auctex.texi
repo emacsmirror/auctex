@@ -1366,8 +1366,7 @@ called with prefix argument (@kbd{C-u}), it's the other way round.
 @c other way round" means.
 
 Note that for some macros, there are special mechanisms, e.g.@:
-@code{LaTeX-includegraphics-options-alist} and
-@code{TeX-arg-cite-note-p}.
+@code{TeX-arg-cite-note-p} and @code{LaTeX-includegraphics-options-alist}.
 @end defopt
 
 
@@ -2713,7 +2712,7 @@ expression matching a header, and the second is the level of the header.
 A @samp{^} is automatically prepended to the regular expressions in the
 list, so they must match text at the beginning of the line.
 
-See @code{LaTeX-section-list} or @code{ConTeXt-INTERFACE-section-list}
+See @code{LaTeX-section-list} or @code{ConTeXt-@var{interface}-section-list}
 for existing header levels.
 @end defvar
 
@@ -3023,7 +3022,8 @@ following form.
 @lisp
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-                '("Foo" "foo %s" TeX-run-command t t :help "Run foo") t))
+                '("Foo" "foo %s" TeX-run-command t t :help "Run foo")
+                t))
 @end lisp
 
 As mentioned before, @AUCTeX{} will try to guess what command you want
@@ -3637,6 +3637,22 @@ bring it to front and display the output page corresponding to the
 position of point in the source file.  @AUCTeX{} will automatically pass
 the necessary command line options to the viewer for this to happen.
 
+@vindex TeX-source-correlate-map
+@findex TeX-view-mouse
+You can also make special mouse event do forward search at the clicked
+position.  Use @code{TeX-source-correlate-map}@footnote{The keymap name is
+@code{TeX-source-correlate-map}, not @code{TeX-source-correlate-mode-map}.
+Actually, this keymap isn't implemented as minor mode map of
+@code{TeX-source-correlate-mode}, in order that its bindings don't affect
+buffers outside of @AUCTeX{}.} and @code{TeX-view-mouse} like this:
+@lisp
+(eval-after-load "tex"
+  '(define-key TeX-source-correlate-map [C-down-mouse-1]
+               #'TeX-view-mouse))
+@end lisp
+This example binds @kbd{C-down-mouse-1}, which usually opens a concise
+menu to select buffer, to the command to do forward search.
+
 @vindex TeX-source-correlate-start-server
 Upon opening the viewer you will be asked if you want to start a server
 process (Gnuserv or Emacs server) which is necessary for inverse search.
@@ -4103,7 +4119,7 @@ functions and hooks.
 @vindex LaTeX-mode-hook
 @findex ams-tex-mode
 @vindex AmS-TeX-mode-hook
-@findex ConTeXt-mode
+@findex context-mode
 @vindex ConTeXt-mode-hook
 @findex texinfo-mode
 @vindex Texinfo-mode-hook
@@ -5610,6 +5626,8 @@ Expert environments are completed depending on @code{TeX-complete-expert-command
 @cindex Bibliographies, adding
 @cindex Examining package/class options
 @cindex package/class options, Examining
+@cindex Adding support for completion of package/class options
+@cindex support for completion of package/class options, Adding
 @cindex Viewer predicates
 @cindex Defining bibliographies in style hooks
 @cindex Adding labels
@@ -5633,10 +5651,10 @@ Add each @var{bibliography} to list of loaded bibliographies.
 Add each @var{label} to the list of known labels.
 @end defun
 
-@subsubsection Examining package/class options
+@subsubsection Examining Package/Class Options
 
 In @LaTeX{} documents, style hooks can find the package names and those
-options given as optional argument(s) of @code{\usepackage} in
+options given as optional argument(s) of @samp{\usepackage} in
 @code{LaTeX-provided-package-options}.
 
 @defvar LaTeX-provided-package-options
@@ -5645,7 +5663,7 @@ packages.  Each element is a cons cell @code{(@var{package}
 . @var{option-list})}.  For example, its value will be
 @lisp
   (("babel" . ("german"))
-   ("geometry" . ("a4paper" "top=2cm" "bottom=2cm" "left=2.5cm" "right=2.5cm"))
+   ("geometry" . ("a4paper" "top=2cm" "left=2.5cm" "right=2.5cm"))
    ...)
 @end lisp
 @end defvar
@@ -5684,6 +5702,62 @@ first found class option matching @var{regexp}, or nil if not found.
 
 These functions are also useful to implement customized predicate(s) in
 @code{TeX-view-predicate-list}.  @xref{Starting Viewers}.
+
+@subsubsection Adding Support for Option Completion
+When the user inserts @samp{\usepackage} by @kbd{C-c C-m}, @AUCTeX{} asks
+for the optional arguments after the package name is given.  The style
+file of that package can provide completion support for the optional
+arguments.
+
+@defvar LaTeX-@var{packagename}-package-options
+List of optional arguments available for the package.
+@end defvar
+
+Here is an excerption from @samp{acronym.el}:
+@lisp
+(defvar LaTeX-acronym-package-options
+  '("footnote" "nohyperlinks" "printonlyused" "withpage"
+    "smaller" "dua" "nolist")
+  "Package options for the acronym package.")
+@end lisp
+
+When the package accepts key-value style optional arguments, more
+sophisticated completion support is needed.  The package style file can
+provide dynamic completion support by custom elisp function.
+
+@defun LaTeX-@var{packagename}-package-options
+This function should ask the user for optional arguments and return them
+as a string, instead of built-in option query facility.  When this function
+is defined, @AUCTeX{} calls it with no argument.
+@end defun
+
+Here is an excerption from @samp{acro.el}:
+@lisp
+(defun LaTeX-acro-package-options ()
+  "Prompt for package options for the acro package."
+  (TeX-read-key-val t LaTeX-acro-package-options-list))
+@end lisp
+
+As you can see in the above example, a utility function
+@code{TeX-read-key-val} is available to read key-value pair(s) from users.
+
+Note that @code{defvar} or @code{defun} of
+@code{LaTeX-@var{packagename}-package-options} should be at the top level
+of the style file and not inside the style hook, because the style hook is
+not yet called when the user inputs the optional arguments in response to
+@kbd{C-c C-m}.
+
+There are similar facilities for class options.  When the user inserts
+@samp{\documentclass} by @kbd{C-c C-e}, the respective class style file
+can provide completion support for the optional arguments.
+
+@defvar LaTeX-@var{classname}-class-options
+List of optional arguments available for the class.
+@end defvar
+
+@defun LaTeX-@var{classname}-class-options
+Which see.
+@end defun
 
 @node Hacking the Parser
 @subsection Automatic Extraction of New Things

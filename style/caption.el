@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -50,8 +50,11 @@
 
 (declare-function LaTeX-babel-active-languages "babel" ())
 (declare-function LaTeX-polyglossia-active-languages "polyglossia" ())
+(declare-function LaTeX-newfloat-DeclareFloatingEnvironment-list
+                  "newfloat" ())
 
 (defvar LaTeX-bicaption-key-val-options)
+(defvar LaTeX-subcaption-key-val-options)
 
 (defvar LaTeX-caption-key-val-options
   '(("aboveskip")
@@ -113,9 +116,93 @@
     ("width"))
   "Key=value options for caption macros.")
 
-(defvar LaTeX-caption-key-val-options-local nil
-  "Buffer-local key=value options for caption macros.")
-(make-variable-buffer-local 'LaTeX-caption-key-val-options-local)
+(defun LaTeX-caption-key-val-options ()
+  "Return an updated list of key=vals from caption package.
+The key=val list will also contain elements from subcaption
+package if loaded."
+  ;; Update the style list once so we don't run this function more
+  ;; than once:
+  (TeX-style-list)
+  (append
+   ;; Check if `subcaption.el' is loaded:
+   (when (member "subcaption" TeX-active-styles)
+     ;; If loaded, update also the entry for `subrefformat' when
+     ;; processing the `labelformat'.  `subrefformat' keys takes the
+     ;; same values as `labelformat'.  We have to check if we have an
+     ;; entry for `\DeclareCaptionLabelFormat', otherwise there is no
+     ;; need to run this procedure:
+     (if (and (LaTeX-caption-DeclareCaption-list)
+              (string-match
+               "\\\\DeclareCaptionLabelFormat"
+               (mapconcat #'identity
+                          (mapcar #'car
+                                  (LaTeX-caption-DeclareCaption-list))
+                          "|")))
+         (progn
+           (let (result)
+             (dolist (keyvals (LaTeX-caption-DeclareCaption-list) result)
+               (when (string-equal (nth 1 keyvals) "LabelFormat")
+                 (let* ((key "subrefformat")
+                        (val (nth 2 keyvals))
+                        (vals-predefined
+                         (cadr (assoc key
+                                      LaTeX-subcaption-key-val-options)))
+                        (vals-parsed
+                         (cadr (assoc key result))))
+                   (cl-pushnew (list key (TeX-delete-duplicate-strings
+                                          (append vals-predefined
+                                                  vals-parsed
+                                                  (list val))))
+                               result :test #'equal))))))
+       LaTeX-subcaption-key-val-options))
+   ;; Check if `bicaption.el' is loaded:
+   (when (member "bicaption" TeX-active-styles)
+     (append
+      (cond ((and (member "babel" TeX-active-styles)
+                  (LaTeX-babel-active-languages))
+             `(,(list "language"
+                      (butlast (LaTeX-babel-active-languages)))))
+            ((and (member "polyglossia" TeX-active-styles)
+                  (LaTeX-polyglossia-active-languages))
+             `(,(list "language"
+                      (butlast (LaTeX-polyglossia-active-languages)))))
+            (t nil))
+      LaTeX-bicaption-key-val-options))
+   ;; Support for environments defined with `newfloat.sty': These
+   ;; environments are added to `type' and `type*' keys:
+   (when (and (member "newfloat" TeX-active-styles)
+              (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+     (let (result)
+       (dolist (key '("type" "type*") result)
+         (let ((val (mapcar #'car
+                            (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+               (vals-predefined
+                (cadr (assoc key LaTeX-caption-key-val-options))))
+           (cl-pushnew (list key (TeX-delete-duplicate-strings
+                                  (append vals-predefined
+                                          val)))
+                       result :test #'equal)))))
+   ;; Update to standard key-vals from `caption.el':
+   (when (LaTeX-caption-DeclareCaption-list)
+     (let (result)
+       (dolist (keyvals (LaTeX-caption-DeclareCaption-list) result)
+         (let* ((key (if (string-equal (nth 1 keyvals) "LabelSeparator")
+                         (downcase (substring (nth 1 keyvals) 0 8))
+                       (downcase (nth 1 keyvals))))
+                (val (nth 2 keyvals))
+                (vals-predefined
+                 (cadr (assoc key LaTeX-caption-key-val-options)))
+                (vals-parsed (cadr (assoc key result))))
+           ;; For `\DeclareCaptionOption', only add the value
+           ;; (remember:      key=^^^^^^, val="defined key")
+           (if (string-equal key "option")
+               (cl-pushnew (list val) result :test #'equal)
+             (cl-pushnew (list key (TeX-delete-duplicate-strings
+                                    (append vals-predefined
+                                            vals-parsed
+                                            (list val))))
+                         result :test #'equal))))))
+   LaTeX-caption-key-val-options))
 
 (defvar LaTeX-caption-supported-float-types
   '("figure" "table" "ContinuedFloat"   ; Standard caption.sty
@@ -130,9 +217,9 @@
     "SCfigure" "SCtable"                ; sidecap.sty
     "supertabular" "xtabular"           ; supertabular.sty & xtab.sty
     "threeparttable" "measuredfigure"   ; threeparttable.sty
-    "wrapfigure" "wraptable")           ; wrapfigure
-  "List of float types provided by other LaTeX packages and
-supported by `caption.sty'.")
+    "wrapfigure" "wraptable")           ; wrapfigure.sty
+  "List of float types supported by `caption.sty'.
+These types are provided by other LaTeX packages.")
 
 ;; Setup for various \DeclareCaption's:
 (TeX-auto-add-type "caption-DeclareCaption" "LaTeX")
@@ -149,8 +236,7 @@ supported by `caption.sty'.")
              "[ \t\n\r%]*"
              "{\\([^}]+\\)}")
     (0 1 2) LaTeX-auto-caption-DeclareCaption)
-  "Matches the arguments of different `\\DeclareCaption*' from
-`caption.sty'.")
+  "Matches the arguments of different `\\DeclareCaption*' from `caption.sty'.")
 
 (defun LaTeX-caption-auto-prepare ()
   "Clear `LaTeX-auto-caption-DeclareCaption' before parsing."
@@ -159,75 +245,14 @@ supported by `caption.sty'.")
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-caption-auto-prepare t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-caption-update-key-val-options ()
-  "Update the buffer-local key-val options before offering them
-in `caption'-completions."
-  (dolist (keyvals (LaTeX-caption-DeclareCaption-list))
-    (let* ((key (cond ((string-equal (nth 1 keyvals) "LabelSeparator")
-                       (downcase (substring (nth 1 keyvals) 0 8)))
-                      (t (downcase (nth 1 keyvals)))))
-           (val (nth 2 keyvals))
-           (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
-           (temp (copy-alist LaTeX-caption-key-val-options-local))
-           ;; If `subcaption.el' is loaded, delete and update also the
-           ;; entry for `subrefformat' when processing the `labelformat'.
-           (opts (progn
-                   (when (and (string-equal key "labelformat")
-                              (boundp 'LaTeX-subcaption-key-val-options))
-                     (setq temp
-                           (assq-delete-all
-                            (car (assoc (caar LaTeX-subcaption-key-val-options) temp))
-                            temp)))
-                   (assq-delete-all (car (assoc key temp)) temp))))
-      ;; For `\DeclareCaptionOption', only add the value
-      ;; (remember:      key=^^^^^^, val="defined key")
-      (if (string-equal key "option")
-          (cl-pushnew (list val) opts :test #'equal)
-        ;; For anything but `\DeclareCaptionOption', do the standard
-        ;; procedure.  Again, take care of `subrefformat' for `subcaption.el'.
-        (if val-match
-            (progn
-              (when (and (string-equal key "labelformat")
-                         (boundp 'LaTeX-subcaption-key-val-options))
-                (cl-pushnew (list "subrefformat"
-                                  (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-                            opts :test #'equal))
-              (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append (list val) val-match)))
-                          opts :test #'equal))
-          (cl-pushnew (list key (list val)) opts :test #'equal)))
-      (setq LaTeX-caption-key-val-options-local (copy-alist opts))))
-  ;; Support for environments defined with newfloat.sty: These
-  ;; environments are added to "type" and "type*" key:
-  (when (and (member "newfloat" (TeX-style-list))
-             (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
-             (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-    (dolist (key '("type" "type*"))
-      (let* ((val (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-             (val-match (cdr (assoc key LaTeX-caption-key-val-options-local)))
-             (temp (copy-alist LaTeX-caption-key-val-options-local))
-             (opts (assq-delete-all (car (assoc key temp)) temp)))
-        (cl-pushnew (list key (TeX-delete-duplicate-strings (apply #'append val val-match)))
-                    opts :test #'equal)
-        (setq LaTeX-caption-key-val-options-local (copy-alist opts))))))
-
-(defun LaTeX-arg-caption-command (optional &optional prompt)
-  "Insert caption-commands from `caption.sty'. If OPTIONAL,
-indicate `(Optional)' while reading key=val and insert it in
-square brackets.  PROMPT replaces the standard one."
-  (LaTeX-caption-update-key-val-options)
-  (let ((opts (TeX-read-key-val optional
-                                LaTeX-caption-key-val-options-local
-                                prompt)))
-    (TeX-argument-insert opts optional)))
-
 ;; In `LaTeX-caption-DeclareCaption-regexp', we match (0 1 2).  When
 ;; adding a new `Name', we need something unique for `0'-match until
 ;; the next `C-c C-n'.  We mimic that regex-match bei concat'ing the
 ;; elements.  It will vanish upon next `C-c C-n'.
 (defun LaTeX-arg-caption-DeclareCaption (optional format)
-  "Insert various `\\DeclareCaptionFORMAT' commands.  If
-OPTIONAL, insert argument in square brackets.  FORMAT is the
-suffix of the command."
+  "Insert various `\\DeclareCaptionFORMAT' commands.
+If OPTIONAL, insert argument in square brackets.  FORMAT is the
+suffix of the LaTeX macro."
   (let ((name (TeX-read-string "Name: ")))
     (LaTeX-add-caption-DeclareCaptions
      (list (concat "\\DeclareCaption" format "{" name "}")
@@ -251,6 +276,7 @@ suffix of the command."
 
 (defun LaTeX-arg-caption-captionbox (optional &optional star)
   "Query for the arguments of \"\\captionbox\" incl. a label and insert them.
+If OPTIONAL is non-nil, indicate it while reading the caption.
 If STAR is non-nil, then do not query for a \\label and a short
 caption, insert only a caption."
   (let* ((currenv (LaTeX-current-environment))
@@ -339,25 +365,6 @@ STAR is non-nil, do not query for a short-caption and a label."
    ;; Add caption to the parser.
    (TeX-auto-add-regexp LaTeX-caption-DeclareCaption-regexp)
 
-   ;; Activate the buffer-local version of key-vals.
-   (setq LaTeX-caption-key-val-options-local
-         (copy-alist LaTeX-caption-key-val-options))
-
-   ;; Append key=vals from bicaption.sty if loaded: "language" key
-   ;; depends on the active languages, it is appended extra where main
-   ;; language is removed from the list:
-   (when (and (member "bicaption" (TeX-style-list))
-              ;; Make sure that one of these packages is loaded:
-              (or (fboundp 'LaTeX-babel-active-languages)
-                  (fboundp 'LaTeX-polyglossia-active-languages)))
-     (setq LaTeX-caption-key-val-options-local
-           (append
-            `(,(list "language"
-                     (or (butlast (LaTeX-babel-active-languages))
-                         (butlast (LaTeX-polyglossia-active-languages)))))
-            LaTeX-bicaption-key-val-options
-            LaTeX-caption-key-val-options-local)))
-
    ;; Caption commands:
    (TeX-add-symbols
     '("caption*" t)
@@ -377,7 +384,7 @@ STAR is non-nil, do not query for a short-caption and a label."
                            ([TeX-arg-eval completing-read
                                           (TeX-argument-prompt t nil "Float type")
                                           LaTeX-caption-supported-float-types]))
-      (LaTeX-arg-caption-command))
+      (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("captionsetup*"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
@@ -385,15 +392,19 @@ STAR is non-nil, do not query for a short-caption and a label."
                            ([TeX-arg-eval completing-read
                                           (TeX-argument-prompt t nil "Float type")
                                           LaTeX-caption-supported-float-types]))
-      (LaTeX-arg-caption-command))
+      (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("clearcaptionsetup"
-      [LaTeX-arg-caption-command "Single key"]
+      [TeX-arg-eval completing-read
+                    (TeX-argument-prompt t nil "Single key")
+                    (LaTeX-caption-key-val-options)]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
                     LaTeX-caption-supported-float-types))
 
     '("clearcaptionsetup*"
-      [LaTeX-arg-caption-command "Single key"]
+      [TeX-arg-eval completing-read
+                    (TeX-argument-prompt t nil "Single key")
+                    (LaTeX-caption-key-val-options)]
       (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
                     LaTeX-caption-supported-float-types))
 
@@ -433,8 +444,8 @@ STAR is non-nil, do not query for a short-caption and a label."
 
     '("DeclareCaptionStyle"
       (LaTeX-arg-caption-DeclareCaption "Style")
-      [LaTeX-arg-caption-command "Additional options"]
-      (LaTeX-arg-caption-command "Options"))
+      [TeX-arg-key-val (LaTeX-caption-key-val-options) "Additional options"]
+      (TeX-arg-key-val (LaTeX-caption-key-val-options) "Options"))
 
     '("DeclareCaptionTextFormat"
       (LaTeX-arg-caption-DeclareCaption "TextFormat") t)

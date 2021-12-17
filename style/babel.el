@@ -154,7 +154,7 @@
       ;; also remove possible comment lines
       (setq results
             (replace-regexp-in-string
-             "\\(%.*$\\|[ \n\r\t]\\)" ""
+             "%.*\\'\\|[ \n\r\t]" ""
              (mapconcat #'car (LaTeX-babel-babeltag-list) ",")))
       ;; Look if \babeltags was issued once with multiple entries or
       ;; more than once in the document:
@@ -286,15 +286,16 @@
     '("useshorthands"  "Character")
     '("useshorthands*" "Character")
     '("defineshorthand"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt t nil "Language(s)")
-         (LaTeX-babel-active-languages)) ""]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt t nil "Language(s)")
+                     (LaTeX-babel-active-languages))
+                    ","]
       t nil)
-    '("aliasshorthand"   "Original" "Alias")
     '("languageshorthands" TeX-arg-babel-lang)
     '("babelshorthand"   "Short hand")
     '("ifbabelshorthand" "Character" t nil)
+    '("aliasshorthand"   "Original" "Alias")
 
     ;; 1.12 The base option
     '("AfterBabelLanguage"
@@ -305,62 +306,60 @@
 
     ;; 1.14 Selecting fonts
     '("babelfont"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt t nil "Language(s)")
-         LaTeX-babel-language-list)
-        "," ]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt t nil "Language(s)")
+                     LaTeX-babel-language-list)
+                    ","]
       (TeX-arg-eval let ((fontfam (completing-read
                                    (TeX-argument-prompt nil nil "font family")
                                    '("rm" "sf" "tt"))))
-                    ;; Make sure `tex-buf.el' is also loaded otherwise
-                    ;; `TeX-check-engine-add-engines' is not defined.
-                    ;; Then load `fontspec.el' and make sure the
-                    ;; key-vals are up to date.
+                    ;; Run `TeX-check-engine-add-engines' and then
+                    ;; load `fontspec.el' if not already loaded and
+                    ;; make sure the key-vals are up to date.
                     (unless (member "fontspec" (TeX-style-list))
-                      (require 'tex-buf)
                       (TeX-check-engine-add-engines 'luatex 'xetex)
                       (TeX-run-style-hooks "fontspec")
                       (LaTeX-fontspec-auto-cleanup))
                     (LaTeX-add-babel-babelfonts fontfam)
                     (LaTeX-babel-cleanup-babelfont)
                     (format "%s" fontfam))
-      [ TeX-arg-key-val LaTeX-fontspec-font-features-local]
+      [TeX-arg-key-val (LaTeX-fontspec-font-features)]
       LaTeX-fontspec-arg-font)
 
     ;; 1.16 Creating a language
     '("babelprovide"
-      [ TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options ]
+      [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Language")
                     LaTeX-babel-language-list))
 
-    ;; 1.18 Getting the current language name
+    ;; 1.19 Accessing language info
     '("languagename" 0)
     '("iflanguage" TeX-arg-babel-lang t nil)
 
-    ;; 1.19 Hyphenation and line breaking
+    ;; 1.20 Hyphenation and line breaking
     '("babelhyphen"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "empty")))
+                    '("soft" "hard" "repeat" "nobreak" "empty")))
     '("babelhyphen*"
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "empty")))
+                    '("soft" "hard" "repeat" "nobreak" "empty")))
 
     '("babelhyphenation"
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt nil nil "Language(s)")
-         LaTeX-babel-language-list)
-        "," ]
+      [TeX-arg-eval mapconcat #'identity
+                    (TeX-completing-read-multiple
+                     (TeX-argument-prompt nil nil "Language(s)")
+                     LaTeX-babel-language-list)
+                    ","]
       t)
 
-    ;; 1.20 Selecting scripts
+    ;; 1.23 Selecting scripts
     '("ensureascii" "Text")
 
-    ;; 1.22 Language attributes
+    ;; 1.25 Language attributes
     '("languageattribute" TeX-arg-babel-lang t))
 
    ;; New environments: 1.8 Auxiliary language selectors
@@ -420,10 +419,10 @@
                   "OT1" "OT2" "OT3" "OT4" "OT6"
                   "T1"  "T2A" "T2B" "T2C" "T3" "T4" "T5"
                   "X2"  "LY1" "LV1" "LGR"))
-      ("hyphenmap" ("off" "main" "select" "other" "other*"))
+      ("hyphenmap" ("off" "first" "select" "other" "other*"))
       ("bidi" ("default" "basic" "basic-r" "bidi-l" "bidi-r"))
-      ("layout" ("sectioning" "counters" "lists" "captions"
-                 "contents" "footnotes" "columns" "extras"))
+      ("layout" ("sectioning" "counters" "lists" "contents" "footnotes"
+                 "captions"  "columns" "graphics" "extras"))
       ("base"))
     (mapcar #'list LaTeX-babel-language-list))))
 

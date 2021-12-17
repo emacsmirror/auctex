@@ -702,6 +702,7 @@ sure \"%p\" is the first entry."
 (autoload 'LaTeX-command-run-all-section "tex-buf" nil t)
 (autoload 'LaTeX-command-section "tex-buf" nil t)
 (autoload 'TeX-active-master "tex-buf")
+(autoload 'TeX-check-engine-add-engines "tex-buf")
 (autoload 'TeX-command "tex-buf")
 (autoload 'TeX-command-buffer "tex-buf" nil t)
 (autoload 'TeX-command-expand "tex-buf")
@@ -1265,12 +1266,18 @@ viewer."
   (if (TeX-evince-dbus-p de app :forward)
       (intern (format "TeX-%s-sync-view" app))
     `(,app (mode-io-correlate
-            ;; With evince 3, -p N opens the page *labeled* N,
-            ;; and -i,--page-index the physical page N.
-            ,(if (string-match "--page-index"
-                               (shell-command-to-string (concat app " --help")))
-                 " -i %(outpage)"
-               " -p %(outpage)")) " %o")))
+            ;; When tex.el is loaded as response to opening a tex file
+            ;; in a non-existent directory, we need to make sure
+            ;; `default-directory' exists, otherwise the shell-command
+            ;; below will error (bug#50225).
+            ,(let ((default-directory (file-name-as-directory
+                                       (expand-file-name "~"))))
+               ;; With evince 3, -p N opens the page *labeled* N,
+               ;; and -i,--page-index the physical page N.
+               (if (string-match "--page-index"
+                                 (shell-command-to-string (concat app " --help")))
+                   " -i %(outpage)"
+                 " -p %(outpage)"))) " %o")))
 
 (defvar TeX-view-program-list-builtin
   (cond
@@ -1689,7 +1696,7 @@ as a string.")
 
 (defvar TeX-source-correlate-start-server-flag nil
   "If non-nil, `TeX-source-correlate-start-server-maybe' will start a server.
-Code related to features requiring a server, e.g. for inverse
+Code related to features requiring a server, for example, for inverse
 search, can set the variable.")
 
 (defun TeX-source-correlate-gnuserv-p ()
@@ -1887,7 +1894,7 @@ SyncTeX are recognized."
        :session nil (format "/org/%s/%s/Window/0" (car de-app) (cadr de-app))
        (format "org.%s.%s.Window" (car de-app) (cadr de-app))
        "SyncSource"
-       'TeX-source-correlate-sync-source))))
+       #'TeX-source-correlate-sync-source))))
 
 (defalias 'TeX-source-specials-mode #'TeX-source-correlate-mode)
 (make-obsolete 'TeX-source-specials-mode 'TeX-source-correlate-mode "11.86")
@@ -2816,7 +2823,7 @@ Supported values are described below:
 
 Purpose is notably to prevent non-Texinfo hooks to be run in
 Texinfo files, due to ambiguous style name, as this may cause bad
-side effect e.g. on variable `TeX-font-list'.")
+side effect for example on variable `TeX-font-list'.")
 
 (defcustom TeX-byte-compile nil
   "Not nil means try to byte compile auto files before loading."
@@ -3146,7 +3153,7 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
              (puthash x style TeX-expert-macro-table))))
 
        (defun ,(intern (format "%s-filtered" list-var)) ()
-         ,(format "Return (%s) filtered depending on `TeX-complete-expert-commands'."
+         ,(format "Filter (%s) depending on `TeX-complete-expert-commands'."
                   list-var)
          (delq nil
                (mapcar
@@ -3295,7 +3302,7 @@ optional arguments.  If set to `mandatory-args-only',
 When `TeX-insert-macro' is called with \\[universal-argument], it's the other
 way round.
 
-Note that for some macros, there are special mechanisms, see e.g.
+Note that for some macros, there are special mechanisms, see for example
 `LaTeX-includegraphics-options-alist' and `TeX-arg-cite-note-p'."
   :group 'TeX-macro
   :type '(choice (const mandatory-args-only)
@@ -4748,7 +4755,7 @@ to look backward for."
    (TeX-master-directory)))
 
 (defun TeX-near-bobp ()
-  "Return t iff there's nothing but whitespace between (bob) and (point)."
+  "Return t if there's nothing but whitespace between (bob) and (point)."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
@@ -5183,16 +5190,17 @@ Brace insertion is only done if point is in a math construct and
 ;;; Verbatim constructs
 
 (defvar TeX-verbatim-p-function nil
-  "Mode-specific function to be called by `TeX-verbatim-p'.")
+  "Mode-specific function to be called by `TeX-verbatim-p'.
+It must accept optional argument POS for position.")
 (make-variable-buffer-local 'TeX-verbatim-p-function)
 
 ;; XXX: We only have an implementation for LaTeX mode at the moment (Oct 2009).
-(defun TeX-verbatim-p (&optional _pos)
+(defun TeX-verbatim-p (&optional pos)
   "Return non-nil if position POS is in a verbatim-like construct.
 A mode-specific implementation is required.  If it is not
 available, the function always returns nil."
   (when TeX-verbatim-p-function
-    (funcall TeX-verbatim-p-function)))
+    (funcall TeX-verbatim-p-function pos)))
 
 
 ;;; Comments
@@ -5267,7 +5275,7 @@ whitespace as well."
 
 (defun TeX-in-line-comment ()
   "Return non-nil if point is in a line comment.
-A line comment is a comment starting in column one, i.e. there is
+A line comment is a comment starting in column one, that is, there is
 no whitespace before the comment sign."
   (save-excursion
     (forward-line 0)
@@ -5351,7 +5359,7 @@ and can use regexps instead of syntax."
   (comment-forward n))
 
 (defun TeX-comment-padding-string ()
-  "Return  comment padding as a string.
+  "Return comment padding as a string.
 The variable `comment-padding' can hold an integer or a string.
 This function will return the appropriate string representation
 regardless of its data type."
@@ -5468,7 +5476,7 @@ do not search further than this position in the buffer."
 
 (defun TeX-find-closing-brace (&optional depth limit)
   "Return the position of the closing brace in a TeX group.
-The function assumes that point is inside the group, i.e. after
+The function assumes that point is inside the group, that is, after
 an opening brace.  With optional DEPTH>=1, find that outer level.
 If LIMIT is non-nil, do not search further down than this
 position in the buffer."
@@ -5476,7 +5484,7 @@ position in the buffer."
 
 (defun TeX-find-opening-brace (&optional depth limit)
   "Return the position of the opening brace in a TeX group.
-The function assumes that point is inside the group, i.e. before
+The function assumes that point is inside the group, that is, before
 a closing brace.  With optional DEPTH>=1, find that outer level.
 If LIMIT is non-nil, do not search further up than this position
 in the buffer."
@@ -5669,8 +5677,8 @@ If LIMIT is omitted, search till the end of the buffer.
 The search relies on `TeX-comment-start-regexp' being set
 correctly for the current mode.
 
-Set `TeX-search-forward-comment-start-defun' in order to override
-the default implementation."
+Set `TeX-search-forward-comment-start-function' in order to
+override the default implementation."
   (if TeX-search-forward-comment-start-function
       (funcall TeX-search-forward-comment-start-function limit)
     (setq limit (or limit (point-max)))
@@ -6383,7 +6391,7 @@ The second is a list of modes the backend should be activated in.
 
 The third is a function returning a list of documents available
 to the backend.  It should return nil if the backend is not
-available, e.g. if a required executable is not present on the
+available, for example if a required executable is not present on the
 system in question.
 
 The fourth is a function for displaying the documentation.  The
@@ -6566,7 +6574,7 @@ skipped."
      (sit-for 2))))
 
 (defun TeX-ispell-tex-arg-verb-end (&optional arg)
-  "Skip across an optional argument, ARG number of mandatory ones and verbatim content.
+  "Skip an optional argument, ARG number of mandatory ones and verbatim content.
 This function always checks if one optional argument in brackets
 is given and skips over it.  If ARG is a number, it skips over
 that many mandatory arguments in braces.  Then it checks for
@@ -6629,7 +6637,7 @@ error."
      (lambda () (null TeX-electric-math)))
 
 (defun TeX--list-of-string-p (lst)
-  "Return non-nil iff `LST' is a list of strings.
+  "Return non-nil if LST is a list of strings.
 Used as function for validating a variable's `safe-local-variable' property."
   (and (listp lst)
        (let ((all-strings t))

@@ -197,7 +197,7 @@ structuring commands matched by regexp in variable
 of variable `texinfo-section-list'.
 
 If optional argument NO-SUBSECTION is set to any integer or is a
-non nil empty argument (i.e. `C-u \\[Texinfo-mark-section]'),
+non nil empty argument (that is, `\\[universal-argument] \\[Texinfo-mark-section]'),
 then mark the current section with exclusion of any subsections.
 
 Otherwise, any included subsections are also marked along with
@@ -273,7 +273,7 @@ the section."
       (TeX-activate-region) )))
 
 (defun Texinfo-mark-node ()
-  "Mark the current node.  \
+  "Mark the current node.
 This is the node in which the pointer is.  It is starting at
 previous beginning of keyword `@node' and ending at next
 beginning of keyword `@node' or `@bye'."
@@ -297,7 +297,8 @@ beginning of keyword `@node' or `@bye'."
 character. Return the resulting string."
   (let ((pos 0) (map '(("comma" . ","))))
     (while (and (< pos (length
-                        node-name)) (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
+                        node-name))
+                (string-match "@\\(comma\\)[[:blank:]]*{}" node-name pos))
       (setq node-name (concat  (substring node-name 0 (match-beginning 0))
                                (cdr (assoc-string (match-string 1 node-name) map))
                                (substring node-name (match-end 0)))
@@ -416,7 +417,8 @@ each invocation."
     (insert " " l " @| " c " @| " r)))
 
 (defun Texinfo-arg-next-line (_optional &rest _args)
-  "Go to the beginning of next line if we are at the end of line. Otherwise insert an end-of-line."
+  "Go to the beginning of next line if we are at the end of line.
+Otherwise insert an end-of-line."
   (if (eolp)  (forward-line) (insert "\n")))
 
 (defun Texinfo-arg-on|off (optional &optional prompt style)
@@ -641,7 +643,7 @@ is assumed by default."
 Special commands:
 \\{Texinfo-mode-map}
 
-Entering Texinfo mode calls the value of `text-mode-hook'  and then the
+Entering Texinfo mode calls the value of `text-mode-hook' and then the
 value of `Texinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)
@@ -669,6 +671,7 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'comment-start) "@c ")
   (set (make-local-variable 'comment-start-skip) "@c +\\|@comment +")
   (set (make-local-variable 'comment-use-syntax) nil)
+  (setq TeX-comment-start-regexp "@c\\(?:omment\\)?\\>")
   (set (make-local-variable 'words-include-escapes) t)
   (set (make-local-variable 'imenu-generic-expression)
        texinfo-imenu-generic-expression)
@@ -871,7 +874,7 @@ value of `Texinfo-mode-hook'."
   '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -881,7 +884,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
     "_toc\\.html" "_fot\\.html" "_abt\\.html" "_[0-9]+\\.html" "_l2h_img.+")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 

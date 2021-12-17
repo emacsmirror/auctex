@@ -225,7 +225,7 @@ customize or in init-file with:
   (add-to-list \\='LaTeX-label-alist \\='(\"theorem\" . \"thm:\"))
 
 RefTeX users should customize or add ENVIRONMENT to
-`LaTeX-label-alist' and `reftex-label-alist', e.g.
+`LaTeX-label-alist' and `reftex-label-alist', for example
 
   (add-to-list \\='LaTeX-label-alist \\='(\"theorem\" . \"thm:\"))
   (add-to-list \\='reftex-label-alist

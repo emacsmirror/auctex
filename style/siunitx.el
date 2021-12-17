@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
-;; Author: Mosè Giordano <giordano.mose@libero.it>
+;; Author: Mosè Giordano <mose@gnu.org>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -25,7 +25,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `siunitx.sty' version 2.5s.
+;; This file adds support for `siunitx.sty' version 3.0.36 from
+;; 2021/22/18.
 
 ;;; Code:
 
@@ -36,38 +37,49 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function LaTeX-color-definecolor-list "color" ())
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
 (TeX-auto-add-type "siunitx-unit" "LaTeX")
 
-;; Self Parsing -- see (info "(auctex)Hacking the Parser").  `\\(?:\\[.*\\]\\)?'
-;; matches possible options (actually used only by `DeclareSIUnit' macro),
-;; wrapped in `[...]'.
+;; Self Parsing -- see (info "(auctex)Hacking the Parser").
+;; `\\(?:\\[[^]]*\\]\\)?' matches possible options (actually used only
+;; by `DeclareSIUnit' macro), wrapped in `[...]'.
 (defvar LaTeX-siunitx-regexp
-  (concat "\\\\Declare"
-          "\\(?:SIUnit\\|SIPrefix\\|BinaryPrefix\\|SIPostPower\\|SIPrepower\\|"
-          "SIQualifier\\)"
-          "[ \t\n\r]*\\(?:\\[.*\\]\\)?[ \t\n\r]*{?\\\\\\([A-Za-z]+\\)}?")
+  `(,(concat "\\\\DeclareSI\\(Unit\\|Prefix\\|Power\\|Qualifier\\)"
+             "[ \t\n\r]*"
+             ;; The optional argument
+             "\\(?:\\[[^]]*\\]\\)?"
+             "[ \t\n\r]*"
+             ;; First mandatory argument
+             "{?\\\\\\([A-Za-z]+\\)}?"
+             "[ \t\n\r]*"
+             ;; Second mandatory argument needed for '\DeclareSIPower':
+             "{?\\\\\\([A-Za-z]+\\)}?")
+    (2 3 1) LaTeX-auto-siunitx-unit)
   "Matches new siunitx unit, prefix, power, and qualifier definitions.")
-
-(defvar LaTeX-auto-siunitx-unit nil
-  "Temporary for parsing siunitx macro definitions.")
 
 (defun LaTeX-siunitx-prepare ()
   "Clear `LaTex-auto-siunitx-unit' before use."
   (setq LaTeX-auto-siunitx-unit nil))
 
-(defun LaTeX-siunitx-cleanup ()
-  "Move symbols from `LaTeX-auto-siunitx-unit' to `LaTeX-siunitx-unit-list'."
-  (mapcar (lambda (symbol)
-            (add-to-list 'LaTeX-siunitx-unit-list (list symbol)))
-          LaTeX-auto-siunitx-unit))
-
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-siunitx-prepare t)
-(add-hook 'TeX-auto-cleanup-hook #'LaTeX-siunitx-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defvar LaTeX-siunitx-unit-history nil
   "History of units in siunitx.")
+
+(defun LaTeX-siunitx-unit-list-parsed ()
+  "Return a list of units incl. the user defined ones.
+This function should be preferred over the function
+`LaTeX-siunitx-unit-list' since it knows about the 2 macros
+defined with '\\DeclareSIPower'."
+  (let (result)
+    (dolist (unit (LaTeX-siunitx-unit-list) result)
+      (push (car unit) result)
+      (when (and (> (safe-length unit) 1)
+                 (string-equal (nth 2 unit) "Power"))
+        (push (cadr unit) result)))))
 
 (defun LaTeX-arg-siunitx-unit (optional &optional prompt initial-input
                                         definition prefix)
@@ -91,7 +103,8 @@ PREFIX is non-nil, insert it before the given input."
          (unit (mapconcat #'identity
                           (TeX-completing-read-multiple
                            (TeX-argument-prompt optional prompt "Unit: " t)
-                           (LaTeX-siunitx-unit-list) nil nil initial-input
+                           (LaTeX-siunitx-unit-list-parsed)
+                           nil nil initial-input
                            'LaTeX-siunitx-unit-history)
                           TeX-esc)))
     (if (and definition (not (string-equal "" unit)))
@@ -108,228 +121,232 @@ string."
                           nil t TeX-esc))
 
 (defvar LaTeX-siunitx-package-options
-  '(;; Detecting fonts
-    ("detect-all")
-    ("detect-display-math" ("true" "false"))
-    ("detect-family" ("true" "false"))
-    ("detect-inline-family" ("math" "text"))
-    ("detect-inline-weight" ("math" "text"))
-    ("detect-mode" ("true" "false"))
-    ("detect-none")
-    ("detect-shape" ("true" "false"))
-    ("detect-weight" ("true" "false"))
-    ;; Font settings
+  '(;; Table 10: Print options
     ("color")
-    ("math-rm")
-    ("math-sf")
-    ("math-tt")
-    ("mode" ("math" "text"))
+    ("mode"                       ("match" "math" "text"))
     ("number-color")
-    ("text-rm")
-    ("text-sf")
-    ("text-tt")
+    ("number-mode"                ("match" "math" "text"))
+    ("propagate-math-font"        ("true" "false"))
+    ("reset-math-version"         ("true" "false"))
+    ("reset-text-family"          ("true" "false"))
+    ("reset-text-series"          ("true" "false"))
+    ("reset-text-shape"           ("true" "false"))
+    ("text-family-to-math"        ("true" "false"))
+    ("text-font-command")
+    ("text-series-to-math"        ("true" "false"))
     ("unit-color")
-    ;; Parsing numbers
+    ("unit-mode"                  ("match" "math" "text"))
+    ;; Table 11: Options for number parsing
+    ("evaluate-expression"        ("true" "false"))
+    ("expression")
     ("input-close-uncertainty")
     ("input-comparators")
-    ("input-complex-roots")
     ("input-decimal-markers")
     ("input-digits")
     ("input-exponent-markers")
     ("input-ignore")
     ("input-open-uncertainty")
-    ("input-protect-tokens")
     ("input-signs")
     ("input-uncertainty-signs")
-    ("input-symbols")
-    ("parse-numbers" ("true" "false"))
-    ;; Post-processing numbers
-    ("add-decimal-zero" ("true" "false"))
-    ("add-integer-zero" ("true" "false"))
-    ("explicit-sign")
+    ("parse-numbers"              ("true" "false"))
+    ("retain-explicit-plus"       ("true" "false"))
+    ("retain-zero-uncertainty"    ("true" "false"))
+    ;; Table 12: Number post-processing options
+    ("drop-exponent"              ("true" "false"))
+    ("drop-uncertainty"           ("true" "false"))
+    ("drop-zero-decimal"          ("true" "false"))
+    ("exponent-mode"              ("input" "fixed" "engineering" "scientific"))
     ("fixed-exponent")
     ("minimum-integer-digits")
-    ("omit-uncertainty" ("true" "false"))
-    ("retain-explicit-plus" ("true" "false"))
-    ("retain-unity-mantissa" ("true" "false"))
-    ("retain-zero-exponent" ("true" "false"))
-    ("round-half" ("up" "even"))
-    ("round-integer-to-decimal" ("true" "false"))
+    ("minimum-decimal-digits")
+    ("round-half"                 ("up" "even"))
     ("round-minimum")
-    ("round-mode" ("off" "figures" "places"))
+    ("round-mode"                 ("off" "figures" "places" "uncertainty"))
+    ("round-pad"                  ("true" "false"))
     ("round-precision")
-    ("scientific-notation" ("true" "false" "fixed" "engineering"))
-    ("zero-decimal-to-integer" ("true" "false"))
-    ;; Printing numbers
-    ("bracket-negative-numbers" ("true" "false"))
-    ("bracket-numbers" ("true" "false"))
-    ("close-bracket")
-    ("complex-root-position" ("after-number" "before-number"))
-    ("copy-complex-root")
-    ("copy-decimal-marker")
+    ;; Table 13: Output options for numbers
+    ("bracket-negative-numbers"   ("true" "false"))
     ("exponent-base")
     ("exponent-product")
-    ("group-digits" ("true" "false" "decimal" "integer"))
+    ("group-digits"               ("all" "none" "decimal" "integer"))
     ("group-minimum-digits")
     ("group-separator")
     ("negative-color")
-    ("open-bracket")
     ("output-close-uncertainty")
-    ("output-complex-root")
     ("output-decimal-marker")
     ("output-exponent-marker")
     ("output-open-uncertainty")
-    ("separate-uncertainty" ("true" "false"))
-    ("tight-spacing" ("true" "false"))
+    ("print-implicit-plus"        ("true" "false"))
+    ("print-unity-mantissa"       ("true" "false"))
+    ("print-zero-exponent"        ("true" "false"))
+    ("tight-spacing"              ("true" "false"))
+    ("uncertainty-mode"           ("compact" "full" "compact-marker"))
     ("uncertainty-separator")
-    ;; Multi-part numbers
-    ("fraction-function")
-    ("input-product")
-    ("input-quotient")
-    ("output-product")
-    ("output-quotient")
-    ("quotient-mode" ("symbol" "fraction"))
-    ;; Lists and ranges of numbers
+    ;; Table 14: Output options for lists, products and ranges of
+    ;; numbers and quantities
+    ("list-exponents"             ("individual" "combine-bracket" "combine"))
     ("list-final-separator")
     ("list-pair-separator")
     ("list-separator")
+    ("list-units"                 ("repeat" "bracket" "single"))
+    ("product-exponents"          ("individual" "combine-bracket" "combine"))
+    ("product-mode"               ("symbol" "phrase"))
+    ("product-phrase")
+    ("product-symbol")
+    ("product-units"              ("repeat" "bracket" "single"))
+    ("range-exponents"            ("individual" "combine-bracket" "combine"))
     ("range-phrase")
-    ;; Angles
-    ("add-arc-degree-zero" ("true" "false"))
-    ("add-arc-minute-zero" ("true" "false"))
-    ("add-arc-second-zero" ("true" "false"))
-    ("angle-symbol-over-decimal" ("true" "false"))
-    ("arc-separator")
+    ("range-units"                ("repeat" "bracket" "single"))
+    ;; Table 15: Options for complex numbers
+    ("complex-root-position"      ("after-number" "before-number"))
+    ("output-complex-root")
+    ("input-complex-root")
+    ;; Table 16: Angle options
+    ("angle-mode"                 ("input" "arc" "decimal"))
+    ("angle-symbol-degree")
+    ("angle-symbol-minute")
+    ("angle-symbol-over-decimal"  ("true" "false"))
+    ("angle-symbol-second")
+    ("angle-separator")
+    ("fill-angle-degrees"         ("true" "false"))
+    ("fill-angle-minutes"         ("true" "false"))
+    ("fill-angle-seconds"         ("true" "false"))
     ("number-angle-product")
-    ;; Creating units
-    ("free-standing-units" ("true" "false"))
-    ("overwrite-functions" ("true" "false"))
-    ("space-before-unit" ("true" "false"))
-    ("unit-optional-argument" ("true" "false"))
-    ("use-xspace" ("true" "false"))
-    ;; Loading additional units
-    ("abbreviations" ("true" "false"))
-    ("binary-units" ("true" "false"))
-    ("version-1-compatibility" ("true" "false"))
-    ;; Using units
-    ("bracket-unit-denominator" ("true" "false"))
-    ("forbid-literal-units" ("true" "false"))
-    ("literal-superscript-as-power" ("true" "false"))
+    ;; Table 17: Unit creation options
+    ("free-standing-units"        ("true" "false"))
+    ("overwrite-command"          ("true" "false"))
+    ("space-before-unit"          ("true" "false"))
+    ("unit-optional-argument"     ("true" "false"))
+    ("use-xspace"                 ("true" "false"))
+    ;; Table 18: Unit output options
+    ("bracket-unit-denominator"   ("true" "false"))
+    ("forbid-literal-units"       ("true" "false"))
+    ("fraction-command")
     ("inter-unit-product")
-    ("parse-units" ("true" "false"))
-    ("per-mode" ("reciprocal" "fraction" "reciprocal-positive-first" "symbol"
-                 "repeated-symbol" "symbol-or-fraction"))
+    ("parse-units"                ("true" "false"))
+    ("per-mode"                   ("power" "fraction" "symbol"
+                                   "repeated-symbol"  "symbol-or-fraction"))
     ("per-symbol")
-    ("power-font" ("number" "unit"))
-    ("prefixes-as-symbols" ("true" "false"))
-    ("qualifier-mode" ("subscript" "brackets" "phrase" "space" "text"))
+    ("qualifier-mode"             ("subscript" "brackets"
+                                   "combine"   "phrase"))
     ("qualifier-phrase")
-    ("sticky-per" ("true" "false"))
-    ;; Numbers with units
-    ("allow-number-unit-breaks" ("true" "false"))
-    ("exponent-to-prefix" ("true" "false"))
-    ("list-units" ("brackets" "repeat" "single"))
-    ("multi-part-units" ("brackets" "repeat" "single"))
-    ("number-unit-product")
-    ("product-units" ("repeat" "brackets" "brackets-power" "power" "repeat"
-                      "single"))
-    ("range-units" ("brackets" "repeat" "single"))
-    ;; Tabular material
-    ("table-align-comparator" ("true" "false"))
-    ("table-align-exponent" ("true" "false"))
-    ("table-align-text-pre" ("true" "false"))
-    ("table-align-text-post" ("true" "false"))
-    ("table-align-uncertainty" ("true" "false"))
-    ("table-alignment" ("center" "left" "right"))
-    ("table-auto-round" ("true" "false"))
+    ("sticky-per"                 ("true" "false"))
+    ("unit-font-command")
+    ;; Table 19: Options for quantities
+    ("allow-number-unit-breaks"   ("true" "false"))
+    ("extract-mass-in-kilograms"  ("true" "false"))
+    ("prefix-mode"                ("input" "combine-exponent"
+                                   "extract-exponent"))
+    ("quantity-product")
+    ("separate-uncertainty-units")
+    ;; Table 20: Options for tabular material
+    ("table-align-comparator"     ("true" "false"))
+    ("table-align-exponent"       ("true" "false"))
+    ("table-align-text-after"     ("true" "false"))
+    ("table-align-text-before"    ("true" "false"))
+    ("table-align-uncertainty"    ("true" "false"))
+    ("table-alignment"            ("center" "left" "right" "none"))
+    ("table-alignment-mode"       ("format" "marker" "none"))
+    ("table-auto-round"           ("true" "false"))
     ("table-column-width")
-    ("table-comparator" ("true" "false"))
-    ("table-figures-decimal")
-    ("table-figures-exponent")
-    ("table-figures-integer")
-    ("table-figures-uncertainty")
+    ("table-fixed-width"          ("true" "false"))
     ("table-format")
-    ("table-number-alignment" ("center-decimal-marker" "center" "left" "right"))
-    ("table-parse-only" ("true" "false"))
-    ("table-omit-exponent" ("true" "false"))
-    ("table-space-text-pre")
-    ("table-space-text-post")
-    ("table-sign-exponent" ("true" "false"))
-    ("table-sign-mantissa" ("true" "false"))
-    ("table-text-alignment" ("center" "left" "right"))
-    ("table-unit-alignment" ("center" "left" "right"))
-    ;; Symbols
-    ("math-angstrom")
-    ("math-arcminute")
-    ("math-arcsecond")
-    ("math-celsius")
-    ("math-degree")
-    ("math-micro")
-    ("math-ohm")
-    ("redefine-symbols" ("true" "false"))
-    ("text-angstrom")
-    ("text-arcminute")
-    ("text-arcsecond")
-    ("text-celsius")
-    ("text-degree")
-    ("text-micro")
-    ("text-ohm")
-    ;; Other options
-    ("locale" ("FR" "DE" "UK" "US" "ZA"))
-    ("strict"))
+    ("table-number-alignment"     ("center" "left" "right"))
+    ("table-text-alignment"       ("center" "left" "right"))
+    ;; 4.13 Locale options
+    ("locale"                     ("FR" "DE" "UK" "US" "ZA")))
   "Package options for the siunitx package.")
+
+(defun LaTeX-siunitx-key-val-options ()
+  "Return an updated list of key=vals from siunitx package."
+  (append
+   (when (and (or (member "xcolor" (TeX-style-list))
+                  (member "color" TeX-active-styles)))
+     (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
+                          #'LaTeX-xcolor-definecolor-list
+                        #'LaTeX-color-definecolor-list))
+            (colors  (mapcar #'car (funcall colorcmd)))
+            (keys '("color"
+                    "number-color"
+                    "unit-color"
+                    "negative-color"))
+            result)
+       (dolist (key keys result)
+         (push (list key colors) result))))
+   LaTeX-siunitx-package-options))
 
 (TeX-add-style-hook
  "siunitx"
  (lambda ()
-   (TeX-auto-add-regexp `(,LaTeX-siunitx-regexp 1 LaTeX-auto-siunitx-unit))
+
+   (TeX-auto-add-regexp LaTeX-siunitx-regexp)
+
    (TeX-add-symbols
-    ;; Numbers
-    '("ang" [TeX-arg-key-val LaTeX-siunitx-package-options] "Angle")
-    '("num" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
-    '("numlist" [TeX-arg-key-val LaTeX-siunitx-package-options] "Numbers")
-    '("numrange" [TeX-arg-key-val LaTeX-siunitx-package-options]
+    '("sisetup" (TeX-arg-key-val (LaTeX-siunitx-key-val-options)))
+
+    ;; 3.1 Numbers
+    '("num"        [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Number")
+    '("numlist"    [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Numbers")
+    '("numproduct" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Numbers")
+    '("numrange"   [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Number 1" "Number 2")
-    ;; Units
-    '("si" [TeX-arg-key-val LaTeX-siunitx-package-options] LaTeX-arg-siunitx-unit)
-    '("SI" [TeX-arg-key-val LaTeX-siunitx-package-options]
-      "Value" [ "Pre-unit"] LaTeX-arg-siunitx-unit)
-    '("SIlist" [TeX-arg-key-val LaTeX-siunitx-package-options]
-      "Values" LaTeX-arg-siunitx-unit)
-    '("SIrange" [TeX-arg-key-val LaTeX-siunitx-package-options]
-      "Value 1" "Value 2" LaTeX-arg-siunitx-unit)
-    ;; Settings
-    '("sisetup" (TeX-arg-key-val LaTeX-siunitx-package-options))
-    ;; Tabular material
-    '("tablenum" [TeX-arg-key-val LaTeX-siunitx-package-options] "Number")
-    ;; Creating new macros (`DeclareSIUnitWithOptions' macro is deprecated)
-    '("DeclareSIUnit" [TeX-arg-key-val LaTeX-siunitx-package-options]
+
+    ;; 3.2 Angles
+    '("ang" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Angle")
+
+    ;; 3.3 Units
+    '("unit"       [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      LaTeX-arg-siunitx-unit)
+    '("qty"        [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Number" LaTeX-arg-siunitx-unit)
+    '("qtylist"    [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Numbers" LaTeX-arg-siunitx-unit)
+    '("qtyproduct" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Numbers" LaTeX-arg-siunitx-unit)
+    '("qtyrange"   [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Number 1" "Number 2" LaTeX-arg-siunitx-unit)
+
+    ;; 3.4 Complex numbers and quantities
+    '("complexnum" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Number")
+    '("complexqty" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+      "Number" LaTeX-arg-siunitx-unit)
+
+    ;; These macros are deprecated with package v3: "si", "SI",
+    ;; "SIlist", "SIrange", "SendSettingsToPgf".  Hence they are
+    ;; removed.
+
+    ;; 3.7 Creating new macros
+    '("DeclareSIUnit" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       (LaTeX-arg-define-siunitx-unit) "Symbol")
+
     '("DeclareSIPrefix" (LaTeX-arg-define-siunitx-unit "Prefix")
       "Symbol" "Powers of 10")
-    '("DeclareBinaryPrefix" (LaTeX-arg-define-siunitx-unit "Prefix")
-      "Symbol" "Powers of 2")
-    '("DeclareSIPostPower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
-    '("DeclareSIPrePower" (LaTeX-arg-define-siunitx-unit "Name") "Power")
+
+    '("DeclareSIPower"
+      (LaTeX-arg-define-siunitx-unit "Symbol before")
+      (LaTeX-arg-define-siunitx-unit "Symbol after")
+      "Power")
+
     '("DeclareSIQualifier" (LaTeX-arg-define-siunitx-unit "Qualifier") "Symbol")
-    ;; Highlighting
-    '("highlight" "Color")
-    ;; Transferring settings to pgf
-    '("SendSettingsToPgf" 0))
-    ;;; The unit macros
-   ;; SI base units
+
+    ;; 3.8 Tabular material
+    '("tablenum" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Number"))
+
+   ;; The unit macros
    (LaTeX-add-siunitx-units
+    ;; Table 1: SI base units.
     "ampere"
     "candela"
     "kelvin"
     "kilogram"
-    "gram"
     "meter"
     "metre"
     "second"
-    ;; Coherent derived units in the SI with special names and symbols
+    ;; Table 2: Coherent derived units in the SI with special names
+    ;; and symbols
     "becquerel"
-    "celsius"
+    ;; "celsius"
     "degreeCelsius"
     "coulomb"
     "farad"
@@ -337,8 +354,8 @@ string."
     "hertz"
     "henry"
     "joule"
-    "katal"
     "lumen"
+    "katal"
     "lux"
     "newton"
     "ohm"
@@ -351,9 +368,15 @@ string."
     "volt"
     "watt"
     "weber"
-    ;; Non-SI units accepted for use with the International System of Units
+    ;; Table 3: Non-SI units accepted for use with the International
+    ;; System of Units
+    "astronomicalunit"
+    "bel"
+    "dalton"
     "day"
+    "decibel"
     "degree"
+    "electronvolt"
     "hectare"
     "hour"
     "liter"
@@ -361,30 +384,20 @@ string."
     "arcminute"
     "minute"
     "arcsecond"
-    "tonne"
-    ;; Non-SI units whose values in SI units must be obtained experimentally
-    "astronomicalunit"
-    "atomicmassunit"
-    "bohr"
-    "clight"
-    "dalton"
-    "electronmass"
-    "electronvolt"
-    "elementarycharge"
-    "hartree"
-    "planckbar"
-    ;; Other non-SI units.
-    "angstrom"
-    "bar"
-    "barn"
-    "bel"
-    "decibel"
-    "knot"
-    "mmHg"
-    "nauticalmile"
     "neper"
+    "tonne"
+    ;; 3.5 The unit macros
     "percent"
-    ;; SI prefixes
+    "square"
+    "squared"
+    "cubic"
+    "cubed"
+    "tothe"
+    "raiseto"
+    "per"
+    "of"
+    "highlight" ; Defined by siunitx.sty
+    ;; Table 4: SI prefixes
     "yocto"
     "zepto"
     "atto"
@@ -405,201 +418,37 @@ string."
     "peta"
     "exa"
     "zetta"
-    "yotta"
-    ;; Powers
-    "square"
-    "squared"
-    "cubic"
-    "cubed"
-    "tothe"
-    "raiseto"
-    "per"
-    "of")
-   ;; Abbreviated units (available unless `abbreviations' option is set to `false')
-   (unless (LaTeX-provided-package-options-member "siunitx" "abbreviations=false")
-     (LaTeX-add-siunitx-units
-      "fg"
-      "pg"
-      "ng"
-      "ug"
-      "mg"
-      "g"
-      "kg"
-      "amu"
-      "pm"
-      "nm"
-      "um"
-      "mm"
-      "cm"
-      "dm"
-      "m"
-      "km"
-      "as"
-      "fs"
-      "ps"
-      "ns"
-      "us"
-      "ms"
-      "s"
-      "fmol"
-      "pmol"
-      "nmol"
-      "umol"
-      "mmol"
-      "mol"
-      "kmol"
-      "pA"
-      "nA"
-      "uA"
-      "mA"
-      "A"
-      "kA"
-      "ul"
-      "ml"
-      "l"
-      "hl"
-      "uL"
-      "mL"
-      "L"
-      "hL"
-      "mHz"
-      "Hz"
-      "kHz"
-      "MHz"
-      "GHz"
-      "THz"
-      "N"
-      "mN"
-      "kN"
-      "MN"
-      "Pa"
-      "kPa"
-      "MPa"
-      "GPa"
-      "mohm"
-      "kohm"
-      "Mohm"
-      "pV"
-      "nV"
-      "uV"
-      "mV"
-      "V"
-      "kV"
-      "uW"
-      "mW"
-      "W"
-      "kW"
-      "MW"
-      "GW"
-      "J"
-      "kJ"
-      "meV"
-      "keV"
-      "MeV"
-      "GeV"
-      "TeV"
-      "kWh"
-      "F"
-      "fF"
-      "pF"
-      "K"
-      "dB"))
-   ;; Binary prefixes and units available when `binary-units' option is used
-   (when (or (LaTeX-provided-package-options-member "siunitx" "binary-units")
-             (LaTeX-provided-package-options-member "siunitx" "binary-units=true"))
-     (LaTeX-add-siunitx-units
-      "kibi"
-      "mebi"
-      "gibi"
-      "tebi"
-      "pebi"
-      "exbi"
-      "zebi"
-      "yobi"
-      "bit"
-      "byte"))
-   ;; Symbols
-   (LaTeX-add-siunitx-units
-    "SIUnitSymbolAngstrom"
-    "SIUnitSymbolArcminute"
-    "SIUnitSymbolArcsecond"
-    "SIUnitSymbolCelsius"
-    "SIUnitSymbolDegree"
-    "SIUnitSymbolMicro"
-    "SIUnitSymbolOhm")
-   ;; Macros available when `version-1-compatibility' option is used
-   (when (or (LaTeX-provided-package-options-member
-              "siunitx" "version-1-compatibility")
-             (LaTeX-provided-package-options-member
-              "siunitx" "version-1-compatibility=true"))
-     (LaTeX-add-siunitx-units
-      "Square"
-      "ssquare"
-      "BAR"
-      "bbar"
-      "Day"
-      "dday"
-      "Gray"
-      "ggray"
-      "atomicmass"
-      "arcmin"
-      "arcsec"
-      "are"
-      "curie"
-      "gal"
-      "millibar"
-      "rad"
-      "rem"
-      "roentgen"
-      "micA"
-      "micmol"
-      "micl"
-      "micL"
-      "nanog"
-      "micg"
-      "picm"
-      "micm"
-      "Sec"
-      "mics"
-      "cmc"
-      "dmc"
-      "cms"
-      "centimetrecubed"
-      "centimetresquared"
-      "cubiccentimetre"
-      "cubicdecimetre"
-      "squarecentimetre"
-      "squaremetre"
-      "squarekilometre"
-      "parsec"
-      "lightyear"
-      "gmol"
-      "kgmol"
-      "lbmol"
-      "molar"
-      "Molar"
-      "torr"
-      "gon"
-      "micron"
-      "mrad"
-      "gauss"
-      "eVperc"
-      "nanobarn"
-      "picobarn"
-      "femtobarn"
-      "attobarn"
-      "zeptobarn"
-      "yoctobarn"
-      "nb"
-      "pb"
-      "fb"
-      "ab"
-      "zb"
-      "yb"))
+    "yotta")
 
-   ;; `siunitx.sty' adds new column specification letters
+   ;; 3.6 Unit abbreviations are always defined:
+   (LaTeX-add-siunitx-units
+    "fg"    "pg"    "ng"    "ug"    "mg"    "g"    "kg"
+    "pm"    "nm"    "um"    "mm"    "cm"    "dm"   "m"  "km"
+    "as"    "fs"    "ps"    "ns"    "us"    "ms"   "s"
+    "fmol"  "pmol"  "nmol"  "umol"  "mmol"  "mol"  "kmol"
+    "pA"    "nA"    "uA"    "mA"    "A"     "kA"
+    "ul"    "ml"    "l"     "hl"    "uL"    "mL"   "L"  "hL"
+    "mHz"   "Hz"    "kHz"   "MHz"   "GHz"   "THz"
+    "mN"    "N"     "kN"    "MN"
+    "Pa"    "kPa"   "MPa"   "GPa"
+    "mohm"  "kohm"  "Mohm"
+    "pV"    "nV"    "uV"    "mV"    "V"     "kV"
+    "uW"    "mW"    "W"     "kW"    "MW"    "GW"
+    "J"     "uJ"    "mJ"    "kJ"
+    "eV"    "meV"   "keV"   "MeV"   "GeV"   "TeV"  "kWh"
+    "F"     "fF"    "pF"    "nF"    "uF"
+    "H"     "mH"    "uH"
+    "K"     "dB"
+    "kibi"  "mebi"  "gibi"  "tebi"  "pebi"
+    "exbi"  "zebi"  "yobi"  "bit"   "byte")
+
+   ;; \cancel is only available when cancel.sty is loaded:
+   (when (member "cancel" (TeX-style-list))
+     (LaTeX-add-siunitx-units "cancel"))
+
+   ;; `siunitx.sty' add new column specification letter 'S'
    (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "s" "S"))
+        (concat LaTeX-array-column-letters "S"))
 
    (TeX-run-style-hooks "l3keys2e"
                         "array"
@@ -610,28 +459,39 @@ string."
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("ang" "[{")
-                                ("num" "[{")
-                                ("si" "[{")
-                                ("SI" "[{[{")
-                                ("numlist" "[{")
-                                ("numrange" "[{{")
-                                ("SIlist" "[{{")
-                                ("SIrange" "[{{{")
-                                ("sisetup" "{")
-                                ("tablenum" "[{")
-                                ("DeclareSIUnit" "[|{\\{")
-                                ("DeclareSIPrefix" "|{\\{{")
-                                ("DeclareBinaryPrefix" "|{\\{{")
-                                ("DeclareSIPostPower" "|{\\{")
-                                ("DeclareSIPrePower" "|{\\{")
-                                ("DeclareSIQualifier" "|{\\{")
-                                ("highlight" "{"))
+     (font-latex-add-keywords '(("num"                 "[{")
+                                ("numlist"             "[{")
+                                ("numproduct"          "[{")
+                                ("numrange"            "[{{")
+                                ("ang"                 "[{")
+                                ("unit"                "[{")
+                                ("qty"                 "[{{")
+                                ("qtylist"             "[{{")
+                                ("qtyrange"            "[{{{")
+                                ("complexnum"          "[{")
+                                ("complexqty"          "[{")
+                                ("DeclareSIUnit"       "[|{\\{")
+                                ("DeclareSIPrefix"     "|{\\{{")
+                                ("DeclareSIPower"      "|{\\|{\\{")
+                                ("DeclareSIQualifier"  "|{\\{")
+                                ("tablenum"            "[{")
+                                ("highlight"           "{")
+                                ("sisetup"             "{")
+                                ;; These macros are deprecated in v3, we
+                                ;; leave the fontification support
+                                ;; here for older documents:
+                                ("si"       "[{")
+                                ("SI"       "[{[{")
+                                ("SIlist"   "[{{")
+                                ("SIrange"  "[{{{"))
                               'function)))
  TeX-dialect)
 
 (defun LaTeX-siunitx-package-options nil
   "Prompt for package options for the siunitx package."
-  (TeX-read-key-val t LaTeX-siunitx-package-options))
+  (TeX-read-key-val t (append
+                       ;; 'table-column-type' is a preamble only:
+                       '(("table-column-type"))
+                       LaTeX-siunitx-package-options)))
 
 ;; siunitx.el ends here

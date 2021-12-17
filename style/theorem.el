@@ -63,10 +63,10 @@
     "Large" "LARGE" "huge" "Huge"
     ;; reset macro
     "normalfont")
-  "List of font declaration commands for \"\\theorem(body\|header)font\".")
+  "List of font declaration commands for \"\\theorem(body|header)font\".")
 
 (defun LaTeX-arg-theorem-fontdecl (optional &optional prompt)
-  "Prompt for font declaration commands in \"\\theorem(body\|header)font\".
+  "Prompt for font declaration commands in \"\\theorem(body|header)font\".
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument.  Use PROMPT as the prompt string."
   ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
@@ -87,7 +87,7 @@ for label.  AUCTeX users should add ENVIRONMENT to
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
 
 RefTeX users should customize or add ENVIRONMENT to
-`LaTeX-label-alist' and `reftex-label-alist', e.g.
+`LaTeX-label-alist' and `reftex-label-alist', for example
 
   (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
   (add-to-list \\='reftex-label-alist

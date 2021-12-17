@@ -12,6 +12,16 @@
 
 @itemize @bullet
 @item
+Now two commands @samp{Texindex} and @samp{Texi2dvi} are available when
+you type @kbd{C-c C-c} in Texinfo mode.  The command @samp{Texindex} runs
+@command{texindex} on index files and @samp{Texi2dvi} runs
+@command{pdftexi2dvi} or @command{texi2dvi} according to the value of
+@code{TeX-PDF-mode}.
+
+So you can typeset Texinfo documents into @acronym{PDF} or @acronym{DVI}
+format from within @AUCTeX{}.
+
+@item
 @AUCTeX{}'s own help messages for @LaTeX{} errors are now shown only for
 @LaTeX{} runs.  @AUCTeX{} shows raw error/warning messages found in
 @file{.log} files for runs of formats other than @LaTeX{}, such as plain
@@ -28,6 +38,18 @@ Two functions @code{TeX-split-string} and @code{TeX-assoc} are now
 obsolete and will be removed in future release.  If your personal code
 uses these functions, use @code{split-string} and @code{assoc-string}
 instead.
+
+@item
+The function @code{TeX-read-key-val} now accepts a function call as second
+argument.  This change should help @AUCTeX{} style writers who use
+@code{TeX-arg-key-val} and have to deal with dynamic key-values.  Example
+of usage:
+@lisp
+(TeX-add-style-hook "foo"
+ (lambda ()
+   (TeX-add-symbols
+    '("bar" (TeX-arg-key-val (function-returning-key-val))))))
+@end lisp
 
 @item
 Since @AUCTeX{} 12.2, @kbd{C-x C-w} accidentally disabled the parse on
@@ -107,6 +129,11 @@ The style @file{latexinfo.el} is removed from @AUCTeX{}.
 @LaTeX{}-2.09 extension of Texinfo, but didn't manage to replace Texinfo.
 
 @item
+The style @file{siunitx.el} is updated to support package version 3.
+Key-value options provided by older package versions are removed,
+deprecated macros and units are not supported anymore.
+
+@item
 @AUCTeX{} has preliminary support for @LaTeX{}-hooks.  Hooks provided by
 @LaTeX{} kernel are known and available for completion in
 @samp{\AddToHook}, @samp{\RemoveFromHook} and @samp{\AddToHookNext}.
@@ -119,6 +146,12 @@ directory.  To use this feature, set the new user option
 @code{TeX-output-dir} to the absolute path of the output directory or a
 relative path which would be interpreted as being relative to the master
 file in a multifile document.
+
+Note that this feature doesn't work if the document includes sub file
+placed in sub directory below the main file via @samp{\include} command.
+
+@item
+Many other bugs were fixed.
 @end itemize
 
 @heading News in 12.3

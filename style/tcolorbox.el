@@ -1,6 +1,6 @@
 ;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,9 +34,10 @@
 ;; file is prefixed with `tcolorboxlib-',
 ;; e.g. `tcolorboxlib-raster.el'.
 
-;; Libraries should also append their key=val option to variable
-;; `LaTeX-tcolorbox-keyval-options-full'.  This variable is called
-;; with macro `\tcbset'.
+;; Libraries should also prepend a symbol containing their key=val
+;; options to the variable `LaTeX-tcolorbox-keyval-options-full'.
+;; This variable is used by the function of the same name called when
+;; inserting `\tcbset' macro.
 
 ;;; Code:
 
@@ -343,13 +344,45 @@
     ("no recording"))
   "Key=value options for tcolorbox macros and environments.")
 
-(defvar LaTeX-tcolorbox-keyval-options-local nil
-   "Buffer-local key=value options for tcolorbox macros and environments.")
-(make-variable-buffer-local 'LaTeX-tcolorbox-keyval-options-local)
+(defun LaTeX-tcolorbox-keyval-options ()
+  "Return an updated list of key=vals from tcolorbox package."
+  (append
+   ;; This style runs `xcolor.el', so we use
+   ;; `LaTeX-xcolor-definecolor-list' right away:
+   (let ((colors (mapcar #'car (LaTeX-xcolor-definecolor-list)))
+         (keys '("colframe"
+                 "colback"
+                 "colbacktitle"
+                 "colupper"
+                 "collower"
+                 "coltext"
+                 "coltitle"))
+         result)
+     (dolist (key keys result)
+       (cl-pushnew (list key colors) result :test #'equal)))
+   LaTeX-tcolorbox-keyval-options))
 
-(defvar LaTeX-tcolorbox-keyval-options-full nil
-  "Key=value options of tcolorbox core and all loaded libraries.")
+(defvar LaTeX-tcolorbox-keyval-options-full
+  '(LaTeX-tcolorbox-keyval-options)
+  "Buffer-local list of symbols containing key=val options.
+tcolorbox libraries should add their key=val options to this
+list.  Key=val options might be a variable or a function.  This
+variable is initialized with the function
+`LaTeX-tcolorbox-keyval-options'.  Please add entries on top of
+this list so that this item always comes last.")
 (make-variable-buffer-local 'LaTeX-tcolorbox-keyval-options-full)
+
+(defun LaTeX-tcolorbox-keyval-options-full ()
+  "Return an updated list of full key=vals for tcolorbox and libraries.
+Each symbol is a variable or a function.  If a symbol name
+contains a function and a variable value, the function is
+preferred.  This function processes symbols in the variable
+`LaTeX-tcolorbox-keyval-options-full'."
+  (let (result)
+    (dolist (elt (reverse LaTeX-tcolorbox-keyval-options-full) result)
+      (if (functionp elt)
+          (setq result (append (funcall elt) result))
+        (setq result (append (symbol-value elt) result))))))
 
 (defvar LaTeX-tcolorbox-tcbox-options
   '(;; 4.20 \tcbox Specials
@@ -437,7 +470,8 @@
   "Matches the arguments of \\newtcbox from tcolorbox package.")
 
 ;; Setup for \tcbuselibrary:
-(TeX-auto-add-type "tcolorbox-tcbuselibrary" "LaTeX" "tcbuselibraries")
+(TeX-auto-add-type "tcolorbox-tcbuselibrary"
+                   "LaTeX" "tcolorbox-tcbuselibraries")
 
 (defvar LaTeX-tcolorbox-tcbuselibrary-regexp
   '("\\\\tcbuselibrary{\\([^}]+\\)}"
@@ -450,7 +484,7 @@ This functions checks the arguments of \\tcbuselibrary and the
 name of libraries given in the optional argument of \\usepackage
 call for tcolorbox and runs the style hook for them.  The file
 for style must have the prefix \"tcolorboxlib-\" in the name,
-e.g. \"tcolorboxlib-raster.el\"."
+for example \"tcolorboxlib-raster.el\"."
   (when (LaTeX-tcolorbox-tcbuselibrary-list)
     (let (libs)
       (dolist (x (LaTeX-tcolorbox-tcbuselibrary-list))
@@ -463,25 +497,6 @@ e.g. \"tcolorboxlib-raster.el\"."
       (dolist (x opts)
         (when (member x LaTeX-tcolorbox-library-list)
           (TeX-run-style-hooks (concat "tcolorboxlib-" x)))))))
-
-(defun LaTeX-tcolorbox-update-style-key ()
-  "Update some key=values in `LaTeX-tcolorbox-keyval-options-local'."
-  ;; Update the key=values for coloring.
-  (let* ((keys '("colframe"
-                 "colback"
-                 "colbacktitle"
-                 "colupper"
-                 "collower"
-                 "coltext"
-                 "coltitle"))
-         (tmp (copy-alist LaTeX-tcolorbox-keyval-options-local)))
-    (dolist (key keys)
-      (setq tmp (assq-delete-all (car (assoc key tmp)) tmp))
-      (cl-pushnew
-       (list key (mapcar #'car (LaTeX-xcolor-definecolor-list))) tmp :test #'equal))
-    (setq LaTeX-tcolorbox-keyval-options-local (copy-alist tmp)))
-  (setq LaTeX-tcolorbox-keyval-options-full
-        (copy-alist LaTeX-tcolorbox-keyval-options-local)))
 
 (defun LaTeX-tcolorbox-auto-prepare ()
   "Clear various LaTeX-tcolorbox-* variables before parsing."
@@ -511,7 +526,7 @@ e.g. \"tcolorboxlib-raster.el\"."
              (LaTeX-add-environments
               (list box
                     #'LaTeX-env-args
-                    [TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local]
+                    [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)]
                     (1- (string-to-number arg)))))
             (;; mandatory argument(s) only
              (and arg (not (string= arg ""))
@@ -539,17 +554,14 @@ e.g. \"tcolorboxlib-raster.el\"."
              (and arg (not (string= arg ""))
                   opt (not (string= opt  "")))
              (TeX-add-symbols (list box
-                               [TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local]
-                               (1- (string-to-number arg)))))
+                                    [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)]
+                                    (1- (string-to-number arg)))))
             (;; mandatory argument(s) only
              (and arg (not (string= arg ""))
                   (string-equal opt ""))
              (TeX-add-symbols (list box (string-to-number arg))))
             (t ; No args -- in pratice, this will probably never happen
              (TeX-add-symbols (list box))))))
-  ;;
-  ;; Update key=vals
-  (LaTeX-tcolorbox-update-style-key)
   ;;
   ;; Load style hooks for libraries, if any.
   (LaTeX-tcolorbox-load-used-libraries))
@@ -561,15 +573,6 @@ e.g. \"tcolorboxlib-raster.el\"."
 (TeX-add-style-hook
  "tcolorbox"
  (lambda ()
-
-   ;; Activate the buffer-local version of key-vals.
-   (setq LaTeX-tcolorbox-keyval-options-local
-         (copy-alist LaTeX-tcolorbox-keyval-options))
-
-   ;; Collect key=val's from libraries in
-   ;; `LaTeX-tcolorbox-keyval-options-full'; \tcbset needs this:
-   (setq LaTeX-tcolorbox-keyval-options-full
-         (copy-alist LaTeX-tcolorbox-keyval-options-local))
 
    ;; Add tcolorbox to the parser.
    (TeX-auto-add-regexp LaTeX-tcolorbox-newtcolorbox-regexp)
@@ -584,32 +587,38 @@ e.g. \"tcolorboxlib-raster.el\"."
 
     ;; 1.3 Libraries
     '("tcbuselibrary"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Libraries")
-                     LaTeX-tcolorbox-library-list) ","))
+      (TeX-arg-eval
+       (lambda ()
+         (let ((libs (mapconcat #'identity
+                                (TeX-completing-read-multiple
+                                 (TeX-argument-prompt nil nil "Libraries")
+                                 LaTeX-tcolorbox-library-list)
+                                ",")))
+           (LaTeX-add-tcolorbox-tcbuselibraries libs)
+           (LaTeX-tcolorbox-load-used-libraries)
+           (format "%s" libs)))))
 
     ;; 3 Macros for Box Creation
     '("tcblower" 0)
 
     '("tcbset"
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-full))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options-full)))
 
     '("tcbsetforeverylayer"
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("tcbox"
-      [ TeX-arg-eval TeX-read-key-val t
-        (append
-         LaTeX-tcolorbox-tcbox-options
-         LaTeX-tcolorbox-keyval-options-local) ]
+      [TeX-arg-eval TeX-read-key-val t
+                    (append
+                     LaTeX-tcolorbox-tcbox-options
+                     (LaTeX-tcolorbox-keyval-options))]
       t)
 
     '("newtcolorbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
       "Name"
       [ TeX-arg-define-macro-arguments ]
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("renewtcolorbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
@@ -617,13 +626,13 @@ e.g. \"tcolorboxlib-raster.el\"."
                     (TeX-argument-prompt nil nil "Color box")
                     (LaTeX-tcolorbox-newtcolorbox-list))
       [ TeX-arg-define-macro-arguments ]
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("newtcbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
       TeX-arg-macro
       [ TeX-arg-define-macro-arguments ]
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("renewtcbox"
       [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
@@ -634,11 +643,11 @@ e.g. \"tcolorboxlib-raster.el\"."
                        (LaTeX-tcolorbox-newtcbox-list))))
            (concat TeX-esc macro))))
       [ TeX-arg-define-macro-arguments ]
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("tcolorboxenvironment"
       TeX-arg-environment
-      (TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local))
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     ;; 4.16 Layered Boxes and Every Box Settings
     '("tcbsetmanagedlayer" "Number")
@@ -670,7 +679,7 @@ e.g. \"tcolorboxlib-raster.el\"."
    (LaTeX-add-environments
     ;; 3 Macros for Box Creation: Main env
     '("tcolorbox" LaTeX-env-args
-      [ TeX-arg-key-val LaTeX-tcolorbox-keyval-options-local ])
+      [ TeX-arg-key-val (LaTeX-tcolorbox-keyval-options) ])
 
     ;; 7 Saving and Loading of Verbatim Texts
     '("tcbverbatimwrite" "File name")

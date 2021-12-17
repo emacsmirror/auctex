@@ -135,7 +135,7 @@ Installation is now being covered in
 
 @cindex Menu entries
 @previewlatex{} adds key bindings starting with @kbd{C-c C-p} to the
-supported modes of @AUCTeX{} (@inforef{Key Index,,auctex}).  It will
+supported modes of @AUCTeX{} (@xref{Key Index,,,auctex}).  It will
 also add its own @samp{Preview} menu in the menu bar, as well as an icon
 in the toolbar.
 
@@ -638,7 +638,7 @@ the two commands gets used depends on the setting of
 @code{preview-fast-conversion}.  The printer specified here
 is @option{-Pwww} by default, which will usually get you scalable fonts
 where available.  If you are experiencing problems, you might want to try
-playing around with Dvips options (@inforef{Command-line options,,dvips}).
+playing around with Dvips options (@xref{Command-line options,,,dvips}).
 
 The conversion of the previews into PostScript or @acronym{EPS} files
 gets started after the @LaTeX{} run completes when Emacs recognizes the

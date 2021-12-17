@@ -193,7 +193,7 @@ if present.
 
 If a prefix argument OVERRIDE-CONFIRM is given, prompting will
 ignore the prompting flag from `TeX-command-list' and instead
-will prompt iff the prefix is positive.
+will prompt only if the prefix is positive.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The document's header is all
@@ -1513,7 +1513,7 @@ errors or warnings to show."
 
 (defun TeX-TeX-sentinel-check (process name)
   "Cleanup TeX output buffer after running TeX.
-Return nil ifs no errors were found."
+Return nil only if no errors were found."
   (save-excursion
     (goto-char (point-max))
     (cond
@@ -1874,7 +1874,7 @@ defined."
 
 (defun TeX-process-set-variable (name symbol value)
   "Set the variable SYMBOL in the process buffer to VALUE.
-Return nil iff no process buffer exist."
+Return nil only if no process buffer exists."
   (let ((buffer (TeX-process-buffer name)))
     (if buffer
         (with-current-buffer buffer
@@ -2019,7 +2019,7 @@ command."
 ;;; Active Process
 
 (defvar TeX-current-process-region-p nil
-  "This variable is set to t iff the last TeX command is on a region.")
+  "Non-nil means that the last TeX command is on a region.")
 
 (defun TeX-active-process ()
   "Return the active process for the current buffer."
@@ -2354,10 +2354,10 @@ depend on it being positive instead of the entry in
 (defun TeX-command-run-all (arg)
   "Compile the current document until an error occurs or it is finished.
 With a prefix ARG (`\\[universal-argument] \\[TeX-command-run-all]'),
-compile the current region instead, e.g, call
+compile the current region instead, that is, call
 `TeX-command-run-all-region'.  With multiple prefix
 arguments (`\\[universal-argument] \\[universal-argument] \\[TeX-command-run-all]'),
-compile the current section instead, e.g. call
+compile the current section instead, that is, call
 `LaTeX-command-run-all-section'."
   (interactive "P")
   (cond
@@ -2434,8 +2434,6 @@ If REPARSE is non-nil, reparse the output log.
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
   (let ((old-buffer (current-buffer))
-        ;; FIXME: default-major-mode has been removed in Emacs 26.
-        (default-major-mode major-mode)
         max-index item)
 
     ;; Switch to the output buffer.
@@ -2520,7 +2518,7 @@ error or warning.  This is the structure of each element:
  *  5: context, to be displayed in the help window
  *  6: string to search in the buffer, in order to find location
        of the error or warning
- *  7: for warnings referring to multiple lines (e.g. bad boxes),
+ *  7: for warnings referring to multiple lines (for exapmle, bad boxes),
        the last line mentioned in the warning message
  *  8: t if it is a bad-box, nil otherwise
  *  9: value of `TeX-error-point'
@@ -2693,11 +2691,14 @@ value is not used here."
                 (find-file
                  (expand-file-name TeX-translate-location-file
                                    (file-name-directory master))))
+          ;; Use the major mode of `TeX-command-buffer' when visiting
+          ;; the error point.
+          (if (eq major-mode (default-value 'major-mode))
+              (funcall (buffer-local-value 'major-mode command-buffer)))
           ;; Set the value of `TeX-command-buffer' in the next file
           ;; with an error to be displayed to the value it has in the
           ;; current buffer.
-          (with-current-buffer error-file-buffer
-            (setq-local TeX-command-buffer command-buffer))
+          (setq-local TeX-command-buffer command-buffer)
 
           ;; Find the location of the error or warning.
           (when TeX-translate-location-line
@@ -2722,16 +2723,16 @@ value is not used here."
                 (search-forward TeX-translate-location-string nil t))))))
       ;; When the file cannot be determined stay here but issue a
       ;; warning.
-      (message (concat "Could not determine file for "
-                       (cond ((equal type 'error) "error")
-                             (t "warning"))))
+      (message "Could not determine file for %s"
+               (if (eq type 'error) "error" "warning"))
       (beep))
 
     ;; Display the help.
     (cond ((eq TeX-display-help 'expert)
            (TeX-pop-to-buffer runbuf nil t)
            (goto-char error-point)
-           (TeX-pop-to-buffer error-file-buffer nil t))
+           (if error-file-buffer
+               (TeX-pop-to-buffer error-file-buffer nil t)))
           (TeX-display-help
            (TeX-help-error
             TeX-translate-location-error
@@ -2740,7 +2741,7 @@ value is not used here."
               TeX-translate-location-context)
             runbuf type))
           (t
-           (message (concat "! " TeX-translate-location-error))))))
+           (message "! %s" TeX-translate-location-error)))))
 
 (defun TeX-error (&optional store)
   "Display an error.
@@ -2815,7 +2816,10 @@ warning."
   (let* ( ;; line-string: match 1 is beginning line, match 2 is end line
          (line-string (if bad-box
                           "at lines? \\([0-9]*\\)\\(?:--\\([0-9]*\\)\\)?"
-                        "on input line \\([0-9]*\\)\\."))
+                        ;; Traditional messages say "on input line X",
+                        ;; the LaTeX3 \msg_line_context:. just reads
+                        ;; "on line X".
+                        "on \\(?:input \\)?line \\([0-9]*\\)\\."))
          ;; word-string: match 1 is the word
          (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
                         ;; Match "ref" in both "Reference `ref' on page NN
@@ -2965,7 +2969,7 @@ Major modes of AUCTeX can set its own catalogue as buffer local
 value of this variable, as LaTeX mode does.
 Style files of AUCTeX can also add their own entries to buffer local
 value of this variable to provide their own help messages.
-It must end with a fallback entry that matches any error, e.g.
+It must end with a fallback entry that matches any error, for example
 \(\".*\" . \"No help available\")")
 
 ;;; - Help
@@ -3138,12 +3142,8 @@ please restart TeX error overview")))
                   TeX-error-last-visited index))
           ;; Find the error and display the help.
           (with-current-buffer TeX-command-buffer
-            ;; For consistency with `TeX-parse-TeX', use the major mode of
-            ;; `TeX-command-buffer' when visiting the error point.
-            ;; FIXME: default-major-mode has been removed in Emacs 26.
-            (let ((default-major-mode major-mode))
-              ;; Find the error and display the help.
-              (apply #'TeX-find-display-help item)))
+            ;; Find the error and display the help.
+            (apply #'TeX-find-display-help item))
           ;; Return to the error overview.
           (if (TeX-error-overview-setup)
               (select-frame TeX-error-overview-frame)

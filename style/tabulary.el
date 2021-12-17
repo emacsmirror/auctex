@@ -1,6 +1,6 @@
 ;;; tabulary.el --- AUCTeX style for the tabulary package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2016, 2020, 2021 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -42,10 +42,13 @@
  (lambda ()
    ;; Make tabulary the default tabular environment
    (setq LaTeX-default-tabular-environment "tabulary")
+
    ;; Use the enhanced tabular indentation.  Append to
-   ;; `LaTeX-indent-environment-list' in order not to override custom settings.
+   ;; `LaTeX-indent-environment-list' in order not to override custom
+   ;; settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-                '("tabulary" LaTeX-indent-tabular))
+                '("tabulary" LaTeX-indent-tabular)
+                t)
 
    ;; Append tabulary to `LaTeX-item-list' with `LaTeX-item-tabular*'
    (add-to-list 'LaTeX-item-list '("tabulary" . LaTeX-item-tabular*) t)

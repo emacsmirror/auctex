@@ -141,12 +141,12 @@ string."
     ("alt-indefinite") ("extra") ("sort") ("class") ("cite") ("short-format")
     ("long-format") ("first-long-format") ("pdfstring") ("accsupp")
     ("index-sort") ("index") ("index-cmd"))
-  "List of keys accepted by `\DeclareAcronym' macro of `acro' package
+  "List of keys accepted by `\\DeclareAcronym' macro of `acro' package
 in its second mandatory argument.")
 
 (defvar LaTeX-acro-printacronyms-keys
   '(("include-classes") ("exclude-classes") ("name") ("header"))
-  "List of keys accepted by `\printacronyms' macro of `acro' package
+  "List of keys accepted by `\\printacronyms' macro of `acro' package
 in its optional argument.")
 
 (defun LaTeX-arg-acro-key-val (optional prompt key-val-alist)

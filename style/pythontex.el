@@ -1,6 +1,6 @@
 ;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,9 +35,10 @@
 (require 'latex)
 
 ;; Silence the compiler:
-;; `LaTeX-fancyvrb-key-val-options-local' will be defined after
+
+;; The function `LaTeX-fancyvrb-key-val-options' will be defined after
 ;; loading `fvextra.el' which loads `fancyvrb.el' in return:
-(defvar LaTeX-fancyvrb-key-val-options-local)
+(declare-function LaTeX-fancyvrb-key-val-options "fancyvrb" ())
 
 ;; These are provided by `font-latex.el':
 (defvar font-latex-syntactic-keywords-extra)
@@ -116,7 +117,7 @@ Update the variable `LaTeX-pythontex-language-list' if still nil."
   "Insert ENVIRONMENT provided by pythontex package."
   (let ((session (TeX-read-string
                   (TeX-argument-prompt t nil "Session")))
-        (fvkeyval (TeX-read-key-val t LaTeX-fancyvrb-key-val-options-local)))
+        (fvkeyval (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options))))
     (LaTeX-insert-environment environment
                               (concat
                                (when (and session (not (string= session "")))
@@ -307,7 +308,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Family")
         LaTeX-pythontex-family-list ]
-      (TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     ;; \setpythontexprettyprinter[<family>]{<printer>}
     '("setpythontexprettyprinter"
@@ -341,14 +342,14 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
 
     ;; \stdoutpythontex[<mode>][<options>]
     '("stdoutpythontex"
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
 
     ;;\saveprintpythontex{<name>}
     '("saveprintpythontex"
@@ -372,7 +373,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Name")
                     (LaTeX-pythontex-savecontent-list)))
@@ -383,7 +384,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Name")
                     (LaTeX-pythontex-savecontent-list)))
@@ -393,7 +394,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ] )
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
 
 
     ;;\savestderrpythontex{<name>}
@@ -409,7 +410,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Mode")
         '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val LaTeX-fancyvrb-key-val-options-local ]
+      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Name")
                     (LaTeX-pythontex-savecontent-list)))
@@ -436,7 +437,7 @@ a list of strings."
 
     ;; \inputpygments[<fancyvrb settings>]{<lexer>}{<external file>}
     '("inputpygments"
-      [ TeX-arg-eval LaTeX-fancyvrb-key-val-options-local ]
+      [ TeX-arg-eval (LaTeX-fancyvrb-key-val-options) ]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Lexer")
                     (LaTeX-pythontex-language-list))
@@ -447,7 +448,7 @@ a list of strings."
       [ TeX-arg-eval completing-read
         (TeX-argument-prompt t nil "Lexer")
         (LaTeX-pythontex-language-list) ]
-      (TeX-arg-eval LaTeX-fancyvrb-key-val-options-local))
+      (TeX-arg-eval (LaTeX-fancyvrb-key-val-options)))
 
     ;; \setpygmentspygopt[<lexer>]{<pygments options>}
     '("setpygmentspygopt"
@@ -511,7 +512,7 @@ a list of strings."
 
     ;; \begin{pygments}[<fancyvrb settings>]{<lexer>}
     '("pygments" LaTeX-env-args
-      [ TeX-arg-eval LaTeX-fancyvrb-key-val-options-local ]
+      [TeX-arg-eval (LaTeX-fancyvrb-key-val-options)]
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Lexer")
                     (LaTeX-pythontex-language-list))) )

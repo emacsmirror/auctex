@@ -1,6 +1,6 @@
 ;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -71,9 +71,13 @@
     ("chapterlistsgaps" ("on" "off")))
   "Key=value options for newfloat macros.")
 
-(defvar LaTeX-newfloat-key-val-options-local nil
-  "Buffer-local Key=value options for newfloat macros.")
-(make-variable-buffer-local 'LaTeX-newfloat-key-val-options-local)
+(defun LaTeX-newfloat-key-val-options ()
+  "Return newfloat key=vals based on variable `LaTeX-largest-level'."
+  (append
+   (if (< (LaTeX-largest-level) 2)
+       '(("within" ("chapter" "section" "none")))
+     '(("within" ("section" "none"))))
+   LaTeX-newfloat-key-val-options))
 
 ;; Setup parsing for \DeclareFloatingEnvironment:
 (TeX-auto-add-type "newfloat-DeclareFloatingEnvironment" "LaTeX")
@@ -88,8 +92,7 @@
              "{\\([^}]+\\)}"
              "\\(?:[ %]*{\\([^}]*\\)}\\)?")
     (1 2) LaTeX-auto-newfloat-DeclareFloatingEnvironment)
-  "Matches the argument of `\\DeclareFloatingEnvironment' from
-`newfloat.sty'.")
+  "Matches the argument of `\\DeclareFloatingEnvironment' from `newfloat.sty'.")
 
 (defun LaTeX-newfloat-auto-prepare ()
   "Clear `LaTeX-auto-newfloat-DeclareFloatingEnvironment' before parsing."
@@ -151,21 +154,10 @@ If `caption.el' is loaded, add the new floating environment to
    ;; Add newfloat to the parser.
    (TeX-auto-add-regexp LaTeX-newfloat-DeclareFloatingEnvironment-regex)
 
-   ;; Depending on class, add "within" key to the local options list
-   ;; and use it.
-   (setq LaTeX-newfloat-key-val-options-local
-         (copy-alist LaTeX-newfloat-key-val-options))
-
-   (if (< (LaTeX-largest-level) 2)
-       (add-to-list 'LaTeX-newfloat-key-val-options-local
-                    '("within" ("chapter" "section" "none")))
-     (add-to-list 'LaTeX-newfloat-key-val-options-local
-                  '("within" ("section" "none"))))
-
    ;; Commands:
    (TeX-add-symbols
     '("DeclareFloatingEnvironment"
-      [TeX-arg-key-val LaTeX-newfloat-key-val-options-local]
+      [TeX-arg-key-val (LaTeX-newfloat-key-val-options)]
       (TeX-arg-eval
        (lambda ()
          (let ((newfloat (TeX-read-string
@@ -177,7 +169,7 @@ If `caption.el' is loaded, add the new floating environment to
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Floating environment")
                     (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-      (TeX-arg-key-val LaTeX-newfloat-key-val-options-local))
+      (TeX-arg-key-val (LaTeX-newfloat-key-val-options-local)))
 
     '("ForEachFloatingEnvironment" t)
     '("ForEachFloatingEnvironment*" t)

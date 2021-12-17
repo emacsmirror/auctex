@@ -377,17 +377,19 @@ Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER.
 
 KEY is the key (after `LaTeX-kpfonts-abbrev-prefix') to be
-redefined in kpfonts minor mode.  If KEY is nil, the symbol has
-no associated keystroke \(it is available in the menu, though\).
+redefined in kpfonts minor mode.  KEY can be a character (for
+example ?o) for a single stroke or a string (for example \"o a\")
+for a multi-stroke binding.  If KEY is nil, the symbol has no
+associated keystroke (it is available in the menu, though).
 
 VALUE can be a string with the name of the macro to be inserted,
 or a function to be called.  The macro must be given without the
 leading backslash.
 
 The third element MENU is the name of the submenu where the
-command should be added.  MENU can be either a string
-\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
-nil.  If MENU is nil, no menu item will be created.
+command should be added.  MENU can be either a string (for
+example \"greek\"), a list (for example (\"AMS\" \"Delimiters\"))
+or nil.  If MENU is nil, no menu item will be created.
 
 The fourth element CHARACTER is a Unicode character position for
 menu display.  When nil, no character is shown.

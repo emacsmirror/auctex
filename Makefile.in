@@ -78,8 +78,6 @@ WWWDIR = $(DIST_PREFIX)/www
 CTANDIR = $(DIST_PREFIX)/ctan
 PREVIEW_BUILD_DIR = preview-build
 COMMITTER="`git config --get user.name`\ \ \<`git config --get user.email`\>"
-RPMROOT = /usr/src/redhat
-RPM_SIGN = --sign
 
 AUCSRC = tex.el tex-buf.el tex-style.el plain-tex.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
@@ -176,7 +174,11 @@ STYLESRC = style/prosper.el \
 	   style/appendix.el  style/scholax.el   style/extramarks.el \
 	   style/truncate.el  style/changes.el   style/footnotehyper.el \
 	   style/brazil.el    style/brazilian.el style/portuguese.el \
-	   style/portuges.el
+	   style/portuges.el  style/backref.el   style/xr-hyper.el \
+	   style/xr.el        style/cancel.el    style/unicodefonttable.el \
+	   style/cuted.el     style/floatpag.el  style/flushend.el \
+	   style/midfloat.el  style/stabular.el  style/stfloats.el \
+	   style/rotating.el  style/sidecap.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -216,7 +218,7 @@ all: texmf lisp docs
 	install-docs install-auto install-startup			\
 	clean distclean maintainer-clean extraclean			\
 	tar-ball-clean check-tag check release-commit dist snapshot	\
-	patch tar-ball rpm-packages wc windows-package	\
+	patch tar-ball wc \
 	release-sign release-upload preview-ball uninstall
 
 texmf: latex/Makefile
@@ -476,22 +478,17 @@ change-history-commit:
 # 3) dist TAG=<tag>
 #    Create the tar ball and other release files and put them into $FTPDIR.
 #
-# 4) windows-package WEMACSVER=<emacs-version> TAG=<tag>
-#    Create the precompiled AUCTeX package for Windows.
-#    This requires a compiled Emacs of the same version at location $WEMACS.
-#    NOTA BENE: you may need to use bash shell for this recipe to work.
-#
-# 5) release-sign TAG=<tag>
+# 4) release-sign TAG=<tag>
 #    Sign the tar ball and create directive files for upload.  NOTA BENE: you
 #    may need to use bash shell for this recipe to work.
 #
-# 6) release-upload
+# 5) release-upload
 #    Upload files to GNU FTP server.
 #
-# 7) www-doc TAG=<tag>
+# 6) www-doc TAG=<tag>
 #    Create documentation for AUCTeX home page.
 #
-# 8) preview-ball TAG=<tag>
+# 7) preview-ball TAG=<tag>
 #    Create preview package.  (Not for GNU FTP server but for CTAN.)
 
 dist: check-tag tar-ball
@@ -547,92 +544,9 @@ tar-ball: doc/Makefile
 	$(CP) doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	$(CP) $(CHANGELOG_N) $(FTPDIR)
 
-rpm-packages:
-	rpmbuild -ta $(RPM_SIGN) $(FTPDIR)/auctex-$(TAG).tar.gz
-	$(CP) $(RPMROOT)/{RPMS/noarch/{auctex-emacs,preview-tetex},SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
-	@echo "If you need to prepare RPM on some other system, you need to add"
-	@echo "them in $(FTPDIR) before 'make release-sign'."
-	sleep 2
-
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) | gzip --best \
 		>$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch.gz
-
-# Pre-compiled AUCTeX package for Emacs on Windows
-WBUILDDIR=$(PWD)/windows-package
-WEMACS=/usr/src/emacs-$(WEMACSVER)/src/emacs
-WPACKAGE=auctex-$(TAG)-e$(WEMACSVER)-msw.zip
-# Starting from Emacs 24.4, the name of the Windows package and the tree
-# structure of the package have been changed.  The following variables cater for
-# these differences.
-ifeq ($(shell echo "$(WEMACSVER)" | grep '\(2[2-3].[1-4]\|24.[1-3]\)' -),$(WEMACSVER))
-	WEMACSDATAROOTDIR=""
-	WEMACSEXTRACTDIR=""
-	WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i386.zip"
-	WEMACSSITELISP="site-lisp"
-else
-	WEMACSDATAROOTDIR="share/"
-	WEMACSEXTRACTDIR="emacs-$(WEMACSVER)"
-# And just to add more complexity, the package name changed again with Emacs
-# 24.5.  Actually, we don't really need to keep track of all these changes as we
-# should support only the latest Emacs version, but unless something else
-# changes again again in the near future we can keep them (and it's useful to
-# reproduce old AUCTeX packages!).
-	ifeq (24.4,$(WEMACSVER))
-		WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-pc-mingw32.zip"
-	else
-		WEMACSPACKAGE="emacs-$(WEMACSVER)-bin-i686-mingw32.zip"
-	endif
-	WEMACSSITELISP="$(WEMACSDATAROOTDIR)/emacs/site-lisp"
-endif
-WPACKAGEFILES=$(WEMACSSITELISP)/auctex $(WEMACSSITELISP)/site-start.d \
-	$(WEMACSSITELISP)/site-start.el $(WEMACSSITELISP)/tex-site.el \
-	var/auctex $(WEMACSDOC) $(WEMACSDATAROOTDIR)doc $(WEMACSDATAROOTDIR)info/dir \
-	$(WEMACSDATAROOTDIR)info/auctex.info* $(WEMACSDATAROOTDIR)info/preview-latex.info*
-windows-package: check-tag
-	@if [ "X$(WEMACSVER)" = "X" ]; then \
-	  echo "*** Error: No Emacs version (WEMACSVER) ***"; \
-	  exit 1; \
-	fi
-# Make sure the prerequisites are available
-	test -d $(WBUILDDIR) || mkdir $(WBUILDDIR)
-	test -f $(WBUILDDIR)/$(WEMACSPACKAGE) \
-	|| { cd $(WBUILDDIR) \
-	&& wget https://ftp.gnu.org/gnu/emacs/windows/$(WEMACSPACKAGE); }
-	test -f $(WBUILDDIR)/auctex-$(TAG).zip \
-	|| { test -f $(FTPDIR)/auctex-$(TAG).zip \
-	  && $(CP) $(FTPDIR)/auctex-$(TAG).zip $(WBUILDDIR); } \
-	|| { cd $(WBUILDDIR) \
-	  && wget https://ftp.gnu.org/gnu/auctex/auctex-$(TAG).zip; }
-# Reset to clean state
-	cd $(WBUILDDIR) \
-	&& rm -rf emacs-$(WEMACSVER) \
-	&& rm -rf auctex-$(TAG) \
-	&& unzip -d "$(WEMACSEXTRACTDIR)" $(WEMACSPACKAGE) \
-	&& unzip auctex-$(TAG).zip
-	rm -f $(WPACKAGE)
-# Create site-start.el and site-start.d
-	cd $(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSSITELISP) \
-	&& echo -e ";; Load files in \`site-start.d' directory.\
-\n(dolist (file (directory-files\
-\n	       (concat (file-name-directory load-file-name) \"site-start.d\")\
-\n	       t \"\\\\\\\\.el\\\\\\\\'\"))\
-\n  (load file nil t t))" > site-start.el \
-	&& mkdir site-start.d
-# Build and install AUCTeX
-	cd $(WBUILDDIR)/auctex-$(TAG) \
-	&& ./configure --prefix=$(WBUILDDIR)/emacs-$(WEMACSVER) \
-	  --without-texmf-dir --with-emacs=$(WEMACS) \
-	  --with-lispdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSSITELISP) \
-	  --datarootdir=$(WBUILDDIR)/emacs-$(WEMACSVER)/$(WEMACSDATAROOTDIR) \
-	&& $(MAKE) \
-	&& sed -i -e 's/"\/[^\n]\+/(expand-file-name "..\/var\/auctex" (file-name-directory load-file-name))/' tex-site.el \
-	&& $(MAKE) install
-# Create the package
-	test -d $(FTPDIR) || mkdir -p $(FTPDIR)
-	rm -f $(FTPDIR)/$(WPACKAGE)
-	cd $(WBUILDDIR)/emacs-$(WEMACSVER) \
-	&& zip -r $(FTPDIR)/$(WPACKAGE) $(WPACKAGEFILES)
 
 release-sign: check-tag
 	rm -f $(FTPDIR)/*.{directive,asc,sig}

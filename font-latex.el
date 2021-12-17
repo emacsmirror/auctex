@@ -240,13 +240,14 @@ variable `font-latex-fontify-sectioning'." ',num)
   '(("warning"
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
-      "appendix" "displaybreak" "allowdisplaybreaks" "include")
+      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline" "include")
      font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\{") ("settowidth" "|{\\{") ("settoheight" "{{")
       ("settodepth" "{{") ("setcounter" "{|{\\")
       ("addtolength" "|{\\{") ("addtocounter" "{|{\\")
       ("stepcounter" "{") ("refstepcounter" "{")
+      ("counterwithin" "*[{{") ("counterwithout" "*[{{")
       ("arabic" "{") ("roman" "{") ("Roman" "{") ("alph" "{") ("Alph" "{")
       ("fnsymbol" "{"))
      font-lock-variable-name-face 2 command)
@@ -733,9 +734,9 @@ keywords, a face and a specifier for the type of macro to be
 highlighted.
 
 When adding new entries, you have to use unique values for the
-class names, i.e. they must not clash with names of the built-in
-keyword classes or other names given by you.  Additionally the
-names must not contain spaces.
+class names, that is, they must not clash with names of the
+built-in keyword classes or other names given by you.
+Additionally the names must not contain spaces.
 
 The list of keywords defines which commands and declarations
 should be covered by the keyword class.  A keyword can either be
@@ -918,8 +919,8 @@ locking machinery will be triggered."
 
 By default, super/subscripts are raised/lowered if this variable
 is non-nil.  This fontification only affects one level of
-scripts, e.g., in x^{y^z}, the y and the z have the same size and
-are equally raised over x.
+scripts, for example in x^{y^z}, the y and the z have the same
+size and are equally raised over x.
 
 If this variable is set to the symbol `multi-level', then y is
 raised above x, and z is raised above y.  With many script
@@ -1316,7 +1317,7 @@ If SYNTACTIC-KWS is non-nil, also update
 It is obsolete and going to be removed.
 If you have called `font-latex-add-keywords' and want to refresh fontification,
 call `font-lock-flush' instead.
-If you changed syntactic fontification, e.g., one of the variables
+If you changed syntactic fontification, for example, one of the variables
 - `LaTeX-verbatim-macros-with-delims'
 - `LaTeX-verbatim-macros-with-delims-local'
 - `LaTeX-verbatim-macros-with-braces'

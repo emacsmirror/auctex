@@ -75,7 +75,7 @@
     "indenting" "label"
     "logo" "overlay"
     "palet" "program" "startstop" "type" "typing")
-  "List of the names of ConTeXt en interface  macro's that define things.")
+  "List of the names of ConTeXt en interface macro's that define things.")
 
 (defvar ConTeXt-setup-list-en
   '("align" "arranging" "background" "backgrounds" "blackrules"
@@ -94,7 +94,7 @@
     "screens" "section" "sectionblock" "sorting" "spacing"
     "subpagenumber" "synonyms" "text" "textrules" "texttexts" "thinrules"
     "tolerance" "top" "toptexts" "type" "typing" "underbar" "whitespace")
-  "List of the names of ConTeXt en interface  macro's that setup things.")
+  "List of the names of ConTeXt en interface macro's that setup things.")
 
 ;; referencing in ConTeXt
 (defvar ConTeXt-referencing-list-en
@@ -208,8 +208,8 @@ Special commands:
 \\{ConTeXt-mode-map}
 
 Entering `context-mode' calls the value of `text-mode-hook',
-then the value of TeX-mode-hook, and then the value
-of context-mode-hook."
+then the value of `TeX-mode-hook', and then the value
+of `ConTeXt-mode-hook'."
   (interactive)
   ;; set the ConTeXt interface
   (setq ConTeXt-current-interface "en")

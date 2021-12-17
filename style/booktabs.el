@@ -41,8 +41,8 @@
   "Prompt for a value and use parentheses when it is inserted.
 If OPTIONAL is non-nil the parameter is labeled as optional.
 PROMPT is the value of the prompt to be shown."
-  (let ((TeX-arg-opening-brace "\(")
-        (TeX-arg-closing-brace "\)"))
+  (let ((TeX-arg-opening-brace "(")
+        (TeX-arg-closing-brace ")"))
     (TeX-parse-argument optional prompt)))
 
 (TeX-add-style-hook

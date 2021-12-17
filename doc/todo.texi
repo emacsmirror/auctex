@@ -61,27 +61,34 @@ using Ref@TeX{}.
 
 @item Fix remove-style feature
 
-Currently @code{TeX-remove-style} implementation isn't good. It is
-common practice that major mode functions directly add macros and
-environments via @code{TeX-add-symbols} and
-@code{LaTeX-add-environments}, but those macros and environments are
-lost once @code{TeX-remove-style} runs. It is necessary to run major
-mode function, by e.g.@: @code{normal-mode}, again to recover them, but
-that makes no point in running @code{TeX-remove-style} itself because
-major mode function kills all buffer-local variables.
+Currently @code{TeX-remove-style} implementation isn't good.  It is common
+practice that major mode functions directly add macros and environments
+via @code{TeX-add-symbols} and @code{LaTeX-add-environments}, but those
+macros and environments are lost once @code{TeX-remove-style} runs.  It is
+necessary to run major mode function, by e.g.@: @code{normal-mode}, again
+to recover them, but that makes no point in running
+@code{TeX-remove-style} itself because major mode function kills all
+buffer-local variables.
 
 As of @AUCTeX{} 12.3, @code{TeX-remove-style} is no longer used by any
 other codes.
 
 @item
-Document @code{LaTeX-insert-into-commments} and
-@code{TeX-translate-location-hook}.
+Document @code{LaTeX-insert-into-commments},
+@code{TeX-translate-location-hook}, and usage of @ConTeXt{} mode.
 @end itemize
 
 @node Wishlist
 @section Wishlist
 
 @itemize @bullet
+@item
+Simplify tool bar implementation.  The library @file{toolbar-x.el} was
+developed as an abstraction layer to absorb difference between XEmacs
+and @acronym{GNU} Emacs.  Now that XEmacs is no longer supported, the
+library, together with @file{tex-bar.el} as a whole, can be much
+simplified (or even unified).
+
 @item Documentation lookup for macros
 
 A parser could gather information about which macros are defined in

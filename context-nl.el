@@ -92,7 +92,7 @@
 ;; referencing in ConTeXt
 (defvar ConTeXt-referencing-list-nl
   '("in" "op" "over" "paginareferentie" "tekstreferentie" "referentie")
-  "List of ConTeXt en macro's that are used for referencing."
+  "List of ConTeXt nl macro's that are used for referencing."
 )
 
 (defvar ConTeXt-other-macro-list-nl
@@ -183,8 +183,8 @@ Special commands:
 \\{ConTeXt-mode-map}
 
 Entering `context-mode' calls the value of `text-mode-hook',
-then the value of TeX-mode-hook, and then the value
-of context-mode-hook."
+then the value of `TeX-mode-hook', and then the value
+of `ConTeXt-mode-hook'."
   (interactive)
 
   ;; set the ConTeXt interface
