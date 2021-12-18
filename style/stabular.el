@@ -47,6 +47,17 @@
     '("stabular" LaTeX-env-array)
     '("stabular*" LaTeX-env-tabular*))
 
+   ;; Use the enhanced tabular indentation.  Append to
+   ;; `LaTeX-indent-environment-list' in order not to override custom
+   ;; settings.
+   (make-local-variable 'LaTeX-indent-environment-list)
+   (add-to-list 'LaTeX-indent-environment-list
+                '("stabular" LaTeX-indent-tabular)
+                t)
+   (add-to-list 'LaTeX-indent-environment-list
+                '("stabular*" LaTeX-indent-tabular)
+                t)
+
    ;; Append the environments to `LaTeX-item-list':
    (add-to-list 'LaTeX-item-list
                 '("stabular" . LaTeX-item-array)
