@@ -5762,6 +5762,20 @@ See also `LaTeX-math-menu'."
                                 (const :tag "none" nil)
                                 (integer :tag "Number")))))
 
+(defun LaTeX--completion-annotation-from-math-menu (sym)
+  "Return a completion annotation for a SYM.
+The annotation is usually a unicode representation of the macro
+SYM's compiled representation, e.g., if SYM is alpha, α is
+returned."
+  (catch 'found
+    (dolist (var (list LaTeX-math-list LaTeX-math-default))
+      (dolist (e var)
+        (when (string= (cadr e) sym)
+          (let ((char (nth 3 e)))
+            (when char
+              (throw 'found
+                     (concat " " (char-to-string char))))))))))
+
 (defvar LaTeX-math-mode-menu)
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy access to TeX math macros.

@@ -3247,7 +3247,10 @@ Or alternatively:
 Used as `:annotation-function' in `completion-extra-properties'."
   (let ((ann (cdr (assoc (concat "\\" sym)
                          tex--prettify-symbols-alist))))
-    (when ann (concat " " (char-to-string ann)))))
+    (if ann
+        (concat " " (char-to-string ann))
+      (when (fboundp #'LaTeX--completion-annotation-from-math-menu)
+        (LaTeX--completion-annotation-from-math-menu sym)))))
 
 (defun TeX--completion-at-point ()
   "(La)TeX completion at point function.
