@@ -3242,15 +3242,22 @@ Or alternatively:
                                          (all-completions symbol list nil)))))
         (funcall (nth 1 entry))))))
 
+(defun TeX--completion-annotation-from-tex--prettify-symbols-alist (sym)
+  (when (boundp 'tex--prettify-symbols-alist)
+    (let ((ann (cdr (assoc (concat "\\" sym)
+                           tex--prettify-symbols-alist))))
+      (when ann
+        (concat " " (char-to-string ann))))))
+
+(declare-function LaTeX--completion-annotation-from-math-menu
+                  "latex" (sym))
+
 (defun TeX--completion-annotation-function (sym)
   "Annotation function for symbol/macro completion.
 Used as `:annotation-function' in `completion-extra-properties'."
-  (let ((ann (cdr (assoc (concat "\\" sym)
-                         tex--prettify-symbols-alist))))
-    (if ann
-        (concat " " (char-to-string ann))
-      (when (fboundp #'LaTeX--completion-annotation-from-math-menu)
-        (LaTeX--completion-annotation-from-math-menu sym)))))
+  (or (TeX--completion-annotation-from-tex--prettify-symbols-alist sym)
+      (and (fboundp #'LaTeX--completion-annotation-from-math-menu)
+           (LaTeX--completion-annotation-from-math-menu sym))))
 
 (defun TeX--completion-at-point ()
   "(La)TeX completion at point function.
