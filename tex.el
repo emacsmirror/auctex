@@ -3133,9 +3133,10 @@ Possible values are nil, t, or a list of style names.
 
 (defmacro TeX-complete-make-expert-command-functions (thing list-var prefix)
   (let* ((plural (concat thing "s"))
-         (upcase-plural (upcase plural)))
+         (upcase-plural (upcase plural))
+         (table-var (intern (format "%s-expert-%s-table" prefix thing))))
     `(progn
-       (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
+       (defvar ,table-var
          (make-hash-table :test #'equal)
          ,(format "A hash-table mapping %s names to the style name providing it.
 
@@ -3149,8 +3150,8 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
                   upcase-plural plural plural)
          (dolist (x ,(intern plural))
            (if (null style)
-               (remhash x TeX-expert-macro-table)
-             (puthash x style TeX-expert-macro-table))))
+               (remhash x ,table-var)
+             (puthash x style ,table-var))))
 
        (defun ,(intern (format "%s-filtered" list-var)) ()
          ,(format "Filter (%s) depending on `TeX-complete-expert-commands'."
@@ -3161,7 +3162,7 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
                   (if (eq t TeX-complete-expert-commands)
                       entry
                     (let* ((cmd (car entry))
-                           (style (gethash cmd TeX-expert-macro-table)))
+                           (style (gethash cmd ,table-var)))
                       (when (or (null style)
                                 (member style TeX-complete-expert-commands))
                         entry))))
