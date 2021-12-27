@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1760}
+% \CheckSum{1794}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{bug-auctex@gnu.org}}}
@@ -781,12 +781,39 @@
 % pretty much the same as in |everyshi.sty|.  One of its implications
 % is that if someone does a \cmd{\shipout} of a \emph{void} box,
 % things will go horribly wrong.
-% \begin{macro}{\shipout}
+% \begin{macro}{\pr@@shipout}
 %    \begin{macrocode}
-\let\pr@shipout=\shipout
-\def\shipout{\deadcycles\z@\bgroup\setbox\z@\box\voidb@x
+\def\pr@@shipout{\deadcycles\z@\bgroup\setbox\z@\box\voidb@x
   \afterassignment\pr@shipoutegroup\setbox\z@}
 \def\pr@shipoutegroup{\ifvoid\z@ \expandafter\aftergroup\fi \egroup}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\pr@shipout}
+%   We now need to check which command we are replacing.  Before
+%   things got sophisticated in 2020 or 2021, this had been
+%   \cmd{\shipout} but now it could be \cmd{\tex\_shipout:D}.  \LaTeX\
+%   got a hook mechanism for managing output routines, but it doesn't
+%   really work well for wholesale replacement of the \cmd{\shipout}
+%   command like |preview| does.
+%    \begin{macrocode}
+\ifx\shipout\@undefined
+  \begingroup
+  \catcode`\:=10
+  \catcode`\_=10
+  \ifx\tex_shipout:D\@undefined
+    \PackageError{preview}{Cannot find \protect\shipout\space primitive}%
+    {preview needs to replace the \protect\shipout\space primitive with
+      its own routine to do its work.  Due to packages or formats
+      interfering, it cannot be identified.  Please report this.}
+  \else
+    \global\let\pr@shipout=\tex_shipout:D
+    \global\let\tex_shipout:D=\pr@@shipout
+  \fi
+  \endgroup
+\else
+  \let\pr@shipout=\shipout
+  \let\shipout=\pr@@shipout
+\fi
 %    \end{macrocode}
 % \end{macro}
 % \subsection{Parsing commands}
