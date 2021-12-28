@@ -3133,9 +3133,10 @@ Possible values are nil, t, or a list of style names.
 
 (defmacro TeX-complete-make-expert-command-functions (thing list-var prefix)
   (let* ((plural (concat thing "s"))
-         (upcase-plural (upcase plural)))
+         (upcase-plural (upcase plural))
+         (table-var (intern (format "%s-expert-%s-table" prefix thing))))
     `(progn
-       (defvar ,(intern (format "%s-expert-%s-table" prefix thing))
+       (defvar ,table-var
          (make-hash-table :test #'equal)
          ,(format "A hash-table mapping %s names to the style name providing it.
 
@@ -3149,8 +3150,8 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
                   upcase-plural plural plural)
          (dolist (x ,(intern plural))
            (if (null style)
-               (remhash x TeX-expert-macro-table)
-             (puthash x style TeX-expert-macro-table))))
+               (remhash x ,table-var)
+             (puthash x style ,table-var))))
 
        (defun ,(intern (format "%s-filtered" list-var)) ()
          ,(format "Filter (%s) depending on `TeX-complete-expert-commands'."
@@ -3161,7 +3162,7 @@ Expert %s are completed depending on `TeX-complete-expert-commands'."
                   (if (eq t TeX-complete-expert-commands)
                       entry
                     (let* ((cmd (car entry))
-                           (style (gethash cmd TeX-expert-macro-table)))
+                           (style (gethash cmd ,table-var)))
                       (when (or (null style)
                                 (member style TeX-complete-expert-commands))
                         entry))))
@@ -3242,6 +3243,23 @@ Or alternatively:
                                          (all-completions symbol list nil)))))
         (funcall (nth 1 entry))))))
 
+(defun TeX--completion-annotation-from-tex--prettify-symbols-alist (sym)
+  (when (boundp 'tex--prettify-symbols-alist)
+    (let ((ann (cdr (assoc (concat "\\" sym)
+                           tex--prettify-symbols-alist))))
+      (when ann
+        (concat " " (char-to-string ann))))))
+
+(declare-function LaTeX--completion-annotation-from-math-menu
+                  "latex" (sym))
+
+(defun TeX--completion-annotation-function (sym)
+  "Annotation function for symbol/macro completion.
+Used as `:annotation-function' in `completion-extra-properties'."
+  (or (TeX--completion-annotation-from-tex--prettify-symbols-alist sym)
+      (and (fboundp #'LaTeX--completion-annotation-from-math-menu)
+           (LaTeX--completion-annotation-from-math-menu sym))))
+
 (defun TeX--completion-at-point ()
   "(La)TeX completion at point function.
 See `completion-at-point-functions'."
@@ -3253,7 +3271,9 @@ See `completion-at-point-functions'."
                  (end (match-end sub))
                  (symbol (buffer-substring-no-properties begin end))
                  (list (funcall (nth 2 entry))))
-            (list begin end (all-completions symbol list)))
+            (list begin end (all-completions symbol list)
+                  :annotation-function
+                  #'TeX--completion-annotation-function))
         ;; We intentionally don't call the fallback completion functions because
         ;; they do completion on their own and don't work too well with things
         ;; like company-mode.  And the default function `ispell-complete-word'
@@ -3322,6 +3342,12 @@ The variable will be temporarily let-bound with the necessary value.")
 
 (defvar TeX-macro-history nil)
 
+(defun TeX--symbol-completion-table ()
+  (completion-table-dynamic
+   (lambda (_str)
+     (TeX-symbol-list-filtered))
+   t))
+
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro SYMBOL with completion.
 
@@ -3333,12 +3359,16 @@ is called with \\[universal-argument]."
   ;; details.  Note that this behavior may be changed in favor of a more
   ;; flexible solution in the future, therefore we don't document it at the
   ;; moment.
-  (interactive (list (completing-read (concat "Macro (default "
-                                              TeX-default-macro
-                                              "): "
-                                              TeX-esc)
-                                      (TeX-symbol-list-filtered) nil nil nil
-                                      'TeX-macro-history TeX-default-macro)))
+  (interactive (list
+                (let ((completion-extra-properties
+                       (list :annotation-function
+                             #'TeX--completion-annotation-function)))
+                  (completing-read (concat "Macro (default "
+                                           TeX-default-macro
+                                           "): "
+                                           TeX-esc)
+                                   (TeX--symbol-completion-table) nil nil nil
+                                   'TeX-macro-history TeX-default-macro))))
   (when (called-interactively-p 'any)
     (setq TeX-default-macro symbol))
   (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
