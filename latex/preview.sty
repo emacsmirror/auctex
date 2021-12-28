@@ -291,10 +291,27 @@ Please complain to your document class author}%
    \global\advance\pr@snippet\@ne
    \pr@cleanup
 }
-\let\pr@shipout=\shipout
-\def\shipout{\deadcycles\z@\bgroup\setbox\z@\box\voidb@x
+\def\pr@@shipout{\deadcycles\z@\bgroup\setbox\z@\box\voidb@x
   \afterassignment\pr@shipoutegroup\setbox\z@}
 \def\pr@shipoutegroup{\ifvoid\z@ \expandafter\aftergroup\fi \egroup}
+\ifx\shipout\@undefined
+  \begingroup
+  \catcode`\:=10
+  \catcode`\_=10
+  \ifx\tex_shipout:D\@undefined
+    \PackageError{preview}{Cannot find \protect\shipout\space primitive}%
+    {preview needs to replace the \protect\shipout\space primitive with
+      its own routine to do its work.  Due to packages or formats
+      interfering, it cannot be identified.  Please report this.}
+  \else
+    \global\let\pr@shipout=\tex_shipout:D
+    \global\let\tex_shipout:D=\pr@@shipout
+  \fi
+  \endgroup
+\else
+  \let\pr@shipout=\shipout
+  \let\shipout=\pr@@shipout
+\fi
 \def\pr@parseit#1{\csname pr@parse#1\endcsname}
 \let\pr@endparse=\@percentchar
 \def\next#1{%
