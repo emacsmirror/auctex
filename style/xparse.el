@@ -108,9 +108,9 @@ TYPE is one of the symbols mac or env."
   (dolist (xcmd (if (eq type 'mac)
                     (LaTeX-xparse-macro-list)
                   (LaTeX-xparse-environment-list)))
-    (let ((name (nth 0 xcmd))
-          (spec (nth 1 xcmd))
-          (what (nth 2 xcmd))
+    (let ((name (nth 1 xcmd))
+          (spec (nth 2 xcmd))
+          (what (nth 3 xcmd))
           args opt-star opt-token)
       (with-temp-buffer
         (set-syntax-table LaTeX-mode-syntax-table)
