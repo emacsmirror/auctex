@@ -6169,14 +6169,16 @@ With prefix argument FORCE, always inserts \" characters."
                        ?\")
                       ((= (preceding-char) ?\")
                        ?\")
-                      ((save-excursion
-                         (forward-char (- (length open-quote)))
-                         (looking-at (regexp-quote open-quote)))
+                      ((and (<= (length open-quote) (- (point) (point-min)))
+                            (save-excursion
+                              (forward-char (- (length open-quote)))
+                              (looking-at (regexp-quote open-quote))))
                        (delete-char (- (length open-quote)))
                        ?\")
-                      ((save-excursion
-                         (forward-char (- (length close-quote)))
-                         (looking-at (regexp-quote close-quote)))
+                      ((and (<= (length open-quote) (- (point) (point-min)))
+                            (save-excursion
+                              (forward-char (- (length close-quote)))
+                              (looking-at (regexp-quote close-quote))))
                        (delete-char (- (length close-quote)))
                        ?\")
                       ((save-excursion
