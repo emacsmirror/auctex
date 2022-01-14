@@ -1,4 +1,4 @@
-;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 2.5s.  -*- lexical-binding: t; -*-
+;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 3.3.36.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
 
@@ -295,10 +295,7 @@ string."
     '("ang" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Angle")
 
     ;; 3.3 Units
-    '("unit"       [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
-      LaTeX-arg-siunitx-unit)
-    '("qty"        [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
-      "Number" LaTeX-arg-siunitx-unit)
+    ;; For 'qty' and 'units', see 8 Compatibility with other packages
     '("qtylist"    [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Numbers" LaTeX-arg-siunitx-unit)
     '("qtyproduct" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
@@ -311,10 +308,6 @@ string."
       "Number")
     '("complexqty" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Number" LaTeX-arg-siunitx-unit)
-
-    ;; These macros are deprecated with package v3: "si", "SI",
-    ;; "SIlist", "SIrange", "SendSettingsToPgf".  Hence they are
-    ;; removed.
 
     ;; 3.7 Creating new macros
     '("DeclareSIUnit" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
@@ -331,7 +324,33 @@ string."
     '("DeclareSIQualifier" (LaTeX-arg-define-siunitx-unit "Qualifier") "Symbol")
 
     ;; 3.8 Tabular material
-    '("tablenum" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Number"))
+    '("tablenum" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] "Number")
+
+    ;; 5 Upgrading from version 2
+    ;; The next set of macros are still available in siunitx.sty v3
+    ;; but are not recommended for use in new documents.  We provide
+    ;; them in this file anyway since they are also needed when other
+    ;; packages like physics or units are loaded:
+    '("si" [TeX-arg-key-val (LaTeX-siunitx-package-options)] LaTeX-arg-siunitx-unit)
+    '("SI" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+      "Value" ["Pre-unit"] LaTeX-arg-siunitx-unit)
+    '("SIlist" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+      "Values" LaTeX-arg-siunitx-unit)
+    '("SIrange" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+      "Value 1" "Value 2" LaTeX-arg-siunitx-unit))
+
+   ;; 8 Compatibility with other packages
+   ;; Avoid clash with other packages which define macros with the
+   ;; same name:
+   (let ((styles (TeX-style-list)))
+     (unless (member "physics" styles)
+       (TeX-add-symbols
+        '("qty"  [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+          "Number" LaTeX-arg-siunitx-unit)))
+     (unless (member "units" styles)
+       (TeX-add-symbols
+        '("unit" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
+          LaTeX-arg-siunitx-unit))))
 
    ;; The unit macros
    (LaTeX-add-siunitx-units
@@ -446,9 +465,11 @@ string."
    (when (member "cancel" (TeX-style-list))
      (LaTeX-add-siunitx-units "cancel"))
 
-   ;; `siunitx.sty' add new column specification letter 'S'
+   ;; FIXME: 'siunitx.sty' adds only one new column specification
+   ;; letter 'S' in v3 and 's' is removed.  We keep 's' for older
+   ;; documents and remove it sometimes later.
    (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "S"))
+        (concat LaTeX-array-column-letters "S" "s"))
 
    (TeX-run-style-hooks "l3keys2e"
                         "array"
@@ -464,8 +485,6 @@ string."
                                 ("numproduct"          "[{")
                                 ("numrange"            "[{{")
                                 ("ang"                 "[{")
-                                ("unit"                "[{")
-                                ("qty"                 "[{{")
                                 ("qtylist"             "[{{")
                                 ("qtyrange"            "[{{{")
                                 ("complexnum"          "[{")
@@ -477,14 +496,20 @@ string."
                                 ("tablenum"            "[{")
                                 ("highlight"           "{")
                                 ("sisetup"             "{")
-                                ;; These macros are deprecated in v3, we
-                                ;; leave the fontification support
-                                ;; here for older documents:
-                                ("si"       "[{")
-                                ("SI"       "[{[{")
-                                ("SIlist"   "[{{")
-                                ("SIrange"  "[{{{"))
-                              'function)))
+                                ;; These macros are deprecated in v3 but
+                                ;; still available:
+                                ("si"                  "[{")
+                                ("SI"                  "[{[{")
+                                ("SIlist"              "[{{")
+                                ("SIrange"             "[{{{"))
+                              'function)
+     (let ((styles (TeX-style-list)))
+       (unless (member "physics" styles)
+         (font-latex-add-keywords '(("qty"  "[{{"))
+                                  'function))
+       (unless (member "units" styles)
+         (font-latex-add-keywords '(("unit" "[{"))
+                                  'function)))))
  TeX-dialect)
 
 (defun LaTeX-siunitx-package-options nil
