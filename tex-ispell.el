@@ -1,6 +1,6 @@
 ;;; tex-ispell.el --- AUCTeX skip additions for Ispell  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,6 +45,7 @@
 ;; attachfile.sty
 ;; booktabs.sty
 ;; breqn.sty
+;; caption.sty
 ;; cleveref.sty
 ;; empheq.sty
 ;; enumitem.sty
@@ -132,6 +133,14 @@
       ;; booktabs.sty
       ("addlinespace" . 0)
       ("specialrule" . 3)
+      ;; caption.sty
+      ("captionlistentry" . 0)
+      ("captionof" . 1)
+      ("captionof*" . 1)
+      ("captionsetup" . 1)
+      ("captionsetup*" . 1)
+      ("clearcaptionsetup" . 1)
+      ("clearcaptionsetup*" . 1)
       ;; cleveref.sty
       ("cref" . 1)
       ("Cref" . 1)
