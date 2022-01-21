@@ -1671,6 +1671,11 @@ Package natbib Warning:.*undefined citations\\)" nil t)
                  (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
                (setq TeX-command-next dvi2pdf)
              (setq TeX-command-next TeX-command-Show))))
+        ((re-search-forward "^No file .*\\.\\(toc\\|lof\\|lot\\)\\.$" nil t)
+         (message "%s" (concat "You should run LaTeX again to get "
+                               (upcase (match-string-no-properties 1))
+                               " right"))
+         (setq TeX-command-next TeX-command-default))
         ((re-search-forward "Package longtable Warning: Table widths have \
 changed\\. Rerun LaTeX\\." nil t)
          (message
