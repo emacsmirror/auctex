@@ -374,7 +374,7 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
    ("filecontents\\*?" ispell-tex-arg-end)
    ;; stabular.sty
    ("stabular" ispell-tex-arg-end)
-   ("stabular*" TeX-ispell-tex-arg-end)
+   ("stabular\\*" TeX-ispell-tex-arg-end)
    ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library
