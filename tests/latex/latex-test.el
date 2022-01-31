@@ -55,6 +55,8 @@
            (with-temp-buffer
              (insert-file-contents LaTeX-indent-tabular-test/in)
              (LaTeX-mode)
+             (let ((TeX-parse-self t))
+               (TeX-update-style t))
              (indent-region (point-min) (point-max))
              (buffer-string))
            (with-temp-buffer

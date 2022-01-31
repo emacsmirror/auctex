@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{amsmath}
 \begin{document}
 \begin{tabular}{llll}
 Lorem ipsum dolor & sit amet, ei mei
@@ -38,6 +39,19 @@ detraxit          & no.        & Ne sea doming   & deserunt.
 8 &
 9
 \end{align}
+
+% Example given by Uwe Brauer <oub@mat.ucm.es>.
+% (https://lists.gnu.org/r/auctex-devel/2022-01/msg00055.html)
+\begin{equation}
+  \begin{aligned}
+&n u m=\left[\begin{array}{ll}
+2 & 25
+\end{array}\right] \\
+&d e n=\left[\begin{array}{lll}
+1 & 4 & 25
+\end{array}\right]
+\end{aligned}
+\end{equation}
 
 % Next table tests filling with a control symbol \& inside a cell; the
 % function `LaTeX-indent-tabular' now (March 2017) detects \&, see:
