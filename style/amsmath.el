@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020, 2022
 ;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
@@ -132,6 +132,7 @@
                    ("Bmatrix" .  LaTeX-item-equation)
                    ("vmatrix" .  LaTeX-item-equation)
                    ("Vmatrix" .  LaTeX-item-equation)
+                   ("smallmatrix" . LaTeX-item-equation)
                    ("subarray" . LaTeX-item-equation)
                    ("cases"    . LaTeX-item-equation))
                  LaTeX-item-list))
@@ -150,6 +151,30 @@
                    ("multline"   . LaTeX-amsmath-label)
                    ("flalign"    . LaTeX-amsmath-label)
                    ("gather"     . LaTeX-amsmath-label))))
+
+   (setq-local LaTeX-indent-environment-list
+               (append LaTeX-indent-environment-list
+                       '(("equation*")
+                         ("align"       LaTeX-indent-tabular)
+                         ("align*"      LaTeX-indent-tabular)
+                         ("aligned"     LaTeX-indent-tabular)
+                         ("alignat"     LaTeX-indent-tabular)
+                         ("alignat*"    LaTeX-indent-tabular)
+                         ("alignedat"   LaTeX-indent-tabular)
+                         ("xalignat"    LaTeX-indent-tabular)
+                         ("xalignat*"   LaTeX-indent-tabular)
+                         ("xxalignat"   LaTeX-indent-tabular)
+                         ("flalign"     LaTeX-indent-tabular)
+                         ("flalign*"    LaTeX-indent-tabular)
+                         ("split"       LaTeX-indent-tabular)
+                         ("matrix"      LaTeX-indent-tabular)
+                         ("pmatrix"     LaTeX-indent-tabular)
+                         ("bmatrix"     LaTeX-indent-tabular)
+                         ("Bmatrix"     LaTeX-indent-tabular)
+                         ("vmatrix"     LaTeX-indent-tabular)
+                         ("Vmatrix"     LaTeX-indent-tabular)
+                         ("smallmatrix" LaTeX-indent-tabular)
+                         ("cases"       LaTeX-indent-tabular))))
 
    (set (make-local-variable 'TeX-braces-association)
         (append '(("\\lvert" . "\\rvert")

@@ -1,6 +1,6 @@
 ;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2011-2020, 2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-02-13
@@ -438,6 +438,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
          (append '(("multlined"   . LaTeX-item-equation)
                    ("lgathered"   . LaTeX-item-equation)
                    ("rgathered"   . LaTeX-item-equation)
+                   ;; FIXME: The entry for spreadlines seems dubious.
                    ("spreadlines" . LaTeX-item-equation)
                    ("matrix*"     . LaTeX-item-equation)
                    ("pmatrix*"    . LaTeX-item-equation)
@@ -459,6 +460,31 @@ Put line break macro on the last line.  Next, insert an ampersand."
                    ("rgathered" . LaTeX-amsmath-label)
                    ("multlined" . LaTeX-amsmath-label))
                  LaTeX-label-alist))
+
+   (setq-local LaTeX-indent-environment-list
+               (append LaTeX-indent-environment-list
+                       '(("matrix*"       LaTeX-indent-tabular)
+                         ("pmatrix*"      LaTeX-indent-tabular)
+                         ("bmatrix*"      LaTeX-indent-tabular)
+                         ("Bmatrix*"      LaTeX-indent-tabular)
+                         ("vmatrix*"      LaTeX-indent-tabular)
+                         ("Vmatrix*"      LaTeX-indent-tabular)
+                         ("smallmatrix*"  LaTeX-indent-tabular)
+                         ("psmallmatrix"  LaTeX-indent-tabular)
+                         ("psmallmatrix*" LaTeX-indent-tabular)
+                         ("bsmallmatrix"  LaTeX-indent-tabular)
+                         ("bsmallmatrix*" LaTeX-indent-tabular)
+                         ("vsmallmatrix"  LaTeX-indent-tabular)
+                         ("vsmallmatrix*" LaTeX-indent-tabular)
+                         ("Vsmallmatrix"  LaTeX-indent-tabular)
+                         ("Vsmallmatrix*" LaTeX-indent-tabular)
+                         ("dcases"        LaTeX-indent-tabular)
+                         ("dcases*"       LaTeX-indent-tabular)
+                         ("rcases"        LaTeX-indent-tabular)
+                         ("rcases*"       LaTeX-indent-tabular)
+                         ("drcases"       LaTeX-indent-tabular)
+                         ("drcases*"      LaTeX-indent-tabular)
+                         ("cases*"        LaTeX-indent-tabular))))
 
    ;; RefTeX support: Add env's with `reftex-add-label-environments'
    (when (fboundp 'reftex-add-label-environments)

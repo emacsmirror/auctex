@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2021 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -3542,8 +3542,6 @@ consideration just as is in the non-commented source code."
     ("filecontents*" current-indentation)
     ("tabular" LaTeX-indent-tabular)
     ("tabular*" LaTeX-indent-tabular)
-    ("align" LaTeX-indent-tabular)
-    ("align*" LaTeX-indent-tabular)
     ("array" LaTeX-indent-tabular)
     ("eqnarray" LaTeX-indent-tabular)
     ("eqnarray*" LaTeX-indent-tabular)
@@ -3551,7 +3549,6 @@ consideration just as is in the non-commented source code."
     ;; Some other day.
     ("displaymath")
     ("equation")
-    ("equation*")
     ("picture")
     ("tabbing"))
   "Alist of environments with special indentation.
