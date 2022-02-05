@@ -472,31 +472,6 @@ Put line break macro on the last line.  Next, insert an ampersand."
                    ("multlined" . LaTeX-amsmath-label))
                  LaTeX-label-alist))
 
-   (setq-local LaTeX-indent-environment-list
-               (append LaTeX-indent-environment-list
-                       '(("matrix*"       LaTeX-indent-tabular)
-                         ("pmatrix*"      LaTeX-indent-tabular)
-                         ("bmatrix*"      LaTeX-indent-tabular)
-                         ("Bmatrix*"      LaTeX-indent-tabular)
-                         ("vmatrix*"      LaTeX-indent-tabular)
-                         ("Vmatrix*"      LaTeX-indent-tabular)
-                         ("smallmatrix*"  LaTeX-indent-tabular)
-                         ("psmallmatrix"  LaTeX-indent-tabular)
-                         ("psmallmatrix*" LaTeX-indent-tabular)
-                         ("bsmallmatrix"  LaTeX-indent-tabular)
-                         ("bsmallmatrix*" LaTeX-indent-tabular)
-                         ("vsmallmatrix"  LaTeX-indent-tabular)
-                         ("vsmallmatrix*" LaTeX-indent-tabular)
-                         ("Vsmallmatrix"  LaTeX-indent-tabular)
-                         ("Vsmallmatrix*" LaTeX-indent-tabular)
-                         ("dcases"        LaTeX-indent-tabular)
-                         ("dcases*"       LaTeX-indent-tabular)
-                         ("rcases"        LaTeX-indent-tabular)
-                         ("rcases*"       LaTeX-indent-tabular)
-                         ("drcases"       LaTeX-indent-tabular)
-                         ("drcases*"      LaTeX-indent-tabular)
-                         ("cases*"        LaTeX-indent-tabular))))
-
    ;; RefTeX support: Add env's with `reftex-add-label-environments'
    (when (fboundp 'reftex-add-label-environments)
      (let ((envs '(("lgathered"  ?e nil nil t)
