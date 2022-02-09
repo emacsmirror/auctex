@@ -2707,7 +2707,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("l") ("r") ("t") ("b") ("tl") ("tr") ("bl") ("br"))
+                    '("l" "r" "t" "b" "tl" "tr" "bl" "br")
                     nil t)
    optional))
 
@@ -2718,7 +2718,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("l") ("r"))
+                    '("l" "r")
                     nil t)
    optional))
 
