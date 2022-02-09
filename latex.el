@@ -1290,16 +1290,41 @@ Just like array and tabular."
 
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
-  (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
+  (let* ((pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
-                  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (width (TeX-read-string "Width: " LaTeX-default-width)))
+                   (completing-read
+                    (TeX-argument-prompt t nil "Position")
+                    '("t" "b" "c"))))
+         (height (when (and pos (not (string= pos "")))
+                   (completing-read (TeX-argument-prompt t nil "Height")
+                                    ;; A valid length can be a macro
+                                    ;; or a length of the form
+                                    ;; <value><dimension>.  Input
+                                    ;; starting with a `\' can be
+                                    ;; completed with length macros.
+                                    (mapcar (lambda (elt)
+                                              (concat TeX-esc (car elt)))
+                                            (LaTeX-length-list)))))
+         (inner-pos (when (and height (not (string= height "")))
+             (completing-read
+              (TeX-argument-prompt t nil "Inner position")
+              '("t" "b" "c" "s"))))
+         (width (TeX-read-string
+                 (TeX-argument-prompt nil nil
+                                      (concat "Width (default "
+                                              LaTeX-default-width
+                                              ")"))
+                 nil nil LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
     (LaTeX-insert-environment environment
                               (concat
                                (unless (zerop (length pos))
                                  (concat LaTeX-optop pos LaTeX-optcl))
+                               (unless (zerop (length height))
+                                 (concat LaTeX-optop height LaTeX-optcl))
+                               (unless (zerop (length inner-pos))
+                                 (concat LaTeX-optop inner-pos LaTeX-optcl))
                                (concat TeX-grop width TeX-grcl)))))
 
 (defun LaTeX-env-tabular* (environment)
@@ -2697,14 +2722,24 @@ string."
                     nil t)
    optional))
 
-(defun TeX-arg-tb (optional &optional prompt)
+(defun TeX-arg-tb (optional &optional prompt poslist)
   "Prompt for a LaTeX side with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string."
+string.  POSLIST contains the positioning characters offered for
+completion.  It can be the symbols `center', `stretch' or nil
+with the following completion list:
+  center   t, b, c
+  stretch  t, b, c, s
+  nil      t, b"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("t") ("b"))
+                    (cond ((eq poslist 'center)
+                           '("t" "b" "c"))
+                          ((eq poslist 'stretch)
+                           '("t" "b" "c" "s"))
+                          (t
+                           '("t" "b")))
                     nil t)
    optional))
 
@@ -7238,8 +7273,12 @@ function would return non-nil and `(match-string 1)' would return
    '("hspace" TeX-arg-length)
    '("mbox" t)
    '("newsavebox" TeX-arg-define-savebox)
-   '("parbox" [ TeX-arg-tb ] [ "Height" ] [ TeX-arg-tb "Inner position" ]
-     "Width" t)
+   '("parbox"
+     [TeX-arg-tb nil center]
+     [TeX-arg-length "Height"]
+     [TeX-arg-tb "Inner position" stretch]
+     (TeX-arg-length "Width")
+     t)
    '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
    '("rule" [ "Raise" ] "Width" "Thickness")
    '("sbox" TeX-arg-savebox t)
