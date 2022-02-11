@@ -108,6 +108,7 @@ $a$")
       (insert "\
 \\documentclass[10pt]{article}
 \\begin{document}
+
 \\section{Macros}
 Inline verbatim test:  \\verb|x|
 Inline math test:      $x$, \\(x\\)
@@ -122,28 +123,46 @@ Emphasize face test:   \\emph{x}
 Declarations test:     \\ttfamily x {\\ttfamily x}
                        \\itshape  x {\\itshape x}
                        \\bfseries x {\\bfseries x}
+
 \\section{Environments}
 \\subsection{Math}
+
 \\begin{math}
   x
 \\end{math}
+
 \\[
   x
 \\]
+
 \\[x\\]
+
 \\begin{displaymath}
   x
 \\end{displaymath}
+
 \\begin{equation}
   x
 \\end{equation}
+
 \\subsection{Misc.}
+
 \\begin{verbatim}
 x
 \\end{verbatim}
+
 \\begin{description}
 \\item[x] x
 \\end{description}
+
+\\section{Box commands}
+
+\\newsavebox\\mysavebox
+\\savebox{\\mysavebox}[30mm][r]{This is my box}
+\\savebox{\\mysavebox}(0,0)[l]{This is my box}
+
+\\parbox[m][3cm][c]{2cm}{Some Text}
+
 \\end{document}
 
 %%% Local Variables:
@@ -155,7 +174,7 @@ x
       (goto-char (point-min))
 
       ;; Test for \documentclass:
-      (search-forward-regexp "\\\\document\\(?1:c\\)lass\\[")
+      (re-search-forward "\\\\document\\(?1:c\\)lass\\[")
       (should (font-latex-faces-present-p 'font-lock-keyword-face
                                           (match-beginning 1)))
       (forward-char)
@@ -168,7 +187,7 @@ x
       (end-of-line)
 
       ;; Test for \section macro itself:
-      (search-forward-regexp "\\\\sec\\(?1:t\\)ion{")
+      (re-search-forward "\\\\sec\\(?1:t\\)ion{")
       (should (font-latex-faces-present-p 'font-lock-keyword-face
                                           (match-beginning 1)))
       (goto-char (match-end 0))
@@ -233,7 +252,7 @@ x
       (end-of-line)
 
       ;; Test for math environments:
-      (search-forward-regexp "\\\\be\\(?1:g\\)in{ma\\(?2:t\\)h}")
+      (re-search-forward "\\\\be\\(?1:g\\)in{ma\\(?2:t\\)h}")
       (should (font-latex-faces-present-p 'font-lock-keyword-face
                                           (match-beginning 1)))
       (should (font-latex-faces-present-p 'font-lock-function-name-face
@@ -271,11 +290,58 @@ x
       (LaTeX-find-matching-end)
 
       ;; Check the fontification of \item macro itself:
-      (search-forward-regexp "\\\\it\\(?1:e\\)m\\[")
+      (re-search-forward "\\\\it\\(?1:e\\)m\\[")
       (should (font-latex-faces-present-p 'font-lock-keyword-face
                                           (match-beginning 1)))
       ;; Now for the optional argument:
       (should (font-latex-faces-present-p 'font-lock-variable-name-face))
-      (LaTeX-find-matching-end)  )))
+      (LaTeX-find-matching-end)
+
+      ;; Test for boxing commands
+      (re-search-forward "\\\\news\\(?1:a\\)vebox")
+      (should (font-latex-faces-present-p 'font-lock-keyword-face
+                                          (match-beginning 1)))
+      (re-search-forward "\\\\mys\\(?1:a\\)vebox")
+      (should (font-latex-faces-present-p 'font-lock-function-name-face
+                                          (match-beginning 1)))
+      ;; Test for the fontification in braces '{\mysavebox}':
+      (re-search-forward "{\\\\mys\\(?1:a\\)ve")
+      (should (font-latex-faces-present-p 'font-lock-function-name-face
+                                          (match-beginning 1)))
+      ;; Now for the optionals arguments of '\savebox':
+      (re-search-forward "\\[\\(?1:[^]]+\\)\\]\\[\\(?2:[^]]+\\)\\]{")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 1)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 2)))
+      (should (font-latex-faces-present-p 'font-lock-function-name-face
+                                          (match-end 0)))
+      (end-of-line)
+
+      ;; Test for the optional arguments of '\savebox' which look
+      ;; different for 'picture' environments:
+      (re-search-forward "(\\(?1:.\\),\\(?2:.\\))\\[\\(?3:[^]]+\\)\\]{")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 1)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 2)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 3)))
+      (should (font-latex-faces-present-p 'font-lock-function-name-face
+                                          (match-end 0)))
+
+      ;; Test for \parbox and its arguments:
+      (re-search-forward
+       "\\\\p\\(?1:a\\)rbox\\[\\(?2:[^]]+\\)\\]\\[\\(?3:[^]]+\\)\\]\\[\\(?4:[^]]+\\)\\]{")
+      (should (font-latex-faces-present-p 'font-lock-keyword-face
+                                          (match-beginning 1)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 2)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 3)))
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-beginning 4)))
+      (should (font-latex-faces-present-p 'font-lock-function-name-face
+                                          (match-end 0)))  )))
 
 ;;; font-latex-test.el ends here

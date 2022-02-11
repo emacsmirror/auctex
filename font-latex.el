@@ -240,7 +240,9 @@ variable `font-latex-fontify-sectioning'." ',num)
   '(("warning"
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
-      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline" "include")
+      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline" "include"
+      "backmatter" "frontmatter" "mainmatter"
+      "makeatletter" "makeatother" "newblock" "suppressfloats" "endinput")
      font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\{") ("settowidth" "|{\\{") ("settoheight" "{{")
@@ -351,13 +353,23 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
       ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
+      ("framebox" "|[([{") ("makebox" "|[([{") ("newsavebox" "|{\\")
+      ("parbox" "[[[{{") ("savebox" "|{\\|[([{") ("sbox" "|{\\{")
+      ("usebox" "|{\\")
+      ("cline" "{") ("extracolsep" "{") ("multicolumn" "{{{")
+      ("linethickness" "{") ("multiput" "(({{") ("put" "({")
+      ("qbezier" "[(((") ("raisebox" "{[[{")
       ("addvspace" "{") ("vspace" "*{") ("hspace" "*{")
-      ("thinspace" "")  ("negthinspace" "")
+      ("addcontentsline" "{{{") ("addtocontents" "{{")
       ("labelformat" "{{")
       ("AddToHook" "{[{") ("RemoveFromHook" "{[") ("AddToHookNext" "{{")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
+      ("bigskip" "") ("medskip" "")  ("smallskip" "")
+      ("thinspace" "")  ("negthinspace" "")
+      ("thicklines" "") ("thinlines" "")
+      ("noindent" "") ("hline" "") ("ldots" "")
       ("centering" "") ("raggedright" "") ("raggedleft" "")
       ("TeX" "") ("LaTeX" "") ("LaTeXe" "")
       ("normalfont" "") ("normalshape" "")
@@ -408,17 +420,19 @@ variable `font-latex-fontify-sectioning'." ',num)
      font-lock-type-face 2 command)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textssc" "{") ("textulc" "{")
-      ("textup" "{") ("textsw" "{") ("boldsymbol" "{") ("pmb" "{"))
+      ("textup" "{") ("textsw" "{") ("boldsymbol" "{") ("pmb" "{")
+      ("mathbf" "{"))
      font-latex-bold-face 1 command)
     ("italic-command"
-     (("emph" "{") ("textit" "{") ("textsl" "{"))
+     (("emph" "{") ("textit" "{") ("textsl" "{") ("mathit" "{"))
      font-latex-italic-face 1 command)
     ("math-command"
      (("ensuremath" "|{\\"))
      font-latex-math-face 1 command)
     ("type-command"
      (("texttt" "{") ("textsf" "{") ("textrm" "{") ("textmd" "{")
-      ("textnormal" "{") ("oldstylenums" "{") ("legacyoldstylenums" "{"))
+      ("textnormal" "{") ("oldstylenums" "{") ("legacyoldstylenums" "{")
+      ("mathrm" "{") ("mathsf" "{") ("mathtt" "{"))
      font-lock-type-face 1 command)
     ("bold-declaration"
      ("bf" "bfseries" "sc" "scshape" "sscshape" "ulcshape" "upshape" "swshape")
