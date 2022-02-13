@@ -1,6 +1,6 @@
 ;;; footmisc.el --- AUCTeX style for `footmisc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2011, 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-04-08
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `footmisc.sty' (v5.5b) from 2011/06/06.
+;; This file adds support for `footmisc.sty' (v6.0a) from 2021/02/10.
 
 ;;; Code:
 
@@ -120,7 +120,10 @@
                                          "para" "symbol" "symbol*"
                                          "marginal" "flushmargin" "hang"
                                          "norule" "splitrule" "stable"
-                                         "multiple")
+                                         "multiple"
+                                         "abovefloats" "belowfloats"
+                                         "bottom"
+                                         "bottomfloats" "bottomfootnotes")
   "Package options for the footmisc package.")
 
 ;;; footmisc.el ends here
