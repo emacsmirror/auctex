@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `footmisc.sty' (v6.0a) from 2021/02/10.
+;; This file adds support for `footmisc.sty' (v6.0a) from 2022/02/10.
 
 ;;; Code:
 
