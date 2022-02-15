@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `footmisc.sty' (v6.0a) from 2022/02/10.
+;; This file adds support for `footmisc.sty' (v6.0b) from 2022/02/14.
 
 ;;; Code:
 
@@ -122,8 +122,7 @@
                                          "norule" "splitrule" "stable"
                                          "multiple"
                                          "abovefloats" "belowfloats"
-                                         "bottom"
-                                         "bottomfloats" "bottomfootnotes")
+                                         "bottom" "bottomfloats")
   "Package options for the footmisc package.")
 
 ;;; footmisc.el ends here
