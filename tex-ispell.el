@@ -56,6 +56,7 @@
 ;; fontspec.sty
 ;; hyperref.sty
 ;; listings.sty
+;; ltxdoc.cls
 ;; ltxtable.sty
 ;; mdframed.sty
 ;; minted.sty
@@ -189,6 +190,8 @@
       ;; listings.sty
       ("lstinputlisting" . 1)
       ("lstset" . 1)
+      ;; ltxdoc.cls
+      ("cs" . 1)
       ;; ltxtable.sty
       ("LTXtable" . 2)
       ;; mdframed.sty

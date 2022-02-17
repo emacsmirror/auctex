@@ -1,6 +1,6 @@
 ;;; ltxdoc.el --- AUCTeX style for `ltxdoc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2022 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -25,19 +25,75 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltxdoc.cls'.
+;; This file adds support for `ltxdoc.cls' v2.1d, dated 2021/12/07.
 
 ;;; Code:
 
 (require 'tex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+(defvar LaTeX-article-class-options)
+
 (TeX-add-style-hook
  "ltxdoc"
  (lambda ()
-   (TeX-run-style-hooks "doc")
-   (TeX-run-style-hooks "ltx-base"))
+
+   ;; ltxdoc.cls loads shortvrb.sty and sets '|' as a shorthand.  We
+   ;; append it to a local version of `LaTeX-shortvrb-chars' before
+   ;; running the style hook for 'shortvrb' which is done inside
+   ;; 'doc.el':
+   (add-to-list (make-local-variable 'LaTeX-shortvrb-chars) ?| t)
+
+   (TeX-run-style-hooks "doc" "ltx-base" "article")
+
+   (TeX-add-symbols
+    '("cmd" TeX-arg-macro)
+    '("cs" (TeX-arg-eval completing-read
+                         (TeX-argument-prompt nil nil "Macro")
+                         (TeX-symbol-list)))
+    '("marg" "Mandatory argument")
+    '("oarg" "Optional argument")
+    '("parg" "Picture mode argument")
+
+    '("DocInclude"
+      (TeX-arg-eval
+       (lambda ()
+         (let ((file (file-relative-name
+                      (read-file-name
+                       "File to include: " nil nil nil nil
+                       (lambda (x)
+                         (or (file-directory-p x)
+                             (string-match "\\.\\(fdd\\|dtx\\)\\'" x))))
+                      (TeX-master-directory))))
+           (format "%s" file))))))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("cmd"  "{")
+                                ("cs"   "{")
+                                ("marg" "{")
+                                ("oarg" "{")
+                                ("parg" "{"))
+                              'textual)
+     (font-latex-add-keywords '("DocInclude" "{")
+                              'reference)))
  TeX-dialect)
+
+(defvar LaTeX-ltxdoc-class-options
+  (progn
+    (TeX-load-style "article")
+    (append (remove "a5paper" LaTeX-article-class-options)
+            '("nocfg")))
+  "Class options for the ltxdoc class.
+All options are passed to article class, \"a5paper\" is disabled
+by ltxdoc.  Therefore it is also removed here.")
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
+
+;;; ltxdoc.el ends here
