@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2021 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -477,7 +477,7 @@ no label is inserted."
 (defun LaTeX-section-heading ()
   "Hook to prompt for LaTeX section name.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
-the name of the sectioning command inserted with `\\[LaTeX-section]'."
+the name of the sectioning command inserted with \\[LaTeX-section]."
   (let ((string (completing-read
                  (concat "Level (default " LaTeX-name "): ")
                  LaTeX-section-list
@@ -491,16 +491,16 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
-the title of the section inserted with `\\[LaTeX-section]."
+the title of the section inserted with \\[LaTeX-section]."
   (setq LaTeX-title (TeX-read-string "Title: " LaTeX-title))
   (let ((region (and (TeX-active-mark)
                      (cons (region-beginning) (region-end)))))
     (when region (delete-region (car region) (cdr region)))))
 
 (defun LaTeX-section-toc ()
-  "Hook to prompt for the LaTeX section entry in the table of content .
+  "Hook to prompt for the LaTeX section entry in the table of contents.
 Insert this hook into `LaTeX-section-hook' to allow the user to insert
-a different entry for the section in the table of content."
+a different entry for the section in the table of contents."
   (setq LaTeX-toc (TeX-read-string "Toc Entry: "))
   (if (zerop (length LaTeX-toc))
       (setq LaTeX-toc nil)))
@@ -1167,7 +1167,7 @@ returned, nil if it is empty."
 
 (defcustom LaTeX-short-caption-prompt-length 40
   "The length that the caption of a figure should be before
-  propting for \\caption's optional short-version."
+propting for \\caption's optional short-version."
   :group 'LaTeX-environment
   :type 'integer)
 
@@ -1290,16 +1290,41 @@ Just like array and tabular."
 
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
-  (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
+  (let* ((pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
-                  (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (width (TeX-read-string "Width: " LaTeX-default-width)))
+                   (completing-read
+                    (TeX-argument-prompt t nil "Position")
+                    '("t" "b" "c"))))
+         (height (when (and pos (not (string= pos "")))
+                   (completing-read (TeX-argument-prompt t nil "Height")
+                                    ;; A valid length can be a macro
+                                    ;; or a length of the form
+                                    ;; <value><dimension>.  Input
+                                    ;; starting with a `\' can be
+                                    ;; completed with length macros.
+                                    (mapcar (lambda (elt)
+                                              (concat TeX-esc (car elt)))
+                                            (LaTeX-length-list)))))
+         (inner-pos (when (and height (not (string= height "")))
+             (completing-read
+              (TeX-argument-prompt t nil "Inner position")
+              '("t" "b" "c" "s"))))
+         (width (TeX-read-string
+                 (TeX-argument-prompt nil nil
+                                      (concat "Width (default "
+                                              LaTeX-default-width
+                                              ")"))
+                 nil nil LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
     (LaTeX-insert-environment environment
                               (concat
                                (unless (zerop (length pos))
                                  (concat LaTeX-optop pos LaTeX-optcl))
+                               (unless (zerop (length height))
+                                 (concat LaTeX-optop height LaTeX-optcl))
+                               (unless (zerop (length inner-pos))
+                                 (concat LaTeX-optop inner-pos LaTeX-optcl))
                                (concat TeX-grop width TeX-grcl)))))
 
 (defun LaTeX-env-tabular* (environment)
@@ -2682,7 +2707,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("l") ("r") ("t") ("b") ("tl") ("tr") ("bl") ("br"))
+                    '("l" "r" "t" "b" "tl" "tr" "bl" "br")
                     nil t)
    optional))
 
@@ -2693,18 +2718,28 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("l") ("r"))
+                    '("l" "r")
                     nil t)
    optional))
 
-(defun TeX-arg-tb (optional &optional prompt)
+(defun TeX-arg-tb (optional &optional prompt poslist)
   "Prompt for a LaTeX side with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string."
+string.  POSLIST contains the positioning characters offered for
+completion.  It can be the symbols `center', `stretch' or nil
+with the following completion list:
+  center   t, b, c
+  stretch  t, b, c, s
+  nil      t, b"
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '(("") ("t") ("b"))
+                    (cond ((eq poslist 'center)
+                           '("t" "b" "c"))
+                          ((eq poslist 'stretch)
+                           '("t" "b" "c" "s"))
+                          (t
+                           '("t" "b")))
                     nil t)
    optional))
 
@@ -3542,18 +3577,62 @@ consideration just as is in the non-commented source code."
     ("filecontents*" current-indentation)
     ("tabular" LaTeX-indent-tabular)
     ("tabular*" LaTeX-indent-tabular)
-    ("align" LaTeX-indent-tabular)
-    ("align*" LaTeX-indent-tabular)
     ("array" LaTeX-indent-tabular)
     ("eqnarray" LaTeX-indent-tabular)
     ("eqnarray*" LaTeX-indent-tabular)
+    ;; envs of amsmath.sty
+    ("align"       LaTeX-indent-tabular)
+    ("align*"      LaTeX-indent-tabular)
+    ("aligned"     LaTeX-indent-tabular)
+    ("alignat"     LaTeX-indent-tabular)
+    ("alignat*"    LaTeX-indent-tabular)
+    ("alignedat"   LaTeX-indent-tabular)
+    ("xalignat"    LaTeX-indent-tabular)
+    ("xalignat*"   LaTeX-indent-tabular)
+    ("xxalignat"   LaTeX-indent-tabular)
+    ("flalign"     LaTeX-indent-tabular)
+    ("flalign*"    LaTeX-indent-tabular)
+    ("split"       LaTeX-indent-tabular)
+    ("matrix"      LaTeX-indent-tabular)
+    ("pmatrix"     LaTeX-indent-tabular)
+    ("bmatrix"     LaTeX-indent-tabular)
+    ("Bmatrix"     LaTeX-indent-tabular)
+    ("vmatrix"     LaTeX-indent-tabular)
+    ("Vmatrix"     LaTeX-indent-tabular)
+    ("smallmatrix" LaTeX-indent-tabular)
+    ("cases"       LaTeX-indent-tabular)
+    ;; envs of mathtools.sty
+    ("matrix*"       LaTeX-indent-tabular)
+    ("pmatrix*"      LaTeX-indent-tabular)
+    ("bmatrix*"      LaTeX-indent-tabular)
+    ("Bmatrix*"      LaTeX-indent-tabular)
+    ("vmatrix*"      LaTeX-indent-tabular)
+    ("Vmatrix*"      LaTeX-indent-tabular)
+    ("smallmatrix*"  LaTeX-indent-tabular)
+    ("psmallmatrix"  LaTeX-indent-tabular)
+    ("psmallmatrix*" LaTeX-indent-tabular)
+    ("bsmallmatrix"  LaTeX-indent-tabular)
+    ("bsmallmatrix*" LaTeX-indent-tabular)
+    ("vsmallmatrix"  LaTeX-indent-tabular)
+    ("vsmallmatrix*" LaTeX-indent-tabular)
+    ("Vsmallmatrix"  LaTeX-indent-tabular)
+    ("Vsmallmatrix*" LaTeX-indent-tabular)
+    ("dcases"        LaTeX-indent-tabular)
+    ("dcases*"       LaTeX-indent-tabular)
+    ("rcases"        LaTeX-indent-tabular)
+    ("rcases*"       LaTeX-indent-tabular)
+    ("drcases"       LaTeX-indent-tabular)
+    ("drcases*"      LaTeX-indent-tabular)
+    ("cases*"        LaTeX-indent-tabular)
     ;; The following should have their own, smart indentation function.
     ;; Some other day.
     ("displaymath")
     ("equation")
-    ("equation*")
     ("picture")
-    ("tabbing"))
+    ("tabbing")
+    ;; envs from amsmath.sty
+    ("gather") ("gather*") ("gathered")
+    ("equation*") ("multline") ("multline*"))
   "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns.
@@ -5952,13 +6031,13 @@ environments."
 (defvar LaTeX-environment-menu-name "Insert Environment  (C-c C-e)")
 
 (defun LaTeX-environment-menu-entry (entry)
-  "Create an entry for the environment menu."
+  "Create an ENTRY for the environment menu."
   (vector (car entry) (list #'LaTeX-environment-menu (car entry)) t))
 
 (defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
 
 (defun LaTeX-environment-modify-menu-entry (entry)
-  "Create an entry for the change environment menu."
+  "Create an ENTRY for the change environment menu."
   (vector (car entry) (list #'LaTeX-modify-environment (car entry)) t))
 
 (defun LaTeX-section-enable-symbol (level)
@@ -7194,8 +7273,12 @@ function would return non-nil and `(match-string 1)' would return
    '("hspace" TeX-arg-length)
    '("mbox" t)
    '("newsavebox" TeX-arg-define-savebox)
-   '("parbox" [ TeX-arg-tb ] [ "Height" ] [ TeX-arg-tb "Inner position" ]
-     "Width" t)
+   '("parbox"
+     [TeX-arg-tb nil center]
+     [TeX-arg-length "Height"]
+     [TeX-arg-tb "Inner position" stretch]
+     (TeX-arg-length "Width")
+     t)
    '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
    '("rule" [ "Raise" ] "Width" "Thickness")
    '("sbox" TeX-arg-savebox t)

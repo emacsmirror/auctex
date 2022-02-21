@@ -1,6 +1,6 @@
 ;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -141,16 +141,26 @@ caption, insert only a caption."
        completing-read (TeX-argument-prompt t nil "Numbering scheme")
        '("arabic" "roman" "Roman" "alph" "Alph" "fnsymbol")]
       (TeX-arg-eval
-       completing-read (TeX-argument-prompt nil nil "Type")
-       '("figure" "table")))
+       completing-read
+       (TeX-argument-prompt nil nil "Type")
+       (append
+        (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+                   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+        '("figure" "table"))))
 
     '("DeclareCaptionSubType*"
       [TeX-arg-eval completing-read
                     (TeX-argument-prompt t nil "Numbering scheme")
                     '("arabic" "roman" "Roman" "alph" "Alph" "fnsymbol")]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Type")
-                    '("figure" "table"))))
+      (TeX-arg-eval
+       completing-read
+       (TeX-argument-prompt nil nil "Type")
+       (append
+        (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+                   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+        '("figure" "table")))))
 
    ;; \subcaption(box)? and \subfloat macros should get their own lines
    (LaTeX-paragraph-commands-add-locally

@@ -1,6 +1,6 @@
 ;;; mathtools.el --- Style hook for the LaTeX package `mathtools'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2011-2020, 2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Created: 2011-02-13
@@ -438,6 +438,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
          (append '(("multlined"   . LaTeX-item-equation)
                    ("lgathered"   . LaTeX-item-equation)
                    ("rgathered"   . LaTeX-item-equation)
+                   ;; FIXME: The entry for spreadlines seems dubious.
                    ("spreadlines" . LaTeX-item-equation)
                    ("matrix*"     . LaTeX-item-equation)
                    ("pmatrix*"    . LaTeX-item-equation)
@@ -445,6 +446,17 @@ Put line break macro on the last line.  Next, insert an ampersand."
                    ("Bmatrix*"    . LaTeX-item-equation)
                    ("vmatrix*"    . LaTeX-item-equation)
                    ("Vmatrix*"    . LaTeX-item-equation)
+                   ("smallmatrix*"  . LaTeX-item-equation)
+                   ("psmallmatrix"  . LaTeX-item-equation)
+                   ("psmallmatrix*" . LaTeX-item-equation)
+                   ("bsmallmatrix"  . LaTeX-item-equation)
+                   ("bsmallmatrix*" . LaTeX-item-equation)
+                   ("Bsmallmatrix"  . LaTeX-item-equation)
+                   ("Bsmallmatrix*" . LaTeX-item-equation)
+                   ("vsmallmatrix"  . LaTeX-item-equation)
+                   ("vsmallmatrix*" . LaTeX-item-equation)
+                   ("Vsmallmatrix"  . LaTeX-item-equation)
+                   ("Vsmallmatrix*" . LaTeX-item-equation)
                    ("dcases"      . LaTeX-mathtools-item-cases)
                    ("dcases*"     . LaTeX-mathtools-item-cases)
                    ("rcases"      . LaTeX-mathtools-item-cases)

@@ -58,7 +58,7 @@ Amsmath equations include \"align\", \"alignat\", \"xalignat\",
 ;; style/beamer.el
 
 (defcustom LaTeX-beamer-section-labels-flag nil
-  "If non-nil section labels are added"
+  "If non-nil section labels are added."
   :type 'boolean)
 
 (defcustom LaTeX-beamer-item-overlay-flag t
@@ -237,7 +237,7 @@ reinitialize affected buffers."
 ;; style/csquotes.el
 
 (defcustom LaTeX-csquotes-quote-after-quote nil
-  "Initial value of `TeX-quote-after-quote' for `csquotes.el'"
+  "Initial value of `TeX-quote-after-quote' for `csquotes.el'."
   :type 'boolean)
 
 (defcustom LaTeX-csquotes-open-quote ""

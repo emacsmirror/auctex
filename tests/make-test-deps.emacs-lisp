@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 
-;; This file provides some functions and .
+;; This file provides some goodies for regression tests.
 
 ;; It has an .emacs-lisp extension because it makes the Makefile easier!
 

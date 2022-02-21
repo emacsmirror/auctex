@@ -1,6 +1,6 @@
 ;;; tex-ispell.el --- AUCTeX skip additions for Ispell  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,6 +45,7 @@
 ;; attachfile.sty
 ;; booktabs.sty
 ;; breqn.sty
+;; caption.sty
 ;; cleveref.sty
 ;; empheq.sty
 ;; enumitem.sty
@@ -55,6 +56,7 @@
 ;; fontspec.sty
 ;; hyperref.sty
 ;; listings.sty
+;; ltxdoc.cls
 ;; ltxtable.sty
 ;; mdframed.sty
 ;; minted.sty
@@ -62,6 +64,7 @@
 ;; pythontex.sty
 ;; siunitx.sty
 ;; splitidx.sty
+;; stabular.sty
 ;; tabularx.sty
 ;; tabulary.sty
 ;; tcolorbox.sty
@@ -132,6 +135,14 @@
       ;; booktabs.sty
       ("addlinespace" . 0)
       ("specialrule" . 3)
+      ;; caption.sty
+      ("captionlistentry" . 0)
+      ("captionof" . 1)
+      ("captionof*" . 1)
+      ("captionsetup" . 1)
+      ("captionsetup*" . 1)
+      ("clearcaptionsetup" . 1)
+      ("clearcaptionsetup*" . 1)
       ;; cleveref.sty
       ("cref" . 1)
       ("Cref" . 1)
@@ -179,6 +190,8 @@
       ;; listings.sty
       ("lstinputlisting" . 1)
       ("lstset" . 1)
+      ;; ltxdoc.cls
+      ("cs" . 1)
       ;; ltxtable.sty
       ("LTXtable" . 2)
       ;; mdframed.sty
@@ -362,6 +375,9 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
 (TeX-ispell-skip-setcdr
  '(;; filecontents.sty
    ("filecontents\\*?" ispell-tex-arg-end)
+   ;; stabular.sty
+   ("stabular" ispell-tex-arg-end)
+   ("stabular\\*" TeX-ispell-tex-arg-end)
    ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library

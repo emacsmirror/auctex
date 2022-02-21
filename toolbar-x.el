@@ -912,7 +912,7 @@ in the end of SWITCHES, which is returned."
             (setq only-symbols-flag (and only-symbols-flag (symbolp i)))))
         (let ((count 0))
           (dolist (i dropdown-list)
-            ;; list-strings and list-buttons are buildt reversed
+            ;; list-strings and list-buttons are built reversed
             (setq list-strings (cons (toolbarx-make-string-from-symbol i)
                                      list-strings))
             (setq count (1+ count))
@@ -925,9 +925,9 @@ in the end of SWITCHES, which is returned."
       ;; if not, the it must start with string
       (unless (stringp (car dropdown-list))
         (error "%s %s %s"
-               "If not all itens on dropdown are symbols, then a string"
+               "If not all items on dropdown are symbols, then a string"
                "must come before each set of buttons; no string found"
-               "in first position."))
+               "in first position"))
       (let ((count 0)
             (elem)
             (temp-list-buttons))

@@ -46,7 +46,7 @@
 (defun multi-prompt (separator
                      unique prompt table
                      &optional mp-predicate require-match initial history)
-  "Completing prompt for a list of strings.  
+  "Completing prompt for a list of strings.
 The first argument SEPARATOR should be the string (of length 1) to
 separate the elements in the list.  The second argument UNIQUE should
 be non-nil, if each element must be unique.  The remaining elements
@@ -73,7 +73,7 @@ are the arguments to `completing-read'.  See that."
                      (while t
                        (let ((extra (catch 'multi-prompt-next
                                       (throw 'multi-prompt-exit
-                                             (completing-read prompt 
+                                             (completing-read prompt
                                                               table
                                                               filter
                                                               require-match
@@ -81,13 +81,13 @@ are the arguments to `completing-read'.  See that."
                                                               history)))))
                          (cond ((eq extra 'back)
                                 (when multi-prompt-found
-                                  (setq prompt (substring 
-                                                prompt 0 
+                                  (setq prompt (substring
+                                                prompt 0
                                                 (- 0 (length separator)
                                                    (length
                                                     (car multi-prompt-found))))
                                         initial (car multi-prompt-found))
-                                  (setq multi-prompt-found 
+                                  (setq multi-prompt-found
                                         (cdr multi-prompt-found))))
                                (t
                                 (setq prompt (concat prompt extra separator)

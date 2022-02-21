@@ -1194,7 +1194,7 @@ entry in `TeX-view-program-list-builtin'."
   "Whether Emacs retains the focus when viewing PDF files with Evince.
 
 When calling `TeX-evince-sync-view', Evince normally captures the
-focus. If this option is set to non-nil, Emacs will retain the
+focus.  If this option is set to non-nil, Emacs will retain the
 focus."
   :group 'TeX-view
   :type 'boolean)
@@ -1596,7 +1596,7 @@ where an entry with the same car exists in the user-defined part."
 Throw an error if `engine' is not present in the alist."
   (or
    (assq engine (TeX-engine-alist))
-   (error "`%s' is not a known engine.  Valid values are: %s." engine
+   (error "Unknown engine `%s'.  Valid values are: %s" engine
           (mapconcat
            (lambda (x) (prin1-to-string (car x)))
            (TeX-engine-alist) ", "))))
@@ -1782,7 +1782,8 @@ You could use this for unusual mouse bindings.")
 (defun TeX-source-correlate-handle-TeX-region (file line col)
   "Translate backward search info with respect to `TeX-region'.
 That is, if FILE is `TeX-region', update FILE to the real tex
-file and LINE to (+ LINE offset-of-region).  Else, return nil."
+file and LINE to (+ LINE offset-of-region), but retain COL as is.
+Else, return nil."
   (when (string-equal TeX-region (file-name-sans-extension
                                   (file-name-nondirectory file)))
     (with-current-buffer (or (find-buffer-visiting file)
@@ -2884,7 +2885,7 @@ side effect for example on variable `TeX-font-list'.")
   '((:latex . 1) (:texinfo . 2) (:bibtex . 4) (:plain-tex . 8) (:context . 16)
     (:classopt . 32))
   "Association list to map dialects to binary weight, in order to
-  implement dialect sets as bitmaps."  )
+implement dialect sets as bitmaps."  )
 
 (defun TeX-shdex-eval (dialect-expr)
   "Evaluate a style hook dialect expression DIALECT-EXPR."
@@ -2892,14 +2893,14 @@ side effect for example on variable `TeX-font-list'.")
    ((symbolp dialect-expr)
     (let ((cell (assq dialect-expr TeX-style-hook-dialect-weight-alist)))
       (if cell (cdr cell)
-        (error "Invalid dialect expression : %S." dialect-expr))))
+        (error "Invalid dialect expression : %S" dialect-expr))))
    ((and (consp dialect-expr)
          (memq (car dialect-expr) '(or not and nor)))
     (apply (intern
             (concat "TeX-shdex-" (symbol-name  (car dialect-expr))))
            (cdr dialect-expr)))
    (t
-    (error "Invalid dialect expression : %S." dialect-expr))))
+    (error "Invalid dialect expression : %S" dialect-expr))))
 
 (defsubst TeX-shdex-or (&rest args)
   "OR operator for style hook dialect expressions."
@@ -3634,7 +3635,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
                  (string :tag "Other")))
 
 (defun TeX-arg-maybe (symbol list form)
-  "Evaluates FORM, if SYMBOL is an element of LIST."
+  "Evaluate FORM, if SYMBOL is an element of LIST."
   (when (memq symbol list)
     (eval form t)))
 

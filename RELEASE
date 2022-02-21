@@ -24,6 +24,22 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
+In math environments 'gather', 'gather*', 'gathered', 'multline'
+and 'multline*', fill commands such as 'M-q' and 'C-c C-q C-e' are
+disabled.  This sorts out the inconsistency between those and
+'equation', 'displaymath' environments, in latter of which filling
+is already disabled.
+
+If you want filling in such environments, customize
+'LaTeX-indent-environment-list' to remove them.
+
+Auto fill continues to work in such environment anyway.
+
+In addition, AUCTeX adds support of alignment at '&' sign in
+'align'-like environments such as 'alignat', 'aligned' and so on,
+as well as 'matrix'-like environments such as 'pmatrix', 'bmatrix'
+and so on.
+
 Now two commands 'Texindex' and 'Texi2dvi' are available when you
 type 'C-c C-c' in Texinfo mode.  The command 'Texindex' runs
 'texindex' on index files and 'Texi2dvi' runs 'pdftexi2dvi' or
@@ -193,17 +209,17 @@ alphabetical order): Ivan Andrus, Ralf Angeli, Masayuki Ataka,
 Mohammad Hossein Bateni, Fabrice Ben Hamouda, Thomas Baumann, Vincent
 Belaïche, Berend de Boer, Alex Branham, Uwe Brauer, Ken Brown, Joshua
 Buhl, Jean-François Burnol, Patrice Dumas, Arash Esbati, Werner Fink,
-Miguel Frasson, Peter S. Galbraith, Mosè Giordano, Patrick Gundlach,
-Abdul-Lateef Haji-Ali, Jobst Hoffmann, Tassilo Horn, Yvon Hevel,
-Orlando Iovino, Mads Jensen, Arne Jørgensen, Philip Kaludercic, David
-Kastrup, Ikumi Keita, Philip Kime, Oleh Krehel, Joost Kremers, Frank
-Küster, Jan-Åke Larsson, Matthew Leach, Brian Leung, Antoine Levitt,
-Leo Liu, Vladimir Lomov, Stefan Monnier, Dan Nicolaescu, Piet van
-Oostrum, Pieter Pareit, Nicolas Richard, Augusto Ritter Stoffel,
-Florent Rougon, Santiago Saavedra, Davide G. M. Salvetti, Rüdiger
-Sonderfeld, Holger Sparr, Mike Sperber, Reiner Steib, Christian
-Schlauer, Shiro Takeda, Mark Trettin (Please accept our apologies if
-we forgot somebody.)
+Miguel Frasson, Peter S. Galbraith, Mosè Giordano, Andrea Greselin,
+Patrick Gundlach, Abdul-Lateef Haji-Ali, Jobst Hoffmann, Tassilo Horn,
+Yvon Hevel, Orlando Iovino, Mads Jensen, Arne Jørgensen, Philip
+Kaludercic, David Kastrup, Ikumi Keita, Philip Kime, Oleh Krehel,
+Joost Kremers, Frank Küster, Jan-Åke Larsson, Matthew Leach, Brian
+Leung, Antoine Levitt, Leo Liu, Vladimir Lomov, Stefan Monnier, Dan
+Nicolaescu, Piet van Oostrum, Pieter Pareit, Nicolas Richard, Augusto
+Ritter Stoffel, Florent Rougon, Santiago Saavedra, Davide
+G. M. Salvetti, Rüdiger Sonderfeld, Holger Sparr, Mike Sperber, Reiner
+Steib, Christian Schlauer, Shiro Takeda, Mark Trettin (Please accept
+our apologies if we forgot somebody.)
 
 Footnotes:
 

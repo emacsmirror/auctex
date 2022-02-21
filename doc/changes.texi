@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2021 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2022 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -11,6 +11,23 @@
 @heading News in 13.1
 
 @itemize @bullet
+@item
+In math environments @samp{gather}, @samp{gather*}, @samp{gathered},
+@samp{multline} and @samp{multline*}, fill commands such as @kbd{M-q} and
+@kbd{C-c C-q C-e} are disabled.  This sorts out the inconsistency between
+those and @samp{equation}, @samp{displaymath} environments, in latter of
+which filling is already disabled.
+
+If you want filling in such environments, customize
+@code{LaTeX-indent-environment-list} to remove them.
+
+Auto fill continues to work in such environment anyway.
+
+In addition, @AUCTeX{} adds support of alignment at @samp{&} sign in
+@samp{align}-like environments such as @samp{alignat}, @samp{aligned} and
+so on, as well as @samp{matrix}-like environments such as @samp{pmatrix},
+@samp{bmatrix} and so on.
+
 @item
 Now two commands @samp{Texindex} and @samp{Texi2dvi} are available when
 you type @kbd{C-c C-c} in Texinfo mode.  The command @samp{Texindex} runs

@@ -1,6 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020
+;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020, 2022
 ;;      Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
@@ -132,6 +132,7 @@
                    ("Bmatrix" .  LaTeX-item-equation)
                    ("vmatrix" .  LaTeX-item-equation)
                    ("Vmatrix" .  LaTeX-item-equation)
+                   ("smallmatrix" . LaTeX-item-equation)
                    ("subarray" . LaTeX-item-equation)
                    ("cases"    . LaTeX-item-equation))
                  LaTeX-item-list))

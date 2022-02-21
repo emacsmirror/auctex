@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This is in progress ConTeXt support for AUCTeX. Please report
+;; This is in progress ConTeXt support for AUCTeX.  Please report
 ;; anomalies or things you believe should be added.
 
 ;; AUCTeX is closely interwoven with LaTeX.  We have to split up
@@ -37,10 +37,10 @@
 ;; 2. paragraph refilling doesn't work 100%, and is very slow.
 ;; 4. Remove dependency on LaTeX by moving LaTeX commands to TeX.
 ;; 5. Most ConTeXt macro's don't currently have lisp code to query for
-;;    arguments. As ConTeXt arguments are quite complex, the LaTeX way
+;;    arguments.  As ConTeXt arguments are quite complex, the LaTeX way
 ;;    of querying for arguments just doesn't cut it.
 ;; 6. Check auto-parsing: does it detect % interface=nl for example?
-;; 7. Complete adding ConTeXt macro's. Perhaps parse cont-en.xml and
+;; 7. Complete adding ConTeXt macro's.  Perhaps parse cont-en.xml and
 ;;    generate the interfaces?
 ;; 8. Add to menu: make TeX hash (mktexlsr), context format and metapost format.
 
@@ -161,7 +161,7 @@
   what)
 
 (defun ConTeXt-insert-other-macro (other-macro)
-  "Insert the ConTeXt other macro's macro SETUP."
+  "Insert the ConTeXt other macro's macro OTHER-MACRO."
   (insert TeX-esc (ConTeXt-other-macro-command other-macro))
   (newline)
   (indent-according-to-mode)
@@ -1400,7 +1400,7 @@ else.  There might be text before point."
   (vector entry (list 'ConTeXt-other-macro-menu entry)))
 
 (defun ConTeXt-other-macro-menu (other-macro)
-  "Insert OTHER MACRO from menu."
+  "Insert OTHER-MACRO from menu."
   (ConTeXt-insert-other-macro other-macro))
 
 
