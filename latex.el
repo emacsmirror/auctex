@@ -5849,11 +5849,13 @@ returned."
   (catch 'found
     (dolist (var (list LaTeX-math-list LaTeX-math-default))
       (dolist (e var)
-        (when (string= (cadr e) sym)
-          (let ((char (nth 3 e)))
-            (when char
-              (throw 'found
-                     (concat " " (char-to-string char))))))))))
+        (let ((val (cadr e)))
+          (when (and (stringp val)
+                     (string= val sym))
+            (let ((char (nth 3 e)))
+              (when char
+                (throw 'found
+                       (concat " " (char-to-string char)))))))))))
 
 (defvar LaTeX-math-mode-menu)
 (define-minor-mode LaTeX-math-mode
