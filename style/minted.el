@@ -130,17 +130,20 @@
     ;; `LaTeX-minted-style-list' here, but with a file local var like:
     ;;     %%% TeX-command-extra-options: "-shell-escape"
     ;; in a .tex file, Emacs asks to apply a variable which is not
-    ;; safe and does not restore the frame; the splitted frame
+    ;; safe and does not restore the window; the splitted frame
     ;; remains.  I couldn't figure out why, so for now, I add the
-    ;; styles from Pygments version 2.9 here.
+    ;; styles from Pygments version 2.11 here.
     ("style" ("abap" "algol" "algol_nu" "arduino" "autumn"
-              "borland" "bw" "colorful" "default" "emacs"
-              "friendly" "fruity" "gruvbox-dark" "gruvbox-light"
-              "igor" "inkpot" "lovelace" "manni" "material" "monokai"
-              "murphy" "native" "paraiso-dark" "paraiso-light"
-              "pastie" "perldoc" "rainbow_dash" "rrt" "sas"
-              "solarized-dark" "solarized-light" "stata" "stata-dark"
-              "stata-light" "tango" "trac" "vim" "vs" "xcode" "zenburn"))
+              "borland" "bw" "colorful" "default" "dracula"
+              "emacs" "friendly" "friendly_grayscale" "fruity"
+              "gruvbox-dark" "gruvbox-light" "igor" "inkpot"
+              "lilypond" "lovelace" "manni" "material"
+              "monokai" "murphy" "native" "one-dark"
+              "paraiso-dark" "paraiso-light" "pastie" "perldoc"
+              "rainbow_dash" "rrt" "sas" "solarized-dark"
+              "solarized-light" "stata-dark" "stata-light"
+              "stata" "tango" "trac" "vim" "vs" "xcode"
+              "zenburn"))
     ("stepnumber")
     ("stepnumberfromfirst")
     ("stepnumberoffsetvalues" ("true" "false"))

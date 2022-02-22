@@ -1742,11 +1742,11 @@ This is necessary since index entries may contain commands and stuff.")
         (1 2) LaTeX-auto-arguments)
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
         1 TeX-auto-symbol)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[")
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]\\[")
         (1 2) LaTeX-auto-env-args-with-opt)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]")
         (1 2) LaTeX-auto-env-args)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?")
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?")
         1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
@@ -5849,11 +5849,13 @@ returned."
   (catch 'found
     (dolist (var (list LaTeX-math-list LaTeX-math-default))
       (dolist (e var)
-        (when (string= (cadr e) sym)
-          (let ((char (nth 3 e)))
-            (when char
-              (throw 'found
-                     (concat " " (char-to-string char))))))))))
+        (let ((val (cadr e)))
+          (when (and (stringp val)
+                     (string= val sym))
+            (let ((char (nth 3 e)))
+              (when char
+                (throw 'found
+                       (concat " " (char-to-string char)))))))))))
 
 (defvar LaTeX-math-mode-menu)
 (define-minor-mode LaTeX-math-mode
