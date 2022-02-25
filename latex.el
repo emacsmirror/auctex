@@ -7761,22 +7761,40 @@ function would return non-nil and `(match-string 1)' would return
     (LaTeX-find-matching-begin)
     (cons (point) (current-column))))
 
-(defun LaTeX-hanging-ampersand-position ()
-  "Return indent column for a hanging ampersand (that is, ^\\s-*&)."
+(defun LaTeX-hanging-ampersand-position (&optional pos col)
+  "Return indent column for a hanging ampersand (that is, ^\\s-*&).
+When you know the position and column of the beginning of the
+current environment, supply them as optional arguments POS and
+COL for efficiency."
   (cl-destructuring-bind
       (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
-    (let* ((cur-pos (point)))
+      (if pos
+          (cons pos col)
+        (LaTeX-env-beginning-pos-col))
+    (let ((cur-pos (point)))
       (save-excursion
-        (if (re-search-backward "\\\\\\\\" beg-pos t)
+        (if (and (search-backward "\\\\" beg-pos t)
+                 ;; Give up if the found "\\" belongs to an inner env.
+                 (= beg-pos
+                    (save-excursion
+                      (LaTeX-find-matching-begin)
+                      (point))))
+            ;; FIXME: This `how-many' fails to count correctly if
+            ;; there is an inner env with "&" but without "\\", e.g.
+            ;; \begin{pmatrix}
+            ;;   a & b
+            ;; \end{pmatrix}
             (let ((cur-idx (how-many "[^\\]&" (point) cur-pos)))
               (goto-char beg-pos)
-              (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
-              ;; If the above searchs fails, i.e. no "&" found,
-              ;; (- (current-column) 1) returns -1, which is wrong.  So
-              ;; we use a fallback (+ 2 beg-col) whenever this happens:
-              (max (- (current-column) 1)
-                   (+ 2 beg-col)))
+              ;; FIXME: This regex search fails if there is an inner
+              ;; env with "&" in it.
+              (if (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+                  (- (current-column) 1)
+                ;; If the above searchs fails, i.e. no "&" found,
+                ;; (- (current-column) 1) returns -1, which is wrong.
+                ;; So we use a fallback (+ 2 beg-col) whenever this
+                ;; happens:
+                (+ 2 beg-col)))
           (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
@@ -7800,16 +7818,38 @@ function would return non-nil and `(match-string 1)' would return
              (+ 2 beg-col))
 
             ((looking-at "&")
-             (LaTeX-hanging-ampersand-position))
+             (LaTeX-hanging-ampersand-position beg-pos beg-col))
 
             (t
              (+ 2
-                (let ((any-col (save-excursion
-                                 (when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
-                                   (current-column)))))
-                  (if (and any-col (= ?& (char-before (match-end 0))))
-                      (1+ any-col)
-                    beg-col))))))))
+                (let ((any-col
+                       (save-excursion
+                         (when
+                             (catch 'found
+                               ;; Search "\\" or "&" which belongs to
+                               ;; the current env, not an inner env.
+                               (while (re-search-backward
+                                       "\\\\\\\\\\|[^\\]&" beg-pos t)
+                                 (let ((p (point)))
+                                   (when (= beg-pos
+                                            (progn
+                                              (LaTeX-find-matching-begin)
+                                              (point)))
+                                     ;; It belongs to the current env.
+                                     ;; Go to target position and exit
+                                     ;; the loop.
+                                     (goto-char (1+ p))
+                                     (throw 'found t)
+                                     ;; Otherwise it belongs to an
+                                     ;; inner env, so continue the
+                                     ;; loop.
+                                     ))))
+                           ;; If we found "&", then use its column as
+                           ;; `any-col'.  Else, `any-col' will be nil.
+                           (if (= ?& (char-after))
+                                  (current-column))))))
+                  (or any-col
+                      beg-col))))))))
 
 ;; Utilities:
 
