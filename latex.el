@@ -2222,25 +2222,35 @@ list of defined saveboxes."
         (LaTeX-add-saveboxes savebox))
     (TeX-argument-insert savebox optional TeX-esc)))
 
-(defun TeX-arg-length (optional &optional prompt initial-input definition)
+(defun TeX-arg-length (optional &optional prompt initial-input
+                                definition default)
   "Prompt for a LaTeX length.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
 initially, with point positioned at the end.  If DEFINITION is
-non-nil, the length is added to the list of defined length."
-  (let ((length (completing-read (TeX-argument-prompt optional prompt "Length")
-                                 ;; A valid length can be a macro or a length of
-                                 ;; the form <value><dimension>.  Input starting
-                                 ;; with a `\' can be completed with length
-                                 ;; macros.
-                                 (mapcar (lambda(elt) (concat TeX-esc (car elt)))
-                                         (LaTeX-length-list))
-                                 ;; Some macros takes as argument only a length
-                                 ;; macro (e.g., `\setlength' in its first
-                                 ;; argument, and `\newlength'), in this case is
-                                 ;; convenient to set `\\' as initial input.
-                                 nil nil initial-input)))
+non-nil, the length is added to the list of defined length.
+DEFAULT is passed to `completing-read', which see."
+  (let ((length
+         (completing-read
+          (TeX-argument-prompt optional
+                               ;; Cater for the case when PROMPT and
+                               ;; DEFAULT are both given:
+                               (if (and prompt default)
+                                   (concat prompt " (default " default ")")
+                                 prompt)
+                               (concat "Length"
+                                       (when (and default (not optional))
+                                         (concat " (default " default ")"))))
+          ;; A valid length can be a macro or a length of the form
+          ;; <value><dimension>.  Input starting with a `\' can be
+          ;; completed with length macros.
+          (mapcar (lambda (elt) (concat TeX-esc (car elt)))
+                  (LaTeX-length-list))
+          ;; Some macros takes as argument only a length macro (e.g.,
+          ;; `\setlength' in its first argument, and `\newlength'), in
+          ;; this case is convenient to set `\\' as initial input.
+          nil nil initial-input nil default)))
     (if (and definition (not (zerop (length length))))
         ;; Strip leading TeX-esc from macro name
         (LaTeX-add-lengths (substring length 1)))
@@ -7367,8 +7377,8 @@ function would return non-nil and `(match-string 1)' would return
      '("filecontents*" LaTeX-env-contents))
 
     (TeX-add-symbols
-     '("enlargethispage" TeX-arg-length)
-     '("enlargethispage*" TeX-arg-length)
+     '("enlargethispage"  (TeX-arg-length nil nil nil "1.0\\baselineskip"))
+     '("enlargethispage*" (TeX-arg-length nil nil nil "1.0\\baselineskip"))
      '("tabularnewline" [ TeX-arg-length ])
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")
