@@ -2974,13 +2974,6 @@ activated mark, however, will always define a new region when calling
 @code{TeX-command-region}.
 @end deffn
 
-@c FIXME: The former half of this paragraph is incorrect.
-@c - `TeX-(La)TeX-sentinel' depends on `TeX-active-*', which act
-@c   according to the value of `TeX-current-process-region-p'.
-@c - Both C-c C-c and C-c C-r overwrite `TeX-current-process-region-p'.
-@c Therefore, if the user types C-c C-r before the process invoked by
-@c C-c C-c finishes, the sentinel for the latter process doesn't work
-@c as expected.
 @AUCTeX{} will allow one process for each document, plus one process
 for the region file to be active at the same time.  Thus, if you are
 editing @var{n} different documents, you can have @var{n} plus one
