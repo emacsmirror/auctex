@@ -111,9 +111,9 @@ This depends on `LaTeX-insert-into-comments'."
              (delete-region (match-beginning 0) (match-end 0))
              (indent-new-comment-line))
             ;; `indent-new-comment-line' does nothing when
-            ;; `comment-auto-fill-only-comments' is non-il, so we must be sure
-            ;; to be in a comment before calling it.  In any other case
-            ;; `newline' is used.
+            ;; `comment-auto-fill-only-comments' is non-nil, so we
+            ;; must be sure to be in a comment before calling it.  In
+            ;; any other case `newline' is used.
             ((TeX-in-comment)
              (indent-new-comment-line))
             (t
@@ -3157,16 +3157,16 @@ returning an alist.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
    (cond ((and (symbolp key-val-alist)
-	       (boundp key-val-alist))
-	  (symbol-value key-val-alist))
-	 ((and (listp key-val-alist)
-	       (symbolp (car key-val-alist))
-	       (fboundp (car key-val-alist)))
-	  (let ((head (car key-val-alist))
-		(tail (cdr key-val-alist)))
-	    (apply head tail)))
-	 (t
-	  key-val-alist))))
+               (boundp key-val-alist))
+          (symbol-value key-val-alist))
+         ((and (listp key-val-alist)
+               (symbolp (car key-val-alist))
+               (fboundp (car key-val-alist)))
+          (let ((head (car key-val-alist))
+                (tail (cdr key-val-alist)))
+            (apply head tail)))
+         (t
+          key-val-alist))))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
