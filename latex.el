@@ -2222,15 +2222,15 @@ list of defined saveboxes."
         (LaTeX-add-saveboxes savebox))
     (TeX-argument-insert savebox optional TeX-esc)))
 
-(defun TeX-arg-length (optional &optional prompt initial-input
-                                definition default)
+(defun TeX-arg-length (optional &optional prompt default initial-input
+                                definition)
   "Prompt for a LaTeX length.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
-initially, with point positioned at the end.  If DEFINITION is
-non-nil, the length is added to the list of defined length.
-DEFAULT is passed to `completing-read', which see."
+string.  DEFAULT is passed to `completing-read', which see.  If
+INITIAL-INPUT is non-nil, insert it in the minibuffer initially,
+with point positioned at the end.  If DEFINITION is non-nil, the
+length is added to the list of defined length."
   (let ((length
          (completing-read
           (TeX-argument-prompt optional
@@ -2366,7 +2366,7 @@ string."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (TeX-arg-length optional prompt "\\" t))
+  (TeX-arg-length optional prompt nil "\\" t))
 
 (defcustom LaTeX-style-list '(("amsart")
                               ("amsbook")
@@ -7257,13 +7257,13 @@ function would return non-nil and `(match-string 1)' would return
    '("footnotemark"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
    '("newlength" (TeX-arg-define-length "Length macro"))
-   '("setlength" (TeX-arg-length "Length macro" "\\")
+   '("setlength" (TeX-arg-length "Length macro" nil "\\")
      (TeX-arg-length "Length value"))
-   '("addtolength" (TeX-arg-length "Length macro" "\\")
+   '("addtolength" (TeX-arg-length "Length macro" nil "\\")
      (TeX-arg-length "Length to add"))
-   '("settowidth" (TeX-arg-length "Length macro" "\\") "Text")
-   '("settoheight" (TeX-arg-length "Length macro" "\\") "Text")
-   '("settodepth" (TeX-arg-length "Length macro" "\\") "Text")
+   '("settowidth" (TeX-arg-length "Length macro" nil "\\") "Text")
+   '("settoheight" (TeX-arg-length "Length macro" nil "\\") "Text")
+   '("settodepth" (TeX-arg-length "Length macro" nil "\\") "Text")
    '("\\" [ "Space" ])
    '("\\*" [ "Space" ])
    '("hyphenation" t)
@@ -7377,8 +7377,8 @@ function would return non-nil and `(match-string 1)' would return
      '("filecontents*" LaTeX-env-contents))
 
     (TeX-add-symbols
-     '("enlargethispage"  (TeX-arg-length nil nil nil "1.0\\baselineskip"))
-     '("enlargethispage*" (TeX-arg-length nil nil nil "1.0\\baselineskip"))
+     '("enlargethispage"  (TeX-arg-length nil "1.0\\baselineskip"))
+     '("enlargethispage*" (TeX-arg-length nil "1.0\\baselineskip"))
      '("tabularnewline" [ TeX-arg-length ])
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")

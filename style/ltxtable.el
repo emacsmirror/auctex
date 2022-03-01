@@ -59,7 +59,7 @@ The regexp for the 2. argument is the same as for \"input\" and
 
    (TeX-add-symbols
     '("LTXtable"
-      (TeX-arg-length "Width" nil nil "1.0\\linewidth")
+      (TeX-arg-length "Width" "1.0\\linewidth")
       (TeX-arg-eval
        (lambda ()
          (let ((longtable (file-relative-name
