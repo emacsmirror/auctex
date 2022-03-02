@@ -1,6 +1,6 @@
 ;;; plext.el --- AUCTeX style for the plext package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2020, 2022 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -55,11 +55,20 @@
 (defun LaTeX-plext-env-array (env)
   (let ((dir (TeX-read-string "(Optional) Direction (t or y or z): "))
         (width (if (string= env "tabular*")
-                   (TeX-read-string "Width: " LaTeX-default-width)))
+                   (TeX-read-string
+                    (format "Width (default %s): " LaTeX-default-width)
+                    nil nil LaTeX-default-width)))
         (pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (fmt (TeX-read-string "Format: " LaTeX-default-format)))
+        (fmt (TeX-read-string
+              (if (string= LaTeX-default-format "")
+                  "Format: "
+                (format "Format (default %s): " LaTeX-default-format))
+              nil nil
+              (if (string= LaTeX-default-format "")
+                  nil
+                LaTeX-default-format))))
     (unless (zerop (length dir))
       (setq dir (concat "<" dir ">")))
     (if (string= env "tabular*")

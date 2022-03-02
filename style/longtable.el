@@ -1,6 +1,6 @@
 ;;; longtable.el --- AUCTeX style for `longtable.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2020  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -56,13 +56,24 @@ insert line break macro."
 
 (defun LaTeX-env-longtable (environment)
   "Insert a longtable-like ENVIRONMENT with caption and label."
-  (let* ((pos (completing-read (TeX-argument-prompt t nil "Position")
-                               '(("l") ("r") ("c"))))
-         (fmt (TeX-read-string "Format: " LaTeX-default-format))
+  (let* ((pos (and LaTeX-default-position ; `LaTeX-default-position'
+                                        ; can be nil, i.e. no prompt
+                   (completing-read (TeX-argument-prompt t nil "Position")
+                                    '("l" "r" "c")
+                                    nil nil LaTeX-default-position)))
+         (fmt (TeX-read-string
+               (if (string= LaTeX-default-format "")
+                   "Format: "
+                 (format "Format (default %s): " LaTeX-default-format))
+               nil nil
+               (if (string= LaTeX-default-format "")
+                   nil
+                 LaTeX-default-format)))
          (caption (TeX-read-string "Caption: "))
          (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
                           (TeX-read-string "(Optional) Short caption: "))))
-    (setq LaTeX-default-format fmt)
+    (setq LaTeX-default-position pos
+          LaTeX-default-format   fmt)
     (LaTeX-insert-environment environment
                               (concat
                                (unless (zerop (length pos))
