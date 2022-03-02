@@ -1095,7 +1095,10 @@ have changed."
   (setq font-latex-doctex-syntactic-keywords
         (append font-latex-syntactic-keywords
                 ;; For docTeX comment-in-doc.
-                '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
+                '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
+  ;; Finally, compute our `syntax-propertize-function' anew.
+  (setq-local syntax-propertize-function
+              (font-latex--make-syntax-propertize-function)))
 
 
 ;;; Syntactic fontification
@@ -1258,14 +1261,12 @@ triggers Font Lock to recognize the change."
   (when (fboundp 'font-lock-flush)
     (font-lock-flush)))
 
-(defun font-latex-syntax-propertize-function (start end)
-  "The `syntax-propertize-function' for (La)TeX documents."
-  (with-no-warnings
-    (let ((font-lock-syntactic-keywords
-           (if (derived-mode-p 'doctex-mode)
-               font-latex-doctex-syntactic-keywords
-             font-latex-syntactic-keywords)))
-      (font-lock-fontify-syntactic-keywords-region start end))))
+(defun font-latex--make-syntax-propertize-function ()
+  "Return a `syntax-propertize-function' for (La|Doc)TeX documents."
+  (let ((kws (if (derived-mode-p 'doctex-mode)
+                 font-latex-doctex-syntactic-keywords
+               font-latex-syntactic-keywords)))
+    (syntax-propertize-via-font-lock kws)))
 
 ;;;###autoload
 (defun font-latex-setup ()
@@ -1282,10 +1283,10 @@ triggers Font Lock to recognize the change."
   ;; `VirTeX-common-initialization' and place it in the different
   ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
   (let ((defaults
-          `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-            nil nil ,font-latex-syntax-alist nil))
+         `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+           nil nil ,font-latex-syntax-alist nil))
         (variables
-         '((font-lock-mark-block-function . mark-paragraph)
+         `((font-lock-mark-block-function . mark-paragraph)
            (font-lock-fontify-region-function
             . font-latex-fontify-region)
            (font-lock-unfontify-region-function
@@ -1298,7 +1299,7 @@ triggers Font Lock to recognize the change."
             font-latex-extend-region-backwards-quotation
             font-latex-extend-region-backwards-math)
            (syntax-propertize-function
-            . font-latex-syntax-propertize-function)
+            . ,(font-latex--make-syntax-propertize-function))
            (syntax-propertize-extend-region-functions
             syntax-propertize-wholelines
             font-latex-sp-extend-region-backwards-verb-env))))
