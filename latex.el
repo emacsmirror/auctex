@@ -1261,7 +1261,14 @@ Just like array and tabular."
   (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (fmt (TeX-read-string "Format: " LaTeX-default-format)))
+        (fmt (TeX-read-string
+              (if (string= LaTeX-default-format "")
+                  "Format: "
+                (format "Format (default %s): " LaTeX-default-format))
+              nil nil
+              (if (string= LaTeX-default-format "")
+                  nil
+                LaTeX-default-format))))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
@@ -1315,14 +1322,12 @@ Just like array and tabular."
                                               (concat TeX-esc (car elt)))
                                             (LaTeX-length-list)))))
          (inner-pos (when (and height (not (string= height "")))
-             (completing-read
-              (TeX-argument-prompt t nil "Inner position")
-              '("t" "b" "c" "s"))))
+                      (completing-read
+                       (TeX-argument-prompt t nil "Inner position")
+                       '("t" "b" "c" "s"))))
          (width (TeX-read-string
-                 (TeX-argument-prompt nil nil
-                                      (concat "Width (default "
-                                              LaTeX-default-width
-                                              ")"))
+                 (TeX-argument-prompt nil nil (format "Width (default %s)"
+                                                      LaTeX-default-width))
                  nil nil LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
@@ -1338,11 +1343,20 @@ Just like array and tabular."
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
-  (let ((width (TeX-read-string "Width: " LaTeX-default-width))
+  (let ((width (TeX-read-string
+                (format "Width (default %s): " LaTeX-default-width)
+                nil nil LaTeX-default-width))
         (pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (fmt (TeX-read-string "Format: " LaTeX-default-format)))
+        (fmt (TeX-read-string
+              (if (string= LaTeX-default-format "")
+                  "Format: "
+                (format "Format (default %s): " LaTeX-default-format))
+              nil nil
+              (if (string= LaTeX-default-format "")
+                  nil
+                LaTeX-default-format))))
     (setq LaTeX-default-width width)
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
@@ -1375,7 +1389,9 @@ Just like array and tabular."
   "Insert ENVIRONMENT with label for bibitem."
   (LaTeX-insert-environment environment
                             (concat TeX-grop
-                                    (TeX-read-string "Label for BibItem: " "99")
+                                    (TeX-read-string
+                                     (format "Label for BibItem (default %s): " "99")
+                                     nil nil "99")
                                     TeX-grcl))
   (end-of-line 0)
   (delete-char 1)
@@ -2139,7 +2155,8 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  ARGS is unused."
   (TeX-argument-insert
-   (TeX-read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
+   (TeX-read-string (TeX-argument-prompt optional prompt "Index tag"))
+   optional))
 
 (defun TeX-arg-index (optional &optional prompt &rest _args)
   "Prompt for an index entry completing with known entries.
@@ -2271,11 +2288,19 @@ string."
 Initial input is the name of the file being visited in the
 current buffer, with extension.  If OPTIONAL is non-nil, insert
 it as an optional argument.  Use PROMPT as the prompt string."
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional prompt "Name")
-    (file-name-nondirectory buffer-file-name))
-   optional))
+  (let ((name (file-name-nondirectory buffer-file-name)))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (if optional
+                                 prompt
+                               (format (concat prompt " (default %s)") name)))
+                           (if optional
+                               "Name"
+                             (format "Name (default %s)" name)))
+      nil nil (if optional nil name))
+     optional)))
 
 (defun TeX-arg-file-name-sans-extension (optional &optional prompt)
   "Prompt for a file name.
@@ -2283,11 +2308,20 @@ Initial input is the name of the file being visited in the
 current buffer, without extension.  If OPTIONAL is non-nil,
 insert it as an optional argument.  Use PROMPT as the prompt
 string."
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional prompt "Name")
-    (file-name-sans-extension (file-name-nondirectory buffer-file-name)))
-   optional))
+  (let ((name (file-name-sans-extension
+               (file-name-nondirectory buffer-file-name))))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (if optional
+                                 prompt
+                               (format (concat prompt " (default %s)") name)))
+                           (if optional
+                               "Name"
+                             (format "Name (default %s)" name)))
+      nil nil (if optional nil name))
+     optional)))
 
 (defun TeX-arg-define-label (optional &optional prompt)
   "Prompt for a label completing with known labels.
@@ -2774,9 +2808,12 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (let ((default (format-time-string TeX-date-format (current-time))))
     (TeX-argument-insert
-     (TeX-read-string (TeX-argument-prompt
-                       optional prompt (format "Date (default %s)" default))
-                      nil nil default)
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (format (concat prompt " (default %s)") default))
+                           (format "Date (default %s)" default))
+      nil nil default)
      optional)))
 
 (defun TeX-arg-version (optional &optional prompt)
@@ -2784,10 +2821,15 @@ string."
 Use as initial input the current date.  If OPTIONAL is non-nil,
 insert the resulting value as an optional argument, otherwise as
 a mandatory one.  Use PROMPT as the prompt string."
-  (TeX-argument-insert
-   (TeX-read-string (TeX-argument-prompt optional prompt "Version")
-                    (format-time-string "%Y/%m/%d" (current-time)))
-   optional))
+  (let ((version (format-time-string "%Y/%m/%d" (current-time))))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (format (concat prompt " (default %s)") version))
+                           (format "Version (default %s)" version))
+      nil nil version)
+     optional)))
 
 (defun TeX-arg-pagestyle (optional &optional prompt definition)
   "Prompt for a LaTeX pagestyle with completion.
