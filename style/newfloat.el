@@ -1,6 +1,6 @@
 ;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -82,15 +82,15 @@
 ;; Setup parsing for \DeclareFloatingEnvironment:
 (TeX-auto-add-type "newfloat-DeclareFloatingEnvironment" "LaTeX")
 
-(defvar LaTeX-newfloat-DeclareFloatingEnvironment-regex
+(defvar LaTeX-newfloat-DeclareFloatingEnvironment-regexp
   `(,(concat "\\\\DeclareFloatingEnvironment"
              "[ \t\n\r%]*"
-             "\\["
-             "[ \t\n\r%{}a-zA-Z0-9=,-]*"
-             "\\]"
+             "\\(?:"
+             (LaTeX-extract-key-value-label 'none)
+             "\\)?"
              "[ \t\n\r%]*"
              "{\\([^}]+\\)}"
-             "\\(?:[ %]*{\\([^}]*\\)}\\)?")
+             "\\(?:[ %]*{\\(figure\\|table\\|verbatim\\)}\\)?")
     (1 2) LaTeX-auto-newfloat-DeclareFloatingEnvironment)
   "Matches the argument of `\\DeclareFloatingEnvironment' from `newfloat.sty'.")
 
@@ -152,7 +152,7 @@ If `caption.el' is loaded, add the new floating environment to
  (lambda ()
 
    ;; Add newfloat to the parser.
-   (TeX-auto-add-regexp LaTeX-newfloat-DeclareFloatingEnvironment-regex)
+   (TeX-auto-add-regexp LaTeX-newfloat-DeclareFloatingEnvironment-regexp)
 
    ;; Commands:
    (TeX-add-symbols
