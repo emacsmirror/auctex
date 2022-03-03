@@ -1298,8 +1298,6 @@ triggers Font Lock to recognize the change."
             font-latex-extend-region-backwards-command-in-braces
             font-latex-extend-region-backwards-quotation
             font-latex-extend-region-backwards-math)
-           (syntax-propertize-function
-            . ,(font-latex--make-syntax-propertize-function))
            (syntax-propertize-extend-region-functions
             syntax-propertize-wholelines
             font-latex-sp-extend-region-backwards-verb-env))))
