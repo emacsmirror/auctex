@@ -6464,8 +6464,9 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 
 (defun LaTeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for LaTeX mode.
-Install tool bar if `LaTeX-enable-toolbar' is non-nil."
-  (when LaTeX-enable-toolbar
+Install tool bar if `LaTeX-enable-toolbar' and `tool-bar-mode' is
+non-nil."
+  (when (and LaTeX-enable-toolbar tool-bar-mode)
     ;; Defined in `tex-bar.el':
     (LaTeX-install-toolbar)))
 
@@ -6949,9 +6950,8 @@ of `LaTeX-mode-hook'."
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook #'LaTeX-maybe-install-toolbar nil t)
-  (when (and (boundp 'tool-bar-mode) tool-bar-mode)
-    (LaTeX-maybe-install-toolbar))
+  (add-hook 'tool-bar-mode-hook #'LaTeX-maybe-install-toolbar nil t)
+  (LaTeX-maybe-install-toolbar)
   ;; Set the value of `LaTeX-using-Biber' based on the local value of
   ;; `LaTeX-biblatex-use-Biber'.  This should be run within
   ;; `TeX-update-style-hook' before toolbarx-refresh, otherwise the bibliography

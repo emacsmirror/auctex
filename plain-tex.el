@@ -40,8 +40,9 @@
 
 (defun plain-TeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for plain TeX mode.
-Install tool bar if `plain-TeX-enable-toolbar' is non-nil."
-  (when plain-TeX-enable-toolbar
+Install tool bar if `plain-TeX-enable-toolbar' and
+`tool-bar-mode' is non-nil."
+  (when (and plain-TeX-enable-toolbar tool-bar-mode)
     ;; Defined in `tex-bar.el':
     (TeX-install-toolbar)))
 
@@ -133,9 +134,8 @@ of `plain-TeX-mode-hook'."
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook #'plain-TeX-maybe-install-toolbar nil t)
-  (when (and (boundp 'tool-bar-mode) tool-bar-mode)
-    (plain-TeX-maybe-install-toolbar))
+  (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
+  (plain-TeX-maybe-install-toolbar)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
