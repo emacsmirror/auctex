@@ -1592,7 +1592,7 @@ seen indented in nested constructs.
 @vindex LaTeX-item-indent
 @vindex LaTeX-item-regexp
 
-You can explicitely indent single lines, usually by pressing @key{TAB},
+You can explicitly indent single lines, usually by pressing @key{TAB},
 or marked regions by calling @code{indent-region} on it.  If you have
 @code{auto-fill-mode} enabled and a line is broken while you type it,
 Emacs automatically cares about the indentation in the following line.
@@ -1750,7 +1750,7 @@ init file:
 (add-hook 'LaTeX-mode-hook #'turn-on-auto-fill)
 @end lisp
 
-You can manually fill explicitely marked regions, paragraphs,
+You can manually fill explicitly marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
 filling in @AUCTeX{} will indent the start of the region to be filled in
 contrast to many other Emacs modes.)
@@ -1766,7 +1766,7 @@ comment and continues after it.  In order to prevent overfull lines in
 the source code, a linebreak will be inserted before the last
 non-comment word by default.  This can be changed by customizing
 @code{LaTeX-fill-break-before-code-comments}.  If you have overfull
-lines with code comments you can fill those explicitely by calling
+lines with code comments you can fill those explicitly by calling
 @code{LaTeX-fill-paragraph} or pressing @kbd{M-q} with the cursor
 positioned on them.  This will add linebreaks in the comment and indent
 subsequent comment lines to the column of the comment in the first line

@@ -777,7 +777,7 @@ emacs 24.1 and is then later run by emacs 24.5."
     (TeX--call-minor-mode (ad-get-arg 0) (ad-get-arg 1))))
 (defun TeX--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
-    ;; Instead of checking for each mode explicitely `minor-mode-list'
+    ;; Instead of checking for each mode explicitly `minor-mode-list'
     ;; could be used.  But this may make the byte compiler pop up.
     (when (memq var '(TeX-PDF-mode
                       TeX-source-correlate-mode TeX-interactive-mode
@@ -1878,7 +1878,7 @@ SyncTeX are recognized."
   :group 'TeX-view
   ;; Since this is a global minor mode and we don't want to require
   ;; tex.el when the mode variable is set, the mode function is called
-  ;; explicitely (if necessary) in `VirTeX-common-initialization'.  We
+  ;; explicitly (if necessary) in `VirTeX-common-initialization'.  We
   ;; do it there because otherwise `kill-all-local-variables' would
   ;; reset `TeX-source-correlate-output-page-function' which is
   ;; buffer-local.
@@ -5443,7 +5443,7 @@ regardless of its data type."
   (let ((table (make-syntax-table (make-char-table 'syntax-table))))
     ;; Preset mode-independent syntax entries.  (Mode-dependent
     ;; entries are set in the function `TeX-search-syntax-table'.)
-    ;; ?\", ?\( and ?\) explicitely get whitespace syntax because
+    ;; ?\", ?\( and ?\) explicitly get whitespace syntax because
     ;; Emacs 21.3 and XEmacs don't generate a completely empty syntax
     ;; table.
     (dolist (elt '((?\f . ">") (?\n . ">") (?\" . " ") (?\( . " ") (?\) . " ")))
