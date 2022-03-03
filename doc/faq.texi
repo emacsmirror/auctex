@@ -43,9 +43,26 @@ in the bug report.
 
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
-customizations.  You can do this by invoking Emacs with the command line
-@samp{emacs -q -no-site-file -l auctex}.  The @option{-l} option
-loads @file{auctex.el} which you normally do in your init file.  After you
+customizations.  You can do this by invoking Emacs with the following
+command line, depending on the installation scheme of @AUCTeX{} and your
+@acronym{OS}:
+@itemize
+@item
+If you installed @AUCTeX{} from @acronym{ELPA}, use @samp{emacs -q
+-no-site-file --eval "(progn (setq package-load-list '((auctex t)))
+(package-initialize))"}.  The @option{--eval} activates only @AUCTeX{}
+among all installed @acronym{EPLA} packages.
+@item
+If you installed @AUCTeX{} via traditional
+@command{configure}--@command{make} scheme, use @samp{emacs -q
+-no-site-file -l auctex}.  The @option{-l} option loads @file{auctex.el}
+which you normally do in your init file.
+@item
+In both above cases, use @samp{runemacs} instead of @samp{emacs} on
+windows.
+@end itemize
+
+After you
 have started Emacs like this, you can load the file triggering the
 error.  If everything is working now, you know that you have to search
 either in the site configuration file or your personal init file for

@@ -41,7 +41,7 @@
 (defun plain-TeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for plain TeX mode.
 Install tool bar if `plain-TeX-enable-toolbar' and
-`tool-bar-mode' is non-nil."
+`tool-bar-mode' are non-nil."
   (when (and plain-TeX-enable-toolbar tool-bar-mode)
     ;; Defined in `tex-bar.el':
     (TeX-install-toolbar)))
