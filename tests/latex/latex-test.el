@@ -24,6 +24,12 @@
 (require 'ert)
 (require 'latex)
 
+;; We need to ensure that font-lock has put the syntax properties
+;; already which won't happen in batch mode.  So trigger font-lock
+;; immediately.
+(define-advice LaTeX-common-initialization (:after ())
+  (font-lock-ensure))
+
 (AUCTeX-set-ert-path
  'LaTeX-indent-tabular-test/in
  "tabular-in.tex"
