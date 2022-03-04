@@ -5410,6 +5410,20 @@ regardless of its data type."
   :group 'TeX-indentation
   :type 'integer)
 
+(defcustom TeX-indent-open-delimiters ""
+  "Additional open delimiters to increase indentation.
+Include \"[\" to indent inside square brackets.
+See `TeX-brace-count-line' and `TeX-indent-close-delimiters'."
+  :group  'TeX-indentation
+  :type '(string :tag "Open delimiters"))
+
+(defcustom TeX-indent-close-delimiters ""
+  "Additional close delimiters to increase indentation.
+Include \"]\" to indent inside square brackets.
+See `TeX-brace-count-line' and `TeX-indent-open-delimiters'."
+  :group  'TeX-indentation
+  :type '(string :tag "Close delimiters"))
+
 (defun TeX-comment-indent ()
   "Determine the indentation of a comment."
   (if (looking-at "%%%")
@@ -5419,17 +5433,32 @@ regardless of its data type."
          comment-column)))
 
 (defun TeX-brace-count-line ()
-  "Count number of open/closed braces."
+  "Count indent caused by open/closed braces.
+In addition to \"{\" and \"}\", characters in
+`TeX-indent-open-delimiters' and `TeX-indent-close-delimiters'
+are also taken into account.  Ignore them when they are escaped
+by \"\\\".  In comments, ignore \"{\" and \"}\" but don't ignore
+additional characters."
   (save-excursion
     (let ((count 0) (limit (line-end-position)) char)
       (while (progn
-               (skip-chars-forward "^{}\\\\" limit)
-               (when (and (< (point) limit) (not (TeX-in-comment)))
-                 (setq char (char-after))
+               (skip-chars-forward
+                (concat "^{}\\\\"
+                        TeX-indent-open-delimiters
+                        TeX-indent-close-delimiters)
+                limit)
+               (when (and (< (point) limit)
+                          (not (and (memq (setq char (char-after))
+                                          '(?\{ ?\} ?\\))
+                                    (TeX-in-comment))))
                  (forward-char)
-                 (cond ((eq char ?\{)
+                 (cond ((memq char (append
+                                    TeX-indent-open-delimiters
+                                    '(?\{)))
                         (setq count (+ count TeX-brace-indent-level)))
-                       ((eq char ?\})
+                       ((memq char (append
+                                    TeX-indent-close-delimiters
+                                    '(?\})))
                         (setq count (- count TeX-brace-indent-level)))
                        ((eq char ?\\)
                         (when (< (point) limit)
