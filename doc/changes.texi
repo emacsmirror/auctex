@@ -8,6 +8,32 @@
 
 @end ifset
 
+@heading News since last release
+
+@itemize @bullet
+@item
+@AUCTeX{} tracks the change in Emacs where initial inputs in the
+minibuffer during queries are getting phased out.  Queries for the
+mandatory arguments of macros and environments are adjusted where
+applicable.  The value which will be used after hitting @kbd{RET} without
+other input is shown in the prompt in parentheses prefixed with
+@samp{default}.  For this change the signature of the function
+@code{TeX-arg-length} is altered.  The old argument list was:
+@lisp
+(defun TeX-arg-length (optional &optional prompt
+                                initial-input definition default)
+@end lisp
+
+whereas the new one is:
+@lisp
+(defun TeX-arg-length (optional &optional prompt
+                                default initial-input definition)
+@end lisp
+
+Note the position change of @code{DEFAULT}.
+
+@end itemize
+
 @heading News in 13.1
 
 @itemize @bullet
