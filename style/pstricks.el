@@ -1,6 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2007-2022  Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -784,7 +784,7 @@ comma separated list. Point has to be within the sexp to modify."
    (unless (or (member "pst-pdf" TeX-active-styles)
                (eq TeX-engine 'xetex))
      ;; Leave at user's choice whether to disable `TeX-PDF-mode' or
-     ;; not. Instead set up `TeX-PDF-from-DVI' option so that AUCTeX
+     ;; not.  Instead set up `TeX-PDF-from-DVI' option so that AUCTeX
      ;; takes dvips+ps2pdf route when `TeX-PDF-mode' is enabled.
      ;; (TeX-PDF-mode-off)
      (setq TeX-PDF-from-DVI "Dvips"))

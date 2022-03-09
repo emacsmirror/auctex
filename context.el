@@ -414,7 +414,7 @@ The following variables are set before the hooks are run
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
-The following standard hook exist -
+The following standard hooks exist -
 
 ConTeXt-numbered-section-heading: Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
@@ -433,12 +433,12 @@ ConTeXt-section-ref: Insert a reference for this section command.
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-numbered-section-hook
-                         '(ConTeXt-numbered-section-heading
+                         \\='(ConTeXt-numbered-section-heading
                                  ConTeXt-section-title
                                  ConTeXt-section-section
                                  ConTeXt-section-ref))
 
-in your .emacs file."
+in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro
   :type 'hook
   :options
@@ -466,7 +466,7 @@ The following variables are set before the hooks are run
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
-The following standard hook exist -
+The following standard hooks exist -
 
 ConTeXt-unnumbered-section-heading: Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
@@ -485,12 +485,12 @@ ConTeXt-section-ref: Insert a reference for this section command.
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-unnumbered-section-hook
-                         '(ConTeXt-unnumbered-section-heading
+                         \\='(ConTeXt-unnumbered-section-heading
                                  ConTeXt-section-title
                                  ConTeXt-section-section
                                  ConTeXt-section-ref))
 
-in your .emacs file."
+in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro
   :type 'hook
   :options
@@ -1696,7 +1696,7 @@ file, or any mode derived thereof. See variable
     "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -1704,7 +1704,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   '("\\.dvi" "\\.pdf" "\\.ps")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 

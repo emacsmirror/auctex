@@ -62,8 +62,8 @@
 
 (defcustom TeX-fold-type-list '(env macro math)
   "List of item types to consider when folding.
-Valid items are the symbols 'env for environments, 'macro for
-macros, 'math for math macros and 'comment for comments."
+Valid items are the symbols `env' for environments, `macro' for
+macros, `math' for math macros and `comment' for comments."
   :type '(set (const :tag "Environments" env)
               (const :tag "Macros" macro)
               (const :tag "Math Macros" math)
@@ -414,7 +414,7 @@ for macros and 'math for math macros."
 (defun TeX-fold-item (type)
   "Hide the item on which point currently is located.
 TYPE specifies the type of item and can be one of the symbols
-'env for environments, 'macro for macros or 'math for math
+`env' for environments, `macro' for macros or `math' for math
 macros.
 Return non-nil if an item was found and folded, nil otherwise."
   (if (and (eq type 'env)
@@ -508,7 +508,7 @@ Return non-nil if a comment was found and folded, nil otherwise."
 (defun TeX-fold-make-overlay (ov-start ov-end type display-string-spec)
   "Make a TeX-fold overlay extending from OV-START to OV-END.
 TYPE is a symbol which is used to describe the content to hide
-and may be 'macro for macros, 'math for math macro and 'env for
+and may be `macro' for macros, `math' for math macro and `env' for
 environments.
 DISPLAY-STRING-SPEC is the original specification of the display
 string in the variables `TeX-fold-macro-spec-list' or
@@ -526,8 +526,8 @@ string in the variables `TeX-fold-macro-spec-list' or
 
 (defun TeX-fold-item-end (start type)
   "Return the end of an item of type TYPE starting at START.
-TYPE can be either 'env for environments, 'macro for macros or
-'math for math macros."
+TYPE can be either `env' for environments, `macro' for macros or
+`math' for math macros."
   (save-excursion
     (cond ((and (eq type 'env)
                 (eq major-mode 'context-mode))

@@ -1,6 +1,6 @@
 ;;; toolbar-x.el --- fancy toolbar handling in Emacs  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -1553,7 +1553,7 @@ To reproduce the default toolbar with use as BUTTON
 in `toolbarx-install-toolbar':
 
 \(toolbarx-install-toolbar
- '((open-file dired kill-buffer save-buffer write-file undo cut
+ \\='((open-file dired kill-buffer save-buffer write-file undo cut
                copy paste search-forward print-buffer customize help))
  toolbarx-default-toolbar-meaning-alist)
 
