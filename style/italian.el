@@ -1,6 +1,6 @@
 ;;; italian.el --- Setup AUCTeX for editing Italian text.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2018, 2020, 2022 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: Davide G. M. Salvetti <salve@debian.org>
@@ -44,20 +44,9 @@
 (TeX-add-style-hook
  "italian"
  (lambda ()
-   ;; XXX: Handle former customizations of the now defunct
-   ;; Italian-specific variables.  References to the respective
-   ;; variables are to be deleted in future versions. (now = 2005-04-01)
    (unless (eq (car TeX-quote-language) 'override)
-     (let ((open-quote (if (and (boundp 'LaTeX-italian-open-quote)
-                                LaTeX-italian-open-quote)
-                           LaTeX-italian-open-quote
-                         "\"<"))
-           (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
-                                 LaTeX-italian-close-quote)
-                            LaTeX-italian-close-quote
-                          "\">")))
-       (setq TeX-quote-language
-             `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
+     (setq TeX-quote-language
+           `("italian" "\"<" "\">" ,TeX-quote-after-quote)))
    ;; Fontification of quotation marks.
    (when (fboundp 'font-latex-add-quotes)
      (font-latex-add-quotes '("\"<" "\">" french)))

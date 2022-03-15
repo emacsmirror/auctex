@@ -30,24 +30,8 @@
  "german"
  (lambda ()
    (set-syntax-table LaTeX-german-mode-syntax-table)
-   ;; XXX: Handle former customizations of the now defunct
-   ;; German-specific variables.  References to the respective
-   ;; variables are to be deleted in future versions. (now = 2005-04-01)
    (unless (eq (car TeX-quote-language) 'override)
-     (let ((open-quote (if (and (boundp 'LaTeX-german-open-quote)
-                                LaTeX-german-open-quote)
-                           LaTeX-german-open-quote
-                         "\"`"))
-           (close-quote (if (and (boundp 'LaTeX-german-close-quote)
-                                 LaTeX-german-close-quote)
-                            LaTeX-german-close-quote
-                          "\"'"))
-           (q-after-q (if (and (boundp 'LaTeX-german-quote-after-quote)
-                               LaTeX-german-quote-after-quote)
-                          LaTeX-german-quote-after-quote
-                        t)))
-       (setq TeX-quote-language
-             `("german" ,open-quote ,close-quote ,q-after-q))))
+     (setq TeX-quote-language '("german" "\"`" "\"'" t)))
    (setq LaTeX-babel-hyphen-language "german")
    ;; Fontification of quotation marks.
    (when (and (eq TeX-install-font-lock 'font-latex-setup)
