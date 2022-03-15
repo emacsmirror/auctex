@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2021 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2022 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -178,7 +178,7 @@ STYLESRC = style/prosper.el \
 	   style/xr.el        style/cancel.el    style/unicodefonttable.el \
 	   style/cuted.el     style/floatpag.el  style/flushend.el \
 	   style/midfloat.el  style/stabular.el  style/stfloats.el \
-	   style/rotating.el  style/sidecap.el
+	   style/rotating.el  style/sidecap.el   style/l3doc.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
