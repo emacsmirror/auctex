@@ -2069,9 +2069,10 @@ The compatibility argument IGNORE is ignored."
 (defvar TeX-region-hook nil
   "List of hooks to run before the region file is saved.
 The hooks are run in the region buffer, you may use the variable
-`master-buffer' to access the buffer of the master file and
-`orig-buffer' to access the buffer where \\[TeX-command-region] or
-\\[TeX-command-buffer] is invoked from.")
+`TeX-region-master-buffer' to access the buffer of the master
+file and `TeX-region-orig-buffer' to access the buffer where
+\\[TeX-command-region] or \\[TeX-command-buffer] is invoked
+from.")
 
 (defun TeX-quote-filename (file)
   "Convert file name into a form acceptable to TeX."
@@ -2110,9 +2111,12 @@ The hooks are run in the region buffer, you may use the variable
                                 "\\\\unexpanded{\\&}" file t)
     file))
 
-(defvar TeX-region-orig-buffer nil
+(defvar-local TeX-region-orig-buffer nil
   "The original buffer in which the TeX-region was created.")
-(make-variable-buffer-local 'TeX-region-orig-buffer)
+
+(defvar-local TeX-region-master-buffer nil
+  "The TeX-master buffer of the document for which the TeX-region
+was created.")
 
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION.
@@ -2238,6 +2242,7 @@ original file."
                 ") }\n"
                 trailer)
         (setq TeX-region-orig-buffer orig-buffer)
+        (setq TeX-region-master-buffer master-buffer)
         (run-hooks 'TeX-region-hook)
         (if (string-equal (buffer-string) original-content)
             (set-buffer-modified-p nil)
