@@ -917,7 +917,7 @@ work analogously."
     (save-excursion
       (while (and (/= arg 0)
                   (re-search-backward
-                   "\\\\\\(begin\\|end\\) *{ *\\([A-Za-z*]+\\) *}" nil t))
+                   "\\\\\\(begin\\|end\\) *{\\([^}]+\\)}" nil t))
         (when (or (and LaTeX-syntactic-comments
                        (eq in-comment (TeX-in-commented-line))
                        (or (not in-comment)
@@ -925,7 +925,15 @@ work analogously."
                            ;; commented case.
                            (string= comment-prefix (TeX-comment-prefix))))
                   (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line))))
+                       (not (TeX-in-commented-line)))
+                  ;; macrocode*? in docTeX-mode is special since we
+                  ;; have also regular code lines not starting with a
+                  ;; comment-prefix.  Hence, the next check just looks
+                  ;; if we're inside such a group and returns t to
+                  ;; recognize such a situation.
+                  (and (eq major-mode 'doctex-mode)
+                       (member (match-string-no-properties 2)
+                               '("macrocode" "macrocode*"))))
           (setq arg (if (string= (match-string 1) "end") (1+ arg) (1- arg)))))
       (if (/= arg 0)
           "document"
