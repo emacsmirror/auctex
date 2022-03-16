@@ -2974,13 +2974,16 @@ activated mark, however, will always define a new region when calling
 @code{TeX-command-region}.
 @end deffn
 
-@AUCTeX{} will allow one process for each document, plus one process
-for the region file to be active at the same time.  Thus, if you are
-editing @var{n} different documents, you can have @var{n} plus one
-processes running at the same time.  If the last process you started was
+If the last process you started was
 on the region, the commands described in @ref{Debugging} and
 @ref{Control} will work on that process, otherwise they will work on the
 process associated with the current document.
+
+Don't run more than one process at the same time.  @AUCTeX{} doesn't
+support simultaneous typeset including region typeset.  Wait for the
+previous process to finish before you start a new process, in particular
+when you are editing multiple documents in parallel.  This limitation
+applies for preview by @previewlatex{} as well.
 
 @node Selecting a Command
 @subsection Selecting and Executing a Command

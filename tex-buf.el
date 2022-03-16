@@ -1,6 +1,6 @@
 ;;; tex-buf.el --- External commands for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1991-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -59,16 +59,16 @@
 ;;; Interactive Commands
 ;;
 ;; The general idea is, that there is one process and process buffer
-;; associated with each master file, and one process and process buffer
-;; for running TeX on a region.   Thus, if you have N master files, you
-;; can run N + 1 processes simultaneously.
+;; associated with each master file, and one process and process
+;; buffer for running TeX on a region.
 ;;
-;; Some user commands operates on ``the'' process.  The following
-;; algorithm determine what ``the'' process is.
-;;
-;; IF   last process started was on a region
-;; THEN ``the'' process is the region process
-;; ELSE ``the'' process is the master file (of the current buffer) process
+;; Some user commands operates on ``the'' process, which is the last
+;; process still running or already finished.  Note that you cannot
+;; run more than one process simultaneously, including preview by
+;; preview-latex, because process filters and sentinels refer to
+;; certain set of global variables which each invokation of the
+;; process overwrites.  If you dare to do, the result is thus
+;; unpredictable.
 
 (defun TeX-save-document (name-or-file-fn)
   "Save all files belonging to the current document.
