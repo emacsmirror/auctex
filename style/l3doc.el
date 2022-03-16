@@ -77,8 +77,7 @@ This function should be used for the environments 'function' and
                            (delete-horizontal-space)
                            (beginning-of-line)
                            (insert "%")
-                           (indent-according-to-mode))))
-         comment-flag)
+                           (indent-according-to-mode)))))
     (LaTeX-insert-environment environment
                               (concat
                                (unless (zerop (length exp-flag))
