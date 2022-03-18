@@ -663,7 +663,9 @@ check the indentation for optional argument of \\usepackage."
              (insert-file-contents LaTeX-conditionals-indent/in)
              (LaTeX-mode)
              (let ((TeX-indent-open-delimiters "[")
-                   (TeX-indent-close-delimiters "]"))
+                   (TeX-indent-close-delimiters "]")
+                   (TeX-parse-self t))
+               (TeX-update-style t)
                (indent-region (point-min) (point-max))
                (buffer-string)))
            (with-temp-buffer

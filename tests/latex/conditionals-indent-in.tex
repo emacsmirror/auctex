@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{algpseudocode}
 \usepackage[%
   key = val , %
                key = val , %
@@ -87,6 +88,60 @@
 \global\chardef#1\allocationnumber
 \wlog{\string#1=\string\insert\the\allocationnumber}%
 }
+
+\begin{algorithmic}[1]
+ \Procedure{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
+  \State $r\gets a\bmod b$
+  \While{$r\not=0$}\Comment{We have the answer if r is 0 and what
+   about a large comment}
+   \State $a\gets b$
+\State $b\gets r$
+ \State $r\gets a\bmod b$
+ \EndWhile\label{euclidendwhile}
+ \State \textbf{return} $b$\Comment{The gcd is b}
+ \State
+\Statex
+ \EndProcedure
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\State $sum\gets 0$
+\For{$i\gets 1, n$}
+\State $sum\gets sum+i$
+\EndFor
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\State $sum\gets 0$
+\State $i\gets 1$
+\While{$i\le n$}
+\State $sum\gets sum+i$
+ \State $i\gets i+1$
+           \EndWhile
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+ \If{$quality\ge 9$}
+ \State $a\gets perfect$
+ \ElsIf{$quality\ge 7$}
+ \State $a\gets good$
+ \ElsIf{$quality\ge 5$}
+ \State $a\gets medium$
+ \ElsIf{$quality\ge 3$}
+             \State $a\gets bad$
+  \Else
+                 \State $a\gets unusable$
+  \EndIf
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+            \Require $x\ge5$
+\Ensure $x\le-5$
+             \Statex
+\While{$x>-5$}
+                  \State $x\gets x-1$
+                                \EndWhile
+\end{algorithmic}
 
 \end{document}
 
