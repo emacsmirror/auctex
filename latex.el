@@ -3751,9 +3751,11 @@ value."
 
 (defvar docTeX-indent-inner-fixed
   `((,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") 4 t)
+              "\\(begin\\|end\\)[ \t]*{macrocode\\*?}")
+     4 t)
     (,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}") 0 nil))
+              "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}")
+     0 nil))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -3761,6 +3763,110 @@ is the amount of spaces to be used for indentation.  The third
 toggles if comment padding is relevant or not.  If t padding is
 part of the amount given, if nil the amount of spaces will be
 inserted after potential padding.")
+
+(defvar-local LaTeX-indent-begin-list nil
+  "List of macros increasing indentation.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make'.  A regexp for the
+\\if contructs is added by the function as well.  AUCTeX styles
+should add their macros to this variable and then run
+`LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-begin-exceptions-list nil
+  "List of macros which shouldn't increase the indentation.
+Each item in this list is a string without a backslash and will
+mostly start with 'if'.  These macros should not increase
+indentation although they start with 'if', for example the
+'ifthenelse' macro provided by the ifthen package.  AUCTeX styles
+should add their macros to this variable and then run
+`LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-mid-list nil
+  "List of macros which backindent the line where they appear.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make' which takes care of
+\\else and \\or.  AUCTeX styles should add their macros to this
+variable and then run `LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-end-list nil
+  "List of macros decreasing indentation.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make' which takes care of
+\\fi.  AUCTeX styles should add their macros to this variable and
+then run `LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-begin-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-begin-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\if constructs.")
+
+(defvar-local LaTeX-indent-begin-regexp-exceptions-local nil
+  "Regexp calculated from `LaTeX-indent-begin-exceptions-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\ifthenelse.")
+
+(defvar-local LaTeX-indent-mid-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-mid-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\else and \\or.")
+
+(defvar-local LaTeX-indent-end-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-end-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\fi.")
+
+(defun LaTeX-indent-commands-regexp-make ()
+  "Calculate final regexp for adjusting indentation.
+This function takes the elements provided in
+`LaTeX-indent-begin-list', `LaTeX-indent-begin-exceptions-list',
+`LaTeX-indent-mid-list' and `LaTeX-indent-end-list' and generates
+the regexp's which are stored in
+`LaTeX-indent-begin-regexp-local',
+`LaTeX-indent-begin-regexp-exceptions-local',
+`LaTeX-indent-mid-regexp-local' and
+`LaTeX-indent-end-regexp-local' accordingly.  Some standard
+macros are added to the regexp's.  This function is called in
+`LaTeX-common-initialization' to set the regexp's."
+  (let* (cmds
+         symbs
+         (func (lambda (in regexp out)
+                 (setq cmds nil
+                       symbs nil)
+                 (dolist (elt in)
+                   (if (string-match "[^a-zA-Z@]" elt)
+                       (push elt symbs)
+                     (push elt cmds)))
+                 (set out (concat regexp
+                                  (when cmds
+                                    (concat "\\|"
+                                            (regexp-opt cmds)
+                                            "\\b"))
+                                  (when symbs
+                                    (concat "\\|"
+                                            (regexp-opt symbs))))))))
+    (funcall func
+             LaTeX-indent-begin-list
+             "if[a-zA-Z@]*\\b"
+             'LaTeX-indent-begin-regexp-local)
+    (funcall func
+             LaTeX-indent-mid-list
+             "else\\b\\|or\\b"
+             'LaTeX-indent-mid-regexp-local)
+    (funcall func
+             LaTeX-indent-end-list
+             "fi\\b"
+             'LaTeX-indent-end-regexp-local)
+    (funcall func
+             LaTeX-indent-begin-exceptions-list
+             "ifthenelse\\b"
+             'LaTeX-indent-begin-regexp-exceptions-local)))
 
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
@@ -3899,6 +4005,20 @@ outer indentation in case of a commented line.  The symbols
                                  "\\)"))
              ;; Items.
              (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
+            ;; Other (La)TeX programming constructs which end
+            ;; something, \fi for example where we backindent:
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-indent-end-regexp-local
+                                 "\\)"))
+             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
+            ;; (La)TeX programming contructs which backindent only the
+            ;; current line, for example \or or \else where we backindent:
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-indent-mid-regexp-local
+                                 "\\)"))
+             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
             ((memq (char-after) (append
                                  TeX-indent-close-delimiters '(?\})))
              ;; End brace in the start of the line.
@@ -3929,6 +4049,11 @@ outer indentation in case of a commented line.  The symbols
            ((looking-at LaTeX-begin-regexp)
             (setq count (+ count LaTeX-indent-level)))
            ((looking-at LaTeX-end-regexp)
+            (setq count (- count LaTeX-indent-level)))
+           ((and (not (looking-at LaTeX-indent-begin-regexp-exceptions-local))
+                 (looking-at LaTeX-indent-begin-regexp-local))
+            (setq count (+ count LaTeX-indent-level)))
+           ((looking-at LaTeX-indent-end-regexp-local)
             (setq count (- count LaTeX-indent-level)))
            ((looking-at (regexp-quote TeX-esc))
             (forward-char 1))))
@@ -4042,6 +4167,16 @@ outer indentation in case of a commented line.  The symbols
                                            LaTeX-item-regexp
                                            "\\)"))
                        (- LaTeX-item-indent))
+                      ((looking-at (concat (regexp-quote TeX-esc)
+                                           "\\("
+                                           LaTeX-indent-end-regexp-local
+                                           "\\)"))
+                       LaTeX-indent-level)
+                      ((looking-at (concat (regexp-quote TeX-esc)
+                                           "\\("
+                                           LaTeX-indent-mid-regexp-local
+                                           "\\)"))
+                       LaTeX-indent-level)
                       ((memq (char-after) (append
                                            TeX-indent-close-delimiters
                                            '(?\})))
@@ -7125,6 +7260,8 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin
               end-of-defun-function       #'LaTeX-find-matching-end)
+
+  (LaTeX-indent-commands-regexp-make)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)
