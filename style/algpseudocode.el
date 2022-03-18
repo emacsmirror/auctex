@@ -137,7 +137,7 @@
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("algref" "{{"))
-                              'reference))
-   TeX-dialect))
+                              'reference)))
+ TeX-dialect)
 
 ;;; algpseudocode.el ends here
