@@ -49,7 +49,6 @@
 
 ;;; Code:
 
-(require 'tex-buf)
 (require 'tex)
 (require 'latex) ; for functions like `TeX-look-at' and `LaTeX-split-long-menu'
 (require 'plain-tex) ; for `plain-TeX-common-initialization'

@@ -62,8 +62,7 @@
 
 (require 'toolbar-x)
 
-;; for error handling
-(require 'tex-buf)
+(require 'tex)
 
 ;; For the symbol toolbar
 (require 'latex)

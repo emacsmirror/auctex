@@ -29,7 +29,6 @@
 ;;; Code:
 
 (require 'tex)
-(require 'tex-buf)
 
 ;;; Tool bar
 

@@ -45,12 +45,8 @@
 (declare-function turn-off-filladapt-mode "ext:filladapt"
                   nil)
 
-;; These functions are reported to be unknown when built
+;; This function is reported to be unknown when built
 ;; `with-native-compilation':
-(declare-function LaTeX-command-section-change-level "tex-buf"
-                  (arg))
-(declare-function TeX-LaTeX-sentinel "tex-buf"
-                  (process name))
 (declare-function LaTeX-flymake "latex-flymake"
                   (report-fn &rest _args))
 
@@ -58,7 +54,6 @@
 (defvar outline-heading-alist)
 (defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
-(defvar TeX-error-description-list-local)
 
 ;;; Syntax
 
@@ -7075,8 +7070,6 @@ This happens when \\left is inserted."
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
 
 (declare-function LaTeX-preview-setup "preview")
-
-(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
 
 ;;;###autoload
 (defun TeX-latex-mode ()

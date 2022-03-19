@@ -31,10 +31,6 @@
 
 (require 'texinfo)
 
-;; Silence the compiler for Emacs compiled `--with-native-compilation':
-(declare-function TeX-TeX-sentinel "tex-buf"
-                  (process name))
-
 ;;; Environments:
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
@@ -633,8 +629,6 @@ is assumed by default."
 
 ;;;###autoload
 (defalias 'Texinfo-mode #'texinfo-mode)
-
-(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
 
 ;;;###autoload
 (defun TeX-texinfo-mode ()

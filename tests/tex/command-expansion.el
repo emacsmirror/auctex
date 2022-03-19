@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'ert)
-(require 'tex-buf)
 (require 'latex)
 
 (ert-deftest TeX-command-expansion ()

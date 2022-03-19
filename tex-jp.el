@@ -35,7 +35,6 @@
 ;;; Code:
 
 (require 'latex)
-(require 'tex-buf)
 
 ;;; Customization
 
