@@ -1724,6 +1724,51 @@ behavior you only need to remove @code{\|\[} and @code{\|\]} from
 @code{LaTeX-begin-regexp} and @code{LaTeX-end-regexp} variables
 respectively.
 
+A closely relevant topic is indenting of text enclosed in square brackets,
+parentheses and other pairs.  @AUCTeX{} offers two variables which control
+if indentation happens inside these pairs.
+
+@defopt TeX-indent-open-delimiters
+This variable contains additional opening delimiters which increase
+indentation.  For example add @code{[} to this variable to get text after
+a square bracket indented.
+@end defopt
+
+@defopt TeX-indent-close-delimiters
+This is the accompanying variable to @code{TeX-indent-open-delimiters}
+decreasing the indentation again.  This variable should contain @code{]}
+if @code{TeX-indent-open-delimiters} is set like described above.
+@end defopt
+
+@noindent
+Note that this is an opt-in feature, both variables are initially set to
+an empty string.  That is because it introduces non-trivial side effects
+to include @code{[} and @code{]} in @code{TeX-indent-open-delimiters} and
+@code{TeX-indent-close-delimiters}; if you only have an opening square
+bracket in your text without closing it, wrong indentation persists in the
+following text.  For example, in math expression, half-open intervals are
+frequently written as @samp{[0,10)} or @samp{[0,10[}.  In such cases, you
+can put the closing part as a comment in the same line in order to have
+correct indentation after that:
+@example
+$[0,10)$ % ]
+$[0,10[$ % ]]
+@end example
+
+Another example is @samp{\left}-@samp{\right} pair in equations.  Similar
+workarounds are available:
+@example
+\begin@{equation@}
+  \left[ % ]
+    xyz
+  \right] % [
+  abc
+\end@{equation@}
+@end example
+
+Note that commented curly braces @code{@{} and @code{@}} aren't counted
+when @AUCTeX{} computes indentation.
+
 @node Filling
 @section Filling
 @cindex Filling
