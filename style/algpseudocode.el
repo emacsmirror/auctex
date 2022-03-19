@@ -67,7 +67,7 @@
     '("EndFor" 0)
 
     ;; 3.1.2 The while block
-    '("While" 0)
+    '("While" 1)
     '("EndWhile" 0)
 
     ;; 3.1.3 The repeat block
