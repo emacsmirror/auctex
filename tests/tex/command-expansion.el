@@ -23,6 +23,7 @@
 
 (require 'ert)
 (require 'tex-buf)
+(require 'latex)
 
 (ert-deftest TeX-command-expansion ()
   "Check whether \"%%%%\" is correctly expanded when before \"%`\"."

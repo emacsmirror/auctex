@@ -29,8 +29,13 @@
 ;;; Code:
 
 (require 'tex)
-(require 'latex)
 (require 'comint)
+
+(defvar LaTeX-largest-level)
+(defvar LaTeX-section-list)
+(defvar compilation-error-regexp-alist)
+
+(declare-function LaTeX-bibliography-list "latex")
 
 ;;; Customization:
 
@@ -842,7 +847,8 @@ omitted) and `TeX-region-file'."
                                  (append BibTeX-file-extensions
                                          TeX-Biber-file-extensions)))
            ;; We should check for bst files here as well.
-           (if LaTeX-using-Biber TeX-command-Biber TeX-command-BibTeX))
+           (if (bound-and-true-p LaTeX-using-Biber)
+               TeX-command-Biber TeX-command-BibTeX))
           ((and
             ;; Rationale: makeindex should be run when final document is almost
             ;; complete (see
