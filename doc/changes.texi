@@ -32,6 +32,11 @@ whereas the new one is:
 
 Note the position change of @code{DEFAULT}.
 
+@item
+Indenting of conditionals is improved.  Code inside constructs like
+@samp{\ifx . \else . \fi} is correctly indented.  An interface for style
+files is also introduced which can add their macros to the indentation
+engine.  Check the file @file{algpseudocode.el} for an example.
 @end itemize
 
 @heading News in 13.1
