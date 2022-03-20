@@ -1724,7 +1724,7 @@ behavior you only need to remove @code{\|\[} and @code{\|\]} from
 @code{LaTeX-begin-regexp} and @code{LaTeX-end-regexp} variables
 respectively.
 
-A closely relevant topic is indenting of text enclosed in square brackets,
+A closely related topic is indenting of text enclosed in square brackets,
 parentheses and other pairs.  @AUCTeX{} offers two variables which control
 if indentation happens inside these pairs.
 
