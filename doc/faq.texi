@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004-2014, 2021 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2014, 2021, 2022 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -50,8 +50,8 @@ command line, depending on the installation scheme of @AUCTeX{} and your
 @item
 If you installed @AUCTeX{} from @acronym{ELPA}, use @samp{emacs -q
 -no-site-file --eval "(progn (setq package-load-list '((auctex t)))
-(package-initialize))"}.  The @option{--eval} activates only @AUCTeX{}
-among all installed @acronym{EPLA} packages.
+(package-initialize))"}.  The @option{--eval} option activates only
+@AUCTeX{} among all installed @acronym{EPLA} packages.
 @item
 If you installed @AUCTeX{} via traditional
 @command{configure}--@command{make} scheme, use @samp{emacs -q
@@ -149,10 +149,10 @@ this is) or by simply keeping the variable @code{TeX-file-line-error} to
 the default value of non-nil.
 
 @item
-What does AUC stand for?
+What does @samp{AUC} stand for?
 
 @AUCTeX{} came into being at Aalborg University in Denmark.  Back then
-the Danish name of the university was Aalborg Universitetscenter; AUC
+the Danish name of the university was Aalborg Universitetscenter; @samp{AUC}
 for short.
 
 @end enumerate

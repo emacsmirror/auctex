@@ -1632,6 +1632,11 @@ The check for the indentation function may be enabled or disabled by
 customizing the variable @code{LaTeX-indent-environment-check}.
 @vindex LaTeX-indent-environment-check
 
+For tabular-like environments, @AUCTeX{} has a built-in function to indent
+according to preceding @samp{&} signs and assigns it to all known
+tabular-like environments in the default value of
+@code{LaTeX-indent-environment-list}.
+
 @cindex align.el
 @findex align-current
 As a side note with regard to formatting special environments: Newer
@@ -1674,13 +1679,6 @@ upon typing @key{RET} as well.  The respective option is called
 List of environments with special indentation.  The second element in
 each entry is the function to calculate the indentation level in
 columns.
-
-@c FIXME: The situation has changed, hasn't it?
-The filling code currently cannot handle tabular-like environments
-which will be completely messed-up if you try to format them.  This is
-why most of these environments are included in this customization
-option without a special indentation function.  This will prevent that
-they get filled.
 @end defopt
 
 @defopt LaTeX-indent-level
