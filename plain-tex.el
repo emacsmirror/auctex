@@ -132,7 +132,6 @@ of `plain-TeX-mode-hook'."
   (use-local-map plain-TeX-mode-map)
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
-  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
   (plain-TeX-maybe-install-toolbar)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
@@ -144,6 +143,7 @@ of `plain-TeX-mode-hook'."
   (set-syntax-table TeX-mode-syntax-table)
   (setq local-abbrev-table plain-tex-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
+  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
         (concat
          "\\(?:[ \t]*$"
