@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2022  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -361,6 +361,13 @@
 
     ;; 1.25 Language attributes
     '("languageattribute" TeX-arg-babel-lang t))
+
+   ;; Don't increase indentation at various \if* macros:
+   (let ((exceptions '("ifbabelshorthand"
+                       "iflanguage")))
+     (dolist (elt exceptions)
+       (add-to-list 'LaTeX-indent-begin-exceptions-list elt t))
+     (LaTeX-indent-commands-regexp-make))
 
    ;; New environments: 1.8 Auxiliary language selectors
    (LaTeX-add-environments
