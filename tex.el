@@ -746,11 +746,7 @@ emacs 24.1 and is then later run by emacs 24.5."
                           (add-to-list 'Info-file-list-for-emacs
                                        (cons elt "AUCTeX"))))
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'hack-one-local-variable :after #'TeX--call-minor-mode)
-  (defadvice hack-one-local-variable (after TeX-hack-one-local-variable-after
-                                          activate)
-    (TeX--call-minor-mode (ad-get-arg 0) (ad-get-arg 1))))
+(advice-add 'hack-one-local-variable :after #'TeX--call-minor-mode)
 (defun TeX--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
     ;; Instead of checking for each mode explicitly `minor-mode-list'

@@ -2038,11 +2038,7 @@ The value is actually the tail of the list of options given to PACKAGE."
 
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-auto-cleanup)
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'LaTeX-add-bibliographies :after #'TeX-run-style-hooks)
-  (defadvice LaTeX-add-bibliographies (after run-bib-style-hooks (&rest bibliographies) activate)
-    "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
-    (apply #'TeX-run-style-hooks bibliographies)))
+(advice-add 'LaTeX-add-bibliographies :after #'TeX-run-style-hooks)
 
 ;;; Biber support
 
@@ -6361,10 +6357,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
                (mapcar #'LaTeX-environment-modify-menu-entry
                        (LaTeX-environment-list))))))))
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'LaTeX-add-environments :after #'LaTeX--invalidate-menus)
-  (defadvice LaTeX-add-environments (after LaTeX-invalidate-environment-menu (&rest environments) activate)
-    (LaTeX--invalidate-menus)))
+(advice-add 'LaTeX-add-environments :after #'LaTeX--invalidate-menus)
 (defun LaTeX--invalidate-menus (&rest _)
   "Mark the environment menus as being in need of a refresh."
   (setq LaTeX-environment-menu nil)

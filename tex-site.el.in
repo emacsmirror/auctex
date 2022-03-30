@@ -95,23 +95,7 @@ shared by all users of a site."
 
 (add-hook 'tex-site-unload-hook
           (lambda ()
-            (if (fboundp 'advice-add)
-                (TeX-modes-set 'TeX-modes nil)
-              (let ((list after-load-alist))
-                (while list
-                  ;; Adapted copy of the definition of `assq-delete-all'
-                  ;; from Emacs 21 as substitute for
-                  ;; `(assq-delete-all'TeX-modes-set (car list))' which
-                  ;; fails on non-list elements in Emacs 21.
-                  (let* ((alist (car list))
-                         (tail alist)
-                         (key #'TeX-modes-set))
-                    (while tail
-                      (if (and (consp (car tail))
-                               (eq (car (car tail)) key))
-                          (setq alist (delq (car tail) alist)))
-                      (setq tail (cdr tail))))
-                  (setq list (cdr list)))))
+            (TeX-modes-set 'TeX-modes nil)
             (setq load-path (delq TeX-lisp-directory load-path))))
 
 (defun TeX-modes-set (var value &optional update)

@@ -639,10 +639,7 @@ for a label to be inserted after the sectioning command."
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'ConTeXt-add-environments :after #'ConTeXt--invalidate-menu)
-  (defadvice ConTeXt-add-environments (after ConTeXt-invalidate-menu (&rest environments) activate)
-    (ConTeXt--invalidate-menu)))
+(advice-add 'ConTeXt-add-environments :after #'ConTeXt--invalidate-menu)
 (defun ConTeXt--invalidate-menu (&rest _)
   "Mark the menu as being in need of a refresh."
   (setq ConTeXt-menu-changed t))
