@@ -1,6 +1,6 @@
-;;; color.el --- AUCTeX style for `color.sty' (v1.1a)  -*- lexical-binding: t; -*-
+;;; color.el --- AUCTeX style for `color.sty' (v1.3d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `color.sty' (v1.1a) from 2014/10/28.
+;; This file adds support for `color.sty' (v1.3d) from 2022/01/06.
 ;; `color.sty' is part of TeXLive.
 
 ;; Many thanks to Tassilo Horn for his percetive comments on
@@ -273,6 +273,10 @@
       ;; \textcolor[<model>]{<color spec>}{<text>}
       '("textcolor" TeX-arg-color "Text")
 
+      ;; \mathcolor{<name>}{<math>} or
+      ;; \mathcolor[<model>]{<color spec>}{<math>}
+      '("mathcolor" TeX-arg-color "Math")
+
       ;; \pagecolor{<name>} or
       ;; \pagecolor[<model>]{<color spec>}
       '("pagecolor" TeX-arg-color)
@@ -304,8 +308,9 @@
 
 (defvar LaTeX-color-package-options
   '("debugshow" "dvipdf" "dvipdfm" "dvipdfmx" "dvips" "dvipsnames"
-    "dvipsone" "dviwin" "dviwindo" "emtex" "monochrome" "nodvipsnames"
-    "oztex" "pctex32" "pctexhp" "pctexps" "pctexwin" "pdftex" "tcidvi"
+    "dvipsone" "dvisvgm" "dviwin" "dviwindo" "emtex" "luatex"
+    "monochrome" "nodvipsnames" "nosetpagesize" "oztex" "pctex32"
+    "pctexhp" "pctexps" "pctexwin" "pdftex" "setpagesize" "tcidvi"
     "textures" "truetex" "usenames" "vtex" "xdvi" "xetex")
   "Package options for the color package.")
 
