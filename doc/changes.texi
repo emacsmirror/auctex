@@ -37,6 +37,20 @@ Indenting of conditionals is improved.  Code inside constructs like
 @samp{\ifx . \else . \fi} is correctly indented.  An interface for style
 files is also introduced which can add their macros to the indentation
 engine.  Check the file @file{algpseudocode.el} for an example.
+
+@item
+Now @file{tex-buf.el} is merged into @file{tex.el} and no longer exists.
+If your personal code has @code{(require 'tex-buf)}, one of the following
+prescriptions would serve.
+@enumerate
+@item
+Remove @code{(require 'tex-buf)}.
+@item
+Replace it with @code{(require 'tex)}.
+@item
+Replace it with @code{(require 'latex)}.
+@end enumerate
+
 @end itemize
 
 @heading News in 13.1

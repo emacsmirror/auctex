@@ -7545,8 +7545,7 @@ omitted) and `TeX-region-file'."
                                  (append BibTeX-file-extensions
                                          TeX-Biber-file-extensions)))
            ;; We should check for bst files here as well.
-           (if (and (boundp 'LaTeX-using-Biber)
-                    LaTeX-using-Biber)
+           (if (bound-and-true-p LaTeX-using-Biber)
                TeX-command-Biber TeX-command-BibTeX))
           ((and
             ;; Rationale: makeindex should be run when final document is almost
