@@ -1764,6 +1764,10 @@ workarounds are available:
 \end@{equation@}
 @end example
 
+You can include parens @samp{()} also in @code{TeX-indent-open-delimiters}
+and @code{TeX-indent-close-delimiters} to enable indent inside them.  Be
+prepared for similar side effects when you do.
+
 Note that commented curly braces @code{@{} and @code{@}} aren't counted
 when @AUCTeX{} computes indentation.
 

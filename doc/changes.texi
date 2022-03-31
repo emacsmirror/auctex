@@ -39,6 +39,14 @@ files is also introduced which can add their macros to the indentation
 engine.  Check the file @file{algpseudocode.el} for an example.
 
 @item
+You can optionally enable indent inside square brackets @samp{[]} by new
+user options @code{TeX-indent-open-delimiters} and
+@code{TeX-indent-close-delimiters}.
+@ifclear rawfile
+@xref{Indenting}.
+@end ifclear
+
+@item
 Now @file{tex-buf.el} is merged into @file{tex.el} and no longer exists.
 If your personal code has @code{(require 'tex-buf)}, one of the following
 prescriptions would serve.
