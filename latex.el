@@ -4054,8 +4054,10 @@ outer indentation in case of a commented line.  The symbols
             (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
-  "Count indentation change caused by all \\left, \\right, \\begin, and
-\\end commands in the current line."
+  "Count indentation change caused by macros in the current line.
+Macros contain \\left, \\right, \\begin, \\end and \\if-\\fi
+constructs.  A special case is \\newif where the following
+\\if<foo> should not change the indentation."
   (save-excursion
     (save-restriction
       (let ((count 0))
@@ -4077,6 +4079,8 @@ outer indentation in case of a commented line.  The symbols
             (setq count (+ count LaTeX-indent-level)))
            ((looking-at LaTeX-end-regexp)
             (setq count (- count LaTeX-indent-level)))
+           ((looking-at "newif\\b")
+            (search-forward TeX-esc (line-end-position) t))
            ((and (not (looking-at LaTeX-indent-begin-regexp-exceptions-local))
                  (looking-at LaTeX-indent-begin-regexp-local))
             (setq count (+ count LaTeX-indent-level)))

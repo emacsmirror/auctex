@@ -8,6 +8,13 @@
 
 \begin{document}
 
+\newif\ifluatex
+\ifluatex
+  luatex specific code
+\else
+  code for other engines
+\fi
+
 \def\IfFileExists#1#2#3{%
   \openin\@inputcheck#1 %
   \ifeof\@inputcheck
