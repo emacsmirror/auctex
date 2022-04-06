@@ -1874,8 +1874,8 @@ For each element, the CAR is the name of the class, the CDR is
 the list of options provided to it.
 
 For example, its value will be
-  \(\(\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\"\)
-   ...\)
+  ((\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\")
+   ...)
 See also `LaTeX-provided-package-options'.")
 (make-variable-buffer-local 'LaTeX-provided-class-options)
 
@@ -1897,9 +1897,9 @@ For each element, the CAR is the name of the package, the CDR is
 the list of options provided to it.
 
 For example, its value will be
-  \(\(\"babel\" \"german\"\)
-   \(\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\"\)
-   ...\)
+  ((\"babel\" \"german\")
+   (\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\")
+   ...)
 See also `LaTeX-provided-class-options'.")
 (make-variable-buffer-local 'LaTeX-provided-package-options)
 
