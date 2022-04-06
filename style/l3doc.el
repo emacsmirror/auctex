@@ -63,7 +63,7 @@ This function should be used for the environments 'function' and
                                          ("noTF")
                                          ("label")
                                          ("verb"))
-                                     "Flag(s)"))
+                                     "Flags (k=v)"))
          (mac (TeX-read-string
                (TeX-argument-prompt nil nil "Macro(s)")
                TeX-esc))
@@ -72,19 +72,37 @@ This function should be used for the environments 'function' and
          (elt-count 0)
          (count 1)
          (comment-func (lambda ()
-                         (if (TeX-in-commented-line)
+                         (if (TeX-in-line-comment)
                              (indent-according-to-mode)
                            (delete-horizontal-space)
                            (beginning-of-line)
                            (insert "%")
-                           (indent-according-to-mode)))))
+                           (indent-according-to-mode))))
+         p)
     (LaTeX-insert-environment environment
                               (concat
                                (unless (zerop (length exp-flag))
                                  (format "[%s]" exp-flag))
                                TeX-grop mac TeX-grcl))
-    ;; Now make sure the current line starts with a '%':
+    ;; Remember where we start:
+    (setq p (point-marker))
+    ;; Now make sure we have '%' everywhere, start at the beginning:
+    (search-backward (concat TeX-esc "begin" TeX-grop environment TeX-grcl)
+                     (if active-mark nil (line-beginning-position 0))
+                     t)
     (funcall comment-func)
+    ;; Now at the end:
+    (goto-char p)
+    (search-forward (concat TeX-esc "end" TeX-grop environment TeX-grcl)
+                    (if active-mark nil (line-end-position 2))
+                    t)
+    (goto-char (match-beginning 0))
+    (funcall comment-func)
+    ;; Finally for where we started and clean up only when region was
+    ;; not active:
+    (goto-char p)
+    (unless active-mark (funcall comment-func))
+    (set-marker p nil)
     ;; Ask if we should insert a 'syntax' environment:
     (when (and (not active-mark)
                (y-or-n-p "Insert syntax environment? "))
