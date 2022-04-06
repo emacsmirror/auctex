@@ -1764,27 +1764,29 @@ This is necessary since index entries may contain commands and stuff.")
 (defvar LaTeX-auto-regexp-list
   (append
    (let ((token TeX-token-char))
-     `((,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]")
-        (1 2 3) LaTeX-auto-optional)
-       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
-        (1 2) LaTeX-auto-arguments)
+     `((,(concat "\\\\\\(re\\)?\\(?:new\\|provide\\)command\\*?"
+                 "{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]")
+        (2 3 4 1) LaTeX-auto-optional)
+       (,(concat "\\\\\\(re\\)?\\(?:new\\|provide\\)command\\*?"
+                 "{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
+        (2 3 1) LaTeX-auto-arguments)
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
         1 TeX-auto-symbol)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]\\[")
-        (1 2) LaTeX-auto-env-args-with-opt)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]")
-        (1 2) LaTeX-auto-env-args)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?")
+       ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]\\["
+        (2 3 1) LaTeX-auto-env-args-with-opt)
+       ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]"
+        (2 3 1) LaTeX-auto-env-args)
+       ("\\\\newenvironment\\*?{\\([^}]+\\)}"
         1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
         1 TeX-auto-file)
        ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
         1 TeX-auto-file)
-       (, (concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
-          1 LaTeX-auto-bibitem)
-       (, (concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
-          1 LaTeX-auto-bibitem)
+       (,(concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+        1 LaTeX-auto-bibitem)
+       (,(concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+        1 LaTeX-auto-bibitem)
        ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
        ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r]+\\)\\..+}"
         1 LaTeX-auto-bibliography)
@@ -1973,7 +1975,8 @@ The value is actually the tail of the list of options given to PACKAGE."
                               ((member "12pt" options)
                                "12")
                               (t
-                               "10"))) t)
+                               "10")))
+                       t)
           (unless (equal options '(""))
             (TeX-add-to-alist 'LaTeX-provided-class-options
                               (list (cons style options)))))
@@ -1987,6 +1990,14 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup optional arguments
   (mapc (lambda (entry)
+          ;; If we're renewcommand-ing and there is already an entry
+          ;; in `TeX-auto-symbol', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) TeX-auto-symbol))
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (car entry)
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol)))
           (add-to-list 'TeX-auto-symbol
                        (list (nth 0 entry)
                              (string-to-number (nth 1 entry)))))
@@ -1994,6 +2005,14 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup default optional arguments
   (mapc (lambda (entry)
+          ;; If we're renewcommand-ing and there is already an entry
+          ;; in `TeX-auto-symbol', delete it first:
+          (when (and (string= (nth 3 entry) "re")
+                     (assoc (car entry) TeX-auto-symbol))
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (car entry)
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol)))
           (add-to-list 'TeX-auto-symbol
                        (list (nth 0 entry)
                              (vector "argument")
@@ -2002,12 +2021,29 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup environments arguments
   (mapc (lambda (entry)
+          ;; If we're renewenvironment-ing and there is already an
+          ;; entry in `LaTeX-auto-environment', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) LaTeX-auto-environment))
+            (setq LaTeX-auto-environment
+                  (assq-delete-all (car (assoc (car entry)
+                                               LaTeX-auto-environment))
+                                   LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
                        (list (nth 0 entry)
                              (string-to-number (nth 1 entry)))))
         LaTeX-auto-env-args)
+
   ;; Ditto for environments with an optional arg
   (mapc (lambda (entry)
+          ;; If we're renewenvironment-ing and there is already an
+          ;; entry in `LaTeX-auto-environment', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) LaTeX-auto-environment))
+            (setq LaTeX-auto-environment
+                  (assq-delete-all (car (assoc (car entry)
+                                               LaTeX-auto-environment))
+                                   LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
                        (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
                              (1- (string-to-number (nth 1 entry))))))
