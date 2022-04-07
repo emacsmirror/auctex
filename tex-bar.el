@@ -1,6 +1,6 @@
 ;;; tex-bar.el --- toolbar icons on AUCTeX in GNU emacs.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
