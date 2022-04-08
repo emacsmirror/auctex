@@ -41,9 +41,7 @@
                   (list))
 
 (defun LaTeX-env-doc-no-comment (environment)
-  "Insert ENVIRONMENT and make sure there is no commented empty line inside.
-This function is aware of the environments \"macro\" and
-\"environment\" and adjusts the query accordingly."
+  "Insert ENVIRONMENT and make sure there is no commented empty line inside."
   (LaTeX-insert-environment environment)
   (unless (TeX-active-mark)
     (when (save-excursion
