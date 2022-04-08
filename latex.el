@@ -3728,7 +3728,9 @@ consideration just as is in the non-commented source code."
     ("tabbing")
     ;; envs from amsmath.sty
     ("gather") ("gather*") ("gathered")
-    ("equation*") ("multline") ("multline*"))
+    ("equation*") ("multline") ("multline*")
+    ;; envs from doc.sty
+    ("macrocode") ("macrocode*"))
   "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns.
