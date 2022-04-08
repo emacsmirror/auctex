@@ -185,41 +185,48 @@ percent sign at the beginning of a line before
     ;; 2. \begin{<env-name>}[<options>]{<element>}
     ;; 3. \PrintDescribe<element-name>{<element>}
     ;; 4. \Print<element-name>Name
-    (dolist (elt (LaTeX-doc-NewDocElement-list))
-      (let ((eltname (car elt))
-            (envname (cadr elt)))
-        (TeX-add-symbols
-         ;; Cater for \Describe<eltname>[options]{<elements query>}
-         `(,(concat "Describe" eltname)
-           [TeX-arg-eval completing-read
-                         (TeX-argument-prompt t nil "Suppress option")
-                         '("noindex" "noprint")]
-           "Element")
+    (let (macs)
+      (dolist (elt (LaTeX-doc-NewDocElement-list))
+        (let ((eltname (car elt))
+              (envname (cadr elt)))
+          (TeX-add-symbols
+           ;; Cater for \Describe<eltname>[options]{<elements query>}
+           `(,(concat "Describe" eltname)
+             [TeX-arg-eval completing-read
+                           (TeX-argument-prompt t nil "Suppress option")
+                           '("noindex" "noprint")]
+             "Element")
 
-         ;; Cater for \PrintDescribe<eltname>{<elements query>}
-         `(,(concat "PrintDescribe" eltname) "Element")
+           ;; Cater for \PrintDescribe<eltname>{<elements query>}
+           `(,(concat "PrintDescribe" eltname) "Element")
 
-         ;; Cater for \Print<eltname>Name
-         (concat "Print" eltname "Name"))
+           ;; Cater for \Print<eltname>Name
+           (concat "Print" eltname "Name"))
 
-        ;; Cater for \begin{<envname>}[options]{<elements query>}
-        (LaTeX-add-environments
-         `(,envname LaTeX-env-doc-commented))
+          ;; Add the \Describe<element-name> to macs
+          (push (concat "Describe" eltname) macs)
 
-        ;; Make sure we have fixed inner indent for our environments:
-        (add-to-list 'docTeX-indent-inner-fixed
-                     `(,(concat (regexp-quote TeX-esc)
-                                "\\(begin\\|end\\)[ \t]*"
-                                (regexp-quote TeX-grop)
-                                envname
-                                (regexp-quote TeX-grcl))
-                       0 nil)
-                     t)
-        ;; Add fontification:
-        (when (and (featurep 'font-latex)
-                   (eq TeX-install-font-lock 'font-latex-setup))
-          (font-latex-add-keywords `((,(concat "Describe" eltname) "[|{\\" ))
-                                   'variable))))))
+          ;; Cater for \begin{<envname>}[options]{<elements query>}
+          (LaTeX-add-environments
+           `(,envname LaTeX-env-doc-commented))
+
+          ;; Make sure we have fixed inner indent for our environments:
+          (add-to-list 'docTeX-indent-inner-fixed
+                       `(,(concat (regexp-quote TeX-esc)
+                                  "\\(begin\\|end\\)[ \t]*"
+                                  (regexp-quote TeX-grop)
+                                  envname
+                                  (regexp-quote TeX-grcl))
+                         0 nil)
+                       t)
+          ;; Add fontification:
+          (when (and (featurep 'font-latex)
+                     (eq TeX-install-font-lock 'font-latex-setup))
+            (font-latex-add-keywords `((,(concat "Describe" eltname) "[|{\\" ))
+                                     'variable))))
+
+      ;; Let \Describe<element-name> stay in their own lines:
+      (LaTeX-paragraph-commands-add-locally macs))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-doc-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-doc-auto-cleanup t)
@@ -402,7 +409,9 @@ percent sign at the beginning of a line before
    (LaTeX-add-counters "IndexColumns" "GlossaryColumns" "StandardModuleDepth")
 
    ;; Macros which should be on their own line:
-   (LaTeX-paragraph-commands-add-locally '("changes"))
+   (LaTeX-paragraph-commands-add-locally '("DescribeEnv"
+                                           "DescribeMacro"
+                                           "changes"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
