@@ -1,6 +1,6 @@
 ;;; plain-tex.el --- Support for plain TeX documents. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010, 2013, 2016-2018, 2021  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2018, 2021-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -29,7 +29,6 @@
 ;;; Code:
 
 (require 'tex)
-(require 'tex-buf)
 
 ;;; Tool bar
 
@@ -40,8 +39,9 @@
 
 (defun plain-TeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for plain TeX mode.
-Install tool bar if `plain-TeX-enable-toolbar' is non-nil."
-  (when plain-TeX-enable-toolbar
+Install tool bar if `plain-TeX-enable-toolbar' and
+`tool-bar-mode' are non-nil."
+  (when (and plain-TeX-enable-toolbar tool-bar-mode)
     ;; Defined in `tex-bar.el':
     (TeX-install-toolbar)))
 
@@ -132,10 +132,8 @@ of `plain-TeX-mode-hook'."
   (use-local-map plain-TeX-mode-map)
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
-  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook #'plain-TeX-maybe-install-toolbar nil t)
-  (when (and (boundp 'tool-bar-mode) tool-bar-mode)
-    (plain-TeX-maybe-install-toolbar))
+  (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
+  (plain-TeX-maybe-install-toolbar)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
@@ -145,6 +143,7 @@ of `plain-TeX-mode-hook'."
   (set-syntax-table TeX-mode-syntax-table)
   (setq local-abbrev-table plain-tex-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
+  (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
         (concat
          "\\(?:[ \t]*$"

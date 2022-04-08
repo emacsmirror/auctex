@@ -1,6 +1,6 @@
-;;; ltxtable.el --- AUCTeX style for `ltxtable.sty' (v0.2)  -*- lexical-binding: t; -*-
+;;; ltxtable.el --- AUCTeX style for `ltxtable.sty' (v0.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltxtable.sty' (v0.2) from 1995/12/11.
+;; This file adds support for `ltxtable.sty' (v0.4) from 2021/06/13.
 ;; `ltxtable.sty' is part of TeXLive.
 
 ;;; Code:
@@ -63,7 +63,13 @@ The regexp for the 2. argument is the same as for \"input\" and
       (TeX-arg-eval
        (lambda ()
          (let ((longtable (file-relative-name
-                           (read-file-name "File with longtable: "))))
+                           (read-file-name
+                            "File with longtable: "
+                            nil nil nil nil
+                            (lambda (x)
+                              (or (file-directory-p x)
+                                  (string-match "\\.\\(tex\\|ltx\\)\\'" x))))
+                           (TeX-master-directory))))
            (format "%s" longtable))))))
 
    ;; Make sure that \LTXtable stays in its own line:
@@ -86,7 +92,7 @@ The regexp for the 2. argument is the same as for \"input\" and
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("LTXtable"  "{{"))
-                              'textual)))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-ltxtable-package-options nil

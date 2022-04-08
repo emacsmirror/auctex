@@ -1,6 +1,6 @@
 ;;; sidecap.el --- AUCTeX style for `sidecap.sty' (v1.6f)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021, 2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -36,94 +36,58 @@
 
 (defun LaTeX-env-sidecap-float (environment)
   "Create ENVIRONMENT with \\caption and \\label commands.
-This function is a copy of `LaTeX-env-figure' and adjusted to
-read the first optional argument 'relwidth' provided by
-environments of the package sidecap."
-  (let* ((relwidth (TeX-read-string
-                    (TeX-argument-prompt t nil "Relative caption width")))
-         (float (and LaTeX-float        ; LaTeX-float can be nil, i.e.
-                                        ; do not prompt
-                     (TeX-read-string "(Optional) Float position: " LaTeX-float)))
-         (caption (TeX-read-string "Caption: "))
-         (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
-                          (TeX-read-string "(Optional) Short caption: ")))
-         (center (y-or-n-p "Center? "))
-         (active-mark (and (TeX-active-mark)
-                           (not (eq (mark) (point)))))
-         start-marker end-marker)
-    (when active-mark
-      (if (< (mark) (point))
-          (exchange-point-and-mark))
-      (setq start-marker (point-marker))
-      (set-marker-insertion-type start-marker t)
-      (setq end-marker (copy-marker (mark))))
-    (setq LaTeX-float float)
-    (LaTeX-insert-environment environment
-                              (concat
-                               ;; First check if 'relwidth' is given:
-                               (when (and relwidth
-                                          (not (string= relwidth "")))
-                                 (concat LaTeX-optop relwidth
-                                         LaTeX-optcl))
-                               ;; We have to insert a pair of brackets
-                               ;; if 'float' is given and 'relwidth'
-                               ;; was empty, otherwise 'float' becomes
-                               ;; 'relwidth':
-                               (unless (zerop (length float))
-                                 (concat
-                                  (when (or (null relwidth)
-                                            (string= relwidth ""))
-                                    (concat LaTeX-optop LaTeX-optcl))
-                                  LaTeX-optop float LaTeX-optcl))))
-    (when active-mark
-      (goto-char start-marker)
-      (set-marker start-marker nil))
-    (when center
-      (insert TeX-esc "centering")
-      (indent-according-to-mode)
-      (LaTeX-newline)
-      (indent-according-to-mode))
-    ;; Insert caption and ask for a label, do nothing if user skips caption
-    (unless (zerop (length caption))
-      (if (member environment LaTeX-top-caption-list)
-          ;; top caption
-          (progn
-            (insert (LaTeX-compose-caption-macro caption short-caption))
-            ;; If `auto-fill-mode' is active, fill the caption.
-            (if auto-fill-function (LaTeX-fill-paragraph))
-            (LaTeX-newline)
-            (indent-according-to-mode)
-            ;; ask for a label and insert a new line only if a label is
-            ;; actually inserted
-            (when (LaTeX-label environment 'environment)
-              (LaTeX-newline)
-              (indent-according-to-mode)))
-        ;; bottom caption (default)
-        (when active-mark (goto-char end-marker))
-        (save-excursion
-          (LaTeX-newline)
-          (indent-according-to-mode)
-          ;; If there is an active region point is before the backslash of
-          ;; "\end" macro, go one line upwards.
-          (when active-mark (forward-line -1) (indent-according-to-mode))
-          (insert (LaTeX-compose-caption-macro caption short-caption))
-          ;; If `auto-fill-mode' is active, fill the caption.
-          (if auto-fill-function (LaTeX-fill-paragraph))
-          ;; ask for a label and if necessary insert a new line between caption
-          ;; and label
-          (when (save-excursion (LaTeX-label environment 'environment))
-            (LaTeX-newline)
-            (indent-according-to-mode)))
-        ;; Insert an empty line between caption and marked region, if any.
-        (when active-mark (LaTeX-newline) (forward-line -1))
-        (indent-according-to-mode)))
-    (when (markerp end-marker)
-      (set-marker end-marker nil))
+This function runs `LaTeX-env-figure' and inserts the first
+optional argument 'relwidth' provided by environments of the
+package sidecap."
+  (let ((relwidth (TeX-read-string
+                   (TeX-argument-prompt t nil "Relative caption width")))
+        (sc-active-mark (and (TeX-active-mark)
+                             (not (eq (mark) (point)))))
+        (p (point-marker))
+        s)
+    ;; Run `LaTeX-env-figure' which does the major part of the job:
+    (LaTeX-env-figure environment)
+    ;; Now save the position:
+    (setq s (point-marker))
+    ;; Search backwards to see if an optional float-placement arg is
+    ;; inserted; this would be the 2nd arg for sidecap environments:
+    (save-excursion
+      (re-search-backward (concat (regexp-quote TeX-esc)
+                                  "begin"
+                                  "[ \t]*"
+                                  TeX-grop
+                                  (regexp-quote environment)
+                                  "\\(" TeX-grcl "\\)"
+                                  "[ \t]*"
+                                  "\\("
+                                  (regexp-quote LaTeX-optop)
+                                  ;; Float placement:
+                                  "\\([a-zA-Z!]*\\)"
+                                  (regexp-quote LaTeX-optcl)
+                                  "\\)?")
+                          p t))
+    (cond (;; Insert the first optional arg at any rate if non-empty:
+           (and relwidth (not (string= relwidth "")))
+           (goto-char (match-end 1))
+           (insert LaTeX-optop relwidth LaTeX-optcl))
+          ;; Insert a pair of empty brackets if relwidth is empty and
+          ;; float-placement is given:
+          ((and (or (null relwidth)
+                    (string= relwidth ""))
+                (match-string 3))
+           (goto-char (match-beginning 2))
+           (insert LaTeX-optop LaTeX-optcl))
+          (t nil))
+    ;; Go back to where we started if we have moved at all:
+    (unless (= s (point))
+      (goto-char s))
+    ;; Insert a tabular stored in `LaTeX-default-tabular-environment':
     (when (and (member environment '("SCtable" "SCtable*"))
-               ;; Suppose an existing tabular environment should just
-               ;; be wrapped into a table if there is an active region.
-               (not active-mark))
-      (LaTeX-environment-menu LaTeX-default-tabular-environment))))
+               (not sc-active-mark))
+      (LaTeX-environment-menu LaTeX-default-tabular-environment))
+    ;; Clean up the markers:
+    (set-marker s nil)
+    (set-marker p nil)))
 
 (TeX-add-style-hook
  "sidecap"
@@ -147,7 +111,14 @@ environments of the package sidecap."
    ;; The next 2 can be set with '\renewcommand':
    (TeX-add-symbols
     "sidecaptionsep"
-    "sidecaptionrelwidth"))
+    "sidecaptionrelwidth")
+
+   ;; Run the style hook for 'ragged2e' if necessary:
+   (when (or (LaTeX-provided-package-options-member "sidecap" "raggedright")
+             (LaTeX-provided-package-options-member "sidecap" "raggedleft")
+             (LaTeX-provided-package-options-member "sidecap" "ragged"))
+     (TeX-run-style-hooks "ragged2e")))
+
  TeX-dialect)
 
 (defvar LaTeX-sidecap-package-options

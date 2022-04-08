@@ -1,6 +1,6 @@
 ;;; gloss-italian.el --- Italian support for polyglossia package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015, 2018, 2020, 2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -55,16 +55,8 @@
    (when (or (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands=true")
              (LaTeX-polyglossia-lang-option-member "italian" "babelshorthands"))
      (unless (eq (car TeX-quote-language) 'override)
-       (let ((open-quote (if (and (boundp 'LaTeX-italian-open-quote)
-                                  LaTeX-italian-open-quote)
-                             LaTeX-italian-open-quote
-                           "\"<"))
-             (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
-                                   LaTeX-italian-close-quote)
-                              LaTeX-italian-close-quote
-                            "\">")))
-         (setq TeX-quote-language
-               `("italian" ,open-quote ,close-quote ,TeX-quote-after-quote))))
+       (setq TeX-quote-language
+             `("italian" "\"<" "\">" ,TeX-quote-after-quote)))
 
      ;; Fontification of quotation marks.
      (when (fboundp 'font-latex-add-quotes)

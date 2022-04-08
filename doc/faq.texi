@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004-2014, 2021 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2014, 2021, 2022 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -43,9 +43,26 @@ in the bug report.
 
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
-customizations.  You can do this by invoking Emacs with the command line
-@samp{emacs -q -no-site-file -l auctex}.  The @option{-l} option
-loads @file{auctex.el} which you normally do in your init file.  After you
+customizations.  You can do this by invoking Emacs with the following
+command line, depending on the installation scheme of @AUCTeX{} and your
+@acronym{OS}:
+@itemize
+@item
+If you installed @AUCTeX{} from @acronym{ELPA}, use @samp{emacs -q
+-no-site-file --eval "(progn (setq package-load-list '((auctex t)))
+(package-initialize))"}.  The @option{--eval} option activates only
+@AUCTeX{} among all installed @acronym{EPLA} packages.
+@item
+If you installed @AUCTeX{} via traditional
+@command{configure}--@command{make} scheme, use @samp{emacs -q
+-no-site-file -l auctex}.  The @option{-l} option loads @file{auctex.el}
+which you normally do in your init file.
+@item
+In both above cases, use @samp{runemacs} instead of @samp{emacs} on
+windows.
+@end itemize
+
+After you
 have started Emacs like this, you can load the file triggering the
 error.  If everything is working now, you know that you have to search
 either in the site configuration file or your personal init file for
@@ -132,10 +149,10 @@ this is) or by simply keeping the variable @code{TeX-file-line-error} to
 the default value of non-nil.
 
 @item
-What does AUC stand for?
+What does @samp{AUC} stand for?
 
 @AUCTeX{} came into being at Aalborg University in Denmark.  Back then
-the Danish name of the university was Aalborg Universitetscenter; AUC
+the Danish name of the university was Aalborg Universitetscenter; @samp{AUC}
 for short.
 
 @end enumerate

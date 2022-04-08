@@ -1,6 +1,6 @@
 ;;; titlesec.el --- AUCTeX style for `titlesec.sty' (v2.11)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -189,6 +189,10 @@ insert the argument in brackets."
       [TeX-arg-eval completing-read
                     (TeX-argument-prompt t nil "Super level command")
                     (LaTeX-titlesec-section-command-list)]) )
+
+   ;; Don't increase indent at \iftitlemeasuring:
+   (add-to-list 'LaTeX-indent-begin-exceptions-list "iftitlemeasuring" t)
+   (LaTeX-indent-commands-regexp-make)
 
    ;; 3.4. Rules: A variant of \titleline to be used only with calcwidth
    (when (LaTeX-provided-package-options-member "titlesec" "calcwidth")

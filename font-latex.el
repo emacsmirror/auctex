@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1996-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2022  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -352,7 +352,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("providecommand" "*|{\\[[{")
       ("newcounter" "{[") ("renewenvironment" "*{[[{{")
       ("renewcommand" "*|{\\[[{") ("renewtheorem" "{[{[")
-      ("usepackage" "[{[") ("fbox" "{") ("mbox" "{") ("rule" "[{{")
+      ("usepackage" "[{[") ("RequirePackage" "[{[")
+      ("fbox" "{") ("mbox" "{") ("rule" "[{{")
       ("framebox" "|[([{") ("makebox" "|[([{") ("newsavebox" "|{\\")
       ("parbox" "[[[{{") ("savebox" "|{\\|[([{") ("sbox" "|{\\{")
       ("usebox" "|{\\")
@@ -363,6 +364,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("addcontentsline" "{{{") ("addtocontents" "{{")
       ("labelformat" "{{")
       ("AddToHook" "{[{") ("RemoveFromHook" "{[") ("AddToHookNext" "{{")
+      ("ProvidesClass" "{[") ("ProvidesPackage" "{[") ("ProvidesFile" "{[")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")
@@ -1091,11 +1093,14 @@ have changed."
          (1 "|") (2 "|")))))
   (when font-latex-syntactic-keywords-extra
     (nconc font-latex-syntactic-keywords font-latex-syntactic-keywords-extra))
-  ;; Cater for docTeX mode.
-  (setq font-latex-doctex-syntactic-keywords
-        (append font-latex-syntactic-keywords
-                ;; For docTeX comment-in-doc.
-                '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
+  ;; ;; Cater for docTeX mode.
+  ;; (setq font-latex-doctex-syntactic-keywords
+  ;;       (append font-latex-syntactic-keywords
+  ;;               ;; For docTeX comment-in-doc.
+  ;;               '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
+  ;; Finally, compute our `syntax-propertize-function' anew.
+  (setq-local syntax-propertize-function
+              (font-latex--make-syntax-propertize-function)))
 
 
 ;;; Syntactic fontification
@@ -1258,14 +1263,12 @@ triggers Font Lock to recognize the change."
   (when (fboundp 'font-lock-flush)
     (font-lock-flush)))
 
-(defun font-latex-syntax-propertize-function (start end)
-  "The `syntax-propertize-function' for (La)TeX documents."
-  (with-no-warnings
-    (let ((font-lock-syntactic-keywords
-           (if (derived-mode-p 'doctex-mode)
-               font-latex-doctex-syntactic-keywords
-             font-latex-syntactic-keywords)))
-      (font-lock-fontify-syntactic-keywords-region start end))))
+(defun font-latex--make-syntax-propertize-function ()
+  "Return a `syntax-propertize-function' for (La|Doc)TeX documents."
+  (let ((kws ;; (if (derived-mode-p 'doctex-mode)
+             ;;     font-latex-doctex-syntactic-keywords
+               font-latex-syntactic-keywords)) ;; )
+    (syntax-propertize-via-font-lock kws)))
 
 ;;;###autoload
 (defun font-latex-setup ()
@@ -1276,14 +1279,14 @@ triggers Font Lock to recognize the change."
   (set (make-local-variable 'font-lock-multiline) t)
 
   ;; The test for `major-mode' currently only works with docTeX mode
-  ;; because `TeX-install-font-lock' is called explicitely in
+  ;; because `TeX-install-font-lock' is called explicitly in
   ;; `doctex-mode'.  In case other modes have to be distinguished as
   ;; well, remove the call to `TeX-install-font-lock' from
   ;; `VirTeX-common-initialization' and place it in the different
   ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
   (let ((defaults
-          `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-            nil nil ,font-latex-syntax-alist nil))
+         `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+           nil nil ,font-latex-syntax-alist nil))
         (variables
          '((font-lock-mark-block-function . mark-paragraph)
            (font-lock-fontify-region-function
@@ -1297,8 +1300,6 @@ triggers Font Lock to recognize the change."
             font-latex-extend-region-backwards-command-in-braces
             font-latex-extend-region-backwards-quotation
             font-latex-extend-region-backwards-math)
-           (syntax-propertize-function
-            . font-latex-syntax-propertize-function)
            (syntax-propertize-extend-region-functions
             syntax-propertize-wholelines
             font-latex-sp-extend-region-backwards-verb-env))))
@@ -2251,32 +2252,27 @@ set to french, and >>german<< (and 8-bit) are used if set to german."
   :group 'font-latex-highlighting-faces)
 
 (defvar font-latex-doctex-keywords
-  (append font-latex-keywords-2
+  (append '((font-latex-doctex-match-^^A 0 font-lock-comment-face t))
+          font-latex-keywords-2
           '(("^%<[^>]*>" (0 font-latex-doctex-preprocessor-face t)))))
 
-;; Copy and adaptation of `doctex-font-lock-^^A' in `tex-mode.el' of
-;; CVS Emacs (March 2004)
-(defun font-latex-doctex-^^A ()
-  (if (eq (char-after (line-beginning-position)) ?\%)
-      (progn
-        (put-text-property
-         (1- (match-beginning 1)) (match-beginning 1) 'syntax-table
-         (if (= (1+ (line-beginning-position)) (match-beginning 1))
-             ;; The `%' is a single-char comment, which Emacs
-             ;; syntax-table can't deal with.  We could turn it
-             ;; into a non-comment, or use `\n%' or `%^' as the comment.
-             ;; Instead, we include it in the ^^A comment.
-             (eval-when-compile (string-to-syntax "< b"))
-           ;; FIXME: Those `eval-when-compile' shouldn't be needed any
-           ;; more since the byte-compiler will precompute those calls
-           ;; anyway (because `string-to-syntax'  is marked as pure).
-           (eval-when-compile (string-to-syntax ">"))))
-        (let ((end (line-end-position)))
-          (if (< end (point-max))
-              (put-text-property end (1+ end) 'syntax-table
-                                 (eval-when-compile
-                                   (string-to-syntax "> b")))))
-        (eval-when-compile (string-to-syntax "< b")))))
+(defun font-latex-doctex-match-^^A (limit)
+  "In docTeX mode, match comment started by ^^A and ^^X before LIMIT."
+  (catch 'found
+    (while (TeX-re-search-forward-unescaped "\\^\\^[AX]" limit t)
+      (when (eq (char-after (line-beginning-position)) ?\%)
+        (forward-line 1)
+        ;; Adjust `font-latex--updated-region-end' if necessary.
+        (let ((p (point)))
+          (if (< font-latex--updated-region-end limit)
+              (setq font-latex--updated-region-end limit))
+          (when (< font-latex--updated-region-end p)
+            (font-lock-unfontify-region
+             font-latex--updated-region-end p)
+            (setq font-latex--updated-region-end p))
+          ;; We assume that the above adjustment preserves match data.
+          (set-match-data (list (match-beginning 0) p)))
+        (throw 'found t)))))
 
 ;; Copy and adaptation of `doctex-font-lock-syntactic-face-function'
 ;; in `tex-mode.el' of CVS Emacs (March 2004)

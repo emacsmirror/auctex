@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'ert)
-(require 'tex-buf)
 
 (AUCTeX-set-ert-path
  'TeX-test-compilation-log

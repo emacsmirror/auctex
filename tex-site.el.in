@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2022  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -95,49 +95,22 @@ shared by all users of a site."
 
 (add-hook 'tex-site-unload-hook
           (lambda ()
-            (if (fboundp 'advice-add)
-                (TeX-modes-set 'TeX-modes nil)
-              (let ((list after-load-alist))
-                (while list
-                  ;; Adapted copy of the definition of `assq-delete-all'
-                  ;; from Emacs 21 as substitute for
-                  ;; `(assq-delete-all'TeX-modes-set (car list))' which
-                  ;; fails on non-list elements in Emacs 21.
-                  (let* ((alist (car list))
-                         (tail alist)
-                         (key #'TeX-modes-set))
-                    (while tail
-                      (if (and (consp (car tail))
-                               (eq (car (car tail)) key))
-                          (setq alist (delq (car tail) alist)))
-                      (setq tail (cdr tail))))
-                  (setq list (cdr list)))))
+            (TeX-modes-set 'TeX-modes nil)
             (setq load-path (delq TeX-lisp-directory load-path))))
 
-(defun TeX-modes-set (var value &optional update)
+(defun TeX-modes-set (var value &optional _ignored)
   "Set VAR (which should be `TeX-modes') to VALUE.
 
 This places either the standard or the AUCTeX versions of
-functions into the respective function cell of the mode.
-If UPDATE is set, a previously saved value for
-the non-AUCTeX function gets overwritten with the current
-definition."
+functions into the respective function cell of the mode."
   (custom-set-default var value)
   (let ((list TeX-mode-alist) elt)
     (while list
       (setq elt (car (pop list)))
       (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
-        (if (fboundp 'advice-add)
-            (if (memq elt value)
-                (advice-add elt :override dst)
-              (advice-remove elt dst))
-          (when (or update (null (get elt 'tex-saved)))
-            (when (fboundp elt)
-              (put elt 'tex-saved (symbol-function elt))))
-          (defalias elt
-            (if (memq elt value)
-                dst
-              (get elt 'tex-saved))))))))
+        (if (memq elt value)
+            (advice-add elt :override dst)
+          (advice-remove elt dst))))))
 
 (defcustom TeX-modes
   (mapcar #'car TeX-mode-alist)
@@ -148,14 +121,7 @@ set it with `TeX-modes-set'."
   :type (cons 'set
               (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set #'TeX-modes-set
-  :initialize(lambda (var value)
-               (custom-initialize-reset var value)
-               (unless (fboundp 'advice-add)
-                 (let ((list TeX-mode-alist))
-                   (while list
-                     (eval-after-load (cdar list)
-                       `(TeX-modes-set ',var ,var t))
-                     (setq list (cdr list)))))) )
+  :initialize #'custom-initialize-reset)
 
 (defconst AUCTeX-version "@AUCTEXVERSION@"
     "AUCTeX version.

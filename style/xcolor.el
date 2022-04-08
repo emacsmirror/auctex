@@ -1,6 +1,6 @@
 ;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `xcolor.sty' (v2.12) from 2016/05/11.
+;; This file adds support for `xcolor.sty' (v2.13) from 2021/10/31.
 ;; `xcolor.sty' is part of TeXLive.
 
 ;; `xcolor.sty' and `color.sty' share many command namens, but the
@@ -463,6 +463,10 @@ xcolor package.")
     ;; \textcolor[<model>]{<color spec>}{<text>}
     '("textcolor" TeX-arg-xcolor "Text")
 
+    ;; \mathcolor{<name>}{<math>} or
+    ;; \mathcolor[<model>]{<color spec>}{<math>}
+    '("mathcolor" TeX-arg-xcolor "Math")
+
     ;; \pagecolor{<name>} or
     ;; \pagecolor[<model>]{<color spec>}
     '("pagecolor" TeX-arg-xcolor)
@@ -627,9 +631,10 @@ xcolor package.")
 
 (defvar LaTeX-xcolor-package-options
   '(;; options that determine the color driver
-    "dvips" "xdvi" "dvipdf" "dvipdfm" "dvipdfmx" "pdftex" "dvipsone"
-    "dviwindo" "emtex" "dviwin" "oztex" "textures" "pctexps" "pctexwin"
-    "pctexhp" "pctex32" "truetex" "tcidvi" "vtex" "xetex"
+    "dvipdf" "dvipdfm" "dvipdfmx" "dvips" "dvipsone" "dvisvgm"
+    "dviwin" "dviwindo" "emtex" "luatex" "oztex" "pctex32"
+    "pctexhp" "pctexps" "pctexwin" "pdftex" "tcidvi" "textures"
+    "truetex" "vtex" "xdvi" "xetex"
 
     ;; options that determine the target color model
     "natural" "rgb" "cmy" "cmyk" "hsb" "gray" "RGB" "HTML"

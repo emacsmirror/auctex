@@ -1,6 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1993-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -30,10 +30,6 @@
 (require 'tex)
 
 (require 'texinfo)
-
-;; Silence the compiler for Emacs compiled `--with-native-compilation':
-(declare-function TeX-TeX-sentinel "tex-buf"
-                  (process name))
 
 ;;; Environments:
 (defvar Texinfo-environment-list
@@ -633,8 +629,6 @@ is assumed by default."
 
 ;;;###autoload
 (defalias 'Texinfo-mode #'texinfo-mode)
-
-(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
 
 ;;;###autoload
 (defun TeX-texinfo-mode ()

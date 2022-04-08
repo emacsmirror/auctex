@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -49,7 +49,6 @@
 
 ;;; Code:
 
-(require 'tex-buf)
 (require 'tex)
 (require 'latex) ; for functions like `TeX-look-at' and `LaTeX-split-long-menu'
 (require 'plain-tex) ; for `plain-TeX-common-initialization'
@@ -640,10 +639,7 @@ for a label to be inserted after the sectioning command."
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'ConTeXt-add-environments :after #'ConTeXt--invalidate-menu)
-  (defadvice ConTeXt-add-environments (after ConTeXt-invalidate-menu (&rest environments) activate)
-    (ConTeXt--invalidate-menu)))
+(advice-add 'ConTeXt-add-environments :after #'ConTeXt--invalidate-menu)
 (defun ConTeXt--invalidate-menu (&rest _)
   "Mark the menu as being in need of a refresh."
   (setq ConTeXt-menu-changed t))
@@ -1318,8 +1314,10 @@ else.  There might be text before point."
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
 
-    (define-key map "\e\C-a"  #'ConTeXt-find-matching-start)
-    (define-key map "\e\C-e"  #'ConTeXt-find-matching-stop)
+    ;; We now set `beginning-of-defun-function' and
+    ;; `end-of-defun-function' instead.
+    ;; (define-key map "\e\C-a"  #'ConTeXt-find-matching-start)
+    ;; (define-key map "\e\C-e"  #'ConTeXt-find-matching-stop)
     ;; likely to change in the future
     (define-key map "\C-c!"    #'ConTeXt-work-on-environment)
     (define-key map "\C-c\C-e" #'ConTeXt-environment)
@@ -1775,6 +1773,9 @@ that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq ConTeXt-menu-changed t)
 
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
+
+  (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start
+              end-of-defun-function       #'ConTeXt-find-matching-stop)
 
   ;; Outline support
   (require 'outline)

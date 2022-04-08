@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2014-2022  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -24,6 +24,12 @@
 (require 'ert)
 (require 'latex)
 
+;; We need to ensure that font-lock has put the syntax properties
+;; already which won't happen in batch mode.  So trigger font-lock
+;; immediately.
+(define-advice LaTeX-common-initialization (:after ())
+  (font-lock-ensure))
+
 (AUCTeX-set-ert-path
  'LaTeX-indent-tabular-test/in
  "tabular-in.tex"
@@ -44,7 +50,11 @@
  'tabular-count-ampersands/in
  "tabular-count-ampersands-in.tex"
  'tabular-count-ampersands/out
- "tabular-count-ampersands-out.tex")
+ "tabular-count-ampersands-out.tex"
+ 'LaTeX-conditionals-indent/in
+ "conditionals-indent-in.tex"
+ 'LaTeX-conditionals-indent/out
+ "conditionals-indent-out.tex")
 
 ;; Test for detecting \& in a table cell added; see
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
@@ -641,5 +651,25 @@ ghi"))
       ;; Restore electric pair mode.
       (or orig-mode
           (electric-pair-mode -1)))))
+
+(ert-deftest LaTeX-conditionals-indent ()
+  "Test if conditionals are indented correctly.
+The code inside the test is randomely taken from source2e.  This
+test also sets the variables `TeX-indent-open-delimiters' and
+`TeX-indent-close-delimiters' to opening and closing brackets to
+check the indentation for optional argument of \\usepackage."
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-conditionals-indent/in)
+             (LaTeX-mode)
+             (let ((TeX-indent-open-delimiters "[")
+                   (TeX-indent-close-delimiters "]")
+                   (TeX-parse-self t))
+               (TeX-update-style t)
+               (indent-region (point-min) (point-max))
+               (buffer-string)))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-conditionals-indent/out)
+             (buffer-string)))))
 
 ;;; latex-test.el ends here

@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated @TeX{} environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2021
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2022
 Free Software Foundation, Inc.
 
 @quotation
@@ -1592,7 +1592,7 @@ seen indented in nested constructs.
 @vindex LaTeX-item-indent
 @vindex LaTeX-item-regexp
 
-You can explicitely indent single lines, usually by pressing @key{TAB},
+You can explicitly indent single lines, usually by pressing @key{TAB},
 or marked regions by calling @code{indent-region} on it.  If you have
 @code{auto-fill-mode} enabled and a line is broken while you type it,
 Emacs automatically cares about the indentation in the following line.
@@ -1631,6 +1631,11 @@ functionality.)
 The check for the indentation function may be enabled or disabled by
 customizing the variable @code{LaTeX-indent-environment-check}.
 @vindex LaTeX-indent-environment-check
+
+For tabular-like environments, @AUCTeX{} has a built-in function to indent
+according to preceding @samp{&} signs and assigns it to all known
+tabular-like environments in the default value of
+@code{LaTeX-indent-environment-list}.
 
 @cindex align.el
 @findex align-current
@@ -1674,13 +1679,6 @@ upon typing @key{RET} as well.  The respective option is called
 List of environments with special indentation.  The second element in
 each entry is the function to calculate the indentation level in
 columns.
-
-@c FIXME: The situation has changed, hasn't it?
-The filling code currently cannot handle tabular-like environments
-which will be completely messed-up if you try to format them.  This is
-why most of these environments are included in this customization
-option without a special indentation function.  This will prevent that
-they get filled.
 @end defopt
 
 @defopt LaTeX-indent-level
@@ -1724,6 +1722,55 @@ behavior you only need to remove @code{\|\[} and @code{\|\]} from
 @code{LaTeX-begin-regexp} and @code{LaTeX-end-regexp} variables
 respectively.
 
+A closely related topic is indenting of text enclosed in square brackets,
+parentheses and other pairs.  @AUCTeX{} offers two variables which control
+if indentation happens inside these pairs.
+
+@defopt TeX-indent-open-delimiters
+This variable contains additional opening delimiters which increase
+indentation.  For example add @code{[} to this variable to get text after
+a square bracket indented.
+@end defopt
+
+@defopt TeX-indent-close-delimiters
+This is the accompanying variable to @code{TeX-indent-open-delimiters}
+decreasing the indentation again.  This variable should contain @code{]}
+if @code{TeX-indent-open-delimiters} is set like described above.
+@end defopt
+
+@noindent
+Note that this is an opt-in feature, both variables are initially set to
+an empty string.  That is because it introduces non-trivial side effects
+to include @code{[} and @code{]} in @code{TeX-indent-open-delimiters} and
+@code{TeX-indent-close-delimiters}; if you only have an opening square
+bracket in your text without closing it, wrong indentation persists in the
+following text.  For example, in math expression, half-open intervals are
+frequently written as @samp{[0,10)} or @samp{[0,10[}.  In such cases, you
+can put the closing part as a comment in the same line in order to have
+correct indentation after that:
+@example
+$[0,10)$ % ]
+$[0,10[$ % ]]
+@end example
+
+Another example is @samp{\left}-@samp{\right} pair in equations.  Similar
+workarounds are available:
+@example
+\begin@{equation@}
+  \left[ % ]
+    xyz
+  \right] % [
+  abc
+\end@{equation@}
+@end example
+
+You can include parens @samp{()} also in @code{TeX-indent-open-delimiters}
+and @code{TeX-indent-close-delimiters} to enable indent inside them.  Be
+prepared for similar side effects when you do.
+
+Note that commented curly braces @code{@{} and @code{@}} aren't counted
+when @AUCTeX{} computes indentation.
+
 @node Filling
 @section Filling
 @cindex Filling
@@ -1750,7 +1797,7 @@ init file:
 (add-hook 'LaTeX-mode-hook #'turn-on-auto-fill)
 @end lisp
 
-You can manually fill explicitely marked regions, paragraphs,
+You can manually fill explicitly marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
 filling in @AUCTeX{} will indent the start of the region to be filled in
 contrast to many other Emacs modes.)
@@ -1766,7 +1813,7 @@ comment and continues after it.  In order to prevent overfull lines in
 the source code, a linebreak will be inserted before the last
 non-comment word by default.  This can be changed by customizing
 @code{LaTeX-fill-break-before-code-comments}.  If you have overfull
-lines with code comments you can fill those explicitely by calling
+lines with code comments you can fill those explicitly by calling
 @code{LaTeX-fill-paragraph} or pressing @kbd{M-q} with the cursor
 positioned on them.  This will add linebreaks in the comment and indent
 subsequent comment lines to the column of the comment in the first line
@@ -2974,20 +3021,16 @@ activated mark, however, will always define a new region when calling
 @code{TeX-command-region}.
 @end deffn
 
-@c FIXME: The former half of this paragraph is incorrect.
-@c - `TeX-(La)TeX-sentinel' depends on `TeX-active-*', which act
-@c   according to the value of `TeX-current-process-region-p'.
-@c - Both C-c C-c and C-c C-r overwrite `TeX-current-process-region-p'.
-@c Therefore, if the user types C-c C-r before the process invoked by
-@c C-c C-c finishes, the sentinel for the latter process doesn't work
-@c as expected.
-@AUCTeX{} will allow one process for each document, plus one process
-for the region file to be active at the same time.  Thus, if you are
-editing @var{n} different documents, you can have @var{n} plus one
-processes running at the same time.  If the last process you started was
+If the last process you started was
 on the region, the commands described in @ref{Debugging} and
 @ref{Control} will work on that process, otherwise they will work on the
 process associated with the current document.
+
+Don't run more than one process at the same time.  @AUCTeX{} doesn't
+support simultaneous typeset including region typeset.  Wait for the
+previous process to finish before you start a new process, in particular
+when you are editing multiple documents in parallel.  This limitation
+applies for preview by @previewlatex{} as well.
 
 @node Selecting a Command
 @subsection Selecting and Executing a Command

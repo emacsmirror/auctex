@@ -1,6 +1,6 @@
 ;;; exam.el --- AUCTeX style for the (LaTeX) exam class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -301,9 +301,9 @@ Arguments NAME and TYPE are the same as for the function
     '("hqword" 1)
     '("hsword" 1)
     '("htword" 1)
-    '("ifcontinuation" 0)
-    '("ifincomplete" 0)
-    '("iflastpage" 0)
+    '("ifcontinuation" 2)
+    '("ifincomplete" 2)
+    '("iflastpage" 2)
     '("ifprintanswers" 0)
     '("lfoot" 1)
     '("lhead" 1)
@@ -390,6 +390,14 @@ Arguments NAME and TYPE are the same as for the function
     ;; ... more stuff here
     )
    (LaTeX-add-lengths "answerlinelength" "answerskip")
+
+   ;; Don't increase indentation at various \if* macros:
+   (let ((exceptions '("ifcontinuation"
+                       "ifincomplete"
+                       "iflastpage")))
+     (dolist (elt exceptions)
+       (add-to-list 'LaTeX-indent-begin-exceptions-list elt t))
+     (LaTeX-indent-commands-regexp-make))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2021 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2022 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -79,7 +79,7 @@ CTANDIR = $(DIST_PREFIX)/ctan
 PREVIEW_BUILD_DIR = preview-build
 COMMITTER="`git config --get user.name`\ \ \<`git config --get user.email`\>"
 
-AUCSRC = tex.el tex-buf.el tex-style.el plain-tex.el latex.el tex-info.el \
+AUCSRC = tex.el tex-style.el plain-tex.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el tex-jp.el \
 	toolbar-x.el tex-bar.el bib-cite.el tex-ispell.el latex-flymake.el
@@ -178,7 +178,8 @@ STYLESRC = style/prosper.el \
 	   style/xr.el        style/cancel.el    style/unicodefonttable.el \
 	   style/cuted.el     style/floatpag.el  style/flushend.el \
 	   style/midfloat.el  style/stabular.el  style/stfloats.el \
-	   style/rotating.el  style/sidecap.el
+	   style/rotating.el  style/sidecap.el   style/l3doc.el \
+	   style/ifthen.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

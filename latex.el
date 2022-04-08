@@ -45,12 +45,8 @@
 (declare-function turn-off-filladapt-mode "ext:filladapt"
                   nil)
 
-;; These functions are reported to be unknown when built
+;; This function is reported to be unknown when built
 ;; `with-native-compilation':
-(declare-function LaTeX-command-section-change-level "tex-buf"
-                  (arg))
-(declare-function TeX-LaTeX-sentinel "tex-buf"
-                  (process name))
 (declare-function LaTeX-flymake "latex-flymake"
                   (report-fn &rest _args))
 
@@ -58,7 +54,6 @@
 (defvar outline-heading-alist)
 (defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
-(defvar TeX-error-description-list-local)
 
 ;;; Syntax
 
@@ -111,9 +106,9 @@ This depends on `LaTeX-insert-into-comments'."
              (delete-region (match-beginning 0) (match-end 0))
              (indent-new-comment-line))
             ;; `indent-new-comment-line' does nothing when
-            ;; `comment-auto-fill-only-comments' is non-il, so we must be sure
-            ;; to be in a comment before calling it.  In any other case
-            ;; `newline' is used.
+            ;; `comment-auto-fill-only-comments' is non-nil, so we
+            ;; must be sure to be in a comment before calling it.  In
+            ;; any other case `newline' is used.
             ((TeX-in-comment)
              (indent-new-comment-line))
             (t
@@ -917,7 +912,7 @@ work analogously."
     (save-excursion
       (while (and (/= arg 0)
                   (re-search-backward
-                   "\\\\\\(begin\\|end\\) *{ *\\([A-Za-z*]+\\) *}" nil t))
+                   "\\\\\\(begin\\|end\\) *{\\([^}]+\\)}" nil t))
         (when (or (and LaTeX-syntactic-comments
                        (eq in-comment (TeX-in-commented-line))
                        (or (not in-comment)
@@ -925,7 +920,15 @@ work analogously."
                            ;; commented case.
                            (string= comment-prefix (TeX-comment-prefix))))
                   (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line))))
+                       (not (TeX-in-commented-line)))
+                  ;; macrocode*? in docTeX-mode is special since we
+                  ;; have also regular code lines not starting with a
+                  ;; comment-prefix.  Hence, the next check just looks
+                  ;; if we're inside such a group and returns t to
+                  ;; recognize such a situation.
+                  (and (eq major-mode 'doctex-mode)
+                       (member (match-string-no-properties 2)
+                               '("macrocode" "macrocode*"))))
           (setq arg (if (string= (match-string 1) "end") (1+ arg) (1- arg)))))
       (if (/= arg 0)
           "document"
@@ -1261,7 +1264,14 @@ Just like array and tabular."
   (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (fmt (TeX-read-string "Format: " LaTeX-default-format)))
+        (fmt (TeX-read-string
+              (if (string= LaTeX-default-format "")
+                  "Format: "
+                (format "Format (default %s): " LaTeX-default-format))
+              nil nil
+              (if (string= LaTeX-default-format "")
+                  nil
+                LaTeX-default-format))))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
@@ -1274,9 +1284,18 @@ Just like array and tabular."
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
   (LaTeX-insert-environment environment)
+  (when (TeX-active-mark)
+    ;; Point is at the end of the region.  Move it back to the
+    ;; beginning of the region.
+    (exchange-point-and-mark)
+    (indent-according-to-mode))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
-    (indent-according-to-mode)))
+    (indent-according-to-mode))
+  (when (TeX-active-mark)
+    (indent-region (point) (mark))
+    ;; Restore the positions of point and mark.
+    (exchange-point-and-mark)))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
@@ -1306,14 +1325,12 @@ Just like array and tabular."
                                               (concat TeX-esc (car elt)))
                                             (LaTeX-length-list)))))
          (inner-pos (when (and height (not (string= height "")))
-             (completing-read
-              (TeX-argument-prompt t nil "Inner position")
-              '("t" "b" "c" "s"))))
+                      (completing-read
+                       (TeX-argument-prompt t nil "Inner position")
+                       '("t" "b" "c" "s"))))
          (width (TeX-read-string
-                 (TeX-argument-prompt nil nil
-                                      (concat "Width (default "
-                                              LaTeX-default-width
-                                              ")"))
+                 (TeX-argument-prompt nil nil (format "Width (default %s)"
+                                                      LaTeX-default-width))
                  nil nil LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
@@ -1329,11 +1346,20 @@ Just like array and tabular."
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
-  (let ((width (TeX-read-string "Width: " LaTeX-default-width))
+  (let ((width (TeX-read-string
+                (format "Width (default %s): " LaTeX-default-width)
+                nil nil LaTeX-default-width))
         (pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
-        (fmt (TeX-read-string "Format: " LaTeX-default-format)))
+        (fmt (TeX-read-string
+              (if (string= LaTeX-default-format "")
+                  "Format: "
+                (format "Format (default %s): " LaTeX-default-format))
+              nil nil
+              (if (string= LaTeX-default-format "")
+                  nil
+                LaTeX-default-format))))
     (setq LaTeX-default-width width)
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
@@ -1366,7 +1392,9 @@ Just like array and tabular."
   "Insert ENVIRONMENT with label for bibitem."
   (LaTeX-insert-environment environment
                             (concat TeX-grop
-                                    (TeX-read-string "Label for BibItem: " "99")
+                                    (TeX-read-string
+                                     (format "Label for BibItem (default %s): " "99")
+                                     nil nil "99")
                                     TeX-grcl))
   (end-of-line 0)
   (delete-char 1)
@@ -1736,27 +1764,29 @@ This is necessary since index entries may contain commands and stuff.")
 (defvar LaTeX-auto-regexp-list
   (append
    (let ((token TeX-token-char))
-     `((,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]")
-        (1 2 3) LaTeX-auto-optional)
-       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
-        (1 2) LaTeX-auto-arguments)
+     `((,(concat "\\\\\\(re\\)?\\(?:new\\|provide\\)command\\*?"
+                 "{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]")
+        (2 3 4 1) LaTeX-auto-optional)
+       (,(concat "\\\\\\(re\\)?\\(?:new\\|provide\\)command\\*?"
+                 "{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
+        (2 3 1) LaTeX-auto-arguments)
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
         1 TeX-auto-symbol)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]\\[")
-        (1 2) LaTeX-auto-env-args-with-opt)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?\\[\\([0-9]+\\)\\]")
-        (1 2) LaTeX-auto-env-args)
-       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)\\*?}?")
+       ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]\\["
+        (2 3 1) LaTeX-auto-env-args-with-opt)
+       ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]"
+        (2 3 1) LaTeX-auto-env-args)
+       ("\\\\newenvironment\\*?{\\([^}]+\\)}"
         1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
         1 TeX-auto-file)
        ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
         1 TeX-auto-file)
-       (, (concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
-          1 LaTeX-auto-bibitem)
-       (, (concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
-          1 LaTeX-auto-bibitem)
+       (,(concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+        1 LaTeX-auto-bibitem)
+       (,(concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+        1 LaTeX-auto-bibitem)
        ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
        ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r]+\\)\\..+}"
         1 LaTeX-auto-bibliography)
@@ -1844,8 +1874,8 @@ For each element, the CAR is the name of the class, the CDR is
 the list of options provided to it.
 
 For example, its value will be
-  \(\(\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\"\)
-   ...\)
+  ((\"book\" \"a4paper\" \"11pt\" \"openany\" \"fleqn\")
+   ...)
 See also `LaTeX-provided-package-options'.")
 (make-variable-buffer-local 'LaTeX-provided-class-options)
 
@@ -1867,9 +1897,9 @@ For each element, the CAR is the name of the package, the CDR is
 the list of options provided to it.
 
 For example, its value will be
-  \(\(\"babel\" \"german\"\)
-   \(\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\"\)
-   ...\)
+  ((\"babel\" \"german\")
+   (\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\")
+   ...)
 See also `LaTeX-provided-class-options'.")
 (make-variable-buffer-local 'LaTeX-provided-package-options)
 
@@ -1945,7 +1975,8 @@ The value is actually the tail of the list of options given to PACKAGE."
                               ((member "12pt" options)
                                "12")
                               (t
-                               "10"))) t)
+                               "10")))
+                       t)
           (unless (equal options '(""))
             (TeX-add-to-alist 'LaTeX-provided-class-options
                               (list (cons style options)))))
@@ -1959,6 +1990,14 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup optional arguments
   (mapc (lambda (entry)
+          ;; If we're renewcommand-ing and there is already an entry
+          ;; in `TeX-auto-symbol', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) TeX-auto-symbol))
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (car entry)
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol)))
           (add-to-list 'TeX-auto-symbol
                        (list (nth 0 entry)
                              (string-to-number (nth 1 entry)))))
@@ -1966,6 +2005,14 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup default optional arguments
   (mapc (lambda (entry)
+          ;; If we're renewcommand-ing and there is already an entry
+          ;; in `TeX-auto-symbol', delete it first:
+          (when (and (string= (nth 3 entry) "re")
+                     (assoc (car entry) TeX-auto-symbol))
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (car entry)
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol)))
           (add-to-list 'TeX-auto-symbol
                        (list (nth 0 entry)
                              (vector "argument")
@@ -1974,12 +2021,29 @@ The value is actually the tail of the list of options given to PACKAGE."
 
   ;; Cleanup environments arguments
   (mapc (lambda (entry)
+          ;; If we're renewenvironment-ing and there is already an
+          ;; entry in `LaTeX-auto-environment', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) LaTeX-auto-environment))
+            (setq LaTeX-auto-environment
+                  (assq-delete-all (car (assoc (car entry)
+                                               LaTeX-auto-environment))
+                                   LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
                        (list (nth 0 entry)
                              (string-to-number (nth 1 entry)))))
         LaTeX-auto-env-args)
+
   ;; Ditto for environments with an optional arg
   (mapc (lambda (entry)
+          ;; If we're renewenvironment-ing and there is already an
+          ;; entry in `LaTeX-auto-environment', delete it first:
+          (when (and (string= (nth 2 entry) "re")
+                     (assoc (car entry) LaTeX-auto-environment))
+            (setq LaTeX-auto-environment
+                  (assq-delete-all (car (assoc (car entry)
+                                               LaTeX-auto-environment))
+                                   LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
                        (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
                              (1- (string-to-number (nth 1 entry))))))
@@ -2010,11 +2074,7 @@ The value is actually the tail of the list of options given to PACKAGE."
 
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-auto-cleanup)
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'LaTeX-add-bibliographies :after #'TeX-run-style-hooks)
-  (defadvice LaTeX-add-bibliographies (after run-bib-style-hooks (&rest bibliographies) activate)
-    "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
-    (apply #'TeX-run-style-hooks bibliographies)))
+(advice-add 'LaTeX-add-bibliographies :after #'TeX-run-style-hooks)
 
 ;;; Biber support
 
@@ -2130,7 +2190,8 @@ If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string.  ARGS is unused."
   (TeX-argument-insert
-   (TeX-read-string (TeX-argument-prompt optional prompt "Index tag")) optional))
+   (TeX-read-string (TeX-argument-prompt optional prompt "Index tag"))
+   optional))
 
 (defun TeX-arg-index (optional &optional prompt &rest _args)
   "Prompt for an index entry completing with known entries.
@@ -2213,25 +2274,35 @@ list of defined saveboxes."
         (LaTeX-add-saveboxes savebox))
     (TeX-argument-insert savebox optional TeX-esc)))
 
-(defun TeX-arg-length (optional &optional prompt initial-input definition)
+(defun TeX-arg-length (optional &optional prompt default initial-input
+                                definition)
   "Prompt for a LaTeX length.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If INITIAL-INPUT is non-nil, insert it in the minibuffer
-initially, with point positioned at the end.  If DEFINITION is
-non-nil, the length is added to the list of defined length."
-  (let ((length (completing-read (TeX-argument-prompt optional prompt "Length")
-                                 ;; A valid length can be a macro or a length of
-                                 ;; the form <value><dimension>.  Input starting
-                                 ;; with a `\' can be completed with length
-                                 ;; macros.
-                                 (mapcar (lambda(elt) (concat TeX-esc (car elt)))
-                                         (LaTeX-length-list))
-                                 ;; Some macros takes as argument only a length
-                                 ;; macro (e.g., `\setlength' in its first
-                                 ;; argument, and `\newlength'), in this case is
-                                 ;; convenient to set `\\' as initial input.
-                                 nil nil initial-input)))
+string.  DEFAULT is passed to `completing-read', which see.  If
+INITIAL-INPUT is non-nil, insert it in the minibuffer initially,
+with point positioned at the end.  If DEFINITION is non-nil, the
+length is added to the list of defined length."
+  (let ((length
+         (completing-read
+          (TeX-argument-prompt optional
+                               ;; Cater for the case when PROMPT and
+                               ;; DEFAULT are both given:
+                               (if (and prompt default)
+                                   (concat prompt " (default " default ")")
+                                 prompt)
+                               (concat "Length"
+                                       (when (and default (not optional))
+                                         (concat " (default " default ")"))))
+          ;; A valid length can be a macro or a length of the form
+          ;; <value><dimension>.  Input starting with a `\' can be
+          ;; completed with length macros.
+          (mapcar (lambda (elt) (concat TeX-esc (car elt)))
+                  (LaTeX-length-list))
+          ;; Some macros takes as argument only a length macro (e.g.,
+          ;; `\setlength' in its first argument, and `\newlength'), in
+          ;; this case is convenient to set `\\' as initial input.
+          nil nil initial-input nil default)))
     (if (and definition (not (zerop (length length))))
         ;; Strip leading TeX-esc from macro name
         (LaTeX-add-lengths (substring length 1)))
@@ -2252,11 +2323,19 @@ string."
 Initial input is the name of the file being visited in the
 current buffer, with extension.  If OPTIONAL is non-nil, insert
 it as an optional argument.  Use PROMPT as the prompt string."
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional prompt "Name")
-    (file-name-nondirectory buffer-file-name))
-   optional))
+  (let ((name (file-name-nondirectory buffer-file-name)))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (if optional
+                                 prompt
+                               (format (concat prompt " (default %s)") name)))
+                           (if optional
+                               "Name"
+                             (format "Name (default %s)" name)))
+      nil nil (if optional nil name))
+     optional)))
 
 (defun TeX-arg-file-name-sans-extension (optional &optional prompt)
   "Prompt for a file name.
@@ -2264,11 +2343,20 @@ Initial input is the name of the file being visited in the
 current buffer, without extension.  If OPTIONAL is non-nil,
 insert it as an optional argument.  Use PROMPT as the prompt
 string."
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional prompt "Name")
-    (file-name-sans-extension (file-name-nondirectory buffer-file-name)))
-   optional))
+  (let ((name (file-name-sans-extension
+               (file-name-nondirectory buffer-file-name))))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (if optional
+                                 prompt
+                               (format (concat prompt " (default %s)") name)))
+                           (if optional
+                               "Name"
+                             (format "Name (default %s)" name)))
+      nil nil (if optional nil name))
+     optional)))
 
 (defun TeX-arg-define-label (optional &optional prompt)
   "Prompt for a label completing with known labels.
@@ -2347,7 +2435,7 @@ string."
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
-  (TeX-arg-length optional prompt "\\" t))
+  (TeX-arg-length optional prompt nil "\\" t))
 
 (defcustom LaTeX-style-list '(("amsart")
                               ("amsbook")
@@ -2755,9 +2843,12 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (let ((default (format-time-string TeX-date-format (current-time))))
     (TeX-argument-insert
-     (TeX-read-string (TeX-argument-prompt
-                       optional prompt (format "Date (default %s)" default))
-                      nil nil default)
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (format (concat prompt " (default %s)") default))
+                           (format "Date (default %s)" default))
+      nil nil default)
      optional)))
 
 (defun TeX-arg-version (optional &optional prompt)
@@ -2765,10 +2856,15 @@ string."
 Use as initial input the current date.  If OPTIONAL is non-nil,
 insert the resulting value as an optional argument, otherwise as
 a mandatory one.  Use PROMPT as the prompt string."
-  (TeX-argument-insert
-   (TeX-read-string (TeX-argument-prompt optional prompt "Version")
-                    (format-time-string "%Y/%m/%d" (current-time)))
-   optional))
+  (let ((version (format-time-string "%Y/%m/%d" (current-time))))
+    (TeX-argument-insert
+     (TeX-read-string
+      (TeX-argument-prompt optional
+                           (when prompt
+                             (format (concat prompt " (default %s)") version))
+                           (format "Version (default %s)" version))
+      nil nil version)
+     optional)))
 
 (defun TeX-arg-pagestyle (optional &optional prompt definition)
   "Prompt for a LaTeX pagestyle with completion.
@@ -3138,16 +3234,16 @@ returning an alist.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
    (cond ((and (symbolp key-val-alist)
-	       (boundp key-val-alist))
-	  (symbol-value key-val-alist))
-	 ((and (listp key-val-alist)
-	       (symbolp (car key-val-alist))
-	       (fboundp (car key-val-alist)))
-	  (let ((head (car key-val-alist))
-		(tail (cdr key-val-alist)))
-	    (apply head tail)))
-	 (t
-	  key-val-alist))))
+               (boundp key-val-alist))
+          (symbol-value key-val-alist))
+         ((and (listp key-val-alist)
+               (symbolp (car key-val-alist))
+               (fboundp (car key-val-alist)))
+          (let ((head (car key-val-alist))
+                (tail (cdr key-val-alist)))
+            (apply head tail)))
+         (t
+          key-val-alist))))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
@@ -3632,7 +3728,9 @@ consideration just as is in the non-commented source code."
     ("tabbing")
     ;; envs from amsmath.sty
     ("gather") ("gather*") ("gathered")
-    ("equation*") ("multline") ("multline*"))
+    ("equation*") ("multline") ("multline*")
+    ;; envs from doc.sty
+    ("macrocode") ("macrocode*"))
   "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns.
@@ -3682,9 +3780,11 @@ value."
 
 (defvar docTeX-indent-inner-fixed
   `((,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") 4 t)
+              "\\(begin\\|end\\)[ \t]*{macrocode\\*?}")
+     4 t)
     (,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}") 0 nil))
+              "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}")
+     0 nil))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -3692,6 +3792,110 @@ is the amount of spaces to be used for indentation.  The third
 toggles if comment padding is relevant or not.  If t padding is
 part of the amount given, if nil the amount of spaces will be
 inserted after potential padding.")
+
+(defvar-local LaTeX-indent-begin-list nil
+  "List of macros increasing indentation.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make'.  A regexp for the
+\\if contructs is added by the function as well.  AUCTeX styles
+should add their macros to this variable and then run
+`LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-begin-exceptions-list nil
+  "List of macros which shouldn't increase the indentation.
+Each item in this list is a string without a backslash and will
+mostly start with 'if'.  These macros should not increase
+indentation although they start with 'if', for example the
+'ifthenelse' macro provided by the ifthen package.  AUCTeX styles
+should add their macros to this variable and then run
+`LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-mid-list nil
+  "List of macros which backindent the line where they appear.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make' which takes care of
+\\else and \\or.  AUCTeX styles should add their macros to this
+variable and then run `LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-end-list nil
+  "List of macros decreasing indentation.
+Each item in this list is a string with the name of the macro
+without a backslash.  The final regexp will be calculated by the
+function `LaTeX-indent-commands-regexp-make' which takes care of
+\\fi.  AUCTeX styles should add their macros to this variable and
+then run `LaTeX-indent-commands-regexp-make'.")
+
+(defvar-local LaTeX-indent-begin-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-begin-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\if constructs.")
+
+(defvar-local LaTeX-indent-begin-regexp-exceptions-local nil
+  "Regexp calculated from `LaTeX-indent-begin-exceptions-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\ifthenelse.")
+
+(defvar-local LaTeX-indent-mid-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-mid-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\else and \\or.")
+
+(defvar-local LaTeX-indent-end-regexp-local nil
+  "Regexp calculated from `LaTeX-indent-end-list'.
+The value is calculated and set by the function
+`LaTeX-indent-commands-regexp-make' which already takes care of
+\\fi.")
+
+(defun LaTeX-indent-commands-regexp-make ()
+  "Calculate final regexp for adjusting indentation.
+This function takes the elements provided in
+`LaTeX-indent-begin-list', `LaTeX-indent-begin-exceptions-list',
+`LaTeX-indent-mid-list' and `LaTeX-indent-end-list' and generates
+the regexp's which are stored in
+`LaTeX-indent-begin-regexp-local',
+`LaTeX-indent-begin-regexp-exceptions-local',
+`LaTeX-indent-mid-regexp-local' and
+`LaTeX-indent-end-regexp-local' accordingly.  Some standard
+macros are added to the regexp's.  This function is called in
+`LaTeX-common-initialization' to set the regexp's."
+  (let* (cmds
+         symbs
+         (func (lambda (in regexp out)
+                 (setq cmds nil
+                       symbs nil)
+                 (dolist (elt in)
+                   (if (string-match "[^a-zA-Z@]" elt)
+                       (push elt symbs)
+                     (push elt cmds)))
+                 (set out (concat regexp
+                                  (when cmds
+                                    (concat "\\|"
+                                            (regexp-opt cmds)
+                                            "\\b"))
+                                  (when symbs
+                                    (concat "\\|"
+                                            (regexp-opt symbs))))))))
+    (funcall func
+             LaTeX-indent-begin-list
+             "if[a-zA-Z@]*\\b"
+             'LaTeX-indent-begin-regexp-local)
+    (funcall func
+             LaTeX-indent-mid-list
+             "else\\b\\|or\\b"
+             'LaTeX-indent-mid-regexp-local)
+    (funcall func
+             LaTeX-indent-end-list
+             "fi\\b"
+             'LaTeX-indent-end-regexp-local)
+    (funcall func
+             LaTeX-indent-begin-exceptions-list
+             "ifthenelse\\b"
+             'LaTeX-indent-begin-regexp-exceptions-local)))
 
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
@@ -3830,15 +4034,32 @@ outer indentation in case of a commented line.  The symbols
                                  "\\)"))
              ;; Items.
              (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
-            ((looking-at "}")
+            ;; Other (La)TeX programming constructs which end
+            ;; something, \fi for example where we backindent:
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-indent-end-regexp-local
+                                 "\\)"))
+             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
+            ;; (La)TeX programming contructs which backindent only the
+            ;; current line, for example \or or \else where we backindent:
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-indent-mid-regexp-local
+                                 "\\)"))
+             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
+            ((memq (char-after) (append
+                                 TeX-indent-close-delimiters '(?\})))
              ;; End brace in the start of the line.
              (- (LaTeX-indent-calculate-last force-type)
                 TeX-brace-indent-level))
             (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
-  "Count indentation change caused by all \\left, \\right, \\begin, and
-\\end commands in the current line."
+  "Count indentation change caused by macros in the current line.
+Macros contain \\left, \\right, \\begin, \\end and \\if-\\fi
+constructs.  A special case is \\newif where the following
+\\if<foo> should not change the indentation."
   (save-excursion
     (save-restriction
       (let ((count 0))
@@ -3859,6 +4080,13 @@ outer indentation in case of a commented line.  The symbols
            ((looking-at LaTeX-begin-regexp)
             (setq count (+ count LaTeX-indent-level)))
            ((looking-at LaTeX-end-regexp)
+            (setq count (- count LaTeX-indent-level)))
+           ((looking-at "newif\\b")
+            (search-forward TeX-esc (line-end-position) t))
+           ((and (not (looking-at LaTeX-indent-begin-regexp-exceptions-local))
+                 (looking-at LaTeX-indent-begin-regexp-local))
+            (setq count (+ count LaTeX-indent-level)))
+           ((looking-at LaTeX-indent-end-regexp-local)
             (setq count (- count LaTeX-indent-level)))
            ((looking-at (regexp-quote TeX-esc))
             (forward-char 1))))
@@ -3972,7 +4200,19 @@ outer indentation in case of a commented line.  The symbols
                                            LaTeX-item-regexp
                                            "\\)"))
                        (- LaTeX-item-indent))
-                      ((looking-at "}")
+                      ((looking-at (concat (regexp-quote TeX-esc)
+                                           "\\("
+                                           LaTeX-indent-end-regexp-local
+                                           "\\)"))
+                       LaTeX-indent-level)
+                      ((looking-at (concat (regexp-quote TeX-esc)
+                                           "\\("
+                                           LaTeX-indent-mid-regexp-local
+                                           "\\)"))
+                       LaTeX-indent-level)
+                      ((memq (char-after) (append
+                                           TeX-indent-close-delimiters
+                                           '(?\})))
                        TeX-brace-indent-level)
                       (t 0)))))))
 
@@ -6000,8 +6240,10 @@ environments."
     ;; (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
     ;; This key is now used by Emacs for face settings.
     ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
-    (define-key map "\e\C-e"  #'LaTeX-find-matching-end)
-    (define-key map "\e\C-a"  #'LaTeX-find-matching-begin)
+    ;; We now set `beginning-of-defun-function' and
+    ;; `end-of-defun-function' instead.
+    ;; (define-key map "\e\C-e"  #'LaTeX-find-matching-end)
+    ;; (define-key map "\e\C-a"  #'LaTeX-find-matching-begin)
 
     (define-key map "\C-c\C-q\C-p" #'LaTeX-fill-paragraph)
     (define-key map "\C-c\C-q\C-r" #'LaTeX-fill-region)
@@ -6027,6 +6269,8 @@ environments."
     (define-key map "(" #'LaTeX-insert-left-brace)
     (define-key map "{" #'LaTeX-insert-left-brace)
     (define-key map "[" #'LaTeX-insert-left-brace)
+
+    (define-key map "\C-xne" #'LaTeX-narrow-to-environment)
     map)
   "Keymap used in `LaTeX-mode'.")
 
@@ -6155,10 +6399,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
                (mapcar #'LaTeX-environment-modify-menu-entry
                        (LaTeX-environment-list))))))))
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    (advice-add 'LaTeX-add-environments :after #'LaTeX--invalidate-menus)
-  (defadvice LaTeX-add-environments (after LaTeX-invalidate-environment-menu (&rest environments) activate)
-    (LaTeX--invalidate-menus)))
+(advice-add 'LaTeX-add-environments :after #'LaTeX--invalidate-menus)
 (defun LaTeX--invalidate-menus (&rest _)
   "Mark the environment menus as being in need of a refresh."
   (setq LaTeX-environment-menu nil)
@@ -6399,8 +6640,9 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 
 (defun LaTeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for LaTeX mode.
-Install tool bar if `LaTeX-enable-toolbar' is non-nil."
-  (when LaTeX-enable-toolbar
+Install tool bar if `LaTeX-enable-toolbar' and `tool-bar-mode'
+are non-nil."
+  (when (and LaTeX-enable-toolbar tool-bar-mode)
     ;; Defined in `tex-bar.el':
     (LaTeX-install-toolbar)))
 
@@ -6864,8 +7106,6 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
-(defvar TeX-sentinel-default-function) ;; Defined in tex-buf.el.
-
 ;;;###autoload
 (defun TeX-latex-mode ()
   ;; FIXME: Use `define-derived-mode'.
@@ -6884,9 +7124,8 @@ of `LaTeX-mode-hook'."
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook #'LaTeX-maybe-install-toolbar nil t)
-  (when (and (boundp 'tool-bar-mode) tool-bar-mode)
-    (LaTeX-maybe-install-toolbar))
+  (add-hook 'tool-bar-mode-hook #'LaTeX-maybe-install-toolbar nil t)
+  (LaTeX-maybe-install-toolbar)
   ;; Set the value of `LaTeX-using-Biber' based on the local value of
   ;; `LaTeX-biblatex-use-Biber'.  This should be run within
   ;; `TeX-update-style-hook' before toolbarx-refresh, otherwise the bibliography
@@ -7046,6 +7285,11 @@ function would return non-nil and `(match-string 1)' would return
         #'LaTeX-search-forward-comment-start)
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
+
+  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin
+              end-of-defun-function       #'LaTeX-find-matching-end)
+
+  (LaTeX-indent-commands-regexp-make)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)
@@ -7231,13 +7475,13 @@ function would return non-nil and `(match-string 1)' would return
    '("footnotemark"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
    '("newlength" (TeX-arg-define-length "Length macro"))
-   '("setlength" (TeX-arg-length "Length macro" "\\")
+   '("setlength" (TeX-arg-length "Length macro" nil "\\")
      (TeX-arg-length "Length value"))
-   '("addtolength" (TeX-arg-length "Length macro" "\\")
+   '("addtolength" (TeX-arg-length "Length macro" nil "\\")
      (TeX-arg-length "Length to add"))
-   '("settowidth" (TeX-arg-length "Length macro" "\\") "Text")
-   '("settoheight" (TeX-arg-length "Length macro" "\\") "Text")
-   '("settodepth" (TeX-arg-length "Length macro" "\\") "Text")
+   '("settowidth" (TeX-arg-length "Length macro" nil "\\") "Text")
+   '("settoheight" (TeX-arg-length "Length macro" nil "\\") "Text")
+   '("settodepth" (TeX-arg-length "Length macro" nil "\\") "Text")
    '("\\" [ "Space" ])
    '("\\*" [ "Space" ])
    '("hyphenation" t)
@@ -7351,8 +7595,8 @@ function would return non-nil and `(match-string 1)' would return
      '("filecontents*" LaTeX-env-contents))
 
     (TeX-add-symbols
-     '("enlargethispage" TeX-arg-length)
-     '("enlargethispage*" TeX-arg-length)
+     '("enlargethispage"  (TeX-arg-length nil "1.0\\baselineskip"))
+     '("enlargethispage*" (TeX-arg-length nil "1.0\\baselineskip"))
      '("tabularnewline" [ TeX-arg-length ])
      '("suppressfloats" [ TeX-arg-tb "Suppress floats position" ])
      '("ensuremath" "Math commands")
@@ -7654,8 +7898,6 @@ function would return non-nil and `(match-string 1)' would return
 
   (use-local-map LaTeX-mode-map)
 
-  (define-key LaTeX-mode-map "\C-xne" #'LaTeX-narrow-to-environment)
-
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)
        #'TeX-current-defun-name)
@@ -7737,22 +7979,40 @@ function would return non-nil and `(match-string 1)' would return
     (LaTeX-find-matching-begin)
     (cons (point) (current-column))))
 
-(defun LaTeX-hanging-ampersand-position ()
-  "Return indent column for a hanging ampersand (that is, ^\\s-*&)."
+(defun LaTeX-hanging-ampersand-position (&optional pos col)
+  "Return indent column for a hanging ampersand (that is, ^\\s-*&).
+When you know the position and column of the beginning of the
+current environment, supply them as optional arguments POS and
+COL for efficiency."
   (cl-destructuring-bind
       (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
-    (let* ((cur-pos (point)))
+      (if pos
+          (cons pos col)
+        (LaTeX-env-beginning-pos-col))
+    (let ((cur-pos (point)))
       (save-excursion
-        (if (re-search-backward "\\\\\\\\" beg-pos t)
+        (if (and (search-backward "\\\\" beg-pos t)
+                 ;; Give up if the found "\\" belongs to an inner env.
+                 (= beg-pos
+                    (save-excursion
+                      (LaTeX-find-matching-begin)
+                      (point))))
+            ;; FIXME: This `how-many' fails to count correctly if
+            ;; there is an inner env with "&" but without "\\", e.g.
+            ;; \begin{pmatrix}
+            ;;   a & b
+            ;; \end{pmatrix}
             (let ((cur-idx (how-many "[^\\]&" (point) cur-pos)))
               (goto-char beg-pos)
-              (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
-              ;; If the above searchs fails, i.e. no "&" found,
-              ;; (- (current-column) 1) returns -1, which is wrong.  So
-              ;; we use a fallback (+ 2 beg-col) whenever this happens:
-              (max (- (current-column) 1)
-                   (+ 2 beg-col)))
+              ;; FIXME: This regex search fails if there is an inner
+              ;; env with "&" in it.
+              (if (re-search-forward "[^\\]&" cur-pos t (+ 1 cur-idx))
+                  (- (current-column) 1)
+                ;; If the above searchs fails, i.e. no "&" found,
+                ;; (- (current-column) 1) returns -1, which is wrong.
+                ;; So we use a fallback (+ 2 beg-col) whenever this
+                ;; happens:
+                (+ 2 beg-col)))
           (+ 2 beg-col))))))
 
 (defun LaTeX-indent-tabular ()
@@ -7776,16 +8036,38 @@ function would return non-nil and `(match-string 1)' would return
              (+ 2 beg-col))
 
             ((looking-at "&")
-             (LaTeX-hanging-ampersand-position))
+             (LaTeX-hanging-ampersand-position beg-pos beg-col))
 
             (t
              (+ 2
-                (let ((any-col (save-excursion
-                                 (when (re-search-backward "\\\\\\\\\\|[^\\]&" beg-pos t)
-                                   (current-column)))))
-                  (if (and any-col (= ?& (char-before (match-end 0))))
-                      (1+ any-col)
-                    beg-col))))))))
+                (let ((any-col
+                       (save-excursion
+                         (when
+                             (catch 'found
+                               ;; Search "\\" or "&" which belongs to
+                               ;; the current env, not an inner env.
+                               (while (re-search-backward
+                                       "\\\\\\\\\\|[^\\]&" beg-pos t)
+                                 (let ((p (point)))
+                                   (when (= beg-pos
+                                            (progn
+                                              (LaTeX-find-matching-begin)
+                                              (point)))
+                                     ;; It belongs to the current env.
+                                     ;; Go to target position and exit
+                                     ;; the loop.
+                                     (goto-char (1+ p))
+                                     (throw 'found t)
+                                     ;; Otherwise it belongs to an
+                                     ;; inner env, so continue the
+                                     ;; loop.
+                                     ))))
+                           ;; If we found "&", then use its column as
+                           ;; `any-col'.  Else, `any-col' will be nil.
+                           (if (= ?& (char-after))
+                                  (current-column))))))
+                  (or any-col
+                      beg-col))))))))
 
 ;; Utilities:
 

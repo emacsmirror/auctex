@@ -1,6 +1,6 @@
 ;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2006, 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2022 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -244,6 +244,19 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 8.9 Configuring Punctuation Look-Ahead
       '("DeclareAutoPunct" "Characters"))
+
+     ;; Don't increase indentation at various \if* macros:
+     (let ((exceptions '("ifpunctmark"
+                         "ifpunct"
+                         "ifterm"
+                         "iftextpunctmark"
+                         "iftextpunct"
+                         "iftextterm"
+                         "ifblockquote"
+                         "ifblank")))
+       (dolist (elt exceptions)
+         (add-to-list 'LaTeX-indent-begin-exceptions-list elt t))
+       (LaTeX-indent-commands-regexp-make))
 
      ;; New environments
      (LaTeX-add-environments

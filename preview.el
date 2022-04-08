@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2022  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -40,7 +40,6 @@
 
 (require 'tex-site)
 (require 'tex)
-(require 'tex-buf)
 (require 'latex)
 
 (eval-when-compile
@@ -2070,11 +2069,6 @@ overlays not in the active window."
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
 
-(if (fboundp 'advice-add)               ;Emacs≥24.4 (or ELPA package nadvice)
-    nil ; See the defcustom below.
-  (defadvice replace-highlight (before preview)
-    (preview--open-for-replace (ad-get-arg 0) (ad-get-arg 1))))
-
 (defun preview--open-for-replace (beg end &rest _)
   "Make `query-replace' open preview text about to be replaced."
   (preview-open-overlays (overlays-in beg end)))
@@ -2086,16 +2080,11 @@ overlays not in the active window."
   :require 'preview
   :set (lambda (symbol value)
          (set-default symbol value)
-         (if (fboundp 'advice-add) ; COMPATIBILITY for Emacs<24.4
-             (if value
-                 (advice-add 'replace-highlight :before
-                             #'preview--open-for-replace)
-               (advice-remove 'replace-highlight
-                              #'preview--open-for-replace))
-           (if value
-               (ad-enable-advice 'replace-highlight 'before 'preview)
-             (ad-disable-advice 'replace-highlight 'before 'preview))
-           (ad-activate 'replace-highlight)))
+         (if value
+             (advice-add 'replace-highlight :before
+                         #'preview--open-for-replace)
+           (advice-remove 'replace-highlight
+                          #'preview--open-for-replace)))
   :initialize #'custom-initialize-reset)
 
 (defun preview-relaxed-string= (&rest args)
@@ -3062,14 +3051,6 @@ pp")
        #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (unless preview-tb-icon
-    (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
-  (when preview-tb-icon
-    (define-key LaTeX-mode-map [tool-bar preview]
-      `(menu-item "Preview at point" preview-at-point
-                  :image ,preview-tb-icon
-                  :help "Preview on/off at point"
-                  :vert-only t)))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
            format-cons)
@@ -3127,6 +3108,14 @@ to add the preview functionality."
         ["Report Bug" preview-report-bug]))
     (if (eq major-mode 'latex-mode)
         (preview-mode-setup))
+    (unless preview-tb-icon
+      (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
+    (when preview-tb-icon
+      (define-key LaTeX-mode-map [tool-bar preview]
+        `(menu-item "Preview at point" preview-at-point
+                    :image ,preview-tb-icon
+                    :help "Preview on/off at point"
+                    :vert-only t)))
     (if (boundp 'desktop-buffer-misc)
         (preview-buffer-restore desktop-buffer-misc))))
 

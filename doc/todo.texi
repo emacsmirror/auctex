@@ -1,6 +1,6 @@
 @c This is part of the AUCTeX Manual.
 @c Copyright (C) 2004-2006, 2008, 2009, 2013-2015,
-@c               2020, 2021 Free Software Foundation, Inc.
+@c               2020-2022 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -301,8 +301,8 @@ Make @code{TeX-insert-dollar} more robust.  Currently it can be fooled
 by @samp{\mbox}'es and escaped double dollar for example.
 
 @item
-Correct indentation for tabular, tabbing, table, math, and array
-environments.
+@c FIXME: Is support for table environment really necessary?
+Correct indentation for tabbing, table, and math environments.
 @end itemize
 
 @c Local Variables:

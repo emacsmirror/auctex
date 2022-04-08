@@ -81,6 +81,10 @@
     '("renewpagestyle" "Name" "Head definition" "Foot definition")
     '("providepagestyle" "Name" "Head definition" "Foot definition"))
 
+   ;; Don't increase indent at \ifoot:
+   (add-to-list 'LaTeX-indent-begin-exceptions-list "ifoot" t)
+   (LaTeX-indent-commands-regexp-make)
+
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))

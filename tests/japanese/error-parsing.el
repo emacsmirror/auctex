@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'ert)
-(require 'tex-buf)
 (setq japanese-TeX-error-messages t)
 (require 'tex-jp)
 

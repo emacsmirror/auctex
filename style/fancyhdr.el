@@ -1,6 +1,6 @@
 ;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2013, 2018-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2013, 2018-2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -122,6 +122,15 @@ for H(eader) or F(ooter)."
 
     ;; 15 The scoop on LATEX’s marks
     '("nouppercase" t))
+
+   ;; Don't increase indentation at various \if* macros:
+   (let ((exceptions '("iftopfloat"
+                       "ifbotfloat"
+                       "iffloatpage"
+                       "iffootnote")))
+     (dolist (elt exceptions)
+       (add-to-list 'LaTeX-indent-begin-exceptions-list elt t))
+     (LaTeX-indent-commands-regexp-make))
 
    ;; 30 Deprecated commands
    ;; Don't offer deprecated commands in V4.0 for completion anymore.
