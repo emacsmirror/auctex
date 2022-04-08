@@ -123,7 +123,7 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.1.1.2022-04-08"
+(defconst AUCTeX-version "13.1.2"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
