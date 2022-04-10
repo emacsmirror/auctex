@@ -54,7 +54,11 @@
  'LaTeX-conditionals-indent/in
  "conditionals-indent-in.tex"
  'LaTeX-conditionals-indent/out
- "conditionals-indent-out.tex")
+ "conditionals-indent-out.tex"
+ 'docTeX/in
+ "doctex-indent-in.dtx"
+ 'docTeX/out
+ "doctex-indent-out.dtx")
 
 ;; Test for detecting \& in a table cell added; see
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26010
@@ -670,6 +674,21 @@ check the indentation for optional argument of \\usepackage."
                (buffer-string)))
            (with-temp-buffer
              (insert-file-contents LaTeX-conditionals-indent/out)
+             (buffer-string)))))
+
+(ert-deftest docTeX-indentation ()
+  "Test if content in docTeX-mode is indented correctly."
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents docTeX/in)
+             (docTeX-mode)
+             (let ((TeX-parse-self t))
+               (TeX-update-style t)
+               (indent-region (point-min) (point-max))
+               (whitespace-cleanup)
+               (buffer-string)))
+           (with-temp-buffer
+             (insert-file-contents docTeX/out)
              (buffer-string)))))
 
 ;;; latex-test.el ends here

@@ -4156,9 +4156,20 @@ outer indentation in case of a commented line.  The symbols
                                     "end[ \t]*{macrocode\\*?}"))
                 fill-prefix
                 (TeX-in-line-comment))
-           ;; Reset indentation to zero after a macrocode
-           ;; environment.
-           0)
+           ;; Reset indentation to zero after a macrocode environment
+           ;; only when we're not still inside a describing
+           ;; environment like "macro" or "environment" etc.  Text
+           ;; inside these environments after '\end{macrocode}' is
+           ;; indented with `LaTeX-indent-level':
+           (let ((outer-env (LaTeX-current-environment 2)))
+             (cond ((member outer-env '("macro" "environment"))
+                    LaTeX-indent-level)
+                   ((and (fboundp 'LaTeX-doc-NewDocElement-list)
+                         (LaTeX-doc-NewDocElement-list)
+                         (member outer-env
+                                 (mapcar #'cadr (LaTeX-doc-NewDocElement-list))))
+                    LaTeX-indent-level)
+                   (t 0))))
           ((looking-at (concat (regexp-quote TeX-esc)
                                "begin *{"
                                ;; Don't give optional argument here
