@@ -3719,14 +3719,12 @@ The algorithm is as follows:
                      answer
                    TeX-default-mode))))))
 
-(when (and (boundp 'tex--prettify-symbols-alist)
-           (boundp 'prettify-symbols-compose-predicate))
-  (defun TeX--prettify-symbols-compose-p (start end match)
-    (and (tex--prettify-symbols-compose-p start end match)
-         (not (let ((face (get-text-property end 'face)))
-                (if (consp face)
-                    (memq 'font-latex-verbatim-face face)
-                  (eq face 'font-latex-verbatim-face)))))))
+(defun TeX--prettify-symbols-compose-p (start end match)
+  (and (tex--prettify-symbols-compose-p start end match)
+       (not (let ((face (get-text-property end 'face)))
+              (if (consp face)
+                  (memq 'font-latex-verbatim-face face)
+                (eq face 'font-latex-verbatim-face))))))
 
 (defun VirTeX-common-initialization ()
   "Perform basic initialization."
@@ -3786,13 +3784,10 @@ The algorithm is as follows:
     (TeX-source-correlate-mode 1))
 
   ;; Prettify Symbols mode
-  (when (fboundp 'TeX--prettify-symbols-compose-p)
-    (set (make-local-variable 'prettify-symbols-alist) tex--prettify-symbols-alist)
-    (TeX--if-macro-fboundp add-function
-        (add-function :override (local 'prettify-symbols-compose-predicate)
-                      #'TeX--prettify-symbols-compose-p)
-      (set (make-local-variable 'prettify-symbols-compose-predicate)
-           #'TeX--prettify-symbols-compose-p)))
+  (require 'tex-mode)
+  (setq-local prettify-symbols-alist tex--prettify-symbols-alist)
+  (add-function :override (local 'prettify-symbols-compose-predicate)
+                #'TeX--prettify-symbols-compose-p)
 
   ;; Standard Emacs completion-at-point support
   (add-hook 'completion-at-point-functions
