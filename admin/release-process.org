@@ -227,3 +227,27 @@ looks for all files without FSF-copyright line which are not listed in a
 special copyright_exceptions file.  As result, it spits out a diff between the
 actual and expected copyright exceptions.  If the diff is empty (or at least
 doesn't mention an AUCTeX file), everything is fine.
+
+** Bumping required Emacs version
+
+It happens from time to time that AUCTeX requires a newer Emacs
+version.  For this, the following files in the main directory has to
+be adjusted.
+
+- [ ] =auctex.el.in= :: Change the ~;; Package-Requires:~ cookie in
+  the header.
+- [ ] =configure.ac= :: Change the argument of ~EMACS_CHECK_VERSION~
+- [ ] =tex-site.el.in= :: Change the number after ~emacs-major-version~
+- [ ] =tex.el= :: Change the number after ~emacs-major-version~
+
+In the =doc= directory, these files are affected.
+
+- [ ] =doc/changes.texi= :: Add an entry under *News* about the
+  required version.
+- [ ] =doc/faq.texi= :: Adjust the number in this sentence:
+  =@AUCTeX{} was tested with @w{GNU Emacs XX.X}=.
+- [ ] =doc/install.texi= :: Adjust the number in ~@node Prerequisites~:
+  =@item GNU Emacs XX.X or higher=.
+- [ ] =doc/preview-faq.texi= :: Adjust the number in ~@section Requirements~
+  =@previewlatex{} nominally requires @w{GNU Emacs} with a version of
+  at least XX.X.=.
