@@ -2,7 +2,7 @@ dnl Autoconf script for AUCTeX
 
 dnl Maintainer: auctex-devel@gnu.org
 
-dnl Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+dnl Copyright (C) 2003-2022Free Software Foundation, Inc.
 
 dnl This file is part of AUCTeX.
 
@@ -37,7 +37,7 @@ AC_SUBST(PREVIEWVERSION)
 
 EMACS_PROG_EMACS
 
-EMACS_CHECK_VERSION(24,3)
+EMACS_CHECK_VERSION(25,1)
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
 # never need to modify the default behavior.

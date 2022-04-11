@@ -12,6 +12,9 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now requires GNU Emacs 25.1 or higher.
+
+@item
 @AUCTeX{} tracks the change in Emacs where initial inputs in the
 minibuffer during queries are getting phased out.  Queries for the
 mandatory arguments of macros and environments are adjusted where
