@@ -1,6 +1,6 @@
 ;;; ltx-base.el --- AUCTeX style for basic LaTeX commands.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2022 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -27,62 +27,134 @@
 
 ;; This file adds general support for basic LaTeX commands used for
 ;; writing LaTeX class files (.cls), style files (.sty) and package
-;; files (.dtx).
+;; files (.dtx).  Most of the macros are taken from clsguide.pdf.
 
 ;;; Code:
 
 (require 'tex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
 (TeX-add-style-hook
  "ltx-base"
  (lambda ()
    (TeX-add-symbols
-    '("DeclareRobustCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-    '("CheckCommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-    '("@addtoreset" TeX-arg-counter "Within counter" "counter")
-    '("addvspace" "space")
-    '("addpenalty" "penalty")
-    '("ProvidesClass" "name" [ "release information" ])
-    '("ProvidesPackage" "name" [ "release information" ])
-    '("ProvidesFile" "filename" [ "release information" ])
-    '("NeedsTeXFormat" "format" [ "release" ])
-    '("DeclareOption" "option" t)
-    ;; would be great if DeclareOption RET * RET would give
-    ;; \DeclareOption*!
+
+    ;; 4.1 Identification.  Other '\Provide*' macros are available in
+    ;; latex.el
+    '("NeedsTeXFormat" "Format" [ "Release date" ])
+
+    ;; 4.2 Loading files
+    ;; \RequirePackage is provided in latex.el
+    '("RequirePackageWithOptions" "Package" [ "Release information" ])
+
+    '("LoadClass" [ "Options" ] "Class" [ "Release information" ])
+    '("LoadClassWithOptions"    "Class" [ "Release information" ])
+
+    ;; 4.3 Option declaration
+    '("DeclareOption" "Option" t)
     '("DeclareOption*" t)
+
+    ;; 4.4 Commands within option code
     '("CurrentOption" 0)
-    '("PassOptionsToPackage" "option list" "package")
-    '("ExecuteOptions" "option list")
-    '("ProcessOptions" (TeX-arg-literal "\\relax"))
-    "ProcessOptions*"
     '("OptionNotUsed" 0)
-    ;; candidate for opt/mand toggling
-    '("RequirePackage" [ "option list" ] "package" [ "release" ])
-    '("LoadClass" [ "option list" ] "class" [ "release" ])
+
+    ;; 4.5 Moving options around
+    '("PassOptionsToPackage" "Option(s) list" "Package")
+    '("PassOptionsToClass" "Option(s) list" "Class")
+
+    ;; 4.6 Delaying code
     '("AtEndOfPackage" t)
     '("AtEndOfClass" t)
     '("AtBeginDocument" t)
     '("AtEndDocument" t)
-    '("IfFileExists" "filename" 2)
-    '("InputIfFileExists" "filename" 2)
-    '("PackageWarning" "name" t)
-    '("PackageWarningNoLine" "name" t)
-    '("PackageInfo" "name" t)
-    '("PackageError" "name" "short text" t)
-    '("ClassWarning" "name" t)
-    '("ClassWarningNoLine" "name" t)
-    '("ClassInfo" "name" t)
-    '("ClassError" "name" "short text" t)
+    '("AtBeginDvi" t)
+
+    ;; 4.7 Option processing
+    '("ProcessOptions" (TeX-arg-literal "\\relax"))
+    "ProcessOptions*"
+    '("ExecuteOptions" "Option list")
+
+    ;; 4.8 Safe file commands
+    '("IfFileExists" "File" 2)
+    '("InputIfFileExists" "File" 2)
+
+    ;; 4.9 Reporting errors, etc
+    '("ClassError" "Class name" "Error text" t)
+    '("PackageError" "Package name" "Error text" t)
+
+    '("ClassWarning" "Class name" t)
+    '("PackageWarning" "Package name" t)
+    '("ClassWarningNoLine" "Class name" t)
+    '("PackageWarningNoLine" "Package name" t)
+
+    '("ClassInfo" "Class name" t)
+    '("PackageInfo" "Package name" t)
+
     '("MessageBreak" 0)
-    '("@ifpackageloaded" "package" 2)
-    '("@ifpackagelater" "package" "date" 2)
-    '("@ifpackagewith" "package" "options" 2)
     '("message" "Log Message")
-    '("@ifundefined" "Macro Name" 2)
-    '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "character") 2 )
-    "expandafter"))
+
+    ;; 4.10 Defining commands
+    '("DeclareRobustCommand"
+      TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+    '("DeclareRobustCommand*"
+      TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
+
+    '("CheckCommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
+    '("CheckCommand*" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
+
+    ;; 5.1 Layout parameters
+    ;; \paperheight & \paperwidth are provided in latex.el
+
+    ;; 5.2 Case changing
+    ;; \MakeUppercase & \MakeLppercase are provided in latex.el
+
+    ;; 5.4 Better user-defined math display environments
+    "ignorespacesafterend"
+
+    ;; 5.5 Normalising spacing
+    "normalsfcodes"
+
+    ;; Some general macros not mentioned in clsguide.pdf
+    '("@addtoreset" TeX-arg-counter "Within counter" "counter")
+    '("addpenalty" "Penalty")
+    '("@ifundefined" TeX-arg-macro 2)
+    '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "Character") 2)
+    '("expandafter" 0))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("NeedsTeXFormat"       "{[")
+                                ("RequirePackageWithOptions" "{[")
+                                ("LoadClass"            "[{[")
+                                ("LoadClassWithOptions" "{[")
+                                ;; Don't fontify the second argument
+                                ;; which will contain code:
+                                ("DeclareOption"         "*{")
+                                ("CurrentOption"         "")
+                                ("OptionNotUsed"         "")
+                                ("PassOptionsToPackage"  "{{")
+                                ("PassOptionsToClass"    "{{")
+
+                                ("AtEndOfPackage"  "")
+                                ("AtEndOfClass"    "")
+                                ("AtBeginDocument" "")
+                                ("AtEndDocument"   "")
+                                ("AtBeginDvi"      "")
+
+                                ("ProcessOptions" "*")
+                                ("ExecuteOptions" "{")
+                                ("DeclareRobustCommand" "*|{\\[[{")
+                                ("CheckCommand"         "*|{\\[[{"))
+                              'function)))
  TeX-dialect)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
+
+;;; ltx-base.el ends here
