@@ -119,7 +119,7 @@
     "normalsfcodes"
 
     ;; Some general macros not mentioned in clsguide.pdf
-    '("@addtoreset" TeX-arg-counter "Within counter" "counter")
+    '("@addtoreset" TeX-arg-counter (TeX-arg-counter "Within counter"))
     '("addpenalty" "Penalty")
     '("@ifundefined" TeX-arg-macro 2)
     '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "Character") 2)
