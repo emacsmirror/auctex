@@ -3278,7 +3278,7 @@ as values for the key.  Use PROMPT as the prompt string."
                    (cond ((member hook '("env" "para"))
                           '("after" "before" "begin" "end"))
                          ((string= hook "include")
-                          '("after" "before" "end"))
+                          '("after" "before" "end" "excluded"))
                          ((string= hook "begindocument")
                           '("before" "end"))
                          ((string= hook "enddocument")
@@ -3337,7 +3337,7 @@ as values for the key.  Use PROMPT as the prompt string."
            (setq where (funcall place)))
 
           ;; include/<file-name>/<where>: <file-name> is optional and
-          ;; <where> is one of (before|after|end)
+          ;; <where> is one of (before|after|end|excluded)
           ((string= hook "include")
            (if (funcall search)
                (progn
