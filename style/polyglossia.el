@@ -242,7 +242,7 @@ argument, otherwise as a mandatory one."
     `(,LaTeX-polyglossia-lang-regexp (3 1 2) LaTeX-auto-polyglossia-lang))
    (TeX-auto-add-regexp
     `(,LaTeX-polyglossia-setkeys-regexp (1 2) LaTeX-auto-polyglossia-setkeys))
-   (TeX-run-style-hooks "etoolbox" "makecmds" "xkeyval" "fontspec")
+   (TeX-run-style-hooks "makecmds" "xkeyval" "fontspec")
    (TeX-add-symbols
     '("setdefaultlanguage" (LaTeX-arg-polyglossia-lang  t  nil nil))
     '("setmainlanguage"    (LaTeX-arg-polyglossia-lang  t  nil nil))

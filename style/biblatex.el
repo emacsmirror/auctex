@@ -266,7 +266,6 @@ for citation keys."
                      "biblatex" "backend=bibtexu")))))
 
    (TeX-run-style-hooks
-    "etoolbox"
     "keyval"
     "kvoptions"
     "logreq"
@@ -330,7 +329,7 @@ for citation keys."
     ;; Dynamic Entry Sets
     '("defbibentryset" "Set"
       (TeX-arg-eval mapconcat #'identity (TeX-completing-read-multiple
-                                         "Keys: " (LaTeX-bibitem-list)) ","))
+                                          "Keys: " (LaTeX-bibitem-list)) ","))
     ;;; Citation Commands
     '("cite" (TeX-arg-conditional TeX-arg-cite-note-p
                                   (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
@@ -522,22 +521,22 @@ for citation keys."
               (car cmd)
               '(TeX-arg-conditional TeX-arg-cite-note-p
                                     ([LaTeX-arg-biblatex-natbib-notes])
-                                  nil)
+                                    nil)
               #'TeX-arg-cite))))
          cmds))
 
-     ;; Fontification for compat macros does not go into `font-latex.el':
-     (when (and (featurep 'font-latex)
-                (eq TeX-install-font-lock 'font-latex-setup))
-       (font-latex-add-keywords '(("citet"        "*[[{")
-                                  ("Citet"        "*[[{")
-                                  ("citep"        "*[[{")
-                                  ("Citep"        "*[[{")
-                                  ("citealt"      "*[[{")
-                                  ("Citealt"      "*[[{")
-                                  ("citealp"      "*[[{")
-                                  ("Citealp"      "*[[{"))
-                                'biblatex))))
+       ;; Fontification for compat macros does not go into `font-latex.el':
+       (when (and (featurep 'font-latex)
+                  (eq TeX-install-font-lock 'font-latex-setup))
+         (font-latex-add-keywords '(("citet"        "*[[{")
+                                    ("Citet"        "*[[{")
+                                    ("citep"        "*[[{")
+                                    ("Citep"        "*[[{")
+                                    ("citealt"      "*[[{")
+                                    ("Citealt"      "*[[{")
+                                    ("citealp"      "*[[{")
+                                    ("Citealp"      "*[[{"))
+                                  'biblatex))))
 
    (LaTeX-add-environments
     ;;; Bibliography commands
