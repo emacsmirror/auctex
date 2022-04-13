@@ -1,6 +1,6 @@
-;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.04)  -*- lexical-binding: t; -*-
+;;; fbox.el --- AUCTeX style for `fbox.sty' (v0.06)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,26 +26,46 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fbox.sty' (v0.04) from 2020/01/03.
+;; This file adds support for `fbox.sty' (v0.06) from 2022/02/20.
 ;; `fbox.sty' is part of TeXLive.
 
 ;;; Code
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
+
+(defun LaTeX-fbox-key-val-options ()
+  "Return an updated list of key=vals from fbox package."
+  (let ((colors (mapcar #'car (LaTeX-xcolor-definecolor-list)))
+        (lenghts (mapcar (lambda (x)
+                           (concat TeX-esc (car x)))
+                         (LaTeX-length-list))))
+    `(("boxrule" ,lenghts)
+      ("boxsep"  ,lenghts)
+      ("lcolor"  ,colors)
+      ("rcolor"  ,colors)
+      ("bcolor"  ,colors)
+      ("tcolor"  ,colors)
+      ("l")
+      ("r")
+      ("b")
+      ("t"))))
 
 (TeX-add-style-hook
  "fbox"
  (lambda ()
+   (TeX-run-style-hooks "xcolor")
    (TeX-add-symbols
-    '("fbox"     [ "Frame parts (combination of lrtb)" ] t)
-    '("fbox*"    [ "Frame parts (combination of lrtb)" ] t)
-    '("fparbox"  [ "Frame parts (combination of lrtb)" ] t)
-    '("fparbox*" [ "Frame parts (combination of lrtb)" ] t))
+    '("fbox"     [TeX-arg-key-val (LaTeX-fbox-key-val-options)] t)
+    '("fbox*"    [TeX-arg-key-val (LaTeX-fbox-key-val-options)] t)
+    '("fparbox"  [TeX-arg-key-val (LaTeX-fbox-key-val-options)] t)
+    '("fparbox*" [TeX-arg-key-val (LaTeX-fbox-key-val-options)] t))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -54,5 +74,8 @@
                                 ("fparbox" "*[{"))
                               'function)))
  TeX-dialect)
+
+(defvar LaTeX-fbox-package-options nil
+  "Package options for the fbox package.")
 
 ;;; fbox.el ends here
