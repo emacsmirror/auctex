@@ -28,10 +28,8 @@
 
 ;;; Code:
 
-(when (or (< emacs-major-version 24)
-          (and (= emacs-major-version 24)
-               (< emacs-minor-version 3)))
-  (error "AUCTeX requires Emacs 24.3 or later"))
+(when (< emacs-major-version 25)
+  (error "AUCTeX requires Emacs 25.1 or later"))
 
 (require 'custom)
 (require 'tex-site)
@@ -270,7 +268,7 @@ expanded.  The expansion is done using the information found in
 `TeX-expand-list'.
 
 The third element is the function which actually start the process.
-Several such hooks has been defined:
+Several such hooks have been defined:
 
 TeX-run-command: Start up the process and show the output in a
 separate buffer.  Check that there is not two commands running for the
@@ -725,7 +723,7 @@ Essentially,
 
 is equivalent to
 
-  (if (fboundp 'name) then else...)
+  (if (fboundp \\='name) then else...)
 
 but takes care of byte-compilation issues where the byte-code for
 the latter could signal an error if it has been compiled with
@@ -1784,7 +1782,7 @@ For some users, `x-focus-frame' does the trick.  For some
 users (on GNOME 3.20),
 
   (lambda ()
-    (run-at-time 0.5 nil #'x-focus-frame))
+    (run-at-time 0.5 nil #\\='x-focus-frame))
 
 does the trick.  Some other users use the external wmctrl tool to
 raise the Emacs frame like so:
@@ -1792,7 +1790,7 @@ raise the Emacs frame like so:
   (lambda ()
     (call-process
      \"wmctrl\" nil nil nil \"-i\" \"-R\"
-     (frame-parameter (selected-frame) 'outer-window-id)))"
+     (frame-parameter (selected-frame) \\='outer-window-id)))"
   :type 'function
   :group 'TeX-view)
 
@@ -2267,10 +2265,10 @@ If this variable is nil, AUCTeX will query you for the name.
 If the variable is t, AUCTeX will assume the file is a master file
 itself.
 
-If the variable is 'shared, AUCTeX will query for the name, but not
+If the variable is `shared', AUCTeX will query for the name, but not
 change the file.
 
-If the variable is 'dwim, AUCTeX will try to avoid querying by
+If the variable is `dwim', AUCTeX will try to avoid querying by
 attempting to `do what I mean'; and then change the file.
 
 It is suggested that you use the File Variables (see the info node
@@ -3022,7 +3020,7 @@ See variable `TeX-style-hook-dialect' for supported dialects."
   :type 'boolean)
 
 (defvar TeX-style-hook-applied-p nil
-  "Nil, unless the style specific hooks have been applied.")
+  "Non-nil means the style specific hooks have been applied.")
  (make-variable-buffer-local 'TeX-style-hook-applied-p)
 
 (defvar TeX-update-style-hook nil
@@ -3719,14 +3717,12 @@ The algorithm is as follows:
                      answer
                    TeX-default-mode))))))
 
-(when (and (boundp 'tex--prettify-symbols-alist)
-           (boundp 'prettify-symbols-compose-predicate))
-  (defun TeX--prettify-symbols-compose-p (start end match)
-    (and (tex--prettify-symbols-compose-p start end match)
-         (not (let ((face (get-text-property end 'face)))
-                (if (consp face)
-                    (memq 'font-latex-verbatim-face face)
-                  (eq face 'font-latex-verbatim-face)))))))
+(defun TeX--prettify-symbols-compose-p (start end match)
+  (and (tex--prettify-symbols-compose-p start end match)
+       (not (let ((face (get-text-property end 'face)))
+              (if (consp face)
+                  (memq 'font-latex-verbatim-face face)
+                (eq face 'font-latex-verbatim-face))))))
 
 (defun VirTeX-common-initialization ()
   "Perform basic initialization."
@@ -3786,13 +3782,10 @@ The algorithm is as follows:
     (TeX-source-correlate-mode 1))
 
   ;; Prettify Symbols mode
-  (when (fboundp 'TeX--prettify-symbols-compose-p)
-    (set (make-local-variable 'prettify-symbols-alist) tex--prettify-symbols-alist)
-    (TeX--if-macro-fboundp add-function
-        (add-function :override (local 'prettify-symbols-compose-predicate)
-                      #'TeX--prettify-symbols-compose-p)
-      (set (make-local-variable 'prettify-symbols-compose-predicate)
-           #'TeX--prettify-symbols-compose-p)))
+  (require 'tex-mode)
+  (setq-local prettify-symbols-alist tex--prettify-symbols-alist)
+  (add-function :override (local 'prettify-symbols-compose-predicate)
+                #'TeX--prettify-symbols-compose-p)
 
   ;; Standard Emacs completion-at-point support
   (add-hook 'completion-at-point-functions
@@ -4108,7 +4101,8 @@ If TEX is a directory, generate style files for all files in the directory."
                                   LaTeX-verbatim-macros-with-delims-local))
             (verb-macros-braces (when (boundp 'LaTeX-verbatim-macros-with-braces-local)
                                   LaTeX-verbatim-macros-with-braces-local))
-            (dialect TeX-style-hook-dialect))
+            (dialect TeX-style-hook-dialect)
+            (bibtex-p (eq major-mode 'bibtex-mode)))
         (TeX-unload-style style)
         (with-current-buffer (generate-new-buffer file)
           (erase-buffer)
@@ -4138,7 +4132,21 @@ If TEX is a directory, generate style files for all files in the directory."
           (mapc (lambda (el) (TeX-auto-insert el style))
                 TeX-auto-parser)
           (insert ")")
-          (if dialect (insert (concat "\n " (prin1-to-string dialect))))
+          (if dialect (insert (concat
+                               "\n "
+                               (prin1-to-string
+                                (if bibtex-p
+                                    ;; Add :latex since functions such
+                                    ;; as `LaTeX-add-bibitems' are
+                                    ;; only meaningful in LaTeX
+                                    ;; document buffer.
+                                    ;; FIXME: BibTeX is available to
+                                    ;; plain TeX through eplain
+                                    ;; (<URL:https://tug.org/eplain/doc/eplain.html#Citations>).
+                                    ;; It would be nice if AUCTeX
+                                    ;; supports such usage.
+                                    `'(or ,dialect :latex)
+                                  dialect)))))
           (insert ")\n\n")
           (write-region (point-min) (point-max) file nil 'silent)
           (kill-buffer (current-buffer))))
@@ -6098,7 +6106,7 @@ valid languages."
   "If non-nil determines behavior of quote insertion.
 It is usually set by language-related style files.  Its value has
 the same structure as the elements of `TeX-quote-language-alist'.
-The symbol 'override can be used as its car in order to override
+The symbol `override' can be used as its car in order to override
 the settings of style files.  Style files should therefore check
 if this symbol is present and not alter `TeX-quote-language' if
 it is.")
@@ -6106,8 +6114,8 @@ it is.")
 
 (defun TeX-insert-quote (force)
   "Insert the appropriate quotation marks for TeX.
-Inserts the value of `TeX-open-quote' (normally ``) or `TeX-close-quote'
-\(normally '') depending on the context.  If `TeX-quote-after-quote'
+Inserts the value of `TeX-open-quote' (normally \\=`\\=`) or `TeX-close-quote'
+\(normally \\='\\=') depending on the context.  If `TeX-quote-after-quote'
 is non-nil, this insertion works only after \".
 With prefix argument FORCE, always inserts \" characters."
   (interactive "*P")
@@ -7043,7 +7051,7 @@ message buffer and start at the first error."
 (defun TeX-previous-error (arg)
   "Find the previous error in the TeX output buffer.
 
-Prefix arg N says how many error messages to move backward (or
+Prefix ARG says how many error messages to move backward (or
 forward, if negative).
 
 This works only with TeX commands and if the
@@ -8044,7 +8052,7 @@ With support for MS-DOS, especially when dviout is used with PC-9801 series."
 (defun TeX-run-interactive (name command file)
   "Run TeX interactively.
 Run command in a buffer (in comint-shell-mode) so that it accepts user
-interaction. If you return to the file buffer after the TeX run,
+interaction.  If you return to the file buffer after the TeX run,
 Error parsing on \\[next-error] should work with a bit of luck."
   (TeX-run-set-command name command)
   (require 'comint)
@@ -8775,7 +8783,7 @@ file and `TeX-region-orig-buffer' to access the buffer where
 from.")
 
 (defun TeX-quote-filename (file)
-  "Convert file name into a form acceptable to TeX."
+  "Convert file name FILE into a form acceptable to TeX."
   (let (pos)
     (while (setq pos (string-match "\\\\" file pos))
       (setq file (replace-match "/" t t file 0)

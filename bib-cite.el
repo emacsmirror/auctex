@@ -1,6 +1,6 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2021 Free Software Foundation, Inc.
+;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2022 Free Software Foundation, Inc.
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
@@ -629,7 +629,7 @@ BiBTeX 0.99b manual says this should be TEXBIB.
 Another version says it should BSTINPUTS.  I don't know anymore!
 
 The colon character (:) is the default path separator in unix, but you may
-use semi-colon (;) for DOS or OS/2 if you set bib-dos-or-os2-variable to t."
+use semi-colon (;) for DOS or OS/2 if you set `bib-dos-or-os2-variable' to t."
   :type 'string)
 
 (defcustom bib-cite-inputs nil
@@ -650,14 +650,14 @@ directory.  You may set this variable to let bib-cite find these .aux files."
   ;; Under DOS  system-type equals ms-dos
   "Whether you use DOS or OS/2 for bib-make-bibliography/bib-display.
 
-It tells bib-make-bibliography and bib-display to translate
+It tells `bib-make-bibliography' and `bib-display' to translate
 the BIBINPUTS environment variable using the \";\" character as
 a path separator and to translate DOS' backslash to slash.
 
 e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
 
 \(You can change the environment variable which is searched by
-setting the elisp variable bib-bibtex-env-variable)"
+setting the elisp variable `bib-bibtex-env-variable')"
   :type 'boolean)
 
 (defcustom bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\|[fvF]\\)ref.*/' -o "
@@ -685,11 +685,11 @@ coexist with some other tags file in your master file directory."
 without the curly bracket.
 
 If you change this variable and you use multi-file documents, make sure you
-also edit the variables bib-etags-command and bib-etags-append-command."
+also edit the variables `bib-etags-command' and `bib-etags-append-command'."
   :type 'regexp)
 
 (defcustom bib-substitute-string-in-display t
-  "Determines if bib-display will substitute @string definitions.
+  "Determines if `bib-display' will substitute @string definitions.
 If t, then the @string text is substituted.
 If nil, the text is not substituted but the @string entry is included."
   :type 'boolean)
@@ -1133,7 +1133,7 @@ to create a bibtex file containing only the references used in the document."
 Store the TAGS file in the master-directory.
 Expect errors if you use this outside of auctex or within a plain
 single-file document.  Also makes sure that the TAGS buffer is updated.
-See variables bib-etags-command and bib-etags-filename"
+See variables `bib-etags-command' and `bib-etags-filename'."
   (interactive)
   (require 'etags)
   (let* ((the-file-list (bib-document-TeX-files))
@@ -1358,12 +1358,14 @@ If within a single file document:
   You can move back with C-xC-x as the mark is set before moving.
   You can search for next occurrances of a ref command with C-sC-s.
 
-If within a multi-file document (in auctex only)
+If within a multi-file document (in AUCTeX only)
   You can move back with C-xC-x if within the same buffer.  If not, just
   select your previous buffer.
-  You can search for next occurrances of a ref command with tag commands:
+  You can search for next occurrences of a ref command with tag commands:
      C-u M-.     Find next alternate definition of last tag specified.
      C-u - M-.   Go back to previous tag found."
+  ;; FIXME: The last 3 lines of the above doc string no longer hold
+  ;; since M-. is now bound to `xref-find-definitions'.
   (let ((the-regexp (bib-guess-or-prompt-for-label)))
     (if (not the-regexp)
         (message "No name given")
@@ -1954,7 +1956,7 @@ Sets global variable bib-document-TeX-files-warnings."
         (progn
           (kill-buffer tex-buffer)
           (error
-           "Sorry, but this is not a multi-file document (Try C-u C-c C-n if using auctex)")))
+           "Sorry, but this is not a multi-file document (Try C-u C-c C-n if using AUCTeX)")))
     (with-current-buffer tex-buffer
       ;; set its directory so relative includes work without expanding
       (setq default-directory dir)
@@ -1989,8 +1991,8 @@ Sets global variable bib-document-TeX-files-warnings."
   "Return cite keys obarray for multi-file document.
 Return nil if not a multi-file document.
 This is a AUCTeX supported feature only.
-Also, see bib-buffer-citekeys-obarray.
-Sets global variable bib-document-citekeys-obarray-warnings."
+Also, see `bib-buffer-citekeys-obarray'.
+Set global variable `bib-document-citekeys-obarray-warnings'."
   (setq bib-document-citekeys-obarray-warnings nil)
   (let ((master-tex (bib-master-file))
         (master-aux))
@@ -2319,7 +2321,7 @@ If FIRST-FILE is t, stop after first file is found."
 argument may consist of environment variable plus a trailing directory, e.g.
 HOME or HOME/bin (trailing directory not supported in dos or OS/2).
 
-bib-dos-or-os2-variable affects:
+`bib-dos-or-os2-variable' affects:
   path separator used (: or ;)
   whether backslashes are converted to slashes"
   (if (not (getenv env))

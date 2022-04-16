@@ -48,7 +48,7 @@ to @email{auctex-devel@@gnu.org}.
 @subsection Which version of Emacs is needed?
 
 @previewlatex{} nominally requires @w{GNU Emacs} with a version of at
-least 24.3.
+least 25.1.
 
 @subsection Which versions of Ghostscript and @AUCTeX{} are needed?
 

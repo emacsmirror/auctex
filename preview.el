@@ -412,7 +412,7 @@ screen content.  Buffer-local to rendering buffer.")
   "Color setup list.
 An array with elements 0, 1 and 2 for background,
 foreground and border colors, respectively.  Each element
-is a list of 3 real numbers between 0 and 1, or NIL
+is a list of 3 real numbers between 0 and 1, or nil
 of nothing special should be done for the color")
 (make-variable-buffer-local 'preview-colors)
 
@@ -1091,7 +1091,7 @@ The usual PROCESS and COMMAND arguments for
 
 (defun preview-dsc-parse (file)
   "Parse DSC comments of FILE.
-Returns a vector with offset/length pairs corresponding to
+Return a vector with offset/length pairs corresponding to
 the pages.  Page 0 corresponds to the initialization section."
   (with-temp-buffer
     (set-buffer-multibyte nil)
@@ -1146,7 +1146,7 @@ object corresponding to the wanted page."
 (defun preview-ps-quote-filename (str &optional nonrel)
   "Make a PostScript string from filename STR.
 The file name is first made relative unless
-NONREL is not NIL."
+NONREL is not nil."
   (unless nonrel (setq str (file-relative-name str)))
   (let ((index 0))
     (while (setq index (string-match "[\\()]" str index))
@@ -1520,7 +1520,7 @@ This is for matching screen font size and previews."
   "Calculate the default font size of document.
 If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
-had let your document be parsed by AucTeX."
+had let your document be parsed by AUCTeX."
   (let* ((regexp "\\`\\([0-9]+\\)pt\\'")
          (option
           (or
@@ -1630,10 +1630,10 @@ Fallback to :inherit and 'default implemented."
                               #'backward-char #'forward-char))
   "Cause previews to open automatically when entered.
 Possibilities are:
-T autoopens,
-NIL doesn't,
+t autoopens,
+nil doesn't,
 a symbol will have its value consulted if it exists,
-defaulting to NIL if it doesn't.
+defaulting to nil if it doesn't.
 An integer will specify a maximum cursor movement distance.
 Larger movements won't open the preview.
 A CONS-cell means to call a function for determining the value.
@@ -1655,7 +1655,7 @@ All of the options show reasonable defaults."
 
 (defun preview-auto-reveal-p (mode distance)
   "Decide whether to auto-reveal.
-Returns non-NIL if region should be auto-opened.
+Return non-nil if region should be auto-opened.
 See `preview-auto-reveal' for definitions of MODE, which gets
 set to `preview-auto-reveal'.  DISTANCE specifies the movement
 distance with which point has been reached in case it has been
@@ -1671,7 +1671,7 @@ a movement starting in the current buffer."
 
 (defun preview-arrived-via (&rest list)
   "Indicate auto-opening.
-Returns non-NIL if called by one of the commands in LIST."
+Return non-nil if called by one of the commands in LIST."
   (memq this-command list))
 
 (defcustom preview-equality-transforms '(identity
@@ -1784,7 +1784,7 @@ REST as the remainder, returning T."
 
 (defun preview-remove-urgentization (ov)
   "Undo urgentization of OV by `preview-add-urgentization'.
-Returns the old arguments to `preview-add-urgentization'
+Return the old arguments to `preview-add-urgentization'
 if there was any urgentization."
   (let ((dispro (overlay-get ov 'display)))
     (when (eq (car-safe dispro) 'when)
@@ -2423,8 +2423,8 @@ Possible values are nil, t, and `ask'."
   "Alist of dumped masters.
 The elements are (NAME . ASSOC).  NAME is the master file name
 \(without extension), ASSOC is what to do with regard to this
-format.  Possible values: NIL means no format is available
-and none should be generated.  T means no format is available,
+format.  Possible values: nil means no format is available
+and none should be generated.  t means no format is available,
 it should be generated on demand.  If the value is a cons cell,
 the CAR of the cons cell is the command with which the format
 has been generated, and the CDR is some Emacs-flavor specific
@@ -2576,7 +2576,7 @@ TeX bounding BOX passed on to the `place' hook.
 COUNTERS is the info about saved counter structures.
 TEMPDIR is a copy of `TeX-active-tempdir'.
 PLACE-OPTS are additional arguments passed into
-`preview-parse-messages'.  Returns
+`preview-parse-messages'.  Return
 a list with additional info from the placement hook.
 Those lists get concatenated together and get passed
 to the close hook."
@@ -2872,9 +2872,9 @@ using MML mode."
   "Return an MML representation of OV as string.
 This can be used to send inline images in mail and news when
 using MML mode.  If there is nothing current available,
-NIL is returned.  If the image has a colored border and the
+nil is returned.  If the image has a colored border and the
 user wants it removed when asked (unless DONT-ASK is set),
-'badcolor is thrown a t.  The MML is returned in the car of the
+`badcolor' is thrown a t.  The MML is returned in the car of the
 result, DONT-ASK in the cdr."
   (and (memq (overlay-get ov 'preview-state) '(active inactive))
        (not (overlay-get ov 'queued))
@@ -3652,7 +3652,7 @@ name(\\([^)]+\\))\\)\\|\
 
 (defun preview-get-geometry ()
   "Transfer display geometry parameters from current display.
-Returns list of scale, resolution and colors.  Calculation
+Return list of scale, resolution and colors.  Calculation
 is done in current buffer."
   (condition-case err
       (let* ((geometry
@@ -3686,7 +3686,7 @@ and `preview-colors' are set as given."
   "Return colors from the current display.
 Fetches the current screen colors and makes a vector
 of colors as numbers in the range 0..65535.
-Pure borderless black-on-white will return triple NIL.
+Pure borderless black-on-white will return triple nil.
 The fourth value is the transparent border thickness."
   (let
       ((bg (color-values (preview-inherited-face-attribute
@@ -3956,7 +3956,7 @@ This is passed through `preview-do-replacements'."
 For the rest of the session, this file is used when running
 on the same master file.
 
-Returns the process for dumping, nil if there is still a valid
+Return the process for dumping, nil if there is still a valid
 format available.
 
 If FORMAT-CONS is non-nil, a previous format may get reused."

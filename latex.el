@@ -399,7 +399,7 @@ LaTeX-title - The title of the section, default to an empty string.
 LaTeX-toc - Entry for the table of contents list, default nil.
 LaTeX-done-mark - Position of point afterwards, default nil (meaning end).
 
-The following standard hook exist -
+The following standard hooks exist -
 
 LaTeX-section-heading: Query the user about the name of the
 sectioning command.  Modifies `LaTeX-level' and `LaTeX-name'.
@@ -422,13 +422,13 @@ Controled by the variable `LaTeX-section-label'.
 To get a full featured `LaTeX-section' command, insert
 
  (setq LaTeX-section-hook
-       '(LaTeX-section-heading
+       \\='(LaTeX-section-heading
          LaTeX-section-title
          LaTeX-section-toc
          LaTeX-section-section
          LaTeX-section-label))
 
-in your .emacs file."
+in your init file such as .emacs.d/init.el or .emacs."
   :group 'LaTeX-macro
   :type 'hook
   :options '(LaTeX-section-heading
@@ -3278,7 +3278,7 @@ as values for the key.  Use PROMPT as the prompt string."
                    (cond ((member hook '("env" "para"))
                           '("after" "before" "begin" "end"))
                          ((string= hook "include")
-                          '("after" "before" "end"))
+                          '("after" "before" "end" "excluded"))
                          ((string= hook "begindocument")
                           '("before" "end"))
                          ((string= hook "enddocument")
@@ -3337,7 +3337,7 @@ as values for the key.  Use PROMPT as the prompt string."
            (setq where (funcall place)))
 
           ;; include/<file-name>/<where>: <file-name> is optional and
-          ;; <where> is one of (before|after|end)
+          ;; <where> is one of (before|after|end|excluded)
           ((string= hook "include")
            (if (funcall search)
                (progn
@@ -3978,7 +3978,7 @@ If optional argument COMMENT is non-nil, include comment env from
   "Return the indentation of a line of LaTeX source.
 FORCE-TYPE can be used to force the calculation of an inner or
 outer indentation in case of a commented line.  The symbols
-'inner and 'outer are recognized."
+`inner' and `outer' are recognized."
   (save-excursion
     (LaTeX-back-to-indentation force-type)
     (let ((i 0)
@@ -4097,7 +4097,7 @@ constructs.  A special case is \\newif where the following
 The point is supposed to be at the beginning of the current line.
 FORCE-TYPE can be used to force the calculation of an inner or
 outer indentation in case of a commented line.  The symbols
-'inner and 'outer are recognized."
+`inner' and `outer' are recognized."
   (let (line-comment-current-flag
         line-comment-last-flag
         comment-current-flag
@@ -4156,9 +4156,20 @@ outer indentation in case of a commented line.  The symbols
                                     "end[ \t]*{macrocode\\*?}"))
                 fill-prefix
                 (TeX-in-line-comment))
-           ;; Reset indentation to zero after a macrocode
-           ;; environment.
-           0)
+           ;; Reset indentation to zero after a macrocode environment
+           ;; only when we're not still inside a describing
+           ;; environment like "macro" or "environment" etc.  Text
+           ;; inside these environments after '\end{macrocode}' is
+           ;; indented with `LaTeX-indent-level':
+           (let ((outer-env (LaTeX-current-environment 2)))
+             (cond ((member outer-env '("macro" "environment"))
+                    LaTeX-indent-level)
+                   ((and (fboundp 'LaTeX-doc-NewDocElement-list)
+                         (LaTeX-doc-NewDocElement-list)
+                         (member outer-env
+                                 (mapcar #'cadr (LaTeX-doc-NewDocElement-list))))
+                    LaTeX-indent-level)
+                   (t 0))))
           ((looking-at (concat (regexp-quote TeX-esc)
                                "begin *{"
                                ;; Don't give optional argument here
@@ -4220,7 +4231,7 @@ outer indentation in case of a commented line.  The symbols
   "Return the indentation of a line.
 FORCE-TYPE can be used to force the calculation of an inner or
 outer indentation in case of a commented line.  The symbols
-'inner and 'outer are recognized."
+`inner' and `outer' are recognized."
   (if (and fill-prefix
            (or (and force-type
                     (eq force-type 'inner))
@@ -4251,7 +4262,7 @@ character(s), but only if `this-command' is not a newline
 command, that is, `TeX-newline' or the value of
 `TeX-newline-function'.  The optional argument FORCE-TYPE can be
 used to force point being moved to the inner or outer indentation
-in case of a commented line.  The symbols 'inner and 'outer are
+in case of a commented line.  The symbols `inner' and `outer' are
 recognized."
   (if (or (and force-type
                (eq force-type 'inner))
@@ -7198,14 +7209,14 @@ runs the hooks in `docTeX-mode-hook'."
   TeX-clean-default-intermediate-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom docTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -7215,14 +7226,14 @@ that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
           '("\\.acn" "\\.acr" "\\.alg" "\\.glg" "\\.ist"))
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
 (defcustom LaTeX-clean-output-suffixes TeX-clean-default-output-suffixes
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
-that is, you do _not_ have to cater for this yourself by adding \\\\' or $."
+that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
@@ -7286,8 +7297,8 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
 
-  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin
-              end-of-defun-function       #'LaTeX-find-matching-end)
+  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
+  (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
   (LaTeX-indent-commands-regexp-make)
 
@@ -8096,7 +8107,7 @@ key=value, default is \"label\".  NUM is an integer for an
 explicitly numbered group construct, useful when adding items to
 `reftex-label-regexps'.
 
-As an extra feature, the key can be the symbol none where the
+As an extra feature, the key can be the symbol `none' where the
 entire matching for the key=value is skipped.  The regexp then is
 useful for skipping complex optional arguments.  It should be
 wrapped in \\(?:...\\)? then."
