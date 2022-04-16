@@ -1774,8 +1774,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
-  (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start
-              end-of-defun-function       #'ConTeXt-find-matching-stop)
+  (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start)
+  (setq-local end-of-defun-function       #'ConTeXt-find-matching-stop)
 
   ;; Outline support
   (require 'outline)
