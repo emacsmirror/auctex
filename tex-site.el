@@ -38,10 +38,8 @@
 
 ;;; Code:
 
-(when (or (< emacs-major-version 24)
-          (and (= emacs-major-version 24)
-               (< emacs-minor-version 3)))
-  (error "AUCTeX requires Emacs 24.3 or later"))
+(when (< emacs-major-version 25)
+  (error "AUCTeX requires Emacs 25.1 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
@@ -123,11 +121,11 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.1.2"
+(defconst AUCTeX-version "13.1.3"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2022-04-08"
+(defconst AUCTeX-date "2022-04-16"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
