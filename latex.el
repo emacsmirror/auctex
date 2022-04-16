@@ -7297,8 +7297,8 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'TeX-search-files-type-alist)
        LaTeX-search-files-type-alist)
 
-  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin
-              end-of-defun-function       #'LaTeX-find-matching-end)
+  (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
+  (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
   (LaTeX-indent-commands-regexp-make)
 
