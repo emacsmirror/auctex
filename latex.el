@@ -3894,7 +3894,7 @@ macros are added to the regexp's.  This function is called in
              'LaTeX-indent-end-regexp-local)
     (funcall func
              LaTeX-indent-begin-exceptions-list
-             "ifthenelse\\b"
+             "ifthenelse\\b\\|iff\\b"
              'LaTeX-indent-begin-regexp-exceptions-local)))
 
 (defun LaTeX-indent-line ()
