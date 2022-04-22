@@ -330,7 +330,7 @@ info manual.
 @item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
 @itemx Preview/Report Bug
-@kindex @kbd{M-x preview-report-bug @key{RET}}
+@kindex @kbd{M-x preview-report-bug RET}
 @findex preview-report-bug
 @cindex Report a bug
 This is the preferred way of reporting bugs as it will fill in what

@@ -1284,7 +1284,7 @@ as much of the macro, as it unambiguously can.  For example, if you type
 environments, etc.  This is controlled by @code{TeX-complete-list}.
 
 @deffn Command TeX-complete-symbol
-@kindex M-@key{TAB}
+@kindex M-TAB
 (@kbd{M-@key{TAB}})  Complete @TeX{} symbol before point.
 @end deffn
 
@@ -1662,13 +1662,13 @@ to indenting with a small summary in each case:
 
 @table @kbd
 @item @key{TAB}
-@kindex @key{TAB}
+@kindex TAB
 @findex LaTeX-indent-line
 @code{LaTeX-indent-line} will indent the current line.
 
 @item @key{LFD}
 @itemx C-j
-@kindex @key{LFD}
+@kindex LFD
 @kindex C-j
 @code{newline-and-indent} inserts a new line (much like @key{RET}) and
 moves the cursor to an appropriate position by the left margin.
