@@ -1089,14 +1089,16 @@ caption.
 @cindex \item
 
 In an itemize-like environment, nodes (i.e., @samp{\item}s) may be
-inserted using @kbd{C-c @key{LFD}}.
+inserted using @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}.  The latter is
+only defined as an alias if the key binding is still available.
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current item, move to the next line and
-insert an appropriate @samp{\item} for the current environment.  That is,
-`itemize' and `enumerate' will have @samp{\item } inserted, while
-`description' will have @samp{\item[] } inserted.
+@kindex C-c LFD
+@kindex M-RET
+(@kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}) Close the current item, move to
+the next line and insert an appropriate @samp{\item} for the current
+environment.  That is, `itemize' and `enumerate' will have @samp{\item }
+inserted, while `description' will have @samp{\item[] } inserted.
 @end deffn
 
 @defopt TeX-arg-item-label-p
@@ -1128,27 +1130,29 @@ act like the empty string is given, but don't prompt for a position.
 @AUCTeX{} calculates the number of columns from the format string and
 inserts the suitable number of ampersands.
 
-You can use @kbd{C-c @key{LFD}} (@code{LaTeX-insert-item}) to terminate
-rows in these environments.  It supplies line break macro @samp{\\} and
-inserts the suitable number of ampersands on the next line.  @AUCTeX{}
-also supports the @samp{*@{num@}@{cols@}} notation (which may contain
-another @samp{*}-expression) in the format string when calculating the
-number of ampersands.  Please note that @samp{num} and @samp{cols} must
-be enclosed in braces; expressions like @samp{*2l} are not recognized
-correctly by the algorithm.
+You can use @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}
+(@code{LaTeX-insert-item}) to terminate rows in these environments.  It
+supplies line break macro @samp{\\} and inserts the suitable number of
+ampersands on the next line.  @AUCTeX{} also supports the
+@samp{*@{num@}@{cols@}} notation (which may contain another
+@samp{*}-expression) in the format string when calculating the number of
+ampersands.  Please note that @samp{num} and @samp{cols} must be enclosed
+in braces; expressions like @samp{*2l} are not recognized correctly by the
+algorithm.
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current row with @samp{\\}, move to the
-next line and insert an appropriate number of ampersands for the current
-environment.
+@kindex C-c LFD
+@kindex M-RET
+(@kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}) Close the current row with
+@samp{\\}, move to the next line and insert an appropriate number of
+ampersands for the current environment.
 @end deffn
 
 Similar supports are provided for various amsmath environments such as
 @samp{align}, @samp{gather}, @samp{alignat}, @samp{matrix} etc.  Try
-typing @kbd{C-c @key{LFD}} in these environments.  It recognizes the
-current environment and does the appropriate job depending on the
-context.
+typing @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}} in these environments.  It
+recognizes the current environment and does the appropriate job depending
+on the context.
 
 @node Customizing Environments
 @subsection Customizing Environments
