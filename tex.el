@@ -8256,7 +8256,12 @@ Return nil only if no errors were found."
                       (match-string 1 output-file)
                     "dvi")))))))
   (if process (TeX-format-mode-line process))
-  (if (re-search-forward "^\\(!\\|.*:[0-9]+:\\) " nil t)
+  (if (catch 'found
+        (while (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
+          (if (or (not (match-beginning 1))
+                  ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 1)))
+              (throw 'found t))))
       (progn
         (message "%s errors in `%s'. Use %s to display." name (buffer-name)
                  (substitute-command-keys
@@ -8269,6 +8274,9 @@ Return nil only if no errors were found."
                                             'TeX-current-master))
                          t))
         t)
+    ;; In case that there were only non-error warnings of type
+    ;; bug#55065, restore point to the initial position.
+    (goto-char (point-min))
     (let (dvi2pdf)
         (if (with-current-buffer TeX-command-buffer
            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
@@ -9272,7 +9280,7 @@ Return non-nil if an error or warning is found."
   (let ((regexp
          (concat
           ;; TeX error
-          "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
+          "^\\(!\\|\\(.+?\\):[0-9]+:\\) \\|"
           ;; New file
           "(\n?\\([^\n()]+\\)\\|"
           ;; End of file.
@@ -9302,17 +9310,25 @@ Return non-nil if an error or warning is found."
           nil)
          ;; TeX error
          ((match-beginning 1)
-          (when (match-beginning 2)
-            (unless TeX-error-file
-              (push nil TeX-error-file)
-              (push nil TeX-error-offset))
-            (unless (car TeX-error-offset)
-              (rplaca TeX-error-file (TeX-match-buffer 2))))
-          (setq error-found t)
-          (if (looking-at "Preview ")
-              t
-            (TeX-error store)
-            nil))
+          (if (or (not (match-beginning 2))
+                  ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 2)))
+              (progn
+                (when (match-beginning 2)
+                  (unless TeX-error-file
+                    (push nil TeX-error-file)
+                    (push nil TeX-error-offset))
+                  (unless (car TeX-error-offset)
+                    (rplaca TeX-error-file (TeX-match-buffer 2))))
+                (setq error-found t)
+                (if (looking-at "Preview ")
+                    t
+                  (TeX-error store)
+                  nil))
+            ;; This wasn't an actual TeX error.  Go to the least
+            ;; possible point to search again.
+            (goto-char (1+ (match-beginning 1)))
+            t))
          ;; LaTeX bad box
          ((match-beginning 7)
           ;; In `TeX-error-list' we collect all warnings, also if they're going
