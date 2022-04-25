@@ -1,6 +1,6 @@
 ;;; ulem.el --- AUCTeX style for `ulem.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2022  Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Keywords: tex
@@ -29,6 +29,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

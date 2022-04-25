@@ -1,6 +1,6 @@
 ;;; midfloat.el --- AUCTeX style for `midfloat.sty' (v1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021, 2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "midfloat"

@@ -1,6 +1,6 @@
 ;;; jurabib.el --- AUCTeX style for the `jurabib' package  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,6 +37,7 @@
 
 (require 'tex)
 (require 'tex-style)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
