@@ -1,10 +1,10 @@
-;;; ifluatex.el --- AUCTeX style for `ifluatex.sty' version 1.5.  -*- lexical-binding: t; -*-
+;;; ifpdf.el --- AUCTeX style for `ifpdf.sty' version 3.4.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022 Free Software Foundation, Inc.
 
-;; Author: Davide G. M. Salvetti <salve@debian.org>
+;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2014-11-15
+;; Created: 2022-04-23
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ifluatex.sty' 1.5.  The package is now
+;; This file adds support for `ifpdf.sty' 3.4.  The package is now
 ;; part of 'iftex' bundle and therefore, the code is now in
 ;; 'iftex.el'.
 
@@ -34,34 +34,14 @@
 
 (require 'tex)
 
-;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-
 (TeX-add-style-hook
- "ifluatex"
+ "ifpdf"
  (lambda ()
-
    ;; Run the style hook for 'iftex' which does the work:
-   (TeX-run-style-hooks "iftex")
-
-   (TeX-add-symbols
-    '("luatexversion" 0)
-    '("luatexrevision" 0))
-
-   (TeX-declare-expert-macros
-    "ifluatex"
-    "luatexversion" "luatexrevision")
-
-   (when (and (featurep 'font-latex)
-              (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("luatexversion")
-                                ("luatexrevision"))
-                              'function)))
+   (TeX-run-style-hooks "iftex"))
  TeX-dialect)
 
-(defvar LaTeX-ifluatex-package-options nil
-  "Package options for the ifluatex package.")
+(defvar LaTeX-ifpdf-package-options nil
+  "Package options for the ifpdf package.")
 
-;;; ifluatex.el ends here
+;;; ifpdf.el ends here
