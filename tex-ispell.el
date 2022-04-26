@@ -62,6 +62,7 @@
 ;; minted.sty
 ;; nameref.sty
 ;; pythontex.sty
+;; shortvrb.sty
 ;; siunitx.sty
 ;; splitidx.sty
 ;; stabular.sty
@@ -212,6 +213,10 @@
       ("inputpygments" . 1)
       ("setpygmentsfv" . 1)
       ("setpygmentspygopt" . 1)
+      ;; shortvrb.sty
+      ("MakeShortVerb" . 1)
+      ("MakeShortVerb*" . 1)
+      ("DeleteShortVerb" . 1)
       ;; siunitx.sty
       ("num" . 1)
       ("si" . 1)
