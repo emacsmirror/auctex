@@ -1,6 +1,6 @@
 ;;; error-parsing.el --- tests for error parsing  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2016-2022  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -34,7 +34,12 @@
              (setq TeX-debug-warnings t
                    TeX-debug-bad-boxes t)
              (insert-file-contents TeX-test-compilation-log)
-             (TeX-parse-all-errors)
+             ;; Set `default-directory' so that `TeX-parse-error' can
+             ;; find dummy file "./test.tex".
+	     (let ((default-directory
+                     (expand-file-name
+                      (file-name-directory TeX-test-compilation-log))))
+               (TeX-parse-all-errors))
              TeX-error-list)
            '((warning
               "./nice-class.cls" 32
