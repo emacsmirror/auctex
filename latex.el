@@ -3245,6 +3245,16 @@ returning an alist.  Use PROMPT as the prompt string."
          (t
           key-val-alist))))
 
+(defun TeX-arg-key-val (optional key-val-alist &optional prompt)
+  "Prompt for keys and values in KEY-VAL-ALIST.
+Insert the given value as a TeX macro argument.  If OPTIONAL is
+non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
+alist.  The car of each element should be a string representing a
+key and the optional cdr should be a list with strings to be used
+as values for the key.  Use PROMPT as the prompt string."
+  (let ((options (TeX-read-key-val optional key-val-alist prompt)))
+    (TeX-argument-insert options optional)))
+
 (defun TeX-read-completing-read (optional collection &optional prompt complete
                                           predicate require-match
                                           initial-input hist def
@@ -3363,16 +3373,6 @@ INHERIT-INPUT-METHOD are passed to
                                                  hist def inherit-input-method)
               ",")
    optional prefix))
-
-(defun TeX-arg-key-val (optional key-val-alist &optional prompt)
-  "Prompt for keys and values in KEY-VAL-ALIST.
-Insert the given value as a TeX macro argument.  If OPTIONAL is
-non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
-alist.  The car of each element should be a string representing a
-key and the optional cdr should be a list with strings to be used
-as values for the key.  Use PROMPT as the prompt string."
-  (let ((options (TeX-read-key-val optional key-val-alist prompt)))
-    (TeX-argument-insert options optional)))
 
 (defun TeX-read-hook ()
   "Read a LaTeX hook and return it as a string."
