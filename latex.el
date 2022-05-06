@@ -3245,6 +3245,125 @@ returning an alist.  Use PROMPT as the prompt string."
          (t
           key-val-alist))))
 
+(defun TeX-read-completing-read (optional collection &optional prompt complete
+                                          predicate require-match
+                                          initial-input hist def
+                                          inherit-input-method)
+  "Read a string in the minibuffer, with completion and return it.
+If OPTIONAL is non-nil, indicate it in the prompt.
+
+COLLECTION provides elements for completion and is passed to
+`completing-read'.  It can be:
+  - A List or an alist
+  - A symbol returning a list
+  - A function call
+
+PROMPT replaces the standard one where ' (cr): ' is appended to
+it.  If you want the full control over the prompt, set COMPLETE
+to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to `completing-read', which see."
+  (completing-read
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (cr)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t "Option (cr)"))
+                        complete)
+   (cond ((and (symbolp collection)
+               (boundp collection))
+          (symbol-value collection))
+         ((and (listp collection)
+               (symbolp (car collection))
+               (fboundp (car collection)))
+          (if (> (length collection) 1)
+              (eval collection t)
+            (funcall (car collection))))
+         (t collection))
+   predicate require-match initial-input hist def inherit-input-method))
+
+(defun TeX-arg-completing-read (optional collection &optional prompt complete
+                                         prefix predicate require-match
+                                         initial-input hist def
+                                         inherit-input-method)
+  "Read a string in the minibuffer, with completion and insert it.
+If OPTIONAL is non-nil, indicate it in the minibuffer and insert
+the result in brackets if not empty.
+
+For PROMPT and COMPLETE, refer to `TeX-read-completing-read'.
+For PREFIX, see `TeX-argument-insert'.
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to `completing-read', which see."
+  (TeX-argument-insert
+   (TeX-read-completing-read optional collection prompt complete
+                             predicate require-match initial-input
+                             hist def inherit-input-method)
+   optional prefix))
+
+(defun TeX-read-completing-read-multiple (optional table &optional prompt complete
+                                                   predicate require-match
+                                                   initial-input hist def
+                                                   inherit-input-method)
+  "Read multiple strings in the minibuffer, with completion and return them.
+If OPTIONAL is non-nil, indicate it in the prompt.
+
+COLLECTION provides elements for completion and is passed to
+`completing-read'.  It can be:
+  - A List or an alist
+  - A symbol returning a list
+  - A function call
+
+PROMPT replaces the standard one where ' (crm): ' is appended to
+it.  If you want the full control over the prompt, set COMPLETE
+to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to
+`TeX-completing-read-multiple', which see."
+  (TeX-completing-read-multiple
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (crm)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t "Options (crm)"))
+                        complete)
+   (cond ((and (symbolp table)
+               (boundp table))
+          (symbol-value table))
+         ((and (listp table)
+               (symbolp (car table))
+               (fboundp (car table)))
+          (if (> (length table) 1)
+              (eval table t)
+            (funcall (car table))))
+         (t table))
+   predicate require-match initial-input hist def inherit-input-method))
+
+(defun TeX-arg-completing-read-multiple (optional table &optional prompt complete
+                                                  prefix predicate require-match
+                                                  initial-input hist def
+                                                  inherit-input-method)
+  "Read multiple strings in the minibuffer, with completion and insert them.
+If OPTIONAL is non-nil, indicate it in the minibuffer and insert
+the result in brackets if not empty.
+
+For PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
+For PREFIX, see `TeX-argument-insert'.
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to
+`TeX-completing-read-multiple', which see."
+  (TeX-argument-insert
+   (mapconcat #'identity
+              (TeX-read-completing-read-multiple optional table prompt
+                                                 complete predicate
+                                                 require-match initial-input
+                                                 hist def inherit-input-method)
+              ",")
+   optional prefix))
+
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
 Insert the given value as a TeX macro argument.  If OPTIONAL is
