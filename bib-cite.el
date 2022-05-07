@@ -1429,11 +1429,7 @@ If within a multi-file document (in AUCTeX only)
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
-          ;; COMPATIBILITY for emacs<25.
-          (if (fboundp 'outline-show-entry)
-              (outline-show-entry)
-            (with-no-warnings
-              (show-entry)))))))
+          (outline-show-entry)))))
 
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))

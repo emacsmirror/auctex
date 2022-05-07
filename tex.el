@@ -8096,7 +8096,7 @@ This function is *obsolete* and only here for compatibility
 reasons.  Use `TeX-run-function' instead."
   (interactive)
   (TeX-ispell-document ""))
-
+(make-obsolete 'TeX-run-ispell-on-document 'TeX-run-function "2006-02-07")
 
 ;;; Command Sentinels
 
