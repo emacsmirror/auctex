@@ -3761,7 +3761,9 @@ The algorithm is as follows:
                                     (when (fboundp #'LaTeX-length-list)
                                       (LaTeX-length-list))
                                     (when (fboundp #'LaTeX-counter-list)
-                                      (LaTeX-counter-list))))
+                                      (mapcar (lambda (x)
+                                                `(,(concat "the" (car x))))
+                                              (LaTeX-counter-list)))))
                           (if TeX-insert-braces "{}"))
                     (list "" TeX-complete-word)))
 
