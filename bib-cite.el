@@ -595,6 +595,7 @@
 ;; Silence the compiler:
 (declare-function reftex-view-crossref "ext:reftex-dcr"
                   (&optional arg auto-how fail-quietly))
+(declare-function outline-show-entry "ext:outline" ())
 
 (defgroup bib-cite nil
   "bib-cite, LaTeX minor-mode to display \\cite, \\ref and \\label commands."
