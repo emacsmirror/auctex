@@ -3752,12 +3752,18 @@ The algorithm is as follows:
   ;;                           (make-display-table)))
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
-  ;; Symbol completion.
-  (set (make-local-variable 'TeX-complete-list)
-       (list (list "\\\\\\([a-zA-Z]*\\)"
-                   1 'TeX-symbol-list-filtered
-                   (if TeX-insert-braces "{}"))
-             (list "" TeX-complete-word)))
+  ;; Symbol & length completion.
+  (setq-local TeX-complete-list
+              (list (list "\\\\\\([a-zA-Z]*\\)"
+                          1
+                          (lambda ()
+                            (append (TeX-symbol-list-filtered)
+                                    (when (fboundp #'LaTeX-length-list)
+                                      (LaTeX-length-list))
+                                    (when (fboundp #'LaTeX-counter-list)
+                                      (LaTeX-counter-list))))
+                          (if TeX-insert-braces "{}"))
+                    (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
 
