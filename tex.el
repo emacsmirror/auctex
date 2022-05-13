@@ -51,14 +51,13 @@
                   (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
                   (bus service path interface signal handler &rest args))
-(declare-function LaTeX-environment-list "latex"
-                  nil)
-(declare-function LaTeX-bibliography-list "latex"
-                  nil)
-(declare-function comint-exec
+(declare-function LaTeX-environment-list "latex" nil)
+(declare-function LaTeX-bibliography-list "latex" nil)
+(declare-function LaTeX-counter-list "latex" nil)
+(declare-function LaTeX-length-list "latex" nil)
+(declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
-(declare-function comint-mode
-                  nil)
+(declare-function comint-mode "ext:comint" nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
 (declare-function gnuserv-start "ext:gnuserv"
