@@ -362,7 +362,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("qbezier" "[(((") ("raisebox" "{[[{")
       ("addvspace" "{") ("vspace" "*{") ("hspace" "*{")
       ("addcontentsline" "{{{") ("addtocontents" "{{")
-      ("labelformat" "{{")
+      ("labelformat" "{{") ("linespread" "{")
       ("AddToHook" "{[{") ("RemoveFromHook" "{[") ("AddToHookNext" "{{")
       ("ProvidesClass" "{[") ("ProvidesPackage" "{[") ("ProvidesFile" "{[")
       ;; XXX: Should macros without arguments rather be listed in a

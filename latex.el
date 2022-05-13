@@ -7896,6 +7896,8 @@ function would return non-nil and `(match-string 1)' would return
      ;; User level reset macros:
      '("normalfont" -1) '("normalshape" -1)
 
+     '("linespread" "Factor")
+
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
      '("RemoveFromHook" TeX-arg-hook [ "Label" ])
