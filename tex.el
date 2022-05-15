@@ -53,8 +53,6 @@
                   (bus service path interface signal handler &rest args))
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
-(declare-function LaTeX-counter-list "latex" nil)
-(declare-function LaTeX-length-list "latex" nil)
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
 (declare-function comint-mode "ext:comint" nil)
@@ -3757,9 +3755,9 @@ The algorithm is as follows:
                           1
                           (lambda ()
                             (append (TeX-symbol-list-filtered)
-                                    (when (fboundp #'LaTeX-length-list)
+                                    (when (fboundp 'LaTeX-length-list)
                                       (LaTeX-length-list))
-                                    (when (fboundp #'LaTeX-counter-list)
+                                    (when (fboundp 'LaTeX-counter-list)
                                       (mapcar (lambda (x)
                                                 `(,(concat "the" (car x))))
                                               (LaTeX-counter-list)))))
