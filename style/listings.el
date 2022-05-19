@@ -345,6 +345,16 @@
          `((,env ?l "lst:" "~\\ref{%s}"
                  LaTeX-listings-reftex-label-context-function
                  (regexp "[Ll]isting")))))
+      (when (boundp 'reftex-label-regexps)
+        (add-to-list (make-local-variable 'reftex-label-regexps)
+                     (concat (regexp-quote TeX-esc)
+                             "begin[[:space:]]*"
+                             (regexp-quote TeX-grop)
+                             (regexp-quote env)
+                             (regexp-quote TeX-grcl)
+                             "[[:space:]]*"
+                             (LaTeX-extract-key-value-label nil 1))
+                     t))
       ;; Fontification
       (when (and (fboundp 'font-latex-add-keywords)
                  (eq TeX-install-font-lock 'font-latex-setup))
