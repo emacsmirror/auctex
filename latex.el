@@ -52,7 +52,6 @@
 
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)
-(defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
 
 ;;; Syntax
@@ -1779,7 +1778,7 @@ This is necessary since index entries may contain commands and stuff.")
        ("\\\\newenvironment\\*?{\\([^}]+\\)}"
         1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
-       ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+       ("\\\\input{\"?\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?\"?}"
         1 TeX-auto-file)
        ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
         1 TeX-auto-file)

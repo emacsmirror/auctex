@@ -3841,6 +3841,10 @@ The algorithm is as follows:
 (defconst TeX-auto-parser-local 3)
 (defconst TeX-auto-parser-change 4)
 
+(defvar TeX-auto-file nil)
+;; Internal temporal variable.  Don't refer to it in your program
+;; unless you know what you are doing.  Use (TeX-style-list) instead.
+
 (defun TeX-auto-add-information (name entries)
   "For NAME in `TeX-auto-parser' add ENTRIES."
   (let* ((entry (assoc name TeX-auto-parser))
@@ -4227,7 +4231,7 @@ alter the numbering of any ordinary, non-shy groups.")
        1 TeX-auto-symbol)
       (,(concat "\\\\newfont{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
       (,(concat "\\\\typein\\[\\\\\\(" token "+\\)\\]") 1 TeX-auto-symbol)
-      ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
+      ("\\\\input +\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?"
        1 TeX-auto-file)
       (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol)))
