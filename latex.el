@@ -1780,16 +1780,16 @@ This is necessary since index entries may contain commands and stuff.")
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\"?\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?\"?}"
         1 TeX-auto-file)
-       ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+       ("\\\\include{\\(\\.*[^#}%\\.\n\r]+\\)\\(\\.[^#}%\\.\n\r]+\\)?}"
         1 TeX-auto-file)
        (,(concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
         1 LaTeX-auto-bibitem)
        (,(concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
         1 LaTeX-auto-bibitem)
-       ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
-       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r]+\\)\\..+}"
+       ("\\\\bibliography{\\([^#}\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
+       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r]+\\)\\..+}"
         1 LaTeX-auto-bibliography)
-       ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
+       ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
        ("\\\\newrefsection\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)
        ("\\\\begin{refsection}\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)))
    LaTeX-auto-class-regexp-list
