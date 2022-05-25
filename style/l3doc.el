@@ -48,9 +48,9 @@
 
 (defun LaTeX-env-l3doc-function (environment)
   "Insert the ENVIRONMENT provided by l3doc.cls.
-This function should be used for the environments 'function' and
-'variable' provided by the l3doc class.  Also ask the user if a
-'syntax' environment should be added as well."
+This function should be used for the environments \"function\" and
+\"variable\" provided by the l3doc class.  Also ask the user if a
+\"syntax\" environment should be added as well."
   (let* ((time (format-time-string "%Y-%m-%d" (current-time)))
          (exp-flag (TeX-read-key-val t `(("added" (,time))
                                          ("updated" (,time))

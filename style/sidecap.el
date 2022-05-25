@@ -37,7 +37,7 @@
 (defun LaTeX-env-sidecap-float (environment)
   "Create ENVIRONMENT with \\caption and \\label commands.
 This function runs `LaTeX-env-figure' and inserts the first
-optional argument 'relwidth' provided by environments of the
+optional argument \\='relwidth\\=' provided by environments of the
 package sidecap."
   (let ((relwidth (TeX-read-string
                    (TeX-argument-prompt t nil "Relative caption width")))

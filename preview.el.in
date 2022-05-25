@@ -1707,13 +1707,13 @@ to the default background in most other cases."
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
-the heuristic-mask setting of images to default to 't since
+the heuristic-mask setting of images to default to t since
 then the borders are correctly detected even in case of
 palette operations.  If the transparent color is something
 not present otherwise in the image, the cursor display
 will affect just this border.  A width of 0 is interpreted
 by PostScript as meaning a single pixel, other widths are
-interpreted as PostScript points (1/72 of 1in)"
+interpreted as PostScript points (1/72 of 1in)."
   :group 'preview-appearance
   :type '(choice (const :value nil :tag "No border")
                  (number :value 1.5 :tag "Border width in pt")))
@@ -1945,7 +1945,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
 (defun preview-toggle (ov &optional arg event)
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
-nil displays the underlying text, and 'toggle toggles.
+nil displays the underlying text, and \\='toggle toggles.
 If EVENT is given, it indicates the window where the event
 occured, either by being a mouse event or by directly being
 the window in question.  This may be used for cursor restoration

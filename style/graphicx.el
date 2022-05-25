@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2021 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2022 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -89,8 +89,8 @@ Temporarily remove \"space\" from `crm-local-completion-map' and
 `minibuffer-local-completion-map' in order to be able to insert
 spaces conveniently.
 
-If `TeX-engine' is set to symbol 'default (while
-`TeX-PDF-from-DVI' is set to nil) or 'luatex and `TeX-PDF-mode'
+If `TeX-engine' is set to symbol \\='default (while
+`TeX-PDF-from-DVI' is set to nil) or \\='luatex and `TeX-PDF-mode'
 is non-nil, add the keys \"page\" and \"pagebox\" to list of
 key-val's."
   (let ((crm-local-completion-map

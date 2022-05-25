@@ -1,6 +1,6 @@
 ;;; tikz.el --- AUCTeX style for `tikz.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2016-2022  Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -199,7 +199,7 @@ is finished."
   "Find TiKZ named points in current enviroment.
 Begin by finding the span of the current TikZ enviroment and then
 searching within that span to find all named-points and return
-them as a list of strings, dropping the '()'."
+them as a list of strings, dropping the \\='()\\='."
   (let* ((env-end (save-excursion
                     (LaTeX-find-matching-end)
                      (point)))
