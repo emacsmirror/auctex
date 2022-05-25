@@ -3920,10 +3920,10 @@ should add their macros to this variable and then run
 (defvar-local LaTeX-indent-begin-exceptions-list nil
   "List of macros which shouldn't increase the indentation.
 Each item in this list is a string without a backslash and will
-mostly start with 'if'.  These macros should not increase
-indentation although they start with 'if', for example the
-'ifthenelse' macro provided by the ifthen package.  AUCTeX styles
-should add their macros to this variable and then run
+mostly start with \"if\".  These macros should not increase
+indentation although they start with \"if\", for example the
+\"ifthenelse\" macro provided by the ifthen package.  AUCTeX
+styles should add their macros to this variable and then run
 `LaTeX-indent-commands-regexp-make'.")
 
 (defvar-local LaTeX-indent-mid-list nil
@@ -6171,7 +6171,7 @@ single stroke or a string (for example \"o a\") for a multi-stroke
 binding.  If KEY is nil, the symbol has no associated
 keystroke (it is available in the menu, though).  Note that
 predefined keys in `LaTeX-math-default' cannot be overridden in
-this variable.  Currently, only the lowercase letter 'o' is free
+this variable.  Currently, only the lowercase letter \\='o\\=' is free
 for user customization, more options are available in uppercase
 area.
 

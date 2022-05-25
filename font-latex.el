@@ -77,7 +77,7 @@ quotes.
 
 If `font-latex-quotes' specifies a different state, order of the
 added quotes will be reversed for fontification.  For example if
-'(\"\\\"<\" \"\\\">\" french) is given but `font-latex-quotes'
+\\='(\"\\\"<\" \"\\\">\" french) is given but `font-latex-quotes'
 specifies `german', quotes will be used like \">foo\"< for
 fontification.")
 
