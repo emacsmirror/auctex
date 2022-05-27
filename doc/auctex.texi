@@ -4305,7 +4305,7 @@ all files in the document.  This means that you will get from each file,
 for example, completion for all labels defined anywhere in the document.
 
 @AUCTeX{} will create the @file{auto} directory automatically if
-@code{TeX-auto-save} is non-nil.  Without it, the files in the document
+@code{TeX-auto-save} is non-@code{nil}.  Without it, the files in the document
 will not know anything about each other, except for the name of the
 master file.  @xref{Automatic Local}.
 
@@ -5080,15 +5080,14 @@ These correspond to the personal @TeX{} macros.
 @cindex Local style directory
 
 @AUCTeX{} can update the style information about a file each time you
-save it, and it will do this if the directory @code{TeX-auto-local}
-exists.  @code{TeX-auto-local} is by default set to @samp{"auto"}, so
-simply creating an @file{auto} directory will enable automatic saving of
-style information.
+save it if @code{TeX-auto-save} option is enabled.  Saved information will
+be stored in the directory @code{TeX-auto-local}, set to @samp{"auto"} by
+default.
 
 The advantage of doing this is that macros, labels, etc.@: defined in any
 file in a multifile document will be known in all the files in the
 document.  The disadvantage is that saving will be slower.  To disable,
-set @code{TeX-auto-local} to nil.
+set @code{TeX-auto-local} to @code{nil}.
 
 @defopt TeX-style-local
 Directory containing hand generated @TeX{} information.
@@ -5100,6 +5099,15 @@ These correspond to @TeX{} macros found in the current directory.
 Directory containing automatically generated @TeX{} information.
 
 These correspond to @TeX{} macros found in the current directory.
+@end defopt
+
+@defopt TeX-auto-save-aggregate
+When non-@code{nil}, save parsed information in @file{auto} subdirectory
+of master directory.
+
+Otherwise, save in each @file{auto} subdirectory of the parsed file.
+
+Subdirectory name is actually taken from @code{TeX-auto-local}.
 @end defopt
 
 @node Style Files
