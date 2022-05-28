@@ -62,6 +62,16 @@ Replace it with @code{(require 'tex)}.
 Replace it with @code{(require 'latex)}.
 @end enumerate
 
+@item
+When you edit a document divided into multiple files, auto parsed
+information for all sub files are saved under @file{auto} subdirectory at
+master directory when @code{TeX-parse-self} and @code{TeX-auto-save}
+options are enabled.  Now you can have support @file{.el} file saved under
+@file{auto} subdirectory of each directory of the sub file when the sub
+files aren't located at the master directory.
+
+To achieve that, set new user option @code{TeX-auto-save-aggregate} to
+@code{nil}.
 @end itemize
 
 @heading News in 13.1
