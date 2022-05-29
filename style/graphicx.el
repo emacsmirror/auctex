@@ -89,8 +89,8 @@ Temporarily remove \"space\" from `crm-local-completion-map' and
 `minibuffer-local-completion-map' in order to be able to insert
 spaces conveniently.
 
-If `TeX-engine' is set to symbol \\='default (while
-`TeX-PDF-from-DVI' is set to nil) or \\='luatex and `TeX-PDF-mode'
+If `TeX-engine' is set to symbol `default' (while
+`TeX-PDF-from-DVI' is set to nil) or `luatex' and `TeX-PDF-mode'
 is non-nil, add the keys \"page\" and \"pagebox\" to list of
 key-val's."
   (let ((crm-local-completion-map

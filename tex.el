@@ -5674,7 +5674,7 @@ characters."
 (defun TeX-search-unescaped (pattern
                              &optional direction regexp-flag bound noerror)
   "Search for unescaped PATTERN in a certain DIRECTION.
-DIRECTION can be indicated by the symbols \\='forward and \\='backward.
+DIRECTION can be indicated by the symbols `forward' and `backward'.
 If DIRECTION is omitted, a forward search is carried out.
 If REGEXP-FLAG is non-nil, PATTERN may be a regular expression,
 otherwise a string.

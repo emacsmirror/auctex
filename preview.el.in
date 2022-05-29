@@ -1945,7 +1945,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
 (defun preview-toggle (ov &optional arg event)
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
-nil displays the underlying text, and \\='toggle toggles.
+nil displays the underlying text, and `toggle' toggles.
 If EVENT is given, it indicates the window where the event
 occured, either by being a mouse event or by directly being
 the window in question.  This may be used for cursor restoration
