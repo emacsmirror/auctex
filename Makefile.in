@@ -181,7 +181,8 @@ STYLESRC = style/prosper.el \
 	   style/rotating.el  style/sidecap.el   style/l3doc.el \
 	   style/ifthen.el    style/etoolbox.el  style/ifetex.el \
 	   style/ifpdf.el     style/iftex.el     style/ifvtex.el \
-	   style/ifxetex.el   style/multibib.el  style/ltcaption.el
+	   style/ifxetex.el   style/multibib.el  style/ltcaption.el \
+	   style/keyval.el    style/kvoptions.el style/kvsetkeys.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
