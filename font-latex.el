@@ -365,6 +365,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("labelformat" "{{") ("linespread" "{")
       ("AddToHook" "{[{") ("RemoveFromHook" "{[") ("AddToHookNext" "{{")
       ("ProvidesClass" "{[") ("ProvidesPackage" "{[") ("ProvidesFile" "{[")
+      ("NewMarkClass" "{")
       ;; XXX: Should macros without arguments rather be listed in a
       ;; separate category with 'noarg instead of 'command handling?
       ("enspace" "") ("enskip" "") ("quad" "") ("qquad" "") ("nonumber" "")

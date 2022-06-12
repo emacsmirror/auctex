@@ -3386,7 +3386,9 @@ INHERIT-INPUT-METHOD are passed to
                   ;; From ltshipout-doc.pdf
                   "shipout"
                   ;; From ltpara-doc.pdf
-                  "para")))
+                  "para"
+                  ;; From ltmarks-doc.pdf
+                  "insertmark")))
          (place (lambda (&optional opt pr)
                   (completing-read
                    (TeX-argument-prompt opt pr "Where")
@@ -7927,7 +7929,47 @@ function would return non-nil and `(match-string 1)' would return
                      (TeX-argument-prompt t nil "Format")
                      '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
        (TeX-arg-counter)
-       (TeX-arg-counter "Within counter"))))
+       (TeX-arg-counter "Within counter"))
+
+     ;; Added in LaTeX 2022-06-01
+     '("NewMarkClass" "Class")
+     '("InsertMark" "Class" t)
+     '("TopMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("FirstMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("LastMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("IfMarksEqualTF"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class")
+       (TeX-arg-completing-read ("top" "first" "last")
+                                "Position 1")
+       (TeX-arg-completing-read ("top" "first" "last")
+                                "Position 2")
+       2)
+     '("fpeval" t)
+     '("dimeval" t)
+     '("skipeval" t) ))
 
   (TeX-run-style-hooks "LATEX")
 

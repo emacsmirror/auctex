@@ -87,7 +87,7 @@
   (progn
     (TeX-load-style "article")
     (append (remove "a5paper" LaTeX-article-class-options)
-            '("nocfg")))
+            '("nocfg" "doc2")))
   "Class options for the ltxdoc class.
 All options are passed to article class, \"a5paper\" is disabled
 by ltxdoc.  Therefore it is also removed here.")
