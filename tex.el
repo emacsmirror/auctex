@@ -593,6 +593,7 @@ string."
     ;; adds suitable quotes for use in shell command line.
     ("%s" TeX-active-master-with-quotes nil t)
     ("%t" TeX-active-master-with-quotes t t)
+    ("%(s-filename-only)" TeX-active-master-with-quotes nil t nil nil file-name-nondirectory)
     ("%(t-filename-only)" TeX-active-master-with-quotes t t nil nil file-name-nondirectory)
     ;; If any TeX codes appear in the interval between %` and %', move
     ;; all of them after the interval and supplement " \input".  The
@@ -1520,7 +1521,7 @@ Check the `TeX-view-program-selection' variable" viewer)))
     (xetex "XeTeX" "xetex" "xelatex" "xetex")
     ;; Some lualatex versions before 0.71 would use "texput" as file
     ;; name if --jobname were not supplied
-    (luatex "LuaTeX" "luatex" "lualatex --jobname=%s" "luatex")
+    (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
     (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine))
   "Alist of built-in TeX engines and associated commands.
 For a description of the format see `TeX-engine-alist'.")
@@ -7324,19 +7325,19 @@ Pass arguments EXTENSION NONDIRECTORY ASK to `TeX-active-master'.
 If the returned file name contains space, enclose it within
 quotes `\"' when \" \\input\" is supplemented (indicated by
 dynamically bound variable `TeX-command-text' having string
-value.) Also enclose the file name within \\detokenize{} when
+value.)  Also enclose the file name within \\detokenize{} when
 the following three conditions are met:
   1. compiling with standard (pdf)LaTeX or upLaTeX
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
-Adjust dynamically bound variable `TeX-expand-pos' to avoid possible
-infinite loop in `TeX-command-expand'.
+Adjust dynamically bound variable `TeX-expand-pos' to avoid
+possible infinite loop in `TeX-command-expand'.
 If PREPROCESS-FN is non-nil then it is called with the filename
 as an argument and the result is enclosed instead of the
 filename.
 
-Helper function of `TeX-command-expand'. Use only within entries in
-`TeX-expand-list-builtin' and `TeX-expand-list'."
+Helper function of `TeX-command-expand'. Use only within entries
+in `TeX-expand-list-builtin' and `TeX-expand-list'."
   (let* ((raw (TeX-active-master extension nondirectory ask))
          ;; String `TeX-command-text' means that the file name is
          ;; given through \input command.
