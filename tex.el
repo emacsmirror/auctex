@@ -97,6 +97,7 @@
 (defvar Info-file-list-for-emacs)       ; info.el
 (defvar ispell-parser)                  ; ispell.el
 (defvar compilation-error-regexp-alist) ; compile.el
+(defvar compilation-in-progress)        ; compile.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -7007,7 +7008,6 @@ at bottom if LINE is nil."
 (defvar TeX-parse-function)
 (defvar TeX-sentinel-function)
 (defvar TeX-sentinel-default-function)
-(defvar compilation-in-progress)
 (defvar TeX-current-page)
 (defvar TeX-error-overview-open-after-TeX-run)
 (defvar TeX-error-list)
@@ -7825,6 +7825,7 @@ Return the new process."
           (set-process-filter process #'TeX-command-filter)
           (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
+          (require 'compile)
           (setq compilation-in-progress (cons process compilation-in-progress))
           process)
       (setq mode-line-process ": run")
@@ -7995,6 +7996,7 @@ run of `TeX-run-format', use
   ;; FIXME: This is just an ad-hoc workaround and it's better to fix
   ;; the regular expression in compile.el properly, if possible.  But
   ;; there was no response to such request in emacs-devel@gnu.org.
+  (require 'compile)
   (with-current-buffer TeX-command-buffer
     (make-local-variable 'compilation-error-regexp-alist)
     ;; Add slightly modified entry of the one associated with `comma'
