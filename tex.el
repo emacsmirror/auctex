@@ -8094,6 +8094,7 @@ Error parsing on \\[next-error] should work with a bit of luck."
     (TeX-command-mode-line process)
     (set-process-sentinel process #'TeX-command-sentinel)
     (set-marker (process-mark process) (point-max))
+    (require 'compile)
     (setq compilation-in-progress (cons process compilation-in-progress))
     (TeX-parse-reset)
     (setq TeX-parse-function #'TeX-parse-TeX)
