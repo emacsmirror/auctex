@@ -3979,8 +3979,28 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
           (preview-cache-preamble-off format-cons)
         (setq format-cons (list format-name))
         (push format-cons preview-dumped-alist))
-      ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
-      ;; in the tools bundle is an empty file.
+      ;; mylatex.ltx expects a file name to follow.  Bad.
+      ;; The file `.tex' in the tools bundle is solely emitting
+      ;; `File ignored', and `\input mylatex.ltx \relax' has the
+      ;; same effect as `\input mylatex.ltx .tex '.
+      ;; The \dump hacks accomplish, among others:
+      ;; - let TeX not ignore spaces (despite instructions to the
+      ;;   contrary inserted into the format by mylatex.ltx)
+      ;;   as we may need to input a `file name with spaces'.
+      ;; - work around the fact that the backslash `\' (as per
+      ;;   mylatex.ltx mandate) has lost its standard TeX status
+      ;;   once the format is loaded, and we could not use `\input'
+      ;;   as in e.g. `pdflatex &abc '\input' abc.tex'.  We
+      ;;   configure TeX for `/' as substitute.
+      ;; - in place of such `/input', we will use `/AUCTEXINPUT'
+      ;;   defined here in the dumped format to grab the file name,
+      ;;   sanitize it via `\detokenize', then
+      ;;   reset TeX to ignore spaces and execute `\input' which
+      ;;   will skip the preamble already dumped.
+      ;; Prior to the patch adding `/AUCTEXINPUT', resetting the
+      ;; spaces to be ignored was included as part of `\everyjob',
+      ;; which was another way to delay this to after the filename
+      ;; was seen by TeX.
       (write-region "\\let\\PREVIEWdump\\dump\\def\\dump{%
 \\edef\\next{{\\ifx\\pdfoutput\\undefined\\else\
 \\pdfoutput=\\the\\pdfoutput\\relax\\fi\
