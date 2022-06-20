@@ -12,6 +12,9 @@
 
 @itemize @bullet
 @item
+Support for the Sioyek document viewer is added.
+
+@item
 @AUCTeX{} now requires GNU Emacs 25.1 or higher.
 
 @item

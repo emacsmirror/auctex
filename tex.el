@@ -1293,7 +1293,15 @@ viewer."
        ("zathura %o"
         (mode-io-correlate
          " --synctex-forward %n:0:\"%b\" -x \"emacsclient +%{line} %{input}\""))
-       "zathura"))))
+       "zathura")
+      ("Sioyek"
+       ("sioyek %o"
+        (mode-io-correlate
+         ,(concat
+           " --forward-search-file \"%b\""
+           " --forward-search-line %n"
+           " --inverse-search \"emacsclient +%2 %1\"")))
+       "sioyek"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
