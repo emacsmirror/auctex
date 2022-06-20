@@ -2211,6 +2211,7 @@ your own macros which are listed in the table below.
 
 @vindex font-latex-match-bold-command-keywords
 @vindex font-latex-match-italic-command-keywords
+@vindex font-latex-match-underline-command-keywords
 @vindex font-latex-match-math-command-keywords
 @vindex font-latex-match-type-command-keywords
 @vindex font-latex-match-bold-declaration-keywords
@@ -2223,6 +2224,9 @@ Face: @code{font-latex-bold-face}
 @item font-latex-match-italic-command-keywords
 Keywords for commands specifying an italic font.@*
 Face: @code{font-latex-italic-face}
+@item font-latex-match-underline-command-keywords
+Keywords for commands specifying an underlined text.@*
+Face: @code{font-latex-underline-face}
 @item font-latex-match-math-command-keywords
 Keywords for commands specifying a math font.@*
 Face: @code{font-latex-math-face}
@@ -2251,7 +2255,7 @@ entries are "warning", "variable", "biblatexnoarg", "biblatex",
 "reference", "function" , "sectioning-0", "sectioning-1",
 "sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
 "slide-title", "textual", "bold-command", "italic-command",
-"math-command", "type-command", "bold-declaration",
+"underline-command", "math-command", "type-command", "bold-declaration",
 "italic-declaration", "type-declaration".
 
 You can also get rid of certain keywords only.  For example if you want

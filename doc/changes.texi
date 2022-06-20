@@ -12,6 +12,18 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} underlines the argument of macros which produce underlined text
+in the final product with @code{font-latex-underline-face}.  The
+corresponding keyword class is called @code{underline-command}.
+@ifset rawfile
+See the section for fontification of macros
+@end ifset
+@ifclear rawfile
+@xref{Fontification of macros}
+@end ifclear
+if you dislike this feature and wish to deactivate it.
+
+@item
 Support for the Sioyek document viewer is added.
 
 @item

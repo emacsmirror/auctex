@@ -431,6 +431,9 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{") ("mathit" "{"))
      font-latex-italic-face 1 command)
+    ("underline-command"
+     (("underline" "{"))
+     font-latex-underline-face 1 command)
     ("math-command"
      (("ensuremath" "|{\\"))
      font-latex-math-face 1 command)
@@ -481,9 +484,9 @@ Valid entries are \"warning\", \"variable\", \"biblatexnoarg\",
 \"biblatex\", \"reference\", \"function\" , \"sectioning-0\",
 \"sectioning-1\", \"sectioning-2\", \"sectioning-3\",
 \"sectioning-4\", \"sectioning-5\", \"slide-title\", \"textual\",
-\"bold-command\", \"italic-command\", \"math-command\",
-\"type-command\", \"bold-declaration\", \"italic-declaration\",
-\"type-declaration\".
+\"bold-command\", \"italic-command\", \"underline-command\",
+\"math-command\", \"type-command\", \"bold-declaration\",
+\"italic-declaration\", \"type-declaration\".
 
 You have to restart Emacs for a change of this variable to take effect."
   :group 'font-latex-keywords
@@ -913,8 +916,8 @@ symbols `warning', `variable', `reference', `biblatexnoarg',
 `biblatex', `function', `sectioning-0', `sectioning-1',
 `sectioning-2', `sectioning-3', `sectioning-4', `sectioning-5',
 `slide-title', `textual', `bold-command', `italic-command',
-`math-command', `type-command', `bold-declaration',
-`italic-declaration' or `type-declaration'.
+`underline-command', `math-command', `type-command',
+`bold-declaration', `italic-declaration' or `type-declaration'.
 
 The keywords will be added to the buffer-local list of keywords
 of the respective keyword class and necessary updates of the font
@@ -1141,6 +1144,20 @@ have changed."
        (:foreground "OliveDrab" ,@font))
       (t (,@font))))
   "Face used to highlight text to be typeset in italic."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-underline-face
+  (let ((font '(:inherit underline)))
+    `((((class grayscale) (background light))
+       (:foreground "DimGray" ,@font))
+      (((class grayscale) (background dark))
+       (:foreground "LightGray" ,@font))
+      (((class color) (background light))
+       (:foreground "DarkOliveGreen" ,@font))
+      (((class color) (background dark))
+       (:foreground "OliveDrab" ,@font))
+      (t (,@font))))
+  "Face used to highlight text to be underlined."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-math-face

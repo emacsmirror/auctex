@@ -69,14 +69,15 @@
      ;; Tell font-lock about the update.
      (font-latex-add-keywords '(("useunder" "{{{"))
                               'function)
+     (font-latex-add-keywords '(("sout" "{")
+                                ("xout" "{"))
+                              'textual)
      (font-latex-add-keywords '(("uline" "{")
                                 ("uuline" "{")
                                 ("uwave" "{")
-                                ("sout" "{")
-                                ("xout" "{")
                                 ("dashuline" "{")
                                 ("dotuline" "{"))
-                              'textual)))
+                              'underline-command)))
  TeX-dialect)
 
 (defvar LaTeX-ulem-fontdecl
