@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `proc.sty' v1.3m form 2021-12-09.
+;; This file adds support for `proc.cls' v1.3m form 2021-12-09.
 
 ;;; Code:
 
