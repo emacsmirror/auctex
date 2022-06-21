@@ -3264,7 +3264,7 @@ COLLECTION provides elements for completion and is passed to
   - A symbol returning a list
   - A function call
 
-PROMPT replaces the standard one where ' (cr): ' is appended to
+PROMPT replaces the standard one where \\=' (cr): \\=' is appended to
 it.  If you want the full control over the prompt, set COMPLETE
 to non-nil and then provide a full PROMPT.
 
@@ -3291,22 +3291,26 @@ INHERIT-INPUT-METHOD are passed to `completing-read', which see."
    predicate require-match initial-input hist def inherit-input-method))
 
 (defun TeX-arg-completing-read (optional collection &optional prompt complete
-                                         prefix predicate require-match
+                                         prefix leftbrace rightbrace
+                                         predicate require-match
                                          initial-input hist def
                                          inherit-input-method)
   "Read a string in the minibuffer, with completion and insert it.
 If OPTIONAL is non-nil, indicate it in the minibuffer and insert
-the result in brackets if not empty.
+the result in brackets if not empty.  The brackets used are
+controlled by the string values of LEFTBRACE and RIGHTBRACE.
 
 For PROMPT and COMPLETE, refer to `TeX-read-completing-read'.
 For PREFIX, see `TeX-argument-insert'.
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to `completing-read', which see."
-  (TeX-argument-insert
-   (TeX-read-completing-read optional collection prompt complete
-                             predicate require-match initial-input
-                             hist def inherit-input-method)
-   optional prefix))
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+    (TeX-argument-insert
+     (TeX-read-completing-read optional collection prompt complete
+                               predicate require-match initial-input
+                               hist def inherit-input-method)
+     optional prefix)))
 
 (defun TeX-read-completing-read-multiple (optional table &optional prompt complete
                                                    predicate require-match
@@ -3321,7 +3325,7 @@ COLLECTION provides elements for completion and is passed to
   - A symbol returning a list
   - A function call
 
-PROMPT replaces the standard one where ' (crm): ' is appended to
+PROMPT replaces the standard one where \\=' (crm): \\=' is appended to
 it.  If you want the full control over the prompt, set COMPLETE
 to non-nil and then provide a full PROMPT.
 
@@ -3349,26 +3353,30 @@ INHERIT-INPUT-METHOD are passed to
    predicate require-match initial-input hist def inherit-input-method))
 
 (defun TeX-arg-completing-read-multiple (optional table &optional prompt complete
-                                                  prefix predicate require-match
+                                                  prefix leftbrace rightbrace
+                                                  predicate require-match
                                                   initial-input hist def
                                                   inherit-input-method)
   "Read multiple strings in the minibuffer, with completion and insert them.
 If OPTIONAL is non-nil, indicate it in the minibuffer and insert
-the result in brackets if not empty.
+the result in brackets if not empty.  The brackets used are
+controlled by the string values of LEFTBRACE and RIGHTBRACE.
 
 For PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
 For PREFIX, see `TeX-argument-insert'.
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to
 `TeX-completing-read-multiple', which see."
-  (TeX-argument-insert
-   (mapconcat #'identity
-              (TeX-read-completing-read-multiple optional table prompt
-                                                 complete predicate
-                                                 require-match initial-input
-                                                 hist def inherit-input-method)
-              ",")
-   optional prefix))
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+    (TeX-argument-insert
+     (mapconcat #'identity
+                (TeX-read-completing-read-multiple optional table prompt
+                                                   complete predicate
+                                                   require-match initial-input
+                                                   hist def inherit-input-method)
+                ",")
+     optional prefix)))
 
 (defun TeX-read-hook ()
   "Read a LaTeX hook and return it as a string."
