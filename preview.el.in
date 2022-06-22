@@ -1622,7 +1622,7 @@ numbers (can be float if available)."
 
 (defface preview-reference-face '((t nil))
   "Face consulted for colors and scale of active previews.
-Fallback to :inherit and 'default implemented."
+Fallback to :inherit and \\='default implemented."
   :group 'preview-appearance)
 
 (defcustom preview-auto-reveal
