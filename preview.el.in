@@ -3636,7 +3636,7 @@ name(\\([^)]+\\))\\)\\|\
              (mm-dims (cdr (assoc 'mm-size monitor-attrs)))
              (mm-width (nth 0 mm-dims))
              (mm-height (nth 1 mm-dims))
-             (pixel-dims (cdddr (assoc 'geometry monitor-attrs)))
+             (pixel-dims (cl-cdddr (assoc 'geometry monitor-attrs)))
              (pixel-width (nth 0 pixel-dims))
              (pixel-height (nth 1 pixel-dims)))
         (cons (/ (* 25.4 pixel-width) mm-width)
