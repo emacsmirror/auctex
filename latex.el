@@ -4752,7 +4752,8 @@ space does not end a sentence, so don't break a line there."
       fill-prefix)))
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
-  "Move to the position where the line should be broken."
+  "Move to the position where the line should be broken.
+See `fill-move-to-break-point' for the meaning of LINEBEG."
   (fill-move-to-break-point linebeg)
   ;; Prevent line break between 2-byte char and 1-byte char.
   (when (and (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
@@ -4777,40 +4778,6 @@ space does not end a sentence, so don't break a line there."
                                       (1- (- (point) linebeg)))
              (not (TeX-escaped-p (match-beginning 0))))
     (goto-char (match-beginning 0)))
-  ;; Cater for \verb|...| (and similar) contructs which should not be
-  ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
-  ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
-  ;; chosen with \MakeShortVerb{<char>}.)  This could probably be
-  ;; handled with `fill-nobreak-predicate', but this is not available
-  ;; in XEmacs.
-  (let ((final-breakpoint (point))
-        (verb-macros (regexp-opt (append (LaTeX-verbatim-macros-with-delims)
-                                         (LaTeX-verbatim-macros-with-braces)))))
-    (save-excursion
-      ;; Look for the start of a verbatim macro in the current line.
-      (when (re-search-backward (concat (regexp-quote TeX-esc)
-                                        "\\(?:" verb-macros "\\)\\([^a-z@*]\\)")
-                                (line-beginning-position) t)
-        ;; Determine start and end of verbatim macro.
-        (let ((beg (point))
-              (end (if (not (string-match "[ [{]" (match-string 1)))
-                       (cdr (LaTeX-verbatim-macro-boundaries))
-                     (TeX-find-macro-end))))
-          ;; Determine if macro end is behind fill column.
-          (when (and end
-                     (> (- end (line-beginning-position))
-                        (current-fill-column))
-                     (> end final-breakpoint))
-            ;; Search backwards for place to break before the macro.
-            (goto-char beg)
-            (skip-chars-backward "^ \n")
-            ;; Determine if point ended up at the beginning of the line.
-            (when (save-excursion (skip-chars-backward " \t%") (bolp))
-              ;; Search forward for a place to break after the macro.
-              (goto-char end)
-              (skip-chars-forward "^ \n" (point-max)))
-            (setq final-breakpoint (point))))))
-    (goto-char final-breakpoint))
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
           (final-breakpoint (point))
@@ -7385,6 +7352,12 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
+  ;; Cater for \verb|...| (and similar) contructs which should not be
+  ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
+  ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
+  ;; chosen with \MakeShortVerb{<char>}.)
+  (add-to-list (make-local-variable 'fill-nobreak-predicate)
+               #'LaTeX-verbatim-p t)
 
   (or LaTeX-largest-level
       (setq LaTeX-largest-level (LaTeX-section-level "section")))
