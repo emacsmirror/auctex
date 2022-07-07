@@ -154,7 +154,11 @@
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/in)
              (LaTeX-mode)
-             (let ((fill-column 70))
+             (let ((fill-column 70)
+                   (LaTeX-shortvrb-chars '(?\"))
+                   (TeX-parse-self t))
+               (TeX-update-style t)
+               (search-forward "Lorem")
                (fill-paragraph)
 
                (let ((cmds '("captionsetup" "caption"
@@ -166,7 +170,7 @@
                      (fill-paragraph))))
 
                (while (search-forward "% bug#" nil t)
-                 (forward-line 1)
+                 (TeX-forward-comment-skip 1)
                  (fill-paragraph)))
              (buffer-string))
            (with-temp-buffer
