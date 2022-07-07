@@ -36,9 +36,6 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
-(declare-function font-latex-add-to-syntax-alist
-                  "font-latex"
-                  (list))
 
 (defun LaTeX-env-doc-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
