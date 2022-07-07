@@ -3713,8 +3713,9 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
   "Return non-nil if position POS is in a verbatim-like construct."
   (when pos (goto-char pos))
   (save-match-data
-    (or (when (fboundp 'font-latex-faces-present-p)
-          (font-latex-faces-present-p 'font-latex-verbatim-face))
+    (or (progn
+          (syntax-propertize (point))
+          (nth 3 (syntax-ppss)))
         (member (LaTeX-current-verbatim-macro)
                 (LaTeX-verbatim-macros-with-delims))
         (member (TeX-current-macro) (LaTeX-verbatim-macros-with-braces))
@@ -7353,9 +7354,7 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
   ;; Cater for \verb|...| (and similar) contructs which should not be
-  ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
-  ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
-  ;; chosen with \MakeShortVerb{<char>}.)
+  ;; broken.
   (add-to-list (make-local-variable 'fill-nobreak-predicate)
                #'LaTeX-verbatim-p t)
 

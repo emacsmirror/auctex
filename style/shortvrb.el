@@ -69,12 +69,21 @@
                   (cons str str)))
               LaTeX-shortvrb-chars)))
 
+   ;; Syntax
+   ;; N.B. This doesn't handle backslash just before the closing
+   ;; delimiter like |xyz\| correctly.  We hope we can live with that.
+   (when LaTeX-shortvrb-chars
+     (let ((st (make-syntax-table (syntax-table))))
+       (dolist (c LaTeX-shortvrb-chars)
+         (modify-syntax-entry c "\"" st))
+       (set-syntax-table st)))
+
    ;; Fontification
    (when (and LaTeX-shortvrb-chars
               (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-to-syntax-alist
-      (mapcar (lambda (char) (cons char "|"))
+      (mapcar (lambda (char) (cons char "\""))
               LaTeX-shortvrb-chars))
 
      (font-latex-add-keywords '(("MakeShortVerb"   "*{")
