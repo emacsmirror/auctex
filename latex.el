@@ -3910,7 +3910,10 @@ value."
      4 t)
     (,(concat (regexp-quote TeX-esc)
               "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}")
-     0 nil))
+     0 nil)
+    (,(concat (regexp-quote TeX-esc)
+              "\\(begin\\|end\\)[ \t]*{verbatim\\*?}")
+     0 t))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -4042,13 +4045,18 @@ Lines starting with an item is given an extra indentation of
                  (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
-                  (TeX-in-line-comment)
-                  (eq major-mode 'doctex-mode))
+                  (eq major-mode 'doctex-mode)
+                  (TeX-in-line-comment))
              ;; If point is in a line comment in `doctex-mode' we only
-             ;; consider the inner indentation.
-             (let ((inner-indent (LaTeX-indent-calculate 'inner)))
-               (when (/= (LaTeX-current-indentation 'inner) inner-indent)
-                 (LaTeX-indent-inner-do inner-indent))))
+             ;; consider the inner indentation.  An exception is when
+             ;; we're inside a verbatim environment where we don't
+             ;; want to touch the indentation, notably with a
+             ;; fill-prefix "% ":
+             (unless (member (LaTeX-current-environment)
+                             (LaTeX-verbatim-environments))
+               (let ((inner-indent (LaTeX-indent-calculate 'inner)))
+                 (when (/= (LaTeX-current-indentation 'inner) inner-indent)
+                   (LaTeX-indent-inner-do inner-indent)))))
             ((and fill-prefix
                   LaTeX-syntactic-comments)
              ;; In any other case of a comment we have to consider
@@ -4057,16 +4065,16 @@ Lines starting with an item is given an extra indentation of
              (let ((inner-indent (LaTeX-indent-calculate 'inner))
                    (outer-indent (LaTeX-indent-calculate 'outer)))
                (when (/= (LaTeX-current-indentation 'inner) inner-indent)
-                   (LaTeX-indent-inner-do inner-indent))
+                 (LaTeX-indent-inner-do inner-indent))
                (when (/= (LaTeX-current-indentation 'outer) outer-indent)
-                   (LaTeX-indent-outer-do outer-indent))))
+                 (LaTeX-indent-outer-do outer-indent))))
             (t
              ;; The default is to adapt whitespace before any
              ;; non-whitespace character, i.e. to do outer
              ;; indentation.
              (let ((outer-indent (LaTeX-indent-calculate 'outer)))
                (when (/= (LaTeX-current-indentation 'outer) outer-indent)
-                   (LaTeX-indent-outer-do outer-indent))))))
+                 (LaTeX-indent-outer-do outer-indent))))))
     (when (< (current-column) (save-excursion
                                 (LaTeX-back-to-indentation) (current-column)))
       (LaTeX-back-to-indentation))))
