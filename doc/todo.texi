@@ -73,6 +73,19 @@ buffer-local variables.
 As of @AUCTeX{} 12.3, @code{TeX-remove-style} is no longer used by any
 other codes.
 
+@item Factor out syntax propertization from @file{font-latex.el}
+
+Syntax propertization is implemented in @file{font-latex.el}.  This means
+that features which depend on syntax parse don't work well for
+@file{tex-font.el} users and those who disable font lock.
+
+Hence syntax propertization should be factored out from
+@file{font-latex.el} and implemented as a major mode facility.
+
+(Texinfo mode is an exception because it already has its own syntax
+propertize function, which just copies the one available in Emacs built-in
+texinfo mode.)
+
 @item
 Document @code{LaTeX-insert-into-commments},
 @code{TeX-translate-location-hook}, and usage of @ConTeXt{} mode.
@@ -82,8 +95,15 @@ Document @code{LaTeX-insert-into-commments},
 @section Wishlist
 
 @itemize @bullet
-@item
-Simplify tool bar implementation.  The library @file{toolbar-x.el} was
+@item Enable syntactic font lock for verbatim constructs in @samp{docTeX}
+mode
+
+In @samp{docTeX} mode buffer, @samp{%} sign at the line beginning hinders
+syntactic font lock of verbatim constructs.  This should be improved.
+
+@item Simplify tool bar implementation
+
+The library @file{toolbar-x.el} was
 developed as an abstraction layer to absorb difference between XEmacs
 and @acronym{GNU} Emacs.  Now that XEmacs is no longer supported, the
 library, together with @file{tex-bar.el} as a whole, can be much
