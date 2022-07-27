@@ -974,6 +974,9 @@ environment.
 If this command is called inside a comment and
 @code{LaTeX-syntactic-comments} is enabled, try to find the environment
 in commented regions with the same comment prefix.
+
+The key bind @kbd{C-M-a} actually calls @code{beginning-of-defun}, which
+in turn calls @code{LaTeX-find-matching-begin}.
 @end deffn
 
 @deffn Command LaTeX-find-matching-end
@@ -983,6 +986,9 @@ in commented regions with the same comment prefix.
 If this command is called inside a comment and
 @code{LaTeX-syntactic-comments} is enabled, try to find the environment
 in commented regions with the same comment prefix.
+
+The key bind @kbd{C-M-e} actually calls @code{end-of-defun}, which in turn
+calls @code{LaTeX-find-matching-end}.
 @end deffn
 
 @node Equations
