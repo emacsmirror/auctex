@@ -1136,8 +1136,10 @@ inserted by typing @key{"}.
 Completion support for options of some @LaTeX{} packages was added.
 
 @item
+@ifclear rawfile
 @cindex @file{auctex.el}
 @cindex @file{tex-site.el}
+@end ifclear
 Already in version 11.81 the way to activate @AUCTeX{} changed
 substantially.  This should now be done with @code{(load "auctex.el" nil
 t t)} instead of the former @code{(require 'tex-site)}.  Related to this
