@@ -33,11 +33,19 @@
 (require 'tex)
 (require 'latex)
 
+;; Silence compiler
+(declare-function ConTeXt-add-environments "context"
+                  (&rest environments))
+
+(defgroup AUCTeX-TikZ nil
+  "AUCTeX TikZ support"
+  :group 'AUCTeX)
+
 (defcustom TeX-TikZ-point-name-regexp
   "(\\([A-Za-z0-9]+\\))"
   "A regexp that matches TikZ names."
   :type 'regexp
-  :group 'auctex-tikz)
+  :group 'AUCTeX-TikZ)
 
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
@@ -199,6 +207,10 @@ is finished."
 Begin by finding the span of the current TikZ enviroment and then
 searching within that span to find all named-points and return
 them as a list of strings, dropping the \\='()\\='."
+  ;; FIXME: This function depends on `LaTeX-find-matching-begin' and
+  ;; `LaTeX-find-matching-end', so it doesn't work for ConTeXt and
+  ;; plain TeX.  In addition, it isn't compatible with the TikZ code
+  ;; following \tikz.
   (let* ((env-end (save-excursion
                     (LaTeX-find-matching-end)
                      (point)))
@@ -278,8 +290,51 @@ return \"\"."
    (TeX-add-symbols
     '("draw" (TeX-TikZ-draw-arg))
     '("coordinate" (TeX-TikZ-coordinate-arg))
-    '("node" (TeX-TikZ-node-arg)))
+    '("node" (TeX-TikZ-node-arg))
+    '("tikz" ["TikZ option"])
+    '("tikzset" "TikZ option")
+    ;; FIXME:
+    ;; 1. usetikzlibrary isn't much useful without completion support
+    ;;    for available libraries.
+    ;; 2. ConTeXt users may prefer [...] over {...} as the argument.
+    '("usetikzlibrary" t)
+    ;; XXX: Maybe we should create pgffor.el and factor out this entry
+    ;; into it.
+    '("foreach" (TeX-arg-literal " ") (TeX-arg-free "Variable(s)")
+      (TeX-arg-literal " ") ["Foreach option"]
+      (TeX-arg-literal " in ") "Value list (Use \"...\" for range)"
+      (TeX-arg-literal " ") t))))
+
+;; LaTeX/docTeX specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
    (LaTeX-add-environments
-    '("tikzpicture"))))
+    '("tikzpicture" ["TikZ option"])
+    '("scope" ["TikZ option"]))
+   ;; tikz.sty loads pgfcore.sty, which loads packages graphicx,
+   ;; keyval and xcolor, too.
+   (TeX-run-style-hooks "pgf" "graphicx" "keyval" "xcolor"))
+ :latex)
+
+;; ConTeXt specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
+   (ConTeXt-add-environments
+    '("tikzpicture" ["TikZ option"])
+    '("scope" ["TikZ option"])))
+ :context)
+
+;; plain TeX specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
+   (TeX-add-symbols
+    '("tikzpicture" ["TikZ option"])
+    "endtikzpicture"
+    '("scope" ["TikZ option"])
+    "endscope"))
+ :plain-tex)
 
 ;;; tikz.el ends here
