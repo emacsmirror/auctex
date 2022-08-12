@@ -472,7 +472,8 @@ caption key is found, an error is issued."
      (font-latex-add-keywords '(("lstalias" "{{")
                                 ("lstdefinestyle" "{{")
                                 ("lstset" "{"))
-                              'variable)))
+                              'variable)
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"
