@@ -638,7 +638,7 @@ string."
                   (concat TeX-command-text " \"\\input\""))
               "")))
     ;; The fourth argument of t directs to supply "\detokenize{}" when
-    ;; necessary. See doc string and comment of
+    ;; necessary.  See doc string and comment of
     ;; `TeX-active-master-with-quotes'.
     ("%T" TeX-active-master-with-quotes t t nil t)
     ("%n" TeX-current-line)
@@ -1085,7 +1085,7 @@ The following built-in predicates are available:
   :type '(alist :key-type symbol :value-type (group sexp)))
 
 ;; XXX: Atril and xreader are forks of Evince and share an almost
-;; identical interface with it. Instead of having different functions
+;; identical interface with it.  Instead of having different functions
 ;; for each program, we keep the original *-evince-* functions and
 ;; make them accept arguments to specify the actual name of the
 ;; program and the desktop environment, that will be used to set up
@@ -1732,8 +1732,8 @@ If this is nil, an empty string will be returned."
           (concat TeX-source-specials-tex-flags
                   (if TeX-source-specials-places
                       ;; -src-specials=WHERE: insert source specials
-                      ;; in certain places of the DVI file. WHERE is a
-                      ;; comma-separated value list: cr display hbox
+                      ;; in certain places of the DVI file.  WHERE is
+                      ;; a comma-separated value list: cr display hbox
                       ;; math par parend vbox
                       (concat "=" (mapconcat #'identity
                                              TeX-source-specials-places ","))))
@@ -2745,7 +2745,7 @@ Used when checking if any files have changed."
 (defconst TeX-dialect :latex
   "Default dialect for use with function `TeX-add-style-hook' for
 argument DIALECT-EXPR when the hook is to be run only on LaTeX
-file, or any mode derived thereof. See variable
+file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
 (defvar TeX-style-hook-list nil
@@ -2945,7 +2945,7 @@ found in DIALECT-LIST and return the list thereof."
     ret)))
 
 (defun TeX-unload-style (style &optional dialect-list)
-  "Forget that we once loaded STYLE. If DIALECT-LIST is provided
+  "Forget that we once loaded STYLE.  If DIALECT-LIST is provided
 the STYLE is only removed for those dialects in DIALECT-LIST.
 
 See variable `TeX-style-hook-dialect' for supported dialects."

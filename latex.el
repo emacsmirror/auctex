@@ -857,7 +857,7 @@ position just before \\begin and the position just before
 \\end.")
 
 (defun LaTeX-modify-environment (environment)
-  "Modify current ENVIRONMENT."
+  "Modify current environment to new ENVIRONMENT."
   (let ((goto-end (lambda ()
                     (LaTeX-find-matching-end)
                     (re-search-backward (concat (regexp-quote TeX-esc)
@@ -3247,7 +3247,9 @@ Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
-as values for the key.  Use PROMPT as the prompt string."
+as values for the key.  KEY-VAL-ALIST can be a symbol or a
+function call returning an alist.  Use PROMPT as the prompt
+string."
   (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
 

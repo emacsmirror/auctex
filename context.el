@@ -696,7 +696,7 @@ With optional ARG, modify current environment."
         (ConTeXt-environment-menu environment)))))
 
 (defun ConTeXt-modify-environment (environment)
-  "Modify current environment."
+  "Modify current environment to new ENVIRONMENT."
   (save-excursion
     (ConTeXt-find-matching-stop)
     (re-search-backward (concat (regexp-quote TeX-esc)

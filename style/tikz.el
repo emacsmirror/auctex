@@ -53,8 +53,7 @@
                        `((,(concat "+" key) ,value "+")
                          (,(concat "++" key) ,value "++"))))
                    TeX-TikZ-point-function-map))
-  "`TeX-TikZ-point-function-map' with \"+\" and \"++\" as a
-prefix.")
+  "`TeX-TikZ-point-function-map' with \"+\" and \"++\" as a prefix.")
 
 (defconst TeX-TikZ-path-connector-function-map
   '(("--" identity)
@@ -73,7 +72,7 @@ prefix.")
     ("Arc" TeX-TikZ-arg-arc)
     ("Parabola" TeX-TikZ-arg-parabola)
     ("Grid" TeX-TikZ-arg-grid))
-  "An alist of argument names and functoins for TikZ's \draw.")
+  "An alist of argument names and functions for TikZ's \\draw.")
 
 (defun TeX-TikZ-get-opt-arg-string (arg &optional open close)
   "Return a string for optional arguments.
@@ -232,7 +231,7 @@ them as a list of strings, dropping the \\='()\\='."
 (defun TeX-TikZ-arg-bend (optional)
   "Prompt the user for a bend argument.
 If OPTIONAL is non-nil and the user doesn't provide a point,
-  return \"\"."
+return \"\"."
   (let ((point
          (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
                                     (TeX-argument-prompt optional nil "Bend point")
