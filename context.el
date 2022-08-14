@@ -680,14 +680,14 @@ With optional ARG, modify current environment."
                    (t ConTeXt-default-environment)))
          (environment
           (completing-read (concat "Environment type (default " default "): ")
-                           ConTeXt-environment-list nil nil nil
+                           (ConTeXt-environment-list) nil nil nil
                            'ConTeXt-environment-history default)))
     ;; Use `environment' as default for the next time only if it is different
     ;; from the current default.
     (unless (equal environment default)
       (setq ConTeXt-default-environment environment))
 
-    (let ((entry (assoc environment ConTeXt-environment-list)))
+    (let ((entry (assoc environment (ConTeXt-environment-list))))
       (if (null entry)
           (ConTeXt-add-environments (list environment)))
 
@@ -717,7 +717,7 @@ With optional ARG, modify current environment."
 
 (defun ConTeXt-environment-menu (environment)
   "Insert ENVIRONMENT around point or region."
-  (let ((entry (assoc environment ConTeXt-environment-list)))
+  (let ((entry (assoc environment (ConTeXt-environment-list))))
     (cond ((not (and entry (nth 1 entry)))
            (ConTeXt-insert-environment environment))
           ((numberp (nth 1 entry))
@@ -727,16 +727,19 @@ With optional ARG, modify current environment."
                (setq args (concat args TeX-grop TeX-grcl))
                (setq count (- count 1)))
              (ConTeXt-insert-environment environment args)))
-          ((stringp (nth 1 entry))
+          ((or (stringp (nth 1 entry)) (vectorp (nth 1 entry)))
            (let ((prompts (cdr entry))
                  (args ""))
-             (while prompts
-               (setq args (concat args
-                                  TeX-grop
-                                  (read-from-minibuffer
-                                   (concat (car prompts) ": "))
-                                  TeX-grcl))
-               (setq prompts (cdr prompts)))
+             (dolist (elt prompts)
+               (let* ((optional (vectorp elt))
+                      (elt (if optional (elt elt 0) elt))
+                      (arg (TeX-read-string
+                            (TeX-argument-prompt optional elt nil))))
+                 (setq args (concat args
+                                    (cond ((and optional (> (length arg) 0))
+                                           (concat ConTeXt-optop arg ConTeXt-optcl))
+                                          ((not optional)
+                                           (concat TeX-grop arg TeX-grcl)))))))
              (ConTeXt-insert-environment environment args)))
           (t
            (apply (nth 1 entry) environment (nthcdr 2 entry))))))
