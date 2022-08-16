@@ -87,11 +87,12 @@ nested curly brace pair nor escaped \"}\".")
       (insert TeX-grop caption)
       ;; ask for a label and insert it
       (LaTeX-label environment 'environment)
-      ;; the longtable `\caption' is equivalent to a
-      ;; `\multicolumn', so it needs a `\\' at the
-      ;; end of the line.  Prior to that, add } to
-      ;; close `\caption{'
-      (insert TeX-grcl "\\\\")
+      ;; the longtable `\caption' is equivalent to a `\multicolumn',
+      ;; so it needs a `\\' at the end of the line.  Prior to that,
+      ;; add } to close `\caption{' and a space:
+      (insert TeX-grcl)
+      (just-one-space)
+      (insert "\\\\")
       ;; fill the caption
       (when auto-fill-function (LaTeX-fill-paragraph))
       ;; Insert a new line and indent
