@@ -2044,7 +2044,7 @@ The value is actually the tail of the list of options given to PACKAGE."
                                                LaTeX-auto-environment))
                                    LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
-                       (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
+                       (list (nth 0 entry) #'LaTeX-env-args (vector "argument")
                              (1- (string-to-number (nth 1 entry))))))
         LaTeX-auto-env-args-with-opt)
 
