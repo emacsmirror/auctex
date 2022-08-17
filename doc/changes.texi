@@ -87,6 +87,16 @@ files aren't located at the master directory.
 
 To achieve that, set new user option @code{TeX-auto-save-aggregate} to
 @code{nil}.
+
+@item
+There was another hook where former dynamic free variables could be used.
+The usage was invalidated at version 13.1, by introduction of lexical
+binding over @AUCTeX{}.
+
+The functions in @code{TeX-region-hook} could access the free variables
+@code{master-buffer} and @code{orig-buffer}.  Those are now named
+@code{TeX-region-master-buffer} and @code{TeX-region-orig-buffer},
+respectively.
 @end itemize
 
 @heading News in 13.1

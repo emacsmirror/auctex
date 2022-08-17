@@ -5670,7 +5670,7 @@ an optional argument of the @samp{lstlisting} environment:
 @lisp
 (LaTeX-add-environments
  '("lstlisting" LaTeX-env-args
-   [TeX-arg-key-val LaTeX-listings-key-val-options]))
+   [TeX-arg-key-val (LaTeX-listings-key-val-options)]))
 @end lisp
 @end ftable
 
@@ -5830,6 +5830,7 @@ Which see.
 @cindex @file{macro.tex}
 @cindex @file{macro.el}
 @cindex Changing the parser
+@findex TeX-auto-add-regexp
 
 The automatic @TeX{} information extractor works by searching for
 regular expressions in the @TeX{} files, and storing the matched
@@ -5933,6 +5934,9 @@ List of functions to be called before parsing a @TeX{} file.
 @defvar TeX-auto-cleanup-hook nil
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
+
+@c FIXME: Write a @defun for `TeX-auto-add-regexp' here.  Then we can omit
+@c its @findex below the subsection heading.
 
 @node Appendices
 @appendix Copying, Changes, Development, FAQ, Texinfo Mode
