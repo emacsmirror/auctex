@@ -91,7 +91,7 @@ texinfo mode.)
 Following entries should be included in the document:
 @itemize @minus
 @item
-Variables @code{LaTeX-insert-into-commments}, @code{TeX-translate-location-hook}
+Variables @code{LaTeX-insert-into-comments}, @code{TeX-translate-location-hook}
 
 @item
 How to use @code{TeX-auto-add-type}, as well as functions and variables
