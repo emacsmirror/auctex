@@ -2743,10 +2743,10 @@ Used when checking if any files have changed."
 
 (define-obsolete-variable-alias 'LaTeX-dialect 'TeX-dialect "13.0")
 (defconst TeX-dialect :latex
-  "Default dialect for use with function `TeX-add-style-hook' for
-argument DIALECT-EXPR when the hook is to be run only on LaTeX
-file, or any mode derived thereof.  See variable
-`TeX-style-hook-dialect'." )
+  "Default dialect for use with function `TeX-add-style-hook'.
+This applies to the argument DIALECT-EXPR when the hook is to be
+run only on LaTeX file, or any mode derived thereof.  See
+variable `TeX-style-hook-dialect'." )
 
 (defvar TeX-style-hook-list nil
   "List of TeX style hooks currently loaded.
@@ -2945,8 +2945,9 @@ found in DIALECT-LIST and return the list thereof."
     ret)))
 
 (defun TeX-unload-style (style &optional dialect-list)
-  "Forget that we once loaded STYLE.  If DIALECT-LIST is provided
-the STYLE is only removed for those dialects in DIALECT-LIST.
+  "Forget that we once loaded STYLE.
+If DIALECT-LIST is provided, the STYLE is only removed for those
+dialects in DIALECT-LIST.
 
 See variable `TeX-style-hook-dialect' for supported dialects."
   (let ((style-data (assoc-string style TeX-style-hook-list)))
