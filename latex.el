@@ -3235,9 +3235,9 @@ returning an alist.  Use PROMPT as the prompt string."
          ((and (listp key-val-alist)
                (symbolp (car key-val-alist))
                (fboundp (car key-val-alist)))
-          (let ((head (car key-val-alist))
-                (tail (cdr key-val-alist)))
-            (apply head tail)))
+          (if (> (length key-val-alist) 1)
+              (eval key-val-alist t)
+            (funcall (car key-val-alist))))
          (t
           key-val-alist))))
 
