@@ -1144,9 +1144,9 @@ An optional fourth (or sixth) element means always replace if t."
 (defun ConTeXt-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^\}]*\\)}" (point-at-eol) t)
+    (if (re-search-forward "{\\([^}]*\\)}" (line-end-position) t)
         (match-string 1)
-      (buffer-substring-no-properties (point) (point-at-eol)))))
+      (buffer-substring-no-properties (point) (line-end-position)))))
 
 ;; This imenu also includes commented out chapters. Perhaps a feature
 ;; for LaTeX, not sure we want or need that for ConTeXt.
