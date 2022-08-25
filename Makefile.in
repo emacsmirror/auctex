@@ -52,14 +52,25 @@ PACKAGE=auctex
 PACKAGE_INFO=auctex preview-latex
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
-AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
-  (mapcar (lambda (file) \
-            (update-file-autoloads file nil autoload-file)) \
-          command-line-args-left) \
+AUTOLOAD=--eval '\
+(let* ((autoload-file (expand-file-name "$@")) \
+       (autoload-file-dir (file-name-directory autoload-file))) \
+  (if (fboundp (quote loaddefs-generate)) \
+      (loaddefs-generate autoload-file-dir autoload-file \
+			 (list "preview.el" "tex-wizard.el")) \
+    (mapcar (lambda (file) \
+	      (update-file-autoloads file nil autoload-file)) \
+	    command-line-args-left)) \
   (save-buffers-kill-emacs t))'
 
-PREVIEW_AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
-  (update-file-autoloads "preview.el" nil autoload-file) \
+PREVIEW_AUTOLOAD=--eval '\
+(let* ((autoload-file (expand-file-name "$@")) \
+       (autoload-file-dir (file-name-directory autoload-file))) \
+  (if (fboundp (quote loaddefs-generate)) \
+      (loaddefs-generate autoload-file-dir autoload-file \
+			 (mapcar (function symbol-name) \
+				 (quote ($(AUCSRC) tex-wizard.el)))) \
+    (update-file-autoloads "preview.el" nil autoload-file)) \
   (save-buffers-kill-emacs t))'
 
 # Files and directories excluded from distributed tar ball.
@@ -257,6 +268,9 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat auto-loads.el >>$@
 	echo "(provide 'tex-site)" >>$@ ; \
 	echo ";;; tex-site.el ends here" >>$@
+	sed -i -e "/^(provide 'auto-loads)/d" \
+	       -e '/^;;; auto-loads.el ends here/d' \
+	       -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
 
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
