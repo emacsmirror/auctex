@@ -194,7 +194,7 @@ STYLESRC = style/prosper.el \
 	   style/ifpdf.el     style/iftex.el     style/ifvtex.el \
 	   style/ifxetex.el   style/multibib.el  style/ltcaption.el \
 	   style/keyval.el    style/kvoptions.el style/kvsetkeys.el \
-	   style/proc.el      style/microtype.el
+	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
