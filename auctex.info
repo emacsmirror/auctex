@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 6.8 from auctex.texi.
 
-This manual is for AUCTeX (version 13.1.3 from 2022-04-16), a
+This manual is for AUCTeX (version 13.1.4 from 2022-08-26), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -1915,12 +1915,18 @@ and to the end of the current environment.
      'LaTeX-syntactic-comments' is enabled, try to find the environment
      in commented regions with the same comment prefix.
 
+     The key bind 'C-M-a' actually calls 'beginning-of-defun', which in
+     turn calls 'LaTeX-find-matching-begin'.
+
  -- Command: LaTeX-find-matching-end
      ('C-M-e') Move point to the '\end' of the current environment.
 
      If this command is called inside a comment and
      'LaTeX-syntactic-comments' is enabled, try to find the environment
      in commented regions with the same comment prefix.
+
+     The key bind 'C-M-e' actually calls 'end-of-defun', which in turn
+     calls 'LaTeX-find-matching-end'.
 
 
 File: auctex.info,  Node: Equations,  Next: Floats,  Up: Environments
@@ -2004,13 +2010,14 @@ File: auctex.info,  Node: Itemize-like,  Next: Tabular-like,  Prev: Floats,  Up:
 -------------------------------
 
 In an itemize-like environment, nodes (i.e., '\item's) may be inserted
-using 'C-c <LFD>'.
+using 'C-c <LFD>' or 'M-<RET>'.  The latter is only defined as an alias
+if the key binding is still available.
 
  -- Command: LaTeX-insert-item
-     ('C-c <LFD>') Close the current item, move to the next line and
-     insert an appropriate '\item' for the current environment.  That
-     is, 'itemize' and 'enumerate' will have '\item ' inserted, while
-     'description' will have '\item[] ' inserted.
+     ('C-c <LFD>' or 'M-<RET>') Close the current item, move to the next
+     line and insert an appropriate '\item' for the current environment.
+     That is, 'itemize' and 'enumerate' will have '\item ' inserted,
+     while 'description' will have '\item[] ' inserted.
 
  -- User Option: TeX-arg-item-label-p
      If non-nil, you will always be asked for optional label in items.
@@ -2040,23 +2047,24 @@ variables:
    AUCTeX calculates the number of columns from the format string and
 inserts the suitable number of ampersands.
 
-   You can use 'C-c <LFD>' ('LaTeX-insert-item') to terminate rows in
-these environments.  It supplies line break macro '\\' and inserts the
-suitable number of ampersands on the next line.  AUCTeX also supports
-the '*{num}{cols}' notation (which may contain another '*'-expression)
-in the format string when calculating the number of ampersands.  Please
-note that 'num' and 'cols' must be enclosed in braces; expressions like
-'*2l' are not recognized correctly by the algorithm.
+   You can use 'C-c <LFD>' or 'M-<RET>' ('LaTeX-insert-item') to
+terminate rows in these environments.  It supplies line break macro '\\'
+and inserts the suitable number of ampersands on the next line.  AUCTeX
+also supports the '*{num}{cols}' notation (which may contain another
+'*'-expression) in the format string when calculating the number of
+ampersands.  Please note that 'num' and 'cols' must be enclosed in
+braces; expressions like '*2l' are not recognized correctly by the
+algorithm.
 
  -- Command: LaTeX-insert-item
-     ('C-c <LFD>') Close the current row with '\\', move to the next
-     line and insert an appropriate number of ampersands for the current
-     environment.
+     ('C-c <LFD>' or 'M-<RET>') Close the current row with '\\', move to
+     the next line and insert an appropriate number of ampersands for
+     the current environment.
 
    Similar supports are provided for various amsmath environments such
 as 'align', 'gather', 'alignat', 'matrix' etc.  Try typing 'C-c <LFD>'
-in these environments.  It recognizes the current environment and does
-the appropriate job depending on the context.
+or 'M-<RET>' in these environments.  It recognizes the current
+environment and does the appropriate job depending on the context.
 
 
 File: auctex.info,  Node: Customizing Environments,  Prev: Tabular-like,  Up: Environments
@@ -2971,6 +2979,9 @@ macros which are listed in the table below.
 'font-latex-match-italic-command-keywords'
      Keywords for commands specifying an italic font.
      Face: 'font-latex-italic-face'
+'font-latex-match-underline-command-keywords'
+     Keywords for commands specifying an underlined text.
+     Face: 'font-latex-underline-face'
 'font-latex-match-math-command-keywords'
      Keywords for commands specifying a math font.
      Face: 'font-latex-math-face'
@@ -2998,7 +3009,7 @@ entries are "warning", "variable", "biblatexnoarg", "biblatex",
 "reference", "function" , "sectioning-0", "sectioning-1",
 "sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
 "slide-title", "textual", "bold-command", "italic-command",
-"math-command", "type-command", "bold-declaration",
+"underline-command", "math-command", "type-command", "bold-declaration",
 "italic-declaration", "type-declaration".
 
    You can also get rid of certain keywords only.  For example if you
@@ -4743,9 +4754,9 @@ get from each file, for example, completion for all labels defined
 anywhere in the document.
 
    AUCTeX will create the 'auto' directory automatically if
-'TeX-auto-save' is non-nil.  Without it, the files in the document will
-not know anything about each other, except for the name of the master
-file.  *Note Automatic Local::.
+'TeX-auto-save' is non-'nil'.  Without it, the files in the document
+will not know anything about each other, except for the name of the
+master file.  *Note Automatic Local::.
 
  -- Command: TeX-save-document
      ('C-c C-d') Save all buffers known to belong to the current
@@ -5350,14 +5361,13 @@ File: auctex.info,  Node: Automatic Local,  Prev: Automatic Private,  Up: Automa
 ---------------------------------------------
 
 AUCTeX can update the style information about a file each time you save
-it, and it will do this if the directory 'TeX-auto-local' exists.
-'TeX-auto-local' is by default set to '"auto"', so simply creating an
-'auto' directory will enable automatic saving of style information.
+it if 'TeX-auto-save' option is enabled.  Saved information will be
+stored in the directory 'TeX-auto-local', set to '"auto"' by default.
 
    The advantage of doing this is that macros, labels, etc. defined in
 any file in a multifile document will be known in all the files in the
 document.  The disadvantage is that saving will be slower.  To disable,
-set 'TeX-auto-local' to nil.
+set 'TeX-auto-local' to 'nil'.
 
  -- User Option: TeX-style-local
      Directory containing hand generated TeX information.
@@ -5368,6 +5378,14 @@ set 'TeX-auto-local' to nil.
      Directory containing automatically generated TeX information.
 
      These correspond to TeX macros found in the current directory.
+
+ -- User Option: TeX-auto-save-aggregate
+     When non-'nil', save parsed information in 'auto' subdirectory of
+     master directory.
+
+     Otherwise, save in each 'auto' subdirectory of the parsed file.
+
+     Subdirectory name is actually taken from 'TeX-auto-local'.
 
 
 File: auctex.info,  Node: Style Files,  Prev: Automatic,  Up: Customization
@@ -5878,7 +5896,7 @@ in 'latex.el' it is just ignored.
 
           (LaTeX-add-environments
            '("lstlisting" LaTeX-env-args
-             [TeX-arg-key-val LaTeX-listings-key-val-options]))
+             [TeX-arg-key-val (LaTeX-listings-key-val-options)]))
 
    Some packages provide environments that are rarely useful to
 non-expert users.  Those should be marked as expert environments using
@@ -6125,7 +6143,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.1.3 from 2022-04-16), a
+   This manual is for AUCTeX (version 13.1.4 from 2022-08-26), a
 sophisticated TeX environment for Emacs.
 
    Copyright (C) 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -6635,6 +6653,14 @@ A.2 Changes and New Features
 News since last release
 -----------------------
 
+   * AUCTeX underlines the argument of macros which produce underlined
+     text in the final product with 'font-latex-underline-face'.  The
+     corresponding keyword class is called 'underline-command'.  *Note
+     Fontification of macros:: if you dislike this feature and wish to
+     deactivate it.
+
+   * Support for the Sioyek document viewer is added.
+
    * AUCTeX now requires GNU Emacs 25.1 or higher.
 
    * AUCTeX tracks the change in Emacs where initial inputs in the
@@ -6669,6 +6695,25 @@ News since last release
        1. Remove '(require 'tex-buf)'.
        2. Replace it with '(require 'tex)'.
        3. Replace it with '(require 'latex)'.
+
+   * When you edit a document divided into multiple files, auto parsed
+     information for all sub files are saved under 'auto' subdirectory
+     at master directory when 'TeX-parse-self' and 'TeX-auto-save'
+     options are enabled.  Now you can have support '.el' file saved
+     under 'auto' subdirectory of each directory of the sub file when
+     the sub files aren't located at the master directory.
+
+     To achieve that, set new user option 'TeX-auto-save-aggregate' to
+     'nil'.
+
+   * There was another hook where former dynamic free variables could be
+     used.  The usage was invalidated at version 13.1, by introduction
+     of lexical binding over AUCTeX.
+
+     The functions in 'TeX-region-hook' could access the free variables
+     'master-buffer' and 'orig-buffer'.  Those are now named
+     'TeX-region-master-buffer' and 'TeX-region-orig-buffer',
+     respectively.
 
 News in 13.1
 ------------
@@ -7957,8 +8002,30 @@ A.3.1 Mid-term Goals
      As of AUCTeX 12.3, 'TeX-remove-style' is no longer used by any
      other codes.
 
-   * Document 'LaTeX-insert-into-commments',
-     'TeX-translate-location-hook', and usage of ConTeXt mode.
+   * Factor out syntax propertization from 'font-latex.el'
+
+     Syntax propertization is implemented in 'font-latex.el'.  This
+     means that features which depend on syntax parse don't work well
+     for 'tex-font.el' users and those who disable font lock.
+
+     Hence syntax propertization should be factored out from
+     'font-latex.el' and implemented as a major mode facility.
+
+     (Texinfo mode is an exception because it already has its own syntax
+     propertize function, which just copies the one available in Emacs
+     built-in texinfo mode.)
+
+   * Add documentation
+
+     Following entries should be included in the document:
+        - Variables 'LaTeX-insert-into-comments',
+          'TeX-translate-location-hook'
+
+        - How to use 'TeX-auto-add-type', as well as functions and
+          variables generated by that macro.  They should be covered in
+          the node *note Hacking the Parser::.
+
+        - Usage of ConTeXt mode
 
 
 File: auctex.info,  Node: Wishlist,  Next: Bugs,  Prev: Mid-term Goals,  Up: Development
@@ -7966,11 +8033,18 @@ File: auctex.info,  Node: Wishlist,  Next: Bugs,  Prev: Mid-term Goals,  Up: Dev
 A.3.2 Wishlist
 --------------
 
-   * Simplify tool bar implementation.  The library 'toolbar-x.el' was
-     developed as an abstraction layer to absorb difference between
-     XEmacs and GNU Emacs.  Now that XEmacs is no longer supported, the
-     library, together with 'tex-bar.el' as a whole, can be much
-     simplified (or even unified).
+   * Enable syntactic font lock for verbatim constructs in 'docTeX' mode
+
+     In 'docTeX' mode buffer, '%' sign at the line beginning hinders
+     syntactic font lock of verbatim constructs.  This should be
+     improved.
+
+   * Simplify tool bar implementation
+
+     The library 'toolbar-x.el' was developed as an abstraction layer to
+     absorb difference between XEmacs and GNU Emacs.  Now that XEmacs is
+     no longer supported, the library, together with 'tex-bar.el' as a
+     whole, can be much simplified (or even unified).
 
    * Documentation lookup for macros
 
@@ -8581,8 +8655,8 @@ Key Index
 * C-c C-t C-x:                           Ignoring warnings.   (line  39)
 * C-c C-v:                               Starting Viewers.    (line  12)
 * C-c C-z:                               Starting a Command.  (line  42)
-* C-c <LFD>:                             Itemize-like.        (line  10)
-* C-c <LFD> <1>:                         Tabular-like.        (line  33)
+* C-c LFD:                               Itemize-like.        (line  11)
+* C-c LFD <1>:                           Tabular-like.        (line  34)
 * C-c ]:                                 Environments.        (line 102)
 * C-c ^:                                 Control.             (line  18)
 * C-c _:                                 Multifile.           (line  71)
@@ -8591,15 +8665,17 @@ Key Index
 * C-c ~:                                 Mathematics.         (line  12)
 * C-j:                                   Indenting.           (line  78)
 * C-M-a:                                 Environments.        (line 107)
-* C-M-e:                                 Environments.        (line 114)
+* C-M-e:                                 Environments.        (line 117)
 * C-M-h:                                 Marking (Texinfo).   (line  34)
 * C-x n e:                               Narrowing.           (line  17)
 * C-x n g:                               Narrowing.           (line  14)
-* <LFD>:                                 Indenting.           (line  78)
+* LFD:                                   Indenting.           (line  78)
 * M-g p:                                 Debugging.           (line  27)
 * M-q:                                   Filling.             (line  87)
-* M-<TAB>:                               Completion.          (line  24)
-* <TAB>:                                 Indenting.           (line  74)
+* M-RET:                                 Itemize-like.        (line  11)
+* M-RET <1>:                             Tabular-like.        (line  34)
+* M-TAB:                                 Completion.          (line  24)
+* TAB:                                   Indenting.           (line  74)
 
 
 File: auctex.info,  Node: Function Index,  Next: Variable Index,  Prev: Key Index,  Up: Indices
@@ -8645,11 +8721,11 @@ Function Index
 * LaTeX-fill-region:                     Filling.             (line  99)
 * LaTeX-fill-section:                    Filling.             (line  95)
 * LaTeX-find-matching-begin:             Environments.        (line 106)
-* LaTeX-find-matching-end:               Environments.        (line 113)
+* LaTeX-find-matching-end:               Environments.        (line 116)
 * LaTeX-indent-line:                     Indenting.           (line  74)
 * LaTeX-insert-environment:              Adding Environments. (line  69)
-* LaTeX-insert-item:                     Itemize-like.        (line   9)
-* LaTeX-insert-item <1>:                 Tabular-like.        (line  32)
+* LaTeX-insert-item:                     Itemize-like.        (line  10)
+* LaTeX-insert-item <1>:                 Tabular-like.        (line  33)
 * LaTeX-mark-environment:                Marking (LaTeX).     (line  15)
 * LaTeX-mark-section:                    Marking (LaTeX).     (line   6)
 * LaTeX-match-class-option:              Adding Other.        (line  55)
@@ -8710,6 +8786,7 @@ Function Index
 * TeX-arg-verb:                          Adding Macros.       (line 226)
 * TeX-arg-verb-delim-or-brace:           Adding Macros.       (line 229)
 * TeX-arg-version:                       Adding Macros.       (line 129)
+* TeX-auto-add-regexp:                   Hacking the Parser.  (line   6)
 * TeX-auto-generate:                     Automatic Private.   (line  23)
 * TeX-clean:                             Cleaning.            (line   6)
 * TeX-command-buffer:                    Starting a Command.  (line  34)
@@ -8796,7 +8873,7 @@ Variable Index
 * docTeX-mode-hook:                      Modes and Hooks.     (line  22)
 * fill-column:                           Filling.             (line   6)
 * font-latex-deactivated-keyword-classes: Fontification of macros.
-                                                              (line 162)
+                                                              (line 165)
 * font-latex-fontify-script:             Fontification of math.
                                                               (line  28)
 * font-latex-fontify-script-max-level:   Fontification of math.
@@ -8839,6 +8916,8 @@ Variable Index
                                                               (line 137)
 * font-latex-match-type-declaration-keywords: Fontification of macros.
                                                               (line 137)
+* font-latex-match-underline-command-keywords: Fontification of macros.
+                                                              (line 137)
 * font-latex-match-variable-keywords:    Fontification of macros.
                                                               (line  60)
 * font-latex-match-warning-keywords:     Fontification of macros.
@@ -8870,7 +8949,7 @@ Variable Index
 * font-latex-superscript-face:           Fontification of math.
                                                               (line  42)
 * font-latex-user-keyword-classes:       Fontification of macros.
-                                                              (line 194)
+                                                              (line 197)
 * japanese-LaTeX-default-style:          Japanese.            (line  75)
 * japanese-TeX-engine-default:           Japanese.            (line  36)
 * japanese-TeX-mode:                     Japanese.            (line   6)
@@ -8975,19 +9054,20 @@ Variable Index
 * TeX-arg-input-file-search:             Adding Macros.       (line 160)
 * TeX-arg-input-file-search <1>:         Adding Macros.       (line 192)
 * TeX-arg-input-file-search <2>:         Adding Macros.       (line 201)
-* TeX-arg-item-label-p:                  Itemize-like.        (line  15)
+* TeX-arg-item-label-p:                  Itemize-like.        (line  16)
 * TeX-arg-right-insert-p:                Quotes.              (line 150)
 * TeX-auto-cleanup-hook:                 Hacking the Parser.  (line 100)
 * TeX-auto-empty-regexp-list:            Parsing Files.       (line  94)
 * TeX-auto-full-regexp-list:             Parsing Files.       (line 127)
 * TeX-auto-global:                       Automatic Global.    (line  24)
-* TeX-auto-local:                        Automatic Local.     (line  21)
+* TeX-auto-local:                        Automatic Local.     (line  20)
 * TeX-auto-parse-length:                 Parsing Files.       (line  88)
 * TeX-auto-prepare-hook:                 Hacking the Parser.  (line  97)
 * TeX-auto-private:                      Automatic Private.   (line  19)
 * TeX-auto-regexp-list:                  Parsing Files.       (line  85)
 * TeX-auto-regexp-list <1>:              Hacking the Parser.  (line  78)
 * TeX-auto-save:                         Parsing Files.       (line  41)
+* TeX-auto-save-aggregate:               Automatic Local.     (line  25)
 * TeX-auto-untabify:                     Parsing Files.       (line  58)
 * TeX-bar-LaTeX-button-alist:            Processing.          (line  11)
 * TeX-bar-LaTeX-buttons:                 Processing.          (line  11)
@@ -9110,7 +9190,7 @@ Variable Index
 * TeX-source-correlate-start-server <1>: I/O Correlation.     (line  63)
 * TeX-source-correlate-start-server <2>: I/O Correlation.     (line  77)
 * TeX-style-global:                      Automatic Global.    (line  19)
-* TeX-style-local:                       Automatic Local.     (line  16)
+* TeX-style-local:                       Automatic Local.     (line  15)
 * TeX-style-path:                        Automatic.           (line  38)
 * TeX-style-private:                     Automatic Private.   (line  28)
 * TeX-suppress-ignored-warnings:         Ignoring warnings.   (line  39)
@@ -9198,7 +9278,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 841)
+* auctex.el <1>:                         Changes.             (line 868)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9503,7 +9583,7 @@ Concept Index
                                                               (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 841)
+* tex-site.el <2>:                       Changes.             (line 868)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9547,83 +9627,83 @@ Node: Quotes59844
 Node: Font Specifiers68284
 Node: Sectioning70352
 Node: Environments74871
-Node: Equations80024
-Node: Floats80616
-Node: Itemize-like82620
-Node: Tabular-like83342
-Node: Customizing Environments85115
-Node: Mathematics85355
-Node: Completion88791
-Node: Marking95822
-Node: Marking (LaTeX)96446
-Node: Marking (Texinfo)97388
-Node: Commenting98999
-Node: Indenting100324
-Node: Filling108018
-Node: Display113888
-Node: Font Locking116383
-Node: Fontification of macros118462
-Node: Fontification of quotes127978
-Node: Fontification of math129472
-Node: Verbatim content133140
-Node: Faces133914
-Node: Known problems134411
-Node: Folding135408
-Node: Outline146181
-Node: Narrowing147460
-Node: Prettifying148529
-Node: Processing149766
-Node: Commands151094
-Node: Starting a Command151650
-Node: Selecting a Command156666
-Node: Processor Options165785
-Node: Viewing176178
-Node: Starting Viewers176552
-Node: I/O Correlation182202
-Ref: I/O Correlation-Footnote-1187878
-Node: Debugging188128
-Node: Ignoring warnings190746
-Node: Error overview192805
-Node: Checking194713
-Node: Control196329
-Node: Cleaning198438
-Node: Documentation199797
-Node: Customization200512
-Node: Modes and Hooks201005
-Node: Multifile202893
-Node: Parsing Files207625
-Node: Internationalization212614
-Node: European213962
-Node: Japanese221441
-Node: Automatic226505
-Node: Automatic Global228996
-Node: Automatic Private230128
-Node: Automatic Local231464
-Node: Style Files232495
-Node: Simple Style233301
-Node: Adding Macros237022
-Node: Adding Environments246521
-Node: Adding Other251185
-Node: Hacking the Parser255785
-Node: Appendices259774
-Node: Copying this Manual260070
-Node: GNU Free Documentation License260953
-Node: Changes286073
-Node: Development340925
-Node: Mid-term Goals341571
-Node: Wishlist343539
-Node: Bugs349299
-Node: FAQ350379
-Node: Texinfo mode356099
-Node: Exploiting357233
-Node: Superseding358051
-Node: Mapping362282
-Node: Unbinding364117
-Node: Indices364938
-Node: Key Index365101
-Node: Function Index372630
-Node: Variable Index384608
-Node: Concept Index409749
+Node: Equations80252
+Node: Floats80844
+Node: Itemize-like82848
+Node: Tabular-like83674
+Node: Customizing Environments85486
+Node: Mathematics85726
+Node: Completion89162
+Node: Marking96193
+Node: Marking (LaTeX)96817
+Node: Marking (Texinfo)97759
+Node: Commenting99370
+Node: Indenting100695
+Node: Filling108389
+Node: Display114259
+Node: Font Locking116754
+Node: Fontification of macros118833
+Node: Fontification of quotes128513
+Node: Fontification of math130007
+Node: Verbatim content133675
+Node: Faces134449
+Node: Known problems134946
+Node: Folding135943
+Node: Outline146716
+Node: Narrowing147995
+Node: Prettifying149064
+Node: Processing150301
+Node: Commands151629
+Node: Starting a Command152185
+Node: Selecting a Command157201
+Node: Processor Options166320
+Node: Viewing176713
+Node: Starting Viewers177087
+Node: I/O Correlation182737
+Ref: I/O Correlation-Footnote-1188413
+Node: Debugging188663
+Node: Ignoring warnings191281
+Node: Error overview193340
+Node: Checking195248
+Node: Control196864
+Node: Cleaning198973
+Node: Documentation200332
+Node: Customization201047
+Node: Modes and Hooks201540
+Node: Multifile203428
+Node: Parsing Files208162
+Node: Internationalization213151
+Node: European214499
+Node: Japanese221978
+Node: Automatic227042
+Node: Automatic Global229533
+Node: Automatic Private230665
+Node: Automatic Local232001
+Node: Style Files233239
+Node: Simple Style234045
+Node: Adding Macros237766
+Node: Adding Environments247265
+Node: Adding Other251931
+Node: Hacking the Parser256531
+Node: Appendices260520
+Node: Copying this Manual260816
+Node: GNU Free Documentation License261699
+Node: Changes286819
+Node: Development342919
+Node: Mid-term Goals343565
+Node: Wishlist346378
+Node: Bugs352361
+Node: FAQ353441
+Node: Texinfo mode359161
+Node: Exploiting360295
+Node: Superseding361113
+Node: Mapping365344
+Node: Unbinding367179
+Node: Indices368000
+Node: Key Index368163
+Node: Function Index375838
+Node: Variable Index387889
+Node: Concept Index413248
 
 End Tag Table
 
