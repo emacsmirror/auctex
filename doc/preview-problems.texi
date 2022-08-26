@@ -20,6 +20,7 @@ newer versions of the problematic software or by simple patches.
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
 * No images are displayed with gs 9.27 and earlier::
+* Black texts are too hard to read on dark background::
 @end menu
 
 If you find something not mentioned here, please send a bug report using
@@ -194,3 +195,12 @@ well.
 The default value used to be @code{compatible} for short period before
 Ghostscript 9.50 was released but now is @code{t}.
 @end defopt
+
+@node Black texts are too hard to read on dark background
+@section Black texts are too hard to read on dark background
+Unfortunately, foreground color adjustment discussed in the previous node
+doesn't work for Xe@LaTeX{} for technical reason.  The texts are always
+rendered as black in the preview images, so it's almost impossible to read
+them on dark background.  Hence Xe@LaTeX{} users who like dark background
+in Emacs frame should customize @code{preview-pdf-adjust-color-method} to
+@code{nil}.

@@ -1,6 +1,6 @@
 ;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2009--2022 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -48,10 +48,18 @@
 (declare-function font-latex-add-to-syntax-alist
                   "font-latex"
                   (list))
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
 
 (TeX-add-style-hook
  "shortvrb"
  (lambda ()
+
+   (TeX-add-symbols
+    '("MakeShortVerb"   (TeX-arg-string "Character" "\\"))
+    '("MakeShortVerb*"  (TeX-arg-string "Character" "\\"))
+    '("DeleteShortVerb" (TeX-arg-string "Character" "\\")))
 
    ;; Ispell: Add entries to `ispell-tex-skip-alist':
    (when LaTeX-shortvrb-chars
@@ -61,13 +69,26 @@
                   (cons str str)))
               LaTeX-shortvrb-chars)))
 
+   ;; Syntax
+   ;; N.B. This doesn't handle backslash just before the closing
+   ;; delimiter like |xyz\| correctly.  We hope we can live with that.
+   (when LaTeX-shortvrb-chars
+     (let ((st (make-syntax-table (syntax-table))))
+       (dolist (c LaTeX-shortvrb-chars)
+         (modify-syntax-entry c "\"" st))
+       (set-syntax-table st)))
+
    ;; Fontification
    (when (and LaTeX-shortvrb-chars
               (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-to-syntax-alist
-      (mapcar (lambda (char) (cons char "|"))
-              LaTeX-shortvrb-chars))))
+      (mapcar (lambda (char) (cons char "\""))
+              LaTeX-shortvrb-chars))
+
+     (font-latex-add-keywords '(("MakeShortVerb"   "*{")
+                                ("DeleteShortVerb" "{"))
+                              'function)))
  TeX-dialect)
 
 ;;; shortvrb.el ends here

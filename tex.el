@@ -51,14 +51,11 @@
                   (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
                   (bus service path interface signal handler &rest args))
-(declare-function LaTeX-environment-list "latex"
-                  nil)
-(declare-function LaTeX-bibliography-list "latex"
-                  nil)
-(declare-function comint-exec
+(declare-function LaTeX-environment-list "latex" nil)
+(declare-function LaTeX-bibliography-list "latex" nil)
+(declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
-(declare-function comint-mode
-                  nil)
+(declare-function comint-mode "ext:comint" nil)
 (declare-function tex--prettify-symbols-compose-p "ext:tex-mode"
                   (start end match))
 (declare-function gnuserv-start "ext:gnuserv"
@@ -100,6 +97,7 @@
 (defvar Info-file-list-for-emacs)       ; info.el
 (defvar ispell-parser)                  ; ispell.el
 (defvar compilation-error-regexp-alist) ; compile.el
+(defvar compilation-in-progress)        ; compile.el
 
 (defgroup TeX-file nil
   "Files used by AUCTeX."
@@ -595,6 +593,7 @@ string."
     ;; adds suitable quotes for use in shell command line.
     ("%s" TeX-active-master-with-quotes nil t)
     ("%t" TeX-active-master-with-quotes t t)
+    ("%(s-filename-only)" TeX-active-master-with-quotes nil t nil nil file-name-nondirectory)
     ("%(t-filename-only)" TeX-active-master-with-quotes t t nil nil file-name-nondirectory)
     ;; If any TeX codes appear in the interval between %` and %', move
     ;; all of them after the interval and supplement " \input".  The
@@ -639,7 +638,7 @@ string."
                   (concat TeX-command-text " \"\\input\""))
               "")))
     ;; The fourth argument of t directs to supply "\detokenize{}" when
-    ;; necessary. See doc string and comment of
+    ;; necessary.  See doc string and comment of
     ;; `TeX-active-master-with-quotes'.
     ("%T" TeX-active-master-with-quotes t t nil t)
     ("%n" TeX-current-line)
@@ -767,53 +766,41 @@ overlays between two existing ones.")
 ;; which results in a void-variable error if crm hasn't been loaded before.
 (require 'crm)
 
-(if (or (and (= emacs-major-version 24) (>= emacs-minor-version 4))
-        (>= emacs-major-version 25))
-    ;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
-    ;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
-    ;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
-    (defun TeX-completing-read-multiple
-        (prompt table &optional predicate require-match initial-input
-                hist def inherit-input-method)
-      "Like `completing-read-multiple' which see.
+;; For GNU Emacs 24.4 or later, based on `completing-read-multiple' of
+;; git commit b14abca9476cba2f500b5eda89441d593dd0f12b
+;;   2013-01-10  * lisp/emacs-lisp/crm.el: Allow any regexp for separators.
+(defun TeX-completing-read-multiple
+    (prompt table &optional predicate require-match initial-input
+            hist def inherit-input-method)
+  "Like `completing-read-multiple' which see.
 Retain zero-length substrings but ensure that empty input results
 in nil across different emacs versions."
-      (unwind-protect
-          (progn
-            (add-hook 'choose-completion-string-functions
-                      #'crm--choose-completion-string)
-            (let* ((minibuffer-completion-table #'crm--collection-fn)
-                   (minibuffer-completion-predicate predicate)
-                   ;; see completing_read in src/minibuf.c
-                   (minibuffer-completion-confirm
-                    (unless (eq require-match t) require-match))
-                   (crm-completion-table table)
-                   (map (if require-match
-                            crm-local-must-match-map
-                          crm-local-completion-map))
-                   ;; If the user enters empty input, `read-from-minibuffer'
-                   ;; returns the empty string, not DEF.
-                   (input (read-from-minibuffer
-                           prompt initial-input map
-                           nil hist def inherit-input-method))
-                   result)
-              (and def (string-equal input "") (setq input def))
-              (if (equal (setq result (split-string input crm-separator))
-                         '(""))
-                  nil
-                result)))
-        (remove-hook 'choose-completion-string-functions
-                     #'crm--choose-completion-string)))
-  ;; For GNU Emacs <= 24.3.
-  (defun TeX-completing-read-multiple
-      (prompt table &optional predicate require-match initial-input
-              hist def inherit-input-method)
-    "Like `completing-read-multiple' which see.
-Ensures that empty input results in nil across different emacs versions."
-    (let ((result (completing-read-multiple prompt table predicate
-                                            require-match initial-input
-                                            hist def inherit-input-method)))
-      (if (equal result '("")) nil result))))
+  (unwind-protect
+      (progn
+        (add-hook 'choose-completion-string-functions
+                  #'crm--choose-completion-string)
+        (let* ((minibuffer-completion-table #'crm--collection-fn)
+               (minibuffer-completion-predicate predicate)
+               ;; see completing_read in src/minibuf.c
+               (minibuffer-completion-confirm
+                (unless (eq require-match t) require-match))
+               (crm-completion-table table)
+               (map (if require-match
+                        crm-local-must-match-map
+                      crm-local-completion-map))
+               ;; If the user enters empty input, `read-from-minibuffer'
+               ;; returns the empty string, not DEF.
+               (input (read-from-minibuffer
+                       prompt initial-input map
+                       nil hist def inherit-input-method))
+               result)
+          (and def (string-equal input "") (setq input def))
+          (if (equal (setq result (split-string input crm-separator))
+                     '(""))
+              nil
+            result)))
+    (remove-hook 'choose-completion-string-functions
+                 #'crm--choose-completion-string)))
 
 (defun TeX-read-string (prompt &optional initial-input history default-value)
   (read-string prompt initial-input history default-value t))
@@ -1098,7 +1085,7 @@ The following built-in predicates are available:
   :type '(alist :key-type symbol :value-type (group sexp)))
 
 ;; XXX: Atril and xreader are forks of Evince and share an almost
-;; identical interface with it. Instead of having different functions
+;; identical interface with it.  Instead of having different functions
 ;; for each program, we keep the original *-evince-* functions and
 ;; make them accept arguments to specify the actual name of the
 ;; program and the desktop environment, that will be used to set up
@@ -1307,7 +1294,15 @@ viewer."
        ("zathura %o"
         (mode-io-correlate
          " --synctex-forward %n:0:\"%b\" -x \"emacsclient +%{line} %{input}\""))
-       "zathura"))))
+       "zathura")
+      ("Sioyek"
+       ("sioyek %o"
+        (mode-io-correlate
+         ,(concat
+           " --forward-search-file \"%b\""
+           " --forward-search-line %n"
+           " --inverse-search \"emacsclient +%2 %1\"")))
+       "sioyek"))))
   "Alist of built-in viewer specifications.
 This variable should not be changed by the user who can use
 `TeX-view-program-list' to add new viewers or overwrite the
@@ -1526,7 +1521,7 @@ Check the `TeX-view-program-selection' variable" viewer)))
     (xetex "XeTeX" "xetex" "xelatex" "xetex")
     ;; Some lualatex versions before 0.71 would use "texput" as file
     ;; name if --jobname were not supplied
-    (luatex "LuaTeX" "luatex" "lualatex --jobname=%s" "luatex")
+    (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
     (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine))
   "Alist of built-in TeX engines and associated commands.
 For a description of the format see `TeX-engine-alist'.")
@@ -1737,8 +1732,8 @@ If this is nil, an empty string will be returned."
           (concat TeX-source-specials-tex-flags
                   (if TeX-source-specials-places
                       ;; -src-specials=WHERE: insert source specials
-                      ;; in certain places of the DVI file. WHERE is a
-                      ;; comma-separated value list: cr display hbox
+                      ;; in certain places of the DVI file.  WHERE is
+                      ;; a comma-separated value list: cr display hbox
                       ;; math par parend vbox
                       (concat "=" (mapconcat #'identity
                                              TeX-source-specials-places ","))))
@@ -2748,10 +2743,10 @@ Used when checking if any files have changed."
 
 (define-obsolete-variable-alias 'LaTeX-dialect 'TeX-dialect "13.0")
 (defconst TeX-dialect :latex
-  "Default dialect for use with function `TeX-add-style-hook' for
-argument DIALECT-EXPR when the hook is to be run only on LaTeX
-file, or any mode derived thereof. See variable
-`TeX-style-hook-dialect'." )
+  "Default dialect for use with function `TeX-add-style-hook'.
+This applies to the argument DIALECT-EXPR when the hook is to be
+run only on LaTeX file, or any mode derived thereof.  See
+variable `TeX-style-hook-dialect'." )
 
 (defvar TeX-style-hook-list nil
   "List of TeX style hooks currently loaded.
@@ -2950,8 +2945,9 @@ found in DIALECT-LIST and return the list thereof."
     ret)))
 
 (defun TeX-unload-style (style &optional dialect-list)
-  "Forget that we once loaded STYLE. If DIALECT-LIST is provided
-the STYLE is only removed for those dialects in DIALECT-LIST.
+  "Forget that we once loaded STYLE.
+If DIALECT-LIST is provided, the STYLE is only removed for those
+dialects in DIALECT-LIST.
 
 See variable `TeX-style-hook-dialect' for supported dialects."
   (let ((style-data (assoc-string style TeX-style-hook-list)))
@@ -3764,12 +3760,20 @@ The algorithm is as follows:
   ;;                           (make-display-table)))
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
-  ;; Symbol completion.
-  (set (make-local-variable 'TeX-complete-list)
-       (list (list "\\\\\\([a-zA-Z]*\\)"
-                   1 'TeX-symbol-list-filtered
-                   (if TeX-insert-braces "{}"))
-             (list "" TeX-complete-word)))
+  ;; Symbol & length completion.
+  (setq-local TeX-complete-list
+              (list (list "\\\\\\([a-zA-Z]*\\)"
+                          1
+                          (lambda ()
+                            (append (TeX-symbol-list-filtered)
+                                    (when (fboundp 'LaTeX-length-list)
+                                      (LaTeX-length-list))
+                                    (when (fboundp 'LaTeX-counter-list)
+                                      (mapcar (lambda (x)
+                                                `(,(concat "the" (car x))))
+                                              (LaTeX-counter-list)))))
+                          (if TeX-insert-braces "{}"))
+                    (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
 
@@ -3847,6 +3851,10 @@ The algorithm is as follows:
 (defconst TeX-auto-parser-add 2)
 (defconst TeX-auto-parser-local 3)
 (defconst TeX-auto-parser-change 4)
+
+(defvar TeX-auto-file nil)
+;; Internal temporal variable.  Don't refer to it in your program
+;; unless you know what you are doing.  Use (TeX-style-list) instead.
 
 (defun TeX-auto-add-information (name entries)
   "For NAME in `TeX-auto-parser' add ENTRIES."
@@ -3966,6 +3974,17 @@ Generated by `TeX-auto-add-type'.")
   :group 'TeX-parse
   :type 'boolean)
 
+(defcustom TeX-auto-save-aggregate t
+  "When non-nil, save parsed information in one directory.
+Each style file of automatically parsed information is saved in
+\"auto\" subdirectory of master file.
+
+When nil, saves in each \"auto\" subdirectory.
+
+Subdirectory name is actually taken from `TeX-auto-local'."
+  :group 'TeX-parse
+  :type 'boolean)
+
 (defun TeX-auto-write ()
   "Save all relevant TeX information from the current buffer."
   (if TeX-auto-untabify
@@ -3976,7 +3995,9 @@ Generated by `TeX-auto-add-type'.")
                      (file-name-as-directory TeX-auto-local)
                      (TeX-strip-extension nil TeX-all-extensions t)
                      ".el")
-                    (TeX-master-directory)))
+                    (if TeX-auto-save-aggregate
+                        (TeX-master-directory)
+                      default-directory)))
              (dir (file-name-directory file)))
         ;; Create auto directory if possible.
         (if (not (file-exists-p dir))
@@ -4234,7 +4255,7 @@ alter the numbering of any ordinary, non-shy groups.")
        1 TeX-auto-symbol)
       (,(concat "\\\\newfont{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
       (,(concat "\\\\typein\\[\\\\\\(" token "+\\)\\]") 1 TeX-auto-symbol)
-      ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
+      ("\\\\input +\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?"
        1 TeX-auto-file)
       (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol)))
@@ -5664,7 +5685,7 @@ characters."
 (defun TeX-search-unescaped (pattern
                              &optional direction regexp-flag bound noerror)
   "Search for unescaped PATTERN in a certain DIRECTION.
-DIRECTION can be indicated by the symbols 'forward and 'backward.
+DIRECTION can be indicated by the symbols `forward' and `backward'.
 If DIRECTION is omitted, a forward search is carried out.
 If REGEXP-FLAG is non-nil, PATTERN may be a regular expression,
 otherwise a string.
@@ -6997,7 +7018,6 @@ at bottom if LINE is nil."
 (defvar TeX-parse-function)
 (defvar TeX-sentinel-function)
 (defvar TeX-sentinel-default-function)
-(defvar compilation-in-progress)
 (defvar TeX-current-page)
 (defvar TeX-error-overview-open-after-TeX-run)
 (defvar TeX-error-list)
@@ -7306,19 +7326,19 @@ Pass arguments EXTENSION NONDIRECTORY ASK to `TeX-active-master'.
 If the returned file name contains space, enclose it within
 quotes `\"' when \" \\input\" is supplemented (indicated by
 dynamically bound variable `TeX-command-text' having string
-value.) Also enclose the file name within \\detokenize{} when
+value.)  Also enclose the file name within \\detokenize{} when
 the following three conditions are met:
   1. compiling with standard (pdf)LaTeX or upLaTeX
   2. \" \\input\" is supplemented
   3. EXTRA is non-nil (default when expanding \"%T\")
-Adjust dynamically bound variable `TeX-expand-pos' to avoid possible
-infinite loop in `TeX-command-expand'.
+Adjust dynamically bound variable `TeX-expand-pos' to avoid
+possible infinite loop in `TeX-command-expand'.
 If PREPROCESS-FN is non-nil then it is called with the filename
 as an argument and the result is enclosed instead of the
 filename.
 
-Helper function of `TeX-command-expand'. Use only within entries in
-`TeX-expand-list-builtin' and `TeX-expand-list'."
+Helper function of `TeX-command-expand'. Use only within entries
+in `TeX-expand-list-builtin' and `TeX-expand-list'."
   (let* ((raw (TeX-active-master extension nondirectory ask))
          ;; String `TeX-command-text' means that the file name is
          ;; given through \input command.
@@ -7815,6 +7835,7 @@ Return the new process."
           (set-process-filter process #'TeX-command-filter)
           (set-process-sentinel process #'TeX-command-sentinel)
           (set-marker (process-mark process) (point-max))
+          (require 'compile)
           (setq compilation-in-progress (cons process compilation-in-progress))
           process)
       (setq mode-line-process ": run")
@@ -7985,6 +8006,7 @@ run of `TeX-run-format', use
   ;; FIXME: This is just an ad-hoc workaround and it's better to fix
   ;; the regular expression in compile.el properly, if possible.  But
   ;; there was no response to such request in emacs-devel@gnu.org.
+  (require 'compile)
   (with-current-buffer TeX-command-buffer
     (make-local-variable 'compilation-error-regexp-alist)
     ;; Add slightly modified entry of the one associated with `comma'
@@ -8082,6 +8104,7 @@ Error parsing on \\[next-error] should work with a bit of luck."
     (TeX-command-mode-line process)
     (set-process-sentinel process #'TeX-command-sentinel)
     (set-marker (process-mark process) (point-max))
+    (require 'compile)
     (setq compilation-in-progress (cons process compilation-in-progress))
     (TeX-parse-reset)
     (setq TeX-parse-function #'TeX-parse-TeX)
@@ -8108,7 +8131,7 @@ This function is *obsolete* and only here for compatibility
 reasons.  Use `TeX-run-function' instead."
   (interactive)
   (TeX-ispell-document ""))
-
+(make-obsolete 'TeX-run-ispell-on-document 'TeX-run-function "2006-02-07")
 
 ;;; Command Sentinels
 
@@ -8256,7 +8279,12 @@ Return nil only if no errors were found."
                       (match-string 1 output-file)
                     "dvi")))))))
   (if process (TeX-format-mode-line process))
-  (if (re-search-forward "^\\(!\\|.*:[0-9]+:\\) " nil t)
+  (if (catch 'found
+        (while (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
+          (if (or (not (match-beginning 1))
+                  ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 1)))
+              (throw 'found t))))
       (progn
         (message "%s errors in `%s'. Use %s to display." name (buffer-name)
                  (substitute-command-keys
@@ -8269,6 +8297,9 @@ Return nil only if no errors were found."
                                             'TeX-current-master))
                          t))
         t)
+    ;; In case that there were only non-error warnings of type
+    ;; bug#55065, restore point to the initial position.
+    (goto-char (point-min))
     (let (dvi2pdf)
         (if (with-current-buffer TeX-command-buffer
            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
@@ -9272,7 +9303,7 @@ Return non-nil if an error or warning is found."
   (let ((regexp
          (concat
           ;; TeX error
-          "^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|"
+          "^\\(!\\|\\(.+?\\):[0-9]+:\\) \\|"
           ;; New file
           "(\n?\\([^\n()]+\\)\\|"
           ;; End of file.
@@ -9302,17 +9333,25 @@ Return non-nil if an error or warning is found."
           nil)
          ;; TeX error
          ((match-beginning 1)
-          (when (match-beginning 2)
-            (unless TeX-error-file
-              (push nil TeX-error-file)
-              (push nil TeX-error-offset))
-            (unless (car TeX-error-offset)
-              (rplaca TeX-error-file (TeX-match-buffer 2))))
-          (setq error-found t)
-          (if (looking-at "Preview ")
-              t
-            (TeX-error store)
-            nil))
+          (if (or (not (match-beginning 2))
+                  ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 2)))
+              (progn
+                (when (match-beginning 2)
+                  (unless TeX-error-file
+                    (push nil TeX-error-file)
+                    (push nil TeX-error-offset))
+                  (unless (car TeX-error-offset)
+                    (rplaca TeX-error-file (TeX-match-buffer 2))))
+                (setq error-found t)
+                (if (looking-at "Preview ")
+                    t
+                  (TeX-error store)
+                  nil))
+            ;; This wasn't an actual TeX error.  Go to the least
+            ;; possible point to search again.
+            (goto-char (1+ (match-beginning 1)))
+            t))
          ;; LaTeX bad box
          ((match-beginning 7)
           ;; In `TeX-error-list' we collect all warnings, also if they're going

@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -364,6 +364,10 @@ STAR is non-nil, do not query for a short-caption and a label."
 
    ;; Add caption to the parser.
    (TeX-auto-add-regexp LaTeX-caption-DeclareCaption-regexp)
+
+   ;; Run style hook for ltcaption if longtable package is loaded:
+   (when (member "longtable" (TeX-style-list))
+     (TeX-run-style-hooks "ltcaption"))
 
    ;; Caption commands:
    (TeX-add-symbols

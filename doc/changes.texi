@@ -12,6 +12,21 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} underlines the argument of macros which produce underlined text
+in the final product with @code{font-latex-underline-face}.  The
+corresponding keyword class is called @code{underline-command}.
+@ifset rawfile
+See the section for fontification of macros
+@end ifset
+@ifclear rawfile
+@xref{Fontification of macros}
+@end ifclear
+if you dislike this feature and wish to deactivate it.
+
+@item
+Support for the Sioyek document viewer is added.
+
+@item
 @AUCTeX{} now requires GNU Emacs 25.1 or higher.
 
 @item
@@ -62,6 +77,26 @@ Replace it with @code{(require 'tex)}.
 Replace it with @code{(require 'latex)}.
 @end enumerate
 
+@item
+When you edit a document divided into multiple files, auto parsed
+information for all sub files are saved under @file{auto} subdirectory at
+master directory when @code{TeX-parse-self} and @code{TeX-auto-save}
+options are enabled.  Now you can have support @file{.el} file saved under
+@file{auto} subdirectory of each directory of the sub file when the sub
+files aren't located at the master directory.
+
+To achieve that, set new user option @code{TeX-auto-save-aggregate} to
+@code{nil}.
+
+@item
+There was another hook where former dynamic free variables could be used.
+The usage was invalidated at version 13.1, by introduction of lexical
+binding over @AUCTeX{}.
+
+The functions in @code{TeX-region-hook} could access the free variables
+@code{master-buffer} and @code{orig-buffer}.  Those are now named
+@code{TeX-region-master-buffer} and @code{TeX-region-orig-buffer},
+respectively.
 @end itemize
 
 @heading News in 13.1
@@ -1111,8 +1146,10 @@ inserted by typing @key{"}.
 Completion support for options of some @LaTeX{} packages was added.
 
 @item
+@ifclear rawfile
 @cindex @file{auctex.el}
 @cindex @file{tex-site.el}
+@end ifclear
 Already in version 11.81 the way to activate @AUCTeX{} changed
 substantially.  This should now be done with @code{(load "auctex.el" nil
 t t)} instead of the former @code{(require 'tex-site)}.  Related to this

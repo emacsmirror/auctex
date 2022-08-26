@@ -52,7 +52,6 @@
 
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)
-(defvar TeX-auto-file)
 (defvar LaTeX-section-list-changed)
 
 ;;; Syntax
@@ -858,7 +857,7 @@ position just before \\begin and the position just before
 \\end.")
 
 (defun LaTeX-modify-environment (environment)
-  "Modify current ENVIRONMENT."
+  "Modify current environment to new ENVIRONMENT."
   (let ((goto-end (lambda ()
                     (LaTeX-find-matching-end)
                     (re-search-backward (concat (regexp-quote TeX-esc)
@@ -1779,18 +1778,18 @@ This is necessary since index entries may contain commands and stuff.")
        ("\\\\newenvironment\\*?{\\([^}]+\\)}"
         1 LaTeX-auto-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
-       ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+       ("\\\\input{\"?\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?\"?}"
         1 TeX-auto-file)
-       ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+       ("\\\\include{\\(\\.*[^#}%\\.\n\r]+\\)\\(\\.[^#}%\\.\n\r]+\\)?}"
         1 TeX-auto-file)
        (,(concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
         1 LaTeX-auto-bibitem)
        (,(concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
         1 LaTeX-auto-bibitem)
-       ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
-       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r]+\\)\\..+}"
+       ("\\\\bibliography{\\([^#}\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
+       ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r]+\\)\\..+}"
         1 LaTeX-auto-bibliography)
-       ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\\\n\r\.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
+       ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
        ("\\\\newrefsection\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)
        ("\\\\begin{refsection}\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)))
    LaTeX-auto-class-regexp-list
@@ -2142,10 +2141,7 @@ confirmation before proceeding."
                   (assoc label (LaTeX-label-list)))
              (ding)
              (when (y-or-n-p
-                    ;; Emacs 24 compatibility
-                    (if (fboundp 'format-message)
-                        (format-message "Label `%s' exists. Use anyway? " label)
-                      (format "Label `%s' exists. Use anyway? " label)))
+                    (format-message "Label `%s' exists. Use anyway? " label))
                (setq valid t)))
             (t
              (setq valid t))))
@@ -3239,9 +3235,9 @@ returning an alist.  Use PROMPT as the prompt string."
          ((and (listp key-val-alist)
                (symbolp (car key-val-alist))
                (fboundp (car key-val-alist)))
-          (let ((head (car key-val-alist))
-                (tail (cdr key-val-alist)))
-            (apply head tail)))
+          (if (> (length key-val-alist) 1)
+              (eval key-val-alist t)
+            (funcall (car key-val-alist))))
          (t
           key-val-alist))))
 
@@ -3251,9 +3247,138 @@ Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
-as values for the key.  Use PROMPT as the prompt string."
+as values for the key.  KEY-VAL-ALIST can be a symbol or a
+function call returning an alist.  Use PROMPT as the prompt
+string."
   (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
+
+(defun TeX-read-completing-read (optional collection &optional prompt complete
+                                          predicate require-match
+                                          initial-input hist def
+                                          inherit-input-method)
+  "Read a string in the minibuffer, with completion and return it.
+If OPTIONAL is non-nil, indicate it in the prompt.
+
+COLLECTION provides elements for completion and is passed to
+`completing-read'.  It can be:
+  - A List or an alist
+  - A symbol returning a list
+  - A function call
+
+PROMPT replaces the standard one where \\=' (cr): \\=' is appended to
+it.  If you want the full control over the prompt, set COMPLETE
+to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to `completing-read', which see."
+  (completing-read
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (cr)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t "Option (cr)"))
+                        complete)
+   (cond ((and (symbolp collection)
+               (boundp collection))
+          (symbol-value collection))
+         ((and (listp collection)
+               (symbolp (car collection))
+               (fboundp (car collection)))
+          (if (> (length collection) 1)
+              (eval collection t)
+            (funcall (car collection))))
+         (t collection))
+   predicate require-match initial-input hist def inherit-input-method))
+
+(defun TeX-arg-completing-read (optional collection &optional prompt complete
+                                         prefix leftbrace rightbrace
+                                         predicate require-match
+                                         initial-input hist def
+                                         inherit-input-method)
+  "Read a string in the minibuffer, with completion and insert it.
+If OPTIONAL is non-nil, indicate it in the minibuffer and insert
+the result in brackets if not empty.  The brackets used are
+controlled by the string values of LEFTBRACE and RIGHTBRACE.
+
+For PROMPT and COMPLETE, refer to `TeX-read-completing-read'.
+For PREFIX, see `TeX-argument-insert'.
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to `completing-read', which see."
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+    (TeX-argument-insert
+     (TeX-read-completing-read optional collection prompt complete
+                               predicate require-match initial-input
+                               hist def inherit-input-method)
+     optional prefix)))
+
+(defun TeX-read-completing-read-multiple (optional table &optional prompt complete
+                                                   predicate require-match
+                                                   initial-input hist def
+                                                   inherit-input-method)
+  "Read multiple strings in the minibuffer, with completion and return them.
+If OPTIONAL is non-nil, indicate it in the prompt.
+
+COLLECTION provides elements for completion and is passed to
+`completing-read'.  It can be:
+  - A List or an alist
+  - A symbol returning a list
+  - A function call
+
+PROMPT replaces the standard one where \\=' (crm): \\=' is appended to
+it.  If you want the full control over the prompt, set COMPLETE
+to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to
+`TeX-completing-read-multiple', which see."
+  (TeX-completing-read-multiple
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (crm)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t "Options (crm)"))
+                        complete)
+   (cond ((and (symbolp table)
+               (boundp table))
+          (symbol-value table))
+         ((and (listp table)
+               (symbolp (car table))
+               (fboundp (car table)))
+          (if (> (length table) 1)
+              (eval table t)
+            (funcall (car table))))
+         (t table))
+   predicate require-match initial-input hist def inherit-input-method))
+
+(defun TeX-arg-completing-read-multiple (optional table &optional prompt complete
+                                                  prefix leftbrace rightbrace
+                                                  predicate require-match
+                                                  initial-input hist def
+                                                  inherit-input-method)
+  "Read multiple strings in the minibuffer, with completion and insert them.
+If OPTIONAL is non-nil, indicate it in the minibuffer and insert
+the result in brackets if not empty.  The brackets used are
+controlled by the string values of LEFTBRACE and RIGHTBRACE.
+
+For PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
+For PREFIX, see `TeX-argument-insert'.
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
+INHERIT-INPUT-METHOD are passed to
+`TeX-completing-read-multiple', which see."
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+    (TeX-argument-insert
+     (mapconcat #'identity
+                (TeX-read-completing-read-multiple optional table prompt
+                                                   complete predicate
+                                                   require-match initial-input
+                                                   hist def inherit-input-method)
+                ",")
+     optional prefix)))
 
 (defun TeX-read-hook ()
   "Read a LaTeX hook and return it as a string."
@@ -3271,7 +3396,9 @@ as values for the key.  Use PROMPT as the prompt string."
                   ;; From ltshipout-doc.pdf
                   "shipout"
                   ;; From ltpara-doc.pdf
-                  "para")))
+                  "para"
+                  ;; From ltmarks-doc.pdf
+                  "insertmark")))
          (place (lambda (&optional opt pr)
                   (completing-read
                    (TeX-argument-prompt opt pr "Where")
@@ -3588,8 +3715,9 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
   "Return non-nil if position POS is in a verbatim-like construct."
   (when pos (goto-char pos))
   (save-match-data
-    (or (when (fboundp 'font-latex-faces-present-p)
-          (font-latex-faces-present-p 'font-latex-verbatim-face))
+    (or (progn
+          (syntax-propertize (point))
+          (nth 3 (syntax-ppss)))
         (member (LaTeX-current-verbatim-macro)
                 (LaTeX-verbatim-macros-with-delims))
         (member (TeX-current-macro) (LaTeX-verbatim-macros-with-braces))
@@ -3784,7 +3912,10 @@ value."
      4 t)
     (,(concat (regexp-quote TeX-esc)
               "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}")
-     0 nil))
+     0 nil)
+    (,(concat (regexp-quote TeX-esc)
+              "\\(begin\\|end\\)[ \t]*{verbatim\\*?}")
+     0 t))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -3805,10 +3936,10 @@ should add their macros to this variable and then run
 (defvar-local LaTeX-indent-begin-exceptions-list nil
   "List of macros which shouldn't increase the indentation.
 Each item in this list is a string without a backslash and will
-mostly start with 'if'.  These macros should not increase
-indentation although they start with 'if', for example the
-'ifthenelse' macro provided by the ifthen package.  AUCTeX styles
-should add their macros to this variable and then run
+mostly start with \"if\".  These macros should not increase
+indentation although they start with \"if\", for example the
+\"ifthenelse\" macro provided by the ifthen package.  AUCTeX
+styles should add their macros to this variable and then run
 `LaTeX-indent-commands-regexp-make'.")
 
 (defvar-local LaTeX-indent-mid-list nil
@@ -3894,7 +4025,7 @@ macros are added to the regexp's.  This function is called in
              'LaTeX-indent-end-regexp-local)
     (funcall func
              LaTeX-indent-begin-exceptions-list
-             "ifthenelse\\b"
+             "ifthenelse\\b\\|iff\\b"
              'LaTeX-indent-begin-regexp-exceptions-local)))
 
 (defun LaTeX-indent-line ()
@@ -3916,13 +4047,18 @@ Lines starting with an item is given an extra indentation of
                  (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
-                  (TeX-in-line-comment)
-                  (eq major-mode 'doctex-mode))
+                  (eq major-mode 'doctex-mode)
+                  (TeX-in-line-comment))
              ;; If point is in a line comment in `doctex-mode' we only
-             ;; consider the inner indentation.
-             (let ((inner-indent (LaTeX-indent-calculate 'inner)))
-               (when (/= (LaTeX-current-indentation 'inner) inner-indent)
-                 (LaTeX-indent-inner-do inner-indent))))
+             ;; consider the inner indentation.  An exception is when
+             ;; we're inside a verbatim environment where we don't
+             ;; want to touch the indentation, notably with a
+             ;; fill-prefix "% ":
+             (unless (member (LaTeX-current-environment)
+                             (LaTeX-verbatim-environments))
+               (let ((inner-indent (LaTeX-indent-calculate 'inner)))
+                 (when (/= (LaTeX-current-indentation 'inner) inner-indent)
+                   (LaTeX-indent-inner-do inner-indent)))))
             ((and fill-prefix
                   LaTeX-syntactic-comments)
              ;; In any other case of a comment we have to consider
@@ -3931,16 +4067,16 @@ Lines starting with an item is given an extra indentation of
              (let ((inner-indent (LaTeX-indent-calculate 'inner))
                    (outer-indent (LaTeX-indent-calculate 'outer)))
                (when (/= (LaTeX-current-indentation 'inner) inner-indent)
-                   (LaTeX-indent-inner-do inner-indent))
+                 (LaTeX-indent-inner-do inner-indent))
                (when (/= (LaTeX-current-indentation 'outer) outer-indent)
-                   (LaTeX-indent-outer-do outer-indent))))
+                 (LaTeX-indent-outer-do outer-indent))))
             (t
              ;; The default is to adapt whitespace before any
              ;; non-whitespace character, i.e. to do outer
              ;; indentation.
              (let ((outer-indent (LaTeX-indent-calculate 'outer)))
                (when (/= (LaTeX-current-indentation 'outer) outer-indent)
-                   (LaTeX-indent-outer-do outer-indent))))))
+                 (LaTeX-indent-outer-do outer-indent))))))
     (when (< (current-column) (save-excursion
                                 (LaTeX-back-to-indentation) (current-column)))
       (LaTeX-back-to-indentation))))
@@ -4627,7 +4763,8 @@ space does not end a sentence, so don't break a line there."
       fill-prefix)))
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
-  "Move to the position where the line should be broken."
+  "Move to the position where the line should be broken.
+See `fill-move-to-break-point' for the meaning of LINEBEG."
   (fill-move-to-break-point linebeg)
   ;; Prevent line break between 2-byte char and 1-byte char.
   (when (and (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
@@ -4652,40 +4789,6 @@ space does not end a sentence, so don't break a line there."
                                       (1- (- (point) linebeg)))
              (not (TeX-escaped-p (match-beginning 0))))
     (goto-char (match-beginning 0)))
-  ;; Cater for \verb|...| (and similar) contructs which should not be
-  ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
-  ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
-  ;; chosen with \MakeShortVerb{<char>}.)  This could probably be
-  ;; handled with `fill-nobreak-predicate', but this is not available
-  ;; in XEmacs.
-  (let ((final-breakpoint (point))
-        (verb-macros (regexp-opt (append (LaTeX-verbatim-macros-with-delims)
-                                         (LaTeX-verbatim-macros-with-braces)))))
-    (save-excursion
-      ;; Look for the start of a verbatim macro in the current line.
-      (when (re-search-backward (concat (regexp-quote TeX-esc)
-                                        "\\(?:" verb-macros "\\)\\([^a-z@*]\\)")
-                                (line-beginning-position) t)
-        ;; Determine start and end of verbatim macro.
-        (let ((beg (point))
-              (end (if (not (string-match "[ [{]" (match-string 1)))
-                       (cdr (LaTeX-verbatim-macro-boundaries))
-                     (TeX-find-macro-end))))
-          ;; Determine if macro end is behind fill column.
-          (when (and end
-                     (> (- end (line-beginning-position))
-                        (current-fill-column))
-                     (> end final-breakpoint))
-            ;; Search backwards for place to break before the macro.
-            (goto-char beg)
-            (skip-chars-backward "^ \n")
-            ;; Determine if point ended up at the beginning of the line.
-            (when (save-excursion (skip-chars-backward " \t%") (bolp))
-              ;; Search forward for a place to break after the macro.
-              (goto-char end)
-              (skip-chars-forward "^ \n" (point-max)))
-            (setq final-breakpoint (point))))))
-    (goto-char final-breakpoint))
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
           (final-breakpoint (point))
@@ -6056,7 +6159,7 @@ single stroke or a string (for example \"o a\") for a multi-stroke
 binding.  If KEY is nil, the symbol has no associated
 keystroke (it is available in the menu, though).  Note that
 predefined keys in `LaTeX-math-default' cannot be overridden in
-this variable.  Currently, only the lowercase letter 'o' is free
+this variable.  Currently, only the lowercase letter \\='o\\=' is free
 for user customization, more options are available in uppercase
 area.
 
@@ -7260,6 +7363,10 @@ function would return non-nil and `(match-string 1)' would return
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
+  ;; Cater for \verb|...| (and similar) contructs which should not be
+  ;; broken.
+  (add-to-list (make-local-variable 'fill-nobreak-predicate)
+               #'LaTeX-verbatim-p t)
 
   (or LaTeX-largest-level
       (setq LaTeX-largest-level (LaTeX-section-level "section")))
@@ -7780,6 +7887,8 @@ function would return non-nil and `(match-string 1)' would return
      ;; User level reset macros:
      '("normalfont" -1) '("normalshape" -1)
 
+     '("linespread" "Factor")
+
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
      '("RemoveFromHook" TeX-arg-hook [ "Label" ])
@@ -7810,7 +7919,47 @@ function would return non-nil and `(match-string 1)' would return
                      (TeX-argument-prompt t nil "Format")
                      '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
        (TeX-arg-counter)
-       (TeX-arg-counter "Within counter"))))
+       (TeX-arg-counter "Within counter"))
+
+     ;; Added in LaTeX 2022-06-01
+     '("NewMarkClass" "Class")
+     '("InsertMark" "Class" t)
+     '("TopMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("FirstMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("LastMark"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class"))
+     '("IfMarksEqualTF"
+       [TeX-arg-completing-read ("page"         "previous-page"
+                                 "column"       "previous-column"
+                                 "first-column" "last-column")
+                                "Region"]
+       (TeX-arg-completing-read ("2e-left" "2e-right" "2e-right-nonempty")
+                                "Class")
+       (TeX-arg-completing-read ("top" "first" "last")
+                                "Position 1")
+       (TeX-arg-completing-read ("top" "first" "last")
+                                "Position 2")
+       2)
+     '("fpeval" t)
+     '("dimeval" t)
+     '("skipeval" t) ))
 
   (TeX-run-style-hooks "LATEX")
 

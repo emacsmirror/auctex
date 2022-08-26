@@ -974,6 +974,9 @@ environment.
 If this command is called inside a comment and
 @code{LaTeX-syntactic-comments} is enabled, try to find the environment
 in commented regions with the same comment prefix.
+
+The key bind @kbd{C-M-a} actually calls @code{beginning-of-defun}, which
+in turn calls @code{LaTeX-find-matching-begin}.
 @end deffn
 
 @deffn Command LaTeX-find-matching-end
@@ -983,6 +986,9 @@ in commented regions with the same comment prefix.
 If this command is called inside a comment and
 @code{LaTeX-syntactic-comments} is enabled, try to find the environment
 in commented regions with the same comment prefix.
+
+The key bind @kbd{C-M-e} actually calls @code{end-of-defun}, which in turn
+calls @code{LaTeX-find-matching-end}.
 @end deffn
 
 @node Equations
@@ -1089,14 +1095,16 @@ caption.
 @cindex \item
 
 In an itemize-like environment, nodes (i.e., @samp{\item}s) may be
-inserted using @kbd{C-c @key{LFD}}.
+inserted using @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}.  The latter is
+only defined as an alias if the key binding is still available.
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current item, move to the next line and
-insert an appropriate @samp{\item} for the current environment.  That is,
-`itemize' and `enumerate' will have @samp{\item } inserted, while
-`description' will have @samp{\item[] } inserted.
+@kindex C-c LFD
+@kindex M-RET
+(@kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}) Close the current item, move to
+the next line and insert an appropriate @samp{\item} for the current
+environment.  That is, `itemize' and `enumerate' will have @samp{\item }
+inserted, while `description' will have @samp{\item[] } inserted.
 @end deffn
 
 @defopt TeX-arg-item-label-p
@@ -1128,27 +1136,29 @@ act like the empty string is given, but don't prompt for a position.
 @AUCTeX{} calculates the number of columns from the format string and
 inserts the suitable number of ampersands.
 
-You can use @kbd{C-c @key{LFD}} (@code{LaTeX-insert-item}) to terminate
-rows in these environments.  It supplies line break macro @samp{\\} and
-inserts the suitable number of ampersands on the next line.  @AUCTeX{}
-also supports the @samp{*@{num@}@{cols@}} notation (which may contain
-another @samp{*}-expression) in the format string when calculating the
-number of ampersands.  Please note that @samp{num} and @samp{cols} must
-be enclosed in braces; expressions like @samp{*2l} are not recognized
-correctly by the algorithm.
+You can use @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}
+(@code{LaTeX-insert-item}) to terminate rows in these environments.  It
+supplies line break macro @samp{\\} and inserts the suitable number of
+ampersands on the next line.  @AUCTeX{} also supports the
+@samp{*@{num@}@{cols@}} notation (which may contain another
+@samp{*}-expression) in the format string when calculating the number of
+ampersands.  Please note that @samp{num} and @samp{cols} must be enclosed
+in braces; expressions like @samp{*2l} are not recognized correctly by the
+algorithm.
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current row with @samp{\\}, move to the
-next line and insert an appropriate number of ampersands for the current
-environment.
+@kindex C-c LFD
+@kindex M-RET
+(@kbd{C-c @key{LFD}} or @kbd{M-@key{RET}}) Close the current row with
+@samp{\\}, move to the next line and insert an appropriate number of
+ampersands for the current environment.
 @end deffn
 
 Similar supports are provided for various amsmath environments such as
 @samp{align}, @samp{gather}, @samp{alignat}, @samp{matrix} etc.  Try
-typing @kbd{C-c @key{LFD}} in these environments.  It recognizes the
-current environment and does the appropriate job depending on the
-context.
+typing @kbd{C-c @key{LFD}} or @kbd{M-@key{RET}} in these environments.  It
+recognizes the current environment and does the appropriate job depending
+on the context.
 
 @node Customizing Environments
 @subsection Customizing Environments
@@ -1280,7 +1290,7 @@ as much of the macro, as it unambiguously can.  For example, if you type
 environments, etc.  This is controlled by @code{TeX-complete-list}.
 
 @deffn Command TeX-complete-symbol
-@kindex M-@key{TAB}
+@kindex M-TAB
 (@kbd{M-@key{TAB}})  Complete @TeX{} symbol before point.
 @end deffn
 
@@ -1658,13 +1668,13 @@ to indenting with a small summary in each case:
 
 @table @kbd
 @item @key{TAB}
-@kindex @key{TAB}
+@kindex TAB
 @findex LaTeX-indent-line
 @code{LaTeX-indent-line} will indent the current line.
 
 @item @key{LFD}
 @itemx C-j
-@kindex @key{LFD}
+@kindex LFD
 @kindex C-j
 @code{newline-and-indent} inserts a new line (much like @key{RET}) and
 moves the cursor to an appropriate position by the left margin.
@@ -2207,6 +2217,7 @@ your own macros which are listed in the table below.
 
 @vindex font-latex-match-bold-command-keywords
 @vindex font-latex-match-italic-command-keywords
+@vindex font-latex-match-underline-command-keywords
 @vindex font-latex-match-math-command-keywords
 @vindex font-latex-match-type-command-keywords
 @vindex font-latex-match-bold-declaration-keywords
@@ -2219,6 +2230,9 @@ Face: @code{font-latex-bold-face}
 @item font-latex-match-italic-command-keywords
 Keywords for commands specifying an italic font.@*
 Face: @code{font-latex-italic-face}
+@item font-latex-match-underline-command-keywords
+Keywords for commands specifying an underlined text.@*
+Face: @code{font-latex-underline-face}
 @item font-latex-match-math-command-keywords
 Keywords for commands specifying a math font.@*
 Face: @code{font-latex-math-face}
@@ -2247,7 +2261,7 @@ entries are "warning", "variable", "biblatexnoarg", "biblatex",
 "reference", "function" , "sectioning-0", "sectioning-1",
 "sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
 "slide-title", "textual", "bold-command", "italic-command",
-"math-command", "type-command", "bold-declaration",
+"underline-command", "math-command", "type-command", "bold-declaration",
 "italic-declaration", "type-declaration".
 
 You can also get rid of certain keywords only.  For example if you want
@@ -4301,7 +4315,7 @@ all files in the document.  This means that you will get from each file,
 for example, completion for all labels defined anywhere in the document.
 
 @AUCTeX{} will create the @file{auto} directory automatically if
-@code{TeX-auto-save} is non-nil.  Without it, the files in the document
+@code{TeX-auto-save} is non-@code{nil}.  Without it, the files in the document
 will not know anything about each other, except for the name of the
 master file.  @xref{Automatic Local}.
 
@@ -5076,15 +5090,14 @@ These correspond to the personal @TeX{} macros.
 @cindex Local style directory
 
 @AUCTeX{} can update the style information about a file each time you
-save it, and it will do this if the directory @code{TeX-auto-local}
-exists.  @code{TeX-auto-local} is by default set to @samp{"auto"}, so
-simply creating an @file{auto} directory will enable automatic saving of
-style information.
+save it if @code{TeX-auto-save} option is enabled.  Saved information will
+be stored in the directory @code{TeX-auto-local}, set to @samp{"auto"} by
+default.
 
 The advantage of doing this is that macros, labels, etc.@: defined in any
 file in a multifile document will be known in all the files in the
 document.  The disadvantage is that saving will be slower.  To disable,
-set @code{TeX-auto-local} to nil.
+set @code{TeX-auto-local} to @code{nil}.
 
 @defopt TeX-style-local
 Directory containing hand generated @TeX{} information.
@@ -5096,6 +5109,15 @@ These correspond to @TeX{} macros found in the current directory.
 Directory containing automatically generated @TeX{} information.
 
 These correspond to @TeX{} macros found in the current directory.
+@end defopt
+
+@defopt TeX-auto-save-aggregate
+When non-@code{nil}, save parsed information in @file{auto} subdirectory
+of master directory.
+
+Otherwise, save in each @file{auto} subdirectory of the parsed file.
+
+Subdirectory name is actually taken from @code{TeX-auto-local}.
 @end defopt
 
 @node Style Files
@@ -5648,7 +5670,7 @@ an optional argument of the @samp{lstlisting} environment:
 @lisp
 (LaTeX-add-environments
  '("lstlisting" LaTeX-env-args
-   [TeX-arg-key-val LaTeX-listings-key-val-options]))
+   [TeX-arg-key-val (LaTeX-listings-key-val-options)]))
 @end lisp
 @end ftable
 
@@ -5808,6 +5830,7 @@ Which see.
 @cindex @file{macro.tex}
 @cindex @file{macro.el}
 @cindex Changing the parser
+@findex TeX-auto-add-regexp
 
 The automatic @TeX{} information extractor works by searching for
 regular expressions in the @TeX{} files, and storing the matched
@@ -5911,6 +5934,9 @@ List of functions to be called before parsing a @TeX{} file.
 @defvar TeX-auto-cleanup-hook nil
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
+
+@c FIXME: Write a @defun for `TeX-auto-add-regexp' here.  Then we can omit
+@c its @findex below the subsection heading.
 
 @node Appendices
 @appendix Copying, Changes, Development, FAQ, Texinfo Mode

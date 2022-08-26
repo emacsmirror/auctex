@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2009, 2013-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2009, 2013-2022 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -295,7 +295,7 @@
 (defvar LaTeX-listings-lstdefinestyle-regexp
   '("\\\\lstdefinestyle{\\([^}]+\\)}"
     1 LaTeX-auto-listings-lstdefinestyle)
-  "Matches the argument of '\\lstdefinestyle' from 'listings' package.")
+  "Matches the argument of \\='\\lstdefinestyle\\=' from listings package.")
 
 ;; Setup for parsing the labels inside optional arguments:
 
@@ -306,12 +306,12 @@
   "Matches the label inside an optional argument after \\begin{lstlisting}.")
 
 (defun LaTeX-listings-auto-prepare ()
-  "Clear temporary variable from 'listings' package before parsing."
+  "Clear temporary variable from listings package before parsing."
   (setq LaTeX-auto-listings-lstnewenvironment nil)
   (setq LaTeX-auto-listings-lstdefinestyle    nil))
 
 (defun LaTeX-listings-auto-cleanup ()
-  "Process the parsed results of 'listings' package."
+  "Process the parsed results of listings package."
   (dolist (env-args LaTeX-auto-listings-lstnewenvironment)
     (let ((env  (car   env-args))
           (args (cadr  env-args))
@@ -345,6 +345,16 @@
          `((,env ?l "lst:" "~\\ref{%s}"
                  LaTeX-listings-reftex-label-context-function
                  (regexp "[Ll]isting")))))
+      (when (boundp 'reftex-label-regexps)
+        (add-to-list (make-local-variable 'reftex-label-regexps)
+                     (concat (regexp-quote TeX-esc)
+                             "begin[[:space:]]*"
+                             (regexp-quote TeX-grop)
+                             (regexp-quote env)
+                             (regexp-quote TeX-grcl)
+                             "[[:space:]]*"
+                             (LaTeX-extract-key-value-label nil 1))
+                     t))
       ;; Fontification
       (when (and (fboundp 'font-latex-add-keywords)
                  (eq TeX-install-font-lock 'font-latex-setup))
@@ -462,7 +472,8 @@ caption key is found, an error is issued."
      (font-latex-add-keywords '(("lstalias" "{{")
                                 ("lstdefinestyle" "{{")
                                 ("lstset" "{"))
-                              'variable)))
+                              'variable)
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-listings-package-options '("draft" "final" "savemem"

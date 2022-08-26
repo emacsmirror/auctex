@@ -47,8 +47,10 @@ containing the programs to the @env{PATH} environment variable if
 necessary.  Here is how to do that in W2000/XP:
 
 @enumerate
+@ifclear rawfile
 @cindex Adding to @env{PATH} in Windows
 @cindex @env{PATH} in Windows
+@end ifclear
 @item
 On the desktop, right click ``My Computer'' and select properties.
 @item
@@ -303,7 +305,9 @@ in either a site-wide @file{site-start.el} or your personal startup file
 (usually accessible as @file{~/.emacs} or @file{~/.emacs.d/init.el} from
 within Emacs).
 
+@ifclear rawfile
 @cindex @file{tex-mik.el}
+@end ifclear
 The default configuration of @AUCTeX{} is probably not the best fit for
 Windows systems with MiK@TeX{}.  You might want to add
 @lisp

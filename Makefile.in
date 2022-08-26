@@ -52,14 +52,25 @@ PACKAGE=auctex
 PACKAGE_INFO=auctex preview-latex
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
-AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
-  (mapcar (lambda (file) \
-            (update-file-autoloads file nil autoload-file)) \
-          command-line-args-left) \
+AUTOLOAD=--eval '\
+(let* ((autoload-file (expand-file-name "$@")) \
+       (autoload-file-dir (file-name-directory autoload-file))) \
+  (if (fboundp (quote loaddefs-generate)) \
+      (loaddefs-generate autoload-file-dir autoload-file \
+			 (list "preview.el" "tex-wizard.el")) \
+    (mapcar (lambda (file) \
+	      (update-file-autoloads file nil autoload-file)) \
+	    command-line-args-left)) \
   (save-buffers-kill-emacs t))'
 
-PREVIEW_AUTOLOAD=--eval '(let ((autoload-file (expand-file-name "$@"))) \
-  (update-file-autoloads "preview.el" nil autoload-file) \
+PREVIEW_AUTOLOAD=--eval '\
+(let* ((autoload-file (expand-file-name "$@")) \
+       (autoload-file-dir (file-name-directory autoload-file))) \
+  (if (fboundp (quote loaddefs-generate)) \
+      (loaddefs-generate autoload-file-dir autoload-file \
+			 (mapcar (function symbol-name) \
+				 (quote ($(AUCSRC) tex-wizard.el)))) \
+    (update-file-autoloads "preview.el" nil autoload-file)) \
   (save-buffers-kill-emacs t))'
 
 # Files and directories excluded from distributed tar ball.
@@ -179,7 +190,11 @@ STYLESRC = style/prosper.el \
 	   style/cuted.el     style/floatpag.el  style/flushend.el \
 	   style/midfloat.el  style/stabular.el  style/stfloats.el \
 	   style/rotating.el  style/sidecap.el   style/l3doc.el \
-	   style/ifthen.el    style/etoolbox.el
+	   style/ifthen.el    style/etoolbox.el  style/ifetex.el \
+	   style/ifpdf.el     style/iftex.el     style/ifvtex.el \
+	   style/ifxetex.el   style/multibib.el  style/ltcaption.el \
+	   style/keyval.el    style/kvoptions.el style/kvsetkeys.el \
+	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -210,6 +225,7 @@ CLEANFILES = $(AUCELC) $(STYLEELC) $(PREVIEWELC) preview-latex.el
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
 	auto-loads.el config.* preview.el
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO PROBLEMS.preview
+DYNVARSFILES = *.dynvars style/*.dynvars auctex-dynvars
 
 NOSEARCH = style/.nosearch
 
@@ -252,6 +268,9 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat auto-loads.el >>$@
 	echo "(provide 'tex-site)" >>$@ ; \
 	echo ";;; tex-site.el ends here" >>$@
+	sed -i -e "/^(provide 'auto-loads)/d" \
+	       -e '/^;;; auto-loads.el ends here/d' \
+	       -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
 
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
@@ -370,11 +389,11 @@ uninstall:
 	$(ELCC) -f batch-byte-compile $<
 
 dynvars-check:
-	rm -f $(AUCELC) $(STYLEELC) *.dynvars style/*.dynvars auctex-dynvars
-	EMACS_GENERATE_DYNVARS=1 make some > /dev/null 2>&1
+	rm -f $(AUCELC) $(STYLEELC) $(DYNVARSFILES)
+	EMACS_GENERATE_DYNVARS=1 $(MAKE) some > /dev/null 2>&1
 	cat *.dynvars style/*.dynvars > auctex-dynvars
 	rm -f $(AUCELC) $(STYLEELC)
-	EMACS_DYNVARS_FILE=auctex-dynvars make some
+	EMACS_DYNVARS_FILE=auctex-dynvars $(MAKE) some
 
 clean:	doc/Makefile latex/Makefile
 	rm -f $(CLEANFILES)
@@ -389,7 +408,7 @@ distclean: doc/Makefile latex/Makefile
 maintainer-clean: doc/Makefile latex/Makefile
 	rm -f $(DISTTEXTS)
 	rm -rf autom4te.cache
-	rm -f $(CLEANFILES) $(DISTCLEANFILES)
+	rm -f $(CLEANFILES) $(DISTCLEANFILES) $(DYNVARSFILES)
 	cd doc && $(MAKE) maintainer-clean
 	cd latex && $(MAKE) distclean
 	cd tests && $(MAKE) clean

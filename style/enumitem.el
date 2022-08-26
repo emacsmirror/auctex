@@ -331,18 +331,20 @@ provided.  OPTIONAL is ignored."
                    sizes))))
       (TeX-argument-insert size t)))
   ;; Second opt. argument:
-  (TeX-argument-insert
-   (mapconcat #'identity
-              (TeX-completing-read-multiple
-               (TeX-argument-prompt t nil "Environment(s), level(s)")
-               (append
-                (when (LaTeX-provided-package-options-member
-                       "enumitem" "includedisplayed")
-                  '("trivlist"))
-                (mapcar #'car (LaTeX-enumitem-newlist-list))
-                '("1" "2" "3" "4")))
-              ",")
-   t)
+  (let ((TeX-arg-opening-brace LaTeX-optop)
+        (TeX-arg-closing-brace LaTeX-optcl))
+    (TeX-argument-insert
+     (mapconcat #'identity
+                (TeX-completing-read-multiple
+                 (TeX-argument-prompt t nil "Environment(s), level(s)")
+                 (append
+                  (when (LaTeX-provided-package-options-member
+                         "enumitem" "includedisplayed")
+                    '("trivlist"))
+                  (mapcar #'car (LaTeX-enumitem-newlist-list))
+                  '("1" "2" "3" "4")))
+                ",")
+     t))
   ;; Mandatory argument:
   (TeX-argument-insert
    (TeX-read-key-val nil (LaTeX-enumitem-key-val-options))

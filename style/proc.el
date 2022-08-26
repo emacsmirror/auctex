@@ -1,10 +1,10 @@
-;;; midfloat.el --- AUCTeX style for `midfloat.sty' (v1.1)  -*- lexical-binding: t; -*-
+;;; proc.el --- AUCTeX style for `proc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021, 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2021-12-11
+;; Created: 2022-06-12
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -21,32 +21,27 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with AUCTeX; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-;; 02110-1301, USA.
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301 USA.
 
 ;;; Commentary:
 
-;; This file adds support for `midfloat.sty' (v1.1) from 2012/05/29.
-;; `midfloat.sty' is part of TeXLive.
+;; This file adds support for `proc.cls' v1.3m form 2021-12-09.
 
 ;;; Code:
 
 (require 'tex)
-(require 'latex)
+
+(defvar LaTeX-proc-class-options
+  '("a4paper" "letterpaper" "legalpaper" "executivepaper"
+    "landscape" "10pt" "11pt" "12pt" "oneside" "twoside" "draft" "final"
+    "notitlepage" "twocolumn" "leqno" "fleqn" "openbib")
+  "Package options for the proc class.")
 
 (TeX-add-style-hook
- "midfloat"
+ "proc"
  (lambda ()
-
-   ;; Add the only environment provided by the package:
-   (LaTeX-add-environments
-    '("strip" ["Top/Bottom skip"]))
-
-   ;; This is a glue, in LaTeX set with \setlength:
-   (LaTeX-add-lengths "stripsep"))
+   (TeX-run-style-hooks "article"))
  TeX-dialect)
 
-(defvar LaTeX-midfloat-package-options nil
-  "Package options for the midfloat package.")
-
-;;; midfloat.el ends here
+;;; proc.el ends here

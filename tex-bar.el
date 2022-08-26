@@ -202,7 +202,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
         (dolist (j (cdr i))
           (insert (format " %s" j)))
-        (fill-region (point-at-bol) (point-at-eol))))
+        (fill-region (line-beginning-position) (line-end-position))))
     (display-buffer "*TeX tool bar buttons*" t)))
 
 ;;; Installation of the tool bar
@@ -342,7 +342,7 @@ format of the argument MEANING-ALIST in the mentioned function."
         (insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
         (dolist (j (cdr i))
           (insert (format " %s" j)))
-        (fill-region (point-at-bol) (point-at-eol))))
+        (fill-region (line-beginning-position) (line-end-position))))
     (display-buffer "*TeX tool bar buttons*" t)))
 
 ;;; Installation of the tool bar

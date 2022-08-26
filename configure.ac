@@ -21,7 +21,7 @@ dnl along with AUCTeX; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 dnl MA 02110-1301, USA.
 
-AC_INIT(auctex,13.1,bug-auctex@gnu.org)
+AC_INIT([auctex],[13.1],[bug-auctex@gnu.org])
 
 AC_CHECK_PROGS_REQUIRED(MAKECMD, make, [make not found, aborting!])
 AC_PROG_MAKE_SET
@@ -268,7 +268,8 @@ AC_SHELL_QUOTIFY(TEXI2HTML)
 AC_SHELL_QUOTIFY(TEXI2DVI)
 AC_SHELL_QUOTIFY(TEXI2PDF)
 
-AC_OUTPUT(Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el preview.el latex/Makefile)
+AC_CONFIG_FILES([Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el preview.el latex/Makefile])
+AC_OUTPUT
 
 
 cat >&2 <<EOF

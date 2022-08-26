@@ -33,6 +33,8 @@ latex/preview-mk.ins
 latex/preview.aux
 latex/preview.drv
 latex/preview.dvi
+latex/preview.hd
+latex/preview.out
 latex/preview.pdf
 latex/preview.sty
 latex/prfootnotes.def

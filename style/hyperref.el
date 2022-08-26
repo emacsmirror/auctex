@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2008, 2013-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2013-2022 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -42,7 +42,7 @@
                   "font-latex")
 
 (defvar LaTeX-hyperref-package-options-list
-  '(;; See https://www.tug.org/applications/hyperref/manual.html#x1-40003
+  '(;; See https://mirrors.ctan.org/macros/latex/contrib/hyperref/doc/hyperref-doc.html#x1-110005
     ;; General options
     ("draft" ("true" "false"))
     ("final" ("true" "false"))
@@ -164,8 +164,7 @@
     ("nextactionraw"))
   "Key=value options for href macro of the hyperref package.")
 
-;; See https://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-220006.2
-
+;; See https://mirrors.ctan.org/macros/latex/contrib/hyperref/doc/hyperref-doc.html#x1-600009.2
 (defvar LaTeX-hyperref-forms-options
   '(("accesskey")
     ("align"          ("0" "1" "2"))
@@ -173,16 +172,12 @@
     ("backgroundcolor")
     ("bordercolor")
     ("bordersep")
-    ("borderwidth")
-    ;; "borderstyle" is not mentioned in the original hyperref-doc, it
-    ;; can be seen in action in
-    ;; https://github.com/latex3/hyperref/blob/main/test/testform.tex
-    ;; S=Solid (default), D=Dashed, B=Beveled, I=Inset, U=Underline
     ("borderstyle"    ("S" "D" "B" "I" "U"))
+    ("borderwidth")
     ("calculate")
     ("charsize")
-    ("checkboxsymbol" ("true" "false"))
-    ("checked")
+    ("checkboxsymbol")
+    ("checked"        ("true" "false"))
     ("color")
     ("combo"          ("true" "false"))
     ("default")
@@ -239,7 +234,10 @@
     '("hyperbaseurl" t)
     '("hyperimage" "Image URL" "Text")
     '("hyperdef" "Category" "Name" "Text")
-    '("hyperref" "URL" "Category" "Name" "Text")
+    '("hyperref"
+      (TeX-arg-conditional (y-or-n-p "Insert a label and text? ")
+                           ([TeX-arg-ref] "Text")
+                           ("URL" "Category" "Name" "Text")))
     '("hyperlink" "Name" "Text")
     '("hypertarget" "Name" "Text")
     '("phantomsection" 0)
@@ -273,13 +271,17 @@
     '("MakeCheckField" "Width" "Height")
     '("MakeTextField" "Width" "Height")
     '("MakeChoiceField" "Width" "Height")
-    '("MakeButtonField" "Text"))
+    '("MakeButtonField" "Text")
+    ;; The macro version of the 'Form' environment:
+    '("Form" 0))
 
    ;; Form fields must be inside a "Form"-env, one per file is allowed, cf.
-   ;; https://www.tug.org/applications/hyperref/ftp/doc/manual.html#x1-200006
-   ;; It is up to user to insert [<options>] after \begin{Form}
+   ;; https://mirrors.ctan.org/macros/latex/contrib/hyperref/doc/hyperref-doc.html#x1-590009.1
    (LaTeX-add-environments
-    '("Form"))
+    '("Form" LaTeX-env-args [TeX-arg-key-val (("action")
+                                              ("encoding" ("html"))
+                                              ("method"   ("post" "get")))])
+    "NoHyper")
 
    ;; Do not indent the content of the "Form"-env; it is odd if the
    ;; whole document is indented.  Append it to a local version of
@@ -291,13 +293,17 @@
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   ;; "hyperref" macros is not added here since it takes different
+   ;; number of arguments depending on a given optional argument.
+   ;; The first mandatory argument is not necessarily a verbatim one.
+   ;; (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
 
-   ;; In hyperref package, \url macro is redefined and \url|...| can't be used,
-   ;; while it's possible when only url package (required by hyperref) is loaded
+   ;; In hyperref package, \url macro is redefined and \url|...| can't
+   ;; be used, while it's possible when only url package (required by
+   ;; hyperref) is loaded
    (setq LaTeX-verbatim-macros-with-delims-local
-         (remove "url"  LaTeX-verbatim-macros-with-delims-local))
+         (remove "url" LaTeX-verbatim-macros-with-delims-local))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -307,7 +313,8 @@
                                 ("hyperbaseurl" "{")
                                 ("hyperimage" "{{")
                                 ("hyperdef" "{{{")
-                                ("hyperref" "{{{{")
+                                ;; Fontify only the minimum set of args:
+                                ("hyperref" "[{")
                                 ("hyperlink" "{{")
                                 ("hypertarget" "{{")
                                 ("autoref" "*{")

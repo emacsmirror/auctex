@@ -1,10 +1,10 @@
-;;; midfloat.el --- AUCTeX style for `midfloat.sty' (v1.1)  -*- lexical-binding: t; -*-
+;;; ifxetex.el --- AUCTeX style for `ifxetex.sty' version 0.7.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021, 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2021-12-11
+;; Created: 2022-04-23
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -26,27 +26,22 @@
 
 ;;; Commentary:
 
-;; This file adds support for `midfloat.sty' (v1.1) from 2012/05/29.
-;; `midfloat.sty' is part of TeXLive.
+;; This file adds support for `ifxetex.sty' 0.7.  The package is now
+;; part of 'iftex' bundle and therefore, the code is now in
+;; 'iftex.el'.
 
 ;;; Code:
 
 (require 'tex)
-(require 'latex)
 
 (TeX-add-style-hook
- "midfloat"
+ "ifxetex"
  (lambda ()
-
-   ;; Add the only environment provided by the package:
-   (LaTeX-add-environments
-    '("strip" ["Top/Bottom skip"]))
-
-   ;; This is a glue, in LaTeX set with \setlength:
-   (LaTeX-add-lengths "stripsep"))
+   ;; Run the style hook for 'iftex' which does the work:
+   (TeX-run-style-hooks "iftex"))
  TeX-dialect)
 
-(defvar LaTeX-midfloat-package-options nil
-  "Package options for the midfloat package.")
+(defvar LaTeX-ifxetex-package-options nil
+  "Package options for the ifxetex package.")
 
-;;; midfloat.el ends here
+;;; ifxetex.el ends here

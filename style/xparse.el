@@ -1,6 +1,6 @@
 ;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2020, 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020--2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -311,6 +311,9 @@ TYPE is one of the symbols mac or env."
     '("IfValueTF" 3)
     '("IfValueT" 2)
     '("IfValueF" 2)
+    '("IfBlankTF" 3)
+    '("IfBlankT" 2)
+    '("IfBlankF" 2)
     "BooleanTrue"
     "BooleanFalse"
     ;; Argument processors

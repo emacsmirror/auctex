@@ -696,7 +696,7 @@ With optional ARG, modify current environment."
         (ConTeXt-environment-menu environment)))))
 
 (defun ConTeXt-modify-environment (environment)
-  "Modify current environment."
+  "Modify current environment to new ENVIRONMENT."
   (save-excursion
     (ConTeXt-find-matching-stop)
     (re-search-backward (concat (regexp-quote TeX-esc)
@@ -1144,9 +1144,9 @@ An optional fourth (or sixth) element means always replace if t."
 (defun ConTeXt-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^\}]*\\)}" (point-at-eol) t)
+    (if (re-search-forward "{\\([^}]*\\)}" (line-end-position) t)
         (match-string 1)
-      (buffer-substring-no-properties (point) (point-at-eol)))))
+      (buffer-substring-no-properties (point) (line-end-position)))))
 
 ;; This imenu also includes commented out chapters. Perhaps a feature
 ;; for LaTeX, not sure we want or need that for ConTeXt.
@@ -1774,8 +1774,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
-  (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start
-              end-of-defun-function       #'ConTeXt-find-matching-stop)
+  (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start)
+  (setq-local end-of-defun-function       #'ConTeXt-find-matching-stop)
 
   ;; Outline support
   (require 'outline)

@@ -1,6 +1,6 @@
 ;;; comment.el --- AUCTeX style for `comment.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2018--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,7 @@
 
 (require 'tex)
 (require 'tex-style)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

@@ -595,6 +595,7 @@
 ;; Silence the compiler:
 (declare-function reftex-view-crossref "ext:reftex-dcr"
                   (&optional arg auto-how fail-quietly))
+(declare-function outline-show-entry "ext:outline" ())
 
 (defgroup bib-cite nil
   "bib-cite, LaTeX minor-mode to display \\cite, \\ref and \\label commands."
@@ -1429,11 +1430,7 @@ If within a multi-file document (in AUCTeX only)
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
-          ;; COMPATIBILITY for emacs<25.
-          (if (fboundp 'outline-show-entry)
-              (outline-show-entry)
-            (with-no-warnings
-              (show-entry)))))))
+          (outline-show-entry)))))
 
 (defvar bib-label-prompt-map
   (let ((map (make-sparse-keymap)))
@@ -1579,9 +1576,9 @@ Does not save excursion."
 (defun create-alist-from-list (the-list)
   "Return a single list from a THE-LIST that may contain either items or lists.
 e.g. turns
-'((\"label3\" \"label4\")(\"label1\" \"label2\") \"label\")
+\\='((\"label3\" \"label4\")(\"label1\" \"label2\") \"label\")
 into
-'((\"label3\") (\"label4\") (\"label1\") (\"label2\") (\"label\"))"
+\\='((\"label3\") (\"label4\") (\"label1\") (\"label2\") (\"label\"))"
   (mapcar #'list (bib-cite-mh-list-to-string the-list)))
 
 ;;

@@ -311,8 +311,8 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
 
 (defun TeX-fold-region-macro-or-env (start end type)
   "Fold all items of type TYPE in region from START to END.
-TYPE can be one of the symbols 'env for environments, 'macro
-for macros and 'math for math macros."
+TYPE can be one of the symbols `env' for environments, `macro'
+for macros and `math' for math macros."
   (save-excursion
     (let (fold-list item-list regexp)
       (dolist (item (cond ((eq type 'env) TeX-fold-env-spec-list-internal)

@@ -680,7 +680,6 @@ value of `Texinfo-mode-hook'."
        (concat "@\\("
                (mapconcat #'car texinfo-section-list "\\>\\|")
                "\\>\\)"))
-  (set (make-local-variable 'outline-level) 'texinfo-outline-level)
 
   ;; Mostly AUCTeX stuff
   (set (make-local-variable 'TeX-command-current) #'TeX-command-master)

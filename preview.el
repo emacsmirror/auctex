@@ -1622,7 +1622,7 @@ numbers (can be float if available)."
 
 (defface preview-reference-face '((t nil))
   "Face consulted for colors and scale of active previews.
-Fallback to :inherit and 'default implemented."
+Fallback to :inherit and \\='default implemented."
   :group 'preview-appearance)
 
 (defcustom preview-auto-reveal
@@ -1707,13 +1707,13 @@ to the default background in most other cases."
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
-the heuristic-mask setting of images to default to 't since
+the heuristic-mask setting of images to default to t since
 then the borders are correctly detected even in case of
 palette operations.  If the transparent color is something
 not present otherwise in the image, the cursor display
 will affect just this border.  A width of 0 is interpreted
 by PostScript as meaning a single pixel, other widths are
-interpreted as PostScript points (1/72 of 1in)"
+interpreted as PostScript points (1/72 of 1in)."
   :group 'preview-appearance
   :type '(choice (const :value nil :tag "No border")
                  (number :value 1.5 :tag "Border width in pt")))
@@ -1945,7 +1945,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
 (defun preview-toggle (ov &optional arg event)
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
-nil displays the underlying text, and 'toggle toggles.
+nil displays the underlying text, and `toggle' toggles.
 If EVENT is given, it indicates the window where the event
 occured, either by being a mouse event or by directly being
 the window in question.  This may be used for cursor restoration
@@ -2328,11 +2328,6 @@ kept."
         (and save-info
              (cons 'preview (cons timestamp (nreverse save-info))))))))
 
-(eval-after-load "desktop"
-  '(add-hook
-    'desktop-buffer-misc-functions
-    #'desktop-buffer-preview-misc-data))
-
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
 Any directory not in this list will be cleared out by preview
@@ -2388,6 +2383,18 @@ BUFFER-MISC is the appropriate data to be used."
                   (preview-buffer-restore-internal
                    buffer-misc))))))
 
+;; Add autoload cookies explicitly for desktop.el.
+;; <Background> preview-latex doesn't conform to the following
+;; assumptions of desktop.el:
+;; (1) The file associated with the major mode by autoload has defun
+;;     of handler, which restores the state of the buffer.
+;; (2) The file has suitable `add-to-list' form also for
+;;     `desktop-buffer-mode-handlers' to register the entry of the
+;;     handler.
+;; This isn't the case here because the file associated with
+;; `latex-mode' is tex-mode.el, neither preview.el nor latex.el.  Thus
+;; we include both of them as explicit autoloads in preview-latex.el.
+;;;###autoload
 (defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
   (when (and file-name (file-readable-p file-name))
@@ -2398,18 +2405,9 @@ BUFFER-MISC is the appropriate data to be used."
             buf)
         buf))))
 
-(eval-after-load "desktop"
-  '(if (boundp 'desktop-buffer-mode-handlers)
-       (add-to-list 'desktop-buffer-mode-handlers
-                    '(latex-mode . desktop-buffer-preview))
-     (defvar desktop-buffer-file-name)
-     (defvar desktop-buffer-name)
-     (defvar desktop-buffer-misc)
-     (add-hook 'desktop-buffer-handlers (lambda ()
-                                          (desktop-buffer-preview
-                                           desktop-buffer-file-name
-                                           desktop-buffer-name
-                                           desktop-buffer-misc)))))
+;;;###autoload
+(add-to-list 'desktop-buffer-mode-handlers
+             '(latex-mode . desktop-buffer-preview))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.
@@ -3115,9 +3113,7 @@ to add the preview functionality."
         `(menu-item "Preview at point" preview-at-point
                     :image ,preview-tb-icon
                     :help "Preview on/off at point"
-                    :vert-only t)))
-    (if (boundp 'desktop-buffer-misc)
-        (preview-buffer-restore desktop-buffer-misc))))
+                    :vert-only t)))))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
@@ -3640,7 +3636,7 @@ name(\\([^)]+\\))\\)\\|\
              (mm-dims (cdr (assoc 'mm-size monitor-attrs)))
              (mm-width (nth 0 mm-dims))
              (mm-height (nth 1 mm-dims))
-             (pixel-dims (cdddr (assoc 'geometry monitor-attrs)))
+             (pixel-dims (cl-cdddr (assoc 'geometry monitor-attrs)))
              (pixel-width (nth 0 pixel-dims))
              (pixel-height (nth 1 pixel-dims)))
         (cons (/ (* 25.4 pixel-width) mm-width)
@@ -3983,8 +3979,28 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
           (preview-cache-preamble-off format-cons)
         (setq format-cons (list format-name))
         (push format-cons preview-dumped-alist))
-      ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
-      ;; in the tools bundle is an empty file.
+      ;; mylatex.ltx expects a file name to follow.  Bad.
+      ;; The file `.tex' in the tools bundle is solely emitting
+      ;; `File ignored', and `\input mylatex.ltx \relax' has the
+      ;; same effect as `\input mylatex.ltx .tex '.
+      ;; The \dump hacks accomplish, among others:
+      ;; - let TeX not ignore spaces (despite instructions to the
+      ;;   contrary inserted into the format by mylatex.ltx)
+      ;;   as we may need to input a `file name with spaces'.
+      ;; - work around the fact that the backslash `\' (as per
+      ;;   mylatex.ltx mandate) has lost its standard TeX status
+      ;;   once the format is loaded, and we could not use `\input'
+      ;;   as in e.g. `pdflatex &abc '\input' abc.tex'.  We
+      ;;   configure TeX for `/' as substitute.
+      ;; - in place of such `/input', we will use `/AUCTEXINPUT'
+      ;;   defined here in the dumped format to grab the file name,
+      ;;   sanitize it via `\detokenize', then
+      ;;   reset TeX to ignore spaces and execute `\input' which
+      ;;   will skip the preamble already dumped.
+      ;; Prior to the patch adding `/AUCTEXINPUT', resetting the
+      ;; spaces to be ignored was included as part of `\everyjob',
+      ;; which was another way to delay this to after the filename
+      ;; was seen by TeX.
       (write-region "\\let\\PREVIEWdump\\dump\\def\\dump{%
 \\edef\\next{{\\ifx\\pdfoutput\\undefined\\else\
 \\pdfoutput=\\the\\pdfoutput\\relax\\fi\

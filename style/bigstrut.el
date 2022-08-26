@@ -1,6 +1,6 @@
 ;;; bigstrut.el --- AUCTeX style for `bigstrut.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2014--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2014--2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

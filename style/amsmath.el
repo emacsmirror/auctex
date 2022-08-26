@@ -57,7 +57,8 @@
     "align*" "gather*" "flalign*" "multline*" "equation*"
     "split"
     "cases"
-    "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"
+    "matrix" "smallmatrix"
+    "bmatrix" "Bmatrix" "pmatrix" "vmatrix" "Vmatrix"
     "subequations"
     '("subarray" "Alignment"))
 
@@ -126,13 +127,13 @@
                    ("alignedat" . LaTeX-item-equation-alignat)
                    ("flalign"  . LaTeX-item-equation)
                    ("flalign*" . LaTeX-item-equation)
-                   ("matrix" .  LaTeX-item-equation)
-                   ("pmatrix" .  LaTeX-item-equation)
-                   ("bmatrix" .  LaTeX-item-equation)
-                   ("Bmatrix" .  LaTeX-item-equation)
-                   ("vmatrix" .  LaTeX-item-equation)
-                   ("Vmatrix" .  LaTeX-item-equation)
-                   ("smallmatrix" . LaTeX-item-equation)
+                   ("matrix" .  LaTeX-item-equation-matrix)
+                   ("pmatrix" .  LaTeX-item-equation-matrix)
+                   ("bmatrix" .  LaTeX-item-equation-matrix)
+                   ("Bmatrix" .  LaTeX-item-equation-matrix)
+                   ("vmatrix" .  LaTeX-item-equation-matrix)
+                   ("Vmatrix" .  LaTeX-item-equation-matrix)
+                   ("smallmatrix" . LaTeX-item-equation-matrix)
                    ("subarray" . LaTeX-item-equation)
                    ("cases"    . LaTeX-item-equation))
                  LaTeX-item-list))
@@ -224,6 +225,31 @@ If SUPPRESS is non-nil, do not insert line break macro."
                (LaTeX-label env 'environment))
       (LaTeX-newline)
       (indent-according-to-mode))))
+
+(defun LaTeX-item-equation-matrix ()
+  "Insert contents to terminate a line in matrix environments.
+Put line break macro on the last line and insert suitable number
+of ampersands if possible.  This number is extracted from the
+first line of the environment."
+  (end-of-line 0)
+  (just-one-space)
+  (TeX-insert-macro "\\")
+  (forward-line 1)
+  (indent-according-to-mode)
+  (let* ((p (point))
+         (s (save-excursion
+              (LaTeX-find-matching-begin)
+              (point)))
+         (e (save-excursion
+              (goto-char s)
+              (search-forward "\\\\" p t)))
+         n)
+    (save-excursion
+      (goto-char s)
+      (setq n (how-many "[^\\]&" s e)))
+    (when (and n (> n 0))
+      (save-excursion
+        (insert (make-string n ?&))))))
 
 (defun LaTeX-item-equation-alignat (&optional suppress)
   "Insert contents to terminate a line in multi-line equations environment.

@@ -1,3 +1,7 @@
+\documentclass{article}
+\usepackage{shortvrb}
+\begin{document}
+
 Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod \(0 = 1\) tempor incidunt ut $a^{2} + b^{2} = c^{2}$ labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.
 
 \begin{tabular}{| l | l | l | l |}
@@ -68,3 +72,18 @@ Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis, lorem a te
 Mauris ac felis vel velit tristique imperdiet.  Vestibulum convallis, lorem a 
 tempus semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus.\\
   Fusce sagittis, libero non molestie mollis, magna orci ultrices dolor, at vulputate neque nulla lacinia eros.  Aliquam posuere.  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.%  
+
+% bug#56160-1 Line break should be suppressed inside \verb|...|.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, \verb|sed do|eiusmod tempor
+
+% bug#56160-2 Line break should be suppressed inside shortcuts defined
+% in `LaTeX-shortvrb-chars'.  The variable itself is let-bound to
+% '(?\") in the function `LaTeX-filling' in latex-test.el.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, "sed do"eiusmod tempor
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
