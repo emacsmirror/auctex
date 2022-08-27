@@ -133,43 +133,43 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
   :group 'TeX-tool-bar-button-definitions)
 
 (defcustom TeX-bar-TeX-button-alist
-  '((tex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
+  `((tex :image ,(lambda nil (if TeX-PDF-mode "pdftex" "tex"))
          :command (progn
                     (TeX-save-document #'TeX-master-file)
                     (TeX-command "TeX" #'TeX-master-file -1))
-         :help (lambda (&rest ignored)
-                 (TeX-bar-help-from-command-list "TeX")))
+         :help ,(lambda (&rest _ignored)
+                  (TeX-bar-help-from-command-list "TeX")))
     (pdftex :image "pdftex"
             :command (progn
                        (TeX-save-document #'TeX-master-file)
                        (TeX-command "PDFTeX" #'TeX-master-file -1))
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "PDFTeX")))
+            :help ,(lambda (&rest _ignored)
+                     (TeX-bar-help-from-command-list "PDFTeX")))
     (next-error :image "error"
                 :command TeX-next-error
                 :enable (TeX-error-report-has-errors-p)
                 :visible (TeX-error-report-has-errors-p))
-    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
+    (view :image ,(lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
           :command (TeX-command "View" #'TeX-master-file -1)
-          :help (lambda (&rest ignored)
-                  (TeX-bar-help-from-command-list "View")))
+          :help ,(lambda (&rest _ignored)
+                   (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
           :command (TeX-command "File" #'TeX-master-file -1)
           :visible (not TeX-PDF-mode)
-          :help (lambda (&rest ignored)
-                  (TeX-bar-help-from-command-list "File")))
+          :help ,(lambda (&rest _ignored)
+                   (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
             :command (TeX-command "BibTeX" #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "BibTeX")))
+            :help ,(lambda (&rest _ignored)
+                     (TeX-bar-help-from-command-list "BibTeX")))
     (clean  :image "delete"
             :command (TeX-command "Clean" #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "Clean")))
+            :help ,(lambda (&rest _ignored)
+                     (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
             :command (TeX-command "Spell" #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "Spell"))))
+            :help ,(lambda (&rest _ignored)
+                     (TeX-bar-help-from-command-list "Spell"))))
   ;; latex-symbols-experimental?
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
@@ -269,48 +269,48 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
   :group 'TeX-tool-bar-button-definitions)
 
 (defcustom TeX-bar-LaTeX-button-alist
-  '((latex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
+  `((latex :image ,(lambda nil (if TeX-PDF-mode "pdftex" "tex"))
            :command (progn
                       (TeX-save-document #'TeX-master-file)
                       (TeX-command "LaTeX" #'TeX-master-file -1))
-           :help (lambda (&rest ignored)
-                   (TeX-bar-help-from-command-list "LaTeX")))
+           :help ,(lambda (&rest ignored)
+                    (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
               :command (progn
                          (TeX-save-document #'TeX-master-file)
                          (TeX-command "PDFLaTeX" #'TeX-master-file -1))
-              :help (lambda (&rest ignored)
-                      (TeX-bar-help-from-command-list "PDFLaTeX")))
+              :help ,(lambda (&rest ignored)
+                       (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
                 :command TeX-next-error
                 :enable (TeX-error-report-has-errors-p)
                 :visible (TeX-error-report-has-errors-p))
-    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
+    (view :image ,(lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
           :command (TeX-command "View" #'TeX-master-file -1)
-          :help (lambda (&rest ignored)
-                  (TeX-bar-help-from-command-list "View")))
+          :help ,(lambda (&rest ignored)
+                   (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
           :command (TeX-command "File" #'TeX-master-file -1)
           :visible (not TeX-PDF-mode)
-          :help (lambda (&rest ignored)
-                  (TeX-bar-help-from-command-list "File")))
+          :help ,(lambda (&rest ignored)
+                   (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
             :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
                                   #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list
-                     (if LaTeX-using-Biber "Biber" "BibTeX"))))
+            :help ,(lambda (&rest ignored)
+                     (TeX-bar-help-from-command-list
+                      (if LaTeX-using-Biber "Biber" "BibTeX"))))
     (clean  :image "delete"
             :command (TeX-command "Clean" #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "Clean")))
+            :help ,(lambda (&rest ignored)
+                     (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
             :command (TeX-command "Spell" #'TeX-master-file -1)
-            :help (lambda (&rest ignored)
-                    (TeX-bar-help-from-command-list "Spell")))
+            :help ,(lambda (&rest ignored)
+                     (TeX-bar-help-from-command-list "Spell")))
     (latex-symbols-experimental . (:alias :eval-group
-                                          LaTeX-symbols-toolbar-switch-contents
-                                          LaTeX-symbols-toolbar-contents)))
+                                   LaTeX-symbols-toolbar-switch-contents
+                                   LaTeX-symbols-toolbar-contents)))
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
 PROPS), where KEY is a symbol that labels the button and PROPS is
@@ -464,22 +464,23 @@ Internal variable.")
   (defconst LaTeX-symbols-toolbar-switch-contents
     `(;; the on-off switch button
       (latex-symbols-switch
-       :image (lambda nil (if LaTeX-symbols-toolbar-visible-flag
-                              "ltx-symb-turn-off"
-                            "ltx-symb-turn-on"))
+       :image ,(lambda ()
+                 (if LaTeX-symbols-toolbar-visible-flag
+                     "ltx-symb-turn-off"
+                   "ltx-symb-turn-on"))
        :command (progn
                   (setq LaTeX-symbols-toolbar-visible-flag
                         (not LaTeX-symbols-toolbar-visible-flag))
                   (toolbarx-refresh))
        ;; help message depends on if symb-toolbar is on or off, and in
        ;; the name of the current class of symbols
-       :help (lambda (&rest ignore)
-               (concat "Turn "
-                       (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
-                       "the toolbar of LaTeX symbols (current class: "
-                       (nth (1- LaTeX-symbols-active-menuitem)
-                            (quote ,list-strings))
-                       ")")))
+       :help ,(lambda (&rest _ignore)
+                (concat "Turn "
+                        (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
+                        "the toolbar of LaTeX symbols (current class: "
+                        (nth (1- LaTeX-symbols-active-menuitem)
+                             (quote ,list-strings))
+                        ")")))
       ;; the dropdown button, that also switch on the symbols
       ,(append '(:dropdown-group)
                list-strings
