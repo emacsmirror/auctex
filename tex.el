@@ -3338,8 +3338,9 @@ is called with \\[universal-argument]."
                                    'TeX-macro-history TeX-default-macro))))
   (when (called-interactively-p 'any)
     (setq TeX-default-macro symbol))
-  (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
-  (run-hooks 'TeX-after-insert-macro-hook))
+  (atomic-change-group
+    (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
+    (run-hooks 'TeX-after-insert-macro-hook)))
 
 (defvar TeX-electric-macro-map
   (let ((map (make-sparse-keymap)))
