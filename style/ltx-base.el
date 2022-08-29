@@ -123,7 +123,13 @@
     '("addpenalty" "Penalty")
     '("@ifundefined" TeX-arg-macro 2)
     '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "Character") 2)
-    '("expandafter" 0))
+    '("expandafter" 0)
+
+    ;; These macros are currently (June 2022) described in ltkeys.dtx:
+    '("DeclareKeys" ["Family"] t)
+    '("DeclareUnknownKeyHandler" ["Family"] t)
+    '("ProcessKeyOptions" ["Family"])
+    '("SetKeys" ["Family"] t))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -149,7 +155,12 @@
                                 ("ProcessOptions" "*")
                                 ("ExecuteOptions" "{")
                                 ("DeclareRobustCommand" "*|{\\[[{")
-                                ("CheckCommand"         "*|{\\[[{"))
+                                ("CheckCommand"         "*|{\\[[{")
+
+                                ("DeclareKeys"              "[{")
+                                ("DeclareUnknownKeyHandler" "[{")
+                                ("ProcessKeyOptions"        "[")
+                                ("SetKeys"                  "[{"))
                               'function)))
  TeX-dialect)
 
