@@ -268,9 +268,11 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat auto-loads.el >>$@
 	echo "(provide 'tex-site)" >>$@ ; \
 	echo ";;; tex-site.el ends here" >>$@
-	sed -i -e "/^(provide 'auto-loads)/d" \
-	       -e '/^;;; auto-loads.el ends here/d' \
-	       -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
+	sed -i'.tmp' \
+	    -e "/^(provide 'auto-loads)/d" \
+	    -e '/^;;; auto-loads.el ends here/d' \
+	    -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
+	-rm -f $@.tmp
 
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
