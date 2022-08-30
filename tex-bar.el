@@ -458,6 +458,8 @@ format of the argument MEANING-ALIST in the mentioned function."
                          (setq list-str-temp (cons (car i)
                                                    list-str-temp)))
                        (nreverse list-str-temp))))
+  ;; Will be defined by running LaTeX-install-toolbar.
+  (defvar LaTeX-symbols-active-menuitem)
   (defvar LaTeX-symbols-toolbar-visible-flag nil
     "Non-nil means that the LaTeX symbols on toolbar are visible.
 Internal variable.")
