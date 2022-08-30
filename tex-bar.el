@@ -454,10 +454,10 @@ format of the argument MEANING-ALIST in the mentioned function."
                               (cons (cons menu-str (list menu-buttons))
                                     menu-strings-alist-temp)))))))))))
        (list-strings (let* ((list-str-temp))
-                       (dolist (i menu-strings-buttons-alist
-                                  (nreverse list-str-temp))
+                       (dolist (i menu-strings-buttons-alist)
                          (setq list-str-temp (cons (car i)
-                                                   list-str-temp))))))
+                                                   list-str-temp)))
+                       (nreverse list-str-temp))))
   (defvar LaTeX-symbols-toolbar-visible-flag nil
     "Non-nil means that the LaTeX symbols on toolbar are visible.
 Internal variable.")
