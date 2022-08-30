@@ -479,7 +479,7 @@ Internal variable.")
                         (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
                         "the toolbar of LaTeX symbols (current class: "
                         (nth (1- LaTeX-symbols-active-menuitem)
-                             (quote ,list-strings))
+                             list-strings)
                         ")")))
       ;; the dropdown button, that also switch on the symbols
       ,(append '(:dropdown-group)
