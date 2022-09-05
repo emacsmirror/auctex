@@ -36,6 +36,9 @@
 (eval-when-compile
   (require 'cl-lib))
 (require 'texmathp)
+;; seq.el is preloaded in Emacs 29, so the next form can be removed
+;; once 29 is the minimum required Emacs version
+(require 'seq)
 ;; Require dbus at compile time to get macro definition of
 ;; `dbus-ignore-errors'.
 (eval-when-compile (require 'dbus))
