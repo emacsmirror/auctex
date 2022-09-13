@@ -5942,9 +5942,8 @@ point.  You can choose between \"$...$\" and \"\\(...\\)\"."
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
-If current math mode was not entered with a dollar, refuse to
-insert one.  Show matching dollar sign if this dollar sign ends
-the TeX math mode and `blink-matching-paren' is non-nil.
+Show matching dollar sign if this dollar sign ends the TeX math
+mode and `blink-matching-paren' is non-nil.
 
 When outside math mode, the behavior is controlled by the variable
 `TeX-electric-math'.
@@ -5996,51 +5995,54 @@ With optional ARG, insert that many dollar signs."
                      (buffer-substring
                       (point) (progn (end-of-line) (point))))))))
      (t
-      ;; Math mode was not entered with dollar - we cannot finish it
-      ;; with one.
-      (message "Math mode started with `%s' cannot be closed with dollar"
-               (car texmathp-why)))))
+      ;; Math mode was not entered with dollar - we assume that
+      ;; `texmathp' was wrong and behave as if not in math
+      ;; mode. (bug#57626)
+      (TeX--insert-dollar-1))))
    (t
     ;; Just somewhere in the text.
+    (TeX--insert-dollar-1))))
+
+(defun TeX--insert-dollar-1 ()
+  "Do the job of `TeX-insert-dollar' in non-math mode."
+  (cond
+   ((and TeX-electric-math (TeX-active-mark)
+         (/= (point) (mark)))
+    (if (> (point) (mark))
+        (exchange-point-and-mark))
     (cond
-     ((and TeX-electric-math (TeX-active-mark)
-           (/= (point) (mark)))
-      (if (> (point) (mark))
-          (exchange-point-and-mark))
-      (cond
-       ;; $...$ to $$...$$
-       ((and (eq last-command #'TeX-insert-dollar)
-             (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
-        (replace-match "$$\\1$$" t)
-        (set-mark (match-beginning 0)))
-       ;; \(...\) to \[...\]
-       ((and (eq last-command #'TeX-insert-dollar)
-             (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
-        (replace-match "\\\\[\\1\\\\]" t)
-        (set-mark (match-beginning 0)))
-       ;; Strip \[...\] or $$...$$
-       ((and (eq last-command #'TeX-insert-dollar)
-             (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
-                 (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
-        (replace-match "\\1" t)
-        (set-mark (match-beginning 0)))
-       (t
-        ;; We use `save-excursion' because point must be situated
-        ;; before opening symbol.
-        (save-excursion (insert (car TeX-electric-math)))
-        (exchange-point-and-mark)
-        (insert (cdr TeX-electric-math))))
-      ;; Keep the region active.
-      (TeX-activate-region))
-     (TeX-electric-math
-      (insert (car TeX-electric-math))
-      (save-excursion (insert (cdr TeX-electric-math)))
-      (if blink-matching-paren
-          (save-excursion
-            (backward-char)
-            (sit-for blink-matching-delay))))
-     ;; In any other case just insert a single $.
-     ((insert "$")))))
+     ;; $...$ to $$...$$
+     ((and (eq last-command #'TeX-insert-dollar)
+           (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
+      (replace-match "$$\\1$$" t)
+      (set-mark (match-beginning 0)))
+     ;; \(...\) to \[...\]
+     ((and (eq last-command #'TeX-insert-dollar)
+           (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
+      (replace-match "\\\\[\\1\\\\]" t)
+      (set-mark (match-beginning 0)))
+     ;; Strip \[...\] or $$...$$
+     ((and (eq last-command #'TeX-insert-dollar)
+           (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
+               (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
+      (replace-match "\\1" t)
+      (set-mark (match-beginning 0)))
+     (t
+      ;; We use `save-excursion' because point must be situated
+      ;; before opening symbol.
+      (save-excursion (insert (car TeX-electric-math)))
+      (exchange-point-and-mark)
+      (insert (cdr TeX-electric-math))))
+    (TeX-activate-region))
+   (TeX-electric-math
+    (insert (car TeX-electric-math))
+    (save-excursion (insert (cdr TeX-electric-math)))
+    (if blink-matching-paren
+        (save-excursion
+          (backward-char)
+          (sit-for blink-matching-delay))))
+   ;; In any other case just insert a single $.
+   ((insert "$")))
   (TeX-math-input-method-off))
 
 (defcustom TeX-math-input-method-off-regexp

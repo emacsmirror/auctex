@@ -1,6 +1,6 @@
 ;;; texmathp.el -- Code to check if point is inside LaTeX math environment  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1998-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1998-2022  Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -85,14 +85,19 @@
 ;;
 ;;  BUGS:
 ;;
-;;  If any of the the special macros like \mbox or \ensuremath has optional
-;;  arguments, math mode inside these optional arguments is *not* influenced
-;;  by the macro.
+;;  o If any of the the special macros like \mbox or \ensuremath has
+;;    optional arguments, math mode inside these optional arguments is
+;;    *not* influenced by the macro.
 ;;
-;;  Nested \(\) and \[\] can confuse texmathp.  It returns nil at AAA
-;;  in the following examples:
+;;  o Nested \(\) and \[\] can confuse texmathp.  It returns nil at AAA
+;;    in the following examples:
 ;;  \[ x=y \mbox{abc \(\alpha\) cba} AAA \]
 ;;  \[ x=y \begin{minipage}{3cm} abc \[\alpha\] cba \end{minipage} AAA \]
+;;
+;;  o In the "text column" of cases* environment, texmathp doesn't
+;;    consider it's non-math mode.  The same applies for variants of
+;;    cases* environents, both provided by mathtools package.
+;;
 ;;--------------------------------------------------------------------------
 
 ;;; Code:
