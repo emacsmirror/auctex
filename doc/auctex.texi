@@ -433,14 +433,14 @@ will blink when @code{blink-matching-paren} is non-nil.  If
 @code{TeX-electric-math} is nil, typing @kbd{$} simply inserts @samp{$}
 at point, this is the default.
 
-Besides @code{nil}, possible values for this variable are @code{(cons
-"$" "$")} for @TeX{} inline equations @samp{$...$}, and @code{(cons
-"\\(" "\\)")} for @LaTeX{} inline equations @samp{\(...\)}.
+Besides @code{nil}, possible values for this variable are @code{("$"
+. "$")} for @TeX{} inline equations @samp{$...$}, and @code{("\(" . "\)")}
+for @LaTeX{} inline equations @samp{\(...\)}.
 
 If the variable is non-nil and point is inside math mode right between a
 couple of single dollars, pressing @kbd{$} will insert another pair of
 dollar signs and leave the point between them.  Thus, if
-@code{TeX-electric-math} is set to @code{(cons "$" "$")} you can easily
+@code{TeX-electric-math} is set to @code{("$" . "$")} you can easily
 obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$}
 twice in a row.  (Note that you should not use double dollar signs in
 @LaTeX{} because this practice can lead to wrong spacing in typeset

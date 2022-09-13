@@ -5891,18 +5891,20 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 ;; Rewritten from scratch with use of `texmathp' by
 ;; Carsten Dominik <dominik@strw.leidenuniv.nl>
 
-(defvar TeX-symbol-marker nil)
-
-(defvar TeX-symbol-marker-pos 0)
-
-;; The following constants are no longer used, but kept in case some
+;; The following variables are no longer used, but kept in case some
 ;; foreign code uses any of them.
-(defvar TeX-dollar-sign ?$
-  "Character used to enter and leave math mode in TeX.")
+(defvar TeX-symbol-marker nil)
+(defvar TeX-symbol-marker-pos 0)
+(defvar TeX-dollar-sign ?$)
 (defconst TeX-dollar-string (char-to-string TeX-dollar-sign))
 (defconst TeX-dollar-regexp
   (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"
           (regexp-quote TeX-dollar-string)))
+(make-obsolete-variable 'TeX-symbol-marker nil "AUCTeX 9.9d++")
+(make-obsolete-variable 'TeX-symbol-marker-pos nil "AUCTeX 9.9d++")
+(make-obsolete-variable 'TeX-dollar-sign nil "AUCTeX 9.9d++")
+(make-obsolete-variable 'TeX-dollar-string nil "AUCTeX 9.9d++")
+(make-obsolete-variable 'TeX-dollar-regexp nil "AUCTeX 9.9d++")
 
 (defcustom TeX-math-toggle-off-input-method t
   "If non-nil, auto turn off some input methods when entering math mode.
@@ -5947,19 +5949,19 @@ the TeX math mode and `blink-matching-paren' is non-nil.
 When outside math mode, the behavior is controlled by the variable
 `TeX-electric-math'.
 
-With raw \\[universal-argument] prefix, insert exactly one dollar
-sign.  With optional ARG, insert that many dollar signs."
-  (interactive "P")
+With raw \\[universal-argument] prefix, insert exactly one dollar sign.
+With optional ARG, insert that many dollar signs."
+  (interactive "*P")
   (cond
    ((and arg (listp arg))
     ;; C-u always inserts one
     (insert "$"))
    (arg
     ;; Numerical arg inserts that many
-    (insert (make-string (prefix-numeric-value arg) ?\$)))
+    (insert-char ?\$ (prefix-numeric-value arg)))
    ((or (TeX-escaped-p) (TeX-verbatim-p))
-    ;; Point is escaped with `\' or is in a verbatim-like construct, so just
-    ;; insert one $.
+    ;; Point is escaped with `\' or is in a verbatim-like construct,
+    ;; so just insert one $.
     (insert "$"))
    ((texmathp)
     ;; We are inside math mode
@@ -5967,16 +5969,17 @@ sign.  With optional ARG, insert that many dollar signs."
      ((and TeX-electric-math
            (eq (preceding-char) ?\$)
            (eq (following-char) ?\$))
-      ;; Point is between "$$" and `TeX-electric-math' is non-nil - insert
-      ;; another pair of dollar signs and leave point between them.
+      ;; Point is between "$$" and `TeX-electric-math' is non-nil -
+      ;; insert another pair of dollar signs and leave point between
+      ;; them.
       (insert "$$")
       (backward-char))
      ((and (stringp (car texmathp-why))
            (string-equal (substring (car texmathp-why) 0 1) "\$"))
       ;; Math mode was turned on with $ or $$ - insert a single $.
       (insert "$")
-      ;; Compatibility, `TeX-math-close-double-dollar' has been removed
-      ;; after AUCTeX 11.87.
+      ;; Compatibility, `TeX-math-close-double-dollar' has been
+      ;; removed after AUCTeX 11.87.
       (if (boundp 'TeX-math-close-double-dollar)
           (message
            (concat "`TeX-math-close-double-dollar' has been removed,"
@@ -5993,35 +5996,37 @@ sign.  With optional ARG, insert that many dollar signs."
                      (buffer-substring
                       (point) (progn (end-of-line) (point))))))))
      (t
-      ;; Math mode was not entered with dollar - we cannot finish it with one.
+      ;; Math mode was not entered with dollar - we cannot finish it
+      ;; with one.
       (message "Math mode started with `%s' cannot be closed with dollar"
                (car texmathp-why)))))
    (t
     ;; Just somewhere in the text.
     (cond
-     ((and TeX-electric-math (TeX-active-mark))
+     ((and TeX-electric-math (TeX-active-mark)
+           (/= (point) (mark)))
       (if (> (point) (mark))
           (exchange-point-and-mark))
       (cond
        ;; $...$ to $$...$$
        ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
-        (replace-match "$$\\1$$")
+        (replace-match "$$\\1$$" t)
         (set-mark (match-beginning 0)))
        ;; \(...\) to \[...\]
        ((and (eq last-command #'TeX-insert-dollar)
              (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
-        (replace-match "\\\\[\\1\\\\]")
+        (replace-match "\\\\[\\1\\\\]" t)
         (set-mark (match-beginning 0)))
        ;; Strip \[...\] or $$...$$
        ((and (eq last-command #'TeX-insert-dollar)
              (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
                  (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
-        (replace-match "\\1")
+        (replace-match "\\1" t)
         (set-mark (match-beginning 0)))
        (t
-        ;; We use `save-excursion' because point must be situated before opening
-        ;; symbol.
+        ;; We use `save-excursion' because point must be situated
+        ;; before opening symbol.
         (save-excursion (insert (car TeX-electric-math)))
         (exchange-point-and-mark)
         (insert (cdr TeX-electric-math))))
@@ -6031,10 +6036,9 @@ sign.  With optional ARG, insert that many dollar signs."
       (insert (car TeX-electric-math))
       (save-excursion (insert (cdr TeX-electric-math)))
       (if blink-matching-paren
-          (progn
+          (save-excursion
             (backward-char)
-            (sit-for blink-matching-delay)
-            (forward-char))))
+            (sit-for blink-matching-delay))))
      ;; In any other case just insert a single $.
      ((insert "$")))))
   (TeX-math-input-method-off))
