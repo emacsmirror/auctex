@@ -107,7 +107,12 @@ functions into the respective function cell of the mode."
       (setq elt (car (pop list)))
       (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
         (if (memq elt value)
-            (advice-add elt :override dst)
+            (advice-add elt :override dst
+                        ;; COMPATIBILITY for Emacs 28.[12]
+                        ;; Give it higher precedence than the :around
+                        ;; advice given to `tex-mode' in tex-mode.el.
+                        ;; <URL:https://lists.gnu.org/r/auctex-devel/2022-09/msg00050.html>
+                        '((depth . -10)))
           (advice-remove elt dst))))))
 
 (defcustom TeX-modes
