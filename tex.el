@@ -92,7 +92,6 @@
 (defvar LaTeX-optop)
 (defvar LaTeX-largest-level)
 (defvar LaTeX-section-list)
-(defvar TeX-output-dir)
 ;; tex-ispell.el
 (defvar TeX-ispell-verb-delimiters)
 ;; Others:

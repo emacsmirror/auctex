@@ -632,8 +632,8 @@ It may be customized with the following variables:
              (dolist (elt prompts)
                (let* ((optional (vectorp elt))
                       (elt (if optional (elt elt 0) elt))
-                      (arg (TeX-read-string (concat (when optional "(Optional) ")
-                                                elt ": "))))
+                      (arg (TeX-read-string
+                            (TeX-argument-prompt optional elt nil))))
                  (setq args (concat args
                                     (cond ((and optional (> (length arg) 0))
                                            (concat LaTeX-optop arg LaTeX-optcl))
