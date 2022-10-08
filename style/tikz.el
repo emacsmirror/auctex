@@ -112,7 +112,7 @@ Ask the user for r and theta values, and return the string
 
 (defun TeX-TikZ-arg-options (optional)
   "Prompt the user for options to a TikZ macro.
-If OPTIONAL is non-nil, always return `LaTeX-optop' and
+If OPTIONAL is nil, always return `LaTeX-optop' and
 `LaTeX-optcl', even if the user doesn't provide any input."
   (let ((options (TeX-read-string (TeX-argument-prompt optional nil "Options" ))))
     (if optional
@@ -121,7 +121,7 @@ If OPTIONAL is non-nil, always return `LaTeX-optop' and
 
 (defun TeX-TikZ-arg-name (optional)
   "Prompt the user for a TikZ name.
-If OPTIONAL is non-nil, always return \"()\", even if the user
+If OPTIONAL is nil, always return \"()\", even if the user
 doesn't provide any input."
   (let ((name (TeX-read-string (TeX-argument-prompt optional nil "Name" ))))
     (if optional
@@ -130,8 +130,8 @@ doesn't provide any input."
 
 (defun TeX-TikZ-arg-label (optional)
   "Prompt the user for TikZ label.
-If OPTIONAL is non-nil always return `TeX-grop' and `TeX-grcl',
-even if the user doesn't provide any input."
+If OPTIONAL is nil always return `TeX-grop' and `TeX-grcl', even
+if the user doesn't provide any input."
   (let ((label (TeX-read-string (TeX-argument-prompt optional nil "Label" ))))
     (if optional
         (TeX-TikZ-get-opt-arg-string label TeX-grop TeX-grcl)
@@ -278,7 +278,7 @@ return \"\"."
 (defun TeX-TikZ-node-arg (_ignored)
   "Prompt the user for the arguments to a TikZ node macro."
   (let ((options (TeX-TikZ-arg-options t))
-        (name (TeX-TikZ-arg-name nil))
+        (name (TeX-TikZ-arg-name t))
         (point (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
                                           "Node point type: "))
         (label (TeX-TikZ-arg-label nil)))
