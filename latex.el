@@ -3278,7 +3278,8 @@ INHERIT-INPUT-METHOD are passed to `completing-read', which see."
                                (concat prompt " (cr)"))
                               ((and prompt complete)
                                prompt)
-                              (t "Option (cr)"))
+                              (t nil))
+                        "Option (cr)"
                         complete)
    (cond ((and (symbolp collection)
                (boundp collection))
@@ -3340,7 +3341,8 @@ INHERIT-INPUT-METHOD are passed to
                                (concat prompt " (crm)"))
                               ((and prompt complete)
                                prompt)
-                              (t "Options (crm)"))
+                              (t nil))
+                        "Options (crm)"
                         complete)
    (cond ((and (symbolp table)
                (boundp table))
