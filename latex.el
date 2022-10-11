@@ -1748,12 +1748,14 @@ This is necessary since index entries may contain commands and stuff.")
   "List of regular expressions matching LaTeX pagestyles only.")
 
 (defvar LaTeX-auto-counter-regexp-list
-  '(("\\\\newcounter *{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter)
-    ("\\\\@definecounter{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter))
+  (let ((token TeX-token-char))
+    `((,(concat "\\\\newcounter *{\\(" token "+\\)}") 1 LaTeX-auto-counter)
+      (,(concat "\\\\@definecounter{\\(" token "+\\)}") 1 LaTeX-auto-counter)))
   "List of regular expressions matching LaTeX counters only.")
 
 (defvar LaTeX-auto-length-regexp-list
-  '(("\\\\newlength *{?\\\\\\([A-Za-z]+\\)}?" 1 LaTeX-auto-length))
+  (let ((token TeX-token-char))
+    `((,(concat "\\\\newlength *{?\\\\\\(" token "+\\)}?") 1 LaTeX-auto-length)))
   "List of regular expressions matching LaTeX lengths only.")
 
 (defvar LaTeX-auto-savebox-regexp-list
