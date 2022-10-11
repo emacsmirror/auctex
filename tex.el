@@ -6308,7 +6308,7 @@ available from ")
         (insert " if your
 installation is older than the one available from the web site.
 
-If the bug is triggered by a specific \(La\)TeX file, you should try
+If the bug is triggered by a specific (La)TeX file, you should try
 to produce a minimal sample file showing the problem and include it
 in your report.
 

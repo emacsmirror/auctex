@@ -375,7 +375,7 @@ If so, return the second element, otherwise return nil."
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^\}]*\\)}" (+ (point) fill-column 10) t)
+    (if (re-search-forward "{\\([^}]*\\)}" (+ (point) fill-column 10) t)
         (match-string 1)
       (buffer-substring (point) (min (point-max) (+ 20 (point)))))))
 
@@ -2900,7 +2900,7 @@ The compatibility argument OPTIONAL and IGNORE are ignored."
 If OPTIONAL, indicate optional argument in minibuffer.  PROMPT is
 a string replacing the default one when asking the user for text.
 This function is intended for \\verb like macros which take their
-argument in delimiters like \"\| \|\" or braces \"\{ \}\"."
+argument in delimiters like \"| |\" or braces \"{ }\"."
   (let ((del (read-quoted-char
               (concat "Delimiter (default "
                       (char-to-string LaTeX-default-verb-delimiter) "): "))))
@@ -6772,13 +6772,13 @@ you did something too clever, or AUCTeX something too stupid.")
 
     ("Bad \\\\line or \\\\vector argument.*" .
      "The first argument of a \\line or \\vector command, which specifies the
-slope, is illegal\.")
+slope, is illegal.")
 
     ("Bad math environment delimiter.*" .
      "TeX has found either a math-mode-starting command such as \\[ or \\(
 when it is already in math mode, or else a math-mode-ending command
 such as \\) or \\] while in LR or paragraph mode.  The problem is caused
-by either unmatched math mode delimiters or unbalanced braces\.")
+by either unmatched math mode delimiters or unbalanced braces.")
 
     ("Bad use of \\\\\\\\.*" .
      "A \\\\ command appears between paragraphs, where it makes no sense. This
