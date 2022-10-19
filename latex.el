@@ -3222,24 +3222,31 @@ prompt string.  `LaTeX-default-author' is the initial input."
 (defun TeX-read-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST and return them.
 If OPTIONAL is non-nil, indicate in the prompt that we are
-reading an optional argument.  KEY-VAL-ALIST is an alist.  The
-car of each element should be a string representing a key and the
-optional cdr should be a list with strings to be used as values
-for the key.  KEY-VAL-ALIST can be a symbol or a function call
-returning an alist.  Use PROMPT as the prompt string."
+reading an optional argument.  KEY-VAL-ALIST can be
+  - A function call without arguments
+  - A function object
+  - A symbol returning an alist
+  - An alist
+
+The car of each element should be a string representing a key and
+the optional cdr should be a list with strings to be used as
+values for the key.  Use PROMPT as the prompt string."
   (multi-prompt-key-value
    (TeX-argument-prompt optional prompt "Options (k=v)")
-   (cond ((and (symbolp key-val-alist)
+   (cond ((and (listp key-val-alist)
+               (symbolp (car key-val-alist))
+               (fboundp (car key-val-alist)))
+          (funcall (car key-val-alist)))
+         ((functionp key-val-alist)
+          (funcall key-val-alist))
+         ((and (symbolp key-val-alist)
                (boundp key-val-alist))
           (symbol-value key-val-alist))
          ((and (listp key-val-alist)
-               (symbolp (car key-val-alist))
-               (fboundp (car key-val-alist)))
-          (if (> (length key-val-alist) 1)
-              (eval key-val-alist t)
-            (funcall (car key-val-alist))))
+               (listp (car key-val-alist)))
+          key-val-alist)
          (t
-          key-val-alist))))
+          (error "Cannot interpret key-val-alist %S" key-val-alist)))))
 
 (defun TeX-arg-key-val (optional key-val-alist &optional prompt)
   "Prompt for keys and values in KEY-VAL-ALIST.
@@ -3247,9 +3254,8 @@ Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
-as values for the key.  KEY-VAL-ALIST can be a symbol or a
-function call returning an alist.  Use PROMPT as the prompt
-string."
+as values for the key.  Refer to `TeX-read-key-val' for more
+about KEY-VAL-ALIST.  Use PROMPT as the prompt string."
   (let ((options (TeX-read-key-val optional key-val-alist prompt)))
     (TeX-argument-insert options optional)))
 
@@ -3262,9 +3268,10 @@ If OPTIONAL is non-nil, indicate it in the prompt.
 
 COLLECTION provides elements for completion and is passed to
 `completing-read'.  It can be:
-  - A List or an alist
+  - A function call without arguments
+  - A function object
   - A symbol returning a list
-  - A function call
+  - A List
 
 PROMPT replaces the standard one where \\=' (cr): \\=' is appended to
 it.  If you want the full control over the prompt, set COMPLETE
@@ -3281,15 +3288,15 @@ INHERIT-INPUT-METHOD are passed to `completing-read', which see."
                               (t nil))
                         "Option (cr)"
                         complete)
-   (cond ((and (symbolp collection)
-               (boundp collection))
-          (symbol-value collection))
-         ((and (listp collection)
+   (cond ((and (listp collection)
                (symbolp (car collection))
                (fboundp (car collection)))
-          (if (> (length collection) 1)
-              (eval collection t)
-            (funcall (car collection))))
+          (funcall (car collection)))
+         ((functionp collection)
+          (funcall collection))
+         ((and (symbolp collection)
+               (boundp collection))
+          (symbol-value collection))
          (t collection))
    predicate require-match initial-input hist def inherit-input-method))
 
@@ -3303,7 +3310,7 @@ If OPTIONAL is non-nil, indicate it in the minibuffer and insert
 the result in brackets if not empty.  The brackets used are
 controlled by the string values of LEFTBRACE and RIGHTBRACE.
 
-For PROMPT and COMPLETE, refer to `TeX-read-completing-read'.
+For COLLECTION, PROMPT and COMPLETE, refer to `TeX-read-completing-read'.
 For PREFIX, see `TeX-argument-insert'.
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to `completing-read', which see."
@@ -3322,11 +3329,12 @@ INHERIT-INPUT-METHOD are passed to `completing-read', which see."
   "Read multiple strings in the minibuffer, with completion and return them.
 If OPTIONAL is non-nil, indicate it in the prompt.
 
-COLLECTION provides elements for completion and is passed to
-`completing-read'.  It can be:
-  - A List or an alist
+TABLE provides elements for completion and is passed to
+`TeX-completing-read-multiple'.  It can be:
+  - A function call without arguments
+  - A function object
   - A symbol returning a list
-  - A function call
+  - A List
 
 PROMPT replaces the standard one where \\=' (crm): \\=' is appended to
 it.  If you want the full control over the prompt, set COMPLETE
@@ -3344,15 +3352,15 @@ INHERIT-INPUT-METHOD are passed to
                               (t nil))
                         "Options (crm)"
                         complete)
-   (cond ((and (symbolp table)
-               (boundp table))
-          (symbol-value table))
-         ((and (listp table)
+   (cond ((and (listp table)
                (symbolp (car table))
                (fboundp (car table)))
-          (if (> (length table) 1)
-              (eval table t)
-            (funcall (car table))))
+          (funcall (car table)))
+         ((functionp table)
+          (funcall table))
+         ((and (symbolp table)
+               (boundp table))
+          (symbol-value table))
          (t table))
    predicate require-match initial-input hist def inherit-input-method))
 
@@ -3366,7 +3374,7 @@ If OPTIONAL is non-nil, indicate it in the minibuffer and insert
 the result in brackets if not empty.  The brackets used are
 controlled by the string values of LEFTBRACE and RIGHTBRACE.
 
-For PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
+For TABLE, PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
 For PREFIX, see `TeX-argument-insert'.
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to
