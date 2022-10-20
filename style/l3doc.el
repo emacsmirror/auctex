@@ -184,10 +184,9 @@ For syntax environment from l3doc class."
     '("parg" "Picture mode argument")
 
     '("file" "File name")
-    '("env" LaTeX-env-args
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Environment")
-                    (LaTeX-environment-list)))
+    '("env" (TeX-arg-eval completing-read
+                          (TeX-argument-prompt nil nil "Environment")
+                          (LaTeX-environment-list)))
     '("pkg" "Package name")
     '("cls" "Class name")
 

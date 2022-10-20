@@ -169,7 +169,7 @@ If `caption.el' is loaded, add the new floating environment to
       (TeX-arg-eval completing-read
                     (TeX-argument-prompt nil nil "Floating environment")
                     (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-      (TeX-arg-key-val (LaTeX-newfloat-key-val-options-local)))
+      (TeX-arg-key-val (LaTeX-newfloat-key-val-options)))
 
     '("ForEachFloatingEnvironment" t)
     '("ForEachFloatingEnvironment*" t)
@@ -180,16 +180,13 @@ If `caption.el' is loaded, add the new floating environment to
                     (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
       t)
 
-    '("newfloatsetup"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((keyvals (TeX-read-key-val
-                         nil
-                         (append '(("chapterlistsgap"))
-                                 (if (< (LaTeX-largest-level) 2)
-                                     '(("within" ("chapter" "section" "none")))
-                                   '(("within" ("section" "none"))))))))
-           (format "%s" keyvals))))))
+    `("newfloatsetup"
+      (TeX-arg-key-val
+       ,(lambda ()
+          (append '(("chapterlistsgap"))
+                  (if (< (LaTeX-largest-level) 2)
+                      '(("within" ("chapter" "section" "none")))
+                    '(("within" ("section" "none")))))))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

@@ -1804,6 +1804,7 @@ Used for patterns like:
                 ;; If the closing tag is beyond the current end of
                 ;; region, take care of it.
                 (when (< font-latex--updated-region-end p)
+                  ;; FIXME: Why?  Should this use `font-lock-flush'?
                   (font-lock-unfontify-region font-latex--updated-region-end p)
                   (setq font-latex--updated-region-end p))
                 (store-match-data (list beg beg beg p)))
@@ -1883,6 +1884,7 @@ The \\begin{equation} incl. arguments in the same line and
                              (+ limit font-latex-multiline-boundary) 'move)
           (progn
             (setq end (match-beginning 0))
+            ;; FIXME: Duplicate of code in `font-latex-match-math-env'.
             (if (< font-latex--updated-region-end limit)
                 (setq font-latex--updated-region-end limit))
             (when (< font-latex--updated-region-end end)
@@ -1919,6 +1921,7 @@ The \\begin{equation} incl. arguments in the same line and
                 (progn
                   (forward-char num)
                   (let ((p (point)))
+                    ;; FIXME: Duplicate of code in `font-latex-match-math-env'.
                     (if (< font-latex--updated-region-end limit)
                         (setq font-latex--updated-region-end limit))
                     (when (< font-latex--updated-region-end p)
@@ -2082,6 +2085,7 @@ set to `french', and >>german<< (and 8-bit) are used if set to `german'."
                   (goto-char after-beg)
                   (store-match-data (list after-beg after-beg beg after-beg)))
               (let ((p (point)))
+                ;; FIXME: Duplicate of code in `font-latex-match-math-env'.
                 (if (< font-latex--updated-region-end limit)
                     (setq font-latex--updated-region-end limit))
                 (when (< font-latex--updated-region-end p)

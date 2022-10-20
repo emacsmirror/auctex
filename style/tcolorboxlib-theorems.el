@@ -312,6 +312,6 @@ empty."
      (font-latex-add-keywords '(("newtcbtheorem"   "[{{{{")
                                 ("renewtcbtheorem" "[{{{{"))
                               'function)))
- LaTeX-dialect)
+ TeX-dialect)
 
 ;;; tcolorboxlib-theorems.el ends here

@@ -194,7 +194,8 @@ STYLESRC = style/prosper.el \
 	   style/ifpdf.el     style/iftex.el     style/ifvtex.el \
 	   style/ifxetex.el   style/multibib.el  style/ltcaption.el \
 	   style/keyval.el    style/kvoptions.el style/kvsetkeys.el \
-	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el
+	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el \
+	   style/amsaddr.el   style/parskip.el   style/catchfilebetweentags.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
@@ -268,9 +269,11 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat auto-loads.el >>$@
 	echo "(provide 'tex-site)" >>$@ ; \
 	echo ";;; tex-site.el ends here" >>$@
-	sed -i -e "/^(provide 'auto-loads)/d" \
-	       -e '/^;;; auto-loads.el ends here/d' \
-	       -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
+	sed -i'.tmp' \
+	    -e "/^(provide 'auto-loads)/d" \
+	    -e '/^;;; auto-loads.el ends here/d' \
+	    -e 's/^\(;;; auto-loads.el.*\)\(   -\*- lexical-binding: t -\*-\)/\1/' $@
+	-rm -f $@.tmp
 
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status

@@ -1,4 +1,4 @@
-;;; xparse.el --- AUCTeX style for `xparse.sty' version 2020-03-06  -*- lexical-binding: t; -*-
+;;; xparse.el --- AUCTeX style for `xparse.sty' version 2022-07-05  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013, 2020--2022 Free Software Foundation, Inc.
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds basic support for `xparse.sty' version 2020-03-06.
+;; This file adds basic support for `xparse.sty' version 2022-07-05.
 ;; It parses argument specification of macros and environments.
 
 ;; The "yet not more supported" specifiers `l', `u', `g' and `G' are
@@ -118,15 +118,15 @@ TYPE is one of the symbols mac or env."
         (goto-char (point-min))
         (insert (replace-regexp-in-string "[ \t\r\n%]" "" spec))
         (goto-char (point-min))
-        (while (looking-at-p "[+!>bmrRvodODsteE]")
-          (cond (;; + or !: Long argument or space aware: Move over
+        (while (looking-at-p "[+!>=bmrRvodODsteE]")
+          (cond ((looking-at-p "[+!b]")
+                 ;; + or !: Long argument or space aware: Move over
                  ;; them.  b is special; only available for
                  ;; enviroments
-                 (looking-at-p "[+!b]")
                  (forward-char 1))
-                ((looking-at-p ">")
-                 ;; Argument processors: Move over > and a balanced
-                 ;; {}
+                ;; Argument processors and key-val modifier: Move
+                ;; over [>=] and a balanced {}
+                ((looking-at-p "[>=]")
                  (forward-char 1)
                  (forward-sexp))
                 ;; Mandatory arguments:

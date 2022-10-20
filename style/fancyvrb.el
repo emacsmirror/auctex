@@ -1,6 +1,6 @@
-;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 3.6.  -*- lexical-binding: t; -*-
+;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 4.5.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fancyvrb.sty' version 3.6.
+;; This file adds support for `fancyvrb.sty' version 4.5.
 
 ;; This style has some capabilities to parse user defined macros,
 ;; environments and saved blocks with `SaveVerbatim' environments and
@@ -571,9 +571,15 @@ ENV is the name of current environment as a string."
     ;; Verbatim material in footnotes
     "VerbatimFootnotes"
     ;; Improved verbatim commands
-    '("Verb" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] TeX-arg-verb)
-    ;; \Verb also has a starred version:
-    '("Verb*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] TeX-arg-verb)
+    '("Verb" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                           (TeX-arg-verb-delim-or-brace)
+                           (TeX-arg-verb)))
+    ;; \Verb also has a starred version
+    '("Verb*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                           (TeX-arg-verb-delim-or-brace)
+                           (TeX-arg-verb)))
     '("DefineShortVerb" (TeX-arg-eval
                          TeX-read-string
                          (TeX-argument-prompt nil nil "Character")
@@ -618,11 +624,18 @@ ENV is the name of current environment as a string."
                       (TeX-argument-prompt nil nil "Save name"))))
            (LaTeX-add-fancyvrb-saveverbs name)
            (format "%s" name))))
-      TeX-arg-verb)
+      (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                           (TeX-arg-verb-delim-or-brace)
+                           (TeX-arg-verb)))
     '("UseVerb" (TeX-arg-eval
                  completing-read
                  (TeX-argument-prompt nil nil "Saved name")
                  (LaTeX-fancyvrb-saveverb-list)))
+    ;; \UseVerb also has a starred version
+    '("UseVerb*" (TeX-arg-eval
+                  completing-read
+                  (TeX-argument-prompt nil nil "Saved name")
+                  (LaTeX-fancyvrb-saveverb-list)))
     '("UseVerbatim" (TeX-arg-eval completing-read
                                   (TeX-argument-prompt nil nil "Saved name")
                                   (LaTeX-fancyvrb-saveverbatim-list)))
@@ -758,7 +771,7 @@ ENV is the name of current environment as a string."
                               'reference)
      (font-latex-add-keywords '(("Verb" "*[") ; The second argument is verbatim.
                                 ("SaveVerb"     "[{")
-                                ("UseVerb"      "{")
+                                ("UseVerb"      "*{")
                                 ("UseVerbatim"  "{")
                                 ("LUseVerbatim" "{")
                                 ("BUseVerbatim" "{"))

@@ -36,6 +36,9 @@
 (eval-when-compile
   (require 'cl-lib))
 (require 'texmathp)
+;; seq.el is preloaded in Emacs 29, so the next form can be removed
+;; once 29 is the minimum required Emacs version
+(require 'seq)
 ;; Require dbus at compile time to get macro definition of
 ;; `dbus-ignore-errors'.
 (eval-when-compile (require 'dbus))
@@ -3338,8 +3341,9 @@ is called with \\[universal-argument]."
                                    'TeX-macro-history TeX-default-macro))))
   (when (called-interactively-p 'any)
     (setq TeX-default-macro symbol))
-  (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
-  (run-hooks 'TeX-after-insert-macro-hook))
+  (atomic-change-group
+    (TeX-parse-macro symbol (cdr-safe (assoc symbol (TeX-symbol-list))))
+    (run-hooks 'TeX-after-insert-macro-hook)))
 
 (defvar TeX-electric-macro-map
   (let ((map (make-sparse-keymap)))
@@ -6304,7 +6308,7 @@ available from ")
         (insert " if your
 installation is older than the one available from the web site.
 
-If the bug is triggered by a specific \(La\)TeX file, you should try
+If the bug is triggered by a specific (La)TeX file, you should try
 to produce a minimal sample file showing the problem and include it
 in your report.
 

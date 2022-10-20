@@ -1,6 +1,6 @@
 ;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,14 +34,12 @@
 (require 'tex)
 (require 'latex)
 
-;; Needed for compiling `cl-pushnew':
-(eval-when-compile
-  (require 'cl-lib))
-
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function font-latex-set-syntactic-keywords
+                  "font-latex")
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
@@ -138,11 +136,12 @@
     "FancyVerbBreakBeforeBreak"
     "FancyVerbBreakAfterBreak")
 
-   ;; Add \EscVerb*? to `LaTeX-verbatim-macros-with-braces-local':
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local
-                "EscVerb" t)
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local
-                "EscVerb*" t)
+   ;; Add \Verb*? and \EscVerb*? to
+   ;; `LaTeX-verbatim-macros-with-braces-local':
+   (let ((macs '("Verb" "Verb*"
+                 "EscVerb" "EscVerb*")))
+     (dolist (mac macs)
+       (add-to-list 'LaTeX-verbatim-macros-with-braces-local mac t)))
 
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
@@ -150,7 +149,8 @@
      (font-latex-add-keywords '(("fvinlineset" "{"))
                               'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
-                              'textual)))
+                              'textual)
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-fvextra-package-options nil

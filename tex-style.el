@@ -226,6 +226,13 @@ override the autodetection of the biblatex backend.")
 (make-variable-buffer-local 'LaTeX-biblatex-use-Biber)
 (put 'LaTeX-biblatex-use-Biber 'safe-local-variable #'booleanp)
 
+;; style/catchfilebetweentags.el
+
+(defcustom LaTeX-catchfilebetweentags-use-numeric-label t
+  "If non-nil, insert automatic numerical labels.
+Otherwise the prompt asks for a label name."
+  :type 'boolean)
+
 ;; style/comment.el
 
 (defcustom LaTeX-comment-env-list '("comment")

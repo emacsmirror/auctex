@@ -1,6 +1,6 @@
 ;;; array.el --- AUCTeX style for `array.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2013-2022  Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -56,16 +56,11 @@ package.")
     (LaTeX-array-update-column-letters)))
 
 (defun LaTeX-array-update-column-letters ()
-  "Update and uniquify the value of `LaTeX-array-column-letters'
-and make it buffer local. "
+  "Update and uniquify the local value of `LaTeX-array-column-letters'."
   (set (make-local-variable 'LaTeX-array-column-letters)
-       (mapconcat #'identity
-                  (TeX-delete-duplicate-strings
-                   (split-string
-                    (concat LaTeX-array-column-letters
-                            (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
-                    "" t))
-                  "")))
+       (let* ((newtypes (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
+              (alltypes (concat LaTeX-array-column-letters newtypes)))
+         (seq-concatenate 'string (seq-uniq alltypes #'=)))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-array-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-array-auto-cleanup t)
