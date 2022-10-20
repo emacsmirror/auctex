@@ -107,7 +107,12 @@ functions into the respective function cell of the mode."
       (setq elt (car (pop list)))
       (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
         (if (memq elt value)
-            (advice-add elt :override dst)
+            (advice-add elt :override dst
+                        ;; COMPATIBILITY for Emacs 28.[12]
+                        ;; Give it higher precedence than the :around
+                        ;; advice given to `tex-mode' in tex-mode.el.
+                        ;; <URL:https://lists.gnu.org/r/auctex-devel/2022-09/msg00050.html>
+                        '((depth . -10)))
           (advice-remove elt dst))))))
 
 (defcustom TeX-modes
@@ -121,11 +126,11 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.1.4"
+(defconst AUCTeX-version "13.1.5"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2022-08-26"
+(defconst AUCTeX-date "2022-10-20"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
