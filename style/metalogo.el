@@ -1,6 +1,6 @@
 ;;; metalogo.el --- AUCTeX style for `metalogo.sty' version 0.12.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -48,12 +48,12 @@
     '("LuaLaTeX")
     ;; Commands
     '("setlogokern"
-      (TeX-arg-eval completing-read "Kern parameters: "
-                    '(("Te") ("eX") ("La") ("aT") ("Xe") ("eT") ("eL") ("X2")))
+      (TeX-arg-completing-read ("Te" "eX" "La" "aT" "Xe" "eT" "eL" "X2")
+                               "Kern parameters")
       (TeX-arg-length "Dimension"))
     '("setlogodrop"
-      [TeX-arg-eval completing-read "Drop parameters: "
-                    '(("TeX") ("Xe") ("XeTeX"))]
+      [TeX-arg-completing-read ("TeX" "Xe" "XeTeX")
+                               "Drop parameters"]
       (TeX-arg-length "Dimension"))
     '("setLaTeXa" 1)
     '("setLaTeXee" 1)

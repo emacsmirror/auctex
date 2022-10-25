@@ -1,6 +1,6 @@
 ;;; polyglossia.el --- AUCTeX style for `polyglossia.sty' version 1.42.0.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -249,8 +249,9 @@ argument, otherwise as a mandatory one."
     '("setotherlanguage"   (LaTeX-arg-polyglossia-lang nil nil nil))
     '("setotherlanguages"  (LaTeX-arg-polyglossia-lang nil  t  nil))
     '("setkeys"            (LaTeX-arg-polyglossia-lang nil nil  t ))
-    '("PolyglossiaSetup"   (TeX-arg-eval completing-read "Language: "
-                                         (LaTeX-polyglossia-active-languages))
+    '("PolyglossiaSetup"   (TeX-arg-completing-read
+                            (LaTeX-polyglossia-active-languages)
+                            "Language")
       LaTeX-arg-polyglossiasetup-options)
     "selectbackgroundlanguage"
     '("resetdefaultlanguage" ["argument"] 1)

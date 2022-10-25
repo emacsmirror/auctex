@@ -124,10 +124,10 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 3.7 Selecting Quote Styles
       `("setquotestyle"
-        [ (TeX-arg-eval completing-read "Quote style variant: "
-                        ',quote-style-variant-list) ]
-        (TeX-arg-eval completing-read "Quote style name or alias: "
-                      ',quote-style-name-list))
+        [TeX-arg-completing-read ,quote-style-variant-list
+                                 "Quote style variant"]
+        (TeX-arg-completing-read ,quote-style-name-list
+                                 "Quote style name or alias"))
       "setquotestyle*"
 
       ;; 4.1 Quoting Regular Text
@@ -199,20 +199,20 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 8.1 Defining Quote Styles
       `("DeclareQuoteStyle"
-        [ (TeX-arg-eval completing-read "Quote style variant: "
-                        ',quote-style-variant-list) ]
-        (TeX-arg-eval completing-read "Quote style name: "
-                      ',quote-style-name-list)
+        [TeX-arg-completing-read ,quote-style-variant-list
+                                 "Quote style variant"]
+        (TeX-arg-completing-read ,quote-style-name-list
+                                 "Quote style name")
         ["Outer quote initialization"] ["Inner quote initialization"]
         "Opening outer quotation mark" ["Middle outer quotation mark"]
         "Closing outer quotation mark" ["Kerning between adjoining marks"]
         "Opening inner quotation mark" ["Middle inner quotation mark"]
         "Closing inner quotation mark")
       `("DeclareQuoteAlias"
-        [ (TeX-arg-eval completing-read "Quote style variant: "
-                        ',quote-style-variant-list) ]
-        (TeX-arg-eval completing-read "Quote style name: "
-                      ',quote-style-name-list)
+        [TeX-arg-completing-read ,quote-style-variant-list
+                                 "Quote style variant"]
+        (TeX-arg-completing-read ,quote-style-name-list
+                                 "Quote style name")
         "Alias name")
       '("DeclareQuoteOption" 1)
       '("ExecuteQuoteOptions" 1)

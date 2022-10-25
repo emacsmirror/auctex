@@ -1,6 +1,6 @@
 ;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -607,42 +607,35 @@ for example \"tcolorboxlib-raster.el\"."
     '("tcbsetforeverylayer"
       (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
-    '("tcbox"
-      [TeX-arg-eval TeX-read-key-val t
-                    (append
-                     LaTeX-tcolorbox-tcbox-options
-                     (LaTeX-tcolorbox-keyval-options))]
+    `("tcbox"
+      [TeX-arg-key-val ,(lambda () (append LaTeX-tcolorbox-tcbox-options
+                                           (LaTeX-tcolorbox-keyval-options)))]
       t)
 
     '("newtcolorbox"
-      [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
+      [TeX-arg-key-val LaTeX-tcolorbox-init-options]
       "Name"
-      [ TeX-arg-define-macro-arguments ]
+      [TeX-arg-define-macro-arguments]
       (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("renewtcolorbox"
-      [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color box")
-                    (LaTeX-tcolorbox-newtcolorbox-list))
-      [ TeX-arg-define-macro-arguments ]
+      [TeX-arg-key-val LaTeX-tcolorbox-init-options]
+      (TeX-arg-completing-read (LaTeX-tcolorbox-newtcolorbox-list) "Color box")
+      [TeX-arg-define-macro-arguments]
       (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("newtcbox"
-      [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
+      [TeX-arg-key-val LaTeX-tcolorbox-init-options]
       TeX-arg-macro
-      [ TeX-arg-define-macro-arguments ]
+      [TeX-arg-define-macro-arguments]
       (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
-    '("renewtcbox"
-      [ TeX-arg-key-val LaTeX-tcolorbox-init-options ]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((macro (completing-read
-                       (TeX-argument-prompt nil nil "Macro: \\" t)
-                       (LaTeX-tcolorbox-newtcbox-list))))
-           (concat TeX-esc macro))))
-      [ TeX-arg-define-macro-arguments ]
+    `("renewtcbox"
+      [TeX-arg-key-val LaTeX-tcolorbox-init-options ]
+
+      (TeX-arg-completing-read (LaTeX-tcolorbox-newtcbox-list)
+                               "Macro (cr): \\" t ,TeX-esc)
+      [TeX-arg-define-macro-arguments]
       (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)))
 
     '("tcolorboxenvironment"
@@ -659,12 +652,13 @@ for example \"tcolorboxlib-raster.el\"."
     '("thetcolorboxpage" 0)
 
     ;; 5.2 Lists of tcolorboxes
-    '("tcblistof"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Macro")
-        (if (< (LaTeX-largest-level) 2)
-            '("\\chapter" "\\section" "\\subsection" "\\subsubsection")
-          '("\\section" "\\subsection" "\\subsubsection")) ]
+    `("tcblistof"
+      [TeX-arg-completing-read
+       ,(lambda ()
+          (if (< (LaTeX-largest-level) 2)
+              '("\\chapter" "\\section" "\\subsection" "\\subsubsection")
+            '("\\section" "\\subsection" "\\subsubsection")))
+       "Macro"]
       2)
 
     ;; 7 Saving and Loading of Verbatim Texts
@@ -679,7 +673,7 @@ for example \"tcolorboxlib-raster.el\"."
    (LaTeX-add-environments
     ;; 3 Macros for Box Creation: Main env
     '("tcolorbox" LaTeX-env-args
-      [ TeX-arg-key-val (LaTeX-tcolorbox-keyval-options) ])
+      [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)])
 
     ;; 7 Saving and Loading of Verbatim Texts
     '("tcbverbatimwrite" "File name")

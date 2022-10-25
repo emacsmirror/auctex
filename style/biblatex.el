@@ -1,6 +1,6 @@
 ;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2022  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -143,7 +143,7 @@
 (defvar LaTeX-biblatex-language-list
   '("catalan" "croatian" "czech" "danish" "dutch" "american" "british"
     "canadian" "australian" "newzealand" "finnish" "french" "german" "austrian"
-    "ngernam" "naustrian" "greek" "italian" "norwegian" "polish" "brazilian"
+    "ngerman" "naustrian" "greek" "italian" "norwegian" "polish" "brazilian"
     "portuguese" "russian" "spanish" "swedish")
   "List of languages supported by biblatex packages.")
 
@@ -483,13 +483,13 @@ for citation keys."
     '("Rn" "Integer")
     ;; Localization Commands
     '("DefineBibliographyStrings"
-      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+      (TeX-arg-completing-read LaTeX-biblatex-language-list "Language") t)
     '("DefineBibliographyExtras"
-      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+      (TeX-arg-completing-read LaTeX-biblatex-language-list "Language") t)
     '("UndefineBibliographyExtras"
-      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+      (TeX-arg-completing-read LaTeX-biblatex-language-list "Language") t)
     '("DefineHyphenationExceptions"
-      (TeX-arg-eval completing-read "Language: " LaTeX-biblatex-language-list) t)
+      (TeX-arg-completing-read LaTeX-biblatex-language-list "Language") t)
     "NewBibliographyString")
 
    ;; § 3.8.9 natbib Compatibility Commands

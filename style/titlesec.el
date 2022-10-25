@@ -123,9 +123,7 @@ insert the argument in brackets."
     ;; \titleformat{<command>}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
     '("titleformat"
       (LaTeX-arg-titlesec-titlespec)
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Shape")
-                    LaTeX-titlesec-section-shape-list]
+      [TeX-arg-completing-read LaTeX-titlesec-section-shape-list "Shape"]
       (TeX-arg-conditional (y-or-n-p "With optional after-code? ")
                            (4 [nil])
                            (4)))
@@ -160,9 +158,7 @@ insert the argument in brackets."
 
     ;; 3.4. Rules
     '("titleline"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Alignment")
-                    '("l" "r" "c")]
+      [TeX-arg-completing-read ("l" "r" "c") "Alignment"]
       t)
 
     '("titlerule" [TeX-arg-length "Rule height"])
@@ -173,22 +169,18 @@ insert the argument in brackets."
 
     ;; 3.5. Page styles
     '("assignpagestyle"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titlesec-section-command-list))
+      (TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Sectioning command")
       (TeX-arg-pagestyle))
 
     ;; 3.9. Creating new levels and changing the class
     '("titleclass"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titlesec-section-command-list))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Class")
-                    '("page" "top" "straight"))
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Super level command")
-                    (LaTeX-titlesec-section-command-list)]) )
+      (TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Sectioning command")
+      (TeX-arg-completing-read ("page" "top" "straight")
+                               "Class")
+      [TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Super level command"]))
 
    ;; Don't increase indent at \iftitlemeasuring:
    (add-to-list 'LaTeX-indent-begin-exceptions-list "iftitlemeasuring" t)
@@ -198,9 +190,7 @@ insert the argument in brackets."
    (when (LaTeX-provided-package-options-member "titlesec" "calcwidth")
      (TeX-add-symbols
       '("titleline*"
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Alignment")
-                      '("l" "r" "c"))
+        (TeX-arg-completing-read ("l" "r" "c") "Alignment")
         t)))
 
    ;; The length of the longest line is returned in \titlewidth

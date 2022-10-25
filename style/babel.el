@@ -299,9 +299,7 @@
 
     ;; 1.12 The base option
     '("AfterBabelLanguage"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Language")
-                    LaTeX-babel-language-list)
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language")
       t)
 
     ;; 1.14 Selecting fonts
@@ -330,9 +328,7 @@
     ;; 1.16 Creating a language
     '("babelprovide"
       [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Language")
-                    LaTeX-babel-language-list))
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language"))
 
     ;; 1.19 Accessing language info
     '("languagename" 0)
@@ -340,13 +336,9 @@
 
     ;; 1.20 Hyphenation and line breaking
     '("babelhyphen"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "nobreak" "empty")))
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
     '("babelhyphen*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "nobreak" "empty")))
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
 
     '("babelhyphenation"
       [TeX-arg-eval mapconcat #'identity

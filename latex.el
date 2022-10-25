@@ -7664,10 +7664,10 @@ function would return non-nil and `(match-string 1)' would return
    '("includeonly" t)
    '("input" TeX-arg-input-file)
    '("addcontentsline"
-     (TeX-arg-eval completing-read "File: " '(("toc") ("lof") ("lot")))
-     (TeX-arg-eval completing-read "Numbering style: " LaTeX-section-list) t)
+     (TeX-arg-completing-read ("toc" "lof" "lot") "File")
+     (TeX-arg-completing-read LaTeX-section-list "Numbering style") t)
    '("addtocontents"
-     (TeX-arg-eval completing-read "File: " '(("toc") ("lof") ("lot"))) t)
+     (TeX-arg-completing-read ("toc" "lof" "lot") "File") t)
    '("typeout" t)
    '("typein" [ TeX-arg-define-macro ] t)
    '("verb" TeX-arg-verb)
@@ -7906,28 +7906,28 @@ function would return non-nil and `(match-string 1)' would return
 
      ;; Added in LaTeX 2021-11-15
      '("counterwithin"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
      '("counterwithin*"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
 
      '("counterwithout"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
      '("counterwithout*"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
 

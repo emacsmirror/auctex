@@ -1,6 +1,6 @@
 ;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -294,62 +294,43 @@ a list of strings."
     ;; 4.2.5 Custom code
     ;; pythontexcustomc[<position>]{<family>}{<code>}
     '("pythontexcustomc"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Position")
-        '("begin" "end") ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Family")
-                    LaTeX-pythontex-family-list)
+      [TeX-arg-completing-read ("begin" "end") "Position"]
+      (TeX-arg-completing-read LaTeX-pythontex-family-list "Family")
       t)
 
     ;; 4.2.7 Formatting of typeset code
     ;; \setpythontexfv[<family>]{<fancyvrb settings>}
     '("setpythontexfv"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Family")
-        LaTeX-pythontex-family-list ]
+      [TeX-arg-completing-read LaTeX-pythontex-family-list "Family"]
       (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     ;; \setpythontexprettyprinter[<family>]{<printer>}
-    '("setpythontexprettyprinter"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Family")
-        (cons "auto" LaTeX-pythontex-family-list) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Printer")
-                    '("text" "bw" "fancyvrb" "pygments")))
+    `("setpythontexprettyprinter"
+      [TeX-arg-completing-read ,(lambda ()
+                                  (cons "auto" LaTeX-pythontex-family-list))
+                               "Family"]
+      (TeX-arg-completing-read ("text" "bw" "fancyvrb" "pygments") "Printer"))
 
     ;; \setpythontexpyglexer[<family>]{<pygments lexer>}
     '("setpythontexpyglexer"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Family")
-        LaTeX-pythontex-family-list ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Pygments lexer")
-                    (LaTeX-pythontex-language-list)))
+      [TeX-arg-completing-read LaTeX-pythontex-family-list "Family"]
+      (TeX-arg-completing-read (LaTeX-pythontex-language-list) "Pygments lexer"))
 
     ;; \setpythontexpygopt[<family>]{<pygments options>}
     '("setpythontexpygopt"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Family")
-        LaTeX-pythontex-family-list ]
-      (TeX-arg-key-val
-       (("style") ("texcomments") ("mathescape"))))
+      [TeX-arg-completing-read LaTeX-pythontex-family-list "Family"]
+      (TeX-arg-key-val (("style") ("texcomments") ("mathescape"))))
 
     ;; 4.2.8 Access to printed content (stdout)
     ;; \printpythontex[<mode>][<options>]
     '("printpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)])
 
     ;; \stdoutpythontex[<mode>][<options>]
     '("stdoutpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)])
 
     ;;\saveprintpythontex{<name>}
     '("saveprintpythontex"
@@ -370,32 +351,21 @@ a list of strings."
     ;; \useprintpythontex[<verbatim options>][<fancyvrb options>]{<name>}
     ;; I assume <verbatim options> is meant to be <mode>
     '("useprintpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-pythontex-savecontent-list)))
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-pythontex-savecontent-list) "Name"))
 
     ;; \usestdoutpythontex[<verbatim options>][<fancyvrb options>]{<name>}
     ;; I assume <verbatim options> is meant to be <mode>
     '("usestdoutpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-pythontex-savecontent-list)))
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-pythontex-savecontent-list) "Name"))
 
     ;; \stderrpythontex[<mode>][<fancyvrb options>]
     '("stderrpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ] )
-
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)])
 
     ;;\savestderrpythontex{<name>}
     '("savestderrpythontex"
@@ -407,62 +377,43 @@ a list of strings."
 
     ;; \usestderrpythontex[<mode>][<fancyvrb options>]{<name>}
     '("usestderrpythontex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Mode")
-        '("raw" "verb" "verbatim") ]
-      [ TeX-arg-key-val (LaTeX-fancyvrb-key-val-options) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-pythontex-savecontent-list)))
+      [TeX-arg-completing-read ("raw" "verb" "verbatim") "Mode"]
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-pythontex-savecontent-list) "Name"))
 
     ;;\setpythontexautoprint{<boolean>}
     '("setpythontexautoprint"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Boolean value")
-                    '("true" "false")))
+      (TeX-arg-completing-read ("true" "false") "Boolean value"))
 
     ;; \setpythontexautostdout{<boolean>}
     '("setpythontexautostdout"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Boolean value")
-                    '("true" "false")))
+      (TeX-arg-completing-read ("true" "false") "Boolean value"))
 
     ;; 4.3 Pygments commands and environments
     ;; \pygment{<lexer>}<opening delim><code><closing delim>
     '("pygment"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Lexer")
-                    (LaTeX-pythontex-language-list))
+      (TeX-arg-completing-read (LaTeX-pythontex-language-list) "Lexer")
       TeX-arg-verb-delim-or-brace)
 
     ;; \inputpygments[<fancyvrb settings>]{<lexer>}{<external file>}
     '("inputpygments"
-      [ TeX-arg-eval (LaTeX-fancyvrb-key-val-options) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Lexer")
-                    (LaTeX-pythontex-language-list))
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-pythontex-language-list) "Lexer")
       TeX-arg-file-name)
 
     ;; \setpygmentsfv[<lexer>]{<fancyvrb settings>}
     '("setpygmentsfv"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Lexer")
-        (LaTeX-pythontex-language-list) ]
-      (TeX-arg-eval (LaTeX-fancyvrb-key-val-options)))
+      [TeX-arg-completing-read (LaTeX-pythontex-language-list) "Lexer"]
+      (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     ;; \setpygmentspygopt[<lexer>]{<pygments options>}
     '("setpygmentspygopt"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Lexer")
-        (LaTeX-pythontex-language-list) ]
-      (TeX-arg-key-val
-       (("style") ("texcomments") ("mathescape"))))
+      [TeX-arg-completing-read (LaTeX-pythontex-language-list) "Lexer"]
+      (TeX-arg-key-val (("style") ("texcomments") ("mathescape"))))
 
     ;; \setpygmentsprettyprinter{<printer>}
     '("setpygmentsprettyprinter"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Printer")
-                    '("text" "bw" "fancyvrb" "pygments")))
+      (TeX-arg-completing-read ("text" "bw" "fancyvrb" "pygments") "Printer"))
 
     ;; 4.5  Advanced PythonTeX usage
     ;; \setpythontexcontext{<key-value pairs>}
@@ -503,19 +454,13 @@ a list of strings."
    (LaTeX-add-environments
     ;; 4.2.5 Custom code
     '("pythontexcustomcode" LaTeX-env-args
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Position")
-        '("begin" "end") ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Family")
-                    LaTeX-pythontex-family-list))
+      [TeX-arg-completing-read ("begin" "end") "Position"]
+      (TeX-arg-completing-read LaTeX-pythontex-family-list "Family"))
 
     ;; \begin{pygments}[<fancyvrb settings>]{<lexer>}
     '("pygments" LaTeX-env-args
-      [TeX-arg-eval (LaTeX-fancyvrb-key-val-options)]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Lexer")
-                    (LaTeX-pythontex-language-list))) )
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-pythontex-language-list) "Lexer")))
 
    ;; Filling
    (add-to-list 'LaTeX-indent-environment-list

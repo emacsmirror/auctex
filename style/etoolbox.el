@@ -186,9 +186,7 @@ user."
     '("providebool" "Name")
     '("booltrue"    "Name")
     '("boolfalse"   "Name")
-    '("setbool"     "Name" (TeX-arg-eval completing-read
-                                         (TeX-argument-prompt nil nil "Value")
-                                         '("true" "false")))
+    '("setbool"     "Name" (TeX-arg-completing-read ("true" "false") "Value"))
     '("ifbool"      "Name" 2)
     '("notbool"     "Name" 2)
 
@@ -197,9 +195,7 @@ user."
     '("providetoggle" "Name")
     '("toggletrue"    "Name")
     '("togglefalse"   "Name")
-    '("settoggle"     "Name" (TeX-arg-eval completing-read
-                                           (TeX-argument-prompt nil nil "Value")
-                                           '("true" "false")))
+    '("settoggle"     "Name" (TeX-arg-completing-read ("true" "false") "Value"))
     '("iftoggle"      "Name" 2)
     '("nottoggle"     "Name" 2)
 
@@ -234,10 +230,7 @@ user."
     '("ifcscounter" LaTeX-arg-etoolbox-csname 2)
     '("ifltxcounter" TeX-arg-counter 2)
     '("ifdeflength" TeX-arg-length 2)
-    '("ifcslength" (TeX-arg-eval completing-read
-                                 (TeX-argument-prompt nil nil "Length")
-                                 (LaTeX-length-list))
-      2)
+    '("ifcslength" (TeX-arg-completing-read (LaTeX-length-list) "Length") 2)
     '("ifdefdimen" TeX-arg-macro 2)
     '("ifcsdimen" "Control sequence" 2)
 

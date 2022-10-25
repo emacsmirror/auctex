@@ -1,6 +1,6 @@
 ;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994, 1997, 2005, 2012, 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1994--2022 Free Software Foundation, Inc.
 
 ;; Author: Berwin Turlach <statba@nus.edu.sg>
 ;; Maintainer: auctex-devel@gnu.org
@@ -53,18 +53,15 @@
       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
       TeX-arg-cite)
     '("citationstyle"
-      (TeX-arg-eval completing-read "Citation style: " '(("agsm") ("dcu"))))
+      (TeX-arg-completing-read ("agsm" "dcu") "Citation style"))
     '("citationmode"
-      (TeX-arg-eval completing-read "Citation mode: "
-                    '(("full") ("abbr") ("default"))))
+      (TeX-arg-completing-read ("full" "abbr" "default") "Citation mode"))
     '("harvardparenthesis"
-      (TeX-arg-eval completing-read "Harvardparenthesis: "
-                    '(("round") ("curly") ("angle") ("square"))))
+      (TeX-arg-completing-read ("round" "curly" "angle" "square") "Harvardparenthesis"))
     '("bibliographystyle"
-      (TeX-arg-eval
-       completing-read "Bibliography style: "
-       '(("agsm") ("apsr") ("dcu") ("jmr") ("jphysicsB") ("kluwer") ("nederlands") ("econometrica")))
-      ignore)
+      (TeX-arg-completing-read ("agsm" "apsr" "dcu" "jmr" "jphysicsB" "kluwer"
+                                "nederlands" "econometrica")
+                               "Bibliography style"))
     '("harvarditem" [ "Short citation" ]
       "Complete citation" "Year" TeX-arg-define-cite))
 

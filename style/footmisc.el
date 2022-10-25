@@ -47,43 +47,34 @@
 
     ;; 1.7 The \setfnsymbol and \DefineFNsymbols commands
     '("DefineFNsymbols"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    '("bringhurst" "chicago" "wiley"
-                      "lamport" "lamport*"))
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Style (text or math)")
-                    '("text" "math")]
+      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
+                                "lamport" "lamport*")
+                               "Name")
+      [TeX-arg-completing-read ("text" "math") "Style"]
       1)
     '("DefineFNsymbols*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    '("bringhurst" "chicago" "wiley"
-                      "lamport" "lamport*"))
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Style (text or math)")
-                    '("text" "math")]
+      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
+                                "lamport" "lamport*")
+                               "Name")
+      [TeX-arg-completing-read ("text" "math") "Style"]
       1)
 
     ;; These two commands define both text and math variants of the
     ;; footnote symbols
     '("DefineFNsymbolsTM"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    '("bringhurst" "chicago" "wiley"
-                      "lamport" "lamport*"))
+      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
+                                "lamport" "lamport*")
+                               "Name")
       1)
     '("DefineFNsymbolsTM*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    '("bringhurst" "chicago" "wiley"
-                      "lamport" "lamport*"))
+      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
+                                "lamport" "lamport*")
+                               "Name")
       1)
     '("setfnsymbol"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    '("bringhurst" "chicago" "wiley"
-                      "lamport" "lamport*")))
+      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
+                                "lamport" "lamport*")
+                               "Name"))
 
     ;; 1.11 Option hang
     "hangfootparskip"

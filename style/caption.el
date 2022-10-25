@@ -374,8 +374,8 @@ STAR is non-nil, do not query for a short-caption and a label."
     '("caption*" t)
 
     '("captionlistentry"
-      [TeX-arg-eval completing-read (TeX-argument-prompt t nil "Float type")
-                    LaTeX-caption-supported-float-types]
+      [TeX-arg-completing-read LaTeX-caption-supported-float-types
+                               "Float type"]
       t)
 
     '("captionof" LaTeX-arg-caption-captionof)
@@ -385,32 +385,24 @@ STAR is non-nil, do not query for a short-caption and a label."
     '("captionsetup"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
                            ([LaTeX-arg-bicaption-captionsetup])
-                           ([TeX-arg-eval completing-read
-                                          (TeX-argument-prompt t nil "Float type")
-                                          LaTeX-caption-supported-float-types]))
+                           ([TeX-arg-completing-read
+                             LaTeX-caption-supported-float-types "Float type"]))
       (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("captionsetup*"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
                            ([LaTeX-arg-bicaption-captionsetup])
-                           ([TeX-arg-eval completing-read
-                                          (TeX-argument-prompt t nil "Float type")
-                                          LaTeX-caption-supported-float-types]))
+                           ([TeX-arg-completing-read
+                             LaTeX-caption-supported-float-types "Float type"]))
       (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("clearcaptionsetup"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Single key")
-                    (LaTeX-caption-key-val-options)]
-      (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-                    LaTeX-caption-supported-float-types))
+      [TeX-arg-completing-read (LaTeX-caption-key-val-options) "Single key"]
+      (TeX-arg-completing-read LaTeX-caption-supported-float-types "Float type"))
 
     '("clearcaptionsetup*"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Single key")
-                    (LaTeX-caption-key-val-options)]
-      (TeX-arg-eval completing-read (TeX-argument-prompt nil nil "Float type")
-                    LaTeX-caption-supported-float-types))
+      [TeX-arg-completing-read (LaTeX-caption-key-val-options) "Single key"]
+      (TeX-arg-completing-read LaTeX-caption-supported-float-types "Float type"))
 
     '("captionbox"  (LaTeX-arg-caption-captionbox) t)
 

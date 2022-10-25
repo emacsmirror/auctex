@@ -1,6 +1,6 @@
 ;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -69,11 +69,9 @@
     '("tbfigures" -1)  ; alignment: tabular figures
     '("prfigures" -1)  ; alignment: proportional figures
     '("fontfigurestyle"
-      (TeX-arg-eval completing-read "Style: "
-                    '(("text") ("lining"))))
+      (TeX-arg-completing-read ("text" "lining") "Style"))
     '("fontfigurealignment"
-      (TeX-arg-eval completing-read "Alignment: "
-                    '(("tabular") ("proportional"))))
+      (TeX-arg-completing-read ("tabular" "proportional") "Alignment"))
     '("fontbasefamily" t)
 
     ;; Math versions
@@ -82,11 +80,9 @@
     '("tabularmath"      -1)  ; math figure alignment
     '("proportionalmath" -1)  ;
     '("mathweight"
-      (TeX-arg-eval completing-read "Math weight: "
-                    '(("bold") ("normal"))))
+      (TeX-arg-completing-read ("bold" "normal") "Math weight"))
     '("mathfigurealignment"
-      (TeX-arg-eval completing-read "Math figure alignment: "
-                    '(("tabular") ("proportional"))))
+      (TeX-arg-completing-read ("tabular" "proportional") "Math figure alignment"))
 
     ;; Additional commands
     ;; These macros are now part of LaTeX kernel 2020-02-02

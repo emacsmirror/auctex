@@ -417,21 +417,15 @@ xcolor package.")
 
     ;; \colorlet[<type>]{<name>}[<num model>]{<color>}
     '("colorlet"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Type")
-        LaTeX-xcolor-type-color-models ]
+      [TeX-arg-completing-read LaTeX-xcolor-type-color-models "Type"]
       (TeX-arg-eval
        (lambda ()
          (let ((xcolor (TeX-read-string
                         (TeX-argument-prompt nil nil "Color"))))
            (LaTeX-add-xcolor-definecolors xcolor)
            (format "%s" xcolor))))
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Model")
-        (LaTeX-xcolor-color-models t) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color")
-                    (LaTeX-xcolor-definecolor-list)))
+      [TeX-arg-completing-read (LaTeX-xcolor-color-models t) "Model"]
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Color"))
 
     ;; 2.5.3 Defining sets of colors
     ;; \definecolorset[<type>]{<model-list>}{<head>}{<tail>}{<set spec>}
@@ -491,32 +485,20 @@ xcolor package.")
 
     ;; 2.7 Color blending
     '("blendcolors"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Mix expr")
-                    (LaTeX-xcolor-definecolor-list)))
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Mix expr"))
     '("blendcolors*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Mix expr")
-                    (LaTeX-xcolor-definecolor-list)))
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Mix expr"))
 
     ;; 2.8 Color masks and separation
-    '("maskcolors"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Model")
-        (LaTeX-xcolor-color-models t) ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color")
-                    (LaTeX-xcolor-definecolor-list)))
+    `("maskcolors"
+      [TeX-arg-completing-read ,(lambda () (LaTeX-xcolor-color-models t)) "Model"]
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Color"))
 
     ;; 2.9 Color series
     '("definecolorseries"
       "Name"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Core model")
-                    LaTeX-xcolor-core-color-models)
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Method")
-                    '("step" "grad" "last"))
+      (TeX-arg-completing-read LaTeX-xcolor-core-color-models "Core model")
+      (TeX-arg-completing-read ("step" "grad" "last") "Method")
       [ t ] nil [ nil ] nil)
 
     '("resetcolorseries" [ "Div." ] "Name")
@@ -524,16 +506,12 @@ xcolor package.")
     ;; 2.13 Color information
     ;; \extractcolorspec{<color>}{<cmd>}
     '("extractcolorspec"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color")
-                    (LaTeX-xcolor-definecolor-list))
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Color")
       (TeX-arg-define-macro "Command: \\"))
 
     ;; \extractcolorspecs{<color>}{<model-cmd>}{<color-cmd>}
     '("extractcolorspecs"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color")
-                    (LaTeX-xcolor-definecolor-list))
+      (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Color")
       (TeX-arg-define-macro "Model command: \\")
       (TeX-arg-define-macro "Color command: \\"))
 
@@ -543,15 +521,11 @@ xcolor package.")
 
     ;; 2.14 Color conversion
     ;; \convertcolorspec{<model>}{<spec>}{<target model>}{cmd>}
-    '("convertcolorspec"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Model")
-                    (LaTeX-xcolor-color-models))
-      (TeX-arg-eval TeX-read-string
-                    (TeX-argument-prompt nil nil "Spec"))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Model")
-                    (LaTeX-xcolor-color-models t))
+    `("convertcolorspec"
+      (TeX-arg-completing-read (LaTeX-xcolor-color-models) "Model")
+      (TeX-arg-string "Spec")
+      (TeX-arg-completing-read ,(lambda () (LaTeX-xcolor-color-models t))
+                               "Target model")
       (TeX-arg-define-macro "Macro: \\")) ) ; close TeX-add-symbols
 
    ;; 2.12 Color in tables
@@ -568,23 +542,15 @@ xcolor package.")
                              ( [ t ] )
                              (ignore))
         "Row"
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Odd-row color")
-                      (LaTeX-xcolor-definecolor-list))
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Even-row color")
-                      (LaTeX-xcolor-definecolor-list)))
+        (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Odd-row color")
+        (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Even-row color"))
       '("rowcolors*"
         (TeX-arg-conditional (y-or-n-p "With optional commands? ")
                              ( [ t ] )
                              (ignore))
         "Row"
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Odd-row color")
-                      (LaTeX-xcolor-definecolor-list))
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Even-row color")
-                      (LaTeX-xcolor-definecolor-list)))
+        (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Odd-row color")
+        (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Even-row color"))
       '("showrowcolors" 0)
       '("hiderowcolors" 0))
      (LaTeX-add-counters "rownum"))

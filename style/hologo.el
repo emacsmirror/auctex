@@ -154,12 +154,12 @@
            (TeX-argument-insert logo nil)
            (format "%s" keyval)))))
 
-    '("hologoDriverSetup" (TeX-arg-eval completing-read
-                                        "Driver: "
-                                        '("pdftex"  "luatex"
-                                          "dvipdfm" "dvipdfmx"
-                                          "dvips"   "dvipsone" "xdvi"
-                                          "xetex"   "vtex"     "driverfallback")))
+    '("hologoDriverSetup" (TeX-arg-completing-read
+                           ("pdftex"  "luatex"
+                            "dvipdfm" "dvipdfmx"
+                            "dvips"   "dvipsone" "xdvi"
+                            "xetex"   "vtex"     "driverfallback")
+                           "Driver"))
 
     '("hologoFontSetup"
       (TeX-arg-key-val (("general") ("bibsf")

@@ -1,6 +1,6 @@
 ;;; splitidx.el --- AUCTeX style for `splitidx.sty' (v1.2a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -160,22 +160,16 @@
     ;; 3.2 Marking up index entries
     '("sindex"
       ;; I don't use `[ TeX-arg-index-tag ]' here
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Short cut")
-        (LaTeX-splitidx-newindex-list) ]
+      [TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut"]
       TeX-arg-index)
 
     ;; 3.4 Customizing index entries
     '("AtWriteToIndex"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Short cut")
-                    (LaTeX-splitidx-newindex-list))
+      (TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut")
       t)
 
     '("AtNextWriteToIndex"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Short cut")
-                    (LaTeX-splitidx-newindex-list))
+      (TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut")
       t)
 
     ;; 3.6 Preventing premature expansion of index entries
@@ -190,25 +184,19 @@
 
     ;; 3.7 Including the generated indices in your document
     '("printindex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Short cut")
-        (LaTeX-splitidx-newindex-list) ]
+      [TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut"]
       [ "Index name" ])
 
     '("printindex*" 0)
 
     '("printsubindex"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Short cut")
-        (LaTeX-splitidx-newindex-list) ]
+      [TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut"]
       [ "Index name" ])
 
     '("printsubindex*" 0)
 
     '("setindexpreamble"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Short cut")
-        (LaTeX-splitidx-newindex-list) ]
+      [TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut"]
       t)
 
     '("useindexpreamble" [ TeX-arg-macro ])
@@ -246,9 +234,7 @@
    (when (LaTeX-provided-package-options-member "splitidx" "useindex")
      (TeX-add-symbols
       '("index"
-        [TeX-arg-eval completing-read
-                      (TeX-argument-prompt t nil "Short cut")
-                      (LaTeX-splitidx-newindex-list) ]
+        [TeX-arg-completing-read (LaTeX-splitidx-newindex-list) "Short cut"]
         (TeX-arg-index)))
      ;; Tell RefTeX to look in the optional arg. for the index short cut
      (when (fboundp 'reftex-add-index-macros)

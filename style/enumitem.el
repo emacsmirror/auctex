@@ -1,6 +1,6 @@
 ;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.9)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -419,11 +419,11 @@ provided.  OPTIONAL is ignored."
            (format "%s" depth)))))
 
     ;; \renewlist{<name>}{<type>}{<max-depth>}
-    '("renewlist"
-      (TeX-arg-eval completing-read "Name: "
-                    (mapcar #'car (LaTeX-enumitem-newlist-list)))
-      (TeX-arg-eval completing-read "Type: "
-                    (mapcar #'cadr (LaTeX-enumitem-newlist-list)))
+    `("renewlist"
+      (TeX-arg-completing-read (LaTeX-enumitem-newlist-list) "Name")
+      (TeX-arg-completing-read ,(lambda ()
+                                  (mapcar #'cadr (LaTeX-enumitem-newlist-list)))
+                               "Type")
       "Max-depth")
 
     ;; \setlist<size>[<names,levels>]{<key-vals>}
@@ -487,8 +487,7 @@ provided.  OPTIONAL is ignored."
    (when (LaTeX-provided-package-options-member "enumitem" "shortlabels")
      (TeX-add-symbols
       '("SetEnumerateShortLabel"
-        (TeX-arg-eval completing-read "Key: "
-                      '("A" "a" "I" "i" "1"))
+        (TeX-arg-completing-read ("A" "a" "I" "i" "1") "Key")
         "Replacement")))
 
    ;; Add \labelindent to list of known lengths:

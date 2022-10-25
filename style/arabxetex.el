@@ -1,6 +1,6 @@
 ;;; arabxetex.el --- AUCTeX style for `arabxetex.sty' (v1.2.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -65,9 +65,8 @@
            (mapcar
             (lambda (symbol)
               (list symbol
-                    [ TeX-arg-eval completing-read
-                      (TeX-argument-prompt t nil "Mode")
-                      LaTeX-arabxetex-package-options ]
+                    [TeX-arg-completing-read LaTeX-arabxetex-package-options
+                                             "Mode"]
                     t))
             (mapcar (lambda (lang) (concat "text" lang)) langs)))
      ;;
@@ -77,9 +76,8 @@
             (lambda (environment)
               (list environment
                     #'LaTeX-env-args
-                    [ TeX-arg-eval completing-read
-                      (TeX-argument-prompt t nil "Mode")
-                      LaTeX-arabxetex-package-options ]))
+                    [TeX-arg-completing-read LaTeX-arabxetex-package-options
+                                             "Mode"]))
             langs))
      ;;
      ;; Fontification
@@ -97,9 +95,7 @@
 
     ;; 3.3 Transliteration
     '("SetTranslitConvention"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Mapping")
-                    '("dmg" "loc")))
+      (TeX-arg-completing-read ("dmg" "loc") "Mapping"))
     '("SetTranslitStyle" "Style"))
 
    ;; Fontification

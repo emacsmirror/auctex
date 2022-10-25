@@ -241,34 +241,34 @@ subdirectories and inserts the relative file name.  See
    (TeX-add-symbols
     '("reflectbox" "Argument")
 
-    '("resizebox"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Width")
-                    (append '("\\width" "!")
-                            (mapcar
-                             (lambda (x) (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Height")
-                    (append '("\\height" "\\totalheight" "\\depth" "!")
-                            (mapcar
-                             (lambda (x) (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
+    `("resizebox"
+      (TeX-arg-completing-read
+       ,(lambda () (append '("\\width" "!")
+                           (mapcar
+                            (lambda (x) (concat TeX-esc (car x)))
+                            (LaTeX-length-list))))
+       "Width")
+      (TeX-arg-completing-read
+       ,(lambda () (append '("\\height" "\\totalheight" "\\depth" "!")
+                           (mapcar
+                            (lambda (x) (concat TeX-esc (car x)))
+                            (LaTeX-length-list))))
+       "Height")
       "Argument")
 
-    '("resizebox*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Width")
-                    (append '("\\width" "!")
-                            (mapcar
-                             (lambda (x) (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Height")
-                    (append '("\\height" "\\totalheight" "\\depth" "!")
-                            (mapcar
-                             (lambda (x) (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
+    `("resizebox*"
+      (TeX-arg-completing-read
+       (lambda () (append '("\\width" "!")
+                          (mapcar
+                           (lambda (x) (concat TeX-esc (car x)))
+                           (LaTeX-length-list))))
+       "Width")
+      (TeX-arg-completing-read
+       (lambda () (append '("\\height" "\\totalheight" "\\depth" "!")
+                          (mapcar
+                           (lambda (x) (concat TeX-esc (car x)))
+                           (LaTeX-length-list))))
+       "Height")
       "Argument")
 
     '("rotatebox" (TeX-arg-conditional (member "graphics" (TeX-style-list))

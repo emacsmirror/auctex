@@ -1,6 +1,6 @@
 ;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -562,12 +562,10 @@ only the parsed items."
     ;; 2.1 The \floatbox Macro
     ;; \floatbox[<preamble>]{<captype>}[<width>][<height>][<vert pos>]{<caption>}{<object>}
     '("floatbox"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Preamble")
-                    '("\\capbeside" "\\nocapbeside" "\\captop")]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Float type")
-                    LaTeX-floatrow-supported-float-types)
+      [TeX-arg-completing-read ("\\capbeside" "\\nocapbeside" "\\captop")
+                               "Preamble"]
+      (TeX-arg-completing-read LaTeX-floatrow-supported-float-types
+                               "Float type")
       LaTeX-floatrow-arg-floatbox)
 
     ;; 2.2 Creation of Personal Commands for Float Boxes
@@ -580,20 +578,14 @@ only the parsed items."
            (TeX-add-symbols
             `(,cmd LaTeX-floatrow-arg-floatbox))
            (format "%s" cmd))))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Float type")
-                    '("figure" "table"))
+      (TeX-arg-completing-read ("figure" "table") "Float type")
       [ 2 ])
 
     '("renewfloatcommand"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Command")
-                    (LaTeX-floatrow-newfloatcommand-list))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Float type")
-                    '("figure" "table"))
+      (TeX-arg-completing-read (LaTeX-floatrow-newfloatcommand-list)
+                               "Command")
+      (TeX-arg-completing-read ("figure" "table") "Float type")
       [ 2 ])
-
 
     ;; 2.2.2 Predefined Float Box Commands
     '("ffigbox"
@@ -614,9 +606,8 @@ only the parsed items."
 
     ;; 3 Float Layout Settings
     '("floatsetup"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Float type")
-                    LaTeX-floatrow-supported-float-types]
+      [TeX-arg-completing-read LaTeX-floatrow-supported-float-types
+                               "Float type"]
       (TeX-arg-key-val (LaTeX-floatrow-key-val-options)))
 
     ;; 3.2 Settings for Current Float Environment
@@ -625,9 +616,8 @@ only the parsed items."
 
     ;; 3.3 Clearing of Settings for Current Float Type
     '("clearfloatsetup"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Float type")
-                    LaTeX-floatrow-supported-float-types))
+      (TeX-arg-completing-read LaTeX-floatrow-supported-float-types
+                               "Float type"))
 
     ;; 3.4 Temporary Clearing of All Float Settings
     '("killfloatstyle" 0)

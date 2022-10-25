@@ -1,6 +1,6 @@
 ;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -147,9 +147,7 @@ make them available as new environments."
                         "") ])
 
     '("theoremstyle"
-      (TeX-arg-eval completing-read
-                    "Style: "
-                    LaTeX-theorem-theoremstyle-list))
+      (TeX-arg-completing-read LaTeX-theorem-theoremstyle-list "Style"))
 
     '("theorembodyfont"
       (LaTeX-arg-theorem-fontdecl "Body font"))

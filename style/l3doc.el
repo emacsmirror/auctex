@@ -168,14 +168,10 @@ For syntax environment from l3doc class."
       TeX-arg-macro)
     '("cs"
       [TeX-arg-key-val LaTeX-l3doc-cmd-key-val-options]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Macro")
-                    (TeX-symbol-list)))
+      (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
     '("tn"
       [TeX-arg-key-val LaTeX-l3doc-key-val-options]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Macro")
-                    (TeX-symbol-list)))
+      (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
 
     ;; "meta" is provided by doc.el, so don't add here again
     '("Arg" "Argument")
@@ -184,9 +180,7 @@ For syntax environment from l3doc class."
     '("parg" "Picture mode argument")
 
     '("file" "File name")
-    '("env" (TeX-arg-eval completing-read
-                          (TeX-argument-prompt nil nil "Environment")
-                          (LaTeX-environment-list)))
+    '("env" (TeX-arg-completing-read (LaTeX-environment-list) "Environment"))
     '("pkg" "Package name")
     '("cls" "Class name")
 

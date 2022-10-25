@@ -1,6 +1,6 @@
 ;;; xr-hyper.el --- AUCTeX style for `xr-hyper.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -46,9 +46,7 @@
    (TeX-add-symbols
     '("externaldocument"
       ["Prefix"]
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Cite option")
-                    '("nocite")]
+      [TeX-arg-completing-read ("nocite") "Cite option"]
       ;; Act like \include and not like \input:
       (TeX-arg-input-file "File" t)
       ["Final file"])

@@ -142,14 +142,12 @@ Removal is based on the return value of function
     '("widenhead*" 2)
 
     '("TitlepsPatchSection"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titleps-section-command-list)))
+      (TeX-arg-completing-read (LaTeX-titleps-section-command-list)
+                               "Sectioning command"))
 
     '("TitlepsPatchSection*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titleps-section-command-list)))
+      (TeX-arg-completing-read (LaTeX-titleps-section-command-list)
+                               "Sectioning command"))
 
     ;; 5. Marks
     '("bottitlemarks"     0)
@@ -163,15 +161,13 @@ Removal is based on the return value of function
     '("newtitlemark*" (TeX-arg-counter "Variable name"))
 
     '("pretitlemark"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titleps-section-command-list))
+      (TeX-arg-completing-read (LaTeX-titleps-section-command-list)
+                               "Sectioning command")
       "Text")
 
     '("pretitlemark*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titleps-section-command-list))
+      (TeX-arg-completing-read (LaTeX-titleps-section-command-list)
+                               "Sectioning command")
       "Text")
 
     '("ifsamemark"
