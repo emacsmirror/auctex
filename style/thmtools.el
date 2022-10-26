@@ -1,6 +1,6 @@
 ;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v0.72)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -277,22 +277,20 @@ RET in order to leave it empty.")
     '("declaretheorem" LaTeX-arg-thmtools-declaretheorem)
 
     '("listoftheorems"  [ LaTeX-arg-thmtools-listoftheorems ])
-    '("ignoretheorems"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Environment(s)")
-                     (append
-                      ;; check for \newtheorem from amsthm.sty:
-                      (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
-                                 (LaTeX-amsthm-newtheorem-list))
-                        (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
-                      ;; check for \newtheorem from ntheorem.sty:
-                      (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
-                                 (LaTeX-ntheorem-newtheorem-list))
-                        (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
-                      ;; thmtools version is called \declaretheorem:
-                      (mapcar #'car (LaTeX-thmtools-declaretheorem-list))))
-                    ","))
+    `("ignoretheorems"
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append
+                    ;; check for \newtheorem from amsthm.sty:
+                    (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
+                               (LaTeX-amsthm-newtheorem-list))
+                      (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
+                    ;; check for \newtheorem from ntheorem.sty:
+                    (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
+                               (LaTeX-ntheorem-newtheorem-list))
+                      (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
+                    ;; thmtools version is called \declaretheorem:
+                    (mapcar #'car (LaTeX-thmtools-declaretheorem-list))))
+       "Environment(s)"))
     '("listtheoremname" 0))
 
    ;; Fontification

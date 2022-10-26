@@ -275,9 +275,8 @@ for citation keys."
     ;;; Global Customization
     ;; Setting Package Options
     '("ExecuteBibliographyOptions"
-      [TeX-arg-eval  mapconcat #'identity
-                     (TeX-completing-read-multiple
-                      "Entry type: " LaTeX-biblatex-entrytype) ","]
+      [TeX-arg-completing-read-multiple LaTeX-biblatex-entrytype
+                                        "Entry type"]
       (TeX-arg-key-val LaTeX-biblatex-executebibliographyoptions-options))
     ;;; Bibliography Commands
     ;; Resources
@@ -328,8 +327,7 @@ for citation keys."
     '("defbibcheck" "Name" t)
     ;; Dynamic Entry Sets
     '("defbibentryset" "Set"
-      (TeX-arg-eval mapconcat #'identity (TeX-completing-read-multiple
-                                          "Keys: " (LaTeX-bibitem-list)) ","))
+      (TeX-arg-completing-read-multiple (LaTeX-bibitem-list) "Keys"))
     ;;; Citation Commands
     '("cite" (TeX-arg-conditional TeX-arg-cite-note-p
                                   (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)

@@ -430,17 +430,15 @@ provided.  OPTIONAL is ignored."
     '("setlist" LaTeX-arg-enumitem-setlist)
 
     ;; \setlist*[<names,levels>]{<key-vals>}
-    '("setlist*"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt t nil "Environment(s), level(s)")
-                     (append
-                      (when (LaTeX-provided-package-options-member "enumitem"
-                                                                   "includedisplayed")
-                        '("trivlist"))
-                      (mapcar #'car (LaTeX-enumitem-newlist-list))
-                      '("1" "2" "3" "4")))
-                    ","]
+    `("setlist*"
+      [TeX-arg-completing-read-multiple
+       ,(lambda () (append
+                    (when (LaTeX-provided-package-options-member "enumitem"
+                                                                 "includedisplayed")
+                      '("trivlist"))
+                    (mapcar #'car (LaTeX-enumitem-newlist-list))
+                    '("1" "2" "3" "4")))
+       "Environment(s), level(s)"]
       (TeX-arg-key-val (LaTeX-enumitem-key-val-options))) )
 
    ;; General commands:

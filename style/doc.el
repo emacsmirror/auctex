@@ -275,11 +275,8 @@ percent sign at the beginning of a line before
            (format "%s" file)))))
 
     ;; 2.2 Package options
-    '("SetupDoc" (TeX-arg-eval mapconcat #'identity
-                               (TeX-completing-read-multiple
-                                (TeX-argument-prompt nil nil "Options")
-                                LaTeX-doc-package-options)
-                               ","))
+    '("SetupDoc" (TeX-arg-completing-read-multiple LaTeX-doc-package-options
+                                                   "Options"))
 
     ;; 2.4 Describing the usage of macros and environments
     '("DescribeMacro"

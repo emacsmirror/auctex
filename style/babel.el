@@ -286,11 +286,8 @@
     '("useshorthands"  "Character")
     '("useshorthands*" "Character")
     '("defineshorthand"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt t nil "Language(s)")
-                     (LaTeX-babel-active-languages))
-                    ","]
+      [TeX-arg-completing-read-multiple (LaTeX-babel-active-languages)
+                                        "Language(s)"]
       t nil)
     '("languageshorthands" TeX-arg-babel-lang)
     '("babelshorthand"   "Short hand")
@@ -304,11 +301,8 @@
 
     ;; 1.14 Selecting fonts
     '("babelfont"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt t nil "Language(s)")
-                     LaTeX-babel-language-list)
-                    ","]
+      [TeX-arg-completing-read-multiple LaTeX-babel-language-list
+                                        "Language(s)"]
       (TeX-arg-eval let ((fontfam (completing-read
                                    (TeX-argument-prompt nil nil "font family")
                                    '("rm" "sf" "tt"))))
@@ -341,11 +335,8 @@
       (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
 
     '("babelhyphenation"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Language(s)")
-                     LaTeX-babel-language-list)
-                    ","]
+      [TeX-arg-completing-read-multiple LaTeX-babel-language-list
+                                        "Language(s)"]
       t)
 
     ;; 1.23 Selecting scripts

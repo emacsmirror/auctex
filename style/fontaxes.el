@@ -57,13 +57,11 @@
 
     ;; Figure versions
     '("figureversion"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     "Style, alignment: "
-                     '(("text") ("osf")
-                       ("lining") ("lf")
-                       ("tabular") ("tab")
-                       ("proportional") ("prop"))) ","))
+      (TeX-arg-completing-read-multiple ("text"         "osf"
+                                         "lining"       "lf"
+                                         "tabular"      "tab"
+                                         "proportional" "prop")
+                                        "Style, alignment"))
     '("txfigures" -1)  ; style: text figures (osf)
     '("lnfigures" -1)  ; style: lining figures
     '("tbfigures" -1)  ; alignment: tabular figures

@@ -324,10 +324,8 @@ make them available as new environments.  Update
 
     ;; 2.4 Generating Theoremlists
     '("listtheorems"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     "Lists: "
-                     (LaTeX-ntheorem-newtheorem-list)) ","))
+      (TeX-arg-completing-read-multiple (LaTeX-ntheorem-newtheorem-list)
+                                        "Lists"))
 
     ;; 2.4.2 Writing Extra Stuff to the Theorem File
     '("addtheoremline"

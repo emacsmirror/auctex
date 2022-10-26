@@ -107,18 +107,12 @@ Removal is based on the return value of function
     '("setfoot*" 3)
 
     '("settitlemarks"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Level names")
-                     (LaTeX-titleps-section-command-list))
-                    ","))
+      (TeX-arg-completing-read-multiple (LaTeX-titleps-section-command-list)
+                                        "Level names"))
 
     '("settitlemarks"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Level names")
-                     (LaTeX-titleps-section-command-list))
-                    ","))
+      (TeX-arg-completing-read-multiple (LaTeX-titleps-section-command-list)
+                                        "Level names"))
 
     '("headrule" 0)
     '("setheadrule" "Thickness")

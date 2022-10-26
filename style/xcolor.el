@@ -557,12 +557,10 @@ xcolor package.")
 
    ;; 2.6.4 Color testing
    (LaTeX-add-environments
-    '("testcolors" LaTeX-env-args
-      [ TeX-arg-eval mapconcat #'identity
-        (TeX-completing-read-multiple
-         (TeX-argument-prompt t nil "Color models")
-         (LaTeX-xcolor-color-models t))
-        "," ] ))
+    `("testcolors" LaTeX-env-args
+      [TeX-arg-completing-read-multiple ,(lambda ()
+                                           (LaTeX-xcolor-color-models t))
+                                        "Color models"] ))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
