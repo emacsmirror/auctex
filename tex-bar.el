@@ -273,13 +273,13 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
            :command (progn
                       (TeX-save-document #'TeX-master-file)
                       (TeX-command "LaTeX" #'TeX-master-file -1))
-           :help ,(lambda (&rest ignored)
+           :help ,(lambda (&rest _ignored)
                     (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
               :command (progn
                          (TeX-save-document #'TeX-master-file)
                          (TeX-command "PDFLaTeX" #'TeX-master-file -1))
-              :help ,(lambda (&rest ignored)
+              :help ,(lambda (&rest _ignored)
                        (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
                 :command TeX-next-error
@@ -287,30 +287,30 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
                 :visible (TeX-error-report-has-errors-p))
     (view :image ,(lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
           :command (TeX-command "View" #'TeX-master-file -1)
-          :help ,(lambda (&rest ignored)
+          :help ,(lambda (&rest _ignored)
                    (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
           :command (TeX-command "File" #'TeX-master-file -1)
           :visible (not TeX-PDF-mode)
-          :help ,(lambda (&rest ignored)
+          :help ,(lambda (&rest _ignored)
                    (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
             :command (TeX-command (if LaTeX-using-Biber "Biber" "BibTeX")
                                   #'TeX-master-file -1)
-            :help ,(lambda (&rest ignored)
+            :help ,(lambda (&rest _ignored)
                      (TeX-bar-help-from-command-list
                       (if LaTeX-using-Biber "Biber" "BibTeX"))))
     (clean  :image "delete"
             :command (TeX-command "Clean" #'TeX-master-file -1)
-            :help ,(lambda (&rest ignored)
+            :help ,(lambda (&rest _ignored)
                      (TeX-bar-help-from-command-list "Clean")))
     (spell  :image "spell"
             :command (TeX-command "Spell" #'TeX-master-file -1)
-            :help ,(lambda (&rest ignored)
+            :help ,(lambda (&rest _ignored)
                      (TeX-bar-help-from-command-list "Spell")))
     (latex-symbols-experimental . (:alias :eval-group
-                                   LaTeX-symbols-toolbar-switch-contents
-                                   LaTeX-symbols-toolbar-contents)))
+                                          LaTeX-symbols-toolbar-switch-contents
+                                          LaTeX-symbols-toolbar-contents)))
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
 PROPS), where KEY is a symbol that labels the button and PROPS is
