@@ -6860,8 +6860,7 @@ depend on it being positive instead of the entry in `TeX-command-list'."
   (save-restriction
     (widen)
     (save-excursion
-      (let ((inhibit-point-motion-hooks t)
-            (inhibit-field-text-motion t))
+      (let ((inhibit-field-text-motion t))
         (if pos (goto-char pos))
         (+ (count-lines (point-min) (point))
            (if (bolp) 0 -1))))))
