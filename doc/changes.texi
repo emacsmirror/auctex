@@ -12,6 +12,12 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} supports completion-at-point of macro and environment arguments
+in @LaTeX{} buffers.  The responsible function recognizes the argument
+position and extracts the corresponding candidates from the variables
+@code{TeX-symbol-list} and @code{LaTeX-environment-list}.
+
+@item
 @AUCTeX{} underlines the argument of macros which produce underlined text
 in the final product with @code{font-latex-underline-face}.  The
 corresponding keyword class is called @code{underline-command}.

@@ -1326,7 +1326,7 @@ define and register custom @code{completion-at-point} functions and when the
 user invokes @code{completion-at-point} (usually bound to
 @kbd{M-@key{TAB}}), all such registered functions are consulted for
 checking for possible completions.  Modern completion UIs like
-@i{company-mode} support this completion-at-point facility.
+@i{company-mode} or @i{corfu} support this completion-at-point facility.
 
 @defun TeX--completion-at-point
 @AUCTeX{}'s completion-at-point function which is automatically added to
@@ -1337,6 +1337,17 @@ It offers the same completion candidates as would
 @code{TeX-complete-list}) except that it doesn't fall back on
 @code{ispell-complete-word} which would be awkward with completion UIs
 like @i{company-mode}.
+@end defun
+
+@defun LaTeX--arguments-completion-at-point
+@AUCTeX{}'s completion-at-point function inside arguments which is
+automatically added to @code{completion-at-point-functions} in @LaTeX{}
+buffers.
+
+It offers the completion candidates stored in the variables
+@code{TeX-symbol-list} and @code{LaTeX-environment-list} for single
+candidate, multiple candidates separated by commas, or key-value
+candidates separated by commas and/or equal signs.
 @end defun
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
