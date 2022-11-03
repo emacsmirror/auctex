@@ -57,8 +57,18 @@
     ;; \useunder {underline_command}{font_declaration}{font_command}
     ;; replaces occurences of font_declaration and font_command with the
     ;; underline_command
-    '("useunder" TeX-arg-ulem-useunder
-      TeX-arg-ulem-fontdecl TeX-arg-ulem-fontcmd))
+    '("useunder"
+      (TeX-arg-completing-read ("\\uline" "\\uuline" "\\uwave" "\\sout"
+                                "\\xout"  "\\dashuline" "\\dotuline")
+                               "Underline command")
+      (TeX-arg-completing-read ("\\itshape"  "\\bfseries" "\\scshape"
+                                "\\ttfamily" "\\upshape"  "\\mdseries"
+                                "\\rmfamily" "\\sffamily" "\\slshape")
+                               "Font declaration")
+      (TeX-arg-completing-read ("\\textit" "\\textbf" "\\textsc"
+                                "\\texttt" "\\textup" "\\textmd"
+                                "\\textrm" "\\textsf" "\\textsl")
+                               "Font command")))
 
    ;; \ULdepth can be changed with \setlength
    (LaTeX-add-lengths "ULdepth")
@@ -79,48 +89,6 @@
                                 ("dotuline" "{"))
                               'underline-command)))
  TeX-dialect)
-
-(defvar LaTeX-ulem-fontdecl
-  (mapcar (lambda (str) (concat "\\" str))
-          '("itshape" "bfseries" "scshape"
-            "ttfamily" "upshape" "mdseries"
-            "rmfamily" "sffamily" "slshape"))
-  "List of font declaration commands in LaTeX.")
-
-(defvar LaTeX-ulem-fontcmd
-  (mapcar (lambda (str) (concat "\\" str))
-          '("textit" "textbf" "textsc"
-            "texttt" "textup" "textmd"
-            "textrm" "textsf" "textsl"))
-  "List of font commands in LaTeX")
-
-(defun TeX-arg-ulem-fontdecl (optional &optional prompt)
-  "Prompt for the font-declaration un \\useunder."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-                     optional prompt "Font declaration")
-                    LaTeX-ulem-fontdecl nil t)
-   optional))
-
-(defun TeX-arg-ulem-fontcmd (optional &optional prompt)
-  "Prompt for the font-declaration un \\useunder."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt
-                     optional prompt "Font command")
-                    LaTeX-ulem-fontcmd nil t)
-   optional))
-
-;; adapted from url.el: TeX-arg-urlstyle
-(defun TeX-arg-ulem-useunder (optional &optional prompt)
-  "Prompt for underline command used in \\useunder."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Underline command")
-                    (mapcar (lambda (str) (concat "\\" str))
-                            '("uline" "uuline"
-                              "uwave" "sout" "xout"
-                              "dashuline" "dotuline"))
-                    nil t)
-   optional))
 
 (defvar LaTeX-ulem-package-options
   '("UWforbf" "ULforem" "normalbf" "normalem")
