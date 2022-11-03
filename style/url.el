@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -115,16 +115,6 @@
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-url-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun TeX-arg-url-urlstyle (optional &optional prompt)
-  "Prompt for style used in \\urlstyle with completion.
-If OPTIONAL is non-nil, indicate it in the minibuffer during the
-query and insert the result in brackets.  PROMPT replaces the
-standard one."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Style")
-                    '("rm" "same" "sf" "tt"))
-   optional))
-
 (defun TeX-arg-url-DeclareUrlCommand (optional &optional prompt)
   "Prompt for arguments of \\DeclareUrlCommand with completion.
 If OPTIONAL is non-nil, indicate it in the minibuffer during the
@@ -181,12 +171,13 @@ standard one."
     ;; "hyperref" redefines \url so that the argument is only in
     ;; braces.  We check here if hyperref is loaded:
     '("url" (TeX-arg-conditional (member "hyperref" (TeX-style-list))
-                                 ("Url")
-                                 ((TeX-arg-verb-delim-or-brace "Url"))))
+                ("Url")
+              ((TeX-arg-verb-delim-or-brace "Url"))))
 
     '("urldef" TeX-arg-url-urldef)
 
-    '("urlstyle" TeX-arg-url-urlstyle))
+    '("urlstyle" (TeX-arg-completing-read ("rm" "same" "sf" "tt")
+                                          "Style")))
 
    ;; For '\path', use the facilities provided by this style.  Also
    ;; don't add "path" for fontification below since
