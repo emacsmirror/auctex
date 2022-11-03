@@ -5939,8 +5939,23 @@ point.  You can choose between \"$...$\" and \"\\(...\\)\"."
                        (string :tag "Insert before point")
                        (string :tag "Insert after point"))))
 
+(defcustom TeX-refuse-unmatched-dollar nil
+  "When non-nil, don't insert unmatched dollar sign.
+That is, `TeX-insert-dollar' refuses to insert \"$\" when
+`texmathp' tells that the current position is in math mode which
+didn't start with dollar(s).
+
+When nil, `TeX-insert-dollar' assumes the user knows that the
+current position is not in math mode actually and behaves in the
+same way as non-math mode."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
+
+If current math mode was not entered with a dollar, refuse to
+insert one when `TeX-refuse-unmatched-dollar' is non-nil.
 
 Show matching dollar sign if this dollar sign ends the TeX math
 mode and `blink-matching-paren' is non-nil.
@@ -5994,10 +6009,15 @@ With optional ARG, insert that many dollar signs."
             (message "Matches %s"
                      (buffer-substring
                       (point) (progn (end-of-line) (point))))))))
+
+     ;; Math mode was not entered with dollar according to `texmathp'.
+     (TeX-refuse-unmatched-dollar
+      ;; We trust `texmathp' and refuse to finish it with one.
+      (message "Math mode started with `%s' cannot be closed with dollar"
+               (car texmathp-why)))
      (t
-      ;; Math mode was not entered with dollar - we assume that
-      ;; `texmathp' was wrong and behave as if not in math
-      ;; mode. (bug#57626)
+      ;; We assume that `texmathp' was wrong and behave as if not in
+      ;; math mode. (bug#57626)
       (TeX--insert-dollar-1))))
    (t
     ;; Just somewhere in the text.

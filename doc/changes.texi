@@ -12,6 +12,15 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} no longer refuses to insert dollar sign when you type @kbd{$} at
+point where @AUCTeX{} thinks the current math mode didn't start with
+dollar(s).  @AUCTeX{} assumes the user knows that it isn't in math mode
+actually.
+
+You can keep the former behavior by enabling the new customize option
+@code{TeX-refuse-unmatched-dollar}.
+
+@item
 @AUCTeX{} supports completion-at-point of macro and environment arguments
 in @LaTeX{} buffers.  The responsible function recognizes the argument
 position and extracts the corresponding candidates from the variables

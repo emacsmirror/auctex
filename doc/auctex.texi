@@ -468,6 +468,20 @@ following to your init file
                           (cons "\\(" "\\)"))))
 @end lisp
 
+Math mode which didn't start with dollar(s) shouldn't be closed with dollar.
+@defopt TeX-refuse-unmatched-dollar
+This option determines the behavior when the user types @kbd{$} at a
+position where @AUCTeX{} thinks that it is in math mode which didn't start
+with dollar(s).
+
+When this option is @code{nil}, @AUCTeX{} behaves in the same way as
+non-math mode, assuming that the user knows it isn't in math mode
+actually.  This is the default.
+
+When this option is non-@code{nil}, @AUCTeX{} refuses to insert @samp{$}
+to prevent unmatched dollar.
+@end defopt
+
 Note that Texinfo mode does nothing special for @kbd{$}.  It inserts
 dollar sign(s) just in the same way as the other normal keys do.
 
