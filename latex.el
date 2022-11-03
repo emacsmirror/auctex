@@ -8347,7 +8347,6 @@ function would return non-nil and `(match-string 1)' would return
      "texteuro"                     ; Type: Symbol -- Slot: 191
      "texttimes"                    ; Type: Symbol -- Slot: 214
      "textdiv"                      ; Type: Symbol -- Slot: 246
-     '("textcircled"          1)    ; Type: Command -- Slot: N/A
      '("capitalcedilla"       1)    ; Type: Command -- Slot: N/A
      '("capitalogonek"        1)    ; Type: Command -- Slot: N/A
 
