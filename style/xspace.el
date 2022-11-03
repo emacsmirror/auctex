@@ -1,6 +1,6 @@
 ;;; xspace.el --- AUCTeX style for `xspace.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2011--2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -42,14 +42,13 @@
  (lambda ()
    (TeX-add-symbols
     '("xspace" 0)
-    "xspaceaddexception"
-    "xspaceremoveexception")
+    '("xspaceaddexceptions" t)
+    '("xspaceremoveexception" "Token"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("xspace" "")
-                                ("xspaceaddexception" "{")
+     (font-latex-add-keywords '(("xspaceaddexceptions"   "{")
                                 ("xspaceremoveexception" "{"))
                               'function)))
  TeX-dialect)
