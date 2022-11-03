@@ -2109,6 +2109,7 @@ It will setup BibTeX to store keys in an auto file."
 If EXPR evaluate to true, parse THEN as an argument list, else
 parse ELSE as an argument list.  The compatibility argument
 OPTIONAL is ignored."
+  (declare (indent 2))
   (TeX-parse-arguments (if (eval expr t) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
