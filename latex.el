@@ -7542,20 +7542,23 @@ or `LaTeX-environment-list' and returns it."
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an
 AUCTeX style file which queries and inserts something in the
-buffer as car and the name function delievering completion
-candidates as cdr.  This list contains only mapping for functions
-which perform key=val completions.  See also
+buffer as car and a function delievering completion candidates as
+cdr.  This list contains only mapping for functions which perform
+key=val completions.  See also
 `LaTeX-completion-function-map-alist-cr'.")
 
 (defvar LaTeX-completion-function-map-alist-cr
-  '((TeX-arg-counter . LaTeX-counter-list)
-    (TeX-arg-pagestyle . LaTeX-pagestyle-list) )
+  `((TeX-arg-counter . LaTeX-counter-list)
+    (TeX-arg-pagestyle . LaTeX-pagestyle-list)
+    (TeX-arg-length . ,(lambda () (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))))
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an
 AUCTeX style file which queries and inserts something in the
-buffer as car and the name function delievering completion
-candidates as cdr.  This list contains only mapping for functions
-which perform completing-read.  See also
+buffer as car and a function delievering completion candidates as
+cdr.  This list contains only mapping for functions which perform
+completing-read.  See also
 `LaTeX-completion-function-map-alist-keyval'.")
 
 (defun LaTeX-completion-parse-arg (arg)
