@@ -95,7 +95,7 @@ them."
                                            (and (fboundp 'LaTeX-color-definecolor-list)
                                                 (LaTeX-color-definecolor-list))))
                                     "Color name"))
-        ((TeX-arg-string "Color name"))))
+        ("Color name")))
 
     `("textblockrulecolour"
       (TeX-arg-conditional (TeX-member "\\`x?color\\'" (TeX-style-list) #'string-match)
@@ -105,7 +105,7 @@ them."
                                            (and (fboundp 'LaTeX-color-definecolor-list)
                                                 (LaTeX-color-definecolor-list))))
                                     "Color name"))
-        ((TeX-arg-string "Color name"))))
+        ("Color name")))
 
     '("TPshowboxestrue")
     '("TPshowboxesfalse")

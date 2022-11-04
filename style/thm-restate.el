@@ -99,7 +99,7 @@
    ;; Provide restatable\\*? environment
    (LaTeX-add-environments
     `("restatable"  LaTeX-env-args
-      [TeX-arg-string "Heading"]
+      ["Heading"]
       (TeX-arg-completing-read
        ;; Name of the environment we are referring to; this can be
        ;; defined via amsthm.sty, ntheorem.sty or thmtools.sty:
@@ -119,7 +119,7 @@
       LaTeX-env-thmrestate-restatable)
 
     `("restatable*" LaTeX-env-args
-      [TeX-arg-string "Heading"]
+      ["Heading"]
       (TeX-arg-completing-read
        ;; Name of the environment we are referring to; this can be
        ;; defined via amsthm.sty, ntheorem.sty or thmtools.sty:

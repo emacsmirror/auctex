@@ -43,7 +43,7 @@
    (LaTeX-add-environments
     ;; \begin{wrapfigure}[No.lines]{Placement}[Overhang]{Width} ... \end{wrapfigure}
     '("wrapfigure" LaTeX-env-args
-      [TeX-arg-string "Number of narrow lines"]
+      ["Number of narrow lines"]
       (TeX-arg-completing-read ("r" "R" "l" "L" "i" "I" "o" "O")
                                "Placement")
       [TeX-arg-length "Overhang"]
@@ -51,7 +51,7 @@
 
     ;; \begin{wraptable}[No.lines]{Placement}[Overhang]{Width} ... \end{wraptable}
     '("wraptable" LaTeX-env-args
-      [TeX-arg-string "Number of narrow lines"]
+      ["Number of narrow lines"]
       (TeX-arg-completing-read ("r" "R" "l" "L" "i" "I" "o" "O")
                                "Placement")
       [TeX-arg-length "Overhang"]
@@ -71,8 +71,8 @@
             ,(lambda ()
                (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
             "Float type"))
-        ((TeX-arg-string "Float type")))
-      [TeX-arg-string "Number of narrow lines"]
+        ("Float type"))
+      ["Number of narrow lines"]
       (TeX-arg-completing-read ("r" "R" "l" "L" "i" "I" "o" "O")
                                "Placement")
       [TeX-arg-length "Overhang"]
