@@ -1,6 +1,6 @@
 ;;; textpos.el --- AUCTeX style for `textpos.sty' version v1.7j  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -87,27 +87,25 @@ them."
     '("TPMargin*" (TeX-arg-length "Margin around textblock"))
 
     ;; We ignore the `\textblock...color' (i.e. without `u') versions
-    '("textblockcolour"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((color (cond ((member "xcolor" (TeX-style-list))
-                             (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
-                            ((member "color" (TeX-style-list))
-                             (completing-read "Color name: " (LaTeX-color-definecolor-list)))
-                            (t
-                             (TeX-read-string "Color name: ")))))
-           (format "%s" color)))))
+    `("textblockcolour"
+      (TeX-arg-conditional (TeX-member "\\`x?color\\'" (TeX-style-list) #'string-match)
+          ((TeX-arg-completing-read ,(lambda ()
+                                       (or (and (fboundp 'LaTeX-xcolor-definecolor-list)
+                                                (LaTeX-xcolor-definecolor-list))
+                                           (and (fboundp 'LaTeX-color-definecolor-list)
+                                                (LaTeX-color-definecolor-list))))
+                                    "Color name"))
+        ((TeX-arg-string "Color name"))))
 
-    '("textblockrulecolour"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((color (cond ((member "xcolor" (TeX-style-list))
-                             (completing-read "Color name: " (LaTeX-xcolor-definecolor-list)))
-                            ((member "color" (TeX-style-list))
-                             (completing-read "Color name: " (LaTeX-color-definecolor-list)))
-                            (t
-                             (TeX-read-string "Color name: ")))))
-           (format "%s" color)))))
+    `("textblockrulecolour"
+      (TeX-arg-conditional (TeX-member "\\`x?color\\'" (TeX-style-list) #'string-match)
+          ((TeX-arg-completing-read ,(lambda ()
+                                       (or (and (fboundp 'LaTeX-xcolor-definecolor-list)
+                                                (LaTeX-xcolor-definecolor-list))
+                                           (and (fboundp 'LaTeX-color-definecolor-list)
+                                                (LaTeX-color-definecolor-list))))
+                                    "Color name"))
+        ((TeX-arg-string "Color name"))))
 
     '("TPshowboxestrue")
     '("TPshowboxesfalse")
