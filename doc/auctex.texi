@@ -5659,8 +5659,8 @@ list to be inserted as an optional argument to the @samp{itemize}
 environment:
 @lisp
 (LaTeX-add-environments
-    '("itemize" LaTeX-env-item-args
-      [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
+ '("itemize" LaTeX-env-item-args
+   [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
 @end lisp
 
 @item LaTeX-env-figure
