@@ -5650,6 +5650,19 @@ Following is a list of available hooks for
 @item LaTeX-env-item
 Insert the given environment and the first item.
 
+@item LaTeX-env-item-args
+Insert the given environment plus further arguments, and the first item.
+You can use this as a hook in case you want to specify multiple complex
+arguments just like in elements of @code{TeX-add-symbols}.  Here is an
+example from @file{enumitem.el} in order to prompt for a @samp{key=value}
+list to be inserted as an optional argument to the @samp{itemize}
+environment:
+@lisp
+(LaTeX-add-environments
+    '("itemize" LaTeX-env-item-args
+      [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
+@end lisp
+
 @item LaTeX-env-figure
 Insert the given figure-like environment with a caption and a label.
 
@@ -5659,6 +5672,10 @@ specifications.
 
 @item LaTeX-env-label
 Insert the given environment with a label.
+
+@item LaTeX-env-label-args
+Insert the given environment with a label and further arguments to the
+environment.
 
 @item LaTeX-env-list
 Insert the given list-like environment, a specifier for the label and

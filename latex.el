@@ -1061,9 +1061,18 @@ If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-label
   :type 'string)
 
-(defun LaTeX-env-item (environment)
-  "Insert ENVIRONMENT and the first item."
-  (LaTeX-insert-environment environment)
+(defun LaTeX--env-parse-args (args)
+  "Helper function to insert arguments defined by ARGS."
+  (save-excursion
+    (LaTeX-find-matching-begin)
+    (end-of-line)
+    (let ((TeX-exit-mark (or TeX-exit-mark
+                             (make-marker))))
+      (TeX-parse-arguments args))))
+
+(defun LaTeX--env-item (environment)
+  "Helper function running inside `LaTeX-env-item'.
+The body of this function used to be part of `LaTeX-env-item'."
   (if (TeX-active-mark)
       (progn
         (LaTeX-find-matching-begin)
@@ -1087,6 +1096,19 @@ If nil, act like the empty string is given, but do not prompt."
              (> (- (line-end-position) (line-beginning-position))
                 (current-fill-column)))
     (LaTeX-fill-paragraph nil)))
+
+(defun LaTeX-env-item (environment)
+  "Insert ENVIRONMENT and the first item.
+The first item is inserted by the function `LaTeX--env-item'."
+  (LaTeX-insert-environment environment)
+  (LaTeX--env-item environment))
+
+(defun LaTeX-env-item-args (environment &rest args)
+  "Insert ENVIRONMENT followed by ARGS and first item.
+The first item is inserted by the function `LaTeX--env-item'."
+  (LaTeX-insert-environment environment)
+  (LaTeX--env-parse-args args)
+  (LaTeX--env-item environment))
 
 (defcustom LaTeX-label-alist
   '(("figure" . LaTeX-figure-label)
@@ -1296,6 +1318,11 @@ Just like array and tabular."
     ;; Restore the positions of point and mark.
     (exchange-point-and-mark)))
 
+(defun LaTeX-env-label-args (environment &rest args)
+  "Run `LaTeX-env-label' on ENVIRONMENT and insert ARGS."
+  (LaTeX-env-label environment)
+  (LaTeX--env-parse-args args))
+
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
   (let ((label (TeX-read-string "Default Label: ")))
@@ -1422,12 +1449,7 @@ Just like array and tabular."
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
   (LaTeX-insert-environment environment)
-  (save-excursion
-    (LaTeX-find-matching-begin)
-    (end-of-line)
-    (let ((TeX-exit-mark (or TeX-exit-mark
-                             (make-marker))))
-      (TeX-parse-arguments args))))
+  (LaTeX--env-parse-args args))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
   "Query for a label and insert it in the optional argument of an environment.
@@ -7458,10 +7480,12 @@ or `LaTeX-environment-list' and returns it."
                                         (TeX-symbol-list)
                                       (LaTeX-environment-list)))))
 
-    ;; Check if there is a `LaTeX-env-args' in the `arg-list' and
+    ;; Check if there is a `LaTeX-env-*-args' in the `arg-list' and
     ;; remove it:
     (when (and (eq mac-or-env 'env)
-               (eq (car arg-list) #'LaTeX-env-args))
+               (memq (car arg-list) '(LaTeX-env-args
+                                      LaTeX-env-item-args
+                                      LaTeX-env-label-args)))
       (pop arg-list))
 
     ;; Check for `TeX-arg-conditional' here and change `arg-list'
