@@ -281,6 +281,8 @@
                                 ("AtWriteToIndex"     "{{")
                                 ("AtNextWriteToIndex" "{{")
                                 ("newprotectedindex"  "[{")
+                                ("printindex"         "*[[")
+                                ("printsubindex"      "*[[")
                                 ("setindexpreamble"   "[{")
                                 ("useindexpreamble"   "[")
                                 ("extendtheindex"     "{{{{"))
