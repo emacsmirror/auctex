@@ -1,6 +1,6 @@
 ;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 3.3.36.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2022  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -260,8 +260,8 @@ string."
 (defun LaTeX-siunitx-key-val-options ()
   "Return an updated list of key=vals from siunitx package."
   (append
-   (when (and (or (member "xcolor" (TeX-style-list))
-                  (member "color" TeX-active-styles)))
+   (when (or (member "xcolor" (TeX-style-list))
+             (member "color" TeX-active-styles))
      (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
                           #'LaTeX-xcolor-definecolor-list
                         #'LaTeX-color-definecolor-list))
@@ -331,12 +331,12 @@ string."
     ;; but are not recommended for use in new documents.  We provide
     ;; them in this file anyway since they are also needed when other
     ;; packages like physics or units are loaded:
-    '("si" [TeX-arg-key-val (LaTeX-siunitx-package-options)] LaTeX-arg-siunitx-unit)
-    '("SI" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+    '("si" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)] LaTeX-arg-siunitx-unit)
+    '("SI" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Value" ["Pre-unit"] LaTeX-arg-siunitx-unit)
-    '("SIlist" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+    '("SIlist" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Values" LaTeX-arg-siunitx-unit)
-    '("SIrange" [TeX-arg-key-val (LaTeX-siunitx-package-options)]
+    '("SIrange" [TeX-arg-key-val (LaTeX-siunitx-key-val-options)]
       "Value 1" "Value 2" LaTeX-arg-siunitx-unit))
 
    ;; 8 Compatibility with other packages
