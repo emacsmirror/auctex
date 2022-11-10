@@ -759,40 +759,151 @@ With optional ARG, modify current environment."
   (end-of-line)
   (newline))
 
+(defvar ConTeXt-after-insert-env-hook nil
+  "List of functions to be run at the end of `ConTeXt-insert-environment'.
+Each function is called with three arguments: the name of the
+environment just inserted, the buffer position just before
+\\start... and the position just before \\stop....")
+
+;;; Copy and adaptation of `LaTeX-insert-environment'.  (2022-08-13)
 (defun ConTeXt-insert-environment (environment &optional extra)
-  "Insert ENVIRONMENT, with optional argument EXTRA."
-  (if (and (TeX-active-mark)
-           (not (eq (mark) (point))))
+  "Insert ConTeXt ENVIRONMENT with optional argument EXTRA."
+  (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
+        content-start env-start env-end additional-indent)
+    (when (and active-mark (< (mark) (point))) (exchange-point-and-mark))
+    ;; What to do with the line containing point.
+    ;; - Open a new empty line for later insertion of "\startfoo" and
+    ;;   put the point there.
+    ;; - If there were at first any non-whitespace texts between the
+    ;;   point and EOL, send them into their new own line.
+    (cond (;; When the entire line consists of whitespaces...
+           (save-excursion (beginning-of-line)
+                           (looking-at "[ \t]*$"))
+           ;; ...make the line empty and put the point there.
+           (delete-region (match-beginning 0) (match-end 0)))
+          (;; When there are only whitespaces between the point and
+           ;; BOL (including the case the point is at BOL)...
+           (TeX-looking-at-backward "^[ \t]*"
+                                    (line-beginning-position))
+           ;; ...in this case, we have non-whitespace texts between
+           ;; the point and EOL, so send the entire line into a new
+           ;; next line and put the point on the empty line just
+           ;; created.
+           (beginning-of-line)
+           (newline)
+           (beginning-of-line 0)
+           ;; Take note that there are texts to be indented later
+           ;; unless the region is activated.
+           (unless active-mark
+             (setq additional-indent t)))
+          (;; In all other cases...
+           t
+           ;; ...insert a new empty line after deleting all
+           ;; whitespaces around the point, put the point there...
+           (delete-horizontal-space)
+           (if (eolp)
+               (newline)
+             ;; ...and if there were at first any non-whitespace texts
+             ;; between (the original position of) the point and EOL,
+             ;; send them into a new next line.
+             (newline 2)
+             (beginning-of-line 0)
+             ;; Take note that there are texts to be indented later
+             ;; unless the region is activated.
+             (unless active-mark
+               (setq additional-indent t)))))
+    ;; What to do with the line containing mark.
+    ;; If there is active region...
+    (when active-mark
+      ;; - Open a new empty line for later insertion of "\stopfoo"
+      ;;   and put the mark there.
+      ;; - If there were at first any non-whitespace texts between the
+      ;;   mark and EOL, pass them over the empty line and put them on
+      ;;   their own line.
       (save-excursion
-        (if (< (mark) (point))
-            (exchange-point-and-mark))
-        (insert TeX-esc (ConTeXt-environment-start-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        (if extra (insert extra))
         (goto-char (mark))
-        (or (TeX-looking-at-backward "^[ \t]*")
-            (newline))
-        (insert TeX-esc (ConTeXt-environment-stop-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        ;;(goto-char (point))
-        )
-    (or (TeX-looking-at-backward "^[ \t]*")
-        (newline))
+        (cond (;; When the entire line consists of whitespaces...
+               (save-excursion (beginning-of-line)
+                               (looking-at "[ \t]*$"))
+               ;; ...make the line empty and put the mark there.
+               (delete-region (match-beginning 0) (match-end 0)))
+              (;; When there are only whitespaces between the mark and
+               ;; BOL (including the case the mark is at BOL)...
+               (TeX-looking-at-backward "^[ \t]*"
+                                        (line-beginning-position))
+               ;; ...in this case, we have non-whitespace texts
+               ;; between the mark and EOL, so send the entire line
+               ;; into a new next line and put the mark on the empty
+               ;; line just created.
+               (beginning-of-line)
+               (set-mark (point))
+               (newline)
+               ;; Take note that there are texts to be indented later.
+               (setq additional-indent t))
+              (;; In all other cases...
+               t
+               ;; ...make a new empty line after deleting all
+               ;; whitespaces around the mark, put the mark there...
+               (delete-horizontal-space)
+               (insert-before-markers "\n")
+               ;; ...and if there were at first any non-whitespace
+               ;; texts between (the original position of) the mark
+               ;; and EOL, send them into a new next line.
+               (unless (eolp)
+                 (newline)
+                 ;; Take note that there are texts to be indented
+                 ;; later.
+                 (setq additional-indent t))))))
+    ;; Now insert the environment.
+    (setq env-start (point))
     (insert TeX-esc (ConTeXt-environment-start-name) environment)
     (indent-according-to-mode)
-    (if extra (insert extra))
-    (end-of-line)
-    (newline-and-indent)
-    (newline)
+    (when extra (insert extra))
+    (setq content-start (line-beginning-position 2))
+    (unless active-mark
+      (newline)
+      (newline))
+    (when active-mark (goto-char (mark)))
     (insert TeX-esc (ConTeXt-environment-stop-name) environment)
-    (or (looking-at "[ \t]*$")
-        (save-excursion (newline-and-indent)))
-    (indent-according-to-mode)
-    (end-of-line 0)))
+    (end-of-line 0)
+    (if active-mark
+        (progn
+          ;; TODO: Do filling when context.el obtains
+          ;; `ConTeXt-fill-region' in future.
+          (indent-region content-start (line-beginning-position 2))
+          (set-mark content-start))
+      (indent-according-to-mode))
+    ;; Indent \stopfoo.
+    (save-excursion (beginning-of-line 2) (indent-according-to-mode)
+                    (when additional-indent
+                      ;; Indent texts sent after the inserted
+                      ;; environment.
+                      (forward-line 1) (indent-according-to-mode)))
+    (setq env-end (save-excursion
+                    (search-forward
+                     (concat TeX-esc (ConTeXt-environment-stop-name)
+                             environment))
+                    (match-beginning 0)))
+    (run-hook-with-args 'ConTeXt-after-insert-env-hook
+                        environment env-start env-end)))
+
+(defun ConTeXt--env-parse-args (args)
+  "Helper function to insert arguments defined by ARGS.
+This function checks if `TeX-exit-mark' is set, otherwise it's
+set to the point where this function starts.  Point will be at
+`TeX-exit-mark' when this function exits."
+  (let ((TeX-exit-mark (or TeX-exit-mark
+                           (point-marker))))
+    (ConTeXt-find-matching-start)
+    (end-of-line)
+    (TeX-parse-arguments args)
+    (goto-char TeX-exit-mark)
+    (set-marker TeX-exit-mark nil)))
+
+(defun ConTeXt-env-args (environment &rest args)
+  "Insert ENVIRONMENT and arguments defined by ARGS."
+  (ConTeXt-insert-environment environment)
+  (ConTeXt--env-parse-args args))
 
 
 ;; with the following we can call a function on an environment. Say
