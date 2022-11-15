@@ -1,6 +1,6 @@
 ;;; currvita.el --- AUCTeX style for `currvita.sty' (v0.9i)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,40 +31,13 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
 (require 'tex)
 (require 'latex)
-
-;; This is a modified version of `LaTeX-env-item'.
-(defun LaTeX-currvita-env-with-label (env)
-  "Insert ENV, a mandatory label and the first item."
-  (LaTeX-insert-environment
-   env
-   (let ((heading (TeX-read-string "Heading of list: ")))
-     (format "{%s}" heading)))
-  (if (TeX-active-mark)
-      (progn
-        (LaTeX-find-matching-begin)
-        (end-of-line 1))
-    (end-of-line 0))
-  (delete-char 1)
-  (when (looking-at (concat "^[ \t]+$\\|"
-                            "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
-    (delete-region (point) (line-end-position)))
-  (delete-horizontal-space)
-  ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
-  ;; from swapping point and mark and the \item ending up right after
-  ;; \begin{...}.
-  (deactivate-mark)
-  (LaTeX-insert-item)
-  ;; The inserted \item may have outdented the first line to the
-  ;; right.  Fill it, if appropriate.
-  (when (and auto-fill-function
-             (not (looking-at "$"))
-             (not (assoc env LaTeX-indent-environment-list))
-             (> (- (line-end-position) (line-beginning-position))
-                (current-fill-column)))
-    (LaTeX-fill-paragraph nil)))
-
 
 (TeX-add-style-hook
  "currvita"
@@ -72,8 +45,8 @@
 
    ;; env's defined by currvita.sty
    (LaTeX-add-environments
-    '("cv"      "Heading of CV")
-    '("cvlist"  LaTeX-currvita-env-with-label))
+    '("cv"     "Heading of CV")
+    '("cvlist" LaTeX-env-item-args "Heading of list"))
 
    ;; Add "cvlist" to the list of environments which have an optional
    ;; argument for each item
@@ -88,7 +61,13 @@
     "cvbibname")
 
    ;; Add new lengths defined by currvita.sty
-   (LaTeX-add-lengths "cvlabelwidth" "cvlabelskip" "cvlabelsep"))
+   (LaTeX-add-lengths "cvlabelwidth" "cvlabelskip" "cvlabelsep")
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("cvplace" "{"))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-currvita-package-options
