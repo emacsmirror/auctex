@@ -1,6 +1,6 @@
 ;;; tcolorboxlib-raster.el --- AUCTeX style for `raster' library from tcolorbox  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -84,47 +84,6 @@
     ("raster multirow"))
   "Key=value options for raster library from tcolorbox.")
 
-(defun LaTeX-tcolorbox-lib-raster-env-item (environment)
-  "Insert ENVIRONMENT, ask for arguments and the first item."
-  (LaTeX-insert-environment
-   environment
-   (let ((opts (TeX-read-key-val t (append
-                                    LaTeX-tcolorbox-lib-raster-keyval-options
-                                    (LaTeX-tcolorbox-keyval-options))
-                                 (when (string= environment "tcboxeditemize")
-                                   "Raster options (k=v)")))
-         (box-opts (when (string= environment "tcboxeditemize")
-                     (TeX-read-key-val nil (LaTeX-tcolorbox-keyval-options)
-                                       "Box options (k=v)"))))
-     (concat
-      (when (and opts (not (string= opts "")))
-        (format "[%s]" opts))
-      (when (string= environment "tcboxeditemize")
-        (format "{%s}" box-opts)))))
-  (if (TeX-active-mark)
-      (progn
-        (LaTeX-find-matching-begin)
-        (end-of-line 1))
-    (end-of-line 0))
-  (delete-char 1)
-  (when (looking-at (concat "^[ \t]+$\\|"
-                            "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
-    (delete-region (point) (line-end-position)))
-  (delete-horizontal-space)
-  ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
-  ;; from swapping point and mark and the \item ending up right after
-  ;; \begin{...}.
-  (deactivate-mark)
-  (LaTeX-insert-item)
-  ;; The inserted \item may have outdented the first line to the
-  ;; right.  Fill it, if appropriate.
-  (when (and auto-fill-function
-             (not (looking-at "$"))
-             (not (assoc environment LaTeX-indent-environment-list))
-             (> (- (line-end-position) (line-beginning-position))
-                (current-fill-column)))
-    (LaTeX-fill-paragraph nil)))
-
 (defun LaTeX-tcolorbox-lib-raster-insert-item ()
   "Insert \"tcbitem\" and query for optional argument."
   (TeX-insert-macro "tcbitem"))
@@ -140,42 +99,36 @@
    (TeX-add-symbols
     ;; 14.2 Macros of the Library
     '("tcbitem"
-      [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options) "Item options (k=v)" ]
+      [TeX-arg-key-val (LaTeX-tcolorbox-keyval-options) "Item options"]
       (TeX-arg-literal " ")))
 
    (LaTeX-add-environments
     ;; 14.2 Macros of the Library
-    '("tcbraster"
-      (lambda (env)
-        (LaTeX-insert-environment
-         env
-         (let ((raster-opts
-                (TeX-read-key-val t (append
-                                     LaTeX-tcolorbox-lib-raster-keyval-options
-                                     (LaTeX-tcolorbox-keyval-options)))))
-           (when (and raster-opts (not (string= raster-opts "")))
-             (concat LaTeX-optop raster-opts LaTeX-optcl))))))
+    `("tcbraster" LaTeX-env-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append LaTeX-tcolorbox-lib-raster-keyval-options
+                                  (LaTeX-tcolorbox-keyval-options)))])
 
-    '("tcbitemize" LaTeX-tcolorbox-lib-raster-env-item)
+    `("tcbitemize" LaTeX-env-item-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append LaTeX-tcolorbox-lib-raster-keyval-options
+                                  (LaTeX-tcolorbox-keyval-options)))])
 
-    '("tcboxedraster"
-      (lambda (env)
-        (LaTeX-insert-environment
-         env
-         (let ((raster-opts
-                (TeX-read-key-val t (append
-                                     LaTeX-tcolorbox-lib-raster-keyval-options
-                                     (LaTeX-tcolorbox-keyval-options))
-                                  "Raster options (k=v)"))
-               (box-opts
-                (TeX-read-key-val nil (LaTeX-tcolorbox-keyval-options)
-                                  "Box options (k=v)")))
-           (concat
-            (when (and raster-opts (not (string= raster-opts "")))
-              (concat LaTeX-optop raster-opts LaTeX-optcl))
-            TeX-grop box-opts TeX-grcl)))))
+    `("tcboxedraster" LaTeX-env-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append LaTeX-tcolorbox-lib-raster-keyval-options
+                                  (LaTeX-tcolorbox-keyval-options)))
+                       "Raster options"]
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)
+                       "Box options"))
 
-    '("tcboxeditemize" LaTeX-tcolorbox-lib-raster-env-item))
+    `("tcboxeditemize" LaTeX-env-item-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append LaTeX-tcolorbox-lib-raster-keyval-options
+                                  (LaTeX-tcolorbox-keyval-options)))
+                       "Raster options"]
+      (TeX-arg-key-val (LaTeX-tcolorbox-keyval-options)
+                       "Box options")))
 
    ;; Append tcb(oxed)?itemize to `LaTeX-item-list':
    (add-to-list 'LaTeX-item-list
