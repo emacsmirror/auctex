@@ -3244,7 +3244,10 @@ prompt string.  `LaTeX-default-author' is the initial input."
                   "")))
     (TeX-argument-insert author optional nil)))
 
-(defun TeX-read-key-val (optional key-val-alist &optional prompt)
+(defun TeX-read-key-val (optional key-val-alist &optional prompt complete
+                                  predicate require-match
+                                  initial-input hist def
+                                  inherit-input-method)
   "Prompt for keys and values in KEY-VAL-ALIST and return them.
 If OPTIONAL is non-nil, indicate in the prompt that we are
 reading an optional argument.  KEY-VAL-ALIST can be
@@ -3255,9 +3258,24 @@ reading an optional argument.  KEY-VAL-ALIST can be
 
 The car of each element should be a string representing a key and
 the optional cdr should be a list with strings to be used as
-values for the key.  Use PROMPT as the prompt string."
+values for the key.
+
+PROMPT replaces the standard one where \\=' (k=v): \\=' is
+appended to it.  If you want the full control over the prompt,
+set COMPLETE to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF,
+INHERIT-INPUT-METHOD are passed to `multi-prompt-key-value',
+which see."
   (multi-prompt-key-value
-   (TeX-argument-prompt optional prompt "Options (k=v)")
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (k=v)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t nil))
+                        "Options (k=v)"
+                        complete)
    (cond ((and (listp key-val-alist)
                (symbolp (car key-val-alist))
                (fboundp (car key-val-alist)))
@@ -3271,18 +3289,51 @@ values for the key.  Use PROMPT as the prompt string."
                (listp (car key-val-alist)))
           key-val-alist)
          (t
-          (error "Cannot interpret key-val-alist %S" key-val-alist)))))
+          (error "Cannot interpret key-val-alist %S" key-val-alist)))
+   predicate require-match initial-input hist def inherit-input-method))
 
-(defun TeX-arg-key-val (optional key-val-alist &optional prompt)
+(defun TeX-arg-key-val (optional key-val-alist &optional prompt complete
+                                 rem-char leftbrace rightbrace
+                                 predicate require-match
+                                 initial-input hist def
+                                 inherit-input-method)
   "Prompt for keys and values in KEY-VAL-ALIST.
 Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
 as values for the key.  Refer to `TeX-read-key-val' for more
-about KEY-VAL-ALIST.  Use PROMPT as the prompt string."
-  (let ((options (TeX-read-key-val optional key-val-alist prompt)))
-    (TeX-argument-insert options optional)))
+about KEY-VAL-ALIST.
+
+PROMPT replaces the standard one where \\=' (k=v): \\=' is
+appended to it.  If you want the full control over the prompt,
+set COMPLETE to non-nil and then provide a full PROMPT.
+
+REM-CHAR is a character removed from `crm-local-completion-map'
+and `minibuffer-local-completion-map' when performing completion.
+In most cases it will be ?\\s.
+
+The brackets used are controlled by the string values of
+LEFTBRACE and RIGHTBRACE.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF,
+INHERIT-INPUT-METHOD are passed to `multi-prompt-key-value',
+which see."
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace))
+        (crm-local-completion-map
+         (if rem-char (remove (assoc rem-char crm-local-completion-map)
+                              crm-local-completion-map)
+           crm-local-completion-map))
+        (minibuffer-local-completion-map
+         (if rem-char (remove (assoc rem-char minibuffer-local-completion-map)
+                              minibuffer-local-completion-map)
+           minibuffer-local-completion-map)))
+    (TeX-argument-insert
+     (TeX-read-key-val optional key-val-alist prompt complete
+                       predicate require-match initial-input
+                       hist def inherit-input-method)
+     optional)))
 
 (defun TeX-read-completing-read (optional collection &optional prompt complete
                                           predicate require-match
@@ -3390,29 +3441,39 @@ INHERIT-INPUT-METHOD are passed to
    predicate require-match initial-input hist def inherit-input-method))
 
 (defun TeX-arg-completing-read-multiple (optional table &optional prompt complete
-                                                  prefix leftbrace rightbrace
+                                                  prefix crm-sep concat-sep
+                                                  leftbrace rightbrace
                                                   predicate require-match
                                                   initial-input hist def
                                                   inherit-input-method)
   "Read multiple strings in the minibuffer, with completion and insert them.
 If OPTIONAL is non-nil, indicate it in the minibuffer and insert
-the result in brackets if not empty.  The brackets used are
-controlled by the string values of LEFTBRACE and RIGHTBRACE.
+the result in brackets if not empty.
 
-For TABLE, PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
+For TABLE, PROMPT and COMPLETE, see `TeX-read-completing-read-multiple'.
+
 For PREFIX, see `TeX-argument-insert'.
+CRM-SEP is a regexp which is bound locally to `crm-separator'.
+CONCAT-SEP is a string which will be used to concat the queried
+items, defaults to \",\".
+
+The brackets used to insert the argument are controlled by the
+string values of LEFTBRACE and RIGHTBRACE.
+
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to
 `TeX-completing-read-multiple', which see."
   (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
-        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace))
+        (crm-separator (or crm-sep crm-separator))
+        (concat-sep (or concat-sep ",")))
     (TeX-argument-insert
      (mapconcat #'identity
                 (TeX-read-completing-read-multiple optional table prompt
                                                    complete predicate
                                                    require-match initial-input
                                                    hist def inherit-input-method)
-                ",")
+                concat-sep)
      optional prefix)))
 
 (defun TeX-read-hook ()
