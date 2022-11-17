@@ -187,8 +187,14 @@
     (let ((env (car elt)))
       ;; Add newly defined env's to AUCTeX:
       (LaTeX-add-environments
-       `(,env LaTeX-env-tcolorbox-lib-theorems)
-       `(,(concat env "*") LaTeX-env-tcolorbox-lib-theorems))
+       `(,env LaTeX-env-args
+              [TeX-arg-key-val (LaTeX-tcolorbox-lib--theorems-keyval-options)]
+              "Title"
+              (TeX-arg-literal ,TeX-grop ,TeX-grcl)
+              (LaTeX-env-label-as-keyval nil nil ,env))
+       `(,(concat env "*") LaTeX-env-args
+         [TeX-arg-key-val (LaTeX-tcolorbox-lib--theorems-keyval-options)]
+         "Title"))
       ;; RefTeX: Make `reftex-label-regexps' buffer local and add env
       ;; to it:
       (when (boundp 'reftex-label-regexps)
@@ -210,40 +216,15 @@
           #'LaTeX-tcolorbox-lib-theorems-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-env-tcolorbox-lib-theorems (environment)
-  "Insert theorems ENVIRONMENT, ask for arguments and insert a label."
-  (LaTeX-insert-environment
-   environment
-   (let ((opts (TeX-read-key-val t (LaTeX-tcolorbox-lib--theorems-keyval-options)))
-         (title (TeX-read-string
-                 (TeX-argument-prompt nil nil "Title"))))
-     (concat
-      (when (and opts (not (string= opts "")))
-        (format "[%s]" opts))
-      (concat TeX-grop title TeX-grcl)
-      (unless (string= (substring-no-properties environment -1) "*")
-        (concat TeX-grop TeX-grcl)))))
-  (unless (string= (substring-no-properties environment -1) "*")
-    (LaTeX-env-label-as-keyval nil nil nil environment)))
-
 (defun LaTeX-arg-tcolorbox-lib-theorems-newtcbtheorem (optional)
-  "Query and insert arguments of \\newtcbtheorem macro.
-If OPTIONAL is non-nil, insert the argument in brackets in not
+  "Query and insert the first argument of \\newtcbtheorem macro.
+If OPTIONAL is non-nil, insert the argument in brackets if not
 empty."
   (let ((env (TeX-read-string
-              (TeX-argument-prompt optional nil "Name")))
-        (disp-name (TeX-read-string
-                    (TeX-argument-prompt optional nil "Display Name")))
-        (opts (TeX-read-key-val optional
-                                (LaTeX-tcolorbox-lib--theorems-keyval-options))))
+              (TeX-argument-prompt optional nil "Name"))))
     (LaTeX-add-tcolorbox-lib-theorems-newtcbtheorems env)
     (LaTeX-tcolorbox-lib-theorems-auto-cleanup)
-    (TeX-argument-insert env optional)
-    (TeX-argument-insert disp-name optional)
-    (TeX-argument-insert opts optional)
-    ;; Our 'prefix' argument is always empty as we insert the 'label'
-    ;; key with a full label value:
-    (insert TeX-grop TeX-grcl)))
+    (TeX-argument-insert env optional)))
 
 (defun LaTeX-tcolorbox-lib-theorems-reftex-label-context-function (env)
   "Return a context string for RefTeX in ENV."
@@ -287,9 +268,12 @@ empty."
 
    (TeX-add-symbols
     ;; 18.1 Macros of the Library
-    '("newtcbtheorem"
+    `("newtcbtheorem"
       [TeX-arg-key-val LaTeX-tcolorbox-init-options]
-      LaTeX-arg-tcolorbox-lib-theorems-newtcbtheorem)
+      LaTeX-arg-tcolorbox-lib-theorems-newtcbtheorem
+      "Display Name"
+      (TeX-arg-key-val (LaTeX-tcolorbox-lib--theorems-keyval-options))
+      (TeX-arg-literal ,TeX-grop ,TeX-grcl))
 
     `("renewtcbtheorem"
       [TeX-arg-key-val LaTeX-tcolorbox-init-options]
