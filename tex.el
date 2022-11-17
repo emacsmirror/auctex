@@ -3554,7 +3554,7 @@ See `TeX-parse-macro' for details."
              (set-marker TeX-exit-mark (point)))
            (insert TeX-arg-closing-brace)
            (setq insert-flag t))
-          ((symbolp arg)
+          ((functionp arg)
            (funcall arg optional))
           ((listp arg)
            (let ((head (car arg))
