@@ -8859,6 +8859,22 @@ wrapped in \\(?:...\\)? then."
    ;; We are done.  Just search until the next closing bracket
    "[^]]*\\]"))
 
+(defvar LaTeX-font-family '("normalfont" "rmfamily"
+                            "sffamily"   "ttfamily")
+  "List of LaTeX font family declarations.")
+
+(defvar LaTeX-font-series '("mdseries" "bfseries")
+  "List of LaTeX font series declarations.")
+
+(defvar LaTeX-font-shape '("itshape" "slshape"  "scshape"  "sscshape"
+                           "swshape" "ulcshape" "upshape")
+  "List of LaTeX font shape declarations.")
+
+(defvar LaTeX-font-size '("tiny" "scriptsize" "footnotesize" "small"
+                          "normalsize" "large" "Large"
+                          "LARGE" "huge" "Huge")
+  "List of LaTeX font size declarations.")
+
 (provide 'latex)
 
 ;;; latex.el ends here
