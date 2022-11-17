@@ -7712,8 +7712,8 @@ ARGS are characters passed to the function
 defined in the variable `LaTeX-completion-macro-delimiters' are
 taken."
   (save-restriction
-    (narrow-to-region (line-beginning-position -20)
-                      (line-beginning-position  20))
+    (narrow-to-region (line-beginning-position -40)
+                      (line-beginning-position  40))
     (let ((args (or args (LaTeX-completion-macro-delimiters))))
       (condition-case nil
           (with-syntax-table (apply #'TeX-search-syntax-table args)
