@@ -3451,18 +3451,29 @@ TeX macro.  What is done depend on the type of the element:
                  (insert TeX-grcl)
                  (backward-char))))))))
 
-(defun TeX-arg-string (optional &optional prompt initial-input)
+(defun TeX-arg-string (optional &optional prompt initial-input
+                                history default-value
+                                leftbrace rightbrace)
   "Prompt for a string.
 
 If OPTIONAL is not nil then the PROMPT will start with ``(Optional) ''.
-INITIAL-INPUT is a string to insert before reading input."
-  (TeX-argument-insert
-   (if (and (not optional) (TeX-active-mark))
-       (let ((TeX-argument (buffer-substring (point) (mark))))
-         (delete-region (point) (mark))
-         TeX-argument)
-     (TeX-read-string (TeX-argument-prompt optional prompt "Text") initial-input))
-   optional))
+INITIAL-INPUT is a string to insert before reading input.
+
+HISTORY and DEFAULT-VALUE are ultimately passed to `read-string',
+which see.
+
+The brackets used are controlled by the string values of
+LEFTBRACE and RIGHTBRACE."
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+    (TeX-argument-insert
+     (if (and (not optional) (TeX-active-mark))
+         (let ((TeX-argument (buffer-substring (point) (mark))))
+           (delete-region (point) (mark))
+           TeX-argument)
+       (TeX-read-string (TeX-argument-prompt optional prompt "Text")
+                        initial-input history default-value))
+     optional)))
 
 (defvar TeX-last-optional-rejected nil
   "Dynamically bound by `TeX-parse-arguments'.")
