@@ -586,17 +586,16 @@ for example \"tcolorboxlib-raster.el\"."
    (TeX-add-symbols
 
     ;; 1.3 Libraries
-    '("tcbuselibrary"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((libs (mapconcat #'identity
-                                (TeX-completing-read-multiple
-                                 (TeX-argument-prompt nil nil "Libraries")
-                                 LaTeX-tcolorbox-library-list)
-                                ",")))
-           (LaTeX-add-tcolorbox-tcbuselibraries libs)
-           (LaTeX-tcolorbox-load-used-libraries)
-           (format "%s" libs)))))
+    `("tcbuselibrary"
+      (TeX-arg-completing-read-multiple LaTeX-tcolorbox-library-list
+                                        "Libraries")
+      ,(lambda (_)
+         (when (= (preceding-char) (string-to-char TeX-grcl))
+           (save-excursion
+             (re-search-backward "\\\\tcbuselibrary{\\([^}]+\\)}"
+                                 (line-beginning-position) t)
+             (LaTeX-add-tcolorbox-tcbuselibraries (match-string-no-properties 1))
+             (LaTeX-tcolorbox-load-used-libraries)))))
 
     ;; 3 Macros for Box Creation
     '("tcblower" 0)
