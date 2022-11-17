@@ -274,15 +274,17 @@ Insert key and value in brackets if OPTIONAL is non-nil."
   "Ask and insert for a new value added to an existing key.
 This is the second mandatory argument of \\SetEnumitemValue
 macro.  Insert the value in brackets if OPTIONAL is non-nil."
-  (let ((key (save-excursion
-               (and (re-search-backward "\\\\SetEnumitemValue{\\([^}]+\\)}"
-                                        (line-beginning-position) t)
-                    (match-string-no-properties 1))))
+  (let ((key (when (= (preceding-char) (string-to-char TeX-grcl))
+               (save-excursion
+                 (re-search-backward "\\\\SetEnumitemValue{\\([^}]+\\)}"
+                                     (line-beginning-position) t)
+                 (match-string-no-properties 1))))
         (val (TeX-read-string
               (TeX-argument-prompt optional nil "String value"))))
-    (LaTeX-add-enumitem-SetEnumitemValues
-     (list (concat "\\SetEnumitemValue{" key "}{" val "}")
-           key val))
+    (when key
+      (LaTeX-add-enumitem-SetEnumitemValues
+       (list (concat "\\SetEnumitemValue{" key "}{" val "}")
+             key val)))
     (TeX-argument-insert val optional)))
 
 (TeX-add-style-hook
@@ -447,10 +449,10 @@ macro.  Insert the value in brackets if OPTIONAL is non-nil."
       (TeX-arg-completing-read
        ,(lambda ()
           (save-excursion
-            (and (re-search-backward "\\\\SetEnumitemValue{\\([^}]+\\)}"
-                                     (line-beginning-position) t)
-                 (cadr (assoc (match-string-no-properties 1)
-                              LaTeX-enumitem-key-val-options)))))
+            (re-search-backward "\\\\SetEnumitemValue{\\([^}]+\\)}"
+                                (line-beginning-position) t)
+            (cadr (assoc (match-string-no-properties 1)
+                         LaTeX-enumitem-key-val-options))))
        "Replacement"))
 
     ;; v3.6 has a macro for visual debugging.
