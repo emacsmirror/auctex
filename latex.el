@@ -7624,8 +7624,7 @@ or `LaTeX-environment-list' and returns it."
           (t nil))
     result))
 
-(defvar LaTeX-completion-function-map-alist-keyval
-  '((LaTeX-enumitem-env-with-opts . LaTeX-enumitem-key-val-options))
+(defvar LaTeX-completion-function-map-alist-keyval '()
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an
 AUCTeX style file which queries and inserts something in the
