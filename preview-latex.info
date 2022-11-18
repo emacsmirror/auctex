@@ -1,18 +1,18 @@
-This is preview-latex.info, produced by makeinfo version 6.8 from
+This is preview-latex.info, produced by makeinfo version 7.0 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.1.5 from 2022-10-20).
+(version 13.1.6 from 2022-11-18).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
-Free Software Foundation, Inc.
+   Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
+Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
      Version 1.3 or any later version published by the Free Software
      Foundation; with no Invariant Sections, no Front-Cover Texts and no
      Back-Cover Texts.  A copy of the license is included in the section
-     entitled "GNU Free Documentation License."
+     entitled “GNU Free Documentation License.”
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
 * preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
@@ -34,11 +34,11 @@ Copying this Manual::.
 
    preview-latex is a package embedding preview fragments into Emacs
 source buffers under the AUCTeX editing environment for LaTeX.  It uses
-'preview.sty' for the extraction of certain environments (most notably
+‘preview.sty’ for the extraction of certain environments (most notably
 displayed formulas).  Other applications of this style file are possible
 and exist.
 
-   The name of the package is really 'preview-latex', all in lowercase
+   The name of the package is really ‘preview-latex’, all in lowercase
 letters, with a hyphen.  If you typeset it, you can use a sans-serif
 font to visually offset it.
 
@@ -103,19 +103,19 @@ File: preview-latex.info,  Node: What use is it?,  Next: Activating preview-late
 WYSIWYG (what you see is what you get) sometimes is considered all the
 rage, sometimes frowned upon.  Do we really want it?  Wrong question.
 The right question is _what_ we want from it.  Except when finetuning
-the layout, we don't want to use printer fonts for on-screen text
+the layout, we don’t want to use printer fonts for on-screen text
 editing.  The low resolution and contrast of a computer screen render
 all but the coarsest printer fonts (those for low-quality newsprint)
 unappealing, and the margins and pagination of the print are not wanted
 on the screen, either.  On the other hand, more complex visual
-compositions like math formulas and tables can't easily be taken in when
+compositions like math formulas and tables can’t easily be taken in when
 seen only in the source.  preview-latex strikes a balance: it only uses
 graphic renditions of the output for certain, configurable constructs,
 does this only when told, and then right in the source code.  Switching
 back and forth between the source and preview is easy and natural and
 can be done for each image independently.  Behind the scenes of
 preview-latex, a sophisticated framework of other programs like
-'dvipng', Dvips and Ghostscript are employed together with a special
+‘dvipng’, Dvips and Ghostscript are employed together with a special
 LaTeX style file for extracting the material of interest in the
 background and providing fast interactive response.
 
@@ -134,10 +134,10 @@ installation.
 
      (load "preview-latex.el" nil t t)
 
-   If you still don't get a "Preview" menu in LaTeX mode in spite of
-AUCTeX showing its "Command", your installation is broken.  One possible
-cause are duplicate Lisp files that might be detectable with 'M-x
-list-load-path-shadows <RET>'.
+   If you still don’t get a “Preview” menu in LaTeX mode in spite of
+AUCTeX showing its “Command”, your installation is broken.  One possible
+cause are duplicate Lisp files that might be detectable with ‘M-x
+list-load-path-shadows <RET>’.
 
 
 File: preview-latex.info,  Node: Getting started,  Next: Basic modes of operation,  Prev: Activating preview-latex,  Up: Introduction
@@ -147,12 +147,12 @@ File: preview-latex.info,  Node: Getting started,  Next: Basic modes of operatio
 
 Once activated, preview-latex and its documentation will be accessible
 via its menus (note that preview-latex requires AUCTeX to be loaded).
-When you have loaded a LaTeX document (a sample document 'circ.tex' is
+When you have loaded a LaTeX document (a sample document ‘circ.tex’ is
 included in the distribution, but most documents including math and/or
-figures should do), you can use its menu or 'C-c C-p C-d' (for
-'Preview/Document').  Previews will now be generated for various objects
+figures should do), you can use its menu or ‘C-c C-p C-d’ (for
+‘Preview/Document’).  Previews will now be generated for various objects
 in your document.  You can use the time to take a short look at the
-other menu entries and key bindings in the 'Preview' menu.  You'll see
+other menu entries and key bindings in the ‘Preview’ menu.  You’ll see
 the previewed objects change into a roadworks sign when preview-latex
 has determined just what it is going to preview.  Note that you can
 freely navigate the buffer while this is going on.  When the process is
@@ -163,18 +163,18 @@ signs appear, since that is the moment when the correlation between the
 original text and the buffer locations gets established.  If the buffer
 changes before that point of time, the previews will not be placed where
 they belong.  If you do want to change some obvious error you just
-spotted, we recommend you stop the background process by pressing 'C-c
-C-k'.
+spotted, we recommend you stop the background process by pressing ‘C-c
+C-k’.
 
    To see/edit the LaTeX code for a specific object, put the point (the
-cursor) on it and press 'C-c C-p C-p' (for 'Preview/at point').  It will
+cursor) on it and press ‘C-c C-p C-p’ (for ‘Preview/at point’).  It will
 also do to click with the middle mouse button on the preview.  Now you
-can edit the code, and generate a new preview by again pressing 'C-c C-p
-C-p' (or by clicking with the middle mouse button on the icon before the
+can edit the code, and generate a new preview by again pressing ‘C-c C-p
+C-p’ (or by clicking with the middle mouse button on the icon before the
 edited text).
 
-   If you are using the 'desktop' package, previews will remain from one
-session to the next as long as you don't kill your buffer.
+   If you are using the ‘desktop’ package, previews will remain from one
+session to the next as long as you don’t kill your buffer.
 
 
 File: preview-latex.info,  Node: Basic modes of operation,  Next: More documentation,  Prev: Getting started,  Up: Introduction
@@ -183,7 +183,7 @@ File: preview-latex.info,  Node: Basic modes of operation,  Next: More documenta
 ============================
 
 preview-latex has a number of methods for generating its graphics.  Its
-default operation is equivalent to using the 'LaTeX' command from
+default operation is equivalent to using the ‘LaTeX’ command from
 AUCTeX.  If this happens to be a call of PDFLaTeX generating PDF output
 (you need at least AUCTeX 11.51 for this), then Ghostscript will be
 called directly on the resulting PDF file.  If a DVI file gets produced,
@@ -193,10 +193,10 @@ first Dvips and then Ghostscript get called by default.
 
      M-x customize-option <RET> preview-image-type <RET>
 
-The default is 'png' (the most efficient image type).  A special setting
-is 'dvipng' in case you have the 'dvipng' program installed.  In this
-case, 'dvipng' will be used for converting DVI files and Ghostscript
-(with a 'PNG' device) for converting PDF files.  'dvipng' is much faster
+The default is ‘png’ (the most efficient image type).  A special setting
+is ‘dvipng’ in case you have the ‘dvipng’ program installed.  In this
+case, ‘dvipng’ will be used for converting DVI files and Ghostscript
+(with a ‘PNG’ device) for converting PDF files.  ‘dvipng’ is much faster
 than the combination of Dvips and Ghostscript.  You can get downloads,
 access to its CVS archive and further information from its project site
 (https://savannah.nongnu.org/projects/dvipng).
@@ -213,15 +213,15 @@ with
 
      info preview-latex
 
-or by pressing 'C-h i d m preview-latex <RET>' in Emacs.  Once
-preview-latex is activated, you can instead use 'C-c C-p <TAB>' (or the
-menu entry 'Preview/Read documentation').
+or by pressing ‘C-h i d m preview-latex <RET>’ in Emacs.  Once
+preview-latex is activated, you can instead use ‘C-c C-p <TAB>’ (or the
+menu entry ‘Preview/Read documentation’).
 
    Depending on your installation, a printable manual may also be
-available in the form of 'preview-latex.pdf'.
+available in the form of ‘preview-latex.pdf’.
 
    Detailed documentation for the LaTeX style used for extracting the
-preview images is placed in 'preview.pdf' in a suitable directory during
+preview images is placed in ‘preview.pdf’ in a suitable directory during
 installation; on typical TeX Live-based systems,
 
      texdoc preview
@@ -252,7 +252,7 @@ File: preview-latex.info,  Node: Contacts,  Prev: Availability,  Up: Introductio
 1.7 Contacts
 ============
 
-Bug reports should be sent by using 'M-x preview-report-bug <RET>', as
+Bug reports should be sent by using ‘M-x preview-report-bug <RET>’, as
 this will fill in a lot of information interesting to us.  If the
 installation fails (but this should be a rare event), report bugs to
 <bug-auctex@gnu.org>.
@@ -260,18 +260,18 @@ installation fails (but this should be a rare event), report bugs to
    There is a general discussion list for AUCTeX which also covers
 preview-latex, look at <https://lists.gnu.org/mailman/listinfo/auctex>.
 For more information on the mailing list, send a message with just the
-word "help" as subject or body to <auctex-request@gnu.org>.  For the
+word “help” as subject or body to <auctex-request@gnu.org>.  For the
 developers, there is the <auctex-devel@gnu.org> list; it would probably
 make sense to direct feature requests and questions about internal
 details there.  There is a low-volume read-only announcement list
-available to which you can subscribe by sending a mail with "subscribe"
+available to which you can subscribe by sending a mail with “subscribe”
 in the subject to <info-auctex-request@gnu.org>.
 
    Offers to support further development will be appreciated.  If you
 want to show your appreciation with a donation to the main developer,
 you can do so via PayPal to <dak@gnu.org>, and of course you can arrange
 for service contracts or for added functionality.  Take a look at the
-'TODO' list for suggestions in that area.
+‘TODO’ list for suggestions in that area.
 
 
 File: preview-latex.info,  Node: Installation,  Next: Keys and lisp,  Prev: Introduction,  Up: Top
@@ -287,15 +287,15 @@ File: preview-latex.info,  Node: Keys and lisp,  Next: Simple customization,  Pr
 3 Key bindings and user-level lisp functions
 ********************************************
 
-preview-latex adds key bindings starting with 'C-c C-p' to the supported
+preview-latex adds key bindings starting with ‘C-c C-p’ to the supported
 modes of AUCTeX (*Note (auctex)Key Index::).  It will also add its own
-'Preview' menu in the menu bar, as well as an icon in the toolbar.
+‘Preview’ menu in the menu bar, as well as an icon in the toolbar.
 
    The following only describes the interactive use: view the
-documentation strings with 'C-h f' if you need the Lisp information.
+documentation strings with ‘C-h f’ if you need the Lisp information.
 
-'C-c C-p C-p'
-'preview-at-point'
+‘C-c C-p C-p’
+‘preview-at-point’
 Preview/Generate previews (or toggle) at point
      If the cursor is positioned on or inside of a preview area, this
      toggles its visibility, regenerating the preview if necessary.  If
@@ -303,19 +303,19 @@ Preview/Generate previews (or toggle) at point
      surroundings include all areas up to the next valid preview, unless
      invalid previews occur before, in which case the area will include
      the last such preview in either direction.  And overriding any
-     other action, if a region is active ('transient-mark-mode'), it is
-     run through 'preview-region'.
+     other action, if a region is active (‘transient-mark-mode’), it is
+     run through ‘preview-region’.
 
-'<mouse-2>'
+‘<mouse-2>’
      The middle mouse button has a similar action bound to it as
-     'preview-at-point', only that it knows which preview to apply it to
+     ‘preview-at-point’, only that it knows which preview to apply it to
      according to the position of the click.  You can click either
      anywhere on a previewed image, or when the preview is opened and
      showing the source text, you can click on the icon preceding the
      source text.  In other areas, the usual mouse key action
      (typically: paste) is not affected.
 
-'<mouse-3>'
+‘<mouse-3>’
      The right mouse key pops up a context menu with several options:
      toggling the preview, regenerating it, removing it (leaving the
      unpreviewed text), copying the text inside of the preview, and
@@ -323,8 +323,8 @@ Preview/Generate previews (or toggle) at point
      or news article.  This is a one-image variant of the following
      command:
 
-'C-c C-p C-w'
-'preview-copy-region-as-mml'
+‘C-c C-p C-w’
+‘preview-copy-region-as-mml’
 Copy a region as MML
      This command is also available as a variant in the context menu on
      the right mouse button (where the region is the preview that has
@@ -336,78 +336,78 @@ Copy a region as MML
      If you regenerate or otherwise kill the preview in its source
      buffer before the mail or news gets posted, this will fail.  Also
      you should generate images you want to send with
-     'preview-transparent-border' set to 'nil', or the images will have
+     ‘preview-transparent-border’ set to ‘nil’, or the images will have
      an ugly border.  preview-latex detects this condition and asks
      whether to regenerate the region with borders switched off.  As
-     this is an asynchronous operation running in the background, you'll
+     this is an asynchronous operation running in the background, you’ll
      need to call this command explicitly again to get the newly
      generated images into the kill ring.
 
-     Preview your articles with 'mml-preview' (on 'C-c C-m P') to make
+     Preview your articles with ‘mml-preview’ (on ‘C-c C-m P’) to make
      sure they look fine.
 
-'C-c C-p C-e'
-'preview-environment'
+‘C-c C-p C-e’
+‘preview-environment’
 Preview/Generate previews for environment
      Run preview on LaTeX environment.  The environments in
-     'preview-inner-environments' are treated as inner levels so that
-     for instance, the 'split' environment in
-     '\begin{equation}\begin{split}...\end{split}\end{equation}' is
+     ‘preview-inner-environments’ are treated as inner levels so that
+     for instance, the ‘split’ environment in
+     ‘\begin{equation}\begin{split}...\end{split}\end{equation}’ is
      properly displayed.  If called with a numeric argument, the
      corresponding number of outward nested environments is treated as
      inner levels.
 
-'C-c C-p C-s'
-'preview-section'
+‘C-c C-p C-s’
+‘preview-section’
 Preview/Generate previews for section
      Run preview on this LaTeX section.
 
-'C-c C-p C-r'
-'preview-region'
+‘C-c C-p C-r’
+‘preview-region’
 Preview/Generate previews for region
      Run preview on current region.
 
-'C-c C-p C-b'
-'preview-buffer'
+‘C-c C-p C-b’
+‘preview-buffer’
 Preview/Generate previews for buffer
      Run preview on the current buffer.
 
-'C-c C-p C-d'
-'preview-document'
+‘C-c C-p C-d’
+‘preview-document’
 Preview/Generate previews for document
      Run preview on the current document.
 
-'C-c C-p C-c C-p'
-'preview-clearout-at-point'
+‘C-c C-p C-c C-p’
+‘preview-clearout-at-point’
 Preview/Remove previews at point
      Clear out (remove) the previews that are immediately adjacent to
      point.
 
-'C-c C-p C-c C-s'
-'preview-clearout-section'
+‘C-c C-p C-c C-s’
+‘preview-clearout-section’
 Preview/Remove previews from section
      Clear out all previews in current section.
 
-'C-c C-p C-c C-r'
-'preview-clearout'
+‘C-c C-p C-c C-r’
+‘preview-clearout’
 Preview/Remove previews from region
      Clear out all previews in the current region.
 
-'C-c C-p C-c C-b'
-'preview-clearout-buffer'
+‘C-c C-p C-c C-b’
+‘preview-clearout-buffer’
 Preview/Remove previews from buffer
      Clear out all previews in current buffer.  This makes the current
      buffer lose all previews.
 
-'C-c C-p C-c C-d'
-'preview-clearout-document'
+‘C-c C-p C-c C-d’
+‘preview-clearout-document’
 Preview/Remove previews from document
      Clear out all previews in current document.  The document consists
      of all buffers that have the same master file as the current
      buffer.  This makes the current document lose all previews.
 
-'C-c C-p C-f'
-'preview-cache-preamble'
+‘C-c C-p C-f’
+‘preview-cache-preamble’
 Preview/Turn preamble cache on
      Dump a pregenerated format file.  For the rest of the session, this
      file is used when running on the same master file.  Use this if you
@@ -421,25 +421,25 @@ Preview/Turn preamble cache on
 
      Note that support for preamble cache is limited for LaTeX variants.
      c.f. <https://github.com/davidcarlisle/dpctex/issues/15>
-        * XeLaTeX cannot use preamble cache at all.  The reason is
-          intrinsic in XeLaTeX, so preview-latex can't help.
-        * LuaLaTeX works with preamble cache only when the preamble is
-          simple enough, i.e., when it doesn't load opentype fonts and
-          it doesn't use lua codes in preamble.
+        • XeLaTeX cannot use preamble cache at all.  The reason is
+          intrinsic in XeLaTeX, so preview-latex can’t help.
+        • LuaLaTeX works with preamble cache only when the preamble is
+          simple enough, i.e., when it doesn’t load opentype fonts and
+          it doesn’t use lua codes in preamble.
 
-'C-c C-p C-c C-f'
-'preview-cache-preamble-off'
+‘C-c C-p C-c C-f’
+‘preview-cache-preamble-off’
 Preview/Turn preamble cache off
      Clear the pregenerated format file and stop using preambles for the
      current document.  If the caching gives you problems, use this.
 
-'C-c C-p C-i'
-'preview-goto-info-page'
+‘C-c C-p C-i’
+‘preview-goto-info-page’
 Preview/Read Documentation
      Read this info manual.
 
-'M-x preview-report-bug <RET>'
-'preview-report-bug'
+‘M-x preview-report-bug <RET>’
+‘preview-report-bug’
 Preview/Report Bug
      This is the preferred way of reporting bugs as it will fill in what
      version of preview-latex you are using as well as versions of
@@ -447,7 +447,7 @@ Preview/Report Bug
      settings.  Please use this method of reporting, if at all possible
      and before reporting a bug, have a look at *note Known problems::.
 
-'C-c C-k'
+‘C-c C-k’
 LaTeX/TeX Output/Kill Job
      Kills the preview-generating process.  This is really an AUCTeX
      keybinding, but it is included here as a hint.  If you are
@@ -460,50 +460,50 @@ File: preview-latex.info,  Node: Simple customization,  Next: Known problems,  P
 4 Simple customization
 **********************
 
-Customization options can be found by typing 'M-x customize-group <RET>
-preview <RET>'.  Remember to set the option when you have changed it.
+Customization options can be found by typing ‘M-x customize-group <RET>
+preview <RET>’.  Remember to set the option when you have changed it.
 The list of suggestions can be made very long (and is covered in detail
 in *note For advanced users::), but some are:
 
-   * Change the color of the preview background
+   • Change the color of the preview background
 
      If you use a non-white background in Emacs, you might have color
      artifacts at the edges of your previews.  Playing around with the
-     option 'preview-transparent-color' in the 'Preview Appearance'
+     option ‘preview-transparent-color’ in the ‘Preview Appearance’
      group might improve things.  With some settings, the cursor may
      cover the whole background of a preview, however.
 
      This option is specific to the display engine in use.
 
-   * Showing '\label's
+   • Showing ‘\label’s
 
-     When using preview-latex, the '\label's are hidden by the previews.
+     When using preview-latex, the ‘\label’s are hidden by the previews.
      It is possible to make them visible in the output by using the
-     LaTeX package 'showkeys' alternatively 'showlabels'.  However, the
+     LaTeX package ‘showkeys’ alternatively ‘showlabels’.  However, the
      boxes of these labels will be outside the region preview-latex
      considers as the preview image.  To enable a similar mechanism
-     internal to preview-latex, enable the 'showlabels' option in the
-     variable 'preview-default-option-list' in the 'Preview Latex'
+     internal to preview-latex, enable the ‘showlabels’ option in the
+     variable ‘preview-default-option-list’ in the ‘Preview Latex’
      group.
 
      It must be noted, however, that a much better idea may be to use
      the RefTeX package for managing references.  *Note RefTeX in a
      Nutshell: (reftex)RefTeX in a Nutshell.
 
-   * Open previews automatically
+   • Open previews automatically
 
      The current default is to open previews automatically when you
      enter them with cursor left/right motions.  Auto-opened previews
      will close again once the cursor leaves them again (this is also
      done when doing incremental search, or query-replace operations),
      unless you changed anything in it.  In that case, you will have to
-     regenerate the preview (via e.g., 'C-c C-p C-p').  Other options
-     for 'preview-auto-reveal' are available via 'customize'.
+     regenerate the preview (via e.g., ‘C-c C-p C-p’).  Other options
+     for ‘preview-auto-reveal’ are available via ‘customize’.
 
-   * Automatically cache preambles
+   • Automatically cache preambles
 
      Currently preview-latex asks you whether you want to cache the
-     document preamble (everything before '\begin{document}') before it
+     document preamble (everything before ‘\begin{document}’) before it
      generates previews for a buffer the first time.  Caching the
      preamble will significantly speed up regeneration of previews.  The
      larger your preamble is, the more this will be apparent.  Once a
@@ -511,15 +511,15 @@ in *note For advanced users::), but some are:
      is changed, and dump a fresh format in that case.  If you
      experience problems with this, or if you want it to happen without
      asking you the first time, you can customize the variable
-     'preview-auto-cache-preamble'.
+     ‘preview-auto-cache-preamble’.
 
-   * Attempt to keep counters accurate when editing
+   • Attempt to keep counters accurate when editing
 
      Since preview-latex frequently runs only small regions through
      LaTeX, values like equation counters are not consistent from run to
      run.  If this bothers you, customize the variable
-     'preview-preserve-counters' to 't' (this is consulted by
-     'preview-required-option-list').  LaTeX will then output a load of
+     ‘preview-preserve-counters’ to ‘t’ (this is consulted by
+     ‘preview-required-option-list’).  LaTeX will then output a load of
      counter information during compilation, and this information will
      be used on subsequent updates to keep counters set to useful
      values.  The additional information takes additional time to
@@ -527,21 +527,21 @@ in *note For advanced users::), but some are:
      all previews at once, and maybe you will be less tempted to do so
      when counters appear more or less correct.
 
-   * Preview your favourite LaTeX constructs
+   • Preview your favourite LaTeX constructs
 
      If you have a certain macro or environment that you want to
      preview, first check if it can be chosen by cutomizing
-     'preview-default-option-list' in the 'Preview Latex' group.
+     ‘preview-default-option-list’ in the ‘Preview Latex’ group.
 
      If it is not available there, you can add it to
-     'preview-default-preamble' also in the 'Preview Latex' group, by
-     adding a '\PreviewMacro' or '\PreviewEnvironment' entry (*note
-     Provided commands::) _after_ the '\RequirePackage' line.  For
-     example, if you want to preview the 'center' environment, press the
+     ‘preview-default-preamble’ also in the ‘Preview Latex’ group, by
+     adding a ‘\PreviewMacro’ or ‘\PreviewEnvironment’ entry (*note
+     Provided commands::) _after_ the ‘\RequirePackage’ line.  For
+     example, if you want to preview the ‘center’ environment, press the
      <Show> button and the last <INS> button, then add
 
           \PreviewEnvironment{center}
-     in the space that just opened.  Note that since 'center' is a
+     in the space that just opened.  Note that since ‘center’ is a
      generic formatting construct of LaTeX, a general configuration like
      that is not quite prudent.  You better to do this on a per-document
      base so that it is easy to disable this behavior when you find this
@@ -554,21 +554,21 @@ in *note For advanced users::), but some are:
      in the same directory with your project (*note Package options::).
 
      The usual file for preview-latex preconfiguration is
-     'prauctex.cfg'.  If you also want to keep the systemwide defaults,
+     ‘prauctex.cfg’.  If you also want to keep the systemwide defaults,
      you should add a line
 
           \InputIfFileExists{preview/prauctex.cfg}{}{}
-     to your own version of 'prauctex.cfg' (this is assuming that global
-     files relating to the 'preview' package are installed in a
-     subdirectory 'preview', the default behavior).
+     to your own version of ‘prauctex.cfg’ (this is assuming that global
+     files relating to the ‘preview’ package are installed in a
+     subdirectory ‘preview’, the default behavior).
 
-   * Don't preview inline math
+   • Don’t preview inline math
 
      If you have performance problems because your document is full of
-     inline math ('$...$'), or if your usage of '$' conflicts with
-     preview-latex's, you can turn off inline math previews.  In the
-     'Preview Latex' group, remove 'textmath' from
-     'preview-default-option-list' by customizing this variable.
+     inline math (‘$...$’), or if your usage of ‘$’ conflicts with
+     preview-latex’s, you can turn off inline math previews.  In the
+     ‘Preview Latex’ group, remove ‘textmath’ from
+     ‘preview-default-option-list’ by customizing this variable.
 
 
 File: preview-latex.info,  Node: Known problems,  Next: For advanced users,  Prev: Simple customization,  Up: Top
@@ -590,7 +590,7 @@ newer versions of the problematic software or by simple patches.
 * Black texts are too hard to read on dark background::
 
    If you find something not mentioned here, please send a bug report
-using 'M-x preview-report-bug <RET>', which will fill in a lot of
+using ‘M-x preview-report-bug <RET>’, which will fill in a lot of
 information interesting to us and send it to the <bug-auctex@gnu.org>
 list.  Please use the bug reporting commands if at all possible.
 
@@ -602,20 +602,20 @@ File: preview-latex.info,  Node: Font problems with Dvips,  Next: Too small boun
 
 Some fonts have been reported to produce wrong characters with
 preview-latex.  preview-latex calls Dvips by default with the option
-'-Pwww' in order to get scalable fonts for nice results.  If you are
+‘-Pwww’ in order to get scalable fonts for nice results.  If you are
 using antialiasing, however, the results might be sufficiently nice with
-bitmapped fonts, anyway.  You might try '-Ppdf' for another stab at
+bitmapped fonts, anyway.  You might try ‘-Ppdf’ for another stab at
 scalable fonts, or other printer definitions.  Use
 
-     'M-x customize-option <RET> preview-fast-dvips-command <RET>'
+     ‘M-x customize-option <RET> preview-fast-dvips-command <RET>’
 and
-     'M-x customize-option <RET> preview-dvips-command <RET>'
+     ‘M-x customize-option <RET> preview-dvips-command <RET>’
 in order to customize this.
 
    One particular problem is that several printer setup files (typically
-in a file called '/usr/share/texmf/dvips/config/config.pdf' if you are
-using the '-Ppdf' switch) contain the 'G' option for 'character
-shifting'.  This option will result in 'fi' being rendered as '£'
+in a file called ‘/usr/share/texmf/dvips/config/config.pdf’ if you are
+using the ‘-Ppdf’ switch) contain the ‘G’ option for ‘character
+shifting’.  This option will result in ‘fi’ being rendered as ‘£’
 (British Pounds sign) in several fonts, unless your version of Dvips has
 a long-standing bug in its implementation fixed (only very recent
 versions of Dvips have).
@@ -629,21 +629,21 @@ File: preview-latex.info,  Node: Too small bounding boxes,  Next: x-symbol inter
 The bounding box of a preview is determined by the LaTeX package using
 the pure TeX bounding boxes.  If there is material extending outside of
 the TeX box, that material will be missing from the preview image.  This
-happens for the label-showing boxes from the 'showkeys' package.  This
-particular problem can be circumvented by using the 'showlabels' option
+happens for the label-showing boxes from the ‘showkeys’ package.  This
+particular problem can be circumvented by using the ‘showlabels’ option
 of the preview package.
 
    In general, you should try to fix the problem in the TeX code, like
 avoiding drawing outside of the picture with PSTricks.
 
-   One possible remedy is to set 'preview-fast-conversion' to 'Off'
+   One possible remedy is to set ‘preview-fast-conversion’ to ‘Off’
 (*note The Emacs interface::).  The conversion will take more time, but
 will then use the bounding boxes from EPS files generated by Dvips.
 
    Dvips generally does not miss things, but it does not understand
-PostScript constructs like '\resizebox' or '\rotate' commands, so will
+PostScript constructs like ‘\resizebox’ or ‘\rotate’ commands, so will
 generate rather wrong boxes for those.  Dvips can be helped with the
-'psfixbb' package option to preview (*note The LaTeX style file::),
+‘psfixbb’ package option to preview (*note The LaTeX style file::),
 which will tag the corners of the included TeX box.  This will mostly be
 convenient for _pure_ PostScript stuff like that created by PSTricks,
 which Dvips would otherwise reserve no space for.
@@ -655,26 +655,26 @@ File: preview-latex.info,  Node: x-symbol interoperation,  Next: Middle-clicks p
 ===========================
 
 Thanks to the work of Christoph Wedler, starting with version
-'4.0h/beta' of x-symbol, the line parsing of AUCTeX and preview-latex is
+‘4.0h/beta’ of x-symbol, the line parsing of AUCTeX and preview-latex is
 fully supported.  Earlier versions exhibit problems.  However, versions
-before '4.2.2' will cause a drastic slowdown of preview-latex's parsing
-pass, so we don't recommend to use versions earlier than that.
+before ‘4.2.2’ will cause a drastic slowdown of preview-latex’s parsing
+pass, so we don’t recommend to use versions earlier than that.
 
    If you wonder what x-symbol is, it is a package that transforms
 various tokens and subscripts to a more readable form while editing and
 offers a few input methods handy especially for dealing with math.  Take
 a look at <http://x-symbol.sourceforge.net/>.
 
-   x-symbol versions up to '4.5.1-beta' at least require an 8bit-clean
+   x-symbol versions up to ‘4.5.1-beta’ at least require an 8bit-clean
 TeX implementation (meaning that its terminal output should not use
-'^^'-started escape sequences) for cooperation with preview-latex.
+‘^^’-started escape sequences) for cooperation with preview-latex.
 Later versions may get along without it, like preview-latex does now.
 
-   If you experience problems with 'circ.tex' in connection with both
+   If you experience problems with ‘circ.tex’ in connection with both
 x-symbol and Latin-1 characters, you may need to change your language
 environment or, as a last resort, customize the variable
-'LaTeX-command-style' by replacing the command 'latex' with 'latex
--translate-file=cp8bit'.
+‘LaTeX-command-style’ by replacing the command ‘latex’ with ‘latex
+-translate-file=cp8bit’.
 
 
 File: preview-latex.info,  Node: Middle-clicks paste instead of toggling,  Next: No images are displayed with gs 9.27 and earlier,  Prev: x-symbol interoperation,  Up: Known problems
@@ -682,10 +682,10 @@ File: preview-latex.info,  Node: Middle-clicks paste instead of toggling,  Next:
 5.4 Middle-clicks paste instead of toggling
 ===========================================
 
-This is probably the fault of your favorite package.  'isearch.el' is
+This is probably the fault of your favorite package.  ‘isearch.el’ is
 known to be affected while searches are in progress, but the code is
 such a complicated mess that no patch is in sight.  Better just end the
-search with '<RET>' before toggling and resume with 'C-s C-s' or similar
+search with ‘<RET>’ before toggling and resume with ‘C-s C-s’ or similar
 afterwards.  Since previews over the current match will auto-open,
 anyway, this should not be much of a problem in practice.
 
@@ -702,45 +702,45 @@ and preview-latex can display no images under certain circumstances.
 
    A new method implemented alternatively works only with Ghostscript >
 9.27.  If you are using Ghostscript 9.27 or earlier, customize the
-option 'preview-pdf-adjust-color-method'.
+option ‘preview-pdf-adjust-color-method’.
 
  -- User Option: preview-pdf-adjust-color-method
      Method to adjust colors of images generated from PDF.  It is not
      consulted when the LaTeX command produces DVI files.
 
-     When the option is 't' (default), preview-latex adjusts the FG and
+     When the option is ‘t’ (default), preview-latex adjusts the FG and
      BG colors of the generated images by the new method.  This method
-     requires that Ghostscript has working 'DELAYBIND' feature, thus is
+     requires that Ghostscript has working ‘DELAYBIND’ feature, thus is
      invalid with gs 9.27 (and possibly < 9.27).
 
-     When it is 'compatible', preview-latex uses traditional method.
+     When it is ‘compatible’, preview-latex uses traditional method.
      This option is provided for backward compatibility with older gs.
      See the below explanation for detail.
 
-     When 'nil', no adjustment is done and "black on white" image is
+     When ‘nil’, no adjustment is done and “black on white” image is
      generated regardless of Emacs color.  This is provided for fallback
      for gs 9.27 users with customized foreground color.  See the below
      explanation for detail.
 
      When the LaTeX command produces PDF rather than DVI and Emacs has
-     non-trivial foreground color, the traditional method ('compatible')
-     makes gs >= 9.27 to stop with error.  Here, "non-trivial foreground
-     color" includes customized themes.
+     non-trivial foreground color, the traditional method (‘compatible’)
+     makes gs >= 9.27 to stop with error.  Here, “non-trivial foreground
+     color” includes customized themes.
 
      If you use such non-trivial foreground color and the version of
      Ghostscript equals to 9.27, you have two options:
-       1. Choose the value 'compatible' and customize
-          'preview-reference-face' to have default (black) foreground
+       1. Choose the value ‘compatible’ and customize
+          ‘preview-reference-face’ to have default (black) foreground
           color.  This makes the generated image almost non-readable on
           dark background, so the next option would be your only choice
           in that case.
-       2. Choose the value 'nil', which forces plain "black on white"
+       2. Choose the value ‘nil’, which forces plain “black on white”
           appearance for the generated image.  You can at least read
           what are written in the image although they may not match with
           your Emacs color well.
 
-     The default value used to be 'compatible' for short period before
-     Ghostscript 9.50 was released but now is 't'.
+     The default value used to be ‘compatible’ for short period before
+     Ghostscript 9.50 was released but now is ‘t’.
 
 
 File: preview-latex.info,  Node: Black texts are too hard to read on dark background,  Prev: No images are displayed with gs 9.27 and earlier,  Up: Known problems
@@ -749,11 +749,11 @@ File: preview-latex.info,  Node: Black texts are too hard to read on dark backgr
 =======================================================
 
 Unfortunately, foreground color adjustment discussed in the previous
-node doesn't work for XeLaTeX for technical reason.  The texts are
-always rendered as black in the preview images, so it's almost
+node doesn’t work for XeLaTeX for technical reason.  The texts are
+always rendered as black in the preview images, so it’s almost
 impossible to read them on dark background.  Hence XeLaTeX users who
 like dark background in Emacs frame should customize
-'preview-pdf-adjust-color-method' to 'nil'.
+‘preview-pdf-adjust-color-method’ to ‘nil’.
 
 
 File: preview-latex.info,  Node: For advanced users,  Next: ToDo,  Prev: Known problems,  Up: Top
@@ -789,24 +789,24 @@ WYSIWYG functionality in the AUCTeX editing environment, generation of
 previews in LyX, as part of the operation of the pst-pdf package, the
 tbook XML system and some other tools.
 
-   Producing EPS files with Dvips and its derivatives using the '-E'
+   Producing EPS files with Dvips and its derivatives using the ‘-E’
 option is not a good alternative: People make do by fiddling around with
-'\thispagestyle{empty}' and hoping for the best (namely, that the
+‘\thispagestyle{empty}’ and hoping for the best (namely, that the
 specified contents will indeed fit on single pages), and then trying to
 guess the baseline of the resulting code and stuff, but this is at best
 dissatisfactory.  The preview package provides an easy way to ensure
 that exactly one page per request gets shipped, with a well-defined
 baseline and no page decorations.  While you still can use the preview
-package with the 'classic'
+package with the ‘classic’
 
      dvips -E -i
 
-invocation, there are better ways available that don't rely on Dvips not
+invocation, there are better ways available that don’t rely on Dvips not
 getting confused by PostScript specials.
 
-   For most applications, you'll want to make use of the 'tightpage'
+   For most applications, you’ll want to make use of the ‘tightpage’
 option.  This will embed the page dimensions into the PostScript or PDF
-code, obliterating the need to use the '-E -i' options to Dvips.  You
+code, obliterating the need to use the ‘-E -i’ options to Dvips.  You
 can then produce all image files with a single run of Ghostscript from a
 single PDF or PostScript (as opposed to EPS) file.
 
@@ -846,10 +846,10 @@ several things that other packages may also provide.
 
    The following options are available:
 
-'active'
+‘active’
      is the most essential option.  If this option is not specified, the
-     'preview' package will be inactive and the document will be typeset
-     as if the 'preview' package were not loaded, except that all
+     ‘preview’ package will be inactive and the document will be typeset
+     as if the ‘preview’ package were not loaded, except that all
      declarations and environments defined by the package are still
      legal but have no effect.  This allows defining previewing
      characteristics in your document, and only activating them by
@@ -857,72 +857,72 @@ several things that other packages may also provide.
 
           latex '\PassOptionsToPackage{active}{preview} \input{FILENAME}'
 
-'noconfig'
-     Usually the file 'prdefault.cfg' gets loaded whenever the 'preview'
-     package gets activated.  'prdefault.cfg' is supposed to contain
+‘noconfig’
+     Usually the file ‘prdefault.cfg’ gets loaded whenever the ‘preview’
+     package gets activated.  ‘prdefault.cfg’ is supposed to contain
      definitions that can cater for otherwise bad results, for example,
      if a certain document class would otherwise lead to trouble.  It
      also can be used to override any settings made in this package,
      since it is loaded at the very end of it.  In addition, there may
-     be configuration files specific for certain 'preview' options like
-     'auctex' which have more immediate needs.  The 'noconfig' option
+     be configuration files specific for certain ‘preview’ options like
+     ‘auctex’ which have more immediate needs.  The ‘noconfig’ option
      suppresses loading of those option files, too.
-'psfixbb'
+‘psfixbb’
      Dvips determines the bounding boxes from the material in the DVI
      file it understands.  Lots of PostScript specials are not part of
      that.  Since the TeX boxes do not make it into the DVI file, but
      merely characters, rules and specials do, Dvips might include far
-     too small areas.  The option 'psfixbb' will include '/dev/null' as
+     too small areas.  The option ‘psfixbb’ will include ‘/dev/null’ as
      a graphic file in the ultimate upper left and lower right corner of
      the previewed box.  This will make Dvips generate an appropriate
      bounding box.
-'dvips'
+‘dvips’
      If this option is specified as a class option or to other packages,
      several packages pass things like page size information to Dvips,
      or cause crop marks or draft messages written on pages.  This
      seriously hampers the usability of previews.  If this option is
      specified, the changes will be undone if possible.
-'pdftex'
+‘pdftex’
      If this option is set, PDFTeX is assumed as the output driver.
-     This mainly affects the 'tightpage' option.
-'xetex'
+     This mainly affects the ‘tightpage’ option.
+‘xetex’
      If this option is set, XeTeX is assumed as the output driver.  This
-     mainly affects the 'tightpage' option.
-'displaymath'
+     mainly affects the ‘tightpage’ option.
+‘displaymath’
      will make all displayed math environments subject to preview
      processing.  This will typically be the most desired option.
-'floats'
+‘floats’
      will make all float objects subject to preview processing.  If you
      want to be more selective about what floats to pass through to a
-     preview, you should instead use the '\PreviewSnarfEnvironment'
+     preview, you should instead use the ‘\PreviewSnarfEnvironment’
      command on the floats you want to have previewed.
-'textmath'
+‘textmath’
      will make all text math subject to previews.  Since math mode is
      used throughly inside of LaTeX even for other purposes, this works
-     by redefining '\(', '\)' and '$' and the 'math' environment
+     by redefining ‘\(’, ‘\)’ and ‘$’ and the ‘math’ environment
      (apparently some people use that).  Only occurences of these text
      math delimiters in later loaded packages and in the main document
      will thus be affected.
-'graphics'
-     will subject all '\includegraphics' commands to a preview.
-'sections'
+‘graphics’
+     will subject all ‘\includegraphics’ commands to a preview.
+‘sections’
      will subject all section headers to a preview.
-'delayed'
-     will delay all activations and redefinitions the 'preview' package
-     makes until '\''begin{document}'.  The purpose of this is to cater
-     for documents which should be subjected to the 'preview' package
+‘delayed’
+     will delay all activations and redefinitions the ‘preview’ package
+     makes until ‘\’‘begin{document}’.  The purpose of this is to cater
+     for documents which should be subjected to the ‘preview’ package
      without having been prepared for it.  You can process such
      documents with
 
           latex '\RequirePackage[active,delayed,OPTIONS]{preview}
           \input{FILENAME}'
 
-     This relaxes the requirement to be loading the 'preview' package as
+     This relaxes the requirement to be loading the ‘preview’ package as
      last package.
 DRIVER
-     loads a special driver file 'prDRIVER.def'.  The remaining options
+     loads a special driver file ‘prDRIVER.def’.  The remaining options
      are implemented through the use of driver files.
-'auctex'
+‘auctex’
      This driver will produce fake error messages at the start and end
      of every preview environment that enable the Emacs package
      preview-latex in connection with AUCTeX to pinpoint the exact
@@ -934,25 +934,25 @@ DRIVER
 
      You should not specify this option manually, since it will only be
      needed by automated runs that want to parse the pseudo error
-     messages.  Those runs will then use '\PassOptionsToPackage' in
-     order to effect the desired behaviour.  In addition, 'prauctex.cfg'
-     will get loaded unless inhibited by the 'noconfig' option.  This
+     messages.  Those runs will then use ‘\PassOptionsToPackage’ in
+     order to effect the desired behaviour.  In addition, ‘prauctex.cfg’
+     will get loaded unless inhibited by the ‘noconfig’ option.  This
      caters for the most frequently encountered problematic commands.
-'showlabels'
+‘showlabels’
      During the editing process, some people like to see the label names
      in their equations, figures and the like.  Now if you are using
-     Emacs for editing, and in particular preview-latex, I'd strongly
+     Emacs for editing, and in particular preview-latex, I’d strongly
      recommend that you check out the RefTeX package which pretty much
      obliterates the need for this kind of functionality.  If you still
-     want it, standard LaTeX provides it with the 'showkeys' package,
-     and there is also the less encompassing 'showlabels' package.
+     want it, standard LaTeX provides it with the ‘showkeys’ package,
+     and there is also the less encompassing ‘showlabels’ package.
      Unfortunately, since those go to some pain not to change the page
-     layout and spacing, they also don't change 'preview''s idea of the
+     layout and spacing, they also don’t change ‘preview’’s idea of the
      TeX dimensions of the involved boxes.  So if you are using
-     'preview' for determing bounding boxes, those packages are mostly
-     useless.  The option 'showlabels' offers a substitute for them.
-'tightpage'
-     It is not uncommon to want to use the results of 'preview' as
+     ‘preview’ for determing bounding boxes, those packages are mostly
+     useless.  The option ‘showlabels’ offers a substitute for them.
+‘tightpage’
+     It is not uncommon to want to use the results of ‘preview’ as
      graphic images for some other application.  One possibility is to
      generate a flurry of EPS files with
 
@@ -968,7 +968,7 @@ DRIVER
      files from a single PostScript file, since Dvips will in that case
      leave no bounding box information anywhere.
 
-     The solution is to use the 'tightpage' option.  That way a single
+     The solution is to use the ‘tightpage’ option.  That way a single
      command line like
 
           gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
@@ -976,31 +976,31 @@ DRIVER
           -sOutputFile=OUTPUTFILE%d.png INPUTFILE.ps
 
      will be able to produce tight graphics from a single PostScript
-     file generated with Dvips _without_ use of the options '-E -i', in
+     file generated with Dvips _without_ use of the options ‘-E -i’, in
      a single run.
 
-     The 'tightpage' option actually also works when using the 'pdftex'
+     The ‘tightpage’ option actually also works when using the ‘pdftex’
      option and generating PDF files with PDFTeX.  The resulting PDF
      file has separate page dimensions for every page and can directly
      be converted with one run of Ghostscript into image files.
 
-     If neither 'dvips' or 'pdftex' have been specified, the
+     If neither ‘dvips’ or ‘pdftex’ have been specified, the
      corresponding option will get autodetected and invoked.
 
-     If you need this in a batch environment where you don't want to use
-     'preview''s automatic extraction facilities, no problem: just don't
+     If you need this in a batch environment where you don’t want to use
+     ‘preview’’s automatic extraction facilities, no problem: just don’t
      use any of the extraction options, and wrap everything to be
-     previewed into 'preview' environments.  This is how LyX does its
+     previewed into ‘preview’ environments.  This is how LyX does its
      math previews.
 
-     If the pages under the 'tightpage' option are just too tight, you
-     can adjust by setting the length '\PreviewBorder' to a different
-     value by using '\setlength'.  The default value is '0.50001bp',
+     If the pages under the ‘tightpage’ option are just too tight, you
+     can adjust by setting the length ‘\PreviewBorder’ to a different
+     value by using ‘\setlength’.  The default value is ‘0.50001bp’,
      which is half of a usual PostScript point, rounded up.  If you go
-     below this value, the resulting page size may drop below '1bp', and
+     below this value, the resulting page size may drop below ‘1bp’, and
      Ghostscript does not seem to like that.  If you need finer control,
      you can adjust the bounding box dimensions individually by changing
-     the macro '\PreviewBbAdjust' with the help of '\renewcommand'.  Its
+     the macro ‘\PreviewBbAdjust’ with the help of ‘\renewcommand’.  Its
      default value is
 
           \newcommand \PreviewBbAdjust
@@ -1010,43 +1010,43 @@ DRIVER
      This adjusts the left, lower, right and upper borders by the given
      amount.  The macro must contain 4 TeX dimensions after another, and
      you may not omit the units if you specify them explicitly instead
-     of by register.  PostScript points have the unit 'bp'.
-'lyx'
+     of by register.  PostScript points have the unit ‘bp’.
+‘lyx’
      This option is for the sake of LyX developers.  It will output a
-     few diagnostics relevant for the sake of LyX' preview functionality
+     few diagnostics relevant for the sake of LyX’ preview functionality
      (at the time of writing, mostly implemented for math insets, in
      versions of LyX starting with 1.3.0).
-'counters'
+‘counters’
      This writes out diagnostics at the start and the end of previews.
      Only the counters changed since the last output get written, and if
      no counters changed, nothing gets written at all.  The list
-     consists of counter name and value, both enclosed in '{}' braces,
+     consists of counter name and value, both enclosed in ‘{}’ braces,
      followed by a space.  The last such pair is followed by a colon
-     (':') if it is at the start of the preview snippet, and by a period
-     ('.') if it is at the end.  The order of different diagnostics like
+     (‘:’) if it is at the start of the preview snippet, and by a period
+     (‘.’) if it is at the end.  The order of different diagnostics like
      this being issued depends on the order of the specification of the
      options when calling the package.
 
      Systems like preview-latex use this for keeping counters accurate
      when single previews are regenerated.
-'footnotes'
+‘footnotes’
      This makes footnotes render as previews, and only as their footnote
      symbol.  A convenient editing feature inside of Emacs.
 
    The following options are just for debugging purposes of the package
 and similar to the corresponding TeX commands they allude to:
 
-'tracingall'
+‘tracingall’
      causes lots of diagnostic output to appear in the log file during
-     the preview collecting phases of TeX's operation.  In contrast to
+     the preview collecting phases of TeX’s operation.  In contrast to
      the similarly named TeX command, it will not switch to
-     '\errorstopmode', nor will it change the setting of
-     '\tracingonline'.
-'showbox'
+     ‘\errorstopmode’, nor will it change the setting of
+     ‘\tracingonline’.
+‘showbox’
      This option will show the contents of the boxes shipped out to the
-     DVI files.  It also sets '\showboxbreadth' and '\showboxdepth' to
+     DVI files.  It also sets ‘\showboxbreadth’ and ‘\showboxdepth’ to
      their maximum values at the end of loading this package, but you
-     may reset them if you don't like that.
+     may reset them if you don’t like that.
 
 
 File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up: The LaTeX style file
@@ -1054,27 +1054,27 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
 6.1.2 Provided commands
 -----------------------
 
-'\begin{preview}...\end{preview}'
-     The 'preview' environment causes its contents to be set as a single
+‘\begin{preview}...\end{preview}’
+     The ‘preview’ environment causes its contents to be set as a single
      preview image.  Insertions like figures and footnotes (except those
      included in minipages) will typically lead to error messages or be
-     lost.  In case the 'preview' package has not been activated, the
+     lost.  In case the ‘preview’ package has not been activated, the
      contents of this environment will be typeset normally.
 
-'\begin{nopreview}...\end{nopreview}'
-     The 'nopreview' environment will cause its contents not to undergo
-     any special treatment by the 'preview' package.  When 'preview' is
+‘\begin{nopreview}...\end{nopreview}’
+     The ‘nopreview’ environment will cause its contents not to undergo
+     any special treatment by the ‘preview’ package.  When ‘preview’ is
      active, the contents will be discarded like all main text that does
-     not trigger the 'preview' hooks.  When 'preview' is not active, the
+     not trigger the ‘preview’ hooks.  When ‘preview’ is not active, the
      contents will be typeset just like the main text.
 
      Note that both of these environments typeset things as usual when
      preview is not active.  If you need something typeset
-     conditionally, use the '\ifPreview' conditional for it.
+     conditionally, use the ‘\ifPreview’ conditional for it.
 
-'\PreviewMacro'
-     If you want to make a macro like '\includegraphics' (actually, this
-     is what is done by the 'graphics' option to 'preview') produce a
+‘\PreviewMacro’
+     If you want to make a macro like ‘\includegraphics’ (actually, this
+     is what is done by the ‘graphics’ option to ‘preview’) produce a
      preview image, you put a declaration like
 
           \PreviewMacro[*[[!]{\includegraphics}
@@ -1083,82 +1083,82 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
 
           \PreviewMacro[{*[][]{}}]{\includegraphics}
 
-     into your preamble.  The optional argument to '\PreviewMacro'
-     specifies the arguments '\includegraphics' accepts, since this is
+     into your preamble.  The optional argument to ‘\PreviewMacro’
+     specifies the arguments ‘\includegraphics’ accepts, since this is
      necessary information for properly ending the preview box.  Note
      that if you are using the more readable form, you have to enclose
-     the argument in a '[{' and '}]' pair.  The inner braces are
-     necessary to stop any included '[]' pairs from prematurely ending
-     the optional argument, and to make a single '{}' denoting an
-     optional argument not get stripped away by TeX's argument parsing.
+     the argument in a ‘[{’ and ‘}]’ pair.  The inner braces are
+     necessary to stop any included ‘[]’ pairs from prematurely ending
+     the optional argument, and to make a single ‘{}’ denoting an
+     optional argument not get stripped away by TeX’s argument parsing.
 
      The letters simply mean
 
-     '*'
-          indicates an optional '*' modifier, as in '\includegraphics*'.
-     '['
+     ‘*’
+          indicates an optional ‘*’ modifier, as in ‘\includegraphics*’.
+     ‘[’
           indicates an optional argument in brackets.  This syntax is
           somewhat baroque, but brief.
-     '[]'
+     ‘[]’
           also indicates an optional argument in brackets.  Be sure to
           have encluded the entire optional argument specification in an
           additional pair of braces as described above.
-     '!'
+     ‘!’
           indicates a mandatory argument.
-     '{}'
+     ‘{}’
           indicates the same.  Again, be sure to have that additional
           level of braces around the whole argument specification.
-     '?'DELIMITER{TRUE CASE}{FALSE CASE}
+     ‘?’DELIMITER{TRUE CASE}{FALSE CASE}
           is a conditional.  The next character is checked against being
           equal to DELIMITER.  If it is, the specification TRUE CASE is
           used for the further parsing, otherwise FALSE CASE will be
           employed.  In neither case is something consumed from the
           input, so {TRUE CASE} will still have to deal with the
           upcoming delimiter.
-     '@'{LITERAL SEQUENCE}
+     ‘@’{LITERAL SEQUENCE}
           will insert the given sequence literally into the executed
           call of the command.
-     '-'
+     ‘-’
           will just drop the next token.  It will probably be most often
-          used in the true branch of a '?' specification.
-     '#'{ARGUMENT}{REPLACEMENT}
+          used in the true branch of a ‘?’ specification.
+     ‘#’{ARGUMENT}{REPLACEMENT}
           is a transformation rule that calls a macro with the given
           argument and replacement text on the rest of the argument
           list.  The replacement is used in the executed call of the
           command.  This can be used for parsing arbitrary constructs.
-          For example, the '[]' option could manually be implemented
-          with the option string '?[{#{[#1]}{[{#1}]}}{}'.  PStricks
+          For example, the ‘[]’ option could manually be implemented
+          with the option string ‘?[{#{[#1]}{[{#1}]}}{}’.  PStricks
           users might enjoy this sort of flexibility.
-     ':'{ARGUMENT}{REPLACEMENT}
-          is again a transformation rule.  As opposed to '#', however,
-          the result of the transformation is parsed again.  You'll
+     ‘:’{ARGUMENT}{REPLACEMENT}
+          is again a transformation rule.  As opposed to ‘#’, however,
+          the result of the transformation is parsed again.  You’ll
           rarely need this.
 
      There is a second optional argument in brackets that can be used to
      declare any default action to be taken instead.  This is mostly for
      the sake of macros that influence numbering: you would want to keep
-     their effects in that respect.  The default action should use '#1'
+     their effects in that respect.  The default action should use ‘#1’
      for referring to the original (not the patched) command with the
      parsed options appended.  Not specifying a second optional argument
-     here is equivalent to specifying '[#1]'.
+     here is equivalent to specifying ‘[#1]’.
 
-'\PreviewMacro*'
-     A similar invocation '\PreviewMacro*' simply throws the macro and
+‘\PreviewMacro*’
+     A similar invocation ‘\PreviewMacro*’ simply throws the macro and
      all of its arguments declared in the manner above away.  This is
-     mostly useful for having things like '\footnote' not do their magic
-     on their arguments.  More often than not, you don't want to declare
-     any arguments to scan to '\PreviewMacro*' since you would want the
+     mostly useful for having things like ‘\footnote’ not do their magic
+     on their arguments.  More often than not, you don’t want to declare
+     any arguments to scan to ‘\PreviewMacro*’ since you would want the
      remaining arguments to be treated as usual text and typeset in that
      manner instead of being thrown away.  An exception might be, say,
-     sort keys for '\cite'.
+     sort keys for ‘\cite’.
 
      A second optional argument in brackets can be used to declare any
      default action to be taken instead.  This is for the sake of macros
      that influence numbering: you would want to keep their effects in
-     that respect.  The default action might use '#1' for referring to
+     that respect.  The default action might use ‘#1’ for referring to
      the original (not the patched) command with the parsed options
      appended.  Not specifying a second optional argument here is
-     equivalent to specifying '[]' since the command usually gets thrown
+     equivalent to specifying ‘[]’ since the command usually gets thrown
      away.
 
      As an example for using this argument, you might want to specify
@@ -1170,14 +1170,14 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
      the numbering scheme.  That way the real argument for the footnote
      remains for processing by preview-latex.
 
-'\PreviewEnvironment'
-     The macro '\PreviewEnvironment' works just as '\PreviewMacro' does,
+‘\PreviewEnvironment’
+     The macro ‘\PreviewEnvironment’ works just as ‘\PreviewMacro’ does,
      only for environments.
-'\PreviewEnvironment*'
-     And the same goes for '\PreviewEnvironment*' as compared to
-     '\PreviewMacro*'.
+‘\PreviewEnvironment*’
+     And the same goes for ‘\PreviewEnvironment*’ as compared to
+     ‘\PreviewMacro*’.
 
-'\PreviewSnarfEnvironment'
+‘\PreviewSnarfEnvironment’
      This macro does not typeset the original environment inside of a
      preview box, but instead typesets just the contents of the original
      environment inside of the preview box, leaving nothing for the
@@ -1189,19 +1189,19 @@ File: preview-latex.info,  Node: Provided commands,  Prev: Package options,  Up:
        2. complain with an error message about not being in outer par
           mode.
 
-'\PreviewOpen'
-'\PreviewClose'
+‘\PreviewOpen’
+‘\PreviewClose’
      Those Macros form a matched preview pair.  This is for macros that
-     behave similar as '\begin' and '\end' of an environment.  It is
-     essential for the operation of '\PreviewOpen' that the macro
+     behave similar as ‘\begin’ and ‘\end’ of an environment.  It is
+     essential for the operation of ‘\PreviewOpen’ that the macro
      treated with it will open an additional group even when the preview
-     falls inside of another preview or inside of a 'nopreview'
-     environment.  Similarly, the macro treated with '\PreviewClose'
+     falls inside of another preview or inside of a ‘nopreview’
+     environment.  Similarly, the macro treated with ‘\PreviewClose’
      will close an environment even when inactive.
 
-'\ifPreview'
-     In case you need to know whether 'preview' is active, you can use
-     the conditional '\ifPreview' together with '\else' and '\fi'.
+‘\ifPreview’
+     In case you need to know whether ‘preview’ is active, you can use
+     the conditional ‘\ifPreview’ together with ‘\else’ and ‘\fi’.
 
 
 File: preview-latex.info,  Node: The Emacs interface,  Next: The preview images,  Prev: The LaTeX style file,  Up: For advanced users
@@ -1209,14 +1209,14 @@ File: preview-latex.info,  Node: The Emacs interface,  Next: The preview images,
 6.2 The Emacs interface
 =======================
 
-You can use 'M-x customize-group <RET> preview-latex <RET>' in order to
+You can use ‘M-x customize-group <RET> preview-latex <RET>’ in order to
 customize these variables, or use the menus for it.  We explain the
 various available options together with explaining how they work
 together in making preview-latex work as intended.
 
-'preview-LaTeX-command'
+‘preview-LaTeX-command’
      When you generate previews on a buffer or a region, the command in
-     'preview-LaTeX-command' gets run (that variable should only be
+     ‘preview-LaTeX-command’ gets run (that variable should only be
      changed with Customize since its structure is somewhat peculiar,
      though expressive).  As usual with AUCTeX, you can continue working
      while this is going on.  It is not a good idea to change the file
@@ -1228,112 +1228,112 @@ together in making preview-latex work as intended.
      various previews is located exactly.  The parsing takes a moment
      and will render Emacs busy.
 
-'preview-LaTeX-command-replacements'
+‘preview-LaTeX-command-replacements’
      This variable specifies transformations to be used before calling
-     the configured command.  One possibility is to have '\pdfoutput=0 '
-     appended to every command starting with 'pdf'.  This particular
+     the configured command.  One possibility is to have ‘\pdfoutput=0 ’
+     appended to every command starting with ‘pdf’.  This particular
      setting is available as the shortcut
-     'preview-LaTeX-disable-pdfoutput'.  Since preview-latex can work
+     ‘preview-LaTeX-disable-pdfoutput’.  Since preview-latex can work
      with PDF files by now, there is little incentive for using this
      option, anymore (for projects not requiring PDF output, the added
-     speed of 'dvipng' might make this somewhat attractive).
+     speed of ‘dvipng’ might make this somewhat attractive).
 
-'preview-required-option-list'
-     'preview-LaTeX-command' uses 'preview-required-option-list' in
-     order to pass options such as 'auctex', 'active' and 'dvips' to the
-     'preview' package.  This means that the user need (and should) not
+‘preview-required-option-list’
+     ‘preview-LaTeX-command’ uses ‘preview-required-option-list’ in
+     order to pass options such as ‘auctex’, ‘active’ and ‘dvips’ to the
+     ‘preview’ package.  This means that the user need (and should) not
      supply these in the document itself in case he wants to be able to
      still compile his document without it turning into an incoherent
      mass of little pictures.  These options even get passed in when the
-     user loads 'preview' explicitly in his document.
+     user loads ‘preview’ explicitly in his document.
 
-     The default includes an option 'counters' that is controlled by the
+     The default includes an option ‘counters’ that is controlled by the
      boolean variable
 
-'preview-preserve-counters'
-     This option will cause the 'preview' package to emit information
+‘preview-preserve-counters’
+     This option will cause the ‘preview’ package to emit information
      that will assist in keeping things like equation counters and
      section numbers reasonably correct even when you are regenerating
      only single previews.
 
-'preview-default-option-list'
-'preview-default-preamble'
-     If the document does not call in the package 'preview' itself (via
-     '\usepackage') in the preamble, the preview package is loaded using
-     default options from 'preview-default-option-list' and additional
-     commands specified in 'preview-default-preamble'.
+‘preview-default-option-list’
+‘preview-default-preamble’
+     If the document does not call in the package ‘preview’ itself (via
+     ‘\usepackage’) in the preamble, the preview package is loaded using
+     default options from ‘preview-default-option-list’ and additional
+     commands specified in ‘preview-default-preamble’.
 
-'preview-fast-conversion'
-     This is relevant only for DVI mode.  It defaults to 'On' and
+‘preview-fast-conversion’
+     This is relevant only for DVI mode.  It defaults to ‘On’ and
      results in the whole document being processed as one large
      PostScript file from which the single images are extracted with the
      help of parsing the PostScript for use of so-called DSC comments.
      The bounding boxes are extracted with the help of TeX instead of
      getting them from Dvips.  If you are experiencing bounding box
-     problems, try setting this option to 'Off'.
+     problems, try setting this option to ‘Off’.
 
-'preview-prefer-TeX-bb'
-     If this option is 'On', it tells preview-latex never to try to
+‘preview-prefer-TeX-bb’
+     If this option is ‘On’, it tells preview-latex never to try to
      extract bounding boxes from the bounding box comments of EPS files,
      but rather rely on the boxes it gets from TeX.  If you activated
-     'preview-fast-conversion', this is done, anyhow, since there are no
+     ‘preview-fast-conversion’, this is done, anyhow, since there are no
      EPS files from which to read this information.  The option defaults
-     to 'Off', simply because about the only conceivable reason to
-     switch off 'preview-fast-conversion' would be that you have some
-     bounding box problem and want to get Dvips' angle on that matter.
+     to ‘Off’, simply because about the only conceivable reason to
+     switch off ‘preview-fast-conversion’ would be that you have some
+     bounding box problem and want to get Dvips’ angle on that matter.
 
-'preview-scale-function'
-'preview-reference-face'
-'preview-document-pt-list'
-'preview-default-document-pt'
-     'preview-scale-function' determines by what factor images should be
+‘preview-scale-function’
+‘preview-reference-face’
+‘preview-document-pt-list’
+‘preview-default-document-pt’
+     ‘preview-scale-function’ determines by what factor images should be
      scaled when appearing on the screen.  If you specify a numerical
      value here, the physical size on the screen will be that of the
      original paper output scaled by the specified factor, at least if
-     Emacs' information about screen size and resolution are correct.
-     The default is to let 'preview-scale-from-face' determine the scale
+     Emacs’ information about screen size and resolution are correct.
+     The default is to let ‘preview-scale-from-face’ determine the scale
      function.  This function determines the scale factor by making the
      size of the default font in the document match that of the
      on-screen fonts.
 
      The size of the screen fonts is deduced from the font
-     'preview-reference-face' (usually the default face used for
+     ‘preview-reference-face’ (usually the default face used for
      display), the size of the default font for the document is
-     determined by calling 'preview-document-pt'.  This function
-     consults the members of 'preview-document-pt-list' in turn until it
+     determined by calling ‘preview-document-pt’.  This function
+     consults the members of ‘preview-document-pt-list’ in turn until it
      gets the desired information.  The default consults first
-     'preview-parsed-font-size', then calls 'preview-auctex-font-size'
-     which asks AUCTeX about any size specification like '12pt' to the
+     ‘preview-parsed-font-size’, then calls ‘preview-auctex-font-size’
+     which asks AUCTeX about any size specification like ‘12pt’ to the
      documentclass that it might have detected when parsing the
      document, and finally reverts to just assuming
-     'preview-default-document-pt' as the size used in the document
+     ‘preview-default-document-pt’ as the size used in the document
      (defaulting to 10pt).
 
      If you find that the size of previews and the other Emacs display
-     clashes, something goes wrong.  'preview-parsed-font-size' is
-     determined at '\begin{document}' time; if the default font size
+     clashes, something goes wrong.  ‘preview-parsed-font-size’ is
+     determined at ‘\begin{document}’ time; if the default font size
      changes after that, it will not get reported.  If you have an
-     outdated version of 'preview.sty' in your path, the size might not
+     outdated version of ‘preview.sty’ in your path, the size might not
      be reported at all.  If in this case AUCTeX is unable to find a
      size specification, and if you are using a document class with a
-     different default value (like 'KomaScript'), the default fallback
+     different default value (like ‘KomaScript’), the default fallback
      assumption will probably be wrong and preview-latex will scale up
      things too large.  So better specify those size options even when
      you know that LaTeX does not need them: preview-latex might benefit
      from them.  Another possibility for error is that you have not
-     enabled AUCTeX's document parsing options.  The fallback method of
+     enabled AUCTeX’s document parsing options.  The fallback method of
      asking AUCTeX about the size might be disabled in future versions
      of preview-latex since in general it is more reliable to get this
      information from the LaTeX run itself.
 
-'preview-fast-dvips-command'
-'preview-dvips-command'
+‘preview-fast-dvips-command’
+‘preview-dvips-command’
      The regular command for turning a DVI file into a single PostScript
-     file is 'preview-fast-dvips-command', while 'preview-dvips-command'
+     file is ‘preview-fast-dvips-command’, while ‘preview-dvips-command’
      is used for cranking out a DVI file where every preview is in a
      separate EPS file.  Which of the two commands gets used depends on
-     the setting of 'preview-fast-conversion'.  The printer specified
-     here is '-Pwww' by default, which will usually get you scalable
+     the setting of ‘preview-fast-conversion’.  The printer specified
+     here is ‘-Pwww’ by default, which will usually get you scalable
      fonts where available.  If you are experiencing problems, you might
      want to try playing around with Dvips options (*Note
      (dvips)Command-line options::).
@@ -1346,25 +1346,25 @@ together in making preview-latex work as intended.
      covering the same areas, and then replacing the text in its visual
      appearance by a placeholder looking like a roadworks sign.
 
-'preview-nonready-icon-specs'
+‘preview-nonready-icon-specs’
      This is the roadworks sign displayed while previews are being
      prepared.  You may want to customize the font sizes at which
      preview-latex switches over between different icon sizes, and the
      ascent ratio which determines how high above the base line the icon
      gets placed.
 
-'preview-error-icon-specs'
-'preview-icon-specs'
+‘preview-error-icon-specs’
+‘preview-icon-specs’
      Those are icons placed before the source code of an opened preview
      and, respectively, the image specs to be used for PostScript
      errors, and a normal open preview in text representation.
 
-'preview-inner-environments'
+‘preview-inner-environments’
      This is a list of environments that are regarded as inner levels of
-     an outer environment when doing 'preview-environment'.  One example
+     an outer environment when doing ‘preview-environment’.  One example
      when this is needed is in
-     '\begin{equation}\begin{split}...\end{split}\end{equation}', and
-     accordingly 'split' is one entry in 'preview-inner-environments'.
+     ‘\begin{equation}\begin{split}...\end{split}\end{equation}’, and
+     accordingly ‘split’ is one entry in ‘preview-inner-environments’.
 
 
 File: preview-latex.info,  Node: The preview images,  Next: Misplaced previews,  Prev: The Emacs interface,  Up: For advanced users
@@ -1372,20 +1372,20 @@ File: preview-latex.info,  Node: The preview images,  Next: Misplaced previews, 
 6.3 The preview images
 ======================
 
-'preview-image-type'
-'preview-image-creators'
-'preview-gs-image-type-alist'
+‘preview-image-type’
+‘preview-image-creators’
+‘preview-gs-image-type-alist’
      What happens when LaTeX is finished depends on the configuration of
-     'preview-image-type'.  What to do for each of the various settings
-     is specified in the variable 'preview-image-creators'.  The options
+     ‘preview-image-type’.  What to do for each of the various settings
+     is specified in the variable ‘preview-image-creators’.  The options
      to pass into Ghostscript and what Emacs image type to use is
-     specified in 'preview-gs-image-type-alist'.
+     specified in ‘preview-gs-image-type-alist’.
 
-     'preview-image-type' defaults to 'png'.  For this to work, your
-     version of Ghostscript needs to support the 'png16m' device.  If
+     ‘preview-image-type’ defaults to ‘png’.  For this to work, your
+     version of Ghostscript needs to support the ‘png16m’ device.  If
      you are experiencing problems here, you might want to reconfigure
-     'preview-gs-image-type-alist' or 'preview-image-type'.
-     Reconfiguring 'preview-image-creators' is only necessary for adding
+     ‘preview-gs-image-type-alist’ or ‘preview-image-type’.
+     Reconfiguring ‘preview-image-creators’ is only necessary for adding
      additional image types.
 
      Most devices make preview-latex start up a single Ghostscript
@@ -1399,37 +1399,37 @@ File: preview-latex.info,  Node: The preview images,  Next: Misplaced previews, 
      be on-screen is given higher priority so that preview-latex will
      first cater for the images that are displayed.  There are various
      options customizable concerning aspects of that operation, see the
-     customization group 'Preview Gs' for this.
+     customization group ‘Preview Gs’ for this.
 
-     Another noteworthy setting of 'preview-image-type' is 'dvipng': in
-     this case, the 'dvipng' program will get run on DVI output (see
+     Another noteworthy setting of ‘preview-image-type’ is ‘dvipng’: in
+     this case, the ‘dvipng’ program will get run on DVI output (see
      below for PDF).  This is in general much faster than Dvips and
      Ghostscript.  In that case, the option
 
-'preview-dvipng-command'
+‘preview-dvipng-command’
      will get run for doing the conversion, and it is expected that
 
-'preview-dvipng-image-type'
-     images get produced ('dvipng' might be configured for other image
-     types as well).  You will notice that 'preview-gs-image-type-alist'
-     contains an entry for 'dvipng': this actually has nothing to with
-     'dvipng' itself but specifies the image type and Ghostscript device
-     option to use when 'dvipng' can't be used.  This will obviously be
+‘preview-dvipng-image-type’
+     images get produced (‘dvipng’ might be configured for other image
+     types as well).  You will notice that ‘preview-gs-image-type-alist’
+     contains an entry for ‘dvipng’: this actually has nothing to with
+     ‘dvipng’ itself but specifies the image type and Ghostscript device
+     option to use when ‘dvipng’ can’t be used.  This will obviously be
      the case for PDF output by PDFLaTeX, but it will also happen if the
      DVI file contains PostScript specials in which case the affected
-     images will get run through Dvips and Ghostscript once 'dvipng'
+     images will get run through Dvips and Ghostscript once ‘dvipng’
      finishes.
 
-     Note for pLaTeX and upLaTeX users: It is known that 'dvipng' is not
-     compatible with pLaTeX and upLaTeX.  If 'preview-image-type' is set
-     to 'dvipng' and (u)pLaTeX is used, 'dvipng' just fails and
+     Note for pLaTeX and upLaTeX users: It is known that ‘dvipng’ is not
+     compatible with pLaTeX and upLaTeX.  If ‘preview-image-type’ is set
+     to ‘dvipng’ and (u)pLaTeX is used, ‘dvipng’ just fails and
      preview-latex falls back on Dvips and Ghostscript.
 
-'preview-gs-options'
+‘preview-gs-options’
      Most interesting to the user perhaps is the setting of this
      variable.  It contains the default antialiasing settings
-     '-dTextAlphaBits=4' and '-dGraphicsAlphaBits=4'.  Decreasing those
-     values to 2 or 1 might increase Ghostscript's performance if you
+     ‘-dTextAlphaBits=4’ and ‘-dGraphicsAlphaBits=4’.  Decreasing those
+     values to 2 or 1 might increase Ghostscript’s performance if you
      find it lacking.
 
    Running and feeding Ghostscript from preview-latex happens
@@ -1449,13 +1449,13 @@ File: preview-latex.info,  Node: Misplaced previews,  Prev: The preview images, 
 If you are reading this section, the first thing is to check that your
 problem is not caused by x-symbol in connection with an installation not
 supporting 8-bit characters (*note x-symbol interoperation::).  If not,
-here's the beef:
+here’s the beef:
 
    As explained previously, Emacs uses pseudo-error messages generated
-by the 'preview' package in order to pinpoint the exact source location
+by the ‘preview’ package in order to pinpoint the exact source location
 where a preview originated.  This works in running text, but fails when
 preview material happens to lie in macro arguments, like the contents of
-'\emph'.  Those macros first read in their entire argument, munge it
+‘\emph’.  Those macros first read in their entire argument, munge it
 through, perhaps transform it somehow, process it and perhaps then
 typeset something.  When they finally typeset something, where is the
 location where the stuff originated?  TeX, having read in the entire
@@ -1473,36 +1473,36 @@ by clicking on them.  The default behaviour is thus somewhat
 undesirable.
 
    The solution (like with other preview problems) is to tell the LaTeX
-'preview' package how to tackle this problem (*note The LaTeX style
-file::).  Simply, you don't need '\emph' do anything at all during
+‘preview’ package how to tackle this problem (*note The LaTeX style
+file::).  Simply, you don’t need ‘\emph’ do anything at all during
 previews!  You only want the text math previewed, so the solution is to
-use '\PreviewMacro*\emph' in the preamble of your document which will
-make LaTeX ignore '\emph' completely as long as it is not part of a
+use ‘\PreviewMacro*\emph’ in the preamble of your document which will
+make LaTeX ignore ‘\emph’ completely as long as it is not part of a
 larger preview (in which case it gets typeset as usual).  Its argument
 thus becomes ordinary text and gets treated like ordinary text.
 
    Note that it would be a bad idea to declare
-'\PreviewMacro*[{{}}]\emph' since then both '\emph' as well as its
+‘\PreviewMacro*[{{}}]\emph’ since then both ‘\emph’ as well as its
 argument would be ignored instead of previewed.  For user-level macros,
 this is almost never wanted, but there may be internal macros where you
 might want to ignore internal arguments.
 
    The same mechanism can be used for a number of other text-formatting
-commands like '\textrm', '\textit' and the like.  While they all use the
-same internal macro '\text@command', it will not do to redefine just
+commands like ‘\textrm’, ‘\textit’ and the like.  While they all use the
+same internal macro ‘\text@command’, it will not do to redefine just
 that, since they call it only after having read their argument in, and
 then it already is too late.  So you need to disable every of those
 commands by hand in your document preamble.
 
    Actually, we wrote all of the above just to scare you.  At least all
 of the above mentioned macros and a few more are already catered for by
-a configuration file 'prauctex.cfg' that gets loaded by default unless
-the 'preview' package gets loaded with the 'noconfig' option.  You can
+a configuration file ‘prauctex.cfg’ that gets loaded by default unless
+the ‘preview’ package gets loaded with the ‘noconfig’ option.  You can
 make your own copy of this file in a local directory and edit it in case
 of need.  You can also add loading of a file of your liking to
-'preview-default-preamble', or alternatively do the manual disabling of
-your favorite macro in 'preview-default-preamble', which is customizable
-in the 'Preview Latex' group.
+‘preview-default-preamble’, or alternatively do the manual disabling of
+your favorite macro in ‘preview-default-preamble’, which is customizable
+in the ‘Preview Latex’ group.
 
 
 File: preview-latex.info,  Node: ToDo,  Next: Frequently Asked Questions,  Prev: For advanced users,  Up: Top
@@ -1510,26 +1510,26 @@ File: preview-latex.info,  Node: ToDo,  Next: Frequently Asked Questions,  Prev:
 Appendix A ToDo
 ***************
 
-   * Support other formats than just LaTeX
+   • Support other formats than just LaTeX
 
      plain TeX users and ConTeXt users should not have to feel left out.
      While ConTeXt is not supported yet by released versions of AUCTeX,
      at least supporting plain would help people, and be a start for
      ConTeXt as well.  There are plain-based formats like MusiXTeX that
      could benefit a lot from preview-latex.  The main part of the
-     difficulties here is to adapt 'preview.dtx' to produce stuff not
+     difficulties here is to adapt ‘preview.dtx’ to produce stuff not
      requiring LaTeX.
 
-   * Support nested snippets
+   • Support nested snippets
 
-     Currently you can't have both a footnote (which gets displayed as
+     Currently you can’t have both a footnote (which gets displayed as
      just its footnote number) and math inside of a footnote rendered as
      an image: such nesting might be achieved by rerunning preview-latex
      on the footnote contents when one opens the footnote for editing.
 
-   * Support other text properties than just images
+   • Support other text properties than just images
 
-     Macros like '\textit' can be rendered as images, but the resulting
+     Macros like ‘\textit’ can be rendered as images, but the resulting
      humungous blob is not suitable for editing, in particular since the
      line filling from LaTeX does not coincide with that of Emacs.  It
      would be much more useful if text properties just switched the
@@ -1542,38 +1542,38 @@ Appendix A ToDo
      displayed a properly fontified version of the footnote number.
      Also, this might make preview-latex useful even on text terminals.
 
-   * Find a way to facilitate Source Specials
+   • Find a way to facilitate Source Specials
 
-     Probably in connection with adding appropriate support to 'dvipng',
+     Probably in connection with adding appropriate support to ‘dvipng’,
      it would be nice if clicking on an image from a larger piece of
      source code would place the cursor at the respective source code
      location.
 
-   * Make 'preview.dtx' look reasonable in AUCTeX
+   • Make ‘preview.dtx’ look reasonable in AUCTeX
 
-     It is a bit embarrassing that 'preview.dtx' is written in a manner
+     It is a bit embarrassing that ‘preview.dtx’ is written in a manner
      that will not give either good syntax highlighting or good
      indentation when employing AUCTeX.
 
-   * Web page work
+   • Web page work
 
-     Currently, preview-latex's web page is not structured at all.
+     Currently, preview-latex’s web page is not structured at all.
      Better navigation would be desirable, as well as separate News and
      Errata eye catchers.
 
-   * Manual improvements
+   • Manual improvements
 
-        - Pepper the manual with screen shots and graphics
+        − Pepper the manual with screen shots and graphics
 
           This will be of interest for the HTML and TeX renditions of
           the texinfo manual.  Since Texinfo now supports images as
           well, this could well be nice to have.
 
-        - Fix duplicates
+        − Fix duplicates
 
           Various stuff appears several times.
 
-   * Implement rendering pipelines for Emacs
+   • Implement rendering pipelines for Emacs
 
      The current preview-latex interface is fundamentally flawed, not
      only because of a broken implementation.  A general batchable and
@@ -1582,36 +1582,36 @@ Appendix A ToDo
      current implementation has a rather adhoc flavor and is not easily
      extended.  It will not work outside of AUCTeX, either.
 
-   * Integrate into RefTeX
+   • Integrate into RefTeX
 
      When referencing to equations and the like, the preview-images of
      the source rather than plain text should be displayed.  If the
      preview in question covers labels, those should appear in the
      bubble help and/or a context menu.  Apropos:
 
-   * Implement LaTeX error indicators
+   • Implement LaTeX error indicators
 
      Previews on erroneous LaTeX passages might gain a red border or
      similar.
 
-   * Pop up relevant online documentation for frequent errors
+   • Pop up relevant online documentation for frequent errors
 
-     A lot of errors are of the "badly configured" variety.  Perhaps the
+     A lot of errors are of the “badly configured” variety.  Perhaps the
      relevant info pages should be delivered in addition to the error
      message.
 
-   * Implement a table editing mode where every table cell gets output
+   • Implement a table editing mode where every table cell gets output
      as a separate preview.  Alternatively, output the complete table
      metrics in a way that lets people click on individual cells for
      editing purposes.
 
-   * Benchmark and kill Emacs inefficiencies
+   • Benchmark and kill Emacs inefficiencies
 
      Both the LaTeX run under Emacs control as well as actual image
      insertion in Emacs could be faster.  CVS Emacs has improved in that
      respect, but it still is slower than desirable.
 
-   * Improve image support under Emacs
+   • Improve image support under Emacs
 
      The general image and color handling in Emacs is inefficient and
      partly defective.  This is still the case in CVS. One option would
@@ -1672,9 +1672,9 @@ from.
 B.2.3 I have trouble with the display format...
 -----------------------------------------------
 
-We recommend keeping the variable 'preview-image-type' set to 'dvipng'
-(if you have it installed) or 'png'.  This is the default and can be set
-via the 'Preview/Customize' menu.
+We recommend keeping the variable ‘preview-image-type’ set to ‘dvipng’
+(if you have it installed) or ‘png’.  This is the default and can be set
+via the ‘Preview/Customize’ menu.
 
    All other formats are known to have inconveniences, either in file
 size or quality.  There are some Emacs versions around not supporting
@@ -1693,7 +1693,7 @@ flavors of Unix: we have reports for HP and Solaris.
 MacOS Carbon, and preview-latex is working with them, too.
 
    With Windows, both native Emacs and Cygwin Emacs should work.
-However, it is known that MiKTeX (https://miktex.org/) sometimes doesn't
+However, it is known that MiKTeX (https://miktex.org/) sometimes doesn’t
 work with preview-latex.  In that case, use TeX Live
 (https://tug.org/texlive/) instead.
 
@@ -1703,7 +1703,7 @@ File: preview-latex.info,  Node: Installation Trouble,  Next: Customization,  Pr
 B.3 Installation Trouble
 ========================
 
-B.3.1 I just get 'LaTeX found no preview images'.
+B.3.1 I just get ‘LaTeX found no preview images’.
 -------------------------------------------------
 
 The reason for this is that LaTeX found no preview images in the
@@ -1713,7 +1713,7 @@ document in question.
 have not used preview-latex before, you might not know its manner of
 operation.  One sure-fire way to test if you just have a document where
 no previews are to be found is to use the provided example document
-'circ.tex' (you will have to copy it to some directory where you have
+‘circ.tex’ (you will have to copy it to some directory where you have
 write permissions).  If the symptom persists, you have a problem, and
 the problem is most likely a LaTeX problem.  Here are possible reasons:
 
@@ -1728,18 +1728,18 @@ Filename database not updated
 An incomplete manual installation
      This should not happen if you followed installation instructions.
      Unfortunately, people know better all the time.  If only
-     'preview.sty' gets installed without a set of supplementary files
-     also in the 'latex' subdirectory, preview-latex runs will not
+     ‘preview.sty’ gets installed without a set of supplementary files
+     also in the ‘latex’ subdirectory, preview-latex runs will not
      generate any errors, but they will not produce any previews,
      either.
 
-An outdated 'preview' installation
-     The 'preview.sty' package is useful for more than just
+An outdated ‘preview’ installation
+     The ‘preview.sty’ package is useful for more than just
      preview-latex.  For example, it is part of TeX Live.  So you have
      to make sure that preview-latex does not get to work with outdated
      style and configuration files: some newer features will not work
      with older TeX style files, and really old files will make
-     preview-latex fail completely.  There usual is a local 'texmf'
+     preview-latex fail completely.  There usual is a local ‘texmf’
      tree, or even a user-specific tree that are searched before the
      default tree.  Make sure that the first version of those files that
      gets found is the correct one.
@@ -1750,11 +1750,11 @@ File: preview-latex.info,  Node: Customization,  Next: Troubleshooting,  Prev: I
 B.4 Customization
 =================
 
-B.4.1 How to include additional environments like 'enumerate'
+B.4.1 How to include additional environments like ‘enumerate’
 -------------------------------------------------------------
 
 By default, preview-latex is intended mainly for displaying mathematical
-formulas, so environments like 'enumerate' or 'tabular' (except where
+formulas, so environments like ‘enumerate’ or ‘tabular’ (except where
 contained in a float) are not included.  You can include them however
 manually by adding the lines:
 
@@ -1763,7 +1763,7 @@ manually by adding the lines:
 in your document header, that is before
 
      \begin{document}
-In general, 'preview' should be loaded as the last thing before the
+In general, ‘preview’ should be loaded as the last thing before the
 start of document.
 
    Be aware that
@@ -1779,19 +1779,19 @@ monolithic block by Emacs, one should really restrict previews to those
 elements where the improvement in visual representation more than makes
 up for the decreased editability.
 
-B.4.2 What if I don't want to change the document?
+B.4.2 What if I don’t want to change the document?
 --------------------------------------------------
 
 The easiest way is to generate a configuration file in the current
-directory.  You can basically either create 'prdefault.cfg' which is
-used for any use of the 'preview' package, or you can use 'prauctex.cfg'
+directory.  You can basically either create ‘prdefault.cfg’ which is
+used for any use of the ‘preview’ package, or you can use ‘prauctex.cfg’
 which only applies to the use from with Emacs.  Let us assume you use
 the latter.  In that case you should write something like
 
      \InputIfFileExists{preview/prauctex.cfg}{}{}
      \PreviewEnvironment{enumerate}
 in it.  The first line inputs the system-wide default configuration (the
-file name should match that, but not your own 'prauctex.cfg'), then you
+file name should match that, but not your own ‘prauctex.cfg’), then you
 add your own stuff.
 
 B.4.3 Suddenly I get gazillions of ridiculous pages?!?
@@ -1800,9 +1800,9 @@ B.4.3 Suddenly I get gazillions of ridiculous pages?!?
 When preview-latex works on extracting its stuff, it typesets each
 single preview on a page of its own.  This only happens when actual
 previews get generated.  Now if you want to configure preview-latex in
-your document, you need to add your own '\usepackage' call to 'preview'
+your document, you need to add your own ‘\usepackage’ call to ‘preview’
 so that it will be able to interpret its various definition commands.
-It is an error to add the 'active' option to this invocation: you don't
+It is an error to add the ‘active’ option to this invocation: you don’t
 want the package to be active unless preview-latex itself enables the
 previewing operation (which it will).
 
@@ -1812,7 +1812,7 @@ B.4.4 Does preview-latex work with presentation classes?
 preview-latex should work with most presentation classes.  However,
 since those classes often have macros or pseudo environments
 encompassing a complete slide, you will need to use the customization
-facilities of 'preview.sty' to tell it how to resolve this, whether you
+facilities of ‘preview.sty’ to tell it how to resolve this, whether you
 want no previews, previews of whole slides or previews of inner
 material.
 
@@ -1850,7 +1850,7 @@ after the LaTeX run in the run buffer.  This merely indicates that
 errors were present, and errors will always be present when
 preview-latex is operating.  There might be also real errors, so in case
 of doubt, look for them explicitly in either run buffer or the resulting
-'.log' file.
+‘.log’ file.
 
 B.5.2 Why do my DVI and PDF output files vanish?
 ------------------------------------------------
@@ -1880,26 +1880,26 @@ B.6 preview-latex when not using LaTeX
 B.6.1 Does preview-latex work with PDFLaTeX?
 --------------------------------------------
 
-Yes, as long as you use AUCTeX's own PDFLaTeX mode and have not messed
-with 'TeX-command-list'.
+Yes, as long as you use AUCTeX’s own PDFLaTeX mode and have not messed
+with ‘TeX-command-list’.
 
-B.6.2 Does preview-latex work with 'elatex'?
+B.6.2 Does preview-latex work with ‘elatex’?
 --------------------------------------------
 
-No problem here.  If you configure your AUCTeX to use 'elatex', or
-simply have 'latex' point to 'elatex', this will work fine.  Modern TeX
+No problem here.  If you configure your AUCTeX to use ‘elatex’, or
+simply have ‘latex’ point to ‘elatex’, this will work fine.  Modern TeX
 distributions use eTeX for LaTeX, anyway.
 
 B.6.3 Does preview-latex work with ConTeXt?
 -------------------------------------------
 
-In short, no.  The 'preview' package is LaTeX-dependent.  Adding support
+In short, no.  The ‘preview’ package is LaTeX-dependent.  Adding support
 for other formats requires volunteers.
 
 B.6.4 Does preview-latex work with plain TeX?
 ---------------------------------------------
 
-Again, no.  Restructuring the 'preview' package for 'plain' operation
+Again, no.  Restructuring the ‘preview’ package for ‘plain’ operation
 would be required.  Volunteers welcome.
 
    In some cases you might get around by making a wrapper pseudo-Master
@@ -1922,17 +1922,17 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.1.5 from 2022-10-20).
+(version 13.1.6 from 2022-11-18).
 
-   Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021
-Free Software Foundation, Inc.
+   Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
+Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
      Version 1.3 or any later version published by the Free Software
      Foundation; with no Invariant Sections, no Front-Cover Texts and no
      Back-Cover Texts.  A copy of the license is included in the section
-     entitled "GNU Free Documentation License."
+     entitled “GNU Free Documentation License.”
 
    The full license text can be read here:
 
@@ -1948,7 +1948,7 @@ C.1 GNU Free Documentation License
 
                      Version 1.3, 3 November 2008
 
-     Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software
+     Copyright © 2000, 2001, 2002, 2007, 2008 Free Software
      Foundation, Inc.  <https://fsf.org/>
 
      Everyone is permitted to copy and distribute verbatim copies
@@ -1957,14 +1957,14 @@ C.1 GNU Free Documentation License
   0. PREAMBLE
 
      The purpose of this License is to make a manual, textbook, or other
-     functional and useful document "free" in the sense of freedom: to
+     functional and useful document “free” in the sense of freedom: to
      assure everyone the effective freedom to copy and redistribute it,
      with or without modifying it, either commercially or
      noncommercially.  Secondarily, this License preserves for the
      author and publisher a way to get credit for their work, while not
      being considered responsible for modifications made by others.
 
-     This License is a kind of "copyleft", which means that derivative
+     This License is a kind of “copyleft”, which means that derivative
      works of the document must themselves be free in the same sense.
      It complements the GNU General Public License, which is a copyleft
      license designed for free software.
@@ -1985,18 +1985,18 @@ C.1 GNU Free Documentation License
      be distributed under the terms of this License.  Such a notice
      grants a world-wide, royalty-free license, unlimited in duration,
      to use that work under the conditions stated herein.  The
-     "Document", below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as "you".  You accept
+     “Document”, below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as “you”.  You accept
      the license if you copy, modify or distribute the work in a way
      requiring permission under copyright law.
 
-     A "Modified Version" of the Document means any work containing the
+     A “Modified Version” of the Document means any work containing the
      Document or a portion of it, either copied verbatim, or with
      modifications and/or translated into another language.
 
-     A "Secondary Section" is a named appendix or a front-matter section
+     A “Secondary Section” is a named appendix or a front-matter section
      of the Document that deals exclusively with the relationship of the
-     publishers or authors of the Document to the Document's overall
+     publishers or authors of the Document to the Document’s overall
      subject (or to related matters) and contains nothing that could
      fall directly within that overall subject.  (Thus, if the Document
      is in part a textbook of mathematics, a Secondary Section may not
@@ -2005,7 +2005,7 @@ C.1 GNU Free Documentation License
      of legal, commercial, philosophical, ethical or political position
      regarding them.
 
-     The "Invariant Sections" are certain Secondary Sections whose
+     The “Invariant Sections” are certain Secondary Sections whose
      titles are designated, as being those of Invariant Sections, in the
      notice that says that the Document is released under this License.
      If a section does not fit the above definition of Secondary then it
@@ -2013,13 +2013,13 @@ C.1 GNU Free Documentation License
      contain zero Invariant Sections.  If the Document does not identify
      any Invariant Sections then there are none.
 
-     The "Cover Texts" are certain short passages of text that are
+     The “Cover Texts” are certain short passages of text that are
      listed, as Front-Cover Texts or Back-Cover Texts, in the notice
      that says that the Document is released under this License.  A
      Front-Cover Text may be at most 5 words, and a Back-Cover Text may
      be at most 25 words.
 
-     A "Transparent" copy of the Document means a machine-readable copy,
+     A “Transparent” copy of the Document means a machine-readable copy,
      represented in a format whose specification is available to the
      general public, that is suitable for revising the document
      straightforwardly with generic text editors or (for images composed
@@ -2031,7 +2031,7 @@ C.1 GNU Free Documentation License
      been arranged to thwart or discourage subsequent modification by
      readers is not Transparent.  An image format is not Transparent if
      used for any substantial amount of text.  A copy that is not
-     "Transparent" is called "Opaque".
+     “Transparent” is called “Opaque”.
 
      Examples of suitable formats for Transparent copies include plain
      ASCII without markup, Texinfo input format, LaTeX input format,
@@ -2044,23 +2044,23 @@ C.1 GNU Free Documentation License
      the machine-generated HTML, PostScript or PDF produced by some word
      processors for output purposes only.
 
-     The "Title Page" means, for a printed book, the title page itself,
+     The “Title Page” means, for a printed book, the title page itself,
      plus such following pages as are needed to hold, legibly, the
      material this License requires to appear in the title page.  For
-     works in formats which do not have any title page as such, "Title
-     Page" means the text near the most prominent appearance of the
-     work's title, preceding the beginning of the body of the text.
+     works in formats which do not have any title page as such, “Title
+     Page” means the text near the most prominent appearance of the
+     work’s title, preceding the beginning of the body of the text.
 
-     The "publisher" means any person or entity that distributes copies
+     The “publisher” means any person or entity that distributes copies
      of the Document to the public.
 
-     A section "Entitled XYZ" means a named subunit of the Document
+     A section “Entitled XYZ” means a named subunit of the Document
      whose title either is precisely XYZ or contains XYZ in parentheses
      following text that translates XYZ in another language.  (Here XYZ
      stands for a specific section name mentioned below, such as
-     "Acknowledgements", "Dedications", "Endorsements", or "History".)
-     To "Preserve the Title" of such a section when you modify the
-     Document means that it remains a section "Entitled XYZ" according
+     “Acknowledgements”, “Dedications”, “Endorsements”, or “History”.)
+     To “Preserve the Title” of such a section when you modify the
+     Document means that it remains a section “Entitled XYZ” according
      to this definition.
 
      The Document may include Warranty Disclaimers next to the notice
@@ -2090,7 +2090,7 @@ C.1 GNU Free Documentation License
 
      If you publish printed copies (or copies in media that commonly
      have printed covers) of the Document, numbering more than 100, and
-     the Document's license notice requires Cover Texts, you must
+     the Document’s license notice requires Cover Texts, you must
      enclose the copies in covers that carry, clearly and legibly, all
      these Cover Texts: Front-Cover Texts on the front cover, and
      Back-Cover Texts on the back cover.  Both covers must also clearly
@@ -2162,15 +2162,15 @@ C.1 GNU Free Documentation License
           the Addendum below.
 
        G. Preserve in that license notice the full lists of Invariant
-          Sections and required Cover Texts given in the Document's
+          Sections and required Cover Texts given in the Document’s
           license notice.
 
        H. Include an unaltered copy of this License.
 
-       I. Preserve the section Entitled "History", Preserve its Title,
+       I. Preserve the section Entitled “History”, Preserve its Title,
           and add to it an item stating at least the title, year, new
           authors, and publisher of the Modified Version as given on the
-          Title Page.  If there is no section Entitled "History" in the
+          Title Page.  If there is no section Entitled “History” in the
           Document, create one stating the title, year, authors, and
           publisher of the Document as given on its Title Page, then add
           an item describing the Modified Version as stated in the
@@ -2180,12 +2180,12 @@ C.1 GNU Free Documentation License
           for public access to a Transparent copy of the Document, and
           likewise the network locations given in the Document for
           previous versions it was based on.  These may be placed in the
-          "History" section.  You may omit a network location for a work
+          “History” section.  You may omit a network location for a work
           that was published at least four years before the Document
           itself, or if the original publisher of the version it refers
           to gives permission.
 
-       K. For any section Entitled "Acknowledgements" or "Dedications",
+       K. For any section Entitled “Acknowledgements” or “Dedications”,
           Preserve the Title of the section, and preserve in the section
           all the substance and tone of each of the contributor
           acknowledgements and/or dedications given therein.
@@ -2194,11 +2194,11 @@ C.1 GNU Free Documentation License
           in their text and in their titles.  Section numbers or the
           equivalent are not considered part of the section titles.
 
-       M. Delete any section Entitled "Endorsements".  Such a section
+       M. Delete any section Entitled “Endorsements”.  Such a section
           may not be included in the Modified Version.
 
        N. Do not retitle any existing section to be Entitled
-          "Endorsements" or to conflict in title with any Invariant
+          “Endorsements” or to conflict in title with any Invariant
           Section.
 
        O. Preserve any Warranty Disclaimers.
@@ -2207,15 +2207,15 @@ C.1 GNU Free Documentation License
      appendices that qualify as Secondary Sections and contain no
      material copied from the Document, you may at your option designate
      some or all of these sections as invariant.  To do this, add their
-     titles to the list of Invariant Sections in the Modified Version's
+     titles to the list of Invariant Sections in the Modified Version’s
      license notice.  These titles must be distinct from any other
      section titles.
 
-     You may add a section Entitled "Endorsements", provided it contains
+     You may add a section Entitled “Endorsements”, provided it contains
      nothing but endorsements of your Modified Version by various
-     parties--for example, statements of peer review or that the text
-     has been approved by an organization as the authoritative
-     definition of a standard.
+     parties—for example, statements of peer review or that the text has
+     been approved by an organization as the authoritative definition of
+     a standard.
 
      You may add a passage of up to five words as a Front-Cover Text,
      and a passage of up to 25 words as a Back-Cover Text, to the end of
@@ -2253,10 +2253,10 @@ C.1 GNU Free Documentation License
      combined work.
 
      In the combination, you must combine any sections Entitled
-     "History" in the various original documents, forming one section
-     Entitled "History"; likewise combine any sections Entitled
-     "Acknowledgements", and any sections Entitled "Dedications".  You
-     must delete all sections Entitled "Endorsements."
+     “History” in the various original documents, forming one section
+     Entitled “History”; likewise combine any sections Entitled
+     “Acknowledgements”, and any sections Entitled “Dedications”.  You
+     must delete all sections Entitled “Endorsements.”
 
   6. COLLECTIONS OF DOCUMENTS
 
@@ -2277,16 +2277,16 @@ C.1 GNU Free Documentation License
 
      A compilation of the Document or its derivatives with other
      separate and independent documents or works, in or on a volume of a
-     storage or distribution medium, is called an "aggregate" if the
+     storage or distribution medium, is called an “aggregate” if the
      copyright resulting from the compilation is not used to limit the
-     legal rights of the compilation's users beyond what the individual
+     legal rights of the compilation’s users beyond what the individual
      works permit.  When the Document is included in an aggregate, this
      License does not apply to the other works in the aggregate which
      are not themselves derivative works of the Document.
 
      If the Cover Text requirement of section 3 is applicable to these
      copies of the Document, then if the Document is less than one half
-     of the entire aggregate, the Document's Cover Texts may be placed
+     of the entire aggregate, the Document’s Cover Texts may be placed
      on covers that bracket the Document within the aggregate, or the
      electronic equivalent of covers if the Document is in electronic
      form.  Otherwise they must appear on printed covers that bracket
@@ -2308,8 +2308,8 @@ C.1 GNU Free Documentation License
      this License or a notice or disclaimer, the original version will
      prevail.
 
-     If a section in the Document is Entitled "Acknowledgements",
-     "Dedications", or "History", the requirement (section 4) to
+     If a section in the Document is Entitled “Acknowledgements”,
+     “Dedications”, or “History”, the requirement (section 4) to
      Preserve its Title (section 1) will typically require changing the
      actual title.
 
@@ -2350,7 +2350,7 @@ C.1 GNU Free Documentation License
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
-     version of this License "or any later version" applies to it, you
+     version of this License “or any later version” applies to it, you
      have the option of following the terms and conditions either of
      that specified version or of any later version that has been
      published (not as a draft) by the Free Software Foundation.  If the
@@ -2358,29 +2358,29 @@ C.1 GNU Free Documentation License
      choose any version ever published (not as a draft) by the Free
      Software Foundation.  If the Document specifies that a proxy can
      decide which future versions of this License can be used, that
-     proxy's public statement of acceptance of a version permanently
+     proxy’s public statement of acceptance of a version permanently
      authorizes you to choose that version for the Document.
 
   11. RELICENSING
 
-     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
+     “Massive Multiauthor Collaboration Site” (or “MMC Site”) means any
      World Wide Web server that publishes copyrightable works and also
      provides prominent facilities for anybody to edit those works.  A
      public wiki that anybody can edit is an example of such a server.
-     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
+     A “Massive Multiauthor Collaboration” (or “MMC”) contained in the
      site means any set of copyrightable works thus published on the MMC
      site.
 
-     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
+     “CC-BY-SA” means the Creative Commons Attribution-Share Alike 3.0
      license published by Creative Commons Corporation, a not-for-profit
      corporation with a principal place of business in San Francisco,
      California, as well as future copyleft versions of that license
      published by that same organization.
 
-     "Incorporate" means to publish or republish a Document, in whole or
+     “Incorporate” means to publish or republish a Document, in whole or
      in part, as part of another Document.
 
-     An MMC is "eligible for relicensing" if it is licensed under this
+     An MMC is “eligible for relicensing” if it is licensed under this
      License, and if all works that were first published under this
      License somewhere other than this MMC, and subsequently
      incorporated in whole or in part into the MMC, (1) had no cover
@@ -2407,7 +2407,7 @@ notices just after the title page:
        Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
-Texts, replace the "with...Texts." line with this:
+Texts, replace the “with...Texts.” line with this:
 
          with the Invariant Sections being LIST THEIR TITLES, with
          the Front-Cover Texts being LIST, and with the Back-Cover Texts
@@ -2550,44 +2550,44 @@ Index
 
 
 Tag Table:
-Node: Top959
-Node: Copying2231
-Node: Introduction2685
-Node: What use is it?3359
-Node: Activating preview-latex4748
-Node: Getting started5499
-Node: Basic modes of operation7446
-Node: More documentation8651
-Node: Availability9520
-Node: Contacts10247
-Node: Installation11520
-Node: Keys and lisp11721
-Node: Simple customization18796
-Node: Known problems24458
-Node: Font problems with Dvips25340
-Node: Too small bounding boxes26510
-Node: x-symbol interoperation27906
-Node: Middle-clicks paste instead of toggling29294
-Node: No images are displayed with gs 9.27 and earlier29979
-Node: Black texts are too hard to read on dark background32681
-Node: For advanced users33326
-Node: The LaTeX style file33785
-Node: Package options36347
-Node: Provided commands47251
-Node: The Emacs interface54596
-Node: The preview images63298
-Node: Misplaced previews67055
-Node: ToDo70511
-Node: Frequently Asked Questions75288
-Node: Introduction to FAQ75611
-Node: Requirements75950
-Node: Installation Trouble77918
-Node: Customization80182
-Node: Troubleshooting83258
-Node: Other formats85768
-Node: Copying this Manual87083
-Node: GNU Free Documentation License88029
-Node: Index113152
+Node: Top962
+Node: Copying2242
+Node: Introduction2696
+Node: What use is it?3370
+Node: Activating preview-latex4767
+Node: Getting started5532
+Node: Basic modes of operation7519
+Node: More documentation8752
+Node: Availability9641
+Node: Contacts10368
+Node: Installation11657
+Node: Keys and lisp11858
+Node: Simple customization19137
+Node: Known problems24961
+Node: Font problems with Dvips25847
+Node: Too small bounding boxes27057
+Node: x-symbol interoperation28481
+Node: Middle-clicks paste instead of toggling29905
+Node: No images are displayed with gs 9.27 and earlier30602
+Node: Black texts are too hard to read on dark background33360
+Node: For advanced users34017
+Node: The LaTeX style file34476
+Node: Package options37062
+Node: Provided commands48288
+Node: The Emacs interface55895
+Node: The preview images64859
+Node: Misplaced previews68744
+Node: ToDo72272
+Node: Frequently Asked Questions77109
+Node: Introduction to FAQ77432
+Node: Requirements77771
+Node: Installation Trouble79757
+Node: Customization82049
+Node: Troubleshooting85177
+Node: Other formats87691
+Node: Copying this Manual89040
+Node: GNU Free Documentation License89989
+Node: Index115316
 
 End Tag Table
 
