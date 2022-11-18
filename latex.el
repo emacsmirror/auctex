@@ -1062,13 +1062,17 @@ If nil, act like the empty string is given, but do not prompt."
   :type 'string)
 
 (defun LaTeX--env-parse-args (args)
-  "Helper function to insert arguments defined by ARGS."
-  (save-excursion
+  "Helper function to insert arguments defined by ARGS.
+This function checks if `TeX-exit-mark' is set, otherwise it's
+set to the point where this function starts.  Point will be at
+`TeX-exit-mark' when this function exits."
+  (let ((TeX-exit-mark (or TeX-exit-mark
+                           (point-marker))))
     (LaTeX-find-matching-begin)
     (end-of-line)
-    (let ((TeX-exit-mark (or TeX-exit-mark
-                             (make-marker))))
-      (TeX-parse-arguments args))))
+    (TeX-parse-arguments args)
+    (goto-char TeX-exit-mark)
+    (set-marker TeX-exit-mark nil)))
 
 (defun LaTeX--env-item (environment)
   "Helper function running inside `LaTeX-env-item'.

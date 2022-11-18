@@ -3367,7 +3367,7 @@ Space will complete and exit."
            (call-interactively #'TeX-insert-macro)))))
 
 (defvar TeX-exit-mark nil
-  "Dynamically bound by `TeX-parse-macro' and `LaTeX-env-args'.")
+  "Dynamically bound by `TeX-parse-macro' and `LaTeX--env-parse-args'.")
 
 (defun TeX-parse-macro (symbol args)
   "How to parse TeX macros which takes one or more arguments.
