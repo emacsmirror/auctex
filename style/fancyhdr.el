@@ -37,38 +37,6 @@
                   "font-latex"
                   (keywords class))
 
-;; Because there can be many places, `TeX-completing-read-multiple' is
-;; used instead of just `completing-read', and a `collection' argument
-;; is provided as the list of places differs between the macros
-(defun TeX-arg-fancyhdr-place (optional
-                               &optional prompt collection full)
-  "Prompt for fancyhdr places with completion.
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument, otherwise as a mandatory one.  If non-nil, PROMPT is
-used as the prompt.  If non-nil, COLLECTION is used as the
-completion list for the place.
-
-If FULL is non-nil, a full list of places is offered for
-completion, otherwise a reduced one omitting place combinations
-for H(eader) or F(ooter)."
-  (let* ((places (or collection
-                     ;; Standard places with no restrictions.
-                     ;; Lower-case versions, and reverse versions
-                     ;; (e.g., OC) are left out for simplicity.
-                     (if full
-                         '("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
-                           "C" "CO" "CE" "COH" "COF" "CEH" "CEF"
-                           "R" "RO" "RE" "ROH" "ROF" "REH" "REF")
-                       '("L" "LO" "LE" "C" "CO" "CE" "R" "RE" "RO"))))
-         (arguments (mapconcat #'identity
-                               (TeX-completing-read-multiple
-                                (TeX-argument-prompt optional
-                                                     prompt
-                                                     "Places")
-                                places)
-                               ",")))
-    (TeX-argument-insert arguments optional)))
-
 (defvar LaTeX-fancyhdr-fancypagestyle-regexp
   '("\\\\fancypagestyle{\\([^}]+\\)}"
     1 LaTeX-auto-pagestyle)
@@ -80,19 +48,31 @@ for H(eader) or F(ooter)."
    (TeX-add-symbols
 
     ;; 2 Using fancyhdr
-    '("fancyhead" [ TeX-arg-fancyhdr-place ] t)
-    '("fancyfoot" [ TeX-arg-fancyhdr-place ] t)
-    '("fancyhf"   [ (TeX-arg-fancyhdr-place nil nil t) ] t)
+    '("fancyhead" [TeX-arg-completing-read-multiple
+                   ("L" "LO" "LE" "C" "CO" "CE" "R" "RE" "RO")
+                   "Places"]
+      t)
+    '("fancyfoot" [TeX-arg-completing-read-multiple
+                   ("L" "LO" "LE" "C" "CO" "CE" "R" "RE" "RO")
+                   "Places"]
+      t)
+    '("fancyhf"   [TeX-arg-completing-read-multiple
+                   ("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
+                    "C" "CO" "CE" "COH" "COF" "CEH" "CEF"
+                    "R" "RO" "RE" "ROH" "ROF" "REH" "REF")
+                   "Places"]
+      t)
 
     '("fancyheadoffset"
-      [ (TeX-arg-fancyhdr-place nil ("L" "LO" "LE" "R" "RO" "RE")) ]
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "R" "RO" "RE") "Places"]
       TeX-arg-length)
     '("fancyfootoffset"
-      [ (TeX-arg-fancyhdr-place nil ("LO" "LE" "L" "RO" "RE" "R")) ]
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "R" "RO" "RE") "Places"]
       TeX-arg-length)
     '("fancyhfoffset"
-      [ (TeX-arg-fancyhdr-place nil ("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
-                                     "R" "RO" "RE" "ROH" "ROF" "REH" "REF")) ]
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "LOH" "LOF" "LEH" "LEF"
+                                         "R" "RO" "RE" "ROH" "ROF" "REH" "REF")
+                                        "Places"]
       TeX-arg-length)
 
     "headrulewidth" "footrulewidth"
@@ -105,7 +85,7 @@ for H(eader) or F(ooter)."
     '("fancyhfinit"   t)
 
     '("fancycenter"
-      [ TeX-arg-length "Distance" ] [ "Stretch" ] 3)
+      [TeX-arg-length "Distance"] [ "Stretch" ] 3)
 
     '("iftopfloat"  2)
     '("ifbotfloat"  2)
@@ -117,7 +97,7 @@ for H(eader) or F(ooter)."
       ;; dupes are removed when retrieving with the function
       ;; `LaTeX-pagestyle-list':
       (TeX-arg-pagestyle nil t)
-      [ TeX-arg-pagestyle "Base pagestyle" ]
+      [TeX-arg-pagestyle "Base pagestyle"]
       t)
 
     ;; 15 The scoop on LATEX’s marks
