@@ -1,6 +1,6 @@
 ;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -29,10 +29,20 @@
 ;; This file adds support for `theorem.sty' (v2.2c) from 2014/10/28.
 ;; `theorem.sty' is a standard LaTeX package and part of TeXLive.
 
-;; The style provides the function `LaTeX-theorem-env-label' which
-;; enables new defined environments with "\newtheoreom" to interact
-;; with AUCTeX and RefTeX mechanisms for inserting labels.  Check
-;; docstring of `LaTeX-theorem-env-label' for instructions.
+;; This style interacts with AUCTeX and RefTeX mechanisms for
+;; inserting labels into new defined environments with "\newtheoreom".
+;; AUCTeX users need to add the new environment to `LaTeX-label-alist'
+;; via customize or in init-file like this:
+;;
+;;   (add-to-list 'LaTeX-label-alist '("lemma" . "lem:"))
+;;
+;; RefTeX users have to add the value to both `LaTeX-label-alist' and
+;; `reftex-label-alist' like this:
+;;
+;;   (add-to-list 'LaTeX-label-alist '("lemma" . "lem:"))
+;;   (add-to-list 'reftex-label-alist
+;;                '("lemma" ?m "lem:" "~ref{%s}"
+;;                  nil ("Lemma" "lemma") nil))
 
 ;;; Code:
 
@@ -46,62 +56,8 @@
                   (keywords class))
 
 (defvar LaTeX-theorem-theoremstyle-list
-  '(("plain") ("break") ("margin") ("change")
-    ("marginbreak") ("changebreak"))
+  '("plain" "break" "margin" "change" "marginbreak" "changebreak")
   "List of theorem styles provided by `theorem.sty'.")
-
-(defvar LaTeX-theorem-fontdecl
-  '(;; family
-    "rmfamily" "sffamily" "ttfamily"
-    ;; series
-    "mdseries" "bfseries"
-    ;; shape
-    "upshape" "itshape" "slshape" "scshape"
-    ;; size
-    "tiny"  "scriptsize" "footnotesize"
-    "small" "normalsize" "large"
-    "Large" "LARGE" "huge" "Huge"
-    ;; reset macro
-    "normalfont")
-  "List of font declaration commands for \"\\theorem(body|header)font\".")
-
-(defun LaTeX-arg-theorem-fontdecl (optional &optional prompt)
-  "Prompt for font declaration commands in \"\\theorem(body|header)font\".
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument.  Use PROMPT as the prompt string."
-  ;; `INITIAL-INPUT' (5th argument to `TeX-completing-read-multiple')
-  ;; is hard-coded to `TeX-esc'.
-  (let* ((crm-separator (regexp-quote TeX-esc))
-         (fontdecl (mapconcat #'identity
-                              (TeX-completing-read-multiple
-                               (TeX-argument-prompt optional prompt "Font")
-                               LaTeX-theorem-fontdecl nil nil TeX-esc)
-                              TeX-esc)))
-    (TeX-argument-insert fontdecl optional)))
-
-(defun LaTeX-theorem-env-label (environment)
-  "Insert ENVIRONMENT, query for an optional argument and prompt
-for label.  AUCTeX users should add ENVIRONMENT to
-`LaTeX-label-alist' via customize or in init-file with:
-
-  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
-
-RefTeX users should customize or add ENVIRONMENT to
-`LaTeX-label-alist' and `reftex-label-alist', for example
-
-  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
-  (add-to-list \\='reftex-label-alist
-               \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
-                 nil (\"Lemma\" \"lemma\") nil))"
-  (let ((opthead (TeX-read-string
-                  (TeX-argument-prompt t nil "Heading"))))
-    (LaTeX-insert-environment environment
-                              (when (and opthead
-                                         (not (string= opthead "")))
-                                (format "[%s]" opthead))))
-  (when (LaTeX-label environment 'environment)
-    (LaTeX-newline)
-    (indent-according-to-mode)))
 
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "theorem-newtheorem" "LaTeX")
@@ -114,7 +70,7 @@ RefTeX users should customize or add ENVIRONMENT to
   "Move parsed results from `LaTeX-auto-theorem-newtheorem' and
 make them available as new environments."
   (dolist (newthm (mapcar #'car (LaTeX-theorem-newtheorem-list)))
-    (LaTeX-add-environments (list newthm #'LaTeX-theorem-env-label))))
+    (LaTeX-add-environments (list newthm #'LaTeX-env-label-args ["Heading"]))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-theorem-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-theorem-auto-cleanup t)
@@ -130,14 +86,13 @@ make them available as new environments."
 
    (TeX-add-symbols
     ;; Overrule the defintion in `latex.el':
-    '("newtheorem"
-      (TeX-arg-eval
-       (lambda ()
+    `("newtheorem"
+      ,(lambda (optional)
          (let ((nthm (TeX-read-string
-                      (TeX-argument-prompt nil nil "Environment"))))
+                      (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-theorem-newtheorems nthm)
-           (LaTeX-add-environments (list nthm #'LaTeX-theorem-env-label))
-           (format "%s" nthm))))
+           (LaTeX-add-environments (list nthm #'LaTeX-env-label-args ["Heading"]))
+           (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
@@ -147,15 +102,25 @@ make them available as new environments."
                         "") ])
 
     '("theoremstyle"
-      (TeX-arg-eval completing-read
-                    "Style: "
-                    LaTeX-theorem-theoremstyle-list))
+      (TeX-arg-completing-read LaTeX-theorem-theoremstyle-list "Style"))
 
-    '("theorembodyfont"
-      (LaTeX-arg-theorem-fontdecl "Body font"))
+    `("theorembodyfont"
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append LaTeX-font-family
+                           LaTeX-font-shape
+                           LaTeX-font-shape
+                           LaTeX-font-size))
+       "Body font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
+       nil nil nil nil ,TeX-esc))
 
-    '("theoremheaderfont"
-      (LaTeX-arg-theorem-fontdecl "Header font"))
+    `("theoremheaderfont"
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append LaTeX-font-family
+                           LaTeX-font-shape
+                           LaTeX-font-shape
+                           LaTeX-font-size))
+       "Header font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
+       nil nil nil nil ,TeX-esc))
 
     '("theorempreskipamount"
       (TeX-arg-length "Skip before theorem"))

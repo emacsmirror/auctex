@@ -136,31 +136,31 @@ caption, insert only a caption."
    ;; The next 2 macros are part of the kernel of caption.sty, but we
    ;; load them within subcaption.el.
    (TeX-add-symbols
-    '("DeclareCaptionSubType"
-      [TeX-arg-eval
-       completing-read (TeX-argument-prompt t nil "Numbering scheme")
-       '("arabic" "roman" "Roman" "alph" "Alph" "fnsymbol")]
-      (TeX-arg-eval
-       completing-read
-       (TeX-argument-prompt nil nil "Type")
-       (append
-        (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
-                   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-        '("figure" "table"))))
+    `("DeclareCaptionSubType"
+      [TeX-arg-completing-read ("arabic" "roman" "Roman"
+                                "alph" "Alph" "fnsymbol")
+                               "Numbering scheme"]
+      (TeX-arg-completing-read
+       ,(lambda ()
+          (append
+           (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+                      (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+             (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+           '("figure" "table")))
+       "Type"))
 
-    '("DeclareCaptionSubType*"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Numbering scheme")
-                    '("arabic" "roman" "Roman" "alph" "Alph" "fnsymbol")]
-      (TeX-arg-eval
-       completing-read
-       (TeX-argument-prompt nil nil "Type")
-       (append
-        (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
-                   (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-        '("figure" "table")))))
+    `("DeclareCaptionSubType*"
+      [TeX-arg-completing-read ("arabic" "roman" "Roman"
+                                "alph" "Alph" "fnsymbol")
+                               "Numbering scheme"]
+      (TeX-arg-completing-read
+       ,(lambda ()
+          (append
+           (when (and (fboundp 'LaTeX-newfloat-DeclareFloatingEnvironment-list)
+                      (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+             (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+           '("figure" "table")))
+       "Type")))
 
    ;; \subcaption(box)? and \subfloat macros should get their own lines
    (LaTeX-paragraph-commands-add-locally

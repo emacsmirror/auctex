@@ -63,9 +63,7 @@
     "NOT"
     '("newboolean" "Name")
     '("provideboolean" "Name")
-    '("setboolean" "Name" (TeX-arg-eval completing-read
-                                        (TeX-argument-prompt nil nil "Value")
-                                        '("true" "false"))))
+    '("setboolean" "Name" (TeX-arg-completing-read ("true" "false") "Value")))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

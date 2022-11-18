@@ -378,7 +378,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("TeX" "") ("LaTeX" "") ("LaTeXe" "")
       ("normalfont" "") ("normalshape" "")
       ("tableofcontents" "") ("listoffigures" "") ("listoftables" "")
-      ("maketitle" ""))
+      ("maketitle" "") ("makeindex" "") ("makeglossary" ""))
      font-lock-function-name-face 2 command)
     ("sectioning-0"
      (("part" "*[{"))

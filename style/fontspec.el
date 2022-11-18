@@ -1,6 +1,6 @@
 ;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.7i.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -369,15 +369,13 @@ to appropriate keys which are eventually prepended to
 
     ;; 23 Defining new features
     '("newAATfeature"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Existing feature")
-                    (LaTeX-fontspec-font-features))
+      (TeX-arg-completing-read (LaTeX-fontspec-font-features)
+                               "Existing feature")
       "New option" 2)
 
     '("newopentypefeature"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Existing feature")
-                    (LaTeX-fontspec-font-features))
+      (TeX-arg-completing-read (LaTeX-fontspec-font-features)
+                               "Existing feature")
       "New option" t)
 
     '("newfontfeature" "New feature" t)
@@ -388,9 +386,8 @@ to appropriate keys which are eventually prepended to
 
     ;; 26 Renaming existing features & options
     '("aliasfontfeature"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Existing feature")
-                    (LaTeX-fontspec-font-features))
+      (TeX-arg-completing-read (LaTeX-fontspec-font-features)
+                               "Existing feature")
       "New name")
 
     '("aliasfontfeatureoption"

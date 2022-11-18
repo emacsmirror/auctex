@@ -322,11 +322,8 @@ RECUSTOM is non-nil, delete macros from the variable
             ;; New macros for using previously saved text:
             ((string= base-mac "UseVerb")
              (TeX-add-symbols
-              `(,mac-name
-                (TeX-arg-eval
-                 completing-read
-                 (TeX-argument-prompt nil nil "Saved name")
-                 (LaTeX-fancyvrb-saveverb-list))))
+              `(,mac-name (TeX-arg-completing-read
+                           (LaTeX-fancyvrb-saveverb-list) "Saved name")))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
                (font-latex-add-keywords `((,mac-name "{"))
@@ -602,12 +599,10 @@ ENV is the name of current environment as a string."
     '("DefineVerbatimEnvironment"
       LaTeX-fancyvrb-arg-define-environment)
     '("RecustomVerbatimEnvironment"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Verbatim environment")
-                    LaTeX-fancyvrb-base-environments)
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Based on environment")
-                    LaTeX-fancyvrb-base-environments)
+      (TeX-arg-completing-read LaTeX-fancyvrb-base-environments
+                               "Verbatim environment")
+      (TeX-arg-completing-read LaTeX-fancyvrb-base-environments
+                               "Based on environment")
       (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     '("CustomVerbatimCommand"
@@ -627,24 +622,17 @@ ENV is the name of current environment as a string."
       (TeX-arg-conditional (member "fvextra" (TeX-style-list))
                            (TeX-arg-verb-delim-or-brace)
                            (TeX-arg-verb)))
-    '("UseVerb" (TeX-arg-eval
-                 completing-read
-                 (TeX-argument-prompt nil nil "Saved name")
-                 (LaTeX-fancyvrb-saveverb-list)))
+    '("UseVerb" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                                         "Saved name"))
     ;; \UseVerb also has a starred version
-    '("UseVerb*" (TeX-arg-eval
-                  completing-read
-                  (TeX-argument-prompt nil nil "Saved name")
-                  (LaTeX-fancyvrb-saveverb-list)))
-    '("UseVerbatim" (TeX-arg-eval completing-read
-                                  (TeX-argument-prompt nil nil "Saved name")
-                                  (LaTeX-fancyvrb-saveverbatim-list)))
-    '("LUseVerbatim" (TeX-arg-eval completing-read
-                                   (TeX-argument-prompt nil nil "Saved name")
-                                   (LaTeX-fancyvrb-saveverbatim-list)))
-    '("BUseVerbatim" (TeX-arg-eval completing-read
-                                   (TeX-argument-prompt nil nil "Saved name")
-                                   (LaTeX-fancyvrb-saveverbatim-list)))
+    '("UseVerb*" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                                          "Saved name"))
+    '("UseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                                             "Saved name"))
+    '("LUseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                                              "Saved name"))
+    '("BUseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                                              "Saved name"))
 
     ;; Writing and reading verbatim files
     '("VerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]

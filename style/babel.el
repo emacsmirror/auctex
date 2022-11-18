@@ -286,11 +286,8 @@
     '("useshorthands"  "Character")
     '("useshorthands*" "Character")
     '("defineshorthand"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt t nil "Language(s)")
-                     (LaTeX-babel-active-languages))
-                    ","]
+      [TeX-arg-completing-read-multiple (LaTeX-babel-active-languages)
+                                        "Language(s)"]
       t nil)
     '("languageshorthands" TeX-arg-babel-lang)
     '("babelshorthand"   "Short hand")
@@ -299,18 +296,13 @@
 
     ;; 1.12 The base option
     '("AfterBabelLanguage"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Language")
-                    LaTeX-babel-language-list)
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language")
       t)
 
     ;; 1.14 Selecting fonts
     '("babelfont"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt t nil "Language(s)")
-                     LaTeX-babel-language-list)
-                    ","]
+      [TeX-arg-completing-read-multiple LaTeX-babel-language-list
+                                        "Language(s)"]
       (TeX-arg-eval let ((fontfam (completing-read
                                    (TeX-argument-prompt nil nil "font family")
                                    '("rm" "sf" "tt"))))
@@ -330,9 +322,7 @@
     ;; 1.16 Creating a language
     '("babelprovide"
       [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Language")
-                    LaTeX-babel-language-list))
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language"))
 
     ;; 1.19 Accessing language info
     '("languagename" 0)
@@ -340,20 +330,13 @@
 
     ;; 1.20 Hyphenation and line breaking
     '("babelhyphen"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "nobreak" "empty")))
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
     '("babelhyphen*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Type/Text")
-                    '("soft" "hard" "repeat" "nobreak" "empty")))
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
 
     '("babelhyphenation"
-      [TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Language(s)")
-                     LaTeX-babel-language-list)
-                    ","]
+      [TeX-arg-completing-read-multiple LaTeX-babel-language-list
+                                        "Language(s)"]
       t)
 
     ;; 1.23 Selecting scripts

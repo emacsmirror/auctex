@@ -1,6 +1,6 @@
 ;;; bigdelim.el --- AUCTeX style for `bigdelim.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2011--2022 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -64,27 +65,25 @@ standard one."
    (TeX-run-style-hooks "multirow")
 
    (TeX-add-symbols
-    '("ldelim"
+    `("ldelim"
       (TeX-arg-bigdelim-brace left)
       "Number of rows for multirow"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Width in multirow")
-                    (append
-                     '("*")
-                     (mapcar (lambda (x)
-                               (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
+      (TeX-arg-completing-read
+       ,(lambda () (append '("*")
+                           (mapcar (lambda (x)
+                                     (concat TeX-esc (car x)))
+                                   (LaTeX-length-list))))
+       "Width in multirow")
       [ "Text in multirow" ])
-    '("rdelim"
+    `("rdelim"
       (TeX-arg-bigdelim-brace right)
       "Number of rows for multirow"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Width in multirow")
-                    (append
-                     '("*")
-                     (mapcar (lambda (x)
-                               (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
+      (TeX-arg-completing-read
+       ,(lambda () (append '("*")
+                           (mapcar (lambda (x)
+                                     (concat TeX-esc (car x)))
+                                   (LaTeX-length-list))))
+       "Width in multirow")
       [ "Text in multirow" ]))
 
    ;; Fontification

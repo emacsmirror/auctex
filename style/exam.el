@@ -142,61 +142,29 @@ Arguments NAME and TYPE are the same as for the function
     '("part" [ "Points" ] (TeX-arg-literal " "))
     '("subpart" [ "Points" ] (TeX-arg-literal " "))
     '("gradetable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("bonusgradetable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("bonuspointtable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("partialgradetable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("partialbonusgradetable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("partialbonuspointtable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("pointtable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
     '("partialpointtable"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Orientation")
-        '("v" "h") ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Table index")
-        '("questions" "pages") ] )
+      [TeX-arg-completing-read ("v" "h") "Orientation"]
+      [TeX-arg-completing-read ("questions" "pages") "Table index"])
 
     '("subsubpart" [ "Points" ] (TeX-arg-literal " "))
     '("question"  ["Points"] (TeX-arg-literal " "))

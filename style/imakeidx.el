@@ -1,6 +1,6 @@
 ;;; imakeidx.el --- AUCTeX style for `imakeidx.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2013, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2022 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -28,6 +28,11 @@
 ;; This file adds support for `imakeidx.sty'.
 
 ;;; Code:
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
 
 (require 'tex)
 (require 'latex)
@@ -65,7 +70,7 @@
                    '(("headers")))))
 
    (TeX-add-symbols
-    '("makeindex" [ (TeX-arg-key-val LaTeX-imakeidx-makeindex-options) ])
+    '("makeindex" [TeX-arg-key-val LaTeX-imakeidx-makeindex-options])
     '("indexsetup" (TeX-arg-key-val LaTeX-imakeidx-indexsetup-options))
     '("splitindexoptions" "Command line option")
     '("index" [ "Index name" ] TeX-arg-index)
@@ -92,7 +97,19 @@
           '(("|see{\\([^{}\n\r]*\\)" 1 LaTeX-index-entry-list))
           TeX-complete-list))
    (and (fboundp 'reftex-add-index-macros)
-        (reftex-add-index-macros '(default))))
+        (reftex-add-index-macros '(default)))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("makeindex"         "[")
+                                ("indexsetup"        "{")
+                                ("splitindexoptions" "{")
+                                ("indexprologue"     "[{")
+                                ("printindex"        "["))
+                              'function)
+     (font-latex-add-keywords '(("index" "[{"))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-imakeidx-package-options

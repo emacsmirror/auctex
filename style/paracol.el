@@ -1,6 +1,6 @@
 ;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.35)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -157,9 +157,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 
     ;; 7.6 Page-Wise Footnotes
     '("footnotelayout"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Layout")
-                    '("c" "m" "p")))
+      (TeX-arg-completing-read ("c" "m" "p") "Layout"))
 
     ;; \footnote*[num]{text}
     ;; \footnotemark*[num]
@@ -206,20 +204,18 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; \backgroundcolor{region(x0,y0)}[mode]{color}
     ;; \backgroundcolor{region(x0,y0)(x1,y1)}[mode]{color}
     '("backgroundcolor"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Region")
-                    '("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
-                      "C" "G" "S" "F" "N" "P" "T" "B" "L" "R"))
+      (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
+                                "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
+                               "Region")
       (TeX-arg-conditional (member "xcolor" (TeX-style-list))
                            (TeX-arg-xcolor)
                            (TeX-arg-color)))
 
     ;; \nobackgroundcolor{region}
     '("nobackgroundcolor"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Region")
-                    '("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
-                      "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")))
+      (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
+                                "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
+                               "Region"))
 
     ;; \resetbackgroundcolor
     '("resetbackgroundcolor" 0)
@@ -227,9 +223,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     ;; 7.9 Control of Contents Output
     ;; \addcontentsonly{file}{col}
     '("addcontentsonly"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Content file")
-                    '("toc" "lof" "lot"))
+      (TeX-arg-completing-read ("toc" "lof" "lot") "Content file")
       "Column")
 
     ;; 7.10 Page Flushing Commands

@@ -1,6 +1,6 @@
 ;;; titletoc.el --- AUCTeX style for `titletoc.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -98,19 +98,18 @@ Removal is based on the return value of function
     ;; \dottedcontents{<section>}[<left>]{<above-code>}
     ;;                {<label width>}{<leader width>}
     '("dottedcontents"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-length "Left margin" ] 3)
+      (TeX-arg-completing-read (LaTeX-titletoc-section-command-list)
+                               "Sectioning command")
+      [TeX-arg-length "Left margin"]
+      3)
 
     ;; \titlecontents{<section>}[<left>]{<above-code>}
     ;;               {<numbered-entry-format>}{<numberless-entry-format>}
     ;;               {<filler-page-format>}[<below-code>]
     '("titlecontents"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-length "Left margin" ]
+      (TeX-arg-completing-read (LaTeX-titletoc-section-command-list)
+                               "Sectioning command")
+      [TeX-arg-length "Left margin"]
       (TeX-arg-conditional (y-or-n-p "With optional below code argument? ")
                            (4 [nil])
                            (4)))
@@ -119,10 +118,9 @@ Removal is based on the return value of function
     ;;                {<numbered-entry-format>}{<numberless-entry-format>}
     ;;                {<filler-page-format>}[<separator>]
     '("titlecontents*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titletoc-section-command-list))
-      [ TeX-arg-length "Left margin" ]
+      (TeX-arg-completing-read (LaTeX-titletoc-section-command-list)
+                               "Sectioning command")
+      [TeX-arg-length "Left margin"]
       (TeX-arg-conditional (y-or-n-p "With optional separator argument? ")
                            (4 [nil])
                            (4)))

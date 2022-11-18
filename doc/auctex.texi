@@ -433,14 +433,14 @@ will blink when @code{blink-matching-paren} is non-nil.  If
 @code{TeX-electric-math} is nil, typing @kbd{$} simply inserts @samp{$}
 at point, this is the default.
 
-Besides @code{nil}, possible values for this variable are @code{(cons
-"$" "$")} for @TeX{} inline equations @samp{$...$}, and @code{(cons
-"\\(" "\\)")} for @LaTeX{} inline equations @samp{\(...\)}.
+Besides @code{nil}, possible values for this variable are @code{("$"
+. "$")} for @TeX{} inline equations @samp{$...$}, and @code{("\(" . "\)")}
+for @LaTeX{} inline equations @samp{\(...\)}.
 
 If the variable is non-nil and point is inside math mode right between a
 couple of single dollars, pressing @kbd{$} will insert another pair of
 dollar signs and leave the point between them.  Thus, if
-@code{TeX-electric-math} is set to @code{(cons "$" "$")} you can easily
+@code{TeX-electric-math} is set to @code{("$" . "$")} you can easily
 obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$}
 twice in a row.  (Note that you should not use double dollar signs in
 @LaTeX{} because this practice can lead to wrong spacing in typeset
@@ -467,6 +467,20 @@ following to your init file
           (lambda () (set (make-local-variable 'TeX-electric-math)
                           (cons "\\(" "\\)"))))
 @end lisp
+
+Math mode which didn't start with dollar(s) shouldn't be closed with dollar.
+@defopt TeX-refuse-unmatched-dollar
+This option determines the behavior when the user types @kbd{$} at a
+position where @AUCTeX{} thinks that it is in math mode which didn't start
+with dollar(s).
+
+When this option is @code{nil}, @AUCTeX{} behaves in the same way as
+non-math mode, assuming that the user knows it isn't in math mode
+actually.  This is the default.
+
+When this option is non-@code{nil}, @AUCTeX{} refuses to insert @samp{$}
+to prevent unmatched dollar.
+@end defopt
 
 Note that Texinfo mode does nothing special for @kbd{$}.  It inserts
 dollar sign(s) just in the same way as the other normal keys do.
@@ -1326,7 +1340,7 @@ define and register custom @code{completion-at-point} functions and when the
 user invokes @code{completion-at-point} (usually bound to
 @kbd{M-@key{TAB}}), all such registered functions are consulted for
 checking for possible completions.  Modern completion UIs like
-@i{company-mode} support this completion-at-point facility.
+@i{company-mode} or @i{corfu} support this completion-at-point facility.
 
 @defun TeX--completion-at-point
 @AUCTeX{}'s completion-at-point function which is automatically added to
@@ -1337,6 +1351,17 @@ It offers the same completion candidates as would
 @code{TeX-complete-list}) except that it doesn't fall back on
 @code{ispell-complete-word} which would be awkward with completion UIs
 like @i{company-mode}.
+@end defun
+
+@defun LaTeX--arguments-completion-at-point
+@AUCTeX{}'s completion-at-point function inside arguments which is
+automatically added to @code{completion-at-point-functions} in @LaTeX{}
+buffers.
+
+It offers the completion candidates stored in the variables
+@code{TeX-symbol-list} and @code{LaTeX-environment-list} for single
+candidate, multiple candidates separated by commas, or key-value
+candidates separated by commas and/or equal signs.
 @end defun
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
@@ -5625,6 +5650,19 @@ Following is a list of available hooks for
 @item LaTeX-env-item
 Insert the given environment and the first item.
 
+@item LaTeX-env-item-args
+Insert the given environment plus further arguments, and the first item.
+You can use this as a hook in case you want to specify multiple complex
+arguments just like in elements of @code{TeX-add-symbols}.  Here is an
+example from @file{enumitem.el} in order to prompt for a @samp{key=value}
+list to be inserted as an optional argument to the @samp{itemize}
+environment:
+@lisp
+(LaTeX-add-environments
+ '("itemize" LaTeX-env-item-args
+   [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
+@end lisp
+
 @item LaTeX-env-figure
 Insert the given figure-like environment with a caption and a label.
 
@@ -5634,6 +5672,10 @@ specifications.
 
 @item LaTeX-env-label
 Insert the given environment with a label.
+
+@item LaTeX-env-label-args
+Insert the given environment with a label and further arguments to the
+environment.
 
 @item LaTeX-env-list
 Insert the given list-like environment, a specifier for the label and

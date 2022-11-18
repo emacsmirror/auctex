@@ -51,9 +51,7 @@
 
    (TeX-add-symbols
     '("cmd" TeX-arg-macro)
-    '("cs" (TeX-arg-eval completing-read
-                         (TeX-argument-prompt nil nil "Macro")
-                         (TeX-symbol-list)))
+    '("cs" (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
     '("marg" "Mandatory argument")
     '("oarg" "Optional argument")
     '("parg" "Picture mode argument")

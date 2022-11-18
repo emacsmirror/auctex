@@ -1,6 +1,6 @@
 ;;; menukeys.el --- AUCTeX style for `menukeys.sty' (v1.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -113,15 +113,15 @@ from the variable `TeX-symbol-list' before being re-added."
         (setq TeX-symbol-list
               (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
       (TeX-add-symbols
-       `(,macro [ TeX-arg-eval completing-read
-                               (TeX-argument-prompt t nil
-                                                    ,(concat "Input separator "
-                                                             "(default "
-                                                             (if (and sep (not (string= sep "")))
-                                                                 sep
-                                                               ",")
-                                                             ")"))
-                               LaTeX-menukeys-input-separators-list ] t ))
+       `(,macro [TeX-arg-completing-read
+                 LaTeX-menukeys-input-separators-list
+                 ,(concat "Input separator "
+                          "(default "
+                          (if (and sep (not (string= sep "")))
+                              sep
+                            ",")
+                          ")")]
+                t ))
       (when (and (featurep 'font-latex)
                  (eq TeX-install-font-lock 'font-latex-setup))
         (font-latex-add-keywords `((,macro "[{"))
@@ -158,15 +158,15 @@ macro.  If RENEW is non-nil, query for an already defined macro."
       (setq TeX-symbol-list
             (assq-delete-all (car (assoc macro (TeX-symbol-list))) TeX-symbol-list)))
     (TeX-add-symbols
-     `(,macro [ TeX-arg-eval completing-read
-                             (TeX-argument-prompt t nil
-                                                  ,(concat "Input separator "
-                                                          "(default "
-                                                          (if (and sep (not (string= sep "")))
-                                                              sep
-                                                            ",")
-                                                          ")"))
-                             LaTeX-menukeys-input-separators-list ] t ))
+     `(,macro [TeX-arg-completing-read
+               LaTeX-menukeys-input-separators-list
+               ,(concat "Input separator "
+                        "(default "
+                        (if (and sep (not (string= sep "")))
+                            sep
+                          ",")
+                        ")")]
+              t))
     (when (and (featurep 'font-latex)
                (eq TeX-install-font-lock 'font-latex-setup))
       (font-latex-add-keywords `((,macro       "[{"))
@@ -197,33 +197,26 @@ macro.  If RENEW is non-nil, query for an already defined macro."
       ;; \directory [<separator>]{path}
       ;; \keys      [<separator>]{keystrokes}
       '("menu"
-        [ TeX-arg-eval completing-read
-          (TeX-argument-prompt t nil "Input separator")
-          LaTeX-menukeys-input-separators-list ]
+        [TeX-arg-completing-read LaTeX-menukeys-input-separators-list
+                                 "Input separator"]
         t)
 
       '("directory"
-        [ TeX-arg-eval completing-read
-          (TeX-argument-prompt t nil "Input separator")
-          LaTeX-menukeys-input-separators-list ]
+        [TeX-arg-completing-read LaTeX-menukeys-input-separators-list
+                                 "Input separator"]
         t)
 
       '("keys"
-        [ TeX-arg-eval completing-read
-          (TeX-argument-prompt t nil "Input separator")
-          LaTeX-menukeys-input-separators-list ]
+        [TeX-arg-completing-read LaTeX-menukeys-input-separators-list
+                                 "Input separator"]
         t)))
 
    (TeX-add-symbols
     ;; 4.2.1 Predefined styles
     ;; \drawtikzfolder[<front fill>][<draw>]
     '("drawtikzfolder"
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Front color")
-        (LaTeX-xcolor-definecolor-list) ]
-      [ TeX-arg-eval completing-read
-        (TeX-argument-prompt t nil "Line color")
-        (LaTeX-xcolor-definecolor-list) ] )
+      [TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Front color"]
+      [TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Line color"])
 
     ;; 4.2.2 Declaring styles
     ;; \newmenustylesimple*{<name>}[<pre>]{<style>}[<sep>][<post>]{<theme>}
@@ -235,9 +228,8 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list)
+                               "Color theme"))
 
     '("newmenustylesimple*"
       (TeX-arg-eval
@@ -247,9 +239,7 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list) "Color theme"))
 
     ;; \newmenustyle*{<name>}[<pre>]{<first>}[<sep>]{<mid>}{<last>}{<single>}[<post>]{<theme>}
     '("newmenustyle"
@@ -260,9 +250,7 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list) "Color theme"))
 
     '("newmenustyle*"
       (TeX-arg-eval
@@ -272,9 +260,7 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list) "Color theme"))
 
     '("CurrentMenuElement" 0)
 
@@ -294,26 +280,19 @@ macro.  If RENEW is non-nil, query for an already defined macro."
     ;; 4.2.4 Changing styles
     ;; \changemenuelement*{name}{element}{definition}
     '("changemenuelement"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-menukeys-newmenustyle-list))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenustyle-list) "Name")
       2)
 
     '("changemenuelement*"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-menukeys-newmenustyle-list))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenustyle-list) "Name")
       2)
 
     ;; Same arguments as \newmenustylesimple
     '("renewmenustylesimple"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-menukeys-newmenustyle-list))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenustyle-list) "Name")
       [ t ] nil [ nil ] [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list)
+                               "Color theme"))
 
     '("providemenustylesimple"
       (TeX-arg-eval
@@ -323,19 +302,15 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list)
+                               "Color theme"))
 
     ;; Same arguments as \newmenustyle
     '("providemenustyle"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-menukeys-newmenustyle-list))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenustyle-list) "Name")
       [ t ] nil [ nil ] nil nil nil [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list)
+                               "Color theme"))
 
     '("renewmenustyle"
       (TeX-arg-eval
@@ -345,9 +320,8 @@ macro.  If RENEW is non-nil, query for an already defined macro."
            (LaTeX-add-menukeys-newmenustyles name)
            (format "%s" name))))
       [ t ] nil [ nil ] nil nil nil [ nil ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Color theme")
-                    (LaTeX-menukeys-newmenucolortheme-list)))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list)
+                               "Color theme"))
 
     ;; 4.3 Color themes
     ;; 4.3.2 Create a theme
@@ -406,12 +380,8 @@ macro.  If RENEW is non-nil, query for an already defined macro."
 
     ;; 4.3.4 Change a theme
     '("changemenucolor"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-menukeys-newmenucolortheme-list))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Element")
-                    '("bg" "br" "txt"))
+      (TeX-arg-completing-read (LaTeX-menukeys-newmenucolortheme-list) "Name")
+      (TeX-arg-completing-read ("bg" "br" "txt") "Element")
       (TeX-arg-eval
        (lambda ()
          (let ((model (completing-read
@@ -497,9 +467,9 @@ macro.  If RENEW is non-nil, query for an already defined macro."
           ((= (cdr cmd) 0)
            (push (car cmd) collector))
           ((= (cdr cmd) 1)
-           (push (list (car cmd) '(TeX-arg-eval completing-read
-                                                "Direction: "
-                                                '("^" "v" ">" "<")))
+           (push (list (car cmd) '(TeX-arg-completing-read
+                                   ("^" "v" ">" "<")
+                                   "Direction"))
                  collector))
           ((= (cdr cmd) 2)
            (push (car cmd) collector)

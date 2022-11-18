@@ -1,6 +1,6 @@
 ;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v0.72)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -82,10 +82,8 @@
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-thmtools-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-thmtools-declaretheoremstyle-key-val (optional &optional prompt)
-  "Query and return a key=val string for \\declaretheoremstyle macro.
-If OPTIONAL is non-nil, indicate an optional argument in
-minibuffer.  PROMPT replaces the standard one."
+(defun LaTeX-thmtools-declaretheoremstyle-key-val-options ()
+  "Return key=val list for \\declaretheoremstyle macro."
   (let ((lengths (mapcar (lambda (x)
                            (concat TeX-esc x))
                          (mapcar #'car (LaTeX-length-list))))
@@ -96,93 +94,73 @@ minibuffer.  PROMPT replaces the standard one."
                          "tiny"  "scriptsize" "footnotesize"
                          "small" "normalsize" "large"
                          "Large" "LARGE" "huge" "Huge" "normalfont"))))
-    (TeX-read-key-val
-     optional
-     `(("spaceabove" ,lengths)
-       ("spacebelow" ,lengths)
-       ("headfont" ,fonts)
-       ("notefont" ,fonts)
-       ("bodyfont" ,fonts)
-       ("headpunct")
-       ("notebraces")
-       ("postheadspace" ,lengths)
-       ("headformat" ("margin" "swapnumber" "\\NUMBER" "\\NAME" "\\NOTE"))
-       ("headindent" ,lengths))
-     prompt)))
+    `(("spaceabove" ,lengths)
+      ("spacebelow" ,lengths)
+      ("headfont" ,fonts)
+      ("notefont" ,fonts)
+      ("bodyfont" ,fonts)
+      ("headpunct")
+      ("notebraces")
+      ("postheadspace" ,lengths)
+      ("headformat" ("margin" "swapnumber" "\\NUMBER" "\\NAME" "\\NOTE"))
+      ("headindent" ,lengths))))
 
 (defun LaTeX-arg-thmtools-declaretheoremstyle (optional &optional prompt)
-  "Insert the key=val and style name defined by \\declaretheoremstyle.
+  "Insert the style name defined by \\declaretheoremstyle.
 If OPTIONAL is non-nil, also insert the second argument in square
 brackets.  PROMPT replaces the standard one for the second
 argument."
-  (let ((TeX-arg-opening-brace "[")
-        (TeX-arg-closing-brace "]"))
-    (TeX-argument-insert
-     (LaTeX-thmtools-declaretheoremstyle-key-val t)
-     t))
   (let ((style (TeX-read-string
                 (TeX-argument-prompt optional prompt "Style"))))
     (LaTeX-add-thmtools-declaretheoremstyles style)
     (TeX-argument-insert style optional)))
 
-(defun LaTeX-thmtools-declaretheorem-key-val (optional &optional prompt)
-  "Query and return a key=val string for \\declaretheorem macro.
-If OPTIONAL is non-nil, indicate an optional argument in
-minibuffer.  PROMPT replaces the standard one."
+(defun LaTeX-thmtools-declaretheorem-key-val-options ()
+  "Return key=val list for \\declaretheorem macro."
   (let ((counters (mapcar #'car (LaTeX-counter-list))))
-    (TeX-read-key-val
-     optional
-     `(("parent" ,counters)
-       ("numberwithin" ,counters)
-       ("within" ,counters)
-       ("sibling" ,counters)
-       ("numberlike" ,counters)
-       ("sharenumber" ,counters)
-       ("title")
-       ("name")
-       ("heading")
-       ("numbered" ("yes" "no" "unless unique"))
-       ("style"
-        ,(append
-          ;; check for \newtheoremstyle from amsthm.sty:
-          (when (and (fboundp 'LaTeX-amsthm-newtheoremstyle-list)
-                     (LaTeX-amsthm-newtheoremstyle-list))
-            (mapcar #'car (LaTeX-amsthm-newtheoremstyle-list)))
-          ;; check for \newtheoremstyle from ntheorem.sty:
-          (when (and (fboundp 'LaTeX-ntheorem-newtheoremstyle-list)
-                     (LaTeX-ntheorem-newtheoremstyle-list))
-            (mapcar #'car (LaTeX-ntheorem-newtheoremstyle-list)))
-          ;; thmtools version is called \declaretheoremstyle:
-          (mapcar #'car (LaTeX-thmtools-declaretheoremstyle-list))))
-       ("preheadhook")
-       ("postheadhook")
-       ("prefoothook")
-       ("postfoothook")
-       ("refname")
-       ("Refname")
-       ("shaded" ("textwidth" "bgcolor" "rulecolor" "rulewidth" "margin"))
-       ("thmbox" ("L" "M" "S")))
-     prompt)))
+    `(("parent" ,counters)
+      ("numberwithin" ,counters)
+      ("within" ,counters)
+      ("sibling" ,counters)
+      ("numberlike" ,counters)
+      ("sharenumber" ,counters)
+      ("title")
+      ("name")
+      ("heading")
+      ("numbered" ("yes" "no" "unless unique"))
+      ("style"
+       ,(append
+         ;; check for \newtheoremstyle from amsthm.sty:
+         (when (and (fboundp 'LaTeX-amsthm-newtheoremstyle-list)
+                    (LaTeX-amsthm-newtheoremstyle-list))
+           (mapcar #'car (LaTeX-amsthm-newtheoremstyle-list)))
+         ;; check for \newtheoremstyle from ntheorem.sty:
+         (when (and (fboundp 'LaTeX-ntheorem-newtheoremstyle-list)
+                    (LaTeX-ntheorem-newtheoremstyle-list))
+           (mapcar #'car (LaTeX-ntheorem-newtheoremstyle-list)))
+         ;; thmtools version is called \declaretheoremstyle:
+         (mapcar #'car (LaTeX-thmtools-declaretheoremstyle-list))))
+      ("preheadhook")
+      ("postheadhook")
+      ("prefoothook")
+      ("postfoothook")
+      ("refname")
+      ("Refname")
+      ("shaded" ("textwidth" "bgcolor" "rulecolor" "rulewidth" "margin"))
+      ("thmbox" ("L" "M" "S")))))
 
 (defun LaTeX-arg-thmtools-declaretheorem (optional &optional prompt)
-  "Insert the key=val and environment name defined by \\declaretheorem.
+  "Insert the environment name defined by \\declaretheorem.
 If OPTIONAL is non-nil, also insert the second argument in square
 brackets.  PROMPT replaces the standard one for the second
 argument."
   (let ((env (TeX-read-string
               (TeX-argument-prompt optional prompt "Environment"))))
     (LaTeX-add-environments `(,env LaTeX-thmtools-env-label))
-    (TeX-argument-insert env optional))
-  (let ((TeX-arg-opening-brace "[")
-        (TeX-arg-closing-brace "]"))
-    (TeX-argument-insert
-     (LaTeX-thmtools-declaretheorem-key-val t)
-     t)))
+    (TeX-argument-insert env optional)))
 
-(defun LaTeX-thmtools-listoftheorems-key-val (optional &optional prompt)
-  "Query and return a key=val string for \\listoftheorems macro.
-If OPTIONAL is non-nil, indicate an optional argument in
-minibuffer.  PROMPT replaces the standard one."
+(defun LaTeX-thmtools-listoftheorems-key-val-options ()
+  "Return key=val list for \\listoftheorems macro."
   (let ((lengths (mapcar (lambda (x)
                            (concat TeX-esc x))
                          (mapcar #'car (LaTeX-length-list))))
@@ -197,25 +175,14 @@ minibuffer.  PROMPT replaces the standard one."
                  (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
                ;; thmtools version is called \declaretheorem:
                (mapcar #'car (LaTeX-thmtools-declaretheorem-list)))))
-    (TeX-read-key-val
-     optional
-     `(("title")
-       ("ignore" ,thms)
-       ("ignoreall" ("true" "false"))
-       ("show" ,thms)
-       ("showall" ("true" "false"))
-       ("onlynamed" ,thms)
-       ("swapnumber" ("true" "false"))
-       ("numwidth" ,lengths))
-     prompt)))
-
-(defun LaTeX-arg-thmtools-listoftheorems (optional &optional prompt)
-  "Insert the key=val to \\listoftheorems macro.
-If OPTIONAL is non-nil, insert the result square brackets.
-OPTIONAL and PROMPT are passed to `LaTeX-thmtools-listoftheorems-key-val'."
-  (TeX-argument-insert
-   (LaTeX-thmtools-listoftheorems-key-val optional prompt)
-   optional))
+    `(("title")
+      ("ignore" ,thms)
+      ("ignoreall" ("true" "false"))
+      ("show" ,thms)
+      ("showall" ("true" "false"))
+      ("onlynamed" ,thms)
+      ("swapnumber" ("true" "false"))
+      ("numwidth" ,lengths))))
 
 (defun LaTeX-thmtools-env-label (environment)
   "Insert thmtools ENVIRONMENT, query for an optional argument and label.
@@ -273,26 +240,31 @@ RET in order to leave it empty.")
    (TeX-auto-add-regexp LaTeX-thmtools-declaretheorem-regexp)
 
    (TeX-add-symbols
-    '("declaretheoremstyle" LaTeX-arg-thmtools-declaretheoremstyle)
-    '("declaretheorem" LaTeX-arg-thmtools-declaretheorem)
+    '("declaretheoremstyle"
+      [TeX-arg-key-val (LaTeX-thmtools-declaretheoremstyle-key-val-options)]
+      LaTeX-arg-thmtools-declaretheoremstyle)
 
-    '("listoftheorems"  [ LaTeX-arg-thmtools-listoftheorems ])
-    '("ignoretheorems"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     (TeX-argument-prompt nil nil "Environment(s)")
-                     (append
-                      ;; check for \newtheorem from amsthm.sty:
-                      (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
-                                 (LaTeX-amsthm-newtheorem-list))
-                        (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
-                      ;; check for \newtheorem from ntheorem.sty:
-                      (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
-                                 (LaTeX-ntheorem-newtheorem-list))
-                        (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
-                      ;; thmtools version is called \declaretheorem:
-                      (mapcar #'car (LaTeX-thmtools-declaretheorem-list))))
-                    ","))
+    '("declaretheorem"
+      LaTeX-arg-thmtools-declaretheorem
+      [TeX-arg-key-val (LaTeX-thmtools-declaretheorem-key-val-options)])
+
+    '("listoftheorems"
+      [TeX-arg-key-val (LaTeX-thmtools-listoftheorems-key-val-options)])
+
+    `("ignoretheorems"
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append
+                    ;; check for \newtheorem from amsthm.sty:
+                    (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
+                               (LaTeX-amsthm-newtheorem-list))
+                      (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
+                    ;; check for \newtheorem from ntheorem.sty:
+                    (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
+                               (LaTeX-ntheorem-newtheorem-list))
+                      (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
+                    ;; thmtools version is called \declaretheorem:
+                    (mapcar #'car (LaTeX-thmtools-declaretheorem-list))))
+       "Environment(s)"))
     '("listtheoremname" 0))
 
    ;; Fontification

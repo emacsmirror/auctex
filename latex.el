@@ -632,8 +632,8 @@ It may be customized with the following variables:
              (dolist (elt prompts)
                (let* ((optional (vectorp elt))
                       (elt (if optional (elt elt 0) elt))
-                      (arg (TeX-read-string (concat (when optional "(Optional) ")
-                                                elt ": "))))
+                      (arg (TeX-read-string
+                            (TeX-argument-prompt optional elt nil))))
                  (setq args (concat args
                                     (cond ((and optional (> (length arg) 0))
                                            (concat LaTeX-optop arg LaTeX-optcl))
@@ -1061,9 +1061,22 @@ If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-label
   :type 'string)
 
-(defun LaTeX-env-item (environment)
-  "Insert ENVIRONMENT and the first item."
-  (LaTeX-insert-environment environment)
+(defun LaTeX--env-parse-args (args)
+  "Helper function to insert arguments defined by ARGS.
+This function checks if `TeX-exit-mark' is set, otherwise it's
+set to the point where this function starts.  Point will be at
+`TeX-exit-mark' when this function exits."
+  (let ((TeX-exit-mark (or TeX-exit-mark
+                           (point-marker))))
+    (LaTeX-find-matching-begin)
+    (end-of-line)
+    (TeX-parse-arguments args)
+    (goto-char TeX-exit-mark)
+    (set-marker TeX-exit-mark nil)))
+
+(defun LaTeX--env-item (environment)
+  "Helper function running inside `LaTeX-env-item'.
+The body of this function used to be part of `LaTeX-env-item'."
   (if (TeX-active-mark)
       (progn
         (LaTeX-find-matching-begin)
@@ -1087,6 +1100,19 @@ If nil, act like the empty string is given, but do not prompt."
              (> (- (line-end-position) (line-beginning-position))
                 (current-fill-column)))
     (LaTeX-fill-paragraph nil)))
+
+(defun LaTeX-env-item (environment)
+  "Insert ENVIRONMENT and the first item.
+The first item is inserted by the function `LaTeX--env-item'."
+  (LaTeX-insert-environment environment)
+  (LaTeX--env-item environment))
+
+(defun LaTeX-env-item-args (environment &rest args)
+  "Insert ENVIRONMENT followed by ARGS and first item.
+The first item is inserted by the function `LaTeX--env-item'."
+  (LaTeX-insert-environment environment)
+  (LaTeX--env-parse-args args)
+  (LaTeX--env-item environment))
 
 (defcustom LaTeX-label-alist
   '(("figure" . LaTeX-figure-label)
@@ -1296,6 +1322,11 @@ Just like array and tabular."
     ;; Restore the positions of point and mark.
     (exchange-point-and-mark)))
 
+(defun LaTeX-env-label-args (environment &rest args)
+  "Run `LaTeX-env-label' on ENVIRONMENT and insert ARGS."
+  (LaTeX-env-label environment)
+  (LaTeX--env-parse-args args))
+
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
   (let ((label (TeX-read-string "Default Label: ")))
@@ -1422,12 +1453,7 @@ Just like array and tabular."
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
   (LaTeX-insert-environment environment)
-  (save-excursion
-    (LaTeX-find-matching-begin)
-    (end-of-line)
-    (let ((TeX-exit-mark (or TeX-exit-mark
-                             (make-marker))))
-      (TeX-parse-arguments args))))
+  (LaTeX--env-parse-args args))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
   "Query for a label and insert it in the optional argument of an environment.
@@ -1748,12 +1774,14 @@ This is necessary since index entries may contain commands and stuff.")
   "List of regular expressions matching LaTeX pagestyles only.")
 
 (defvar LaTeX-auto-counter-regexp-list
-  '(("\\\\newcounter *{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter)
-    ("\\\\@definecounter{\\([A-Za-z]+\\)}" 1 LaTeX-auto-counter))
+  (let ((token TeX-token-char))
+    `((,(concat "\\\\newcounter *{\\(" token "+\\)}") 1 LaTeX-auto-counter)
+      (,(concat "\\\\@definecounter{\\(" token "+\\)}") 1 LaTeX-auto-counter)))
   "List of regular expressions matching LaTeX counters only.")
 
 (defvar LaTeX-auto-length-regexp-list
-  '(("\\\\newlength *{?\\\\\\([A-Za-z]+\\)}?" 1 LaTeX-auto-length))
+  (let ((token TeX-token-char))
+    `((,(concat "\\\\newlength *{?\\\\\\(" token "+\\)}?") 1 LaTeX-auto-length)))
   "List of regular expressions matching LaTeX lengths only.")
 
 (defvar LaTeX-auto-savebox-regexp-list
@@ -2044,7 +2072,7 @@ The value is actually the tail of the list of options given to PACKAGE."
                                                LaTeX-auto-environment))
                                    LaTeX-auto-environment)))
           (add-to-list 'LaTeX-auto-environment
-                       (list (nth 0 entry) 'LaTeX-env-args (vector "argument")
+                       (list (nth 0 entry) #'LaTeX-env-args (vector "argument")
                              (1- (string-to-number (nth 1 entry))))))
         LaTeX-auto-env-args-with-opt)
 
@@ -2109,6 +2137,7 @@ It will setup BibTeX to store keys in an auto file."
 If EXPR evaluate to true, parse THEN as an argument list, else
 parse ELSE as an argument list.  The compatibility argument
 OPTIONAL is ignored."
+  (declare (indent 2))
   (TeX-parse-arguments (if (eval expr t) then else)))
 
 (defun TeX-arg-eval (optional &rest args)
@@ -3219,7 +3248,10 @@ prompt string.  `LaTeX-default-author' is the initial input."
                   "")))
     (TeX-argument-insert author optional nil)))
 
-(defun TeX-read-key-val (optional key-val-alist &optional prompt)
+(defun TeX-read-key-val (optional key-val-alist &optional prompt complete
+                                  predicate require-match
+                                  initial-input hist def
+                                  inherit-input-method)
   "Prompt for keys and values in KEY-VAL-ALIST and return them.
 If OPTIONAL is non-nil, indicate in the prompt that we are
 reading an optional argument.  KEY-VAL-ALIST can be
@@ -3230,9 +3262,24 @@ reading an optional argument.  KEY-VAL-ALIST can be
 
 The car of each element should be a string representing a key and
 the optional cdr should be a list with strings to be used as
-values for the key.  Use PROMPT as the prompt string."
+values for the key.
+
+PROMPT replaces the standard one where \\=' (k=v): \\=' is
+appended to it.  If you want the full control over the prompt,
+set COMPLETE to non-nil and then provide a full PROMPT.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF,
+INHERIT-INPUT-METHOD are passed to `multi-prompt-key-value',
+which see."
   (multi-prompt-key-value
-   (TeX-argument-prompt optional prompt "Options (k=v)")
+   (TeX-argument-prompt optional
+                        (cond ((and prompt (not complete))
+                               (concat prompt " (k=v)"))
+                              ((and prompt complete)
+                               prompt)
+                              (t nil))
+                        "Options (k=v)"
+                        complete)
    (cond ((and (listp key-val-alist)
                (symbolp (car key-val-alist))
                (fboundp (car key-val-alist)))
@@ -3246,18 +3293,51 @@ values for the key.  Use PROMPT as the prompt string."
                (listp (car key-val-alist)))
           key-val-alist)
          (t
-          (error "Cannot interpret key-val-alist %S" key-val-alist)))))
+          (error "Cannot interpret key-val-alist %S" key-val-alist)))
+   predicate require-match initial-input hist def inherit-input-method))
 
-(defun TeX-arg-key-val (optional key-val-alist &optional prompt)
+(defun TeX-arg-key-val (optional key-val-alist &optional prompt complete
+                                 rem-char leftbrace rightbrace
+                                 predicate require-match
+                                 initial-input hist def
+                                 inherit-input-method)
   "Prompt for keys and values in KEY-VAL-ALIST.
 Insert the given value as a TeX macro argument.  If OPTIONAL is
 non-nil, insert it as an optional argument.  KEY-VAL-ALIST is an
 alist.  The car of each element should be a string representing a
 key and the optional cdr should be a list with strings to be used
 as values for the key.  Refer to `TeX-read-key-val' for more
-about KEY-VAL-ALIST.  Use PROMPT as the prompt string."
-  (let ((options (TeX-read-key-val optional key-val-alist prompt)))
-    (TeX-argument-insert options optional)))
+about KEY-VAL-ALIST.
+
+PROMPT replaces the standard one where \\=' (k=v): \\=' is
+appended to it.  If you want the full control over the prompt,
+set COMPLETE to non-nil and then provide a full PROMPT.
+
+REM-CHAR is a character removed from `crm-local-completion-map'
+and `minibuffer-local-completion-map' when performing completion.
+In most cases it will be ?\\s.
+
+The brackets used are controlled by the string values of
+LEFTBRACE and RIGHTBRACE.
+
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF,
+INHERIT-INPUT-METHOD are passed to `multi-prompt-key-value',
+which see."
+  (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace))
+        (crm-local-completion-map
+         (if rem-char (remove (assoc rem-char crm-local-completion-map)
+                              crm-local-completion-map)
+           crm-local-completion-map))
+        (minibuffer-local-completion-map
+         (if rem-char (remove (assoc rem-char minibuffer-local-completion-map)
+                              minibuffer-local-completion-map)
+           minibuffer-local-completion-map)))
+    (TeX-argument-insert
+     (TeX-read-key-val optional key-val-alist prompt complete
+                       predicate require-match initial-input
+                       hist def inherit-input-method)
+     optional)))
 
 (defun TeX-read-completing-read (optional collection &optional prompt complete
                                           predicate require-match
@@ -3365,29 +3445,39 @@ INHERIT-INPUT-METHOD are passed to
    predicate require-match initial-input hist def inherit-input-method))
 
 (defun TeX-arg-completing-read-multiple (optional table &optional prompt complete
-                                                  prefix leftbrace rightbrace
+                                                  prefix crm-sep concat-sep
+                                                  leftbrace rightbrace
                                                   predicate require-match
                                                   initial-input hist def
                                                   inherit-input-method)
   "Read multiple strings in the minibuffer, with completion and insert them.
 If OPTIONAL is non-nil, indicate it in the minibuffer and insert
-the result in brackets if not empty.  The brackets used are
-controlled by the string values of LEFTBRACE and RIGHTBRACE.
+the result in brackets if not empty.
 
-For TABLE, PROMPT and COMPLETE, refer to `TeX-read-completing-read-multiple'.
+For TABLE, PROMPT and COMPLETE, see `TeX-read-completing-read-multiple'.
+
 For PREFIX, see `TeX-argument-insert'.
+CRM-SEP is a regexp which is bound locally to `crm-separator'.
+CONCAT-SEP is a string which will be used to concat the queried
+items, defaults to \",\".
+
+The brackets used to insert the argument are controlled by the
+string values of LEFTBRACE and RIGHTBRACE.
+
 PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF and
 INHERIT-INPUT-METHOD are passed to
 `TeX-completing-read-multiple', which see."
   (let ((TeX-arg-opening-brace (or leftbrace TeX-arg-opening-brace))
-        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace)))
+        (TeX-arg-closing-brace (or rightbrace TeX-arg-closing-brace))
+        (crm-separator (or crm-sep crm-separator))
+        (concat-sep (or concat-sep ",")))
     (TeX-argument-insert
      (mapconcat #'identity
                 (TeX-read-completing-read-multiple optional table prompt
                                                    complete predicate
                                                    require-match initial-input
                                                    hist def inherit-input-method)
-                ",")
+                concat-sep)
      optional prefix)))
 
 (defun TeX-read-hook ()
@@ -7184,6 +7274,475 @@ page without enough text on it. ")
 Used as buffer local value of `TeX-error-description-list-local'.
 See its doc string for detail.")
 
+
+;;; LaTeX Capf for macro/environment arguments:
+
+;; tex.el defines the function `TeX--completion-at-point' which
+;; provides completion at point for (La)TeX macros.  Here we define
+;; `LaTeX--arguments-completion-at-point' which is the entry point for
+;; completion at point when inside a macro or environment argument.
+;; The general idea is:
+;;
+;; - Find out in which argument of macro/env the point is; this is
+;; done by the function `LaTeX-what-macro'.
+;;
+;; - Match the result against the information available in
+;; `TeX-symbol-list' or `LaTeX-environment-list' by the function
+;; `LaTeX-completion-parse-args'.
+;;
+;; - If there is a match, pass it to `LaTeX-completion-parse-arg'
+;; (note the missing `s') which parses the match and runs the
+;; corresponding function to calculate the candidates.  These are the
+;; functions `LaTeX-completion-candidates-key-val',
+;; `LaTeX-completion-candidates-completing-read-multiple', and
+;; `LaTeX-completion-candidates-completing-read'.
+;;
+;; Two mapping variables `LaTeX-completion-function-map-alist-keyval'
+;; and `LaTeX-completion-function-map-alist-cr' are provided in order
+;; to allow a redirection of the entry in `TeX-symbol-list' or
+;; `LaTeX-environment-list' to another function.
+
+(defvar LaTeX-completion-macro-delimiters
+  '((?\[ . ?\])
+    (?\{ . ?\})
+    (?\( . ?\))
+    (?\< . ?\>))
+  "List of characters delimiting mandatory and optional arguments.
+Each element in the list is cons with opening char as car and the
+closing char as cdr.")
+
+(defun LaTeX-completion-macro-delimiters (&optional which)
+  "Return elements of the variable `LaTeX-completion-macro-delimiters'.
+If the optional WHICH is the symbol `open', return the car's of
+each element in the variable `LaTeX-completion-macro-delimiters'.
+If it is the symbol `close', return the cdr's.  If omitted or
+nil, return all elements."
+  (cond ((eq which 'open)
+         (mapcar #'car LaTeX-completion-macro-delimiters))
+        ((eq which 'close)
+         (mapcar #'cdr LaTeX-completion-macro-delimiters))
+        (t
+         (append
+          (mapcar #'car LaTeX-completion-macro-delimiters)
+          (mapcar #'cdr LaTeX-completion-macro-delimiters)))))
+
+(defun LaTeX-move-to-previous-arg (&optional bound)
+  "Move backward to the closing parenthesis of the previous argument.
+Closing parenthesis is in this context all characters which can
+be used to delimit an argument.  Currently, these are the
+following characters:
+
+  } ] ) >
+
+This happens under the assumption that we are in front of a macro
+argument.  This function understands the splitting of macros over
+several lines in TeX."
+  (cond
+   ;; Just to be quick:
+   ((memql (preceding-char) (LaTeX-completion-macro-delimiters 'close)))
+   ;; Do a search:
+   ((re-search-backward
+     "[]})>][ \t]*[\n\r]?\\([ \t]*%[^\n\r]*[\n\r]\\)*[ \t]*\\=" bound t)
+    (goto-char (1+ (match-beginning 0)))
+    t)
+   (t nil)))
+
+(defun LaTeX-what-macro (&optional bound)
+  "Find out if point is within the arguments of any TeX-macro.
+The return value is
+
+  (\"name\" mac-or-env total-num type opt-num opt-distance)
+
+\"name\" is the name of the macro (without backslash) or
+  environment as a string.
+mac-or-env is one of the symbols `mac' or `env'.
+total-num is the total number of the argument before the point started.
+type is one of the symbols `mandatory' or `optional'.
+opt-num is the number of optional arguments before the point started.
+opt-distance the number of optional arguments after the last mandatory.
+
+If the optional BOUND is an integer, limit backward searches to
+this point.  If nil, limit to the previous 15 lines."
+  (let ((bound (or bound (line-beginning-position -15)))
+        (env-or-mac 'mac)
+        cmd cnt cnt-opt type result ;; env-or-mac-start
+        (cnt-distance 0))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region (max (point-min) bound) (point-max))
+        ;; Move back out of the current parenthesis
+        (with-syntax-table (apply #'TeX-search-syntax-table
+                                  (LaTeX-completion-macro-delimiters))
+          (condition-case nil
+              (let ((forward-sexp-function nil))
+                (up-list -1))
+            (error nil))
+          ;; Set the initial value of argument counter
+          (setq cnt 1)
+          ;; Note that we count also the right opt. or man. arg:
+          (setq cnt-opt (if (= (following-char) ?\{) 0 1))
+          ;; Record if we're inside a mand. or opt. argument
+          (setq type (if (= (following-char) ?\{) 'mandatory 'optional))
+          ;; Move back over any touching sexps
+          (while (and (LaTeX-move-to-previous-arg bound)
+                      (condition-case nil
+                          (let ((forward-sexp-function nil))
+                            (backward-sexp) t)
+                        (error nil)))
+            (unless (= (following-char) ?\{)
+              (cl-incf cnt-opt))
+            (cl-incf cnt)))
+        ;; (setq env-or-mac-start (point))
+        (when (and (memql (following-char) ;; '(?\[ ?\{ ?\( ?<)
+                          (LaTeX-completion-macro-delimiters 'open))
+                   (re-search-backward "\\\\[*a-zA-Z]+\\=" nil t))
+          (setq cmd (TeX-match-buffer 0))
+          (when (looking-at "\\\\begin{\\([^}]+\\)}")
+            (setq cmd (TeX-match-buffer 1))
+            (setq env-or-mac 'env)
+            (cl-decf cnt))
+          (when (and cmd (not (string= cmd "")))
+            (setq result (list (if (eq env-or-mac 'mac)
+                                   ;; Strip leading backslash from
+                                   ;; the macro
+                                   (substring cmd 1)
+                                 cmd)
+                               env-or-mac cnt type cnt-opt))))))
+    ;; If we were inside an optional argument after a mandatory one,
+    ;; we have to find out the number of optional arguments before
+    ;; the mandatory one.
+    (when (and (eq (nth 3 result) 'optional)
+               (/= 0 (- (nth 2 result) (nth 4 result))))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region (max (point-min) bound) (point-max))
+          (with-syntax-table (apply #'TeX-search-syntax-table
+                                    (LaTeX-completion-macro-delimiters))
+            (let ((forward-sexp-function nil))
+              (up-list -1))
+            (unless (= (following-char) ?\{)
+              (cl-incf cnt-distance))
+            (while (and (LaTeX-move-to-previous-arg bound)
+                        (condition-case nil
+                            (let ((forward-sexp-function nil))
+                              (backward-sexp)
+                              (/= (following-char) ?\{))
+                          (error nil)))
+              (cl-incf cnt-distance))))))
+    ;; Check if we really have a result before adding something new:
+    (when result
+      (append result (list cnt-distance)))))
+
+(defun LaTeX-completion-candidates-key-val (key-vals)
+  "Return completion candidates from KEY-VALS based on buffer position.
+KEY-VALS is an alist of key-values pairs."
+  (let ((end (point))
+        (func (lambda (kv &optional k)
+                (if k
+                    (cadr (assoc k kv))
+                  kv)))
+        beg key)
+    (save-excursion
+      (re-search-backward "[[{(<,=]" (line-beginning-position 0) t))
+    (if (string= (match-string 0) "=")
+        ;; We have to look for a value:
+        (save-excursion
+          ;; Matching the value is easy, just grab everything before the
+          ;; '=' and ...
+          (re-search-backward "=\\([^=]*\\)" (line-beginning-position) t)
+          ;; ... then move forward over any tabs and spaces:
+          (save-excursion
+            (forward-char)
+            (skip-chars-forward " \t" end)
+            (setq beg (point)))
+          ;; Matching the key is less fun: `re-search-backward'
+          ;; doesn't travel enough, so we have to use
+          ;; `skip-chars-backward' and limit the search to the
+          ;; beginning of the previous line:
+          (skip-chars-backward "^,[{" (line-beginning-position 0))
+          ;; Make sure we're not looking at a comment:
+          (when (looking-at-p (concat "[ \t]*" TeX-comment-start-regexp))
+            (forward-line))
+          ;; Now pick up the key, if available:
+          (setq key (string-trim
+                     (buffer-substring-no-properties (point)
+                                                     (match-beginning 0))
+                     "[ \t\n\r%]+" "[ \t\n\r%]+"))
+          ;; This caters also for the case where nothing is typed yet:
+          (list beg end (completion-table-dynamic
+                         (lambda (_)
+                           (funcall func key-vals key)))))
+      ;; We have to look for a key:
+      (save-excursion
+        ;; Find the beginning
+        (skip-chars-backward "^,[{" (line-beginning-position 0))
+        ;; Make sure we're not looking at a comment:
+        (when (looking-at-p (concat "[ \t]*" TeX-comment-start-regexp))
+          (forward-line))
+        ;; Now go until the first char or number which would be the
+        ;; start of the key:
+        (skip-chars-forward "^a-zA-Z0-9" end)
+        (setq beg (point))
+        ;; This caters also for the case where nothing is typed yet:
+        (list beg end (completion-table-dynamic
+                       (lambda (_)
+                         (funcall func key-vals))))))))
+
+(defun LaTeX-completion-candidates-completing-read-multiple (collection)
+  "Return completion candidates from COLLECTION based on buffer position.
+COLLECTION is an list of strings."
+  (let ((end (point))
+        beg list-beg)
+    (save-excursion
+      (with-syntax-table (apply #'TeX-search-syntax-table
+                                (LaTeX-completion-macro-delimiters))
+        (up-list -1))
+      (setq list-beg (1+ (point))))
+    (save-excursion
+      (unless (search-backward "," list-beg t)
+        (goto-char list-beg))
+      (skip-chars-forward "^a-zA-Z0-9" end)
+      (setq beg (point)))
+    (list beg end (completion-table-dynamic
+                   (lambda (_)
+                     collection)))))
+
+(defun LaTeX-completion-candidates-completing-read (collection)
+  "Return completion candidates from COLLECTION based on buffer position.
+COLLECTION is an list of strings."
+  (let ((end (point))
+        beg)
+    (save-excursion
+      (with-syntax-table (apply #'TeX-search-syntax-table
+                                (LaTeX-completion-macro-delimiters))
+        (up-list -1))
+      (forward-char)
+      (skip-chars-forward "^a-zA-Z0-9" end)
+      (setq beg (point)))
+    (list beg end (completion-table-dynamic
+                   (lambda (_)
+                     collection)))))
+
+(defun LaTeX-completion-parse-args (entry)
+  "Return the match of buffer position ENTRY with AUCTeX macro definitions.
+ENTRY is generated by the function `LaTeX-what-macro'.  This
+function matches the current buffer position (i.e., which macro
+argument) with the corresponding definition in `TeX-symbol-list'
+or `LaTeX-environment-list' and returns it."
+  (let* ((name (nth 0 entry))
+         (mac-or-env (nth 1 entry))
+         (total-num (nth 2 entry))
+         (type (nth 3 entry))
+         (opt-num (nth 4 entry))
+         (opt-dis (nth 5 entry))
+         (mand-num (- total-num opt-num))
+         (cnt 0)
+         (again t)
+         arg-list
+         arg
+         result)
+    (setq arg-list (cdr (assoc name (if (eq mac-or-env 'mac)
+                                        (TeX-symbol-list)
+                                      (LaTeX-environment-list)))))
+
+    ;; Check if there is a `LaTeX-env-*-args' in the `arg-list' and
+    ;; remove it:
+    (when (and (eq mac-or-env 'env)
+               (memq (car arg-list) '(LaTeX-env-args
+                                      LaTeX-env-item-args
+                                      LaTeX-env-label-args)))
+      (pop arg-list))
+
+    ;; Check for `TeX-arg-conditional' here and change `arg-list'
+    ;; accordingly
+    (when (assq 'TeX-arg-conditional arg-list)
+      (while (and arg-list
+                  (setq arg (car arg-list)))
+        (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
+            (setq result (append (reverse (if (eval (nth 1 arg) t)
+                                              (nth 2 arg)
+                                            (nth 3 arg)))
+                                 result))
+          (push arg result))
+        (pop arg-list))
+      (setq arg-list (nreverse result)))
+
+    ;; Now parse the `arg-list':
+    (cond ((and (eq type 'optional)
+                (= opt-dis 0))
+           ;; Optional arg without mandatory one before: This case is
+           ;; straight and we just pick the correct one out of the
+           ;; list:
+           (setq result (nth (1- total-num) arg-list)))
+
+          ;; Mandatory arg: Loop over the arg-list and drop all
+          ;; vectors at the list beginning:
+          ((eq type 'mandatory)
+           (while (vectorp (car arg-list))
+             (pop arg-list))
+           ;; The next entry must be a mandatory arg.  If we're
+           ;; looking for the first mandatory argument, just pick the
+           ;; first element.  Otherwise loop further over the list and
+           ;; count for the correct arg:
+           (if (= mand-num 1)
+               (setq result (car arg-list))
+             (while again
+               (cond ((vectorp (car arg-list))
+                      (pop arg-list)
+                      (setq again t))
+                     ((= (cl-incf cnt) mand-num)
+                      (setq again nil)
+                      (setq result (car arg-list)))
+                     (t
+                      ;; Be a little conservative against infloops.
+                      (if arg-list
+                          (progn (setq again t)
+                                 (pop arg-list))
+                        (setq again nil)))))))
+
+          ;; Optional arg after mandatory one(s): This isn't fun :-(
+          ((and (eq type 'optional)
+                (/= opt-dis 0))
+           (setq again t)
+           (setq cnt 0)
+           ;; The idea is: Look for non-vectors and count the number
+           ;; of mandatory argument in `mand-num'.
+           (while again
+             (cond ((and (not (vectorp (car arg-list)))
+                         (/= (cl-incf cnt) mand-num))
+                    (pop arg-list)
+                    (setq again t))
+                   ((and (not (vectorp (car arg-list)))
+                         ;; Don't incf mand-num again; is done in the
+                         ;; clause above:
+                         (= cnt mand-num))
+                    (setq again nil))
+                   ;; If the clauses above fail, we can safely drop
+                   ;; vectors:
+                   ((vectorp (car arg-list))
+                    (pop arg-list)
+                    (setq again t))
+                   (t
+                    (setq again nil))))
+           (setq result (nth opt-dis arg-list)))
+          (t nil))
+    result))
+
+(defvar LaTeX-completion-function-map-alist-keyval '()
+  "Alist mapping style funcs to completion-candidates counterparts.
+Each element is a cons with the name of the function used in an
+AUCTeX style file which queries and inserts something in the
+buffer as car and a function delievering completion candidates as
+cdr.  This list contains only mapping for functions which perform
+key=val completions.  See also
+`LaTeX-completion-function-map-alist-cr'.")
+
+(defvar LaTeX-completion-function-map-alist-cr
+  `((TeX-arg-counter . LaTeX-counter-list)
+    (TeX-arg-pagestyle . LaTeX-pagestyle-list)
+    (TeX-arg-length . ,(lambda () (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))))
+  "Alist mapping style funcs to completion-candidates counterparts.
+Each element is a cons with the name of the function used in an
+AUCTeX style file which queries and inserts something in the
+buffer as car and a function delievering completion candidates as
+cdr.  This list contains only mapping for functions which perform
+completing-read.  See also
+`LaTeX-completion-function-map-alist-keyval'.")
+
+(defun LaTeX-completion-parse-arg (arg)
+  "Parse ARG and call the correct candidates completion function.
+ARG is the entry for the current argument in buffer stored in
+`TeX-symbol-list' or `LaTeX-environment-list'."
+  (when (or (and (vectorp arg)
+                 (symbolp (elt arg 0))
+                 (fboundp (elt arg 0)))
+            (and (listp arg)
+                 (symbolp (car arg))
+                 (fboundp (car arg)))
+            (and (symbolp arg)
+                 (fboundp arg)))
+    ;; Turn a vector into a list:
+    (when (vectorp arg)
+      (setq arg (append arg nil)))
+    ;; Turn a single function symbol into a list:
+    (unless (listp arg)
+      (setq arg (list arg)))
+    (let* ((head (car arg))
+           (tail (cadr arg))
+           (fun1 (lambda (elt)
+                   (cond ((and (listp elt)
+                               (symbolp (car elt))
+                               (fboundp (car elt)))
+                          ;; It is a function call:
+                          (funcall (car elt)))
+                         ;; It is a function object
+                         ((functionp elt)
+                          (funcall elt))
+                         ;; It is a variable name
+                         ((and (symbolp elt)
+                               (boundp elt))
+                          (symbol-value elt))
+                         ;; It is a plain list of strings:
+                         (t elt)))))
+      (cond ((eq head #'TeX-arg-key-val)
+             (LaTeX-completion-candidates-key-val
+              (funcall fun1 tail)))
+
+            ((eq head #'TeX-arg-completing-read-multiple)
+             (LaTeX-completion-candidates-completing-read-multiple
+              (funcall fun1 tail)))
+
+            ((eq head #'TeX-arg-completing-read)
+             (LaTeX-completion-candidates-completing-read
+              (funcall fun1 tail)))
+
+            ((assq head LaTeX-completion-function-map-alist-keyval)
+             (LaTeX-completion-candidates-key-val
+              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-keyval)))))
+
+            ((assq head LaTeX-completion-function-map-alist-cr)
+             (LaTeX-completion-candidates-completing-read
+              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-cr)))))
+
+            (t nil)))))
+
+(defun LaTeX-completion-find-argument-boundries (&rest args)
+  "Find the boundries of the current LaTeX argument.
+ARGS are characters passed to the function
+`TeX-search-syntax-table'.  If ARGS are omitted, all characters
+defined in the variable `LaTeX-completion-macro-delimiters' are
+taken."
+  (save-restriction
+    (narrow-to-region (line-beginning-position -40)
+                      (line-beginning-position  40))
+    (let ((args (or args (LaTeX-completion-macro-delimiters))))
+      (condition-case nil
+          (with-syntax-table (apply #'TeX-search-syntax-table args)
+            (scan-lists (point) 1 1))
+        (error nil)))))
+
+(defun LaTeX--arguments-completion-at-point ()
+  "Capf for arguments of LaTeX macros and environments.
+Completion for macros starting with `\\' is provided by the
+function `TeX--completion-at-point' which should come first in
+`completion-at-point-functions'."
+  ;; Exit if not inside an argument or in a comment:
+  (when (and (LaTeX-completion-find-argument-boundries)
+             (not (nth 4 (syntax-ppss))))
+    (let ((entry (LaTeX-what-macro)))
+      (cond ((or (and entry
+                      (eq (nth 1 entry) 'mac)
+                      (assoc (car entry) (TeX-symbol-list)))
+                 (and entry
+                      (eq (nth 1 entry) 'env)
+                      (assoc (car entry) (LaTeX-environment-list))))
+             (LaTeX-completion-parse-arg
+              (LaTeX-completion-parse-args entry)))
+            ;; Any other constructs?
+            (t nil)))))
+
 ;;; Mode
 
 (defgroup LaTeX-macro nil
@@ -7418,6 +7977,11 @@ function would return non-nil and `(match-string 1)' would return
   (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
   (LaTeX-indent-commands-regexp-make)
+
+  ;; Standard Emacs completion-at-point support.  We append the entry
+  ;; in order to let `TeX--completion-at-point' be first in the list:
+  (add-hook 'completion-at-point-functions
+            #'LaTeX--arguments-completion-at-point t t)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)
@@ -7664,10 +8228,10 @@ function would return non-nil and `(match-string 1)' would return
    '("includeonly" t)
    '("input" TeX-arg-input-file)
    '("addcontentsline"
-     (TeX-arg-eval completing-read "File: " '(("toc") ("lof") ("lot")))
-     (TeX-arg-eval completing-read "Numbering style: " LaTeX-section-list) t)
+     (TeX-arg-completing-read ("toc" "lof" "lot") "File")
+     (TeX-arg-completing-read LaTeX-section-list "Numbering style") t)
    '("addtocontents"
-     (TeX-arg-eval completing-read "File: " '(("toc") ("lof") ("lot"))) t)
+     (TeX-arg-completing-read ("toc" "lof" "lot") "File") t)
    '("typeout" t)
    '("typein" [ TeX-arg-define-macro ] t)
    '("verb" TeX-arg-verb)
@@ -7877,7 +8441,6 @@ function would return non-nil and `(match-string 1)' would return
      "texteuro"                     ; Type: Symbol -- Slot: 191
      "texttimes"                    ; Type: Symbol -- Slot: 214
      "textdiv"                      ; Type: Symbol -- Slot: 246
-     '("textcircled"          1)    ; Type: Command -- Slot: N/A
      '("capitalcedilla"       1)    ; Type: Command -- Slot: N/A
      '("capitalogonek"        1)    ; Type: Command -- Slot: N/A
 
@@ -7906,28 +8469,28 @@ function would return non-nil and `(match-string 1)' would return
 
      ;; Added in LaTeX 2021-11-15
      '("counterwithin"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
      '("counterwithin*"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
 
      '("counterwithout"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
      '("counterwithout*"
-       [TeX-arg-eval completing-read
-                     (TeX-argument-prompt t nil "Format")
-                     '("\\arabic" "\\roman" "\\Roman" "\\alph" "\\Alph")]
+       [TeX-arg-completing-read ("\\arabic" "\\roman" "\\Roman"
+                                 "\\alph" "\\Alph")
+                                "Format"]
        (TeX-arg-counter)
        (TeX-arg-counter "Within counter"))
 
@@ -8299,6 +8862,22 @@ wrapped in \\(?:...\\)? then."
              "\\)}?"))
    ;; We are done.  Just search until the next closing bracket
    "[^]]*\\]"))
+
+(defvar LaTeX-font-family '("normalfont" "rmfamily"
+                            "sffamily"   "ttfamily")
+  "List of LaTeX font family declarations.")
+
+(defvar LaTeX-font-series '("mdseries" "bfseries")
+  "List of LaTeX font series declarations.")
+
+(defvar LaTeX-font-shape '("itshape" "slshape"  "scshape"  "sscshape"
+                           "swshape" "ulcshape" "upshape")
+  "List of LaTeX font shape declarations.")
+
+(defvar LaTeX-font-size '("tiny" "scriptsize" "footnotesize" "small"
+                          "normalsize" "large" "Large"
+                          "LARGE" "huge" "Huge")
+  "List of LaTeX font size declarations.")
 
 (provide 'latex)
 

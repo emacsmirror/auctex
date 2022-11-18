@@ -316,14 +316,10 @@ Put line break macro on the last line.  Next, insert an ampersand."
            (format "%s" newtag))))
       [ "Inner format" ] "Left" "Right")
     '("renewtagform"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-mathtools-newtagform-list))
+      (TeX-arg-completing-read (LaTeX-mathtools-newtagform-list) "Name")
       [ "Inner format" ] "Left" "Right")
     '("usetagform"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-mathtools-newtagform-list)))
+      (TeX-arg-completing-read (LaTeX-mathtools-newtagform-list) "Name"))
     ;; 3.2.2 Showing only referenced tags
     '("refeq" TeX-arg-ref)
     '("noeqref" TeX-arg-ref)
@@ -388,9 +384,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
                      (concat "Command: " TeX-esc)
                      (mapcar #'car (LaTeX-mathtools-DeclarePairedDelimiter-list)))))
            (concat TeX-esc cmd))))
-      (TeX-arg-eval completing-read
-                    "star or nostar: "
-                    '("star" "nostar"))
+      (TeX-arg-completing-read ("star" "nostar") "star or nostar")
       t)
     ;; 3.7.1 Left and right parentheses
     '("lparen" TeX-arg-insert-right-brace-maybe)
@@ -421,9 +415,7 @@ Put line break macro on the last line.  Next, insert an ampersand."
            (format "%s" env))))
       3)
     '("renewgathered"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Name")
-                    (LaTeX-mathtools-newgathered-list))
+      (TeX-arg-completing-read (LaTeX-mathtools-newgathered-list) "Name")
       3)
     ;; 4.6 Split fractions
     '("splitfrac" 2)

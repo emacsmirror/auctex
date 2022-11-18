@@ -1,6 +1,6 @@
 ;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -202,8 +202,8 @@ make them available as new environments.  Update
                         "") ])
 
     '("renewtheorem"
-      (TeX-arg-eval completing-read "Environment: "
-                    (LaTeX-ntheorem-newtheorem-list))
+      (TeX-arg-completing-read (LaTeX-ntheorem-newtheorem-list)
+                               "Environment")
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
@@ -214,8 +214,7 @@ make them available as new environments.  Update
 
     ;; 2.3 Defining the Layout of Theorem Sets
     '("theoremstyle"
-      (TeX-arg-eval completing-read "Style: "
-                    LaTeX-ntheorem-theoremstyle-list))
+      (TeX-arg-completing-read LaTeX-ntheorem-theoremstyle-list "Style"))
 
     '("theorembodyfont"
       (LaTeX-arg-ntheorem-fontdecl "Body font"))
@@ -224,10 +223,9 @@ make them available as new environments.  Update
       (LaTeX-arg-ntheorem-fontdecl "Header font"))
 
     '("theoremnumbering"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Numbering scheme")
-                    '("arabic" "roman" "Roman" "alph" "Alph"
-                      "greek" "Greek" "fnsymbol")))
+      (TeX-arg-completing-read ("arabic" "roman" "Roman" "alph" "Alph"
+                                "greek" "Greek" "fnsymbol")
+                               "Numbering scheme"))
 
     '("theoremseparator" "Separator")
 
@@ -246,10 +244,11 @@ make them available as new environments.  Update
     '("theoremprework" t)
     '("theorempostwork" t)
 
-    '("theoremclass"
-      (TeX-arg-eval completing-read "Theorem type: "
-                    (append '(("LaTeX"))
-                            (LaTeX-ntheorem-newtheorem-list))))
+    `("theoremclass"
+      (TeX-arg-completing-read ,(lambda ()
+                                  (append '(("LaTeX"))
+                                          (LaTeX-ntheorem-newtheorem-list)))
+                               "Theorem type"))
 
     ;; 2.3.6 A Standard Set of Theorems
     (when (LaTeX-provided-package-options-member "ntheorem" "standard")
@@ -325,25 +324,23 @@ make them available as new environments.  Update
 
     ;; 2.4 Generating Theoremlists
     '("listtheorems"
-      (TeX-arg-eval mapconcat #'identity
-                    (TeX-completing-read-multiple
-                     "Lists: "
-                     (LaTeX-ntheorem-newtheorem-list)) ","))
+      (TeX-arg-completing-read-multiple (LaTeX-ntheorem-newtheorem-list)
+                                        "Lists"))
 
     ;; 2.4.2 Writing Extra Stuff to the Theorem File
     '("addtheoremline"
-      (TeX-arg-eval completing-read "Environment: "
-                    (LaTeX-ntheorem-newtheorem-list))
+      (TeX-arg-completing-read (LaTeX-ntheorem-newtheorem-list)
+                               "Environment")
       t)
 
     '("addtheoremline*"
-      (TeX-arg-eval completing-read "Environment: "
-                    (LaTeX-ntheorem-newtheorem-list))
+      (TeX-arg-completing-read (LaTeX-ntheorem-newtheorem-list)
+                               "Environment")
       t)
 
     '("addtotheoremfile"
-      [ TeX-arg-eval completing-read "Environment: "
-        (LaTeX-ntheorem-newtheorem-list) ]
+      [TeX-arg-completing-read (LaTeX-ntheorem-newtheorem-list)
+                               "Environment"]
       t)
 
     ;; 2.5.1 Defining New Theorem Layouts
@@ -359,8 +356,8 @@ make them available as new environments.  Update
       2)
 
     '("renewtheoremstyle"
-      (TeX-arg-eval completing-read "Style name: "
-                    LaTeX-ntheorem-theoremstyle-list)
+      (TeX-arg-completing-read LaTeX-ntheorem-theoremstyle-list
+                               "Style name")
       2)
 
     ;; 2.5.2 Defining New Theorem List Layouts
@@ -376,8 +373,8 @@ make them available as new environments.  Update
       3)
 
     '("renewtheoremlisttype"
-      (TeX-arg-eval completing-read "Style name: "
-                    LaTeX-ntheorem-listtype-list)
+      (TeX-arg-completing-read LaTeX-ntheorem-listtype-list
+                               "Style name")
       3)
 
     ;; 2.6 Setting End Marks

@@ -160,9 +160,7 @@ make them available as new environments."
            (format "%s" heading)))))
 
     '("theoremstyle"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Style")
-                    (LaTeX-amsthm-newtheoremstyle-list)))
+      (TeX-arg-completing-read (LaTeX-amsthm-newtheoremstyle-list) "Style"))
     "qedhere"
     "swapnumbers"
 

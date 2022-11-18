@@ -1,6 +1,6 @@
 ;;; changes.el --- AUCTeX style for `changes.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -164,13 +164,9 @@ Insert the argument in brackets if OPTIONAL is non-nil."
     '("setcommentmarkup" "Definition")
     '("setauthormarkup" "Definition")
     '("setauthormarkupposition"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt optional nil "Position")
-                    '("left" "right")))
+      (TeX-arg-completing-read ("left" "right") "Position"))
     '("setauthormarktext"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt optional nil "Markup")
-                    '("id" "name")))
+      (TeX-arg-completing-read ("id" "name") "Markup"))
     '("settruncatewidth" (TeX-arg-length "Width"))
     '("setsummarywidth" (TeX-arg-length "Width"))
     '("setsummarytowidth" "Text")

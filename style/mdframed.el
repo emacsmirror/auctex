@@ -1,6 +1,6 @@
 ;;; mdframed.el --- AUCTeX style for `mdframed.sty' (v1.9b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -290,29 +290,20 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
 
     '("renewmdenv"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Environment")
-                    (LaTeX-mdframed-newmdenv-list)))
+      (TeX-arg-completing-read (LaTeX-mdframed-newmdenv-list) "Environment"))
 
     '("surroundwithmdframed"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
       TeX-arg-environment)
 
     '("mdflength"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Length")
-                    '(("skipabove")
-                      ("skipbelow")
-                      ("leftmargin")
-                      ("rightmargin")
-                      ("innerleftmargin")
-                      ("innerrightmargin")
-                      ("innertopmargin")
-                      ("innerbottommargin")
-                      ("linewidth")
-                      ("innerlinewidth")
-                      ("middlelinewidth")
-                      ("outerlinewidth"))))
+      (TeX-arg-completing-read ("skipabove"       "skipbelow"
+                                "leftmargin"      "rightmargin"
+                                "innerleftmargin" "innerrightmargin"
+                                "innertopmargin"  "innerbottommargin"
+                                "linewidth"       "innerlinewidth"
+                                "middlelinewidth" "outerlinewidth")
+                               "Length"))
 
     ;; 5. Defining your own style
     '("mdfdefinestyle"
@@ -325,9 +316,7 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
       (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     '("mdfapptodefinestyle"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Style name")
-                    (LaTeX-mdframed-mdfdefinestyle-list))
+      (TeX-arg-completing-read (LaTeX-mdframed-mdfdefinestyle-list) "Style name")
       (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     ;; 6.11. Title commands inside the environment

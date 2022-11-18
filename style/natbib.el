@@ -1,6 +1,6 @@
 ;;; natbib.el --- AUCTeX style for `natbib.sty' version 8.31b  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2020 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 1998, 2004, 2007, 2014--2022 Free Software Foundation, Inc.
 
 ;; Authors: Berwin Turlach <statba@nus.edu.sg>
 ;;          Carsten Dominik <dominik@strw.leidenuniv.nl>
@@ -118,10 +118,10 @@
       "Punctuation between author and year"
       "Punctuation between years for common authors")
 
-    '("citestyle" (TeX-arg-eval completing-read
-                                (TeX-argument-prompt nil nil "Style")
-                                '("plain" "plainnat" "agu" "egu"
-                                  "agms" "dcu" "kluwer" "cospar" "nature")))
+    '("citestyle" (TeX-arg-completing-read ("plain" "plainnat" "agu" "egu"
+                                            "agms" "dcu" "kluwer" "cospar"
+                                            "nature")
+                                           "Style"))
 
     ;; 2.12 Other Formatting Options
     "bibsection"

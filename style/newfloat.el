@@ -166,18 +166,18 @@ If `caption.el' is loaded, add the new floating environment to
            (format "%s" newfloat)))))
 
     '("SetupFloatingEnvironment"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Floating environment")
-                    (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+      (TeX-arg-completing-read
+       (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+       "Floating environment")
       (TeX-arg-key-val (LaTeX-newfloat-key-val-options)))
 
     '("ForEachFloatingEnvironment" t)
     '("ForEachFloatingEnvironment*" t)
 
     '("PrepareListOf"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Floating environment")
-                    (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+      (TeX-arg-completing-read
+       (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+       "Floating environment")
       t)
 
     `("newfloatsetup"

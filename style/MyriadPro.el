@@ -1,6 +1,6 @@
 ;;; MyriadPro.el --- AUCTeX style for `MyriadPro.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -62,9 +62,9 @@
    (when (LaTeX-provided-package-options-member "MyriadPro" "sansmath")
      (TeX-add-symbols
       '("mathversion"
-        (TeX-arg-eval completing-read "Math version: "
-                      '(("sans")        ("sansbold")
-                        ("sanstabular") ("sansboldtabular"))))))
+        (TeX-arg-completing-read ("sans"        "sansbold"
+                                  "sanstabular" "sansboldtabular")
+                                 "Math version"))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

@@ -33,11 +33,19 @@
 (require 'tex)
 (require 'latex)
 
+;; Silence compiler
+(declare-function ConTeXt-add-environments "context"
+                  (&rest environments))
+
+(defgroup AUCTeX-TikZ nil
+  "AUCTeX TikZ support"
+  :group 'AUCTeX)
+
 (defcustom TeX-TikZ-point-name-regexp
   "(\\([A-Za-z0-9]+\\))"
   "A regexp that matches TikZ names."
   :type 'regexp
-  :group 'auctex-tikz)
+  :group 'AUCTeX-TikZ)
 
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
@@ -104,7 +112,7 @@ Ask the user for r and theta values, and return the string
 
 (defun TeX-TikZ-arg-options (optional)
   "Prompt the user for options to a TikZ macro.
-If OPTIONAL is non-nil, always return `LaTeX-optop' and
+If OPTIONAL is nil, always return `LaTeX-optop' and
 `LaTeX-optcl', even if the user doesn't provide any input."
   (let ((options (TeX-read-string (TeX-argument-prompt optional nil "Options" ))))
     (if optional
@@ -113,7 +121,7 @@ If OPTIONAL is non-nil, always return `LaTeX-optop' and
 
 (defun TeX-TikZ-arg-name (optional)
   "Prompt the user for a TikZ name.
-If OPTIONAL is non-nil, always return \"()\", even if the user
+If OPTIONAL is nil, always return \"()\", even if the user
 doesn't provide any input."
   (let ((name (TeX-read-string (TeX-argument-prompt optional nil "Name" ))))
     (if optional
@@ -122,8 +130,8 @@ doesn't provide any input."
 
 (defun TeX-TikZ-arg-label (optional)
   "Prompt the user for TikZ label.
-If OPTIONAL is non-nil always return `TeX-grop' and `TeX-grcl',
-even if the user doesn't provide any input."
+If OPTIONAL is nil always return `TeX-grop' and `TeX-grcl', even
+if the user doesn't provide any input."
   (let ((label (TeX-read-string (TeX-argument-prompt optional nil "Label" ))))
     (if optional
         (TeX-TikZ-get-opt-arg-string label TeX-grop TeX-grcl)
@@ -199,6 +207,10 @@ is finished."
 Begin by finding the span of the current TikZ enviroment and then
 searching within that span to find all named-points and return
 them as a list of strings, dropping the \\='()\\='."
+  ;; FIXME: This function depends on `LaTeX-find-matching-begin' and
+  ;; `LaTeX-find-matching-end', so it doesn't work for ConTeXt and
+  ;; plain TeX.  In addition, it isn't compatible with the TikZ code
+  ;; following \tikz.
   (let* ((env-end (save-excursion
                     (LaTeX-find-matching-end)
                      (point)))
@@ -266,7 +278,7 @@ return \"\"."
 (defun TeX-TikZ-node-arg (_ignored)
   "Prompt the user for the arguments to a TikZ node macro."
   (let ((options (TeX-TikZ-arg-options t))
-        (name (TeX-TikZ-arg-name nil))
+        (name (TeX-TikZ-arg-name t))
         (point (TeX-TikZ-single-macro-arg TeX-TikZ-point-function-map
                                           "Node point type: "))
         (label (TeX-TikZ-arg-label nil)))
@@ -278,8 +290,51 @@ return \"\"."
    (TeX-add-symbols
     '("draw" (TeX-TikZ-draw-arg))
     '("coordinate" (TeX-TikZ-coordinate-arg))
-    '("node" (TeX-TikZ-node-arg)))
+    '("node" (TeX-TikZ-node-arg))
+    '("tikz" ["TikZ option"])
+    '("tikzset" "TikZ option")
+    ;; FIXME:
+    ;; 1. usetikzlibrary isn't much useful without completion support
+    ;;    for available libraries.
+    ;; 2. ConTeXt users may prefer [...] over {...} as the argument.
+    '("usetikzlibrary" t)
+    ;; XXX: Maybe we should create pgffor.el and factor out this entry
+    ;; into it.
+    '("foreach" (TeX-arg-literal " ") (TeX-arg-free "Variable(s)")
+      (TeX-arg-literal " ") ["Foreach option"]
+      (TeX-arg-literal " in ") "Value list (Use \"...\" for range)"
+      (TeX-arg-literal " ") t))))
+
+;; LaTeX/docTeX specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
    (LaTeX-add-environments
-    '("tikzpicture"))))
+    '("tikzpicture" ["TikZ option"])
+    '("scope" ["TikZ option"]))
+   ;; tikz.sty loads pgfcore.sty, which loads packages graphicx,
+   ;; keyval and xcolor, too.
+   (TeX-run-style-hooks "pgf" "graphicx" "keyval" "xcolor"))
+ :latex)
+
+;; ConTeXt specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
+   (ConTeXt-add-environments
+    '("tikzpicture" ["TikZ option"])
+    '("scope" ["TikZ option"])))
+ :context)
+
+;; plain TeX specific stuff
+(TeX-add-style-hook
+ "tikz"
+ (lambda ()
+   (TeX-add-symbols
+    '("tikzpicture" ["TikZ option"])
+    "endtikzpicture"
+    '("scope" ["TikZ option"])
+    "endscope"))
+ :plain-tex)
 
 ;;; tikz.el ends here

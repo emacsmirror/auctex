@@ -1,6 +1,6 @@
 ;;; multind.el --- AUCTeX support for multiple indices with multind.sty.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1999--2022 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
 (require 'tex)
 (require 'latex)
 
@@ -36,7 +41,7 @@
     '("makeindex" "Indextag")
     '("index" TeX-arg-index-tag TeX-arg-index)
     '("printindex" TeX-arg-index-tag "Title")
-    "printindex" "indexspace")
+    "indexspace")
 
    ;; Parsing index macros
    (setq LaTeX-auto-regexp-list
@@ -57,7 +62,16 @@
 
    ;; RefTeX support
    (and (fboundp 'reftex-add-index-macros)
-        (reftex-add-index-macros '(multind))))
+        (reftex-add-index-macros '(multind)))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("makeindex"  "{")
+                                ("printindex" "{{"))
+                              'function)
+     (font-latex-add-keywords '(("index" "{{"))
+                              'reference)))
  TeX-dialect)
 
 (defvar LaTeX-multind-package-options nil

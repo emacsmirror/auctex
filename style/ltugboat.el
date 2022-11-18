@@ -1,6 +1,6 @@
 ;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -241,25 +241,15 @@
 
     ;; 10.2 Other special typesetting
     "Dash"
-    '("cs" (TeX-arg-eval let ((macro (completing-read
-                                      (TeX-argument-prompt nil nil
-                                                           "Command")
-                                      (TeX-symbol-list))))
-                         (format "%s" macro)))
-    '("env" (TeX-arg-eval let ((env (completing-read
-                                     (TeX-argument-prompt nil nil
-                                                          "Environment")
-                                     (LaTeX-environment-list))))
-                          (format "%s" env)))
+    '("cs"  (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
+    '("env" (TeX-arg-completing-read (LaTeX-environment-list) "Environment"))
     '("meta"      "Text")
     '("tubbraced" "Text")
     '("nth"       "Number")
 
     ;; 12 Bibliography
     '("SetBibJustification"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Justification")
-                    '("\\raggedright"  "\\sloppy"))))
+      (TeX-arg-completing-read ("\\raggedright" "\\sloppy") "Justification")))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

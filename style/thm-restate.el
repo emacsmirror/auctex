@@ -1,6 +1,6 @@
 ;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -39,14 +39,17 @@
 ;; Silence the parser:
 (declare-function LaTeX-thmtools-declaretheorem-list
                   "thmtools" ())
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
 
 ;; Setup for macro names defined with
-;; \begin{restatable}[<Heading>]{<env-name>}{<macro name>}:
+;; \begin{restatable*?}[<Heading>]{<env-name>}{<macro name>}:
 
 (TeX-auto-add-type "thmrestate-restatable-macro" "LaTeX")
 
 (defvar LaTeX-thmrestate-restatable-marco-regexp
-  `(,(concat "\\\\begin{restatable}"
+  `(,(concat "\\\\begin{restatable\\*?}"
              "[ \t\n\r%]*"
              "\\(?:\\[[^]]*\\]\\)?"
              "[ \t\n\r%]*"
@@ -62,43 +65,25 @@
 (defun LaTeX-thmrestate-auto-cleanup ()
   "Process parsed elements from thm-restate package."
   (dolist (newmac (mapcar #'car (LaTeX-thmrestate-restatable-macro-list)))
-    (TeX-add-symbols `(,newmac 0)
-                     `(,(concat newmac "*") 0))))
+    (TeX-add-symbols newmac (concat newmac "*"))
+    (when (and (featurep 'font-latex)
+               (eq TeX-install-font-lock 'font-latex-setup))
+      (font-latex-add-keywords `((,newmac "*"))
+                               'function))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-thmrestate-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-thmrestate-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defun LaTeX-env-thmrestate-restatable (optional)
-  "Insert arguments for restatable environment from thm-restate package."
-  ;; The optional heading argument:
-  (let ((TeX-arg-opening-brace LaTeX-optop)
-        (TeX-arg-closing-brace LaTeX-optcl))
-    (TeX-argument-insert
-     (TeX-read-string
-      (TeX-argument-prompt t nil "Heading"))
-     t))
-  ;; Name of the environment we are referring to; this can be defined
-  ;; via amsthm.sty, ntheorem.sty or thmtools.sty:
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional nil "Environment")
-    (append
-     ;; Cater for environments defined with amsthm's \newtheorem
-     (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
-                (LaTeX-amsthm-newtheorem-list))
-       (LaTeX-amsthm-newtheorem-list))
-     ;; Cater for environments defined with ntheorem's \newtheorem
-     (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
-                (LaTeX-ntheorem-newtheorem-list))
-       (LaTeX-ntheorem-newtheorem-list))
-     ;; Environments defined with \declaretheorem
-     (LaTeX-thmtools-declaretheorem-list)))
-   optional)
+  "Insert last argument of restatable environment from thm-restate package."
   (let ((mac (TeX-read-string
               (TeX-argument-prompt optional nil "Macro"))))
-    (TeX-add-symbols `(,mac 0)
-                     `(,(concat mac "*") 0))
+    (when (and (featurep 'font-latex)
+               (eq TeX-install-font-lock 'font-latex-setup))
+      (font-latex-add-keywords `((,mac "*"))
+                               'function))
+    (TeX-add-symbols mac (concat mac "*"))
     (TeX-argument-insert mac optional)))
 
 (TeX-add-style-hook
@@ -113,8 +98,48 @@
 
    ;; Provide restatable\\*? environment
    (LaTeX-add-environments
-    '("restatable"  LaTeX-env-args LaTeX-env-thmrestate-restatable)
-    '("restatable*" LaTeX-env-args LaTeX-env-thmrestate-restatable)))
+    `("restatable"  LaTeX-env-args
+      ["Heading"]
+      (TeX-arg-completing-read
+       ;; Name of the environment we are referring to; this can be
+       ;; defined via amsthm.sty, ntheorem.sty or thmtools.sty:
+       ,(lambda ()
+          (append
+           ;; Cater for environments defined with amsthm's \newtheorem
+           (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
+                      (LaTeX-amsthm-newtheorem-list))
+             (LaTeX-amsthm-newtheorem-list))
+           ;; Cater for environments defined with ntheorem's \newtheorem
+           (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
+                      (LaTeX-ntheorem-newtheorem-list))
+             (LaTeX-ntheorem-newtheorem-list))
+           ;; Environments defined with \declaretheorem
+           (LaTeX-thmtools-declaretheorem-list)))
+       "Environment")
+      LaTeX-env-thmrestate-restatable)
+
+    `("restatable*" LaTeX-env-args
+      ["Heading"]
+      (TeX-arg-completing-read
+       ;; Name of the environment we are referring to; this can be
+       ;; defined via amsthm.sty, ntheorem.sty or thmtools.sty:
+       ,(lambda ()
+          (append
+           ;; Cater for environments defined with amsthm's \newtheorem
+           (when (and (fboundp 'LaTeX-amsthm-newtheorem-list)
+                      (LaTeX-amsthm-newtheorem-list))
+             (LaTeX-amsthm-newtheorem-list))
+           ;; Cater for environments defined with ntheorem's \newtheorem
+           (when (and (fboundp 'LaTeX-ntheorem-newtheorem-list)
+                      (LaTeX-ntheorem-newtheorem-list))
+             (LaTeX-ntheorem-newtheorem-list))
+           ;; Environments defined with \declaretheorem
+           (LaTeX-thmtools-declaretheorem-list)))
+       "Environment")
+      LaTeX-env-thmrestate-restatable)))
  TeX-dialect)
+
+(defvar LaTeX-thm-restate-package-options nil
+  "Package options for the thm-restate package.")
 
 ;;; thm-restate.el ends here

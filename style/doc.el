@@ -189,9 +189,7 @@ percent sign at the beginning of a line before
           (TeX-add-symbols
            ;; Cater for \Describe<eltname>[options]{<elements query>}
            `(,(concat "Describe" eltname)
-             [TeX-arg-eval completing-read
-                           (TeX-argument-prompt t nil "Suppress option")
-                           '("noindex" "noprint")]
+             [TeX-arg-completing-read ("noindex" "noprint") "Suppress option"]
              "Element")
 
            ;; Cater for \PrintDescribe<eltname>{<elements query>}
@@ -277,17 +275,12 @@ percent sign at the beginning of a line before
            (format "%s" file)))))
 
     ;; 2.2 Package options
-    '("SetupDoc" (TeX-arg-eval mapconcat #'identity
-                               (TeX-completing-read-multiple
-                                (TeX-argument-prompt nil nil "Options")
-                                LaTeX-doc-package-options)
-                               ","))
+    '("SetupDoc" (TeX-arg-completing-read-multiple LaTeX-doc-package-options
+                                                   "Options"))
 
     ;; 2.4 Describing the usage of macros and environments
     '("DescribeMacro"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Suppress option")
-                    '("noindex" "noprint")]
+      [TeX-arg-completing-read ("noindex" "noprint") "Suppress option"]
       (TeX-arg-eval
        (lambda ()
          (let ((name (TeX-read-string
@@ -295,9 +288,7 @@ percent sign at the beginning of a line before
                       TeX-esc)))
            (format "%s" name)))))
     '("DescribeEnv"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Suppress option")
-                    '("noindex" "noprint")]
+      [TeX-arg-completing-read ("noindex" "noprint") "Suppress option"]
       "Environment")
 
     ;; 2.5 Describing the definition of macros and environments

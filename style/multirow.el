@@ -42,19 +42,17 @@
  (lambda ()
    (TeX-add-symbols
     ;; \multirow[<vpos>]{<nrows>}[<bigstruts>]{<width>}[<vmove>]{<text>}
-    '("multirow"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Vertical position")
-                    '("c" "b" "t")]
+    `("multirow"
+      [TeX-arg-completing-read ("c" "b" "t") "Vertical position"]
       "Number of rows"
       [ "Big struts" ]
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Width")
-                    (append
-                     '("*" "=")
-                     (mapcar (lambda (x)
-                               (concat TeX-esc (car x)))
-                             (LaTeX-length-list))))
+      (TeX-arg-completing-read
+       ,(lambda ()
+          (append '("*" "=")
+                  (mapcar (lambda (x)
+                            (concat TeX-esc (car x)))
+                          (LaTeX-length-list))))
+       "Width")
       [TeX-arg-length "Vertical fix-up"]
       t)
     "multirowsetup"

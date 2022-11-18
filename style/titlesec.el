@@ -75,34 +75,29 @@ Removal is based on the return value of function
 `TeX-esc'."
   (mapcar (lambda (elt) (concat TeX-esc elt))
           (if (< (LaTeX-largest-level) 2)
-              (symbol-value 'LaTeX-titlesec-section-command-list)
+              LaTeX-titlesec-section-command-list
             (remove "chapter" LaTeX-titlesec-section-command-list))))
 
-(defun LaTeX-arg-titlesec-titlespec (optional)
-  "Insert the first argument of \"\\titleformat\" and \"\\titlespacing\".
-Depending on returned value of function `LaTeX-largest-level',
-append a \"name\" key with corresponding values to
-`LaTeX-titlesec-key-val-options'.  The values are retrieved from
-`LaTeX-titlesec-section-command-list'.  The values of this list
-are also added stand-alone as keys.  If OPTIONAL is non-nil,
-insert the argument in brackets."
-  (let ((keyvals
-         (TeX-read-key-val
-          optional
-          (append
-           `(("name"
-              ,(mapcar (lambda (elt) (concat TeX-esc elt))
-                       (if (< (LaTeX-largest-level) 2)
-                           (symbol-value 'LaTeX-titlesec-section-command-list)
-                         (remove "chapter" LaTeX-titlesec-section-command-list)))))
-           (mapcar #'list
-                   (mapcar (lambda (elt) (concat TeX-esc elt))
-                           (if (< (LaTeX-largest-level) 2)
-                               (symbol-value 'LaTeX-titlesec-section-command-list)
-                             (remove "chapter" LaTeX-titlesec-section-command-list))))
-           LaTeX-titlesec-key-val-options)
-          "Sectioning command")))
-    (TeX-argument-insert keyvals optional)))
+(defun LaTeX-titlesec-titlespec-key-val-options ()
+  "Return key=val's for the 1st arg of \"\\titleformat\" and \"\\titlespacing\".
+Depending on the returned value of the function
+`LaTeX-largest-level', append a \"name\" key with corresponding
+values to `LaTeX-titlesec-key-val-options'.  The values are
+retrieved from `LaTeX-titlesec-section-command-list'.  The values
+of this list are also added stand-alone as keys."
+  (append
+   `(("name"
+      ,(mapcar (lambda (elt) (concat TeX-esc elt))
+               (if (< (LaTeX-largest-level) 2)
+                   LaTeX-titlesec-section-command-list
+                 (remove "chapter" LaTeX-titlesec-section-command-list)))))
+   (mapcar #'list
+           (mapcar (lambda (elt) (concat TeX-esc elt))
+                   (if (< (LaTeX-largest-level) 2)
+                       LaTeX-titlesec-section-command-list
+                     (remove "chapter" LaTeX-titlesec-section-command-list))))
+   LaTeX-titlesec-key-val-options))
+
 
 (TeX-add-style-hook
  "titlesec"
@@ -117,32 +112,30 @@ insert the argument in brackets."
     '("titlelabel" t)
 
     ;; \titleformat*{<command>}{<format>}
-    '("titleformat*" (LaTeX-arg-titlesec-titlespec) t)
+    '("titleformat*" (TeX-arg-key-val (LaTeX-titlesec-titlespec-key-val-options)) t)
 
     ;; 3. Advanced Interface
     ;; \titleformat{<command>}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
     '("titleformat"
-      (LaTeX-arg-titlesec-titlespec)
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Shape")
-                    LaTeX-titlesec-section-shape-list]
+      (TeX-arg-key-val (LaTeX-titlesec-titlespec-key-val-options))
+      [TeX-arg-completing-read LaTeX-titlesec-section-shape-list "Shape"]
       (TeX-arg-conditional (y-or-n-p "With optional after-code? ")
-                           (4 [nil])
-                           (4)))
+          (4 [nil])
+        (4)))
 
     '("chaptertitlename" 0)
 
     ;; 3.2. Spacing
     ;; \titlespacing{<command>}{<left>}{<before-sep>}{<after-sep>}[<right-sep>]
     '("titlespacing"
-      (LaTeX-arg-titlesec-titlespec)
+      (TeX-arg-key-val (LaTeX-titlesec-titlespec-key-val-options))
       (TeX-arg-length "Left margin")
       (TeX-arg-length "Before vertical space")
       (TeX-arg-length "Space between title and text")
       [TeX-arg-length "Right margin"])
 
     '("titlespacing*"
-      (LaTeX-arg-titlesec-titlespec)
+      (TeX-arg-key-val (LaTeX-titlesec-titlespec-key-val-options))
       (TeX-arg-length "Left margin")
       (TeX-arg-length "Before vertical space")
       (TeX-arg-length "Space between title and text")
@@ -160,9 +153,7 @@ insert the argument in brackets."
 
     ;; 3.4. Rules
     '("titleline"
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Alignment")
-                    '("l" "r" "c")]
+      [TeX-arg-completing-read ("l" "r" "c") "Alignment"]
       t)
 
     '("titlerule" [TeX-arg-length "Rule height"])
@@ -173,22 +164,18 @@ insert the argument in brackets."
 
     ;; 3.5. Page styles
     '("assignpagestyle"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titlesec-section-command-list))
+      (TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Sectioning command")
       (TeX-arg-pagestyle))
 
     ;; 3.9. Creating new levels and changing the class
     '("titleclass"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Sectioning command")
-                    (LaTeX-titlesec-section-command-list))
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Class")
-                    '("page" "top" "straight"))
-      [TeX-arg-eval completing-read
-                    (TeX-argument-prompt t nil "Super level command")
-                    (LaTeX-titlesec-section-command-list)]) )
+      (TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Sectioning command")
+      (TeX-arg-completing-read ("page" "top" "straight")
+                               "Class")
+      [TeX-arg-completing-read (LaTeX-titlesec-section-command-list)
+                               "Super level command"]))
 
    ;; Don't increase indent at \iftitlemeasuring:
    (add-to-list 'LaTeX-indent-begin-exceptions-list "iftitlemeasuring" t)
@@ -198,9 +185,7 @@ insert the argument in brackets."
    (when (LaTeX-provided-package-options-member "titlesec" "calcwidth")
      (TeX-add-symbols
       '("titleline*"
-        (TeX-arg-eval completing-read
-                      (TeX-argument-prompt nil nil "Alignment")
-                      '("l" "r" "c"))
+        (TeX-arg-completing-read ("l" "r" "c") "Alignment")
         t)))
 
    ;; The length of the longest line is returned in \titlewidth

@@ -1,6 +1,6 @@
-;;; XCharter.el --- AUCTeX style for `XCharter.sty' (v1.094)  -*- lexical-binding: t; -*-
+;;; XCharter.el --- AUCTeX style for `XCharter.sty' (v1.24)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2017, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,12 +26,13 @@
 
 ;;; Commentary:
 
-;; This file adds support for `XCharter.sty' (v1.094) from 2017/08/08.
+;; This file adds support for `XCharter.sty' (v1.24) from 2022/04/16.
 ;; `XCharter.sty' is part of TeXLive.
 
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -43,7 +44,9 @@
  (lambda ()
 
    ;; Run style hook for various packages loaded by XCharter
-   (TeX-run-style-hooks "textcomp" "fontaxes")
+   (if (memq TeX-engine '(xetex luatex))
+       (TeX-run-style-hooks "fontspec")
+     (TeX-run-style-hooks "textcomp" "fontaxes"))
 
    ;; New symbols
    (TeX-add-symbols
@@ -51,47 +54,112 @@
     ;; Only preamble commands
     '("useosf"  0)
     '("useosfI" 0)
+    '("useproportional" 0)
 
     ;; Text commands
-    '("textsu"     t)   ; superior figures
-    '("sustyle"   -1)   ;
-    '("textin"     t)   ; inferior figures
-    '("instyle"   -1)   ;
     '("textlf"     t)   ; lining figures
     '("lfstyle"   -1)   ;
     '("textosf"    t)   ; oldstyle figures
     '("textosfI"   t)   ; oldstyle figures alternate
     '("osfstyle"  -1)   ; whatever oldstyle option is in force
+    '("texttlf"    t)
+    '("tlfstyle"  -1)
+    '("texttosf"   t)
+    '("tosfstyle" -1)
+
+    '("liningnums"       -1)
+    '("tabularnums"      -1)
+    '("oldstylenums"     -1)
+    '("proportionalnums" -1)
+
+    '("textsu"     t)   ; superior figures
+    '("sustyle"   -1)   ;
+    '("textinf"    t)   ; inferior figures
+    '("instyle"   -1)   ;
+
     '("textnumerator"   t) ; numerators
-    '("textnu"          t) ;
+    '("textnum"         t)
     '("textdenominator" t) ; denominators
     '("textde"          t) ;
-    '("textfrac"        2))
+    '("textfrac"  ["Number"] "Numerator" "Denominator")
+    '("textsfrac" ["Number"] "Numerator" "Denominator")
+
+    '("textth"      t)
+    '("textthit"    t)
+    '("thfamily"   -1))
+
+   ;; \textnu isn't available with 'notextnu' package option
+   (unless (LaTeX-provided-package-options-member "xcharter" "notextnu")
+     (TeX-add-symbols '("textnu" t))
+     (when (and (featurep 'font-latex)
+                (eq TeX-install-font-lock 'font-latex-setup))
+       (font-latex-add-keywords '(("textnu" "{"))
+                                'type-command)))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("textsu"    "{")
-                                ("textin"    "{")
-                                ("textlf"    "{")
+     (font-latex-add-keywords '(("textlf"    "{")
                                 ("textosf"   "{")
                                 ("textosfI"  "{")
+                                ("texttlf"   "{")
+                                ("texttosf"  "{")
+                                ("textsu"    "{")
+                                ("textinf"   "{")
                                 ("textnumerator"   "{")
-                                ("textnu"          "{")
+                                ("textnum"         "{")
                                 ("textdenominator" "{")
                                 ("textde"          "{")
-                                ("textfrac"        "{{"))
+                                ("textth"          "{")
+                                ("textthit"        "{"))
                               'type-command)
-     (font-latex-add-keywords '(("sustyle"   "")
-                                ("instyle"   "")
-                                ("lfstyle"   "")
-                                ("osfstyle"  ""))
-                              'type-declaration)))
+     (font-latex-add-keywords '(("lfstyle"           "")
+                                ("osfstyle"          "")
+                                ("tlfstyle"          "")
+                                ("tosfstyle"         "")
+                                ("liningnums"        "")
+                                ("tabularnums"       "")
+                                ("oldstylenums"      "")
+                                ("proportionalnums"  "")
+                                ("sustyle"           "")
+                                ("instyle"           "")
+                                ("thfamily"          ""))
+                              'type-declaration)
+     (font-latex-add-keywords '(("useosf"          "")
+                                ("useosfI"         "")
+                                ("useproportional" ""))
+                              'function)
+     (font-latex-add-keywords '(("textfrac"        "[{{")
+                                ("textsfrac"       "[{{"))
+                              'textual)))
  TeX-dialect)
 
-(defvar LaTeX-XCharter-package-options
-  '("lining" "lf" "oldstyle" "osf" "oldstyleI" "osfI"
-    "scaled" "sups" "scosf")
-  "Package options for the XCharter package.")
+(defun LaTeX-XCharter-package-options ()
+  "Read the XCharter package options."
+  (TeX-read-key-val t (append
+                       (when (memq TeX-engine '(xetex luatex))
+                         '(("nofontspec" ("true" "false"))
+                           ("type1text" ("true" "false"))
+                           ("type1" ("true" "false"))
+                           ("defaultfeatures")))
+                       '(("scaled")
+                         ("scale")
+                         ("lining" ("true" "false"))
+                         ("lf" ("true" "false"))
+                         ("oldstyle" ("true" "false"))
+                         ("osf" ("true" "false"))
+                         ("proportional" ("true" "false"))
+                         ("p" ("true" "false"))
+                         ("tabular" ("true" "false"))
+                         ("t" ("true" "false"))
+                         ("oldstyleI" ("true" "false"))
+                         ("osfI" ("true" "false"))
+                         ("sups")
+                         ("scosf")
+                         ("serbianc")
+                         ("theoremfont")
+                         ("thmlining")
+                         ("oldSS")
+                         ("notextnu")))))
 
 ;;; XCharter.el ends here

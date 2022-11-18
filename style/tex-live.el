@@ -1,6 +1,6 @@
 ;;; tex-live.el --- AUCTeX style for `tex-live.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020--2021 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -82,10 +82,11 @@
    (TeX-add-symbols
     '("verbatiminput" LaTeX-fancyvrb-arg-file-relative)
     '("boxedverbatiminput" LaTeX-fancyvrb-arg-file-relative)
-    '("listinginput"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Value of firstnumber key")
-                    (cadr (assoc "firstnumber" (LaTeX-fancyvrb-key-val-options))))
+    `("listinginput"
+      (TeX-arg-completing-read
+       ,(lambda () (cadr (assoc "firstnumber"
+                                (LaTeX-fancyvrb-key-val-options))))
+       "Value of firstnumber key")
       LaTeX-fancyvrb-arg-file-relative)
 
     ;; Various sorts of names:
@@ -95,24 +96,22 @@
     '("colname" "Collection")
     '("dirname" "Directory")
     '("filename" "Directory")
-    '("envname"
-      (TeX-arg-eval completing-read
-                    (TeX-argument-prompt nil nil "Environment")
-                    '("TEXMFCACHE"
-                      "TEXMFCNF"
-                      "TEXMFCONFIG"
-                      "TEXMFDIST"
-                      "TEXMFHOME"
-                      "TEXMFLOCAL"
-                      "TEXMFMAIN"
-                      "TEXMFOUTPUT"
-                      "TEXMFSYSCONFIG"
-                      "TEXMFSYSVAR"
-                      "TEXMFVAR"
-                      "TEXINPUTS"
-                      "TEXFONTMAPS"
-                      "ENCFONTS"
-                      "PATH" "MANPATH" "INFOPATH" "DISPLAY")))
+    '("envname" (TeX-arg-completing-read ("TEXMFCACHE"
+                                          "TEXMFCNF"
+                                          "TEXMFCONFIG"
+                                          "TEXMFDIST"
+                                          "TEXMFHOME"
+                                          "TEXMFLOCAL"
+                                          "TEXMFMAIN"
+                                          "TEXMFOUTPUT"
+                                          "TEXMFSYSCONFIG"
+                                          "TEXMFSYSVAR"
+                                          "TEXMFVAR"
+                                          "TEXINPUTS"
+                                          "TEXFONTMAPS"
+                                          "ENCFONTS"
+                                          "PATH" "MANPATH" "INFOPATH" "DISPLAY")
+                                         "Environment"))
     '("code" "Code")
     '("file" "File")
     '("prog" "Program")
