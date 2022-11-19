@@ -107,7 +107,7 @@ make them available as new environments."
     `("theorembodyfont"
       (TeX-arg-completing-read-multiple
        ,(lambda () (append LaTeX-font-family
-                           LaTeX-font-shape
+                           LaTeX-font-series
                            LaTeX-font-shape
                            LaTeX-font-size))
        "Body font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
@@ -116,7 +116,7 @@ make them available as new environments."
     `("theoremheaderfont"
       (TeX-arg-completing-read-multiple
        ,(lambda () (append LaTeX-font-family
-                           LaTeX-font-shape
+                           LaTeX-font-series
                            LaTeX-font-shape
                            LaTeX-font-size))
        "Header font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
