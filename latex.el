@@ -2406,9 +2406,9 @@ string."
    optional))
 
 (defun TeX-arg-define-macro-arguments (optional &optional prompt)
-  "Prompt for the number of arguments for a LaTeX macro.  If this
-is non-zero, also prompt for the default value for the first
-argument.
+  "Prompt for the number of arguments for a LaTeX macro.
+If this is non-zero, also prompt for the default value for the
+first argument.
 
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -8095,17 +8095,17 @@ function would return non-nil and `(match-string 1)' would return
    '("newcommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment" TeX-arg-define-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment" TeX-arg-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("providecommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("providecommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("newcommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand*" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment*" TeX-arg-define-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment*" TeX-arg-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("newtheorem" TeX-arg-define-environment
      [ TeX-arg-environment "Numbered like" ]
      t [ (TeX-arg-eval progn (if (eq (save-excursion
@@ -8546,22 +8546,6 @@ function would return non-nil and `(match-string 1)' would return
     (setq TeX-font-list LaTeX-font-list)
     (setq TeX-font-replace-function #'TeX-font-replace-macro)
     (TeX-add-symbols
-     '("newcommand" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("renewcommand" TeX-arg-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("providecommand" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("providecommand*" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("newcommand*" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("renewcommand*" TeX-arg-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("newenvironment" TeX-arg-define-environment
-       [ TeX-arg-define-macro-arguments ]  t t)
-     '("renewenvironment" TeX-arg-environment
-       [ TeX-arg-define-macro-arguments ] t t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
