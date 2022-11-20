@@ -1,6 +1,6 @@
 ;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997, 2013--2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1997--2022  Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,10 +24,23 @@
 
 ;;; Commentary:
 
-;; The style provides the function `LaTeX-amsthm-env-label' which
-;; enables new defined environments with "\newtheoreom" to interact
-;; with AUCTeX and RefTeX mechanisms for inserting labels.  Check
-;; docstring of `LaTeX-amsthm-env-label' for instructions.
+;; This file adds support for `theorem.sty' (v2.2c) from 2014/10/28.
+;; `theorem.sty' is a standard LaTeX package and part of TeXLive.
+
+;; This style interacts with AUCTeX and RefTeX mechanisms for
+;; inserting labels into new defined environments with "\newtheoreom".
+;; AUCTeX users need to add the new environment to `LaTeX-label-alist'
+;; via customize or in init-file like this:
+;;
+;;   (add-to-list 'LaTeX-label-alist '("lemma" . "lem:"))
+;;
+;; RefTeX users have to add the value to both `LaTeX-label-alist' and
+;; `reftex-label-alist' like this:
+;;
+;;   (add-to-list 'LaTeX-label-alist '("lemma" . "lem:"))
+;;   (add-to-list 'reftex-label-alist
+;;                '("lemma" ?m "lem:" "~ref{%s}"
+;;                  nil ("Lemma" "lemma") nil))
 
 ;;; Code:
 
@@ -41,60 +54,6 @@
 
 (defvar LaTeX-amsthm-package-options nil
   "Package options for the amsthm package.")
-
-(defvar LaTeX-amsthm-fontdecl
-  '(;; family
-    "rmfamily" "sffamily" "ttfamily"
-    ;; series
-    "mdseries" "bfseries"
-    ;; shape
-    "upshape" "itshape" "slshape" "scshape"
-    ;; size
-    "tiny"  "scriptsize" "footnotesize"
-    "small" "normalsize" "large"
-    "Large" "LARGE" "huge" "Huge"
-    ;; reset macro
-    "normalfont")
-  "List of font declaration commands for \"\\newtheoremstyle\".")
-
-(defun LaTeX-arg-amsthm-fontdecl (optional &optional prompt)
-  "Prompt for font declaration commands in \"\\newtheoremstyle\".
-If OPTIONAL is non-nil, insert the resulting value as an optional
-argument.  Use PROMPT as the prompt string."
-  (let* ((crm-separator (regexp-quote TeX-esc))
-         (fontdecl (mapconcat #'identity
-                              (TeX-completing-read-multiple
-                               (TeX-argument-prompt optional prompt "Font: \\" t)
-                               LaTeX-amsthm-fontdecl)
-                              TeX-esc)))
-    (TeX-argument-insert fontdecl
-                         optional
-                         (when (and fontdecl (not (string= fontdecl "")))
-                           TeX-esc))))
-
-(defun LaTeX-amsthm-env-label (environment)
-  "Insert ENVIRONMENT, query for an optional argument and prompt
-for label.  AUCTeX users should add ENVIRONMENT to
-`LaTeX-label-alist' via customize or in init-file with:
-
-  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
-
-RefTeX users should customize or add ENVIRONMENT to
-`LaTeX-label-alist' and `reftex-label-alist', for example
-
-  (add-to-list \\='LaTeX-label-alist \\='(\"lemma\" . \"lem:\"))
-  (add-to-list \\='reftex-label-alist
-               \\='(\"lemma\" ?m \"lem:\" \"~\\ref{%s}\"
-                 nil (\"Lemma\" \"lemma\") nil))"
-  (let ((opthead (TeX-read-string
-                  (TeX-argument-prompt t nil "Heading"))))
-    (LaTeX-insert-environment environment
-                              (when (and opthead
-                                         (not (string= opthead "")))
-                                (format "[%s]" opthead))))
-  (when (LaTeX-label environment 'environment)
-    (LaTeX-newline)
-    (indent-according-to-mode)))
 
 ;; Setup parsing for \newtheorem
 (TeX-auto-add-type "amsthm-newtheorem" "LaTeX")
@@ -112,7 +71,7 @@ RefTeX users should customize or add ENVIRONMENT to
   "Move parsed results from `LaTeX-auto-amsthm-newtheorem' and
 make them available as new environments."
   (dolist (newthm (mapcar #'car (LaTeX-amsthm-newtheorem-list)))
-    (LaTeX-add-environments (list newthm #'LaTeX-amsthm-env-label))))
+    (LaTeX-add-environments (list newthm #'LaTeX-env-label-args ["Heading"]))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-amsthm-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-amsthm-auto-cleanup t)
@@ -127,18 +86,17 @@ make them available as new environments."
                                       "remark")
 
    (LaTeX-add-environments
-    '("proof" LaTeX-amsthm-env-label))
+    '("proof" LaTeX-env-label-args ["Heading"]))
 
    (TeX-add-symbols
     ;; Overrule the defintion in `latex.el':
-    '("newtheorem"
-      (TeX-arg-eval
-       (lambda ()
+    `("newtheorem"
+      ,(lambda (optional)
          (let ((nthm (TeX-read-string
-                      (TeX-argument-prompt nil nil "Environment"))))
+                      (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-amsthm-newtheorems nthm)
-           (LaTeX-add-environments (list nthm #'LaTeX-amsthm-env-label))
-           (format "%s" nthm))))
+           (LaTeX-add-environments (list nthm #'LaTeX-env-label-args ["Heading"]))
+           (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
@@ -147,35 +105,50 @@ make them available as new environments."
                                 (TeX-arg-counter t "Within counter"))
                         "") ])
 
-    '("newtheorem*"
-      (TeX-arg-eval
-       (lambda ()
+    `("newtheorem*"
+      ,(lambda (optional)
          (let ((nthm (TeX-read-string
-                      (TeX-argument-prompt nil nil "Environment")))
-               (heading (TeX-read-string
-                         (TeX-argument-prompt nil nil "Heading"))))
+                      (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-amsthm-newtheorems nthm)
-           (LaTeX-add-environments (list nthm #'LaTeX-amsthm-env-label))
-           (insert (concat TeX-grop nthm TeX-grcl))
-           (format "%s" heading)))))
+           ;; NOTE: Using `LaTeX-env-label-args' on environments
+           ;; defined with \newtheorem* is semi-accurate since these
+           ;; environments are not numbered.  But numbering depends on
+           ;; an entry in `LaTeX-label-alist' and we assume that users
+           ;; will not add an entry to it.  Hence,
+           ;; `LaTeX-env-label-args' will not insert a label and we
+           ;; don't need to differentiate.
+           (LaTeX-add-environments (list nthm #'LaTeX-env-label-args ["Heading"]))
+           (TeX-argument-insert nthm optional)))
+      "Heading")
 
     '("theoremstyle"
       (TeX-arg-completing-read (LaTeX-amsthm-newtheoremstyle-list) "Style"))
     "qedhere"
     "swapnumbers"
 
-    '("newtheoremstyle"
-      (TeX-arg-eval
-       (lambda ()
+    `("newtheoremstyle"
+      ,(lambda (optional)
          (let ((nthmstyle (TeX-read-string
-                           (TeX-argument-prompt nil nil "Style name"))))
+                           (TeX-argument-prompt optional nil "Style name"))))
            (LaTeX-add-amsthm-newtheoremstyles nthmstyle)
-           (format "%s" nthmstyle))))
+           (TeX-argument-insert nthmstyle optional)))
       (TeX-arg-length "Space above")
       (TeX-arg-length "Space below")
-      (LaTeX-arg-amsthm-fontdecl "Body font: \\")
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append LaTeX-font-family
+                           LaTeX-font-series
+                           LaTeX-font-shape
+                           LaTeX-font-size))
+       "Body font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
+       nil nil nil nil ,TeX-esc)
       "Indent amount"
-      (LaTeX-arg-amsthm-fontdecl "Theorem head font: \\")
+      (TeX-arg-completing-read-multiple
+       ,(lambda () (append LaTeX-font-family
+                           LaTeX-font-series
+                           LaTeX-font-shape
+                           LaTeX-font-size))
+       "Theorem head font" nil nil ,(regexp-quote TeX-esc) ,TeX-esc
+       nil nil nil nil ,TeX-esc)
       "Punctuation after head"
       (TeX-arg-length "Space after head")
       "Theorem head spec"))
