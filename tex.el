@@ -1106,24 +1106,32 @@ DE is the name of the desktop environment, APP is the name of viewer."
     (and (featurep 'dbusbind)
          (require 'dbus nil :no-error)
          (dbus-ignore-errors (dbus-get-unique-name :session))
-         (dbus-ping :session (format "org.%s.%s.Daemon" de app))
+         ;; Apparently, `dbus-ping' can signal errors in certain
+         ;; situations.  If so, fail gracefully (bug#59380).
+         (ignore-errors
+           (dbus-ping :session (format "org.%s.%s.Daemon" de app)
+                      ;; Don't block for up to 25 secs if something
+                      ;; is wonky.
+                      2000))
          (or (not (memq :forward options))
              (let ((spec (dbus-introspect-get-method
                           :session (format "org.%s.%s.Daemon" de app)
                           (format "/org/%s/%s/Daemon" de app)
                           (format "org.%s.%s.Daemon" de app)
                           "FindDocument")))
-               ;; FindDocument must exist, and its signature must be (String,
-               ;; Boolean, String).  Evince versions between 2.30 and 2.91.x
-               ;; didn't have the Boolean spawn argument we need to start evince
-               ;; initially.
-               (and spec
-                    (equal '("s" "b" "s")
-                           (delq nil (mapcar (lambda (elem)
-                                               (when (and (listp elem)
-                                                          (eq (car elem) 'arg))
-                                                 (cdr (caar (cdr elem)))))
-                                             spec)))))))))
+               ;; FindDocument must exist, and its signature must be
+               ;; (String, Boolean, String).  Evince versions between
+               ;; 2.30 and 2.91.x didn't have the Boolean spawn
+               ;; argument we need to start evince initially.
+               (and
+                spec
+                (equal '("s" "b" "s")
+                       (delq nil (mapcar
+                                  (lambda (elem)
+                                    (when (and (listp elem)
+                                               (eq (car elem) 'arg))
+                                      (cdr (caar (cdr elem)))))
+                                  spec)))))))))
 
 (defun TeX-pdf-tools-sync-view ()
   "Focus the focused page/paragraph in `pdf-view-mode'.
