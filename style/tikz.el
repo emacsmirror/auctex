@@ -39,16 +39,6 @@
 (declare-function ConTeXt-insert-environment "context"
                   (environment &optional extra))
 
-(defgroup AUCTeX-TikZ nil
-  "AUCTeX TikZ support"
-  :group 'AUCTeX)
-
-(defcustom TeX-TikZ-point-name-regexp
-  "(\\([A-Za-z0-9]+\\))"
-  "A regexp that matches TikZ names."
-  :type 'regexp
-  :group 'AUCTeX-TikZ)
-
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
