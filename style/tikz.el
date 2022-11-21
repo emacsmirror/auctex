@@ -36,8 +36,6 @@
 ;; Silence compiler
 (declare-function ConTeXt-add-environments "context"
                   (&rest environments))
-(declare-function ConTeXt-insert-environment "context"
-                  (environment &optional extra))
 
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
