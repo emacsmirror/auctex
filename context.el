@@ -598,7 +598,7 @@ for a label to be inserted after the sectioning command."
     (cond ((TeX-TeX-sentinel-check process name))
           ((save-excursion
              ;; in a full ConTeXt run there will multiple texutil
-             ;; outputs. Just looking for "another run needed" would
+             ;; outputs.  Just looking for "another run needed" would
              ;; find the first occurence
              (goto-char (point-max))
              (re-search-backward "TeXUtil " nil t)
@@ -906,9 +906,9 @@ set to the point where this function starts.  Point will be at
   (ConTeXt--env-parse-args args))
 
 
-;; with the following we can call a function on an environment. Say
+;; with the following we can call a function on an environment.  Say
 ;; you have metapost stuff within your TeX file, go to the environment
-;; and run ConTeXt-work-on-environment (suggested Key: C-c !). AUCTeX
+;; and run ConTeXt-work-on-environment (suggested Key: C-c !).  AUCTeX
 ;; sees that you are inside e.g. \startMPpage....\stopMPpage and
 ;; looks in ConTeXt-environment-helper for a function to be called.
 
@@ -953,7 +953,7 @@ An entry looks like: (\"environment\" . function)")
   (context-mode)
   (widen))
 
-;; find smarter name. Suggestions welcome
+;; find smarter name.  Suggestions welcome
 (defun ConTeXt-work-on-environment ()
   "Takes current environment and does something on it (todo: documentation)."
   (interactive)
@@ -1049,10 +1049,10 @@ If INNER is non-nil, go to the point just past the \\start... macro."
                        (setq level (1- level))))))
     ;; now we have to look if we want to start behind the \start... macro
     (when inner
-      ;; \startfoo can have 0 or more {} and [] pairs. I assume that
-      ;; skipping all those parens will be smart enough. It fails when
+      ;; \startfoo can have 0 or more {} and [] pairs.  I assume that
+      ;; skipping all those parens will be smart enough.  It fails when
       ;; the first part in the \start-\stop-environment is { or [, like
-      ;; in \startquotation   {\em important} \stopquotation. There is
+      ;; in \startquotation   {\em important} \stopquotation.  There is
       ;; yet another pitfall: \startsetups SomeSetup foo bar
       ;; \stopsetups will use SomeSetup as the argument and the
       ;; environment
@@ -1262,7 +1262,7 @@ An optional fourth (or sixth) element means always replace if t."
         (match-string 1)
       (buffer-substring-no-properties (point) (line-end-position)))))
 
-;; This imenu also includes commented out chapters. Perhaps a feature
+;; This imenu also includes commented out chapters.  Perhaps a feature
 ;; for LaTeX, not sure we want or need that for ConTeXt.
 
 (defun ConTeXt-imenu-create-index-function ()
@@ -1799,7 +1799,7 @@ Use `ConTeXt-Mark-version' to choose the command."
 (defconst ConTeXt-dialect :context
   "Default dialect for use with function `TeX-add-style-hook' for
 argument DIALECT-EXPR when the hook is to be run only on ConTeXt
-file, or any mode derived thereof. See variable
+file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
 (defcustom ConTeXt-clean-intermediate-suffixes
@@ -1851,7 +1851,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
 
   ;; What's the deepest level at we can collapse a document?
-  ;; set only if user has not set it. Need to be set before menu is created.
+  ;; set only if user has not set it.  Need to be set before menu is created.
   ;; level 2 is "section"
   (or ConTeXt-largest-level
       (setq ConTeXt-largest-level 2))

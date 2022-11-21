@@ -5053,7 +5053,7 @@ code comment.
 
 If LaTeX syntax is taken into consideration during filling
 depends on the value of `LaTeX-syntactic-comments'."
-  (interactive "P")
+  (interactive "*P")
   (if (save-excursion
         (beginning-of-line)
         (looking-at (concat TeX-comment-start-regexp "*[ \t]*$")))
@@ -6918,7 +6918,7 @@ by too many \\thanks commands.")
 
     ("Environment [^ ]* undefined." .
      "LaTeX has encountered a \\begin command for a nonexistent environment.
-You probably misspelled the environment name. ")
+You probably misspelled the environment name.")
 
     ("Float(s) lost." .
      "You put a figure or table environment or a \\marginpar command inside a
@@ -7253,7 +7253,7 @@ on this line than it should.")
 
     ("Overfull \\\\vbox .*" .
      "Because it couldn't find a good place for a page break, TeX put more
-on the page than it should. ")
+on the page than it should.")
 
     ("Underfull \\\\hbox .*" .
      "Check your output for extra vertical space.  If you find some, it was
@@ -7264,7 +7264,7 @@ by inserting a \\linebreak command.")
 
     ("Underfull \\\\vbox .*" .
      "TeX could not find a good place to break the page, so it produced a
-page without enough text on it. ")
+page without enough text on it.")
 
     ;; New list items should be placed here
     ;;

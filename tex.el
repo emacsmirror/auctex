@@ -701,11 +701,6 @@ sure \"%p\" is the first entry."
    TeX-expand-list
    TeX-expand-list-builtin))
 
-;; This variable used to be defined in tex-buf.el.  It is used in
-;; `TeX-mode-specific-command-menu-entries' in this file.  It is now
-;; (June 2021) moved into this file to avoid `void-variable' errors
-;; with the "Command" menu if tex-buf.el is not loaded yet for reasons
-;; mentioned above.
 (defcustom TeX-parse-all-errors t
   "Whether to automatically collect all warning and errors after running TeX.
 
@@ -5722,8 +5717,8 @@ throwing an error.
 A pattern is escaped, if it is preceded by an odd number of escape
 characters."
   (let ((search-fun (if (eq direction 'backward)
-                        (if regexp-flag 're-search-backward 'search-backward)
-                      (if regexp-flag 're-search-forward 'search-forward))))
+                        (if regexp-flag #'re-search-backward #'search-backward)
+                      (if regexp-flag #'re-search-forward #'search-forward))))
     (catch 'found
       (while (funcall search-fun pattern bound noerror)
         (when (not (TeX-escaped-p (match-beginning 0)))
@@ -6286,7 +6281,7 @@ between.
 If there is an active region, ARG will be ignored, braces will be
 inserted around the region, and point will be left after the
 closing brace."
-  (interactive "P")
+  (interactive "*P")
   (if (TeX-active-mark)
       (progn
         (if (< (point) (mark))
