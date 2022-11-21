@@ -25,11 +25,15 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ;; 02110-1301, USA.
 
-;;; Commentary:
+;;; Library-Commentary:
 
 ;; This can be used for starting up AUCTeX.  The following somewhat
 ;; strange trick causes tex-site.el to be loaded in a way that can be
 ;; safely undone using (unload-feature 'tex-site).
+
+;;; Commentary:
+
+;; AUCTeX is the predominant TeX/LaTeX writing environment for Emacs.
 
 ;;; Code:
 
