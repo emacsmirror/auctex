@@ -568,11 +568,11 @@ Styles such as tabularx may set it according to their needs.")
 
 (defvar LaTeX-environment-history nil)
 
-;; Variable used to cache the current environment, e.g. for repeated
-;; tasks in an environment, like indenting each line in a paragraph to
-;; be filled.  It must not have a non-nil value in general.  That
-;; means it is usually let-bound for such operations.
-(defvar LaTeX-current-environment nil)
+(defvar LaTeX-current-environment nil
+  "Cache holding the name of current enviroment for repeated tasks.
+Example for a repeated task is indenting each line in a paragraph
+to be filled.  Therefore, this variable is meant to be let-bound
+in a function and nil globally.")
 
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
@@ -1110,9 +1110,10 @@ The first item is inserted by the function `LaTeX--env-item'."
 (defun LaTeX-env-item-args (environment &rest args)
   "Insert ENVIRONMENT followed by ARGS and first item.
 The first item is inserted by the function `LaTeX--env-item'."
-  (LaTeX-insert-environment environment)
-  (LaTeX--env-parse-args args)
-  (LaTeX--env-item environment))
+  (let ((LaTeX-current-environment environment))
+    (LaTeX-insert-environment environment)
+    (LaTeX--env-parse-args args)
+    (LaTeX--env-item environment)))
 
 (defcustom LaTeX-label-alist
   '(("figure" . LaTeX-figure-label)
@@ -1324,8 +1325,9 @@ Just like array and tabular."
 
 (defun LaTeX-env-label-args (environment &rest args)
   "Run `LaTeX-env-label' on ENVIRONMENT and insert ARGS."
-  (LaTeX-env-label environment)
-  (LaTeX--env-parse-args args))
+  (let ((LaTeX-current-environment environment))
+    (LaTeX-env-label environment)
+    (LaTeX--env-parse-args args)))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
@@ -1452,8 +1454,9 @@ Just like array and tabular."
 
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
-  (LaTeX-insert-environment environment)
-  (LaTeX--env-parse-args args))
+  (let ((LaTeX-current-environment environment))
+    (LaTeX-insert-environment environment)
+    (LaTeX--env-parse-args args)))
 
 (defun LaTeX-env-label-as-keyval (_optional &optional keyword keyvals environment)
   "Query for a label and insert it in the optional argument of an environment.
