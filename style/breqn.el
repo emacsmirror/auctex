@@ -66,7 +66,8 @@ The keys \"label\" and \"labelprefix\" are omitted.")
 
 (defun LaTeX-breqn-key-val-options ()
   "Return updated key=val's based on the current \"breqn\" environment."
-  (let ((currenv (LaTeX-current-environment)))
+  (let ((currenv (or LaTeX-current-environment
+                     (LaTeX-current-environment))))
     (cond ((string-match-p "\\`dgroup" currenv)
            (append '(("noalign") ("brace"))
                    LaTeX-breqn-key-val-options))
