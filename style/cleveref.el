@@ -1,6 +1,6 @@
 ;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -55,18 +55,12 @@ string."
            (labels-string (mapconcat #'identity labels ",")))
       (TeX-argument-insert labels-string optional))))
 
-(defun TeX-arg-cleveref-crossref-type (optional &optional prompt)
-  "Insert the cross-reference type for macros of cleveref package.
-If OPTIONAL is non-nil, insert the resulting value in brackets.
-Use PROMPT as the prompt string."
-  (let* ((type (mapcar #'list
-                       '("appendix" "subappendix" "subsubappendix"
-                         "subsubsubappendix" "subfigure" "subtable"
-                         "subequation")))
-         (types (append (LaTeX-counter-list) type)))
-    (TeX-argument-insert
-     (completing-read (TeX-argument-prompt optional prompt "Type") types)
-     optional)))
+(defun LaTeX-cleveref-crossref-type ()
+  "Return a list of cross-reference types for cleveref package macros."
+  (let ((type (mapcar #'list '("appendix" "subappendix"
+                               "subsubappendix" "subsubsubappendix"
+                               "subfigure" "subtable" "subequation"))))
+    (append (LaTeX-counter-list) type)))
 
 (defvar LaTeX-cleveref-label-regexp
   '("\\\\label\\[[^]]*\\]{\\([^\n\r%\\{}]+\\)}" 1 LaTeX-auto-label)
@@ -100,32 +94,56 @@ Use PROMPT as the prompt string."
     '("labelcpageref" TeX-arg-cleveref-multiple-labels)
     ;; 6 Overriding the Cross-Reference Type
     '("crefalias" TeX-arg-counter "Type")
-    '("label" [ TeX-arg-cleveref-crossref-type ] TeX-arg-define-label)
+    '("label"
+      [TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type"]
+      TeX-arg-define-label)
 
     ;; 8.1.1 Global Customisation
     '("crefdefaultlabelformat" t)
 
     ;; 8.1.2 Customising Individual Cross-Reference Types
-    '("crefname" TeX-arg-cleveref-crossref-type
+    '("crefname"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
       "Singular name" "Plural name")
-    '("Crefname" TeX-arg-cleveref-crossref-type
+    '("Crefname"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
       "Singular name" "Plural name")
-    '("creflabelformat" TeX-arg-cleveref-crossref-type t)
-    '("crefrangelabelformat" TeX-arg-cleveref-crossref-type t)
+    '("creflabelformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
+    '("crefrangelabelformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
 
     ;; 8.2.1 Single Cross-References
-    '("crefformat" TeX-arg-cleveref-crossref-type t)
-    '("Crefformat" TeX-arg-cleveref-crossref-type t)
+    '("crefformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
+    '("Crefformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
 
     ;; 8.2.2 Reference Ranges
-    '("crefrangeformat" TeX-arg-cleveref-crossref-type t)
-    '("Crefrangeformat" TeX-arg-cleveref-crossref-type t)
+    '("crefrangeformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
+    '("Crefrangeformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      t)
 
     ;; 8.2.3 Multiple Cross-References
-    '("crefmultiformat"      TeX-arg-cleveref-crossref-type 4)
-    '("Crefmultiformat"      TeX-arg-cleveref-crossref-type 4)
-    '("crefrangemultiformat" TeX-arg-cleveref-crossref-type 4)
-    '("Crefrangemultiformat" TeX-arg-cleveref-crossref-type 4))
+    '("crefmultiformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      4)
+    '("Crefmultiformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      4)
+    '("crefrangemultiformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      4)
+    '("Crefrangemultiformat"
+      (TeX-arg-completing-read (LaTeX-cleveref-crossref-type) "Type")
+      4))
 
    ;; These macros aren't used particularly often during the course of
    ;; normal referencing.
