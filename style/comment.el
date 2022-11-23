@@ -112,26 +112,29 @@
 
    ;; New symbols
    (TeX-add-symbols
-    '("includecomment"
-      (TeX-arg-eval let ((env (TeX-read-string
-                               (TeX-argument-prompt nil nil "Name"))))
-                    (LaTeX-add-comment-incl-excls `(,env "include"))
-                    (LaTeX-comment-auto-cleanup)
-                    (format "%s" env)))
+    `("includecomment"
+      ,(lambda (optional)
+         (let ((env (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+           (LaTeX-add-comment-incl-excls `(,env "include"))
+           (LaTeX-comment-auto-cleanup)
+           (TeX-argument-insert env optional))))
 
-    '("excludecomment"
-      (TeX-arg-eval let ((env (TeX-read-string
-                               (TeX-argument-prompt nil nil "Name"))))
-                    (LaTeX-add-comment-incl-excls `(,env "exclude"))
-                    (LaTeX-comment-auto-cleanup)
-                    (format "%s" env)))
+    `("excludecomment"
+      ,(lambda (optional)
+         (let ((env (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+           (LaTeX-add-comment-incl-excls `(,env "exclude"))
+           (LaTeX-comment-auto-cleanup)
+           (TeX-argument-insert env optional))))
 
-    '("specialcomment"
-      (TeX-arg-eval let ((env (TeX-read-string
-                               (TeX-argument-prompt nil nil "Name"))))
-                    (LaTeX-add-comment-incl-excls `(,env "special"))
-                    (LaTeX-comment-auto-cleanup)
-                    (format "%s" env))
+    `("specialcomment"
+      ,(lambda (optional)
+         (let ((env (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+           (LaTeX-add-comment-incl-excls `(,env "special"))
+           (LaTeX-comment-auto-cleanup)
+           (TeX-argument-insert env optional)))
       "Before commands" "After commands")
 
     '("processcomment" "Name" "Each-line commands"
