@@ -39,35 +39,16 @@
                   "font-latex"
                   (keywords class))
 
-(defun LaTeX-csquotes-read-language (optional &optional prompt)
-  "Read and return a language for csquotes macros.
-If OPTIONAL is non-nil, indicate it in minibuffer while reading
-user input.  PROMPT replaces the standard one \"Language\".  This
-function checks if the functions `LaTeX-babel-active-languages'
-or `LaTeX-polyglossia-active-languages' are bound and use them to
-retrieve the active languages.  If none available, user is
-requested to enter a language."
-  (cond ((and (fboundp 'LaTeX-babel-active-languages)
-              (LaTeX-babel-active-languages))
-         (completing-read
-          (TeX-argument-prompt optional prompt "Language")
-          (LaTeX-babel-active-languages)))
-        ((and (fboundp 'LaTeX-polyglossia-active-languages)
-              (LaTeX-polyglossia-active-languages))
-         (completing-read
-          (TeX-argument-prompt optional prompt "Language")
-          (LaTeX-polyglossia-active-languages)))
-        (t
-         (TeX-read-string
-          (TeX-argument-prompt optional prompt "Language")))))
-
-(defun LaTeX-arg-csquotes-language (optional &optional prompt)
-  "Insert a language for csquotes macros.
-If OPTIONAL is non-nil, insert the language in square brackets.
-PROMPT replaces the standard one \"Language\"."
-  (TeX-argument-insert
-   (LaTeX-csquotes-read-language optional prompt)
-   optional))
+(defun LaTeX-csquotes-language-list ()
+  "Return a list of active languages for csquotes macros.
+This function checks if the functions
+`LaTeX-babel-active-languages' or
+`LaTeX-polyglossia-active-languages' are bound and use them to
+retrieve the active languages."
+  (or (and (fboundp 'LaTeX-babel-active-languages)
+           (LaTeX-babel-active-languages))
+      (and (fboundp 'LaTeX-polyglossia-active-languages)
+           (LaTeX-polyglossia-active-languages))))
 
 (TeX-add-style-hook
  "csquotes"
@@ -92,10 +73,14 @@ PROMPT replaces the standard one \"Language\"."
       '("enquote*" 1)
 
       ;; 3.2 Quoting Text in a Foreign Language
-      '("foreignquote"  LaTeX-arg-csquotes-language 1)
-      '("foreignquote*" LaTeX-arg-csquotes-language 1)
-      '("hyphenquote"   LaTeX-arg-csquotes-language 1)
-      '("hyphenquote*"  LaTeX-arg-csquotes-language 1)
+      '("foreignquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list)) t)
+      '("foreignquote*"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list)) t)
+      '("hyphenquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list)) t)
+      '("hyphenquote*"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list)) t)
 
       ;; 3.3 Formal Quoting of Regular Text
       '("textquote"  ["Citation"] ["Punctuation"] t)
@@ -103,24 +88,31 @@ PROMPT replaces the standard one \"Language\"."
 
       ;; 3.4 Formal Quoting of Text in a Foreign Language
       '("foreigntextquote"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
       '("foreigntextquote*"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
       '("hyphentextquote"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
       '("hyphentextquote*"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
 
       ;; 3.5 Block Quoting of Regular Text
       '("blockquote" ["Citation"] ["Punctuation"] t)
 
       ;; 3.6 Block Quoting of Text in a Foreign Language
       '("foreignblockquote"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
       '("hyphenblockquote"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
       '("hybridblockquote"
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"] t)
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"] t)
 
       ;; 3.7 Selecting Quote Styles
       `("setquotestyle"
@@ -137,14 +129,18 @@ PROMPT replaces the standard one \"Language\"."
       '("MakeAutoQuote*" "Opening quotation mark" "Closing quotation mark")
 
       ;; 4.2 Quoting Text in a Foreign Language
-      '("MakeForeignQuote" LaTeX-arg-csquotes-language
+      '("MakeForeignQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
-      '("MakeForeignQuote*" LaTeX-arg-csquotes-language
+      '("MakeForeignQuote*"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
 
-      '("MakeHyphenQuote" LaTeX-arg-csquotes-language
+      '("MakeHyphenQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
-      '("MakeHyphenQuote" LaTeX-arg-csquotes-language
+      '("MakeHyphenQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
 
       ;; 4.3 Block Quoting of Regular Text
@@ -152,11 +148,14 @@ PROMPT replaces the standard one \"Language\"."
         "Closing quotation mark")
 
       ;; 4.4 Block Quoting of Text in a Foreign Language
-      '("MakeForeignBlockQuote" LaTeX-arg-csquotes-language
+      '("MakeForeignBlockQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
-      '("MakeHyphenBlockQuote" LaTeX-arg-csquotes-language
+      '("MakeHyphenBlockQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
-      '("MakeHybridBlockQuote" LaTeX-arg-csquotes-language
+      '("MakeHybridBlockQuote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Delimiter for citation" "Closing quotation mark")
 
       ;; 4.5 Controlling Active Quotes
@@ -170,24 +169,31 @@ PROMPT replaces the standard one \"Language\"."
       '("textcquote*" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 5.2 Formal Quoting of Text in a Foreign Language
-      '("foreigntextcquote" LaTeX-arg-csquotes-language
+      '("foreigntextcquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("foreigntextcquote*" LaTeX-arg-csquotes-language
+      '("foreigntextcquote*"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("hyphentextcquote" LaTeX-arg-csquotes-language
+      '("hyphentextcquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("hyphentextcquote*" LaTeX-arg-csquotes-language
+      '("hyphentextcquote*"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 5.3 Block Quoting of Regular Text
       '("blockcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 5.4 Block Quoting of Text in a Foreign Language
-      '("foreignblockcquote" LaTeX-arg-csquotes-language
+      '("foreignblockcquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("hyphenblockcquote" LaTeX-arg-csquotes-language
+      '("hyphenblockcquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("hybridblockcquote" LaTeX-arg-csquotes-language
+      '("hybridblockcquote"
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
 
       ;; 7 Auxiliary Commands
@@ -266,20 +272,24 @@ PROMPT replaces the standard one \"Language\"."
         ["Citation"] ["Punctuation"])
 
       '("foreigndisplayquote" LaTeX-env-args
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"])
 
       '("hyphendisplayquote" LaTeX-env-args
-        LaTeX-arg-csquotes-language ["Citation"] ["Punctuation"])
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Citation"] ["Punctuation"])
 
       ;; 6.2 Integrated Display Environments
       '("displaycquote" LaTeX-env-args
         ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
 
       '("foreigndisplaycquote" LaTeX-env-args
-        LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
 
       '("hyphendisplaycquote" LaTeX-env-args
-        LaTeX-arg-csquotes-language["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
+        (TeX-arg-completing-read (LaTeX-csquotes-language-list))
+        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
 
      ;; Quotation marks
      (when (and (> (length LaTeX-csquotes-open-quote) 0)
