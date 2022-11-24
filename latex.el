@@ -1435,7 +1435,7 @@ Just like array and tabular."
 
 (defun LaTeX-env-contents (environment)
   "Insert ENVIRONMENT with optional argument and filename for contents."
-  (let* ((opt '("overwrite" "force" "nosearch"))
+  (let* ((opt '("overwrite" "force" "nosearch" "nowarn"))
          (arg (mapconcat #'identity
                          (TeX-completing-read-multiple
                           (TeX-argument-prompt t nil "Options")
