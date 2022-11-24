@@ -395,32 +395,34 @@ The following variables are set before the hooks are run
                       `ConTeXt-level'.
 `ConTeXt-title'     - The title of the section, default to an empty
                       string.
+`ConTeXt-reference' - Comma separated list of reference.
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
 The following standard hooks exist -
 
-ConTeXt-numbered-section-heading: Query the user about the name
+`ConTeXt-numbered-section-heading': Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
 `ConTeXt-name'.
 
-ConTeXt-section-title: Query the user about the title of the
+`ConTeXt-section-title': Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according
+`ConTeXt-section-section': Insert ConTeXt section command according
 to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
-ConTeXt-section-ref: Insert a reference for this section command.
+`ConTeXt-section-ref': Query the user about a reference for this
+section command.  Modifies `ConTeXt-reference'.
 
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-numbered-section-hook
                          \\='(ConTeXt-numbered-section-heading
                                  ConTeXt-section-title
-                                 ConTeXt-section-section
-                                 ConTeXt-section-ref))
+                                 ConTeXt-section-ref
+                                 ConTeXt-section-section))
 
 in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro
@@ -447,32 +449,34 @@ The following variables are set before the hooks are run
                       `ConTeXt-level'.
 `ConTeXt-title'     - The title of the section, default to an empty
                       string.
+`ConTeXt-reference' - Comma separated list of reference.
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
 The following standard hooks exist -
 
-ConTeXt-unnumbered-section-heading: Query the user about the name
+`ConTeXt-unnumbered-section-heading': Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
 `ConTeXt-name'.
 
-ConTeXt-section-title: Query the user about the title of the
+`ConTeXt-section-title': Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according
+`ConTeXt-section-section': Insert ConTeXt section command according
 to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
-ConTeXt-section-ref: Insert a reference for this section command.
+`ConTeXt-section-ref': Query the user about a reference for this
+section command.  Modifies `ConTeXt-reference'.
 
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-unnumbered-section-hook
                          \\='(ConTeXt-unnumbered-section-heading
                                  ConTeXt-section-title
-                                 ConTeXt-section-section
-                                 ConTeXt-section-ref))
+                                 ConTeXt-section-ref
+                                 ConTeXt-section-section))
 
 in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro

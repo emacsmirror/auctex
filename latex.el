@@ -386,30 +386,35 @@ If so, return the second element, otherwise return nil."
 
 The following variables are set before the hooks are run
 
-LaTeX-level - numeric section level, see the documentation of `LaTeX-section'.
-LaTeX-name - name of the sectioning command, derived from `LaTeX-level'.
-LaTeX-title - The title of the section, default to an empty string.
-LaTeX-toc - Entry for the table of contents list, default nil.
-LaTeX-done-mark - Position of point afterwards, default nil (meaning end).
+`LaTeX-level'     - numeric section level, see the documentation of
+                    `LaTeX-section'.
+`LaTeX-name'      - name of the sectioning command, derived from
+                    `LaTeX-level'.
+`LaTeX-title'     - The title of the section, default to an empty
+                    string.
+`LaTeX-toc'       - Entry for the table of contents list, default
+                    nil.
+`LaTeX-done-mark' - Position of point afterwards, default nil
+                    (meaning end).
 
 The following standard hooks exist -
 
-LaTeX-section-heading: Query the user about the name of the
+`LaTeX-section-heading': Query the user about the name of the
 sectioning command.  Modifies `LaTeX-level' and `LaTeX-name'.
 
-LaTeX-section-title: Query the user about the title of the
+`LaTeX-section-title': Query the user about the title of the
 section.  Modifies `LaTeX-title'.
 
-LaTeX-section-toc: Query the user for the toc entry.  Modifies
+`LaTeX-section-toc': Query the user for the toc entry.  Modifies
 `LaTeX-toc'.
 
-LaTeX-section-section: Insert LaTeX section command according to
+`LaTeX-section-section': Insert LaTeX section command according to
 `LaTeX-name', `LaTeX-title', and `LaTeX-toc'.  If `LaTeX-toc' is
 nil, no toc entry is inserted.  If `LaTeX-toc' or `LaTeX-title'
 are empty strings, `LaTeX-done-mark' will be placed at the point
 they should be inserted.
 
-LaTeX-section-label: Insert a label after the section command.
+`LaTeX-section-label': Insert a label after the section command.
 Controled by the variable `LaTeX-section-label'.
 
 To get a full featured `LaTeX-section' command, insert
