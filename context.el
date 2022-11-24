@@ -363,35 +363,19 @@ section."
 
 (defun ConTeXt-numbered-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level ConTeXt-numbered-section-list
-                           (function (lambda (a b) (equal a (nth 1 b)))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) ConTeXt-numbered-section-list)))
 
 (defun ConTeXt-unnumbered-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level ConTeXt-unnumbered-section-list
-                           (function (lambda (a b) (equal a (nth 1 b)))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) ConTeXt-unnumbered-section-list)))
 
 (defun ConTeXt-numbered-section-level (name)
   "Return the level of the section NAME."
-  (let ((entry (TeX-member name ConTeXt-numbered-section-list
-                           (function (lambda (a b) (equal a (nth 0 b)))))))
-    (if entry
-        (nth 1 entry)
-      nil)))
+  (cadr (assoc name ConTeXt-numbered-section-list)))
 
 (defun ConTeXt-unnumbered-section-level (name)
   "Return the level of the section NAME."
-  (let ((entry (TeX-member name ConTeXt-unnumbered-section-list
-                           (function (lambda (a b) (equal a (nth 0 b)))))))
-    (if entry
-        (nth 1 entry)
-      nil)))
+  (cadr (assoc name ConTeXt-unnumbered-section-list)))
 
 
 ;;; Section Hooks.

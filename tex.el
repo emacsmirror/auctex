@@ -56,6 +56,7 @@
                   (bus service path interface signal handler &rest args))
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
+(declare-function LaTeX-section-name "latex" (level))
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
 (declare-function comint-mode "ext:comint" nil)
@@ -91,7 +92,6 @@
 (defvar LaTeX-optcl)
 (defvar LaTeX-optop)
 (defvar LaTeX-largest-level)
-(defvar LaTeX-section-list)
 ;; tex-ispell.el
 (defvar TeX-ispell-verb-delimiters)
 ;; Others:
@@ -9077,8 +9077,7 @@ Initialize it to `LaTeX-largest-level' if needed."
 determine the current section by `LaTeX-command-section'.
 The levels are defined by `LaTeX-section-list'."
   (interactive "p")
-  (let ((old-level (car (rassoc (list (LaTeX-command-section-level))
-                                LaTeX-section-list))))
+  (let ((old-level (LaTeX-section-name (LaTeX-command-section-level))))
     (setq LaTeX-command-section-level (+ LaTeX-command-section-level arg))
     (cond
      ((> LaTeX-command-section-level 6)
@@ -9088,8 +9087,8 @@ The levels are defined by `LaTeX-section-list'."
       (setq LaTeX-command-section-level 0)
       (message "Cannot enlarge LaTeX-command-section-level above part."))
      (t (message "Changed level from %s to %s."
-                 old-level (car (rassoc (list LaTeX-command-section-level)
-                                        LaTeX-section-list)))))))
+                 old-level (LaTeX-section-name
+                            LaTeX-command-section-level))))))
 
 (defun LaTeX-command-section-boundaries ()
   "Return the boundaries of the current section as (start . end).
@@ -9097,13 +9096,10 @@ The section is determined by `LaTeX-command-section-level'."
   (let* ((case-fold-search nil)
          (rx (concat "\\\\" (regexp-opt
                              (mapcar
-                              (lambda (level)
-                                (car (rassoc (list level) LaTeX-section-list)))
-                              (let (r)
-                                (dotimes (i (1+ (LaTeX-command-section-level)))
-                                  (push i r))
-                                r)))
-                     "{")))
+                              #'LaTeX-section-name
+                              (number-sequence
+                               0 (LaTeX-command-section-level))))
+                     "\\*?{")))
     (cons (save-excursion
             (re-search-backward rx nil t)
             (point))

@@ -259,20 +259,14 @@ used in style files."
 
 (defun LaTeX-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level LaTeX-section-list
-                           (lambda (a b) (equal a (nth 1 b))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) LaTeX-section-list)))
 
 (defun LaTeX-section-level (name)
-  "Return the level of the section NAME."
-  (let ((entry (TeX-member name LaTeX-section-list
-                           (lambda (a b) (equal a (nth 0 b))))))
-
-    (if entry
-        (nth 1 entry)
-      nil)))
+  "Return the level of the section NAME.
+NAME can be starred variant."
+  (if (string-suffix-p "*" name)
+      (setq name (substring-no-properties name 0 -1)))
+  (cadr (assoc name LaTeX-section-list)))
 
 (defcustom TeX-outline-extra nil
   "List of extra TeX outline levels.
@@ -474,7 +468,12 @@ Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with \\[LaTeX-section]."
   (let ((string (completing-read
                  (concat "Level (default " LaTeX-name "): ")
-                 LaTeX-section-list
+                 (append
+                  ;; Include starred variants in candidates.
+                  (mapcar (lambda (sct)
+                            (list (concat (car sct) "*")))
+                          LaTeX-section-list)
+                  LaTeX-section-list)
                  nil nil nil nil LaTeX-name)))
     ;; Update LaTeX-name
     (if (not (zerop (length string)))
