@@ -249,44 +249,52 @@ percent sign at the beginning of a line before
     '("theglossary" LaTeX-env-item))
 
    (TeX-add-symbols
-    ;; 2.1 The driver file
-    '("DocInput"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((file (file-relative-name
-                      (read-file-name
-                       "File to input: " nil nil nil nil
-                       (lambda (x)
-                         (or (file-directory-p x)
-                             (string-match "\\.\\(fdd\\|dtx\\)\\'" x))))
-                      (TeX-master-directory))))
-           (format "%s" file)))))
+    ;; 2.1 The driver file: Note that `l3doc.el' also loads `doc.el'
+    ;; but `\DocInput' behaves differently.  With `l3doc.el', it takes
+    ;; comma-separated arguments, with `doc.el' it takes only one
+    ;; argument.
+    `("DocInput"
+      (TeX-arg-conditional (member "l3doc" (TeX-style-list))
+          (,(lambda (optional)
+              (let ((file (TeX-read-string
+                           (TeX-argument-prompt optional nil
+                                                (format "File(s) to input (default %s)"
+                                                        (buffer-name)))
+                           nil nil (buffer-name))))
+                (TeX-argument-insert file optional))))
+        (,(lambda (optional)
+            (let ((file (file-relative-name
+                         (read-file-name
+                          (TeX-argument-prompt optional nil
+                                               (format "File to input (default %s)"
+                                                       (buffer-name)))
+                          nil (buffer-name) nil nil
+                          (lambda (x)
+                            (or (file-directory-p x)
+                                (string-match "\\.\\(fdd\\|dtx\\)\\'" x))))
+                         (TeX-master-directory))))
+              (TeX-argument-insert file optional))))))
 
-    '("IndexInput"
-      (TeX-arg-eval
-       (lambda ()
+    `("IndexInput"
+      ,(lambda (optional)
          (let ((file (file-relative-name
                       (read-file-name
-                       "File to input: " nil nil nil nil
+                       (TeX-argument-prompt optional nil "File to input")
+                       nil nil nil nil
                        (lambda (x)
                          (or (file-directory-p x)
                              (string-match "\\.\\(tex\\|ltx\\|fdd\\|dtx\\)\\'" x))))
                       (TeX-master-directory))))
-           (format "%s" file)))))
+           (TeX-argument-insert file optional))))
 
     ;; 2.2 Package options
     '("SetupDoc" (TeX-arg-completing-read-multiple LaTeX-doc-package-options
                                                    "Options"))
 
     ;; 2.4 Describing the usage of macros and environments
-    '("DescribeMacro"
+    `("DescribeMacro"
       [TeX-arg-completing-read ("noindex" "noprint") "Suppress option"]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (TeX-read-string
-                      (TeX-argument-prompt nil nil "Macro")
-                      TeX-esc)))
-           (format "%s" name)))))
+      (TeX-arg-string "Macro" ,TeX-esc))
     '("DescribeEnv"
       [TeX-arg-completing-read ("noindex" "noprint") "Suppress option"]
       "Environment")
@@ -434,7 +442,6 @@ percent sign at the beginning of a line before
      (font-latex-add-keywords '(("meta"       "{"))
                               'textual)
      (font-latex-add-keywords '(("DocInput"   "{")
-                                ("DocInclude" "{" )
                                 ("IndexInput" "{"))
                               'reference)))
  TeX-dialect)
