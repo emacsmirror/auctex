@@ -270,41 +270,41 @@ expanded.  The expansion is done using the information found in
 The third element is the function which actually start the process.
 Several such hooks have been defined:
 
-TeX-run-command: Start up the process and show the output in a
+`TeX-run-command': Start up the process and show the output in a
 separate buffer.  Check that there is not two commands running for the
 same file.  Return the process object.
 
-TeX-run-format: As `TeX-run-command', but assume the output is created
+`TeX-run-format': As `TeX-run-command', but assume the output is created
 by a TeX macro package.  Return the process object.
 
-TeX-run-TeX: For TeX output.
+`TeX-run-TeX': For TeX output.
 
-TeX-run-interactive: Run TeX or LaTeX interactively.
+`TeX-run-interactive': Run TeX or LaTeX interactively.
 
-TeX-run-BibTeX: For BibTeX output.
+`TeX-run-BibTeX': For BibTeX output.
 
-TeX-run-Biber: For Biber output.
+`TeX-run-Biber': For Biber output.
 
-TeX-run-compile: Use `compile' to run the process.
+`TeX-run-compile': Use `compile' to run the process.
 
-TeX-run-shell: Use `shell-command' to run the process.
+`TeX-run-shell': Use `shell-command' to run the process.
 
-TeX-run-discard: Start the process in the background, discarding its
+`TeX-run-discard': Start the process in the background, discarding its
 output.
 
-TeX-run-background: Start the process in the background, show output
+`TeX-run-background': Start the process in the background, show output
 in other window.
 
-TeX-run-silent: Start the process in the background.
+`TeX-run-silent': Start the process in the background.
 
-TeX-run-discard-foreground: Start the process in the foreground,
+`TeX-run-discard-foreground': Start the process in the foreground,
 discarding its output.
 
-TeX-run-function: Execute the Lisp function or function call
+`TeX-run-function': Execute the Lisp function or function call
 specified by the string in the second element.  Consequently,
 this hook does not start a process.
 
-TeX-run-discard-or-function: If the command is a Lisp function,
+`TeX-run-discard-or-function': If the command is a Lisp function,
 execute it as such, otherwise start the command as a process,
 discarding its output.
 
@@ -3260,7 +3260,7 @@ See `completion-at-point-functions'."
 (make-variable-buffer-local 'TeX-default-macro)
 
 (defcustom TeX-insert-braces t
-  "If non-nil, append a empty pair of braces after inserting a macro.
+  "If non-nil, append an empty pair of braces after inserting a macro.
 
 See also `TeX-insert-braces-alist'."
   :group 'TeX-macro
