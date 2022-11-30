@@ -59,8 +59,7 @@ The keys sectioncmd and label are added in the function
 
 (defun LaTeX-changelog-key-val-options ()
   "Return an updated list of key=vals from changelog package."
-  (let ((currenv (or LaTeX-current-environment
-                     (LaTeX-current-environment)))
+  (let ((currenv (LaTeX-current-environment))
         (seccmds (mapcar #'car LaTeX-section-list)))
     (if (string= currenv "changelog")
         (append
