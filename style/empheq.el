@@ -1,6 +1,6 @@
 ;;; empheq.el --- AUCTeX style for `empheq.sty' (v2.14)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -162,69 +162,31 @@ delimiters and prepends them to variable
          ("right" ,rvals))))
    LaTeX-empheq-key-val-options))
 
-(defun LaTeX-empheq-env (env)
-  "Query for a supported amsmath environment and insert it accordingly.
-ENV is the name of environment passed to the function in the style hook."
-  (let* ((keyvals (TeX-read-key-val t (LaTeX-empheq-key-val-options)))
-         (amsenv (completing-read
-                  (TeX-argument-prompt nil nil "amsmath environment")
-                  LaTeX-empheq-supported-amsmath-envs))
-         (ncols (when (or (string= amsenv "alignat")
-                          (string= amsenv "alignat*"))
-                  (TeX-read-string
-                   (TeX-argument-prompt nil nil "Number of columns"))))
-         num)
-    (LaTeX-insert-environment
-     env
-     (concat
-      (when (and keyvals (not (string= keyvals "")))
-        (concat LaTeX-optop keyvals LaTeX-optcl))
-      TeX-grop
-      (if (and ncols (not (string= ncols "")))
-          (concat amsenv "=" ncols)
-        amsenv)
-      TeX-grcl))
-    (when (and (assoc amsenv LaTeX-label-alist)
-               (LaTeX-label amsenv 'environment))
-      (LaTeX-newline)
-      (indent-according-to-mode))
-    (when (and ncols (not (string= ncols "")))
-      (setq num (string-to-number ncols))
+(defun LaTeX-empheq-env (optional)
+  "Insert a label inside empheq environment.
+In addition, query for a column number for the alignat*?
+environments and insert suitable number of ampersands.  If
+OPTIONAL is non-nil, indicate it in the prompt."
+  (save-excursion
+    (TeX-looking-at-backward (concat TeX-grop "\\([^" TeX-grcl "]+\\)" TeX-grcl)
+                             20))
+  (let* ((amsenv (match-string-no-properties 1))
+         ncols)
+    (when (string-match-p "\\`alignat" amsenv)
+      (setq ncols (read-number
+                   (TeX-argument-prompt optional nil "Number of columns")))
       (save-excursion
-        (insert (make-string (+ num num -1) ?&))))))
-
-(defun LaTeX-empheq-env-overload (env &optional _ignore)
-  "Insert amsmath ENV's when option overload is given to empheq package.
-This function combines the capabilities of `LaTeX-env-label' and
-`LaTeX-amsmath-env-alignat'.  It overwrites the definitions of
-`amsmath.el'."
-  (if (or (string= env "alignat")
-          (string= env "alignat*"))
-      (let ((ncols (TeX-read-string
-                    (TeX-argument-prompt nil nil "Number of columns")))
-            (keyvals (TeX-read-key-val t
-                                       (LaTeX-empheq-key-val-options)
-                                       "empheq options (k=v)")))
-        (LaTeX-insert-environment env
-                                  (concat TeX-grop ncols TeX-grcl
-                                          (when (and keyvals
-                                                     (not (string= keyvals "")))
-                                            (concat LaTeX-optop
-                                                    keyvals
-                                                    LaTeX-optcl))))
-        (LaTeX-item-equation-alignat t))
-    (let ((keyvals
-           (TeX-read-key-val t
-                             (LaTeX-empheq-key-val-options)
-                             "empheq options (k=v)")))
-      (LaTeX-insert-environment env
-                                (when (and keyvals
-                                           (not (string= keyvals "")))
-                                  (concat LaTeX-optop
-                                          keyvals
-                                          LaTeX-optcl)))
-      (when (and (assoc env LaTeX-label-alist)
-                 (LaTeX-label env 'environment))
+        (goto-char (match-end 1))
+        (insert "=" (number-to-string ncols))
+        (goto-char TeX-exit-mark)
+        (insert-char ?& (+ ncols ncols -1))
+        (indent-according-to-mode)))
+    (save-excursion
+      (goto-char TeX-exit-mark)
+      (beginning-of-line)
+      (when (and (assoc amsenv LaTeX-label-alist)
+                 (LaTeX-label amsenv 'environment))
+        (indent-according-to-mode)
         (LaTeX-newline)
         (indent-according-to-mode)))))
 
@@ -233,7 +195,7 @@ This function combines the capabilities of `LaTeX-env-label' and
 Put line break macro on the last line.  Next, if the current
 environment wants \\label, insert it also.  And insert suitable
 number of ampersands if possible."
-  (let ((env (LaTeX-current-environment))
+  (let ((env "empheq")
         amsenv ncols match)
     (save-excursion
       (LaTeX-find-matching-begin)
@@ -243,7 +205,7 @@ number of ampersands if possible."
         (forward-sexp))
       (re-search-forward "[ \t\n\r%]*{\\([^}]+\\)}")
       (setq match (replace-regexp-in-string "[ \t\n\r%]" ""
-                                                (match-string-no-properties 1)))
+                                            (match-string-no-properties 1)))
       (if (string-match "=" match)
           (progn
             (setq amsenv (car (split-string match "=")))
@@ -251,19 +213,17 @@ number of ampersands if possible."
         (setq amsenv match)))
     ;; Do not ask for "\\" if in "equation" or "equation*" since these
     ;; are single line equations only
-    (if (or (string= amsenv "equation")
-            (string= amsenv "equation*"))
+    (if (member amsenv '("equation" "equation*"))
         ;; Nullify the effect of `M-RET'
         (progn
           (message "This environment does not support multi-line equations")
           (end-of-line 0)
           (kill-line 1))
-      (progn
-        (end-of-line 0)
-        (just-one-space)
-        (TeX-insert-macro "\\")
-        (forward-line 1)
-        (indent-according-to-mode)))
+      (end-of-line 0)
+      (just-one-space)
+      (TeX-insert-macro "\\")
+      (forward-line 1)
+      (indent-according-to-mode))
     ;; Add a new label only if not in "equation"
     (when (and (not (string= amsenv "equation"))
                (assoc amsenv LaTeX-label-alist)
@@ -272,7 +232,7 @@ number of ampersands if possible."
       (indent-according-to-mode))
     (when ncols
       (save-excursion
-        (insert (make-string (+ ncols ncols -1) ?&))))))
+        (insert-char ?& (+ ncols ncols -1))))))
 
 (TeX-add-style-hook
  "empheq"
@@ -285,7 +245,11 @@ number of ampersands if possible."
    (TeX-run-style-hooks "amsmath" "mathtools")
 
    (LaTeX-add-environments
-    '("empheq" LaTeX-empheq-env))
+    '("empheq" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-empheq-key-val-options)]
+      (TeX-arg-completing-read LaTeX-empheq-supported-amsmath-envs
+                               "amsmath environment")
+      LaTeX-empheq-env))
 
    ;; Add "empheq" to `LaTeX-item-list' and run
    ;; `LaTeX-empheq-item-equation' when `M-RET' is invoked
@@ -365,18 +329,53 @@ number of ampersands if possible."
    (when (or (LaTeX-provided-package-options-member "empheq" "overload")
              (LaTeX-provided-package-options-member "empheq" "overload2"))
      (LaTeX-add-environments
-      '("align"      LaTeX-empheq-env-overload)
-      '("alignat"    LaTeX-empheq-env-overload)
-      '("equation"   LaTeX-empheq-env-overload)
-      '("flalign"    LaTeX-empheq-env-overload)
-      '("gather"     LaTeX-empheq-env-overload)
-      '("multline"   LaTeX-empheq-env-overload)
-      '("align*"     LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
-      '("alignat*"   LaTeX-empheq-env-overload)
-      '("equation*"  LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
-      '("flalign*"   LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
-      '("gather*"    LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
-      '("multline*"  LaTeX-env-args [TeX-arg-key-val (LaTeX-empheq-key-val-options)])
+      '("align"      LaTeX-env-label-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      `("alignat"    LaTeX-env-args
+        "Number of columns"
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"]
+        ,(lambda (_)
+           (goto-char TeX-exit-mark)
+           (beginning-of-line)
+           (LaTeX-item-equation-alignat t)
+           (end-of-line 0)
+           (indent-according-to-mode)
+           (goto-char TeX-exit-mark)))
+
+      '("equation"   LaTeX-env-label-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("flalign"    LaTeX-env-label-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("gather"     LaTeX-env-label-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("multline"   LaTeX-env-label-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("align*"     LaTeX-env-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      `("alignat*"   LaTeX-env-args
+        "Number of columns"
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"]
+        ,(lambda (_)
+           (goto-char TeX-exit-mark)
+           (LaTeX-item-equation-alignat t)))
+
+      '("equation*"  LaTeX-env-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("flalign*"   LaTeX-env-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("gather*"    LaTeX-env-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
+
+      '("multline*"  LaTeX-env-args
+        [TeX-arg-key-val (LaTeX-empheq-key-val-options) "empheq options"])
 
       ;; Original definitions are stored prefixed with "AmS"
       '("AmSalign"      LaTeX-env-label)
@@ -404,14 +403,13 @@ number of ampersands if possible."
 
      ;; RefTeX support: Add original definitions with `reftex-add-label-environments'
      (when (fboundp 'reftex-add-label-environments)
-       (let ((envs '(("AmSalign"     ?e nil nil eqnarray-like)
-                     ("AmSequation"  ?e nil nil t)
-                     ("AmSgather"    ?e nil nil eqnarray-like)
-                     ("AmSmultline"  ?e nil nil t)
-                     ("AmSflalign"   ?e nil nil eqnarray-like)
-                     ("AmSalignat"   ?e nil nil alignat-like))))
-         (dolist (env envs)
-           (reftex-add-label-environments `(,env)))))
+       (reftex-add-label-environments
+        '(("AmSalign"     ?e nil nil eqnarray-like)
+          ("AmSequation"  ?e nil nil t)
+          ("AmSgather"    ?e nil nil eqnarray-like)
+          ("AmSmultline"  ?e nil nil t)
+          ("AmSflalign"   ?e nil nil eqnarray-like)
+          ("AmSalignat"   ?e nil nil alignat-like))))
 
      ;; Append original definitions to `LaTeX-item-list'; functions
      ;; are provided by amsmath.el
@@ -441,25 +439,25 @@ number of ampersands if possible."
 
    ;; 4.1 Creating your own delimiters
    (TeX-add-symbols
-    '("DeclareLeftDelimiter"
+    `("DeclareLeftDelimiter"
       [ "Space adjustment" ]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((delim (TeX-read-string (concat "Delimiter: " TeX-esc))))
+      ,(lambda (optional)
+         (let ((delim (TeX-read-string
+                       (TeX-argument-prompt optional nil "Delimiter: \\" t))))
            (TeX-add-symbols (concat "empheq" delim)
                             (concat "empheqbig" delim))
            (LaTeX-add-empheq-declaredelimiters `(,delim "Left"))
-           (concat TeX-esc delim)))))
+           (TeX-argument-insert delim optional TeX-esc))))
 
-    '("DeclareRightDelimiter"
+    `("DeclareRightDelimiter"
       [ "Space adjustment" ]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((delim (TeX-read-string (concat "Delimiter: " TeX-esc))))
+      ,(lambda (optional)
+         (let ((delim (TeX-read-string
+                       (TeX-argument-prompt optional nil "Delimiter: \\" t))))
            (TeX-add-symbols (concat "empheq" delim)
                             (concat "empheqbig" delim))
            (LaTeX-add-empheq-declaredelimiters `(,delim "Right"))
-           (concat TeX-esc delim))))))
+           (TeX-argument-insert delim optional TeX-esc)))))
 
    ;; 4.2 Fine-tuning of delimiters
    (LaTeX-add-lengths "EmphEqdelimitershortfall")
