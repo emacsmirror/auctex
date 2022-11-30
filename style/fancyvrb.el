@@ -308,13 +308,14 @@ RECUSTOM is non-nil, delete macros from the variable
              (TeX-add-symbols
               `(,mac-name
                 [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
-                (TeX-arg-eval
-                 (lambda ()
+                ,(lambda (optional)
                    (let ((name (TeX-read-string
-                                (TeX-argument-prompt nil nil "Save name"))))
+                                (TeX-argument-prompt optional nil "Save name"))))
                      (LaTeX-add-fancyvrb-saveverbs name)
-                     (format "%s" name))))
-                TeX-arg-verb))
+                     (TeX-argument-insert name optional)))
+                (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                    (TeX-arg-verb-delim-or-brace)
+                  (TeX-arg-verb))))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
                (font-latex-add-keywords `((,mac-name "[{"))
@@ -333,16 +334,23 @@ RECUSTOM is non-nil, delete macros from the variable
              (TeX-add-symbols
               `(,mac-name
                 [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
-                TeX-arg-verb)
+                (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                    (TeX-arg-verb-delim-or-brace)
+                  (TeX-arg-verb)))
               ;; Defined macros have a starred version where the
               ;; `showspaces' key is set to true
               `(,(concat mac-name "*")
                 [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
-                TeX-arg-verb))
-             (add-to-list 'LaTeX-verbatim-macros-with-delims-local
-                          mac-name t)
-             (add-to-list 'LaTeX-verbatim-macros-with-delims-local
-                          (concat mac-name "*") t)
+                (TeX-arg-conditional (member "fvextra" (TeX-style-list))
+                    (TeX-arg-verb-delim-or-brace)
+                  (TeX-arg-verb))))
+             (dolist (elt `(,mac-name ,(concat mac-name "*")))
+               (add-to-list 'LaTeX-verbatim-macros-with-delims-local
+                            elt t))
+             (when (member "fvextra" (TeX-style-list))
+               (dolist (elt `(,mac-name ,(concat mac-name "*")))
+                 (add-to-list 'LaTeX-verbatim-macros-with-braces-local
+                              elt t)))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
                (font-latex-add-keywords `((,mac-name "*["))
@@ -570,21 +578,15 @@ ENV is the name of current environment as a string."
     ;; Improved verbatim commands
     '("Verb" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       (TeX-arg-conditional (member "fvextra" (TeX-style-list))
-                           (TeX-arg-verb-delim-or-brace)
-                           (TeX-arg-verb)))
+          (TeX-arg-verb-delim-or-brace)
+        (TeX-arg-verb)))
     ;; \Verb also has a starred version
     '("Verb*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       (TeX-arg-conditional (member "fvextra" (TeX-style-list))
-                           (TeX-arg-verb-delim-or-brace)
-                           (TeX-arg-verb)))
-    '("DefineShortVerb" (TeX-arg-eval
-                         TeX-read-string
-                         (TeX-argument-prompt nil nil "Character")
-                         TeX-esc))
-    '("UndefineShortVerb" (TeX-arg-eval
-                           TeX-read-string
-                           (TeX-argument-prompt nil nil "Character")
-                           TeX-esc))
+          (TeX-arg-verb-delim-or-brace)
+        (TeX-arg-verb)))
+    `("DefineShortVerb" (TeX-arg-string "Character" ,TeX-esc))
+    `("UndefineShortVerb" (TeX-arg-string "Character" ,TeX-esc))
     ;; Verbatim environments
     '("fvset" (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
     ;; Changing individual line formatting
@@ -611,17 +613,16 @@ ENV is the name of current environment as a string."
       (LaTeX-fancyvrb-arg-define-macro nil t))
 
     ;; Saving and restoring verbatim text and environments
-    '("SaveVerb"
+    `("SaveVerb"
       [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((name (TeX-read-string
-                      (TeX-argument-prompt nil nil "Save name"))))
+                      (TeX-argument-prompt optional nil "Save name"))))
            (LaTeX-add-fancyvrb-saveverbs name)
-           (format "%s" name))))
+           (TeX-argument-insert name optional)))
       (TeX-arg-conditional (member "fvextra" (TeX-style-list))
-                           (TeX-arg-verb-delim-or-brace)
-                           (TeX-arg-verb)))
+          (TeX-arg-verb-delim-or-brace)
+        (TeX-arg-verb)))
     '("UseVerb" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
                                          "Saved name"))
     ;; \UseVerb also has a starred version
@@ -661,26 +662,16 @@ ENV is the name of current environment as a string."
     '("LVerbatim*" LaTeX-env-args
       [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-env-reflabel-key-val)
-    '("SaveVerbatim"
-      (lambda (env)
-        (let ((options (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options)))
-              (name (TeX-read-string "Save name: ")))
-          (LaTeX-insert-environment
-           env
-           (concat
-            (unless (zerop (length options))
-              (concat LaTeX-optop options LaTeX-optcl))
-            (concat TeX-grop name TeX-grcl)))
-          (LaTeX-add-fancyvrb-saveverbatims name))))
-    '("VerbatimOut"
-      (lambda (env)
-        (let ((options (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options)))
-              (file (TeX-read-string "Output file: ")))
-          (LaTeX-insert-environment
-           env
-           (concat (unless (zerop (length options))
-                     (concat LaTeX-optop options LaTeX-optcl))
-                   (concat TeX-grop file TeX-grcl)))))))
+    `("SaveVerbatim" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      ,(lambda (optional)
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt optional nil "Save name"))))
+           (LaTeX-add-fancyvrb-saveverbatims name)
+           (TeX-argument-insert name optional))))
+    '("VerbatimOut" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      "Output file"))
 
    (let ((envs '("BVerbatim" "BVerbatim*"
                  "LVerbatim" "LVerbatim*"
