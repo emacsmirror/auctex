@@ -390,18 +390,16 @@ to appropriate keys which are eventually prepended to
                                "Existing feature")
       "New name")
 
-    '("aliasfontfeatureoption"
-      (TeX-arg-eval
-       (lambda ()
-         (let* ((key (completing-read
-                      (TeX-argument-prompt nil nil "Feature")
-                      (LaTeX-fontspec-font-features)))
-                (val (completing-read
-                      (TeX-argument-prompt nil nil "Existing name")
-                      (cadr (assoc key (LaTeX-fontspec-font-features))))))
-           (TeX-argument-insert key nil)
-           (format "%s" val))))
-      "New name") )
+    `("aliasfontfeatureoption"
+      (TeX-arg-completing-read (LaTeX-fontspec-font-features) "Feature")
+      (TeX-arg-completing-read
+       ,(lambda ()
+          (save-excursion
+            (re-search-backward "\\\\aliasfontfeatureoption{\\([^}]+\\)}"
+                                (line-beginning-position) t))
+          (cadr (assoc (match-string-no-properties 1)
+                       (LaTeX-fontspec-font-features)))))
+      "New Name") )
 
    (LaTeX-add-environments
     ;; 4.6 Strong emphasis
