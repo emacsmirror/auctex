@@ -296,7 +296,20 @@
   ;; Process new float commands like \ffigbox:
   (when (LaTeX-floatrow-newfloatcommand-list)
     (dolist (cmd (mapcar #'car (LaTeX-floatrow-newfloatcommand-list)))
-      (TeX-add-symbols `(,cmd LaTeX-floatrow-arg-floatbox))
+      (TeX-add-symbols
+       `(,cmd
+         [TeX-arg-completing-read ,(lambda ()
+                                     (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                             (LaTeX-length-list)))
+                                  "Width"]
+         [TeX-arg-completing-read ,(lambda ()
+                                     (mapcar (lambda (x)
+                                               (concat TeX-esc (car x)))
+                                             (LaTeX-length-list)))
+                                  "Height"]
+         [TeX-arg-completing-read ("t" "c" "b" "s")
+                                  "Vertical alignment"]
+         LaTeX-floatrow-arg-floatbox))
       (when (and (featurep 'font-latex)
                  (eq TeX-install-font-lock 'font-latex-setup))
         (font-latex-add-keywords `((,cmd "[[["))
@@ -355,44 +368,10 @@
 (defun LaTeX-floatrow-arg-floatbox (optional)
   "Query and insert arguments of float box commands from floatrow.sty.
 If OPTIONAL is non-nil, indicate optional argument during query."
-  ;; Query for the optional arguments; ask for "vertpos" only if
-  ;; "height" is given.  let-bind `TeX-arg-*-brace' for
-  ;; `TeX-argument-insert':
-  (let* ((TeX-arg-opening-brace "[")
-         (TeX-arg-closing-brace "]")
-         (TeX-last-optional-rejected nil)
-         (width (LaTeX-check-insert-macro-default-style
-                 (completing-read
-                  (TeX-argument-prompt t nil "Width")
-                  (mapcar (lambda (x) (concat TeX-esc (car x)))
-                          (LaTeX-length-list)))))
-         (TeX-last-optional-rejected (or (not width)
-                                         (and width (string= width ""))))
-         (height (LaTeX-check-insert-macro-default-style
-                  (completing-read
-                   (TeX-argument-prompt t nil "Height")
-                   (mapcar (lambda (x) (concat TeX-esc (car x)))
-                           (LaTeX-length-list)))))
-         (TeX-last-optional-rejected (or (not height)
-                                         (and height (string= height ""))))
-         (vertpos (LaTeX-check-insert-macro-default-style
-                   (if (string= height "")
-                       ""
-                     (completing-read
-                      (TeX-argument-prompt t nil "Vertical alignment")
-                      '("t" "c" "b" "s"))))))
-    (and width (TeX-argument-insert width t))
-    ;; Insert an extra pair of brackets if only `height' is given,
-    ;; otherwise it will become `width'
-    (when (and width (string= width "")
-               height (not (string= height "")))
-      (insert "[]"))
-    (and height (TeX-argument-insert height t))
-    (and vertpos (TeX-argument-insert vertpos t)))
-  ;; Now query for the (short-)caption.  Also check for the
-  ;; float-type; if we're inside (sub)?floatrow*?, then check for the
-  ;; next outer environment:
-  (let* ((currenv (if (string-match "floatrow\\*?\\_>" (LaTeX-current-environment))
+  ;; Query for the (short-)caption.  Also check for the float-type; if
+  ;; we're inside (sub)?floatrow*?, then check for the next outer
+  ;; environment:
+  (let* ((currenv (if (string-match "floatrow\\*?\\'" (LaTeX-current-environment))
                       (LaTeX-current-environment 2)
                     (LaTeX-current-environment)))
          (caption (TeX-read-string
@@ -561,23 +540,46 @@ only the parsed items."
    (TeX-add-symbols
     ;; 2.1 The \floatbox Macro
     ;; \floatbox[<preamble>]{<captype>}[<width>][<height>][<vert pos>]{<caption>}{<object>}
-    '("floatbox"
+    `("floatbox"
       [TeX-arg-completing-read ("\\capbeside" "\\nocapbeside" "\\captop")
                                "Preamble"]
       (TeX-arg-completing-read LaTeX-floatrow-supported-float-types
                                "Float type")
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Width"]
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Height"]
+      [TeX-arg-completing-read ("t" "c" "b" "s")
+                               "Vertical alignment"]
       LaTeX-floatrow-arg-floatbox)
 
     ;; 2.2 Creation of Personal Commands for Float Boxes
-    '("newfloatcommand"
-      (TeX-arg-eval
-       (lambda ()
+    `("newfloatcommand"
+      ,(lambda (optional)
          (let ((cmd (TeX-read-string
-                     (TeX-argument-prompt nil nil "Command"))))
+                     (TeX-argument-prompt optional nil "Command"))))
            (LaTeX-add-floatrow-newfloatcommands cmd)
            (TeX-add-symbols
-            `(,cmd LaTeX-floatrow-arg-floatbox))
-           (format "%s" cmd))))
+            `(,cmd [TeX-arg-completing-read
+                    ,(lambda ()
+                       (mapcar (lambda (x)(concat TeX-esc (qcar x)))
+                               (LaTeX-length-list)))
+                    "Width"]
+                   [TeX-arg-completing-read
+                    ,(lambda ()
+                       (mapcar (lambda (x)
+                                 (concat TeX-esc (car x)))
+                               (LaTeX-length-list)))
+                    "Height"]
+                   [TeX-arg-completing-read ("t" "c" "b" "s")
+                                            "Vertical alignment"]
+                   LaTeX-floatrow-arg-floatbox))
+           (TeX-argument-insert cmd optional)))
       (TeX-arg-completing-read ("figure" "table") "Float type")
       [ 2 ])
 
@@ -588,13 +590,46 @@ only the parsed items."
       [ 2 ])
 
     ;; 2.2.2 Predefined Float Box Commands
-    '("ffigbox"
+    `("ffigbox"
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Width"]
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Height"]
+      [TeX-arg-completing-read ("t" "c" "b" "s")
+                               "Vertical alignment"]
       LaTeX-floatrow-arg-floatbox)
 
-    '("ttabbox"
+    `("ttabbox"
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Width"]
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Height"]
+      [TeX-arg-completing-read ("t" "c" "b" "s")
+                               "Vertical alignment"]
       LaTeX-floatrow-arg-floatbox)
 
-    '("fcapside"
+    `("fcapside"
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Width"]
+      [TeX-arg-completing-read ,(lambda ()
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
+                                          (LaTeX-length-list)))
+                               "Height"]
+      [TeX-arg-completing-read ("t" "c" "b" "s")
+                               "Vertical alignment"]
       LaTeX-floatrow-arg-floatbox)
 
     ;; 2.3.1 Mixed Row
