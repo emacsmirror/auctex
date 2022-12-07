@@ -546,7 +546,8 @@ only the parsed items."
       (TeX-arg-completing-read LaTeX-floatrow-supported-float-types
                                "Float type")
       [TeX-arg-completing-read ,(lambda ()
-                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))
                                "Width"]
       [TeX-arg-completing-read ,(lambda ()
@@ -567,7 +568,8 @@ only the parsed items."
            (TeX-add-symbols
             `(,cmd [TeX-arg-completing-read
                     ,(lambda ()
-                       (mapcar (lambda (x)(concat TeX-esc (qcar x)))
+                       (mapcar (lambda (x)
+                                 (concat TeX-esc (car x)))
                                (LaTeX-length-list)))
                     "Width"]
                    [TeX-arg-completing-read
@@ -592,7 +594,8 @@ only the parsed items."
     ;; 2.2.2 Predefined Float Box Commands
     `("ffigbox"
       [TeX-arg-completing-read ,(lambda ()
-                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))
                                "Width"]
       [TeX-arg-completing-read ,(lambda ()
@@ -606,7 +609,8 @@ only the parsed items."
 
     `("ttabbox"
       [TeX-arg-completing-read ,(lambda ()
-                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))
                                "Width"]
       [TeX-arg-completing-read ,(lambda ()
@@ -620,7 +624,8 @@ only the parsed items."
 
     `("fcapside"
       [TeX-arg-completing-read ,(lambda ()
-                                  (mapcar (lambda (x)(concat TeX-esc (car x)))
+                                  (mapcar (lambda (x)
+                                            (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))
                                "Width"]
       [TeX-arg-completing-read ,(lambda ()
