@@ -11,10 +11,10 @@
 (TeX-load-style "graphicx")
 (defvar LaTeX-graphics-package-options LaTeX-graphicx-package-options)
 
-(TeX-add-style-hook "graphics"
- (function
-  (lambda ()
-    (TeX-run-style-hooks "graphicx")))
+(TeX-add-style-hook
+ "graphics"
+ (lambda ()
+   (TeX-run-style-hooks "graphicx"))
  TeX-dialect)
 
 ;;; graphics.el ends here.
