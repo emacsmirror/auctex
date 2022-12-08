@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fvextra.sty' (v1.4) from 2019/02/04.
+;; This file adds support for `fvextra.sty' (v1.5) from 2022/11/30.
 ;; `fvextra.sty' is part of TeXLive.
 
 ;;; Code:
@@ -75,7 +75,7 @@
     ("tabcolor" ("none"))
     ;; 7.1 Line breaking options
     ("breakafter" ("none"))
-    ("breakaftergroup" ("true" "false"))
+    ("breakafterinrun" ("true" "false"))
     ("breakaftersymbolpre")
     ("breakaftersymbolpost")
     ("breakanywhere" ("true" "false"))
@@ -83,12 +83,13 @@
     ("breakanywheresymbolpost")
     ("breakautoindent" ("true" "false"))
     ("breakbefore")
-    ("breakbeforegroup" ("true" "false"))
+    ("breakbeforeinrun" ("true" "false"))
     ("breakbeforesymbolpre")
     ("breakbeforesymbolpost")
     ("breakindent")
     ("breakindentnchars")
     ("breaklines" ("true" "false"))
+    ("breaknonspaceingroup" ("true" "false"))
     ("breaksymbol")
     ("breaksymbolleft")
     ("breaksymbolright")
@@ -118,6 +119,7 @@
     '("fvinlineset" (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
     ;; 4.2 Line and text formatting
+    "FancyVerbFormatInline"
     "FancyVerbFormatText"
 
     ;; 6 New commands and environments
@@ -135,6 +137,16 @@
     "FancyVerbBreakAnywhereBreak"
     "FancyVerbBreakBeforeBreak"
     "FancyVerbBreakAfterBreak")
+
+   ;; 6.2 VerbEnv environment
+   (LaTeX-add-environments
+    '("VerbEnv" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]))
+
+   ;; Filling
+   (add-to-list 'LaTeX-verbatim-environments-local "VerbEnv")
+   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+                '("VerbEnv" current-indentation) t)
 
    ;; Add \Verb*? and \EscVerb*? to
    ;; `LaTeX-verbatim-macros-with-braces-local':
