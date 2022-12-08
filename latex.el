@@ -871,30 +871,32 @@ position just before \\begin and the position just before
                                                 (LaTeX-environment-name-regexp)
                                                 "\\)"
                                                 (regexp-quote TeX-grcl))
-                                        (save-excursion (beginning-of-line 1) (point)))))
+                                        (line-beginning-position))))
         (goto-begin (lambda ()
                       (LaTeX-find-matching-begin)
                       (prog1 (point)
                         (re-search-forward (concat (regexp-quote TeX-esc)
                                                    "begin"
                                                    (regexp-quote TeX-grop)
-                                                   "\\("
+                                                   "\\(?:"
                                                    (LaTeX-environment-name-regexp)
                                                    "\\)"
                                                    (regexp-quote TeX-grcl))
-                                           (save-excursion (end-of-line 1) (point)))))))
+                                           (line-end-position))))))
     (save-excursion
       (funcall goto-end)
-      (let ((old-env (match-string 1)))
+      (let ((old-env (match-string-no-properties 1))
+            beg-pos)
         (replace-match environment t t nil 1)
-        (beginning-of-line 1)
-        (funcall goto-begin)
+        ;; This failed when \begin and \end lie on the same line. (bug#58689)
+        ;; (beginning-of-line 1)
+        (setq beg-pos (funcall goto-begin))
         (replace-match environment t t nil 1)
-        (end-of-line 1)
+        ;; (end-of-line 1)
         (run-hook-with-args 'LaTeX-after-modify-env-hook
                             environment old-env
-                            (save-excursion (funcall goto-begin))
-                            (progn (funcall goto-end) (point)))))))
+                            beg-pos
+                            (funcall goto-end))))))
 
 (defvar LaTeX-syntactic-comments) ;; Defined further below.
 
