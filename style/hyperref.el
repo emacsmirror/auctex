@@ -226,7 +226,7 @@
 
    (TeX-add-symbols
     '("hypersetup" (TeX-arg-key-val LaTeX-hyperref-package-options-list))
-    '("href" [ (TeX-arg-key-val LaTeX-hyperref-href-options) ] "URL" "Text")
+    '("href" [TeX-arg-key-val LaTeX-hyperref-href-options] "URL" "Text")
     ;; Completion for \url is provided via url.el.  Hence the entry in
     ;; this style is commented:
     ;; '("url" "URL" ignore)
@@ -236,8 +236,8 @@
     '("hyperdef" "Category" "Name" "Text")
     '("hyperref"
       (TeX-arg-conditional (y-or-n-p "Insert a label and text? ")
-                           ([TeX-arg-ref] "Text")
-                           ("URL" "Category" "Name" "Text")))
+          ([TeX-arg-ref] "Text")
+        ("URL" "Category" "Name" "Text")))
     '("hyperlink" "Name" "Text")
     '("hypertarget" "Name" "Text")
     '("phantomsection" 0)
@@ -258,12 +258,12 @@
     ;; The next 6 macros take Key-vals defined in
     ;; "LaTeX-hyperref-forms-options".  For an example, see
     ;; https://github.com/latex3/hyperref/blob/main/test/testform.tex
-    '("TextField"  [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
-    '("CheckBox"   [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
-    '("ChoiceMenu" [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label" "Choices")
-    '("PushButton" [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
-    '("Submit"     [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
-    '("Reset"      [ (TeX-arg-key-val LaTeX-hyperref-forms-options) ] "Label")
+    '("TextField"  [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label")
+    '("CheckBox"   [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label")
+    '("ChoiceMenu" [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label" "Choices")
+    '("PushButton" [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label")
+    '("Submit"     [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label")
+    '("Reset"      [TeX-arg-key-val LaTeX-hyperref-forms-options] "Label")
     '("LayoutTextField" "Label" "Field")
     '("LayoutChoiceField" "Label" "Field")
     '("LayoutCheckField" "Label" "Field")
