@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
@@ -106,17 +107,18 @@
                 "space"  "hyphen" "runtogether"))) ; plainTeX
   "Local key=value options for hologo macros.")
 
-(defun LaTeX-hologo--arg-use-region-or-query-logo-name (optional)
-  (if (and (use-region-p)
-           (member (buffer-substring (region-beginning) (region-end))
-                   LaTeX-hologo-logo-names))
-      (progn
-        (insert TeX-grop)
-        (goto-char (region-end))
-        (insert TeX-grcl))
-    (TeX-argument-insert
-     (completing-read "Logo name: " LaTeX-hologo-logo-names)
-     optional)))
+(defun LaTeX-hologo--arg-use-region-or-query-logo-name ()
+  "Check if region is active and over element from `LaTeX-hologo-logo-names'."
+  (and (use-region-p)
+       (member (buffer-substring (region-beginning) (region-end))
+               LaTeX-hologo-logo-names)))
+
+(defun LaTeX-hologo--arg-use-region (_optional)
+  "Wrap region around braces.
+OPTIONAL is ignored."
+  (insert TeX-grop)
+  (goto-char (region-end))
+  (insert TeX-grcl))
 
 (TeX-add-style-hook
  "hologo"
@@ -124,35 +126,40 @@
    (TeX-add-symbols
 
     ;; Insert logo macros
-    '("hologo" LaTeX-hologo--arg-use-region-or-query-logo-name)
-    '("Hologo" LaTeX-hologo--arg-use-region-or-query-logo-name)
+    `("hologo"
+      (TeX-arg-conditional (LaTeX-hologo--arg-use-region-or-query-logo-name)
+          (LaTeX-hologo--arg-use-region)
+        ((TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name"))))
+    `("Hologo"
+      (TeX-arg-conditional (LaTeX-hologo--arg-use-region-or-query-logo-name)
+          (LaTeX-hologo--arg-use-region)
+        ((TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name"))))
 
     ;; Setup macros
     '("hologoSetup" (TeX-arg-key-val LaTeX-hologo-key-val-options-global))
 
-    '("hologoLogoSetup"
-      (TeX-arg-eval
-       (lambda ()
-         (let* ((logo   (completing-read "Logo name: " LaTeX-hologo-logo-names))
-                (keyval (TeX-read-key-val
-                         nil
-                         (cond ((string= logo "BibTeX")
-                                (append '(("variant" ("sf" "sc")))
-                                        LaTeX-hologo-key-val-options-global))
-                               ((string= logo "ConTeXt")
-                                (append '(("variant" ("narrow" "simple")))
-                                        LaTeX-hologo-key-val-options-global))
-                               ((string= logo "plainTeX")
-                                (append '(("variant" ("space" "hyphen" "runtogether")))
-                                        LaTeX-hologo-key-val-options-global))
-                               ((or (string= logo "SLiTeX")
-                                    (string= logo "SliTeX"))
-                                (append '(("variant" ("lift" "narrow" "lift")))
-                                        LaTeX-hologo-key-val-options-global))
-                               (t
-                                LaTeX-hologo-key-val-options-global)))))
-           (TeX-argument-insert logo nil)
-           (format "%s" keyval)))))
+    `("hologoLogoSetup"
+      (TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name")
+      (TeX-arg-key-val ,(lambda ()
+                          (save-excursion
+                            (re-search-backward "\\\\hologoLogoSetup{\\([^}]+\\)}"
+                                                (line-beginning-position) t))
+                          (let ((logo (match-string-no-properties 1)))
+                            (cond ((string= logo "BibTeX")
+                                   (append '(("variant" ("sf" "sc")))
+                                           LaTeX-hologo-key-val-options-global))
+                                  ((string= logo "ConTeXt")
+                                   (append '(("variant" ("narrow" "simple")))
+                                           LaTeX-hologo-key-val-options-global))
+                                  ((string= logo "plainTeX")
+                                   (append '(("variant" ("space" "hyphen" "runtogether")))
+                                           LaTeX-hologo-key-val-options-global))
+                                  ((or (string= logo "SLiTeX")
+                                       (string= logo "SliTeX"))
+                                   (append '(("variant" ("lift" "narrow" "lift")))
+                                           LaTeX-hologo-key-val-options-global))
+                                  (t
+                                   LaTeX-hologo-key-val-options-global))))))
 
     '("hologoDriverSetup" (TeX-arg-completing-read
                            ("pdftex"  "luatex"
@@ -165,47 +172,44 @@
       (TeX-arg-key-val (("general") ("bibsf")
                         ("rm") ("sc") ("sf") ("sy") ("logo"))))
 
-    '("hologoLogoFontSetup"
-      (TeX-arg-eval
-       (lambda ()
-         (let* ((logo   (completing-read "Logo name: "
-                                         '("BibTeX"
-                                           "ExTeX"
-                                           "SliTeX"
-                                           "AmS"
-                                           "NTS"
-                                           "KOMAScript"
-                                           "METAFONT"
-                                           "METAPOST")))
-                (keyval (TeX-read-key-val
-                         nil
-                         (cond ((string= logo "BibTeX")
-                                '(("bibsf") ("sc")))
-                               ((string= logo "ExTeX")
-                                '(("rm") ("sy")))
-                               ((string= logo "SliTeX")
-                                '(("rm") ("sc")))
-                               ((or (string= logo "AmS")
-                                    (string= logo "NTS"))
-                                '(("sy")))
-                               ((string= logo "KOMAScript")
-                                '(("sf")))
-                               ((or (string= logo "METAFONT")
-                                    (string= logo "METAPOST"))
-                                '(("logo")))
-                               (t
-                                nil)))))
-           (TeX-argument-insert logo nil)
-           (format "%s" keyval)))))
+    `("hologoLogoFontSetup"
+      (TeX-arg-completing-read ("BibTeX" "ExTeX" "SliTeX" "AmS" "NTS"
+                                "KOMAScript" "METAFONT" "METAPOST")
+                               "Logo name")
+      (TeX-arg-key-val ,(lambda ()
+                          (save-excursion
+                            (re-search-backward "\\\\hologoLogoFontSetup{\\([^}]+\\)}"
+                                                (line-beginning-position) t))
+                          (let ((logo (match-string-no-properties 1)))
+                            (cond ((string= logo "BibTeX")
+                                   '(("bibsf") ("sc")))
+                                  ((string= logo "ExTeX")
+                                   '(("rm") ("sy")))
+                                  ((string= logo "SliTeX")
+                                   '(("rm") ("sc")))
+                                  ((or (string= logo "AmS")
+                                       (string= logo "NTS"))
+                                   '(("sy")))
+                                  ((string= logo "KOMAScript")
+                                   '(("sf")))
+                                  ((or (string= logo "METAFONT")
+                                       (string= logo "METAPOST"))
+                                   '(("logo")))
+                                  (t
+                                   nil))))))
 
     ;; Additional user macros
     `("hologoVariant"
-      LaTeX-hologo--arg-use-region-or-query-logo-name
+      (TeX-arg-conditional (LaTeX-hologo--arg-use-region-or-query-logo-name)
+          (LaTeX-hologo--arg-use-region)
+        ((TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name")))
       (TeX-arg-key-val ,(append LaTeX-hologo-key-val-options-local
                                 LaTeX-hologo-key-val-options-global)))
 
     `("HologoVariant"
-      LaTeX-hologo--arg-use-region-or-query-logo-name
+      (TeX-arg-conditional (LaTeX-hologo--arg-use-region-or-query-logo-name)
+          (LaTeX-hologo--arg-use-region)
+        ((TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name")))
       (TeX-arg-key-val ,(append LaTeX-hologo-key-val-options-local
                                 LaTeX-hologo-key-val-options-global)))
 
