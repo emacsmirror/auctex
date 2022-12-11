@@ -5270,8 +5270,10 @@ environment in commented regions with the same comment prefix."
          (in-comment (TeX-in-commented-line))
          (comment-prefix (and in-comment (TeX-comment-prefix)))
          (case-fold-search nil))
+    ;; The following code until `while' handles exceptional cases that
+    ;; the point is on "\begin{foo}" or "\end{foo}".
     (let ((pt (point)))
-      (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
+      (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
       (unless (bolp)
         (backward-char 1)
         (if (and (looking-at regexp)
@@ -5307,7 +5309,9 @@ environment in commented regions with the same comment prefix."
          (in-comment (TeX-in-commented-line))
          (comment-prefix (and in-comment (TeX-comment-prefix)))
          (case-fold-search nil))
-    (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
+    ;; The following code until `while' handles exceptional cases that
+    ;; the point is on "\begin{foo}" or "\end{foo}".
+    (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
     (unless (bolp)
       (backward-char 1)
       (and (looking-at regexp)
