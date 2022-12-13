@@ -40,23 +40,6 @@
                   "font-latex"
                   (keywords class))
 
-(defun LaTeX-env-ltugboat-verbatim (environment)
-  "Insert verbatim environment with an optional argument."
-  (let* ((crm-separator (regexp-quote TeX-esc))
-         (opts (mapconcat #'identity
-                          (TeX-completing-read-multiple
-                           (TeX-argument-prompt t nil "command(s)")
-                           '("\\tiny"  "\\scriptsize" "\\footnotesize"
-                             "\\small" "\\normalsize" "\\large"
-                             "\\Large" "\\LARGE"      "\\huge"
-                             "\\Huge"  "\\makevmeta"  "\\ruled")
-                           nil nil TeX-esc)
-                          TeX-esc)))
-    (LaTeX-insert-environment environment
-                              (when (and opts
-                                         (not (string= opts "")))
-                                (concat LaTeX-optop opts LaTeX-optcl)))))
-
 (TeX-add-style-hook
  "ltugboat"
  (lambda ()
@@ -106,7 +89,14 @@
 
    ;; 8 Verbatim text
    (LaTeX-add-environments
-    '("verbatim" LaTeX-env-ltugboat-verbatim))
+    `("verbatim" LaTeX-env-args
+      [TeX-arg-completing-read-multiple ("tiny"  "scriptsize" "footnotesize"
+                                         "small" "normalsize" "large"
+                                         "Large" "LARGE"      "huge"
+                                         "Huge"  "makevmeta"  "ruled")
+                                        "Command(s)" nil nil
+                                        ,(regexp-quote TeX-esc)
+                                        ,TeX-esc nil nil nil nil ,TeX-esc]))
 
    ;; 10.1 Acronyms and logos
    (TeX-add-symbols
