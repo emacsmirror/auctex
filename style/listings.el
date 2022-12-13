@@ -412,12 +412,12 @@ caption key is found, an error is issued."
    ;; New symbols
    (TeX-add-symbols
     '("lstalias" ["Alias dialect"] "Alias" ["Dialect"] "Language")
-    '("lstdefinestyle"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (TeX-read-string "Style name: ")))
+    `("lstdefinestyle"
+      ,(lambda (optional)
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt optional nil "Style name"))))
            (LaTeX-add-listings-lstdefinestyles name)
-           (format "%s" name))))
+           (TeX-argument-insert name optional)))
       (TeX-arg-key-val (LaTeX-listings-key-val-options)))
     '("lstinline" [TeX-arg-key-val (LaTeX-listings-key-val-options)]
       TeX-arg-verb-delim-or-brace)
