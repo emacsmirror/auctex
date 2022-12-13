@@ -56,17 +56,17 @@
     '("oarg" "Optional argument")
     '("parg" "Picture mode argument")
 
-    '("DocInclude"
-      (TeX-arg-eval
-       (lambda ()
+    `("DocInclude"
+      ,(lambda (optional)
          (let ((file (file-relative-name
                       (read-file-name
-                       "File to include: " nil nil nil nil
+                       (TeX-argument-prompt optional nil "File to include")
+                       nil nil nil nil
                        (lambda (x)
                          (or (file-directory-p x)
                              (string-match "\\.\\(fdd\\|dtx\\)\\'" x))))
                       (TeX-master-directory))))
-           (format "%s" file))))))
+           (TeX-argument-insert file optional)))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
