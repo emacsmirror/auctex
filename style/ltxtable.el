@@ -58,19 +58,18 @@ The regexp for the 2. argument is the same as for \"input\" and
    (TeX-run-style-hooks "tabularx" "longtable")
 
    (TeX-add-symbols
-    '("LTXtable"
+    `("LTXtable"
       (TeX-arg-length "Width" "1.0\\linewidth")
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((longtable (file-relative-name
                            (read-file-name
-                            "File with longtable: "
+                            (TeX-argument-prompt optional nil "File with longtable")
                             nil nil nil nil
                             (lambda (x)
                               (or (file-directory-p x)
                                   (string-match "\\.\\(tex\\|ltx\\)\\'" x))))
                            (TeX-master-directory))))
-           (format "%s" longtable))))))
+           (TeX-argument-insert longtable optional)))))
 
    ;; Make sure that \LTXtable stays in its own line:
    (LaTeX-paragraph-commands-add-locally "LTXtable")
