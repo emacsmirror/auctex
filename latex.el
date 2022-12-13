@@ -910,34 +910,51 @@ environment in commented regions with the same comment prefix.
 
 The functions `LaTeX-find-matching-begin' and `LaTeX-find-matching-end'
 work analogously."
+  (or (save-excursion (LaTeX-backward-up-environment arg t))
+      "document"))
+
+(defun LaTeX-backward-up-environment (&optional arg want-name)
+  "Move backward out of the enclosing environment.
+Helper function of `LaTeX-current-environment' and
+`LaTeX-find-matching-begin'.
+With optional ARG>=1, find that outer level.
+Return non-nil if the operation succeeded.
+Return the (outermost) environment name if WANT-NAME is non-nil.
+
+Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let* ((in-comment (TeX-in-commented-line))
          (comment-prefix (and in-comment (TeX-comment-prefix)))
          (case-fold-search nil))
-    (save-excursion
-      (while (and (/= arg 0)
-                  (re-search-backward
-                   "\\\\\\(begin\\|end\\) *{\\([^}]+\\)}" nil t))
-        (when (or (and LaTeX-syntactic-comments
-                       (eq in-comment (TeX-in-commented-line))
-                       (or (not in-comment)
-                           ;; Consider only matching prefixes in the
-                           ;; commented case.
-                           (string= comment-prefix (TeX-comment-prefix))))
-                  (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line)))
-                  ;; macrocode*? in docTeX-mode is special since we
-                  ;; have also regular code lines not starting with a
-                  ;; comment-prefix.  Hence, the next check just looks
-                  ;; if we're inside such a group and returns t to
-                  ;; recognize such a situation.
-                  (and (eq major-mode 'doctex-mode)
-                       (member (match-string-no-properties 2)
-                               '("macrocode" "macrocode*"))))
-          (setq arg (if (string= (match-string 1) "end") (1+ arg) (1- arg)))))
-      (if (/= arg 0)
-          "document"
-        (match-string-no-properties 2)))))
+    (while (and (/= arg 0)
+                (re-search-backward
+                 (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b") nil t))
+      (when (or (and LaTeX-syntactic-comments
+                     (eq in-comment (TeX-in-commented-line))
+                     (or (not in-comment)
+                         ;; Consider only matching prefixes in the
+                         ;; commented case.
+                         (string= comment-prefix (TeX-comment-prefix))))
+                (and (not LaTeX-syntactic-comments)
+                     (not (TeX-in-commented-line)))
+                ;; macrocode*? in docTeX-mode is special since we have
+                ;; also regular code lines not starting with a
+                ;; comment-prefix.  Hence, the next check just looks
+                ;; if we're inside such a group and returns non-nil to
+                ;; recognize such a situation.
+                (and (eq major-mode 'doctex-mode)
+                     (looking-at-p (concat (regexp-quote TeX-esc)
+                                   "\\(?:begin\\|end\\) *{macrocode\\*?}"))))
+        (setq arg (if (= (char-after (match-beginning 1)) ?e)
+                      (1+ arg)
+                    (1- arg)))))
+    (if (= arg 0)
+        (or (not want-name)
+            (progn
+              (looking-at (concat (regexp-quote TeX-esc) "begin *"
+                                  TeX-grop (LaTeX-environment-name-regexp)
+                                  TeX-grcl))
+              (match-string-no-properties 1))))))
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
@@ -5272,12 +5289,13 @@ environment in commented regions with the same comment prefix."
          (case-fold-search nil))
     ;; The following code until `while' handles exceptional cases that
     ;; the point is on "\begin{foo}" or "\end{foo}".
+    ;; Note that it doesn't work for "\end{\foo{bar}}".  See bug#19281.
     (let ((pt (point)))
       (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
       (unless (bolp)
         (backward-char 1)
         (if (and (looking-at regexp)
-                 (char-equal (char-after (1+ (match-beginning 0))) ?e))
+                 (char-equal (char-after (match-beginning 1)) ?e))
             (setq level 0)
           (goto-char pt))))
     (while (and (> level 0) (re-search-forward regexp nil t))
@@ -5288,10 +5306,18 @@ environment in commented regions with the same comment prefix."
                      (or (not in-comment)
                          (string= comment-prefix (TeX-comment-prefix))))
                 (and (not LaTeX-syntactic-comments)
-                     (not (TeX-in-commented-line))))
-        (if (= (char-after (1+ (match-beginning 0))) ?b) ;;begin
-            (setq level (1+ level))
-          (setq level (1- level)))))
+                     (not (TeX-in-commented-line)))
+                ;; macrocode*? in docTeX-mode is special since we have
+                ;; also regular code lines not starting with a
+                ;; comment-prefix.  Hence, the next check just looks
+                ;; if we're inside such a group and returns non-nil to
+                ;; recognize such a situation.
+                (and (eq major-mode 'doctex-mode)
+                     (looking-at-p " *{macrocode\\*?}")))
+        (setq level
+              (if (= (char-after (match-beginning 1)) ?b) ;;begin
+                  (1+ level)
+                (1- level)))))
     (if (= level 0)
         (re-search-forward
          (concat TeX-grop (LaTeX-environment-name-regexp) TeX-grcl))
@@ -5304,32 +5330,17 @@ If function is called inside a comment and
 `LaTeX-syntactic-comments' is enabled, try to find the
 environment in commented regions with the same comment prefix."
   (interactive)
-  (let* ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
-         (level 1)
-         (in-comment (TeX-in-commented-line))
-         (comment-prefix (and in-comment (TeX-comment-prefix)))
-         (case-fold-search nil))
-    ;; The following code until `while' handles exceptional cases that
+  (let (done)
+    ;; The following code until `or' handles exceptional cases that
     ;; the point is on "\begin{foo}" or "\end{foo}".
+    ;; Note that it doesn't work for "\end{\foo{bar}}". See bug#19281.
     (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
     (unless (bolp)
       (backward-char 1)
-      (and (looking-at regexp)
-           (char-equal (char-after (1+ (match-beginning 0))) ?b)
-           (setq level 0)))
-    (while (and (> level 0) (re-search-backward regexp nil t))
-      (when (or (and LaTeX-syntactic-comments
-                     (eq in-comment (TeX-in-commented-line))
-                     ;; If we are in a commented line, check if the
-                     ;; prefix matches the one we started out with.
-                     (or (not in-comment)
-                         (string= comment-prefix (TeX-comment-prefix))))
-                (and (not LaTeX-syntactic-comments)
-                     (not (TeX-in-commented-line))))
-        (if (= (char-after (1+ (match-beginning 0))) ?e) ;;end
-            (setq level (1+ level))
-          (setq level (1- level)))))
-    (or (= level 0)
+      (and (looking-at (concat (regexp-quote TeX-esc) "begin\\b"))
+           (setq done t)))
+    (or done
+        (LaTeX-backward-up-environment)
         (error "Can't locate beginning of current environment"))))
 
 (defun LaTeX-mark-environment (&optional count)
