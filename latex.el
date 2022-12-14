@@ -7385,10 +7385,13 @@ this point.  If nil, limit to the previous 15 lines."
             (error nil))
           ;; Set the initial value of argument counter
           (setq cnt 1)
-          ;; Note that we count also the right opt. or man. arg:
-          (setq cnt-opt (if (= (following-char) ?\{) 0 1))
-          ;; Record if we're inside a mand. or opt. argument
-          (setq type (if (= (following-char) ?\{) 'mandatory 'optional))
+          ;; Note that we count also the right opt. or man. arg and
+          ;; record if we're inside a mand. or opt. argument
+          (if (= (following-char) ?\{)
+              (setq cnt-opt 0
+                    type 'mandatory)
+            (setq cnt-opt 1
+                  type 'optional))
           ;; Move back over any touching sexps
           (while (and (LaTeX-move-to-previous-arg bound)
                       (condition-case nil
