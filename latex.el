@@ -3266,9 +3266,11 @@ reading an optional argument.  KEY-VAL-ALIST can be
   - A symbol returning an alist
   - An alist
 
-The car of each element should be a string representing a key and
-the optional cdr should be a list with strings to be used as
-values for the key.
+Each entry of this alist is a list.  The first element of each
+list is a string representing a key and the optional second
+element is a list with strings to be used as values for the key.
+The second element can also be a variable returning a list of
+strings.
 
 PROMPT replaces the standard one where \\=' (k=v): \\=' is
 appended to it.  If you want the full control over the prompt,

@@ -185,9 +185,13 @@ the alist elements."
             hist def inherit-input-method)
   "Read multiple strings, with completion and key=value support.
 PROMPT is a string to prompt with, usually ending with a colon
-and a space.  TABLE is an alist.  The car of each element should
-be a string representing a key and the optional cdr should be a
-list with strings to be used as values for the key.
+and a space.
+
+TABLE is an alist where each entry is a list.  The first element
+of each list is a string representing a key and the optional
+second element is a list with strings to be used as values for
+the key.  The second element can also be a variable returning a
+list of strings.
 
 See the documentation for `completing-read' for details on the
 other arguments: PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST,

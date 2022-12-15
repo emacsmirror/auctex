@@ -152,11 +152,10 @@ in its optional argument.")
 (defun LaTeX-arg-acro-key-val (optional prompt key-val-alist)
   "Prompt for keys and values in KEY-VAL-ALIST.
 <SPC> key binding in minibuffer is removed temporarily.  Insert
-the given value as a TeX macro argument.  If OPTIONAL is non-nil,
-insert it as an optional argument.  Use PROMPT as the prompt
-string.  KEY-VAL-ALIST is an alist.  The car of each element
-should be a string representing a key and the optional cdr should
-be a list with strings to be used as values for the key."
+the given value as a TeX macro argument.
+
+See `TeX-read-key-val' for explanation of OPTIONAL, PROMPT and
+KEY-VAL-ALIST."
   ;; Remove <SPC> key binding from map used in `multi-prompt-key-value' (called
   ;; by `TeX-arg-key-val') with `require-match' set to `nil'.
   (let ((crm-local-completion-map
