@@ -171,7 +171,7 @@ This is achieved by eval'ing all variables in the value parts of
 the alist elements."
   (mapcar (lambda (x)
             (if (and (cadr x) (symbolp (cadr x)) (not (functionp (cadr x))))
-                (cons (car x) (list (eval (cadr x) t)))
+                (cons (car x) (list (symbol-value (cadr x))))
               x))
           table))
 
