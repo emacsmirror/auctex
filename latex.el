@@ -848,10 +848,9 @@ environment just inserted, the buffer position just before
   "Return the regexp matching the name of a LaTeX environment.
 This matches everything different from a TeX closing brace but
 allowing one level of TeX group braces."
-  (concat "\\([^" (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\("
-          (regexp-quote TeX-grop) "[^" (regexp-quote TeX-grcl)
-          (regexp-quote TeX-grop) "]*" (regexp-quote TeX-grcl) "\\)*[^"
-          (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\)"))
+  (concat "\\([^" TeX-grcl TeX-grop "]*\\(" (regexp-quote TeX-grop)
+          "[^" TeX-grcl TeX-grop "]*" (regexp-quote TeX-grcl) "\\)*[^"
+          TeX-grcl TeX-grop "]*\\)"))
 
 (defvar LaTeX-after-modify-env-hook nil
   "List of functions to be run at the end of `LaTeX-modify-environment'.
@@ -867,9 +866,7 @@ position just before \\begin and the position just before
                     (re-search-backward (concat (regexp-quote TeX-esc)
                                                 "end"
                                                 (regexp-quote TeX-grop)
-                                                "\\("
                                                 (LaTeX-environment-name-regexp)
-                                                "\\)"
                                                 (regexp-quote TeX-grcl))
                                         (line-beginning-position))))
         (goto-begin (lambda ()
@@ -878,9 +875,7 @@ position just before \\begin and the position just before
                         (re-search-forward (concat (regexp-quote TeX-esc)
                                                    "begin"
                                                    (regexp-quote TeX-grop)
-                                                   "\\(?:"
                                                    (LaTeX-environment-name-regexp)
-                                                   "\\)"
                                                    (regexp-quote TeX-grcl))
                                            (line-end-position))))))
     (save-excursion
