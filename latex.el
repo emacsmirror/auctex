@@ -905,16 +905,21 @@ environment in commented regions with the same comment prefix.
 
 The functions `LaTeX-find-matching-begin' and `LaTeX-find-matching-end'
 work analogously."
-  (or (save-excursion (LaTeX-backward-up-environment arg t))
-      "document"))
+  (save-excursion
+    (if (LaTeX-backward-up-environment arg)
+        (progn
+          (re-search-forward (concat
+                              TeX-grop (LaTeX-environment-name-regexp)
+                              TeX-grcl))
+          (match-string-no-properties 1))
+      "document")))
 
-(defun LaTeX-backward-up-environment (&optional arg want-name)
+(defun LaTeX-backward-up-environment (&optional arg)
   "Move backward out of the enclosing environment.
 Helper function of `LaTeX-current-environment' and
 `LaTeX-find-matching-begin'.
 With optional ARG>=1, find that outer level.
 Return non-nil if the operation succeeded.
-Return the (outermost) environment name if WANT-NAME is non-nil.
 
 Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
@@ -943,13 +948,7 @@ Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
         (setq arg (if (= (char-after (match-beginning 1)) ?e)
                       (1+ arg)
                     (1- arg)))))
-    (if (= arg 0)
-        (or (not want-name)
-            (progn
-              (looking-at (concat (regexp-quote TeX-esc) "begin *"
-                                  TeX-grop (LaTeX-environment-name-regexp)
-                                  TeX-grcl))
-              (match-string-no-properties 1))))))
+    (= arg 0)))
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
