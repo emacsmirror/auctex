@@ -1753,7 +1753,7 @@ Use `ConTeXt-Mark-version' to choose the command."
      (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)) t)))
        (when engine
          (format "--engine=%s " engine)))
-     (unless (eq ConTeXt-current-interface "en")
+     (unless (string= ConTeXt-current-interface "en")
        (format "--interface=%s " ConTeXt-current-interface))
      (when TeX-source-correlate-mode
        (format "--passon=\"%s\" "
