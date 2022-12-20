@@ -4,7 +4,7 @@
 
 ;; Author: Ikumi Keita <ikumikeita@jcom.home.ne.jp>
 ;; Maintainer: auctex-devel@gnu.org
-;; Created: 2022-12-xx
+;; Created: 2022-12-20
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
