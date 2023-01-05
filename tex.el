@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2022 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2023 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -5573,10 +5573,18 @@ in the buffer."
   (TeX-find-balanced-brace -1 depth limit))
 
 (defun TeX-find-macro-boundaries (&optional lower-bound)
-  "Return a list containing the start and end of a macro.
+  "Return a cons containing the start and end of a macro.
 If LOWER-BOUND is given, do not search backward further than this
 point in buffer.  Arguments enclosed in brackets or braces are
 considered part of the macro."
+  ;; FIXME: Pay attention to `texmathp-allow-detached-args' and
+  ;; `reftex-allow-detached-macro-args'.
+  ;; Should we handle cases like \"{o} and \\[3mm] (that is, a macro
+  ;; whose name is a symbol and takes some arguments) as well?  Note
+  ;; that amsmath package arranges the macro \\ so that white spaces
+  ;; between \\ and [something] prevents the latter to be interpreted
+  ;; as an optional argument.  mathtools package arranges some
+  ;; environments including gathered similarly.
   (save-restriction
     (when lower-bound
       (narrow-to-region lower-bound (point-max)))
@@ -5603,6 +5611,7 @@ considered part of the macro."
                          (condition-case nil (backward-sexp)
                            (error (throw 'abort nil)))
                          (forward-comment -1)
+                         (skip-chars-backward " \t")
                          (and (memq (char-before) '(?\] ?\}))
                               (not (TeX-escaped-p (1- (point)))))))
                 (skip-chars-backward "A-Za-z@*")
@@ -5632,7 +5641,7 @@ those will be considered part of it."
         (while (not (eobp))
           (cond
            ;; Skip over pairs of square brackets
-           ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
+           ((or (looking-at "[ \t]*\n?[ \t]*\\(\\[\\)") ; Be conservative: Consider
                                         ; only consecutive lines.
                 (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
                      (save-excursion
@@ -5643,7 +5652,7 @@ those will be considered part of it."
                 (forward-sexp)
               (scan-error (throw 'found (point)))))
            ;; Skip over pairs of curly braces
-           ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
+           ((or (looking-at "[ \t]*\n?[ \t]*{") ; Be conservative: Consider
                                         ; only consecutive lines.
                 (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
                      (save-excursion

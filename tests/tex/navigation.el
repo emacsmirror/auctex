@@ -1,6 +1,6 @@
 ;;; navigation.el --- tests for navigation function in TeX buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2019-2023  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -26,29 +26,66 @@
 
 (defun TeX-check-f-m-e-h (string &optional position)
   "Check whether `TeX-find-macro-end-helper' works for exceptional case."
+  (erase-buffer)
+  (insert string)
+  (should (= (or position (point-max))
+             (TeX-find-macro-end-helper (point-min)))))
+
+(ert-deftest TeX-find-macro-end-helper ()
   (with-temp-buffer
-    (insert string)
-    (should (= (or position (point-max))
-               (TeX-find-macro-end-helper (point-min))))))
+    (LaTeX-mode)
 
-(ert-deftest TeX-find-macro-end-helper-single ()
-  ;; single macro ending at EOB
-  (TeX-check-f-m-e-h "\\foo"))
+    ;; single macro ending at EOB
+    (TeX-check-f-m-e-h "\\foo")
 
-(ert-deftest TeX-find-macro-end-helper-curly ()
-  ;; curly braces ending at EOB
-  (TeX-check-f-m-e-h "\\foo{bar}"))
+    ;; curly braces ending at EOB
+    (TeX-check-f-m-e-h "\\foo{bar}")
 
-(ert-deftest TeX-find-macro-end-helper-curly-fail ()
-  ;; curly brace failing to close at EOB
-  (TeX-check-f-m-e-h "\\foo{bar"))
+    ;; curly brace failing to close at EOB
+    (TeX-check-f-m-e-h "\\foo{bar")
 
-(ert-deftest TeX-find-macro-end-helper-square ()
-  ;; square brackets ending at EOB
-  (TeX-check-f-m-e-h "\\foo{bar}[baz]"))
+    ;; square brackets ending at EOB
+    (TeX-check-f-m-e-h "\\foo{bar}[baz]")
 
-(ert-deftest TeX-find-macro-end-helper-square-fail ()
-  ;; square bracket failing to close at EOB
-  (TeX-check-f-m-e-h "\\foo{bar}[baz" (1+ (length "\\foo{bar}"))))
+    ;; square bracket failing to close at EOB
+    (TeX-check-f-m-e-h "\\foo{bar}[baz" (1+ (length "\\foo{bar}")))))
+
+(defun TeX-check-f-m-b (string &optional chars)
+  "Check whether `TeX-find-macro-boundaries' works for exceptional case."
+  (erase-buffer)
+  (insert string)
+  (if chars (backward-char chars))
+  (let ((result (TeX-find-macro-boundaries)))
+    (should (= (point-min)
+               (car result)))
+    (should (= (point-max)
+               (cdr result)))))
+
+(ert-deftest TeX-find-macro-boundaries-detached-arg ()
+  (with-temp-buffer
+    ;; necessary to set comment syntax properly
+    (LaTeX-mode)
+
+    ;; argument separated by newline
+    (TeX-check-f-m-e-h "\\foo{bar}
+{baz}")
+
+    (TeX-check-f-m-e-h "\\foo{bar}
+  {baz}")
+
+    (TeX-check-f-m-e-h "\\foo{bar} % comment
+  {baz}")
+
+    (TeX-check-f-m-b "\\foo{bar}
+{baz}" 2)
+
+    (TeX-check-f-m-b "\\foo{bar}
+  {baz}" 2)
+
+    (TeX-check-f-m-b "\\foo{bar} % comment
+  {baz}" 2)
+
+    (TeX-check-f-m-b "\\foo{bar}% comment
+  {baz}" 2)))
 
 ;;; navigation.el ends here
