@@ -67,8 +67,8 @@
 ;;  + as opposed to the document, \tr and \trace aren't equivalent.
 ;;  + dv accepts one or two arguments except optional argument.
 ;;    o 1 arg      ... {derivative variable}
-;;    o 2 arg      ... {function to derive}{derivative variable}
-;;    O 1 arg + () ... {derivative variable}(function to derive)
+;;    o 2 args     ... {function to derive}{derivative variable}
+;;    o 1 arg + () ... {derivative variable}(function to derive)
 ;;  + pdv accepts one, two or three arguments except optional argument.
 ;;    o 1 arg      ... {derivative variable}
 ;;    o 2 args     ... {function to derive}{derivative variable}
