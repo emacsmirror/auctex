@@ -1,6 +1,6 @@
 ;; xcolor.el --- AUCTeX style for `xcolor.sty' (v2.12)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -416,15 +416,16 @@ xcolor package.")
     '("providecolor" TeX-arg-xcolor-definecolor)
 
     ;; \colorlet[<type>]{<name>}[<num model>]{<color>}
-    '("colorlet"
+    `("colorlet"
       [TeX-arg-completing-read LaTeX-xcolor-type-color-models "Type"]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((xcolor (TeX-read-string
-                        (TeX-argument-prompt nil nil "Color"))))
+                        (TeX-argument-prompt optional nil "Color"))))
            (LaTeX-add-xcolor-definecolors xcolor)
-           (format "%s" xcolor))))
-      [TeX-arg-completing-read (LaTeX-xcolor-color-models t) "Model"]
+           (TeX-argument-insert xcolor optional)))
+      [TeX-arg-completing-read ,(lambda ()
+                                  (LaTeX-xcolor-color-models t))
+                               "Model"]
       (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Color"))
 
     ;; 2.5.3 Defining sets of colors
@@ -539,15 +540,15 @@ xcolor package.")
       ;; \rowcolors[<commands>]{<row>}{<odd-row color>}{<even-row color>}
       '("rowcolors"
         (TeX-arg-conditional (y-or-n-p "With optional commands? ")
-                             ( [ t ] )
-                             (ignore))
+            ( [ t ] )
+          (ignore))
         "Row"
         (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Odd-row color")
         (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Even-row color"))
       '("rowcolors*"
         (TeX-arg-conditional (y-or-n-p "With optional commands? ")
-                             ( [ t ] )
-                             (ignore))
+            ( [ t ] )
+          (ignore))
         "Row"
         (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Odd-row color")
         (TeX-arg-completing-read (LaTeX-xcolor-definecolor-list) "Even-row color"))
