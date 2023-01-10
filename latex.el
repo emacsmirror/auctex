@@ -7574,17 +7574,22 @@ or `LaTeX-environment-list' and returns it."
       (pop arg-list))
 
     ;; Check for `TeX-arg-conditional' here and change `arg-list'
-    ;; accordingly
+    ;; accordingly.
+    ;; FIXME: Turn `y-or-n-p' into `always' otherwise there will be a
+    ;; query during in-buffer completion.  This will work for most
+    ;; cases, but will also fail for example in hyperref.el.  This
+    ;; decision should revisited at a later stage:
     (when (assq 'TeX-arg-conditional arg-list)
-      (while (and arg-list
-                  (setq arg (car arg-list)))
-        (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
-            (setq result (append (reverse (if (eval (nth 1 arg) t)
-                                              (nth 2 arg)
-                                            (nth 3 arg)))
-                                 result))
-          (push arg result))
-        (pop arg-list))
+      (cl-letf (((symbol-function 'y-or-n-p) #'always))
+        (while (and arg-list
+                    (setq arg (car arg-list)))
+          (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
+              (setq result (append (reverse (if (eval (nth 1 arg) t)
+                                                (nth 2 arg)
+                                              (nth 3 arg)))
+                                   result))
+            (push arg result))
+          (pop arg-list)))
       (setq arg-list (nreverse result)))
 
     ;; Now parse the `arg-list':
