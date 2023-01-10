@@ -1,6 +1,6 @@
 ;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -197,15 +197,6 @@ Update the variable `LaTeX-minted-language-list' if still nil."
             (setq LaTeX-minted-language-list languages))
           LaTeX-minted-language-list))))
 
-(defun LaTeX-arg-minted-language (optional &optional prompt)
-    "Insert a selected pygmentize language as argument for macros from minted.sty.
-If OPTIONAL is non-nil, insert it as optional argument in
-brackets.  PROMPT replaces the standard one."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Language")
-                    (LaTeX-minted-language-list))
-   optional))
-
 (defvar LaTeX-minted-style-list nil
   "List containing styles provided by pymentize program.")
 
@@ -224,15 +215,6 @@ Update the variable `LaTeX-minted-style-list' if still nil."
                 (push style styles)))
             (setq LaTeX-minted-style-list styles))
           LaTeX-minted-style-list))))
-
-(defun LaTeX-arg-minted-style (optional &optional prompt)
-  "Insert a selected pygmentize style as argument for macros from minted.sty.
-If OPTIONAL is non-nil, insert it as optional argument in
-brackets.  PROMPT replaces the standard one."
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Style")
-                    (LaTeX-minted-style-list))
-   optional))
 
 (defvar LaTeX-minted-auto-newminted nil)
 (defvar LaTeX-minted-newminted-regexp
@@ -373,38 +355,46 @@ a list of strings."
    (TeX-add-symbols
     '("mint"
       [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-      LaTeX-arg-minted-language TeX-arg-verb)
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
+      TeX-arg-verb)
     '("mintinline"
       [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-      LaTeX-arg-minted-language TeX-arg-verb-delim-or-brace)
-    '("newminted" ["Environment Name"] LaTeX-arg-minted-language
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
+      TeX-arg-verb-delim-or-brace)
+    '("newminted" ["Environment Name"]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
-    '("newmint" ["Macro Name"] LaTeX-arg-minted-language
+    '("newmint" ["Macro Name"]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
-    '("newmintinline" ["Macro Name"] LaTeX-arg-minted-language
+    '("newmintinline" ["Macro Name"]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
-    '("newmintedfile" ["Macro Name"] LaTeX-arg-minted-language
+    '("newmintedfile" ["Macro Name"]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     ;; 3.3 Formatting source code
     '("inputminted"
-      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-      (LaTeX-arg-minted-language)
+      [TeX-arg-key-val (LaTeX-minted-key-vaLaTeX-arg-minted-languagel-options)]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       TeX-arg-file)
     ;; 3.4 Using different styles
     '("usemintedstyle"
-      [ LaTeX-arg-minted-language ] LaTeX-arg-minted-style)
+      [TeX-arg-completing-read (LaTeX-minted-language-list) "Language"]
+      (TeX-arg-completing-read (LaTeX-minted-style-list) "Style"))
     ;; 5.2 Macro option usage
     '("setminted"
-      [ LaTeX-arg-minted-language ]
+      [TeX-arg-completing-read (LaTeX-minted-language-list) "Language"]
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     '("setmintedinline"
-      [ LaTeX-arg-minted-language ]
+      [TeX-arg-completing-read (LaTeX-minted-language-list) "Language"]
       (TeX-arg-key-val (LaTeX-minted-key-val-options))))
 
    ;; New environments
    (LaTeX-add-environments
-    '("minted" LaTeX-env-args [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-      LaTeX-arg-minted-language))
+    '("minted" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")))
 
    ;; 4 Floating listings: If option "newfloat" is given, run the
    ;; style hook and use the interface provided by the style,
