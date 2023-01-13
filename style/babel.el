@@ -40,6 +40,9 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function LaTeX-fontspec-auto-cleanup
+                  "fontspec"
+                  ())
 
 (defvar LaTeX-babel-language-list
   '("afrikaans"
@@ -202,10 +205,9 @@
         (let ((fam (concat elt "family"))
               (def (concat elt "default"))
               (mac (concat "text" elt)))
-          (apply #'TeX-add-symbols
-                 `((,fam -1)
-                   (,def -1)
-                   (,mac t)))
+          (apply #'TeX-add-symbols `((,fam -1)
+                                     (,def -1)
+                                     (,mac t)))
           ;; Cater for fontification:
           (when (and (featurep 'font-latex)
                      (eq TeX-install-font-lock 'font-latex-setup))
@@ -229,20 +231,6 @@
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-babel-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun TeX-arg-babel-lang (optional &optional prompt)
-  "Prompt for a language with completion and insert it as an argument."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional prompt "Language")
-    (LaTeX-babel-active-languages))
-   optional))
-
-(defun LaTeX-env-babel-lang (env)
-  "Prompt for a language and insert it as an argument of ENV."
-  (LaTeX-insert-environment
-   env (format "{%s}" (completing-read "Language: "
-                                       (LaTeX-babel-active-languages)))))
-
 (defun LaTeX-babel-load-languages ()
   "Load style files of babel active languages."
   ;; Run style hooks for every active language in loading order, so
@@ -263,22 +251,29 @@
    (TeX-add-symbols
 
     ;; 1.7 Basic language selectors
-    '("selectlanguage" TeX-arg-babel-lang)
-    '("foreignlanguage" TeX-arg-babel-lang t)
+    '("selectlanguage"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+    '("foreignlanguage"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")
+      t)
 
     ;; 1.9 More on selection
     '("babeltags" t)
-    '("babelensure" (TeX-arg-key-val
-                     (("include") ("exclude")
-                      ("fontenc" (;; 128+ glyph encodings (text)
-                                  "OT1" "OT2" "OT3" "OT4" "OT6"
-                                  ;; 256 glyph encodings (text)
-                                  "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
-                                  ;; 256 glyph encodings (text extended)
-                                  "X2"
-                                  ;; Other encodings
-                                  "LY1" "LV1" "LGR"))))
-      TeX-arg-babel-lang)
+    '("babelensure"
+      (TeX-arg-key-val
+       (("include") ("exclude")
+        ("fontenc" (;; 128+ glyph encodings (text)
+                    "OT1" "OT2" "OT3" "OT4" "OT6"
+                    ;; 256 glyph encodings (text)
+                    "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
+                    ;; 256 glyph encodings (text extended)
+                    "X2"
+                    ;; Other encodings
+                    "LY1" "LV1" "LGR"))))
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
     ;; 1.10 Shorthands
     '("shorthandon"    "Shorthands list")
     '("shorthandoff"   "Shorthands list")
@@ -289,7 +284,9 @@
       [TeX-arg-completing-read-multiple (LaTeX-babel-active-languages)
                                         "Language(s)"]
       t nil)
-    '("languageshorthands" TeX-arg-babel-lang)
+    '("languageshorthands"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
     '("babelshorthand"   "Short hand")
     '("ifbabelshorthand" "Character" t nil)
     '("aliasshorthand"   "Original" "Alias")
@@ -300,24 +297,26 @@
       t)
 
     ;; 1.14 Selecting fonts
-    '("babelfont"
+    `("babelfont"
       [TeX-arg-completing-read-multiple LaTeX-babel-language-list
                                         "Language(s)"]
-      (TeX-arg-eval let ((fontfam (completing-read
-                                   (TeX-argument-prompt nil nil "font family")
-                                   '("rm" "sf" "tt"))))
-                    ;; Run `TeX-check-engine-add-engines' and then
-                    ;; load `fontspec.el' if not already loaded and
-                    ;; make sure the key-vals are up to date.
-                    (unless (member "fontspec" (TeX-style-list))
-                      (TeX-check-engine-add-engines 'luatex 'xetex)
-                      (TeX-run-style-hooks "fontspec")
-                      (LaTeX-fontspec-auto-cleanup))
-                    (LaTeX-add-babel-babelfonts fontfam)
-                    (LaTeX-babel-cleanup-babelfont)
-                    (format "%s" fontfam))
+      (TeX-arg-completing-read ("rm" "sf" "tt") "Font family")
       [TeX-arg-key-val (LaTeX-fontspec-font-features)]
-      LaTeX-fontspec-arg-font)
+      LaTeX-fontspec-arg-font
+      ,(lambda (_)
+         ;; Run `TeX-check-engine-add-engines' and then
+         ;; load `fontspec.el' if not already loaded and
+         ;; make sure the key-vals are up to date.
+         (unless (member "fontspec" (TeX-style-list))
+           (TeX-check-engine-add-engines 'luatex 'xetex)
+           (TeX-run-style-hooks "fontspec")
+           (LaTeX-fontspec-auto-cleanup))
+         ;; Now search back for the Font family arg:
+         (save-excursion
+           (re-search-backward "\\\\babelfont\\(?:\\[[^]]*\\]\\)?{\\([^}]+\\)}"
+                               (line-beginning-position) t)
+           (LaTeX-add-babel-babelfonts (match-string-no-properties 1))
+           (LaTeX-babel-cleanup-babelfont))))
 
     ;; 1.16 Creating a language
     '("babelprovide"
@@ -326,7 +325,10 @@
 
     ;; 1.19 Accessing language info
     '("languagename" 0)
-    '("iflanguage" TeX-arg-babel-lang t nil)
+    '("iflanguage"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")
+      t nil)
 
     ;; 1.20 Hyphenation and line breaking
     '("babelhyphen"
@@ -343,7 +345,10 @@
     '("ensureascii" "Text")
 
     ;; 1.25 Language attributes
-    '("languageattribute" TeX-arg-babel-lang t))
+    '("languageattribute"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")
+      t))
 
    ;; Don't increase indentation at various \if* macros:
    (let ((exceptions '("ifbabelshorthand"
@@ -354,9 +359,15 @@
 
    ;; New environments: 1.8 Auxiliary language selectors
    (LaTeX-add-environments
-    '("otherlanguage" LaTeX-env-babel-lang)
-    '("otherlanguage*" LaTeX-env-babel-lang)
-    '("hyphenrules" LaTeX-env-babel-lang))
+    '("otherlanguage" LaTeX-env-args
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+    '("otherlanguage*" LaTeX-env-args
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+    '("hyphenrules" LaTeX-env-args
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

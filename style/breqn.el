@@ -1,6 +1,6 @@
 ;;; breqn.el --- AUCTeX style for `breqn.sty' (v0.98j)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -64,6 +64,17 @@
   "Key=value options for breqn environments.
 The keys \"label\" and \"labelprefix\" are omitted.")
 
+(defun LaTeX-breqn-key-val-options ()
+  "Return updated key=val's based on the current \"breqn\" environment."
+  (let ((currenv (LaTeX-current-environment)))
+    (cond ((string-match-p "\\`dgroup" currenv)
+           (append '(("noalign") ("brace"))
+                   LaTeX-breqn-key-val-options))
+          ((string-match-p "\\`darray" currenv)
+           (append '(("noalign") ("brace") ("cols" ("{}")))
+                   LaTeX-breqn-key-val-options))
+          (t LaTeX-breqn-key-val-options))))
+
 (defvar LaTeX-breqn-key-val-label-regexp
   `(,(concat
       "\\\\begin{"
@@ -72,26 +83,6 @@ The keys \"label\" and \"labelprefix\" are omitted.")
       (LaTeX-extract-key-value-label))
     1 LaTeX-auto-label)
   "Matches the label inside an optional argument after \\begin{<breqn-env's>}.")
-
-(defun LaTeX-breqn-env (env)
-  "Insert ENV from breqn package incl. optional key=val argument.
-Keys offered for key=val query depend on ENV.  \"label\" and
-\"labelprefix\" are omitted."
-  (let ((keyvals
-         (TeX-read-key-val t
-                           (cond ((or (string= env "dgroup")
-                                      (string= env "dgroup*"))
-                                  (append '(("noalign") ("brace"))
-                                          LaTeX-breqn-key-val-options))
-                                 ((or (string= env "darray")
-                                      (string= env "darray*"))
-                                  (append '(("noalign") ("brace") ("cols" ("{}")))
-                                          LaTeX-breqn-key-val-options))
-                                 (t LaTeX-breqn-key-val-options)))))
-    (LaTeX-insert-environment env (when (and keyvals
-                                             (not (string= keyvals "")))
-                                    (concat LaTeX-optop keyvals LaTeX-optcl)))
-    (LaTeX-env-label-as-keyval nil nil keyvals env)))
 
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
@@ -119,14 +110,30 @@ Keys offered for key=val query depend on ENV.  \"label\" and
      (reftex-add-label-environments '(("darray" ?e nil nil eqnarray-like))))
 
    (LaTeX-add-environments
-    '("dmath" LaTeX-breqn-env)
-    '("dmath*" LaTeX-breqn-env)
-    '("dseries" LaTeX-breqn-env)
-    '("dseries*" LaTeX-breqn-env)
-    '("dgroup" LaTeX-breqn-env)
-    '("dgroup*" LaTeX-breqn-env)
-    '("darray" LaTeX-breqn-env)
-    '("darray*" LaTeX-breqn-env)
+    '("dmath" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)]
+      LaTeX-env-label-as-keyval)
+    '("dmath*" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)])
+
+    '("dseries" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)]
+      LaTeX-env-label-as-keyval)
+    '("dseries*" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)])
+
+    '("dgroup" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)]
+      LaTeX-env-label-as-keyval)
+    '("dgroup*" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)])
+
+    '("darray" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)]
+      LaTeX-env-label-as-keyval)
+    '("darray*" LaTeX-env-args
+      [TeX-arg-key-val (LaTeX-breqn-key-val-options)])
+
     '("dsuspend"))
 
    (TeX-add-symbols

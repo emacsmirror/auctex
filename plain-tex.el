@@ -105,7 +105,7 @@ Install tool bar if `plain-TeX-enable-toolbar' and
 (defconst plain-TeX-dialect :plain-tex
   "Default dialect for use with function `TeX-add-style-hook' for
 argument DIALECT-EXPR when the hook is to be run only on
-plain-TeX file, or any mode derived thereof. See variable
+plain-TeX file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
 (defcustom plain-TeX-mode-hook nil

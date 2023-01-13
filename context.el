@@ -363,35 +363,19 @@ section."
 
 (defun ConTeXt-numbered-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level ConTeXt-numbered-section-list
-                           (function (lambda (a b) (equal a (nth 1 b)))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) ConTeXt-numbered-section-list)))
 
 (defun ConTeXt-unnumbered-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level ConTeXt-unnumbered-section-list
-                           (function (lambda (a b) (equal a (nth 1 b)))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) ConTeXt-unnumbered-section-list)))
 
 (defun ConTeXt-numbered-section-level (name)
   "Return the level of the section NAME."
-  (let ((entry (TeX-member name ConTeXt-numbered-section-list
-                           (function (lambda (a b) (equal a (nth 0 b)))))))
-    (if entry
-        (nth 1 entry)
-      nil)))
+  (cadr (assoc name ConTeXt-numbered-section-list)))
 
 (defun ConTeXt-unnumbered-section-level (name)
   "Return the level of the section NAME."
-  (let ((entry (TeX-member name ConTeXt-unnumbered-section-list
-                           (function (lambda (a b) (equal a (nth 0 b)))))))
-    (if entry
-        (nth 1 entry)
-      nil)))
+  (cadr (assoc name ConTeXt-unnumbered-section-list)))
 
 
 ;;; Section Hooks.
@@ -411,32 +395,34 @@ The following variables are set before the hooks are run
                       `ConTeXt-level'.
 `ConTeXt-title'     - The title of the section, default to an empty
                       string.
+`ConTeXt-reference' - Comma separated list of reference.
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
 The following standard hooks exist -
 
-ConTeXt-numbered-section-heading: Query the user about the name
+`ConTeXt-numbered-section-heading': Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
 `ConTeXt-name'.
 
-ConTeXt-section-title: Query the user about the title of the
+`ConTeXt-section-title': Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according
+`ConTeXt-section-section': Insert ConTeXt section command according
 to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
-ConTeXt-section-ref: Insert a reference for this section command.
+`ConTeXt-section-ref': Query the user about a reference for this
+section command.  Modifies `ConTeXt-reference'.
 
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-numbered-section-hook
                          \\='(ConTeXt-numbered-section-heading
                                  ConTeXt-section-title
-                                 ConTeXt-section-section
-                                 ConTeXt-section-ref))
+                                 ConTeXt-section-ref
+                                 ConTeXt-section-section))
 
 in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro
@@ -463,32 +449,34 @@ The following variables are set before the hooks are run
                       `ConTeXt-level'.
 `ConTeXt-title'     - The title of the section, default to an empty
                       string.
+`ConTeXt-reference' - Comma separated list of reference.
 `ConTeXt-done-mark' - Position of point afterwards, default nil
                       (meaning end).
 
 The following standard hooks exist -
 
-ConTeXt-unnumbered-section-heading: Query the user about the name
+`ConTeXt-unnumbered-section-heading': Query the user about the name
 of the sectioning command.  Modifies `ConTeXt-level' and
 `ConTeXt-name'.
 
-ConTeXt-section-title: Query the user about the title of the
+`ConTeXt-section-title': Query the user about the title of the
 section.  Modifies `ConTeXt-title'.
 
-ConTeXt-section-section: Insert ConTeXt section command according
+`ConTeXt-section-section': Insert ConTeXt section command according
 to `ConTeXt-name', `ConTeXt-title', and `ConTeXt-reference'.  If
 `ConTeXt-title' is an empty string, `ConTeXt-done-mark' will be
 placed at the point they should be inserted.
 
-ConTeXt-section-ref: Insert a reference for this section command.
+`ConTeXt-section-ref': Query the user about a reference for this
+section command.  Modifies `ConTeXt-reference'.
 
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-unnumbered-section-hook
                          \\='(ConTeXt-unnumbered-section-heading
                                  ConTeXt-section-title
-                                 ConTeXt-section-section
-                                 ConTeXt-section-ref))
+                                 ConTeXt-section-ref
+                                 ConTeXt-section-section))
 
 in your init file such as .emacs.d/init.el or .emacs."
   :group 'ConTeXt-macro
@@ -598,7 +586,7 @@ for a label to be inserted after the sectioning command."
     (cond ((TeX-TeX-sentinel-check process name))
           ((save-excursion
              ;; in a full ConTeXt run there will multiple texutil
-             ;; outputs. Just looking for "another run needed" would
+             ;; outputs.  Just looking for "another run needed" would
              ;; find the first occurence
              (goto-char (point-max))
              (re-search-backward "TeXUtil " nil t)
@@ -759,45 +747,156 @@ With optional ARG, modify current environment."
   (end-of-line)
   (newline))
 
+(defvar ConTeXt-after-insert-env-hook nil
+  "List of functions to be run at the end of `ConTeXt-insert-environment'.
+Each function is called with three arguments: the name of the
+environment just inserted, the buffer position just before
+\\start... and the position just before \\stop....")
+
+;;; Copy and adaptation of `LaTeX-insert-environment'.  (2022-08-13)
 (defun ConTeXt-insert-environment (environment &optional extra)
-  "Insert ENVIRONMENT, with optional argument EXTRA."
-  (if (and (TeX-active-mark)
-           (not (eq (mark) (point))))
+  "Insert ConTeXt ENVIRONMENT with optional argument EXTRA."
+  (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
+        content-start env-start env-end additional-indent)
+    (when (and active-mark (< (mark) (point))) (exchange-point-and-mark))
+    ;; What to do with the line containing point.
+    ;; - Open a new empty line for later insertion of "\startfoo" and
+    ;;   put the point there.
+    ;; - If there were at first any non-whitespace texts between the
+    ;;   point and EOL, send them into their new own line.
+    (cond (;; When the entire line consists of whitespaces...
+           (save-excursion (beginning-of-line)
+                           (looking-at "[ \t]*$"))
+           ;; ...make the line empty and put the point there.
+           (delete-region (match-beginning 0) (match-end 0)))
+          (;; When there are only whitespaces between the point and
+           ;; BOL (including the case the point is at BOL)...
+           (TeX-looking-at-backward "^[ \t]*"
+                                    (line-beginning-position))
+           ;; ...in this case, we have non-whitespace texts between
+           ;; the point and EOL, so send the entire line into a new
+           ;; next line and put the point on the empty line just
+           ;; created.
+           (beginning-of-line)
+           (newline)
+           (beginning-of-line 0)
+           ;; Take note that there are texts to be indented later
+           ;; unless the region is activated.
+           (unless active-mark
+             (setq additional-indent t)))
+          (;; In all other cases...
+           t
+           ;; ...insert a new empty line after deleting all
+           ;; whitespaces around the point, put the point there...
+           (delete-horizontal-space)
+           (if (eolp)
+               (newline)
+             ;; ...and if there were at first any non-whitespace texts
+             ;; between (the original position of) the point and EOL,
+             ;; send them into a new next line.
+             (newline 2)
+             (beginning-of-line 0)
+             ;; Take note that there are texts to be indented later
+             ;; unless the region is activated.
+             (unless active-mark
+               (setq additional-indent t)))))
+    ;; What to do with the line containing mark.
+    ;; If there is active region...
+    (when active-mark
+      ;; - Open a new empty line for later insertion of "\stopfoo"
+      ;;   and put the mark there.
+      ;; - If there were at first any non-whitespace texts between the
+      ;;   mark and EOL, pass them over the empty line and put them on
+      ;;   their own line.
       (save-excursion
-        (if (< (mark) (point))
-            (exchange-point-and-mark))
-        (insert TeX-esc (ConTeXt-environment-start-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        (if extra (insert extra))
         (goto-char (mark))
-        (or (TeX-looking-at-backward "^[ \t]*")
-            (newline))
-        (insert TeX-esc (ConTeXt-environment-stop-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        ;;(goto-char (point))
-        )
-    (or (TeX-looking-at-backward "^[ \t]*")
-        (newline))
+        (cond (;; When the entire line consists of whitespaces...
+               (save-excursion (beginning-of-line)
+                               (looking-at "[ \t]*$"))
+               ;; ...make the line empty and put the mark there.
+               (delete-region (match-beginning 0) (match-end 0)))
+              (;; When there are only whitespaces between the mark and
+               ;; BOL (including the case the mark is at BOL)...
+               (TeX-looking-at-backward "^[ \t]*"
+                                        (line-beginning-position))
+               ;; ...in this case, we have non-whitespace texts
+               ;; between the mark and EOL, so send the entire line
+               ;; into a new next line and put the mark on the empty
+               ;; line just created.
+               (beginning-of-line)
+               (set-mark (point))
+               (newline)
+               ;; Take note that there are texts to be indented later.
+               (setq additional-indent t))
+              (;; In all other cases...
+               t
+               ;; ...make a new empty line after deleting all
+               ;; whitespaces around the mark, put the mark there...
+               (delete-horizontal-space)
+               (insert-before-markers "\n")
+               ;; ...and if there were at first any non-whitespace
+               ;; texts between (the original position of) the mark
+               ;; and EOL, send them into a new next line.
+               (unless (eolp)
+                 (newline)
+                 ;; Take note that there are texts to be indented
+                 ;; later.
+                 (setq additional-indent t))))))
+    ;; Now insert the environment.
+    (setq env-start (point))
     (insert TeX-esc (ConTeXt-environment-start-name) environment)
     (indent-according-to-mode)
-    (if extra (insert extra))
-    (end-of-line)
-    (newline-and-indent)
-    (newline)
+    (when extra (insert extra))
+    (setq content-start (line-beginning-position 2))
+    (unless active-mark
+      (newline)
+      (newline))
+    (when active-mark (goto-char (mark)))
     (insert TeX-esc (ConTeXt-environment-stop-name) environment)
-    (or (looking-at "[ \t]*$")
-        (save-excursion (newline-and-indent)))
-    (indent-according-to-mode)
-    (end-of-line 0)))
+    (end-of-line 0)
+    (if active-mark
+        (progn
+          ;; TODO: Do filling when context.el obtains
+          ;; `ConTeXt-fill-region' in future.
+          (indent-region content-start (line-beginning-position 2))
+          (set-mark content-start))
+      (indent-according-to-mode))
+    ;; Indent \stopfoo.
+    (save-excursion (beginning-of-line 2) (indent-according-to-mode)
+                    (when additional-indent
+                      ;; Indent texts sent after the inserted
+                      ;; environment.
+                      (forward-line 1) (indent-according-to-mode)))
+    (setq env-end (save-excursion
+                    (search-forward
+                     (concat TeX-esc (ConTeXt-environment-stop-name)
+                             environment))
+                    (match-beginning 0)))
+    (run-hook-with-args 'ConTeXt-after-insert-env-hook
+                        environment env-start env-end)))
+
+(defun ConTeXt--env-parse-args (args)
+  "Helper function to insert arguments defined by ARGS.
+This function checks if `TeX-exit-mark' is set, otherwise it's
+set to the point where this function starts.  Point will be at
+`TeX-exit-mark' when this function exits."
+  (let ((TeX-exit-mark (or TeX-exit-mark
+                           (point-marker))))
+    (ConTeXt-find-matching-start)
+    (end-of-line)
+    (TeX-parse-arguments args)
+    (goto-char TeX-exit-mark)
+    (set-marker TeX-exit-mark nil)))
+
+(defun ConTeXt-env-args (environment &rest args)
+  "Insert ENVIRONMENT and arguments defined by ARGS."
+  (ConTeXt-insert-environment environment)
+  (ConTeXt--env-parse-args args))
 
 
-;; with the following we can call a function on an environment. Say
+;; with the following we can call a function on an environment.  Say
 ;; you have metapost stuff within your TeX file, go to the environment
-;; and run ConTeXt-work-on-environment (suggested Key: C-c !). AUCTeX
+;; and run ConTeXt-work-on-environment (suggested Key: C-c !).  AUCTeX
 ;; sees that you are inside e.g. \startMPpage....\stopMPpage and
 ;; looks in ConTeXt-environment-helper for a function to be called.
 
@@ -842,7 +941,7 @@ An entry looks like: (\"environment\" . function)")
   (context-mode)
   (widen))
 
-;; find smarter name. Suggestions welcome
+;; find smarter name.  Suggestions welcome
 (defun ConTeXt-work-on-environment ()
   "Takes current environment and does something on it (todo: documentation)."
   (interactive)
@@ -938,10 +1037,10 @@ If INNER is non-nil, go to the point just past the \\start... macro."
                        (setq level (1- level))))))
     ;; now we have to look if we want to start behind the \start... macro
     (when inner
-      ;; \startfoo can have 0 or more {} and [] pairs. I assume that
-      ;; skipping all those parens will be smart enough. It fails when
+      ;; \startfoo can have 0 or more {} and [] pairs.  I assume that
+      ;; skipping all those parens will be smart enough.  It fails when
       ;; the first part in the \start-\stop-environment is { or [, like
-      ;; in \startquotation   {\em important} \stopquotation. There is
+      ;; in \startquotation   {\em important} \stopquotation.  There is
       ;; yet another pitfall: \startsetups SomeSetup foo bar
       ;; \stopsetups will use SomeSetup as the argument and the
       ;; environment
@@ -1151,7 +1250,7 @@ An optional fourth (or sixth) element means always replace if t."
         (match-string 1)
       (buffer-substring-no-properties (point) (line-end-position)))))
 
-;; This imenu also includes commented out chapters. Perhaps a feature
+;; This imenu also includes commented out chapters.  Perhaps a feature
 ;; for LaTeX, not sure we want or need that for ConTeXt.
 
 (defun ConTeXt-imenu-create-index-function ()
@@ -1654,7 +1753,7 @@ Use `ConTeXt-Mark-version' to choose the command."
      (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)) t)))
        (when engine
          (format "--engine=%s " engine)))
-     (unless (eq ConTeXt-current-interface "en")
+     (unless (string= ConTeXt-current-interface "en")
        (format "--interface=%s " ConTeXt-current-interface))
      (when TeX-source-correlate-mode
        (format "--passon=\"%s\" "
@@ -1688,7 +1787,7 @@ Use `ConTeXt-Mark-version' to choose the command."
 (defconst ConTeXt-dialect :context
   "Default dialect for use with function `TeX-add-style-hook' for
 argument DIALECT-EXPR when the hook is to be run only on ConTeXt
-file, or any mode derived thereof. See variable
+file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
 (defcustom ConTeXt-clean-intermediate-suffixes
@@ -1740,7 +1839,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
 
   ;; What's the deepest level at we can collapse a document?
-  ;; set only if user has not set it. Need to be set before menu is created.
+  ;; set only if user has not set it.  Need to be set before menu is created.
   ;; level 2 is "section"
   (or ConTeXt-largest-level
       (setq ConTeXt-largest-level 2))

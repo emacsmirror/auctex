@@ -1,6 +1,6 @@
 ;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -113,27 +113,24 @@ package.")
 
    ;; geometry commands:
    (TeX-add-symbols
-    '("geometry"
-      (TeX-arg-eval TeX-read-key-val nil
-                    (append LaTeX-geometry-preamble-key-val-options
-                            LaTeX-geometry-always-key-val-options)))
+    `("geometry"
+      (TeX-arg-key-val ,(append LaTeX-geometry-preamble-key-val-options
+                                LaTeX-geometry-always-key-val-options)))
     '("newgeometry"
       (TeX-arg-key-val LaTeX-geometry-always-key-val-options))
 
     '("restoregeometry" 0)
 
-    '("savegeometry"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (TeX-read-string "Name: ")))
+    `("savegeometry"
+      ,(lambda (optional)
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt optional nil "Name"))))
            (LaTeX-add-geometry-savegeometries name)
-           (format "%s" name)))))
+           (TeX-argument-insert name optional))))
 
     '("loadgeometry"
-      (TeX-arg-eval
-       (lambda ()
-         (completing-read "Name: "
-                          (LaTeX-geometry-savegeometry-list))))))
+      (TeX-arg-completing-read (LaTeX-geometry-savegeometry-list)
+                               "Name")))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

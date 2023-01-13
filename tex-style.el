@@ -411,6 +411,13 @@ must be unique.  It is initialized to ?s when added to
 `reftex-index-macros'."
   :type 'character)
 
+;; style/tikz.el
+
+(defcustom TeX-TikZ-point-name-regexp
+  "(\\([A-Za-z0-9]+\\))"
+  "A regexp that matches TikZ names."
+  :type 'regexp)
+
 ;; Don't look for file-local variables before this line, so that the
 ;; example in the docstring of `LaTeX-shortvrb-chars' isn't picked up.
 

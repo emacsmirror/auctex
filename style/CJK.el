@@ -1,6 +1,6 @@
 ;;; CJK.el --- AUCTeX style for the CJK package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2009-2022  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -43,17 +43,9 @@
     "CNS2" "CNS3" "CNS4" "CNS5" "CNS6" "CNS7" "CEFX" "CEFY")
   "List of encodings supported by the CJK package.")
 
-(defun LaTeX-env-CJK (env)
-  "Prompt for the arguments of ENV and insert it.
-The function can be used for CJK and CJK* environments."
-  (LaTeX-insert-environment
-   env
-   (concat
-    (let ((font-enc (TeX-read-string "(Optional) Font encoding: ")))
-      (unless (zerop (length font-enc)) (format "[%s]" font-enc)))
-    (format "{%s}" (completing-read "Encoding: "
-                                    (mapcar #'list LaTeX-CJK-enc-list)))
-    (format "{%s}" (TeX-read-string "Font family: ")))))
+(defvar LaTeX-CJK-fontenc-list
+  '("pmC" "dnp" "wn" "HL")
+  "List of font encodings supported by the CJK package.")
 
 (TeX-add-style-hook
  "CJK"
@@ -90,8 +82,15 @@ The function can be used for CJK and CJK* environments."
     "CJKverbatim")
    ;; New environments
    (LaTeX-add-environments
-    '("CJK" LaTeX-env-CJK)
-    '("CJK*" LaTeX-env-CJK)))
+    '("CJK" LaTeX-env-args
+      [TeX-arg-completing-read LaTeX-CJK-fontenc-list "Font encoding"]
+      (TeX-arg-completing-read LaTeX-CJK-enc-list "Encoding")
+      "Font family")
+
+    '("CJK*" LaTeX-env-args
+      [TeX-arg-completing-read LaTeX-CJK-fontenc-list "Font encoding"]
+      (TeX-arg-completing-read LaTeX-CJK-enc-list "Encoding")
+      "Font family")))
  TeX-dialect)
 
 ;;; CJK.el ends here

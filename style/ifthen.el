@@ -31,33 +31,29 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
 
-(defun LaTeX-arg-ifthen-test (optional &optional prompt)
-  "Query and insert skeleton for a test in ifthen macros."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional prompt "Test")
-    '("<" "=" ">"
-      "\\isodd{}"
-      "\\isundefined{}"
-      "\\equal{}{}"
-      "\\lengthtest{<}"
-      "\\lengthtest{=}"
-      "\\lengthtest{>}"
-      "\\boolean{}"))
-   optional))
+(defvar LaTeX-ifthen-test '("<" "=" ">"
+                            "\\isodd{}"
+                            "\\isundefined{}"
+                            "\\equal{}{}"
+                            "\\lengthtest{<}"
+                            "\\lengthtest{=}"
+                            "\\lengthtest{>}"
+                            "\\boolean{}")
+  "List of tests in ifthen macros.")
 
 (TeX-add-style-hook
  "ifthen"
  (lambda ()
    (TeX-add-symbols
-    '("ifthenelse" LaTeX-arg-ifthen-test t nil)
-    '("whiledo"    LaTeX-arg-ifthen-test t)
+    '("ifthenelse" (TeX-arg-completing-read LaTeX-ifthen-test "Test") t nil)
+    '("whiledo"    (TeX-arg-completing-read LaTeX-ifthen-test "Test") t)
     "AND"
     "OR"
     "NOT"

@@ -41,7 +41,9 @@
  "bigstrut"
  (lambda ()
    (TeX-add-symbols
-    '("bigstrut" [ TeX-arg-bigstrut ]))
+    '("bigstrut"
+      [TeX-arg-completing-read ("t" "b")
+                               "Strut to top (t) or bottom (b)"]))
 
    (LaTeX-add-lengths "bigstrutjot")
 
@@ -51,17 +53,6 @@
      (font-latex-add-keywords '(("bigstrut" "["))
                               'function)))
  TeX-dialect)
-
-(defun TeX-arg-bigstrut (optional &optional prompt)
-  "Prompt for the optional argument in \\bigstrut.
-If OPTIONAL is non-nil, insert the argument in brackets.  PROMPT
-replaces the standard one."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt
-     optional prompt "Strut to top (t) or bottom (b)")
-    '("t" "b"))
-   optional))
 
 (defvar LaTeX-bigstrut-package-options nil
   "Package options for the bigstrut package.")

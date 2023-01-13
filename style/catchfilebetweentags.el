@@ -51,7 +51,7 @@
     (setq LaTeX-catchfilebetweentags-counter 0)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward (concat "^%<\\*\\([^>]+\\)>$")
+      (while (re-search-forward "^%<\\*[^:]*:\\([^>]+\\)>$"
                                 (point-max) t)
         (let ((fn (string-to-number (match-string 1))))
           (when (> fn LaTeX-catchfilebetweentags-counter)
@@ -62,11 +62,18 @@
 (defun LaTeX-env-catchfilebetweentags (_environment)
   "Insert a tag-skeleton defined by `LaTeX-catchfilebetweentags'.
 ENVIRONMENT is ignored."
-  (let* ((fn (when LaTeX-catchfilebetweentags-use-numeric-label
+  ;; The following code, adds the file name as a prefix to the tag, in
+  ;; a similar way reftex does this, which is useful for combining
+  ;; several external files to a singular one.
+  (let* ((file (file-name-sans-extension
+                (file-name-nondirectory
+                 (buffer-file-name (current-buffer)))))
+         (fn (when LaTeX-catchfilebetweentags-use-numeric-label
                (LaTeX-catchfilebetweentags-counter-inc)))
-         (tag  (TeX-read-string
-                (if fn (format "Tag (default %s): " fn) "Tag: ")
-                nil nil (when fn (number-to-string fn)))))
+         (tag (concat file ":"
+                      (TeX-read-string
+                       (if fn (format "Tag (default %s): " fn) "Tag: ")
+                       nil nil (when fn (number-to-string fn))))))
     (unless (bolp)
       (newline)
       (delete-horizontal-space))
@@ -85,7 +92,6 @@ ENVIRONMENT is ignored."
       [TeX-arg-input-file "File" t] "Tag")
     '("ExecuteMetaData*"
       [TeX-arg-input-file "File" t] "Tag")
-
     '("CatchFileBetweenTags"
       TeX-arg-define-macro (TeX-arg-input-file  "File-name" t) "Tag")
     '("CatchFileBetweenTags*"

@@ -37,16 +37,6 @@
 (declare-function ConTeXt-add-environments "context"
                   (&rest environments))
 
-(defgroup AUCTeX-TikZ nil
-  "AUCTeX TikZ support"
-  :group 'AUCTeX)
-
-(defcustom TeX-TikZ-point-name-regexp
-  "(\\([A-Za-z0-9]+\\))"
-  "A regexp that matches TikZ names."
-  :type 'regexp
-  :group 'AUCTeX-TikZ)
-
 (defconst TeX-TikZ-point-function-map
   '(("Rect Point" TeX-TikZ-arg-rect-point)
     ("Polar Point" TeX-TikZ-arg-polar-point)
@@ -85,8 +75,8 @@
 (defun TeX-TikZ-get-opt-arg-string (arg &optional open close)
   "Return a string for optional arguments.
 If ARG is nil or \"\", return \"\".  Otherwise return \"OPEN ARG
-CLOSE\". If OPEN or CLOSE are nil, set them to `LaTeX-optop' and
-`LaTeX-optcl' respectively."
+CLOSE\".  If OPEN and CLOSE are nil, set them to `LaTeX-optop'
+and `LaTeX-optcl' respectively."
   (unless (or open close)
     (setq open LaTeX-optop)
     (setq close LaTeX-optcl))
@@ -284,6 +274,16 @@ return \"\"."
         (label (TeX-TikZ-arg-label nil)))
     (insert options " " name  " at" point label ";")))
 
+;; TODO: Add similar support for plain TeX.
+(defun TeX-TikZ-env-scope (_ignored)
+  "Ask the user for TikZ option and insert it with surrounding \"[]\".
+If the user provides empty input, insert \"[]\" anyway and put the
+point inside it."
+  (let ((option (TeX-TikZ-arg-options nil)))
+    (insert option)
+    (if (string= option "[]")
+        (set-marker TeX-exit-mark (1- (point))))))
+
 (TeX-add-style-hook
  "tikz"
  (lambda ()
@@ -311,7 +311,7 @@ return \"\"."
  (lambda ()
    (LaTeX-add-environments
     '("tikzpicture" ["TikZ option"])
-    '("scope" ["TikZ option"]))
+    '("scope" LaTeX-env-args TeX-TikZ-env-scope))
    ;; tikz.sty loads pgfcore.sty, which loads packages graphicx,
    ;; keyval and xcolor, too.
    (TeX-run-style-hooks "pgf" "graphicx" "keyval" "xcolor"))
@@ -323,7 +323,7 @@ return \"\"."
  (lambda ()
    (ConTeXt-add-environments
     '("tikzpicture" ["TikZ option"])
-    '("scope" ["TikZ option"])))
+    '("scope" ConTeXt-env-args TeX-TikZ-env-scope)))
  :context)
 
 ;; plain TeX specific stuff

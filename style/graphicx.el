@@ -66,6 +66,25 @@
     ("alt"))
   "Key=value options for graphicx macros.")
 
+(defun LaTeX-graphicx-key-val-options ()
+  "Return an updated list of key=vals from graphicx package.
+If `TeX-engine' is set to symbol `default' (while
+`TeX-PDF-from-DVI' is set to nil) or `luatex' and `TeX-PDF-mode'
+is non-nil, add the keys \"page\" and \"pagebox\" to list of
+key=vals."
+  (if (and (or (and (eq TeX-engine 'default)
+                    (not (TeX-PDF-from-DVI)))
+               (eq TeX-engine 'luatex)
+               ;; dvipdfmx can handle page and
+               ;; pagebox options.
+               (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+           TeX-PDF-mode)
+      (append '(("page")
+                ("pagebox" ("mediabox" "cropbox" "bleedbox"
+                            "trimbox" "artbox")))
+              LaTeX-graphicx-key-val-options)
+    LaTeX-graphicx-key-val-options))
+
 (defvar LaTeX-includegraphics-dvips-extensions
   '("eps" "mps" "EPS")
   "List of extensions for image files supported by \"dvips\".")
@@ -81,42 +100,6 @@
     "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
     "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
   "List of extensions for image files supported by \"xetex\".")
-
-(defun LaTeX-arg-graphicx-includegraphics-key-val (optional)
-  "Insert key-val for optional argument of \\includegraphics macro.
-If OPTIONAL is non-nil, insert argument in square brackets.
-Temporarily remove \"space\" from `crm-local-completion-map' and
-`minibuffer-local-completion-map' in order to be able to insert
-spaces conveniently.
-
-If `TeX-engine' is set to symbol `default' (while
-`TeX-PDF-from-DVI' is set to nil) or `luatex' and `TeX-PDF-mode'
-is non-nil, add the keys \"page\" and \"pagebox\" to list of
-key-val's."
-  (let ((crm-local-completion-map
-         (remove (assoc 32 crm-local-completion-map)
-                 crm-local-completion-map))
-        (minibuffer-local-completion-map
-         (remove (assoc 32 minibuffer-local-completion-map)
-                 minibuffer-local-completion-map)))
-    (TeX-argument-insert
-     (TeX-read-key-val optional
-                       (if (and (or (and (eq TeX-engine 'default)
-                                         (not (TeX-PDF-from-DVI)))
-                                    (eq TeX-engine 'luatex)
-                                    ;; dvipdfmx can handle page and
-                                    ;; pagebox options.
-                                    (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
-                                TeX-PDF-mode)
-                           (append '(("page")
-                                     ("pagebox" ("mediabox"
-                                                 "cropbox"
-                                                 "bleedbox"
-                                                 "trimbox"
-                                                 "artbox")))
-                                   LaTeX-graphicx-key-val-options)
-                         LaTeX-graphicx-key-val-options))
-     optional)))
 
 (defun LaTeX-includegraphics-extensions-list ()
   "Return appropriate extensions for input files to \\includegraphics.
@@ -272,20 +255,22 @@ subdirectories and inserts the relative file name.  See
       "Argument")
 
     '("rotatebox" (TeX-arg-conditional (member "graphics" (TeX-style-list))
-                                       ()
-                                       ([ TeX-arg-key-val (("x") ("y") ("origin") ("units")) ]))
+                      ()
+                    ([TeX-arg-key-val (("x") ("y") ("origin") ("units"))]))
       "Angle" "Argument")
 
     '("scalebox" "Horizontal scale" [ "Vertical scale" ] "Argument")
 
     '("includegraphics" (TeX-arg-conditional (member "graphics" (TeX-style-list))
-                                             (["llx,lly"] ["urx,ury"])
-                                             ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+                            (["llx,lly"] ["urx,ury"])
+                          ([TeX-arg-key-val (LaTeX-graphicx-key-val-options)
+                                            nil nil ?\s]))
       LaTeX-arg-includegraphics)
 
     '("includegraphics*" (TeX-arg-conditional (member "graphics" (TeX-style-list))
-                                              (["llx,lly"] ["urx,ury"])
-                                              ([ LaTeX-arg-graphicx-includegraphics-key-val ]))
+                             (["llx,lly"] ["urx,ury"])
+                           ([TeX-arg-key-val (LaTeX-graphicx-key-val-options)
+                                             nil nil ?\s]))
       LaTeX-arg-includegraphics)
 
     '("graphicspath" t)

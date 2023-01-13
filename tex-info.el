@@ -164,7 +164,7 @@ there are unbalanced begin-end pairs in comments and verbatim
 environments."
   ;; TODO:
   ;; This is identical to the LaTeX counterpart but for the find begin/end
-  ;; functions. So some day the implemenation should be factorized.
+  ;; functions.  So some day the implemenation should be factorized.
   (interactive "p")
   (setq count (if count (abs count) 1))
   (let ((cur (point)) beg end)
@@ -290,7 +290,7 @@ beginning of keyword `@node' or `@bye'."
 
 (defun Texinfo-nodename-de-escape (node-name)
   "In NODE-NAME, convert `@comma{}' commands to the corresponding `,'
-character. Return the resulting string."
+character.  Return the resulting string."
   (let ((pos 0) (map '(("comma" . ","))))
     (while (and (< pos (length
                         node-name))
@@ -304,7 +304,7 @@ character. Return the resulting string."
 
 (defun Texinfo-nodename-escape (node-name)
   "Convert in NODE-NAME the `,' characters to `@comma{}'
-commands. Return the resulting string."
+commands.  Return the resulting string."
   (let* ((pos 0)
          (map '(("," . "comma")))
          (re (regexp-opt (mapcar #'car map))) )
@@ -466,7 +466,7 @@ is assumed by default."
          (literal (buffer-substring-no-properties
                    (1- (match-beginning 3))
                    (min (point-max) (+ (match-end 0) (length text1) 1))))
-         ;; Literal can be too short since text1 too short. No big problem.
+         ;; Literal can be too short since text1 too short.  No big problem.
          (text (reftex-nicify-text text1)))
 
     ;; Add section number and indentation
@@ -728,7 +728,7 @@ value of `Texinfo-mode-hook'."
    '("bye")
    '("c" (TeX-arg-literal " ") (TeX-arg-free "Comment"))
    '("caption" "Caption"
-     ;; TODO: caption is meaningful only inside float env. Maybe some checking
+     ;; TODO: caption is meaningful only inside float env.  Maybe some checking
      ;; and warning would be good.
      )
    '("center" (TeX-arg-literal " ") (TeX-arg-free "Line of text"))

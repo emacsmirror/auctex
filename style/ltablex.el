@@ -1,6 +1,6 @@
 ;;; ltablex.el --- AUCTeX style for `ltablex.sty' (v1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -34,6 +34,11 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
 (require 'tex)
 
 (TeX-add-style-hook
@@ -42,7 +47,14 @@
    (TeX-run-style-hooks "tabularx" "longtable")
    (TeX-add-symbols
     '("keepXColumns" 0)
-    '("convertXColumns" 0)))
+    '("convertXColumns" 0))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("keepXColumns"    "")
+                                ("convertXColumns" ""))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-ltablex-package-options nil

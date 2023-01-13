@@ -129,14 +129,17 @@
     (dolist (delim (LaTeX-mathtools-DeclarePairedDelimiter-list))
       (let ((cmd (car delim))
             (arg (cadr delim)))
-        (TeX-add-symbols `(,cmd [ LaTeX-mathtools-arg-mathsize-completion ]
-                                ,(if (string= arg "")
-                                     1
-                                   (string-to-number arg)))
-                         `(,(concat cmd "*")
-                           ,(if (string= arg "")
-                                1
-                              (string-to-number arg)))))))
+        (TeX-add-symbols
+         `(,cmd
+           [TeX-arg-completing-read ("\\big" "\\Big" "\\bigg" "\\Bigg")
+                                    "Command" nil nil nil nil nil nil "\\"]
+           ,(if (string= arg "")
+                1
+              (string-to-number arg)))
+         `(,(concat cmd "*")
+           ,(if (string= arg "")
+                1
+              (string-to-number arg)))))))
   (when (LaTeX-mathtools-newgathered-list)
     (dolist (env (mapcar #'car (LaTeX-mathtools-newgathered-list)))
       (LaTeX-add-environments env)
@@ -151,41 +154,30 @@
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-mathtools-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-mathtools-arg-mathstyle-completion (optional)
-  "Query and insert mathstyle argument to various commands.
-If OPTIONAL, insert it as optional argument in brackets."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional nil
-                         (concat "Math style: " TeX-esc) t)
-    '("displaystyle" "textstyle"
-      "scriptstyle"  "scriptscriptstyle"))
-   optional TeX-esc))
-
-(defun LaTeX-mathtools-arg-mathsize-completion (optional)
-  "Query and insert math size argument to various commands.
-If OPTIONAL, insert it as optional argument in brackets."
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional nil
-                         (concat "Size command: " TeX-esc) t)
-    '("big" "Big" "bigg" "Bigg"))
-   optional TeX-esc))
+(defvar LaTeX-mathtools-mathstyle-list
+  '("\\displaystyle" "\\textstyle"
+    "\\scriptstyle"  "\\scriptscriptstyle")
+  "List of math styles supported by the mathtools package.")
 
 (defun LaTeX-mathtools-arg-declarepaireddelimiter (optional &optional X)
-  "Query and insert various \\DeclarePairedDelimiter macros from mathtools package."
+  "Query and insert various \\DeclarePairedDelimiter macros from mathtools package.
+If X is non-nil, be aware of the macros \\DeclarePairedDelimiterX
+and \\DeclarePairedDelimiterXPP."
   (let ((cmd (TeX-read-string (concat "Command: " TeX-esc)))
         (arg (when X (TeX-read-string
                       (TeX-argument-prompt t nil "Number of arguments")))))
-    (TeX-add-symbols `(,cmd [ LaTeX-mathtools-arg-mathsize-completion ]
-                            ,(if X
-                                 ;; This is no precaution, arg has to be > 0
-                                 (string-to-number arg)
-                               1))
-                     `(,(concat cmd "*")
-                       ,(if X
-                            (string-to-number arg)
-                          1)))
+    (TeX-add-symbols
+     `(,cmd
+       [TeX-arg-completing-read ("\\big" "\\Big" "\\bigg" "\\Bigg")
+                                "Command" nil nil nil nil nil nil "\\"]
+       ,(if X
+            ;; This is no precaution, arg has to be > 0
+            (string-to-number arg)
+          1))
+     `(,(concat cmd "*")
+       ,(if X
+            (string-to-number arg)
+          1)))
     (LaTeX-add-mathtools-DeclarePairedDelimiters
      `(,cmd ,(if X arg "")))
     (TeX-argument-insert cmd optional TeX-esc)
@@ -289,17 +281,38 @@ Put line break macro on the last line.  Next, insert an ampersand."
    (TeX-add-symbols
     '("mathtoolsset" (TeX-arg-key-val LaTeX-mathtools-key-val-options))
     ;; 3.1.1 A complement to \smash, \llap, and \rlap
-    '("mathllap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
-    '("mathrlap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
-    '("mathclap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
-    '("mathmakebox" [ (TeX-arg-length "Width") ] [ "Position" ] 1)
+    '("mathllap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
+    '("mathrlap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
+    '("mathclap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
+    '("mathmakebox" [TeX-arg-length "Width"] [ "Position" ] 1)
     '("clap" 1)
     '("mathmbox" 1)
     ;; 3.1.2 Forcing a cramped style
-    '("cramped" [ LaTeX-mathtools-arg-mathstyle-completion ] 1)
-    '("crampedllap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
-    '("crampedrlap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
-    '("crampedclap" [ LaTeX-mathtools-arg-mathstyle-completion ] t)
+    '("cramped"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      1)
+    '("crampedllap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
+    '("crampedrlap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
+    '("crampedclap"
+      [TeX-arg-completing-read LaTeX-mathtools-mathstyle-list
+                               "Math style" nil nil nil nil nil nil "\\"]
+      t)
     ;; 3.1.3 Smashing an operator
     '("smashoperator" [ "Position (l, r or lr (default)" ] 1)
     ;; 3.1.4 Adjusting the limits of operators
@@ -307,13 +320,12 @@ Put line break macro on the last line.  Next, insert an ampersand."
     ;; 3.1.5 Swapping space above AMS display math environments
     '("SwapAboveDisplaySkip" 0)
     ;; 3.2.1 The appearance of tags
-    '("newtagform"
-      (TeX-arg-eval
-       (lambda ()
+    `("newtagform"
+      ,(lambda (optional)
          (let ((newtag (TeX-read-string
-                        (TeX-argument-prompt nil nil "Name"))))
+                        (TeX-argument-prompt optional nil "Name"))))
            (LaTeX-add-mathtools-newtagforms newtag)
-           (format "%s" newtag))))
+           (TeX-argument-insert newtag optional)))
       [ "Inner format" ] "Left" "Right")
     '("renewtagform"
       (TeX-arg-completing-read (LaTeX-mathtools-newtagform-list) "Name")
@@ -338,17 +350,17 @@ Put line break macro on the last line.  Next, insert an ampersand."
     '("xrightleftharpoons" ["Below"] "Above")
     '("xleftrightharpoons" ["Below"] "Above")
     ;; 3.3.2 Braces and brackets
-    '("underbracket" [ (TeX-arg-length "Rule thickness") ]
+    '("underbracket" [TeX-arg-length "Rule thickness"]
       [ (TeX-arg-length "Bracket height") ] t)
-    '("overbracket"  [ (TeX-arg-length "Rule thickness") ]
+    '("overbracket"  [TeX-arg-length "Rule thickness"]
       [ (TeX-arg-length "Bracket height") ] t)
     '("underbrace" 1)
     '("overbrace" 1)
     '("LaTeXunderbrace" 1)
     '("LaTeXoverbrace" 1)
     ;; 3.4.2
-    '("shoveleft"  [ (TeX-arg-length "Dimension") ] 1)
-    '("shoveright" [ (TeX-arg-length "Dimension") ] 1)
+    '("shoveleft"  [TeX-arg-length "Dimension"] 1)
+    '("shoveright" [TeX-arg-length "Dimension"] 1)
     ;; 3.4.4
     '("MoveEqLeft" [ "Number" ])
     ;; 3.4.5 Boxing a single line in an alignment
@@ -377,13 +389,12 @@ Put line break macro on the last line.  Next, insert an ampersand."
       "Pre-code" "Left delimiter" "Right delimiter" 2)
     '("delimsize" 0)
     ;; 3.6.1 Expert use
-    '("reDeclarePairedDelimiterInnerWrapper"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((cmd (completing-read
-                     (concat "Command: " TeX-esc)
-                     (mapcar #'car (LaTeX-mathtools-DeclarePairedDelimiter-list)))))
-           (concat TeX-esc cmd))))
+    `("reDeclarePairedDelimiterInnerWrapper"
+      (TeX-arg-completing-read
+       ,(lambda ()
+          (mapcar (lambda (x) (concat TeX-esc (car x)))
+                  (LaTeX-mathtools-DeclarePairedDelimiter-list)))
+       "Command" nil nil nil nil nil nil "\\")
       (TeX-arg-completing-read ("star" "nostar") "star or nostar")
       t)
     ;; 3.7.1 Left and right parentheses
@@ -401,18 +412,17 @@ Put line break macro on the last line.  Next, insert an ampersand."
     ;; 4.3 Declaring math sizes
     '("DeclareMathSizes" 4)
     ;; 4.5 Gathered environments
-    '("newgathered"
-      (TeX-arg-eval
-       (lambda ()
+    `("newgathered"
+      ,(lambda (optional)
          (let ((env (TeX-read-string
-                     (TeX-argument-prompt nil nil "Name"))))
+                     (TeX-argument-prompt optional nil "Name"))))
            (LaTeX-add-environments env)
            (LaTeX-add-mathtools-newgathereds env)
            (add-to-list 'LaTeX-item-list
                         `(,env . LaTeX-item-equation) t)
            (add-to-list 'LaTeX-label-alist
                         `(,env . LaTeX-amsmath-label) t)
-           (format "%s" env))))
+           (TeX-argument-insert env optional)))
       3)
     '("renewgathered"
       (TeX-arg-completing-read (LaTeX-mathtools-newgathered-list) "Name")

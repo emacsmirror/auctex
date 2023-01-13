@@ -32,4 +32,8 @@
 (TeX-add-style-hook
  "beamerarticle"
  (lambda ()
-   (TeX-run-style-hooks "beamer")))
+   (TeX-run-style-hooks "beamer")
+
+   (LaTeX-section-list-add-locally
+    '(("paragraph" 4)
+      ("subparagraph" 5)))))

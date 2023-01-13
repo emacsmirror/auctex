@@ -631,12 +631,12 @@ use."
                         (if (eq type 'command)
                             "\
 This must be a list where each element is a list consisting of a
-keyword string \(not a regular expression\) omitting the leading
+keyword string (not a regular expression) omitting the leading
 backslash and a format specifier as described in the doc string of
 `font-latex-user-keyword-classes'."
                           "\
-This must be a list where each element is a keyword string \(not a
-regular expression\) omitting the leading backslash.")
+This must be a list where each element is a keyword string (not a
+regular expression) omitting the leading backslash.")
 
                         "\n\n\
 This is an internal variable which should not be set directly.

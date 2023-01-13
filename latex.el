@@ -259,20 +259,14 @@ used in style files."
 
 (defun LaTeX-section-name (level)
   "Return the name of the section corresponding to LEVEL."
-  (let ((entry (TeX-member level LaTeX-section-list
-                           (lambda (a b) (equal a (nth 1 b))))))
-    (if entry
-        (nth 0 entry)
-      nil)))
+  (car (rassoc (list level) LaTeX-section-list)))
 
 (defun LaTeX-section-level (name)
-  "Return the level of the section NAME."
-  (let ((entry (TeX-member name LaTeX-section-list
-                           (lambda (a b) (equal a (nth 0 b))))))
-
-    (if entry
-        (nth 1 entry)
-      nil)))
+  "Return the level of the section NAME.
+NAME can be starred variant."
+  (if (string-suffix-p "*" name)
+      (setq name (substring-no-properties name 0 -1)))
+  (cadr (assoc name LaTeX-section-list)))
 
 (defcustom TeX-outline-extra nil
   "List of extra TeX outline levels.
@@ -392,30 +386,35 @@ If so, return the second element, otherwise return nil."
 
 The following variables are set before the hooks are run
 
-LaTeX-level - numeric section level, see the documentation of `LaTeX-section'.
-LaTeX-name - name of the sectioning command, derived from `LaTeX-level'.
-LaTeX-title - The title of the section, default to an empty string.
-LaTeX-toc - Entry for the table of contents list, default nil.
-LaTeX-done-mark - Position of point afterwards, default nil (meaning end).
+`LaTeX-level'     - numeric section level, see the documentation of
+                    `LaTeX-section'.
+`LaTeX-name'      - name of the sectioning command, derived from
+                    `LaTeX-level'.
+`LaTeX-title'     - The title of the section, default to an empty
+                    string.
+`LaTeX-toc'       - Entry for the table of contents list, default
+                    nil.
+`LaTeX-done-mark' - Position of point afterwards, default nil
+                    (meaning end).
 
 The following standard hooks exist -
 
-LaTeX-section-heading: Query the user about the name of the
+`LaTeX-section-heading': Query the user about the name of the
 sectioning command.  Modifies `LaTeX-level' and `LaTeX-name'.
 
-LaTeX-section-title: Query the user about the title of the
+`LaTeX-section-title': Query the user about the title of the
 section.  Modifies `LaTeX-title'.
 
-LaTeX-section-toc: Query the user for the toc entry.  Modifies
+`LaTeX-section-toc': Query the user for the toc entry.  Modifies
 `LaTeX-toc'.
 
-LaTeX-section-section: Insert LaTeX section command according to
+`LaTeX-section-section': Insert LaTeX section command according to
 `LaTeX-name', `LaTeX-title', and `LaTeX-toc'.  If `LaTeX-toc' is
 nil, no toc entry is inserted.  If `LaTeX-toc' or `LaTeX-title'
 are empty strings, `LaTeX-done-mark' will be placed at the point
 they should be inserted.
 
-LaTeX-section-label: Insert a label after the section command.
+`LaTeX-section-label': Insert a label after the section command.
 Controled by the variable `LaTeX-section-label'.
 
 To get a full featured `LaTeX-section' command, insert
@@ -474,7 +473,12 @@ Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with \\[LaTeX-section]."
   (let ((string (completing-read
                  (concat "Level (default " LaTeX-name "): ")
-                 LaTeX-section-list
+                 (append
+                  ;; Include starred variants in candidates.
+                  (mapcar (lambda (sct)
+                            (list (concat (car sct) "*")))
+                          LaTeX-section-list)
+                  LaTeX-section-list)
                  nil nil nil nil LaTeX-name)))
     ;; Update LaTeX-name
     (if (not (zerop (length string)))
@@ -844,10 +848,9 @@ environment just inserted, the buffer position just before
   "Return the regexp matching the name of a LaTeX environment.
 This matches everything different from a TeX closing brace but
 allowing one level of TeX group braces."
-  (concat "\\([^" (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\("
-          (regexp-quote TeX-grop) "[^" (regexp-quote TeX-grcl)
-          (regexp-quote TeX-grop) "]*" (regexp-quote TeX-grcl) "\\)*[^"
-          (regexp-quote TeX-grcl) (regexp-quote TeX-grop) "]*\\)"))
+  (concat "\\([^" TeX-grcl TeX-grop "]*\\(" (regexp-quote TeX-grop)
+          "[^" TeX-grcl TeX-grop "]*" (regexp-quote TeX-grcl) "\\)*[^"
+          TeX-grcl TeX-grop "]*\\)"))
 
 (defvar LaTeX-after-modify-env-hook nil
   "List of functions to be run at the end of `LaTeX-modify-environment'.
@@ -863,34 +866,32 @@ position just before \\begin and the position just before
                     (re-search-backward (concat (regexp-quote TeX-esc)
                                                 "end"
                                                 (regexp-quote TeX-grop)
-                                                "\\("
                                                 (LaTeX-environment-name-regexp)
-                                                "\\)"
                                                 (regexp-quote TeX-grcl))
-                                        (save-excursion (beginning-of-line 1) (point)))))
+                                        (line-beginning-position))))
         (goto-begin (lambda ()
                       (LaTeX-find-matching-begin)
                       (prog1 (point)
                         (re-search-forward (concat (regexp-quote TeX-esc)
                                                    "begin"
                                                    (regexp-quote TeX-grop)
-                                                   "\\("
                                                    (LaTeX-environment-name-regexp)
-                                                   "\\)"
                                                    (regexp-quote TeX-grcl))
-                                           (save-excursion (end-of-line 1) (point)))))))
+                                           (line-end-position))))))
     (save-excursion
       (funcall goto-end)
-      (let ((old-env (match-string 1)))
+      (let ((old-env (match-string-no-properties 1))
+            beg-pos)
         (replace-match environment t t nil 1)
-        (beginning-of-line 1)
-        (funcall goto-begin)
+        ;; This failed when \begin and \end lie on the same line. (bug#58689)
+        ;; (beginning-of-line 1)
+        (setq beg-pos (funcall goto-begin))
         (replace-match environment t t nil 1)
-        (end-of-line 1)
+        ;; (end-of-line 1)
         (run-hook-with-args 'LaTeX-after-modify-env-hook
                             environment old-env
-                            (save-excursion (funcall goto-begin))
-                            (progn (funcall goto-end) (point)))))))
+                            beg-pos
+                            (funcall goto-end))))))
 
 (defvar LaTeX-syntactic-comments) ;; Defined further below.
 
@@ -904,34 +905,50 @@ environment in commented regions with the same comment prefix.
 
 The functions `LaTeX-find-matching-begin' and `LaTeX-find-matching-end'
 work analogously."
+  (save-excursion
+    (if (LaTeX-backward-up-environment arg)
+        (progn
+          (re-search-forward (concat
+                              TeX-grop (LaTeX-environment-name-regexp)
+                              TeX-grcl))
+          (match-string-no-properties 1))
+      "document")))
+
+(defun LaTeX-backward-up-environment (&optional arg)
+  "Move backward out of the enclosing environment.
+Helper function of `LaTeX-current-environment' and
+`LaTeX-find-matching-begin'.
+With optional ARG>=1, find that outer level.
+Return non-nil if the operation succeeded.
+
+Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let* ((in-comment (TeX-in-commented-line))
          (comment-prefix (and in-comment (TeX-comment-prefix)))
          (case-fold-search nil))
-    (save-excursion
-      (while (and (/= arg 0)
-                  (re-search-backward
-                   "\\\\\\(begin\\|end\\) *{\\([^}]+\\)}" nil t))
-        (when (or (and LaTeX-syntactic-comments
-                       (eq in-comment (TeX-in-commented-line))
-                       (or (not in-comment)
-                           ;; Consider only matching prefixes in the
-                           ;; commented case.
-                           (string= comment-prefix (TeX-comment-prefix))))
-                  (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line)))
-                  ;; macrocode*? in docTeX-mode is special since we
-                  ;; have also regular code lines not starting with a
-                  ;; comment-prefix.  Hence, the next check just looks
-                  ;; if we're inside such a group and returns t to
-                  ;; recognize such a situation.
-                  (and (eq major-mode 'doctex-mode)
-                       (member (match-string-no-properties 2)
-                               '("macrocode" "macrocode*"))))
-          (setq arg (if (string= (match-string 1) "end") (1+ arg) (1- arg)))))
-      (if (/= arg 0)
-          "document"
-        (match-string-no-properties 2)))))
+    (while (and (/= arg 0)
+                (re-search-backward
+                 (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b") nil t))
+      (when (or (and LaTeX-syntactic-comments
+                     (eq in-comment (TeX-in-commented-line))
+                     (or (not in-comment)
+                         ;; Consider only matching prefixes in the
+                         ;; commented case.
+                         (string= comment-prefix (TeX-comment-prefix))))
+                (and (not LaTeX-syntactic-comments)
+                     (not (TeX-in-commented-line)))
+                ;; macrocode*? in docTeX-mode is special since we have
+                ;; also regular code lines not starting with a
+                ;; comment-prefix.  Hence, the next check just looks
+                ;; if we're inside such a group and returns non-nil to
+                ;; recognize such a situation.
+                (and (eq major-mode 'doctex-mode)
+                     (looking-at-p (concat (regexp-quote TeX-esc)
+                                   "\\(?:begin\\|end\\) *{macrocode\\*?}"))))
+        (setq arg (if (= (char-after (match-beginning 1)) ?e)
+                      (1+ arg)
+                    (1- arg)))))
+    (= arg 0)))
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
@@ -1433,7 +1450,7 @@ Just like array and tabular."
 
 (defun LaTeX-env-contents (environment)
   "Insert ENVIRONMENT with optional argument and filename for contents."
-  (let* ((opt '("overwrite" "force" "nosearch"))
+  (let* ((opt '("overwrite" "force" "nosearch" "nowarn"))
          (arg (mapconcat #'identity
                          (TeX-completing-read-multiple
                           (TeX-argument-prompt t nil "Options")
@@ -2403,9 +2420,9 @@ string."
    optional))
 
 (defun TeX-arg-define-macro-arguments (optional &optional prompt)
-  "Prompt for the number of arguments for a LaTeX macro.  If this
-is non-zero, also prompt for the default value for the first
-argument.
+  "Prompt for the number of arguments for a LaTeX macro.
+If this is non-zero, also prompt for the default value for the
+first argument.
 
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
@@ -3260,9 +3277,11 @@ reading an optional argument.  KEY-VAL-ALIST can be
   - A symbol returning an alist
   - An alist
 
-The car of each element should be a string representing a key and
-the optional cdr should be a list with strings to be used as
-values for the key.
+Each entry of this alist is a list.  The first element of each
+list is a string representing a key and the optional second
+element is a list with strings to be used as values for the key.
+The second element can also be a variable returning a list of
+strings.
 
 PROMPT replaces the standard one where \\=' (k=v): \\=' is
 appended to it.  If you want the full control over the prompt,
@@ -5050,7 +5069,7 @@ code comment.
 
 If LaTeX syntax is taken into consideration during filling
 depends on the value of `LaTeX-syntactic-comments'."
-  (interactive "P")
+  (interactive "*P")
   (if (save-excursion
         (beginning-of-line)
         (looking-at (concat TeX-comment-start-regexp "*[ \t]*$")))
@@ -5262,12 +5281,15 @@ environment in commented regions with the same comment prefix."
          (in-comment (TeX-in-commented-line))
          (comment-prefix (and in-comment (TeX-comment-prefix)))
          (case-fold-search nil))
+    ;; The following code until `while' handles exceptional cases that
+    ;; the point is on "\begin{foo}" or "\end{foo}".
+    ;; Note that it doesn't work for "\end{\foo{bar}}".  See bug#19281.
     (let ((pt (point)))
-      (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
+      (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
       (unless (bolp)
         (backward-char 1)
         (if (and (looking-at regexp)
-                 (char-equal (char-after (1+ (match-beginning 0))) ?e))
+                 (char-equal (char-after (match-beginning 1)) ?e))
             (setq level 0)
           (goto-char pt))))
     (while (and (> level 0) (re-search-forward regexp nil t))
@@ -5278,10 +5300,18 @@ environment in commented regions with the same comment prefix."
                      (or (not in-comment)
                          (string= comment-prefix (TeX-comment-prefix))))
                 (and (not LaTeX-syntactic-comments)
-                     (not (TeX-in-commented-line))))
-        (if (= (char-after (1+ (match-beginning 0))) ?b) ;;begin
-            (setq level (1+ level))
-          (setq level (1- level)))))
+                     (not (TeX-in-commented-line)))
+                ;; macrocode*? in docTeX-mode is special since we have
+                ;; also regular code lines not starting with a
+                ;; comment-prefix.  Hence, the next check just looks
+                ;; if we're inside such a group and returns non-nil to
+                ;; recognize such a situation.
+                (and (eq major-mode 'doctex-mode)
+                     (looking-at-p " *{macrocode\\*?}")))
+        (setq level
+              (if (= (char-after (match-beginning 1)) ?b) ;;begin
+                  (1+ level)
+                (1- level)))))
     (if (= level 0)
         (re-search-forward
          (concat TeX-grop (LaTeX-environment-name-regexp) TeX-grcl))
@@ -5294,30 +5324,17 @@ If function is called inside a comment and
 `LaTeX-syntactic-comments' is enabled, try to find the
 environment in commented regions with the same comment prefix."
   (interactive)
-  (let* ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
-         (level 1)
-         (in-comment (TeX-in-commented-line))
-         (comment-prefix (and in-comment (TeX-comment-prefix)))
-         (case-fold-search nil))
-    (skip-chars-backward (concat "a-zA-Z \t" (regexp-quote TeX-grop)))
+  (let (done)
+    ;; The following code until `or' handles exceptional cases that
+    ;; the point is on "\begin{foo}" or "\end{foo}".
+    ;; Note that it doesn't work for "\end{\foo{bar}}". See bug#19281.
+    (skip-chars-backward (concat "a-zA-Z* \t" TeX-grop))
     (unless (bolp)
       (backward-char 1)
-      (and (looking-at regexp)
-           (char-equal (char-after (1+ (match-beginning 0))) ?b)
-           (setq level 0)))
-    (while (and (> level 0) (re-search-backward regexp nil t))
-      (when (or (and LaTeX-syntactic-comments
-                     (eq in-comment (TeX-in-commented-line))
-                     ;; If we are in a commented line, check if the
-                     ;; prefix matches the one we started out with.
-                     (or (not in-comment)
-                         (string= comment-prefix (TeX-comment-prefix))))
-                (and (not LaTeX-syntactic-comments)
-                     (not (TeX-in-commented-line))))
-        (if (= (char-after (1+ (match-beginning 0))) ?e) ;;end
-            (setq level (1+ level))
-          (setq level (1- level)))))
-    (or (= level 0)
+      (and (looking-at (concat (regexp-quote TeX-esc) "begin\\b"))
+           (setq done t)))
+    (or done
+        (LaTeX-backward-up-environment)
         (error "Can't locate beginning of current environment"))))
 
 (defun LaTeX-mark-environment (&optional count)
@@ -6298,8 +6315,8 @@ See also `LaTeX-math-menu'."
 (defun LaTeX--completion-annotation-from-math-menu (sym)
   "Return a completion annotation for a SYM.
 The annotation is usually a unicode representation of the macro
-SYM's compiled representation, e.g., if SYM is alpha, α is
-returned."
+SYM's compiled representation, for example, if SYM is alpha, α
+is returned."
   (catch 'found
     (dolist (var (list LaTeX-math-list LaTeX-math-default))
       (dolist (e var)
@@ -6915,7 +6932,7 @@ by too many \\thanks commands.")
 
     ("Environment [^ ]* undefined." .
      "LaTeX has encountered a \\begin command for a nonexistent environment.
-You probably misspelled the environment name. ")
+You probably misspelled the environment name.")
 
     ("Float(s) lost." .
      "You put a figure or table environment or a \\marginpar command inside a
@@ -7250,7 +7267,7 @@ on this line than it should.")
 
     ("Overfull \\\\vbox .*" .
      "Because it couldn't find a good place for a page break, TeX put more
-on the page than it should. ")
+on the page than it should.")
 
     ("Underfull \\\\hbox .*" .
      "Check your output for extra vertical space.  If you find some, it was
@@ -7261,7 +7278,7 @@ by inserting a \\linebreak command.")
 
     ("Underfull \\\\vbox .*" .
      "TeX could not find a good place to break the page, so it produced a
-page without enough text on it. ")
+page without enough text on it.")
 
     ;; New list items should be placed here
     ;;
@@ -7379,10 +7396,13 @@ this point.  If nil, limit to the previous 15 lines."
             (error nil))
           ;; Set the initial value of argument counter
           (setq cnt 1)
-          ;; Note that we count also the right opt. or man. arg:
-          (setq cnt-opt (if (= (following-char) ?\{) 0 1))
-          ;; Record if we're inside a mand. or opt. argument
-          (setq type (if (= (following-char) ?\{) 'mandatory 'optional))
+          ;; Note that we count also the right opt. or man. arg and
+          ;; record if we're inside a mand. or opt. argument
+          (if (= (following-char) ?\{)
+              (setq cnt-opt 0
+                    type 'mandatory)
+            (setq cnt-opt 1
+                  type 'optional))
           ;; Move back over any touching sexps
           (while (and (LaTeX-move-to-previous-arg bound)
                       (condition-case nil
@@ -7526,7 +7546,7 @@ COLLECTION is an list of strings."
 (defun LaTeX-completion-parse-args (entry)
   "Return the match of buffer position ENTRY with AUCTeX macro definitions.
 ENTRY is generated by the function `LaTeX-what-macro'.  This
-function matches the current buffer position (i.e., which macro
+function matches the current buffer position (that is, which macro
 argument) with the corresponding definition in `TeX-symbol-list'
 or `LaTeX-environment-list' and returns it."
   (let* ((name (nth 0 entry))
@@ -7554,17 +7574,22 @@ or `LaTeX-environment-list' and returns it."
       (pop arg-list))
 
     ;; Check for `TeX-arg-conditional' here and change `arg-list'
-    ;; accordingly
+    ;; accordingly.
+    ;; FIXME: Turn `y-or-n-p' into `always' otherwise there will be a
+    ;; query during in-buffer completion.  This will work for most
+    ;; cases, but will also fail for example in hyperref.el.  This
+    ;; decision should revisited at a later stage:
     (when (assq 'TeX-arg-conditional arg-list)
-      (while (and arg-list
-                  (setq arg (car arg-list)))
-        (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
-            (setq result (append (reverse (if (eval (nth 1 arg) t)
-                                              (nth 2 arg)
-                                            (nth 3 arg)))
-                                 result))
-          (push arg result))
-        (pop arg-list))
+      (cl-letf (((symbol-function 'y-or-n-p) #'always))
+        (while (and arg-list
+                    (setq arg (car arg-list)))
+          (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
+              (setq result (append (reverse (if (eval (nth 1 arg) t)
+                                                (nth 2 arg)
+                                              (nth 3 arg)))
+                                   result))
+            (push arg result))
+          (pop arg-list)))
       (setq arg-list (nreverse result)))
 
     ;; Now parse the `arg-list':
@@ -8092,17 +8117,17 @@ function would return non-nil and `(match-string 1)' would return
    '("newcommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment" TeX-arg-define-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment" TeX-arg-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("providecommand" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("providecommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("newcommand*" TeX-arg-define-macro [ TeX-arg-define-macro-arguments ] t)
    '("renewcommand*" TeX-arg-macro [ TeX-arg-define-macro-arguments ] t)
    '("newenvironment*" TeX-arg-define-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment*" TeX-arg-environment
-     [ "Number of arguments"] t t)
+     [ TeX-arg-define-macro-arguments ] 2)
    '("newtheorem" TeX-arg-define-environment
      [ TeX-arg-environment "Numbered like" ]
      t [ (TeX-arg-eval progn (if (eq (save-excursion
@@ -8543,22 +8568,6 @@ function would return non-nil and `(match-string 1)' would return
     (setq TeX-font-list LaTeX-font-list)
     (setq TeX-font-replace-function #'TeX-font-replace-macro)
     (TeX-add-symbols
-     '("newcommand" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("renewcommand" TeX-arg-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("providecommand" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("providecommand*" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("newcommand*" TeX-arg-define-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("renewcommand*" TeX-arg-macro
-       [ TeX-arg-define-macro-arguments ] t)
-     '("newenvironment" TeX-arg-define-environment
-       [ TeX-arg-define-macro-arguments ]  t t)
-     '("renewenvironment" TeX-arg-environment
-       [ TeX-arg-define-macro-arguments ] t t)
      '("usepackage" LaTeX-arg-usepackage)
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")

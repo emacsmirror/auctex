@@ -276,17 +276,16 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
     '("mdfsetup"
       (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
-    '("newmdenv"
+    `("newmdenv"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((env (TeX-read-string
-                     (TeX-argument-prompt nil nil "Environment"))))
+                     (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-environments
             `(,env LaTeX-env-args [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]))
            ;; Add new env's to `ispell-tex-skip-alist': skip the optional argument
            (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0)))
-           (format "%s" env)))))
+           (TeX-argument-insert env optional))))
 
     '("renewmdenv"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
@@ -306,13 +305,12 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
                                "Length"))
 
     ;; 5. Defining your own style
-    '("mdfdefinestyle"
-      (TeX-arg-eval
-       (lambda ()
+    `("mdfdefinestyle"
+      ,(lambda (optional)
          (let ((style (TeX-read-string
-                       (TeX-argument-prompt nil nil "Style name"))))
+                       (TeX-argument-prompt optional nil "Style name"))))
            (LaTeX-add-mdframed-mdfdefinestyles style)
-           (format "%s" style))))
+           (TeX-argument-insert style optional)))
       (TeX-arg-key-val (LaTeX-mdframed-key-val-options)))
 
     '("mdfapptodefinestyle"
@@ -325,15 +323,14 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
       "Subtitle")
 
     ;; 8. Theorems
-    '("newmdtheoremenv"
+    `("newmdtheoremenv"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((nthm (TeX-read-string
-                      (TeX-argument-prompt nil nil "Environment"))))
+                      (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-environments (list nthm (vector "Heading")))
-           (format "%s" nthm))))
-      [ TeX-arg-environment "Numbered like" ]
+           (TeX-argument-insert nthm optional)))
+      [TeX-arg-environment "Numbered like"]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
                                         (preceding-char))
@@ -342,16 +339,15 @@ and prepends them to variable `LaTeX-mdframed-key-val-options'."
                                 (TeX-arg-counter t "Within counter"))
                         "") ])
 
-    '("mdtheorem"
+    `("mdtheorem"
       [TeX-arg-key-val (LaTeX-mdframed-key-val-options)]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((nthm (TeX-read-string
-                      (TeX-argument-prompt nil nil "Environment"))))
+                      (TeX-argument-prompt optional nil "Environment"))))
            (LaTeX-add-environments (list nthm (vector "Heading"))
                                    (list (concat nthm "*") (vector "Heading")))
-           (format "%s" nthm))))
-      [ TeX-arg-environment "Numbered like" ]
+           (TeX-argument-insert nthm optional)))
+      [TeX-arg-environment "Numbered like"]
       t [ (TeX-arg-eval progn (if (eq (save-excursion
                                         (backward-char 2)
                                         (preceding-char))

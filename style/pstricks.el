@@ -136,6 +136,8 @@ available through package name PNAME and return \"param=value\"."
                    ((string-match bregexp param)
                     'LaTeX-pst-boolean-list)))
          val compl)
+    ;; See FIXME below: The next form is just to silence the compiler:
+    (setq compl nil)
     ;; ask for value
     (setq val (TeX-arg-compl-list
                (symbol-value parlist)

@@ -1,6 +1,6 @@
 ;;; booktabs.el -- AUCTeX style for booktabs.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2004, 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003--2022 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,14 +37,6 @@
                   "font-latex"
                   (keywords class))
 
-(defun LaTeX-booktabs-arg-paren (optional prompt)
-  "Prompt for a value and use parentheses when it is inserted.
-If OPTIONAL is non-nil the parameter is labeled as optional.
-PROMPT is the value of the prompt to be shown."
-  (let ((TeX-arg-opening-brace "(")
-        (TeX-arg-closing-brace ")"))
-    (TeX-parse-argument optional prompt)))
-
 (TeX-add-style-hook
  "booktabs"
  (lambda ()
@@ -61,7 +53,8 @@ PROMPT is the value of the prompt to be shown."
     '("bottomrule" [ "Thickness" ])
     ;; The `ignore' resets `TeX-last-optional-rejected' to nil so that the trim
     ;; argument is prompted also when the thickness is skipped.
-    '("cmidrule" [ "Thickness" ] (ignore) [ LaTeX-booktabs-arg-paren "Trim" ]
+    '("cmidrule" [ "Thickness" ] (ignore)
+      [TeX-arg-string "Trim" nil nil nil "(" ")"]
       "Column(s)")
     '("addlinespace" [ "Height" ])
     '("morecmidrules")

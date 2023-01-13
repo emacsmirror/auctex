@@ -73,13 +73,13 @@ package.")
    (TeX-auto-add-regexp LaTeX-array-newcolumntype-regexp)
 
    (TeX-add-symbols
-    '("newcolumntype"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((col (TeX-read-string "Column type: ")))
+    `("newcolumntype"
+      ,(lambda (optional)
+         (let ((col (TeX-read-string
+                     (TeX-argument-prompt optional nil "Column type"))))
            (LaTeX-add-array-newcolumntypes col)
            (LaTeX-array-update-column-letters)
-           (format "%s" col))))
+           (TeX-argument-insert col optional)))
       [ "Number of arguments" ] t)
     '("showcols" 0)
     '("firsthline" 0)

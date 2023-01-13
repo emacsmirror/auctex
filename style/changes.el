@@ -60,56 +60,22 @@
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-changes-auto-prepare t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
-(defun LaTeX-arg-changes-definechangesauthor (optional)
-  "Prompt for the arguments of \\definechangesauthor macro.
-While reading the first optional argument, remove space from
-`crm-local-completion-map' and `minibuffer-local-completion-map'.
-Insert the argument in brackets if OPTIONAL is non-nil."
-  (let* ((crm-local-completion-map
-          (remove (assoc 32 crm-local-completion-map)
-                  crm-local-completion-map))
-         (minibuffer-local-completion-map
-          (remove (assoc 32 minibuffer-local-completion-map)
-                  minibuffer-local-completion-map))
-         (TeX-last-optional-rejected nil)
-         (keyval (LaTeX-check-insert-macro-default-style
-                  (TeX-read-key-val
-                   t
-                   `(("name")
-                     ("color"
-                      ,(cond
-                        ((and (member "xcolor" (TeX-style-list))
-                              (fboundp 'LaTeX-xcolor-definecolor-list))
-                         (mapcar #'car (LaTeX-xcolor-definecolor-list)))
-                        ((and (member "color" (TeX-style-list))
-                              (fboundp 'LaTeX-color-definecolor-list))
-                         (mapcar #'car (LaTeX-color-definecolor-list)))
-                        (t nil)))))))
-         (TeX-arg-opening-brace LaTeX-optop)
-         (TeX-arg-closing-brace LaTeX-optcl))
-    (when keyval (TeX-argument-insert keyval t)))
-  (let ((id (TeX-read-string
-             (TeX-argument-prompt optional nil "Author ID"))))
-    (LaTeX-add-changes-definechangesauthors id)
-    (TeX-argument-insert id optional)))
+(defun LaTeX-changes-definechangesauthor-key-val-options ()
+  "Return a key=val list for the \\definechangesauthor macro."
+  `(("name")
+    ("color" ,(cond ((and (member "xcolor" (TeX-style-list))
+                          (fboundp 'LaTeX-xcolor-definecolor-list))
+                     (mapcar #'car (LaTeX-xcolor-definecolor-list)))
+                    ((and (member "color" TeX-active-styles)
+                          (fboundp 'LaTeX-color-definecolor-list))
+                     (mapcar #'car (LaTeX-color-definecolor-list)))
+                    (t nil)))))
 
-(defun LaTeX-arg-changes-markup (optional)
-  "Prompt for the argument of various markup commands.
-Remove space from `crm-local-completion-map' and
-`minibuffer-local-completion-map' while reading user input.
-Insert the argument in brackets if OPTIONAL is non-nil."
-  (let* ((crm-local-completion-map
-          (remove (assoc 32 crm-local-completion-map)
-                  crm-local-completion-map))
-         (minibuffer-local-completion-map
-          (remove (assoc 32 minibuffer-local-completion-map)
-                  minibuffer-local-completion-map))
-         (keyval (TeX-read-key-val
-                  optional
-                  `(("id" ,(mapcar #'car
-                                   (LaTeX-changes-definechangesauthor-list)))
-                    ("comment")))))
-    (TeX-argument-insert keyval optional)))
+(defun LaTeX-changes-key-val-options ()
+  "Return a key=val list for the change management macros."
+  `(("id" ,(mapcar #'car
+                   (LaTeX-changes-definechangesauthor-list)))
+    ("comment")))
 
 (TeX-add-style-hook
  "changes"
@@ -134,17 +100,16 @@ Insert the argument in brackets if OPTIONAL is non-nil."
 
    (TeX-add-symbols
     ;; 4.2 Change management
-    '("added"    [ LaTeX-arg-changes-markup ] 1)
-    '("deleted"  [ LaTeX-arg-changes-markup ] 1)
-    '("replaced" [ LaTeX-arg-changes-markup ] 2)
+    '("added"    [TeX-arg-key-val LaTeX-changes-key-val-options nil nil ?\s] 1)
+    '("deleted"  [TeX-arg-key-val LaTeX-changes-key-val-options nil nil ?\s] 1)
+    '("replaced" [TeX-arg-key-val LaTeX-changes-key-val-options nil nil ?\s] 2)
 
     ;; 4.3 Highlighting and Comments
-    '("highlight" [ LaTeX-arg-changes-markup ] 1)
-    '("comment"
-      [TeX-arg-eval
-       TeX-read-key-val t `(("id"
-                             ,(mapcar #'car
-                                      (LaTeX-changes-definechangesauthor-list))))]
+    '("highlight" [TeX-arg-key-val LaTeX-changes-key-val-options nil nil ?\s] 1)
+    `("comment"
+      [TeX-arg-key-val
+       ,(lambda ()
+          `(("id" ,(mapcar #'car (LaTeX-changes-definechangesauthor-list)))))]
       1)
 
     ;; 4.4 Overview of changes
@@ -155,7 +120,14 @@ Insert the argument in brackets if OPTIONAL is non-nil."
                                  "replaced" "highlight" "comment")))])
 
     ;; 4.5 Author management \definechangesauthor
-    '("definechangesauthor" LaTeX-arg-changes-definechangesauthor)
+    `("definechangesauthor"
+      [TeX-arg-key-val (LaTeX-changes-definechangesauthor-key-val-options)
+                       nil nil ?\s]
+      ,(lambda (optional)
+         (let ((id (TeX-read-string
+                    (TeX-argument-prompt optional nil "Author ID"))))
+           (LaTeX-add-changes-definechangesauthors id)
+           (TeX-argument-insert id optional))))
 
     ;; 4.6 Adaption of the output:
     '("setaddedmarkup" "Definition")

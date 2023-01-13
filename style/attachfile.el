@@ -1,6 +1,6 @@
 ;;; attachfile.el --- AUCTeX style for `attachfile.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -80,26 +80,26 @@
 
    (TeX-add-symbols
     ;; \attachfile[<options>]{<filename>}
-    '("attachfile"
+    `("attachfile"
       [TeX-arg-key-val LaTeX-attachfile-key-val-options]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((atfi (file-relative-name
-                      (read-file-name "File to attach: "))))
-           (format "%s" atfi)))))
+                      (read-file-name
+                       (TeX-argument-prompt optional nil "File to attach")))))
+           (TeX-argument-insert atfi optional))))
 
     ;; \noattachfile[<options>]
     '("noattachfile"
       [TeX-arg-key-val LaTeX-attachfile-key-val-options] )
 
     ;; \textattachfile[<options>]{<filename>}{<text>}
-    '("textattachfile"
+    `("textattachfile"
       [TeX-arg-key-val LaTeX-attachfile-key-val-options]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((atfi (file-relative-name
-                      (read-file-name "File to attach: "))))
-           (format "%s" atfi))))
+                      (read-file-name
+                       (TeX-argument-prompt optional nil "File to attach")))))
+           (TeX-argument-insert atfi optional)))
       t)
 
     ;; \notextattachfile[<options>]{<text>}

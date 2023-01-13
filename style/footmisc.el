@@ -37,6 +37,10 @@
                   "font-latex"
                   (keywords class))
 
+(defvar LaTeX-footmisc-fnsymbols-set '("bringhurst" "chicago" "wiley"
+                                       "lamport" "lamport*")
+  "Sets of footnote symbols provided by the footmisc package.")
+
 (TeX-add-style-hook
  "footmisc"
  (lambda ()
@@ -47,34 +51,24 @@
 
     ;; 1.7 The \setfnsymbol and \DefineFNsymbols commands
     '("DefineFNsymbols"
-      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
-                                "lamport" "lamport*")
-                               "Name")
+      (TeX-arg-completing-read LaTeX-footmisc-fnsymbols-set "Name")
       [TeX-arg-completing-read ("text" "math") "Style"]
       1)
     '("DefineFNsymbols*"
-      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
-                                "lamport" "lamport*")
-                               "Name")
+      (TeX-arg-completing-read LaTeX-footmisc-fnsymbols-set "Name")
       [TeX-arg-completing-read ("text" "math") "Style"]
       1)
 
     ;; These two commands define both text and math variants of the
     ;; footnote symbols
     '("DefineFNsymbolsTM"
-      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
-                                "lamport" "lamport*")
-                               "Name")
+      (TeX-arg-completing-read LaTeX-footmisc-fnsymbols-set "Name")
       1)
     '("DefineFNsymbolsTM*"
-      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
-                                "lamport" "lamport*")
-                               "Name")
+      (TeX-arg-completing-read LaTeX-footmisc-fnsymbols-set "Name")
       1)
     '("setfnsymbol"
-      (TeX-arg-completing-read ("bringhurst" "chicago" "wiley"
-                                "lamport" "lamport*")
-                               "Name"))
+      (TeX-arg-completing-read LaTeX-footmisc-fnsymbols-set "Name"))
 
     ;; 1.11 Option hang
     "hangfootparskip"
@@ -85,8 +79,6 @@
     "multfootsep"
 
     ;; 1.16 User interface
-    ;; The following command references a label inside in a footnote
-    '("footref" TeX-arg-ref)
     "mpfootnotemark")
 
    ;; 1.9 Option marginal
@@ -103,9 +95,7 @@
      (font-latex-add-keywords '(("DefineFNsymbols"   "*{[{")
                                 ("DefineFNsymbolsTM" "*{{")
                                 ("setfnsymbol"       "{"))
-                              'function)
-     (font-latex-add-keywords '(("footref"))
-                              'reference)))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-footmisc-package-options '("perpage" "side" "ragged"

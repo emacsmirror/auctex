@@ -238,8 +238,7 @@
        `(,env LaTeX-env-item-args
               [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
       ;; Tell AUCTeX about parsed description like environments.
-      (when (or (string-equal type "description")
-                (string-equal type "description*"))
+      (when (member type '("description" "description*"))
         (add-to-list 'LaTeX-item-list `(,env . LaTeX-item-argument)))
       ;; Add new env's to `ispell-tex-skip-alist': skip the opt. arg:
       (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0))))))
@@ -343,25 +342,29 @@ macro.  Insert the value in brackets if OPTIONAL is non-nil."
     ;; But we go the extra mile to improve the user experience and add
     ;; the arguments directly to appropriate lists.
     ;; \newlist{<name>}{<type>}{<max-depth>}
-    '("newlist"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (TeX-read-string "Name: "))
-               (type (completing-read
-                      "Type: "
-                      (mapcar #'cadr (LaTeX-enumitem-newlist-list))))
-               (depth (TeX-read-string "Max-depth: ")))
-           (when (or (string-equal type "description")
-                     (string-equal type "description*"))
-             (add-to-list 'LaTeX-item-list `(,name . LaTeX-item-argument)))
+    `("newlist"
+      ,(lambda (optional)
+         (let ((name (TeX-read-string
+                      (TeX-argument-prompt optional nil "Name"))))
            (LaTeX-add-environments
             `(,name LaTeX-env-item-args
                     [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
-           (LaTeX-add-enumitem-newlists (list name type))
            (TeX-ispell-skip-setcdr `((,name ispell-tex-arg-end 0)))
-           (TeX-argument-insert name nil)
-           (TeX-argument-insert type nil)
-           (format "%s" depth)))))
+           (TeX-argument-insert name optional)))
+      (TeX-arg-completing-read ,(lambda ()
+                                  (mapcar #'cadr
+                                          (LaTeX-enumitem-newlist-list)))
+                               "Type")
+      "Max-depth"
+      ,(lambda (_optional)
+         (save-excursion
+           (re-search-backward "\\\\newlist{\\([^}]+\\)}{\\([^}]+\\)}"
+                               (line-beginning-position) t))
+         (let ((name (match-string-no-properties 1))
+               (type (match-string-no-properties 2)))
+           (when (member type '("description" "description*"))
+             (add-to-list 'LaTeX-item-list `(,name . LaTeX-item-argument)))
+           (LaTeX-add-enumitem-newlists (list name type)))))
 
     ;; \renewlist{<name>}{<type>}{<max-depth>}
     `("renewlist"
@@ -428,8 +431,7 @@ macro.  Insert the value in brackets if OPTIONAL is non-nil."
             (dolist (env-type (LaTeX-enumitem-newlist-list))
               (let ((env   (car env-type))
                     (type  (cadr env-type)))
-                (when (or (string-equal type "enumerate")
-                          (string-equal type "enumerate*"))
+                (when (member type '("enumerate" "enumerate*"))
                   (push env enums))))
             enums))
        "List name"))

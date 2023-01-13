@@ -186,13 +186,7 @@ For syntax environment from l3doc class."
 
     '("NB" "Tag" t)
 
-    '("DocInput"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((file (TeX-read-string
-                      (format "File(s) to include (default %s): " (current-buffer))
-                      nil nil (current-buffer))))
-           (format "%s" file)))))
+    ;; "DocInput": This macro is supplied in `doc.el'
 
     ;; 4.5 Describing functions in the implementation
     '("TestFiles" "File(s)")
@@ -245,9 +239,7 @@ For syntax environment from l3doc class."
                                 ("TestFiles"             "{")
                                 ("UnitTested"            "")
                                 ("TestMissing"           "{"))
-                              'function)
-     (font-latex-add-keywords '("DocInput" "{")
-                              'reference)))
+                              'function)))
  TeX-dialect)
 
 (defvar LaTeX-l3doc-class-options
