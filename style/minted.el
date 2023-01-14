@@ -374,7 +374,7 @@ a list of strings."
       (TeX-arg-key-val (LaTeX-minted-key-val-options)))
     ;; 3.3 Formatting source code
     '("inputminted"
-      [TeX-arg-key-val (LaTeX-minted-key-vaLaTeX-arg-minted-languagel-options)]
+      [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
       TeX-arg-file)
     ;; 3.4 Using different styles
