@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1794}
+% \CheckSum{1758}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{bug-auctex@gnu.org}}}
@@ -429,26 +429,19 @@
 %
 % \StopEventually{}
 % \section{The Implementation}
-% Here we go: the start is somewhat obtuse since we figure out version
-% number and date from RCS strings.  This should really be done at
+% We provide version and date manually.  This should really be done at
 % docstrip time instead.  Takers?
 % \begin{macro}{\pr@version}
+% \begin{macro}{\pr@date}
 %    \begin{macrocode}
 %<*style>
 %<*!active>
-\NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
-#4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
-\begingroup \catcode`\_=12
-\reserved@a\pr@version $Name: release_13_1 $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.126 $ \endgroup \else
-  \def\next release_{} \lccode`\_=`.
-  \edef\next{\lowercase{\endgroup
-    \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2017/04/24 13:20:00 $
-\edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space \pr@version\space (AUCTeX/preview-latex)]}
-\next
+\NeedsTeXFormat{LaTeX2e}
+\def\pr@version{13.2}
+\def\pr@date{2023/01/17}
+\ProvidesPackage{preview}[\pr@date\space \pr@version\space (AUCTeX/preview-latex)]
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % Since many parts here will not be needed as long as the package is
 % inactive, we will include them enclosed with |<*active>| and
