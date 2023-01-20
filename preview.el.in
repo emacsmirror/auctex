@@ -3628,23 +3628,15 @@ name(\\([^)]+\\))\\)\\|\
           (preview-call-hook 'close (car open-data) close-data))))))
 
 (defun preview-get-dpi ()
-  ;; TODO: Remove false-case when required emacs version is bumped to
-  ;; 24.4 or newer as this is the version where
-  ;; `frame-monitor-attributes' has been introduced.
-  (if (fboundp 'frame-monitor-attributes)
-      (let* ((monitor-attrs (frame-monitor-attributes))
-             (mm-dims (cdr (assoc 'mm-size monitor-attrs)))
-             (mm-width (nth 0 mm-dims))
-             (mm-height (nth 1 mm-dims))
-             (pixel-dims (cl-cdddr (assoc 'geometry monitor-attrs)))
-             (pixel-width (nth 0 pixel-dims))
-             (pixel-height (nth 1 pixel-dims)))
-        (cons (/ (* 25.4 pixel-width) mm-width)
-              (/ (* 25.4 pixel-height) mm-height)))
-    (cons (/ (* 25.4 (display-pixel-width))
-             (display-mm-width))
-          (/ (* 25.4 (display-pixel-height))
-             (display-mm-height)))))
+  (let* ((monitor-attrs (frame-monitor-attributes))
+         (mm-dims (cdr (assoc 'mm-size monitor-attrs)))
+         (mm-width (nth 0 mm-dims))
+         (mm-height (nth 1 mm-dims))
+         (pixel-dims (cl-cdddr (assoc 'geometry monitor-attrs)))
+         (pixel-width (nth 0 pixel-dims))
+         (pixel-height (nth 1 pixel-dims)))
+    (cons (/ (* 25.4 pixel-width) mm-width)
+          (/ (* 25.4 pixel-height) mm-height))))
 
 (defun preview-get-geometry ()
   "Transfer display geometry parameters from current display.
