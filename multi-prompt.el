@@ -1,6 +1,6 @@
 ;;; multi-prompt.el --- Completing read of multiple strings  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1996-2021 Free Software Foundation, Inc.
+;; Copyright (C) 1996-2023 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -147,9 +147,9 @@ The value of FLAG is used to specify the type of completion operation.
 A value of nil specifies `try-completion'.  A value of t specifies
 `all-completions'.  A value of lambda specifes a test for an exact match.
 
-For more information on STRING, PREDICATE, and FLAG, see the Elisp
-Reference sections on 'Programmed Completion' and 'Basic Completion
-Functions'."
+For more information on STRING, PREDICATE, and FLAG, see the
+Elisp Reference Info node `(elisp)Programmed Completion' and Info node
+`(elisp)Basic Completion'."
   (let ((beg 0) (last 0) matched)
     (while (string-match multi-prompt-key-value-sep string beg)
       (setq matched t
