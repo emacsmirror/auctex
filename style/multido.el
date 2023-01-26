@@ -1,6 +1,6 @@
 ;;; multido.el --- AUCTeX style for `multido.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2007--2023 Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Created: 21 Jun 2007
@@ -41,10 +41,10 @@
  "multido"
  (lambda ()
    (TeX-add-symbols
-    '("multido" "\var=<start value>+-<inc>" "Repititions" t)
-    '("Multido" "\var=<start value>+-<inc>" "Repititions" t)
-    '("mmultido" "\var=<start value>+-<inc>" "Repititions" t)
-    '("MMultido" "\var=<start value>+-<inc>" "Repititions" t)
+    '("multido" "\\<var>=<start value>+<inc>" "Repititions" t)
+    '("Multido" "\\<var>=<start value>+<inc>" "Repititions" t)
+    '("mmultido" "\\<var>=<start value>+<inc>" "Repititions" t)
+    '("MMultido" "\\<var>=<start value>+<inc>" "Repititions" t)
     "multidostop"
     "multidocount"
     '("fpAdd" "Summand 1" "Summand 2" "Register")
