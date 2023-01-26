@@ -1,6 +1,6 @@
 ;;; nameref.el --- AUCTeX style for `nameref.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2023 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -49,7 +49,7 @@
           '(("\\\\\\(?:N\\|n\\)ameref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
           TeX-complete-list))
 
-                                        ;, Fontification
+   ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (fboundp 'font-latex-set-syntactic-keywords)
               (eq TeX-install-font-lock 'font-latex-setup))
