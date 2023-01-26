@@ -6382,7 +6382,7 @@ tracker.  Visit ")
 ;;; Documentation
 
 (defun TeX-documentation-texdoc (&optional arg)
-  "Run texdoc to read documentation.
+  "Run Texdoc to read documentation.
 
 Prompt for selection of the package of which to show the documentation.
 
@@ -6402,11 +6402,11 @@ show."
             (progn
               ;; Create the buffer, insert the result of the command,
               ;; and accumulate the list of manuals.
-              (with-current-buffer (get-buffer-create
-                                    (setq buffer (format "*texdoc: %s*" pkg)))
+              (with-current-buffer
+                  (setq buffer (get-buffer-create (format "*texdoc: %s*" pkg)))
                 (erase-buffer)
-                (insert (shell-command-to-string
-                         (concat "texdoc --list --nointeract " pkg)))
+                (call-process "texdoc" nil t nil
+                              "--list" "--nointeract" pkg)
                 (goto-char 1)             ; No need to use `point-min' here.
                 (while (re-search-forward
                         "^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:\\ ()]+\\)"
@@ -6419,7 +6419,7 @@ show."
                     ;; buffer, prompt for the number of the manual,
                     ;; then run
                     ;;     texdoc --just-view <doc>
-                    (TeX-pop-to-buffer (get-buffer buffer))
+                    (TeX-pop-to-buffer buffer)
                     (condition-case nil
                         (when (setq doc
                                     (cdr (assoc (TeX-read-string "Please \
