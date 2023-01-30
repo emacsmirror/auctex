@@ -83,7 +83,7 @@ If there is no help, the empty string is returned."
 (defcustom TeX-bar-TeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
              separator tex next-error view bibtex spell)
-  "List of buttons available in `tex-mode'.
+  "List of buttons available in `plain-TeX-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
 labels a button.

@@ -183,7 +183,7 @@ If nil, none is specified."
 (defcustom TeX-command-list
   '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil
-     (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
+     (plain-TeX-mode AmSTeX-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
@@ -193,7 +193,7 @@ If nil, none is specified."
     ("Makeinfo HTML" "makeinfo %(extraopts) %(o-dir) --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
     ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %(output-dir) %t"
-     TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
+     TeX-run-TeX nil (AmSTeX-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
     ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
@@ -202,11 +202,11 @@ If nil, none is specified."
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode
                      context-mode)
      :help "Run BibTeX")
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Run Biber")
     ;; Not part of standard TeX.
     ;; It seems that texindex doesn't support "--output-dir" option.
@@ -224,28 +224,28 @@ If nil, none is specified."
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
     ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Convert DVI file to PostScript")
     ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Run makeindex to create index file")
     ("upMendex" "upmendex %(O?idx)" TeX-run-index t
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
@@ -346,12 +346,12 @@ Any additional elements get just transferred to the respective menu entries."
                         (boolean :tag "Prompt")
                         (choice :tag "Modes"
                                 (const :tag "All" t)
-                                (set (const :tag "Plain TeX" plain-tex-mode)
+                                (set (const :tag "Plain TeX" plain-TeX-mode)
                                      (const :tag "LaTeX" latex-mode)
                                      (const :tag "DocTeX" doctex-mode)
                                      (const :tag "ConTeXt" context-mode)
                                      (const :tag "Texinfo" texinfo-mode)
-                                     (const :tag "AmSTeX" ams-tex-mode)))
+                                     (const :tag "AmSTeX" AmSTeX-mode)))
                         (repeat :tag "Menu elements" :inline t sexp))))
 
 (defcustom TeX-command-output-list
@@ -545,7 +545,7 @@ string."
                     "pdf"
                   "")))
     ("%(PDFout)" (lambda ()
-                   (cond ((eq major-mode 'ams-tex-mode)
+                   (cond ((eq major-mode 'AmSTeX-mode)
                           (if TeX-PDF-mode
                               " -output-format=pdf"
                             " -output-format=dvi"))
@@ -991,9 +991,9 @@ If RESET is non-nil, `TeX-command-next' is reset to
 (defun TeX-mode-prefix (&optional mode)
   "Return the prefix for the symbol MODE as string.
 If no mode is given the current major mode is used."
-  (cdr (assoc (or mode major-mode) '((plain-tex-mode . "plain-TeX")
+  (cdr (assoc (or mode major-mode) '((plain-TeX-mode . "plain-TeX")
                                      (latex-mode . "LaTeX")
-                                     (ams-tex-mode . "AmSTeX")
+                                     (AmSTeX-mode . "AmSTeX")
                                      (doctex-mode . "docTeX")
                                      (texinfo-mode . "Texinfo")
                                      (context-mode . "ConTeXt")))))
@@ -3657,7 +3657,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 \\(article\\|report\\|book\\|slides\\)")
     ("JTEX" japanese-plain-tex-mode
      "-- string likely in Japanese TeX --")
-    ("AMSTEX" ams-tex-mode
+    ("AMSTEX" AmSTeX-mode
      "\\\\document\\b")
     ("CONTEXT" context-mode
      "\\\\\\(start\\(text\\|tekst\\|proje[ck]t\\|proiect\\|\
@@ -3668,7 +3668,7 @@ component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
     ("LATEX" latex-mode
      "\\\\\\(begin\\|\\(?:sub\\)\\{0,2\\}section\\|chapter\\|documentstyle\\|\
 documentclass\\)\\b")
-    ("TEX" plain-tex-mode "."))
+    ("TEX" plain-TeX-mode "."))
   "List of format packages to consider when choosing a TeX mode.
 
 A list with an entry for each format package available at the site.
@@ -3686,7 +3686,7 @@ the major mode to be used.")
   "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
   :type '(radio (function-item latex-mode)
-                (function-item plain-tex-mode)
+                (function-item plain-TeX-mode)
                 (function :tag "Other")))
 
 (defcustom TeX-force-default-mode nil
@@ -3705,7 +3705,7 @@ The algorithm is as follows:
       `TeX-default-mode' is chosen
    2) If \\documentstyle or \\begin{, \\section{, \\part{ or \\chapter{ is
       found, `latex-mode' is selected.
-   3) Otherwise, use `plain-tex-mode'"
+   3) Otherwise, use `plain-TeX-mode'"
   (interactive)
 
   (funcall (if (or (equal (buffer-size) 0)
@@ -5178,7 +5178,7 @@ Brace insertion is only done if point is in a math construct and
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the macro containing point"]
     ["Hide Current Environment" TeX-fold-env
-     :visible (not (eq major-mode 'plain-tex-mode))
+     :visible (not (eq major-mode 'plain-TeX-mode))
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the environment containing point"]
     ["Hide Current Comment" TeX-fold-comment
@@ -6448,7 +6448,7 @@ enter the number of the file to view, anything else to skip: ") list)))
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
-  '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
+  '((texdoc (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode context-mode)
             (lambda ()
               (when (executable-find "texdoc")
                 (TeX-search-files-by-type 'docs 'global t t)))

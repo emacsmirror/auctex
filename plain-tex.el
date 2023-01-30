@@ -92,7 +92,7 @@ Install tool bar if `plain-TeX-enable-toolbar' and
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (TeX-mode-specific-command-menu 'plain-tex-mode))
+    (TeX-mode-specific-command-menu 'plain-TeX-mode))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -113,22 +113,29 @@ plain-TeX file, or any mode derived thereof.  See variable
   :type 'hook
   :group 'TeX-misc)
 
-(TeX-abbrev-mode-setup plain-tex-mode)
+(TeX-abbrev-mode-setup plain-TeX-mode)
 
+;; We want to use `plain-TeX-mode' as the function name.  However, it is
+;; overwritten when tex-mode.el, prior to Emacs 29, is loaded afterwards
+;; because it has non-commented out (defalias 'plain-TeX-mode
+;; #'plain-tex-mode) in it.
+;; When the least supported emacsen version becomes 29, we can safely
+;; transform this definition to `(define-derived-mode plain-TeX-mode
+;; text-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(defun TeX-plain-tex-mode ()
+(defun TeX-plain-TeX-mode ()
   "Major mode in AUCTeX for editing plain TeX files.
 See info under AUCTeX for documentation.
 
 Special commands:
 \\{plain-TeX-mode-map}
 
-Entering `plain-tex-mode' calls the value of `text-mode-hook',
+Entering `plain-TeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `plain-TeX-mode-hook'."
   (interactive)
   (plain-TeX-common-initialization)
-  (setq major-mode 'plain-tex-mode)
+  (setq major-mode 'plain-TeX-mode)
   (use-local-map plain-TeX-mode-map)
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
@@ -137,11 +144,16 @@ of `plain-TeX-mode-hook'."
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
+;; COMPATIBILITY for Emacs<29
+;; Override defalias in tex-mode.el.
+;;;###autoload
+(defalias 'plain-TeX-mode #'TeX-plain-TeX-mode)
+
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
   (VirTeX-common-initialization)
   (set-syntax-table TeX-mode-syntax-table)
-  (setq local-abbrev-table plain-tex-mode-abbrev-table)
+  (setq local-abbrev-table plain-TeX-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
@@ -277,38 +289,43 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
     "Command menu used in AmSTeX mode."
-    (TeX-mode-specific-command-menu 'ams-tex-mode))
+    (TeX-mode-specific-command-menu 'AmSTeX-mode))
 
 (easy-menu-define AmSTeX-mode-menu
   AmSTeX-mode-map
   "Menu used in AmSTeX mode."
-  (cons "AmS-TeX" plain-TeX-menu-entries))
+  (cons "AmSTeX" plain-TeX-menu-entries))
 
-(defcustom AmS-TeX-mode-hook nil
-  "A hook run in AmS-TeX mode buffers."
+(define-obsolete-variable-alias
+  'AmS-TeX-mode-hook 'AmSTeX-mode-hook "AUCTeX 14")
+(defcustom AmSTeX-mode-hook nil
+  "A hook run in AmSTeX mode buffers."
   :type 'hook
   :group 'TeX-misc)
 
 ;;;###autoload
-(defun ams-tex-mode ()
-  "Major mode in AUCTeX for editing AmS-TeX files.
+(defun AmSTeX-mode ()
+  "Major mode in AUCTeX for editing AmSTeX files.
 See info under AUCTeX for documentation.
 
 Special commands:
 \\{AmSTeX-mode-map}
 
-Entering `ams-tex-mode' calls the value of `text-mode-hook',
+Entering `AmSTeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
-of `AmS-TeX-mode-hook'."
+of `AmSTeX-mode-hook'."
   (interactive)
   (plain-TeX-common-initialization)
-  (setq major-mode 'ams-tex-mode)
+  (setq major-mode 'AmSTeX-mode)
   (use-local-map AmSTeX-mode-map)
 
   (setq TeX-base-mode-name "AmS-TeX")
   (setq TeX-command-default "AmSTeX")
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmSTeX-mode-hook)
   (TeX-set-mode-name))
+
+;;;###autoload
+(defalias 'ams-tex-mode #'AmSTeX-mode)
 
 (defcustom AmSTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes

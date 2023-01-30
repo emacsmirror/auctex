@@ -2272,7 +2272,7 @@ has FUNC called with its current buffer being set to it."
       (with-current-buffer (pop buffers)
         (when
             (or (memq (current-buffer) default-buffers)
-                (and (memq major-mode '(plain-tex-mode latex-mode))
+                (and (memq major-mode '(plain-TeX-mode latex-mode))
                      (or (stringp TeX-master)
                          (eq TeX-master t))
                      (string= (expand-file-name (TeX-master-file t))
