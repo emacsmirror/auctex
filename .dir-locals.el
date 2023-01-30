@@ -12,7 +12,7 @@
                      (electric-quote-comment . nil)
                      (electric-quote-string . nil)
                      (indent-tabs-mode . nil)))
- (texinfo-mode . ((mode . bug-reference-prog)
+ (Texinfo-mode . ((mode . bug-reference-prog)
                   (electric-quote-comment . nil)
                   (electric-quote-string . nil)
                   (fill-column . 74))))

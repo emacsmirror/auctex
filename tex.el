@@ -183,15 +183,15 @@ If nil, none is specified."
 (defcustom TeX-command-list
   '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil
-     (plain-TeX-mode AmSTeX-mode texinfo-mode) :help "Run plain TeX")
+     (plain-TeX-mode AmSTeX-mode Texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
     ;; Not part of standard TeX.
     ("Makeinfo" "makeinfo %(extraopts) %(o-dir) %t" TeX-run-compile nil
-     (texinfo-mode) :help "Run Makeinfo with Info output")
+     (Texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo %(extraopts) %(o-dir) --html %t" TeX-run-compile nil
-     (texinfo-mode) :help "Run Makeinfo with HTML output")
+     (Texinfo-mode) :help "Run Makeinfo with HTML output")
     ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil (AmSTeX-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
@@ -202,50 +202,50 @@ If nil, none is specified."
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode
                      context-mode)
      :help "Run BibTeX")
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Run Biber")
     ;; Not part of standard TeX.
     ;; It seems that texindex doesn't support "--output-dir" option.
     ("Texindex" "texindex %s.??" TeX-run-command nil
-     (texinfo-mode) :help "Run Texindex")
+     (Texinfo-mode) :help "Run Texindex")
     ;; TODO:
     ;; 1. Supply "--dvipdf" option if `TeX-PDF-mode' and
     ;;    `TeX-PDF-from-DVI' are non-nil.
     ;; 2. Supply "--build-dir=DIR" option when `TeX-output-dir' is
     ;;    non-nil.
     ("Texi2dvi" "%(PDF)texi2dvi %t" TeX-run-command nil
-     (texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
+     (Texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
     ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PostScript")
     ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeindex to create index file")
     ("upMendex" "upmendex %(O?idx)" TeX-run-index t
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode texinfo-mode)
+     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
      :help "Run xindy to create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
@@ -350,7 +350,7 @@ Any additional elements get just transferred to the respective menu entries."
                                      (const :tag "LaTeX" latex-mode)
                                      (const :tag "DocTeX" doctex-mode)
                                      (const :tag "ConTeXt" context-mode)
-                                     (const :tag "Texinfo" texinfo-mode)
+                                     (const :tag "Texinfo" Texinfo-mode)
                                      (const :tag "AmSTeX" AmSTeX-mode)))
                         (repeat :tag "Menu elements" :inline t sexp))))
 
@@ -995,7 +995,7 @@ If no mode is given the current major mode is used."
                                      (latex-mode . "LaTeX")
                                      (AmSTeX-mode . "AmSTeX")
                                      (doctex-mode . "docTeX")
-                                     (texinfo-mode . "Texinfo")
+                                     (Texinfo-mode . "Texinfo")
                                      (context-mode . "ConTeXt")))))
 
 ;;; Viewing
@@ -2466,7 +2466,7 @@ Get `major-mode' from master file and enable it."
                             (TeX-master-file TeX-default-extension))
                          major-mode)
                      major-mode))
-             (comment-prefix (cond ((eq mode 'texinfo-mode) "@c ")
+             (comment-prefix (cond ((eq mode 'Texinfo-mode) "@c ")
                                    ((eq mode 'doctex-mode) "% ")
                                    (t "%%% ")))
              (mode-string (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
@@ -5522,7 +5522,7 @@ reset to \" \"."
     ;; Preset mode-dependent syntax entries.  (Mode-independent entries
     ;; are set when the variable `TeX-search-syntax-table' is created.)
     (modify-syntax-entry (string-to-char TeX-esc) "\\" TeX-search-syntax-table)
-    (unless (eq major-mode 'texinfo-mode)
+    (unless (eq major-mode 'Texinfo-mode)
       (modify-syntax-entry ?\% "<" TeX-search-syntax-table))
     ;; Clean up the entries which can be specified as arguments.
     (dolist (elt char-syntax-alist)
@@ -6465,16 +6465,16 @@ enter the number of the file to view, anything else to skip: ") list)))
                           (info-lookup->completions 'symbol 'latex-mode)))
                 (lambda (doc)
                   (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
-    (texinfo-info (texinfo-mode)
+    (texinfo-info (Texinfo-mode)
                   (lambda ()
                     (mapcar (lambda (x)
                               (let ((x (car x)))
                                 (if (string-match "\\`@" x)
                                     (substring x 1) x)))
                             (info-lookup->completions 'symbol
-                                                      'texinfo-mode)))
+                                                      'Texinfo-mode)))
                   (lambda (doc)
-                    (info-lookup-symbol (concat "@" doc) 'texinfo-mode))))
+                    (info-lookup-symbol (concat "@" doc) 'Texinfo-mode))))
   "Alist of backends used for looking up documentation.
 Each item consists of four elements.
 

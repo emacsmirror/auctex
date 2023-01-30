@@ -549,7 +549,7 @@ is assumed by default."
 (easy-menu-define Texinfo-command-menu
   Texinfo-mode-map
   "Menu used in Texinfo mode for external commands."
-  (TeX-mode-specific-command-menu 'texinfo-mode))
+  (TeX-mode-specific-command-menu 'Texinfo-mode))
 
 (easy-menu-define Texinfo-mode-menu
   Texinfo-mode-map
@@ -627,11 +627,9 @@ is assumed by default."
 
 ;;; Mode:
 
-;;;###autoload
-(defalias 'Texinfo-mode #'texinfo-mode)
 
 ;;;###autoload
-(defun TeX-texinfo-mode ()
+(defun Texinfo-mode ()
   "Major mode in AUCTeX for editing Texinfo files.
 
 Special commands:
