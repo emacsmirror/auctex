@@ -1,7 +1,7 @@
-This is auctex.info, produced by makeinfo version 7.0.1 from
+This is auctex.info, produced by makeinfo version 7.0.2 from
 auctex.texi.
 
-This manual is for AUCTeX (version 13.1.8 from 2023-01-15), a
+This manual is for AUCTeX (version 13.1.9 from 2023-01-31), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -4627,6 +4627,13 @@ File: auctex.info,  Node: Documentation,  Prev: Cleaning,  Up: Processing
      The command can be invoked by the key binding mentioned above as
      well as the ‘Find Documentation...’ entry in the mode menu.
 
+     Note that this command assumes TeX Live (https://tug.org/texlive/),
+     not MiKTeX (https://miktex.org/); according to ‘Texdoc’ site
+     (https://tug.org/texdoc/),
+          A command named ‘texdoc’ is also available in MiKTeX, but it
+          is merely a shortcut for an independent program, ‘mthelp’.
+     Thus it isn’t sure whether this command works for MiKTeX or not.
+
 
 File: auctex.info,  Node: Customization,  Next: Appendices,  Prev: Processing,  Up: Top
 
@@ -6181,7 +6188,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.1.8 from 2023-01-15), a
+   This manual is for AUCTeX (version 13.1.9 from 2023-01-31), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -9723,42 +9730,42 @@ Node: Checking201684
 Node: Control203374
 Node: Cleaning205523
 Node: Documentation206970
-Node: Customization207697
-Node: Modes and Hooks208190
-Node: Multifile210150
-Node: Parsing Files214996
-Node: Internationalization220035
-Node: European221389
-Node: Japanese229308
-Node: Automatic234568
-Node: Automatic Global237097
-Node: Automatic Private238235
-Node: Automatic Local239599
-Node: Style Files240873
-Node: Simple Style241687
-Node: Adding Macros245480
-Node: Adding Environments255281
-Node: Adding Other260743
-Node: Hacking the Parser265423
-Node: Appendices269436
-Node: Copying this Manual269732
-Node: GNU Free Documentation License270618
-Node: Changes295942
-Node: Development355334
-Node: Mid-term Goals355982
-Node: Wishlist358881
-Node: Bugs365084
-Node: FAQ366224
-Node: Texinfo mode372098
-Node: Exploiting373234
-Node: Superseding374056
-Node: Mapping378523
-Node: Unbinding380466
-Node: Indices381307
-Node: Key Index381470
-Node: Function Index389145
-Node: Variable Index401415
-Node: Concept Index426847
+Node: Customization208093
+Node: Modes and Hooks208586
+Node: Multifile210546
+Node: Parsing Files215392
+Node: Internationalization220431
+Node: European221785
+Node: Japanese229704
+Node: Automatic234964
+Node: Automatic Global237493
+Node: Automatic Private238631
+Node: Automatic Local239995
+Node: Style Files241269
+Node: Simple Style242083
+Node: Adding Macros245876
+Node: Adding Environments255677
+Node: Adding Other261139
+Node: Hacking the Parser265819
+Node: Appendices269832
+Node: Copying this Manual270128
+Node: GNU Free Documentation License271014
+Node: Changes296338
+Node: Development355730
+Node: Mid-term Goals356378
+Node: Wishlist359277
+Node: Bugs365480
+Node: FAQ366620
+Node: Texinfo mode372494
+Node: Exploiting373630
+Node: Superseding374452
+Node: Mapping378919
+Node: Unbinding380862
+Node: Indices381703
+Node: Key Index381866
+Node: Function Index389541
+Node: Variable Index401811
+Node: Concept Index427243
 
 End Tag Table
 

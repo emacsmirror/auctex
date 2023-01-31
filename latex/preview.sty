@@ -23,18 +23,10 @@
 %% in the same archive or directory.)
 %%    The preview style for extracting previews from LaTeX documents.
 %%    Developed as part of AUCTeX <URL:https://www.gnu.org/software/auctex/>.
-\NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
-#4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
-\begingroup \catcode`\_=12
-\reserved@a\pr@version $Name: release_13_1 $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.126 $ \endgroup \else
-  \def\next release_{} \lccode`\_=`.
-  \edef\next{\lowercase{\endgroup
-    \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2017/04/24 13:20:00 $
-\edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space \pr@version\space (AUCTeX/preview-latex)]}
-\next
+\NeedsTeXFormat{LaTeX2e}
+\def\pr@version{13.2}
+\def\pr@date{2023/01/17}
+\ProvidesPackage{preview}[\pr@date\space \pr@version\space (AUCTeX/preview-latex)]
 \let\ifPreview\iffalse
 \let\preview@delay=\@gobble
 \let\pr@advise=\@gobbletwo
