@@ -60,7 +60,7 @@
   "Matches the arguments of \\newcites from multibib package.")
 
 (defun LaTeX-multibib-auto-prepare ()
-  "Clear `LaTeX-auto-multibib-newcite' variables before parsing."
+  "Clear `LaTeX-auto-multibib-newcite' variable before parsing."
   (setq LaTeX-auto-multibib-newcite nil))
 
 (defun LaTeX-multibib-auto-cleanup ()
@@ -107,14 +107,13 @@
    (TeX-auto-add-regexp LaTeX-multibib-newcites-regexp)
 
    (TeX-add-symbols
-    '("newcites"
-      (TeX-arg-eval
-       (lambda ()
+    `("newcites"
+      ,(lambda (optional)
          (let ((suf (TeX-read-string
-                     (TeX-argument-prompt nil nil "Suffix"))))
+                     (TeX-argument-prompt optional nil "Suffix"))))
            (LaTeX-add-multibib-newcites suf)
            (LaTeX-multibib-auto-cleanup)
-           (format "%s" suf))))
+           (TeX-argument-insert suf optional)))
       "Heading")
     '("setbiblabelwidth" "Label"))
 

@@ -6382,7 +6382,7 @@ tracker.  Visit ")
 ;;; Documentation
 
 (defun TeX-documentation-texdoc (&optional arg)
-  "Run texdoc to read documentation.
+  "Run Texdoc to read documentation.
 
 Prompt for selection of the package of which to show the documentation.
 
@@ -6390,81 +6390,54 @@ If called with a prefix argument ARG, after selecting the
 package, prompt for selection of the manual of that package to
 show."
   (interactive "P")
-  (let ((pkg (thing-at-point 'symbol))
-        buffer list doc)
-    ;; Strip off properties.  XXX: XEmacs doesn't have
-    ;; `substring-no-properties'.
-    (set-text-properties 0 (length pkg) nil pkg)
-    (setq pkg (TeX-read-string "View documentation for: " pkg))
-    (unless (zerop (length pkg))
-      (if arg
-          ;; Called with prefix argument: run "texdoc --list --nointeract <pkg>"
-          (progn
-            ;; Create the buffer, insert the result of the command, and
-            ;; accumulate the list of manuals.
-            (with-current-buffer (get-buffer-create
-                                  (setq buffer (format "*texdoc: %s*" pkg)))
-              (erase-buffer)
-              (insert (shell-command-to-string
-                       (concat "texdoc --list --nointeract " pkg)))
-              (goto-char 1)             ; No need to use `point-min' here.
-              (save-excursion
+  (if (not (executable-find "texdoc"))
+      (message "texdoc not found")
+    (let ((pkg (thing-at-point 'symbol t))
+          buffer list doc)
+      (setq pkg (TeX-read-string "View documentation for: " pkg))
+      (unless (zerop (length pkg))
+        (if arg
+            ;; Called with prefix argument:
+            ;; run "texdoc --list --nointeract <pkg>"
+            (progn
+              ;; Create the buffer, insert the result of the command,
+              ;; and accumulate the list of manuals.
+              (with-current-buffer
+                  (setq buffer (get-buffer-create (format "*texdoc: %s*" pkg)))
+                (erase-buffer)
+                (call-process "texdoc" nil t nil
+                              "--list" "--nointeract" pkg)
+                (goto-char 1)             ; No need to use `point-min' here.
                 (while (re-search-forward
-                        ;; XXX: XEmacs doesn't support character classes in
-                        ;; regexps, like "[:alnum:]".
-                        "^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:\\ ()]+\\)" nil t)
-                  (push (cons (match-string 1) (match-string 2)) list))))
-            (unwind-protect
-                (cond
-                 ((null (executable-find "texdoc"))
-                  ;; Note: `shell-command-to-string' uses shell, only
-                  ;; `call-process' looks at `exec-path', thus only here makes
-                  ;; sense to use `executable-find' to test whether texdoc is
-                  ;; available.
-                  (message "texdoc not found"))
-                 (list
-                  ;; Go on if there are manuals listed: show the buffer, prompt
-                  ;; for the number of the manual, then run
-                  ;;     texdoc --just-view <doc>
-                  (TeX-pop-to-buffer (get-buffer buffer))
-                  (condition-case nil
-                      (when (setq doc
-                                  (cdr (assoc (TeX-read-string "Please enter \
-the number of the file to view, anything else to skip: ") list)))
-                        (call-process "texdoc" nil 0 nil "--just-view" doc))
-                    ;; Exit gently if a `quit' signal is thrown.
-                    (quit nil)))
-                 (t (message "No documentation found for %s" pkg)))
-              ;; In any case quit-and-kill the window.
-              (when (get-buffer-window buffer)
-                (quit-window t (get-buffer-window buffer)))))
-        ;; Called without prefix argument: just run "texdoc --view <pkg>" and
-        ;; show the output, so that the user is warned in case it doesn't find
-        ;; the documentation or "texdoc" is not available.
-        (message "%s"
-                 ;; The folowing code to the end of `defun' used to be
-                 ;; just
-                 ;; (shell-command-to-string (concat "texdoc --view " pkg))
-                 ;; , but in some cases it blocks emacs until the user
-                 ;; quits the viewer (bug#28905).
-                 (with-output-to-string
-                   (let* (;; Use pipe rather than pty because the
-                          ;; latter causes atril (evince variant
-                          ;; viewer) to exit before showing anything.
-                          (process-connection-type nil)
-                          (process (start-process-shell-command
-                                    "Doc view" standard-output
-                                    (concat "texdoc --view " pkg))))
-                     ;; Suppress the message "Process Doc view
-                     ;; finished".
-                     (set-process-sentinel process #'ignore)
-                     ;; Kill temp buffer without query.  This is
-                     ;; necessary, at least for some environment, if
-                     ;; the underlying shell can't find the texdoc
-                     ;; executable.
-                     (set-process-query-on-exit-flag process nil)
-                     ;; Don't discard shell output.
-                     (accept-process-output process))))))))
+                        "^ *\\([0-9]+\\) +\\([-~/a-zA-Z0-9_.${}#%,:\\ ()]+\\)"
+                        nil t)
+                  (push (cons (match-string 1) (match-string 2)) list)))
+              (unwind-protect
+                  (cond
+                   (list
+                    ;; Go on if there are manuals listed: show the
+                    ;; buffer, prompt for the number of the manual,
+                    ;; then run
+                    ;;     texdoc --just-view <doc>
+                    (TeX-pop-to-buffer buffer)
+                    (condition-case nil
+                        (when (setq doc
+                                    (cdr (assoc (TeX-read-string "Please \
+enter the number of the file to view, anything else to skip: ") list)))
+                          (call-process "texdoc" nil 0 nil "--just-view" doc))
+                      ;; Exit gently if a `quit' signal is thrown.
+                      (quit nil)))
+                   (t (message "No documentation found for %s" pkg)))
+                ;; In any case quit-and-kill the window.
+                (when (get-buffer-window buffer)
+                  (quit-window t (get-buffer-window buffer)))))
+          ;; Called without prefix argument:
+          ;; just run "texdoc --view <pkg>".
+          ;; Recent Texdoc returns exit code 3 when it can't find the
+          ;; specified document, according to
+          ;; <URL:https://tug.org/texdoc/doc/texdoc.man1.pdf>
+          (if (= (call-process "texdoc" nil nil nil "--view" pkg) 3)
+              (message "No documentation found for %s" pkg)))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."

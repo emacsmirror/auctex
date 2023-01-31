@@ -1,6 +1,6 @@
 ;;; inputenc.el --- AUCTeX style for `inputenc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
@@ -53,18 +53,17 @@
 
             ;; if necessary offer to set the coding system for saving
             ;; this buffer based on the selected input encoding
-            (when (and (null
-                        (coding-system-equal
-                         (coding-system-base
-                          (or coding-system-for-write
-                              buffer-file-coding-system))
-                         (coding-system-base
-                          (latexenc-inputenc-to-coding-system selected))))
-                       (y-or-n-p "Set coding system for saving this buffer? ")
-                       (set-buffer-file-coding-system
+            (and (null (coding-system-equal
                         (coding-system-base
-                         (latexenc-inputenc-to-coding-system selected)))
-                       (message nil)))
+                         (or coding-system-for-write
+                             buffer-file-coding-system))
+                        (coding-system-base
+                         (latexenc-inputenc-to-coding-system selected))))
+                 (y-or-n-p "Set coding system for saving this buffer? ")
+                 (set-buffer-file-coding-system
+                  (coding-system-base
+                   (latexenc-inputenc-to-coding-system selected)))
+                 (message nil))
 
             ;; return selected input encoding
             selected)))

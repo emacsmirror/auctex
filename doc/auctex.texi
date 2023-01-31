@@ -4160,6 +4160,15 @@ list of manuals of the given package among to choose.
 
 The command can be invoked by the key binding mentioned above as well as
 the @samp{Find Documentation...} entry in the mode menu.
+
+Note that this command assumes @url{https://tug.org/texlive/,
+@w{@TeX{} Live}}, not @url{https://miktex.org/,MiK@TeX{}}; according to
+@url{https://tug.org/texdoc/, @samp{Texdoc} site},
+@quotation
+A command named @command{texdoc} is also available in MiK@TeX{}, but it is
+merely a shortcut for an independent program, @command{mthelp}.
+@end quotation
+Thus it isn't sure whether this command works for MiK@TeX{} or not.
 @end deffn
 
 @node Customization
