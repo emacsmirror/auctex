@@ -821,12 +821,13 @@ environment just inserted, the buffer position just before
     (end-of-line 0)
     (if active-mark
         (progn
-          (or (assoc environment LaTeX-indent-environment-list)
-              (if auto-fill-function
-                  ;; Fill the region only when `auto-fill-mode' is active.
-                  (LaTeX-fill-region content-start (line-beginning-position 2))
-                ;; Else just indent the region. (bug#48518)
-                (indent-region content-start (line-beginning-position 2))))
+          (if (and auto-fill-function
+                   (not (assoc environment LaTeX-indent-environment-list)))
+              ;; Fill the region only when `auto-fill-mode' is active
+              ;; and no special indent rule exists.
+              (LaTeX-fill-region content-start (line-beginning-position 2))
+            ;; Else just indent the region. (bug#48518, bug#28382)
+            (indent-region content-start (line-beginning-position 2)))
           (set-mark content-start))
       (indent-according-to-mode))
     ;; Indent \end{foo}.
@@ -1335,7 +1336,6 @@ Just like array and tabular."
     (LaTeX-newline)
     (indent-according-to-mode))
   (when (TeX-active-mark)
-    (indent-region (point) (mark))
     ;; Restore the positions of point and mark.
     (exchange-point-and-mark)))
 
