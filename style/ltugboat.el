@@ -1,6 +1,6 @@
-;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.22)  -*- lexical-binding: t; -*-
+;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.28)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltugboat.cls' (v2.22) from 2019/11/09.
+;; This file adds support for `ltugboat.cls' (v2.28) from 2023/01/16.
 ;; `ltugboat.cls' is part of TeXLive.
 
 ;;; Code:
@@ -39,6 +39,8 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function font-latex-set-syntactic-keywords
+                  "font-latex")
 
 (TeX-add-style-hook
  "ltugboat"
@@ -94,9 +96,10 @@
                                          "small" "normalsize" "large"
                                          "Large" "LARGE"      "huge"
                                          "Huge"  "makevmeta"  "ruled")
-                                        "Command(s)" nil nil
+                                        "Command(s) (crm): \\" t
+                                        ,TeX-esc
                                         ,(regexp-quote TeX-esc)
-                                        ,TeX-esc nil nil nil nil ,TeX-esc]))
+                                        ,TeX-esc]))
 
    ;; 10.1 Acronyms and logos
    (TeX-add-symbols
@@ -237,9 +240,19 @@
     '("tubbraced" "Text")
     '("nth"       "Number")
 
-    ;; 12 Bibliography
+    ;; 12 Typesetting urls
+    '("tburl" "Url")
+    '("tbsurl" "https Url")
+    '("tbhurl" "http Url")
+    '("tburlfootnote" "Url")
+
+    ;; 13 Bibliography
     '("SetBibJustification"
       (TeX-arg-completing-read ("\\raggedright" "\\sloppy") "Justification")))
+
+   ;; Add the macros to `LaTeX-verbatim-macros-with-braces-local':
+   (dolist (mac '("tburl" "tbsurl" "tbhurl" "tburlfootnote"))
+     (add-to-list 'LaTeX-verbatim-macros-with-braces-local mac t))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -260,8 +273,14 @@
      (font-latex-add-keywords '(("makesignature"   "")
                                 ("SetBibJustification"  "{"))
                               'function)
-     (font-latex-add-keywords '(("nameref" "{"))
-                              'reference)))
+     (font-latex-add-keywords '(("nameref" "{")
+                                ("tburl"   "")
+                                ("tbsurl"  "")
+                                ("tbhurl"  "")
+                                ("tburlfootnote" ""))
+                              'reference)
+     ;; Tell font-lock about the update.
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-ltugboat-class-options
