@@ -55,6 +55,10 @@
  "conditionals-indent-in.tex"
  'LaTeX-conditionals-indent/out
  "conditionals-indent-out.tex"
+ 'LaTeX-nested-indent/in
+ "nested-indent-in.tex"
+ 'LaTeX-nested-indent/out
+ "nested-indent-out.tex"
  'docTeX/in
  "doctex-indent-in.dtx"
  'docTeX/out
@@ -142,6 +146,23 @@
       (goto-char (point-max))
       (newline-and-indent)
       (should (= (current-column) 2)))))
+
+;; bug#48518 Test indent in nested environments
+(ert-deftest LaTeX-indent-nested-envs ()
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-nested-indent/in)
+             (LaTeX-mode)
+             (let ((TeX-parse-self t))
+               (TeX-update-style t))
+             (search-forward "a^2 + b^2 = c^2")
+             (set-mark (match-beginning 0))
+             (activate-mark)
+             (LaTeX-insert-environment "equation")
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-nested-indent/out)
+             (buffer-string)))))
 
 ;; Test LaTeX code with math modes is indented as expected.  This has mostly to
 ;; do with the value of `LaTeX-fill-break-at-separators' and how
