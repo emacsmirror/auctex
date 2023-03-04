@@ -70,7 +70,8 @@
    (add-hook 'LaTeX-after-insert-env-hook #'LaTeX-beamer-after-insert-env nil t)
 
    (TeX-run-style-hooks "amsmath" "amssymb" "amsthm" "color" "geometry"
-                        "hyperref" "inputenc" "translator" "xcolor")
+                        "hyperref" "inputenc" "translator" "xcolor"
+                        "graphicx")
 
    (LaTeX-section-list-add-locally
     '(("part" 0)
@@ -160,7 +161,8 @@
     '("hyperlinkdocumentend" [TeX-arg-beamer-overlay-spec] 1)
     '("hypertarget" [TeX-arg-beamer-overlay-spec] "Target name" t)
     '("includegraphics" [TeX-arg-beamer-overlay-spec]
-      [LaTeX-arg-graphicx-includegraphics-key-val] LaTeX-arg-includegraphics)
+      [TeX-arg-key-val (LaTeX-graphicx-key-val-options) nil nil ?\s]
+      LaTeX-arg-includegraphics)
     '("includeonlyframes" "Frame label(s)")
     '("includeonlylecture" "Lecture label")
     '("includeslide" ["Options"] "Label")
