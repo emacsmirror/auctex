@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2023  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -177,7 +177,9 @@ standard one."
     '("urldef" TeX-arg-url-urldef)
 
     '("urlstyle" (TeX-arg-completing-read ("rm" "same" "sf" "tt")
-                                          "Style")))
+                                          "Style"))
+
+    '("DeclareUrlCommand" TeX-arg-url-DeclareUrlCommand))
 
    ;; For '\path', use the facilities provided by this style.  Also
    ;; don't add "path" for fontification below since

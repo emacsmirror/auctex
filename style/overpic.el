@@ -55,10 +55,9 @@
   "Insert key-val for optional argument of overpic environments.
 If OPTIONAL is non-nil, insert argument in square brackets.
 
-This function is an variation of
-`LaTeX-arg-graphicx-includegraphics-key-val' where the key-val's
-in `LaTeX-overpic-key-val-options' are offered in addition to the
-ones provided by `LaTeX-graphicx-key-val-options'."
+The key-val's in `LaTeX-overpic-key-val-options' are offered in
+addition to the ones provided by
+`LaTeX-graphicx-key-val-options'."
   (let ((crm-local-completion-map
          (remove (assoc 32 crm-local-completion-map)
                  crm-local-completion-map))

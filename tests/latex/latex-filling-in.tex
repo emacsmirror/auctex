@@ -1,4 +1,6 @@
 \documentclass{article}
+\usepackage{url}
+\usepackage{fvextra}
 \usepackage{shortvrb}
 \begin{document}
 
@@ -80,6 +82,18 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, \verb|sed do|eiusmod te
 % in `LaTeX-shortvrb-chars'.  The variable itself is let-bound to
 % '(?\") in the function `LaTeX-filling' in latex-test.el.
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, "sed do"eiusmod tempor
+
+% bug#61400 Various verb-like commands should allow line break at just
+% before them.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec \path{bar}
+% bug#61400
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec \path|bar|
+% bug#61400
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec \Verb{bar}
+% bug#61400
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec \Verb|bar|
+% bug#61400
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec \verb|bar|
 
 \end{document}
 

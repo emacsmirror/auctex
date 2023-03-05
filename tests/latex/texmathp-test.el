@@ -48,4 +48,26 @@
             (LaTeX-mode)
             (texmathp))))
 
+;; bug#61410
+(ert-deftest texmathp-verbatim ()
+  "Test for math command inside verbatim which is ignored."
+  (let ((TeX-install-font-lock #'font-latex-setup))
+    (should-not (with-temp-buffer
+                  (insert "a $b$ \\verb|$| c ")
+                  (LaTeX-mode)
+                  (font-lock-ensure)
+                  (texmathp)))
+
+    (should-not (with-temp-buffer
+                  (insert "\
+a $b$
+
+\\begin{verbatim}
+$
+\\end{verbatim}
+c")
+                  (LaTeX-mode)
+                  (font-lock-ensure)
+                  (texmathp)))))
+
 ;;; texmathp-test.el ends here

@@ -283,7 +283,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
                        (if (eq major-mode 'doctex-mode)
                            "[\n\r]%*[ \t]*[\n\r]"
                          "[\n\r][ \t]*[\n\r]")
-                                          nil 1 texmathp-search-n-paragraphs)
+                       nil 1 texmathp-search-n-paragraphs)
                       (match-beginning 0)
                     (point-min))))
          (mac-match (texmathp-match-macro bound))
@@ -321,12 +321,25 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 
     ;; Store info, show as message when interactive, and return
     (setq texmathp-why match)
-    (and (called-interactively-p 'any)
-         (message "math-mode is %s: %s begins at buffer position %d"
-                  (if math-on "on" "off")
-                  (or (car match) "new paragraph")
-                  (cdr match)))
-    (and math-on t)))
+    ;; Check also if the match is inside a verbatim construct and
+    ;; return immediately nil.  This relies on the function
+    ;; `LaTeX-verbatim-p'.  We add a check here in case this library
+    ;; is used stand-alone without latex.el provided by AUCTeX
+    ;; (bug#61410):
+    (if (and (fboundp 'LaTeX-verbatim-p)
+             (save-excursion (LaTeX-verbatim-p (cdr match))))
+        (progn
+          (setq texmathp-why `(nil . ,(cdr match)))
+          (when (called-interactively-p 'any)
+            (message "math-mode is off: Math command in verbatim construct at buffer position %d"
+                     (cdr match)))
+          nil)
+      (and (called-interactively-p 'any)
+           (message "math-mode is %s: %s begins at buffer position %d"
+                    (if math-on "on" "off")
+                    (or (car match) "new paragraph")
+                    (cdr match)))
+      (and math-on t))))
 
 (defun texmathp-match-environment (bound)
   "Find out if point is inside any of the math environments.

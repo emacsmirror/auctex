@@ -821,12 +821,13 @@ environment just inserted, the buffer position just before
     (end-of-line 0)
     (if active-mark
         (progn
-          (or (assoc environment LaTeX-indent-environment-list)
-              (if auto-fill-function
-                  ;; Fill the region only when `auto-fill-mode' is active.
-                  (LaTeX-fill-region content-start (line-beginning-position 2))
-                ;; Else just indent the region. (bug#48518)
-                (indent-region content-start (line-beginning-position 2))))
+          (if (and auto-fill-function
+                   (not (assoc environment LaTeX-indent-environment-list)))
+              ;; Fill the region only when `auto-fill-mode' is active
+              ;; and no special indent rule exists.
+              (LaTeX-fill-region content-start (line-beginning-position 2))
+            ;; Else just indent the region. (bug#48518, bug#28382)
+            (indent-region content-start (line-beginning-position 2)))
           (set-mark content-start))
       (indent-according-to-mode))
     ;; Indent \end{foo}.
@@ -1335,7 +1336,6 @@ Just like array and tabular."
     (LaTeX-newline)
     (indent-according-to-mode))
   (when (TeX-active-mark)
-    (indent-region (point) (mark))
     ;; Restore the positions of point and mark.
     (exchange-point-and-mark)))
 
@@ -3780,46 +3780,72 @@ values of the variable `LaTeX-verbatim-environments' as well.")
   (append LaTeX-verbatim-environments
           LaTeX-verbatim-environments-local))
 
-(defun LaTeX-verbatim-macro-boundaries ()
-  "Return boundaries of verbatim macro.
+(defun LaTeX-verbatim-macro-boundaries (&optional arg-only)
+  "Return boundaries of verbatim macro containing point.
 Boundaries are returned as a cons cell where the car is the macro
 start and the cdr the macro end.
 
-Only macros which enclose their arguments with special
-non-parenthetical delimiters, like \\verb+foo+, are recognized."
+If optional argument ARG-ONLY is non-nil, return the inner region
+of the macro argument as cons."
   (save-excursion
     (let ((orig (point))
-          (verbatim-regexp (regexp-opt (LaTeX-verbatim-macros-with-delims) t)))
+          (verbatim-regexp (regexp-opt
+                            (append (LaTeX-verbatim-macros-with-delims)
+                                    (LaTeX-verbatim-macros-with-braces))
+                            t)))
       ;; Search backwards for the macro start, unless we are facing one
-      (unless (looking-at (concat (regexp-quote TeX-esc) verbatim-regexp))
-        (catch 'found
-          (while (progn
-                   (skip-chars-backward (concat "^\n" (regexp-quote TeX-esc))
-                                        (line-beginning-position))
-                   (when (looking-at verbatim-regexp) (throw 'found nil))
-                   (or (bobp) (forward-char -1))
-                   (/= (point) (line-beginning-position))))))
+      (if (looking-at (concat (regexp-quote TeX-esc) verbatim-regexp))
+          (forward-char 1)
+        (while (progn
+                 (skip-chars-backward (concat "^" (regexp-quote TeX-esc))
+                                      (line-beginning-position))
+                 (if (or (bolp)
+                         (looking-at verbatim-regexp))
+                     ;; Terminate the loop.
+                     nil
+                   (forward-char -1)
+                   ;; Continue the loop.
+                   t))))
       ;; Search forward for the macro end, unless we failed to find a start
       (unless (bolp)
         (let* ((beg (1- (point)))
-               (macro-end (match-end 0))
+               (end (match-end 0))
                ;; XXX: Here we assume we are dealing with \verb which
                ;; expects the delimiter right behind the command.
                ;; However, \lstinline can also cope with whitespace as
                ;; well as an optional argument after the command.
-               (delimiter (buffer-substring-no-properties
-                           macro-end (1+ macro-end))))
+               ;; \Verb (from fancyvrb) also accepts an optional
+               ;; argument which we have to encounter.  We assume that
+               ;; users don't write something like this '\Verb[foo['
+               ;; and again the delimiter is directly after the ]
+               ;; closing the optional argument:
+               (delimiter (progn
+                            (if (= (char-after end) (aref LaTeX-optop 0))
+                                ;; Update `end'.
+                                (save-excursion (goto-char end)
+                                                (forward-list)
+                                                (setq end (point))))
+                            (string (char-after end)))))
           ;; Heuristic: If an opening brace is encountered, search for
-          ;; both the opening and the closing brace as an end marker.
+          ;; a closing brace as an end marker.
           ;; Like that the function should work for \verb|...| as well
           ;; as for \url{...}.
-          (when (string= delimiter TeX-grop)
-            (setq delimiter (concat delimiter TeX-grcl)))
-          (goto-char (1+ macro-end))
-          (skip-chars-forward (concat "^" delimiter))
+          (if (string= delimiter TeX-grop)
+              (progn
+                (goto-char end)
+                ;; Allow one level of nested braces as verb argument.
+                (re-search-forward "{[^}{]*\\(?:{[^}{]*}[^}{]*\\)*}"
+                                   (line-end-position) t)
+                (backward-char))
+            (goto-char (1+ end))
+            (skip-chars-forward (concat "^" delimiter) (line-end-position)))
           (when (<= orig (point))
-            (cons beg (1+ (point)))))))))
+            (if arg-only
+                (cons (1+ end) (point))
+              (cons beg (1+ (point))))))))))
 
+;; Currently, AUCTeX doesn't use this function at all.  We leave it as
+;; a utility function.  It was originally used in `LaTeX-verbatim-p'.
 (defun LaTeX-current-verbatim-macro ()
   "Return name of verbatim macro containing point, nil if none is present."
   (let ((macro-boundaries (LaTeX-verbatim-macro-boundaries)))
@@ -3831,16 +3857,25 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
          (point) (progn (skip-chars-forward "@A-Za-z*") (point)))))))
 
 (defun LaTeX-verbatim-p (&optional pos)
-  "Return non-nil if position POS is in a verbatim-like construct."
+  "Return non-nil if position POS is in a verbatim-like construct.
+The macro body (\"\\verb\") and its delimiters, including
+optional argument if any, aren't considered as component of a
+verbatim-like construct."
   (when pos (goto-char pos))
   (save-match-data
-    (or (progn
+    ;; TODO: Factor out syntax propertize facility from font-latex.el
+    ;; and re-implement as major mode feature.  Then we can drop the
+    ;; fallback code below.
+    (if (eq TeX-install-font-lock 'font-latex-setup)
+        (progn
           (syntax-propertize (point))
           (nth 3 (syntax-ppss)))
-        (member (LaTeX-current-verbatim-macro)
-                (LaTeX-verbatim-macros-with-delims))
-        (member (TeX-current-macro) (LaTeX-verbatim-macros-with-braces))
-        (member (LaTeX-current-environment) (LaTeX-verbatim-environments)))))
+      ;; Fallback for users who stay away from font-latex.
+      (or
+       (let ((region (LaTeX-verbatim-macro-boundaries t)))
+         (and region
+              (<= (car region) (point) (cdr region))))
+       (member (LaTeX-current-environment) (LaTeX-verbatim-environments))))))
 
 
 ;;; Formatting
