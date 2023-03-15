@@ -1,6 +1,6 @@
 ;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -156,27 +156,28 @@ If `caption.el' is loaded, add the new floating environment to
 
    ;; Commands:
    (TeX-add-symbols
-    '("DeclareFloatingEnvironment"
+    `("DeclareFloatingEnvironment"
       [TeX-arg-key-val (LaTeX-newfloat-key-val-options)]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((newfloat (TeX-read-string
-                          (TeX-argument-prompt nil nil "Floating environment"))))
+                          (TeX-argument-prompt optional nil "Floating environment"))))
            (LaTeX-add-newfloat-DeclareFloatingEnvironments newfloat)
-           (format "%s" newfloat)))))
+           (TeX-argument-insert newfloat optional))))
 
-    '("SetupFloatingEnvironment"
+    `("SetupFloatingEnvironment"
       (TeX-arg-completing-read
-       (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+       ,(lambda ()
+          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
        "Floating environment")
       (TeX-arg-key-val (LaTeX-newfloat-key-val-options)))
 
     '("ForEachFloatingEnvironment" t)
     '("ForEachFloatingEnvironment*" t)
 
-    '("PrepareListOf"
+    `("PrepareListOf"
       (TeX-arg-completing-read
-       (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+       ,(lambda ()
+          (mapcar #'car (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
        "Floating environment")
       t)
 
