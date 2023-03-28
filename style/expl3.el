@@ -1,6 +1,6 @@
 ;;; expl3.el --- AUCTeX style for `expl3.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2017-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,10 @@
 
 ;;; Code:
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex" (keywords class))
+
 (require 'tex)
 (require 'latex)
 
@@ -49,15 +53,44 @@
    (when (and (eq TeX-install-font-lock 'font-latex-setup))
      ;; Fontify _ and : as part of macros.
      (add-to-list 'font-latex-match-simple-include-list "_" t)
-     (add-to-list 'font-latex-match-simple-include-list ":" t)))
+     (add-to-list 'font-latex-match-simple-include-list ":" t))
+
+   (TeX-add-symbols
+    '("ExplSyntaxOn" 0)
+    '("ExplSyntaxOff" 0)
+
+    '("ProvidesExplClass"
+      (TeX-arg-file-name-sans-extension "Class name")
+      TeX-arg-date TeX-arg-version "Description")
+
+    '("ProvidesExplFile"
+      (TeX-arg-file-name "File name")
+      TeX-arg-date TeX-arg-version "Description")
+
+    '("ProvidesExplPackage"
+      (TeX-arg-file-name-sans-extension "Package name")
+      TeX-arg-date TeX-arg-version "Description"))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("ExplSyntaxOn"  "")
+                                ("ExplSyntaxOff" ""))
+                              'warning)
+     (font-latex-add-keywords '(("ProvidesExplClass"   "{{{{")
+                                ("ProvidesExplFile"    "{{{{")
+                                ("ProvidesExplPackage" "{{{{"))
+                              'function)))
  TeX-dialect)
 
 (defun LaTeX-expl3-package-options ()
   "Read the expl3 package options from the user."
   (TeX-read-key-val t '(("check-declarations" ("true" "false"))
                         ("log-functions" ("true" "false"))
-                        ("driver" ("auto"    "latex2e"
-                                   "dvips"   "dvipdfmx"
-                                   "pdfmode" "xdvipdfmx")))))
+                        ("enable-debug" ("true" "false"))
+                        ("backend" ("dvips"   "dvipdfmx"
+                                    "dvisvgm" "luatex"
+                                    "pdftex"  "xetex"))
+                        ("suppress-backend-headers" ("true" "false")))))
 
 ;;; expl3.el ends here
