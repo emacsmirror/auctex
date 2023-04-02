@@ -1806,6 +1806,40 @@ prepared for similar side effects when you do.
 Note that commented curly braces @code{@{} and @code{@}} aren't counted
 when @AUCTeX{} computes indentation.
 
+In docTeX-mode, @TeX{} code is enclosed in @samp{macrocode} environment
+like this:
+@example
+%    \begin@{macrocode@}
+\def\foo#1@{%
+  $#1$%
+@}
+%    \end@{macrocode@}
+@end example
+
+@noindent
+Sometimes, the code is long and one wants to insert comments inside the
+@TeX{} code like this:
+@example
+%    \begin@{macrocode@}
+\def\foo#1@{%
+%    \end@{macrocode@}
+%   Comment the next line of code
+%    \begin@{macrocode@}
+  $#1$%
+@}
+%    \end@{macrocode@}
+@end example
+
+@noindent
+Usually, the comment inside the code interrupts the indentation.  This
+behavior can be controlled by setting the variable
+@code{docTeX-indent-across-comments}.
+
+@defopt docTeX-indent-across-comments
+If non-nil, indentation in docTeX is done across comments.  This option is
+disabled by default.
+@end defopt
+
 @node Filling
 @section Filling
 @cindex Filling

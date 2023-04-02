@@ -84,6 +84,11 @@ the lines are outcommented, like in dtx files."
   :group 'LaTeX-environment
   :type 'boolean)
 
+(defcustom docTeX-indent-across-comments nil
+  "If non-nil, indentation in docTeX is done across comments."
+  :group 'LaTeX-indentation
+  :type 'boolean)
+
 (defun LaTeX-newline ()
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
@@ -4391,7 +4396,9 @@ outer indentation in case of a commented line.  The symbols
   (let (line-comment-current-flag
         line-comment-last-flag
         comment-current-flag
-        comment-last-flag)
+        comment-last-flag
+        (indent-across-comments (or docTeX-indent-across-comments
+                                    (not (eq major-mode 'doctex-mode)))))
     (beginning-of-line)
     (setq line-comment-current-flag (TeX-in-line-comment)
           comment-current-flag (TeX-in-commented-line))
@@ -4403,11 +4410,11 @@ outer indentation in case of a commented line.  The symbols
     ;; lines.  The computation of indentation should in this case
     ;; rather take the last non-comment line into account.
     ;; Otherwise there might arise problems with e.g. multi-line
-    ;; code comments.  This behavior is not enabled in docTeX mode
+    ;; code comments.  This behavior can be disabled in docTeX mode
     ;; where large amounts of line comments may have to be skipped
     ;; and indentation should not be influenced by unrelated code in
     ;; other macrocode environments.
-    (while (and (not (eq major-mode 'doctex-mode))
+    (while (and indent-across-comments
                 (not comment-current-flag)
                 (TeX-in-commented-line)
                 (not (bobp)))
