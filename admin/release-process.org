@@ -28,7 +28,12 @@ everything goes well, before actually doing the release.
       =doc/changes.texi=, you may need to run =make= to update it after
       changes above)
     - [ ] Update any other relevant information, like the list of
-      contributors
+      contributors, or required version of GNU Emacs
+
+  - [ ] Commit all the above changes with a title like
+    #+BEGIN_SRC
+    ; Prepare for new release
+    #+END_SRC
 
 - [ ] Towards the end of the top-level =Makefile= there are the instructions on
   how to do the release. Follow them.
@@ -240,7 +245,7 @@ be adjusted.
 - [ ] =tex-site.el.in= :: Change the number after ~emacs-major-version~
 - [ ] =tex.el= :: Change the number after ~emacs-major-version~
 
-In the =doc= directory, these files are affected.
+Other files to be updated accordingly:
 
 - [ ] =doc/changes.texi= :: Add an entry under *News* about the
   required version.
@@ -251,3 +256,5 @@ In the =doc= directory, these files are affected.
 - [ ] =doc/preview-faq.texi= :: Adjust the number in ~@section Requirements~
   =@previewlatex{} nominally requires @w{GNU Emacs} with a version of
   at least XX.X.=.
+- [ ] =RELEASE= :: Update the version of GNU Emacs in the
+  "Requirements" section.
