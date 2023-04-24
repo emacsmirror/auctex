@@ -1,6 +1,6 @@
 ;;; pdfpages.el --- AUCTeX style for `pdfpages.sty' (v0.4v)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -102,18 +102,18 @@
 
    (TeX-add-symbols
     ;; \includepdf[<options>]{<filename>}
-    '("includepdf"
+    `("includepdf"
       [TeX-arg-key-val LaTeX-pdfpages-key-val-options]
-      (TeX-arg-eval
-       (lambda ()
+      ,(lambda (optional)
          (let ((pdffile (file-relative-name
                          (read-file-name
-                          "File to include: " nil nil nil nil
+                          (TeX-argument-prompt optional nil "File to include")
+                          nil nil nil nil
                           (lambda (pdfs)
                             (or (file-directory-p pdfs)
                                 (string-match "\\.pdf\\'" pdfs))))
                          (TeX-master-directory))))
-           (format "%s" pdffile)))))
+           (TeX-argument-insert pdffile optional))))
 
     ;; \includepdfmerge[<options>]{<file-page-list>}
     ;; The mandatory argument is complex, we just insert a pair of

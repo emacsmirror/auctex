@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 4.5.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2022 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2023 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -70,6 +70,7 @@
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 (defvar LaTeX-fvextra-key-val-options)
+(defvar font-latex-syntactic-keywords-extra)
 
 (defvar LaTeX-fancyvrb-key-val-options
   `(("commentchar" ("none"))
@@ -298,11 +299,18 @@ RECUSTOM is non-nil, delete macros from the variable
              (TeX-add-symbols
               `(,mac-name
                 [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+                LaTeX-fancyvrb-arg-file-relative)
+              ;; Defined macros have a starred version where the
+              ;; `showspaces' key is set to true
+              `(,(concat mac-name "*")
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
                 LaTeX-fancyvrb-arg-file-relative))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
-               (font-latex-add-keywords `((,mac-name "[{"))
-                                        'reference)))
+               (font-latex-add-keywords `((,mac-name "*[{"))
+                                        'reference))
+             (TeX-ispell-skip-setcar
+              `((,(concat (regexp-quote TeX-esc) mac-name "\\*?") ispell-tex-arg-end))))
             ;; New macros for saving verbatim text:
             ((string= base-mac "SaveVerb")
              (TeX-add-symbols
@@ -319,16 +327,34 @@ RECUSTOM is non-nil, delete macros from the variable
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
                (font-latex-add-keywords `((,mac-name "[{"))
-                                        'textual)))
+                                        'textual)
+               (LaTeX-fancyvrb-add-syntactic-keywords-extra 'delim
+                                                            mac-name)
+               (when (member "fvextra" (TeX-style-list))
+                 (LaTeX-fancyvrb-add-syntactic-keywords-extra 'brace
+                                                              mac-name)))
+             (TeX-ispell-skip-setcar
+              `((,(concat (regexp-quote TeX-esc) mac-name)
+                 TeX-ispell-tex-arg-verb-end 1))))
             ;; New macros for using previously saved text:
             ((string= base-mac "UseVerb")
              (TeX-add-symbols
-              `(,mac-name (TeX-arg-completing-read
-                           (LaTeX-fancyvrb-saveverb-list) "Saved name")))
+              `(,mac-name
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+                (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                                         "Saved name"))
+              ;; Defined macros have a starred version where the
+              ;; `showspaces' key is set to true
+              `(,(concat mac-name "*")
+                [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+                (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                                         "Saved name")))
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
-               (font-latex-add-keywords `((,mac-name "{"))
-                                        'textual)))
+               (font-latex-add-keywords `((,mac-name "*[{"))
+                                        'textual))
+             (TeX-ispell-skip-setcar
+              `((,(concat (regexp-quote TeX-esc) mac-name "\\*?") ispell-tex-arg-end))))
             ;; Anything else is considered as verbatim typesetting macro:
             (t
              (TeX-add-symbols
@@ -354,7 +380,10 @@ RECUSTOM is non-nil, delete macros from the variable
              (when (and (fboundp 'font-latex-add-keywords)
                         (eq TeX-install-font-lock 'font-latex-setup))
                (font-latex-add-keywords `((,mac-name "*["))
-                                        'textual))))))
+                                        'textual))
+             (TeX-ispell-skip-setcar
+              `((,(concat (regexp-quote TeX-esc) mac-name "\\*?")
+                 TeX-ispell-tex-arg-verb-end)))))))
   ;; Update font-lock:
   (when (and (fboundp 'font-latex-set-syntactic-keywords)
              (eq TeX-install-font-lock 'font-latex-setup))
@@ -389,16 +418,9 @@ update only various AUCTeX variables for verbatim environments."
           (type (cadr elt)))
       (cond ((string= type "VerbatimOut")
              (LaTeX-add-environments
-              `(,env (lambda (env)
-                       (let ((options (TeX-read-key-val
-                                       t (LaTeX-fancyvrb-key-val-options)))
-                             (file (TeX-read-string "Output file: ")))
-                         (LaTeX-insert-environment
-                          env
-                          (concat
-                           (unless (zerop (length options))
-                             (concat LaTeX-optop options LaTeX-optcl))
-                           (concat TeX-grop file TeX-grcl))))))))
+              `(,env LaTeX-env-args
+                     [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+                     "Output file")))
             ((string= type "SaveVerbatim")
              (TeX-auto-add-regexp `(,(concat "\\\\begin{"
                                              env
@@ -465,7 +487,10 @@ update only various AUCTeX variables for verbatim environments."
                             t))))
       ;; These apply for all environments defined:
       (add-to-list 'LaTeX-verbatim-environments-local env)
-      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)))
+      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
+      ;; Add new env's to `ispell-tex-skip-alist': skip the entire env
+      (TeX-ispell-skip-setcdr `(,(cons (concat env "\\*?")
+                                       (concat "\\\\end{" env "\\*?}"))))))
   ;; Update RefTeX:
   (when (fboundp 'reftex-compile-variables)
     (reftex-compile-variables))
@@ -561,6 +586,40 @@ ENV is the name of current environment as a string."
     1 LaTeX-auto-label)
   "Matches the label inside an optional argument of fancyvrb environments.")
 
+(defun LaTeX-fancyvrb-add-syntactic-keywords-extra (type macro)
+  "Add MACRO from fancyvrb.sty to `font-latex-syntactic-keywords-extra'.
+TYPE is one of the symbols `brace' or `delim' indicating how
+verbatim text is enclosed after the macro.  MACRO is a string or
+a list of strings."
+  (let ((syntax (if (eq type 'brace)
+                    '((1 "|") (2 ".") (3 "|"))
+                  '((1 "\"") (2 ".") (3 "\""))))
+        regexp)
+    (when (listp macro)
+      (setq macro (regexp-opt macro "\\(?:")))
+    (setq regexp `(,(concat
+                     ;; The backslash
+                     (regexp-quote TeX-esc)
+                     ;; Name of the macro(s)
+                     macro
+                     ;; The optional argument
+                     "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
+                     ;; The first mandatory argument which is the name
+                     "\\(?:{[^}]+}\\)"
+                     ;; With 'brace, allow one braced sub-group
+                     ;; otherwise we might stop matching too early.
+                     ;; With 'delim, copy font-latex.el:
+                     (if (eq type 'brace)
+                         (concat "\\({\\)[^}{]*?\\(?:{[^}{]*}[^}{]*?\\)*"
+                                 "\\(" (regexp-quote TeX-esc) "*\\)"
+                                 "\\(}\\)")
+                       (concat
+                        ;; Opening delimiter
+                        "\\([^a-z@*\n\f{]\\).*?"
+                        ;; Closing delimiter
+                        "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")))))
+    (add-to-list 'font-latex-syntactic-keywords-extra (append regexp syntax))))
+
 (TeX-add-style-hook
  "fancyvrb"
  (lambda ()
@@ -623,17 +682,40 @@ ENV is the name of current environment as a string."
       (TeX-arg-conditional (member "fvextra" (TeX-style-list))
           (TeX-arg-verb-delim-or-brace)
         (TeX-arg-verb)))
-    '("UseVerb" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
-                                         "Saved name"))
+    '("UseVerb"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                               "Saved name"))
     ;; \UseVerb also has a starred version
-    '("UseVerb*" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
-                                          "Saved name"))
-    '("UseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
-                                             "Saved name"))
-    '("LUseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
-                                              "Saved name"))
-    '("BUseVerbatim" (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
-                                              "Saved name"))
+    '("UseVerb*"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverb-list)
+                               "Saved name"))
+    '("UseVerbatim"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
+    ;; \UseVerbatim et al. also have a starred version
+    '("UseVerbatim*"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
+    '("LUseVerbatim"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
+    '("LUseVerbatim*"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
+    '("BUseVerbatim"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
+    '("BUseVerbatim*"
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      (TeX-arg-completing-read (LaTeX-fancyvrb-saveverbatim-list)
+                               "Saved name"))
 
     ;; Writing and reading verbatim files
     '("VerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
@@ -712,23 +794,15 @@ ENV is the name of current environment as a string."
     "FancyVerbLine")
 
    ;; Filling
-   (add-to-list 'LaTeX-verbatim-environments-local "Verbatim")
-   (add-to-list 'LaTeX-verbatim-environments-local "Verbatim*")
-   (add-to-list 'LaTeX-verbatim-environments-local "BVerbatim")
-   (add-to-list 'LaTeX-verbatim-environments-local "BVerbatim*")
-   (add-to-list 'LaTeX-verbatim-environments-local "LVerbatim")
-   (add-to-list 'LaTeX-verbatim-environments-local "LVerbatim*")
-   (add-to-list 'LaTeX-verbatim-environments-local "SaveVerbatim")
-   (add-to-list 'LaTeX-verbatim-environments-local "VerbatimOut")
    (make-local-variable 'LaTeX-indent-environment-list)
-   (add-to-list 'LaTeX-indent-environment-list '("Verbatim" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("Verbatim*" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("BVerbatim" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("BVerbatim*" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("LVerbatim" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("LVerbatim*" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("SaveVerbatim" current-indentation) t)
-   (add-to-list 'LaTeX-indent-environment-list '("VerbatimOut" current-indentation) t)
+   (let ((envs '("Verbatim"    "Verbatim*"
+                 "BVerbatim"   "BVerbatim*"
+                 "LVerbatim"   "LVerbatim*"
+                 "VerbatimOut" "SaveVerbatim")))
+     (dolist (env envs)
+       (add-to-list 'LaTeX-verbatim-environments-local env)
+       (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)))
+
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "Verb")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "Verb*")
 
@@ -750,11 +824,21 @@ ENV is the name of current environment as a string."
                               'reference)
      (font-latex-add-keywords '(("Verb" "*[") ; The second argument is verbatim.
                                 ("SaveVerb"     "[{")
-                                ("UseVerb"      "*{")
-                                ("UseVerbatim"  "{")
-                                ("LUseVerbatim" "{")
-                                ("BUseVerbatim" "{"))
+                                ("UseVerb"      "*[{")
+                                ("UseVerbatim"  "*[{")
+                                ("LUseVerbatim" "*[{")
+                                ("BUseVerbatim" "*[{"))
                               'textual)
+     ;; Add \SaveVerb to `font-latex-syntactic-keywords-extra' and
+     ;; cater for their special syntax:
+     ;; \SaveVerb[optional]{name}|verbatim| or
+     ;; \SaveVerb[optional]{name}{verbatim} with fvextra.sty loaded:
+     (LaTeX-fancyvrb-add-syntactic-keywords-extra 'delim
+                                                  "SaveVerb")
+     (when (member "fvextra" (TeX-style-list))
+       (LaTeX-fancyvrb-add-syntactic-keywords-extra 'brace
+                                                    "SaveVerb"))
+     ;; Tell font-lock about the update
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 

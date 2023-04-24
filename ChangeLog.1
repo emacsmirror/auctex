@@ -1,3 +1,2623 @@
+2023-04-23  Mosè Giordano  <mose@gnu.org>
+
+	* Version 13.2 released.
+
+2023-04-19  Arash Esbati  <arash@gnu.org>
+
+	Improve style/enumitem.el
+
+	* style/enumitem.el (LaTeX-enumitem-key-val-options): Use
+	variables provided by latex.el and don't hard-code the font
+	related values.
+	(LaTeX-enumitem-auto-cleanup): Don't add environments defined in
+	tex-ispell.el to `ispell-tex-skip-alists' again.
+	Remove comment.
+
+2023-04-11  Arash Esbati  <arash@gnu.org>
+
+	Improve style/fancyvrb.el
+
+	* style/fancyvrb.el (LaTeX-fancyvrb-arg-define-macro): Improve
+	addition of parsed elements incl. starred version, fontification
+	and spell-checking skips.
+	(LaTeX-fancyvrb-arg-define-environment): Simplify addition of
+	parsed environments of "VerbatimOut" type.
+	Make sure the entire environments are skipped during
+	spell-checking.
+	(LaTeX-fancyvrb-add-syntactic-keywords-extra): New function for
+	adding fontification support for "SaveVerb" macros.
+	("fancyvrb"): Add missing query of optional arguments for various
+	macros.  Simplify code.  Improve fontification.
+	Use the function `LaTeX-fancyvrb-add-syntactic-keywords-extra'.
+
+2023-04-11  Arash Esbati  <arash@gnu.org>
+
+	Improve spelling skip support for fancyvrb macros
+
+	* tex-ispell.el (TeX-ispell-skip-cmds-list): Improve skip support
+	for macros provided by fancyvrb package.
+
+2023-04-02  Arash Esbati  <arash@gnu.org>  (tiny change)
+	    Dirk Ullrich  <dirk.ullrich@posteo.de>
+
+	Improve filling over comments in docTeX-mode
+
+	* doc/auctex.texi (Indenting): Document new option.
+
+	* latex.el (docTeX-indent-across-comments): New option.
+	(LaTeX-indent-calculate-last): Use new option in docTeX-mode.
+	Code contributed by Dirk Ullrich.
+
+2023-03-28  Arash Esbati  <arash@gnu.org>
+
+	Update style/expl3.el
+
+	* style/expl3.el ("expl3"): Add missing macros plus fontification.
+	(LaTeX-expl3-package-options): Update options.
+
+2023-03-27  Arash Esbati  <arash@gnu.org>
+
+	Fix query of optional arguments
+
+	* style/thmtools.el (LaTeX-thmtools-env-label): Add ?\r (RET) to
+	list of valid chars for input.
+
+2023-03-25  Arash Esbati  <arash@gnu.org>
+
+	* style/pdfpages.el ("pdfpages"): Replace `TeX-arg-eval'.
+
+2023-03-17  Arash Esbati  <arash@gnu.org>
+
+	Return correct completion candidates in math-mode
+
+	* latex.el (LaTeX-common-initialization): Make sure that from the
+	second elements inside `LaTeX-math-list' and `LaTeX-math-default',
+	only the strings are used for `TeX-complete-list'.  The second
+	element can also be a function which is not correct for completion
+	purposes.  (bug#62220)
+
+2023-03-15  Arash Esbati  <arash@gnu.org>
+
+	Replace `TeX-arg-eval' in style/newfloat.el
+
+	* style/newfloat.el ("newfloat"): Replace `TeX-arg-eval' with
+	closure.
+	Fix the first argument of `TeX-arg-completing-read'
+
+2023-03-14  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/overpic.el
+
+	* style/overpic.el (LaTeX-arg-overpic-key-val): Delete function
+	and move the functionality into the hook.
+	(LaTeX-graphicx-key-val-options): Declare.
+
+2023-03-04  Tassilo Horn  <tsdh@gnu.org>
+
+	Fix \includegraphics key-vals prompt in beamer documents.
+
+	* style/beamer.el ("beamer"): Fix \includegraphics key-vals prompt in
+	beamer documents.
+	* style/overpic.el (LaTeX-arg-overpic-key-val): Fix
+	LaTeX-arg-overpic-key-val docstring which referred to the removed
+	function LaTeX-arg-graphicx-includegraphics-key-val.
+
+2023-02-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add new tests
+
+	* tests/latex/nested-indent-in.tex:
+	* tests/latex/nested-indent-out.tex:
+	New files for additional test for bug#48518.
+	* tests/latex/latex-test.el (AUCTeX-set-ert-path): Add new entries for
+	the above new files.
+	(LaTeX-indent-nested-envs): New test for bug#48518.
+	* tests/latex/latex-filling-in.tex:
+	* tests/latex/latex-filling-out.tex:
+	Add \usepackage and paragraphs for bug#61400
+
+2023-02-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fill \verb-like macros appropriately (bug#61400)
+
+	* latex.el (LaTeX-verbatim-macro-boundaries): Attach an optional
+	argument so that it can return boundaries of its argument only.
+	Include *-braces verbatim macros like \url{} as targets.  This affects
+	`LaTeX-current-verbatim-macro' in the same way.
+	Clean up codes to fix the following bugs.
+	(1) Inconsistent result when the point is at just before "\verb...".
+	(2) Going back to the previous line unintentionally in search of
+	verbatim macros.
+	Support optional argument of macros such as \Verb from fancyvrb.
+	Allow one level of nested braces as verb argument.
+	(LaTeX-verbatim-p): Don't regard the point just before "\verb..." as
+	verbatim.
+	Depend only on syntax-table property when syntax propertize is used.
+
+2023-02-15  Arash Esbati  <arash@gnu.org>
+
+	* style/url.el ("url"): Add missing \DeclareUrlCommand macro.
+
+2023-02-15  Arash Esbati  <arash@gnu.org>
+
+	Update style/ltugboat.el to class version 2.28
+
+	* style/ltugboat.el ("ltugboat"): Improve query for the optional
+	argument of verbatim environment.
+	Add support for various URL typesetting macros.
+
+2023-02-13  Arash Esbati  <arash@gnu.org>
+
+	Make `texmathp' aware of verbatim macros/environments
+
+	* tests/latex/texmathp-test.el (texmathp-verbatim): New test.
+
+	* texmathp.el (texmathp): Use `LaTeX-verbatim-p' to check if the
+	math command is inside a verbatim construct.  (bug#61410)
+
+2023-02-06  Arash Esbati  <arash@gnu.org>
+
+	Add new style/algpseudocodex.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/algpseudocodex.el: New file.
+
+2023-02-04  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Indent the active region (bug#48518, bug#28382)
+
+	* latex.el (LaTeX-insert-environment): Indent the active region so
+	that indentation isn't broken even in nested environments.
+	(LaTeX-env-label): Remove indentation code no longer necessary by the
+	above change.
+
+2023-01-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add a paragraph to Texdoc section in the documentation
+
+	* doc/auctex.texi (Documentation): Add an notice that it isn't sure
+	whether `TeX-documentation-texdoc' works for MiKTeX or not.
+
+2023-01-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Call Texdoc coherently
+
+	* tex.el (TeX-documentation-texdoc): Use `call-process' rather than
+	`shell-command-to-string' to invoke Texdoc.
+	Bind buffer object of working buffer rather than its name to `buffer'.
+	Capitalize Texdoc in the doc string.  (It seems that's the proper name
+	according to its documentation shown by "texdoc texdoc".)
+
+2023-01-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix `TeX-documentation-texdoc' for okular
+
+	We used `start-process-shell-command' for these 4 years.  However,
+	it turned out that that invalidated okular.  (See bug#40577 and
+	<URL:https://lists.gnu.org/r/auctex/2023-01/msg00006.html>.)
+
+	The reason that `TeX-documentation-texdoc' tried hard to collect and
+	show the output from Texdoc is that the exit code wasn't meaningful
+	once[1].  This was the only way to notify the user when Texdoc can't
+	find any documentation for the given keyword.
+
+	However, recent Texdoc is improved to return non-zero exit code when
+	it can't find any documentation[2].  Now we use `call-process' instead
+	of `start-process-shell-command'.  This has a drawback that user who
+	sticks to older TeX Live distribution isn't notified at all when the
+	given keyword didn't match any documentation, but we hope that it
+	doesn't cause major problem.
+
+	[1] https://debbugs.gnu.org/cgi/bugreport.cgi?bug=28905#17
+	[2] https://tug.org/texdoc/doc/texdoc.man1.pdf
+
+	* tex.el (TeX-documentation-texdoc): Use `call-process' to invoke
+	Texdoc.
+	Move `executable-find' test up in the function body so that it covers
+	no prefix case as well.
+	Add NO-PROPERTIES argument to `thing-at-point'.
+	Remove unnecessary `save-excursion'.
+	Refill.
+
+2023-01-26  Arash Esbati  <arash@gnu.org>
+
+	* style/multido.el ("multido"): Fix query prompt.
+
+2023-01-25  Arash Esbati  <arash@gnu.org>
+
+	Pacify compiler warning
+
+	* multi-prompt.el (multi-prompt-key-value-collection-fn): Fix
+	references to Emacs Lisp Reference Manual.
+
+2023-01-24  Arash Esbati  <arash@gnu.org>
+
+	* style/multibib.el: Replace `TeX-arg-eval'.
+
+2023-01-20  Tassilo Horn  <tsdh@gnu.org>
+
+	Remove Emacs 24.3 compat code
+
+	* preview.el.in (preview-get-dpi): Remove Emacs 24.3 compat case
+	introduced with bug#45596.
+
+2023-01-19  Arash Esbati  <arash@gnu.org>
+
+	Silence compiler warning
+
+	* style/inputenc.el (LaTeX-inputenc-package-options): Delete
+	`when' with empty body.
+
+2023-01-17  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Simplify version and date specification
+
+	* latex/preview.dtx (section{The Implementation}): Don't use RCS
+	tags for version and date.  Declare manually instead.
+	(): Update \CheckSum value.
+
+2023-01-12  Arash Esbati  <arash@gnu.org>
+
+	Update Pygments style names
+
+	* style/minted.el (LaTeX-minted-key-val-options): Update style
+	names provided by Pygments version 2.14.0.
+
+2023-01-10  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/minted.el
+
+	* style/minted.el (LaTeX-arg-minted-language)
+	(LaTeX-arg-minted-style): Delete functions and move the
+	functionality into the hook.
+
+2023-01-10  Arash Esbati  <arash@gnu.org>
+
+	Turn `y-or-n-p' into `always' for in-buffer completion
+
+	* latex.el (LaTeX-completion-parse-args): Turn `y-or-n-p' into
+	`always' inside `TeX-arg-conditional' for in-buffer completion.
+
+2023-01-08  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Support detached arguments
+
+	* tex.el (TeX-find-macro-boundaries): Skip white spaces between a
+	macro argument and comment starter.
+	Fix doc string.
+	Add FIXME comment.
+	(TeX-find-macro-end-helper): Skip white spaces at the beginning of
+	line even when the preceding line doesn't end with comment.
+	* tests/tex/navigation.el (TeX-check-f-m-b): New function.
+	(TeX-find-macro-boundaries-detached-arg): New test.
+	(TeX-find-macro-end-helper): Integrate similar tests into one test.
+	(TeX-check-f-m-e-h): Adapt according to the above integration.
+
+2023-01-07  David Kastrup  <dak@gnu.org>
+
+	Preserve braces after @TeX and similar macros.
+
+2022-12-20  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	New style file physics.el
+
+	* style/physics.el: New style file.
+	* Makefile.in (STYLESRC): Add it.
+
+2022-12-19  Arash Esbati  <arash@gnu.org>
+
+	Avoid compiler warnings with long function names
+
+	* tex.el (TeX-auto-add-type): Rearrange the auto-generated
+	docstring in order to avoid compiler warnings for long function
+	names.
+
+2022-12-19  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add filename as a prefix to catchfilebetweentags counter
+
+	* style/catchfilebetweentags.el (LaTeX-env-catchfilebetweentags):
+	Add filename as a prefix to the counter.
+
+2022-12-18  Arash Esbati  <arash@gnu.org>
+
+	Pacify compiler warning
+
+	* context.el (ConTeXt-expand-options): Use `string=' instead of
+	`eq' to compare strings.
+
+2022-12-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve the previous commit slightly
+
+	* latex.el (LaTeX-current-environment,LaTeX-backward-up-environment):
+	Move the task to find out the environment name from the latter to the
+	former.
+
+2022-12-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Reduce redundancy in regexp
+
+	* latex.el (LaTeX-environment-name-regexp): Don't quote regexp inside
+	[^...].
+	(LaTeX-modify-environment): Omit spurious regexp group.  (already
+	given by `LaTeX-environment-name-regexp')
+
+2022-12-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve consistency between similar functions
+
+	Include doctex mode special treatment of `LaTeX-current-environmnet'
+	into `LaTeX-find-matching-begin' and `LaTeX-find-matching-end'.
+
+	* latex.el (LaTeX-backward-up-environment): Factor out the common
+	functionality of `LaTeX-current-environmnet' and
+	`LaTeX-find-matching-begin' into a new function.
+	(LaTeX-current-environment,LaTeX-find-matching-begin):
+	Use it.
+	(LaTeX-find-matching-end): Include doctex mode special treatment.
+
+2022-12-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Support starred variant name
+
+	* latex.el (LaTeX-find-matching-end):
+	(LaTeX-find-matching-begin):
+	Find correct begin or end when the point is just after the asterisk of
+	"\end{foo*}".
+	Remove spurious `regexp-quote' for `TeX-grop'.
+
+2022-12-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Use `symbol-value' instead of `eval'
+
+	* multi-prompt.el (multi-prompt-expand-completion-table): Use
+	`symbol-value' explicitly instead of `eval' to obtain the value of
+	variable.
+
+2022-12-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix argument description in doc strings
+
+	* latex.el (TeX-read-key-val):
+	* multi-prompt.el (multi-prompt-key-value):
+	Correct the format of KEY-VAL-ALIST and state that variable is also
+	allowed.
+	* style/acro.el (LaTeX-arg-acro-key-val):
+	Simplify instead of stating the detail.
+
+2022-12-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Overhaul beamer.el
+
+	* style/beamer.el (LaTeX-beamer-after-insert-env): Use `member'
+	instead of `TeX-member'.
+	Add comment.
+	(TeX-arg-beamer-overlay-spec): Simplify by feature implemented
+	recently in `TeX-arg-string'.
+	(TeX-arg-beamer-default-overlay-spec): New function.
+	(TeX-arg-beamer-frametitle,TeX-arg-beamer-note): Delete.
+	(LaTeX-item-beamer): Accept optional argument for bibitem.
+	Simplify.
+	(LaTeX-bibitem-beamer): New function to use `LaTeX-item-beamer'.
+	(LaTeX-beamer-search-themes): Use `length' instead of `string-width'.
+	Use `substring-no-properties' instead of `substring'.
+	(LaTeX-beamer-themes-list,LaTeX-beamer-inner-themes-list)
+	(LaTeX-beamer-outer-themes-list,LaTeX-beamer-color-themes-list)
+	(LaTeX-beamer-font-themes-list):
+	New functions to use with `TeX-arg-completing-read'.
+	(LaTeX-arg-beamer-theme,LaTeX-arg-beamer-inner-theme)
+	(LaTeX-arg-beamer-outer-theme,LaTeX-arg-beamer-color-theme)
+	(LaTeX-arg-beamer-font-theme):
+	Turn into the above new functions.
+	(LaTeX-beamer-env-frame): Factor out former lambda form into an
+	individual function and adapt for new usage in
+	`LaTeX-add-environments'.
+	(LaTeX-beamer-section): New function to insert section commands as
+	well as asking for their optional arguments.
+	("beamer"): Update support of section commands with the above new
+	function.
+	Add and improve input support for many macros and environments.
+	Add syntax highlight support.
+	Update local value of `LaTeX-clean-intermediate-suffixes' so that
+	"Clean" command cleans .vrb files.
+	(LaTeX-beamer-class-options): Update class options for current
+	beamer.
+	* style/beamerarticle.el ("beamerarticle"): Allow (sub)paragraph
+	commands.
+
+2022-12-14  Arash Esbati  <arash@gnu.org>
+
+	* style/mdframed.el ("mdframed"): Replace `TeX-arg-eval'.
+
+2022-12-14  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/mathtools.el
+
+	* style/mathtools.el (LaTeX-mathtools-arg-mathstyle-completion)
+	(LaTeX-mathtools-arg-mathsize-completion): Delete functions and
+	move the functionality into the hook.
+	(LaTeX-mathtools-mathstyle-list): New variable.
+	(LaTeX-mathtools-auto-cleanup):
+	("mathtools"): Adjust acc. to deleted function(s).
+	Replace `TeX-arg-eval'.
+
+2022-12-13  Arash Esbati  <arash@gnu.org>
+
+	* style/ltxtable.el ("ltxtable"): Replace `TeX-arg-eval'.
+
+	* style/ltxdoc.el ("ltxdoc"): Replace `TeX-arg-eval'.
+
+2022-12-13  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/ltugboat.el
+
+	* style/ltugboat.el (LaTeX-env-ltugboat-verbatim): Remove function
+	and move the functionality into the hook.
+
+2022-12-13  Arash Esbati  <arash@gnu.org>
+
+	* style/enumitem.el ("enumitem"): Replace `TeX-arg-eval'.
+
+	* style/ltablex.el ("ltablex"): Add fontification support.
+
+	* style/listings.el ("listings"): Replace `TeX-arg-eval'.
+
+2022-12-13  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/ifthen.el
+
+	* style/ifthen.el (LaTeX-ifthen-test): New variable.
+	(LaTeX-arg-ifthen-test): Delete and move the functionality into
+	the hook.
+
+2022-12-08  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/hologo.el
+
+	* style/hologo.el
+	(LaTeX-hologo--arg-use-region-or-query-logo-name): Reduce
+	functionality.
+	(LaTeX-hologo--arg-use-region): New helper function to wrap region
+	in a pair of braces.
+	("hologo"): Use new functions in combination with
+	`TeX-arg-conditional'.
+	Replace `TeX-arg-eval'.
+
+2022-12-08  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/graphicx.el
+
+	* style/graphicx.el (LaTeX-graphicx-key-val-options): New
+	function.
+	(LaTeX-arg-graphicx-includegraphics-key-val): Remove since not
+	needed anymore.
+	("graphicx"): Use `TeX-arg-key-val' with the new function in the
+	hook.
+
+2022-12-08  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/geometry.el
+
+	* style/geometry.el ("geometry"): Replace `TeX-arg-eval'.
+
+2022-12-08  Arash Esbati  <arash@gnu.org>
+
+	Update style/fvextra.el to package version 1.5
+
+	* style/fvextra.el (LaTeX-fvextra-key-val-options): Add new
+	key=vals.
+	("fvextra"): Add support for the new "VerbEnv" environment.
+
+2022-12-08  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/footmisc.el
+
+	* style/footmisc.el (LaTeX-footmisc-fnsymbols-set): New variable.
+	("footmisc"): Use it in the hook.
+	Remove support for the \footref macro which is now part of LaTeX
+	kernel.
+
+2022-12-08  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix bug#58689 with a bit of optiomization
+
+	* latex.el (LaTeX-modify-environment): Comment out redundant
+	`beginning-of-line' and `end-of-line'.
+
+2022-12-07  Arash Esbati  <arash@gnu.org>
+
+	* style/fontspec.el ("fontspec"): Replace `TeX-arg-eval'.
+
+2022-12-07  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/floatrow.el
+
+	* style/floatrow.el (LaTeX-floatrow-auto-cleanup): Adjust to new
+	functionality of `LaTeX-floatrow-arg-floatbox'.
+	(LaTeX-floatrow-arg-floatbox): Move query for optional arguments
+	into the hook.
+	("floatrow"): Query for optional arguments with
+	`TeX-arg-completing-read'.
+	Replace usage of `TeX-arg-eval'.
+
+2022-11-30  Arash Esbati  <arash@gnu.org>
+
+	Don't rely on the value of `LaTeX-current-environment'
+
+	* style/breqn.el (LaTeX-breqn-key-val-options):
+	* style/changelog.el (LaTeX-changelog-key-val-options): Remove
+	usage of the variable `LaTeX-current-environment'.
+
+2022-11-30  Arash Esbati  <arash@gnu.org>
+
+	Revert "Bind a value to `LaTeX-current-environment' locally"
+
+	This reverts commit e4ceb88bb7cb4f406874de196aa71118449fe373.
+
+	This change had negative side effects for indentation.  See
+	https://lists.gnu.org/archive/html/auctex-devel/2022-11/msg00057.html
+
+2022-11-30  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/fancyvrb.el
+
+	* style/fancyvrb.el (LaTeX-fancyvrb-arg-define-macro): Check if
+	the package "fvextra" is loaded and allow verbatim arguments in
+	braces.  Adjust fontification accordingly.
+	("fancyvrb"): Replace `TeX-arg-eval'.
+	Use standard hooks to insert environments.
+
+2022-11-30  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/empheq.el
+
+	* style/empheq.el (LaTeX-empheq-env): Reduce functionality in the
+	function which now adds a number of columns to 'alignat*?'
+	environments and adds a label where applicable.
+	(LaTeX-empheq-env-overload): Delete function and move the
+	functionality into the hook.
+	(LaTeX-empheq-item-equation): Use the environment name "empheq"
+	instead of a call of `LaTeX-current-environment'.  Other minor
+	improvements.
+	("empheq"): Use standard functions inside the hook.
+	Replace `TeX-arg-eval'.
+
+2022-11-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix doc strings regarding to section commands
+
+	* context.el (ConTeXt-numbered-section-hook):
+	(ConTeXt-unnumbered-section-hook):
+	Add mention about `ConTeXt-reference'.
+	Fix explanation of `ConTeXt-section-ref'.
+	Fix order of Lisp code example.
+	Add quote for Lisp symbols.
+	* latex.el (LaTeX-section-hook): Reindent.
+	Add quote for Lisp symbols.
+
+2022-11-25  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Support starred section names
+
+	* latex.el (LaTeX-section-level): Accept starred section names.
+	Simplify.
+	(LaTeX-section-name): Simplify.
+	(LaTeX-section-heading): Include starred variants in completion
+	candidates.
+	* tex.el (LaTeX-command-section-boundaries): Arrange regexp to
+	accept starred section names.
+	Simplify.
+	(LaTeX-command-section-change-level): Simplify.
+	(): Arrange cookies for silencing compiler.
+	* context.el (ConTeXt-numbered-section-name)
+	(ConTeXt-unnumbered-section-name,ConTeXt-numbered-section-level)
+	(ConTeXt-unnumbered-section-level):
+	Simplify.
+
+2022-11-24  Arash Esbati  <arash@gnu.org>
+
+	* latex.el (LaTeX-env-contents): Add the "nowarn" key.
+
+2022-11-24  Arash Esbati  <arash@gnu.org>
+
+	Replace `TeX-arg-eval'
+
+	* style/doc.el ("doc"): Replace `TeX-arg-eval' with closure.
+	For "DocInput", add a check if "l3doc" style is loaded and adjust
+	the query accordingly.
+
+	* style/l3doc.el ("l3doc"): Remove entry for "DocInput"
+	incl. fontification which is done inside "doc.el".
+
+2022-11-23  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/csquotes.el
+
+	* style/csquotes.el (LaTeX-csquotes-read-language)
+	(LaTeX-arg-csquotes-language): Delete functions.
+	(LaTeX-csquotes-language-list): New function.
+	("csquotes"): Adjust the hook acc. to the changes above.
+
+2022-11-23  Arash Esbati  <arash@gnu.org>
+
+	* style/comment.el ("comment"): Replace `TeX-arg-eval'.
+
+2022-11-23  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/cleveref.el
+
+	* style/cleveref.el (TeX-arg-cleveref-crossref-type): Delete
+	function.
+	(LaTeX-cleveref-crossref-type): New function.
+	("cleveref"): Adjust the hook acc. to the changes above.
+
+2022-11-23  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/CJK.el
+
+	* style/CJK.el (LaTeX-CJK-fontenc-list): New variable.
+	(LaTeX-env-CJK): Delete function
+	("CJK"): Replace functionality of deleted function with standard
+	ones.
+
+2022-11-23  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/changes.el
+
+	* style/changes.el (LaTeX-arg-changes-definechangesauthor)
+	(LaTeX-arg-changes-markup): Delete functions.  The functionality
+	is provided inside the hook.
+	(LaTeX-changes-definechangesauthor-key-val-options)
+	(LaTeX-changes-key-val-options): New functions.
+	("changes"): Adjust the hook acc. to the changes above.
+
+2022-11-23  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Cleanup newcommand/newenvironment support
+
+	* latex.el (LaTeX-common-initialization): Use
+	`TeX-arg-define-macro-arguments' for optional argument
+	for (re)newenvironment(*).
+	Remove duplicated entries.
+	(TeX-arg-define-macro-arguments): Fix line break of doc string.
+
+2022-11-22  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/changelog.el
+
+	* style/changelog.el (LaTeX-changelog-key-val-options): New
+	function returning key=vals.  The functionality used to be part of
+	`LaTeX-env-changelog'.
+	(LaTeX-env-changelog): Adjust in order to insert a label into
+	optional argument.
+	("changelog"): Adjust function usage in the hook accordingly.
+
+2022-11-22  Arash Esbati  <arash@gnu.org>
+
+	Check the value of `LaTeX-current-environment' first
+
+	* style/breqn.el (LaTeX-breqn-key-val-options): Check if the
+	variable `LaTeX-current-environment' contains a name before
+	running the function of the same name.
+
+2022-11-22  Arash Esbati  <arash@gnu.org>
+
+	Bind a value to `LaTeX-current-environment' locally
+
+	* latex.el (LaTeX-current-environment): Add docstring.
+	(LaTeX-env-item-args, LaTeX-env-label-args, LaTeX-env-args):
+	Let-bind `LaTeX-current-environment' in the function body.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/breqn.el
+
+	* style/breqn.el (LaTeX-breqn-key-val-options): New function.
+	(LaTeX-breqn-env): Delete function.
+	("breqn"): Replace functionality of deleted function with
+	standard ones.
+	Don't use `LaTeX-env-label-as-keyval' for starred environments.
+
+2022-11-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Move `TeX-TikZ-point-name-regexp' to tex-style.el
+
+	* tex-style.el:
+	* style/tikz.el (TeX-TikZ-point-function-map):
+	Move defcustom into tex-style.el.
+	(AUCTeX-TikZ): Delete group.
+
+2022-11-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Enhance scope environmnent support
+
+	* context.el (ConTeXt-after-insert-env-hook): New hook.
+	(ConTeXt-insert-environment): Follow the change in
+	`LaTeX-insert-environment' to support the form
+	 (ConTeXt-add-environments
+	  '("scope" FUNCTION-NAME ARGS))
+	as well as to run the above new hook.
+	(ConTeXt-env-args,ConTeXt--env-parse-args): New function and its
+	helper function.  Adapted copies of `LaTeX-env-args' and
+	`LaTeX--env-parse-args'.
+	* style/tikz.el (TeX-TikZ-env-scope): New function.
+	("tikz"): Use the above new function to support scope env. in LaTeX
+	and ConTeXt.
+	(TeX-TikZ-get-opt-arg-string): Fix spacing in the doc string.
+	(declare-function): Silence compiler.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/booktabs.el
+
+	* style/booktabs.el ("booktabs"): Delete the function
+	`LaTeX-booktabs-arg-paren' and use `TeX-arg-string' instead.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/bigstrut.el
+
+	* style/bigstrut.el (TeX-arg-bigstrut): Delete the function and
+	replace the functionality with `TeX-arg-completing-read' inside
+	the hook.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/babel.el
+
+	* style/babel.el (TeX-arg-babel-lang, LaTeX-env-babel-lang):
+	Delete functions.
+	("babel"): Replace functionality of deleted functions with
+	standard ones.
+	For "babelfont", move code inside the query for "Font family" into
+	a closure at the end of the entry and drop `TeX-arg-eval'.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	* style/attachfile.el ("attachfile"): Replace `TeX-arg-eval'.
+
+	* style/array.el ("array"): Replace `TeX-arg-eval' with a closure.
+
+2022-11-21  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/ntheorem.el
+
+	* style/ntheorem.el (LaTeX-ntheorem-fontdecl)
+	(LaTeX-arg-ntheorem-fontdecl, LaTeX-ntheorem-env-label): Delete
+	variable and functions.
+	(LaTeX-ntheorem-auto-cleanup): Use `LaTeX-env-label-args' instead of
+	`LaTeX-ntheorem-env-label'.
+	("ntheorem"): Replace `TeX-arg-eval' with a closure.
+	Replace functionality of deleted functions with standard ones.
+
+2022-11-20  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/amsthm.el
+
+	* style/amsthm.el (LaTeX-amsthm-fontdecl)
+	(LaTeX-arg-amsthm-fontdecl, LaTeX-amsthm-env-label): Delete
+	variable and functions.
+	(LaTeX-amsthm-auto-cleanup): Use `LaTeX-env-label-args' instead of
+	`LaTeX-amsthm-env-label'.
+	("amsthm"): Replace `TeX-arg-eval' with a closure.
+	Replace functionality of deleted functions with standard ones.
+
+2022-11-20  Tassilo Horn  <tsdh@gnu.org>
+
+	Ignore errors from dbus-ping (fixes bug#59380).
+
+	We just want to test if a viewer's DBUS interface works.  If there are
+	errors, the answer is surely no/nil.
+
+	* tex.el (TeX-evince-dbus-p): Ignore errors from dbus-ping.
+
+2022-11-18  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/fancyhdr.el
+
+	* style/fancyhdr.el (TeX-arg-fancyhdr-place): Delete function.
+	The functionality is now in the style hook.
+
+2022-11-18  Arash Esbati  <arash@gnu.org>
+
+	* style/afterpage.el ("afterpage"): Fontify the only macro.
+
+2022-11-18  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/theorem.el
+
+	* style/theorem.el (LaTeX-theorem-theoremstyle-list): Turn into a
+	plain list.
+	(LaTeX-theorem-fontdecl, LaTeX-arg-theorem-fontdecl): Delete
+	functions.
+	(LaTeX-theorem-auto-cleanup): Use `LaTeX-env-label-args' instead
+	of `LaTeX-theorem-env-label'.
+	("theorem"): Replace `TeX-arg-eval' with a closure.
+	Replace functionality of deleted functions with standard ones.
+
+2022-11-18  Arash Esbati  <arash@gnu.org>
+
+	Respect `TeX-exit-mark' when inserting enviroments
+
+	* latex.el (LaTeX--env-parse-args): Set `TeX-exit-mark' to current
+	point if not set yet.  Move point to the position of
+	`TeX-exit-mark' after parsing the arguments, so hooks can set the
+	value acc. to their needs.
+
+	* tex.el (TeX-exit-mark): Adjust docstring.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Add some variables containing font declarations
+
+	* latex.el (LaTeX-font-family, LaTeX-font-series)
+	(LaTeX-font-shape, LaTeX-font-size): New variables.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/tcolorbox.el
+
+	* style/tcolorbox.el ("tcolorbox"): Replace `TeX-arg-eval' and use
+	a distinct function for the only argument.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Use `functionp' to recognize a function
+
+	* tex.el (TeX-parse-argument): Identify a function with
+	`functionp' instead of `symbolp'.  This way it is also possible to
+	use a closure inside a style hook.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Remove entry in `LaTeX-completion-function-map-alist-keyval'
+
+	* latex.el (LaTeX-completion-function-map-alist-keyval): Remove
+	the entry for the deleted function `LaTeX-enumitem-env-with-opts'.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/tcolorboxlib-theorems.el
+
+	* style/tcolorboxlib-theorems.el
+	(LaTeX-tcolorbox-lib-theorems-auto-cleanup):
+	("tcolorboxlib-theorems"): Use `LaTeX-env-args' instead of
+	`LaTeX-env-tcolorbox-lib-theorems'.
+	(LaTeX-env-tcolorbox-lib-theorems): Delete function.
+	(LaTeX-arg-tcolorbox-lib-theorems-newtcbtheorem): Insert only the
+	first argument, other arguments are queried in the hook.
+
+2022-11-17  Arash Esbati  <arash@gnu.org>
+
+	Extend the argument list of `TeX-arg-string'
+
+	* tex.el (TeX-arg-string): Extend the argument list which will be
+	passed to `TeX-read-string' and change the brackets for insertion.
+
+2022-11-16  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/tcolorboxlib-raster.el
+
+	* style/tcolorboxlib-raster.el ("tcolorboxlib-raster"): Use
+	`LaTeX-env-args' and `LaTeX-env-item-args' in the hook and
+	subsequently delete `LaTeX-tcolorbox-lib-raster-env-item'.
+
+2022-11-16  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/enumitem.el
+
+	* style/enumitem.el (LaTeX-enumitem-env-with-opts): Delete
+	function.
+	(LaTeX-arg-enumitem-SetEnumitemKey): Query and insert only the
+	first mandatory argument.  The second on is queried in the hook.
+	(LaTeX-arg-enumitem-SetEnumitemValue): Query and insert only the
+	second mandatory argument.  The others are queried in the hook.
+	(LaTeX-arg-enumitem-setlist): Delete function, now performed in
+	the hook.
+	(LaTeX-enumitem-auto-cleanup):
+	("enumitem"): Use the function `LaTeX-env-item-args' instead of
+	`LaTeX-enumitem-env-with-opts'.
+
+2022-11-16  Arash Esbati  <arash@gnu.org>
+
+	Extend the argument list of some functions
+
+	* latex.el (TeX-read-key-val, TeX-arg-key-val): Extend the
+	argument list which control the query and insertion of key=val's
+	in the style hooks.
+	(TeX-arg-completing-read-multiple): Extend argument list to alter
+	the value of `crm-separator' and the separator inside `mapconcat'.
+
+2022-11-15  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/currvita.el
+
+	* style/currvita.el ("currvita"): Use `LaTeX-env-item-args' in the
+	hook and subsequently delete `LaTeX-currvita-env-with-label'.
+	Add fontification support for \cvplace macro.
+
+2022-11-09  Arash Esbati  <arash@gnu.org>
+
+	Improve fontification of indexing macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add entries
+	for \makeindex and \makeglossary macros.
+
+	* style/imakeidx.el ("imakeidx"):
+	* style/makeidx.el ("makeidx"):
+	* style/multind.el ("multind"):
+	* style/splitidx.el ("splitidx"): Improve fontification of
+	indexing macros.
+
+2022-11-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't insert empty node name
+
+	* style/tikz.el (TeX-TikZ-node-arg): Treat node name as optional to
+	avoid the insertion of empty node name.
+	(TeX-TikZ-arg-options, TeX-TikZ-arg-name,TeX-TikZ-arg-label):
+	Fix doc strings.
+
+2022-11-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix `ConTeXt-add-environments'
+
+	* context.el (ConTeXt-environment, ConTeXt-environment-menu): Use
+	function `ConTeXt-environment-list' to refer to the current
+	environments list.
+	(ConTeXt-environment-menu): Follow `LaTeX-environment-menu' to support
+	optional argument for environments.
+	* tex.el (TeX-auto-add-type): Use unique key for `TeX-auto-parser' in
+	order to discriminate ConTeXt environments from LaTeX environments.
+	* context-en.el (ConTeXt-en-mode-initialization):
+	* context-nl.el (ConTeXt-nl-mode-initialization):
+	Add comments.
+
+2022-11-09  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve support for TikZ
+
+	* style/tikz.el ("tikz"): Add "tikz", "tikzset", "usetikzlibrary" and
+	"foreach" macros.
+	Run style hooks for graphicx, keyval and xcolor as well.
+	Include preliminary support for ConTeXt and plain TeX.
+	Allow optional argument for "tikzpicture" environment.
+	Add "scope" environment.
+	(AUCTeX-TikZ): New customize group.
+	(TeX-TikZ-point-name-regexp): Use it as group.
+	(TeX-TikZ-find-named-points): Add comment.
+	(): Add `declare-function'.
+
+2022-11-09  Arash Esbati  <arash@gnu.org>
+
+	Add new hooks for inserting environments with arguments
+
+	* doc/auctex.texi (Adding Environments): Document new functions
+	`LaTeX-env-item-args' and `LaTeX-env-label-args'.
+
+	* latex.el (LaTeX--env-parse-args, LaTeX--env-item): New helper
+	functions which contain body used be part of `LaTeX-env-args' and
+	`LaTeX-env-item'.
+	(LaTeX-env-item, LaTeX-env-args): Use new helpers.
+	(LaTeX-env-item-args, LaTeX-env-label-args): New functions like
+	their counterparts without '-args' but allowing additional
+	arguments.
+
+	* latex.el (LaTeX-completion-parse-args): Recognize new functions.
+
+2022-11-09  Arash Esbati  <arash@gnu.org>
+
+	Use the correct function to retrieve the key=vals
+
+	* style/siunitx.el (LaTeX-siunitx-key-val-options): Delete
+	unnecessary `and' when checking for a color package.
+	("siunitx"): Use the correct function
+	`LaTeX-siunitx-key-val-options' for the old commands.
+
+2022-11-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Extend Japanese TeX support
+
+	* latex.el (LaTeX-auto-counter-regexp-list)
+	(LaTeX-auto-length-regexp-list):
+	Support Japanese counter/length names.
+
+2022-11-04  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	New option `TeX-refuse-unmatched-dollar'
+
+	* tex.el (TeX-refuse-unmatched-dollar): New option.
+	(TeX-insert-dollar): When the new option is enabled, retain the former
+	behavior.
+	Arrange the doc string.
+	* doc/auctex.texi (Quotes):
+	* doc/changes.texi:
+	Mention the change in the behavior of `TeX-insert-dollar'.
+
+2022-11-04  Arash Esbati  <arash@gnu.org>
+
+	Provide completion candidates for `TeX-arg-length'
+
+	* latex.el (LaTeX-completion-function-map-alist-cr): Add entry for
+	`TeX-arg-length' and the corresponding mapping function.
+	Adjust docstring.
+
+2022-11-04  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/textpos.el
+
+	* style/textpos.el ("textpos"): Use `TeX-arg-conditional' instead
+	of `TeX-arg-eval' in the style hook.
+
+2022-11-04  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/thm-restate.el
+
+	* style/thm-restate.el (LaTeX-thmrestate-restatable-marco-regexp):
+	Recognize the starred version of the environment as well.
+	(LaTeX-thmrestate-auto-cleanup): Fontify new macros.
+	(LaTeX-env-thmrestate-restatable): Insert only the last mandatory
+	argument.  Other arguments are included in the style hook.
+	(LaTeX-thm-restate-package-options): New variable.
+
+2022-11-04  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/thmtools.el
+
+	* style/thmtools.el
+	(LaTeX-thmtools-declaretheoremstyle-key-val-options): Rename from
+	`LaTeX-thmtools-declaretheoremstyle-key-val'.
+	(LaTeX-thmtools-declaretheorem-key-val-options): Rename from
+	`LaTeX-thmtools-declaretheorem-key-val'.
+	(LaTeX-thmtools-listoftheorems-key-val-options): Rename from
+	`LaTeX-thmtools-listoftheorems-key-val'.
+	New functions now return only a key=val alist and don't query.
+	(LaTeX-arg-thmtools-declaretheoremstyle):
+	(LaTeX-arg-thmtools-declaretheorem): Insert only the mandatory
+	argument.  The query for the optional one happens in the hook.
+	(LaTeX-arg-thmtools-listoftheorems): Removed as not needed.
+
+2022-11-04  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/titlesec.el
+
+	* style/titlesec.el (LaTeX-titlesec-section-command-list): Delete
+	unnecessary `symbol-value'.
+	(LaTeX-titlesec-titlespec-key-val-options): New function replacing
+	`LaTeX-arg-titlesec-titlespec'.  The new function returns only
+	key=vals and doesn't insert them into buffer.
+	("titlesec"): Use the new function in the style hook.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	Simplify implementation of style/ulem.el
+
+	* style/ulem.el (LaTeX-ulem-fontdecl, LaTeX-ulem-fontcmd)
+	(TeX-arg-ulem-fontdecl, TeX-arg-ulem-fontcmd)
+	(TeX-arg-ulem-useunder): Remove variables and functions.
+	("ulem"): Move the functionality into the style hook.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	Replace `TeX-arg-url-urlstyle' in style/url.el
+
+	* style/url.el (TeX-arg-url-urlstyle): Delete function.
+	("url"): Move the functionality into the style hook.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	Simplify argument queries in style/wrapfig.el
+
+	* style/wrapfig.el ("wrapfig"): Use `LaTeX-env-args' and standard
+	hook functions for argument query.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	* latex.el (TeX-arg-conditional): Declare 'indent'.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	Update style/XCharter.el to package version 1.24
+
+	* style/XCharter.el ("XCharter"): Add support for new macros
+	incl. fontification.
+	(LaTeX-XCharter-package-options): Turn variable into a function
+	which reads key=val package options.
+
+2022-11-03  Arash Esbati  <arash@gnu.org>
+
+	Fix style/xspace.el
+
+	* style/xspace.el ("xspace"): Fix the name of the macro
+	\xspaceaddexceptions, insert braces for the argument.
+	Query for a token after \xspaceremoveexception.
+	Remove "xspace" from fontification since it's used only in a
+	macro argument itself.
+
+2022-11-02  Arash Esbati  <arash@gnu.org>
+
+	Add capf for LaTeX marco/environment arguments
+
+	* doc/changes.texi: Announce the new feature.
+
+	* doc/auctex.texi (Completion): Document the main new function.
+
+	* latex.el: Add functions for completion-at-point inside
+	marco/environment arguments in LaTeX buffers.
+	(LaTeX-common-initialization): Append the entry point
+	`LaTeX--arguments-completion-at-point' to
+	`completion-at-point-functions'.
+
+2022-11-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Allow user to insert "$" (bug#57626)
+
+	* tex.el (TeX-insert-dollar): Let user to insert "$" when `texmathp'
+	thinks that the math mode didn't start with dollar, considering it
+	isn't actually in math mode.
+	Fix doc string along with the above change.
+	* texmathp.el: Add cases* env issue in BUGS section of header
+	comments.
+
+2022-11-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Cleanup `TeX-insert-dollar'
+
+	* tex.el (TeX-insert-dollar): Don't insert "\)\(" when we have empty
+	active region and `TeX-electric-math' is ("\(" . "\)").
+	Use `insert-char' instead of `insert'+`make-string' to insert multiple
+	"$"s.
+	Supply FIXEDCASE argument for `replace-match'.
+	Use `save-excursion' for robustness to blink matching paren.
+	Add "*" at the beginning of interactive spec to declare explicitly
+	it's invalid in read-only buffer.
+	Fix line break of doc string and comment.
+	(TeX-symbol-marker,TeX-symbol-marker-pos,TeX-dollar-sign)
+	(TeX-dollar-string,TeX-dollar-regexp): Declare as obsolete explicitly.
+	* doc/auctex.texi (Quotes): Write cons value in "(A . B)" form instead
+	of "(cons A B)".
+
+2022-10-31  Arash Esbati  <arash@gnu.org>
+
+	Don't let-bind `inhibit-point-motion-hooks' to t
+
+	* tex.el (TeX-current-offset): Delete let-binding of
+	`inhibit-point-motion-hooks' to t because this is the default
+	value since Emacs 25.1.
+
+2022-10-26  Arash Esbati  <arash@gnu.org>
+
+	Use `TeX-arg-completing-read-multiple'
+
+	* style/babel.el ("babel"):
+	* style/biblatex.el ("biblatex"):
+	* style/doc.el ("doc"):
+	* style/enumitem.el ("enumitem"):
+	* style/ntheorem.el ("ntheorem"):
+	* style/thmtools.el ("thmtools"):
+	* style/titleps.el ("titleps"):
+	* style/xcolor.el ("xcolor"): Use
+	`TeX-arg-completing-read-multiple' instead of `TeX-arg-eval' and
+	`mapconcat ...' combination.
+
+2022-10-25  Arash Esbati  <arash@gnu.org>
+
+	Use `TeX-arg-completing-read'
+
+	* latex.el (LaTeX-common-initialization):
+	* style/MyriadPro.el ("MyriadPro"):
+	* style/amsthm.el ("amsthm"):
+	* style/arabxetex.el ("arabxetex"):
+	* style/babel.el ("babel"):
+	* style/biblatex.el ("biblatex"):
+	* style/bigdelim.el ("bigdelim"):
+	* style/caption.el ("caption"):
+	* style/changes.el ("changes"):
+	* style/csquotes.el ("csquotes"):
+	* style/doc.el ("doc"):
+	* style/enumitem.el ("enumitem"):
+	* style/etoolbox.el ("etoolbox"):
+	* style/exam.el ("exam"):
+	* style/fancyvrb.el ("fancyvrb"):
+	* style/floatrow.el ("floatrow"):
+	* style/fontaxes.el ("fontaxes"):
+	* style/fontspec.el ("fontspec"):
+	* style/footmisc.el ("footmisc"):
+	* style/graphicx.el ("graphicx"):
+	* style/harvard.el ("harvard"):
+	* style/hologo.el ("hologo"):
+	* style/l3doc.el ("l3doc"):
+	* style/ltugboat.el ("ltugboat"):
+	* style/ltxdoc.el ("ltxdoc"):
+	* style/mathtools.el ("mathtools"):
+	* style/mdframed.el ("mdframed"):
+	* style/menukeys.el ("menukeys"):
+	* style/metalogo.el ("metalogo"):
+	* style/multirow.el ("multirow"):
+	* style/natbib.el ("natbib"):
+	* style/newfloat.el ("newfloat"):
+	* style/ntheorem.el ("ntheorem"):
+	* style/paracol.el ("paracol"):
+	* style/polyglossia.el ("polyglossia"):
+	* style/pythontex.el ("pythontex"):
+	* style/splitidx.el ("splitidx"):
+	* style/subcaption.el ("subcaption"):
+	* style/tcolorbox.el ("tcolorbox"):
+	* style/tex-live.el ("tex-live"):
+	* style/theorem.el ("theorem"):
+	* style/titleps.el ("titleps"):
+	* style/titlesec.el ("titlesec"):
+	* style/titletoc.el ("titletoc"):
+	* style/xcolor.el ("xcolor"):
+	* style/xr-hyper.el ("xr-hyper"): Use `TeX-arg-completing-read'
+	instead of `TeX-arg-eval' and `completing-read' combination.
+
+2022-10-19  Arash Esbati  <arash@gnu.org>
+
+	Don't use `eval' on code
+
+	* latex.el (TeX-read-key-val, TeX-read-completing-read)
+	(TeX-read-completing-read-multiple): Replace usage of `eval' with
+	other clauses after a comment in this message:
+	https://lists.gnu.org/archive/html/emacs-devel/2022-08/msg01231.html
+	Adjust docstrings.
+
+	* style/hologo.el ("hologo"):
+	* style/newfloat.el ("newfloat"): Adjust the styles accordingly.
+
+2022-10-10  Arash Esbati  <arash@gnu.org>
+
+	Add missing argument for `TeX-argument-prompt'
+
+	* latex.el (TeX-read-completing-read)
+	(TeX-read-completing-read-multiple): Fix the value of third
+	argument of `TeX-argument-prompt'.
+
+2022-10-07  Arash Esbati  <arash@gnu.org>
+
+	Improve style/fvextra.el
+
+	* style/fvextra.el: Don't require cl-lib, `cl-pushnew' isn't used.
+	(font-latex-set-syntactic-keywords): Declare the function.
+	("fvextra"): Add \Verb*? and \EscVerb*? to
+	`LaTeX-verbatim-macros-with-braces-local'.
+	Update fontification rules.
+
+2022-10-07  Arash Esbati  <arash@gnu.org>
+
+	Improve interaction between fancyvrb.el and fvextra.el
+
+	* style/fancyvrb.el ("fancyvrb"): Check if the fvextra package is
+	loaded which allows \Verb and \SaveVerb macros to take the
+	mandatory argument in braces.
+	Add starred version of \Verb and \UseVerb macros.
+	Adjust fontification entry for \UseVerb.
+
+2022-10-07  Arash Esbati  <arash@gnu.org>
+
+	Add new style/parskip.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/parskip.el: New file.
+
+2022-10-06  Arash Esbati  <arash@gnu.org>
+
+	Recognize '=' argument modifier
+
+	* style/xparse.el (LaTeX-xparse-macro-parse): Support '={...}'
+	argument modifier for key-vals.
+
+2022-09-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Override built-in tex-mode
+
+	* tex-site.el.in (TeX-modes-set): Specify `depth' to override the
+	:around advice given to `tex-mode' in tex-mode.el.
+
+2022-09-13  Arash Esbati  <arash@gnu.org>
+
+	Update style/amsart.el
+
+	* style/amsart.el: Add missing header.
+	(LaTeX-amsart-class-options): New variable.
+	("amsart"): Update the style hook for the macros provided by the
+	class.
+
+2022-09-07  Arash Esbati  <arash@gnu.org>
+
+	* style/l3doc.el ("l3doc"): Fix entry for the "env" macro.
+
+2022-09-05  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add support for the amsaddr package
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/amsaddr.el: New file.
+
+2022-09-05  Arash Esbati  <arash@gnu.org>
+
+	* tex.el: Require seq.el for older Emacsen where not preloaded.
+
+2022-09-01  Arash Esbati  <arash@gnu.org>
+
+	Simplify the function `LaTeX-array-update-column-letters'
+
+	* style/array.el (LaTeX-array-update-column-letters): Simplify by
+	using seq-functions.  Fix docstring.
+
+2022-08-31  Uwe Brauer  <oub@mat.ucm.es>
+
+	Add support for catchfilebetweentags package
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* tex-style.el (LaTeX-catchfilebetweentags-use-numeric-label):
+	Add a new variable that controls whether a numeric label gets
+	inserted automatically.  Default is t.
+
+	* style/catchfilebetweentags.el: New file.
+
+2022-08-30  Tassilo Horn  <tsdh@gnu.org>
+
+	Silence byte-compiler.
+
+2022-08-30  Tassilo Horn  <tsdh@gnu.org>
+
+	Close over list-strings from outer scope.
+
+	* tex-bar.el (menu-strings-buttons-alist): Close over list-strings
+	from outer scope.
+
+2022-08-30  Tassilo Horn  <tsdh@gnu.org>
+
+	Don't use RESULT arg of dolist.
+
+	* tex-bar.el (menu-strings-buttons-alist): Don't use RESULT arg of
+	dolist.
+
+2022-08-29  Arash Esbati  <arash@gnu.org>
+
+	Support macros for key-val package or class options
+
+	* style/ltx-base.el ("ltx-base"): Add kernel commands for creating
+	and using key-val package or class options.
+
+2022-08-29  Arash Esbati  <arash@gnu.org>
+
+	Restore compatibility for BSD sed
+
+	* Makefile.in (tex-site.el): Set '-i' command line option
+	explicitly since it is mandatory for BSD sed.
+
+2022-08-29  Philip Kaludercic  <philipk@posteo.net>
+
+	* tex.el (TeX-insert-macro): Use 'atomic-change-group'
+
+	If the user aborts the command, we avoid keeping behind a partial
+	state by reverting all changes that might have made.
+
+2022-08-27  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Unquote lambdas in font-latex.el & tex-bar.el; add some FIXMEs
+
+	* font-latex.el (font-latex-match-math-env)
+	(font-latex-match-math-envII,font-latex-match-dollar-math)
+	(font-latex-match-quotation): Add FIXMEs.
+	* tex-bar.el (TeX-bar-TeX-button-alist)
+	(TeX-bar-LaTeX-button-alist,menu-strings-buttons-alist): Unquote lambdas.
+
+2022-08-25  Arash Esbati  <arash@gnu.org>
+
+	Add new style/tcolorboxlib-theorems.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/tcolorboxlib-theorems.el: New file.
+
+2022-08-25  Arash Esbati  <arash@gnu.org>
+
+	Pacify Emacs 29 compiler warnings
+
+	* context.el (ConTeXt-outline-name):
+	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Use
+	`line-beginning-position' instead of `point-at-bol' and
+	`line-end-position' instead of `point-at-eol' which are obsolete
+	with Emacs 29.
+
+2022-08-25  Arash Esbati  <arash@gnu.org>
+
+	Unbreak building with Emacs 29 after obsoleting autoload.el
+
+	* Makefile.in (AUTOLOAD, PREVIEW_AUTOLOAD): Check if the function
+	`loaddefs-generate' is defined and use it by setting the
+	`excluded-files' argument accordingly.
+	(tex-site.el): Delete unnecessary parts which are included by
+	appending auto-loads.el.
+
+2022-08-22  Arash Esbati  <arash@gnu.org>
+
+	Improve function calls to retrieve key=vals in style hooks
+
+	* latex.el (TeX-read-key-val): Improve call of functions as
+	argument of `TeX-arg-key-val' inside style hooks.
+
+2022-08-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix doc string
+
+	* tex.el (TeX-dialect):
+	(TeX-unload-style):
+	Fix doc string so that the first line consists of a complete sentence.
+
+2022-08-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update documentation
+
+	* doc/changes.texi: Announce that `master-buffer' and `orig-buffer'
+	aren't accessible in `TeX-region-hook'.
+	* doc/auctex.texi (Adding Environments): Update example to the current
+	usage.
+	(Hacking the Parser): Add @findex for `TeX-auto-add-regexp' and FIXME
+	comment.
+	* doc/todo.texi (Mid-term Goals): Add todo and rearrange the item to
+	look better.
+
+2022-08-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix comments and doc strings
+
+	* latex.el (TeX-arg-key-val): Explain that KEY-VAL-ALIST can also be a
+	function call.
+	(LaTeX-modify-environment):
+	* context.el (ConTeXt-modify-environment):
+	Use better doc strings to mention the argument.
+	* font-latex.el (font-latex-find-matching-close): Add supplementary
+	comment.
+	(font-latex-make-built-in-keywords):
+	(font-latex--updated-region-end, font-latex-match-math-envII):
+	(font-latex-extend-region-backwards-math):
+	* style/tikz.el (TeX-TikZ-relative-point-function-map):
+	(TeX-TikZ-draw-arg-function-map, TeX-TikZ-arg-bend):
+	* tex.el (TeX-expand-list-builtin):
+	(TeX-view-predicate-list, TeX-source-correlate-expand-options):
+	(TeX-dialect, TeX-unload-style):
+	Fix typos and spacings.
+
+2022-08-18  Werner Lemberg  <wl@gnu.org>
+
+	Avoid `makeinfo` warnings
+
+	* doc/changes.texi, doc/wininstall.texi: Protect `@cindex` entries with
+	`@ifclear rawfile`.
+
+2022-08-18  Werner Lemberg  <wl@gnu.org>
+
+	Fix `autoconf` warnings
+
+	* configure.ac: Run `autoupdate`.
+	* aclocal.m4: s/AC_FD_CC/AS_MESSAGE_LOG_FD/.
+
+2022-08-16  Arash Esbati  <arash@gnu.org>
+
+	Insert a space between \caption and \\ in tables
+
+	* style/longtable.el (LaTeX-env-longtable):
+	* style/xltabular.el (LaTeX-env-xltabular): Insert a space between
+	the end of \caption macro and \\.
+
+2022-08-12  Arash Esbati  <arash@gnu.org>
+
+	* style/listings.el (TeX-add-style-hook): Update fontification.
+
+2022-08-02  Philip Kaludercic  <philipk@posteo.net>
+
+	Don't use void function texinfo-outline-level
+
+	Apparently, the function `texinfo-outline-level' was added to
+	texinfo.el in 1996 (ChangeLog.6) and removed in 2003 (ChangeLog.10).
+	In release 9.4f (1996) `outline-level' was set to this then newly
+	added function, which has been void for 19 years now.
+
+	I just noticed it now, because consult [0] checks if `outline-level' is
+	bound, in which case it is funcall'ed.  In .texi buffer with auctex
+	loaded, this triggers an error.
+
+	[0] https://elpa.gnu.org/packages/consult.html
+
+	* tex-info.el (TeX-texinfo-mode): Don't bind texinfo-outline-level to
+	outline-level.
+
+2022-07-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update documentation about C-M-a and C-M-e
+
+	* doc/auctex.texi (Environments): Supplement to descriptions about
+	C-M-a and C-M-e.
+
+2022-07-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add TODO
+
+	* doc/todo.texi (Mid-term Goals):
+	(Wishlist):
+	Syntax propertization and syntactic font lock should be improved.
+
+2022-07-10  Arash Esbati  <arash@gnu.org>
+
+	Suppress indentation of verbatim env's in docTeX-mode
+
+	* latex.el (docTeX-indent-inner-fixed): Add entry for verbatim*?
+	environments.
+	(LaTeX-indent-line): Add a check in order to suppress
+	the calculation of indentation inside verbatim environments in
+	docTeX-mode.
+
+	* tests/latex/doctex-indent-in.dtx:
+	* tests/latex/doctex-indent-out.dtx: Update test.
+
+2022-07-07  Arash Esbati  <arash@gnu.org>
+
+	Extend test for filling
+
+	* tests/latex/latex-filling-in.tex:
+	* tests/latex/latex-filling-out.tex: Add an additional test for
+	bug#56160 which also checks for filling with shortcuts defined
+	in `LaTeX-shortvrb-chars'.
+
+	* tests/latex/latex-test.el (LaTeX-filling): Let-bind the variable
+	`LaTeX-shortvrb-chars' for the test.
+	Use `TeX-forward-comment-skip' to skip over multiline comments.
+
+2022-07-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add new test
+
+	* tests/latex/latex-filling-in.tex:
+	* tests/latex/latex-filling-out.tex:
+	Add new test to check bug#56160.
+
+2022-07-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve shortvrb.sty support
+
+	* latex.el (LaTeX-verbatim-p): Consult syntax parse instead of
+	font-latex face.
+	(LaTeX-common-initialization): Delete FIXME comment which is now
+	obsolete.
+	* style/shortvrb.el ("shortvrb"): Install new syntax table which
+	assigns "string quotes" syntax to chars in `LaTeX-shortvrb-chars'.
+	Change syntax of those chars in `font-lock-syntax-table' from "generic
+	string delimiters" to "string quotes" so that they won't interfere
+	with each other.
+
+2022-07-01  Arash Esbati  <arash@gnu.org>
+
+	* style/shortvrb.el: Add missing macros incl. fontification.
+
+2022-06-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't break line inside \verb-like macro (bug#56160)
+
+	* latex.el (LaTeX-common-initialization): Add `LaTeX-verbatim-p' to
+	`fill-nobreak-predicate'.
+	(LaTeX-fill-move-to-break-point): Drop incomplete code which is no
+	longer needed with the above addition.
+	Complement doc string.
+
+2022-06-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Partial fix of region preview with TeX-output-dir feature
+
+	* tex.el (TeX-expand-list-builtin): Add a new directive
+	"%(s-filename-only)".
+	(TeX-engine-alist-builtin): Use it for --jobname parameter for
+	lualatex.
+	string.
+
+2022-06-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Avoid emacs 25 error
+
+	* preview.el.in (preview-get-dpi): Use `cl-cdddr' instead of `cdddr'.
+
+2022-06-22  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add notification about xelatex in preview-latex doc
+
+	* doc/preview-problems.texi (Black texts are too hard to read on dark
+	background): New node explaining that preview-latex with xelatex
+	cannot adjust foreground color.
+
+2022-06-21  Arash Esbati  <arash@gnu.org>
+
+	Add new style/microtype.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/microtype.el: New file.
+
+2022-06-21  Arash Esbati  <arash@gnu.org>
+
+	Control the opening and closing braces during insertion
+
+	* latex.el (TeX-arg-completing-read)
+	(TeX-arg-completing-read-multiple): Add parameters to set the
+	values of `TeX-arg-opening-brace' and `TeX-arg-closing-brace'
+	during the argument insertion.
+	(TeX-read-completing-read, TeX-read-completing-read-multiple):
+	Escape the single quotes in docstrings correctly.
+
+2022-06-20  Arash Esbati  <arash@gnu.org>  (tiny change)
+	    Hendrik Rommeswinkel  <rommeswi@proton.me>
+
+	Introduce face and keyword class for underlined text
+
+	* doc/auctex.texi (Fontification of macros): Describe the keyword
+	list `font-latex-match-underline-command-keywords'.  Add
+	"underline-command" to description of user option
+	`font-latex-deactivated-keyword-classes'.
+
+	* doc/changes.texi: Announce the new face.
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Introduce
+	new keyword classs "underline-command" incl. the builtin macro.
+	(font-latex-deactivated-keyword-classes)
+	(font-latex-add-keywords): Adjust docstrings accordingly.
+	(font-latex-underline-face): New face for underlined text.
+
+	* style/ulem.el ("ulem"): Use new keyword class for macros
+	provided by the package.
+
+2022-06-20  Eshan Ramesh  <esrh@gatech.edu>  (tiny change)
+
+	Add support for the Sioyek document viewer
+
+	* tex.el (TeX-view-program-list-builtin): Add support for sioyek.
+
+	* doc/changes.texi (News since last release): Document this change.
+
+2022-06-19  Jean-François B  <jfbu@free.fr>
+
+	Add comment
+
+	* preview.el.in (preview-cache-preamble): Add explanation of TeX codes
+	written in tempral .ini file.
+
+2022-06-15  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Follow up the previous commit
+
+	* tex.el (TeX-run-interactive): Avoid (void-variable
+	compilation-in-progress) error) for interactive mode as well.
+
+2022-06-15  Tassilo Horn  <tsdh@gnu.org>
+
+	Fix (void-variable compilation-in-progress) error
+
+	* tex.el (TeX-run-command, TeX-run-compile): Require `compile'
+	explicitly.
+
+2022-06-12  Arash Esbati  <arash@gnu.org>
+
+	Add new style/proc.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/proc.el: New file.
+
+2022-06-12  Arash Esbati  <arash@gnu.org>
+
+	Track changes in LaTeX kernel 2022-06-01
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add entry
+	for the top level macro \NewMarkClass.
+
+	* latex.el (TeX-read-hook): Query for "insertmark" hook.
+	(LaTeX-common-initialization): Support macros for the new mark
+	mechanism and floating point and integer calculations.
+
+	* style/ltxdoc.el (LaTeX-ltxdoc-class-options): Add "doc2".
+
+	* style/xparse.el ("xparse"): Add "IfBlank*" series of tests.
+
+2022-06-08  Arash Esbati  <arash@gnu.org>
+
+	Support different number of arguments for \hyperref
+
+	* style/hyperref.el (LaTeX-hyperref-forms-options): Remove
+	obsolete comment about the "borderstyle" key.
+	("hyperref"): Add a conditional for the "hyperref" macro to cater
+	for the different number of arguments.  Therefore, don't add the
+	macro to `LaTeX-verbatim-macros-with-braces-local'.  Also adjust
+	the fontification.
+	Add query for key-val options in "Form" environment.  Add missing
+	"NoHyper" environment.
+	Update URL's, minor cosmetic changes to linebreaks.
+
+2022-05-30  Arash Esbati  <arash@gnu.org>
+
+	Add three new styles
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/keyval.el:
+	* style/kvoptions.el:
+	* style/kvsetkeys.el: New files.
+
+2022-05-29  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Follow elisp quoting convention
+
+	* preview.el.in (preview-toggle):
+	* style/graphicx.el (LaTeX-arg-graphicx-includegraphics-key-val):
+	* tex-fold.el (TeX-fold-region-macro-or-env):
+	* tex.el (TeX-search-unescaped):
+	Quote symbols in doc strings with `this style'.
+
+2022-05-29  Arash Esbati  <arash@gnu.org>
+
+	Fontify \maketitle macro
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add an
+	entry for \maketitle macro.
+
+2022-05-28  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	* doc/changes.texi: Add NEWS item for the previous commit.
+
+2022-05-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	New option for saving auto parsed information (bug#55511)
+
+	* tex.el (TeX-auto-save-aggregate): New option.  When non-nil, save
+	parsed information in "auto" subdirectory of master
+	directory.  (Traditional behavior)
+	When nil, save in each @file{auto} subdirectory of the parsed file.
+
+2022-05-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Simplify regexp
+
+	* latex.el (LaTeX-auto-regexp-list): Simplify regular expression.
+	Inside "[...]", backslash and period don't have special meaning so
+	they don't need escaping.
+
+2022-05-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Support complex \input path (bug#55511)
+
+	* latex.el (LaTeX-auto-regexp-list): Allow ".." to appear more than
+	once in an argument of \input.
+	Support path surrounded by double quotes.
+	* tex.el (plain-TeX-auto-regexp-list): Allow ".." to appear more than
+	once in an argument of \input.
+	(TeX-auto-file): Defvar properly.
+
+2022-05-19  Arash Esbati  <arash@gnu.org>
+
+	Let RefTeX recognize labels in user defined environments
+
+	* style/listings.el (LaTeX-listings-auto-cleanup): Add user
+	defined environments to `reftex-label-regexps'.
+
+2022-05-19  Arash Esbati  <arash@gnu.org>
+
+	Fix insertion of second optional argument
+
+	* style/enumitem.el (LaTeX-arg-enumitem-setlist): Bind the values
+	for `TeX-arg-opening-brace' and `TeX-arg-closing-brace' when
+	inserting the second optional argument.
+
+2022-05-14  Arash Esbati  <arash@gnu.org>
+
+	Improve fontification of kernel macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add two
+	kernel macros "raggedbottom" and "flushbottom".
+
+2022-05-13  Arash Esbati  <arash@gnu.org>
+
+	Add support for \linespread macro
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add
+	"linespread" to function keyword class.
+
+	* latex.el (LaTeX-common-initialization): Add entry for
+	"linespread" macro.
+
+2022-05-09  Tassilo Horn  <tsdh@gnu.org>
+
+	Complete LaTeX lengths and counters
+
+	* tex.el: (VirTeX-common-initialization): Complete LaTeX lengths and
+	counters.
+
+2022-05-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Remove compatibility code
+
+	* bib-cite.el (bib-display-or-find-label):
+	* font-latex.el (font-latex-fontify-region):
+	* latex.el (TeX-read-label):
+	Remove compatibility code for emacs<25.
+	* tex.el (TeX-run-ispell-on-document): Add `make-obsolete' for
+	`TeX-run-ispell-on-document'.
+
+2022-05-06  Arash Esbati  <arash@gnu.org>
+
+	Provide generic completion functions
+
+	* latex.el (TeX-read-completing-read, TeX-arg-completing-read)
+	(TeX-read-completing-read-multiple)
+	(TeX-arg-completing-read-multiple): Add generic functions to read
+	and insert arguments with completion.
+
+2022-05-05  Arash Esbati  <arash@gnu.org>
+
+	Add new style/ltcaption.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/caption.el ("caption"): Run the style hook for ltcaption
+	if longtable is loaded.
+
+	* style/ltcaption.el: New file.
+
+2022-05-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix preview-latex to work with desktop.el again
+
+	* preview.el.in (): Don't use obsolete variable
+	`desktop-buffer-misc-functions'.
+	(): Just use `desktop-buffer-mode-handlers' which all supported
+	Emacsens now have.
+	Use autoload cookie instead of `eval-after-load'.
+	(desktop-buffer-preview): Add autoload cookie so that it's available
+	before preview.el is loaded.
+	(LaTeX-preview-setup): Don't use `desktop-buffer-misc' because it
+	isn't available (It's now lexically scoped variable in
+	`desktop-create-buffer'.  In addition, `LaTeX-preview-setup' isn't
+	called anyway during `desktop-buffer-misc' is bound.).
+
+2022-05-03  Arash Esbati  <arash@gnu.org>
+
+	Add new style/multibib.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/multibib.el: New file.
+
+2022-05-03  Arash Esbati  <arash@gnu.org>
+
+	Delete compatibility code
+
+	* tex.el (TeX-completing-read-multiple): Remove compatibility code
+	for Emacs <= 24.3.
+
+2022-05-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Adapt regression test for the previous commit
+
+	* tests/tex/error-parsing.el (TeX-error-parsing): Tweak
+	`default-diretory' so that `TeX-parse-error' can find dummy file.
+	* tests/tex/test.tex: New dummy file.
+
+2022-05-01  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Be more robust against false positive
+
+	* tex.el (TeX-TeX-sentinel-check,TeX-parse-error): Check whether
+	"file" really exists.  If not, ignore it.
+
+2022-04-26  Arash Esbati  <arash@gnu.org>
+
+	* tex-ispell.el (TeX-ispell-skip-cmds-list): Support shortvrb.sty.
+
+2022-04-25  Arash Esbati  <arash@gnu.org>
+
+	Add styles for iftex bundle
+
+	* style/ifluatex.el: Update license header.
+	Adjust style to use 'iftex.el'.
+
+	* Makefile.in (STYLESRC): Add new styles.
+
+	* style/ifetex.el:
+	* style/ifpdf.el:
+	* style/iftex.el:
+	* style/ifvtex.el:
+	* style/ifxetex.el: New files.
+
+2022-04-22  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Ensure "make maintainer-clean" deletes dynvars files
+
+	* Makefile.in (DYNVARSFILES): New variable.
+	(dynvars-check,maintainer-clean): Use it.
+
+2022-04-22  Arash Esbati  <arash@gnu.org>
+
+	Delete usage of @key in index entries
+
+	* doc/auctex.texi (Completion, Indenting):
+	* doc/preview-latex.texi (Keys and lisp): Don't use @key in index
+	entries per convention for GNU manuals:
+	https://www.gnu.org/software/texinfo/manual/texinfo/html_node/_0040key.html
+
+2022-04-22  Arash Esbati  <arash@gnu.org>
+
+	Mention 'M-RET' alias which runs `LaTeX-insert-item'
+
+	* doc/auctex.texi (Itemize-like, Tabular-like): Mention 'M-RET' as
+	an alias for 'C-c LFD' to invoke `LaTeX-insert-item'.
+
+2022-04-22  Arash Esbati  <arash@gnu.org>
+
+	Improve insertion of & in matrix-like environments
+
+	* style/amsmath.el (LaTeX-item-equation-matrix): New function.
+	("amsmath"): Use the function for matrix-like environments in
+	`LaTeX-item-list'.
+
+2022-04-16  Arash Esbati  <arash@gnu.org>
+
+	Don't increase indentation after \iff
+
+	* latex.el (LaTeX-indent-commands-regexp-make): Add "iff" to list
+	of macros which don't increase indentation.  (bug#54943)
+
+2022-04-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Follow up the previous commit
+
+	* context.el (ConTeXt-mode-common-initialization): Do similar fix for
+	Emacs<27.
+
+2022-04-16  Radon Rosborough  <radon.neon@gmail.com>
+
+	Avoid using variadic setq-local
+
+2022-04-13  Arash Esbati  <arash@gnu.org>
+
+	Update style/fbox.el to package version 0.06
+
+	* style/fbox.el (LaTeX-fbox-key-val-options): New function.
+	("fbox"): Run the style hook for 'xcolor'.
+	("fbox"): Support key=value query for the macros provided by the
+	package with the new function `LaTeX-fbox-key-val-options'.
+	(LaTeX-fbox-package-options): New variable.
+
+2022-04-13  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix bibtex dialect
+
+	* tex.el (TeX-auto-store): Use `(or :bibtex :latex)' instead of
+	`:bibtex' as dialect argument for `TeX-add-style-hook' when saving auto
+	file for BibTeX file.
+
+2022-04-13  Arash Esbati  <arash@gnu.org>
+
+	Add new style/etoolbox.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/etoolbox.el: New file.
+
+	* style/biblatex.el ("biblatex"):
+	* style/polyglossia.el ("polyglossia"): Don't run the style hook
+	for 'etoolbox' since it adds a lot a macros to the completion list
+	which are usually not needed for regular LaTeX editing.
+
+2022-04-12  Arash Esbati  <arash@gnu.org>
+
+	* style/ltx-base.el: Update style.
+
+	* latex.el (TeX-read-hook): Support 'include/excluded' hook.
+
+2022-04-11  Arash Esbati  <arash@gnu.org>
+
+	Document how to bump the required Emacs version
+
+	* admin/release-process.org (Bumping required Emacs version):
+	Document the required steps.
+
+2022-04-11  Arash Esbati  <arash@gnu.org>
+
+	Lift required GNU Emacs version to 25.1
+
+	* auctex.el.in:
+	* configure.ac (EMACS_CHECK_VERSION):
+	* doc/changes.texi:
+	* doc/faq.texi:
+	* doc/install.texi (Prerequisites):
+	* doc/preview-faq.texi (Requirements):
+	* tex-site.el.in:
+	* tex.el: Bump minimum required Emacs version to 25.1.
+
+2022-04-10  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make prettification work reliably
+
+	Simplify at the same time, assuming to bump required Emacs version to
+	25.1.
+
+	* tex.el (TeX--prettify-symbols-compose-p): Define unconditionally.
+	(VirTeX-common-initialization): Always prepare for prettification.
+
+2022-04-10  Arash Esbati  <arash@gnu.org>
+
+	Improve indentation after '\end{macrocode}' in docTeX mode
+
+	* latex.el (LaTeX-indent-calculate-last): Improve indentation
+	after '\end{macrocode}' if still inside a description environment
+	like 'macro' or 'environment'.
+
+	* tests/latex/doctex-indent-in.dtx:
+	* tests/latex/doctex-indent-out.dtx: New test files.
+
+	* tests/latex/latex-test.el (docTeX-indentation): New test.
+
+2022-04-08  Arash Esbati  <arash@gnu.org>
+
+	Let \Describe<foo> macros stay on their own lines
+
+	* style/doc.el (LaTeX-doc-auto-cleanup): Run
+	`LaTeX-paragraph-commands-add-locally' on 'Describe<parsed>'
+	macros.
+	("doc"): Run `LaTeX-paragraph-commands-add-locally' on
+	'DescribeEnv' and 'DescribeMacro'.
+
+2022-04-08  Arash Esbati  <arash@gnu.org>
+
+	Update style/doc.el to package version 3.0h
+
+	* latex.el (LaTeX-indent-environment-list): Add 2 environments
+	from doc.sty.
+
+	* style/doc.el (LaTeX-env-doc-no-comment): Update docstring.
+	(LaTeX-env-doc-commented): New function used to insert description
+	environments like "macro" or "environment" and the ones defined
+	with '\NewDocElement'.
+	(LaTeX-doc-after-insert-macrocode): Remove "macro" from list of
+	environments where this function runs.
+	(LaTeX-doc-newdocelement-key-val-options): New variable.
+	Add parsing support for '\NewDocElement'.
+	("doc"): Update style hook and add fontification support.
+	(LaTeX-doc-package-options): New variable.
+
+2022-04-06  Arash Esbati  <arash@gnu.org>
+
+	Wrap the 'function' environment better with %
+
+	* style/l3doc.el (LaTeX-env-l3doc-function): Improve inserting of
+	comment-char % around and in the 'function' environment.
+
+2022-04-06  Arash Esbati  <arash@gnu.org>
+
+	Don't change indentation when defining a conditional
+
+	* latex.el (LaTeX-indent-level-count): Add an entry for the
+	"newif" macro where the following \if<foo> is the definition of
+	the conditional which should not increase the indentation.
+	Fix docstring.
+
+	* tests/latex/conditionals-indent-in.tex:
+	* tests/latex/conditionals-indent-out.tex: Adjust tests
+	for the change.
+
+2022-04-06  Arash Esbati  <arash@gnu.org>
+
+	Improve parsing of re-definitions
+
+	* latex.el (LaTeX-auto-regexp-list): Extend regexp's for defining
+	commands and environments to match also their re-defining
+	counterparts.
+	Improve matching of environment names.
+	Delete space after the `,' marker.
+	(LaTeX-auto-cleanup): Add checks for re-definition of macros and
+	environments in order to remove already defined entries from
+	`TeX-auto-symbol' and `LaTeX-auto-environment'.
+
+2022-03-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add news for new indent feature
+
+	* doc/changes.texi: Add news for new indent feature.
+	* doc/auctex.texi (Indenting): Add minor note.
+
+2022-03-31  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Apply remaining portion of Stefan's patch
+
+	* preview.el.in (preview--open-for-replace):
+	(preview-query-replace-reveal):
+	* tex-site.el.in (TeX-modes-set):
+	(TeX-modes):
+	Discard fallbacks for emacsen lacking nadvice.
+
+2022-03-30  Tassilo Horn  <tsdh@gnu.org>
+
+	Remove old defadvices (patch by Stefan Monnier)
+
+	* auctex.el.in: Require nadvice-0.3.
+	* context.el (ConTeXt-add-environments): Unconditionally advise it
+	with advice-add.
+	* latex.el (LaTeX-add-bibliographies,LaTeX-add-environments): ditto.
+	* tex-site.el.in (tex-site-unload-hook): ditto.
+	* tex.el (hack-one-local-variable): ditto.
+
+2022-03-30  Arash Esbati  <arash@gnu.org>
+
+	Support \mathcolor in style/x?color.el
+
+	* style/color.el ("color"): Add support for 'mathcolor' macro.
+	(LaTeX-color-package-options): Update options.
+
+	* style/xcolor.el ("xcolor"): Add support for 'mathcolor' macro.
+	(LaTeX-xcolor-package-options): Update options.
+
+2022-03-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add news
+
+	* doc/changes.texi: Announce the disappearance of tex-buf.el.
+	* tex.el (TeX-command-default): Add change somehow dropped off from
+	the previous commit.
+
+2022-03-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Assign reasonable sentinel in AmS-TeX mode
+
+	* plain-tex.el (TeX-plain-tex-mode):
+	(plain-TeX-common-initialization):
+	Move `setq' for `TeX-sentinel-default-function' into
+	`plain-TeX-common-initialization' so that AmS-TeX mode also attains
+	reasonable value.
+
+2022-03-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Move contents of tex-buf.el into tex.el
+
+	Resolve circular dependency between tex.el and tex-buf.el and get rid
+	of tedious `defvar' and `declare-function' business over tex-buf.
+
+	* tex-buf.el: Delete.
+	* Makefile.in: Delete tex-buf.el from AUCSRC.
+	* tex.el: Adapt defvar's and declare-function's.
+	Remove all autoload's for tex-buf functions.
+	Move all the rest of tex-buf.el at the last of tex.el.
+	* context.el:
+	* plain-tex.el:
+	* preview.el.in:
+	* style/ifluatex.el:
+	* style/polyglossia.el:
+	* tests/japanese/error-parsing.el:
+	* tests/tex/command-expansion.el:
+	* tests/tex/error-parsing.el:
+	* tex-bar.el:
+	* tex-jp.el:
+	Remove "(require 'tex-buf)".
+	Supply "(require 'tex) or "(require 'latex)" instead if necessary.
+	* latex.el:
+	* tex-info.el:
+	Remove defvar's and declare-function's for tex-buf.el.
+
+2022-03-30  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Make tex-buf.el compile without (require 'latex)
+
+	* tex-buf.el (): Delete (require 'latex) and add defvar's &
+	declare-function.
+	(TeX-command-default): Add `bound-and-true-p' guard for
+	`LaTeX-using-Biber'.
+	* tests/tex/command-expansion.el: Supply (require 'latex) which is now
+	needed.
+
+2022-03-29  Arash Esbati  <arash@gnu.org>
+
+	Adjust indenting of conditionals in styles
+
+	* style/babel.el ("babel"):
+	* style/csquotes.el ("csquotes"):
+	* style/exam.el ("exam"):
+	* style/fancyhdr.el ("fancyhdr"):
+	* style/scrpage2.el ("scrpage2"):
+	* style/titleps.el ("titleps"):
+	* style/titlesec.el ("titlesec"): Add macros starting with \if
+	which should not increase the indentation to
+	`LaTeX-indent-begin-exceptions-list'.
+
+2022-03-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Follow similar update of latex.el in context.el
+
+	* context.el (ConTeXt-mode-common-initialization): Set
+	`beginning-of-defun-function' and `end-of-defun-function'.
+	(ConTeXt-mode-map): Don't bind C-M-a and C-M-e explicitly.
+	(): Update copyright year.
+
+2022-03-22  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update documentation with respect to indent
+
+	* doc/auctex.texi (Indenting): Describe support of indent for
+	tabular-like environments.
+	Delete obsolete description.
+	* doc/faq.texi: Add a missing word and re-fill.
+	Add a markup.
+	Update copyright year.
+	* doc/todo.texi (Bugs): Update a todo.
+	Update copyright year.
+
+2022-03-20  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Announce the indentation improvement.
+
+2022-03-20  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Document feature of []-induced indent
+
+	* doc/auctex.texi (Indenting): Add description of two new options
+	`TeX-indent-open-delimiters' and `TeX-indent-close-delimiters'.  Also
+	Explain workarounds for unwanted side effects.
+
+2022-03-18  Arash Esbati  <arash@gnu.org>
+
+	Improve indentation in env from algpseudocode package
+
+	* style/algpseudocode.el (LaTeX-algpseudocode-package-options):
+	Adjust package options.
+	("algpseudocode"): Rearrange provided macros.  Add macros to
+	appropriate indentation variables.  Inhibit filling by adding the
+	environment "algorithmic" to `LaTeX-indent-environment-list'
+	without a function.  Cater for fontification.
+
+	* tests/latex/latex-test.el (LaTeX-conditionals-indent): Parse the
+	test file and run the style hook for loaded package algpseudocode.
+
+	* tests/latex/conditionals-indent-in.tex:
+	* tests/latex/conditionals-indent-out.tex: Expand files with code
+	from algpseudocode package.
+
+2022-03-18  Arash Esbati  <arash@gnu.org>
+
+	Improve fontification of kernel macros
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Add some
+	missing kernel macros to function class.
+
+2022-03-18  Arash Esbati  <arash@gnu.org>
+
+	Add new style/ifthen.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/ifthen.el: New file.
+
+2022-03-18  Arash Esbati  <arash@gnu.org>
+
+	Improve indentation of conditionals
+
+	* latex.el (LaTeX-indent-begin-list)
+	(LaTeX-indent-begin-exceptions-list, LaTeX-indent-mid-list)
+	(LaTeX-indent-end-list): New variables containing list of macros
+	which alter the indentation.
+	(LaTeX-indent-begin-regexp-local)
+	(LaTeX-indent-begin-regexp-exceptions-local)
+	(LaTeX-indent-mid-regexp-local, LaTeX-indent-end-regexp-local):
+	New variables containing the regexp's calculated from the
+	variables above.
+	(LaTeX-indent-commands-regexp-make): New function calculating the
+	regexp's.
+	(LaTeX-indent-calculate):
+	(LaTeX-indent-calculate-last): Indent at regexps from
+	`LaTeX-indent-end-regexp-local' and
+	`LaTeX-indent-mid-regexp-local'.
+	(LaTeX-indent-level-count): Increase/decrease indentation
+	depending on `LaTeX-indent-begin-regexp-local' and
+	`LaTeX-indent-end-regexp-local'.
+
+	* tests/latex/latex-test.el (LaTeX-conditionals-indent): New test.
+
+2022-03-18  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Revise documentation about simultaneous process
+
+	* doc/auctex.texi (Starting a Command):
+	* tex-buf.el:
+	State explicitly that AUCTeX doesn't support concurrent typesets.
+	Update copyright year.
+
+2022-03-16  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Enable indent by square bracket
+
+	* tex.el (TeX-indent-open-delimiters):
+	(TeX-indent-close-delimiters): New options regarded as additional
+	open/close delimiters at indentation.
+	* tex.el (TeX-brace-count-line): Increase indentation inside those
+	options in addition to "{", "}".  In comments, don't ignore those
+	additional characters.
+	* latex.el (LaTeX-indent-calculate):
+	(LaTeX-indent-calculate-last):
+	Treat chars in `TeX-indent-close-delimiters' in the same way as "}".
+
+2022-03-15  Arash Esbati  <arash@gnu.org>
+
+	Add new style/l3doc.el
+
+	* Makefile.in (STYLESRC): Add new style.
+
+	* style/l3doc.el: New file.
+
+2022-03-15  Arash Esbati  <arash@gnu.org>
+
+	Delete obsoleted variables (bug#54339)
+
+	* style/gloss-italian.el ("gloss-italian"):
+	* style/italian.el ("italian"): Remove references to long time
+	obsoleted variables `LaTeX-italian-open-quote' and
+	`LaTeX-italian-close-quote'.
+
+	* style/german.el ("german"):
+	* style/ngerman.el ("ngerman"): Remove references to long time
+	obsoleted variables `LaTeX-german-open-quote',
+	`LaTeX-german-close-quote' and `LaTeX-german-quote-after-quote'.
+
+2022-03-15  Arash Esbati  <arash@gnu.org>
+
+	Recognize macrocode*? environments in doctex-mode
+
+	* latex.el (LaTeX-current-environment): Don't ignore whitespaces
+	and other characters than letters in regexp for searching the name
+	of the environment.  In doctex-mode, handle the macrocode*?
+	environments specially and find them if invoked from a non-comment
+	line.
+
+2022-03-15  Tassilo Horn  <tsdh@gnu.org>
+
+	Adapt TeX-region-hook for lexical-binding
+
+	* tex-buf.el (TeX-region-hook): Update docstring.
+	(TeX-region-orig-buffer): Convert to defvar-local.
+	(TeX-region-master-buffer): New variable.
+	(TeX-region-create): Set TeX-region-master-buffer in addition to
+	TeX-region-orig-buffer before runnig TeX-region-hook.
+
+2022-03-08  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Revert "Fix simultaneity"
+
+	This reverts commit e032df90e792ef9b85be3e8e3528c947ecdb5b6a
+	because it breaks region preview.
+
+	* tex-buf.el (TeX-current-process-region-p):
+	(TeX-command, TeX-command-sentinel):
+	Revert.
+
+2022-03-08  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Update documentation
+
+	* doc/faq.texi: Mention how to invoke vanilla emacs for EPLA
+	installation and on windows.
+	* latex.el (LaTeX-maybe-install-toolbar):
+	* plain-tex.el (plain-TeX-maybe-install-toolbar):
+	Fix typos.
+
+2022-03-07  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Discard obsolete hook
+
+	* latex.el (LaTeX-maybe-install-toolbar):
+	* plain-tex.el (plain-TeX-maybe-install-toolbar):
+	Install only when tool bar is active.
+	* latex.el (TeX-latex-mode):
+	* plain-tex.el (TeX-plain-tex-mode):
+	Use `tool-bar-mode-hook' instead of `tool-bar-mode-on-hook' since the
+	latter is backward compatibility only variable, according to a comment
+	in `define-minor-mode'.
+	Call `LaTeX-maybe-install-toolbar' or
+	`plain-TeX-maybe-install-toolbar' unconditionally since mode check is
+	done in the respective functions now.
+
+2022-03-05  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Don't change syntax of ^^A comments in doctex mode (bug#35140)
+
+	* font-latex.el (font-latex-doctex-match-^^A): New function to
+	override fontification on ^^A and ^^X comments with ordinary comment
+	face.
+	(font-latex-doctex-keywords): Add an entry to use new function.
+	(font-latex-doctex-^^A): Remove.
+	(font-latex-set-syntactic-keywords): Don't add entry using removed
+	function.
+	(font-latex--make-syntax-propertize-function): Don't use
+	`font-latex-doctex-syntactic-keywords'.
+	(font-latex-setup): Use forward quote instead of back quote.
+	(): Update copyright year.
+
+2022-03-04  Arash Esbati  <arash@gnu.org>
+
+	Reduce code duplication in style/sidecap.el
+
+	* style/sidecap.el (LaTeX-env-sidecap-float): Use
+	`LaTeX-env-figure' and don't duplicate the code from it.
+	("sidecap"): Run the style hook for 'ragged2e' depending on given
+	package option.
+
+2022-03-04  Arash Esbati  <arash@gnu.org>
+
+	* doc/changes.texi: Document switch from initial input to default.
+
+2022-03-03  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Add new test
+
+	* tests/latex/tabular-in.tex:
+	* tests/latex/tabular-out.tex:
+	Add new test for indent involving nested tabular-like env.
+
+2022-03-03  Tassilo Horn  <tsdh@gnu.org>
+
+	Don't set syntax-propertize-function in defaults
+
+	* font-latex.el (font-latex-setup): Don't set
+	syntax-propertize-function in defaults as we are calling
+	font-latex-set-syntactic-keywords explicitly.
+
+2022-03-02  Tassilo Horn  <tsdh@gnu.org>
+
+	Don't use obsolete font-lock-syntactic-keywords
+
+	That's obsolete since Emacs 24.1 and probably going to be removed in
+	Emacs 29.1.
+
+	* font-latex.el (font-latex-set-syntactic-keywords):
+	(font-latex-syntax-propertize-function): Delete function.
+	(font-latex--make-syntax-propertize-function): New function.
+	(font-latex-setup): Regenerate syntax-propertize-function.
+
+2022-03-02  Arash Esbati  <arash@gnu.org>
+
+	Use DEFAULT argument of `TeX-read-string' in styles
+
+	* style/longtable.el (LaTeX-env-longtable):
+	* style/ocg-p.el (LaTeX-env-ocgp-ocgtabular):
+	* style/plext.el (LaTeX-plext-env-array):
+	* style/xltabular.el (LaTeX-env-xltabular): Use the DEFAULT
+	argument in `TeX-read-string' where applicable.
+
+2022-03-02  Arash Esbati  <arash@gnu.org>
+
+	Improve regexp matching new environments
+
+	* style/newfloat.el
+	(LaTeX-newfloat-DeclareFloatingEnvironment-regexp): Add 'p' to the
+	name of the variable.  Use the function
+	`LaTeX-extract-key-value-label' to build the regexp.  Be more
+	restrictive when matching the type of declared environment.
+
+2022-03-02  Arash Esbati  <arash@gnu.org>
+
+	Use DEFAULT argument in latex.el where appropriate
+
+	* latex.el (LaTeX-env-array, LaTeX-env-tabular*): Use the DEFAULT
+	argument of `TeX-read-string' when asking for the mandatory FMT
+	argument.
+	(LaTeX-env-minipage): Use `format' instead of `concat' to assemble
+	the prompt.
+	(LaTeX-env-bib): Use DEFAULT argument for the bibitem label.
+	(TeX-arg-file-name, TeX-arg-file-name-sans-extension): Use the
+	DEFAULT argument only when used as a mandatory argument.
+	(TeX-arg-date, TeX-arg-version): Add support for DEFAULT argument
+	of `TeX-read-string'.
+
+2022-03-01  Arash Esbati  <arash@gnu.org>
+
+	Adjust argument list of `TeX-arg-length'
+
+	* latex.el (TeX-arg-length): Put DEFAULT before INITIAL-INPUT in
+	the argument list.  Adjust all occurrences in the library
+	accordingly.
+
+	* style/ltxtable.el ("ltxtable"): Track the new signature of
+	`TeX-arg-length'.
+
+2022-02-27  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve indent in tabular-like environments
+
+	* latex.el (LaTeX-hanging-ampersand-position): Fall back to default
+	value if encountered "\\" in an inner env.
+	Attach optional arguments for efficiency.
+	(LaTeX-indent-tabular): Skip inner env which also is tabular-like.
+	Call `LaTeX-hanging-ampersand-position' with new optional arguments.
+
+2022-02-26  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix simultaneity
+
+	* tex-buf.el (TeX-command): Keep the value of
+	`TeX-current-process-region-p' as buffer-local value of
+	`TeX--this-process-region-flag' in process buffer.
+	(TeX-command-sentinel): Call sentinel where
+	`TeX-current-process-region-p' has its own value when the process
+	started.
+	(TeX-current-process-region-p): Move `defvar' before its first usage.
+	(TeX--this-process-region-flag): New variable.
+
+2022-02-25  Arash Esbati  <arash@gnu.org>
+
+	Introduce DEFAULT argument in `TeX-arg-length'
+
+	* latex.el (TeX-arg-length): Add DEFAULT to argument names list
+	which will be passed to `completing-read'.  Adjust how this
+	argument is shown in the minibuffer when available.
+	Add a default value to "enlargethispage" and "enlargethispage*".
+
+	* style/ltxtable.el ("ltxtable"): Use DEFAULT argument of
+	`TeX-arg-length' for the table width.
+
+2022-02-24  Arash Esbati  <arash@gnu.org>
+
+	Improve file query in style/ltxtable.el
+
+	* style/ltxtable.el ("ltxtable"): Improve query for longtable file
+	which can reside in a subfolder.  Input die subfolder relative to
+	directory of the master file.
+	Change fontification of LTXtable macro to reference class.
+
+2022-02-24  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Fix label insertion at env. insertion with active region (bug#28382)
+
+	* latex.el (LaTeX-env-label): Add management of positions of point and
+	mark and indent region when region is active.
+
+2022-02-24  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve keymap handling
+
+	* latex.el (LaTeX-mode-map):
+	(LaTeX-common-initialization):
+	* tex.el (VirTeX-common-initialization):
+	(TeX-mode-map):
+	Bind narrowing command just once.
+	* latex.el (LaTeX-mode-map,LaTeX-common-initialization): Use
+	`beginning-of-defun-function' and `end-of-defun-function' instead of
+	overriding bindings of C-M-a and C-M-e.
+	* preview.el.in (preview-mode-setup):
+	(LaTeX-preview-setup):
+	Bind preview tool button just once.
+
+2022-02-22  Tassilo Horn  <tsdh@gnu.org>
+
+	Fix bug#54099
+
+	* latex.el (LaTeX--completion-annotation-from-math-menu): Ignore
+	LaTeX-math-list entries with a function as VALUE (bug#54099).
+
+2022-02-21  Arash Esbati  <arash@gnu.org>
+
+	Update pygmentize styles
+
+	* style/minted.el (LaTeX-minted-key-val-options): Update style key
+	with styles provided by pygmentize v2.11.
+
+2022-02-21  Ikumi Keita  <ikumi@ikumi.que.jp>
+
+	Improve support for starred variant name
+
+	* tex.el (TeX-current-macro): Return starred variant name if asterisk
+	is present.
+	* latex.el (LaTeX-auto-regexp-list): Allow starred variant name for
+	\newenvironment.
+
 2022-02-20  Mosè Giordano  <mose@gnu.org>
 
 	* Version 13.1 released.
@@ -28108,7 +30728,7 @@
 
 This file records repository revisions from
 commit c865982cacab289f4480f9145b3438ec06824232 (exclusive) to
-commit 8eb3cccba9f0085e5d4d1d734abcb9d1dcbf6169 (inclusive).
+commit ec742f33320928680dfb3b287add4d511a69f4d4 (inclusive).
 
 ;; Local Variables:
 ;; coding: utf-8

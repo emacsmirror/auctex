@@ -1,6 +1,6 @@
 ;;; enumitem.el --- AUCTeX style for `enumitem.sty' (v3.9)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -56,34 +56,12 @@
                "\\roman*" "\\Roman*" "\\value*"))
     ("ref"    ("\\alph*"  "\\Alph*"  "\\arabic*"
                "\\roman*" "\\Roman*" "\\value*"))
-    ("font" ,(mapcar (lambda (mac)
-                       (concat TeX-esc mac))
-                     '(;; family
-                       "rmfamily" "sffamily" "ttfamily"
-                       ;; series
-                       "mdseries" "bfseries"
-                       ;; shape
-                       "upshape" "itshape" "slshape" "scshape"
-                       ;; size
-                       "tiny"  "scriptsize" "footnotesize"
-                       "small" "normalsize" "large"
-                       "Large" "LARGE" "huge" "Huge"
-                       ;; reset macro
-                       "normalfont")))
-    ("format" ,(mapcar (lambda (mac)
-                         (concat TeX-esc mac))
-                       '(;; family
-                         "rmfamily" "sffamily" "ttfamily"
-                         ;; series
-                         "mdseries" "bfseries"
-                         ;; shape
-                         "upshape" "itshape" "slshape" "scshape"
-                         ;; size
-                         "tiny"  "scriptsize" "footnotesize"
-                         "small" "normalsize" "large"
-                         "Large" "LARGE" "huge" "Huge"
-                         ;; reset macro
-                         "normalfont")))
+    ("font" ,(mapcar (lambda (mac) (concat TeX-esc mac))
+                     (append LaTeX-font-family LaTeX-font-series
+                             LaTeX-font-shape  LaTeX-font-size)))
+    ("format" ,(mapcar (lambda (mac) (concat TeX-esc mac))
+                       (append LaTeX-font-family LaTeX-font-series
+                               LaTeX-font-shape  LaTeX-font-size)))
     ("align" ("left" "right" "parleft"))
     ;; 3.2 Horizontal spacing of labels
     ("labelindent" ("*" "!"))
@@ -240,8 +218,11 @@
       ;; Tell AUCTeX about parsed description like environments.
       (when (member type '("description" "description*"))
         (add-to-list 'LaTeX-item-list `(,env . LaTeX-item-argument)))
-      ;; Add new env's to `ispell-tex-skip-alist': skip the opt. arg:
-      (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0))))))
+      ;; Add new env's to `ispell-tex-skip-alists' and skip the
+      ;; opt. arg, ignore evn's already added in `tex-ispell.el':
+      (unless (member env '("itemize"  "enumerate"  "description"
+                            "itemize*" "enumerate*" "description*"))
+        (TeX-ispell-skip-setcdr `((,env ispell-tex-arg-end 0)))))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-enumitem-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-enumitem-auto-cleanup t)
@@ -332,15 +313,6 @@ macro.  Insert the value in brackets if OPTIONAL is non-nil."
     '("SetEnumitemSize" 2)
 
     ;; 7 Cloning the basic lists
-    ;; The easy way would be:
-    ;; '("newlist"
-    ;;   "Name" (TeX-arg-eval
-    ;;           completing-read "Type: "
-    ;;                 '(("itemize")  ("enumerate")  ("description")
-    ;;                   ("itemize*") ("enumerate*") ("description*")))
-    ;;  "Max-depth")
-    ;; But we go the extra mile to improve the user experience and add
-    ;; the arguments directly to appropriate lists.
     ;; \newlist{<name>}{<type>}{<max-depth>}
     `("newlist"
       ,(lambda (optional)

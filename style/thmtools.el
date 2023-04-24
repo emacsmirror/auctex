@@ -1,6 +1,6 @@
 ;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v0.72)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -205,8 +205,8 @@ Select the content of the optional argument with a key:
 RET in order to leave it empty.")
          (choice (read-char-choice
                   (TeX-argument-prompt
-                   nil nil "Heading (h), Key=val (k), Empty (RET)")
-                  '(?h ?k)))
+                   nil nil "Heading (h), Key=val (k), Empty (RET), Help (C-h)")
+                  '(?h ?k ?\r)))
          (opthead (cond ((= choice ?h)
                          (TeX-read-string
                           (TeX-argument-prompt t nil "Heading")))
@@ -222,7 +222,11 @@ RET in order to leave it empty.")
                             ;; much easier for AUCTeX and RefTeX
                             ;; ("label")
                             ("listhack" ("true" "false")))))
-                        (t ""))))
+                        (t
+                         ;; Clear minibuffer and don't leave the ugly
+                         ;; ^M there and return an empty string:
+                         (message nil)
+                         ""))))
     (LaTeX-insert-environment environment
                               (when (and opthead
                                          (not (string= opthead "")))

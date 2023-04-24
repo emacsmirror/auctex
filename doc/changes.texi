@@ -8,7 +8,7 @@
 
 @end ifset
 
-@heading News since last release
+@heading News in 13.2
 
 @itemize @bullet
 @item

@@ -1,6 +1,6 @@
 ;;; overpic.el --- AUCTeX style for `overpic.sty' (v1.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,7 +38,8 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
-(defvar LaTeX-graphicx-key-val-options)
+(declare-function LaTeX-graphicx-key-val-options
+                  "graphicx" ())
 (defvar LaTeX-graphicx-package-options)
 
 (defvar LaTeX-overpic-key-val-options
@@ -51,39 +52,6 @@
     ("unit"))
   "Key=value options for overpic macro and environments.")
 
-(defun LaTeX-arg-overpic-key-val (optional)
-  "Insert key-val for optional argument of overpic environments.
-If OPTIONAL is non-nil, insert argument in square brackets.
-
-The key-val's in `LaTeX-overpic-key-val-options' are offered in
-addition to the ones provided by
-`LaTeX-graphicx-key-val-options'."
-  (let ((crm-local-completion-map
-         (remove (assoc 32 crm-local-completion-map)
-                 crm-local-completion-map))
-        (minibuffer-local-completion-map
-         (remove (assoc 32 minibuffer-local-completion-map)
-                 minibuffer-local-completion-map)))
-    (TeX-argument-insert
-     (TeX-read-key-val optional
-                       (if (and (or (and (eq TeX-engine 'default)
-                                         (not (TeX-PDF-from-DVI)))
-                                    (eq TeX-engine 'luatex))
-                                TeX-PDF-mode)
-                           (append '(("page")
-                                     ("pagebox" ("mediabox"
-                                                 "cropbox"
-                                                 "bleedbox"
-                                                 "trimbox"
-                                                 "artbox")))
-                                   LaTeX-overpic-key-val-options
-                                   LaTeX-graphicx-key-val-options)
-                         (append
-                          LaTeX-overpic-key-val-options
-                          LaTeX-graphicx-key-val-options)))
-     optional)))
-
-
 (TeX-add-style-hook
  "overpic"
  (lambda ()
@@ -95,13 +63,21 @@ addition to the ones provided by
     '("setOverpic" (TeX-arg-key-val LaTeX-overpic-key-val-options)))
 
    (LaTeX-add-environments
-    '("overpic" LaTeX-env-args
-      [ LaTeX-arg-overpic-key-val ]
+    `("overpic" LaTeX-env-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append (LaTeX-graphicx-key-val-options)
+                                  LaTeX-overpic-key-val-options))
+                       nil nil ?\s]
       LaTeX-arg-includegraphics)
 
-    '("Overpic" LaTeX-env-args
-      [ LaTeX-arg-overpic-key-val ]
-      (TeX-arg-literal "{" "}")))
+    `("Overpic" LaTeX-env-args
+      [TeX-arg-key-val ,(lambda ()
+                          (append (LaTeX-graphicx-key-val-options)
+                                  LaTeX-overpic-key-val-options))
+                       nil nil ?\s]
+      (TeX-arg-literal "{" "}")
+      ,(lambda (_optional)
+         (set-marker TeX-exit-mark (1- (point))))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

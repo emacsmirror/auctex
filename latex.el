@@ -84,6 +84,11 @@ the lines are outcommented, like in dtx files."
   :group 'LaTeX-environment
   :type 'boolean)
 
+(defcustom docTeX-indent-across-comments nil
+  "If non-nil, indentation in docTeX is done across comments."
+  :group 'LaTeX-indentation
+  :type 'boolean)
+
 (defun LaTeX-newline ()
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
@@ -4391,7 +4396,9 @@ outer indentation in case of a commented line.  The symbols
   (let (line-comment-current-flag
         line-comment-last-flag
         comment-current-flag
-        comment-last-flag)
+        comment-last-flag
+        (indent-across-comments (or docTeX-indent-across-comments
+                                    (not (eq major-mode 'doctex-mode)))))
     (beginning-of-line)
     (setq line-comment-current-flag (TeX-in-line-comment)
           comment-current-flag (TeX-in-commented-line))
@@ -4403,11 +4410,11 @@ outer indentation in case of a commented line.  The symbols
     ;; lines.  The computation of indentation should in this case
     ;; rather take the last non-comment line into account.
     ;; Otherwise there might arise problems with e.g. multi-line
-    ;; code comments.  This behavior is not enabled in docTeX mode
+    ;; code comments.  This behavior can be disabled in docTeX mode
     ;; where large amounts of line comments may have to be skipped
     ;; and indentation should not be influenced by unrelated code in
     ;; other macrocode environments.
-    (while (and (not (eq major-mode 'doctex-mode))
+    (while (and indent-across-comments
                 (not comment-current-flag)
                 (TeX-in-commented-line)
                 (not (bobp)))
@@ -8073,8 +8080,9 @@ function would return non-nil and `(match-string 1)' would return
                    2 LaTeX-pagestyle-list "}")
                   (LaTeX--after-math-macro-prefix-p
                    1 (lambda ()
-                       (append (mapcar #'cadr LaTeX-math-list)
-                               (mapcar #'cadr LaTeX-math-default)))
+                       (seq-filter #'stringp
+                                   (append (mapcar #'cadr LaTeX-math-list)
+                                           (mapcar #'cadr LaTeX-math-default))))
                    (if TeX-insert-braces "{}")))
                 TeX-complete-list))
 
@@ -8178,15 +8186,15 @@ function would return non-nil and `(match-string 1)' would return
      [ TeX-arg-corner ] t)
    '("frame" t)
    '("framebox" (TeX-arg-conditional
-                 (string-equal (LaTeX-current-environment) "picture")
-                 (TeX-arg-size [ TeX-arg-corner ] t)
-                 ([ "Length" ] [ TeX-arg-lr ] t)))
+                    (string-equal (LaTeX-current-environment) "picture")
+                    (TeX-arg-size [ TeX-arg-corner ] t)
+                  ([ "Length" ] [ TeX-arg-lr ] t)))
    '("line" (TeX-arg-pair "X slope" "Y slope") "Length")
    '("linethickness" "Dimension")
    '("makebox" (TeX-arg-conditional
-                (string-equal (LaTeX-current-environment) "picture")
-                (TeX-arg-size [ TeX-arg-corner ] t)
-                ([ "Length" ] [ TeX-arg-lr ] t)))
+                   (string-equal (LaTeX-current-environment) "picture")
+                   (TeX-arg-size [ TeX-arg-corner ] t)
+                 ([ "Length" ] [ TeX-arg-lr ] t)))
    '("multiput"
      TeX-arg-coordinate
      (TeX-arg-pair "X delta" "Y delta")
@@ -8196,9 +8204,9 @@ function would return non-nil and `(match-string 1)' would return
    '("put" TeX-arg-coordinate t)
    '("savebox" TeX-arg-savebox
      (TeX-arg-conditional
-      (string-equal (LaTeX-current-environment) "picture")
-      (TeX-arg-size [ TeX-arg-corner ] t)
-      ([ "Length" ] [ TeX-arg-lr ] t)))
+         (string-equal (LaTeX-current-environment) "picture")
+         (TeX-arg-size [ TeX-arg-corner ] t)
+       ([ "Length" ] [ TeX-arg-lr ] t)))
    '("shortstack" [ TeX-arg-lr ] t)
    '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
    '("cline" "Span `i-j'")
@@ -8207,8 +8215,8 @@ function would return non-nil and `(match-string 1)' would return
      (TeX-arg-conditional (or TeX-arg-item-label-p
                               (string-equal (LaTeX-current-environment)
                                             "description"))
-                          ([ "Item label" ])
-                          ())
+         ([ "Item label" ])
+       ())
      (TeX-arg-literal " "))
    '("bibitem" [ "Bibitem label" ] TeX-arg-define-cite)
    '("cite"
@@ -8607,13 +8615,13 @@ function would return non-nil and `(match-string 1)' would return
      '("RequirePackage" LaTeX-arg-usepackage)
      '("ProvidesPackage" (TeX-arg-file-name-sans-extension "Package name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-         ([ TeX-arg-version ]) nil])
+           ([ TeX-arg-version ]) nil])
      '("ProvidesClass" (TeX-arg-file-name-sans-extension "Class name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-         ([ TeX-arg-version ]) nil])
+           ([ TeX-arg-version ]) nil])
      '("ProvidesFile" (TeX-arg-file-name "File name")
        [ TeX-arg-conditional (y-or-n-p "Insert version? ")
-         ([ TeX-arg-version ]) nil ])
+           ([ TeX-arg-version ]) nil ])
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"

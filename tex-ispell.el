@@ -1,6 +1,6 @@
 ;;; tex-ispell.el --- AUCTeX skip additions for Ispell  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -168,6 +168,14 @@
       ("Fref" . 1)
       ;; fancyvrb.sty
       ("fvset" . 1)
+      ("UseVerb" . 1)
+      ("UseVerb*" . 1)
+      ("UseVerbatim" . 1)
+      ("UseVerbatim*" . 1)
+      ("BUseVerbatim" . 1)
+      ("BUseVerbatim*" . 1)
+      ("LUseVerbatim" . 1)
+      ("LUseVerbatim*" . 1)
       ("VerbatimInput" . 1)
       ;; fontaxes.sty
       ("figureversion" . 1)
@@ -343,6 +351,8 @@ Environments for math or verbatim text are candidates for this list."))
    ("\\\\raisebox" TeX-ispell-tex-arg-end 1 2 0)
    ;; booktabs.sty
    ("\\\\cmidrule" . "{[-0-9]+}")
+   ;; fancyvrb.sty
+   ("\\\\SaveVerb" TeX-ispell-tex-arg-verb-end 1)
    ;; fontspec.sty
    ("\\\\fontspec" TeX-ispell-tex-arg-end 1 1 0)))
 

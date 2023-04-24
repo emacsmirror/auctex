@@ -1,6 +1,6 @@
 ;;; physics.el --- AUCTeX style for `physics' (v1.3).  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumikeita@jcom.home.ne.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 ;; List of supported braces by macros in physics package
 ;;     | () | [] | || | {} |null| big

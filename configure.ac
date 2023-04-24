@@ -2,7 +2,7 @@ dnl Autoconf script for AUCTeX
 
 dnl Maintainer: auctex-devel@gnu.org
 
-dnl Copyright (C) 2003-2022Free Software Foundation, Inc.
+dnl Copyright (C) 2003-2023 Free Software Foundation, Inc.
 
 dnl This file is part of AUCTeX.
 
@@ -21,7 +21,7 @@ dnl along with AUCTeX; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 dnl MA 02110-1301, USA.
 
-AC_INIT([auctex],[13.1],[bug-auctex@gnu.org])
+AC_INIT([auctex],[13.2],[bug-auctex@gnu.org])
 
 AC_CHECK_PROGS_REQUIRED(MAKECMD, make, [make not found, aborting!])
 AC_PROG_MAKE_SET
