@@ -1,7 +1,7 @@
-This is auctex.info, produced by makeinfo version 7.0.2 from
+This is auctex.info, produced by makeinfo version 7.0.3 from
 auctex.texi.
 
-This manual is for AUCTeX (version 13.1.10 from 2023-03-05), a
+This manual is for AUCTeX (version 13.2.0 from 2023-04-24), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -2619,6 +2619,33 @@ for similar side effects when you do.
 
    Note that commented curly braces ‘{’ and ‘}’ aren’t counted when
 AUCTeX computes indentation.
+
+   In docTeX-mode, TeX code is enclosed in ‘macrocode’ environment like
+this:
+     %    \begin{macrocode}
+     \def\foo#1{%
+       $#1$%
+     }
+     %    \end{macrocode}
+
+Sometimes, the code is long and one wants to insert comments inside the
+TeX code like this:
+     %    \begin{macrocode}
+     \def\foo#1{%
+     %    \end{macrocode}
+     %   Comment the next line of code
+     %    \begin{macrocode}
+       $#1$%
+     }
+     %    \end{macrocode}
+
+Usually, the comment inside the code interrupts the indentation.  This
+behavior can be controlled by setting the variable
+‘docTeX-indent-across-comments’.
+
+ -- User Option: docTeX-indent-across-comments
+     If non-nil, indentation in docTeX is done across comments.  This
+     option is disabled by default.
 
 
 File: auctex.info,  Node: Filling,  Prev: Indenting,  Up: Editing
@@ -6188,7 +6215,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.1.10 from 2023-03-05), a
+   This manual is for AUCTeX (version 13.2.0 from 2023-04-24), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
@@ -6695,8 +6722,8 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 A.2 Changes and New Features
 ============================
 
-News since last release
------------------------
+News in 13.2
+------------
 
    • AUCTeX no longer refuses to insert dollar sign when you type ‘$’ at
      point where AUCTeX thinks the current math mode didn’t start with
@@ -8931,6 +8958,7 @@ Variable Index
 * ConTeXt-Omega-engine:                  Processor Options.   (line 121)
 * docTeX-clean-intermediate-suffixes:    Cleaning.            (line   7)
 * docTeX-clean-output-suffixes:          Cleaning.            (line   7)
+* docTeX-indent-across-comments:         Indenting.           (line 189)
 * docTeX-mode-hook:                      Modes and Hooks.     (line  22)
 * fill-column:                           Filling.             (line   6)
 * font-latex-deactivated-keyword-classes: Fontification of macros.
@@ -9667,105 +9695,105 @@ Concept Index
 
 
 Tag Table:
-Node: Top923
-Node: Copying7403
-Node: Introduction9352
-Node: Summary9622
-Node: Installation12371
-Node: Prerequisites14382
-Node: Configure16609
-Node: Build/install and uninstall21351
-Node: Loading the package22108
-Node: Advice for package providers23847
-Node: Advice for non-privileged users26718
-Node: Installation under MS Windows32236
-Node: Customizing46176
-Node: Quick Start47785
-Ref: Quick Start-Footnote-149918
-Node: Editing Facilities50020
-Node: Processing Facilities54910
-Node: Editing59801
-Node: Quotes61139
-Node: Font Specifiers70677
-Node: Sectioning72873
-Node: Environments77570
-Node: Equations83138
-Node: Floats83766
-Node: Itemize-like85810
-Node: Tabular-like86680
-Node: Customizing Environments88574
-Node: Mathematics88814
-Node: Completion92340
-Node: Marking100107
-Node: Marking (LaTeX)100743
-Node: Marking (Texinfo)101693
-Node: Commenting103336
-Node: Indenting104721
-Node: Filling112673
-Node: Display118695
-Node: Font Locking121208
-Node: Fontification of macros123313
-Node: Fontification of quotes133316
-Node: Fontification of math134856
-Node: Verbatim content138632
-Node: Faces139422
-Node: Known problems139927
-Node: Folding140936
-Node: Outline151923
-Node: Narrowing153246
-Node: Prettifying154323
-Node: Processing155610
-Node: Commands156970
-Node: Starting a Command157534
-Node: Selecting a Command162698
-Node: Processor Options172101
-Node: Viewing182774
-Node: Starting Viewers183148
-Node: I/O Correlation188946
-Ref: I/O Correlation-Footnote-1194704
-Node: Debugging194970
-Node: Ignoring warnings197650
-Node: Error overview199761
-Node: Checking201685
-Node: Control203375
-Node: Cleaning205524
-Node: Documentation206971
-Node: Customization208094
-Node: Modes and Hooks208587
-Node: Multifile210547
-Node: Parsing Files215393
-Node: Internationalization220432
-Node: European221786
-Node: Japanese229705
-Node: Automatic234965
-Node: Automatic Global237494
-Node: Automatic Private238632
-Node: Automatic Local239996
-Node: Style Files241270
-Node: Simple Style242084
-Node: Adding Macros245877
-Node: Adding Environments255678
-Node: Adding Other261140
-Node: Hacking the Parser265820
-Node: Appendices269833
-Node: Copying this Manual270129
-Node: GNU Free Documentation License271016
-Node: Changes296340
-Node: Development355732
-Node: Mid-term Goals356380
-Node: Wishlist359279
-Node: Bugs365482
-Node: FAQ366622
-Node: Texinfo mode372496
-Node: Exploiting373632
-Node: Superseding374454
-Node: Mapping378921
-Node: Unbinding380864
-Node: Indices381705
-Node: Key Index381868
-Node: Function Index389543
-Node: Variable Index401813
-Node: Concept Index427245
+Node: Top922
+Node: Copying7402
+Node: Introduction9351
+Node: Summary9621
+Node: Installation12370
+Node: Prerequisites14381
+Node: Configure16608
+Node: Build/install and uninstall21350
+Node: Loading the package22107
+Node: Advice for package providers23846
+Node: Advice for non-privileged users26717
+Node: Installation under MS Windows32235
+Node: Customizing46175
+Node: Quick Start47784
+Ref: Quick Start-Footnote-149917
+Node: Editing Facilities50019
+Node: Processing Facilities54909
+Node: Editing59800
+Node: Quotes61138
+Node: Font Specifiers70676
+Node: Sectioning72872
+Node: Environments77569
+Node: Equations83137
+Node: Floats83765
+Node: Itemize-like85809
+Node: Tabular-like86679
+Node: Customizing Environments88573
+Node: Mathematics88813
+Node: Completion92339
+Node: Marking100106
+Node: Marking (LaTeX)100742
+Node: Marking (Texinfo)101692
+Node: Commenting103335
+Node: Indenting104720
+Node: Filling113439
+Node: Display119461
+Node: Font Locking121974
+Node: Fontification of macros124079
+Node: Fontification of quotes134082
+Node: Fontification of math135622
+Node: Verbatim content139398
+Node: Faces140188
+Node: Known problems140693
+Node: Folding141702
+Node: Outline152689
+Node: Narrowing154012
+Node: Prettifying155089
+Node: Processing156376
+Node: Commands157736
+Node: Starting a Command158300
+Node: Selecting a Command163464
+Node: Processor Options172867
+Node: Viewing183540
+Node: Starting Viewers183914
+Node: I/O Correlation189712
+Ref: I/O Correlation-Footnote-1195470
+Node: Debugging195736
+Node: Ignoring warnings198416
+Node: Error overview200527
+Node: Checking202451
+Node: Control204141
+Node: Cleaning206290
+Node: Documentation207737
+Node: Customization208860
+Node: Modes and Hooks209353
+Node: Multifile211313
+Node: Parsing Files216159
+Node: Internationalization221198
+Node: European222552
+Node: Japanese230471
+Node: Automatic235731
+Node: Automatic Global238260
+Node: Automatic Private239398
+Node: Automatic Local240762
+Node: Style Files242036
+Node: Simple Style242850
+Node: Adding Macros246643
+Node: Adding Environments256444
+Node: Adding Other261906
+Node: Hacking the Parser266586
+Node: Appendices270599
+Node: Copying this Manual270895
+Node: GNU Free Documentation License271781
+Node: Changes297105
+Node: Development356475
+Node: Mid-term Goals357123
+Node: Wishlist360022
+Node: Bugs366225
+Node: FAQ367365
+Node: Texinfo mode373239
+Node: Exploiting374375
+Node: Superseding375197
+Node: Mapping379664
+Node: Unbinding381607
+Node: Indices382448
+Node: Key Index382611
+Node: Function Index390286
+Node: Variable Index402556
+Node: Concept Index428061
 
 End Tag Table
 
