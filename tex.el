@@ -28,8 +28,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 25)
-  (error "AUCTeX requires Emacs 25.1 or later"))
+(when (< emacs-major-version 26)
+  (error "AUCTeX requires Emacs 26.1 or later"))
 
 (require 'custom)
 (require 'tex-site)

@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX Manual.
-@c Copyright (C) 2004-2014, 2021, 2022 Free Software Foundation, Inc.
+@c Copyright (C) 2004-2023 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -71,7 +71,7 @@ statements related to the problem.
 @item
 What versions of Emacs are supported?
 
-@AUCTeX{} was tested with @w{GNU Emacs 25.1}.  Older versions may work but
+@AUCTeX{} was tested with @w{GNU Emacs 26.1}.  Older versions may work but
 are unsupported.
 
 @item

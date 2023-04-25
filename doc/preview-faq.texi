@@ -1,6 +1,6 @@
 @c This is part of the preview-latex manual.
 @c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009
-@c               2017, 2021 Free Software Foundation, Inc.
+@c               2017, 2021-2023 Free Software Foundation, Inc.
 @c See file preview-latex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -48,7 +48,7 @@ to @email{auctex-devel@@gnu.org}.
 @subsection Which version of Emacs is needed?
 
 @previewlatex{} nominally requires @w{GNU Emacs} with a version of at
-least 25.1.
+least 26.1.
 
 @subsection Which versions of Ghostscript and @AUCTeX{} are needed?
 

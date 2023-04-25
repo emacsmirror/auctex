@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 25)
-  (error "AUCTeX requires Emacs 25.1 or later"))
+(when (< emacs-major-version 26)
+  (error "AUCTeX requires Emacs 26.1 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
