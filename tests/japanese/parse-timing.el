@@ -41,7 +41,7 @@
   "Test style hooks are not called too early."
   (let ((TeX-parse-self t)
         (TeX-master t)
-        (LaTeX-mode-hook '(japanese-latex-mode-initialization
+        (LaTeX-mode-hook '(japanese-LaTeX-mode-initialization
                            turn-on-reftex)))
     (find-file parse-timing)
     (should (memq 'AMSTeX
