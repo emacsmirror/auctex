@@ -945,7 +945,7 @@ An entry looks like: (\"environment\" . function)")
   (metapost-mode)
   (message "Type `M-x exit-recursive-edit' to get back")
   (recursive-edit)
-  (context-mode)
+  (ConTeXt-mode)
   (widen))
 
 ;; find smarter name.  Suggestions welcome
@@ -1596,7 +1596,7 @@ else.  There might be text before point."
 (easy-menu-define ConTeXt-mode-command-menu
   ConTeXt-mode-map
   "Command menu used in ConTeXt mode."
-  (TeX-mode-specific-command-menu 'context-mode))
+  (TeX-mode-specific-command-menu 'ConTeXt-mode))
 
 ;; it seems the menu is evaluated at compile/load-time
 ;; we don't have ConTeXt-current-interface at that time
@@ -1659,7 +1659,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
-  (or (not (memq major-mode '(context-mode)))
+  (or (not (memq major-mode '(ConTeXt-mode)))
       (null ConTeXt-menu-changed)
       (progn
         (TeX-update-style)
@@ -1819,7 +1819,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
-(TeX-abbrev-mode-setup context-mode)
+(TeX-abbrev-mode-setup ConTeXt-mode)
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
@@ -1830,9 +1830,9 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
     (setq save-ConTeXt-current-interface ConTeXt-current-interface)
     (plain-TeX-common-initialization)
     (setq ConTeXt-current-interface save-ConTeXt-current-interface))
-  (setq major-mode 'context-mode)
+  (setq major-mode 'ConTeXt-mode)
 
-  (setq local-abbrev-table context-mode-abbrev-table)
+  (setq local-abbrev-table ConTeXt-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
   (require (intern (concat "context-" ConTeXt-current-interface)))
@@ -1922,10 +1922,10 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
                  ConTeXt-default-interface)))))
 
 ;;;###autoload
-(defalias 'ConTeXt-mode #'context-mode)
+(defalias 'context-mode #'ConTeXt-mode)
 
 ;;;###autoload
-(defun context-mode ()
+(defun ConTeXt-mode ()
   "Major mode in AUCTeX for editing ConTeXt files.
 
 Special commands:

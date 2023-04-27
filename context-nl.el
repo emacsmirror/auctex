@@ -178,13 +178,13 @@ That is, besides the section(-block) commands.")
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
 ;;;###autoload
-(defun context-nl-mode ()
+(defun ConTeXt-nl-mode ()
   "Major mode for editing files for ConTeXt using its dutch interface.
 
 Special commands:
 \\{ConTeXt-mode-map}
 
-Entering `context-mode' calls the value of `text-mode-hook',
+Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
   (interactive)
@@ -199,6 +199,9 @@ of `ConTeXt-mode-hook'."
   ;; set mode line
   (setq TeX-base-mode-name "ConTeXt-nl")
   (TeX-set-mode-name))
+
+;;;###autoload
+(defalias 'context-nl-mode #'ConTeXt-nl-mode)
 
 (provide 'context-nl)
 

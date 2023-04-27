@@ -197,13 +197,13 @@ If nil, none is specified."
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
     ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
-     TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
+     TeX-run-TeX nil (ConTeXt-mode) :help "Run ConTeXt once")
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
-     (context-mode) :help "Run ConTeXt until completion")
+     (ConTeXt-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
      (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode
-                     context-mode)
+                     ConTeXt-mode)
      :help "Run BibTeX")
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
      (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
@@ -349,7 +349,7 @@ Any additional elements get just transferred to the respective menu entries."
                                 (set (const :tag "Plain TeX" plain-TeX-mode)
                                      (const :tag "LaTeX" latex-mode)
                                      (const :tag "DocTeX" doctex-mode)
-                                     (const :tag "ConTeXt" context-mode)
+                                     (const :tag "ConTeXt" ConTeXt-mode)
                                      (const :tag "Texinfo" Texinfo-mode)
                                      (const :tag "AmSTeX" AmSTeX-mode)))
                         (repeat :tag "Menu elements" :inline t sexp))))
@@ -996,7 +996,7 @@ If no mode is given the current major mode is used."
                                      (AmSTeX-mode . "AmSTeX")
                                      (doctex-mode . "docTeX")
                                      (Texinfo-mode . "Texinfo")
-                                     (context-mode . "ConTeXt")))))
+                                     (ConTeXt-mode . "ConTeXt")))))
 
 ;;; Viewing
 
@@ -3659,7 +3659,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
      "-- string likely in Japanese TeX --")
     ("AMSTEX" AmSTeX-mode
      "\\\\document\\b")
-    ("CONTEXT" context-mode
+    ("CONTEXT" ConTeXt-mode
      "\\\\\\(start\\(text\\|tekst\\|proje[ck]t\\|proiect\\|\
 produ[ck]t\\|produs\\|environment\\|omgeving\\|umgebung\\|prostredi\\|mediu\\|\
 component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
@@ -6448,7 +6448,7 @@ enter the number of the file to view, anything else to skip: ") list)))
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
-  '((texdoc (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode context-mode)
+  '((texdoc (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode ConTeXt-mode)
             (lambda ()
               (when (executable-find "texdoc")
                 (TeX-search-files-by-type 'docs 'global t t)))

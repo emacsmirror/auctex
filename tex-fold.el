@@ -323,7 +323,7 @@ for macros and `math' for math macros."
           (cl-pushnew i item-list :test #'equal)))
       (when item-list
         (setq regexp (cond ((and (eq type 'env)
-                                 (eq major-mode 'context-mode))
+                                 (eq major-mode 'ConTeXt-mode))
                             (concat (regexp-quote TeX-esc)
                                     "start" (regexp-opt item-list t)))
                            ((and (eq type 'env)
@@ -422,7 +422,7 @@ Return non-nil if an item was found and folded, nil otherwise."
       (message
        "Folding of environments is not supported in current mode")
     (let ((item-start (cond ((and (eq type 'env)
-                                  (eq major-mode 'context-mode))
+                                  (eq major-mode 'ConTeXt-mode))
                              (save-excursion
                                (ConTeXt-find-matching-start) (point)))
                             ((and (eq type 'env)
@@ -441,7 +441,7 @@ Return non-nil if an item was found and folded, nil otherwise."
                             (goto-char item-start)
                             (looking-at
                              (cond ((and (eq type 'env)
-                                         (eq major-mode 'context-mode))
+                                         (eq major-mode 'ConTeXt-mode))
                                     (concat (regexp-quote TeX-esc)
                                             "start\\([A-Za-z]+\\)"))
                                    ((and (eq type 'env)
@@ -530,7 +530,7 @@ TYPE can be either `env' for environments, `macro' for macros or
 `math' for math macros."
   (save-excursion
     (cond ((and (eq type 'env)
-                (eq major-mode 'context-mode))
+                (eq major-mode 'ConTeXt-mode))
            (goto-char start)
            (ConTeXt-find-matching-stop)
            (point))

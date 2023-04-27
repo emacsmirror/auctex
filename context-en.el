@@ -203,13 +203,13 @@ That is, besides the section(-block) commands.")
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
 ;;;###autoload
-(defun context-en-mode ()
+(defun ConTeXt-en-mode ()
   "Major mode for editing files for ConTeXt using its english interface.
 
 Special commands:
 \\{ConTeXt-mode-map}
 
-Entering `context-mode' calls the value of `text-mode-hook',
+Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
   (interactive)
@@ -223,6 +223,9 @@ of `ConTeXt-mode-hook'."
   ;; set mode line
   (setq TeX-base-mode-name "ConTeXt-en")
   (TeX-set-mode-name))
+
+;;;###autoload
+(defalias 'context-en-mode #'ConTeXt-en-mode)
 
 (provide 'context-en)
 
