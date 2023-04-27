@@ -278,7 +278,7 @@ Test against RequirePackage."
 backend=biber % here is a comment
 ]{biblatex}
 ")
-    (latex-mode)
+    (LaTeX-mode)
     (let ((TeX-parse-self t))
       (TeX-update-style t))
     (should (member "biblatex" (TeX-style-list)))
@@ -391,7 +391,7 @@ backend=biber % here is a comment
       ;;                        (setq TeX-PDF-from-DVI "Dvips"))
       ;;                      :classopt)
       (insert "\\documentclass[dvips]{article}\n")
-      (latex-mode)
+      (LaTeX-mode)
       (TeX-update-style)
       (should (equal (TeX-PDF-from-DVI) "Dvips"))
       (should (not (member "dvips" TeX-active-styles)))
@@ -408,7 +408,7 @@ backend=biber % here is a comment
       ;;                          (setq TeX-PDF-from-DVI "Dvipdfmx")))
       ;;                      :classopt)
       (insert "\\documentclass[dvipdfmx]{article}\n")
-      (latex-mode)
+      (LaTeX-mode)
       (TeX-update-style)
       (should TeX-PDF-mode)
       (should (equal (TeX-PDF-from-DVI) "Dvipdfmx"))
@@ -416,7 +416,7 @@ backend=biber % here is a comment
 
       ;; dvipdfmx option should not trigger `TeX-PDF-from-DVI' for
       ;; XeLaTeX document
-      (latex-mode)
+      (LaTeX-mode)
       (let ((TeX-engine 'xetex))
         (TeX-update-style))
       (should TeX-PDF-mode)
@@ -428,7 +428,7 @@ backend=biber % here is a comment
       ;; This depends on the following code in latex.el:
       ;; (TeX-add-style-hook "pdftricks" #'TeX-PDF-mode-on :classopt)
       (insert "\\documentclass[pdftricks]{article}\n")
-      (latex-mode)
+      (LaTeX-mode)
       (TeX-update-style)
       (should TeX-PDF-mode)
       (should (not (member "pdftricks" TeX-active-styles)))
@@ -438,7 +438,7 @@ backend=biber % here is a comment
       ;; This depends on the following code in latex.el:
       ;; (TeX-add-style-hook "psfrag" #'TeX-PDF-mode-off :classopt)
       (insert "\\documentclass[psfrag]{article}\n")
-      (latex-mode)
+      (LaTeX-mode)
       (TeX-update-style)
       (should (not TeX-PDF-mode))
       (should (not (member "psfrag" TeX-active-styles))))))
@@ -452,7 +452,7 @@ backend=biber % here is a comment
   (with-temp-buffer
     (let ((transient-mark-mode t)
           (LaTeX-insert-into-comments t))
-      (latex-mode)
+      (LaTeX-mode)
       (auto-fill-mode 1)
 
       ;; test 1: for bug#35284
@@ -662,7 +662,7 @@ ghi"))
           ;; already.
           (or orig-mode
               (electric-pair-mode 1))
-          (latex-mode)
+          (LaTeX-mode)
 
           ;; When `LaTeX-insert-left-brace' supplies right brace,
           ;; `electric-pair-mode' shouldn't come into play.

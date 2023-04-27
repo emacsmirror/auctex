@@ -1286,7 +1286,7 @@ triggers Font Lock to recognize the change."
 
 (defun font-latex--make-syntax-propertize-function ()
   "Return a `syntax-propertize-function' for (La|Doc)TeX documents."
-  (let ((kws ;; (if (derived-mode-p 'doctex-mode)
+  (let ((kws ;; (if (derived-mode-p 'docTeX-mode)
              ;;     font-latex-doctex-syntactic-keywords
                font-latex-syntactic-keywords)) ;; )
     (syntax-propertize-via-font-lock kws)))
@@ -1301,7 +1301,7 @@ triggers Font Lock to recognize the change."
 
   ;; The test for `major-mode' currently only works with docTeX mode
   ;; because `TeX-install-font-lock' is called explicitly in
-  ;; `doctex-mode'.  In case other modes have to be distinguished as
+  ;; `docTeX-mode'.  In case other modes have to be distinguished as
   ;; well, remove the call to `TeX-install-font-lock' from
   ;; `VirTeX-common-initialization' and place it in the different
   ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
@@ -1325,7 +1325,7 @@ triggers Font Lock to recognize the change."
             syntax-propertize-wholelines
             font-latex-sp-extend-region-backwards-verb-env))))
     ;; Add the mode-dependent stuff to the basic variables defined above.
-    (if (eq major-mode 'doctex-mode)
+    (if (eq major-mode 'docTeX-mode)
         (progn
           (setcar defaults (append (car defaults)
                                    '(font-latex-doctex-keywords)))
@@ -1430,7 +1430,7 @@ OPENCHAR is the opening character and CLOSECHAR is the closing
 character.  Character pairs are usually { } or [ ].  Comments are
 ignored during the search."
   (let ((parse-sexp-ignore-comments
-         (not (eq major-mode 'doctex-mode))) ; scan-sexps ignores comments
+         (not (eq major-mode 'docTeX-mode))) ; scan-sexps ignores comments
         (init-point (point))
         (mycount 1)
         (esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\"))
@@ -1483,7 +1483,7 @@ ignored during the search."
       (forward-line 0)
       (if (and (eq (char-after) ?\%)
                (not (font-latex-faces-present-p 'font-latex-verbatim-face)))
-          (not (eq major-mode 'doctex-mode))
+          (not (eq major-mode 'docTeX-mode))
         (catch 'found
           (while (progn (skip-chars-forward "^%" limit)
                         (< (point) limit))
@@ -1511,7 +1511,7 @@ If POS is omitted, the current position of point is used."
 (defun font-latex-forward-comment ()
   "Like `forward-comment' but with special provisions for docTeX mode.
 In docTeX mode \"%\" at the start of a line will be treated as whitespace."
-  (if (eq major-mode 'doctex-mode)
+  (if (eq major-mode 'docTeX-mode)
       ;; XXX: We should probably cater for ^^A as well.
       (progn
         (while (progn (if (bolp) (skip-chars-forward "%"))
@@ -1538,7 +1538,7 @@ Set this to nil if verification of command syntax is unwanted.")
   '((?\[ . ?\]) (?< . ?>) (?\( . ?\)))
   "List character pairs used as delimiters for optional arguments.")
 
-(defvar font-latex-syntax-error-modes '(latex-mode)
+(defvar font-latex-syntax-error-modes '(LaTeX-mode)
   "List of modes where syntax errors in macros should be indicated.")
 
 (defun font-latex-match-command-with-arguments (regexp keywords face limit)
@@ -1768,7 +1768,7 @@ cases.")
          (pos (funcall search)))
     (while (and pos
                 (member (match-string 1)
-                        (if (eq major-mode 'doctex-mode)
+                        (if (eq major-mode 'docTeX-mode)
                             (remove "_" font-latex-match-simple-exclude-list)
                           font-latex-match-simple-exclude-list)))
       (setq pos (funcall search)))

@@ -223,7 +223,7 @@ format of the argument MEANING-ALIST in the mentioned function."
 (defcustom TeX-bar-LaTeX-buttons
   '(new-file open-file dired kill-buffer save-buffer cut copy paste undo
              separator latex next-error view bibtex spell)
-  "List of buttons available in `latex-mode'.
+  "List of buttons available in `LaTeX-mode'.
 It should be a list in the same format of the BUTTONS parameter
 in function `toolbarx-install-toolbar', often a symbol that
 labels a button.

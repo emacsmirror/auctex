@@ -941,7 +941,7 @@ Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
                 ;; comment-prefix.  Hence, the next check just looks
                 ;; if we're inside such a group and returns non-nil to
                 ;; recognize such a situation.
-                (and (eq major-mode 'doctex-mode)
+                (and (eq major-mode 'docTeX-mode)
                      (looking-at-p (concat (regexp-quote TeX-esc)
                                    "\\(?:begin\\|end\\) *{macrocode\\*?}"))))
         (setq arg (if (= (char-after (match-beginning 1)) ?e)
@@ -3910,7 +3910,7 @@ consideration just as is in the non-commented source code."
 ;;
 ;; Comments can be filled syntax-aware or not.
 ;;
-;; In `doctex-mode' line comments should always be indented
+;; In `docTeX-mode' line comments should always be indented
 ;; syntax-aware and the comment character has to be anchored at the
 ;; first column (unless the appear in a macrocode environment).  Other
 ;; comments not in the documentation parts always start after the
@@ -3921,7 +3921,7 @@ consideration just as is in the non-commented source code."
 ;; `LaTeX-syntactic-comments' disabled, line comments should still be
 ;; indented syntax-aware.
 ;;
-;; In `latex-mode' comments starting in different columns don't have
+;; In `LaTeX-mode' comments starting in different columns don't have
 ;; to be handled differently.  They don't have to be anchored in
 ;; column one.  That means that in any case indentation before and
 ;; after the comment characters has to be checked and adjusted.
@@ -4199,9 +4199,9 @@ Lines starting with an item is given an extra indentation of
                  (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
-                  (eq major-mode 'doctex-mode)
+                  (eq major-mode 'docTeX-mode)
                   (TeX-in-line-comment))
-             ;; If point is in a line comment in `doctex-mode' we only
+             ;; If point is in a line comment in `docTeX-mode' we only
              ;; consider the inner indentation.  An exception is when
              ;; we're inside a verbatim environment where we don't
              ;; want to touch the indentation, notably with a
@@ -4275,7 +4275,7 @@ outer indentation in case of a commented line.  The symbols
           entry
           found)
       (cond ((save-excursion (beginning-of-line) (bobp)) 0)
-            ((and (eq major-mode 'doctex-mode)
+            ((and (eq major-mode 'docTeX-mode)
                   fill-prefix
                   (TeX-in-line-comment)
                   (progn
@@ -4391,7 +4391,7 @@ outer indentation in case of a commented line.  The symbols
         comment-current-flag
         comment-last-flag
         (indent-across-comments (or docTeX-indent-across-comments
-                                    (not (eq major-mode 'doctex-mode)))))
+                                    (not (eq major-mode 'docTeX-mode)))))
     (beginning-of-line)
     (setq line-comment-current-flag (TeX-in-line-comment)
           comment-current-flag (TeX-in-commented-line))
@@ -4420,7 +4420,7 @@ outer indentation in case of a commented line.  The symbols
     ;; code comments).  Additionally we don't want to compute inner
     ;; indentation when a commented and a non-commented line are
     ;; compared.
-    (cond ((or (and (eq major-mode 'doctex-mode)
+    (cond ((or (and (eq major-mode 'docTeX-mode)
                     (or (and line-comment-current-flag
                              (not line-comment-last-flag))
                         (and (not line-comment-current-flag)
@@ -4441,7 +4441,7 @@ outer indentation in case of a commented line.  The symbols
               ;; Some people have opening braces at the end of the
               ;; line, e.g. in case of `\begin{letter}{%'.
               (TeX-brace-count-line)))
-          ((and (eq major-mode 'doctex-mode)
+          ((and (eq major-mode 'docTeX-mode)
                 (looking-at (concat (regexp-quote TeX-esc)
                                     "end[ \t]*{macrocode\\*?}"))
                 fill-prefix
@@ -4530,11 +4530,11 @@ outer indentation in case of a commented line.  The symbols
                      ;; If `LaTeX-syntactic-comments' is not enabled,
                      ;; do conventional indentation
                      LaTeX-syntactic-comments
-                     ;; Line comments in `doctex-mode' are always
+                     ;; Line comments in `docTeX-mode' are always
                      ;; indented syntax-aware so we need their inner
                      ;; indentation.
                      (and (TeX-in-line-comment)
-                          (eq major-mode 'doctex-mode))))))
+                          (eq major-mode 'docTeX-mode))))))
       ;; INNER indentation
       (save-excursion
         (beginning-of-line)
@@ -4558,7 +4558,7 @@ recognized."
                (eq force-type 'inner))
           (and (not force-type)
                (or (and (TeX-in-line-comment)
-                        (eq major-mode 'doctex-mode))
+                        (eq major-mode 'docTeX-mode))
                    (and (TeX-in-commented-line)
                         ;; Only move after the % if we're not
                         ;; performing a newline command (bug#47757).
@@ -5163,11 +5163,11 @@ depends on the value of `LaTeX-syntactic-comments'."
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
        ;; * `LaTeX-syntactic-comments' disabled: Uncommented code and
-       ;;   line comments in `doctex-mode'.
+       ;;   line comments in `docTeX-mode'.
        ((or (or LaTeX-syntactic-comments
                 (and (not LaTeX-syntactic-comments)
                      (not has-comment)))
-            (and (eq major-mode 'doctex-mode)
+            (and (eq major-mode 'docTeX-mode)
                  (TeX-in-line-comment)))
         (let ((fill-prefix comment-fill-prefix))
           (save-excursion
@@ -5341,7 +5341,7 @@ environment in commented regions with the same comment prefix."
                 ;; comment-prefix.  Hence, the next check just looks
                 ;; if we're inside such a group and returns non-nil to
                 ;; recognize such a situation.
-                (and (eq major-mode 'doctex-mode)
+                (and (eq major-mode 'docTeX-mode)
                      (looking-at-p " *{macrocode\\*?}")))
         (setq level
               (if (= (char-after (match-beginning 1)) ?b) ;;begin
@@ -6395,6 +6395,7 @@ commands are defined:
   :lighter nil
   :keymap (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   (TeX-set-mode-name))
+;; FIXME: Is this still necessary?
 (defalias 'latex-math-mode #'LaTeX-math-mode)
 
 (easy-menu-define LaTeX-math-mode-menu
@@ -6693,7 +6694,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
-    (TeX-mode-specific-command-menu 'latex-mode))
+    (TeX-mode-specific-command-menu 'LaTeX-mode))
 
 (easy-menu-define LaTeX-mode-menu
   LaTeX-mode-map
@@ -7857,19 +7858,26 @@ This happens when \\left is inserted."
   :type 'hook
   :group 'LaTeX)
 
-(TeX-abbrev-mode-setup latex-mode)
+(TeX-abbrev-mode-setup LaTeX-mode)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
+(add-to-list 'auto-mode-alist '("\\.drv\\'" . LaTeX-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
 
 ;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
+(add-to-list 'auto-mode-alist '("\\.hva\\'" . LaTeX-mode))
 
 (declare-function LaTeX-preview-setup "preview")
 
+;; We want to use `LaTeX-mode' as the function name.  However, it is
+;; overwritten when tex-mode.el, prior to Emacs 29, is loaded afterwards
+;; because it has non-commented out (defalias 'LaTeX-mode
+;; #'latex-mode) in it.
+;; When the least supported emacsen version becomes 29, we can safely
+;; transform this definition to `(define-derived-mode LaTeX-mode
+;; text-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(defun TeX-latex-mode ()
+(defun TeX-LaTeX-mode ()
   ;; FIXME: Use `define-derived-mode'.
   "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
@@ -7883,7 +7891,7 @@ of `LaTeX-mode-hook'."
   (interactive)
   (LaTeX-common-initialization)
   (setq TeX-base-mode-name "LaTeX")
-  (setq major-mode 'latex-mode)
+  (setq major-mode 'LaTeX-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
   (add-hook 'tool-bar-mode-hook #'LaTeX-maybe-install-toolbar nil t)
@@ -7920,18 +7928,19 @@ of `LaTeX-mode-hook'."
   ;; Set up flymake backend, see latex-flymake.el
   (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
 
-(TeX-abbrev-mode-setup doctex-mode)
+;; COMPATIBILITY for Emacs<29
+;; Override defalias in tex-mode.el.
+;;;###autoload
+(defalias 'LaTeX-mode #'TeX-LaTeX-mode)
+
+(TeX-abbrev-mode-setup docTeX-mode)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
-
-;;;###autoload
-(define-derived-mode docTeX-mode TeX-latex-mode "docTeX"
+(define-derived-mode docTeX-mode LaTeX-mode "docTeX"
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
-  :abbrev-table doctex-mode-abbrev-table
-  (setq major-mode 'doctex-mode)
+  :abbrev-table docTeX-mode-abbrev-table
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
@@ -7942,18 +7951,6 @@ runs the hooks in `docTeX-mode-hook'."
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
-
-;;This is actually a mess: to fit the scheme properly, our derived
-;;mode definition would have had to be made for TeX-doctex-mode in the
-;;first place, but then we could not have used define-derived-mode, or
-;;all mode-specific variables would have gotten non-AUCTeX names.
-;;This solution has the advantage that documentation strings are
-;;provided in the autoloads, and has the disadvantage that docTeX-mode
-;;is not aliased to doctex-mode (not even when the AUCTeX version is
-;;disabled) as would be normal for our scheme.
-
-;;;###autoload
-(defalias 'TeX-doctex-mode #'docTeX-mode)
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
@@ -8004,7 +8001,7 @@ function would return non-nil and `(match-string 1)' would return
   (set-syntax-table LaTeX-mode-syntax-table)
   (set (make-local-variable 'indent-line-function) #'LaTeX-indent-line)
 
-  (setq local-abbrev-table latex-mode-abbrev-table)
+  (setq local-abbrev-table LaTeX-mode-abbrev-table)
 
   ;; Filling
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)

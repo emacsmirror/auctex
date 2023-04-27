@@ -186,7 +186,7 @@ If nil, none is specified."
      (plain-TeX-mode AmSTeX-mode Texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
-     (latex-mode doctex-mode) :help "Run LaTeX")
+     (LaTeX-mode docTeX-mode) :help "Run LaTeX")
     ;; Not part of standard TeX.
     ("Makeinfo" "makeinfo %(extraopts) %(o-dir) %t" TeX-run-compile nil
      (Texinfo-mode) :help "Run Makeinfo with Info output")
@@ -202,11 +202,11 @@ If nil, none is specified."
      TeX-run-TeX nil
      (ConTeXt-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode
                      ConTeXt-mode)
      :help "Run BibTeX")
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run Biber")
     ;; Not part of standard TeX.
     ;; It seems that texindex doesn't support "--output-dir" option.
@@ -224,32 +224,32 @@ If nil, none is specified."
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
     ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PostScript")
     ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeindex to create index file")
     ("upMendex" "upmendex %(O?idx)" TeX-run-index t
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil
-     (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode Texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run xindy to create index file")
-    ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
+    ("Check" "lacheck %s" TeX-run-compile nil (LaTeX-mode)
      :help "Check LaTeX file for correctness")
-    ("ChkTeX" "chktex -v6 %s" TeX-run-compile nil (latex-mode)
+    ("ChkTeX" "chktex -v6 %s" TeX-run-compile nil (LaTeX-mode)
      :help "Check LaTeX file for common mistakes")
     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t
      :help "Spell-check the document")
@@ -347,8 +347,8 @@ Any additional elements get just transferred to the respective menu entries."
                         (choice :tag "Modes"
                                 (const :tag "All" t)
                                 (set (const :tag "Plain TeX" plain-TeX-mode)
-                                     (const :tag "LaTeX" latex-mode)
-                                     (const :tag "DocTeX" doctex-mode)
+                                     (const :tag "LaTeX" LaTeX-mode)
+                                     (const :tag "DocTeX" docTeX-mode)
                                      (const :tag "ConTeXt" ConTeXt-mode)
                                      (const :tag "Texinfo" Texinfo-mode)
                                      (const :tag "AmSTeX" AmSTeX-mode)))
@@ -992,9 +992,9 @@ If RESET is non-nil, `TeX-command-next' is reset to
   "Return the prefix for the symbol MODE as string.
 If no mode is given the current major mode is used."
   (cdr (assoc (or mode major-mode) '((plain-TeX-mode . "plain-TeX")
-                                     (latex-mode . "LaTeX")
+                                     (LaTeX-mode . "LaTeX")
                                      (AmSTeX-mode . "AmSTeX")
-                                     (doctex-mode . "docTeX")
+                                     (docTeX-mode . "docTeX")
                                      (Texinfo-mode . "Texinfo")
                                      (ConTeXt-mode . "ConTeXt")))))
 
@@ -2467,13 +2467,13 @@ Get `major-mode' from master file and enable it."
                          major-mode)
                      major-mode))
              (comment-prefix (cond ((eq mode 'Texinfo-mode) "@c ")
-                                   ((eq mode 'doctex-mode) "% ")
+                                   ((eq mode 'docTeX-mode) "% ")
                                    (t "%%% ")))
              (mode-string (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
                                        "japanese-")
                                   (substring (symbol-name mode) 0 -5))))
         (newline)
-        (when (eq major-mode 'doctex-mode)
+        (when (eq major-mode 'docTeX-mode)
           (insert comment-prefix TeX-esc "endinput\n"))
         (insert
          comment-prefix "Local Variables:\n"
@@ -3665,7 +3665,7 @@ produ[ck]t\\|produs\\|environment\\|omgeving\\|umgebung\\|prostredi\\|mediu\\|\
 component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
 \\|inizia\\(testo\\|progetto\\|prodotto\\|ambiente\\|componente\\)\
 \\)\\|%.*?interface=")
-    ("LATEX" latex-mode
+    ("LATEX" LaTeX-mode
      "\\\\\\(begin\\|\\(?:sub\\)\\{0,2\\}section\\|chapter\\|documentstyle\\|\
 documentclass\\)\\b")
     ("TEX" plain-TeX-mode "."))
@@ -3682,10 +3682,10 @@ Each entry is a list with three elements.
 When entering `tex-mode', each regexp is tried in turn in order to find
 the major mode to be used.")
 
-(defcustom TeX-default-mode #'latex-mode
+(defcustom TeX-default-mode #'LaTeX-mode
   "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
-  :type '(radio (function-item latex-mode)
+  :type '(radio (function-item LaTeX-mode)
                 (function-item plain-TeX-mode)
                 (function :tag "Other")))
 
@@ -3704,7 +3704,7 @@ The algorithm is as follows:
    1) if the file is empty or `TeX-force-default-mode' is not set to nil,
       `TeX-default-mode' is chosen
    2) If \\documentstyle or \\begin{, \\section{, \\part{ or \\chapter{ is
-      found, `latex-mode' is selected.
+      found, `LaTeX-mode' is selected.
    3) Otherwise, use `plain-TeX-mode'"
   (interactive)
 
@@ -5231,7 +5231,7 @@ Brace insertion is only done if point is in a math construct and
         (easy-menu-add-item
          nil
          ;; Ugly hack because docTeX mode uses the LaTeX menu.
-         (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
+         (list (if (eq major-mode 'docTeX-mode) "LaTeX" TeX-base-mode-name))
          (or TeX-customization-menu
              (setq TeX-customization-menu
                    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
@@ -6209,7 +6209,7 @@ With prefix argument FORCE, always inserts \" characters."
                                              font-lock-comment-face)
                                            (1- (point))))
           (texmathp)
-          (and (TeX-in-comment) (not (eq major-mode 'doctex-mode))))
+          (and (TeX-in-comment) (not (eq major-mode 'docTeX-mode))))
       (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
     (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
@@ -6448,7 +6448,7 @@ enter the number of the file to view, anything else to skip: ") list)))
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
-  '((texdoc (plain-TeX-mode latex-mode doctex-mode AmSTeX-mode ConTeXt-mode)
+  '((texdoc (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode ConTeXt-mode)
             (lambda ()
               (when (executable-find "texdoc")
                 (TeX-search-files-by-type 'docs 'global t t)))
@@ -6456,15 +6456,15 @@ enter the number of the file to view, anything else to skip: ") list)))
               ;; texdoc in MiKTeX requires --view in order to start
               ;; the viewer instead of an intermediate web page.
               (call-process "texdoc" nil 0 nil "--view" doc)))
-    (latex-info (latex-mode)
+    (latex-info (LaTeX-mode)
                 (lambda ()
                   (mapcar (lambda (x)
                             (let ((x (car x)))
                               (if (string-match "\\`\\\\" x)
                                   (substring x 1) x)))
-                          (info-lookup->completions 'symbol 'latex-mode)))
+                          (info-lookup->completions 'symbol 'LaTeX-mode)))
                 (lambda (doc)
-                  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
+                  (info-lookup-symbol (concat "\\" doc) 'LaTeX-mode)))
     (texinfo-info (Texinfo-mode)
                   (lambda ()
                     (mapcar (lambda (x)
@@ -7380,7 +7380,7 @@ in `TeX-expand-list-builtin' and `TeX-expand-list'."
            (format
             (if (and extra
                      (stringp TeX-command-text)
-                     (memq major-mode '(latex-mode doctex-mode))
+                     (memq major-mode '(LaTeX-mode docTeX-mode))
                      (memq TeX-engine '(default uptex)))
                 ;; Since TeXLive 2018, the default encoding for LaTeX
                 ;; files has been changed to UTF-8 if used with
@@ -7590,7 +7590,7 @@ omitted) and `TeX-region-file'."
                                 TeX-file-extensions)
              (TeX-save-document name-or-file-fn))
            TeX-command-default)
-          ((and (memq major-mode '(doctex-mode latex-mode))
+          ((and (memq major-mode '(docTeX-mode LaTeX-mode))
                 ;; Want to know if bib file is newer than .bbl
                 ;; We don't care whether the bib files are open in emacs
                 (TeX-check-files (TeX--concat-ext name-or-file-fn "bbl")
@@ -7936,7 +7936,7 @@ run of `TeX-run-format', use
 
   (let ((idx-file nil) (element nil))
     ;; Store md5 hash of the index file before running LaTeX.
-    (and (memq major-mode '(doctex-mode latex-mode))
+    (and (memq major-mode '(docTeX-mode LaTeX-mode))
          (prog1 (file-exists-p
                  (setq idx-file (expand-file-name (TeX-active-master "idx"))))
            ;; In order to avoid confusion and pollution of
@@ -8859,7 +8859,7 @@ from.")
   ;; names right when analysing the process output buffer.
   ;; Note that \usepackage[utf8]{inputenc} is enabled by default in
   ;; standard (pdf)latex since TeXLive 2018.
-  (if (and (memq major-mode '(latex-mode doctex-mode))
+  (if (and (memq major-mode '(LaTeX-mode docTeX-mode))
            ;; Japanese upLaTeX requires the same treatment with
            ;; respect to non-ascii characters other than Japanese, in
            ;; file names within \message{}.
@@ -9107,7 +9107,7 @@ If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in
 `TeX-command-list'."
   (interactive "P")
-  (if (eq major-mode 'latex-mode)
+  (if (eq major-mode 'LaTeX-mode)
       (let* ((bounds (LaTeX-command-section-boundaries))
              (TeX-command-region-begin (car bounds))
              (TeX-command-region-end (cdr bounds)))
@@ -9123,7 +9123,7 @@ depend on it being positive instead of the entry in
 (defun LaTeX-command-run-all-section ()
   "Compile the current section until an error occurs or it is finished."
   (interactive)
-  (if (eq major-mode 'latex-mode)
+  (if (eq major-mode 'LaTeX-mode)
       (let* ((bounds (LaTeX-command-section-boundaries))
              (TeX-command-region-begin (car bounds))
              (TeX-command-region-end (cdr bounds)))
