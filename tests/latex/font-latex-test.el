@@ -350,4 +350,59 @@ x
       (should (font-latex-faces-present-p 'font-lock-function-name-face
                                           (match-end 0)))  )))
 
+(ert-deftest font-latex-shortvrb-chars ()
+  "Test fontification within delimiters defined by `LaTeX-shortvrb-chars'."
+  (with-temp-buffer
+    (let ((TeX-install-font-lock #'font-latex-setup)
+          (LaTeX-shortvrb-chars '(?| ?\"))
+          (TeX-parse-self t))
+      (insert "\
+\\documentclass{article}
+\\usepackage{shortvrb}
+\\begin{document}
+foo |xyz\\| bar
+foo \"xyz\\\" bar
+\\end{document}")
+      (LaTeX-mode)
+      (TeX-update-style t)
+      ;; See https://lists.gnu.org/archive/html/auctex-devel/2023-04/msg00011.html
+      (syntax-ppss-flush-cache (point-min))
+      (font-lock-ensure)
+      (goto-char (point-min))
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "|" nil t)
+      ;; This is the `|' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (1- (point))))
+      ;; This is the `x' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "|" nil t)
+      ;; This is the `\' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (- (point) 2)))
+      ;; This is the `|' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (1- (point))))
+      (search-forward "ba" nil t)
+      (should-not (get-text-property (point) 'face))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "\"" nil t)
+      ;; This is the `"' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (1- (point))))
+      ;; This is the `x' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "\"" nil t)
+      ;; This is the `\' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (- (point) 2)))
+      ;; This is the `"' char:
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face
+                                          (1- (point))))
+      (search-forward "ba" nil t)
+      (should-not (get-text-property (point) 'face)))))
+
 ;;; font-latex-test.el ends here

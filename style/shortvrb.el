@@ -1,6 +1,6 @@
 ;;; shortvrb.el --- AUCTeX style for `shortvrb.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2009--2023 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,12 +45,11 @@
 (require 'tex-style)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-to-syntax-alist
-                  "font-latex"
-                  (list))
+(declare-function font-latex-set-syntactic-keywords
+                  "font-latex" ())
 (declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+                  "font-latex" (keywords class))
+(defvar font-latex-syntactic-keywords-extra)
 
 (TeX-add-style-hook
  "shortvrb"
@@ -69,26 +68,28 @@
                   (cons str str)))
               LaTeX-shortvrb-chars)))
 
-   ;; Syntax
-   ;; N.B. This doesn't handle backslash just before the closing
-   ;; delimiter like |xyz\| correctly.  We hope we can live with that.
-   (when LaTeX-shortvrb-chars
-     (let ((st (make-syntax-table (syntax-table))))
-       (dolist (c LaTeX-shortvrb-chars)
-         (modify-syntax-entry c "\"" st))
-       (set-syntax-table st)))
-
    ;; Fontification
-   (when (and LaTeX-shortvrb-chars
-              (featurep 'font-latex)
+   (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-to-syntax-alist
-      (mapcar (lambda (char) (cons char "\""))
-              LaTeX-shortvrb-chars))
-
      (font-latex-add-keywords '(("MakeShortVerb"   "*{")
                                 ("DeleteShortVerb" "{"))
-                              'function)))
+                              'function)
+
+     ;; Use `font-latex-syntactic-keywords-extra' instead of
+     ;; `font-latex-add-to-syntax-alist' so we can catch a backslash
+     ;; within the shortvrb delimiters and make things like |xyz\|
+     ;; work correctly:
+     (when LaTeX-shortvrb-chars
+       (dolist (c LaTeX-shortvrb-chars)
+         (let ((s (char-to-string c)))
+           (add-to-list 'font-latex-syntactic-keywords-extra
+                        `(,(concat "\\(" s "\\)"
+                                   ".*?"
+                                   "\\(" (regexp-quote TeX-esc) "*\\)"
+                                   "\\(" s "\\)")
+                          (1 "\"") (2 ".") (3 "\"")))))
+       ;; Tell font-lock about the update
+       (font-latex-set-syntactic-keywords))))
  TeX-dialect)
 
 ;;; shortvrb.el ends here
