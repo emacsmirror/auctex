@@ -3675,12 +3675,12 @@ A list with an entry for each format package available at the site.
 
 Each entry is a list with three elements.
 
-1. The name of the format package.
-2. The name of the major mode.
+1. The name of the format package (as string).
+2. The name of the major mode (as symbol).
 3. A regexp typically matched in the beginning of the file.
 
-When entering `tex-mode', each regexp is tried in turn in order to find
-the major mode to be used.")
+When entering `TeX-tex-mode', each regexp is tried in turn in
+order to find the major mode to be used.")
 
 (defcustom TeX-default-mode #'LaTeX-mode
   "Mode to enter for a new file when it can't be determined otherwise."
@@ -3696,16 +3696,27 @@ the major mode to be used.")
 
 ;;;###autoload
 (defun TeX-tex-mode ()
-  "Major mode in AUCTeX for editing TeX or LaTeX files.
+  "Call suitable AUCTeX major mode for editing TeX or LaTeX files.
 Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
 
-   1) if the file is empty or `TeX-force-default-mode' is not set to nil,
-      `TeX-default-mode' is chosen
-   2) If \\documentstyle or \\begin{, \\section{, \\part{ or \\chapter{ is
+   1) If the file is empty or `TeX-force-default-mode' is not set to nil,
+      `TeX-default-mode' is chosen.
+   2) If non-commented out content matches with regular expression in
+      `TeX-format-list', use the associated major mode.  For example,
+      if \\documentclass or \\begin{, \\section{, \\part{ or \\chapter{ is
       found, `LaTeX-mode' is selected.
-   3) Otherwise, use `plain-TeX-mode'"
+   3) Otherwise, use `TeX-default-mode'.
+
+By default, `TeX-format-list' has a fallback entry for
+`plain-TeX-mode', thus non-empty file which didn't match any
+other entries will enter `plain-TeX-mode'."
+  ;; This is a dispatch function meaningful only as target of
+  ;; `auto-mode-alist' and `major-mode-remap-alist'.  Hence we don't
+  ;; use `define-derived-mode'.  Note that it isn't a proper major
+  ;; mode and it actually makes little sense to specify this for
+  ;; "mode:" tag of file local variable.
   (interactive)
 
   (funcall (if (or (equal (buffer-size) 0)
