@@ -1,6 +1,6 @@
 ;;; changelog.el --- AUCTeX style for `changelog.sty' (v2.0.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -83,7 +83,7 @@ OPTIONAL is ignored."
   (let* ((s (save-excursion
               (LaTeX-find-matching-begin)
               (point)))
-         (currenv LaTeX-current-environment)
+         (currenv (LaTeX-current-environment))
          ;; Extract the chosen sectioning command
          (sec (save-excursion
                 (re-search-backward
