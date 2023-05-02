@@ -1,6 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993-2022  Free Software Foundation, Inc.
+;; Copyright (C) 1993-2023  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -555,7 +555,7 @@ is assumed by default."
   Texinfo-mode-map
   "Menu used in Texinfo mode."
   `("Texinfo"
-    ["Node ..." texinfo-insert-@node
+    ["Node ..." Texinfo-insert-node
      :help "Insert a node"]
     ["Macro ..." TeX-insert-macro
      :help "Insert a macro and possibly arguments"]
@@ -655,7 +655,7 @@ value of `Texinfo-mode-hook'."
         "^@node [ \t]*[Tt]op\\|^@\\("
         texinfo-chapter-level-regexp
         "\\)"))
-  (set (make-local-variable 'require-final-newline) t)
+  (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'paragraph-separate)
        (concat "@[a-zA-Z]*[ \n]\\|" paragraph-separate))
@@ -669,6 +669,7 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'words-include-escapes) t)
   (set (make-local-variable 'imenu-generic-expression)
        texinfo-imenu-generic-expression)
+  (setq imenu-case-fold-search nil)
 
   (set (make-local-variable 'font-lock-defaults)
        '(texinfo-font-lock-keywords nil nil nil backward-paragraph))
@@ -676,10 +677,12 @@ value of `Texinfo-mode-hook'."
        texinfo-syntax-propertize-function)
 
   ;; Outline settings.
-  (set (make-local-variable 'outline-regexp)
-       (concat "@\\("
-               (mapconcat #'car texinfo-section-list "\\>\\|")
-               "\\>\\)"))
+  (setq-local outline-heading-alist
+	      (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
+		      texinfo-section-list))
+  (setq-local outline-regexp
+	      (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
+		      "\\>"))
 
   ;; Mostly AUCTeX stuff
   (set (make-local-variable 'TeX-command-current) #'TeX-command-master)
@@ -690,11 +693,12 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'TeX-auto-regexp-list) 'TeX-auto-empty-regexp-list)
 
   (setq TeX-command-default "TeX")
-  (setq TeX-header-end "%*end")
-  (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
+  (setq TeX-header-end (regexp-quote "%**end of header"))
+  (setq TeX-trailer-start (format "^%s$"
+                                  (regexp-quote (concat TeX-esc "bye"))))
 
   (set (make-local-variable 'TeX-complete-list)
-       (list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list-filtered nil)
+       (list (list "@\\([a-zA-Z]*\\)" 1 #'TeX-symbol-list-filtered nil)
              (list "" TeX-complete-word)))
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
