@@ -1,7 +1,7 @@
 ;;; context-nl.el --- Support for the ConTeXt dutch interface. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003, 2004, 2006, 2010,
-;;               2015, 2020-2022 Free Software Foundation, Inc.
+;;               2015, 2020-2023 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -163,9 +163,8 @@ That is, besides the section(-block) commands.")
 
 (defun ConTeXt-nl-mode-initialization ()
   "ConTeXt dutch interface specific initialization."
-  ;; FIXME: This `mapc' seems spurious because
-  ;; `ConTeXt-language-variable-list' includes
-  ;; `ConTeXt-environment-list'.
+  ;; FIXME: Move to `ConTeXt-mode-common-initialization' replacing
+  ;; `ConTeXt-environment-list-nl' with `ConTeXt-environment-list'?
   (mapc #'ConTeXt-add-environments (reverse ConTeXt-environment-list-nl))
 
   (TeX-add-symbols

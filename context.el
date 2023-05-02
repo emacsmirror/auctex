@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2023  Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -309,13 +309,20 @@ The following variables can be set to customize:
 
 ;; LaTeX has a max function here, which makes no sense.
 ;; I think you want to insert a section that is max ConTeXt-largest-level
+;; (May 3, 2023) The above comment is wrong.  Here "large" refers to
+;; coarseness of document structure grouping.  That is, "chapter" is
+;; larger than "section", "section" is larger than "subsection" etc.
+;; On the ohter hand, the corresponding levels are numbered in the
+;; reversed order.  That is, "chapter" is level 1, "section" is level
+;; 2 etc.  Hence the largest _section_ has the smallest _level_.
+;; That's the reason we use `max' rather than `min' here.
 (defun ConTeXt-current-section ()
   "Return the level of the section that contain point.
 See also `ConTeXt-section' for description of levels."
   (save-excursion
-    (min (ConTeXt-largest-level)
+    (max (ConTeXt-largest-level)
          (if (re-search-backward outline-regexp nil t)
-             (+ 1 (- (ConTeXt-outline-level) (ConTeXt-outline-offset)))
+             (- (ConTeXt-outline-level) (ConTeXt-outline-offset))
            (ConTeXt-largest-level)))))
 
 (defun ConTeXt-down-section ()
@@ -549,7 +556,7 @@ assumes the section already is inserted."
   (newline)
   ;; If RefTeX is available, tell it that we've just made a new section
   (and (fboundp 'reftex-notice-new-section)
-       (funcall (symbol-function 'reftex-notice-new-section))))
+       (reftex-notice-new-section)))
 
 (defun ConTeXt-section-ref ()
   "Hook to insert a reference after the sectioning command.
@@ -1159,7 +1166,8 @@ header is at the start of a line."
    "\\|" (ConTeXt-header-end) "\\b"
    "\\|" (ConTeXt-trailer-start) "\\b"))
 
-(defvar ConTeXt-text "Name of ConTeXt macro that begins the text body.")
+(defvar ConTeXt-text nil
+  "Name of ConTeXt macro that begins the text body.")
 
 (defun ConTeXt-header-end ()
   "Default end of header marker for ConTeXt documents."
@@ -1451,20 +1459,20 @@ else.  There might be text before point."
 
 (defun ConTeXt-environment-menu-entry (entry)
   "Create an ENTRY for the environment menu."
-  (vector (car entry) (list 'ConTeXt-environment-menu (car entry)) t))
+  (vector (car entry) (list #'ConTeXt-environment-menu (car entry)) t))
 
 (defvar ConTeXt-environment-modify-menu-name "Change Environment   (C-u C-c C-e)")
 
 (defun ConTeXt-environment-modify-menu-entry (entry)
   "Create an ENTRY for the change environment menu."
-  (vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
+  (vector (car entry) (list #'ConTeXt-modify-environment (car entry)) t))
 
 ;; ConTeXt define macros
 (defvar ConTeXt-define-menu-name "Define")
 
 (defun ConTeXt-define-menu-entry (entry)
   "Create an ENTRY for the define menu."
-  (vector entry (list 'ConTeXt-define-menu entry)))
+  (vector entry (list #'ConTeXt-define-menu entry)))
 
 (defun ConTeXt-define-menu (define)
   "Insert DEFINE from menu."
@@ -1475,7 +1483,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-setup-menu-entry (entry)
   "Create an ENTRY for the setup menu."
-  (vector entry (list 'ConTeXt-setup-menu entry)))
+  (vector entry (list #'ConTeXt-setup-menu entry)))
 
 (defun ConTeXt-setup-menu (setup)
   "Insert SETUP from menu."
@@ -1486,7 +1494,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-referencing-menu-entry (entry)
   "Create an ENTRY for the referencing menu."
-  (vector entry (list 'ConTeXt-referencing-menu entry)))
+  (vector entry (list #'ConTeXt-referencing-menu entry)))
 
 (defun ConTeXt-referencing-menu (referencing)
   "Insert REFERENCING from menu."
@@ -1497,7 +1505,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-other-macro-menu-entry (entry)
   "Create an ENTRY for the other macro menu."
-  (vector entry (list 'ConTeXt-other-macro-menu entry)))
+  (vector entry (list #'ConTeXt-other-macro-menu entry)))
 
 (defun ConTeXt-other-macro-menu (other-macro)
   "Insert OTHER-MACRO from menu."
@@ -1516,7 +1524,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-project-structure-menu-entry (entry)
   "Create an ENTRY for the project structure menu."
-  (vector entry (list 'ConTeXt-project-structure-menu entry)))
+  (vector entry (list #'ConTeXt-project-structure-menu entry)))
 
 
 ;; meta-structure section blocks menu entries
@@ -1529,7 +1537,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-section-block-menu-entry (entry)
   "Create an ENTRY for the section block menu."
-  (vector entry (list 'ConTeXt-section-block-menu entry)))
+  (vector entry (list #'ConTeXt-section-block-menu entry)))
 
 
 ;; section menu entries
@@ -1564,25 +1572,23 @@ else.  There might be text before point."
 (defun ConTeXt-numbered-section-menu-entry (entry)
   "Create an ENTRY for the numbered section menu."
   (let ((enable (ConTeXt-section-enable-symbol (nth 1 entry))))
-    (set enable t)
-    (vector (car entry) (list 'ConTeXt-numbered-section-menu (nth 1 entry)) enable)))
+    (vector (car entry) (list #'ConTeXt-numbered-section-menu (nth 1 entry)) enable)))
 
 (defun ConTeXt-unnumbered-section-menu-entry (entry)
   "Create an ENTRY for the unnumbered section menu."
   (let ((enable (ConTeXt-section-enable-symbol (nth 1 entry))))
-    (set enable t)
-    (vector (car entry) (list 'ConTeXt-unnumbered-section-menu (nth 1 entry)) enable)))
+    (vector (car entry) (list #'ConTeXt-unnumbered-section-menu (nth 1 entry)) enable)))
 
 
 ;; etexshow support
 
 (defun ConTeXt-etexshow ()
-  "Call etexshow, if available, to show the definition of a ConText macro."
+  "Call etexshow, if available, to show the definition of a ConTeXt macro."
   (interactive)
-  (if (fboundp 'etexshow)
-      (let ()
+  (if (fboundp 'etexshow-cmd)
+      (progn
         (require 'etexshow)
-        (funcall (symbol-function 'etexshow-cmd)))
+        (etexshow-cmd))
     (error "etexshow is not installed.  Get it from http://levana.de/emacs/")))
 
 ;; menu itself
@@ -1783,6 +1789,9 @@ Use `ConTeXt-Mark-version' to choose the command."
     ConTeXt-extra-paragraph-commands
     ConTeXt-environment-list)
   "List of variables to be set from languages specific ones.")
+;; Make language specific variables buffer local
+(dolist (symbol ConTeXt-language-variable-list)
+  (make-variable-buffer-local symbol))
 
 (defconst ConTeXt-dialect :context
   "Default dialect for use with function `TeX-add-style-hook' for
@@ -1794,8 +1803,8 @@ file, or any mode derived thereof.  See variable
   ;; See *suffixes in texutil.pl.
   '("\\.tui" "\\.tup" "\\.ted" "\\.tes" "\\.top" "\\.log" "\\.tmp" "\\.run"
     "\\.bck" "\\.rlg" "\\.mpt" "\\.mpx" "\\.mpd" "\\.mpo" "\\.tuo" "\\.tub"
-    "\\.top" "-mpgraph\\.mp" "-mpgraph\\.mpd" "-mpgraph\\.mpo" "-mpgraph\\.mpy"
-    "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
+    "\\.top" "\\.tuc" "-mpgraph\\.mp" "-mpgraph\\.mpd" "-mpgraph\\.mpo"
+    "-mpgraph\\.mpy" "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
   "List of regexps matching suffixes of files to be deleted.
 The regexps will be anchored at the end of the file name to be matched,
 that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
@@ -1825,10 +1834,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   (setq local-abbrev-table context-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
-
-  ;; Make language specific variables buffer local
-  (dolist (symbol ConTeXt-language-variable-list)
-    (make-variable-buffer-local symbol))
 
   (require (intern (concat "context-" ConTeXt-current-interface)))
   (dolist (symbol ConTeXt-language-variable-list)
