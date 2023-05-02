@@ -2098,12 +2098,11 @@ Programs should not use this variable directly but the function
   :type '(choice
           (const :tag "No DVI to PDF conversion" nil)
           (const :tag "dvips - ps2pdf sequence" "Dvips")
-          (const :tag "dvipdfmx" "Dvipdfmx")))
+          (const :tag "dvipdfmx" "Dvipdfmx"))
+  :safe #'string-or-null-p)
 ;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
 ;; `TeX-command-default' accordingly.
 (make-variable-buffer-local 'TeX-PDF-from-DVI)
-(put 'TeX-PDF-from-DVI 'safe-local-variable
-     (lambda (x) (or (stringp x) (null x))))
 
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
@@ -2483,10 +2482,12 @@ Get `major-mode' from master file and enable it."
          comment-prefix "End:\n")
         (unless (eq mode major-mode)
           (funcall mode)
-          ;; TeX modes run `VirTeX-common-initialization' which kills all local
-          ;; variables, thus `TeX-master' will be forgotten after `(funcall
-          ;; mode)'.  Reparse local variables in order to bring it back.
-          (hack-local-variables))))))
+          ;; On Emacs 26 and later, no need to reparse local variables
+          ;; in order to retain `TeX-master' because major mode
+          ;; function runs `hack-local-variables' through
+          ;; `run-mode-hooks'.
+          ;; (hack-local-variables)
+          )))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.

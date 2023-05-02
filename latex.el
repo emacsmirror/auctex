@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2022 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2023 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -31,9 +31,7 @@
 (require 'tex)
 (require 'tex-style)
 (require 'tex-ispell)
-(when (<= 26 emacs-major-version)
-  ;; latex-flymake requires Emacs 26.
-  (require 'latex-flymake))
+(require 'latex-flymake)
 (eval-when-compile
   (require 'cl-lib))
 
@@ -44,11 +42,6 @@
                   nil)
 (declare-function turn-off-filladapt-mode "ext:filladapt"
                   nil)
-
-;; This function is reported to be unknown when built
-;; `with-native-compilation':
-(declare-function LaTeX-flymake "latex-flymake"
-                  (report-fn &rest _args))
 
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)
@@ -7905,9 +7898,8 @@ of `LaTeX-mode-hook'."
   (if (and (boundp 'filladapt-mode)
            filladapt-mode)
       (turn-off-filladapt-mode))
-  (when (< 25 emacs-major-version)
-    ;; Set up flymake backend, see latex-flymake.el
-    (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t)))
+  ;; Set up flymake backend, see latex-flymake.el
+  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
 
 (TeX-abbrev-mode-setup doctex-mode)
 

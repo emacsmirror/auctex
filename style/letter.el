@@ -1,6 +1,6 @@
 ;;; letter.el - Special code for letter style.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993, 2012, 2013, 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1993-2023 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auctex-devel@gnu.org
@@ -101,12 +101,7 @@
         (signature (TeX-read-string "Signature: "))
         (opening (TeX-read-string "Opening: "))
         (closing (TeX-read-string "Closing: "))
-        (date (TeX-read-string "Date: " (LaTeX-today)))
-        ;; COMPATIBILITY for EMACS<26
-        (func (if (fboundp 'indent-relative-first-indent-point)
-                  #'indent-relative-first-indent-point
-                ;; Stay away from using #' to avoid compiler warning.
-                'indent-relative-maybe)))
+        (date (TeX-read-string "Date: " (LaTeX-today))))
 
     (insert TeX-esc "name" TeX-grop sender TeX-grcl)
     (newline-and-indent)
@@ -157,7 +152,7 @@
               opening)
             TeX-grcl "\n")
 
-    (funcall func)
+    (indent-relative-first-indent-point)
     (save-excursion
       (insert "\n" TeX-esc "closing"
               TeX-grop
@@ -165,7 +160,7 @@
                   (concat TeX-esc " ")
                 closing)
               TeX-grcl "\n")
-      (funcall func))))
+      (indent-relative-first-indent-point))))
 
 (defun LaTeX-today nil
   "Return a string representing todays date according to flavor."
