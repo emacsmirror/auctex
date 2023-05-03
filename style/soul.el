@@ -45,7 +45,7 @@
 (TeX-auto-add-type "soul-sodef" "LaTeX")
 
 (defvar LaTeX-soul-sodef-regexp
-  `(,(concat"\\\\sodef{?\\\\\\(" TeX-token-char "+\\)")
+  `(,(concat "\\\\sodef{?\\\\\\(" TeX-token-char "+\\)")
     1 LaTeX-auto-soul-sodef))
 
 (defun LaTeX-soul-auto-prepare ()
@@ -87,7 +87,7 @@
                (TeX-arg-opening-brace "")
                (TeX-arg-closing-brace ""))
            (LaTeX-add-soul-sodefs mac)
-           (LaTeX-soul-auto-prepare)
+           (LaTeX-soul-auto-cleanup)
            (TeX-argument-insert mac optional TeX-esc)))
       (TeX-arg-completing-read LaTeX-font-shape "Font: \\" t ,TeX-esc)
       "Inner-letter space" "Inner space" "Outer space"
