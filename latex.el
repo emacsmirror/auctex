@@ -5696,7 +5696,7 @@ use \\[customize]."
   '("Math"
     ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
     ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
-    ("Delimiters") ("Constructs") ("Accents") ("AMS"))
+    ("Delimiters") ("Constructs") ("Accents") ("AMS") ("Wasysym"))
   "Menu containing LaTeX math commands.
 The menu entries will be generated dynamically, but you can specify
 the sequence by initializing this variable.")
@@ -6223,7 +6223,26 @@ the sequence by initializing this variable.")
     (nil "intertext" ("AMS" "Special"))
     (nil "substack" ("AMS" "Special"))
     (nil "subarray" ("AMS" "Special"))
-    (nil "sideset" ("AMS" "Special")))
+    (nil "sideset" ("AMS" "Special"))
+    ;; Wasysym symbols:
+    (nil "lhd" ("Wasysym" "Binary Op") 9665) ;; #X22C1
+    (nil "LHD" ("Wasysym" "Binary Op") 9664) ;; #X25C0
+    (nil "ocircle" ("Wasysym" "Binary Op") 9675) ;; #X25CB
+    (nil "rhd" ("Wasysym" "Binary Op") 9655) ;; #X25B7
+    (nil "RHD" ("Wasysym" "Binary Op") 9654) ;; #X25B6
+    (nil "unlhd" ("Wasysym" "Binary Op") 8884) ;; #X22B4
+    (nil "unrhd" ("Wasysym" "Binary Op") 8885) ;; #X22B5
+    (nil "apprle" ("Wasysym" "Relational") 8818) ;; #X2272
+    (nil "apprge" ("Wasysym" "Relational") 8819) ;; #X2273
+    (nil "invneg" ("Wasysym" "Relational") 8976) ;; #X2310
+    (nil "Join" ("Wasysym" "Relational") 10781) ;; #X2A1D
+    (nil "leadsto" ("Wasysym" "Relational") 10547) ;; #X2933
+    (nil "sqsubset" ("Wasysym" "Relational") 8847) ;; #X228f
+    (nil "sqsupset" ("Wasysym" "Relational") 8848) ;; #X2290
+    (nil "wasypropto" ("Wasysym" "Relational") 8733) ;; #X221D
+    (nil "Box" ("Wasysym" "Misc Symbol") 9633) ;; #X25A1
+    (nil "Diamond" ("Wasysym" "Misc Symbol") 9671) ;; #X25C7
+    (nil "logof" ("Wasysym" "Misc Symbol")))
   "Alist of LaTeX math symbols.
 
 Each entry should be a list with upto four elements, KEY, VALUE,
