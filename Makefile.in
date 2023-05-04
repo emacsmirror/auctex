@@ -196,7 +196,7 @@ STYLESRC = style/prosper.el \
 	   style/keyval.el    style/kvoptions.el style/kvsetkeys.el \
 	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el \
 	   style/amsaddr.el   style/parskip.el   style/catchfilebetweentags.el \
-	   style/physics.el   style/soul.el      style/algpseudocodex.el
+	   style/physics.el   style/soul.el      style/algpseudocodex.el \
 	   style/wasysym.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
