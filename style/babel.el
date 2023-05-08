@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -43,6 +43,7 @@
 (declare-function LaTeX-fontspec-auto-cleanup
                   "fontspec"
                   ())
+(defvar LaTeX-fontenc-package-options)
 
 (defvar LaTeX-babel-language-list
   '("afrikaans"
@@ -398,33 +399,35 @@
 
 (defun LaTeX-babel-package-options ()
   "Prompt for package options for the babel package."
-  (TeX-read-key-val
-   t
-   (append
-    '(("KeepShorthandsActive")
-      ("activeacute")
-      ("activegrave")
-      ("shorthands" ("off"))
-      ("safe" ("none" "ref" "bib"))
-      ("math" ("active" "normal"))
-      ("config")
-      ("main" LaTeX-babel-language-list)
-      ("headfoot" LaTeX-babel-language-list)
-      ("noconfigs")
-      ("nocase")
-      ("silent")
-      ("showlanguages")
-      ("nocase")
-      ("silent")
-      ("strings" ("generic" "unicode" "encoded"
-                  "OT1" "OT2" "OT3" "OT4" "OT6"
-                  "T1"  "T2A" "T2B" "T2C" "T3" "T4" "T5"
-                  "X2"  "LY1" "LV1" "LGR"))
-      ("hyphenmap" ("off" "first" "select" "other" "other*"))
-      ("bidi" ("default" "basic" "basic-r" "bidi-l" "bidi-r"))
-      ("layout" ("sectioning" "counters" "lists" "contents" "footnotes"
-                 "captions"  "columns" "graphics" "extras"))
-      ("base"))
-    (mapcar #'list LaTeX-babel-language-list))))
+  (TeX-read-key-val t (progn
+                        (TeX-load-style "fontenc")
+                        (append
+                         `(("KeepShorthandsActive")
+                           ("activeacute")
+                           ("activegrave")
+                           ("shorthands" ("off"))
+                           ("safe" ("none" "ref" "bib"))
+                           ("math" ("active" "normal"))
+                           ("config")
+                           ("main" ,LaTeX-babel-language-list)
+                           ("headfoot" ,LaTeX-babel-language-list)
+                           ("noconfigs")
+                           ("nocase")
+                           ("silent")
+                           ("showlanguages")
+                           ("nocase")
+                           ("silent")
+                           ("strings" ,(append
+                                        LaTeX-fontenc-package-options
+                                        '("generic" "unicode" "encoded")))
+                           ("hyphenmap" ("off" "first" "select"
+                                         "other" "other*"))
+                           ("bidi" ("default" "basic" "basic-r"
+                                    "bidi-l" "bidi-r"))
+                           ("layout" ("sectioning" "counters" "lists"
+                                      "contents" "footnotes"  "captions"
+                                      "columns" "graphics" "extras"))
+                           ("base"))
+                         (mapcar #'list LaTeX-babel-language-list)))))
 
 ;;; babel.el ends here
