@@ -397,37 +397,41 @@
                               'variable)))
  TeX-dialect)
 
+(defvar LaTeX-babel-package-options-list
+  (progn
+    (TeX-load-style "fontenc")
+    (append
+     `(("KeepShorthandsActive")
+       ("activeacute")
+       ("activegrave")
+       ("shorthands" ("off"))
+       ("safe" ("none" "ref" "bib"))
+       ("math" ("active" "normal"))
+       ("config")
+       ("main" ,LaTeX-babel-language-list)
+       ("headfoot" ,LaTeX-babel-language-list)
+       ("noconfigs")
+       ("nocase")
+       ("silent")
+       ("showlanguages")
+       ("nocase")
+       ("silent")
+       ("strings" ,(append
+                    LaTeX-fontenc-package-options
+                    '("generic" "unicode" "encoded")))
+       ("hyphenmap" ("off" "first" "select"
+                     "other" "other*"))
+       ("bidi" ("default" "basic" "basic-r"
+                "bidi-l" "bidi-r"))
+       ("layout" ("sectioning" "counters" "lists"
+                  "contents" "footnotes"  "captions"
+                  "columns" "graphics" "extras"))
+       ("base"))
+     (mapcar #'list LaTeX-babel-language-list)))
+  "Package options for the babel package.")
+
 (defun LaTeX-babel-package-options ()
   "Prompt for package options for the babel package."
-  (TeX-read-key-val t (progn
-                        (TeX-load-style "fontenc")
-                        (append
-                         `(("KeepShorthandsActive")
-                           ("activeacute")
-                           ("activegrave")
-                           ("shorthands" ("off"))
-                           ("safe" ("none" "ref" "bib"))
-                           ("math" ("active" "normal"))
-                           ("config")
-                           ("main" ,LaTeX-babel-language-list)
-                           ("headfoot" ,LaTeX-babel-language-list)
-                           ("noconfigs")
-                           ("nocase")
-                           ("silent")
-                           ("showlanguages")
-                           ("nocase")
-                           ("silent")
-                           ("strings" ,(append
-                                        LaTeX-fontenc-package-options
-                                        '("generic" "unicode" "encoded")))
-                           ("hyphenmap" ("off" "first" "select"
-                                         "other" "other*"))
-                           ("bidi" ("default" "basic" "basic-r"
-                                    "bidi-l" "bidi-r"))
-                           ("layout" ("sectioning" "counters" "lists"
-                                      "contents" "footnotes"  "captions"
-                                      "columns" "graphics" "extras"))
-                           ("base"))
-                         (mapcar #'list LaTeX-babel-language-list)))))
+  (TeX-read-key-val t LaTeX-babel-package-options-list))
 
 ;;; babel.el ends here

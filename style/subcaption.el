@@ -196,11 +196,15 @@ caption, insert only a caption."
                               'function)) )
  TeX-dialect)
 
+(defvar LaTeX-subcaption-package-options-list
+  (progn
+    (TeX-load-style "caption")
+    (append LaTeX-subcaption-key-val-options
+            LaTeX-caption-key-val-options))
+  "Package options for the subcaption package.")
+
 (defun LaTeX-subcaption-package-options ()
   "Prompt for package options for the subcaption package."
-  (TeX-read-key-val t (progn
-                        (TeX-load-style "caption")
-                        (append LaTeX-subcaption-key-val-options
-                                LaTeX-caption-key-val-options))))
+  (TeX-read-key-val t LaTeX-subcaption-package-options-list))
 
 ;;; subcaption.el ends here

@@ -1,6 +1,6 @@
 ;;; XCharter.el --- AUCTeX style for `XCharter.sty' (v1.24)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -134,32 +134,36 @@
                               'textual)))
  TeX-dialect)
 
+(defun LaTeX-XCharter-package-options-list ()
+  "Return an alist of package options for XCharter package."
+  (append
+   (when (memq TeX-engine '(xetex luatex))
+     '(("nofontspec" ("true" "false"))
+       ("type1text" ("true" "false"))
+       ("type1" ("true" "false"))
+       ("defaultfeatures")))
+   '(("scaled")
+     ("scale")
+     ("lining" ("true" "false"))
+     ("lf" ("true" "false"))
+     ("oldstyle" ("true" "false"))
+     ("osf" ("true" "false"))
+     ("proportional" ("true" "false"))
+     ("p" ("true" "false"))
+     ("tabular" ("true" "false"))
+     ("t" ("true" "false"))
+     ("oldstyleI" ("true" "false"))
+     ("osfI" ("true" "false"))
+     ("sups")
+     ("scosf")
+     ("serbianc")
+     ("theoremfont")
+     ("thmlining")
+     ("oldSS")
+     ("notextnu"))))
+
 (defun LaTeX-XCharter-package-options ()
-  "Read the XCharter package options."
-  (TeX-read-key-val t (append
-                       (when (memq TeX-engine '(xetex luatex))
-                         '(("nofontspec" ("true" "false"))
-                           ("type1text" ("true" "false"))
-                           ("type1" ("true" "false"))
-                           ("defaultfeatures")))
-                       '(("scaled")
-                         ("scale")
-                         ("lining" ("true" "false"))
-                         ("lf" ("true" "false"))
-                         ("oldstyle" ("true" "false"))
-                         ("osf" ("true" "false"))
-                         ("proportional" ("true" "false"))
-                         ("p" ("true" "false"))
-                         ("tabular" ("true" "false"))
-                         ("t" ("true" "false"))
-                         ("oldstyleI" ("true" "false"))
-                         ("osfI" ("true" "false"))
-                         ("sups")
-                         ("scosf")
-                         ("serbianc")
-                         ("theoremfont")
-                         ("thmlining")
-                         ("oldSS")
-                         ("notextnu")))))
+  "Prompt for package options for the XCharter package."
+  (TeX-read-key-val t (LaTeX-XCharter-package-options-list)))
 
 ;;; XCharter.el ends here

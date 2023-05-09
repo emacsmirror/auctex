@@ -172,38 +172,41 @@
                               'reference)))
  TeX-dialect)
 
+(defun LaTeX-changes-package-options-list ()
+  "Return an alist of package options for changes package."
+  (TeX-load-style "xcolor")
+  (TeX-load-style "truncate")
+  (TeX-load-style "ulem")
+  (append
+   `(("defaultcolor"
+      ,(if (and (fboundp 'LaTeX-xcolor-definecolor-list)
+                (LaTeX-xcolor-definecolor-list))
+           (mapcar #'car (LaTeX-xcolor-definecolor-list))
+         LaTeX-xcolor-base-colors)))
+   `(("draft")
+     ("final")
+     ("commandnameprefix" ("none" "ifneeded" "always"))
+     ("markup" ("default" "underlined" "bfit" "nocolor"))
+     ("addedmarkup" ("colored" "uline" "uuline" "uwave"
+                     "dashuline" "dotuline"
+                     "bf" "it" "sl" "em"))
+     ("deletedmarkup" ("sout" "xout" "colored"
+                       "uline" "uuline" "uwave"
+                       "dashuline" "dotuline"
+                       "bf" "it" "sl" "em"))
+     ("highlightmarkup" ("background" "uuline" "uwave"))
+     ("commentmarkup" ("todo" "margin" "footnote" "uwave"))
+     ("authormarkup" ("superscript" "subscript" "brackets"
+                      "footnote" "none"))
+     ("authormarkupposition" ("right" "left"))
+     ("authormarkuptext" ("id" "name"))
+     ("todonotes")
+     ("truncate" ,LaTeX-truncate-package-options)
+     ("ulem" ,LaTeX-ulem-package-options)
+     ("xcolor" ,LaTeX-xcolor-package-options))))
+
 (defun LaTeX-changes-package-options ()
   "Prompt for package options for the changes package."
-  (TeX-read-key-val t (progn
-                        (TeX-load-style "xcolor")
-                        (TeX-load-style "truncate")
-                        (TeX-load-style "ulem")
-                        (append
-                         `(("defaultcolor"
-                            ,(if (and (fboundp 'LaTeX-xcolor-definecolor-list)
-                                      (LaTeX-xcolor-definecolor-list))
-                                 (mapcar #'car (LaTeX-xcolor-definecolor-list))
-                               LaTeX-xcolor-base-colors)))
-                         `(("draft")
-                           ("final")
-                           ("commandnameprefix" ("none" "ifneeded" "always"))
-                           ("markup" ("default" "underlined" "bfit" "nocolor"))
-                           ("addedmarkup" ("colored" "uline" "uuline" "uwave"
-                                           "dashuline" "dotuline"
-                                           "bf" "it" "sl" "em"))
-                           ("deletedmarkup" ("sout" "xout" "colored"
-                                             "uline" "uuline" "uwave"
-                                             "dashuline" "dotuline"
-                                             "bf" "it" "sl" "em"))
-                           ("highlightmarkup" ("background" "uuline" "uwave"))
-                           ("commentmarkup" ("todo" "margin" "footnote" "uwave"))
-                           ("authormarkup" ("superscript" "subscript" "brackets"
-                                            "footnote" "none"))
-                           ("authormarkupposition" ("right" "left"))
-                           ("authormarkuptext" ("id" "name"))
-                           ("todonotes")
-                           ("truncate" ,LaTeX-truncate-package-options)
-                           ("ulem" ,LaTeX-ulem-package-options)
-                           ("xcolor" ,LaTeX-xcolor-package-options))))))
+  (TeX-read-key-val t (LaTeX-changes-package-options-list)))
 
 ;;; changes.el ends here

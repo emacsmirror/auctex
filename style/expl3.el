@@ -83,14 +83,18 @@
                               'function)))
  TeX-dialect)
 
+(defvar LaTeX-expl3-package-options-list
+  '(("check-declarations" ("true" "false"))
+    ("log-functions" ("true" "false"))
+    ("enable-debug" ("true" "false"))
+    ("backend" ("dvips"   "dvipdfmx"
+                "dvisvgm" "luatex"
+                "pdftex"  "xetex"))
+    ("suppress-backend-headers" ("true" "false")))
+  "Package options for the expl3 package.")
+
 (defun LaTeX-expl3-package-options ()
-  "Read the expl3 package options from the user."
-  (TeX-read-key-val t '(("check-declarations" ("true" "false"))
-                        ("log-functions" ("true" "false"))
-                        ("enable-debug" ("true" "false"))
-                        ("backend" ("dvips"   "dvipdfmx"
-                                    "dvisvgm" "luatex"
-                                    "pdftex"  "xetex"))
-                        ("suppress-backend-headers" ("true" "false")))))
+  "Prompt for package options for the expl3 package."
+  (TeX-read-key-val t LaTeX-expl3-package-options-list))
 
 ;;; expl3.el ends here

@@ -37,15 +37,18 @@
 (require 'tex)
 (require 'latex)
 
+(defun LaTeX-parskip-package-options-list ()
+  "Return an alist of package options for the parskip package."
+  (let ((len (mapcar (lambda (x)
+                       (concat TeX-esc (car x)))
+                     (LaTeX-length-list))))
+    `(("skip"    ,len)
+      ("tocskip" ,len)
+      ("indent"  ,len)
+      ("parfill" ,len))))
+
 (defun LaTeX-parskip-package-options ()
   "Prompt for package options for the parskip package."
-  (TeX-read-key-val t (progn
-                        (let ((len (mapcar (lambda (x)
-                                             (concat TeX-esc (car x)))
-                                           (LaTeX-length-list))))
-                          `(("skip"    ,len)
-                            ("tocskip" ,len)
-                            ("indent"  ,len)
-                            ("parfill" ,len))))))
+  (TeX-read-key-val t (LaTeX-parskip-package-options-list)))
 
 ;;; parskip.el ends here

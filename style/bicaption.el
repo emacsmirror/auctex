@@ -187,20 +187,22 @@ square brackets."
                               'textual)))
  TeX-dialect)
 
+(defun LaTeX-bicaption-package-options-list ()
+  "Return an alist of package options for bicaption package."
+  (TeX-load-style "caption")
+  (append `(,(list "language"
+                   (cond ((and (member "babel" (TeX-style-list))
+                               (LaTeX-babel-active-languages))
+                          (butlast (LaTeX-babel-active-languages)))
+                         ((and (member "polyglossia" (TeX-style-list))
+                               (LaTeX-polyglossia-active-languages))
+                          (butlast (LaTeX-babel-active-languages)))
+                         (t nil))))
+          LaTeX-bicaption-key-val-options
+          LaTeX-caption-key-val-options))
+
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."
-  (TeX-read-key-val t (progn
-                        (TeX-load-style "caption")
-                        (append
-                         `(,(list "language"
-                                  (cond ((and (member "babel" (TeX-style-list))
-                                              (LaTeX-babel-active-languages))
-                                         (butlast (LaTeX-babel-active-languages)))
-                                        ((and (member "polyglossia" (TeX-style-list))
-                                              (LaTeX-polyglossia-active-languages))
-                                         (butlast (LaTeX-babel-active-languages)))
-                                        (t nil))))
-                         LaTeX-bicaption-key-val-options
-                         LaTeX-caption-key-val-options))))
+  (TeX-read-key-val t (LaTeX-bicaption-package-options-list)))
 
 ;;; bicaption.el ends here

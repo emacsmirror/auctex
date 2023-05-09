@@ -351,8 +351,12 @@ TYPE is one of the symbols mac or env."
                               'function)))
  TeX-dialect)
 
+(defvar LaTeX-xparse-package-options-list
+  '(("log-declarations" ("true" "false")))
+  "Package options for the xparse package.")
+
 (defun LaTeX-xparse-package-options ()
   "Read the xparse package options from the user."
-  (TeX-read-key-val t '(("log-declarations" ("true" "false")))))
+  (TeX-read-key-val t LaTeX-xparse-package-options-list))
 
 ;;; xparse.el ends here

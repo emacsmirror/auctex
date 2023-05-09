@@ -1,6 +1,6 @@
 ;;; algpseudocodex.el --- AUCTeX style for `algpseudocodex.sty' (v1.0.2)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Created: 2022-10-10
@@ -200,17 +200,21 @@ the number of arguments."
                               'function)))
  TeX-dialect)
 
+(defvar LaTeX-algpseudocodex-package-options-list
+  '(("noEnd" ("true" "false"))
+    ("indLines" ("true" "false"))
+    ("spaceRequire" ("true" "false"))
+    ("italicComments" ("true" "false"))
+    ("rightComments" ("true" "false"))
+    ("commentColor")
+    ("beginComment")
+    ("endComment")
+    ("beginLComment")
+    ("endLComment"))
+  "Package options for the algpseudocodex package.")
+
 (defun LaTeX-algpseudocodex-package-options ()
-  "Package options for the algpseudocodex package."
-  (TeX-read-key-val t '(("noEnd" ("true" "false"))
-                        ("indLines" ("true" "false"))
-                        ("spaceRequire" ("true" "false"))
-                        ("italicComments" ("true" "false"))
-                        ("rightComments" ("true" "false"))
-                        ("commentColor")
-                        ("beginComment")
-                        ("endComment")
-                        ("beginLComment")
-                        ("endLComment"))))
+  "Prompt for package options for the algpseudocodex package."
+  (TeX-read-key-val t LaTeX-algpseudocodex-package-options-list))
 
 ;;; algpseudocodex.el ends here
