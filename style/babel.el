@@ -1,4 +1,4 @@
-;;; babel.el --- AUCTeX style for `babel.sty' version 3.31.  -*- lexical-binding: t; -*-
+;;; babel.el --- AUCTeX style for `babel.sty' version 3.88.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `babel.sty' version 3.31 from 2019/05/04.
+;; This file adds support for `babel.sty' version 3.88 from 2023/04/18.
 
 ;;; Code:
 
@@ -256,6 +256,7 @@
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language"))
     '("foreignlanguage"
+      [TeX-arg-completing-read-multiple ("date" "captions")]
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language")
       t)
@@ -364,6 +365,7 @@
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language"))
     '("otherlanguage*" LaTeX-env-args
+      [TeX-arg-completing-read-multiple ("date" "captions")]
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language"))
     '("hyphenrules" LaTeX-env-args
@@ -374,7 +376,6 @@
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("selectlanguage"     "{")
-                                ("foreignlanguage"    "{{")
                                 ("babeltags"          "{")
                                 ("babelensure"        "{{")
                                 ("shorthandon"        "{")
@@ -394,7 +395,9 @@
      (font-latex-add-keywords '(("defineshorthand"    "[{{")
                                 ("aliasshorthand"     "{{")
                                 ("languageattribute"  "{{"))
-                              'variable)))
+                              'variable)
+     (font-latex-add-keywords '(("foreignlanguage"    "[{{"))
+                              'textual)))
  TeX-dialect)
 
 (defvar LaTeX-babel-package-options-list
@@ -426,6 +429,9 @@
        ("layout" ("sectioning" "counters" "lists"
                   "contents" "footnotes"  "captions"
                   "columns" "graphics" "extras"))
+       ("provide" ("*"))
+       ("provide+" ("*"))
+       ("provide*" ("*"))
        ("base"))
      (mapcar #'list LaTeX-babel-language-list)))
   "Package options for the babel package.")
