@@ -188,8 +188,6 @@ That is, besides the section(-block) commands.")
 
 (defun ConTeXt-en-mode-initialization ()
   "ConTeXt english interface specific initialization."
-  ;; FIXME: Move to `ConTeXt-mode-common-initialization' replacing
-  ;; `ConTeXt-environment-list-en' with `ConTeXt-environment-list'?
   (mapc #'ConTeXt-add-environments (reverse ConTeXt-environment-list-en))
 
   (TeX-add-symbols
@@ -203,26 +201,25 @@ That is, besides the section(-block) commands.")
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
 ;;;###autoload
-(defun ConTeXt-en-mode ()
+(define-derived-mode ConTeXt-en-mode ConTeXt-mode "ConTeXt-en"
   "Major mode for editing files for ConTeXt using its english interface.
-
-Special commands:
-\\{ConTeXt-mode-map}
 
 Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
-of `ConTeXt-mode-hook'."
-  (interactive)
+of `ConTeXt-mode-hook'.
+
+Don't use `ConTeXt-en-mode-hook' and `ConTeXt-en-mode-map', both
+specific to this mode.  They are ignored unless `ConTeXt-en-mode'
+is called directly."
+  :syntax-table nil
+  :abbrev-table nil
+
   ;; set the ConTeXt interface
   (setq ConTeXt-current-interface "en")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
-  (ConTeXt-en-mode-initialization)
-
-  ;; set mode line
-  (setq TeX-base-mode-name "ConTeXt-en")
-  (TeX-set-mode-name))
+  (ConTeXt-en-mode-initialization))
 
 ;;;###autoload
 (defalias 'context-en-mode #'ConTeXt-en-mode)

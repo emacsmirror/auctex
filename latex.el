@@ -118,7 +118,7 @@ This depends on `LaTeX-insert-into-comments'."
 
 ;;; Syntax Table
 
-(defvar LaTeX-mode-syntax-table (copy-syntax-table TeX-mode-syntax-table)
+(defvar LaTeX-mode-syntax-table (make-syntax-table TeX-mode-syntax-table)
   "Syntax table used in LaTeX mode.")
 
 (progn ; set [] to match for LaTeX.
@@ -6517,6 +6517,9 @@ environments."
 
 ;;; Keymap
 
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX-LaTeX-mode'.
+(defvaralias 'TeX-LaTeX-mode-map 'LaTeX-mode-map)
 (defvar LaTeX-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
@@ -7950,6 +7953,9 @@ This happens when \\left is inserted."
   :type 'boolean
   :group 'LaTeX-macro)
 
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX-LaTeX-mode'.
+(defvaralias 'TeX-LaTeX-mode-hook 'LaTeX-mode-hook)
 (defcustom LaTeX-mode-hook nil
   "A hook run in LaTeX mode buffers."
   :type 'hook
@@ -7972,22 +7978,23 @@ This happens when \\left is inserted."
 ;; #'latex-mode) in it.
 ;; When the least supported emacsen version becomes 29, we can safely
 ;; transform this definition to `(define-derived-mode LaTeX-mode
-;; text-mode ...)' and remove defaliases for compatibility.
+;; TeX-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(defun TeX-LaTeX-mode ()
-  ;; FIXME: Use `define-derived-mode'.
+(define-derived-mode TeX-LaTeX-mode TeX--VirTeX-mode "LaTeX"
   "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
 
 Entering LaTeX mode calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `LaTeX-mode-hook'."
-  (interactive)
+  :syntax-table LaTeX-mode-syntax-table
+  :abbrev-table LaTeX-mode-abbrev-table
+  :after-hook ;; Defeat filladapt
+  (if (bound-and-true-p filladapt-mode)
+      (turn-off-filladapt-mode))
+
   (LaTeX-common-initialization)
-  (setq TeX-base-mode-name "LaTeX")
+  (setq TeX-base-mode-name mode-name)
   (setq major-mode 'LaTeX-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
@@ -8014,14 +8021,8 @@ of `LaTeX-mode-hook'."
                        (apply #'append
                               (mapcar #'cdr LaTeX-provided-class-options)))))
             nil t)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
-  (TeX-set-mode-name)
-  ;; Defeat filladapt
-  (if (and (boundp 'filladapt-mode)
-           filladapt-mode)
-      (turn-off-filladapt-mode))
   ;; Set up flymake backend, see latex-flymake.el
   (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
 
@@ -8037,7 +8038,6 @@ of `LaTeX-mode-hook'."
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
-  :abbrev-table docTeX-mode-abbrev-table
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
@@ -8045,8 +8045,7 @@ runs the hooks in `docTeX-mode-hook'."
   (setq paragraph-start (concat paragraph-start "\\|%<")
         paragraph-separate (concat paragraph-separate "\\|%<")
         TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
-  (setq TeX-base-mode-name "docTeX")
-  (TeX-set-mode-name)
+  (setq TeX-base-mode-name mode-name)
   (funcall TeX-install-font-lock))
 
 ;; Enable LaTeX abbrevs in docTeX mode buffer.
@@ -8100,11 +8099,7 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
-  (VirTeX-common-initialization)
-  (set-syntax-table LaTeX-mode-syntax-table)
   (set (make-local-variable 'indent-line-function) #'LaTeX-indent-line)
-
-  (setq local-abbrev-table LaTeX-mode-abbrev-table)
 
   ;; Filling
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
@@ -8125,11 +8120,10 @@ function would return non-nil and `(match-string 1)' would return
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
   (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  (when (boundp 'outline-heading-alist)
-    (setq outline-heading-alist
-          (mapcar (lambda (x)
-                    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                  LaTeX-section-list)))
+  (setq outline-heading-alist
+        (mapcar (lambda (x)
+                  (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                LaTeX-section-list))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
@@ -8797,8 +8791,6 @@ function would return non-nil and `(match-string 1)' would return
 
   (set (make-local-variable 'imenu-create-index-function)
        #'LaTeX-imenu-create-index-function)
-
-  (use-local-map LaTeX-mode-map)
 
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)

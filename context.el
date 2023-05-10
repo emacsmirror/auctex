@@ -1823,16 +1823,9 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
-  ;; `plain-TeX-common-initialization' kills all local variables, but
-  ;; we need to keep ConTeXt-current-interface, so save and restore
-  ;; it.
-  (let (save-ConTeXt-current-interface)
-    (setq save-ConTeXt-current-interface ConTeXt-current-interface)
-    (plain-TeX-common-initialization)
-    (setq ConTeXt-current-interface save-ConTeXt-current-interface))
+  (plain-TeX-common-initialization)
   (setq major-mode 'ConTeXt-mode)
 
-  (setq local-abbrev-table ConTeXt-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
   (require (intern (concat "context-" ConTeXt-current-interface)))
@@ -1848,9 +1841,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; level 2 is "section"
   (or ConTeXt-largest-level
       (setq ConTeXt-largest-level 2))
-
-  ;; keybindings
-  (use-local-map ConTeXt-mode-map)
 
   ;; Indenting
   (set (make-local-variable 'indent-line-function) #'ConTeXt-indent-line)
@@ -1876,7 +1866,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
          "\\|$\\)"))
 
   ;; Keybindings and menu
-  (use-local-map ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
   ;; FIXME: Isn't `activate-menubar-hook' obsolete?
@@ -1900,10 +1889,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (set (make-local-variable 'imenu-create-index-function)
        #'ConTeXt-imenu-create-index-function)
 
-  ;; run hooks
   (setq TeX-command-default "ConTeXt")
-  (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
+  (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
@@ -1926,19 +1913,33 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (defalias 'context-mode #'ConTeXt-mode)
 
 ;;;###autoload
-(defun ConTeXt-mode ()
+(define-derived-mode ConTeXt-mode TeX--VirTeX-mode "ConTeXt"
   "Major mode in AUCTeX for editing ConTeXt files.
 
-Special commands:
-\\{ConTeXt-mode-map}
-
-Entering `context-mode' calls the value of `text-mode-hook',
+Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
-  (interactive)
-  (context-guess-current-interface)
-  (require (intern (concat "context-" ConTeXt-current-interface)))
-  (funcall (intern (concat "context-" ConTeXt-current-interface "-mode"))))
+  ;; When called as parent of ConTeXt-{en,nl}-mode, do nothing to
+  ;; avoid `TeX-add-symbols' and `ConTeXt-add-environments' for wrong
+  ;; language interface.
+  (add-hook 'change-major-mode-after-body-hook #'ConTeXt--auto-mode nil t))
+
+(defun ConTeXt--auto-mode ()
+  ;; When called as not parent of ConTeXt-{en,nl}-mode, guess ConTeXt
+  ;; interface and use it.
+  (remove-hook 'change-major-mode-after-body-hook #'ConTeXt--auto-mode t)
+  (when (string-equal mode-name "ConTeXt")
+    (context-guess-current-interface)
+    (ConTeXt-mode-common-initialization)
+    (require (intern (concat "context-" ConTeXt-current-interface)))
+    ;; This bypasses call to ConTeXt-{en,nl}-mode.  Consequently,
+    ;; their mode-specific hook/keymap are ignored.
+    (funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-mode-initialization")))
+
+    (setq mode-name
+          (concat "ConTeXt-" ConTeXt-current-interface)))
+  ;; set mode line
+  (setq TeX-base-mode-name mode-name))
 
 (provide 'context)
 

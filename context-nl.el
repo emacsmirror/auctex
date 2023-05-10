@@ -166,8 +166,6 @@ That is, besides the section(-block) commands.")
 
 (defun ConTeXt-nl-mode-initialization ()
   "ConTeXt dutch interface specific initialization."
-  ;; FIXME: Move to `ConTeXt-mode-common-initialization' replacing
-  ;; `ConTeXt-environment-list-nl' with `ConTeXt-environment-list'?
   (mapc #'ConTeXt-add-environments (reverse ConTeXt-environment-list-nl))
 
   (TeX-add-symbols
@@ -181,27 +179,25 @@ That is, besides the section(-block) commands.")
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
 ;;;###autoload
-(defun ConTeXt-nl-mode ()
+(define-derived-mode ConTeXt-nl-mode ConTeXt-mode "ConTeXt-nl"
   "Major mode for editing files for ConTeXt using its dutch interface.
-
-Special commands:
-\\{ConTeXt-mode-map}
 
 Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
-of `ConTeXt-mode-hook'."
-  (interactive)
+of `ConTeXt-mode-hook'.
+
+Don't use `ConTeXt-nl-mode-hook' and `ConTeXt-nl-mode-map', both
+specific to this mode.  They are ignored unless `ConTeXt-nl-mode'
+is called directly."
+  :syntax-table nil
+  :abbrev-table nil
 
   ;; set the ConTeXt interface
   (setq ConTeXt-current-interface "nl")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
-  (ConTeXt-nl-mode-initialization)
-
-  ;; set mode line
-  (setq TeX-base-mode-name "ConTeXt-nl")
-  (TeX-set-mode-name))
+  (ConTeXt-nl-mode-initialization))
 
 ;;;###autoload
 (defalias 'context-nl-mode #'ConTeXt-nl-mode)

@@ -629,24 +629,19 @@ is assumed by default."
 
 
 ;;;###autoload
-(defun Texinfo-mode ()
+(define-derived-mode Texinfo-mode text-mode "Texinfo"
   "Major mode in AUCTeX for editing Texinfo files.
-
-Special commands:
-\\{Texinfo-mode-map}
 
 Entering Texinfo mode calls the value of `text-mode-hook' and then the
 value of `Texinfo-mode-hook'."
-  (interactive)
-  (kill-all-local-variables)
+  :syntax-table texinfo-mode-syntax-table
+  :after-hook (TeX-set-mode-name)
+
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
-  (setq TeX-base-mode-name "Texinfo")
-  (setq major-mode 'texinfo-mode)
-  (use-local-map Texinfo-mode-map)
-  (set-syntax-table texinfo-mode-syntax-table)
+  (setq TeX-base-mode-name mode-name)
 
   (set (make-local-variable 'page-delimiter)
        (concat
@@ -860,10 +855,7 @@ value of `Texinfo-mode-hook'."
   ;; RefTeX plugging
   (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook)
   (if (and (boundp 'reftex-mode) reftex-mode)
-      (Texinfo-reftex-hook))
-
-  (run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
-  (TeX-set-mode-name))
+      (Texinfo-reftex-hook)))
 
 (defcustom Texinfo-clean-intermediate-suffixes
   '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")

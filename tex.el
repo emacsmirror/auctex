@@ -76,6 +76,9 @@
 (defvar TeX-esc)
 (defvar TeX-interactive-mode)
 (defvar TeX-macro-global)
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX--VirTeX-mode'.
+(defvaralias 'TeX--VirTeX-mode-map 'TeX-mode-map)
 (defvar TeX-mode-map)
 (defvar TeX-mode-p)
 (defvar TeX-output-extension)
@@ -169,6 +172,9 @@ If nil, none is specified."
 ;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
 (make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist "11.86")
 
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX--VirTeX-mode'.
+(defvaralias 'TeX--VirTeX-mode-hook 'TeX-mode-hook)
 (defcustom TeX-mode-hook nil
   "A hook run in TeX mode buffers."
   :type 'hook
@@ -1748,6 +1754,7 @@ If this is nil, an empty string will be returned."
 (defvar TeX-source-correlate-map (make-sparse-keymap)
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
+(set-keymap-parent TeX-source-correlate-map text-mode-map)
 
 (defun TeX-source-correlate-handle-TeX-region (file line col)
   "Translate backward search info with respect to `TeX-region'.
@@ -1853,8 +1860,9 @@ SyncTeX are recognized."
   ;; reset `TeX-source-correlate-output-page-function' which is
   ;; buffer-local.
   :global t
-  (set-keymap-parent TeX-mode-map (and TeX-source-correlate-mode
-                                       TeX-source-correlate-map))
+  (set-keymap-parent TeX-mode-map (if TeX-source-correlate-mode
+                                      TeX-source-correlate-map
+                                    text-mode-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
   ;; Register Emacs for the SyncSource DBUS signal emitted by
@@ -3751,7 +3759,6 @@ other entries will enter `plain-TeX-mode'."
 
 (defun VirTeX-common-initialization ()
   "Perform basic initialization."
-  (kill-all-local-variables)
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq indent-tabs-mode nil)
@@ -4862,9 +4869,12 @@ element to ALIST-VAR."
 
 ;;; Syntax Table
 
+;; XXX: Now we have `text-mode' as parent mode.  Should we make AUCTeX
+;; syntax table inherit from `text-mode-syntax-table'?
 (defvar TeX-mode-syntax-table (make-syntax-table)
   "Syntax table used while in TeX mode.")
 
+;; FIXME: Does this make sense?
  (make-variable-buffer-local 'TeX-mode-syntax-table)
 
 (progn ; Define TeX-mode-syntax-table.
@@ -5261,6 +5271,26 @@ Brace insertion is only done if point is in a math construct and
      :help ,(format "Problems with AUCTeX %s? Mail us!"
                     AUCTeX-version)]))
 
+;;; The mode (continuation)...
+;; We have to wait this `define-derived-mode' until `TeX-mode-map' and
+;; `TeX-mode-syntax-table' are ready.
+
+;; This should definitely be `TeX-mode', but then tex-mode.el would
+;; overwrite it by (defalias 'TeX-mode #'tex-mode) prior to emacs 29.
+;; When the least supported emacsen version becomes 29, we can safely
+;; transform this definition to `(define-derived-mode TeX-mode ...)'
+;; and get rid of ugly defvaralias'es for `TeX-mode-hook' and
+;; `TeX-mode-map'.
+(define-derived-mode TeX--VirTeX-mode text-mode "TeX"
+  "Base mode for AUCTeX major modes except Texinfo mode.
+
+Not intended for direct use for user."
+  :syntax-table TeX-mode-syntax-table
+  :abbrev-table nil
+  :after-hook (TeX-set-mode-name)
+  :interactive nil
+
+  (VirTeX-common-initialization))
 
 ;;; Verbatim constructs
 

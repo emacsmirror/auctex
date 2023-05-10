@@ -48,6 +48,9 @@ Install tool bar if `plain-TeX-enable-toolbar' and
 
 ;;; Keymap and menu
 
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX-plain-TeX-mode'.
+(defvaralias 'TeX-plain-TeX-mode-map 'plain-TeX-mode-map)
 (defvar plain-TeX-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
@@ -108,6 +111,9 @@ argument DIALECT-EXPR when the hook is to be run only on
 plain-TeX file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
+;; We can remove this defvaralias in future.  See the comment before
+;; the definition of `TeX-plain-TeX-mode'.
+(defvaralias 'TeX-plain-TeX-mode-hook 'plain-TeX-mode-hook)
 (defcustom plain-TeX-mode-hook nil
   "A hook run in plain TeX mode buffers."
   :type 'hook
@@ -121,28 +127,36 @@ plain-TeX file, or any mode derived thereof.  See variable
 ;; #'plain-tex-mode) in it.
 ;; When the least supported emacsen version becomes 29, we can safely
 ;; transform this definition to `(define-derived-mode plain-TeX-mode
-;; text-mode ...)' and remove defaliases for compatibility.
+;; TeX-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(defun TeX-plain-TeX-mode ()
+(define-derived-mode TeX-plain-TeX-mode TeX--VirTeX-mode
+  ;; The mode name can be "plain-TeX", but in that case, we have to
+  ;; change the "TeX" in the above call to `easy-menu-define' as well.
+  ;; See what "Extend this Menu" entry does in
+  ;; `TeX-common-menu-entries'.
+  "TeX"
   "Major mode in AUCTeX for editing plain TeX files.
 See info under AUCTeX for documentation.
-
-Special commands:
-\\{plain-TeX-mode-map}
 
 Entering `plain-TeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `plain-TeX-mode-hook'."
-  (interactive)
+  :syntax-table nil
+  :abbrev-table plain-TeX-mode-abbrev-table
+
   (plain-TeX-common-initialization)
   (setq major-mode 'plain-TeX-mode)
-  (use-local-map plain-TeX-mode-map)
-  (setq TeX-base-mode-name "TeX")
+  (setq TeX-base-mode-name mode-name)
   (setq TeX-command-default "TeX")
-  (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
-  (plain-TeX-maybe-install-toolbar)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
-  (TeX-set-mode-name))
+
+  (add-hook 'plain-TeX-mode-hook
+            (lambda ()
+              ;; Don't install tool bar in AmSTeX mode.
+              (when (eq major-mode 'plain-TeX-mode)
+                (add-hook 'tool-bar-mode-hook
+                          #'plain-TeX-maybe-install-toolbar nil t)
+                (plain-TeX-maybe-install-toolbar)))
+            nil t))
 
 ;; COMPATIBILITY for Emacs<29
 ;; Override defalias in tex-mode.el.
@@ -151,9 +165,6 @@ of `plain-TeX-mode-hook'."
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
-  (VirTeX-common-initialization)
-  (set-syntax-table TeX-mode-syntax-table)
-  (setq local-abbrev-table plain-TeX-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
@@ -281,6 +292,11 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
 (defvar AmSTeX-mode-map
   (let ((map (make-sparse-keymap)))
+    ;; Don't use `plain-TeX-mode-map' as parent.  That would corrupt
+    ;; the menu bar in the following two ways. :-(
+    ;;  - "TeX" entry appears in addition to "AmS-TeX", with
+    ;;    duplicated content.
+    ;;  - "Command" entry disappears.
     (set-keymap-parent map TeX-mode-map)
     map)
   "Keymap used in `AmSTeX-mode'.")
@@ -304,25 +320,18 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :group 'TeX-misc)
 
 ;;;###autoload
-(defun AmSTeX-mode ()
+(define-derived-mode AmSTeX-mode plain-TeX-mode "AmS-TeX"
   "Major mode in AUCTeX for editing AmSTeX files.
 See info under AUCTeX for documentation.
 
-Special commands:
-\\{AmSTeX-mode-map}
+Entering `AmSTeX-mode' calls the value of `text-mode-hook', then
+the value of `TeX-mode-hook', `plain-TeX-mode-hook' and then the
+value of `AmSTeX-mode-hook'."
+  :syntax-table nil
+  :abbrev-table nil
 
-Entering `AmSTeX-mode' calls the value of `text-mode-hook',
-then the value of `TeX-mode-hook', and then the value
-of `AmSTeX-mode-hook'."
-  (interactive)
-  (plain-TeX-common-initialization)
-  (setq major-mode 'AmSTeX-mode)
-  (use-local-map AmSTeX-mode-map)
-
-  (setq TeX-base-mode-name "AmS-TeX")
-  (setq TeX-command-default "AmSTeX")
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmSTeX-mode-hook)
-  (TeX-set-mode-name))
+  (setq TeX-base-mode-name mode-name)
+  (setq TeX-command-default "AmSTeX"))
 
 ;;;###autoload
 (defalias 'ams-tex-mode #'AmSTeX-mode)
