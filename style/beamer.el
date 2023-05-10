@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2023  Free Software Foundation, Inc.
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,6 +37,9 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(defvar LaTeX-hyperref-package-options-list)
+(defvar LaTeX-color-package-options)
+(defvar LaTeX-xcolor-package-options)
 
 (defun LaTeX-beamer-after-insert-env (env start _end)
   "Do beamer-specific stuff after the insertion of an environment."
@@ -608,22 +611,30 @@ also be a string.  Then the length of the string is used."
     (and (fboundp 'reftex-notice-new-section)
          (reftex-notice-new-section))))
 
+(defvar LaTeX-beamer-class-options-list
+  (progn
+    (TeX-load-style "hyperref")
+    (TeX-load-style "color")
+    (TeX-load-style "xcolor")
+    `(("usepdftitle" ("false")) ("envcountsect")
+      ("notheorems") ("noamsthm") ("compress") ("t") ("c")
+      ("leqno") ("fleqn") ("handout") ("trans")
+      ("ignorenonframetext") ("onlytextwidth")
+      ("noamssymb") ("bigger") ("smaller") ("8pt") ("9pt")
+      ("10pt") ("11pt") ("12pt") ("14pt") ("17pt") ("20pt")
+      ("draft") ("CJK") ("cjk") ("pgf")
+      ;; Take only the keys from `LaTeX-hyperref-package-options-list'
+      ;; since a new alist doesn't make sense here and isn't
+      ;; recognized as such:
+      ("hyperref" ,(mapcar #'car LaTeX-hyperref-package-options-list))
+      ("color" ,LaTeX-color-package-options)
+      ("xcolor" ,LaTeX-xcolor-package-options)
+      ("ucs") ("utf8x") ("utf8")
+      ("aspectratio" ("2013" "1610" "169" "149" "141" "54" "43" "32"))))
+  "Class options for the beamer class.")
+
 (defun LaTeX-beamer-class-options ()
-  "Read the beamer class options from the user."
-  (TeX-load-style "hyperref")
-  (TeX-load-style "color")
-  (TeX-load-style "xcolor")
-  (TeX-read-key-val t '(("usepdftitle" ("false")) ("envcountsect")
-                        ("notheorems") ("noamsthm") ("compress") ("t") ("c")
-                        ("leqno") ("fleqn") ("handout") ("trans")
-                        ("ignorenonframetext") ("onlytextwidth")
-                        ("noamssymb") ("bigger") ("smaller") ("8pt") ("9pt")
-                        ("10pt") ("11pt") ("12pt") ("14pt") ("17pt") ("20pt")
-                        ("draft") ("CJK") ("cjk") ("pgf")
-                        ("hyperref" LaTeX-hyperref-package-options-list)
-                        ("color" LaTeX-color-package-options)
-                        ("xcolor" LaTeX-xcolor-package-options)
-                        ("ucs") ("utf8x") ("utf8")
-                        ("aspectratio" ("2013" "1610" "169" "149" "141" "54" "43" "32")))))
+  "Prompt for the class options for the beamer class."
+  (TeX-read-key-val t LaTeX-beamer-class-options-list))
 
 ;;; beamer.el ends here
