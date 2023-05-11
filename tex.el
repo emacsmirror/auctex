@@ -5485,7 +5485,10 @@ additional characters."
                         (setq count (- count TeX-brace-indent-level)))
                        ((eq char ?\\)
                         (when (< (point) limit)
-                          (forward-char)
+                          ;; ?\\ in verbatim constructs doesn't escape
+                          ;; the next char
+                          (unless (TeX-verbatim-p)
+                            (forward-char))
                           t))))))
       count)))
 
@@ -5508,7 +5511,7 @@ It should be accessed through the function `TeX-search-syntax-table'.")
   "Return a syntax table for searching purposes.
 ARGS may be a list of characters.  For each of them the
 respective predefined syntax is set.  Currently the parenthetical
-characters ?{, ?}, ?[, ?], ?\(, ?\), ?<, and ?> are supported.
+characters ?{, ?}, ?[, ?], ?(, ?), ?<, and ?> are supported.
 The syntax of each of these characters not specified will be
 reset to \" \"."
   (let ((char-syntax-alist '((?\{ . "(}") (?\} . "){")
