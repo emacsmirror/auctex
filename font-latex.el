@@ -1097,8 +1097,16 @@ have changed."
                   ;; Some macros take an optional argument.  This is
                   ;; the same line as above for environments.
                   "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
-                  "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
-         (1 "|") (2 "|")))))
+                  ;; Within verb macros with braces, only balanced
+                  ;; pairs of braces are allowed; so we respect this
+                  ;; and allow one level of balanced braces.  Give
+                  ;; escape char(s) at the end of the verbatim
+                  ;; construct punctuation syntax.
+                  "\\({\\)[^}{]*?"
+                  "\\(?:{[^}{]*}[^}{]*?\\)*"
+                  "\\(" (regexp-quote TeX-esc) "*\\)"
+                  "\\(}\\)")
+         (1 "|") (2 ".") (3 "|")))))
   (when font-latex-syntactic-keywords-extra
     (nconc font-latex-syntactic-keywords font-latex-syntactic-keywords-extra))
   ;; ;; Cater for docTeX mode.

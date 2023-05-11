@@ -1,6 +1,6 @@
 ;;; font-latex-test.el --- tests for font-latex  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2020-2023  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -403,6 +403,77 @@ foo \"xyz\\\" bar
       (should (font-latex-faces-present-p 'font-latex-verbatim-face
                                           (1- (point))))
       (search-forward "ba" nil t)
+      (should-not (get-text-property (point) 'face)))))
+
+(ert-deftest font-latex-verb-macros-with-braces ()
+  "Test fontification for verb macros with argument in braces."
+  (with-temp-buffer
+    (let ((TeX-install-font-lock #'font-latex-setup)
+          (TeX-parse-self t))
+      (insert "\
+\\documentclass{article}
+\\usepackage{fvextra}
+\\usepackage{hyperref}
+\\begin{document}
+foo \\Verb[commandchars=\\\\\\{\\}]{Pre \fbox{Middle} Post} bar
+foo \\Verb{w{o}r{k}s} bar
+foo \\Verb{b{r}eak{s}} bar
+foo \\href[ismap=false]{text \\cmd{test} text}{more text} bar
+foo \\path{C:\\path\\to\\} bar
+\\end{document}")
+      (LaTeX-mode)
+      (TeX-update-style t)
+      (syntax-ppss-flush-cache (point-min))
+      (font-lock-ensure)
+      (goto-char (point-min))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "commandc")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face))
+      (search-forward "Mid")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "Po")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "ba")
+      (should-not (get-text-property (point) 'face))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "k")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "ba")
+      (should-not (get-text-property (point) 'face))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "s")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "ba")
+      (should-not (get-text-property (point) 'face))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "ismap")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face))
+      (search-forward "text")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "cmd{t")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "text")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "more")
+      (should (font-latex-faces-present-p 'font-lock-constant-face))
+      (search-forward "ba")
+      (should-not (get-text-property (point) 'face))
+
+      (re-search-forward "^f" nil t)
+      (should-not (get-text-property (point) 'face))
+      (search-forward "C:")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "to")
+      (should (font-latex-faces-present-p 'font-latex-verbatim-face))
+      (search-forward "ba")
       (should-not (get-text-property (point) 'face)))))
 
 ;;; font-latex-test.el ends here
