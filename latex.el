@@ -7598,11 +7598,13 @@ COLLECTION is an list of strings."
                      collection)))))
 
 (defun LaTeX-completion-documentclass-usepackage (entry)
-  "Return completion candidates for arguments of \\usepackage macro.
+  "Return completion candidates for \\usepackage and \\documentclass arguments.
 ENTRY is the value returned by `LaTeX-what-macro'.  This function
-provides completion for package names if point is inside the
-mandatory argument and package options if inside the first
-optional argument."
+provides completion for class/package names if point is inside
+the mandatory argument and class/package options if inside the
+first optional argument.  The completion for class/package names
+is provided only if the value of `TeX-arg-input-file-search' is
+set to t."
   (let ((cls-or-sty (if (member (car entry) '("usepackage" "RequirePackage"
                                               "RequirePackageWithOptions"))
                         'sty
