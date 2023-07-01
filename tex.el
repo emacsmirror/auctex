@@ -8259,16 +8259,17 @@ errors or warnings to show."
       (progn
         (if TeX-parse-all-errors
             (TeX-parse-all-errors))
-        (if (and TeX-error-overview-open-after-TeX-run
+        (if (and (with-current-buffer TeX-command-buffer
+                   TeX-error-overview-open-after-TeX-run)
                  (TeX-error-overview-make-entries
                   (TeX-master-directory) (TeX-active-buffer)))
             (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
     (let (dvi2pdf)
-        (if (with-current-buffer TeX-command-buffer
-           (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
-         (setq TeX-command-next dvi2pdf)
-       (setq TeX-command-next TeX-command-Show)))))
+      (if (with-current-buffer TeX-command-buffer
+            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+          (setq TeX-command-next dvi2pdf)
+        (setq TeX-command-next TeX-command-Show)))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -8374,7 +8375,8 @@ Open the error overview if
 errors or warnings to show."
   (if TeX-parse-all-errors
       (TeX-parse-all-errors))
-  (if (and TeX-error-overview-open-after-TeX-run
+  (if (and (with-current-buffer TeX-command-buffer
+             TeX-error-overview-open-after-TeX-run)
            (TeX-error-overview-make-entries
             (TeX-master-directory) (TeX-active-buffer)))
       (TeX-error-overview))
