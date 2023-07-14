@@ -2854,7 +2854,7 @@ string."
   "Prompt for a LaTeX side with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  POSLIST contains the positioning characters offered for
+string.  POSLIST controls the positioning characters offered for
 completion.  It can be the symbols `center', `stretch' or nil
 with the following completion list:
   center   t, b, c
