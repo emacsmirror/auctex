@@ -8370,9 +8370,9 @@ function would return non-nil and `(match-string 1)' would return
    '("date" TeX-arg-date)
    '("thanks" t)
    '("title" t)
-   '("pagenumbering" (TeX-arg-eval
-                      completing-read "Numbering style: "
-                      '(("arabic") ("roman") ("Roman") ("alph") ("Alph"))))
+   '("pagenumbering" (TeX-arg-completing-read
+                      ("arabic" "roman" "Roman" "alph" "Alph")
+                      "Numbering style"))
    '("pagestyle" TeX-arg-pagestyle)
    '("markboth" t nil)
    '("markright" t)
