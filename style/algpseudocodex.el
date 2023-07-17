@@ -136,6 +136,25 @@ the number of arguments."
     ;; 2.2 Boxes Inside Single Line
     '("BoxedString" ["options"] t)
 
+    ;; 4.3 Changing Keywords
+    "algorithmicend"
+    "algorithmicdo"
+    "algorithmicwhile"
+    "algorithmicfor"
+    "algorithmicforall"
+    "algorithmicloop"
+    "algorithmicrepeat"
+    "algorithmicuntil"
+    "algorithmicprocedure"
+    "algorithmicfunction"
+    "algorithmicif"
+    "algorithmicthen"
+    "algorithmicelse"
+    "algorithmicrequire"
+    "algorithmicensure"
+    "algorithmicreturn"
+    "algorithmicoutput"
+
     '("algrenewcommand"
       (TeX-arg-completing-read ("algorithmicend"
                                 "algorithmicdo"
