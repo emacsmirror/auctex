@@ -1,6 +1,6 @@
 ;;; amsthm.el --- Style hook for the AMS-LaTeX amsthm package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1997--2022  Free Software Foundation, Inc.
+;; Copyright (C) 1997--2023  Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -98,12 +98,13 @@ make them available as new environments."
            (LaTeX-add-environments (list nthm #'LaTeX-env-label-args ["Heading"]))
            (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
 
     `("newtheorem*"
       ,(lambda (optional)
