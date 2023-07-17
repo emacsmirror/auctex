@@ -7794,7 +7794,7 @@ or `LaTeX-environment-list' and returns it."
           (t nil))
     result))
 
-(defvar LaTeX-completion-function-map-alist-keyval '()
+(defvar LaTeX-completion-function-map-alist-keyval nil
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an
 AUCTeX style file which queries and inserts something in the
@@ -7806,6 +7806,7 @@ key=val completions.  See also
 (defvar LaTeX-completion-function-map-alist-cr
   `((TeX-arg-counter . LaTeX-counter-list)
     (TeX-arg-pagestyle . LaTeX-pagestyle-list)
+    (TeX-arg-environment . LaTeX-environment-list)
     (TeX-arg-length . ,(lambda () (mapcar (lambda (x)
                                             (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))))
@@ -8275,14 +8276,20 @@ function would return non-nil and `(match-string 1)' would return
      [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment*" TeX-arg-environment
      [ TeX-arg-define-macro-arguments ] 2)
+   ;; \newtheorem comes in 3 flavors:
+   ;; \newtheorem{name}{title} or
+   ;; \newtheorem{name}[numbered_like]{title} or
+   ;; \newtheorem{name}{title}[numbered_within]
+   ;; Both optional args are not allowed
    '("newtheorem" TeX-arg-define-environment
      [ TeX-arg-environment "Numbered like" ]
-     t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                       (backward-char 2)
-                                       (preceding-char)) ?\])
-                                 ()
-                               (TeX-arg-counter t "Within counter"))
-                       "") ])
+     "Title"
+     (TeX-arg-conditional (save-excursion
+                            (skip-chars-backward (concat "^" TeX-grcl))
+                            (backward-list)
+                            (= (preceding-char) ?\]))
+         ()
+       ([TeX-arg-counter "Within counter"])))
    '("newfont" TeX-arg-define-macro t)
    '("circle" "Diameter")
    '("circle*" "Diameter")
