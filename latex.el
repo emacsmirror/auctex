@@ -2835,8 +2835,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '("l" "r" "t" "b" "tl" "tr" "bl" "br")
-                    nil t)
+                    '("l" "r" "t" "b" "tl" "tr" "bl" "br"))
    optional))
 
 (defun TeX-arg-lr (optional &optional prompt)
@@ -2846,8 +2845,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '("l" "r")
-                    nil t)
+                    '("l" "r"))
    optional))
 
 (defun TeX-arg-tb (optional &optional prompt poslist)
@@ -2867,8 +2865,7 @@ with the following completion list:
                           ((eq poslist 'stretch)
                            '("t" "b" "c" "s"))
                           (t
-                           '("t" "b")))
-                    nil t)
+                           '("t" "b"))))
    optional))
 
 (defcustom TeX-date-format "%Y/%m/%d"
