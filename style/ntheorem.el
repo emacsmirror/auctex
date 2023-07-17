@@ -122,13 +122,9 @@ make them available as new environments.  Update
  (lambda ()
 
    (TeX-auto-add-regexp
-    `(,(concat "\\\\newtheorem{\\(" TeX-token-char "+\\)}")
-      1 LaTeX-auto-ntheorem-newtheorem))
-   (TeX-auto-add-regexp
-    `(,(concat "\\\\newframedtheorem{\\(" TeX-token-char "+\\)}")
-      1 LaTeX-auto-ntheorem-newtheorem))
-   (TeX-auto-add-regexp
-    `(,(concat "\\\\newshadedtheorem{\\(" TeX-token-char "+\\)}")
+    `(,(concat "\\\\"
+               (regexp-opt '("newtheorem" "newframedtheorem" "newshadedtheorem"))
+               "{\\(" TeX-token-char "+\\)}")
       1 LaTeX-auto-ntheorem-newtheorem))
    (TeX-auto-add-regexp
     `(,(concat "\\\\newtheoremstyle{\\(" TeX-token-char "+\\)}")
