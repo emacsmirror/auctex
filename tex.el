@@ -6125,14 +6125,15 @@ With optional argument ARG, also reload the style hooks."
   (if arg
       (dolist (var TeX-normal-mode-reset-list)
         (set var nil)))
-  (let ((TeX-auto-save t))
-    (if (buffer-modified-p)
-        (save-buffer)
-      (TeX-auto-write)))
-  (normal-mode)
-  ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
-  (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
-  (TeX-update-style t))
+  (let ((gc-cons-percentage 0.5))
+    (let ((TeX-auto-save t))
+      (if (buffer-modified-p)
+          (save-buffer)
+        (TeX-auto-write)))
+    (normal-mode)
+    ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
+    (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
+    (TeX-update-style t)))
 
 (defgroup TeX-quote nil
   "Quoting in AUCTeX."
