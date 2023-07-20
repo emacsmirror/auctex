@@ -1,7 +1,7 @@
 ;;; context-en.el --- Support for the ConTeXt english interface. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2003-2004, 2006, 2008
-;;               2010, 2014, 2020-2022 Free Software Foundation, Inc.
+;;               2010, 2014, 2020-2023 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -188,9 +188,8 @@ That is, besides the section(-block) commands.")
 
 (defun ConTeXt-en-mode-initialization ()
   "ConTeXt english interface specific initialization."
-  ;; FIXME: This `mapc' seems spurious because
-  ;; `ConTeXt-language-variable-list' includes
-  ;; `ConTeXt-environment-list'.
+  ;; FIXME: Move to `ConTeXt-mode-common-initialization' replacing
+  ;; `ConTeXt-environment-list-en' with `ConTeXt-environment-list'?
   (mapc #'ConTeXt-add-environments (reverse ConTeXt-environment-list-en))
 
   (TeX-add-symbols

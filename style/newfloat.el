@@ -200,14 +200,15 @@ If `caption.el' is loaded, add the new floating environment to
                               'function)))
  TeX-dialect)
 
+(defun LaTeX-newfloat-package-options-list ()
+  "Return an alist of package options for the newfloat package."
+  (append '(("chapterlistsgap"))
+          (if (< (LaTeX-largest-level) 2)
+              '(("within" ("chapter" "section" "none")))
+            '(("within" ("section" "none"))))))
+
 (defun LaTeX-newfloat-package-options ()
   "Prompt for package options for the newfloat package."
-  (TeX-read-key-val
-   t
-   (append
-    '(("chapterlistsgap"))
-    (if (< (LaTeX-largest-level) 2)
-        '(("within" ("chapter" "section" "none")))
-      '(("within" ("section" "none")))))))
+  (TeX-read-key-val t (LaTeX-newfloat-package-options-list)))
 
 ;;; newfloat.el ends here

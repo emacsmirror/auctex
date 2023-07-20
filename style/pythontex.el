@@ -1,6 +1,6 @@
 ;;; pythontex.el --- AUCTeX style for `pythontex.sty' (v0.16)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -112,24 +112,6 @@ Update the variable `LaTeX-pythontex-language-list' if still nil."
 (defvar LaTeX-pythontex-family-list
   '("py" "sympy" "pylab" "rb" "ruby" "jl" "julia" "octave")
   "List of language families provided by pythontex package.")
-
-(defun LaTeX-env-pythontex (environment)
-  "Insert ENVIRONMENT provided by pythontex package."
-  (let ((session (TeX-read-string
-                  (TeX-argument-prompt t nil "Session")))
-        (fvkeyval (TeX-read-key-val t (LaTeX-fancyvrb-key-val-options))))
-    (LaTeX-insert-environment environment
-                              (concat
-                               (when (and session (not (string= session "")))
-                                 (concat LaTeX-optop session LaTeX-optcl))
-                               ;; We need an extra pair of brackets
-                               ;; when no session is given but
-                               ;; key=vals are available
-                               (when (and session (string= session "")
-                                          fvkeyval (not (string= fvkeyval "")))
-                                 (concat LaTeX-optop LaTeX-optcl))
-                               (when (and fvkeyval (not (string= fvkeyval "")))
-                                 (concat LaTeX-optop fvkeyval LaTeX-optcl))))))
 
 ;; Setup for \saveprintpythontex & \savestdoutpythontex &
 ;; \savestderrpythontex
@@ -248,7 +230,9 @@ a list of strings."
                     verb-macs))
      (apply #'LaTeX-add-environments
             (mapcar (lambda (env)
-                      (list env #'LaTeX-env-pythontex))
+                      (list env #'LaTeX-env-args
+                            [ "Session" ]
+                            [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]))
                     verb-envs))
      ;; Filling:
      (dolist (mac verb-macs)

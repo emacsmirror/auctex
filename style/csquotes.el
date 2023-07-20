@@ -1,6 +1,6 @@
 ;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2023 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -342,73 +342,77 @@ retrieve the active languages."
                                 'variable))))
  TeX-dialect)
 
+(defvar LaTeX-csquotes-package-options-list
+  '(("strict"     ("true" "false"))
+    ("style"      ("american"
+                   "australian"
+                   "austrian"
+                   "brazil"
+                   "brazilian"
+                   "british"
+                   "canadian"
+                   "croatian"
+                   "czech"
+                   "danish"
+                   "dutch"
+                   "english"
+                   "finnish"
+                   "french"
+                   "german"
+                   "greek"
+                   "italian"
+                   "mexican"
+                   "naustrian"
+                   "newzealand"
+                   "ngerman"
+                   "norsk"
+                   "norwegian"
+                   "nswissgerman"
+                   "nynorsk"
+                   "portuges"
+                   "portuguese"
+                   "russian"
+                   "serbian"
+                   "spanish"
+                   "swedish"
+                   "swiss"
+                   "swissgerman"
+                   "UKenglish"
+                   "USenglish"))
+    ("autostyle"  ("true" "false" "try" "once" "tryonce"))
+    ("austrian"   ("quotes" "guillemets"))
+    ("croatian"   ("quotes" "guillemets" "guillemets*"))
+    ("czech"      ("quotes" "guillemets"))
+    ("danish"     ("quotes" "guillemets" "topquotes"))
+    ("english"    ("american" "british"))
+    ("estonian")
+    ("french"     ("quotes" "quotes*" "guillemets" "guillemets*"))
+    ("galician"   ("quotes" "guillemets"))
+    ("german"     ("quotes" "guillemets" "swiss"))
+    ("hungarian")
+    ("italian"    ("guillemets" "quotes"))
+    ("latvian")
+    ("norwegian"  ("guillemets" "quotes"))
+    ("polish"     ("guillemets" "guillemets*"))
+    ("portuguese" ("portuguese" "brazilian"))
+    ("serbian"    ("quotes" "guillemets" "german"))
+    ("spanish"    ("spanish" "mexican"))
+    ("swedish"    ("quotes" "guillemets" "guillemets*"))
+    ("maxlevel")
+    ("autopunct"     ("true" "false"))
+    ("threshold")
+    ("thresholdtype" ("lines" "words"))
+    ("parthreshold"  ("true" "false"))
+    ("splitcomp"     ("true" "false"))
+    ("csdisplay"     ("true" "false"))
+    ("debug"         ("true" "false"))
+    ;; "babel" key is deprecated, replaced by "autostyle":
+    ;; ("babel" ("true" "false" "try" "once" "tryonce"))
+    ("version"       ("4.4" "3.6" "3.0")))
+  "Package options for the csquotes package.")
+
 (defun LaTeX-csquotes-package-options ()
   "Prompt for package options for the csquotes package."
-  (TeX-read-key-val t '(("strict"     ("true" "false"))
-                        ("style"      ("american"
-                                       "australian"
-                                       "austrian"
-                                       "brazil"
-                                       "brazilian"
-                                       "british"
-                                       "canadian"
-                                       "croatian"
-                                       "czech"
-                                       "danish"
-                                       "dutch"
-                                       "english"
-                                       "finnish"
-                                       "french"
-                                       "german"
-                                       "greek"
-                                       "italian"
-                                       "mexican"
-                                       "naustrian"
-                                       "newzealand"
-                                       "ngerman"
-                                       "norsk"
-                                       "norwegian"
-                                       "nswissgerman"
-                                       "nynorsk"
-                                       "portuges"
-                                       "portuguese"
-                                       "russian"
-                                       "serbian"
-                                       "spanish"
-                                       "swedish"
-                                       "swiss"
-                                       "swissgerman"
-                                       "UKenglish"
-                                       "USenglish"))
-                        ("autostyle"  ("true" "false" "try" "once" "tryonce"))
-                        ("austrian"   ("quotes" "guillemets"))
-                        ("croatian"   ("quotes" "guillemets" "guillemets*"))
-                        ("czech"      ("quotes" "guillemets"))
-                        ("danish"     ("quotes" "guillemets" "topquotes"))
-                        ("english"    ("american" "british"))
-                        ("estonian")
-                        ("french"     ("quotes" "quotes*" "guillemets" "guillemets*"))
-                        ("galician"   ("quotes" "guillemets"))
-                        ("german"     ("quotes" "guillemets" "swiss"))
-                        ("hungarian")
-                        ("italian"    ("guillemets" "quotes"))
-                        ("latvian")
-                        ("norwegian"  ("guillemets" "quotes"))
-                        ("polish"     ("guillemets" "guillemets*"))
-                        ("portuguese" ("portuguese" "brazilian"))
-                        ("serbian"    ("quotes" "guillemets" "german"))
-                        ("spanish"    ("spanish" "mexican"))
-                        ("swedish"    ("quotes" "guillemets" "guillemets*"))
-                        ("maxlevel")
-                        ("autopunct"     ("true" "false"))
-                        ("threshold")
-                        ("thresholdtype" ("lines" "words"))
-                        ("parthreshold"  ("true" "false"))
-                        ("splitcomp"     ("true" "false"))
-                        ("csdisplay"     ("true" "false"))
-                        ("debug"         ("true" "false"))
-                        ;; "babel" key is deprecated, replaced by "autostyle":
-                        ;; ("babel" ("true" "false" "try" "once" "tryonce"))
-                        ("version"       ("4.4" "3.6" "3.0")))))
+  (TeX-read-key-val t LaTeX-csquotes-package-options-list))
 
 ;;; csquotes.el ends here

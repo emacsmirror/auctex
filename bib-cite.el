@@ -1570,8 +1570,6 @@ Does not save excursion."
          "Sorry, could not find an environment or section declaration")))))
 
 (defvar LaTeX-find-label-hist-alist nil "History list for LaTeX-find-label.")
-(defvar LaTeX-label-list nil "Used by AUCTeX to store label names.")
-
 
 (defun create-alist-from-list (the-list)
   "Return a single list from a THE-LIST that may contain either items or lists.

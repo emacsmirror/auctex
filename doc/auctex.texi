@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated @TeX{} environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2022
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2023
 Free Software Foundation, Inc.
 
 @quotation
@@ -2317,11 +2317,11 @@ described above.  You can disable these defaults per class by
 customizing the variable @code{font-latex-deactivated-keyword-classes}.
 This is a list of strings for keyword classes to be deactivated.  Valid
 entries are "warning", "variable", "biblatexnoarg", "biblatex",
-"reference", "function" , "sectioning-0", "sectioning-1",
+"reference", "function", "function-noarg", "sectioning-0", "sectioning-1",
 "sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
 "slide-title", "textual", "bold-command", "italic-command",
 "underline-command", "math-command", "type-command", "bold-declaration",
-"italic-declaration", "type-declaration".
+"italic-declaration" or "type-declaration".
 
 You can also get rid of certain keywords only.  For example if you want
 to remove highlighting of footnotes as references you can put the

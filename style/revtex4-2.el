@@ -1,6 +1,6 @@
 ;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,6 +38,8 @@
 (declare-function font-latex-add-keywords
                   "font-latex"
                   (keywords class))
+(declare-function font-latex-set-syntactic-keywords
+                  "font-latex")
 (defvar LaTeX-natbib-package-options)
 (defvar LaTeX-url-package-options)
 
@@ -132,10 +134,14 @@ provided by REVTeX class."
 
     ;; VIII.1. Citing a reference
     '("onlinecite"
-      (TeX-arg-conditional TeX-arg-cite-note-p ([LaTeX-arg-natbib-notes]) nil)
+      (TeX-arg-conditional TeX-arg-cite-note-p
+          (["Pre-note"] LaTeX-arg-natbib-notes)
+        nil)
       TeX-arg-cite)
     '("textcite"
-      (TeX-arg-conditional TeX-arg-cite-note-p ([LaTeX-arg-natbib-notes]) nil)
+      (TeX-arg-conditional TeX-arg-cite-note-p
+          (["Pre-note"] LaTeX-arg-natbib-notes)
+        nil)
       TeX-arg-cite)
 
     ;; IX.2 video environment
@@ -192,13 +198,14 @@ provided by REVTeX class."
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("fbox"          "*[{")
                                 ("keywords"      "{")
-                                ("preprint"      "")
-                                ("onecolumngrid" "")
-                                ("twocolumngrid" "")
-                                ("squeezetable"  "")
                                 ("printtables"   "*")
                                 ("printfigures"  "*"))
                               'function)
+     (font-latex-add-keywords '("preprint"
+                                "onecolumngrid"
+                                "twocolumngrid"
+                                "squeezetable")
+                              'function-noarg)
      (font-latex-add-keywords '(("affiliation"    "{")
                                 ("noaffiliation"  "")
                                 ("collaboration"  "{")
@@ -211,7 +218,9 @@ provided by REVTeX class."
                                 ("setfloatlink" ""))
                               'reference)
      (font-latex-add-keywords '(("appendix*" ""))
-                              'warning)))
+                              'warning)
+     ;; Tell font-lock about the update
+     (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
 (defvar LaTeX-revtex4-2-class-options

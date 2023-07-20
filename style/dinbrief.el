@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1994-2023  Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -71,28 +71,23 @@
 
 (defun LaTeX-dinbrief-style ()
   "Insert some useful packages for writing german letters."
-  ;; COMPATIBILITY for EMACS<26
-  (let ((func (if (fboundp 'indent-relative-first-indent-point)
-                  #'indent-relative-first-indent-point
-                ;; Stay away from using #' to avoid compiler warning.
-                'indent-relative-maybe)))
-    (save-excursion
-      (goto-char (point-min)) ; insert before \begin{document}
-      (if (re-search-forward ".begin.document." (point-max) t)
-          (beginning-of-line 1))
-      (open-line 2)
-      (funcall func)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-                             LaTeX-optop "latin1,utf8" LaTeX-optcl
-                             TeX-grop "inputenc" TeX-grcl)
-      (newline-and-indent)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-                             LaTeX-optop "T1" LaTeX-optcl
-                             TeX-grop "fontenc" TeX-grcl)
-      (funcall func)
-      (LaTeX-dinbrief-insert TeX-esc "usepackage"
-                             TeX-grop "ngerman" TeX-grcl))
-    (TeX-run-style-hooks "inputenc" "fontenc" "ngerman")))
+  (save-excursion
+    (goto-char (point-min)) ; insert before \begin{document}
+    (if (re-search-forward ".begin.document." (point-max) t)
+        (beginning-of-line 1))
+    (open-line 2)
+    (indent-relative-first-indent-point)
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+                           LaTeX-optop "latin1,utf8" LaTeX-optcl
+                           TeX-grop "inputenc" TeX-grcl)
+    (newline-and-indent)
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+                           LaTeX-optop "T1" LaTeX-optcl
+                           TeX-grop "fontenc" TeX-grcl)
+    (indent-relative-first-indent-point)
+    (LaTeX-dinbrief-insert TeX-esc "usepackage"
+                           TeX-grop "ngerman" TeX-grcl))
+  (TeX-run-style-hooks "inputenc" "fontenc" "ngerman"))
 
 (defun LaTeX-dinbrief-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."
@@ -108,12 +103,7 @@
         (opening (TeX-read-string "Anrede: "))
         (closing (TeX-read-string "Schluss: "))
         (signature (TeX-read-string "Unterschrift: "))
-        (anlage (TeX-read-string "Anlagen: "))
-        ;; COMPATIBILITY for EMACS<26
-        (func (if (fboundp 'indent-relative-first-indent-point)
-                  #'indent-relative-first-indent-point
-                ;; Stay away from using #' to avoid compiler warning.
-                'indent-relative-maybe)))
+        (anlage (TeX-read-string "Anlagen: ")))
     (if (string= fenster "ja")
         (progn
           (LaTeX-dinbrief-insert TeX-esc "enabledraftstandard")
@@ -201,7 +191,7 @@
                              opening)
                            TeX-grcl "\n")
 
-    (funcall func)
+    (indent-relative-first-indent-point)
     (save-excursion
       (LaTeX-dinbrief-insert "\n" TeX-esc "closing"
                              TeX-grop
@@ -209,7 +199,7 @@
                                  (concat TeX-esc " ")
                                closing)
                              TeX-grcl "\n")
-      (funcall func))))
+      (indent-relative-first-indent-point))))
 
 (defun LaTeX-dinbrief-sender ()
   "Read and write the senders address."

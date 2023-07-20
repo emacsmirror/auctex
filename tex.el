@@ -28,8 +28,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 25)
-  (error "AUCTeX requires Emacs 25.1 or later"))
+(when (< emacs-major-version 26)
+  (error "AUCTeX requires Emacs 26.1 or later"))
 
 (require 'custom)
 (require 'tex-site)
@@ -2098,12 +2098,11 @@ Programs should not use this variable directly but the function
   :type '(choice
           (const :tag "No DVI to PDF conversion" nil)
           (const :tag "dvips - ps2pdf sequence" "Dvips")
-          (const :tag "dvipdfmx" "Dvipdfmx")))
+          (const :tag "dvipdfmx" "Dvipdfmx"))
+  :safe #'string-or-null-p)
 ;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
 ;; `TeX-command-default' accordingly.
 (make-variable-buffer-local 'TeX-PDF-from-DVI)
-(put 'TeX-PDF-from-DVI 'safe-local-variable
-     (lambda (x) (or (stringp x) (null x))))
 
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
@@ -2483,10 +2482,12 @@ Get `major-mode' from master file and enable it."
          comment-prefix "End:\n")
         (unless (eq mode major-mode)
           (funcall mode)
-          ;; TeX modes run `VirTeX-common-initialization' which kills all local
-          ;; variables, thus `TeX-master' will be forgotten after `(funcall
-          ;; mode)'.  Reparse local variables in order to bring it back.
-          (hack-local-variables))))))
+          ;; On Emacs 26 and later, no need to reparse local variables
+          ;; in order to retain `TeX-master' because major mode
+          ;; function runs `hack-local-variables' through
+          ;; `run-mode-hooks'.
+          ;; (hack-local-variables)
+          )))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.
@@ -5484,7 +5485,10 @@ additional characters."
                         (setq count (- count TeX-brace-indent-level)))
                        ((eq char ?\\)
                         (when (< (point) limit)
-                          (forward-char)
+                          ;; ?\\ in verbatim constructs doesn't escape
+                          ;; the next char
+                          (unless (TeX-verbatim-p)
+                            (forward-char))
                           t))))))
       count)))
 
@@ -5507,7 +5511,7 @@ It should be accessed through the function `TeX-search-syntax-table'.")
   "Return a syntax table for searching purposes.
 ARGS may be a list of characters.  For each of them the
 respective predefined syntax is set.  Currently the parenthetical
-characters ?{, ?}, ?[, ?], ?\(, ?\), ?<, and ?> are supported.
+characters ?{, ?}, ?[, ?], ?(, ?), ?<, and ?> are supported.
 The syntax of each of these characters not specified will be
 reset to \" \"."
   (let ((char-syntax-alist '((?\{ . "(}") (?\} . "){")
@@ -6121,14 +6125,15 @@ With optional argument ARG, also reload the style hooks."
   (if arg
       (dolist (var TeX-normal-mode-reset-list)
         (set var nil)))
-  (let ((TeX-auto-save t))
-    (if (buffer-modified-p)
-        (save-buffer)
-      (TeX-auto-write)))
-  (normal-mode)
-  ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
-  (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
-  (TeX-update-style t))
+  (let ((gc-cons-percentage 0.5))
+    (let ((TeX-auto-save t))
+      (if (buffer-modified-p)
+          (save-buffer)
+        (TeX-auto-write)))
+    (normal-mode)
+    ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
+    (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
+    (TeX-update-style t)))
 
 (defgroup TeX-quote nil
   "Quoting in AUCTeX."
@@ -8255,16 +8260,17 @@ errors or warnings to show."
       (progn
         (if TeX-parse-all-errors
             (TeX-parse-all-errors))
-        (if (and TeX-error-overview-open-after-TeX-run
+        (if (and (with-current-buffer TeX-command-buffer
+                   TeX-error-overview-open-after-TeX-run)
                  (TeX-error-overview-make-entries
                   (TeX-master-directory) (TeX-active-buffer)))
             (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
     (let (dvi2pdf)
-        (if (with-current-buffer TeX-command-buffer
-           (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
-         (setq TeX-command-next dvi2pdf)
-       (setq TeX-command-next TeX-command-Show)))))
+      (if (with-current-buffer TeX-command-buffer
+            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+          (setq TeX-command-next dvi2pdf)
+        (setq TeX-command-next TeX-command-Show)))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -8370,7 +8376,8 @@ Open the error overview if
 errors or warnings to show."
   (if TeX-parse-all-errors
       (TeX-parse-all-errors))
-  (if (and TeX-error-overview-open-after-TeX-run
+  (if (and (with-current-buffer TeX-command-buffer
+             TeX-error-overview-open-after-TeX-run)
            (TeX-error-overview-make-entries
             (TeX-master-directory) (TeX-active-buffer)))
       (TeX-error-overview))

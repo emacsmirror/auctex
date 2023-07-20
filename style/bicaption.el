@@ -1,6 +1,6 @@
 ;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -187,20 +187,22 @@ square brackets."
                               'textual)))
  TeX-dialect)
 
+(defun LaTeX-bicaption-package-options-list ()
+  "Return an alist of package options for bicaption package."
+  (TeX-load-style "caption")
+  (append `(,(list "language"
+                   (cond ((and (member "babel" (TeX-style-list))
+                               (LaTeX-babel-active-languages))
+                          (butlast (LaTeX-babel-active-languages)))
+                         ((and (member "polyglossia" (TeX-style-list))
+                               (LaTeX-polyglossia-active-languages))
+                          (butlast (LaTeX-babel-active-languages)))
+                         (t nil))))
+          LaTeX-bicaption-key-val-options
+          LaTeX-caption-key-val-options))
+
 (defun LaTeX-bicaption-package-options ()
   "Prompt for package options for the bicaption package."
-  (TeX-load-style "caption")
-  (TeX-read-key-val t
-                    (append
-                     `(,(list "language"
-                              (cond ((and (member "babel" (TeX-style-list))
-                                          (LaTeX-babel-active-languages))
-                                     (butlast (LaTeX-babel-active-languages)))
-                                    ((and (member "polyglossia" (TeX-style-list))
-                                          (LaTeX-polyglossia-active-languages))
-                                     (butlast (LaTeX-babel-active-languages)))
-                                    (t nil))))
-                     LaTeX-bicaption-key-val-options
-                     LaTeX-caption-key-val-options)))
+  (TeX-read-key-val t (LaTeX-bicaption-package-options-list)))
 
 ;;; bicaption.el ends here

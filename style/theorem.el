@@ -1,6 +1,6 @@
 ;;; theorem.el --- AUCTeX style for `theorem.sty' (v2.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2023  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -94,12 +94,13 @@ make them available as new environments."
            (LaTeX-add-environments (list nthm #'LaTeX-env-label-args ["Heading"]))
            (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
 
     '("theoremstyle"
       (TeX-arg-completing-read LaTeX-theorem-theoremstyle-list "Style"))

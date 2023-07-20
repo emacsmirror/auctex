@@ -1,6 +1,6 @@
 ;;; microtype.el --- AUCTeX style for `microtype.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -231,10 +231,13 @@
                               'type-declaration)))
  TeX-dialect)
 
+(defvar LaTeX-microtype-package-options-list
+  (append '((config))
+          LaTeX-microtype-key-val-options)
+  "Package options for the microtype package.")
+
 (defun LaTeX-microtype-package-options ()
-  "Read the microtype package options from the user."
-  (TeX-read-key-val t (append
-                       '((config))
-                       LaTeX-microtype-key-val-options)))
+  "Prompt for package options for the microtype package."
+  (TeX-read-key-val t LaTeX-microtype-package-options-list))
 
 ;;; microtype.el ends here

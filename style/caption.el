@@ -1,6 +1,6 @@
 ;;; caption.el --- AUCTeX style for `caption.sty' (v3.4a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -384,16 +384,16 @@ STAR is non-nil, do not query for a short-caption and a label."
 
     '("captionsetup"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
-                           ([LaTeX-arg-bicaption-captionsetup])
-                           ([TeX-arg-completing-read
-                             LaTeX-caption-supported-float-types "Float type"]))
+          ([LaTeX-arg-bicaption-captionsetup])
+        ([TeX-arg-completing-read
+          LaTeX-caption-supported-float-types "Float type"]))
       (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("captionsetup*"
       (TeX-arg-conditional (member "bicaption" (TeX-style-list))
-                           ([LaTeX-arg-bicaption-captionsetup])
-                           ([TeX-arg-completing-read
-                             LaTeX-caption-supported-float-types "Float type"]))
+          ([LaTeX-arg-bicaption-captionsetup])
+        ([TeX-arg-completing-read
+          LaTeX-caption-supported-float-types "Float type"]))
       (TeX-arg-key-val (LaTeX-caption-key-val-options)))
 
     '("clearcaptionsetup"
@@ -476,12 +476,15 @@ STAR is non-nil, do not query for a short-caption and a label."
                               'function)) )
  TeX-dialect)
 
+(defvar LaTeX-caption-package-options-list
+  (append '(("compatibility"  ("true" "false"))
+            ("figureposition" ("top" "above" "bottom" "below"))
+            ("tableposition"  ("top" "above" "bottom" "below")))
+          LaTeX-caption-key-val-options)
+  "Package options for the caption package.")
+
 (defun LaTeX-caption-package-options ()
   "Prompt for package options for the caption package."
-  (TeX-read-key-val t
-                    (append '(("compatibility"  ("true" "false")))
-                            '(("figureposition" ("top" "above" "bottom" "below")))
-                            '(("tableposition"  ("top" "above" "bottom" "below")))
-                            LaTeX-caption-key-val-options)))
+  (TeX-read-key-val t LaTeX-caption-package-options-list))
 
 ;;; caption.el ends here

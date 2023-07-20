@@ -1,6 +1,6 @@
 ;;; xparse.el --- AUCTeX style for `xparse.sty' version 2022-07-05  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2020--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020--2023 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -111,6 +111,8 @@ TYPE is one of the symbols mac or env."
     (let ((name (nth 1 xcmd))
           (spec (nth 2 xcmd))
           (what (nth 3 xcmd))
+          (case-fold-search nil)
+          (syntax (TeX-search-syntax-table ?\{ ?\}))
           args opt-star opt-token)
       (with-temp-buffer
         (set-syntax-table LaTeX-mode-syntax-table)
@@ -128,7 +130,7 @@ TYPE is one of the symbols mac or env."
                 ;; over [>=] and a balanced {}
                 ((looking-at-p "[>=]")
                  (forward-char 1)
-                 (forward-sexp))
+                 (with-syntax-table syntax (forward-sexp)))
                 ;; Mandatory arguments:
                 ;; m: Ask for input with "Text" as prompt
                 ((looking-at-p "m")
@@ -144,7 +146,7 @@ TYPE is one of the symbols mac or env."
                 ;; R<token1><token2>{default}
                 ((looking-at-p "R")
                  (re-search-forward "R\\(.\\)\\(.\\)" (+ (point) 3) t)
-                 (forward-sexp)
+                 (with-syntax-table syntax (forward-sexp))
                  (push `(LaTeX-arg-xparse-query
                          ,(match-string-no-properties 1)
                          ,(match-string-no-properties 2))
@@ -168,12 +170,12 @@ TYPE is one of the symbols mac or env."
                 ;; O{default}
                 ((looking-at-p "O")
                  (forward-char 1)
-                 (forward-sexp)
+                 (with-syntax-table syntax (forward-sexp))
                  (push (vector "Text") args))
                 ;; D<token1><token2>{default}
                 ((looking-at-p "D")
                  (re-search-forward "D\\(.\\)\\(.\\)" (+ (point) 3) t)
-                 (forward-sexp)
+                 (with-syntax-table syntax (forward-sexp))
                  (push (vector #'LaTeX-arg-xparse-query
                                (match-string-no-properties 1)
                                (match-string-no-properties 2))
@@ -205,7 +207,7 @@ TYPE is one of the symbols mac or env."
                          ,(match-string-no-properties 1))
                        args)
                  (when (looking-at-p TeX-grop)
-                   (forward-sexp)))
+                   (with-syntax-table syntax (forward-sexp))))
                 ;; Finished:
                 (t nil))))
       (if (eq type 'env)
@@ -349,8 +351,12 @@ TYPE is one of the symbols mac or env."
                               'function)))
  TeX-dialect)
 
+(defvar LaTeX-xparse-package-options-list
+  '(("log-declarations" ("true" "false")))
+  "Package options for the xparse package.")
+
 (defun LaTeX-xparse-package-options ()
   "Read the xparse package options from the user."
-  (TeX-read-key-val t '(("log-declarations" ("true" "false")))))
+  (TeX-read-key-val t LaTeX-xparse-package-options-list))
 
 ;;; xparse.el ends here

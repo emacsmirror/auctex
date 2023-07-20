@@ -74,7 +74,9 @@
            ;; Pre and post notes
            (list
             (car cmd)
-            '(TeX-arg-conditional TeX-arg-cite-note-p ([LaTeX-arg-natbib-notes]) nil)
+            '(TeX-arg-conditional TeX-arg-cite-note-p
+                 (["Pre-note"] LaTeX-arg-natbib-notes)
+               nil)
             #'TeX-arg-cite))))
        citecmds))
 
@@ -173,21 +175,18 @@
      (reftex-set-cite-format 'natbib)))
  TeX-dialect)
 
-(defun LaTeX-arg-natbib-notes (optional)
-  "Prompt for two note arguments a natbib citation command.
-If OPTIONAL is non-nil, insert them in brackets, otherwise in
-braces."
-  (let ((pre (TeX-read-string
-              (TeX-argument-prompt optional nil "Pre-note")))
-        (post (TeX-read-string
-               (TeX-argument-prompt optional nil "Post-note"))))
-    (TeX-argument-insert pre optional)
-    (TeX-argument-insert post optional)
-    ;; pre is given, post is empty: Make sure that we insert an
-    ;; extra pair of `[]', otherwise pre becomes post
-    (when (and pre (not (string= pre ""))
-               (string= post ""))
-      (insert LaTeX-optop LaTeX-optcl))))
+(defun LaTeX-arg-natbib-notes (_optional)
+  "Prompt for the post-note argument of a natbib citation command.
+OPTIONAL is ignored."
+  (let ((post (TeX-read-string
+               (TeX-argument-prompt t nil "Post-note")))
+        (TeX-arg-opening-brace LaTeX-optop)
+        (TeX-arg-closing-brace LaTeX-optcl))
+    ;; Pre-note is given, Post-note is empty: Make sure that we insert
+    ;; an extra pair of `[]', otherwise pre becomes post
+    (if (and (string-empty-p post) (= (preceding-char) ?\]))
+        (insert LaTeX-optop LaTeX-optcl)
+      (TeX-argument-insert post t))))
 
 (defvar LaTeX-natbib-package-options '("numbers" "super" "authoryear"
                                        "round" "square" "angle" "curly"
