@@ -1,10 +1,10 @@
 This is auctex.info, produced by makeinfo version 7.0.3 from
 auctex.texi.
 
-This manual is for AUCTeX (version 13.2.0 from 2023-04-24), a
+This manual is for AUCTeX (version 13.2.1 from 2023-07-20), a
 sophisticated TeX environment for Emacs.
 
-   Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
+   Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -365,7 +365,7 @@ File: auctex.info,  Node: Prerequisites,  Next: Configure,  Up: Installation
 1.2.1 Prerequisites
 -------------------
 
-   • GNU Emacs 25.1 or higher
+   • GNU Emacs 26.1 or higher
 
      Using preview-latex requires a version of Emacs compiled with image
      support.
@@ -3058,11 +3058,11 @@ described above.  You can disable these defaults per class by
 customizing the variable ‘font-latex-deactivated-keyword-classes’.  This
 is a list of strings for keyword classes to be deactivated.  Valid
 entries are "warning", "variable", "biblatexnoarg", "biblatex",
-"reference", "function" , "sectioning-0", "sectioning-1",
-"sectioning-2", "sectioning-3", "sectioning-4", "sectioning-5",
-"slide-title", "textual", "bold-command", "italic-command",
-"underline-command", "math-command", "type-command", "bold-declaration",
-"italic-declaration", "type-declaration".
+"reference", "function", "function-noarg", "sectioning-0",
+"sectioning-1", "sectioning-2", "sectioning-3", "sectioning-4",
+"sectioning-5", "slide-title", "textual", "bold-command",
+"italic-command", "underline-command", "math-command", "type-command",
+"bold-declaration", "italic-declaration" or "type-declaration".
 
    You can also get rid of certain keywords only.  For example if you
 want to remove highlighting of footnotes as references you can put the
@@ -6215,10 +6215,10 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.2.0 from 2023-04-24), a
+   This manual is for AUCTeX (version 13.2.1 from 2023-07-20), a
 sophisticated TeX environment for Emacs.
 
-   Copyright © 1992-1995, 2001, 2002, 2004-2022 Free Software
+   Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
 Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
@@ -6721,6 +6721,11 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 
 A.2 Changes and New Features
 ============================
+
+News since last release
+-----------------------
+
+   • AUCTeX now requires GNU Emacs 26.1 or higher.
 
 News in 13.2
 ------------
@@ -8367,7 +8372,7 @@ A.4 Frequently Asked Questions
 
   2. What versions of Emacs are supported?
 
-     AUCTeX was tested with GNU Emacs 25.1.  Older versions may work but
+     AUCTeX was tested with GNU Emacs 26.1.  Older versions may work but
      are unsupported.
 
   3. What should I do when ‘./configure’ does not find programs like
@@ -9368,7 +9373,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 881)
+* auctex.el <1>:                         Changes.             (line 886)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9673,7 +9678,7 @@ Concept Index
                                                               (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 881)
+* tex-site.el <2>:                       Changes.             (line 886)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9733,67 +9738,67 @@ Node: Filling113439
 Node: Display119461
 Node: Font Locking121974
 Node: Fontification of macros124079
-Node: Fontification of quotes134082
-Node: Fontification of math135622
-Node: Verbatim content139398
-Node: Faces140188
-Node: Known problems140693
-Node: Folding141702
-Node: Outline152689
-Node: Narrowing154012
-Node: Prettifying155089
-Node: Processing156376
-Node: Commands157736
-Node: Starting a Command158300
-Node: Selecting a Command163464
-Node: Processor Options172867
-Node: Viewing183540
-Node: Starting Viewers183914
-Node: I/O Correlation189712
-Ref: I/O Correlation-Footnote-1195470
-Node: Debugging195736
-Node: Ignoring warnings198416
-Node: Error overview200527
-Node: Checking202451
-Node: Control204141
-Node: Cleaning206290
-Node: Documentation207737
-Node: Customization208860
-Node: Modes and Hooks209353
-Node: Multifile211313
-Node: Parsing Files216159
-Node: Internationalization221198
-Node: European222552
-Node: Japanese230471
-Node: Automatic235731
-Node: Automatic Global238260
-Node: Automatic Private239398
-Node: Automatic Local240762
-Node: Style Files242036
-Node: Simple Style242850
-Node: Adding Macros246643
-Node: Adding Environments256444
-Node: Adding Other261906
-Node: Hacking the Parser266586
-Node: Appendices270599
-Node: Copying this Manual270895
-Node: GNU Free Documentation License271781
-Node: Changes297105
-Node: Development356475
-Node: Mid-term Goals357123
-Node: Wishlist360022
-Node: Bugs366225
-Node: FAQ367365
-Node: Texinfo mode373239
-Node: Exploiting374375
-Node: Superseding375197
-Node: Mapping379664
-Node: Unbinding381607
-Node: Indices382448
-Node: Key Index382611
-Node: Function Index390286
-Node: Variable Index402556
-Node: Concept Index428061
+Node: Fontification of quotes134101
+Node: Fontification of math135641
+Node: Verbatim content139417
+Node: Faces140207
+Node: Known problems140712
+Node: Folding141721
+Node: Outline152708
+Node: Narrowing154031
+Node: Prettifying155108
+Node: Processing156395
+Node: Commands157755
+Node: Starting a Command158319
+Node: Selecting a Command163483
+Node: Processor Options172886
+Node: Viewing183559
+Node: Starting Viewers183933
+Node: I/O Correlation189731
+Ref: I/O Correlation-Footnote-1195489
+Node: Debugging195755
+Node: Ignoring warnings198435
+Node: Error overview200546
+Node: Checking202470
+Node: Control204160
+Node: Cleaning206309
+Node: Documentation207756
+Node: Customization208879
+Node: Modes and Hooks209372
+Node: Multifile211332
+Node: Parsing Files216178
+Node: Internationalization221217
+Node: European222571
+Node: Japanese230490
+Node: Automatic235750
+Node: Automatic Global238279
+Node: Automatic Private239417
+Node: Automatic Local240781
+Node: Style Files242055
+Node: Simple Style242869
+Node: Adding Macros246662
+Node: Adding Environments256463
+Node: Adding Other261925
+Node: Hacking the Parser266605
+Node: Appendices270618
+Node: Copying this Manual270914
+Node: GNU Free Documentation License271800
+Node: Changes297124
+Node: Development356597
+Node: Mid-term Goals357245
+Node: Wishlist360144
+Node: Bugs366347
+Node: FAQ367487
+Node: Texinfo mode373361
+Node: Exploiting374497
+Node: Superseding375319
+Node: Mapping379786
+Node: Unbinding381729
+Node: Indices382570
+Node: Key Index382733
+Node: Function Index390408
+Node: Variable Index402678
+Node: Concept Index428183
 
 End Tag Table
 

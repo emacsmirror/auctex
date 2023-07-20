@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 25)
-  (error "AUCTeX requires Emacs 25.1 or later"))
+(when (< emacs-major-version 26)
+  (error "AUCTeX requires Emacs 26.1 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
@@ -73,7 +73,7 @@ TeX-auto-* (automatically generated lisp).")
   "The directory where the AUCTeX non-Lisp data is located.")
 
 (defcustom TeX-auto-global
-    (if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")
+  (if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")
   "Directory containing automatically generated information.
 
 For storing automatic extracted information about the TeX macros
@@ -91,10 +91,11 @@ shared by all users of a site."
 
 (defalias 'TeX-load-hack #'ignore)
 
-(add-hook 'tex-site-unload-hook
-          (lambda ()
-            (TeX-modes-set 'TeX-modes nil)
-            (setq load-path (delq TeX-lisp-directory load-path))))
+(defun tex-site-unload-function ()
+  (TeX-modes-set 'TeX-modes nil)
+  (setq load-path (delq TeX-lisp-directory load-path))
+  ;; Tell emacs to continue standard unloading procedure.
+  nil)
 
 (defun TeX-modes-set (var value &optional _ignored)
   "Set VAR (which should be `TeX-modes') to VALUE.
@@ -126,11 +127,11 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.2.0"
-    "AUCTeX version.
+(defconst AUCTeX-version "13.2.1"
+  "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2023-04-24"
+(defconst AUCTeX-date "2023-07-20"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer

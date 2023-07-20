@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 7.0.3 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.2.0 from 2023-04-24).
+(version 13.2.1 from 2023-07-20).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
@@ -1656,7 +1656,7 @@ B.2.1 Which version of Emacs is needed?
 ---------------------------------------
 
 preview-latex nominally requires GNU Emacs with a version of at least
-25.1.
+26.1.
 
 B.2.2 Which versions of Ghostscript and AUCTeX are needed?
 ----------------------------------------------------------
@@ -1922,7 +1922,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.2.0 from 2023-04-24).
+(version 13.2.1 from 2023-07-20).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
