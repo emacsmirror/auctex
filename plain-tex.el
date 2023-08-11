@@ -113,7 +113,7 @@ plain-TeX file, or any mode derived thereof.  See variable
   :type 'hook
   :group 'TeX-misc)
 
-(TeX-abbrev-mode-setup plain-TeX-mode)
+(TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
 ;; We want to use `plain-TeX-mode' as the function name.  However, it is
 ;; overwritten when tex-mode.el, prior to Emacs 29, is loaded afterwards

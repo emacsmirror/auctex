@@ -6704,15 +6704,24 @@ error."
 
 ;;; Abbrev mode
 
-(defmacro TeX-abbrev-mode-setup (mode)
-  "Set up the abbrev table and variable for MODE."
+(defmacro TeX-abbrev-mode-setup (mode usertable)
+  "Set up the abbrev table and variable for MODE.
+The table inherits from USERTABLE if it is a valid abbrev table."
   (let ((symbol (intern (concat (symbol-name mode) "-abbrev-table")))
         (name (TeX-mode-prefix mode)))
     `(progn
        (defvar ,symbol nil
          ,(format "Abbrev table for %s mode." name))
        (define-abbrev-table ',symbol nil)
-       (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table)))))
+       (let ((parents (list text-mode-abbrev-table)))
+         ;; Users may already have user abbrevs in tables based on the
+         ;; former mode names such as `latex-mode-abbrev-table',
+         ;; stored in .emacs.d/abbrev_defs.  In that case, add them as
+         ;; parent abbrev tables.
+         (if (and (boundp ',usertable)
+                  (abbrev-table-p ,usertable))
+             (push ,usertable parents))
+         (abbrev-table-put ,symbol :parents parents)))))
 
 
 ;;; Special provisions for other modes and libraries

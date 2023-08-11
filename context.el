@@ -1819,7 +1819,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
-(TeX-abbrev-mode-setup ConTeXt-mode)
+(TeX-abbrev-mode-setup ConTeXt-mode context-mode-abbrev-table)
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."

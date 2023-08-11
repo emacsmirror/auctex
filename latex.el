@@ -7858,7 +7858,7 @@ This happens when \\left is inserted."
   :type 'hook
   :group 'LaTeX)
 
-(TeX-abbrev-mode-setup LaTeX-mode)
+(TeX-abbrev-mode-setup LaTeX-mode latex-mode-abbrev-table)
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.drv\\'" . LaTeX-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
@@ -7933,7 +7933,7 @@ of `LaTeX-mode-hook'."
 ;;;###autoload
 (defalias 'LaTeX-mode #'TeX-LaTeX-mode)
 
-(TeX-abbrev-mode-setup docTeX-mode)
+(TeX-abbrev-mode-setup docTeX-mode doctex-mode-abbrev-table)
 
 ;;;###autoload
 (define-derived-mode docTeX-mode LaTeX-mode "docTeX"
