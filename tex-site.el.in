@@ -47,11 +47,6 @@
   ;; auctex.el directly, in the old way.
   (provide 'tex-site)        ;Avoid (re)loading tex-site from auctex-autoloads.
 
-  ;; Delete predefined autoloads by tex-mode.el so that AUCTeX
-  ;; autoloads provided aftarwards take precedence.
-  (fset 'plain-TeX-mode nil)
-  (fset 'LaTeX-mode nil)
-
   (load "auctex-autoloads" 'noerror 'nomessage))
 
 ;; Define here in order for `M-x customize-group <RET> AUCTeX <RET>'
@@ -150,7 +145,8 @@ set it with `TeX-modes-set'."
 ;; emacsens version becomes 29 or higher and (defun TeX-LaTeX-mode
 ;; ...) etc. are turned into (define-derived-mode LaTeX-mode ...) etc.
 (with-eval-after-load 'tex-mode
-  (progn
+  ;; This must be no-op after (unload-feature 'tex-site).
+  (when (featurep 'tex-site)
     (defalias 'plain-TeX-mode #'TeX-plain-TeX-mode)
     (defalias 'LaTeX-mode #'TeX-LaTeX-mode)))
 
