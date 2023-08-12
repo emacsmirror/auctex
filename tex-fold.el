@@ -513,8 +513,8 @@ TYPE is a symbol which is used to describe the content to hide
 and may be `macro' for macros, `math' for math macro and `env' for
 environments.
 DISPLAY-STRING-SPEC is the original specification of the display
-string in the variables `TeX-fold-macro-spec-list' or
-`TeX-fold-env-spec-list' and may be a string or an integer."
+string in the variables `TeX-fold-macro-spec-list' and alikes.
+See its doc string for detail."
   ;; Calculate priority before the overlay is instantiated.  We don't
   ;; want `TeX-overlay-prioritize' to pick up a non-prioritized one.
   (let ((priority (TeX-overlay-prioritize ov-start ov-end))
