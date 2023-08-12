@@ -138,6 +138,9 @@ List should be in logical order.")
     ("subsubsubsubject" 4))
   "List of the names of ConTeXt unnumbered sections for its nl interface.")
 
+(defvar ConTeXt-section-list-nl
+  (append ConTeXt-numbered-section-list-nl ConTeXt-unnumbered-section-list-nl))
+
 (defvar ConTeXt-text-nl "tekst"
   "The ConTeXt nl interface body text group.")
 
