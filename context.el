@@ -312,7 +312,7 @@ The following variables can be set to customize:
 ;; (May 3, 2023) The above comment is wrong.  Here "large" refers to
 ;; coarseness of document structure grouping.  That is, "chapter" is
 ;; larger than "section", "section" is larger than "subsection" etc.
-;; On the ohter hand, the corresponding levels are numbered in the
+;; On the other hand, the corresponding levels are numbered in the
 ;; reversed order.  That is, "chapter" is level 1, "section" is level
 ;; 2 etc.  Hence the largest _section_ has the smallest _level_.
 ;; That's the reason we use `max' rather than `min' here.
@@ -1879,6 +1879,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (use-local-map ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
+  ;; FIXME: Isn't `activate-menubar-hook' obsolete?
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
   (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start)
@@ -1886,7 +1887,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Outline support
   (require 'outline)
-  (set (make-local-variable 'outline-level) 'ConTeXt-outline-level)
+  (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
   (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
   ;;(make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
