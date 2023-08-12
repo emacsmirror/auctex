@@ -6451,14 +6451,16 @@ char."
 (defcustom LaTeX-fold-macro-spec-list nil
   "List of display strings and macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
 (defcustom LaTeX-fold-env-spec-list nil
   "List of display strings and environments to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
@@ -6484,7 +6486,8 @@ char."
                     ,@LaTeX-math-default)))
   "List of display strings and math macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
