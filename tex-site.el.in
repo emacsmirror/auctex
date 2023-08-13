@@ -114,7 +114,8 @@ Otherwise, use advice facility."
             dst (cdr entry))
       (if (memq elt value)
           (if (boundp 'major-mode-remap-alist)
-              (push (cons elt dst) major-mode-remap-alist)
+              (or (eq (cdr-safe (assq elt major-mode-remap-alist)) dst)
+                  (push (cons elt dst) major-mode-remap-alist))
             ;; COMPATIBILITY for Emacs<29
             (advice-add elt :override dst
                         ;; COMPATIBILITY for Emacs 28.[12]
@@ -124,7 +125,7 @@ Otherwise, use advice facility."
                         '((depth . -10))))
         (if (boundp 'major-mode-remap-alist)
             (setq major-mode-remap-alist
-                  (assq-delete-all elt major-mode-remap-alist))
+                  (delete entry major-mode-remap-alist))
           ;; COMPATIBILITY for Emacs<29
           (advice-remove elt dst))))))
 
