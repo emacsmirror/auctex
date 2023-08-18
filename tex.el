@@ -4779,6 +4779,16 @@ Return nil if ELT is not a member of LIST."
 (make-obsolete 'TeX-assoc
                "use (assoc-string KEY LIST t) instead." "AUCTeX 13.0")
 
+(if (>= emacs-major-version 28)
+    (defalias 'TeX-always #'always)
+  (defun TeX-always (&rest _arguments)
+    "Ignore ARGUMENTS, do nothing and return t.
+This function accepts any number of arguments in ARGUMENTS.
+Also see `ignore'.
+
+This is a compatibility function for Emacs versions prior to v.28."
+    t))
+
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
 See `match-data' for details."
