@@ -33,7 +33,10 @@
 (require 'tex-ispell)
 (require 'latex-flymake)
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  ;; Require subr-x.el for `string-trim' which wasn't autoloaded:
+  (when (< emacs-major-version 29)
+    (require 'subr-x)))
 
 ;; Silence the compiler for functions:
 (declare-function outline-level "ext:outline"
