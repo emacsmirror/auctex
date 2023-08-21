@@ -8040,6 +8040,12 @@ runs the hooks in `docTeX-mode-hook'."
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
 
+;; Enable LaTeX abbrevs in docTeX mode buffer.
+(let ((p (abbrev-table-get doctex-mode-abbrev-table :parents)))
+  (or (memq latex-mode-abbrev-table p)
+      (abbrev-table-put doctex-mode-abbrev-table :parents
+                        (cons latex-mode-abbrev-table p))))
+
 ;;This is actually a mess: to fit the scheme properly, our derived
 ;;mode definition would have had to be made for TeX-doctex-mode in the
 ;;first place, but then we could not have used define-derived-mode, or

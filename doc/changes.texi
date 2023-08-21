@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2022 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2023 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -14,6 +14,8 @@
 @item
 @AUCTeX{} now requires GNU Emacs 26.1 or higher.
 
+@item
+Now @LaTeX{} abbreves are available in doc@TeX{} mode buffers.
 @end itemize
 
 @heading News in 13.2
