@@ -1,6 +1,6 @@
 ;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 3.3.36.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -512,11 +512,13 @@ string."
                                   'function)))))
  TeX-dialect)
 
+(defvar LaTeX-siunitx-package-options-list
+  (append '(("table-column-type")) ; 'table-column-type' is a preamble only
+          LaTeX-siunitx-package-options)
+  "Package options for the siunitx package.")
+
 (defun LaTeX-siunitx-package-options nil
   "Prompt for package options for the siunitx package."
-  (TeX-read-key-val t (append
-                       ;; 'table-column-type' is a preamble only:
-                       '(("table-column-type"))
-                       LaTeX-siunitx-package-options)))
+  (TeX-read-key-val t LaTeX-siunitx-package-options-list))
 
 ;; siunitx.el ends here

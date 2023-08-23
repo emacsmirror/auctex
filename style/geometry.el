@@ -1,6 +1,6 @@
 ;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -148,10 +148,13 @@ package.")
        (setq TeX-PDF-from-DVI "Dvipdfmx")))
  TeX-dialect)
 
+(defvar LaTeX-geometry-package-options-list
+  (append LaTeX-geometry-preamble-key-val-options
+          LaTeX-geometry-always-key-val-options)
+  "Package options for the geometry package.")
+
 (defun LaTeX-geometry-package-options ()
   "Prompt for package options for the geometry package."
-  (TeX-read-key-val t
-                    (append LaTeX-geometry-preamble-key-val-options
-                            LaTeX-geometry-always-key-val-options)))
+  (TeX-read-key-val t LaTeX-geometry-package-options-list))
 
 ;;; geometry.el ends here

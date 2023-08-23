@@ -1,6 +1,6 @@
 ;;; parskip.el --- AUCTeX style for `parskip.sty' (v2.0h)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -37,14 +37,18 @@
 (require 'tex)
 (require 'latex)
 
-(defun LaTeX-parskip-package-options ()
-  "Prompt for package options for the parskip package."
+(defun LaTeX-parskip-package-options-list ()
+  "Return an alist of package options for the parskip package."
   (let ((len (mapcar (lambda (x)
                        (concat TeX-esc (car x)))
                      (LaTeX-length-list))))
-    (TeX-read-key-val t `(("skip"    ,len)
-                          ("tocskip" ,len)
-                          ("indent"  ,len)
-                          ("parfill" ,len)))))
+    `(("skip"    ,len)
+      ("tocskip" ,len)
+      ("indent"  ,len)
+      ("parfill" ,len))))
+
+(defun LaTeX-parskip-package-options ()
+  "Prompt for package options for the parskip package."
+  (TeX-read-key-val t (LaTeX-parskip-package-options-list)))
 
 ;;; parskip.el ends here

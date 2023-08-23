@@ -4790,6 +4790,16 @@ Return nil if ELT is not a member of LIST."
 (make-obsolete 'TeX-assoc
                "use (assoc-string KEY LIST t) instead." "AUCTeX 13.0")
 
+(if (>= emacs-major-version 28)
+    (defalias 'TeX-always #'always)
+  (defun TeX-always (&rest _arguments)
+    "Ignore ARGUMENTS, do nothing and return t.
+This function accepts any number of arguments in ARGUMENTS.
+Also see `ignore'.
+
+This is a compatibility function for Emacs versions prior to v.28."
+    t))
+
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
 See `match-data' for details."
@@ -5496,7 +5506,10 @@ additional characters."
                         (setq count (- count TeX-brace-indent-level)))
                        ((eq char ?\\)
                         (when (< (point) limit)
-                          (forward-char)
+                          ;; ?\\ in verbatim constructs doesn't escape
+                          ;; the next char
+                          (unless (TeX-verbatim-p)
+                            (forward-char))
                           t))))))
       count)))
 
@@ -5519,7 +5532,7 @@ It should be accessed through the function `TeX-search-syntax-table'.")
   "Return a syntax table for searching purposes.
 ARGS may be a list of characters.  For each of them the
 respective predefined syntax is set.  Currently the parenthetical
-characters ?{, ?}, ?[, ?], ?\(, ?\), ?<, and ?> are supported.
+characters ?{, ?}, ?[, ?], ?(, ?), ?<, and ?> are supported.
 The syntax of each of these characters not specified will be
 reset to \" \"."
   (let ((char-syntax-alist '((?\{ . "(}") (?\} . "){")
@@ -6133,14 +6146,15 @@ With optional argument ARG, also reload the style hooks."
   (if arg
       (dolist (var TeX-normal-mode-reset-list)
         (set var nil)))
-  (let ((TeX-auto-save t))
-    (if (buffer-modified-p)
-        (save-buffer)
-      (TeX-auto-write)))
-  (normal-mode)
-  ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
-  (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
-  (TeX-update-style t))
+  (let ((gc-cons-percentage 0.5))
+    (let ((TeX-auto-save t))
+      (if (buffer-modified-p)
+          (save-buffer)
+        (TeX-auto-write)))
+    (normal-mode)
+    ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
+    (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
+    (TeX-update-style t)))
 
 (defgroup TeX-quote nil
   "Quoting in AUCTeX."
@@ -8276,16 +8290,17 @@ errors or warnings to show."
       (progn
         (if TeX-parse-all-errors
             (TeX-parse-all-errors))
-        (if (and TeX-error-overview-open-after-TeX-run
+        (if (and (with-current-buffer TeX-command-buffer
+                   TeX-error-overview-open-after-TeX-run)
                  (TeX-error-overview-make-entries
                   (TeX-master-directory) (TeX-active-buffer)))
             (TeX-error-overview)))
     (message (concat name ": formatted " (TeX-current-pages)))
     (let (dvi2pdf)
-        (if (with-current-buffer TeX-command-buffer
-           (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
-         (setq TeX-command-next dvi2pdf)
-       (setq TeX-command-next TeX-command-Show)))))
+      (if (with-current-buffer TeX-command-buffer
+            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+          (setq TeX-command-next dvi2pdf)
+        (setq TeX-command-next TeX-command-Show)))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -8391,7 +8406,8 @@ Open the error overview if
 errors or warnings to show."
   (if TeX-parse-all-errors
       (TeX-parse-all-errors))
-  (if (and TeX-error-overview-open-after-TeX-run
+  (if (and (with-current-buffer TeX-command-buffer
+             TeX-error-overview-open-after-TeX-run)
            (TeX-error-overview-make-entries
             (TeX-master-directory) (TeX-active-buffer)))
       (TeX-error-overview))

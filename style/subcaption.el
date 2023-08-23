@@ -1,6 +1,6 @@
 ;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.3)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -196,10 +196,15 @@ caption, insert only a caption."
                               'function)) )
  TeX-dialect)
 
+(defvar LaTeX-subcaption-package-options-list
+  (progn
+    (TeX-load-style "caption")
+    (append LaTeX-subcaption-key-val-options
+            LaTeX-caption-key-val-options))
+  "Package options for the subcaption package.")
+
 (defun LaTeX-subcaption-package-options ()
   "Prompt for package options for the subcaption package."
-  (TeX-load-style "caption")
-  (TeX-read-key-val t (append LaTeX-subcaption-key-val-options
-                              LaTeX-caption-key-val-options)))
+  (TeX-read-key-val t LaTeX-subcaption-package-options-list))
 
 ;;; subcaption.el ends here

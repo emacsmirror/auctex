@@ -203,8 +203,8 @@ for citation keys."
          (TeX-argument-insert
           (TeX-read-string (TeX-argument-prompt t nil "Global postnote"))
           (equal prenote ""))))
-  (let ((items t) (noinsert nil))
-    (while items
+  (let ((items t) (noinsert nil) (reftex--done nil))
+    (while (and items (not reftex--done))
       ;; Prompt for prenote and postnote of the current keys.
       (and TeX-arg-cite-note-p (not current-prefix-arg)
            (let ((TeX-arg-opening-brace "[")
@@ -221,7 +221,11 @@ for citation keys."
                            (fboundp 'reftex-plug-flag)
                            (reftex-plug-flag 3))
                       ;; Use RefTeX when enabled.
-                      (reftex-citation t)
+                      (prog1
+                          (reftex-citation t)
+                        ;; Don't loop when RefTeX citation is done.
+                        ;; (bug#64921)
+                        (setq reftex--done t))
                     ;; Multiple citation keys in each argument are allowed.
                     (TeX-completing-read-multiple
                      (TeX-argument-prompt optional prompt "Key(s)")

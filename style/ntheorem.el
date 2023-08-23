@@ -1,6 +1,6 @@
 ;;; ntheorem.el --- AUCTeX style for `ntheorem.sty' (v1.33)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2015-2023  Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -122,13 +122,9 @@ make them available as new environments.  Update
  (lambda ()
 
    (TeX-auto-add-regexp
-    `(,(concat "\\\\newtheorem{\\(" TeX-token-char "+\\)}")
-      1 LaTeX-auto-ntheorem-newtheorem))
-   (TeX-auto-add-regexp
-    `(,(concat "\\\\newframedtheorem{\\(" TeX-token-char "+\\)}")
-      1 LaTeX-auto-ntheorem-newtheorem))
-   (TeX-auto-add-regexp
-    `(,(concat "\\\\newshadedtheorem{\\(" TeX-token-char "+\\)}")
+    `(,(concat "\\\\"
+               (regexp-opt '("newtheorem" "newframedtheorem" "newshadedtheorem"))
+               "{\\(" TeX-token-char "+\\)}")
       1 LaTeX-auto-ntheorem-newtheorem))
    (TeX-auto-add-regexp
     `(,(concat "\\\\newtheoremstyle{\\(" TeX-token-char "+\\)}")
@@ -151,23 +147,25 @@ make them available as new environments.  Update
                                          #'LaTeX-env-label-args ["Heading"]))
            (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
 
     '("renewtheorem"
       (TeX-arg-completing-read (LaTeX-ntheorem-newtheorem-list)
                                "Environment")
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
 
     ;; 2.3 Defining the Layout of Theorem Sets
     '("theoremstyle"
@@ -245,12 +243,13 @@ make them available as new environments.  Update
                                          #'LaTeX-env-label-args ["Heading"]))
            (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
 
     `("newshadedtheorem"
       ,(lambda (optional)
@@ -263,12 +262,14 @@ make them available as new environments.  Update
                                          #'LaTeX-env-label-args ["Heading"]))
            (TeX-argument-insert nthm optional)))
       [ TeX-arg-environment "Numbered like" ]
-      t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                        (backward-char 2)
-                                        (preceding-char)) ?\])
-                                  ()
-                                (TeX-arg-counter t "Within counter"))
-                        "") ])
+      "Title"
+      (TeX-arg-conditional (save-excursion
+                             (skip-chars-backward (concat "^" TeX-grcl))
+                             (backward-list)
+                             (= (preceding-char) ?\]))
+          ()
+        ([TeX-arg-counter "Within counter"])))
+
     `("shadecolor"
       (TeX-arg-conditional (TeX-member "\\`x?color\\'" (TeX-style-list) #'string-match)
           ((TeX-arg-completing-read ,(lambda ()

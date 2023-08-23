@@ -1,6 +1,6 @@
 ;;; paralist.el -- AUCTeX style for paralist.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2005, 2014, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2023 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,20 +38,6 @@
                   "font-latex"
                   (keywords class))
 
-;; Insert an itemize-ish environment and ask for an optional label
-(defun LaTeX-paralist-env-item-opt-label (environment)
-  "Insert ENVIRONMENT, an optional label and the first item."
-  (LaTeX-insert-environment
-   environment
-   (let ((label (TeX-read-string "(Optional) Label: ")))
-     (concat (unless (zerop (length label))
-               (format "[%s]" label)))))
-  (LaTeX-find-matching-begin)
-  (end-of-line 1)
-  (delete-char 1)
-  (delete-horizontal-space)
-  (LaTeX-insert-item))
-
 (TeX-add-style-hook
  "paralist"
  (lambda ()
@@ -74,21 +60,21 @@
 
    ;; New environments
    (LaTeX-add-environments
-    '("asparaenum" LaTeX-paralist-env-item-opt-label)
-    '("inparaenum" LaTeX-paralist-env-item-opt-label)
-    '("compactenum" LaTeX-paralist-env-item-opt-label)
-    '("asparaitem" LaTeX-paralist-env-item-opt-label)
-    '("inparaitem" LaTeX-paralist-env-item-opt-label)
-    '("compactitem" LaTeX-paralist-env-item-opt-label)
+    '("asparaenum" LaTeX-env-item-args ["Label"])
+    '("inparaenum" LaTeX-env-item-args ["Label"])
+    '("compactenum" LaTeX-env-item-args ["Label"])
+    '("asparaitem" LaTeX-env-item-args ["Label"])
+    '("inparaitem" LaTeX-env-item-args ["Label"])
+    '("compactitem" LaTeX-env-item-args ["Label"])
     '("compactdesc" LaTeX-env-item))
    ;; Environments (re)defined only when the package is loaded with particular
    ;; options.
    (unless (LaTeX-provided-package-options-member "paralist" "olditem")
      (LaTeX-add-environments
-      '("itemize" LaTeX-paralist-env-item-opt-label)))
+      '("itemize" LaTeX-env-item-args ["Label"])))
    (unless (LaTeX-provided-package-options-member "paralist" "oldenum")
      (LaTeX-add-environments
-      '("enumerate" LaTeX-paralist-env-item-opt-label)))
+      '("enumerate" LaTeX-env-item-args ["Label"])))
    (when (LaTeX-provided-package-options-member "paralist" "defblank")
      (LaTeX-add-environments
       '("asparablank" LaTeX-env-item)

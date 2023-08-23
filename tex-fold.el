@@ -131,7 +131,8 @@ and <mode-prefix>-fold-macro-spec-list.")
   '(("[comment]" ("comment")))
   "List of display strings and environments to fold."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Environments" (string)))))
 
 (defvar TeX-fold-env-spec-list-internal nil
@@ -145,7 +146,8 @@ and <mode-prefix>-fold-env-spec-list.")
 (defcustom TeX-fold-math-spec-list nil
   "List of display strings and math macros to fold."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Math Macros" (string)))))
 
 (defvar TeX-fold-math-spec-list-internal nil
@@ -511,8 +513,8 @@ TYPE is a symbol which is used to describe the content to hide
 and may be `macro' for macros, `math' for math macro and `env' for
 environments.
 DISPLAY-STRING-SPEC is the original specification of the display
-string in the variables `TeX-fold-macro-spec-list' or
-`TeX-fold-env-spec-list' and may be a string or an integer."
+string in the variables `TeX-fold-macro-spec-list' and alikes.
+See its doc string for detail."
   ;; Calculate priority before the overlay is instantiated.  We don't
   ;; want `TeX-overlay-prioritize' to pick up a non-prioritized one.
   (let ((priority (TeX-overlay-prioritize ov-start ov-end))

@@ -498,7 +498,7 @@ Set `japanese-TeX-mode' to t, and enter `LaTeX-mode'."
 
 (defun japanese-LaTeX-guess-engine ()
   "Guess Japanese TeX engine and set it to `TeX-engine'.
-Document class and its option is considered in the guess.  Do not
+Document class and its option are taken into account.  Do not
 overwrite the value already set locally."
   ;; `TeX-engine' may be set by the file local variable or by the menu
   ;; Command->TeXing Options manually.  Don't override the user

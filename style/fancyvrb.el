@@ -806,6 +806,14 @@ a list of strings."
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "Verb")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "Verb*")
 
+   ;; Ispell: Add entries to `ispell-tex-skip-alist':
+   (when LaTeX-fancyvrb-chars
+     (TeX-ispell-skip-setcar
+      (mapcar (lambda (char)
+                (let ((str (char-to-string char)))
+                  (cons str str)))
+              LaTeX-fancyvrb-chars)))
+
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (fboundp 'font-latex-set-syntactic-keywords)
@@ -838,6 +846,21 @@ a list of strings."
      (when (member "fvextra" (TeX-style-list))
        (LaTeX-fancyvrb-add-syntactic-keywords-extra 'brace
                                                     "SaveVerb"))
+
+     ;; Use `font-latex-syntactic-keywords-extra' instead of
+     ;; `font-latex-add-to-syntax-alist' so we can catch a backslash
+     ;; within the shortverb delimiters and make things like |xyz\|
+     ;; work correctly:
+     (when LaTeX-fancyvrb-chars
+       (dolist (c LaTeX-fancyvrb-chars)
+         (let ((s (char-to-string c)))
+           (add-to-list 'font-latex-syntactic-keywords-extra
+                        `(,(concat "\\(" s "\\)"
+                                   ".*?"
+                                   "\\(" (regexp-quote TeX-esc) "*\\)"
+                                   "\\(" s "\\)")
+                          (1 "\"") (2 ".") (3 "\""))))))
+
      ;; Tell font-lock about the update
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)

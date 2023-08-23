@@ -33,7 +33,10 @@
 (require 'tex-ispell)
 (require 'latex-flymake)
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  ;; Require subr-x.el for `string-trim' which wasn't autoloaded:
+  (when (< emacs-major-version 29)
+    (require 'subr-x)))
 
 ;; Silence the compiler for functions:
 (declare-function outline-level "ext:outline"
@@ -2835,8 +2838,7 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '("l" "r" "t" "b" "tl" "tr" "bl" "br")
-                    nil t)
+                    '("l" "r" "t" "b" "tl" "tr" "bl" "br"))
    optional))
 
 (defun TeX-arg-lr (optional &optional prompt)
@@ -2846,15 +2848,14 @@ argument, otherwise as a mandatory one.  Use PROMPT as the prompt
 string."
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "Position")
-                    '("l" "r")
-                    nil t)
+                    '("l" "r"))
    optional))
 
 (defun TeX-arg-tb (optional &optional prompt poslist)
   "Prompt for a LaTeX side with completion.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  POSLIST contains the positioning characters offered for
+string.  POSLIST controls the positioning characters offered for
 completion.  It can be the symbols `center', `stretch' or nil
 with the following completion list:
   center   t, b, c
@@ -2867,8 +2868,7 @@ with the following completion list:
                           ((eq poslist 'stretch)
                            '("t" "b" "c" "s"))
                           (t
-                           '("t" "b")))
-                    nil t)
+                           '("t" "b"))))
    optional))
 
 (defcustom TeX-date-format "%Y/%m/%d"
@@ -6455,14 +6455,16 @@ char."
 (defcustom LaTeX-fold-macro-spec-list nil
   "List of display strings and macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
 (defcustom LaTeX-fold-env-spec-list nil
   "List of display strings and environments to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
@@ -6488,7 +6490,8 @@ char."
                     ,@LaTeX-math-default)))
   "List of display strings and math macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
@@ -7598,6 +7601,93 @@ COLLECTION is an list of strings."
                    (lambda (_)
                      collection)))))
 
+(defun LaTeX-completion-documentclass-usepackage (entry)
+  "Return completion candidates for \\usepackage and \\documentclass arguments.
+ENTRY is the value returned by `LaTeX-what-macro'.  This function
+provides completion for class/package names if point is inside
+the mandatory argument and class/package options if inside the
+first optional argument.  The completion for class/package names
+is provided only if the value of `TeX-arg-input-file-search' is
+set to t."
+  (let ((cls-or-sty (if (member (car entry) '("usepackage" "RequirePackage"
+                                              "RequirePackageWithOptions"))
+                        'sty
+                      'cls)))
+    (cond ((and (eq (nth 3 entry) 'mandatory)
+                (eq TeX-arg-input-file-search t))
+           (if (eq cls-or-sty 'cls)
+               (progn
+                 (unless LaTeX-global-class-files
+                   (let ((TeX-file-extensions '("cls")))
+                     (message "Searching for LaTeX classes...")
+                     (setq LaTeX-global-class-files
+                           (mapcar #'list (TeX-search-files-by-type 'texinputs 'global t t)))
+                     (message "Searching for LaTeX classes...done")))
+                 (LaTeX-completion-candidates-completing-read
+                  LaTeX-global-class-files))
+             (unless LaTeX-global-package-files
+               (let ((TeX-file-extensions '("sty")))
+                 (message "Searching for LaTeX packages...")
+                 (setq LaTeX-global-package-files
+                       (mapcar #'list (TeX-search-files-by-type 'texinputs 'global t t)))
+                 (message "Searching for LaTeX packages...done")))
+             (LaTeX-completion-candidates-completing-read-multiple
+              LaTeX-global-package-files)))
+          ;; We have to be more careful for the optional argument
+          ;; since the macros can look like this:
+          ;; \usepackage[opt1]{mand}[opt2].  So we add an extra check
+          ;; if we are inside the first optional arg:
+          ((and (eq (nth 3 entry) 'optional)
+                (= (nth 2 entry) 1))
+           (let ((syntax (TeX-search-syntax-table ?\[ ?\]))
+                 style style-opts)
+             ;; We have to find out about the package/class name:
+             (save-excursion
+               (with-syntax-table syntax
+                 (condition-case nil
+                     (let ((forward-sexp-function nil))
+                       (up-list))
+                   (error nil)))
+               (skip-chars-forward "^[:alnum:]")
+               (setq style (thing-at-point 'symbol t)))
+             ;; Load the style file; may fail but that's Ok for us
+             (TeX-load-style style)
+             ;; Now we have to find out how the options are available:
+             ;; This is usually a variable called
+             ;; `LaTeX-<class|package>-package-options'.  If it is a
+             ;; function, then the options are stored either in a
+             ;; variable or a function called
+             ;; `LaTeX-<class|package>-package-options-list:'
+             (when (setq style-opts
+                         (intern-soft (format
+                                       (concat "LaTeX-%s-"
+                                               (if (eq cls-or-sty 'cls)
+                                                   "class"
+                                                 "package")
+                                               "-options")
+                                       style)))
+               (cond ((and (boundp style-opts)
+                           (symbol-value style-opts))
+                      (LaTeX-completion-candidates-completing-read-multiple
+                       (symbol-value style-opts)))
+                     ((and (setq style-opts
+                                 (intern-soft (format
+                                               (concat "LaTeX-%s-"
+                                                       (if (eq cls-or-sty 'cls)
+                                                           "class"
+                                                         "package")
+                                                       "-options-list")
+                                               style)))
+                           (boundp style-opts)
+                           (symbol-value style-opts))
+                      (LaTeX-completion-candidates-key-val
+                       (symbol-value style-opts)))
+                     ((fboundp style-opts)
+                      (LaTeX-completion-candidates-key-val
+                       (funcall style-opts)))
+                     (t nil)))))
+          (t nil))))
+
 (defun LaTeX-completion-parse-args (entry)
   "Return the match of buffer position ENTRY with AUCTeX macro definitions.
 ENTRY is generated by the function `LaTeX-what-macro'.  This
@@ -7635,7 +7725,7 @@ or `LaTeX-environment-list' and returns it."
     ;; cases, but will also fail for example in hyperref.el.  This
     ;; decision should revisited at a later stage:
     (when (assq 'TeX-arg-conditional arg-list)
-      (cl-letf (((symbol-function 'y-or-n-p) #'always))
+      (cl-flet ((y-or-n-p #'TeX-always))
         (while (and arg-list
                     (setq arg (car arg-list)))
           (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
@@ -7708,7 +7798,7 @@ or `LaTeX-environment-list' and returns it."
           (t nil))
     result))
 
-(defvar LaTeX-completion-function-map-alist-keyval '()
+(defvar LaTeX-completion-function-map-alist-keyval nil
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an
 AUCTeX style file which queries and inserts something in the
@@ -7720,6 +7810,7 @@ key=val completions.  See also
 (defvar LaTeX-completion-function-map-alist-cr
   `((TeX-arg-counter . LaTeX-counter-list)
     (TeX-arg-pagestyle . LaTeX-pagestyle-list)
+    (TeX-arg-environment . LaTeX-environment-list)
     (TeX-arg-length . ,(lambda () (mapcar (lambda (x)
                                             (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))))
@@ -7812,7 +7903,13 @@ function `TeX--completion-at-point' which should come first in
   (when (and (LaTeX-completion-find-argument-boundries)
              (not (nth 4 (syntax-ppss))))
     (let ((entry (LaTeX-what-macro)))
-      (cond ((or (and entry
+      (cond ((and entry
+                  (member (car entry) '("usepackage" "RequirePackage"
+                                        "RequirePackageWithOptions"
+                                        "documentclass" "LoadClass"
+                                        "LoadClassWithOptions")))
+             (LaTeX-completion-documentclass-usepackage entry))
+            ((or (and entry
                       (eq (nth 1 entry) 'mac)
                       (assoc (car entry) (TeX-symbol-list)))
                  (and entry
@@ -7951,6 +8048,12 @@ runs the hooks in `docTeX-mode-hook'."
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
+
+;; Enable LaTeX abbrevs in docTeX mode buffer.
+(let ((p (abbrev-table-get docTeX-mode-abbrev-table :parents)))
+  (or (memq LaTeX-mode-abbrev-table p)
+      (abbrev-table-put docTeX-mode-abbrev-table :parents
+                        (cons LaTeX-mode-abbrev-table p))))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
@@ -8179,14 +8282,20 @@ function would return non-nil and `(match-string 1)' would return
      [ TeX-arg-define-macro-arguments ] 2)
    '("renewenvironment*" TeX-arg-environment
      [ TeX-arg-define-macro-arguments ] 2)
+   ;; \newtheorem comes in 3 flavors:
+   ;; \newtheorem{name}{title} or
+   ;; \newtheorem{name}[numbered_like]{title} or
+   ;; \newtheorem{name}{title}[numbered_within]
+   ;; Both optional args are not allowed
    '("newtheorem" TeX-arg-define-environment
      [ TeX-arg-environment "Numbered like" ]
-     t [ (TeX-arg-eval progn (if (eq (save-excursion
-                                       (backward-char 2)
-                                       (preceding-char)) ?\])
-                                 ()
-                               (TeX-arg-counter t "Within counter"))
-                       "") ])
+     "Title"
+     (TeX-arg-conditional (save-excursion
+                            (skip-chars-backward (concat "^" TeX-grcl))
+                            (backward-list)
+                            (= (preceding-char) ?\]))
+         ()
+       ([TeX-arg-counter "Within counter"])))
    '("newfont" TeX-arg-define-macro t)
    '("circle" "Diameter")
    '("circle*" "Diameter")
@@ -8274,9 +8383,9 @@ function would return non-nil and `(match-string 1)' would return
    '("date" TeX-arg-date)
    '("thanks" t)
    '("title" t)
-   '("pagenumbering" (TeX-arg-eval
-                      completing-read "Numbering style: "
-                      '(("arabic") ("roman") ("Roman") ("alph") ("Alph"))))
+   '("pagenumbering" (TeX-arg-completing-read
+                      ("arabic" "roman" "Roman" "alph" "Alph")
+                      "Numbering style"))
    '("pagestyle" TeX-arg-pagestyle)
    '("markboth" t nil)
    '("markright" t)

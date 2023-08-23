@@ -1,6 +1,6 @@
 ;;; mdsymbol.el --- AUCTeX style for `mdsymbol.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -85,9 +85,8 @@
       '("lambdaslash"))))
  TeX-dialect)
 
-(defvar LaTeX-mdsymbol-package-options
-  '(;;
-    ("normalweight"  ("Light" "Regular" "autolight" "autoregular"))
+(defvar LaTeX-mdsymbol-package-options-list
+  '(("normalweight"  ("Light" "Regular" "autolight" "autoregular"))
     ("boldweight"    ("Semibold" "Bold" "autosemibold"))
     ("onlysansmath"  ("true" "false"))
     ("retainmissing" ("true" "false"))
@@ -97,6 +96,6 @@
 
 (defun LaTeX-mdsymbol-package-options nil
   "Prompt for package options for the mdsymbol package."
-  (TeX-read-key-val t LaTeX-mdsymbol-package-options))
+  (TeX-read-key-val t LaTeX-mdsymbol-package-options-list))
 
 ;;; mdsymbol.el ends here
