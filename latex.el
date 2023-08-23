@@ -6517,9 +6517,6 @@ environments."
 
 ;;; Keymap
 
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX-LaTeX-mode'.
-(defvaralias 'TeX-LaTeX-mode-map 'LaTeX-mode-map)
 (defvar LaTeX-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
@@ -7953,9 +7950,6 @@ This happens when \\left is inserted."
   :type 'boolean
   :group 'LaTeX-macro)
 
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX-LaTeX-mode'.
-(defvaralias 'TeX-LaTeX-mode-hook 'LaTeX-mode-hook)
 (defcustom LaTeX-mode-hook nil
   "A hook run in LaTeX mode buffers."
   :type 'hook
@@ -7972,30 +7966,20 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
-;; We want to use `LaTeX-mode' as the function name.  However, it is
-;; overwritten when tex-mode.el, prior to Emacs 29, is loaded afterwards
-;; because it has non-commented out (defalias 'LaTeX-mode
-;; #'latex-mode) in it.
-;; When the least supported emacsen version becomes 29, we can safely
-;; transform this definition to `(define-derived-mode LaTeX-mode
-;; TeX-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(define-derived-mode TeX-LaTeX-mode TeX--VirTeX-mode "LaTeX"
+(define-derived-mode LaTeX-mode TeX-mode "LaTeX"
   "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
 
 Entering LaTeX mode calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `LaTeX-mode-hook'."
-  :syntax-table LaTeX-mode-syntax-table
-  :abbrev-table LaTeX-mode-abbrev-table
   :after-hook ;; Defeat filladapt
   (if (bound-and-true-p filladapt-mode)
       (turn-off-filladapt-mode))
 
   (LaTeX-common-initialization)
   (setq TeX-base-mode-name mode-name)
-  (setq major-mode 'LaTeX-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
   (add-hook 'tool-bar-mode-hook #'LaTeX-maybe-install-toolbar nil t)
@@ -8027,9 +8011,8 @@ of `LaTeX-mode-hook'."
   (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
 
 ;; COMPATIBILITY for Emacs<29
-;; Override defalias in tex-mode.el.
 ;;;###autoload
-(defalias 'LaTeX-mode #'TeX-LaTeX-mode)
+(put 'LaTeX-mode 'auctex-function-definition (symbol-function 'LaTeX-mode))
 
 (TeX-abbrev-mode-setup docTeX-mode doctex-mode-abbrev-table)
 

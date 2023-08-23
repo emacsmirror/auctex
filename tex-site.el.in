@@ -94,6 +94,12 @@ shared by all users of a site."
 
 (defun tex-site-unload-function ()
   (TeX-modes-set 'TeX-modes nil)
+
+  ;; COMPATIBILITY for Emacs<29
+  (put 'plain-TeX-mode 'auctex-function-definition nil)
+  (put 'LaTeX-mode 'auctex-function-definition nil)
+  (put 'TeX-mode 'auctex-function-definition nil)
+
   (setq load-path (delq TeX-lisp-directory load-path))
   ;; Tell emacs to continue standard unloading procedure.
   nil)
@@ -140,16 +146,29 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
+(defun TeX--alias-overlapped-modes (&optional restore)
+  "Delete or restore definition of overlapped modes via `defalias'.
+Set function definition for modes overlapped between tex-mode.el
+and AUCTeX, `plain-TeX-mode', `LaTeX-mode' and `TeX-mode'.
+If optional argument RESTORE is nil, delete the definition.
+Otherwise, restore AUCTeX definition saved in the symbol property
+`auctex-function-definition'."
+  (dolist (mode '(plain-TeX-mode LaTeX-mode TeX-mode))
+    (if (eq (symbol-function mode)
+            (intern (downcase (symbol-name mode))))
+        (defalias mode (if restore
+                           (get mode 'auctex-function-definition))))))
+
+;; Delete aliases predefined in tex-mode.el so that AUCTeX
+;; autoloads provided below take precedence.
+(TeX--alias-overlapped-modes)
+
 ;; COMPATIBILITY for Emacs<29, which executes
 ;; (defalias 'LaTeX-mode #'latex-mode) etc. in tex-mode.el.
-;; This `with-eval-after-load' should be removed when the supported
-;; emacsens version becomes 29 or higher and (defun TeX-LaTeX-mode
-;; ...) etc. are turned into (define-derived-mode LaTeX-mode ...) etc.
 (with-eval-after-load 'tex-mode
   ;; This must be no-op after (unload-feature 'tex-site).
-  (when (featurep 'tex-site)
-    (defalias 'plain-TeX-mode #'TeX-plain-TeX-mode)
-    (defalias 'LaTeX-mode #'TeX-LaTeX-mode)))
+  (if (featurep 'tex-site)
+      (TeX--alias-overlapped-modes t)))
 
 (defconst AUCTeX-version "@AUCTEXVERSION@"
   "AUCTeX version.

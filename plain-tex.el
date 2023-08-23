@@ -48,9 +48,6 @@ Install tool bar if `plain-TeX-enable-toolbar' and
 
 ;;; Keymap and menu
 
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX-plain-TeX-mode'.
-(defvaralias 'TeX-plain-TeX-mode-map 'plain-TeX-mode-map)
 (defvar plain-TeX-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map TeX-mode-map)
@@ -111,9 +108,6 @@ argument DIALECT-EXPR when the hook is to be run only on
 plain-TeX file, or any mode derived thereof.  See variable
 `TeX-style-hook-dialect'." )
 
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX-plain-TeX-mode'.
-(defvaralias 'TeX-plain-TeX-mode-hook 'plain-TeX-mode-hook)
 (defcustom plain-TeX-mode-hook nil
   "A hook run in plain TeX mode buffers."
   :type 'hook
@@ -121,15 +115,8 @@ plain-TeX file, or any mode derived thereof.  See variable
 
 (TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
-;; We want to use `plain-TeX-mode' as the function name.  However, it is
-;; overwritten when tex-mode.el, prior to Emacs 29, is loaded afterwards
-;; because it has non-commented out (defalias 'plain-TeX-mode
-;; #'plain-tex-mode) in it.
-;; When the least supported emacsen version becomes 29, we can safely
-;; transform this definition to `(define-derived-mode plain-TeX-mode
-;; TeX-mode ...)' and remove defaliases for compatibility.
 ;;;###autoload
-(define-derived-mode TeX-plain-TeX-mode TeX--VirTeX-mode
+(define-derived-mode plain-TeX-mode TeX-mode
   ;; The mode name can be "plain-TeX", but in that case, we have to
   ;; change the "TeX" in the above call to `easy-menu-define' as well.
   ;; See what "Extend this Menu" entry does in
@@ -142,10 +129,8 @@ Entering `plain-TeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `plain-TeX-mode-hook'."
   :syntax-table nil
-  :abbrev-table plain-TeX-mode-abbrev-table
 
   (plain-TeX-common-initialization)
-  (setq major-mode 'plain-TeX-mode)
   (setq TeX-base-mode-name mode-name)
   (setq TeX-command-default "TeX")
 
@@ -159,9 +144,8 @@ of `plain-TeX-mode-hook'."
             nil t))
 
 ;; COMPATIBILITY for Emacs<29
-;; Override defalias in tex-mode.el.
 ;;;###autoload
-(defalias 'plain-TeX-mode #'TeX-plain-TeX-mode)
+(put 'plain-TeX-mode 'auctex-function-definition (symbol-function 'plain-TeX-mode))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."

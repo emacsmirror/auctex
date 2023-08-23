@@ -76,9 +76,6 @@
 (defvar TeX-esc)
 (defvar TeX-interactive-mode)
 (defvar TeX-macro-global)
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX--VirTeX-mode'.
-(defvaralias 'TeX--VirTeX-mode-map 'TeX-mode-map)
 (defvar TeX-mode-map)
 (defvar TeX-mode-p)
 (defvar TeX-output-extension)
@@ -172,9 +169,6 @@ If nil, none is specified."
 ;; At least in TeXLive 2009 ConTeXt does not support an omega option anymore.
 (make-obsolete-variable 'ConTeXt-Omega-engine 'TeX-engine-alist "11.86")
 
-;; We can remove this defvaralias in future.  See the comment before
-;; the definition of `TeX--VirTeX-mode'.
-(defvaralias 'TeX--VirTeX-mode-hook 'TeX-mode-hook)
 (defcustom TeX-mode-hook nil
   "A hook run in TeX mode buffers."
   :type 'hook
@@ -1855,9 +1849,9 @@ SyncTeX are recognized."
   :group 'TeX-view
   ;; Since this is a global minor mode and we don't want to require
   ;; tex.el when the mode variable is set, the mode function is called
-  ;; explicitly (if necessary) in `VirTeX-common-initialization'.  We
-  ;; do it there because otherwise `kill-all-local-variables' would
-  ;; reset `TeX-source-correlate-output-page-function' which is
+  ;; explicitly (if necessary) in `TeX-mode'.  We do it there because
+  ;; otherwise `kill-all-local-variables' would reset
+  ;; `TeX-source-correlate-output-page-function' which is
   ;; buffer-local.
   :global t
   (set-keymap-parent TeX-mode-map (if TeX-source-correlate-mode
@@ -3757,8 +3751,14 @@ other entries will enter `plain-TeX-mode'."
                   (memq 'font-latex-verbatim-face face)
                 (eq face 'font-latex-verbatim-face))))))
 
-(defun VirTeX-common-initialization ()
-  "Perform basic initialization."
+(define-derived-mode TeX-mode text-mode "TeX"
+  "Base mode for AUCTeX major modes except Texinfo mode.
+
+Not intended for direct use for user."
+  :abbrev-table nil
+  :after-hook (TeX-set-mode-name)
+  :interactive nil
+
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq indent-tabs-mode nil)
@@ -3852,6 +3852,10 @@ other entries will enter `plain-TeX-mode'."
                         (eq TeX-master 'shared))
                 (TeX-master-file nil nil t))
               (TeX-update-style t)) nil t))
+
+;; COMPATIBILITY for Emacs<29
+;;;###autoload
+(put 'TeX-mode 'auctex-function-definition (symbol-function 'TeX-mode))
 
 
 ;;; Hilighting
@@ -4869,14 +4873,6 @@ element to ALIST-VAR."
 
 ;;; Syntax Table
 
-;; XXX: Now we have `text-mode' as parent mode.  Should we make AUCTeX
-;; syntax table inherit from `text-mode-syntax-table'?
-(defvar TeX-mode-syntax-table (make-syntax-table)
-  "Syntax table used while in TeX mode.")
-
-;; FIXME: Does this make sense?
- (make-variable-buffer-local 'TeX-mode-syntax-table)
-
 (progn ; Define TeX-mode-syntax-table.
   (modify-syntax-entry (string-to-char TeX-esc)
                        "\\" TeX-mode-syntax-table)
@@ -5017,8 +5013,8 @@ Brace insertion is only done if point is in a math construct and
   "Call the function specified by the variable `TeX-newline-function'."
   (interactive) (call-interactively TeX-newline-function))
 
-(defvar TeX-mode-map
-  (let ((map (make-sparse-keymap)))
+(progn
+  (let ((map TeX-mode-map))
     ;; Standard
     ;; (define-key map "\177"     #'backward-delete-char-untabify)
     (define-key map "\C-c}"    #'up-list)
@@ -5077,9 +5073,7 @@ Brace insertion is only done if point is in a math construct and
     ;; Multifile
     (define-key map "\C-c_" #'TeX-master-file-ask)  ;*** temporary
 
-    (define-key map "\C-xng" #'TeX-narrow-to-group)
-    map)
-  "Keymap for common TeX and LaTeX commands.")
+    (define-key map "\C-xng" #'TeX-narrow-to-group)))
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
@@ -5270,27 +5264,6 @@ Brace insertion is only done if point is in a math construct and
     ["Report AUCTeX Bug" TeX-submit-bug-report
      :help ,(format "Problems with AUCTeX %s? Mail us!"
                     AUCTeX-version)]))
-
-;;; The mode (continuation)...
-;; We have to wait this `define-derived-mode' until `TeX-mode-map' and
-;; `TeX-mode-syntax-table' are ready.
-
-;; This should definitely be `TeX-mode', but then tex-mode.el would
-;; overwrite it by (defalias 'TeX-mode #'tex-mode) prior to emacs 29.
-;; When the least supported emacsen version becomes 29, we can safely
-;; transform this definition to `(define-derived-mode TeX-mode ...)'
-;; and get rid of ugly defvaralias'es for `TeX-mode-hook' and
-;; `TeX-mode-map'.
-(define-derived-mode TeX--VirTeX-mode text-mode "TeX"
-  "Base mode for AUCTeX major modes except Texinfo mode.
-
-Not intended for direct use for user."
-  :syntax-table TeX-mode-syntax-table
-  :abbrev-table nil
-  :after-hook (TeX-set-mode-name)
-  :interactive nil
-
-  (VirTeX-common-initialization))
 
 ;;; Verbatim constructs
 
@@ -6182,7 +6155,7 @@ With optional argument ARG, also reload the style hooks."
           (save-buffer)
         (TeX-auto-write)))
     (normal-mode)
-    ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
+    ;; See also addition to `find-file-hook' in `TeX-mode'.
     (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
     (TeX-update-style t)))
 

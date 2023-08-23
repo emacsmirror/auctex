@@ -1311,9 +1311,9 @@ triggers Font Lock to recognize the change."
   ;; The test for `major-mode' currently only works with docTeX mode
   ;; because `TeX-install-font-lock' is called explicitly in
   ;; `docTeX-mode'.  In case other modes have to be distinguished as
-  ;; well, remove the call to `TeX-install-font-lock' from
-  ;; `VirTeX-common-initialization' and place it in the different
-  ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
+  ;; well, remove the call to `TeX-install-font-lock' from `TeX-mode'
+  ;; and place it in the different `xxx-mode' calls instead, but
+  ;; _after_ `major-mode' is set.
   (let ((defaults
          `((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
            nil nil ,font-latex-syntax-alist nil))

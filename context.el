@@ -1913,7 +1913,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (defalias 'context-mode #'ConTeXt-mode)
 
 ;;;###autoload
-(define-derived-mode ConTeXt-mode TeX--VirTeX-mode "ConTeXt"
+(define-derived-mode ConTeXt-mode TeX-mode "ConTeXt"
   "Major mode in AUCTeX for editing ConTeXt files.
 
 Entering `ConTeXt-mode' calls the value of `text-mode-hook',
