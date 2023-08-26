@@ -294,7 +294,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (easy-menu-define AmSTeX-mode-menu
   AmSTeX-mode-map
   "Menu used in AmSTeX mode."
-  (cons "AmSTeX" plain-TeX-menu-entries))
+  (cons "AmS-TeX" plain-TeX-menu-entries))
 
 (define-obsolete-variable-alias
   'AmS-TeX-mode-hook 'AmSTeX-mode-hook "AUCTeX 14")
