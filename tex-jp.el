@@ -407,7 +407,7 @@ For inappropriate encoding, nil instead."
 ;;; Japanese TeX modes
 
 ;;;###autoload
-(define-derived-mode japanese-plain-TeX-mode plain-TeX-mode "plain-TeX"
+(define-derived-mode japanese-plain-TeX-mode plain-TeX-mode "TeX"
   "Major mode in AUCTeX for editing Japanese plain TeX files."
   :syntax-table nil
   ;; See the comments below in `japanese-LaTeX-mode' for the intent of
