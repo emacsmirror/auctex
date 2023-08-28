@@ -1919,25 +1919,10 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
-  ;; When called as parent of ConTeXt-{en,nl}-mode, do nothing to
-  ;; avoid `TeX-add-symbols' and `ConTeXt-add-environments' for wrong
-  ;; language interface.
-  (add-hook 'change-major-mode-after-body-hook #'ConTeXt--auto-mode nil t))
+  (context-guess-current-interface)
+  (require (intern (concat "context-" ConTeXt-current-interface)))
+  (funcall (intern (concat "ConTeXt--mode-" ConTeXt-current-interface)))
 
-(defun ConTeXt--auto-mode ()
-  ;; When called as not parent of ConTeXt-{en,nl}-mode, guess ConTeXt
-  ;; interface and use it.
-  (remove-hook 'change-major-mode-after-body-hook #'ConTeXt--auto-mode t)
-  (when (string-equal mode-name "ConTeXt")
-    (context-guess-current-interface)
-    (ConTeXt-mode-common-initialization)
-    (require (intern (concat "context-" ConTeXt-current-interface)))
-    ;; This bypasses call to ConTeXt-{en,nl}-mode.  Consequently,
-    ;; their mode-specific hook/keymap are ignored.
-    (funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-mode-initialization")))
-
-    (setq mode-name
-          (concat "ConTeXt-" ConTeXt-current-interface)))
   ;; set mode line
   (setq TeX-base-mode-name mode-name))
 

@@ -200,29 +200,18 @@ That is, besides the section(-block) commands.")
    '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
-;;;###autoload
-(define-derived-mode ConTeXt-en-mode ConTeXt-mode "ConTeXt-en"
-  "Major mode for editing files for ConTeXt using its english interface.
-
-Entering `ConTeXt-mode' calls the value of `text-mode-hook',
-then the value of `TeX-mode-hook', and then the value
-of `ConTeXt-mode-hook'.
-
-Don't use `ConTeXt-en-mode-hook' and `ConTeXt-en-mode-map', both
-specific to this mode.  They are ignored unless `ConTeXt-en-mode'
-is called directly."
-  :syntax-table nil
-  :abbrev-table nil
+(defun ConTeXt--mode-en ()
+  "Set up ConTeXt mode for editing files under english interface.
+Helper function of `ConTeXt-mode'.  Don't use."
 
   ;; set the ConTeXt interface
   (setq ConTeXt-current-interface "en")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
-  (ConTeXt-en-mode-initialization))
+  (ConTeXt-en-mode-initialization)
 
-;;;###autoload
-(defalias 'context-en-mode #'ConTeXt-en-mode)
+  (setq mode-name "ConTeXt-en"))
 
 (provide 'context-en)
 

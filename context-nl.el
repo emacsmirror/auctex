@@ -178,29 +178,18 @@ That is, besides the section(-block) commands.")
    '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
    '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
-;;;###autoload
-(define-derived-mode ConTeXt-nl-mode ConTeXt-mode "ConTeXt-nl"
-  "Major mode for editing files for ConTeXt using its dutch interface.
-
-Entering `ConTeXt-mode' calls the value of `text-mode-hook',
-then the value of `TeX-mode-hook', and then the value
-of `ConTeXt-mode-hook'.
-
-Don't use `ConTeXt-nl-mode-hook' and `ConTeXt-nl-mode-map', both
-specific to this mode.  They are ignored unless `ConTeXt-nl-mode'
-is called directly."
-  :syntax-table nil
-  :abbrev-table nil
+(defun ConTeXt--mode-nl ()
+  "Set up ConTeXt mode for editing files under dutch interface.
+Helper function of `ConTeXt-mode'.  Don't use."
 
   ;; set the ConTeXt interface
   (setq ConTeXt-current-interface "nl")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
-  (ConTeXt-nl-mode-initialization))
+  (ConTeXt-nl-mode-initialization)
 
-;;;###autoload
-(defalias 'context-nl-mode #'ConTeXt-nl-mode)
+  (setq mode-name "ConTeXt-nl"))
 
 (provide 'context-nl)
 
