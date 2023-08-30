@@ -1,6 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2023  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -111,6 +111,8 @@ the respective macro argument.
 If the first element is a function symbol, the function will be
 called with all mandatory arguments of the macro and the result
 of the function call will be used as a replacement for the macro.
+Such functions typically return a string, but may also return the
+symbol `abort' to indicate that the macro should not be folded.
 
 Setting this variable does not take effect immediately.  Use
 Customize or reset the mode."
@@ -796,31 +798,40 @@ That means, put respective properties onto overlay OV."
          (display-string (if (listp computed) (car computed) computed))
          ;; (face (when (listp computed) (cadr computed)))
          )
-    ;; Do nothing if the overlay is empty.
-    (when (and ov-start ov-end)
-      ;; Cater for zero-length display strings.
-      (when (string= display-string "") (setq display-string TeX-fold-ellipsis))
-      ;; Add a linebreak to the display string and adjust the overlay end
-      ;; in case of an overfull line.
-      (when (TeX-fold-overfull-p ov-start ov-end display-string)
-        (setq display-string (concat display-string "\n"))
-        (move-overlay ov ov-start (save-excursion
-                                    (goto-char ov-end)
-                                    (skip-chars-forward " \t")
-                                    (point))))
-      (overlay-put ov 'mouse-face 'highlight)
-      (when font-lock-mode
-        ;; Add raise adjustment for superscript and subscript.
-        ;; (bug#42209)
-        (setq display-string
-              (propertize display-string
-                          'display (get-text-property ov-start 'display))))
-      (overlay-put ov 'display display-string)
-      (when font-lock-mode
-        (overlay-put ov 'face TeX-fold-folded-face))
-      (unless (zerop TeX-fold-help-echo-max-length)
-        (overlay-put ov 'help-echo (TeX-fold-make-help-echo
-                                    (overlay-start ov) (overlay-end ov)))))))
+
+    (if (eq computed 'abort)
+        ;; Abort folding if computed result is the symbol `abort'.
+        ;; This allows programmatic customization.
+        ;; Suggested by Paul Nelson <ultrono@gmail.com>.
+        ;; <URL:https://lists.gnu.org/r/auctex/2023-08/msg00026.html>
+        (progn (delete-overlay ov)
+               t ; so that `TeX-fold-dwim' "gives up"
+               )
+      ;; Do nothing if the overlay is empty.
+      (when (and ov-start ov-end)
+        ;; Cater for zero-length display strings.
+        (when (string= display-string "") (setq display-string TeX-fold-ellipsis))
+        ;; Add a linebreak to the display string and adjust the overlay end
+        ;; in case of an overfull line.
+        (when (TeX-fold-overfull-p ov-start ov-end display-string)
+          (setq display-string (concat display-string "\n"))
+          (move-overlay ov ov-start (save-excursion
+                                      (goto-char ov-end)
+                                      (skip-chars-forward " \t")
+                                      (point))))
+        (overlay-put ov 'mouse-face 'highlight)
+        (when font-lock-mode
+          ;; Add raise adjustment for superscript and subscript.
+          ;; (bug#42209)
+          (setq display-string
+                (propertize display-string
+                            'display (get-text-property ov-start 'display))))
+        (overlay-put ov 'display display-string)
+        (when font-lock-mode
+          (overlay-put ov 'face TeX-fold-folded-face))
+        (unless (zerop TeX-fold-help-echo-max-length)
+          (overlay-put ov 'help-echo (TeX-fold-make-help-echo
+                                      (overlay-start ov) (overlay-end ov))))))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.

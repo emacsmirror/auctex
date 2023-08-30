@@ -2747,6 +2747,8 @@ placeholder.
 If the first element is a function symbol, the function will be called
 with all mandatory arguments of the macro and the result of the function
 call will be used as a replacement for the macro.
+Such functions typically return a string, but may also return the
+symbol @code{abort} to indicate that the macro should not be folded.
 
 The placeholder is made by copying the text from the buffer together with
 its properties, i.e.@: its face as well.  If fontification has not
