@@ -51,7 +51,7 @@ command line, depending on the installation scheme of @AUCTeX{} and your
 If you installed @AUCTeX{} from @acronym{ELPA}, use @samp{emacs -q
 -no-site-file --eval "(progn (setq package-load-list '((auctex t)))
 (package-initialize))"}.  The @option{--eval} option activates only
-@AUCTeX{} among all installed @acronym{EPLA} packages.
+@AUCTeX{} among all installed @acronym{ELPA} packages.
 @item
 If you installed @AUCTeX{} via traditional
 @command{configure}--@command{make} scheme, use @samp{emacs -q

@@ -4577,7 +4577,7 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @cindex @acronym{CJK}-@LaTeX{}
 
 @TeX{} and Emacs are usable for European (Latin, Cyrillic, Greek) based
-languages.  Some @LaTeX{} and EmacsLisp packages are available for easy
+languages.  Some @LaTeX{} and Emacs Lisp packages are available for easy
 typesetting and editing documents in European languages.
 
 @c Some Texinfo macros are not used because they require quite recent
