@@ -1083,8 +1083,10 @@ have changed."
                   "\\(?:\\[[^][]*\\(?:\\[[^][]*\\][^][]*\\)*\\]\\)?"
                   ;; An opening curly brace as delimiter is valid, but
                   ;; allowing it might screw up fontification of stuff
-                  ;; like "\url{...} foo \textbf{<--!...}".
-                  "\\([^a-z@*\n\f{]\\).*?"
+                  ;; like "\url{...} foo \textbf{<--!...}".  Also
+                  ;; disallow an opening square bracket which produces
+                  ;; confusion in "\Verb[key-val]{foo[<--!}"
+                  "\\([^a-z@*\n\f{[]\\).*?"
                   ;; Give an escape char at the end of the verbatim
                   ;; construct punctuation syntax.  Prevents wrong
                   ;; fontification of stuff like "\verb|foo\|".
