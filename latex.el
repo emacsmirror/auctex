@@ -8007,6 +8007,30 @@ of `LaTeX-mode-hook'."
                               (mapcar #'cdr LaTeX-provided-class-options)))))
             nil t)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) variables.
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp (LaTeX-outline-regexp t)))
+  (or (local-variable-p 'outline-heading-alist)
+      (setq outline-heading-alist
+            (mapcar (lambda (x)
+                      (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                    LaTeX-section-list)))
+
+  ;; Don't do locally-bound test for `paragraph-start' because it
+  ;; makes little sense; Style files casually call this function and
+  ;; overwrite it unconditionally.  Users who need per-file
+  ;; customization of `paragraph-start' should set
+  ;; `LaTeX-paragraph-commands' instead.
+  (LaTeX-set-paragraph-start)
+
+  ;; Don't do locally-bound test for similar reason as above.  Users
+  ;; who need per-file customization of
+  ;; `LaTeX-indent-begin-regexp-local' etc. should set
+  ;; `LaTeX-indent-begin-list' and so on instead.
+  (LaTeX-indent-commands-regexp-make)
+
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
   (TeX-set-mode-name)
@@ -8127,12 +8151,13 @@ function would return non-nil and `(match-string 1)' would return
 
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  (when (boundp 'outline-heading-alist)
-    (setq outline-heading-alist
-          (mapcar (lambda (x)
-                    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                  LaTeX-section-list)))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  ;; (when (boundp 'outline-heading-alist)
+  ;;   (setq outline-heading-alist
+  ;;         (mapcar (lambda (x)
+  ;;                   (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+  ;;                 LaTeX-section-list)))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
@@ -8141,7 +8166,8 @@ function would return non-nil and `(match-string 1)' would return
                                    (copy-sequence
                                     plain-TeX-auto-regexp-list))))
 
-  (LaTeX-set-paragraph-start)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-set-paragraph-start)
   (setq paragraph-separate
         (concat
          "[ \t]*%*[ \t]*\\("
@@ -8157,7 +8183,8 @@ function would return non-nil and `(match-string 1)' would return
   (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
   (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
-  (LaTeX-indent-commands-regexp-make)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-indent-commands-regexp-make)
 
   ;; Standard Emacs completion-at-point support.  We append the entry
   ;; in order to let `TeX--completion-at-point' be first in the list:
