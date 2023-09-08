@@ -8911,22 +8911,36 @@ function would return non-nil and `(match-string 1)' would return
             (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
 
+;; This function is no longer used; We leave it for compatibility.
 (defun LaTeX-env-beginning-pos-col ()
   "Return a cons: (POINT . COLUMN) for current environment's beginning."
   (save-excursion
     (LaTeX-find-matching-begin)
     (cons (point) (current-column))))
 
+;; This makes difference from `LaTeX-env-beginning-pos-col' when
+;; something non-whitespace sits before the \begin{foo}.  (bug#65648)
+(defun LaTeX-env-beginning-pos-indent ()
+  "Return a cons: (POINT . INDENT) for current environment's beginning.
+INDENT is the indent of the line containing POINT."
+  (save-excursion
+    ;; FIXME: There should be some fallback mechanism in case that the
+    ;; next `backward-up' fails.  (Such fail can occur in document
+    ;; with temporarily broken structure due to in-progress editing
+    ;; process.)
+    (LaTeX-backward-up-environment)
+    (cons (point) (LaTeX-current-indentation))))
+
 (defun LaTeX-hanging-ampersand-position (&optional pos col)
   "Return indent column for a hanging ampersand (that is, ^\\s-*&).
-When you know the position and column of the beginning of the
-current environment, supply them as optional arguments POS and
-COL for efficiency."
+When you know the position of the beginning of the current
+environment and indent of its line, supply them as optional
+arguments POS and COL for efficiency."
   (cl-destructuring-bind
       (beg-pos . beg-col)
       (if pos
           (cons pos col)
-        (LaTeX-env-beginning-pos-col))
+        (LaTeX-env-beginning-pos-indent))
     (let ((cur-pos (point)))
       (save-excursion
         (if (and (search-backward "\\\\" beg-pos t)
@@ -8957,7 +8971,7 @@ COL for efficiency."
   "Return indent column for the current tabular-like line."
   (cl-destructuring-bind
       (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
+      (LaTeX-env-beginning-pos-indent)
     (let ((tabular-like-end-regex
            (format "\\\\end{%s}"
                    (regexp-opt
