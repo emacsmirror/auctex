@@ -3779,6 +3779,9 @@ The algorithm is as follows:
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
   ;; Symbol & length completion.
+  ;; We have to move the setup of `TeX-complete-list' after
+  ;; `run-mode-hooks' in order to reflect the file local customization
+  ;; of `TeX-insert-braces' and `TeX-complete-word'.
   (setq-local TeX-complete-list
               (list (list "\\\\\\([a-zA-Z]*\\)"
                           1
