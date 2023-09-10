@@ -5243,8 +5243,16 @@ Brace insertion is only done if point is in a math construct and
       (progn
         (easy-menu-add-item
          nil
-         ;; Ugly hack because docTeX mode uses the LaTeX menu.
-         (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
+         ;; Ugly hack because docTeX mode uses the LaTeX menu and
+         ;; ConTeXt mode uses "ConTeXt-en" or "ConTeXt-nl" for the
+         ;; value of `TeX-base-mode-name'.
+         ;; XXX: Perhaps we should have a new variable holding the
+         ;; mode-specific menu title?
+         (list
+          (cond
+           ((eq major-mode 'doctex-mode) "LaTeX")
+           ((eq major-mode 'context-mode) "ConTeXt")
+           (t TeX-base-mode-name)))
          (or TeX-customization-menu
              (setq TeX-customization-menu
                    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
