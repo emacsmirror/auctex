@@ -8009,7 +8009,7 @@ of `LaTeX-mode-hook'."
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
 
   ;; Don't overwrite the value the user set by hooks or file
-  ;; (directory) variables.
+  ;; (directory) local variables.
   (or (local-variable-p 'outline-regexp)
       (setq-local outline-regexp (LaTeX-outline-regexp t)))
   (or (local-variable-p 'outline-heading-alist)
@@ -8018,6 +8018,12 @@ of `LaTeX-mode-hook'."
                       (cons (concat "\\" (nth 0 x)) (nth 1 x)))
                     LaTeX-section-list)))
 
+  ;; Keep `LaTeX-paragraph-commands-regexp' in sync with
+  ;; `LaTeX-paragraph-commands' in case the latter is updated by
+  ;; hooks or file (directory) local variables.
+  (and (local-variable-p 'LaTeX-paragraph-commands)
+       (setq-local LaTeX-paragraph-commands-regexp
+                   (LaTeX-paragraph-commands-regexp-make)))
   ;; Don't do locally-bound test for `paragraph-start' because it
   ;; makes little sense; Style files casually call this function and
   ;; overwrite it unconditionally.  Users who need per-file

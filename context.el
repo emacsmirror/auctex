@@ -1858,8 +1858,9 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Paragraph formatting
   (set (make-local-variable 'LaTeX-syntactic-comments) nil)
-  (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
-       (ConTeXt-paragraph-commands-regexp))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
+  ;;      (ConTeXt-paragraph-commands-regexp))
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
@@ -1917,8 +1918,10 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
                    (mapconcat #'identity ConTeXt-item-list "\\|")
                    "\\)\\>")))
 
-  ;; Don't do locally-bound test for `paragraph-start'.  See comments
-  ;; in similar part in latex.el.
+  ;; Don't do locally-bound test for `LaTeX-paragraph-commands-regexp'
+  ;; and `paragraph-start'.  See comments in similar part in latex.el.
+  (setq-local LaTeX-paragraph-commands-regexp
+              (ConTeXt-paragraph-commands-regexp))
   (setq paragraph-start
         (concat
          "[ \t]*\\("
