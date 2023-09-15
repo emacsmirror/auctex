@@ -5496,21 +5496,25 @@ additional characters."
                                           '(?\{ ?\} ?\\))
                                     (TeX-in-comment))))
                  (forward-char)
-                 (cond ((memq char (append
-                                    TeX-indent-open-delimiters
-                                    '(?\{)))
-                        (setq count (+ count TeX-brace-indent-level)))
-                       ((memq char (append
-                                    TeX-indent-close-delimiters
-                                    '(?\})))
-                        (setq count (- count TeX-brace-indent-level)))
-                       ((eq char ?\\)
-                        (when (< (point) limit)
-                          ;; ?\\ in verbatim constructs doesn't escape
-                          ;; the next char
-                          (unless (TeX-verbatim-p)
-                            (forward-char))
-                          t))))))
+                 ;; If inside a verbatim construct, just return t and
+                 ;; proceed, otherwise start counting:
+                 (if (TeX-verbatim-p)
+                     t
+                   (cond ((memq char (append
+                                      TeX-indent-open-delimiters
+                                      '(?\{)))
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((memq char (append
+                                      TeX-indent-close-delimiters
+                                      '(?\})))
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\\)
+                          (when (< (point) limit)
+                            ;; ?\\ in verbatim constructs doesn't escape
+                            ;; the next char
+                            (unless (TeX-verbatim-p)
+                              (forward-char))
+                            t)))))))
       count)))
 
 ;;; Navigation
