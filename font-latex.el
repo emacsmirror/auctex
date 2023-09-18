@@ -1353,7 +1353,17 @@ triggers Font Lock to recognize the change."
 
   ;; Make sure fontification will be refreshed if a user sets variables
   ;; influencing fontification in her file-local variables section.
-  (add-hook 'hack-local-variables-hook #'font-latex-after-hacking-local-variables t t))
+  (add-hook 'hack-local-variables-hook #'font-latex-after-hacking-local-variables t t)
+
+  ;; We may be using the mode programmatically to extract data, and we
+  ;; then need this to be set up first so that a command like
+  ;; `xref-find-references' doesn't bug out when matching hits in
+  ;; files that Emacs isn't visiting. (bug#65912)
+  ;; We need this treatment because the current syntax propertize
+  ;; facility depends on font lock machinery.  We can remove this
+  ;; when syntax propertization decouples font lock.
+  (unless buffer-file-truename
+    (font-lock-set-defaults)))
 
 (defun font-latex-update-font-lock (&optional _syntactic-kws)
   "Tell font-lock about updates of fontification rules.

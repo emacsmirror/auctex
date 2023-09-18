@@ -55,7 +55,6 @@
     (should-not (with-temp-buffer
                   (insert "a $b$ \\verb|$| c ")
                   (LaTeX-mode)
-                  (font-lock-ensure)
                   (texmathp)))
 
     (should-not (with-temp-buffer
@@ -67,7 +66,6 @@ $
 \\end{verbatim}
 c")
                   (LaTeX-mode)
-                  (font-lock-ensure)
                   (texmathp)))))
 
 ;;; texmathp-test.el ends here

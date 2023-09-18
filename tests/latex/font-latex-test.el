@@ -27,12 +27,6 @@
 (defvar font-lock-beg)
 (defvar font-lock-end)
 
-;; We need to ensure that font-lock has put the syntax properties
-;; already which won't happen in batch mode.  So trigger font-lock
-;; immediately.
-(define-advice LaTeX-common-initialization (:after ())
-  (font-lock-ensure))
-
 (ert-deftest font-latex-three-dollars ()
   "Test three consecutive dollar is ignored."
   ;; When the function `font-latex-match-dollar-math' encounters three

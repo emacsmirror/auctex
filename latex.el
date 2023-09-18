@@ -8045,7 +8045,14 @@ of `LaTeX-mode-hook'."
            filladapt-mode)
       (turn-off-filladapt-mode))
   ;; Set up flymake backend, see latex-flymake.el
-  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
+  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t)
+
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of `find-file-hook'
+  ;; in `VirTeX-common-initialization'.  This is necessary for
+  ;; `xref-find-references', for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style)))
 
 (TeX-abbrev-mode-setup doctex-mode)
 
@@ -8068,6 +8075,10 @@ runs the hooks in `docTeX-mode-hook'."
         TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
+  ;; We can remove the next `setq' when syntax propertization
+  ;; decouples font lock and `font-latex-setup' stops calling
+  ;; `font-lock-set-defaults'.
+  (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
 
 ;; Enable LaTeX abbrevs in docTeX mode buffer.
