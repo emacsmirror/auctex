@@ -2290,13 +2290,14 @@ all previews."
 (defun preview-kill-buffer-cleanup (&optional buf)
   "This is a cleanup function just for use in hooks.
 Cleans BUF or current buffer.  The difference to
-`preview-clearout-buffer' is that previews
-associated with the last buffer modification time are
-kept."
-  (with-current-buffer (or buf (current-buffer))
-    (save-restriction
-      (widen)
-      (preview-clearout (point-min) (point-max) (visited-file-modtime)))))
+`preview-clearout-buffer' is that previews associated with the
+last buffer modification time are kept."
+  ;; Do nothing for indirect buffers. (bug#65462)
+  (unless (buffer-base-buffer (or buf (setq buf (current-buffer))))
+    (with-current-buffer buf
+      (save-restriction
+        (widen)
+        (preview-clearout (point-min) (point-max) (visited-file-modtime))))))
 
 (add-hook 'kill-buffer-hook #'preview-kill-buffer-cleanup)
 (add-hook 'before-revert-hook #'preview-kill-buffer-cleanup)

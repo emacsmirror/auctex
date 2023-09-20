@@ -3756,7 +3756,7 @@ other entries will enter `plain-TeX-mode'."
 
 Not intended for direct use for user."
   :abbrev-table nil
-  :after-hook (TeX-set-mode-name)
+  :after-hook (TeX-mode-cleanup)
   :interactive nil
 
   (setq TeX-mode-p t)
@@ -3797,6 +3797,9 @@ Not intended for direct use for user."
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
   ;; Symbol & length completion.
+  ;; We have to move the setup of `TeX-complete-list' after
+  ;; `run-mode-hooks' in order to reflect the file local customization
+  ;; of `TeX-insert-braces' and `TeX-complete-word'.
   (setq-local TeX-complete-list
               (list (list "\\\\\\([a-zA-Z]*\\)"
                           1
@@ -3853,10 +3856,19 @@ Not intended for direct use for user."
                 (TeX-master-file nil nil t))
               (TeX-update-style t)) nil t))
 
+(defun TeX-mode-cleanup ()
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of above
+  ;; `find-file-hook'.  This is necessary for `xref-find-references',
+  ;; for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style))
+
+  (TeX-set-mode-name))
+
 ;; COMPATIBILITY for Emacs<29
 ;;;###autoload
 (put 'TeX-mode 'auctex-function-definition (symbol-function 'TeX-mode))
-
 
 ;;; Hilighting
 
@@ -5255,8 +5267,16 @@ Brace insertion is only done if point is in a math construct and
       (progn
         (easy-menu-add-item
          nil
-         ;; Ugly hack because docTeX mode uses the LaTeX menu.
-         (list (if (eq major-mode 'docTeX-mode) "LaTeX" TeX-base-mode-name))
+         ;; Ugly hack because docTeX mode uses the LaTeX menu and
+         ;; ConTeXt mode uses "ConTeXt-en" or "ConTeXt-nl" for the
+         ;; value of `TeX-base-mode-name'.
+         ;; XXX: Perhaps we should have a new variable holding the
+         ;; mode-specific menu title?
+         (list
+          (cond
+           ((eq major-mode 'docTeX-mode) "LaTeX")
+           ((eq major-mode 'ConTeXt-mode) "ConTeXt")
+           (t TeX-base-mode-name)))
          (or TeX-customization-menu
              (setq TeX-customization-menu
                    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
@@ -5499,21 +5519,25 @@ additional characters."
                                           '(?\{ ?\} ?\\))
                                     (TeX-in-comment))))
                  (forward-char)
-                 (cond ((memq char (append
-                                    TeX-indent-open-delimiters
-                                    '(?\{)))
-                        (setq count (+ count TeX-brace-indent-level)))
-                       ((memq char (append
-                                    TeX-indent-close-delimiters
-                                    '(?\})))
-                        (setq count (- count TeX-brace-indent-level)))
-                       ((eq char ?\\)
-                        (when (< (point) limit)
-                          ;; ?\\ in verbatim constructs doesn't escape
-                          ;; the next char
-                          (unless (TeX-verbatim-p)
-                            (forward-char))
-                          t))))))
+                 ;; If inside a verbatim construct, just return t and
+                 ;; proceed, otherwise start counting:
+                 (if (TeX-verbatim-p)
+                     t
+                   (cond ((memq char (append
+                                      TeX-indent-open-delimiters
+                                      '(?\{)))
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((memq char (append
+                                      TeX-indent-close-delimiters
+                                      '(?\})))
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\\)
+                          (when (< (point) limit)
+                            ;; ?\\ in verbatim constructs doesn't escape
+                            ;; the next char
+                            (unless (TeX-verbatim-p)
+                              (forward-char))
+                            t)))))))
       count)))
 
 ;;; Navigation

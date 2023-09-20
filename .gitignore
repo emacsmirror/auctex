@@ -51,3 +51,4 @@ PROBLEMS.preview
 tests/*/auto/*
 *.dynvars
 auctex-dynvars
+.DS_Store

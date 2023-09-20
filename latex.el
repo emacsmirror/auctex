@@ -7974,9 +7974,7 @@ See info under AUCTeX for full documentation.
 Entering LaTeX mode calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `LaTeX-mode-hook'."
-  :after-hook ;; Defeat filladapt
-  (if (bound-and-true-p filladapt-mode)
-      (turn-off-filladapt-mode))
+  :after-hook (LaTeX-mode-cleanup)
 
   (LaTeX-common-initialization)
   (setq TeX-base-mode-name mode-name)
@@ -8005,10 +8003,45 @@ of `LaTeX-mode-hook'."
                        (apply #'append
                               (mapcar #'cdr LaTeX-provided-class-options)))))
             nil t)
+
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
   ;; Set up flymake backend, see latex-flymake.el
   (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
+
+(defun LaTeX-mode-cleanup ()
+  ;; Defeat filladapt
+  (if (bound-and-true-p filladapt-mode)
+      (turn-off-filladapt-mode))
+
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) local variables.
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp (LaTeX-outline-regexp t)))
+  (or (local-variable-p 'outline-heading-alist)
+      (setq outline-heading-alist
+            (mapcar (lambda (x)
+                      (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                    LaTeX-section-list)))
+
+  ;; Keep `LaTeX-paragraph-commands-regexp' in sync with
+  ;; `LaTeX-paragraph-commands' in case the latter is updated by
+  ;; hooks or file (directory) local variables.
+  (and (local-variable-p 'LaTeX-paragraph-commands)
+       (setq-local LaTeX-paragraph-commands-regexp
+                   (LaTeX-paragraph-commands-regexp-make)))
+  ;; Don't do locally-bound test for `paragraph-start' because it
+  ;; makes little sense; Style files casually call this function and
+  ;; overwrite it unconditionally.  Users who need per-file
+  ;; customization of `paragraph-start' should set
+  ;; `LaTeX-paragraph-commands' instead.
+  (LaTeX-set-paragraph-start)
+
+  ;; Don't do locally-bound test for similar reason as above.  Users
+  ;; who need per-file customization of
+  ;; `LaTeX-indent-begin-regexp-local' etc. should set
+  ;; `LaTeX-indent-begin-list' and so on instead.
+  (LaTeX-indent-commands-regexp-make))
 
 ;; COMPATIBILITY for Emacs<29
 ;;;###autoload
@@ -8029,6 +8062,10 @@ runs the hooks in `docTeX-mode-hook'."
         paragraph-separate (concat paragraph-separate "\\|%<")
         TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
   (setq TeX-base-mode-name mode-name)
+  ;; We can remove the next `setq' when syntax propertization
+  ;; decouples font lock and `font-latex-setup' stops calling
+  ;; `font-lock-set-defaults'.
+  (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
 
 ;; Enable LaTeX abbrevs in docTeX mode buffer.
@@ -8102,11 +8139,13 @@ function would return non-nil and `(match-string 1)' would return
 
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  (setq outline-heading-alist
-        (mapcar (lambda (x)
-                  (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                LaTeX-section-list))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  ;; (when (boundp 'outline-heading-alist)
+  ;;   (setq outline-heading-alist
+  ;;         (mapcar (lambda (x)
+  ;;                   (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+  ;;                 LaTeX-section-list)))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
@@ -8115,7 +8154,8 @@ function would return non-nil and `(match-string 1)' would return
                                    (copy-sequence
                                     plain-TeX-auto-regexp-list))))
 
-  (LaTeX-set-paragraph-start)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-set-paragraph-start)
   (setq paragraph-separate
         (concat
          "[ \t]*%*[ \t]*\\("
@@ -8131,7 +8171,8 @@ function would return non-nil and `(match-string 1)' would return
   (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
   (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
-  (LaTeX-indent-commands-regexp-make)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-indent-commands-regexp-make)
 
   ;; Standard Emacs completion-at-point support.  We append the entry
   ;; in order to let `TeX--completion-at-point' be first in the list:
@@ -8850,22 +8891,36 @@ function would return non-nil and `(match-string 1)' would return
             (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
 
+;; This function is no longer used; We leave it for compatibility.
 (defun LaTeX-env-beginning-pos-col ()
   "Return a cons: (POINT . COLUMN) for current environment's beginning."
   (save-excursion
     (LaTeX-find-matching-begin)
     (cons (point) (current-column))))
 
+;; This makes difference from `LaTeX-env-beginning-pos-col' when
+;; something non-whitespace sits before the \begin{foo}.  (bug#65648)
+(defun LaTeX-env-beginning-pos-indent ()
+  "Return a cons: (POINT . INDENT) for current environment's beginning.
+INDENT is the indent of the line containing POINT."
+  (save-excursion
+    ;; FIXME: There should be some fallback mechanism in case that the
+    ;; next `backward-up' fails.  (Such fail can occur in document
+    ;; with temporarily broken structure due to in-progress editing
+    ;; process.)
+    (LaTeX-backward-up-environment)
+    (cons (point) (LaTeX-current-indentation))))
+
 (defun LaTeX-hanging-ampersand-position (&optional pos col)
   "Return indent column for a hanging ampersand (that is, ^\\s-*&).
-When you know the position and column of the beginning of the
-current environment, supply them as optional arguments POS and
-COL for efficiency."
+When you know the position of the beginning of the current
+environment and indent of its line, supply them as optional
+arguments POS and COL for efficiency."
   (cl-destructuring-bind
       (beg-pos . beg-col)
       (if pos
           (cons pos col)
-        (LaTeX-env-beginning-pos-col))
+        (LaTeX-env-beginning-pos-indent))
     (let ((cur-pos (point)))
       (save-excursion
         (if (and (search-backward "\\\\" beg-pos t)
@@ -8896,7 +8951,7 @@ COL for efficiency."
   "Return indent column for the current tabular-like line."
   (cl-destructuring-bind
       (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
+      (LaTeX-env-beginning-pos-indent)
     (let ((tabular-like-end-regex
            (format "\\\\end{%s}"
                    (regexp-opt

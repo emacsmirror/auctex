@@ -1833,8 +1833,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
     (set symbol (symbol-value (intern (concat (symbol-name symbol) "-"
                                               ConTeXt-current-interface)))))
 
-  ;; Create certain regular expressions based on language
-  (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
 
   ;; What's the deepest level at we can collapse a document?
   ;; set only if user has not set it.  Need to be set before menu is created.
@@ -1848,17 +1848,19 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Paragraph formatting
   (set (make-local-variable 'LaTeX-syntactic-comments) nil)
-  (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
-       (ConTeXt-paragraph-commands-regexp))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
+  ;;      (ConTeXt-paragraph-commands-regexp))
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
-  (setq paragraph-start
-        (concat
-         "[ \t]*\\("
-         (ConTeXt-paragraph-commands-regexp) "\\|"
-         "\\$\\$\\|" ; Plain TeX display math
-         "$\\)"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (setq paragraph-start
+  ;;       (concat
+  ;;        "[ \t]*\\("
+  ;;        (ConTeXt-paragraph-commands-regexp) "\\|"
+  ;;        "\\$\\$\\|" ; Plain TeX display math
+  ;;        "$\\)"))
   (setq paragraph-separate
         (concat
          "[ \t]*\\("
@@ -1877,7 +1879,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; Outline support
   (require 'outline)
   (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
-  (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
   ;;(make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
         TeX-trailer-start (ConTeXt-trailer-start))
@@ -1891,6 +1894,31 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel))
+
+(defun ConTeXt-mode-cleanup ()
+  ;; Create certain regular expressions based on language.
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) variables.
+  (or (local-variable-p 'ConTeXt-indent-item-re)
+      (setq-local ConTeXt-indent-item-re
+                  (concat
+                   "\\\\\\("
+                   (mapconcat #'identity ConTeXt-item-list "\\|")
+                   "\\)\\>")))
+
+  ;; Don't do locally-bound test for `LaTeX-paragraph-commands-regexp'
+  ;; and `paragraph-start'.  See comments in similar part in latex.el.
+  (setq-local LaTeX-paragraph-commands-regexp
+              (ConTeXt-paragraph-commands-regexp))
+  (setq paragraph-start
+        (concat
+         "[ \t]*\\("
+         (ConTeXt-paragraph-commands-regexp) "\\|"
+         "\\$\\$\\|" ; Plain TeX display math
+         "$\\)"))
+
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp (ConTeXt-outline-regexp t))))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
@@ -1919,6 +1947,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
+  :after-hook (ConTeXt-mode-cleanup)
   (context-guess-current-interface)
   (require (intern (concat "context-" ConTeXt-current-interface)))
   (funcall (intern (concat "ConTeXt--mode-" ConTeXt-current-interface)))

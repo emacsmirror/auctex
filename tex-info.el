@@ -31,6 +31,9 @@
 
 (require 'texinfo)
 
+;; Silence the compiler for variables:
+(defvar outline-heading-alist)
+
 ;;; Environments:
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
@@ -635,7 +638,7 @@ is assumed by default."
 Entering Texinfo mode calls the value of `text-mode-hook' and then the
 value of `Texinfo-mode-hook'."
   :syntax-table texinfo-mode-syntax-table
-  :after-hook (TeX-set-mode-name)
+  :after-hook (Texinfo-mode-cleanup)
 
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
@@ -643,11 +646,12 @@ value of `Texinfo-mode-hook'."
   ;; Mostly stolen from texinfo.el
   (setq TeX-base-mode-name mode-name)
 
-  (set (make-local-variable 'page-delimiter)
-       (concat
-        "^@node [ \t]*[Tt]op\\|^@\\("
-        texinfo-chapter-level-regexp
-        "\\)"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'page-delimiter)
+  ;;      (concat
+  ;;       "^@node [ \t]*[Tt]op\\|^@\\("
+  ;;       texinfo-chapter-level-regexp
+  ;;       "\\)"))
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'paragraph-separate)
@@ -669,13 +673,13 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'syntax-propertize-function)
        texinfo-syntax-propertize-function)
 
-  ;; Outline settings.
-  (setq-local outline-heading-alist
-	      (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
-		      texinfo-section-list))
-  (setq-local outline-regexp
-	      (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
-		      "\\>"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (setq-local outline-heading-alist
+  ;;             (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
+  ;;       	      texinfo-section-list))
+  ;; (setq-local outline-regexp
+  ;;             (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
+  ;;       	      "\\>"))
 
   ;; Mostly AUCTeX stuff
   (set (make-local-variable 'TeX-command-current) #'TeX-command-master)
@@ -690,9 +694,10 @@ value of `Texinfo-mode-hook'."
   (setq TeX-trailer-start (format "^%s$"
                                   (regexp-quote (concat TeX-esc "bye"))))
 
-  (set (make-local-variable 'TeX-complete-list)
-       (list (list "@\\([a-zA-Z]*\\)" 1 #'TeX-symbol-list-filtered nil)
-             (list "" TeX-complete-word)))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'TeX-complete-list)
+  ;;      (list (list "@\\([a-zA-Z]*\\)" 1 #'TeX-symbol-list-filtered nil)
+  ;;            (list "" TeX-complete-word)))
 
   (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
   (set (make-local-variable 'TeX-font-replace-function)
@@ -856,6 +861,33 @@ value of `Texinfo-mode-hook'."
   (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook)
   (if (and (boundp 'reftex-mode) reftex-mode)
       (Texinfo-reftex-hook)))
+
+(defun Texinfo-mode-cleanup ()
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) variables.
+  (or (local-variable-p 'page-delimiter)
+      (setq-local page-delimiter
+                  (concat
+                   "^@node [ \t]*[Tt]op\\|^@\\("
+                   texinfo-chapter-level-regexp
+                   "\\)")))
+
+  ;; Outline settings.
+  (or (local-variable-p 'outline-heading-alist)
+      (setq-local outline-heading-alist
+	          (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
+		          texinfo-section-list)))
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp
+	          (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
+		          "\\>")))
+
+  (or (local-variable-p 'TeX-complete-list)
+      (setq-local TeX-complete-list
+                  (list (list "@\\([a-zA-Z]*\\)" 1 #'TeX-symbol-list-filtered nil)
+                        (list "" TeX-complete-word))))
+
+  (TeX-set-mode-name))
 
 (defcustom Texinfo-clean-intermediate-suffixes
   '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
