@@ -5085,7 +5085,10 @@ Brace insertion is only done if point is in a math construct and
     ;; Multifile
     (define-key map "\C-c_" #'TeX-master-file-ask)  ;*** temporary
 
-    (define-key map "\C-xng" #'TeX-narrow-to-group)))
+    (define-key map "\C-xng" #'TeX-narrow-to-group)
+
+    ;; Hide "Text" menu entry inherited from text mode.
+    (define-key map [menu-bar text] #'undefined)))
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."

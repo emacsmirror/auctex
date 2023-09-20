@@ -512,7 +512,9 @@ overwrite the value already set locally."
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
   (call-interactively #'japanese-TeX-self-insert-command))
-(advice-add 'TeX-insert-punctuation :override
+(define-key japanese-plain-TeX-mode-map [remap TeX-insert-punctuation]
+            #'japanese-TeX-insert-punctuation)
+(define-key japanese-LaTeX-mode-map [remap TeX-insert-punctuation]
             #'japanese-TeX-insert-punctuation)
 
 ;;; Error Messages

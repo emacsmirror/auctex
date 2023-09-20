@@ -546,6 +546,9 @@ is assumed by default."
     (define-key map "\\" #'self-insert-command)
     ;; Users benefit from `TeX-electric-macro' even in Texinfo mode
     (define-key map "@" #'TeX-insert-backslash)
+
+    ;; Hide "Text" menu entry inherited from text mode.
+    (define-key map [menu-bar text] #'undefined)
     map)
   "Keymap for Texinfo mode.")
 
