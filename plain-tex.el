@@ -139,7 +139,7 @@ of `plain-TeX-mode-hook'."
   "Cleanup function for `plain-TeX-mode'.
 Run after mode hooks and file local variables application."
   ;; Don't install tool bar in AmSTeX mode.
-  (when (eq major-mode 'plain-TeX-mode)
+  (unless (derived-mode-p 'AmSTeX-mode)
     (add-hook 'tool-bar-mode-hook
               #'plain-TeX-maybe-install-toolbar nil t)
     (plain-TeX-maybe-install-toolbar)))
