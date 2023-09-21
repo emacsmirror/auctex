@@ -1824,7 +1824,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
   (plain-TeX-common-initialization)
-  (setq major-mode 'ConTeXt-mode)
 
   (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
@@ -1896,6 +1895,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel))
 
 (defun ConTeXt-mode-cleanup ()
+  "Cleanup function for `ConTeXt-mode'.
+Run after mode hooks and file local variables application."
   ;; Create certain regular expressions based on language.
   ;; Don't overwrite the value the user set by hooks or file
   ;; (directory) variables.

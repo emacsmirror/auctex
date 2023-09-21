@@ -4145,7 +4145,7 @@ the regexp's which are stored in
 `LaTeX-indent-mid-regexp-local' and
 `LaTeX-indent-end-regexp-local' accordingly.  Some standard
 macros are added to the regexp's.  This function is called in
-`LaTeX-common-initialization' to set the regexp's."
+`LaTeX-mode-cleanup' to set the regexp's."
   (let* (cmds
          symbs
          (func (lambda (in regexp out)
@@ -8010,6 +8010,8 @@ of `LaTeX-mode-hook'."
   (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
 
 (defun LaTeX-mode-cleanup ()
+  "Cleanup function for `LaTeX-mode'.
+Run after mode hooks and file local variables application."
   ;; Defeat filladapt
   (if (bound-and-true-p filladapt-mode)
       (turn-off-filladapt-mode))
@@ -8041,7 +8043,37 @@ of `LaTeX-mode-hook'."
   ;; who need per-file customization of
   ;; `LaTeX-indent-begin-regexp-local' etc. should set
   ;; `LaTeX-indent-begin-list' and so on instead.
-  (LaTeX-indent-commands-regexp-make))
+  (LaTeX-indent-commands-regexp-make)
+
+  (setq TeX-complete-list
+        (append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                   1 LaTeX-bibitem-list "}")
+                  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+                  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                   2 LaTeX-bibitem-list)
+                  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+                  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                   2 LaTeX-bibitem-list)
+                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+                  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
+                   2 LaTeX-index-entry-list "}")
+                  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
+                  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
+                  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
+                   1 TeX-symbol-list-filtered "}")
+                  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
+                   1 LaTeX-environment-list-filtered "}")
+                  ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
+                   2 LaTeX-pagestyle-list "}")
+                  (LaTeX--after-math-macro-prefix-p
+                   1 (lambda ()
+                       (seq-filter #'stringp
+                                   (append (mapcar #'cadr LaTeX-math-list)
+                                           (mapcar #'cadr LaTeX-math-default))))
+                   (if TeX-insert-braces "{}")))
+                TeX-complete-list)))
 
 ;; COMPATIBILITY for Emacs<29
 ;;;###autoload
@@ -8184,36 +8216,6 @@ function would return non-nil and `(match-string 1)' would return
                                                 ("array" . LaTeX-item-array)
                                                 ("tabular" . LaTeX-item-array)
                                                 ("tabular*" . LaTeX-item-tabular*)))
-
-  (setq TeX-complete-list
-        (append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
-                   1 LaTeX-bibitem-list "}")
-                  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-                  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-                   2 LaTeX-bibitem-list)
-                  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-                  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-                   2 LaTeX-bibitem-list)
-                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
-                   2 LaTeX-index-entry-list "}")
-                  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
-                  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
-                  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
-                   1 TeX-symbol-list-filtered "}")
-                  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
-                   1 LaTeX-environment-list-filtered "}")
-                  ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
-                   2 LaTeX-pagestyle-list "}")
-                  (LaTeX--after-math-macro-prefix-p
-                   1 (lambda ()
-                       (seq-filter #'stringp
-                                   (append (mapcar #'cadr LaTeX-math-list)
-                                           (mapcar #'cadr LaTeX-math-default))))
-                   (if TeX-insert-braces "{}")))
-                TeX-complete-list))
 
   (LaTeX-add-environments
    '("document" LaTeX-env-document)

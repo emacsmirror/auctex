@@ -3796,24 +3796,6 @@ Not intended for direct use for user."
   ;;                           (make-display-table)))
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
-  ;; Symbol & length completion.
-  ;; We have to move the setup of `TeX-complete-list' after
-  ;; `run-mode-hooks' in order to reflect the file local customization
-  ;; of `TeX-insert-braces' and `TeX-complete-word'.
-  (setq-local TeX-complete-list
-              (list (list "\\\\\\([a-zA-Z]*\\)"
-                          1
-                          (lambda ()
-                            (append (TeX-symbol-list-filtered)
-                                    (when (fboundp 'LaTeX-length-list)
-                                      (LaTeX-length-list))
-                                    (when (fboundp 'LaTeX-counter-list)
-                                      (mapcar (lambda (x)
-                                                `(,(concat "the" (car x))))
-                                              (LaTeX-counter-list)))))
-                          (if TeX-insert-braces "{}"))
-                    (list "" TeX-complete-word)))
-
   (funcall TeX-install-font-lock)
 
   ;; We want this to be early in the list, so we do not add it before
@@ -3857,6 +3839,29 @@ Not intended for direct use for user."
               (TeX-update-style t)) nil t))
 
 (defun TeX-mode-cleanup ()
+  "Cleanup function for `TeX-mode'.
+Run after mode hooks and file local variables application."
+  ;; Symbol & length completion.
+  (or (local-variable-p 'TeX-complete-list)
+      (setq-local TeX-complete-list
+                  (list (list "\\\\\\([a-zA-Z]*\\)"
+                              1
+                              (lambda ()
+                                (append
+                                 (TeX-symbol-list-filtered)
+                                 ;; These LaTeX-*-list are called even
+                                 ;; in non-LaTeX mode buffers, but
+                                 ;; that is permissible because they
+                                 ;; return empty list immediately.
+                                 (when (fboundp 'LaTeX-length-list)
+                                   (LaTeX-length-list))
+                                 (when (fboundp 'LaTeX-counter-list)
+                                   (mapcar (lambda (x)
+                                             `(,(concat "the" (car x))))
+                                           (LaTeX-counter-list)))))
+                              (if TeX-insert-braces "{}"))
+                        (list "" TeX-complete-word))))
+
   ;; Complete style initialization in buffers which don't visit files
   ;; and which are therefore missed by the setting of above
   ;; `find-file-hook'.  This is necessary for `xref-find-references',

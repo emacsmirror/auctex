@@ -866,6 +866,8 @@ value of `Texinfo-mode-hook'."
       (Texinfo-reftex-hook)))
 
 (defun Texinfo-mode-cleanup ()
+  "Cleanup function for `Texinfo-mode'.
+Run after mode hooks and file local variables application."
   ;; Don't overwrite the value the user set by hooks or file
   ;; (directory) variables.
   (or (local-variable-p 'page-delimiter)

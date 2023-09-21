@@ -129,19 +129,20 @@ Entering `plain-TeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `plain-TeX-mode-hook'."
   :syntax-table nil
+  :after-hook (plain-TeX-mode-cleanup)
 
   (plain-TeX-common-initialization)
   (setq TeX-base-mode-name mode-name)
-  (setq TeX-command-default "TeX")
+  (setq TeX-command-default "TeX"))
 
-  (add-hook 'plain-TeX-mode-hook
-            (lambda ()
-              ;; Don't install tool bar in AmSTeX mode.
-              (when (eq major-mode 'plain-TeX-mode)
-                (add-hook 'tool-bar-mode-hook
-                          #'plain-TeX-maybe-install-toolbar nil t)
-                (plain-TeX-maybe-install-toolbar)))
-            nil t))
+(defun plain-TeX-mode-cleanup ()
+  "Cleanup function for `plain-TeX-mode'.
+Run after mode hooks and file local variables application."
+  ;; Don't install tool bar in AmSTeX mode.
+  (when (eq major-mode 'plain-TeX-mode)
+    (add-hook 'tool-bar-mode-hook
+              #'plain-TeX-maybe-install-toolbar nil t)
+    (plain-TeX-maybe-install-toolbar)))
 
 ;; COMPATIBILITY for Emacs<29
 ;;;###autoload
