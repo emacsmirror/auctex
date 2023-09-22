@@ -5510,10 +5510,7 @@ additional characters."
                           (setq count (- count TeX-brace-indent-level)))
                          ((eq char ?\\)
                           (when (< (point) limit)
-                            ;; ?\\ in verbatim constructs doesn't escape
-                            ;; the next char
-                            (unless (TeX-verbatim-p)
-                              (forward-char))
+                            (forward-char)
                             t)))))))
       count)))
 
