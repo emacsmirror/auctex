@@ -8079,7 +8079,14 @@ Run after mode hooks and file local variables application."
 ;;;###autoload
 (put 'LaTeX-mode 'auctex-function-definition (symbol-function 'LaTeX-mode))
 
-(TeX-abbrev-mode-setup docTeX-mode doctex-mode-abbrev-table)
+;; Enable LaTeX abbrevs in docTeX mode buffer.
+;; No need to include text mode abbrev table as parents because LaTeX
+;; mode abbrev table inherits it.
+(let ((p (list LaTeX-mode-abbrev-table)))
+  ;; Inherit abbrev table of the former name, if it exists.
+  (if (boundp 'doctex-mode-abbrev-table)
+      (push doctex-mode-abbrev-table p))
+  (define-abbrev-table 'docTeX-mode-abbrev-table nil nil :parents p))
 
 ;;;###autoload
 (define-derived-mode docTeX-mode LaTeX-mode "docTeX"
@@ -8099,12 +8106,6 @@ runs the hooks in `docTeX-mode-hook'."
   ;; `font-lock-set-defaults'.
   (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
-
-;; Enable LaTeX abbrevs in docTeX mode buffer.
-(let ((p (abbrev-table-get docTeX-mode-abbrev-table :parents)))
-  (or (memq LaTeX-mode-abbrev-table p)
-      (abbrev-table-put docTeX-mode-abbrev-table :parents
-                        (cons LaTeX-mode-abbrev-table p))))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
