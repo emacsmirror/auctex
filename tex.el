@@ -10168,6 +10168,7 @@ forward, if negative)."
 (define-derived-mode TeX-error-overview-mode tabulated-list-mode
                      "TeX errors"
   "Major mode for listing TeX errors."
+  :syntax-table nil :abbrev-table nil :interactive nil
   (setq tabulated-list-format [("File" 25 nil)
                                ("Line" 4 nil :right-align t)
                                ("Type" 7 nil)
@@ -10270,7 +10271,8 @@ warnings and bad boxes"
 
 ;;; Output mode
 
-(define-derived-mode TeX-special-mode special-mode "TeX")
+(define-derived-mode TeX-special-mode special-mode "TeX"
+  :syntax-table nil :abbrev-table nil :interactive nil)
 
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
@@ -10293,7 +10295,7 @@ warnings and bad boxes"
 (define-derived-mode TeX-output-mode TeX-special-mode "TeX Output"
   "Major mode for viewing TeX output.
 \\{TeX-output-mode-map} "
-  :syntax-table nil
+  :syntax-table nil :abbrev-table nil :interactive nil
   (set (make-local-variable 'revert-buffer-function)
        #'TeX-output-revert-buffer)
   ;; special-mode makes it read-only which prevents input from TeX.
