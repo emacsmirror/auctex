@@ -1802,8 +1802,9 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-counter-regexp-list
   (let ((token TeX-token-char))
-    `((,(concat "\\\\newcounter *{\\(" token "+\\)}") 1 LaTeX-auto-counter)
-      (,(concat "\\\\@definecounter{\\(" token "+\\)}") 1 LaTeX-auto-counter)))
+    `((,(concat "\\\\"
+                "\\(?:newcounter\\|@definecounter\\) *{\\(" token "+\\)}")
+       1 LaTeX-auto-counter)))
   "List of regular expressions matching LaTeX counters only.")
 
 (defvar LaTeX-auto-length-regexp-list
