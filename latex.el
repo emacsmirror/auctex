@@ -1760,7 +1760,7 @@ Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-class-regexp-list
-  '(;; \RequirePackage[<options>]{<package>}[<date>]
+  `(;; \RequirePackage[<options>]{<package>}[<date>]
     ("\\\\Require\\(Package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
@@ -1783,13 +1783,16 @@ This is necessary since index entries may contain commands and stuff.")
     ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?"
      1 TeX-auto-symbol)
     ;; Patterns for commands described in "LaTeX2e font selection" (fntguide)
-    ("\\\\DeclareMath\\(?:Symbol\\|Delimiter\\|Accent\\|Radical\\)\
-{?\\\\\\([A-Za-z]+\\)}?"
-     1 TeX-auto-symbol)
-    ("\\\\\\(Declare\\|Provide\\)Text\
-\\(?:Command\\|Symbol\\|Accent\\|Composite\\){?\\\\\\([A-Za-z]+\\)}?"
-     1 TeX-auto-symbol)
-    ("\\\\Declare\\(?:Text\\|Old\\)FontCommand{?\\\\\\([A-Za-z]+\\)}?"
+    (,(concat "\\\\"
+              (regexp-opt '("DeclareMathSymbol"  "DeclareMathDelimiter"
+                            "DeclareMathAccent"  "DeclareMathRadical"
+                            "DeclareTextCommand" "DeclareTextSymbol"
+                            "DeclareTextAccent"  "DeclareTextComposite"
+                            "ProvideTextCommand" "ProvideTextSymbol"
+                            "ProvideTextAccent"  "ProvideTextComposite"
+                            "DeclareTextFontCommand"
+                            "DeclareOldFontCommand"))
+              "{?\\\\\\([A-Za-z]+\\)}?")
      1 TeX-auto-symbol))
   "List of regular expressions matching macros in LaTeX classes and packages.")
 
