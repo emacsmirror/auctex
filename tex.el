@@ -4270,21 +4270,16 @@ alter the numbering of any ordinary, non-shy groups.")
 
 (defvar plain-TeX-auto-regexp-list
   (let ((token TeX-token-char))
-    `((,(concat "\\\\def\\\\\\(" token "+\\)[^a-zA-Z@]")
+    `((,(concat "\\\\\\(?:def\\|let\\)\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol-check)
-      (,(concat "\\\\let\\\\\\(" token "+\\)[^a-zA-Z@]")
-       1 TeX-auto-symbol-check)
-      (,(concat "\\\\font\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
-      (,(concat "\\\\chardef\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
-      (,(concat "\\\\new\\(?:count\\|dimen\\|muskip\\|skip\\)\\\\\\(" token
-                "+\\)[^a-zA-Z@]")
+      (,(concat "\\\\"
+                (regexp-opt '("font" "newfont" "chardef" "mathchardef"
+                              "newcount" "newdimen" "newmuskip" "newskip"))
+                "{?\\\\\\(" token "+\\)}?[^a-zA-Z@]")
        1 TeX-auto-symbol)
-      (,(concat "\\\\newfont{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
       (,(concat "\\\\typein\\[\\\\\\(" token "+\\)\\]") 1 TeX-auto-symbol)
       ("\\\\input +\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?"
-       1 TeX-auto-file)
-      (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
-       1 TeX-auto-symbol)))
+       1 TeX-auto-file)))
   "List of regular expression matching common plain TeX macro definitions.")
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
