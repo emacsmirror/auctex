@@ -1747,9 +1747,15 @@ right number."
   "List of regular expression matching LaTeX labels only.")
 
 (defvar LaTeX-auto-index-regexp-list
-   '(("\\\\\\(index\\|glossary\\){\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-        2 LaTeX-auto-index-entry))
-   "List of regular expression matching LaTeX index/glossary entries only.
+  `((,(concat "\\\\\\(?:index\\|glossary\\)"
+              "{\\([^}{]*"
+              "\\(?:{[^}{]*"
+              "\\(?:{[^}{]*"
+              "\\(?:{[^}{]*}[^}{]*\\)*}"
+              "[^}{]*\\)*}"
+              "[^}{]*\\)*\\)}")
+     1 LaTeX-auto-index-entry))
+  "List of regular expression matching LaTeX index/glossary entries only.
 Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")
 
