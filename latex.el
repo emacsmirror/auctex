@@ -7964,6 +7964,14 @@ This happens when \\left is inserted."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hva\\'" . LaTeX-mode))
 
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(LaTeX-mode "*.ltx" "*.sty" "*.cls" "*.clo" "*.bbl" "*.drv" "*.hva")
+        semantic-symref-filepattern-alist))
+
 (declare-function LaTeX-preview-setup "preview")
 
 ;;;###autoload
