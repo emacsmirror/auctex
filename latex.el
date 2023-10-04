@@ -8087,6 +8087,9 @@ Run after mode hooks and file local variables application."
 ;;;###autoload
 (put 'LaTeX-mode 'auctex-function-definition (symbol-function 'LaTeX-mode))
 
+(with-eval-after-load 'semantic/symref/grep
+  (push '(docTeX-mode "*.dtx") semantic-symref-filepattern-alist))
+
 ;; Enable LaTeX abbrevs in docTeX mode buffer.
 ;; No need to include text mode abbrev table as parents because LaTeX
 ;; mode abbrev table inherits it.

@@ -633,6 +633,10 @@ is assumed by default."
 
 ;;; Mode:
 
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  (push '(Texinfo-mode "*.texinfo" "*.texi" "*.txi")
+        semantic-symref-filepattern-alist))
 
 ;;;###autoload
 (define-derived-mode Texinfo-mode text-mode "Texinfo"
