@@ -523,6 +523,7 @@ is assumed by default."
     (define-key map "\C-c\C-u\C-n"   #'texinfo-update-node)
     (define-key map "\C-c\C-u\C-e"   #'texinfo-every-node-update)
     (define-key map "\C-c\C-u\C-a"   #'texinfo-all-menus-update)
+    (define-key map "\C-c\C-u\C-d"   #'texinfo-start-menu-description)
 
     ;; Simulating LaTeX-mode
     (define-key map "\C-c\C-e" #'Texinfo-environment)
