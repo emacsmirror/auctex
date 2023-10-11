@@ -6,7 +6,7 @@
 ;; URL: https://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 ;; Notifications-To: auctex-diffs@gnu.org
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: TeX LaTeX Texinfo ConTeXt docTeX preview-latex
 
 ;; This file is part of GNU Emacs.
