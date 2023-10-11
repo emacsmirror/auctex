@@ -1,6 +1,6 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020-2022
+;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020-2023
 ;;   Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
@@ -449,7 +449,7 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
     ;; に 2 回行われてしまう。
     (add-hook 'TeX-update-style-hook
               #'japanese-LaTeX-guess-engine nil t)
-    (setq LaTeX-default-style japanese-LaTeX-default-style)
+    (setq-local LaTeX-default-style japanese-LaTeX-default-style)
 
     (when (and (fboundp 'font-latex-add-keywords)
                (eq TeX-install-font-lock 'font-latex-setup))
@@ -497,7 +497,7 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 
 (defun japanese-LaTeX-guess-engine ()
   "Guess Japanese TeX engine and set it to `TeX-engine'.
-Document class and its option is considered in the guess.  Do not
+Document class and its option are taken into account.  Do not
 overwrite the value already set locally."
   ;; `TeX-engine' may be set by the file local variable or by the menu
   ;; Command->TeXing Options manually.  Don't override the user
@@ -517,6 +517,9 @@ overwrite the value already set locally."
 ;;; Support for various self-insert-command
 
 (defalias 'japanese-TeX-self-insert-command
+  ;; FIXME: `can-n-egg-self-insert-command' and
+  ;; `egg-self-insert-command' must be much obsolete because
+  ;; can-n-egg.el and egg.el are no longer available.
   (cond ((fboundp 'can-n-egg-self-insert-command)
          #'can-n-egg-self-insert-command)
         ((fboundp 'egg-self-insert-command)
@@ -526,13 +529,15 @@ overwrite the value already set locally."
         (t
          #'self-insert-command)))
 
-(defun TeX-insert-punctuation ()
+(defun japanese-TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
   (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
   (call-interactively #'japanese-TeX-self-insert-command))
+(advice-add 'TeX-insert-punctuation :override
+            #'japanese-TeX-insert-punctuation)
 
 ;;; Error Messages
 

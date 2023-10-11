@@ -135,7 +135,13 @@ of `plain-TeX-mode-hook'."
   (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
   (plain-TeX-maybe-install-toolbar)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
-  (TeX-set-mode-name))
+  (TeX-set-mode-name)
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of `find-file-hook'
+  ;; in `VirTeX-common-initialization'.  This is necessary for
+  ;; `xref-find-references', for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style)))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
@@ -308,7 +314,13 @@ of `AmS-TeX-mode-hook'."
   (setq TeX-base-mode-name "AmS-TeX")
   (setq TeX-command-default "AmSTeX")
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
-  (TeX-set-mode-name))
+  (TeX-set-mode-name)
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of `find-file-hook'
+  ;; in `VirTeX-common-initialization'.  This is necessary for
+  ;; `xref-find-references', for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style)))
 
 (defcustom AmSTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes

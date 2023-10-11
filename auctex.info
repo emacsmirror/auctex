@@ -1,7 +1,7 @@
 This is auctex.info, produced by makeinfo version 7.0.3 from
 auctex.texi.
 
-This manual is for AUCTeX (version 13.2.1 from 2023-07-20), a
+This manual is for AUCTeX (version 13.2.1.2023-10-11 from 2023-10-11), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
@@ -453,7 +453,7 @@ it out with one of these options:
      If you are planning to install the package as a single
      non-priviledged user, you will typically set PREFIX to your home
      directory.  Consult *note Advice for non-privileged users:: for
-     addtional instructions.
+     additional instructions.
 
 ‘--with-emacs=/PATH/TO/EMACS’
      If you are using a pretest which isn’t in your ‘PATH’, or
@@ -1212,8 +1212,8 @@ about this and asks you to enter a value.
 1.3.1.4 Inserting macros
 ........................
 
-‘C-c C-m’, or simply ‘C-c RET’ will give you a prompt that asks you for
-a LaTeX macro.  You can use <TAB> for completion, or the <up>/<down>
+‘C-c C-m’, or simply ‘C-c <RET>’ will give you a prompt that asks you
+for a LaTeX macro.  You can use <TAB> for completion, or the <up>/<down>
 arrow keys (or ‘M-p’ and ‘M-n’) to browse the command history.  In many
 cases, AUCTeX knows which arguments a macro needs and will ask you for
 that.  It even can differentiate between mandatory and optional
@@ -3440,6 +3440,8 @@ consideration which are specified in the variables
      If the first element is a function symbol, the function will be
      called with all mandatory arguments of the macro and the result of
      the function call will be used as a replacement for the macro.
+     Such functions typically return a string, but may also return the
+     symbol ‘abort’ to indicate that the macro should not be folded.
 
      The placeholder is made by copying the text from the buffer
      together with its properties, i.e. its face as well.  If
@@ -4960,7 +4962,7 @@ File: auctex.info,  Node: Internationalization,  Next: Automatic,  Prev: Parsing
 ====================
 
 TeX and Emacs are usable for European (Latin, Cyrillic, Greek) based
-languages.  Some LaTeX and EmacsLisp packages are available for easy
+languages.  Some LaTeX and Emacs Lisp packages are available for easy
 typesetting and editing documents in European languages.
 
    All Emacs versions supported by current AUCTeX can handle CJK
@@ -6215,8 +6217,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.2.1 from 2023-07-20), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 13.2.1.2023-10-11 from
+2023-10-11), a sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
 Foundation, Inc.
@@ -6726,6 +6728,8 @@ News since last release
 -----------------------
 
    • AUCTeX now requires GNU Emacs 26.1 or higher.
+
+   • Now LaTeX abbrevs are available in docTeX mode buffers.
 
 News in 13.2
 ------------
@@ -8357,7 +8361,7 @@ A.4 Frequently Asked Questions
         • If you installed AUCTeX from ELPA, use ‘emacs -q -no-site-file
           --eval "(progn (setq package-load-list '((auctex t)))
           (package-initialize))"’.  The ‘--eval’ option activates only
-          AUCTeX among all installed EPLA packages.
+          AUCTeX among all installed ELPA packages.
         • If you installed AUCTeX via traditional ‘configure’–‘make’
           scheme, use ‘emacs -q -no-site-file -l auctex’.  The ‘-l’
           option loads ‘auctex.el’ which you normally do in your init
@@ -8512,9 +8516,7 @@ Insert commands
      C-f <RET>’ to get a list of supported commands.
 
      Note that the prefix argument is not handled the same way by
-     AUCTeX.  Note also that the node insertion command from the native
-     mode (‘texinfo-insert-@node’) can still accessed from the Texinfo
-     menu in AUCTeX.
+     AUCTeX.
 
 Insert braces
      In AUCTeX braces can be inserted with the same key binding as in
@@ -8531,7 +8533,17 @@ Insert environments
      and closing statements, with the function ‘Texinfo-environment’
      (mapped to ‘C-c C-e’).
 
-Format info files with makeinfo and TeX
+Insert nodes
+     Node insertion command ‘texinfo-insert-@node’ is available in the
+     native Texinfo mode (mapped to ‘C-c C-c n’).  It only inserts the
+     string ‘@node ’ (with suitable newlines).
+
+     AUCTeX provides its own node insertion command
+     ‘Texinfo-insert-node’ (mapped to ‘C-c C-s’), which asks for the
+     next, previous and upper nodes with completion, in addition to the
+     node name you are going to insert.
+
+Format info files with ‘makeinfo’ and TeX
      In the native Texinfo mode there are various functions and bindings
      to format a region or the whole buffer for info or to typeset the
      respective text.  For example, there is ‘makeinfo-buffer’ (mapped
@@ -8542,9 +8554,9 @@ Format info files with makeinfo and TeX
      In AUCTeX different commands for formatting or typesetting can be
      invoked through the function ‘TeX-command-master’ (mapped to ‘C-c
      C-c’).  After typing ‘C-c C-c’, you can select the desired command,
-     e.g ‘Makeinfo’ or ‘TeX’, through a prompt in the mini buffer.  Note
-     that you can make, say ‘Makeinfo’, the default by adding this
-     statement in your init file:
+     e.g. ‘Makeinfo’, ‘Makeinfo HTML’, ‘Texi2dvi’ or ‘TeX’, through a
+     prompt in the mini buffer.  Note that you can make, say ‘Makeinfo’,
+     the default by adding this statement in your init file:
 
           (add-hook 'Texinfo-mode-hook
                     (lambda () (setq TeX-command-default "Makeinfo")))
@@ -8559,7 +8571,7 @@ Format info files with makeinfo and TeX
      Note also that in the case of a multifile document, ‘C-c C-c’ in
      AUCTeX will work on the whole document (provided that the file
      variable ‘TeX-master’ is set correctly), while ‘makeinfo-buffer’ in
-     the native mode will process only the current buffer, provided at
+     the native mode will process only the current buffer, provided that
      the ‘@setfilename’ statement is provided.
 
 Produce indexes and print
@@ -8625,20 +8637,14 @@ File: auctex.info,  Node: Unbinding,  Prev: Mapping,  Up: Texinfo mode
 A.5.4 Which native mode key bindings are missing
 ------------------------------------------------
 
-The following commands from the native commands might still be useful
-when working with AUCTeX, however, they are not accessible with a key
+The following command from the native commands might still be useful
+when working with AUCTeX, however, it is not accessible with a key
 binding any longer.
-
-‘@node’ insertion
-     The node insertion command, mapped to ‘C-c C-c n’ in the native
-     mode, is not mapped to any key in AUCTeX.  You can still access it
-     through the Texinfo menu, though.  Another alternative is to use
-     the ‘C-c C-m’ binding for macro insertion in AUCTeX.
 
 Show the section structure
      The command ‘texinfo-show-structure’ (‘C-c C-s’) from the native
      mode does not have a key binding in AUCTeX.  The binding is used by
-     AUCTeX for sectioning.
+     AUCTeX for inserting ‘@node’.
 
 
 File: auctex.info,  Node: Indices,  Prev: Appendices,  Up: Top
@@ -8681,6 +8687,7 @@ Key Index
 * C-c C-c:                               Starting a Command.  (line  13)
 * C-c C-d:                               Multifile.           (line  99)
 * C-c C-e:                               Environments.        (line  23)
+* C-c C-e <1>:                           Superseding.         (line  34)
 * C-c C-f:                               Font Specifiers.     (line  55)
 * C-c C-f C-b:                           Editing Facilities.  (line  72)
 * C-c C-f C-b <1>:                       Font Specifiers.     (line  16)
@@ -8707,6 +8714,7 @@ Key Index
 * C-c C-f g:                             Japanese.            (line 113)
 * C-c C-f m:                             Japanese.            (line 117)
 * C-c C-k:                               Control.             (line  10)
+* C-c C-k <1>:                           Superseding.         (line  94)
 * C-c C-l:                               Control.             (line  14)
 * C-c C-m:                               Completion.          (line  79)
 * C-c C-n:                               Parsing Files.       (line  45)
@@ -8728,6 +8736,7 @@ Key Index
 * C-c C-q C-s:                           Filling.             (line  95)
 * C-c C-r:                               Starting a Command.  (line  19)
 * C-c C-s:                               Sectioning.          (line  22)
+* C-c C-s <1>:                           Superseding.         (line  44)
 * C-c C-t C-b:                           Ignoring warnings.   (line  10)
 * C-c C-t C-i:                           Processing Facilities.
                                                               (line  53)
@@ -8909,6 +8918,7 @@ Function Index
 * TeX-font:                              Font Specifiers.     (line  54)
 * TeX-home-buffer:                       Control.             (line  17)
 * TeX-insert-braces:                     Quotes.              (line 135)
+* TeX-insert-braces <1>:                 Superseding.         (line  29)
 * TeX-insert-dollar:                     Quotes.              (line  60)
 * TeX-insert-macro:                      Completion.          (line  78)
 * TeX-insert-quote:                      Quotes.              (line  14)
@@ -8917,6 +8927,7 @@ Function Index
 * TeX-ispell-skip-setcdr:                Selecting a Command. (line 147)
 * TeX-ispell-tex-arg-end:                Selecting a Command. (line 167)
 * TeX-kill-job:                          Control.             (line   9)
+* TeX-kill-job <1>:                      Superseding.         (line  94)
 * TeX-master-file-ask:                   Multifile.           (line  70)
 * TeX-narrow-to-group:                   Narrowing.           (line  13)
 * TeX-next-error:                        Debugging.           (line  11)
@@ -8937,6 +8948,8 @@ Function Index
 * TeX-view:                              Starting Viewers.    (line  11)
 * TeX-view <1>:                          I/O Correlation.     (line  42)
 * TeX-view-mouse:                        I/O Correlation.     (line  48)
+* Texinfo-environment:                   Superseding.         (line  34)
+* Texinfo-insert-node:                   Superseding.         (line  44)
 * Texinfo-mark-environment:              Marking (Texinfo).   (line  24)
 * Texinfo-mark-node:                     Marking (Texinfo).   (line  33)
 * Texinfo-mark-section:                  Marking (Texinfo).   (line   6)
@@ -9091,9 +9104,9 @@ Variable Index
 * LaTeX-fill-excluded-macros:            Filling.             (line 121)
 * LaTeX-float:                           Floats.              (line  14)
 * LaTeX-float <1>:                       Floats.              (line  39)
-* LaTeX-fold-env-spec-list:              Folding.             (line 197)
-* LaTeX-fold-macro-spec-list:            Folding.             (line 197)
-* LaTeX-fold-math-spec-list:             Folding.             (line 197)
+* LaTeX-fold-env-spec-list:              Folding.             (line 199)
+* LaTeX-fold-macro-spec-list:            Folding.             (line 199)
+* LaTeX-fold-math-spec-list:             Folding.             (line 199)
 * LaTeX-font-list:                       Font Specifiers.     (line  69)
 * LaTeX-indent-environment-check:        Indenting.           (line  51)
 * LaTeX-indent-environment-list:         Indenting.           (line  37)
@@ -9210,17 +9223,17 @@ Variable Index
 * TeX-file-recurse:                      Automatic.           (line  44)
 * TeX-fold-auto:                         Folding.             (line  70)
 * TeX-fold-command-prefix:               Folding.             (line 145)
-* TeX-fold-env-spec-list:                Folding.             (line 187)
+* TeX-fold-env-spec-list:                Folding.             (line 189)
 * TeX-fold-force-fontify:                Folding.             (line  62)
-* TeX-fold-help-echo-max-length:         Folding.             (line 224)
+* TeX-fold-help-echo-max-length:         Folding.             (line 226)
 * TeX-fold-macro-spec-list:              Folding.             (line 154)
-* TeX-fold-math-spec-list:               Folding.             (line 194)
+* TeX-fold-math-spec-list:               Folding.             (line 196)
 * TeX-fold-preserve-comments:            Folding.             (line  75)
 * TeX-fold-type-list:                    Folding.             (line  57)
 * TeX-fold-unfold-around-mark:           Folding.             (line  81)
-* TeX-fold-unspec-env-display-string:    Folding.             (line 207)
-* TeX-fold-unspec-macro-display-string:  Folding.             (line 203)
-* TeX-fold-unspec-use-name:              Folding.             (line 211)
+* TeX-fold-unspec-env-display-string:    Folding.             (line 209)
+* TeX-fold-unspec-macro-display-string:  Folding.             (line 205)
+* TeX-fold-unspec-use-name:              Folding.             (line 213)
 * TeX-font-list:                         Font Specifiers.     (line  60)
 * TeX-header-end:                        Starting a Command.  (line  32)
 * TeX-header-end <1>:                    Starting a Command.  (line  69)
@@ -9373,7 +9386,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 886)
+* auctex.el <1>:                         Changes.             (line 888)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9678,7 +9691,7 @@ Concept Index
                                                               (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 886)
+* tex-site.el <2>:                       Changes.             (line 888)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9700,105 +9713,105 @@ Concept Index
 
 
 Tag Table:
-Node: Top922
-Node: Copying7402
-Node: Introduction9351
-Node: Summary9621
-Node: Installation12370
-Node: Prerequisites14381
-Node: Configure16608
-Node: Build/install and uninstall21350
-Node: Loading the package22107
-Node: Advice for package providers23846
-Node: Advice for non-privileged users26717
-Node: Installation under MS Windows32235
-Node: Customizing46175
-Node: Quick Start47784
-Ref: Quick Start-Footnote-149917
-Node: Editing Facilities50019
-Node: Processing Facilities54909
-Node: Editing59800
-Node: Quotes61138
-Node: Font Specifiers70676
-Node: Sectioning72872
-Node: Environments77569
-Node: Equations83137
-Node: Floats83765
-Node: Itemize-like85809
-Node: Tabular-like86679
-Node: Customizing Environments88573
-Node: Mathematics88813
-Node: Completion92339
-Node: Marking100106
-Node: Marking (LaTeX)100742
-Node: Marking (Texinfo)101692
-Node: Commenting103335
-Node: Indenting104720
-Node: Filling113439
-Node: Display119461
-Node: Font Locking121974
-Node: Fontification of macros124079
-Node: Fontification of quotes134101
-Node: Fontification of math135641
-Node: Verbatim content139417
-Node: Faces140207
-Node: Known problems140712
-Node: Folding141721
-Node: Outline152708
-Node: Narrowing154031
-Node: Prettifying155108
-Node: Processing156395
-Node: Commands157755
-Node: Starting a Command158319
-Node: Selecting a Command163483
-Node: Processor Options172886
-Node: Viewing183559
-Node: Starting Viewers183933
-Node: I/O Correlation189731
-Ref: I/O Correlation-Footnote-1195489
-Node: Debugging195755
-Node: Ignoring warnings198435
-Node: Error overview200546
-Node: Checking202470
-Node: Control204160
-Node: Cleaning206309
-Node: Documentation207756
-Node: Customization208879
-Node: Modes and Hooks209372
-Node: Multifile211332
-Node: Parsing Files216178
-Node: Internationalization221217
-Node: European222571
-Node: Japanese230490
-Node: Automatic235750
-Node: Automatic Global238279
-Node: Automatic Private239417
-Node: Automatic Local240781
-Node: Style Files242055
-Node: Simple Style242869
-Node: Adding Macros246662
-Node: Adding Environments256463
-Node: Adding Other261925
-Node: Hacking the Parser266605
-Node: Appendices270618
-Node: Copying this Manual270914
-Node: GNU Free Documentation License271800
-Node: Changes297124
-Node: Development356597
-Node: Mid-term Goals357245
-Node: Wishlist360144
-Node: Bugs366347
-Node: FAQ367487
-Node: Texinfo mode373361
-Node: Exploiting374497
-Node: Superseding375319
-Node: Mapping379786
-Node: Unbinding381729
-Node: Indices382570
-Node: Key Index382733
-Node: Function Index390408
-Node: Variable Index402678
-Node: Concept Index428183
+Node: Top933
+Node: Copying7413
+Node: Introduction9362
+Node: Summary9632
+Node: Installation12381
+Node: Prerequisites14392
+Node: Configure16619
+Node: Build/install and uninstall21362
+Node: Loading the package22119
+Node: Advice for package providers23858
+Node: Advice for non-privileged users26729
+Node: Installation under MS Windows32247
+Node: Customizing46187
+Node: Quick Start47796
+Ref: Quick Start-Footnote-149929
+Node: Editing Facilities50031
+Node: Processing Facilities54923
+Node: Editing59814
+Node: Quotes61152
+Node: Font Specifiers70690
+Node: Sectioning72886
+Node: Environments77583
+Node: Equations83151
+Node: Floats83779
+Node: Itemize-like85823
+Node: Tabular-like86693
+Node: Customizing Environments88587
+Node: Mathematics88827
+Node: Completion92353
+Node: Marking100120
+Node: Marking (LaTeX)100756
+Node: Marking (Texinfo)101706
+Node: Commenting103349
+Node: Indenting104734
+Node: Filling113453
+Node: Display119475
+Node: Font Locking121988
+Node: Fontification of macros124093
+Node: Fontification of quotes134115
+Node: Fontification of math135655
+Node: Verbatim content139431
+Node: Faces140221
+Node: Known problems140726
+Node: Folding141735
+Node: Outline152866
+Node: Narrowing154189
+Node: Prettifying155266
+Node: Processing156553
+Node: Commands157913
+Node: Starting a Command158477
+Node: Selecting a Command163641
+Node: Processor Options173044
+Node: Viewing183717
+Node: Starting Viewers184091
+Node: I/O Correlation189889
+Ref: I/O Correlation-Footnote-1195647
+Node: Debugging195913
+Node: Ignoring warnings198593
+Node: Error overview200704
+Node: Checking202628
+Node: Control204318
+Node: Cleaning206467
+Node: Documentation207914
+Node: Customization209037
+Node: Modes and Hooks209530
+Node: Multifile211490
+Node: Parsing Files216336
+Node: Internationalization221375
+Node: European222730
+Node: Japanese230649
+Node: Automatic235909
+Node: Automatic Global238438
+Node: Automatic Private239576
+Node: Automatic Local240940
+Node: Style Files242214
+Node: Simple Style243028
+Node: Adding Macros246821
+Node: Adding Environments256622
+Node: Adding Other262084
+Node: Hacking the Parser266764
+Node: Appendices270777
+Node: Copying this Manual271073
+Node: GNU Free Documentation License271970
+Node: Changes297294
+Node: Development356831
+Node: Mid-term Goals357479
+Node: Wishlist360378
+Node: Bugs366581
+Node: FAQ367721
+Node: Texinfo mode373595
+Node: Exploiting374731
+Node: Superseding375553
+Node: Mapping380368
+Node: Unbinding382311
+Node: Indices382859
+Node: Key Index383022
+Node: Function Index390916
+Node: Variable Index403478
+Node: Concept Index428983
 
 End Tag Table
 

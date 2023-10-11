@@ -24,12 +24,6 @@
 (require 'ert)
 (require 'latex)
 
-;; We need to ensure that font-lock has put the syntax properties
-;; already which won't happen in batch mode.  So trigger font-lock
-;; immediately.
-(define-advice LaTeX-common-initialization (:after ())
-  (font-lock-ensure))
-
 (AUCTeX-set-ert-path
  'LaTeX-indent-tabular-test/in
  "tabular-in.tex"
@@ -174,11 +168,10 @@
   (should (string=
            (with-temp-buffer
              (insert-file-contents LaTeX-filling/in)
-             (LaTeX-mode)
              (let ((fill-column 70)
                    (LaTeX-shortvrb-chars '(?\"))
                    (TeX-parse-self t))
-               (TeX-update-style t)
+               (LaTeX-mode)
                (search-forward "Lorem")
                (fill-paragraph)
 
@@ -416,9 +409,8 @@ backend=biber % here is a comment
 
       ;; dvipdfmx option should not trigger `TeX-PDF-from-DVI' for
       ;; XeLaTeX document
-      (latex-mode)
       (let ((TeX-engine 'xetex))
-        (TeX-update-style))
+        (LaTeX-mode))
       (should TeX-PDF-mode)
       (should (not (TeX-PDF-from-DVI)))
       (should (not (member "dvipdfmx" TeX-active-styles)))

@@ -124,7 +124,7 @@ this and asks you to enter a value.
 
 @subsection Inserting macros
 
-@kbd{C-c C-m}, or simply @kbd{C-c RET} will give you a prompt that asks
+@kbd{C-c C-m}, or simply @kbd{C-c @key{RET}} will give you a prompt that asks
 you for a @LaTeX{} macro.  You can use @key{TAB} for completion, or the
 @key{up}/@key{down} arrow keys (or @kbd{M-p} and @kbd{M-n}) to browse the command
 history.  In many cases, @AUCTeX{} knows which arguments a macro needs

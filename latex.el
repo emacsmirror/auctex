@@ -33,7 +33,10 @@
 (require 'tex-ispell)
 (require 'latex-flymake)
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  ;; Require subr-x.el for `string-trim' which wasn't autoloaded:
+  (when (< emacs-major-version 29)
+    (require 'subr-x)))
 
 ;; Silence the compiler for functions:
 (declare-function outline-level "ext:outline"
@@ -1744,14 +1747,20 @@ right number."
   "List of regular expression matching LaTeX labels only.")
 
 (defvar LaTeX-auto-index-regexp-list
-   '(("\\\\\\(index\\|glossary\\){\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-        2 LaTeX-auto-index-entry))
-   "List of regular expression matching LaTeX index/glossary entries only.
+  `((,(concat "\\\\\\(?:index\\|glossary\\)"
+              "{\\([^}{]*"
+              "\\(?:{[^}{]*"
+              "\\(?:{[^}{]*"
+              "\\(?:{[^}{]*}[^}{]*\\)*}"
+              "[^}{]*\\)*}"
+              "[^}{]*\\)*\\)}")
+     1 LaTeX-auto-index-entry))
+  "List of regular expression matching LaTeX index/glossary entries only.
 Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-class-regexp-list
-  '(;; \RequirePackage[<options>]{<package>}[<date>]
+  `(;; \RequirePackage[<options>]{<package>}[<date>]
     ("\\\\Require\\(Package\\)\\(\\[\\([^]]*\\)\\]\\)?\
 {\\([^#\\.\n\r]+?\\)}"
      (3 4 1) LaTeX-auto-style)
@@ -1774,13 +1783,16 @@ This is necessary since index entries may contain commands and stuff.")
     ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?"
      1 TeX-auto-symbol)
     ;; Patterns for commands described in "LaTeX2e font selection" (fntguide)
-    ("\\\\DeclareMath\\(?:Symbol\\|Delimiter\\|Accent\\|Radical\\)\
-{?\\\\\\([A-Za-z]+\\)}?"
-     1 TeX-auto-symbol)
-    ("\\\\\\(Declare\\|Provide\\)Text\
-\\(?:Command\\|Symbol\\|Accent\\|Composite\\){?\\\\\\([A-Za-z]+\\)}?"
-     1 TeX-auto-symbol)
-    ("\\\\Declare\\(?:Text\\|Old\\)FontCommand{?\\\\\\([A-Za-z]+\\)}?"
+    (,(concat "\\\\"
+              (regexp-opt '("DeclareMathSymbol"  "DeclareMathDelimiter"
+                            "DeclareMathAccent"  "DeclareMathRadical"
+                            "DeclareTextCommand" "DeclareTextSymbol"
+                            "DeclareTextAccent"  "DeclareTextComposite"
+                            "ProvideTextCommand" "ProvideTextSymbol"
+                            "ProvideTextAccent"  "ProvideTextComposite"
+                            "DeclareTextFontCommand"
+                            "DeclareOldFontCommand"))
+              "{?\\\\\\([A-Za-z]+\\)}?")
      1 TeX-auto-symbol))
   "List of regular expressions matching macros in LaTeX classes and packages.")
 
@@ -1790,8 +1802,9 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-counter-regexp-list
   (let ((token TeX-token-char))
-    `((,(concat "\\\\newcounter *{\\(" token "+\\)}") 1 LaTeX-auto-counter)
-      (,(concat "\\\\@definecounter{\\(" token "+\\)}") 1 LaTeX-auto-counter)))
+    `((,(concat "\\\\"
+                "\\(?:newcounter\\|@definecounter\\) *{\\(" token "+\\)}")
+       1 LaTeX-auto-counter)))
   "List of regular expressions matching LaTeX counters only.")
 
 (defvar LaTeX-auto-length-regexp-list
@@ -1825,16 +1838,15 @@ This is necessary since index entries may contain commands and stuff.")
         1 TeX-auto-file)
        ("\\\\include{\\(\\.*[^#}%\\.\n\r]+\\)\\(\\.[^#}%\\.\n\r]+\\)?}"
         1 TeX-auto-file)
-       (,(concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
-        1 LaTeX-auto-bibitem)
-       (,(concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+       (,(concat "\\\\bibitem\\(?:\\[[^][\n\r]+\\]\\)?"
+                 "{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
         1 LaTeX-auto-bibitem)
        ("\\\\bibliography{\\([^#}\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)
        ("\\\\addbibresource\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r]+\\)\\..+}"
         1 LaTeX-auto-bibliography)
        ("\\\\add\\(?:global\\|section\\)bib\\(?:\\[[^]]+\\]\\)?{\\([^#}\\\n\r.]+\\)\\(?:\\..+\\)?}" 1 LaTeX-auto-bibliography)
-       ("\\\\newrefsection\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)
-       ("\\\\begin{refsection}\\[\\([^]]+\\)\\]" 1 LaTeX-split-bibs)))
+       ("\\\\\\(?:newrefsection\\|begin{refsection}\\)\\[\\([^]]+\\)\\]"
+        1 LaTeX-split-bibs)))
    LaTeX-auto-class-regexp-list
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
@@ -6451,14 +6463,16 @@ char."
 (defcustom LaTeX-fold-macro-spec-list nil
   "List of display strings and macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
 (defcustom LaTeX-fold-env-spec-list nil
   "List of display strings and environments to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
@@ -6484,7 +6498,8 @@ char."
                     ,@LaTeX-math-default)))
   "List of display strings and math macros to fold in LaTeX mode."
   :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1))
+                                (integer :tag "Number of argument" :value 1)
+                                (function :tag "Function to execute"))
                         (repeat :tag "Math Macros" (string))))
   :group 'TeX-fold)
 
@@ -7718,7 +7733,7 @@ or `LaTeX-environment-list' and returns it."
     ;; cases, but will also fail for example in hyperref.el.  This
     ;; decision should revisited at a later stage:
     (when (assq 'TeX-arg-conditional arg-list)
-      (cl-letf (((symbol-function 'y-or-n-p) #'always))
+      (cl-flet ((y-or-n-p #'TeX-always))
         (while (and arg-list
                     (setq arg (car arg-list)))
           (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
@@ -8001,6 +8016,36 @@ of `LaTeX-mode-hook'."
                               (mapcar #'cdr LaTeX-provided-class-options)))))
             nil t)
   (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) local variables.
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp (LaTeX-outline-regexp t)))
+  (or (local-variable-p 'outline-heading-alist)
+      (setq outline-heading-alist
+            (mapcar (lambda (x)
+                      (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                    LaTeX-section-list)))
+
+  ;; Keep `LaTeX-paragraph-commands-regexp' in sync with
+  ;; `LaTeX-paragraph-commands' in case the latter is updated by
+  ;; hooks or file (directory) local variables.
+  (and (local-variable-p 'LaTeX-paragraph-commands)
+       (setq-local LaTeX-paragraph-commands-regexp
+                   (LaTeX-paragraph-commands-regexp-make)))
+  ;; Don't do locally-bound test for `paragraph-start' because it
+  ;; makes little sense; Style files casually call this function and
+  ;; overwrite it unconditionally.  Users who need per-file
+  ;; customization of `paragraph-start' should set
+  ;; `LaTeX-paragraph-commands' instead.
+  (LaTeX-set-paragraph-start)
+
+  ;; Don't do locally-bound test for similar reason as above.  Users
+  ;; who need per-file customization of
+  ;; `LaTeX-indent-begin-regexp-local' etc. should set
+  ;; `LaTeX-indent-begin-list' and so on instead.
+  (LaTeX-indent-commands-regexp-make)
+
   (when (fboundp 'LaTeX-preview-setup)
     (LaTeX-preview-setup))
   (TeX-set-mode-name)
@@ -8009,7 +8054,14 @@ of `LaTeX-mode-hook'."
            filladapt-mode)
       (turn-off-filladapt-mode))
   ;; Set up flymake backend, see latex-flymake.el
-  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
+  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t)
+
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of `find-file-hook'
+  ;; in `VirTeX-common-initialization'.  This is necessary for
+  ;; `xref-find-references', for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style)))
 
 (TeX-abbrev-mode-setup doctex-mode)
 
@@ -8032,7 +8084,17 @@ runs the hooks in `docTeX-mode-hook'."
         TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
+  ;; We can remove the next `setq' when syntax propertization
+  ;; decouples font lock and `font-latex-setup' stops calling
+  ;; `font-lock-set-defaults'.
+  (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
+
+;; Enable LaTeX abbrevs in docTeX mode buffer.
+(let ((p (abbrev-table-get doctex-mode-abbrev-table :parents)))
+  (or (memq latex-mode-abbrev-table p)
+      (abbrev-table-put doctex-mode-abbrev-table :parents
+                        (cons latex-mode-abbrev-table p))))
 
 ;;This is actually a mess: to fit the scheme properly, our derived
 ;;mode definition would have had to be made for TeX-doctex-mode in the
@@ -8115,12 +8177,13 @@ function would return non-nil and `(match-string 1)' would return
 
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  (when (boundp 'outline-heading-alist)
-    (setq outline-heading-alist
-          (mapcar (lambda (x)
-                    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                  LaTeX-section-list)))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  ;; (when (boundp 'outline-heading-alist)
+  ;;   (setq outline-heading-alist
+  ;;         (mapcar (lambda (x)
+  ;;                   (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+  ;;                 LaTeX-section-list)))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
@@ -8129,7 +8192,8 @@ function would return non-nil and `(match-string 1)' would return
                                    (copy-sequence
                                     plain-TeX-auto-regexp-list))))
 
-  (LaTeX-set-paragraph-start)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-set-paragraph-start)
   (setq paragraph-separate
         (concat
          "[ \t]*%*[ \t]*\\("
@@ -8145,7 +8209,8 @@ function would return non-nil and `(match-string 1)' would return
   (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
   (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
 
-  (LaTeX-indent-commands-regexp-make)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (LaTeX-indent-commands-regexp-make)
 
   ;; Standard Emacs completion-at-point support.  We append the entry
   ;; in order to let `TeX--completion-at-point' be first in the list:
@@ -8866,22 +8931,36 @@ function would return non-nil and `(match-string 1)' would return
             (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
 
+;; This function is no longer used; We leave it for compatibility.
 (defun LaTeX-env-beginning-pos-col ()
   "Return a cons: (POINT . COLUMN) for current environment's beginning."
   (save-excursion
     (LaTeX-find-matching-begin)
     (cons (point) (current-column))))
 
+;; This makes difference from `LaTeX-env-beginning-pos-col' when
+;; something non-whitespace sits before the \begin{foo}.  (bug#65648)
+(defun LaTeX-env-beginning-pos-indent ()
+  "Return a cons: (POINT . INDENT) for current environment's beginning.
+INDENT is the indent of the line containing POINT."
+  (save-excursion
+    ;; FIXME: There should be some fallback mechanism in case that the
+    ;; next `backward-up' fails.  (Such fail can occur in document
+    ;; with temporarily broken structure due to in-progress editing
+    ;; process.)
+    (LaTeX-backward-up-environment)
+    (cons (point) (LaTeX-current-indentation))))
+
 (defun LaTeX-hanging-ampersand-position (&optional pos col)
   "Return indent column for a hanging ampersand (that is, ^\\s-*&).
-When you know the position and column of the beginning of the
-current environment, supply them as optional arguments POS and
-COL for efficiency."
+When you know the position of the beginning of the current
+environment and indent of its line, supply them as optional
+arguments POS and COL for efficiency."
   (cl-destructuring-bind
       (beg-pos . beg-col)
       (if pos
           (cons pos col)
-        (LaTeX-env-beginning-pos-col))
+        (LaTeX-env-beginning-pos-indent))
     (let ((cur-pos (point)))
       (save-excursion
         (if (and (search-backward "\\\\" beg-pos t)
@@ -8912,7 +8991,7 @@ COL for efficiency."
   "Return indent column for the current tabular-like line."
   (cl-destructuring-bind
       (beg-pos . beg-col)
-      (LaTeX-env-beginning-pos-col)
+      (LaTeX-env-beginning-pos-indent)
     (let ((tabular-like-end-regex
            (format "\\\\end{%s}"
                    (regexp-opt

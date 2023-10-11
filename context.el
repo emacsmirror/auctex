@@ -312,7 +312,7 @@ The following variables can be set to customize:
 ;; (May 3, 2023) The above comment is wrong.  Here "large" refers to
 ;; coarseness of document structure grouping.  That is, "chapter" is
 ;; larger than "section", "section" is larger than "subsection" etc.
-;; On the ohter hand, the corresponding levels are numbered in the
+;; On the other hand, the corresponding levels are numbered in the
 ;; reversed order.  That is, "chapter" is level 1, "section" is level
 ;; 2 etc.  Hence the largest _section_ has the smallest _level_.
 ;; That's the reason we use `max' rather than `min' here.
@@ -1840,8 +1840,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
     (set symbol (symbol-value (intern (concat (symbol-name symbol) "-"
                                               ConTeXt-current-interface)))))
 
-  ;; Create certain regular expressions based on language
-  (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (setq ConTeXt-indent-item-re (concat "\\\\\\(" (mapconcat #'identity ConTeXt-item-list "\\|") "\\)\\>"))
 
   ;; What's the deepest level at we can collapse a document?
   ;; set only if user has not set it.  Need to be set before menu is created.
@@ -1858,17 +1858,19 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Paragraph formatting
   (set (make-local-variable 'LaTeX-syntactic-comments) nil)
-  (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
-       (ConTeXt-paragraph-commands-regexp))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
+  ;;      (ConTeXt-paragraph-commands-regexp))
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
-  (setq paragraph-start
-        (concat
-         "[ \t]*\\("
-         (ConTeXt-paragraph-commands-regexp) "\\|"
-         "\\$\\$\\|" ; Plain TeX display math
-         "$\\)"))
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (setq paragraph-start
+  ;;       (concat
+  ;;        "[ \t]*\\("
+  ;;        (ConTeXt-paragraph-commands-regexp) "\\|"
+  ;;        "\\$\\$\\|" ; Plain TeX display math
+  ;;        "$\\)"))
   (setq paragraph-separate
         (concat
          "[ \t]*\\("
@@ -1879,6 +1881,7 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (use-local-map ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
+  ;; FIXME: Isn't `activate-menubar-hook' obsolete?
   (add-hook 'activate-menubar-hook #'ConTeXt-menu-update nil t)
 
   (setq-local beginning-of-defun-function #'ConTeXt-find-matching-start)
@@ -1886,8 +1889,9 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Outline support
   (require 'outline)
-  (set (make-local-variable 'outline-level) 'ConTeXt-outline-level)
-  (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
+  (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
+  ;; Moved after `run-mode-hooks'. (bug#65750)
+  ;; (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
   ;;(make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
         TeX-trailer-start (ConTeXt-trailer-start))
@@ -1902,7 +1906,31 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; run hooks
   (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
+  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook)
+
+  ;; Create certain regular expressions based on language.
+  ;; Don't overwrite the value the user set by hooks or file
+  ;; (directory) variables.
+  (or (local-variable-p 'ConTeXt-indent-item-re)
+      (setq-local ConTeXt-indent-item-re
+                  (concat
+                   "\\\\\\("
+                   (mapconcat #'identity ConTeXt-item-list "\\|")
+                   "\\)\\>")))
+
+  ;; Don't do locally-bound test for `LaTeX-paragraph-commands-regexp'
+  ;; and `paragraph-start'.  See comments in similar part in latex.el.
+  (setq-local LaTeX-paragraph-commands-regexp
+              (ConTeXt-paragraph-commands-regexp))
+  (setq paragraph-start
+        (concat
+         "[ \t]*\\("
+         (ConTeXt-paragraph-commands-regexp) "\\|"
+         "\\$\\$\\|" ; Plain TeX display math
+         "$\\)"))
+
+  (or (local-variable-p 'outline-regexp)
+      (setq-local outline-regexp (ConTeXt-outline-regexp t))))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."

@@ -3779,6 +3779,9 @@ The algorithm is as follows:
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
 
   ;; Symbol & length completion.
+  ;; We have to move the setup of `TeX-complete-list' after
+  ;; `run-mode-hooks' in order to reflect the file local customization
+  ;; of `TeX-insert-braces' and `TeX-complete-word'.
   (setq-local TeX-complete-list
               (list (list "\\\\\\([a-zA-Z]*\\)"
                           1
@@ -4267,21 +4270,16 @@ alter the numbering of any ordinary, non-shy groups.")
 
 (defvar plain-TeX-auto-regexp-list
   (let ((token TeX-token-char))
-    `((,(concat "\\\\def\\\\\\(" token "+\\)[^a-zA-Z@]")
+    `((,(concat "\\\\\\(?:def\\|let\\)\\\\\\(" token "+\\)[^a-zA-Z@]")
        1 TeX-auto-symbol-check)
-      (,(concat "\\\\let\\\\\\(" token "+\\)[^a-zA-Z@]")
-       1 TeX-auto-symbol-check)
-      (,(concat "\\\\font\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
-      (,(concat "\\\\chardef\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
-      (,(concat "\\\\new\\(?:count\\|dimen\\|muskip\\|skip\\)\\\\\\(" token
-                "+\\)[^a-zA-Z@]")
+      (,(concat "\\\\"
+                (regexp-opt '("font" "newfont" "chardef" "mathchardef"
+                              "newcount" "newdimen" "newmuskip" "newskip"))
+                "{?\\\\\\(" token "+\\)}?[^a-zA-Z@]")
        1 TeX-auto-symbol)
-      (,(concat "\\\\newfont{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
       (,(concat "\\\\typein\\[\\\\\\(" token "+\\)\\]") 1 TeX-auto-symbol)
       ("\\\\input +\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?"
-       1 TeX-auto-file)
-      (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]")
-       1 TeX-auto-symbol)))
+       1 TeX-auto-file)))
   "List of regular expression matching common plain TeX macro definitions.")
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
@@ -4779,6 +4777,16 @@ Return nil if ELT is not a member of LIST."
 (make-obsolete 'TeX-assoc
                "use (assoc-string KEY LIST t) instead." "AUCTeX 13.0")
 
+(if (>= emacs-major-version 28)
+    (defalias 'TeX-always #'always)
+  (defun TeX-always (&rest _arguments)
+    "Ignore ARGUMENTS, do nothing and return t.
+This function accepts any number of arguments in ARGUMENTS.
+Also see `ignore'.
+
+This is a compatibility function for Emacs versions prior to v.28."
+    t))
+
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
 See `match-data' for details."
@@ -5230,8 +5238,16 @@ Brace insertion is only done if point is in a math construct and
       (progn
         (easy-menu-add-item
          nil
-         ;; Ugly hack because docTeX mode uses the LaTeX menu.
-         (list (if (eq major-mode 'doctex-mode) "LaTeX" TeX-base-mode-name))
+         ;; Ugly hack because docTeX mode uses the LaTeX menu and
+         ;; ConTeXt mode uses "ConTeXt-en" or "ConTeXt-nl" for the
+         ;; value of `TeX-base-mode-name'.
+         ;; XXX: Perhaps we should have a new variable holding the
+         ;; mode-specific menu title?
+         (list
+          (cond
+           ((eq major-mode 'doctex-mode) "LaTeX")
+           ((eq major-mode 'context-mode) "ConTeXt")
+           (t TeX-base-mode-name)))
          (or TeX-customization-menu
              (setq TeX-customization-menu
                    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
@@ -5475,21 +5491,22 @@ additional characters."
                                           '(?\{ ?\} ?\\))
                                     (TeX-in-comment))))
                  (forward-char)
-                 (cond ((memq char (append
-                                    TeX-indent-open-delimiters
-                                    '(?\{)))
-                        (setq count (+ count TeX-brace-indent-level)))
-                       ((memq char (append
-                                    TeX-indent-close-delimiters
-                                    '(?\})))
-                        (setq count (- count TeX-brace-indent-level)))
-                       ((eq char ?\\)
-                        (when (< (point) limit)
-                          ;; ?\\ in verbatim constructs doesn't escape
-                          ;; the next char
-                          (unless (TeX-verbatim-p)
-                            (forward-char))
-                          t))))))
+                 ;; If inside a verbatim construct, just return t and
+                 ;; proceed, otherwise start counting:
+                 (if (TeX-verbatim-p)
+                     t
+                   (cond ((memq char (append
+                                      TeX-indent-open-delimiters
+                                      '(?\{)))
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((memq char (append
+                                      TeX-indent-close-delimiters
+                                      '(?\})))
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\\)
+                          (when (< (point) limit)
+                            (forward-char)
+                            t)))))))
       count)))
 
 ;;; Navigation
@@ -10146,6 +10163,7 @@ forward, if negative)."
 (define-derived-mode TeX-error-overview-mode tabulated-list-mode
                      "TeX errors"
   "Major mode for listing TeX errors."
+  :syntax-table nil :abbrev-table nil :interactive nil
   (setq tabulated-list-format [("File" 25 nil)
                                ("Line" 4 nil :right-align t)
                                ("Type" 7 nil)
@@ -10248,7 +10266,8 @@ warnings and bad boxes"
 
 ;;; Output mode
 
-(define-derived-mode TeX-special-mode special-mode "TeX")
+(define-derived-mode TeX-special-mode special-mode "TeX"
+  :syntax-table nil :abbrev-table nil :interactive nil)
 
 (defvar TeX-output-mode-map
   (let ((map (make-sparse-keymap)))
@@ -10271,7 +10290,7 @@ warnings and bad boxes"
 (define-derived-mode TeX-output-mode TeX-special-mode "TeX Output"
   "Major mode for viewing TeX output.
 \\{TeX-output-mode-map} "
-  :syntax-table nil
+  :syntax-table nil :abbrev-table nil :interactive nil
   (set (make-local-variable 'revert-buffer-function)
        #'TeX-output-revert-buffer)
   ;; special-mode makes it read-only which prevents input from TeX.

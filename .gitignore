@@ -52,7 +52,7 @@ auctex-autoloads.el
 tests/*/auto/*
 *.dynvars
 auctex-dynvars
-
+.DS_Store
 # ELPA-generated files
 /auctex-autoloads.el
 /auctex-pkg.el

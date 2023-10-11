@@ -1,6 +1,6 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Keywords: tex, wp, convenience
@@ -282,6 +282,30 @@ is initialized to ?x."
 (defcustom LaTeX-exam-label "exm:"
   "Default prefix to labels in environments of exam class."
   :type 'string)
+
+;; style/fancyvrb.el
+
+(defcustom LaTeX-fancyvrb-chars nil
+  "List of characters toggling verbatim mode.
+When your document uses the fancyvrb package and you have a
+\\DefineShortVerb{\\|} in your file to write verbatim text as
+|text|, then set this variable to the list (?|).  Then AUCTeX
+fontifies |text| as verbatim.
+
+Preferably, you should do this buffer-locally using a file
+variable near the end of your document like so:
+
+  %% Local Variables:
+  %% LaTeX-fancyvrb-chars: (?|)
+  %% End:
+
+When you customize this variable to a non-nil value, then it
+becomes the default value meaning that verbatim fontification is
+always performed for the characters in the list, no matter if
+your document actually defines shortverb chars using
+\\DefineShortVerb."
+  :type '(repeat character))
+(put 'LaTeX-fancyvrb-chars 'safe-local-variable #'listp)
 
 ;; style/fontspec.el
 

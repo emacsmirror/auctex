@@ -193,7 +193,7 @@ providers} for detail.
 
 If you are planning to install the package as a single non-priviledged
 user, you will typically set @var{prefix} to your home directory.
-Consult @ref{Advice for non-privileged users} for addtional
+Consult @ref{Advice for non-privileged users} for additional
 instructions.
 
 @item --with-emacs=@var{/path/to/emacs}

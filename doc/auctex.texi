@@ -2747,6 +2747,8 @@ placeholder.
 If the first element is a function symbol, the function will be called
 with all mandatory arguments of the macro and the result of the function
 call will be used as a replacement for the macro.
+Such functions typically return a string, but may also return the
+symbol @code{abort} to indicate that the macro should not be folded.
 
 The placeholder is made by copying the text from the buffer together with
 its properties, i.e.@: its face as well.  If fontification has not
@@ -4577,7 +4579,7 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @cindex @acronym{CJK}-@LaTeX{}
 
 @TeX{} and Emacs are usable for European (Latin, Cyrillic, Greek) based
-languages.  Some @LaTeX{} and EmacsLisp packages are available for easy
+languages.  Some @LaTeX{} and Emacs Lisp packages are available for easy
 typesetting and editing documents in European languages.
 
 @c Some Texinfo macros are not used because they require quite recent
@@ -6144,16 +6146,16 @@ C-@var{k}} and call the function @code{TeX-font}.  Type @kbd{C-c C-f
 @key{RET}} to get a list of supported commands.
 
 Note that the prefix argument is not handled the same way by @AUCTeX{}.
-Note also that the node insertion command from the native mode
-(@code{texinfo-insert-@@node}) can still accessed from the Texinfo menu
-in @AUCTeX{}.
 
 @item Insert braces
+@findex TeX-insert-braces
 In @AUCTeX{} braces can be inserted with the same key binding as in the
 native Texinfo mode: @kbd{C-c @{}.  But @AUCTeX{} uses its own function
 for the feature: @code{TeX-insert-braces}.
 
 @item Insert environments
+@findex Texinfo-environment
+@kindex C-c C-e
 The native Texinfo mode does not insert full environments.  Instead, it
 provides the function @code{texinfo-insert-@@end} (mapped to @kbd{C-c
 C-c e}) for closing an open environment with a matching @code{@@end} statement.
@@ -6162,18 +6164,31 @@ In @AUCTeX{} you can insert full environments, i.e.@: both the opening and
 closing statements, with the function @code{Texinfo-environment} (mapped
 to @kbd{C-c C-e}).
 
-@item Format info files with makeinfo and @TeX{}
+@item Insert nodes
+@findex Texinfo-insert-node
+@kindex C-c C-s
+Node insertion command @code{texinfo-insert-@@node} is available in
+the native Texinfo mode (mapped to @kbd{C-c C-c n}).  It only inserts
+the string @samp{@@node } (with suitable newlines).
+
+@AUCTeX{} provides its own node insertion command
+@code{Texinfo-insert-node} (mapped to @kbd{C-c C-s}), which asks for
+the next, previous and upper nodes with completion, in addition to the
+node name you are going to insert.
+
+@item Format info files with @command{makeinfo} and @TeX{}
 In the native Texinfo mode there are various functions and bindings to
 format a region or the whole buffer for info or to typeset the
 respective text.  For example, there is @code{makeinfo-buffer} (mapped
-to @kbd{C-c C-m C-b}) which runs @samp{makeinfo} on the buffer or there
+to @kbd{C-c C-m C-b}) which runs @command{makeinfo} on the buffer or there
 is @code{texinfo-tex-buffer} (mapped to @kbd{C-c C-t C-b}) which runs
 @TeX{} on the buffer in order to produce a @acronym{DVI} file.
 
 In @AUCTeX{} different commands for formatting or typesetting can be
 invoked through the function @code{TeX-command-master} (mapped to
 @kbd{C-c C-c}).  After typing @kbd{C-c C-c}, you can select the desired
-command, e.g @samp{Makeinfo} or @samp{TeX}, through a prompt in the mini
+command, e.g.@: @samp{Makeinfo}, @samp{Makeinfo HTML}, @samp{Texi2dvi}
+or @samp{TeX}, through a prompt in the mini
 buffer.  Note that you can make, say @samp{Makeinfo}, the default by
 adding this statement in your init file:
 
@@ -6193,7 +6208,7 @@ Note also that in the case of a multifile document, @kbd{C-c C-c} in
 @AUCTeX{} will work on the whole document (provided that the file
 variable @code{TeX-master} is set correctly), while
 @code{makeinfo-buffer} in the native mode will process only the current
-buffer, provided at the @code{@@setfilename} statement is provided.
+buffer, provided that the @code{@@setfilename} statement is provided.
 
 @item Produce indexes and print
 The native Texinfo mode provides the binding @kbd{C-c C-t C-i}
@@ -6205,6 +6220,8 @@ through @kbd{C-c C-c} (@code{TeX-command-master}) in @AUCTeX{}: @samp{Texindex},
 @samp{Print}, and @samp{Queue}.
 
 @item Kill jobs
+@findex TeX-kill-job
+@kindex C-c C-k
 The command @kbd{C-c C-t C-k} (@code{tex-kill-job}) in the native mode
 is superseded by @kbd{C-c C-k} (@code{TeX-kill-job}) in @AUCTeX{}.
 @end table
@@ -6255,21 +6272,15 @@ C-d} in @AUCTeX{} instead.
 @node Unbinding
 @appendixsubsec Which native mode key bindings are missing
 
-The following commands from the native commands might still be useful
-when working with @AUCTeX{}, however, they are not accessible with a
+The following command from the native commands might still be useful
+when working with @AUCTeX{}, however, it is not accessible with a
 key binding any longer.
 
 @table @asis
-@item @code{@@node} insertion
-The node insertion command, mapped to @kbd{C-c C-c n} in the native
-mode, is not mapped to any key in @AUCTeX{}.  You can still access it
-through the Texinfo menu, though.  Another alternative is to use the
-@kbd{C-c C-m} binding for macro insertion in @AUCTeX{}.
-
 @item Show the section structure
 The command @code{texinfo-show-structure} (@kbd{C-c C-s}) from the
 native mode does not have a key binding in @AUCTeX{}.  The binding is
-used by @AUCTeX{} for sectioning.
+used by @AUCTeX{} for inserting @samp{@@node}.
 @end table
 
 @node Indices
