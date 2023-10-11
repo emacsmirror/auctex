@@ -1,8 +1,8 @@
 ;;; auctex.el --- Integrated environment for *TeX*  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2023 Free Software Foundation, Inc.
 
-;; Version: 13.2.1
+;; Version: 13.2.2
 ;; URL: https://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 ;; Notifications-To: auctex-diffs@gnu.org

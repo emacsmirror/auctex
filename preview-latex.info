@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 7.0.3 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.2.1.2023-10-11 from 2023-10-11).
+(version 13.2.2 from 2023-10-11).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
@@ -1922,7 +1922,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 13.2.1.2023-10-11 from 2023-10-11).
+(version 13.2.2 from 2023-10-11).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
@@ -2550,44 +2550,44 @@ Index
 
 
 Tag Table:
-Node: Top975
-Node: Copying2255
-Node: Introduction2709
-Node: What use is it?3383
-Node: Activating preview-latex4780
-Node: Getting started5545
-Node: Basic modes of operation7532
-Node: More documentation8765
-Node: Availability9654
-Node: Contacts10381
-Node: Installation11670
-Node: Keys and lisp11871
-Node: Simple customization19150
-Node: Known problems24974
-Node: Font problems with Dvips25860
-Node: Too small bounding boxes27070
-Node: x-symbol interoperation28494
-Node: Middle-clicks paste instead of toggling29918
-Node: No images are displayed with gs 9.27 and earlier30615
-Node: Black texts are too hard to read on dark background33373
-Node: For advanced users34030
-Node: The LaTeX style file34489
-Node: Package options37075
-Node: Provided commands48301
-Node: The Emacs interface55908
-Node: The preview images64872
-Node: Misplaced previews68757
-Node: ToDo72285
-Node: Frequently Asked Questions77122
-Node: Introduction to FAQ77445
-Node: Requirements77784
-Node: Installation Trouble79770
-Node: Customization82062
-Node: Troubleshooting85190
-Node: Other formats87704
-Node: Copying this Manual89053
-Node: GNU Free Documentation License90013
-Node: Index115340
+Node: Top964
+Node: Copying2244
+Node: Introduction2698
+Node: What use is it?3372
+Node: Activating preview-latex4769
+Node: Getting started5534
+Node: Basic modes of operation7521
+Node: More documentation8754
+Node: Availability9643
+Node: Contacts10370
+Node: Installation11659
+Node: Keys and lisp11860
+Node: Simple customization19139
+Node: Known problems24963
+Node: Font problems with Dvips25849
+Node: Too small bounding boxes27059
+Node: x-symbol interoperation28483
+Node: Middle-clicks paste instead of toggling29907
+Node: No images are displayed with gs 9.27 and earlier30604
+Node: Black texts are too hard to read on dark background33362
+Node: For advanced users34019
+Node: The LaTeX style file34478
+Node: Package options37064
+Node: Provided commands48290
+Node: The Emacs interface55897
+Node: The preview images64861
+Node: Misplaced previews68746
+Node: ToDo72274
+Node: Frequently Asked Questions77111
+Node: Introduction to FAQ77434
+Node: Requirements77773
+Node: Installation Trouble79759
+Node: Customization82051
+Node: Troubleshooting85179
+Node: Other formats87693
+Node: Copying this Manual89042
+Node: GNU Free Documentation License89991
+Node: Index115318
 
 End Tag Table
 
