@@ -40,7 +40,7 @@ everything goes well, before actually doing the release.
 
   - The instructions may mention how to build the XEmacs and Windows packages,
     but you do not need to do that if you decided to stop providing those
-    packages
+    packages.
   - Make sure that the patch for =gendocs.sh= in the =www-docs= target applies
     correctly, otherwise you will need to update it. Remember to update it in
     the =gendocspath= branch of the AUCTeX remote repository too.
@@ -81,7 +81,7 @@ You can also browse the [[http://web.cvs.savannah.gnu.org/viewvc/auctex/][conten
 - [ ] Update AUCTeX version and date in files in =src/= directory. When you are
   done, run the script =./genpages.sh=
 - [ ] Update the =ChangeLog=
-- [ ] Register all changes. You can use for example =vc-mode= in Emacs: [0/2]
+- [ ] Register all changes. You can use for example =vc-mode= in Emacs: [0/3]
 
   - [ ] Register all new files with =i=
   - [ ] Select all files in the same state with =m= and do check in/out with =v=
@@ -172,7 +172,7 @@ AUCTeX is kept in the ~externals/auctex~ branch of the ELPA repository.
 3. Merge the commits which have taken place in the normal auctex development on
    the ~master~ branch using ~git merge origin/master~.
 4. In case of conflicts, edit, and commit.
-5. Check that everything compiles by running ~make -f GNUMakefile~.
+5. Check that everything compiles by running ~make -f GNUmakefile~.
 6. Push your changes to the elpa remote (~git push~).
 
 Just updating the ~externals/auctex~ branch by merging in the changes from the
@@ -181,7 +181,7 @@ Emacs' package manager.  To do an actual release which will be published, you
 have to do the following steps in addition.
 
 7. Edit the line ~;; Version: X.Y.Z~ in the file ~auctex.el~.  For ELPA
-   releases, Y and Y match the latest AUCTeX version and Z is incremented for
+   releases, X and Y match the latest AUCTeX version and Z is incremented for
    every ELPA release of that AUCTeX version.  Z starts with 0, so AUCTeX
    12.2.0 should be (almost) identical to the AUCTeX release 12.2.
 8. Commit that change with this Git commit message (but do not push yet!).  The
@@ -194,7 +194,7 @@ Release GNU AUCTeX X.Y.Z
 * GNU AUCTeX Version X.Y.Z released.
 #+END_EXAMPLE
 
-9. Run ~make -f GNUMakefile~ again.  In the output you should see that the
+9. Run ~make -f GNUmakefile~ again.  In the output you should see that the
    above version is inserted into several files, e.g., the info documentation.
    The version change is gotten from the current HEAD of the branch.  That's
    the reason the commit message has to be in exactly this format.
