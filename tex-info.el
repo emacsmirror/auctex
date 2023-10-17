@@ -480,8 +480,7 @@ is assumed by default."
                (concat section-number " "))
            text))
     (list 'toc "toc" text file marker level section-number
-          literal (marker-position marker))
-      (set-marker marker nil)))
+          literal (marker-position marker))))
 
 (defun Texinfo-reftex-hook ()
   "Hook function to plug Texinfo into RefTeX."
