@@ -258,3 +258,9 @@ Other files to be updated accordingly:
   at least XX.X.=.
 - [ ] =RELEASE= :: Update the version of GNU Emacs in the
   "Requirements" section.
+
+For ELPA releases:
+
+- [ ] =auctex.el= :: Since this file is not regenerated, the required
+  Emacs version must be adjusted manually in the GNU ELPA Git
+  repository.
