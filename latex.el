@@ -7733,7 +7733,7 @@ or `LaTeX-environment-list' and returns it."
     ;; cases, but will also fail for example in hyperref.el.  This
     ;; decision should revisited at a later stage:
     (when (assq 'TeX-arg-conditional arg-list)
-      (cl-flet ((y-or-n-p #'TeX-always))
+      (cl-letf (((symbol-function 'y-or-n-p) #'TeX-always))
         (while (and arg-list
                     (setq arg (car arg-list)))
           (if (and (listp arg) (eq (car arg) 'TeX-arg-conditional))
