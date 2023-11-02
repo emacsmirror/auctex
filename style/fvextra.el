@@ -1,4 +1,4 @@
-;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)  -*- lexical-binding: t; -*-
+;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.5)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
 
@@ -118,8 +118,13 @@
     ;; 4.1 Inline formatting with \fvinlineset
     '("fvinlineset" (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
-    ;; 4.2 Line and text formatting
+    ;; 4.2 Custom formatting for inline commands like \Verb with
+    ;; \FancyVerbFormatInline
     "FancyVerbFormatInline"
+
+    ;; 4.3 Custom formatting for environments like Verbatim with
+    ;; \FancyVerbFormatLine and \FancyVerbFormatText
+    "FancyVerbFormatLine"
     "FancyVerbFormatText"
 
     ;; 6 New commands and environments
