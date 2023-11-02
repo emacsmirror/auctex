@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.8)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `minted.sty' (v2.5) from 2017/07/19.
+;; This file adds support for `minted.sty' (v2.8) from 2023/09/12.
 
 ;;; Code:
 
@@ -53,7 +53,7 @@
     ("baselinestretch" ("auto"))
     ("beameroverlays" ("true" "false"))
     ("breakafter")
-    ("breakaftergroup" ("true" "false"))
+    ("breakafterinrun" ("true" "false"))
     ("breakaftersymbolpre")
     ("breakaftersymbolpost")
     ("breakanywhere" ("true" "false"))
@@ -61,7 +61,7 @@
     ("breakanywheresymbolpost")
     ("breakautoindent" ("true" "false"))
     ("breakbefore")
-    ("breakbeforegroup" ("true" "false"))
+    ("breakbeforeinrun" ("true" "false"))
     ("breakbeforesymbolpre")
     ("breakbeforesymbolpost")
     ("breakbytoken" ("true" "false"))
@@ -453,12 +453,28 @@ a list of strings."
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
-(defvar LaTeX-minted-package-options '("chapter"     "cache"
-                                       "cachedir"    "finalizecache"
-                                       "frozencache" "draft"
-                                       "final"       "kpsewhich"
-                                       "langlinenos" "newfloat"
-                                       "outputdir"   "section")
-  "Package options for the minted package.")
+(defun LaTeX-minted-package-options-list ()
+  "Return an alist of package options for minted package."
+  (append
+   `(("fontencoding"
+      ,(when (member "fontenc" (TeX-style-list))
+         LaTeX-fontenc-package-options)))
+   '(("chapter")
+     ("cache"            ("true" "false"))
+     ("cachedir")
+     ("finalizecache"    ("true" "false"))
+     ("frozencache"      ("true" "false"))
+     ("draft"            ("true" "false"))
+     ("final"            ("true" "false"))
+     ("inputlanglinenos" ("true" "false"))
+     ("kpsewhich"        ("true" "false"))
+     ("langlinenos"      ("true" "false"))
+     ("newfloat"         ("true" "false"))
+     ("outputdir")
+     ("section"))))
+
+(defun LaTeX-minted-package-options ()
+  "Prompt for package options for the minted package."
+  (TeX-read-key-val t (LaTeX-minted-package-options-list)))
 
 ;;; minted.el ends here
