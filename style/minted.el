@@ -47,6 +47,7 @@
                   "newfloat" (&rest newfloat-declarefloatingenvironments))
 
 (defvar font-latex-syntactic-keywords-extra)
+(defvar LaTeX-fontenc-package-options)
 
 (defvar LaTeX-minted-key-val-options
   '(("autogobble" ("true" "false"))
