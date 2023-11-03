@@ -3868,21 +3868,22 @@ of the macro argument as cons."
 The macro body (\"\\verb\") and its delimiters, including
 optional argument if any, aren't considered as component of a
 verbatim-like construct."
-  (when pos (goto-char pos))
-  (save-match-data
-    ;; TODO: Factor out syntax propertize facility from font-latex.el
-    ;; and re-implement as major mode feature.  Then we can drop the
-    ;; fallback code below.
-    (if (eq TeX-install-font-lock 'font-latex-setup)
-        (progn
-          (syntax-propertize (point))
-          (nth 3 (syntax-ppss)))
-      ;; Fallback for users who stay away from font-latex.
-      (or
-       (let ((region (LaTeX-verbatim-macro-boundaries t)))
-         (and region
-              (<= (car region) (point) (cdr region))))
-       (member (LaTeX-current-environment) (LaTeX-verbatim-environments))))))
+  (save-excursion
+    (when pos (goto-char pos))
+    (save-match-data
+      ;; TODO: Factor out syntax propertize facility from font-latex.el
+      ;; and re-implement as major mode feature.  Then we can drop the
+      ;; fallback code below.
+      (if (eq TeX-install-font-lock 'font-latex-setup)
+          (progn
+            (syntax-propertize (point))
+            (nth 3 (syntax-ppss)))
+        ;; Fallback for users who stay away from font-latex.
+        (or
+         (let ((region (LaTeX-verbatim-macro-boundaries t)))
+           (and region
+                (<= (car region) (point) (cdr region))))
+         (member (LaTeX-current-environment) (LaTeX-verbatim-environments)))))))
 
 
 ;;; Formatting
