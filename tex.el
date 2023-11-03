@@ -5491,22 +5491,36 @@ additional characters."
                                           '(?\{ ?\} ?\\))
                                     (TeX-in-comment))))
                  (forward-char)
-                 ;; If inside a verbatim construct, just return t and
-                 ;; proceed, otherwise start counting:
-                 (if (TeX-verbatim-p)
-                     t
-                   (cond ((memq char (append
-                                      TeX-indent-open-delimiters
-                                      '(?\{)))
-                          (setq count (+ count TeX-brace-indent-level)))
-                         ((memq char (append
-                                      TeX-indent-close-delimiters
-                                      '(?\})))
-                          (setq count (- count TeX-brace-indent-level)))
-                         ((eq char ?\\)
-                          (when (< (point) limit)
-                            (forward-char)
-                            t)))))))
+                 ;; We have to cater for verb-macros with braces and
+                 ;; what the function `TeX-verbatim-p' returns dep. on
+                 ;; the position of point:
+                 ;;       \Verb{\ or { or } are not special}.
+                 ;;            ^-> nil                     ^-> t
+                 (cond ((memq char (append
+                                    TeX-indent-open-delimiters
+                                    '(?\{)))
+                        ;; Point is one char after `{', so check if
+                        ;; we're inside a verb macro and return t,
+                        ;; otherwise increase `count':
+                        (if (TeX-verbatim-p)
+                            t
+                          (setq count (+ count TeX-brace-indent-level))))
+                       ((memq char (append
+                                    TeX-indent-close-delimiters
+                                    '(?\})))
+                        ;; Point if one char after `}', so check if the
+                        ;; char before point is inside a verb macro:
+                        (if (TeX-verbatim-p (1- (point)))
+                            t
+                          (setq count (- count TeX-brace-indent-level))))
+                       ((eq char ?\\)
+                        ;; Point is one char-after after `\', so check
+                        ;; if the char before point is inside a verb
+                        ;; macro:
+                        (when (< (point) limit)
+                          (unless (TeX-verbatim-p (1- (point)))
+                            (forward-char))
+                          t))))))
       count)))
 
 ;;; Navigation
