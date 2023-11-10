@@ -749,7 +749,8 @@ Replace them with the respective macro argument."
         (setq spec elt
               index nil)
         ;; Find and expand every placeholder.
-        (while (and (string-match "\\([[{<]\\)\\([1-9]\\)\\([]}>]\\)" elt index)
+        (while (and (string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
+                                  elt index)
                     ;; Does the closing delim match the opening one?
                     (string-equal
                      (match-string 3 elt)
