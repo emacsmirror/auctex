@@ -1956,6 +1956,11 @@ of `ConTeXt-mode-hook'."
   ;; set mode line
   (setq TeX-base-mode-name mode-name))
 
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `context-mode' continue to be valid for
+;; `ConTeXt-mode'.
+(TeX-derived-mode-add-parents 'ConTeXt-mode '(context-mode))
+
 (provide 'context)
 
 ;;; context.el ends here

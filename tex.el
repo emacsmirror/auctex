@@ -3875,6 +3875,21 @@ Run after mode hooks and file local variables application."
 ;;;###autoload
 (put 'TeX-mode 'auctex-function-definition (symbol-function 'TeX-mode))
 
+;; COMPATIBILITY for Emacs<30
+(unless (fboundp 'derived-mode-add-parents)
+  (advice-add 'derived-mode-p :after-until
+              ;; Don't quote by #'-style to avoid compiler warning.
+              'TeX--compat-derived-mode-p)
+  (defun TeX--compat-derived-mode-p (&rest modes)
+    "Add pseudo-parents facility to `derived-mode-p' like Emacs 30.
+Modes registered in `derived-mode-extra-parents' property of the
+current major mode name symbol are regarded as parent modes as
+long as `derived-mode-p' is concerned."
+    (let ((extra-parents (get major-mode 'derived-mode-extra-parents)))
+      (and extra-parents
+           (cl-loop for parent in extra-parents
+                    thereis (memq parent modes))))))
+
 ;;; Hilighting
 
 ;; FIXME: It's likely that `hilit-patterns-alist' is much obsolete.
@@ -4827,6 +4842,16 @@ Also see `ignore'.
 
 This is a compatibility function for Emacs versions prior to v.28."
     t))
+
+;; COMPATIBILITY for Emacs<30
+(if (fboundp 'derived-mode-add-parents)
+    (defalias 'TeX-derived-mode-add-parents #'derived-mode-add-parents)
+  ;; Adapted copy of `derived-mode-add-parents'.
+  (defun TeX-derived-mode-add-parents (mode extra-parents)
+    "Add EXTRA-PARENTS to the parents of MODE.
+Declares the parents of MODE to be its main parent (as defined
+in `define-derived-mode') plus EXTRA-PARENTS."
+    (put mode 'derived-mode-extra-parents extra-parents)))
 
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.

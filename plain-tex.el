@@ -148,6 +148,11 @@ Run after mode hooks and file local variables application."
 ;;;###autoload
 (put 'plain-TeX-mode 'auctex-function-definition (symbol-function 'plain-TeX-mode))
 
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `plain-tex-mode' continue to be valid for
+;; `plain-TeX-mode'.
+(TeX-derived-mode-add-parents 'plain-TeX-mode '(plain-tex-mode))
+
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
@@ -320,6 +325,12 @@ value of `AmSTeX-mode-hook'."
 
 ;;;###autoload
 (defalias 'ams-tex-mode #'AmSTeX-mode)
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `ams-tex-mode' continue to be valid for `AmSTeX-mode'.
+;; In addition, dir local vars for `plain-tex-mode' are now valid for
+;; `AmSTeX-mode' as well.
+(TeX-derived-mode-add-parents 'AmSTeX-mode '(ams-tex-mode plain-tex-mode))
 
 (defcustom AmSTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes

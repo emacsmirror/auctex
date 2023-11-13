@@ -425,6 +425,12 @@ Now `japanese-plain-tex-mode-initialization' is no-op.  Don't use it."))
 ;;;###autoload
 (defalias 'japanese-plain-tex-mode #'japanese-plain-TeX-mode)
 
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `japanese-plain-tex-mode' and `plain-tex-mode'
+;; continue to be valid for `japanese-plain-TeX-mode'.
+(TeX-derived-mode-add-parents 'japanese-plain-TeX-mode
+                              '(japanese-plain-tex-mode plain-tex-mode))
+
 ;;;###autoload
 (define-derived-mode japanese-LaTeX-mode LaTeX-mode "LaTeX"
   "Major mode in AUCTeX for editing Japanese LaTeX files."
@@ -470,6 +476,12 @@ Now `japanese-latex-mode-initialization' is no-op.  Don't use it."))
 
 ;;;###autoload
 (defalias 'japanese-latex-mode #'japanese-LaTeX-mode)
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `japanese-latex-mode' and `latex-mode' continue to be
+;; valid for `japanese-LaTeX-mode'.
+(TeX-derived-mode-add-parents 'japanese-LaTeX-mode
+                              '(japanese-latex-mode latex-mode))
 
 (defun japanese-LaTeX-guess-engine ()
   "Guess Japanese TeX engine and set it to `TeX-engine'.

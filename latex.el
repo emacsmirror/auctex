@@ -8087,6 +8087,10 @@ Run after mode hooks and file local variables application."
 ;;;###autoload
 (put 'LaTeX-mode 'auctex-function-definition (symbol-function 'LaTeX-mode))
 
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `latex-mode' continue to be valid for `LaTeX-mode'.
+(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode))
+
 (with-eval-after-load 'semantic/symref/grep
   (push '(docTeX-mode "*.dtx") semantic-symref-filepattern-alist))
 
@@ -8117,6 +8121,12 @@ runs the hooks in `docTeX-mode-hook'."
   ;; `font-lock-set-defaults'.
   (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `doctex-mode' continue to be valid for `docTeX-mode'.
+;; In addition, dir local vars for `latex-mode' are now valid for
+;; `docTeX-mode' as well.
+(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
