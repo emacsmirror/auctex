@@ -379,7 +379,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       "normalfont" "normalshape"
       "tableofcontents" "listoffigures" "listoftables"
       "maketitle" "makeindex" "makeglossary"
-      "sloppy" "fussy")
+      "sloppy" "fussy" "par")
      font-lock-keyword-face 2 noarg)
     ("sectioning-0"
      (("part" "*[{"))
