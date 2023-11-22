@@ -1,6 +1,6 @@
 ;;; splitidx.el --- AUCTeX style for `splitidx.sty' (v1.2a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -150,12 +150,11 @@
     ;; 3.1 Setup
     '("newindex"
       [ "Index name" ]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((shortcut (TeX-read-string
-                          (TeX-argument-prompt nil nil "Short cut"))))
-           (LaTeX-add-splitidx-newindices shortcut)
-           (format "%s" shortcut)))))
+      (lambda (optional)
+        (let ((shortcut (TeX-read-string
+                         (TeX-argument-prompt optional nil "Short cut"))))
+          (LaTeX-add-splitidx-newindices shortcut)
+          (TeX-argument-insert shortcut optional))))
 
     ;; 3.2 Marking up index entries
     '("sindex"
@@ -175,12 +174,11 @@
     ;; 3.6 Preventing premature expansion of index entries
     '("newprotectedindex"
       [ "Index name" ]
-      (TeX-arg-eval
-       (lambda ()
-         (let ((shortcut (TeX-read-string
-                          (TeX-argument-prompt nil nil "Short cut"))))
-           (LaTeX-add-splitidx-newindices shortcut)
-           (format "%s" shortcut)))))
+      (lambda (optional)
+        (let ((shortcut (TeX-read-string
+                         (TeX-argument-prompt optional nil "Short cut"))))
+          (LaTeX-add-splitidx-newindices shortcut)
+          (TeX-argument-insert shortcut optional))))
 
     ;; 3.7 Including the generated indices in your document
     '("printindex"
