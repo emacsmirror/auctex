@@ -5495,22 +5495,24 @@ additional characters."
                  ;; what the function `TeX-verbatim-p' returns dep. on
                  ;; the position of point:
                  ;;       \Verb{\ or { or } are not special}.
-                 ;;            ^-> nil                     ^-> t
+                 ;;     nil  <-^^-> t                  t <-^^-> nil
                  (cond ((memq char (append
                                     TeX-indent-open-delimiters
                                     '(?\{)))
-                        ;; Point is one char after `{', so check if
-                        ;; we're inside a verb macro and return t,
-                        ;; otherwise increase `count':
-                        (if (TeX-verbatim-p)
+                        ;; Point is one char after `{', if char before
+                        ;; isn't inside a verb macro, then the brace
+                        ;; is a real delimiter and we increase
+                        ;; `count', otherwise not:
+                        (if (TeX-verbatim-p (1- (point)))
                             t
                           (setq count (+ count TeX-brace-indent-level))))
                        ((memq char (append
                                     TeX-indent-close-delimiters
                                     '(?\})))
-                        ;; Point if one char after `}', so check if the
-                        ;; char before point is inside a verb macro:
-                        (if (TeX-verbatim-p (1- (point)))
+                        ;; Point if one char after `}', if not inside
+                        ;; a verb macro, this is a real delimiter and
+                        ;; we decrease `count', otherwise not:
+                        (if (TeX-verbatim-p)
                             t
                           (setq count (- count TeX-brace-indent-level))))
                        ((eq char ?\\)
