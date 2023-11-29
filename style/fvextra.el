@@ -86,6 +86,7 @@
     ("breakbeforeinrun" ("true" "false"))
     ("breakbeforesymbolpre")
     ("breakbeforesymbolpost")
+    ("breakcollapsespaces" ("true" "false"))
     ("breakindent")
     ("breakindentnchars")
     ("breaklines" ("true" "false"))
@@ -104,7 +105,8 @@
     ("breaksymbolsepleft")
     ("breaksymbolsepleftnchars")
     ("breaksymbolsepright")
-    ("breaksymbolseprightnchars"))
+    ("breaksymbolseprightnchars")
+    ("spacebreak"))
   "Key=value options for fvextra macros and environments.")
 
 (TeX-add-style-hook
