@@ -1721,6 +1721,12 @@ right number."
 (defvar LaTeX-auto-optional nil)
 (defvar LaTeX-auto-env-args nil)
 (defvar LaTeX-auto-env-args-with-opt nil)
+(defvar LaTeX-auto-xparse-macro nil
+  "Information about user defined macros in the current buffer.
+This variable contains information after parsing the buffer.")
+(defvar LaTeX-auto-xparse-environment nil
+  "Information about user defined enviroments in the current buffer.
+This variable contains information after parsing the buffer.")
 
 (TeX-auto-add-type "label" "LaTeX")
 (TeX-auto-add-type "bibitem" "LaTeX")
@@ -1827,12 +1833,33 @@ This is necessary since index entries may contain commands and stuff.")
         (2 3 1) LaTeX-auto-arguments)
        (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?")
         1 TeX-auto-symbol)
+       (,(concat
+          "\\\\\\(New\\|Renew\\|Provide\\|Declare\\)"
+          "\\(?:Expandable\\)?"
+          "DocumentCommand"
+          "[ \t\n\r]*"
+          "{?"
+          "[ \t\n\r]*"
+          "\\\\\\(" token "+\\)"
+          "[ \t\n\r]*"
+          "}?"
+          "[ \t\n\r]*"
+          "{\\([^}{]*\\(?:{[^}{]*\\(?:{[^}{]*\\(?:{[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}")
+        (0 2 3 1) LaTeX-auto-xparse-macro)
        ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]\\["
         (2 3 1) LaTeX-auto-env-args-with-opt)
        ("\\\\\\(re\\)?newenvironment\\*?{\\([^}]+\\)}\\[\\([0-9]+\\)\\]"
         (2 3 1) LaTeX-auto-env-args)
        ("\\\\newenvironment\\*?{\\([^}]+\\)}"
         1 LaTeX-auto-environment)
+       (,(concat
+          "\\\\\\(New\\|Renew\\|Provide\\|Declare\\)"
+          "DocumentEnvironment"
+          "[ \t\n\r]*"
+          "{\\([^}]+\\)}"
+          "[ \t\n\r]*"
+          "{\\([^}{]*\\(?:{[^}{]*\\(?:{[^}{]*\\(?:{[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}")
+        (0 2 3 1) LaTeX-auto-xparse-environment)
        (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
        ("\\\\input{\"?\\([^#}%\"\\\n\r]+?\\)\\(?:\\.[^#}%/\"\\.\n\r]+\\)?\"?}"
         1 TeX-auto-file)
@@ -1876,7 +1903,9 @@ Split the string at commas and remove Biber file extensions."
         LaTeX-auto-optional nil
         LaTeX-auto-env-args nil
         LaTeX-auto-style nil
-        LaTeX-auto-end-symbol nil))
+        LaTeX-auto-end-symbol nil
+        LaTeX-auto-xparse-macro nil
+        LaTeX-auto-xparse-environment nil))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-auto-prepare)
 
@@ -1961,6 +1990,165 @@ See also `LaTeX-provided-class-options'.")
   "Return non-nil if OPTION has been given to PACKAGE at load time.
 The value is actually the tail of the list of options given to PACKAGE."
   (member option (cdr (assoc package LaTeX-provided-package-options))))
+
+(defun LaTeX-arg-xparse-embellishment (_optional embellish)
+  "Special insert function for embellishments.
+Compatibility argument OPTIONAL is ignored.  EMBELLISH is a
+string with parsed elements inserted in the buffer.  This
+function also sets the value of `TeX-exit-mark' where the point
+will be once the insertion is completed."
+  (let (p)
+    (just-one-space)
+    (setq p (point))
+    (insert embellish)
+    (set-marker TeX-exit-mark (1+ p))))
+
+(defun LaTeX-xparse-macro-parse (type)
+  "Process parsed macro and environment definitions.
+TYPE is one of the symbols mac or env."
+  (dolist (xcmd (if (eq type 'mac)
+                    LaTeX-auto-xparse-macro
+                  LaTeX-auto-xparse-environment))
+    (let ((name (string-trim (nth 1 xcmd) "[ \t\r\n%]+" "[ \t\r\n%]+"))
+          (spec (nth 2 xcmd))
+          (what (nth 3 xcmd))
+          (case-fold-search nil)
+          (syntax (TeX-search-syntax-table ?\{ ?\}))
+          args opt-star opt-token)
+      (with-temp-buffer
+        (set-syntax-table LaTeX-mode-syntax-table)
+        (insert (replace-regexp-in-string "[ \t\r\n%]" "" spec))
+        (goto-char (point-min))
+        (while (looking-at-p "[+!>=bmrRvodODsteE]")
+          (cond ((looking-at-p "[+!b]")
+                 ;; + or !: Long argument or space aware: Move over
+                 ;; them.  b is special; only available for
+                 ;; enviroments
+                 (forward-char 1))
+                ;; Argument processors and key-val modifier: Move
+                ;; over [>=] and a balanced {}
+                ((looking-at-p "[>=]")
+                 (forward-char 1)
+                 (with-syntax-table syntax (forward-sexp)))
+                ;; Mandatory arguments:
+                ;; m: Ask for input with "Text" as prompt
+                ((looking-at-p "m")
+                 (forward-char 1)
+                 (push "Text" args))
+                ;; r<token1><token2>
+                ((looking-at-p "r")
+                 (re-search-forward "r\\(.\\)\\(.\\)" (+ (point) 3) t)
+                 (push `(TeX-arg-string nil nil nil nil
+                                        ,(match-string-no-properties 1)
+                                        ,(match-string-no-properties 2))
+                       args))
+                ;; R<token1><token2>{default}
+                ((looking-at-p "R")
+                 (re-search-forward "R\\(.\\)\\(.\\)" (+ (point) 3) t)
+                 (with-syntax-table syntax (forward-sexp))
+                 (push `(TeX-arg-string nil nil nil nil
+                                        ,(match-string-no-properties 1)
+                                        ,(match-string-no-properties 2))
+                       args))
+                ;; v: Use `TeX-arg-verb-delim-or-brace'
+                ((looking-at-p "v")
+                 (forward-char 1)
+                 (push #'TeX-arg-verb-delim-or-brace args))
+                ;; Optional arguments:
+                ;; o standard LaTeX optional in square brackets
+                ((looking-at-p "o")
+                 (forward-char 1)
+                 (push (vector "Text") args))
+                ;; d<token1><token2>
+                ((looking-at-p "d")
+                 (re-search-forward "d\\(.\\)\\(.\\)" (+ (point) 3) t)
+                 (push (vector #'TeX-arg-string nil nil nil nil
+                               (match-string-no-properties 1)
+                               (match-string-no-properties 2))
+                       args))
+                ;; O{default}
+                ((looking-at-p "O")
+                 (forward-char 1)
+                 (with-syntax-table syntax (forward-sexp))
+                 (push (vector "Text") args))
+                ;; D<token1><token2>{default}
+                ((looking-at-p "D")
+                 (re-search-forward "D\\(.\\)\\(.\\)" (+ (point) 3) t)
+                 (with-syntax-table syntax (forward-sexp))
+                 (push (vector #'TeX-arg-string nil nil nil nil
+                               (match-string-no-properties 1)
+                               (match-string-no-properties 2))
+                       args))
+                ;; s: optional star
+                ((looking-at-p "s")
+                 (forward-char 1)
+                 (setq opt-star t))
+                ;; t: optional <token>
+                ((looking-at-p "t")
+                 (re-search-forward "t\\(.\\)" (+ (point) 2) t)
+                 (setq opt-token (match-string-no-properties 1)))
+                ;; e{tokes} a set of optional embellishments
+                ((looking-at-p "e")
+                 (forward-char)
+                 (if (looking-at-p TeX-grop)
+                     (re-search-forward "{\\([^}]+\\)}" nil t)
+                   (re-search-forward "\\(.\\)" (1+ (point)) t))
+                 (push `(LaTeX-arg-xparse-embellishment
+                         ,(match-string-no-properties 1))
+                       args))
+                ;; E{tokes}{defaults}
+                ((looking-at-p "E")
+                 (forward-char)
+                 (if (looking-at-p TeX-grop)
+                     (re-search-forward "{\\([^}]+\\)}" nil t)
+                   (re-search-forward "\\(.\\)" (1+ (point)) t))
+                 (push `(LaTeX-arg-xparse-embellishment
+                         ,(match-string-no-properties 1))
+                       args)
+                 (when (looking-at-p TeX-grop)
+                   (with-syntax-table syntax (forward-sexp))))
+                ;; Finished:
+                (t nil))))
+      (if (eq type 'env)
+          ;; Parsed enviroments: If we are Renew'ing or Delare'ing, we
+          ;; delete the enviroment first from `LaTeX-environment-list'
+          ;; before adding the new one.  We have to sort the value of
+          ;; `LaTeX-environment-list' by running the function of the
+          ;; same name:
+          (progn
+            (when (member what '("Renew" "Declare"))
+              (setq LaTeX-auto-environment
+                    (assq-delete-all (car (assoc name LaTeX-auto-environment))
+                                     LaTeX-auto-environment)))
+            (add-to-list 'LaTeX-auto-environment
+                         (if args
+                             `(,name LaTeX-env-args ,@(reverse args))
+                           (list name))))
+        ;; Parsed macros: If we are Renew'ing or Delare'ing, we delete
+        ;; the macros first from `TeX-symbol-list' before adding the
+        ;; new ones.  We have to sort the value of `TeX-symbol-list'
+        ;; by running the function of the same name:
+        (when (member what '("Renew" "Declare"))
+          (setq TeX-auto-symbol
+                (assq-delete-all (car (assoc name TeX-auto-symbol))
+                                 TeX-auto-symbol))
+          (when opt-star
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (concat name "*")
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol)))
+          (when opt-token
+            (setq TeX-auto-symbol
+                  (assq-delete-all (car (assoc (concat name opt-token)
+                                               TeX-auto-symbol))
+                                   TeX-auto-symbol))))
+        (add-to-list 'TeX-auto-symbol (cons name (reverse args)))
+        (when opt-star
+          (add-to-list 'TeX-auto-symbol (cons (concat name "*")
+                                              (reverse args))))
+        (when opt-token
+          (add-to-list 'TeX-auto-symbol (cons (concat name opt-token)
+                                              (reverse args))))))))
 
 (defun LaTeX-auto-cleanup ()
   "Cleanup after LaTeX parsing."
@@ -2057,6 +2245,9 @@ The value is actually the tail of the list of options given to PACKAGE."
                              (string-to-number (nth 1 entry)))))
         LaTeX-auto-arguments)
 
+  ;; Cleanup for marcos defined with former xparse commands:
+  (LaTeX-xparse-macro-parse 'mac)
+
   ;; Cleanup default optional arguments
   (mapc (lambda (entry)
           ;; If we're renewcommand-ing and there is already an entry
@@ -2102,6 +2293,9 @@ The value is actually the tail of the list of options given to PACKAGE."
                        (list (nth 0 entry) #'LaTeX-env-args (vector "argument")
                              (1- (string-to-number (nth 1 entry))))))
         LaTeX-auto-env-args-with-opt)
+
+  ;; Cleanup for enviroments defined with former xparse commands:
+  (LaTeX-xparse-macro-parse 'env)
 
   ;; Cleanup use of def to add environments
   ;; NOTE: This uses an O(N^2) algorithm, while an O(N log N)
@@ -8707,6 +8901,65 @@ function would return non-nil and `(match-string 1)' would return
      '("normalfont" -1) '("normalshape" -1)
 
      '("linespread" "Factor")
+
+     ;; Macros for document-command parser, aka xparse added to LaTeX
+     ;; kernel with 2020-10-01 release:
+     '("DeclareDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+     '("NewDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+     '("RenewDocumentCommand"
+       TeX-arg-macro "Argument specification" t)
+     '("ProvideDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+
+     ;; Declaring environments
+     '("DeclareDocumentEnvironment" TeX-arg-define-environment
+       "Argument specification" t t)
+     '("NewDocumentEnvironment" TeX-arg-define-environment
+       "Argument specification" t t)
+     '("RenewDocumentEnvironment" TeX-arg-environment
+       "Argument specification" t t)
+     '("ProvideDocumentEnvironment" TeX-arg-define-environment
+       "Argument specification" t t)
+
+     ;; Fully-expandable document commands
+     '("DeclareExpandableDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+     '("NewExpandableDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+     '("RenewExpandableDocumentCommand"
+       TeX-arg-macro "Argument specification" t)
+     '("ProvideExpandableDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
+
+     ;; Testing special values
+     '("IfBooleanTF" 3)
+     '("IfBooleanT" 2)
+     '("IfBooleanF" 2)
+     '("IfNoValueTF" 3)
+     '("IfNoValueT" 2)
+     '("IfNoValueF" 2)
+     '("IfValueTF" 3)
+     '("IfValueT" 2)
+     '("IfValueF" 2)
+     '("IfBlankTF" 3)
+     '("IfBlankT" 2)
+     '("IfBlankF" 2)
+     "BooleanTrue"
+     "BooleanFalse"
+     ;; Argument processors
+     "ProcessedArgument"
+     "ReverseBoolean"
+     '("SplitArgument" "Number" "Token")
+     '("SplitList" "Token")
+     "TrimSpaces"
+     '("ProcessList" "List" "Function")
+     ;; Access to the argument specification
+     '("GetDocumentCommandArgSpec" TeX-arg-macro)
+     '("GetDocumentEnvironmmentArgSpec" TeX-arg-environment)
+     '("ShowDocumentCommandArgSpec" TeX-arg-macro)
+     '("ShowDocumentEnvironmentArgSpec" TeX-arg-environment)
 
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)

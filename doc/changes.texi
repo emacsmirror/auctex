@@ -16,6 +16,12 @@
 
 @item
 Now @LaTeX{} abbrevs are available in doc@TeX{} mode buffers.
+
+@item
+Macros provided by the @file{xparse} package are part of @LaTeX{} kernel
+since October 2020.  @AUCTeX{} tracks this change and the content of
+@file{xparse.el} is moved into @file{latex.el} and @file{font-latex.el}
+respectively.
 @end itemize
 
 @heading News in 13.2
