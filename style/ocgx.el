@@ -1,6 +1,6 @@
 ;;; ocgx.el --- AUCTeX style for `ocgx.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -54,9 +54,9 @@
     '("hideocg" LaTeX-arg-ocgp-layer-id "Action button")
 
     '("actionsocg"
-      (LaTeX-arg-ocgp-layer-id "Toggle layer id ('s space separated)")
-      (LaTeX-arg-ocgp-layer-id "Show layer id ('s space separated)")
-      (LaTeX-arg-ocgp-layer-id "Hide layer id ('s space separated)")
+      (LaTeX-arg-ocgp-layer-id "Toggle layer id (space separated crm)")
+      (LaTeX-arg-ocgp-layer-id "Show layer id (space separated crm)")
+      (LaTeX-arg-ocgp-layer-id "Hide layer id (space separated crm)")
       "Action button"))
 
    ;; Fontification
