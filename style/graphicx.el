@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2000, 2004, 2005, 2014--2022 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005, 2014--2023 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -90,13 +90,13 @@ key=vals."
   "List of extensions for image files supported by \"dvips\".")
 
 (defvar LaTeX-includegraphics-pdftex-extensions
-  '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-    "PNG" "PDF" "JPE?G" "JBIG2" "JB2")
+  '("png" "pdf" "jpg" "jpeg" "jbig2" "jb2" "mps"
+    "PNG" "PDF" "JPG" "JPEG" "JBIG2" "JB2")
   "List of extensions for image files supported by \"pdftex\" and \"luatex\".")
 
 (defvar LaTeX-includegraphics-xetex-extensions
-  '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jp2" "jpf"
-    "PDF" "EPS" "MPS" "PS" "PNG" "JPE?G" "JP2" "JPF"
+  '("pdf" "eps" "mps" "ps" "png" "jpg" "jpeg" "jp2" "jpf"
+    "PDF" "EPS" "MPS" "PS" "PNG" "JPG" "JPEG" "JP2" "JPF"
     "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
     "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
   "List of extensions for image files supported by \"xetex\".")
@@ -275,7 +275,13 @@ subdirectories and inserts the relative file name.  See
 
     '("graphicspath" t)
 
-    '("DeclareGraphicsExtensions" t)
+    '("DeclareGraphicsExtensions"
+      (TeX-arg-completing-read-multiple
+       (lambda ()
+         (delete ".jpe?g" (mapcar (lambda (ext)
+                                    (concat "." ext))
+                                  (LaTeX-includegraphics-extensions-list))))
+       "Extension(s)" nil nil nil nil nil nil nil nil "."))
 
     '("DeclareGraphicsRule" 4))
 

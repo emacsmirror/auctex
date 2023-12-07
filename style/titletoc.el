@@ -1,6 +1,6 @@
 ;;; titletoc.el --- AUCTeX style for `titletoc.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -111,8 +111,8 @@ Removal is based on the return value of function
                                "Sectioning command")
       [TeX-arg-length "Left margin"]
       (TeX-arg-conditional (y-or-n-p "With optional below code argument? ")
-                           (4 [nil])
-                           (4)))
+          (4 [nil])
+        (4)))
 
     ;; \titlecontents*{<section>}[<left>]{<above-code>}
     ;;                {<numbered-entry-format>}{<numberless-entry-format>}
@@ -122,8 +122,8 @@ Removal is based on the return value of function
                                "Sectioning command")
       [TeX-arg-length "Left margin"]
       (TeX-arg-conditional (y-or-n-p "With optional separator argument? ")
-                           (4 [nil])
-                           (4)))
+          (4 [nil])
+        (4)))
 
     ;; \contentsmargin[<correction>]{<right>}
     '("contentsmargin" [ "Correction" ] "Right margin")
@@ -144,19 +144,18 @@ Removal is based on the return value of function
     ;; the environments must be introduced to titletoc.sty with
     ;; \contentuse{ENV} and then can be used as argument to \titlecontents.
     '("contentsuse"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (if (and (member "newfloat" (TeX-active-styles))
-                              (LaTeX-newfloat-DeclareFloatingEnvironment-list))
-                         (completing-read
-                          (TeX-argument-prompt nil nil "Name of contents")
-                          (mapcar #'car
-                                  (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
-                       (TeX-read-string
-                        (TeX-argument-prompt nil nil "Name of contents")))))
-           (make-local-variable 'LaTeX-titletoc-section-command-list)
-           (add-to-list 'LaTeX-titletoc-section-command-list name)
-           (format "%s" name))))
+      (lambda (optional)
+        (let ((name (if (and (member "newfloat" (TeX-active-styles))
+                             (LaTeX-newfloat-DeclareFloatingEnvironment-list))
+                        (completing-read
+                         (TeX-argument-prompt optional nil "Name of contents")
+                         (mapcar #'car
+                                 (LaTeX-newfloat-DeclareFloatingEnvironment-list)))
+                      (TeX-read-string
+                       (TeX-argument-prompt optional nil "Name of contents")))))
+          (make-local-variable 'LaTeX-titletoc-section-command-list)
+          (add-to-list 'LaTeX-titletoc-section-command-list name)
+          (TeX-argument-insert name optional)))
       "File extension")
 
     ;; 6.3. Partial TOC's

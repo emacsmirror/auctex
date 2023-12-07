@@ -318,19 +318,19 @@ a list of strings."
 
     ;;\saveprintpythontex{<name>}
     '("saveprintpythontex"
-      (TeX-arg-eval (lambda ()
-                      (let ((name (TeX-read-string
-                                   (TeX-argument-prompt nil nil "Name"))))
-                        (LaTeX-add-pythontex-savecontents name)
-                        (format "%s" name)))))
+      (lambda (optional)
+        (let ((name (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+          (LaTeX-add-pythontex-savecontents name)
+          (TeX-argument-insert name optional))))
 
     ;;\savestdoutpythontex{<name>}
     '("savestdoutpythontex"
-      (TeX-arg-eval (lambda ()
-                      (let ((name (TeX-read-string
-                                   (TeX-argument-prompt nil nil "Name"))))
-                        (LaTeX-add-pythontex-savecontents name)
-                        (format "%s" name)))))
+      (lambda (optional)
+        (let ((name (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+          (LaTeX-add-pythontex-savecontents name)
+          (TeX-argument-insert name optional))))
 
     ;; \useprintpythontex[<verbatim options>][<fancyvrb options>]{<name>}
     ;; I assume <verbatim options> is meant to be <mode>
@@ -353,11 +353,11 @@ a list of strings."
 
     ;;\savestderrpythontex{<name>}
     '("savestderrpythontex"
-      (TeX-arg-eval (lambda ()
-                      (let ((name (TeX-read-string
-                                   (TeX-argument-prompt nil nil "Name"))))
-                        (LaTeX-add-pythontex-savecontents name)
-                        (format "%s" name)))))
+      (lambda (optional)
+        (let ((name (TeX-read-string
+                     (TeX-argument-prompt optional nil "Name"))))
+          (LaTeX-add-pythontex-savecontents name)
+          (TeX-argument-insert name optional))))
 
     ;; \usestderrpythontex[<mode>][<fancyvrb options>]{<name>}
     '("usestderrpythontex"
@@ -427,13 +427,12 @@ a list of strings."
    ;; Cater for \setpythontexlistingenv:
    (TeX-add-symbols
     '("setpythontexlistingenv"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((name (TeX-read-string
-                      (TeX-argument-prompt nil nil "Listing environment name"))))
-           (LaTeX-add-newfloat-DeclareFloatingEnvironments `(,name "verbatim"))
-           (LaTeX-newfloat-auto-cleanup)
-           (format "%s" name))))))
+      (lambda (optional)
+        (let ((name (TeX-read-string
+                     (TeX-argument-prompt optional nil "Listing environment name"))))
+          (LaTeX-add-newfloat-DeclareFloatingEnvironments `(,name "verbatim"))
+          (LaTeX-newfloat-auto-cleanup)
+          (TeX-argument-insert name optional)))))
 
    (LaTeX-add-environments
     ;; 4.2.5 Custom code

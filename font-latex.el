@@ -240,7 +240,7 @@ variable `font-latex-fontify-sectioning'." ',num)
   '(("warning"
      ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
-      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline" "include"
+      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline"
       "backmatter" "frontmatter" "mainmatter"
       "makeatletter" "makeatother" "newblock" "suppressfloats" "endinput")
      font-latex-warning-face 1 noarg)
@@ -365,7 +365,19 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("labelformat" "{{") ("linespread" "{")
       ("AddToHook" "{[{") ("RemoveFromHook" "{[") ("AddToHookNext" "{{")
       ("ProvidesClass" "{[") ("ProvidesPackage" "{[") ("ProvidesFile" "{[")
-      ("NewMarkClass" "{"))
+      ("NewMarkClass" "{")
+      ("DeclareDocumentCommand" "|{\\{{")
+      ("NewDocumentCommand"     "|{\\{{")
+      ("ProvideDocumentCommand" "|{\\{{")
+      ("RenewDocumentCommand"   "|{\\{{")
+      ("DeclareExpandableDocumentCommand" "|{\\{{")
+      ("NewExpandableDocumentCommand"     "|{\\{{")
+      ("ProvideExpandableDocumentCommand" "|{\\{{")
+      ("RenewExpandableDocumentCommand"   "|{\\{{")
+      ("DeclareDocumentEnvironment" "{{{{")
+      ("NewDocumentEnvironment"     "{{{{")
+      ("ProvideDocumentEnvironment" "{{{{")
+      ("RenewDocumentEnvironment"   "{{{{"))
      font-lock-function-name-face 2 command)
     ("function-noarg"
      ("enspace" "enskip" "quad" "qquad" "nonumber"
@@ -379,7 +391,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       "normalfont" "normalshape"
       "tableofcontents" "listoffigures" "listoftables"
       "maketitle" "makeindex" "makeglossary"
-      "sloppy" "fussy")
+      "sloppy" "fussy" "par")
      font-lock-keyword-face 2 noarg)
     ("sectioning-0"
      (("part" "*[{"))

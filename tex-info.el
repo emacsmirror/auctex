@@ -479,26 +479,17 @@ is assumed by default."
            (if (nth 1 reftex-label-menu-flags) ; section number flag
                (concat section-number " "))
            text))
-    (prog1
-        (list 'toc "toc" text file marker level section-number
-              literal (marker-position marker))
-      (set-marker marker nil))))
+    (list 'toc "toc" text file marker level section-number
+          literal (marker-position marker))))
 
 (defun Texinfo-reftex-hook ()
   "Hook function to plug Texinfo into RefTeX."
   ;; force recompilation of variables
-  (when (string= TeX-base-mode-name "Texinfo")
-    ;; dirty temporary hook to remove when reftex has a Texinfo builtin
-    ;; TODO --- taken on <2014-01-06 mon> --- remove the dirty trick once reftex
-    ;; has been corrected for long enough a time
-    (unless (assq 'Texinfo reftex-label-alist-builtin)
-      (setq reftex-label-alist-builtin (append reftex-label-alist-builtin
-                                               '((Texinfo "Texinfo default environments" nil)))))
-    (dolist (v `((reftex-section-pre-regexp . "@")
-                 ; section post-regexp must contain exactly one group
-                 (reftex-section-post-regexp . "\\([ \t]+\\)")
-                 (reftex-section-info-function . Texinfo-reftex-section-info)
-                 (reftex-default-label-alist-entries . (Texinfo))
+  (dolist (v `((reftex-section-pre-regexp . "@")
+               ;; section post-regexp must contain exactly one group
+               (reftex-section-post-regexp . "\\([ \t]+\\)")
+               (reftex-section-info-function . Texinfo-reftex-section-info)
+               (reftex-default-label-alist-entries . (Texinfo))
                (reftex-section-levels
                 . ,(mapcar
                     (lambda (x)
@@ -507,8 +498,8 @@ is assumed by default."
                           (cons (car x) (- (cadr x)))
                         (cons (car x) (cadr x))))
                     texinfo-section-list))))
-      (set (make-local-variable (car v) ) (cdr v)))
-    (reftex-ensure-compiled-variables)))
+    (set (make-local-variable (car v) ) (cdr v)))
+  (reftex-ensure-compiled-variables))
 
 ;;; Keymap:
 
@@ -866,7 +857,7 @@ value of `Texinfo-mode-hook'."
    '("xref" (Texinfo-arg-nodename "Node name")))
 
   ;; RefTeX plugging
-  (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook)
+  (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook nil t)
   (if (and (boundp 'reftex-mode) reftex-mode)
       (Texinfo-reftex-hook))
 

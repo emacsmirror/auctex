@@ -1,6 +1,6 @@
-;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.4)  -*- lexical-binding: t; -*-
+;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fvextra.sty' (v1.5) from 2022/11/30.
+;; This file adds support for `fvextra.sty' (v1.6) from 2023/11/19.
 ;; `fvextra.sty' is part of TeXLive.
 
 ;;; Code:
@@ -86,6 +86,7 @@
     ("breakbeforeinrun" ("true" "false"))
     ("breakbeforesymbolpre")
     ("breakbeforesymbolpost")
+    ("breakcollapsespaces" ("true" "false"))
     ("breakindent")
     ("breakindentnchars")
     ("breaklines" ("true" "false"))
@@ -104,7 +105,8 @@
     ("breaksymbolsepleft")
     ("breaksymbolsepleftnchars")
     ("breaksymbolsepright")
-    ("breaksymbolseprightnchars"))
+    ("breaksymbolseprightnchars")
+    ("spacebreak"))
   "Key=value options for fvextra macros and environments.")
 
 (TeX-add-style-hook
@@ -118,8 +120,13 @@
     ;; 4.1 Inline formatting with \fvinlineset
     '("fvinlineset" (TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)))
 
-    ;; 4.2 Line and text formatting
+    ;; 4.2 Custom formatting for inline commands like \Verb with
+    ;; \FancyVerbFormatInline
     "FancyVerbFormatInline"
+
+    ;; 4.3 Custom formatting for environments like Verbatim with
+    ;; \FancyVerbFormatLine and \FancyVerbFormatText
+    "FancyVerbFormatLine"
     "FancyVerbFormatText"
 
     ;; 6 New commands and environments
@@ -128,6 +135,17 @@
       [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] "Text")
     '("EscVerb*"
       [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] "Text")
+
+    ;; 6.5 \VerbatimInsertBuffer
+    '("VerbatimInsertBuffer"
+      [TeX-arg-key-val (lambda ()
+                         (append (LaTeX-fancyvrb-key-val-options)
+                                 '(("afterbuffer")
+                                   ("bufferer")
+                                   ("bufferlengthname")
+                                   ("bufferlinename")
+                                   ("buffername")
+                                   ("globalbuffer" ("true" "false")))))])
 
     ;; 7.3.2 Breaks within macro arguments
     "FancyVerbBreakStart"
@@ -141,12 +159,28 @@
    ;; 6.2 VerbEnv environment
    (LaTeX-add-environments
     '("VerbEnv" LaTeX-env-args
-      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]))
+      [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)])
+
+    ;; 6.3 VerbatimWrite
+    '("VerbatimWrite" LaTeX-env-args
+      [TeX-arg-key-val (("writefilehandle") ("writer"))])
+
+    ;; 6.4 VerbatimBuffer
+    '("VerbatimBuffer" LaTeX-env-args
+      [TeX-arg-key-val (("afterbuffer")
+                        ("bufferer")
+                        ("bufferlengthname")
+                        ("bufferlinename")
+                        ("buffername")
+                        ("globalbuffer" ("true" "false")))]) )
 
    ;; Filling
-   (add-to-list 'LaTeX-verbatim-environments-local "VerbEnv")
-   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-                '("VerbEnv" current-indentation) t)
+   (let ((envs '("VerbEnv" "VerbatimWrite" "VerbatimBuffer")))
+     (make-local-variable 'LaTeX-indent-environment-list)
+     (dolist (env envs)
+       (add-to-list 'LaTeX-verbatim-environments-local env)
+       (add-to-list 'LaTeX-indent-environment-list
+                    `(,env current-indentation) t)))
 
    ;; Add \Verb*? and \EscVerb*? to
    ;; `LaTeX-verbatim-macros-with-braces-local':
@@ -162,6 +196,8 @@
                               'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
                               'textual)
+     (font-latex-add-keywords '(("VerbatimInsertBuffer" "["))
+                              'reference)
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
