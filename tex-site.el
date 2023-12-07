@@ -129,11 +129,11 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.2.2"
+(defconst AUCTeX-version "13.2.3"
   "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2023-10-11"
+(defconst AUCTeX-date "2023-12-07"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
