@@ -285,6 +285,9 @@ subdirectories and inserts the relative file name.  See
 
     '("DeclareGraphicsRule" 4))
 
+   ;; \includegraphics macro should get its own line
+   (LaTeX-paragraph-commands-add-locally '("includegraphics"))
+
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
