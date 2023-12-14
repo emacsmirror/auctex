@@ -623,6 +623,6 @@ set the variable for you if it could use the program @command{kpsewhich}.
 In this case you normally don't have to alter anything.
 
 @c Local Variables:
-@c mode: texinfo
+@c mode: Texinfo
 @c TeX-master: "auctex"
 @c End:

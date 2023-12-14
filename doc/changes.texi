@@ -1751,6 +1751,6 @@ Bug fixes.
 @end itemize
 
 @c Local Variables:
-@c mode: texinfo
+@c mode: Texinfo
 @c TeX-master: "auctex"
 @c End:
