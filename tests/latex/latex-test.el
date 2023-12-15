@@ -302,8 +302,9 @@ backend=biber % here is a comment
             TeX-DVI-via-PDFTeX nil)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jpeg" "jpg" "jbig2" "jb2" "mps"
+                      "PNG" "PDF"         "JPEG" "JPG" "JBIG2" "JB2" "eps")
+                    #'string<)))
       ;; default 2
       (setq TeX-PDF-mode t
             TeX-PDF-from-DVI "Dvips"
@@ -324,8 +325,9 @@ backend=biber % here is a comment
             TeX-DVI-via-PDFTeX t)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jpeg" "jpg" "jbig2" "jb2" "mps"
+                      "PNG" "PDF"         "JPEG" "JPG" "JBIG2" "JB2" "eps")
+                    #'string<)))
       ;; default 5
       (setq TeX-PDF-mode t
             TeX-PDF-from-DVI "Dvipdfmx"
@@ -340,8 +342,9 @@ backend=biber % here is a comment
       (setq TeX-PDF-mode t)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-              (sort '("png" "pdf" "jpe?g" "jbig2" "jb2" "mps"
-                      "PNG" "PDF" "JPE?G" "JBIG2" "JB2" "eps") #'string<)))
+              (sort '("png" "pdf" "jpe?g" "jpeg" "jpg" "jbig2" "jb2" "mps"
+                      "PNG" "PDF"         "JPEG" "JPG" "JBIG2" "JB2" "eps")
+                    #'string<)))
       ;; luatex 2
       (setq TeX-PDF-mode nil)
       (should
@@ -352,8 +355,8 @@ backend=biber % here is a comment
       (setq TeX-engine 'xetex)
       (should
        (equal (sort (LaTeX-includegraphics-extensions-list) #'string<)
-              (sort '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jp2" "jpf"
-                      "PDF" "EPS" "MPS" "PS" "PNG" "JPE?G" "JP2" "JPF"
+              (sort '("pdf" "eps" "mps" "ps" "png" "jpe?g" "jpeg" "jpg" "jp2" "jpf"
+                      "PDF" "EPS" "MPS" "PS" "PNG"         "JPEG" "JPG" "JP2" "JPF"
                       "bmp" "pict" "psd" "mac" "tga" "gif" "tif" "tiff"
                       "BMP" "PICT" "PSD" "MAC" "TGA" "GIF" "TIF" "TIFF")
                     #'string<)))
