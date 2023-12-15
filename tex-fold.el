@@ -741,37 +741,31 @@ Return non-nil if a removal happened, nil otherwise."
   "Expand instances of {<num>}, [<num>], <<num>>, and (<num>).
 Replace them with the respective macro argument."
   (let ((spec-list (split-string spec "||"))
-        (delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\))))
-        index success)
-    (catch 'success
-      ;; Iterate over alternatives.
-      (dolist (elt spec-list)
-        (setq spec elt
-              index nil)
-        ;; Find and expand every placeholder.
-        (while (and (string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
-                                  elt index)
-                    ;; Does the closing delim match the opening one?
-                    (string-equal
-                     (match-string 3 elt)
-                     (char-to-string
-                      (cdr (assq (string-to-char (match-string 1 elt))
-                                 delims)))))
-          (setq index (match-end 0))
-          (let ((arg (car (save-match-data
-                            ;; Get the argument.
-                            (TeX-fold-macro-nth-arg
-                             (string-to-number (match-string 2 elt))
-                             ov-start ov-end
-                             (assoc (string-to-char (match-string 1 elt))
-                                    delims))))))
-            (when arg (setq success t))
-            ;; Replace the placeholder in the string.
-            (setq elt (replace-match (or arg TeX-fold-ellipsis) nil t elt)
-                  index (+ index (- (length elt) (length spec)))
-                  spec elt)))
-        (when success (throw 'success nil))))
-    spec))
+        (delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\)))))
+    (cl-labels
+        ((expand (spec &optional index)
+           ;; If there is something to replace and the closing delimiter
+           ;; matches the opening one…
+           (if-let (((string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
+                                   elt index))
+                    (open (string-to-char (match-string 1 spec)))
+                    (num (string-to-number (match-string 2 spec)))
+                    (close (string-to-char (match-string 3 spec)))
+                    ((equal close (cdr (assoc open delims)))))
+               ;; … then replace it and move on.  Otherwise, it must have been
+               ;; a spurious spec, so abort.
+               (when-let ((arg (car (save-match-data
+                                      (TeX-fold-macro-nth-arg
+                                       num ov-start ov-end (assoc open delims)))))
+                          (spec* (replace-match arg nil t spec)))
+                 (expand spec*
+                         (+ (match-end 0) (- (length spec*) (length spec)))))
+             ;; Nothing to replace: return the (completed) spec.
+             spec)))
+      (or (cl-loop for elt in spec-list
+                   do (when-let (expanded (expand elt))
+                        (cl-return expanded)))
+          TeX-fold-ellipsis))))
 
 (defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.
