@@ -747,7 +747,7 @@ Replace them with the respective macro argument."
            ;; If there is something to replace and the closing delimiter
            ;; matches the opening one…
            (if-let (((string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
-                                   elt index))
+                                   spec index))
                     (open (string-to-char (match-string 1 spec)))
                     (num (string-to-number (match-string 2 spec)))
                     (close (string-to-char (match-string 3 spec)))
