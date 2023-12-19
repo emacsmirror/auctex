@@ -15,13 +15,22 @@
 @AUCTeX{} now requires GNU Emacs 26.1 or higher.
 
 @item
-Now @LaTeX{} abbrevs are available in doc@TeX{} mode buffers.
+@LaTeX{} abbrevs are now available in doc@TeX{} mode buffers.
+
+@item
+@AUCTeX{} temporarily rebinds the variable @code{gc-cons-percentage} to a
+higher value during parsing which speeds up the process significantly.
+The memory pressure should still be acceptable, even on older machines.
 
 @item
 Macros provided by the @file{xparse} package are part of @LaTeX{} kernel
 since October 2020.  @AUCTeX{} tracks this change and the content of
 @file{xparse.el} is moved into @file{latex.el} and @file{font-latex.el}
 respectively.
+
+@item
+The variable @code{preview-scale-function} is now allowed as a file-local
+variable where the values are restricted to @math{0.1 \le x \le 10}.
 @end itemize
 
 @heading News in 13.2
