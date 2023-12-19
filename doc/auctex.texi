@@ -376,10 +376,10 @@ String inserted by typing @kbd{"} to close a quotation.
 @end defopt
 
 @defopt TeX-quote-after-quote
-Determines the behavior of @kbd{"}.  If it is non-nil, typing @kbd{"}
-will insert a literal double quote.  The respective values of
-@code{TeX-open-quote} and @code{TeX-close-quote} will be inserted
-after typing @kbd{"} once again.
+Determines the behavior of @kbd{"}.  If it is non-@code{nil}, typing
+@kbd{"} will insert a literal double quote.  The respective values of
+@code{TeX-open-quote} and @code{TeX-close-quote} will be inserted after
+typing @kbd{"} once again.
 @end defopt
 
 The @samp{babel} package provides special support for the requirements
@@ -426,28 +426,27 @@ equations like @samp{$...$} or @samp{\(...\)} simply typing @kbd{$}.
 @code{TeX-electric-math}.
 
 @defopt TeX-electric-math
-If the variable is non-nil and you type @kbd{$} outside math mode,
-@AUCTeX{} will automatically insert the opening and closing symbols for
-an inline equation and put the point between them.  The opening symbol
-will blink when @code{blink-matching-paren} is non-nil.  If
-@code{TeX-electric-math} is nil, typing @kbd{$} simply inserts @samp{$}
-at point, this is the default.
+If the variable is non-@code{nil} and you type @kbd{$} outside math mode,
+@AUCTeX{} will automatically insert the opening and closing symbols for an
+inline equation and put the point between them.  The opening symbol will
+blink when @code{blink-matching-paren} is non-@code{nil}.  If
+@code{TeX-electric-math} is @code{nil}, typing @kbd{$} simply inserts
+@samp{$} at point, this is the default.
 
 Besides @code{nil}, possible values for this variable are @code{("$"
 . "$")} for @TeX{} inline equations @samp{$...$}, and @code{("\(" . "\)")}
 for @LaTeX{} inline equations @samp{\(...\)}.
 
-If the variable is non-nil and point is inside math mode right between a
-couple of single dollars, pressing @kbd{$} will insert another pair of
-dollar signs and leave the point between them.  Thus, if
+If the variable is non-@code{nil} and point is inside math mode right
+between a couple of single dollars, pressing @kbd{$} will insert another
+pair of dollar signs and leave the point between them.  Thus, if
 @code{TeX-electric-math} is set to @code{("$" . "$")} you can easily
-obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$}
-twice in a row.  (Note that you should not use double dollar signs in
-@LaTeX{} because this practice can lead to wrong spacing in typeset
-documents.)
+obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$} twice
+in a row.  (Note that you should not use double dollar signs in @LaTeX{}
+because this practice can lead to wrong spacing in typeset documents.)
 
-In addition, when the variable is non-nil and there is an active region
-outside math mode, typing @kbd{$} will put around the active region
+In addition, when the variable is non-@code{nil} and there is an active
+region outside math mode, typing @kbd{$} will put around the active region
 symbols for opening and closing inline equation and keep the region
 active, leaving point after the closing symbol.  By pressing repeatedly
 @kbd{$} while the region is active you can toggle between an inline
@@ -693,17 +692,17 @@ Delete the innermost font specification containing point.
 @kindex C-c C-f
 (@kbd{C-c C-f}) Insert template for font change command.
 
-If @var{replace} is not nil, replace current font.  @var{what}
+If @var{replace} is non-@code{nil}, replace current font.  @var{what}
 determines the font to use, as specified by @code{TeX-font-list}.
 @end deffn
 
 @defopt TeX-font-list
 List of fonts used by @code{TeX-font}.
 
-Each entry is a list with three elements.  The first element is the
-key to activate the font.  The second element is the string to insert
-before point, and the third element is the string to insert after
-point.  An optional fourth element means always replace if not nil.
+Each entry is a list with three elements.  The first element is the key to
+activate the font.  The second element is the string to insert before
+point, and the third element is the string to insert after point.  An
+optional fourth element means always replace if non-@code{nil}.
 @end defopt
 
 @defopt LaTeX-font-list
@@ -746,7 +745,7 @@ Determine the type of section to be inserted, by the argument
 
 @itemize @bullet
 @item
-If @var{arg} is nil or missing, use the current level.
+If @var{arg} is @code{nil} or missing, use the current level.
 @item
 If @var{arg} is a list (selected by C-u), go downward one level.
 @item
@@ -799,10 +798,10 @@ Name of the sectioning command, derived from @code{LaTeX-level}.
 @item LaTeX-title
 The title of the section, default to an empty string.
 @item LaTeX-toc
-Entry for the table of contents list, default nil.
+Entry for the table of contents list, default @code{nil}.
 @item LaTeX-done-mark
-Position of point afterwards, default nil meaning after the inserted
-text.
+Position of point afterwards, default @code{nil} meaning after the
+inserted text.
 @end vtable
 
 A number of hooks are already defined.  Most likely, you will be able to
@@ -818,10 +817,10 @@ Query the user about the title of the section.  Modifies @code{LaTeX-title}.
 Query the user for the toc entry.  Modifies @code{LaTeX-toc}.
 @item LaTeX-section-section
 Insert @LaTeX{} section command according to @code{LaTeX-name},
-@code{LaTeX-title}, and @code{LaTeX-toc}.  If @code{LaTeX-toc} is nil, no
-toc entry is inserted.  If @code{LaTeX-toc} or @code{LaTeX-title} are
-empty strings, @code{LaTeX-done-mark} will be placed at the point they
-should be inserted.
+@code{LaTeX-title}, and @code{LaTeX-toc}.  If @code{LaTeX-toc} is
+@code{nil}, no toc entry is inserted.  If @code{LaTeX-toc} or
+@code{LaTeX-title} are empty strings, @code{LaTeX-done-mark} will be
+placed at the point they should be inserted.
 @item LaTeX-section-label
 Insert a label after the section command.  Controlled by the variable
 @code{LaTeX-section-label}.
@@ -848,11 +847,11 @@ variable @code{LaTeX-section-label}.
 Default prefix when asking for a label.
 
 If it is a string, it is used unchanged for all kinds of sections.
-If it is nil, no label is inserted.
-If it is a list, the list is searched for a member whose car is equal
-to the name of the sectioning command being inserted.  The cdr is then
-used as the prefix.  If the name is not found, or if the cdr is nil,
-no label is inserted.
+If it is @code{nil}, no label is inserted.
+If it is a list, the list is searched for a member whose car is equal to
+the name of the sectioning command being inserted.  The cdr is then used
+as the prefix.  If the name is not found, or if the cdr is @code{nil}, no
+label is inserted.
 
 @cindex Prefix for labels
 @cindex Label prefix
@@ -892,8 +891,8 @@ complete a partially written name, and/or to get a list of available
 environments.  After selection of a specific environment @AUCTeX{} may
 prompt you for further specifications.
 
-If the optional argument @var{arg} is non-nil (i.e.@: you have given a
-prefix argument), the current environment is modified and no new
+If the optional argument @var{arg} is non-@code{nil} (i.e.@: you have
+given a prefix argument), the current environment is modified and no new
 environment is inserted.
 @end deffn
 
@@ -909,7 +908,7 @@ environment.
 This is an alist whose car is the environment name, and the cdr either
 the prefix or a symbol referring to one.
 
-If the name is not found, or if the cdr is nil, no label is
+If the name is not found, or if the cdr is @code{nil}, no label is
 automatically inserted for that environment.
 
 If you want to automatically insert a label for a environment but with
@@ -949,7 +948,7 @@ controlled by the user option @code{TeX-complete-expert-commands}.
 @defopt TeX-complete-expert-commands
 Complete macros and environments marked as expert commands.
 
-Possible values are nil, t, or a list of style names.
+Possible values are @code{nil}, t, or a list of style names.
 
 @table @asis
 @item nil
@@ -1122,7 +1121,7 @@ inserted, while `description' will have @samp{\item[] } inserted.
 @end deffn
 
 @defopt TeX-arg-item-label-p
-If non-nil, you will always be asked for optional label in items.
+If non-@code{nil}, you will always be asked for optional label in items.
 Otherwise, you will be asked only in description environments.
 @end defopt
 
@@ -1143,8 +1142,9 @@ Default width for minipage and tabular* environments.
 @end defopt
 
 @defopt LaTeX-default-position
-Default position string for array and tabular environments.  If nil,
-act like the empty string is given, but don't prompt for a position.
+Default position string for array and tabular environments.  If
+@code{nil}, act like the empty string is given, but don't prompt for a
+position.
 @end defopt
 
 @AUCTeX{} calculates the number of columns from the format string and
@@ -1229,9 +1229,9 @@ Math mode.  Each entry should be a list of two to four elements.
 
 First, the key to be used after @code{LaTeX-math-abbrev-prefix} for macro
 insertion.  The key can be a character (e.g.@: @samp{?o}) for a single
-stroke or a string (e.g.@: @samp{"o a"}) for a multi-stroke binding.  If it
-is nil, the symbol has no associated keystroke (it is available in the
-menu, though).
+stroke or a string (e.g.@: @samp{"o a"}) for a multi-stroke binding.  If
+it is @code{nil}, the symbol has no associated keystroke (it is available
+in the menu, though).
 
 Second, a string representing the name of the macro (without a leading
 backslash.)
@@ -1260,10 +1260,11 @@ math mode commands.
 constructs by automatically inserting a pair of braces after typing
 @key{_} or @key{^} respectively and putting point between the braces.
 In order to enable this feature, set the variable
-@code{TeX-electric-sub-and-superscript} to a non-nil value.
+@code{TeX-electric-sub-and-superscript} to a non-@code{nil} value.
 
 @defopt TeX-electric-sub-and-superscript
-If non-nil, insert braces after typing @key{^} and @key{_} in math mode.
+If non-@code{nil}, insert braces after typing @key{^} and @key{_} in math
+mode.
 @end defopt
 
 @cindex input method
@@ -1315,8 +1316,8 @@ Each entry is a list with the following elements:
 
 @enumerate
 @item
-Regexp matching the preceding text or a predicate of arity 0 which
-returns non-nil and sets `match-data' appropriately if it is applicable.
+Regexp matching the preceding text or a predicate of arity 0 which returns
+non-@code{nil} and sets `match-data' appropriately if it is applicable.
 @item
 A number indicating the subgroup in the regexp containing the text.
 @item
@@ -1409,7 +1410,7 @@ A faster alternative is to enable the option
 @code{TeX-electric-escape}.
 
 @defopt TeX-electric-escape
-If this is non-nil, typing the @TeX{} escape character @kbd{\} will
+If this is non-@code{nil}, typing the @TeX{} escape character @kbd{\} will
 invoke the command @code{TeX-electric-macro}.
 
 In Texinfo mode, the command is invoked by @kbd{@@} instead.
@@ -1429,20 +1430,21 @@ Space (@key{SPC}) will complete and exit.
 By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
 This is suppressed inside math mode and can be disabled totally by
-setting @code{TeX-insert-braces} to nil.
+setting @code{TeX-insert-braces} to @code{nil}.
 
 @defopt TeX-insert-braces
-If non-nil, append a empty pair of braces after inserting a macro with
-no arguments.
+If non-@code{nil}, append a empty pair of braces after inserting a macro
+with no arguments.
 @end defopt
 
 @defopt TeX-insert-braces-alist
 Control the insertion of a pair of braces after a macro on a per macro
 basis.
 
-This variable is an alist.  Each element is a cons cell, whose car is
-the macro name, and the cdr is non-nil or nil, depending on whether a
-pair of braces should be, respectively, appended or not to the macro.
+This variable is an alist.  Each element is a cons cell, whose car is the
+macro name, and the cdr is non-@code{nil} or @code{nil}, depending on
+whether a pair of braces should be, respectively, appended or not to the
+macro.
 
 If a macro has an element in this variable, @AUCTeX{} will
 use its value to decide what to do, whatever the value of the variable
@@ -1460,7 +1462,7 @@ controlled using the user option @code{TeX-complete-expert-commands}.
 @defopt TeX-complete-expert-commands
 Complete macros and environments marked as expert commands.
 
-Possible values are nil, t, or a list of style names.
+Possible values are @code{nil}, t, or a list of style names.
 
 @table @asis
 @item nil
@@ -1515,7 +1517,7 @@ to its end.
 (@kbd{C-c *}) Set mark at end of current logical section, and point at
 top.
 
-With a non-nil prefix argument, mark only the region from the current
+With a non-@code{nil} prefix argument, mark only the region from the current
 section start to the next sectioning command.  Thereby subsections are
 not being marked.  Otherwise, any included subsections are also marked
 along with current section.
@@ -1546,9 +1548,10 @@ commands matched by the regular expression in the variable
 @code{outline-regexp} which in turn is a regular expression matching any
 element of the variable @code{texinfo-section-list}.
 
-With a non-nil prefix argument, mark only the region from the current
-section start to the next sectioning command.  Thereby subsections are
-not being marked.  Otherwise, any included subsections are also marked.
+With a non-@code{nil} prefix argument, mark only the region from the
+current section start to the next sectioning command.  Thereby subsections
+are not being marked.  Otherwise, any included subsections are also
+marked.
 
 Note that when the current section is starting immediately after a node
 command, then the node command is also marked as part of the section.
@@ -1732,8 +1735,8 @@ matched by a @samp{@}}.
 @end defopt
 
 @defopt LaTeX-syntactic-comments
-If non-nil comments will be filled and indented according to @LaTeX{}
-syntax.  Otherwise they will be filled like normal text.
+If non-@code{nil} comments will be filled and indented according to
+@LaTeX{} syntax.  Otherwise they will be filled like normal text.
 @end defopt
 
 @defopt TeX-newline-function
@@ -1836,8 +1839,8 @@ behavior can be controlled by setting the variable
 @code{docTeX-indent-across-comments}.
 
 @defopt docTeX-indent-across-comments
-If non-nil, indentation in docTeX is done across comments.  This option is
-disabled by default.
+If non-@code{nil}, indentation in docTeX is done across comments.  This
+option is disabled by default.
 @end defopt
 
 @node Filling
@@ -2394,8 +2397,8 @@ recognize the different ways these quotes can be given in your source
 code, i.e.@: (@samp{"<}, @samp{">}), (@samp{<<}, @samp{>>}) and the
 respective 8-bit variants.
 
-If you set @code{font-latex-quotes} to nil, quoted content will not be
-fontified.
+If you set @code{font-latex-quotes} to @code{nil}, quoted content will not
+be fontified.
 @end defopt
 
 
@@ -2433,8 +2436,8 @@ variables @code{font-latex-fontify-script} and
 @code{font-latex-script-display}.
 
 @defopt font-latex-fontify-script
-If non-nil, fontify subscript and superscript strings.  Concretely, this
-means that the scripts are raised or lowered.
+If non-@code{nil}, fontify subscript and superscript strings.  Concretely,
+this means that the scripts are raised or lowered.
 
 Another possiblity is setting this variable to the symbol
 @code{multi-level}.  In this case, in a formula @i{x^@{y^z@}}, @i{y} is
@@ -2616,20 +2619,20 @@ forced fontification by customizing the variable
 @end defopt
 
 @defopt TeX-fold-auto
-By default, a macro inserted with @code{TeX-insert-macro} (@kbd{C-c
-C-m}) will not be folded.  Set this variable to a non-nil value to
+By default, a macro inserted with @code{TeX-insert-macro} (@kbd{C-c C-m})
+will not be folded.  Set this variable to a non-@code{nil} value to
 aumatically fold macros as soon as they are inserted.
 @end defopt
 
 @defopt TeX-fold-preserve-comments
-By default items found in comments will be folded.  If your comments
-often contain unfinished code this might lead to problems.  Give this
-variable a non-nil value and foldable items in your comments will be
-left alone.
+By default items found in comments will be folded.  If your comments often
+contain unfinished code this might lead to problems.  Give this variable a
+non-@code{nil} value and foldable items in your comments will be left
+alone.
 @end defopt
 
 @defopt TeX-fold-unfold-around-mark
-When this variable is non-nil and there is an active regione, text
+When this variable is non-@code{nil} and there is an active regione, text
 around the mark will be kept unfolded.
 @end defopt
 
@@ -2792,9 +2795,9 @@ Default display string for environments which are not specified in
 @end defopt
 
 @defopt TeX-fold-unspec-use-name
-If non-nil the name of the macro or environment surrounded by square
-brackets is used as display string, otherwise the defaults specified in
-@code{TeX-fold-unspec-macro-display-string} or
+If non-@code{nil} the name of the macro or environment surrounded by
+square brackets is used as display string, otherwise the defaults
+specified in @code{TeX-fold-unspec-macro-display-string} or
 @code{TeX-fold-unspec-env-display-string} respectively.
 @end defopt
 
@@ -3174,18 +3177,18 @@ this variable if automatic parsing is not enabled.
 
 After confirming a command to execute, @AUCTeX{} will try to save any
 buffers related to the document, and check if the document needs to be
-reformatted.  If the variable @code{TeX-save-query} is non-nil,
+reformatted.  If the variable @code{TeX-save-query} is non-@code{nil},
 @AUCTeX{} will query before saving each file.  By default @AUCTeX{} will
-check emacs buffers associated with files in the current directory, in
-one of the @code{TeX-macro-private} directories, and in the
+check emacs buffers associated with files in the current directory, in one
+of the @code{TeX-macro-private} directories, and in the
 @code{TeX-macro-global} directories.  You can change this by setting the
 variable @code{TeX-check-path}.
 
 @defopt TeX-check-path
 Directory path to search for dependencies.
 
-If nil, just check the current file.
-Used when checking if any files have changed.
+If @code{nil}, just check the current file.  Used when checking if any
+files have changed.
 @end defopt
 
 @cindex ispell
@@ -3416,14 +3419,15 @@ generate the final @acronym{PDF} by converting a @acronym{DVI} file.
 This option controls if and how to produce a @acronym{PDF} file by
 converting a @acronym{DVI} file.
 
-When @code{TeX-PDF-mode} is non-nil, if @code{TeX-PDF-from-DVI} is
-non-nil too the document is compiled to @acronym{DVI} instead of
-@acronym{PDF}.  When the document is ready, @kbd{C-c C-c} will suggest
-to run the converter to @acronym{PDF} or an intermediate format.
+When @code{TeX-PDF-mode} is non-@code{nil}, if @code{TeX-PDF-from-DVI} is
+non-@code{nil} too the document is compiled to @acronym{DVI} instead of
+@acronym{PDF}.  When the document is ready, @kbd{C-c C-c} will suggest to
+run the converter to @acronym{PDF} or an intermediate format.
 
-If non-nil, @code{TeX-PDF-from-DVI} should be the name of the command in @code{TeX-command-list},
-as a string, used to convert the @acronym{DVI} file to @acronym{PDF} or
-to an intermediate format.  Values currently supported are:
+If non-@code{nil}, @code{TeX-PDF-from-DVI} should be the name of the
+command in @code{TeX-command-list}, as a string, used to convert the
+@acronym{DVI} file to @acronym{PDF} or to an intermediate format.  Values
+currently supported are:
 @itemize
 @item
 @code{"Dvips"}: the @acronym{DVI} file is converted to @acronym{PS} with
@@ -3490,14 +3494,14 @@ the executables you want to use instead.  You can also add entries to
 per default.
 
 @defopt TeX-engine-alist
-Alist of @TeX{} engines and associated commands.  Each entry is a list with
-a maximum of five elements.  The first element is a symbol used to
+Alist of @TeX{} engines and associated commands.  Each entry is a list
+with a maximum of five elements.  The first element is a symbol used to
 identify the engine.  The second is a string describing the engine.  The
 third is the command to be used for plain @TeX{}.  The fourth is the
 command to be used for @LaTeX{}.  The fifth is the command to be used for
-the @option{--engine} parameter of @ConTeXt{}'s @samp{texexec} program.  Each
-command can either be a variable or a string.  An empty string or nil
-means there is no command available.
+the @option{--engine} parameter of @ConTeXt{}'s @samp{texexec} program.
+Each command can either be a variable or a string.  An empty string or
+@code{nil} means there is no command available.
 @end defopt
 
 In some systems, Emacs cannot inherit the @env{PATH} environment variable from
@@ -3509,12 +3513,11 @@ the option @code{TeX-check-TeX}.
 @defopt TeX-check-TeX
 @vindex TeX-command
 @vindex TeX-check-TeX-command-not-found
-If non-nil, @AUCTeX{} will check if it is able to find a working @TeX{}
-distribution before running @TeX{}, @LaTeX{}, @ConTeXt{}, etc.  It
-actually checks if can run @code{TeX-command} command or the shell
-returns a command not found error.  The error code returned by the shell
-in this case can be set in @code{TeX-check-TeX-command-not-found}
-option.
+If non-@code{nil}, @AUCTeX{} will check if it is able to find a working
+@TeX{} distribution before running @TeX{}, @LaTeX{}, @ConTeXt{}, etc.  It
+actually checks if can run @code{TeX-command} command or the shell returns
+a command not found error.  The error code returned by the shell in this
+case can be set in @code{TeX-check-TeX-command-not-found} option.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a
@@ -3552,14 +3555,16 @@ You can customize @AUCTeX{} to show the processor output as it is
 produced.
 
 @defopt TeX-show-compilation
-If non-nil, the output of @TeX{} compilation is shown in another window.
+If non-@code{nil}, the output of @TeX{} compilation is shown in another
+window.
 @end defopt
 
 You can instruct @TeX{} to print error messages in the form
 @samp{file:line:error} which is similar to the way many compilers format them.
 
 @defopt TeX-file-line-error
-If non-nil, @TeX{} will produce @samp{file:line:error} style error messages.
+If non-@code{nil}, @TeX{} will produce @samp{file:line:error} style error
+messages.
 @end defopt
 
 @ConTeXt{} users can choose between Mark II and Mark IV versions.  This
@@ -3646,8 +3651,8 @@ definitions, you can do so via the variables
 
 @defopt TeX-view-predicate-list
 This is a list of predicates for viewer selection and invocation.  The
-first element of each list item is a symbol and the second element a
-Lisp form to be evaluated.  The form should return nil if the predicate
+first element of each list item is a symbol and the second element a Lisp
+form to be evaluated.  The form should return @code{nil} if the predicate
 is not fulfilled.
 
 A built-in predicate from @code{TeX-view-predicate-list-builtin} can be
@@ -3683,8 +3688,8 @@ and you are using evince-compatible viewer, customize the option
 @code{TeX-view-enince-keep-focus}.
 
 @defopt TeX-view-evince-keep-focus
-When this option is non-nil and the viewer is compatible with evince,
-the focus is pulled back to Emacs immediately after the viewer is
+When this option is non-@code{nil} and the viewer is compatible with
+evince, the focus is pulled back to Emacs immediately after the viewer is
 invoked or refreshed from within @AUCTeX{}.
 @end defopt
 
@@ -3884,10 +3889,9 @@ the whole @TeX{} log buffer.  This is controlled by the
 If t, @AUCTeX{} automatically parses the whole output log buffer right
 after running a @TeX{} command, in order to collect all warnings and
 errors.  This makes it possible to navigate back and forth between the
-error messages using @code{TeX-next-error} and
-@code{TeX-previous-error}.  This is the default.  If nil, @AUCTeX{} does
-not parse the whole output log buffer and @code{TeX-previous-error}
-cannot be used.
+error messages using @code{TeX-next-error} and @code{TeX-previous-error}.
+This is the default.  If @code{nil}, @AUCTeX{} does not parse the whole
+output log buffer and @code{TeX-previous-error} cannot be used.
 @end defopt
 
 As default, @AUCTeX{} will display a special help buffer containing the
@@ -3895,11 +3899,11 @@ error reported by @TeX{} along with the documentation.  There is however
 an `expert' option, which allows you to display the real @TeX{} output.
 
 @defopt TeX-display-help
-If t @AUCTeX{} will automatically display a help text whenever an error
-is encountered using @code{TeX-next-error} (@kbd{C-c `}).  If nil a
+If t @AUCTeX{} will automatically display a help text whenever an error is
+encountered using @code{TeX-next-error} (@kbd{C-c `}).  If @code{nil}, a
 terse information about the error is displayed in the echo area.  If
-@code{expert} @AUCTeX{} will display the output buffer with the raw
-@TeX{} output.
+@code{expert} @AUCTeX{} will display the output buffer with the raw @TeX{}
+output.
 @end defopt
 
 @menu
@@ -3954,19 +3958,19 @@ details.
 (@kbd{C-c C-t C-x}) Toggle whether @AUCTeX{} should actually hide the
 ignored warnings specified with @code{TeX-ignore-warnings}.  The boolean
 option @code{TeX-suppress-ignored-warnings} is set accordingly.  If this
-is nil, all warnings are shown, even those matched by
+is @code{nil}, all warnings are shown, even those matched by
 @code{TeX-ignore-warnings}, otherwise these are hidden.
 
-Note that @code{TeX-debug-warnings} takes the precedence: if it is nil,
-all warnings are hidden in any case.
+Note that @code{TeX-debug-warnings} takes the precedence: if it is
+@code{nil}, all warnings are hidden in any case.
 @end deffn
 
 @node Error overview
 @subsection List of all errors and warnings
 
-When the option @code{TeX-parse-all-errors} is non-nil, you will be also
-able to open an overview of all errors and warnings reported by the @TeX{}
-compiler.
+When the option @code{TeX-parse-all-errors} is non-@code{nil}, you will be
+also able to open an overview of all errors and warnings reported by the
+@TeX{} compiler.
 
 @deffn Command TeX-error-overview
 Show an overview of the errors and warnings occurred in the last @TeX{}
@@ -3985,7 +3989,7 @@ overview.
 @end deffn
 
 @defopt TeX-error-overview-open-after-TeX-run
-When this boolean variable is non-nil, the error overview will be
+When this boolean variable is non-@code{nil}, the error overview will be
 automatically opened after running @TeX{} if there are errors or warnings
 to show.
 @end defopt
@@ -3996,7 +4000,7 @@ default, but you can change this behavior by customizing the option
 
 @defopt TeX-error-overview-setup
 Controls the frame setup of the error overview.  The possible value is:
-@code{separate-frame}; with a nil value the current frame is used
+@code{separate-frame}; with a @code{nil} value the current frame is used
 instead.
 
 The parameters of the separate frame can be set with the
@@ -4111,7 +4115,7 @@ Alternatively, you may use @code{setq-default} to set the default value of
 this option or set it as a directory local variable (@pxref{Directory
 Variables,,, emacs, The Emacs Editor}).
 
-Note that a non-nil value of @code{TeX-output-dir} might be incompatible
+Note that a non-@code{nil} value of @code{TeX-output-dir} might be incompatible
 with some @TeX{} commands and macros.  In particular, the @LaTeX{} macro
 @samp{\include} is known to not work with this option.  Some @TeX{}
 packages which produce intermediary files might also be incompatible.  A
@@ -4177,7 +4181,7 @@ for each @AUCTeX{} mode by means of the following variables:
 
 @defopt TeX-clean-confirm
 Control if deletion of intermediate and output files has to be confirmed
-before it is actually done.  If non-nil, ask before deleting files.
+before it is actually done.  If non-@code{nil}, ask before deleting files.
 @end defopt
 
 @node Documentation
@@ -4395,7 +4399,7 @@ master file.  @xref{Automatic Local}.
 @end deffn
 
 @defopt TeX-save-query
-If non-nil, then query the user before saving each file with
+If non-@code{nil}, then query the user before saving each file with
 @code{TeX-save-document}.
 @end defopt
 
@@ -4804,10 +4808,10 @@ Used for overriding the default language-specific quote insertion
 behavior.  This is an alist where each element is a list consisting of
 four items.  The first item is the name of the language in concern as a
 string.  See the list of supported languages above.  The second item is
-the opening quotation mark.  The third item is the closing quotation
-mark.  Opening and closing quotation marks can be specified directly as
-strings or as functions returning a string.  The fourth item is a
-boolean controlling quote insertion.  It should be non-nil if if the
+the opening quotation mark.  The third item is the closing quotation mark.
+Opening and closing quotation marks can be specified directly as strings
+or as functions returning a string.  The fourth item is a boolean
+controlling quote insertion.  It should be non-@code{nil} if if the
 special quotes should only be used after inserting a literal @samp{"}
 character first, i.e.@: on second key press.
 @end defopt
@@ -4816,9 +4820,9 @@ character first, i.e.@: on second key press.
 Used for overriding the behavior of hyphen insertion for specific
 languages.  Every element in this alist is a list of three items.  The
 first item should specify the affected language as a string.  The second
-item denotes the hyphen string to be used as a string.  The third item,
-a boolean, controls the behavior of hyphen insertion and should be
-non-nil if the special hyphen should be inserted after inserting a
+item denotes the hyphen string to be used as a string.  The third item, a
+boolean, controls the behavior of hyphen insertion and should be
+non-@code{nil} if the special hyphen should be inserted after inserting a
 literal @samp{-} character, i.e.@: on second key press.
 @end defopt
 
@@ -4831,15 +4835,15 @@ String to be used when typing @key{-}.  This usually is a hyphen
 alternative or hyphenation aid provided by @samp{babel} and the related
 language style files, like @samp{"=}, @samp{"~} or @samp{"-}.
 
-Set it to an empty string or nil in order to disable language-specific
-hyphen insertion.
+Set it to an empty string or @code{nil} in order to disable
+language-specific hyphen insertion.
 @end defopt
 
 @defopt LaTeX-babel-hyphen-after-hyphen
-Control insertion of hyphen strings.  If non-nil insert normal hyphen on
-first key press and swap it with the language-specific hyphen string
-specified in the variable @code{LaTeX-babel-hyphen} on second key press.
-If nil do it the other way round.
+Control insertion of hyphen strings.  If non-@code{nil} insert normal
+hyphen on first key press and swap it with the language-specific hyphen
+string specified in the variable @code{LaTeX-babel-hyphen} on second key
+press.  If @code{nil} do it the other way round.
 @end defopt
 
 @node Japanese
@@ -4959,8 +4963,8 @@ There are three customize options with regard to the encoding of
 Japanese text.
 
 @defopt japanese-TeX-use-kanji-opt-flag
-If non-nil, @AUCTeX{} adds @option{-kanji} option to the typesetting
-command when @code{TeX-engine} is @samp{ptex}.
+If non-@code{nil}, @AUCTeX{} adds @option{-kanji} option to the
+typesetting command when @code{TeX-engine} is @samp{ptex}.
 @end defopt
 
 Usually @AUCTeX{} guesses the right coding systems for input to and
@@ -4968,12 +4972,12 @@ output from the Japanese @TeX{} process, but you can override them by
 the following two customize options.
 
 @defopt TeX-japanese-process-input-coding-system
-If non-nil, used for encoding input to Japanese @TeX{} process.
+If non-@code{nil}, used for encoding input to Japanese @TeX{} process.
 When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
 @end defopt
 
 @defopt TeX-japanese-process-output-coding-system
-If non-nil, used for decoding output from Japanese @TeX{} process.
+If non-@code{nil}, used for decoding output from Japanese @TeX{} process.
 When @code{nil}, @AUCTeX{} tries to choose suitable coding system.
 @end defopt
 
@@ -5059,7 +5063,7 @@ By default, when @AUCTeX{} searches a directory for files, it will
 recursively search through subdirectories.
 
 @defopt TeX-file-recurse
-Whether to search @TeX{} directories recursively: nil means do not
+Whether to search @TeX{} directories recursively: @code{nil} means do not
 recurse, a positive integer means go that far deep in the directory
 hierarchy, t means recurse indefinitely.
 @end defopt
@@ -5091,8 +5095,8 @@ environments available for completion purposes.  The drawback is slower
 load time when you edit a new file and perhaps too many confusing
 symbols when you try to do a completion.
 
-You can disable the automatic generated global style hooks by setting
-the variable @code{TeX-auto-global} to nil.
+You can disable the automatic generated global style hooks by setting the
+variable @code{TeX-auto-global} to @code{nil}.
 
 @defopt TeX-macro-global
 Directories containing the site's @TeX{} style files.
@@ -5459,7 +5463,8 @@ Prompt for a @LaTeX{} environment with completion.
 @item TeX-arg-cite
 @vindex TeX-arg-cite-note-p
 Prompt for a Bib@TeX{} citation.  If the variable
-@code{TeX-arg-cite-note-p} is non-nil, ask also for optional note in citations.
+@code{TeX-arg-cite-note-p} is non-@code{nil}, ask also for optional note
+in citations.
 
 @item TeX-arg-counter
 Prompt for a @LaTeX{} counter completing with known counters.
@@ -5849,7 +5854,8 @@ value is actually the tail of the list of options given to @var{class}.
 
 @defun LaTeX-match-class-option @var{regexp}
 Check if a documentclass option matching @var{regexp} is active.  Return
-first found class option matching @var{regexp}, or nil if not found.
+first found class option matching @var{regexp}, or @code{nil} if not
+found.
 @end defun
 
 These functions are also useful to implement customized predicate(s) in
@@ -5998,8 +6004,8 @@ found.
 @defvar TeX-auto-regexp-list
 List of regular expressions matching @TeX{} macro definitions.
 
-The list has the following format ((@var{regexp} @var{match} @var{table}) @dots{}), that
-is, each entry is a list with three elements.
+The list has the following format ((@var{regexp} @var{match}
+@var{table})@dots{}), that is, each entry is a list with three elements.
 
 @var{regexp}.  Regular expression matching the macro we want to parse.
 
