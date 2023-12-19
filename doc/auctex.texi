@@ -948,12 +948,12 @@ controlled by the user option @code{TeX-complete-expert-commands}.
 @defopt TeX-complete-expert-commands
 Complete macros and environments marked as expert commands.
 
-Possible values are @code{nil}, t, or a list of style names.
+Possible values are @code{nil}, @code{t}, or a list of style names.
 
 @table @asis
-@item nil
+@item @code{nil}
 Don't complete expert commands (default).
-@item t
+@item @code{t}
 Always complete expert commands.
 @item (@var{styles} @dots{})
 Only complete expert commands of @var{styles}.
@@ -1462,12 +1462,12 @@ controlled using the user option @code{TeX-complete-expert-commands}.
 @defopt TeX-complete-expert-commands
 Complete macros and environments marked as expert commands.
 
-Possible values are @code{nil}, t, or a list of style names.
+Possible values are @code{nil}, @code{t}, or a list of style names.
 
 @table @asis
-@item nil
+@item @code{nil}
 Don't complete expert commands (default).
-@item t
+@item @code{t}
 Always complete expert commands.
 @item (@var{styles} @dots{})
 Only complete expert commands of @var{styles}.
@@ -1683,12 +1683,12 @@ formatting @samp{tabular} and @samp{tabbing} environments with the
 function @code{align-current} which will nicely align columns in the
 source code.
 
-@AUCTeX{} is able to format commented parts of your code just as any
-other part.  This means @LaTeX{} environments and @TeX{} groups in
-comments will be indented syntactically correct if the variable
-@code{LaTeX-syntactic-comments} is set to t.  If you disable it,
-comments will be filled like normal text and no syntactic indentation
-will be done.
+@AUCTeX{} is able to format commented parts of your code just as any other
+part.  This means @LaTeX{} environments and @TeX{} groups in comments will
+be indented syntactically correct if the variable
+@code{LaTeX-syntactic-comments} is set to @code{t}.  If you disable it,
+comments will be filled like normal text and no syntactic indentation will
+be done.
 @vindex LaTeX-syntactic-comments
 
 Following you will find a list of most commands and variables related
@@ -2892,14 +2892,15 @@ Emacs 25 is able to prettify symbols in programming language buffers,
 example is to display @code{(lambda () ...)} as @code{(λ () ...)} in
 Lisp buffers.
 
-@AUCTeX{} can use this feature in order to display certain math macros
-and greek letters using their Unicode representation, too.  For example,
-the @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α
-× β}.  When point is on one of the characters, it'll be unprettified
+@AUCTeX{} can use this feature in order to display certain math macros and
+greek letters using their Unicode representation, too.  For example, the
+@TeX{} code @code{\alpha \times \beta} will be displayed as @code{α × β}.
+When point is on one of the characters, it'll be unprettified
 automatically, meaning you see the verbatim text again.  For this
 behaviour however you need to set
-@code{prettify-symbols-unprettify-at-point} to t or @code{right-edge}
-which will unprettify the symbol when point moves into or near it.
+@code{prettify-symbols-unprettify-at-point} to @code{t} or
+@code{right-edge} which will unprettify the symbol when point moves into
+or near it.
 
 To enable prettification in @AUCTeX{}, simply add
 @code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled
@@ -3886,8 +3887,8 @@ the whole @TeX{} log buffer.  This is controlled by the
 @code{TeX-parse-all-errors} variable.
 
 @defopt TeX-parse-all-errors
-If t, @AUCTeX{} automatically parses the whole output log buffer right
-after running a @TeX{} command, in order to collect all warnings and
+If @code{t}, @AUCTeX{} automatically parses the whole output log buffer
+right after running a @TeX{} command, in order to collect all warnings and
 errors.  This makes it possible to navigate back and forth between the
 error messages using @code{TeX-next-error} and @code{TeX-previous-error}.
 This is the default.  If @code{nil}, @AUCTeX{} does not parse the whole
@@ -3899,11 +3900,11 @@ error reported by @TeX{} along with the documentation.  There is however
 an `expert' option, which allows you to display the real @TeX{} output.
 
 @defopt TeX-display-help
-If t @AUCTeX{} will automatically display a help text whenever an error is
-encountered using @code{TeX-next-error} (@kbd{C-c `}).  If @code{nil}, a
-terse information about the error is displayed in the echo area.  If
-@code{expert} @AUCTeX{} will display the output buffer with the raw @TeX{}
-output.
+If @code{t}, @AUCTeX{} will automatically display a help text whenever an
+error is encountered using @code{TeX-next-error} (@kbd{C-c `}).  If
+@code{nil}, a terse information about the error is displayed in the echo
+area.  If @code{expert} @AUCTeX{} will display the output buffer with the
+raw @TeX{} output.
 @end defopt
 
 @menu
@@ -5065,7 +5066,7 @@ recursively search through subdirectories.
 @defopt TeX-file-recurse
 Whether to search @TeX{} directories recursively: @code{nil} means do not
 recurse, a positive integer means go that far deep in the directory
-hierarchy, t means recurse indefinitely.
+hierarchy, @code{t} means recurse indefinitely.
 @end defopt
 
 By default, @AUCTeX{} will ignore files named @file{.}, @file{..},
@@ -5521,19 +5522,19 @@ Prompt for a @LaTeX{} savebox.
 @vindex LaTeX-default-options
 @vindex TeX-arg-input-file-search
 @vindex LaTeX-style-list
-Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style}
-as default value and @code{LaTeX-default-options} as default list of
-options.  If the variable @code{TeX-arg-input-file-search} is t, you
-will be able to complete with all @LaTeX{} classes available on your
-system, otherwise classes listed in the variable @code{LaTeX-style-list}
-will be used for completion.  It is also provided completion for options
-of many common classes.
+Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style} as
+default value and @code{LaTeX-default-options} as default list of options.
+If the variable @code{TeX-arg-input-file-search} is @code{t}, you will be
+able to complete with all @LaTeX{} classes available on your system,
+otherwise classes listed in the variable @code{LaTeX-style-list} will be
+used for completion.  It is also provided completion for options of many
+common classes.
 
 @item LaTeX-arg-usepackage
 @vindex TeX-arg-input-file-search
 Prompt for @LaTeX{} packages.  If the variable
-@code{TeX-arg-input-file-search} is t, you will be able to complete with
-all @LaTeX{} packages available on your system.  It is also provided
+@code{TeX-arg-input-file-search} is @code{t}, you will be able to complete
+with all @LaTeX{} packages available on your system.  It is also provided
 completion for options of many common packages.
 
 @item TeX-arg-bibstyle
