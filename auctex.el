@@ -42,4 +42,6 @@
                     (file-name-directory load-file-name)))
 (TeX-load-hack)
 
+(provide 'auctex)
+
 ;;; auctex.el ends here
