@@ -30,7 +30,7 @@ respectively.
 
 @item
 The variable @code{preview-scale-function} is now allowed as a file-local
-variable where the values are restricted to @math{0.1 \le x \le 10}.
+variable where the assigned value can only be between 0.1 and 10.
 @end itemize
 
 @heading News in 13.2
