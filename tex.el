@@ -944,9 +944,8 @@ more details."
 
 ;;; Mode names.
 
-(defvar TeX-base-mode-name nil
+(defvar-local TeX-base-mode-name nil
   "Base name of mode.")
-(make-variable-buffer-local 'TeX-base-mode-name)
 
 (defun TeX-set-mode-name (&optional changed local reset)
   "Build and set the mode name.
@@ -1645,11 +1644,10 @@ actually used for forward and inverse search."
                                      (const source-specials)))))
   :group 'TeX-view)
 
-(defvar TeX-source-correlate-output-page-function nil
+(defvar-local TeX-source-correlate-output-page-function nil
   "Symbol of function returning an output page relating to buffer position.
 The function should take no arguments and return the page numer
 as a string.")
-(make-variable-buffer-local 'TeX-source-correlate-output-page-function)
 
 (define-obsolete-variable-alias 'TeX-source-specials-view-start-server
   'TeX-source-correlate-start-server "11.86")
@@ -2000,9 +1998,8 @@ enabled and the `synctex' binary is available."
 
 ;;; Miscellaneous minor modes
 
-(defvar TeX-mode-p nil
+(defvar-local TeX-mode-p nil
   "This indicates a TeX mode being active.")
-(make-variable-buffer-local 'TeX-mode-p)
 
 (defun TeX-mode-set (var value)
   (set-default var value)
@@ -2040,10 +2037,8 @@ function `TeX-global-PDF-mode' for toggling this value."
 
 (defalias 'tex-pdf-mode #'TeX-PDF-mode)
 
-(defvar TeX-PDF-mode-parsed nil
+(defvar-local TeX-PDF-mode-parsed nil
   "Set if `TeX-PDF-mode' has come about by parsing.")
-
-(make-variable-buffer-local 'TeX-PDF-mode-parsed)
 
 (defun TeX-PDF-mode-parsed (arg)
   "Change `TeX-PDF-mode' to ARG based on parsing.
@@ -2051,11 +2046,11 @@ If this conflicts with previous parsed settings,
 just use the default.  If an explicit setting is
 already established, don't do anything."
 
-;; Basically we have the following situations:
-;; TeX-PDF-mode-parsed (local-variable-p 'TeX-PDF-mode):
-;; nil nil : virgin state
-;; nil t   : stably set state (possibly because of conflicting parse info)
-;; t   t   : non-conflicting parsed info
+  ;; Basically we have the following situations:
+  ;; TeX-PDF-mode-parsed (local-variable-p 'TeX-PDF-mode):
+  ;; nil nil : virgin state
+  ;; nil t   : stably set state (possibly because of conflicting parse info)
+  ;; t   t   : non-conflicting parsed info
 
   (if TeX-PDF-mode-parsed
       (unless (eq TeX-PDF-mode arg)
@@ -2166,20 +2161,14 @@ Must be the car of an entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
 
-(defvar TeX-trailer-start nil
+(defvar-local TeX-trailer-start nil
   "Regular expression delimiting start of trailer in a TeX file.")
 
- (make-variable-buffer-local 'TeX-trailer-start)
-
-(defvar TeX-header-end nil
+(defvar-local TeX-header-end nil
   "Regular expression delimiting end of header in a TeX file.")
 
- (make-variable-buffer-local 'TeX-header-end)
-
-(defvar TeX-command-default nil
+(defvar-local TeX-command-default nil
   "The default command for `TeX-command' in the current major mode.")
-
- (make-variable-buffer-local 'TeX-command-default)
 
 (put 'TeX-command-default 'safe-local-variable #'stringp)
 
@@ -2971,9 +2960,8 @@ See variable `TeX-style-hook-dialect' for supported dialects."
   :group 'TeX-parse
   :type 'string)
 
-(defvar TeX-active-styles nil
+(defvar-local TeX-active-styles nil
   "List of styles currently active in the document.")
- (make-variable-buffer-local 'TeX-active-styles)
 
 (defun TeX-run-style-hooks (&rest styles)
   "Run the TeX style hooks STYLES."
@@ -3021,9 +3009,8 @@ See variable `TeX-style-hook-dialect' for supported dialects."
   :group 'TeX-parse
   :type 'boolean)
 
-(defvar TeX-style-hook-applied-p nil
+(defvar-local TeX-style-hook-applied-p nil
   "Non-nil means the style specific hooks have been applied.")
- (make-variable-buffer-local 'TeX-style-hook-applied-p)
 
 (defvar TeX-update-style-hook nil
   "Hook run as soon as style specific hooks were applied.")
@@ -3068,14 +3055,11 @@ FORCE is not nil."
 
 ;;; Special Characters
 
-(defvar TeX-esc "\\" "The TeX escape character.")
- (make-variable-buffer-local 'TeX-esc)
+(defvar-local TeX-esc "\\" "The TeX escape character.")
 
-(defvar TeX-grop "{" "The TeX group opening character.")
- (make-variable-buffer-local 'TeX-grop)
+(defvar-local TeX-grop "{" "The TeX group opening character.")
 
-(defvar TeX-grcl "}" "The TeX group closing character.")
- (make-variable-buffer-local 'TeX-grcl)
+(defvar-local TeX-grcl "}" "The TeX group closing character.")
 
 ;;; Symbols
 
@@ -4485,13 +4469,11 @@ Check for potential LaTeX environments."
   :group 'TeX-file-extension
   :type 'string)
 
-(defvar TeX-output-extension nil
+(defvar-local TeX-output-extension nil
   "Extension of TeX output file.
 This is either a string or a list with
 a string as element.  Its value is obtained from `TeX-command-output-list'.
 Access to the value should be through the function `TeX-output-extension'.")
-
-  (make-variable-buffer-local 'TeX-output-extension)
 
 (defcustom TeX-Biber-file-extensions '("bib" "ris" "xml")
   "Valid file extensions for Biber files."
@@ -4849,10 +4831,8 @@ element to ALIST-VAR."
 
 ;;; Syntax Table
 
-(defvar TeX-mode-syntax-table (make-syntax-table)
+(defvar-local TeX-mode-syntax-table (make-syntax-table)
   "Syntax table used while in TeX mode.")
-
- (make-variable-buffer-local 'TeX-mode-syntax-table)
 
 (progn ; Define TeX-mode-syntax-table.
   (modify-syntax-entry (string-to-char TeX-esc)
@@ -5259,10 +5239,9 @@ Brace insertion is only done if point is in a math construct and
 
 ;;; Verbatim constructs
 
-(defvar TeX-verbatim-p-function nil
+(defvar-local TeX-verbatim-p-function nil
   "Mode-specific function to be called by `TeX-verbatim-p'.
 It must accept optional argument POS for position.")
-(make-variable-buffer-local 'TeX-verbatim-p-function)
 
 ;; XXX: We only have an implementation for LaTeX mode at the moment (Oct 2009).
 (defun TeX-verbatim-p (&optional pos)
@@ -5275,11 +5254,10 @@ available, the function always returns nil."
 
 ;;; Comments
 
-(defvar TeX-comment-start-regexp "%"
+(defvar-local TeX-comment-start-regexp "%"
   "Regular expression matching a comment starter.
 Unlike the variable `comment-start-skip' it should not match any
 whitespace after the comment starter or any character before it.")
-(make-variable-buffer-local 'TeX-comment-start-regexp)
 
 (defun TeX-uncomment ()
   "Delete comment characters from the beginning of each line in a comment."
@@ -5790,13 +5768,12 @@ escape characters, such as \"\\\" in LaTeX."
         (buffer-substring-no-properties
          (point) (progn (skip-chars-forward "@A-Za-z*") (point)))))))
 
-(defvar TeX-search-forward-comment-start-function nil
+(defvar-local TeX-search-forward-comment-start-function nil
   "Function to find the start of a comment.
 The function should accept an optional argument for specifying
 the limit of the search.  It should return the position just
 before the comment if one is found and nil otherwise.  Point
 should not be moved.")
-(make-variable-buffer-local 'TeX-search-forward-comment-start-function)
 
 (defun TeX-search-forward-comment-start (&optional limit)
   "Search forward for a comment start from current position till LIMIT.
@@ -6218,7 +6195,7 @@ valid languages."
                         (choice :tag "Closing quotation mark" string function)
                         (boolean :tag "Insert plain quote first" :value t))))
 
-(defvar TeX-quote-language nil
+(defvar-local TeX-quote-language nil
   "If non-nil determines behavior of quote insertion.
 It is usually set by language-related style files.  Its value has
 the same structure as the elements of `TeX-quote-language-alist'.
@@ -6226,7 +6203,6 @@ The symbol `override' can be used as its car in order to override
 the settings of style files.  Style files should therefore check
 if this symbol is present and not alter `TeX-quote-language' if
 it is.")
-(make-variable-buffer-local 'TeX-quote-language)
 
 (defun TeX-insert-quote (force)
   "Insert the appropriate quotation marks for TeX.
@@ -6912,12 +6888,9 @@ depend on it being positive instead of the entry in `TeX-command-list'."
 ;; However, that string is inappropriate for plain TeX and ConTeXt.
 ;; This needs reconsideration.
 
-(defvar TeX-command-region-begin nil)
-(defvar TeX-command-region-end nil)
+(defvar-local TeX-command-region-begin nil)
+(defvar-local TeX-command-region-end nil)
 ;; Used for marking the last region.
-
-(make-variable-buffer-local 'TeX-command-region-begin)
-(make-variable-buffer-local 'TeX-command-region-end)
 
 (defun TeX-current-offset (&optional pos)
   "Calculate line offset of POS, or of point if POS is nil."
@@ -7102,12 +7075,11 @@ the master file."
       (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
 
-(defvar TeX-error-last-visited -1
+(defvar-local TeX-error-last-visited -1
   "Index of the last visited error listed in `TeX-error-list'.
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
-(make-variable-buffer-local 'TeX-error-last-visited)
 
 (defun TeX-get-parse-function ()
   "Get the parse function for the current buffer."
@@ -7182,12 +7154,11 @@ run.")
   :group 'TeX-command
   :type 'boolean)
 
-(defvar TeX-check-engine-list '(default luatex omega xetex)
+(defvar-local TeX-check-engine-list '(default luatex omega xetex)
   "List of engines required by the loaded TeX packages.
 
 Do not set this variable directly, use
 `TeX-check-engine-add-engines' to specify required engines.")
-(make-variable-buffer-local 'TeX-check-engine-list)
 
 (defun TeX-check-engine-add-engines (&rest engines)
   "Add ENGINES to list of required engines.
@@ -7675,10 +7646,8 @@ omitted) and `TeX-region-file'."
         answer
       default)))
 
-(defvar TeX-command-next nil
+(defvar-local TeX-command-next nil
   "The default command next time `TeX-command' is invoked.")
-
- (make-variable-buffer-local 'TeX-command-next)
 
 (defun TeX-printer-query (&optional queue)
   "Query the user for a printer name.
@@ -7688,7 +7657,7 @@ QUEUE is non-nil when we are checking for the printer queue."
         (unless (setq element 2 command TeX-queue-command)
           (error "Need to customize `TeX-queue-command'"))
       (unless (setq element 1 command TeX-print-command)
-          (error "Need to customize `TeX-print-command'")))
+        (error "Need to customize `TeX-print-command'")))
     (while (progn
              (setq printer (if TeX-printer-list
                                (let ((completion-ignore-case t))
@@ -8266,19 +8235,14 @@ Insert MSG with some additional information."
   (setq compilation-in-progress (delq process compilation-in-progress)))
 
 
-(defvar TeX-sentinel-function (lambda (_process _name) nil)
+(defvar-local TeX-sentinel-function (lambda (_process _name) nil)
   "Hook to cleanup TeX command buffer after termination of PROCESS.
 NAME is the name of the process.")
 
-(make-variable-buffer-local 'TeX-sentinel-function)
-
-
-(defvar TeX-sentinel-default-function (lambda (_process _name) nil)
+(defvar-local TeX-sentinel-default-function (lambda (_process _name) nil)
   "Default for `TeX-sentinel-function'.  To be set in major mode.
 Hook to cleanup TeX command buffer after termination of PROCESS.
 NAME is the name of the process.")
-
-(make-variable-buffer-local 'TeX-sentinel-default-function)
 
 (defun TeX-TeX-sentinel (process name)
   "Cleanup TeX output buffer after running TeX.
@@ -8746,16 +8710,14 @@ command."
       (insert-before-markers string)
       (set-marker (process-mark process) (point)))))
 
-(defvar TeX-current-page nil
+(defvar-local TeX-current-page nil
   "The page number currently being formatted, enclosed in brackets.")
-
- (make-variable-buffer-local 'TeX-current-page)
 
 (defun TeX-format-mode-line (process)
   "Format the mode line for a buffer containing TeX output from PROCESS."
-    (setq mode-line-process (concat " " TeX-current-page ": "
-                                    (symbol-name (process-status process))))
-    (force-mode-line-update))
+  (setq mode-line-process (concat " " TeX-current-page ": "
+                                  (symbol-name (process-status process))))
+  (force-mode-line-update))
 
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."
@@ -8800,9 +8762,8 @@ command."
                   pt nil)
             (TeX-format-mode-line process)))))))
 
-(defvar TeX-parse-function nil
+(defvar-local TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
-(make-variable-buffer-local 'TeX-parse-function)
 
 (defun TeX-background-filter (_process string)
   "Filter to process background output."
@@ -9081,10 +9042,9 @@ The compatibility argument IGNORE is ignored."
   :group 'TeX-command
   :type 'string)
 
-(defvar LaTeX-command-section-level nil
+(defvar-local LaTeX-command-section-level nil
   "The section level used for `LaTeX-command-section'.
 Will be initialized to `LaTeX-largest-level' buffer-locally.")
-(make-variable-buffer-local 'LaTeX-command-section-level)
 
 (defun LaTeX-command-section-level ()
   "Return the value of `LaTeX-command-section-level'.
@@ -9092,7 +9052,6 @@ Initialize it to `LaTeX-largest-level' if needed."
   (unless LaTeX-command-section-level
     (setq LaTeX-command-section-level LaTeX-largest-level))
   LaTeX-command-section-level)
-
 
 (defun LaTeX-command-section-change-level (arg)
   "Change `LaTeX-command-section-level' by ARG.
@@ -9188,20 +9147,14 @@ compile the current section instead, that is, call
 
 ;;; - Global Parser Variables
 
-(defvar TeX-error-point nil
+(defvar-local TeX-error-point nil
   "How far we have parsed until now.")
 
-(make-variable-buffer-local 'TeX-error-point)
-
-(defvar TeX-error-file nil
+(defvar-local TeX-error-file nil
   "Stack of files in which errors have occurred.")
 
-(make-variable-buffer-local 'TeX-error-file)
-
-(defvar TeX-error-offset nil
+(defvar-local TeX-error-offset nil
   "Add this to any line numbers from TeX.  Stack like `TeX-error-file'.")
-
-(make-variable-buffer-local 'TeX-error-offset)
 
 (defun TeX-parse-reset (&optional reparse)
   "Reset all variables used for parsing TeX output.
@@ -9324,7 +9277,7 @@ from this hook.")
 ;; for each error/warning, because it can be set within `TeX-warning' by a
 ;; custom function taking as argument all information present in
 ;; `TeX-error-list' but `ignore', see `TeX-ignore-warnings'.
-(defvar TeX-error-list nil
+(defvar-local TeX-error-list nil
   "List of warnings and errors.
 
 Each element of the list is a list of information for a specific
@@ -9345,7 +9298,6 @@ error or warning.  This is the structure of each element:
 
 This variable is intended to be set only in output buffer so it
 will be shared among all files of the same document.")
-(make-variable-buffer-local 'TeX-error-list)
 
 (defun TeX-parse-all-errors ()
   "Parse TeX output buffer to collect all warnings and errors."
