@@ -1,6 +1,6 @@
 ;;; titleps.el --- AUCTeX style for `titleps.sty' (v1.1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -78,30 +78,29 @@ Removal is based on the return value of function
    (TeX-add-symbols
     ;; 2. Defining Page Styles
     '("newpagestyle"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((ps (TeX-read-string
-                    (TeX-argument-prompt nil nil "Page style"))))
-           (LaTeX-add-pagestyles ps)
-           (format "%s" ps))))
+      (lambda (optional)
+        (let ((ps (TeX-read-string
+                   (TeX-argument-prompt optional nil "Page style"))))
+          (LaTeX-add-pagestyles ps)
+          (TeX-argument-insert ps optional)))
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
-                           ( [ t ] nil)
-                           ( t )))
+          ( [ t ] nil)
+        ( t )))
 
     '("renewpagestyle" TeX-arg-pagestyle
       (TeX-arg-conditional (y-or-n-p "With optional global style? ")
-                           ( [ t ] nil)
-                           ( t )))
+          ( [ t ] nil)
+        ( t )))
 
     '("sethead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil)
-                           ( 3 )))
+          ( [ 3 ] nil nil nil)
+        ( 3 )))
 
     '("setfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil)
-                           ( 3 )))
+          ( [ 3 ] nil nil nil)
+        ( 3 )))
 
     '("sethead*" 3)
     '("setfoot*" 3)
@@ -130,8 +129,8 @@ Removal is based on the return value of function
     ;; 4. Headline/footline width
     '("widenhead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 2 ] nil nil)
-                           ( 2 )))
+          ( [ 2 ] nil nil)
+        ( 2 )))
 
     '("widenhead*" 2)
 
@@ -172,26 +171,26 @@ Removal is based on the return value of function
     ;; 6. Running heads with floats
     '("setfloathead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil nil [ nil ] )
-                           ( 4 [ nil ] )))
+          ( [ 3 ] nil nil nil nil [ nil ] )
+        ( 4 [ nil ] )))
 
     '("setfloatfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil nil [ nil ] )
-                           ( 4 [ nil ] )))
+          ( [ 3 ] nil nil nil nil [ nil ] )
+        ( 4 [ nil ] )))
 
     '("setfloathead*" 4 [ nil ] )
     '("setfloatfoot*" 4 [ nil ] )
 
     '("nextfloathead"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil nil [ nil ] )
-                           ( 4 [ nil ] )))
+          ( [ 3 ] nil nil nil nil [ nil ] )
+        ( 4 [ nil ] )))
 
     '("nextfloatfoot"
       (TeX-arg-conditional (y-or-n-p "With optional even pages? ")
-                           ( [ 3 ] nil nil nil nil [ nil ] )
-                           ( 4 [ nil ] )))
+          ( [ 3 ] nil nil nil nil [ nil ] )
+        ( 4 [ nil ] )))
 
     '("nextfloathead*" 4 [ nil ] )
     '("nextfloatfoot*" 4 [ nil ] )

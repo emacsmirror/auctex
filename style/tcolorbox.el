@@ -1,6 +1,6 @@
 ;;; tcolorbox.el --- AUCTeX style for `tcolorbox.sty' (v4.00)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -362,15 +362,14 @@
        (cl-pushnew (list key colors) result :test #'equal)))
    LaTeX-tcolorbox-keyval-options))
 
-(defvar LaTeX-tcolorbox-keyval-options-full
-  '(LaTeX-tcolorbox-keyval-options)
+(defvar-local LaTeX-tcolorbox-keyval-options-full
+    '(LaTeX-tcolorbox-keyval-options)
   "Buffer-local list of symbols containing key=val options.
 tcolorbox libraries should add their key=val options to this
 list.  Key=val options might be a variable or a function.  This
 variable is initialized with the function
 `LaTeX-tcolorbox-keyval-options'.  Please add entries on top of
 this list so that this item always comes last.")
-(make-variable-buffer-local 'LaTeX-tcolorbox-keyval-options-full)
 
 (defun LaTeX-tcolorbox-keyval-options-full ()
   "Return an updated list of full key=vals for tcolorbox and libraries.

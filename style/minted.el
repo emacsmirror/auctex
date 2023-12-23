@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.5)  -*- lexical-binding: t; -*-
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.8)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `minted.sty' (v2.5) from 2017/07/19.
+;; This file adds support for `minted.sty' (v2.8) from 2023/09/12.
 
 ;;; Code:
 
@@ -47,13 +47,14 @@
                   "newfloat" (&rest newfloat-declarefloatingenvironments))
 
 (defvar font-latex-syntactic-keywords-extra)
+(defvar LaTeX-fontenc-package-options)
 
 (defvar LaTeX-minted-key-val-options
   '(("autogobble" ("true" "false"))
     ("baselinestretch" ("auto"))
     ("beameroverlays" ("true" "false"))
     ("breakafter")
-    ("breakaftergroup" ("true" "false"))
+    ("breakafterinrun" ("true" "false"))
     ("breakaftersymbolpre")
     ("breakaftersymbolpost")
     ("breakanywhere" ("true" "false"))
@@ -61,7 +62,7 @@
     ("breakanywheresymbolpost")
     ("breakautoindent" ("true" "false"))
     ("breakbefore")
-    ("breakbeforegroup" ("true" "false"))
+    ("breakbeforeinrun" ("true" "false"))
     ("breakbeforesymbolpre")
     ("breakbeforesymbolpost")
     ("breakbytoken" ("true" "false"))
@@ -175,10 +176,16 @@ prepends them to variable `LaTeX-minted-key-val-options'."
          (push (list key colors) result))))
    LaTeX-minted-key-val-options))
 
-(defvar LaTeX-minted-pygmentize-program (executable-find "pygmentize"))
+(defvar LaTeX-minted-pygmentize-program (executable-find "pygmentize")
+  "Absolute file name to pygmentize program.")
 
 (defvar LaTeX-minted-language-list nil
-  "List containing languages provided by pymentize program.")
+  "List containing languages provided by pymentize program.
+Initialized once at the first prompt for a Pygments language.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-minted-language-list)
 
 (defun LaTeX-minted-language-list (&rest _ignored)
   "Return a list of languages provided by pymentize program.
@@ -197,7 +204,12 @@ Update the variable `LaTeX-minted-language-list' if still nil."
           LaTeX-minted-language-list))))
 
 (defvar LaTeX-minted-style-list nil
-  "List containing styles provided by pymentize program.")
+  "List containing styles provided by pymentize program.
+Initialized once at the first prompt for a Pygments style.
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
+
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-minted-style-list)
 
 (defun LaTeX-minted-style-list (&rest _ignored)
   "Return a list of styles provided by pymentize program.
@@ -215,91 +227,83 @@ Update the variable `LaTeX-minted-style-list' if still nil."
             (setq LaTeX-minted-style-list styles))
           LaTeX-minted-style-list))))
 
-(defvar LaTeX-minted-auto-newminted nil)
-(defvar LaTeX-minted-newminted-regexp
-  '("\\\\newminted\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
-    (1 2) LaTeX-minted-auto-newminted))
+(TeX-auto-add-type "minted-newmint" "LaTeX")
 
-(defvar LaTeX-minted-auto-newmint nil)
 (defvar LaTeX-minted-newmint-regexp
-  '("\\\\newmint\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
-    (1 2) LaTeX-minted-auto-newmint))
-
-(defvar LaTeX-minted-auto-newmintinline nil)
-(defvar LaTeX-minted-newmintinline-regexp
-  '("\\\\newmintinline\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
-    (1 2) LaTeX-minted-auto-newmintinline))
-
-(defvar LaTeX-minted-auto-newmintedfile nil)
-(defvar LaTeX-minted-newmintedfile-regexp
-  '("\\\\newmintedfile\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}{[^}]*}"
-    (1 2) LaTeX-minted-auto-newmintedfile))
+  '("\\\\newmint\\(edfile\\|inline\\|ed\\)?\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}"
+    (2 3 1) LaTeX-auto-minted-newmint)
+  "Match the arguments of \\newmint* macros from minted package.")
 
 (defun LaTeX-minted-auto-prepare ()
-  (setq LaTeX-minted-auto-newminted     nil
-        LaTeX-minted-auto-newmint       nil
-        LaTeX-minted-auto-newmintinline nil
-        LaTeX-minted-auto-newmintedfile nil
-        LaTeX-minted-language-list      nil
-        LaTeX-minted-style-list         nil))
+  "Reset `LaTeX-auto-minted-newmint' before parsing."
+  (setq LaTeX-auto-minted-newmint nil))
 
 (defun LaTeX-minted-auto-cleanup ()
-  ;; \newminted{lang}{opts} => new langcode and langcode* envs.
-  ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
-  (dolist (name-lang LaTeX-minted-auto-newminted)
-    (let* ((env (if (> (length (car name-lang)) 0)
-                    (car name-lang)
-                  (concat (cadr name-lang) "code")))
-           (env* (concat env "*")))
-      (add-to-list 'LaTeX-auto-environment (list env))
-      (add-to-list 'LaTeX-auto-environment
-                   (list env* #'LaTeX-env-args
-                         '(TeX-arg-key-val (LaTeX-minted-key-val-options))))
-      (add-to-list 'LaTeX-indent-environment-list `(,env current-indentation) t)
-      (add-to-list 'LaTeX-indent-environment-list `(,env* current-indentation) t)
-      (add-to-list 'LaTeX-verbatim-environments-local env)
-      (add-to-list 'LaTeX-verbatim-environments-local env*)))
-  ;; \newmint{foo}{opts} => \foo[key=vals]|code|
-  ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code|
-  (dolist (name-lang LaTeX-minted-auto-newmint)
-    (let ((lang (if (> (length (car name-lang)) 0)
-                    (car name-lang)
-                  (cadr name-lang))))
-      (add-to-list 'TeX-auto-symbol
-                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-                           TeX-arg-verb))
-      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
-      (when (and (fboundp 'font-latex-add-keywords)
-                 (eq TeX-install-font-lock 'font-latex-setup))
-        (font-latex-add-keywords `((,lang "[")) 'textual))))
-  ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
-  ;;                              \fooinline[key=vals]{code}
-  ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
-  ;;                                       \macname[key=vals]{code}
-  (dolist (name-lang LaTeX-minted-auto-newmintinline)
-    (let ((lang (if (> (length (car name-lang)) 0)
-                    (car name-lang)
-                  (concat (cadr name-lang) "inline"))))
-      (add-to-list 'TeX-auto-symbol
-                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-                           TeX-arg-verb-delim-or-brace))
-      (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
-      (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
-      (when (and (fboundp 'font-latex-add-keywords)
-                 (eq TeX-install-font-lock 'font-latex-setup))
-        (font-latex-add-keywords `((,lang "[")) 'textual))))
-  ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
-  ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
-  (dolist (name-lang LaTeX-minted-auto-newmintedfile)
-    (let ((lang (if (> (length (car name-lang)) 0)
-                    (car name-lang)
-                  (concat (cadr name-lang) "file"))))
-      (add-to-list 'TeX-auto-symbol
-                   `(,lang [TeX-arg-key-val (LaTeX-minted-key-val-options)]
-                           TeX-arg-file))))
-  (when (and (fboundp 'font-latex-set-syntactic-keywords)
+  "Process the parsed results from minted package."
+  (dolist (mint (LaTeX-minted-newmint-list))
+    (cond ((string= (nth 2 mint) "ed")
+           ;; \newminted{lang}{opts} => new langcode and langcode* envs.
+           ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
+           (let* ((env (if (string-empty-p (car mint))
+                           (concat (cadr mint) "code")
+                         (car mint)))
+                  (env* (concat env "*")))
+             (LaTeX-add-environments (list env))
+             (LaTeX-add-environments (list env* #'LaTeX-env-args
+                                           '(TeX-arg-key-val
+                                             (LaTeX-minted-key-val-options))))
+             (add-to-list 'LaTeX-indent-environment-list
+                          `(,env current-indentation) t)
+             (add-to-list 'LaTeX-indent-environment-list
+                          `(,env* current-indentation) t)
+             (add-to-list 'LaTeX-verbatim-environments-local env)
+             (add-to-list 'LaTeX-verbatim-environments-local env*)))
+          ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
+          ;;                              \fooinline[key=vals]{code}
+          ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
+          ;;                                       \macname[key=vals]{code}
+          ((string= (nth 2 mint) "inline")
+           (let ((lang (if (string-empty-p (car mint))
+                           (concat (cadr mint) "inline")
+                         (car mint))))
+             (TeX-add-symbols `(,lang
+                                [TeX-arg-key-val (LaTeX-minted-key-val-options)]
+                                TeX-arg-verb-delim-or-brace))
+             (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+             (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
+             (when (and (fboundp 'font-latex-add-keywords)
+                        (eq TeX-install-font-lock 'font-latex-setup))
+               (font-latex-add-keywords `((,lang "[")) 'textual))))
+          ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
+          ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
+          ((string= (nth 2 mint) "edfile")
+           (let ((lang (if (string-empty-p (car mint))
+                           (concat (cadr mint) "file")
+                         (car mint))))
+             (TeX-add-symbols `(,lang
+                                [TeX-arg-key-val (LaTeX-minted-key-val-options)]
+                                TeX-arg-file))))
+          ;; \newmint{foo}{opts} => \foo[key=vals]|code| or
+          ;;                        \foo[key=vals]{code}
+          ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code| or
+          ;;                                 \macname[key=vals]{code}
+          (t
+           (let ((lang (if (string-empty-p (car mint))
+                           (cadr mint)
+                         (car mint))))
+             (TeX-add-symbols `(,lang
+                                [TeX-arg-key-val (LaTeX-minted-key-val-options)]
+                                TeX-arg-verb-delim-or-brace))
+             (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+             (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
+             (when (and (fboundp 'font-latex-add-keywords)
+                        (eq TeX-install-font-lock 'font-latex-setup))
+               (font-latex-add-keywords `((,lang "[")) 'textual))))))
+  ;; Refresh font-locking so that the verbatim envs take effect only
+  ;; when there are defined shortcuts:
+  (when (and (LaTeX-minted-newmint-list)
+             (fboundp 'font-latex-set-syntactic-keywords)
              (eq TeX-install-font-lock 'font-latex-setup))
-    ;; Refresh font-locking so that the verbatim envs take effect.
     (font-latex-set-syntactic-keywords)))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-minted-auto-prepare t)
@@ -307,7 +311,7 @@ Update the variable `LaTeX-minted-style-list' if still nil."
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
 
 (defun LaTeX-minted-add-syntactic-keywords-extra (type macro)
-  "Add MACRO from minted.sty to `font-latex-syntactic-keywords-extra'.
+  "Add TYPE of MACRO to `font-latex-syntactic-keywords-extra'.
 TYPE is one of the symbols `brace' or `delim' indicating how
 verbatim text is enclosed after the macro.  MACRO is a string or
 a list of strings."
@@ -355,7 +359,7 @@ a list of strings."
     '("mint"
       [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
-      TeX-arg-verb)
+      TeX-arg-verb-delim-or-brace)
     '("mintinline"
       [TeX-arg-key-val (LaTeX-minted-key-val-options)]
       (TeX-arg-completing-read (LaTeX-minted-language-list) "Language")
@@ -416,10 +420,7 @@ a list of strings."
         '(("listing" ?l "lst:" "~\\ref{%s}" caption nil nil)))))
 
    ;; Add to the auto parser
-   (TeX-auto-add-regexp LaTeX-minted-newminted-regexp)
    (TeX-auto-add-regexp LaTeX-minted-newmint-regexp)
-   (TeX-auto-add-regexp LaTeX-minted-newmintinline-regexp)
-   (TeX-auto-add-regexp LaTeX-minted-newmintedfile-regexp)
 
    ;; Filling
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
@@ -453,12 +454,28 @@ a list of strings."
      (font-latex-set-syntactic-keywords)))
  TeX-dialect)
 
-(defvar LaTeX-minted-package-options '("chapter"     "cache"
-                                       "cachedir"    "finalizecache"
-                                       "frozencache" "draft"
-                                       "final"       "kpsewhich"
-                                       "langlinenos" "newfloat"
-                                       "outputdir"   "section")
-  "Package options for the minted package.")
+(defun LaTeX-minted-package-options-list ()
+  "Return an alist of package options for minted package."
+  (append
+   `(("fontencoding"
+      ,(when (member "fontenc" (TeX-style-list))
+         LaTeX-fontenc-package-options)))
+   '(("chapter")
+     ("cache"            ("true" "false"))
+     ("cachedir")
+     ("finalizecache"    ("true" "false"))
+     ("frozencache"      ("true" "false"))
+     ("draft"            ("true" "false"))
+     ("final"            ("true" "false"))
+     ("inputlanglinenos" ("true" "false"))
+     ("kpsewhich"        ("true" "false"))
+     ("langlinenos"      ("true" "false"))
+     ("newfloat"         ("true" "false"))
+     ("outputdir")
+     ("section"))))
+
+(defun LaTeX-minted-package-options ()
+  "Prompt for package options for the minted package."
+  (TeX-read-key-val t (LaTeX-minted-package-options-list)))
 
 ;;; minted.el ends here

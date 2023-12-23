@@ -327,7 +327,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
     ;; is used stand-alone without latex.el provided by AUCTeX
     ;; (bug#61410):
     (if (and (fboundp 'LaTeX-verbatim-p)
-             (save-excursion (LaTeX-verbatim-p (cdr match))))
+             (LaTeX-verbatim-p (cdr match)))
         (progn
           (setq texmathp-why `(nil . ,(cdr match)))
           (when (called-interactively-p 'any)

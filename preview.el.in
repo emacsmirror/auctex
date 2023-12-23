@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2023  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -1488,6 +1488,9 @@ a fixed number."
                  (const 1.0)
                  (number :value 1.0)
                  (function :value preview-scale-from-face)))
+;;;###autoload
+(put 'preview-scale-function 'safe-local-variable
+     (lambda (x) (and (numberp x) (<= 0.1 x 10))))
 
 (defcustom preview-default-document-pt 10
   "Assumed document point size for `preview-scale-from-face'.

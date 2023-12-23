@@ -121,13 +121,12 @@ Customize or reset the mode."
                                 (function :tag "Function to execute"))
                         (repeat :tag "Macros" (string)))))
 
-(defvar TeX-fold-macro-spec-list-internal nil
+(defvar-local TeX-fold-macro-spec-list-internal nil
   "Internal list of display strings and macros to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
 respectively, that is, contents of both `TeX-fold-macro-spec-list'
 and <mode-prefix>-fold-macro-spec-list.")
-(make-variable-buffer-local 'TeX-fold-macro-spec-list-internal)
 
 (defcustom TeX-fold-env-spec-list
   '(("[comment]" ("comment")))
@@ -137,13 +136,12 @@ and <mode-prefix>-fold-macro-spec-list.")
                                 (function :tag "Function to execute"))
                         (repeat :tag "Environments" (string)))))
 
-(defvar TeX-fold-env-spec-list-internal nil
+(defvar-local TeX-fold-env-spec-list-internal nil
   "Internal list of display strings and environments to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
 respectively, that is, contents of both `TeX-fold-env-spec-list'
 and <mode-prefix>-fold-env-spec-list.")
-(make-variable-buffer-local 'TeX-fold-env-spec-list-internal)
 
 (defcustom TeX-fold-math-spec-list nil
   "List of display strings and math macros to fold."
@@ -152,13 +150,12 @@ and <mode-prefix>-fold-env-spec-list.")
                                 (function :tag "Function to execute"))
                         (repeat :tag "Math Macros" (string)))))
 
-(defvar TeX-fold-math-spec-list-internal nil
+(defvar-local TeX-fold-math-spec-list-internal nil
   "Internal list of display strings and math macros to fold.
 Is updated when the TeX Fold mode is being activated and then
 contains all constructs to fold for the given buffer or mode
 respectively, that is, contents of both `TeX-fold-math-spec-list'
 and <mode-prefix>-fold-math-spec-list.")
-(make-variable-buffer-local 'TeX-fold-math-spec-list-internal)
 
 (defcustom TeX-fold-unspec-macro-display-string "[m]"
   "Display string for unspecified macros.
@@ -234,8 +231,7 @@ Set it to zero in order to disable help echos."
 (defvar TeX-fold-ellipsis "..."
   "String used as display string for overlays instead of a zero-length string.")
 
-(defvar TeX-fold-open-spots nil)
-(make-variable-buffer-local 'TeX-fold-open-spots)
+(defvar-local TeX-fold-open-spots nil)
 
 (defcustom TeX-fold-command-prefix "\C-c\C-o"
   "Prefix key to use for commands in TeX Fold mode.
@@ -741,36 +737,31 @@ Return non-nil if a removal happened, nil otherwise."
   "Expand instances of {<num>}, [<num>], <<num>>, and (<num>).
 Replace them with the respective macro argument."
   (let ((spec-list (split-string spec "||"))
-        (delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\))))
-        index success)
-    (catch 'success
-      ;; Iterate over alternatives.
-      (dolist (elt spec-list)
-        (setq spec elt
-              index nil)
-        ;; Find and expand every placeholder.
-        (while (and (string-match "\\([[{<]\\)\\([1-9]\\)\\([]}>]\\)" elt index)
-                    ;; Does the closing delim match the opening one?
-                    (string-equal
-                     (match-string 3 elt)
-                     (char-to-string
-                      (cdr (assq (string-to-char (match-string 1 elt))
-                                 delims)))))
-          (setq index (match-end 0))
-          (let ((arg (car (save-match-data
-                            ;; Get the argument.
-                            (TeX-fold-macro-nth-arg
-                             (string-to-number (match-string 2 elt))
-                             ov-start ov-end
-                             (assoc (string-to-char (match-string 1 elt))
-                                    delims))))))
-            (when arg (setq success t))
-            ;; Replace the placeholder in the string.
-            (setq elt (replace-match (or arg TeX-fold-ellipsis) nil t elt)
-                  index (+ index (- (length elt) (length spec)))
-                  spec elt)))
-        (when success (throw 'success nil))))
-    spec))
+        (delims '((?\{ . ?\}) (?\[ . ?\]) (?< . ?>) (?\( . ?\)))))
+    (cl-labels
+        ((expand (spec &optional index)
+           ;; If there is something to replace and the closing delimiter
+           ;; matches the opening one…
+           (if-let (((string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
+                                   spec index))
+                    (open (string-to-char (match-string 1 spec)))
+                    (num (string-to-number (match-string 2 spec)))
+                    (close (string-to-char (match-string 3 spec)))
+                    ((equal close (cdr (assoc open delims)))))
+               ;; … then replace it and move on.  Otherwise, it must have been
+               ;; a spurious spec, so abort.
+               (when-let ((arg (car (save-match-data
+                                      (TeX-fold-macro-nth-arg
+                                       num ov-start ov-end (assoc open delims)))))
+                          (spec* (replace-match arg nil t spec)))
+                 (expand spec*
+                         (+ (match-end 0) (- (length spec*) (length spec)))))
+             ;; Nothing to replace: return the (completed) spec.
+             spec)))
+      (or (cl-loop for elt in spec-list
+                   do (when-let (expanded (expand elt))
+                        (cl-return expanded)))
+          TeX-fold-ellipsis))))
 
 (defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.

@@ -41,6 +41,8 @@
 (when (< emacs-major-version 26)
   (error "AUCTeX requires Emacs 26.1 or later"))
 
+(declare-function BibTeX-auto-store "latex")
+
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
   ;; Try and support the case where someone loads tex-site.el or

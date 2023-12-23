@@ -1,4 +1,4 @@
-;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.1-109)  -*- lexical-binding: t; -*-
+;;; newfloat.el --- AUCTeX style for `newfloat.sty' (v1.2)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `newfloat.sty' (v1.1-109) from 2015/09/17.
+;; This file adds support for `newfloat.sty' (v1.2) from 2023/10/01.
 ;; `newfloat.sty' is part of TeXLive.
 
 ;; This style has some facilities to process the newly defined
@@ -77,6 +77,10 @@
    (if (< (LaTeX-largest-level) 2)
        '(("within" ("chapter" "section" "none")))
      '(("within" ("section" "none"))))
+   (when (member "hyperref" (TeX-style-list))
+     '(("autorefname")))
+   (when (member "memoir" TeX-active-styles)
+     '(("legendname")))
    LaTeX-newfloat-key-val-options))
 
 ;; Setup parsing for \DeclareFloatingEnvironment:
