@@ -8,6 +8,131 @@
 
 @end ifset
 
+@heading News in 14.1
+
+@itemize @bullet
+@item
+@AUCTeX{} changes major mode names to avoid conflicts with Emacs built-in
+@TeX{} major modes.
+
+@itemize @minus
+@item
+The overview of the former names and new names are:
+
+@multitable {@code{japanese-plain-tex-mode}} {@code{japanese-plain-TeX-mode}}
+@headitem Former name @tab New name
+@item @code{plain-tex-mode} @tab @code{plain-TeX-mode}
+@item @code{latex-mode} @tab @code{LaTeX-mode}
+@item @code{doctex-mode} @tab @code{docTeX-mode}
+@item @code{context-mode} @tab @code{ConTeXt-mode}
+@item @code{texinfo-mode} @tab @code{Texinfo-mode}
+@item @code{ams-tex-mode} @tab @code{AmSTeX-mode}
+@item @code{japanese-plain-tex-mode} @tab @code{japanese-plain-TeX-mode}
+@item @code{japanese-latex-mode} @tab @code{japanese-LaTeX-mode}
+@end multitable
+
+The undocumented modes @code{context-en-mode} and @code{context-nl-modes}
+were deleted.
+
+@item
+New mode names are chosen to match the existing variables, so most user
+codes would continue to work without modification.  For example, names of
+keymaps and hooks don't change.  (@code{AmS-TeX-mode-hook} is renamed to
+@code{AmSTeX-mode-hook}, but compatibility alias is provided.)
+
+@item
+Now @code{TeX-add-local-master} adds entry of new mode names such as
+
+@example
+%%% Local Variables:
+%%% mode: LaTeX      <-- not `latex'
+%%% End:
+@end example
+
+@item
+The compatibility with the former mode names with respect to function call
+are retained.  This includes @samp{mode:} tag in the file local variables.
+
+Former names which overlap with built-in modes, namely
+@code{plain-tex-mode}, @code{latex-mode}, @code{doctex-mode},
+@code{texinfo-mode} and @code{tex-mode} are handled by redirections; the
+same override advices as before are continued to used for emacs @math{<29}
+while @code{major-mode-remap-alist} is used for emacs 29 and later.
+(Therefore, if there are user code which call @code{latex-mode} 
+directly, built-in @code{latex-mode} runs instead of AUCTeX
+@code{LaTeX-mode} in emacs 29 and later.)
+
+These redirections still honor your customization to @code{TeX-modes}.
+Thus you are served by built-in @code{plain-tex-mode} and @AUCTeX{}
+@code{LaTeX-mode} if you exclude @code{plain-tex-mode} from
+@code{TeX-modes}.
+
+Other former names, e.g.@: @code{context-mode} and
+@code{japanese-latex-mode}, are handled by aliases such as
+
+@lisp
+(defalias 'context-mode #'ConTeXt-mode)
+@end lisp
+
+@item
+New modes recognize directory local variables prepaired for former mode
+name.  That is, you don't have to rewrite every former mode name to the
+new one in @file{.dir-locals.el}.
+
+@item
+Now all major modes are defined by @code{define-derived-mode}, so standard
+inheritance of keymaps, syntax tables etc.@: takes place.  The inheritance
+relations are:
+
+@verbatim
+text-mode      --+-- TeX-mode
+                 +-- Texinfo-mode
+
+TeX-mode       --+-- plain-TeX-mode
+                 +-- LaTeX-mode
+                 +-- ConTeXt-mode
+
+plain-TeX-mode --+-- AmSTeX-mode
+                 +-- japanese-plain-TeX-mode
+
+LaTeX-mode     --+-- docTeX-mode
+                 +-- japanese-LaTeX-mode
+@end verbatim
+
+Note that @code{TeX-mode} isn't meant for use for end users.  It is only
+meant for the base mode for other major modes.  Its role is to provide
+base keymap, hook and syntax table under the same name with the current
+AUCTeX and run the initialization code.
+
+Now that all modes has @code{text-mode} as their ancestor, they inherit
+keymap and syntax table of @code{text-mode}.
+
+However, @code{Texinfo-mode} is exceptional in the following aspects:
+@enumerate
+@item
+It doesn't inherit @code{text-mode-syntax-table} because it simply uses
+built-in mode's @code{texinfo-mode-syntax-table}, which is independent of
+@code{text-mode-syntax-table}.  This situation is the same with the former
+Texinfo mode.
+
+@item
+@code{Texinfo-mode-map} has @code{TeX-mode-map} as its direct parent.
+This is the same with the former Texinfo mode.  Now it inherits
+@code{text-mode-map} indirectly through @code{TeX-mode-map}.
+@end enumerate
+
+@c Need to mention AmSTeX-mode as well?
+
+@item
+There are new keymaps, hooks and abbrev tables:
+@code{Texinfo-mode-abbrev-table}, @code{japanese-plain-TeX-mode-map},
+@code{japanese-LaTeX-mode-map}, @code{japanese-plain-TeX-mode-hook},
+@code{japanese-LaTeX-mode-hook},
+@code{japanese-plain-TeX-mode-abbrev-table},
+@code{japanese-LaTeX-mode-abbrev-table}
+@end itemize
+@end itemize
+
 @heading News since last release
 
 @itemize @bullet
