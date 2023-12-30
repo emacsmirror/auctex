@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v10.3.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v10.4.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023 Free Software Foundation, Inc.
 
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v10.3.3) from
-;; 2023/12/22.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v10.4.0) from
+;; 2023/12/29.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -99,6 +99,7 @@
     "affinityphoto"
     "affinitypublisher"
     "aframe"
+    "afterpay"
     "agora"
     "aib"
     "aidungeon"
@@ -291,6 +292,7 @@
     "autodeskmaya"
     "autodeskrevit"
     "autohotkey"
+    "autoit"
     "automattic"
     "autoprefixer"
     "avajs"
@@ -326,6 +328,7 @@
     "bankofamerica"
     "barclays"
     "baremetrics"
+    "barmenia"
     "basecamp"
     "basicattentiontoken"
     "bastyon"
@@ -363,6 +366,7 @@
     "bitdefender"
     "bitly"
     "bitrise"
+    "bittorrent"
     "bitwarden"
     "bitwig"
     "blackberry"
@@ -375,6 +379,7 @@
     "blogger"
     "bloglovin"
     "blueprint"
+    "bluesky"
     "bluetooth"
     "bmcsoftware"
     "bmw"
@@ -404,6 +409,7 @@
     "brave"
     "breaker"
     "brevo"
+    "brex"
     "bricks"
     "britishairways"
     "broadcom"
@@ -438,6 +444,7 @@
     "cairographics"
     "cairometro"
     "cakephp"
+    "calendly"
     "campaignmonitor"
     "canonical"
     "canva"
@@ -691,6 +698,7 @@
     "designernews"
     "deutschebahn"
     "deutschebank"
+    "deutschepost"
     "devdotto"
     "devexpress"
     "deviantart"
@@ -964,6 +972,7 @@
     "futurelearn"
     "g2"
     "g2a"
+    "galaxus"
     "gameandwatch"
     "gamebanana"
     "gamedeveloper"
@@ -1037,6 +1046,7 @@
     "googlebigquery"
     "googlebigtable"
     "googlecalendar"
+    "googlecampaignmanager360"
     "googlecardboard"
     "googlechat"
     "googlechrome"
@@ -1180,9 +1190,11 @@
     "homify"
     "honda"
     "honey"
+    "hono"
     "honor"
     "hootsuite"
     "hoppscotch"
+    "hostinger"
     "hotelsdotcom"
     "hotjar"
     "hotwire"
@@ -1436,6 +1448,7 @@
     "lequipe"
     "lerna"
     "leroymerlin"
+    "leslibraires"
     "less"
     "letsencrypt"
     "letterboxd"
@@ -1569,6 +1582,7 @@
     "meetup"
     "mega"
     "meilisearch"
+    "meituan"
     "mendeley"
     "mentorcruise"
     "mercadopago"
@@ -1718,6 +1732,7 @@
     "newyorktimes"
     "nextbilliondotai"
     "nextcloud"
+    "nextdns"
     "nextdoor"
     "nextdotjs"
     "nextra"
@@ -1860,6 +1875,7 @@
     "packagist"
     "packer"
     "packt"
+    "paddle"
     "paddlepaddle"
     "paddypower"
     "pagekit"
@@ -1933,6 +1949,7 @@
     "pingdom"
     "pinterest"
     "pioneerdj"
+    "piped"
     "pipx"
     "pivotaltracker"
     "piwigo"
@@ -2272,6 +2289,7 @@
     "seagate"
     "searxng"
     "seat"
+    "seatgeek"
     "securityscorecard"
     "sefaria"
     "sega"
@@ -2467,6 +2485,7 @@
     "strava"
     "streamlabs"
     "streamlit"
+    "streamrunners"
     "stripe"
     "strongswan"
     "stryker"
@@ -2623,6 +2642,8 @@
     "trailforks"
     "trainerroad"
     "trakt"
+    "transifex"
+    "transmission"
     "transportforireland"
     "transportforlondon"
     "travisci"
