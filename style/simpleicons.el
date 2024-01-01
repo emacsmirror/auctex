@@ -2983,3 +2983,5 @@
 
 (defvar LaTeX-simpleicons-package-options nil
   "Package options for the simpleicons package.")
+
+;;; simpleicons.el ends here
