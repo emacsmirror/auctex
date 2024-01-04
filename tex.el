@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2023 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2024 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -8457,6 +8457,11 @@ changed\\. Rerun LaTeX\\." nil t)
 Rerun to get mark in right position\\." nil t)
          (message
           "%s" "You should run LaTeX again to get TikZ marks in right position")
+         (setq TeX-command-next TeX-command-default))
+        ((re-search-forward "^Package Changebar Warning: \
+Changebar info has changed." nil t)
+         (message
+          "%s" "You should run LaTeX again to get the change bars right")
          (setq TeX-command-next TeX-command-default))
         ((re-search-forward "^\\* xsim warning: \"rerun\"" nil t)
          (message
