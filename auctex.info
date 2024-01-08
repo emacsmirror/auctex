@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 7.1 from auctex.texi.
 
-This manual is for AUCTeX (version 13.2.3 from 2023-12-07), a
+This manual is for AUCTeX (version 13.2.4 from 2024-01-08), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
@@ -1444,8 +1444,8 @@ single quotes.  To get a literal double quote, press ‘"’ twice.
      European::, for language-specific quotation mark insertion.)
 
  -- User Option: TeX-quote-after-quote
-     Determines the behavior of ‘"’.  If it is non-nil, typing ‘"’ will
-     insert a literal double quote.  The respective values of
+     Determines the behavior of ‘"’.  If it is non-‘nil’, typing ‘"’
+     will insert a literal double quote.  The respective values of
      ‘TeX-open-quote’ and ‘TeX-close-quote’ will be inserted after
      typing ‘"’ once again.
 
@@ -1487,18 +1487,18 @@ like ‘$...$’ or ‘\(...\)’ simply typing ‘$’.  AUCTeX helps them thro
 the customizable variable ‘TeX-electric-math’.
 
  -- User Option: TeX-electric-math
-     If the variable is non-nil and you type ‘$’ outside math mode,
+     If the variable is non-‘nil’ and you type ‘$’ outside math mode,
      AUCTeX will automatically insert the opening and closing symbols
      for an inline equation and put the point between them.  The opening
-     symbol will blink when ‘blink-matching-paren’ is non-nil.  If
-     ‘TeX-electric-math’ is nil, typing ‘$’ simply inserts ‘$’ at point,
-     this is the default.
+     symbol will blink when ‘blink-matching-paren’ is non-‘nil’.  If
+     ‘TeX-electric-math’ is ‘nil’, typing ‘$’ simply inserts ‘$’ at
+     point, this is the default.
 
      Besides ‘nil’, possible values for this variable are ‘("$" . "$")’
      for TeX inline equations ‘$...$’, and ‘("\(" . "\)")’ for LaTeX
      inline equations ‘\(...\)’.
 
-     If the variable is non-nil and point is inside math mode right
+     If the variable is non-‘nil’ and point is inside math mode right
      between a couple of single dollars, pressing ‘$’ will insert
      another pair of dollar signs and leave the point between them.
      Thus, if ‘TeX-electric-math’ is set to ‘("$" . "$")’ you can easily
@@ -1507,7 +1507,7 @@ the customizable variable ‘TeX-electric-math’.
      because this practice can lead to wrong spacing in typeset
      documents.)
 
-     In addition, when the variable is non-nil and there is an active
+     In addition, when the variable is non-‘nil’ and there is an active
      region outside math mode, typing ‘$’ will put around the active
      region symbols for opening and closing inline equation and keep the
      region active, leaving point after the closing symbol.  By pressing
@@ -1685,7 +1685,7 @@ inserted.
  -- Command: TeX-font REPLACE WHAT
      (‘C-c C-f’) Insert template for font change command.
 
-     If REPLACE is not nil, replace current font.  WHAT determines the
+     If REPLACE is non-‘nil’, replace current font.  WHAT determines the
      font to use, as specified by ‘TeX-font-list’.
 
  -- User Option: TeX-font-list
@@ -1695,7 +1695,7 @@ inserted.
      key to activate the font.  The second element is the string to
      insert before point, and the third element is the string to insert
      after point.  An optional fourth element means always replace if
-     not nil.
+     non-‘nil’.
 
  -- User Option: LaTeX-font-list
      List of fonts used by ‘TeX-font’ in LaTeX mode.  It has the same
@@ -1727,7 +1727,7 @@ label will be prefixed by the value specified in ‘LaTeX-section-hook’.
 
      Determine the type of section to be inserted, by the argument ARG.
 
-        • If ARG is nil or missing, use the current level.
+        • If ARG is ‘nil’ or missing, use the current level.
         • If ARG is a list (selected by C-u), go downward one level.
         • If ARG is negative, go up that many levels.
         • If ARG is positive or zero, use absolute level:
@@ -1762,9 +1762,9 @@ label will be prefixed by the value specified in ‘LaTeX-section-hook’.
      ‘LaTeX-title’
           The title of the section, default to an empty string.
      ‘LaTeX-toc’
-          Entry for the table of contents list, default nil.
+          Entry for the table of contents list, default ‘nil’.
      ‘LaTeX-done-mark’
-          Position of point afterwards, default nil meaning after the
+          Position of point afterwards, default ‘nil’ meaning after the
           inserted text.
 
      A number of hooks are already defined.  Most likely, you will be
@@ -1780,10 +1780,10 @@ label will be prefixed by the value specified in ‘LaTeX-section-hook’.
           Query the user for the toc entry.  Modifies ‘LaTeX-toc’.
      ‘LaTeX-section-section’
           Insert LaTeX section command according to ‘LaTeX-name’,
-          ‘LaTeX-title’, and ‘LaTeX-toc’.  If ‘LaTeX-toc’ is nil, no toc
-          entry is inserted.  If ‘LaTeX-toc’ or ‘LaTeX-title’ are empty
-          strings, ‘LaTeX-done-mark’ will be placed at the point they
-          should be inserted.
+          ‘LaTeX-title’, and ‘LaTeX-toc’.  If ‘LaTeX-toc’ is ‘nil’, no
+          toc entry is inserted.  If ‘LaTeX-toc’ or ‘LaTeX-title’ are
+          empty strings, ‘LaTeX-done-mark’ will be placed at the point
+          they should be inserted.
      ‘LaTeX-section-label’
           Insert a label after the section command.  Controlled by the
           variable ‘LaTeX-section-label’.
@@ -1806,10 +1806,10 @@ label will be prefixed by the value specified in ‘LaTeX-section-hook’.
      Default prefix when asking for a label.
 
      If it is a string, it is used unchanged for all kinds of sections.
-     If it is nil, no label is inserted.  If it is a list, the list is
+     If it is ‘nil’, no label is inserted.  If it is a list, the list is
      searched for a member whose car is equal to the name of the
      sectioning command being inserted.  The cdr is then used as the
-     prefix.  If the name is not found, or if the cdr is nil, no label
+     prefix.  If the name is not found, or if the cdr is ‘nil’, no label
      is inserted.
 
      By default, chapters have a prefix of ‘cha:’ while sections and
@@ -1845,7 +1845,7 @@ you will change the current environment.
      environments.  After selection of a specific environment AUCTeX may
      prompt you for further specifications.
 
-     If the optional argument ARG is non-nil (i.e. you have given a
+     If the optional argument ARG is non-‘nil’ (i.e. you have given a
      prefix argument), the current environment is modified and no new
      environment is inserted.
 
@@ -1861,7 +1861,7 @@ environments with the ‘LaTeX-label-alist’ variable.
      This is an alist whose car is the environment name, and the cdr
      either the prefix or a symbol referring to one.
 
-     If the name is not found, or if the cdr is nil, no label is
+     If the name is not found, or if the cdr is ‘nil’, no label is
      automatically inserted for that environment.
 
      If you want to automatically insert a label for a environment but
@@ -1897,11 +1897,11 @@ controlled by the user option ‘TeX-complete-expert-commands’.
  -- User Option: TeX-complete-expert-commands
      Complete macros and environments marked as expert commands.
 
-     Possible values are nil, t, or a list of style names.
+     Possible values are ‘nil’, ‘t’, or a list of style names.
 
-     nil
+     ‘nil’
           Don't complete expert commands (default).
-     t
+     ‘t’
           Always complete expert commands.
      (STYLES ...)
           Only complete expert commands of STYLES.
@@ -2034,7 +2034,7 @@ if the key binding is still available.
      while 'description' will have ‘\item[] ’ inserted.
 
  -- User Option: TeX-arg-item-label-p
-     If non-nil, you will always be asked for optional label in items.
+     If non-‘nil’, you will always be asked for optional label in items.
      Otherwise, you will be asked only in description environments.
 
 
@@ -2055,7 +2055,7 @@ variables:
 
  -- User Option: LaTeX-default-position
      Default position string for array and tabular environments.  If
-     nil, act like the empty string is given, but don't prompt for a
+     ‘nil’, act like the empty string is given, but don't prompt for a
      position.
 
    AUCTeX calculates the number of columns from the format string and
@@ -2133,8 +2133,8 @@ file such as ‘init.el’ or ‘.emacs’:
      First, the key to be used after ‘LaTeX-math-abbrev-prefix’ for
      macro insertion.  The key can be a character (e.g. ‘?o’) for a
      single stroke or a string (e.g. ‘"o a"’) for a multi-stroke
-     binding.  If it is nil, the symbol has no associated keystroke (it
-     is available in the menu, though).
+     binding.  If it is ‘nil’, the symbol has no associated keystroke
+     (it is available in the menu, though).
 
      Second, a string representing the name of the macro (without a
      leading backslash.)
@@ -2157,10 +2157,10 @@ mode commands.
 constructs by automatically inserting a pair of braces after typing <_>
 or <^> respectively and putting point between the braces.  In order to
 enable this feature, set the variable ‘TeX-electric-sub-and-superscript’
-to a non-nil value.
+to a non-‘nil’ value.
 
  -- User Option: TeX-electric-sub-and-superscript
-     If non-nil, insert braces after typing <^> and <_> in math mode.
+     If non-‘nil’, insert braces after typing <^> and <_> in math mode.
 
    You can automatically turn off input methods, used to input non-ascii
 characters, when you begin to enter math constructs.
@@ -2202,7 +2202,7 @@ controlled by ‘TeX-complete-list’.
      Each entry is a list with the following elements:
 
        1. Regexp matching the preceding text or a predicate of arity 0
-          which returns non-nil and sets 'match-data' appropriately if
+          which returns non-‘nil’ and sets 'match-data' appropriately if
           it is applicable.
        2. A number indicating the subgroup in the regexp containing the
           text.
@@ -2278,8 +2278,8 @@ or, as the first choice the value of the variable ‘TeX-default-macro’.
    A faster alternative is to enable the option ‘TeX-electric-escape’.
 
  -- User Option: TeX-electric-escape
-     If this is non-nil, typing the TeX escape character ‘\’ will invoke
-     the command ‘TeX-electric-macro’.
+     If this is non-‘nil’, typing the TeX escape character ‘\’ will
+     invoke the command ‘TeX-electric-macro’.
 
      In Texinfo mode, the command is invoked by ‘@’ instead.
 
@@ -2295,10 +2295,10 @@ that space key <SPC> will complete and exit from the minibuffer in
    By default AUCTeX will put an empty set braces ‘{}’ after a macro
 with no arguments to stop it from eating the next whitespace.  This is
 suppressed inside math mode and can be disabled totally by setting
-‘TeX-insert-braces’ to nil.
+‘TeX-insert-braces’ to ‘nil’.
 
  -- User Option: TeX-insert-braces
-     If non-nil, append a empty pair of braces after inserting a macro
+     If non-‘nil’, append a empty pair of braces after inserting a macro
      with no arguments.
 
  -- User Option: TeX-insert-braces-alist
@@ -2306,7 +2306,7 @@ suppressed inside math mode and can be disabled totally by setting
      macro basis.
 
      This variable is an alist.  Each element is a cons cell, whose car
-     is the macro name, and the cdr is non-nil or nil, depending on
+     is the macro name, and the cdr is non-‘nil’ or ‘nil’, depending on
      whether a pair of braces should be, respectively, appended or not
      to the macro.
 
@@ -2325,11 +2325,11 @@ controlled using the user option ‘TeX-complete-expert-commands’.
  -- User Option: TeX-complete-expert-commands
      Complete macros and environments marked as expert commands.
 
-     Possible values are nil, t, or a list of style names.
+     Possible values are ‘nil’, ‘t’, or a list of style names.
 
-     nil
+     ‘nil’
           Don't complete expert commands (default).
-     t
+     ‘t’
           Always complete expert commands.
      (STYLES ...)
           Only complete expert commands of STYLES.
@@ -2372,7 +2372,7 @@ File: auctex.info,  Node: Marking (LaTeX),  Next: Marking (Texinfo),  Up: Markin
      (‘C-c *’) Set mark at end of current logical section, and point at
      top.
 
-     With a non-nil prefix argument, mark only the region from the
+     With a non-‘nil’ prefix argument, mark only the region from the
      current section start to the next sectioning command.  Thereby
      subsections are not being marked.  Otherwise, any included
      subsections are also marked along with current section.
@@ -2401,7 +2401,7 @@ File: auctex.info,  Node: Marking (Texinfo),  Prev: Marking (LaTeX),  Up: Markin
      variable ‘outline-regexp’ which in turn is a regular expression
      matching any element of the variable ‘texinfo-section-list’.
 
-     With a non-nil prefix argument, mark only the region from the
+     With a non-‘nil’ prefix argument, mark only the region from the
      current section start to the next sectioning command.  Thereby
      subsections are not being marked.  Otherwise, any included
      subsections are also marked.
@@ -2519,7 +2519,7 @@ formatting ‘tabular’ and ‘tabbing’ environments with the function
    AUCTeX is able to format commented parts of your code just as any
 other part.  This means LaTeX environments and TeX groups in comments
 will be indented syntactically correct if the variable
-‘LaTeX-syntactic-comments’ is set to t.  If you disable it, comments
+‘LaTeX-syntactic-comments’ is set to ‘t’.  If you disable it, comments
 will be filled like normal text and no syntactic indentation will be
 done.
 
@@ -2557,8 +2557,8 @@ to indenting with a small summary in each case:
      by a ‘}’.
 
  -- User Option: LaTeX-syntactic-comments
-     If non-nil comments will be filled and indented according to LaTeX
-     syntax.  Otherwise they will be filled like normal text.
+     If non-‘nil’ comments will be filled and indented according to
+     LaTeX syntax.  Otherwise they will be filled like normal text.
 
  -- User Option: TeX-newline-function
      Used to specify the function which is called when <RET> is pressed.
@@ -2643,7 +2643,7 @@ behavior can be controlled by setting the variable
 ‘docTeX-indent-across-comments’.
 
  -- User Option: docTeX-indent-across-comments
-     If non-nil, indentation in docTeX is done across comments.  This
+     If non-‘nil’, indentation in docTeX is done across comments.  This
      option is disabled by default.
 
 
@@ -3137,7 +3137,7 @@ properties.
      given in your source code, i.e. (‘"<’, ‘">’), (‘<<’, ‘>>’) and the
      respective 8-bit variants.
 
-     If you set ‘font-latex-quotes’ to nil, quoted content will not be
+     If you set ‘font-latex-quotes’ to ‘nil’, quoted content will not be
      fontified.
 
 
@@ -3169,8 +3169,8 @@ respectively.  This fontification feature can be controlled with the
 variables ‘font-latex-fontify-script’ and ‘font-latex-script-display’.
 
  -- User Option: font-latex-fontify-script
-     If non-nil, fontify subscript and superscript strings.  Concretely,
-     this means that the scripts are raised or lowered.
+     If non-‘nil’, fontify subscript and superscript strings.
+     Concretely, this means that the scripts are raised or lowered.
 
      Another possiblity is setting this variable to the symbol
      ‘multi-level’.  In this case, in a formula x^{y^z}, y is raised
@@ -3336,18 +3336,18 @@ and show macros, environments and comments:
 
  -- User Option: TeX-fold-auto
      By default, a macro inserted with ‘TeX-insert-macro’ (‘C-c C-m’)
-     will not be folded.  Set this variable to a non-nil value to
+     will not be folded.  Set this variable to a non-‘nil’ value to
      aumatically fold macros as soon as they are inserted.
 
  -- User Option: TeX-fold-preserve-comments
      By default items found in comments will be folded.  If your
      comments often contain unfinished code this might lead to problems.
-     Give this variable a non-nil value and foldable items in your
+     Give this variable a non-‘nil’ value and foldable items in your
      comments will be left alone.
 
  -- User Option: TeX-fold-unfold-around-mark
-     When this variable is non-nil and there is an active regione, text
-     around the mark will be kept unfolded.
+     When this variable is non-‘nil’ and there is an active regione,
+     text around the mark will be kept unfolded.
 
  -- Command: TeX-fold-region
      (‘C-c C-o C-r’) Hide all configured macros in the marked region.
@@ -3478,7 +3478,7 @@ mode-specific variables ‘LaTeX-fold-macro-spec-list’,
      ‘TeX-fold-env-spec-list’.
 
  -- User Option: TeX-fold-unspec-use-name
-     If non-nil the name of the macro or environment surrounded by
+     If non-‘nil’ the name of the macro or environment surrounded by
      square brackets is used as display string, otherwise the defaults
      specified in ‘TeX-fold-unspec-macro-display-string’ or
      ‘TeX-fold-unspec-env-display-string’ respectively.
@@ -3573,8 +3573,9 @@ and greek letters using their Unicode representation, too.  For example,
 the TeX code ‘\alpha \times \beta’ will be displayed as ‘α × β’.  When
 point is on one of the characters, it'll be unprettified automatically,
 meaning you see the verbatim text again.  For this behaviour however you
-need to set ‘prettify-symbols-unprettify-at-point’ to t or ‘right-edge’
-which will unprettify the symbol when point moves into or near it.
+need to set ‘prettify-symbols-unprettify-at-point’ to ‘t’ or
+‘right-edge’ which will unprettify the symbol when point moves into or
+near it.
 
    To enable prettification in AUCTeX, simply add
 ‘prettify-symbols-mode’ to ‘TeX-mode-hook’.  If you enabled
@@ -3797,7 +3798,7 @@ the file local ‘LaTeX-biblatex-use-Biber’ variable.
 
    After confirming a command to execute, AUCTeX will try to save any
 buffers related to the document, and check if the document needs to be
-reformatted.  If the variable ‘TeX-save-query’ is non-nil, AUCTeX will
+reformatted.  If the variable ‘TeX-save-query’ is non-‘nil’, AUCTeX will
 query before saving each file.  By default AUCTeX will check emacs
 buffers associated with files in the current directory, in one of the
 ‘TeX-macro-private’ directories, and in the ‘TeX-macro-global’
@@ -3807,7 +3808,7 @@ directories.  You can change this by setting the variable
  -- User Option: TeX-check-path
      Directory path to search for dependencies.
 
-     If nil, just check the current file.  Used when checking if any
+     If ‘nil’, just check the current file.  Used when checking if any
      files have changed.
 
    When performing spell checking on a document or a region (invoked
@@ -3995,13 +3996,13 @@ you want to generate the final PDF by converting a DVI file.
      This option controls if and how to produce a PDF file by converting
      a DVI file.
 
-     When ‘TeX-PDF-mode’ is non-nil, if ‘TeX-PDF-from-DVI’ is non-nil
-     too the document is compiled to DVI instead of PDF.  When the
-     document is ready, ‘C-c C-c’ will suggest to run the converter to
-     PDF or an intermediate format.
+     When ‘TeX-PDF-mode’ is non-‘nil’, if ‘TeX-PDF-from-DVI’ is
+     non-‘nil’ too the document is compiled to DVI instead of PDF.  When
+     the document is ready, ‘C-c C-c’ will suggest to run the converter
+     to PDF or an intermediate format.
 
-     If non-nil, ‘TeX-PDF-from-DVI’ should be the name of the command in
-     ‘TeX-command-list’, as a string, used to convert the DVI file to
+     If non-‘nil’, ‘TeX-PDF-from-DVI’ should be the name of the command
+     in ‘TeX-command-list’, as a string, used to convert the DVI file to
      PDF or to an intermediate format.  Values currently supported are:
         • ‘"Dvips"’: the DVI file is converted to PS with ‘dvips’.
           After successfully running it, ‘ps2pdf’ will be the default
@@ -4060,7 +4061,7 @@ to add support for engines not covered per default.
      fourth is the command to be used for LaTeX.  The fifth is the
      command to be used for the ‘--engine’ parameter of ConTeXt's
      ‘texexec’ program.  Each command can either be a variable or a
-     string.  An empty string or nil means there is no command
+     string.  An empty string or ‘nil’ means there is no command
      available.
 
    In some systems, Emacs cannot inherit the ‘PATH’ environment variable
@@ -4070,7 +4071,7 @@ and will warn you in case it fails.  You can skip this test by changing
 the option ‘TeX-check-TeX’.
 
  -- User Option: TeX-check-TeX
-     If non-nil, AUCTeX will check if it is able to find a working TeX
+     If non-‘nil’, AUCTeX will check if it is able to find a working TeX
      distribution before running TeX, LaTeX, ConTeXt, etc.  It actually
      checks if can run ‘TeX-command’ command or the shell returns a
      command not found error.  The error code returned by the shell in
@@ -4106,7 +4107,7 @@ use the file local variable ‘TeX-command-extra-options’.
 produced.
 
  -- User Option: TeX-show-compilation
-     If non-nil, the output of TeX compilation is shown in another
+     If non-‘nil’, the output of TeX compilation is shown in another
      window.
 
    You can instruct TeX to print error messages in the form
@@ -4114,7 +4115,7 @@ produced.
 them.
 
  -- User Option: TeX-file-line-error
-     If non-nil, TeX will produce ‘file:line:error’ style error
+     If non-‘nil’, TeX will produce ‘file:line:error’ style error
      messages.
 
    ConTeXt users can choose between Mark II and Mark IV versions.  This
@@ -4199,8 +4200,8 @@ one of them or add your own definitions, you can do so via the variables
  -- User Option: TeX-view-predicate-list
      This is a list of predicates for viewer selection and invocation.
      The first element of each list item is a symbol and the second
-     element a Lisp form to be evaluated.  The form should return nil if
-     the predicate is not fulfilled.
+     element a Lisp form to be evaluated.  The form should return ‘nil’
+     if the predicate is not fulfilled.
 
      A built-in predicate from ‘TeX-view-predicate-list-builtin’ can be
      overwritten by defining a new predicate with the same symbol.
@@ -4233,7 +4234,7 @@ that and you are using evince-compatible viewer, customize the option
 ‘TeX-view-enince-keep-focus’.
 
  -- User Option: TeX-view-evince-keep-focus
-     When this option is non-nil and the viewer is compatible with
+     When this option is non-‘nil’ and the viewer is compatible with
      evince, the focus is pulled back to Emacs immediately after the
      viewer is invoked or refreshed from within AUCTeX.
 
@@ -4402,20 +4403,21 @@ whole TeX log buffer.  This is controlled by the ‘TeX-parse-all-errors’
 variable.
 
  -- User Option: TeX-parse-all-errors
-     If t, AUCTeX automatically parses the whole output log buffer right
-     after running a TeX command, in order to collect all warnings and
-     errors.  This makes it possible to navigate back and forth between
-     the error messages using ‘TeX-next-error’ and ‘TeX-previous-error’.
-     This is the default.  If nil, AUCTeX does not parse the whole
-     output log buffer and ‘TeX-previous-error’ cannot be used.
+     If ‘t’, AUCTeX automatically parses the whole output log buffer
+     right after running a TeX command, in order to collect all warnings
+     and errors.  This makes it possible to navigate back and forth
+     between the error messages using ‘TeX-next-error’ and
+     ‘TeX-previous-error’.  This is the default.  If ‘nil’, AUCTeX does
+     not parse the whole output log buffer and ‘TeX-previous-error’
+     cannot be used.
 
    As default, AUCTeX will display a special help buffer containing the
 error reported by TeX along with the documentation.  There is however an
 'expert' option, which allows you to display the real TeX output.
 
  -- User Option: TeX-display-help
-     If t AUCTeX will automatically display a help text whenever an
-     error is encountered using ‘TeX-next-error’ (‘C-c `’).  If nil a
+     If ‘t’, AUCTeX will automatically display a help text whenever an
+     error is encountered using ‘TeX-next-error’ (‘C-c `’).  If ‘nil’, a
      terse information about the error is displayed in the echo area.
      If ‘expert’ AUCTeX will display the output buffer with the raw TeX
      output.
@@ -4467,11 +4469,11 @@ options.
      (‘C-c C-t C-x’) Toggle whether AUCTeX should actually hide the
      ignored warnings specified with ‘TeX-ignore-warnings’.  The boolean
      option ‘TeX-suppress-ignored-warnings’ is set accordingly.  If this
-     is nil, all warnings are shown, even those matched by
+     is ‘nil’, all warnings are shown, even those matched by
      ‘TeX-ignore-warnings’, otherwise these are hidden.
 
-     Note that ‘TeX-debug-warnings’ takes the precedence: if it is nil,
-     all warnings are hidden in any case.
+     Note that ‘TeX-debug-warnings’ takes the precedence: if it is
+     ‘nil’, all warnings are hidden in any case.
 
 
 File: auctex.info,  Node: Error overview,  Prev: Ignoring warnings,  Up: Debugging
@@ -4479,8 +4481,8 @@ File: auctex.info,  Node: Error overview,  Prev: Ignoring warnings,  Up: Debuggi
 4.3.2 List of all errors and warnings
 -------------------------------------
 
-When the option ‘TeX-parse-all-errors’ is non-nil, you will be also able
-to open an overview of all errors and warnings reported by the TeX
+When the option ‘TeX-parse-all-errors’ is non-‘nil’, you will be also
+able to open an overview of all errors and warnings reported by the TeX
 compiler.
 
  -- Command: TeX-error-overview
@@ -4499,7 +4501,7 @@ compiler.
      overview.
 
  -- User Option: TeX-error-overview-open-after-TeX-run
-     When this boolean variable is non-nil, the error overview will be
+     When this boolean variable is non-‘nil’, the error overview will be
      automatically opened after running TeX if there are errors or
      warnings to show.
 
@@ -4509,7 +4511,7 @@ default, but you can change this behavior by customizing the option
 
  -- User Option: TeX-error-overview-setup
      Controls the frame setup of the error overview.  The possible value
-     is: ‘separate-frame’; with a nil value the current frame is used
+     is: ‘separate-frame’; with a ‘nil’ value the current frame is used
      instead.
 
      The parameters of the separate frame can be set with the
@@ -4596,10 +4598,10 @@ separate directory.
      of this option or set it as a directory local variable (*note
      (emacs)Directory Variables::).
 
-     Note that a non-nil value of ‘TeX-output-dir’ might be incompatible
-     with some TeX commands and macros.  In particular, the LaTeX macro
-     ‘\include’ is known to not work with this option.  Some TeX
-     packages which produce intermediary files might also be
+     Note that a non-‘nil’ value of ‘TeX-output-dir’ might be
+     incompatible with some TeX commands and macros.  In particular, the
+     LaTeX macro ‘\include’ is known to not work with this option.  Some
+     TeX packages which produce intermediary files might also be
      incompatible.  A possible workaround for those packages is to
      append the value of ‘TeX-output-dir’ to the environment variables
      ‘TEXINPUTS’ and ‘BIBINPUTS’.
@@ -4636,7 +4638,7 @@ File: auctex.info,  Node: Cleaning,  Next: Documentation,  Prev: Control,  Up: P
 
  -- User Option: TeX-clean-confirm
      Control if deletion of intermediate and output files has to be
-     confirmed before it is actually done.  If non-nil, ask before
+     confirmed before it is actually done.  If non-‘nil’, ask before
      deleting files.
 
 
@@ -4823,7 +4825,7 @@ master file.  *Note Automatic Local::.
      document.
 
  -- User Option: TeX-save-query
-     If non-nil, then query the user before saving each file with
+     If non-‘nil’, then query the user before saving each file with
      ‘TeX-save-document’.
 
 
@@ -5138,7 +5140,7 @@ respectively.
      the closing quotation mark.  Opening and closing quotation marks
      can be specified directly as strings or as functions returning a
      string.  The fourth item is a boolean controlling quote insertion.
-     It should be non-nil if if the special quotes should only be used
+     It should be non-‘nil’ if if the special quotes should only be used
      after inserting a literal ‘"’ character first, i.e. on second key
      press.
 
@@ -5148,7 +5150,7 @@ respectively.
      The first item should specify the affected language as a string.
      The second item denotes the hyphen string to be used as a string.
      The third item, a boolean, controls the behavior of hyphen
-     insertion and should be non-nil if the special hyphen should be
+     insertion and should be non-‘nil’ if the special hyphen should be
      inserted after inserting a literal ‘-’ character, i.e. on second
      key press.
 
@@ -5160,14 +5162,14 @@ respectively.
      alternative or hyphenation aid provided by ‘babel’ and the related
      language style files, like ‘"=’, ‘"~’ or ‘"-’.
 
-     Set it to an empty string or nil in order to disable
+     Set it to an empty string or ‘nil’ in order to disable
      language-specific hyphen insertion.
 
  -- User Option: LaTeX-babel-hyphen-after-hyphen
-     Control insertion of hyphen strings.  If non-nil insert normal
+     Control insertion of hyphen strings.  If non-‘nil’ insert normal
      hyphen on first key press and swap it with the language-specific
      hyphen string specified in the variable ‘LaTeX-babel-hyphen’ on
-     second key press.  If nil do it the other way round.
+     second key press.  If ‘nil’ do it the other way round.
 
 
 File: auctex.info,  Node: Japanese,  Prev: European,  Up: Internationalization
@@ -5257,19 +5259,19 @@ variables is useful.
 Japanese text.
 
  -- User Option: japanese-TeX-use-kanji-opt-flag
-     If non-nil, AUCTeX adds ‘-kanji’ option to the typesetting command
-     when ‘TeX-engine’ is ‘ptex’.
+     If non-‘nil’, AUCTeX adds ‘-kanji’ option to the typesetting
+     command when ‘TeX-engine’ is ‘ptex’.
 
    Usually AUCTeX guesses the right coding systems for input to and
 output from the Japanese TeX process, but you can override them by the
 following two customize options.
 
  -- User Option: TeX-japanese-process-input-coding-system
-     If non-nil, used for encoding input to Japanese TeX process.  When
-     ‘nil’, AUCTeX tries to choose suitable coding system.
+     If non-‘nil’, used for encoding input to Japanese TeX process.
+     When ‘nil’, AUCTeX tries to choose suitable coding system.
 
  -- User Option: TeX-japanese-process-output-coding-system
-     If non-nil, used for decoding output from Japanese TeX process.
+     If non-‘nil’, used for decoding output from Japanese TeX process.
      When ‘nil’, AUCTeX tries to choose suitable coding system.
 
    The former customize options ‘japanese-TeX-command-default’,
@@ -5339,9 +5341,9 @@ will be executed.
 recursively search through subdirectories.
 
  -- User Option: TeX-file-recurse
-     Whether to search TeX directories recursively: nil means do not
+     Whether to search TeX directories recursively: ‘nil’ means do not
      recurse, a positive integer means go that far deep in the directory
-     hierarchy, t means recurse indefinitely.
+     hierarchy, ‘t’ means recurse indefinitely.
 
    By default, AUCTeX will ignore files named ‘.’, ‘..’, ‘SCCS’, ‘RCS’,
 and ‘CVS’.
@@ -5366,7 +5368,7 @@ load time when you edit a new file and perhaps too many confusing
 symbols when you try to do a completion.
 
    You can disable the automatic generated global style hooks by setting
-the variable ‘TeX-auto-global’ to nil.
+the variable ‘TeX-auto-global’ to ‘nil’.
 
  -- User Option: TeX-macro-global
      Directories containing the site's TeX style files.
@@ -5694,7 +5696,7 @@ overwrite the default prompt.
 
 ‘TeX-arg-cite’
      Prompt for a BibTeX citation.  If the variable
-     ‘TeX-arg-cite-note-p’ is non-nil, ask also for optional note in
+     ‘TeX-arg-cite-note-p’ is non-‘nil’, ask also for optional note in
      citations.
 
 ‘TeX-arg-counter’
@@ -5750,7 +5752,7 @@ overwrite the default prompt.
 ‘TeX-arg-document’
      Prompt for a LaTeX document class, using ‘LaTeX-default-style’ as
      default value and ‘LaTeX-default-options’ as default list of
-     options.  If the variable ‘TeX-arg-input-file-search’ is t, you
+     options.  If the variable ‘TeX-arg-input-file-search’ is ‘t’, you
      will be able to complete with all LaTeX classes available on your
      system, otherwise classes listed in the variable ‘LaTeX-style-list’
      will be used for completion.  It is also provided completion for
@@ -5758,9 +5760,9 @@ overwrite the default prompt.
 
 ‘LaTeX-arg-usepackage’
      Prompt for LaTeX packages.  If the variable
-     ‘TeX-arg-input-file-search’ is t, you will be able to complete with
-     all LaTeX packages available on your system.  It is also provided
-     completion for options of many common packages.
+     ‘TeX-arg-input-file-search’ is ‘t’, you will be able to complete
+     with all LaTeX packages available on your system.  It is also
+     provided completion for options of many common packages.
 
 ‘TeX-arg-bibstyle’
      Prompt for a BibTeX style file completing with all style available
@@ -6040,7 +6042,7 @@ in ‘\documentclass’ declaration.
 
  -- Function: LaTeX-match-class-option REGEXP
      Check if a documentclass option matching REGEXP is active.  Return
-     first found class option matching REGEXP, or nil if not found.
+     first found class option matching REGEXP, or ‘nil’ if not found.
 
    These functions are also useful to implement customized predicate(s)
 in ‘TeX-view-predicate-list’.  *Note Starting Viewers::.
@@ -6174,7 +6176,7 @@ symbols found.
  -- Variable: TeX-auto-regexp-list
      List of regular expressions matching TeX macro definitions.
 
-     The list has the following format ((REGEXP MATCH TABLE) ...), that
+     The list has the following format ((REGEXP MATCH TABLE)...), that
      is, each entry is a list with three elements.
 
      REGEXP.  Regular expression matching the macro we want to parse.
@@ -6218,7 +6220,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.2.3 from 2023-12-07), a
+   This manual is for AUCTeX (version 13.2.4 from 2024-01-08), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
@@ -6730,12 +6732,21 @@ News since last release
 
    • AUCTeX now requires GNU Emacs 26.1 or higher.
 
-   • Now LaTeX abbrevs are available in docTeX mode buffers.
+   • LaTeX abbrevs are now available in docTeX mode buffers.
+
+   • AUCTeX temporarily rebinds the variable ‘gc-cons-percentage’ to a
+     higher value during parsing which speeds up the process
+     significantly.  The memory pressure should still be acceptable,
+     even on older machines.
 
    • Macros provided by the ‘xparse’ package are part of LaTeX kernel
      since October 2020.  AUCTeX tracks this change and the content of
      ‘xparse.el’ is moved into ‘latex.el’ and ‘font-latex.el’
      respectively.
+
+   • The variable ‘preview-scale-function’ is now allowed as a
+     file-local variable where the assigned value can only be between
+     0.1 and 10.
 
 News in 13.2
 ------------
@@ -8429,7 +8440,7 @@ A.4 Frequently Asked Questions
 
   8. Why does ‘TeX-next-error’ (‘C-c `’) fail?
 
-     If ‘TeX-file-line-error’ is set to nil (not the default), these
+     If ‘TeX-file-line-error’ is set to ‘nil’ (not the default), these
      sort of failures might be related to the the fact that when writing
      the log file, TeX puts information related to a file, including
      error messages, between a pair of parentheses.  In this scenario
@@ -8442,7 +8453,7 @@ A.4 Frequently Asked Questions
      to parse; however, they may lack some details.  Activation can be
      done either in the configuration of your TeX system (consult its
      manual to see where this is) or by simply keeping the variable
-     ‘TeX-file-line-error’ to the default value of non-nil.
+     ‘TeX-file-line-error’ to the default value of non-‘nil’.
 
   9. What does ‘AUC’ stand for?
 
@@ -9210,7 +9221,7 @@ Variable Index
 * TeX-default-mode:                      Japanese.            (line   6)
 * TeX-default-mode <1>:                  Japanese.            (line  67)
 * TeX-dialect:                           Simple Style.        (line  82)
-* TeX-display-help:                      Debugging.           (line  47)
+* TeX-display-help:                      Debugging.           (line  48)
 * TeX-DVI-via-PDFTeX:                    Processor Options.   (line  22)
 * TeX-electric-escape:                   Completion.          (line 107)
 * TeX-electric-math:                     Quotes.              (line  72)
@@ -9392,7 +9403,7 @@ Concept Index
                                                               (line   6)
 * ASCII pTeX <1>:                        Japanese.            (line   6)
 * auctex.el:                             Loading the package. (line  10)
-* auctex.el <1>:                         Changes.             (line 893)
+* auctex.el <1>:                         Changes.             (line 902)
 * auto directories.:                     Automatic.           (line   6)
 * auto-fill-mode:                        Indenting.           (line  29)
 * Auto-Reveal:                           Folding.             (line   6)
@@ -9697,7 +9708,7 @@ Concept Index
                                                               (line 252)
 * tex-site.el:                           Loading the package. (line  10)
 * tex-site.el <1>:                       Customizing.         (line   6)
-* tex-site.el <2>:                       Changes.             (line 893)
+* tex-site.el <2>:                       Changes.             (line 902)
 * tool bar, toolbar:                     Processing.          (line  11)
 * Trailer:                               Commands.            (line   6)
 * Underfull boxes:                       Debugging.           (line   6)
@@ -9738,86 +9749,86 @@ Node: Editing Facilities49892
 Node: Processing Facilities54773
 Node: Editing59654
 Node: Quotes60992
-Node: Font Specifiers70520
-Node: Sectioning72716
-Node: Environments77411
-Node: Equations82976
-Node: Floats83596
-Node: Itemize-like85632
-Node: Tabular-like86490
-Node: Customizing Environments88374
-Node: Mathematics88614
-Node: Completion92138
-Node: Marking99881
-Node: Marking (LaTeX)100517
-Node: Marking (Texinfo)101467
-Node: Commenting103110
-Node: Indenting104495
-Node: Filling113202
-Node: Display119220
-Node: Font Locking121731
-Node: Fontification of macros123830
-Node: Fontification of quotes133837
-Node: Fontification of math135375
-Node: Verbatim content139151
-Node: Faces139941
-Node: Known problems140446
-Node: Folding141455
-Node: Outline152580
-Node: Narrowing153903
-Node: Prettifying154980
-Node: Processing156261
-Node: Commands157621
-Node: Starting a Command158185
-Node: Selecting a Command163341
-Node: Processor Options172740
-Node: Viewing183409
-Node: Starting Viewers183783
-Node: I/O Correlation189581
-Ref: I/O Correlation-Footnote-1195337
-Node: Debugging195599
-Node: Ignoring warnings198269
-Node: Error overview200376
-Node: Checking202300
-Node: Control203988
-Node: Cleaning206133
-Node: Documentation207580
-Node: Customization208701
-Node: Modes and Hooks209194
-Node: Multifile211154
-Node: Parsing Files215992
-Node: Internationalization221029
-Node: European222382
-Node: Japanese230301
-Node: Automatic235557
-Node: Automatic Global238084
-Node: Automatic Private239220
-Node: Automatic Local240584
-Node: Style Files241858
-Node: Simple Style242672
-Node: Adding Macros246465
-Node: Adding Environments256264
-Node: Adding Other261726
-Node: Hacking the Parser266406
-Node: Appendices270419
-Node: Copying this Manual270715
-Node: GNU Free Documentation License271597
-Node: Changes296720
-Node: Development356436
-Node: Mid-term Goals357082
-Node: Wishlist359977
-Node: Bugs366166
-Node: FAQ367302
-Node: Texinfo mode373164
-Node: Exploiting374298
-Node: Superseding375120
-Node: Mapping379935
-Node: Unbinding381878
-Node: Indices382426
-Node: Key Index382589
-Node: Function Index390483
-Node: Variable Index403045
-Node: Concept Index428550
+Node: Font Specifiers70556
+Node: Sectioning72764
+Node: Environments77495
+Node: Equations83096
+Node: Floats83716
+Node: Itemize-like85752
+Node: Tabular-like86616
+Node: Customizing Environments88506
+Node: Mathematics88746
+Node: Completion92288
+Node: Marking100091
+Node: Marking (LaTeX)100727
+Node: Marking (Texinfo)101683
+Node: Commenting103332
+Node: Indenting104717
+Node: Filling113442
+Node: Display119460
+Node: Font Locking121971
+Node: Fontification of macros124070
+Node: Fontification of quotes134077
+Node: Fontification of math135621
+Node: Verbatim content139402
+Node: Faces140192
+Node: Known problems140697
+Node: Folding141706
+Node: Outline152855
+Node: Narrowing154178
+Node: Prettifying155255
+Node: Processing156542
+Node: Commands157902
+Node: Starting a Command158466
+Node: Selecting a Command163622
+Node: Processor Options173033
+Node: Viewing183744
+Node: Starting Viewers184118
+Node: I/O Correlation189928
+Ref: I/O Correlation-Footnote-1195684
+Node: Debugging195946
+Node: Ignoring warnings198648
+Node: Error overview200767
+Node: Checking202709
+Node: Control204397
+Node: Cleaning206548
+Node: Documentation208001
+Node: Customization209122
+Node: Modes and Hooks209615
+Node: Multifile211575
+Node: Parsing Files216419
+Node: Internationalization221456
+Node: European222809
+Node: Japanese230758
+Node: Automatic236031
+Node: Automatic Global238570
+Node: Automatic Private239712
+Node: Automatic Local241076
+Node: Style Files242350
+Node: Simple Style243164
+Node: Adding Macros246957
+Node: Adding Environments256774
+Node: Adding Other262236
+Node: Hacking the Parser266922
+Node: Appendices270934
+Node: Copying this Manual271230
+Node: GNU Free Documentation License272112
+Node: Changes297235
+Node: Development357345
+Node: Mid-term Goals357991
+Node: Wishlist360886
+Node: Bugs367075
+Node: FAQ368211
+Node: Texinfo mode374085
+Node: Exploiting375219
+Node: Superseding376041
+Node: Mapping380856
+Node: Unbinding382799
+Node: Indices383347
+Node: Key Index383510
+Node: Function Index391404
+Node: Variable Index403966
+Node: Concept Index429471
 
 End Tag Table
 
