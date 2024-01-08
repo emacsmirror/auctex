@@ -2,7 +2,7 @@
 
 # Maintainer: auctex-devel@gnu.org
 
-# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2023 Free Software
+# Copyright (C) 2003-2008, 2010, 2013-2015, 2018-2024 Free Software
 #   Foundation, Inc.
 
 # This file is part of AUCTeX.
@@ -197,7 +197,8 @@ STYLESRC = style/prosper.el \
 	   style/proc.el      style/microtype.el style/tcolorboxlib-theorems.el \
 	   style/amsaddr.el   style/parskip.el   style/catchfilebetweentags.el \
 	   style/physics.el   style/soul.el      style/algpseudocodex.el \
-	   style/wasysym.el   style/refcount.el
+	   style/wasysym.el   style/refcount.el  style/simpleicons.el \
+	   style/changebar.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 

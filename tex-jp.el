@@ -83,9 +83,8 @@ systems are determined by their values regardless of the kanji option."
        TeX-command-list))
 
 ;; Define before first use.
-(defvar japanese-TeX-mode nil
+(defvar-local japanese-TeX-mode nil
   "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
-(make-variable-buffer-local 'japanese-TeX-mode)
 (put 'japanese-TeX-mode 'permanent-local t)
 
 (setq TeX-expand-list-builtin

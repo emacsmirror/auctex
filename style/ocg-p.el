@@ -1,6 +1,6 @@
 ;;; ocg-p.el --- AUCTeX style for `ocg-p.sty' (v0.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -68,36 +68,6 @@
     ("listintoolbar" ("always" "never" "iffirstuse")))
   "Key=value options for ocg environment from ocg-p package.")
 
-(defun LaTeX-env-ocgp-ocg (optional)
-  "Insert arguments for ocg environment from ocg-p package."
-  ;; The optional key-val argument:
-  (let ((TeX-arg-opening-brace LaTeX-optop)
-        (TeX-arg-closing-brace LaTeX-optcl))
-    (TeX-argument-insert
-     (TeX-read-key-val t LaTeX-ocgp-env-key-val-options)
-     t))
-  ;; Layer Name:
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional nil "Layer name"))
-   optional)
-  ;;
-  ;; Layer id: Use completing read to show which id's are available.
-  ;; Then add the new id to list of know id's and insert it
-  (TeX-argument-insert
-   (let ((id (completing-read
-              (TeX-argument-prompt optional nil "Layer id")
-              (LaTeX-ocgp-ocg-layer-id-list))))
-     (LaTeX-add-ocgp-ocg-layer-ids id)
-     id)
-   optional)
-  ;;
-  ;; Initial visibility: Insert 0 or 1
-  (TeX-argument-insert
-   (TeX-read-string
-    (TeX-argument-prompt optional nil "Initial visibility (0 or 1)"))
-   optional))
-
 (defvar LaTeX-ocgp-mac-key-val-options
   '(("triggerocg" ("onareaenter" "onareaexit" "onmousedown"
                    "onmouseup"   "allactions")))
@@ -112,7 +82,8 @@ Completion is still available with <TAB> key."
           (remove (assoc 32 crm-local-completion-map) crm-local-completion-map))
          (ids (mapconcat #'identity
                          (TeX-completing-read-multiple
-                          (TeX-argument-prompt optional prompt "Layer id ('s space separated)")
+                          (TeX-argument-prompt optional prompt
+                                               "Layer id (space separated crm)")
                           (LaTeX-ocgp-ocg-layer-id-list))
                          " ")))
     (TeX-argument-insert ids optional)))
@@ -153,30 +124,39 @@ Just like array and tabular."
 
    ;; 2.3 The ocg environment
    (LaTeX-add-environments
-    '("ocg" LaTeX-env-args LaTeX-env-ocgp-ocg))
+    '("ocg" LaTeX-env-args
+      [TeX-arg-key-val LaTeX-ocgp-env-key-val-options]
+      "Layer name"
+      (TeX-arg-completing-read (LaTeX-ocgp-ocg-layer-id-list) "Layer id")
+      (TeX-arg-completing-read ("0" "1") "Initial visibility")
+      (lambda (_optional)
+        (save-excursion
+          (when (re-search-backward "{\\([^}{]+\\)}{[01]}"
+                                    (line-beginning-position) t)
+            (LaTeX-add-ocgp-ocg-layer-ids (match-string-no-properties 1)))))))
 
    ;; 2.4 The commands of the package
    (TeX-add-symbols
     '("toggleocgs"
-      [ TeX-arg-key-val LaTeX-ocgp-mac-key-val-options ]
+      [TeX-arg-key-val LaTeX-ocgp-mac-key-val-options]
       LaTeX-arg-ocgp-layer-id
       "Action button")
 
     '("showocgs"
-      [ TeX-arg-key-val LaTeX-ocgp-mac-key-val-options ]
+      [TeX-arg-key-val LaTeX-ocgp-mac-key-val-options]
       LaTeX-arg-ocgp-layer-id
       "Action button")
 
     '("hideocgs"
-      [ TeX-arg-key-val LaTeX-ocgp-mac-key-val-options ]
+      [TeX-arg-key-val LaTeX-ocgp-mac-key-val-options]
       LaTeX-arg-ocgp-layer-id
       "Action button")
 
     '("setocgs"
-      [ TeX-arg-key-val LaTeX-ocgp-mac-key-val-options ]
-      (LaTeX-arg-ocgp-layer-id "Toggle layer id ('s space separated)")
-      (LaTeX-arg-ocgp-layer-id "Show layer id ('s space separated)")
-      (LaTeX-arg-ocgp-layer-id "Hide layer id ('s space separated)")
+      [TeX-arg-key-val LaTeX-ocgp-mac-key-val-options]
+      (LaTeX-arg-ocgp-layer-id "Toggle layer id (space separated crm)")
+      (LaTeX-arg-ocgp-layer-id "Show layer id (space separated crm)")
+      (LaTeX-arg-ocgp-layer-id "Hide layer id (space separated crm)")
       "Action button"))
 
    ;; 2.5 The ocgtabular environment

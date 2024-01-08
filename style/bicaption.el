@@ -1,4 +1,4 @@
-;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.1-158)  -*- lexical-binding: t; -*-
+;;; bicaption.el --- AUCTeX style for `bicaption.sty' (v1.6)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
 
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `bicaption.sty' (v1.1-158) from
-;; 2016/03/27.  `bicaption.sty' is part of TeXLive.
+;; This file adds support for `bicaption.sty' (v1.6) from
+;; 2023/07/10.  `bicaption.sty' is part of TeXLive.
 
 ;; If things do not work or when in doubt, press `C-c C-n'.  Comments
 ;; for improvement are welcome.
@@ -139,22 +139,6 @@ arguments."
       (indent-according-to-mode)
       (end-of-line))))
 
-(defun LaTeX-arg-bicaption-captionsetup (optional)
-  "Query for 2 arguments for \"\\captionsetup\" with bicaption.sty loaded.
-When OPTIONAL is non-nil, include both as optional arguments in
-square brackets."
-  (let* ((flttype (completing-read (TeX-argument-prompt optional nil "Float type")
-                                  LaTeX-caption-supported-float-types))
-         (biflt (if (and (not (or (string= flttype "bi")
-                                  (string= flttype "bi-first")
-                                  (string= flttype "bi-second")))
-                         flttype (not (string= flttype "")))
-                    (completing-read (TeX-argument-prompt optional nil "Bicaption type")
-                                     '("bi" "bi-first" "bi-second"))
-                  "")))
-    (TeX-argument-insert flttype optional)
-    (TeX-argument-insert biflt optional)))
-
 (TeX-add-style-hook
  "bicaption"
  (lambda ()
@@ -164,6 +148,13 @@ square brackets."
 
    ;; Macros
    (TeX-add-symbols
+    '("bicaptionsetup"
+      [TeX-arg-completing-read LaTeX-caption-supported-float-types
+                               "Float type"]
+      (TeX-arg-key-val (LaTeX-caption-key-val-options)
+                       "First language")
+      (TeX-arg-key-val (LaTeX-caption-key-val-options)
+                       "Second language"))
     '("bicaption"        (LaTeX-arg-bicaption-bicaption))
     '("bicaption*"       (LaTeX-arg-bicaption-bicaption  nil    t))
     '("bicaptionbox"     (LaTeX-arg-bicaption-bicaption  nil   nil  t   t) t)
@@ -175,7 +166,8 @@ square brackets."
 
    ;; \bi(sub)?caption(box)? macros should get their own lines
    (LaTeX-paragraph-commands-add-locally '("bicaption"    "bicaptionbox"
-                                           "bisubcaption" "bisubcaptionbox"))
+                                           "bisubcaption" "bisubcaptionbox"
+                                           "bicaptionsetup"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -184,7 +176,9 @@ square brackets."
                                 ("bicaptionbox"    "*[{[{[[")
                                 ("bisubcaption"    "*[{[{")
                                 ("bisubcaptionbox" "*[{[{[["))
-                              'textual)))
+                              'textual)
+     (font-latex-add-keywords '(("bicaptionsetup"  "[{{"))
+                              'function)))
  TeX-dialect)
 
 (defun LaTeX-bicaption-package-options-list ()

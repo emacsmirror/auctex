@@ -133,20 +133,20 @@ error in your init file.
 @item
 Why does @code{TeX-next-error} (@kbd{C-c `}) fail?
 
-If @code{TeX-file-line-error} is set to nil (not the default), these
-sort of failures might be related to the the fact that when writing the
-log file, @TeX{} puts information related to a file, including error
+If @code{TeX-file-line-error} is set to @code{nil} (not the default),
+these sort of failures might be related to the the fact that when writing
+the log file, @TeX{} puts information related to a file, including error
 messages, between a pair of parentheses.  In this scenario @AUCTeX{}
 determines the file where the error happened by parsing the log file and
-counting the parentheses.  This can fail when there are other,
-unbalanced parentheses present.
+counting the parentheses.  This can fail when there are other, unbalanced
+parentheses present.
 
 Activating so-called @samp{file:line:error} messages for the log file usually
 solves this issue, as these kind of messages are are easier to parse;
 however, they may lack some details.  Activation can be done either in
 the configuration of your @TeX{} system (consult its manual to see where
 this is) or by simply keeping the variable @code{TeX-file-line-error} to
-the default value of non-nil.
+the default value of non-@code{nil}.
 
 @item
 What does @samp{AUC} stand for?

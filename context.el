@@ -71,17 +71,14 @@
   :group 'ConTeXt
   :type 'string)
 
-(defvar ConTeXt-current-interface "en"
+(defvar-local ConTeXt-current-interface "en"
   "Interface to be used for inserting macros and ConTeXt run.")
-(make-variable-buffer-local 'ConTeXt-current-interface)
 
-(defvar ConTeXt-menu-changed nil)
 ;; Need to update ConTeXt menu.
-(make-variable-buffer-local 'ConTeXt-menu-changed)
+(defvar-local ConTeXt-menu-changed nil)
 
-(defvar ConTeXt-largest-level nil
+(defvar-local ConTeXt-largest-level nil
   "Largest sectioning level within current document.")
-(make-variable-buffer-local 'ConTeXt-largest-level)
 
 (defun ConTeXt-largest-level ()
   (TeX-update-style)

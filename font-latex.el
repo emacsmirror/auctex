@@ -60,9 +60,8 @@
 (defvar font-latex-multiline-boundary 5000
   "Size of region to search for the start or end of a multiline construct.")
 
-(defvar font-latex-quote-regexp-beg nil
+(defvar-local font-latex-quote-regexp-beg nil
   "Regexp used to find quotes.")
-(make-variable-buffer-local 'font-latex-quote-regexp-beg)
 
 (defvar font-latex-quote-list '(("``" "''") ("<<" ">>" french) ("«" "»" french))
   "List of quote specifiers for quotation fontification.
@@ -81,15 +80,13 @@ added quotes will be reversed for fontification.  For example if
 specifies `german', quotes will be used like \">foo\"< for
 fontification.")
 
-(defvar font-latex-quotes-control nil
+(defvar-local font-latex-quotes-control nil
   "Internal variable for keeping track if `font-latex-quotes' changed.")
-(make-variable-buffer-local 'font-latex-quotes-control)
 
-(defvar font-latex-quotes-internal nil
+(defvar-local font-latex-quotes-internal nil
   "Internal variable for tracking outcome of automatic detection.
 If automatic detection is not enabled, it is assigned the value
 of `font-latex-quotes'.")
-(make-variable-buffer-local 'font-latex-quotes-internal)
 
 (defvar font-latex-quotes-fallback 'french
   "Fallback value for `font-latex-quotes' if automatic detection fails.")
@@ -1015,14 +1012,12 @@ The car is used for subscript, the cdr is used for superscripts."
 
 ;;; Syntactic keywords
 
-(defvar font-latex-syntactic-keywords nil
+(defvar-local font-latex-syntactic-keywords nil
   "Syntactic keywords used by `font-latex'.")
-(make-variable-buffer-local 'font-latex-syntactic-keywords)
 
-(defvar font-latex-syntactic-keywords-extra nil
+(defvar-local font-latex-syntactic-keywords-extra nil
   "List of syntactic keywords to add to `font-latex-syntactic-keywords'.
 The form should be the same as in `font-lock-syntactic-keywords'.")
-(make-variable-buffer-local 'font-latex-syntactic-keywords-extra)
 
 ;; Set and updated in `font-latex-set-syntactic-keywords'.
 (defvar font-latex-doctex-syntactic-keywords nil)
@@ -1763,13 +1758,12 @@ Return nil if no command is found."
   "List of characters directly after \"\\\" excluded from fontification.
 Each character is a string.")
 
-(defvar font-latex-match-simple-include-list '("@")
+(defvar-local font-latex-match-simple-include-list '("@")
   "List of characters allowed in a macro for fontification.
 Each character is a string.  This variable is initialized to
 \"@\" since internal LaTeX commands are very often redefined in a
 .tex file and the fontification should work correctly in those
 cases.")
-(make-variable-buffer-local 'font-latex-match-simple-include-list)
 
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
@@ -1792,8 +1786,8 @@ cases.")
                      "a-zA-Z"
                      ;; Additional characters added by AUCTeX styles
                      (mapconcat #'identity
-                                  font-latex-match-simple-include-list
-                                  "")
+                                font-latex-match-simple-include-list
+                                "")
                      ;; End group
                      "]\\)*")
                     limit t)))
