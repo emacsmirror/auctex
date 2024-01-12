@@ -1,6 +1,6 @@
 ;;; titletoc.el --- AUCTeX style for `titletoc.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -54,10 +54,10 @@ Other environments producing a \"Table of ENVIRONMENT\" (figure,
 table) are also available in this variable.")
 
 (defun LaTeX-titletoc-section-command-list ()
-  "Remove \"chapter\" from variable
-`LaTeX-titletoc-section-command-list' and return the remainder.
-Removal is based on the return value of function
-`LaTeX-largest-level'."
+  "Return a list of appropriate sectioning commands.
+Commands are collected from the variable
+`LaTeX-titletoc-section-command-list' and selected based on the
+return value of the function `LaTeX-largest-level'."
   (if (< (LaTeX-largest-level) 2)
       (symbol-value 'LaTeX-titletoc-section-command-list)
     (remove "chapter" LaTeX-titletoc-section-command-list)))
@@ -75,7 +75,8 @@ Removal is based on the return value of function
   (setq LaTeX-auto-titletoc-contentsuse nil))
 
 (defun LaTeX-titletoc-auto-cleanup ()
-  "Move parsed arguments of \"\\contentsuse\" to the variable
+  "Process parsed arguments of \"\\contentsuse\".
+Parsed elements are added to the variable
 `LaTeX-titletoc-section-command-list'."
   (when (LaTeX-titletoc-contentsuse-list)
     (make-local-variable 'LaTeX-titletoc-section-command-list)
