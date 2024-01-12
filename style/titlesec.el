@@ -1,6 +1,6 @@
 ;;; titlesec.el --- AUCTeX style for `titlesec.sty' (v2.11)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -68,22 +68,23 @@ macros provided by \"titlesec.sty\".")
   "List of sectioning shapes available for \"\\titleformat\" command.")
 
 (defun LaTeX-titlesec-section-command-list ()
-  "Remove \"chapter\" from variable
-`LaTeX-titlesec-section-command-list' and return the remainder.
-Removal is based on the return value of function
-`LaTeX-largest-level'.  Items returned are prefixed with
-`TeX-esc'."
+  "Return a list of appropriate sectioning commands.
+Commands are collected from the variable
+`LaTeX-titlesec-section-command-list' and selected based on the
+return value of function `LaTeX-largest-level'.  Commands
+returned are prefixed with `TeX-esc'."
   (mapcar (lambda (elt) (concat TeX-esc elt))
           (if (< (LaTeX-largest-level) 2)
               LaTeX-titlesec-section-command-list
             (remove "chapter" LaTeX-titlesec-section-command-list))))
 
 (defun LaTeX-titlesec-titlespec-key-val-options ()
-  "Return key=val's for the 1st arg of \"\\titleformat\" and \"\\titlespacing\".
-Depending on the returned value of the function
-`LaTeX-largest-level', append a \"name\" key with corresponding
-values to `LaTeX-titlesec-key-val-options'.  The values are
-retrieved from `LaTeX-titlesec-section-command-list'.  The values
+  "Return key=val's for the 1st arg of titlesec macros.
+Macros are \"\\titleformat\" and \"\\titlespacing\".  Depending
+on the returned value of the function `LaTeX-largest-level',
+append a \"name\" key with corresponding values to
+`LaTeX-titlesec-key-val-options'.  The values are retrieved from
+the variable `LaTeX-titlesec-section-command-list'.  The values
 of this list are also added stand-alone as keys."
   (append
    `(("name"
@@ -97,7 +98,6 @@ of this list are also added stand-alone as keys."
                        LaTeX-titlesec-section-command-list
                      (remove "chapter" LaTeX-titlesec-section-command-list))))
    LaTeX-titlesec-key-val-options))
-
 
 (TeX-add-style-hook
  "titlesec"
