@@ -1,6 +1,6 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v10.4.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v11.0.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023 Free Software Foundation, Inc.
+;; Copyright (C) 2023--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v10.4.0) from
-;; 2023/12/29.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v11.0.0) from
+;; 2024/01/12.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -312,7 +312,6 @@
     "azurefunctions"
     "azurepipelines"
     "babel"
-    "babylondotjs"
     "backblaze"
     "backbonedotjs"
     "backendless"
@@ -597,6 +596,7 @@
     "conventionalcommits"
     "convertio"
     "cookiecutter"
+    "coolermaster"
     "coop"
     "coppel"
     "cora"
@@ -679,6 +679,7 @@
     "debian"
     "decapcms"
     "dedge"
+    "deepcool"
     "deepin"
     "deepl"
     "deepnote"
@@ -1209,7 +1210,6 @@
     "huawei"
     "hubspot"
     "hugo"
-    "hulu"
     "humblebundle"
     "hungryjacks"
     "husqvarna"
@@ -1533,6 +1533,7 @@
     "mailgun"
     "mailtrap"
     "majorleaguehacking"
+    "make"
     "makerbot"
     "mambaui"
     "mamp"
@@ -1913,7 +1914,6 @@
     "peloton"
     "penny"
     "penpot"
-    "pepsi"
     "percy"
     "perforce"
     "perl"
@@ -2335,6 +2335,7 @@
     "showtime"
     "showwcase"
     "shutterstock"
+    "sidequest"
     "siemens"
     "sifive"
     "signal"
@@ -2349,6 +2350,7 @@
     "singlestore"
     "sitecore"
     "sitepoint"
+    "siyuan"
     "skaffold"
     "sketch"
     "sketchfab"
@@ -2453,6 +2455,7 @@
     "stackshare"
     "stadia"
     "staffbase"
+    "stagetimer"
     "standardjs"
     "standardresume"
     "starbucks"
@@ -2712,7 +2715,6 @@
     "unitednations"
     "unity"
     "unlicense"
-    "uno"
     "unocss"
     "unraid"
     "unrealengine"
@@ -2761,6 +2763,7 @@
     "viber"
     "viblo"
     "victoriametrics"
+    "victronenergy"
     "vim"
     "vimeo"
     "vimeolivestream"
@@ -2890,6 +2893,7 @@
     "writedotas"
     "wwe"
     "wwise"
+    "wyze"
     "x"
     "xamarin"
     "xaml"
