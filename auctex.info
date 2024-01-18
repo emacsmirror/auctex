@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 7.1 from auctex.texi.
 
-This manual is for AUCTeX (version 13.2.4 from 2024-01-08), a
+This manual is for AUCTeX (version 13.3.0 from 2024-01-18), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
@@ -6220,7 +6220,7 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 13.2.4 from 2024-01-08), a
+   This manual is for AUCTeX (version 13.3.0 from 2024-01-18), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2023 Free Software
@@ -6727,8 +6727,8 @@ File: auctex.info,  Node: Changes,  Next: Development,  Prev: Copying this Manua
 A.2 Changes and New Features
 ============================
 
-News since last release
------------------------
+News in 13.3
+------------
 
    • AUCTeX now requires GNU Emacs 26.1 or higher.
 
@@ -9814,21 +9814,21 @@ Node: Appendices270934
 Node: Copying this Manual271230
 Node: GNU Free Documentation License272112
 Node: Changes297235
-Node: Development357345
-Node: Mid-term Goals357991
-Node: Wishlist360886
-Node: Bugs367075
-Node: FAQ368211
-Node: Texinfo mode374085
-Node: Exploiting375219
-Node: Superseding376041
-Node: Mapping380856
-Node: Unbinding382799
-Node: Indices383347
-Node: Key Index383510
-Node: Function Index391404
-Node: Variable Index403966
-Node: Concept Index429471
+Node: Development357323
+Node: Mid-term Goals357969
+Node: Wishlist360864
+Node: Bugs367053
+Node: FAQ368189
+Node: Texinfo mode374063
+Node: Exploiting375197
+Node: Superseding376019
+Node: Mapping380834
+Node: Unbinding382777
+Node: Indices383325
+Node: Key Index383488
+Node: Function Index391382
+Node: Variable Index403944
+Node: Concept Index429449
 
 End Tag Table
 

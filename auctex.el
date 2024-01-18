@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2014-2024 Free Software Foundation, Inc.
 
-;; Version: 13.2.4
+;; Version: 13.3.0
 ;; URL: https://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 ;; Notifications-To: auctex-diffs@gnu.org
