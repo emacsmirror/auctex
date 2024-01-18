@@ -71,7 +71,7 @@ statements related to the problem.
 @item
 What versions of Emacs are supported?
 
-@AUCTeX{} was tested with @w{GNU Emacs 26.1}.  Older versions may work but
+@AUCTeX{} was tested with @w{GNU Emacs 27.1}.  Older versions may work but
 are unsupported.
 
 @item

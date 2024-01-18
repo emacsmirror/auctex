@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 26)
-  (error "AUCTeX requires Emacs 26.1 or later"))
+(when (< emacs-major-version 27)
+  (error "AUCTeX requires Emacs 27.1 or later"))
 
 (declare-function BibTeX-auto-store "latex")
 

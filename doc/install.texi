@@ -96,7 +96,7 @@ the file @file{INSTALL.windows}.
 @end ifclear
 
 @itemize @bullet
-@item GNU Emacs 26.1 or higher
+@item GNU Emacs 27.1 or higher
 
 Using @previewlatex{} requires a version of Emacs compiled with image
 support.
