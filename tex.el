@@ -4275,7 +4275,7 @@ alter the numbering of any ordinary, non-shy groups.")
 (defcustom TeX-auto-parse-length 999999
   "Maximal length of TeX file (in characters) that will be parsed."
   :group 'TeX-parse
-  :type 'integer#
+  :type 'integer
   :local t)
 
 (defcustom TeX-auto-x-parse-length 0
