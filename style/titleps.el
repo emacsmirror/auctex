@@ -1,6 +1,6 @@
 ;;; titleps.el --- AUCTeX style for `titleps.sty' (v1.1.1)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -50,12 +50,12 @@
   "List of sectioning commands available in \"titleps.sty\".")
 
 (defun LaTeX-titleps-section-command-list ()
-  "Remove \"chapter\" from variable
-`LaTeX-titleps-section-command-list' and return the remainder.
-Removal is based on the return value of function
-`LaTeX-largest-level'."
+  "Return a list of appropriate sectioning commands.
+Commands are collected from the variable
+`LaTeX-titleps-section-command-list' and selected based on the
+return value of the function `LaTeX-largest-level'."
   (if (< (LaTeX-largest-level) 2)
-      (symbol-value 'LaTeX-titleps-section-command-list)
+      LaTeX-titleps-section-command-list
     (remove "chapter" LaTeX-titleps-section-command-list)))
 
 (defvar LaTeX-titleps-newpagestyle-regexp
