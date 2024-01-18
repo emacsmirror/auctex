@@ -1578,10 +1578,9 @@ It should be one of the following symbols:\n\n"
   :group 'TeX-command
   :type `(choice ,@(mapcar (lambda (x)
                              `(const :tag ,(nth 1 x) ,(car x)))
-                           (TeX-engine-alist))))
+                           (TeX-engine-alist)))
+  :safe (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin))))
 (make-variable-buffer-local 'TeX-engine)
-(put 'TeX-engine 'safe-local-variable
-     (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin))))
 
 (defun TeX-engine-set (type)
   "Set TeX engine to TYPE.
@@ -2008,8 +2007,8 @@ enabled and the `synctex' binary is available."
 (defcustom TeX-PDF-mode t nil
   :group 'TeX-command
   :set #'TeX-mode-set
-  :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable #'booleanp)
+  :type 'boolean
+  :safe #'booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -2102,9 +2101,9 @@ Programs should not use this variable directly but the function
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
   :group 'TeX-command
-  :type 'boolean)
+  :type 'boolean
+  :safe #'booleanp)
 (make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable #'booleanp)
 (make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
 (defun TeX-PDF-from-DVI ()
@@ -2267,12 +2266,11 @@ It is suggested that you use the File Variables (see the info node
                  (const :tag "This file" t)
                  (const :tag "Shared" shared)
                  (const :tag "Dwim" dwim)
-                 (string :format "%v")))
+                 (string :format "%v"))
+  :safe (lambda (x)
+          (or (stringp x)
+              (member x (quote (t nil shared dwim))))))
 (make-variable-buffer-local 'TeX-master)
-(put 'TeX-master 'safe-local-variable
-     (lambda (x)
-       (or (stringp x)
-           (member x (quote (t nil shared dwim))))))
 
 (defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
   "Regular expression matching ordinary TeX files.

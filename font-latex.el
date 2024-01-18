@@ -110,9 +110,8 @@ the language option supplied to the babel package.
 
 If nil, quoted content will not be fontified."
   :type '(choice (const auto) (const french) (const german) (const nil))
-  :group 'font-latex)
-(put 'font-latex-quotes 'safe-local-variable
-     (lambda (x) (memq x '(auto french german nil))))
+  :group 'font-latex
+  :safe (lambda (x) (memq x '(auto french german nil))))
 
 (defun font-latex-add-quotes (quotes)
   "Add QUOTES to `font-latex-quote-list'.
@@ -969,11 +968,10 @@ script operators ^ and _ are not displayed."
   :type '(choice (boolean :tag "Enabled")
                  (const :tag "Multiple levels" multi-level)
                  (const :tag "Hide ^ and _" invisible))
-  :group 'font-latex)
-(put 'font-latex-fontify-script 'safe-local-variable
-     (lambda (val)
-       (or (booleanp val)
-           (memq val '(multi-level invisible)))))
+  :group 'font-latex
+  :safe (lambda (val)
+          (or (booleanp val)
+              (memq val '(multi-level invisible)))))
 
 (defcustom font-latex-fontify-script-max-level 3
   "Maximum scriptification level for which script faces are applied.

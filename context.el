@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -495,9 +495,9 @@ in your init file such as .emacs.d/init.el or .emacs."
 (defcustom ConTeXt-Mark-version "II"
   "ConTeXt Mark version used for running ConTeXt."
   :type 'string
-  :group 'TeX-command)
+  :group 'TeX-command
+  :safe #'stringp)
 (make-variable-buffer-local 'ConTeXt-Mark-version)
-(put 'ConTeXt-Mark-version 'safe-local-variable #'stringp)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
