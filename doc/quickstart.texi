@@ -322,6 +322,6 @@ files.  It will run @command{latex} only on the current buffer, using the
 preamble from the master file.
 
 @c Local Variables: 
-@c mode: texinfo
+@c mode: Texinfo
 @c TeX-master: "auctex"
 @c End: 

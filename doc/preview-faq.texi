@@ -304,3 +304,8 @@ file looking like the following:
 \end@{plain@}
 \end@{document@}
 @end example
+
+@c Local Variables:
+@c mode: Texinfo
+@c TeX-master: "preview-latex"
+@c End:

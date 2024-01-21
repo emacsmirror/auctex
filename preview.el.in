@@ -2260,7 +2260,7 @@ has FUNC called with its current buffer being set to it."
       (with-current-buffer (pop buffers)
         (when
             (or (memq (current-buffer) default-buffers)
-                (and (memq major-mode '(plain-tex-mode latex-mode))
+                (and (memq major-mode '(plain-TeX-mode LaTeX-mode))
                      (or (stringp TeX-master)
                          (eq TeX-master t))
                      (string= (expand-file-name (TeX-master-file t))
@@ -2373,16 +2373,14 @@ BUFFER-MISC is the appropriate data to be used."
                    buffer-misc))))))
 
 ;; Add autoload cookies explicitly for desktop.el.
-;; <Background> preview-latex doesn't conform to the following
-;; assumptions of desktop.el:
+;; <Background> desktop.el assumes the following two:
 ;; (1) The file associated with the major mode by autoload has defun
 ;;     of handler, which restores the state of the buffer.
 ;; (2) The file has suitable `add-to-list' form also for
 ;;     `desktop-buffer-mode-handlers' to register the entry of the
 ;;     handler.
-;; This isn't the case here because the file associated with
-;; `latex-mode' is tex-mode.el, neither preview.el nor latex.el.  Thus
-;; we include both of them as explicit autoloads in preview-latex.el.
+;; This isn't the case for preview-latex.  Thus we register both of
+;; them as autoload cookies in AUCTeX initialzation code.
 ;;;###autoload
 (defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
@@ -2396,7 +2394,7 @@ BUFFER-MISC is the appropriate data to be used."
 
 ;;;###autoload
 (add-to-list 'desktop-buffer-mode-handlers
-             '(latex-mode . desktop-buffer-preview))
+             '(LaTeX-mode . desktop-buffer-preview))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.
@@ -3092,7 +3090,7 @@ to add the preview functionality."
            (customize-menu-create 'preview))])
         ["Read documentation" preview-goto-info-page]
         ["Report Bug" preview-report-bug]))
-    (if (eq major-mode 'latex-mode)
+    (if (eq major-mode 'LaTeX-mode)
         (preview-mode-setup))
     (unless preview-tb-icon
       (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))

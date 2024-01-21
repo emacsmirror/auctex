@@ -46,7 +46,7 @@
 (TeX-add-style-hook
  "amstex"
  (lambda ()
-   (unless (memq major-mode '(plain-tex-mode ams-tex-mode))
+   (unless (memq major-mode '(plain-TeX-mode AmSTeX-mode))
      (TeX-run-style-hooks "amsmath")))
  TeX-dialect)
 
