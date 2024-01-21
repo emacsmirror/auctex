@@ -171,11 +171,7 @@ There are new keymaps, hooks and abbrev tables:
 @code{japanese-plain-TeX-mode-abbrev-table},
 @code{japanese-LaTeX-mode-abbrev-table}
 @end itemize
-@end itemize
 
-@heading News since last release
-
-@itemize @bullet
 @item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
