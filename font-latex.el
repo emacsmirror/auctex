@@ -1,12 +1,12 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1996-2023  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2024  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created:    06 July 1996
-;; Keywords:   tex, wp, faces
+;; Keywords:   tex, text, faces
 
 ;;; This file is not part of GNU Emacs.
 

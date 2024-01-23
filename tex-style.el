@@ -3,7 +3,7 @@
 ;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
-;; Keywords: tex, wp, convenience
+;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

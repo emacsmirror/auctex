@@ -1,11 +1,11 @@
 ;;; tex-fold.el --- Fold TeX macros.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2024  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2004-07-04
-;; Keywords: tex, wp
+;; Keywords: tex, text
 
 ;; This file is part of AUCTeX.
 

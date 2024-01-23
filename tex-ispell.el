@@ -1,10 +1,10 @@
 ;;; tex-ispell.el --- AUCTeX skip additions for Ispell  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016-2023 Free Software Foundation, Inc.
+;; Copyright (C) 2016-2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
-;; Keywords: tex, wp, convenience
+;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
