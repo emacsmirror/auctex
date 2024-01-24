@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated @TeX{} environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2023
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2024
 Free Software Foundation, Inc.
 
 @quotation
@@ -3519,6 +3519,20 @@ If non-@code{nil}, @AUCTeX{} will check if it is able to find a working
 actually checks if can run @code{TeX-command} command or the shell returns
 a command not found error.  The error code returned by the shell in this
 case can be set in @code{TeX-check-TeX-command-not-found} option.
+@end defopt
+
+In addtion, @AUCTeX{} searches for a line similar to
+@example
+LaTeX2e <2022-11-01> patch level 1
+@end example
+in the console log to check whether @command{latex} command runs
+successfully.  If there isn't such a line when running @LaTeX{}, @AUCTeX{}
+warns the problem and resets the next default command to ``LaTeX''.  If
+this check doesn't suit for your use case, you can customize the
+@code{TeX-LaTeX-sentinel-banner-regexp} option:
+@defopt TeX-LaTeX-sentinel-banner-regexp
+When a @LaTeX{} run outputs a banner line matching this regexp, @AUCTeX{}
+considers that it was successfull.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a

@@ -709,6 +709,13 @@ commands."
   :group 'TeX-command
   :type 'boolean)
 
+(defcustom TeX-LaTeX-sentinel-banner-regexp
+  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
+\\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)"
+  "Regexp to identify the banner line in the LaTeX output."
+  :group 'TeX-output
+  :type 'regexp)
+
 ;;; Portability.
 
 (defmacro TeX--if-macro-fboundp (name then &rest else)
@@ -8531,8 +8538,7 @@ Changebar info has changed." nil t)
           "%s" "You should run LaTeX again to synchronize exercise properties")
          (setq TeX-command-next TeX-command-default))
         ((re-search-forward
-          "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
-\\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)" nil t)
+          TeX-LaTeX-sentinel-banner-regexp nil t)
          (let* ((warnings (and TeX-debug-warnings
                                (TeX-LaTeX-sentinel-has-warnings)))
                 (bad-boxes (and TeX-debug-bad-boxes
