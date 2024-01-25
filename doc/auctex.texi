@@ -3521,18 +3521,18 @@ a command not found error.  The error code returned by the shell in this
 case can be set in @code{TeX-check-TeX-command-not-found} option.
 @end defopt
 
-In addtion, @AUCTeX{} searches for a line similar to
+In addition, @AUCTeX{} searches for a line similar to
 @example
 LaTeX2e <2022-11-01> patch level 1
 @end example
-in the console log to check whether @command{latex} command runs
-successfully.  If there isn't such a line when running @LaTeX{}, @AUCTeX{}
-warns the problem and resets the next default command to ``LaTeX''.  If
-this check doesn't suit for your use case, you can customize the
+in the console log to check whether @command{latex} command fails or not.
+If there isn't such a line when running @LaTeX{}, @AUCTeX{} warns the
+problem and resets the next default command to ``LaTeX''.  If this check
+doesn't suit for your use case, you can customize the
 @code{TeX-LaTeX-sentinel-banner-regexp} option:
 @defopt TeX-LaTeX-sentinel-banner-regexp
-When a @LaTeX{} run outputs a banner line matching this regexp, @AUCTeX{}
-considers that it was successfull.
+When a @LaTeX{} run doesn't output a banner line matching this regexp,
+@AUCTeX{} considers that it failed.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a
@@ -4271,6 +4271,7 @@ functions and hooks.
 @vindex Texinfo-mode-hook
 @findex docTeX-mode
 @vindex docTeX-mode-hook
+@vindex TeX-mode-hook
 
 If you need to make a customization via a hook which is only relevant
 for one of the modes listed above, put it into the respective mode hook,
