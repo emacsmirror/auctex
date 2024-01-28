@@ -177,6 +177,11 @@
       ("LUseVerbatim" . 1)
       ("LUseVerbatim*" . 1)
       ("VerbatimInput" . 1)
+      ("VerbatimInput*" . 1)
+      ("BVerbatimInput" . 1)
+      ("BVerbatimInput*" . 1)
+      ("LVerbatimInput" . 1)
+      ("LVerbatimInput*" . 1)
       ;; fontaxes.sty
       ("figureversion" . 1)
       ;; fontspec.sty
