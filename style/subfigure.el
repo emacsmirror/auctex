@@ -1,6 +1,6 @@
 ;;; subfigure.el --- AUCTeX style file for subfigure.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003, 2005, 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2003--2024 Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib  <Reiner.Steib@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -55,7 +55,8 @@
    ;; Install completion for labels:
    (setq TeX-complete-list
          (append
-          '(("\\\\[Ss]ubref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
+          '(("\\\\[Ss]ubref{\\([^{}\n\r\\%,]*\\)"
+             1 LaTeX-completion-label-list "}"))
           TeX-complete-list))
 
    ;; Fontification

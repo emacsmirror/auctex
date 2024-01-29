@@ -56,6 +56,8 @@
                   (bus service path interface signal handler &rest args))
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
+(declare-function LaTeX-completion-label-annotation-function "latex" (label))
+(declare-function LaTeX-completion-label-list "latex" nil)
 (declare-function LaTeX-section-name "latex" (level))
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
@@ -3234,10 +3236,14 @@ See `completion-at-point-functions'."
                  (begin (match-beginning sub))
                  (end (match-end sub))
                  (symbol (buffer-substring-no-properties begin end))
-                 (list (funcall (nth 2 entry))))
+                 (func (nth 2 entry))
+                 (list (funcall func)))
             (list begin end (all-completions symbol list)
                   :annotation-function
-                  #'TeX--completion-annotation-function))
+                  (cond ((eq func #'LaTeX-completion-label-list)
+                         #'LaTeX-completion-label-annotation-function)
+                        (t
+                         #'TeX--completion-annotation-function))))
         ;; We intentionally don't call the fallback completion functions because
         ;; they do completion on their own and don't work too well with things
         ;; like company-mode.  And the default function `ispell-complete-word'

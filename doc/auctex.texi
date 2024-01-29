@@ -1365,6 +1365,17 @@ candidate, multiple candidates separated by commas, or key-value
 candidates separated by commas and/or equal signs.
 @end defun
 
+Sometimes the list of offered candidates is enriched by annotations which
+are appended to the candidates themself.  For labels which are referenced,
+the annotations are controlled by the variable
+@code{LaTeX-label-annotation-max-length} and Ref@TeX{} being enabled in
+the buffer since the annotations are gathered from it.
+
+@defopt LaTeX-label-annotation-max-length
+Controls the length of the annotation attached to a label, default is 30.
+Setting this variable to 0 disables annotation of labels.
+@end defopt
+
 A more direct way to insert a macro is with @code{TeX-insert-macro},
 bound to @kbd{C-c C-m} which is equivalent to @kbd{C-c @key{RET}}.  It
 has the advantage over completion that it knows about the argument of

@@ -1,6 +1,6 @@
 ;;; fancyref.el --- AUCTeX style file with support for fancyref.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2014, 2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 1999--2024 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -91,7 +91,7 @@
    (setq TeX-complete-list
          (append
           '(("\\\\[fF]ref\\(\\[[^]]*\\]\\)?{\\([^{}\n\r\\%,]*\\)" 
-             2 LaTeX-label-list "}")
+             2 LaTeX-completion-label-list "}")
             ("\\\\[fF]ref\\[\\([^{}\n\r\\%,]*\\)" 
              1 LaTeX-fancyref-formats "]")
             ("\\\\[fF]refformat{\\([^{}\n\r\\%,]*\\)"

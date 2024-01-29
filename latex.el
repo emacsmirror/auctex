@@ -8112,6 +8112,54 @@ function `TeX--completion-at-point' which should come first in
             ;; Any other constructs?
             (t nil)))))
 
+;; The next defcustom and functions control the annotation of labels
+;; during in-buffer completion which is done by
+;; `TeX--completion-at-point' also inside the arguments of \ref and
+;; such and not with the code above.
+
+(defcustom LaTeX-label-annotation-max-length 30
+  "Maximum number of characters for annotation of labels.
+Setting this variable to 0 disables label annotation during
+in-buffer completion."
+  :group 'LaTeX-label
+  :type 'integer)
+
+(defun LaTeX-completion-label-annotation-function (label)
+  "Return context for LABEL in a TeX file.
+Context is a string gathered from RefTeX.  Return nil if
+`LaTeX-label-annotation-max-length' is set to 0 or RefTeX-mode is
+not activated.  Context is stripped to the number of characters
+defined in `LaTeX-label-annotation-max-length'."
+  (when (and (bound-and-true-p reftex-mode)
+             (> LaTeX-label-annotation-max-length 0)
+             (boundp 'reftex-docstruct-symbol))
+    (let ((docstruct (symbol-value reftex-docstruct-symbol))
+          s)
+      (and (setq s (nth 2 (assoc label docstruct)))
+           (concat " "
+                   (string-trim-right
+                    (substring s 0 (when (>= (length s)
+                                             LaTeX-label-annotation-max-length)
+                                     LaTeX-label-annotation-max-length))))))))
+
+(defun LaTeX-completion-label-list ()
+  "Return a list of defined labels for in-buffer completion.
+This function checks if RefTeX mode is activated and extracts the
+labels from there.  Otherwise the AUCTeX label list is returned.
+If the list of offered labels is out of sync, re-parse the
+document with `reftex-parse-all' or `TeX-normal-mode'."
+  (if (and (bound-and-true-p reftex-mode)
+           (fboundp 'reftex-access-scan-info)
+           (boundp 'reftex-docstruct-symbol))
+      (progn
+        (reftex-access-scan-info)
+        (let ((docstruct (symbol-value reftex-docstruct-symbol))
+              labels)
+          (dolist (label docstruct labels)
+            (when (stringp (car label))
+              (push (car label) labels)))))
+    (LaTeX-label-list)))
+
 ;;; Mode
 
 (defgroup LaTeX-macro nil
@@ -8254,9 +8302,9 @@ Run after mode hooks and file local variables application."
                   ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
                   ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
                    2 LaTeX-bibitem-list)
-                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
                   ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
                    2 LaTeX-index-entry-list "}")
                   ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
