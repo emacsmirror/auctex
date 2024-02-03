@@ -975,6 +975,8 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 @deffn Command LaTeX-close-environment
 @kindex C-c ]
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment.
+When called with prefix argument (@kbd{C-u}), reopen environment
+afterwards.
 @end deffn
 
 @AUCTeX{} offers keyboard shortcuts for moving point to the beginning
