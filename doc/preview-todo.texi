@@ -116,3 +116,8 @@ replace the whole color and image handling with @acronym{GDK} routines
 when this library is available, since it has been optimized for it.
 
 @end itemize
+
+@c Local Variables:
+@c mode: Texinfo
+@c TeX-master: "preview-latex"
+@c End:

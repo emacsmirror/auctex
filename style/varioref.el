@@ -1,6 +1,6 @@
 ;;; varioref.el --- AUCTeX style for `varioref.sty' (v1.6b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2013, 2015, 2018--2020 Free Software Foundation, Inc.
+;; Copyright (C) 1999--2024 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
 ;;         Mads Jensen <mje@inducks.org>
@@ -69,16 +69,12 @@
 
    ;; Install completion for labels.  Only offer completion for
    ;; commands that take only one reference as an argument
-   ;; FIXME: The first 3 entries can be reduced to
-   ;; ("\\\\[Vv]ref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")  ???
    (setq TeX-complete-list
          (append
-          '(("\\\\[Vv]ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-            ("\\\\vref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-            ("\\\\vref\\*{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-            ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+          '(("\\\\[Vv]ref\\*?{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+            ("\\\\fullref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
             ("\\\\vpageref\\*?\\(\\[[^]]*\\]\\)*{\\([^{}\n\r\\%,]*\\)"
-             2 LaTeX-label-list "}"))
+             2 LaTeX-completion-label-list "}"))
           TeX-complete-list))
 
    ;; Fontification

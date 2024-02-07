@@ -227,3 +227,8 @@ to show your appreciation with a donation to the main developer, you can
 do so via PayPal to @email{dak@@gnu.org}, and of course you can arrange
 for service contracts or for added functionality.  Take a look at the
 @file{TODO} list for suggestions in that area.
+
+@c Local Variables:
+@c mode: Texinfo
+@c TeX-master: "preview-latex"
+@c End:

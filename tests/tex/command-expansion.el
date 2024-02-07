@@ -88,7 +88,7 @@
   ;; Skip on w32 because the quoting style of `shell-quote-argument'
   ;; is different.
   (skip-unless (not (eq system-type 'windows-nt)))
-  (let ((major-mode 'latex-mode)
+  (let ((major-mode 'LaTeX-mode)
         (TeX-engine 'default)
         (TeX-command-extra-options " \"\\foo\"")
         TeX-master)

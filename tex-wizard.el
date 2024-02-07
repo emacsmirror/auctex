@@ -1,9 +1,9 @@
 ;;; tex-wizard.el --- Check the TeX configuration  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2024 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <dak@gnu.org>
-;; Keywords: tex, wp, convenience
+;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

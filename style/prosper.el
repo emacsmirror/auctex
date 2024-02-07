@@ -1,10 +1,10 @@
 ;;; prosper.el --- Prosper style file for AUCTeX  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2024  Free Software Foundation, Inc.
 
 ;; Authors:  Phillip Lord<p.lord@russet.org.uk>
 ;;           Nevin Kapur <nevin@jhu.edu>
-;; Keywords: tex, wp, prosper
+;; Keywords: tex, text, prosper
 ;; Version: 0.6
 ;; URL: http://www.mts.jhu.edu/~kapur/emacs/prosper.el
 

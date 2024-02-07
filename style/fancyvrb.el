@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 4.5.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2023 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2024 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -720,9 +720,17 @@ a list of strings."
     ;; Writing and reading verbatim files
     '("VerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative)
+    '("VerbatimInput*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      LaTeX-fancyvrb-arg-file-relative)
+
     '("BVerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative)
+    '("BVerbatimInput*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      LaTeX-fancyvrb-arg-file-relative)
+
     '("LVerbatimInput" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
+      LaTeX-fancyvrb-arg-file-relative)
+    '("LVerbatimInput*" [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)]
       LaTeX-fancyvrb-arg-file-relative))
 
    (LaTeX-add-environments
@@ -826,9 +834,9 @@ a list of strings."
                                 ("UndefineShortVerb" "{")
                                 ("fvset"             "{"))
                               'function)
-     (font-latex-add-keywords '(("VerbatimInput"  "[{")
-                                ("BVerbatimInput" "[{")
-                                ("LVerbatimInput" "[{"))
+     (font-latex-add-keywords '(("VerbatimInput"  "*[{")
+                                ("BVerbatimInput" "*[{")
+                                ("LVerbatimInput" "*[{"))
                               'reference)
      (font-latex-add-keywords '(("Verb" "*[") ; The second argument is verbatim.
                                 ("SaveVerb"     "[{")

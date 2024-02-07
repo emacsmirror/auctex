@@ -1,9 +1,9 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
-;; Keywords: tex, wp, convenience
+;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -303,8 +303,8 @@ becomes the default value meaning that verbatim fontification is
 always performed for the characters in the list, no matter if
 your document actually defines shortverb chars using
 \\DefineShortVerb."
-  :type '(repeat character))
-(put 'LaTeX-fancyvrb-chars 'safe-local-variable #'listp)
+  :type '(repeat character)
+  :safe #'listp)
 
 ;; style/fontspec.el
 
@@ -420,8 +420,8 @@ becomes the default value meaning that verbatim fontification is
 always performed for the characters in the list, no matter if
 your document actually defines shortvrb chars using
 \\MakeShortVrb."
-  :type '(repeat character))
-(put 'LaTeX-shortvrb-chars 'safe-local-variable #'listp)
+  :type '(repeat character)
+  :safe #'listp)
 
 ;; style/splitidx.el
 

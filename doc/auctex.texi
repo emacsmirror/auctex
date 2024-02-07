@@ -12,7 +12,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated @TeX{} environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2023
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2024
 Free Software Foundation, Inc.
 
 @quotation
@@ -975,6 +975,8 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 @deffn Command LaTeX-close-environment
 @kindex C-c ]
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment.
+When called with prefix argument (@kbd{C-u}), reopen environment
+afterwards.
 @end deffn
 
 @AUCTeX{} offers keyboard shortcuts for moving point to the beginning
@@ -1364,6 +1366,17 @@ It offers the completion candidates stored in the variables
 candidate, multiple candidates separated by commas, or key-value
 candidates separated by commas and/or equal signs.
 @end defun
+
+Sometimes the list of offered candidates is enriched by annotations which
+are appended to the candidates themself.  For labels which are referenced,
+the annotations are controlled by the variable
+@code{LaTeX-label-annotation-max-length} and Ref@TeX{} being enabled in
+the buffer since the annotations are gathered from it.
+
+@defopt LaTeX-label-annotation-max-length
+Controls the length of the annotation attached to a label, default is 30.
+Setting this variable to 0 disables annotation of labels.
+@end defopt
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
 bound to @kbd{C-c C-m} which is equivalent to @kbd{C-c @key{RET}}.  It
@@ -3302,7 +3315,7 @@ Another possibility is to use file local additions at the end of your
 @TeX{} file, e.g.:
 @example
 %%% Local Variables:
-%%% mode: latex
+%%% mode: LaTeX
 %%% TeX-master: t
 %%% eval: (TeX-ispell-skip-setcar '(("\\\\mymacro" . "@{[-0-9]+@}")))
 %%% End:
@@ -3519,6 +3532,20 @@ If non-@code{nil}, @AUCTeX{} will check if it is able to find a working
 actually checks if can run @code{TeX-command} command or the shell returns
 a command not found error.  The error code returned by the shell in this
 case can be set in @code{TeX-check-TeX-command-not-found} option.
+@end defopt
+
+In addition, @AUCTeX{} searches for a line similar to
+@example
+LaTeX2e <2022-11-01> patch level 1
+@end example
+in the console log to check whether @command{latex} command fails or not.
+If there isn't such a line when running @LaTeX{}, @AUCTeX{} warns the
+problem and resets the next default command to ``LaTeX''.  If this check
+doesn't suit for your use case, you can customize the
+@code{TeX-LaTeX-sentinel-banner-regexp} option:
+@defopt TeX-LaTeX-sentinel-banner-regexp
+When a @LaTeX{} run doesn't output a banner line matching this regexp,
+@AUCTeX{} considers that it failed.
 @end defopt
 
 Some @LaTeX{} packages requires the document to be compiled with a
@@ -4107,7 +4134,7 @@ documents and all files in a multifile document.  For example,
 
 @example
 %%% Local Variables:
-%%% mode: latex
+%%% mode: LaTeX
 %%% TeX-output-dir: "build"
 %%% End:
 @end example
@@ -4236,33 +4263,38 @@ order.  (As an exception, Texinfo mode does not run @code{TeX-mode-hook}.)
 The following table provides an overview of the respective mode
 functions and hooks.
 
-@multitable {Plain @TeX{}} {@code{plain-tex-mode}} {@code{plain-TeX-mode-hook}}
+@multitable {Plain @TeX{}} {@code{plain-TeX-mode}} {@code{plain-TeX-mode-hook}}
 @headitem Type @tab Mode function @tab Hook
-@item Plain @TeX{} @tab @code{plain-tex-mode} @tab @code{plain-TeX-mode-hook}
-@item @LaTeX{}     @tab @code{latex-mode}     @tab @code{LaTeX-mode-hook}
-@item AMS-@TeX{}   @tab @code{ams-tex-mode}   @tab @code{AmS-TeX-mode-hook}
-@item @ConTeXt{}   @tab @code{context-mode}   @tab @code{ConTeXt-mode-hook}
-@item Texinfo      @tab @code{texinfo-mode}   @tab @code{Texinfo-mode-hook}
-@item Doc@TeX{}    @tab @code{doctex-mode}    @tab @code{docTeX-mode-hook}
+@item Plain @TeX{} @tab @code{plain-TeX-mode} @tab @code{plain-TeX-mode-hook}
+@item @LaTeX{}     @tab @code{LaTeX-mode}     @tab @code{LaTeX-mode-hook}
+@item AMS-@TeX{}   @tab @code{AmSTeX-mode}    @tab @code{AmSTeX-mode-hook}
+@item @ConTeXt{}   @tab @code{ConTeXt-mode}   @tab @code{ConTeXt-mode-hook}
+@item Texinfo      @tab @code{Texinfo-mode}   @tab @code{Texinfo-mode-hook}
+@item Doc@TeX{}    @tab @code{docTeX-mode}    @tab @code{docTeX-mode-hook}
 @end multitable
-@findex plain-tex-mode
+@findex plain-TeX-mode
 @vindex plain-TeX-mode-hook
-@findex latex-mode
+@findex LaTeX-mode
 @vindex LaTeX-mode-hook
-@findex ams-tex-mode
-@vindex AmS-TeX-mode-hook
-@findex context-mode
+@findex AmSTeX-mode
+@vindex AmSTeX-mode-hook
+@findex ConTeXt-mode
 @vindex ConTeXt-mode-hook
-@findex texinfo-mode
+@findex Texinfo-mode
 @vindex Texinfo-mode-hook
-@findex doctex-mode
+@findex docTeX-mode
 @vindex docTeX-mode-hook
+@vindex TeX-mode-hook
 
 If you need to make a customization via a hook which is only relevant
 for one of the modes listed above, put it into the respective mode hook,
 if it is relevant for any @AUCTeX{} mode, add it to @code{TeX-mode-hook}
 and if it is relevant for all text modes, append it to
 @code{text-mode-hook}.
+
+Now doc@TeX{} mode is child of @LaTeX{} mode, so doc@TeX{} mode runs
+@code{LaTeX-mode-hook} as well.  Similarly, AmS@TeX{} mode is child of plain
+@TeX{} mode and runs @code{plain-TeX-mode-hook} as well.
 
 Other useful hooks are listed below.
 
@@ -4866,15 +4898,15 @@ press.  If @code{nil} do it the other way round.
 @vindex TeX-engine
 @vindex TeX-engine-alist
 @vindex japanese-TeX-mode
-@findex japanese-plain-tex-mode
-@findex japanese-latex-mode
+@findex japanese-plain-TeX-mode
+@findex japanese-LaTeX-mode
 
 To write Japanese text with @AUCTeX{}, you need the versions of
 @TeX{} and Emacs that support Japanese.  @AUCTeX{} supports three
 Japanese @TeX{} engines by default: NTT j@TeX{}, ASCII p@TeX{} and
 up@TeX{}.
 
-Activate @code{japanese-plain-tex-mode} or @code{japanese-latex-mode} to
+Activate @code{japanese-plain-TeX-mode} or @code{japanese-LaTeX-mode} to
 use the Japanese @TeX{} engines.  If it doesn't work, send mail to
 Masayuki Ataka @email{masayuki.ataka@@gmail.com} or Ikumi Keita
 @email{ikumikeita@@jcom.home.ne.jp}, who currently concern with stuff
@@ -4882,7 +4914,7 @@ related to Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
 maintainers understand Japanese, so they cannot help you.
 
 It is recommended to enable @code{TeX-parse-self} for typical Japanese
-@LaTeX{} users.  When enabled, @code{japanese-latex-mode} selects the
+@LaTeX{} users.  When enabled, @code{japanese-LaTeX-mode} selects the
 suitable Japanese @TeX{} engine automatically based on the class file
 name (such as @code{jbook}, @code{jsarticle} and @code{tjreport}) and
 its option.  @xref{Parsing Files}.
@@ -4916,7 +4948,7 @@ Here is a sample code to set @code{TeX-engine} to @samp{uptex}:
 
 @example
 %%% Local Variables:
-%%% mode: japanese-latex
+%%% mode: japanese-LaTeX
 %%% TeX-engine: uptex
 %%% End:
 @end example
@@ -4947,7 +4979,7 @@ file is plain @TeX{} or @LaTeX{} or what.
 If you want to enter Japanese @LaTeX{} mode whenever this may happen,
 set the variable like this:
 @lisp
-(setq TeX-default-mode 'japanese-latex-mode)
+(setq TeX-default-mode 'japanese-LaTeX-mode)
 @end lisp
 @end defopt
 
@@ -6323,7 +6355,7 @@ used by @AUCTeX{} for inserting @samp{@@node}.
 @bye
 
 @c Local Variables:
-@c mode: texinfo
+@c mode: Texinfo
 @c coding: utf-8
 @c TeX-master: t
 @c End:

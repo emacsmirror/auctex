@@ -28,8 +28,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 26)
-  (error "AUCTeX requires Emacs 26.1 or later"))
+(when (< emacs-major-version 27)
+  (error "AUCTeX requires Emacs 27.1 or later"))
 
 (require 'custom)
 (require 'tex-site)
@@ -56,6 +56,8 @@
                   (bus service path interface signal handler &rest args))
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
+(declare-function LaTeX-completion-label-annotation-function "latex" (label))
+(declare-function LaTeX-completion-label-list "latex" nil)
 (declare-function LaTeX-section-name "latex" (level))
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
@@ -183,73 +185,73 @@ If nil, none is specified."
 (defcustom TeX-command-list
   '(("TeX" "%(PDF)%(tex) %(file-line-error) %`%(extraopts) %S%(PDFout)%(mode)%' %(output-dir) %t"
      TeX-run-TeX nil
-     (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
+     (plain-TeX-mode AmSTeX-mode Texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%`%l%(mode)%' %T"
      TeX-run-TeX nil
-     (latex-mode doctex-mode) :help "Run LaTeX")
+     (LaTeX-mode docTeX-mode) :help "Run LaTeX")
     ;; Not part of standard TeX.
     ("Makeinfo" "makeinfo %(extraopts) %(o-dir) %t" TeX-run-compile nil
-     (texinfo-mode) :help "Run Makeinfo with Info output")
+     (Texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo %(extraopts) %(o-dir) --html %t" TeX-run-compile nil
-     (texinfo-mode) :help "Run Makeinfo with HTML output")
+     (Texinfo-mode) :help "Run Makeinfo with HTML output")
     ("AmSTeX" "amstex %(PDFout) %`%(extraopts) %S%(mode)%' %(output-dir) %t"
-     TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
+     TeX-run-TeX nil (AmSTeX-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
     ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
-     TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
+     TeX-run-TeX nil (ConTeXt-mode) :help "Run ConTeXt once")
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
-     (context-mode) :help "Run ConTeXt until completion")
+     (ConTeXt-mode) :help "Run ConTeXt until completion")
     ("BibTeX" "bibtex %(O?aux)" TeX-run-BibTeX nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode
-                     context-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode
+                     ConTeXt-mode)
      :help "Run BibTeX")
     ("Biber" "biber %(output-dir) %s" TeX-run-Biber nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run Biber")
     ;; Not part of standard TeX.
     ;; It seems that texindex doesn't support "--output-dir" option.
     ("Texindex" "texindex %s.??" TeX-run-command nil
-     (texinfo-mode) :help "Run Texindex")
+     (Texinfo-mode) :help "Run Texindex")
     ;; TODO:
     ;; 1. Supply "--dvipdf" option if `TeX-PDF-mode' and
     ;;    `TeX-PDF-from-DVI' are non-nil.
     ;; 2. Supply "--build-dir=DIR" option when `TeX-output-dir' is
     ;;    non-nil.
     ("Texi2dvi" "%(PDF)texi2dvi %t" TeX-run-command nil
-     (texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
+     (Texinfo-mode) :help "Run Texi2dvi or Texi2pdf")
     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
     ("File" "%(o?)dvips %d -o %f " TeX-run-dvips t
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Generate PostScript file")
     ("Dvips" "%(o?)dvips %d -o %f " TeX-run-dvips nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PostScript")
     ("Dvipdfmx" "dvipdfmx -o %(O?pdf) %d" TeX-run-dvipdfmx nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert DVI file to PDF with dvipdfmx")
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert PostScript file to PDF")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeglossaries to create glossary file")
     ("Index" "makeindex %(O?idx)" TeX-run-index nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeindex to create index file")
     ("upMendex" "upmendex %(O?idx)" TeX-run-index t
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run upmendex to create index file")
     ("Xindy" "texindy %s" TeX-run-command nil
-     (plain-tex-mode latex-mode doctex-mode ams-tex-mode texinfo-mode)
+     (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run xindy to create index file")
-    ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
+    ("Check" "lacheck %s" TeX-run-compile nil (LaTeX-mode)
      :help "Check LaTeX file for correctness")
-    ("ChkTeX" "chktex -v6 %s" TeX-run-compile nil (latex-mode)
+    ("ChkTeX" "chktex -v6 %s" TeX-run-compile nil (LaTeX-mode)
      :help "Check LaTeX file for common mistakes")
     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t
      :help "Spell-check the document")
@@ -346,12 +348,12 @@ Any additional elements get just transferred to the respective menu entries."
                         (boolean :tag "Prompt")
                         (choice :tag "Modes"
                                 (const :tag "All" t)
-                                (set (const :tag "Plain TeX" plain-tex-mode)
-                                     (const :tag "LaTeX" latex-mode)
-                                     (const :tag "DocTeX" doctex-mode)
-                                     (const :tag "ConTeXt" context-mode)
-                                     (const :tag "Texinfo" texinfo-mode)
-                                     (const :tag "AmSTeX" ams-tex-mode)))
+                                (set (const :tag "Plain TeX" plain-TeX-mode)
+                                     (const :tag "LaTeX" LaTeX-mode)
+                                     (const :tag "DocTeX" docTeX-mode)
+                                     (const :tag "ConTeXt" ConTeXt-mode)
+                                     (const :tag "Texinfo" Texinfo-mode)
+                                     (const :tag "AmSTeX" AmSTeX-mode)))
                         (repeat :tag "Menu elements" :inline t sexp))))
 
 (defcustom TeX-command-output-list
@@ -511,8 +513,8 @@ string."
 
 (defcustom TeX-command-extra-options ""
   "String with the extra options to be given to the TeX processor."
-  :type 'string)
-(make-variable-buffer-local 'TeX-command-extra-options)
+  :type 'string
+  :local t)
 
 (defvar TeX-command-text nil
   "Dynamically bound by `TeX-command-expand'.")
@@ -545,7 +547,7 @@ string."
                     "pdf"
                   "")))
     ("%(PDFout)" (lambda ()
-                   (cond ((eq major-mode 'ams-tex-mode)
+                   (cond ((eq major-mode 'AmSTeX-mode)
                           (if TeX-PDF-mode
                               " -output-format=pdf"
                             " -output-format=dvi"))
@@ -708,6 +710,13 @@ If t, it makes it possible to use `TeX-previous-error' with TeX
 commands."
   :group 'TeX-command
   :type 'boolean)
+
+(defcustom TeX-LaTeX-sentinel-banner-regexp
+  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
+\\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)"
+  "Regexp to identify the banner line in the LaTeX output."
+  :group 'TeX-output
+  :type 'regexp)
 
 ;;; Portability.
 
@@ -990,12 +999,12 @@ If RESET is non-nil, `TeX-command-next' is reset to
 (defun TeX-mode-prefix (&optional mode)
   "Return the prefix for the symbol MODE as string.
 If no mode is given the current major mode is used."
-  (cdr (assoc (or mode major-mode) '((plain-tex-mode . "plain-TeX")
-                                     (latex-mode . "LaTeX")
-                                     (ams-tex-mode . "AmSTeX")
-                                     (doctex-mode . "docTeX")
-                                     (texinfo-mode . "Texinfo")
-                                     (context-mode . "ConTeXt")))))
+  (cdr (assoc (or mode major-mode) '((plain-TeX-mode . "plain-TeX")
+                                     (LaTeX-mode . "LaTeX")
+                                     (AmSTeX-mode . "AmSTeX")
+                                     (docTeX-mode . "docTeX")
+                                     (Texinfo-mode . "Texinfo")
+                                     (ConTeXt-mode . "ConTeXt")))))
 
 ;;; Viewing
 
@@ -1578,10 +1587,9 @@ It should be one of the following symbols:\n\n"
   :group 'TeX-command
   :type `(choice ,@(mapcar (lambda (x)
                              `(const :tag ,(nth 1 x) ,(car x)))
-                           (TeX-engine-alist))))
-(make-variable-buffer-local 'TeX-engine)
-(put 'TeX-engine 'safe-local-variable
-     (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin))))
+                           (TeX-engine-alist)))
+  :safe (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin)))
+  :local t)
 
 (defun TeX-engine-set (type)
   "Set TeX engine to TYPE.
@@ -1746,6 +1754,7 @@ If this is nil, an empty string will be returned."
 (defvar TeX-source-correlate-map (make-sparse-keymap)
   "Keymap for `TeX-source-correlate-mode'.
 You could use this for unusual mouse bindings.")
+(set-keymap-parent TeX-source-correlate-map text-mode-map)
 
 (defun TeX-source-correlate-handle-TeX-region (file line col)
   "Translate backward search info with respect to `TeX-region'.
@@ -1846,13 +1855,14 @@ SyncTeX are recognized."
   :group 'TeX-view
   ;; Since this is a global minor mode and we don't want to require
   ;; tex.el when the mode variable is set, the mode function is called
-  ;; explicitly (if necessary) in `VirTeX-common-initialization'.  We
-  ;; do it there because otherwise `kill-all-local-variables' would
-  ;; reset `TeX-source-correlate-output-page-function' which is
+  ;; explicitly (if necessary) in `TeX-mode'.  We do it there because
+  ;; otherwise `kill-all-local-variables' would reset
+  ;; `TeX-source-correlate-output-page-function' which is
   ;; buffer-local.
   :global t
-  (set-keymap-parent TeX-mode-map (and TeX-source-correlate-mode
-                                       TeX-source-correlate-map))
+  (set-keymap-parent TeX-mode-map (if TeX-source-correlate-mode
+                                      TeX-source-correlate-map
+                                    text-mode-map))
   (TeX-set-mode-name 'TeX-source-correlate-mode t t)
   (setq TeX-source-correlate-start-server-flag TeX-source-correlate-mode)
   ;; Register Emacs for the SyncSource DBUS signal emitted by
@@ -2008,8 +2018,8 @@ enabled and the `synctex' binary is available."
 (defcustom TeX-PDF-mode t nil
   :group 'TeX-command
   :set #'TeX-mode-set
-  :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable #'booleanp)
+  :type 'boolean
+  :safe #'booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -2094,17 +2104,17 @@ Programs should not use this variable directly but the function
           (const :tag "No DVI to PDF conversion" nil)
           (const :tag "dvips - ps2pdf sequence" "Dvips")
           (const :tag "dvipdfmx" "Dvipdfmx"))
-  :safe #'string-or-null-p)
-;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
-;; `TeX-command-default' accordingly.
-(make-variable-buffer-local 'TeX-PDF-from-DVI)
+  :safe #'string-or-null-p
+  ;; If you plan to support new values of `TeX-PDF-from-DVI' remember
+  ;; to update `TeX-command-default' accordingly.
+  :local t)
 
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
   :group 'TeX-command
-  :type 'boolean)
-(make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
-(put 'TeX-PDF-via-dvips-ps2pdf 'safe-local-variable #'booleanp)
+  :type 'boolean
+  :safe #'booleanp
+  :local t)
 (make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
 (defun TeX-PDF-from-DVI ()
@@ -2135,21 +2145,21 @@ for backward compatibility."
 (defcustom TeX-command-BibTeX "BibTeX"
   "The name of the BibTeX entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-BibTeX)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Biber "Biber"
   "The name of the Biber entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-Biber)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Show "View"
   "The default command to show (view or print) a TeX file.
 Must be the car of an entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-Show)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Print "Print"
   "The name of the Print entry in `TeX-command-Print'."
@@ -2267,12 +2277,11 @@ It is suggested that you use the File Variables (see the info node
                  (const :tag "This file" t)
                  (const :tag "Shared" shared)
                  (const :tag "Dwim" dwim)
-                 (string :format "%v")))
-(make-variable-buffer-local 'TeX-master)
-(put 'TeX-master 'safe-local-variable
-     (lambda (x)
-       (or (stringp x)
-           (member x (quote (t nil shared dwim))))))
+                 (string :format "%v"))
+  :safe (lambda (x)
+          (or (stringp x)
+              (member x (quote (t nil shared dwim)))))
+  :local t)
 
 (defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
   "Regular expression matching ordinary TeX files.
@@ -2455,14 +2464,14 @@ Get `major-mode' from master file and enable it."
                             (TeX-master-file TeX-default-extension))
                          major-mode)
                      major-mode))
-             (comment-prefix (cond ((eq mode 'texinfo-mode) "@c ")
-                                   ((eq mode 'doctex-mode) "% ")
+             (comment-prefix (cond ((eq mode 'Texinfo-mode) "@c ")
+                                   ((eq mode 'docTeX-mode) "% ")
                                    (t "%%% ")))
              (mode-string (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
                                        "japanese-")
                                   (substring (symbol-name mode) 0 -5))))
         (newline)
-        (when (eq major-mode 'doctex-mode)
+        (when (eq major-mode 'docTeX-mode)
           (insert comment-prefix TeX-esc "endinput\n"))
         (insert
          comment-prefix "Local Variables:\n"
@@ -2510,8 +2519,8 @@ is assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
   :safe #'string-or-null-p
   :type '(choice (const :tag "Directory of master file" nil)
-                 (string :tag "Custom" "build")))
-(make-variable-buffer-local 'TeX-output-dir)
+                 (string :tag "Custom" "build"))
+  :local t)
 
 (defun TeX--master-output-dir (master-dir relative-to-master &optional ensure)
   "Return the directory path where output files should be placed.
@@ -3227,10 +3236,14 @@ See `completion-at-point-functions'."
                  (begin (match-beginning sub))
                  (end (match-end sub))
                  (symbol (buffer-substring-no-properties begin end))
-                 (list (funcall (nth 2 entry))))
+                 (func (nth 2 entry))
+                 (list (funcall func)))
             (list begin end (all-completions symbol list)
                   :annotation-function
-                  #'TeX--completion-annotation-function))
+                  (cond ((eq func #'LaTeX-completion-label-list)
+                         #'LaTeX-completion-label-annotation-function)
+                        (t
+                         #'TeX--completion-annotation-function))))
         ;; We intentionally don't call the fallback completion functions because
         ;; they do completion on their own and don't work too well with things
         ;; like company-mode.  And the default function `ispell-complete-word'
@@ -3240,9 +3253,8 @@ See `completion-at-point-functions'."
 (defcustom TeX-default-macro "ref"
   "The default macro when creating new ones with `TeX-insert-macro'."
   :group 'TeX-macro
-  :type 'string)
-
-(make-variable-buffer-local 'TeX-default-macro)
+  :type 'string
+  :local t)
 
 (defcustom TeX-insert-braces t
   "If non-nil, append an empty pair of braces after inserting a macro.
@@ -3263,8 +3275,8 @@ will use its value to decide what to do, whatever the value of
 the variable `TeX-insert-braces'."
   :group 'TeX-macro
   :type '(repeat (cons (string :tag "Macro name")
-                       (boolean :tag "Append braces?"))))
-(make-variable-buffer-local 'TeX-insert-braces-alist)
+                       (boolean :tag "Append braces?")))
+  :local t)
 
 (defcustom TeX-insert-macro-default-style 'show-optional-args
   "Specifies whether `TeX-insert-macro' will ask for all optional arguments.
@@ -3636,41 +3648,41 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 ;;; The Mode
 
 (defvar TeX-format-list
-  '(("JLATEX" japanese-latex-mode
+  '(("JLATEX" japanese-LaTeX-mode
      "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{u?\\(j[s-]?\\|t\\)\
 \\(article\\|report\\|book\\|slides\\)")
-    ("JTEX" japanese-plain-tex-mode
+    ("JTEX" japanese-plain-TeX-mode
      "-- string likely in Japanese TeX --")
-    ("AMSTEX" ams-tex-mode
+    ("AMSTEX" AmSTeX-mode
      "\\\\document\\b")
-    ("CONTEXT" context-mode
+    ("CONTEXT" ConTeXt-mode
      "\\\\\\(start\\(text\\|tekst\\|proje[ck]t\\|proiect\\|\
 produ[ck]t\\|produs\\|environment\\|omgeving\\|umgebung\\|prostredi\\|mediu\\|\
 component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
 \\|inizia\\(testo\\|progetto\\|prodotto\\|ambiente\\|componente\\)\
 \\)\\|%.*?interface=")
-    ("LATEX" latex-mode
+    ("LATEX" LaTeX-mode
      "\\\\\\(begin\\|\\(?:sub\\)\\{0,2\\}section\\|chapter\\|documentstyle\\|\
 documentclass\\)\\b")
-    ("TEX" plain-tex-mode "."))
+    ("TEX" plain-TeX-mode "."))
   "List of format packages to consider when choosing a TeX mode.
 
 A list with an entry for each format package available at the site.
 
 Each entry is a list with three elements.
 
-1. The name of the format package.
-2. The name of the major mode.
+1. The name of the format package (as string).
+2. The name of the major mode (as symbol).
 3. A regexp typically matched in the beginning of the file.
 
-When entering `tex-mode', each regexp is tried in turn in order to find
-the major mode to be used.")
+When entering `TeX-tex-mode', each regexp is tried in turn in
+order to find the major mode to be used.")
 
-(defcustom TeX-default-mode #'latex-mode
+(defcustom TeX-default-mode #'LaTeX-mode
   "Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
-  :type '(radio (function-item latex-mode)
-                (function-item plain-tex-mode)
+  :type '(radio (function-item LaTeX-mode)
+                (function-item plain-TeX-mode)
                 (function :tag "Other")))
 
 (defcustom TeX-force-default-mode nil
@@ -3680,16 +3692,27 @@ the major mode to be used.")
 
 ;;;###autoload
 (defun TeX-tex-mode ()
-  "Major mode in AUCTeX for editing TeX or LaTeX files.
+  "Call suitable AUCTeX major mode for editing TeX or LaTeX files.
 Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
 
-   1) if the file is empty or `TeX-force-default-mode' is not set to nil,
-      `TeX-default-mode' is chosen
-   2) If \\documentstyle or \\begin{, \\section{, \\part{ or \\chapter{ is
-      found, `latex-mode' is selected.
-   3) Otherwise, use `plain-tex-mode'"
+   1) If the file is empty or `TeX-force-default-mode' is not set to nil,
+      `TeX-default-mode' is chosen.
+   2) If non-commented out content matches with regular expression in
+      `TeX-format-list', use the associated major mode.  For example,
+      if \\documentclass or \\begin{, \\section{, \\part{ or \\chapter{ is
+      found, `LaTeX-mode' is selected.
+   3) Otherwise, use `TeX-default-mode'.
+
+By default, `TeX-format-list' has a fallback entry for
+`plain-TeX-mode', thus non-empty file which didn't match any
+other entries will enter `plain-TeX-mode'."
+  ;; This is a dispatch function meaningful only as target of
+  ;; `auto-mode-alist' and `major-mode-remap-alist'.  Hence we don't
+  ;; use `define-derived-mode'.  Note that it isn't a proper major
+  ;; mode and it actually makes little sense to specify this for
+  ;; "mode:" tag of file local variable.
   (interactive)
 
   (funcall (if (or (equal (buffer-size) 0)
@@ -3722,9 +3745,14 @@ The algorithm is as follows:
                   (memq 'font-latex-verbatim-face face)
                 (eq face 'font-latex-verbatim-face))))))
 
-(defun VirTeX-common-initialization ()
-  "Perform basic initialization."
-  (kill-all-local-variables)
+(define-derived-mode TeX-mode text-mode "TeX"
+  "Base mode for AUCTeX major modes except Texinfo mode.
+
+Not intended for direct use for user."
+  :abbrev-table nil
+  :after-hook (TeX-mode-cleanup)
+  :interactive nil
+
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq indent-tabs-mode nil)
@@ -3761,24 +3789,6 @@ The algorithm is as follows:
   ;;                             (copy-sequence standard-display-table)
   ;;                           (make-display-table)))
   ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
-
-  ;; Symbol & length completion.
-  ;; We have to move the setup of `TeX-complete-list' after
-  ;; `run-mode-hooks' in order to reflect the file local customization
-  ;; of `TeX-insert-braces' and `TeX-complete-word'.
-  (setq-local TeX-complete-list
-              (list (list "\\\\\\([a-zA-Z]*\\)"
-                          1
-                          (lambda ()
-                            (append (TeX-symbol-list-filtered)
-                                    (when (fboundp 'LaTeX-length-list)
-                                      (LaTeX-length-list))
-                                    (when (fboundp 'LaTeX-counter-list)
-                                      (mapcar (lambda (x)
-                                                `(,(concat "the" (car x))))
-                                              (LaTeX-counter-list)))))
-                          (if TeX-insert-braces "{}"))
-                    (list "" TeX-complete-word)))
 
   (funcall TeX-install-font-lock)
 
@@ -3822,6 +3832,57 @@ The algorithm is as follows:
                 (TeX-master-file nil nil t))
               (TeX-update-style t)) nil t))
 
+(defun TeX-mode-cleanup ()
+  "Cleanup function for `TeX-mode'.
+Run after mode hooks and file local variables application."
+  ;; Symbol & length completion.
+  (or (local-variable-p 'TeX-complete-list)
+      (setq-local TeX-complete-list
+                  (list (list "\\\\\\([a-zA-Z]*\\)"
+                              1
+                              (lambda ()
+                                (append
+                                 (TeX-symbol-list-filtered)
+                                 ;; These LaTeX-*-list are called even
+                                 ;; in non-LaTeX mode buffers, but
+                                 ;; that is permissible because they
+                                 ;; return empty list immediately.
+                                 (when (fboundp 'LaTeX-length-list)
+                                   (LaTeX-length-list))
+                                 (when (fboundp 'LaTeX-counter-list)
+                                   (mapcar (lambda (x)
+                                             `(,(concat "the" (car x))))
+                                           (LaTeX-counter-list)))))
+                              (if TeX-insert-braces "{}"))
+                        (list "" TeX-complete-word))))
+
+  ;; Complete style initialization in buffers which don't visit files
+  ;; and which are therefore missed by the setting of above
+  ;; `find-file-hook'.  This is necessary for `xref-find-references',
+  ;; for example. (bug#65912)
+  (unless buffer-file-truename
+    (TeX-update-style))
+
+  (TeX-set-mode-name))
+
+;; COMPATIBILITY for Emacs<29
+;;;###autoload
+(put 'TeX-mode 'auctex-function-definition (symbol-function 'TeX-mode))
+
+;; COMPATIBILITY for Emacs<30
+(unless (fboundp 'derived-mode-add-parents)
+  (advice-add 'derived-mode-p :after-until
+              ;; Don't quote by #'-style to avoid compiler warning.
+              'TeX--compat-derived-mode-p)
+  (defun TeX--compat-derived-mode-p (&rest modes)
+    "Add pseudo-parents facility to `derived-mode-p' like Emacs 30.
+Modes registered in `derived-mode-extra-parents' property of the
+current major mode name symbol are regarded as parent modes as
+long as `derived-mode-p' is concerned."
+    (let ((extra-parents (get major-mode 'derived-mode-extra-parents)))
+      (and extra-parents
+           (cl-loop for parent in extra-parents
+                    thereis (memq parent modes))))))
 
 ;;; Hilighting
 
@@ -4230,8 +4291,8 @@ It can also be a name of a variable having such value."
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
                                symbol)))
-  :group 'TeX-parse)
-  (make-variable-buffer-local 'TeX-auto-regexp-list)
+  :group 'TeX-parse
+  :local t)
 
 (defun TeX-auto-add-regexp (regexp)
   "Add REGEXP to `TeX-auto-regexp-list' if not already a member."
@@ -4278,16 +4339,16 @@ alter the numbering of any ordinary, non-shy groups.")
 (defcustom TeX-auto-parse-length 999999
   "Maximal length of TeX file (in characters) that will be parsed."
   :group 'TeX-parse
-  :type 'integer)
-  (make-variable-buffer-local 'TeX-auto-parse-length)
+  :type 'integer
+  :local t)
 
 (defcustom TeX-auto-x-parse-length 0
   "Maximum length of TeX file that will be parsed additionally.
 Use `TeX-auto-x-regexp-list' for parsing the region between
 `TeX-auto-parse-length' and this value."
   :group 'TeX-parse
-  :type 'integer)
-  (make-variable-buffer-local 'TeX-auto-x-parse-length)
+  :type 'integer
+  :local t)
 
 (defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
   "List of regular expressions used for additional parsing.
@@ -4304,8 +4365,8 @@ See `TeX-auto-x-parse-length'."
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
                                symbol)))
-  :group 'TeX-parse)
-  (make-variable-buffer-local 'TeX-auto-x-regexp-list)
+  :group 'TeX-parse
+  :local t)
 
 (defun TeX-regexp-group-count (regexp)
   "Return number of groups in a REGEXP.  This is not foolproof:
@@ -4455,9 +4516,8 @@ Check for potential LaTeX environments."
 (defcustom TeX-default-extension "tex"
   "Default extension for TeX files."
   :group 'TeX-file-extension
-  :type 'string)
-
-  (make-variable-buffer-local 'TeX-default-extension)
+  :type 'string
+  :local t)
 
 (defvar TeX-doc-extensions
   '("dvi" "pdf" "ps" "txt" "html" "dvi\\.gz" "pdf\\.gz" "ps\\.gz" "txt\\.gz"
@@ -4769,6 +4829,16 @@ Also see `ignore'.
 This is a compatibility function for Emacs versions prior to v.28."
     t))
 
+;; COMPATIBILITY for Emacs<30
+(if (fboundp 'derived-mode-add-parents)
+    (defalias 'TeX-derived-mode-add-parents #'derived-mode-add-parents)
+  ;; Adapted copy of `derived-mode-add-parents'.
+  (defun TeX-derived-mode-add-parents (mode extra-parents)
+    "Add EXTRA-PARENTS to the parents of MODE.
+Declares the parents of MODE to be its main parent (as defined
+in `define-derived-mode') plus EXTRA-PARENTS."
+    (put mode 'derived-mode-extra-parents extra-parents)))
+
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
 See `match-data' for details."
@@ -4830,9 +4900,6 @@ element to ALIST-VAR."
     (setq new-alist (cdr new-alist))))
 
 ;;; Syntax Table
-
-(defvar-local TeX-mode-syntax-table (make-syntax-table)
-  "Syntax table used while in TeX mode.")
 
 (progn ; Define TeX-mode-syntax-table.
   (modify-syntax-entry (string-to-char TeX-esc)
@@ -4974,8 +5041,8 @@ Brace insertion is only done if point is in a math construct and
   "Call the function specified by the variable `TeX-newline-function'."
   (interactive) (call-interactively TeX-newline-function))
 
-(defvar TeX-mode-map
-  (let ((map (make-sparse-keymap)))
+(progn
+  (let ((map TeX-mode-map))
     ;; Standard
     ;; (define-key map "\177"     #'backward-delete-char-untabify)
     (define-key map "\C-c}"    #'up-list)
@@ -5035,8 +5102,9 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c_" #'TeX-master-file-ask)  ;*** temporary
 
     (define-key map "\C-xng" #'TeX-narrow-to-group)
-    map)
-  "Keymap for common TeX and LaTeX commands.")
+
+    ;; Hide "Text" menu entry inherited from text mode.
+    (define-key map [menu-bar text] #'undefined)))
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
@@ -5166,7 +5234,7 @@ Brace insertion is only done if point is in a math construct and
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the macro containing point"]
     ["Hide Current Environment" TeX-fold-env
-     :visible (not (eq major-mode 'plain-tex-mode))
+     :visible (not (eq major-mode 'plain-TeX-mode))
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the environment containing point"]
     ["Hide Current Comment" TeX-fold-comment
@@ -5225,8 +5293,8 @@ Brace insertion is only done if point is in a math construct and
          ;; mode-specific menu title?
          (list
           (cond
-           ((eq major-mode 'doctex-mode) "LaTeX")
-           ((eq major-mode 'context-mode) "ConTeXt")
+           ((eq major-mode 'docTeX-mode) "LaTeX")
+           ((eq major-mode 'ConTeXt-mode) "ConTeXt")
            (t TeX-base-mode-name)))
          (or TeX-customization-menu
              (setq TeX-customization-menu
@@ -5235,7 +5303,6 @@ Brace insertion is only done if point is in a math construct and
     ["Report AUCTeX Bug" TeX-submit-bug-report
      :help ,(format "Problems with AUCTeX %s? Mail us!"
                     AUCTeX-version)]))
-
 
 ;;; Verbatim constructs
 
@@ -5536,7 +5603,7 @@ reset to \" \"."
     ;; Preset mode-dependent syntax entries.  (Mode-independent entries
     ;; are set when the variable `TeX-search-syntax-table' is created.)
     (modify-syntax-entry (string-to-char TeX-esc) "\\" TeX-search-syntax-table)
-    (unless (eq major-mode 'texinfo-mode)
+    (unless (eq major-mode 'Texinfo-mode)
       (modify-syntax-entry ?\% "<" TeX-search-syntax-table))
     ;; Clean up the entries which can be specified as arguments.
     (dolist (elt char-syntax-alist)
@@ -6141,7 +6208,7 @@ With optional argument ARG, also reload the style hooks."
           (save-buffer)
         (TeX-auto-write)))
     (normal-mode)
-    ;; See also addition to `find-file-hook' in `VirTeX-common-initialization'.
+    ;; See also addition to `find-file-hook' in `TeX-mode'.
     (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
     (TeX-update-style t)))
 
@@ -6222,7 +6289,7 @@ With prefix argument FORCE, always inserts \" characters."
                                              font-lock-comment-face)
                                            (1- (point))))
           (texmathp)
-          (and (TeX-in-comment) (not (eq major-mode 'doctex-mode))))
+          (and (TeX-in-comment) (not (eq major-mode 'docTeX-mode))))
       (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
     (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
@@ -6461,7 +6528,7 @@ enter the number of the file to view, anything else to skip: ") list)))
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
-  '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
+  '((texdoc (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode ConTeXt-mode)
             (lambda ()
               (when (executable-find "texdoc")
                 (TeX-search-files-by-type 'docs 'global t t)))
@@ -6469,25 +6536,25 @@ enter the number of the file to view, anything else to skip: ") list)))
               ;; texdoc in MiKTeX requires --view in order to start
               ;; the viewer instead of an intermediate web page.
               (call-process "texdoc" nil 0 nil "--view" doc)))
-    (latex-info (latex-mode)
+    (latex-info (LaTeX-mode)
                 (lambda ()
                   (mapcar (lambda (x)
                             (let ((x (car x)))
                               (if (string-match "\\`\\\\" x)
                                   (substring x 1) x)))
-                          (info-lookup->completions 'symbol 'latex-mode)))
+                          (info-lookup->completions 'symbol 'LaTeX-mode)))
                 (lambda (doc)
-                  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
-    (texinfo-info (texinfo-mode)
+                  (info-lookup-symbol (concat "\\" doc) 'LaTeX-mode)))
+    (texinfo-info (Texinfo-mode)
                   (lambda ()
                     (mapcar (lambda (x)
                               (let ((x (car x)))
                                 (if (string-match "\\`@" x)
                                     (substring x 1) x)))
                             (info-lookup->completions 'symbol
-                                                      'texinfo-mode)))
+                                                      'Texinfo-mode)))
                   (lambda (doc)
-                    (info-lookup-symbol (concat "@" doc) 'texinfo-mode))))
+                    (info-lookup-symbol (concat "@" doc) 'Texinfo-mode))))
   "Alist of backends used for looking up documentation.
 Each item consists of four elements.
 
@@ -6706,15 +6773,24 @@ error."
 
 ;;; Abbrev mode
 
-(defmacro TeX-abbrev-mode-setup (mode)
-  "Set up the abbrev table and variable for MODE."
+(defmacro TeX-abbrev-mode-setup (mode usertable)
+  "Set up the abbrev table and variable for MODE.
+The table inherits from USERTABLE if it is a valid abbrev table."
   (let ((symbol (intern (concat (symbol-name mode) "-abbrev-table")))
         (name (TeX-mode-prefix mode)))
     `(progn
        (defvar ,symbol nil
          ,(format "Abbrev table for %s mode." name))
        (define-abbrev-table ',symbol nil)
-       (abbrev-table-put ,symbol :parents (list text-mode-abbrev-table)))))
+       (let ((parents (list text-mode-abbrev-table)))
+         ;; Users may already have user abbrevs in tables based on the
+         ;; former mode names such as `latex-mode-abbrev-table',
+         ;; stored in .emacs.d/abbrev_defs.  In that case, add them as
+         ;; parent abbrev tables.
+         (if (and (boundp ',usertable)
+                  (abbrev-table-p ,usertable))
+             (push ,usertable parents))
+         (abbrev-table-put ,symbol :parents parents)))))
 
 
 ;;; Special provisions for other modes and libraries
@@ -7388,7 +7464,7 @@ in `TeX-expand-list-builtin' and `TeX-expand-list'."
            (format
             (if (and extra
                      (stringp TeX-command-text)
-                     (memq major-mode '(latex-mode doctex-mode))
+                     (memq major-mode '(LaTeX-mode docTeX-mode))
                      (memq TeX-engine '(default uptex)))
                 ;; Since TeXLive 2018, the default encoding for LaTeX
                 ;; files has been changed to UTF-8 if used with
@@ -7598,7 +7674,7 @@ omitted) and `TeX-region-file'."
                                 TeX-file-extensions)
              (TeX-save-document name-or-file-fn))
            TeX-command-default)
-          ((and (memq major-mode '(doctex-mode latex-mode))
+          ((and (memq major-mode '(docTeX-mode LaTeX-mode))
                 ;; Want to know if bib file is newer than .bbl
                 ;; We don't care whether the bib files are open in emacs
                 (TeX-check-files (TeX--concat-ext name-or-file-fn "bbl")
@@ -7942,7 +8018,7 @@ run of `TeX-run-format', use
 
   (let ((idx-file nil) (element nil))
     ;; Store md5 hash of the index file before running LaTeX.
-    (and (memq major-mode '(doctex-mode latex-mode))
+    (and (memq major-mode '(docTeX-mode LaTeX-mode))
          (prog1 (file-exists-p
                  (setq idx-file (expand-file-name (TeX-active-master "idx"))))
            ;; In order to avoid confusion and pollution of
@@ -8468,8 +8544,7 @@ Changebar info has changed." nil t)
           "%s" "You should run LaTeX again to synchronize exercise properties")
          (setq TeX-command-next TeX-command-default))
         ((re-search-forward
-          "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \
-\\(Version\\|ver\\.\\|<[0-9/-]*\\(?:u[^>]*\\)?>\\)" nil t)
+          TeX-LaTeX-sentinel-banner-regexp nil t)
          (let* ((warnings (and TeX-debug-warnings
                                (TeX-LaTeX-sentinel-has-warnings)))
                 (bad-boxes (and TeX-debug-bad-boxes
@@ -8864,7 +8939,7 @@ from.")
   ;; names right when analysing the process output buffer.
   ;; Note that \usepackage[utf8]{inputenc} is enabled by default in
   ;; standard (pdf)latex since TeXLive 2018.
-  (if (and (memq major-mode '(latex-mode doctex-mode))
+  (if (and (memq major-mode '(LaTeX-mode docTeX-mode))
            ;; Japanese upLaTeX requires the same treatment with
            ;; respect to non-ascii characters other than Japanese, in
            ;; file names within \message{}.
@@ -9110,7 +9185,7 @@ If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
 depend on it being positive instead of the entry in
 `TeX-command-list'."
   (interactive "P")
-  (if (eq major-mode 'latex-mode)
+  (if (eq major-mode 'LaTeX-mode)
       (let* ((bounds (LaTeX-command-section-boundaries))
              (TeX-command-region-begin (car bounds))
              (TeX-command-region-end (cdr bounds)))
@@ -9126,7 +9201,7 @@ depend on it being positive instead of the entry in
 (defun LaTeX-command-run-all-section ()
   "Compile the current section until an error occurs or it is finished."
   (interactive)
-  (if (eq major-mode 'latex-mode)
+  (if (eq major-mode 'LaTeX-mode)
       (let* ((bounds (LaTeX-command-section-boundaries))
              (TeX-command-region-begin (car bounds))
              (TeX-command-region-end (cdr bounds)))

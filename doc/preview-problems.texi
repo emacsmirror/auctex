@@ -204,3 +204,8 @@ rendered as black in the preview images, so it's almost impossible to read
 them on dark background.  Hence Xe@LaTeX{} users who like dark background
 in Emacs frame should customize @code{preview-pdf-adjust-color-method} to
 @code{nil}.
+
+@c Local Variables:
+@c mode: Texinfo
+@c TeX-master: "preview-latex"
+@c End:

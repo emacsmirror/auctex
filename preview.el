@@ -1,9 +1,9 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2024  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
-;; Keywords: tex, wp, convenience
+;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -245,9 +245,8 @@ that is."
       (apply (car hook) (append (cdr hook) rest)))))
 
 
-(defvar TeX-active-tempdir nil
+(defvar-local TeX-active-tempdir nil
   "List of directory name, top directory name and reference count.")
-(make-variable-buffer-local 'TeX-active-tempdir)
 
 (defcustom preview-bb-filesize 1024
   "Size of file area scanned for bounding box information."
@@ -289,21 +288,20 @@ If `preview-fast-conversion' is set, this option is not
   :group 'preview-gs
   :type 'number)
 
-(defvar preview-parsed-font-size nil
+(defvar-local preview-parsed-font-size nil
   "Font size as parsed from the log of LaTeX run.")
-(make-variable-buffer-local 'preview-parsed-font-size)
-(defvar preview-parsed-magnification nil
+
+(defvar-local preview-parsed-magnification nil
   "Magnification as parsed from the log of LaTeX run.")
-(make-variable-buffer-local 'preview-parsed-magnification)
-(defvar preview-parsed-pdfoutput nil
+
+(defvar-local preview-parsed-pdfoutput nil
   "PDFoutput as parsed from the log of LaTeX run.")
-(make-variable-buffer-local 'preview-parsed-pdfoutput)
-(defvar preview-parsed-counters nil
+
+(defvar-local preview-parsed-counters nil
   "Counters as parsed from the log of LaTeX run.")
-(make-variable-buffer-local 'preview-parsed-counters)
-(defvar preview-parsed-tightpage nil
+
+(defvar-local preview-parsed-tightpage nil
   "Tightpage as parsed from the log of LaTeX run.")
-(make-variable-buffer-local 'preview-parsed-tightpage)
 
 (defun preview-get-magnification ()
   "Get magnification from `preview-parsed-magnification'."
@@ -364,14 +362,12 @@ See also `preview-gs-command'."
   :group 'preview-gs
   :type '(repeat string))
 
-(defvar preview-gs-queue nil
+(defvar-local preview-gs-queue nil
   "List of overlays to convert using gs.
 Buffer-local to the appropriate TeX process buffer.")
-(make-variable-buffer-local 'preview-gs-queue)
 
-(defvar preview-gs-outstanding nil
+(defvar-local preview-gs-outstanding nil
   "Overlays currently processed.")
-(make-variable-buffer-local 'preview-gs-outstanding)
 
 (defcustom preview-gs-outstanding-limit 2
   "Number of requests allowed to be outstanding.
@@ -390,49 +386,40 @@ follow changes in the displayed buffer area faster."
                             (< value 10))))
           :tag "small number"))
 
-(defvar preview-gs-answer nil
+(defvar-local preview-gs-answer nil
   "Accumulated answer of Ghostscript process.")
-(make-variable-buffer-local 'preview-gs-answer)
 
-(defvar preview-gs-image-type nil
+(defvar-local preview-gs-image-type nil
   "Image type for gs produced images.")
-(make-variable-buffer-local 'preview-gs-image-type)
 
-(defvar preview-gs-sequence nil
+(defvar-local preview-gs-sequence nil
   "Pair of sequence numbers for gs produced images.")
-(make-variable-buffer-local 'preview-gs-sequence)
 
-(defvar preview-scale nil
+(defvar-local preview-scale nil
   "Screen scale of images.
 Magnify by this factor to make images blend with other
 screen content.  Buffer-local to rendering buffer.")
-(make-variable-buffer-local 'preview-scale)
 
-(defvar preview-colors nil
+(defvar-local preview-colors nil
   "Color setup list.
 An array with elements 0, 1 and 2 for background,
 foreground and border colors, respectively.  Each element
 is a list of 3 real numbers between 0 and 1, or nil
 of nothing special should be done for the color")
-(make-variable-buffer-local 'preview-colors)
 
-(defvar preview-gs-init-string nil
+(defvar-local preview-gs-init-string nil
   "Ghostscript setup string.")
-(make-variable-buffer-local 'preview-gs-init-string)
 
-(defvar preview-ps-file nil
+(defvar-local preview-ps-file nil
   "PostScript file name for fast conversion.")
-(make-variable-buffer-local 'preview-ps-file)
 
-(defvar preview-gs-dsc nil
+(defvar-local preview-gs-dsc nil
   "Parsed DSC information.")
-(make-variable-buffer-local 'preview-gs-dsc)
 
-(defvar preview-resolution nil
+(defvar-local preview-resolution nil
   "Screen resolution where rendering started.
 Cons-cell of x and y resolution, given in
 dots per inch.  Buffer-local to rendering buffer.")
-(make-variable-buffer-local 'preview-resolution)
 
 (defun preview-gs-resolution (scale xres yres)
   "Generate resolution argument for gs.
@@ -452,10 +439,9 @@ show as response of Ghostscript."
       (overlay-put ov 'queued nil))
     ov))
 
-(defvar preview-gs-command-line nil)
-(make-variable-buffer-local 'preview-gs-command-line)
-(defvar preview-gs-file nil)
-(make-variable-buffer-local 'preview-gs-file)
+(defvar-local preview-gs-command-line nil)
+
+(defvar-local preview-gs-file nil)
 
 (defcustom preview-fast-conversion t
   "Set this for single-file PostScript conversion.
@@ -1993,9 +1979,8 @@ purposes."
 
 (defvar preview-temporary-opened nil)
 
-(defvar preview-last-location nil
+(defvar-local preview-last-location nil
   "Restored cursor position marker for reopened previews.")
-(make-variable-buffer-local 'preview-last-location)
 
 (defun preview-mark-point ()
   "Mark position for fake intangibility."
@@ -2275,7 +2260,7 @@ has FUNC called with its current buffer being set to it."
       (with-current-buffer (pop buffers)
         (when
             (or (memq (current-buffer) default-buffers)
-                (and (memq major-mode '(plain-tex-mode latex-mode))
+                (and (memq major-mode '(plain-TeX-mode LaTeX-mode))
                      (or (stringp TeX-master)
                          (eq TeX-master t))
                      (string= (expand-file-name (TeX-master-file t))
@@ -2388,16 +2373,14 @@ BUFFER-MISC is the appropriate data to be used."
                    buffer-misc))))))
 
 ;; Add autoload cookies explicitly for desktop.el.
-;; <Background> preview-latex doesn't conform to the following
-;; assumptions of desktop.el:
+;; <Background> desktop.el assumes the following two:
 ;; (1) The file associated with the major mode by autoload has defun
 ;;     of handler, which restores the state of the buffer.
 ;; (2) The file has suitable `add-to-list' form also for
 ;;     `desktop-buffer-mode-handlers' to register the entry of the
 ;;     handler.
-;; This isn't the case here because the file associated with
-;; `latex-mode' is tex-mode.el, neither preview.el nor latex.el.  Thus
-;; we include both of them as explicit autoloads in preview-latex.el.
+;; This isn't the case for preview-latex.  Thus we register both of
+;; them as autoload cookies in AUCTeX initialzation code.
 ;;;###autoload
 (defun desktop-buffer-preview (file-name _buffer-name misc)
   "Hook function for restoring persistent previews into a buffer."
@@ -2411,7 +2394,7 @@ BUFFER-MISC is the appropriate data to be used."
 
 ;;;###autoload
 (add-to-list 'desktop-buffer-mode-handlers
-             '(latex-mode . desktop-buffer-preview))
+             '(LaTeX-mode . desktop-buffer-preview))
 
 (defcustom preview-auto-cache-preamble 'ask
   "Whether to generate a preamble cache format automatically.
@@ -2565,8 +2548,7 @@ it gets deleted as well."
                 (setcdr file nil)
                 (delete-directory (nth 0 tempdir)))))))))
 
-(defvar preview-buffer-has-counters nil)
-(make-variable-buffer-local 'preview-buffer-has-counters)
+(defvar-local preview-buffer-has-counters nil)
 
 (defun preview-place-preview (snippet start end
                                       box counters tempdir place-opts)
@@ -3108,7 +3090,7 @@ to add the preview functionality."
            (customize-menu-create 'preview))])
         ["Read documentation" preview-goto-info-page]
         ["Report Bug" preview-report-bug]))
-    (if (eq major-mode 'latex-mode)
+    (if (eq major-mode 'LaTeX-mode)
         (preview-mode-setup))
     (unless preview-tb-icon
       (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))

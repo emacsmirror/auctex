@@ -37,7 +37,7 @@ AC_SUBST(PREVIEWVERSION)
 
 EMACS_PROG_EMACS
 
-EMACS_CHECK_VERSION(26,1)
+EMACS_CHECK_VERSION(27,1)
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
 # never need to modify the default behavior.

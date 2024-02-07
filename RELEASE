@@ -45,7 +45,7 @@ file-local variable where the assigned value can only be between
 Requirements
 ------------
 
-It is required that you use at least GNU Emacs 26.1.
+It is required that you use at least GNU Emacs 27.1.
 
 The preview-latex subsystem requires image support.
 

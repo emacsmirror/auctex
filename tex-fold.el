@@ -1,11 +1,11 @@
 ;;; tex-fold.el --- Fold TeX macros.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2004-2024  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2004-07-04
-;; Keywords: tex, wp
+;; Keywords: tex, text
 
 ;; This file is part of AUCTeX.
 
@@ -300,7 +300,7 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   "Fold all items in region from START to END."
   (interactive "r")
   (when (and (memq 'env TeX-fold-type-list)
-             (not (eq major-mode 'plain-tex-mode)))
+             (not (eq major-mode 'plain-TeX-mode)))
     (TeX-fold-region-macro-or-env start end 'env))
   (when (memq 'macro TeX-fold-type-list)
     (TeX-fold-region-macro-or-env start end 'macro))
@@ -323,11 +323,11 @@ for macros and `math' for math macros."
           (cl-pushnew i item-list :test #'equal)))
       (when item-list
         (setq regexp (cond ((and (eq type 'env)
-                                 (eq major-mode 'context-mode))
+                                 (eq major-mode 'ConTeXt-mode))
                             (concat (regexp-quote TeX-esc)
                                     "start" (regexp-opt item-list t)))
                            ((and (eq type 'env)
-                                 (eq major-mode 'texinfo-mode))
+                                 (eq major-mode 'Texinfo-mode))
                             (concat (regexp-quote TeX-esc)
                                     (regexp-opt item-list t)))
                            ((eq type 'env)
@@ -418,15 +418,15 @@ TYPE specifies the type of item and can be one of the symbols
 macros.
 Return non-nil if an item was found and folded, nil otherwise."
   (if (and (eq type 'env)
-           (eq major-mode 'plain-tex-mode))
+           (eq major-mode 'plain-TeX-mode))
       (message
        "Folding of environments is not supported in current mode")
     (let ((item-start (cond ((and (eq type 'env)
-                                  (eq major-mode 'context-mode))
+                                  (eq major-mode 'ConTeXt-mode))
                              (save-excursion
                                (ConTeXt-find-matching-start) (point)))
                             ((and (eq type 'env)
-                                  (eq major-mode 'texinfo-mode))
+                                  (eq major-mode 'Texinfo-mode))
                              (save-excursion
                                (Texinfo-find-env-start) (point)))
                             ((eq type 'env)
@@ -441,11 +441,11 @@ Return non-nil if an item was found and folded, nil otherwise."
                             (goto-char item-start)
                             (looking-at
                              (cond ((and (eq type 'env)
-                                         (eq major-mode 'context-mode))
+                                         (eq major-mode 'ConTeXt-mode))
                                     (concat (regexp-quote TeX-esc)
                                             "start\\([A-Za-z]+\\)"))
                                    ((and (eq type 'env)
-                                         (eq major-mode 'texinfo-mode))
+                                         (eq major-mode 'Texinfo-mode))
                                     (concat (regexp-quote TeX-esc)
                                             "\\([A-Za-z]+\\)"))
                                    ((eq type 'env)
@@ -530,12 +530,12 @@ TYPE can be either `env' for environments, `macro' for macros or
 `math' for math macros."
   (save-excursion
     (cond ((and (eq type 'env)
-                (eq major-mode 'context-mode))
+                (eq major-mode 'ConTeXt-mode))
            (goto-char start)
            (ConTeXt-find-matching-stop)
            (point))
           ((and (eq type 'env)
-                (eq major-mode 'texinfo-mode))
+                (eq major-mode 'Texinfo-mode))
            (goto-char (1+ start))
            (Texinfo-find-env-end)
            (point))

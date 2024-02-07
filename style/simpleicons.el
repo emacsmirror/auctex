@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v11.0.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v11.1.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023--2024 Free Software Foundation, Inc.
 
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v11.0.0) from
-;; 2024/01/12.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v11..0) from
+;; 2024/01/19.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -47,6 +47,7 @@
     "4chan"
     "4d"
     "500px"
+    "7zip"
     "99designs"
     "9gag"
     "abbott"
@@ -263,6 +264,7 @@
     "artixlinux"
     "artstation"
     "arxiv"
+    "asahilinux"
     "asana"
     "asciidoctor"
     "asciinema"
@@ -312,6 +314,7 @@
     "azurefunctions"
     "azurepipelines"
     "babel"
+    "babelio"
     "backblaze"
     "backbonedotjs"
     "backendless"
@@ -407,6 +410,7 @@
     "brandfolder"
     "brave"
     "breaker"
+    "brenntag"
     "brevo"
     "brex"
     "bricks"
@@ -450,6 +454,7 @@
     "canvas"
     "capacitor"
     "cardano"
+    "carlsberggroup"
     "carrd"
     "carrefour"
     "carthrottle"
@@ -531,6 +536,7 @@
     "clyp"
     "cmake"
     "cncf"
+    "cnet"
     "cnn"
     "cocacola"
     "cockpit"
@@ -671,6 +677,7 @@
     "datefns"
     "datocms"
     "datto"
+    "davinciresolve"
     "dazn"
     "dbeaver"
     "dblp"
@@ -783,6 +790,7 @@
     "eclipsemosquitto"
     "eclipsevertdotx"
     "edeka"
+    "edgeimpulse"
     "editorconfig"
     "edotleclerc"
     "educative"
@@ -832,6 +840,7 @@
     "esea"
     "eslgaming"
     "eslint"
+    "esotericsoftware"
     "esphome"
     "espressif"
     "esri"
@@ -964,6 +973,7 @@
     "frontify"
     "fsecure"
     "fsharp"
+    "fubo"
     "fugacloud"
     "fujifilm"
     "fujitsu"
@@ -1214,6 +1224,7 @@
     "hungryjacks"
     "husqvarna"
     "hyper"
+    "hyperskill"
     "hypothesis"
     "hyundai"
     "i18next"
@@ -1395,6 +1406,7 @@
     "klm"
     "klook"
     "knative"
+    "knexdotjs"
     "knowledgebase"
     "known"
     "koa"
@@ -1478,6 +1490,7 @@
     "linkedin"
     "linkerd"
     "linkfire"
+    "linksys"
     "linktree"
     "linux"
     "linuxcontainers"
@@ -1760,6 +1773,7 @@
     "nodemon"
     "nodered"
     "nokia"
+    "nomad"
     "norco"
     "nordicsemiconductor"
     "nordvpn"
@@ -1854,6 +1868,7 @@
     "opsgenie"
     "opslevel"
     "oracle"
+    "orange"
     "orcid"
     "oreilly"
     "org"
@@ -1891,6 +1906,7 @@
     "pandora"
     "pantheon"
     "paperspace"
+    "paramountplus"
     "paritysubstrate"
     "parsedotly"
     "passport"
@@ -2137,6 +2153,7 @@
     "razorpay"
     "react"
     "reacthookform"
+    "reactiveresume"
     "reactivex"
     "reactos"
     "reactquery"
@@ -2387,6 +2404,7 @@
     "socketdotio"
     "softpedia"
     "sogou"
+    "solana"
     "solid"
     "solidity"
     "sololearn"
@@ -2423,6 +2441,7 @@
     "speedypage"
     "sphinx"
     "spigotmc"
+    "spine"
     "spinnaker"
     "spinrilla"
     "splunk"
@@ -2606,6 +2625,7 @@
     "thurgauerkantonalbank"
     "thymeleaf"
     "ticketmaster"
+    "ticktick"
     "tidal"
     "tiddlywiki"
     "tide"

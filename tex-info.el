@@ -538,13 +538,16 @@ is assumed by default."
     (define-key map "\\" #'self-insert-command)
     ;; Users benefit from `TeX-electric-macro' even in Texinfo mode
     (define-key map "@" #'TeX-insert-backslash)
+
+    ;; Hide "Text" menu entry inherited from text mode.
+    (define-key map [menu-bar text] #'undefined)
     map)
   "Keymap for Texinfo mode.")
 
 (easy-menu-define Texinfo-command-menu
   Texinfo-mode-map
   "Menu used in Texinfo mode for external commands."
-  (TeX-mode-specific-command-menu 'texinfo-mode))
+  (TeX-mode-specific-command-menu 'Texinfo-mode))
 
 (easy-menu-define Texinfo-mode-menu
   Texinfo-mode-map
@@ -622,28 +625,25 @@ is assumed by default."
 
 ;;; Mode:
 
-;;;###autoload
-(defalias 'Texinfo-mode #'texinfo-mode)
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  (push '(Texinfo-mode "*.texinfo" "*.texi" "*.txi")
+        semantic-symref-filepattern-alist))
 
 ;;;###autoload
-(defun TeX-texinfo-mode ()
+(define-derived-mode Texinfo-mode text-mode "Texinfo"
   "Major mode in AUCTeX for editing Texinfo files.
-
-Special commands:
-\\{Texinfo-mode-map}
 
 Entering Texinfo mode calls the value of `text-mode-hook' and then the
 value of `Texinfo-mode-hook'."
-  (interactive)
-  (kill-all-local-variables)
+  :syntax-table texinfo-mode-syntax-table
+  :after-hook (Texinfo-mode-cleanup)
+
   (setq TeX-mode-p t)
   (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   ;; Mostly stolen from texinfo.el
-  (setq TeX-base-mode-name "Texinfo")
-  (setq major-mode 'texinfo-mode)
-  (use-local-map Texinfo-mode-map)
-  (set-syntax-table texinfo-mode-syntax-table)
+  (setq TeX-base-mode-name mode-name)
 
   ;; Moved after `run-mode-hooks'. (bug#65750)
   ;; (set (make-local-variable 'page-delimiter)
@@ -859,10 +859,11 @@ value of `Texinfo-mode-hook'."
   ;; RefTeX plugging
   (add-hook 'reftex-mode-hook #'Texinfo-reftex-hook nil t)
   (if (and (boundp 'reftex-mode) reftex-mode)
-      (Texinfo-reftex-hook))
+      (Texinfo-reftex-hook)))
 
-  (run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
-
+(defun Texinfo-mode-cleanup ()
+  "Cleanup function for `Texinfo-mode'.
+Run after mode hooks and file local variables application."
   ;; Don't overwrite the value the user set by hooks or file
   ;; (directory) variables.
   (or (local-variable-p 'page-delimiter)

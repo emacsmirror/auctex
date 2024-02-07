@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2023 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2024 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -69,9 +69,8 @@
   "Default options to documentclass.
 A comma-seperated list of strings."
   :group 'LaTeX-environment
-  :type '(repeat (string :format "%v")))
-
-(make-variable-buffer-local 'LaTeX-default-options)
+  :type '(repeat (string :format "%v"))
+  :local t)
 
 (defcustom LaTeX-insert-into-comments t
   "Whether insertion commands stay in comments.
@@ -118,7 +117,7 @@ This depends on `LaTeX-insert-into-comments'."
 
 ;;; Syntax Table
 
-(defvar LaTeX-mode-syntax-table (copy-syntax-table TeX-mode-syntax-table)
+(defvar LaTeX-mode-syntax-table (make-syntax-table TeX-mode-syntax-table)
   "Syntax table used in LaTeX mode.")
 
 (progn ; set [] to match for LaTeX.
@@ -554,8 +553,8 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
 It is overridden by `LaTeX-default-document-environment' when it
 is non-nil and the current environment is \"document\"."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-environment)
+  :type 'string
+  :local t)
 
 (defvar-local LaTeX-default-document-environment nil
   "The default environment when creating new ones with
@@ -939,7 +938,7 @@ Assume the current point is on neither \"begin{foo}\" nor \"end{foo}\"."
                 ;; comment-prefix.  Hence, the next check just looks
                 ;; if we're inside such a group and returns non-nil to
                 ;; recognize such a situation.
-                (and (eq major-mode 'doctex-mode)
+                (and (eq major-mode 'docTeX-mode)
                      (looking-at-p (concat (regexp-quote TeX-esc)
                                    "\\(?:begin\\|end\\) *{macrocode\\*?}"))))
         (setq arg (if (= (char-after (match-beginning 1)) ?e)
@@ -1002,8 +1001,8 @@ optional argument is omitted.)"
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 (string :format "%v")))
-(make-variable-buffer-local 'LaTeX-float)
+                 (string :format "%v"))
+  :local t)
 
 (defcustom LaTeX-top-caption-list nil
   "List of float environments with top caption."
@@ -1047,14 +1046,14 @@ code listings and take a caption and label."
 (defcustom LaTeX-default-format ""
   "Default format for array and tabular environments."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-format)
+  :type 'string
+  :local t)
 
 (defcustom LaTeX-default-width "1.0\\linewidth"
   "Default width for minipage and tabular* environments."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-width)
+  :type 'string
+  :local t)
 
 (defcustom LaTeX-default-position ""
   "Default position for array and tabular environments.
@@ -1062,8 +1061,8 @@ If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 string))
-(make-variable-buffer-local 'LaTeX-default-position)
+                 string)
+  :local t)
 
 (defcustom LaTeX-equation-label "eq:"
   "Default prefix to equation labels."
@@ -1148,9 +1147,8 @@ corresponding entry."
   :group 'LaTeX-label
   :type '(repeat (cons (string :tag "Environment")
                        (choice (string :tag "Label prefix")
-                               (symbol :tag "Label prefix symbol")))))
-
-(make-variable-buffer-local 'LaTeX-label-alist)
+                               (symbol :tag "Label prefix symbol"))))
+  :local t)
 
 (defvar TeX-read-label-prefix nil
   "Initial input for the label in `TeX-read-label'.")
@@ -4106,7 +4104,7 @@ consideration just as is in the non-commented source code."
 ;;
 ;; Comments can be filled syntax-aware or not.
 ;;
-;; In `doctex-mode' line comments should always be indented
+;; In `docTeX-mode' line comments should always be indented
 ;; syntax-aware and the comment character has to be anchored at the
 ;; first column (unless the appear in a macrocode environment).  Other
 ;; comments not in the documentation parts always start after the
@@ -4117,7 +4115,7 @@ consideration just as is in the non-commented source code."
 ;; `LaTeX-syntactic-comments' disabled, line comments should still be
 ;; indented syntax-aware.
 ;;
-;; In `latex-mode' comments starting in different columns don't have
+;; In `LaTeX-mode' comments starting in different columns don't have
 ;; to be handled differently.  They don't have to be anchored in
 ;; column one.  That means that in any case indentation before and
 ;; after the comment characters has to be checked and adjusted.
@@ -4341,7 +4339,7 @@ the regexp's which are stored in
 `LaTeX-indent-mid-regexp-local' and
 `LaTeX-indent-end-regexp-local' accordingly.  Some standard
 macros are added to the regexp's.  This function is called in
-`LaTeX-common-initialization' to set the regexp's."
+`LaTeX-mode-cleanup' to set the regexp's."
   (let* (cmds
          symbs
          (func (lambda (in regexp out)
@@ -4395,9 +4393,9 @@ Lines starting with an item is given an extra indentation of
                  (concat (match-string 0) (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
-                  (eq major-mode 'doctex-mode)
+                  (eq major-mode 'docTeX-mode)
                   (TeX-in-line-comment))
-             ;; If point is in a line comment in `doctex-mode' we only
+             ;; If point is in a line comment in `docTeX-mode' we only
              ;; consider the inner indentation.  An exception is when
              ;; we're inside a verbatim environment where we don't
              ;; want to touch the indentation, notably with a
@@ -4471,7 +4469,7 @@ outer indentation in case of a commented line.  The symbols
           entry
           found)
       (cond ((save-excursion (beginning-of-line) (bobp)) 0)
-            ((and (eq major-mode 'doctex-mode)
+            ((and (eq major-mode 'docTeX-mode)
                   fill-prefix
                   (TeX-in-line-comment)
                   (progn
@@ -4587,7 +4585,7 @@ outer indentation in case of a commented line.  The symbols
         comment-current-flag
         comment-last-flag
         (indent-across-comments (or docTeX-indent-across-comments
-                                    (not (eq major-mode 'doctex-mode)))))
+                                    (not (eq major-mode 'docTeX-mode)))))
     (beginning-of-line)
     (setq line-comment-current-flag (TeX-in-line-comment)
           comment-current-flag (TeX-in-commented-line))
@@ -4616,7 +4614,7 @@ outer indentation in case of a commented line.  The symbols
     ;; code comments).  Additionally we don't want to compute inner
     ;; indentation when a commented and a non-commented line are
     ;; compared.
-    (cond ((or (and (eq major-mode 'doctex-mode)
+    (cond ((or (and (eq major-mode 'docTeX-mode)
                     (or (and line-comment-current-flag
                              (not line-comment-last-flag))
                         (and (not line-comment-current-flag)
@@ -4637,7 +4635,7 @@ outer indentation in case of a commented line.  The symbols
               ;; Some people have opening braces at the end of the
               ;; line, e.g. in case of `\begin{letter}{%'.
               (TeX-brace-count-line)))
-          ((and (eq major-mode 'doctex-mode)
+          ((and (eq major-mode 'docTeX-mode)
                 (looking-at (concat (regexp-quote TeX-esc)
                                     "end[ \t]*{macrocode\\*?}"))
                 fill-prefix
@@ -4726,11 +4724,11 @@ outer indentation in case of a commented line.  The symbols
                      ;; If `LaTeX-syntactic-comments' is not enabled,
                      ;; do conventional indentation
                      LaTeX-syntactic-comments
-                     ;; Line comments in `doctex-mode' are always
+                     ;; Line comments in `docTeX-mode' are always
                      ;; indented syntax-aware so we need their inner
                      ;; indentation.
                      (and (TeX-in-line-comment)
-                          (eq major-mode 'doctex-mode))))))
+                          (eq major-mode 'docTeX-mode))))))
       ;; INNER indentation
       (save-excursion
         (beginning-of-line)
@@ -4754,7 +4752,7 @@ recognized."
                (eq force-type 'inner))
           (and (not force-type)
                (or (and (TeX-in-line-comment)
-                        (eq major-mode 'doctex-mode))
+                        (eq major-mode 'docTeX-mode))
                    (and (TeX-in-commented-line)
                         ;; Only move after the % if we're not
                         ;; performing a newline command (bug#47757).
@@ -5359,11 +5357,11 @@ depends on the value of `LaTeX-syntactic-comments'."
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
        ;; * `LaTeX-syntactic-comments' disabled: Uncommented code and
-       ;;   line comments in `doctex-mode'.
+       ;;   line comments in `docTeX-mode'.
        ((or (or LaTeX-syntactic-comments
                 (and (not LaTeX-syntactic-comments)
                      (not has-comment)))
-            (and (eq major-mode 'doctex-mode)
+            (and (eq major-mode 'docTeX-mode)
                  (TeX-in-line-comment)))
         (let ((fill-prefix comment-fill-prefix))
           (save-excursion
@@ -5537,7 +5535,7 @@ environment in commented regions with the same comment prefix."
                 ;; comment-prefix.  Hence, the next check just looks
                 ;; if we're inside such a group and returns non-nil to
                 ;; recognize such a situation.
-                (and (eq major-mode 'doctex-mode)
+                (and (eq major-mode 'docTeX-mode)
                      (looking-at-p " *{macrocode\\*?}")))
         (setq level
               (if (= (char-after (match-beginning 1)) ?b) ;;begin
@@ -6591,6 +6589,7 @@ commands are defined:
   :lighter nil
   :keymap (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   (TeX-set-mode-name))
+;; FIXME: Is this still necessary?
 (defalias 'latex-math-mode #'LaTeX-math-mode)
 
 (easy-menu-define LaTeX-math-mode-menu
@@ -6890,7 +6889,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
-    (TeX-mode-specific-command-menu 'latex-mode))
+    (TeX-mode-specific-command-menu 'LaTeX-mode))
 
 (easy-menu-define LaTeX-mode-menu
   LaTeX-mode-map
@@ -8113,6 +8112,54 @@ function `TeX--completion-at-point' which should come first in
             ;; Any other constructs?
             (t nil)))))
 
+;; The next defcustom and functions control the annotation of labels
+;; during in-buffer completion which is done by
+;; `TeX--completion-at-point' also inside the arguments of \ref and
+;; such and not with the code above.
+
+(defcustom LaTeX-label-annotation-max-length 30
+  "Maximum number of characters for annotation of labels.
+Setting this variable to 0 disables label annotation during
+in-buffer completion."
+  :group 'LaTeX-label
+  :type 'integer)
+
+(defun LaTeX-completion-label-annotation-function (label)
+  "Return context for LABEL in a TeX file.
+Context is a string gathered from RefTeX.  Return nil if
+`LaTeX-label-annotation-max-length' is set to 0 or RefTeX-mode is
+not activated.  Context is stripped to the number of characters
+defined in `LaTeX-label-annotation-max-length'."
+  (when (and (bound-and-true-p reftex-mode)
+             (> LaTeX-label-annotation-max-length 0)
+             (boundp 'reftex-docstruct-symbol))
+    (let ((docstruct (symbol-value reftex-docstruct-symbol))
+          s)
+      (and (setq s (nth 2 (assoc label docstruct)))
+           (concat " "
+                   (string-trim-right
+                    (substring s 0 (when (>= (length s)
+                                             LaTeX-label-annotation-max-length)
+                                     LaTeX-label-annotation-max-length))))))))
+
+(defun LaTeX-completion-label-list ()
+  "Return a list of defined labels for in-buffer completion.
+This function checks if RefTeX mode is activated and extracts the
+labels from there.  Otherwise the AUCTeX label list is returned.
+If the list of offered labels is out of sync, re-parse the
+document with `reftex-parse-all' or `TeX-normal-mode'."
+  (if (and (bound-and-true-p reftex-mode)
+           (fboundp 'reftex-access-scan-info)
+           (boundp 'reftex-docstruct-symbol))
+      (progn
+        (reftex-access-scan-info)
+        (let ((docstruct (symbol-value reftex-docstruct-symbol))
+              labels)
+          (dolist (label docstruct labels)
+            (when (stringp (car label))
+              (push (car label) labels)))))
+    (LaTeX-label-list)))
+
 ;;; Mode
 
 (defgroup LaTeX-macro nil
@@ -8148,33 +8195,37 @@ This happens when \\left is inserted."
   :type 'hook
   :group 'LaTeX)
 
-(TeX-abbrev-mode-setup latex-mode)
+(TeX-abbrev-mode-setup LaTeX-mode latex-mode-abbrev-table)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
+(add-to-list 'auto-mode-alist '("\\.drv\\'" . LaTeX-mode) t) ;; append to the end of `auto-mode-alist' to give higher priority to Guix/Nix's derivation modes
 
 ;; HeVeA files (LaTeX -> HTML converter: http://hevea.inria.fr/)
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.hva\\'" . latex-mode))
+(add-to-list 'auto-mode-alist '("\\.hva\\'" . LaTeX-mode))
+
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(LaTeX-mode "*.ltx" "*.sty" "*.cls" "*.clo" "*.bbl" "*.drv" "*.hva")
+        semantic-symref-filepattern-alist))
 
 (declare-function LaTeX-preview-setup "preview")
 
 ;;;###autoload
-(defun TeX-latex-mode ()
-  ;; FIXME: Use `define-derived-mode'.
+(define-derived-mode LaTeX-mode TeX-mode "LaTeX"
   "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
 
 Entering LaTeX mode calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `LaTeX-mode-hook'."
-  (interactive)
+  :after-hook (LaTeX-mode-cleanup)
+
   (LaTeX-common-initialization)
-  (setq TeX-base-mode-name "LaTeX")
-  (setq major-mode 'latex-mode)
+  (setq TeX-base-mode-name mode-name)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function #'TeX-LaTeX-sentinel)
   (add-hook 'tool-bar-mode-hook #'LaTeX-maybe-install-toolbar nil t)
@@ -8200,7 +8251,18 @@ of `LaTeX-mode-hook'."
                        (apply #'append
                               (mapcar #'cdr LaTeX-provided-class-options)))))
             nil t)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  (when (fboundp 'LaTeX-preview-setup)
+    (LaTeX-preview-setup))
+  ;; Set up flymake backend, see latex-flymake.el
+  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t))
+
+(defun LaTeX-mode-cleanup ()
+  "Cleanup function for `LaTeX-mode'.
+Run after mode hooks and file local variables application."
+  ;; Defeat filladapt
+  (if (bound-and-true-p filladapt-mode)
+      (turn-off-filladapt-mode))
 
   ;; Don't overwrite the value the user set by hooks or file
   ;; (directory) local variables.
@@ -8231,35 +8293,61 @@ of `LaTeX-mode-hook'."
   ;; `LaTeX-indent-begin-list' and so on instead.
   (LaTeX-indent-commands-regexp-make)
 
-  (when (fboundp 'LaTeX-preview-setup)
-    (LaTeX-preview-setup))
-  (TeX-set-mode-name)
-  ;; Defeat filladapt
-  (if (and (boundp 'filladapt-mode)
-           filladapt-mode)
-      (turn-off-filladapt-mode))
-  ;; Set up flymake backend, see latex-flymake.el
-  (add-hook 'flymake-diagnostic-functions #'LaTeX-flymake nil t)
+  (setq TeX-complete-list
+        (append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                   1 LaTeX-bibitem-list "}")
+                  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+                  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                   2 LaTeX-bibitem-list)
+                  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+                  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                   2 LaTeX-bibitem-list)
+                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-completion-label-list "}")
+                  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
+                   2 LaTeX-index-entry-list "}")
+                  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
+                  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
+                  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
+                   1 TeX-symbol-list-filtered "}")
+                  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
+                   1 LaTeX-environment-list-filtered "}")
+                  ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
+                   2 LaTeX-pagestyle-list "}")
+                  (LaTeX--after-math-macro-prefix-p
+                   1 (lambda ()
+                       (seq-filter #'stringp
+                                   (append (mapcar #'cadr LaTeX-math-list)
+                                           (mapcar #'cadr LaTeX-math-default))))
+                   (if TeX-insert-braces "{}")))
+                TeX-complete-list)))
 
-  ;; Complete style initialization in buffers which don't visit files
-  ;; and which are therefore missed by the setting of `find-file-hook'
-  ;; in `VirTeX-common-initialization'.  This is necessary for
-  ;; `xref-find-references', for example. (bug#65912)
-  (unless buffer-file-truename
-    (TeX-update-style)))
+;; COMPATIBILITY for Emacs<29
+;;;###autoload
+(put 'LaTeX-mode 'auctex-function-definition (symbol-function 'LaTeX-mode))
 
-(TeX-abbrev-mode-setup doctex-mode)
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `latex-mode' continue to be valid for `LaTeX-mode'.
+(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode))
+
+(with-eval-after-load 'semantic/symref/grep
+  (push '(docTeX-mode "*.dtx") semantic-symref-filepattern-alist))
+
+;; Enable LaTeX abbrevs in docTeX mode buffer.
+;; No need to include text mode abbrev table as parents because LaTeX
+;; mode abbrev table inherits it.
+(let ((p (list LaTeX-mode-abbrev-table)))
+  ;; Inherit abbrev table of the former name, if it exists.
+  (if (boundp 'doctex-mode-abbrev-table)
+      (push doctex-mode-abbrev-table p))
+  (define-abbrev-table 'docTeX-mode-abbrev-table nil nil :parents p))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
-
-;;;###autoload
-(define-derived-mode docTeX-mode TeX-latex-mode "docTeX"
+(define-derived-mode docTeX-mode LaTeX-mode "docTeX"
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
-  :abbrev-table doctex-mode-abbrev-table
-  (setq major-mode 'doctex-mode)
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
@@ -8267,31 +8355,18 @@ runs the hooks in `docTeX-mode-hook'."
   (setq paragraph-start (concat paragraph-start "\\|%<")
         paragraph-separate (concat paragraph-separate "\\|%<")
         TeX-comment-start-regexp "\\(?:%\\(?:<[^>]+>\\)?\\)")
-  (setq TeX-base-mode-name "docTeX")
-  (TeX-set-mode-name)
+  (setq TeX-base-mode-name mode-name)
   ;; We can remove the next `setq' when syntax propertization
   ;; decouples font lock and `font-latex-setup' stops calling
   ;; `font-lock-set-defaults'.
   (setq font-lock-set-defaults nil)
   (funcall TeX-install-font-lock))
 
-;; Enable LaTeX abbrevs in docTeX mode buffer.
-(let ((p (abbrev-table-get doctex-mode-abbrev-table :parents)))
-  (or (memq latex-mode-abbrev-table p)
-      (abbrev-table-put doctex-mode-abbrev-table :parents
-                        (cons latex-mode-abbrev-table p))))
-
-;;This is actually a mess: to fit the scheme properly, our derived
-;;mode definition would have had to be made for TeX-doctex-mode in the
-;;first place, but then we could not have used define-derived-mode, or
-;;all mode-specific variables would have gotten non-AUCTeX names.
-;;This solution has the advantage that documentation strings are
-;;provided in the autoloads, and has the disadvantage that docTeX-mode
-;;is not aliased to doctex-mode (not even when the AUCTeX version is
-;;disabled) as would be normal for our scheme.
-
-;;;###autoload
-(defalias 'TeX-doctex-mode #'docTeX-mode)
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `doctex-mode' continue to be valid for `docTeX-mode'.
+;; In addition, dir local vars for `latex-mode' are now valid for
+;; `docTeX-mode' as well.
+(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
@@ -8338,11 +8413,7 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
-  (VirTeX-common-initialization)
-  (set-syntax-table LaTeX-mode-syntax-table)
   (set (make-local-variable 'indent-line-function) #'LaTeX-indent-line)
-
-  (setq local-abbrev-table latex-mode-abbrev-table)
 
   ;; Filling
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
@@ -8407,36 +8478,6 @@ function would return non-nil and `(match-string 1)' would return
                                                 ("array" . LaTeX-item-array)
                                                 ("tabular" . LaTeX-item-array)
                                                 ("tabular*" . LaTeX-item-tabular*)))
-
-  (setq TeX-complete-list
-        (append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
-                   1 LaTeX-bibitem-list "}")
-                  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-                  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-                   2 LaTeX-bibitem-list)
-                  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-                  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-                   2 LaTeX-bibitem-list)
-                  ("\\\\[Rr]ef{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-                  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)"
-                   2 LaTeX-index-entry-list "}")
-                  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
-                  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list-filtered "}")
-                  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
-                   1 TeX-symbol-list-filtered "}")
-                  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
-                   1 LaTeX-environment-list-filtered "}")
-                  ("\\\\\\(this\\)?pagestyle{\\([A-Za-z]*\\)"
-                   2 LaTeX-pagestyle-list "}")
-                  (LaTeX--after-math-macro-prefix-p
-                   1 (lambda ()
-                       (seq-filter #'stringp
-                                   (append (mapcar #'cadr LaTeX-math-list)
-                                           (mapcar #'cadr LaTeX-math-default))))
-                   (if TeX-insert-braces "{}")))
-                TeX-complete-list))
 
   (LaTeX-add-environments
    '("document" LaTeX-env-document)
@@ -9097,8 +9138,6 @@ function would return non-nil and `(match-string 1)' would return
 
   (set (make-local-variable 'imenu-create-index-function)
        #'LaTeX-imenu-create-index-function)
-
-  (use-local-map LaTeX-mode-map)
 
   ;; Initialization of `add-log-current-defun-function':
   (set (make-local-variable 'add-log-current-defun-function)

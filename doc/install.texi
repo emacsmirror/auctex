@@ -96,7 +96,7 @@ the file @file{INSTALL.windows}.
 @end ifclear
 
 @itemize @bullet
-@item GNU Emacs 26.1 or higher
+@item GNU Emacs 27.1 or higher
 
 Using @previewlatex{} requires a version of Emacs compiled with image
 support.
@@ -623,6 +623,6 @@ set the variable for you if it could use the program @command{kpsewhich}.
 In this case you normally don't have to alter anything.
 
 @c Local Variables:
-@c mode: texinfo
+@c mode: Texinfo
 @c TeX-master: "auctex"
 @c End:

@@ -92,7 +92,7 @@ Install tool bar if `plain-TeX-enable-toolbar' and
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (TeX-mode-specific-command-menu 'plain-tex-mode))
+    (TeX-mode-specific-command-menu 'plain-TeX-mode))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -113,41 +113,48 @@ plain-TeX file, or any mode derived thereof.  See variable
   :type 'hook
   :group 'TeX-misc)
 
-(TeX-abbrev-mode-setup plain-tex-mode)
+(TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
 ;;;###autoload
-(defun TeX-plain-tex-mode ()
+(define-derived-mode plain-TeX-mode TeX-mode
+  ;; The mode name can be "plain-TeX", but in that case, we have to
+  ;; change the "TeX" in the above call to `easy-menu-define' as well.
+  ;; See what "Extend this Menu" entry does in
+  ;; `TeX-common-menu-entries'.
+  "TeX"
   "Major mode in AUCTeX for editing plain TeX files.
 See info under AUCTeX for documentation.
 
-Special commands:
-\\{plain-TeX-mode-map}
-
-Entering `plain-tex-mode' calls the value of `text-mode-hook',
+Entering `plain-TeX-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `plain-TeX-mode-hook'."
-  (interactive)
+  :syntax-table nil
+  :after-hook (plain-TeX-mode-cleanup)
+
   (plain-TeX-common-initialization)
-  (setq major-mode 'plain-tex-mode)
-  (use-local-map plain-TeX-mode-map)
-  (setq TeX-base-mode-name "TeX")
-  (setq TeX-command-default "TeX")
-  (add-hook 'tool-bar-mode-hook #'plain-TeX-maybe-install-toolbar nil t)
-  (plain-TeX-maybe-install-toolbar)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
-  (TeX-set-mode-name)
-  ;; Complete style initialization in buffers which don't visit files
-  ;; and which are therefore missed by the setting of `find-file-hook'
-  ;; in `VirTeX-common-initialization'.  This is necessary for
-  ;; `xref-find-references', for example. (bug#65912)
-  (unless buffer-file-truename
-    (TeX-update-style)))
+  (setq TeX-base-mode-name mode-name)
+  (setq TeX-command-default "TeX"))
+
+(defun plain-TeX-mode-cleanup ()
+  "Cleanup function for `plain-TeX-mode'.
+Run after mode hooks and file local variables application."
+  ;; Don't install tool bar in AmSTeX mode.
+  (unless (derived-mode-p 'AmSTeX-mode)
+    (add-hook 'tool-bar-mode-hook
+              #'plain-TeX-maybe-install-toolbar nil t)
+    (plain-TeX-maybe-install-toolbar)))
+
+;; COMPATIBILITY for Emacs<29
+;;;###autoload
+(put 'plain-TeX-mode 'auctex-function-definition (symbol-function 'plain-TeX-mode))
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `plain-tex-mode' continue to be valid for
+;; `plain-TeX-mode'.
+(TeX-derived-mode-add-parents 'plain-TeX-mode '(plain-tex-mode))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
-  (VirTeX-common-initialization)
-  (set-syntax-table TeX-mode-syntax-table)
-  (setq local-abbrev-table plain-tex-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
@@ -275,6 +282,11 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
 (defvar AmSTeX-mode-map
   (let ((map (make-sparse-keymap)))
+    ;; Don't use `plain-TeX-mode-map' as parent.  That would corrupt
+    ;; the menu bar in the following two ways. :-(
+    ;;  - "TeX" entry appears in addition to "AmS-TeX", with
+    ;;    duplicated content.
+    ;;  - "Command" entry disappears.
     (set-keymap-parent map TeX-mode-map)
     map)
   "Keymap used in `AmSTeX-mode'.")
@@ -283,44 +295,42 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
     "Command menu used in AmSTeX mode."
-    (TeX-mode-specific-command-menu 'ams-tex-mode))
+    (TeX-mode-specific-command-menu 'AmSTeX-mode))
 
 (easy-menu-define AmSTeX-mode-menu
   AmSTeX-mode-map
   "Menu used in AmSTeX mode."
   (cons "AmS-TeX" plain-TeX-menu-entries))
 
-(defcustom AmS-TeX-mode-hook nil
-  "A hook run in AmS-TeX mode buffers."
+(define-obsolete-variable-alias
+  'AmS-TeX-mode-hook 'AmSTeX-mode-hook "AUCTeX 14")
+(defcustom AmSTeX-mode-hook nil
+  "A hook run in AmSTeX mode buffers."
   :type 'hook
   :group 'TeX-misc)
 
 ;;;###autoload
-(defun ams-tex-mode ()
-  "Major mode in AUCTeX for editing AmS-TeX files.
+(define-derived-mode AmSTeX-mode plain-TeX-mode "AmS-TeX"
+  "Major mode in AUCTeX for editing AmSTeX files.
 See info under AUCTeX for documentation.
 
-Special commands:
-\\{AmSTeX-mode-map}
+Entering `AmSTeX-mode' calls the value of `text-mode-hook', then
+the value of `TeX-mode-hook', `plain-TeX-mode-hook' and then the
+value of `AmSTeX-mode-hook'."
+  :syntax-table nil
+  :abbrev-table nil
 
-Entering `ams-tex-mode' calls the value of `text-mode-hook',
-then the value of `TeX-mode-hook', and then the value
-of `AmS-TeX-mode-hook'."
-  (interactive)
-  (plain-TeX-common-initialization)
-  (setq major-mode 'ams-tex-mode)
-  (use-local-map AmSTeX-mode-map)
+  (setq TeX-base-mode-name mode-name)
+  (setq TeX-command-default "AmSTeX"))
 
-  (setq TeX-base-mode-name "AmS-TeX")
-  (setq TeX-command-default "AmSTeX")
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
-  (TeX-set-mode-name)
-  ;; Complete style initialization in buffers which don't visit files
-  ;; and which are therefore missed by the setting of `find-file-hook'
-  ;; in `VirTeX-common-initialization'.  This is necessary for
-  ;; `xref-find-references', for example. (bug#65912)
-  (unless buffer-file-truename
-    (TeX-update-style)))
+;;;###autoload
+(defalias 'ams-tex-mode #'AmSTeX-mode)
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `ams-tex-mode' continue to be valid for `AmSTeX-mode'.
+;; In addition, dir local vars for `plain-tex-mode' are now valid for
+;; `AmSTeX-mode' as well.
+(TeX-derived-mode-add-parents 'AmSTeX-mode '(ams-tex-mode plain-tex-mode))
 
 (defcustom AmSTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes

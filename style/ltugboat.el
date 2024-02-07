@@ -1,6 +1,6 @@
 ;;; ltugboat.el --- AUCTeX style for `ltugboat.cls' (v2.28)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2019--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -61,7 +61,8 @@
 
    (setq TeX-complete-list
          (append
-          '(("\\\\nameref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}"))
+          '(("\\\\nameref{\\([^{}\n\r\\%,]*\\)"
+             1 LaTeX-completion-label-list "}"))
           TeX-complete-list))
 
    ;; 6.1 Abstracts

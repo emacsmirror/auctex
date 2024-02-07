@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -495,9 +495,9 @@ in your init file such as .emacs.d/init.el or .emacs."
 (defcustom ConTeXt-Mark-version "II"
   "ConTeXt Mark version used for running ConTeXt."
   :type 'string
-  :group 'TeX-command)
-(make-variable-buffer-local 'ConTeXt-Mark-version)
-(put 'ConTeXt-Mark-version 'safe-local-variable #'stringp)
+  :group 'TeX-command
+  :safe #'stringp
+  :local t)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -626,8 +626,8 @@ for a label to be inserted after the sectioning command."
 (defcustom ConTeXt-default-environment "itemize"
   "The default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-environment
-  :type 'string)
-(make-variable-buffer-local 'ConTeXt-default-environment)
+  :type 'string
+  :local t)
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
@@ -942,7 +942,7 @@ An entry looks like: (\"environment\" . function)")
   (metapost-mode)
   (message "Type `M-x exit-recursive-edit' to get back")
   (recursive-edit)
-  (context-mode)
+  (ConTeXt-mode)
   (widen))
 
 ;; find smarter name.  Suggestions welcome
@@ -1593,7 +1593,7 @@ else.  There might be text before point."
 (easy-menu-define ConTeXt-mode-command-menu
   ConTeXt-mode-map
   "Command menu used in ConTeXt mode."
-  (TeX-mode-specific-command-menu 'context-mode))
+  (TeX-mode-specific-command-menu 'ConTeXt-mode))
 
 ;; it seems the menu is evaluated at compile/load-time
 ;; we don't have ConTeXt-current-interface at that time
@@ -1656,7 +1656,7 @@ else.  There might be text before point."
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
-  (or (not (memq major-mode '(context-mode)))
+  (or (not (memq major-mode '(ConTeXt-mode)))
       (null ConTeXt-menu-changed)
       (progn
         (TeX-update-style)
@@ -1816,20 +1816,12 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   :type '(repeat regexp)
   :group 'TeX-command)
 
-(TeX-abbrev-mode-setup context-mode)
+(TeX-abbrev-mode-setup ConTeXt-mode context-mode-abbrev-table)
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
-  ;; `plain-TeX-common-initialization' kills all local variables, but
-  ;; we need to keep ConTeXt-current-interface, so save and restore
-  ;; it.
-  (let (save-ConTeXt-current-interface)
-    (setq save-ConTeXt-current-interface ConTeXt-current-interface)
-    (plain-TeX-common-initialization)
-    (setq ConTeXt-current-interface save-ConTeXt-current-interface))
-  (setq major-mode 'context-mode)
+  (plain-TeX-common-initialization)
 
-  (setq local-abbrev-table context-mode-abbrev-table)
   (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
 
   (require (intern (concat "context-" ConTeXt-current-interface)))
@@ -1845,9 +1837,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; level 2 is "section"
   (or ConTeXt-largest-level
       (setq ConTeXt-largest-level 2))
-
-  ;; keybindings
-  (use-local-map ConTeXt-mode-map)
 
   ;; Indenting
   (set (make-local-variable 'indent-line-function) #'ConTeXt-indent-line)
@@ -1875,7 +1864,6 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
          "\\|$\\)"))
 
   ;; Keybindings and menu
-  (use-local-map ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
   ;; FIXME: Isn't `activate-menubar-hook' obsolete?
@@ -1900,11 +1888,12 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   (set (make-local-variable 'imenu-create-index-function)
        #'ConTeXt-imenu-create-index-function)
 
-  ;; run hooks
   (setq TeX-command-default "ConTeXt")
-  (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel)
-  (run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook)
+  (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel))
 
+(defun ConTeXt-mode-cleanup ()
+  "Cleanup function for `ConTeXt-mode'.
+Run after mode hooks and file local variables application."
   ;; Create certain regular expressions based on language.
   ;; Don't overwrite the value the user set by hooks or file
   ;; (directory) variables.
@@ -1947,22 +1936,27 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
                  ConTeXt-default-interface)))))
 
 ;;;###autoload
-(defalias 'ConTeXt-mode #'context-mode)
+(defalias 'context-mode #'ConTeXt-mode)
 
 ;;;###autoload
-(defun context-mode ()
+(define-derived-mode ConTeXt-mode TeX-mode "ConTeXt"
   "Major mode in AUCTeX for editing ConTeXt files.
 
-Special commands:
-\\{ConTeXt-mode-map}
-
-Entering `context-mode' calls the value of `text-mode-hook',
+Entering `ConTeXt-mode' calls the value of `text-mode-hook',
 then the value of `TeX-mode-hook', and then the value
 of `ConTeXt-mode-hook'."
-  (interactive)
+  :after-hook (ConTeXt-mode-cleanup)
   (context-guess-current-interface)
   (require (intern (concat "context-" ConTeXt-current-interface)))
-  (funcall (intern (concat "context-" ConTeXt-current-interface "-mode"))))
+  (funcall (intern (concat "ConTeXt--mode-" ConTeXt-current-interface)))
+
+  ;; set mode line
+  (setq TeX-base-mode-name mode-name))
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `context-mode' continue to be valid for
+;; `ConTeXt-mode'.
+(TeX-derived-mode-add-parents 'ConTeXt-mode '(context-mode))
 
 (provide 'context)
 

@@ -280,7 +280,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
   (let* ((pos (point)) math-on sw-match
          (bound (save-excursion
                   (if (re-search-backward
-                       (if (eq major-mode 'doctex-mode)
+                       (if (memq major-mode '(doctex-mode docTeX-mode))
                            "[\n\r]%*[ \t]*[\n\r]"
                          "[\n\r][ \t]*[\n\r]")
                        nil 1 texmathp-search-n-paragraphs)
