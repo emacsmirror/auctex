@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 26)
-  (error "AUCTeX requires Emacs 26.1 or later"))
+(when (< emacs-major-version 27)
+  (error "AUCTeX requires Emacs 27.1 or later"))
 
 (declare-function BibTeX-auto-store "latex")
 
@@ -48,6 +48,7 @@
   ;; Try and support the case where someone loads tex-site.el or
   ;; auctex.el directly, in the old way.
   (provide 'tex-site)        ;Avoid (re)loading tex-site from auctex-autoloads.
+
   (load "auctex-autoloads" 'noerror 'nomessage))
 
 ;; Define here in order for `M-x customize-group <RET> AUCTeX <RET>'
@@ -84,17 +85,23 @@ shared by all users of a site."
   :type 'directory)
 
 (defconst TeX-mode-alist
-  '((tex-mode . tex-mode)
-    (plain-tex-mode . tex-mode)
-    (texinfo-mode . texinfo)
-    (latex-mode . tex-mode)
-    (doctex-mode . tex-mode))
-  "Alist of built-in TeX modes and their load files.")
+  '((tex-mode . TeX-tex-mode)
+    (plain-tex-mode . plain-TeX-mode)
+    (texinfo-mode . Texinfo-mode)
+    (latex-mode . LaTeX-mode)
+    (doctex-mode . docTeX-mode))
+  "Alist of built-in TeX modes and their counterparts in AUCTeX.")
 
 (defalias 'TeX-load-hack #'ignore)
 
 (defun tex-site-unload-function ()
   (TeX-modes-set 'TeX-modes nil)
+
+  ;; COMPATIBILITY for Emacs<29
+  (put 'plain-TeX-mode 'auctex-function-definition nil)
+  (put 'LaTeX-mode 'auctex-function-definition nil)
+  (put 'TeX-mode 'auctex-function-definition nil)
+
   (setq load-path (delq TeX-lisp-directory load-path))
   ;; Tell emacs to continue standard unloading procedure.
   nil)
@@ -102,25 +109,37 @@ shared by all users of a site."
 (defun TeX-modes-set (var value &optional _ignored)
   "Set VAR (which should be `TeX-modes') to VALUE.
 
-This places either the standard or the AUCTeX versions of
-functions into the respective function cell of the mode."
+Arrange the redirection of the built-in TeX modes according to VALUE.
+- The built-in modes in VALUE are redirected to the corresponding
+  AUCTeX major modes.
+- The built-in modes not in VALUE discard redirection, if any.
+If `major-mode-remap-alist' is available, use it for redirection.
+Otherwise, use advice facility."
   (custom-set-default var value)
-  (let ((list TeX-mode-alist) elt)
-    (while list
-      (setq elt (car (pop list)))
-      (let ((dst (intern (concat "TeX-" (symbol-name elt)))))
-        (if (memq elt value)
+  (let (elt dst)
+    (dolist (entry TeX-mode-alist)
+      (setq elt (car entry)
+            dst (cdr entry))
+      (if (memq elt value)
+          (if (boundp 'major-mode-remap-alist)
+              (or (eq (cdr-safe (assq elt major-mode-remap-alist)) dst)
+                  (push (cons elt dst) major-mode-remap-alist))
+            ;; COMPATIBILITY for Emacs<29
             (advice-add elt :override dst
                         ;; COMPATIBILITY for Emacs 28.[12]
                         ;; Give it higher precedence than the :around
                         ;; advice given to `tex-mode' in tex-mode.el.
                         ;; <URL:https://lists.gnu.org/r/auctex-devel/2022-09/msg00050.html>
-                        '((depth . -10)))
+                        '((depth . -10))))
+        (if (boundp 'major-mode-remap-alist)
+            (setq major-mode-remap-alist
+                  (delete entry major-mode-remap-alist))
+          ;; COMPATIBILITY for Emacs<29
           (advice-remove elt dst))))))
 
 (defcustom TeX-modes
   (mapcar #'car TeX-mode-alist)
-  "List of modes provided by AUCTeX.
+  "List of built-in TeX modes redirected to AUCTeX modes.
 
 This variable can't be set normally; use customize for that, or
 set it with `TeX-modes-set'."
@@ -129,11 +148,35 @@ set it with `TeX-modes-set'."
   :set #'TeX-modes-set
   :initialize #'custom-initialize-reset)
 
-(defconst AUCTeX-version "13.3.0"
+(defun TeX--alias-overlapped-modes (&optional restore)
+  "Delete or restore definition of overlapped modes via `defalias'.
+Set function definition for modes overlapped between tex-mode.el
+and AUCTeX, `plain-TeX-mode', `LaTeX-mode' and `TeX-mode'.
+If optional argument RESTORE is nil, delete the definition.
+Otherwise, restore AUCTeX definition saved in the symbol property
+`auctex-function-definition'."
+  (dolist (mode '(plain-TeX-mode LaTeX-mode TeX-mode))
+    (if (eq (symbol-function mode)
+            (intern (downcase (symbol-name mode))))
+        (defalias mode (if restore
+                           (get mode 'auctex-function-definition))))))
+
+;; Delete aliases predefined in tex-mode.el so that AUCTeX
+;; autoloads provided below take precedence.
+(TeX--alias-overlapped-modes)
+
+;; COMPATIBILITY for Emacs<29, which executes
+;; (defalias 'LaTeX-mode #'latex-mode) etc. in tex-mode.el.
+(with-eval-after-load 'tex-mode
+  ;; This must be no-op after (unload-feature 'tex-site).
+  (if (featurep 'tex-site)
+      (TeX--alias-overlapped-modes t)))
+
+(defconst AUCTeX-version "13.3.0.2024-02-07"
   "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "2024-01-18"
+(defconst AUCTeX-date "2024-02-07"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
