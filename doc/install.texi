@@ -1,6 +1,6 @@
 @c This is part of the AUCTeX Manual.
 @c Copyright (C) 1994, 1996, 2003-2007, 2012-2013,
-@c               2015-2023  Free Software Foundation, Inc.
+@c               2015-2024  Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @ifset rawfile
 @include macros.texi
@@ -353,11 +353,31 @@ below.
 @end ifclear
 
 Once activated, the modes provided by @AUCTeX{} are used per default for
-all supported file types.  If you want to change the modes for which it
-is operative instead of the default, use
+all supported file types, namely @code{plain-tex-mode}, @code{latex-mode},
+@code{doctex-mode} and @code{texinfo-mode}.  This might not match your
+preference.  You can have control over which @AUCTeX{} mode is activated
+per file types by @code{TeX-modes} option.  For example, you can use Emacs
+built-in @code{plain-tex-mode} for plain @TeX{} files while you can use
+@AUCTeX{} @code{LaTeX-mode} for @LaTeX{} files.
+
+@defopt TeX-modes
+List of Emacs built-in @TeX{} modes redirected to @AUCTeX{} modes.  If you
+prefer a particular built-in mode over @AUCTeX{} mode, remove it from this
+list.  Type
 @example
 @kbd{M-x customize-option @key{RET} TeX-modes @key{RET}}
 @end example
+@noindent
+to manipulate the contents of @code{TeX-modes}.
+@end defopt
+
+Don't remove @code{tex-mode} from @code{TeX-modes} because it results in
+inconsistent behavior.
+
+On Emacs 29 and later, you can alter @code{major-mode-remap-alist} instead
+of @code{TeX-modes} as you like to arrange @AUCTeX{} redirections.  In
+fact, @code{TeX-modes} option does nothing other than setting up
+@code{major-mode-remap-alist} according its value on those Emacsens.
 
 If you want to remove a preinstalled @AUCTeX{} completely before any of
 its modes have been used,
@@ -365,7 +385,7 @@ its modes have been used,
 (unload-feature 'tex-site)
 @end lisp
 @noindent
-should accomplish that.
+in your init file should accomplish that.
 
 @node Advice for package providers
 @section Providing @AUCTeX{} as a package
