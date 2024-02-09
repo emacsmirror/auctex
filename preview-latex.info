@@ -2,7 +2,7 @@ This is preview-latex.info, produced by makeinfo version 7.1 from
 preview-latex.texi.
 
 This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 14.0.1 from 2024-02-09).
+(version 14.0.2 from 2024-02-09).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
@@ -1922,7 +1922,7 @@ Appendix C Copying this Manual
 The copyright notice for this manual is:
 
    This manual is for preview-latex, a LaTeX preview mode for AUCTeX
-(version 14.0.1 from 2024-02-09).
+(version 14.0.2 from 2024-02-09).
 
    Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2017-2019, 2021 Free
 Software Foundation, Inc.
