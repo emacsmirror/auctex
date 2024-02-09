@@ -1,6 +1,6 @@
 ;;; plain-tex.el --- Support for plain TeX documents. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010, 2013, 2016-2018, 2021-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2010, 2013, 2016-2018, 2021-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -115,6 +115,8 @@ plain-TeX file, or any mode derived thereof.  See variable
 
 (TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
+;;;###autoload (if (eq (symbol-function 'plain-TeX-mode) 'plain-tex-mode)
+;;;###autoload     (defalias 'plain-TeX-mode nil))
 ;;;###autoload
 (define-derived-mode plain-TeX-mode TeX-mode
   ;; The mode name can be "plain-TeX", but in that case, we have to

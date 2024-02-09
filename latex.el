@@ -8214,6 +8214,8 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
+;;;###autoload (if (eq (symbol-function 'LaTeX-mode) 'latex-mode)
+;;;###autoload     (defalias 'LaTeX-mode nil))
 ;;;###autoload
 (define-derived-mode LaTeX-mode TeX-mode "LaTeX"
   "Major mode in AUCTeX for editing LaTeX files.
