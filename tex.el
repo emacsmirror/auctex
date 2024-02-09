@@ -3745,6 +3745,8 @@ other entries will enter `plain-TeX-mode'."
                   (memq 'font-latex-verbatim-face face)
                 (eq face 'font-latex-verbatim-face))))))
 
+;;;###autoload (if (eq (symbol-function 'TeX-mode) 'tex-mode)
+;;;###autoload     (defalias 'TeX-mode nil))
 (define-derived-mode TeX-mode text-mode "TeX"
   "Base mode for AUCTeX major modes except Texinfo mode.
 
