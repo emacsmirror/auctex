@@ -103,6 +103,19 @@
 (defvar compilation-error-regexp-alist) ; compile.el
 (defvar compilation-in-progress)        ; compile.el
 
+(defconst TeX-mode-comparison-alist
+  '((plain-tex-mode . plain-TeX-mode)
+    (latex-mode . LaTeX-mode)
+    (doctex-mode . docTeX-mode)
+    (context-mode . ConTeXt-mode)
+    (texinfo-mode . Texinfo-mode)
+    (ams-tex-mode . AmSTeX-mode)
+    (japanese-plain-tex-mode . japanese-plain-TeX-mode)
+    (japanese-latex-mode . japanese-LaTeX-mode))
+  "Comparison table of AUCTeX former and current mode names.
+Each entry is of the form (FORMER . CURRENT) where FORMER and
+CURRENT are each mode name symbols.")
+
 (defgroup TeX-file nil
   "Files used by AUCTeX."
   :group 'AUCTeX)
@@ -5207,12 +5220,20 @@ Brace insertion is only done if point is in a math construct and
   "Return the list of commands available in the given MODE."
   (let ((full-list TeX-command-list)
         out-list
-        entry)
+        entry fourth-element
+        former-mode)
     (while (setq entry (pop full-list))
+      (setq fourth-element (nth 4 entry))
       ;; `(nth 4 entry)' may be either an atom in case of which the
       ;; entry should be present in any mode or a list of major modes.
-      (if (or (atom (nth 4 entry))
-              (memq mode (nth 4 entry)))
+      (if (or (atom fourth-element)
+              (memq mode fourth-element)
+              ;; Compatibility for former mode names.  The user can
+              ;; have customized `TeX-command-list' with former mode
+              ;; names listed in `(nth 4 entry)'.
+              (and (setq former-mode
+                         (car (rassq mode TeX-mode-comparison-alist)))
+                   (memq former-mode fourth-element)))
           (push entry out-list)))
     (nreverse out-list)))
 
