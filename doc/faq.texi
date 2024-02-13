@@ -13,6 +13,10 @@
 @item
 Something is not working correctly.  What should I do?
 
+If you are having trouble with upgrading @acronym{ELPA} package, first
+have a look at the dedicated entry below.  If that doesn't resolve your
+issue, then come back here and proceed.
+
 Well, you might have guessed it, the first place to look is in the
 available documentation packaged with @AUCTeX{}.  This could be the
 release notes (in the @file{RELEASE} file) or the news section of the
@@ -67,6 +71,57 @@ have started Emacs like this, you can load the file triggering the
 error.  If everything is working now, you know that you have to search
 either in the site configuration file or your personal init file for
 statements related to the problem.
+
+@item
+@acronym{ELPA} upgrade fails.  What should I do?
+
+In general, @acronym{ELPA} upgrade can fail in a Emacs session you are
+running, especially when @AUCTeX{} major version increases.  This entry
+covers the following cases in such casual upgrade.
+@itemize
+@item
+Upgrade stops with error and doesn't complete.
+@item
+Upgrade falls in infinite loop and doesn't terminate.  You have
+to interrupt it with @kbd{C-g} and upgrade doesn't complete.
+@item
+It looks like upgrade finishes successfully but afterwards @AUCTeX{}
+breaks with mysterious error like:
+@example
+TeX-command-expand: Wrong type argument: stringp, nil
+@end example
+
+@end itemize
+
+These issues involve byte compilation failure.  In the third case, the
+generated @file{.elc} files are actually corrupted.  Thus the point is to
+have sane byte compilation.
+
+The first thing which is worth trying is:
+@enumerate
+@item
+Terminate the current running Emacs session and restart Emacs.
+@item
+Type @kbd{M-x package-recompile @key{RET} auctex @key{RET}}.
+@item
+Restart your Emacs again.
+@end enumerate
+
+If you are lucky enough, this will basically resolve the issue.  There is
+still old @samp{auctex-X.Y.Z} directory left behind under
+@file{~/.emacs.d/elpa/}, so delete it manually to avoid future trouble.
+
+If the above prescription doesn't work, then try:
+@enumerate
+@item
+Uninstall @AUCTeX{} once.
+@item
+Restart your Emacs and (before doing anything else) reinstall @AUCTeX{}.
+@end enumerate
+
+In theory, this recipe will circumvent all caveats in @acronym{ELPA}
+upgrade of @AUCTeX{}.  Find and delete old @samp{auctex-X.Y.Z} directory
+remaining under @file{~/.emacs.d/elpa/}.
 
 @item
 What versions of Emacs are supported?
