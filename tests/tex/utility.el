@@ -1,6 +1,6 @@
 ;;; utility.el --- tests for AUCTeX utility functions -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2017, 2021, 2024 Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -54,5 +54,22 @@
   ;; result.
   (TeX-add-to-alist 'TeX-dummy-alist '((a a)))
   (should (equal TeX-dummy-alist '((b 2 3) (a 1 4 a)))))
+
+(ert-deftest TeX-pseudo-parent-mode ()
+  "Check pseudo parent modes are recognized.
+For example, `LaTeX-mode' should be regarded as derived from
+`latex-mode' for compatibility with the former mode names."
+  (require 'plain-tex)
+  (require 'latex)
+  (require 'tex-info)
+  (require 'context)
+  (require 'tex-jp)
+  (dolist (mode-pair TeX-mode-comparison-alist)
+    (should (provided-mode-derived-p (cdr mode-pair) (car mode-pair)))
+    ;; In addition, several modes should be regarded as derived from
+    ;; `tex-mode' for better compatibility with other packages and
+    ;; Emacs core.
+    (unless (memq (cdr mode-pair) '(Texinfo-mode ConTeXt-mode AmSTeX-mode))
+      (should (provided-mode-derived-p (cdr mode-pair) 'tex-mode)))))
 
 ;;; utility.el ends here

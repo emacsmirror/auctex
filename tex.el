@@ -3887,18 +3887,19 @@ Run after mode hooks and file local variables application."
 
 ;; COMPATIBILITY for Emacs<30
 (unless (fboundp 'derived-mode-add-parents)
-  (advice-add 'derived-mode-p :after-until
+  (advice-add 'provided-mode-derived-p :after-until
               ;; Don't quote by #'-style to avoid compiler warning.
-              'TeX--compat-derived-mode-p)
-  (defun TeX--compat-derived-mode-p (&rest modes)
-    "Add pseudo-parents facility to `derived-mode-p' like Emacs 30.
-Modes registered in `derived-mode-extra-parents' property of the
-current major mode name symbol are regarded as parent modes as
-long as `derived-mode-p' is concerned."
-    (let ((extra-parents (get major-mode 'derived-mode-extra-parents)))
-      (and extra-parents
-           (cl-loop for parent in extra-parents
-                    thereis (memq parent modes))))))
+              'TeX--compat-provided-mode-derived-p)
+  (defun TeX--compat-provided-mode-derived-p (mode &rest modes)
+    "Add pseudo-parents facility to `provided-mode-derived-p' like Emacs 30.
+Modes registered in `derived-mode-extra-parents' property of MODE
+symbol are regarded as parent modes by `provided-mode-derived-p',
+when MODE is one of the AUCTeX new mode names."
+    (when (rassq mode TeX-mode-comparison-alist)
+      (let ((extra-parents (get mode 'derived-mode-extra-parents)))
+        (and extra-parents
+             (cl-loop for parent in extra-parents
+                      thereis (memq parent modes)))))))
 
 ;;; Hilighting
 

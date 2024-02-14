@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2014-2024  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -53,6 +53,10 @@
  "nested-indent-in.tex"
  'LaTeX-nested-indent/out
  "nested-indent-out.tex"
+ 'LaTeX-align/in
+ "align-in.tex"
+ 'LaTeX-align/out
+ "align-out.tex"
  'docTeX/in
  "doctex-indent-in.dtx"
  'docTeX/out
@@ -694,6 +698,21 @@ check the indentation for optional argument of \\usepackage."
                (buffer-string)))
            (with-temp-buffer
              (insert-file-contents LaTeX-conditionals-indent/out)
+             (buffer-string)))))
+
+(ert-deftest LaTeX-align ()
+  "Test if align.el works correctly."
+  (should (string=
+           (with-temp-buffer
+             (insert-file-contents LaTeX-align/in)
+             (goto-char (point-min))
+             (LaTeX-mode)
+             (search-forward "\\begin{")
+             (forward-line 1)
+             (align-current)
+             (buffer-string))
+           (with-temp-buffer
+             (insert-file-contents LaTeX-align/out)
              (buffer-string)))))
 
 (ert-deftest docTeX-indentation ()

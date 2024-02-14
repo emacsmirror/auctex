@@ -155,7 +155,9 @@ Run after mode hooks and file local variables application."
 ;; Compatibility for former mode name.  Directory local variables
 ;; prepared for `plain-tex-mode' continue to be valid for
 ;; `plain-TeX-mode'.
-(TeX-derived-mode-add-parents 'plain-TeX-mode '(plain-tex-mode))
+;; COMPATIBILITY for emacs<30: `tex-mode' can be removed from the list
+;; once the least supported emacsen becomes 30.
+(TeX-derived-mode-add-parents 'plain-TeX-mode '(plain-tex-mode tex-mode))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."

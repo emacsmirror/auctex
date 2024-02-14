@@ -8333,7 +8333,9 @@ Run after mode hooks and file local variables application."
 
 ;; Compatibility for former mode name.  Directory local variables
 ;; prepared for `latex-mode' continue to be valid for `LaTeX-mode'.
-(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode))
+;; COMPATIBILITY for emacs<30: `tex-mode' can be removed from the list
+;; once the least supported emacsen becomes 30.
+(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode tex-mode))
 
 (with-eval-after-load 'semantic/symref/grep
   (push '(docTeX-mode "*.dtx") semantic-symref-filepattern-alist))
@@ -8370,7 +8372,9 @@ runs the hooks in `docTeX-mode-hook'."
 ;; prepared for `doctex-mode' continue to be valid for `docTeX-mode'.
 ;; In addition, dir local vars for `latex-mode' are now valid for
 ;; `docTeX-mode' as well.
-(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode))
+;; COMPATIBILITY for emacs<30: `latex-mode' and `tex-mode' can be removed
+;; from the list once the least supported emacsen becomes 30.
+(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode tex-mode))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
