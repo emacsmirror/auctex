@@ -115,6 +115,8 @@ plain-TeX file, or any mode derived thereof.  See variable
 
 (TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
+;; Delete alias predefined in tex-mode.el so that AUCTeX autoload
+;; takes precedence.
 ;;;###autoload (if (eq (symbol-function 'plain-TeX-mode) 'plain-tex-mode)
 ;;;###autoload     (defalias 'plain-TeX-mode nil))
 ;;;###autoload

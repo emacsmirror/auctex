@@ -3758,6 +3758,7 @@ other entries will enter `plain-TeX-mode'."
                   (memq 'font-latex-verbatim-face face)
                 (eq face 'font-latex-verbatim-face))))))
 
+;; Delete alias predefined in tex-mode.el.
 ;;;###autoload (if (eq (symbol-function 'TeX-mode) 'tex-mode)
 ;;;###autoload     (defalias 'TeX-mode nil))
 (define-derived-mode TeX-mode text-mode "TeX"

@@ -8214,6 +8214,8 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
+;; Delete alias predefined in tex-mode.el so that AUCTeX autoload
+;; takes precedence.
 ;;;###autoload (if (eq (symbol-function 'LaTeX-mode) 'latex-mode)
 ;;;###autoload     (defalias 'LaTeX-mode nil))
 ;;;###autoload
