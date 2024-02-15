@@ -1,6 +1,6 @@
 ;;; cancel.el --- AUCTeX style for `cancel.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -57,7 +57,7 @@
  TeX-dialect)
 
 (defvar LaTeX-cancel-package-options
-  '("thicklines" "samesize" "smaller" "Smaller")
+  '("thicklines" "samesize" "smaller" "Smaller" "makeroom" "overlap")
   "Package options for the cancel package.")
 
 ;;; cancel.el ends here
