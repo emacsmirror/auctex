@@ -8479,7 +8479,7 @@ function would return non-nil and `(match-string 1)' would return
   ;; Standard Emacs completion-at-point support.  We append the entry
   ;; in order to let `TeX--completion-at-point' be first in the list:
   (add-hook 'completion-at-point-functions
-            #'LaTeX--arguments-completion-at-point t t)
+            #'LaTeX--arguments-completion-at-point 5 t)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)
