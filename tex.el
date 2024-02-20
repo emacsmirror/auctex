@@ -103,6 +103,19 @@
 (defvar compilation-error-regexp-alist) ; compile.el
 (defvar compilation-in-progress)        ; compile.el
 
+(defconst TeX-mode-comparison-alist
+  '((plain-tex-mode . plain-TeX-mode)
+    (latex-mode . LaTeX-mode)
+    (doctex-mode . docTeX-mode)
+    (context-mode . ConTeXt-mode)
+    (texinfo-mode . Texinfo-mode)
+    (ams-tex-mode . AmSTeX-mode)
+    (japanese-plain-tex-mode . japanese-plain-TeX-mode)
+    (japanese-latex-mode . japanese-LaTeX-mode))
+  "Comparison table of AUCTeX former and current mode names.
+Each entry is of the form (FORMER . CURRENT) where FORMER and
+CURRENT are each mode name symbols.")
+
 (defgroup TeX-file nil
   "Files used by AUCTeX."
   :group 'AUCTeX)
@@ -3745,6 +3758,7 @@ other entries will enter `plain-TeX-mode'."
                   (memq 'font-latex-verbatim-face face)
                 (eq face 'font-latex-verbatim-face))))))
 
+;; Delete alias predefined in tex-mode.el.
 ;;;###autoload (if (eq (symbol-function 'TeX-mode) 'tex-mode)
 ;;;###autoload     (defalias 'TeX-mode nil))
 (define-derived-mode TeX-mode text-mode "TeX"
@@ -3873,18 +3887,19 @@ Run after mode hooks and file local variables application."
 
 ;; COMPATIBILITY for Emacs<30
 (unless (fboundp 'derived-mode-add-parents)
-  (advice-add 'derived-mode-p :after-until
+  (advice-add 'provided-mode-derived-p :after-until
               ;; Don't quote by #'-style to avoid compiler warning.
-              'TeX--compat-derived-mode-p)
-  (defun TeX--compat-derived-mode-p (&rest modes)
-    "Add pseudo-parents facility to `derived-mode-p' like Emacs 30.
-Modes registered in `derived-mode-extra-parents' property of the
-current major mode name symbol are regarded as parent modes as
-long as `derived-mode-p' is concerned."
-    (let ((extra-parents (get major-mode 'derived-mode-extra-parents)))
-      (and extra-parents
-           (cl-loop for parent in extra-parents
-                    thereis (memq parent modes))))))
+              'TeX--compat-provided-mode-derived-p)
+  (defun TeX--compat-provided-mode-derived-p (mode &rest modes)
+    "Add pseudo-parents facility to `provided-mode-derived-p' like Emacs 30.
+Modes registered in `derived-mode-extra-parents' property of MODE
+symbol are regarded as parent modes by `provided-mode-derived-p',
+when MODE is one of the AUCTeX new mode names."
+    (when (rassq mode TeX-mode-comparison-alist)
+      (let ((extra-parents (get mode 'derived-mode-extra-parents)))
+        (and extra-parents
+             (cl-loop for parent in extra-parents
+                      thereis (memq parent modes)))))))
 
 ;;; Hilighting
 
@@ -5207,12 +5222,20 @@ Brace insertion is only done if point is in a math construct and
   "Return the list of commands available in the given MODE."
   (let ((full-list TeX-command-list)
         out-list
-        entry)
+        entry fourth-element
+        former-mode)
     (while (setq entry (pop full-list))
+      (setq fourth-element (nth 4 entry))
       ;; `(nth 4 entry)' may be either an atom in case of which the
       ;; entry should be present in any mode or a list of major modes.
-      (if (or (atom (nth 4 entry))
-              (memq mode (nth 4 entry)))
+      (if (or (atom fourth-element)
+              (memq mode fourth-element)
+              ;; Compatibility for former mode names.  The user can
+              ;; have customized `TeX-command-list' with former mode
+              ;; names listed in `(nth 4 entry)'.
+              (and (setq former-mode
+                         (car (rassq mode TeX-mode-comparison-alist)))
+                   (memq former-mode fourth-element)))
           (push entry out-list)))
     (nreverse out-list)))
 

@@ -1,7 +1,6 @@
 ;;; tex-jp.el --- Support for Japanese TeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1999, 2001-2008, 2012-2013, 2016-2018, 2020-2023
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 1999-2024 Free Software Foundation, Inc.
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>,
 ;;             Hidenobu Nabetani <nabe@debian.or.jp>
@@ -427,8 +426,10 @@ Now `japanese-plain-tex-mode-initialization' is no-op.  Don't use it."))
 ;; Compatibility for former mode name.  Directory local variables
 ;; prepared for `japanese-plain-tex-mode' and `plain-tex-mode'
 ;; continue to be valid for `japanese-plain-TeX-mode'.
+;; COMPATIBILITY for emacs<30: `plain-tex-mode' and `tex-mode' can be
+;; removed from the list once the least supported emacsen becomes 30.
 (TeX-derived-mode-add-parents 'japanese-plain-TeX-mode
-                              '(japanese-plain-tex-mode plain-tex-mode))
+                              '(japanese-plain-tex-mode plain-tex-mode tex-mode))
 
 ;;;###autoload
 (define-derived-mode japanese-LaTeX-mode LaTeX-mode "LaTeX"
@@ -479,8 +480,10 @@ Now `japanese-latex-mode-initialization' is no-op.  Don't use it."))
 ;; Compatibility for former mode name.  Directory local variables
 ;; prepared for `japanese-latex-mode' and `latex-mode' continue to be
 ;; valid for `japanese-LaTeX-mode'.
+;; COMPATIBILITY for emacs<30: `latex-mode' and `tex-mode' can be
+;; removed from the list once the least supported emacsen becomes 30.
 (TeX-derived-mode-add-parents 'japanese-LaTeX-mode
-                              '(japanese-latex-mode latex-mode))
+                              '(japanese-latex-mode latex-mode tex-mode))
 
 (defun japanese-LaTeX-guess-engine ()
   "Guess Japanese TeX engine and set it to `TeX-engine'.

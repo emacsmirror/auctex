@@ -8214,6 +8214,8 @@ This happens when \\left is inserted."
 
 (declare-function LaTeX-preview-setup "preview")
 
+;; Delete alias predefined in tex-mode.el so that AUCTeX autoload
+;; takes precedence.
 ;;;###autoload (if (eq (symbol-function 'LaTeX-mode) 'latex-mode)
 ;;;###autoload     (defalias 'LaTeX-mode nil))
 ;;;###autoload
@@ -8331,7 +8333,9 @@ Run after mode hooks and file local variables application."
 
 ;; Compatibility for former mode name.  Directory local variables
 ;; prepared for `latex-mode' continue to be valid for `LaTeX-mode'.
-(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode))
+;; COMPATIBILITY for emacs<30: `tex-mode' can be removed from the list
+;; once the least supported emacsen becomes 30.
+(TeX-derived-mode-add-parents 'LaTeX-mode '(latex-mode tex-mode))
 
 (with-eval-after-load 'semantic/symref/grep
   (push '(docTeX-mode "*.dtx") semantic-symref-filepattern-alist))
@@ -8368,7 +8372,9 @@ runs the hooks in `docTeX-mode-hook'."
 ;; prepared for `doctex-mode' continue to be valid for `docTeX-mode'.
 ;; In addition, dir local vars for `latex-mode' are now valid for
 ;; `docTeX-mode' as well.
-(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode))
+;; COMPATIBILITY for emacs<30: `latex-mode' and `tex-mode' can be removed
+;; from the list once the least supported emacsen becomes 30.
+(TeX-derived-mode-add-parents 'docTeX-mode '(doctex-mode latex-mode tex-mode))
 
 (defcustom docTeX-clean-intermediate-suffixes
   TeX-clean-default-intermediate-suffixes
@@ -8473,7 +8479,7 @@ function would return non-nil and `(match-string 1)' would return
   ;; Standard Emacs completion-at-point support.  We append the entry
   ;; in order to let `TeX--completion-at-point' be first in the list:
   (add-hook 'completion-at-point-functions
-            #'LaTeX--arguments-completion-at-point t t)
+            #'LaTeX--arguments-completion-at-point 5 t)
 
   (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
                                                 ("thebibliography" . LaTeX-item-bib)

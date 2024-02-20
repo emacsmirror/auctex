@@ -1,6 +1,6 @@
 ;;; tex-info.el --- Support for editing Texinfo source.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1993-2023  Free Software Foundation, Inc.
+;; Copyright (C) 1993-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -889,6 +889,11 @@ Run after mode hooks and file local variables application."
                         (list "" TeX-complete-word))))
 
   (TeX-set-mode-name))
+
+;; Compatibility for former mode name.  Directory local variables
+;; prepared for `texinfo-mode' continue to be valid for
+;; `Texinfo-mode'.
+(TeX-derived-mode-add-parents 'Texinfo-mode '(texinfo-mode))
 
 (defcustom Texinfo-clean-intermediate-suffixes
   '("\\.cps?" "\\.vrs?" "\\.fns?" "\\.tps?" "\\.pgs?" "\\.kys?")
