@@ -1,6 +1,6 @@
 This is auctex.info, produced by makeinfo version 7.1 from auctex.texi.
 
-This manual is for AUCTeX (version 14.0.2 from 2024-02-09), a
+This manual is for AUCTeX (version 14.0.2.2024-02-20 from 2024-02-20), a
 sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2024 Free Software
@@ -581,14 +581,32 @@ before the above lines into your Emacs startup file.
 providers::.
 
    Once activated, the modes provided by AUCTeX are used per default for
-all supported file types.  If you want to change the modes for which it
-is operative instead of the default, use
-     M-x customize-option <RET> TeX-modes <RET>
+all supported file types, namely ‘plain-tex-mode’, ‘latex-mode’,
+‘doctex-mode’ and ‘texinfo-mode’.  This might not match your preference.
+You can have control over which AUCTeX mode is activated per file types
+by ‘TeX-modes’ option.  For example, you can use Emacs built-in
+‘plain-tex-mode’ for plain TeX files while you can use AUCTeX
+‘LaTeX-mode’ for LaTeX files.
+
+ -- User Option: TeX-modes
+     List of Emacs built-in TeX modes redirected to AUCTeX modes.  If
+     you prefer a particular built-in mode over AUCTeX mode, remove it
+     from this list.  Type
+          M-x customize-option <RET> TeX-modes <RET>
+     to manipulate the contents of ‘TeX-modes’.
+
+   Don't remove ‘tex-mode’ from ‘TeX-modes’ because it results in
+inconsistent behavior.
+
+   On Emacs 29 and later, you can alter ‘major-mode-remap-alist’ instead
+of ‘TeX-modes’ as you like to arrange AUCTeX redirections.  In fact,
+‘TeX-modes’ option does nothing other than setting up
+‘major-mode-remap-alist’ according its value on those Emacsens.
 
    If you want to remove a preinstalled AUCTeX completely before any of
 its modes have been used,
      (unload-feature 'tex-site)
-should accomplish that.
+in your init file should accomplish that.
 
 
 File: auctex.info,  Node: Advice for package providers,  Next: Advice for non-privileged users,  Prev: Loading the package,  Up: Installation
@@ -6247,8 +6265,8 @@ A.1 Copying this Manual
 
 The copyright notice for this manual is:
 
-   This manual is for AUCTeX (version 14.0.2 from 2024-02-09), a
-sophisticated TeX environment for Emacs.
+   This manual is for AUCTeX (version 14.0.2.2024-02-20 from
+2024-02-20), a sophisticated TeX environment for Emacs.
 
    Copyright © 1992-1995, 2001, 2002, 2004-2024 Free Software
 Foundation, Inc.
@@ -8513,6 +8531,10 @@ A.4 Frequently Asked Questions
 
   1. Something is not working correctly.  What should I do?
 
+     If you are having trouble with upgrading ELPA package, first have a
+     look at the dedicated entry below.  If that doesn't resolve your
+     issue, then come back here and proceed.
+
      Well, you might have guessed it, the first place to look is in the
      available documentation packaged with AUCTeX.  This could be the
      release notes (in the ‘RELEASE’ file) or the news section of the
@@ -8561,12 +8583,46 @@ A.4 Frequently Asked Questions
      you have to search either in the site configuration file or your
      personal init file for statements related to the problem.
 
-  2. What versions of Emacs are supported?
+  2. ELPA upgrade fails.  What should I do?
+
+     In general, ELPA upgrade can fail in a Emacs session you are
+     running, especially when AUCTeX major version increases.  This
+     entry covers the following cases in such casual upgrade.
+        • Upgrade stops with error and doesn't complete.
+        • Upgrade falls in infinite loop and doesn't terminate.  You
+          have to interrupt it with ‘C-g’ and upgrade doesn't complete.
+        • It looks like upgrade finishes successfully but afterwards
+          AUCTeX breaks with mysterious error like:
+               TeX-command-expand: Wrong type argument: stringp, nil
+
+     These issues involve byte compilation failure.  In the third case,
+     the generated ‘.elc’ files are actually corrupted.  Thus the point
+     is to have sane byte compilation.
+
+     The first thing which is worth trying is:
+       1. Terminate the current running Emacs session and restart Emacs.
+       2. Type ‘M-x package-recompile <RET> auctex <RET>’.
+       3. Restart your Emacs again.
+
+     If you are lucky enough, this will basically resolve the issue.
+     There is still old ‘auctex-X.Y.Z’ directory left behind under
+     ‘~/.emacs.d/elpa/’, so delete it manually to avoid future trouble.
+
+     If the above prescription doesn't work, then try:
+       1. Uninstall AUCTeX once.
+       2. Restart your Emacs and (before doing anything else) reinstall
+          AUCTeX.
+
+     In theory, this recipe will circumvent all caveats in ELPA upgrade
+     of AUCTeX.  Find and delete old ‘auctex-X.Y.Z’ directory remaining
+     under ‘~/.emacs.d/elpa/’.
+
+  3. What versions of Emacs are supported?
 
      AUCTeX was tested with GNU Emacs 27.1.  Older versions may work but
      are unsupported.
 
-  3. What should I do when ‘./configure’ does not find programs like
+  4. What should I do when ‘./configure’ does not find programs like
      ‘latex’?
 
      This is problem often encountered on Windows.  Make sure that the
@@ -8574,7 +8630,7 @@ A.4 Frequently Asked Questions
      relevant programs, as described in *note (auctex)Installation under
      MS Windows::.
 
-  4. Why doesn't the completion, style file, or multifile stuff work?
+  5. Why doesn't the completion, style file, or multifile stuff work?
 
      It must be enabled first, insert this in your init file:
 
@@ -8585,18 +8641,18 @@ A.4 Frequently Asked Questions
      Read also the chapters about parsing and multifile documents in the
      manual.  *Note Parsing Files:: and *note Multifile::.
 
-  5. Why doesn't ‘TeX-save-document’ work?
+  6. Why doesn't ‘TeX-save-document’ work?
 
      ‘TeX-check-path’ has to contain "‘./’" somewhere.
 
-  6. Why is the information in ‘foo.tex’ forgotten when I save
+  7. Why is the information in ‘foo.tex’ forgotten when I save
      ‘foo.bib’?
 
      For various reasons, AUCTeX ignores the extension when it stores
      information about a file, so you should use unique base names for
      your files.  E.g. rename ‘foo.bib’ to ‘foob.bib’.
 
-  7. Why doesn't AUCTeX signal when processing a document is done?
+  8. Why doesn't AUCTeX signal when processing a document is done?
 
      If the message in the minibuffer stays "Type 'C-c C-l' to display
      results of compilation.", you probably have a misconfiguration in
@@ -8608,7 +8664,7 @@ A.4 Frequently Asked Questions
      The information in the debugging buffer can help you find the cause
      of the error in your init file.
 
-  8. Why does ‘TeX-next-error’ (‘C-c `’) fail?
+  9. Why does ‘TeX-next-error’ (‘C-c `’) fail?
 
      If ‘TeX-file-line-error’ is set to ‘nil’ (not the default), these
      sort of failures might be related to the the fact that when writing
@@ -8625,7 +8681,7 @@ A.4 Frequently Asked Questions
      manual to see where this is) or by simply keeping the variable
      ‘TeX-file-line-error’ to the default value of non-‘nil’.
 
-  9. What does ‘AUC’ stand for?
+  10. What does ‘AUC’ stand for?
 
      AUCTeX came into being at Aalborg University in Denmark.  Back then
      the Danish name of the university was Aalborg Universitetscenter;
@@ -9460,6 +9516,7 @@ Variable Index
 * TeX-master <2>:                        Multifile.           (line  39)
 * TeX-math-input-method-off-regexp:      Mathematics.         (line  76)
 * TeX-mode-hook:                         Modes and Hooks.     (line  22)
+* TeX-modes:                             Loading the package. (line  40)
 * TeX-newline-function:                  Indenting.           (line  29)
 * TeX-newline-function <1>:              Indenting.           (line 107)
 * TeX-Omega-command:                     Processor Options.   (line 121)
@@ -9913,105 +9970,105 @@ Concept Index
 
 
 Tag Table:
-Node: Top916
-Node: Copying7384
-Node: Introduction9333
-Node: Summary9603
-Node: Installation12340
-Node: Prerequisites14349
-Node: Configure16570
-Node: Build/install and uninstall21305
-Node: Loading the package22062
-Node: Advice for package providers23799
-Node: Advice for non-privileged users26668
-Node: Installation under MS Windows32166
-Node: Customizing46052
-Node: Quick Start47657
-Ref: Quick Start-Footnote-149790
-Node: Editing Facilities49892
-Node: Processing Facilities54773
-Node: Editing59654
-Node: Quotes60992
-Node: Font Specifiers70556
-Node: Sectioning72764
-Node: Environments77495
-Node: Equations83183
-Node: Floats83803
-Node: Itemize-like85839
-Node: Tabular-like86703
-Node: Customizing Environments88593
-Node: Mathematics88833
-Node: Completion92375
-Node: Marking100696
-Node: Marking (LaTeX)101332
-Node: Marking (Texinfo)102288
-Node: Commenting103937
-Node: Indenting105322
-Node: Filling114047
-Node: Display120065
-Node: Font Locking122576
-Node: Fontification of macros124675
-Node: Fontification of quotes134682
-Node: Fontification of math136226
-Node: Verbatim content140007
-Node: Faces140797
-Node: Known problems141302
-Node: Folding142311
-Node: Outline153460
-Node: Narrowing154783
-Node: Prettifying155860
-Node: Processing157147
-Node: Commands158507
-Node: Starting a Command159071
-Node: Selecting a Command164227
-Node: Processor Options173638
-Node: Viewing184914
-Node: Starting Viewers185288
-Node: I/O Correlation191098
-Ref: I/O Correlation-Footnote-1196854
-Node: Debugging197116
-Node: Ignoring warnings199818
-Node: Error overview201937
-Node: Checking203879
-Node: Control205567
-Node: Cleaning207718
-Node: Documentation209171
-Node: Customization210292
-Node: Modes and Hooks210785
-Node: Multifile212934
-Node: Parsing Files217778
-Node: Internationalization222815
-Node: European224168
-Node: Japanese232117
-Node: Automatic237390
-Node: Automatic Global239929
-Node: Automatic Private241071
-Node: Automatic Local242435
-Node: Style Files243709
-Node: Simple Style244523
-Node: Adding Macros248316
-Node: Adding Environments258133
-Node: Adding Other263595
-Node: Hacking the Parser268281
-Node: Appendices272293
-Node: Copying this Manual272589
-Node: GNU Free Documentation License273471
-Node: Changes298594
-Node: Development365681
-Node: Mid-term Goals366327
-Node: Wishlist369222
-Node: Bugs375411
-Node: FAQ376547
-Node: Texinfo mode382421
-Node: Exploiting383555
-Node: Superseding384377
-Node: Mapping389192
-Node: Unbinding391135
-Node: Indices391683
-Node: Key Index391846
-Node: Function Index399740
-Node: Variable Index412302
-Node: Concept Index438026
+Node: Top927
+Node: Copying7395
+Node: Introduction9344
+Node: Summary9614
+Node: Installation12351
+Node: Prerequisites14360
+Node: Configure16581
+Node: Build/install and uninstall21316
+Node: Loading the package22073
+Node: Advice for package providers24737
+Node: Advice for non-privileged users27606
+Node: Installation under MS Windows33104
+Node: Customizing46990
+Node: Quick Start48595
+Ref: Quick Start-Footnote-150728
+Node: Editing Facilities50830
+Node: Processing Facilities55711
+Node: Editing60592
+Node: Quotes61930
+Node: Font Specifiers71494
+Node: Sectioning73702
+Node: Environments78433
+Node: Equations84121
+Node: Floats84741
+Node: Itemize-like86777
+Node: Tabular-like87641
+Node: Customizing Environments89531
+Node: Mathematics89771
+Node: Completion93313
+Node: Marking101634
+Node: Marking (LaTeX)102270
+Node: Marking (Texinfo)103226
+Node: Commenting104875
+Node: Indenting106260
+Node: Filling114985
+Node: Display121003
+Node: Font Locking123514
+Node: Fontification of macros125613
+Node: Fontification of quotes135620
+Node: Fontification of math137164
+Node: Verbatim content140945
+Node: Faces141735
+Node: Known problems142240
+Node: Folding143249
+Node: Outline154398
+Node: Narrowing155721
+Node: Prettifying156798
+Node: Processing158085
+Node: Commands159445
+Node: Starting a Command160009
+Node: Selecting a Command165165
+Node: Processor Options174576
+Node: Viewing185852
+Node: Starting Viewers186226
+Node: I/O Correlation192036
+Ref: I/O Correlation-Footnote-1197792
+Node: Debugging198054
+Node: Ignoring warnings200756
+Node: Error overview202875
+Node: Checking204817
+Node: Control206505
+Node: Cleaning208656
+Node: Documentation210109
+Node: Customization211230
+Node: Modes and Hooks211723
+Node: Multifile213872
+Node: Parsing Files218716
+Node: Internationalization223753
+Node: European225106
+Node: Japanese233055
+Node: Automatic238328
+Node: Automatic Global240867
+Node: Automatic Private242009
+Node: Automatic Local243373
+Node: Style Files244647
+Node: Simple Style245461
+Node: Adding Macros249254
+Node: Adding Environments259071
+Node: Adding Other264533
+Node: Hacking the Parser269219
+Node: Appendices273231
+Node: Copying this Manual273527
+Node: GNU Free Documentation License274420
+Node: Changes299543
+Node: Development366630
+Node: Mid-term Goals367276
+Node: Wishlist370171
+Node: Bugs376360
+Node: FAQ377496
+Node: Texinfo mode385188
+Node: Exploiting386322
+Node: Superseding387144
+Node: Mapping391959
+Node: Unbinding393902
+Node: Indices394450
+Node: Key Index394613
+Node: Function Index402507
+Node: Variable Index415069
+Node: Concept Index440866
 
 End Tag Table
 
