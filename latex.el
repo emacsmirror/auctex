@@ -8268,16 +8268,6 @@ Run after mode hooks and file local variables application."
   (if (bound-and-true-p filladapt-mode)
       (turn-off-filladapt-mode))
 
-  ;; Don't overwrite the value the user set by hooks or file
-  ;; (directory) local variables.
-  (or (local-variable-p 'outline-regexp)
-      (setq-local outline-regexp (LaTeX-outline-regexp t)))
-  (or (local-variable-p 'outline-heading-alist)
-      (setq outline-heading-alist
-            (mapcar (lambda (x)
-                      (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                    LaTeX-section-list)))
-
   ;; Keep `LaTeX-paragraph-commands-regexp' in sync with
   ;; `LaTeX-paragraph-commands' in case the latter is updated by
   ;; hooks or file (directory) local variables.
@@ -8441,13 +8431,12 @@ function would return non-nil and `(match-string 1)' would return
 
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  ;; Moved after `run-mode-hooks'. (bug#65750)
-  ;; (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  ;; (when (boundp 'outline-heading-alist)
-  ;;   (setq outline-heading-alist
-  ;;         (mapcar (lambda (x)
-  ;;                   (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-  ;;                 LaTeX-section-list)))
+  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  (when (boundp 'outline-heading-alist)
+    (setq outline-heading-alist
+          (mapcar (lambda (x)
+                    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                  LaTeX-section-list)))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list

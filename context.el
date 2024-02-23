@@ -1875,9 +1875,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; Outline support
   (require 'outline)
   (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
-  ;; Moved after `run-mode-hooks'. (bug#65750)
-  ;; (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
-  ;;(make-local-variable 'outline-heading-end-regexp)
+  (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
+  (make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
         TeX-trailer-start (ConTeXt-trailer-start))
 
@@ -1913,10 +1912,7 @@ Run after mode hooks and file local variables application."
          "[ \t]*\\("
          (ConTeXt-paragraph-commands-regexp) "\\|"
          "\\$\\$\\|" ; Plain TeX display math
-         "$\\)"))
-
-  (or (local-variable-p 'outline-regexp)
-      (setq-local outline-regexp (ConTeXt-outline-regexp t))))
+         "$\\)")))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
