@@ -8762,6 +8762,7 @@ function would return non-nil and `(match-string 1)' would return
      '("mathring" t)
      '("MakeUppercase" t)
      '("MakeLowercase" t)
+     '("MakeTitlecase" t)
      '("chaptermark" "Text")
      '("sectionmark" "Text")
      '("subsectionmark" "Text")
