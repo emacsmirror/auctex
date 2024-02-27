@@ -105,17 +105,13 @@
     ;; 5.2 Case changing
     ;; \MakeUppercase, \MakeLowercase & \MakeTitlecase are in latex.el
 
-    ;; 5.4 Better user-defined math display environments
+    ;; 5.3 Better user-defined math display environments
     "ignorespacesafterend"
 
-    ;; 5.5 Normalising spacing
+    ;; 5.4 Normalising spacing
     "normalsfcodes"
 
-    ;; 5.3 Better user-defined math display environments
-    '("ignorespacesafterend")
-
-    ;; 5.4 Normalising spacing
-    '("normalsfcodes")
+    ;; 5.5 Querying localisation: TBD
 
     ;; 5.6 Extended and expandable references of properties
     '("RecordProperties" "Label"
