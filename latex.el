@@ -1789,6 +1789,7 @@ This is necessary since index entries may contain commands and stuff.")
                             "DeclareTextAccent"  "DeclareTextComposite"
                             "ProvideTextCommand" "ProvideTextSymbol"
                             "ProvideTextAccent"  "ProvideTextComposite"
+                            "DeclareFixedFont"
                             "DeclareTextFontCommand"
                             "DeclareOldFontCommand"))
               "{?\\\\\\([A-Za-z]+\\)}?")
@@ -8917,6 +8918,10 @@ function would return non-nil and `(match-string 1)' would return
      ;; The next 3 were added to LaTeX kernel with 2020-02-02 release:
      '("sscshape" -1) '("swshape"  -1) '("ulcshape" -1)
      ;; These are for the default settings:
+     "encodingdefault" "familydefault" "seriesdefault" "shapedefault"
+     "rmdefault" "sfdefault" "ttdefault"
+     "bfdefault" "mddefault"
+     "itdefault" "sldefault" "scdefault" "updefault"
      "sscdefault" "swdefault" "ulcdefault"
      ;; This macro is for `spaced small caps'.  Currently, only some
      ;; commercial fonts offer this.  It should be moved into
@@ -8925,7 +8930,18 @@ function would return non-nil and `(match-string 1)' would return
      ;; User level reset macros:
      '("normalfont" -1) '("normalshape" -1)
 
+     ;; Low level commands for selecting a font:
+     '("fontencoding" "Encoding")
+     '("fontfamily" "Family")
+     '("fontseries" "Series")
+     '("fontshape" "Shape")
+     '("fontsize" "Size" "Baselineskip")
+     "selectfont"
+     '("usefont" "Encoding" "Family" "Series" "Shape")
      '("linespread" "Factor")
+
+     ;; This one only be used outside math mode:
+     '("mathversion" (TeX-arg-completing-read ("normal" "bold") "Version"))
 
      ;; Macros for document-command parser, aka xparse added to LaTeX
      ;; kernel with 2020-10-01 release:
