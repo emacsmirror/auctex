@@ -8761,9 +8761,6 @@ function would return non-nil and `(match-string 1)' would return
      '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
-     '("MakeUppercase" t)
-     '("MakeLowercase" t)
-     '("MakeTitlecase" t)
      '("chaptermark" "Text")
      '("sectionmark" "Text")
      '("subsectionmark" "Text")
@@ -8772,7 +8769,7 @@ function would return non-nil and `(match-string 1)' would return
      '("subparagraphmark" "Text")
 
      "LaTeXe"
-     "listfiles" "frontmatter" "mainmatter" "backmatter"
+     "frontmatter" "mainmatter" "backmatter"
      "leftmark" "rightmark"
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
@@ -8944,24 +8941,24 @@ function would return non-nil and `(match-string 1)' would return
      '("mathversion" (TeX-arg-completing-read ("normal" "bold") "Version"))
 
      ;; Macros for document-command parser, aka xparse added to LaTeX
-     ;; kernel with 2020-10-01 release:
-     '("DeclareDocumentCommand"
-       TeX-arg-define-macro "Argument specification" t)
+     ;; kernel with 2020-10-01 release and documented in usrguide.pdf
      '("NewDocumentCommand"
        TeX-arg-define-macro "Argument specification" t)
      '("RenewDocumentCommand"
        TeX-arg-macro "Argument specification" t)
      '("ProvideDocumentCommand"
        TeX-arg-define-macro "Argument specification" t)
+     '("DeclareDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
 
      ;; Declaring environments
-     '("DeclareDocumentEnvironment" TeX-arg-define-environment
-       "Argument specification" t t)
      '("NewDocumentEnvironment" TeX-arg-define-environment
        "Argument specification" t t)
      '("RenewDocumentEnvironment" TeX-arg-environment
        "Argument specification" t t)
      '("ProvideDocumentEnvironment" TeX-arg-define-environment
+       "Argument specification" t t)
+     '("DeclareDocumentEnvironment" TeX-arg-define-environment
        "Argument specification" t t)
 
      ;; Fully-expandable document commands
@@ -8975,9 +8972,6 @@ function would return non-nil and `(match-string 1)' would return
        TeX-arg-define-macro "Argument specification" t)
 
      ;; Testing special values
-     '("IfBooleanTF" 3)
-     '("IfBooleanT" 2)
-     '("IfBooleanF" 2)
      '("IfNoValueTF" 3)
      '("IfNoValueT" 2)
      '("IfNoValueF" 2)
@@ -8989,18 +8983,49 @@ function would return non-nil and `(match-string 1)' would return
      '("IfBlankF" 2)
      "BooleanTrue"
      "BooleanFalse"
+     '("IfBooleanTF" 3)
+     '("IfBooleanT" 2)
+     '("IfBooleanF" 2)
+
      ;; Argument processors
-     "ProcessedArgument"
-     "ReverseBoolean"
      '("SplitArgument" "Number" "Token")
      '("SplitList" "Token")
-     "TrimSpaces"
      '("ProcessList" "List" "Function")
-     ;; Access to the argument specification
-     '("GetDocumentCommandArgSpec" TeX-arg-macro)
-     '("GetDocumentEnvironmmentArgSpec" TeX-arg-environment)
-     '("ShowDocumentCommandArgSpec" TeX-arg-macro)
-     '("ShowDocumentEnvironmentArgSpec" TeX-arg-environment)
+     "ReverseBoolean"
+     "TrimSpaces"
+     "ProcessedArgument"
+
+     ;; Copying and showing (robust) commands and environments
+     '("NewCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("RenewCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("DeclareCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("ShowCommand"        TeX-arg-macro)
+
+     '("NewEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("RenewEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("DeclareEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("ShowEnvironment" TeX-arg-environment)
+
+     ;; Preconstructing command names (or otherwise expanding arguments)
+     '("UseName" "String")
+     ;; Only offer the predictable part
+     '("ExpandArgs"
+       (TeX-arg-completing-read ("c" "cc" "Nc") "Spec"))
+
+     ;; Expandable floating point (and other) calculations
+     '("fpeval" t)
+     '("inteval" t)
+     '("dimeval" t)
+     '("skipeval" t)
+
+     ;; Case changing
+     '("MakeUppercase" t)
+     '("MakeLowercase" t)
+     '("MakeTitlecase" t)
+
+     ;; Support for problem solving
+     '("listfiles"
+       [TeX-arg-completing-read-multiple ("hashes" "sizes")])
 
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
@@ -9069,10 +9094,7 @@ function would return non-nil and `(match-string 1)' would return
                                 "Position 1")
        (TeX-arg-completing-read ("top" "first" "last")
                                 "Position 2")
-       2)
-     '("fpeval" t)
-     '("dimeval" t)
-     '("skipeval" t) ))
+       2) ))
 
   (TeX-run-style-hooks "LATEX")
 
