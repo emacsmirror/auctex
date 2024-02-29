@@ -27,7 +27,8 @@
 
 ;; This file adds general support for basic LaTeX commands used for
 ;; writing LaTeX class files (.cls), style files (.sty) and package
-;; files (.dtx).  Most of the macros are taken from clsguide.pdf.
+;; files (.dtx).  Most of the macros are taken from clsguide.pdf and
+;; fntguide.pdf
 
 ;;; Code:
 
@@ -47,6 +48,8 @@
 (TeX-add-style-hook
  "ltx-base"
  (lambda ()
+
+   ;; Macros from clsguide.pdf
    (TeX-add-symbols
 
     ;; 4.1 Identification.  Other '\Provide*' macros are available in
@@ -165,6 +168,145 @@
     '("@ifnextchar" (TeX-arg-literal " ") (TeX-arg-free "Character") 2)
     '("expandafter" 0) )
 
+   ;; Run the style hook so we can use `LaTeX-fontenc-package-options':
+   (TeX-run-style-hooks "fontenc")
+
+   ;; Macros from fntguide.pdf
+   (TeX-add-symbols
+
+    ;; 2.5 Special font declaration commands
+    '("DeclareFixedFont" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      4)
+    '("DeclareTextFontCommand" TeX-arg-define-macro t)
+    '("DeclareOldFontCommand" TeX-arg-define-macro 2)
+
+    ;; 3.3 Declaring math versions
+    '("DeclareMathVersion" "Version")
+
+    ;; 3.4 Declaring math alphabets
+    '("DeclareMathAlphabet" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      3)
+    '("SetMathAlphabet" TeX-arg-define-macro
+      "Version"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      3)
+
+    ;; 3.5 Declaring symbol fonts
+    '("DeclareSymbolFont" "Symbol font"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      3)
+    '("SetSymbolFont" "Symbol font" "Version"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      3)
+    '("DeclareSymbolFontAlphabet" TeX-arg-define-macro "Symbol font")
+
+    ;; 3.6 Declaring math symbols
+    '("DeclareMathSymbol" "Symbol"
+      (TeX-arg-completing-read ("0" "1" "2" "3" "4" "5" "6" "7"
+                                "\\marthord" "\\mathop" "\\mathbin"
+                                "\\mathrel" "\\mathopen" "\\mathclose"
+                                "\\mathpunct" "\\mathalph")
+                               "Type")
+      2)
+    '("DeclareMathDelimiter" "Symbol"
+      (TeX-arg-completing-read ("0" "1" "2" "3" "4" "5" "6" "7"
+                                "\\marthord" "\\mathop" "\\mathbin"
+                                "\\mathrel" "\\mathopen" "\\mathclose"
+                                "\\mathpunct" "\\mathalph")
+                               "Type")
+      4)
+    '("DeclareMathAccent" TeX-arg-define-macro
+      (TeX-arg-completing-read ("0" "1" "2" "3" "4" "5" "6" "7"
+                                "\\marthord" "\\mathop" "\\mathbin"
+                                "\\mathrel" "\\mathopen" "\\mathclose"
+                                "\\mathpunct" "\\mathalph")
+                               "Type")
+      2)
+    '("DeclareMathRadical" TeX-arg-define-macro 4)
+
+    ;; 3.7 Declaring math sizes
+    '("DeclareMathSizes" 4)
+
+    ;; 4.2 Font definition file commands
+    '("DeclareFontFamily"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      2)
+    '("DeclareFontShape"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      5)
+    '("DeclareSizeFunction" 2)
+
+    ;; 5.2 Encoding definition file commands
+    '("DeclareFontEncoding" "Encoding" 2)
+    '("DeclareTextCommand" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      [TeX-arg-define-macro-arguments] t)
+    '("ProvideTextCommand" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      [TeX-arg-define-macro-arguments] t)
+    '("DeclareTextSymbol" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      "Slot")
+    '("DeclareTextAccent" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      "Slot")
+    '("DeclareTextComposite" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      2)
+    '("DeclareTextCompositeCommand" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      2)
+    "LastDeclaredEncoding"
+
+    ;; 5.3 Default definitions
+    '("DeclareTextCommandDefault" TeX-arg-define-macro t)
+    '("DeclareTextAccentDefault" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding"))
+    '("DeclareTextSymbolDefault" TeX-arg-define-macro
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding"))
+    '("ProvideTextCommandDefault" TeX-arg-define-macro t)
+
+    ;; 5.4 Encoding defaults
+    '("DeclareFontEncodingDefaults" 2)
+    '("DeclareFontSubstitution"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      3)
+
+    ;; 6.1 Font substitution
+    '("DeclareErrorFont")
+    "fontsubfuzz"
+
+    ;; 6.2 Preloading
+    '("DeclarePreloadSizes"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      4)
+
+    ;; 6.6 Font series defaults per document family
+    '("DeclareFontSeriesDefault"
+      [TeX-arg-completing-read ("rm" "sf" "tt") "Meta family"]
+      (TeX-arg-completing-read ("bf" "md") "Meta series")
+      "Series value")
+
+    ;; 6.7 Handling of nested emphasis
+    '("DeclareEmphSequence"
+      (TeX-arg-completing-read-multiple (lambda ()
+                                          (mapcar (lambda (x)
+                                                    (concat TeX-esc x))
+                                                  LaTeX-font-shape))
+                                        "Font declarations"))
+
+    ;; 6.8 Providing font family substitutions
+    '("DeclareFontFamilySubstitution"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      2)
+
+    ;; 7 Additional text symbols - textcomp
+    '("DeclareEncodingSubset"
+      (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
+      2) )
+
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
@@ -202,7 +344,57 @@
                                 ("ProcessOptions" "*")
                                 ("ExecuteOptions" "{")
                                 ("DeclareRobustCommand" "*|{\\[[{")
-                                ("CheckCommand"         "*|{\\[[{"))
+                                ("CheckCommand"         "*|{\\[[{")
+
+                                ("DeclareFixedFont"       "|{\\{{{{{")
+                                ("DeclareTextFontCommand" "|{\\|{\\")
+                                ("DeclareOldFontCommand"  "|{\\|{\\|{\\")
+
+                                ("DeclareMathVersion"   "{")
+                                ("DeclareMathAlphabet"  "|{\\{{{{")
+                                ("SetMathAlphabet"      "|{\\{{{{{")
+
+                                ("DeclareSymbolFont"         "{{{{{")
+                                ("SetSymbolFont"             "{{{{{{")
+                                ("DeclareSymbolFontAlphabet" "|{\\{")
+
+                                ("DeclareMathSymbol"    "|{\\|{\\{{")
+                                ("DeclareMathDelimiter" "|{\\|{\\{{{{")
+                                ("DeclareMathAccent"    "|{\\{{{")
+                                ("DeclareMathRadical"   "|{\\{{{{")
+
+                                ("DeclareMathSizes"     "{{{{")
+
+                                ("DeclareFontFamily"  "{{{")
+                                ("DeclareFontShape"   "{{{{{{")
+
+                                ("DeclareFontEncoding"         "{{{")
+                                ("DeclareTextCommand"          "|{\\{[[{")
+                                ("ProvideTextCommand"          "|{\\{[[{")
+                                ("DeclareTextSymbol"           "|{\\{{")
+                                ("DeclareTextAccent"           "|{\\{{")
+                                ("DeclareTextComposite"        "|{\\{{{")
+                                ("DeclareTextCompositeCommand" "|{\\{{{")
+
+                                ("DeclareTextCommandDefault" "|{\\|{\\")
+                                ("DeclareTextAccentDefault"  "|{\\{")
+                                ("DeclareTextSymbolDefault"  "|{\\{")
+                                ("ProvideTextCommandDefault" "|{\\|{\\")
+
+                                ("DeclareFontEncodingDefaults" "{{")
+                                ("DeclareFontSubstitution"     "{{{{")
+
+                                ("DeclareErrorFont" "{{{{")
+
+                                ("DeclarePreloadSizes" "{{{{{")
+
+                                ("DeclareFontSeriesDefault" "[{{")
+
+                                ("DeclareEmphSequence" "{")
+
+                                ("DeclareFontFamilySubstitution" "{{{")
+
+                                ("DeclareEncodingSubset"       "{{{"))
                               'function)
      (font-latex-add-keywords '(("RecordProperties" "{{")
                                 ("RefProperty" "{{"))
