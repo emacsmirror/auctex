@@ -78,8 +78,8 @@ Emacs.
 It is known to work under the X Window System for Linux and for several
 flavors of Unix: we have reports for HP and Solaris.
 
-There are several development versions of Emacs around for native MacOS
-Carbon, and @previewlatex{} is working with them, too.
+There are several versions of Emacs around for macOS, and @previewlatex{}
+is working with them, too.
 
 With Windows, both native Emacs and Cygwin Emacs should work.  However, it
 is known that @url{https://miktex.org/,MiK@TeX{}} sometimes doesn't work
@@ -209,6 +209,35 @@ encompassing a complete slide, you will need to use the customization
 facilities of @file{preview.sty} to tell it how to resolve this, whether
 you want no previews, previews of whole slides or previews of inner
 material.
+
+@subsection Does @previewlatex{} work with the TikZ package?
+
+@previewlatex{} doesn't have support for the @code{tikzpicture}
+environment built-in.  It can be included manually by adding the lines:
+@example
+\usepackage[displaymath,sections,graphics,floats,textmath]@{preview@}
+\PreviewEnvironment[@{[]@}]@{tikzpicture@}
+@end example
+
+@noindent
+to the document preamble.
+
+Things get more complicated when the code inside the @code{tikzpicture}
+environment contains @code{$ $} for inserting inline math and
+@previewlatex{} is instructed to insert previews for it into the buffer.
+In this case, you can disable previews for inline math by changing the
+lines above to:
+@example
+\usepackage[displaymath,sections,graphics,floats
+  % textmath   %% Don't preview inline math
+]@{preview@}
+\PreviewEnvironment[@{[]@}]@{tikzpicture@}
+@end example
+
+Another solution is to source out the TikZ pictures into an external file
+which uses the @code{standalone} class, process them and insert them back
+into the main file as figures with the @code{\includegraphics} macro.  In
+this case, previewing of inline math will work as usual.
 
 @node Troubleshooting, Other formats, Customization, Frequently Asked Questions
 @section Troubleshooting
