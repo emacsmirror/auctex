@@ -366,9 +366,16 @@ If so, return the second element, otherwise return nil."
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^}]*\\)}" (+ (point) fill-column 10) t)
-        (match-string 1)
-      (buffer-substring (point) (min (point-max) (+ 20 (point)))))))
+    (search-forward "{" nil t)
+    (let ((beg (point)))
+      (backward-char)
+      (condition-case nil
+          (with-syntax-table (TeX-search-syntax-table ?\{ ?\})
+            (forward-sexp)
+            (backward-char))
+        (error (forward-sentence)))
+      (replace-regexp-in-string "[\n\r][ ]*" " "
+                                (buffer-substring beg (point))))))
 
 (add-hook 'TeX-remove-style-hook
           (lambda () (setq LaTeX-largest-level nil)))
