@@ -1,6 +1,6 @@
 ;;; latex-flymake.el --- Flymake integration  -*- lexical-binding: t; -*-
 
-;; Copyright (C), 2018 Free Software Foundation, Inc.
+;; Copyright (C), 2018--2024 Free Software Foundation, Inc.
 
 ;; Author: Alex Branham <branham@utexas.edu>
 ;; Maintainer: auctex-devel@gnu.org
@@ -40,6 +40,23 @@
 
 (defvar-local LaTeX--flymake-proc nil)
 
+(defcustom LaTeX-flymake-chktex-options nil
+  "A list of strings passed as options to the chktex backend.
+You can use this to enable or disable specific warnings by setting it to
+something like:
+
+  \\='(\"-n12\" \"-w41\")
+
+Which would disable warning 12 (\"interword spacing should perhaps be
+used\") and enable 41 (\"you ought not to use primitive TeX in LaTeX
+code\").
+
+See the chktex manual for warning numbers and details about how to use
+flags."
+  :type '(choice (const :tag "Use chktex defaults" nil)
+                 (repeat :tag "Custom chktex options" string))
+  :group 'LaTeX)
+
 (defun LaTeX-flymake (report-fn &rest _args)
   "Setup flymake integration.
 
@@ -56,7 +73,8 @@ REPORT-FN is flymake's callback function."
        (make-process
         :name "LaTeX-flymake" :noquery t :connection-type 'pipe
         :buffer (generate-new-buffer " *LaTeX-flymake*")
-        :command '("chktex" "--verbosity=0" "--quiet" "--inputfiles")
+        :command `("chktex" "--verbosity=0" "--quiet" "--inputfiles"
+                   ,@LaTeX-flymake-chktex-options)
         :sentinel
         (lambda (proc _event)
           (when (eq 'exit (process-status proc))
