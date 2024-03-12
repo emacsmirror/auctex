@@ -8770,7 +8770,7 @@ Return nil only if no process buffer exists."
       nil)))
 
 (defun TeX-process-check (name)
-  "Check if a process for the TeX document NAME already exist.
+  "Check if a process for the TeX document NAME already exists.
 If so, give the user the choice of aborting the process or the current
 command."
   (let (process)
