@@ -1,5 +1,5 @@
 @c This is part of the AUCTeX manual.
-@c Copyright (C) 1994-2002, 2004-2010, 2012-2023 Free Software
+@c Copyright (C) 1994-2002, 2004-2010, 2012-2024 Free Software
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
@@ -171,6 +171,11 @@ There are new keymaps, hooks and abbrev tables:
 @code{japanese-plain-TeX-mode-abbrev-table},
 @code{japanese-LaTeX-mode-abbrev-table}
 @end itemize
+
+@item
+New custom variable @code{LaTeX-flymake-chktex-options} is provided to
+enable or disable specific warnings of @code{chktex} backend used by
+Flymake.
 
 @item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
