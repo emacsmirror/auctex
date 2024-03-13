@@ -8769,22 +8769,31 @@ Return nil only if no process buffer exists."
           t)
       nil)))
 
+(defcustom TeX-kill-process-without-query nil
+  "If non-nil, abort a running document process without user query."
+  :type 'boolean
+  :local t
+  :safe #'booleanp
+  :group 'TeX-command)
+
 (defun TeX-process-check (name)
   "Check if a process for the TeX document NAME already exists.
 If so, give the user the choice of aborting the process or the current
-command."
+command.  If the value of `TeX-kill-process-without-query' is non-nil,
+user query is skipped and the process is aborted right away."
   (let (process)
     (while (and (setq process (TeX-process name))
                 (eq (process-status process) 'run))
       (cond
-       ((yes-or-no-p (concat "Process `"
-                             (process-name process)
-                             "' for document `"
-                             name
-                             "' running, kill it? "))
+       ((or TeX-kill-process-without-query
+            (yes-or-no-p (concat "Process `"
+                                 (process-name process)
+                                 "' for document `"
+                                 name
+                                 "' running, kill it? ")))
         (delete-process process))
        ((eq (process-status process) 'run)
-           (error "Cannot have two processes for the same document"))))))
+        (error "Cannot have two processes for the same document"))))))
 
 (defun TeX-process-buffer-name (name)
   "Return name of AUCTeX buffer associated with the document NAME."

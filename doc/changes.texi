@@ -178,6 +178,11 @@ enable or disable specific warnings of @code{chktex} backend used by
 Flymake.
 
 @item
+The boolean custom variable @code{TeX-kill-process-without-query} can be
+used to disable the user query before aborting a running process for a
+@TeX{} document.  Default is @code{nil}.
+
+@item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
 

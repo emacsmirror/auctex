@@ -3085,6 +3085,12 @@ The name of the file for temporarily storing the text when formatting
 the current region.
 @end defopt
 
+@defopt TeX-kill-process-without-query
+This boolean option controls whether @AUCTeX{} should ask user before
+aborting a running process for a @TeX{} document.  It can be set as a
+file-local variable.
+@end defopt
+
 @defopt TeX-header-end
 A regular expression matching the end of the header.  By default, this
 is @samp{\begin@{document@}} in @LaTeX{} mode and @samp{%**end of
