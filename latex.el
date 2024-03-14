@@ -8079,8 +8079,8 @@ ARG is the entry for the current argument in buffer stored in
 
             (t nil)))))
 
-(defun LaTeX-completion-find-argument-boundries (&rest args)
-  "Find the boundries of the current LaTeX argument.
+(defun LaTeX-completion-find-argument-boundaries (&rest args)
+  "Find the boundaries of the current LaTeX argument.
 ARGS are characters passed to the function
 `TeX-search-syntax-table'.  If ARGS are omitted, all characters
 defined in the variable `LaTeX-completion-macro-delimiters' are
@@ -8088,7 +8088,8 @@ taken."
   (save-restriction
     (narrow-to-region (line-beginning-position -40)
                       (line-beginning-position  40))
-    (let ((args (or args (LaTeX-completion-macro-delimiters))))
+    (let ((args (or args (LaTeX-completion-macro-delimiters)))
+          (parse-sexp-ignore-comments t))
       (condition-case nil
           (with-syntax-table (apply #'TeX-search-syntax-table args)
             (scan-lists (point) 1 1))
@@ -8100,7 +8101,7 @@ Completion for macros starting with `\\' is provided by the
 function `TeX--completion-at-point' which should come first in
 `completion-at-point-functions'."
   ;; Exit if not inside an argument or in a comment:
-  (when (and (LaTeX-completion-find-argument-boundries)
+  (when (and (LaTeX-completion-find-argument-boundaries)
              (not (nth 4 (syntax-ppss))))
     (let ((entry (LaTeX-what-macro)))
       (cond ((and entry
