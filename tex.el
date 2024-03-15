@@ -8741,12 +8741,6 @@ variable is nil."
 
 ;;; Process Control
 
-;; COMPATIBILITY for emacs < 27
-(if (< emacs-major-version 27)
-    (or (assq 'compilation-in-progress minor-mode-alist)
-        (setq minor-mode-alist (cons '(compilation-in-progress " Compiling")
-                                     minor-mode-alist))))
-
 (defun TeX-process-get-variable (name symbol &optional default)
   "Return the value in the process buffer for NAME of SYMBOL.
 
