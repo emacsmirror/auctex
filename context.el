@@ -496,8 +496,8 @@ in your init file such as .emacs.d/init.el or .emacs."
   "ConTeXt Mark version used for running ConTeXt."
   :type 'string
   :group 'TeX-command
-  :safe #'stringp
-  :local t)
+  :safe #'stringp)
+(make-variable-buffer-local 'ConTeXt-Mark-version)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -626,8 +626,8 @@ for a label to be inserted after the sectioning command."
 (defcustom ConTeXt-default-environment "itemize"
   "The default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-environment
-  :type 'string
-  :local t)
+  :type 'string)
+(make-variable-buffer-local 'ConTeXt-default-environment)
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
