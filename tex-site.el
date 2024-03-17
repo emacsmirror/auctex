@@ -168,7 +168,7 @@ Otherwise, restore AUCTeX definition saved in the symbol property
   (if (featurep 'tex-site)
       (TeX--alias-overlapped-modes t)))
 
-(defconst AUCTeX-version "14.0.3.2024-03-17"
+(defconst AUCTeX-version "14.0.4"
   "AUCTeX version.
 If not a regular release, the date of the last change.")
 
