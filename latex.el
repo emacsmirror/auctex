@@ -69,8 +69,9 @@
   "Default options to documentclass.
 A comma-seperated list of strings."
   :group 'LaTeX-environment
-  :type '(repeat (string :format "%v"))
-  :local t)
+  :type '(repeat (string :format "%v")))
+
+(make-variable-buffer-local 'LaTeX-default-options)
 
 (defcustom LaTeX-insert-into-comments t
   "Whether insertion commands stay in comments.
@@ -366,9 +367,16 @@ If so, return the second element, otherwise return nil."
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^}]*\\)}" (+ (point) fill-column 10) t)
-        (match-string 1)
-      (buffer-substring (point) (min (point-max) (+ 20 (point)))))))
+    (search-forward "{" nil t)
+    (let ((beg (point)))
+      (backward-char)
+      (condition-case nil
+          (with-syntax-table (TeX-search-syntax-table ?\{ ?\})
+            (forward-sexp)
+            (backward-char))
+        (error (forward-sentence)))
+      (replace-regexp-in-string "[\n\r][ ]*" " "
+                                (buffer-substring beg (point))))))
 
 (add-hook 'TeX-remove-style-hook
           (lambda () (setq LaTeX-largest-level nil)))
@@ -553,8 +561,8 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
 It is overridden by `LaTeX-default-document-environment' when it
 is non-nil and the current environment is \"document\"."
   :group 'LaTeX-environment
-  :type 'string
-  :local t)
+  :type 'string)
+(make-variable-buffer-local 'LaTeX-default-environment)
 
 (defvar-local LaTeX-default-document-environment nil
   "The default environment when creating new ones with
@@ -1001,8 +1009,8 @@ optional argument is omitted.)"
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 (string :format "%v"))
-  :local t)
+                 (string :format "%v")))
+(make-variable-buffer-local 'LaTeX-float)
 
 (defcustom LaTeX-top-caption-list nil
   "List of float environments with top caption."
@@ -1046,14 +1054,14 @@ code listings and take a caption and label."
 (defcustom LaTeX-default-format ""
   "Default format for array and tabular environments."
   :group 'LaTeX-environment
-  :type 'string
-  :local t)
+  :type 'string)
+(make-variable-buffer-local 'LaTeX-default-format)
 
 (defcustom LaTeX-default-width "1.0\\linewidth"
   "Default width for minipage and tabular* environments."
   :group 'LaTeX-environment
-  :type 'string
-  :local t)
+  :type 'string)
+(make-variable-buffer-local 'LaTeX-default-width)
 
 (defcustom LaTeX-default-position ""
   "Default position for array and tabular environments.
@@ -1061,8 +1069,8 @@ If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 string)
-  :local t)
+                 string))
+(make-variable-buffer-local 'LaTeX-default-position)
 
 (defcustom LaTeX-equation-label "eq:"
   "Default prefix to equation labels."
@@ -1147,8 +1155,9 @@ corresponding entry."
   :group 'LaTeX-label
   :type '(repeat (cons (string :tag "Environment")
                        (choice (string :tag "Label prefix")
-                               (symbol :tag "Label prefix symbol"))))
-  :local t)
+                               (symbol :tag "Label prefix symbol")))))
+
+(make-variable-buffer-local 'LaTeX-label-alist)
 
 (defvar TeX-read-label-prefix nil
   "Initial input for the label in `TeX-read-label'.")
@@ -1789,6 +1798,7 @@ This is necessary since index entries may contain commands and stuff.")
                             "DeclareTextAccent"  "DeclareTextComposite"
                             "ProvideTextCommand" "ProvideTextSymbol"
                             "ProvideTextAccent"  "ProvideTextComposite"
+                            "DeclareFixedFont"
                             "DeclareTextFontCommand"
                             "DeclareOldFontCommand"))
               "{?\\\\\\([A-Za-z]+\\)}?")
@@ -8071,8 +8081,8 @@ ARG is the entry for the current argument in buffer stored in
 
             (t nil)))))
 
-(defun LaTeX-completion-find-argument-boundries (&rest args)
-  "Find the boundries of the current LaTeX argument.
+(defun LaTeX-completion-find-argument-boundaries (&rest args)
+  "Find the boundaries of the current LaTeX argument.
 ARGS are characters passed to the function
 `TeX-search-syntax-table'.  If ARGS are omitted, all characters
 defined in the variable `LaTeX-completion-macro-delimiters' are
@@ -8080,7 +8090,8 @@ taken."
   (save-restriction
     (narrow-to-region (line-beginning-position -40)
                       (line-beginning-position  40))
-    (let ((args (or args (LaTeX-completion-macro-delimiters))))
+    (let ((args (or args (LaTeX-completion-macro-delimiters)))
+          (parse-sexp-ignore-comments t))
       (condition-case nil
           (with-syntax-table (apply #'TeX-search-syntax-table args)
             (scan-lists (point) 1 1))
@@ -8092,7 +8103,7 @@ Completion for macros starting with `\\' is provided by the
 function `TeX--completion-at-point' which should come first in
 `completion-at-point-functions'."
   ;; Exit if not inside an argument or in a comment:
-  (when (and (LaTeX-completion-find-argument-boundries)
+  (when (and (LaTeX-completion-find-argument-boundaries)
              (not (nth 4 (syntax-ppss))))
     (let ((entry (LaTeX-what-macro)))
       (cond ((and entry
@@ -8268,16 +8279,6 @@ Run after mode hooks and file local variables application."
   (if (bound-and-true-p filladapt-mode)
       (turn-off-filladapt-mode))
 
-  ;; Don't overwrite the value the user set by hooks or file
-  ;; (directory) local variables.
-  (or (local-variable-p 'outline-regexp)
-      (setq-local outline-regexp (LaTeX-outline-regexp t)))
-  (or (local-variable-p 'outline-heading-alist)
-      (setq outline-heading-alist
-            (mapcar (lambda (x)
-                      (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-                    LaTeX-section-list)))
-
   ;; Keep `LaTeX-paragraph-commands-regexp' in sync with
   ;; `LaTeX-paragraph-commands' in case the latter is updated by
   ;; hooks or file (directory) local variables.
@@ -8441,13 +8442,12 @@ function would return non-nil and `(match-string 1)' would return
 
   (require 'outline)
   (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  ;; Moved after `run-mode-hooks'. (bug#65750)
-  ;; (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
-  ;; (when (boundp 'outline-heading-alist)
-  ;;   (setq outline-heading-alist
-  ;;         (mapcar (lambda (x)
-  ;;                   (cons (concat "\\" (nth 0 x)) (nth 1 x)))
-  ;;                 LaTeX-section-list)))
+  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  (when (boundp 'outline-heading-alist)
+    (setq outline-heading-alist
+          (mapcar (lambda (x)
+                    (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                  LaTeX-section-list)))
 
   (setq-local TeX-auto-full-regexp-list
               (delete-dups (append LaTeX-auto-regexp-list
@@ -8771,8 +8771,6 @@ function would return non-nil and `(match-string 1)' would return
      '("textsubscript" "Text")
      '("textcircled" "Text")
      '("mathring" t)
-     '("MakeUppercase" t)
-     '("MakeLowercase" t)
      '("chaptermark" "Text")
      '("sectionmark" "Text")
      '("subsectionmark" "Text")
@@ -8781,7 +8779,7 @@ function would return non-nil and `(match-string 1)' would return
      '("subparagraphmark" "Text")
 
      "LaTeXe"
-     "listfiles" "frontmatter" "mainmatter" "backmatter"
+     "frontmatter" "mainmatter" "backmatter"
      "leftmark" "rightmark"
      "textcompwordmark" "textvisiblespace" "textemdash" "textendash"
      "textexclamdown" "textquestiondown" "textquotedblleft"
@@ -8927,6 +8925,10 @@ function would return non-nil and `(match-string 1)' would return
      ;; The next 3 were added to LaTeX kernel with 2020-02-02 release:
      '("sscshape" -1) '("swshape"  -1) '("ulcshape" -1)
      ;; These are for the default settings:
+     "encodingdefault" "familydefault" "seriesdefault" "shapedefault"
+     "rmdefault" "sfdefault" "ttdefault"
+     "bfdefault" "mddefault"
+     "itdefault" "sldefault" "scdefault" "updefault"
      "sscdefault" "swdefault" "ulcdefault"
      ;; This macro is for `spaced small caps'.  Currently, only some
      ;; commercial fonts offer this.  It should be moved into
@@ -8935,27 +8937,38 @@ function would return non-nil and `(match-string 1)' would return
      ;; User level reset macros:
      '("normalfont" -1) '("normalshape" -1)
 
+     ;; Low level commands for selecting a font:
+     '("fontencoding" "Encoding")
+     '("fontfamily" "Family")
+     '("fontseries" "Series")
+     '("fontshape" "Shape")
+     '("fontsize" "Size" "Baselineskip")
+     "selectfont"
+     '("usefont" "Encoding" "Family" "Series" "Shape")
      '("linespread" "Factor")
 
+     ;; This one only be used outside math mode:
+     '("mathversion" (TeX-arg-completing-read ("normal" "bold") "Version"))
+
      ;; Macros for document-command parser, aka xparse added to LaTeX
-     ;; kernel with 2020-10-01 release:
-     '("DeclareDocumentCommand"
-       TeX-arg-define-macro "Argument specification" t)
+     ;; kernel with 2020-10-01 release and documented in usrguide.pdf
      '("NewDocumentCommand"
        TeX-arg-define-macro "Argument specification" t)
      '("RenewDocumentCommand"
        TeX-arg-macro "Argument specification" t)
      '("ProvideDocumentCommand"
        TeX-arg-define-macro "Argument specification" t)
+     '("DeclareDocumentCommand"
+       TeX-arg-define-macro "Argument specification" t)
 
      ;; Declaring environments
-     '("DeclareDocumentEnvironment" TeX-arg-define-environment
-       "Argument specification" t t)
      '("NewDocumentEnvironment" TeX-arg-define-environment
        "Argument specification" t t)
      '("RenewDocumentEnvironment" TeX-arg-environment
        "Argument specification" t t)
      '("ProvideDocumentEnvironment" TeX-arg-define-environment
+       "Argument specification" t t)
+     '("DeclareDocumentEnvironment" TeX-arg-define-environment
        "Argument specification" t t)
 
      ;; Fully-expandable document commands
@@ -8969,9 +8982,6 @@ function would return non-nil and `(match-string 1)' would return
        TeX-arg-define-macro "Argument specification" t)
 
      ;; Testing special values
-     '("IfBooleanTF" 3)
-     '("IfBooleanT" 2)
-     '("IfBooleanF" 2)
      '("IfNoValueTF" 3)
      '("IfNoValueT" 2)
      '("IfNoValueF" 2)
@@ -8983,18 +8993,49 @@ function would return non-nil and `(match-string 1)' would return
      '("IfBlankF" 2)
      "BooleanTrue"
      "BooleanFalse"
+     '("IfBooleanTF" 3)
+     '("IfBooleanT" 2)
+     '("IfBooleanF" 2)
+
      ;; Argument processors
-     "ProcessedArgument"
-     "ReverseBoolean"
      '("SplitArgument" "Number" "Token")
      '("SplitList" "Token")
-     "TrimSpaces"
      '("ProcessList" "List" "Function")
-     ;; Access to the argument specification
-     '("GetDocumentCommandArgSpec" TeX-arg-macro)
-     '("GetDocumentEnvironmmentArgSpec" TeX-arg-environment)
-     '("ShowDocumentCommandArgSpec" TeX-arg-macro)
-     '("ShowDocumentEnvironmentArgSpec" TeX-arg-environment)
+     "ReverseBoolean"
+     "TrimSpaces"
+     "ProcessedArgument"
+
+     ;; Copying and showing (robust) commands and environments
+     '("NewCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("RenewCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("DeclareCommandCopy" TeX-arg-define-macro TeX-arg-macro)
+     '("ShowCommand"        TeX-arg-macro)
+
+     '("NewEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("RenewEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("DeclareEnvironmentCopy" TeX-arg-define-environment TeX-arg-environment)
+     '("ShowEnvironment" TeX-arg-environment)
+
+     ;; Preconstructing command names (or otherwise expanding arguments)
+     '("UseName" "String")
+     ;; Only offer the predictable part
+     '("ExpandArgs"
+       (TeX-arg-completing-read ("c" "cc" "Nc") "Spec"))
+
+     ;; Expandable floating point (and other) calculations
+     '("fpeval" t)
+     '("inteval" t)
+     '("dimeval" t)
+     '("skipeval" t)
+
+     ;; Case changing
+     '("MakeUppercase" t)
+     '("MakeLowercase" t)
+     '("MakeTitlecase" t)
+
+     ;; Support for problem solving
+     '("listfiles"
+       [TeX-arg-completing-read-multiple ("hashes" "sizes")])
 
      ;; LaTeX hook macros:
      '("AddToHook"      TeX-arg-hook [ "Label" ] t)
@@ -9063,10 +9104,7 @@ function would return non-nil and `(match-string 1)' would return
                                 "Position 1")
        (TeX-arg-completing-read ("top" "first" "last")
                                 "Position 2")
-       2)
-     '("fpeval" t)
-     '("dimeval" t)
-     '("skipeval" t) ))
+       2) ))
 
   (TeX-run-style-hooks "LATEX")
 

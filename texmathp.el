@@ -1,6 +1,6 @@
 ;;; texmathp.el -- Code to check if point is inside LaTeX math environment  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1998-2022  Free Software Foundation, Inc.
+;; Copyright (C) 1998-2024  Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Maintainer: auctex-devel@gnu.org
@@ -325,8 +325,10 @@ See the variable `texmathp-tex-commands' about which commands are checked."
     ;; return immediately nil.  This relies on the function
     ;; `LaTeX-verbatim-p'.  We add a check here in case this library
     ;; is used stand-alone without latex.el provided by AUCTeX
-    ;; (bug#61410):
-    (if (and (fboundp 'LaTeX-verbatim-p)
+    ;; (bug#61410) and the `major-mode' doesn't derive from `TeX-mode'
+    ;; (bug#69681):
+    (if (and (derived-mode-p 'TeX-mode)
+             (fboundp 'LaTeX-verbatim-p)
              (LaTeX-verbatim-p (cdr match)))
         (progn
           (setq texmathp-why `(nil . ,(cdr match)))

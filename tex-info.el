@@ -31,9 +31,6 @@
 
 (require 'texinfo)
 
-;; Silence the compiler for variables:
-(defvar outline-heading-alist)
-
 ;;; Environments:
 (defvar Texinfo-environment-list
   '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
@@ -672,13 +669,12 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'syntax-propertize-function)
        texinfo-syntax-propertize-function)
 
-  ;; Moved after `run-mode-hooks'. (bug#65750)
-  ;; (setq-local outline-heading-alist
-  ;;             (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
-  ;;       	      texinfo-section-list))
-  ;; (setq-local outline-regexp
-  ;;             (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
-  ;;       	      "\\>"))
+  (setq-local outline-heading-alist
+              (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
+        	      texinfo-section-list))
+  (setq-local outline-regexp
+              (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
+        	      "\\>"))
 
   ;; Mostly AUCTeX stuff
   (set (make-local-variable 'TeX-command-current) #'TeX-command-master)
@@ -872,16 +868,6 @@ Run after mode hooks and file local variables application."
                    "^@node [ \t]*[Tt]op\\|^@\\("
                    texinfo-chapter-level-regexp
                    "\\)")))
-
-  ;; Outline settings.
-  (or (local-variable-p 'outline-heading-alist)
-      (setq-local outline-heading-alist
-	          (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
-		          texinfo-section-list)))
-  (or (local-variable-p 'outline-regexp)
-      (setq-local outline-regexp
-	          (concat (regexp-opt (mapcar #'car outline-heading-alist) t)
-		          "\\>")))
 
   (or (local-variable-p 'TeX-complete-list)
       (setq-local TeX-complete-list

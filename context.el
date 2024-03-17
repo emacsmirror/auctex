@@ -496,8 +496,8 @@ in your init file such as .emacs.d/init.el or .emacs."
   "ConTeXt Mark version used for running ConTeXt."
   :type 'string
   :group 'TeX-command
-  :safe #'stringp
-  :local t)
+  :safe #'stringp)
+(make-variable-buffer-local 'ConTeXt-Mark-version)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -626,8 +626,8 @@ for a label to be inserted after the sectioning command."
 (defcustom ConTeXt-default-environment "itemize"
   "The default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-environment
-  :type 'string
-  :local t)
+  :type 'string)
+(make-variable-buffer-local 'ConTeXt-default-environment)
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
@@ -1875,9 +1875,8 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   ;; Outline support
   (require 'outline)
   (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
-  ;; Moved after `run-mode-hooks'. (bug#65750)
-  ;; (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
-  ;;(make-local-variable 'outline-heading-end-regexp)
+  (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
+  (make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
         TeX-trailer-start (ConTeXt-trailer-start))
 
@@ -1913,10 +1912,7 @@ Run after mode hooks and file local variables application."
          "[ \t]*\\("
          (ConTeXt-paragraph-commands-regexp) "\\|"
          "\\$\\$\\|" ; Plain TeX display math
-         "$\\)"))
-
-  (or (local-variable-p 'outline-regexp)
-      (setq-local outline-regexp (ConTeXt-outline-regexp t))))
+         "$\\)")))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."

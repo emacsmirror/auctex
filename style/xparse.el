@@ -1,6 +1,6 @@
 ;;; xparse.el --- AUCTeX style for `xparse.sty' version 2022-07-05  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2024 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -27,14 +27,27 @@
 
 ;; The content of this file is now (December 2023) part of latex.el
 ;; and font-latex.el.  This style provides only completion for xparse
-;; package options.
+;; package options and some macros re-allocated from the kernel back
+;; into xparse.sty with LaTeX release 2023-11-01.
 
 ;; The "yet not more supported" specifiers `l', `u', `g' and `G' are
 ;; ignored completely and may lead to wrong parsing results.
 
 ;;; Code:
 
+(require 'tex)
 (require 'latex)
+
+(TeX-add-style-hook
+ "xparse"
+ (lambda ()
+   (TeX-add-symbols
+    ;; Access to the argument specification
+    '("GetDocumentCommandArgSpec" TeX-arg-macro)
+    '("GetDocumentEnvironmmentArgSpec" TeX-arg-environment)
+    '("ShowDocumentCommandArgSpec" TeX-arg-macro)
+    '("ShowDocumentEnvironmentArgSpec" TeX-arg-environment)))
+ TeX-dialect)
 
 (defvar LaTeX-xparse-package-options-list
   '(("log-declarations" ("true" "false")))
