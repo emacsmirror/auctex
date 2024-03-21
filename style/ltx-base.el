@@ -289,7 +289,11 @@
       (TeX-arg-completing-read ("bf" "md") "Meta series")
       "Series value")
 
-    ;; 6.7 Handling of nested emphasis
+    ;; 6.7 Handling of current and requested font series and shape
+    '("DeclareFontSeriesChangeRule" 4)
+    '("DeclareFontShapeChangeRule"  4)
+
+    ;; 6.8 Handling of nested emphasis
     '("DeclareEmphSequence"
       (TeX-arg-completing-read-multiple (lambda ()
                                           (mapcar (lambda (x)
@@ -297,7 +301,7 @@
                                                   LaTeX-font-shape))
                                         "Font declarations"))
 
-    ;; 6.8 Providing font family substitutions
+    ;; 6.9 Providing font family substitutions
     '("DeclareFontFamilySubstitution"
       (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
       2)
@@ -389,6 +393,9 @@
                                 ("DeclarePreloadSizes" "{{{{{")
 
                                 ("DeclareFontSeriesDefault" "[{{")
+
+                                ("DeclareFontSeriesChangeRule" "{{{{")
+                                ("DeclareFontShapeChangeRule " "{{{{")
 
                                 ("DeclareEmphSequence" "{")
 

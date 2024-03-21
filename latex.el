@@ -8941,7 +8941,9 @@ function would return non-nil and `(match-string 1)' would return
      '("fontencoding" "Encoding")
      '("fontfamily" "Family")
      '("fontseries" "Series")
+     '("fontseriesforce" "Series")
      '("fontshape" "Shape")
+     '("fontshapeforce" "Shape")
      '("fontsize" "Size" "Baselineskip")
      "selectfont"
      '("usefont" "Encoding" "Family" "Series" "Shape")
