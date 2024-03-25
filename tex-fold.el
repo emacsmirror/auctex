@@ -254,6 +254,34 @@ After that, changing the prefix key requires manipulating keymaps."
     (define-key map "i"    #'TeX-fold-clearout-item)
     map))
 
+(defcustom TeX-fold-auto-reveal
+  '(eval (TeX-fold-arrived-via (key-binding [left]) (key-binding [right])
+                               #'backward-char #'forward-char
+                               #'mouse-set-point))
+  "Predicate to open a fold when entered.
+Possibilities are:
+t autoopens,
+nil doesn't,
+a symbol will have its value consulted if it exists,
+defaulting to nil if it doesn't.
+A CONS-cell means to call a function for determining the value.
+The CAR of the cell is the function to call which receives
+the CDR of the CONS-cell in the rest of the arguments, while
+point and current buffer point to the position in question.
+All of the options show reasonable defaults."
+  :group 'TeX-fold
+  :type '(choice (const :tag "Off" nil)
+                 (const :tag "On" t)
+                 (symbol :tag "Indirect variable" :value reveal-mode)
+                 (cons :tag "Function call"
+                       :value (eval (TeX-fold-arrived-via
+                                     (key-binding [left])
+                                     (key-binding [right])
+                                     #'backward-char #'forward-char
+                                     #'mouse-set-point))
+                       function (list :tag "Argument list"
+                                      (repeat :inline t sexp)))))
+
 
 ;;; Folding
 
@@ -833,6 +861,22 @@ Remove the respective properties from the overlay OV."
   (when font-lock-mode
     (overlay-put ov 'face TeX-fold-unfolded-face)))
 
+(defun TeX-fold-auto-reveal-p (mode)
+  "Decide whether to auto-reveal.
+Return non-nil if folded region should be auto-opened.
+See `TeX-fold-auto-reveal' for definitions of MODE."
+  (cond ((symbolp mode)
+         (and (boundp mode)
+              (symbol-value mode)))
+        ((consp mode)
+         (apply (car mode) (cdr mode)))
+        (t mode)))
+
+(defun TeX-fold-arrived-via (&rest list)
+  "Indicate auto-opening.
+Return non-nil if called by one of the commands in LIST."
+  (memq this-command list))
+
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
 (defun TeX-fold-post-command ()
@@ -855,11 +899,7 @@ Remove the respective properties from the overlay OV."
               (setq TeX-fold-open-spots (cdr spots))
               (when (or disable-point-adjustment
                         global-disable-point-adjustment
-                        ;; See preview.el on how to make this configurable.
-                        (memq this-command
-                              (list (key-binding [left]) (key-binding [right])
-                                    #'backward-char #'forward-char
-                                    #'mouse-set-point)))
+                        (TeX-fold-auto-reveal-p TeX-fold-auto-reveal))
                 ;; Open new overlays.
                 (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
                                               mark-active)
