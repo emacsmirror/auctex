@@ -2826,6 +2826,30 @@ Maximum length of original text displayed in a tooltip or the echo area
 for folded content.  Set it to zero in order to disable this feature.
 @end defopt
 
+@defopt TeX-fold-auto-reveal
+This option determines the auto-reveal behavior when the point enters the
+folded portion of the buffer.  Possible values and the corresponding
+behaviors are:
+@itemize
+@item
+@code{t}: @AUCTeX{} always opens the folded expression and reveal the
+original source text.
+@item
+@code{nil}: @AUCTeX{} never reveals.
+@item
+@var{SYMBOL}: The value of @var{SYMBOL} is used as a boolean flag.  If
+@var{SYMBOL} isn't bound as a variable, it is treated as @code{nil}.
+@item
+Cons cell @code{(@var{FUNCTION} . @var{ARGUMENTS})}: @AUCTeX{} calls the
+@var{FUNCTION} with arbitrary number of @var{ARGUMENTS}.  The return value
+is regarded as a boolean flag.
+@end itemize
+
+It has a reasonable default value to reveal when the point enters the
+folded portion with @kbd{@key{left}}, @kbd{@key{right}}, @kbd{C-b},
+@kbd{C-f} or mouse click under standard key binding.
+@end defopt
+
 
 @node Outline
 @section Outlining the Document
