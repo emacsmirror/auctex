@@ -183,6 +183,11 @@ used to disable the user query before aborting a running process for a
 @TeX{} document.  Default is @code{nil}.
 
 @item
+In Fold mode, the original source text is revealed when you click the
+folded portion by mouse.  You can customize the detailed behavior by
+new customize option @code{TeX-fold-auto-reveal}.
+
+@item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
 
